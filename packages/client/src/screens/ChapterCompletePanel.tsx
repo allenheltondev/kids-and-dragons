@@ -25,6 +25,12 @@
  * it is a fact about the run and not a beat: a phone that reconnects onto the
  * summary has to read the same ending as the two that watched it happen.
  *
+ * The ending scene's own words (`RunState.narration`, composed when the scene
+ * opened) head the summary and are read first: the scene ends the chapter the
+ * moment it opens, so this is the only place the table ever sees them. On the
+ * completion that ends the campaign, an epilogue (EpiloguePlates) may follow
+ * them, and the rest of what the summary says waits until it is done.
+ *
  * A setback is drawn as a different ending, never as a loss (spec §8.2). It
  * pays half rather than nothing precisely so the evening still counts, and the
  * screen has to say the same thing the rule does — the party is not being told
@@ -42,6 +48,7 @@ import { Icon } from "./icons";
 import { campaignEndHeading, campaignEndLine } from "./campaign-copy";
 import { fightEndingIcon, fightEndingLine } from "./fight-ending-copy";
 import { useEnsureChapter, useEnsureContent } from "./content";
+import { useEndPlates } from "./end-plates";
 import { ChapterGoalCard } from "./ChapterGoal";
 import "./shared.css";
 import "./ChapterCompletePanel.css";
@@ -165,8 +172,15 @@ export function ChapterCompletePanel(): ReactElement {
    * Spoken once — the summary is narration like any other (spec §11). Held
    * until the chapter has loaded, so the recap is in the same utterance rather
    * than missing from it; a chapter that never loads never holds it up.
+   *
+   * The ending's own words come first. While an epilogue is still to play they
+   * are said alone, and the rest waits for it, so the paintings are not talked
+   * over and the XP is not the last thing anyone heard before them.
    */
+  const ending = (state?.narration ?? "").trim();
+  const epilogueDue = useEndPlates() !== null;
   const spoken = useRef(false);
+  const endingSaid = useRef(false);
   const chapterReady = chapter !== null && chapter.id === chapterId;
   const [waited, setWaited] = useState(false);
   useEffect(() => {
@@ -175,10 +189,16 @@ export function ChapterCompletePanel(): ReactElement {
     return () => { clearTimeout(timer); };
   }, [chapterReady]);
   useEffect(() => {
-    if (spoken.current || (!chapterReady && !waited)) return;
+    if (!epilogueDue || endingSaid.current || spoken.current || ending === "") return;
+    endingSaid.current = true;
+    speak(ending, { source: "narration", interrupt: true });
+  }, [epilogueDue, ending]);
+  useEffect(() => {
+    if (spoken.current || epilogueDue || (!chapterReady && !waited)) return;
     spoken.current = true;
     speak(
       [
+        endingSaid.current ? "" : ending,
         endLine !== null
           ? `${heading} ${endLine}`
           : setback
@@ -193,9 +213,9 @@ export function ChapterCompletePanel(): ReactElement {
         ...ownRolls.map((r) => `${r.name} earned ${String(r.xp)} experience from their own good rolls.`),
         ...fightEndings.map(fightEndingLine),
         ...recap,
-      ].join(" "),
+      ].filter((line) => line !== "").join(" "),
     );
-  }, [xp, xpLine, ownRolls, setback, recap, heading, endLine, fightEndings, chapterReady, waited]);
+  }, [xp, xpLine, ownRolls, setback, recap, heading, endLine, fightEndings, chapterReady, waited, ending, epilogueDue]);
 
   const questItems = party.flatMap((m) =>
     m.character.questItems.map((itemId) => ({ itemId, owner: m.character.name })),
@@ -209,6 +229,12 @@ export function ChapterCompletePanel(): ReactElement {
           <Icon name={ended === "complete" ? "crown" : setback || ended === "failed" ? "scroll" : "trophy"} />
           <span>{heading}</span>
         </h2>
+        {/* How the story ended, in the ending scene's own words: the last page, before the tally. */}
+        {ending === "" ? null : (
+          <p className="complete__ending" data-testid="chapter-ending">
+            {ending}
+          </p>
+        )}
         {endLine !== null ? (
           <p className="complete__campaign-end">
             <Icon name={ended === "complete" ? "star" : "charm"} />

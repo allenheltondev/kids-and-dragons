@@ -23,6 +23,11 @@ function used() {
     for (const [i, plate] of (campaign.prologue?.plates ?? []).entries()) out.push([`${campaign.id} prologue ${String(i + 1)}`, plate.art]);
   }
   for (const chapter of chapters) if (chapter.plate) out.push([`${chapter.id} plate`, chapter.plate.art]);
+  for (const campaign of campaigns) {
+    for (const epilogue of campaign.epilogues ?? []) {
+      for (const [i, plate] of epilogue.plates.entries()) out.push([`${campaign.id} epilogue ${epilogue.id} ${String(i + 1)}`, plate.art]);
+    }
+  }
   return out;
 }
 
@@ -59,6 +64,7 @@ describe("story plates", () => {
     const said = new Map();
     for (const campaign of campaigns) for (const plate of campaign.prologue?.plates ?? []) said.set(plate.art, plate.narration);
     for (const chapter of chapters) if (chapter.plate) said.set(chapter.plate.art, chapter.plate.narration);
+    for (const campaign of campaigns) for (const epilogue of campaign.epilogues ?? []) for (const plate of epilogue.plates) said.set(plate.art, plate.narration);
     for (const painting of prompts) {
       expect(painting.narration, painting.id).toBe(said.get(painting.id));
       expect(painting.path, painting.id).toBe(`assets/${painting.id}.webp`);
@@ -76,6 +82,19 @@ describe("story plates", () => {
       expect(campaign.prologue.plates.length, campaign.id).toBeGreaterThanOrEqual(3);
       expect(campaign.prologue.plates.length, campaign.id).toBeLessThanOrEqual(6);
       for (const plate of campaign.prologue.plates) expect(plate.art.startsWith(`plates/${campaign.id}/`), plate.art).toBe(true);
+    }
+  });
+
+  it("gives every ending of Gemfall's and Riftlight's last chapter an epilogue, named after it", () => {
+    for (const [id, last] of [["gemfall", "gemfall-08"], ["riftlight", "riftlight-finale"]]) {
+      const campaign = campaigns.find((c) => c.id === id);
+      const finale = chapters.find((c) => c.id === last);
+      const endings = Object.entries(finale.scenes).filter(([, scene]) => Array.isArray(scene.choices) && scene.choices.length === 0).map(([sceneId]) => sceneId);
+      expect(campaign.epilogues.flatMap((e) => e.endings).sort(), id).toEqual(endings.sort());
+      for (const epilogue of campaign.epilogues) {
+        expect(epilogue.chapter).toBe(last);
+        epilogue.plates.forEach((plate, i) => expect(plate.art).toBe(`plates/${id}/epilogue-${epilogue.id}-${String(i + 1)}`));
+      }
     }
   });
 

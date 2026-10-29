@@ -9,7 +9,7 @@
  * What is collected, and what is deliberately not:
  *  - scene and branch narration, their variants, check prompts, interaction
  *    cues, hints, the goal ("Your goal: …"), chapter plates, the prologue, the
- *    "Last time…" opener and lines, and help.json;
+ *    epilogues, the "Last time…" opener and lines, and help.json;
  *  - choice labels, as their own kind: in Party Mode a phone reads its own
  *    choices with the device voice, so they are priced separately;
  *  - never anything a player typed (turns, decision lines, the fight log) or
@@ -27,6 +27,7 @@ export type LineKind =
   | "goal"
   | "plate"
   | "prologue"
+  | "epilogue"
   | "last-time"
   | "help"
   | "choice";
@@ -153,6 +154,14 @@ export function campaignLines(campaign: Record<string, Json>, options: Inventory
     prologue.forEach((plate, i) => {
       const words = isObject(plate) ? str(plate.narration) : null;
       if (words !== null) push(`${id}/@prologue/${String(i)}`, "prologue", words);
+    });
+  }
+  const epilogues = Array.isArray(campaign.epilogues) ? campaign.epilogues : [];
+  for (const epilogue of epilogues) {
+    if (!isObject(epilogue) || !Array.isArray(epilogue.plates)) continue;
+    epilogue.plates.forEach((plate, i) => {
+      const words = isObject(plate) ? str(plate.narration) : null;
+      if (words !== null) push(`${id}/@epilogue/${String(epilogue.id)}/${String(i)}`, "epilogue", words);
     });
   }
   if (isObject(campaign.lastTime)) {

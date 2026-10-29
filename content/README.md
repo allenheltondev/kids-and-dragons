@@ -413,7 +413,7 @@ A screen that comes back partway (a resumed room, a reload, a phone back at the 
 the run walked. A scene whose words have variants or a `{token}` is passed over, so nothing is
 quoted that differs by party. Nothing to author for it.
 
-## Story plates: the prologue and chapter plates
+## Story plates: the prologue, chapter plates and epilogues
 
 A campaign can open with paintings and the story told over them, before the table is asked to
 decide anything. Full spec, with the art: [docs/story-plates.md](../docs/story-plates.md).
@@ -441,6 +441,27 @@ later chapter, including road and pursuit variants):
 - A plate whose painting has not shipped is left out when the story plays, so content can land
   before its art. `npm run art:inventory` lists what is owed.
 - On a graph campaign, `npm run content:proofs` after adding one.
+
+And at the other end, in the campaign file, an epilogue for each way it can end (2 to 4 plates,
+after the ending scene's words and before the summary, on the completion that ends the campaign):
+
+```json
+"epilogues": [
+  { "id": "heroes", "title": "The Heroes of Red Sky", "chapter": "gemfall-08", "endings": ["ending_heroes"],
+    "plates": [ { "art": "plates/gemfall/epilogue-heroes-1", "narration": "The bells ring..." } ] }
+]
+```
+
+- `endings` are ending scenes (`"choices": []`) of the campaign's last chapter (a graph
+  campaign's: scenes with `endsCampaign`). Each ending leads into at most one epilogue; an ending
+  none names goes straight to the summary. `title` is the name history gives the party, and the
+  first plate wears it. Paintings are `plates/<campaign>/epilogue-<id>-<n>`.
+- Same words rules as any plate. An epilogue may resolve (it is the ending), but it names only
+  who and what its endings, every scene leading into them, or the prologue have already said:
+  `content:validate` refuses any other capitalised name. Carry on from the ending's words, never
+  repeat them, and end on a spark.
+- The ending scene's own words head the summary and are read first, epilogue or not. Write them
+  as the story's last page.
 
 ## The Story page (#358)
 

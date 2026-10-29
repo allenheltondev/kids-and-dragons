@@ -3,6 +3,8 @@ import type { Campaign, Chapter } from "./types/chapter.js";
 import {
   PLATE_MAX_WORDS,
   campaignPlates,
+  endPlates,
+  epilogueFor,
   isOpeningChapter,
   plateProblems,
   plateWordCount,
@@ -123,5 +125,74 @@ describe("plateProblems", () => {
     const both = chapter("c-1", "c", 1, { plate: { art: "plates/c/c-1", narration: "A door." } });
     expect(plateProblems(clean, chapters(both)).map((p) => p.problem)[0]).toMatch(/takes no plate/);
     expect(plateProblems({ ...clean, prologue: undefined }, chapters(both))).toEqual([]);
+  });
+});
+
+describe("epilogues", () => {
+  const ending = (narration: string) => ({ type: "story", narration, choices: [] });
+  const last = chapter("c-3", "c", 3, {
+    scenes: {
+      s: { type: "story", narration: "Two doors.", choices: [{ id: "a", label: "A", goto: "door_a" }, { id: "b", label: "B", goto: "lead_b" }] },
+      door_a: ending("You open the door. History calls you the Door Folk."),
+      lead_b: { type: "story", narration: "Mabel the heron waves goodbye.", choices: [{ id: "go", label: "Go on", goto: "door_b" }] },
+      door_b: ending("You leave by the other door."),
+    },
+  } as unknown as Partial<Chapter>);
+  const epi = (id: string, endings: string[], narration: string[]) => ({
+    id,
+    title: `Title ${id}`,
+    chapter: "c-3",
+    endings,
+    plates: narration.map((n, i) => ({ art: `plates/c/epilogue-${id}-${String(i + 1)}`, narration: n })),
+  });
+  const withEpilogues = (...epilogues: ReturnType<typeof epi>[]) => ({ ...ordered, chapters: ["c-1", "c-3"], prologue: undefined, epilogues }) as Campaign;
+  const chapters = new Map([["c-1", chapter("c-1", "c", 1)], ["c-3", last]]);
+
+  it("picks the epilogue of the ending the party reached, only when the campaign ended", () => {
+    const campaign = withEpilogues(epi("a", ["door_a"], ["You leave.", "You open the door."]), epi("b", ["door_b"], ["You leave by the door.", "You open it."]));
+    expect(epilogueFor(campaign, "c-3", "door_b")?.id).toBe("b");
+    expect(epilogueFor(campaign, "c-1", "door_b")).toBeNull();
+    expect(endPlates(campaign, "c-3", "door_a", "complete")).toEqual({
+      kind: "epilogue",
+      key: "epilogue:c:a",
+      ribbon: "Title a",
+      plates: campaign.epilogues![0]!.plates,
+    });
+    expect(endPlates(campaign, "c-3", "door_a", undefined)).toBeNull();
+    expect(endPlates(campaign, "c-3", "s", "complete")).toBeNull();
+  });
+
+  it("counts epilogue paintings among the campaign's plates, last", () => {
+    const campaign = withEpilogues(epi("a", ["door_a"], ["You leave.", "You open the door."]));
+    expect(campaignPlates(campaign, []).map((p) => p.art)).toEqual(["plates/c/epilogue-a-1", "plates/c/epilogue-a-2"]);
+  });
+
+  it("passes epilogues that follow the rules", () => {
+    const campaign = withEpilogues(
+      epi("a", ["door_a"], ["The Door Folk go home.", "You leave."]),
+      epi("b", ["door_b"], ["You see Mabel waves again.", "The door stays open."]),
+    );
+    expect(plateProblems(campaign, chapters)).toEqual([]);
+  });
+
+  it("refuses an epilogue on a scene that is not a last ending, or on an ending already taken", () => {
+    const problems = (e: ReturnType<typeof epi>[]) => plateProblems(withEpilogues(...e), chapters).map((p) => p.problem);
+    expect(problems([epi("a", ["s"], ["You leave.", "You open the door."])])).toEqual([`"s" is not an ending scene of c-3`]);
+    expect(problems([epi("a", ["door_a"], ["You leave.", "You open the door."]), epi("b", ["door_a"], ["You leave by the door.", "You open it."])])).toEqual([`"door_a" already leads into a`]);
+    expect(problems([{ ...epi("a", ["door_a"], ["You leave.", "You open the door."]), chapter: "c-1" }])).toEqual([`"door_a" is not an ending scene of c-1`]);
+    expect(problems([epi("a", ["door_a"], ["You leave."])])).toEqual(["1 plates; an epilogue has 2 to 4"]);
+    const early = new Map([["c-1", chapter("c-1", "c", 1, { scenes: { e: ending("The end.") } } as unknown as Partial<Chapter>)], ["c-3", last]]);
+    const onFirst = withEpilogues({ ...epi("a", ["e"], ["You leave.", "You open the door."]), chapter: "c-1" });
+    expect(plateProblems(onFirst, early).map((p) => p.problem)).toEqual([`"e" does not end the campaign`]);
+  });
+
+  it("refuses a name its endings never said, wherever it stands in the sentence", () => {
+    const named = (narration: string) => plateProblems(withEpilogues(epi("a", ["door_a"], [narration, "You leave."])), chapters).map((p) => p.problem);
+    expect(named("Pellam waves.")).toEqual([`names "Pellam", which its endings never say`]);
+    expect(named("You see Pellam waves.")).toEqual([`names "Pellam", which its endings never say`]);
+    // Mabel is only met on the way to the other door.
+    expect(named("Mabel waves.")).toEqual([`names "Mabel", which its endings never say`]);
+    // An ordinary word that opens a sentence is no name, and the ending's own names are heard.
+    expect(named("History smiles at the Door Folk.")).toEqual([]);
   });
 });

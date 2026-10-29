@@ -59,6 +59,21 @@
  */
 /* Inline, so the star stays on the sentence when it wraps on a phone rather
    than floating alone above it. */
+/*
+ * How the story ended, in the ending scene's own words: the last page of the
+ * chapter, so it reads as story (the scene's type, left-aligned prose) rather
+ * than as one of the tallies under it. Bounded like the recap, a little
+ * larger, because it is read aloud to the room.
+ */
+.complete__ending {
+  margin: 0;
+  max-width: 52ch;
+  font-size: var(--font-size-lg, 1.15em);
+  line-height: 1.5;
+  text-align: start;
+  color: var(--color-text, #efeaff);
+}
+
 .complete__campaign-end,
 .complete__setback {
   display: block;

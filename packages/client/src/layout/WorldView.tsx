@@ -38,7 +38,7 @@ import { RiftStatus } from "../screens/RiftStatus";
 import { ChapterGoalCard } from "../screens/ChapterGoal";
 import { ChapterPreface } from "../screens/ChapterPreface";
 import { RoomCheers } from "../screens/RoomCheers";
-import { StoryPlates } from "../screens/StoryPlates";
+import { EpiloguePlates, StoryPlates } from "../screens/StoryPlates";
 import { useChapter, useGameStore, useMe, useRunState, useSession } from "../store";
 import type { PresentationEvent } from "../store/contract";
 // The hold table lives in world/presentation.ts because the board renderer
@@ -190,6 +190,10 @@ export function WorldView({
       {isSceneLike(phase) && <FightLog />}
       {isSceneLike(phase) && <Suspense fallback={null}><StoryArtLayer /></Suspense>}
       {phase === "chapter_complete" && <ChapterCompletePanel />}
+      {/* The campaign's epilogue for the ending the party reached, over the summary once the
+          ending's own words have been read (docs/story-plates.md). Once per device and
+          skippable; the summary says the rest when it is done. */}
+      {phase === "chapter_complete" && <EpiloguePlates />}
       {/* Spectators' cheers and how many are watching (#388). Only on the room's
           own screen: a party phone's world pane, mounted behind its controls,
           does not gate presentations, and the heroes' phones never show cheers. */}

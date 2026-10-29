@@ -1073,6 +1073,27 @@ export interface Prologue {
 }
 
 /**
+ * What came after: a short series of paintings for one way the campaign can end, shown once the
+ * table has heard the ending scene's own words and before the summary (`EPILOGUE_MIN_PLATES` to
+ * `EPILOGUE_MAX_PLATES` plates). It plays only on the completion that ends the campaign, on the
+ * ending scenes it names, and it may resolve what a prologue may not: it is the ending.
+ */
+export interface Epilogue {
+  /** Stable: the device remembers it as `epilogue:<campaign>:<id>`, and its paintings are named after it. */
+  id: string;
+  /**
+   * The name history gives the party for this ending ("The Heroes of Red Sky"). The first plate
+   * wears it, as a prologue's first plate wears the campaign's title.
+   */
+  title: string;
+  /** The chapter the endings are in: the campaign's last. */
+  chapter: string;
+  /** The ending scenes (no choices) of `chapter` that lead into these plates. One scene, one epilogue. */
+  endings: SceneId[];
+  plates: StoryPlate[];
+}
+
+/**
  * A campaign's "Last time…" (#357): one authored line per route-set member, and an opener for
  * a party that carries none (a first chapter, or a campaign begun again).
  *
@@ -1220,6 +1241,12 @@ export interface Campaign {
    * campaign authored before it existed, Gemfall included. See `Prologue` and story-plates.ts.
    */
   prologue?: Prologue;
+  /**
+   * What came after each way the campaign can end, told in paintings once the ending scene's words
+   * have been heard. Absent, or an ending none names, means the summary follows the ending as it
+   * always did. See `Epilogue` and story-plates.ts.
+   */
+  epilogues?: Epilogue[];
 }
 
 /** Data loaded and cached with its chapter, rather than bundled as client code. */
