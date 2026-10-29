@@ -58,6 +58,10 @@ in `StoryInteraction.tsx`):
    later than that, whatever the gap says.
 5. The start is fixed per attempt on each screen, so a better gap arriving mid-sweep never makes
    the marker jump. A phone that rejoins mid-attempt picks the game up where it is.
+6. The wall clock is read once per attempt, to align. From then on the attempt runs on the
+   monotonic `performance.now()`, so a phone whose clock is reset mid-attempt (a network time
+   update, a time zone change) neither skips a memory pattern nor jumps the marker
+   (`story-interaction.test.tsx`, a 5 s reset back and a 3 s reset forward).
 
 Everything that reads `now - startedAt` on the board uses this clock: the marker and its trail,
 the lamp, the GO stamp, memory pads and their notes, the cup shuffle and its frame rate, and the

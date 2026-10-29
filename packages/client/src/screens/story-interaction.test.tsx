@@ -550,11 +550,15 @@ describe("mini-game playtest refinements", () => {
 describe("timing fairness across clocks, frames and taps (#566)", () => {
   const T = Date.parse("2026-10-29T20:00:00.000Z");
   let local = 0;
+  /** How far the wall clock has been set away from the monotonic one since the test began. */
+  let wallJump = 0;
   let frames: FrameRequestCallback[] = [];
   let seq = 100;
   beforeEach(() => {
     frames = [];
-    vi.spyOn(Date, "now").mockImplementation(() => local);
+    wallJump = 0;
+    vi.spyOn(Date, "now").mockImplementation(() => local + wallJump);
+    vi.spyOn(performance, "now").mockImplementation(() => local);
     vi.spyOn(window, "requestAnimationFrame").mockImplementation((callback) => { frames.push(callback); return frames.length; });
   });
   afterEach(() => forgetServerTime());
@@ -575,6 +579,21 @@ describe("timing fairness across clocks, frames and taps (#566)", () => {
     expect(markers()).toEqual([50, 50]);
     tick(500);
     expect(markers()).toEqual([75, 75]);
+  });
+  it.each([-5000, 3000])("keeps the marker and a memory pattern steady when the phone's clock is reset %i ms mid-attempt", (jumpMs) => {
+    arrive(precision, 1000, 0);
+    render(<><StoryInteractionWorld /><StoryInteractionControls /></>);
+    tick(250);
+    expect(markers()).toEqual([62.5, 62.5]);
+    wallJump = jumpMs; // a network time update lands
+    tick(250);
+    expect(markers()).toEqual([75, 75]);
+    cleanup();
+    arrive({ kind: "memory", cue: "Echo", actionLabel: "Echo", options: [{ id: "a", label: "Shells", icon: "star" }, { id: "b", label: "Leaves", icon: "leaf" }], answer: ["a", "b", "a"], stepMs: 1000 }, 0, 0);
+    render(<StoryInteractionControls />);
+    wallJump += jumpMs;
+    tick(250);
+    expect(screen.getByText("Watch the pads light up!")).toBeTruthy();
   });
   it("picks the sweep up where it is for a phone that rejoins mid-attempt", () => {
     arrive(precision, 2500, 1000);
