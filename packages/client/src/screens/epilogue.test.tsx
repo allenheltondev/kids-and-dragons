@@ -18,7 +18,7 @@ import { makeItems } from "../../../shared/src/test-fixtures";
 import { useGameStore } from "../store";
 import { STORY_PLATES_SEEN_KEY, markStoryPlatesSeen, resetStoryPlatesSeen } from "../store/story-plates-seen";
 import { ChapterCompletePanel } from "./ChapterCompletePanel";
-import { CAMPAIGN_WAIT_MS } from "./end-plates";
+import { CAMPAIGN_WAIT_MS, resetEndPlatesWait } from "./end-plates";
 import { resetPrefaceCampaigns } from "./run-campaign";
 import { EpiloguePlates, PLATE_LOAD_MS, endingHoldMs } from "./StoryPlates";
 
@@ -157,6 +157,7 @@ beforeEach(() => {
   missing.clear();
   hanging.clear();
   resetPrefaceCampaigns();
+  resetEndPlatesWait();
   setSpeaker((text) => spoken.push(text));
   resetStoryPlatesSeen();
   vi.stubGlobal("Image", FakeImage);
@@ -291,6 +292,34 @@ describe("waiting on what the epilogue needs", () => {
     expect(spoken).toHaveLength(1);
     expect(spoken[0]).toMatch(/^You walk out of the mountain/);
     expect(spoken[0]).toContain("The Walk is complete!");
+  });
+
+  it("lets no epilogue follow once it gave up waiting and spoke, even if the campaign lands just after", async () => {
+    let answer: (value: Response) => void = () => undefined;
+    vi.stubGlobal("fetch", vi.fn(() => new Promise<Response>((resolve) => { answer = resolve; })));
+    seed();
+    useGameStore.setState({ campaign: null });
+    both();
+    await act(async () => {
+      vi.advanceTimersByTime(CAMPAIGN_WAIT_MS);
+    });
+    expect(spoken).toHaveLength(1);
+    expect(spoken[0]).toContain("The Walk is complete!");
+
+    // The file arrives a moment too late: this completion has had its summary, and keeps it.
+    await act(async () => {
+      answer({ ok: true, json: async () => CAMPAIGN } as Response);
+    });
+    await flush();
+    await act(async () => {
+      vi.advanceTimersByTime(60_000);
+    });
+    await flush();
+    expect(screen.queryByTestId("story-plates")).toBeNull();
+    expect(spoken).toHaveLength(1);
+    expect(screen.getByText(/XP for everyone/)).toBeTruthy();
+    // Not remembered as seen: the next device, or the next time, still gets it.
+    expect(JSON.parse(localStorage.getItem(STORY_PLATES_SEEN_KEY) ?? "[]")).not.toContain("epilogue:c:heroes");
   });
 
   it("drops an epilogue with no paintings as soon as they fail, without cutting the ending off", async () => {
