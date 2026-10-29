@@ -1,6 +1,7 @@
-# Story plates: the prologue and chapter plates
+# Story plates: the prologue, chapter plates and epilogues
 
-Paintings with the story told over them, shown **before** the table is asked to decide anything.
+Paintings with the story told over them, shown **before** the table is asked to decide anything,
+and once more at the very end.
 
 - A campaign's **prologue**: a short series (3 to 6 plates) before the first scene of its opening
   chapter. It puts the table in the world and raises the question the campaign answers.
@@ -8,10 +9,14 @@ Paintings with the story told over them, shown **before** the table is asked to 
   that establishes the chapter's setting, mood and immediate situation. It invites children
   into the next problem without revealing an outcome. Riftlight uses one for every chapter
   after its prologue, as does every Gemfall road and pursuit variant.
+- A campaign's **epilogues**: a short series (2 to 4 plates) for each way the campaign can end,
+  after the ending scene's own words and before the summary's tally. What came after: the
+  picture-book's last pages.
 
 Both are skippable and shown once per device. This document is the spec for the **art** (what to
 paint, how it is cropped, how to hand it over) and for the **content** that asks for it. The code
-that plays them is `packages/client/src/screens/StoryPlates.tsx`.
+that plays them is `packages/client/src/screens/StoryPlates.tsx` (`StoryPlates` at a start,
+`EpiloguePlates` at the end).
 
 > **What is owed, live: `npm run art:inventory`** ("Story plates"). **Mechanical check:
 > `npm run art:verify`.** **Composition check: `npm run art:plates`** (below).
@@ -40,6 +45,23 @@ that plays them is `packages/client/src/screens/StoryPlates.tsx`.
    being remembered, so the first load after the art ships plays it. Nothing breaks and nothing is
    blocked on the art.
 
+### At the end: the ending's words, then the epilogue
+
+1. An ending scene (`"choices": []`) ends the chapter the moment it opens. The summary that
+   follows heads with **the ending scene's own words** (composed for this party, variants and
+   all) and reads them aloud first. That is true of every chapter's ending, epilogue or not.
+2. On the completion that **ends the campaign** (`RunState.campaign.ended`), if the campaign
+   names an epilogue for the scene the party ended on, and this device has not shown it, the
+   summary says the ending's words alone and holds the rest. Once they have had time to be read
+   (about two seconds plus 0.4 s a word, between 6.5 and 60 seconds; a remote's OK brings it up
+   sooner), the epilogue comes up over the summary and plays like a prologue: the first plate
+   wears the epilogue's `title`, the name history gives the party.
+3. When it is done or skipped, this device remembers it (`epilogue:<campaign>:<id>`) and the
+   summary says the rest: the campaign's ending line, the XP, the recap. A painting that has not
+   been delivered is left out, as at the start; with none delivered, the summary simply follows.
+4. If a phone taps "Keep going" during the epilogue, play moves on and the reel goes away,
+   unmarked, as a prologue does.
+
 Not in v1, on purpose: skipping on the shared screen from a phone (it needs a protocol message),
 a way to watch the prologue again, and holding the phones' choices until the reel ends. If a phone
 chooses during a reel, play moves on and the reel goes away, unmarked.
@@ -63,20 +85,44 @@ chooses during a reel, play moves on and the reel goes away, unmarked.
 "plate": { "art": "plates/riftlight/sky-islands-arrival", "narration": "High above the realm…" }
 ```
 
+### An epilogue (`content/campaigns/<id>.json`)
+
+```json
+"epilogues": [
+  {
+    "id": "heroes",
+    "title": "The Heroes of Red Sky",
+    "chapter": "gemfall-08",
+    "endings": ["ending_heroes"],
+    "plates": [
+      { "art": "plates/gemfall/epilogue-heroes-1", "narration": "The bells ring the happy ring all morning…" }
+    ]
+  }
+]
+```
+
 ### The rules (`content:validate` and `tools/content/story-plates.test.mjs` enforce them)
 
-- A prologue has **3 to 6** plates. Go for 4.
+- A prologue has **3 to 6** plates. Go for 4. An epilogue has **2 to 4**. Go for 3.
 - Each plate's narration is **at most 45 words**: two or three short sentences. It is read aloud
   from a TV to a child of about eight, over a painting that is the point.
 - **The same words for every party.** No `{tokens}`, no counting the party ("all three of you"),
   no great stone (`facet_*`), no em dashes. Nothing may depend on a choice the party made.
 - `art` is `plates/<campaign id>/<name>`: no extension, in the campaign's own folder, and no
   painting used twice. Name prologue plates `prologue-1` to `prologue-N` and a chapter's plate for
-  the chapter without the campaign prefix (`riftlight-finale` → `finale`).
+  the chapter without the campaign prefix (`riftlight-finale` → `finale`), and an epilogue's
+  plates `epilogue-<id>-1` to `epilogue-<id>-N`.
 - **Every `art` is declared in `assets/manifest.json` → `storyPlates.ids`, and nothing else is.**
   Adding a plate to content without adding it there fails the test, which is how the art tools
   know what is owed.
 - A campaign's opening chapter takes **the prologue or a plate, never both**.
+- An epilogue's `endings` are ending scenes of the campaign's last chapter (for a graph
+  campaign, scenes with `endsCampaign`), and **each ending leads into at most one epilogue**.
+- An epilogue's words **name nobody its endings have not**: every capitalised name must appear
+  in its title, the prologue, the ending scenes' own narration (variants do not count: not every
+  party hears them), or the narration of every scene that leads into the ending. A capitalised
+  word that opens a sentence counts as a name unless the campaign writes it in lowercase
+  somewhere. Like `content:continuity`, it cannot see "the jar"; read for those.
 
 ### What belongs in a prologue
 
@@ -90,6 +136,24 @@ It is a picture-book opening, so the same continuity rules as a chapter apply, a
 - **A sequel's prologue is ending-neutral.** It never says how the previous campaign ended.
 - **End on a hook that is a stake for the party**: the last plate hands the question to the table.
 - Warm, a little spooky, never scary. One concrete detail a child can picture and repeat.
+
+### What belongs in an epilogue
+
+The ending scene has just said what happened; the epilogue says what happened **next**. It is the
+one plate allowed to resolve, because the story is over.
+
+- **Carry on from the ending's words; never repeat them.** The table has just heard them. Plate 1
+  starts a little after (the walk home, that summer, the next morning) and the last reaches
+  further (years later, every spring).
+- **Read true for every party that reached that ending.** Variants on an ending scene (what the
+  party carried, why it came) are not heard by everyone, so an epilogue never leans on them.
+  Name only who the ending itself names; the validator holds you to it.
+- **A setback ending gets an epilogue too**, and it ends on a spark like the scene does: grief
+  and consequence, never despair, and a door left open.
+- **End on a spark or a small joke** a child can repeat: the goat ringing the bell, the welcome
+  mat, the cake shaped like a mountain.
+- **Protected mysteries stay protected** in the art even when the words resolve: Gemfall's titan
+  is never drawn, only implied by light and warmth.
 
 ### What belongs in a chapter plate
 
@@ -181,13 +245,15 @@ the TV view with the caption band shaded and the surviving middle outlined, besi
    (the count drops), `npm run art:plates` (look at it).
 4. Commit the files. Nothing else changes: the manifest and content already name them.
 
-## 4. Delivered coverage
+## 4. Coverage
 
-All 46 paintings are delivered: 19 for Gemfall and 27 for Riftlight. Each campaign's
-four-plate prologue represents its opening chapter. Gemfall's other 15 authored chapters
-(including all road and pursuit variants) and Riftlight's other 23 chapters each have their
-own representative plate. The narration is in the content; the prompts are in
-[story-plates-prompts.json](story-plates-prompts.json).
+85 paintings are declared: 49 for Gemfall and 36 for Riftlight. The 46 prologue and chapter
+paintings are delivered: each campaign's four-plate prologue represents its opening chapter, and
+Gemfall's other 15 authored chapters (including all road and pursuit variants) and Riftlight's
+other 23 chapters each have their own representative plate. The 39 epilogue paintings (three
+for each of Gemfall's ten endings and Riftlight's three) are **owed**: `npm run art:inventory`
+lists them, and each ending goes straight to its summary until its paintings land. The narration
+is in the content; the prompts are in [story-plates-prompts.json](story-plates-prompts.json).
 
 ### Gemfall
 
@@ -228,6 +294,23 @@ and seven chapter plates; the selected branches each have their own painting.
 | `07l` | The Tether | A wobbly door-table and a knitting grandmother between two arguing factions |
 | `08` | Gemfall | Two routes up the glowing mountain while a prospector hurries downhill |
 
+**Epilogues** (`content/campaigns/gemfall.json`, after the endings of *Gemfall*, `gemfall-08`;
+owed). Every ending of the finale has one, setbacks included. The words carry on from the ending
+scene's own, name only who it names, and never show the titan:
+
+| Epilogue | After | Plates |
+|---|---|---|
+| `heroes`: *The Heroes of Red Sky* | `ending_heroes` | 3 |
+| `heroes-destroy`: *The Heroes of Red Sky* | `ending_heroes_destroy` | 3 |
+| `quiet-fixers`: *The Quiet Fixers* | `ending_quiet_fixers` | 3 |
+| `collectors`: *The Collectors* | `ending_collectors` | 3 |
+| `wardens-regret`: *The Wardens' Regret* | `ending_wardens_regret` | 3 |
+| `cure`: *The Cure* | `ending_cure` | 3 |
+| `new-weather`: *The New Weather* | `ending_new_weather` | 3 |
+| `turned-back`: *Turned Back* | `ending_turned_back` | 3 |
+| `last-ring`: *The Almost-Heroes* | `ending_last_ring` | 3 |
+| `broken-tether`: *Still Holding* | `ending_broken_tether` | 3 |
+
 ### Riftlight
 
 **Prologue** (`content/campaigns/riftlight.json`, before *Snow on the Quay*):
@@ -267,9 +350,19 @@ and seven chapter plates; the selected branches each have their own painting.
 | `convergence` | The Maps Come Together | A sheltered map table overlooking the blue glacier |
 | `finale` | The Glacier Remembers | The glacier quiet and enormous, the wind holding its breath |
 
+**Epilogues** (`content/campaigns/riftlight.json`, after the endings of *The Glacier Remembers*,
+`riftlight-finale`; owed). The two success endings share their ending scene's words, so the
+epilogue carries what the scene before (`keepers` or `listened`) decided:
+
+| Epilogue | After | Plates |
+|---|---|---|
+| `keepers`: *The Glacier Keepers* | `keepers_epilogue` | 3 |
+| `listened`: *The Ones Who Listened* | `listened_epilogue` | 3 |
+| `rivers-wander`: *Rivers Wander* | `loss_epilogue` | 3 |
+
 ## 5. Adding plates to another campaign
 
-1. Write the `prologue` (and any chapter `plate`s), following section 2.
+1. Write the `prologue` (and any chapter `plate`s and `epilogues`), following section 2.
 2. Add each `art` id to `assets/manifest.json` → `storyPlates.ids`.
 3. Add the prompts to [story-plates-prompts.json](story-plates-prompts.json).
 4. `npm run content:validate`. For a **graph** campaign, also `npm run content:proofs` and commit

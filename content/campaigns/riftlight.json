@@ -983,5 +983,73 @@
         "narration": "By breakfast it arrives. Snow drifts over the fish stalls, out of a perfectly blue sky. Everyone on the quay looks up. Then they look at you. You came back from the mountain. Surely you know what is going on?"
       }
     ]
-  }
+  },
+  "epilogues": [
+    {
+      "id": "keepers",
+      "title": "The Glacier Keepers",
+      "chapter": "riftlight-finale",
+      "endings": [
+        "keepers_epilogue"
+      ],
+      "plates": [
+        {
+          "art": "plates/riftlight/epilogue-keepers-1",
+          "narration": "Deep in the glacier, in a quiet place in the ice, Corvane sleeps beneath his blanket with his map folded on his chest. The ice keeps him, and he keeps the memory."
+        },
+        {
+          "art": "plates/riftlight/epilogue-keepers-2",
+          "narration": "The rivers stay in their beds. The valleys stay where they were put. At the Exchange, the snow stops falling on the fish stalls, and the gulls go back to arguing about fish."
+        },
+        {
+          "art": "plates/riftlight/epilogue-keepers-3",
+          "narration": "Every spring, the Riftseekers climb up to the glacier and ring the chime very softly, just to say hello. And every spring, a small goat tries to eat the welcome mat."
+        }
+      ]
+    },
+    {
+      "id": "listened",
+      "title": "The Ones Who Listened",
+      "chapter": "riftlight-finale",
+      "endings": [
+        "listened_epilogue"
+      ],
+      "plates": [
+        {
+          "art": "plates/riftlight/epilogue-listened-1",
+          "narration": "Every evening, Corvane sits at the broad table with the yetis and the present map. He points to a valley. They tell him what it is called now. He writes it down, very carefully."
+        },
+        {
+          "art": "plates/riftlight/epilogue-listened-2",
+          "narration": "One morning, Corvane steps out of the plain walking door with the watcher beside him. He takes the path outside, one step at a time, learning the world as it is now."
+        },
+        {
+          "art": "plates/riftlight/epilogue-listened-3",
+          "narration": "Far to the south, a letter arrives at the Exchange in very old, very careful handwriting. It asks what the busiest harbor in the realm is called these days. Somebody writes back."
+        }
+      ]
+    },
+    {
+      "id": "rivers-wander",
+      "title": "Rivers Wander",
+      "chapter": "riftlight-finale",
+      "endings": [
+        "loss_epilogue"
+      ],
+      "plates": [
+        {
+          "art": "plates/riftlight/epilogue-rivers-wander-1",
+          "narration": "The Riftseekers spread out across the realm with fresh paper and sharp pencils. Some rivers have wandered. Some valleys have swapped places. Everything needs drawing again."
+        },
+        {
+          "art": "plates/riftlight/epilogue-rivers-wander-2",
+          "narration": "Orin folds the old joining lines under the new page. \"Then we learn the new map.\" The first messengers set out, and the people you helped already know how to begin."
+        },
+        {
+          "art": "plates/riftlight/epilogue-rivers-wander-3",
+          "narration": "At the Exchange, the snow still falls now and then, out of a perfectly blue sky. Nobody minds anymore. And a small goat, who has given up on map cases, finally finds a welcome mat."
+        }
+      ]
+    }
+  ]
 }

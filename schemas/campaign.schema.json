@@ -205,6 +205,62 @@
           }
         }
       }
+    },
+    "epilogues": {
+      "description": "Campaign.epilogues: what came after each way the campaign can end, told in paintings once the ending scene's words have been heard and before the summary. Shown once per device, on the completion that ends the campaign, skippable. See docs/story-plates.md.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "chapter", "endings", "plates"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+            "description": "Stable: the device remembers the epilogue by it, and its paintings are plates/<campaign>/epilogue-<id>-N."
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The name history gives the party for this ending. The first plate wears it."
+          },
+          "chapter": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The chapter the ending scenes are in: the campaign's last."
+          },
+          "endings": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 },
+            "description": "Ending scenes (\"choices\": []) of `chapter` that lead into these plates. Each ending leads into at most one epilogue (validate.mjs)."
+          },
+          "plates": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 4,
+            "items": {
+              "description": "One painting and the words read over it.",
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["art", "narration"],
+              "properties": {
+                "art": {
+                  "type": "string",
+                  "pattern": "^plates/[a-z0-9]+(-[a-z0-9]+)*/[a-z0-9]+(-[a-z0-9]+)*$",
+                  "description": "Asset-relative id, no extension: /assets/<art>.webp, 1600x900. Declared in assets/manifest.json storyPlates.ids (checked by tools/content/story-plates.test.mjs)."
+                },
+                "narration": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Read aloud and shown beneath the painting. Static for every party: no {tokens}, no counting the party, no great stones, and no name its endings never said. At most PLATE_MAX_WORDS words (validate.mjs)."
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "$defs": {

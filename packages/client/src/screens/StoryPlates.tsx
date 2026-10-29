@@ -6,6 +6,10 @@
  * new (shared `startPlates`). Each plate is a full-pane painting with its words beneath, read
  * aloud as it comes up. Shown once per device (`store/story-plates-seen.ts`) and skippable.
  *
+ * An **epilogue** (EpiloguePlates, shared `endPlates`) is the same reel at the other end: on the
+ * completion that ends the campaign, once the summary has had time to read the ending's own
+ * words, what came after that ending. The summary says the rest once it is done.
+ *
  * - **Going back stops the turning.** A phone's Back (or a remote's left arrow) returns to the
  *   page before, and from then on the pages wait to be turned by hand.
  * - **Nothing to tap on the shared screen** (docs/tv-read-only-audit.md): it turns the pages by
@@ -28,8 +32,9 @@ import type { ReactElement } from "react";
 import { createPortal } from "react-dom";
 import { plateWordCount, speak, storyPlateUrl } from "@kad/shared";
 import type { Campaign, StartPlates, StoryPlate } from "@kad/shared";
-import { useSession } from "../store";
+import { useRunState, useSession } from "../store";
 import { markStoryPlatesSeen, markStoryPlatesUnavailable } from "../store/story-plates-seen";
+import { useEndPlates } from "./end-plates";
 import { useStartPlates } from "./start-plates";
 import "./StoryPlates.css";
 
@@ -229,6 +234,52 @@ function Reel({ picked, onDone }: { picked: StartPlates; onDone?: () => void }):
       </div>
     </section>
   );
+}
+
+/**
+ * How long the ending's own words get, on the summary, before the epilogue comes up: long enough
+ * to read aloud. Longer than a plate allows, because the ending is the story's last page.
+ */
+export function endingHoldMs(words: number): number {
+  return Math.min(60_000, Math.max(6500, 2000 + words * 420));
+}
+
+/**
+ * The campaign's epilogue for the ending the party reached (`useEndPlates`), over the summary.
+ * It waits while the summary reads the ending's words (`endingHoldMs`); a remote's OK brings it
+ * up sooner. Remembered once shown or skipped, like any reel.
+ */
+export function EpiloguePlates(): ReactElement | null {
+  const picked = useEndPlates();
+  const ending = useRunState()?.narration ?? "";
+  const [up, setUp] = useState(false);
+  const key = picked?.key ?? null;
+  useEffect(() => {
+    if (key === null) return;
+    setUp(false);
+    const timer = setTimeout(() => setUp(true), endingHoldMs(plateWordCount(ending)));
+    return () => clearTimeout(timer);
+    // The ending's words are fixed for a key: the hold is set once, when the epilogue is due.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key]);
+  // Only while it waits: once the reel is up, OK is the reel's to turn its pages with.
+  const waiting = key !== null && !up;
+  useEffect(() => {
+    if (!waiting) return;
+    const onKey = (event: KeyboardEvent): void => {
+      if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
+      const target = event.target instanceof Element ? event.target : null;
+      if (target?.closest("input, textarea, select, button, a[href], summary, [role='button'], [contenteditable='true']")) return;
+      if (event.key === "Enter" || event.key === "ArrowRight") {
+        event.preventDefault();
+        setUp(true);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [waiting]);
+  if (picked === null || !up) return null;
+  return <Reel key={picked.key} picked={picked} />;
 }
 
 export function StoryPlates(): ReactElement | null {
