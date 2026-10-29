@@ -83,12 +83,12 @@ describe("what gets voiced", () => {
     expect(billedChars(byAddress.get("ch-01/s1/narration")!)).toBe("Hello {party}.".length * 4);
   });
 
-  it("collects the prologue, the Last time lines and help", () => {
+  it("collects the prologue, the epilogues, the Last time lines and help", () => {
     const campaign = campaignLines(
-      { id: "camp", prologue: { plates: [{ art: "p", narration: "Once." }] }, lastTime: { $comment: "x", opener: "New night.", lines: { f: "You went north." } } },
+      { id: "camp", prologue: { plates: [{ art: "p", narration: "Once." }] }, epilogues: [{ id: "home", plates: [{ art: "e", narration: "After." }] }], lastTime: { $comment: "x", opener: "New night.", lines: { f: "You went north." } } },
       OPTIONS,
     );
-    expect(campaign.map((line) => line.address)).toEqual(["camp/@prologue/0", "camp/@lastTime/opener", "camp/@lastTime/f"]);
+    expect(campaign.map((line) => line.address)).toEqual(["camp/@prologue/0", "camp/@epilogue/home/0", "camp/@lastTime/opener", "camp/@lastTime/f"]);
     const help = helpLines({ version: 1, surfaces: { story: { icon: "scroll", text: "This is the story." } } }, OPTIONS);
     expect(help.map((line) => line.text)).toEqual(["This is the story."]);
   });

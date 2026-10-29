@@ -283,7 +283,7 @@ const delivered = (line: Line): number => line.need - line.missing.length;
     category: "Story plates",
     need: plates.length,
     missing: plates.filter((id) => !has("assets", `${id}.webp`)).map((id) => `${id}.webp`),
-    note: "prologue and chapter plates, 1600x900 (docs/story-plates.md); the story plays without a plate until it lands",
+    note: "prologue, chapter and epilogue plates, 1600x900 (docs/story-plates.md); the story plays without a plate until it lands",
   });
 }
 
