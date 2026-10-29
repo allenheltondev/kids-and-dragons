@@ -68,7 +68,8 @@ that plays them is `packages/client/src/screens/StoryPlates.tsx` (`StoryPlates` 
 5. A run in a campaign the lobby did not launch has its campaign file fetched. Until it lands
    nobody knows whether an epilogue follows, so the summary says nothing and shows the ending
    alone, for at most four seconds (`CAMPAIGN_WAIT_MS`); if the file has not come by then, it
-   speaks as if there were none.
+   speaks as if there were none, and that completion goes without an epilogue even if the file
+   lands a moment later (it is not remembered as seen, so the next completion still gets one).
 6. If a phone taps "Keep going" during the epilogue, play moves on and the reel goes away,
    unmarked, as a prologue does.
 
