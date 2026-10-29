@@ -1359,9 +1359,16 @@ describe("class deeds (#310, docs/class-mastery.md §6)", () => {
     expect(result.out).toContain("Master includes a story deed");
   });
 
-  it("rejects a deed the game does not count, and a class with no ladder", () => {
-    expect(withRules((r) => { r.classes.starweaver.deeds.apprentice.withFriends = { stare_hard: 2 }; }).code).not.toBe(0);
-    expect(withRules((r) => { delete r.classes.thornguard.deeds; }).code).not.toBe(0);
+  // Each validation copies and checks the full content tree. Keep the cases
+  // separate so two subprocess runs do not share one five-second CI timeout.
+  it("rejects a deed the game does not count", () => {
+    const result = withRules((r) => { r.classes.starweaver.deeds.apprentice.withFriends = { stare_hard: 2 }; });
+    expect(result.code, result.out).not.toBe(0);
+  });
+
+  it("rejects a class with no ladder", () => {
+    const result = withRules((r) => { delete r.classes.thornguard.deeds; });
+    expect(result.code, result.out).not.toBe(0);
   });
 });
 
