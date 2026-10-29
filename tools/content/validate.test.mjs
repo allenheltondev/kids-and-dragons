@@ -1738,6 +1738,16 @@ describe("the cast voice sheet and the lexicon (#539)", () => {
     expect(result.code).not.toBe(0);
   });
 
+  it("does not count a speaker the content no longer has, even if the sheet still lists them", () => {
+    // A retired character left on the sheet with Pib's voice and Pib's chapter: not a clash,
+    // because nobody by that id appears in bramblewood-01 any more.
+    const result = withCast((cast) => {
+      cast.speakers.retired_ghost = { ...cast.speakers.pib, name: "Retired Ghost", chapters: ["bramblewood-01"], aliases: [] };
+    });
+    expect(result.out).not.toContain("share the voice");
+    expect(result.code).toBe(0);
+  });
+
   it("fails a lexicon entry with nothing to say", () => {
     const dir = copyTree();
     writeJson(dir, LEXICON, { words: { Pib: { say: "" } } });
