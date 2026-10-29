@@ -33,7 +33,7 @@
 
 import { INVENTORY_SLOTS, MAX_PARTY } from "./types/domain.js";
 import { cooperationProgress } from "./teamwork.js";
-import { balanceReady, interactionActor, playbackMs, playReady, precisionSuccess, relayHolder, supportsReady, trackedCover, SUPPORT_LEASE_MS } from "./interactions.js";
+import { balanceReady, interactionActor, playbackOver, playReady, precisionSuccess, relayHolder, supportsReady, trackedCover, SUPPORT_LEASE_MS } from "./interactions.js";
 import type {
   Character,
   ClassDef,
@@ -1356,14 +1356,14 @@ function doInteract(draft: RunState, playerId: string, intent: Extract<ClientInt
       return undefined;
     case "answer":
       if (prompt.spec.kind === "tracking") {
-        if (playerId !== actor || !Array.isArray(intent.answer) || intent.answer.length !== 1 || !prompt.spec.covers.some((_, index) => String(index) === intent.answer[0]) || (!prompt.relaxed && Date.parse(ctx.now) - Date.parse(prompt.startedAt ?? "") < playbackMs(prompt.spec, prompt.relaxed))) throw new Illegal("ILLEGAL", "Watch the trick before choosing a cover.");
+        if (playerId !== actor || !Array.isArray(intent.answer) || intent.answer.length !== 1 || !prompt.spec.covers.some((_, index) => String(index) === intent.answer[0]) || !playbackOver(prompt, ctx.now)) throw new Illegal("ILLEGAL", "Watch the trick before choosing a cover.");
         prompt.submittedAnswer = [...intent.answer];
         result(intent.answer[0] === String(trackedCover(prompt.spec)) ? "success" : "failure");
         return undefined;
       }
       if (prompt.spec.kind === "memory") {
         const spec = prompt.spec;
-        if (playerId !== actor || !Array.isArray(intent.answer) || intent.answer.length !== spec.answer.length || !intent.answer.every((id) => typeof id === "string" && spec.options.some((option) => option.id === id)) || (!prompt.relaxed && Date.parse(ctx.now) - Date.parse(prompt.startedAt ?? "") < playbackMs(spec, prompt.relaxed))) throw new Illegal("ILLEGAL", "Watch the magic before answering.");
+        if (playerId !== actor || !Array.isArray(intent.answer) || intent.answer.length !== spec.answer.length || !intent.answer.every((id) => typeof id === "string" && spec.options.some((option) => option.id === id)) || !playbackOver(prompt, ctx.now)) throw new Illegal("ILLEGAL", "Watch the magic before answering.");
         prompt.submittedAnswer = [...intent.answer];
         result(intent.answer.every((id, index) => id === spec.answer[index]) ? "success" : "failure");
         return undefined;
