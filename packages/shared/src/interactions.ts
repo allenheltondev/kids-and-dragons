@@ -107,6 +107,21 @@ export function playbackMs(spec: InteractionSpec, relaxed: boolean): number {
   return spec.kind === "tracking" ? (spec.swaps.length + 1) * step : spec.kind === "memory" ? spec.answer.length * step : 0;
 }
 
+/**
+ * How early an answer may land and still count as one given after the pattern or shuffle played.
+ * A phone whose clock is up to CLOCK_TRUSTED_MS fast is trusted as in step (interactionStartLocal),
+ * so it finishes playing and unlocks the answer up to that much before the server's clock says so.
+ * Refusing it would tell a child who watched it all to "watch" again (#566).
+ */
+export const ANSWER_EARLY_MS = CLOCK_TRUSTED_MS;
+
+/** Whether a tracking or memory answer arriving `now` comes after its playback, as the server judges it. */
+export function playbackOver(prompt: Pick<InteractionPrompt, "spec" | "relaxed" | "startedAt">, now: string): boolean {
+  if (prompt.relaxed) return true;
+  // A prompt with no start time has nothing to wait for, as before.
+  return !(Date.parse(now) - Date.parse(prompt.startedAt ?? "") < playbackMs(prompt.spec, false) - ANSWER_EARLY_MS);
+}
+
 export function trackedCover(spec: Extract<InteractionSpec, { kind: "tracking" }>): number {
   return spec.swaps.reduce((at, [a, b]) => at === a ? b : at === b ? a : at, spec.start);
 }

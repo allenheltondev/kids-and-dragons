@@ -145,9 +145,11 @@ the same number.
 - **Team lift:** a hold the server saw unbroken for 1.8 s succeeds, whichever message lands
   next. Holds survive up to 4.5 s of delivery trouble between renewals (6 s lease, 1.5 s renew).
 - **Memory and tracking:** every screen plays the pattern at the server's pace. The answer
-  unlocks 250 ms after the pattern ends on the phone's clock; a phone up to 400 ms fast that looks
-  in step can unlock up to 150 ms before the server would accept, and the server refuses an
-  answer that lands that early ("Watch the magic before answering.").
+  unlocks 250 ms after the pattern ends on the phone's clock, so a phone up to 400 ms fast that
+  looks in step can unlock up to 150 ms before the pattern ends on the server's. The server
+  accepts an answer up to 400 ms early (`ANSWER_EARLY_MS`, the same as `CLOCK_TRUSTED_MS`), so a
+  child who watched it all is never told to "watch the magic" again; anything earlier was given
+  while the pattern was still playing and is refused.
 - **Relaxed play** doubles a precision or timing target, and makes a team lift a tap-to-prop
   toggle. **Reduced motion** shows no moving marker, and the acting phone opens "Take a helping
   hand"; the assisted branch is authored and decided by the server like any other.
