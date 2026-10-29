@@ -91,6 +91,20 @@ describe("authoritative story interactions", () => {
     const relaxed = step(state, ctx, { action: "start", relaxed: true });
     expect(prompt(step(relaxed, ctx, { action: "answer", answer: ["a", "b", "a"] })).outcome).toBe("success");
   });
+  it.each([
+    ["tracking", tracking, ["2"], 3000],
+    ["memory", memory, ["a", "b", "a"], 3000],
+  ] as const)("accepts a %s answer from a phone whose clock is a little fast, never one given mid-playback (#566)", (_, spec, answer, playback) => {
+    const { state, ctx } = setup(spec);
+    const active = step(state, ctx, { action: "start", relaxed: false });
+    const at = (ms: number) => ({ ...ctx, now: new Date(Date.parse(now) + ms).toISOString() });
+    // The phone unlocked the answer up to CLOCK_TRUSTED_MS (400 ms) early on its own clock.
+    expect(prompt(step(active, at(playback - 150), { action: "answer", answer: [...answer] })).outcome).toBe("success");
+    expect(prompt(step(active, at(playback - 400), { action: "answer", answer: [...answer] })).outcome).toBe("success");
+    // Any earlier is an answer given while the pattern was still playing.
+    expect(act(active, at(playback - 401), { action: "answer", answer: [...answer] }).error).toBeDefined();
+    expect(act(active, at(playback / 2), { action: "answer", answer: [...answer] }).error).toBeDefined();
+  });
   it("resolves wait-now timing using the displayed phase", () => {
     const { state, ctx } = setup({ ...precision, kind: "timing" });
     const active = step(state, ctx, { action: "start", relaxed: false });

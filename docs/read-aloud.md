@@ -21,9 +21,12 @@ Each device decides for itself, and speaks only when its own switch is on.
 
 | Surface | Reads |
 | --- | --- |
-| Party Mode display (TV) | narration, "X's turn", roll prompts, hand-offs |
+| Party Mode display (TV) | narration, "Hero's turn.", roll prompts, hand-offs |
 | Party Mode phone | its own player's choices (once per question) |
 | Travel Mode phone | both, narration first, then its choices |
+
+A hero's name is shown, never spoken: every device says "hero" instead, whatever it is reading
+([voice-narration-plan.md §8](./voice-narration-plan.md#8-privacy-and-live-lines)).
 
 The TV does not read the option list. Phones are the ones that choose, and a TV reading every
 list would talk over a phone reading its own. The options are on the TV screen as always.
