@@ -248,7 +248,13 @@ function checkVoiceCast(rep, ajv) {
   const current = {
     ...sheet,
     speakers: Object.fromEntries(
-      Object.entries(sheet.speakers).map(([id, entry]) => [id, byId.has(id) ? { ...entry, chapters: [...byId.get(id).chapters].sort() } : entry]),
+      Object.entries(sheet.speakers).map(([id, entry]) => {
+        if (byId.has(id)) return [id, { ...entry, chapters: [...byId.get(id).chapters].sort() }];
+        // On the sheet but in no chapter any more (retired or renamed): kept on disk for its
+        // history, but in no chapter now, so its old voice cannot clash with anybody.
+        const speaksEverywhere = entry.kind === "narrator" || entry.kind === "party";
+        return [id, drafts === null || speaksEverywhere ? entry : { ...entry, chapters: [] }];
+      }),
     ),
   };
   for (const clash of voiceClashes(current)) {
