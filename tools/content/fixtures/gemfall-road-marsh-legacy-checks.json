@@ -27,7 +27,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 16,
-      "prompt": "Find the fresh brass-hat knots in the line rope",
+      "prompt": "Find the fresh brass-hat knots in the rope that marks the line",
       "roller": "party",
       "onSuccess": {
         "goto": "scene_rivals_caught",
