@@ -8,6 +8,8 @@
  *                  No room, so no code — the device binding is enough.
  *   /guide       → the grown-up's guide to running a session (#257). Needs
  *                  nothing at all, and prints.
+ *   /guide/setup → the other half of the guide: accounts, devices, visitors and
+ *                  groups, for the grown-up who wants to look after heroes.
  *   /privacy     → the privacy policy (#523). Public, needs nothing at all, and
  *                  is linked from the start screens before anyone joins or hosts.
  *   /account     → accounts and devices: sign in, move a hero between
@@ -34,6 +36,7 @@ export type Route =
   | { name: "home" }
   | { name: "journal" }
   | { name: "guide" }
+  | { name: "guideSetup" }
   | { name: "account" }
   | { name: "privacy" }
   | { name: "share" }
@@ -107,6 +110,7 @@ export function parseRoute(input: string): Route {
   if (segments.length === 0) return { name: "home" };
   if (segments.length === 1 && head === "journal") return { name: "journal" };
   if (segments.length === 1 && head === "guide") return { name: "guide" };
+  if (segments.length === 2 && head === "guide" && second === "setup") return { name: "guideSetup" };
   if (segments.length === 1 && head === "account") return { name: "account" };
   if (segments.length === 1 && head === "privacy") return { name: "privacy" };
   if (segments.length === 1 && head === "share") return { name: "share" };
@@ -131,6 +135,8 @@ export function formatRoute(route: Route): string {
       return "/journal";
     case "guide":
       return "/guide";
+    case "guideSetup":
+      return "/guide/setup";
     case "account":
       return "/account";
     case "privacy":

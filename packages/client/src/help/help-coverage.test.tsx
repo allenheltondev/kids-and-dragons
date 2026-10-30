@@ -62,7 +62,7 @@ describe("every surface has help", () => {
   });
 
   it("draws every entry with an icon that exists", () => {
-    const entries = [...Object.values(help.surfaces), ...Object.values(help.things), help.join];
+    const entries = [...Object.values(help.surfaces), ...Object.values(help.things), help.join, ...help.howToPlay];
     for (const entry of entries) expect(hasIcon(entry.icon), entry.icon).toBe(true);
   });
 });
