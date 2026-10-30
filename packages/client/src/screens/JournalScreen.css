@@ -188,3 +188,44 @@
   font-weight: 700;
   cursor: pointer;
 }
+
+/* --- Whose story: a household's crews (architecture §4.5, "Crews") ------- */
+
+.journal__crews {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4em;
+  margin: 0.5em 0 0;
+}
+
+.journal__crew {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  min-block-size: 2.75rem;
+  padding: 0.3em 0.9em;
+  border: 0.1em solid #ad885777;
+  border-radius: 999px;
+  background: linear-gradient(#3c2d42, #20192f);
+  color: #f3ddb3;
+  font: inherit;
+  font-size: 0.9em;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.journal__crew--on {
+  border-color: #f3ddb3;
+}
+
+.journal__crew .kad-icon { color: #e5c281; }
+
+/* Above the map: the surface is a column, so the atlas takes what is left. */
+.journal__crews-bar {
+  flex: none;
+  padding: 0.4em 0.75em;
+}
+
+.journal__crews-bar .journal__crews {
+  margin: 0;
+}

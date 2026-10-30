@@ -10,7 +10,17 @@
  * is no room — the entry points resolve the principal and hand it in.
  */
 
-import { resolveCharacter, storyChapters, type Character, type JournalResponse, type JournalStoryCampaign } from "@kad/shared";
+import {
+  claimOf,
+  parseClaim,
+  resolveCharacter,
+  storyChapters,
+  type Character,
+  type JournalCrew,
+  type JournalResponse,
+  type JournalStoryCampaign,
+} from "@kad/shared";
+import { claimIsLive } from "./claim.ts";
 import { ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 import { listHeroes } from "./heroes.ts";
 import { viewOf } from "./profile.ts";
@@ -29,19 +39,32 @@ export interface JournalInput {
  */
 const WHEREABOUTS_LOOKBACK = 5;
 
+/**
+ * The same, for a household with crews: enough recent runs that each crew's
+ * last chapter, and the crew each hero last sat down with, is likely among them.
+ */
+const CREW_LOOKBACK = 20;
+
+/** What the household's first crew is called in the book (client `FIRST_CREW`). */
+const FIRST_CREW = "The first crew";
 export async function getJournal(
   input: JournalInput,
   deps: HandlerDeps,
 ): Promise<HandlerResult<JournalResponse>> {
-  const [heroes, book, characters, players, whereabouts, attempts] = await Promise.all([
+  const [heroes, book, characters, players, whereabouts, attempts, crewRows] = await Promise.all([
     listHeroes(input, deps),
     deps.repo.getFieldGuide(input.householdId),
     deps.repo.listCharacters(input.householdId),
     deps.repo.listPlayers(input.householdId),
     whereaboutsOf(input.householdId, deps),
     deps.repo.listCampaignProgress(input.householdId),
+    deps.repo.listCrews(input.householdId),
   ]);
   if (!heroes.ok) return heroes;
+  const crewBook =
+    crewRows.length > 0
+      ? await crewsOf(input.householdId, crewRows, characters.filter((c) => c.ownerPlayerId === input.playerId), deps)
+      : null;
   const finders = findersOf(players, characters, deps);
   const finished = finishedOf(characters.filter((c) => c.ownerPlayerId === input.playerId), deps);
   const me = players.find((p) => p.id === input.playerId);
@@ -50,11 +73,71 @@ export async function getJournal(
     heroes: heroes.value.heroes,
     fieldGuide: book.entries,
     finders,
-    whereabouts,
+    // With crews, the first crew's, as the book always showed: the household's
+    // latest run may be another crew's, whose place is on its own entry.
+    whereabouts: crewBook ? crewBook.crews[0]!.whereabouts : whereabouts,
     finished,
     ...(profile ? { profile } : {}),
     story: storyOf(attempts, deps),
+    ...(crewBook ? crewBook : {}),
   });
+}
+
+/**
+ * Each crew's book (architecture §4.5, "Crews"): its own story, read from its
+ * own saves, and where it last adventured; and which crew each of this
+ * player's heroes plays with. One pass over the recent runs answers both of
+ * the latter, since a run's state says its crew and who sat in it.
+ *
+ * A hero's crew is the one whose adventure holds her (her claim, while that
+ * adventure is under way at this household), or else the crew of the latest
+ * recent run she sat in. A hero who is neither is the first crew's, and is
+ * left out of `heroCrews`, as the first crew is everywhere.
+ */
+async function crewsOf(
+  householdId: string,
+  rows: readonly { id: string; name: string }[],
+  mine: readonly Character[],
+  deps: HandlerDeps,
+): Promise<{ crews: JournalCrew[]; heroCrews: Record<string, string> }> {
+  const runs = (await deps.repo.listRuns(householdId))
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .slice(0, CREW_LOOKBACK);
+  const placed = new Map<string | null, JournalCrew["whereabouts"]>();
+  const lastSat = new Map<string, string | null>();
+  for (const run of runs) {
+    const state = await deps.repo.getState(run.id);
+    if (!state?.chapterId) continue;
+    const crew = state.crew ?? null;
+    const chapter = deps.content.chapter(state.chapterId);
+    if (chapter && !placed.has(crew)) placed.set(crew, { chapterId: chapter.id, biome: chapter.biome });
+    for (const member of state.party) {
+      if (!lastSat.has(member.character.id)) lastSat.set(member.character.id, crew);
+    }
+  }
+
+  const all = [{ id: null as string | null, name: FIRST_CREW }, ...rows.map((r) => ({ id: r.id as string | null, name: r.name }))];
+  const crews = await Promise.all(
+    all.map(async (crew): Promise<JournalCrew> => ({
+      id: crew.id,
+      name: crew.name,
+      story: storyOf(await deps.repo.listCampaignProgress(householdId, crew.id ?? undefined), deps),
+      whereabouts: placed.get(crew.id) ?? null,
+    })),
+  );
+
+  const known = new Set(rows.map((r) => r.id));
+  const heroCrews: Record<string, string> = {};
+  for (const hero of mine) {
+    let crew = lastSat.get(hero.id) ?? null;
+    const held = claimOf(hero);
+    if (held !== null) {
+      const claim = parseClaim(held, hero);
+      if (claim.table === householdId && (await claimIsLive(held, hero, deps))) crew = claim.crew ?? null;
+    }
+    if (crew !== null && known.has(crew)) heroCrews[hero.id] = crew;
+  }
+  return { crews, heroCrews };
 }
 
 /**

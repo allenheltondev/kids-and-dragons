@@ -13,6 +13,7 @@ import { applyAction } from "./action.ts";
 import { followCrew, MAX_CREWS, parseCrewChoice, switchCrew, CREW_NAMES } from "./crew.ts";
 import { createRoom, joinRoom } from "./room.ts";
 import { resumeGame, stopForToday } from "./save.ts";
+import { getJournal } from "./journal.ts";
 
 const ROOT = path.resolve(import.meta.dirname, "..", "..", "..", "..");
 const content = await loadContent(path.join(ROOT, "content"));
@@ -396,5 +397,76 @@ describe("crew names and bodies", () => {
     expect(parseCrewChoice({ crew: "cw_a@b" })).toBeUndefined();
     expect(parseCrewChoice({ crew: "new", request: "short" })).toBeUndefined();
     expect(parseCrewChoice({ crew: "new", request: 42 })).toBeUndefined();
+  });
+});
+
+describe("the adventure book, per crew", () => {
+  /** As if the attempt had finished chapter 1: the Story page lists finished chapters only. */
+  const playedOne = async (h: Household, crew?: string) => {
+    const attempt = (await h.harness.repo.getCampaignProgress(h.householdId, GEMFALL, crew))!;
+    await h.harness.repo.putCampaignProgress({ ...attempt, lastIndex: 1 });
+  };
+  const chapterOne = () => content.chapterAt(GEMFALL, 1, {})!;
+  const book = async (h: Household, seat: number) => {
+    const read = await getJournal({ householdId: h.householdId, playerId: h.players[seat]!.principal.playerId }, h.harness.deps);
+    if (!read.ok) throw new Error(`journal: ${JSON.stringify(read)}`);
+    return read.value;
+  };
+
+  it("sends no crews to a household that has only its first", async () => {
+    const h = await household();
+    await familyStops(h);
+    await playedOne(h);
+    const journal = await book(h, 1);
+    expect(journal.crews).toBeUndefined();
+    expect(journal.heroCrews).toBeUndefined();
+    expect(journal.story?.map((s) => s.campaignId)).toEqual([GEMFALL]);
+  });
+
+  it("gives each crew its own story and place, and opens a hero on her own crew", async () => {
+    const h = await household();
+    const crew = await crewStops(h);
+    await playedOne(h, crew);
+
+    const newKid = await book(h, 2);
+    expect(newKid.crews?.map((c) => [c.id, c.name])).toEqual([
+      [null, "The first crew"],
+      [crew, CREW_NAMES[0]],
+    ]);
+    const [first, otter] = newKid.crews!;
+    // Only the Otter Crew has finished a chapter: its story is its own, the family's is empty.
+    expect(first!.story).toEqual([]);
+    expect(otter!.story.map((s) => [s.campaignId, s.status, s.chapters.map((c) => c.chapterId)])).toEqual([
+      [GEMFALL, "active", [chapterOne().id]],
+    ]);
+    expect(otter!.whereabouts?.chapterId).toBe(chapterOne().id);
+    expect(first!.whereabouts?.chapterId).toBe(chapterOne().id);
+
+    // Each crew stands where its own latest game was: move the crew's to another chapter.
+    const elsewhere = content.chapter(content.campaign(GEMFALL)!.chapters.find((id) => id !== chapterOne().id)!)!;
+    for (const run of await h.harness.repo.listRuns(h.householdId)) {
+      const state = (await h.harness.repo.getState(run.id))!;
+      if (state.crew === crew && state.chapterId) await h.harness.repo.putState({ ...state, chapterId: elsewhere.id });
+    }
+    const moved = (await book(h, 2)).crews!;
+    expect(moved[1]!.whereabouts).toEqual({ chapterId: elsewhere.id, biome: elsewhere.biome });
+    expect(moved[0]!.whereabouts?.chapterId).toBe(chapterOne().id);
+    // Bo plays with the Otter Crew; the top-level fields stay the first crew's.
+    expect(newKid.heroCrews).toEqual({ [await heroId(h, "Bo")]: crew });
+    expect(newKid.story).toEqual(first!.story);
+    expect(newKid.whereabouts).toEqual(first!.whereabouts);
+
+    // The family's kid is the first crew's, which is never named.
+    expect((await book(h, 1)).heroCrews).toEqual({});
+  });
+
+  it("keeps a hero on the crew she last played with once her adventure is over", async () => {
+    const h = await household();
+    const crew = await crewStops(h);
+    const bo = await heroId(h, "Bo");
+    // Her adventure is let go (the grown-up's "end this adventure"): no claim, but she still sat with the crew.
+    const row = (await h.harness.repo.getCharacter(h.householdId, bo))!;
+    await h.harness.repo.putCharacter({ ...row, provisional: null });
+    expect((await book(h, 2)).heroCrews).toEqual({ [bo]: crew });
   });
 });
