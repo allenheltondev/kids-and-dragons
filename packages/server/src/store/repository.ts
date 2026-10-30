@@ -421,6 +421,13 @@ export interface CommitInput {
    * household again. Never together with `founder`, which writes the same row.
    */
   unfound?: { householdId: string; deviceId: string };
+  /**
+   * A new crew (`CrewRecord`), written in the same transaction as the lobby
+   * that switches to it, and only if no crew has that id yet: so a crew is
+   * never left behind by a lobby change that lost its race, and two rooms
+   * taking the same slot at once cannot both have it (handlers/crew.ts).
+   */
+  crew?: CrewRecord;
 }
 
 /** `HH#<hhId>` / `OWNER#<sub>`: one grown-up who may manage the household (#248). */
@@ -859,9 +866,11 @@ export interface GameRepository {
   putCampaignProgress(progress: CampaignProgressRecord): Promise<void>;
 
   // --- crews (household-scoped, permanent) ------------------------------------
-  /** `HH#<id>` / `CREW#<crew>`: the household's crews beyond its first, oldest first. */
+  /**
+   * `HH#<id>` / `CREW#<crew>`: the household's crews beyond its first, oldest
+   * first. Written only by a lobby's commit (`CommitInput.crew`).
+   */
   listCrews(householdId: string): Promise<CrewRecord[]>;
-  putCrew(crew: CrewRecord): Promise<void>;
 
   // --- field guide (household-scoped, permanent) -----------------------------
   /** `HH#<id>` / `FIELDGUIDE`. An empty book (never `null`) when nothing is found yet. */

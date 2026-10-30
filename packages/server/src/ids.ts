@@ -9,7 +9,7 @@
 
 import { randomBytes, randomUUID } from "node:crypto";
 
-export type IdPrefix = "h" | "p" | "d" | "c" | "r" | "cw";
+export type IdPrefix = "h" | "p" | "d" | "c" | "r";
 
 export function newId(prefix: IdPrefix): string {
   return `${prefix}_${randomUUID().replace(/-/g, "").slice(0, 10)}`;

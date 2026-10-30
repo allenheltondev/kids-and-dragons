@@ -825,10 +825,6 @@ export class MemoryRepository implements GameRepository {
       .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
   }
 
-  async putCrew(crew: CrewRecord): Promise<void> {
-    this.put({ PK: HH(crew.householdId), SK: CREW_SK(crew.id), entity: "crew", data: crew });
-  }
-
   async getFieldGuide(householdId: string): Promise<FieldGuideRecord> {
     return this.readFieldGuide(householdId);
   }
@@ -931,6 +927,8 @@ export class MemoryRepository implements GameRepository {
       const { householdId, id } = write.character;
       if (!claimHolds(this.get(HH(householdId), CHAR_SK(id)), write)) return false;
     }
+    // A new crew takes a slot nobody holds yet.
+    if (input.crew && this.get(HH(input.crew.householdId), CREW_SK(input.crew.id))) return false;
 
     // No await from here through the final row: this is the local equivalent of
     // one TransactWriteItems, including across two different run partitions.
@@ -961,6 +959,9 @@ export class MemoryRepository implements GameRepository {
     }
     for (const write of characters) {
       this.put(characterItem(claimedRow(write)));
+    }
+    if (input.crew) {
+      this.put({ PK: HH(input.crew.householdId), SK: CREW_SK(input.crew.id), entity: "crew", data: input.crew });
     }
     if (chapterProgress) {
       this.put({

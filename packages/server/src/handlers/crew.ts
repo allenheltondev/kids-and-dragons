@@ -22,15 +22,11 @@
 
 import { claimOf, memberHome, parseClaim, type RunState } from "@kad/shared";
 import type { CrewRecord } from "../store/repository.ts";
-import { newId } from "../ids.ts";
 import { claimIsLive } from "./claim.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 import { commitRoomChange, hostedRoom, type HostPrincipal } from "./host.ts";
 import { seatedParty, UNDER_WAY } from "./progression.ts";
 import { offerCampaigns } from "./room.ts";
-
-/** Enough for every group a household plays with, and a bound on the rows a host can make. */
-export const MAX_CREWS = 8;
 
 /** What a new crew is called: no typing on a TV remote, and every name is a kid's. */
 export const CREW_NAMES = [
@@ -44,10 +40,8 @@ export const CREW_NAMES = [
   "The Pebble Crew",
 ] as const;
 
-/** The first name no crew of the household has yet. */
-export function nextCrewName(taken: readonly string[]): string {
-  return CREW_NAMES.find((name) => !taken.includes(name)) ?? `Crew ${taken.length + 2}`;
-}
+/** Enough for every group a household plays with, and a bound on the rows a host can make: one slot per name. */
+export const MAX_CREWS = CREW_NAMES.length;
 
 export interface SwitchCrewInput {
   code: string;
@@ -63,6 +57,15 @@ export interface SwitchCrewInput {
  * Point the lobby at another of the household's crews, or a brand-new one.
  * One committed change, like every host control, and the lobby is rebuilt in
  * it: the crew's campaigns, its saved game, and votes cast on the old list go.
+ *
+ * A new crew's row rides that same commit (`CommitInput.crew`), so it exists
+ * exactly when a lobby switched to it: a start that won the race, or retries
+ * that ran out, leave nothing behind. Its id is the first free slot,
+ * `cw_1` to `cw_<MAX_CREWS>`, written only if nobody holds it, so two rooms
+ * starting a crew at once take different slots (the loser's commit fails and
+ * its retry reads again), and the cap is the slots themselves. And "new" on a
+ * lobby already on a crew that has played nothing is that crew: a client
+ * retrying a request whose answer it lost gets the crew it made, not a second.
  */
 export async function switchCrew(
   input: SwitchCrewInput,
@@ -75,51 +78,78 @@ export async function switchCrew(
   if (room.claimable === true) {
     return fail("ILLEGAL", "Let somebody join first, so the game knows whose crews these are.");
   }
-  const before = await deps.repo.getState(room.runId);
-  if (!before) return fail("NOT_FOUND", `run ${room.runId} has no state`);
-  if (!betweenGames(before)) return fail("ILLEGAL", "Change crews before the adventure starts.");
-
   const run = await deps.repo.getRun(room.runId);
   if (!run) return fail("NOT_FOUND", `no run ${room.runId}`);
-  const crews = await deps.repo.listCrews(room.householdId);
 
-  let target: string | null;
-  if (input.crew === "new") {
-    if (crews.length >= MAX_CREWS) {
-      return fail("ILLEGAL", "This game already has as many crews as it can keep.");
-    }
-    const crew: CrewRecord = {
-      householdId: room.householdId,
-      id: newId("cw"),
-      name: nextCrewName(crews.map((c) => c.name)),
-      createdAt: iso(deps.now()),
-    };
-    await deps.repo.putCrew(crew);
-    target = crew.id;
-  } else if (input.crew === null) {
-    target = null;
-  } else {
-    if (!crews.some((c) => c.id === input.crew)) return fail("NOT_FOUND", "There is no crew like that in this game.");
-    target = input.crew;
-  }
+  // Decided afresh on every attempt, from the crews as they stand then.
+  let target: string | null = null;
+  let made: CrewRecord | undefined;
+  // Asserted rather than annotated: set in the change below, which TypeScript cannot see.
+  let refusal = null as { code: "ILLEGAL" | "NOT_FOUND"; message: string } | null;
 
   const result = await commitRoomChange(
     room,
     input.principal.playerId,
     async (state) => {
-      if (!betweenGames(state)) return null;
-      if ((state.crew ?? null) === target && input.crew !== "new") return null;
+      made = undefined;
+      refusal = null;
+      if (!betweenGames(state)) {
+        refusal = { code: "ILLEGAL", message: "Change crews before the adventure starts." };
+        return null;
+      }
+      const crews = await deps.repo.listCrews(room.householdId);
+      if (input.crew === "new") {
+        if (state.crew && (await isUnplayed(state.crew, crews, room.householdId, deps))) {
+          target = state.crew;
+          return null;
+        }
+        const taken = new Set(crews.map((c) => c.id));
+        const slot = CREW_NAMES.findIndex((_, i) => !taken.has(crewSlot(i)));
+        if (slot < 0) {
+          refusal = { code: "ILLEGAL", message: "This game already has as many crews as it can keep." };
+          return null;
+        }
+        made = { householdId: room.householdId, id: crewSlot(slot), name: CREW_NAMES[slot]!, createdAt: iso(deps.now()) };
+        target = made.id;
+      } else if (input.crew === null) {
+        target = null;
+      } else {
+        if (!crews.some((c) => c.id === input.crew)) {
+          refusal = { code: "NOT_FOUND", message: "There is no crew like that in this game." };
+          return null;
+        }
+        target = input.crew;
+      }
+      if ((state.crew ?? null) === target) return null;
       const { crew: _crew, ...rest } = state;
       const next: RunState = target === null ? (rest as RunState) : { ...rest, crew: target };
       await offerCampaigns(next, room.householdId, run.campaignId, deps);
+      // The lobby read the crews before this one's row exists: it lands with this commit.
+      if (made) next.crews = [...(next.crews ?? []), { id: made.id, name: made.name }];
       return next;
     },
     deps,
+    { crew: () => made },
   );
   if (!result.ok) return result;
-  // The lobby moved on to a chapter while the change was being made.
-  if ((result.value.state.crew ?? null) !== target) return fail("ILLEGAL", "Change crews before the adventure starts.");
+  if (refusal) return fail(refusal.code, refusal.message);
   return ok({ seq: result.value.seq, crew: target });
+}
+
+/** A crew's id by slot: `cw_1` for the first slot. Never the claim's separators. */
+function crewSlot(index: number): string {
+  return `cw_${index + 1}`;
+}
+
+/** A crew of the household that has never begun an adventure (no attempt at anything). */
+async function isUnplayed(
+  crew: string,
+  crews: readonly CrewRecord[],
+  householdId: string,
+  deps: HandlerDeps,
+): Promise<boolean> {
+  if (!crews.some((c) => c.id === crew)) return false;
+  return (await deps.repo.listCampaignProgress(householdId, crew)).length === 0;
 }
 
 /**
