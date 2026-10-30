@@ -582,6 +582,21 @@ export interface RunState {
    */
   saved?: SavedGameView;
   /**
+   * Which of the household's crews this room plays: a second group of
+   * players at the same household, with campaign saves of their own (
+   * architecture §4.5 "Crews"). Absent is the household's first crew, which
+   * is every room and every save from before crews existed, so none of them
+   * moves. Chosen by the host in the lobby (`switchCrew`), and part of the
+   * game rather than the room: a resumed save keeps its own.
+   */
+  crew?: string;
+  /**
+   * The household's other crews, for the host's Room panel to switch to.
+   * Absent while the household has only its first one. Filled where the
+   * lobby's campaigns are (`offerCampaigns`).
+   */
+  crews?: CrewView[];
+  /**
    * What the family calls its table, the household's place at the game ("Kitchen table"),
    * from the TV that opened it. Absent when the table was never named.
    */
@@ -622,6 +637,12 @@ export interface RunState {
 }
 
 /** A stopped chapter, as the lobby offers it (`RunState.saved`, #259). */
+/** One of a household's crews, as the host's Room panel lists it. */
+export interface CrewView {
+  id: string;
+  name: string;
+}
+
 export interface SavedGameView {
   campaignId: string;
   campaignTitle: string;

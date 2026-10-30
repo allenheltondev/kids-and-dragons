@@ -129,9 +129,20 @@
 }
 
 .kad-host__actions,
-.kad-host__confirm {
+.kad-host__confirm,
+.kad-host__crew {
   display: grid;
   gap: 0.5rem;
+}
+
+/* New players at the same TV: set apart from the room's own levers. */
+.kad-host__crew {
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--kad-line, var(--kad-bg-sunken));
+}
+
+.kad-host__crew .kad-host__hint {
+  margin: 0;
 }
 
 .kad-host__confirm p {

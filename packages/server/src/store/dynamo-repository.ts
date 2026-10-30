@@ -51,6 +51,7 @@ import type {
 } from "@kad/shared";
 import type {
   CampaignProgressRecord,
+  CrewRecord,
   ChapterProgressRecord,
   CharacterWrite,
   CommitInput,
@@ -74,6 +75,8 @@ import { collectMove, fieldGuideItem, planMove, transferKey, type MoveStep, type
 import {
   ACCT,
   CAMPAIGN_SK,
+  CREW_SK,
+  CREWSAVE_PREFIX,
   CHAPTER_SK,
   CHAR_SK,
   DEVICE_SK,
@@ -1332,14 +1335,27 @@ export class DynamoRepository implements GameRepository {
   async getCampaignProgress(
     householdId: string,
     campaignId: string,
+    crew?: string,
   ): Promise<CampaignProgressRecord | null> {
-    const item = await this.get(HH(householdId), CAMPAIGN_SK(campaignId));
+    const item = await this.get(HH(householdId), CAMPAIGN_SK(campaignId, crew));
     return (item?.data as CampaignProgressRecord | undefined) ?? null;
   }
 
-  async listCampaignProgress(householdId: string): Promise<CampaignProgressRecord[]> {
-    const items = await this.partition(HH(householdId), PREFIX.campaign);
+  async listCampaignProgress(householdId: string, crew?: string): Promise<CampaignProgressRecord[]> {
+    const items = await this.partition(HH(householdId), crew ? CREWSAVE_PREFIX(crew) : PREFIX.campaign);
     return items.map((i) => i.data as CampaignProgressRecord);
+  }
+
+  async listCrews(householdId: string): Promise<CrewRecord[]> {
+    // Strongly consistent: a crew's slot is chosen from this list, and a room
+    // that lost a slot to another must see the winner's row on its retry,
+    // not the stale list that made it try the same slot again (crew.ts).
+    const items = await this.query({
+      KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
+      ExpressionAttributeValues: { ":pk": HH(householdId), ":sk": PREFIX.crew },
+      ConsistentRead: true,
+    });
+    return items.map((i) => i.data as CrewRecord).sort((a, b) => a.createdAt.localeCompare(b.createdAt));
   }
 
   async getFieldGuide(householdId: string): Promise<FieldGuideRecord> {
@@ -1537,6 +1553,24 @@ export class DynamoRepository implements GameRepository {
                       ConditionExpression: "attribute_exists(PK) AND #d.#founder = :device",
                       ExpressionAttributeNames: { "#d": "data", "#founder": "founderDeviceId" },
                       ExpressionAttributeValues: { ":device": input.unfound.deviceId, ":nobody": "" },
+                    },
+                  },
+                ]
+              : []),
+            // A new crew, only if its slot is free (handlers/crew.ts): it lands
+            // with the lobby that switches to it, or not at all.
+            ...(input.crew
+              ? [
+                  {
+                    Put: {
+                      TableName: this.table,
+                      Item: {
+                        PK: HH(input.crew.householdId),
+                        SK: CREW_SK(input.crew.id),
+                        entity: "crew",
+                        data: input.crew,
+                      } satisfies TableItem,
+                      ConditionExpression: "attribute_not_exists(PK)",
                     },
                   },
                 ]
@@ -1937,7 +1971,7 @@ function characterTransaction(table: string, write: CharacterWrite) {
 function campaignProgressItem(progress: CampaignProgressRecord): TableItem {
   return {
     PK: HH(progress.householdId),
-    SK: CAMPAIGN_SK(progress.campaignId),
+    SK: CAMPAIGN_SK(progress.campaignId, progress.crew),
     entity: "campaign-progress",
     data: progress,
   };

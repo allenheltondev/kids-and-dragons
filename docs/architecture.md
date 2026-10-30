@@ -100,6 +100,7 @@ Single DynamoDB table, `kad`. Composite key `PK` / `SK`, one GSI (`GSI1PK` / `GS
 | Character | `HH#<hhId>` | `CHAR#<charId>` | Owned by a playerId, and stored under that kid's **home** household wherever she plays (§4.5, "Who owns what"), a visitor's included (#249, "Visitors"). Persistent across campaigns. See §3.1. |
 | Campaign run | `HH#<hhId>` | `RUN#<runId>` | One playthrough of one campaign. |
 | Campaign attempt | `HH#<hhId>` | `CAMPAIGN#<campaignId>` | The household's attempt at one campaign across evenings: status, setbacks, route flags, coins, a graph campaign's journey (`CampaignProgressRecord`). |
+| Crew | `HH#<hhId>` | `CREW#<crewId>` | A second group of players at the household, with saves of its own: id (a slot, `cw_1`…), a name from a fixed list, when it was made. Written only in a lobby's commit. Its attempts are `CREWSAVE#<crewId>#<campaignId>`, beside the first crew's `CAMPAIGN#` rows. See §4.5, "Crews". |
 | Field Guide | `HH#<hhId>` | `FIELDGUIDE` | The household's permanent record of discoveries: `entries` keyed by canon id → `{ firstFoundBy, foundAt, runId? }`. One item, written with per-key `if_not_exists` so the first finder always wins and concurrent writers merge. Versioned (`FIELD_GUIDE_VERSION`). |
 | Chapter progress | `RUN#<runId>` | `CHAPTER#<n>` | Status, branch taken, XP earned. |
 | Game state | `RUN#<runId>` | `STATE` | Current authoritative snapshot. Single item. |
@@ -1638,6 +1639,64 @@ leaves nobody signed in afterwards. A TV's room must be settled by a phone first
 - **No trades across households** in v1. The engine refuses an offer between
   heroes from different households (`sameHome`), and the give list leaves them
   out. Trades within a household, visitors' included, work as before.
+
+#### Crews: new players at the same household
+
+A household holds one save per campaign (`HH#…/CAMPAIGN#<campaignId>`), which
+is right for one family at one TV and wrong the evening a grown-up sits down
+there with different kids: the lobby would offer the family's chapter 4, and
+starting fresh would mean a new household that the grown-up's own phone, bound
+to the family, could not join. A **crew** is another set of saves inside the
+same household (`handlers/crew.ts`). The kids, their heroes, the Field Guide
+and every device stay the household's, so anyone may sit down with any crew.
+
+- **The first crew has no row and no id.** It is the household's saves exactly
+  as they were: `RunState.crew` absent, progress at `CAMPAIGN#<campaignId>`,
+  claims the bare campaign id. No run, save or claim from before crews moves,
+  and Gemfall's pinned digests do not.
+- **Every other crew** is `HH#…/CREW#<id>` (`CrewRecord`: id, a name from a
+  fixed list so a TV remote never types, created). Its attempts live at
+  `CREWSAVE#<id>#<campaignId>` and carry `crew`; that prefix is not a prefix
+  of `CREW#` or `CAMPAIGN#`, so `listCampaignProgress(hh)` still lists only the
+  first crew's rows and every older reader is unchanged. A household's purge
+  takes the whole partition, crews included.
+- **The run carries it.** `RunState.crew` decides every save read and write:
+  the lobby's campaigns, locks and saved game (`offerCampaigns`), a chapter
+  start's road and attempt (`roadTo`, `joinOrStartAttempt`), settlement, a
+  journey's exits, and a stop's "one save per campaign", which is now one per
+  campaign and crew. It is the game's, not the room's, so a resumed save keeps
+  its own, and `savedGame` offers only the lobby's crew's.
+- **A hero's claim names the crew** (`adventureKey`): `<campaignId>~<crew>`,
+  before any `@<table>`, so a hero in the family's Gemfall is busy, not free,
+  in another crew's Gemfall, and `claimIsLive` reads the right attempt.
+- **Choosing is a host control** (`POST /api/room/:code/crew`, `{ crew: id |
+  null | "new" }`): low stakes, since it only changes which saves the lobby
+  offers, and "new" only adds an empty crew. Only between games, and only once
+  a phone has settled a TV's room (before that there is no household to have
+  crews). The lobby is rebuilt in the same commit, so votes on the old list go.
+- **A new crew lands with the lobby that switches to it, or not at all.** Its
+  row rides the run's commit (`CommitInput.crew`), so a start that wins the
+  race or retries that run out leave no crew behind. Its id is the first free
+  slot (`cw_1` to `cw_<MAX_CREWS>`, one per name), put only if absent: two
+  rooms making a crew at once take different slots (the loser's commit fails
+  and its retry reads again, strongly consistent, so it sees the winner's
+  row), and the slots are the cap. Each "Start a new crew" tap sends its own
+  id (`request`), kept on the crew it makes: the same request again, a retry
+  of a lost answer, gets that crew, and a fresh tap always makes another. `RunState.crews` lists the others for the Room
+  panel, and is absent while the household has only its first.
+
+**The lobby follows the kids** (`followCrew`, run beside `relockLobby`
+whenever the lobby's party changes). A new room opens on the first crew, and
+the moment a seated hero is on a live adventure of another crew at this
+household, the lobby switches to that crew and is rebuilt for it, so a crew
+that comes back every week never opens the Room panel. Only a clear answer
+moves it: new heroes and heroes whose adventure is over or elsewhere say
+nothing, and heroes of two crews leave it where it is. Then the start's
+refusal names the crew (`crewBusyMessage`: "Bo is playing with The Otter
+Crew. A grown-up can switch crews in the Room panel."). A household that has
+never made a crew reads nothing here. Opening on the most recently played
+crew was left out on purpose: with two groups taking turns at one TV it
+guesses wrong half the time.
 
 #### The TV, which is nobody
 

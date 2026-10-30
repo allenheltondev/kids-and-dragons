@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { claimFor, claimOf, parseClaim } from "./claim.js";
+import { adventureKey, claimFor, claimOf, parseClaim } from "./claim.js";
 
 const home = { householdId: "h_ada" };
 
@@ -14,6 +14,17 @@ describe("a hero's claim (#282)", () => {
     expect(atRues).toBe("gemfall@h_rue");
     expect(atRues).not.toBe(claimFor("gemfall", "h_ada", home));
     expect(parseClaim(atRues, home)).toEqual({ campaignId: "gemfall", table: "h_rue" });
+  });
+
+  it("names the crew when it is not the household's first, at home or visiting", () => {
+    expect(adventureKey("gemfall")).toBe("gemfall");
+    expect(adventureKey("gemfall", null)).toBe("gemfall");
+    const crew = claimFor(adventureKey("gemfall", "cw_otter"), "h_ada", home);
+    expect(crew).toBe("gemfall~cw_otter");
+    expect(parseClaim(crew, home)).toEqual({ campaignId: "gemfall", table: "h_ada", crew: "cw_otter" });
+    const away = claimFor(adventureKey("gemfall", "cw_otter"), "h_rue", home);
+    expect(away).toBe("gemfall~cw_otter@h_rue");
+    expect(parseClaim(away, home)).toEqual({ campaignId: "gemfall", table: "h_rue", crew: "cw_otter" });
   });
 
   it("is read off provisional, and a hero with none is free", () => {

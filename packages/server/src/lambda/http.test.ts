@@ -2099,6 +2099,8 @@ const SHARED = [
   // Host controls (#263, handlers/host.ts).
   { path: "/api/room/:code/lock", method: "POST", probe: "/api/room/ABCD/lock" },
   { path: "/api/room/:code/quiet", method: "POST", probe: "/api/room/ABCD/quiet" },
+  // Which of the household's crews the lobby plays (handlers/crew.ts).
+  { path: "/api/room/:code/crew", method: "POST", probe: "/api/room/ABCD/crew" },
   // The session clock: pause, resume, note, off (#511, handlers/timing.ts).
   { path: "/api/room/:code/timing", method: "POST", probe: "/api/room/ABCD/timing" },
   { path: "/api/room/:code/close", method: "POST", probe: "/api/room/ABCD/close" },

@@ -41,6 +41,7 @@ import { setVisitors } from "../handlers/visitors.ts";
 import { removePlayer } from "../handlers/remove.ts";
 import { handKeeper } from "../handlers/keeper.ts";
 import { closeRoom, lockRoom, setQuiet, type HostPrincipal } from "../handlers/host.ts";
+import { CREW_BODY, parseCrewChoice, switchCrew } from "../handlers/crew.ts";
 import { parseTimingControl, setTiming, TIMING_BODY, type TimingControl } from "../handlers/timing.ts";
 import { releaseSavedHero, resumeGame, stopForToday } from "../handlers/save.ts";
 import { listHeroes } from "../handlers/heroes.ts";
@@ -203,6 +204,11 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
     if (quiet?.[1]) {
       const code = quiet[1].toUpperCase();
       return (deps) => postQuiet(req, deps, code);
+    }
+    const crew = /^\/api\/room\/([A-Za-z]{4})\/crew$/.exec(req.path);
+    if (crew?.[1]) {
+      const code = crew[1].toUpperCase();
+      return (deps) => postCrew(req, deps, code);
     }
     const timing = /^\/api\/room\/([A-Za-z]{4})\/timing$/.exec(req.path);
     if (timing?.[1]) {
@@ -586,6 +592,14 @@ async function postQuiet(req: Req, deps: HandlerDeps, code: string) {
   const valid = typeof quiet === "boolean";
   return postHostControl(req, deps, code, valid ? null : "expected { quiet: true | false }", (principal) =>
     setQuiet({ code, principal, quiet: quiet as boolean }, deps),
+  );
+}
+
+/** The host choosing which of the household's crews this lobby plays, or starting one (handlers/crew.ts). */
+async function postCrew(req: Req, deps: HandlerDeps, code: string) {
+  const choice = parseCrewChoice(req.body);
+  return postHostControl(req, deps, code, choice === undefined ? CREW_BODY : null, (principal) =>
+    switchCrew({ code, principal, ...choice! }, deps),
   );
 }
 

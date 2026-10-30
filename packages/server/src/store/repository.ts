@@ -119,6 +119,27 @@ export interface RunRecord {
 }
 
 /**
+ * `HH#<householdId>` / `CREW#<id>` — a second group of players at the same
+ * household, with campaign saves of its own (architecture §4.5, "Crews").
+ * The household's first crew has no row: it is the household's saves as they
+ * always were. The kids and their heroes are not the crew's: they belong to
+ * the household, and any of them may sit down with any crew.
+ */
+export interface CrewRecord {
+  householdId: string;
+  id: string;
+  /** What the Room panel calls it ("The Otter Crew"). */
+  name: string;
+  createdAt: string;
+  /**
+   * The id of the "Start a new crew" tap that made it, when the tap sent one:
+   * the same request again (a retry after a lost response) is this crew, not
+   * another (handlers/crew.ts).
+   */
+  request?: string;
+}
+
+/**
  * `HH#<householdId>` / `CAMPAIGN#<campaignId>` — the campaign setback counter
  * (roadmap chapter 5, spec §8.3).
  *
@@ -134,6 +155,13 @@ export interface RunRecord {
 export interface CampaignProgressRecord {
   householdId: string;
   campaignId: string;
+  /**
+   * The crew whose save this is (`RunState.crew`), absent for the household's
+   * first crew, which is every row written before crews existed. It decides
+   * the row's key (`CAMPAIGN_SK`), so two crews' attempts at one campaign
+   * never meet.
+   */
+  crew?: string;
   /** `active` is the attempt in flight; anything else is history. */
   status: "active" | "complete" | "failed";
   setbacks: number;
@@ -399,6 +427,13 @@ export interface CommitInput {
    * household again. Never together with `founder`, which writes the same row.
    */
   unfound?: { householdId: string; deviceId: string };
+  /**
+   * A new crew (`CrewRecord`), written in the same transaction as the lobby
+   * that switches to it, and only if no crew has that id yet: so a crew is
+   * never left behind by a lobby change that lost its race, and two rooms
+   * taking the same slot at once cannot both have it (handlers/crew.ts).
+   */
+  crew?: CrewRecord;
 }
 
 /** `HH#<hhId>` / `OWNER#<sub>`: one grown-up who may manage the household (#248). */
@@ -827,11 +862,21 @@ export interface GameRepository {
   putChapterProgress(progress: ChapterProgressRecord): Promise<void>;
   listChapterProgress(runId: string): Promise<ChapterProgressRecord[]>;
 
-  /** The setback counter (see `CampaignProgressRecord`). `null` = no attempt yet. */
-  getCampaignProgress(householdId: string, campaignId: string): Promise<CampaignProgressRecord | null>;
-  /** Every attempt the household has, whatever its status — the lobby's list. */
-  listCampaignProgress(householdId: string): Promise<CampaignProgressRecord[]>;
+  /**
+   * The setback counter (see `CampaignProgressRecord`). `null` = no attempt yet.
+   * `crew` names one of the household's other crews; absent is its first.
+   */
+  getCampaignProgress(householdId: string, campaignId: string, crew?: string): Promise<CampaignProgressRecord | null>;
+  /** Every attempt one crew of the household has, whatever its status — the lobby's list. */
+  listCampaignProgress(householdId: string, crew?: string): Promise<CampaignProgressRecord[]>;
   putCampaignProgress(progress: CampaignProgressRecord): Promise<void>;
+
+  // --- crews (household-scoped, permanent) ------------------------------------
+  /**
+   * `HH#<id>` / `CREW#<crew>`: the household's crews beyond its first, oldest
+   * first. Written only by a lobby's commit (`CommitInput.crew`).
+   */
+  listCrews(householdId: string): Promise<CrewRecord[]>;
 
   // --- field guide (household-scoped, permanent) -----------------------------
   /** `HH#<id>` / `FIELDGUIDE`. An empty book (never `null`) when nothing is found yet. */

@@ -820,6 +820,23 @@ describe("arrivals and removal (#267)", () => {
     ]);
   });
 
+  it("names each 'Start a new crew' tap, so a second tap is a second crew and not a retry", async () => {
+    const h = harness();
+    await h.store.getState().createRoom("travel", "Allen");
+    h.store.setState({ session: { ...h.store.getState().session!, host: true } });
+
+    expect(await h.store.getState().switchCrew("new")).toBe(true);
+    expect(await h.store.getState().switchCrew("new")).toBe(true);
+    expect(await h.store.getState().switchCrew("cw_1")).toBe(true);
+    const bodies = h.api.hostControl.mock.calls.map((call) => [call[1], call[2]] as [string, Record<string, unknown>]);
+    expect(bodies.map(([control]) => control)).toEqual(["crew", "crew", "crew"]);
+    const [first, second, chosen] = bodies.map(([, body]) => body);
+    expect(first).toMatchObject({ crew: "new", request: expect.stringMatching(/^[A-Za-z0-9_-]{8,64}$/) });
+    expect(second).toMatchObject({ crew: "new" });
+    expect(second!.request).not.toBe(first!.request);
+    expect(chosen).toEqual({ crew: "cw_1" });
+  });
+
   it("never lets a burst push a host's arrival out, though it caps everyone else's", async () => {
     // The host's notices are its only Remove control (review of #269).
     const hosted = harness();
