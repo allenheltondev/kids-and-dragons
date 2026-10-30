@@ -20,12 +20,13 @@
  * lobby, before a chapter starts or a save is picked up.
  */
 
-import type { RunState } from "@kad/shared";
+import { claimOf, memberHome, parseClaim, type RunState } from "@kad/shared";
 import type { CrewRecord } from "../store/repository.ts";
 import { newId } from "../ids.ts";
+import { claimIsLive } from "./claim.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 import { commitRoomChange, hostedRoom, type HostPrincipal } from "./host.ts";
-import { UNDER_WAY } from "./progression.ts";
+import { seatedParty, UNDER_WAY } from "./progression.ts";
 import { offerCampaigns } from "./room.ts";
 
 /** Enough for every group a household plays with, and a bound on the rows a host can make. */
@@ -119,6 +120,54 @@ export async function switchCrew(
   // The lobby moved on to a chapter while the change was being made.
   if ((result.value.state.crew ?? null) !== target) return fail("ILLEGAL", "Change crews before the adventure starts.");
   return ok({ seq: result.value.seq, crew: target });
+}
+
+/**
+ * The lobby follows the kids: when the heroes seated in it are already on one
+ * crew's adventure at this household, it switches to that crew, so a crew that
+ * comes back every week never has to open the Room panel. Called whenever the
+ * party in the lobby changes, beside `relockLobby`.
+ *
+ * Only a clear answer moves it. A new hero, or one whose adventure is over or
+ * at another table, says nothing. Heroes on two different crews' adventures
+ * leave the lobby where it is, and the start says who is playing with whom
+ * (`crewBusyMessage`). A household that has never made a crew reads nothing
+ * and returns the state unchanged (the same object), so the first crew's
+ * lobbies, Gemfall's pinned ones among them, are exactly as before.
+ */
+export async function followCrew(
+  state: RunState,
+  householdId: string,
+  featuredId: string | null,
+  deps: HandlerDeps,
+): Promise<RunState> {
+  if (state.crews === undefined && state.crew === undefined) return state;
+  if (!betweenGames(state)) return state;
+  const known = new Set((state.crews ?? []).map((c) => c.id));
+  const crews = new Set<string | null>();
+  for (const member of seatedParty(state)) {
+    let hero;
+    try {
+      hero = await deps.repo.getCharacter(memberHome(member, householdId), member.character.id);
+    } catch (err) {
+      // A hero who cannot be read cannot say which crew: leave the lobby be.
+      console.error(`crews: could not read ${member.character.id}:`, err);
+      return state;
+    }
+    const held = hero ? claimOf(hero) : null;
+    if (!hero || held === null) continue;
+    const { table, crew } = parseClaim(held, hero);
+    if (table !== householdId || (crew !== undefined && !known.has(crew))) continue;
+    if (!(await claimIsLive(held, hero, deps))) continue;
+    crews.add(crew ?? null);
+  }
+  if (crews.size !== 1) return state;
+  const [target] = [...crews];
+  if ((state.crew ?? null) === target) return state;
+  const { crew: _crew, ...rest } = state;
+  const next: RunState = target ? { ...rest, crew: target } : (rest as RunState);
+  await offerCampaigns(next, householdId, featuredId, deps);
+  return next;
 }
 
 /** In the lobby, with no chapter started and none to finish. */
