@@ -267,9 +267,7 @@ voice, and nothing there touches the Gemini one:
   ElevenLabs makes three voices from the description and each says the text. That step spends: it is priced and held
   to the session's cap like an audition (the cost is shown first, and a design that fails is not charged). **Use this
   voice** names it, asks, and saves it to the ElevenLabs account (it may use one of the plan's voice slots) and gives
-  it to the character, unapproved. Nothing changes the account until that click. The cap's price is a stand-in: ElevenLabs
-  bills a design in credits that `pricing.json` does not list, so it is priced as the mode's speech model reading the
-  text three times; check what a design really costs on your account. ElevenLabs takes a description of 20 to 1,000
+  it to the character, unapproved. Nothing changes the account until that click. Design runs on ElevenLabs' own design model (`eleven_ttv_v3`), not a speech model, and bills the sample text once however many candidates come back. `pricing.json` has no design rate, so the cap's price is an estimate: the text priced once as `eleven_v3` speech (itself an unconfirmed rate there). It is asked for again whenever the text is edited, shown beside the button, and sent with the request: if the words changed, the server answers with the new price instead of spending on the old one. Editing either box also takes the candidates away, so a voice is only ever saved under the description it was made from. Check what a design really costs on your account. ElevenLabs takes a description of 20 to 1,000
   characters and a sample text of 100 to 1,000.
 - **Nothing is chosen for you.** Gemini's voices come with traits that a builder can match to a
   character; an account's don't, so nobody has an ElevenLabs voice until you pick one. Until then
