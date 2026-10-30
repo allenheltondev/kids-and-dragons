@@ -21,7 +21,7 @@ import { renderPage, type LiveConfig } from "./page.ts";
 import { GEMINI_VOICES, engineOf, listModels, listVoices, type CastFile, type EngineConfig, type Fetch, type Keys, type ModelInfo } from "./providers.ts";
 import type { Sample } from "./samples.ts";
 import { renderCastPage } from "../cast/page.ts";
-import { ART } from "../cast/profile.ts";
+import { ART, REALM_MAP } from "../cast/profile.ts";
 import { renderProfilePage } from "../cast/profile-page.ts";
 import { castPageData, createCastRoutes, type Budget } from "../cast/routes.ts";
 
@@ -226,7 +226,7 @@ export function createBakeoffServer(options: ServerOptions): { server: http.Serv
           // The characters' paintings, straight from assets/: only the figure files, nothing else in the repository.
           const name = url.pathname.slice("/art/".length);
           const file = path.join(artRoot, "assets", name);
-          if (!ART.test(name) || !fs.existsSync(file)) return send(response, 404, { error: "no such painting" });
+          if (!(ART.test(name) || name === REALM_MAP) || !fs.existsSync(file)) return send(response, 404, { error: "no such painting" });
           response.writeHead(200, { "content-type": name.endsWith(".webp") ? "image/webp" : "image/png", "cache-control": "no-cache" });
           return fs.createReadStream(file).pipe(response);
         }
