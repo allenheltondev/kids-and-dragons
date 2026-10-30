@@ -15,6 +15,14 @@ How to run a session, for a grown-up who has never seen the game (#257).
   the buttons, set it in black on white, and keep the quick start to its own
   first page.
 
+## The painted banners
+
+Each page opens on a painted banner (`packages/client/src/assets/guide/`, #573), and the setup page's
+two parts each open on a small emblem. They are decoration: the images have no alt text, so the page
+says everything in words. On a phone the scene is a strip above the title, never behind text; from 48em
+it is the hero's backdrop, with the words on its calm left. Both are hidden in print and in high
+contrast. The files are never inlined (`vite.config.ts`).
+
 ## The pictures
 
 Every picture is a real screen, taken by the e2e spec that already walks that
