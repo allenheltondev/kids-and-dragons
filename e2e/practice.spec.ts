@@ -45,7 +45,7 @@ test.describe("the practice", () => {
     const hint = solo.getByTestId("player-hint");
     await expect(hint).toContainText("Tap what you want to do on your phone, then tap Do it!");
     await expect(solo.getByRole("button", { name: "Hear the hint" })).toBeVisible();
-    await guidePicture(solo, "practice-hint");
+    await guidePicture(solo, "practice-hint", { mark: solo.getByRole("button", { name: "Hear the hint" }) });
     await solo.locator(".prompt button").filter({ hasText: /open the gate/i }).first().click(TAP);
     // Pressed rather than clicked: at phone width the dev server's Playtest
     // drawer handle sits over the confirm bar, and production has no drawer.

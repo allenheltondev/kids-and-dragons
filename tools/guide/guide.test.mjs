@@ -21,11 +21,17 @@ import { checkText } from "../content/spelling-lint.mjs";
 import { pictureSpecs } from "./pictures.mjs";
 
 const ROOT = path.resolve(import.meta.dirname, "..", "..");
-const GUIDE = path.join(ROOT, "packages", "client", "src", "guide", "guide.md");
+const GUIDE_DIR = path.join(ROOT, "packages", "client", "src", "guide");
+const GUIDE = path.join(GUIDE_DIR, "guide.md");
+const SETUP = path.join(GUIDE_DIR, "setup.md");
 const PICTURES = path.join(ROOT, "packages", "client", "public", "guide-pictures");
 
 const source = readFileSync(GUIDE, "utf8");
 const guide = parseGuide(source);
+const setupSource = readFileSync(SETUP, "utf8");
+const setup = parseGuide(setupSource);
+/** Both pages, for what holds of every word a grown-up reads. */
+const pages = [guide, setup];
 
 /** The example names the guide uses where a screen shows a kid's own. */
 const EXAMPLE_NAMES = ["Rosie", "Sam", "Pip"];
@@ -54,18 +60,18 @@ const SCREENS = [
 
 function runs(blocks) {
   return blocks.flatMap((block) => {
-    if (block.kind === "paragraph") return [block.text];
+    if (block.kind === "paragraph" || block.kind === "note") return [block.text];
     if (block.kind === "list") return block.items;
     return [];
   });
 }
 
-const allRuns = [guide.intro, ...guide.sections.map((s) => s.blocks)].flatMap(runs);
+const allRuns = pages.flatMap((page) => [page.intro, ...page.sections.map((s) => s.blocks)]).flatMap(runs);
 const bold = [...new Set(allRuns.flat().filter((run) => run.bold).map((run) => run.text))];
 const quoted = [
   ...new Set(allRuns.flatMap((text) => [...text.map((run) => run.text).join("").matchAll(/"([^"]+)"/g)].map((m) => m[1]))),
 ];
-const pictures = guide.sections.flatMap((s) => s.blocks).filter((b) => b.kind === "picture");
+const pictures = pages.flatMap((page) => page.sections).flatMap((s) => s.blocks).filter((b) => b.kind === "picture");
 
 describe("the grown-up's guide", () => {
   it("opens with a quick start that fits on one printed page", () => {
@@ -78,22 +84,31 @@ describe("the grown-up's guide", () => {
     // About ten minutes at a grown-up's 240 words a minute, which the guide's
     // first lines promise. Room to fold a session's questions back in, not a target.
     expect(words(guide)).toBeLessThanOrEqual(2400);
+    // The accounts and groups page is look-up, never the tonight page's ten minutes.
+    expect(words(setup)).toBeLessThanOrEqual(1600);
+  });
+
+  it("keeps what tonight needs off the accounts and groups page", () => {
+    expect(guide.sections.every((s) => s.part === null)).toBe(true);
+    expect(setup.sections.map((s) => s.part).every((part) => part !== null)).toBe(true);
+    expect(setup.sections.some((s) => /Quick start/.test(s.title))).toBe(false);
   });
 
   it("covers every flow a grown-up runs", () => {
-    const titles = guide.sections.map((s) => s.title);
+    const titles = pages.flatMap((page) => page.sections).map((s) => s.title);
     for (const topic of [/Party Mode or Phone Mode/, /seating the kids/, /Running the room/, /leaves or arrives/, /Stopping and coming back/, /easier to play/, /signing in/, /tablet/, /Visitors/, /group/, /new device/, /Moving a hero/, /Deleting/]) {
       expect(titles.some((t) => topic.test(t)), String(topic)).toBe(true);
     }
   });
 
   it("uses US spelling and no em or en dashes", () => {
-    expect(source).not.toMatch(/[–—]/);
-    expect(checkText(source).map((hit) => `${hit.word} -> ${hit.suggestion}`)).toEqual([]);
+    const both = `${source}\n${setupSource}`;
+    expect(both).not.toMatch(/[–—]/);
+    expect(checkText(both).map((hit) => `${hit.word} -> ${hit.suggestion}`)).toEqual([]);
   });
 
   it("never counts the party", () => {
-    expect(source).not.toMatch(/\ball (two|three|four) of you\b/i);
+    expect(`${source}\n${setupSource}`).not.toMatch(/\ball (two|three|four) of you\b/i);
   });
 
   it.each(bold)("shows **%s**, which a screen really says", (label) => {
@@ -137,5 +152,12 @@ describe("the guide's Markdown", () => {
     expect(g.sections[0].blocks[0].items[0].map((r) => r.text).join("")).toBe("a b");
     expect(g.sections[0].blocks[2]).toEqual({ kind: "picture", alt: "A picture of it", name: "y.jpg" });
     expect(g.sections[0].blocks[4].text[0].text).toBe("End line.");
+  });
+
+  it("reads notes and the parts that sections sit in", () => {
+    const g = parseGuide("# T\n\n> Hi\n> **there**\n>\n> Again\n\n<!-- part: First -->\n\n## One\n\n> Aside\n\nBody\n\n## Two\n\n<!-- part: Second -->\n\n## Three\n\n- a");
+    expect(g.intro).toEqual([{ kind: "note", text: [{ text: "Hi ", bold: false }, { text: "there", bold: true }, { text: " Again", bold: false }] }]);
+    expect(g.sections.map((s) => s.part)).toEqual(["First", "First", "Second"]);
+    expect(g.sections[0].blocks.map((b) => b.kind)).toEqual(["note", "paragraph"]);
   });
 });

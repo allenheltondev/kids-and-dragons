@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { act, cleanup, render, screen } from "@testing-library/react";
+import { act, cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -87,6 +87,48 @@ describe("the ? button", () => {
 
     act(() => { showThingHelp({ kind: "buff", name: "Guard" }); });
     expect((await screen.findByRole("dialog", { name: "Guard" })).textContent).toContain(help.things.buff.text);
+  });
+
+  it("opens a quick How to play reference whose cards read themselves aloud, and goes back", async () => {
+    const user = userEvent.setup();
+    render(<HelpControl />);
+    await user.click(screen.getByRole("button", { name: "Help" }));
+    await screen.findByRole("dialog", { name: "Help" });
+    await user.click(await screen.findByRole("button", { name: "How to play" }));
+    const dialog = await screen.findByRole("dialog", { name: "How to play" });
+    for (const tile of help.howToPlay) expect(dialog.textContent).toContain(tile.title);
+    hear.mockClear();
+    await user.click(screen.getByRole("button", { name: new RegExp(help.howToPlay[2]!.title) }));
+    expect(hear).toHaveBeenCalledWith(help.howToPlay[2]!.text, { source: "ui" });
+    await user.click(screen.getByRole("button", { name: "Back" }));
+    expect((await screen.findByRole("dialog", { name: "Help" })).textContent).toContain(help.surfaces.inventory.text);
+  });
+
+  it("keeps the keyboard's place when the sheet swaps to the How to play cards and back", async () => {
+    const user = userEvent.setup();
+    render(<HelpControl />);
+    await user.click(screen.getByRole("button", { name: "Help" }));
+    await screen.findByRole("dialog", { name: "Help" });
+    const how = await screen.findByRole("button", { name: "How to play" });
+    how.focus();
+    await user.keyboard("{Enter}");
+    // The button that had the focus is gone, so the new heading has it, and it is the dialog's new name.
+    const reference = await screen.findByRole("dialog", { name: "How to play" });
+    expect(document.activeElement).toBe(within(reference).getByRole("heading", { name: "How to play" }));
+    // Shift+Tab from the heading wraps to the last button rather than leaving the sheet.
+    await user.keyboard("{Shift>}{Tab}{/Shift}");
+    expect(document.activeElement).toBe(within(reference).getByRole("button", { name: "Got it" }));
+    within(reference).getByRole("button", { name: "Back" }).focus();
+    await user.keyboard("{Enter}");
+    const back = await screen.findByRole("dialog", { name: "Help" });
+    expect(document.activeElement).toBe(within(back).getByRole("heading", { name: "Help" }));
+  });
+
+  it("offers no reference on a held thing's help", async () => {
+    render(<HelpControl />);
+    act(() => { showThingHelp({ kind: "buff", name: "Guard" }); });
+    await screen.findByRole("dialog", { name: "Guard" });
+    expect(screen.queryByRole("button", { name: "How to play" })).toBeNull();
   });
 
   it("is not on the TV or the join screen", () => {

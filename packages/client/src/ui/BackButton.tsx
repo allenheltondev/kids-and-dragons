@@ -18,7 +18,7 @@ export function BackButton(): ReactElement | null {
   const route = useRoute();
   const hasStep = useHasBackStep();
   const showing =
-    route.name === "journal" || route.name === "guide" || route.name === "account" || route.name === "privacy" || (route.name === "player" && hasStep);
+    route.name === "journal" || route.name === "guide" || route.name === "guideSetup" || route.name === "account" || route.name === "privacy" || (route.name === "player" && hasStep);
   if (!showing) return null;
   return (
     <div className="kad-back">
