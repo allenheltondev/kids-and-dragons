@@ -142,7 +142,11 @@ const FIRST_PAINT_BUDGET_KB = 324;
 // The StoryPlates reel now also plays endings, with the epilogue hook and
 // staged narration in lazy room screens. First paint kept its 322KB cap then;
 // the paintings themselves are fetched separately and are not JavaScript.
-const TOTAL_BUDGET_KB = 1515;
+// 1515 -> 1520 for crew setup and child-friendly creation: 1518KB measured.
+// The editable strength suggestion, optional choice details, lobby readiness
+// and creation-only hero greeting live in the lazy room/layout graph. First
+// paint remains within its unchanged 324KB cap; painted assets remain files.
+const TOTAL_BUDGET_KB = 1520;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

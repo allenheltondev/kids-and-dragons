@@ -427,6 +427,10 @@ export async function applyAction(
   if (auth.home !== auth.run.householdId) {
     result = { ...result, state: withHome(result.state, input.playerId, auth.home) };
   }
+  if (result.state.chapterId !== null && result.state.crewSetup) {
+    result = { ...result, state: { ...result.state } };
+    delete result.state.crewSetup;
+  }
   // A hero sat down or got up in the lobby: her own finished campaigns can
   // unlock one the household has not finished (#283), so the lobby's locks
   // follow who is seated. A no-op unless an option declares `requires`.

@@ -10,7 +10,7 @@
  * portrait pane of Travel Mode, and never knows which (architecture §4.6).
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ReactElement } from "react";
 import { lobbyCampaign, type PartyMember } from "@kad/shared";
 import { useGameStore, useParty, useRunState } from "../store";
@@ -22,13 +22,15 @@ import { ClassToken } from "./ClassToken";
 import { Icon } from "./icons";
 import { savedHeading, savedHeroes, savedWhere } from "./save-copy";
 import { crewChoices } from "./crew-copy";
+import { CrewIdentity } from "./CrewIdentity";
 import { VoteTicks } from "./VoteTicks";
 import { useHelp } from "../help/content";
 import { joinUrl } from "../ui/share-invite";
 import "./shared.css";
 import "./LobbyContent.css";
-import { EntryScene, lobbySceneFor } from "./EntryScene";
+import { EntryScene } from "./EntryScene";
 import { RiftSightings } from "./RiftSight";
+import { lobbyReadiness } from "./lobby-readiness";
 
 /**
  * The QR is a convenience, never a requirement — the code is always readable
@@ -67,10 +69,10 @@ function useJoinQr(code: string | null): string | null {
   return dataUrl;
 }
 
-function MemberCard({ member }: { member: PartyMember }): ReactElement {
+function MemberCard({ member, arriving = false }: { member: PartyMember; arriving?: boolean }): ReactElement {
   const { character } = member;
   return (
-    <li className={`lobby-member${member.ready ? " lobby-member--ready" : ""}`}>
+    <li className={`lobby-member${member.ready ? " lobby-member--ready" : ""}${arriving ? " lobby-member--arriving" : ""}`}>
       {/* The lineup is the one place everyone looks while the room fills up, so
           it is their actual character, at their actual tier — a party of three
           fledglings and a returning Radiant should look like that. */}
@@ -110,13 +112,13 @@ function MemberCard({ member }: { member: PartyMember }): ReactElement {
           swaps which is visible: the cell is as wide as the wider word either
           way, so a tap on somebody's phone cannot reflow the card. */}
       <span className="lobby-member__status">
-        <span className={`kad-chip kad-chip--ok${member.ready ? "" : " lobby-member__chip--off"}`}>
+        <span aria-hidden={!member.ready || !member.connected} className={`kad-chip kad-chip--ok${member.ready && member.connected ? "" : " lobby-member__chip--off"}`}>
           <Icon name="ready" />
           <span>Ready</span>
         </span>
-        <span className={`kad-chip${member.ready ? " lobby-member__chip--off" : ""}`}>
+        <span aria-hidden={member.ready || !member.connected} className={`kad-chip${member.ready || !member.connected ? " lobby-member__chip--off" : ""}`}>
           <Icon name="waiting" />
-          <span>Getting ready</span>
+          <span>Tap Ready on your phone</span>
         </span>
       </span>
     </li>
@@ -135,7 +137,12 @@ export function LobbyContent(): ReactElement {
   const qr = useJoinQr(code);
   const help = useHelp();
 
-  const readyCount = party.filter((m) => m.ready).length;
+  const readiness = lobbyReadiness(state ?? { party, seats: undefined, removed: undefined });
+  const previousMembers = useRef<Set<string> | null>(null);
+  useEffect(() => {
+    previousMembers.current = new Set(readiness.members.map(member => member.playerId));
+  }, [party, state?.removed]);
+  const readyCount = readiness.ready;
   // A graph campaign (#195) has a stop, not a numbered chapter: the journey's
   // line when it has a journey, else the chapter line exactly as before. The
   // phones hold the choosing; the table just sees where the party stands.
@@ -147,7 +154,7 @@ export function LobbyContent(): ReactElement {
 
   return (
     <section className="lobby entry-scene-host" aria-labelledby="lobby-heading">
-      <EntryScene scene={lobbySceneFor(party)} />
+      <EntryScene scene={readiness.allReady ? "lobby-ready" : "lobby-waiting"} />
       <h2 className="lobby__heading" id="lobby-heading">
         <Icon name="party" />
         <span>Everyone in?</span>
@@ -155,8 +162,12 @@ export function LobbyContent(): ReactElement {
       {/* The household's table, when the family named it: where the game is
           kept, not the phones. */}
       {state?.location ? <p className="lobby__place kad-muted">{state.location}</p> : null}
-      {/* Whose adventure this is, once the household has more than one crew. */}
-      {state?.crews ? <p className="lobby__place kad-muted">{crewChoices(state).current}</p> : null}
+      {state ? <CrewIdentity name={crewChoices(state).current} compact /> : null}
+      {state?.crewSetup ? (
+        <p className="lobby__place" role="status">
+          Make new heroes on your phones. Your other crew&rsquo;s adventure is saved.
+        </p>
+      ) : null}
       {/* A chapter this household stopped partway (#259): said to the room, and
           taken up from any phone. */}
       {state?.saved ? (
@@ -244,61 +255,78 @@ export function LobbyContent(): ReactElement {
           in Travel Mode the whole lobby has to fit a phone.
           Once anyone has joined, the code and QR step down to a strip so a
           full three-person party is on screen without scrolling. */}
-      <div className={`lobby__join${party.length > 0 ? " lobby__join--compact" : ""}`}>
-        <div className="lobby__code-block">
-          <p className="lobby__code-label kad-label">{visiting ? "Room code (visitors welcome)" : "Room code"}</p>
-          <p className="lobby__code" aria-label={code === null ? "No room code yet" : `Room code ${code.split("").join(" ")}`}>
-            {code === null
-              ? "----"
-              : code.split("").map((letter, i) => (
-                  // Position is meaningful and letters repeat, so index is the key.
-                  <span className="lobby__code-letter" key={`${letter}-${String(i)}`} aria-hidden="true">
-                    {letter}
-                  </span>
-                ))}
-          </p>
+      <div className="lobby__gather">
+        <div className={`lobby__join${party.length > 0 ? " lobby__join--compact" : ""}`}>
+          <div className="lobby__code-block">
+            <p className="lobby__code-label kad-label">{visiting ? "Room code (visitors welcome)" : "Room code"}</p>
+            <p className="lobby__code" aria-label={code === null ? "No room code yet" : `Room code ${code.split("").join(" ")}`}>
+              {code === null
+                ? "----"
+                : code.split("").map((letter, i) => (
+                    // Position is meaningful and letters repeat, so index is the key.
+                    <span className="lobby__code-letter" key={`${letter}-${String(i)}`} aria-hidden="true">
+                      {letter}
+                    </span>
+                  ))}
+            </p>
+          </div>
+
+          <div className="lobby__qr-block">
+            {qr === null ? (
+              <div className="lobby__qr lobby__qr--empty">
+                <Icon name="qr" size="3em" />
+              </div>
+            ) : (
+              <img className="lobby__qr" src={qr} alt={`QR code to join room ${code ?? ""}`} />
+            )}
+          </div>
+          {/* How to get in, in one line with a picture (#256). Its words are content (help.json) and
+              never count the letters, because a visitor room's code is longer than a family room's. */}
+          {help !== null ? (
+            <p className="lobby__join-step">
+              <Icon name={help.join.icon} size="2em" />
+              <span>{help.join.text}</span>
+            </p>
+          ) : null}
         </div>
 
-        <div className="lobby__qr-block">
-          {qr === null ? (
-            <div className="lobby__qr lobby__qr--empty">
-              <Icon name="qr" size="3em" />
+        <div className="lobby__party">
+          <h3 className="lobby__party-heading">
+            <Icon name="party" />
+            <span>
+              The party ({readyCount}/{readiness.total} ready)
+            </span>
+          </h3>
+          {readiness.allReady && locked === null ? (
+            <p className="lobby__next-step" role="status">
+              <Icon name="ready" />
+              <span>{state?.saved ? "Everyone is ready! Tap Keep going on a phone." : "Everyone is ready! Start the adventure on a phone."}</span>
+            </p>
+          ) : null}
+          {readiness.members.length === 0 && readiness.making.length === 0 ? (
+            /* A div, not a p — Spinner renders a block, which is invalid inside
+               a <p> and warns at runtime. */
+            <div className="lobby__waiting kad-row" role="status">
+              <Spinner />
+              <span>Waiting for the first player…</span>
             </div>
           ) : (
-            <img className="lobby__qr" src={qr} alt={`QR code to join room ${code ?? ""}`} />
+            <ul className="lobby__lineup">
+              {readiness.members.map((member) => (
+                <MemberCard key={member.playerId} member={member} arriving={previousMembers.current !== null && !previousMembers.current.has(member.playerId)} />
+              ))}
+              {readiness.making.map(player => (
+                <li className="lobby-member lobby-member--making" key={player.id}>
+                  <span className="lobby-member__portrait" aria-hidden="true"><Icon name="palette" size="2em" /></span>
+                  <span className="lobby-member__text">
+                    <span className="lobby-member__name">{player.name}</span>
+                    <span className="kad-chip"><Icon name="waiting" /><span>Making a hero</span></span>
+                  </span>
+                </li>
+              ))}
+            </ul>
           )}
         </div>
-        {/* How to get in, in one line with a picture (#256). Its words are content (help.json) and
-            never count the letters, because a visitor room's code is longer than a family room's. */}
-        {help !== null ? (
-          <p className="lobby__join-step">
-            <Icon name={help.join.icon} size="2em" />
-            <span>{help.join.text}</span>
-          </p>
-        ) : null}
-      </div>
-
-      <div className="lobby__party">
-        <h3 className="lobby__party-heading">
-          <Icon name="party" />
-          <span>
-            The party ({readyCount}/{party.length} ready)
-          </span>
-        </h3>
-        {party.length === 0 ? (
-          /* A div, not a p — Spinner renders a block, which is invalid inside
-             a <p> and warns at runtime. */
-          <div className="lobby__waiting kad-row" role="status">
-            <Spinner />
-            <span>Waiting for the first player…</span>
-          </div>
-        ) : (
-          <ul className="lobby__lineup">
-            {party.map((member) => (
-              <MemberCard key={member.playerId} member={member} />
-            ))}
-          </ul>
-        )}
       </div>
     </section>
   );

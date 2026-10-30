@@ -425,25 +425,28 @@ test.describe("the shared screen is read, not driven", () => {
     await tv.keyboard.press("Enter");
     await expect(mode(/party mode/i)).toBeVisible(TAP);
 
-    // OK put the button it was on away; the next arrow picks up near where it stood, under the
-    // mode cards. Up onto them: arriving on Phone Mode only focuses it, and OK chooses it.
+    // The cards now share a landscape row. Reach Party from below, then leave the group and
+    // approach Phone from Back to joining on the right. Entering either card from outside
+    // only focuses it; it must not let a native radio arrow silently change the mode.
+    await arrowTo("ArrowUp", (f) => /party mode/i.test(f?.name ?? ""), "the Party Mode card");
+    await expect(mode(/party mode/i)).toHaveClass(/home__mode--on/, TAP);
+    await tv.keyboard.press("ArrowDown");
+    await arrowTo("ArrowRight", (f) => /back to joining/i.test(f?.name ?? ""), "Back to joining");
     await arrowTo("ArrowUp", (f) => /phone mode/i.test(f?.name ?? ""), "the Phone Mode card");
     await expect(mode(/party mode/i)).toHaveClass(/home__mode--on/, TAP);
     await tv.keyboard.press("Enter");
     await expect(mode(/phone mode/i)).toHaveClass(/home__mode--on/, TAP);
-    // Inside the group, selection follows focus, as the browser's radio arrows do: Up to Party
-    // Mode chooses it (review of #392).
-    await tv.keyboard.press("ArrowUp");
+    // Inside the landscape group, Left to Party follows focus and chooses it.
+    await tv.keyboard.press("ArrowLeft");
     expect((await focusedOn(tv))?.name ?? "").toMatch(/party mode/i);
     await expect(mode(/party mode/i)).toHaveClass(/home__mode--on/, TAP);
     // The card whose radio has focus is ringed (HomeScreen.css .home__mode:focus-within).
     expect(await mode(/party mode/i).evaluate((el) => getComputedStyle(el).outlineStyle)).not.toBe("none");
 
-    // Out of the group sideways, which chooses nothing, and up to Open the lobby here, and OK:
-    // the TV is the room's shared screen.
-    await tv.keyboard.press("ArrowRight");
+    // Leave the group downward, which chooses nothing, then move right to Open the lobby here.
+    await tv.keyboard.press("ArrowDown");
     await expect(mode(/party mode/i)).toHaveClass(/home__mode--on/);
-    await arrowTo("ArrowUp", (f) => /open the lobby here/i.test(f?.name ?? ""), "Open the lobby here");
+    await arrowTo("ArrowRight", (f) => /open the lobby here/i.test(f?.name ?? ""), "Open the lobby here");
     await tv.keyboard.press("Enter");
     await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/, TAP);
 
