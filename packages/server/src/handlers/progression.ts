@@ -22,6 +22,7 @@
  */
 
 import {
+  adventureKey,
   CharacterRuleError,
   classOf,
   commitCampaign,
@@ -97,7 +98,9 @@ import { busyMessage, claimFor, claimOf, create, parseClaim, rewrite, standing }
  * campaign — so the fallback keeps the old scope exactly there.
  */
 function campaignKey(state: RunState): string {
-  return state.campaignId ?? state.runId;
+  // A crew's adventure is its own (architecture §4.5, "Crews"); the first
+  // crew's is the bare campaign id, exactly as before.
+  return state.campaignId ? adventureKey(state.campaignId, state.crew) : state.runId;
 }
 
 /**
@@ -340,10 +343,14 @@ function newAttempt(
   /** The row this attempt replaces, if any: a completion it records is carried. */
   previous: CampaignProgressRecord | null,
   journey?: JourneyState,
+  /** The crew playing it (`RunState.crew`); absent for the household's first. */
+  crew?: string,
 ): CampaignProgressRecord {
   return {
     householdId,
     campaignId,
+    // Only on another crew's row, so the first crew's is exactly as before.
+    ...(crew ? { crew } : {}),
     status: "active",
     setbacks: 0,
     lastIndex: 0,
@@ -384,11 +391,13 @@ export function joinOrStartAttempt(
    * journey — or, unwritten, the fresh start every reader derives — stands.
    */
   journey?: JourneyState,
+  /** The crew playing it (`RunState.crew`); absent for the household's first. */
+  crew?: string,
 ): { attemptId: string | null; startedAttempt: StartedAttempt | null } {
   if (existing && existing.status === "active") {
     return { attemptId: existing.attemptId ?? null, startedAttempt: null };
   }
-  const attempt = newAttempt(householdId, campaignId, runId, now, (existing?.version ?? 0) + 1, existing, journey);
+  const attempt = newAttempt(householdId, campaignId, runId, now, (existing?.version ?? 0) + 1, existing, journey, crew);
   return {
     attemptId: attempt.attemptId ?? null,
     startedAttempt: { attempt, expectedVersion: existing ? (existing.version ?? 0) : null },
@@ -610,10 +619,12 @@ export async function lockedRefusal(
   householdId: string,
   deps: HandlerDeps,
   party: readonly PartyMember[] = [],
+  /** The crew starting it (`RunState.crew`): its own record is the table's. */
+  crew?: string,
 ): Promise<string | null> {
   if (!isGated(campaign)) return null;
   const [attempts, finished] = await Promise.all([
-    deps.repo.listCampaignProgress(householdId),
+    deps.repo.listCampaignProgress(householdId, crew),
     partyFinished(party, householdId, deps),
   ]);
   const lock = campaignLock(campaign, attempts, deps, finished);
@@ -643,7 +654,7 @@ export async function relockLobby(
   });
   if (gated.length === 0) return state;
   const [attempts, finished] = await Promise.all([
-    deps.repo.listCampaignProgress(householdId),
+    deps.repo.listCampaignProgress(householdId, state.crew),
     partyFinished(seatedParty(state), householdId, deps),
   ]);
   const relocked = options.map((option): CampaignView => {
@@ -686,8 +697,10 @@ export async function lobbyCampaigns(
   deps: HandlerDeps,
   /** The party already seated, whose own records can unlock it (#283). */
   party: readonly PartyMember[] = [],
+  /** Whose saves (`RunState.crew`): absent is the household's first crew. */
+  crew?: string,
 ): Promise<CampaignView[]> {
-  const attempts = await deps.repo.listCampaignProgress(householdId);
+  const attempts = await deps.repo.listCampaignProgress(householdId, crew);
   const featured = featuredId ? deps.content.campaign(featuredId) : null;
   // Beside the room's own campaign, never instead of it: a room opened for no
   // campaign offers none, and Begin plays what the phone names, as before.
@@ -844,7 +857,7 @@ export async function settleChapterCompletion(
    */
   const existing =
     campaignId && campaign && chapter
-      ? (pending?.attempt ?? (await deps.repo.getCampaignProgress(householdId, campaignId)))
+      ? (pending?.attempt ?? (await deps.repo.getCampaignProgress(householdId, campaignId, state.crew)))
       : null;
   // A graph campaign settles by visit, not by beat (#194). Branched here, after
   // the one read both share and before anything ordered-only runs, so an
@@ -892,7 +905,7 @@ export async function settleChapterCompletion(
       ? { ...existing, version, updatedAt: now }
       : // Only reachable for a run started before chapter start began creating
         // the attempt (isStale admits exactly that case).
-        newAttempt(householdId, campaignId, state.runId, now, version, existing);
+        newAttempt(householdId, campaignId, state.runId, now, version, existing, undefined, state.crew);
   if (outcome === "setback") attempt.setbacks += 1;
   keepStory(attempt, state, campaign, chapter, attempt.routeFlags);
   const roads = routesTaken(campaign, state.flags, attempt.routeFlags);
@@ -1474,7 +1487,7 @@ export async function prepareRiftWayDeeds(
     // Not caught: a read that fails must fail the action, not skip her deed.
     const row = await deps.repo.getCharacter(memberHome(member, householdId), member.character.id);
     if (!row) return fail("NOT_FOUND", `no character ${member.character.id}`);
-    const claim = claimFor(campaignId, householdId, row);
+    const claim = claimFor(adventureKey(campaignId, state.crew), householdId, row);
     if ((await standing(row, claim, deps)) === "busy") return fail("HERO_BUSY", busyMessage(row));
     const earned = earnStoredDeed(startCampaign(row, claim), rules, "class_story");
     if (earned.character === row || classOf(earned.character) !== member.character.class) {

@@ -41,6 +41,7 @@ function room(session: Partial<ClientSession>, run: Partial<RunState> = RUN) {
   const closeRoom = vi.fn(async () => true);
   const quietRoom = vi.fn(async () => true);
   const stopForToday = vi.fn(async () => true);
+  const switchCrew = vi.fn(async () => true);
   act(() => {
     useGameStore.setState({
       session: { runId: "r_1", roomCode: "ABCD", playerId: "p_1", mode: "travel", sessionToken: "t", ...session },
@@ -51,9 +52,10 @@ function room(session: Partial<ClientSession>, run: Partial<RunState> = RUN) {
       closeRoom,
       quietRoom,
       stopForToday,
+      switchCrew,
     });
   });
-  return { removePlayer, handKeeper, lockRoom, closeRoom, quietRoom, stopForToday };
+  return { removePlayer, handKeeper, lockRoom, closeRoom, quietRoom, stopForToday, switchCrew };
 }
 
 afterEach(() => {
@@ -174,6 +176,47 @@ describe("host controls", () => {
     room({ host: true }, visiting);
     render(<HostControls placement="inline" />);
     expect(screen.getByText(/visiting/)).toBeTruthy();
+  });
+});
+
+describe("crews: new players at the same TV", () => {
+  it("starts a new crew from the lobby in one tap, and says nothing of crews until there is one", () => {
+    const { switchCrew } = room({ host: true }, { ...RUN, phase: "lobby" });
+    render(<HostControls placement="inline" />);
+    expect(screen.queryByText(/Playing as/)).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "New players? Start a new crew" }));
+    expect(switchCrew).toHaveBeenCalledWith("new");
+  });
+
+  it("names the crew playing and switches to any other, the first crew included", () => {
+    const crews: Partial<RunState> = {
+      ...RUN,
+      phase: "lobby",
+      crew: "cw_otter",
+      crews: [{ id: "cw_otter", name: "The Otter Crew" }, { id: "cw_comet", name: "The Comet Crew" }],
+    };
+    const first = room({ host: true }, crews);
+    render(<HostControls placement="inline" />);
+    expect(screen.getByText("The Otter Crew")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Play as The Otter Crew" })).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Play as The first crew" }));
+    expect(first.switchCrew).toHaveBeenCalledWith(null);
+
+    cleanup();
+    const comet = room({ host: true }, crews);
+    render(<HostControls placement="inline" />);
+    fireEvent.click(screen.getByRole("button", { name: "Play as The Comet Crew" }));
+    expect(comet.switchCrew).toHaveBeenCalledWith("cw_comet");
+  });
+
+  it("is not offered once a chapter is under way, or before anybody has joined", () => {
+    room({ host: true }, { ...RUN, phase: "scene", campaignId: "gemfall", chapterId: "gemfall-01" });
+    render(<HostControls placement="inline" />);
+    expect(screen.queryByRole("button", { name: "New players? Start a new crew" })).toBeNull();
+    cleanup();
+    room({ host: true }, { phase: "lobby", seats: {}, party: [] });
+    render(<HostControls placement="inline" />);
+    expect(screen.queryByRole("button", { name: "New players? Start a new crew" })).toBeNull();
   });
 });
 

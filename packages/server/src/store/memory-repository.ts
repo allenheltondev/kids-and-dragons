@@ -36,6 +36,7 @@ import type {
 } from "@kad/shared";
 import type {
   CampaignProgressRecord,
+  CrewRecord,
   ChapterProgressRecord,
   CharacterWrite,
   CommitInput,
@@ -59,6 +60,8 @@ import { collectMove, fieldGuideItem, planMove } from "./profile-move.ts";
 import {
   ACCT,
   CAMPAIGN_SK,
+  CREW_SK,
+  CREWSAVE_PREFIX,
   CHAPTER_SK,
   CHAR_SK,
   DEVICE_SK,
@@ -804,15 +807,26 @@ export class MemoryRepository implements GameRepository {
   async getCampaignProgress(
     householdId: string,
     campaignId: string,
+    crew?: string,
   ): Promise<CampaignProgressRecord | null> {
-    const item = this.get(HH(householdId), CAMPAIGN_SK(campaignId));
+    const item = this.get(HH(householdId), CAMPAIGN_SK(campaignId, crew));
     return (item?.data as CampaignProgressRecord | undefined) ?? null;
   }
 
-  async listCampaignProgress(householdId: string): Promise<CampaignProgressRecord[]> {
-    return this.query(HH(householdId), PREFIX.campaign).map(
+  async listCampaignProgress(householdId: string, crew?: string): Promise<CampaignProgressRecord[]> {
+    return this.query(HH(householdId), crew ? CREWSAVE_PREFIX(crew) : PREFIX.campaign).map(
       (i) => i.data as CampaignProgressRecord,
     );
+  }
+
+  async listCrews(householdId: string): Promise<CrewRecord[]> {
+    return this.query(HH(householdId), PREFIX.crew)
+      .map((i) => i.data as CrewRecord)
+      .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+  }
+
+  async putCrew(crew: CrewRecord): Promise<void> {
+    this.put({ PK: HH(crew.householdId), SK: CREW_SK(crew.id), entity: "crew", data: crew });
   }
 
   async getFieldGuide(householdId: string): Promise<FieldGuideRecord> {
@@ -854,7 +868,7 @@ export class MemoryRepository implements GameRepository {
   async putCampaignProgress(progress: CampaignProgressRecord): Promise<void> {
     this.put({
       PK: HH(progress.householdId),
-      SK: CAMPAIGN_SK(progress.campaignId),
+      SK: CAMPAIGN_SK(progress.campaignId, progress.crew),
       entity: "campaign-progress",
       data: progress,
     });
@@ -892,7 +906,7 @@ export class MemoryRepository implements GameRepository {
       const stored =
         (this.get(
           HH(campaignProgress.householdId),
-          CAMPAIGN_SK(campaignProgress.campaignId),
+          CAMPAIGN_SK(campaignProgress.campaignId, campaignProgress.crew),
         )?.data as CampaignProgressRecord | undefined) ?? null;
       const matches =
         campaignProgressExpectedVersion === null
@@ -959,7 +973,7 @@ export class MemoryRepository implements GameRepository {
     if (campaignProgress) {
       this.put({
         PK: HH(campaignProgress.householdId),
-        SK: CAMPAIGN_SK(campaignProgress.campaignId),
+        SK: CAMPAIGN_SK(campaignProgress.campaignId, campaignProgress.crew),
         entity: "campaign-progress",
         data: campaignProgress,
       });

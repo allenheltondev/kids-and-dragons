@@ -100,6 +100,7 @@ Single DynamoDB table, `kad`. Composite key `PK` / `SK`, one GSI (`GSI1PK` / `GS
 | Character | `HH#<hhId>` | `CHAR#<charId>` | Owned by a playerId, and stored under that kid's **home** household wherever she plays (§4.5, "Who owns what"), a visitor's included (#249, "Visitors"). Persistent across campaigns. See §3.1. |
 | Campaign run | `HH#<hhId>` | `RUN#<runId>` | One playthrough of one campaign. |
 | Campaign attempt | `HH#<hhId>` | `CAMPAIGN#<campaignId>` | The household's attempt at one campaign across evenings: status, setbacks, route flags, coins, a graph campaign's journey (`CampaignProgressRecord`). |
+| Crew | `HH#<hhId>` | `CREW#<crewId>` | A second group of players at the household, with saves of its own: id, a name from a fixed list, when it was made. Its attempts are `CREWSAVE#<crewId>#<campaignId>`, beside the first crew's `CAMPAIGN#` rows. See §4.5, "Crews". |
 | Field Guide | `HH#<hhId>` | `FIELDGUIDE` | The household's permanent record of discoveries: `entries` keyed by canon id → `{ firstFoundBy, foundAt, runId? }`. One item, written with per-key `if_not_exists` so the first finder always wins and concurrent writers merge. Versioned (`FIELD_GUIDE_VERSION`). |
 | Chapter progress | `RUN#<runId>` | `CHAPTER#<n>` | Status, branch taken, XP earned. |
 | Game state | `RUN#<runId>` | `STATE` | Current authoritative snapshot. Single item. |
@@ -1638,6 +1639,47 @@ leaves nobody signed in afterwards. A TV's room must be settled by a phone first
 - **No trades across households** in v1. The engine refuses an offer between
   heroes from different households (`sameHome`), and the give list leaves them
   out. Trades within a household, visitors' included, work as before.
+
+#### Crews: new players at the same household
+
+A household holds one save per campaign (`HH#…/CAMPAIGN#<campaignId>`), which
+is right for one family at one TV and wrong the evening a grown-up sits down
+there with different kids: the lobby would offer the family's chapter 4, and
+starting fresh would mean a new household that the grown-up's own phone, bound
+to the family, could not join. A **crew** is another set of saves inside the
+same household (`handlers/crew.ts`). The kids, their heroes, the Field Guide
+and every device stay the household's, so anyone may sit down with any crew.
+
+- **The first crew has no row and no id.** It is the household's saves exactly
+  as they were: `RunState.crew` absent, progress at `CAMPAIGN#<campaignId>`,
+  claims the bare campaign id. No run, save or claim from before crews moves,
+  and Gemfall's pinned digests do not.
+- **Every other crew** is `HH#…/CREW#<id>` (`CrewRecord`: id, a name from a
+  fixed list so a TV remote never types, created). Its attempts live at
+  `CREWSAVE#<id>#<campaignId>` and carry `crew`; that prefix is not a prefix
+  of `CREW#` or `CAMPAIGN#`, so `listCampaignProgress(hh)` still lists only the
+  first crew's rows and every older reader is unchanged. A household's purge
+  takes the whole partition, crews included.
+- **The run carries it.** `RunState.crew` decides every save read and write:
+  the lobby's campaigns, locks and saved game (`offerCampaigns`), a chapter
+  start's road and attempt (`roadTo`, `joinOrStartAttempt`), settlement, a
+  journey's exits, and a stop's "one save per campaign", which is now one per
+  campaign and crew. It is the game's, not the room's, so a resumed save keeps
+  its own, and `savedGame` offers only the lobby's crew's.
+- **A hero's claim names the crew** (`adventureKey`): `<campaignId>~<crew>`,
+  before any `@<table>`, so a hero in the family's Gemfall is busy, not free,
+  in another crew's Gemfall, and `claimIsLive` reads the right attempt.
+- **Choosing is a host control** (`POST /api/room/:code/crew`, `{ crew: id |
+  null | "new" }`): low stakes, since it only changes which saves the lobby
+  offers, and "new" only adds an empty crew. Only between games, only once a
+  phone has settled a TV's room (before that there is no household to have
+  crews), and at most `MAX_CREWS`. The lobby is rebuilt in the same commit, so
+  votes on the old list go. `RunState.crews` lists the others for the Room
+  panel, and is absent while the household has only its first.
+
+A new room always opens on the first crew; a returning crew is one tap in the
+Room panel. Remembering the last crew per TV was left out on purpose: the
+lobby's "keep going" already says whose game is on screen.
 
 #### The TV, which is nobody
 

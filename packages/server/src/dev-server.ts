@@ -50,6 +50,7 @@ import { removePlayer } from "./handlers/remove.ts";
 import { handKeeper } from "./handlers/keeper.ts";
 import { MemoryTimingStore } from "./store/timing-store.ts";
 import { closeRoom, lockRoom, setQuiet, type HostPrincipal } from "./handlers/host.ts";
+import { CREW_BODY, parseCrewChoice, switchCrew } from "./handlers/crew.ts";
 import { localTimingReport, parseTimingControl, setTiming, TIMING_BODY, type TimingControl } from "./handlers/timing.ts";
 import { releaseSavedHero, resumeGame, stopForToday } from "./handlers/save.ts";
 import { listHeroes } from "./handlers/heroes.ts";
@@ -463,6 +464,11 @@ async function main(): Promise<void> {
   app.post("/api/room/:code/quiet", hostControl(
     (body) => (typeof body.quiet === "boolean" ? null : "expected { quiet: true | false }"),
     (code, principal, body, deps) => setQuiet({ code, principal, quiet: body.quiet as boolean }, deps),
+  ));
+  // Which of the household's crews this lobby plays, or a new one (handlers/crew.ts).
+  app.post("/api/room/:code/crew", hostControl(
+    (body) => (parseCrewChoice(body) === undefined ? CREW_BODY : null),
+    (code, principal, body, deps) => switchCrew({ code, principal, crew: parseCrewChoice(body) as string | null }, deps),
   ));
   app.post("/api/room/:code/timing", hostControl(
     (body) => (parseTimingControl(body) ? null : TIMING_BODY),

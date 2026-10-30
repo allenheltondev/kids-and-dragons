@@ -13,6 +13,7 @@
 import { checkLocationName, tableFull, VISITOR_CODE_EXTRA } from "@kad/shared";
 import type {
   CreateRoomResponse,
+  CrewView,
   JoinRoomResponse,
   RoomMode,
   RoomSeat,
@@ -195,23 +196,30 @@ export async function createRoom(
  * `lobbyCampaign` skips a locked campaign for the same reason. With every
  * option locked it is the first, and its reason is what the screens show.
  */
-async function offerCampaigns(
+export async function offerCampaigns(
   state: RunState,
   householdId: string,
   featuredId: string | null,
   deps: HandlerDeps,
 ): Promise<void> {
-  const options = await lobbyCampaigns(householdId, featuredId, deps, seatedParty(state));
+  // Everything below is the crew's own (`RunState.crew`, absent for the
+  // household's first): its campaigns, its saved game, what it has under way.
+  const crew = state.crew;
+  const options = await lobbyCampaigns(householdId, featuredId, deps, seatedParty(state), crew);
   state.campaignOptions = options;
   state.campaignVotes = {};
-  // A chapter this household stopped partway, if it left one (#259): the
+  // A chapter this crew stopped partway, if it left one (#259): the
   // lobby offers to keep going from it.
-  const saved = await savedGameView(householdId, deps);
+  const saved = await savedGameView(householdId, deps, crew);
   if (saved) state.saved = saved;
   else delete state.saved;
-  // A campaign the household has under way is what the picker rests on, the most
+  // The household's other crews, for the host's Room panel to switch to.
+  const crews = await listCrewViews(householdId, deps);
+  if (crews.length > 0) state.crews = crews;
+  else delete state.crews;
+  // A campaign the crew has under way is what the picker rests on, the most
   // recently played first; with none, the first startable one.
-  const attempts = await deps.repo.listCampaignProgress(householdId);
+  const attempts = await deps.repo.listCampaignProgress(householdId, crew);
   const underWay = attempts
     .filter((a) => a.status === "active")
     .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
@@ -219,6 +227,19 @@ async function offerCampaigns(
     .find((option) => option !== undefined);
   const shown = underWay ?? options.find((option) => option.locked === undefined) ?? options[0];
   if (shown) state.campaign = shown;
+}
+
+/**
+ * The household's crews beyond its first, or none when the store cannot say:
+ * a failed lookup costs the Room panel its list, never the room.
+ */
+async function listCrewViews(householdId: string, deps: HandlerDeps): Promise<CrewView[]> {
+  try {
+    return (await deps.repo.listCrews(householdId)).map((crew) => ({ id: crew.id, name: crew.name }));
+  } catch (err) {
+    console.error(`crews: could not list ${householdId}'s crews:`, err);
+    return [];
+  }
 }
 
 async function reserveCode(
