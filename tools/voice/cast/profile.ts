@@ -42,6 +42,8 @@ export interface Profile {
   facts: { basis?: string; scale?: string; heightCm?: number; stance?: string; look?: string };
   canon: null | { id: string; home?: string; role?: string; people?: string; fields: Record<string, string> };
   voiceNotes: { chapter: string; campaign: string; key: string; text: string; pinned: boolean }[];
+  /** Which people they are one of ("yeti", "harvest_sprite", "unicorn"), when canon or their figure says: the group casting can share a voice across. */
+  people: string | null;
   /** Where their people live on the map, or null when canon has no place for them. */
   homeland: Homeland | null;
   /** Accents that might suit where they live, most-suggested first, each with the reasons. */
@@ -205,6 +207,8 @@ function profileOf(
         ? [`npc.${basis}`, `character.${basis}`].find((id) => sources.places.homes.has(id))
         : undefined;
   const homeland = homelandOf(sources.places, people, typeof person?.home === "string" ? person.home : undefined);
+  // Canon's word for them, else the kind they are drawn as ("faun", "yeti"): the same key whether or not the map knows the people.
+  const peopleKey = (typeof person?.people === "string" ? person.people.replace(/^(npc|character)\./, "") : basis) ?? null;
   const ideas = homeland ? accentIdeas(homeland.places.map((place) => place.biome), (biome) => sources.places.biomes.get(biome)?.title ?? biome) : [];
   return {
     image,
@@ -225,6 +229,7 @@ function profileOf(
           fields: Object.fromEntries(INDIVIDUAL_FIELDS.map((field) => [field, typeof person[field] === "string" ? (person[field] as string).replace(/\s+/g, " ").trim() : ""])),
         }
       : null,
+    people: peopleKey,
     homeland,
     accentIdeas: ideas.map((idea) => ({ label: idea.accent.label, note: idea.accent.note, because: idea.because })),
     voiceNotes: (entry.voiceNotes ?? []).flatMap(({ chapter: chapterId, key }) => {

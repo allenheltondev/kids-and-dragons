@@ -549,7 +549,7 @@ ${MODE_CSS}</style>
       listenBox(id, entry));
   }
 
-  const linesLabel = (entry) => { const n = entry.lineCount || 0; return n + " line" + (n === 1 ? "" : "s") + " to speak"; };
+  const linesLabel = (entry) => { const n = entry.lineCount || 0; return n + " line" + (n === 1 ? "" : "s") + " to speak" + (entry.guessedLines ? ", " + entry.guessedLines + " guessed" : ""); };
 
   // The player under the picture: the voice, one line at a time, and a big button to hear it.
   function listenBox(id, entry) {
@@ -640,7 +640,7 @@ ${MODE_CSS}</style>
       profile.canon && profile.canon.role ? ["Role", profile.canon.role] : null,
       profile.facts.look ? ["Looks like", profile.facts.look] : null,
       entry.aliases.length ? ["Also called", entry.aliases.join(", ")] : null,
-      ["Speaks", entry.speaks ? ((entry.lineCount || 0) > 0 ? "yes, " + entry.lineCount + " line" + (entry.lineCount === 1 ? "" : "s") + " in the game" + (entry.lines.length ? ", " + entry.lines.length + " to audition" : "") : "yes, but no line of theirs found yet") : "no: they don't talk"],
+      ["Speaks", entry.speaks ? ((entry.lineCount || 0) > 0 ? "yes, " + entry.lineCount + " line" + (entry.lineCount === 1 ? "" : "s") + " in the game" + (entry.guessedLines ? " (" + entry.guessedLines + " guessed, from being the only one in the scene)" : "") + (entry.lines.length ? ", " + entry.lines.length + " to audition" : "") : "yes, but no line of theirs found yet") : "no: they don't talk"],
       ["Chapters", el("div", { class: "chips" }, entry.chapters.length ? entry.chapters.map((c) => el("span", { class: "chip" }, c)) : el("span", { class: "hint" }, "every one"))],
     ].filter(Boolean);
     return el("section", { class: "panel" }, el("h2", {}, "About them"), el("dl", { class: "facts" }, facts.flatMap(([k, v]) => [el("dt", {}, k), el("dd", {}, v)])));
@@ -662,6 +662,30 @@ ${MODE_CSS}</style>
       el("div", { class: "hint" }, "Edits are written to the file shown, and the sheet is rebuilt so the voice model hears the new words. Your decisions are kept."));
   }
 
+  // One voice for the rest of their people, where it puts nobody on a voice they share a chapter with. Asks first, with the plan.
+  async function sharePeople(id) {
+    const mode = provider();
+    try {
+      const plan = await call("/api/cast/people", { id, provider: mode });
+      const names = (ids) => ids.map((other) => data.speakers[other].name).join(", ");
+      if (!plan.applied.length) {
+        toast(plan.already.length && !plan.skipped.length ? "They all have it already." : "None of the rest of their people can have it: " + plan.skipped.map((item) => item.why).join("; "));
+        return;
+      }
+      const kind = (plan.people || "their people").replace(/_/g, " ");
+      const sentence = "Give " + KadMode.voiceName(data.speakers[id], mode) + " to " + plan.applied.length + " more of the " + kind + ": " + names(plan.applied) + "."
+        + (plan.skipped.length ? "\\n\\nLeft as they are (" + plan.skipped.length + "):\\n" + plan.skipped.map((item) => "• " + item.why).join("\\n") : "")
+        + "\\n\\nThey stay unapproved, so each is still yours to hear and judge.";
+      if (!confirm(sentence)) return;
+      const done = await call("/api/cast/people", { id, provider: mode, apply: true });
+      for (const [other, changed] of Object.entries(done.entries)) data.speakers[other] = changed;
+      clashes = done.clashes;
+      toast("Gave it to " + done.applied.length + " more of the " + kind + ".");
+      await refreshState();
+      draw();
+    } catch (error) { toast(error.message); }
+  }
+
   function modelPanel(id, entry) {
     const sheetOwned = entry.kind === "narrator" || entry.kind === "party";
     const mode = provider();
@@ -678,6 +702,11 @@ ${MODE_CSS}</style>
       voice.addEventListener("change", () => pick(voice.value));
     }
     const others = mine ? Object.entries(data.speakers).filter(([other, e]) => other !== id && KadMode.voiceId(e, mode) === mine).length : 0;
+    // The rest of their people: the others who are one of the same kind (a yeti, a griffin), the narrator and party not among them.
+    const kindKey = data.profiles[id] && data.profiles[id].people;
+    const kin = kindKey ? Object.keys(data.speakers).filter((other) => other !== id && data.profiles[other] && data.profiles[other].people === kindKey && data.speakers[other].kind !== "narrator" && data.speakers[other].kind !== "party").length : 0;
+    const share = kin ? el("button", { type: "button", disabled: !mine, title: mine ? "Shows who would get it first, and asks" : "Pick a voice for them first" }, "Use this voice for the other " + kin + " " + kindKey.replace(/_/g, " ") + (kin === 1 ? "" : "s")) : null;
+    if (share) share.addEventListener("click", () => sharePeople(id));
     const accent = el("input", { value: entry.accent || "", placeholder: data.accent, "aria-label": "Accent", list: "accent-list" });
     accent.addEventListener("change", async () => { await save(id, { accent: accent.value }); draw(); loadTold(); });
     const suggestions = el("datalist", { id: "accent-list" }, data.accents.map((a) => el("option", { value: a.label, label: a.group + " · " + a.note })));
@@ -696,6 +725,7 @@ ${MODE_CSS}</style>
     return el("section", { class: "panel" },
       el("h2", {}, "Voice and model"),
       el("div", { class: "row" }, voice, el("span", { class: "hint" }, !mine ? "no " + KadMode.NAMES[mode] + " voice yet" : others ? "also " + others + " other" + (others === 1 ? "" : "s") + " in other chapters" : "only them")),
+      share ? el("div", { class: "row" }, share, el("span", { class: "hint" }, "where it puts nobody on a voice they share a chapter with")) : null,
       mismatch ? el("div", { class: "clash" }, "This voice reads as a " + (info.gender === "f" ? "woman's" : "man's") + ", and they're marked " + entry.gender + ".") : null,
       (clashes[id] || []).map((clash) => el("div", { class: "clash" }, "Same voice as " + clash.with.map((other) => (data.speakers[other] || { name: other }).name).join(", ") + " in " + clash.chapter)),
       el("label", { class: "inline grow" }, "Accent", accent, suggestions),

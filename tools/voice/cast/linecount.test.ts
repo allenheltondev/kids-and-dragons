@@ -10,7 +10,7 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { castOrder, castPageData } from "./routes.ts";
 import { reviewJson } from "./review.ts";
-import { buildSheet, type CastSheet, type ChapterLike, type NarrationLine } from "./sheet.ts";
+import { attributeQuotes, buildSheet, looksSpoken, type CastSheet, type ChapterLike, type LooseQuote, type NarrationLine } from "./sheet.ts";
 
 const chapters: ChapterLike[] = [
   { id: "c1", voiceGuide: { npcVoices: { pib: "a bramble sprite; he chirps", wisp: "a shy ghost; she whispers", mute: "a goat; only bleats" } } },
@@ -86,5 +86,66 @@ describe("counting each character's spoken lines", () => {
   it("puts the count in the review export", () => {
     const review = reviewJson(sheetOf());
     expect(Object.fromEntries(review.speakers.map((e) => [e.id, e.lines]))).toMatchObject({ pib: 7, wisp: 2, mute: 0 });
+  });
+});
+
+describe("guessing at quotes nobody is tagged for", () => {
+  const loose = (words: string, before = "", after = ""): LooseQuote => ({ words, before, after });
+
+  it("reports the quotes it could not give to anyone, with the words either side", () => {
+    const sink: LooseQuote[] = [];
+    const found = attributeQuotes('The path ends at a wall of thorns. "Mind the brambles." Then it hums.', [{ id: "pib", names: ["Pib"] }], sink);
+    expect(found).toEqual([]);
+    expect(sink).toEqual([{ words: "Mind the brambles.", before: "The path ends at a wall of thorns. ", after: " Then it hums." }]);
+  });
+
+  it("takes a sentence someone said, and not a fragment, a quoted phrase, a sign or the party", () => {
+    expect(looksSpoken(loose("Going, then.", "At dawn, Mortar watches you pass. "))).toBe(true);
+    expect(looksSpoken(loose("for keeping the argument going."))).toBe(false); // a fragment
+    expect(looksSpoken(loose("Mine,"))).toBe(false); // one word
+    expect(looksSpoken(loose("slightly used rumors.", "A boggart in a coat of other coats sells "))).toBe(false); // sold, not said
+    expect(looksSpoken(loose("NO MESSING.", "A sign on the gate reads "))).toBe(false);
+    expect(looksSpoken(loose("Now you're Sunward,", "You sing the verse back to Hob. "))).toBe(false);
+    expect(looksSpoken(loose("We will see.", "", ", you say, and mean it."))).toBe(false);
+    // The same words a sentence earlier are not a sign: the cue must be in the quote's own sentence.
+    expect(looksSpoken(loose("Then we are home.", "The grandmother reads the founder's plaque twice. "))).toBe(true);
+  });
+
+  const hedge: ChapterLike[] = [
+    {
+      id: "h1",
+      voiceGuide: { npcVoices: { pib: "a bramble sprite; he chirps", wisp: "a shy ghost; she whispers" } },
+      scenes: {
+        // One speaker here: Pib. Two there: nobody can say who.
+        alone: { cast: [{ name: "Pib" }] },
+        crowd: { cast: [{ name: "Pib" }, { name: "Wisp" }] },
+      },
+    },
+  ];
+  const guessing: NarrationLine[] = [
+    { chapter: "h1", address: "h1/alone/narration", text: 'Pib says, "Welcome to the hedge." The hedge rustles. "Mind the brambles on your way in."' },
+    { chapter: "h1", address: "h1/alone/narration", text: 'A hush falls. "The hedge remembers everyone who passes."' },
+    { chapter: "h1", address: "h1/alone/narration", text: 'A sign nailed to the gate reads "KEEP OUT."' },
+    { chapter: "h1", address: "h1/crowd/narration", text: 'A hush falls. "Somebody here is humming."' },
+  ];
+  const sheet = buildSheet({ chapters: hedge, individuals: [], narration: guessing }, null);
+
+  it("counts them for the one who is alone in the scene, apart from the tagged lines", () => {
+    const pib = sheet.speakers.pib!;
+    // One tagged line (his two back-to-back quotes are one line, as they are said), and one guess; the sign is neither.
+    expect(pib.lineCount).toBe(2);
+    expect(pib.guessedLines).toBe(1);
+    // Only the tagged line is offered to audition on: a guess is never a sample of their voice.
+    expect(pib.lines.map((line) => line.text)).toEqual(["Welcome to the hedge. Mind the brambles on your way in."]);
+  });
+
+  it("leaves a crowded scene's quotes uncounted, and a sign alone", () => {
+    expect(sheet.speakers.wisp!.lineCount).toBe(0);
+    expect(sheet.speakers.wisp!.guessedLines).toBeUndefined();
+  });
+
+  it("does not guess when someone else is named right beside the quote", () => {
+    const withWisp = buildSheet({ chapters: hedge, individuals: [], narration: [{ chapter: "h1", address: "h1/alone/narration", text: 'Wisp drifts past the gate. "The hedge remembers everyone who passes."' }] }, null);
+    expect(withWisp.speakers.pib!.lineCount).toBe(0);
   });
 });

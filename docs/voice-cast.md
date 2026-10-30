@@ -38,7 +38,8 @@ One entry per speaker, keyed by id:
 | `accent` | set only to override the sheet-wide `accent` (General American) |
 | `direction` | a person's direction for the voice model, told after who they are ("a touch quicker than usual") |
 | `lines` | up to three real quotes of theirs from the narration, each with its address: the lines to audition a voice on, never a count |
-| `lineCount` | how many lines the game gives them to speak: every quote the narration's speech tags give them, in every chapter, counted once per place it is said. The narrator's is every narration line, and the party's the "you say" lines. Refreshed on every rebuild. The pages sort by it |
+| `lineCount` | how many lines the game gives them to speak: every quote the narration's speech tags give them, in every chapter, counted once per place it is said, plus the guesses below. The narrator's is every narration line, and the party's the "you say" lines. Refreshed on every rebuild. The pages sort by it |
+| `guessedLines` | how many of `lineCount` are a guess: a quote nobody is tagged for, in a scene where this is the only character who could be speaking. Absent when none. Never used to audition on |
 | `speaks` | false for those who only bleat or sigh |
 | `status` | `provisional` (assigned by the builder) or `approved` (chosen by a person) |
 | `history` | every approval and rejection, oldest first: the voice, the listener's notes, the model it was heard on, and when |
@@ -152,6 +153,13 @@ Each profile has:
   button and no second step. (The voice notes in canon above stay two-step on purpose: they
   write to a canon file.) The line you were on is marked as not yet heard in the new words, ready
   for one click;
+  - **Use this voice for the other N of their people** (the others who are one of the same kind, a yeti or a
+    griffin, from canon or the kind they are drawn as). It asks first, naming who would get the voice and who
+    would be left and why, and only then does it. It keeps to the sheet's rule: nobody is put on a voice
+    they would share a chapter with someone on, or on the narrator's, and nobody with a voice you approved is
+    moved. Everyone it gives the voice to is still unapproved, so each is yours to hear. On the real cast it
+    gives a voice to a third or so of a people (4 of 14 yetis, 9 of 15 griffins), because members of a people
+    so often share chapters;
   - **what the model is told** besides the words: the exact Gemini 3.8 style, or the Gemini 3.1
     prompt, for the model picked in the header.
 - **Hear them:** every audition line in full, each with its own **Play**, and where it comes
@@ -320,11 +328,15 @@ source of truth.
 
 ## What's still rough
 
-- **Lines are counted from the narration's speech tags**, so a quote nobody is tagged for is
-  counted for nobody. On the first count, 1,211 lines were given to someone out of about 2,600
-  quoted passages, so a character who talks a lot but is rarely tagged ("the clerk says") is
-  counted low: 63 characters have a count of none, 52 of whom do speak. They audition on the stand-in until a chapter gives
-  them words. Treat the order as a good guide to who speaks most, not an exact tally.
+- **Lines are counted from speech tags, plus a guess.** A quote is given to whoever it is tagged for ("…," says
+  Pib). Most quotes are not tagged for anyone: of about 2,600 quoted passages, 1,205 were. So where a scene has
+  only one character who could be speaking, the quotes nobody is tagged for are counted for them as a **guess**,
+  shown apart ("52 lines, 4 guessed"). A guess skips what is not a sentence someone said (a fragment, a sign,
+  something sold, the party's own "you say") and any quote with someone else named beside it. On the real cast
+  that adds about 250 lines, 28 of them for the Skywardens alone, and on a read of 26 of them (before the last guard was added) about
+  four in five were right. A crowded scene's untagged quotes are still counted for nobody, so someone who talks a lot among
+  others is counted low, and 58 characters (47 of whom speak) still have none. They audition on the stand-in until
+  a chapter gives them words. Treat the order as a good guide to who speaks most, not an exact tally.
 - **The voice genders and traits** are from Google's one-word descriptions and best knowledge,
   not a listening pass. The page is the listening pass.
 - **ElevenLabs is on the sheet but not in production** (see above). The bake-off's own cast

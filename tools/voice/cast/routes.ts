@@ -22,6 +22,7 @@ import type { Cell } from "../bakeoff/page.ts";
 import { GEMINI_VOICES, engineOf, familyOf, plan, type CastFile, type Fetch, type Keys, type ModelInfo } from "../bakeoff/providers.ts";
 import type { Sample } from "../bakeoff/samples.ts";
 import { ACCENTS } from "./accents.ts";
+import { peersOf, shareVoice } from "./people.ts";
 import { CanonEditError, editIndividual, editVoiceNote } from "./canon-edit.ts";
 import { loadProfiles } from "./profile.ts";
 import { reviewJson, reviewMarkdown } from "./review.ts";
@@ -420,6 +421,27 @@ export function createCastRoutes(options: CastRouteOptions, budget: Budget) {
         writeSheet(options.sheetPath, sheet);
         const clashes = Object.fromEntries(Object.keys(sheet.speakers).map((other) => [other, clashesOf(sheet, other, provider)]));
         return { status: 200, body: { entry, clashes } };
+      }
+      case "/api/cast/people": {
+        // One character's voice for the rest of their people, wherever it puts nobody on a voice they share a chapter with.
+        // Without `apply` it only says what would happen, so the page can ask first.
+        const sheet = readSheet(options.sheetPath);
+        const id = String(body.id);
+        if (!sheet.speakers[id]) return { status: 400, body: { error: `nobody called ${id} in the sheet` } };
+        const provider = providerOf(body.provider);
+        const keys = Object.fromEntries(Object.entries(loadProfiles(rootOf(options), sheet)).map(([other, profile]) => [other, profile.people]));
+        const apply = body.apply === true;
+        // A plan is worked out on a copy, so asking changes nothing.
+        const target = apply ? sheet : (JSON.parse(JSON.stringify(sheet)) as CastSheet);
+        let outcome;
+        try {
+          outcome = shareVoice(target, id, peersOf(target, keys, id), provider);
+        } catch (error) {
+          return { status: 400, body: { error: (error as Error).message } };
+        }
+        if (apply) writeSheet(options.sheetPath, sheet);
+        const clashes = Object.fromEntries(Object.keys(target.speakers).map((other) => [other, clashesOf(target, other, provider)]));
+        return { status: 200, body: { ...outcome, people: keys[id], apply, clashes, ...(apply ? { entries: Object.fromEntries(outcome.applied.map((other) => [other, sheet.speakers[other]])) } : {}) } };
       }
       case "/api/cast/review": {
         const sheet = readSheet(options.sheetPath);

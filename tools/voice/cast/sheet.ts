@@ -119,6 +119,8 @@ export interface CastEntry {
    * the party's the "you say" lines the storyteller reads for the heroes.
    */
   lineCount?: number;
+  /** How many of `lineCount` are a guess: a quote nobody is tagged for, in a scene with only this one speaker. */
+  guessedLines?: number;
   /** Whether they talk at all. Some only bleat or sigh. */
   speaks: boolean;
   /** "provisional": assigned by the builder and free to change. "approved": chosen by a person, never touched. */
@@ -264,6 +266,29 @@ export interface Speaker {
   names: readonly string[];
 }
 
+/** A quote nobody was tagged for, with the words either side of it. */
+export interface LooseQuote {
+  words: string;
+  before: string;
+  after: string;
+}
+
+/** The party speaking, within a few words of a quote: "you say", "you sing the verse back", "you reply kindly". */
+const PARTY_NEAR = /\byou(?:'ll|'d)?\s+(?:\w+\s+){0,2}?(?:say|said|ask|reply|answer|sing|whisper|call|shout|tell|add|offer|announce|read|try|hum)\b/i;
+/** Words that say a quote is something shown or sold, not said: "sells "slightly used rumors."", "a sign that reads "…"". */
+const SHOWN_NOT_SAID = /\b(?:sells?|sold|sign|plaque|label|labeled|banner|reads?|written|spells?|spelled|carved|painted|stamped|called|named|nicknamed|word|words|phrase)\b[^"“”.!?]{0,35}$/i;
+
+/**
+ * Whether a quote nobody was tagged for is probably spoken by the one speaker in its scene, and so worth counting
+ * for them as a guess. Not a fragment (it starts a sentence and has more than one word), not the party's (a "you
+ * say" beside it), and not something shown or sold ("sells "slightly used rumors."").
+ */
+export function looksSpoken(quote: LooseQuote): boolean {
+  if (!/^[A-Z“"'‘]/.test(quote.words) || quote.words.split(/\s+/).length < 2) return false;
+  if (PARTY_NEAR.test(quote.before.slice(-50)) || PARTY_NEAR.test(quote.after.slice(0, 50))) return false;
+  return !SHOWN_NOT_SAID.test(quote.before);
+}
+
 /**
  * Who says each quote in a narration string:
  *  - a speech tag naming someone ("…," says Pib / Pib says, "…") gives it to them;
@@ -271,9 +296,9 @@ export interface Speaker {
  *  - "you say" gives it to the party;
  *  - with no tag, an action beat just before it ("The keeper shakes her head.") gives it to the one speaker the beat is about;
  *  - a quote right after an attributed one, with no new speaker tagged between, is the same speaker's.
- * Quotes nobody can be sure of are left out.
+ * Quotes nobody can be sure of are left out of the result, and, if `unattributed` is given, their words are added to it.
  */
-export function attributeQuotes(text: string, speakers: readonly Speaker[]): { id: string; words: string; pronoun?: string }[] {
+export function attributeQuotes(text: string, speakers: readonly Speaker[], unattributed?: LooseQuote[]): { id: string; words: string; pronoun?: string }[] {
   const named = speakers
     .map((speaker) => ({ id: speaker.id, names: speaker.names.filter((n) => n.length >= 3).map(escape) }))
     .filter((speaker) => speaker.names.length > 0);
@@ -351,6 +376,7 @@ export function attributeQuotes(text: string, speakers: readonly Speaker[]): { i
       previous = { id, end };
     } else {
       previous = null;
+      unattributed?.push({ words: match[1]!.trim(), before: text.slice(Math.max(0, start - 80), start), after: text.slice(end, end + 80) });
     }
   }
   return found;
@@ -399,8 +425,14 @@ interface Draft {
 /** npcVoices keys are ids (`old_wick`) in most chapters and display names ("Orin Vale") in some. */
 const idOfKey = (key: string): string => (/[A-Z\s]/.test(key) ? identity(key) : key);
 
-/** Every character the content names, merged across chapters and sources. Narrator and party not included. */
-export function collectCharacters(sources: Sources): Draft[] {
+/** Who is physically in each scene: chapter id, then scene id, to the ids of the characters in its cast. */
+export type SceneCasts = Map<string, Map<string, Set<string>>>;
+
+/**
+ * Every character the content names, merged across chapters and sources. Narrator and party not included.
+ * `scenes`, if given, is filled with who is in each scene, resolved to the same characters.
+ */
+export function collectCharacters(sources: Sources, scenes?: SceneCasts): Draft[] {
   const drafts = new Map<string, Draft>();
   const get = (id: string, name: string, who: string, generic: boolean): Draft => {
     let draft = drafts.get(id);
@@ -437,6 +469,7 @@ export function collectCharacters(sources: Sources): Draft[] {
         names.set(member.name, figures);
       }
     }
+    const resolved = new Map<string, string>(); // a cast name, in this chapter → the character it is
     for (const [name, figures] of names) {
       const s = identity(name);
       const parts = s.split("_");
@@ -458,6 +491,7 @@ export function collectCharacters(sources: Sources): Draft[] {
         : drafts.get(s) ??
           (isRoleName(name) ? undefined : [...drafts.values()].find((d) => !d.generic && !isRoleName(d.name) && chapter.campaignId !== undefined && d.campaigns.has(chapter.campaignId) && sameName(d)));
       const draft = key ? drafts.get(key)! : (known ?? get(s, name, "", false));
+      resolved.set(name, draft.id);
       draft.chapters.add(chapter.id);
       if (chapter.campaignId) draft.campaigns.add(chapter.campaignId);
       if (name !== draft.name) draft.aliases.add(name);
@@ -466,6 +500,18 @@ export function collectCharacters(sources: Sources): Draft[] {
         draft.aliases.add(draft.name);
         draft.name = name;
       }
+    }
+    if (scenes) {
+      const inChapter = new Map<string, Set<string>>();
+      for (const [sceneId, scene] of Object.entries(chapter.scenes ?? {})) {
+        const present = new Set<string>();
+        for (const member of (scene as { cast?: { name?: string }[] }).cast ?? []) {
+          const id = member.name ? resolved.get(member.name) : undefined;
+          if (id) present.add(id);
+        }
+        inChapter.set(sceneId, present);
+      }
+      scenes.set(chapter.id, inChapter);
     }
   }
 
@@ -714,7 +760,8 @@ const NARRATOR_LINES: AuditionLine[] = [
  */
 export function buildSheet(sources: Sources, previous: CastSheet | null): CastSheet {
   const accent = previous?.accent ?? "General American, the way a warm American storyteller reads aloud";
-  const drafts = collectCharacters(sources);
+  const scenes: SceneCasts = new Map();
+  const drafts = collectCharacters(sources, scenes);
   const speakers: Record<string, CastEntry> = {};
 
   speakers.narrator = previous?.speakers.narrator ?? {
@@ -747,6 +794,8 @@ export function buildSheet(sources: Sources, previous: CastSheet | null): CastSh
   const heard = new Map<string, AuditionLine[]>();
   // The party's "you say" lines are the storyteller's to read, so they are counted but not auditioned.
   let partyLines = 0;
+  // Quotes nobody was tagged for, in a scene where one character is the only one who could be speaking.
+  const guessed = new Map<string, number>();
   // The pronouns the narration's own speech tags use for each speaker ("…," she says).
   const tagged = new Map<string, Record<string, number>>();
   const inChapter = new Map<string, Speaker[]>();
@@ -765,7 +814,19 @@ export function buildSheet(sources: Sources, previous: CastSheet | null): CastSh
     for (const line of lines) {
       // A speech tag mid-sentence splits one line in two ("Rush prices, darlings," … "rush prices!"): join a speaker's run back up.
       const runs: { id: string; words: string[] }[] = [];
-      for (const quote of attributeQuotes(line.text, present)) {
+      const loose: LooseQuote[] = [];
+      const attributed = attributeQuotes(line.text, present, loose);
+      const inScene = scenes.get(chapter)?.get(line.address.split("/")[1] ?? "");
+      if (inScene?.size === 1) {
+        const only = [...inScene][0]!;
+        // Someone else named right beside the quote may be the one speaking, so it is no guess for this scene's only speaker.
+        const others = present.filter((speaker) => speaker.id !== only).flatMap((speaker) => speaker.names.filter((name) => name.length >= 3).map(escape));
+        const othersNear = others.length === 0 ? null : new RegExp(`\\b(?:${others.join("|")})\\b`, "i");
+        for (const quote of loose) {
+          if (looksSpoken(quote) && !(othersNear && (othersNear.test(quote.before.slice(-60)) || othersNear.test(quote.after.slice(0, 40))))) guessed.set(only, (guessed.get(only) ?? 0) + 1);
+        }
+      }
+      for (const quote of attributed) {
         if (quote.pronoun && quote.pronoun !== "it") {
           const counts = tagged.get(quote.id) ?? {};
           counts[quote.pronoun] = (counts[quote.pronoun] ?? 0) + 1;
@@ -796,7 +857,8 @@ export function buildSheet(sources: Sources, previous: CastSheet | null): CastSh
     const candidates = heard.get(draft.id) ?? [];
     const kind = kindOf(draft.id, draft.name, draft.who);
     const lines = pickLines(candidates);
-    const lineCount = candidates.length;
+    const guess = guessed.get(draft.id) ?? 0;
+    const lineCount = candidates.length + guess;
     // Canon's pronouns win; otherwise the ones the narration uses, when it is clear.
     const counts = tagged.get(draft.id) ?? {};
     const [top, second] = Object.entries(counts).sort((a, b) => b[1] - a[1]);
@@ -826,6 +888,7 @@ export function buildSheet(sources: Sources, previous: CastSheet | null): CastSh
       ...(old?.elevenlabs ? { elevenlabs: old.elevenlabs } : {}),
       lines,
       lineCount,
+      ...(guess > 0 ? { guessedLines: guess } : {}),
       speaks: !SILENT.test(draft.who) && (lines.length > 0 || kind !== "creature"),
       // What a person decided carries over; everything else above is refreshed from the content,
       // so an approved character's chapters stay current and a new clash is still seen.
