@@ -17,11 +17,12 @@
 
 import fs from "node:fs";
 import path from "node:path";
-import { cellOf, estimate, estimateTake, renderTake, type Workspace } from "../bakeoff/bakeoff.ts";
+import { cellOf, estimate, estimateTake, priceOf, renderTake, type Workspace } from "../bakeoff/bakeoff.ts";
 import type { Cell } from "../bakeoff/page.ts";
-import { GEMINI_VOICES, engineOf, familyOf, plan, type CastFile, type Fetch, type Keys, type ModelInfo } from "../bakeoff/providers.ts";
+import { createDesignedVoice, designVoice, GEMINI_VOICES, engineOf, familyOf, plan, type CastFile, type Fetch, type Keys, type ModelInfo } from "../bakeoff/providers.ts";
 import type { Sample } from "../bakeoff/samples.ts";
 import { ACCENTS } from "./accents.ts";
+import { designBrief, designProblem } from "./design.ts";
 import { peersOf, shareVoice } from "./people.ts";
 import { CanonEditError, editIndividual, editVoiceNote } from "./canon-edit.ts";
 import { loadProfiles } from "./profile.ts";
@@ -206,7 +207,17 @@ function needsVoice(sheet: CastSheet, sample: Sample, provider: VoiceProvider): 
   return null;
 }
 
+/** Voice design returns this many candidate voices for each description. */
+export const DESIGN_PREVIEWS = 3;
+
 export function createCastRoutes(options: CastRouteOptions, budget: Budget) {
+  /**
+   * What previewing a designed voice costs. ElevenLabs bills a design by the credits the previews use, which pricing.json
+   * does not list, so this prices them as the mode's own speech model saying the sample text once for each preview: a
+   * stand-in, not ElevenLabs' own rate: check what a design really costs on your account before trusting the cap here.
+   */
+  const designPrice = (text: string): number | null => priceOf(engineFor(undefined, options.catalog, "elevenlabs"), text.length * DESIGN_PREVIEWS, DESIGN_PREVIEWS, options.ws);
+
   /** Renders one sample in the sheet's voices, inside the session's cap. */
   async function render(sheet: CastSheet, sample: Sample, model: unknown, keys: Keys, take = 1, provider: VoiceProvider = "gemini"): Promise<Reply> {
     const nobody = needsVoice(sheet, sample, provider);
@@ -422,6 +433,56 @@ export function createCastRoutes(options: CastRouteOptions, budget: Budget) {
         writeSheet(options.sheetPath, sheet);
         const clashes = Object.fromEntries(Object.keys(sheet.speakers).map((other) => [other, clashesOf(sheet, other, provider)]));
         return { status: 200, body: { entry, clashes } };
+      }
+      case "/api/cast/design/brief": {
+        // What a designed voice would be asked for, from the sheet, and what previewing it would cost. Spends nothing.
+        const sheet = readSheet(options.sheetPath);
+        const entry = sheet.speakers[String(body.id)];
+        if (!entry) return { status: 400, body: { error: `nobody called ${String(body.id)} in the sheet` } };
+        const brief = designBrief(sheet, entry, STAND_IN);
+        return { status: 200, body: { ...brief, previews: DESIGN_PREVIEWS, dollars: designPrice(brief.text), spent: budget.spent, cap: budget.cap } };
+      }
+      case "/api/cast/design/preview": {
+        const description = typeof body.description === "string" ? body.description.replace(/\s+/g, " ").trim() : "";
+        const text = typeof body.text === "string" ? body.text.replace(/\s+/g, " ").trim() : "";
+        const problem = designProblem(description, text);
+        if (problem) return { status: 400, body: { error: problem } };
+        const price = designPrice(text);
+        if (price === null) return { status: 409, body: { error: "pricing.json has no price for the ElevenLabs model, so the cap cannot be kept.", spent: budget.spent, cap: budget.cap } };
+        if (budget.spent + price > budget.cap + 1e-9) {
+          return { status: 402, body: { error: `This would take the session past its $${budget.cap.toFixed(2)} cap. Raise the cap on the bake-off page to go on.`, spent: budget.spent, cap: budget.cap } };
+        }
+        budget.spent += price;
+        try {
+          const previews = await designVoice(keys, { description, text }, options.fetch);
+          return { status: 200, body: { previews, spent: budget.spent, cap: budget.cap } };
+        } catch (error) {
+          // A call that failed was not billed.
+          budget.spent -= price;
+          return { status: 502, body: { error: (error as Error).message } };
+        }
+      }
+      case "/api/cast/design/save": {
+        // The one step that changes the ElevenLabs account: the page asks first, and this takes only what was clicked.
+        const sheet = readSheet(options.sheetPath);
+        const id = String(body.id);
+        const entry = sheet.speakers[id];
+        if (!entry) return { status: 400, body: { error: `nobody called ${id} in the sheet` } };
+        const generatedVoiceId = typeof body.generatedVoiceId === "string" ? body.generatedVoiceId : "";
+        if (!ELEVEN_VOICE_ID.test(generatedVoiceId)) return { status: 400, body: { error: "that is not a designed voice id" } };
+        const name = typeof body.name === "string" ? body.name.replace(/\s+/g, " ").trim().slice(0, 100) : "";
+        const description = typeof body.description === "string" ? body.description.replace(/\s+/g, " ").trim() : "";
+        if (!name) return { status: 400, body: { error: "give the voice a name" } };
+        let voiceId: string;
+        try {
+          voiceId = await createDesignedVoice(keys, { generatedVoiceId, name, description }, options.fetch);
+        } catch (error) {
+          return { status: 502, body: { error: (error as Error).message } };
+        }
+        // A new voice has not been approved, whatever the last one was.
+        entry.elevenlabs = { voiceId, name };
+        writeSheet(options.sheetPath, sheet);
+        return { status: 200, body: { voice: { id: voiceId, name, about: "designed for this game" }, entry } };
       }
       case "/api/cast/people": {
         // One character's voice for the rest of their people, wherever it puts nobody on a voice they share a chapter with.

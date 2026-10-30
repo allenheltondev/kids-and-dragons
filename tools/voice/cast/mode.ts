@@ -33,6 +33,11 @@ export const MODE_CSS = `
 .voicepick .tools { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .voicepick input[type="search"] { flex: 1 1 140px; }
 .voicepick select { width: 100%; }
+.designer { margin-top: 4px; }
+.designer summary { cursor: pointer; font-weight: 600; }
+.designer textarea { width: 100%; min-height: 4.5em; }
+.designer .previews { display: grid; gap: 4px; margin-top: 6px; }
+.designer .previews > div { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px; }
 .library { flex: 1 1 100%; }
 .library summary { cursor: pointer; font-weight: 600; }
 .library .found { display: grid; gap: 4px; margin-top: 6px; max-height: 280px; overflow: auto; }
@@ -205,6 +210,93 @@ const KadMode = (() => {
   }
   function el2(tag, cls, ...kids) { const node = document.createElement(tag); node.className = cls; node.append(...kids); return node; }
 
+  /**
+   * "Design a new voice" for one character, beside the voice picker: a description and a sample text prefilled from the
+   * sheet (the server works them out, so they are the same on both pages), three candidate voices to hear, and a button
+   * that saves the one chosen to the ElevenLabs account and gives it to the character. Opening it spends nothing;
+   * previewing spends from the session's cap, and says what it will cost first; saving asks before it changes the account.
+   * \`onSaved\` gets the new voice ({id, name, about}) and the character's updated entry.
+   */
+  function voiceDesigner(opts) {
+    const { id, name, call, onSaved } = opts;
+    const box = document.createElement("details");
+    box.className = "designer";
+    const summary = document.createElement("summary");
+    summary.textContent = "Design a new voice for " + name;
+    const description = document.createElement("textarea");
+    description.setAttribute("aria-label", name + " voice description");
+    const text = document.createElement("textarea");
+    text.setAttribute("aria-label", name + " sample text");
+    const cost = document.createElement("span");
+    cost.className = "hint";
+    const status = document.createElement("span");
+    status.className = "hint";
+    status.setAttribute("role", "status");
+    const go = document.createElement("button");
+    go.type = "button";
+    go.textContent = "Hear 3 candidates";
+    const previews = el2("div", "previews");
+    const money = (n) => (n === null || n === undefined ? "price unknown" : "about $" + n.toFixed(2));
+    let started = false;
+    box.addEventListener("toggle", async () => {
+      if (!box.open || started) return;
+      started = true;
+      status.textContent = "Reading the sheet…";
+      try {
+        const brief = await call("/api/cast/design/brief", { id });
+        description.value = brief.description;
+        text.value = brief.text;
+        cost.textContent = "Previewing " + brief.previews + " candidates costs " + money(brief.dollars) + " of the session cap.";
+        status.textContent = "";
+      } catch (error) {
+        started = false;
+        status.textContent = "Could not read the sheet: " + error.message;
+      }
+    });
+    function row(preview, index) {
+      const play = document.createElement("button");
+      play.type = "button";
+      play.textContent = "▶ Candidate " + (index + 1);
+      play.addEventListener("click", () => { stopSample(); sample = new Audio(preview.audio); sample.play().catch(() => {}); });
+      const use = document.createElement("button");
+      use.type = "button";
+      use.textContent = "Use this voice";
+      use.addEventListener("click", async () => {
+        const chosen = prompt("Name for this voice on your ElevenLabs account:", name);
+        if (!chosen || !chosen.trim()) return;
+        if (!confirm("Save " + chosen.trim() + " to your ElevenLabs account and give it to " + name + "?\\n\\nThis changes your account, and may use one of your plan's voice slots.")) return;
+        use.disabled = true;
+        use.textContent = "Saving…";
+        try {
+          const saved = await call("/api/cast/design/save", { id, generatedVoiceId: preview.generatedVoiceId, name: chosen.trim(), description: description.value });
+          use.textContent = "Saved";
+          await onSaved(saved.voice, saved.entry);
+        } catch (error) {
+          use.disabled = false;
+          use.textContent = "Use this voice";
+          status.textContent = "Could not save the voice: " + error.message;
+        }
+      });
+      return el2("div", "", play, use);
+    }
+    go.addEventListener("click", async () => {
+      go.disabled = true;
+      status.textContent = "Designing…";
+      try {
+        const result = await call("/api/cast/design/preview", { id, description: description.value, text: text.value });
+        previews.replaceChildren(...result.previews.map(row));
+        status.textContent = result.previews.length ? "Spent so far: $" + result.spent.toFixed(2) + " of $" + result.cap.toFixed(2) : "ElevenLabs returned no candidates.";
+      } catch (error) {
+        status.textContent = error.message;
+      } finally {
+        go.disabled = false;
+      }
+    });
+    const label = (words) => { const node = document.createElement("div"); node.className = "hint"; node.textContent = words; return node; };
+    box.append(summary, label("How the voice should sound (edit freely: it starts from what the sheet knows)"), description, label("What the candidates say (their own lines)"), text, el2("div", "tools", go, cost, status), previews);
+    return box;
+  }
+
   /** The request that saves a voice the person picked, in the mode they are in. */
   function pickBody(provider, id, value, elevenVoices) {
     if (provider === "gemini") return { id, provider, voice: value };
@@ -327,6 +419,6 @@ const KadMode = (() => {
     return { paint };
   }
 
-  return { NAMES, providerOf, isEleven, normalize, modelsFor, model, voiceId, voiceName, approved, history, lastRejected, untouched, historyLine, uses, coverage, voiceOptions, filterOptions, filterGender, voicePicker, pickBody, keyHeaders, keyLabel, mountSwitch };
+  return { NAMES, providerOf, isEleven, normalize, modelsFor, model, voiceId, voiceName, approved, history, lastRejected, untouched, historyLine, uses, coverage, voiceOptions, filterOptions, filterGender, voicePicker, voiceDesigner, pickBody, keyHeaders, keyLabel, mountSwitch };
 })();
 `;
