@@ -812,6 +812,30 @@ export interface JournalResponse {
    * because a server from before it sends none.
    */
   story?: JournalStoryCampaign[];
+  /**
+   * The household's crews (architecture §4.5, "Crews"), the first crew
+   * included (id null), each with its own story and whereabouts, which is what
+   * the Story page and the map show for whichever crew is picked. Present only
+   * when the household has more than one crew; `story` and `whereabouts`
+   * above are then the first crew's, as they always were.
+   */
+  crews?: JournalCrew[];
+  /**
+   * Hero id → the crew she plays with, for each of this player's heroes not in
+   * the first crew: the crew whose adventure holds her, or else the one she
+   * last played in. The book opens the Story page and map on the picked
+   * hero's crew. Present only beside `crews`.
+   */
+  heroCrews?: Record<string, string>;
+}
+
+/** One crew's book: its own story and where it last adventured. */
+export interface JournalCrew {
+  /** Null for the household's first crew. */
+  id: string | null;
+  name: string;
+  story: JournalStoryCampaign[];
+  whereabouts: { chapterId: string; biome: string } | null;
 }
 
 /** One campaign on the Story page (#358). */

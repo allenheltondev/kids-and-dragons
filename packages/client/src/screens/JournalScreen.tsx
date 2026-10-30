@@ -22,7 +22,7 @@
 import { Suspense, useCallback, useEffect, useState } from "react";
 import { ChunkBoundary, lazyChunk } from "../ui/ChunkBoundary";
 import type { ReactElement } from "react";
-import type { JournalFinishedCampaign, JournalResponse, PartyMember, ResolvedCharacter } from "@kad/shared";
+import type { JournalCrew, JournalFinishedCampaign, JournalResponse, PartyMember, ResolvedCharacter } from "@kad/shared";
 import { navigate } from "../router";
 import { useGameStore, useItems, useWorld } from "../store";
 import { setFieldGuideDiscoveries } from "../store/field-guide-discoveries";
@@ -237,7 +237,7 @@ export function JournalScreen(): ReactElement {
         {pane === "story" ? (
           <ChunkBoundary inline message="Your story couldn’t open.">
             <Suspense fallback={<div className="journal__busy" role="status"><Spinner /><span>Opening your story…</span></div>}>
-              <StoryPane journal={load.journal} />
+              <CrewStory journal={load.journal} />
             </Suspense>
           </ChunkBoundary>
         ) : null}
@@ -392,18 +392,80 @@ function FinishedAdventures({ lines }: { lines: readonly JournalFinishedCampaign
   );
 }
 
-function MapPane({ journal }: { journal: JournalResponse }): ReactElement {
+function MapPane({ journal: whole }: { journal: JournalResponse }): ReactElement {
   useEnsureWorld();
   const world = useWorld();
-  const [hero] = useChosenHero(journal.heroes);
+  const [hero] = useChosenHero(whole.heroes);
+  const { journal, picker } = useCrewBook(whole);
   return (
     <div className="kad-surface kad-surface--map" data-surface="map">
+      {/* Above the map, not over it: the atlas keeps its own controls along its top edge. */}
+      {picker ? <div className="journal__crews-bar">{picker}</div> : null}
       <div className="kad-map__host" data-map="world">
         {world === null ? <AtlasUnrolling /> : (
           <Atlas world={world} place={placeOf(world, journal.whereabouts?.biome)}
             party={hero ? [restingMember(hero)] : []} scope="journal" here="last" />
         )}
       </div>
+    </div>
+  );
+}
+
+/** The Story page, for whichever crew is picked. */
+function CrewStory({ journal: whole }: { journal: JournalResponse }): ReactElement {
+  const { journal, picker } = useCrewBook(whole);
+  return <StoryPane journal={journal} picker={picker} />;
+}
+
+/**
+ * Which crew's story and map are open, per hero, once somebody picked one by
+ * hand: unpicked, a hero's book opens on her own crew. Module state, like
+ * `chosenHero`, so the map and the Story page agree.
+ */
+const pickedCrews = new Map<string, string | null>();
+
+/**
+ * The book as the picked crew sees it (architecture §4.5, "Crews"): its story
+ * and its whereabouts in place of the first crew's, and the picker that
+ * changes it. A household with one crew gets the book as it is and no picker.
+ */
+function useCrewBook(journal: JournalResponse): { journal: JournalResponse; picker: ReactElement | null } {
+  const [hero] = useChosenHero(journal.heroes);
+  const [, redraw] = useState(0);
+  const crews = journal.crews;
+  if (!crews || crews.length < 2) return { journal, picker: null };
+  const key = hero?.id ?? "";
+  const id = pickedCrews.has(key) ? pickedCrews.get(key)! : hero ? (journal.heroCrews?.[hero.id] ?? null) : null;
+  const crew = crews.find((c) => c.id === id) ?? crews[0]!;
+  const choose = (next: string | null): void => {
+    pickedCrews.set(key, next);
+    redraw((n) => n + 1);
+  };
+  return {
+    journal: { ...journal, story: crew.story, whereabouts: crew.whereabouts },
+    picker: <CrewPicker crews={crews} on={crew.id} onChoose={choose} />,
+  };
+}
+
+/** Which crew's book this is. A choice is a border and a mark, never colour alone (spec §11). */
+function CrewPicker({ crews, on, onChoose }: {
+  crews: readonly JournalCrew[];
+  on: string | null;
+  onChoose: (crew: string | null) => void;
+}): ReactElement {
+  return (
+    <div className="journal__crews" role="group" aria-label="Whose story">
+      {crews.map((crew) => {
+        const chosen = crew.id === on;
+        return (
+          <button key={crew.id ?? "first"} type="button"
+            className={`journal__crew kad-tap kad-focusable${chosen ? " journal__crew--on" : ""}`}
+            aria-pressed={chosen} onClick={() => onChoose(crew.id)}>
+            {chosen ? <Icon name="check" /> : null}
+            <span>{crew.name}</span>
+          </button>
+        );
+      })}
     </div>
   );
 }

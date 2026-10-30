@@ -33,6 +33,13 @@ const WORLD: WorldMap = {
       anchor: { x: 470, y: 690 },
       parent: null,
     },
+    glimmer_caves: {
+      id: "biome.glimmer_caves",
+      title: "The Glimmer Caves",
+      kind: "biome",
+      anchor: { x: 820, y: 410 },
+      parent: null,
+    },
   },
 };
 
@@ -174,6 +181,63 @@ describe("JournalScreen", () => {
     expect(await screen.findByText(/would not open/i)).toBeTruthy();
     await user.click(screen.getByRole("button", { name: /try again/i }));
     expect(loadJournal).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("the book of a household with crews", () => {
+  // Fresh hero ids: the picked hero and crew are remembered for the life of the page.
+  const OTTER_KID = makeCharacter({ id: "c_otter", name: "Bo" });
+  const FAMILY_KID = makeCharacter({ id: "c_family", name: "Pip" });
+  const story = (title: string) => [{ campaignId: "gemfall", title, status: "active" as const, chapters: [] }];
+  const crews = (heroes = [OTTER_KID, FAMILY_KID]) =>
+    journal({
+      heroes,
+      story: story("The family's Gemfall"),
+      crews: [
+        { id: null, name: "The first crew", story: story("The family's Gemfall"), whereabouts: { chapterId: "ch_1", biome: "sunward_fields" } },
+        { id: "cw_1", name: "The Otter Crew", story: story("The Otter Crew's Gemfall"), whereabouts: { chapterId: "ch_9", biome: "glimmer_caves" } },
+      ],
+      // Bo plays with the Otter Crew, whichever fresh id a test gives her.
+      heroCrews: Object.fromEntries(heroes.filter((h) => h.name === "Bo").map((h) => [h.id, "cw_1"])),
+    });
+
+  it("opens the story on the picked hero's crew, and switches to any other", async () => {
+    const user = userEvent.setup();
+    mount(crews());
+    await user.click(await screen.findByRole("button", { name: "Story" }));
+    expect(await screen.findByRole("heading", { name: "The Otter Crew's Gemfall" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "The Otter Crew", pressed: true })).toBeTruthy();
+
+    await user.click(screen.getByRole("button", { name: "The first crew" }));
+    expect(screen.getByRole("heading", { name: "The family's Gemfall" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "The Otter Crew's Gemfall" })).toBeNull();
+  });
+
+  it("follows the hero: another hero's book opens on her own crew", async () => {
+    const user = userEvent.setup();
+    mount(crews([makeCharacter({ id: "c_otter2", name: "Bo" }), makeCharacter({ id: "c_family2", name: "Pip" })]));
+    await user.click(await screen.findByRole("button", { name: "Pip" }));
+    await user.click(screen.getByRole("button", { name: "Story" }));
+    // Pip is nobody's but the first crew's.
+    expect(await screen.findByRole("heading", { name: "The family's Gemfall" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "The first crew", pressed: true })).toBeTruthy();
+  });
+
+  it("stands the map where the picked crew was last", async () => {
+    const user = userEvent.setup();
+    mount(crews([makeCharacter({ id: "c_otter3", name: "Bo" })]));
+    await user.click(await screen.findByRole("button", { name: "Map" }));
+    expect(screen.getByText("Last seen in The Glimmer Caves.")).toBeTruthy();
+    await user.click(screen.getByRole("button", { name: "The first crew" }));
+    expect(screen.getByText("Last seen in The Sunward Fields.")).toBeTruthy();
+  });
+
+  it("shows no crews at a household that has only its first", async () => {
+    const user = userEvent.setup();
+    mount(journal({ story: story("The family's Gemfall") }));
+    await user.click(await screen.findByRole("button", { name: "Story" }));
+    expect(await screen.findByRole("heading", { name: "The family's Gemfall" })).toBeTruthy();
+    expect(screen.queryByRole("group", { name: "Whose story" })).toBeNull();
   });
 });
 

@@ -1685,6 +1685,16 @@ and every device stay the household's, so anyone may sit down with any crew.
   of a lost answer, gets that crew, and a fresh tap always makes another. `RunState.crews` lists the others for the Room
   panel, and is absent while the household has only its first.
 
+**The adventure book shows a crew's own story.** `GET /api/journal` answers,
+for a household with crews, `crews` (each crew, the first included, with its
+own Story page and its own "you were here") and `heroCrews` (each of the
+player's heroes not in the first crew: the crew whose live adventure holds
+her, or else the one she last sat down with, read off the recent runs). The
+book opens the Story page and the map on the picked hero's crew, with a
+picker to look at any other; `story` and `whereabouts` stay the first crew's,
+so an older saved copy reads as it did. A household with no crews gets
+neither field and no picker.
+
 **The lobby follows the kids** (`followCrew`, run beside `relockLobby`
 whenever the lobby's party changes). A new room opens on the first crew, and
 the moment a seated hero is on a live adventure of another crew at this

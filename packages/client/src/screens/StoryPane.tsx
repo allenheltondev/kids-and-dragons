@@ -12,7 +12,7 @@
  * Lazy: JournalScreen loads this chunk the first time "Story" is opened.
  */
 
-import type { ReactElement } from "react";
+import type { ReactElement, ReactNode } from "react";
 import type { JournalResponse, JournalStoryCampaign, JournalStoryChapter } from "@kad/shared";
 import { Icon } from "./icons";
 import "./StoryPane.css";
@@ -23,7 +23,8 @@ const STANDING: Record<JournalStoryCampaign["status"], { icon: string; words: st
   failed: { icon: "charm", words: "This try is over" },
 };
 
-export default function StoryPane({ journal }: { journal: JournalResponse }): ReactElement {
+/** `picker`: which crew's story this is, when the household has more than one (JournalScreen). */
+export default function StoryPane({ journal, picker }: { journal: JournalResponse; picker?: ReactNode }): ReactElement {
   const story = journal.story ?? [];
   return (
     <div className="kad-surface kad-surface--player" data-surface="player">
@@ -34,6 +35,7 @@ export default function StoryPane({ journal }: { journal: JournalResponse }): Re
             <span>The story so far</span>
           </h1>
           <p className="story__lede kad-muted">Every chapter you have played, in the order you played it.</p>
+          {picker}
         </header>
         {story.length === 0 ? (
           <p className="story__empty">
