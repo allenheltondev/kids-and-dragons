@@ -233,7 +233,7 @@ One click tries it, and a click on the one in use puts the sheet's own accent ba
 to hear and judge, kept in `tools/voice/cast/accents.ts` (`REGION_IDEAS`), where you can change
 them; a test checks that every place named there is a real biome in canon. Only regional accents of
 English are offered, never another language's English, which too easily becomes a caricature.
-ElevenLabs is not told the accent: it steers only Gemini.
+Gemini is told the accent in words. ElevenLabs has no style prompt, so only v3 and later get it, as a tag in front of each line (see [ElevenLabs mode](#elevenlabs-mode)).
 
 ## ElevenLabs mode
 
@@ -250,17 +250,24 @@ voice, and nothing there touches the Gemini one:
   stays in the list. **Preview** plays the highlighted voice's own sample, which is free, so you
   can sift by ear before paying for an audition on the character's real lines. (Each card's list
   is only built when you reach for it: a page of 200 cards would otherwise carry 25,000 options.)
-  The list is the account's own voices: a voice from ElevenLabs' public library appears here
-  once it has been added to the account. A character's choice is saved as `elevenlabs` on the sheet, and **No voice yet** takes
+  A **gender filter** (any, women, men) beside the search uses ElevenLabs' own gender label; a
+  voice with none shows only under "any". The list is the account's own voices, which for a new account is a couple of
+  dozen (the premade ones). **Find more voices in the ElevenLabs library** in the header searches the public Voice Library
+  (thousands of voices; searching changes nothing, and each has a free sample). **Add to my account** puts one on your
+  account after a confirmation, since that changes the account and may use one of your plan's voice slots; it then
+  appears in every picker. A character's choice is saved as `elevenlabs` on the sheet, and **No voice yet** takes
   it back. A voice that has left the account is still listed, marked, so the picker never hides
   what is saved.
 - **Nothing is chosen for you.** Gemini's voices come with traits that a builder can match to a
   character; an account's don't, so nobody has an ElevenLabs voice until you pick one. Until then
   they have nothing to render or approve, and their buttons say so.
 - **Auditions** render with the mode's model (`eleven_v4` to start) in the voice you picked, and
-  count against the same session cap. ElevenLabs is not told who they are or how they talk: it gets
-  the voice and the words (with a delivery tag in front on v3 and later), so the description,
-  accent and direction steer only Gemini. The profile page shows exactly what is sent.
+  count against the same session cap. ElevenLabs has no style prompt, so it is not told who they are
+  or how they talk. It gets the voice and the words, with tags in front on v3 and later: their own accent (the sheet's
+  default is the voice's own, so it is not a tag) as `[Scottish Highland accent]`, and a direction of 80 characters or
+  fewer as `[the direction]`, then the line's delivery tag. A longer direction is left out rather than risk it being
+  read aloud, and older models (v2 and before) take neither: pick a voice that already sounds right. The description
+  steers only Gemini.
 - **Approve** pins that voice on its own (`elevenlabs.approved`), and Gemini's approval is
   unchanged. **Reject** records the voice and your note and takes the choice back, so you can pick
   another; a voice you rejected for a character is left out of their picker.

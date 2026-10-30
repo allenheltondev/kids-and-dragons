@@ -185,7 +185,9 @@ ${MODE_CSS}</style>
 
   // ---- Header controls ----
   KadMode.mountSwitch({
-    prefs, data, keys, live, savePrefs, saveKeys,
+    prefs, data, keys, live, savePrefs, saveKeys, call,
+    // A voice added from the library is on the account now: list it.
+    onAdded: async () => { await ensureElevenVoices(true); await refresh(); },
     // A new mode or model or key: the voices on offer, who has one, and what is already rendered all change.
     onChange: async (keyChanged) => { note(""); await ensureElevenVoices(keyChanged); await refresh(); },
   });
