@@ -2,9 +2,10 @@
 
 Kids & Dragons is a story game for kids about eight. You read the story off a big screen, and each kid plays a hero from a phone or tablet. You need no account and no setup. This guide takes about ten minutes to read. The first part is all you need tonight.
 
-Words in bold are exactly what the buttons and screens say.
+> Words in bold are exactly what the buttons and screens say.
 
 <!-- The quick start is the first page when printed. Keep it to one page. -->
+<!-- part: Playing tonight -->
 
 ## Quick start
 
@@ -17,11 +18,11 @@ Words in bold are exactly what the buttons and screens say.
 7. Read the story out loud from the big screen. The kids tap their choices on their phones. When it is a kid's turn, their phone says so.
 8. A chapter takes 30 to 45 minutes. To stop early, find a rest and tap **Stop here for today**. Next time, open a room the same way and tap **Keep going**.
 
-No TV? Pick **Phone Mode** instead. Everyone plays on phones, and each phone shows the story too.
+> No TV? Pick **Phone Mode** instead. Everyone plays on phones, and each phone shows the story too.
 
-Without an account, heroes are kept for a week after you last play. To keep them for good, a grown-up taps **Grown-ups: sign in, or move a hero to another device** at the bottom of the start screen, then **Sign in or create an account**. There is no password, only a code by email.
-
-That same link is where every grown-up errand lives: signing in, a tablet the kids share, a group, and moving a hero to a new device. Nobody needs it to play.
+> Without an account, heroes are kept for a week after you last play. To keep them for good, a grown-up taps **Grown-ups: sign in, or move a hero to another device** at the bottom of the start screen, then **Sign in or create an account**. There is no password, only a code by email.
+>
+> That same link is where every grown-up errand lives: signing in, a tablet the kids share, a group, and moving a hero to a new device. Nobody needs it to play.
 
 ![The start screen, where kids join and grown-ups host](../../public/guide-pictures/home.jpg)
 
@@ -34,7 +35,7 @@ There are two ways to play. You pick one when you start a game.
 - **Party Mode**: "This screen becomes the TV. Everyone joins from their phones." The big screen shows the story, the map and the fights. Each phone shows only that kid's own choices.
 - **Phone Mode**: "Phones only. Everyone sees the world and their own controls." The phone that starts the game is a player too, so it asks for **Your adventurer name**. Use a nickname, never a real name. At the bottom of each phone, **World** shows the story and **You** shows that kid's turn. A phone jumps to **You** by itself when it is that kid's turn.
 
-You can switch partway. On a phone, open **Room settings** and tap **Play on phones instead** or **Use a TV for the world**.
+> You can switch partway. On a phone, open **Room settings** and tap **Play on phones instead** or **Use a TV for the world**.
 
 ## Starting a room and seating the kids
 
@@ -72,14 +73,15 @@ Whoever opened the room runs it. In Party Mode that is the big screen: tap **Roo
 
 ![What the grown-up running the room sees](../../public/guide-pictures/host-panel.jpg)
 
-- At the top is everyone in the room, each marked **Here**, **Away**, **Making a hero** or **Taken out**.
-- **Remove** takes a phone out of the game. That phone sees "The person running this game took this phone out of it." Each time a phone joins, the big screen says who joined, with **Remove** beside it, so a stranger is one tap from gone.
+At the top is everyone in the room, each marked **Here**, **Away**, **Making a hero** or **Taken out**.
+
+- **Remove**: Takes a phone out of the game. That phone sees "The person running this game took this phone out of it." Each time a phone joins, the big screen says who joined, with **Remove** beside it, so a stranger is one tap from gone.
 - **Lock the room**: "Lock it once everyone is in, and nobody else can join with the code." Kids already here can still come back. **Let new players join again** undoes it.
 - **Quiet mode**: "For a sleeping sibling or a car ride: softer, calmer and dimmer on every device." It turns on for every phone in the room at once. **Turn quiet mode off** ends it.
-- **Make keeper** picks which phone is offered to keep the heroes. See signing in, below.
-- **Stop for today** saves the game for next time.
-- **New players? Start a new crew** for their own save, which their heroes reopen.
-- **Close the room** ends it for everyone, after one more tap on **Close it**. "Heroes and what they earned are kept."
+- **Make keeper**: Picks which phone is offered to keep the heroes. See signing in, below.
+- **Stop for today**: Saves the game for next time.
+- **New players? Start a new crew**: Starts their own save, which their heroes reopen.
+- **Close the room**: Ends it for everyone, after one more tap on **Close it**. "Heroes and what they earned are kept."
 
 ## When a kid leaves or arrives partway
 
@@ -127,6 +129,8 @@ Each screen has a row of small buttons in its corner. They change only that scre
 
 ![Display settings on a phone](../../public/guide-pictures/display-settings.jpg)
 
+<!-- part: Keeping heroes -->
+
 ## Keeping heroes: signing in
 
 You can play forever without an account. Without one, heroes "fade after a week away". Playing again starts the week over.
@@ -151,6 +155,19 @@ The tablet can also be the big screen. Tap **Show the game on this screen**, and
 
 To stop a tablet being the family's, tap **Grown-ups: forget this tablet**. Everyone's heroes stay safe. They were never on the tablet.
 
+## A kid on a new device
+
+A kid who plays on their own phone can carry on from another device, like a hospital tablet or a borrowed phone.
+
+1. On the phone they already play on, tap **Grown-ups: sign in, or move a hero to another device**, then **Play as me on another device**. It shows a code and a square to scan. "It works one time, for 10 minutes."
+2. On the new device, tap the same link, then **Bring my hero to this device**. Type the code, or scan the square, and tap **That's me**.
+
+A grown-up can make the same code from **Run a group**: tap **Pair a device** beside the kid.
+
+![The code that puts a kid on another device](../../public/guide-pictures/pairing-code.jpg)
+
+<!-- part: Groups, visitors and privacy -->
+
 ## Visitors from another family
 
 A kid from another family plays with their own hero, and everything they earn goes home with them. They cannot join with the four letters. The game tells them their phone belongs to a different household.
@@ -171,17 +188,6 @@ A club, a class, the cousins: a group is for kids from more than one family. Tap
 ![Running a group](../../public/guide-pictures/organizer.jpg)
 
 The same screen lists **Family tablets**, with **Forget** for each one.
-
-## A kid on a new device
-
-A kid who plays on their own phone can carry on from another device, like a hospital tablet or a borrowed phone.
-
-1. On the phone they already play on, tap **Grown-ups: sign in, or move a hero to another device**, then **Play as me on another device**. It shows a code and a square to scan. "It works one time, for 10 minutes."
-2. On the new device, tap the same link, then **Bring my hero to this device**. Type the code, or scan the square, and tap **That's me**.
-
-A grown-up can make the same code from **Run a group**: tap **Pair a device** beside the kid.
-
-![The code that puts a kid on another device](../../public/guide-pictures/pairing-code.jpg)
 
 ## Moving a hero home
 
