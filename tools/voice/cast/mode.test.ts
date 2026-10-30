@@ -120,3 +120,34 @@ describe("the cast pages' voice mode", () => {
     expect(MODE_SCRIPT).not.toMatch(/<\/script/i);
   });
 });
+
+describe("searching a long list of voices", () => {
+  const options = [
+    { value: "", label: "No voice yet: pick one" },
+    { value: "v1", label: "Rachel · premade, american, female, young, narration", preview: "https://example.test/rachel.mp3" },
+    { value: "v2", label: "Adam · premade, american, male, middle_aged, narration" },
+    { value: "v3", label: "Charlotte · professional, british, female, middle_aged, characters" },
+    { value: "v4", label: "Old Bill · cloned, american, male, old, characters" },
+  ];
+  const values = (list: { value: string }[]) => list.map((o) => o.value);
+
+  it("matches every word typed, anywhere in a voice's label, ignoring case", () => {
+    expect(values(mode.filterOptions(options, "american female", ""))).toEqual(["", "v1"]);
+    expect(values(mode.filterOptions(options, "  CHARACTERS   old ", ""))).toEqual(["", "v4"]);
+    expect(values(mode.filterOptions(options, "female", ""))).toEqual(["", "v1", "v3"]);
+    expect(values(mode.filterOptions(options, "nothing like it", ""))).toEqual([""]);
+  });
+
+  it("shows everything for an empty search, and always keeps the voice already picked", () => {
+    expect(mode.filterOptions(options, "", "")).toBe(options);
+    expect(mode.filterOptions(options, "   ", "")).toBe(options);
+    expect(values(mode.filterOptions(options, "british", "v4"))).toEqual(["", "v3", "v4"]);
+  });
+
+  it("carries a voice's own sample through to the picker", () => {
+    const voices = [{ id: "v1", name: "Rachel", about: "premade", preview: "https://example.test/rachel.mp3" }, { id: "v2", name: "Adam", about: "premade" }];
+    const [, first, second] = mode.voiceOptions("elevenlabs", { name: "x", gemini: { voice: "Kore" }, history: [] }, [], voices);
+    expect(first.preview).toBe("https://example.test/rachel.mp3");
+    expect(second.preview).toBeUndefined();
+  });
+});
