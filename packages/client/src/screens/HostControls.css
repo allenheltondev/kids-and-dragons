@@ -39,8 +39,8 @@
 
 .kad-host--float .kad-host__panel {
   inline-size: 100%;
-  max-block-size: 70vh;
-  overflow-y: auto;
+  /* As tall as its content, so a player joining grows the panel instead of
+     putting a scroll bar inside it. */
   border: 1px solid var(--kad-border);
   border-radius: var(--kad-radius-md);
   background: var(--kad-bg-raised);
