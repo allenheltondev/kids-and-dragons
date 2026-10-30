@@ -1351,10 +1351,6 @@ export class DynamoRepository implements GameRepository {
     return items.map((i) => i.data as CrewRecord).sort((a, b) => a.createdAt.localeCompare(b.createdAt));
   }
 
-  async putCrew(crew: CrewRecord): Promise<void> {
-    await this.put({ PK: HH(crew.householdId), SK: CREW_SK(crew.id), entity: "crew", data: crew });
-  }
-
   async getFieldGuide(householdId: string): Promise<FieldGuideRecord> {
     const item = await this.get(HH(householdId), FIELDGUIDE);
     if (!item) return migrateFieldGuide({}, FIELD_GUIDE_VERSION);
@@ -1550,6 +1546,24 @@ export class DynamoRepository implements GameRepository {
                       ConditionExpression: "attribute_exists(PK) AND #d.#founder = :device",
                       ExpressionAttributeNames: { "#d": "data", "#founder": "founderDeviceId" },
                       ExpressionAttributeValues: { ":device": input.unfound.deviceId, ":nobody": "" },
+                    },
+                  },
+                ]
+              : []),
+            // A new crew, only if its slot is free (handlers/crew.ts): it lands
+            // with the lobby that switches to it, or not at all.
+            ...(input.crew
+              ? [
+                  {
+                    Put: {
+                      TableName: this.table,
+                      Item: {
+                        PK: HH(input.crew.householdId),
+                        SK: CREW_SK(input.crew.id),
+                        entity: "crew",
+                        data: input.crew,
+                      } satisfies TableItem,
+                      ConditionExpression: "attribute_not_exists(PK)",
                     },
                   },
                 ]

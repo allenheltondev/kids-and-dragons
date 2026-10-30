@@ -81,6 +81,10 @@ const ROOM_KEYS = [
   "removed",
   "campaignOptions",
   "campaignVotes",
+  // The household's crews as this lobby listed them: a save stopped before a
+  // crew was made must not take it off the Room panel. (`crew` itself is the
+  // game's, and comes with the save, which is the lobby's crew's own.)
+  "crews",
 ] as const satisfies readonly (keyof RunState)[];
 
 /** The first sentence of `text`, trimmed to one breath. */

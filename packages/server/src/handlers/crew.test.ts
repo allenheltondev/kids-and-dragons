@@ -10,7 +10,7 @@ import { loadContent } from "../content/loader.ts";
 import type { Engine } from "../engine/port.ts";
 import { makeHarness, seedHousehold } from "../test-support.ts";
 import { applyAction } from "./action.ts";
-import { followCrew, MAX_CREWS, nextCrewName, parseCrewChoice, switchCrew, CREW_NAMES } from "./crew.ts";
+import { followCrew, MAX_CREWS, parseCrewChoice, switchCrew, CREW_NAMES } from "./crew.ts";
 import { createRoom, joinRoom } from "./room.ts";
 import { resumeGame, stopForToday } from "./save.ts";
 
@@ -195,6 +195,8 @@ describe("a new crew at the same household", () => {
     const evening = await room(h);
     for (let i = 0; i < MAX_CREWS; i++) {
       expect((await switchCrew({ code: evening.code, principal: host(h), crew: "new" }, h.harness.deps)).ok).toBe(true);
+      // Back to the first crew, or the next "new" is this unplayed crew again.
+      expect((await switchCrew({ code: evening.code, principal: host(h), crew: null }, h.harness.deps)).ok).toBe(true);
     }
     expect(await switchCrew({ code: evening.code, principal: host(h), crew: "new" }, h.harness.deps)).toMatchObject({
       ok: false,
@@ -221,6 +223,73 @@ async function crewStops(h: Household): Promise<string> {
 
 const heroId = async (h: Household, name: string) =>
   (await h.harness.repo.listCharacters(h.householdId)).find((c) => c.name === name)!.id;
+
+describe("making a crew is safe to retry and to race", () => {
+  const newCrew = (h: Household, code: string) => switchCrew({ code, principal: host(h), crew: "new" }, h.harness.deps);
+
+  it("answers a repeated tap with the crew it already made", async () => {
+    const h = await household();
+    const evening = await room(h);
+    const first = await newCrew(h, evening.code);
+    const again = await newCrew(h, evening.code);
+    expect(first).toMatchObject({ ok: true, value: { crew: "cw_1" } });
+    expect(again).toMatchObject({ ok: true, value: { crew: "cw_1" } });
+    expect((await h.harness.repo.listCrews(h.householdId)).map((c) => c.id)).toEqual(["cw_1"]);
+  });
+
+  it("makes another once the new crew has begun an adventure", async () => {
+    const h = await household();
+    await crewStops(h);
+    const evening = await room(h);
+    await switchCrew({ code: evening.code, principal: host(h), crew: "cw_1" }, h.harness.deps);
+    expect(await newCrew(h, evening.code)).toMatchObject({ ok: true, value: { crew: "cw_2" } });
+  });
+
+  it("leaves no crew behind when the lobby change does not land", async () => {
+    const h = await household();
+    const evening = await room(h);
+    h.harness.repo.commit = async () => false;
+    expect(await newCrew(h, evening.code)).toMatchObject({ ok: false, error: { code: "STALE_SEQ" } });
+    expect(await h.harness.repo.listCrews(h.householdId)).toEqual([]);
+    expect((await h.harness.repo.getState(evening.runId))!.crew).toBeUndefined();
+  });
+
+  it("gives two rooms starting a crew at once a slot and a name each", async () => {
+    const h = await household();
+    const one = await room(h);
+    const two = await createRoom(
+      { householdId: h.householdId, mode: "party", campaignId: GEMFALL, hostDeviceId: h.players[1]!.principal.deviceId },
+      h.harness.deps,
+    );
+    if (!two.ok) throw new Error("room");
+    const [a, b] = await Promise.all([
+      newCrew(h, one.code),
+      switchCrew({ code: two.value.code, principal: h.players[1]!.principal, crew: "new" }, h.harness.deps),
+    ]);
+    expect(a.ok && b.ok).toBe(true);
+    const crews = await h.harness.repo.listCrews(h.householdId);
+    expect(crews.map((c) => c.id).sort()).toEqual(["cw_1", "cw_2"]);
+    expect(new Set(crews.map((c) => c.name)).size).toBe(2);
+    const picked = [a.ok ? a.value.crew : null, b.ok ? b.value.crew : null].sort();
+    expect(picked).toEqual(["cw_1", "cw_2"]);
+  });
+
+  it("keeps the crews a resumed save never knew about (review #571)", async () => {
+    const h = await household();
+    await familyStops(h);
+    const evening = await room(h);
+    await newCrew(h, evening.code);
+    await switchCrew({ code: evening.code, principal: host(h), crew: null }, h.harness.deps);
+
+    const kid = await sit(h, evening.code, evening.runId, 1);
+    const resumed = await resumeGame({ runId: evening.runId, playerId: kid.playerId, householdId: h.householdId }, h.harness.deps);
+    expect(resumed.ok).toBe(true);
+    const playing = await kid.state();
+    expect(playing.saved).toBeUndefined();
+    expect(playing.chapterInfo?.index).toBe(1);
+    expect(playing.crews).toEqual([{ id: "cw_1", name: CREW_NAMES[0] }]);
+  });
+});
 
 describe("the lobby follows the kids", () => {
   it("switches to a returning crew the moment one of its heroes sits down", async () => {
@@ -308,12 +377,6 @@ describe("the lobby follows the kids", () => {
 });
 
 describe("crew names and bodies", () => {
-  it("names a crew with the first name nobody has, then counts", () => {
-    expect(nextCrewName([])).toBe(CREW_NAMES[0]);
-    expect(nextCrewName([CREW_NAMES[0]])).toBe(CREW_NAMES[1]);
-    expect(nextCrewName([...CREW_NAMES])).toBe(`Crew ${CREW_NAMES.length + 2}`);
-  });
-
   it("reads only a crew id, null or new", () => {
     expect(parseCrewChoice({ crew: null })).toBeNull();
     expect(parseCrewChoice({ crew: "new" })).toBe("new");

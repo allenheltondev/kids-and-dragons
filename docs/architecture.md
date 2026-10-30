@@ -100,7 +100,7 @@ Single DynamoDB table, `kad`. Composite key `PK` / `SK`, one GSI (`GSI1PK` / `GS
 | Character | `HH#<hhId>` | `CHAR#<charId>` | Owned by a playerId, and stored under that kid's **home** household wherever she plays (§4.5, "Who owns what"), a visitor's included (#249, "Visitors"). Persistent across campaigns. See §3.1. |
 | Campaign run | `HH#<hhId>` | `RUN#<runId>` | One playthrough of one campaign. |
 | Campaign attempt | `HH#<hhId>` | `CAMPAIGN#<campaignId>` | The household's attempt at one campaign across evenings: status, setbacks, route flags, coins, a graph campaign's journey (`CampaignProgressRecord`). |
-| Crew | `HH#<hhId>` | `CREW#<crewId>` | A second group of players at the household, with saves of its own: id, a name from a fixed list, when it was made. Its attempts are `CREWSAVE#<crewId>#<campaignId>`, beside the first crew's `CAMPAIGN#` rows. See §4.5, "Crews". |
+| Crew | `HH#<hhId>` | `CREW#<crewId>` | A second group of players at the household, with saves of its own: id (a slot, `cw_1`…), a name from a fixed list, when it was made. Written only in a lobby's commit. Its attempts are `CREWSAVE#<crewId>#<campaignId>`, beside the first crew's `CAMPAIGN#` rows. See §4.5, "Crews". |
 | Field Guide | `HH#<hhId>` | `FIELDGUIDE` | The household's permanent record of discoveries: `entries` keyed by canon id → `{ firstFoundBy, foundAt, runId? }`. One item, written with per-key `if_not_exists` so the first finder always wins and concurrent writers merge. Versioned (`FIELD_GUIDE_VERSION`). |
 | Chapter progress | `RUN#<runId>` | `CHAPTER#<n>` | Status, branch taken, XP earned. |
 | Game state | `RUN#<runId>` | `STATE` | Current authoritative snapshot. Single item. |
@@ -1671,10 +1671,17 @@ and every device stay the household's, so anyone may sit down with any crew.
   in another crew's Gemfall, and `claimIsLive` reads the right attempt.
 - **Choosing is a host control** (`POST /api/room/:code/crew`, `{ crew: id |
   null | "new" }`): low stakes, since it only changes which saves the lobby
-  offers, and "new" only adds an empty crew. Only between games, only once a
-  phone has settled a TV's room (before that there is no household to have
-  crews), and at most `MAX_CREWS`. The lobby is rebuilt in the same commit, so
-  votes on the old list go. `RunState.crews` lists the others for the Room
+  offers, and "new" only adds an empty crew. Only between games, and only once
+  a phone has settled a TV's room (before that there is no household to have
+  crews). The lobby is rebuilt in the same commit, so votes on the old list go.
+- **A new crew lands with the lobby that switches to it, or not at all.** Its
+  row rides the run's commit (`CommitInput.crew`), so a start that wins the
+  race or retries that run out leave no crew behind. Its id is the first free
+  slot (`cw_1` to `cw_<MAX_CREWS>`, one per name), put only if absent: two
+  rooms making a crew at once take different slots (the loser's commit fails
+  and its retry reads again), and the slots are the cap. "New" on a lobby
+  already on a crew that has begun nothing answers with that crew, so a
+  client retrying a lost response does not make a second. `RunState.crews` lists the others for the Room
   panel, and is absent while the household has only its first.
 
 **The lobby follows the kids** (`followCrew`, run beside `relockLobby`
