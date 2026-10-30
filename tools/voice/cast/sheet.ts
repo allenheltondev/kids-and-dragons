@@ -841,6 +841,21 @@ export function buildSheet(sources: Sources, previous: CastSheet | null, untagge
       return { id: speaker.id, names: [...speaker.names, ...mine] };
     }));
   }
+  // Someone the campaign names who is not cast in this chapter can still be tagged in it ("says Voss"): the narration
+  // names them. Only by their own name, never a role word, and never a name someone else in the chapter answers to.
+  const campaignOf = new Map(sources.chapters.map((chapter) => [chapter.id, chapter.campaignId]));
+  for (const chapter of narrationByChapter.keys()) {
+    const campaign = campaignOf.get(chapter);
+    const here = inChapter.get(chapter) ?? [];
+    const taken = new Set(here.flatMap((speaker) => speaker.names.map((name) => name.toLowerCase())));
+    const visiting: Speaker[] = [];
+    for (const draft of drafts) {
+      if (draft.generic || isRoleName(draft.name) || draft.chapters.has(chapter) || campaign === undefined || !draft.campaigns.has(campaign)) continue;
+      const names = namesFor(draft).filter((name) => name.length >= 4 && /^[A-Z]/.test(name) && !taken.has(name.toLowerCase()));
+      if (names.length > 0) visiting.push({ id: draft.id, names });
+    }
+    if (visiting.length > 0) inChapter.set(chapter, [...here, ...visiting]);
+  }
   for (const [chapter, lines] of narrationByChapter) {
     const present = inChapter.get(chapter) ?? [];
     for (const line of lines) {
