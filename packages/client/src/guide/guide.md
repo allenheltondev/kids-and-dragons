@@ -79,7 +79,7 @@ Tap **Players** to open the list of everyone in the room, as the picture shows i
 - **Quiet mode**: "Softer sound, less motion and dimmer screens for everyone." It turns on for every phone in the room at once. **Turn quiet mode off** ends it.
 - **Make keeper**: Picks which phone is offered to keep the heroes. See the accounts and devices guide.
 - **Stop for today**: Saves the game for next time.
-- **Crews**: Open it, then tap **New players? Start a new crew** to start separate saves. Phones stay connected for new heroes. Existing heroes and adventures stay saved.
+- **Crews**: Open it, then tap **New players? Start a new crew** to start separate saves. Phones stay connected for new heroes. Existing heroes and adventures stay saved. Tap **Change crew** on the lobby screen to go straight there. To go back to another crew, tap **Play as** and its name: each crew keeps its place in its own adventure. Tap **Rename this crew** to pick a different name from the list.
 - **Close the room**: Ends it for everyone, after one more tap on **Close it**. "Heroes and what they earned are kept."
 
 ## When a kid leaves or arrives partway

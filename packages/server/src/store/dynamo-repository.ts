@@ -77,6 +77,7 @@ import {
   CAMPAIGN_SK,
   CREW_SK,
   CREWSAVE_PREFIX,
+  FIRSTCREW,
   CHAPTER_SK,
   CHAR_SK,
   DEVICE_SK,
@@ -1356,6 +1357,22 @@ export class DynamoRepository implements GameRepository {
       ConsistentRead: true,
     });
     return items.map((i) => i.data as CrewRecord).sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+  }
+
+  async renameCrew(householdId: string, crew: string | null, name: string): Promise<boolean> {
+    if (crew === null) {
+      await this.put({ PK: HH(householdId), SK: FIRSTCREW, entity: "crew", data: { name } });
+      return true;
+    }
+    const item = await this.get(HH(householdId), CREW_SK(crew), true);
+    if (!item) return false;
+    await this.put({ ...item, data: { ...(item.data as CrewRecord), name } });
+    return true;
+  }
+
+  async getFirstCrewName(householdId: string): Promise<string | null> {
+    const item = await this.get(HH(householdId), FIRSTCREW, true);
+    return (item?.data as { name?: string } | undefined)?.name ?? null;
   }
 
   async getFieldGuide(householdId: string): Promise<FieldGuideRecord> {

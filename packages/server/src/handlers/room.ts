@@ -217,6 +217,9 @@ export async function offerCampaigns(
   const crews = await listCrewViews(householdId, deps);
   if (crews.length > 0) state.crews = crews;
   else delete state.crews;
+  const firstName = await firstCrewName(householdId, deps);
+  if (firstName !== null) state.firstCrewName = firstName;
+  else delete state.firstCrewName;
   // A campaign the crew has under way is what the picker rests on, the most
   // recently played first; with none, the first startable one.
   const attempts = await deps.repo.listCampaignProgress(householdId, crew);
@@ -239,6 +242,16 @@ async function listCrewViews(householdId: string, deps: HandlerDeps): Promise<Cr
   } catch (err) {
     console.error(`crews: could not list ${householdId}'s crews:`, err);
     return [];
+  }
+}
+
+/** What the household named its first crew, or null: a failed lookup leaves it on the default. */
+async function firstCrewName(householdId: string, deps: HandlerDeps): Promise<string | null> {
+  try {
+    return await deps.repo.getFirstCrewName(householdId);
+  } catch (err) {
+    console.error(`crews: could not read ${householdId}'s first crew name:`, err);
+    return null;
   }
 }
 

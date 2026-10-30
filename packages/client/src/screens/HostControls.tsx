@@ -37,7 +37,7 @@ import { inviteData, joinUrl, shareInvite, type ShareOutcome } from "../ui/share
 import { Icon } from "./icons";
 import { SignInFlow } from "./SignInFlow";
 import { LET_GO_NOTE, STOP_CONFIRM, STOP_OFFER } from "./save-copy";
-import { crewChoices } from "./crew-copy";
+import { CREW_NAMES, crewChoices } from "./crew-copy";
 import { CrewIdentity } from "./CrewIdentity";
 import "./HostControls.css";
 
@@ -554,6 +554,8 @@ function CrewSwitch({
   empty: boolean;
 }): React.JSX.Element {
   const switchCrew = useGameStore((store) => store.switchCrew);
+  const renameCrew = useGameStore((store) => store.renameCrew);
+  const [renaming, setRenaming] = useState(false);
   const { current, others } = crewChoices(state);
   if (empty) {
     return (
@@ -572,6 +574,28 @@ function CrewSwitch({
   return (
     <div className="kad-host__crew" role="group" aria-label="Which crew is playing">
       <CrewIdentity name={current} />
+      {renaming ? (
+        <div className="kad-host__crew-names" role="group" aria-label="Pick a name for this crew">
+          {CREW_NAMES.filter((name) => name === current || !others.some((crew) => crew.name === name)).map((name) => (
+            <Button
+              key={name}
+              variant={name === current ? "primary" : "ghost"}
+              size="md"
+              disabled={busy || name === current}
+              onClick={() => void run(() => renameCrew(state.crew ?? null, name)).then(() => setRenaming(false))}
+            >
+              {name}
+            </Button>
+          ))}
+          <Button variant="ghost" size="md" disabled={busy} onClick={() => setRenaming(false)}>
+            Keep the name
+          </Button>
+        </div>
+      ) : (
+        <Button variant="ghost" size="md" block disabled={busy} onClick={() => setRenaming(true)}>
+          Rename this crew
+        </Button>
+      )}
       <p className="kad-host__hint">Your other crew&rsquo;s adventure stays saved. Existing heroes are kept.</p>
       {others.map((crew) => (
         <Button

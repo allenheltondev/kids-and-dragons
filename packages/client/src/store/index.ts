@@ -1484,6 +1484,10 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         return hostControl("crew", { crew, request: tapId() }, "Could not start a new crew.");
       },
 
+      renameCrew(crew: string | null, name: string) {
+        return hostControl("crewname", { crew, name }, "Could not rename the crew.");
+      },
+
       closeRoom() {
         return hostControl("close", {}, "Could not close the room.");
       },
