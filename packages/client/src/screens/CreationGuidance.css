@@ -32,16 +32,17 @@
 
 .creation__foot--guided[data-first-step] > .kad-button { grid-column: 1 / -1; }
 
-/* At large text on a narrow phone, preserve both labels with full-width
-   buttons instead of giving the primary action half a line to squeeze into. */
-@container (max-width: 19em) {
-  .creation__foot.creation__foot--guided { grid-template-columns: minmax(0, 1fr); }
+/* Keep one action row even on the smallest phone: the existing narrow-pane
+   Back arrow retains its accessible label, while the primary gets the rest.
+   Stacking both actions consumes the scroll area at the largest text size. */
 
-  .creation__foot--guided > .kad-button--ghost .kad-button__label {
-    position: static;
-    inline-size: auto;
-    block-size: auto;
-    clip-path: none;
-    overflow: visible;
-  }
+@container (max-width: 19em) {
+  /* Leave actual choice space on short phones at large text. The chosen
+     hero's name and portrait remain; its descriptive line can scroll below. */
+  .creation__head { gap: 0.3em; padding-block: 0.4em; }
+  .creation__title { font-size: 1.2em; }
+  .creation__pip { inline-size: 1.6em; block-size: 1.6em; }
+  .creation-hero { padding-block: 0.3em; }
+  .creation-hero__art { inline-size: 2em; block-size: 2em; }
+  .creation-hero__meta { display: none; }
 }

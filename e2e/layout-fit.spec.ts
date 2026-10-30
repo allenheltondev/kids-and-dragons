@@ -687,7 +687,7 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
       const bounds = member.getBoundingClientRect();
       return { top: bounds.top, bottom: bounds.bottom };
     }));
-    expect(cards.every(card => card.top >= 0 && card.bottom <= 720)).toBe(true);
+    expect(cards.every(card => card.top >= 0 && card.bottom <= 720), JSON.stringify(cards)).toBe(true);
     expect(await tv.locator(".lobby__lineup").evaluate(lineup => lineup.scrollHeight <= lineup.clientHeight + 1)).toBe(true);
   });
 
