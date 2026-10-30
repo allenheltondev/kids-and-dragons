@@ -112,6 +112,7 @@ ${MODE_CSS}</style>
   </div>
 </header>
 <main id="cards"></main>
+<datalist id="accent-list"></datalist>
 <script type="application/json" id="boot">${boot}</script>
 <script>
 (() => {
@@ -177,6 +178,9 @@ ${MODE_CSS}</style>
   }
   const linesLabel = (entry) => { const n = entry.lineCount || 0; return n + " line" + (n === 1 ? "" : "s"); };
   const campaignsOf = (entry) => [...new Set(entry.chapters.map((c) => data.chapterCampaigns[c]).filter(Boolean))];
+
+  // The accents on offer, for any accent box to suggest from: nobody has to keep General American.
+  document.getElementById("accent-list").replaceChildren(...data.accents.map((a) => el("option", { value: a.label, label: a.group + " · " + a.note })));
 
   // ---- Header controls ----
   KadMode.mountSwitch({
@@ -299,7 +303,7 @@ ${MODE_CSS}</style>
       voice.addEventListener("change", () => pick(voice.value));
     }
     const count = mine ? KadMode.uses(data.speakers, mode)[mine] || 1 : 0;
-    const accent = el("input", { value: entry.accent || "", placeholder: "Accent: " + data.accent, "aria-label": entry.name + " accent" });
+    const accent = el("input", { value: entry.accent || "", placeholder: "Accent: " + data.accent, "aria-label": entry.name + " accent", list: "accent-list" });
     accent.addEventListener("change", async () => { await save(id, { accent: accent.value }); await refresh(); });
 
     // A decision and the words that go with it: kept in the character's history and the review.
