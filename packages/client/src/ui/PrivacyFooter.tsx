@@ -6,7 +6,8 @@
  * Both links open in a tab of their own, so a kid partway through naming a hero loses nothing by
  * tapping one, and neither page needs an account or a room. The guide leaves itself out of its own
  * footer (`guide={false}`). `compact` drops the copyright line while a phone waits in the lobby.
- * PhoneFrame puts that footer below the navigation; hero creation and play leave it out.
+ * PhoneFrame keeps pregame links below navigation, including while making a hero.
+ * The footer disappears once the adventure starts.
  */
 
 import type { ReactElement } from "react";

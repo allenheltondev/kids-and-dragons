@@ -671,6 +671,26 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     return { tv, kid, code };
   }
 
+  test("the shared lobby keeps four hero portraits and whole names visible at 720p", async ({ browser }) => {
+    const table = await seedTable({ mode: "party", tv: true, heroes: [
+      { name: "Sparklehoof", species: "unicorn" }, { name: "Bramble", species: "bigfoot" },
+      { name: "Feather", species: "griffin" }, { name: "Ember", species: "dragonling" },
+    ] });
+    const context = await browser.newContext({ viewport: { width: 1280, height: 720 }, storageState: tvStorage(table) });
+    open.push(context);
+    const tv = await context.newPage();
+    await tv.goto(`/tv/${table.code}`);
+    await onAir(tv);
+    await expect(tv.locator(".lobby-member")).toHaveCount(4);
+    await expectFits(tv, "the shared screen's full lobby", [SHARED[0]!]);
+    const cards = await tv.locator(".lobby-member").evaluateAll(members => members.map(member => {
+      const bounds = member.getBoundingClientRect();
+      return { top: bounds.top, bottom: bounds.bottom };
+    }));
+    expect(cards.every(card => card.top >= 0 && card.bottom <= 720)).toBe(true);
+    expect(await tv.locator(".lobby__lineup").evaluate(lineup => lineup.scrollHeight <= lineup.clientHeight + 1)).toBe(true);
+  });
+
   test("the shared screen: its corner row (Room, About this screen, Tap for sound) keeps off the lobby, the story and a rank-up", async ({ browser }) => {
     test.setTimeout(240_000);
     const { tv, kid, code } = await sharedScreen(browser);

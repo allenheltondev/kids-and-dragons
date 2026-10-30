@@ -64,7 +64,11 @@
   .kad-party--world .lobby__gather .lobby__qr { inline-size: 6em; block-size: 6em; }
   .kad-party--world .lobby__gather .lobby__join-step { flex: 0 0 auto; font-size: 0.8em; }
   .kad-party--world .lobby__gather .lobby__party { inline-size: 100%; align-self: stretch; }
-  .kad-party--world .lobby__lineup { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* Two cards fit a TV at ordinary text size. At larger text, let a card
+     take the row before the portrait squeezes a hero's name into fragments. */
+  .kad-party--world .lobby__lineup {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14em), 1fr));
+  }
 }
 
 .lobby__place {
