@@ -2,9 +2,13 @@
 
 How to run a session, for a grown-up who has never seen the game (#257).
 
-- **The words** are [packages/client/src/guide/guide.md](../../packages/client/src/guide/guide.md).
-  GitHub shows that file with its pictures, so it doubles as the printable source.
-- **In the app** it is `/guide`, linked from the start screen's host card and from a family
+- **The words** are two files. [guide.md](../../packages/client/src/guide/guide.md) is tonight:
+  the quick start, hosting, seating the kids and playing (`/guide`, about ten minutes).
+  [setup.md](../../packages/client/src/guide/setup.md) is look-up for the grown-up's errands:
+  accounts, a shared tablet, a new device, visitors, groups and deleting (`/guide/setup`).
+  Each page links to the other; setup's sections sit in `<!-- part: Name -->` groups.
+  GitHub shows both with their pictures, so they double as the printable source.
+- **In the app** the first is `/guide`, linked from the start screen's host card and from a family
   tablet's "Who's playing?" screen. It loads as its own chunk, never with the
   first paint.
 - **To print**, open `/guide` and tap **Print this guide**. The print styles drop

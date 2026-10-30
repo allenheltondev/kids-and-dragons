@@ -9,6 +9,7 @@
  *   /journal            → <JournalScreen/> (between games: nothing to play,
  *                         everything to look at — no room, no session)
  *   /guide              → <GuideScreen/> (the grown-up's guide, #257)
+ *   /guide/setup        → <SetupGuideScreen/> (its accounts, devices and groups half)
  *   /privacy            → <PrivacyScreen/> (the privacy policy, #523)
  *   /account            → <AccountScreen/> (sign-in, devices, tablets, groups)
  *   /tv/:code           → PartyLayout world  (a pure display client, spec §2.1)
@@ -120,6 +121,7 @@ const JournalScreen = lazyChunk(() => import("./screens/JournalScreen"), (module
 // The grown-up's guide (`/guide`, #257): words and pictures nobody on the join
 // screen is waiting for, so a chunk of its own.
 const GuideScreen = lazyChunk(() => import("./guide/GuideScreen"), (module) => module.default);
+const SetupGuideScreen = lazyChunk(() => import("./guide/GuideScreen"), (module) => module.SetupGuideScreen);
 
 // Accounts and devices (`/account`): the grown-up's errands, kept off the join
 // screen and out of its chunk.
@@ -292,6 +294,15 @@ export function App(): React.JSX.Element {
         <ChunkBoundary message="The guide couldn’t open.">
           <Suspense fallback={<div className="kad-boot"><Spinner size="lg" label="Opening the guide" showLabel /></div>}>
             <GuideScreen />
+          </Suspense>
+        </ChunkBoundary>
+      );
+    }
+    if (route.name === "guideSetup") {
+      return (
+        <ChunkBoundary message="The guide couldn’t open.">
+          <Suspense fallback={<div className="kad-boot"><Spinner size="lg" label="Opening the guide" showLabel /></div>}>
+            <SetupGuideScreen />
           </Suspense>
         </ChunkBoundary>
       );

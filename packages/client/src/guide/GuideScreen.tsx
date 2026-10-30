@@ -1,8 +1,10 @@
 /**
  * GuideScreen (`/guide`, #257): how to run a session, for a grown-up who has
- * never seen the game.
+ * never seen the game. Its other half, `/guide/setup`, is the errands that need
+ * a grown-up (accounts, a shared tablet, visitors, groups, deleting); nobody
+ * needs it to play, so it is a page of its own that the first one points to.
  *
- * The words are `guide.md` beside this file, the one source for the screen,
+ * The words are `guide.md` and `setup.md` beside this file, the one source for the screen,
  * the printed page and the copy GitHub shows. The pictures are real screens,
  * taken by the e2e specs (`npm run guide:pictures`, docs/guide/README.md) and
  * served from `/guide-pictures/`. The whole screen is a lazy chunk: nobody on
@@ -21,11 +23,12 @@
 
 import { Fragment, useEffect, useMemo, useRef } from "react";
 import type { ReactElement } from "react";
-import { navigate } from "../router";
+import { navigate, type Route } from "../router";
 import { Button } from "../ui/Button";
 import { Icon } from "../screens/icons";
 import { parseGuide, type Block, type Inline, type Section } from "./markdown";
 import source from "./guide.md?raw";
+import setupSource from "./setup.md?raw";
 import "./GuideScreen.css";
 import { PrivacyFooter } from "../ui/PrivacyFooter";
 
@@ -163,9 +166,42 @@ function SectionCard({ section, number, first, partStart }: { section: Section; 
   );
 }
 
-export function GuideScreen(): ReactElement {
-  const guide = useMemo(() => parseGuide(source), []);
+type Page = "play" | "setup";
+
+/** The two pages of the guide: where each lives, what it is called and what it is for. */
+const PAGES: Record<Page, { route: Route; href: string; label: string; blurb: string }> = {
+  play: { route: { name: "guide" }, href: "/guide", label: "Running a game", blurb: "Hosting, seating the kids and playing tonight." },
+  setup: {
+    route: { name: "guideSetup" },
+    href: "/guide/setup",
+    label: "Accounts, devices and groups",
+    blurb: "Keeping heroes, a shared tablet, visitors, groups and deleting.",
+  },
+};
+
+/** A link between the guide's pages: a plain link that opens in place, so it also works to open in a new tab. */
+function PageLink({ page, className, current, children }: { page: Page; className: string; current?: boolean; children: React.ReactNode }): ReactElement {
+  const { href, route } = PAGES[page];
+  return (
+    <a
+      className={`${className} kad-focusable`}
+      href={href}
+      aria-current={current ? "page" : undefined}
+      onClick={(event) => {
+        if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        navigate(route);
+      }}
+    >
+      {children}
+    </a>
+  );
+}
+
+function GuideDocument({ page, markdown }: { page: Page; markdown: string }): ReactElement {
+  const guide = useMemo(() => parseGuide(markdown), [markdown]);
   const contents = useRef<HTMLDetailsElement>(null);
+  const other: Page = page === "play" ? "setup" : "play";
 
   useEffect(() => {
     const before = document.title;
@@ -199,6 +235,8 @@ export function GuideScreen(): ReactElement {
     },
     [],
   );
+  // One part is no grouping at all: its name would only repeat the page's.
+  const grouped = parts.length > 1;
 
   return (
     <main className="guide" aria-labelledby="guide-title">
@@ -211,6 +249,15 @@ export function GuideScreen(): ReactElement {
             Print this guide
           </Button>
         </div>
+
+        <nav className="guide__pages" aria-label="Guide pages">
+          {(["play", "setup"] as const).map((id) => (
+            <PageLink key={id} page={id} current={id === page} className={`guide__page-tab${id === page ? " guide__page-tab--on" : ""}`}>
+              <span className="guide__page-label">{PAGES[id].label}</span>
+              <span className="guide__page-blurb">{PAGES[id].blurb}</span>
+            </PageLink>
+          ))}
+        </nav>
 
         <header className="guide__hero">
           <h1 className="guide__title" id="guide-title">
@@ -225,7 +272,7 @@ export function GuideScreen(): ReactElement {
               <summary className="guide__contents-toggle kad-focusable">In this guide</summary>
               {parts.map((part, p) => (
                 <Fragment key={part.name ?? p}>
-                  {part.name !== null ? <p className="guide__contents-part">{part.name}</p> : null}
+                  {grouped && part.name !== null ? <p className="guide__contents-part">{part.name}</p> : null}
                   <ul className="guide__contents-list">
                     {part.sections.map(({ section }) => (
                       <li key={section.id}>
@@ -246,10 +293,15 @@ export function GuideScreen(): ReactElement {
                 key={section.id}
                 section={section}
                 number={i + 1}
-                first={i === 0}
-                partStart={i === 0 || guide.sections[i - 1]?.part !== section.part}
+                first={page === "play" && i === 0}
+                partStart={grouped && (i === 0 || guide.sections[i - 1]?.part !== section.part)}
               />
             ))}
+            <PageLink page={other} className="guide__next">
+              <span className="guide__next-kicker">{page === "play" ? "Next" : "Back to"}</span>
+              <span className="guide__next-label">{PAGES[other].label}</span>
+              <span className="guide__next-blurb">{PAGES[other].blurb}</span>
+            </PageLink>
           </div>
         </div>
 
@@ -262,6 +314,14 @@ export function GuideScreen(): ReactElement {
       </article>
     </main>
   );
+}
+
+export function GuideScreen(): ReactElement {
+  return <GuideDocument page="play" markdown={source} />;
+}
+
+export function SetupGuideScreen(): ReactElement {
+  return <GuideDocument page="setup" markdown={setupSource} />;
 }
 
 export default GuideScreen;

@@ -25,6 +25,13 @@ describe("parseRoute", () => {
     expect(routeCode({ name: "journal" })).toBeNull();
   });
 
+  it("maps /guide/setup, the guide's accounts and groups half", () => {
+    expect(parseRoute("/guide/setup")).toEqual({ name: "guideSetup" });
+    expect(formatRoute({ name: "guideSetup" })).toBe("/guide/setup");
+    expect(routeCode({ name: "guideSetup" })).toBeNull();
+    expect(parseRoute("/guide/other")).toEqual({ name: "notFound", path: "/guide/other" });
+  });
+
   it("maps /guide, which needs nothing at all (#257)", () => {
     expect(parseRoute("/guide")).toEqual({ name: "guide" });
     expect(parseRoute("/guide/")).toEqual({ name: "guide" });
