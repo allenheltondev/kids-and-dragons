@@ -648,3 +648,22 @@
   font-size: var(--font-size-md, 1em);
   font-weight: 600;
 }
+
+/*
+ * What a choice leads to (shared `choiceAhead`): a small gold tag after the label, "Quick roll",
+ * "Game", "Fight". Smaller than the label and in the accent, so it reads as a note on the option
+ * rather than a second option.
+ */
+.narration__ahead {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2em;
+  margin-inline-start: 0.2em;
+  padding: 0.05em 0.5em;
+  border-radius: var(--radius-pill, 999em);
+  background: rgb(245 200 108 / 16%);
+  color: var(--color-accent, #f5c86c);
+  font-size: 0.72em;
+  font-weight: 700;
+  white-space: nowrap;
+}

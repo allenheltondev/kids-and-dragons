@@ -14,6 +14,7 @@ import type { FactId, FactValue, JourneyView, NodeId } from "./campaign-graph.js
 import type { BuffId, CheckBuffOffer, RunBuff } from "./buffs.js";
 import type { MatchupNote } from "./matchups.js";
 import type { NarrationPart } from "../narration.js";
+import type { ChoiceAhead } from "../choice-ahead.js";
 
 export type RoomMode = "party" | "travel";
 
@@ -155,7 +156,17 @@ export type Prompt =
        * Choices already filtered for party eligibility (`requires*` and
        * `when`), with label tokens already filled (#159).
        */
-      options: { id: string; label: string; icon: string }[];
+      options: {
+        id: string;
+        label: string;
+        icon: string;
+        /**
+         * What picking it leads to: a roll, a game or a fight
+         * (choice-ahead.ts), drawn as a badge beside the label. Absent when it
+         * leads to more story, and on prompts opened before options said.
+         */
+        ahead?: ChoiceAhead;
+      }[];
       /** Empty means anyone may answer. */
       forPlayerIds: string[];
       /** choice_point scenes tally votes rather than taking the first answer. */

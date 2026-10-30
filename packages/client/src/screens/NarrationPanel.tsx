@@ -24,6 +24,7 @@ import { fitPlate, unfitPlate } from "./fit-plate";
 import { Icon } from "./icons";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { ClassToken } from "./ClassToken";
+import { aheadBadge } from "./choice-ahead-copy";
 import { VoteTicks } from "./VoteTicks";
 import { ClassPlaceRoll } from "./ClassPlace";
 import { checkPlan } from "./DiceOverlay";
@@ -591,6 +592,7 @@ export function NarrationPanel(): ReactElement | null {
               // name appearing and disappearing cannot rewrap the label. A group
               // vote never lights (see `voting`); a single kid's pick does.
               const leaningNow = !voting && (leaning.choices[choice.id] ?? []).length > 0;
+              const ahead = aheadBadge(choice.ahead);
               // A locked vote is a tick in the voter's color, the same as on
               // the phones (PlayerPanel): a seat per voter, drawn from the
               // start, so a vote landing cannot grow the pill and rewrap the row.
@@ -607,6 +609,13 @@ export function NarrationPanel(): ReactElement | null {
                 >
                   <Icon name={choice.icon} />
                   <span>{choice.label}</span>
+                  {/* What picking it leads to: a roll, a game or a fight. */}
+                  {ahead === null ? null : (
+                    <span className="narration__ahead" data-testid="choice-ahead">
+                      <Icon name={ahead.icon} />
+                      <span>{ahead.text}</span>
+                    </span>
+                  )}
                   {prompt?.kind === "choice" && prompt.vote ? (
                     <VoteTicks
                       className="narration__voters"

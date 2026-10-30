@@ -84,6 +84,7 @@ import { CharacterSheet } from "./CharacterSheet";
 import { XpMeter } from "./XpMeter";
 import { ClassToken, SpareTokens, TokenCard, TokenGlyph, tokenName } from "./ClassToken";
 import { Icon } from "./icons";
+import { aheadBadge } from "./choice-ahead-copy";
 import { ChapterGoalCard } from "./ChapterGoal";
 import { CheckMatchupBadges } from "./MatchupHints";
 import { useSideBySide } from "../layout/landscape";
@@ -1162,6 +1163,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                   .filter(([, choiceId]) => choiceId === option.id)
                   .map(([playerId]) => playerId);
                 const selected = pendingChoice === option.id || myVote === option.id;
+                const ahead = aheadBadge(option.ahead);
                 return (
                   <li key={option.id} className={readAloud ? "prompt__option--hear" : undefined}>
                     <button
@@ -1174,7 +1176,16 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                       <span className="choice__icon">
                         <Icon name={option.icon} size="1.8em" />
                       </span>
-                      <span className="choice__label">{option.label}</span>
+                      <span className="choice__label">
+                        {option.label}
+                        {/* What picking it leads to: a roll, a game or a fight. */}
+                        {ahead === null ? null : (
+                          <span className="choice__ahead" data-testid="choice-ahead">
+                            <Icon name={ahead.icon} />
+                            <span>{ahead.text}</span>
+                          </span>
+                        )}
+                      </span>
                       <span className="choice__trail">
                         {/* The seats are always here; only the check and the
                             ticks come and go, so somebody else voting cannot
