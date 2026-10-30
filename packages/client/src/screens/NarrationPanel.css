@@ -169,10 +169,48 @@
   mask-image: linear-gradient(to bottom, #000 calc(100% - 1.5em), transparent);
 }
 
+/*
+ * Whose turn it is: the owner of this moment, face and name, in the accent gold. The one thing
+ * on the plate the room has to find from across it, so it is the loudest thing after the story
+ * (and louder than what was picked to get here, which is a quiet line of record above it).
+ */
 .narration__turn {
-  margin: 0 0 0.5em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  max-inline-size: 100%;
+  margin: 0 0 0.4em;
+  padding: 0.15em 0.9em 0.15em 0.2em;
+  border: 0.1em solid var(--color-accent, #ffc95c);
+  border-radius: var(--radius-pill, 999em);
+  background: rgb(var(--kad-bg-rgb) / 70%);
+  color: var(--color-accent, #ffc95c);
+  font-size: max(calc(var(--font-size-xl, 1.5em) * var(--fit-story, 1)), calc(1em / var(--kad-text-scale, 1)));
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.narration__turn b {
+  color: var(--color-text, #f4f0ff);
+  font-weight: 800;
+}
+
+.narration__turn-face {
+  flex: 0 0 auto;
+  inline-size: 1.6em;
+  block-size: 1.6em;
+}
+
+/* What was picked to get here: one quiet line, dim and small, no box. */
+.narration__decision {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1, 0.25em);
+  margin: 0 0 0.3em;
   color: var(--kad-ink-dim);
-  font-size: 0.85em;
+  font-size: var(--font-size-sm, 0.875em);
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
@@ -381,13 +419,11 @@
  * fighter's half-made pick in a fight. The same cyan the board rings its aim
  * in (world/board.ts AIM_COLOR), so "about to" reads as one mark everywhere.
  */
+/* A single kid leaning on an option: a light, not a show. The turn line says whose call it is;
+   this only says which way they are looking, so it stays a thin rim with no glow or pulse. */
 .narration__choice--picked {
   border-color: #6fe6ff;
-  /* The thicker rim is an outline, not a wider border: a border would grow
-     the pill and rewrap the row every time somebody leaned on a choice. */
-  outline: 0.08em solid #6fe6ff;
-  background: rgba(111, 230, 255, 0.14);
-  box-shadow: 0 0 0.8em rgba(111, 230, 255, 0.35);
+  background: rgba(111, 230, 255, 0.08);
 }
 
 .narration__aim {
@@ -483,21 +519,6 @@
 
 /* The TV's highlight for an unconfirmed pick: arrives with a pop and keeps
    a slow glow while the player is still deciding. */
-.narration__choice--picked {
-  animation:
-    narration-picked-in 260ms cubic-bezier(0.34, 1.56, 0.64, 1),
-    narration-picked-glow 1.6s ease-in-out 260ms infinite;
-}
-
-@keyframes narration-picked-in {
-  from { transform: scale(0.94); }
-  to { transform: scale(1); }
-}
-
-@keyframes narration-picked-glow {
-  0%, 100% { box-shadow: 0 0 0.5em rgba(111, 230, 255, 0.25); }
-  50% { box-shadow: 0 0 1.2em rgba(111, 230, 255, 0.55); }
-}
 
 /* The seat is always there, so this runs when a pick fills it rather than
    when the element mounts. */

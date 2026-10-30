@@ -292,6 +292,23 @@ export type CastSize =
 export type ScenePriority = 1 | 2;
 
 /**
+ * Who owns a beat. Every moment the story hands one hero (a turn-held Story
+ * choice, an ordinary check's die, the lead of a game) goes to the beat's
+ * **owner**, the story-turn holder (`RunState.storyTurn`), so a stretch of the
+ * chapter is centred on one kid instead of the die hopping round the table
+ * scene by scene. The owner keeps the spotlight for `SPOTLIGHT_BEAT` moments,
+ * and it passes to the next seat after the last of them, or earlier:
+ *
+ * - at a Rest, which is where a beat naturally breaks;
+ * - at a scene marked `"next"`, where the author starts a new beat (the party
+ *   reaches a new place, a new person takes the stage).
+ *
+ * Either way only once the owner has had a moment, so a beat is never spent
+ * on reading. Absent is an ordinary scene. content/README.md, "Who owns a beat".
+ */
+export type SceneSpotlight = "next";
+
+/**
  * A rift in plain view in this scene (#401): the stage draws the painted tear
  * standing in the gap between the party and the cast, on the floor line.
  *
@@ -338,6 +355,8 @@ export interface StoryScene {
   variants?: NarrationVariant[];
   /** How much this scene matters to the story. See `ScenePriority`. */
   priority?: ScenePriority;
+  /** Ends the beat as this scene opens, so the spotlight passes on. See `SceneSpotlight`. */
+  spotlight?: SceneSpotlight;
   /** A rift in plain view. See `SceneRift`. */
   rift?: SceneRift;
   /** One line for a player still learning what to tap. See `SceneHint`. */
@@ -392,6 +411,8 @@ export interface CheckScene {
   variants?: NarrationVariant[];
   /** How much this scene matters to the story. See `ScenePriority`. */
   priority?: ScenePriority;
+  /** Ends the beat as this scene opens, so the spotlight passes on. See `SceneSpotlight`. */
+  spotlight?: SceneSpotlight;
   /** A rift in plain view. See `SceneRift`. */
   rift?: SceneRift;
   /** One line for a player still learning what to tap. See `SceneHint`. */
@@ -428,6 +449,8 @@ export interface ChoicePointScene {
   variants?: NarrationVariant[];
   /** How much this scene matters to the story. See `ScenePriority`. */
   priority?: ScenePriority;
+  /** Ends the beat as this scene opens, so the spotlight passes on. See `SceneSpotlight`. */
+  spotlight?: SceneSpotlight;
   /** A rift in plain view. See `SceneRift`. */
   rift?: SceneRift;
   /** One line for a player still learning what to tap. See `SceneHint`. */
@@ -459,6 +482,8 @@ export interface RestScene {
   variants?: NarrationVariant[];
   /** How much this scene matters to the story. See `ScenePriority`. */
   priority?: ScenePriority;
+  /** Ends the beat as this scene opens, so the spotlight passes on. See `SceneSpotlight`. */
+  spotlight?: SceneSpotlight;
   /** A rift in plain view. See `SceneRift`. */
   rift?: SceneRift;
   /** One line for a player still learning what to tap. See `SceneHint`. */

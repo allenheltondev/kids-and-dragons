@@ -213,6 +213,12 @@ export type ClientIntent =
     }
   | { type: "END_TURN" }
   /**
+   * The table has heard how the chapter ended (`RunState.endingRead`): the
+   * shared screen turns from the ending's own words to the XP. Any seated
+   * player may say so, once; legal only on a chapter's summary.
+   */
+  | { type: "ENDING_READ" }
+  /**
    * Playtest mode (roadmap chapter 6). Both are refused with FORBIDDEN unless
    * `EngineContext.playtest` is true, which only `dev-server.ts` ever sets —
    * `lambda/runtime.ts` passes a literal `false`, so a deployed build has no

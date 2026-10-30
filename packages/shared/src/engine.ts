@@ -784,10 +784,12 @@ function rollerPool(draft: RunState): PartyMember[] {
  * Who rolls a check.
  *
  * `"active"` is whoever is first in the party, `"best"` is the highest score
- * in the check's stat, and `"party"` (the default) takes turns: whoever has
- * rolled the fewest checks this run goes next, so every kid gets the die in
- * their hands. Ties go to the higher stat, then party order, so among those
- * who are due the one most likely to succeed still steps up.
+ * in the check's stat, and `"party"` (the default) is the beat's owner, the
+ * story-turn holder (`SceneSpotlight`), so the kid whose stretch of story this
+ * is gets the die. When the owner cannot roll (down, or their phone dropped)
+ * it takes turns instead: whoever has rolled the fewest checks this run goes
+ * next. Ties go to the higher stat, then party order, so among those who are
+ * due the one most likely to succeed still steps up.
  */
 function pickRoller(draft: RunState, scene: Scene & { type: "check" }): PartyMember {
   const pool = rollerPool(draft);
@@ -798,6 +800,10 @@ function pickRoller(draft: RunState, scene: Scene & { type: "check" }): PartyMem
   if (scene.roller === "best") {
     return pool.reduce((best, m) => (stat(m) > stat(best) ? m : best), first);
   }
+  // An ordinary check is a moment of the beat, so the beat's owner rolls it
+  // (`SceneSpotlight`) — while they are here to; otherwise the rotation below.
+  const owner = storyTurnHolder(draft);
+  if (owner && pool.includes(owner)) return owner;
   const rolled = (m: PartyMember): number => draft.checkRolls?.[m.character.id] ?? 0;
   return pool.reduce((pick, m) => {
     if (rolled(m) !== rolled(pick)) return rolled(m) < rolled(pick) ? m : pick;
@@ -851,6 +857,8 @@ function completeChapter(draft: RunState, scene: EndingScene, ctx: EngineContext
   draft.phase = "chapter_complete";
   draft.prompt = null;
   draft.chapterOutcome = outcome;
+  // The ending's own words first, on their own plate; the XP after (ENDING_READ).
+  draft.endingRead = false;
   // Leaving is a vote (doReady), counted from nobody.
   for (const member of draft.party) member.ready = false;
   // A setback ends the temporary buffs (#200) that end on one, before the run
@@ -914,6 +922,8 @@ function openScenePrompt(
 ): Presentation | undefined {
   // A rest is where help recharges (doHelp).
   if (scene.type === "rest") draft.helpSpent = [];
+  // A rest, or a scene the author marks, starts a new beat (`SceneSpotlight`).
+  if (scene.type !== "encounter" && (scene.type === "rest" || scene.spotlight === "next")) endBeat(draft);
   switch (scene.type) {
     case "story":
     case "rest":
@@ -1481,6 +1491,9 @@ function dispatch(
     case "READY":
       return doReady(draft, playerId, intent.ready, ctx);
 
+    case "ENDING_READ":
+      return doEndingRead(draft, playerId);
+
     case "CREATE_CHARACTER":
       return doCreateCharacter(draft, playerId, intent, ctx, effects);
 
@@ -1993,15 +2006,15 @@ function doChoose(
     throw new Illegal("ILLEGAL", `"${winning}" is no longer something this party can do`);
   }
 
-  // The marker moves on from whoever just had it — the chooser on a Story
-  // beat (who may have stood in for an absent turn holder), the holder on a
-  // vote — before the next scene opens its prompt against it. A Rest's way
-  // out is open to anyone and is nobody's turn, so it leaves the marker be.
-  // So does a Story beat with only one way on: "Go on" is not a decision, and
-  // spending a turn on it would leave that player nothing to decide (§6.1).
-  if (prompt.vote) passStoryTurn(draft, storyTurnHolder(draft)?.playerId ?? playerId);
-  else if (prompt.forPlayerIds.length > 0 && prompt.options.length > 1) {
-    passStoryTurn(draft, playerId);
+  // The marker moves on before the next scene opens its prompt against it,
+  // once a Story beat's owner has had the beat's last moment
+  // (`spendSpotlight`). A vote is the whole party's, not a moment of anyone's
+  // beat, so it leaves the owner the spotlight (and they break its ties). A
+  // Rest's way out is open to anyone and is nobody's moment either. Nor is a
+  // Story beat with only one way on: "Go on" is not a decision, and spending
+  // a moment on it would leave that player nothing to decide (§6.1).
+  if (!prompt.vote && prompt.forPlayerIds.length > 0 && prompt.options.length > 1) {
+    spendSpotlight(draft);
   }
 
   applyEffectsDraft(draft, choice.effects, ctx);
@@ -2089,6 +2102,45 @@ export function rollerAway(
 function passStoryTurn(draft: RunState, fromPlayerId: string): void {
   const at = draft.party.findIndex((m) => m.playerId === fromPlayerId);
   draft.storyTurn = (at === -1 ? (draft.storyTurn ?? 0) : at) + 1;
+  if (draft.spotlightMoments !== undefined) draft.spotlightMoments = 0;
+}
+
+/**
+ * The table has heard how the chapter ended: the summary turns to the XP.
+ * Idempotent, so two phones tapping at once is one turn of the page.
+ */
+function doEndingRead(draft: RunState, playerId: string): undefined {
+  if (draft.phase !== "chapter_complete") throw new Illegal("ILLEGAL", "no chapter has just ended");
+  if (!memberByPlayer(draft, playerId)) throw new Illegal("FORBIDDEN", "only a seated player can turn the page");
+  draft.endingRead = true;
+  return undefined;
+}
+
+/** How many moments the owner of a beat gets before the spotlight passes (`SceneSpotlight`). */
+export const SPOTLIGHT_BEAT = 3;
+
+/**
+ * One moment of the owner's beat spent. The last of them passes the spotlight
+ * to the next seat, from the holder (who may not be who tapped: a stand-in
+ * answering for a dropped phone spends the owner's moment, not their own).
+ */
+function spendSpotlight(draft: RunState): void {
+  const moments = (draft.spotlightMoments ?? 0) + 1;
+  if (moments < SPOTLIGHT_BEAT) {
+    draft.spotlightMoments = moments;
+    return;
+  }
+  const holder = storyTurnHolder(draft);
+  if (holder) passStoryTurn(draft, holder.playerId);
+  draft.spotlightMoments = 0;
+}
+
+/** The beat ends early: the spotlight passes, if its owner has had a moment yet. */
+function endBeat(draft: RunState): void {
+  if ((draft.spotlightMoments ?? 0) === 0) return;
+  const holder = storyTurnHolder(draft);
+  if (holder) passStoryTurn(draft, holder.playerId);
+  draft.spotlightMoments = 0;
 }
 
 /**
@@ -2417,6 +2469,11 @@ function doRoll(draft: RunState, playerId: string, ctx: EngineContext, spendBuff
     ...draft.checkRolls,
     [roller.character.id]: (draft.checkRolls?.[roller.character.id] ?? 0) + 1,
   };
+  // The owner's die is a moment of their beat; a stand-in's, or a best/first
+  // roller's, belongs to nobody's beat.
+  if ((scene.roller ?? "party") === "party" && storyTurnHolder(draft)?.character.id === roller.character.id) {
+    spendSpotlight(draft);
+  }
 
   creditCheckXp(draft, ctx, result);
   // Both outcomes continue the story down different paths (spec §6.1).
