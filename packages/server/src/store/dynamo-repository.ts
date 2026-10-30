@@ -1347,7 +1347,14 @@ export class DynamoRepository implements GameRepository {
   }
 
   async listCrews(householdId: string): Promise<CrewRecord[]> {
-    const items = await this.partition(HH(householdId), PREFIX.crew);
+    // Strongly consistent: a crew's slot is chosen from this list, and a room
+    // that lost a slot to another must see the winner's row on its retry,
+    // not the stale list that made it try the same slot again (crew.ts).
+    const items = await this.query({
+      KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
+      ExpressionAttributeValues: { ":pk": HH(householdId), ":sk": PREFIX.crew },
+      ConsistentRead: true,
+    });
     return items.map((i) => i.data as CrewRecord).sort((a, b) => a.createdAt.localeCompare(b.createdAt));
   }
 

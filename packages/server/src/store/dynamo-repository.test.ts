@@ -3,6 +3,7 @@ import {
   DynamoDBDocumentClient,
   GetCommand,
   PutCommand,
+  QueryCommand,
   TransactWriteCommand,
   UpdateCommand,
 } from "@aws-sdk/lib-dynamodb";
@@ -184,6 +185,18 @@ describe("DynamoRepository character persistence", () => {
     const command = send.mock.calls[0]?.[0];
     expect(command).toBeInstanceOf(GetCommand);
     expect(command.input.ConsistentRead).toBe(true);
+  });
+
+  it("lists a household's crews strongly consistent, since a crew's slot is chosen from it", async () => {
+    send.mockResolvedValueOnce({ Items: [{ data: { householdId: "h_1", id: "cw_1", name: "The Otter Crew", createdAt: "" } }] });
+    const repo = new DynamoRepository({ tableName: "kad-test", client });
+    await expect(repo.listCrews("h_1")).resolves.toMatchObject([{ id: "cw_1" }]);
+    const command = send.mock.calls[0]?.[0];
+    expect(command).toBeInstanceOf(QueryCommand);
+    expect(command.input).toMatchObject({
+      ConsistentRead: true,
+      ExpressionAttributeValues: { ":pk": "HH#h_1", ":sk": "CREW#" },
+    });
   });
 
   it("calls two phones' simultaneous commits a lost race, not an error", async () => {

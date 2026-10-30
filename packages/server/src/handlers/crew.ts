@@ -51,6 +51,11 @@ export interface SwitchCrewInput {
    * "new" to start a crew with no saves and play it.
    */
   crew: string | null | "new";
+  /**
+   * With "new": the id of this one tap. A request carrying the id of a crew
+   * already made is a retry, and gets that crew rather than another.
+   */
+  request?: string;
 }
 
 /**
@@ -63,9 +68,10 @@ export interface SwitchCrewInput {
  * that ran out, leave nothing behind. Its id is the first free slot,
  * `cw_1` to `cw_<MAX_CREWS>`, written only if nobody holds it, so two rooms
  * starting a crew at once take different slots (the loser's commit fails and
- * its retry reads again), and the cap is the slots themselves. And "new" on a
- * lobby already on a crew that has played nothing is that crew: a client
- * retrying a request whose answer it lost gets the crew it made, not a second.
+ * its retry reads again), and the cap is the slots themselves. And a "new"
+ * request carries its tap's id (`request`), kept on the crew it makes: the
+ * same request again, a retry after a lost answer, gets that crew, not a
+ * second, while a fresh tap always makes one.
  */
 export async function switchCrew(
   input: SwitchCrewInput,
@@ -98,18 +104,23 @@ export async function switchCrew(
         return null;
       }
       const crews = await deps.repo.listCrews(room.householdId);
-      if (input.crew === "new") {
-        if (state.crew && (await isUnplayed(state.crew, crews, room.householdId, deps))) {
-          target = state.crew;
-          return null;
-        }
+      const retried = input.crew === "new" && input.request ? crews.find((c) => c.request === input.request) : undefined;
+      if (retried) {
+        target = retried.id;
+      } else if (input.crew === "new") {
         const taken = new Set(crews.map((c) => c.id));
         const slot = CREW_NAMES.findIndex((_, i) => !taken.has(crewSlot(i)));
         if (slot < 0) {
           refusal = { code: "ILLEGAL", message: "This game already has as many crews as it can keep." };
           return null;
         }
-        made = { householdId: room.householdId, id: crewSlot(slot), name: CREW_NAMES[slot]!, createdAt: iso(deps.now()) };
+        made = {
+          householdId: room.householdId,
+          id: crewSlot(slot),
+          name: CREW_NAMES[slot]!,
+          createdAt: iso(deps.now()),
+          ...(input.request ? { request: input.request } : {}),
+        };
         target = made.id;
       } else if (input.crew === null) {
         target = null;
@@ -139,17 +150,6 @@ export async function switchCrew(
 /** A crew's id by slot: `cw_1` for the first slot. Never the claim's separators. */
 function crewSlot(index: number): string {
   return `cw_${index + 1}`;
-}
-
-/** A crew of the household that has never begun an adventure (no attempt at anything). */
-async function isUnplayed(
-  crew: string,
-  crews: readonly CrewRecord[],
-  householdId: string,
-  deps: HandlerDeps,
-): Promise<boolean> {
-  if (!crews.some((c) => c.id === crew)) return false;
-  return (await deps.repo.listCampaignProgress(householdId, crew)).length === 0;
 }
 
 /**
@@ -206,12 +206,22 @@ function betweenGames(state: RunState): boolean {
 }
 
 /** What a crew route answers a body it cannot read. */
-export const CREW_BODY = 'expected { crew: "<crew id>" | null | "new" }';
+export const CREW_BODY = 'expected { crew: "<crew id>" | null | "new", request?: "<tap id>" }';
 
-/** The crew a request body names (`SwitchCrewInput.crew`), or undefined when it names none. */
-export function parseCrewChoice(body: Record<string, unknown>): string | null | undefined {
-  const crew = body.crew;
-  if (crew === null || crew === "new") return crew;
-  // A crew id is ours (`newId("cw")`): never the claim's separators, never anything long.
-  return typeof crew === "string" && /^cw_[a-z0-9]{1,20}$/.test(crew) ? crew : undefined;
+/**
+ * What a crew request body asks for (`SwitchCrewInput`), or undefined when it
+ * cannot be read: a crew id, null or "new", and for "new" an optional tap id.
+ */
+export function parseCrewChoice(
+  body: Record<string, unknown>,
+): Pick<SwitchCrewInput, "crew" | "request"> | undefined {
+  const { crew, request } = body;
+  if (request !== undefined && (typeof request !== "string" || !/^[A-Za-z0-9_-]{8,64}$/.test(request))) {
+    return undefined;
+  }
+  const tap = typeof request === "string" ? { request } : {};
+  if (crew === null) return { crew };
+  if (crew === "new") return { crew, ...tap };
+  // A crew id is ours (`crewSlot`): never the claim's separators, never anything long.
+  return typeof crew === "string" && /^cw_[a-z0-9]{1,20}$/.test(crew) ? { crew } : undefined;
 }
