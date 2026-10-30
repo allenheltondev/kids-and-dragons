@@ -176,18 +176,18 @@
 /* --- Species: the portrait is the button -------------------------------- */
 
 /*
- * One column on a phone held in portrait, two once there is room — a species
- * card is a picture with a paragraph beside it, and squeezing two of those into
- * a 40%-width pane makes the picture too small to choose by.
+ * Picture and summary share the top row; detailed abilities and matchups
+ * use the full width below. Add cards across only when the pane allows.
  */
 .creation-species-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22em), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18em), 1fr));
   gap: var(--space-3, 0.75em);
 }
 
 .creation-species {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
   align-items: center;
   gap: var(--space-3, 0.75em);
   padding: var(--space-3, 0.75em);
@@ -218,31 +218,24 @@
   );
 }
 
-/*
- * The portrait's share of the card: a square that grows with the pane rather
- * than a fixed width, so the same card is a big picture on a landscape phone
- * and still a choosable one in a narrow portrait pane.
- *
- * Centred against the text, and centred *inside its own box* too
- * (`stand="centre"`). This card is a picture beside a paragraph, not a place —
- * stretching the column to the card's height and standing the creature on the
- * bottom of it put it at the foot of a tall block of text, reading as fallen
- * off the bottom rather than as standing on anything.
- */
+/* A balanced picture beside the short introduction, not the detailed copy. */
 .creation-species__art {
   flex: 0 0 auto;
   align-self: center;
-  inline-size: clamp(5.5em, 32%, 9em);
+  inline-size: 100%;
   block-size: auto;
   aspect-ratio: 1;
 }
 
-.creation-species__text {
+.creation-species__text,
+.creation-species__details {
   display: flex;
   flex-direction: column;
   gap: var(--space-1, 0.25em);
   min-width: 0;
 }
+
+.creation-species__details { grid-column: 1 / -1; }
 
 /* --- Option cards ------------------------------------------------------ */
 

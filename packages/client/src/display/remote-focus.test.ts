@@ -168,6 +168,21 @@ describe("installRemoteFocus", () => {
 });
 
 describe("what the arrows reach", () => {
+  it("does not let a remote's arrow wrap a side-by-side radio group when nothing lies that way", () => {
+    lay('<input id="party" type="radio" name="mode" checked /><input id="phone" type="radio" name="mode" />', {
+      party: at(0, 0), phone: at(60, 0),
+    });
+    const stop = installRemoteFocus();
+    document.getElementById("party")!.focus();
+    const up = new KeyboardEvent("keydown", { key: "ArrowUp", bubbles: true, cancelable: true });
+    document.activeElement!.dispatchEvent(up);
+    expect(up.defaultPrevented).toBe(true);
+    expect(document.activeElement?.id).toBe("party");
+    expect((document.getElementById("party") as HTMLInputElement).checked).toBe(true);
+    expect((document.getElementById("phone") as HTMLInputElement).checked).toBe(false);
+    stop();
+  });
+
   it("reaches a radio hidden inside the card that draws it, where the card stands, and OK checks it", () => {
     // Review of #392: the start screen's Party Mode and Phone Mode are radios hidden in their cards.
     lay(

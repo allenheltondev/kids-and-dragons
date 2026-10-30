@@ -30,6 +30,7 @@ import { useCampaign, useRules, useSend, useSynced } from "../store";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
 import { CharacterPortrait } from "./CharacterPortrait";
+import { announceHeroArrival } from "./hero-arrival";
 import { Icon } from "./icons";
 import { useEnsureContent } from "./content";
 import {
@@ -50,6 +51,9 @@ import {
 import type { CardMatchups, MatchupLine } from "./creationContent";
 import "./shared.css";
 import "./CreationFlow.css";
+import "./CreationGuidance.css";
+import { STAT_MEANING, creationNextHint, suggestedCreationStats } from "./creation-guidance";
+import "./CreationChoices.css";
 import { EntryScene } from "./EntryScene";
 import { useBusy } from "../sw/busy";
 
@@ -70,6 +74,14 @@ const STEP_ICON: Record<CreationStep, string> = {
 function sumStats(stats: Stats): number {
   return STAT_IDS.reduce((total, stat) => total + stats[stat], 0);
 }
+
+/** Lead with what a child can do, then teach the realm's class name. */
+const CLASS_PROMISE: Record<ClassId, string> = {
+  thornguard: "Protect your friends",
+  duskrunner: "Be quick and sneaky",
+  starweaver: "Cast wonderful spells",
+  songkeeper: "Help your friends shine",
+};
 
 /**
  * What a species or class card says about the fight: "Good at:", "Watch out:"
@@ -172,8 +184,8 @@ export function SpeciesStep({
       {species.map((def) => {
         const selected = chosen === def.id;
         return (
+          <div className="creation-choice-tile" key={def.id}>
           <button
-            key={def.id}
             type="button"
             className={`creation-species kad-tap kad-focusable${selected ? " creation-species--on" : ""}`}
             aria-pressed={selected}
@@ -193,7 +205,9 @@ export function SpeciesStep({
                   {selected ? <Icon name="check" label="Chosen" /> : null}
                 </span>
               </span>
-              <span className="creation-card__blurb kad-muted">{def.blurb}</span>
+              <span className="creation-card__blurb kad-muted">{firstSentence(def.blurb)}</span>
+            </span>
+            <span className="creation-species__details">
               <span className="creation-card__line">
                 <Icon name={def.worldAbility.icon} />
                 <span>
@@ -201,13 +215,19 @@ export function SpeciesStep({
                   <span className="kad-muted">{def.worldAbility.text}</span>
                 </span>
               </span>
+            </span>
+          </button>
+          <details className="creation-choice-more">
+            <summary className="kad-focusable">More about {def.name}</summary>
+            <div className="creation-choice-more__body">
               <span className="creation-card__line kad-muted">
                 <Icon name={def.passive.stat ?? "heart"} />
                 <span>{def.passive.text}</span>
               </span>
               <MatchupNotes notes={speciesMatchups(matchups, def.id, klass)} />
-            </span>
-          </button>
+            </div>
+          </details>
+          </div>
         );
       })}
     </div>
@@ -292,28 +312,32 @@ export function ClassStep({
   species?: SpeciesId | null;
 }): ReactElement {
   return (
-    <div className="creation-grid">
+    <div className="creation-grid creation-class-grid">
       {classes.map((def) => (
+        <div className="creation-choice-tile" key={def.id}>
         <OptionCard
-          key={def.id}
           selected={chosen === def.id}
           onSelect={() => onChoose(def.id)}
-          icon={<Icon name={def.id} size="2.2em" />}
-          title={def.name}
+          icon={<Icon name={def.id} size="3em" />}
+          title={CLASS_PROMISE[def.id]}
         >
-          <span className="creation-card__line kad-muted">
-            <Icon name={def.stat} />
-            <span>{def.role}</span>
-          </span>
-          <span className="creation-card__blurb kad-muted">{def.blurb}</span>
+          <span className="creation-class__name kad-muted">{def.name}</span>
           <span className="creation-card__line">
             <Icon name={def.signature.icon} />
             <span>
               <b>{def.signature.name}</b> <span className="kad-muted">{def.signature.text}</span>
             </span>
           </span>
-          <MatchupNotes notes={classMatchups(matchups, def.id, species)} />
         </OptionCard>
+        <details className="creation-choice-more">
+          <summary className="kad-focusable">More about {def.name}</summary>
+          <div className="creation-choice-more__body">
+            <p className="kad-muted">{def.blurb}</p>
+            <span className="creation-card__line kad-muted"><Icon name={def.stat} /><span>{def.role}</span></span>
+            <MatchupNotes notes={classMatchups(matchups, def.id, species)} />
+          </div>
+        </details>
+        </div>
       ))}
     </div>
   );
@@ -323,7 +347,7 @@ export function ClassStep({
 // Step 3 — stats (spec §5.3): tap to increment, never any arithmetic
 // ---------------------------------------------------------------------------
 
-function StatsStep({
+export function StatsStep({
   base,
   bonus,
   assigned,
@@ -331,6 +355,8 @@ function StatsStep({
   onAdd,
   onRemove,
   onReset,
+  onHelp,
+  suggestedStat,
 }: {
   base: Stats;
   bonus: Stats;
@@ -339,6 +365,8 @@ function StatsStep({
   onAdd: (stat: StatId) => void;
   onRemove: (stat: StatId) => void;
   onReset: () => void;
+  onHelp: () => void;
+  suggestedStat: StatId;
 }): ReactElement {
   const nothingSpent = sumStats(assigned) === 0;
   return (
@@ -349,6 +377,13 @@ function StatsStep({
           {remaining === 0 ? "All points spent" : `${String(remaining)} point${remaining === 1 ? "" : "s"} to spend`}
         </span>
       </p>
+
+      <div className="creation-stats__help">
+        <Button variant="secondary" size="md" icon={<Icon name="star" />} onClick={onHelp}>
+          Help me choose
+        </Button>
+        <p className="kad-muted">Try a boost to {suggestedStat} for your class. You can change the points before Next.</p>
+      </div>
 
       {/*
        * Every row is the same five columns — icon, name, free-point chip,
@@ -402,10 +437,13 @@ function StatsStep({
                   </button>
                 ) : null}
               </span>
+              <span className="creation-stat__meaning">{STAT_MEANING[stat]}</span>
             </li>
           );
         })}
       </ul>
+
+
 
       {/* Always laid out, shown only once there is something to start over.
           Unmounting it on a reset shortened the scroll, and a pane scrolled
@@ -491,7 +529,7 @@ function OptionButton({
 
 // ---------------------------------------------------------------------------
 
-export function CreationFlow(): ReactElement {
+export function CreationFlow({ crewName }: { crewName?: string } = {}): ReactElement {
   useEnsureContent();
   // The draft lives only in this page (creationDraft.ts): no update reload while it is open.
   useBusy("creation");
@@ -607,7 +645,11 @@ export function CreationFlow(): ReactElement {
         setError(useGameStore.getState().error ?? "That didn't send. Try again?");
         return;
       }
-      cue("choice");
+      const current = useGameStore.getState();
+      const created = current.state?.party.find(member => member.playerId === current.session?.playerId);
+      if (created && current.session) announceHeroArrival({
+        runId: current.session.runId, playerId: current.session.playerId, hero: created.character,
+      });
       resetCreationDraft();
     } catch (err) {
       patchCreationDraft({ submitting: false });
@@ -622,6 +664,7 @@ export function CreationFlow(): ReactElement {
       <div className="creation creation--loading" role="status">
         <Spinner />
         <span>Getting the character sheet ready…</span>
+        {crewName ? <span>Make a new hero for {crewName}. Your other heroes are kept for next time.</span> : null}
       </div>
     );
   }
@@ -630,6 +673,11 @@ export function CreationFlow(): ReactElement {
     <section className="creation entry-scene-host" aria-labelledby="creation-title">
       <EntryScene scene={`creation-${draft.step}`} />
       <header className="creation__head">
+        {crewName ? (
+          <p className="kad-muted" role="status">
+            <Icon name="crew" /> Make a new hero for {crewName}. Your other heroes are kept for next time.
+          </p>
+        ) : null}
         <p className="creation__progress" aria-label={`Step ${String(stepIndex + 1)} of ${String(CREATION_STEPS.length)}`}>
           {CREATION_STEPS.map((step, i) => (
             <span
@@ -687,6 +735,8 @@ export function CreationFlow(): ReactElement {
             onAdd={addPoint}
             onRemove={removePoint}
             onReset={() => patchCreationDraft({ assigned: NO_POINTS })}
+            onHelp={() => patchCreationDraft({ assigned: suggestedCreationStats(rules.creationPoints, classDef?.stat ?? "heart") })}
+            suggestedStat={classDef?.stat ?? "heart"}
           />
         ) : null}
 
@@ -758,7 +808,10 @@ export function CreationFlow(): ReactElement {
         )}
       </div>
 
-      <footer className="creation__foot">
+      <footer className="creation__foot creation__foot--guided" data-first-step={stepIndex === 0 || undefined}>
+        <p className="creation__next-hint" aria-live="polite">
+          {creationNextHint(draft.step, stepDone, remaining) || "\u00a0"}
+        </p>
         {stepIndex > 0 ? (
           <Button variant="ghost" size="md" icon={<Icon name="back" />} onClick={goBack}>
             Back

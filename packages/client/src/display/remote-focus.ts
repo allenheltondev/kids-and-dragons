@@ -274,7 +274,11 @@ export function installRemoteFocus(doc: Document = document, { armed = true }: {
     escaped = null;
     if (!direction || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.defaultPrevented) return;
     if (answersArrowsItself(active) && !leaving && !leavesOnUpDown(active, direction)) return;
-    if (step(direction, doc, lastPlace)) event.preventDefault();
+    // Once the remote owns the arrows, a radio must never fall back to the
+    // browser's wrapping group navigation. In a side-by-side group, Up can
+    // have no spatial destination: native Up would silently choose its peer.
+    // Keyboard users who Tabbed in still take the unarmed early return above.
+    if (step(direction, doc, lastPlace) || isToggle(active)) event.preventDefault();
   };
   doc.addEventListener("keydown", onKey);
   doc.addEventListener("focusin", onFocus);

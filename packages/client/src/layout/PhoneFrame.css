@@ -1,0 +1,24 @@
+.kad-phone-frame {
+  block-size: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--kad-bg);
+}
+
+.kad-phone-frame > :is(.kad-party, .kad-travel) {
+  block-size: auto;
+  flex: 1 1 auto;
+  min-block-size: 0;
+}
+
+.kad-phone-frame > .privacy-footer {
+  padding-block-end: env(safe-area-inset-bottom, 0px);
+}
+
+/* The thumb-side controls still have their own strip above the page footer. */
+@media (orientation: portrait) {
+  html[data-hand] body:has(.kad-phone-frame[data-lobby-footer]) .kad-corner {
+    bottom: calc(2.25rem + env(safe-area-inset-bottom, 0px));
+  }
+}

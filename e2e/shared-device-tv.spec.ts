@@ -84,6 +84,7 @@ test.describe("a family tablet as the TV", () => {
     // And as host it can act, with the shared token alone: Remove is in the Room panel, where
     // the roster lists everyone in the order they came, so the newest is last.
     await tablet.getByRole("button", { name: "Room", exact: true }).click(TAP);
+    await tablet.locator(".kad-host__people > summary").click(TAP);
     const roster = tablet.getByRole("list", { name: "Who is in this room" });
     await expect(roster.getByRole("listitem")).toHaveCount(2, TAP);
     await roster.getByRole("listitem").last().getByRole("button", { name: /^Remove .* from this game$/ }).click(TAP);
