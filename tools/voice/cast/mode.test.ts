@@ -144,6 +144,19 @@ describe("searching a long list of voices", () => {
     expect(values(mode.filterOptions(options, "british", "v4"))).toEqual(["", "v3", "v4"]);
   });
 
+  it("filters by gender, keeping the voice already picked and the blank", () => {
+    const gendered = [
+      { value: "", label: "none" },
+      { value: "a", label: "A", gender: "f" },
+      { value: "b", label: "B", gender: "m" },
+      { value: "c", label: "C" },
+    ];
+    const values = (list: { value: string }[]) => list.map((o) => o.value);
+    expect(mode.filterGender(gendered, "", "")).toBe(gendered);
+    expect(values(mode.filterGender(gendered, "f", ""))).toEqual(["", "a"]);
+    expect(values(mode.filterGender(gendered, "m", "c"))).toEqual(["", "b", "c"]);
+  });
+
   it("carries a voice's own sample through to the picker", () => {
     const voices = [{ id: "v1", name: "Rachel", about: "premade", preview: "https://example.test/rachel.mp3" }, { id: "v2", name: "Adam", about: "premade" }];
     const [, first, second] = mode.voiceOptions("elevenlabs", { name: "x", gemini: { voice: "Kore" }, history: [] }, [], voices);
