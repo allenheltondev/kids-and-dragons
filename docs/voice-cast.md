@@ -2,7 +2,9 @@
 
 Every character in the game, the voice they speak with, and their own lines to hear it on. This
 is the production cast the [voice narration plan](./voice-narration-plan.md) (§2) calls for. Its
-voices are Gemini's, the provider the game is leaning toward. Everyone speaks with an American
+voices are Gemini's, the provider the game is leaning toward, and a page can also be switched to
+**ElevenLabs** to pick and audition voices from an account there (see
+[ElevenLabs mode](#elevenlabs-mode)). Everyone speaks with an American
 accent: the game is for American children.
 
 ```
@@ -31,9 +33,11 @@ One entry per speaker, keyed by id:
 | `voiceNotes` | which chapters' `voiceGuide.npcVoices` describe them, and under which key |
 | `chapters` | every chapter they appear in, so one person keeps one voice across the game |
 | `gemini.voice` | one of Gemini's 30 prebuilt voices |
+| `elevenlabs` | the voice they have on ElevenLabs, picked by ear on the cast pages: `voiceId`, its `name`, and `approved` once a person approved it. Absent until picked. Kept on every rebuild |
 | `accent` | set only to override the sheet-wide `accent` (General American) |
 | `direction` | a person's direction for the voice model, told after who they are ("a touch quicker than usual") |
-| `lines` | up to three real quotes of theirs from the narration, each with its address |
+| `lines` | up to three real quotes of theirs from the narration, each with its address: the lines to audition a voice on, never a count |
+| `lineCount` | how many lines the game gives them to speak: every quote the narration's speech tags give them, in every chapter, counted once per place it is said. The narrator's is every narration line, and the party's the "you say" lines. Refreshed on every rebuild. The pages sort by it |
 | `speaks` | false for those who only bleat or sigh |
 | `status` | `provisional` (assigned by the builder) or `approved` (chosen by a person) |
 | `history` | every approval and rejection, oldest first: the voice, the listener's notes, the model it was heard on, and when |
@@ -88,7 +92,8 @@ The first build: 207 speakers, 127 with lines from the game, no voice clashes.
 ## Profiles, one at a time: `/cast/profile`
 
 It opens on the first character still waiting, in the order the sheet is best reviewed in: the
-narrator, the party, then whoever appears in the most chapters. The header keeps count:
+narrator, the party, then whoever has the most lines to speak (`lineCount`), then the most
+chapters, so the characters that matter most are reviewed first. The header keeps count:
 **37 left** of 207, with a progress bar.
 
 Each profile has:
@@ -169,14 +174,48 @@ same clip cache and the same session spending cap.
   the new voice. Switching back is free, because the old clips stay cached.
 - **Approve and Reject:** see the next section.
 - **Accent override** saves to the sheet too.
+- **Lines to speak:** each card says how many lines the game gives them (`lineCount`), and the
+  page sorts by it, **Most spoken lines first** by default, with the narrator and the party always
+  at the top. That is the order to give voices attention in: the first few dozen characters carry
+  most of the speech.
 - **Filters:** search, campaign, still provisional, approved, rejected and waiting to be heard
   again, not reviewed yet, sharing a voice, no line yet, and doesn't speak.
+- **Gemini | ElevenLabs:** the switch in the header, see the next section.
 - **Render all shown** renders every audition the filters show, three at a time. Rendering the
   whole cast on Gemini 3.8 Flash is about $0.42.
 
 Gemini's style for each line is the character's name and notes, then
 `Accent: General American, …`, then the line's delivery if it has one
 ([voice-bakeoff.md](./voice-bakeoff.md#expression-delivery-and-beats)).
+
+## ElevenLabs mode
+
+Both pages have a **Gemini | ElevenLabs** switch in the header, with that provider's own model list
+and a key box (one key for each, pasted once, shared with the bake-off page). The mode is
+remembered in the browser. In ElevenLabs mode everything on the page is about the ElevenLabs
+voice, and nothing there touches the Gemini one:
+
+- **Voices** come from the account, listed with the key (the picker says so if there is no key or
+  no voices). A character's choice is saved as `elevenlabs` on the sheet, and **No voice yet** takes
+  it back. A voice that has left the account is still listed, marked, so the picker never hides
+  what is saved.
+- **Nothing is chosen for you.** Gemini's voices come with traits that a builder can match to a
+  character; an account's don't, so nobody has an ElevenLabs voice until you pick one. Until then
+  they have nothing to render or approve, and their buttons say so.
+- **Auditions** render with the mode's model (`eleven_v4` to start) in the voice you picked, and
+  count against the same session cap. ElevenLabs is not told who they are or how they talk: it gets
+  the voice and the words (with a delivery tag in front on v3 and later), so the description,
+  accent and direction steer only Gemini. The profile page shows exactly what is sent.
+- **Approve** pins that voice on its own (`elevenlabs.approved`), and Gemini's approval is
+  unchanged. **Reject** records the voice and your note and takes the choice back, so you can pick
+  another; a voice you rejected for a character is left out of their picker.
+- **History and clash warnings** are per mode: a decision with no `provider` is a Gemini one, and
+  two characters on one ElevenLabs voice in a chapter are warned about only in ElevenLabs mode.
+  The review export still lists Gemini's decisions.
+
+**What this doesn't do yet:** `voice:generate`, `voice:status` and `voice:verify` still render
+and key every clip with Gemini's voice. The sheet now holds both, so switching production to
+ElevenLabs is a change to what the generator reads, not to the sheet.
 
 ## Approving and rejecting
 
@@ -235,10 +274,13 @@ source of truth.
 
 ## What's still rough
 
-- **69 speakers have no line found** in the game. Some really have none, and some are spoken for
-  in a way the attribution misses ("the clerk says"). They audition on the stand-in until a
-  chapter gives them words.
+- **Lines are counted from the narration's speech tags**, so a quote nobody is tagged for is
+  counted for nobody. On the first count, 1,211 lines were given to someone out of about 2,600
+  quoted passages, so a character who talks a lot but is rarely tagged ("the clerk says") is
+  counted low: 63 characters have a count of none, 52 of whom do speak. They audition on the stand-in until a chapter gives
+  them words. Treat the order as a good guide to who speaks most, not an exact tally.
 - **The voice genders and traits** are from Google's one-word descriptions and best knowledge,
   not a listening pass. The page is the listening pass.
-- **ElevenLabs isn't on the sheet yet.** The bake-off's own cast (`tools/voice/bakeoff/cast.json`)
-  keeps ElevenLabs voices for comparison, now all American premade voices.
+- **ElevenLabs is on the sheet but not in production** (see above). The bake-off's own cast
+  (`tools/voice/bakeoff/cast.json`) keeps its own ElevenLabs voices for comparison, separate from
+  the ones picked on the cast pages.

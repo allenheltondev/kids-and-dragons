@@ -12,8 +12,12 @@
 
 import { voiceClashes, type CastEntry, type CastSheet, type Decision } from "./sheet.ts";
 
-const latest = (entry: CastEntry): Decision | undefined => entry.history?.[entry.history.length - 1];
-const rejections = (entry: CastEntry): Decision[] => (entry.history ?? []).filter((d) => d.decision === "rejected");
+/** A provider's decisions, oldest first: one with no provider is a Gemini one, as every decision was before ElevenLabs. */
+const decisionsOn = (entry: CastEntry, provider: "gemini" | "elevenlabs"): Decision[] => (entry.history ?? []).filter((d) => (d.provider ?? "gemini") === provider);
+/** The review is of the game's voices, which are Gemini's: ElevenLabs decisions are listed apart, in the JSON. */
+const geminiHistory = (entry: CastEntry): Decision[] => decisionsOn(entry, "gemini");
+const latest = (entry: CastEntry): Decision | undefined => geminiHistory(entry).at(-1);
+const rejections = (entry: CastEntry): Decision[] => geminiHistory(entry).filter((d) => d.decision === "rejected");
 const cell = (text: string | undefined): string => (text ?? "").replace(/\|/g, "\\|").replace(/\s+/g, " ").trim();
 const day = (iso: string): string => iso.slice(0, 10);
 
@@ -29,9 +33,14 @@ export interface ReviewJson {
     status: CastEntry["status"];
     voice: string;
     chapters: number;
+    /** Lines the game gives them to speak, so a review can start with whoever has the most. */
+    lines: number;
     notes?: string;
     direction?: string;
+    /** Gemini's decisions: what `status` and `voice` are about. */
     history: Decision[];
+    /** The voice picked on ElevenLabs and the decisions about it, when there is any: apart from Gemini's. */
+    elevenlabs?: { voiceId?: string; name?: string; approved: boolean; history: Decision[] };
   }[];
 }
 
@@ -46,7 +55,7 @@ export function reviewJson(sheet: CastSheet, generated = new Date().toISOString(
       speakers: entries.length,
       approved: entries.filter(([, e]) => e.status === "approved").length,
       rejectedNowRetrying: entries.filter(([, e]) => e.status !== "approved" && latest(e)?.decision === "rejected").length,
-      untouched: entries.filter(([, e]) => !e.history?.length).length,
+      untouched: entries.filter(([, e]) => geminiHistory(e).length === 0).length,
       clashes: voiceClashes(sheet).length,
     },
     rejectedVoices,
@@ -57,9 +66,13 @@ export function reviewJson(sheet: CastSheet, generated = new Date().toISOString(
       status: e.status,
       voice: e.gemini.voice,
       chapters: e.chapters.length,
+      lines: e.lineCount ?? 0,
       ...(e.notes ? { notes: e.notes } : {}),
       ...(e.direction ? { direction: e.direction } : {}),
-      history: e.history ?? [],
+      history: geminiHistory(e),
+      ...(e.elevenlabs || decisionsOn(e, "elevenlabs").length
+        ? { elevenlabs: { ...(e.elevenlabs?.voiceId ? { voiceId: e.elevenlabs.voiceId } : {}), ...(e.elevenlabs?.name ? { name: e.elevenlabs.name } : {}), approved: e.elevenlabs?.approved === true, history: decisionsOn(e, "elevenlabs") } }
+        : {}),
     })),
   };
 }
@@ -69,7 +82,7 @@ export function reviewMarkdown(sheet: CastSheet, generated = new Date().toISOStr
   const entries = Object.entries(sheet.speakers).sort(([, a], [, b]) => a.name.localeCompare(b.name));
   const approved = entries.filter(([, e]) => e.status === "approved");
   const retrying = entries.filter(([, e]) => e.status !== "approved" && latest(e)?.decision === "rejected");
-  const untouched = entries.filter(([, e]) => e.status !== "approved" && !e.history?.length);
+  const untouched = entries.filter(([, e]) => e.status !== "approved" && geminiHistory(e).length === 0);
   const clashes = voiceClashes(sheet);
   const out: string[] = [];
 
@@ -88,7 +101,7 @@ export function reviewMarkdown(sheet: CastSheet, generated = new Date().toISOStr
   else {
     out.push("| Character | Voice | Notes | Turned down first |", "|---|---|---|---|");
     for (const [, e] of approved) {
-      const approval = [...(e.history ?? [])].reverse().find((d) => d.decision === "approved");
+      const approval = [...geminiHistory(e)].reverse().find((d) => d.decision === "approved");
       const before = rejections(e).map((d) => d.voice).join(", ");
       out.push(`| ${cell(e.name)} | ${e.gemini.voice} | ${cell(approval?.notes ?? e.notes)} | ${before || "—"} |`);
     }

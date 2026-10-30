@@ -106,6 +106,31 @@
           },
           "additionalProperties": true
         },
+        "lineCount": {
+          "description": "How many lines the narration gives them to speak, in every chapter; `lines` is only up to three to audition on. Refreshed on every rebuild.",
+          "type": "integer",
+          "minimum": 0
+        },
+        "elevenlabs": {
+          "description": "The voice they have on ElevenLabs, from the account's own voices, picked by ear on the cast page; absent until a person picks one.",
+          "type": "object",
+          "required": [
+            "voiceId"
+          ],
+          "properties": {
+            "voiceId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{8,64}$"
+            },
+            "name": {
+              "type": "string"
+            },
+            "approved": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
         "accent": {
           "type": "string",
           "minLength": 1
