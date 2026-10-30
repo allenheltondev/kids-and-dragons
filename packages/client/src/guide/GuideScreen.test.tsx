@@ -9,6 +9,7 @@ import { readFileSync } from "node:fs";
 import { basename, join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { currentRoute, navigate } from "../router";
 import { GuideScreen, SetupGuideScreen, PICTURES, resetGuideSources } from "./GuideScreen";
 import { parseGuide } from "./markdown";
@@ -106,6 +107,31 @@ describe("GuideScreen", () => {
     expect(within(dialog).getByRole("img").getAttribute("src")).toMatch(new RegExp(`^${PICTURES}/`));
     fireEvent.keyDown(document, { key: "Escape" });
     expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  it("keeps the keyboard inside an enlarged picture, and gives focus back to it when closed", async () => {
+    const user = userEvent.setup();
+    const root = document.createElement("div");
+    root.id = "root";
+    document.body.append(root);
+    render(<GuideScreen />, { container: root.appendChild(document.createElement("div")) });
+    const open = (await screen.findAllByRole("button", { name: /^Enlarge the picture/ }))[0]!;
+    open.focus();
+    await user.keyboard("{Enter}");
+    const close = screen.getByRole("button", { name: "Close the picture" });
+    expect(document.activeElement).toBe(close);
+    // The page behind cannot be reached: it is inert, and Tab either way stays on the one button.
+    expect(root.hasAttribute("inert")).toBe(true);
+    await user.keyboard("{Tab}");
+    expect(document.activeElement).toBe(close);
+    await user.keyboard("{Shift>}{Tab}{/Shift}");
+    expect(document.activeElement).toBe(close);
+    expect(root.contains(document.activeElement)).toBe(false);
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(root.hasAttribute("inert")).toBe(false);
+    expect(document.activeElement).toBe(open);
+    root.remove();
   });
 
   it("says so when the words cannot be fetched, and tries again", async () => {
