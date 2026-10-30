@@ -290,20 +290,20 @@
       },
       "lines": [
         {
-          "text": "You may be the second person in the world to hear that properly.",
-          "address": "gemfall-07h/interaction_tidewell_knocks/narration"
+          "text": "Oh. I count three of the real ones in there already. A fine beginning. the eighth one",
+          "address": "gemfall-07h/scene_tidewell/variants/1"
         },
         {
-          "text": "and you are the first people who have believed me all week.",
-          "address": "gemfall-01/scene_scholar_believed/narration"
+          "text": "three. I was right, and you went and found them. I don't know whether to hug you or scold you.",
+          "address": "gemfall-07h/scene_tidewell_show/variants/2"
         },
         {
-          "text": "Count them! Every stone you see, count it! Write it down!",
-          "address": "gemfall-01/scene_north_gate_tidewell/narration"
+          "text": "Hm. Loud, and lovely, and not one of the real ones. Have you been collecting, or only carrying?",
+          "address": "gemfall-07h/scene_tidewell/variants/0"
         }
       ],
-      "lineCount": 22,
-      "guessedLines": 16,
+      "lineCount": 19,
+      "guessedLines": 7,
       "speaks": true,
       "status": "provisional"
     },
@@ -1332,7 +1332,7 @@
           "address": "gemfall-07r/scene_ossley/narration"
         }
       ],
-      "lineCount": 36,
+      "lineCount": 37,
       "guessedLines": 5,
       "speaks": true,
       "status": "provisional"
@@ -3281,7 +3281,7 @@
           "address": "gemfall-05c/scene_unassigned_ask_proper/narration"
         }
       ],
-      "lineCount": 28,
+      "lineCount": 29,
       "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
@@ -3335,7 +3335,7 @@
         }
       ],
       "lineCount": 35,
-      "guessedLines": 15,
+      "guessedLines": 14,
       "speaks": true,
       "status": "provisional"
     },
@@ -3362,19 +3362,19 @@
       },
       "lines": [
         {
+          "text": "Humming pebbles. Mine started that way too, you know. A very long time ago.",
+          "address": "gemfall-07h/scene_rival_collector/variants/0"
+        },
+        {
           "text": "Will you buy it? I need enough for the wagon home. Mom says the mountain is no place for us now.",
           "address": "gemfall-07h/scene_milestone_boy/narration"
         },
         {
           "text": "Nobody rings that one. Not ever. Great-Grandma says we'll know.",
           "address": "gemfall-05c/scene_morning_bells_unrung/narration"
-        },
-        {
-          "text": "Irregular. Entirely legal. This way. The captain has a table.",
-          "address": "gemfall-06/scene_pellam_again/narration"
         }
       ],
-      "lineCount": 17,
+      "lineCount": 20,
       "speaks": true,
       "status": "provisional"
     },
@@ -3491,8 +3491,8 @@
           "address": "gemfall-08/check_tether_cult_bare/narration"
         }
       ],
-      "lineCount": 21,
-      "guessedLines": 3,
+      "lineCount": 20,
+      "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -4019,8 +4019,7 @@
           "address": "gemfall-07h/scene_rival_collector_pride/narration"
         }
       ],
-      "lineCount": 7,
-      "guessedLines": 3,
+      "lineCount": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -4306,7 +4305,7 @@
         }
       ],
       "lineCount": 71,
-      "guessedLines": 17,
+      "guessedLines": 16,
       "speaks": true,
       "status": "provisional"
     },
@@ -4634,19 +4633,19 @@
       },
       "lines": [
         {
+          "text": "The Cairnstep watchers told me where you landed. They said to look after you.",
+          "address": "riftlight-sky-islands-arrival/dusk_ferry/variants/0"
+        },
+        {
           "text": "I need a safe lane home for everyone aboard, and a very strong cup of tea.",
           "address": "riftlight-sky-islands-arrival/ferry_in/narration"
         },
         {
           "text": "Hold the rail with both hands, and do not sing back until I say.",
           "address": "riftlight-sky-islands-arrival/route_ferry/narration"
-        },
-        {
-          "text": "Never, trust a map on a windy day. Look for me if you reach the islands. You will recognize the washing.",
-          "address": "riftlight-exchange-rift/ship_flap/narration"
         }
       ],
-      "lineCount": 14,
+      "lineCount": 17,
       "guessedLines": 6,
       "speaks": true,
       "status": "provisional"
@@ -5571,8 +5570,8 @@
         "voice": "Zubenelgenubi"
       },
       "lines": [],
-      "lineCount": 18,
-      "guessedLines": 18,
+      "lineCount": 9,
+      "guessedLines": 9,
       "speaks": true,
       "status": "provisional"
     },
@@ -5679,19 +5678,19 @@
       },
       "lines": [
         {
+          "text": "Helping. Fixing. Putting things back. That is a different word from the one you just said.",
+          "address": "gemfall-06/scene_record_hoard/variants/6"
+        },
+        {
           "text": "Who should stand with you now? The wardens, the gathering grandmothers, or nobody else yet?",
           "address": "gemfall-06/scene_who_to_tell/narration"
         },
         {
           "text": "A starting road, then. You can carry a question as well as a plan.",
           "address": "gemfall-06/scene_undeclared/narration"
-        },
-        {
-          "text": "Then you had better be right, and you had better be quick.",
-          "address": "gemfall-06/scene_kept_close_room/narration"
         }
       ],
-      "lineCount": 14,
+      "lineCount": 17,
       "speaks": true,
       "status": "provisional"
     },
@@ -5699,10 +5698,8 @@
       "name": "Travelers",
       "kind": "group",
       "who": "Travelers.",
-      "pronouns": "he/him",
-      "pronounsFrom": "narration",
-      "gender": "male",
-      "genderFrom": "narration",
+      "gender": "unknown",
+      "genderFrom": "none",
       "figure": "cast/boarding_traveler",
       "chapters": [
         "riftlight-ashspan-bridge"
@@ -5713,11 +5710,15 @@
       },
       "lines": [
         {
+          "text": "Your windbreak is useful too. I can tell the next travelers where to stop if the weather turns.",
+          "address": "riftlight-glacier-survival/changing/variants/0"
+        },
+        {
           "text": "It floats. It is a very good bag.",
           "address": "riftlight-ashspan-bridge/board_wet/narration"
         }
       ],
-      "lineCount": 2,
+      "lineCount": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -6134,11 +6135,11 @@
       },
       "lines": [
         {
-          "text": "Grab this!",
-          "address": "riftlight-exchange-rift/pull/narration"
+          "text": "You saved my fish. Let us save that little one.",
+          "address": "riftlight-exchange-rift/pull/variants/1"
         }
       ],
-      "lineCount": 1,
+      "lineCount": 2,
       "speaks": true,
       "status": "provisional"
     },
