@@ -264,6 +264,8 @@ const escape = (text: string): string => text.replace(/[.*+?^${}()|[\]\\]/g, "\\
 export interface Speaker {
   id: string;
   names: readonly string[];
+  /** Answers only to its names as written ("Wisp", never the noun "wisp"): a name that is also a common word. */
+  exact?: boolean;
 }
 
 /**
@@ -281,7 +283,7 @@ export function withSceneRoles(present: readonly Speaker[], inScene: ReadonlySet
   }
   return present.map((speaker) => {
     const mine = [...owners].filter(([, ids]) => ids.length === 1 && ids[0] === speaker.id).map(([word]) => word);
-    return mine.length > 0 ? { id: speaker.id, names: [...new Set([...speaker.names, ...mine])] } : speaker;
+    return mine.length > 0 ? { ...speaker, names: [...new Set([...speaker.names, ...mine])] } : speaker;
   });
 }
 
@@ -323,9 +325,13 @@ export function attributeQuotes(text: string, speakers: readonly Speaker[], unat
   const named = speakers
     .map((speaker) => ({ id: speaker.id, names: speaker.names.filter((n) => n.length >= 3).map(escape) }))
     .filter((speaker) => speaker.names.length > 0);
+  // A name that only counts as written is hidden wherever the text spells it any other way, so "a wisp line" is not Wisp.
+  // Same length, so every position still means the same place in the text.
+  const exactNames = speakers.filter((speaker) => speaker.exact).flatMap((speaker) => speaker.names.filter((n) => n.length >= 3));
+  const context = exactNames.length === 0 ? text : text.replace(new RegExp(`\\b(?:${exactNames.map(escape).join("|")})\\b`, "gi"), (found) => (exactNames.includes(found) ? found : "_".repeat(found.length)));
   const mentions: { at: number; id: string }[] = [];
   for (const speaker of named) {
-    for (const match of text.matchAll(new RegExp(`\\b(?:${speaker.names.join("|")})\\b`, "gi"))) mentions.push({ at: match.index!, id: speaker.id });
+    for (const match of context.matchAll(new RegExp(`\\b(?:${speaker.names.join("|")})\\b`, "gi"))) mentions.push({ at: match.index!, id: speaker.id });
   }
   mentions.sort((a, b) => a.at - b.at);
   const tagAfter = (tail: string): string | null => {
@@ -349,7 +355,7 @@ export function attributeQuotes(text: string, speakers: readonly Speaker[], unat
   // An action beat: the sentence just before the quote is about one named speaker, who starts it
   // ("The keeper shakes her head. "…""). Its she/her or he/his is that speaker's too.
   const beatBefore = (start: number): { id: string; pronoun?: string } | null => {
-    const head = text.slice(Math.max(0, start - 200), start);
+    const head = context.slice(Math.max(0, start - 200), start);
     if (!/[.!?]["”]?\s+$/.test(head)) return null;
     const sentence = /(?:^|[.!?]["”]?\s+)([^.!?"“”]+[.!?])\s+$/.exec(head)?.[1];
     if (!sentence) return null;
@@ -378,7 +384,7 @@ export function attributeQuotes(text: string, speakers: readonly Speaker[], unat
     const start = match.index!;
     const end = start + match[0].length;
     const lastNamed = [...mentions].reverse().find((m) => m.at < start)?.id ?? null;
-    const tag = tagAfter(text.slice(end, end + 80)) ?? tagBefore(text.slice(Math.max(0, start - 80), start));
+    const tag = tagAfter(context.slice(end, end + 80)) ?? tagBefore(context.slice(Math.max(0, start - 80), start));
     let id: string | null = null;
     let pronoun: string | undefined;
     if (tag === "you") id = "party";
@@ -572,6 +578,12 @@ function namesFor(draft: Pick<Draft, "name" | "aliases">): string[] {
 
 // Jobs and roles, never peoples: "the merfolk" in a chapter with two merfolk is anybody's.
 const ROLE_WORDS = /^(captain|keeper|guide|grandmother|drover|ferrier|runner|cook|prospector|driver|seller|leader|warden|tree|beech|voice|door|postmaster|innkeeper|fishmonger|boy|girl|elder|clerk|courier|lamplighter|scholar|cobbler|foreman|provisioner|ladler|actor|grocer|toll-taker|ferryman|ferrywoman|engineer|sergeant|corporal|archivist|messenger|watcher|herder|builder|pilot|singer|student|worker|boss|carter|claimant|expert|gatherer)s?$/i;
+
+/** A name for several of them ("Gullet's Cousins", "Marker Movers"): its last word is a plural. */
+export function isGroupName(name: string): boolean {
+  const last = name.trim().split(/\s+/).pop() ?? "";
+  return /[a-z]{3,}s$/i.test(last) && !/(ss|us|is)$/i.test(last);
+}
 
 /** A name that is a description, not a name: "Lighthouse Keeper", "Egg Faun". */
 function isRoleName(name: string): boolean {
@@ -852,10 +864,12 @@ export function buildSheet(sources: Sources, previous: CastSheet | null, untagge
     const here = inChapter.get(chapter) ?? [];
     const taken = new Set(here.flatMap((speaker) => speaker.names.map((name) => name.toLowerCase())));
     const visiting: Speaker[] = [];
+    const prose = (narrationByChapter.get(chapter) ?? []).map((line) => line.text).join(" ");
     for (const draft of drafts) {
       if (draft.generic || isRoleName(draft.name) || draft.chapters.has(chapter) || campaign === undefined || !draft.campaigns.has(campaign)) continue;
-      const names = namesFor(draft).filter((name) => name.length >= 4 && /^[A-Z]/.test(name) && !taken.has(name.toLowerCase()));
-      if (names.length > 0) visiting.push({ id: draft.id, names });
+      // A name this chapter also uses as a plain noun ("a wisp line") is not safe to take for the person.
+      const names = namesFor(draft).filter((name) => name.length >= 4 && /^[A-Z]/.test(name) && !taken.has(name.toLowerCase()) && !new RegExp(`\\b${escape(name.toLowerCase())}\\b`).test(prose));
+      if (names.length > 0) visiting.push({ id: draft.id, names, exact: true });
     }
     if (visiting.length > 0) inChapter.set(chapter, [...here, ...visiting]);
   }
@@ -873,10 +887,12 @@ export function buildSheet(sources: Sources, previous: CastSheet | null, untagge
       if (inScene?.size === 1) {
         const only = [...inScene][0]!;
         // Someone else named right beside the quote may be the one speaking, so it is no guess for this scene's only speaker.
-        const others = here.filter((speaker) => speaker.id !== only).flatMap((speaker) => speaker.names.filter((name) => name.length >= 3).map(escape));
-        const othersNear = others.length === 0 ? null : new RegExp(`\\b(?:${others.join("|")})\\b`, "i");
+        const namesOf = (exact: boolean): string[] => here.filter((speaker) => speaker.id !== only && !!speaker.exact === exact).flatMap((speaker) => speaker.names.filter((name) => name.length >= 3).map(escape));
+        const others = namesOf(false);
+        const exactOthers = namesOf(true);
+        const nearby = [others.length === 0 ? null : new RegExp(`\\b(?:${others.join("|")})\\b`, "i"), exactOthers.length === 0 ? null : new RegExp(`\\b(?:${exactOthers.join("|")})\\b`)].filter((found): found is RegExp => found !== null);
         for (const quote of loose) {
-          const counted = looksSpoken(quote) && !(othersNear && (othersNear.test(quote.before.slice(-60)) || othersNear.test(quote.after.slice(0, 40))));
+          const counted = looksSpoken(quote) && !nearby.some((found) => found.test(quote.before.slice(-60)) || found.test(quote.after.slice(0, 40)));
           if (counted) guessed.set(only, (guessed.get(only) ?? 0) + 1);
           untagged?.push({ ...quote, address: line.address, scene: [...inScene], guessed: counted });
         }
@@ -920,8 +936,14 @@ export function buildSheet(sources: Sources, previous: CastSheet | null, untagge
     const counts = tagged.get(draft.id) ?? {};
     const [top, second] = Object.entries(counts).sort((a, b) => b[1] - a[1]);
     const heardPronoun = top && (!second || top[1] > second[1]) ? { she: "she/her", he: "he/him", they: "they/them" }[top[0]] : undefined;
-    if (!draft.pronouns && heardPronoun) {
+    // A group ("Gullet's Cousins") is not a she or a he because one of them was. What the narration once told us is
+    // kept: a rebuild that moves a quote to someone else does not take back a trait that was already established.
+    const group = isGroupName(draft.name);
+    if (!draft.pronouns && heardPronoun && !group) {
       draft.pronouns = heardPronoun;
+      draft.pronounsFrom = "narration";
+    } else if (!draft.pronouns && old?.pronouns && old.pronounsFrom === "narration") {
+      draft.pronouns = old.pronouns;
       draft.pronounsFrom = "narration";
     }
     const who = draft.who || `${draft.name}.`;
