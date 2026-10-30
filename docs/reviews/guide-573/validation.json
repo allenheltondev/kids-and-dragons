@@ -1,0 +1,46 @@
+{
+  "guide-banner-play": {
+    "size": [
+      1920,
+      480
+    ],
+    "mode": "RGB",
+    "bytes": 72394,
+    "sRGB": true,
+    "left55_min_contrast": {
+      "title_f4f1ff": 15.04,
+      "paragraph_b7b0d8": 8.14
+    }
+  },
+  "guide-banner-setup": {
+    "size": [
+      1920,
+      480
+    ],
+    "mode": "RGB",
+    "bytes": 80724,
+    "sRGB": true,
+    "left55_min_contrast": {
+      "title_f4f1ff": 14.49,
+      "paragraph_b7b0d8": 7.84
+    }
+  },
+  "guide-part-keeping": {
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "bytes": 15132,
+    "sRGB": true
+  },
+  "guide-part-groups": {
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "bytes": 21430,
+    "sRGB": true
+  }
+}
