@@ -145,7 +145,8 @@ describe("how the chapter ended (spec §8.2)", () => {
 
 describe("how a fight that fought back ended (#220)", () => {
   it("names each ending, who was freed and what got done", () => {
-    mount({ fightEndings: [{ outcome: "escaped", freed: ["Pip"], lost: [], done: [] }] });
+    // On the ending's page, with the story: how the fight ended is what happened, not a tally.
+    mount({ endingRead: false, fightEndings: [{ outcome: "escaped", freed: ["Pip"], lost: [], done: [] }] });
     expect(screen.getByText("You got out through the rift. You freed Pip.")).toBeTruthy();
   });
 
@@ -260,7 +261,7 @@ describe("the recap (priority-1 scenes, in their own words)", () => {
   }
 
   it("retells each p1 scene the party walked through", () => {
-    withChapter(CHAPTER, { visited: ["s_start", "s_truth", "s_clue", "s_end"] });
+    withChapter(CHAPTER, { endingRead: false, visited: ["s_start", "s_truth", "s_clue", "s_end"] });
     expect(screen.getByText(TRUTH)).toBeTruthy();
     expect(screen.queryByText("A clue.")).toBeNull();
     expect(document.querySelectorAll(".complete__recap")).toHaveLength(1);
@@ -279,19 +280,28 @@ describe("the recap (priority-1 scenes, in their own words)", () => {
     expect(document.querySelector(".complete__recap")).toBeNull();
   });
 
-  it("reads it aloud with the summary rather than after it", () => {
+  it("reads it aloud with the ending, on the ending's page, and the tally only once the page turns", () => {
     /*
      * §11 — all narration flows through `speak()`, and a recap that only
-     * existed on the television is a recap nobody hears. One utterance rather
-     * than two so it cannot interrupt or be interrupted by the summary line.
+     * existed on the television is a recap nobody hears. One utterance with
+     * the ending rather than two, so it cannot interrupt or be interrupted.
      */
     const spoken: string[] = [];
     setSpeaker((text) => spoken.push(text));
     try {
-      withChapter(CHAPTER, { visited: ["s_start", "s_truth", "s_end"] });
+      withChapter(CHAPTER, { endingRead: false, narration: "Home.", visited: ["s_start", "s_truth", "s_end"] });
       expect(spoken).toHaveLength(1);
-      expect(spoken[0]).toContain("Chapter finished!");
-      expect(spoken[0]).toContain(TRUTH);
+      expect(spoken[0]).toBe(`Home. ${TRUTH}`);
+      expect(screen.queryByText(/XP for everyone/)).toBeNull();
+
+      act(() => {
+        useGameStore.setState((s) => ({ state: { ...s.state!, endingRead: true } }));
+      });
+      expect(spoken).toHaveLength(2);
+      expect(spoken[1]).toContain("Chapter finished!");
+      expect(spoken[1]).not.toContain(TRUTH);
+      expect(screen.getByText(/XP for everyone/)).toBeTruthy();
+      expect(document.querySelector(".complete__recap")).toBeNull();
     } finally {
       setSpeaker(null);
     }
@@ -302,13 +312,12 @@ describe("the recap (priority-1 scenes, in their own words)", () => {
     const spoken: string[] = [];
     setSpeaker((text) => spoken.push(text));
     try {
-      mount({ visited: ["s_truth"] });
+      mount({ endingRead: false, narration: "Home.", visited: ["s_truth"] });
       expect(spoken).toHaveLength(0);
       act(() => {
         vi.advanceTimersByTime(2000);
       });
-      expect(spoken).toHaveLength(1);
-      expect(spoken[0]).toContain("Chapter finished!");
+      expect(spoken).toEqual(["Home."]);
     } finally {
       setSpeaker(null);
       vi.useRealTimers();
@@ -388,7 +397,7 @@ describe("the chapter's goal on the summary (#356)", () => {
   } as unknown as Chapter;
 
   it("shows the goal done on a success that skipped every extra, and counts the extras apart", () => {
-    mount({ chapterOutcome: "success", flags: { faced_the_bend: true } });
+    mount({ endingRead: false, chapterOutcome: "success", flags: { faced_the_bend: true } });
     act(() => {
       useGameStore.setState({ chapter: TETHER });
     });
