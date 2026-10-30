@@ -21,7 +21,8 @@
  * set it in black on white, and keep the quick start to its own first page.
  */
 
-import { Fragment, useEffect, useMemo, useRef } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import type { ReactElement } from "react";
 import { navigate, type Route } from "../router";
 import { Button } from "../ui/Button";
@@ -50,14 +51,70 @@ function Text({ runs }: { runs: Inline[] }): ReactElement {
   );
 }
 
+/** What a picture is of, from its shape: a phone's tall screen, a TV's wide one, or a part of a screen. */
+type Shape = "phone" | "screen" | "panel";
+
+function shapeOf(width: number, height: number): Shape {
+  if (width === 0 || height === 0) return "panel";
+  if (height / width >= 1.6) return "phone";
+  if (width / height >= 1.5) return "screen";
+  return "panel";
+}
+
+/** A picture, framed as the device it was taken on, and a tap opens it large enough to read. */
 function Picture({ block }: { block: Extract<Block, { kind: "picture" }> }): ReactElement {
+  const [shape, setShape] = useState<Shape>("panel");
+  const [large, setLarge] = useState(false);
+  const opener = useRef<HTMLButtonElement>(null);
+  const src = `${PICTURES}/${block.name}`;
+
   return (
-    <figure className="guide__figure">
-      <img className="guide__picture" src={`${PICTURES}/${block.name}`} alt={block.alt} loading="lazy" />
+    <figure className={`guide__figure guide__figure--${shape}`}>
+      <button
+        type="button"
+        ref={opener}
+        className="guide__zoom kad-focusable"
+        aria-label={`Enlarge the picture: ${block.alt}`}
+        aria-haspopup="dialog"
+        onClick={() => { setLarge(true); }}
+      >
+        <img
+          className="guide__picture"
+          src={src}
+          alt={block.alt}
+          loading="lazy"
+          onLoad={(event) => { setShape(shapeOf(event.currentTarget.naturalWidth, event.currentTarget.naturalHeight)); }}
+        />
+      </button>
       <figcaption className="guide__caption" aria-hidden="true">
         {block.alt}
       </figcaption>
+      {large ? <Enlarged src={src} alt={block.alt} onClose={() => { setLarge(false); opener.current?.focus(); }} /> : null}
     </figure>
+  );
+}
+
+/** One picture over the page. Escape, a tap anywhere or the button closes it. */
+function Enlarged({ src, alt, onClose }: { src: string; alt: string; onClose: () => void }): ReactElement {
+  const close = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    close.current?.focus();
+    const onKey = (event: KeyboardEvent): void => {
+      if (event.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [onClose]);
+  return createPortal(
+    <div className="guide-large" role="dialog" aria-modal="true" aria-label={alt} onClick={onClose}>
+      <img className="guide-large__picture" src={src} alt={alt} />
+      <button ref={close} type="button" className="guide-large__close kad-focusable" aria-label="Close the picture">
+        <Icon name="close" />
+      </button>
+    </div>,
+    document.body,
   );
 }
 
