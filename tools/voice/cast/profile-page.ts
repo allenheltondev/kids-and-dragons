@@ -871,6 +871,8 @@ ${MODE_CSS}</style>
   });
 
   (async () => {
+    // Already in ElevenLabs mode from the last visit: the account's voices are needed before the first character draws.
+    await ensureElevenVoices();
     await refreshState();
     const asked = new URLSearchParams(location.search).get("id");
     const first = asked && data.speakers[asked] ? asked : data.order.find(isWaiting);
