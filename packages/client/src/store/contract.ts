@@ -306,6 +306,11 @@ export interface GameStore {
    * offered names (`CREW_NAMES`). Resolves like `removePlayer`.
    */
   renameCrew(crew: string | null, name: string): Promise<boolean>;
+  /**
+   * The host answers `RunState.crewCheck`: the heroes seated join the crew's
+   * adventure where it stands. Resolves like `removePlayer`.
+   */
+  keepCrew(campaignId: string): Promise<boolean>;
   /** The host closes the room for everybody (#263). Resolves like `removePlayer`. */
   closeRoom(): Promise<boolean>;
   /**

@@ -50,7 +50,7 @@ import { removePlayer } from "./handlers/remove.ts";
 import { handKeeper } from "./handlers/keeper.ts";
 import { MemoryTimingStore } from "./store/timing-store.ts";
 import { closeRoom, lockRoom, setQuiet, type HostPrincipal } from "./handlers/host.ts";
-import { CREW_BODY, RENAME_BODY, parseCrewChoice, parseCrewRename, renameCrew, switchCrew } from "./handlers/crew.ts";
+import { confirmCrew, CREW_BODY, KEEP_BODY, RENAME_BODY, parseCrewChoice, parseCrewKeep, parseCrewRename, renameCrew, switchCrew } from "./handlers/crew.ts";
 import { localTimingReport, parseTimingControl, setTiming, TIMING_BODY, type TimingControl } from "./handlers/timing.ts";
 import { releaseSavedHero, resumeGame, stopForToday } from "./handlers/save.ts";
 import { listHeroes } from "./handlers/heroes.ts";
@@ -469,6 +469,11 @@ async function main(): Promise<void> {
   app.post("/api/room/:code/crew", hostControl(
     (body) => (parseCrewChoice(body) === undefined ? CREW_BODY : null),
     (code, principal, body, deps) => switchCrew({ code, principal, ...parseCrewChoice(body)! }, deps),
+  ));
+  // Heroes new to the crew's adventure keep going with it (handlers/crew.ts).
+  app.post("/api/room/:code/crewkeep", hostControl(
+    (body) => (parseCrewKeep(body) === undefined ? KEEP_BODY : null),
+    (code, principal, body, deps) => confirmCrew({ code, principal, ...parseCrewKeep(body)! }, deps),
   ));
   // Another of the offered names for one of the household's crews (handlers/crew.ts).
   app.post("/api/room/:code/crewname", hostControl(

@@ -41,7 +41,7 @@ import { setVisitors } from "../handlers/visitors.ts";
 import { removePlayer } from "../handlers/remove.ts";
 import { handKeeper } from "../handlers/keeper.ts";
 import { closeRoom, lockRoom, setQuiet, type HostPrincipal } from "../handlers/host.ts";
-import { CREW_BODY, RENAME_BODY, parseCrewChoice, parseCrewRename, renameCrew, switchCrew } from "../handlers/crew.ts";
+import { confirmCrew, CREW_BODY, KEEP_BODY, RENAME_BODY, parseCrewChoice, parseCrewKeep, parseCrewRename, renameCrew, switchCrew } from "../handlers/crew.ts";
 import { parseTimingControl, setTiming, TIMING_BODY, type TimingControl } from "../handlers/timing.ts";
 import { releaseSavedHero, resumeGame, stopForToday } from "../handlers/save.ts";
 import { listHeroes } from "../handlers/heroes.ts";
@@ -209,6 +209,11 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
     if (crew?.[1]) {
       const code = crew[1].toUpperCase();
       return (deps) => postCrew(req, deps, code);
+    }
+    const crewKeep = /^\/api\/room\/([A-Za-z]{4})\/crewkeep$/.exec(req.path);
+    if (crewKeep?.[1]) {
+      const code = crewKeep[1].toUpperCase();
+      return (deps) => postCrewKeep(req, deps, code);
     }
     const crewName = /^\/api\/room\/([A-Za-z]{4})\/crewname$/.exec(req.path);
     if (crewName?.[1]) {
@@ -605,6 +610,14 @@ async function postCrew(req: Req, deps: HandlerDeps, code: string) {
   const choice = parseCrewChoice(req.body);
   return postHostControl(req, deps, code, choice === undefined ? CREW_BODY : null, (principal) =>
     switchCrew({ code, principal, ...choice! }, deps),
+  );
+}
+
+/** The host keeping the crew's adventure going for heroes new to it (handlers/crew.ts). */
+async function postCrewKeep(req: Req, deps: HandlerDeps, code: string) {
+  const keep = parseCrewKeep(req.body);
+  return postHostControl(req, deps, code, keep === undefined ? KEEP_BODY : null, (principal) =>
+    confirmCrew({ code, principal, ...keep! }, deps),
   );
 }
 

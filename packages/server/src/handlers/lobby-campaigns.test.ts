@@ -18,7 +18,7 @@ import { applyIntent, createRunState, lobbyCampaign } from "@kad/shared";
 import type { Campaign, Chapter, ClientIntent } from "@kad/shared";
 import type { Engine } from "../engine/port.ts";
 import { makeChapter } from "../../../shared/src/test-fixtures.ts";
-import { makeContent, makeHarness, seedHousehold, type TestHarness } from "../test-support.ts";
+import { makeContent, makeHarness, seedHousehold, type TestHarness, keepGoing } from "../test-support.ts";
 import { applyAction } from "./action.ts";
 import { createGuestHousehold } from "./account.ts";
 import { createRoom, joinRoom, settleRoom } from "./room.ts";
@@ -73,8 +73,11 @@ async function lobby(h: TestHarness, featured: string, count: number) {
   if (!created.ok) throw new Error(created.error.message);
   const { code, runId } = created.value;
   const state = async () => (await h.repo.getState(runId))!;
-  const send = async (playerId: string, intent: ClientIntent) =>
-    applyAction({ runId, playerId, seq: (await state()).seq, intent }, h.deps);
+  const send = async (playerId: string, intent: ClientIntent) => {
+    // The TV's "Keep going" for heroes new to the adventure (crew.ts): these tests are about what follows.
+    if (intent.type === "CONTINUE_CAMPAIGN") await keepGoing(h, runId, intent.campaignId);
+    return applyAction({ runId, playerId, seq: (await state()).seq, intent }, h.deps);
+  };
   const ok = async (playerId: string, intent: ClientIntent) => {
     const response = await send(playerId, intent);
     expect(response.ok, JSON.stringify(response.ok ? null : response.error)).toBe(true);
@@ -274,15 +277,17 @@ describe("a TV's room belongs to the first phone that joins", () => {
     expect((await h.repo.getRoom(code))?.claimable).toBe(true);
   });
 
-  it("is settled by the first join, so a second household is still turned away", async () => {
+  it("is settled by the first join, so a second household comes in as a visitor", async () => {
     const h = harness();
-    const { players } = await seedHousehold(h, 1);
+    const { householdId, players } = await seedHousehold(h, 1);
     const stranger = await createGuestHousehold({ displayName: "Visitor" }, h.deps);
     const { code } = await tvRoom(h);
 
     expect((await joinRoom({ code, principal: players[0]!.principal }, h.deps)).ok).toBe(true);
-    const refused = await joinRoom({ code, principal: stranger.principal }, h.deps);
-    expect(refused.ok ? null : refused.error.code).toBe("FORBIDDEN");
+    const visiting = await joinRoom({ code, principal: stranger.principal }, h.deps);
+    if (!visiting.ok) throw new Error(visiting.error.message);
+    expect((await h.repo.getRoom(code))?.householdId).toBe(householdId);
+    expect(visiting.value.state.seats?.[stranger.principal.playerId]?.homeHouseholdId).toBe(stranger.principal.householdId);
   });
 
   it("stays with the TV's household when a brand-new phone settles it first", async () => {
@@ -296,8 +301,10 @@ describe("a TV's room belongs to the first phone that joins", () => {
     const settled = await settleRoom(room, room.householdId, h.deps);
     expect(settled.ok && settled.value?.householdId).toBe(tvHousehold);
 
-    const refused = await joinRoom({ code, principal: players[0]!.principal }, h.deps);
-    expect(refused.ok ? null : refused.error.code).toBe("FORBIDDEN");
+    const visiting = await joinRoom({ code, principal: players[0]!.principal }, h.deps);
+    if (!visiting.ok) throw new Error(visiting.error.message);
+    expect((await h.repo.getRoom(code))?.householdId).toBe(tvHousehold);
+    expect(visiting.value.state.seats?.[players[0]!.principal.playerId]?.homeHouseholdId).toBe(players[0]!.principal.householdId);
   });
 
   it("never moves a room a phone opened", async () => {
@@ -307,7 +314,7 @@ describe("a TV's room belongs to the first phone that joins", () => {
     const created = await createRoom({ householdId, mode: "party", campaignId: "gems" }, h.deps);
     if (!created.ok) throw new Error(created.error.message);
 
-    const refused = await joinRoom({ code: created.value.code, principal: stranger.principal }, h.deps);
-    expect(refused.ok ? null : refused.error.code).toBe("FORBIDDEN");
+    expect((await joinRoom({ code: created.value.code, principal: stranger.principal }, h.deps)).ok).toBe(true);
+    expect((await h.repo.getRoom(created.value.code))?.householdId).toBe(householdId);
   });
 });

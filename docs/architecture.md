@@ -1581,6 +1581,14 @@ any character — characters belong to the household.
 
 #### Visitors: a room open to more than one household
 
+> **Changed:** a phone already bound to another household now joins any room on
+> the room's own four letters, as a visitor (`joinRoom`), with no switch to turn
+> on first; the host's view no longer shows the switch. The owner chose that over
+> the guard below, accepting that a guessed code admits a stranger's phone; the
+> host's Lock is what closes a room once everyone is in. A brand-new phone still
+> joins as family on the four letters, as before. The switch and its longer code
+> remain on the server for rooms already open; what follows is how they work.
+
 A kid who brings their own phone to a friend's game, or two families sharing an
 adventure (#249). **One room-level switch**, not an approval for each visitor,
 and only a signed-in owner of the room's household may turn it on
@@ -1657,6 +1665,12 @@ and every device stay the household's, so anyone may sit down with any crew.
   Its name, when the household picks one, is the one `FIRSTCREW` row
   (`entity: "crew"`), outside `CREW#` so `listCrews` still lists only the others.
   A host renames any crew, from the same fixed list, at `POST /api/room/:code/crewname`.
+- **Heroes new to a crew's adventure are asked about first.** When the lobby's
+  adventure is partway for the crew, other heroes of the household are on it
+  (they hold its claim), and none of the seated heroes are, the lobby carries
+  `RunState.crewCheck` and Begin is refused until the host picks: keep going
+  (`POST /api/room/:code/crewkeep`, `crewConfirmed`) or start a new crew. An
+  attempt no hero is on asks nothing.
 - **Every other crew** is `HH#…/CREW#<id>` (`CrewRecord`: id, a name from a
   fixed list so a TV remote never types, created). Its attempts live at
   `CREWSAVE#<id>#<campaignId>` and carry `crew`; that prefix is not a prefix

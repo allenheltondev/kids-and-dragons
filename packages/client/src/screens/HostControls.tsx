@@ -15,10 +15,8 @@
  *   - in the lobby, play as another crew: a new group of players at the same
  *     TV starts its own adventure, and everyone else's save stays as it was
  *
- * And one that is not the host's alone: opening the room to visitors (#249),
- * which lowers the barrier to joining, so a grown-up who runs the game signs
- * in to turn it on (`VisitorSwitch`). The host's view is where it lives,
- * because that is where somebody running the evening looks.
+ * Visitors (#249) need no switch: a phone from another household joins with
+ * the room's own code, and Lock is what keeps newcomers out.
  *
  * The roster is read from the run (`RunState.seats`, with `party` for heroes
  * and who is connected), so unlike the arrival notices it survives a refresh
@@ -31,7 +29,6 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import type { RunState } from "@kad/shared";
 import { useGameStore, useRunState, useSession } from "../store";
-import { useKeepsakeStore } from "../store/keepsake";
 import { Button } from "../ui";
 import { inviteData, joinUrl, shareInvite, type ShareOutcome } from "../ui/share-invite";
 import { Icon } from "./icons";
@@ -443,7 +440,6 @@ function HostPanel({ state, me, code, invite = false }: { state: RunState; me: s
       </details>
       <div className="kad-host__actions">
         {invite ? <ShareInvite code={code} /> : null}
-        <VisitorSwitch state={state} code={code} busy={busy} />
 
         <div className="kad-host__quick-settings">
         <div className="kad-host__setting">
@@ -620,44 +616,3 @@ function CrewSwitch({
   );
 }
 
-/**
- * Open to visitors, or not (#249). Either way round, the tap opens the sign-in
- * for a grown-up who runs the game; the server refuses anybody else. Once it
- * is open, the visitor code is said here as well as on the room's screens.
- */
-function VisitorSwitch({ state, code, busy }: { state: RunState; code: string; busy: boolean }): React.JSX.Element | null {
-  const available = useKeepsakeStore((s) => s.available);
-  const check = useKeepsakeStore((s) => s.check);
-  const openVisitors = useKeepsakeStore((s) => s.openVisitors);
-  useEffect(() => {
-    void check();
-  }, [check]);
-  // No sign-in on this deployment, so nobody could turn it on.
-  if (available === false && state.visitorCode === undefined) return null;
-
-  const open = state.visitorCode !== undefined;
-  return (
-    <>
-      <Button
-        variant="secondary"
-        size="md"
-        block
-        disabled={busy || available !== true}
-        aria-pressed={open}
-        onClick={() => openVisitors(code, !open)}
-      >
-        {open ? "Stop new visitors" : "Let visitors join"}
-      </Button>
-      <p className="kad-host__hint">
-        {open ? (
-          <>
-            Kids from other families join with <strong className="kad-host__code">{state.visitorCode}</strong>.
-            A grown-up signs in to change this.
-          </>
-        ) : (
-          "Kids from other families can join with their own heroes. A grown-up who runs this game signs in to turn it on."
-        )}
-      </p>
-    </>
-  );
-}

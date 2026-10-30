@@ -137,7 +137,7 @@ describe("joinRoom", () => {
     expect(joined.ok).toBe(true);
   });
 
-  it("rejects an unknown code, an expired room, and another household's device", async () => {
+  it("rejects an unknown code and an expired room", async () => {
     const harness = makeHarness();
     const { householdId, players } = await seedHousehold(harness);
     const created = await createRoom({ householdId, mode: "party" }, harness.deps);
@@ -148,11 +148,6 @@ describe("joinRoom", () => {
       ok: false,
       error: { code: "NOT_FOUND" },
     });
-
-    const stranger = { ...principal, householdId: "h_other" };
-    expect(
-      await joinRoom({ code: created.value.code, principal: stranger }, harness.deps),
-    ).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
 
     harness.clock.advance(ROOM_TTL_MS + 1);
     expect(await joinRoom({ code: created.value.code, principal }, harness.deps)).toMatchObject({

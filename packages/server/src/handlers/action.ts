@@ -56,7 +56,7 @@ import {
 import type { DeviceIdentity } from "../identity.ts";
 import type { ApplyIntentResult, EngineContext } from "../engine/port.ts";
 import type { CampaignProgressRecord, CharacterWrite, EventRecord, RunRecord } from "../store/repository.ts";
-import { followCrew } from "./crew.ts";
+import { checkNewcomers, followCrew, newcomersTo } from "./crew.ts";
 import { diff } from "../json-patch.ts";
 import { keepGuestHousehold } from "./account.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
@@ -185,6 +185,20 @@ export async function applyAction(
     const campaignId = state.campaignOptions?.length ? choice.leader?.id : input.intent.campaignId;
     if (!campaignId) {
       return { ok: false, seq: state.seq, error: { code: "ILLEGAL", message: "no campaign to continue" } };
+    }
+    // A crew partway through this adventure, and nobody seated has been on it:
+    // the host chooses first (crew.ts, `checkNewcomers`), rather than these
+    // heroes being dropped into the middle of somebody else's story.
+    if (await newcomersTo(state, auth.run.householdId, campaignId, deps)) {
+      const title = deps.content.campaign(campaignId)?.title ?? campaignId;
+      return {
+        ok: false,
+        seq: state.seq,
+        error: {
+          code: "ILLEGAL",
+          message: `This crew is partway through ${title}, and none of these heroes have been on it yet. The grown-up running the game picks: keep going, or start a new crew.`,
+        },
+      };
     }
     const next = await nextChapter(campaignId, auth.run.householdId, seatedParty(state), deps, state.crew);
     if ("refusal" in next) {
@@ -427,9 +441,11 @@ export async function applyAction(
   if (auth.home !== auth.run.householdId) {
     result = { ...result, state: withHome(result.state, input.playerId, auth.home) };
   }
-  if (result.state.chapterId !== null && result.state.crewSetup) {
+  if (result.state.chapterId !== null && (result.state.crewSetup || result.state.crewCheck || result.state.crewConfirmed)) {
     result = { ...result, state: { ...result.state } };
     delete result.state.crewSetup;
+    delete result.state.crewCheck;
+    delete result.state.crewConfirmed;
   }
   // A hero sat down or got up in the lobby: her own finished campaigns can
   // unlock one the household has not finished (#283), so the lobby's locks
@@ -442,6 +458,16 @@ export async function applyAction(
     // And the crew follows who sat down: a returning crew's heroes bring
     // their own saves with them (crew.ts). A no-op for a household with none.
     result = { ...result, state: await followCrew(result.state, auth.run.householdId, auth.run.campaignId, deps) };
+  }
+  // Whether the heroes now seated are new to the adventure the lobby rests on
+  // (crew.ts): rechecked when who is seated or which adventure leads changes.
+  if (
+    (result.state.phase === "lobby" || result.state.phase === "creation") &&
+    (!sameParty(state.party, result.state.party) ||
+      state.campaignVotes !== result.state.campaignVotes ||
+      state.crew !== result.state.crew)
+  ) {
+    result = { ...result, state: await checkNewcomers(result.state, auth.run.householdId, deps) };
   }
 
   /*
