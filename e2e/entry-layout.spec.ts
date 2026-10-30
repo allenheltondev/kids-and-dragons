@@ -39,7 +39,7 @@ test("wide entry screens use both sides and phones put lobby privacy below navig
     await tv.page.locator(".kad-host__crew-menu > summary").click();
     await tv.page.getByRole("button", { name: "New players? Start a new crew" }).click();
     await expect(phone.page.getByText(/Make a new hero for The Otter Crew/)).toBeVisible();
-    await expect(footer).toHaveCount(0);
+    await expect(footer).toBeVisible();
   } finally {
     await tv.context.close();
     await phone.context.close();

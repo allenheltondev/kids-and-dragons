@@ -13,10 +13,14 @@ import rocks from "../../../../content/chapters/gemfall-06.json";
 
 const initial = useGameStore.getState();
 beforeEach(() => { vi.spyOn(window, "requestAnimationFrame").mockReturnValue(1); });
-afterEach(() => { cleanup(); useGameStore.setState(initial, true); document.documentElement.removeAttribute("data-motion"); vi.restoreAllMocks(); });
+afterEach(() => { cleanup(); useGameStore.setState(initial, true); document.documentElement.removeAttribute("data-motion"); vi.useRealTimers(); vi.restoreAllMocks(); });
 const precision: InteractionSpec = { kind: "precision", cue: "Ring the bell", actionLabel: "Toss!", target: 0.5, width: 0.3, periodMs: 4000 };
+let seededRun = 0;
 function seed(spec: InteractionSpec = precision, extra: Partial<InteractionPrompt> = {}) {
-  const state = createRunState({ runId: "r", roomCode: "TEST", mode: "party", now: new Date().toISOString() });
+  // Each seed is a new game; do not reuse a previous game's monotonic anchor
+  // when fixture timestamps happen to match under a frozen wall clock.
+  const runId = `r_${++seededRun}`;
+  const state = createRunState({ runId, roomCode: "TEST", mode: "party", now: new Date().toISOString() });
   state.chapterId = "test";
   state.sceneId = "test";
   state.party = [{ playerId: "p", character: resolveCharacter(makeCharacter(), makeRules(), makeItems()), connected: true, ready: true, down: false, hp: 10 }];
@@ -24,7 +28,7 @@ function seed(spec: InteractionSpec = precision, extra: Partial<InteractionPromp
   // Sent just now, on the server clock the screens align to.
   state.updatedAt = new Date(Date.now()).toISOString();
   const send = vi.fn(async (_intent: ClientIntent) => true);
-  useGameStore.setState({ state, send, synced: true, session: { playerId: "p", runId: "r", roomCode: "TEST", mode: "party", sessionToken: "test" } });
+  useGameStore.setState({ state, send, synced: true, session: { playerId: "p", runId, roomCode: "TEST", mode: "party", sessionToken: "test" } });
   return send;
 }
 
@@ -463,6 +467,10 @@ describe("each game has something to do with your hands", () => {
     expect(stampFor({ ...prompt, outcome: "assisted" })).toBe("Together!");
   });
   it("says GO as a game with no pattern starts, and not under reduced motion", () => {
+    // Rendering under coverage must not spend the 900ms animation window.
+    // Freeze both wall and monotonic clocks, the two clocks this game aligns.
+    vi.useFakeTimers({ toFake: ["Date", "performance"] });
+    vi.setSystemTime(2_100_000);
     seed(precision, { startedAt: new Date(Date.now() - 100).toISOString() });
     const { unmount } = render(<StoryInteractionWorld />);
     expect(document.querySelector(".game-stamp--go")).toBeTruthy();

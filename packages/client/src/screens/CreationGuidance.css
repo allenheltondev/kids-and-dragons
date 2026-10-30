@@ -16,7 +16,8 @@
 
 .creation__foot.creation__foot--guided {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* Back takes only the room it needs; the way forward gets the rest. */
+  grid-template-columns: auto minmax(0, 1fr);
   row-gap: 0.35em;
 }
 
@@ -30,3 +31,17 @@
 }
 
 .creation__foot--guided[data-first-step] > .kad-button { grid-column: 1 / -1; }
+
+/* At large text on a narrow phone, preserve both labels with full-width
+   buttons instead of giving the primary action half a line to squeeze into. */
+@container (max-width: 19em) {
+  .creation__foot.creation__foot--guided { grid-template-columns: minmax(0, 1fr); }
+
+  .creation__foot--guided > .kad-button--ghost .kad-button__label {
+    position: static;
+    inline-size: auto;
+    block-size: auto;
+    clip-path: none;
+    overflow: visible;
+  }
+}

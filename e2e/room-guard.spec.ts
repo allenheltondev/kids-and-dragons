@@ -38,6 +38,8 @@ test.describe("guarding the room", () => {
     // it can act from its Room panel.
     await expect(tv.locator(".kad-arrival")).toContainText("joined", { timeout: 15_000 });
     await tv.getByRole("button", { name: "Room", exact: true }).click();
+    await tv.locator(".kad-host__people > summary").focus();
+    await tv.keyboard.press("Enter");
     const remove = tv.getByRole("list", { name: "Who is in this room" }).getByRole("button", { name: /^Remove .* from this game$/ });
     await expect(remove).toBeVisible({ timeout: 15_000 });
     await remove.click();
