@@ -107,9 +107,71 @@
 /* ---- The hero: the title, what the game is, and how to read the guide ---- */
 
 .guide__hero {
+  position: relative;
+  /* The page is a column as tall as the screen, so its items would shrink to fit it; the hero never does. */
+  flex: none;
   display: flex;
   flex-direction: column;
   gap: var(--kad-space-3);
+}
+
+.guide__hero-words {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--kad-space-3);
+  max-inline-size: 42em;
+}
+
+/* On a phone the bright scene is a strip of its own, the right of the painting, above the words: it is
+   not a safe backdrop for text, so none goes on it. */
+.guide__banner {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  object-position: 100% 50%;
+  border: 0.08em solid var(--kad-border-strong);
+  border-radius: var(--kad-radius-lg);
+  box-shadow: var(--kad-shadow-lg);
+}
+
+/* Wide enough, the painting is the hero's backdrop and the words sit on its calm, dark left. */
+@media (min-width: 48em) {
+  .guide__hero {
+    justify-content: center;
+    min-block-size: 15em;
+    padding: var(--kad-space-5) var(--kad-space-6);
+    border-radius: var(--kad-radius-lg);
+    overflow: hidden;
+  }
+
+  .guide__banner {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    aspect-ratio: auto;
+    object-position: 100% 50%;
+    border-radius: inherit;
+  }
+
+  .guide__hero-words {
+    max-inline-size: 52%;
+  }
+}
+
+html[data-contrast="high"] .guide__banner {
+  display: none;
+}
+
+html[data-contrast="high"] .guide__hero {
+  min-block-size: 0;
+  padding: 0;
+}
+
+html[data-contrast="high"] .guide__hero-words {
   max-inline-size: 42em;
 }
 
@@ -295,6 +357,20 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--kad-accent-hi);
+}
+
+.guide__part {
+  display: flex;
+  align-items: center;
+  gap: var(--kad-space-2);
+}
+
+.guide__emblem {
+  flex: none;
+  inline-size: 48px;
+  block-size: 48px;
+  margin-block: -10px;
+  filter: drop-shadow(0 0.15em 0.3em rgba(0, 0, 0, 0.5));
 }
 
 .guide__head {
@@ -643,6 +719,13 @@
     position: relative;
   }
 
+  /* Sticky beside the words from 62em (which anchors its frame); below that it needs anchoring itself. */
+  @media (max-width: 61.99em) {
+    html:not([data-contrast="high"]) .guide__contents {
+      position: relative;
+    }
+  }
+
   /* A step's own ::before is its number, so its frame is the ::after. */
   html:not([data-contrast="high"]) :is(
     .guide__section, .guide__contents, .guide__page-tab, .guide__next, .guide__terms, .guide__note
@@ -764,6 +847,7 @@
   .guide__next,
   .guide__contents,
   .guide__part,
+  .guide__banner,
   .guide__number,
   .guide__caption {
     display: none !important;
@@ -785,6 +869,16 @@
   .guide__main,
   .guide__words {
     display: block;
+    max-inline-size: none;
+  }
+
+  .guide__hero {
+    min-block-size: 0;
+    padding: 0;
+    overflow: visible;
+  }
+
+  .guide__hero-words {
     max-inline-size: none;
   }
 

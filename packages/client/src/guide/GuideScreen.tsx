@@ -30,6 +30,10 @@ import { Icon } from "../screens/icons";
 import { parseGuide, type Block, type Inline, type Section } from "./markdown";
 import source from "./guide.md?raw";
 import setupSource from "./setup.md?raw";
+import bannerPlay from "../assets/guide/guide-banner-play.webp";
+import bannerSetup from "../assets/guide/guide-banner-setup.webp";
+import emblemKeeping from "../assets/guide/guide-part-keeping.webp";
+import emblemGroups from "../assets/guide/guide-part-groups.webp";
 import "./GuideScreen.css";
 import { PrivacyFooter } from "../ui/PrivacyFooter";
 
@@ -190,6 +194,12 @@ function Blocks({ blocks }: { blocks: Block[] }): ReactElement {
   );
 }
 
+/** The painted emblem that opens a part of the setup page. A part with none is just its name. */
+const EMBLEMS: Record<string, string> = {
+  "Keeping heroes": emblemKeeping,
+  "Groups, visitors and privacy": emblemGroups,
+};
+
 /** A section's words, and beside them every picture it shows (so the pictures read as a set). */
 function SectionCard({ section, number, first, partStart }: { section: Section; number: number; first: boolean; partStart: boolean }): ReactElement {
   const words = section.blocks.filter((block) => block.kind !== "picture");
@@ -200,7 +210,14 @@ function SectionCard({ section, number, first, partStart }: { section: Section; 
       id={section.id}
       aria-labelledby={`${section.id}-title`}
     >
-      {partStart && section.part !== null ? <p className="guide__part">{section.part}</p> : null}
+      {partStart && section.part !== null ? (
+        <p className="guide__part">
+          {EMBLEMS[section.part] !== undefined ? (
+            <img className="guide__emblem" src={EMBLEMS[section.part]} alt="" width={256} height={256} decoding="async" />
+          ) : null}
+          {section.part}
+        </p>
+      ) : null}
       <header className="guide__head">
         <span className="guide__number" aria-hidden="true">
           {number}
@@ -226,13 +243,20 @@ function SectionCard({ section, number, first, partStart }: { section: Section; 
 type Page = "play" | "setup";
 
 /** The two pages of the guide: where each lives, what it is called and what it is for. */
-const PAGES: Record<Page, { route: Route; href: string; label: string; blurb: string }> = {
-  play: { route: { name: "guide" }, href: "/guide", label: "Running a game", blurb: "Hosting, seating the kids and playing tonight." },
+const PAGES: Record<Page, { route: Route; href: string; label: string; blurb: string; banner: string }> = {
+  play: {
+    route: { name: "guide" },
+    href: "/guide",
+    label: "Running a game",
+    blurb: "Hosting, seating the kids and playing tonight.",
+    banner: bannerPlay,
+  },
   setup: {
     route: { name: "guideSetup" },
     href: "/guide/setup",
     label: "Accounts, devices and groups",
     blurb: "Keeping heroes, a shared tablet, visitors, groups and deleting.",
+    banner: bannerSetup,
   },
 };
 
@@ -317,10 +341,14 @@ function GuideDocument({ page, markdown }: { page: Page; markdown: string }): Re
         </nav>
 
         <header className="guide__hero">
-          <h1 className="guide__title" id="guide-title">
-            {guide.title}
-          </h1>
-          <Blocks blocks={guide.intro} />
+          {/* Decorative: the page says everything it means in words. On a phone it is a strip above the text. */}
+          <img className="guide__banner" src={PAGES[page].banner} alt="" width={1920} height={480} decoding="async" />
+          <div className="guide__hero-words">
+            <h1 className="guide__title" id="guide-title">
+              {guide.title}
+            </h1>
+            <Blocks blocks={guide.intro} />
+          </div>
         </header>
 
         <div className="guide__layout">
