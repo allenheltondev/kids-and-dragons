@@ -1477,6 +1477,10 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         return hostControl("quiet", { quiet }, "Could not change quiet mode.");
       },
 
+      switchCrew(crew: string | null | "new") {
+        return hostControl("crew", { crew }, crew === "new" ? "Could not start a new crew." : "Could not change crews.");
+      },
+
       closeRoom() {
         return hostControl("close", {}, "Could not close the room.");
       },

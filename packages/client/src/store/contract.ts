@@ -295,6 +295,12 @@ export interface GameStore {
    * (#260). Resolves like `removePlayer`.
    */
   quietRoom(quiet: boolean): Promise<boolean>;
+  /**
+   * The host points the lobby at another of the household's crews (`crew`'s
+   * id, or null for its first), or starts a new one ("new"), for a different
+   * group of players at the same TV. Resolves like `removePlayer`.
+   */
+  switchCrew(crew: string | null | "new"): Promise<boolean>;
   /** The host closes the room for everybody (#263). Resolves like `removePlayer`. */
   closeRoom(): Promise<boolean>;
   /**

@@ -94,8 +94,20 @@ export const PAIR = (code: string) => `PAIR#${code.toUpperCase()}`;
 export const GUESS = (clientKey: string) => `GUESS#${clientKey}`;
 export const GUESS_WINDOW_SK = (window: number) => `WINDOW#${window}`;
 
-/** Campaign setback counter, household-scoped — see `CampaignProgressRecord`. */
-export const CAMPAIGN_SK = (campaignId: string) => `CAMPAIGN#${campaignId}`;
+/**
+ * Campaign setback counter, household-scoped — see `CampaignProgressRecord`.
+ * A crew other than the household's first keeps its own under `CREWSAVE#`
+ * (architecture §4.5, "Crews"), so `PREFIX.campaign` still lists exactly the
+ * first crew's rows, as it always has.
+ */
+export const CAMPAIGN_SK = (campaignId: string, crew?: string) =>
+  crew ? `${CREWSAVE_PREFIX(crew)}${campaignId}` : `CAMPAIGN#${campaignId}`;
+
+/** One crew's campaign rows, for a range query. Not a prefix of `CREW#`. */
+export const CREWSAVE_PREFIX = (crew: string) => `CREWSAVE#${crew}#`;
+
+/** A household's crew (`CrewRecord`). */
+export const CREW_SK = (crew: string) => `CREW#${crew}`;
 
 /**
  * A table a kid has played at as a visitor (#249, #252): one row per kid and
@@ -133,6 +145,7 @@ export const PREFIX = {
   character: "CHAR#",
   run: "RUN#",
   campaign: "CAMPAIGN#",
+  crew: "CREW#",
   chapter: "CHAPTER#",
   event: "EVT#",
 } as const;

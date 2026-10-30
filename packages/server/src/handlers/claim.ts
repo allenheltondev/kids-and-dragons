@@ -20,7 +20,7 @@ import { fail, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 
 // The claim's shape lives in shared (`claim.ts`), so #251's move reads it the
 // same way; re-exported for the handlers that already import it from here.
-export { claimFor, claimOf, parseClaim } from "@kad/shared";
+export { adventureKey, claimFor, claimOf, parseClaim } from "@kad/shared";
 
 /**
  * Is the adventure `claim` names still in flight? Only an active campaign
@@ -34,9 +34,9 @@ export async function claimIsLive(
   hero: Pick<Character, "householdId">,
   deps: Pick<HandlerDeps, "repo" | "content">,
 ): Promise<boolean> {
-  const { campaignId, table } = parseClaim(claim, hero);
+  const { campaignId, table, crew } = parseClaim(claim, hero);
   if (!deps.content.campaign(campaignId)) return false;
-  const attempt = await deps.repo.getCampaignProgress(table, campaignId);
+  const attempt = await deps.repo.getCampaignProgress(table, campaignId, crew);
   return attempt?.status === "active";
 }
 
