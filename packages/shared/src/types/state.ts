@@ -466,6 +466,26 @@ export interface RunState {
    */
   storyTurn?: number;
   /**
+   * How many moments the story-turn holder has had in the beat they own
+   * (chapter.ts `SceneSpotlight`): turn-held choices, ordinary checks. The
+   * marker moves on at `SPOTLIGHT_BEAT`, at a Rest, or at a scene that starts
+   * a new beat, and this goes back to 0.
+   *
+   * Optional, and read as 0 when absent: a run persisted before beats had
+   * owners starts its holder's beat afresh.
+   */
+  spotlightMoments?: number;
+  /**
+   * On a chapter's summary (`phase === "chapter_complete"`), whether the table
+   * has heard the ending yet. `false` from the moment the chapter completes:
+   * the shared screen shows how the story ended, on its own plate, and the
+   * XP waits behind it until a phone sends ENDING_READ, which sets `true`.
+   *
+   * Optional, and absent reads as read: a summary persisted before the
+   * ending had its own plate goes straight to the XP, as it always did.
+   */
+  endingRead?: boolean;
+  /**
    * A d20 face the next roll will come up (roadmap chapter 6's playtest mode).
    *
    * On the run rather than in the request that sets it, because loading the die
