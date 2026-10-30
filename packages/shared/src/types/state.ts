@@ -600,6 +600,12 @@ export interface RunState {
    */
   crews?: CrewView[];
   /**
+   * What the household named its first crew, when it did (`renameCrew`).
+   * Absent while the first crew goes by the default name. Filled where the
+   * lobby's campaigns are (`offerCampaigns`).
+   */
+  firstCrewName?: string;
+  /**
    * What the family calls its table, the household's place at the game ("Kitchen table"),
    * from the TV that opened it. Absent when the table was never named.
    */

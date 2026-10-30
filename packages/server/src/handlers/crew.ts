@@ -20,7 +20,7 @@
  * lobby, before a chapter starts or a save is picked up.
  */
 
-import { claimOf, memberHome, parseClaim, type RunState } from "@kad/shared";
+import { claimOf, CREW_NAMES, FIRST_CREW_NAME, memberHome, parseClaim, type RunState } from "@kad/shared";
 import type { CrewRecord } from "../store/repository.ts";
 import { claimIsLive } from "./claim.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
@@ -28,17 +28,7 @@ import { commitRoomChange, hostedRoom, type HostPrincipal } from "./host.ts";
 import { seatedParty, UNDER_WAY } from "./progression.ts";
 import { offerCampaigns } from "./room.ts";
 
-/** What a new crew is called: no typing on a TV remote, and every name is a kid's. */
-export const CREW_NAMES = [
-  "The Otter Crew",
-  "The Lantern Crew",
-  "The Acorn Crew",
-  "The Comet Crew",
-  "The Puddle Crew",
-  "The Kettle Crew",
-  "The Thistle Crew",
-  "The Pebble Crew",
-] as const;
+export { CREW_NAMES };
 
 /** Enough for every group a household plays with, and a bound on the rows a host can make: one slot per name. */
 export const MAX_CREWS = CREW_NAMES.length;
@@ -156,6 +146,85 @@ export async function switchCrew(
   if (!result.ok) return result;
   if (refusal) return fail(refusal.code, refusal.message);
   return ok({ seq: result.value.seq, crew: target });
+}
+
+export interface RenameCrewInput {
+  code: string;
+  principal: HostPrincipal;
+  /** The crew to rename: its id, or null for the household's first. */
+  crew: string | null;
+  /** One of `CREW_NAMES`: no typing on a TV remote. */
+  name: string;
+}
+
+/** What a rename body asks for, or undefined when it cannot be read. */
+export const RENAME_BODY = 'expected { crew: "<crew id>" | null, name: "<one of the offered names>" }';
+
+export function parseCrewRename(body: Record<string, unknown>): Pick<RenameCrewInput, "crew" | "name"> | undefined {
+  const { crew, name } = body;
+  if (typeof name !== "string" || !(CREW_NAMES as readonly string[]).includes(name)) return undefined;
+  if (crew === null) return { crew, name };
+  return typeof crew === "string" && /^cw_[a-z0-9]{1,20}$/.test(crew) ? { crew, name } : undefined;
+}
+
+/**
+ * Give one of the household's crews another of the offered names. The names are
+ * a fixed list, so a kid's crew never carries anything typed at the TV, and no
+ * two crews share one. The lobby is rebuilt in the same commit so the Room panel
+ * and the lobby screen show it at once.
+ */
+export async function renameCrew(
+  input: RenameCrewInput,
+  deps: HandlerDeps,
+): Promise<HandlerResult<{ seq: number }>> {
+  const hosted = await hostedRoom(input.code, input.principal, deps);
+  if (!hosted.ok) return hosted;
+  const room = hosted.value;
+  if (room.claimable === true) {
+    return fail("ILLEGAL", "Let somebody join first, so the game knows whose crews these are.");
+  }
+  const run = await deps.repo.getRun(room.runId);
+  if (!run) return fail("NOT_FOUND", `no run ${room.runId}`);
+
+  let refusal = null as { code: "ILLEGAL" | "NOT_FOUND"; message: string } | null;
+  const result = await commitRoomChange(
+    room,
+    input.principal.playerId,
+    async (state) => {
+      refusal = null;
+      if (!betweenGames(state)) {
+        refusal = { code: "ILLEGAL", message: "Rename a crew before the adventure starts." };
+        return null;
+      }
+      const crews = await deps.repo.listCrews(room.householdId);
+      if (input.crew !== null && !crews.some((c) => c.id === input.crew)) {
+        refusal = { code: "NOT_FOUND", message: "There is no crew like that in this game." };
+        return null;
+      }
+      const first = await deps.repo.getFirstCrewName(room.householdId);
+      const held = [
+        ...crews.filter((c) => c.id !== input.crew).map((c) => c.name),
+        ...(input.crew === null ? [] : [first ?? FIRST_CREW_NAME]),
+      ];
+      if (held.includes(input.name)) {
+        refusal = { code: "ILLEGAL", message: "Another crew already has that name." };
+        return null;
+      }
+      if (!(await deps.repo.renameCrew(room.householdId, input.crew, input.name))) {
+        refusal = { code: "NOT_FOUND", message: "There is no crew like that in this game." };
+        return null;
+      }
+      const next: RunState = { ...state };
+      await offerCampaigns(next, room.householdId, run.campaignId, deps);
+      // `offerCampaigns` picks a fresh campaign and drops votes cast; a rename changes neither.
+      next.campaignVotes = state.campaignVotes ?? {};
+      return next;
+    },
+    deps,
+  );
+  if (!result.ok) return result;
+  if (refusal) return fail(refusal.code, refusal.message);
+  return ok({ seq: result.value.seq });
 }
 
 /** A crew's id by slot: `cw_1` for the first slot. Never the claim's separators. */

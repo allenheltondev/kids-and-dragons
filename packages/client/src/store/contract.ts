@@ -301,6 +301,11 @@ export interface GameStore {
    * group of players at the same TV. Resolves like `removePlayer`.
    */
   switchCrew(crew: string | null | "new"): Promise<boolean>;
+  /**
+   * The host gives a crew (`crew`'s id, or null for the first) one of the
+   * offered names (`CREW_NAMES`). Resolves like `removePlayer`.
+   */
+  renameCrew(crew: string | null, name: string): Promise<boolean>;
   /** The host closes the room for everybody (#263). Resolves like `removePlayer`. */
   closeRoom(): Promise<boolean>;
   /**

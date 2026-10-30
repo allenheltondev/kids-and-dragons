@@ -2101,6 +2101,8 @@ const SHARED = [
   { path: "/api/room/:code/quiet", method: "POST", probe: "/api/room/ABCD/quiet" },
   // Which of the household's crews the lobby plays (handlers/crew.ts).
   { path: "/api/room/:code/crew", method: "POST", probe: "/api/room/ABCD/crew" },
+  // One of the offered names for a crew (handlers/crew.ts).
+  { path: "/api/room/:code/crewname", method: "POST", probe: "/api/room/ABCD/crewname" },
   // The session clock: pause, resume, note, off (#511, handlers/timing.ts).
   { path: "/api/room/:code/timing", method: "POST", probe: "/api/room/ABCD/timing" },
   { path: "/api/room/:code/close", method: "POST", probe: "/api/room/ABCD/close" },

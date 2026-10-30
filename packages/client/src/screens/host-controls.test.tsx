@@ -42,6 +42,7 @@ function room(session: Partial<ClientSession>, run: Partial<RunState> = RUN) {
   const quietRoom = vi.fn(async () => true);
   const stopForToday = vi.fn(async () => true);
   const switchCrew = vi.fn(async () => true);
+  const renameCrew = vi.fn(async () => true);
   act(() => {
     useGameStore.setState({
       session: { runId: "r_1", roomCode: "ABCD", playerId: "p_1", mode: "travel", sessionToken: "t", ...session },
@@ -53,9 +54,10 @@ function room(session: Partial<ClientSession>, run: Partial<RunState> = RUN) {
       quietRoom,
       stopForToday,
       switchCrew,
+      renameCrew,
     });
   });
-  return { removePlayer, handKeeper, lockRoom, closeRoom, quietRoom, stopForToday, switchCrew };
+  return { removePlayer, handKeeper, lockRoom, closeRoom, quietRoom, stopForToday, switchCrew, renameCrew };
 }
 
 afterEach(() => {
@@ -214,6 +216,25 @@ describe("crews: new players at the same TV", () => {
     fireEvent.click(screen.getByText("Crews", { exact: true }));
     fireEvent.click(screen.getByRole("button", { name: "Play as The Comet Crew" }));
     expect(comet.switchCrew).toHaveBeenCalledWith("cw_comet");
+  });
+
+  it("names the first crew from the offered names, and shows the name it was given", () => {
+    const { renameCrew } = room({ host: true }, { ...RUN, phase: "lobby", firstCrewName: "The Comet Crew" });
+    render(<HostControls placement="inline" />);
+    expect(screen.getByText("The Comet Crew")).toBeTruthy();
+    expect(screen.queryByText("The first crew")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Rename this crew" }));
+    expect(screen.getByRole("button", { name: "The Comet Crew" })).toHaveProperty("disabled", true);
+    fireEvent.click(screen.getByRole("button", { name: "The Otter Crew" }));
+    expect(renameCrew).toHaveBeenCalledWith(null, "The Otter Crew");
+  });
+
+  it("does not offer a name another crew already has", () => {
+    room({ host: true }, { ...RUN, phase: "lobby", crew: "cw_otter", crews: [{ id: "cw_otter", name: "The Otter Crew" }, { id: "cw_comet", name: "The Comet Crew" }] });
+    render(<HostControls placement="inline" />);
+    fireEvent.click(screen.getByRole("button", { name: "Rename this crew" }));
+    expect(screen.queryByRole("button", { name: "The Comet Crew" })).toBeNull();
+    expect(screen.getByRole("button", { name: "The Lantern Crew" })).toBeTruthy();
   });
 
   it("is not offered once a chapter is under way, or before anybody has joined", () => {

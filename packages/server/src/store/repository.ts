@@ -877,6 +877,14 @@ export interface GameRepository {
    * first. Written only by a lobby's commit (`CommitInput.crew`).
    */
   listCrews(householdId: string): Promise<CrewRecord[]>;
+  /**
+   * Give a crew another name. `crew` null is the household's first, which keeps
+   * its name in a row of its own (`FIRSTCREW`); otherwise the crew's row is
+   * rewritten. False when there is no such crew.
+   */
+  renameCrew(householdId: string, crew: string | null, name: string): Promise<boolean>;
+  /** The name the household gave its first crew, or null while it has none. */
+  getFirstCrewName(householdId: string): Promise<string | null>;
 
   // --- field guide (household-scoped, permanent) -----------------------------
   /** `HH#<id>` / `FIELDGUIDE`. An empty book (never `null`) when nothing is found yet. */

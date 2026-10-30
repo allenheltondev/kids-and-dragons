@@ -62,6 +62,7 @@ import {
   CAMPAIGN_SK,
   CREW_SK,
   CREWSAVE_PREFIX,
+  FIRSTCREW,
   CHAPTER_SK,
   CHAR_SK,
   DEVICE_SK,
@@ -823,6 +824,22 @@ export class MemoryRepository implements GameRepository {
     return this.query(HH(householdId), PREFIX.crew)
       .map((i) => i.data as CrewRecord)
       .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+  }
+
+  async renameCrew(householdId: string, crew: string | null, name: string): Promise<boolean> {
+    if (crew === null) {
+      this.put({ PK: HH(householdId), SK: FIRSTCREW, entity: "crew", data: { name } });
+      return true;
+    }
+    const item = this.get(HH(householdId), CREW_SK(crew));
+    if (!item) return false;
+    this.put({ ...item, data: { ...(item.data as CrewRecord), name } });
+    return true;
+  }
+
+  async getFirstCrewName(householdId: string): Promise<string | null> {
+    const item = this.get(HH(householdId), FIRSTCREW);
+    return (item?.data as { name?: string } | undefined)?.name ?? null;
   }
 
   async getFieldGuide(householdId: string): Promise<FieldGuideRecord> {

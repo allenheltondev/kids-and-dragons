@@ -10,7 +10,7 @@ import { loadContent } from "../content/loader.ts";
 import type { Engine } from "../engine/port.ts";
 import { makeHarness, seedHousehold } from "../test-support.ts";
 import { applyAction } from "./action.ts";
-import { followCrew, MAX_CREWS, parseCrewChoice, switchCrew, CREW_NAMES } from "./crew.ts";
+import { followCrew, MAX_CREWS, parseCrewChoice, parseCrewRename, renameCrew, switchCrew, CREW_NAMES } from "./crew.ts";
 import { createRoom, joinRoom } from "./room.ts";
 import { resumeGame, stopForToday } from "./save.ts";
 
@@ -423,5 +423,42 @@ describe("crew names and bodies", () => {
     expect(parseCrewChoice({ crew: "cw_a@b" })).toBeUndefined();
     expect(parseCrewChoice({ crew: "new", request: "short" })).toBeUndefined();
     expect(parseCrewChoice({ crew: "new", request: 42 })).toBeUndefined();
+  });
+});
+
+describe("naming a crew", () => {
+  it("gives the first crew a name of its own, and the lobby shows it", async () => {
+    const h = await household();
+    const evening = await room(h);
+    const kid = await sit(h, evening.code, evening.runId, 1);
+    expect((await kid.state()).firstCrewName).toBeUndefined();
+    const named = await renameCrew({ code: evening.code, principal: host(h), crew: null, name: CREW_NAMES[3] }, h.harness.deps);
+    expect(named.ok).toBe(true);
+    expect((await kid.state()).firstCrewName).toBe(CREW_NAMES[3]);
+    expect(await h.harness.repo.getFirstCrewName(h.householdId)).toBe(CREW_NAMES[3]);
+    // The first crew is still not a row: only the crews beyond it are listed.
+    expect(await h.harness.repo.listCrews(h.householdId)).toEqual([]);
+  });
+
+  it("renames a crew beyond the first, and refuses a name another crew holds", async () => {
+    const h = await household();
+    const evening = await room(h);
+    await sit(h, evening.code, evening.runId, 1);
+    await switchCrew({ code: evening.code, principal: host(h), crew: "new", request: "tap-rename-1" }, h.harness.deps);
+    const renamed = await renameCrew({ code: evening.code, principal: host(h), crew: "cw_1", name: CREW_NAMES[5] }, h.harness.deps);
+    expect(renamed.ok).toBe(true);
+    expect((await h.harness.repo.listCrews(h.householdId)).map((c) => c.name)).toEqual([CREW_NAMES[5]]);
+    await renameCrew({ code: evening.code, principal: host(h), crew: null, name: CREW_NAMES[2] }, h.harness.deps);
+    const taken = await renameCrew({ code: evening.code, principal: host(h), crew: "cw_1", name: CREW_NAMES[2] }, h.harness.deps);
+    expect(taken.ok).toBe(false);
+    const missing = await renameCrew({ code: evening.code, principal: host(h), crew: "cw_7", name: CREW_NAMES[0] }, h.harness.deps);
+    expect(missing.ok).toBe(false);
+  });
+
+  it("only takes names from the offered list", () => {
+    expect(parseCrewRename({ crew: null, name: CREW_NAMES[0] })).toEqual({ crew: null, name: CREW_NAMES[0] });
+    expect(parseCrewRename({ crew: "cw_2", name: CREW_NAMES[1] })).toEqual({ crew: "cw_2", name: CREW_NAMES[1] });
+    expect(parseCrewRename({ crew: null, name: "Anything I like" })).toBeUndefined();
+    expect(parseCrewRename({ crew: "../x", name: CREW_NAMES[0] })).toBeUndefined();
   });
 });

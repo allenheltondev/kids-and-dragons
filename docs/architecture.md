@@ -1654,6 +1654,9 @@ and every device stay the household's, so anyone may sit down with any crew.
   as they were: `RunState.crew` absent, progress at `CAMPAIGN#<campaignId>`,
   claims the bare campaign id. No run, save or claim from before crews moves,
   and Gemfall's pinned digests do not.
+  Its name, when the household picks one, is the one `FIRSTCREW` row
+  (`entity: "crew"`), outside `CREW#` so `listCrews` still lists only the others.
+  A host renames any crew, from the same fixed list, at `POST /api/room/:code/crewname`.
 - **Every other crew** is `HH#…/CREW#<id>` (`CrewRecord`: id, a name from a
   fixed list so a TV remote never types, created). Its attempts live at
   `CREWSAVE#<id>#<campaignId>` and carry `crew`; that prefix is not a prefix
