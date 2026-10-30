@@ -177,6 +177,7 @@ ${MODE_CSS}</style>
     }
   }
   const linesLabel = (entry) => { const n = entry.lineCount || 0; return n + " line" + (n === 1 ? "" : "s"); };
+  const linesTitle = (entry) => "Lines the game gives them to speak, in every chapter" + (entry.guessedLines ? "; " + entry.guessedLines + " of them guessed, from being the only one in the scene" : "");
   const campaignsOf = (entry) => [...new Set(entry.chapters.map((c) => data.chapterCampaigns[c]).filter(Boolean))];
 
   // The accents on offer, for any accent box to suggest from: nobody has to keep General American.
@@ -354,7 +355,7 @@ ${MODE_CSS}</style>
     const chapters = entry.chapters.slice(0, 8).map((c) => el("span", { class: "chip" }, c));
     if (entry.chapters.length > 8) chapters.push(el("span", { class: "chip" }, "+" + (entry.chapters.length - 8)));
     return el("section", { class: "card" + (approved ? " is-approved" : ""), id: "cast-" + id },
-      el("h2", {}, entry.name, el("span", { class: "badge" }, entry.kind), el("span", { class: "badge", title: "Lines the game gives them to speak, in every chapter" }, linesLabel(entry)), approved ? el("span", { class: "badge ok" }, "approved") : null, " ", el("a", { href: "/cast/profile?id=" + encodeURIComponent(id), class: "hint" }, "profile")),
+      el("h2", {}, entry.name, el("span", { class: "badge" }, entry.kind), el("span", { class: "badge", title: linesTitle(entry) }, linesLabel(entry)), approved ? el("span", { class: "badge ok" }, "approved") : null, " ", el("a", { href: "/cast/profile?id=" + encodeURIComponent(id), class: "hint" }, "profile")),
       el("div", { class: "who" }, entry.who),
       el("div", { class: "chips" }, chapters),
       el("div", { class: "hint" }, [entry.pronouns ? "pronouns " + entry.pronouns : null, entry.aliases.length ? "also " + entry.aliases.join(", ") : null, entry.speaks ? null : "doesn't speak"].filter(Boolean).join(" · ")),

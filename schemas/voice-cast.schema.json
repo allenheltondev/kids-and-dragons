@@ -111,6 +111,11 @@
           "type": "integer",
           "minimum": 0
         },
+        "guessedLines": {
+          "description": "How many of `lineCount` are a guess: a quote nobody is tagged for, in a scene where this is the only character who could be speaking.",
+          "type": "integer",
+          "minimum": 1
+        },
         "elevenlabs": {
           "description": "The voice they have on ElevenLabs, from the account's own voices, picked by ear on the cast page; absent until a person picks one.",
           "type": "object",

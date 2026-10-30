@@ -82,7 +82,8 @@
           "address": "gemfall-02/choice_pib_gift_pebble/narration"
         }
       ],
-      "lineCount": 4,
+      "lineCount": 8,
+      "guessedLines": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -299,7 +300,8 @@
           "address": "gemfall-01/scene_north_gate_tidewell/narration"
         }
       ],
-      "lineCount": 6,
+      "lineCount": 22,
+      "guessedLines": 16,
       "speaks": true,
       "status": "provisional"
     },
@@ -338,7 +340,8 @@
           "address": "gemfall-01/scene_sold/narration"
         }
       ],
-      "lineCount": 2,
+      "lineCount": 3,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -414,7 +417,8 @@
           "address": "gemfall-01/scene_caravan_yard_banner/narration"
         }
       ],
-      "lineCount": 8,
+      "lineCount": 9,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -556,7 +560,8 @@
           "address": "gemfall-01/scene_last_noodles_listen/narration"
         }
       ],
-      "lineCount": 7,
+      "lineCount": 10,
+      "guessedLines": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -581,7 +586,8 @@
         "voice": "Sadaltager"
       },
       "lines": [],
-      "lineCount": 0,
+      "lineCount": 1,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -670,7 +676,8 @@
           "address": "gemfall-01/scene_gutter_glint_griffin/narration"
         }
       ],
-      "lineCount": 1,
+      "lineCount": 2,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -744,7 +751,8 @@
           "address": "gemfall-01/scene_newcomers_plaque/narration"
         }
       ],
-      "lineCount": 2,
+      "lineCount": 3,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -810,7 +818,8 @@
           "address": "gemfall-02/scene_caravan_turned/narration"
         }
       ],
-      "lineCount": 2,
+      "lineCount": 3,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -934,7 +943,8 @@
           "address": "gemfall-03c/scene_spilled_pannier_spot_all/narration"
         }
       ],
-      "lineCount": 13,
+      "lineCount": 14,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -1143,7 +1153,8 @@
           "address": "gemfall-04c/check_relay/narration"
         }
       ],
-      "lineCount": 5,
+      "lineCount": 10,
+      "guessedLines": 5,
       "speaks": true,
       "status": "provisional"
     },
@@ -1338,7 +1349,8 @@
           "address": "gemfall-07r/scene_ossley/narration"
         }
       ],
-      "lineCount": 31,
+      "lineCount": 36,
+      "guessedLines": 5,
       "speaks": true,
       "status": "provisional"
     },
@@ -1526,7 +1538,8 @@
           "address": "gemfall-03b/interaction_stumps/narration"
         }
       ],
-      "lineCount": 16,
+      "lineCount": 21,
+      "guessedLines": 5,
       "speaks": true,
       "status": "provisional"
     },
@@ -1569,7 +1582,8 @@
           "address": "gemfall-03b/scene_nan_washtub/narration"
         }
       ],
-      "lineCount": 3,
+      "lineCount": 7,
+      "guessedLines": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -1720,7 +1734,8 @@
           "address": "gemfall-03c/choice_runaway_goat_sort/narration"
         }
       ],
-      "lineCount": 7,
+      "lineCount": 8,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -1763,7 +1778,8 @@
           "address": "riftlight-frostfang-shore/ladder_hold/onFailure/narration"
         }
       ],
-      "lineCount": 30,
+      "lineCount": 34,
+      "guessedLines": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -1811,7 +1827,8 @@
           "address": "gemfall-03c/scene_soup_line_ask_crystal/narration"
         }
       ],
-      "lineCount": 10,
+      "lineCount": 11,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -2085,7 +2102,8 @@
           "address": "gemfall-05a/check_fires/onSuccess/narration"
         }
       ],
-      "lineCount": 8,
+      "lineCount": 10,
+      "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -2249,7 +2267,8 @@
           "address": "gemfall-04b/scene_unicorns_patch/narration"
         }
       ],
-      "lineCount": 5,
+      "lineCount": 8,
+      "guessedLines": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -2296,7 +2315,8 @@
           "address": "gemfall-05b/check_falls_logs/onSuccess/narration"
         }
       ],
-      "lineCount": 3,
+      "lineCount": 4,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -2369,7 +2389,8 @@
           "address": "gemfall-04b/check_runner_path/onFailure/narration"
         }
       ],
-      "lineCount": 11,
+      "lineCount": 14,
+      "guessedLines": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -2501,7 +2522,8 @@
           "address": "gemfall-05c/check_count_picks/onSuccess/narration"
         }
       ],
-      "lineCount": 11,
+      "lineCount": 13,
+      "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -2577,7 +2599,8 @@
           "address": "gemfall-04c/scene_relay_sing/narration"
         }
       ],
-      "lineCount": 4,
+      "lineCount": 5,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -2796,7 +2819,8 @@
           "address": "riftlight-cairnstep-pass/survey/narration"
         }
       ],
-      "lineCount": 47,
+      "lineCount": 51,
+      "guessedLines": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -2915,7 +2939,8 @@
           "address": "gemfall-05a/scene_survey_guard_clerks_stone/narration"
         }
       ],
-      "lineCount": 2,
+      "lineCount": 3,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -3085,7 +3110,8 @@
           "address": "gemfall-05b/choice_elders_close/narration"
         }
       ],
-      "lineCount": 24,
+      "lineCount": 26,
+      "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -3112,7 +3138,8 @@
         "voice": "Achernar"
       },
       "lines": [],
-      "lineCount": 0,
+      "lineCount": 2,
+      "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -3180,7 +3207,8 @@
           "address": "gemfall-05b/check_follow_moths/onSuccess/narration"
         }
       ],
-      "lineCount": 1,
+      "lineCount": 3,
+      "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -3223,7 +3251,8 @@
           "address": "gemfall-05c/scene_unassigned_ask_proper/narration"
         }
       ],
-      "lineCount": 16,
+      "lineCount": 21,
+      "guessedLines": 5,
       "speaks": true,
       "status": "provisional"
     },
@@ -3275,7 +3304,8 @@
           "address": "gemfall-07h/scene_echo_quiet/narration"
         }
       ],
-      "lineCount": 19,
+      "lineCount": 37,
+      "guessedLines": 18,
       "speaks": true,
       "status": "provisional"
     },
@@ -3354,7 +3384,8 @@
           "address": "gemfall-05c/scene_centaur_whisper_show_bark/narration"
         }
       ],
-      "lineCount": 3,
+      "lineCount": 5,
+      "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -3438,7 +3469,8 @@
           "address": "gemfall-08/check_tether_cult_bare/narration"
         }
       ],
-      "lineCount": 19,
+      "lineCount": 23,
+      "guessedLines": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -3518,7 +3550,8 @@
           "address": "gemfall-06/scene_morning_bells_sock/narration"
         }
       ],
-      "lineCount": 2,
+      "lineCount": 5,
+      "guessedLines": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -3657,7 +3690,8 @@
           "address": "gemfall-07r/scene_mosshome_runner/narration"
         }
       ],
-      "lineCount": 1,
+      "lineCount": 5,
+      "guessedLines": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -3707,7 +3741,8 @@
           "address": "gemfall-07h/scene_ford_witch_all_of_them/narration"
         }
       ],
-      "lineCount": 9,
+      "lineCount": 13,
+      "guessedLines": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -3838,7 +3873,8 @@
           "address": "gemfall-07r/check_caravan_helped/onSuccess/narration"
         }
       ],
-      "lineCount": 6,
+      "lineCount": 10,
+      "guessedLines": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -3878,7 +3914,8 @@
           "address": "gemfall-07h/walk_scene_news/narration"
         }
       ],
-      "lineCount": 5,
+      "lineCount": 6,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -3958,7 +3995,8 @@
           "address": "gemfall-07h/interaction_cabinet/narration"
         }
       ],
-      "lineCount": 6,
+      "lineCount": 9,
+      "guessedLines": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -4033,7 +4071,8 @@
           "address": "gemfall-07l/scene_stall_witch_flatter/narration"
         }
       ],
-      "lineCount": 4,
+      "lineCount": 7,
+      "guessedLines": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -4165,7 +4204,8 @@
           "address": "gemfall-07r/scene_glitter_barrow/narration"
         }
       ],
-      "lineCount": 3,
+      "lineCount": 4,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -4209,7 +4249,8 @@
           "address": "gemfall-07r/check_posy/onSuccess/narration"
         }
       ],
-      "lineCount": 4,
+      "lineCount": 5,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -4249,7 +4290,8 @@
           "address": "gemfall-08/scene_seal_chamber/narration"
         }
       ],
-      "lineCount": 54,
+      "lineCount": 80,
+      "guessedLines": 26,
       "speaks": true,
       "status": "provisional"
     },
@@ -4589,7 +4631,8 @@
           "address": "riftlight-exchange-rift/ship_flap/narration"
         }
       ],
-      "lineCount": 8,
+      "lineCount": 14,
+      "guessedLines": 6,
       "speaks": true,
       "status": "provisional"
     },
@@ -4629,7 +4672,8 @@
           "address": "riftlight-exchange-rift/gull/narration"
         }
       ],
-      "lineCount": 5,
+      "lineCount": 7,
+      "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -4669,7 +4713,8 @@
           "address": "riftlight-exchange-rift/fish_slosh/narration"
         }
       ],
-      "lineCount": 3,
+      "lineCount": 4,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -4752,7 +4797,8 @@
           "address": "riftlight-hidden-glacier-rift/cairn/narration"
         }
       ],
-      "lineCount": 48,
+      "lineCount": 52,
+      "guessedLines": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -4986,7 +5032,8 @@
         "voice": "Charon"
       },
       "lines": [],
-      "lineCount": 0,
+      "lineCount": 5,
+      "guessedLines": 5,
       "speaks": true,
       "status": "provisional"
     },
@@ -5078,7 +5125,8 @@
           "address": "gemfall-04a/rest_waystation_with_escort/narration"
         }
       ],
-      "lineCount": 3,
+      "lineCount": 7,
+      "guessedLines": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -5097,7 +5145,8 @@
         "voice": "Kore"
       },
       "lines": [],
-      "lineCount": 0,
+      "lineCount": 3,
+      "guessedLines": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -5220,7 +5269,8 @@
           "address": "gemfall-04c/scene_bell_courier_ring_back/narration"
         }
       ],
-      "lineCount": 10,
+      "lineCount": 12,
+      "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -5320,7 +5370,8 @@
           "address": "gemfall-05b/scene_pile_visit_carry/narration"
         }
       ],
-      "lineCount": 4,
+      "lineCount": 6,
+      "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -5480,7 +5531,8 @@
         "voice": "Zubenelgenubi"
       },
       "lines": [],
-      "lineCount": 0,
+      "lineCount": 28,
+      "guessedLines": 28,
       "speaks": true,
       "status": "provisional"
     },
@@ -5732,7 +5784,8 @@
           "address": "riftlight-ashspan-bridge/academy/variants/0"
         }
       ],
-      "lineCount": 2,
+      "lineCount": 5,
+      "guessedLines": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -5802,7 +5855,8 @@
           "address": "riftlight-boundary-stone-bank/sight_plan/narration"
         }
       ],
-      "lineCount": 43,
+      "lineCount": 55,
+      "guessedLines": 12,
       "speaks": true,
       "status": "provisional"
     },
@@ -5889,7 +5943,8 @@
           "address": "riftlight-exchange-rift/awning_plan/narration"
         }
       ],
-      "lineCount": 5,
+      "lineCount": 7,
+      "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -5923,7 +5978,8 @@
           "address": "riftlight-exchange-rift/quay_rest/narration"
         }
       ],
-      "lineCount": 13,
+      "lineCount": 16,
+      "guessedLines": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -6009,7 +6065,8 @@
           "address": "riftlight-hidden-glacier-rift/search/narration"
         }
       ],
-      "lineCount": 1,
+      "lineCount": 2,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -6319,7 +6376,8 @@
           "address": "riftlight-saltrot-arrival/poles/narration"
         }
       ],
-      "lineCount": 42,
+      "lineCount": 50,
+      "guessedLines": 8,
       "speaks": true,
       "status": "provisional"
     },
@@ -6403,7 +6461,8 @@
           "address": "riftlight-squall-temple/messages/narration"
         }
       ],
-      "lineCount": 32,
+      "lineCount": 38,
+      "guessedLines": 6,
       "speaks": true,
       "status": "provisional"
     },
@@ -6648,7 +6707,8 @@
           "address": "riftlight-wyrm-nest/bed/narration"
         }
       ],
-      "lineCount": 5,
+      "lineCount": 7,
+      "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
     },
