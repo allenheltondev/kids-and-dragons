@@ -39,6 +39,45 @@ afterEach(() => {
   cleanup();
 });
 
+describe("the adventure's crew", () => {
+  it("identifies the first crew for saves made before crews existed", () => {
+    mount({});
+    expect(screen.getByText("The first crew")).toBeTruthy();
+  });
+
+  it("identifies the active crew independently of tonight's party", () => {
+    mount({ crew: "cw_1", crews: [{ id: "cw_1", name: "The Otter Crew" }], party: [] });
+    expect(screen.getByText("The Otter Crew")).toBeTruthy();
+    expect(screen.queryByText("The first crew")).toBeNull();
+  });
+});
+
+describe("what the room should do next", () => {
+  it("shows a player making a hero and withholds the start instruction", () => {
+    mount({
+      party: [makeMember({ ready: true })],
+      seats: { p_2: { name: "Sam", color: "#abc", device: "phone" } },
+    });
+    expect(screen.getByText("Sam")).toBeTruthy();
+    expect(screen.getByText("Making a hero")).toBeTruthy();
+    expect(screen.getByText("The party (1/2 ready)")).toBeTruthy();
+    expect(screen.queryByText(/Start the adventure on a phone/)).toBeNull();
+  });
+
+  it("says where to start after everyone playing is ready", () => {
+    mount({ party: [makeMember({ ready: true })] });
+    expect(screen.getByText("Everyone is ready! Start the adventure on a phone.")).toBeTruthy();
+    expect(document.querySelector('[data-entry-scene="lobby-ready"]')).not.toBeNull();
+  });
+
+  it("does not treat a seated hero who still needs Ready as making a hero", () => {
+    mount({ party: [makeMember({ ready: false })] });
+    expect(screen.getByText("Tap Ready on your phone")).toBeTruthy();
+    expect(screen.queryByText("Making a hero")).toBeNull();
+    expect(screen.queryByText(/Everyone is ready!/)).toBeNull();
+  });
+});
+
 describe("a saved game (#259)", () => {
   const SAVED = {
     campaignId: "gemfall",
@@ -192,7 +231,7 @@ describe("a lobby card", () => {
     const ready = card({ ready: true });
     expect(shape(waiting)).toEqual(shape(ready));
     expect(waiting.querySelector(".lobby-member__chip--off")?.textContent).toBe("Ready");
-    expect(ready.querySelector(".lobby-member__chip--off")?.textContent).toBe("Getting ready");
+    expect(ready.querySelector(".lobby-member__chip--off")?.textContent).toBe("Tap Ready on your phone");
   });
 
   it("pins Away to the portrait instead of adding a row to the card", () => {

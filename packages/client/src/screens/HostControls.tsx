@@ -38,6 +38,7 @@ import { Icon } from "./icons";
 import { SignInFlow } from "./SignInFlow";
 import { LET_GO_NOTE, STOP_CONFIRM, STOP_OFFER } from "./save-copy";
 import { crewChoices } from "./crew-copy";
+import { CrewIdentity } from "./CrewIdentity";
 import "./HostControls.css";
 
 export type RosterStatus = "here" | "away" | "creating" | "out";
@@ -520,32 +521,33 @@ function CrewSwitch({
 }): React.JSX.Element {
   const switchCrew = useGameStore((store) => store.switchCrew);
   const { current, others } = crewChoices(state);
-  const several = others.length > 0;
+  const chooseCrew = async (crew: string | null | "new"): Promise<boolean> => {
+    const changed = await switchCrew(crew);
+    if (changed) setRoomOpen(false);
+    return changed;
+  };
   return (
     <div className="kad-host__crew" role="group" aria-label="Which crew is playing">
-      {several ? (
-        <p className="kad-host__hint">
-          Playing as <strong>{current}</strong>
-        </p>
-      ) : null}
+      <CrewIdentity name={current} />
+      <p className="kad-host__hint">Your other crew&rsquo;s adventure stays saved. Existing heroes are kept.</p>
       {others.map((crew) => (
         <Button
           key={crew.id ?? "first"}
+          icon={<Icon name="crew" />}
           variant="ghost"
           size="md"
           block
           disabled={busy}
-          onClick={() => void run(() => switchCrew(crew.id))}
+          onClick={() => void run(() => chooseCrew(crew.id))}
         >
           Play as {crew.name}
         </Button>
       ))}
-      <Button variant="secondary" size="md" block disabled={busy} onClick={() => void run(() => switchCrew("new"))}>
+      <Button icon={<Icon name="plus" />} variant="secondary" size="md" block disabled={busy} onClick={() => void run(() => chooseCrew("new"))}>
         New players? Start a new crew
       </Button>
       <p className="kad-host__hint">
-        A new adventure from the first chapter, with its own save. Everyone&rsquo;s heroes and saved games stay
-        just as they are.
+        Start fresh with new heroes on everyone&rsquo;s phones and separate adventure saves.
       </p>
     </div>
   );

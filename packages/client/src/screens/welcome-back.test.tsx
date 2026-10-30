@@ -11,17 +11,18 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { ResolvedCharacter } from "@kad/shared";
-import { makeCharacter } from "../testing/fixtures";
+import { makeCharacter, makeState } from "../testing/fixtures";
 import { useGameStore } from "../store";
 import { WelcomeBack } from "./WelcomeBack";
 
-function mount(heroes: ResolvedCharacter[] | Error, accepted = true) {
+function mount(heroes: ResolvedCharacter[] | Error, accepted = true, fresh = false) {
   const send = vi.fn(async () => accepted);
   const listHeroes = vi.fn(async () => {
     if (heroes instanceof Error) throw heroes;
     return heroes;
   });
-  useGameStore.setState({ send, listHeroes, rules: null, loadContent: async () => undefined });
+  useGameStore.setState({ send, listHeroes, rules: null, loadContent: async () => undefined,
+    state: makeState(fresh ? { crew: "cw_1", crewSetup: true, crews: [{ id: "cw_1", name: "The Otter Crew" }] } : {}) });
   render(<WelcomeBack />);
   return { send, listHeroes };
 }
@@ -33,6 +34,14 @@ afterEach(() => {
 const SPARKLEHOOF = makeCharacter({ id: "c_old", name: "Sparklehoof", level: 4, tier: "sworn" });
 
 describe("WelcomeBack", () => {
+  it("guides a returning player straight into new heroes when the TV starts a crew", async () => {
+    const { send } = mount([SPARKLEHOOF], true, true);
+    expect(screen.getByText(/Make a new hero for The Otter Crew/)).toBeTruthy();
+    expect(await screen.findByText(/getting the character sheet ready/i)).toBeTruthy();
+    expect(screen.queryByText(/welcome back/i)).toBeNull();
+    expect(screen.queryByRole("button", { name: /Sparklehoof/ })).toBeNull();
+    expect(send).not.toHaveBeenCalled();
+  });
   it("goes straight to making someone when there is nobody to bring", async () => {
     mount([]);
     // CreationFlow, waiting on rules this test never loads.

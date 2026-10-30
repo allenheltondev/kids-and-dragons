@@ -33,6 +33,7 @@ import { useMyTurnKey } from "../store";
 import { setHelpPane } from "../help/focus";
 import { PlayerShell, useSideBySide } from "./landscape";
 import { PaneFrame } from "./PaneFrame";
+import { PhoneFrame } from "./PhoneFrame";
 
 export interface PartyLayoutProps {
   surface: "world" | "player";
@@ -46,7 +47,7 @@ export function PartyLayout({ surface }: PartyLayoutProps): React.JSX.Element {
       </div>
     );
   }
-  return <PhoneLayout />;
+  return <PhoneFrame><PhoneLayout /></PhoneFrame>;
 }
 
 type Showing = "world" | "player" | "map";

@@ -1,0 +1,46 @@
+/* em sizing follows the enclosing phone or shared-screen surface. */
+.crew-identity {
+  display: flex;
+  align-items: center;
+  gap: 0.65em;
+  padding: 0.6em 0.8em;
+  border: 0.06em solid var(--kad-line, rgba(190, 178, 255, 0.2));
+  border-radius: 0.8em;
+  background: var(--kad-bg-sunken, rgba(18, 16, 42, 0.8));
+  min-inline-size: 0;
+}
+
+.crew-identity .crew-identity__art {
+  inline-size: 3.25em;
+  block-size: 3.25em;
+  flex: 0 0 auto;
+  object-fit: contain;
+}
+
+.crew-identity__copy {
+  display: grid;
+  gap: 0.15em;
+  min-inline-size: 0;
+}
+
+.crew-identity__label,
+.crew-identity__hint {
+  font-size: 0.8em;
+  color: var(--kad-ink-dim, #c6bfdc);
+}
+
+.crew-identity__name {
+  overflow-wrap: anywhere;
+}
+
+.crew-identity--compact {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 0.85em;
+}
+
+.crew-identity--compact .crew-identity__art {
+  inline-size: 2.5em;
+  block-size: 2.5em;
+}

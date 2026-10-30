@@ -66,6 +66,32 @@ async function familyStops(h: Household) {
 const host = (h: Household) => h.players[0]!.principal;
 
 describe("a new crew at the same household", () => {
+  it("hands connected phones a fresh lineup, keeps heroes and saves, and retries without clearing new heroes", async () => {
+    const h = await household();
+    await familyStops(h);
+    const save = await h.harness.repo.getCampaignProgress(h.householdId, GEMFALL);
+    const evening = await room(h);
+    const kid = await sit(h, evening.code, evening.runId, 1);
+    await kid.must({ type: "CREATE_CHARACTER", name: "Before", ...HERO });
+    const before = await kid.state();
+    const heroes = await h.harness.repo.listCharacters(h.householdId);
+    const tap = { code: evening.code, principal: host(h), crew: "new" as const, request: "tap-friends-night" };
+    expect((await switchCrew(tap, h.harness.deps)).ok).toBe(true);
+    const fresh = await kid.state();
+    expect(fresh.party).toEqual([]);
+    expect(fresh.seats).toEqual(before.seats);
+    expect(fresh.crewSetup).toBe(true);
+    expect(await h.harness.repo.listCharacters(h.householdId)).toEqual(heroes);
+    expect(await h.harness.repo.getCampaignProgress(h.householdId, GEMFALL)).toEqual(save);
+    await kid.must({ type: "CREATE_CHARACTER", name: "After", ...HERO });
+    expect((await switchCrew(tap, h.harness.deps)).ok).toBe(true);
+    expect((await kid.state()).party.map(m => m.character.name)).toEqual(["After"]);
+    await kid.must({ type: "READY", ready: true });
+    await kid.must({ type: "CONTINUE_CAMPAIGN", campaignId: GEMFALL });
+    expect((await kid.state()).crewSetup).toBeUndefined();
+    expect(await h.harness.repo.getCampaignProgress(h.householdId, GEMFALL)).toEqual(save);
+  });
+
   it("starts its own Gemfall from the beginning, and the family's save stays offered to the family", async () => {
     const h = await household();
     await familyStops(h);
@@ -125,6 +151,7 @@ describe("a new crew at the same household", () => {
     });
     const back = (await h.harness.repo.getState(evening.runId))!;
     expect(back.crew).toBeUndefined();
+    expect(back.crewSetup).toBeUndefined();
     expect(back.saved?.heroes).toEqual(["Pip"]);
     // The crew is still there to come back to, another evening or now.
     expect(back.crews).toEqual([{ id: crew, name: CREW_NAMES[0] }]);

@@ -1,0 +1,42 @@
+/* The whole picture and short promise select a hero. Extra reading is an
+   independent disclosure, so opening it never changes the child's choice. */
+.creation-choice-tile {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+  gap: 0.35em;
+}
+
+.creation-choice-tile > :is(.creation-species, .creation-card) {
+  inline-size: 100%;
+  flex: 1 0 auto;
+}
+
+.creation-choice-more {
+  padding: 0 0.75em;
+  border-radius: 0.6em;
+  background: var(--kad-bg-sunken, #120f26);
+  color: var(--kad-ink-dim, #b7b0d8);
+  font-size: 0.85em;
+}
+
+.creation-choice-more > summary {
+  min-block-size: var(--kad-touch-min, 44px);
+  padding-block: 0.65em;
+  cursor: pointer;
+}
+
+.creation-choice-more__body {
+  display: grid;
+  gap: 0.65em;
+  padding-block-end: 0.8em;
+}
+
+.creation-choice-more__body > p { margin: 0; }
+
+.creation-class-grid .creation-card__icon {
+  inline-size: 4.2em;
+  block-size: 4.2em;
+}
+
+.creation-class__name { font-weight: 700; }

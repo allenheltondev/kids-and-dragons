@@ -31,6 +31,42 @@
   font-weight: 800;
 }
 
+.lobby__gather {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4, 1em);
+  min-block-size: 0;
+  flex: 1 1 auto;
+}
+
+/* Join on the left, the people already here on the right. Scoped to the
+   shared display so phone and tablet drawers keep their compact layout. */
+@media (min-width: 1000px) and (orientation: landscape) {
+  .kad-party--world .lobby__gather {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    inline-size: min(100%, 54em);
+    align-self: center;
+    gap: 1.25em;
+  }
+
+  .kad-party--world .lobby__gather .lobby__join {
+    inline-size: 100%;
+    align-self: stretch;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: 0.7em;
+    padding: 0.8em;
+  }
+
+  .kad-party--world .lobby__gather .lobby__code-letter { font-size: 2.4em; }
+  .kad-party--world .lobby__gather .lobby__qr { inline-size: 6em; block-size: 6em; }
+  .kad-party--world .lobby__gather .lobby__join-step { flex: 0 0 auto; font-size: 0.8em; }
+  .kad-party--world .lobby__gather .lobby__party { inline-size: 100%; align-self: stretch; }
+  .kad-party--world .lobby__lineup { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
 .lobby__place {
   margin: 0;
   font-size: var(--font-size-md, 1em);
@@ -228,6 +264,15 @@
   border-color: var(--color-success, #5fd6a0);
 }
 
+.lobby-member--arriving { animation: lobby-hero-arrive 240ms ease-out; }
+@keyframes lobby-hero-arrive {
+  from { opacity: 0; transform: translateY(0.35em); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lobby-member--arriving { animation: none; }
+}
+
 /* Holds the portrait and pins the Away badge to it. */
 .lobby-member__seat {
   position: relative;
@@ -295,6 +340,19 @@
   justify-items: end;
   flex: 0 0 auto;
   margin-inline-start: auto;
+}
+
+.lobby-member__status .kad-chip { font-size: 0.8em; }
+
+.lobby__next-step {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin: 0;
+  padding: 0.5em 0.65em;
+  border-radius: 0.65em;
+  background: var(--color-surface, #1a1730);
+  font-size: 0.85em;
 }
 
 /* Both chips in the same cell; see MemberCard. */
@@ -420,4 +478,37 @@
   .lobby__party-heading { font-size: var(--font-size-md, 1em); }
   .entry-scene-host .lobby__premise { padding-block: 0.3em; }
   .lobby__join--compact { padding-block: 0.3em; }
+}
+
+/* Give the actual hero the left half of the card, with their name and
+   readiness together on the right. Keep four heroes visible at 720p. */
+.lobby-member {
+  display: grid;
+  grid-template-columns: minmax(0, 4.5em) minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  column-gap: 0.65em;
+  row-gap: 0.35em;
+}
+.lobby-member > .lobby-member__seat,
+.lobby-member > .lobby-member__portrait {
+  grid-column: 1;
+  grid-row: 1 / 3;
+}
+.lobby-member .lobby-member__portrait {
+  inline-size: 4.5em;
+  block-size: 5.4em;
+}
+.lobby-member .lobby-member__text {
+  grid-column: 2;
+  min-inline-size: 0;
+}
+.lobby-member .lobby-member__status {
+  grid-column: 2;
+  margin-inline-start: 0;
+  min-inline-size: 0;
+  justify-self: start;
+}
+.lobby-member .lobby-member__status .kad-chip {
+  white-space: normal;
+  font-size: 0.8em;
 }
