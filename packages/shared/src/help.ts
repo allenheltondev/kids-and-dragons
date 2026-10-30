@@ -25,6 +25,15 @@ export interface HelpEntry {
   text: string;
 }
 
+/** One card of the "How to play" reference: a picture, a few words for a title, and what to know. */
+export interface HelpTile {
+  id: string;
+  /** An icon id from the shared icon set. */
+  icon: string;
+  title: string;
+  text: string;
+}
+
 export interface HelpContent {
   version: 1;
   surfaces: Record<HelpSurfaceId, HelpEntry>;
@@ -34,6 +43,11 @@ export interface HelpContent {
    * and a six-letter visitor room alike, so it never counts letters.
    */
   join: HelpEntry;
+  /**
+   * The quick "How to play" reference behind a button in the "?" sheet: a handful of cards a kid can tap to
+   * hear, for the moment they forget what a roll is or how a fight goes. Short, and the same at every table.
+   */
+  howToPlay: HelpTile[];
 }
 
 /** Sentences, counted the way a child hears them: a run of words ended by . ! or ? */
@@ -55,6 +69,7 @@ export function helpProblems(help: HelpContent): { at: string; message: string }
     ...HELP_SURFACE_IDS.map((id): [string, HelpEntry] => [`/surfaces/${id}`, help.surfaces[id]]),
     ...HELP_THING_KINDS.map((id): [string, HelpEntry] => [`/things/${id}`, help.things[id]]),
     ["/join", help.join],
+    ...help.howToPlay.map((tile, i): [string, HelpEntry] => [`/howToPlay/${String(i)}`, tile]),
   ];
   for (const [at, entry] of entries) {
     const sentences = sentenceCount(entry.text);
@@ -68,6 +83,15 @@ export function helpProblems(help: HelpContent): { at: string; message: string }
       problems.push({ at: `${at}/text`, message: "is longer than 28 words; it is read aloud to a child" });
     }
   }
+  if (help.howToPlay.length < 4 || help.howToPlay.length > 8) {
+    problems.push({ at: "/howToPlay", message: "the quick reference is four to eight cards" });
+  }
+  const seen = new Set<string>();
+  help.howToPlay.forEach((tile, i) => {
+    if (seen.has(tile.id)) problems.push({ at: `/howToPlay/${String(i)}/id`, message: `"${tile.id}" is used twice` });
+    seen.add(tile.id);
+    if (tile.title.length > 20) problems.push({ at: `/howToPlay/${String(i)}/title`, message: "is longer than 20 characters; it is a card's heading" });
+  });
   if (COUNTS_LETTERS.test(help.join.text)) {
     problems.push({
       at: "/join/text",

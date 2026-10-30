@@ -55,5 +55,43 @@
   "join": {
     "icon": "travel",
     "text": "Scan this with your phone or tablet, or type the code in Join a game."
-  }
+  },
+  "howToPlay": [
+    {
+      "id": "story",
+      "icon": "scroll",
+      "title": "The story",
+      "text": "A grown-up reads the story from the big screen. Listen, then tap what you want to do on your phone."
+    },
+    {
+      "id": "turn",
+      "icon": "star",
+      "title": "Your turn",
+      "text": "Your phone tells you when it is your turn. Until then, watch the big screen and cheer for your friends."
+    },
+    {
+      "id": "roll",
+      "icon": "roll",
+      "title": "Rolling",
+      "text": "Tap the big button to throw the dice. A small number never ends the story, but it can take it somewhere new."
+    },
+    {
+      "id": "fight",
+      "icon": "swords",
+      "title": "Fights",
+      "text": "Tap a gold square to walk or a card to act, then tap End my turn. Nobody dies in this game."
+    },
+    {
+      "id": "help-up",
+      "icon": "heart",
+      "title": "Helping friends",
+      "text": "If a friend is knocked down, stand next to them and play Help Up. They get right back on their feet."
+    },
+    {
+      "id": "hear",
+      "icon": "sound",
+      "title": "Hearing it",
+      "text": "Tap the question mark button to hear what a screen is for. Press and hold a card to hear what it is."
+    }
+  ]
 }
