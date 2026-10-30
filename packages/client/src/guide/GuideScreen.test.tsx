@@ -8,7 +8,7 @@
 import { readFileSync } from "node:fs";
 import { basename, join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { currentRoute, navigate } from "../router";
 import { GuideScreen, SetupGuideScreen, PICTURES, resetGuideSources } from "./GuideScreen";
@@ -54,7 +54,8 @@ describe("GuideScreen", () => {
     for (const section of guide.sections) {
       expect(screen.getByRole("region", { name: section.title })).toBeTruthy();
     }
-    expect(document.title).toContain(guide.title);
+    // Set in an effect, which can land a moment after the first paint on a busy machine.
+    await waitFor(() => { expect(document.title).toContain(guide.title); });
   });
 
   it("starts with the quick start", async () => {
