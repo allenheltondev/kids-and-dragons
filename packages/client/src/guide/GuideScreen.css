@@ -2,6 +2,11 @@
  * The grown-up's guide (#257): a document, not a game screen, so a readable
  * column that scrolls, text that can be selected, and print styles that make
  * the same page the printable one.
+ *
+ * The page is a manual: a hero, a contents list (a sidebar from 62em, a
+ * fold-away list below it), and one card per section. Inside a card the words
+ * sit on the left and the section's pictures on the right once the card is wide
+ * enough (a container query, so it follows the card, not the screen).
  */
 
 .guide {
@@ -22,9 +27,9 @@
 .guide__page {
   display: flex;
   flex-direction: column;
-  gap: var(--kad-space-3);
+  gap: var(--kad-space-5);
   inline-size: 100%;
-  max-inline-size: 40em;
+  max-inline-size: 70em;
   line-height: 1.55;
 }
 
@@ -34,92 +39,444 @@
   gap: var(--kad-space-2);
 }
 
-.guide__title {
-  margin: var(--kad-space-2) 0 0;
-  font-size: var(--kad-text-xl);
-  font-weight: var(--kad-weight-black);
-  line-height: 1.2;
+.guide__actions:first-child {
+  justify-content: space-between;
 }
 
-.guide__section {
+/* ---- The hero: the title, what the game is, and how to read the guide ---- */
+
+.guide__hero {
   display: flex;
   flex-direction: column;
   gap: var(--kad-space-3);
-  padding-block-start: var(--kad-space-4);
-  border-block-start: 0.08em solid var(--kad-border);
-  scroll-margin-block-start: var(--kad-corner-bottom);
+  max-inline-size: 42em;
 }
 
-.guide__section--first {
-  padding: var(--kad-space-4);
-  border: 0.08em solid var(--kad-border-strong);
+.guide__title {
+  margin: 0;
+  font-size: var(--kad-text-2xl);
+  font-weight: var(--kad-weight-black);
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+.guide__hero .guide__p {
+  font-size: var(--kad-text-lg);
+  color: var(--kad-ink-dim);
+  line-height: 1.45;
+}
+
+/* ---- Contents and sections side by side ---- */
+
+.guide__layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kad-space-5);
+  align-items: stretch;
+}
+
+.guide__main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kad-space-5);
+  min-inline-size: 0;
+}
+
+.guide__contents {
+  border: 0.08em solid var(--kad-border);
   border-radius: var(--kad-radius-lg);
   background: var(--kad-bg-raised);
 }
 
+.guide__contents details {
+  padding: var(--kad-space-2) var(--kad-space-4) var(--kad-space-3);
+}
+
+.guide__contents-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-block-size: 44px;
+  font-weight: var(--kad-weight-black);
+  cursor: pointer;
+  list-style: none;
+}
+
+.guide__contents-toggle::-webkit-details-marker {
+  display: none;
+}
+
+.guide__contents-toggle::after {
+  content: "";
+  inline-size: 0.55em;
+  block-size: 0.55em;
+  margin-inline-end: 0.2em;
+  border-inline-end: 0.15em solid var(--kad-accent-hi);
+  border-block-end: 0.15em solid var(--kad-accent-hi);
+  transform: translateY(-0.15em) rotate(45deg);
+  transition: transform 120ms ease;
+}
+
+.guide__contents details[open] .guide__contents-toggle::after {
+  transform: translateY(0.1em) rotate(-135deg);
+}
+
+.guide__contents-part {
+  margin: var(--kad-space-3) 0 var(--kad-space-1);
+  font-size: var(--kad-text-xs);
+  font-weight: var(--kad-weight-black);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--kad-ink-dim);
+}
+
+.guide__contents-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.guide__link {
+  display: flex;
+  align-items: center;
+  gap: var(--kad-space-2);
+  min-block-size: 44px;
+  padding: 0.25em var(--kad-space-2);
+  margin-inline: calc(var(--kad-space-2) * -1);
+  border-radius: var(--kad-radius-md);
+  color: var(--kad-ink);
+  text-decoration: none;
+  line-height: 1.3;
+}
+
+.guide__link:hover {
+  background: var(--kad-accent-soft);
+}
+
+/* Numbered by CSS, so the link's own words are only the section's title. */
+.guide__contents {
+  counter-reset: guide-link;
+}
+
+.guide__contents-list > li {
+  counter-increment: guide-link;
+}
+
+.guide__link::before {
+  content: counter(guide-link);
+  flex: none;
+  display: grid;
+  place-items: center;
+  inline-size: 1.7em;
+  block-size: 1.7em;
+  border-radius: var(--kad-radius-pill);
+  background: var(--kad-accent-soft);
+  color: var(--kad-accent-hi);
+  font-size: var(--kad-text-sm);
+  font-weight: var(--kad-weight-black);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (min-width: 62em) {
+  .guide__layout {
+    flex-direction: row;
+    gap: var(--kad-space-6);
+  }
+
+  .guide__contents {
+    position: sticky;
+    inset-block-start: 0;
+    flex: none;
+    inline-size: 17em;
+    align-self: flex-start;
+    max-block-size: 100%;
+    overflow-y: auto;
+  }
+
+  .guide__main {
+    flex: 1 1 auto;
+  }
+
+  /* Always open beside the words; the toggle is only for a phone. */
+  .guide__contents-toggle {
+    display: none;
+  }
+
+  .guide__contents-part:first-of-type {
+    margin-block-start: var(--kad-space-1);
+  }
+}
+
+/* ---- A section: one card ---- */
+
+.guide__section {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: var(--kad-space-4);
+  padding: var(--kad-space-5);
+  border: 0.08em solid var(--kad-border);
+  border-radius: var(--kad-radius-lg);
+  background: var(--kad-bg-raised);
+  scroll-margin-block-start: var(--kad-space-3);
+}
+
+.guide__section--first {
+  border-color: var(--kad-border-strong);
+  background: linear-gradient(160deg, var(--kad-accent-soft), var(--kad-bg-raised) 55%);
+}
+
+/* The first card of a part says which part it opens. */
+.guide__part {
+  margin: 0;
+  font-size: var(--kad-text-xs);
+  font-weight: var(--kad-weight-black);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--kad-accent-hi);
+}
+
+.guide__head {
+  display: flex;
+  align-items: center;
+  gap: var(--kad-space-3);
+}
+
+.guide__number {
+  flex: none;
+  display: grid;
+  place-items: center;
+  inline-size: 2em;
+  block-size: 2em;
+  border-radius: var(--kad-radius-pill);
+  background: var(--kad-accent);
+  color: var(--kad-accent-ink);
+  font-weight: var(--kad-weight-black);
+  font-variant-numeric: tabular-nums;
+}
+
 .guide__h2 {
   margin: 0;
-  font-size: var(--kad-text-lg);
+  font-size: var(--kad-text-xl);
   font-weight: var(--kad-weight-black);
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.guide__split {
+  display: grid;
+  gap: var(--kad-space-5);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* Words on the left, the section's pictures as a set on the right. */
+@container (min-inline-size: 46em) {
+  .guide__split--pictures {
+    grid-template-columns: minmax(0, 1fr) 21em;
+    align-items: start;
+  }
+}
+
+.guide__words {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: var(--kad-space-4);
+  min-inline-size: 0;
 }
 
 .guide__h3 {
-  margin: var(--kad-space-2) 0 0;
-  font-size: var(--kad-text-md);
+  margin: var(--kad-space-2) 0 calc(var(--kad-space-2) * -1);
+  padding-inline-start: var(--kad-space-3);
+  border-inline-start: 0.2em solid var(--kad-accent);
+  font-size: var(--kad-text-lg);
   font-weight: var(--kad-weight-black);
+  line-height: 1.25;
 }
 
 .guide__p {
   margin: 0;
 }
 
-.guide__list {
-  margin: 0;
-  padding-inline-start: 1.6em;
+/* What the buttons and screens say: marked as a label, so it reads as something to look for. */
+.guide b {
+  padding: 0.05em 0.4em;
+  border-radius: var(--kad-radius-sm);
+  background: var(--kad-accent-soft);
+  color: var(--kad-ink);
+  font-weight: var(--kad-weight-black);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 }
 
-/* Spacing, not flex: a flex item is no longer a list item, and loses its number. */
-.guide__list > li + li {
-  margin-block-start: var(--kad-space-1);
-}
+/* ---- Steps: numbered cards ---- */
 
-/* The app resets lists to none; the guide's steps are numbered and its points bulleted. */
-ol.guide__list {
-  list-style: decimal;
-}
-
-ul.guide__list {
-  list-style: disc;
-}
-
-.guide__contents {
-  padding: var(--kad-space-3) var(--kad-space-4);
-  border-radius: var(--kad-radius-md);
-  background: var(--kad-bg-raised);
-}
-
-.guide__contents .guide__link {
+.guide__steps {
   display: flex;
-  align-items: center;
-  min-block-size: 44px;
-  padding-block: 0.35em;
+  flex-direction: column;
+  gap: var(--kad-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: guide-step;
 }
 
-.guide__link {
+.guide__steps > li {
+  display: flex;
+  counter-increment: guide-step;
+}
+
+.guide__step {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--kad-space-3);
+  inline-size: 100%;
+  padding: var(--kad-space-3);
+  border: 0.08em solid var(--kad-border);
+  border-radius: var(--kad-radius-md);
+  background: rgb(var(--kad-bg-rgb) / 45%);
+}
+
+.guide__step::before {
+  content: counter(guide-step);
+  flex: none;
+  display: grid;
+  place-items: center;
+  inline-size: 1.8em;
+  block-size: 1.8em;
+  margin-block-start: 0.05em;
+  border-radius: var(--kad-radius-pill);
+  background: var(--kad-accent-soft);
+  border: 0.08em solid var(--kad-border-strong);
+  color: var(--kad-accent-hi);
+  font-weight: var(--kad-weight-black);
+  font-variant-numeric: tabular-nums;
+}
+
+.guide__step-text {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  margin: 0;
+}
+
+/* ---- "Label: what it does" lists: labels in a column, words beside them ---- */
+
+.guide__terms {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  border: 0.08em solid var(--kad-border);
+  border-radius: var(--kad-radius-md);
+  overflow: hidden;
+}
+
+.guide__term {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--kad-space-1);
+  padding: var(--kad-space-3);
+}
+
+.guide__term + .guide__term {
+  border-block-start: 0.08em solid var(--kad-border);
+}
+
+.guide__term dt {
+  font-weight: var(--kad-weight-black);
   color: var(--kad-accent-hi);
 }
 
+.guide__term dd {
+  margin: 0;
+}
+
+@container (min-inline-size: 26em) {
+  .guide__term {
+    grid-template-columns: 8.5em minmax(0, 1fr);
+    gap: var(--kad-space-4);
+  }
+}
+
+/* ---- Plain bullets ---- */
+
+.guide__bullets {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kad-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.guide__bullets > li {
+  position: relative;
+  padding-inline-start: 1.4em;
+}
+
+.guide__bullets > li::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0.2em;
+  inset-block-start: 0.6em;
+  inline-size: 0.5em;
+  block-size: 0.5em;
+  border-radius: var(--kad-radius-pill);
+  background: var(--kad-accent);
+}
+
+/* ---- A note: an aside to the steps ---- */
+
+.guide__note {
+  padding: var(--kad-space-3) var(--kad-space-4);
+  border-inline-start: 0.25em solid var(--kad-accent);
+  border-radius: var(--kad-radius-sm) var(--kad-radius-md) var(--kad-radius-md) var(--kad-radius-sm);
+  background: var(--kad-accent-soft);
+  color: var(--kad-ink);
+}
+
+.guide__hero .guide__note {
+  max-inline-size: none;
+  font-size: var(--kad-text-md);
+}
+
+/* ---- Pictures: one frame, set side by side ---- */
+
+.guide__pictures {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: var(--kad-space-4);
+  min-inline-size: 0;
+}
+
 .guide__figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--kad-space-2);
+  max-inline-size: 100%;
   margin: 0;
 }
 
 .guide__picture {
   display: block;
   max-inline-size: 100%;
-  max-block-size: 32em;
+  max-block-size: 24em;
+  inline-size: auto;
   block-size: auto;
   border: 0.08em solid var(--kad-border-strong);
   border-radius: var(--kad-radius-md);
+  box-shadow: var(--kad-shadow-lg);
+}
+
+.guide__caption {
+  max-inline-size: 16em;
+  font-size: var(--kad-text-sm);
+  line-height: 1.35;
+  text-align: center;
+  color: var(--kad-ink-dim);
+  text-wrap: balance;
 }
 
 @media print {
@@ -136,7 +493,10 @@ ul.guide__list {
   .kad-connection,
   .kad-arrivals,
   .guide__actions,
-  .guide__contents {
+  .guide__contents,
+  .guide__part,
+  .guide__number,
+  .guide__caption {
     display: none !important;
   }
 
@@ -151,16 +511,68 @@ ul.guide__list {
     font-size: 11pt;
   }
 
-  .guide__page {
+  .guide__page,
+  .guide__layout,
+  .guide__main,
+  .guide__words {
+    display: block;
     max-inline-size: none;
-    gap: 0.5em;
+  }
+
+  .guide__hero .guide__p {
+    font-size: inherit;
+    color: #000;
   }
 
   .guide__section,
   .guide__section--first {
+    display: block;
+    container-type: normal;
     padding: 0.5em 0 0;
     border: 0;
     background: none;
+  }
+
+  .guide__split,
+  .guide__split--pictures {
+    display: block;
+  }
+
+  .guide__words > * + * {
+    margin-block-start: 0.5em;
+  }
+
+  .guide b {
+    padding: 0;
+    background: none;
+    font-weight: 700;
+  }
+
+  .guide__note,
+  .guide__step,
+  .guide__terms {
+    background: none;
+    border-color: #999;
+    color: #000;
+    break-inside: avoid;
+  }
+
+  .guide__term dt {
+    color: #000;
+  }
+
+  .guide__step::before {
+    background: none;
+    border-color: #000;
+    color: #000;
+  }
+
+  .guide__bullets > li::before {
+    background: #000;
+  }
+
+  .guide__h3 {
+    border-color: #000;
   }
 
   /* The quick start is the first page on its own; the rest follows it. */
@@ -177,13 +589,18 @@ ul.guide__list {
     break-inside: avoid;
   }
 
+  .guide__pictures {
+    display: flex;
+  }
+
   .guide__picture {
     max-block-size: 9cm;
     border-color: #999;
+    box-shadow: none;
   }
 
   /* On paper the quick start is words alone, so it stays on its one page. */
-  .guide__section--first .guide__figure {
+  .guide__section--first .guide__pictures {
     display: none;
   }
 }

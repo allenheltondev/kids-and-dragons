@@ -1,8 +1,9 @@
 /**
  * The guide's Markdown (#257), read into blocks the guide screen draws.
  *
- * Only what `guide.md` uses, and nothing else: a title, sections and
- * subsections, paragraphs, lists, pictures on a line of their own, and bold.
+ * Only what `guide.md` uses, and nothing else: a title, sections (grouped
+ * into parts by a `<!-- part: Name -->` line) and subsections, paragraphs,
+ * `> ` notes, lists, pictures on a line of their own, and bold.
  * Anything else is an error rather than a guess, so a construct this cannot
  * draw fails the guide's test instead of reaching a grown-up as stray
  * asterisks. Plain data out, never HTML, so the screen needs no
@@ -14,6 +15,7 @@ export type Inline = { text: string; bold: boolean };
 
 export type Block =
   | { kind: "paragraph"; text: Inline[] }
+  | { kind: "note"; text: Inline[] }
   | { kind: "list"; ordered: boolean; items: Inline[][] }
   | { kind: "picture"; alt: string; name: string }
   | { kind: "subheading"; text: string };
@@ -21,6 +23,8 @@ export type Block =
 export interface Section {
   id: string;
   title: string;
+  /** The part this section sits in (the last `<!-- part: -->` above it), or null before any. */
+  part: string | null;
   blocks: Block[];
 }
 
@@ -31,6 +35,7 @@ export interface Guide {
   sections: Section[];
 }
 
+const PART = /^<!--\s*part:\s*(.+?)\s*-->$/;
 const PICTURE = /^!\[([^\]]+)\]\(([^)\s]+)\)$/;
 const BULLET = /^- (.+)$/;
 const NUMBERED = /^\d+\. (.+)$/;
@@ -64,14 +69,17 @@ export function parseGuide(source: string): Guide {
   const intro: Block[] = [];
   const sections: Section[] = [];
   let paragraph: string[] = [];
+  let note = false;
+  let part: string | null = null;
   let list: { ordered: boolean; items: Inline[][] } | null = null;
 
   const target = (): Block[] => sections.at(-1)?.blocks ?? intro;
 
   const flush = (): void => {
     if (paragraph.length > 0) {
-      target().push({ kind: "paragraph", text: inline(paragraph.join(" "), paragraph[0] ?? "") });
+      target().push({ kind: note ? "note" : "paragraph", text: inline(paragraph.join(" "), paragraph[0] ?? "") });
       paragraph = [];
+      note = false;
     }
     if (list !== null) {
       target().push({ kind: "list", ...list });
@@ -82,6 +90,12 @@ export function parseGuide(source: string): Guide {
   lines.forEach((raw, index) => {
     const line = raw.trim();
     const where = `guide.md:${String(index + 1)}`;
+    const partName = PART.exec(line)?.[1];
+    if (partName !== undefined) {
+      flush();
+      part = partName;
+      return;
+    }
     if (line === "" || (line.startsWith("<!--") && line.endsWith("-->"))) {
       flush();
       return;
@@ -95,7 +109,7 @@ export function parseGuide(source: string): Guide {
     if (line.startsWith("## ")) {
       flush();
       const name = line.slice(3).trim();
-      sections.push({ id: slug(name), title: name, blocks: [] });
+      sections.push({ id: slug(name), title: name, part, blocks: [] });
       return;
     }
     if (line.startsWith("### ")) {
@@ -104,6 +118,14 @@ export function parseGuide(source: string): Guide {
       return;
     }
     if (line.startsWith("#")) throw new Error(`${where}: a heading deeper than ###`);
+    if (line === ">" || line.startsWith("> ")) {
+      if (!note || list !== null) flush();
+      note = true;
+      // A lone ">" is a break inside a note: the words after it are still the same note.
+      if (line.length > 1) paragraph.push(line.slice(2).trim());
+      return;
+    }
+    if (note) flush();
     const picture = PICTURE.exec(line);
     if (picture) {
       flush();
@@ -138,7 +160,7 @@ export function words(guide: Guide): number {
   const text: string[] = [guide.title];
   const add = (blocks: Block[]): void => {
     for (const block of blocks) {
-      if (block.kind === "paragraph") text.push(...block.text.map((run) => run.text));
+      if (block.kind === "paragraph" || block.kind === "note") text.push(...block.text.map((run) => run.text));
       if (block.kind === "list") text.push(...block.items.flat().map((run) => run.text));
       if (block.kind === "subheading") text.push(block.text);
     }

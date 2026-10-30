@@ -54,7 +54,7 @@ const SCREENS = [
 
 function runs(blocks) {
   return blocks.flatMap((block) => {
-    if (block.kind === "paragraph") return [block.text];
+    if (block.kind === "paragraph" || block.kind === "note") return [block.text];
     if (block.kind === "list") return block.items;
     return [];
   });
@@ -137,5 +137,12 @@ describe("the guide's Markdown", () => {
     expect(g.sections[0].blocks[0].items[0].map((r) => r.text).join("")).toBe("a b");
     expect(g.sections[0].blocks[2]).toEqual({ kind: "picture", alt: "A picture of it", name: "y.jpg" });
     expect(g.sections[0].blocks[4].text[0].text).toBe("End line.");
+  });
+
+  it("reads notes and the parts that sections sit in", () => {
+    const g = parseGuide("# T\n\n> Hi\n> **there**\n>\n> Again\n\n<!-- part: First -->\n\n## One\n\n> Aside\n\nBody\n\n## Two\n\n<!-- part: Second -->\n\n## Three\n\n- a");
+    expect(g.intro).toEqual([{ kind: "note", text: [{ text: "Hi ", bold: false }, { text: "there", bold: true }, { text: " Again", bold: false }] }]);
+    expect(g.sections.map((s) => s.part)).toEqual(["First", "First", "Second"]);
+    expect(g.sections[0].blocks.map((b) => b.kind)).toEqual(["note", "paragraph"]);
   });
 });
