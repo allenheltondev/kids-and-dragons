@@ -41,3 +41,11 @@ Validation: 82 focused creation, arrival, lobby and phone-layout tests; five rea
 Final portrait adjustment: lobby hero art is 4.5 × 5.4em, with names, levels and readiness to the right. A full four-hero lineup still fits at 720p; all three entry-layout browser checks passed after the change.
 
 Payload check: first paint remains within the unchanged 324KB cap. Total JavaScript is 1518KB; the total cap moves from 1515KB to 1520KB for the new room/creation features, with the measured reason documented beside the limit.
+
+## Room controls
+
+`room-menu-tv.png` shows the compact TV menu: room identity and Done, a collapsible player roster, lock/quiet settings paired with short explanations, crew changes folded into their own disclosure, and a separated close-room action. Escape dismisses the TV menu and returns focus to Room. Existing save/close confirmations remain in place. The phone roster starts expanded.
+
+Validated with 151 host-control/guide tests, all five browser flows, typecheck, build and payload checks. The final collapsed-roster TV layout was captured and checked again in the entry-layout browser test. Guide wording matches the menu and remains within its reading-length budget.
+
+The broader Windows unit run completed with 10,996 passing and eight failing tests. Its guide reading-length failure was fixed in this follow-up; the broader suite was not rerun. Other reported failures included source-text parsing, regenerated figures, audio cleaning, and a dev-server test. CI is the remaining full-suite gate.
