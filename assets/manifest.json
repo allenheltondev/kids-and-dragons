@@ -3018,6 +3018,12 @@
     "height": 256,
     "description": "Opaque painted enamel for projected 3D dice; gold bevels and numbered faces are rendered by the client."
   },
+  "guideArt": [
+    { "id": "guide-banner-play", "width": 1920, "height": 480, "alpha": false },
+    { "id": "guide-banner-setup", "width": 1920, "height": 480, "alpha": false },
+    { "id": "guide-part-keeping", "width": 256, "height": 256, "alpha": true },
+    { "id": "guide-part-groups", "width": 256, "height": 256, "alpha": true }
+  ],
   "paintedIcons": {
     "canvas": {
       "width": 256,
