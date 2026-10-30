@@ -72,7 +72,7 @@ Whoever opened the room runs it. In Party Mode that is the big screen: tap **Roo
 
 ![What the grown-up running the room sees](../../public/guide-pictures/host-panel.jpg)
 
-At the top is everyone in the room, each marked **Here**, **Away**, **Making a hero** or **Taken out**.
+Tap **Players** to open the list of everyone in the room, as the picture shows it. Each is marked **Here**, **Away**, **Making a hero** or **Taken out**.
 
 - **Remove**: Takes a phone out of the game. That phone sees "The person running this game took this phone out of it." Each time a phone joins, the big screen says who joined, with **Remove** beside it, so a stranger is one tap from gone.
 - **Lock the room**: "Stop more players joining once everyone is here." Kids already here can still come back. **Let new players join again** undoes it.

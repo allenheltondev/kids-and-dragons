@@ -52,6 +52,7 @@ function HelpSheet(): React.JSX.Element {
   const thing = useHelpFocus((focus) => focus.thing);
   const titleId = useId();
   const sheet = useRef<HTMLDivElement>(null);
+  const heading = useRef<HTMLHeadingElement>(null);
   const [diagnostics, setDiagnostics] = useState(false);
   // The sheet says what this screen is for; a button beside it opens the quick "How to play" cards instead.
   const [reference, setReference] = useState(false);
@@ -68,6 +69,16 @@ function HelpSheet(): React.JSX.Element {
     if (reference) stopSpeaking();
     else if (text !== "") hear(text, { source: "ui" });
   }, [text, reference]);
+
+  // Swapping the sheet to the How to play cards (and back) unmounts the button that was focused, so the new
+  // heading takes the focus, and a screen reader hears the dialog's new name. Not on the first open: focus
+  // goes to the buttons then.
+  const shown = useRef(reference);
+  useEffect(() => {
+    if (shown.current === reference) return;
+    shown.current = reference;
+    heading.current?.focus();
+  }, [reference]);
 
   // Focus moves in, the page behind goes inert, Tab stays inside, Escape closes, and focus goes back.
   useEffect(() => {
@@ -91,7 +102,7 @@ function HelpSheet(): React.JSX.Element {
       if (!sheet.current?.contains(active)) {
         event.preventDefault();
         first.focus();
-      } else if (event.shiftKey && active === first) {
+      } else if (event.shiftKey && (active === first || active === heading.current)) {
         event.preventDefault();
         last.focus();
       } else if (!event.shiftKey && active === last) {
@@ -115,7 +126,7 @@ function HelpSheet(): React.JSX.Element {
       <div ref={sheet} className="kad-help__sheet" role="dialog" aria-modal="true" aria-labelledby={titleId}>
         {reference ? (
           <div className="kad-help__reference">
-            <h2 id={titleId} className="kad-help__title">How to play</h2>
+            <h2 id={titleId} ref={heading} tabIndex={-1} className="kad-help__title">How to play</h2>
             <p className="kad-help__hint">Tap a card to hear it.</p>
             <ul className="kad-help__tiles">
               {(help?.howToPlay ?? []).map((tile) => (
@@ -135,7 +146,7 @@ function HelpSheet(): React.JSX.Element {
           <div className="kad-help__body">
             <span className="kad-help__picture" aria-hidden="true"><Icon name={icon} size="2.4em" /></span>
             <div className="kad-help__words">
-              <h2 id={titleId} className="kad-help__title">{title}</h2>
+              <h2 id={titleId} ref={heading} tabIndex={-1} className="kad-help__title">{title}</h2>
               {text !== "" ? <p className="kad-help__text">{text}</p> : <p className="kad-help__text kad-muted">One moment…</p>}
             </div>
           </div>

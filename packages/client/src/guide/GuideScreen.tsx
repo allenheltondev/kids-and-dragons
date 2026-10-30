@@ -23,7 +23,7 @@
 
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import type { ReactElement } from "react";
+import type { ReactElement, RefObject } from "react";
 import { navigate, type Route } from "../router";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
@@ -96,24 +96,40 @@ function Picture({ block }: { block: Extract<Block, { kind: "picture" }> }): Rea
       <figcaption className="guide__caption" aria-hidden="true">
         {block.alt}
       </figcaption>
-      {large ? <Enlarged src={src} alt={block.alt} onClose={() => { setLarge(false); opener.current?.focus(); }} /> : null}
+      {large ? <Enlarged src={src} alt={block.alt} returnTo={opener} onClose={() => { setLarge(false); }} /> : null}
     </figure>
   );
 }
 
-/** One picture over the page. Escape, a tap anywhere or the button closes it. */
-function Enlarged({ src, alt, onClose }: { src: string; alt: string; onClose: () => void }): ReactElement {
+/**
+ * One picture over the page, modal like the help sheet: the page behind goes inert, Tab stays on the one
+ * button, and Escape, a tap anywhere or that button closes it and gives focus back to the picture opened.
+ */
+function Enlarged({ src, alt, returnTo, onClose }: { src: string; alt: string; returnTo: RefObject<HTMLElement | null>; onClose: () => void }): ReactElement {
   const close = useRef<HTMLButtonElement>(null);
+  // Held in a ref so the effect below runs once: a re-render of the page must not re-trap focus or give it back.
+  const closeNow = useRef(onClose);
+  closeNow.current = onClose;
   useEffect(() => {
+    const app = document.getElementById("root");
+    app?.setAttribute("inert", "");
     close.current?.focus();
     const onKey = (event: KeyboardEvent): void => {
-      if (event.key === "Escape") onClose();
+      if (event.key === "Escape") closeNow.current();
+      // The close button is all there is to reach, so Tab either way stays on it.
+      else if (event.key === "Tab") {
+        event.preventDefault();
+        close.current?.focus();
+      }
     };
     document.addEventListener("keydown", onKey);
     return () => {
       document.removeEventListener("keydown", onKey);
+      app?.removeAttribute("inert");
+      // The page is live again, so the focus can go back to where the picture was opened.
+      returnTo.current?.focus();
     };
-  }, [onClose]);
+  }, [returnTo]);
   return createPortal(
     <div className="guide-large" role="dialog" aria-modal="true" aria-label={alt} onClick={onClose}>
       <img className="guide-large__picture" src={src} alt={alt} />
