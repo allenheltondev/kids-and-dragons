@@ -250,7 +250,7 @@ function PersonalHome(): ReactElement {
   }
 
   return (
-    <main className="home entry-scene-host">
+    <main className="home home--personal entry-scene-host">
       <EntryScene scene="home-market" />
       <div className="home__inner kad-stack">
         <Masthead />
@@ -441,13 +441,10 @@ function PersonalHome(): ReactElement {
 
             {/* The grown-up's guide (#257): how to run a session, for someone
                 who has never seen the game. Its own route and chunk. */}
-            <div className="home__host-toggle">
+            <div className="home__secondary-links">
               <button type="button" className="home__link kad-focusable" onClick={() => navigate({ name: "guide" })}>
                 New to running a game? Read the grown-up&rsquo;s guide
               </button>
-            </div>
-
-            <div className="home__host-toggle">
               <button
                 type="button"
                 className="home__link kad-focusable"
@@ -489,6 +486,9 @@ function PersonalHome(): ReactElement {
            * any of it to play.
            */}
           <div className="home__host-toggle home__guide" hidden={hosting}>
+            <button type="button" className="home__link kad-focusable" onClick={() => navigate({ name: "guide" })}>
+              Grown-up&rsquo;s guide
+            </button>
             <button type="button" className="home__link kad-focusable" onClick={() => navigate({ name: "account" })}>
               {signInAvailable ? "Grown-ups: sign in, or move a hero to another device" : "Move a hero to another device"}
             </button>

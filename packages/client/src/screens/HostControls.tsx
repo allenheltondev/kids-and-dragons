@@ -38,6 +38,7 @@ import { Icon } from "./icons";
 import { SignInFlow } from "./SignInFlow";
 import { LET_GO_NOTE, STOP_CONFIRM, STOP_OFFER } from "./save-copy";
 import { crewChoices } from "./crew-copy";
+import { CrewIdentity } from "./CrewIdentity";
 import "./HostControls.css";
 
 export type RosterStatus = "here" | "away" | "creating" | "out";
@@ -358,6 +359,10 @@ function HostPanel({ state, me, code, invite = false }: { state: RunState; me: s
   const rows = rosterOf(state, me);
   const locked = state.locked === true;
   const quiet = state.quiet === true;
+  const dismiss = (): void => {
+    setRoomOpen(false);
+    document.querySelector<HTMLButtonElement>(".kad-host__room")?.focus();
+  };
 
   const run = async (task: () => Promise<boolean>): Promise<void> => {
     setBusy(true);
@@ -369,7 +374,15 @@ function HostPanel({ state, me, code, invite = false }: { state: RunState; me: s
   };
 
   return (
-    <div className="kad-host__panel">
+    <div className="kad-host__panel" onKeyDown={event => {
+      if (!invite && event.key === "Escape") { event.stopPropagation(); dismiss(); }
+    }}>
+      <header className="kad-host__panel-head">
+        <div><strong>Room {code}</strong><p className="kad-host__hint">Look after the group</p></div>
+        {!invite ? <Button variant="ghost" size="md" icon={<Icon name="close" />} aria-label="Dismiss room controls" onClick={dismiss}>Done</Button> : null}
+      </header>
+      <details className="kad-host__people" open={invite}>
+      <summary className="kad-focusable">Players <span className="kad-host__hint">{rows.length} in this room</span></summary>
       {rows.length === 0 ? (
         <p className="kad-host__empty">Nobody has joined yet.</p>
       ) : (
@@ -415,43 +428,57 @@ function HostPanel({ state, me, code, invite = false }: { state: RunState; me: s
         </ul>
       )}
 
+      </details>
       <div className="kad-host__actions">
         {invite ? <ShareInvite code={code} /> : null}
         <VisitorSwitch state={state} code={code} busy={busy} />
 
+        <div className="kad-host__quick-settings">
+        <div className="kad-host__setting">
         <Button
           variant="secondary"
           size="md"
           block
           disabled={busy}
           aria-pressed={locked}
+          icon={<Icon name={locked ? "close" : "players"} />}
           onClick={() => void run(() => lockRoom(!locked))}
         >
           {locked ? "Let new players join again" : "Lock the room"}
         </Button>
         <p className="kad-host__hint">
           {locked
-            ? "Locked: nobody new can join. Everyone here can still come back."
-            : "Lock it once everyone is in, and nobody else can join with the code."}
+            ? "Only players already here can return."
+            : "Stop more players joining once everyone is here."}
         </p>
+        </div>
 
+        <div className="kad-host__setting">
         <Button
           variant="secondary"
           size="md"
           block
           disabled={busy}
           aria-pressed={quiet}
+          icon={<Icon name="moon" />}
           onClick={() => void run(() => quietRoom(!quiet))}
         >
           {quiet ? "Turn quiet mode off" : "Quiet mode"}
         </Button>
         <p className="kad-host__hint">
           {quiet
-            ? "Quiet: softer sound, no sudden noises, no shaking, and a dimmer screen on every device."
-            : "For a sleeping sibling or a car ride: softer, calmer and dimmer on every device."}
+            ? "On: softer sound, less motion and dimmer screens."
+            : "Softer sound, less motion and dimmer screens for everyone."}
         </p>
+        </div>
+        </div>
 
-        {rows.length > 0 && canSwitchCrew(state) ? <CrewSwitch state={state} busy={busy} run={run} /> : null}
+        {rows.length > 0 && canSwitchCrew(state) ? (
+          <details className="kad-host__crew-menu">
+            <summary className="kad-focusable"><Icon name="crew" /> Crews <span className="kad-host__hint">Change who is playing</span></summary>
+            <CrewSwitch state={state} busy={busy} run={run} />
+          </details>
+        ) : null}
 
         {canStop(state) ? (
           stopping ? (
@@ -471,7 +498,7 @@ function HostPanel({ state, me, code, invite = false }: { state: RunState; me: s
               </Button>
             </div>
           ) : (
-            <Button variant="secondary" size="md" block disabled={busy} onClick={() => setStopping(true)}>
+            <Button icon={<Icon name="rest" />} variant="secondary" size="md" block disabled={busy} onClick={() => setStopping(true)}>
               Stop for today
             </Button>
           )
@@ -494,7 +521,7 @@ function HostPanel({ state, me, code, invite = false }: { state: RunState; me: s
             </Button>
           </div>
         ) : (
-          <Button variant="ghost" size="md" block disabled={busy} onClick={() => setClosing(true)}>
+          <Button className="kad-host__close" icon={<Icon name="close" />} variant="ghost" size="md" block disabled={busy} onClick={() => setClosing(true)}>
             Close the room
           </Button>
         )}
@@ -520,32 +547,33 @@ function CrewSwitch({
 }): React.JSX.Element {
   const switchCrew = useGameStore((store) => store.switchCrew);
   const { current, others } = crewChoices(state);
-  const several = others.length > 0;
+  const chooseCrew = async (crew: string | null | "new"): Promise<boolean> => {
+    const changed = await switchCrew(crew);
+    if (changed) setRoomOpen(false);
+    return changed;
+  };
   return (
     <div className="kad-host__crew" role="group" aria-label="Which crew is playing">
-      {several ? (
-        <p className="kad-host__hint">
-          Playing as <strong>{current}</strong>
-        </p>
-      ) : null}
+      <CrewIdentity name={current} />
+      <p className="kad-host__hint">Your other crew&rsquo;s adventure stays saved. Existing heroes are kept.</p>
       {others.map((crew) => (
         <Button
           key={crew.id ?? "first"}
+          icon={<Icon name="crew" />}
           variant="ghost"
           size="md"
           block
           disabled={busy}
-          onClick={() => void run(() => switchCrew(crew.id))}
+          onClick={() => void run(() => chooseCrew(crew.id))}
         >
           Play as {crew.name}
         </Button>
       ))}
-      <Button variant="secondary" size="md" block disabled={busy} onClick={() => void run(() => switchCrew("new"))}>
+      <Button icon={<Icon name="plus" />} variant="secondary" size="md" block disabled={busy} onClick={() => void run(() => chooseCrew("new"))}>
         New players? Start a new crew
       </Button>
       <p className="kad-host__hint">
-        A new adventure from the first chapter, with its own save. Everyone&rsquo;s heroes and saved games stay
-        just as they are.
+        Start fresh with new heroes on everyone&rsquo;s phones and separate adventure saves.
       </p>
     </div>
   );

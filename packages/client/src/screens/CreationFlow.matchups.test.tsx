@@ -103,6 +103,19 @@ describe("species and class card lines", () => {
 });
 
 describe("species cards with matchups", () => {
+  it("keeps the first choice short and details outside every selection button", () => {
+    const html = renderToStaticMarkup(<SpeciesStep species={speciesList} chosen={null} onChoose={() => undefined} matchups={matchups} />);
+    const buttons = [...html.matchAll(/<button[\s\S]*?<\/button>/g)].map(m => m[0]);
+    expect(buttons).toHaveLength(speciesList.length);
+    for (const button of buttons) {
+      expect(button).toContain("creation-species__art");
+      expect(button).toContain("creation-species__details");
+      expect(button).not.toContain("creation-notes");
+      expect(button).not.toContain("<details");
+    }
+    expect(html.match(/<details /g)).toHaveLength(speciesList.length);
+    expect(html).not.toMatch(/<details[^>]*\bopen/);
+  });
   it("writes Good at, Watch out and the signs in words, with no numbers", () => {
     const html = renderToStaticMarkup(
       <SpeciesStep species={speciesList} chosen={null} onChoose={() => undefined} matchups={matchups} />,
@@ -148,6 +161,16 @@ describe("species cards with matchups", () => {
 });
 
 describe("class cards with matchups", () => {
+  it("teaches the role before the fantasy name and keeps extra reading optional", () => {
+    const html = renderToStaticMarkup(<ClassStep classes={classList} chosen={null} onChoose={() => undefined} matchups={matchups} />);
+    expect(html.indexOf("Protect your friends")).toBeLessThan(html.indexOf("Thornguard"));
+    expect(html).toContain("Be quick and sneaky");
+    expect(html).toContain("Cast wonderful spells");
+    expect(html).toContain("Help your friends shine");
+    const buttons = [...html.matchAll(/<button[\s\S]*?<\/button>/g)].map(m => m[0]);
+    expect(buttons).toHaveLength(classList.length);
+    expect(buttons.every(button => !button.includes("creation-notes") && !button.includes("<details"))).toBe(true);
+  });
   it("shows a class's own lines, and its pairing with the species picked", () => {
     const html = renderToStaticMarkup(
       <ClassStep classes={classList} chosen={null} onChoose={() => undefined} matchups={matchups} species="bigfoot" />,
