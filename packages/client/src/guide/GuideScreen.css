@@ -619,6 +619,133 @@
   text-wrap: balance;
 }
 
+/*
+ * The painted chrome (assets/chrome, styles/chrome.css): the same frames, ribbon, parchment and night
+ * paper the game is dressed in, so the guide reads as part of it. Screen only, and never in high
+ * contrast, which keeps the flat borders above; print keeps its black on white.
+ */
+@media screen {
+  html:not([data-contrast="high"]) .guide {
+    background: var(--kad-bg) url("../assets/chrome/paper-night.webp") 0 0 / 256px;
+  }
+
+  /* Frames on a pseudo-element behind the content, as chrome.css does: nothing here moves a box. */
+  html:not([data-contrast="high"]) :is(
+    .guide__section, .guide__contents, .guide__page-tab, .guide__next, .guide__step, .guide__terms, .guide__note
+  ) {
+    isolation: isolate;
+    background: none;
+    border-color: transparent;
+    box-shadow: none;
+  }
+
+  html:not([data-contrast="high"]) :is(.guide__section, .guide__page-tab, .guide__next, .guide__step, .guide__terms, .guide__note) {
+    position: relative;
+  }
+
+  /* A step's own ::before is its number, so its frame is the ::after. */
+  html:not([data-contrast="high"]) :is(
+    .guide__section, .guide__contents, .guide__page-tab, .guide__next, .guide__terms, .guide__note
+  )::before,
+  html:not([data-contrast="high"]) .guide__step::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    border-style: solid;
+    border-color: transparent;
+    border-width: var(--chrome-w);
+    border-image-source: var(--chrome);
+    border-image-slice: var(--chrome-slice) fill;
+    border-image-width: var(--chrome-w);
+    border-image-repeat: stretch;
+  }
+
+  .guide__section,
+  .guide__contents,
+  .guide__page-tab {
+    --chrome: url("../assets/chrome/panel.webp");
+    --chrome-slice: 40;
+    --chrome-w: 20px;
+  }
+
+  .guide__page-tab {
+    --chrome-w: 14px;
+  }
+
+  .guide__section--first,
+  .guide__page-tab--on,
+  .guide__next {
+    --chrome: url("../assets/chrome/panel-featured.webp");
+    --chrome-slice: 64;
+    --chrome-w: 32px;
+  }
+
+  .guide__page-tab--on {
+    --chrome-w: 20px;
+  }
+
+  .guide__step,
+  .guide__terms {
+    --chrome: url("../assets/chrome/panel-sunken.webp");
+    --chrome-slice: 32;
+    --chrome-w: 14px;
+  }
+
+  /* Room for the frame's trim: the featured corners are 32px deep. */
+  html:not([data-contrast="high"]) .guide__section--first {
+    padding: 2.25em;
+  }
+
+  html:not([data-contrast="high"]) .guide__next {
+    padding: 1.5em 2.25em;
+  }
+
+  html:not([data-contrast="high"]) .guide__page-tab {
+    padding: 0.9em 1.4em;
+  }
+
+  /* A section's title on a ribbon as wide as its words. */
+  html:not([data-contrast="high"]) .guide__head {
+    inline-size: fit-content;
+    max-inline-size: 100%;
+    padding: 0.3em 2.2em 0.3em 1.8em;
+    border-image: url("../assets/chrome/heading-ribbon.webp") 0 64 fill / 0 32px stretch;
+    border-style: solid;
+    border-color: transparent;
+    border-width: 0 32px;
+    margin-inline: -1.25em;
+    box-sizing: content-box;
+  }
+
+  /* A divider at its own size, so its star never smears. */
+  html:not([data-contrast="high"]) .guide__hero::after {
+    content: "";
+    block-size: 16px;
+    margin-block-start: var(--kad-space-2);
+    background: url("../assets/chrome/rule-flourish.webp") left center / min(320px, 100%) 16px no-repeat;
+  }
+
+  /* Notes are slips of parchment, with the game's own dark ink on them. */
+  .guide__note {
+    --chrome: url("../assets/chrome/goal-paper.webp");
+    --chrome-slice: 48;
+    --chrome-w: 20px;
+  }
+
+  html:not([data-contrast="high"]) .guide__note {
+    padding: 1em 1.4em;
+    border-radius: 0;
+    color: #2a1f45;
+  }
+
+  html:not([data-contrast="high"]) .guide__note b {
+    background: rgba(106, 78, 224, 0.16);
+    color: #2a1f45;
+  }
+}
+
 @media print {
   html,
   body,
