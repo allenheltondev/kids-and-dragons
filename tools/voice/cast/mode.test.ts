@@ -73,6 +73,20 @@ describe("the cast pages' voice mode", () => {
     expect(mode.lastRejected(entry({ status: "approved", history: wick.history }), "gemini")).toBe(false);
   });
 
+  it("says how many of the game's lines the approved voices cover, leaving out the narrator and the party", () => {
+    const speakers = {
+      narrator: entry({ kind: "narrator", status: "approved", lineCount: 900 }),
+      party: entry({ kind: "party", status: "approved", lineCount: 90 }),
+      a: entry({ lineCount: 30, status: "approved" }),
+      b: entry({ lineCount: 10, elevenlabs: { voiceId: "VOICEAAAAAAA", approved: true } }),
+      c: entry({ lineCount: 60 }),
+      d: entry({}),
+    };
+    expect(mode.coverage(speakers, "gemini")).toEqual({ lines: 100, covered: 30, percent: 30 });
+    expect(mode.coverage(speakers, "elevenlabs")).toEqual({ lines: 100, covered: 10, percent: 10 });
+    expect(mode.coverage({}, "gemini")).toEqual({ lines: 0, covered: 0, percent: 0 });
+  });
+
   it("counts who shares a voice in a mode, and nobody for a voice not yet picked", () => {
     const speakers = {
       a: entry({ elevenlabs: { voiceId: "VOICEAAAAAAA" } }),
