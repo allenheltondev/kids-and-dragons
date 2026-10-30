@@ -196,7 +196,15 @@ remembered in the browser. In ElevenLabs mode everything on the page is about th
 voice, and nothing there touches the Gemini one:
 
 - **Voices** come from the account, listed with the key (the picker says so if there is no key or
-  no voices). A character's choice is saved as `elevenlabs` on the sheet, and **No voice yet** takes
+  no voices). An account can have hundreds, so the picker has a **search** box that narrows the
+  list as you type: every word must appear in a voice's name or what ElevenLabs says about it
+  (premade or cloned, accent, gender, age, what it is for), so `american female narration` finds
+  those voices, and "30 of 120" says how many are left. The voice a character already has always
+  stays in the list. **Preview** plays the highlighted voice's own sample, which is free, so you
+  can sift by ear before paying for an audition on the character's real lines. (Each card's list
+  is only built when you reach for it: a page of 200 cards would otherwise carry 25,000 options.)
+  The list is the account's own voices: a voice from ElevenLabs' public library appears here
+  once it has been added to the account. A character's choice is saved as `elevenlabs` on the sheet, and **No voice yet** takes
   it back. A voice that has left the account is still listed, marked, so the picker never hides
   what is saved.
 - **Nothing is chosen for you.** Gemini's voices come with traits that a builder can match to a

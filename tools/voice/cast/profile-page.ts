@@ -622,9 +622,17 @@ ${MODE_CSS}</style>
     const sheetOwned = entry.kind === "narrator" || entry.kind === "party";
     const mode = provider();
     const mine = KadMode.voiceId(entry, mode);
-    const voice = el("select", { "aria-label": KadMode.NAMES[mode] + " voice" }, KadMode.voiceOptions(mode, entry, data.voices, elevenVoices).map((o) => el("option", { value: o.value }, o.label)));
-    voice.value = mine;
-    voice.addEventListener("change", async () => { await save(id, KadMode.pickBody(mode, id, voice.value, elevenVoices)); draw(); loadTold(); if (prefs.autoplay && voice.value) autoPlay(); });
+    const pick = async (value) => { await save(id, KadMode.pickBody(mode, id, value, elevenVoices)); draw(); loadTold(); if (prefs.autoplay && value) autoPlay(); };
+    const voiceLabel = KadMode.NAMES[mode] + " voice";
+    let voice;
+    if (mode === "elevenlabs") {
+      // An account can have hundreds: search them, and hear each one's own sample before spending anything on an audition.
+      voice = KadMode.voicePicker({ options: KadMode.voiceOptions(mode, entry, data.voices, elevenVoices), value: mine, label: voiceLabel, onPick: pick });
+    } else {
+      voice = el("select", { "aria-label": voiceLabel }, KadMode.voiceOptions(mode, entry, data.voices, elevenVoices).map((o) => el("option", { value: o.value }, o.label)));
+      voice.value = mine;
+      voice.addEventListener("change", () => pick(voice.value));
+    }
     const others = mine ? Object.entries(data.speakers).filter(([other, e]) => other !== id && KadMode.voiceId(e, mode) === mine).length : 0;
     const accent = el("input", { value: entry.accent || "", placeholder: data.accent, "aria-label": "Accent" });
     accent.addEventListener("change", async () => { await save(id, { accent: accent.value }); draw(); loadTold(); });
