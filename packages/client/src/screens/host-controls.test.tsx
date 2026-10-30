@@ -168,6 +168,10 @@ describe("host controls", () => {
     expect(screen.queryByRole("list", { name: "Who is in this room" })).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: "Room" }));
     expect(screen.getByRole("list", { name: "Who is in this room" })).toBeTruthy();
+    expect(screen.getByText("Crews", { exact: true }).closest("details")?.hasAttribute("open")).toBe(false);
+    fireEvent.keyDown(screen.getByRole("button", { name: "Dismiss room controls" }), { key: "Escape" });
+    expect(screen.queryByRole("list", { name: "Who is in this room" })).toBeNull();
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "Room" }));
   });
 
   it("mark a visitor on the roster (#249)", () => {
@@ -184,6 +188,7 @@ describe("crews: new players at the same TV", () => {
     const { switchCrew } = room({ host: true }, { ...RUN, phase: "lobby" });
     render(<HostControls placement="inline" />);
     expect(screen.getByText("The first crew")).toBeTruthy();
+    fireEvent.click(screen.getByText("Crews", { exact: true }));
     fireEvent.click(screen.getByRole("button", { name: "New players? Start a new crew" }));
     expect(switchCrew).toHaveBeenCalledWith("new");
   });
@@ -199,12 +204,14 @@ describe("crews: new players at the same TV", () => {
     render(<HostControls placement="inline" />);
     expect(screen.getByText("The Otter Crew")).toBeTruthy();
     expect(screen.queryByRole("button", { name: "Play as The Otter Crew" })).toBeNull();
+    fireEvent.click(screen.getByText("Crews", { exact: true }));
     fireEvent.click(screen.getByRole("button", { name: "Play as The first crew" }));
     expect(first.switchCrew).toHaveBeenCalledWith(null);
 
     cleanup();
     const comet = room({ host: true }, crews);
     render(<HostControls placement="inline" />);
+    fireEvent.click(screen.getByText("Crews", { exact: true }));
     fireEvent.click(screen.getByRole("button", { name: "Play as The Comet Crew" }));
     expect(comet.switchCrew).toHaveBeenCalledWith("cw_comet");
   });

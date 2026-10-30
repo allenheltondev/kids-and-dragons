@@ -82,6 +82,23 @@
   font-size: var(--kad-text-sm);
 }
 
+.kad-host__panel-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+.kad-host__panel-head strong { font-size: 1.15em; }
+.kad-host__section-title { margin: 0; font-size: 0.9em; color: var(--kad-ink-dim); }
+.kad-host__people > summary { min-block-size: var(--kad-touch-min); padding-block: 0.5rem; cursor: pointer; font-weight: 700; }
+.kad-host__people > summary .kad-host__hint { margin-inline-start: 0.6em; font-weight: 400; }
+.kad-host__quick-settings { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; }
+.kad-host__setting { display: grid; align-content: start; gap: 0.4rem; }
+.kad-host__setting .kad-button { min-block-size: 3.4em; }
+.kad-host__row { padding: 0.5rem; border-radius: 0.5rem; background: var(--kad-bg-sunken); }
+.kad-host__crew-menu { border: 1px solid var(--kad-border); border-radius: 0.65rem; }
+.kad-host__crew-menu > summary { display: flex; align-items: center; gap: 0.5em; padding: 0.6rem; min-block-size: var(--kad-touch-min); cursor: pointer; font-weight: 700; }
+.kad-host__crew-menu > summary::after { content: "+"; margin-inline-start: auto; }
+.kad-host__crew-menu[open] > summary::after { content: "−"; }
+.kad-host__crew-menu > summary .kad-host__hint { font-weight: 400; }
+.kad-host__crew-menu .kad-host__crew { margin: 0 0.6rem 0.6rem; }
+.kad-host__close { border-block-start: 1px solid var(--kad-border); margin-block-start: 0.35rem; }
+
 .kad-host__roster {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
