@@ -44,11 +44,11 @@ In Party Mode, the big screen shows **Room code** with four letters, and a squar
 
 A kid who has played on this phone before sees "Welcome back! Who are you bringing?" They tap a hero, then **Play as** and its name. Or they tap **Make someone new**.
 
-A new kid makes a hero in four short steps, starting with "Who are you?" and ending with a name. **Surprise me** picks a name for a kid who cannot choose.
+A new kid makes a hero in four short steps, starting with "Who are you?" and ending with a name. **Help me choose** suggests where to put the points, and **Surprise me** picks a name for a kid who cannot choose. A line above the buttons says what to do next. When the hero is made, the phone says "Meet Sam!" for a moment.
 
 ![Making a hero on a phone](../../public/guide-pictures/creation.jpg)
 
-Then they tap **Ready to play**, and **I'm ready!** The big screen shows who is ready. Once everyone here is ready, every phone shows **Begin the adventure**, and any kid can tap it. Later chapters say **Play chapter** and its number instead.
+Then they tap **Ready to play**, and **I'm ready!** The big screen shows who is ready. Once everyone here is ready, the big screen says "Everyone is ready! Start the adventure on a phone." and every phone shows **Begin the adventure**. Any kid can tap it. Later chapters say **Play chapter** and its number instead.
 
 ### The practice, for new heroes
 
