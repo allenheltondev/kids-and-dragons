@@ -8,11 +8,13 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { currentRoute, navigate } from "../router";
-import { GuideScreen, PICTURES } from "./GuideScreen";
+import { GuideScreen, SetupGuideScreen, PICTURES } from "./GuideScreen";
 import { parseGuide } from "./markdown";
 import source from "./guide.md?raw";
+import setupSource from "./setup.md?raw";
 
 const guide = parseGuide(source);
+const setup = parseGuide(setupSource);
 
 afterEach(() => {
   cleanup();
@@ -55,5 +57,18 @@ describe("GuideScreen", () => {
     expect(print).toHaveBeenCalledOnce();
     fireEvent.click(screen.getAllByRole("button", { name: "Back to the start" })[0]!);
     expect(currentRoute()).toEqual({ name: "home" });
+  });
+
+  it("draws the accounts and groups page with its parts, and links the two pages", () => {
+    render(<SetupGuideScreen />);
+    expect(screen.getByRole("heading", { level: 1, name: setup.title })).toBeTruthy();
+    const contents = screen.getByRole("navigation", { name: "In this guide" });
+    expect(within(contents).getAllByRole("link").map((a) => a.textContent)).toEqual(setup.sections.map((s) => s.title));
+    expect(within(contents).getByText("Keeping heroes")).toBeTruthy();
+    const pages = screen.getByRole("navigation", { name: "Guide pages" });
+    expect(within(pages).getAllByRole("link").map((a) => a.getAttribute("href"))).toEqual(["/guide", "/guide/setup"]);
+    expect(within(pages).getAllByRole("link")[1]?.getAttribute("aria-current")).toBe("page");
+    fireEvent.click(within(pages).getAllByRole("link")[0]!);
+    expect(currentRoute()).toEqual({ name: "guide" });
   });
 });

@@ -36,6 +36,11 @@ test("a grown-up opens the guide from the start screen, sees the real screens, a
   await page.reload();
   await expect(page.getByRole("heading", { level: 1, name: /guide to running a game/i })).toBeVisible(TAP);
 
+  // The accounts and groups half is its own page, one tap on.
+  await page.getByRole("navigation", { name: "Guide pages" }).getByRole("link", { name: /accounts, devices and groups/i }).click(TAP);
+  await expect(page).toHaveURL(/\/guide\/setup$/);
+  await expect(page.getByRole("heading", { level: 1, name: /accounts, devices and groups/i })).toBeVisible(TAP);
+
   await page.getByRole("button", { name: "Back to the start" }).first().click();
   await expect(page).toHaveURL(/\/$/);
   await expect(page.getByRole("button", { name: /host a game/i })).toBeVisible(TAP);

@@ -43,6 +43,67 @@
   justify-content: space-between;
 }
 
+/* ---- The guide's two pages: tabs under the buttons, and a card at the foot to the other one ---- */
+
+.guide__pages {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--kad-space-2);
+}
+
+@media (max-width: 36em) {
+  .guide__pages {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.guide__page-tab,
+.guide__next {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15em;
+  padding: var(--kad-space-3) var(--kad-space-4);
+  border: 0.08em solid var(--kad-border);
+  border-radius: var(--kad-radius-md);
+  background: var(--kad-bg-raised);
+  color: var(--kad-ink);
+  text-decoration: none;
+  line-height: 1.3;
+}
+
+.guide__page-tab:hover,
+.guide__next:hover {
+  border-color: var(--kad-border-strong);
+}
+
+.guide__page-tab--on {
+  border-color: var(--kad-accent);
+  background: var(--kad-accent-soft);
+}
+
+.guide__page-label,
+.guide__next-label {
+  font-weight: var(--kad-weight-black);
+}
+
+.guide__page-blurb,
+.guide__next-blurb {
+  font-size: var(--kad-text-sm);
+  color: var(--kad-ink-dim);
+}
+
+.guide__next-kicker {
+  font-size: var(--kad-text-xs);
+  font-weight: var(--kad-weight-black);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--kad-accent-hi);
+}
+
+.guide__next-label {
+  font-size: var(--kad-text-lg);
+}
+
 /* ---- The hero: the title, what the game is, and how to read the guide ---- */
 
 .guide__hero {
@@ -493,6 +554,8 @@
   .kad-connection,
   .kad-arrivals,
   .guide__actions,
+  .guide__pages,
+  .guide__next,
   .guide__contents,
   .guide__part,
   .guide__number,
