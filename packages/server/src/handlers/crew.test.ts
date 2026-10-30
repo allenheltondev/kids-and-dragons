@@ -195,8 +195,6 @@ describe("a new crew at the same household", () => {
     const evening = await room(h);
     for (let i = 0; i < MAX_CREWS; i++) {
       expect((await switchCrew({ code: evening.code, principal: host(h), crew: "new" }, h.harness.deps)).ok).toBe(true);
-      // Back to the first crew, or the next "new" is this unplayed crew again.
-      expect((await switchCrew({ code: evening.code, principal: host(h), crew: null }, h.harness.deps)).ok).toBe(true);
     }
     expect(await switchCrew({ code: evening.code, principal: host(h), crew: "new" }, h.harness.deps)).toMatchObject({
       ok: false,
@@ -227,22 +225,29 @@ const heroId = async (h: Household, name: string) =>
 describe("making a crew is safe to retry and to race", () => {
   const newCrew = (h: Household, code: string) => switchCrew({ code, principal: host(h), crew: "new" }, h.harness.deps);
 
-  it("answers a repeated tap with the crew it already made", async () => {
+  it("answers a retried request with the crew it already made", async () => {
     const h = await household();
     const evening = await room(h);
-    const first = await newCrew(h, evening.code);
-    const again = await newCrew(h, evening.code);
-    expect(first).toMatchObject({ ok: true, value: { crew: "cw_1" } });
-    expect(again).toMatchObject({ ok: true, value: { crew: "cw_1" } });
+    const tap = { code: evening.code, principal: host(h), crew: "new" as const, request: "tap-0001-aaaa" };
+    expect(await switchCrew(tap, h.harness.deps)).toMatchObject({ ok: true, value: { crew: "cw_1" } });
+    // Switched away meanwhile: the retry still lands on the crew that tap made.
+    await switchCrew({ code: evening.code, principal: host(h), crew: null }, h.harness.deps);
+    expect(await switchCrew(tap, h.harness.deps)).toMatchObject({ ok: true, value: { crew: "cw_1" } });
+    expect((await h.harness.repo.getState(evening.runId))!.crew).toBe("cw_1");
     expect((await h.harness.repo.listCrews(h.householdId)).map((c) => c.id)).toEqual(["cw_1"]);
   });
 
-  it("makes another once the new crew has begun an adventure", async () => {
+  it("makes a new crew for every fresh tap, even while an unused crew is chosen", async () => {
     const h = await household();
-    await crewStops(h);
     const evening = await room(h);
+    const tap = (request: string) =>
+      switchCrew({ code: evening.code, principal: host(h), crew: "new", request }, h.harness.deps);
+    expect(await tap("tap-0001-aaaa")).toMatchObject({ ok: true, value: { crew: "cw_1" } });
+    expect(await tap("tap-0002-bbbb")).toMatchObject({ ok: true, value: { crew: "cw_2" } });
+    // An existing crew nobody has played, chosen on purpose, then a new one.
     await switchCrew({ code: evening.code, principal: host(h), crew: "cw_1" }, h.harness.deps);
-    expect(await newCrew(h, evening.code)).toMatchObject({ ok: true, value: { crew: "cw_2" } });
+    expect(await tap("tap-0003-cccc")).toMatchObject({ ok: true, value: { crew: "cw_3" } });
+    expect((await h.harness.repo.getState(evening.runId))!.crews?.map((c) => c.name)).toEqual(CREW_NAMES.slice(0, 3));
   });
 
   it("leaves no crew behind when the lobby change does not land", async () => {
@@ -377,12 +382,19 @@ describe("the lobby follows the kids", () => {
 });
 
 describe("crew names and bodies", () => {
-  it("reads only a crew id, null or new", () => {
-    expect(parseCrewChoice({ crew: null })).toBeNull();
-    expect(parseCrewChoice({ crew: "new" })).toBe("new");
-    expect(parseCrewChoice({ crew: "cw_ab12" })).toBe("cw_ab12");
+  it("reads only a crew id, null or new, and a tap id only with new", () => {
+    expect(parseCrewChoice({ crew: null })).toEqual({ crew: null });
+    expect(parseCrewChoice({ crew: "new" })).toEqual({ crew: "new" });
+    expect(parseCrewChoice({ crew: "new", request: "0b9a6f3e-1c2d-4e5f-8a9b-0c1d2e3f4a5b" })).toEqual({
+      crew: "new",
+      request: "0b9a6f3e-1c2d-4e5f-8a9b-0c1d2e3f4a5b",
+    });
+    expect(parseCrewChoice({ crew: "cw_1" })).toEqual({ crew: "cw_1" });
+    expect(parseCrewChoice({ crew: "cw_1", request: "tap-0001-aaaa" })).toEqual({ crew: "cw_1" });
     expect(parseCrewChoice({})).toBeUndefined();
     expect(parseCrewChoice({ crew: "gemfall~x" })).toBeUndefined();
     expect(parseCrewChoice({ crew: "cw_a@b" })).toBeUndefined();
+    expect(parseCrewChoice({ crew: "new", request: "short" })).toBeUndefined();
+    expect(parseCrewChoice({ crew: "new", request: 42 })).toBeUndefined();
   });
 });

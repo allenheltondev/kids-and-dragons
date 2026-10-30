@@ -468,7 +468,7 @@ async function main(): Promise<void> {
   // Which of the household's crews this lobby plays, or a new one (handlers/crew.ts).
   app.post("/api/room/:code/crew", hostControl(
     (body) => (parseCrewChoice(body) === undefined ? CREW_BODY : null),
-    (code, principal, body, deps) => switchCrew({ code, principal, crew: parseCrewChoice(body) as string | null }, deps),
+    (code, principal, body, deps) => switchCrew({ code, principal, ...parseCrewChoice(body)! }, deps),
   ));
   app.post("/api/room/:code/timing", hostControl(
     (body) => (parseTimingControl(body) ? null : TIMING_BODY),

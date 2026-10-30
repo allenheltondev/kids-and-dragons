@@ -1679,9 +1679,10 @@ and every device stay the household's, so anyone may sit down with any crew.
   race or retries that run out leave no crew behind. Its id is the first free
   slot (`cw_1` to `cw_<MAX_CREWS>`, one per name), put only if absent: two
   rooms making a crew at once take different slots (the loser's commit fails
-  and its retry reads again), and the slots are the cap. "New" on a lobby
-  already on a crew that has begun nothing answers with that crew, so a
-  client retrying a lost response does not make a second. `RunState.crews` lists the others for the Room
+  and its retry reads again, strongly consistent, so it sees the winner's
+  row), and the slots are the cap. Each "Start a new crew" tap sends its own
+  id (`request`), kept on the crew it makes: the same request again, a retry
+  of a lost answer, gets that crew, and a fresh tap always makes another. `RunState.crews` lists the others for the Room
   panel, and is absent while the household has only its first.
 
 **The lobby follows the kids** (`followCrew`, run beside `relockLobby`

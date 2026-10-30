@@ -597,9 +597,9 @@ async function postQuiet(req: Req, deps: HandlerDeps, code: string) {
 
 /** The host choosing which of the household's crews this lobby plays, or starting one (handlers/crew.ts). */
 async function postCrew(req: Req, deps: HandlerDeps, code: string) {
-  const crew = parseCrewChoice(req.body);
-  return postHostControl(req, deps, code, crew === undefined ? CREW_BODY : null, (principal) =>
-    switchCrew({ code, principal, crew: crew as string | null }, deps),
+  const choice = parseCrewChoice(req.body);
+  return postHostControl(req, deps, code, choice === undefined ? CREW_BODY : null, (principal) =>
+    switchCrew({ code, principal, ...choice! }, deps),
   );
 }
 

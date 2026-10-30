@@ -131,6 +131,12 @@ export interface CrewRecord {
   /** What the Room panel calls it ("The Otter Crew"). */
   name: string;
   createdAt: string;
+  /**
+   * The id of the "Start a new crew" tap that made it, when the tap sent one:
+   * the same request again (a retry after a lost response) is this crew, not
+   * another (handlers/crew.ts).
+   */
+  request?: string;
 }
 
 /**

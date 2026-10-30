@@ -1478,7 +1478,10 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       },
 
       switchCrew(crew: string | null | "new") {
-        return hostControl("crew", { crew }, crew === "new" ? "Could not start a new crew." : "Could not change crews.");
+        if (crew !== "new") return hostControl("crew", { crew }, "Could not change crews.");
+        // Each tap names itself, so the server can tell a retry of this one
+        // from a second tap that wants a second crew.
+        return hostControl("crew", { crew, request: tapId() }, "Could not start a new crew.");
       },
 
       closeRoom() {
@@ -1869,4 +1872,11 @@ export function useProgression(handler: (event: ProgressionEvent) => void): void
       }),
     [],
   );
+}
+
+/** An id for one tap of a request the server must not do twice (`switchCrew`). */
+function tapId(): string {
+  return typeof crypto !== "undefined" && "randomUUID" in crypto
+    ? crypto.randomUUID()
+    : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`;
 }
