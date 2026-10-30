@@ -1,5 +1,7 @@
 # Painted game icons
 
+- **crew**: Teal cloth pennant with three woven terracotta, lavender and cream ribbons around a gold star. The common symbol for a continuing group and its adventure saves; always pair with the crew's name. Master and provenance: `art/source/crew-identity/`.
+
 Generated for Kids & Dragons with the built-in imagegen tool. Runtime files retain alpha and are encoded at 256px. Sources are bundled by Vite, so deployment includes them with the client.
 
 - **globe**: An antique little globe of a fictional fantasy realm on a warm brass stand. Teal ocean, leafy green invented continents and one tiny red mountain. No Earth geography. Bold spherical silhouette.

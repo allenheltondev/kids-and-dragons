@@ -74,11 +74,11 @@ Whoever opened the room runs it. In Party Mode that is the big screen: tap **Roo
 
 - At the top is everyone in the room, each marked **Here**, **Away**, **Making a hero** or **Taken out**.
 - **Remove** takes a phone out of the game. That phone sees "The person running this game took this phone out of it." Each time a phone joins, the big screen says who joined, with **Remove** beside it, so a stranger is one tap from gone.
-- **Lock the room**: "Lock it once everyone is in, and nobody else can join with the code." Kids already here can still come back. **Let new players join again** undoes it.
-- **Quiet mode**: "For a sleeping sibling or a car ride: softer, calmer and dimmer on every device." It turns on for every phone in the room at once. **Turn quiet mode off** ends it.
+- **Lock the room**: "Stop more players joining once everyone is here." Kids already here can still come back. **Let new players join again** undoes it.
+- **Quiet mode**: "Softer sound, less motion and dimmer screens for everyone." It turns on for every phone in the room at once. **Turn quiet mode off** ends it.
 - **Make keeper** picks which phone is offered to keep the heroes. See signing in, below.
 - **Stop for today** saves the game for next time.
-- **New players? Start a new crew** for their own save, which their heroes reopen.
+- **Crews** → **New players? Start a new crew** starts separate saves. Phones stay connected for new heroes. Existing heroes and adventures stay saved.
 - **Close the room** ends it for everyone, after one more tap on **Close it**. "Heroes and what they earned are kept."
 
 ## When a kid leaves or arrives partway

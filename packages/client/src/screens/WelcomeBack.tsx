@@ -26,6 +26,7 @@ import { Icon } from "./icons";
 import "./shared.css";
 import "./CreationFlow.css";
 import { savedHeroLine } from "./save-copy";
+import { crewChoices } from "./crew-copy";
 import "./WelcomeBack.css";
 
 function tierName(tier: string): string {
@@ -33,6 +34,7 @@ function tierName(tier: string): string {
 }
 
 export function WelcomeBack(): ReactElement {
+  const state = useGameStore((s) => s.state);
   const listHeroes = useGameStore((s) => s.listHeroes);
   const savedHeroes = useGameStore((s) => s.savedHeroes);
   const send = useSend();
@@ -61,6 +63,8 @@ export function WelcomeBack(): ReactElement {
       live = false;
     };
   }, [listHeroes]);
+
+  if (state?.crewSetup) return <CreationFlow crewName={crewChoices(state).current} />;
 
   if (makeNew || (heroes !== null && heroes.length === 0)) return <CreationFlow />;
 

@@ -43,7 +43,7 @@ import { usePhoneWakeLock } from "../display/usePhoneWakeLock";
 import { usePersistStorage } from "../storage/persist";
 import { usePromptBuzz } from "../ui/prompt-buzz";
 import { useAppBadge } from "../ui/app-badge";
-import { PrivacyFooter } from "../ui/PrivacyFooter";
+import { HeroArrival } from "../screens/HeroArrival";
 
 export function PlayerView({ roomControls }: { roomControls?: ReactNode }): React.JSX.Element {
   const me = useMe();
@@ -122,13 +122,11 @@ export function PlayerView({ roomControls }: { roomControls?: ReactNode }): Reac
         <>
           {/* Not playing this time (#388): one tap to watch instead. */}
           {!watching ? <JustWatch hidden={guideOverCreation} /> : null}
-          <div className="player-view__creation" hidden={guideOverCreation || watching}><WelcomeBack /></div>
+          <div className="player-view__creation" hidden={guideOverCreation || watching}><WelcomeBack key={state?.crew ?? "first"} /></div>
         </>
       ) : null}
       {!creating ? <PlayerPanel roomControls={roomControls} /> : null}
-      {/* The privacy link (#523), while this phone is making a hero or waiting in the lobby, not
-          once the game is on. */}
-      {creating || state?.phase === "lobby" || state?.phase === "creation" ? <PrivacyFooter compact /> : null}
+      <HeroArrival />
       {/* A panel over the surface, not a route: the game keeps running behind
           it and closing it costs nobody their place. Renders nothing until
           somebody opens it. */}

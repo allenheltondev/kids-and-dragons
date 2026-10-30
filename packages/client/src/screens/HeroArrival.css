@@ -1,0 +1,26 @@
+.hero-arrival {
+  position: absolute;
+  inset-inline: 8%;
+  inset-block-start: 12%;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4em;
+  padding: 1em;
+  border: 0.12em solid var(--kad-gold, #f5c86c);
+  border-radius: 1em;
+  background: var(--kad-bg-raised, #231e45);
+  box-shadow: 0 0.5em 2em #080711;
+  text-align: center;
+  pointer-events: none;
+  animation: hero-arrival-hello 260ms ease-out;
+}
+.hero-arrival .hero-arrival__portrait { inline-size: 8em; block-size: 8em; }
+.hero-arrival strong { font-size: 1.5em; overflow-wrap: anywhere; }
+@keyframes hero-arrival-hello {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) { .hero-arrival { animation: none; } }
+html[data-motion="reduced"] .hero-arrival { animation: none; }

@@ -72,13 +72,18 @@ it("ending route guarantees remove phantom softlocks without hiding a missing ro
   const graph = parseCampaignGraph(campaign).graph!;
   const options = { routeSets: campaign.routeSets, chapterFlags: chapterFlagsFrom(chapters) };
   expect(lintCampaignGraph(graph, options).findings).toEqual([]);
+}, 60_000); // A full-campaign search under V8 coverage gets its own budget.
+
+it("a missing ending guarantee still reports the stranded route", () => {
+  const graph = parseCampaignGraph(campaign).graph!;
+  const options = { routeSets: campaign.routeSets, chapterFlags: chapterFlagsFrom(chapters) };
   const shelf = structuredClone(chapters.get("riftlight-ice-shelf-traverse")!);
   expect(chapterFlagWrites(shelf).requiredOneOf).toEqual(["traverse_failed", "traverse_made"]);
   shelf.scenes.rest_river!.onEnter = [{ type: "setFlag", flag: "traverse_failed" }, { type: "setFlag", flag: "traverse_failed", value: false }];
   expect(chapterFlagWrites(shelf).requiredOneOf).toBeUndefined();
   const broken = new Map(chapters); broken.set(shelf.id, shelf);
   expect(lintCampaignGraph(graph, { ...options, chapterFlags: chapterFlagsFrom(broken) }).findings.some((f) => f.code === "STRANDED")).toBe(true);
-}, 60_000); // Two full-campaign searches, including the deliberately broken graph, under V8 coverage.
+}, 60_000); // Keep the broken full-campaign search independent of the valid one.
 
 it("the linked glacier rift grants only one Riftspark and preserves a way back", () => {
   const graph = parseCampaignGraph(campaign).graph!;
