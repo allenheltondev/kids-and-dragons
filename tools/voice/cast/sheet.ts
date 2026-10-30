@@ -316,8 +316,10 @@ export function looksSpoken(quote: LooseQuote): boolean {
  *  - with no tag, an action beat just before it ("The keeper shakes her head.") gives it to the one speaker the beat is about;
  *  - a quote right after an attributed one, with no new speaker tagged between, is the same speaker's.
  * Quotes nobody can be sure of are left out of the result, and, if `unattributed` is given, their words are added to it.
+ * `from` is where the words being counted begin: the text before it is only context for "he" and "she" (a scene variant
+ * continues the scene's own narration), and its quotes are read but not returned.
  */
-export function attributeQuotes(text: string, speakers: readonly Speaker[], unattributed?: LooseQuote[]): { id: string; words: string; pronoun?: string }[] {
+export function attributeQuotes(text: string, speakers: readonly Speaker[], unattributed?: LooseQuote[], from = 0): { id: string; words: string; pronoun?: string }[] {
   const named = speakers
     .map((speaker) => ({ id: speaker.id, names: speaker.names.filter((n) => n.length >= 3).map(escape) }))
     .filter((speaker) => speaker.names.length > 0);
@@ -391,11 +393,11 @@ export function attributeQuotes(text: string, speakers: readonly Speaker[], unat
       if (between.length === 0) id = previous.id;
     }
     if (id !== null) {
-      found.push({ id, words: match[1]!.trim(), ...(pronoun ? { pronoun } : {}) });
+      if (start >= from) found.push({ id, words: match[1]!.trim(), ...(pronoun ? { pronoun } : {}) });
       previous = { id, end };
     } else {
       previous = null;
-      unattributed?.push({ words: match[1]!.trim(), before: text.slice(Math.max(0, start - 80), start), after: text.slice(end, end + 80) });
+      if (start >= from) unattributed?.push({ words: match[1]!.trim(), before: text.slice(Math.max(0, start - 80), start), after: text.slice(end, end + 80) });
     }
   }
   return found;
@@ -819,6 +821,7 @@ export function buildSheet(sources: Sources, previous: CastSheet | null, untagge
   };
 
   const nameOf = new Map(drafts.map((draft) => [draft.id, draft.name]));
+  const baseOf = new Map(sources.narration.map((line) => [line.address, line.text]));
   const narrationByChapter = new Map<string, NarrationLine[]>();
   for (const line of sources.narration) narrationByChapter.set(line.chapter, [...(narrationByChapter.get(line.chapter) ?? []), line]);
 
@@ -864,7 +867,9 @@ export function buildSheet(sources: Sources, previous: CastSheet | null, untagge
       const loose: LooseQuote[] = [];
       const inScene = scenes.get(chapter)?.get(line.address.split("/")[1] ?? "");
       const here = withSceneRoles(present, inScene, nameOf);
-      const attributed = attributeQuotes(line.text, here, loose);
+      // A scene variant carries on from the scene's own narration: "he reads" there is whoever that narration last named.
+      const base = line.address.includes("/variants/") ? baseOf.get(line.address.replace(/\/variants\/.*$/, "/narration")) : undefined;
+      const attributed = attributeQuotes(base ? `${base} ${line.text}` : line.text, here, loose, base ? base.length + 1 : 0);
       if (inScene?.size === 1) {
         const only = [...inScene][0]!;
         // Someone else named right beside the quote may be the one speaking, so it is no guess for this scene's only speaker.

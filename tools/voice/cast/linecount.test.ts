@@ -175,3 +175,20 @@ describe("naming someone by what they are, in the scene they are in", () => {
     expect(attributeQuotes('"Toll refund," the centaur drover says.', drovers).map((q) => q.id)).toEqual(["drover_a"]);
   });
 });
+
+describe("a scene variant that carries on from the scene's narration", () => {
+  const speakers = [{ id: "pellam", names: ["Pellam"] }];
+  const base = 'Pellam opens the ledger. "Here it is."';
+  const variant = '"Pockets," he reads. "A great many pockets."';
+
+  it("takes its 'he' from who the narration last named, and counts only its own quotes", () => {
+    const loose: LooseQuote[] = [];
+    const alone = attributeQuotes(variant, speakers, loose);
+    expect(alone).toEqual([]);
+    expect(loose).toHaveLength(2);
+    const sink: LooseQuote[] = [];
+    const joined = attributeQuotes(`${base} ${variant}`, speakers, sink, base.length + 1);
+    expect(joined.map((q) => [q.id, q.words])).toEqual([["pellam", "Pockets,"], ["pellam", "A great many pockets."]]);
+    expect(sink).toEqual([]);
+  });
+});
