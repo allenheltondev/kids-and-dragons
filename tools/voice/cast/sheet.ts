@@ -59,6 +59,10 @@ export const GEMINI_VOICE_TRAITS: Record<string, { gender: "f" | "m"; traits: st
 /** The narrator's voice, which nobody else gets: they speak in every chapter. */
 export const NARRATOR_VOICE = "Sulafat";
 
+/** Whose voices the cast pages are choosing from. Gemini's are what the game ships with; ElevenLabs' are an alternative to audition and pick. */
+export type VoiceProvider = "gemini" | "elevenlabs";
+export const VOICE_PROVIDERS: readonly VoiceProvider[] = ["gemini", "elevenlabs"];
+
 export type Kind = "narrator" | "party" | "character" | "group" | "creature";
 
 /** How a character's voice should read. "nonbinary" (they/them) and "unknown" can be either a woman's or a man's voice. */
@@ -101,8 +105,22 @@ export interface CastEntry {
   /** A person's direction for the voice model, told after who they are ("a touch quicker than usual"). Kept on every rebuild. */
   direction?: string;
   gemini: { voice: string };
-  /** Real lines of theirs, found in the narration. */
+  /**
+   * The voice they have on ElevenLabs, from the account's own voices, when a person has picked one. Kept on every rebuild.
+   * Nothing assigns it: there are no traits to match an account's voices by, so it is chosen by ear.
+   */
+  elevenlabs?: ElevenVoice;
+  /** Up to three real lines of theirs, found in the narration, to audition the voice on. */
   lines: AuditionLine[];
+  /**
+   * How many lines the game gives them to speak: every quote the narration's speech tags give them, in every chapter,
+   * counted once per place it is said. `lines` is only the few of these worth auditioning on, so it is never this number.
+   * Refreshed from the content on every rebuild. The narrator's is every narration line (they read them all), and
+   * the party's the "you say" lines the storyteller reads for the heroes.
+   */
+  lineCount?: number;
+  /** How many of `lineCount` are a guess: a quote nobody is tagged for, in a scene with only this one speaker. */
+  guessedLines?: number;
   /** Whether they talk at all. Some only bleat or sigh. */
   speaks: boolean;
   /** "provisional": assigned by the builder and free to change. "approved": chosen by a person, never touched. */
@@ -112,10 +130,22 @@ export interface CastEntry {
   history?: Decision[];
 }
 
+/** One ElevenLabs voice: its id for the API, and the name the account gives it. */
+export interface ElevenVoice {
+  voiceId: string;
+  name?: string;
+  /** A person approved this voice for them (the Gemini voice's approval is `status`). */
+  approved?: boolean;
+}
+
 export interface Decision {
   decision: "approved" | "rejected";
-  /** The voice the decision was about. */
+  /** Whose voice it was: Gemini's when this is absent, as every decision before ElevenLabs was. */
+  provider?: VoiceProvider;
+  /** The voice the decision was about: Gemini's name for it, or an ElevenLabs voice id. */
   voice: string;
+  /** An ElevenLabs voice's name, kept beside its id so the history reads. */
+  voiceName?: string;
   /** What the listener said: why it works, or what is wrong with it. */
   notes?: string;
   /** The model the auditions were heard on. */
@@ -236,6 +266,29 @@ export interface Speaker {
   names: readonly string[];
 }
 
+/** A quote nobody was tagged for, with the words either side of it. */
+export interface LooseQuote {
+  words: string;
+  before: string;
+  after: string;
+}
+
+/** The party speaking, within a few words of a quote: "you say", "you sing the verse back", "you reply kindly". */
+const PARTY_NEAR = /\byou(?:'ll|'d)?\s+(?:\w+\s+){0,2}?(?:say|said|ask|reply|answer|sing|whisper|call|shout|tell|add|offer|announce|read|try|hum)\b/i;
+/** Words that say a quote is something shown or sold, not said: "sells "slightly used rumors."", "a sign that reads "…"". */
+const SHOWN_NOT_SAID = /\b(?:sells?|sold|sign|plaque|label|labeled|banner|reads?|written|spells?|spelled|carved|painted|stamped|called|named|nicknamed|word|words|phrase)\b[^"“”.!?]{0,35}$/i;
+
+/**
+ * Whether a quote nobody was tagged for is probably spoken by the one speaker in its scene, and so worth counting
+ * for them as a guess. Not a fragment (it starts a sentence and has more than one word), not the party's (a "you
+ * say" beside it), and not something shown or sold ("sells "slightly used rumors."").
+ */
+export function looksSpoken(quote: LooseQuote): boolean {
+  if (!/^[A-Z“"'‘]/.test(quote.words) || quote.words.split(/\s+/).length < 2) return false;
+  if (PARTY_NEAR.test(quote.before.slice(-50)) || PARTY_NEAR.test(quote.after.slice(0, 50))) return false;
+  return !SHOWN_NOT_SAID.test(quote.before);
+}
+
 /**
  * Who says each quote in a narration string:
  *  - a speech tag naming someone ("…," says Pib / Pib says, "…") gives it to them;
@@ -243,9 +296,9 @@ export interface Speaker {
  *  - "you say" gives it to the party;
  *  - with no tag, an action beat just before it ("The keeper shakes her head.") gives it to the one speaker the beat is about;
  *  - a quote right after an attributed one, with no new speaker tagged between, is the same speaker's.
- * Quotes nobody can be sure of are left out.
+ * Quotes nobody can be sure of are left out of the result, and, if `unattributed` is given, their words are added to it.
  */
-export function attributeQuotes(text: string, speakers: readonly Speaker[]): { id: string; words: string; pronoun?: string }[] {
+export function attributeQuotes(text: string, speakers: readonly Speaker[], unattributed?: LooseQuote[]): { id: string; words: string; pronoun?: string }[] {
   const named = speakers
     .map((speaker) => ({ id: speaker.id, names: speaker.names.filter((n) => n.length >= 3).map(escape) }))
     .filter((speaker) => speaker.names.length > 0);
@@ -323,6 +376,7 @@ export function attributeQuotes(text: string, speakers: readonly Speaker[]): { i
       previous = { id, end };
     } else {
       previous = null;
+      unattributed?.push({ words: match[1]!.trim(), before: text.slice(Math.max(0, start - 80), start), after: text.slice(end, end + 80) });
     }
   }
   return found;
@@ -371,8 +425,14 @@ interface Draft {
 /** npcVoices keys are ids (`old_wick`) in most chapters and display names ("Orin Vale") in some. */
 const idOfKey = (key: string): string => (/[A-Z\s]/.test(key) ? identity(key) : key);
 
-/** Every character the content names, merged across chapters and sources. Narrator and party not included. */
-export function collectCharacters(sources: Sources): Draft[] {
+/** Who is physically in each scene: chapter id, then scene id, to the ids of the characters in its cast. */
+export type SceneCasts = Map<string, Map<string, Set<string>>>;
+
+/**
+ * Every character the content names, merged across chapters and sources. Narrator and party not included.
+ * `scenes`, if given, is filled with who is in each scene, resolved to the same characters.
+ */
+export function collectCharacters(sources: Sources, scenes?: SceneCasts): Draft[] {
   const drafts = new Map<string, Draft>();
   const get = (id: string, name: string, who: string, generic: boolean): Draft => {
     let draft = drafts.get(id);
@@ -409,6 +469,7 @@ export function collectCharacters(sources: Sources): Draft[] {
         names.set(member.name, figures);
       }
     }
+    const resolved = new Map<string, string>(); // a cast name, in this chapter → the character it is
     for (const [name, figures] of names) {
       const s = identity(name);
       const parts = s.split("_");
@@ -430,6 +491,7 @@ export function collectCharacters(sources: Sources): Draft[] {
         : drafts.get(s) ??
           (isRoleName(name) ? undefined : [...drafts.values()].find((d) => !d.generic && !isRoleName(d.name) && chapter.campaignId !== undefined && d.campaigns.has(chapter.campaignId) && sameName(d)));
       const draft = key ? drafts.get(key)! : (known ?? get(s, name, "", false));
+      resolved.set(name, draft.id);
       draft.chapters.add(chapter.id);
       if (chapter.campaignId) draft.campaigns.add(chapter.campaignId);
       if (name !== draft.name) draft.aliases.add(name);
@@ -438,6 +500,18 @@ export function collectCharacters(sources: Sources): Draft[] {
         draft.aliases.add(draft.name);
         draft.name = name;
       }
+    }
+    if (scenes) {
+      const inChapter = new Map<string, Set<string>>();
+      for (const [sceneId, scene] of Object.entries(chapter.scenes ?? {})) {
+        const present = new Set<string>();
+        for (const member of (scene as { cast?: { name?: string }[] }).cast ?? []) {
+          const id = member.name ? resolved.get(member.name) : undefined;
+          if (id) present.add(id);
+        }
+        inChapter.set(sceneId, present);
+      }
+      scenes.set(chapter.id, inChapter);
     }
   }
 
@@ -539,8 +613,15 @@ export function noteHints(notes: readonly string[]): Hints {
   return hints;
 }
 
-/** The voices a character has been rejected in: never offered to them again. */
-export const rejectedVoices = (entry: CastEntry): Set<string> => new Set((entry.history ?? []).filter((d) => d.decision === "rejected").map((d) => d.voice));
+/** The voices a character has been rejected in, on one provider: never offered to them again. */
+export const rejectedVoices = (entry: CastEntry, provider: VoiceProvider = "gemini"): Set<string> =>
+  new Set((entry.history ?? []).filter((d) => d.decision === "rejected" && (d.provider ?? "gemini") === provider).map((d) => d.voice));
+
+/** The voice a character has on a provider (a Gemini voice's name, or an ElevenLabs voice id), or "" when they have none yet. */
+export const voiceOf = (entry: CastEntry, provider: VoiceProvider = "gemini"): string => (provider === "elevenlabs" ? (entry.elevenlabs?.voiceId ?? "") : entry.gemini.voice);
+
+/** Whether a person has approved a character's voice on a provider. */
+export const approvedOn = (entry: CastEntry, provider: VoiceProvider = "gemini"): boolean => (provider === "elevenlabs" ? entry.elevenlabs?.approved === true : entry.status === "approved");
 
 /**
  * The best voice for one character, given which voices are already speaking in
@@ -550,8 +631,10 @@ export const rejectedVoices = (entry: CastEntry): Set<string> => new Set((entry.
  * any other is left.
  */
 function bestVoice(entry: CastEntry, byChapter: ReadonlyMap<string, ReadonlyMap<string, string>>, uses: ReadonlyMap<string, number>): string {
-  const rejected = rejectedVoices(entry);
-  const hints = noteHints((entry.history ?? []).filter((d) => d.decision === "rejected").map((d) => d.notes ?? ""));
+  const rejected = rejectedVoices(entry, "gemini");
+  // Only Gemini's own rejections steer Gemini's next voice: a note about an ElevenLabs voice ("too deep, a woman's voice")
+  // says nothing about these.
+  const hints = noteHints((entry.history ?? []).filter((d) => d.decision === "rejected" && (d.provider ?? "gemini") === "gemini").map((d) => d.notes ?? ""));
   const gender = hints.gender ?? voiceGenderOf(entry);
   const wants = [...traitsOf(entry), ...hints.want];
   let best = "";
@@ -612,10 +695,23 @@ export function nextVoice(entries: Record<string, CastEntry>, id: string): strin
  * Records a listener's decision on a character's current voice. Approving
  * pins it. Rejecting remembers the voice and the notes, and moves the
  * character to the next best voice at once, so it can be heard right away.
+ *
+ * On ElevenLabs there is no trait table to find a next best voice by, so a
+ * rejection clears the choice instead (and remembers the voice, which the page
+ * then leaves out of what it offers): the next one is picked by ear.
  */
-export function decide(sheet: CastSheet, id: string, decision: Decision["decision"], notes: string | undefined, model: string | undefined, at = new Date().toISOString()): CastEntry {
+export function decide(sheet: CastSheet, id: string, decision: Decision["decision"], notes: string | undefined, model: string | undefined, at = new Date().toISOString(), provider: VoiceProvider = "gemini"): CastEntry {
   const entry = sheet.speakers[id];
   if (!entry) throw new Error(`nobody called ${id} in the sheet`);
+  if (provider === "elevenlabs") {
+    const voice = entry.elevenlabs;
+    if (!voice?.voiceId) throw new Error(`${entry.name} has no ElevenLabs voice to ${decision === "approved" ? "approve" : "reject"} yet`);
+    const record: Decision = { decision, provider, voice: voice.voiceId, ...(voice.name ? { voiceName: voice.name } : {}), ...(notes ? { notes } : {}), ...(model ? { model } : {}), at };
+    entry.history = [...(entry.history ?? []), record];
+    if (decision === "approved") entry.elevenlabs = { ...voice, approved: true };
+    else delete entry.elevenlabs;
+    return entry;
+  }
   const record: Decision = { decision, voice: entry.gemini.voice, ...(notes ? { notes } : {}), ...(model ? { model } : {}), at };
   entry.history = [...(entry.history ?? []), record];
   if (decision === "approved") {
@@ -627,23 +723,26 @@ export function decide(sheet: CastSheet, id: string, decision: Decision["decisio
   return entry;
 }
 
-/** Two speakers with one voice in the same chapter: what the sheet warns about. */
-export function voiceClashes(sheet: CastSheet): { chapter: string; voice: string; speakers: string[] }[] {
+/** Two speakers with one voice in the same chapter: what the sheet warns about. Someone with no voice yet on the provider clashes with nobody. */
+export function voiceClashes(sheet: CastSheet, provider: VoiceProvider = "gemini"): { chapter: string; voice: string; speakers: string[] }[] {
   const clashes: { chapter: string; voice: string; speakers: string[] }[] = [];
   const byChapter = new Map<string, Map<string, string[]>>();
   for (const [id, entry] of Object.entries(sheet.speakers)) {
-    if (entry.kind === "narrator" || entry.kind === "party") continue;
+    const voice = voiceOf(entry, provider);
+    if (entry.kind === "narrator" || entry.kind === "party" || (provider !== "gemini" && voice === "")) continue;
     for (const chapter of entry.chapters) {
       const voices = byChapter.get(chapter) ?? new Map<string, string[]>();
-      voices.set(entry.gemini.voice, [...(voices.get(entry.gemini.voice) ?? []), id]);
+      voices.set(voice, [...(voices.get(voice) ?? []), id]);
       byChapter.set(chapter, voices);
     }
   }
   for (const [chapter, voices] of byChapter) for (const [voice, speakers] of voices) if (speakers.length > 1) clashes.push({ chapter, voice, speakers });
   // The narrator speaks everywhere, so a character with the narrator's voice clashes in each of their chapters.
+  const narrator = sheet.speakers.narrator === undefined ? "" : voiceOf(sheet.speakers.narrator, provider);
   for (const [id, entry] of Object.entries(sheet.speakers)) {
-    if (entry.kind !== "narrator" && entry.kind !== "party" && entry.gemini.voice === sheet.speakers.narrator?.gemini.voice) {
-      for (const chapter of entry.chapters) clashes.push({ chapter, voice: entry.gemini.voice, speakers: ["narrator", id] });
+    const voice = voiceOf(entry, provider);
+    if (entry.kind !== "narrator" && entry.kind !== "party" && voice !== "" && voice === narrator) {
+      for (const chapter of entry.chapters) clashes.push({ chapter, voice, speakers: ["narrator", id] });
     }
   }
   return clashes.sort((a, b) => a.chapter.localeCompare(b.chapter) || a.voice.localeCompare(b.voice));
@@ -663,7 +762,8 @@ const NARRATOR_LINES: AuditionLine[] = [
  */
 export function buildSheet(sources: Sources, previous: CastSheet | null): CastSheet {
   const accent = previous?.accent ?? "General American, the way a warm American storyteller reads aloud";
-  const drafts = collectCharacters(sources);
+  const scenes: SceneCasts = new Map();
+  const drafts = collectCharacters(sources, scenes);
   const speakers: Record<string, CastEntry> = {};
 
   speakers.narrator = previous?.speakers.narrator ?? {
@@ -694,6 +794,10 @@ export function buildSheet(sources: Sources, previous: CastSheet | null): CastSh
 
   // Every quote in a chapter, given to whichever of that chapter's characters says it.
   const heard = new Map<string, AuditionLine[]>();
+  // The party's "you say" lines are the storyteller's to read, so they are counted but not auditioned.
+  let partyLines = 0;
+  // Quotes nobody was tagged for, in a scene where one character is the only one who could be speaking.
+  const guessed = new Map<string, number>();
   // The pronouns the narration's own speech tags use for each speaker ("…," she says).
   const tagged = new Map<string, Record<string, number>>();
   const inChapter = new Map<string, Speaker[]>();
@@ -712,7 +816,19 @@ export function buildSheet(sources: Sources, previous: CastSheet | null): CastSh
     for (const line of lines) {
       // A speech tag mid-sentence splits one line in two ("Rush prices, darlings," … "rush prices!"): join a speaker's run back up.
       const runs: { id: string; words: string[] }[] = [];
-      for (const quote of attributeQuotes(line.text, present)) {
+      const loose: LooseQuote[] = [];
+      const attributed = attributeQuotes(line.text, present, loose);
+      const inScene = scenes.get(chapter)?.get(line.address.split("/")[1] ?? "");
+      if (inScene?.size === 1) {
+        const only = [...inScene][0]!;
+        // Someone else named right beside the quote may be the one speaking, so it is no guess for this scene's only speaker.
+        const others = present.filter((speaker) => speaker.id !== only).flatMap((speaker) => speaker.names.filter((name) => name.length >= 3).map(escape));
+        const othersNear = others.length === 0 ? null : new RegExp(`\\b(?:${others.join("|")})\\b`, "i");
+        for (const quote of loose) {
+          if (looksSpoken(quote) && !(othersNear && (othersNear.test(quote.before.slice(-60)) || othersNear.test(quote.after.slice(0, 40))))) guessed.set(only, (guessed.get(only) ?? 0) + 1);
+        }
+      }
+      for (const quote of attributed) {
         if (quote.pronoun && quote.pronoun !== "it") {
           const counts = tagged.get(quote.id) ?? {};
           counts[quote.pronoun] = (counts[quote.pronoun] ?? 0) + 1;
@@ -723,7 +839,10 @@ export function buildSheet(sources: Sources, previous: CastSheet | null): CastSh
         else runs.push({ id: quote.id, words: [quote.words] });
       }
       for (const run of runs) {
-        if (run.id === "party") continue;
+        if (run.id === "party") {
+          partyLines += 1;
+          continue;
+        }
         // The comma before a speech tag ends the sentence when the next quote starts a new one.
         const joined = run.words
           .map((words, i) => (words.endsWith(",") && (i === run.words.length - 1 || /^[A-Z]/.test(run.words[i + 1]!)) ? `${words.slice(0, -1)}.` : words))
@@ -740,6 +859,8 @@ export function buildSheet(sources: Sources, previous: CastSheet | null): CastSh
     const candidates = heard.get(draft.id) ?? [];
     const kind = kindOf(draft.id, draft.name, draft.who);
     const lines = pickLines(candidates);
+    const guess = guessed.get(draft.id) ?? 0;
+    const lineCount = candidates.length + guess;
     // Canon's pronouns win; otherwise the ones the narration uses, when it is clear.
     const counts = tagged.get(draft.id) ?? {};
     const [top, second] = Object.entries(counts).sort((a, b) => b[1] - a[1]);
@@ -766,7 +887,10 @@ export function buildSheet(sources: Sources, previous: CastSheet | null): CastSh
       ...(old?.accent ? { accent: old.accent } : {}),
       ...(old?.direction ? { direction: old.direction } : {}),
       gemini: old?.gemini ?? { voice: "" },
+      ...(old?.elevenlabs ? { elevenlabs: old.elevenlabs } : {}),
       lines,
+      lineCount,
+      ...(guess > 0 ? { guessedLines: guess } : {}),
       speaks: !SILENT.test(draft.who) && (lines.length > 0 || kind !== "creature"),
       // What a person decided carries over; everything else above is refreshed from the content,
       // so an approved character's chapters stay current and a new clash is still seen.
@@ -775,6 +899,10 @@ export function buildSheet(sources: Sources, previous: CastSheet | null): CastSh
       ...(old?.history?.length ? { history: old.history } : {}),
     };
   }
+
+  // The narrator and the party are kept whole from the previous sheet, so what is counted is refreshed on them here.
+  speakers.narrator.lineCount = sources.narration.length;
+  speakers.party.lineCount = partyLines;
 
   // A provisional entry keeps a voice it already had; only empty ones are (re)assigned.
   assignVoices(speakers, (id) => speakers[id]!.status === "approved" || speakers[id]!.gemini.voice !== "");

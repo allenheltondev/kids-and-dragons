@@ -516,6 +516,8 @@ export interface VoiceInfo {
   id: string;
   name: string;
   about?: string;
+  /** A short sample of the voice the provider hosts, free to play (ElevenLabs gives one for most voices). */
+  preview?: string;
 }
 
 /** The voices this key can use: an ElevenLabs account's voices, or Gemini's prebuilt set. */
@@ -523,11 +525,12 @@ export async function listVoices(provider: Provider, keys: Keys, fetch: Fetch): 
   if (provider === "gemini") return GEMINI_VOICES.map((v) => ({ id: v.id, name: v.id, about: v.about }));
   if (provider === "fake") return [];
   const json = (await getJson(`${ELEVENLABS}/voices`, authFor(provider, keys), fetch)) as {
-    voices?: { voice_id: string; name: string; category?: string; labels?: Record<string, string> }[];
+    voices?: { voice_id: string; name: string; category?: string; labels?: Record<string, string>; preview_url?: string | null }[];
   };
   return (json.voices ?? []).map((v) => ({
     id: v.voice_id,
     name: v.name,
     about: [v.category, ...Object.values(v.labels ?? {})].filter(Boolean).join(", "),
+    ...(v.preview_url ? { preview: v.preview_url } : {}),
   }));
 }

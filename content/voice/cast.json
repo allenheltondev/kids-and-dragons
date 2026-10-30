@@ -1,5 +1,5 @@
 {
-  "$comment": "The cast voice sheet (docs/voice-cast.md). Built by `npm run voice:cast` from the chapters' voiceGuide.npcVoices, their scene casts and canon/individuals.yaml; edit voices on the cast page (`npm run voice:bakeoff -- --serve`, then /cast) or here. A person's decisions (status, voice, gender, accent, direction, notes, history) survive every rebuild; everything else is refreshed from the content. `lines` are real quotes from the narration, for auditions.",
+  "$comment": "The cast voice sheet (docs/voice-cast.md). Built by `npm run voice:cast` from the chapters' voiceGuide.npcVoices, their scene casts and canon/individuals.yaml; edit voices on the cast page (`npm run voice:bakeoff -- --serve`, then /cast) or here. A person's decisions (status, voice, gender, accent, direction, notes, history) survive every rebuild; everything else is refreshed from the content. `lines` are up to three real quotes from the narration, for auditions; `lineCount` is how many lines the narration gives them in all.",
   "accent": "General American, the way a warm American storyteller reads aloud",
   "speakers": {
     "narrator": {
@@ -18,7 +18,8 @@
         }
       ],
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "lineCount": 6098
     },
     "party": {
       "name": "The party",
@@ -36,7 +37,8 @@
         }
       ],
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "lineCount": 61
     },
     "pib": {
       "name": "Pib",
@@ -80,6 +82,8 @@
           "address": "gemfall-02/choice_pib_gift_pebble/narration"
         }
       ],
+      "lineCount": 8,
+      "guessedLines": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -115,6 +119,7 @@
           "address": "gemfall-03b/rest_reed_raft_hat/narration"
         }
       ],
+      "lineCount": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -138,6 +143,7 @@
         "voice": "Puck"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -182,6 +188,7 @@
           "address": "first-steps-01/interaction_balance/narration"
         }
       ],
+      "lineCount": 28,
       "speaks": true,
       "status": "provisional"
     },
@@ -221,6 +228,7 @@
           "address": "first-steps-01/interaction_bell/narration"
         }
       ],
+      "lineCount": 13,
       "speaks": true,
       "status": "provisional"
     },
@@ -245,6 +253,7 @@
         "voice": "Leda"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": false,
       "status": "provisional"
     },
@@ -291,6 +300,8 @@
           "address": "gemfall-01/scene_north_gate_tidewell/narration"
         }
       ],
+      "lineCount": 22,
+      "guessedLines": 16,
       "speaks": true,
       "status": "provisional"
     },
@@ -329,6 +340,8 @@
           "address": "gemfall-01/scene_sold/narration"
         }
       ],
+      "lineCount": 3,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -364,6 +377,7 @@
           "address": "gemfall-01/scene_market_fresh_start/narration"
         }
       ],
+      "lineCount": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -403,6 +417,8 @@
           "address": "gemfall-01/scene_caravan_yard_banner/narration"
         }
       ],
+      "lineCount": 9,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -454,6 +470,7 @@
           "address": "gemfall-07h/scene_boggart_grandma_said/narration"
         }
       ],
+      "lineCount": 6,
       "speaks": true,
       "status": "provisional"
     },
@@ -478,6 +495,7 @@
         "voice": "Schedar"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -502,6 +520,7 @@
         "voice": "Algieba"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -541,6 +560,8 @@
           "address": "gemfall-01/scene_last_noodles_listen/narration"
         }
       ],
+      "lineCount": 10,
+      "guessedLines": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -565,6 +586,8 @@
         "voice": "Sadaltager"
       },
       "lines": [],
+      "lineCount": 1,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -589,6 +612,7 @@
         "voice": "Fenrir"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -620,6 +644,7 @@
           "address": "gemfall-01/scene_griffin_post/narration"
         }
       ],
+      "lineCount": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -651,6 +676,8 @@
           "address": "gemfall-01/scene_gutter_glint_griffin/narration"
         }
       ],
+      "lineCount": 2,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -690,6 +717,7 @@
           "address": "gemfall-01/scene_provisions_sunbloom/narration"
         }
       ],
+      "lineCount": 5,
       "speaks": true,
       "status": "provisional"
     },
@@ -723,6 +751,8 @@
           "address": "gemfall-01/scene_newcomers_plaque/narration"
         }
       ],
+      "lineCount": 3,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -754,6 +784,7 @@
           "address": "gemfall-01/scene_inn_full/narration"
         }
       ],
+      "lineCount": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -787,6 +818,8 @@
           "address": "gemfall-02/scene_caravan_turned/narration"
         }
       ],
+      "lineCount": 3,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -815,6 +848,7 @@
           "address": "gemfall-02/choice_harvest_stone/narration"
         }
       ],
+      "lineCount": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -855,6 +889,7 @@
           "address": "gemfall-02/rest_marda_inn/narration"
         }
       ],
+      "lineCount": 5,
       "speaks": true,
       "status": "provisional"
     },
@@ -908,6 +943,8 @@
           "address": "gemfall-03c/scene_spilled_pannier_spot_all/narration"
         }
       ],
+      "lineCount": 14,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -938,6 +975,7 @@
           "address": "gemfall-02/scene_hedge_mob_flock/narration"
         }
       ],
+      "lineCount": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -968,6 +1006,7 @@
           "address": "gemfall-02/scene_song_stops_ask/narration"
         }
       ],
+      "lineCount": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -1006,6 +1045,7 @@
           "address": "gemfall-02/scene_signpost_cart/narration"
         }
       ],
+      "lineCount": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -1034,6 +1074,7 @@
           "address": "gemfall-02/scene_tremor_snore/narration"
         }
       ],
+      "lineCount": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -1064,6 +1105,7 @@
           "address": "gemfall-02/choice_common_room_frog/narration"
         }
       ],
+      "lineCount": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -1111,6 +1153,8 @@
           "address": "gemfall-04c/check_relay/narration"
         }
       ],
+      "lineCount": 10,
+      "guessedLines": 5,
       "speaks": true,
       "status": "provisional"
     },
@@ -1144,6 +1188,7 @@
           "address": "gemfall-03a/scene_fennick/narration"
         }
       ],
+      "lineCount": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -1183,6 +1228,7 @@
           "address": "gemfall-03a/scene_troll_hum_answer_honest/narration"
         }
       ],
+      "lineCount": 10,
       "speaks": true,
       "status": "provisional"
     },
@@ -1206,6 +1252,7 @@
         "voice": "Orus"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": false,
       "status": "provisional"
     },
@@ -1239,6 +1286,7 @@
         "voice": "Iapetus"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -1301,6 +1349,8 @@
           "address": "gemfall-07r/scene_ossley/narration"
         }
       ],
+      "lineCount": 36,
+      "guessedLines": 5,
       "speaks": true,
       "status": "provisional"
     },
@@ -1331,6 +1381,7 @@
           "address": "gemfall-03a/interaction_planks/narration"
         }
       ],
+      "lineCount": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -1354,6 +1405,7 @@
         "voice": "Despina"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -1384,6 +1436,7 @@
           "address": "gemfall-03a/scene_first_story/narration"
         }
       ],
+      "lineCount": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -1421,6 +1474,7 @@
           "address": "gemfall-03a/scene_gem_toll_explain/narration"
         }
       ],
+      "lineCount": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -1444,6 +1498,7 @@
         "voice": "Umbriel"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -1483,6 +1538,8 @@
           "address": "gemfall-03b/interaction_stumps/narration"
         }
       ],
+      "lineCount": 21,
+      "guessedLines": 5,
       "speaks": true,
       "status": "provisional"
     },
@@ -1525,6 +1582,8 @@
           "address": "gemfall-03b/scene_nan_washtub/narration"
         }
       ],
+      "lineCount": 7,
+      "guessedLines": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -1548,6 +1607,7 @@
         "voice": "Alnilam"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": false,
       "status": "provisional"
     },
@@ -1575,6 +1635,7 @@
         "voice": "Sadachbia"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -1603,6 +1664,7 @@
           "address": "gemfall-03b/scene_tussock_shallows/narration"
         }
       ],
+      "lineCount": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -1631,6 +1693,7 @@
           "address": "gemfall-03b/scene_reed_edge_reeds/narration"
         }
       ],
+      "lineCount": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -1671,6 +1734,8 @@
           "address": "gemfall-03c/choice_runaway_goat_sort/narration"
         }
       ],
+      "lineCount": 8,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -1713,6 +1778,8 @@
           "address": "riftlight-frostfang-shore/ladder_hold/onFailure/narration"
         }
       ],
+      "lineCount": 34,
+      "guessedLines": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -1760,6 +1827,8 @@
           "address": "gemfall-03c/scene_soup_line_ask_crystal/narration"
         }
       ],
+      "lineCount": 11,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -1799,6 +1868,7 @@
           "address": "gemfall-03c/scene_tuned_charm_take_it_home/narration"
         }
       ],
+      "lineCount": 7,
       "speaks": true,
       "status": "provisional"
     },
@@ -1822,6 +1892,7 @@
         "voice": "Leda"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -1860,6 +1931,7 @@
           "address": "gemfall-03c/scene_surge_scarves_help/narration"
         }
       ],
+      "lineCount": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -1890,6 +1962,7 @@
           "address": "gemfall-03c/scene_queue_jumpers/narration"
         }
       ],
+      "lineCount": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -1924,6 +1997,7 @@
           "address": "gemfall-04a/scene_leave_stone/narration"
         }
       ],
+      "lineCount": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -1950,6 +2024,7 @@
         "voice": "Rasalgethi"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -1980,6 +2055,7 @@
           "address": "gemfall-04a/scene_waystation/narration"
         }
       ],
+      "lineCount": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -2026,6 +2102,8 @@
           "address": "gemfall-05a/check_fires/onSuccess/narration"
         }
       ],
+      "lineCount": 10,
+      "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -2054,6 +2132,7 @@
           "address": "gemfall-04a/scene_cub_scouts/narration"
         }
       ],
+      "lineCount": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -2093,6 +2172,7 @@
           "address": "gemfall-04a/interaction_plates/narration"
         }
       ],
+      "lineCount": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -2123,6 +2203,7 @@
           "address": "gemfall-04a/interaction_post_hole/narration"
         }
       ],
+      "lineCount": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -2146,6 +2227,7 @@
         "voice": "Schedar"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -2185,6 +2267,8 @@
           "address": "gemfall-04b/scene_unicorns_patch/narration"
         }
       ],
+      "lineCount": 8,
+      "guessedLines": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -2231,6 +2315,8 @@
           "address": "gemfall-05b/check_falls_logs/onSuccess/narration"
         }
       ],
+      "lineCount": 4,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -2254,6 +2340,7 @@
         "voice": "Umbriel"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": false,
       "status": "provisional"
     },
@@ -2302,6 +2389,8 @@
           "address": "gemfall-04b/check_runner_path/onFailure/narration"
         }
       ],
+      "lineCount": 14,
+      "guessedLines": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -2325,6 +2414,7 @@
         "voice": "Rasalgethi"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -2362,6 +2452,7 @@
           "address": "gemfall-04c/check_search/narration"
         }
       ],
+      "lineCount": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -2386,6 +2477,7 @@
         "voice": "Puck"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -2430,6 +2522,8 @@
           "address": "gemfall-05c/check_count_picks/onSuccess/narration"
         }
       ],
+      "lineCount": 13,
+      "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -2469,6 +2563,7 @@
           "address": "gemfall-04c/scene_depot/narration"
         }
       ],
+      "lineCount": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -2504,6 +2599,8 @@
           "address": "gemfall-04c/scene_relay_sing/narration"
         }
       ],
+      "lineCount": 5,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -2543,6 +2640,7 @@
           "address": "gemfall-04c/scene_road_crew_charm/narration"
         }
       ],
+      "lineCount": 5,
       "speaks": true,
       "status": "provisional"
     },
@@ -2566,6 +2664,7 @@
         "voice": "Zephyr"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -2589,6 +2688,7 @@
         "voice": "Leda"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -2624,6 +2724,7 @@
           "address": "gemfall-05a/scene_cult_pitch/narration"
         }
       ],
+      "lineCount": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -2674,6 +2775,7 @@
           "address": "gemfall-06/interaction_tags/onSuccess/narration"
         }
       ],
+      "lineCount": 50,
       "speaks": true,
       "status": "provisional"
     },
@@ -2717,6 +2819,8 @@
           "address": "riftlight-cairnstep-pass/survey/narration"
         }
       ],
+      "lineCount": 51,
+      "guessedLines": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -2759,6 +2863,7 @@
           "address": "gemfall-05a/interaction_bowls/narration"
         }
       ],
+      "lineCount": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -2798,6 +2903,7 @@
           "address": "gemfall-05a/scene_told_gatherers/narration"
         }
       ],
+      "lineCount": 7,
       "speaks": true,
       "status": "provisional"
     },
@@ -2833,6 +2939,8 @@
           "address": "gemfall-05a/scene_survey_guard_clerks_stone/narration"
         }
       ],
+      "lineCount": 3,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -2871,6 +2979,7 @@
           "address": "gemfall-05a/check_string/onFailure/narration"
         }
       ],
+      "lineCount": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -2909,6 +3018,7 @@
           "address": "gemfall-05a/check_rubbing/narration"
         }
       ],
+      "lineCount": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -2932,6 +3042,7 @@
         "voice": "Vindemiatrix"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -2956,6 +3067,7 @@
         "voice": "Algenib"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -2998,6 +3110,8 @@
           "address": "gemfall-05b/choice_elders_close/narration"
         }
       ],
+      "lineCount": 26,
+      "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -3024,6 +3138,8 @@
         "voice": "Achernar"
       },
       "lines": [],
+      "lineCount": 2,
+      "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -3061,6 +3177,7 @@
           "address": "gemfall-05b/scene_halfway_hut_sign/narration"
         }
       ],
+      "lineCount": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -3090,6 +3207,8 @@
           "address": "gemfall-05b/check_follow_moths/onSuccess/narration"
         }
       ],
+      "lineCount": 3,
+      "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -3132,6 +3251,8 @@
           "address": "gemfall-05c/scene_unassigned_ask_proper/narration"
         }
       ],
+      "lineCount": 21,
+      "guessedLines": 5,
       "speaks": true,
       "status": "provisional"
     },
@@ -3183,6 +3304,8 @@
           "address": "gemfall-07h/scene_echo_quiet/narration"
         }
       ],
+      "lineCount": 37,
+      "guessedLines": 18,
       "speaks": true,
       "status": "provisional"
     },
@@ -3221,6 +3344,7 @@
           "address": "gemfall-05c/interaction_bell_cart/narration"
         }
       ],
+      "lineCount": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -3260,6 +3384,8 @@
           "address": "gemfall-05c/scene_centaur_whisper_show_bark/narration"
         }
       ],
+      "lineCount": 5,
+      "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -3283,6 +3409,7 @@
         "voice": "Charon"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -3342,6 +3469,8 @@
           "address": "gemfall-08/check_tether_cult_bare/narration"
         }
       ],
+      "lineCount": 23,
+      "guessedLines": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -3385,6 +3514,7 @@
           "address": "gemfall-06/scene_told_wardens_room/narration"
         }
       ],
+      "lineCount": 6,
       "speaks": true,
       "status": "provisional"
     },
@@ -3420,6 +3550,8 @@
           "address": "gemfall-06/scene_morning_bells_sock/narration"
         }
       ],
+      "lineCount": 5,
+      "guessedLines": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -3451,6 +3583,7 @@
           "address": "gemfall-06/scene_doorstep_one_rule/narration"
         }
       ],
+      "lineCount": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -3474,6 +3607,7 @@
         "voice": "Achird"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -3511,6 +3645,7 @@
           "address": "gemfall-07h/scene_checkpoint/narration"
         }
       ],
+      "lineCount": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -3555,6 +3690,8 @@
           "address": "gemfall-07r/scene_mosshome_runner/narration"
         }
       ],
+      "lineCount": 5,
+      "guessedLines": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -3604,6 +3741,8 @@
           "address": "gemfall-07h/scene_ford_witch_all_of_them/narration"
         }
       ],
+      "lineCount": 13,
+      "guessedLines": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -3639,6 +3778,7 @@
           "address": "gemfall-07l/scene_centaur_relay/narration"
         }
       ],
+      "lineCount": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -3683,6 +3823,7 @@
           "address": "gemfall-07h/scene_ember_too_much/narration"
         }
       ],
+      "lineCount": 6,
       "speaks": true,
       "status": "provisional"
     },
@@ -3732,6 +3873,8 @@
           "address": "gemfall-07r/check_caravan_helped/onSuccess/narration"
         }
       ],
+      "lineCount": 10,
+      "guessedLines": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -3771,6 +3914,8 @@
           "address": "gemfall-07h/walk_scene_news/narration"
         }
       ],
+      "lineCount": 6,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -3810,6 +3955,7 @@
           "address": "gemfall-07h/scene_price_board/variants/2"
         }
       ],
+      "lineCount": 5,
       "speaks": true,
       "status": "provisional"
     },
@@ -3849,6 +3995,8 @@
           "address": "gemfall-07h/interaction_cabinet/narration"
         }
       ],
+      "lineCount": 9,
+      "guessedLines": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -3883,6 +4031,7 @@
           "address": "gemfall-07h/scene_milestone_boy/narration"
         }
       ],
+      "lineCount": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -3922,6 +4071,8 @@
           "address": "gemfall-07l/scene_stall_witch_flatter/narration"
         }
       ],
+      "lineCount": 7,
+      "guessedLines": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -3955,6 +4106,7 @@
           "address": "gemfall-07l/scene_two_scouts_table_stone/narration"
         }
       ],
+      "lineCount": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -3988,6 +4140,7 @@
           "address": "gemfall-07l/scene_two_scouts/narration"
         }
       ],
+      "lineCount": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -4011,6 +4164,7 @@
         "voice": "Orus"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -4050,6 +4204,8 @@
           "address": "gemfall-07r/scene_glitter_barrow/narration"
         }
       ],
+      "lineCount": 4,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -4093,6 +4249,8 @@
           "address": "gemfall-07r/check_posy/onSuccess/narration"
         }
       ],
+      "lineCount": 5,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -4132,6 +4290,8 @@
           "address": "gemfall-08/scene_seal_chamber/narration"
         }
       ],
+      "lineCount": 80,
+      "guessedLines": 26,
       "speaks": true,
       "status": "provisional"
     },
@@ -4155,6 +4315,7 @@
         "voice": "Enceladus"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -4178,6 +4339,7 @@
         "voice": "Charon"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -4230,6 +4392,7 @@
           "address": "riftlight-convergence/arrival/narration"
         }
       ],
+      "lineCount": 63,
       "speaks": true,
       "status": "provisional"
     },
@@ -4276,6 +4439,7 @@
           "address": "riftlight-convergence/decision/narration"
         }
       ],
+      "lineCount": 28,
       "speaks": true,
       "status": "provisional"
     },
@@ -4315,6 +4479,7 @@
           "address": "riftlight-convergence/decision/narration"
         }
       ],
+      "lineCount": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -4367,6 +4532,7 @@
           "address": "riftlight-convergence/lesson/narration"
         }
       ],
+      "lineCount": 47,
       "speaks": true,
       "status": "provisional"
     },
@@ -4424,6 +4590,7 @@
           "address": "riftlight-reading-room/rest/narration"
         }
       ],
+      "lineCount": 37,
       "speaks": true,
       "status": "provisional"
     },
@@ -4464,6 +4631,8 @@
           "address": "riftlight-exchange-rift/ship_flap/narration"
         }
       ],
+      "lineCount": 14,
+      "guessedLines": 6,
       "speaks": true,
       "status": "provisional"
     },
@@ -4503,6 +4672,8 @@
           "address": "riftlight-exchange-rift/gull/narration"
         }
       ],
+      "lineCount": 7,
+      "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -4542,6 +4713,8 @@
           "address": "riftlight-exchange-rift/fish_slosh/narration"
         }
       ],
+      "lineCount": 4,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -4581,6 +4754,7 @@
           "address": "riftlight-finale/first_anchor/narration"
         }
       ],
+      "lineCount": 6,
       "speaks": true,
       "status": "provisional"
     },
@@ -4623,6 +4797,8 @@
           "address": "riftlight-hidden-glacier-rift/cairn/narration"
         }
       ],
+      "lineCount": 52,
+      "guessedLines": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -4652,6 +4828,7 @@
           "address": "riftlight-glacier-survival/note_try/narration"
         }
       ],
+      "lineCount": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -4680,6 +4857,7 @@
         "voice": "Charon"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -4704,6 +4882,7 @@
         "voice": "Achird"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -4738,6 +4917,7 @@
           "address": "riftlight-whale-road/whales/narration"
         }
       ],
+      "lineCount": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -4762,6 +4942,7 @@
         "voice": "Iapetus"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -4785,6 +4966,7 @@
           "address": "gemfall-01/scene_three_rumours/narration"
         }
       ],
+      "lineCount": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -4803,6 +4985,7 @@
         "voice": "Sadachbia"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -4828,6 +5011,7 @@
           "address": "gemfall-05a/scene_brass_south/narration"
         }
       ],
+      "lineCount": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -4848,6 +5032,8 @@
         "voice": "Charon"
       },
       "lines": [],
+      "lineCount": 5,
+      "guessedLines": 5,
       "speaks": true,
       "status": "provisional"
     },
@@ -4866,6 +5052,7 @@
         "voice": "Pulcherrima"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -4889,6 +5076,7 @@
           "address": "gemfall-03c/choice_tolls/narration"
         }
       ],
+      "lineCount": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -4907,6 +5095,7 @@
         "voice": "Orus"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": false,
       "status": "provisional"
     },
@@ -4936,6 +5125,8 @@
           "address": "gemfall-04a/rest_waystation_with_escort/narration"
         }
       ],
+      "lineCount": 7,
+      "guessedLines": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -4954,6 +5145,8 @@
         "voice": "Kore"
       },
       "lines": [],
+      "lineCount": 3,
+      "guessedLines": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -4980,6 +5173,7 @@
           "address": "gemfall-06/scene_moths/narration"
         }
       ],
+      "lineCount": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -4998,6 +5192,7 @@
         "voice": "Achird"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -5021,6 +5216,7 @@
           "address": "gemfall-04b/scene_attendance/narration"
         }
       ],
+      "lineCount": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -5039,6 +5235,7 @@
         "voice": "Achird"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": false,
       "status": "provisional"
     },
@@ -5072,6 +5269,8 @@
           "address": "gemfall-04c/scene_bell_courier_ring_back/narration"
         }
       ],
+      "lineCount": 12,
+      "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -5090,6 +5289,7 @@
         "voice": "Sadachbia"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -5117,6 +5317,7 @@
           "address": "gemfall-05a/scene_soup_line_fix_barrow/narration"
         }
       ],
+      "lineCount": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -5135,6 +5336,7 @@
         "voice": "Sadachbia"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": false,
       "status": "provisional"
     },
@@ -5168,6 +5370,8 @@
           "address": "gemfall-05b/scene_pile_visit_carry/narration"
         }
       ],
+      "lineCount": 6,
+      "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -5197,6 +5401,7 @@
           "address": "gemfall-05c/scene_morning_bells/narration"
         }
       ],
+      "lineCount": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -5215,6 +5420,7 @@
         "voice": "Schedar"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -5238,6 +5444,7 @@
           "address": "gemfall-06/scene_wolves/narration"
         }
       ],
+      "lineCount": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -5256,6 +5463,7 @@
         "voice": "Algieba"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -5279,6 +5487,7 @@
           "address": "gemfall-06/scene_claim_boulder/narration"
         }
       ],
+      "lineCount": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -5302,6 +5511,7 @@
           "address": "gemfall-06/scene_claim_boulder/narration"
         }
       ],
+      "lineCount": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -5321,6 +5531,8 @@
         "voice": "Zubenelgenubi"
       },
       "lines": [],
+      "lineCount": 28,
+      "guessedLines": 28,
       "speaks": true,
       "status": "provisional"
     },
@@ -5339,6 +5551,7 @@
         "voice": "Iapetus"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -5366,6 +5579,7 @@
           "address": "gemfall-07l/interaction_choir_warmup/onSuccess/narration"
         }
       ],
+      "lineCount": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -5384,6 +5598,7 @@
         "voice": "Alnilam"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -5402,6 +5617,7 @@
         "voice": "Iapetus"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": false,
       "status": "provisional"
     },
@@ -5427,6 +5643,7 @@
           "address": "gemfall-08/scene_wardens_come/narration"
         }
       ],
+      "lineCount": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -5452,6 +5669,7 @@
           "address": "riftlight-ashspan-bridge/board_wet/narration"
         }
       ],
+      "lineCount": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -5485,6 +5703,7 @@
           "address": "riftlight-ashspan-bridge/duck_plan/narration"
         }
       ],
+      "lineCount": 9,
       "speaks": true,
       "status": "provisional"
     },
@@ -5518,6 +5737,7 @@
           "address": "riftlight-ashspan-bridge/planks_laid/narration"
         }
       ],
+      "lineCount": 13,
       "speaks": true,
       "status": "provisional"
     },
@@ -5536,6 +5756,7 @@
         "voice": "Rasalgethi"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -5563,6 +5784,8 @@
           "address": "riftlight-ashspan-bridge/academy/variants/0"
         }
       ],
+      "lineCount": 5,
+      "guessedLines": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -5597,6 +5820,7 @@
           "address": "riftlight-bone-yard/test/narration"
         }
       ],
+      "lineCount": 17,
       "speaks": true,
       "status": "provisional"
     },
@@ -5631,6 +5855,8 @@
           "address": "riftlight-boundary-stone-bank/sight_plan/narration"
         }
       ],
+      "lineCount": 55,
+      "guessedLines": 12,
       "speaks": true,
       "status": "provisional"
     },
@@ -5649,6 +5875,7 @@
         "voice": "Zubenelgenubi"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -5682,6 +5909,7 @@
           "address": "riftlight-cairnstep-pass/tea_share/narration"
         }
       ],
+      "lineCount": 12,
       "speaks": true,
       "status": "provisional"
     },
@@ -5715,6 +5943,8 @@
           "address": "riftlight-exchange-rift/awning_plan/narration"
         }
       ],
+      "lineCount": 7,
+      "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -5748,6 +5978,8 @@
           "address": "riftlight-exchange-rift/quay_rest/narration"
         }
       ],
+      "lineCount": 16,
+      "guessedLines": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -5777,6 +6009,7 @@
           "address": "riftlight-exchange-rift/rookery_lesson/narration"
         }
       ],
+      "lineCount": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -5802,6 +6035,7 @@
           "address": "riftlight-exchange-rift/crates_slid/narration"
         }
       ],
+      "lineCount": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -5831,6 +6065,8 @@
           "address": "riftlight-hidden-glacier-rift/search/narration"
         }
       ],
+      "lineCount": 2,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -5849,6 +6085,7 @@
         "voice": "Fenrir"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -5878,6 +6115,7 @@
           "address": "riftlight-finale/help_him/narration"
         }
       ],
+      "lineCount": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -5897,6 +6135,7 @@
         "voice": "Algenib"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": false,
       "status": "provisional"
     },
@@ -5930,6 +6169,7 @@
           "address": "riftlight-glacier-survival/conservatory/variants/0"
         }
       ],
+      "lineCount": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -5948,6 +6188,7 @@
         "voice": "Iapetus"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -5966,6 +6207,7 @@
         "voice": "Zubenelgenubi"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -5984,6 +6226,7 @@
         "voice": "Algenib"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -6002,6 +6245,7 @@
         "voice": "Leda"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": false,
       "status": "provisional"
     },
@@ -6020,6 +6264,7 @@
         "voice": "Pulcherrima"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -6053,6 +6298,7 @@
           "address": "riftlight-reading-room/second_view/narration"
         }
       ],
+      "lineCount": 6,
       "speaks": true,
       "status": "provisional"
     },
@@ -6071,6 +6317,7 @@
         "voice": "Kore"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -6094,6 +6341,7 @@
           "address": "riftlight-reading-room/teach_back/narration"
         }
       ],
+      "lineCount": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -6128,6 +6376,8 @@
           "address": "riftlight-saltrot-arrival/poles/narration"
         }
       ],
+      "lineCount": 50,
+      "guessedLines": 8,
       "speaks": true,
       "status": "provisional"
     },
@@ -6157,6 +6407,7 @@
           "address": "riftlight-saltrot-arrival/traveler_done/narration"
         }
       ],
+      "lineCount": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -6175,6 +6426,7 @@
         "voice": "Schedar"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -6209,6 +6461,8 @@
           "address": "riftlight-squall-temple/messages/narration"
         }
       ],
+      "lineCount": 38,
+      "guessedLines": 6,
       "speaks": true,
       "status": "provisional"
     },
@@ -6238,6 +6492,7 @@
           "address": "riftlight-sky-islands-arrival/walker_safe/narration"
         }
       ],
+      "lineCount": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -6267,6 +6522,7 @@
           "address": "riftlight-sky-islands-arrival/route_flags/narration"
         }
       ],
+      "lineCount": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -6300,6 +6556,7 @@
           "address": "riftlight-sky-islands-arrival/dojo/narration"
         }
       ],
+      "lineCount": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -6318,6 +6575,7 @@
         "voice": "Orus"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -6336,6 +6594,7 @@
         "voice": "Zubenelgenubi"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -6359,6 +6618,7 @@
           "address": "riftlight-the-island-due-back/letters/narration"
         }
       ],
+      "lineCount": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -6377,6 +6637,7 @@
         "voice": "Orus"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -6395,6 +6656,7 @@
         "voice": "Zubenelgenubi"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -6413,6 +6675,7 @@
         "voice": "Algieba"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": false,
       "status": "provisional"
     },
@@ -6444,6 +6707,8 @@
           "address": "riftlight-wyrm-nest/bed/narration"
         }
       ],
+      "lineCount": 7,
+      "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -6462,6 +6727,7 @@
         "voice": "Algieba"
       },
       "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     }

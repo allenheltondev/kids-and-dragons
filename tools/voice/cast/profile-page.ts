@@ -7,6 +7,7 @@
  * and an edit to the canon to the chapter or canon file it came from.
  */
 
+import { MODE_CSS, MODE_HEADER_HTML, MODE_SCRIPT } from "./mode.ts";
 import type { castPageData } from "./routes.ts";
 import type { CastLive } from "./page.ts";
 
@@ -56,14 +57,21 @@ kbd { font: 11px ui-monospace, monospace; border: 1px solid var(--line); border-
 button.accept kbd { color: #fff; border-color: rgba(255,255,255,.6); }
 label.grow { flex: 1 1 260px; }
 label.grow input { flex: 1; }
-main { max-width: 1200px; margin: 0 auto; padding: 16px 16px 200px; display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: 16px; align-items: start; }
+main { max-width: 1200px; margin: 0 auto; padding: 16px; display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: 16px; align-items: start; }
 @media (max-width: 820px) { main { grid-template-columns: minmax(0, 1fr); } }
 .panel { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: grid; gap: 10px; min-width: 0; }
 .panel h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0; }
-.portrait { position: sticky; top: 120px; }
-@media (max-height: 940px) { .portrait { position: static; } }
-@media (max-width: 820px) { .portrait { position: static; } .stage { max-width: 260px; width: 100%; justify-self: center; } header { position: static; } }
-.stage { aspect-ratio: 1; border-radius: 10px; background: radial-gradient(circle at 50% 40%, var(--card), var(--stage)); display: grid; place-items: center; overflow: hidden; }
+/* The face and the player stay on screen while the panels beside them scroll: editing a field and then playing a line
+   never means scrolling back up. On a short screen the picture gives way first, and the panel scrolls inside itself
+   if it still does not fit. --head is the header's height, measured by the page. */
+/* The left column runs the full height of the page, so the sticky face is held in view right to the last panel; the room
+   under the last panel, for the decision bar, is the right column's own. */
+.leftcol { align-self: stretch; min-width: 0; }
+.rightcol { display: grid; gap: 16px; min-width: 0; padding-bottom: 200px; }
+.portrait { position: sticky; top: calc(var(--head, 120px) + 12px); max-height: calc(100vh - var(--head, 120px) - 110px); overflow-y: auto; grid-auto-rows: max-content; }
+@media (max-width: 820px) { .portrait { position: static; max-height: none; overflow: visible; } .stage { max-width: 260px; width: 100%; justify-self: center; } header { position: static; } }
+/* The picture takes what the screen has left after the name and the player (about 490px), between a thumbnail and the full column. */
+.stage { max-width: clamp(110px, calc(100vh - var(--head, 120px) - 490px), 310px); justify-self: center; width: 100%; aspect-ratio: 1; border-radius: 10px; background: radial-gradient(circle at 50% 40%, var(--card), var(--stage)); display: grid; place-items: center; overflow: hidden; }
 .stage img, .stage canvas { width: 100%; height: 100%; object-fit: contain; }
 .stage .initial { font-size: 120px; font-weight: 700; color: var(--line); }
 .name { font-size: 24px; font-weight: 700; margin: 0; line-height: 1.2; }
@@ -112,9 +120,20 @@ main { max-width: 1200px; margin: 0 auto; padding: 16px 16px 200px; display: gri
 .progress { height: 6px; background: var(--line); border-radius: 999px; overflow: hidden; }
 .progress > span { display: block; height: 100%; width: 0; background: var(--accent); }
 .listen .time { font: 12px ui-monospace, monospace; color: var(--muted); display: flex; justify-content: space-between; }
+.field { display: grid; gap: 4px; }
+.field > span { font-size: 13px; color: var(--muted); }
+.field textarea { width: 100%; min-height: 54px; resize: vertical; }
+.chips.accents { align-items: center; }
+.chip.action { font: 13px system-ui, sans-serif; cursor: pointer; padding: 2px 9px; background: var(--card); color: var(--ink); }
+.chip.action:hover { border-color: var(--accent); }
+.chip.action[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+.places { margin: 0; padding-left: 1.3em; }
+.realmmap { position: relative; margin-top: 8px; max-width: 380px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--stage); }
+.realmmap img { display: block; width: 100%; height: auto; }
+.pin { position: absolute; transform: translate(-50%, -50%); width: 20px; height: 20px; border-radius: 999px; background: var(--accent); color: #fff; font: 700 12px/20px system-ui, sans-serif; text-align: center; box-shadow: 0 0 0 2px #fff, 0 1px 5px rgba(0,0,0,.55); }
 .done { grid-column: 1 / -1; text-align: center; padding: 60px 16px; }
 label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 13px; color: var(--muted); }
-</style>
+${MODE_CSS}</style>
 </head>
 <body>
 <header>
@@ -132,8 +151,7 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
     <input id="jump" list="everyone" placeholder="Jump to…" aria-label="Jump to a character">
     <datalist id="everyone"></datalist>
     <label class="inline"><input type="checkbox" id="waitingOnly"> only those still waiting</label>
-    <select id="model" aria-label="Gemini model"></select>
-    <input id="key" type="password" placeholder="Gemini API key" aria-label="Gemini API key" autocomplete="off" spellcheck="false">
+    ${MODE_HEADER_HTML}
     <label class="inline"><input type="checkbox" id="autoplay"> play the first line on arrival</label>
     <span class="hint" id="budget"></span>
   </div>
@@ -145,10 +163,13 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
 <script>
 (() => {
   const { data, live } = JSON.parse(document.getElementById("boot").textContent);
+  ${MODE_SCRIPT}
   const STORE = "kad.voice-cast-profile";
   const KEYS = "kad.voice-bakeoff.keys"; // shared with the bake-off and cast pages: one key, pasted once
   const load = (store, key) => { try { return JSON.parse(store.getItem(key) || "null"); } catch { return null; } };
-  const prefs = Object.assign({ model: "gemini-3.8-flash-tts", autoplay: false, waitingOnly: true }, load(localStorage, STORE) || {});
+  const prefs = KadMode.normalize(Object.assign({ autoplay: false, waitingOnly: true }, load(localStorage, STORE) || {}), data);
+  const provider = () => KadMode.providerOf(prefs);
+  const modelId = () => KadMode.model(prefs);
   const savePrefs = () => { try { localStorage.setItem(STORE, JSON.stringify(prefs)); } catch {} };
   const keys = load(sessionStorage, KEYS) || load(localStorage, KEYS) || { elevenlabs: "", gemini: "" };
   const saveKeys = () => { try { sessionStorage.setItem(KEYS, JSON.stringify(keys)); if (localStorage.getItem(KEYS)) localStorage.setItem(KEYS, JSON.stringify(keys)); } catch {} };
@@ -172,7 +193,7 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
   async function call(route, body) {
     const response = await fetch(route, {
       method: "POST",
-      headers: { "content-type": "application/json", "x-bakeoff-token": live.token, "x-gemini-key": keys.gemini || "" },
+      headers: Object.assign({ "content-type": "application/json", "x-bakeoff-token": live.token }, KadMode.keyHeaders(keys)),
       body: JSON.stringify(body || {}),
     });
     const json = await response.json().catch(() => ({ error: "HTTP " + response.status }));
@@ -184,8 +205,25 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
   const FROM = { canon: "from canon's pronouns", narration: "from how the narration talks about them", notes: "guessed from their notes", person: "set by you", none: "nothing in the content says" };
   const FIELDS = { short_description: "Who they are", visual_identity: "How they look", speech_register: "How they talk", pronouns: "Pronouns" };
   const voiceInfo = Object.fromEntries(data.voices.map((v) => [v.id, v]));
-  const voiceLabel = (v) => v.id + " · " + v.about + (v.gender ? " · " + (v.gender === "f" ? "woman" : "man") : "");
-  const isWaiting = (id) => data.speakers[id].status !== "approved";
+  // Whether a character is still waiting for a voice to be approved, in the mode the page is in.
+  const isWaiting = (id) => !KadMode.approved(data.speakers[id], provider());
+  // The account's own ElevenLabs voices, fetched once a key is in: Gemini's thirty are on the page already.
+  let elevenVoices = [];
+  let elevenLoaded = false;
+  const note = (text) => { document.getElementById("modeNote").textContent = text || ""; };
+  async function ensureElevenVoices(again) {
+    if (provider() !== "elevenlabs" || (elevenLoaded && !again)) return;
+    note("Loading your ElevenLabs voices…");
+    try {
+      const json = await call("/api/voices", { provider: "elevenlabs" });
+      elevenVoices = json.voices;
+      elevenLoaded = true;
+      note(elevenVoices.length ? "" : "This ElevenLabs account has no voices to pick from.");
+    } catch (error) {
+      elevenVoices = [];
+      note("Could not list ElevenLabs voices: " + error.message);
+    }
+  }
   const waitingCount = () => data.order.filter(isWaiting).length;
 
   let current = null;
@@ -196,15 +234,23 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
   let told = null;
   let said = { text: "", cell: null };
 
+  // The sticky face and player sit just under the header, whatever height its rows wrap to.
+  const headerEl = document.querySelector("header");
+  const sizeHead = () => document.documentElement.style.setProperty("--head", headerEl.offsetHeight + "px");
+  sizeHead();
+  if (window.ResizeObserver) new ResizeObserver(sizeHead).observe(headerEl);
+
   // ---- Header ----
-  const modelSel = document.getElementById("model");
-  for (const m of data.models) modelSel.append(el("option", { value: m.model }, m.label));
-  modelSel.value = prefs.model;
-  modelSel.addEventListener("change", () => { prefs.model = modelSel.value; savePrefs(); refreshState(); loadTold(); });
-  const keyInput = document.getElementById("key");
-  keyInput.value = keys.gemini || "";
-  if (live.envKeys.gemini) keyInput.placeholder = "Using the Gemini key from your shell";
-  keyInput.addEventListener("change", () => { keys.gemini = keyInput.value.trim(); saveKeys(); });
+  KadMode.mountSwitch({
+    prefs, data, keys, live, savePrefs, saveKeys,
+    // A new mode or model or key: the voices on offer, who is still waiting, and what is rendered all change.
+    onChange: async (keyChanged) => {
+      note("");
+      await ensureElevenVoices(keyChanged);
+      await refreshState();
+      if (current) { draw(); loadTold(); } else if (data.order.some(isWaiting)) open(data.order.find(isWaiting)); else drawDone();
+    },
+  });
   const autoplay = document.getElementById("autoplay");
   autoplay.checked = !!prefs.autoplay;
   autoplay.addEventListener("change", () => { prefs.autoplay = autoplay.checked; savePrefs(); });
@@ -300,7 +346,7 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
     const box = document.getElementById("listen");
     if (!box || !current) return;
     const lines = data.auditions[current] || [];
-    if (!lines.length) return;
+    if (!lines.length || !KadMode.voiceId(data.speakers[current], provider())) return;
     const line = lines[picked];
     const on = player && player.row.dataset.line === String(picked) ? player : null;
     box.querySelector(".count").textContent = "Line " + (picked + 1) + " of " + lines.length;
@@ -336,7 +382,7 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
       button.disabled = true;
       button.textContent = "Rendering…";
       try {
-        const json = await call("/api/cast/render", { id, line: i, model: prefs.model, take: takeOf[id] || 1 });
+        const json = await call("/api/cast/render", { id, line: i, provider: provider(), model: modelId(), take: takeOf[id] || 1 });
         (cells[id] ||= [])[i] = json.cell;
         spent = json.spent; cap = json.cap;
       } catch (error) { toast(error.message); }
@@ -357,7 +403,7 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
     button.disabled = true;
     button.textContent = "Rendering…";
     try {
-      const json = await call("/api/cast/say", { id, text, model: prefs.model, render: true });
+      const json = await call("/api/cast/say", { id, text, provider: provider(), model: modelId(), render: true });
       said = { text, cell: json.cell };
       spent = json.spent; cap = json.cap;
     } catch (error) { toast(error.message); }
@@ -372,7 +418,7 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
   // ---- Saving ----
   async function save(id, patch) {
     try {
-      const json = await call("/api/cast/save", Object.assign({ id }, patch));
+      const json = await call("/api/cast/save", Object.assign({ id, provider: provider() }, patch));
       data.speakers[id] = json.entry;
       clashes = json.clashes;
       if (json.moved) toast("Moved to " + json.moved.to + " to fit (was " + json.moved.from + ")");
@@ -385,7 +431,7 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
 
   async function editCanon(id, patch) {
     try {
-      const json = await call("/api/cast/canon", Object.assign({ id }, patch));
+      const json = await call("/api/cast/canon", Object.assign({ id, provider: provider() }, patch));
       data.speakers[id] = json.entry;
       data.profiles[id] = json.profile;
       data.auditions[id] = json.auditions;
@@ -399,7 +445,7 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
 
   async function decide(id, decision, notes) {
     try {
-      const json = await call("/api/cast/decide", { id, decision, notes, model: prefs.model });
+      const json = await call("/api/cast/decide", { id, decision, notes, provider: provider(), model: modelId() });
       data.speakers[id] = json.entry;
       clashes = json.clashes;
       return true;
@@ -407,7 +453,7 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
   }
 
   async function accept() {
-    if (!current || !isWaiting(current)) return;
+    if (!current || !isWaiting(current) || !KadMode.voiceId(data.speakers[current], provider())) return;
     const id = current;
     const notes = document.getElementById("decisionNotes").value;
     if (!(await decide(id, "approved", notes))) return;
@@ -417,7 +463,7 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
     let i = data.order.indexOf(id);
     let next = null;
     for (let tries = 0; tries < n; tries++) { i = (i + 1) % n; if (isWaiting(data.order[i])) { next = data.order[i]; break; } }
-    toast("Approved " + name + " on " + data.speakers[id].gemini.voice + ". " + waitingCount() + " left.");
+    toast("Approved " + name + " on " + KadMode.voiceName(data.speakers[id], provider()) + ". " + waitingCount() + " left.");
     if (next) open(next); else drawDone();
   }
 
@@ -425,13 +471,14 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
     const id = current;
     const notes = document.getElementById("decisionNotes").value.trim();
     if (!notes) return;
-    const from = data.speakers[id].gemini.voice;
+    const from = KadMode.voiceName(data.speakers[id], provider());
     if (!(await decide(id, "rejected", notes))) return;
-    toast("Turned down " + from + ". Now trying " + data.speakers[id].gemini.voice + ".");
+    // Gemini moves on to the next best voice at once; ElevenLabs has none to suggest, so the pick is cleared for you to make another.
+    toast(provider() === "gemini" ? "Turned down " + from + ". Now trying " + data.speakers[id].gemini.voice + "." : "Turned down " + from + ". Pick another voice for them.");
     await refreshState();
     draw();
     loadTold();
-    if (prefs.autoplay) autoPlay();
+    if (prefs.autoplay && KadMode.voiceId(data.speakers[id], provider())) autoPlay();
   }
 
   // ---- Sections ----
@@ -492,21 +539,26 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
       stage.append(img);
     }
     else stage.append(el("span", { class: "initial", "aria-hidden": "true" }, entry.name.replace(/^the\\s+/i, "").charAt(0).toUpperCase()));
-    const status = entry.status === "approved" ? el("span", { class: "badge ok" }, "approved") : entry.history && entry.history.length && entry.history[entry.history.length - 1].decision === "rejected" ? el("span", { class: "badge bad" }, "rejected, try again") : el("span", { class: "badge" }, "waiting");
+    const status = KadMode.approved(entry, provider()) ? el("span", { class: "badge ok" }, "approved") : KadMode.lastRejected(entry, provider()) ? el("span", { class: "badge bad" }, "rejected, try again") : el("span", { class: "badge" }, "waiting");
     return el("section", { class: "panel portrait" },
       stage,
       profile.image ? null : el("div", { class: "hint" }, "No painting of them yet."),
       profile.imageIsGeneric ? el("div", { class: "hint" }, "Drawn as any " + (profile.facts.basis || "one of their people") + ": they have no figure of their own.") : null,
       el("p", { class: "name" }, entry.name, " ", status),
-      el("div", { class: "hint" }, entry.kind + " · " + id),
+      el("div", { class: "hint" }, entry.kind + " · " + id + " · " + linesLabel(entry)),
       listenBox(id, entry));
   }
+
+  const linesLabel = (entry) => { const n = entry.lineCount || 0; return n + " line" + (n === 1 ? "" : "s") + " to speak" + (entry.guessedLines ? ", " + entry.guessedLines + " guessed" : ""); };
 
   // The player under the picture: the voice, one line at a time, and a big button to hear it.
   function listenBox(id, entry) {
     const lines = data.auditions[id] || [];
-    const info = voiceInfo[entry.gemini.voice];
-    const voice = el("div", { class: "voice" }, "Voice: ", el("strong", {}, entry.gemini.voice), info ? " · " + info.about + (info.gender ? ", " + (info.gender === "f" ? "woman" : "man") : "") : "");
+    const mode = provider();
+    const info = mode === "gemini" ? voiceInfo[entry.gemini.voice] : null;
+    const name = KadMode.voiceName(entry, mode);
+    const voice = el("div", { class: "voice" }, KadMode.NAMES[mode] + " voice: ", el("strong", {}, name || "none yet"), info ? " · " + info.about + (info.gender ? ", " + (info.gender === "f" ? "woman" : "man") : "") : "");
+    if (lines.length && !name) return el("div", { class: "listen", id: "listen" }, voice, el("div", { class: "hint" }, "Pick an ElevenLabs voice for them under Voice and model to hear them."));
     if (!lines.length) return el("div", { class: "listen", id: "listen" }, voice, el("div", { class: "hint" }, "They don't speak, so there's nothing to hear."));
     const prev = el("button", { type: "button", "aria-label": "Previous line", title: "Previous line ([)" }, "‹");
     const next = el("button", { type: "button", "aria-label": "Next line", title: "Next line (])" }, "›");
@@ -553,6 +605,25 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
       el("div", { class: "hint", id: "listenNote" }));
   }
 
+  // Where their people live: the places in words, and the realm's map with each one marked by its number.
+  function homelandView(homeland) {
+    const list = el("ol", { class: "places" }, homeland.places.map((place) => el("li", {}, place.title, place.label ? el("span", { class: "hint" }, " (the map calls it " + place.label + ")") : null)));
+    const marked = homeland.places.map((place, i) => ({ place, n: i + 1 })).filter((item) => item.place.x !== null);
+    const map = marked.length
+      ? el("div", { class: "realmmap" },
+          el("img", { src: "/art/world/realm_of_red_sky.webp", alt: "The realm's map, with " + marked.map((item) => item.place.title).join(" and ") + " marked", loading: "lazy" }),
+          marked.map((item) => el("span", { class: "pin", style: "left:" + item.place.x / 10 + "%;top:" + item.place.y / 10 + "%", title: item.place.title }, String(item.n))))
+      : null;
+    return el("div", {}, list, map);
+  }
+
+  // A plain field, saved as you leave it, like the accent: no Edit button, no second step.
+  function field(label, value, placeholder, onSave) {
+    const area = el("textarea", { placeholder, "aria-label": label, rows: "2" }, value);
+    area.addEventListener("change", () => onSave(area.value));
+    return el("label", { class: "field" }, el("span", {}, label), area);
+  }
+
   function about(id, entry, profile) {
     const gender = el("select", { "aria-label": "Gender" }, Object.entries(GENDER).map(([value, label]) => el("option", { value }, label)));
     gender.value = entry.gender || "unknown";
@@ -565,10 +636,11 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
       profile.facts.basis || (profile.canon && profile.canon.people) ? ["People", profile.facts.basis || profile.canon.people] : null,
       profile.facts.heightCm ? ["Height", profile.facts.heightCm + " cm" + (profile.facts.stance && profile.facts.stance !== "standing" ? ", " + profile.facts.stance : "")] : null,
       profile.canon && profile.canon.home ? ["Home", profile.canon.home] : null,
+      profile.homeland ? [profile.homeland.source === "people" ? "Their people live" : "Lives", homelandView(profile.homeland)] : null,
       profile.canon && profile.canon.role ? ["Role", profile.canon.role] : null,
       profile.facts.look ? ["Looks like", profile.facts.look] : null,
       entry.aliases.length ? ["Also called", entry.aliases.join(", ")] : null,
-      ["Speaks", entry.speaks ? (entry.lines.length ? "yes, " + entry.lines.length + " line" + (entry.lines.length === 1 ? "" : "s") + " found in the game" : "yes, but no line of theirs found yet") : "no: they don't talk"],
+      ["Speaks", entry.speaks ? ((entry.lineCount || 0) > 0 ? "yes, " + entry.lineCount + " line" + (entry.lineCount === 1 ? "" : "s") + " in the game" + (entry.guessedLines ? " (" + entry.guessedLines + " guessed, from being the only one in the scene)" : "") + (entry.lines.length ? ", " + entry.lines.length + " to audition" : "") : "yes, but no line of theirs found yet") : "no: they don't talk"],
       ["Chapters", el("div", { class: "chips" }, entry.chapters.length ? entry.chapters.map((c) => el("span", { class: "chip" }, c)) : el("span", { class: "hint" }, "every one"))],
     ].filter(Boolean);
     return el("section", { class: "panel" }, el("h2", {}, "About them"), el("dl", { class: "facts" }, facts.flatMap(([k, v]) => [el("dt", {}, k), el("dd", {}, v)])));
@@ -590,33 +662,83 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
       el("div", { class: "hint" }, "Edits are written to the file shown, and the sheet is rebuilt so the voice model hears the new words. Your decisions are kept."));
   }
 
+  // One voice for the rest of their people, where it puts nobody on a voice they share a chapter with. Asks first, with the plan.
+  async function sharePeople(id) {
+    const mode = provider();
+    try {
+      const plan = await call("/api/cast/people", { id, provider: mode });
+      const names = (ids) => ids.map((other) => data.speakers[other].name).join(", ");
+      if (!plan.applied.length) {
+        toast(plan.already.length && !plan.skipped.length ? "They all have it already." : "None of the rest of their people can have it: " + plan.skipped.map((item) => item.why).join("; "));
+        return;
+      }
+      const kind = (plan.people || "their people").replace(/_/g, " ");
+      const sentence = "Give " + KadMode.voiceName(data.speakers[id], mode) + " to " + plan.applied.length + " more of the " + kind + ": " + names(plan.applied) + "."
+        + (plan.skipped.length ? "\\n\\nLeft as they are (" + plan.skipped.length + "):\\n" + plan.skipped.map((item) => "• " + item.why).join("\\n") : "")
+        + "\\n\\nThey stay unapproved, so each is still yours to hear and judge.";
+      if (!confirm(sentence)) return;
+      const done = await call("/api/cast/people", { id, provider: mode, apply: true });
+      for (const [other, changed] of Object.entries(done.entries)) data.speakers[other] = changed;
+      clashes = done.clashes;
+      toast("Gave it to " + done.applied.length + " more of the " + kind + ".");
+      await refreshState();
+      draw();
+    } catch (error) { toast(error.message); }
+  }
+
   function modelPanel(id, entry) {
     const sheetOwned = entry.kind === "narrator" || entry.kind === "party";
-    const voice = el("select", { "aria-label": "Voice" }, data.voices.map((v) => el("option", { value: v.id }, voiceLabel(v))));
-    voice.value = entry.gemini.voice;
-    voice.addEventListener("change", async () => { await save(id, { voice: voice.value }); draw(); loadTold(); if (prefs.autoplay) autoPlay(); });
-    const others = Object.entries(data.speakers).filter(([other, e]) => other !== id && e.gemini.voice === entry.gemini.voice).length;
-    const accent = el("input", { value: entry.accent || "", placeholder: data.accent, "aria-label": "Accent" });
+    const mode = provider();
+    const mine = KadMode.voiceId(entry, mode);
+    const pick = async (value) => { await save(id, KadMode.pickBody(mode, id, value, elevenVoices)); draw(); loadTold(); if (prefs.autoplay && value) autoPlay(); };
+    const voiceLabel = KadMode.NAMES[mode] + " voice";
+    let voice;
+    if (mode === "elevenlabs") {
+      // An account can have hundreds: search them, and hear each one's own sample before spending anything on an audition.
+      voice = KadMode.voicePicker({ options: KadMode.voiceOptions(mode, entry, data.voices, elevenVoices), value: mine, label: voiceLabel, onPick: pick });
+    } else {
+      voice = el("select", { "aria-label": voiceLabel }, KadMode.voiceOptions(mode, entry, data.voices, elevenVoices).map((o) => el("option", { value: o.value }, o.label)));
+      voice.value = mine;
+      voice.addEventListener("change", () => pick(voice.value));
+    }
+    const others = mine ? Object.entries(data.speakers).filter(([other, e]) => other !== id && KadMode.voiceId(e, mode) === mine).length : 0;
+    // The rest of their people: the others who are one of the same kind (a yeti, a griffin), the narrator and party not among them.
+    const kindKey = data.profiles[id] && data.profiles[id].people;
+    const kin = kindKey ? Object.keys(data.speakers).filter((other) => other !== id && data.profiles[other] && data.profiles[other].people === kindKey && data.speakers[other].kind !== "narrator" && data.speakers[other].kind !== "party").length : 0;
+    const share = kin ? el("button", { type: "button", disabled: !mine, title: mine ? "Shows who would get it first, and asks" : "Pick a voice for them first" }, "Use this voice for the other " + kin + " " + kindKey.replace(/_/g, " ") + (kin === 1 ? "" : "s")) : null;
+    if (share) share.addEventListener("click", () => sharePeople(id));
+    const accent = el("input", { value: entry.accent || "", placeholder: data.accent, "aria-label": "Accent", list: "accent-list" });
     accent.addEventListener("change", async () => { await save(id, { accent: accent.value }); draw(); loadTold(); });
-    const info = voiceInfo[entry.gemini.voice];
+    const suggestions = el("datalist", { id: "accent-list" }, data.accents.map((a) => el("option", { value: a.label, label: a.group + " · " + a.note })));
+    // Ideas from where their people live, one click to try; a click on the one in use puts the sheet's own back.
+    const ideas = (data.profiles[id] && data.profiles[id].accentIdeas) || [];
+    const tryAccent = async (label) => { await save(id, { accent: entry.accent === label ? "" : label }); draw(); loadTold(); };
+    const chips = ideas.length
+      ? el("div", { class: "chips accents" }, el("span", { class: "hint" }, "Ideas from where their people live:"), ideas.map((idea) => {
+          const chip = el("button", { type: "button", class: "chip action", "aria-pressed": String(entry.accent === idea.label), title: idea.note + ". " + idea.because.join("; ") }, idea.label);
+          chip.addEventListener("click", () => tryAccent(idea.label));
+          return chip;
+        }))
+      : el("div", { class: "hint" }, "Nothing on the map to suggest from. Start typing for the accents on offer, or write your own.");
+    const info = mode === "gemini" ? voiceInfo[entry.gemini.voice] : null;
     const mismatch = info && info.gender && entry.gender && (entry.gender === "female" || entry.gender === "male") && (info.gender === "f") !== (entry.gender === "female");
     return el("section", { class: "panel" },
       el("h2", {}, "Voice and model"),
-      el("div", { class: "row" }, voice, el("span", { class: "hint" }, others ? "also " + others + " other" + (others === 1 ? "" : "s") + " in other chapters" : "only them")),
+      el("div", { class: "row" }, voice, el("span", { class: "hint" }, !mine ? "no " + KadMode.NAMES[mode] + " voice yet" : others ? "also " + others + " other" + (others === 1 ? "" : "s") + " in other chapters" : "only them")),
+      share ? el("div", { class: "row" }, share, el("span", { class: "hint" }, "where it puts nobody on a voice they share a chapter with")) : null,
       mismatch ? el("div", { class: "clash" }, "This voice reads as a " + (info.gender === "f" ? "woman's" : "man's") + ", and they're marked " + entry.gender + ".") : null,
       (clashes[id] || []).map((clash) => el("div", { class: "clash" }, "Same voice as " + clash.with.map((other) => (data.speakers[other] || { name: other }).name).join(", ") + " in " + clash.chapter)),
-      el("label", { class: "inline grow" }, "Accent", accent),
-      sheetOwned ? editable("How they sound", entry.who, "on the sheet: the " + entry.name.toLowerCase() + " isn't in any chapter's canon", async (text) => {
-        const json = await save(id, { who: text });
-        if (json) loadTold();
-        return !!json;
-      }, null, "Save") : null,
-      editable("Your direction for the model", entry.direction || "", "added after who they are, kept on every rebuild", async (text) => {
-        const json = await save(id, { direction: text });
-        if (json) loadTold();
-        return !!json;
-      }, el("div", { class: "hint" }, "Plain words, like \u201ca touch quicker than usual\u201d or \u201cbrighter, with a smile in it\u201d. Leave it empty to remove it."), "Save", true),
-      el("div", { class: "hint" }, "What " + (told ? told.model : prefs.model) + " is told, besides the words:"),
+      el("label", { class: "inline grow" }, "Accent", accent, suggestions),
+      chips,
+      sheetOwned ? field("How they sound (on the sheet: the " + entry.name.toLowerCase() + " isn't in any chapter's canon)", entry.who, "A warm grown-up storyteller…", async (text) => {
+        if (await save(id, { who: text })) { syncListen(); loadTold(); }
+      }) : null,
+      field("Your direction for the model", entry.direction || "", "e.g. a touch quicker than usual, or brighter, with a smile in it", async (text) => {
+        if (await save(id, { direction: text })) { syncListen(); loadTold(); }
+      }),
+      el("div", { class: "hint" }, "Saved as you leave the box, and kept on every rebuild. Leave direction empty to remove it."),
+      mode === "elevenlabs" ? el("div", { class: "hint" }, "ElevenLabs is not told who they are or how they talk: it reads the words in the voice you picked, so the description, accent and direction above steer only Gemini.") : null,
+      el("div", { class: "hint" }, mode === "elevenlabs" ? "What " + (told ? told.model : modelId()) + " is sent:" : "What " + (told ? told.model : modelId()) + " is told, besides the words:"),
       el("pre", { class: "told", id: "told" }, told && told.id === id ? told.display : "…"),
       el("div", { class: "hint" }, "Changing the description or direction changes what is sent, so each line renders once more in the new words."));
   }
@@ -625,7 +747,7 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
     const lines = data.auditions[id] || [];
     const rows = lines.map((line, i) => {
       const row = el("div", { class: "line", "data-line": String(i) });
-      const button = el("button", { type: "button", class: clipOf((cells[id] || [])[i]) ? "" : "primary" }, "▶ Play");
+      const button = el("button", { type: "button", class: clipOf((cells[id] || [])[i]) ? "" : "primary", disabled: !KadMode.voiceId(entry, provider()), title: KadMode.voiceId(entry, provider()) ? "" : "Pick a voice for them first" }, "▶ Play");
       button.addEventListener("click", () => { playingAll = false; listen(i); });
       row.append(button, el("div", {},
         el("div", {}, line.text),
@@ -635,7 +757,7 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
     });
     const sayRow = el("div", { class: "line say" });
     const area = el("textarea", { placeholder: "Type anything for " + entry.name + " to say…", "aria-label": "Something for them to say" }, said.text);
-    const sayButton = el("button", { type: "button", class: "primary" }, "▶ Say it");
+    const sayButton = el("button", { type: "button", class: "primary", disabled: !KadMode.voiceId(entry, provider()), title: KadMode.voiceId(entry, provider()) ? "" : "Pick a voice for them first" }, "▶ Say it");
     sayButton.addEventListener("click", () => say(id, area.value, sayRow, sayButton));
     area.addEventListener("keydown", (event) => { if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) sayButton.click(); });
     sayRow.append(sayButton, el("div", {}, area, el("div", { class: "hint" }, "Cmd/Ctrl+Enter to say it. Rendered once, then free."), el("div", { class: "err" }, errorOf(said.cell) || "")));
@@ -646,17 +768,19 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
   }
 
   function historyPanel(entry) {
-    if (!entry.history || !entry.history.length) return null;
-    return el("section", { class: "panel" }, el("h2", {}, "History"), el("div", { class: "history" }, entry.history.map((d) =>
-      el("div", { class: d.decision }, (d.decision === "approved" ? "Approved " : "Rejected ") + d.voice + (d.notes ? ': "' + d.notes + '"' : "") + " · " + d.at.slice(0, 10)))));
+    const decisions = KadMode.history(entry, provider());
+    if (!decisions.length) return null;
+    return el("section", { class: "panel" }, el("h2", {}, KadMode.NAMES[provider()] + " history"), el("div", { class: "history" }, decisions.map((d) => el("div", { class: d.decision }, KadMode.historyLine(d)))));
   }
 
   function decideBar(id, entry) {
-    const approved = entry.status === "approved";
+    const mode = provider();
+    const mine = KadMode.voiceId(entry, mode);
+    const approved = KadMode.approved(entry, mode);
     const notes = el("textarea", { id: "decisionNotes", placeholder: approved ? "Notes for reopening" : "Why it works, or what's wrong: too old, more bounce, a woman's voice…", "aria-label": "Decision notes" });
-    const acceptButton = el("button", { type: "button", class: "accept", title: "A" }, "✓ Accept " + entry.gemini.voice + " and next ", el("kbd", {}, "A"));
+    const acceptButton = el("button", { type: "button", class: "accept", title: "A", disabled: !mine }, mine ? "✓ Accept " + KadMode.voiceName(entry, mode) + " and next " : "Pick a voice first ", el("kbd", {}, "A"));
     acceptButton.addEventListener("click", accept);
-    const rejectButton = el("button", { type: "button", class: "reject", disabled: true, title: "Say what's wrong first: it steers the next voice" }, "Reject, try another voice");
+    const rejectButton = el("button", { type: "button", class: "reject", disabled: true, hidden: !mine, title: mode === "gemini" ? "Say what's wrong first: it steers the next voice" : "Say what's wrong first: it is kept, and the voice is taken back so you can pick another" }, mode === "gemini" ? "Reject, try another voice" : "Reject, pick another voice");
     rejectButton.addEventListener("click", reject);
     notes.addEventListener("input", () => { rejectButton.disabled = notes.value.trim() === ""; });
     const reopen = el("button", { type: "button" }, "Reopen");
@@ -665,7 +789,7 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
     skip.addEventListener("click", () => { const n = data.order.length; let i = data.order.indexOf(id); for (let t = 0; t < n; t++) { i = (i + 1) % n; if (isWaiting(data.order[i])) return open(data.order[i]); } drawDone(); });
     document.getElementById("decide").replaceChildren(el("div", { class: "inner" },
       notes,
-      el("div", { class: "row" }, approved ? [el("span", { class: "badge ok" }, "Approved on " + entry.gemini.voice), reopen] : [acceptButton, rejectButton], skip)));
+      el("div", { class: "row" }, approved ? [el("span", { class: "badge ok" }, "Approved on " + KadMode.voiceName(entry, mode)), reopen] : [acceptButton, rejectButton], skip)));
   }
 
   function draw() {
@@ -675,8 +799,8 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
     const profile = data.profiles[id] || { image: null, imageIsGeneric: false, facts: {}, canon: null, voiceNotes: [] };
     document.title = entry.name + " · Cast profiles";
     document.getElementById("main").replaceChildren(
-      portrait(id, entry, profile),
-      el("div", { style: "display:grid;gap:16px;min-width:0" }, about(id, entry, profile), canonPanel(id, entry, profile), modelPanel(id, entry), hearPanel(id, entry), historyPanel(entry)));
+      el("div", { class: "leftcol" }, portrait(id, entry, profile)),
+      el("div", { class: "rightcol" }, about(id, entry, profile), canonPanel(id, entry, profile), modelPanel(id, entry), hearPanel(id, entry), historyPanel(entry)));
     decideBar(id, entry);
     drawHeader();
     syncListen();
@@ -696,8 +820,8 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
     if (!current) return;
     const id = current;
     try {
-      const json = await call("/api/cast/told", { id, model: prefs.model });
-      told = Object.assign({ id, display: json.told + "\\n\\nVoice: " + json.voice }, json);
+      const json = await call("/api/cast/told", { id, provider: provider(), model: modelId() });
+      told = Object.assign({ id, display: provider() === "elevenlabs" ? (json.voice ? "Sent as: " + json.text + "\\n\\nVoice: " + KadMode.voiceName(data.speakers[id], "elevenlabs") : "No voice picked yet.") : json.told + "\\n\\nVoice: " + json.voice }, json);
       const pre = document.getElementById("told");
       if (pre && current === id) pre.textContent = told.display;
     } catch (error) { toast(error.message); }
@@ -705,7 +829,7 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
 
   async function refreshState() {
     try {
-      const json = await call("/api/cast/state", { model: prefs.model, takes: takeOf });
+      const json = await call("/api/cast/state", { provider: provider(), model: modelId(), takes: takeOf });
       cells = json.cells;
       clashes = json.clashes;
       spent = json.spent;

@@ -2,8 +2,11 @@
 
 Every character in the game, the voice they speak with, and their own lines to hear it on. This
 is the production cast the [voice narration plan](./voice-narration-plan.md) (§2) calls for. Its
-voices are Gemini's, the provider the game is leaning toward. Everyone speaks with an American
-accent: the game is for American children.
+voices are Gemini's, the provider the game is leaning toward, and a page can also be switched to
+**ElevenLabs** to pick and audition voices from an account there (see
+[ElevenLabs mode](#elevenlabs-mode)). Everyone starts with an American accent,
+because the game is for American children, but nobody has to keep it: each character can have their own, and the
+profile page suggests some (see [Accents](#accents-and-where-their-people-live)).
 
 ```
 npm run voice:cast                  # build or refresh content/voice/cast.json from the content
@@ -31,9 +34,12 @@ One entry per speaker, keyed by id:
 | `voiceNotes` | which chapters' `voiceGuide.npcVoices` describe them, and under which key |
 | `chapters` | every chapter they appear in, so one person keeps one voice across the game |
 | `gemini.voice` | one of Gemini's 30 prebuilt voices |
+| `elevenlabs` | the voice they have on ElevenLabs, picked by ear on the cast pages: `voiceId`, its `name`, and `approved` once a person approved it. Absent until picked. Kept on every rebuild |
 | `accent` | set only to override the sheet-wide `accent` (General American) |
 | `direction` | a person's direction for the voice model, told after who they are ("a touch quicker than usual") |
-| `lines` | up to three real quotes of theirs from the narration, each with its address |
+| `lines` | up to three real quotes of theirs from the narration, each with its address: the lines to audition a voice on, never a count |
+| `lineCount` | how many lines the game gives them to speak: every quote the narration's speech tags give them, in every chapter, counted once per place it is said, plus the guesses below. The narrator's is every narration line, and the party's the "you say" lines. Refreshed on every rebuild. The pages sort by it |
+| `guessedLines` | how many of `lineCount` are a guess: a quote nobody is tagged for, in a scene where this is the only character who could be speaking. Absent when none. Never used to audition on |
 | `speaks` | false for those who only bleat or sigh |
 | `status` | `provisional` (assigned by the builder) or `approved` (chosen by a person) |
 | `history` | every approval and rejection, oldest first: the voice, the listener's notes, the model it was heard on, and when |
@@ -88,12 +94,15 @@ The first build: 207 speakers, 127 with lines from the game, no voice clashes.
 ## Profiles, one at a time: `/cast/profile`
 
 It opens on the first character still waiting, in the order the sheet is best reviewed in: the
-narrator, the party, then whoever appears in the most chapters. The header keeps count:
+narrator, the party, then whoever has the most lines to speak (`lineCount`), then the most
+chapters, so the characters that matter most are reviewed first. The header keeps count:
 **37 left** of 207, with a progress bar.
 
 Each profile has:
 
-- **The player, under their picture:**
+- **The player, under their picture,** which stays on screen while the panels beside it scroll,
+  so you can edit a field, press Play and watch their face without scrolling back up. On a short
+  screen the picture shrinks first, and the panel scrolls inside itself if it still doesn't fit:
   - their voice;
   - the line it's on, with **‹ ›** to change lines;
   - one big **Play** button (**Render and play** the first time a line is heard in this voice);
@@ -115,6 +124,8 @@ Each profile has:
 - **About them:**
   - their **gender**, with where it came from;
   - pronouns, their people, height, home and role (from canon and the art manifest);
+  - **where their people live**, numbered, with the realm's map beside it and each place marked
+    on it (see [Accents](#accents-and-where-their-people-live));
   - how they look (the art brief, `docs/briefs/story-cast-art.md`);
   - other names, whether they speak, and their chapters.
 
@@ -130,13 +141,26 @@ Each profile has:
     commit with an edit there must re-take those hashes and say why (its header says how).
 - **Voice and model:**
   - the voice, with a warning if it doesn't match their gender, and any clash in a chapter;
-  - their accent;
+  - their **accent**, with ideas to try;
   - **your direction for the model**, in plain words ("a touch quicker than usual", "brighter,
     with a smile in it"). It goes after who they are, in `direction` on the sheet, and is kept on
     every rebuild. Leave it empty to remove it;
   - for the narrator and the party, **how they sound**. Their description lives on the sheet
     rather than in any chapter, so it is edited here. Everyone else's comes from their voice notes
-    in canon, edited above;
+    in canon, edited above.
+
+  Accent, direction and how they sound are plain fields, saved as you leave them, with no Edit
+  button and no second step. (The voice notes in canon above stay two-step on purpose: they
+  write to a canon file.) The line you were on is marked as not yet heard in the new words, ready
+  for one click;
+  - **Use this voice for the other N of their people** (the others who are one of the same kind, a yeti or a
+    griffin, from canon or the kind they are drawn as). It asks first, naming who would get the voice and who
+    would be left and why, and only then does it. It keeps to the sheet's rule: nobody is put on a voice
+    they would share a chapter with someone on, or on the narrator's, and nobody with a voice you approved is
+    moved, nor anyone with an ElevenLabs voice you picked, approved or not (only Gemini's builder-assigned
+    voices may be replaced). Everyone it gives the voice to is still unapproved, so each is yours to hear. On the real cast it
+    gives a voice to a third or so of a people (4 of 14 yetis, 9 of 15 griffins), because members of a people
+    so often share chapters;
   - **what the model is told** besides the words: the exact Gemini 3.8 style, or the Gemini 3.1
     prompt, for the model picked in the header.
 - **Hear them:** every audition line in full, each with its own **Play**, and where it comes
@@ -169,14 +193,84 @@ same clip cache and the same session spending cap.
   the new voice. Switching back is free, because the old clips stay cached.
 - **Approve and Reject:** see the next section.
 - **Accent override** saves to the sheet too.
+- **Lines to speak:** each card says how many lines the game gives them (`lineCount`), and the
+  page sorts by it, **Most spoken lines first** by default, with the narrator and the party always
+  at the top. That is the order to give voices attention in: the first few dozen characters carry
+  most of the speech.
 - **Filters:** search, campaign, still provisional, approved, rejected and waiting to be heard
   again, not reviewed yet, sharing a voice, no line yet, and doesn't speak.
+- **Gemini | ElevenLabs:** the switch in the header, see the next section.
 - **Render all shown** renders every audition the filters show, three at a time. Rendering the
   whole cast on Gemini 3.8 Flash is about $0.42.
 
 Gemini's style for each line is the character's name and notes, then
 `Accent: General American, …`, then the line's delivery if it has one
 ([voice-bakeoff.md](./voice-bakeoff.md#expression-delivery-and-beats)).
+
+## Accents and where their people live
+
+The sheet's accent is General American, and a character's own **accent** replaces it in what
+Gemini is told. The accent box suggests as you type (it is a list of regional accents of English:
+American regions, British and Irish, Canadian, Australian and New Zealand), and the same list is on
+the cards page.
+
+On a profile, **Their people live** lists the places canon gives their people and marks each on the
+realm's map. It comes from canon:
+
+- a people's own homeland (`relationships.primary_locations` in `canon/npcs.yaml`), plus any
+  biome that names them under `inhabitants` in `canon/biomes.yaml`, which is also how the six
+  playable species are placed;
+- for someone with no people on the map, the place canon says is their home, shown as **Lives**;
+- nothing for someone with neither (the narrator, the party, anyone canon doesn't place).
+
+A place is shown by its canon name, with the map's own label when it differs ("The Sallow
+Wastelands", which the map calls "The Bone Yard"). A homeland is where a people is most often found,
+not a border, as canon itself says.
+
+Under the accent box, **Ideas from where their people live** are a few accents that might suit those
+places, each with its reason on hover ("Sunward Fields: farms, orchards and village cooperatives").
+One click tries it, and a click on the one in use puts the sheet's own accent back. They are guesses
+to hear and judge, kept in `tools/voice/cast/accents.ts` (`REGION_IDEAS`), where you can change
+them; a test checks that every place named there is a real biome in canon. Only regional accents of
+English are offered, never another language's English, which too easily becomes a caricature.
+ElevenLabs is not told the accent: it steers only Gemini.
+
+## ElevenLabs mode
+
+Both pages have a **Gemini | ElevenLabs** switch in the header, with that provider's own model list
+and a key box (one key for each, pasted once, shared with the bake-off page). The mode is
+remembered in the browser. In ElevenLabs mode everything on the page is about the ElevenLabs
+voice, and nothing there touches the Gemini one:
+
+- **Voices** come from the account, listed with the key (the picker says so if there is no key or
+  no voices). An account can have hundreds, so the picker has a **search** box that narrows the
+  list as you type: every word must appear in a voice's name or what ElevenLabs says about it
+  (premade or cloned, accent, gender, age, what it is for), so `american female narration` finds
+  those voices, and "30 of 120" says how many are left. The voice a character already has always
+  stays in the list. **Preview** plays the highlighted voice's own sample, which is free, so you
+  can sift by ear before paying for an audition on the character's real lines. (Each card's list
+  is only built when you reach for it: a page of 200 cards would otherwise carry 25,000 options.)
+  The list is the account's own voices: a voice from ElevenLabs' public library appears here
+  once it has been added to the account. A character's choice is saved as `elevenlabs` on the sheet, and **No voice yet** takes
+  it back. A voice that has left the account is still listed, marked, so the picker never hides
+  what is saved.
+- **Nothing is chosen for you.** Gemini's voices come with traits that a builder can match to a
+  character; an account's don't, so nobody has an ElevenLabs voice until you pick one. Until then
+  they have nothing to render or approve, and their buttons say so.
+- **Auditions** render with the mode's model (`eleven_v4` to start) in the voice you picked, and
+  count against the same session cap. ElevenLabs is not told who they are or how they talk: it gets
+  the voice and the words (with a delivery tag in front on v3 and later), so the description,
+  accent and direction steer only Gemini. The profile page shows exactly what is sent.
+- **Approve** pins that voice on its own (`elevenlabs.approved`), and Gemini's approval is
+  unchanged. **Reject** records the voice and your note and takes the choice back, so you can pick
+  another; a voice you rejected for a character is left out of their picker.
+- **History and clash warnings** are per mode: a decision with no `provider` is a Gemini one, and
+  two characters on one ElevenLabs voice in a chapter are warned about only in ElevenLabs mode.
+  The review export still lists Gemini's decisions.
+
+**What this doesn't do yet:** `voice:generate`, `voice:status` and `voice:verify` still render
+and key every clip with Gemini's voice. The sheet now holds both, so switching production to
+ElevenLabs is a change to what the generator reads, not to the sheet.
 
 ## Approving and rejecting
 
@@ -235,10 +329,17 @@ source of truth.
 
 ## What's still rough
 
-- **69 speakers have no line found** in the game. Some really have none, and some are spoken for
-  in a way the attribution misses ("the clerk says"). They audition on the stand-in until a
-  chapter gives them words.
+- **Lines are counted from speech tags, plus a guess.** A quote is given to whoever it is tagged for ("…," says
+  Pib). Most quotes are not tagged for anyone: of about 2,600 quoted passages, 1,205 were. So where a scene has
+  only one character who could be speaking, the quotes nobody is tagged for are counted for them as a **guess**,
+  shown apart ("52 lines, 4 guessed"). A guess skips what is not a sentence someone said (a fragment, a sign,
+  something sold, the party's own "you say") and any quote with someone else named beside it. On the real cast
+  that adds about 250 lines, 28 of them for the Skywardens alone, and on a read of 26 of them (before the last guard was added) about
+  four in five were right. A crowded scene's untagged quotes are still counted for nobody, so someone who talks a lot among
+  others is counted low, and 58 characters (47 of whom speak) still have none. They audition on the stand-in until
+  a chapter gives them words. Treat the order as a good guide to who speaks most, not an exact tally.
 - **The voice genders and traits** are from Google's one-word descriptions and best knowledge,
   not a listening pass. The page is the listening pass.
-- **ElevenLabs isn't on the sheet yet.** The bake-off's own cast (`tools/voice/bakeoff/cast.json`)
-  keeps ElevenLabs voices for comparison, now all American premade voices.
+- **ElevenLabs is on the sheet but not in production** (see above). The bake-off's own cast
+  (`tools/voice/bakeoff/cast.json`) keeps its own ElevenLabs voices for comparison, separate from
+  the ones picked on the cast pages.

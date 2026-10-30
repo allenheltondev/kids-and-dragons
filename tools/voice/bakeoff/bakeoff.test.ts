@@ -299,6 +299,15 @@ describe("talking to the providers", () => {
   it("lists an ElevenLabs account's voices, and Gemini's prebuilt ones without a call", async () => {
     const fetch: Fetch = async () => response(JSON.stringify({ voices: [{ voice_id: "v1", name: "Ada", category: "premade", labels: { age: "young" } }] }));
     expect(await listVoices("elevenlabs", { elevenlabs: "k" }, fetch)).toEqual([{ id: "v1", name: "Ada", about: "premade, young" }]);
+    // A voice's own sample comes through when it has one, and a null one is left off.
+    const sampled: Fetch = async () => response(JSON.stringify({ voices: [
+      { voice_id: "v1", name: "Ada", category: "premade", preview_url: "https://example.test/ada.mp3" },
+      { voice_id: "v2", name: "Bo", category: "cloned", preview_url: null },
+    ] }));
+    expect(await listVoices("elevenlabs", { elevenlabs: "k" }, sampled)).toEqual([
+      { id: "v1", name: "Ada", about: "premade", preview: "https://example.test/ada.mp3" },
+      { id: "v2", name: "Bo", about: "cloned" },
+    ]);
     const gemini = await listVoices("gemini", {}, async () => { throw new Error("no call"); });
     expect(gemini.find((v) => v.id === "Sulafat")?.about).toBe("warm");
   });
