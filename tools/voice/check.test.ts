@@ -139,3 +139,40 @@ describe("the clips deploy.sh looks up", () => {
     expect(clipsIn(path.join(dir, "none"))).toEqual({ clips: new Map(), unreadable: [] });
   });
 });
+
+describe("the deploy's site check (#545 review)", () => {
+  const manifestDir = async () => {
+    const fs = await import("node:fs");
+    const os = await import("node:os");
+    const path = await import("node:path");
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "voice-site-"));
+    fs.writeFileSync(path.join(dir, "ch.json"), JSON.stringify(played()));
+    return dir;
+  };
+  const answer = (status: number) => () => Promise.resolve({ status, headers: { get: () => null } });
+
+  it("passes when every clip is confirmed there", async () => {
+    const { verifySite } = await import("./verify-site");
+    expect((await verifySite("https://x", await manifestDir(), answer(200))).code).toBe(0);
+  });
+
+  it("fails when a clip is not there", async () => {
+    const { verifySite } = await import("./verify-site");
+    expect((await verifySite("https://x", await manifestDir(), answer(404))).code).toBe(1);
+  });
+
+  it.each([
+    ["a 503 on every try", answer(503)],
+    ["a timeout", () => Promise.reject(new Error("timed out"))],
+  ])("fails when a lookup never gets an answer: %s", async (_, fetcher) => {
+    const { verifySite } = await import("./verify-site");
+    const verdict = await verifySite("https://x", await manifestDir(), fetcher);
+    expect(verdict.code).toBe(1);
+    expect(verdict.lines.join("\n")).toContain("0 of 1 looked up at https://x, 0 broken, 1 unanswered");
+  });
+
+  it("passes a site with nothing to look up", async () => {
+    const { verifySite } = await import("./verify-site");
+    expect((await verifySite("https://x", "/nowhere", answer(503))).code).toBe(0);
+  });
+});

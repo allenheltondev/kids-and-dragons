@@ -51,6 +51,12 @@ describe("the CloudFront distribution", () => {
 describe("deploy.sh and the voice manifests (#545)", () => {
   const script = fs.readFileSync(path.join(ROOT, "scripts", "deploy.sh"), "utf8");
 
+  it("runs the git-side voice gate with the other checks, which only a CI-verified ship skips", () => {
+    const checks = script.slice(script.indexOf('if [ "${KAD_SKIP_CHECKS:-}" = "1" ]'), script.indexOf("\nfi\n", script.indexOf("KAD_SKIP_CHECKS")));
+    expect(checks).toContain("npm run content:validate");
+    expect(checks).toContain("npm run voice:verify");
+  });
+
   it("checks every clip is on the site before content/ goes up, with plain node and whatever the checks setting", () => {
     const verify = script.indexOf('node tools/voice/verify-site.ts "$SITE_URL"');
     const content = script.indexOf('aws s3 sync content "s3://$BUCKET/content"');

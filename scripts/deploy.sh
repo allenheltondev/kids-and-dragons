@@ -69,6 +69,9 @@ else
   npm test
   npm run content:validate
   npm run art:verify
+  # The voice manifests against today's words (#545): a manifest whose clips still exist but
+  # say text that has since changed passes the site check below, so it is caught here.
+  npm run voice:verify
   # cfn-lint is a pip install, so a laptop may not have it. CI always does
   # (ci.yml), which keeps the stack linted on every path that gates a merge.
   if command -v cfn-lint >/dev/null 2>&1; then
