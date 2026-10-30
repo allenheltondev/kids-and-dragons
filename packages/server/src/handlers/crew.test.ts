@@ -10,9 +10,9 @@ import { loadContent } from "../content/loader.ts";
 import type { Engine } from "../engine/port.ts";
 import { makeHarness, seedHousehold } from "../test-support.ts";
 import { applyAction } from "./action.ts";
-import { MAX_CREWS, nextCrewName, parseCrewChoice, switchCrew, CREW_NAMES } from "./crew.ts";
+import { followCrew, MAX_CREWS, nextCrewName, parseCrewChoice, switchCrew, CREW_NAMES } from "./crew.ts";
 import { createRoom, joinRoom } from "./room.ts";
-import { stopForToday } from "./save.ts";
+import { resumeGame, stopForToday } from "./save.ts";
 
 const ROOT = path.resolve(import.meta.dirname, "..", "..", "..", "..");
 const content = await loadContent(path.join(ROOT, "content"));
@@ -202,6 +202,108 @@ describe("a new crew at the same household", () => {
     });
     const names = (await h.harness.repo.listCrews(h.householdId)).map((c) => c.name);
     expect(new Set(names).size).toBe(MAX_CREWS);
+  });
+});
+
+/** A crew (player 2's Bo) begins Gemfall and stops: next to the family's own save. */
+async function crewStops(h: Household): Promise<string> {
+  await familyStops(h);
+  const evening = await room(h);
+  const started = await switchCrew({ code: evening.code, principal: host(h), crew: "new" }, h.harness.deps);
+  if (!started.ok) throw new Error("crew");
+  const kid = await sit(h, evening.code, evening.runId, 2);
+  await kid.must({ type: "CREATE_CHARACTER", name: "Bo", ...HERO });
+  await kid.must({ type: "READY", ready: true });
+  await kid.must({ type: "CONTINUE_CAMPAIGN", campaignId: GEMFALL });
+  if (!(await stopForToday({ code: evening.code, principal: host(h) }, h.harness.deps)).ok) throw new Error("stop");
+  return started.value.crew!;
+}
+
+const heroId = async (h: Household, name: string) =>
+  (await h.harness.repo.listCharacters(h.householdId)).find((c) => c.name === name)!.id;
+
+describe("the lobby follows the kids", () => {
+  it("switches to a returning crew the moment one of its heroes sits down", async () => {
+    const h = await household();
+    const crew = await crewStops(h);
+
+    const next = await room(h);
+    expect((await h.harness.repo.getState(next.runId))!.crew).toBeUndefined();
+    const kid = await sit(h, next.code, next.runId, 2);
+    await kid.must({ type: "SEAT_CHARACTER", characterId: await heroId(h, "Bo") });
+
+    const lobby = await kid.state();
+    expect(lobby.crew).toBe(crew);
+    expect(lobby.saved?.heroes).toEqual(["Bo"]);
+    // Nobody opened the Room panel: Keep going picks up the crew's own chapter.
+    const resumed = await resumeGame({ runId: next.runId, playerId: kid.playerId, householdId: h.householdId }, h.harness.deps);
+    expect(resumed.ok).toBe(true);
+    const playing = await kid.state();
+    expect(playing.crew).toBe(crew);
+    expect(playing.chapterInfo?.index).toBe(1);
+    expect(playing.party.map((m) => m.character.name)).toEqual(["Bo"]);
+  });
+
+  it("goes back to the first crew when the family's hero sits down", async () => {
+    const h = await household();
+    const crew = await crewStops(h);
+    const next = await room(h);
+    await switchCrew({ code: next.code, principal: host(h), crew }, h.harness.deps);
+
+    const kid = await sit(h, next.code, next.runId, 1);
+    await kid.must({ type: "SEAT_CHARACTER", characterId: await heroId(h, "Pip") });
+    const lobby = await kid.state();
+    expect(lobby.crew).toBeUndefined();
+    expect(lobby.saved?.heroes).toEqual(["Pip"]);
+  });
+
+  it("stays put for a new hero, and for heroes of two crews, and then says who plays with whom", async () => {
+    const h = await household(4);
+    await crewStops(h);
+    const next = await room(h);
+
+    const fresh = await sit(h, next.code, next.runId, 3);
+    await fresh.must({ type: "CREATE_CHARACTER", name: "Wren", ...HERO });
+    expect((await fresh.state()).crew).toBeUndefined();
+
+    const family = await sit(h, next.code, next.runId, 1);
+    await family.must({ type: "SEAT_CHARACTER", characterId: await heroId(h, "Pip") });
+    const visiting = await sit(h, next.code, next.runId, 2);
+    await visiting.must({ type: "SEAT_CHARACTER", characterId: await heroId(h, "Bo") });
+    expect((await visiting.state()).crew).toBeUndefined();
+
+    for (const seat of [fresh, family, visiting]) await seat.must({ type: "READY", ready: true });
+    const begin = await applyAction(
+      { runId: next.runId, playerId: family.playerId, seq: (await family.state()).seq, intent: { type: "CONTINUE_CAMPAIGN", campaignId: GEMFALL } },
+      h.harness.deps,
+    );
+    expect(begin).toMatchObject({
+      ok: false,
+      error: {
+        code: "HERO_BUSY",
+        message: `Bo is playing with ${CREW_NAMES[0]}. A grown-up can switch crews in the Room panel.`,
+      },
+    });
+  });
+
+  it("reads nothing at a household that has never made a crew", async () => {
+    const h = await household();
+    await familyStops(h);
+    const next = await room(h);
+    const kid = await sit(h, next.code, next.runId, 1);
+    await kid.must({ type: "SEAT_CHARACTER", characterId: await heroId(h, "Pip") });
+    const lobby = await kid.state();
+    expect(lobby.crew).toBeUndefined();
+    expect(lobby.crews).toBeUndefined();
+
+    let reads = 0;
+    const get = h.harness.repo.getCharacter.bind(h.harness.repo);
+    h.harness.repo.getCharacter = async (...args) => {
+      reads++;
+      return get(...args);
+    };
+    expect(await followCrew(lobby, h.householdId, GEMFALL, h.harness.deps)).toBe(lobby);
+    expect(reads).toBe(0);
   });
 });
 

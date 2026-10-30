@@ -81,7 +81,7 @@ import {
 } from "../engine/shared-engine.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 import type { CampaignProgressRecord, ChapterProgressRecord, CharacterWrite } from "../store/repository.ts";
-import { busyMessage, claimFor, claimOf, create, parseClaim, rewrite, standing } from "./claim.ts";
+import { busyMessage, claimFor, claimOf, create, crewBusyMessage, parseClaim, rewrite, standing } from "./claim.ts";
 
 /**
  * The identity a provisional gain is scoped to.
@@ -228,7 +228,7 @@ export async function startPartyCampaign(
   const { writes, busy } = await transformParty(state, deps, householdId, [], (character) => character);
   // Acquiring the claim (#282): a hero another adventure still holds cannot
   // start this one, and nothing is written for anybody.
-  if (busy.length > 0) return fail("HERO_BUSY", busyMessage(busy[0]!));
+  if (busy.length > 0) return fail("HERO_BUSY", await crewBusyMessage(busy[0]!, state, householdId, deps));
   return ok(writes);
 }
 
@@ -261,7 +261,7 @@ export async function seatHero(
   if (where === "busy") {
     const held = claimOf(hero)!;
     if (underWay || parseClaim(held, hero).table !== householdId) {
-      return fail("HERO_BUSY", busyMessage(hero));
+      return fail("HERO_BUSY", await crewBusyMessage(hero, state, householdId, deps));
     }
   }
   if (!claim || where === "mine") return ok(null);

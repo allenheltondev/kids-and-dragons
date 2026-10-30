@@ -1677,9 +1677,18 @@ and every device stay the household's, so anyone may sit down with any crew.
   votes on the old list go. `RunState.crews` lists the others for the Room
   panel, and is absent while the household has only its first.
 
-A new room always opens on the first crew; a returning crew is one tap in the
-Room panel. Remembering the last crew per TV was left out on purpose: the
-lobby's "keep going" already says whose game is on screen.
+**The lobby follows the kids** (`followCrew`, run beside `relockLobby`
+whenever the lobby's party changes). A new room opens on the first crew, and
+the moment a seated hero is on a live adventure of another crew at this
+household, the lobby switches to that crew and is rebuilt for it, so a crew
+that comes back every week never opens the Room panel. Only a clear answer
+moves it: new heroes and heroes whose adventure is over or elsewhere say
+nothing, and heroes of two crews leave it where it is. Then the start's
+refusal names the crew (`crewBusyMessage`: "Bo is playing with The Otter
+Crew. A grown-up can switch crews in the Room panel."). A household that has
+never made a crew reads nothing here. Opening on the most recently played
+crew was left out on purpose: with two groups taking turns at one TV it
+guesses wrong half the time.
 
 #### The TV, which is nobody
 

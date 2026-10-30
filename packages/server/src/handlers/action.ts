@@ -56,6 +56,7 @@ import {
 import type { DeviceIdentity } from "../identity.ts";
 import type { ApplyIntentResult, EngineContext } from "../engine/port.ts";
 import type { CampaignProgressRecord, CharacterWrite, EventRecord, RunRecord } from "../store/repository.ts";
+import { followCrew } from "./crew.ts";
 import { diff } from "../json-patch.ts";
 import { keepGuestHousehold } from "./account.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
@@ -434,6 +435,9 @@ export async function applyAction(
     !sameParty(state.party, result.state.party)
   ) {
     result = { ...result, state: await relockLobby(result.state, auth.run.householdId, deps) };
+    // And the crew follows who sat down: a returning crew's heroes bring
+    // their own saves with them (crew.ts). A no-op for a household with none.
+    result = { ...result, state: await followCrew(result.state, auth.run.householdId, auth.run.campaignId, deps) };
   }
 
   /*
