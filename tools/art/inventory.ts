@@ -58,6 +58,7 @@ interface Manifest {
   storyPlates?: { ids: string[] };
   paintedIcons?: { ids: string[] };
   badgeArt?: { ids: string[] };
+  guideArt?: { id: string; width: number; height: number; alpha: boolean }[];
   entities: { id: string; classification: string; states?: Record<string, string> }[];
   stageFigures?: { id: string }[];
   storyProps?: { ids: string[] };
@@ -288,6 +289,16 @@ const delivered = (line: Line): number => line.need - line.missing.length;
 }
 
 // --- Canonical entities ------------------------------------------------------
+{
+  const guide = manifest.guideArt ?? [];
+  lines.push({
+    category: "Guide banners and emblems",
+    need: guide.length,
+    missing: guide.filter(asset => !has("packages/client/src/assets/guide", `${asset.id}.webp`)).map(asset => `${asset.id}.webp`),
+    note: "#573 grown-up guide paintings; exact canvas and alpha declared in the manifest",
+  });
+}
+
 {
   const icons = manifest.paintedIcons?.ids ?? [];
   lines.push({
