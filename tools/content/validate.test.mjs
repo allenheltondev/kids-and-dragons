@@ -264,15 +264,19 @@ describe("cross-file rules", () => {
     expect(result.code).not.toBe(0);
   });
 
-  it("catches a music override naming a track MUSIC_SPECS does not know", () => {
-    // Music is chosen by name at a table; a track with no spec row is not one
-    // the game can be asked for, so the override is refused, not left to the synth pad.
+  // Music is chosen by name at a table; a track with no spec row is not one
+  // the game can be asked for, so the override is refused, not left to the synth pad.
+  // A chapter's and a scene's are separate cases so two full-tree runs do not
+  // share one five-second CI timeout (it timed out on #571's runners).
+  it("catches a chapter's music override naming a track MUSIC_SPECS does not know", () => {
     const onChapter = withChapter((chapter) => {
       chapter.music = "a-track-nobody-produced";
     });
     expect(onChapter.out).toContain('music "a-track-nobody-produced" is not a MUSIC_SPECS track');
     expect(onChapter.code).not.toBe(0);
+  });
 
+  it("catches a scene's music override naming a track MUSIC_SPECS does not know", () => {
     const onScene = withChapter((chapter) => {
       chapter.scenes[laterSceneOf(chapter)].music = "a-track-nobody-produced";
     });
