@@ -517,8 +517,7 @@ describe("POST /api/room/:code/join", () => {
     });
   });
 
-  it("refuses a device from another household with 403", async () => {
-    // The FORBIDDEN → 403 leg of `statusFor`.
+  it("lets a device from another household in, as a visitor", async () => {
     const harness = makeHarness();
     const room = await seedRoom(harness);
     await harness.repo.putHousehold({
@@ -545,8 +544,8 @@ describe("POST /api/room/:code/join", () => {
       }),
       runtimeFor(harness),
     );
-    expect(result.statusCode).toBe(403);
-    expect(bodyOf(result).error).toMatchObject({ code: "FORBIDDEN" });
+    expect(result.statusCode).toBe(200);
+    expect(bodyOf(result)).toMatchObject({ playerId: "p_x" });
   });
 });
 
@@ -590,11 +589,11 @@ describe("a room open to visitors (#249)", () => {
     expect((await respond(opening("WXYZ", true), rt)).statusCode).toBe(404);
   });
 
-  it("lets a phone from another household join with the six-letter code only", async () => {
+  it("lets a phone from another household join with the room's code, or an open room's six letters", async () => {
     const { room, rt, visitorToken } = await openable();
     const join = (code: string) =>
       respond(event("POST", `/api/room/${code}/join`, { headers: { "x-kad-device-token": visitorToken } }), rt);
-    expect((await join(room.code)).statusCode).toBe(403);
+    expect((await join(room.code)).statusCode).toBe(200);
 
     rt.account = OWNER;
     const opened = await respond(opening(room.code, true), rt);
@@ -602,9 +601,8 @@ describe("a room open to visitors (#249)", () => {
     const visitorCode = String(bodyOf(opened).visitorCode);
     expect(visitorCode).toMatch(new RegExp(`^${room.code}[A-Z]{2}$`));
 
-    // Still refused on the short code; in on the long one, answered with the
-    // room's own code, which every later call names.
-    expect((await join(room.code)).statusCode).toBe(403);
+    // In on the long one too, answered with the room's own code, which every
+    // later call names.
     const joined = await join(visitorCode.toLowerCase());
     expect(joined.statusCode).toBe(200);
     expect(bodyOf(joined)).toMatchObject({ code: room.code, roomCode: room.code, playerId: "p_x" });
@@ -2101,6 +2099,8 @@ const SHARED = [
   { path: "/api/room/:code/quiet", method: "POST", probe: "/api/room/ABCD/quiet" },
   // Which of the household's crews the lobby plays (handlers/crew.ts).
   { path: "/api/room/:code/crew", method: "POST", probe: "/api/room/ABCD/crew" },
+  // Heroes new to a crew's adventure keep going with it (handlers/crew.ts).
+  { path: "/api/room/:code/crewkeep", method: "POST", probe: "/api/room/ABCD/crewkeep" },
   // One of the offered names for a crew (handlers/crew.ts).
   { path: "/api/room/:code/crewname", method: "POST", probe: "/api/room/ABCD/crewname" },
   // The session clock: pause, resume, note, off (#511, handlers/timing.ts).

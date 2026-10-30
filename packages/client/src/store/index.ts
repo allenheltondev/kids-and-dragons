@@ -1488,6 +1488,10 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         return hostControl("crewname", { crew, name }, "Could not rename the crew.");
       },
 
+      keepCrew(campaignId: string) {
+        return hostControl("crewkeep", { campaignId }, "Could not keep going.");
+      },
+
       closeRoom() {
         return hostControl("close", {}, "Could not close the room.");
       },

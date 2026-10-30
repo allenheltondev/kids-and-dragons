@@ -21,7 +21,7 @@ import { applyIntent, createRunState, riftActionsForParty } from "@kad/shared";
 import type { Campaign, Chapter, ClassId, ClientIntent, JourneyRiftActionView } from "@kad/shared";
 import type { Engine } from "../engine/port.ts";
 import { makeChapter } from "../../../shared/src/test-fixtures.ts";
-import { makeContent, makeHarness, seedHousehold, type TestHarness } from "../test-support.ts";
+import { makeContent, makeHarness, seedHousehold, type TestHarness, keepGoing } from "../test-support.ts";
 import { applyAction } from "./action.ts";
 import { createRoom, joinRoom } from "./room.ts";
 
@@ -71,6 +71,8 @@ async function table(harness: TestHarness, seeded: Seeded, classes: ClassId[]) {
     seats.push(joined.value.playerId);
   }
   const send = async (intent: ClientIntent, seat = 0) => {
+    // The TV's "Keep going" for heroes new to the adventure (crew.ts): these tests are about what follows.
+    if (intent.type === "CONTINUE_CAMPAIGN") await keepGoing(harness, runId, intent.campaignId);
     const seq = (await harness.repo.getState(runId))?.seq ?? 0;
     return applyAction({ runId, playerId: seats[seat]!, seq, intent }, harness.deps);
   };

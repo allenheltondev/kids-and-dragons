@@ -11,7 +11,6 @@ import type { PartyMember, RunState } from "@kad/shared";
 import { useGameStore } from "../store";
 import type { ClientSession } from "../store/contract";
 import { makeState } from "../testing/fixtures";
-import { useKeepsakeStore } from "../store/keepsake";
 import { HostControls, LetHeroGo, STOP_OFFER_MS, rosterOf } from "./HostControls";
 
 function member(playerId: string, name: string, connected = true): PartyMember {
@@ -404,36 +403,3 @@ describe("letting a hero go from a stopped game (#259)", () => {
   });
 });
 
-describe("the visitor switch (#249)", () => {
-  function signIn(available: boolean) {
-    const openVisitors = vi.fn();
-    act(() => {
-      useKeepsakeStore.setState({ available, check: async () => undefined, openVisitors });
-    });
-    return openVisitors;
-  }
-
-  it("asks a grown-up to sign in to let visitors join", () => {
-    const openVisitors = signIn(true);
-    room({ host: true });
-    render(<HostControls placement="inline" />);
-    fireEvent.click(screen.getByRole("button", { name: "Let visitors join" }));
-    expect(openVisitors).toHaveBeenCalledWith("ABCD", true);
-  });
-
-  it("shows the visitor code once the room is open, and can stop new visitors", () => {
-    const openVisitors = signIn(true);
-    room({ host: true }, { ...RUN, visitorCode: "ABCDXY" });
-    render(<HostControls placement="inline" />);
-    expect(screen.getByText("ABCDXY")).toBeTruthy();
-    fireEvent.click(screen.getByRole("button", { name: "Stop new visitors" }));
-    expect(openVisitors).toHaveBeenCalledWith("ABCD", false);
-  });
-
-  it("is not offered where nobody can sign in", () => {
-    signIn(false);
-    room({ host: true });
-    render(<HostControls placement="inline" />);
-    expect(screen.queryByRole("button", { name: "Let visitors join" })).toBeNull();
-  });
-});

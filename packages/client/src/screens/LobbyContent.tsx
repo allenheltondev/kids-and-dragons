@@ -132,6 +132,13 @@ export function LobbyContent(): ReactElement {
   const party = useParty();
   const sessionCode = useGameStore((s) => s.session?.roomCode ?? null);
   const host = useGameStore((s) => s.session?.host === true);
+  const keepCrew = useGameStore((s) => s.keepCrew);
+  const switchCrew = useGameStore((s) => s.switchCrew);
+  const [deciding, setDeciding] = useState(false);
+  const decide = (task: () => Promise<boolean>): void => {
+    setDeciding(true);
+    void task().finally(() => setDeciding(false));
+  };
   // A room open to visitors (#249) shows its longer code, which anybody can
   // join with: a phone from another household needs it, and one from the
   // room's own takes it as well as the short one.
@@ -181,6 +188,45 @@ export function LobbyContent(): ReactElement {
         <p className="lobby__place" role="status">
           Make new heroes on your phones. Your other crew&rsquo;s adventure is saved.
         </p>
+      ) : null}
+      {/* Heroes new to the adventure this crew is partway through: nothing
+          resumes until the grown-up running the game picks (crew.ts,
+          `checkNewcomers`), so nobody lands in the middle of somebody else's
+          story by accident. */}
+      {state?.crewCheck ? (
+        <div className="lobby__premise lobby__crew-check" role="group" aria-label="Keep going or start fresh?">
+          <p className="lobby__premise-title">
+            <Icon name="crew" />
+            <span>New heroes, or the same crew?</span>
+          </p>
+          <p className="lobby__premise-text">
+            {crewChoices(state).current} is partway through {state.crewCheck.title}. None of these heroes have been
+            on it yet.
+            {host ? null : " The grown-up running the game picks."}
+          </p>
+          {host ? (
+            <div className="lobby__crew-check-actions">
+              <Button
+                variant="primary"
+                size="md"
+                icon={<Icon name="map" />}
+                disabled={deciding}
+                onClick={() => decide(() => keepCrew(state.crewCheck!.campaignId))}
+              >
+                Keep going with {state.crewCheck.title}
+              </Button>
+              <Button
+                variant="secondary"
+                size="md"
+                icon={<Icon name="plus" />}
+                disabled={deciding}
+                onClick={() => decide(() => switchCrew("new"))}
+              >
+                Start fresh as a new crew
+              </Button>
+            </div>
+          ) : null}
+        </div>
       ) : null}
       {/* A chapter this household stopped partway (#259): said to the room, and
           taken up from any phone. */}

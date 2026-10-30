@@ -20,7 +20,7 @@
  * lobby, before a chapter starts or a save is picked up.
  */
 
-import { claimOf, CREW_NAMES, FIRST_CREW_NAME, memberHome, parseClaim, type RunState } from "@kad/shared";
+import { claimOf, CREW_NAMES, FIRST_CREW_NAME, lobbyCampaign, memberHome, parseClaim, type Character, type RunState } from "@kad/shared";
 import type { CrewRecord } from "../store/repository.ts";
 import { claimIsLive } from "./claim.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
@@ -125,6 +125,8 @@ export async function switchCrew(
       const { crew: _crew, ...rest } = state;
       const next: RunState = target === null ? (rest as RunState) : { ...rest, crew: target };
       delete next.crewSetup;
+      delete next.crewCheck;
+      delete next.crewConfirmed;
       // A deliberate crew choice also chooses a different lineup. The phones
       // stay connected and can bring that crew's saved heroes or make new ones.
       next.party = [];
@@ -224,6 +226,124 @@ export async function renameCrew(
   );
   if (!result.ok) return result;
   if (refusal) return fail(refusal.code, refusal.message);
+  return ok({ seq: result.value.seq });
+}
+
+/**
+ * Whether the heroes seated are all new to the adventure this crew has under
+ * way in `campaignId`: the crew is partway through it (a chapter finished, or
+ * a journey begun), other heroes of the household are on it, and no seated
+ * hero is. Then it is somebody else's story, and the lobby must not quietly
+ * resume it for them; the host chooses (`confirmCrew`, or a new crew). An
+ * attempt no hero is on asks nothing. False whenever anything cannot be read,
+ * so a failed lookup never stands between a returning crew and its game.
+ */
+export async function newcomersTo(
+  state: RunState,
+  householdId: string,
+  campaignId: string,
+  deps: HandlerDeps,
+): Promise<boolean> {
+  if (!betweenGames(state) || state.crewSetup || state.crewConfirmed === campaignId) return false;
+  const party = seatedParty(state);
+  if (party.length === 0) return false;
+  const attempt = await deps.repo.getCampaignProgress(householdId, campaignId, state.crew);
+  if (!attempt || attempt.status !== "active") return false;
+  if (attempt.lastIndex === undefined && attempt.journey === undefined) return false;
+  const onIt = (hero: Character): boolean => {
+    const held = claimOf(hero);
+    if (held === null) return false;
+    const claim = parseClaim(held, hero);
+    return claim.campaignId === campaignId && claim.table === householdId && (claim.crew ?? null) === (state.crew ?? null);
+  };
+  let household: Character[];
+  try {
+    household = await deps.repo.listCharacters(householdId);
+  } catch (err) {
+    console.error(`crews: could not list ${householdId}'s heroes:`, err);
+    return false;
+  }
+  const seated = new Set(party.map((member) => member.character.id));
+  if (!household.some((hero) => !seated.has(hero.id) && onIt(hero))) return false;
+  for (const member of party) {
+    let hero;
+    try {
+      hero = await deps.repo.getCharacter(memberHome(member, householdId), member.character.id);
+    } catch (err) {
+      console.error(`crews: could not read ${member.character.id}:`, err);
+      return false;
+    }
+    if (hero && onIt(hero)) return false;
+  }
+  return true;
+}
+
+/**
+ * Keeps `RunState.crewCheck` true to who is seated and which adventure the
+ * lobby rests on. Called whenever the party or the votes in the lobby change.
+ * Returns the state unchanged (the same object) when nothing moved.
+ */
+export async function checkNewcomers(state: RunState, householdId: string, deps: HandlerDeps): Promise<RunState> {
+  const leader = lobbyCampaign(state).leader;
+  const found =
+    leader && leader.locked === undefined && (await newcomersTo(state, householdId, leader.id, deps))
+      ? { campaignId: leader.id, title: leader.title }
+      : null;
+  const same = found
+    ? state.crewCheck?.campaignId === found.campaignId && state.crewCheck.title === found.title
+    : state.crewCheck === undefined;
+  if (same) return state;
+  const next: RunState = { ...state };
+  if (found) next.crewCheck = found;
+  else delete next.crewCheck;
+  return next;
+}
+
+export interface ConfirmCrewInput {
+  code: string;
+  principal: HostPrincipal;
+  /** The adventure the host chose to keep going with (`crewCheck.campaignId`). */
+  campaignId: string;
+}
+
+/** What a keep-going body asks for, or undefined when it cannot be read. */
+export const KEEP_BODY = 'expected { campaignId: "<campaign id>" }';
+
+export function parseCrewKeep(body: Record<string, unknown>): Pick<ConfirmCrewInput, "campaignId"> | undefined {
+  const { campaignId } = body;
+  return typeof campaignId === "string" && /^[a-z0-9-]{1,64}$/.test(campaignId) ? { campaignId } : undefined;
+}
+
+/**
+ * The host's answer to `crewCheck`: these heroes join the crew's adventure
+ * where it stands. Starting fresh instead is `switchCrew("new")`.
+ */
+export async function confirmCrew(
+  input: ConfirmCrewInput,
+  deps: HandlerDeps,
+): Promise<HandlerResult<{ seq: number }>> {
+  const hosted = await hostedRoom(input.code, input.principal, deps);
+  if (!hosted.ok) return hosted;
+  const room = hosted.value;
+  let refusal = null as string | null;
+  const result = await commitRoomChange(
+    room,
+    input.principal.playerId,
+    async (state) => {
+      refusal = null;
+      if (!betweenGames(state)) {
+        refusal = "Choose before the adventure starts.";
+        return null;
+      }
+      if (state.crewConfirmed === input.campaignId && state.crewCheck === undefined) return null;
+      const next: RunState = { ...state, crewConfirmed: input.campaignId };
+      delete next.crewCheck;
+      return next;
+    },
+    deps,
+  );
+  if (!result.ok) return result;
+  if (refusal) return fail("ILLEGAL", refusal);
   return ok({ seq: result.value.seq });
 }
 

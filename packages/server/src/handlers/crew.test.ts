@@ -10,7 +10,7 @@ import { loadContent } from "../content/loader.ts";
 import type { Engine } from "../engine/port.ts";
 import { makeHarness, seedHousehold } from "../test-support.ts";
 import { applyAction } from "./action.ts";
-import { followCrew, MAX_CREWS, parseCrewChoice, parseCrewRename, renameCrew, switchCrew, CREW_NAMES } from "./crew.ts";
+import { confirmCrew, followCrew, MAX_CREWS, parseCrewChoice, parseCrewRename, renameCrew, switchCrew, CREW_NAMES } from "./crew.ts";
 import { createRoom, joinRoom } from "./room.ts";
 import { resumeGame, stopForToday } from "./save.ts";
 
@@ -460,5 +460,65 @@ describe("naming a crew", () => {
     expect(parseCrewRename({ crew: "cw_2", name: CREW_NAMES[1] })).toEqual({ crew: "cw_2", name: CREW_NAMES[1] });
     expect(parseCrewRename({ crew: null, name: "Anything I like" })).toBeUndefined();
     expect(parseCrewRename({ crew: "../x", name: CREW_NAMES[0] })).toBeUndefined();
+  });
+});
+
+describe("heroes new to the crew's adventure", () => {
+  /** The family's Pip is on the first crew's Gemfall, and it is partway: a chapter finished. */
+  async function partway(h: Household) {
+    await familyStops(h);
+    const attempt = (await h.harness.repo.getCampaignProgress(h.householdId, GEMFALL))!;
+    await h.harness.repo.putCampaignProgress({ ...attempt, lastIndex: 1 });
+  }
+
+  it("asks the TV first, and resumes nothing until the host picks", async () => {
+    const h = await household();
+    await partway(h);
+    const evening = await room(h);
+    const kid = await sit(h, evening.code, evening.runId, 2);
+    await kid.must({ type: "CREATE_CHARACTER", name: "Newcomer", ...HERO });
+    expect((await kid.state()).crewCheck).toEqual({ campaignId: GEMFALL, title: content.campaign(GEMFALL)!.title });
+    await kid.must({ type: "READY", ready: true });
+    const refused = await applyAction(
+      { runId: evening.runId, playerId: kid.playerId, seq: (await kid.state()).seq, intent: { type: "CONTINUE_CAMPAIGN", campaignId: GEMFALL } },
+      h.harness.deps,
+    );
+    expect(refused).toMatchObject({ ok: false, error: { code: "ILLEGAL" } });
+    expect((await kid.state()).chapterId).toBeNull();
+
+    const kept = await confirmCrew({ code: evening.code, principal: host(h), campaignId: GEMFALL }, h.harness.deps);
+    expect(kept.ok).toBe(true);
+    const after = await kid.state();
+    expect(after.crewCheck).toBeUndefined();
+    expect(after.crewConfirmed).toBe(GEMFALL);
+  });
+
+  it("starting a new crew instead clears the question", async () => {
+    const h = await household();
+    await partway(h);
+    const evening = await room(h);
+    const kid = await sit(h, evening.code, evening.runId, 2);
+    await kid.must({ type: "CREATE_CHARACTER", name: "Newcomer", ...HERO });
+    expect((await kid.state()).crewCheck).toBeDefined();
+    await switchCrew({ code: evening.code, principal: host(h), crew: "new", request: "tap-fresh-crew" }, h.harness.deps);
+    expect((await kid.state()).crewCheck).toBeUndefined();
+  });
+
+  it("does not ask when nobody else is on it", async () => {
+    const h = await household();
+    await h.harness.repo.putCampaignProgress({
+      householdId: h.householdId,
+      campaignId: GEMFALL,
+      status: "active",
+      setbacks: 0,
+      lastIndex: 1,
+      attemptId: `${GEMFALL}:1`,
+      version: 1,
+      updatedAt: "2026-10-01T18:00:00.000Z",
+    });
+    const evening = await room(h);
+    const kid = await sit(h, evening.code, evening.runId, 2);
+    await kid.must({ type: "CREATE_CHARACTER", name: "Newcomer", ...HERO });
+    expect((await kid.state()).crewCheck).toBeUndefined();
   });
 });

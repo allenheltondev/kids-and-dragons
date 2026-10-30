@@ -9,7 +9,7 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { cleanup, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { CampaignView, RunState } from "@kad/shared";
@@ -269,5 +269,34 @@ describe("the join step on the shared screen (#256)", { timeout: 30_000 }, () =>
   it("stays while the room fills, because the next kid at the table needs it too", async () => {
     mount({ campaign: FIRST, party: [makeMember()] });
     expect(await screen.findByText(help.join.text, {}, { timeout: 10_000 })).toBeTruthy();
+  });
+});
+
+describe("heroes new to the crew's adventure", () => {
+  const check = { crewCheck: { campaignId: "riftlight", title: "Riftlight" }, party: [makeMember()] };
+
+  it("lets the host keep going or start fresh, and resumes nothing by itself", async () => {
+    const keepCrew = vi.fn(async () => true);
+    const switchCrew = vi.fn(async () => true);
+    useGameStore.setState({
+      session: { runId: "r_1", roomCode: "ABCD", playerId: "", mode: "party", sessionToken: "t", host: true },
+      state: makeState({ phase: "lobby", ...check }),
+      keepCrew,
+      switchCrew,
+    });
+    render(<LobbyContent />);
+    expect(screen.getByText(/is partway through Riftlight/)).toBeTruthy();
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Keep going with Riftlight" }));
+    });
+    expect(keepCrew).toHaveBeenCalledWith("riftlight");
+    fireEvent.click(screen.getByRole("button", { name: "Start fresh as a new crew" }));
+    expect(switchCrew).toHaveBeenCalledWith("new");
+  });
+
+  it("tells a screen that is not the host's who picks", () => {
+    mount(check);
+    expect(screen.getByText(/The grown-up running the game picks/)).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Keep going with Riftlight" })).toBeNull();
   });
 });
