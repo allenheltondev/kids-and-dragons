@@ -57,14 +57,21 @@ kbd { font: 11px ui-monospace, monospace; border: 1px solid var(--line); border-
 button.accept kbd { color: #fff; border-color: rgba(255,255,255,.6); }
 label.grow { flex: 1 1 260px; }
 label.grow input { flex: 1; }
-main { max-width: 1200px; margin: 0 auto; padding: 16px 16px 200px; display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: 16px; align-items: start; }
+main { max-width: 1200px; margin: 0 auto; padding: 16px; display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: 16px; align-items: start; }
 @media (max-width: 820px) { main { grid-template-columns: minmax(0, 1fr); } }
 .panel { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: grid; gap: 10px; min-width: 0; }
 .panel h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0; }
-.portrait { position: sticky; top: 120px; }
-@media (max-height: 940px) { .portrait { position: static; } }
-@media (max-width: 820px) { .portrait { position: static; } .stage { max-width: 260px; width: 100%; justify-self: center; } header { position: static; } }
-.stage { aspect-ratio: 1; border-radius: 10px; background: radial-gradient(circle at 50% 40%, var(--card), var(--stage)); display: grid; place-items: center; overflow: hidden; }
+/* The face and the player stay on screen while the panels beside them scroll: editing a field and then playing a line
+   never means scrolling back up. On a short screen the picture gives way first, and the panel scrolls inside itself
+   if it still does not fit. --head is the header's height, measured by the page. */
+/* The left column runs the full height of the page, so the sticky face is held in view right to the last panel; the room
+   under the last panel, for the decision bar, is the right column's own. */
+.leftcol { align-self: stretch; min-width: 0; }
+.rightcol { display: grid; gap: 16px; min-width: 0; padding-bottom: 200px; }
+.portrait { position: sticky; top: calc(var(--head, 120px) + 12px); max-height: calc(100vh - var(--head, 120px) - 110px); overflow-y: auto; grid-auto-rows: max-content; }
+@media (max-width: 820px) { .portrait { position: static; max-height: none; overflow: visible; } .stage { max-width: 260px; width: 100%; justify-self: center; } header { position: static; } }
+/* The picture takes what the screen has left after the name and the player (about 490px), between a thumbnail and the full column. */
+.stage { max-width: clamp(110px, calc(100vh - var(--head, 120px) - 490px), 310px); justify-self: center; width: 100%; aspect-ratio: 1; border-radius: 10px; background: radial-gradient(circle at 50% 40%, var(--card), var(--stage)); display: grid; place-items: center; overflow: hidden; }
 .stage img, .stage canvas { width: 100%; height: 100%; object-fit: contain; }
 .stage .initial { font-size: 120px; font-weight: 700; color: var(--line); }
 .name { font-size: 24px; font-weight: 700; margin: 0; line-height: 1.2; }
@@ -113,6 +120,17 @@ main { max-width: 1200px; margin: 0 auto; padding: 16px 16px 200px; display: gri
 .progress { height: 6px; background: var(--line); border-radius: 999px; overflow: hidden; }
 .progress > span { display: block; height: 100%; width: 0; background: var(--accent); }
 .listen .time { font: 12px ui-monospace, monospace; color: var(--muted); display: flex; justify-content: space-between; }
+.field { display: grid; gap: 4px; }
+.field > span { font-size: 13px; color: var(--muted); }
+.field textarea { width: 100%; min-height: 54px; resize: vertical; }
+.chips.accents { align-items: center; }
+.chip.action { font: 13px system-ui, sans-serif; cursor: pointer; padding: 2px 9px; background: var(--card); color: var(--ink); }
+.chip.action:hover { border-color: var(--accent); }
+.chip.action[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+.places { margin: 0; padding-left: 1.3em; }
+.realmmap { position: relative; margin-top: 8px; max-width: 380px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--stage); }
+.realmmap img { display: block; width: 100%; height: auto; }
+.pin { position: absolute; transform: translate(-50%, -50%); width: 20px; height: 20px; border-radius: 999px; background: var(--accent); color: #fff; font: 700 12px/20px system-ui, sans-serif; text-align: center; box-shadow: 0 0 0 2px #fff, 0 1px 5px rgba(0,0,0,.55); }
 .done { grid-column: 1 / -1; text-align: center; padding: 60px 16px; }
 label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 13px; color: var(--muted); }
 ${MODE_CSS}</style>
@@ -215,6 +233,12 @@ ${MODE_CSS}</style>
   let cap = live.cap;
   let told = null;
   let said = { text: "", cell: null };
+
+  // The sticky face and player sit just under the header, whatever height its rows wrap to.
+  const headerEl = document.querySelector("header");
+  const sizeHead = () => document.documentElement.style.setProperty("--head", headerEl.offsetHeight + "px");
+  sizeHead();
+  if (window.ResizeObserver) new ResizeObserver(sizeHead).observe(headerEl);
 
   // ---- Header ----
   KadMode.mountSwitch({
@@ -581,6 +605,25 @@ ${MODE_CSS}</style>
       el("div", { class: "hint", id: "listenNote" }));
   }
 
+  // Where their people live: the places in words, and the realm's map with each one marked by its number.
+  function homelandView(homeland) {
+    const list = el("ol", { class: "places" }, homeland.places.map((place) => el("li", {}, place.title, place.label ? el("span", { class: "hint" }, " (the map calls it " + place.label + ")") : null)));
+    const marked = homeland.places.map((place, i) => ({ place, n: i + 1 })).filter((item) => item.place.x !== null);
+    const map = marked.length
+      ? el("div", { class: "realmmap" },
+          el("img", { src: "/art/world/realm_of_red_sky.webp", alt: "The realm's map, with " + marked.map((item) => item.place.title).join(" and ") + " marked", loading: "lazy" }),
+          marked.map((item) => el("span", { class: "pin", style: "left:" + item.place.x / 10 + "%;top:" + item.place.y / 10 + "%", title: item.place.title }, String(item.n))))
+      : null;
+    return el("div", {}, list, map);
+  }
+
+  // A plain field, saved as you leave it, like the accent: no Edit button, no second step.
+  function field(label, value, placeholder, onSave) {
+    const area = el("textarea", { placeholder, "aria-label": label, rows: "2" }, value);
+    area.addEventListener("change", () => onSave(area.value));
+    return el("label", { class: "field" }, el("span", {}, label), area);
+  }
+
   function about(id, entry, profile) {
     const gender = el("select", { "aria-label": "Gender" }, Object.entries(GENDER).map(([value, label]) => el("option", { value }, label)));
     gender.value = entry.gender || "unknown";
@@ -593,6 +636,7 @@ ${MODE_CSS}</style>
       profile.facts.basis || (profile.canon && profile.canon.people) ? ["People", profile.facts.basis || profile.canon.people] : null,
       profile.facts.heightCm ? ["Height", profile.facts.heightCm + " cm" + (profile.facts.stance && profile.facts.stance !== "standing" ? ", " + profile.facts.stance : "")] : null,
       profile.canon && profile.canon.home ? ["Home", profile.canon.home] : null,
+      profile.homeland ? [profile.homeland.source === "people" ? "Their people live" : "Lives", homelandView(profile.homeland)] : null,
       profile.canon && profile.canon.role ? ["Role", profile.canon.role] : null,
       profile.facts.look ? ["Looks like", profile.facts.look] : null,
       entry.aliases.length ? ["Also called", entry.aliases.join(", ")] : null,
@@ -634,8 +678,19 @@ ${MODE_CSS}</style>
       voice.addEventListener("change", () => pick(voice.value));
     }
     const others = mine ? Object.entries(data.speakers).filter(([other, e]) => other !== id && KadMode.voiceId(e, mode) === mine).length : 0;
-    const accent = el("input", { value: entry.accent || "", placeholder: data.accent, "aria-label": "Accent" });
+    const accent = el("input", { value: entry.accent || "", placeholder: data.accent, "aria-label": "Accent", list: "accent-list" });
     accent.addEventListener("change", async () => { await save(id, { accent: accent.value }); draw(); loadTold(); });
+    const suggestions = el("datalist", { id: "accent-list" }, data.accents.map((a) => el("option", { value: a.label, label: a.group + " · " + a.note })));
+    // Ideas from where their people live, one click to try; a click on the one in use puts the sheet's own back.
+    const ideas = (data.profiles[id] && data.profiles[id].accentIdeas) || [];
+    const tryAccent = async (label) => { await save(id, { accent: entry.accent === label ? "" : label }); draw(); loadTold(); };
+    const chips = ideas.length
+      ? el("div", { class: "chips accents" }, el("span", { class: "hint" }, "Ideas from where their people live:"), ideas.map((idea) => {
+          const chip = el("button", { type: "button", class: "chip action", "aria-pressed": String(entry.accent === idea.label), title: idea.note + ". " + idea.because.join("; ") }, idea.label);
+          chip.addEventListener("click", () => tryAccent(idea.label));
+          return chip;
+        }))
+      : el("div", { class: "hint" }, "Nothing on the map to suggest from. Start typing for the accents on offer, or write your own.");
     const info = mode === "gemini" ? voiceInfo[entry.gemini.voice] : null;
     const mismatch = info && info.gender && entry.gender && (entry.gender === "female" || entry.gender === "male") && (info.gender === "f") !== (entry.gender === "female");
     return el("section", { class: "panel" },
@@ -643,17 +698,15 @@ ${MODE_CSS}</style>
       el("div", { class: "row" }, voice, el("span", { class: "hint" }, !mine ? "no " + KadMode.NAMES[mode] + " voice yet" : others ? "also " + others + " other" + (others === 1 ? "" : "s") + " in other chapters" : "only them")),
       mismatch ? el("div", { class: "clash" }, "This voice reads as a " + (info.gender === "f" ? "woman's" : "man's") + ", and they're marked " + entry.gender + ".") : null,
       (clashes[id] || []).map((clash) => el("div", { class: "clash" }, "Same voice as " + clash.with.map((other) => (data.speakers[other] || { name: other }).name).join(", ") + " in " + clash.chapter)),
-      el("label", { class: "inline grow" }, "Accent", accent),
-      sheetOwned ? editable("How they sound", entry.who, "on the sheet: the " + entry.name.toLowerCase() + " isn't in any chapter's canon", async (text) => {
-        const json = await save(id, { who: text });
-        if (json) loadTold();
-        return !!json;
-      }, null, "Save") : null,
-      editable("Your direction for the model", entry.direction || "", "added after who they are, kept on every rebuild", async (text) => {
-        const json = await save(id, { direction: text });
-        if (json) loadTold();
-        return !!json;
-      }, el("div", { class: "hint" }, "Plain words, like \u201ca touch quicker than usual\u201d or \u201cbrighter, with a smile in it\u201d. Leave it empty to remove it."), "Save", true),
+      el("label", { class: "inline grow" }, "Accent", accent, suggestions),
+      chips,
+      sheetOwned ? field("How they sound (on the sheet: the " + entry.name.toLowerCase() + " isn't in any chapter's canon)", entry.who, "A warm grown-up storyteller…", async (text) => {
+        if (await save(id, { who: text })) { syncListen(); loadTold(); }
+      }) : null,
+      field("Your direction for the model", entry.direction || "", "e.g. a touch quicker than usual, or brighter, with a smile in it", async (text) => {
+        if (await save(id, { direction: text })) { syncListen(); loadTold(); }
+      }),
+      el("div", { class: "hint" }, "Saved as you leave the box, and kept on every rebuild. Leave direction empty to remove it."),
       mode === "elevenlabs" ? el("div", { class: "hint" }, "ElevenLabs is not told who they are or how they talk: it reads the words in the voice you picked, so the description, accent and direction above steer only Gemini.") : null,
       el("div", { class: "hint" }, mode === "elevenlabs" ? "What " + (told ? told.model : modelId()) + " is sent:" : "What " + (told ? told.model : modelId()) + " is told, besides the words:"),
       el("pre", { class: "told", id: "told" }, told && told.id === id ? told.display : "…"),
@@ -716,8 +769,8 @@ ${MODE_CSS}</style>
     const profile = data.profiles[id] || { image: null, imageIsGeneric: false, facts: {}, canon: null, voiceNotes: [] };
     document.title = entry.name + " · Cast profiles";
     document.getElementById("main").replaceChildren(
-      portrait(id, entry, profile),
-      el("div", { style: "display:grid;gap:16px;min-width:0" }, about(id, entry, profile), canonPanel(id, entry, profile), modelPanel(id, entry), hearPanel(id, entry), historyPanel(entry)));
+      el("div", { class: "leftcol" }, portrait(id, entry, profile)),
+      el("div", { class: "rightcol" }, about(id, entry, profile), canonPanel(id, entry, profile), modelPanel(id, entry), hearPanel(id, entry), historyPanel(entry)));
     decideBar(id, entry);
     drawHeader();
     syncListen();

@@ -4,8 +4,9 @@ Every character in the game, the voice they speak with, and their own lines to h
 is the production cast the [voice narration plan](./voice-narration-plan.md) (§2) calls for. Its
 voices are Gemini's, the provider the game is leaning toward, and a page can also be switched to
 **ElevenLabs** to pick and audition voices from an account there (see
-[ElevenLabs mode](#elevenlabs-mode)). Everyone speaks with an American
-accent: the game is for American children.
+[ElevenLabs mode](#elevenlabs-mode)). Everyone starts with an American accent,
+because the game is for American children, but nobody has to keep it: each character can have their own, and the
+profile page suggests some (see [Accents](#accents-and-where-their-people-live)).
 
 ```
 npm run voice:cast                  # build or refresh content/voice/cast.json from the content
@@ -98,7 +99,9 @@ chapters, so the characters that matter most are reviewed first. The header keep
 
 Each profile has:
 
-- **The player, under their picture:**
+- **The player, under their picture,** which stays on screen while the panels beside it scroll,
+  so you can edit a field, press Play and watch their face without scrolling back up. On a short
+  screen the picture shrinks first, and the panel scrolls inside itself if it still doesn't fit:
   - their voice;
   - the line it's on, with **‹ ›** to change lines;
   - one big **Play** button (**Render and play** the first time a line is heard in this voice);
@@ -120,6 +123,8 @@ Each profile has:
 - **About them:**
   - their **gender**, with where it came from;
   - pronouns, their people, height, home and role (from canon and the art manifest);
+  - **where their people live**, numbered, with the realm's map beside it and each place marked
+    on it (see [Accents](#accents-and-where-their-people-live));
   - how they look (the art brief, `docs/briefs/story-cast-art.md`);
   - other names, whether they speak, and their chapters.
 
@@ -135,13 +140,18 @@ Each profile has:
     commit with an edit there must re-take those hashes and say why (its header says how).
 - **Voice and model:**
   - the voice, with a warning if it doesn't match their gender, and any clash in a chapter;
-  - their accent;
+  - their **accent**, with ideas to try;
   - **your direction for the model**, in plain words ("a touch quicker than usual", "brighter,
     with a smile in it"). It goes after who they are, in `direction` on the sheet, and is kept on
     every rebuild. Leave it empty to remove it;
   - for the narrator and the party, **how they sound**. Their description lives on the sheet
     rather than in any chapter, so it is edited here. Everyone else's comes from their voice notes
-    in canon, edited above;
+    in canon, edited above.
+
+  Accent, direction and how they sound are plain fields, saved as you leave them, with no Edit
+  button and no second step. (The voice notes in canon above stay two-step on purpose: they
+  write to a canon file.) The line you were on is marked as not yet heard in the new words, ready
+  for one click;
   - **what the model is told** besides the words: the exact Gemini 3.8 style, or the Gemini 3.1
     prompt, for the model picked in the header.
 - **Hear them:** every audition line in full, each with its own **Play**, and where it comes
@@ -187,6 +197,34 @@ same clip cache and the same session spending cap.
 Gemini's style for each line is the character's name and notes, then
 `Accent: General American, …`, then the line's delivery if it has one
 ([voice-bakeoff.md](./voice-bakeoff.md#expression-delivery-and-beats)).
+
+## Accents and where their people live
+
+The sheet's accent is General American, and a character's own **accent** replaces it in what
+Gemini is told. The accent box suggests as you type (it is a list of regional accents of English:
+American regions, British and Irish, Canadian, Australian and New Zealand), and the same list is on
+the cards page.
+
+On a profile, **Their people live** lists the places canon gives their people and marks each on the
+realm's map. It comes from canon:
+
+- a people's own homeland (`relationships.primary_locations` in `canon/npcs.yaml`), plus any
+  biome that names them under `inhabitants` in `canon/biomes.yaml`, which is also how the six
+  playable species are placed;
+- for someone with no people on the map, the place canon says is their home, shown as **Lives**;
+- nothing for someone with neither (the narrator, the party, anyone canon doesn't place).
+
+A place is shown by its canon name, with the map's own label when it differs ("The Sallow
+Wastelands", which the map calls "The Bone Yard"). A homeland is where a people is most often found,
+not a border, as canon itself says.
+
+Under the accent box, **Ideas from where their people live** are a few accents that might suit those
+places, each with its reason on hover ("Sunward Fields: farms, orchards and village cooperatives").
+One click tries it, and a click on the one in use puts the sheet's own accent back. They are guesses
+to hear and judge, kept in `tools/voice/cast/accents.ts` (`REGION_IDEAS`), where you can change
+them; a test checks that every place named there is a real biome in canon. Only regional accents of
+English are offered, never another language's English, which too easily becomes a caricature.
+ElevenLabs is not told the accent: it steers only Gemini.
 
 ## ElevenLabs mode
 

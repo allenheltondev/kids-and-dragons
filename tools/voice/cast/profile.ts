@@ -8,9 +8,31 @@
 import fs from "node:fs";
 import path from "node:path";
 import * as yaml from "js-yaml";
+import { accentIdeas } from "./accents.ts";
 import { INDIVIDUAL_FIELDS, isPinned } from "./canon-edit.ts";
 import type { CastEntry, CastSheet } from "./sheet.ts";
 import { chapterFiles } from "./sources.ts";
+
+/** A place on the realm's map: a biome or a named location, with its label anchor (0 to 1000 each way, from the top left). */
+export interface Place {
+  id: string;
+  /** The canon name ("The Sallow Wastelands"). */
+  title: string;
+  /** What the map itself prints there, when it is not the name ("The Bone Yard"). */
+  label?: string;
+  x: number | null;
+  y: number | null;
+  /** The biome it is in (its own id for a biome), which is what the accent ideas are keyed by. */
+  biome: string;
+}
+
+/** Where a character's people live: the places canon gives their people, or failing that the place the character calls home. */
+export interface Homeland {
+  /** Their people's name ("skupper"), when canon gives one. */
+  people: string | null;
+  source: "people" | "home";
+  places: Place[];
+}
 
 export interface Profile {
   /** A served path under /art/, or null when nobody has painted them. */
@@ -20,7 +42,84 @@ export interface Profile {
   facts: { basis?: string; scale?: string; heightCm?: number; stance?: string; look?: string };
   canon: null | { id: string; home?: string; role?: string; people?: string; fields: Record<string, string> };
   voiceNotes: { chapter: string; campaign: string; key: string; text: string; pinned: boolean }[];
+  /** Where their people live on the map, or null when canon has no place for them. */
+  homeland: Homeland | null;
+  /** Accents that might suit where they live, most-suggested first, each with the reasons. */
+  accentIdeas: { label: string; note: string; because: string[] }[];
 }
+
+/** The map's places and who lives where, read once from canon. */
+export interface PlaceBook {
+  biomes: Map<string, { title: string; label?: string; x: number | null; y: number | null }>;
+  locations: Map<string, { title: string; label?: string; x: number | null; y: number | null; biome: string }>;
+  /** A people's id ("npc.skupper", "character.unicorn") to the places canon puts them. */
+  homes: Map<string, string[]>;
+}
+
+const anchorOf = (entry: Record<string, unknown>): { x: number | null; y: number | null } => {
+  const anchor = entry.map_anchor as { x?: unknown; y?: unknown } | null | undefined;
+  return typeof anchor?.x === "number" && typeof anchor.y === "number" ? { x: anchor.x, y: anchor.y } : { x: null, y: null };
+};
+
+/** A place's name, and the map's own label for it when that is something else. */
+const namesOf = (entry: Record<string, unknown>, id: string): { title: string; label?: string } => {
+  const title = String(entry.title ?? entry.map_label ?? id);
+  const label = typeof entry.map_label === "string" && entry.map_label !== title ? entry.map_label : undefined;
+  return { title, ...(label ? { label } : {}) };
+};
+
+/** What canon says about the map: biomes, named locations and which peoples live in which. Empty if a file is missing. */
+export function readPlaces(root: string): PlaceBook {
+  const list = (file: string, key: string): Record<string, unknown>[] => {
+    const full = path.join(root, "canon", file);
+    if (!fs.existsSync(full)) return [];
+    const doc = yaml.load(fs.readFileSync(full, "utf8")) as Record<string, unknown> | null;
+    const found = doc?.[key];
+    return Array.isArray(found) ? (found as Record<string, unknown>[]) : [];
+  };
+  const book: PlaceBook = { biomes: new Map(), locations: new Map(), homes: new Map() };
+  const add = (people: string, place: string): void => {
+    const known = book.homes.get(people) ?? [];
+    if (!known.includes(place)) book.homes.set(people, [...known, place]);
+  };
+  for (const biome of list("biomes.yaml", "biomes")) {
+    const id = String(biome.id);
+    book.biomes.set(id, { ...namesOf(biome, id), ...anchorOf(biome) });
+    const inhabitants = (biome.inhabitants ?? {}) as { primary_peoples?: unknown; supporting_peoples?: unknown };
+    for (const people of [...((inhabitants.primary_peoples as string[] | undefined) ?? []), ...((inhabitants.supporting_peoples as string[] | undefined) ?? [])]) add(String(people), id);
+  }
+  for (const location of list("locations.yaml", "locations")) {
+    book.locations.set(String(location.id), { ...namesOf(location, String(location.id)), ...anchorOf(location), biome: String(location.parent_biome ?? "") });
+  }
+  for (const people of list("npcs.yaml", "npcs")) {
+    const relationships = (people.relationships ?? {}) as { primary_locations?: unknown };
+    for (const place of (relationships.primary_locations as string[] | undefined) ?? []) add(String(people.id), String(place));
+  }
+  return book;
+}
+
+const placeOf = (book: PlaceBook, id: string): Place | null => {
+  const biome = book.biomes.get(id);
+  if (biome) return { id, title: biome.title, ...(biome.label ? { label: biome.label } : {}), x: biome.x, y: biome.y, biome: id };
+  const location = book.locations.get(id);
+  return location ? { id, title: location.title, ...(location.label ? { label: location.label } : {}), x: location.x, y: location.y, biome: location.biome } : null;
+};
+
+/**
+ * Where a character's people live: the places canon gives their people (a kind, "npc.skupper", or one of the
+ * playable species, "character.unicorn"), or failing that the place they themselves call home. Null when canon
+ * has neither. A people's homeland is where they are most often found, not a border (canon says so).
+ */
+export function homelandOf(book: PlaceBook, people: string | undefined, home: string | undefined): Homeland | null {
+  const named = people ? [...new Set(book.homes.get(people) ?? [])].flatMap((id) => placeOf(book, id) ?? []) : [];
+  const label = people?.replace(/^(npc|character)\./, "").replace(/_/g, " ") ?? null;
+  if (named.length > 0) return { people: label, source: "people", places: named };
+  const house = home ? placeOf(book, home) : null;
+  return house ? { people: label, source: "home", places: [house] } : null;
+}
+
+/** The realm's map, the one painting outside the figures that /art/ serves: a profile marks where a character's people live on it. */
+export const REALM_MAP = "world/realm_of_red_sky.webp";
 
 /** What /art/ serves: paintings under assets/, nothing else. */
 export const ART = /^(cast|entities|characters)\/[a-z0-9_]+(\/[a-z0-9_]+)?\/(assembled\.png|portrait\.webp)$/;
@@ -72,8 +171,9 @@ export function loadProfiles(root: string, sheet: CastSheet): Record<string, Pro
     return chapters.get(id);
   };
 
+  const places = readPlaces(root);
   const profiles: Record<string, Profile> = {};
-  for (const [id, entry] of Object.entries(sheet.speakers)) profiles[id] = profileOf(root, id, entry, { figures, looks, byName, individuals, chapter });
+  for (const [id, entry] of Object.entries(sheet.speakers)) profiles[id] = profileOf(root, id, entry, { figures, looks, byName, individuals, chapter, places });
   return profiles;
 }
 
@@ -87,6 +187,7 @@ function profileOf(
     byName: Map<string | undefined, string>;
     individuals: Map<string, Record<string, unknown>>;
     chapter: (id: string) => { campaignId?: string; voiceGuide?: { npcVoices?: Record<string, string> } } | undefined;
+    places: PlaceBook;
   },
 ): Profile {
   // The scenes' own figure first; then a cast painting under their id or name, for those the scenes draw as someone else.
@@ -95,6 +196,16 @@ function profileOf(
   const facts = figure ? sources.figures.get(figure) : undefined;
   const castId = figure?.startsWith("cast/") ? figure.slice(5) : undefined;
   const person = entry.canon ? sources.individuals.get(entry.canon) : undefined;
+  // Their people: canon's word for the individual, or the kind they are drawn as (a faun, a yeti, a unicorn).
+  const basis = (facts?.basis ?? (figure && !figure.startsWith("cast/") ? figure.split("/")[1] : undefined))?.toLowerCase().replace(/[ -]/g, "_");
+  const people =
+    typeof person?.people === "string"
+      ? person.people
+      : basis
+        ? [`npc.${basis}`, `character.${basis}`].find((id) => sources.places.homes.has(id))
+        : undefined;
+  const homeland = homelandOf(sources.places, people, typeof person?.home === "string" ? person.home : undefined);
+  const ideas = homeland ? accentIdeas(homeland.places.map((place) => place.biome), (biome) => sources.places.biomes.get(biome)?.title ?? biome) : [];
   return {
     image,
     imageIsGeneric: !!figure && !figure.startsWith("cast/"),
@@ -114,6 +225,8 @@ function profileOf(
           fields: Object.fromEntries(INDIVIDUAL_FIELDS.map((field) => [field, typeof person[field] === "string" ? (person[field] as string).replace(/\s+/g, " ").trim() : ""])),
         }
       : null,
+    homeland,
+    accentIdeas: ideas.map((idea) => ({ label: idea.accent.label, note: idea.accent.note, because: idea.because })),
     voiceNotes: (entry.voiceNotes ?? []).flatMap(({ chapter: chapterId, key }) => {
       const chapter = sources.chapter(chapterId);
       const text = chapter?.voiceGuide?.npcVoices?.[key];

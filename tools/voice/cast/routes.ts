@@ -21,6 +21,7 @@ import { cellOf, estimate, estimateTake, renderTake, type Workspace } from "../b
 import type { Cell } from "../bakeoff/page.ts";
 import { GEMINI_VOICES, engineOf, familyOf, plan, type CastFile, type Fetch, type Keys, type ModelInfo } from "../bakeoff/providers.ts";
 import type { Sample } from "../bakeoff/samples.ts";
+import { ACCENTS } from "./accents.ts";
 import { CanonEditError, editIndividual, editVoiceNote } from "./canon-edit.ts";
 import { loadProfiles } from "./profile.ts";
 import { reviewJson, reviewMarkdown } from "./review.ts";
@@ -186,6 +187,8 @@ export function castPageData(options: CastRouteOptions, include: { profiles?: bo
     // Every provider's, each tagged with its own: the page shows the ones for the mode it is in.
     models: options.catalog.filter((model) => model.provider === "gemini" || model.provider === "elevenlabs"),
     defaultModels: DEFAULT_MODEL,
+    // Accents to suggest in the accent field, grouped: the sheet's own default is General American, and nobody has to keep it.
+    accents: ACCENTS,
     chapterCampaigns: options.chapterCampaigns,
     auditions: Object.fromEntries(Object.entries(sheet.speakers).map(([id, entry]) => [id, auditionLines(id, entry)])),
   };
