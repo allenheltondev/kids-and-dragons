@@ -758,6 +758,8 @@ test.describe("first playable", () => {
     // room channel alone.
     await expect(tv.getByText("Sparklehoof").first()).toBeVisible({ timeout: 15_000 });
     await expect(controller.getByRole("button", { name: /begin the adventure/i })).toBeVisible();
+    // "Meet Sparklehoof!" greets a new hero for a moment; the picture is of the screen under it.
+    await expect(controller.locator(".hero-arrival")).toHaveCount(0, { timeout: 10_000 });
     await guidePicture(controller, "ready", { mark: controller.getByRole("button", { name: /play the practice/i }) });
     await guidePicture(tv, "tv-lobby");
     expect(tvErrors).toEqual([]);
