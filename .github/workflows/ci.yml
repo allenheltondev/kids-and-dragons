@@ -196,6 +196,12 @@ jobs:
       - name: Verify audio assets
         run: npm run audio:verify
 
+      # Recorded narration (#545): fails a manifest that would play the wrong words, a malformed
+      # clip or a broken script, never a line with no clips yet. Whether each clip is on the site
+      # is asked by deploy.sh, which knows which site it is deploying to.
+      - name: Verify voice manifests
+        run: npm run voice:verify
+
 
   test:
     needs: changes

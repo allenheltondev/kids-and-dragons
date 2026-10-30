@@ -224,7 +224,7 @@ New `tools/voice/` (the `tools/audio` pattern), with npm scripts:
 | `voice:status` | desired clips vs. manifest: **missing / stale / unreviewed / approved / orphaned**, per chapter, with a character count and cost estimate for each provider | no |
 | `voice:generate` | renders only missing clips. `--chapter`, `--speaker`, `--provider`, `--dry-run`, `--max-chars` budget cap, concurrency, retries with backoff | no |
 | `voice:review` | a listening page per chapter (like `audio:preview`): play a scene's playlist, approve, reject with a note, regenerate a take | no |
-| `voice:verify` | CI: every manifest entry points at a clip that exists, the script sidecars match their source, every speaker is cast, durations are sane | **yes, on broken, never on missing** |
+| `voice:verify` | CI: every manifest entry points at a clip that exists, the script sidecars match their source, every speaker is cast, durations are sane (built, #545: `tools/voice/check.ts`; the clip lookup runs in `deploy.sh` against the site being deployed, `tools/voice/verify-site.ts`) | **yes, on broken, never on missing** |
 
 As with `audio:verify`, **absence is reported, never fatal**. A gate that failed on missing clips
 would be red from day one.

@@ -29,7 +29,10 @@ Both run `scripts/deploy.sh`, which is also what you run from a laptop:
 
 It runs the checks — typecheck, unit tests, `content:validate`, `art:verify`,
 and `infra:lint` when `cfn-lint` is installed — then bundles
-the Lambdas, deploys the stack, uploads the client and the art, and invalidates
+the Lambdas, deploys the stack, checks that every recorded voice clip the
+manifests in `content/voice/manifest/` play is on the site
+(`tools/voice/verify-site.ts`, even when the checks are skipped, since only the
+deploy knows which site it is), uploads the client and the art, and invalidates
 CloudFront — in that order, so a deploy that fails partway leaves the previous
 version serving rather than a new bundle talking to an API that does not exist
 yet. It also exports `AWS_REGION=us-east-1` unless one is already set, so a
