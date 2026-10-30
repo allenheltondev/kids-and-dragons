@@ -19,7 +19,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { cellOf, estimate, estimateTake, priceOf, renderTake, type Workspace } from "../bakeoff/bakeoff.ts";
 import type { Cell } from "../bakeoff/page.ts";
-import { createDesignedVoice, designVoice, GEMINI_VOICES, engineOf, familyOf, plan, type CastFile, type Fetch, type Keys, type ModelInfo } from "../bakeoff/providers.ts";
+import { DESIGN_MODEL, DESIGN_PRICED_AS, createDesignedVoice, designVoice, GEMINI_VOICES, engineOf, familyOf, plan, type CastFile, type Fetch, type Keys, type ModelInfo } from "../bakeoff/providers.ts";
 import type { Sample } from "../bakeoff/samples.ts";
 import { ACCENTS } from "./accents.ts";
 import { designBrief, designProblem } from "./design.ts";
@@ -212,11 +212,13 @@ export const DESIGN_PREVIEWS = 3;
 
 export function createCastRoutes(options: CastRouteOptions, budget: Budget) {
   /**
-   * What previewing a designed voice costs. ElevenLabs bills a design by the credits the previews use, which pricing.json
-   * does not list, so this prices them as the mode's own speech model saying the sample text once for each preview: a
-   * stand-in, not ElevenLabs' own rate: check what a design really costs on your account before trusting the cap here.
+   * What previewing a designed voice is estimated to cost. ElevenLabs bills a design in credits that pricing.json does not
+   * list, and bills the preview text once whatever the number of candidates (not once for each). So it is priced as the
+   * speech model of the same generation (eleven_v3, whose rate is itself unconfirmed there) reading the text once: an
+   * estimate to hold the cap with, not ElevenLabs' own figure. Check what a design really costs on your account.
    */
-  const designPrice = (text: string): number | null => priceOf(engineFor(undefined, options.catalog, "elevenlabs"), text.length * DESIGN_PREVIEWS, DESIGN_PREVIEWS, options.ws);
+  const designPrice = (text: string): number | null => priceOf(engineFor(DESIGN_PRICED_AS, options.catalog, "elevenlabs"), text.length, 1, options.ws);
+  const DESIGN_BASIS = `estimated as ${DESIGN_PRICED_AS} speech reading the sample text once; ElevenLabs bills a design in credits, so check your account`;
 
   /** Renders one sample in the sheet's voices, inside the session's cap. */
   async function render(sheet: CastSheet, sample: Sample, model: unknown, keys: Keys, take = 1, provider: VoiceProvider = "gemini"): Promise<Reply> {
@@ -440,7 +442,12 @@ export function createCastRoutes(options: CastRouteOptions, budget: Budget) {
         const entry = sheet.speakers[String(body.id)];
         if (!entry) return { status: 400, body: { error: `nobody called ${String(body.id)} in the sheet` } };
         const brief = designBrief(sheet, entry, STAND_IN);
-        return { status: 200, body: { ...brief, previews: DESIGN_PREVIEWS, dollars: designPrice(brief.text), spent: budget.spent, cap: budget.cap } };
+        return { status: 200, body: { ...brief, previews: DESIGN_PREVIEWS, model: DESIGN_MODEL, dollars: designPrice(brief.text), basis: DESIGN_BASIS, spent: budget.spent, cap: budget.cap } };
+      }
+      case "/api/cast/design/quote": {
+        // The price of previewing this text, which the page asks for again each time the text is edited. Spends nothing.
+        const text = typeof body.text === "string" ? body.text.replace(/\s+/g, " ").trim() : "";
+        return { status: 200, body: { dollars: designPrice(text), basis: DESIGN_BASIS, spent: budget.spent, cap: budget.cap } };
       }
       case "/api/cast/design/preview": {
         const description = typeof body.description === "string" ? body.description.replace(/\s+/g, " ").trim() : "";
@@ -448,6 +455,10 @@ export function createCastRoutes(options: CastRouteOptions, budget: Budget) {
         const problem = designProblem(description, text);
         if (problem) return { status: 400, body: { error: problem } };
         const price = designPrice(text);
+        // The page says what it showed; if the words changed since, it is told the new price instead of spending on the old one.
+        if (typeof body.quote === "number" && price !== null && Math.abs(body.quote - price) > 1e-9) {
+          return { status: 409, body: { error: `The price changed to about $${price.toFixed(2)} for these words: check it and go again.`, dollars: price, spent: budget.spent, cap: budget.cap } };
+        }
         if (price === null) return { status: 409, body: { error: "pricing.json has no price for the ElevenLabs model, so the cap cannot be kept.", spent: budget.spent, cap: budget.cap } };
         if (budget.spent + price > budget.cap + 1e-9) {
           return { status: 402, body: { error: `This would take the session past its $${budget.cap.toFixed(2)} cap. Raise the cap on the bake-off page to go on.`, spent: budget.spent, cap: budget.cap } };

@@ -237,6 +237,37 @@ const KadMode = (() => {
     go.textContent = "Hear 3 candidates";
     const previews = el2("div", "previews");
     const money = (n) => (n === null || n === undefined ? "price unknown" : "about $" + n.toFixed(2));
+    // The price shown is the price for the words in the box now: it is asked for again whenever they change, and what the
+    // page spends is sent with the request, so the server can refuse to spend on a price nobody saw.
+    let quoted = null;
+    let quoting = 0;
+    let basis = "";
+    async function requote() {
+      const mine = ++quoting;
+      cost.textContent = "Checking the price…";
+      try {
+        const result = await call("/api/cast/design/quote", { text: text.value });
+        if (mine !== quoting) return;
+        quoted = result.dollars;
+        basis = result.basis || basis;
+        cost.textContent = "Hearing the candidates is " + money(quoted) + " of the session cap";
+        cost.title = basis;
+      } catch (error) {
+        if (mine !== quoting) return;
+        quoted = null;
+        cost.textContent = "Could not check the price: " + error.message;
+      }
+    }
+    // Candidates belong to the words that made them: changing either box takes them away, so a voice can never be saved
+    // under a description it was not made from.
+    function stale() {
+      if (!previews.children.length) return;
+      previews.replaceChildren();
+      status.textContent = "Edited: hear the candidates again.";
+    }
+    let timer = null;
+    description.addEventListener("input", stale);
+    text.addEventListener("input", () => { stale(); quoted = null; cost.textContent = "Checking the price…"; clearTimeout(timer); timer = setTimeout(requote, 250); });
     let started = false;
     box.addEventListener("toggle", async () => {
       if (!box.open || started) return;
@@ -246,14 +277,17 @@ const KadMode = (() => {
         const brief = await call("/api/cast/design/brief", { id });
         description.value = brief.description;
         text.value = brief.text;
-        cost.textContent = "Previewing " + brief.previews + " candidates costs " + money(brief.dollars) + " of the session cap.";
+        quoted = brief.dollars;
+        basis = brief.basis || "";
+        cost.textContent = "Hearing the candidates is " + money(quoted) + " of the session cap";
+        cost.title = basis;
         status.textContent = "";
       } catch (error) {
         started = false;
         status.textContent = "Could not read the sheet: " + error.message;
       }
     });
-    function row(preview, index) {
+    function row(preview, index, used) {
       const play = document.createElement("button");
       play.type = "button";
       play.textContent = "▶ Candidate " + (index + 1);
@@ -268,7 +302,7 @@ const KadMode = (() => {
         use.disabled = true;
         use.textContent = "Saving…";
         try {
-          const saved = await call("/api/cast/design/save", { id, generatedVoiceId: preview.generatedVoiceId, name: chosen.trim(), description: description.value });
+          const saved = await call("/api/cast/design/save", { id, generatedVoiceId: preview.generatedVoiceId, name: chosen.trim(), description: used.description });
           use.textContent = "Saved";
           await onSaved(saved.voice, saved.entry);
         } catch (error) {
@@ -281,13 +315,21 @@ const KadMode = (() => {
     }
     go.addEventListener("click", async () => {
       go.disabled = true;
-      status.textContent = "Designing…";
+      clearTimeout(timer);
+      status.textContent = "Checking the price…";
       try {
-        const result = await call("/api/cast/design/preview", { id, description: description.value, text: text.value });
-        previews.replaceChildren(...result.previews.map(row));
+        await requote();
+        if (quoted === null) { status.textContent = "No price for these words, so nothing was spent."; return; }
+        const used = { description: description.value, text: text.value };
+        status.textContent = "Designing…";
+        const result = await call("/api/cast/design/preview", { id, description: used.description, text: used.text, quote: quoted });
+        // Edited while it was working: those candidates are for words that are gone.
+        if (description.value !== used.description || text.value !== used.text) { status.textContent = "Edited while designing: hear the candidates again."; return; }
+        previews.replaceChildren(...result.previews.map((preview, index) => row(preview, index, used)));
         status.textContent = result.previews.length ? "Spent so far: $" + result.spent.toFixed(2) + " of $" + result.cap.toFixed(2) : "ElevenLabs returned no candidates.";
       } catch (error) {
         status.textContent = error.message;
+        if (error.dollars !== undefined) { quoted = error.dollars; cost.textContent = "Hearing the candidates is " + money(quoted) + " of the session cap"; }
       } finally {
         go.disabled = false;
       }
@@ -336,16 +378,21 @@ const KadMode = (() => {
     more.type = "button";
     more.textContent = "More";
     more.hidden = true;
+    // Only the latest search may draw: an earlier one that comes back late would overwrite its results and its paging.
+    let latest = 0;
     async function run(next) {
       page = next;
+      const mine = ++latest;
       status.textContent = "Searching…";
       try {
         const result = await call("/api/voices/library", { search: search.value, gender: gender.value, page });
+        if (mine !== latest) return;
         if (!page) found.replaceChildren();
         for (const v of result.voices) found.append(row(v));
         status.textContent = (result.total !== undefined ? result.total + " in the library" : "") + (result.voices.length ? "" : "Nothing found");
         more.hidden = !result.hasMore;
       } catch (error) {
+        if (mine !== latest) return;
         status.textContent = "Could not search the library: " + error.message;
       }
     }
@@ -419,6 +466,6 @@ const KadMode = (() => {
     return { paint };
   }
 
-  return { NAMES, providerOf, isEleven, normalize, modelsFor, model, voiceId, voiceName, approved, history, lastRejected, untouched, historyLine, uses, coverage, voiceOptions, filterOptions, filterGender, voicePicker, voiceDesigner, pickBody, keyHeaders, keyLabel, mountSwitch };
+  return { NAMES, providerOf, isEleven, normalize, modelsFor, model, voiceId, voiceName, approved, history, lastRejected, untouched, historyLine, uses, coverage, voiceOptions, filterOptions, filterGender, voicePicker, voiceDesigner, mountLibrary, pickBody, keyHeaders, keyLabel, mountSwitch };
 })();
 `;

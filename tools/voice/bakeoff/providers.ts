@@ -605,6 +605,10 @@ export interface DesignedPreview {
   seconds?: number;
 }
 
+/** The model voice design runs on (its own list: not the speech models), and the speech model its previews are priced as. */
+export const DESIGN_MODEL = "eleven_ttv_v3";
+export const DESIGN_PRICED_AS = "eleven_v3";
+
 /** ElevenLabs' limits on a voice description and the sample text it is previewed on. */
 export const DESIGN_LIMITS = { description: { min: 20, max: 1000 }, text: { min: 100, max: 1000 } } as const;
 
@@ -616,7 +620,7 @@ export async function designVoice(keys: Keys, input: { description: string; text
   const response = await fetch(`${ELEVENLABS}/text-to-voice/design`, {
     method: "POST",
     headers: { ...authFor("elevenlabs", keys), "content-type": "application/json" },
-    body: JSON.stringify({ voice_description: input.description, text: input.text, auto_generate_text: false }),
+    body: JSON.stringify({ model_id: DESIGN_MODEL, voice_description: input.description, text: input.text, auto_generate_text: false }),
   });
   if (!response.ok) throw await failure(response);
   const json = JSON.parse(await response.text()) as { previews?: { generated_voice_id: string; audio_base_64: string; media_type?: string; duration_secs?: number }[] };

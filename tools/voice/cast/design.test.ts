@@ -8,7 +8,7 @@ import os from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import type { Pricing } from "../cost-model.ts";
-import { DESIGN_LIMITS, createDesignedVoice, designVoice, type CastFile, type Fetch } from "../bakeoff/providers.ts";
+import { DESIGN_LIMITS, DESIGN_MODEL, DESIGN_PRICED_AS, createDesignedVoice, designVoice, type CastFile, type Fetch } from "../bakeoff/providers.ts";
 import { designBrief, designDescription, designProblem, designText } from "./design.ts";
 import { createCastRoutes, STAND_IN } from "./routes.ts";
 import type { CastEntry, CastSheet } from "./sheet.ts";
@@ -92,7 +92,9 @@ describe("the ElevenLabs calls", () => {
       { generatedVoiceId: "GEN2", audio: "data:audio/mpeg;base64,BBBB" },
     ]);
     expect(calls[0]!.url).toBe("https://api.elevenlabs.io/v1/text-to-voice/design");
-    expect(calls[0]!.body).toEqual({ voice_description: "d".repeat(30), text: "t".repeat(120), auto_generate_text: false });
+    // Voice design runs on its own models, never a speech model: ElevenLabs would otherwise pick its own default.
+    expect(DESIGN_MODEL).toBe("eleven_ttv_v3");
+    expect(calls[0]!.body).toEqual({ model_id: "eleven_ttv_v3", voice_description: "d".repeat(30), text: "t".repeat(120), auto_generate_text: false });
   });
 
   it("saves a preview to the account and returns the id it was given", async () => {
@@ -134,9 +136,32 @@ describe("the design routes", () => {
     expect(body.description).toContain("a stone troll ferryman");
     expect(body.previews).toBe(3);
     expect(body.dollars).toBeGreaterThan(0);
+    // The preview text is billed once, however many candidates come back, and priced as the matching speech model.
+    const rate = (pricing.models.find((m) => m.apiModel === DESIGN_PRICED_AS)!.rates[0] as { perThousandChars: number }).perThousandChars;
+    expect(body.dollars).toBeCloseTo((body.text.length / 1000) * rate, 6);
+    expect((body as unknown as { basis: string }).basis).toMatch(/once/);
     expect(budget.spent).toBe(0);
     expect(urls).toEqual([]);
     expect((await handle("/api/cast/design/brief", { id: "nobody" }, {}))!.status).toBe(400);
+  });
+
+  it("quotes any edited text on its own, and refuses to spend on a price the page did not see", async () => {
+    const { handle, budget, urls } = setup();
+    const { description, text, dollars } = await brief(handle);
+    const longer = `${text} ${text}`.slice(0, 600);
+    const quote = (await handle("/api/cast/design/quote", { text: longer }, {}))!.body as { dollars: number };
+    expect(quote.dollars).toBeGreaterThan(dollars!);
+    expect(budget.spent).toBe(0);
+    // The page showed the price for the first words, then the words changed.
+    const stale = await handle("/api/cast/design/preview", { id: "wick", description, text: longer, quote: dollars }, { elevenlabs: "k" });
+    expect(stale!.status).toBe(409);
+    expect((stale!.body as { dollars: number }).dollars).toBeCloseTo(quote.dollars, 9);
+    expect(budget.spent).toBe(0);
+    expect(urls).toEqual([]);
+    // Shown and spent are the same number.
+    const fresh = await handle("/api/cast/design/preview", { id: "wick", description, text: longer, quote: quote.dollars }, { elevenlabs: "k" });
+    expect(fresh!.status).toBe(200);
+    expect(budget.spent).toBeCloseTo(quote.dollars, 9);
   });
 
   it("previews inside the cap, charging for it, and refuses what is out of bounds or past the cap", async () => {
