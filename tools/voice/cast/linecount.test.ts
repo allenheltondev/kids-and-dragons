@@ -10,7 +10,7 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { castOrder, castPageData } from "./routes.ts";
 import { reviewJson } from "./review.ts";
-import { attributeQuotes, buildSheet, looksSpoken, type CastSheet, type ChapterLike, type LooseQuote, type NarrationLine } from "./sheet.ts";
+import { attributeQuotes, buildSheet, looksSpoken, withSceneRoles, type CastSheet, type ChapterLike, type LooseQuote, type NarrationLine } from "./sheet.ts";
 
 const chapters: ChapterLike[] = [
   { id: "c1", voiceGuide: { npcVoices: { pib: "a bramble sprite; he chirps", wisp: "a shy ghost; she whispers", mute: "a goat; only bleats" } } },
@@ -147,5 +147,31 @@ describe("guessing at quotes nobody is tagged for", () => {
   it("does not guess when someone else is named right beside the quote", () => {
     const withWisp = buildSheet({ chapters: hedge, individuals: [], narration: [{ chapter: "h1", address: "h1/alone/narration", text: 'Wisp drifts past the gate. "The hedge remembers everyone who passes."' }] }, null);
     expect(withWisp.speakers.pib!.lineCount).toBe(0);
+  });
+});
+
+describe("naming someone by what they are, in the scene they are in", () => {
+  const names = new Map([["cousins", "Gullet's Cousins"], ["gullet", "Gullet"], ["drover_a", "Centaur drover"], ["drover_b", "Faun drover"]]);
+  const speakers = [{ id: "cousins", names: ["Gullet's Cousins"] }, { id: "gullet", names: ["Gullet"] }, { id: "drover_a", names: ["Centaur drover"] }, { id: "drover_b", names: ["Faun drover"] }];
+  const rolesOf = (here: string[], id: string): readonly string[] => withSceneRoles(speakers, new Set(here), names).find((speaker) => speaker.id === id)!.names;
+
+  it("lets the last word of a name stand for them where nobody else in the scene shares it", () => {
+    expect(rolesOf(["cousins", "gullet"], "cousins")).toEqual(["Gullet's Cousins", "cousins", "cousin"]);
+    // Two drovers in one scene: "the drover" is nobody's, but "the centaur drover" still is.
+    expect(rolesOf(["drover_a", "drover_b"], "drover_a")).toEqual(["Centaur drover"]);
+    // Someone not in the scene keeps just their own names.
+    expect(rolesOf(["gullet"], "cousins")).toEqual(["Gullet's Cousins"]);
+    expect(withSceneRoles(speakers, undefined, names)).toEqual(speakers);
+  });
+
+  it("reads 'says a cousin' and 'groans the guide' as tags, and a bare 'the drover says' only when one drover is there", () => {
+    const here = withSceneRoles(speakers, new Set(["cousins", "gullet"]), names);
+    expect(attributeQuotes('"Tall lady with cords," says a cousin. "Never stopped jogging."', here).map((q) => q.id)).toEqual(["cousins", "cousins"]);
+    expect(attributeQuotes('"My cousin," groans the cousin.', here).map((q) => q.id)).toEqual(["cousins"]);
+    const drovers = withSceneRoles(speakers, new Set(["drover_a", "drover_b"]), names);
+    const loose: LooseQuote[] = [];
+    expect(attributeQuotes('"Toll refund," the drover says.', drovers, loose)).toEqual([]);
+    expect(loose).toHaveLength(1);
+    expect(attributeQuotes('"Toll refund," the centaur drover says.', drovers).map((q) => q.id)).toEqual(["drover_a"]);
   });
 });

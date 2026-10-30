@@ -257,13 +257,32 @@ export function traitsOf(entry: Pick<CastEntry, "name" | "who">): string[] {
   return traits;
 }
 
-const SPEECH_VERBS = "says|said|asks|adds|croaks|squawks|whispers|calls|shouts|booms|sighs|laughs|mutters|sings|grumbles|answers|replies|bellows|squeaks|hums|announces|explains|tells you|puffs|rumbles|snaps|chirps|cries|murmurs|declares|beams|grins|wheezes|honks|bleats|purrs|say|ask|whisper|call|shout|answer";
+const SPEECH_VERBS = "says|said|asks|adds|croaks|squawks|whispers|calls|shouts|booms|sighs|laughs|mutters|sings|grumbles|answers|replies|bellows|squeaks|hums|announces|explains|tells you|puffs|rumbles|snaps|chirps|cries|murmurs|declares|beams|grins|wheezes|honks|bleats|purrs|say|ask|whisper|call|shout|answer|groans|corrects|decides|promises|insists|warns|urges|offers|suggests|agrees|admits|demands|complains|grunts|gasps|yells|exclaims|remarks|continues|reminds|pleads|scolds|teases|hisses|growls|chuckles|giggles|cheers|moans|sniffs|barks|croak|groan|cry|mutter|explain|tells";
 const QUOTE = /["“]([^"”]{2,400})["”]/g;
 const escape = (text: string): string => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 export interface Speaker {
   id: string;
   names: readonly string[];
+}
+
+/**
+ * What the prose calls someone in the scene they are in: the last word of their name ("the keeper" for the Lookout
+ * keeper, "a cousin" for Gullet's Cousins). It names them only where no one else in the scene ends in the same word,
+ * which is how a reader knows who "the drover says" means. Anyone not in the scene keeps just their names.
+ */
+export function withSceneRoles(present: readonly Speaker[], inScene: ReadonlySet<string> | undefined, nameOf: ReadonlyMap<string, string>): Speaker[] {
+  if (!inScene || inScene.size < 1) return [...present];
+  const owners = new Map<string, string[]>();
+  for (const id of inScene) {
+    const last = nameOf.get(id)?.toLowerCase().replace(/['’]s\b/g, "").split(/\s+/).pop();
+    if (!last || last.length < 4) continue;
+    for (const word of new Set([last, last.length > 4 ? last.replace(/s$/, "") : last])) owners.set(word, [...(owners.get(word) ?? []), id]);
+  }
+  return present.map((speaker) => {
+    const mine = [...owners].filter(([, ids]) => ids.length === 1 && ids[0] === speaker.id).map(([word]) => word);
+    return mine.length > 0 ? { id: speaker.id, names: [...new Set([...speaker.names, ...mine])] } : speaker;
+  });
 }
 
 /** A quote nobody was tagged for, with the words either side of it. */
@@ -309,7 +328,7 @@ export function attributeQuotes(text: string, speakers: readonly Speaker[], unat
   mentions.sort((a, b) => a.at - b.at);
   const tagAfter = (tail: string): string | null => {
     for (const speaker of named) {
-      const name = `(?:the\\s+)?(?:${speaker.names.join("|")})`;
+      const name = `(?:(?:the|a|an|one)\\s+)?(?:${speaker.names.join("|")})`;
       if (new RegExp(`^\\s*,?\\s*(?:${SPEECH_VERBS})\\s+${name}\\b|^\\s*,?\\s*${name}\\s+(?:${SPEECH_VERBS})\\b`, "i").test(tail)) return speaker.id;
     }
     if (new RegExp(`^\\s*,?\\s*you\\s+(?:${SPEECH_VERBS})\\b`, "i").test(tail)) return "you";
@@ -760,7 +779,17 @@ const NARRATOR_LINES: AuditionLine[] = [
  * approved or not, so clash checks see an approved character in a chapter
  * written after the approval.
  */
-export function buildSheet(sources: Sources, previous: CastSheet | null): CastSheet {
+/** A quote the sheet could not give to anyone by its tags: where it is, who is in the scene, and whether it was counted as a guess. */
+export interface UntaggedQuote extends LooseQuote {
+  address: string;
+  /** The characters in the scene's cast: who the quote can be tagged for. */
+  scene: string[];
+  /** Counted for the scene's only speaker as a guess. */
+  guessed: boolean;
+}
+
+/** `untagged`, if given, is filled with every quote nobody was tagged for (voice:untagged reports it). */
+export function buildSheet(sources: Sources, previous: CastSheet | null, untagged?: UntaggedQuote[]): CastSheet {
   const accent = previous?.accent ?? "General American, the way a warm American storyteller reads aloud";
   const scenes: SceneCasts = new Map();
   const drafts = collectCharacters(sources, scenes);
@@ -789,6 +818,7 @@ export function buildSheet(sources: Sources, previous: CastSheet | null): CastSh
     status: "provisional",
   };
 
+  const nameOf = new Map(drafts.map((draft) => [draft.id, draft.name]));
   const narrationByChapter = new Map<string, NarrationLine[]>();
   for (const line of sources.narration) narrationByChapter.set(line.chapter, [...(narrationByChapter.get(line.chapter) ?? []), line]);
 
@@ -817,16 +847,21 @@ export function buildSheet(sources: Sources, previous: CastSheet | null): CastSh
       // A speech tag mid-sentence splits one line in two ("Rush prices, darlings," … "rush prices!"): join a speaker's run back up.
       const runs: { id: string; words: string[] }[] = [];
       const loose: LooseQuote[] = [];
-      const attributed = attributeQuotes(line.text, present, loose);
       const inScene = scenes.get(chapter)?.get(line.address.split("/")[1] ?? "");
+      const here = withSceneRoles(present, inScene, nameOf);
+      const attributed = attributeQuotes(line.text, here, loose);
       if (inScene?.size === 1) {
         const only = [...inScene][0]!;
         // Someone else named right beside the quote may be the one speaking, so it is no guess for this scene's only speaker.
-        const others = present.filter((speaker) => speaker.id !== only).flatMap((speaker) => speaker.names.filter((name) => name.length >= 3).map(escape));
+        const others = here.filter((speaker) => speaker.id !== only).flatMap((speaker) => speaker.names.filter((name) => name.length >= 3).map(escape));
         const othersNear = others.length === 0 ? null : new RegExp(`\\b(?:${others.join("|")})\\b`, "i");
         for (const quote of loose) {
-          if (looksSpoken(quote) && !(othersNear && (othersNear.test(quote.before.slice(-60)) || othersNear.test(quote.after.slice(0, 40))))) guessed.set(only, (guessed.get(only) ?? 0) + 1);
+          const counted = looksSpoken(quote) && !(othersNear && (othersNear.test(quote.before.slice(-60)) || othersNear.test(quote.after.slice(0, 40))));
+          if (counted) guessed.set(only, (guessed.get(only) ?? 0) + 1);
+          untagged?.push({ ...quote, address: line.address, scene: [...inScene], guessed: counted });
         }
+      } else {
+        for (const quote of loose) untagged?.push({ ...quote, address: line.address, scene: [...(inScene ?? [])], guessed: false });
       }
       for (const quote of attributed) {
         if (quote.pronoun && quote.pronoun !== "it") {
