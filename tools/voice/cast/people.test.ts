@@ -74,6 +74,27 @@ describe("sharing a voice across a people", () => {
     expect(sheet.speakers.keeper!.gemini.voice).toBe("Puck");
   });
 
+  it("never replaces an ElevenLabs voice somebody picked, even before it is approved, though Gemini's builder-assigned ones may go", () => {
+    const sheet = sheetOf();
+    sheet.speakers.herder!.elevenlabs = { voiceId: "21m00Tcm4TlvDq8ikWAM", name: "Rachel" };
+    // Keeper picked Adam by ear and has not approved him yet. Nothing assigns an ElevenLabs voice, so this is a decision.
+    sheet.speakers.keeper!.elevenlabs = { voiceId: "pNInz6obpgDQGcFmaJgB", name: "Adam" };
+    const result = shareVoice(sheet, "herder", ["keeper", "builder"], "elevenlabs");
+    expect(result.skipped).toEqual([{ id: "keeper", why: "Yeti keeper already has an ElevenLabs voice you picked (Adam)" }]);
+    expect(sheet.speakers.keeper!.elevenlabs).toEqual({ voiceId: "pNInz6obpgDQGcFmaJgB", name: "Adam" });
+    // The builder had none, and shares no chapter with the herder, so takes it.
+    expect(result.applied).toEqual(["builder"]);
+    // On Gemini the same unapproved keeper's Puck was only ever assigned, and is replaced (as the first test shows).
+    expect(shareVoice(sheetOf(), "herder", ["keeper"], "gemini").applied).toEqual(["keeper"]);
+  });
+
+  it("names an ElevenLabs voice by its id when it has no name", () => {
+    const sheet = sheetOf();
+    sheet.speakers.herder!.elevenlabs = { voiceId: "21m00Tcm4TlvDq8ikWAM" };
+    sheet.speakers.keeper!.elevenlabs = { voiceId: "pNInz6obpgDQGcFmaJgB" };
+    expect(shareVoice(sheet, "herder", ["keeper"], "elevenlabs").skipped[0]!.why).toContain("(pNInz6obpgDQGcFmaJgB)");
+  });
+
   it("will not put anyone on the narrator's voice, who is in every chapter", () => {
     const sheet = sheetOf();
     sheet.speakers.herder!.gemini = { voice: "Sulafat" };

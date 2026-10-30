@@ -157,7 +157,8 @@ Each profile has:
     griffin, from canon or the kind they are drawn as). It asks first, naming who would get the voice and who
     would be left and why, and only then does it. It keeps to the sheet's rule: nobody is put on a voice
     they would share a chapter with someone on, or on the narrator's, and nobody with a voice you approved is
-    moved. Everyone it gives the voice to is still unapproved, so each is yours to hear. On the real cast it
+    moved, nor anyone with an ElevenLabs voice you picked, approved or not (only Gemini's builder-assigned
+    voices may be replaced). Everyone it gives the voice to is still unapproved, so each is yours to hear. On the real cast it
     gives a voice to a third or so of a people (4 of 14 yetis, 9 of 15 griffins), because members of a people
     so often share chapters;
   - **what the model is told** besides the words: the exact Gemini 3.8 style, or the Gemini 3.1

@@ -54,7 +54,7 @@ function give(entry: CastEntry, from: CastEntry, provider: VoiceProvider): void 
 
 /**
  * Gives `from`'s voice to each of `peers` it can, in order. Changes the sheet in place. Someone a person approved a
- * voice for is never moved. A peer who would meet someone on that voice in a chapter, the narrator's included, is
+ * voice for is never moved, and neither is an ElevenLabs voice somebody picked and has not approved yet. A peer who would meet someone on that voice in a chapter, the narrator's included, is
  * left, and so is the next peer who meets the one just given it.
  */
 export function shareVoice(sheet: CastSheet, from: string, peers: readonly string[], provider: VoiceProvider): SharedVoice {
@@ -72,6 +72,12 @@ export function shareVoice(sheet: CastSheet, from: string, peers: readonly strin
     }
     if (approvedOn(peer, provider)) {
       result.skipped.push({ id, why: `${peer.name} has a voice you approved` });
+      continue;
+    }
+    // An ElevenLabs voice is only ever there because somebody picked it by ear, approved or not yet: nothing assigns one.
+    // (Gemini's are assigned by the builder until a person approves, so those may be replaced.)
+    if (provider === "elevenlabs" && voiceOf(peer, provider) !== "") {
+      result.skipped.push({ id, why: `${peer.name} already has an ElevenLabs voice you picked (${peer.elevenlabs?.name ?? peer.elevenlabs?.voiceId})` });
       continue;
     }
     const clash = clashWith(sheet, id, voice, provider);
