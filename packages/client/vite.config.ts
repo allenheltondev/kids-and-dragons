@@ -71,6 +71,6 @@ export default defineConfig({
      * journal's, ~96KB each), whether the screen used the piece or not. As files it is fetched
      * once, when drawn, and the service worker saves it like the rest of `/bundle/`.
      */
-    assetsInlineLimit: (file) => ((file.includes("/assets/chrome/") || file.includes("/assets/guide/")) ? false : undefined),
+    assetsInlineLimit: (file) => (file.includes("/assets/chrome/") || file.includes("/assets/guide/") || file.endsWith(".md") ? false : undefined),
   },
 });

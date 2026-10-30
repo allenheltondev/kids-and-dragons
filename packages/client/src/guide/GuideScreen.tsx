@@ -21,15 +21,18 @@
  * set it in black on white, and keep the quick start to its own first page.
  */
 
-import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { ReactElement } from "react";
 import { navigate, type Route } from "../router";
 import { Button } from "../ui/Button";
+import { Spinner } from "../ui/Spinner";
 import { Icon } from "../screens/icons";
 import { parseGuide, type Block, type Inline, type Section } from "./markdown";
-import source from "./guide.md?raw";
-import setupSource from "./setup.md?raw";
+// The words are files, fetched when the guide opens, not strings in the script: the bundle stays small and
+// the service worker saves them with the rest of `/bundle/`.
+import sourceUrl from "./guide.md?url";
+import setupSourceUrl from "./setup.md?url";
 import bannerPlay from "../assets/guide/guide-banner-play.webp";
 import bannerSetup from "../assets/guide/guide-banner-setup.webp";
 import emblemKeeping from "../assets/guide/guide-part-keeping.webp";
@@ -401,12 +404,85 @@ function GuideDocument({ page, markdown }: { page: Page; markdown: string }): Re
   );
 }
 
+const sources = new Map<string, Promise<string>>();
+
+/** A guide page's Markdown, fetched once and kept; a failed fetch is forgotten so the next ask retries. */
+function loadSource(url: string): Promise<string> {
+  let source = sources.get(url);
+  if (source === undefined) {
+    source = fetch(url)
+      .then((response) => {
+        if (!response.ok) throw new Error(`guide: ${String(response.status)}`);
+        return response.text();
+      })
+      .catch((error: unknown) => {
+        sources.delete(url);
+        throw error;
+      });
+    sources.set(url, source);
+  }
+  return source;
+}
+
+/** Test seam: forget the fetched pages. */
+export function resetGuideSources(): void {
+  sources.clear();
+}
+
+function GuidePage({ page, url }: { page: Page; url: string }): ReactElement {
+  const [markdown, setMarkdown] = useState<string | null>(null);
+  const [failed, setFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+  const retry = useCallback(() => {
+    setFailed(false);
+    setAttempt((n) => n + 1);
+  }, []);
+
+  useEffect(() => {
+    let live = true;
+    loadSource(url).then(
+      (text) => {
+        if (live) setMarkdown(text);
+      },
+      () => {
+        if (live) setFailed(true);
+      },
+    );
+    return () => {
+      live = false;
+    };
+  }, [url, attempt]);
+
+  if (markdown !== null) return <GuideDocument page={page} markdown={markdown} />;
+  return (
+    <main className="guide" aria-busy={!failed}>
+      <article className="guide__page">
+        {failed ? (
+          <>
+            <p className="guide__p">The guide could not be loaded. Check the connection and try again.</p>
+            <div className="guide__actions">
+              <Button variant="primary" onClick={retry}>
+                Try again
+              </Button>
+              <Button variant="secondary" icon={<Icon name="back" />} onClick={() => navigate({ name: "home" })}>
+                Back to the start
+              </Button>
+            </div>
+          </>
+        ) : (
+          <Spinner size="lg" label="Opening the guide" showLabel />
+        )}
+      </article>
+    </main>
+  );
+}
+
 export function GuideScreen(): ReactElement {
-  return <GuideDocument page="play" markdown={source} />;
+  return <GuidePage page="play" url={sourceUrl} />;
 }
 
 export function SetupGuideScreen(): ReactElement {
-  return <GuideDocument page="setup" markdown={setupSource} />;
+  return <GuidePage page="setup" url={setupSourceUrl} />;
 }
 
 export default GuideScreen;

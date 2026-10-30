@@ -146,10 +146,7 @@ const FIRST_PAINT_BUDGET_KB = 324;
 // The editable strength suggestion, optional choice details, lobby readiness
 // and creation-only hero greeting live in the lazy room/layout graph. First
 // paint remains within its unchanged 324KB cap; painted assets remain files.
-// 1520 -> 1530 for the grown-up's guide as a manual: its second page (setup.md), the painted layout's
-// CSS and the help sheet's How to play cards, 1526KB measured. All of it is in the lazy guide chunk and
-// the lazy help sheet; the first paint did not move, and the painted guide art stays files.
-const TOTAL_BUDGET_KB = 1530;
+const TOTAL_BUDGET_KB = 1520;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);
