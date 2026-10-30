@@ -60,6 +60,63 @@ describe("the design panel", () => {
     expect(preview.body.text).toHaveLength(400);
   });
 
+  it("keeps Hear off while the price for the current words is still being worked out, and never spends on a price fetched by the press", async () => {
+    // The quote for the edited words is slow: the page must not spend on it, or on anything, until it is on show.
+    const calls: { route: string; body: any }[] = [];
+    let release: () => void = () => {};
+    const call = async (route: string, body: any) => {
+      calls.push({ route, body });
+      if (route === "/api/cast/design/brief") return { description: "A man's voice for a storybook.", text: "x".repeat(100), dollars: 0.01, previews: 3, basis: "estimated" };
+      if (route === "/api/cast/design/quote") { await new Promise<void>((resolve) => { release = resolve; }); return { dollars: 0.1, basis: "estimated" }; }
+      return { previews: [{ generatedVoiceId: "GEN1", audio: "data:audio/mpeg;base64,AAAA" }], spent: 0.1, cap: 5 };
+    };
+    const el = mode.voiceDesigner({ id: "wick", name: "Wick", call, onSaved: async () => {} });
+    dom.document.body.append(el);
+    await open(el);
+    const [, text] = el.querySelectorAll("textarea");
+    const go = el.querySelector("button");
+    expect(go.disabled).toBe(false);
+    text.value = "y".repeat(1000);
+    text.dispatchEvent(event("input"));
+    expect(go.disabled).toBe(true);
+    // Pressed at once, before the quote has even been asked for, and again while it is being fetched.
+    go.click();
+    await tick(300);
+    go.click();
+    expect(calls.filter((c) => c.route === "/api/cast/design/preview")).toHaveLength(0);
+    expect(go.disabled).toBe(true);
+    expect(el.querySelector(".tools .hint").textContent).toBe("Checking the price…");
+    release();
+    await tick(20);
+    // Now the price is on show, and a fresh press spends exactly that.
+    expect(el.querySelector(".tools .hint").textContent).toBe("Hearing the candidates is about $0.10 of the session cap");
+    expect(go.disabled).toBe(false);
+    expect(calls.filter((c) => c.route === "/api/cast/design/preview")).toHaveLength(0);
+    go.click();
+    await tick(20);
+    const spent = calls.filter((c) => c.route === "/api/cast/design/preview");
+    expect(spent).toHaveLength(1);
+    expect(spent[0]!.body.quote).toBeCloseTo(0.1, 9);
+  });
+
+  it("shows a price that moved and spends nothing on it until it is pressed again", async () => {
+    const calls: { route: string; body: any }[] = [];
+    const call = async (route: string, body: any) => {
+      calls.push({ route, body });
+      if (route === "/api/cast/design/brief") return { description: "A man's voice for a storybook.", text: "x".repeat(100), dollars: 0.01, previews: 3, basis: "estimated" };
+      throw Object.assign(new Error("The price changed to about $0.05 for these words: check it and go again."), { dollars: 0.05 });
+    };
+    const el = mode.voiceDesigner({ id: "wick", name: "Wick", call, onSaved: async () => {} });
+    dom.document.body.append(el);
+    await open(el);
+    const go = el.querySelector("button");
+    go.click();
+    await tick(20);
+    expect(el.querySelector(".tools .hint").textContent).toBe("Hearing the candidates is about $0.05 of the session cap");
+    expect(calls.filter((c) => c.route === "/api/cast/design/preview")).toHaveLength(1);
+    expect(go.disabled).toBe(false);
+  });
+
   it("takes the candidates away when either box is edited, so a voice is never saved under another description", async () => {
     const { el, area, calls, go } = panel(() => 0.01);
     await open(el);
