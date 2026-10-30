@@ -268,6 +268,7 @@ voice, and nothing there touches the Gemini one:
   fewer as `[the direction]`, then the line's delivery tag. A longer direction is left out rather than risk it being
   read aloud, and older models (v2 and before) take neither: pick a voice that already sounds right. The description
   steers only Gemini.
+- **Coverage** is in the cards page's header line: "30% of 1,430 lines covered" is the share of the game's spoken lines (not the narrator's or the party's) that belong to a character approved in the mode you are in.
 - **Approve** pins that voice on its own (`elevenlabs.approved`), and Gemini's approval is
   unchanged. **Reject** records the voice and your note and takes the choice back, so you can pick
   another; a voice you rejected for a character is left out of their picker.

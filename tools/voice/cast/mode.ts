@@ -80,6 +80,22 @@ const KadMode = (() => {
   const untouched = (entry, provider) => !approved(entry, provider) && history(entry, provider).length === 0;
   const historyLine = (d) => (d.decision === "approved" ? "Approved " : "Rejected ") + (d.voiceName || d.voice) + (d.notes ? ': "' + d.notes + '"' : "") + " · " + d.at.slice(0, 10);
 
+  /**
+   * How much of the game's speech the approved voices cover: the lines (lineCount) of every character who is not the
+   * narrator or the party, and the share of them belonging to a character approved in this mode.
+   */
+  function coverage(speakers, provider) {
+    let lines = 0;
+    let covered = 0;
+    for (const entry of Object.values(speakers)) {
+      if (entry.kind === "narrator" || entry.kind === "party") continue;
+      const n = entry.lineCount || 0;
+      lines += n;
+      if (approved(entry, provider)) covered += n;
+    }
+    return { lines, covered, percent: lines ? Math.round((covered / lines) * 100) : 0 };
+  }
+
   /** How many characters have each voice in this mode. */
   function uses(speakers, provider) {
     const count = {};
@@ -311,6 +327,6 @@ const KadMode = (() => {
     return { paint };
   }
 
-  return { NAMES, providerOf, isEleven, normalize, modelsFor, model, voiceId, voiceName, approved, history, lastRejected, untouched, historyLine, uses, voiceOptions, filterOptions, filterGender, voicePicker, pickBody, keyHeaders, keyLabel, mountSwitch };
+  return { NAMES, providerOf, isEleven, normalize, modelsFor, model, voiceId, voiceName, approved, history, lastRejected, untouched, historyLine, uses, coverage, voiceOptions, filterOptions, filterGender, voicePicker, pickBody, keyHeaders, keyLabel, mountSwitch };
 })();
 `;

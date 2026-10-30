@@ -384,7 +384,7 @@ ${MODE_CSS}</style>
     const list = shown();
     const all = Object.values(data.speakers);
     const retrying = all.filter((e) => KadMode.lastRejected(e, provider())).length;
-    document.getElementById("meta").textContent = KadMode.NAMES[provider()] + " voices · " + all.length + " speakers · " + all.filter((e) => KadMode.approved(e, provider())).length + " approved · " + retrying + " rejected, to hear again · " + Object.values(clashes).filter((c) => c.length).length + " sharing a voice · showing " + list.length;
+    document.getElementById("meta").textContent = KadMode.NAMES[provider()] + " voices · " + all.length + " speakers · " + all.filter((e) => KadMode.approved(e, provider())).length + " approved · " + (cover => cover.percent + "% of " + cover.lines + " lines covered")(KadMode.coverage(data.speakers, provider())) + " · " + retrying + " rejected, to hear again · " + Object.values(clashes).filter((c) => c.length).length + " sharing a voice · showing " + list.length;
     document.getElementById("cards").replaceChildren(...list.map(([id, entry]) => card(id, entry)));
     drawBudget();
   }
