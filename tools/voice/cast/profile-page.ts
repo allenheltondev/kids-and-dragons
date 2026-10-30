@@ -698,6 +698,8 @@ ${MODE_CSS}</style>
     if (mode === "elevenlabs") {
       // An account can have hundreds: search them, and hear each one's own sample before spending anything on an audition.
       voice = KadMode.voicePicker({ options: KadMode.voiceOptions(mode, entry, data.voices, elevenVoices), value: mine, label: voiceLabel, onPick: pick });
+      // Nothing in the account fits? Design one from what the sheet knows of them.
+      voice.append(KadMode.voiceDesigner({ id, name: entry.name, call, onSaved: async (made, updated) => { data.speakers[id] = updated; elevenVoices = elevenVoices.concat(made); await ensureElevenVoices(true); draw(); loadTold(); } }));
     } else {
       voice = el("select", { "aria-label": voiceLabel }, KadMode.voiceOptions(mode, entry, data.voices, elevenVoices).map((o) => el("option", { value: o.value }, o.label)));
       voice.value = mine;
@@ -739,7 +741,7 @@ ${MODE_CSS}</style>
         if (await save(id, { direction: text })) { syncListen(); loadTold(); }
       }),
       el("div", { class: "hint" }, "Saved as you leave the box, and kept on every rebuild. Leave direction empty to remove it."),
-      mode === "elevenlabs" ? el("div", { class: "hint" }, "ElevenLabs is not told who they are or how they talk: it reads the words in the voice you picked, so the description, accent and direction above steer only Gemini.") : null,
+      mode === "elevenlabs" ? el("div", { class: "hint" }, "ElevenLabs has no style prompt: it reads the words in the voice you picked. On v3 and later their own accent and a short direction go in front of the line as tags (shown below); the description steers only Gemini.") : null,
       el("div", { class: "hint" }, mode === "elevenlabs" ? "What " + (told ? told.model : modelId()) + " is sent:" : "What " + (told ? told.model : modelId()) + " is told, besides the words:"),
       el("pre", { class: "told", id: "told" }, told && told.id === id ? told.display : "…"),
       el("div", { class: "hint" }, "Changing the description or direction changes what is sent, so each line renders once more in the new words."));

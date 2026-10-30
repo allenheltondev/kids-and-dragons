@@ -597,6 +597,49 @@ export async function searchLibrary(keys: Keys, query: { search?: string; gender
   };
 }
 
+/** A candidate voice from ElevenLabs' voice design: audio of the sample text, and the id that saves it. */
+export interface DesignedPreview {
+  generatedVoiceId: string;
+  /** The preview audio as a data: URL, ready to play. */
+  audio: string;
+  seconds?: number;
+}
+
+/** ElevenLabs' limits on a voice description and the sample text it is previewed on. */
+export const DESIGN_LIMITS = { description: { min: 20, max: 1000 }, text: { min: 100, max: 1000 } } as const;
+
+/**
+ * Designs a voice from a description: a few candidate previews of it saying `text`. Nothing is saved to the account
+ * until createDesignedVoice, but the previews are billed.
+ */
+export async function designVoice(keys: Keys, input: { description: string; text: string }, fetch: Fetch): Promise<DesignedPreview[]> {
+  const response = await fetch(`${ELEVENLABS}/text-to-voice/design`, {
+    method: "POST",
+    headers: { ...authFor("elevenlabs", keys), "content-type": "application/json" },
+    body: JSON.stringify({ voice_description: input.description, text: input.text, auto_generate_text: false }),
+  });
+  if (!response.ok) throw await failure(response);
+  const json = JSON.parse(await response.text()) as { previews?: { generated_voice_id: string; audio_base_64: string; media_type?: string; duration_secs?: number }[] };
+  return (json.previews ?? []).map((preview) => ({
+    generatedVoiceId: preview.generated_voice_id,
+    audio: `data:${preview.media_type ?? "audio/mpeg"};base64,${preview.audio_base_64}`,
+    ...(typeof preview.duration_secs === "number" ? { seconds: preview.duration_secs } : {}),
+  }));
+}
+
+/** Saves one designed preview to the account as a voice, which is what lets it be used (and may count against the plan's voice slots). */
+export async function createDesignedVoice(keys: Keys, voice: { generatedVoiceId: string; name: string; description: string }, fetch: Fetch): Promise<string> {
+  const response = await fetch(`${ELEVENLABS}/text-to-voice`, {
+    method: "POST",
+    headers: { ...authFor("elevenlabs", keys), "content-type": "application/json" },
+    body: JSON.stringify({ voice_name: voice.name, voice_description: voice.description, generated_voice_id: voice.generatedVoiceId }),
+  });
+  if (!response.ok) throw await failure(response);
+  const json = JSON.parse(await response.text()) as { voice_id?: string };
+  if (!json.voice_id) throw new Error("ElevenLabs saved the voice but did not say its id");
+  return json.voice_id;
+}
+
 /** Adds a library voice to the account, which is what lets it be used (and may count against the plan's voice slots). */
 export async function addLibraryVoice(keys: Keys, voice: { ownerId: string; voiceId: string; name: string }, fetch: Fetch): Promise<string> {
   const url = `${ELEVENLABS}/voices/add/${encodeURIComponent(voice.ownerId)}/${encodeURIComponent(voice.voiceId)}`;
