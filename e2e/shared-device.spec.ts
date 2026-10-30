@@ -51,7 +51,7 @@ test.describe("a family tablet", () => {
     await phone.goto("/account");
     await phone.getByRole("button", { name: /sign in or create an account/i }).click(TAP);
     await expect(phone.getByLabel("Email")).toBeVisible(TAP);
-    await guidePicture(phone, "sign-in");
+    await guidePicture(phone, "sign-in", { mark: phone.getByRole("button", { name: /send the code/i }) });
     await signIn(phone, email);
     await phone.getByRole("button", { name: /back to the game/i }).click(TAP);
     await phone.getByRole("button", { name: "Back to the start" }).click();
