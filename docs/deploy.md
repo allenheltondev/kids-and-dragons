@@ -27,9 +27,13 @@ Both run `scripts/deploy.sh`, which is also what you run from a laptop:
 ./scripts/deploy.sh dev          # a fourth stack, for driving by hand
 ```
 
-It runs the checks — typecheck, unit tests, `content:validate`, `art:verify`,
+It runs the checks — typecheck, unit tests, `content:validate`, `art:verify`, `voice:verify`,
 and `infra:lint` when `cfn-lint` is installed — then bundles
-the Lambdas, deploys the stack, uploads the client and the art, and invalidates
+the Lambdas, deploys the stack, checks that every recorded voice clip the
+manifests in `content/voice/manifest/` play is on the site
+(`tools/voice/verify-site.ts`, even when the checks are skipped, since only the
+deploy knows which site it is; a clip the site will not answer for stops the
+deploy too), uploads the client and the art, and invalidates
 CloudFront — in that order, so a deploy that fails partway leaves the previous
 version serving rather than a new bundle talking to an API that does not exist
 yet. It also exports `AWS_REGION=us-east-1` unless one is already set, so a

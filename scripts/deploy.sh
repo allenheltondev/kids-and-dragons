@@ -69,6 +69,9 @@ else
   npm test
   npm run content:validate
   npm run art:verify
+  # The voice manifests against today's words (#545): a manifest whose clips still exist but
+  # say text that has since changed passes the site check below, so it is caught here.
+  npm run voice:verify
   # cfn-lint is a pip install, so a laptop may not have it. CI always does
   # (ci.yml), which keeps the stack linted on every path that gates a merge.
   if command -v cfn-lint >/dev/null 2>&1; then
@@ -186,6 +189,15 @@ else
   say "Building the client"
   npm run build
 fi
+
+# Recorded narration (#545): every clip the manifests in content/ play must be
+# on this site before those manifests go live, or a browser fetches a 404
+# mid-sentence. Asked over HTTPS exactly as a browser asks, so it needs no AWS
+# permission, and run with plain node because a ship-mode deploy has no
+# node_modules. Not skipped with the checks: CI cannot know what this bucket
+# holds. No manifests is the ordinary state and passes at once.
+say "Voice clips on $SITE_URL"
+node tools/voice/verify-site.ts "$SITE_URL"
 
 say "Uploading to $BUCKET"
 

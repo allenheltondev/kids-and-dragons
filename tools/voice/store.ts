@@ -10,6 +10,8 @@
  *  - `S3ClipStore`: the site bucket, under `voice/` and nowhere else;
  *  - `DirClipStore`: a folder laid out like the bucket;
  *  - `MemoryClipStore`: for tests.
+ * And one that can only look: `SiteClipSource` (sources.ts), the deployed
+ * site, which is what a browser fetches.
  */
 
 import fs from "node:fs";
@@ -21,15 +23,11 @@ import {
 } from "@aws-sdk/client-s3";
 import { CLIP_CACHE_CONTROL, CLIP_CONTENT_TYPE, clipObjectKey } from "../../packages/shared/src/voice-clips";
 
-export interface StoredClip {
-  ms: number;
-}
+import { CLIP_LENGTH_META, type ClipSource, type StoredClip } from "./sources.ts";
 
-export interface ClipStore {
-  /** Where this store is, for reports: a bucket name or a folder. */
-  readonly name: string;
-  /** The clip's recorded length, or null when it is not there. */
-  head(key: string): Promise<StoredClip | null>;
+export type { ClipSource, StoredClip };
+
+export interface ClipStore extends ClipSource {
   /** Keep a clip. Never replaces one that exists (a key names its bytes). Returns whether it was written. */
   put(key: string, bytes: Uint8Array, clip: StoredClip): Promise<boolean>;
 }
@@ -72,8 +70,7 @@ export class DirClipStore implements ClipStore {
   }
 }
 
-/** The metadata key a clip's length rides under (S3 sends it back as `x-amz-meta-ms`). */
-const LENGTH = "ms";
+const LENGTH = CLIP_LENGTH_META;
 
 /**
  * The site bucket, `voice/<key[0:2]>/<key>.webm`. Uploaded with the immutable
@@ -142,3 +139,4 @@ export class StoreSet implements ClipStore {
     return wrote.some(Boolean);
   }
 }
+
