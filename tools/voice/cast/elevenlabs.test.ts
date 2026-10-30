@@ -13,7 +13,7 @@ import type { Pricing } from "../cost-model.ts";
 import type { CastFile, Fetch, ModelInfo } from "../bakeoff/providers.ts";
 import { castPageData, createCastRoutes, providerOf, sheetCast, toldFor } from "./routes.ts";
 import { reviewJson, reviewMarkdown } from "./review.ts";
-import { buildSheet, decide, voiceClashes, voiceOf, type CastSheet, type ChapterLike } from "./sheet.ts";
+import { buildSheet, decide, nextVoice, voiceClashes, voiceOf, type CastSheet, type ChapterLike } from "./sheet.ts";
 
 const ROOT = path.resolve(import.meta.dirname, "..", "..", "..");
 const VOICE_A = "21m00Tcm4TlvDq8ikWAM";
@@ -87,6 +87,23 @@ describe("the sheet, in ElevenLabs mode", () => {
     expect(wick.elevenlabs).toMatchObject({ voiceId: VOICE_A, name: "Rachel", approved: true, history: [{ decision: "approved", provider: "elevenlabs", voice: VOICE_A }] });
     expect(review.speakers.find((e) => e.id === "bun")!.elevenlabs).toBeUndefined();
     expect(reviewMarkdown(sheet)).not.toContain(VOICE_A);
+  });
+
+  it("lets only Gemini's own rejection notes steer Gemini's next voice", () => {
+    const chapters: ChapterLike[] = [{ id: "c", voiceGuide: { npcVoices: { miller: "a miller; he grumbles", baker: "a baker; she hums" } } }];
+    const make = (history: NonNullable<CastSheet["speakers"][string]["history"]>): CastSheet => {
+      const sheet = buildSheet({ chapters, individuals: [], narration: [] }, null);
+      sheet.speakers.miller!.history = history;
+      return sheet;
+    };
+    const note = "too deep, should be a woman's voice";
+    const base = nextVoice(make([]).speakers, "miller");
+    // The same words about an ElevenLabs voice change nothing here.
+    const elevenOnly = make([{ decision: "rejected", provider: "elevenlabs", voice: "VOICEAAAAAAA", notes: note, at: "2026-10-30T00:00:00Z" }]);
+    expect(nextVoice(elevenOnly.speakers, "miller")).toBe(base);
+    // About a Gemini voice they do steer it: this is what the line above is not allowed to do.
+    const geminiToo = make([{ decision: "rejected", voice: "Charon", notes: note, at: "2026-10-30T00:00:00Z" }]);
+    expect(nextVoice(geminiToo.speakers, "miller")).not.toBe(base);
   });
 
   it("will not decide on a voice nobody has picked", () => {

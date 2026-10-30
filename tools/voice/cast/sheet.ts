@@ -632,7 +632,9 @@ export const approvedOn = (entry: CastEntry, provider: VoiceProvider = "gemini")
  */
 function bestVoice(entry: CastEntry, byChapter: ReadonlyMap<string, ReadonlyMap<string, string>>, uses: ReadonlyMap<string, number>): string {
   const rejected = rejectedVoices(entry, "gemini");
-  const hints = noteHints((entry.history ?? []).filter((d) => d.decision === "rejected").map((d) => d.notes ?? ""));
+  // Only Gemini's own rejections steer Gemini's next voice: a note about an ElevenLabs voice ("too deep, a woman's voice")
+  // says nothing about these.
+  const hints = noteHints((entry.history ?? []).filter((d) => d.decision === "rejected" && (d.provider ?? "gemini") === "gemini").map((d) => d.notes ?? ""));
   const gender = hints.gender ?? voiceGenderOf(entry);
   const wants = [...traitsOf(entry), ...hints.want];
   let best = "";
