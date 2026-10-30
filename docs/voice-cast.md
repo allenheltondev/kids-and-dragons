@@ -340,13 +340,13 @@ goes to whoever was named last. Adding a tag changes the words, so do it before 
 
 - **Lines are counted from speech tags, plus a guess.** A quote is given to whoever it is tagged for ("…," says
   Pib), by name or by what they are in that scene ("says a cousin", "the keeper asks": the last word of their name, where
-  nobody else in the scene shares it), and a named character the campaign knows is tagged in a chapter they are not cast in ("asks Voss" in a chapter that only casts the Skywardens). Of about 2,600 quoted passages, about 1,300 are tagged. So where a scene has
+  nobody else in the scene shares it), and a named character the campaign knows is tagged in a chapter they are not cast in ("asks Voss" in a chapter that only casts the Skywardens), but only by their name as written: "Wisp", never the noun in "a wisp line", and never a name the chapter also uses as a plain word. A group ("Gullet's Cousins") is not given a he or she from the narration, and a trait the narration once gave someone is kept when a rebuild moves a quote to somebody else. Of about 2,600 quoted passages, about 1,300 are tagged. So where a scene has
   only one character who could be speaking, the quotes nobody is tagged for are counted for them as a **guess**,
   shown apart ("52 lines, 4 guessed"). A guess skips what is not a sentence someone said (a fragment, a sign,
   something sold, the party's own "you say") and any quote with someone else named beside it. On the real cast
-  that is about 170 lines, and on a read of 26 of them (before the last guard was added) about
+  that is about 195 lines, and on a read of 26 of them (before the last guard was added) about
   four in five were right. A crowded scene's untagged quotes are still counted for nobody, so someone who talks a lot among
-  others is counted low, and 39 characters who speak still have none (a guess that turned out to be someone named in the narration, such as Voss, moves to them and leaves the character it was wrongly given to with none). They audition on the stand-in until
+  others is counted low, and 35 characters who speak still have none. They audition on the stand-in until
   a chapter gives them words. Treat the order as a good guide to who speaks most, not an exact tally.
 - **The voice genders and traits** are from Google's one-word descriptions and best knowledge,
   not a listening pass. The page is the listening pass.

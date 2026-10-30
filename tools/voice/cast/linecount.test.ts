@@ -192,3 +192,42 @@ describe("a scene variant that carries on from the scene's narration", () => {
     expect(sink).toEqual([]);
   });
 });
+
+describe("a character cast in another chapter of the campaign", () => {
+  // Wisp is cast in chapter w1. In chapter r1 only the runner is, and the prose says "the wisp line" (a noun, not the person).
+  const campaign: ChapterLike[] = [
+    { id: "w1", campaignId: "gem", voiceGuide: { npcVoices: { wisp: "Wisp, a shy ghost; she whispers", cousins: "Gullet's Cousins, croaky frog folk" } }, scenes: { a: { cast: [{ name: "Wisp" }, { name: "Gullet's Cousins" }] } } },
+    { id: "r1", campaignId: "gem", voiceGuide: { npcVoices: { runner: "a MossHome runner; brisk" } }, scenes: { post: { cast: [{ name: "Runner" }] } } },
+  ];
+  const text = 'And the ribbon crew moved the wisp line out twice more this week. "She said to tell anybody who asked," he puffs, "that she is not worried. Which means she is."';
+
+  it("keeps a lowercase noun from being the person: the wisp line is not Wisp, so the runner's quote is not hers", () => {
+    const sheet = buildSheet({ chapters: campaign, individuals: [], narration: [{ chapter: "r1", address: "r1/post/narration", text }] }, null);
+    expect(sheet.speakers.wisp!.lineCount).toBe(0);
+    expect(sheet.speakers.wisp!.pronouns).toBeUndefined();
+    expect(sheet.speakers.runner!.lineCount).toBe(1);
+  });
+
+  it("still tags them by their own name in a chapter that does not cast them", () => {
+    const sheet = buildSheet({ chapters: campaign, individuals: [], narration: [{ chapter: "r1", address: "r1/post/narration", text: 'Wisp drifts by. "The ribbon is loose," says Wisp.' }] }, null);
+    expect(sheet.speakers.wisp!.lineCount).toBe(1);
+  });
+
+  it("masks a name that only counts as written, and keeps the words and the places of the text", () => {
+    const speakers = [{ id: "runner", names: ["Runner"] }, { id: "wisp", names: ["Wisp"], exact: true }];
+    expect(attributeQuotes(text, speakers).map((q) => q.id)).not.toContain("wisp");
+    expect(attributeQuotes('Wisp says, "Hello there."', speakers).map((q) => q.id)).toEqual(["wisp"]);
+    expect(attributeQuotes('"Hello there," says wisp.', speakers)).toEqual([]);
+  });
+
+  it("does not take a group for a she because one of them was, and keeps what a rebuild had already learned", () => {
+    const told = [{ chapter: "w1", address: "w1/a/narration", text: '"Good hands," croaks the cousin. "We will carry you across," she says.' }];
+    const first = buildSheet({ chapters: campaign, individuals: [], narration: told }, null);
+    expect(first.speakers.cousins!.pronouns).toBeUndefined();
+    // Something once learned from the narration stays when the quotes later go elsewhere.
+    const before = buildSheet({ chapters: campaign, individuals: [], narration: [{ chapter: "w1", address: "w1/a/narration", text: '"I am here," Wisp says. "Come along," she whispers.' }] }, null);
+    expect(before.speakers.wisp).toMatchObject({ pronouns: "she/her", pronounsFrom: "narration" });
+    const later = buildSheet({ chapters: campaign, individuals: [], narration: [] }, before);
+    expect(later.speakers.wisp).toMatchObject({ pronouns: "she/her", pronounsFrom: "narration" });
+  });
+});
