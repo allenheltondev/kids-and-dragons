@@ -1,0 +1,32 @@
+.creation-stat__meaning {
+  grid-column: 1 / -1;
+  font-size: 0.85em;
+  font-weight: 400;
+  line-height: 1.3;
+  text-transform: none;
+  color: var(--kad-ink-dim);
+}
+
+.creation-stats__help {
+  display: grid;
+  gap: 0.35em;
+}
+
+.creation-stats__help p { margin: 0; font-size: 0.85em; }
+
+.creation__foot.creation__foot--guided {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  row-gap: 0.35em;
+}
+
+.creation__next-hint {
+  grid-column: 1 / -1;
+  margin: 0;
+  min-block-size: 1.3em;
+  font-size: 0.8em;
+  line-height: 1.3;
+  color: var(--kad-ink-dim);
+}
+
+.creation__foot--guided[data-first-step] > .kad-button { grid-column: 1 / -1; }

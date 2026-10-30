@@ -180,10 +180,10 @@ describe("host controls", () => {
 });
 
 describe("crews: new players at the same TV", () => {
-  it("starts a new crew from the lobby in one tap, and says nothing of crews until there is one", () => {
+  it("names the first crew and starts a new crew from the lobby in one tap", () => {
     const { switchCrew } = room({ host: true }, { ...RUN, phase: "lobby" });
     render(<HostControls placement="inline" />);
-    expect(screen.queryByText(/Playing as/)).toBeNull();
+    expect(screen.getByText("The first crew")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "New players? Start a new crew" }));
     expect(switchCrew).toHaveBeenCalledWith("new");
   });

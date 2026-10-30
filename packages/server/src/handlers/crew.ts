@@ -134,6 +134,17 @@ export async function switchCrew(
       if ((state.crew ?? null) === target) return null;
       const { crew: _crew, ...rest } = state;
       const next: RunState = target === null ? (rest as RunState) : { ...rest, crew: target };
+      delete next.crewSetup;
+      // A deliberate crew choice also chooses a different lineup. The phones
+      // stay connected and can bring that crew's saved heroes or make new ones.
+      next.party = [];
+      next.phase = "lobby";
+      if (made) {
+        // Keep the phones and household hero rows, but begin a new lineup.
+        // This rides the crew's atomic commit, so retries cannot unseat newly
+        // created heroes after the original response was lost.
+        next.crewSetup = true;
+      }
       await offerCampaigns(next, room.householdId, run.campaignId, deps);
       // The lobby read the crews before this one's row exists: it lands with this commit.
       if (made) next.crews = [...(next.crews ?? []), { id: made.id, name: made.name }];
@@ -173,6 +184,7 @@ export async function followCrew(
 ): Promise<RunState> {
   if (state.crews === undefined && state.crew === undefined) return state;
   if (!betweenGames(state)) return state;
+  if (state.crewSetup) return state;
   const known = new Set((state.crews ?? []).map((c) => c.id));
   const crews = new Set<string | null>();
   for (const member of seatedParty(state)) {

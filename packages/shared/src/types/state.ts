@@ -590,6 +590,9 @@ export interface RunState {
    * game rather than the room: a resumed save keeps its own.
    */
   crew?: string;
+  /** Host deliberately started a fresh crew: connected phones make new heroes.
+   * Lobby-only; cleared when switching crews or starting the chapter. */
+  crewSetup?: boolean;
   /**
    * The household's other crews, for the host's Room panel to switch to.
    * Absent while the household has only its first one. Filled where the
