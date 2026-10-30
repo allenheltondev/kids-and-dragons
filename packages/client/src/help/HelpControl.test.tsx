@@ -89,6 +89,28 @@ describe("the ? button", () => {
     expect((await screen.findByRole("dialog", { name: "Guard" })).textContent).toContain(help.things.buff.text);
   });
 
+  it("opens a quick How to play reference whose cards read themselves aloud, and goes back", async () => {
+    const user = userEvent.setup();
+    render(<HelpControl />);
+    await user.click(screen.getByRole("button", { name: "Help" }));
+    await screen.findByRole("dialog", { name: "Help" });
+    await user.click(await screen.findByRole("button", { name: "How to play" }));
+    const dialog = await screen.findByRole("dialog", { name: "How to play" });
+    for (const tile of help.howToPlay) expect(dialog.textContent).toContain(tile.title);
+    hear.mockClear();
+    await user.click(screen.getByRole("button", { name: new RegExp(help.howToPlay[2]!.title) }));
+    expect(hear).toHaveBeenCalledWith(help.howToPlay[2]!.text, { source: "ui" });
+    await user.click(screen.getByRole("button", { name: "Back" }));
+    expect((await screen.findByRole("dialog", { name: "Help" })).textContent).toContain(help.surfaces.inventory.text);
+  });
+
+  it("offers no reference on a held thing's help", async () => {
+    render(<HelpControl />);
+    act(() => { showThingHelp({ kind: "buff", name: "Guard" }); });
+    await screen.findByRole("dialog", { name: "Guard" });
+    expect(screen.queryByRole("button", { name: "How to play" })).toBeNull();
+  });
+
   it("is not on the TV or the join screen", () => {
     act(() => { navigate("/tv/ABCD"); });
     const { container } = render(<HelpControl />);

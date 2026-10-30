@@ -5,7 +5,7 @@
   "description": "content/help.json: the words behind every \"?\" button, every long-press and the join line on the shared screen (#256). Mirrors packages/shared/src/help.ts HelpContent; where the two disagree, the TypeScript type wins. Written for a child of eight listening to it read aloud: one or two short sentences, US spelling, no em dashes.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["version", "surfaces", "things", "join"],
+  "required": ["version", "surfaces", "things", "join", "howToPlay"],
   "properties": {
     "$comment": { "type": "string" },
     "version": { "const": 1 },
@@ -35,6 +35,23 @@
         "buff": { "$ref": "#/$defs/entry" },
         "item": { "$ref": "#/$defs/entry" },
         "token": { "$ref": "#/$defs/entry" }
+      }
+    },
+    "howToPlay": {
+      "description": "The quick \"How to play\" reference behind a button in the \"?\" sheet (HelpContent.howToPlay): four to eight cards a kid can tap to hear.",
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "icon", "title", "text"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+          "icon": { "type": "string", "minLength": 1 },
+          "title": { "type": "string", "minLength": 1, "maxLength": 20 },
+          "text": { "type": "string", "minLength": 1, "maxLength": 160 }
+        }
       }
     },
     "join": {

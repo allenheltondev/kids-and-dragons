@@ -66,6 +66,31 @@ html[data-contrast="high"] .kad-help__button { opacity: 1; }
 .kad-help__words { min-inline-size: 0; }
 .kad-help__title { margin: 0; font-size: var(--kad-text-xl); overflow-wrap: anywhere; }
 .kad-help__text { margin: var(--kad-space-1, 0.25em) 0 0; font-size: var(--kad-text-lg); line-height: 1.4; }
+/* The quick "How to play" cards: a column of tappable rows, a picture and two lines each. */
+.kad-help__reference { display: flex; flex-direction: column; gap: var(--kad-space-2); flex: 1 1 auto; min-block-size: 0; overflow-y: auto; overscroll-behavior: contain; }
+.kad-help__reference > * { flex: none; }
+.kad-help__hint { margin: 0; color: var(--kad-ink-dim); }
+.kad-help__tiles { display: flex; flex-direction: column; gap: var(--kad-space-2); margin: 0; padding: 0; list-style: none; }
+.kad-help__tile {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--kad-space-3);
+  inline-size: 100%;
+  min-block-size: var(--kad-touch-min);
+  padding: var(--kad-space-3);
+  border: 1px solid var(--kad-border);
+  border-radius: var(--kad-radius-md);
+  background: var(--kad-bg);
+  color: var(--kad-ink);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.kad-help__tile:active { border-color: var(--kad-border-strong); }
+.kad-help__tile-picture { flex: none; display: grid; place-items: center; inline-size: 2.4em; block-size: 2.4em; border-radius: 999px; background: var(--kad-accent-soft); color: var(--kad-accent-hi); }
+.kad-help__tile-words { display: flex; flex-direction: column; gap: 0.15em; min-inline-size: 0; }
+.kad-help__tile-title { font-weight: var(--kad-weight-black); font-size: var(--kad-text-lg); }
+.kad-help__tile-text { line-height: 1.4; color: var(--kad-ink-dim); }
 .kad-help__actions { display: flex; flex-wrap: wrap; gap: var(--kad-space-2); }
 .kad-help__actions > * { flex: 1 1 8em; }
 html[data-hand="left"] .kad-help__actions { flex-direction: row-reverse; }

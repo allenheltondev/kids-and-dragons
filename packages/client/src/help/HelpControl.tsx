@@ -53,6 +53,8 @@ function HelpSheet(): React.JSX.Element {
   const titleId = useId();
   const sheet = useRef<HTMLDivElement>(null);
   const [diagnostics, setDiagnostics] = useState(false);
+  // The sheet says what this screen is for; a button beside it opens the quick "How to play" cards instead.
+  const [reference, setReference] = useState(false);
 
   const kind = thing === null ? undefined : help?.things[thing.kind];
   const entry = thing === null ? help?.surfaces[surface] : kind;
@@ -63,8 +65,9 @@ function HelpSheet(): React.JSX.Element {
 
   // Reading aloud is the point of the button for a child who cannot read yet: say it as soon as it shows.
   useEffect(() => {
-    if (text !== "") hear(text, { source: "ui" });
-  }, [text]);
+    if (reference) stopSpeaking();
+    else if (text !== "") hear(text, { source: "ui" });
+  }, [text, reference]);
 
   // Focus moves in, the page behind goes inert, Tab stays inside, Escape closes, and focus goes back.
   useEffect(() => {
@@ -110,14 +113,34 @@ function HelpSheet(): React.JSX.Element {
   return createPortal(
     <div className="kad-help__scrim" onClick={(event) => { if (event.target === event.currentTarget) closeHelp(); }}>
       <div ref={sheet} className="kad-help__sheet" role="dialog" aria-modal="true" aria-labelledby={titleId}>
-        <div className="kad-help__body">
-          <span className="kad-help__picture" aria-hidden="true"><Icon name={icon} size="2.4em" /></span>
-          <div className="kad-help__words">
-            <h2 id={titleId} className="kad-help__title">{title}</h2>
-            {text !== "" ? <p className="kad-help__text">{text}</p> : <p className="kad-help__text kad-muted">One moment…</p>}
+        {reference ? (
+          <div className="kad-help__reference">
+            <h2 id={titleId} className="kad-help__title">How to play</h2>
+            <p className="kad-help__hint">Tap a card to hear it.</p>
+            <ul className="kad-help__tiles">
+              {(help?.howToPlay ?? []).map((tile) => (
+                <li key={tile.id}>
+                  <button type="button" className="kad-help__tile kad-focusable" onClick={() => { hear(tile.text, { source: "ui" }); }}>
+                    <span className="kad-help__tile-picture" aria-hidden="true"><Icon name={tile.icon} size="1.8em" /></span>
+                    <span className="kad-help__tile-words">
+                      <span className="kad-help__tile-title">{tile.title}</span>
+                      <span className="kad-help__tile-text">{tile.text}</span>
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
           </div>
-        </div>
-        {thing === null ? (
+        ) : (
+          <div className="kad-help__body">
+            <span className="kad-help__picture" aria-hidden="true"><Icon name={icon} size="2.4em" /></span>
+            <div className="kad-help__words">
+              <h2 id={titleId} className="kad-help__title">{title}</h2>
+              {text !== "" ? <p className="kad-help__text">{text}</p> : <p className="kad-help__text kad-muted">One moment…</p>}
+            </div>
+          </div>
+        )}
+        {thing === null && !reference ? (
           <div className="kad-help__grownups">
             <button
               type="button"
@@ -137,10 +160,24 @@ function HelpSheet(): React.JSX.Element {
           </div>
         ) : null}
         <div className="kad-help__actions">
-          <Button variant="secondary" size="lg" icon={<Icon name="sound" />} disabled={text === ""}
-            onClick={() => hear(text, { source: "ui" })}>
-            Hear it again
-          </Button>
+          {reference ? (
+            <Button variant="secondary" size="lg" icon={<Icon name="back" />} onClick={() => { setReference(false); }}>
+              Back
+            </Button>
+          ) : (
+            <>
+              <Button variant="secondary" size="lg" icon={<Icon name="sound" />} disabled={text === ""}
+                onClick={() => hear(text, { source: "ui" })}>
+                Hear it again
+              </Button>
+              {thing === null ? (
+                <Button variant="secondary" size="lg" icon={<Icon name="scroll" />} disabled={(help?.howToPlay.length ?? 0) === 0}
+                  onClick={() => { setReference(true); }}>
+                  How to play
+                </Button>
+              ) : null}
+            </>
+          )}
           <Button variant="primary" size="lg" onClick={closeHelp}>Got it</Button>
         </div>
       </div>
