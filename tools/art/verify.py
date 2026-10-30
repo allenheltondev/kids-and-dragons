@@ -733,6 +733,33 @@ def check_painted_icons(rep: Report, mf: dict, section: str = "paintedIcons", di
         rep.ok(f"{label}  {size[0]}x{size[1]} RGBA  margin={margin}px")
 
 
+def check_guide_art(rep: Report, mf: dict) -> None:
+    """Guide banners are opaque; the two isolated part emblems retain alpha."""
+    for asset in mf.get("guideArt", []):
+        label = f"guide/{asset['id']}"
+        file = os.path.join(ROOT, "packages", "client", "src", "assets", "guide", f"{asset['id']}.webp")
+        if not os.path.isfile(file):
+            rep.fail(label, "declared guide painting present", "missing")
+            continue
+        size = (asset["width"], asset["height"])
+        mode = "RGBA" if asset["alpha"] else "RGB"
+        with Image.open(file) as im:
+            if im.format != "WEBP" or im.mode != mode or im.size != size:
+                rep.fail(label, f"WEBP {mode} {size}", f"{im.format} {im.mode} {im.size}")
+                continue
+            if asset["alpha"]:
+                alpha = np.asarray(im)[..., 3]
+                ys, xs = np.where(alpha > 8)
+                if not len(xs) or alpha.min() != 0:
+                    rep.fail(label, "visible isolated emblem with transparent background", "empty or opaque")
+                    continue
+                margin = min(xs.min(), ys.min(), size[0]-1-xs.max(), size[1]-1-ys.max())
+                if margin < 8:
+                    rep.fail(label, "at least 8px clear margin", int(margin))
+                    continue
+        rep.ok(f"{label}  {size[0]}x{size[1]} {mode}")
+
+
 def check_story_props(rep: Report, mf: dict) -> None:
     """Reusable transparent interaction objects and their decorative motion presets."""
     spec = mf.get("storyProps")
@@ -837,6 +864,7 @@ def main() -> int:
     check_scene_illustrations(rep, mf)
     check_painted_icons(rep, mf)
     check_painted_icons(rep, mf, "badgeArt", "badges")
+    check_guide_art(rep, mf)
     check_story_props(rep, mf)
 
     print(f"\n{BOLD}{'-' * 60}{RESET}")
