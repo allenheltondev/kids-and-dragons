@@ -234,6 +234,10 @@ function setRoomOpen(next: boolean): void {
   roomOpen = next;
   for (const listener of roomListeners) listener();
 }
+/** The lobby's "Change crew" button opens the Room panel, where the crews are. */
+export function openRoomPanel(): void {
+  setRoomOpen(true);
+}
 function useRoomOpen(): boolean {
   return useSyncExternalStore(
     (listener) => { roomListeners.add(listener); return () => { roomListeners.delete(listener); }; },
@@ -381,6 +385,14 @@ function HostPanel({ state, me, code, invite = false }: { state: RunState; me: s
         <div><strong>Room {code}</strong><p className="kad-host__hint">Look after the group</p></div>
         {!invite ? <Button variant="ghost" size="md" icon={<Icon name="close" />} aria-label="Dismiss room controls" onClick={dismiss}>Done</Button> : null}
       </header>
+      {/* First, and open: a table that wants another crew should not have to
+          scroll a full roster to find it. */}
+      {canSwitchCrew(state) ? (
+        <details className="kad-host__crew-menu" open>
+          <summary className="kad-focusable"><Icon name="crew" /> Crews <span className="kad-host__hint">Pause this adventure and change who is playing</span></summary>
+          <CrewSwitch state={state} busy={busy} run={run} empty={rows.length === 0} />
+        </details>
+      ) : null}
       <details className="kad-host__people" open={invite}>
       <summary className="kad-focusable">Players <span className="kad-host__hint">{rows.length} in this room</span></summary>
       {rows.length === 0 ? (
@@ -473,13 +485,6 @@ function HostPanel({ state, me, code, invite = false }: { state: RunState; me: s
         </div>
         </div>
 
-        {rows.length > 0 && canSwitchCrew(state) ? (
-          <details className="kad-host__crew-menu">
-            <summary className="kad-focusable"><Icon name="crew" /> Crews <span className="kad-host__hint">Change who is playing</span></summary>
-            <CrewSwitch state={state} busy={busy} run={run} />
-          </details>
-        ) : null}
-
         {canStop(state) ? (
           stopping ? (
             <div className="kad-host__confirm" role="alertdialog" aria-label="Stop for today?">
@@ -540,13 +545,25 @@ function CrewSwitch({
   state,
   busy,
   run,
+  empty,
 }: {
   state: RunState;
   busy: boolean;
   run: (task: () => Promise<boolean>) => Promise<void>;
+  /** Nobody has joined: the room is nobody's yet, so it has no crews to offer. */
+  empty: boolean;
 }): React.JSX.Element {
   const switchCrew = useGameStore((store) => store.switchCrew);
   const { current, others } = crewChoices(state);
+  if (empty) {
+    return (
+      <div className="kad-host__crew" role="group" aria-label="Which crew is playing">
+        <p className="kad-host__hint">
+          Once somebody joins on a phone, you can change crews here. Each crew keeps its own adventure saved.
+        </p>
+      </div>
+    );
+  }
   const chooseCrew = async (crew: string | null | "new"): Promise<boolean> => {
     const changed = await switchCrew(crew);
     if (changed) setRoomOpen(false);

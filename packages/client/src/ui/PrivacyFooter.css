@@ -3,7 +3,9 @@
    just enough to tap. In a column it takes the bottom edge (margin-top: auto). */
 .privacy-footer {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
+  column-gap: var(--space-3, 0.75em);
   align-items: center;
   justify-content: center;
   align-self: stretch;
@@ -21,7 +23,8 @@
 }
 
 .privacy-footer__copy {
-  padding-block-end: var(--space-2, 0.5em);
+  padding: 0;
+  white-space: nowrap;
   color: var(--color-text-muted, #b7b0d8);
   font-size: var(--font-size-xs, 0.75em);
 }

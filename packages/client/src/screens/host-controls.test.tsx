@@ -168,7 +168,7 @@ describe("host controls", () => {
     expect(screen.queryByRole("list", { name: "Who is in this room" })).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: "Room" }));
     expect(screen.getByRole("list", { name: "Who is in this room" })).toBeTruthy();
-    expect(screen.getByText("Crews", { exact: true }).closest("details")?.hasAttribute("open")).toBe(false);
+    expect(screen.getByText("Crews", { exact: true }).closest("details")?.hasAttribute("open")).toBe(true);
     fireEvent.keyDown(screen.getByRole("button", { name: "Dismiss room controls" }), { key: "Escape" });
     expect(screen.queryByRole("list", { name: "Who is in this room" })).toBeNull();
     expect(document.activeElement).toBe(screen.getByRole("button", { name: "Room" }));

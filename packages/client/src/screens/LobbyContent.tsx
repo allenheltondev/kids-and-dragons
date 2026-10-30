@@ -23,6 +23,8 @@ import { Icon } from "./icons";
 import { savedHeading, savedHeroes, savedWhere } from "./save-copy";
 import { crewChoices } from "./crew-copy";
 import { CrewIdentity } from "./CrewIdentity";
+import { canSwitchCrew, openRoomPanel } from "./HostControls";
+import { Button } from "../ui";
 import { VoteTicks } from "./VoteTicks";
 import { useHelp } from "../help/content";
 import { joinUrl } from "../ui/share-invite";
@@ -129,6 +131,7 @@ export function LobbyContent(): ReactElement {
   const state = useRunState();
   const party = useParty();
   const sessionCode = useGameStore((s) => s.session?.roomCode ?? null);
+  const host = useGameStore((s) => s.session?.host === true);
   // A room open to visitors (#249) shows its longer code, which anybody can
   // join with: a phone from another household needs it, and one from the
   // room's own takes it as well as the short one.
@@ -162,7 +165,18 @@ export function LobbyContent(): ReactElement {
       {/* The household's table, when the family named it: where the game is
           kept, not the phones. */}
       {state?.location ? <p className="lobby__place kad-muted">{state.location}</p> : null}
-      {state ? <CrewIdentity name={crewChoices(state).current} compact /> : null}
+      {state ? (
+        <div className="lobby__crew">
+          <CrewIdentity name={crewChoices(state).current} compact />
+          {/* The Room panel holds the crews; this is the way to it from the lobby
+              itself, for the grown-up who runs the room. */}
+          {host && canSwitchCrew(state) ? (
+            <Button variant="secondary" size="md" icon={<Icon name="crew" />} onClick={openRoomPanel}>
+              Change crew
+            </Button>
+          ) : null}
+        </div>
+      ) : null}
       {state?.crewSetup ? (
         <p className="lobby__place" role="status">
           Make new heroes on your phones. Your other crew&rsquo;s adventure is saved.
