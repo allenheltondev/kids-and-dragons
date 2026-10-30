@@ -56,6 +56,7 @@ import {
 import type { DeviceIdentity } from "../identity.ts";
 import type { ApplyIntentResult, EngineContext } from "../engine/port.ts";
 import type { CampaignProgressRecord, CharacterWrite, EventRecord, RunRecord } from "../store/repository.ts";
+import { followCrew } from "./crew.ts";
 import { diff } from "../json-patch.ts";
 import { keepGuestHousehold } from "./account.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
@@ -185,7 +186,7 @@ export async function applyAction(
     if (!campaignId) {
       return { ok: false, seq: state.seq, error: { code: "ILLEGAL", message: "no campaign to continue" } };
     }
-    const next = await nextChapter(campaignId, auth.run.householdId, seatedParty(state), deps);
+    const next = await nextChapter(campaignId, auth.run.householdId, seatedParty(state), deps, state.crew);
     if ("refusal" in next) {
       return { ok: false, seq: state.seq, error: { code: next.code, message: next.refusal } };
     }
@@ -244,7 +245,7 @@ export async function applyAction(
   // The household had already played this chapter (session timing, #511).
   let revisit = false;
   if (input.intent.type === "START_CHAPTER" && chapter) {
-    const road = await roadTo(chapter, auth.run.householdId, seatedParty(state), deps);
+    const road = await roadTo(chapter, auth.run.householdId, seatedParty(state), deps, state.crew);
     if ("refusal" in road) {
       return { ok: false, seq: state.seq, error: { code: "ILLEGAL", message: road.refusal } };
     }
@@ -263,6 +264,7 @@ export async function applyAction(
         iso(deps.now()),
         // A graph campaign's fresh attempt is created holding its journey.
         road.journey,
+        state.crew,
       );
       campaignAttemptId = joined.attemptId;
       startedAttempt = joined.startedAttempt;
@@ -433,6 +435,9 @@ export async function applyAction(
     !sameParty(state.party, result.state.party)
   ) {
     result = { ...result, state: await relockLobby(result.state, auth.run.householdId, deps) };
+    // And the crew follows who sat down: a returning crew's heroes bring
+    // their own saves with them (crew.ts). A no-op for a household with none.
+    result = { ...result, state: await followCrew(result.state, auth.run.householdId, auth.run.campaignId, deps) };
   }
 
   /*
@@ -785,6 +790,8 @@ async function roadTo(
   /** Who is starting it: any one hero's own record can meet a prerequisite (#283). */
   party: readonly PartyMember[],
   deps: HandlerDeps,
+  /** Whose saves (`RunState.crew`): absent is the household's first crew. */
+  crew?: string,
 ): Promise<
   | {
       flags: Record<string, boolean>;
@@ -823,10 +830,10 @@ async function roadTo(
   // A campaign this table has not unlocked (#221) starts nothing - whatever
   // the lobby showed, and whichever intent asked. Absent `requires`, a no-op.
   // The household's record or any seated hero's own meets it (#283).
-  const locked = await lockedRefusal(campaign, householdId, deps, party);
+  const locked = await lockedRefusal(campaign, householdId, deps, party, crew);
   if (locked) return { refusal: locked };
 
-  const attempt = await deps.repo.getCampaignProgress(householdId, chapter.campaignId);
+  const attempt = await deps.repo.getCampaignProgress(householdId, chapter.campaignId, crew);
   const graph = deps.content.graph(campaign.id);
   if (graph) {
     /*
@@ -916,15 +923,17 @@ async function nextChapter(
   householdId: string,
   party: readonly PartyMember[],
   deps: HandlerDeps,
+  /** Whose saves (`RunState.crew`): absent is the household's first crew. */
+  crew?: string,
 ): Promise<{ chapterId: string } | { refusal: string; code: "NOT_FOUND" | "ILLEGAL" }> {
   const campaign = deps.content.campaign(campaignId);
   if (!campaign) return { refusal: `unknown campaign "${campaignId}"`, code: "NOT_FOUND" };
 
   // Refused here too, so a locked Begin answers before it resolves a chapter (#221).
-  const locked = await lockedRefusal(campaign, householdId, deps, party);
+  const locked = await lockedRefusal(campaign, householdId, deps, party, crew);
   if (locked) return { refusal: locked, code: "ILLEGAL" };
 
-  const attempt = await deps.repo.getCampaignProgress(householdId, campaignId);
+  const attempt = await deps.repo.getCampaignProgress(householdId, campaignId, crew);
   const graph = deps.content.graph(campaignId);
   if (graph) {
     // A graph campaign (#194): the journey's current visit — resumed, never
@@ -1079,7 +1088,7 @@ async function moveJourney(
   const graph = deps.content.graph(campaignId);
   if (!graph) return { refusal: `"${campaignId}" has no map to choose a way through`, code: "ILLEGAL" };
 
-  const attempt = await deps.repo.getCampaignProgress(householdId, campaignId);
+  const attempt = await deps.repo.getCampaignProgress(householdId, campaignId, state.crew);
   if (!attempt || attempt.status !== "active") {
     return { refusal: `this party has no journey under way in "${campaignId}"`, code: "ILLEGAL" };
   }

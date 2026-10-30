@@ -12,6 +12,8 @@
  *   - stop for today (#259): save the chapter and close the room, to pick it
  *     up another day, and offered by itself at a Rest scene
  *   - close the room for everyone, after one "are you sure?"
+ *   - in the lobby, play as another crew: a new group of players at the same
+ *     TV starts its own adventure, and everyone else's save stays as it was
  *
  * And one that is not the host's alone: opening the room to visitors (#249),
  * which lowers the barrier to joining, so a grown-up who runs the game signs
@@ -35,6 +37,7 @@ import { inviteData, joinUrl, shareInvite, type ShareOutcome } from "../ui/share
 import { Icon } from "./icons";
 import { SignInFlow } from "./SignInFlow";
 import { LET_GO_NOTE, STOP_CONFIRM, STOP_OFFER } from "./save-copy";
+import { crewChoices } from "./crew-copy";
 import "./HostControls.css";
 
 export type RosterStatus = "here" | "away" | "creating" | "out";
@@ -96,6 +99,11 @@ const STATUS: Record<RosterStatus, string> = {
 /** A chapter is under way: there is something to save (#259). */
 export function canStop(state: Pick<RunState, "phase" | "campaignId">): boolean {
   return state.campaignId !== null && (state.phase === "scene" || state.phase === "check" || state.phase === "encounter");
+}
+
+/** Between games, where the lobby may change crews: no chapter started, none to finish. */
+export function canSwitchCrew(state: Pick<RunState, "phase" | "chapterId" | "campaignId">): boolean {
+  return state.chapterId === null && state.phase !== "chapter_complete" && !canStop(state);
 }
 
 /** How long the shared screen offers to stop at a Rest before it keeps playing by itself. */
@@ -443,6 +451,8 @@ function HostPanel({ state, me, code, invite = false }: { state: RunState; me: s
             : "For a sleeping sibling or a car ride: softer, calmer and dimmer on every device."}
         </p>
 
+        {rows.length > 0 && canSwitchCrew(state) ? <CrewSwitch state={state} busy={busy} run={run} /> : null}
+
         {canStop(state) ? (
           stopping ? (
             <div className="kad-host__confirm" role="alertdialog" aria-label="Stop for today?">
@@ -489,6 +499,54 @@ function HostPanel({ state, me, code, invite = false }: { state: RunState; me: s
           </Button>
         )}
       </div>
+    </div>
+  );
+}
+
+/**
+ * New players at the same TV (architecture §4.5, "Crews"). Quiet and last of
+ * the lobby's levers: most evenings it is the same kids. A new crew has its
+ * own saves, from the first chapter; switching only changes which saves this
+ * lobby offers, so nothing here needs an "are you sure?".
+ */
+function CrewSwitch({
+  state,
+  busy,
+  run,
+}: {
+  state: RunState;
+  busy: boolean;
+  run: (task: () => Promise<boolean>) => Promise<void>;
+}): React.JSX.Element {
+  const switchCrew = useGameStore((store) => store.switchCrew);
+  const { current, others } = crewChoices(state);
+  const several = others.length > 0;
+  return (
+    <div className="kad-host__crew" role="group" aria-label="Which crew is playing">
+      {several ? (
+        <p className="kad-host__hint">
+          Playing as <strong>{current}</strong>
+        </p>
+      ) : null}
+      {others.map((crew) => (
+        <Button
+          key={crew.id ?? "first"}
+          variant="ghost"
+          size="md"
+          block
+          disabled={busy}
+          onClick={() => void run(() => switchCrew(crew.id))}
+        >
+          Play as {crew.name}
+        </Button>
+      ))}
+      <Button variant="secondary" size="md" block disabled={busy} onClick={() => void run(() => switchCrew("new"))}>
+        New players? Start a new crew
+      </Button>
+      <p className="kad-host__hint">
+        A new adventure from the first chapter, with its own save. Everyone&rsquo;s heroes and saved games stay
+        just as they are.
+      </p>
     </div>
   );
 }

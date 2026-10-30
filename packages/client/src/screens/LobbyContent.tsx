@@ -21,6 +21,7 @@ import { CharacterPortrait } from "./CharacterPortrait";
 import { ClassToken } from "./ClassToken";
 import { Icon } from "./icons";
 import { savedHeading, savedHeroes, savedWhere } from "./save-copy";
+import { crewChoices } from "./crew-copy";
 import { VoteTicks } from "./VoteTicks";
 import { useHelp } from "../help/content";
 import { joinUrl } from "../ui/share-invite";
@@ -154,6 +155,8 @@ export function LobbyContent(): ReactElement {
       {/* The household's table, when the family named it: where the game is
           kept, not the phones. */}
       {state?.location ? <p className="lobby__place kad-muted">{state.location}</p> : null}
+      {/* Whose adventure this is, once the household has more than one crew. */}
+      {state?.crews ? <p className="lobby__place kad-muted">{crewChoices(state).current}</p> : null}
       {/* A chapter this household stopped partway (#259): said to the room, and
           taken up from any phone. */}
       {state?.saved ? (

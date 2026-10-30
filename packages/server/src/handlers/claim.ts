@@ -20,7 +20,7 @@ import { fail, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 
 // The claim's shape lives in shared (`claim.ts`), so #251's move reads it the
 // same way; re-exported for the handlers that already import it from here.
-export { claimFor, claimOf, parseClaim } from "@kad/shared";
+export { adventureKey, claimFor, claimOf, parseClaim } from "@kad/shared";
 
 /**
  * Is the adventure `claim` names still in flight? Only an active campaign
@@ -34,9 +34,9 @@ export async function claimIsLive(
   hero: Pick<Character, "householdId">,
   deps: Pick<HandlerDeps, "repo" | "content">,
 ): Promise<boolean> {
-  const { campaignId, table } = parseClaim(claim, hero);
+  const { campaignId, table, crew } = parseClaim(claim, hero);
   if (!deps.content.campaign(campaignId)) return false;
-  const attempt = await deps.repo.getCampaignProgress(table, campaignId);
+  const attempt = await deps.repo.getCampaignProgress(table, campaignId, crew);
   return attempt?.status === "active";
 }
 
@@ -60,6 +60,38 @@ export async function standing(
 /** What a phone shows when a hero is busy elsewhere (#282). */
 export function busyMessage(hero: Pick<Character, "name">): string {
   return `${hero.name} is in the middle of another adventure`;
+}
+
+/** What the household's first crew is called where a sentence names it (client `FIRST_CREW`). */
+const FIRST_CREW = "the first crew";
+
+/**
+ * `busyMessage`, but when another crew of this same household holds the hero
+ * (architecture §4.5, "Crews") it says which, and how to get there: the fix
+ * is one tap in the Room panel, not a hero lost. Anything else (another
+ * table, another campaign of this crew) is the plain message.
+ */
+export async function crewBusyMessage(
+  hero: Character,
+  state: { crew?: string },
+  householdId: string,
+  deps: Pick<HandlerDeps, "repo">,
+): Promise<string> {
+  const held = claimOf(hero);
+  if (held === null) return busyMessage(hero);
+  const { table, crew } = parseClaim(held, hero);
+  if (table !== householdId || (crew ?? null) === (state.crew ?? null)) return busyMessage(hero);
+  let name = FIRST_CREW;
+  if (crew) {
+    try {
+      const found = (await deps.repo.listCrews(householdId)).find((c) => c.id === crew);
+      if (!found) return busyMessage(hero);
+      name = found.name;
+    } catch {
+      return busyMessage(hero);
+    }
+  }
+  return `${hero.name} is playing with ${name}. A grown-up can switch crews in the Room panel.`;
 }
 
 /** A write to a stored hero, conditioned on the row as `read` found it. */

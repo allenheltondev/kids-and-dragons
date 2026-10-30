@@ -1,0 +1,227 @@
+/**
+ * Crews: a second group of players at the same household (architecture §4.5,
+ * "Crews").
+ *
+ * A household holds one save per campaign (`CampaignProgressRecord`), which
+ * is right for one family at one table and wrong the evening a grown-up sits
+ * down at the same TV with different kids: their lobby would offer the
+ * family's chapter 4. A crew is another set of saves in the same household.
+ * The kids, their heroes and the Field Guide stay the household's, so the
+ * grown-up's own phone comes along and makes a new hero, and nobody has to
+ * sign in or start a new household for it.
+ *
+ * The household's first crew has no row and no id: it is the saves as they
+ * always were, so no room, save or claim from before crews moves. Every other
+ * crew is a `CREW#` row, and its saves are keyed by it (`CAMPAIGN_SK`).
+ *
+ * Choosing one is a host control, like Lock and Quiet: low stakes and
+ * recoverable, since switching only changes which saves this lobby offers and
+ * starting a crew only adds an empty one. So it is only between games, in the
+ * lobby, before a chapter starts or a save is picked up.
+ */
+
+import { claimOf, memberHome, parseClaim, type RunState } from "@kad/shared";
+import type { CrewRecord } from "../store/repository.ts";
+import { claimIsLive } from "./claim.ts";
+import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
+import { commitRoomChange, hostedRoom, type HostPrincipal } from "./host.ts";
+import { seatedParty, UNDER_WAY } from "./progression.ts";
+import { offerCampaigns } from "./room.ts";
+
+/** What a new crew is called: no typing on a TV remote, and every name is a kid's. */
+export const CREW_NAMES = [
+  "The Otter Crew",
+  "The Lantern Crew",
+  "The Acorn Crew",
+  "The Comet Crew",
+  "The Puddle Crew",
+  "The Kettle Crew",
+  "The Thistle Crew",
+  "The Pebble Crew",
+] as const;
+
+/** Enough for every group a household plays with, and a bound on the rows a host can make: one slot per name. */
+export const MAX_CREWS = CREW_NAMES.length;
+
+export interface SwitchCrewInput {
+  code: string;
+  principal: HostPrincipal;
+  /**
+   * The crew this lobby plays: a crew's id, null for the household's first, or
+   * "new" to start a crew with no saves and play it.
+   */
+  crew: string | null | "new";
+  /**
+   * With "new": the id of this one tap. A request carrying the id of a crew
+   * already made is a retry, and gets that crew rather than another.
+   */
+  request?: string;
+}
+
+/**
+ * Point the lobby at another of the household's crews, or a brand-new one.
+ * One committed change, like every host control, and the lobby is rebuilt in
+ * it: the crew's campaigns, its saved game, and votes cast on the old list go.
+ *
+ * A new crew's row rides that same commit (`CommitInput.crew`), so it exists
+ * exactly when a lobby switched to it: a start that won the race, or retries
+ * that ran out, leave nothing behind. Its id is the first free slot,
+ * `cw_1` to `cw_<MAX_CREWS>`, written only if nobody holds it, so two rooms
+ * starting a crew at once take different slots (the loser's commit fails and
+ * its retry reads again), and the cap is the slots themselves. And a "new"
+ * request carries its tap's id (`request`), kept on the crew it makes: the
+ * same request again, a retry after a lost answer, gets that crew, not a
+ * second, while a fresh tap always makes one.
+ */
+export async function switchCrew(
+  input: SwitchCrewInput,
+  deps: HandlerDeps,
+): Promise<HandlerResult<{ seq: number; crew: string | null }>> {
+  const hosted = await hostedRoom(input.code, input.principal, deps);
+  if (!hosted.ok) return hosted;
+  const room = hosted.value;
+  // A TV's room is nobody's until a phone joins it: there are no crews to choose from.
+  if (room.claimable === true) {
+    return fail("ILLEGAL", "Let somebody join first, so the game knows whose crews these are.");
+  }
+  const run = await deps.repo.getRun(room.runId);
+  if (!run) return fail("NOT_FOUND", `no run ${room.runId}`);
+
+  // Decided afresh on every attempt, from the crews as they stand then.
+  let target: string | null = null;
+  let made: CrewRecord | undefined;
+  // Asserted rather than annotated: set in the change below, which TypeScript cannot see.
+  let refusal = null as { code: "ILLEGAL" | "NOT_FOUND"; message: string } | null;
+
+  const result = await commitRoomChange(
+    room,
+    input.principal.playerId,
+    async (state) => {
+      made = undefined;
+      refusal = null;
+      if (!betweenGames(state)) {
+        refusal = { code: "ILLEGAL", message: "Change crews before the adventure starts." };
+        return null;
+      }
+      const crews = await deps.repo.listCrews(room.householdId);
+      const retried = input.crew === "new" && input.request ? crews.find((c) => c.request === input.request) : undefined;
+      if (retried) {
+        target = retried.id;
+      } else if (input.crew === "new") {
+        const taken = new Set(crews.map((c) => c.id));
+        const slot = CREW_NAMES.findIndex((_, i) => !taken.has(crewSlot(i)));
+        if (slot < 0) {
+          refusal = { code: "ILLEGAL", message: "This game already has as many crews as it can keep." };
+          return null;
+        }
+        made = {
+          householdId: room.householdId,
+          id: crewSlot(slot),
+          name: CREW_NAMES[slot]!,
+          createdAt: iso(deps.now()),
+          ...(input.request ? { request: input.request } : {}),
+        };
+        target = made.id;
+      } else if (input.crew === null) {
+        target = null;
+      } else {
+        if (!crews.some((c) => c.id === input.crew)) {
+          refusal = { code: "NOT_FOUND", message: "There is no crew like that in this game." };
+          return null;
+        }
+        target = input.crew;
+      }
+      if ((state.crew ?? null) === target) return null;
+      const { crew: _crew, ...rest } = state;
+      const next: RunState = target === null ? (rest as RunState) : { ...rest, crew: target };
+      await offerCampaigns(next, room.householdId, run.campaignId, deps);
+      // The lobby read the crews before this one's row exists: it lands with this commit.
+      if (made) next.crews = [...(next.crews ?? []), { id: made.id, name: made.name }];
+      return next;
+    },
+    deps,
+    { crew: () => made },
+  );
+  if (!result.ok) return result;
+  if (refusal) return fail(refusal.code, refusal.message);
+  return ok({ seq: result.value.seq, crew: target });
+}
+
+/** A crew's id by slot: `cw_1` for the first slot. Never the claim's separators. */
+function crewSlot(index: number): string {
+  return `cw_${index + 1}`;
+}
+
+/**
+ * The lobby follows the kids: when the heroes seated in it are already on one
+ * crew's adventure at this household, it switches to that crew, so a crew that
+ * comes back every week never has to open the Room panel. Called whenever the
+ * party in the lobby changes, beside `relockLobby`.
+ *
+ * Only a clear answer moves it. A new hero, or one whose adventure is over or
+ * at another table, says nothing. Heroes on two different crews' adventures
+ * leave the lobby where it is, and the start says who is playing with whom
+ * (`crewBusyMessage`). A household that has never made a crew reads nothing
+ * and returns the state unchanged (the same object), so the first crew's
+ * lobbies, Gemfall's pinned ones among them, are exactly as before.
+ */
+export async function followCrew(
+  state: RunState,
+  householdId: string,
+  featuredId: string | null,
+  deps: HandlerDeps,
+): Promise<RunState> {
+  if (state.crews === undefined && state.crew === undefined) return state;
+  if (!betweenGames(state)) return state;
+  const known = new Set((state.crews ?? []).map((c) => c.id));
+  const crews = new Set<string | null>();
+  for (const member of seatedParty(state)) {
+    let hero;
+    try {
+      hero = await deps.repo.getCharacter(memberHome(member, householdId), member.character.id);
+    } catch (err) {
+      // A hero who cannot be read cannot say which crew: leave the lobby be.
+      console.error(`crews: could not read ${member.character.id}:`, err);
+      return state;
+    }
+    const held = hero ? claimOf(hero) : null;
+    if (!hero || held === null) continue;
+    const { table, crew } = parseClaim(held, hero);
+    if (table !== householdId || (crew !== undefined && !known.has(crew))) continue;
+    if (!(await claimIsLive(held, hero, deps))) continue;
+    crews.add(crew ?? null);
+  }
+  if (crews.size !== 1) return state;
+  const [target] = [...crews];
+  if ((state.crew ?? null) === target) return state;
+  const { crew: _crew, ...rest } = state;
+  const next: RunState = target ? { ...rest, crew: target } : (rest as RunState);
+  await offerCampaigns(next, householdId, featuredId, deps);
+  return next;
+}
+
+/** In the lobby, with no chapter started and none to finish. */
+function betweenGames(state: RunState): boolean {
+  return state.chapterId === null && !UNDER_WAY.has(state.phase) && state.phase !== "chapter_complete";
+}
+
+/** What a crew route answers a body it cannot read. */
+export const CREW_BODY = 'expected { crew: "<crew id>" | null | "new", request?: "<tap id>" }';
+
+/**
+ * What a crew request body asks for (`SwitchCrewInput`), or undefined when it
+ * cannot be read: a crew id, null or "new", and for "new" an optional tap id.
+ */
+export function parseCrewChoice(
+  body: Record<string, unknown>,
+): Pick<SwitchCrewInput, "crew" | "request"> | undefined {
+  const { crew, request } = body;
+  if (request !== undefined && (typeof request !== "string" || !/^[A-Za-z0-9_-]{8,64}$/.test(request))) {
+    return undefined;
+  }
+  const tap = typeof request === "string" ? { request } : {};
+  if (crew === null) return { crew };
+  if (crew === "new") return { crew, ...tap };
+  // A crew id is ours (`crewSlot`): never the claim's separators, never anything long.
+  return typeof crew === "string" && /^cw_[a-z0-9]{1,20}$/.test(crew) ? { crew } : undefined;
+}

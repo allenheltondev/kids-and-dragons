@@ -34,6 +34,7 @@
  */
 
 import {
+  adventureKey,
   claimFor,
   claimOf,
   isPracticeCampaign,
@@ -80,6 +81,10 @@ const ROOM_KEYS = [
   "removed",
   "campaignOptions",
   "campaignVotes",
+  // The household's crews as this lobby listed them: a save stopped before a
+  // crew was made must not take it off the Room panel. (`crew` itself is the
+  // game's, and comes with the save, which is the lobby's crew's own.)
+  "crews",
 ] as const satisfies readonly (keyof RunState)[];
 
 /** The first sentence of `text`, trimmed to one breath. */
@@ -106,6 +111,8 @@ interface Saved {
 
 /**
  * The household's newest stopped chapter that can still be picked up, or null.
+ * One crew's (`crew`, absent for the household's first): another crew's save
+ * is its own game, and never offered to this one.
  *
  * "Can still be picked up" is checked against the household's campaign
  * attempt, which another room may have moved on in the meantime: the attempt
@@ -116,13 +123,14 @@ interface Saved {
 export async function savedGame(
   householdId: string,
   deps: Pick<HandlerDeps, "repo" | "content">,
+  crew?: string,
 ): Promise<Saved | null> {
   const stopped = (await deps.repo.listRuns(householdId))
     .filter((run) => run.stoppedAt !== undefined)
     .sort((a, b) => (b.stoppedAt ?? "").localeCompare(a.stoppedAt ?? ""));
   for (const record of stopped) {
     const found = await readSaved(record, householdId, deps);
-    if (found) return found;
+    if (found && found.state.crew === crew) return found;
   }
   return null;
 }
@@ -138,7 +146,7 @@ async function readSaved(
   }
   const campaign = deps.content.campaign(state.campaignId);
   if (!campaign) return null;
-  const attempt = await deps.repo.getCampaignProgress(householdId, state.campaignId);
+  const attempt = await deps.repo.getCampaignProgress(householdId, state.campaignId, state.crew);
   if (!attempt || attempt.status !== "active") return null;
   if ((attempt.attemptId ?? null) !== (state.campaignAttemptId ?? null)) return null;
 
@@ -174,9 +182,10 @@ async function readSaved(
 export async function savedGameView(
   householdId: string,
   deps: Pick<HandlerDeps, "repo" | "content">,
+  crew?: string,
 ): Promise<SavedGameView | null> {
   try {
-    return (await savedGame(householdId, deps))?.view ?? null;
+    return (await savedGame(householdId, deps, crew))?.view ?? null;
   } catch (err) {
     console.error(`save: could not look for ${householdId}'s saved game:`, err);
     return null;
@@ -238,7 +247,7 @@ export async function stopForToday(
   if (!result.ok) return result;
   await deps.repo.deleteRoom(room.code);
 
-  // One save per campaign: an older stop of the same one is the game as it
+  // One save per campaign and crew: an older stop of the same one is the game as it
   // was an evening ago, and must not come back once this one is taken up.
   // The campaign is the stopped state's own, never the run row's: a room
   // opened for one campaign can resume another (`resumeGame`).
@@ -246,6 +255,7 @@ export async function stopForToday(
     if (other.id === run.id || other.stoppedAt === undefined) continue;
     const otherState = await deps.repo.getState(other.id);
     if ((otherState?.campaignId ?? other.campaignId) !== state.campaignId) continue;
+    if (otherState?.crew !== state.crew) continue;
     const { stoppedAt: _old, stoppedBy: _oldBy, ...cleared } = other;
     await deps.repo.putRun(cleared);
   }
@@ -290,7 +300,7 @@ export async function resumeGame(
       return fail("ILLEGAL", "This game is already under way.");
     }
 
-    const found = await savedGame(run.householdId, deps);
+    const found = await savedGame(run.householdId, deps, room.crew);
     if (!found) return fail("NOT_FOUND", "There is no saved game to pick up.");
 
     const { party, writes, removed } = await restoreParty(room, found.state, run.householdId, deps);
@@ -421,7 +431,7 @@ async function restoreParty(
   householdId: string,
   deps: HandlerDeps,
 ): Promise<{ party: PartyMember[]; writes: CharacterWrite[]; removed: string[] }> {
-  const campaignId = saved.campaignId!;
+  const adventure = adventureKey(saved.campaignId!, saved.crew);
   const party: PartyMember[] = [];
   const writes: CharacterWrite[] = [];
   const kept = new Set<string>();
@@ -433,7 +443,7 @@ async function restoreParty(
   for (const member of saved.party) {
     const hero = await deps.repo.getCharacter(memberHome(member, householdId), member.character.id);
     if (!hero) continue;
-    if ((await standing(hero, claimFor(campaignId, householdId, hero), deps)) !== "mine") continue;
+    if ((await standing(hero, claimFor(adventure, householdId, hero), deps)) !== "mine") continue;
     if (saved.removed?.includes(member.playerId)) out.add(member.playerId);
     const away = out.has(member.playerId);
     claimed.push({ ...member, connected: !away && here(member.playerId), ready: false });
@@ -458,7 +468,7 @@ async function restoreParty(
     if (seated() >= MAX_PARTY) continue;
     const hero = await deps.repo.getCharacter(memberHome(member, householdId), member.character.id);
     if (!hero) continue;
-    const claim = claimFor(campaignId, householdId, hero);
+    const claim = claimFor(adventure, householdId, hero);
     const where = await standing(hero, claim, deps);
     if (where === "busy") continue;
     if (where === "mine") {
@@ -488,8 +498,8 @@ export async function heroSaved(
 ): Promise<{ at: string | null } | null> {
   const held = claimOf(hero);
   if (held === null || !(await claimIsLive(held, hero, deps))) return null;
-  const { campaignId, table } = parseClaim(held, hero);
-  const saved = await savedGame(table, deps);
+  const { campaignId, table, crew } = parseClaim(held, hero);
+  const saved = await savedGame(table, deps, crew);
   if (!saved || saved.state.campaignId !== campaignId) return null;
   if (!saved.state.party.some((member) => member.character.id === hero.id)) return null;
   if (table === hero.householdId) return { at: null };
@@ -523,14 +533,19 @@ export async function releaseSavedHero(
   const hero = await deps.repo.getCharacter(home, input.characterId);
   if (!hero) return fail("NOT_FOUND", `no hero ${input.characterId}`);
   const held = claimOf(hero);
-  const { campaignId, table } = held === null ? { campaignId: "", table: "" } : parseClaim(held, hero);
+  const { campaignId, table, crew } =
+    held === null ? { campaignId: "", table: "", crew: undefined } : parseClaim(held, hero);
   const runs = held === null || table !== input.householdId ? [] : await deps.repo.listRuns(table);
   // Matched on the stopped state's own campaign and party, not the run row's.
   let holds = false;
   for (const run of runs) {
     if (run.stoppedAt === undefined || run.stoppedBy !== input.deviceId) continue;
     const saved = await readSaved(run, table, deps);
-    if (saved?.state.campaignId === campaignId && saved.state.party.some((member) => member.character.id === hero.id)) {
+    if (
+      saved?.state.campaignId === campaignId &&
+      saved.state.crew === crew &&
+      saved.state.party.some((member) => member.character.id === hero.id)
+    ) {
       holds = true;
       break;
     }

@@ -78,6 +78,7 @@ Whoever opened the room runs it. In Party Mode that is the big screen: tap **Roo
 - **Quiet mode**: "For a sleeping sibling or a car ride: softer, calmer and dimmer on every device." It turns on for every phone in the room at once. **Turn quiet mode off** ends it.
 - **Make keeper** picks which phone is offered to keep the heroes. See signing in, below.
 - **Stop for today** saves the game for next time.
+- **New players? Start a new crew** for their own save, which their heroes reopen.
 - **Close the room** ends it for everyone, after one more tap on **Close it**. "Heroes and what they earned are kept."
 
 ## When a kid leaves or arrives partway
