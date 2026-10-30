@@ -50,6 +50,8 @@ test.describe("running the room", () => {
     // The host is listed too, as "(you)", and is still making a hero as well.
     const guestRow = roster.getByRole("listitem").filter({ hasNotText: "(you)" });
     await expect(guestRow.getByText(/Making a hero/)).toBeVisible(TAP);
+    // The box gives way and scrolls on a short phone; the picture shows all of it.
+    await host.addStyleTag({ content: ".kad-host--inline { overflow: visible !important; max-block-size: none !important; flex: none !important; }" });
     await guidePicture(host.locator(".kad-host"), "host-panel");
     // The guest's phone has no such panel.
     await expect(guest.getByText("Running this room")).toHaveCount(0);
