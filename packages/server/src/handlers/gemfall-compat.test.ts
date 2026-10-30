@@ -337,9 +337,14 @@ const DIGESTS: PreEpicSave["digests"] = {
 // Great-Grandma, "hands round" -> "hands around" and the like, in text only,
 // with "line soup" and "line camp" reworded for sense (soup for travelers in line).
 // resumeInteractions keep their shipped words; gameplay digests are unchanged.
+// Re-pinned for a prose pass on chapter 1 from family playtest feedback:
+// gemfall-01 narration, labels, branch and variant text only (shorter, plainer,
+// and continuity fixes at merge points). The nine legacy checks and
+// resumeInteractions keep their shipped words; no scene, edge, flag, effect,
+// stat or TN moved, and the gameplay digests are unchanged.
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "43d406c6e7d81ee2586a4041b2cbe3677762c30b389e1dcd666ea7a75a374463",
-  "chapters/gemfall-01.json": "125a3a89b10229cd2cf820e43c75182df7e35518135b9499ff31217535ccb28a",
+  "chapters/gemfall-01.json": "7e8b9cb36ec0e205591b9067162b71b97af8063d383649c70eb9cd50afec9bf1",
   "chapters/gemfall-02.json": "6ad8d9140df234888d00080f013a2a42db50ed5394a3d077f05810cfc166b586",
   "chapters/gemfall-03a.json": "6bd4fe160b127075630ce31d35517fd1c062beafc0ca29219b23b71c8dd6b90b",
   "chapters/gemfall-03b.json": "4e90b4e0bbe67a35c97bc1342489a71be9ded6594b8da133067939dada4a5d7f",
