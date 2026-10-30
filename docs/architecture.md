@@ -1778,7 +1778,7 @@ discards it. A browser whose binding came from opening a Party Mode room on itse
 
 `/guide` is how to run a session, for a grown-up who has never seen the game, linked from the start
 screen and from a family tablet's picker. Its words are `client/src/guide/guide.md`, with the grown-up's errands (accounts, tablets, visitors,
-groups, deleting) as a second page at `/guide/setup` from `setup.md`. Both are drawn by a
+groups, deleting) as a second page at `/guide/setup` from `setup.md`. Both are fetched as files when the guide opens (never bundled as strings) and drawn by a
 small Markdown reader that knows only what the guide uses and refuses the rest. The same page
 prints: its print styles drop the controls and keep the quick start to the first page. Its
 pictures are real screens taken by the e2e specs that walk each flow (`guidePicture()`, a no-op

@@ -8,6 +8,9 @@ How to run a session, for a grown-up who has never seen the game (#257).
   accounts, a shared tablet, a new device, visitors, groups and deleting (`/guide/setup`).
   Each page links to the other; setup's sections sit in `<!-- part: Name -->` groups.
   GitHub shows both with their pictures, so they double as the printable source.
+  In the app they are not in the script: `GuideScreen.tsx` imports each as a file (`?url`) and fetches
+  it when the guide opens, so the 15KB of words stay out of the payload. The build emits them under
+  `/bundle/`, which the service worker saves at install, so the guide still opens offline.
 - **In the app** the first is `/guide`, linked from the start screen's host card and from a family
   tablet's "Who's playing?" screen. It loads as its own chunk, never with the
   first paint.
