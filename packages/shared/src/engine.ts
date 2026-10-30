@@ -77,6 +77,7 @@ import {
 } from "./encounter.js";
 import { captiveStatuses, captivesOf, objectivesDone, outcomeBranch, resolveEnvironment } from "./environment.js";
 import { parseBoard, type Position } from "./grid.js";
+import { choiceAhead, type ChoiceAhead } from "./choice-ahead.js";
 import { planEnemyTurn } from "./enemy-ai.js";
 import type {
   CampaignView,
@@ -899,6 +900,20 @@ function completeChapter(draft: RunState, scene: EndingScene, ctx: EngineContext
  * the gift. So after every intent the options are recomputed, and a vote cast
  * for an option that has gone is withdrawn, leaving that player to vote again.
  */
+/**
+ * One option as the phones and the TV draw it: its label with tokens filled
+ * (#159), and what picking it leads to (`choiceAhead`), when that is a roll,
+ * a game or a fight.
+ */
+function promptOption(
+  choice: Choice,
+  who: ReturnType<typeof party>,
+  ctx: EngineContext,
+): { id: string; label: string; icon: string; ahead?: ChoiceAhead } {
+  const ahead = ctx.chapter ? choiceAhead(ctx.chapter, choice) : null;
+  return { id: choice.id, label: fillTokens(choice.label, who), icon: choice.icon, ...(ahead === null ? {} : { ahead }) };
+}
+
 function refreshChoicePrompt(draft: RunState, ctx: EngineContext): void {
   const prompt = draft.prompt;
   if (!prompt || prompt.kind !== "choice" || prompt.sceneId !== draft.sceneId) return;
@@ -908,7 +923,7 @@ function refreshChoicePrompt(draft: RunState, ctx: EngineContext): void {
   const live = visibleChoices(scene.choices, who);
   const liveIds = new Set(live.map((c) => c.id));
   if (prompt.options.length === live.length && prompt.options.every((o) => liveIds.has(o.id))) return;
-  prompt.options = live.map((c) => ({ id: c.id, label: fillTokens(c.label, who), icon: c.icon }));
+  prompt.options = live.map((c) => promptOption(c, who, ctx));
   if (prompt.votes) {
     prompt.votes = Object.fromEntries(Object.entries(prompt.votes).filter(([, id]) => liveIds.has(id)));
   }
@@ -949,7 +964,7 @@ function openScenePrompt(
         sceneId,
         // Labels take tokens (never variants), filled here so the phones
         // render the prompt as-is and a reload shows the same words (#159).
-        options: options.map((c) => ({ id: c.id, label: fillTokens(c.label, who), icon: c.icon })),
+        options: options.map((c) => promptOption(c, who, ctx)),
         forPlayerIds: isVote
           ? draft.party.map((m) => m.playerId)
           : turn

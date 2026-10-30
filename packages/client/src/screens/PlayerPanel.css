@@ -1463,3 +1463,18 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
 .kad-surface--player:has(.playtest--shut) .confirm {
   padding-block-end: calc(var(--space-3, 0.75em) + 3.5em);
 }
+
+/* What a choice leads to (shared `choiceAhead`), under its label: "Quick roll", "Game", "Fight". */
+.choice__ahead {
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
+  inline-size: fit-content;
+  margin-block-start: 0.2em;
+  padding: 0.05em 0.5em;
+  border-radius: var(--radius-pill, 999em);
+  background: rgb(245 200 108 / 16%);
+  color: var(--color-accent, #f5c86c);
+  font-size: 0.8em;
+  font-weight: 700;
+}

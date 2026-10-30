@@ -36,6 +36,7 @@ export * from "./discoveries.js";
 export * from "./chapter-graph.js";
 export * from "./chapter-pacing.js";
 export * from "./chapter-goal.js";
+export * from "./choice-ahead.js";
 export * from "./chapter-preface.js";
 export * from "./session-timing.js";
 export * from "./story-plates.js";
