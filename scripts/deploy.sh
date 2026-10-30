@@ -187,6 +187,15 @@ else
   npm run build
 fi
 
+# Recorded narration (#545): every clip the manifests in content/ play must be
+# on this site before those manifests go live, or a browser fetches a 404
+# mid-sentence. Asked over HTTPS exactly as a browser asks, so it needs no AWS
+# permission, and run with plain node because a ship-mode deploy has no
+# node_modules. Not skipped with the checks: CI cannot know what this bucket
+# holds. No manifests is the ordinary state and passes at once.
+say "Voice clips on $SITE_URL"
+node tools/voice/verify-site.ts "$SITE_URL"
+
 say "Uploading to $BUCKET"
 
 # Hashed filenames, so they can be cached until the heat death of the universe.
