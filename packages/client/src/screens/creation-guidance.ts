@@ -18,7 +18,7 @@ export function creationNextHint(step: CreationStep, done: boolean, remaining: n
   switch (step) {
     case "species": return "Pick your creature to keep going.";
     case "class": return "Pick what you love doing to keep going.";
-    case "stats": return `Spend your last ${remaining} point${remaining === 1 ? "" : "s"}, or tap Help me choose.`;
+    case "stats": return `Spend ${remaining} point${remaining === 1 ? "" : "s"} to keep going.`;
     case "name": return "Pick a name or type your own.";
   }
 }

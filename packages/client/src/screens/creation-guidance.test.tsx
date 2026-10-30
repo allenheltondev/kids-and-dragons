@@ -22,7 +22,7 @@ describe("creation guidance", () => {
   it("suggests a class's strength without advancing, and lets the player edit the points", () => {
     setCreationDraft({ ...EMPTY_DRAFT, species: "unicorn", klass: "thornguard", step: "stats", assigned: { might: 0, quick: 0, clever: 0, heart: 0 } });
     const send = mount();
-    expect(screen.getByText(/Spend your last .*points/)).toBeTruthy();
+    expect(screen.getByText(/Spend .*points to keep going/)).toBeTruthy();
     expect(screen.getByText("Lift, push and stand strong.")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Help me choose" }));
     const primary = rules.classes.thornguard.stat;
