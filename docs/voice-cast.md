@@ -340,7 +340,7 @@ goes to whoever was named last. Adding a tag changes the words, so do it before 
 
 - **Lines are counted from speech tags, plus a guess.** A quote is given to whoever it is tagged for ("…," says
   Pib), by name or by what they are in that scene ("says a cousin", "the keeper asks": the last word of their name, where
-  nobody else in the scene shares it). Of about 2,600 quoted passages, 1,3xx are tagged. So where a scene has
+  nobody else in the scene shares it). Of about 2,600 quoted passages, about 1,300 are tagged. So where a scene has
   only one character who could be speaking, the quotes nobody is tagged for are counted for them as a **guess**,
   shown apart ("52 lines, 4 guessed"). A guess skips what is not a sentence someone said (a fragment, a sign,
   something sold, the party's own "you say") and any quote with someone else named beside it. On the real cast
