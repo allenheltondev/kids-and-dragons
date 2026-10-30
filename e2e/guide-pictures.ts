@@ -37,6 +37,8 @@ export async function guidePicture(target: Page | Locator, name: string, options
   const marks: Locator[] = [];
   for (const mark of wanted) if ((await mark.count()) > 0) marks.push(mark.first());
   for (const mark of marks) {
+    // On screen first: a ring below the fold is a ring nobody sees.
+    await mark.scrollIntoViewIfNeeded().catch(() => undefined);
     await mark.evaluate((element) => {
       element.setAttribute("data-guide-mark", "");
     });
