@@ -189,7 +189,7 @@ test.describe("drop in, drop out", () => {
     await rosie.getByRole("button", { name: /do it!/i }).click(TAP);
     await expect.poll(async () => (await state()).sceneId, TAP).not.toBe(firstScene);
     await comeBack(sam, "Sam");
-    await guidePicture(sam, "catch-up");
+    await guidePicture(sam, "catch-up", { mark: sam.getByRole("button", { name: /got it/i }) });
     // And the TV says where the party has got to (#357), with nothing tapped.
     await expect(tv.getByTestId("chapter-preface")).toHaveAttribute("data-kind", "back", TAP);
     await expect(tv.getByTestId("chapter-preface")).toContainText("Where you left off");

@@ -735,7 +735,7 @@ test.describe("first playable", () => {
     await tv.goto("/");
     await tv.getByRole("button", { name: /host a game/i }).click();
     await tv.getByText("Party Mode").click();
-    await guidePicture(tv.locator(".home__host"), "start-a-game");
+    await guidePicture(tv.locator(".home__host"), "start-a-game", { mark: tv.getByRole("button", { name: /open the lobby here/i }) });
     await tv.getByRole("button", { name: /open the lobby here/i }).click();
     await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/);
     const code = new URL(tv.url()).pathname.split("/").pop()!;
@@ -746,7 +746,7 @@ test.describe("first playable", () => {
     const controller = await phone(browser);
     await controller.goto("/");
     await expect(controller.getByRole("button", { name: /host a game/i })).toBeVisible();
-    await guidePicture(controller, "home");
+    await guidePicture(controller, "home", { mark: controller.getByRole("button", { name: /host a game/i }) });
     await controller.getByLabel(/room code/i).fill(code);
     await controller.getByRole("button", { name: /join a game/i }).click();
     await expect(controller).toHaveURL(new RegExp(`/p/${code}$`));
@@ -758,7 +758,7 @@ test.describe("first playable", () => {
     // room channel alone.
     await expect(tv.getByText("Sparklehoof").first()).toBeVisible({ timeout: 15_000 });
     await expect(controller.getByRole("button", { name: /begin the adventure/i })).toBeVisible();
-    await guidePicture(controller, "ready");
+    await guidePicture(controller, "ready", { mark: controller.getByRole("button", { name: /play the practice/i }) });
     await guidePicture(tv, "tv-lobby");
     expect(tvErrors).toEqual([]);
   });

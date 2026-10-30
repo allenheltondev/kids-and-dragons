@@ -20,9 +20,10 @@ export const takingGuidePictures = process.env.KAD_GUIDE_PICTURES === "1";
 
 /**
  * Photograph a page, or one part of it, for the guide. `name` is the file
- * name without `.jpg`, as guide.md uses it.
+ * name without `.jpg`, as guide.md uses it. `mark` rings the button or buttons
+ * the guide's words tell a grown-up to tap, so the eye finds it on the picture.
  */
-export async function guidePicture(target: Page | Locator, name: string): Promise<void> {
+export async function guidePicture(target: Page | Locator, name: string, options: { mark?: Locator | Locator[] } = {}): Promise<void> {
   if (!takingGuidePictures) return;
   const page = "page" in target && typeof target.page === "function" ? target.page() : (target as Page);
   // The dev drawer is a developer's tool, never part of what a grown-up sees.
@@ -30,6 +31,22 @@ export async function guidePicture(target: Page | Locator, name: string): Promis
   // Fonts and the picture behind the home screen, so a shot is never half drawn.
   await page.evaluate(() => document.fonts.ready).catch(() => undefined);
   await page.waitForLoadState("networkidle", { timeout: 5_000 }).catch(() => undefined);
+  // The button the words name gets a gold ring, inside its own edge so a part of the screen never clips it.
+  const wanted = options.mark === undefined ? [] : Array.isArray(options.mark) ? options.mark : [options.mark];
+  // A button that is not on this screen is not ringed, rather than failing the picture.
+  const marks: Locator[] = [];
+  for (const mark of wanted) if ((await mark.count()) > 0) marks.push(mark.first());
+  for (const mark of marks) {
+    await mark.evaluate((element) => {
+      element.setAttribute("data-guide-mark", "");
+    });
+  }
+  if (marks.length > 0) {
+    await page.addStyleTag({
+      content: `[data-guide-mark] { outline: 0.22em solid #f5c86c !important; outline-offset: -0.12em !important;
+        box-shadow: 0 0 0 0.35em rgba(245, 200, 108, 0.35) inset !important; }`,
+    });
+  }
   await target.screenshot({
     path: path.join(OUT, `${name}.jpg`),
     type: "jpeg",
@@ -38,4 +55,9 @@ export async function guidePicture(target: Page | Locator, name: string): Promis
     caret: "hide",
     scale: "css",
   });
+  for (const mark of marks) {
+    await mark.evaluate((element) => {
+      element.removeAttribute("data-guide-mark");
+    });
+  }
 }
