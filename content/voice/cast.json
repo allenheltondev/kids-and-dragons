@@ -74,16 +74,16 @@
           "address": "gemfall-02/choice_pib_gift/narration"
         },
         {
-          "text": "Prickly. But only on the outside. Like a hedge.",
-          "address": "gemfall-02/choice_pib_gift_pin/narration"
+          "text": "I'm Pib. I can't let them in. The hedges don't listen to people who haven't asked properly. What about you?",
+          "address": "gemfall-02/scene_hedge_mob/narration"
         },
         {
-          "text": "For luck. When things go wrong, you look through the hole, and they go a bit less wrong. That's how I do the tricky bits of hedge.",
-          "address": "gemfall-02/choice_pib_gift_pebble/narration"
+          "text": "Prickly. But only on the outside. Like a hedge.",
+          "address": "gemfall-02/choice_pib_gift_pin/narration"
         }
       ],
-      "lineCount": 8,
-      "guessedLines": 4,
+      "lineCount": 7,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -292,16 +292,16 @@
           "address": "gemfall-07h/scene_tidewell/variants/1"
         },
         {
-          "text": "three. I was right, and you went and found them. I don't know whether to hug you or scold you.",
-          "address": "gemfall-07h/scene_tidewell_show/variants/2"
+          "text": "Professor Marrow Tidewell, and you are the first people who have believed me all week.",
+          "address": "gemfall-01/scene_scholar_believed/narration"
         },
         {
-          "text": "Hm. Loud, and lovely, and not one of the real ones. Have you been collecting, or only carrying?",
-          "address": "gemfall-07h/scene_tidewell/variants/0"
+          "text": "three. I was right, and you went and found them. I don't know whether to hug you or scold you.",
+          "address": "gemfall-07h/scene_tidewell_show/variants/2"
         }
       ],
-      "lineCount": 19,
-      "guessedLines": 7,
+      "lineCount": 16,
+      "guessedLines": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -561,7 +561,7 @@
         }
       ],
       "lineCount": 10,
-      "guessedLines": 3,
+      "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -1145,16 +1145,16 @@
           "address": "gemfall-02/choice_common_room_runner/narration"
         },
         {
-          "text": "The relay could use a friend with wings.",
-          "address": "gemfall-03c/scene_relay_message_fly/narration"
+          "text": "Fine. Past you. Once. Don't make me sorry.",
+          "address": "gemfall-07h/scene_centaur_relay_old_way/narration"
         },
         {
-          "text": "Small boy, orange hat, talks to horses? Hand me the word and I will pass it down the line. Every runner after me passes it on.",
-          "address": "gemfall-04c/check_relay/narration"
+          "text": "The relay could use a friend with wings.",
+          "address": "gemfall-03c/scene_relay_message_fly/narration"
         }
       ],
       "lineCount": 11,
-      "guessedLines": 5,
+      "guessedLines": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -1341,16 +1341,16 @@
           "address": "riftlight-ashspan-bridge/ferry_ask/narration"
         },
         {
-          "text": "I am along this river at every tide. When you want to go upriver, I am your frog.",
-          "address": "riftlight-saltrot-arrival/ossley_done/narration"
-        },
-        {
           "text": "Stones want to go home. We only kept them until someone was going that way.",
           "address": "gemfall-07r/scene_ossley/narration"
+        },
+        {
+          "text": "Like a post. A post that gets out of the way afterward. Hard to find.",
+          "address": "riftlight-ashspan-bridge/brace_done/narration"
         }
       ],
       "lineCount": 37,
-      "guessedLines": 5,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -1790,8 +1790,8 @@
           "address": "riftlight-frostfang-shore/ladder_hold/onFailure/narration"
         }
       ],
-      "lineCount": 34,
-      "guessedLines": 3,
+      "lineCount": 33,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -1931,19 +1931,19 @@
       },
       "lines": [
         {
+          "text": "Better. Annoyingly better.",
+          "address": "gemfall-03c/scene_campfire_play_rewrite/narration"
+        },
+        {
           "text": "New mountain, darlings!",
           "address": "gemfall-03c/scene_campfire_play/narration"
         },
         {
           "text": "Much spookier.",
           "address": "gemfall-03c/scene_campfire_play_tell_true/narration"
-        },
-        {
-          "text": "Fair's fair.",
-          "address": "gemfall-03c/scene_surge_scarves_help/narration"
         }
       ],
-      "lineCount": 3,
+      "lineCount": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -2285,7 +2285,7 @@
         }
       ],
       "lineCount": 8,
-      "guessedLines": 3,
+      "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -2398,16 +2398,16 @@
           "address": "gemfall-04b/scene_runner_path_knock/narration"
         },
         {
-          "text": "MossHome is north! Come and see us! Bring your feet!",
-          "address": "gemfall-04b/check_runner_path/onSuccess/narration"
+          "text": "MossHome runner. Bigfoot town, north. Third missing path today. Cannot stop!",
+          "address": "gemfall-04b/scene_runner_path/narration"
         },
         {
-          "text": "Happens to everybody this season.",
-          "address": "gemfall-04b/check_runner_path/onFailure/narration"
+          "text": "MossHome is north! Come and see us! Bring your feet!",
+          "address": "gemfall-04b/check_runner_path/onSuccess/narration"
         }
       ],
-      "lineCount": 15,
-      "guessedLines": 3,
+      "lineCount": 14,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -2608,20 +2608,19 @@
       },
       "lines": [
         {
+          "text": "Watch. Now give them back to me in road order, little traveler. The road remembers better when it is sung back.",
+          "address": "gemfall-04c/interaction_verses/narration"
+        },
+        {
           "text": "There. The road just learned you.",
           "address": "gemfall-04c/interaction_verses/onSuccess/narration"
         },
         {
           "text": "Corran's new verses bend around the falls, and they bend around the Shortcut too. It's in the song. It's been in the song all along.",
           "address": "gemfall-05c/scene_centaur_whisper_show_bark/narration"
-        },
-        {
-          "text": "Your turn, travelers.",
-          "address": "gemfall-04c/scene_relay_sing/narration"
         }
       ],
-      "lineCount": 6,
-      "guessedLines": 1,
+      "lineCount": 5,
       "speaks": true,
       "status": "provisional"
     },
@@ -2796,7 +2795,7 @@
           "address": "gemfall-06/interaction_tags/onSuccess/narration"
         }
       ],
-      "lineCount": 49,
+      "lineCount": 52,
       "speaks": true,
       "status": "provisional"
     },
@@ -2840,8 +2839,8 @@
           "address": "riftlight-cairnstep-pass/survey/narration"
         }
       ],
-      "lineCount": 51,
-      "guessedLines": 3,
+      "lineCount": 50,
+      "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -2876,15 +2875,15 @@
           "address": "gemfall-05a/check_crates/onSuccess/narration"
         },
         {
-          "text": "Not that one. The humming ones are underneath.",
-          "address": "gemfall-05a/check_crates/onFailure/narration"
+          "text": "Take it. Give me a song I can sing over it instead.",
+          "address": "gemfall-05a/check_carter/onSuccess/narration"
         },
         {
-          "text": "Humming gives me the shakes.",
-          "address": "gemfall-05a/interaction_bowls/narration"
+          "text": "Not that one. The humming ones are underneath.",
+          "address": "gemfall-05a/check_crates/onFailure/narration"
         }
       ],
-      "lineCount": 4,
+      "lineCount": 6,
       "speaks": true,
       "status": "provisional"
     },
@@ -3140,8 +3139,8 @@
           "address": "gemfall-05b/choice_elders_close/narration"
         }
       ],
-      "lineCount": 26,
-      "guessedLines": 2,
+      "lineCount": 24,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -3199,15 +3198,19 @@
       },
       "lines": [
         {
+          "text": "Takes forty years to read those. I've done thirty-one.",
+          "address": "gemfall-05b/check_hut_pages/onFailure/narration"
+        },
+        {
           "text": "Still good advice. There are wolves up there today.",
           "address": "gemfall-05b/check_hut_pages/onSuccess/narration"
         },
         {
-          "text": "Busy mountain.",
-          "address": "gemfall-05b/scene_halfway_hut_sign/narration"
+          "text": "My sister bakes them. Still warm, if you hurry. Mind the path past the hut. There is a stream, and a young river drake has moved into it.",
+          "address": "gemfall-05b/scene_hut_honeycake/narration"
         }
       ],
-      "lineCount": 2,
+      "lineCount": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -3237,8 +3240,8 @@
           "address": "gemfall-05b/check_follow_moths/onSuccess/narration"
         }
       ],
-      "lineCount": 3,
-      "guessedLines": 2,
+      "lineCount": 2,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -3277,12 +3280,12 @@
           "address": "gemfall-05c/check_outline/narration"
         },
         {
-          "text": "Keeping. Not taking. You know the difference. Don't you dare sell it.",
-          "address": "gemfall-05c/scene_unassigned_ask_proper/narration"
+          "text": "Nobody sells what the mountain drops. Now you're keeping it. Not owning it.",
+          "address": "gemfall-05c/scene_bell_house_supper_depot_tag/narration"
         }
       ],
-      "lineCount": 21,
-      "guessedLines": 2,
+      "lineCount": 20,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -3334,8 +3337,8 @@
           "address": "gemfall-07h/scene_echo_quiet/narration"
         }
       ],
-      "lineCount": 38,
-      "guessedLines": 15,
+      "lineCount": 35,
+      "guessedLines": 9,
       "speaks": true,
       "status": "provisional"
     },
@@ -3366,12 +3369,12 @@
           "address": "gemfall-05c/scene_morning_bells_unrung/narration"
         },
         {
-          "text": "They all do that.",
-          "address": "gemfall-05c/scene_moths_leaving_hold_one/narration"
+          "text": "Because they always leave a little before the mountain wakes up, and come back after, and grandmothers count everything.",
+          "address": "gemfall-05c/scene_moths_leaving_ask_bells/narration"
         },
         {
-          "text": "Somebody steer!",
-          "address": "gemfall-05c/interaction_bell_cart/narration"
+          "text": "They all do that.",
+          "address": "gemfall-05c/scene_moths_leaving_hold_one/narration"
         }
       ],
       "lineCount": 4,
@@ -3408,10 +3411,14 @@
         {
           "text": "Never tell anyone. Not ever. It's the best argument we've got.",
           "address": "gemfall-05c/scene_shortcut/narration"
+        },
+        {
+          "text": "Don't tell Corran.",
+          "address": "gemfall-05c/scene_centaur_whisper_show_bark/narration"
         }
       ],
       "lineCount": 4,
-      "guessedLines": 2,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -4274,12 +4281,11 @@
           "address": "gemfall-07r/scene_posy/narration"
         },
         {
-          "text": "So it can go home.",
-          "address": "gemfall-07r/check_posy/onSuccess/narration"
+          "text": "You got a medal for not taking something?",
+          "address": "gemfall-07r/scene_posy_medal/narration"
         }
       ],
       "lineCount": 5,
-      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -4320,7 +4326,7 @@
         }
       ],
       "lineCount": 78,
-      "guessedLines": 21,
+      "guessedLines": 20,
       "speaks": true,
       "status": "provisional"
     },
@@ -4409,19 +4415,19 @@
       },
       "lines": [
         {
+          "text": "One notebook. One brush. Two sandwiches. A remarkable improvement on last Tuesday.",
+          "address": "riftlight-buried-bridge/restore_bank/narration"
+        },
+        {
           "text": "It does not take orders from whistles. Good. That would be a very bossy chime.",
           "address": "riftlight-riftseekers-departure/chime_whistle/narration"
         },
         {
           "text": "I packed two sandwiches. Apparently that is not the same thing as two boards.",
           "address": "riftlight-buried-bridge/equipment/narration"
-        },
-        {
-          "text": "Compare your discoveries. Then help us steady any opening before people go near it.",
-          "address": "riftlight-convergence/arrival/narration"
         }
       ],
-      "lineCount": 66,
+      "lineCount": 73,
       "speaks": true,
       "status": "provisional"
     },
@@ -4468,7 +4474,7 @@
           "address": "riftlight-convergence/decision/narration"
         }
       ],
-      "lineCount": 29,
+      "lineCount": 31,
       "speaks": true,
       "status": "provisional"
     },
@@ -4549,19 +4555,19 @@
       },
       "lines": [
         {
+          "text": "One of you can see it. Keep looking. Later, I can show you how to listen too.",
+          "address": "riftlight-riftseekers-departure/seren/variants/0"
+        },
+        {
+          "text": "You can learn a good deal without seeing what I see. He brought half a bag of help.",
+          "address": "riftlight-riftseekers-departure/seren/variants/1"
+        },
+        {
           "text": "One loud note. Use it when you need to be heard, not when you want to be.",
           "address": "riftlight-riftseekers-departure/supplies_buy/narration"
-        },
-        {
-          "text": "Fast and bright, or slow and careful. Both can work, if nobody sneezes.",
-          "address": "riftlight-sky-islands-arrival/light/narration"
-        },
-        {
-          "text": "Hold a condition that is already there. Do not change a one-way rule or grant a second use.",
-          "address": "riftlight-convergence/lesson/narration"
         }
       ],
-      "lineCount": 47,
+      "lineCount": 46,
       "speaks": true,
       "status": "provisional"
     },
@@ -4611,15 +4617,15 @@
           "address": "riftlight-sky-islands-arrival/basket_plan/narration"
         },
         {
-          "text": "I do not know why it is all moving. I only know it is easier to count with friends.",
-          "address": "riftlight-sky-islands-arrival/pip_night/narration"
+          "text": "The firm bank first. The silt second. The stone last, and only from the bank.",
+          "address": "riftlight-saltrot-arrival/bridge_plan/narration"
         },
         {
-          "text": "The drawing goes in the traveling pages, not my tea-stained scrap.",
-          "address": "riftlight-reading-room/rest/narration"
+          "text": "I do not know why it is all moving. I only know it is easier to count with friends.",
+          "address": "riftlight-sky-islands-arrival/pip_night/narration"
         }
       ],
-      "lineCount": 37,
+      "lineCount": 39,
       "speaks": true,
       "status": "provisional"
     },
@@ -4648,20 +4654,20 @@
       },
       "lines": [
         {
-          "text": "The Cairnstep watchers told me where you landed. They said to look after you.",
-          "address": "riftlight-sky-islands-arrival/dusk_ferry/variants/0"
-        },
-        {
           "text": "I need a safe lane home for everyone aboard, and a very strong cup of tea.",
           "address": "riftlight-sky-islands-arrival/ferry_in/narration"
         },
         {
           "text": "Hold the rail with both hands, and do not sing back until I say.",
           "address": "riftlight-sky-islands-arrival/route_ferry/narration"
+        },
+        {
+          "text": "Never, trust a map on a windy day. Look for me if you reach the islands. You will recognize the washing.",
+          "address": "riftlight-exchange-rift/ship_flap/narration"
         }
       ],
-      "lineCount": 17,
-      "guessedLines": 6,
+      "lineCount": 14,
+      "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -4734,7 +4740,7 @@
           "address": "riftlight-exchange-rift/fish_help/narration"
         },
         {
-          "text": "I ordered ice. Ice stays where you put it.",
+          "text": "I ordered ice. Ice stays where you put it. Somebody move these, before my fish catch cold!",
           "address": "riftlight-exchange-rift/fish/narration"
         },
         {
@@ -4742,8 +4748,7 @@
           "address": "riftlight-exchange-rift/fish_slosh/narration"
         }
       ],
-      "lineCount": 4,
-      "guessedLines": 1,
+      "lineCount": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -4771,19 +4776,19 @@
       },
       "lines": [
         {
+          "text": "I am Corvane. Emperor of Pangea. Do you know how long I waited to see my rivers run the right way again?",
+          "address": "riftlight-finale/reveal/narration"
+        },
+        {
           "text": "Wake me if the rivers ever forget their way.",
           "address": "riftlight-finale/keepers/narration"
         },
         {
           "text": "Then tell me what you call this valley now.",
           "address": "riftlight-finale/listened/narration"
-        },
-        {
-          "text": "My old map left those out.",
-          "address": "riftlight-finale/first_anchor/narration"
         }
       ],
-      "lineCount": 6,
+      "lineCount": 7,
       "speaks": true,
       "status": "provisional"
     },
@@ -4818,16 +4823,15 @@
           "address": "riftlight-glacier-survival/ledge_done/narration"
         },
         {
-          "text": "That is a good kid. That is a terrible kid. Same kid. For the climb. Do not tell the kid.",
-          "address": "riftlight-hidden-glacier-rift/kid_done/narration"
+          "text": "For calling a herd off thin snow. One loud note. Do not blow it indoors.",
+          "address": "riftlight-glacier-survival/hall_share/narration"
         },
         {
-          "text": "That, is where my herd must never wander. Goats go through anything. How do we keep them out?",
-          "address": "riftlight-hidden-glacier-rift/cairn/narration"
+          "text": "That is a good kid. That is a terrible kid. Same kid. For the climb. Do not tell the kid.",
+          "address": "riftlight-hidden-glacier-rift/kid_done/narration"
         }
       ],
-      "lineCount": 53,
-      "guessedLines": 4,
+      "lineCount": 58,
       "speaks": true,
       "status": "provisional"
     },
@@ -5179,12 +5183,16 @@
           "address": "gemfall-04a/scene_pride_camp/narration"
         },
         {
+          "text": "Then they had better come to the fire.",
+          "address": "gemfall-04a/scene_pride_greeting_cubs_introduce/narration"
+        },
+        {
           "text": "We'll wait here. We always wait here.",
           "address": "gemfall-04a/rest_waystation_with_escort/narration"
         }
       ],
       "lineCount": 7,
-      "guessedLines": 4,
+      "guessedLines": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -5429,7 +5437,7 @@
         }
       ],
       "lineCount": 6,
-      "guessedLines": 2,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -5451,6 +5459,10 @@
       },
       "lines": [
         {
+          "text": "But they've never left this many. And they haven't come back.",
+          "address": "gemfall-05c/scene_moths_leaving_ask_bells/narration"
+        },
+        {
           "text": "On the list. Nobody gathers there.",
           "address": "gemfall-05c/scene_night_lights/narration"
         },
@@ -5459,7 +5471,7 @@
           "address": "gemfall-05c/scene_morning_bells/narration"
         }
       ],
-      "lineCount": 2,
+      "lineCount": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -5713,7 +5725,7 @@
           "address": "gemfall-06/scene_undeclared/narration"
         }
       ],
-      "lineCount": 17,
+      "lineCount": 16,
       "speaks": true,
       "status": "provisional"
     },
@@ -5761,19 +5773,19 @@
       },
       "lines": [
         {
+          "text": "Tilly. Duck eggs, for market across the water. They are not due for days. They disagree.",
+          "address": "riftlight-ashspan-bridge/ferry_ask/narration"
+        },
+        {
           "text": "They'll learn. Eventually. Possibly in about a year. For the heroes.",
           "address": "riftlight-ashspan-bridge/ducks_loose/narration"
         },
         {
           "text": "Do not share them with ducks. They will take advantage.",
           "address": "riftlight-ashspan-bridge/cakes/narration"
-        },
-        {
-          "text": "Eggs, are supposed to wait until market.",
-          "address": "riftlight-ashspan-bridge/duck_plan/narration"
         }
       ],
-      "lineCount": 9,
+      "lineCount": 10,
       "speaks": true,
       "status": "provisional"
     },
@@ -5890,7 +5902,7 @@
           "address": "riftlight-bone-yard/test/narration"
         }
       ],
-      "lineCount": 17,
+      "lineCount": 19,
       "speaks": true,
       "status": "provisional"
     },
@@ -5921,12 +5933,12 @@
           "address": "riftlight-boundary-stone-bank/marker_set/narration"
         },
         {
-          "text": "My eyes have been up since dawn. Yours are fresh. Who looks along it, and how?",
-          "address": "riftlight-boundary-stone-bank/sight_plan/narration"
+          "text": "Let the counters look at that, and decide for themselves. I am only the keeper.",
+          "address": "riftlight-boundary-stone-bank/drew_both/narration"
         }
       ],
-      "lineCount": 56,
-      "guessedLines": 12,
+      "lineCount": 52,
+      "guessedLines": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -6009,12 +6021,12 @@
           "address": "riftlight-exchange-rift/market/narration"
         },
         {
-          "text": "Quick! Before it all lands in my broth!",
-          "address": "riftlight-exchange-rift/awning_plan/narration"
+          "text": "Eat it warm, or save it for somebody who needs it more than you do.",
+          "address": "riftlight-exchange-rift/noodle_buy/narration"
         }
       ],
       "lineCount": 7,
-      "guessedLines": 2,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -6036,20 +6048,20 @@
       },
       "lines": [
         {
+          "text": "This will do for tonight. Tomorrow I have to find where my landing went.",
+          "address": "riftlight-exchange-rift/moor_drift/narration"
+        },
+        {
           "text": "Throw me the end of that rope! Right over my hook, if you please!",
           "address": "riftlight-exchange-rift/barge_toss/narration"
         },
         {
           "text": "Pass them down the line, friend to friend. And watch out for the puddles. Potatoes hate puddles.",
           "address": "riftlight-exchange-rift/sack_chain/narration"
-        },
-        {
-          "text": "Anybody ever eat a potato skin on a day the weather went wrong?",
-          "address": "riftlight-exchange-rift/quay_rest/narration"
         }
       ],
-      "lineCount": 16,
-      "guessedLines": 3,
+      "lineCount": 14,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -6459,12 +6471,12 @@
           "address": "riftlight-saltrot-arrival/crab_done/narration"
         },
         {
-          "text": "Every morning, I plant poles along the safe route. This morning the route is under silt.",
-          "address": "riftlight-saltrot-arrival/poles/narration"
+          "text": "Wrong order and they roll. Put it together. I am a guide, not a parrot.",
+          "address": "riftlight-saltrot-arrival/shell_path/narration"
         }
       ],
-      "lineCount": 51,
-      "guessedLines": 8,
+      "lineCount": 50,
+      "guessedLines": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -6555,8 +6567,8 @@
           "address": "riftlight-squall-temple/messages/narration"
         }
       ],
-      "lineCount": 38,
-      "guessedLines": 4,
+      "lineCount": 40,
+      "guessedLines": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -6577,6 +6589,10 @@
         "voice": "Enceladus"
       },
       "lines": [
+        {
+          "text": "Good. That is the edge told about, and one kite seller safe. Now the hard part.",
+          "address": "riftlight-sky-islands-arrival/edge_merge/narration"
+        },
         {
           "text": "Ah. Wrong road.",
           "address": "riftlight-sky-islands-arrival/walker_dragged/narration"
@@ -6608,6 +6624,10 @@
       },
       "lines": [
         {
+          "text": "The Cairnstep watchers told me where you landed. They said to look after you.",
+          "address": "riftlight-sky-islands-arrival/dusk_ferry/variants/0"
+        },
+        {
           "text": "Flags have no word for 'the sky has moved,' But you can ask the air.",
           "address": "riftlight-sky-islands-arrival/thimble/narration"
         },
@@ -6616,7 +6636,7 @@
           "address": "riftlight-sky-islands-arrival/route_flags/narration"
         }
       ],
-      "lineCount": 2,
+      "lineCount": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -6699,11 +6719,11 @@
           "address": "riftlight-the-island-due-back/sightings/narration"
         },
         {
-          "text": "They have seen something low. We should look there first.",
-          "address": "riftlight-the-island-due-back/arrival/variants/1"
+          "text": "A message can travel without taking every secret in the bag.",
+          "address": "riftlight-the-island-due-back/message_pack/narration"
         }
       ],
-      "lineCount": 6,
+      "lineCount": 7,
       "speaks": true,
       "status": "provisional"
     },

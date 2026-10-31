@@ -257,7 +257,7 @@ export function traitsOf(entry: Pick<CastEntry, "name" | "who">): string[] {
   return traits;
 }
 
-const SPEECH_VERBS = "says|said|asks|adds|croaks|squawks|whispers|calls|shouts|booms|sighs|laughs|mutters|sings|grumbles|answers|replies|bellows|squeaks|hums|announces|explains|tells you|puffs|rumbles|snaps|chirps|cries|murmurs|declares|beams|grins|wheezes|honks|bleats|purrs|say|ask|whisper|call|shout|answer|groans|corrects|decides|promises|insists|warns|urges|offers|suggests|agrees|admits|demands|complains|grunts|gasps|yells|exclaims|remarks|continues|reminds|pleads|scolds|teases|hisses|growls|chuckles|giggles|cheers|moans|sniffs|barks|croak|groan|cry|mutter|explain|tells";
+const SPEECH_VERBS = "says|said|asks|adds|croaks|squawks|whispers|calls|shouts|booms|sighs|laughs|mutters|sings|grumbles|answers|replies|bellows|squeaks|hums|announces|explains|tells you|puffs|rumbles|snaps|chirps|cries|murmurs|declares|beams|grins|wheezes|honks|bleats|purrs|say|ask|whisper|call|shout|answer|groans|corrects|decides|promises|insists|warns|urges|offers|suggests|agrees|admits|demands|complains|grunts|gasps|yells|exclaims|remarks|continues|reminds|pleads|scolds|teases|hisses|growls|chuckles|giggles|cheers|moans|sniffs|barks|croak|groan|cry|mutter|explain|tells|repeats|echoes|states|notes|observes|wonders|insists|adds|growls|squeals|calls out|cheers|roars|howls|thunders|screeches|trills|coos|yelps|screams|warbles|rasps|writes|jots|scribbles";
 const QUOTE = /["“]([^"”]{2,400})["”]/g;
 const escape = (text: string): string => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
@@ -266,7 +266,17 @@ export interface Speaker {
   names: readonly string[];
   /** Answers only to its names as written ("Wisp", never the noun "wisp"): a name that is also a common word. */
   exact?: boolean;
+  /** The pronoun the sheet already has for them ("she", "he", "they", "it"), when it does. */
+  pronoun?: "she" | "he" | "they" | "it";
+  /** In the scene being read, which is who "she says" can mean when nobody is named. */
+  here?: boolean;
 }
+
+/** "she/her" is "she". */
+export const pronounWord = (pronouns: string | undefined): Speaker["pronoun"] => {
+  const word = pronouns?.split("/")[0]?.trim().toLowerCase();
+  return word === "she" || word === "he" || word === "they" || word === "it" ? word : undefined;
+};
 
 /**
  * What the prose calls someone in the scene they are in: the last word of their name ("the keeper" for the Lookout
@@ -274,7 +284,7 @@ export interface Speaker {
  * which is how a reader knows who "the drover says" means. Anyone not in the scene keeps just their names.
  */
 export function withSceneRoles(present: readonly Speaker[], inScene: ReadonlySet<string> | undefined, nameOf: ReadonlyMap<string, string>): Speaker[] {
-  if (!inScene || inScene.size < 1) return [...present];
+  if (!inScene || inScene.size < 1) return present.map((speaker) => ({ ...speaker, here: false }));
   const owners = new Map<string, string[]>();
   for (const id of inScene) {
     const last = nameOf.get(id)?.toLowerCase().replace(/['’]s\b/g, "").split(/\s+/).pop();
@@ -283,7 +293,8 @@ export function withSceneRoles(present: readonly Speaker[], inScene: ReadonlySet
   }
   return present.map((speaker) => {
     const mine = [...owners].filter(([, ids]) => ids.length === 1 && ids[0] === speaker.id).map(([word]) => word);
-    return mine.length > 0 ? { ...speaker, names: [...new Set([...speaker.names, ...mine])] } : speaker;
+    const here = inScene.has(speaker.id);
+    return mine.length > 0 ? { ...speaker, here, names: [...new Set([...speaker.names, ...mine])] } : { ...speaker, here };
   });
 }
 
@@ -323,7 +334,8 @@ export function looksSpoken(quote: LooseQuote): boolean {
  */
 export function attributeQuotes(text: string, speakers: readonly Speaker[], unattributed?: LooseQuote[], from = 0): { id: string; words: string; pronoun?: string }[] {
   const named = speakers
-    .map((speaker) => ({ id: speaker.id, names: speaker.names.filter((n) => n.length >= 3).map(escape) }))
+    // "Seal Keeper" is "Seal-Keeper" in the prose, and the other way about.
+    .map((speaker) => ({ id: speaker.id, names: speaker.names.filter((n) => n.length >= 3).map((n) => escape(n).replace(/[ -]/g, "[\\s-]+")) }))
     .filter((speaker) => speaker.names.length > 0);
   // A name that only counts as written is hidden wherever the text spells it any other way, so "a wisp line" is not Wisp.
   // Same length, so every position still means the same place in the text.
@@ -369,13 +381,30 @@ export function attributeQuotes(text: string, speakers: readonly Speaker[], unat
         break;
       }
     }
-    if (!subject) return null;
+    if (!subject) {
+      // "She stops at the sight of the kid." is the scene's one she, whoever else it mentions.
+      const lead = /^(she|he|they)\s/i.exec(sentence)?.[1]?.toLowerCase();
+      const only = lead ? inSceneWith(lead) : null;
+      return only && lead ? { id: only, pronoun: lead } : null;
+    }
     const others = named.filter((speaker) => speaker.id !== subject.id && new RegExp(`\\b(?:${speaker.names.join("|")})\\b`, "i").test(sentence));
     if (others.length > 0) return null;
     // Their own: "shakes her head", or a later "she"; not "reaches toward her hand", which is someone else's.
     const own = /^\s+\w+\s+(her|his)\b/i.exec(rest)?.[1] ?? /\b(she|he)\b/i.exec(rest)?.[1];
     const pronoun = own ? (/^(?:her|she)$/i.test(own) ? "she" : "he") : undefined;
     return { id: subject.id, ...(pronoun ? { pronoun } : {}) };
+  };
+
+  // "she says" with nobody named: the one she in the scene, when there is exactly one.
+  const inSceneWith = (pronoun: string): string | null => {
+    const found = speakers.filter((speaker) => speaker.here && speaker.pronoun === pronoun);
+    return found.length === 1 ? found[0]!.id : null;
+  };
+  const introducedIn = (words: string): string | null => {
+    for (const speaker of named) {
+      if (new RegExp(`\\b(?:I am|I'm|I’m|my name is|call me)\\s+(?:the\\s+)?(?:${speaker.names.join("|")})\\b`, "i").test(words)) return speaker.id;
+    }
+    return null;
   };
 
   const found: { id: string; words: string; pronoun?: string }[] = [];
@@ -389,10 +418,16 @@ export function attributeQuotes(text: string, speakers: readonly Speaker[], unat
     let pronoun: string | undefined;
     if (tag === "you") id = "party";
     else if (tag?.startsWith("pronoun:")) {
-      id = lastNamed;
+      // "I am Corvane," he says: with nobody named before it, the quote names its own speaker.
       pronoun = tag.slice("pronoun:".length);
+      // Named last is who "she" is, unless the sheet knows that one is a he: then the scene's one she.
+      const lastKnown = speakers.find((speaker) => speaker.id === lastNamed)?.pronoun;
+      const byScene = inSceneWith(pronoun);
+      id = lastNamed !== null && !(lastKnown && lastKnown !== pronoun && byScene) ? lastNamed : (introducedIn(match[1]!) ?? byScene);
     } else if (tag !== null) id = tag;
     else if (beatBefore(start)) ({ id, pronoun } = beatBefore(start)!);
+    // "I'm Orin Vale." names its own speaker, tag or none.
+    else if (introducedIn(match[1]!) !== null) id = introducedIn(match[1]!);
     else if (previous !== null && start - previous.end <= 60) {
       // Untagged right after an attributed quote: theirs, unless someone new is named between.
       const between = mentions.filter((m) => m.at > previous!.end && m.at < start && m.id !== previous!.id);
@@ -846,14 +881,14 @@ export function buildSheet(sources: Sources, previous: CastSheet | null, untagge
   // The pronouns the narration's own speech tags use for each speaker ("…," she says).
   const tagged = new Map<string, Record<string, number>>();
   const inChapter = new Map<string, Speaker[]>();
-  for (const draft of drafts) for (const chapter of draft.chapters) inChapter.set(chapter, [...(inChapter.get(chapter) ?? []), { id: draft.id, names: namesFor(draft) }]);
+  for (const draft of drafts) for (const chapter of draft.chapters) inChapter.set(chapter, [...(inChapter.get(chapter) ?? []), { id: draft.id, names: namesFor(draft), pronoun: kindOf(draft.id, draft.name, draft.who) === "creature" ? undefined : pronounWord(draft.pronouns ?? previous?.speakers[draft.id]?.pronouns) }]);
   // A role word ("the captain") names someone only where nobody else in the chapter answers to it.
   for (const [chapter, present] of inChapter) {
     const roles = new Map<string, string[]>();
     for (const draft of drafts.filter((d) => d.chapters.has(chapter))) for (const word of roleWords(draft)) roles.set(word, [...(roles.get(word) ?? []), draft.id]);
     inChapter.set(chapter, present.map((speaker) => {
       const mine = [...roles].filter(([, ids]) => ids.length === 1 && ids[0] === speaker.id).map(([word]) => word);
-      return { id: speaker.id, names: [...speaker.names, ...mine] };
+      return { ...speaker, names: [...speaker.names, ...mine] };
     }));
   }
   // Someone the campaign names who is not cast in this chapter can still be tagged in it ("says Voss"): the narration
