@@ -36,11 +36,11 @@
   "scenes": {
     "arrival": {
       "type": "story",
-      "narration": "Pip Thistledown, a young manticore scout, stops so suddenly that his notebook bumps his nose. Water is roaring through a valley his sketch shows dry. The road toward the glacier ends at the new stream. A yeti worker raises a staff from the high bank. \"Stay up there! Help me warn the next traveler, then get us and our tools across,\" the worker calls. Pip shuts the notebook. \"The road has made changes without telling the map.\"",
+      "narration": "Pip Thistledown, a young manticore scout, stops so suddenly that his notebook bumps his nose. A river roars through a valley his sketch shows dry. A yeti worker waves a staff from the high bank. \"Stay up there! Help me warn the next traveler, then get us and our tools across,\" the worker calls. Your job is to find a safe way across. Pip sighs. \"The road changed without telling the map.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Find out what needs doing",
+          "label": "Ask what needs doing",
           "icon": "hand",
           "goto": "look_again"
         }
@@ -61,35 +61,35 @@
           "when": {
             "flag": "stone_route_priority"
           },
-          "text": "Your party chose to lead Pip's traveling page with the road plan. He keeps it open to compare with this changed route."
+          "text": "Pip keeps your road plan open beside his sketch."
         },
         {
           "when": {
             "notFlag": "stone_route_priority"
           },
-          "text": "Pip keeps the uncertain stone count on his traveling page and opens a fresh space for what the valley shows now."
+          "text": "Pip keeps the stone count on his page, just in case."
         }
       ]
     },
     "look_again": {
       "type": "choice_point",
-      "narration": "An old route marker has a fork-shaped chip. That has not changed. Below it, the old melt channel lies dry while water pours between two ridges farther west. A yeti route worker waits above the new flow; a tool bundle sits on the opposite bank. Pip turns his sketch the right way up, then checks it once more. \"What should we compare to find out what moved?\" he asks.",
+      "narration": "An old route marker has a fork-shaped chip. That has not changed. Below it, the old stream bed lies dry. The water pours between two ridges farther west instead. Pip turns his sketch the right way up. \"What should we compare to see what moved?\"",
       "choices": [
         {
           "id": "option_1",
-          "label": "Compare the marker with both ridges",
+          "label": "Check the marker and ridges",
           "icon": "hand",
           "goto": "look_again_1"
         },
         {
           "id": "option_2",
-          "label": "Trace the dry channel from firm ground",
+          "label": "Trace the dry stream bed",
           "icon": "hand",
           "goto": "look_again_2"
         },
         {
           "id": "road_plan",
-          "label": "Use the traveling road plan to check the changed landmarks",
+          "label": "Check with our road plan",
           "icon": "eye",
           "goto": "road_plan",
           "when": {
@@ -111,11 +111,11 @@
     },
     "look_again_1": {
       "type": "story",
-      "narration": "You keep your feet on the upper path while Pip holds his drawing against the horizon. One friend checks the chipped marker; another points out the ridges. You look for the same shapes in the same order before putting a name on the water below.",
+      "narration": "You stay on the upper path. Pip holds his drawing up against the sky. You find the chipped marker, then the two ridges.",
       "choices": [
         {
           "id": "continue",
-          "label": "Put the plan into action",
+          "label": "Compare them carefully",
           "icon": "hand",
           "goto": "look_again_1_check"
         }
@@ -134,11 +134,11 @@
     },
     "look_again_2": {
       "type": "story",
-      "narration": "You follow the visible bed only along its firm upper edge. Pip watches where it joins the valley ahead. Your party marks the last place water has recently passed without stepping into the new stream or assuming the dry stones will stay dry.",
+      "narration": "You follow the dry bed along its firm top edge. Nobody steps into the new stream. Dry stones might not stay dry.",
       "choices": [
         {
           "id": "continue",
-          "label": "Put the plan into action",
+          "label": "Follow it carefully",
           "icon": "hand",
           "goto": "look_again_2_check"
         }
@@ -160,7 +160,7 @@
       "stat": "clever",
       "tn": 12,
       "roller": "party",
-      "prompt": "Compare the marker with both ridges. Choose who leads while the others help.",
+      "prompt": "Compare the marker with both ridges. Pip holds the sketch steady.",
       "onSuccess": {
         "goto": "look_again_1_done"
       },
@@ -184,7 +184,7 @@
       "stat": "clever",
       "tn": 12,
       "roller": "party",
-      "prompt": "Trace the dry channel from firm ground. Choose who leads while the others help.",
+      "prompt": "Trace the dry bed from firm ground. Pip calls out each bend.",
       "onSuccess": {
         "goto": "look_again_2_done"
       },
@@ -205,11 +205,11 @@
     },
     "look_again_1_done": {
       "type": "story",
-      "narration": "The marker and ridges still agree with the drawing. The water has taken another valley between them. Pip puts his finger on the blank space west of the old channel. You have a changed route to investigate, rather than a reason to throw away every familiar landmark.",
+      "narration": "The marker and ridges match the drawing. Only the water has moved. Pip taps the blank valley. \"The map is right. The river is the one being wrong.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue with this result",
+          "label": "Go meet the worker",
           "icon": "hand",
           "goto": "worksite"
         }
@@ -228,11 +228,11 @@
     },
     "look_again_1_changed": {
       "type": "story",
-      "narration": "A curl of snow hides one ridge and your first comparison points the wrong way. You wait for the gust to pass and compare the chipped marker again. The correction leaves the same conclusion: the landmarks agree, but the water between them has changed its course.",
+      "narration": "Blowing snow hides one ridge, and your first look points the wrong way. You wait and look again. The landmarks match. Only the water has moved.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue with this result",
+          "label": "Go meet the worker",
           "icon": "hand",
           "goto": "worksite"
         }
@@ -251,11 +251,11 @@
     },
     "look_again_2_done": {
       "type": "story",
-      "narration": "The marker and ridges still agree with the drawing. The water has taken another valley between them. Pip puts his finger on the blank space west of the old channel. You have a changed route to investigate, rather than a reason to throw away every familiar landmark.",
+      "narration": "The marker and ridges match the drawing. Only the water has moved. Pip taps the blank valley. \"The map is right. The river is the one being wrong.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue with this result",
+          "label": "Go meet the worker",
           "icon": "hand",
           "goto": "worksite"
         }
@@ -274,11 +274,11 @@
     },
     "look_again_2_changed": {
       "type": "story",
-      "narration": "A curl of snow hides one ridge and your first comparison points the wrong way. You wait for the gust to pass and compare the chipped marker again. The correction leaves the same conclusion: the landmarks agree, but the water between them has changed its course.",
+      "narration": "Blowing snow hides one ridge, and your first look points the wrong way. You wait and look again. The landmarks match. Only the water has moved.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue with this result",
+          "label": "Go meet the worker",
           "icon": "hand",
           "goto": "worksite"
         }
@@ -297,11 +297,11 @@
     },
     "road_plan": {
       "type": "story",
-      "narration": "Your party chose to carry the road plan from the stone keepers. Pip opens its measured landmarks beside the changed valley. You already have a way to distinguish a moved route from a missing marker; the worker only needs you to test the new view against it.",
+      "narration": "Pip opens the road plan from the stone keepers. You hold its landmarks up beside the changed valley.",
       "choices": [
         {
           "id": "compare",
-          "label": "Compare the new view with our road plan",
+          "label": "Check the plan's landmarks",
           "icon": "eye",
           "goto": "road_plan_check"
         }
@@ -323,7 +323,7 @@
       "stat": "clever",
       "tn": 8,
       "roller": "party",
-      "prompt": "Use your checked road-plan landmarks to compare the new route.",
+      "prompt": "Use the road plan's landmarks to check the new route.",
       "onSuccess": {
         "goto": "look_again_1_done"
       },
@@ -344,7 +344,7 @@
     },
     "worksite": {
       "type": "story",
-      "narration": "A yeti route worker meets you on the near bank. Across the changed stream, a second worker waits on a low shelf beside tools and an unlit lantern. A high path leads from that shelf toward the reading rooms. The near worker has two ropes and a carrying board. \"One job before you cross: lift the tools high, or prepare her upper handline. We will need the other if the water changes,\" says the route worker. Pip studies both valleys.",
+      "narration": "A yeti route worker meets you on the near bank. Across the stream, a second worker waits on a low shelf with a tool bundle and an unlit lantern. A high path climbs from her shelf to the yetis' reading rooms. \"One job before you cross: lift the tools high, or rig her upper handline,\" says the route worker. \"We will need the other if the water changes.\"",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -363,7 +363,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Test the water first",
           "icon": "hand",
           "goto": "test_flow"
         }
@@ -371,7 +371,7 @@
     },
     "test_flow": {
       "type": "interaction",
-      "narration": "The worker drops a small twig into the new stream. From the dry bank, judge where it passes the central rock. The slow pocket can carry a line; no hero will stand in it.",
+      "narration": "The worker drops a twig into the stream. Where does it pass the big middle rock? A calm pocket there could carry a rope.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -389,7 +389,7 @@
       "art": "scenes/riftlight/wrong-valley",
       "interaction": {
         "kind": "precision",
-        "cue": "Mark the twig's passage through the calm pocket.",
+        "cue": "Mark where the twig passes the calm pocket.",
         "actionLabel": "Mark the calm pocket",
         "target": 0.5,
         "width": 0.3,
@@ -397,7 +397,7 @@
       },
       "onSuccess": {
         "goto": "flow_result",
-        "narration": "You mark a calm pocket behind the central rock.",
+        "narration": "You spot a calm pocket behind the rock.",
         "effects": [
           {
             "type": "setFlag",
@@ -408,7 +408,7 @@
       },
       "onFailure": {
         "goto": "flow_result",
-        "narration": "Spray hides the twig. The worker tests again with her marked pole from the bank and shows the calm pocket.",
+        "narration": "Spray hides the twig. The worker pokes a pole in and finds the calm pocket.",
         "effects": [
           {
             "type": "setFlag",
@@ -419,7 +419,7 @@
       },
       "onAssisted": {
         "goto": "flow_result",
-        "narration": "You mark a calm pocket behind the central rock.",
+        "narration": "You spot a calm pocket behind the rock.",
         "effects": [
           {
             "type": "setFlag",
@@ -431,7 +431,7 @@
     },
     "flow_result": {
       "type": "story",
-      "narration": "The calm pocket leads to a low shelf crossing. A longer high rock reach avoids it. The worker squints at the stream. \"Neither one promises the water will stay here,\" says the route worker. The workers pass a guide rope across the calm pocket and test it from both banks. The far worker lights her lantern and lifts it to show she can see you, then waits for your plan.",
+      "narration": "The calm pocket leads to a low shelf crossing. A longer high rock reach goes around it. \"Neither one promises the water will stay here,\" says the route worker. The workers stretch a guide rope across. The far worker lifts her lantern: she can see you.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -450,7 +450,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Plan the crossing",
           "icon": "hand",
           "goto": "bundle_plan"
         }
@@ -458,7 +458,7 @@
     },
     "bundle_plan": {
       "type": "choice_point",
-      "narration": "There is time for one preparation before your party crosses. Lift the tools to a high rack and they will stay dry, but the far worker will still need help finding the upper handline if the water changes. Rig that handline first and she can withdraw herself; her tools will stay low until you can recover them. Which job comes first?",
+      "narration": "There is time for one preparation before your party crosses. Lift the tools to a high rack and they stay dry, but the far worker may need help later. Or rig her handline, so she can climb out herself, and leave her tools low. Which comes first?",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -477,7 +477,7 @@
       "choices": [
         {
           "id": "tools",
-          "label": "Lift the tools high; help the worker later",
+          "label": "Lift the tools high",
           "icon": "hand",
           "goto": "tools_hoist",
           "effects": [
@@ -495,7 +495,7 @@
         },
         {
           "id": "people",
-          "label": "Rig the worker's upper handline; recover tools later",
+          "label": "Rig the worker's handline",
           "icon": "hand",
           "goto": "people_line",
           "effects": [
@@ -513,7 +513,7 @@
         },
         {
           "id": "duskrunner",
-          "label": "Have our duskrunner guide the tools onto the high rack",
+          "label": "Our duskrunner guides them",
           "icon": "hand",
           "goto": "tools_hoist_assisted",
           "requiresClass": "duskrunner",
@@ -532,7 +532,7 @@
         },
         {
           "id": "thornguard",
-          "label": "Have our thornguard brace the upper handline",
+          "label": "Our thornguard braces it",
           "icon": "hand",
           "goto": "people_braced",
           "requiresClass": "thornguard",
@@ -553,7 +553,7 @@
     },
     "tools_hoist": {
       "type": "interaction",
-      "narration": "The far worker puts the tool bundle on the board. Guide her hauling line toward the rack above the wet seam. The rack is broad; its approach is awkward.",
+      "narration": "The far worker straps the tools onto a carrying board. Guide her hauling line up to the rack.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -579,20 +579,20 @@
       },
       "onSuccess": {
         "goto": "tools_tie",
-        "narration": "The board lands on the rack. The tools are above the waterline."
+        "narration": "The board lands on the rack. The tools are safe up high."
       },
       "onFailure": {
         "goto": "tools_steps",
-        "narration": "A strap catches below the rack. The far worker holds it on the shelf while you prepare the slower lift."
+        "narration": "A strap snags. The far worker holds the board while you try a slower lift."
       },
       "onAssisted": {
         "goto": "tools_tie",
-        "narration": "The board lands on the rack. The tools are above the waterline."
+        "narration": "The board lands on the rack. The tools are safe up high."
       }
     },
     "tools_hoist_assisted": {
       "type": "interaction",
-      "narration": "The far worker puts the tool bundle on the board. Guide her hauling line toward the rack above the wet seam. The rack is broad; its approach is awkward. Your duskrunner keeps the straps clear, giving the board a wider landing.",
+      "narration": "The far worker straps the tools onto a carrying board. Guide her hauling line up to the rack. Your duskrunner keeps the straps clear.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -618,20 +618,20 @@
       },
       "onSuccess": {
         "goto": "tools_tie",
-        "narration": "The board lands on the rack. The tools are above the waterline."
+        "narration": "The board lands on the rack. The tools are safe up high."
       },
       "onFailure": {
         "goto": "tools_steps",
-        "narration": "A strap catches below the rack. The far worker holds it on the shelf while you prepare the slower lift."
+        "narration": "A strap snags. The far worker holds the board while you try a slower lift."
       },
       "onAssisted": {
         "goto": "tools_tie",
-        "narration": "The board lands on the rack. The tools are above the waterline."
+        "narration": "The board lands on the rack. The tools are safe up high."
       }
     },
     "tools_steps": {
       "type": "interaction",
-      "narration": "The far worker takes the board up the checked stone steps. Keep its load level from your line while she raises each end onto the rack.",
+      "narration": "The far worker carries the board up the stone steps. Keep it level while she lifts it onto the rack.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -655,20 +655,20 @@
       },
       "onSuccess": {
         "goto": "tools_tie",
-        "narration": "The slow lift puts every tool on the high rack."
+        "narration": "Slowly, the tools reach the rack."
       },
       "onFailure": {
         "goto": "tools_tie",
-        "narration": "The slow lift puts every tool on the high rack."
+        "narration": "Slowly, the tools reach the rack."
       },
       "onAssisted": {
         "goto": "tools_tie",
-        "narration": "The slow lift puts every tool on the high rack."
+        "narration": "Slowly, the tools reach the rack."
       }
     },
     "tools_tie": {
       "type": "interaction",
-      "narration": "Pass the loose end of the retaining line along the near bank. The far worker uses the returned length to secure the rack. Her upper handline still needs preparing later.",
+      "narration": "Pass the rack line along the bank so the far worker can tie it tight.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -692,20 +692,20 @@
       },
       "onSuccess": {
         "goto": "signals",
-        "narration": "The tools are secured high. The far worker still has the low shelf as her working place."
+        "narration": "The tools are tied up high. The far worker stays on her shelf."
       },
       "onFailure": {
         "goto": "signals",
-        "narration": "The tools are secured high. The far worker still has the low shelf as her working place."
+        "narration": "The tools are tied up high. The far worker stays on her shelf."
       },
       "onAssisted": {
         "goto": "signals",
-        "narration": "The tools are secured high. The far worker still has the low shelf as her working place."
+        "narration": "The tools are tied up high. The far worker stays on her shelf."
       }
     },
     "people_line": {
       "type": "interaction",
-      "narration": "From the near bank, support the guide board while the far worker fixes a handline between her low shelf and the high path. The tool bundle waits beside her lantern.",
+      "narration": "Hold the guide board steady from your bank. The far worker fixes a handline from her shelf up to the high path.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -729,20 +729,20 @@
       },
       "onSuccess": {
         "goto": "people_signal",
-        "narration": "The upper handline is fixed. The tools are still on the low shelf."
+        "narration": "The handline is fixed. The tools stay on the low shelf."
       },
       "onFailure": {
         "goto": "people_signal",
-        "narration": "The upper handline is fixed. The tools are still on the low shelf."
+        "narration": "The handline is fixed. The tools stay on the low shelf."
       },
       "onAssisted": {
         "goto": "people_signal",
-        "narration": "The upper handline is fixed. The tools are still on the low shelf."
+        "narration": "The handline is fixed. The tools stay on the low shelf."
       }
     },
     "people_braced": {
       "type": "story",
-      "narration": "Your thornguard uses a skill called Brace to hold the guide board in place. The far worker can fix her upper handline without the party doing the board-support task. Her tool bundle remains on the low shelf.",
+      "narration": "Your thornguard uses a skill called Brace and holds the guide board still as a rock. The far worker fixes her handline in no time. Her tools stay on the low shelf.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -761,7 +761,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Signal the far worker",
           "icon": "hand",
           "goto": "people_signal"
         }
@@ -769,7 +769,7 @@
     },
     "people_signal": {
       "type": "interaction",
-      "narration": "Wait for the worker to reach the top of her new handline, then raise the lantern to confirm the route. Her return path is ready; the tools will need collecting later.",
+      "narration": "The far worker climbs her new handline to the top. Wave the near worker's lantern when she gets there.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -795,20 +795,20 @@
       },
       "onSuccess": {
         "goto": "signals",
-        "narration": "The worker reaches the high path and returns to her watch, with the handline ready behind her."
+        "narration": "She reaches the top and climbs back to her watch."
       },
       "onFailure": {
         "goto": "signals",
-        "narration": "The lantern signal comes early. The worker waits, then points out the checked upper path herself before returning to watch."
+        "narration": "The lantern goes up too early. She waves, finishes the climb and goes back to watch."
       },
       "onAssisted": {
         "goto": "signals",
-        "narration": "The worker reaches the high path and returns to her watch, with the handline ready behind her."
+        "narration": "She reaches the top and climbs back to her watch."
       }
     },
     "signals": {
       "type": "story",
-      "narration": "The workers demonstrate lantern up for wait, staff sideways for stop and a hand toward the checked path for clear. You practice together until everyone can see the next signal. Pip holds his notebook under one arm. It is having a very quiet adventure.",
+      "narration": "The workers demonstrate lantern up for wait, staff sideways for stop and a hand toward the path for clear. Everyone practices. Pip tucks his notebook under one arm. It is having a very quiet adventure.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -827,7 +827,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Rest before crossing",
           "icon": "forward",
           "goto": "camp"
         }
@@ -835,7 +835,7 @@
     },
     "camp": {
       "type": "rest",
-      "narration": "The near worker shares warm tea from a flask while everyone rests on the upper bank. Pip draws two river lines and puts his eraser away. The far worker watches from the low shelf. Your preparation is ready, and the party still needs to reach the far path together.",
+      "narration": "The near worker shares warm tea from a flask. Pip draws two river lines and puts his eraser away. Everything is ready. Now everyone has to get across.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -855,13 +855,13 @@
       "choices": [
         {
           "id": "rest",
-          "label": "Rest, then choose the crossing",
+          "label": "Rest, then pick a crossing",
           "icon": "hand",
           "goto": "crossing_choice"
         },
         {
           "id": "watch",
-          "label": "Rest while checking both routes",
+          "label": "Rest and study both routes",
           "icon": "hand",
           "goto": "crossing_choice"
         }
@@ -869,7 +869,7 @@
     },
     "crossing_choice": {
       "type": "choice_point",
-      "narration": "The low shelf has a guide rope and a calm pocket. The high rock reach takes longer but stays above the low ice. The worker nods at both routes. \"If your route shifts, we will help you use the other one,\" says the route worker. You will play that changed crossing, not repeat the same attempt. Which route will your party try?",
+      "narration": "The low shelf has a guide rope and a calm pocket. The high rock reach is slower, but it stays above the ice. \"If your route shifts, we will help you use the other one,\" says the route worker. Which way will you cross?",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -888,13 +888,13 @@
       "choices": [
         {
           "id": "option_1",
-          "label": "Cross by the supported low shelf",
+          "label": "Cross the low shelf",
           "icon": "hand",
           "goto": "crossing_choice_1_check"
         },
         {
           "id": "option_2",
-          "label": "Cross by the high rock reach",
+          "label": "Cross the high rocks",
           "icon": "hand",
           "goto": "crossing_choice_2_check"
         }
@@ -902,7 +902,7 @@
     },
     "crossing_choice_1_check": {
       "type": "interaction",
-      "narration": "Wait for the worker's clear interval before moving along the supported low shelf. Everyone follows the same checked route.",
+      "narration": "Wait for the worker's clear signal, then step along the low shelf.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -920,7 +920,7 @@
       "art": "scenes/riftlight/wrong-valley",
       "interaction": {
         "kind": "timing",
-        "cue": "Take the low-shelf step in the clear interval.",
+        "cue": "Step onto the low shelf when it is clear.",
         "actionLabel": "Take the supported step",
         "target": 0.5,
         "width": 0.3,
@@ -928,7 +928,7 @@
       },
       "onSuccess": {
         "goto": "crossing_choice_1_done",
-        "narration": "Your party reaches the far path along the supported low shelf.",
+        "narration": "Your party reaches the far path along the low shelf.",
         "effects": [
           {
             "type": "setFlag",
@@ -939,11 +939,11 @@
       },
       "onFailure": {
         "goto": "high_recovery",
-        "narration": "The low shelf shifts. You return to the near bank before taking the high rock reach together."
+        "narration": "The shelf wobbles! You hurry back and head for the high rocks instead."
       },
       "onAssisted": {
         "goto": "crossing_choice_1_done",
-        "narration": "Your party reaches the far path along the supported low shelf.",
+        "narration": "Your party reaches the far path along the low shelf.",
         "effects": [
           {
             "type": "setFlag",
@@ -955,7 +955,7 @@
     },
     "crossing_choice_2_check": {
       "type": "interaction",
-      "narration": "The worker points out the next checked foothold on the high rock reach. Wait for her clear interval before taking it. The low guide line stays available if this approach shifts.",
+      "narration": "The worker points to the next foothold on the high rocks. Wait for her clear signal.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -973,7 +973,7 @@
       "art": "scenes/riftlight/wrong-valley",
       "interaction": {
         "kind": "timing",
-        "cue": "Move across the high reach during the worker's clear interval.",
+        "cue": "Cross the high rocks when the worker signals clear.",
         "actionLabel": "Take the high step",
         "target": 0.5,
         "width": 0.35,
@@ -981,7 +981,7 @@
       },
       "onSuccess": {
         "goto": "crossing_choice_2_done",
-        "narration": "Your party reaches the far path by the high rock reach.",
+        "narration": "Your party reaches the far path by the high rocks.",
         "effects": [
           {
             "type": "setFlag",
@@ -992,11 +992,11 @@
       },
       "onFailure": {
         "goto": "low_recovery",
-        "narration": "A foothold shifts before you commit. The worker redirects you to the supported low shelf."
+        "narration": "A foothold wobbles! The worker waves you down to the low shelf."
       },
       "onAssisted": {
         "goto": "crossing_choice_2_done",
-        "narration": "Your party reaches the far path by the high rock reach.",
+        "narration": "Your party reaches the far path by the high rocks.",
         "effects": [
           {
             "type": "setFlag",
@@ -1008,7 +1008,7 @@
     },
     "high_recovery": {
       "type": "interaction",
-      "narration": "Keep the high guide line steady while your party follows the worker's longer rock route. This is the way the party actually finishes.",
+      "narration": "Hold the high guide line steady while everyone climbs the rocks.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -1032,7 +1032,7 @@
       },
       "onSuccess": {
         "goto": "crossing_choice_2_done",
-        "narration": "Your changed plan gets everyone across by the high rock reach.",
+        "narration": "Everyone gets across by the high rocks.",
         "effects": [
           {
             "type": "setFlag",
@@ -1043,7 +1043,7 @@
       },
       "onFailure": {
         "goto": "crossing_choice_2_done",
-        "narration": "Your changed plan gets everyone across by the high rock reach.",
+        "narration": "Everyone gets across by the high rocks.",
         "effects": [
           {
             "type": "setFlag",
@@ -1054,7 +1054,7 @@
       },
       "onAssisted": {
         "goto": "crossing_choice_2_done",
-        "narration": "Your changed plan gets everyone across by the high rock reach.",
+        "narration": "Everyone gets across by the high rocks.",
         "effects": [
           {
             "type": "setFlag",
@@ -1066,7 +1066,7 @@
     },
     "low_recovery": {
       "type": "interaction",
-      "narration": "The workers hold the low crossing steady while your party follows the supported shelf. The checked backup replaces the shifted high foothold.",
+      "narration": "The workers hold the guide rope steady while everyone follows the low shelf.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -1090,7 +1090,7 @@
       },
       "onSuccess": {
         "goto": "crossing_choice_1_done",
-        "narration": "Your changed plan gets everyone across along the supported low shelf.",
+        "narration": "Everyone gets across along the low shelf.",
         "effects": [
           {
             "type": "setFlag",
@@ -1101,7 +1101,7 @@
       },
       "onFailure": {
         "goto": "crossing_choice_1_done",
-        "narration": "Your changed plan gets everyone across along the supported low shelf.",
+        "narration": "Everyone gets across along the low shelf.",
         "effects": [
           {
             "type": "setFlag",
@@ -1112,7 +1112,7 @@
       },
       "onAssisted": {
         "goto": "crossing_choice_1_done",
-        "narration": "Your changed plan gets everyone across along the supported low shelf.",
+        "narration": "Everyone gets across along the low shelf.",
         "effects": [
           {
             "type": "setFlag",
@@ -1124,11 +1124,11 @@
     },
     "crossing_choice_1_done": {
       "type": "story",
-      "narration": "The chosen route holds and the party reaches the far path together. The workers wait until the last friend is on firm ground before lifting the stop signal. Pip checks every face, then gives the all-clear. Your crossing plan has worked without leaving anyone behind. You finish along the supported low shelf.",
+      "narration": "The last hero steps onto firm ground. Pip checks every face and gives a thumbs-up with his tail. Nobody was left behind. You came along the supported low shelf.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue with this result",
+          "label": "Look back at the river",
           "icon": "hand",
           "goto": "river_turn"
         }
@@ -1158,11 +1158,11 @@
     },
     "crossing_choice_2_done": {
       "type": "story",
-      "narration": "The chosen route holds and the party reaches the far path together. The workers wait until the last friend is on firm ground before lifting the stop signal. Pip checks every face, then gives the all-clear. Your crossing plan has worked without leaving anyone behind. You finish by the high rock reach.",
+      "narration": "The last hero steps onto firm ground. Pip checks every face and gives a thumbs-up with his tail. Nobody was left behind. You came by the high rock reach.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue with this result",
+          "label": "Look back at the river",
           "icon": "hand",
           "goto": "river_turn"
         }
@@ -1192,7 +1192,7 @@
     },
     "river_turn": {
       "type": "story",
-      "narration": "From the far path, you can see both valleys. Water noses into the old bed while the western stream grows quieter. Pip puts down his eraser. \"It is changing back.\" Watch the order of the visible changes before the workers need your help.",
+      "narration": "From the far path, you can see both valleys. Water noses into the old bed while the western stream grows quieter. Pip drops his eraser. \"It is changing back!\"",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -1218,7 +1218,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Watch the river change",
           "icon": "hand",
           "goto": "return_observation"
         }
@@ -1226,7 +1226,7 @@
     },
     "return_observation": {
       "type": "check",
-      "narration": "The worker points to the changing water. Watch the observation pattern for the western stream, old bed and quiet western channel. Remember which changed first.",
+      "narration": "Three things are changing: the western stream, the old bed and the quiet western channel. Which changes first?",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -1244,7 +1244,7 @@
       "art": "scenes/riftlight/wrong-valley",
       "onSuccess": {
         "goto": "return_water",
-        "narration": "You keep the whole visible sequence in order.",
+        "narration": "You remember the whole change, in order.",
         "effects": [
           {
             "type": "setFlag",
@@ -1255,7 +1255,7 @@
       },
       "onFailure": {
         "goto": "return_water",
-        "narration": "Spray hides the middle change. You keep the before-and-after landmarks and leave that moment blank.",
+        "narration": "Spray hides the middle part. You leave that part blank.",
         "effects": [
           {
             "type": "setFlag",
@@ -1267,11 +1267,11 @@
       "stat": "clever",
       "tn": 12,
       "roller": "party",
-      "prompt": "Read the river's changing course through the spray. A clear view gives you the whole sequence; a missed view leaves only the before-and-after landmarks. Choose who watches; everyone can help."
+      "prompt": "Watch the river through the spray. Pip whispers, \"Keep your eyes open.\""
     },
     "return_water": {
       "type": "choice_point",
-      "narration": "The old bed is filling. Your party is on the far high path; the workers are ready to withdraw. The job you prepared determines what still needs help below. You can take that job, or let the workers finish it while your party helps move their repair gear afterward.",
+      "narration": "The old bed is filling. You are safe up high, but one job is still waiting below. You can do it, or let the workers finish while you carry their gear.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -1290,13 +1290,13 @@
       "choices": [
         {
           "id": "workers",
-          "label": "Let the workers finish; help with repair gear",
+          "label": "Let the workers finish",
           "icon": "hand",
           "goto": "workers_takeover"
         },
         {
           "id": "worker",
-          "label": "Our tools are high: guide the worker to the upper path",
+          "label": "Guide the worker out",
           "icon": "hand",
           "goto": "worker_beacon",
           "when": {
@@ -1305,7 +1305,7 @@
         },
         {
           "id": "tools",
-          "label": "Her handline is ready: recover the low tool bundle",
+          "label": "Fetch the low tools",
           "icon": "hand",
           "goto": "tool_recover",
           "when": {
@@ -1314,7 +1314,7 @@
         },
         {
           "id": "quick_tools",
-          "label": "Use our duskrunner to free the low bundle's straps",
+          "label": "Our duskrunner frees them",
           "icon": "hand",
           "goto": "tool_recover_assisted",
           "requiresClass": "duskrunner",
@@ -1326,7 +1326,7 @@
     },
     "worker_beacon": {
       "type": "interaction",
-      "narration": "The tools are high, but the far worker still needs a clear route off her low watch. Pass the lantern directions along the high path while the other worker readies a line. She follows the lit landmarks to you.",
+      "narration": "The tools are dry, but the far worker needs a clear way up. Pass the lantern directions down the high path.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -1344,13 +1344,13 @@
       "art": "scenes/riftlight/wrong-valley",
       "interaction": {
         "kind": "relay",
-        "cue": "Pass the upper-path directions to the worker.",
+        "cue": "Pass the directions down to the worker.",
         "actionLabel": "Pass the lantern directions",
         "objectLabel": "Upper-path lantern directions"
       },
       "onSuccess": {
         "goto": "tell_together",
-        "narration": "The worker follows the lights onto the high path. The tools remain dry on their rack.",
+        "narration": "She follows the lights up to you. The tools stay dry on their rack.",
         "effects": [
           {
             "type": "setFlag",
@@ -1361,7 +1361,7 @@
       },
       "onFailure": {
         "goto": "tell_together",
-        "narration": "The worker follows the lights onto the high path. The tools remain dry on their rack.",
+        "narration": "She follows the lights up to you. The tools stay dry on their rack.",
         "effects": [
           {
             "type": "setFlag",
@@ -1372,7 +1372,7 @@
       },
       "onAssisted": {
         "goto": "tell_together",
-        "narration": "The worker follows the lights onto the high path. The tools remain dry on their rack.",
+        "narration": "She follows the lights up to you. The tools stay dry on their rack.",
         "effects": [
           {
             "type": "setFlag",
@@ -1384,7 +1384,7 @@
     },
     "tool_recover": {
       "type": "interaction",
-      "narration": "The far worker uses the upper handline you prepared and joins you. From the high path, guide a hook toward her low bundle's hauling loop.",
+      "narration": "The far worker climbs your handline to you. Now swing a hook down to the tool bundle's loop.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -1410,7 +1410,7 @@
       },
       "onSuccess": {
         "goto": "tell_together",
-        "narration": "The bundle clears the returning water. Its tools are dry.",
+        "narration": "The bundle swings up out of the water. The tools are dry.",
         "effects": [
           {
             "type": "setFlag",
@@ -1421,7 +1421,7 @@
       },
       "onFailure": {
         "goto": "wet_tools",
-        "narration": "The water reaches the bundle before the hook catches. The worker draws it onto the high step with her spare line. Everyone stays above the channel.",
+        "narration": "The water reaches the bundle first. The worker pulls it up, dripping.",
         "effects": [
           {
             "type": "setFlag",
@@ -1432,7 +1432,7 @@
       },
       "onAssisted": {
         "goto": "tell_together",
-        "narration": "The bundle clears the returning water. Its tools are dry.",
+        "narration": "The bundle swings up out of the water. The tools are dry.",
         "effects": [
           {
             "type": "setFlag",
@@ -1444,7 +1444,7 @@
     },
     "tool_recover_assisted": {
       "type": "interaction",
-      "narration": "The far worker uses the upper handline you prepared and joins you. From the high path, guide a hook toward her low bundle's hauling loop. Your duskrunner keeps the loose straps clear, widening the catch.",
+      "narration": "The far worker climbs your handline to you. Now swing a hook down to the tool bundle's loop. Your duskrunner keeps the straps clear.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -1470,7 +1470,7 @@
       },
       "onSuccess": {
         "goto": "tell_together",
-        "narration": "The bundle clears the returning water. Its tools are dry.",
+        "narration": "The bundle swings up out of the water. The tools are dry.",
         "effects": [
           {
             "type": "setFlag",
@@ -1481,7 +1481,7 @@
       },
       "onFailure": {
         "goto": "wet_tools",
-        "narration": "The water reaches the bundle before the hook catches. The worker draws it onto the high step with her spare line. Everyone stays above the channel.",
+        "narration": "The water reaches the bundle first. The worker pulls it up, dripping.",
         "effects": [
           {
             "type": "setFlag",
@@ -1492,7 +1492,7 @@
       },
       "onAssisted": {
         "goto": "tell_together",
-        "narration": "The bundle clears the returning water. Its tools are dry.",
+        "narration": "The bundle swings up out of the water. The tools are dry.",
         "effects": [
           {
             "type": "setFlag",
@@ -1504,7 +1504,7 @@
     },
     "wet_tools": {
       "type": "interaction",
-      "narration": "The recovered tools are wet. Keep the carrying board level while the workers lay the blades out to dry. The repair will take their afternoon; do not report a dry recovery.",
+      "narration": "Hold the board level while the workers lay the wet tools out. A hammer drips on Pip's foot.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -1528,20 +1528,20 @@
       },
       "onSuccess": {
         "goto": "tell_together",
-        "narration": "The workers set aside the wet kit for cleaning. It will need care before another shift."
+        "narration": "Cleaning them will take all afternoon."
       },
       "onFailure": {
         "goto": "tell_together",
-        "narration": "The workers set aside the wet kit for cleaning. It will need care before another shift."
+        "narration": "Cleaning them will take all afternoon."
       },
       "onAssisted": {
         "goto": "tell_together",
-        "narration": "The workers set aside the wet kit for cleaning. It will need care before another shift."
+        "narration": "Cleaning them will take all afternoon."
       }
     },
     "workers_takeover": {
       "type": "story",
-      "narration": "Your party stays on the upper path while the workers finish the low recovery together. Their spare line and a second trip get everyone and the bundle out. They ask you to move the repair gear to the reading-room path.",
+      "narration": "You stay up high while the workers finish below with their spare line. Then they ask you to carry their repair gear to the reading-room path.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -1562,19 +1562,19 @@
           "when": {
             "flag": "valley_prepared_tools"
           },
-          "text": "The tools stay dry on the rack while the workers guide the last low watch out."
+          "text": "Their tools are still dry on the rack."
         },
         {
           "when": {
             "notFlag": "valley_prepared_tools"
           },
-          "text": "The low bundle gets wet before the workers draw it in. The kit needs cleaning."
+          "text": "The low bundle gets soaked first."
         }
       ],
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Carry the repair gear",
           "icon": "hand",
           "goto": "repair_gear"
         }
@@ -1582,7 +1582,7 @@
     },
     "repair_gear": {
       "type": "story",
-      "narration": "The workers have used their spare line to finish the recovery. You replace its cord and help spread drying cloths beside their kit. The wet tools will cost them an afternoon. Your help makes that work possible; it does not make the cost disappear.",
+      "narration": "You wind a new cord for their spare line and spread out drying cloths. Wet tools still cost the workers an afternoon, but your help makes it faster.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -1601,7 +1601,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Write down what happened",
           "icon": "forward",
           "goto": "tell_together",
           "effects": [
@@ -1616,7 +1616,7 @@
     },
     "tell_together": {
       "type": "choice_point",
-      "narration": "The river runs in its older bed again. The western course still glistens. Pip opens the page. \"Time to record the crossing and the return.\" You can use the landmarks everyone saw. If you caught the whole return sequence, you can also lead a moving-water reconstruction. Which account will you prepare?",
+      "narration": "The river runs in its older bed again. Pip opens his page. \"Time to write down the crossing and how the river came back.\" You can tell it by the landmarks. If you watched the whole change, you can tell that.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -1635,13 +1635,13 @@
       "choices": [
         {
           "id": "landmarks",
-          "label": "Rebuild the known events around fixed landmarks",
+          "label": "Tell it by the landmarks",
           "icon": "hand",
           "goto": "record_landmarks"
         },
         {
           "id": "sequence",
-          "label": "Use the complete return sequence we watched",
+          "label": "Tell the whole change",
           "icon": "hand",
           "goto": "record_return",
           "when": {
@@ -1652,7 +1652,7 @@
     },
     "record_landmarks": {
       "type": "story",
-      "narration": "Pip records the landmarks you all checked. The changed stream was there when you arrived; you crossed before it returned to its older bed. Spray-hidden moments stay blank. The workers add their own view beside yours. Together the pages tell what happened without guessing why.",
+      "narration": "Pip writes down the landmarks everyone saw, and when you crossed. The parts the spray hid stay blank. The workers add what they saw.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -1671,7 +1671,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Test the warning",
           "icon": "forward",
           "goto": "last_check",
           "effects": [
@@ -1686,7 +1686,7 @@
     },
     "record_return": {
       "type": "choice_point",
-      "narration": "Your party watched the complete return. Give the workers the sequence while each of you points out a checked part of the view. Nobody needs to invent why it happened.",
+      "narration": "You watched the whole change. Show the workers each part.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -1705,19 +1705,19 @@
       "choices": [
         {
           "id": "west",
-          "label": "Show where the western stream fell",
+          "label": "Where the western stream fell",
           "icon": "hand",
           "goto": "record_return_response_west"
         },
         {
           "id": "old",
-          "label": "Show where the old bed filled",
+          "label": "Where the old bed filled",
           "icon": "hand",
           "goto": "record_return_response_old"
         },
         {
           "id": "quiet",
-          "label": "Show the quiet western course",
+          "label": "The quiet western course",
           "icon": "hand",
           "goto": "record_return_response_quiet"
         }
@@ -1725,7 +1725,7 @@
     },
     "last_check": {
       "type": "choice_point",
-      "narration": "Pip pretends to be the next traveler. \"Hi, I am new,\" he says, and stops when your party points out the upper warning. Choose a useful instruction to leave with the lantern. The workers are checking whether the instructions are clear.",
+      "narration": "Pip pretends to be the next traveler. \"Hi, I am new!\" he says, marching toward the water. He stops at the warning lantern. What should the warning tell travelers?",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -1744,19 +1744,19 @@
       "choices": [
         {
           "id": "stop",
-          "label": "Show the upper stopping place",
+          "label": "Where to stop",
           "icon": "hand",
           "goto": "last_check_response_stop"
         },
         {
           "id": "look",
-          "label": "Point out both river channels",
+          "label": "Look at both channels",
           "icon": "hand",
           "goto": "last_check_response_look"
         },
         {
           "id": "ask",
-          "label": "Show where to find the route worker",
+          "label": "Where to find the worker",
           "icon": "hand",
           "goto": "last_check_response_ask"
         }
@@ -1764,7 +1764,7 @@
     },
     "rest": {
       "type": "rest",
-      "narration": "The river runs in its older bed again. A wet ribbon in the western valley shows where it briefly went instead. Everyone is across, and the workers keep their lantern on the upper path. Pip closes the sketch with both river lines and the order of the change recorded. \"An elder at the reading room has seen something like this in memory ice,\" says the worker. \"Bring your account. She will want to compare it.\" You can follow the upper path to her or return by the upper road.",
+      "narration": "The river runs in its older bed again. Everyone is across, and the lantern waits for the next traveler. Pip closes his sketch with both river lines and the order of the change recorded. \"An elder at the reading room has seen something like this in memory ice,\" says the worker. \"Bring your account. She will want to compare it.\" You can follow the upper path to her or go back by the upper road.",
       "heal": 0,
       "choices": [],
       "outcome": "success",
@@ -1795,13 +1795,13 @@
           "when": {
             "flag": "valley_prepared_tools"
           },
-          "text": "The high-rack preparation kept the tools dry. The worker's late withdrawal was the job left to finish."
+          "text": "The tools stayed dry. Getting the far worker out came later."
         },
         {
           "when": {
             "notFlag": "valley_prepared_tools"
           },
-          "text": "The early upper handline let the worker withdraw herself. The low tool bundle was the job left to finish."
+          "text": "The far worker climbed out. Her tools came later."
         },
         {
           "when": {
@@ -1813,29 +1813,29 @@
           "when": {
             "notFlag": "valley_tools_dry"
           },
-          "text": "The workers must clean and dry the wet kit before their next shift."
+          "text": "The workers must clean and dry the wet kit first."
         },
         {
           "when": {
             "flag": "valley_record_detailed"
           },
-          "text": "The complete watched return sequence goes with the two river outlines."
+          "text": "Your account tells the whole change."
         },
         {
           "when": {
             "notFlag": "valley_record_detailed"
           },
-          "text": "The page preserves the checked landmarks and known order, without inventing the missing detail."
+          "text": "Your account leaves the missing part blank."
         }
       ]
     },
     "record_return_response_west": {
       "type": "story",
-      "narration": "The worker marks the falling western stream. The account includes the complete observed return as well as the two course outlines.",
+      "narration": "The worker marks the falling western stream. The account has the whole change now.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Test the warning",
           "icon": "forward",
           "goto": "last_check",
           "effects": [
@@ -1865,11 +1865,11 @@
     },
     "record_return_response_old": {
       "type": "story",
-      "narration": "Pip marks the returning water beside the old channel. The account includes the complete observed return as well as the two course outlines.",
+      "narration": "Pip marks the returning water beside the old channel. The account has the whole change now.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Test the warning",
           "icon": "forward",
           "goto": "last_check",
           "effects": [
@@ -1899,11 +1899,11 @@
     },
     "record_return_response_quiet": {
       "type": "story",
-      "narration": "The wet western line stays on the page for comparison. The account includes the complete observed return as well as the two course outlines.",
+      "narration": "The wet western line stays on the page for comparison. The account has the whole change now.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Test the warning",
           "icon": "forward",
           "goto": "last_check",
           "effects": [
@@ -1933,11 +1933,11 @@
     },
     "last_check_response_stop": {
       "type": "story",
-      "narration": "Pip stops at the lantern, well above the old bed. The workers can maintain the upper warning after your party leaves.",
+      "narration": "Pip stops at the lantern, well above the old bed. The workers will keep the warning lit.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Finish up here",
           "icon": "forward",
           "goto": "rest",
           "effects": [
@@ -1967,11 +1967,11 @@
     },
     "last_check_response_look": {
       "type": "story",
-      "narration": "The worker checks both channels before offering a route. The workers can maintain the upper warning after your party leaves.",
+      "narration": "The worker checks both channels before offering a route. The workers will keep the warning lit.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Finish up here",
           "icon": "forward",
           "goto": "rest",
           "effects": [
@@ -2001,11 +2001,11 @@
     },
     "last_check_response_ask": {
       "type": "story",
-      "narration": "The next traveler has someone to ask when the view changes. The workers can maintain the upper warning after your party leaves.",
+      "narration": "The next traveler has someone to ask when the view changes. The workers will keep the warning lit.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Finish up here",
           "icon": "forward",
           "goto": "rest",
           "effects": [
