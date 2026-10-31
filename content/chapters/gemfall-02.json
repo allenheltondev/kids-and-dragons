@@ -138,7 +138,7 @@
     },
     "scene_trampled_field": {
       "type": "story",
-      "narration": "Rush wagons are turning through unpicked pumpkins to dodge a traffic jam. Foreman Hob Thistledown waves his hat. \"Help turn them! Before the whole season is soup!\"",
+      "narration": "Rush wagons are turning through unpicked pumpkins to dodge a traffic jam. Foreman Hob Thistledown waves his hat. \"Help turn them! Before the whole season is soup!\" says Hob.",
       "cast": [
         {
           "figure": "cast/hob",
@@ -1825,7 +1825,7 @@
     },
     "scene_hedge_mob_cousins": {
       "type": "story",
-      "narration": "Pib sees the sprites' medal and gasps. \"Cousins! You've met my cousins!\" The hedge opens before Pib has even finished the sentence, wide enough for a cart, and a thorn reaches out and very gently straightens the little medal.",
+      "narration": "Pib sees the sprites' medal. \"Cousins! You've met my cousins!\" Pib gasps. The hedge opens before Pib has even finished the sentence, wide enough for a cart, and a thorn reaches out and very gently straightens the little medal.",
       "cast": [
         {
           "figure": "cast/pib",
