@@ -48,6 +48,7 @@ const CHAPTER = {
   entry: "s_1",
   scenes: {
     s_1: { type: "story", narration: "Two roads.", choices: [] },
+    s_truth: { type: "story", narration: "The mountain was a door all along.", priority: 1, choices: [] },
     s_heroes: { type: "story", narration: ENDING, choices: [] },
     s_home: { type: "story", narration: "You go home.", choices: [] },
   },
@@ -151,6 +152,13 @@ const flush = async (): Promise<void> => {
   });
 };
 
+/** A phone says the table has heard the ending (ENDING_READ): the summary turns to the tally. */
+const turnThePage = (): void => {
+  act(() => {
+    useGameStore.setState((s) => ({ state: { ...s.state!, endingRead: true } }));
+  });
+};
+
 let spoken: string[] = [];
 beforeEach(() => {
   spoken = [];
@@ -172,25 +180,33 @@ afterEach(() => {
 });
 
 describe("the ending's own words", () => {
-  it("head the summary and are said first, with the tally, when no epilogue follows", () => {
-    seed({ sceneId: "s_1", narration: "Two roads end here.", campaign: undefined });
+  it("have a page of their own, said first, and the tally waits for the page to turn", () => {
+    seed({ sceneId: "s_1", narration: "Two roads end here.", campaign: undefined, endingRead: false });
     render(<ChapterCompletePanel />);
     expect(screen.getByTestId("chapter-ending").textContent).toBe("Two roads end here.");
-    expect(spoken).toHaveLength(1);
-    expect(spoken[0]).toMatch(/^Two roads end here\. Chapter finished!/);
+    expect(screen.queryByText(/XP for everyone/)).toBeNull();
+    expect(spoken).toEqual(["Two roads end here."]);
+
+    turnThePage();
+    expect(screen.queryByTestId("chapter-ending")).toBeNull();
+    expect(screen.getByText(/XP for everyone/)).toBeTruthy();
+    expect(spoken).toHaveLength(2);
+    expect(spoken[1]).toMatch(/^Chapter finished!/);
   });
 
   it("are left out when the ending had none", () => {
-    seed({ sceneId: "s_1", narration: "", campaign: undefined });
+    seed({ sceneId: "s_1", narration: "", campaign: undefined, endingRead: false });
     render(<ChapterCompletePanel />);
     expect(screen.queryByTestId("chapter-ending")).toBeNull();
+    expect(spoken).toEqual([]);
+    turnThePage();
     expect(spoken[0]).toMatch(/^Chapter finished!/);
   });
 });
 
 describe("the epilogue", () => {
   it("comes up for the ending the party reached once the ending has had time to be read", async () => {
-    seed();
+    seed({ endingRead: false });
     render(
       <>
         <ChapterCompletePanel />
@@ -212,11 +228,14 @@ describe("the epilogue", () => {
     expect(reel.textContent).toContain("After heroes, plate 1.");
     expect(spoken.at(-1)).toBe("The Heroes. After heroes, plate 1.");
 
-    // Escape skips the rest: remembered, gone, and the summary says the rest, without the ending again.
+    // Escape skips the rest: remembered, gone, and back on the ending's page until a phone turns it.
     fireEvent.keyDown(window, { key: "Escape" });
     await flush();
     expect(screen.queryByTestId("story-plates")).toBeNull();
     expect(JSON.parse(localStorage.getItem(STORY_PLATES_SEEN_KEY) ?? "[]")).toContain("epilogue:c:heroes");
+    expect(screen.getByTestId("chapter-ending")).toBeTruthy();
+    // Then the summary says the rest, without the ending again.
+    turnThePage();
     expect(spoken.at(-1)).toMatch(/^The Walk is complete!/);
     expect(spoken.filter((line) => line.includes(ENDING))).toHaveLength(1);
   });
@@ -240,7 +259,7 @@ describe("the epilogue", () => {
     unmount();
 
     markStoryPlatesSeen("epilogue:c:heroes");
-    seed();
+    seed({ endingRead: false });
     render(
       <>
         <ChapterCompletePanel />
@@ -252,7 +271,38 @@ describe("the epilogue", () => {
     expect(screen.queryByTestId("story-plates")).toBeNull();
     expect(spoken).toHaveLength(1);
     expect(spoken[0]).toMatch(/^You walk out of the mountain/);
-    expect(spoken[0]).toContain("The Walk is complete!");
+    turnThePage();
+    expect(spoken).toHaveLength(2);
+    expect(spoken[1]).toContain("The Walk is complete!");
+  });
+});
+
+describe("the recap and the fights, around an epilogue", () => {
+  it("are read once the epilogue is done, ahead of the tally, never dropped", async () => {
+    const fight = { outcome: "escaped" as const, freed: ["Pip"], lost: [], done: [] };
+    seed({ endingRead: false, visited: ["s_truth", "s_heroes"], fightEndings: [fight] });
+    both();
+    // The ending alone first: the paintings are not talked over.
+    expect(spoken).toEqual([ENDING]);
+    await flush();
+    await act(async () => {
+      vi.advanceTimersByTime(endingHoldMs(ENDING.split(" ").length));
+    });
+    await flush();
+    expect(screen.getByTestId("story-plates")).toBeTruthy();
+    expect(spoken.some((line) => line.includes("a door all along"))).toBe(false);
+
+    // The epilogue skipped: the fight and the recap, once, and still no tally.
+    fireEvent.keyDown(window, { key: "Escape" });
+    await flush();
+    expect(spoken.at(-1)).toBe("You got out through the rift. You freed Pip. The mountain was a door all along.");
+    expect(spoken.filter((line) => line.includes("a door all along"))).toHaveLength(1);
+    expect(spoken.some((line) => line.includes("is complete!"))).toBe(false);
+
+    // Then the page turns, and the tally is the last thing said.
+    turnThePage();
+    expect(spoken.at(-1)).toMatch(/^The Walk is complete!/);
+    expect(spoken.filter((line) => line.includes("a door all along"))).toHaveLength(1);
   });
 });
 
@@ -260,7 +310,7 @@ describe("waiting on what the epilogue needs", () => {
   it("holds the summary's words while the campaign is still being fetched, then plays the epilogue first", async () => {
     let answer: (value: Response) => void = () => undefined;
     vi.stubGlobal("fetch", vi.fn(() => new Promise<Response>((resolve) => { answer = resolve; })));
-    seed();
+    seed({ endingRead: false });
     useGameStore.setState({ campaign: null });
     both();
     // Nothing is said yet: an epilogue may still turn up, and the tally must not go first.
@@ -282,7 +332,7 @@ describe("waiting on what the epilogue needs", () => {
 
   it("gives up on a campaign that never arrives, and says everything", async () => {
     vi.stubGlobal("fetch", vi.fn(() => new Promise<Response>(() => undefined)));
-    seed();
+    seed({ endingRead: false });
     useGameStore.setState({ campaign: null });
     both();
     expect(spoken).toEqual([]);
@@ -291,7 +341,8 @@ describe("waiting on what the epilogue needs", () => {
     });
     expect(spoken).toHaveLength(1);
     expect(spoken[0]).toMatch(/^You walk out of the mountain/);
-    expect(spoken[0]).toContain("The Walk is complete!");
+    turnThePage();
+    expect(spoken[1]).toContain("The Walk is complete!");
   });
 
   it("lets no epilogue follow once it gave up waiting and spoke, even if the campaign lands just after", async () => {
@@ -325,10 +376,13 @@ describe("waiting on what the epilogue needs", () => {
   it("drops an epilogue with no paintings as soon as they fail, without cutting the ending off", async () => {
     for (const url of urls("heroes")) missing.add(url);
     const speaker = queueingSpeaker();
-    seed();
+    seed({ endingRead: false });
     both();
     await flush();
-    // Well inside the ending's hold, the tally follows the ending in the queue.
+    expect(speaker.queue).toEqual([ENDING]);
+    expect(screen.queryByTestId("story-plates")).toBeNull();
+    // A phone turns the page well inside the ending's hold: the tally follows the ending in the queue.
+    turnThePage();
     expect(speaker.queue).toHaveLength(2);
     expect(speaker.queue[0]).toBe(ENDING);
     expect(speaker.queue[1]).toMatch(/^The Walk is complete!/);
@@ -338,13 +392,15 @@ describe("waiting on what the epilogue needs", () => {
 
   it("drops an epilogue whose paintings never answer once they time out, inside the ending's hold", async () => {
     for (const url of urls("heroes")) hanging.add(url);
-    seed();
+    seed({ endingRead: false });
     both();
     expect(PLATE_LOAD_MS).toBeLessThan(endingHoldMs(ENDING.split(" ").length));
     await act(async () => {
       vi.advanceTimersByTime(PLATE_LOAD_MS);
     });
     await flush();
+    expect(spoken).toEqual([ENDING]);
+    turnThePage();
     expect(spoken).toHaveLength(2);
     expect(spoken[1]).toMatch(/^The Walk is complete!/);
     await act(async () => {

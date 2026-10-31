@@ -25,11 +25,15 @@
  * it is a fact about the run and not a beat: a phone that reconnects onto the
  * summary has to read the same ending as the two that watched it happen.
  *
- * The ending scene's own words (`RunState.narration`, composed when the scene
- * opened) head the summary and are read first: the scene ends the chapter the
- * moment it opens, so this is the only place the table ever sees them. On the
+ * Two pages, one after the other. First the **ending plate**: the ending
+ * scene's own words (`RunState.narration`, composed when the scene opened),
+ * read aloud, with what the chapter turned on (the recap), how its fights
+ * ended and the goal it set out with. The scene ends the chapter the moment it
+ * opens, so this is the only place the table ever sees those words. On the
  * completion that ends the campaign, an epilogue (EpiloguePlates) may follow
- * them, and the rest of what the summary says waits until it is done.
+ * them. Then, once a phone says the table has heard it (ENDING_READ,
+ * `RunState.endingRead`), the **tally**: XP, who grew, and what everyone is
+ * carrying, and nothing of the story, so it fits on one screen unscrolled.
  *
  * A setback is drawn as a different ending, never as a loss (spec §8.2). It
  * pays half rather than nothing precisely so the evening still counts, and the
@@ -169,26 +173,29 @@ export function ChapterCompletePanel(): ReactElement {
   const fightEndings = state?.fightEndings ?? [];
 
   /*
-   * Spoken once — the summary is narration like any other (spec §11). Held
-   * until the chapter has loaded, so the recap is in the same utterance rather
-   * than missing from it; a chapter that never loads never holds it up.
+   * Spoken once a page — the summary is narration like any other (spec §11).
    *
-   * The ending's own words come first. While an epilogue is still to play they
-   * are said alone, and the rest waits for it, so the paintings are not talked
-   * over and the XP is not the last thing anyone heard before them. While it
-   * cannot yet be known whether one follows (the campaign file is still on its
-   * way, `pending`, for a few seconds at most) nothing is said at all: the
-   * ending and the tally go together if none does.
+   * The ending plate is read first: the ending's own words, then the fights and the recap (read
+   * aloud too, because a recap that only exists on the television is a recap nobody hears). Held
+   * until the chapter has loaded, so the recap is in the same utterance rather than missing from
+   * it; a chapter that never loads never holds it up. While an epilogue is still to play the
+   * ending is said alone, so the paintings are not talked over, and the fights and the recap are
+   * read once it is done (or skipped), still ahead of the tally; while it cannot yet be known
+   * whether one follows (the campaign file is on its way, `pending`, a few seconds at most)
+   * nothing is said at all.
    *
-   * And until then the screen shows the ending alone, under its heading: the
-   * tally is what the summary says after the story, not beneath it.
+   * The tally is read when its page comes up, and never while an epilogue is still to play.
    */
   const ending = (state?.narration ?? "").trim();
   const endPlates = useEndPlatesStatus();
   const epilogueDue = endPlates.due !== null;
   const holding = epilogueDue || endPlates.pending;
-  const spoken = useRef(false);
-  const endingSaid = useRef(false);
+  // Absent is a summary persisted before the ending had its own page: straight to the tally.
+  const onEnding = state?.endingRead === false || holding;
+  const endingSpoken = useRef(false);
+  // The fights and the recap, held back while an epilogue played; false once they are owed.
+  const restSpoken = useRef(true);
+  const tallySpoken = useRef(false);
   const chapterReady = chapter !== null && chapter.id === chapterId;
   const [waited, setWaited] = useState(false);
   useEffect(() => {
@@ -197,16 +204,26 @@ export function ChapterCompletePanel(): ReactElement {
     return () => { clearTimeout(timer); };
   }, [chapterReady]);
   useEffect(() => {
-    if (!epilogueDue || endingSaid.current || spoken.current || ending === "") return;
-    endingSaid.current = true;
-    speak(ending, { source: "narration", interrupt: true });
-  }, [epilogueDue, ending]);
+    // A summary from before the ending had its own page still reads the ending ahead of an epilogue.
+    if (endingSpoken.current || !(state?.endingRead === false || epilogueDue)) return;
+    if (endPlates.pending || (!chapterReady && !waited)) return;
+    endingSpoken.current = true;
+    restSpoken.current = !epilogueDue;
+    const lines = epilogueDue ? [ending] : [ending, ...fightEndings.map(fightEndingLine), ...recap];
+    const said = lines.filter((line) => line !== "").join(" ");
+    if (said !== "") speak(said, { source: "narration", interrupt: true });
+  }, [state?.endingRead, endPlates.pending, chapterReady, waited, epilogueDue, ending, fightEndings, recap]);
   useEffect(() => {
-    if (spoken.current || holding || (!chapterReady && !waited)) return;
-    spoken.current = true;
+    if (restSpoken.current || holding) return;
+    restSpoken.current = true;
+    const said = [...fightEndings.map(fightEndingLine), ...recap].join(" ");
+    if (said !== "") speak(said, { source: "narration" });
+  }, [holding, fightEndings, recap]);
+  useEffect(() => {
+    if (tallySpoken.current || onEnding) return;
+    tallySpoken.current = true;
     speak(
       [
-        endingSaid.current ? "" : ending,
         endLine !== null
           ? `${heading} ${endLine}`
           : setback
@@ -214,233 +231,240 @@ export function ChapterCompletePanel(): ReactElement {
               ? `The story took a turn. The party earned ${String(xp)} experience, and the adventure keeps going.`
               : `The story took a turn. ${xpLine} The adventure keeps going.`
             : `Chapter finished! ${xpLine ?? `The party earned ${String(xp)} experience.`}`,
-        // Read aloud too, because a recap that only exists on the television is
-        // a recap nobody hears — the §11 seam is where every line of narration
-        // goes and this is narration. Appended to the same utterance rather
-        // than spoken separately so it cannot interrupt or be interrupted.
         // Shown with each hero's name; heard as "hero" (#552).
         ...ownRolls.map((r) => `Hero earned ${String(r.xp)} experience from their own good rolls.`),
-        ...fightEndings.map(fightEndingLine),
-        ...recap,
-      ].filter((line) => line !== "").join(" "),
+      ].join(" "),
     );
-  }, [xp, xpLine, ownRolls, setback, recap, heading, endLine, fightEndings, chapterReady, waited, ending, holding]);
+  }, [onEnding, xp, xpLine, ownRolls, setback, heading, endLine]);
 
   const questItems = party.flatMap((m) =>
     m.character.questItems.map((itemId) => ({ itemId, owner: m.character.name })),
   );
 
+  const headingIcon = ended === "complete" ? "crown" : setback || ended === "failed" ? "scroll" : "trophy";
+
+  if (onEnding) {
+    return (
+      <section className="complete complete--ending" aria-labelledby="complete-heading">
+        <div className="complete__plate" data-testid="chapter-ending-plate">
+          <h2 className="complete__heading" id="complete-heading">
+            {/* Icon and words carry the difference — never colour (spec §11). */}
+            <Icon name={headingIcon} />
+            <span>{heading}</span>
+          </h2>
+          {/* How the story ended, in the ending scene's own words: the chapter's last page. */}
+          {ending === "" ? null : (
+            <p className="complete__ending" data-testid="chapter-ending">
+              {ending}
+            </p>
+          )}
+          {fightEndings.map((fight, i) => (
+            <p className="complete__fight" key={i}>
+              <Icon name={fightEndingIcon(fight)} />
+              <span>{fightEndingLine(fight)}</span>
+            </p>
+          ))}
+          {recap.map((line, i) => (
+            <p className="complete__recap" key={i}>
+              <Icon name="scroll" />
+              <span>{line}</span>
+            </p>
+          ))}
+          {/* The goal the chapter set out with (#356), and what got ticked on the way. */}
+          <ChapterGoalCard place="world" />
+          {state?.endingRead === false ? (
+            <p className="complete__next kad-muted">
+              <Icon name="forward" />
+              <span>Tap &ldquo;See our rewards&rdquo; on a phone.</span>
+            </p>
+          ) : null}
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="complete" aria-labelledby="complete-heading">
       <header className="complete__head">
         <h2 className="complete__heading" id="complete-heading">
-          {/* Icon and words carry the difference — never colour (spec §11). */}
-          <Icon name={ended === "complete" ? "crown" : setback || ended === "failed" ? "scroll" : "trophy"} />
+          <Icon name={headingIcon} />
           <span>{heading}</span>
         </h2>
-        {/* How the story ended, in the ending scene's own words: the last page, before the tally. */}
-        {ending === "" ? null : (
-          <p className="complete__ending" data-testid="chapter-ending">
-            {ending}
+        {endLine !== null ? (
+          <p className="complete__campaign-end">
+            <Icon name={ended === "complete" ? "star" : "charm"} />
+            <span>{endLine}</span>
+          </p>
+        ) : null}
+        <p className="complete__xp">
+          <Icon name="star" />
+          <span>
+            {/* Story XP is per chapter and shared (spec §8.2) — "for everyone" is
+                the line that keeps the youngest player from counting hers
+                against the adults'. Only a hero the chapter paid before is
+                left out of it (#408), and her card says why. */}
+            {nobodyPaid ? (
+              xpLine
+            ) : (
+              <>
+                <b>{xp}</b> {alreadyPaid.size > 0 ? "XP for each hero new to this chapter" : "XP for everyone"}
+              </>
+            )}
+          </span>
+        </p>
+        {ownRolls.length === 0 ? null : (
+          <p className="complete__xp complete__xp--own">
+            <Icon name="star" />
+            <span>From their own good rolls: {ownRolls.map((r) => `${r.name} +${String(r.xp)}`).join(", ")}</span>
           </p>
         )}
-        {holding ? null : (
-          <>
-            {endLine !== null ? (
-              <p className="complete__campaign-end">
-                <Icon name={ended === "complete" ? "star" : "charm"} />
-                <span>{endLine}</span>
-              </p>
-            ) : null}
-            {/* The goal the chapter set out with (#356), and what got ticked on the way. */}
-            <ChapterGoalCard place="world" />
-            <p className="complete__xp">
-              <Icon name="star" />
-              <span>
-                {/* Story XP is per chapter and shared (spec §8.2) — "for everyone" is
-                    the line that keeps the youngest player from counting hers
-                    against the adults'. Only a hero the chapter paid before is
-                    left out of it (#408), and her card says why. */}
-                {nobodyPaid ? (
-                  xpLine
-                ) : (
-                  <>
-                    <b>{xp}</b> {alreadyPaid.size > 0 ? "XP for each hero new to this chapter" : "XP for everyone"}
-                  </>
-                )}
-              </span>
-            </p>
-            {ownRolls.length === 0 ? null : (
-              <p className="complete__xp">
-                <Icon name="star" />
-                <span>From their own good rolls: {ownRolls.map((r) => `${r.name} +${String(r.xp)}`).join(", ")}</span>
-              </p>
-            )}
-            {setback && ended === undefined ? (
-              <p className="complete__setback">
-                <Icon name="forward" />
-                <span>Not how you hoped, and the adventure carries on from here.</span>
-              </p>
-            ) : null}
-            {fightEndings.map((ending, i) => (
-              <p className="complete__fight" key={i}>
-                <Icon name={fightEndingIcon(ending)} />
-                <span>{fightEndingLine(ending)}</span>
-              </p>
-            ))}
-            {recap.map((line, i) => (
-              <p className="complete__recap" key={i}>
-                <Icon name="scroll" />
-                <span>{line}</span>
-              </p>
-            ))}
-          </>
-        )}
+        {setback && ended === undefined ? (
+          <p className="complete__setback">
+            <Icon name="forward" />
+            <span>Not how you hoped, and the adventure carries on from here.</span>
+          </p>
+        ) : null}
       </header>
 
-      {holding ? null : (
-        <>
-          {/*
-           * spec §8.2 — objectives pay the whole party or nobody, and they pay on a
-           * setback too, because they are about what the party *did* on the way and
-           * not about which ending it arrived at. Itemised rather than folded
-           * silently into the total: the XP above already includes these, and a
-           * number nobody can account for teaches the table that the number is
-           * arbitrary.
-           */}
-          {bonuses.length === 0 ? null : (
-            <div className="complete__bonuses">
-              <h3 className="complete__bonus-heading">
-                <Icon name="star" />
-                <span>And you did these too</span>
-                {/* Mixed table: the objectives' XP is for the new heroes only. */}
-                {alreadyPaid.size > 0 && !nobodyPaid ? <span className="kad-muted"> (new heroes earn these)</span> : null}
-              </h3>
-              <ul className="complete__bonus-list">
-                {bonuses.map((bonus) => (
-                  <li className="complete-bonus" key={bonus.id}>
-                    <Icon name="check" />
-                    <span className="complete-bonus__label">{bonus.label}</span>
-                    {/* When nobody earns the chapter's XP again, its objectives'
-                        XP is withheld with the rest: they are shown as done, not
-                        as XP. A clamped objective can honestly pay 0 (the 25%
-                        budget is shared). It still shows: the party did the thing. */}
-                    {nobodyPaid ? (
-                      <span className="complete-bonus__xp kad-muted">Already claimed</span>
-                    ) : (
-                      <span className="complete-bonus__xp kad-muted">+{bonus.xp}</span>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          <ul className="complete__party">
-            {party.map((member) => {
-              const newLevel = leveled[member.character.id];
-              const newTier = transformed[member.character.id];
-              return (
-                <li className="complete-card" key={member.playerId}>
-                  {/*
-                   * The new tier if they crossed one this chapter, not the tier
-                   * they walked in with. The cutscene has already played the moment
-                   * itself; this is the receipt for it, so the summary and the beat
-                   * that preceded it agree about what she is now.
-                   */}
-                  <span className="complete-card__portrait" aria-hidden="true">
-                    <CharacterPortrait
-                      backdrop
-                      species={member.character.species}
-                      accent={member.character.appearance.accent}
-                      tier={(newTier as TierId | undefined) ?? member.character.tier}
-                      characterClass={member.character.class}
-                      className="complete-card__art"
-                      lit={newTier !== undefined}
-                    />
-                  </span>
-                  <span className="complete-card__text">
-                    <span className="complete-card__name">{member.character.name}</span>
-                    <span className="complete-card__chips">
-                      <span className="kad-chip">
-                        <Icon name="levelup" />
-                        <span>Level {newLevel ?? member.character.level}</span>
-                      </span>
-                      {alreadyPaid.has(member.character.id) ? (
-                        <span className="kad-chip">
-                          <Icon name="check" />
-                          <span>XP earned here before</span>
-                        </span>
-                      ) : null}
-                      {newLevel === undefined ? null : (
-                        <span className="kad-chip kad-chip--ok">
-                          <Icon name="star" />
-                          <span>Levelled up!</span>
-                        </span>
-                      )}
-                      {newTier === undefined ? null : (
-                        <span className="kad-chip kad-chip--warn">
-                          <Icon name="clever" />
-                          <span>New look: {newTier}</span>
-                        </span>
-                      )}
-                    </span>
-                    {/* The point the level brought can't be spent here — only at a
-                        Rest scene while the next chapter is in play — so the
-                        moment it is earned is the moment to say where it goes. */}
-                    {newLevel === undefined ? null : (
-                      <span className="complete-card__hint kad-muted">
-                        <Icon name="rest" />
-                        <span>New stat point! Spend it on your phone at the next rest stop.</span>
-                      </span>
-                    )}
-                    {/* spec §9.5: what is in the bag right now is provisional until
-                        the campaign is finished, so it is shown as "carrying", not
-                        "won". */}
-                    <span className="complete-card__loot">
-                      {member.character.inventory.length === 0 ? (
-                        <span className="kad-muted">Empty bag</span>
-                      ) : (
-                        member.character.inventory.map((entry, i) => (
-                          <span className="kad-chip" key={`${entry.itemId}-${String(i)}`}>
-                            <Icon name={items?.[entry.itemId]?.icon ?? entry.kind} />
-                            <span>{items?.[entry.itemId]?.name ?? entry.itemId}</span>
-                          </span>
-                        ))
-                      )}
-                    </span>
-                  </span>
-                </li>
-              );
-            })}
+      {/*
+       * spec §8.2 — objectives pay the whole party or nobody, and they pay on a
+       * setback too, because they are about what the party *did* on the way and
+       * not about which ending it arrived at. Itemised rather than folded
+       * silently into the total: the XP above already includes these, and a
+       * number nobody can account for teaches the table that the number is
+       * arbitrary.
+       */}
+      {bonuses.length === 0 ? null : (
+        <div className="complete__bonuses">
+          <h3 className="complete__bonus-heading">
+            <Icon name="star" />
+            <span>And you did these too</span>
+            {/* Mixed table: the objectives' XP is for the new heroes only. */}
+            {alreadyPaid.size > 0 && !nobodyPaid ? <span className="kad-muted"> (new heroes earn these)</span> : null}
+          </h3>
+          <ul className="complete__bonus-list">
+            {bonuses.map((bonus) => (
+              <li className="complete-bonus" key={bonus.id}>
+                <Icon name="check" />
+                <span className="complete-bonus__label">{bonus.label}</span>
+                {/* When nobody earns the chapter's XP again, its objectives'
+                    XP is withheld with the rest: they are shown as done, not
+                    as XP. A clamped objective can honestly pay 0 (the 25%
+                    budget is shared). It still shows: the party did the thing. */}
+                {nobodyPaid ? (
+                  <span className="complete-bonus__xp kad-muted">Already claimed</span>
+                ) : (
+                  <span className="complete-bonus__xp kad-muted">+{bonus.xp}</span>
+                )}
+              </li>
+            ))}
           </ul>
-
-          {questItems.length === 0 ? null : (
-            <div className="complete__quest">
-              <h3 className="complete__quest-heading">
-                <Icon name="quest" />
-                <span>What the party found</span>
-              </h3>
-              <ul className="complete__quest-list">
-                {questItems.map((entry) => (
-                  <li className="kad-chip" key={`${entry.owner}-${entry.itemId}`}>
-                    <Icon name={items?.[entry.itemId]?.icon ?? "quest"} />
-                    <span>
-                      {items?.[entry.itemId]?.name ?? entry.itemId}{" "}
-                      <span className="kad-muted">({entry.owner})</span>
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          <p className="complete__next kad-muted">
-            <Icon name="travel" />
-            <span>Tap “Keep going” on your phone.</span>
-          </p>
-        </>
+        </div>
       )}
+
+      <ul className="complete__party">
+        {party.map((member) => {
+          const newLevel = leveled[member.character.id];
+          const newTier = transformed[member.character.id];
+          return (
+            <li className="complete-card" key={member.playerId}>
+              {/*
+               * The new tier if they crossed one this chapter, not the tier
+               * they walked in with. The cutscene has already played the moment
+               * itself; this is the receipt for it, so the summary and the beat
+               * that preceded it agree about what she is now.
+               */}
+              <span className="complete-card__portrait" aria-hidden="true">
+                <CharacterPortrait
+                  backdrop
+                  species={member.character.species}
+                  accent={member.character.appearance.accent}
+                  tier={(newTier as TierId | undefined) ?? member.character.tier}
+                  characterClass={member.character.class}
+                  className="complete-card__art"
+                  lit={newTier !== undefined}
+                />
+              </span>
+              <span className="complete-card__text">
+                <span className="complete-card__name">{member.character.name}</span>
+                <span className="complete-card__chips">
+                  <span className="kad-chip">
+                    <Icon name="levelup" />
+                    <span>Level {newLevel ?? member.character.level}</span>
+                  </span>
+                  {alreadyPaid.has(member.character.id) ? (
+                    <span className="kad-chip">
+                      <Icon name="check" />
+                      <span>XP earned here before</span>
+                    </span>
+                  ) : null}
+                  {newLevel === undefined ? null : (
+                    <span className="kad-chip kad-chip--ok">
+                      <Icon name="star" />
+                      <span>Levelled up!</span>
+                    </span>
+                  )}
+                  {newTier === undefined ? null : (
+                    <span className="kad-chip kad-chip--warn">
+                      <Icon name="clever" />
+                      <span>New look: {newTier}</span>
+                    </span>
+                  )}
+                </span>
+                {/* The point the level brought can't be spent here — only at a
+                    Rest scene while the next chapter is in play — so the
+                    moment it is earned is the moment to say where it goes. */}
+                {newLevel === undefined ? null : (
+                  <span className="complete-card__hint kad-muted">
+                    <Icon name="rest" />
+                    <span>New stat point! Spend it on your phone at the next rest stop.</span>
+                  </span>
+                )}
+                {/* spec §9.5: what is in the bag right now is provisional until
+                    the campaign is finished, so it is shown as "carrying", not
+                    "won". */}
+                <span className="complete-card__loot">
+                  {member.character.inventory.length === 0 ? (
+                    <span className="kad-muted">Empty bag</span>
+                  ) : (
+                    member.character.inventory.map((entry, i) => (
+                      <span className="kad-chip" key={`${entry.itemId}-${String(i)}`}>
+                        <Icon name={items?.[entry.itemId]?.icon ?? entry.kind} />
+                        <span>{items?.[entry.itemId]?.name ?? entry.itemId}</span>
+                      </span>
+                    ))
+                  )}
+                </span>
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+
+      {questItems.length === 0 ? null : (
+        <div className="complete__quest">
+          <h3 className="complete__quest-heading">
+            <Icon name="quest" />
+            <span>What the party found</span>
+          </h3>
+          <ul className="complete__quest-list">
+            {questItems.map((entry) => (
+              <li className="kad-chip" key={`${entry.owner}-${entry.itemId}`}>
+                <Icon name={items?.[entry.itemId]?.icon ?? "quest"} />
+                <span>
+                  {items?.[entry.itemId]?.name ?? entry.itemId}{" "}
+                  <span className="kad-muted">({entry.owner})</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <p className="complete__next kad-muted">
+        <Icon name="travel" />
+        <span>Tap “Keep going” on your phone.</span>
+      </p>
     </section>
   );
 }

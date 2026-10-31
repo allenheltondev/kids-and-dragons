@@ -113,6 +113,12 @@ html:not([data-contrast="high"]) :is(.inv__button, .inv__slot--empty, .sheet__hp
   --chrome-slice: 32 48;
   --chrome-w: 16px 24px;
 }
+/* Except in a fight, where the plate is a caption strip with no backdrop of its own
+   (NarrationPanel.css `.narration--fight`): its frame stayed up the whole fight, opaque over the
+   board's bottom rows, long after the caption itself had faded. */
+html:not([data-contrast="high"]) .narration--fight .narration__plate::before {
+  content: none;
+}
 
 /* The nameplate. While the game waits on you the strip is the gold banner instead (PlayerPanel.css,
    `.sheet--turn`), the one "your turn" signal, framed in the same brass (below). */

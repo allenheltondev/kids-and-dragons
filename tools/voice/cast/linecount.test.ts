@@ -354,3 +354,26 @@ describe("names that are mostly a common word", () => {
     expect(Object.values(sheet.speakers).find((speaker) => speaker.name === "The Eldest")!.lineCount).toBe(2);
   });
 });
+
+describe("a name whose first word is also an ordinary word", () => {
+  it("is not the first word alone: a soup line is not the Soup Woman, and the runner's quotes are the runner's", () => {
+    const chapters: ChapterLike[] = [
+      {
+        id: "g",
+        voiceGuide: { npcVoices: { "Soup Woman": "Marigold; warm, runs the soup tent", "MossHome Runner": "a runner; brisk" } },
+        scenes: { tent: { cast: [{ name: "Soup Woman" }] }, post: { cast: [{ name: "MossHome Runner" }] } },
+      },
+    ];
+    const narration: NarrationLine[] = [
+      { chapter: "g", address: "g/tent/narration", text: 'The tent smells of onions. Soup for everyone, and a soup ladle the size of an oar. "Eat," she says.' },
+      { chapter: "g", address: "g/post/narration", text: '"The rush road?" A runner puffs out the news. A ford line two days long. And a soup line, very kind, that keeps asking people about the mountain. "Same shape as here," she says. "Different country. Everybody\'s noticing."' },
+    ];
+    const sheet = buildSheet({ chapters, individuals: [], narration }, null);
+    const named = (name: string) => Object.values(sheet.speakers).find((speaker) => speaker.name === name)!;
+    expect(named("Soup Woman").lines.map((line) => line.text).join(" ")).not.toMatch(/Same shape/);
+    expect(named("MossHome Runner").lines.map((line) => line.text).join(" ")).toMatch(/Same shape as here/);
+    // Her own name still works.
+    const again = buildSheet({ chapters, individuals: [], narration: [{ chapter: "g", address: "g/post/narration", text: '"Hello," says Soup Woman.' }] }, null);
+    expect(Object.values(again.speakers).find((speaker) => speaker.name === "Soup Woman")!.lineCount).toBe(1);
+  });
+});

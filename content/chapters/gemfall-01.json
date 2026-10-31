@@ -94,7 +94,7 @@
     "scene_prologue_realm": {
       "type": "story",
       "priority": 2,
-      "narration": "This is the Realm of Red Sky. Far north stands Mount Red Sky, source of the Gemfalls. Old maps say it is only sleeping. Get ready for the long trip north: tonight your story begins at the Exchange docks.",
+      "narration": "This is the Realm of Red Sky. Far to the north stands Mount Red Sky. Old maps say it is only sleeping. Tonight your story begins at the Exchange docks. Your job: get ready for the long trip north.",
       "choices": [
         {
           "id": "prologue_to_city",
@@ -106,7 +106,7 @@
     },
     "scene_prologue_city": {
       "type": "story",
-      "narration": "The Exchange stands where roads and rivers meet the sea. Travelers trade goods, news and chances to begin again. Nobody is from here. That is rather the point.",
+      "narration": "The Exchange is a city where roads and rivers meet the sea. People come here to trade and to start again. Nobody is from here. That is the whole point.",
       "choices": [
         {
           "id": "prologue_to_party",
@@ -118,11 +118,11 @@
     },
     "scene_prologue_party": {
       "type": "choice_point",
-      "narration": "You met on the docks this week. Between you: a shared purse of six coins, one supper bundle, and reasons for traveling you have not told yet. Harbor lamps are coming on. What are you doing here tonight?",
+      "narration": "You met on the docks this week. Together you have six coins and one supper bundle. The harbor lamps are coming on. What are you doing tonight?",
       "choices": [
         {
           "id": "prologue_begin",
-          "label": "Fishing off the end of the long pier",
+          "label": "Fishing off the pier",
           "icon": "drop",
           "goto": "scene_prologue_party_prologue_begin",
           "effects": [
@@ -135,7 +135,7 @@
         },
         {
           "id": "oranges",
-          "label": "Helping a ship unload its oranges",
+          "label": "Unloading a ship of oranges",
           "icon": "hand",
           "goto": "scene_prologue_party_oranges",
           "effects": [
@@ -148,7 +148,7 @@
         },
         {
           "id": "lamps",
-          "label": "Helping the old lamplighter light the lamps",
+          "label": "Helping the lamplighter",
           "icon": "lantern",
           "goto": "scene_prologue_party_lamps",
           "effects": [
@@ -161,7 +161,7 @@
         },
         {
           "id": "cards",
-          "label": "Doing card tricks for the sailors",
+          "label": "Card tricks for sailors",
           "icon": "spark",
           "requiresSpecies": "kitsune",
           "goto": "scene_prologue_party_cards",
@@ -188,11 +188,11 @@
     },
     "scene_prologue_party_prologue_begin": {
       "type": "story",
-      "narration": "One bucket, several fishing lines: two old boots and a silver sardine. You tuck the sardine away. A gull watches it. The sardine, as much as sardines can, watches back.",
+      "narration": "You catch two old boots and one silver sardine. You keep the sardine. A gull stares at it. The sardine stares back.",
       "choices": [
         {
           "id": "on",
-          "label": "Keep fishing while the stars come out",
+          "label": "Keep fishing",
           "icon": "moon",
           "goto": "scene_red_sky"
         }
@@ -201,11 +201,11 @@
     },
     "scene_prologue_party_oranges": {
       "type": "story",
-      "narration": "You help unload the Sunny Disposition. Its yeti captain has orange peel in his fur. \"We owe you one. Sailors pay their debts.\" He thinks. \"Mostly in oranges.\"",
+      "narration": "You help a yeti captain unload his orange ship, the Sunny Disposition. He has peel in his fur. \"We owe you one,\" he says. \"Mostly in oranges.\"",
       "choices": [
         {
           "id": "on",
-          "label": "Sit on a crate and peel an orange",
+          "label": "Peel an orange",
           "icon": "hand",
           "goto": "scene_red_sky"
         }
@@ -217,7 +217,7 @@
       "discovers": [
         "npc.frogfolk"
       ],
-      "narration": "Old Wick, a frogfolk lamplighter, names every lamp as he lights it. You carry his ladder. He shows you a quiet ledge along the Long Bridge. \"Nobody else looks.\"",
+      "narration": "Old Wick, a frogfolk lamplighter, says goodnight to every lamp by name. You carry his ladder. He shows you a secret ledge along the Long Bridge. \"Nobody else looks.\"",
       "cast": [
         {
           "figure": "cast/old_wick",
@@ -227,7 +227,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Light the last lamp at the end of the harbor",
+          "label": "Light the last lamp",
           "icon": "lantern",
           "goto": "scene_red_sky"
         }
@@ -236,11 +236,11 @@
     },
     "scene_prologue_party_cards": {
       "type": "story",
-      "narration": "Your kitsune does card tricks on an upturned barrel. A sailor picks a card, and it turns up in his own boot. Then in his hat. Then in his sandwich. The sailors laugh so hard that one of them gives you his lucky stone, a smooth pebble with a hole in it. \"You clearly don't need luck,\" he says, \"so it'll be safe with you.\"",
+      "narration": "Your kitsune does card tricks. A sailor's card turns up in his boot, then his hat, then his sandwich. He laughs and gives you his lucky stone, a pebble with a hole in it.",
       "choices": [
         {
           "id": "on",
-          "label": "Shuffle up for one more trick",
+          "label": "One more trick",
           "icon": "spark",
           "goto": "scene_red_sky"
         }
@@ -250,11 +250,11 @@
     "scene_red_sky": {
       "type": "story",
       "priority": 2,
-      "narration": "The northern sky turns cherry red. Gem-light rains over the foothills. For a blink, some falls upward. A gull drops its fish. Both look surprised.",
+      "narration": "The northern sky turns cherry red. Gem-light rains down far away. For a blink, some of it falls up. A gull drops its fish. Both look surprised.",
       "choices": [
         {
           "id": "fly_up",
-          "label": "Fly up the lighthouse for a better look",
+          "label": "Fly up the lighthouse",
           "icon": "wing",
           "requiresSpecies": [
             "griffin",
@@ -270,7 +270,7 @@
         },
         {
           "id": "run_docks",
-          "label": "Run down to the docks and see what people do",
+          "label": "Run to the docks",
           "icon": "boot",
           "goto": "scene_night_docks"
         }
@@ -281,7 +281,7 @@
       "discovers": [
         "npc.merfolk"
       ],
-      "narration": "From the lighthouse, one thread of gem-light rises toward the mountain. The old merfolk keeper sits up in her bathtub. Officially, she saw nothing. Neither did you.",
+      "narration": "From the lighthouse, you see one thread of gem-light rise toward the mountain. The old merfolk keeper sits up in her bathtub. \"I saw nothing,\" she says. Neither did you.",
       "cast": [
         {
           "figure": "entities/merfolk",
@@ -298,7 +298,7 @@
       "choices": [
         {
           "id": "glide_down",
-          "label": "Glide back down and see what the city does",
+          "label": "Glide back down",
           "icon": "arrow",
           "goto": "scene_stampede"
         }
@@ -307,11 +307,11 @@
     },
     "scene_harbour_wall": {
       "type": "story",
-      "narration": "Ships swing on their anchors until their noses point north. Tower bells ring, then stop. Nobody knows this signal. The lighthouse lamp shuts one eye and pretends it did not.",
+      "narration": "Every ship swings around until its nose points north. The tower bells ring, then stop. Nobody knows why. The lighthouse lamp shuts one eye.",
       "choices": [
         {
           "id": "wall_wait",
-          "label": "Watch the red fade, and see what the morning brings",
+          "label": "Wait for morning",
           "icon": "moon",
           "goto": "scene_stampede"
         }
@@ -323,7 +323,7 @@
         "npc.merfolk",
         "npc.yeti"
       ],
-      "narration": "A boy changes the rope price on his ladder. A merfolk in a wheeled barrel shouts \"Rush prices!\" A fishmonger looks north and doubles the herring price.",
+      "narration": "A boy changes his rope price. A fishmonger looks north and doubles the herring price. \"Rush prices!\" somebody shouts.",
       "cast": [
         {
           "figure": "cast/fishmonger",
@@ -337,7 +337,7 @@
       "choices": [
         {
           "id": "docks_wait",
-          "label": "Find a crate to sit on and watch it all begin",
+          "label": "Sit on a crate and watch",
           "icon": "eye",
           "goto": "scene_stampede"
         }
@@ -346,17 +346,17 @@
     },
     "scene_stampede": {
       "type": "story",
-      "narration": "Three days later, the Exchange is packed. Everybody says gems. Prices rise while you read them. Before going north, you need a reason, road news, food, a bed and a caravan. First, find somewhere to talk.",
+      "narration": "Three days later, the Exchange is packed with gem hunters. Prices go up while you read them. Before you go north, you need a reason, road news, food, a bed and a caravan. First, find somewhere to talk.",
       "choices": [
         {
           "id": "plaques",
-          "label": "Read the brass plaques on the harbor",
+          "label": "Read the harbor plaques",
           "icon": "scroll",
           "goto": "scene_plaques"
         },
         {
           "id": "find_table",
-          "label": "Find somewhere to sit down and talk",
+          "label": "Find somewhere to talk",
           "icon": "party",
           "goto": "scene_long_bridge"
         }
@@ -367,7 +367,7 @@
       "discovers": [
         "npc.centaur"
       ],
-      "narration": "Seventeen harbor plaques name seventeen different founders. One says MY GRANDMA. A centaur guide says everybody belongs here. Today the explanation is free, because you look new.",
+      "narration": "Seventeen brass plaques name seventeen different founders. One just says MY GRANDMA. A centaur tour guide says it means everybody belongs here.",
       "cast": [
         {
           "figure": "entities/centaur",
@@ -377,7 +377,7 @@
       "choices": [
         {
           "id": "sit_down",
-          "label": "Find somewhere to sit down and talk",
+          "label": "Find somewhere to talk",
           "icon": "party",
           "goto": "scene_long_bridge"
         }
@@ -385,37 +385,37 @@
     },
     "scene_long_bridge": {
       "type": "story",
-      "narration": "The noodle stall is beyond the jammed Long Bridge. A goat stands on a merchant who has not noticed. Nobody can move. The cabbage barge below is doing much better.",
+      "narration": "The best place to talk is a noodle stall across the Long Bridge. But the bridge is jammed. A goat is standing on a merchant, who has not noticed. Below, a cabbage barge floats by.",
       "choices": [
         {
           "id": "squeeze",
-          "label": "Squeeze through the crowd",
+          "label": "Squeeze through",
           "icon": "quick",
           "goto": "check_bridge_squeeze"
         },
         {
           "id": "barge",
-          "label": "Ride the cabbage barge under the bridge",
+          "label": "Ride the cabbage barge",
           "icon": "drop",
           "goto": "scene_long_bridge_barge"
         },
         {
           "id": "lamp_path",
-          "label": "Take Old Wick's lamplighters' path",
+          "label": "Take Old Wick's ledge",
           "icon": "lantern",
           "requiresFlag": "night_lamps",
           "goto": "scene_long_bridge_lamp_path"
         },
         {
           "id": "wade",
-          "label": "Wade the canal beside the bridge",
+          "label": "Wade the canal",
           "icon": "boot",
           "requiresSpecies": "bigfoot",
           "goto": "scene_long_bridge_wade"
         },
         {
           "id": "duskrunner_lead",
-          "label": "Have a duskrunner lead us through the crowd",
+          "label": "Follow our duskrunner",
           "icon": "quick",
           "requiresClass": "duskrunner",
           "goto": "check_bridge_squeeze"
@@ -441,11 +441,11 @@
     },
     "scene_long_bridge_barge": {
       "type": "story",
-      "narration": "You ride the cabbage barge under hundreds of dangling feet. It costs nothing. You reach the noodle stall smelling strongly of cabbage.",
+      "narration": "You float under the bridge, past hundreds of dangling feet. You arrive by the noodle stall smelling of cabbage.",
       "choices": [
         {
           "id": "on",
-          "label": "Climb off and shake out the cabbage leaves",
+          "label": "Hop off",
           "icon": "drop",
           "goto": "choice_why_north"
         }
@@ -454,7 +454,7 @@
     },
     "scene_long_bridge_lamp_path": {
       "type": "story",
-      "narration": "Old Wick's ledge is clear. You cross above the traffic. Halfway over, he is lighting a lamp at noon, just to be sure. He tips his hat.",
+      "narration": "Old Wick's ledge is empty, just as he said. Halfway across, there he is, lighting a lamp at noon, just to be sure. He tips his hat.",
       "cast": [
         {
           "figure": "cast/old_wick",
@@ -464,7 +464,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Hop down by the noodle stall",
+          "label": "Hop down",
           "icon": "lantern",
           "goto": "choice_why_north"
         }
@@ -473,11 +473,11 @@
     },
     "scene_long_bridge_wade": {
       "type": "story",
-      "narration": "Your bigfoot steps off the bank into the canal. It comes up to their knees. Everybody else climbs onto their shoulders, and then two strangers climb on too, and then the goat. You wade across like a walking tower, and the whole bridge cheers you all the way to the noodle stall.",
+      "narration": "Your bigfoot wades into the canal. Everybody climbs onto their shoulders. Then two strangers. Then the goat. The whole bridge cheers.",
       "choices": [
         {
           "id": "on",
-          "label": "Set everybody down, goat last",
+          "label": "Set everyone down",
           "icon": "boot",
           "goto": "choice_why_north"
         }
@@ -486,7 +486,7 @@
     },
     "choice_why_north": {
       "type": "choice_point",
-      "narration": "You find an empty chair at Mortar's noodle stall. \"Every table keeps one for whoever comes next,\" the stone troll says. \"Today, that is you.\" Why is your party going north?",
+      "narration": "At the noodle stall, a stone troll named Mortar points at an empty chair. \"Every table keeps one for whoever comes next. Today, that is you.\" So, why are you going north?",
       "cast": [
         {
           "figure": "cast/mortar",
@@ -497,7 +497,7 @@
       "choices": [
         {
           "id": "wealth",
-          "label": "For the treasure. Gems, gems, gems!",
+          "label": "For gems, gems, gems!",
           "icon": "gem",
           "goto": "scene_motive_wealth",
           "effects": [
@@ -510,7 +510,7 @@
         },
         {
           "id": "curiosity",
-          "label": "To find out what really happened",
+          "label": "To find out what happened",
           "icon": "eye",
           "goto": "scene_motive_curiosity",
           "effects": [
@@ -523,7 +523,7 @@
         },
         {
           "id": "prestige",
-          "label": "So everyone will know our names",
+          "label": "To make our names famous",
           "icon": "crown",
           "goto": "scene_motive_prestige",
           "effects": [
@@ -536,7 +536,7 @@
         },
         {
           "id": "duty",
-          "label": "Because somebody has to keep folk safe",
+          "label": "To keep folk safe",
           "icon": "shield",
           "goto": "scene_motive_duty",
           "effects": [
@@ -549,7 +549,7 @@
         },
         {
           "id": "fresh_start",
-          "label": "For a fresh start somewhere new",
+          "label": "For a fresh start",
           "icon": "leaf",
           "goto": "scene_motive_fresh_start",
           "effects": [
@@ -562,7 +562,7 @@
         },
         {
           "id": "proving",
-          "label": "To prove we can do it",
+          "label": "To prove we can",
           "icon": "star",
           "goto": "scene_motive_proving",
           "effects": [
@@ -581,7 +581,7 @@
       "discovers": [
         "npc.stone_troll"
       ],
-      "narration": "Mortar, the noodle stall's stone troll, chalks RUSH PRICES on his board. Your noodles are free. Three pickpockets move one table closer.",
+      "narration": "Mortar chalks RUSH PRICES on his board. Your noodles are free. Three pickpockets scoot one table closer.",
       "cast": [
         {
           "figure": "cast/mortar",
@@ -592,7 +592,7 @@
       "choices": [
         {
           "id": "to_docks",
-          "label": "Go and find out what gems are fetching at the docks",
+          "label": "Off to the docks",
           "icon": "gem",
           "goto": "scene_newcomers"
         }
@@ -604,7 +604,7 @@
       "discovers": [
         "npc.stone_troll"
       ],
-      "narration": "Mortar, the noodle stall's stone troll, stops stirring. \"The gull dropped its fish before the light arrived. Heard something first.\" He has clearly thought about this for three days.",
+      "narration": "Mortar stops stirring. \"The gull dropped its fish before the light came. Heard something first.\" He has thought about that for three days.",
       "cast": [
         {
           "figure": "cast/mortar",
@@ -615,7 +615,7 @@
       "choices": [
         {
           "id": "to_docks",
-          "label": "Go and ask the docks what they heard",
+          "label": "Off to the docks",
           "icon": "eye",
           "goto": "scene_newcomers"
         }
@@ -628,7 +628,7 @@
         "npc.stone_troll",
         "npc.faun"
       ],
-      "narration": "Mortar, the noodle stall's stone troll, writes your names under TODAY'S HEROES. One is misspelled. A faun asks you to sign her dumpling, then eats it for safekeeping.",
+      "narration": "Mortar writes your names on his board under TODAY'S HEROES. He spells one wrong. A faun asks you to sign her dumpling.",
       "cast": [
         {
           "figure": "cast/mortar",
@@ -643,7 +643,7 @@
       "choices": [
         {
           "id": "to_docks",
-          "label": "Go where the news is made: the docks",
+          "label": "Off to the docks",
           "icon": "crown",
           "goto": "scene_newcomers"
         }
@@ -656,7 +656,7 @@
         "npc.stone_troll",
         "npc.faun"
       ],
-      "narration": "Mortar, the noodle stall's stone troll, sets out an extra bowl. \"For whoever needs it.\" A stranded faun eats, spots her cousins' wagon, and runs after it waving the spoon.",
+      "narration": "Mortar sets out an extra bowl \"for whoever needs it.\" A lost faun gobbles it up, spots her cousins' wagon, and runs after it with the spoon.",
       "cast": [
         {
           "figure": "cast/mortar",
@@ -670,7 +670,7 @@
       "choices": [
         {
           "id": "to_docks",
-          "label": "Wave her off and head down to the docks",
+          "label": "Off to the docks",
           "icon": "shield",
           "goto": "scene_newcomers"
         }
@@ -682,7 +682,7 @@
       "discovers": [
         "npc.stone_troll"
       ],
-      "narration": "Mortar, the noodle stall's stone troll, marks your empty chair. \"Yours now. Everyone here started again.\" He gives you bread, which at rush prices is practically a house.",
+      "narration": "Mortar taps your chair. \"Yours now. Everyone here started again.\" He gives you bread. At rush prices, that is practically a house.",
       "cast": [
         {
           "figure": "cast/mortar",
@@ -693,7 +693,7 @@
       "choices": [
         {
           "id": "to_docks",
-          "label": "Take your first steps as new people: down to the docks",
+          "label": "Off to the docks",
           "icon": "leaf",
           "goto": "scene_newcomers"
         }
@@ -705,7 +705,7 @@
       "discovers": [
         "npc.stone_troll"
       ],
-      "narration": "Mortar, the noodle stall's stone troll, points at the Big Bowl. \"Nobody finishes it.\" You finish it together. Somebody has to be rolled away afterward. \"Hm,\" says Mortar. Applause, for a troll.",
+      "narration": "Mortar points at the Big Bowl. \"Nobody finishes it.\" You finish it together. \"Hm,\" says Mortar. From a troll, that is clapping.",
       "cast": [
         {
           "figure": "cast/mortar",
@@ -716,7 +716,7 @@
       "choices": [
         {
           "id": "to_docks",
-          "label": "Waddle down to the docks, victorious",
+          "label": "Off to the docks",
           "icon": "star",
           "goto": "scene_newcomers"
         }
@@ -728,7 +728,7 @@
       "discovers": [
         "npc.selkie"
       ],
-      "narration": "A selkie family steps ashore with everything they own. Rush prices make them go quiet. \"Up the hill, the Empty Chair inn has room for newcomers,\" their grandmother says. The harbor plaques name selkie founders too. Everybody else hurries north.",
+      "narration": "On the way to the docks, a selkie family steps off a boat with everything they own. \"Is there room here for selkies?\" asks the grandmother. \"We were told to try the Empty Chair, an inn up the hill.\"",
       "cast": [
         {
           "figure": "cast/selkie_grandmother",
@@ -738,7 +738,7 @@
       "choices": [
         {
           "id": "carry",
-          "label": "Carry their bags to the Empty Chair inn",
+          "label": "Carry their bags to the inn",
           "icon": "might",
           "goto": "interaction_newcomer_load",
           "effects": [
@@ -751,7 +751,7 @@
         },
         {
           "id": "plaque",
-          "label": "Walk them along the brass plaques on the quay",
+          "label": "Show them the harbor plaques",
           "icon": "scroll",
           "goto": "scene_newcomers_plaque",
           "effects": [
@@ -764,7 +764,7 @@
         },
         {
           "id": "fresh",
-          "label": "Tell them we're starting fresh too",
+          "label": "Say we're starting fresh too",
           "icon": "leaf",
           "requiresFlag": "motive_fresh_start",
           "goto": "scene_newcomers_fresh",
@@ -778,7 +778,7 @@
         },
         {
           "id": "quick_lift",
-          "label": "Risk lifting the whole load without leveling it",
+          "label": "Risk lifting it all at once",
           "goto": "check_newcomers_carry",
           "icon": "hand",
           "effects": [
@@ -816,7 +816,7 @@
     },
     "scene_newcomers_plaque": {
       "type": "story",
-      "narration": "The grandmother reads the selkie founder's plaque twice. \"Then we are home.\" She gives you her river charm for the road. Her grandchildren straighten the plaque.",
+      "narration": "You find a plaque with a selkie founder on it. The grandmother reads it twice. \"Then we are home.\" She gives you her river charm for the road.",
       "cast": [
         {
           "figure": "cast/selkie_grandmother",
@@ -826,7 +826,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Wave goodbye and head for the docks",
+          "label": "Wave goodbye",
           "icon": "scroll",
           "goto": "interaction_quay_line"
         }
@@ -834,7 +834,7 @@
     },
     "scene_newcomers_fresh": {
       "type": "story",
-      "narration": "You swap fresh-start advice: eat at Mortar's, ignore the prices, keep an empty chair. The selkies take a room at the inn and promise to save space for you.",
+      "narration": "You swap fresh-start tips: eat at Mortar's and ignore the prices. The selkies head for the Empty Chair and promise to save you some room.",
       "cast": [
         {
           "figure": "cast/selkie_grandmother",
@@ -844,7 +844,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Head down to the docks",
+          "label": "Head for the docks",
           "icon": "leaf",
           "goto": "interaction_quay_line"
         }
@@ -856,7 +856,7 @@
         "npc.boggart",
         "npc.yeti"
       ],
-      "narration": "The docks trade news. A boggart in a coat of other coats sells \"slightly used rumors.\" The yeti fishmonger shouts road news between herring prices.",
+      "narration": "At the docks, everybody trades news, and you need to know the roads north. A boggart in a coat made of coats sells \"slightly used rumors.\" A yeti fishmonger shouts road news between herring prices.",
       "cast": [
         {
           "figure": "entities/boggart"
@@ -869,19 +869,19 @@
       "choices": [
         {
           "id": "swap",
-          "label": "Listen in on the dock folk's rumors",
+          "label": "Listen to the rumors",
           "icon": "scroll",
           "goto": "check_rumours"
         },
         {
           "id": "boggart",
-          "label": "Buy a rumor from the boggart",
+          "label": "Buy a boggart's rumor",
           "icon": "hand",
           "goto": "scene_boggart"
         },
         {
           "id": "read_crowd",
-          "label": "Read the crowd and hear what nobody says out loud",
+          "label": "Read the crowd's faces",
           "icon": "ear",
           "requiresSpecies": "kitsune",
           "goto": "scene_three_rumours",
@@ -895,7 +895,7 @@
         },
         {
           "id": "sailors",
-          "label": "Find the orange ship's sailors. They owe us one",
+          "label": "Find the orange sailors",
           "icon": "ear",
           "requiresFlag": "night_oranges",
           "goto": "scene_docks_sailors",
@@ -912,7 +912,7 @@
     },
     "scene_docks_sailors": {
       "type": "story",
-      "narration": "The crew of the Sunny Disposition are mending sails on the quay, and they cheer when they see you. Sailors pay their debts, and they pay this one in rumors: one from every port they stopped at on the way in. The yeti captain throws in an orange each for the road, because he cannot help himself.",
+      "narration": "The crew of the Sunny Disposition cheer when they see you. Sailors pay their debt in rumors, one from every port, and an orange each.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -922,7 +922,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Tally up everything you heard",
+          "label": "Add it all up",
           "icon": "ear",
           "goto": "scene_three_rumours"
         }
@@ -963,7 +963,7 @@
     },
     "scene_boggart": {
       "type": "story",
-      "narration": "The boggart's rumors come in little jars with the lids screwed on tight. You pay with a button. You open the jar, and the rumor inside is: \"The mountain is grumpy.\" You already knew that. Then the boggart says it again, slower, looking sideways, off to the west where the marshes are, and you realize it meant something else entirely.",
+      "narration": "The boggart sells rumors in jars. You pay with a button. The rumor inside is: \"The mountain is grumpy.\" Then the boggart says it again, slowly, looking west toward the marshes.",
       "cast": [
         {
           "figure": "entities/boggart"
@@ -976,7 +976,7 @@
       "choices": [
         {
           "id": "listen_more",
-          "label": "Take the jar to the dock folk and ask which road it meant",
+          "label": "Ask what it meant",
           "icon": "ear",
           "goto": "scene_three_rumours"
         }
@@ -985,7 +985,7 @@
     },
     "scene_three_rumours": {
       "type": "story",
-      "narration": "Three roads: east to Stone Crossing, a story toll and a crowded river; north through the Plains with the packed rush wagons; west through the Whispering Marsh, if the frogfolk like you. The fishmonger points up. \"Courier griffins carry so many claim letters they can barely steer.\"",
+      "narration": "There are three roads north. East to Stone Crossing, where the toll is a story. North across the Plains, with the rush wagons. West through the Whispering Marsh, if the frogfolk like you. The fishmonger points up. \"Griffin couriers carry so many letters, they can barely fly.\"",
       "cast": [
         {
           "figure": "cast/fishmonger",
@@ -995,7 +995,7 @@
       "choices": [
         {
           "id": "through_market",
-          "label": "Head back through the market, keeping one eye on the sky",
+          "label": "Back through the market",
           "icon": "arrow",
           "goto": "scene_griffin_post"
         }
@@ -1013,7 +1013,7 @@
       "discovers": [
         "character.griffin"
       ],
-      "narration": "On the way back you pass the Griffin Post, a tall tower full of round windows. Courier griffins line up on the roof while clerks stuff claim letters into their sacks, and then a few more, and then a few more after that. The postmaster, a griffin called Quill with glasses on a chain, is losing count. \"Hands!\" she squawks. \"Anybody with hands!\"",
+      "narration": "In the market stands the Griffin Post, a tower full of round windows. Clerks stuff more and more letters into the couriers' sacks. The postmaster, a griffin called Quill, has lost count. \"Hands!\" she squawks. \"Anybody with hands!\"",
       "cast": [
         {
           "figure": "cast/postmaster_quill",
@@ -1029,7 +1029,7 @@
         },
         {
           "id": "feed",
-          "label": "Share our supper with the tired couriers",
+          "label": "Share our supper",
           "icon": "heart",
           "goto": "scene_griffin_post_feed",
           "effects": [
@@ -1058,7 +1058,7 @@
         },
         {
           "id": "shop",
-          "label": "Talk shop with the couriers",
+          "label": "Talk shop with couriers",
           "icon": "griffin",
           "requiresSpecies": "griffin",
           "goto": "scene_griffin_post_shop",
@@ -1072,7 +1072,7 @@
         },
         {
           "id": "quick_sort",
-          "label": "Risk sorting the sacks without checking the route cards",
+          "label": "Risk sorting it fast",
           "goto": "check_post_sort",
           "icon": "hand"
         }
@@ -1110,7 +1110,7 @@
     },
     "scene_griffin_post_feed": {
       "type": "story",
-      "narration": "The couriers have been flying since the red night and have not stopped once for supper. You share yours. One young griffin eats a whole loaf in a single gulp, then a second loaf to check the first one was real. He bows to you with his wings out, which in griffin means: I will remember your faces.",
+      "narration": "The couriers have not eaten since the red night. One young griffin swallows a whole loaf in one gulp, then bows with his wings out. In griffin, that means: I will remember you.",
       "cast": [
         {
           "figure": "cast/courier_griffin",
@@ -1120,7 +1120,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Wave them off into the sky",
+          "label": "Wave them off",
           "icon": "heart",
           "goto": "scene_gutter_glint"
         }
@@ -1129,7 +1129,7 @@
     },
     "scene_griffin_post_shop": {
       "type": "story",
-      "narration": "Your griffin and the couriers talk wing to wing about headwinds, sack straps and the worst roofs to land on. Then they lower their voices. Since the red night, no courier will fly within a day of the mountain. \"The air up there hums,\" says one, \"like a kettle that's thinking about it.\" They make you an honorary courier, which mostly means free gossip.",
+      "narration": "Your griffin and the couriers talk about headwinds. Then they whisper. Since the red night, no courier flies near the mountain. \"The air up there hums,\" says one, \"like a kettle.\"",
       "cast": [
         {
           "figure": "cast/courier_griffin",
@@ -1139,7 +1139,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Swap one last bit of gossip",
+          "label": "Say goodbye",
           "icon": "griffin",
           "goto": "scene_gutter_glint"
         }
@@ -1152,7 +1152,7 @@
       "discovers": [
         "character.griffin"
       ],
-      "narration": "A courier's huge sack splits overhead. Letters flutter over the market. A warm red stone lands by your boot with a plink. It is plum-sized, glittering, and humming.",
+      "narration": "Overhead, a courier's sack splits. Letters flutter over the market. Plink! A warm red stone lands by your boot. It is plum-sized, and it glitters, and it hums.",
       "cast": [
         {
           "figure": "cast/courier_griffin",
@@ -1162,7 +1162,7 @@
       "choices": [
         {
           "id": "pocket",
-          "label": "Pick it up and pocket it",
+          "label": "Pocket it",
           "icon": "hand",
           "goto": "interaction_letters"
         },
@@ -1174,14 +1174,14 @@
         },
         {
           "id": "griffin",
-          "label": "Call up to the courier who knows us",
+          "label": "Ask our courier friend",
           "icon": "whistle",
           "requiresFlag": "griffin_friends",
           "goto": "scene_gutter_glint_griffin"
         },
         {
           "id": "checked_bags",
-          "label": "Pocket the stone, then catch mail in the checked bags",
+          "label": "Pocket it, catch the mail",
           "goto": "interaction_checked_mail",
           "icon": "hand",
           "requiresFlag": "post_routes_checked"
@@ -1190,7 +1190,7 @@
     },
     "scene_gutter_glint_griffin": {
       "type": "story",
-      "narration": "The courier hears you, wobbles around, and lands on a chimney pot with his split sack in his beak. He peers at the red stone. \"Not mine,\" he says. \"That didn't come out of my sack. That came out of the sky, after it.\" He fluffs his feathers. \"Finders keepers. Tell nobody I said so.\"",
+      "narration": "A courier you know lands on a chimney and peers at the stone. \"Not mine. That fell out of the sky.\" He fluffs his feathers. \"Finders keepers!\"",
       "cast": [
         {
           "figure": "cast/courier_griffin",
@@ -1200,7 +1200,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Pocket it, and wave him off",
+          "label": "Pocket it",
           "icon": "hand",
           "goto": "interaction_letters"
         }
@@ -1208,11 +1208,11 @@
     },
     "scene_nobody_claims": {
       "type": "story",
-      "narration": "Eleven people say it is theirs. None of them can say what color it is. The griffin is already a dot over the sea, and the dot is not coming back. It seems the stone is yours, for now.",
+      "narration": "Eleven people say it is theirs. None of them can say what color it is. The stone is yours, for now.",
       "choices": [
         {
           "id": "to_tavern",
-          "label": "Pocket it and head for the Empty Chair",
+          "label": "Pocket it and go",
           "icon": "hand",
           "goto": "interaction_letters"
         }
@@ -1220,17 +1220,17 @@
     },
     "scene_gull_dive": {
       "type": "story",
-      "narration": "A gull blocks your way and eyes the warm stone in your pocket. It looks like the gull from the red night. It crouches. You have time to choose before it dives.",
+      "narration": "On the way up to the Empty Chair, a gull lands in front of you. It looks like the gull from the red night. It stares at your pocket, and crouches to dive.",
       "choices": [
         {
           "id": "grab",
-          "label": "Grab the gull before it grabs the stone",
+          "label": "Grab it, gently",
           "icon": "quick",
           "goto": "check_gull_grab"
         },
         {
           "id": "bread",
-          "label": "Offer it your supper instead",
+          "label": "Offer it your supper",
           "icon": "cake",
           "goto": "scene_gull_dive_bread",
           "when": {
@@ -1254,14 +1254,14 @@
         },
         {
           "id": "sardine",
-          "label": "Throw it the sardine from the red night",
+          "label": "Throw it the sardine",
           "icon": "drop",
           "requiresFlag": "night_fishing",
           "goto": "scene_gull_dive_sardine"
         },
         {
           "id": "outfly",
-          "label": "Chase it off on the wing",
+          "label": "Chase it on the wing",
           "icon": "wing",
           "requiresSpecies": [
             "griffin",
@@ -1290,11 +1290,11 @@
     },
     "scene_gull_dive_bread": {
       "type": "story",
-      "narration": "You hold out your supper. The gull considers the supper. It considers the stone. It takes the supper, cloth and all. Fair is fair. It flaps away full and happy, and leaves the stone alone. Your tummies rumble all the way to the Empty Chair.",
+      "narration": "The gull takes your supper, cloth and all, and leaves the stone alone. Your tummies rumble all the way to the Empty Chair.",
       "choices": [
         {
           "id": "on",
-          "label": "Go and find some supper",
+          "label": "Go find supper",
           "icon": "cake",
           "goto": "scene_tavern"
         }
@@ -1303,11 +1303,11 @@
     },
     "scene_gull_dive_sardine": {
       "type": "story",
-      "narration": "The sardine has had a long three days. The gull swallows it, then follows you to the Empty Chair like a small, very loud guard.",
+      "narration": "The gull gulps the sardine. Then it follows you to the Empty Chair like a small, very loud guard.",
       "choices": [
         {
           "id": "on",
-          "label": "Leave your new friend on guard",
+          "label": "Go inside",
           "icon": "drop",
           "goto": "scene_tavern"
         }
@@ -1316,11 +1316,11 @@
     },
     "scene_gull_dive_outfly": {
       "type": "story",
-      "narration": "Wings snap open and up you go. The gull has never been chased by anything bigger than a cat. It flies one loop, sees who is behind it, and decides it had other plans today. A crowd on the quay claps. Two pickpockets who were also watching your pocket decide they had other plans too.",
+      "narration": "Wings out, up you go! The gull has never been chased by anything bigger than a cat. It leaves in a hurry.",
       "choices": [
         {
           "id": "on",
-          "label": "Land with a bow by the Empty Chair's door",
+          "label": "Land at the Empty Chair",
           "icon": "wing",
           "goto": "scene_tavern"
         }
@@ -1333,7 +1333,7 @@
         "npc.selkie",
         "npc.stone_troll"
       ],
-      "narration": "At the Empty Chair, a selkie scholar stands on a table. \"The gem-light fell upward!\" The room laughs. Two polite trolls carry her out, table and all. She keeps talking.",
+      "narration": "Inside the Empty Chair, a selkie scholar stands on a table. \"The gem-light fell upward!\" Everyone laughs. Two trolls carry her outside, table and all. She just wants someone to believe her.",
       "cast": [
         {
           "figure": "cast/tidewell",
@@ -1349,21 +1349,21 @@
         },
         {
           "id": "saw_it_too",
-          "label": "Tell her we saw it too!",
+          "label": "Say we saw it too!",
           "icon": "eye",
           "requiresFlag": "saw_it_rise",
           "goto": "scene_scholar_believed"
         },
         {
           "id": "curious",
-          "label": "Ask what it means. That is why we came, after all",
+          "label": "Ask her what it means",
           "icon": "eye",
           "requiresFlag": "motive_curiosity",
           "goto": "scene_scholar_believed"
         },
         {
           "id": "shopping",
-          "label": "Leave her be. There are gem-buyers to see",
+          "label": "Go find the gem-buyers",
           "icon": "gem",
           "goto": "scene_quay_wisps"
         }
@@ -1372,7 +1372,7 @@
     },
     "scene_scholar_believed": {
       "type": "story",
-      "narration": "The scholar stops wringing out her notes and stares at you. Then she hugs you, which is very wet, because she is a selkie and it is raining. \"Professor Marrow Tidewell,\" she says, \"and you are the first people who have believed me all week.\" She unpins the owl-feather clasp from her own coat and gives it to you, for clear thinking.",
+      "narration": "The scholar hugs you. It is a very wet hug, because she is a selkie. \"Professor Marrow Tidewell,\" she says. \"You are the first to believe me all week!\" She gives you the owl-feather clasp from her coat.",
       "cast": [
         {
           "figure": "cast/tidewell",
@@ -1389,7 +1389,7 @@
       "choices": [
         {
           "id": "hear_theory",
-          "label": "Hear the whole theory",
+          "label": "Hear her idea",
           "icon": "ear",
           "goto": "scene_scholar_theory"
         }
@@ -1398,7 +1398,7 @@
     "scene_scholar_theory": {
       "type": "story",
       "priority": 1,
-      "narration": "Outside, the scholar draws on a napkin. Professor Tidewell, says the name on her soggy notes. The drawing is a shape with eight sides, like a gem cut by somebody very careful. \"The oldest stories tell of a seal, like a lid on a jar, made of facets, eight of them. I think the mountain just threw seven of them across the realm, and everybody is selling them. The eighth is still in the mountain.\" Then she looks at your pocket, which is glowing slightly. \"Oh,\" she says. \"You've got one.\"",
+      "narration": "Outside, the scholar draws a gem with eight sides on a napkin. Her soggy notes are signed Professor Tidewell. \"Old stories tell of a seal, like a lid on a jar, made of eight pieces called facets,\" she says. \"I think the mountain just threw seven of them across the realm. The eighth is still inside.\" She looks at your glowing pocket. \"Oh! You've got one.\"",
       "cast": [
         {
           "figure": "cast/tidewell",
@@ -1415,7 +1415,7 @@
       "choices": [
         {
           "id": "thank_her",
-          "label": "Thank her, and think about it",
+          "label": "Thank her and go",
           "icon": "heart",
           "goto": "scene_quay_wisps"
         }
@@ -1426,7 +1426,7 @@
       "discovers": [
         "npc.merfolk"
       ],
-      "narration": "Gem-buyer Madame Coralie Fenn rolls up in her merfolk barrel. \"Rush prices, darlings!\" She names a huge price for the red stone. A pigeon faints. Sell the stone for coins, or keep its hum with you?",
+      "narration": "Along the quay, gem-buyers shout prices. The loudest is Madame Coralie Fenn, a merfolk in a barrel on wheels. \"Rush prices, darlings!\" She offers a huge price for your red stone. A pigeon faints. Sell it, or keep it?",
       "cast": [
         {
           "figure": "cast/coralie_fenn",
@@ -1436,7 +1436,7 @@
       "choices": [
         {
           "id": "sell",
-          "label": "Sell it to Madame Fenn",
+          "label": "Sell it",
           "icon": "gem",
           "goto": "scene_sold",
           "effects": [
@@ -1453,7 +1453,7 @@
         },
         {
           "id": "sell_high",
-          "label": "Haggle her up even higher, then sell",
+          "label": "Haggle higher, then sell",
           "icon": "crown",
           "requiresFlag": "motive_wealth",
           "goto": "choice_ember_sell_high",
@@ -1496,7 +1496,7 @@
     },
     "choice_ember_sell_high": {
       "type": "story",
-      "narration": "You name a bigger number. Madame Fenn names a smaller one. You name a bigger one again, and a second pigeon faints. In the end she pays twice what she offered, laughs so hard her barrel rolls into a bollard, and throws in a brave whistle \"for cheek, darlings.\" Then she writes your names in her little green book, twice.",
+      "narration": "You name a bigger number. She names a smaller one. Back and forth you go, until a second pigeon faints. She pays double, and adds a brave whistle \"for cheek, darlings.\"",
       "cast": [
         {
           "figure": "cast/coralie_fenn",
@@ -1506,7 +1506,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Take the clanking purse",
+          "label": "Take the purse",
           "icon": "gem",
           "goto": "scene_sold"
         }
@@ -1515,7 +1515,7 @@
     },
     "scene_sold": {
       "type": "story",
-      "narration": "Fenn pays into a clanking purse and adds a lucky bead. \"I never forget a good seller.\" The humming goes away in her barrel.",
+      "narration": "Madame Fenn pays you in a clanking purse and adds a lucky bead. \"I never forget a good seller.\" The hum rolls away in her barrel.",
       "cast": [
         {
           "figure": "cast/coralie_fenn",
@@ -1532,7 +1532,7 @@
       "choices": [
         {
           "id": "go_shopping",
-          "label": "Go and spend some of it",
+          "label": "Go shopping",
           "icon": "boot",
           "goto": "scene_provisions"
         }
@@ -1541,7 +1541,7 @@
     },
     "scene_kept": {
       "type": "story",
-      "narration": "You close your hand around the warm stone. Fenn sighs so hard her barrel rocks. The hum stays with you. You still need supplies.",
+      "narration": "You close your hand around the warm stone. Madame Fenn sighs so hard her barrel rocks. The hum stays with you.",
       "cast": [
         {
           "figure": "cast/coralie_fenn",
@@ -1551,7 +1551,7 @@
       "choices": [
         {
           "id": "go_outfit",
-          "label": "Go and get ready for the road",
+          "label": "Get ready for the road",
           "icon": "boot",
           "goto": "scene_provisions"
         }
@@ -1563,7 +1563,7 @@
       "discovers": [
         "npc.sheeple"
       ],
-      "narration": "At the Outfitters' Steps, Mrs. Tuft, a sheeple grocer, gives each northbound party one supply. Her price tags stick in her wool. \"Food to share, a healing potion, or light for dark roads,\" she says. \"Pick one.\" Her jars even come in jars.",
+      "narration": "At the foot of the Outfitters' Steps, a sheeple grocer named Mrs. Tuft has her barge tied up. Her price tags are stuck in her wool. \"One thing for the road, free,\" she says. \"Food, a potion, or a light. Pick one.\"",
       "cast": [
         {
           "figure": "cast/mrs_tuft",
@@ -1573,7 +1573,7 @@
       "choices": [
         {
           "id": "honey",
-          "label": "A tin of honeycakes, for sharing",
+          "label": "Honeycakes to share",
           "icon": "cake",
           "goto": "scene_provisions_honey",
           "effects": [
@@ -1590,7 +1590,7 @@
         },
         {
           "id": "sunbloom",
-          "label": "A sunbloom potion, for bumps and scrapes",
+          "label": "A sunbloom potion",
           "icon": "potion",
           "goto": "scene_provisions_sunbloom",
           "effects": [
@@ -1607,7 +1607,7 @@
         },
         {
           "id": "mosslight",
-          "label": "A jar of mosslight, for dark roads",
+          "label": "A jar of mosslight",
           "icon": "lantern",
           "goto": "scene_provisions_mosslight",
           "effects": [
@@ -1624,7 +1624,7 @@
         },
         {
           "id": "stone",
-          "label": "Show Mrs. Tuft the warm red stone",
+          "label": "Show her the red stone",
           "icon": "gem",
           "requiresItem": "facet_ember",
           "goto": "scene_provisions_stone",
@@ -1645,7 +1645,7 @@
     },
     "scene_provisions_honey": {
       "type": "story",
-      "narration": "Mrs. Tuft packs six honeycakes into a tin, then a seventh \"for the tin\". You promise to save them for the road. By the top of the Outfitters' Steps there are five. Nobody knows what happened to the other two, and everybody has crumbs on their chin.",
+      "narration": "Mrs. Tuft packs six honeycakes in a tin. By the time the lid is on, there are five. Everybody has crumbs on their chin.",
       "cast": [
         {
           "figure": "cast/mrs_tuft",
@@ -1655,7 +1655,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Climb the steps to the cobbler",
+          "label": "Help carry her jars",
           "icon": "cake",
           "goto": "interaction_jars"
         }
@@ -1664,7 +1664,7 @@
     },
     "scene_provisions_sunbloom": {
       "type": "story",
-      "narration": "The sunbloom potion glows in its bottle like a little sunrise. \"For bumps, scrapes and grumps,\" says Mrs. Tuft. \"Mostly grumps.\" She wraps it in a sock so it will not clink against anything, and then throws in the sock for free.",
+      "narration": "The sunbloom potion glows like a tiny sunrise. \"For bumps, scrapes and grumps,\" says Mrs. Tuft. \"Mostly grumps.\"",
       "cast": [
         {
           "figure": "cast/mrs_tuft",
@@ -1674,7 +1674,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Climb the steps to the cobbler",
+          "label": "Help carry her jars",
           "icon": "potion",
           "goto": "interaction_jars"
         }
@@ -1683,7 +1683,7 @@
     },
     "scene_provisions_mosslight": {
       "type": "story",
-      "narration": "The mosslight glows soft and green, like a tiny forest that fits in your hand. \"Picked far to the west by my cousins,\" says Mrs. Tuft. \"It likes to be talked to. Not sung to. It's very particular.\" The jar seems to brighten a little when you say thank you.",
+      "narration": "The mosslight glows soft and green. \"It likes to be talked to,\" says Mrs. Tuft. \"Not sung to.\"",
       "cast": [
         {
           "figure": "cast/mrs_tuft",
@@ -1693,7 +1693,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Climb the steps to the cobbler",
+          "label": "Help carry her jars",
           "icon": "lantern",
           "goto": "interaction_jars"
         }
@@ -1702,7 +1702,7 @@
     },
     "scene_provisions_stone": {
       "type": "story",
-      "narration": "Mrs. Tuft takes one look at the red stone, and every jar on her barge starts to rattle on its shelf, very gently, the way spoons do when a cart goes by. She hands it back rather quickly. \"Lovely,\" she says, not meaning it. She hands you a honeycake in a hurry, and you get the feeling it is so you will leave a bit sooner.",
+      "narration": "Mrs. Tuft takes one look at the red stone, and every jar on her barge rattles. \"Lovely,\" she says, not meaning it. She hands you a honeycake, so you will leave sooner.",
       "cast": [
         {
           "figure": "cast/mrs_tuft",
@@ -1712,7 +1712,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Pocket the stone and climb the steps",
+          "label": "Help carry her jars",
           "icon": "gem",
           "goto": "interaction_jars"
         }
@@ -1724,7 +1724,7 @@
       "discovers": [
         "npc.faun"
       ],
-      "narration": "Cobbler Tobble Reedpipe sings the price of quickfoot laces, \"Quick feet, sweet price!\" Each verse goes higher. By the top of the Outfitters' Steps, he squeaks. You can trade, buy if you have the coins, or save them.",
+      "narration": "At the top of the steps, a faun cobbler named Tobble Reedpipe sings the price of his quickfoot laces. Every verse goes higher. You can sing back, buy, or keep your coins.",
       "cast": [
         {
           "figure": "cast/tobble",
@@ -1734,7 +1734,7 @@
       "choices": [
         {
           "id": "haggle",
-          "label": "Sing the price down with Tobble",
+          "label": "Sing the price down",
           "icon": "note",
           "goto": "check_haggle",
           "when": {
@@ -1745,7 +1745,7 @@
         },
         {
           "id": "buy_outright",
-          "label": "Buy the best laces outright. We're rich now!",
+          "label": "Buy the best laces",
           "icon": "gem",
           "requiresFlag": "ember_sold",
           "goto": "scene_market_buy_outright",
@@ -1768,7 +1768,7 @@
         },
         {
           "id": "fresh_start",
-          "label": "Tell Tobble we're after a fresh start",
+          "label": "Say we're starting fresh",
           "icon": "leaf",
           "requiresFlag": "motive_fresh_start",
           "goto": "scene_market_fresh_start",
@@ -1791,7 +1791,7 @@
         },
         {
           "id": "spot_fakes",
-          "label": "Point out the fake laces on the next stall",
+          "label": "Spot the fake laces",
           "icon": "eye",
           "requiresSpecies": "kitsune",
           "goto": "scene_market_spot_fakes",
@@ -1805,7 +1805,7 @@
         },
         {
           "id": "keep_coins",
-          "label": "Keep your coins and go and find a bed",
+          "label": "Keep your coins",
           "icon": "boot",
           "goto": "scene_market_keep_coins"
         }
@@ -1814,11 +1814,11 @@
     },
     "scene_market_keep_coins": {
       "type": "story",
-      "narration": "You keep your old laces and your coins. Tobble sings you down the steps, one key lower each step. At the bottom, he is humming.",
+      "narration": "You keep your coins. Tobble sings you down the steps, one key lower each step.",
       "choices": [
         {
           "id": "to_inn",
-          "label": "Find a bed for the night",
+          "label": "Find a bed",
           "icon": "rest",
           "goto": "scene_inn_full"
         }
@@ -1827,7 +1827,7 @@
     },
     "scene_market_spot_fakes": {
       "type": "story",
-      "narration": "Your kitsune sniffs once and points. \"Those are bootlaces painted yellow.\" The stall-keeper next door goes very red, packs up in about four seconds, and is never seen on the Outfitters' Steps again. Tobble is so grateful he presses real quickfoot laces on you and sings your names up the whole scale.",
+      "narration": "Your kitsune points at the next stall. \"Those are bootlaces painted yellow.\" Tobble is so grateful he gives you real quickfoot laces.",
       "cast": [
         {
           "figure": "cast/tobble",
@@ -1846,7 +1846,7 @@
     },
     "scene_market_fresh_start": {
       "type": "story",
-      "narration": "Tobble stops singing. \"A fresh start,\" he says, and for once he just speaks. He has one too, he says. He used to make boots for a duke, and then he decided he liked laces better. He sells you the laces at last year's price and sings a small verse about beginnings that nearly rhymes.",
+      "narration": "Tobble stops singing. \"I had a fresh start too,\" he says. \"I used to make boots for a duke.\" He sells you laces at last year's price.",
       "cast": [
         {
           "figure": "cast/tobble",
@@ -1865,7 +1865,7 @@
     },
     "scene_market_buy_outright": {
       "type": "story",
-      "narration": "You point at the best laces on the rack and pay without asking the price. Tobble is so startled he sings the price anyway, out of habit, a whole key too high. Three prospectors turn around to see who is rich. You try to look like you have always been rich.",
+      "narration": "You buy the best laces without asking the price. Tobble is so surprised he sings the price anyway, a whole key too high.",
       "cast": [
         {
           "figure": "cast/tobble",
@@ -1923,7 +1923,7 @@
     },
     "scene_laced": {
       "type": "story",
-      "narration": "The quickfoot laces go on, and right away your feet would like to be somewhere else, quickly. Tobble sings a little verse about you. It is very flattering and mostly does not rhyme.",
+      "narration": "The quickfoot laces go on. Right away, your feet want to be somewhere else, quickly.",
       "cast": [
         {
           "figure": "cast/tobble",
@@ -1933,7 +1933,7 @@
       "choices": [
         {
           "id": "to_inn",
-          "label": "Find a bed for the night",
+          "label": "Find a bed",
           "icon": "rest",
           "goto": "scene_inn_full"
         }
@@ -1942,7 +1942,7 @@
     },
     "scene_lace_tangle": {
       "type": "story",
-      "narration": "Your song and Tobble's get so tangled up that he sells you a honeycake instead of laces. You are not sure how that happened. Neither is Tobble. It is a very good honeycake, though.",
+      "narration": "Your song and Tobble's get so tangled that he sells you a honeycake instead. Nobody knows how. It is a good honeycake, though.",
       "cast": [
         {
           "figure": "cast/tobble",
@@ -1959,7 +1959,7 @@
       "choices": [
         {
           "id": "to_inn_cake",
-          "label": "Find a bed for the night",
+          "label": "Find a bed",
           "icon": "rest",
           "goto": "scene_inn_full"
         }
@@ -1968,7 +1968,7 @@
     },
     "scene_inn_full": {
       "type": "story",
-      "narration": "Innkeeper Flint has one cupboard bed and several bidders. His nightcap is much too small. \"One warm bed,\" he rumbles, folding his arms. \"Earn it.\" Share a story, work for the bed, call on friends, or pay if you can.",
+      "narration": "Back at the Empty Chair, the innkeeper is a stone troll named Flint, in a nightcap much too small. He has one cupboard bed left, and lots of people want it. \"Earn it,\" he rumbles.",
       "cast": [
         {
           "figure": "cast/innkeeper_flint",
@@ -1978,26 +1978,26 @@
       "choices": [
         {
           "id": "story",
-          "label": "Tell the best story of the red night",
+          "label": "Tell the red night's story",
           "icon": "heart",
           "goto": "interaction_inn_account"
         },
         {
           "id": "dishes",
-          "label": "Offer to wash the supper bowls for it",
+          "label": "Wash the supper bowls",
           "icon": "drop",
           "goto": "scene_inn_full_dishes"
         },
         {
           "id": "selkies",
-          "label": "Find the selkie family upstairs",
+          "label": "Find the selkie family",
           "icon": "party",
           "requiresFlag": "selkies_at_inn",
           "goto": "scene_inn_full_selkies"
         },
         {
           "id": "outbid",
-          "label": "Outbid everybody with Madame Fenn's purse",
+          "label": "Pay with Fenn's coins",
           "icon": "gem",
           "requiresFlag": "ember_sold",
           "goto": "scene_inn_full_outbid",
@@ -2015,7 +2015,7 @@
         },
         {
           "id": "quick_story",
-          "label": "Risk telling the whole story over the noisy room",
+          "label": "Risk telling it over the noise",
           "goto": "check_inn_story",
           "icon": "hand"
         }
@@ -2046,7 +2046,7 @@
     },
     "scene_inn_full_dishes": {
       "type": "story",
-      "narration": "There are three hundred supper bowls, and some of them have been used twice. You wash, dry and stack until your fingers go wrinkly as raisins and the kitchen is full of soap bubbles. At midnight Flint inspects one bowl very closely, says \"Hm,\" and hands you the key. The other prospectors are still arguing about prices.",
+      "narration": "There are three hundred supper bowls. You wash until your fingers wrinkle like raisins. At midnight Flint checks one bowl, says \"Hm,\" and hands you the key.",
       "cast": [
         {
           "figure": "cast/innkeeper_flint",
@@ -2065,7 +2065,7 @@
     },
     "scene_inn_full_selkies": {
       "type": "story",
-      "narration": "The selkie family you helped today hear your voices and come thundering down the stairs. \"You'll squash in with us,\" says the grandmother, and that is the end of the argument. Their room is tiny, and eight selkies is a lot of selkie, but it is warm. The five children want a bedtime story, and they want it about you.",
+      "narration": "The selkie family hears your voices and comes thundering down the stairs. \"You'll squash in with us,\" says the grandmother. The room is tiny, but warm.",
       "cast": [
         {
           "figure": "cast/selkie_grandmother",
@@ -2075,7 +2075,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Squash in and tell the story",
+          "label": "Squash in",
           "icon": "party",
           "goto": "rest_empty_chair"
         }
@@ -2084,7 +2084,7 @@
     },
     "scene_inn_full_outbid": {
       "type": "story",
-      "narration": "You open Madame Fenn's clanking purse and name a number. The other prospectors go pale and wander off to sleep in the stables. Flint bites one coin to check it is real, then another to check the first one was. The cupboard is yours. It is still a cupboard, but it is the most expensive cupboard in the realm.",
+      "narration": "You open Madame Fenn's purse and name a number. Everyone else goes off to sleep in the stables. The cupboard is yours. It is a very expensive cupboard.",
       "cast": [
         {
           "figure": "cast/innkeeper_flint",
@@ -2094,7 +2094,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Admire your very expensive cupboard",
+          "label": "Admire your cupboard",
           "icon": "gem",
           "goto": "rest_empty_chair"
         }
@@ -2103,12 +2103,12 @@
     },
     "rest_empty_chair": {
       "type": "rest",
-      "narration": "Cupboard, hayloft or squashed-up room, it is warm and dry, and somebody shares out supper. Through the wall, three people in three languages argue happily about the price of onions, and all three of them are right. Tomorrow the caravans leave.",
+      "narration": "Cupboard, hayloft or squashed-up room, it is warm and dry. Through the wall, people argue happily about onions. Tomorrow the caravans leave.",
       "heal": 2,
       "choices": [
         {
           "id": "to_yard",
-          "label": "Up at dawn for the caravan yard",
+          "label": "Up at dawn",
           "icon": "travel",
           "goto": "scene_last_noodles"
         }
@@ -2122,7 +2122,7 @@
     },
     "scene_last_noodles": {
       "type": "story",
-      "narration": "At dawn, Mortar watches you pass with packed bags. He stirs one slow turn. \"Going, then.\" The caravan lanterns are lit. Time for one farewell before the yard.",
+      "narration": "At dawn you pass Mortar's noodle stall with your bags packed. He stirs one slow turn. \"Going, then.\" There is time for one goodbye before the caravans leave.",
       "cast": [
         {
           "figure": "cast/mortar",
@@ -2133,7 +2133,7 @@
       "choices": [
         {
           "id": "ask",
-          "label": "Ask him which caravan to join",
+          "label": "Ask which caravan to join",
           "icon": "ear",
           "goto": "scene_last_noodles_ask",
           "effects": [
@@ -2146,7 +2146,7 @@
         },
         {
           "id": "gift",
-          "label": "Leave a gift on the empty chair",
+          "label": "Leave a gift on the chair",
           "icon": "heart",
           "goto": "scene_last_noodles_gift",
           "effects": [
@@ -2159,7 +2159,7 @@
         },
         {
           "id": "bowl",
-          "label": "Eat one last bowl, for the road",
+          "label": "Eat one last bowl",
           "icon": "cake",
           "goto": "scene_last_noodles_bowl",
           "effects": [
@@ -2172,7 +2172,7 @@
         },
         {
           "id": "listen",
-          "label": "Let Mortar listen to the warm stone",
+          "label": "Let Mortar hear the stone",
           "icon": "gem",
           "requiresItem": "facet_ember",
           "goto": "scene_last_noodles_listen"
@@ -2182,7 +2182,7 @@
     },
     "scene_last_noodles_ask": {
       "type": "story",
-      "narration": "Mortar stirs one whole slow turn. Then another. \"Longstride,\" he says at last. \"Lantern wagon. Listens to the whole answer.\" He taps the table with one enormous finger. \"Tell her Mortar sent you.\" That is more words than he has said all week, and he looks a bit tired afterwards.",
+      "narration": "Mortar stirs one slow turn. Then another. \"Longstride. Lantern wagon. Listens to the whole answer. Tell her Mortar sent you.\" That is the most he has said all week.",
       "cast": [
         {
           "figure": "cast/mortar",
@@ -2193,7 +2193,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Thank him, and head for the lantern wagon",
+          "label": "Find the lantern wagon",
           "icon": "ear",
           "goto": "scene_caravan_yard"
         }
@@ -2202,7 +2202,7 @@
     },
     "scene_last_noodles_gift": {
       "type": "story",
-      "narration": "Every table in the Exchange keeps an empty chair for whoever comes next. You leave a button on it, and a note that says GOOD LUCK in all your different handwritings. Underneath, tied to the chair leg, you find a songbird ribbon. Somebody left it there for you, before you ever came. Mortar pretends not to see. He is smiling, very slowly.",
+      "narration": "You leave a button on the empty chair. Under it, someone has tied a songbird ribbon for whoever comes next. Mortar pretends not to see. He is smiling, very slowly.",
       "cast": [
         {
           "figure": "cast/mortar",
@@ -2213,7 +2213,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Tie on the ribbon and go",
+          "label": "Tie on the ribbon",
           "icon": "heart",
           "goto": "scene_caravan_yard"
         }
@@ -2222,7 +2222,7 @@
     },
     "scene_last_noodles_bowl": {
       "type": "story",
-      "narration": "Mortar ladles out the biggest breakfast of your lives. When you are done, he unpins the little thistle from his apron and pins it on you. \"Strong noodles,\" he rumbles. \"Strong legs.\" Then, after a long stir: \"Come back.\" Two words, which from a stone troll is practically a speech.",
+      "narration": "Mortar ladles out the biggest breakfast of your lives, then pins his apron's thistle on you. \"Strong noodles. Strong legs.\" A long stir. \"Come back.\"",
       "cast": [
         {
           "figure": "cast/mortar",
@@ -2233,7 +2233,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Wave goodbye with full tummies",
+          "label": "Wave goodbye",
           "icon": "cake",
           "goto": "scene_caravan_yard"
         }
@@ -2242,7 +2242,7 @@
     },
     "scene_last_noodles_listen": {
       "type": "story",
-      "narration": "Mortar holds the warm stone to his great stone ear for a long, long time. The whole stall goes quiet. \"Sings,\" he says at last. \"Like my grandma's pot, just before it boiled over.\" He gives it back to you very carefully, the way you hand somebody a baby bird, and fills your water flasks for nothing.",
+      "narration": "Mortar holds the warm stone to his ear for a long time. \"Sings,\" he says at last. \"Like my grandma's pot, just before it boiled over.\"",
       "cast": [
         {
           "figure": "cast/mortar",
@@ -2253,7 +2253,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Tuck the stone away and go",
+          "label": "Tuck it away",
           "icon": "gem",
           "goto": "scene_caravan_yard"
         }
@@ -2265,7 +2265,7 @@
       "discovers": [
         "npc.centaur"
       ],
-      "narration": "Centaur caravan master Hesper Longstride checks the lantern wagon. Her sash is stitched with roads. \"Room for another crew.\" She lowers her clipboard to hear why you want to join.",
+      "narration": "In the caravan yard, a centaur named Hesper Longstride is checking her lantern wagon. \"I have room for one more crew,\" she says. \"Tell me why you want to come.\"",
       "cast": [
         {
           "figure": "cast/hesper",
@@ -2276,13 +2276,13 @@
       "choices": [
         {
           "id": "honest",
-          "label": "Tell her honestly why we're going",
+          "label": "Tell her why we're going",
           "icon": "heart",
           "goto": "interaction_crew_introduction"
         },
         {
           "id": "lift_wagon",
-          "label": "Lift a stuck wagon out of the mud",
+          "label": "Lift a stuck wagon",
           "icon": "fist",
           "requiresSpecies": "bigfoot",
           "goto": "scene_caravan_yard_lift_wagon",
@@ -2296,7 +2296,7 @@
         },
         {
           "id": "guard",
-          "label": "Offer to guard her lantern wagon",
+          "label": "Guard her wagon",
           "icon": "shield",
           "requiresFlag": "motive_duty",
           "goto": "scene_caravan_yard_guard",
@@ -2310,7 +2310,7 @@
         },
         {
           "id": "race",
-          "label": "Bet we can load a wagon faster than anyone",
+          "label": "Bet we load fastest",
           "icon": "star",
           "requiresFlag": "motive_proving",
           "goto": "scene_caravan_yard_race",
@@ -2324,7 +2324,7 @@
         },
         {
           "id": "banner",
-          "label": "Offer to carry the banner at the front",
+          "label": "Carry the banner",
           "icon": "crown",
           "requiresFlag": "motive_prestige",
           "goto": "scene_caravan_yard_banner",
@@ -2338,7 +2338,7 @@
         },
         {
           "id": "mortar",
-          "label": "Tell Hesper that Mortar sent us",
+          "label": "Say Mortar sent us",
           "icon": "scroll",
           "requiresFlag": "mortar_vouched",
           "goto": "scene_caravan_yard_mortar",
@@ -2352,14 +2352,14 @@
         },
         {
           "id": "thornguard_watch",
-          "label": "Have a thornguard stand watch over the lantern wagon",
+          "label": "Our thornguard stands watch",
           "icon": "shield",
           "requiresClass": "thornguard",
           "goto": "scene_caravan_yard_thornguard"
         },
         {
           "id": "quick_pitch",
-          "label": "Risk a hurried pitch while Hesper checks the wagons",
+          "label": "Risk a quick pitch",
           "goto": "check_signon",
           "icon": "hand"
         }
@@ -2368,7 +2368,7 @@
     },
     "scene_caravan_yard_banner": {
       "type": "story",
-      "narration": "The banner is taller than you are and heavier than it looks, and the wind off the harbor wants it very badly. You hold it up anyway. The whole yard turns to look at who is carrying the Longstride banner, and Hesper lets them look. \"Front,\" she says. \"Don't drop it.\"",
+      "narration": "The Longstride banner is taller than you, and the wind wants it badly. You hold it up anyway. \"Front,\" says Hesper. \"Don't drop it.\"",
       "cast": [
         {
           "figure": "cast/hesper",
@@ -2379,7 +2379,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Take your place at the front",
+          "label": "Take the front",
           "icon": "crown",
           "goto": "scene_hired"
         }
@@ -2391,7 +2391,7 @@
       "discovers": [
         "npc.yeti"
       ],
-      "narration": "A yeti crew bets you cannot load a wagon faster than they can. You load it in the time it takes them to argue about who goes first. Half of it is loaded upside down, but it is loaded. The yetis pay up in dried apples, and Hesper, very slightly, smiles.",
+      "narration": "A yeti crew bets you can't load a wagon faster. You finish while they argue about who goes first. Half of it is upside down. Hesper almost smiles.",
       "cast": [
         {
           "figure": "cast/hesper",
@@ -2405,7 +2405,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Collect your winnings",
+          "label": "Report for duty",
           "icon": "star",
           "goto": "scene_hired"
         }
@@ -2414,7 +2414,7 @@
     },
     "scene_caravan_yard_guard": {
       "type": "story",
-      "narration": "\"The lantern wagon,\" says Hesper, \"has been robbed twice this week and set on fire once.\" You say you will guard it anyway. She looks at you the way she looks at weather that has decided to be useful, and hands you a long pole with a hook on the end.",
+      "narration": "\"That wagon was robbed twice this week,\" says Hesper. You offer to guard it anyway. She hands you a long pole with a hook.",
       "cast": [
         {
           "figure": "cast/hesper",
@@ -2437,7 +2437,7 @@
       "discovers": [
         "npc.faun"
       ],
-      "narration": "You walk over to the wagon stuck in the mud, take hold of the back axle, and lift. The wagon comes up. So does the mud. So does a small faun who was sitting in the wagon eating breakfast, and who keeps eating it. Hesper watches the whole thing without a word, then nods once.",
+      "narration": "A wagon is stuck in the mud. You lift it out, along with a small faun who keeps eating breakfast. Hesper nods once.",
       "cast": [
         {
           "figure": "cast/hesper",
@@ -2461,7 +2461,7 @@
     },
     "scene_caravan_yard_mortar": {
       "type": "story",
-      "narration": "Hesper's ears turn right around. \"Mortar,\" she says. \"How many words did he say about you?\" You count. Four. She is quiet for a moment, the way weather is quiet before it decides something. Then she nods once. From a stone troll, four words is a letter of recommendation.",
+      "narration": "Hesper's ears swivel. \"Mortar sent you? Mortar hardly talks to anybody.\" She nods once. From that troll, a name is as good as a letter.",
       "cast": [
         {
           "figure": "cast/hesper",
@@ -2511,7 +2511,7 @@
     },
     "scene_hired": {
       "type": "story",
-      "narration": "Hesper hands you a lantern pole. \"Crew.\" You eat first and sleep last. The wagons roll toward the North Gate, with you on duty.",
+      "narration": "Hesper hands you a lantern pole. \"Crew,\" she says. The wagons roll toward the North Gate.",
       "cast": [
         {
           "figure": "cast/hesper",
@@ -2536,7 +2536,7 @@
     },
     "scene_turnip_wagon": {
       "type": "story",
-      "narration": "\"Cargo, then,\" says Hesper, kindly. You ride among turnips. One settles in your lap like a cat. It is not glamorous, but it is going north. The wagons stop at the North Gate.",
+      "narration": "\"Cargo, then,\" says Hesper, kindly. You ride with the turnips. One sits in your lap like a cat. The wagons roll toward the North Gate.",
       "cast": [
         {
           "figure": "cast/hesper",
@@ -2561,7 +2561,7 @@
     },
     "scene_north_gate": {
       "type": "story",
-      "narration": "The Leaving Bell hangs over the North Gate. Beyond it lie green fields and distant Mount Red Sky. Hesper pauses for your goodbye. \"No hurry,\" she says. \"Leave however you like.\"",
+      "narration": "A big bell called the Leaving Bell hangs over the North Gate. Past it are green fields and, far away, Mount Red Sky. \"Say goodbye however you like,\" says Hesper.",
       "cast": [
         {
           "figure": "cast/hesper",
@@ -2578,19 +2578,19 @@
         },
         {
           "id": "wave",
-          "label": "Wave goodbye to everyone we met",
+          "label": "Wave goodbye",
           "icon": "heart",
           "goto": "scene_north_gate_wave"
         },
         {
           "id": "look",
-          "label": "Turn around and face the mountain",
+          "label": "Face the mountain",
           "icon": "eye",
           "goto": "scene_north_gate_look"
         },
         {
           "id": "tidewell",
-          "label": "Look for Professor Tidewell in the crowd",
+          "label": "Look for Professor Tidewell",
           "icon": "scroll",
           "requiresFlag": "listened_to_scholar",
           "goto": "scene_north_gate_tidewell"
@@ -2616,11 +2616,11 @@
     },
     "scene_north_gate_wave": {
       "type": "story",
-      "narration": "You wave, and the Exchange waves back. Tobble sings a goodbye verse from the Outfitters' Steps, three keys too high. Madame Fenn's barrel rolls along the quay to keep up. \"Bring me back something shiny, darlings!\" High on the lighthouse, the great lamp winks twice, as if it knows something.",
+      "narration": "You wave, and the Exchange waves back. Tobble sings goodbye, three keys too high. Madame Fenn's barrel rolls along beside you. \"Bring me something shiny, darlings!\"",
       "choices": [
         {
           "id": "on",
-          "label": "Keep waving until the roofs are gone",
+          "label": "Keep waving",
           "icon": "heart",
           "goto": "rest_northbound"
         }
@@ -2629,11 +2629,11 @@
     },
     "scene_north_gate_look": {
       "type": "story",
-      "narration": "You turn your backs on the city and look north. Far away, over the fields, Mount Red Sky sits on the edge of the world with a little red glow on top, like a candle somebody forgot to blow out. For one blink you feel as if it is looking back. Then a wheel hits a bump, and it is just a mountain again.",
+      "narration": "You look north. Far away, Mount Red Sky glows red on top, like a candle somebody forgot to blow out. For a blink, it seems to look back.",
       "choices": [
         {
           "id": "on",
-          "label": "Keep your eyes on the road ahead",
+          "label": "Eyes on the road",
           "icon": "eye",
           "goto": "rest_northbound"
         }
@@ -2642,7 +2642,7 @@
     },
     "scene_north_gate_tidewell": {
       "type": "story",
-      "narration": "There she is, running alongside the wagons with an armful of soggy notes. \"Count them!\" shouts Professor Tidewell. \"Every stone you see, count it! Write it down!\" She throws you a napkin with an eight-sided shape drawn on it, trips over a goose, and keeps waving from the ground until you are out of sight.",
+      "narration": "There is Professor Tidewell, running beside the wagons. \"Count every stone you see!\" she shouts. \"Write it down!\" She throws you her napkin drawing, trips over a goose, and keeps waving.",
       "cast": [
         {
           "figure": "cast/tidewell",
@@ -2652,7 +2652,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Fold up the napkin and keep it safe",
+          "label": "Keep the napkin",
           "icon": "scroll",
           "goto": "rest_northbound"
         }
@@ -2664,7 +2664,7 @@
       "discovers": [
         "biome.sunward_fields"
       ],
-      "narration": "That night the caravan camps in the first of the Sunward Fields, where the grass smells of honey and everybody's boots still smell of the city. Far to the north the sky glows faintly red, like a coal somebody forgot to put out. Share out your things, patch each other up, and get some sleep. The road starts properly tomorrow.",
+      "narration": "That night the caravan camps in the first of the Sunward Fields, where the grass smells of honey and everybody's boots still smell of the city. Far to the north, the sky glows faintly red. Share out your things, patch each other up, and sleep.",
       "heal": 4,
       "choices": [],
       "variants": [
@@ -2672,14 +2672,14 @@
           "when": {
             "flag": "checked_mail_used"
           },
-          "text": "The bags you prepared saved the fallen letters from a canal bath."
+          "text": "Your mail bags kept the letters dry."
         }
       ]
     },
     "interaction_quay_line": {
       "art": "scenes/gemfall/exchange-docks",
       "type": "story",
-      "narration": "With the family's bags delivered, you join the dockhands for the last pear crates. The dockmaster fills the other gap in the line, using his hat to point when his hands are full. Not one pear drops. The last crate reaches the top of the quay, and the dockmaster tips his hat so far forward it falls off. You each get a pear for the walk to the docks, and it is the best pear in the Exchange, which is saying something this week.",
+      "narration": "Down on the quay, dockhands pass pear crates in a long line. You fill a gap. Not one pear drops, and the dockmaster gives you each a pear.",
       "choices": [
         {
           "id": "continue",
@@ -2691,7 +2691,7 @@
     },
     "interaction_letters": {
       "type": "interaction",
-      "narration": "Letters drift toward the canal. Wait for a clear moment, then catch them. A post clerk runs beside you with a ladle. She would prefer to keep the good news dry.",
+      "narration": "The letters are drifting toward the canal! A post clerk runs beside you with a ladle. Wait until a letter floats close, then grab it.",
       "interaction": {
         "kind": "timing",
         "cue": "Wait for the letter to float close, then grab it.",
@@ -2702,15 +2702,15 @@
       },
       "onSuccess": {
         "goto": "scene_gull_dive",
-        "narration": "You snatch the last letter an inch above the water. The clerk stamps it DELIVERED, even though it is not, and hurries off with her arms full of good news. You set off again, pleased with yourselves."
+        "narration": "You snatch the last letter just above the water. The clerk stamps it DELIVERED and hurries off."
       },
       "onFailure": {
         "goto": "scene_gull_dive",
-        "narration": "The last letter takes a bath in the canal. The clerk fishes it out with a ladle and decides it now smells of canal, which is a very fine smell for a letter to the harbor master. She hurries off, and you set off again."
+        "narration": "The last letter splashes into the canal. The clerk fishes it out with her ladle and hurries off."
       },
       "onAssisted": {
         "goto": "scene_gull_dive",
-        "narration": "The clerk grabs the last letter herself, and stamps it DELIVERED, even though it is not. She hurries off with her arms full of good news, and you set off again."
+        "narration": "The clerk grabs the last letter herself, stamps it DELIVERED, and hurries off."
       },
       "art": "scenes/gemfall/exchange-docks"
     },
@@ -2723,7 +2723,7 @@
       ],
       "art": "scenes/gemfall/exchange-quay",
       "type": "story",
-      "narration": "Mrs. Tuft carries the tray beside you up the Outfitters' Steps. The pickle jar rattles at every step. She tells it sternly that the canal is not a shortcut. At the top she counts every jar and writes a tick in the air. \"Good hands,\" she says, which from a grocer is a lot.",
+      "narration": "Mrs. Tuft has a tray of jars for the top of the Outfitters' Steps, and you help carry it. The pickle jar rattles all the way up. At the top she counts them. \"Good hands,\" she says.",
       "choices": [
         {
           "id": "continue",
@@ -2743,7 +2743,7 @@
       ],
       "art": "scenes/gemfall/caravan-yard",
       "type": "story",
-      "narration": "You stop the lantern pole while Hesper frees the washing line. The wagons wait. Long underwear floats onto a goat, which now looks like a very small caravan ghost. Hesper lifts the last peg from the hook and nods once. \"On to the North Gate,\" she says, and the wagons roll.",
+      "narration": "On the way, a lantern pole snags a washing line. You hold the pole steady while Hesper unhooks it. Long underwear floats down onto a goat. \"On to the North Gate,\" says Hesper.",
       "choices": [
         {
           "id": "continue",
@@ -2755,7 +2755,7 @@
     },
     "scene_quay_wisps": {
       "type": "story",
-      "narration": "The dusk lamps are being lit along the quay, and the thing in your pocket is humming louder than before. Two wisps, tiny, pale and giggling, have followed the warm red stone all the way from the tavern door. They think it is a very small sun. They tangle themselves in the lamp strings, and a ferryman's rope comes loose, and his little ferry starts to drift. \"Shoo them off my lamps!\" he cries. \"Before I am halfway to the sea!\"",
+      "narration": "Down on the quay, the lamps are being lit, and the stone in your pocket hums louder. Two tiny wisps have followed it. They think it is a very small sun! They tangle in the lamp strings, and a ferry's rope comes loose. \"Shoo them off!\" cries the ferryman.",
       "cast": [
         {
           "figure": "entities/will_o_wisp",
@@ -2766,7 +2766,7 @@
       "choices": [
         {
           "id": "shoo",
-          "label": "Shoo the wisps off the lamps",
+          "label": "Shoo the wisps",
           "icon": "swords",
           "goto": "encounter_quay_wisps"
         }
@@ -2776,7 +2776,7 @@
     "encounter_quay_wisps": {
       "type": "encounter",
       "map": "reedbank",
-      "narration": "The wisps zip around the lamp strings, giggling and tugging. Drive them off before the ferry drifts away.",
+      "narration": "The wisps zip around the lamp strings, giggling and tugging. Shoo them off before the ferry drifts away.",
       "enemies": [
         {
           "id": "wisp",
@@ -2808,11 +2808,11 @@
     },
     "scene_quay_wisps_shooed": {
       "type": "story",
-      "narration": "The wisps squeak, wobble and bob away over the water, still giggling. The ferryman hauls his rope back in, hand over hand, and ties the ferry up with a bow. \"Free light,\" he says, and unties a bright ribbon from his best lamp string. \"Take it. For luck, and for the shooing.\" Then he ties the lamp strings back up, and it turns out he has been hanging them in the wrong order for years.",
+      "narration": "The wisps bob away over the water, giggling. The ferryman ties up his ferry and gives you a bright ribbon from his lamp string. \"For the shooing.\"",
       "choices": [
         {
           "id": "on",
-          "label": "Head along the quay to the gem-buyers",
+          "label": "On to the gem-buyers",
           "icon": "gem",
           "goto": "choice_ember"
         }
@@ -2821,11 +2821,11 @@
     },
     "scene_quay_wisps_scattered": {
       "type": "story",
-      "narration": "The wisps swirl until the whole quay is dizzy sparkles. The ferryman bangs his tin kettle against the rail, loud and honest, and the wisps pop away over the water like soap bubbles. He hauls the ferry back in and presses hot cocoa into everybody's hands. Nobody gets a ribbon tonight, but the lamps are still lit, and the cocoa is excellent.",
+      "narration": "The wisps swirl until the quay is dizzy with sparkles. Then the ferryman bangs his kettle, and they pop away like bubbles. No ribbon, but everyone gets hot cocoa.",
       "choices": [
         {
           "id": "on",
-          "label": "Head along the quay to the gem-buyers",
+          "label": "On to the gem-buyers",
           "icon": "gem",
           "goto": "choice_ember"
         }
@@ -2834,7 +2834,7 @@
     },
     "scene_caravan_yard_thornguard": {
       "type": "story",
-      "narration": "The thornguard in your band plants both boots beside the lantern wagon and does not move. A pickpocket takes one look, remembers a very important appointment elsewhere, and leaves. Hesper watches all this out of the corner of one eye. \"Steady,\" she says, which from a centaur is a medal. She hands over a long pole with a hook on the end.",
+      "narration": "Your thornguard plants both boots by the lantern wagon. A pickpocket takes one look and leaves. \"Steady,\" says Hesper, and hands over a long pole with a hook.",
       "cast": [
         {
           "figure": "cast/hesper",
@@ -2854,7 +2854,7 @@
     },
     "interaction_newcomer_load": {
       "type": "interaction",
-      "narration": "The selkie family stacks its bags on a carrying board. Raise or lower your side until it is level, then take it to the Empty Chair inn. The rocking chair rocks. The fishbowl must not.",
+      "narration": "Everything goes on a carrying board, even a fishbowl. Raise or lower your side until it is level. The fish is counting on you.",
       "interaction": {
         "kind": "balance",
         "cue": "Level the carrying board before lifting the family's bags.",
@@ -2863,21 +2863,21 @@
       },
       "onSuccess": {
         "goto": "interaction_quay_line",
-        "narration": "You carry the bags level to the inn. The selkie children wave from their new room."
+        "narration": "You carry it all up to the inn, level as a table. The selkie children wave from their new window."
       },
       "onFailure": {
         "goto": "interaction_quay_line",
-        "narration": "Halfway up the hill the biggest trunk pops open, and out pour about a hundred knitted socks. All five children help you chase them down the street. It takes ages, and it is the most fun anybody has had all week. The selkies take a room at the Empty Chair, socks and all."
+        "narration": "Halfway up the hill, a trunk pops open. Out pour a hundred knitted socks! Chasing them is the most fun anyone has had all week. The selkies get their room at the Empty Chair, socks and all."
       },
       "onAssisted": {
         "goto": "interaction_quay_line",
-        "narration": "The selkie grandmother steadies the fishbowl while you level the board. Together you carry the bags to the inn."
+        "narration": "The grandmother steadies the fishbowl, and together you carry it all up to the inn."
       },
       "art": "scenes/gemfall/exchange-docks"
     },
     "interaction_post_routes": {
       "type": "interaction",
-      "narration": "Quill lays out three route cards. Share the clues and set the labeled bags in loading order. Those bags will stay by the quay for arriving letters. One envelope is addressed to THE DUCK. Quill checks that it really means the duck.",
+      "narration": "Quill lays out three route cards. Share the clues and put the mail bags in order. She will leave them by the quay for more mail.",
       "interaction": {
         "kind": "sequence",
         "cue": "Share the route cards and arrange the mail bags in loading order.",
@@ -2912,7 +2912,7 @@
       },
       "onSuccess": {
         "goto": "scene_gutter_glint",
-        "narration": "You check the sacks against the route cards. Quill gives you a brave whistle and leaves the labeled bags beside the quay for the incoming mail.",
+        "narration": "The bags are in order. Quill gives you a brave whistle and sets them by the quay.",
         "effects": [
           {
             "type": "grantItem",
@@ -2928,11 +2928,11 @@
       },
       "onFailure": {
         "goto": "scene_gutter_glint",
-        "narration": "You sort the letters beautifully, into all the wrong sacks. A letter for a duke is now going to a duck. Quill sighs, says it will all come out in the wash, and stuffs everything into one enormous sack anyway."
+        "narration": "You sort the letters beautifully, into all the wrong bags. A letter for a duke is now going to a duck. Quill sighs."
       },
       "onAssisted": {
         "goto": "scene_gutter_glint",
-        "narration": "Quill reads the cards with you. Together you label and arrange the bags; she gives you a brave whistle for the help.",
+        "narration": "Quill helps you read the cards. Together you set the bags in order, and she gives you a brave whistle.",
         "effects": [
           {
             "type": "grantItem",
@@ -2956,7 +2956,7 @@
     },
     "interaction_checked_mail": {
       "type": "interaction",
-      "narration": "You pocket the warm red stone. The split sack's letters flutter toward the bags you checked. Catch and pass the bundle along the quay into the right labeled bag. The clerk can keep her ladle for soup today.",
+      "narration": "You pocket the stone. The letters flutter toward the mail bags you set out. A post clerk runs up with a ladle. Catch the bundle and pass it into the right bag.",
       "interaction": {
         "kind": "relay",
         "cue": "Catch the mail bundle and pass it to the checked bags.",
@@ -2965,7 +2965,7 @@
       },
       "onSuccess": {
         "goto": "scene_gull_dive",
-        "narration": "The letters reach the bags you prepared. The clerk checks the labels and carries the good news away.",
+        "narration": "Every letter lands in the right bag. The clerk carries them off, delighted.",
         "effects": [
           {
             "type": "setFlag",
@@ -2976,11 +2976,11 @@
       },
       "onFailure": {
         "goto": "scene_gull_dive",
-        "narration": "A letter escapes toward the canal. The clerk catches it with her ladle and checks the bags herself."
+        "narration": "One letter escapes. The clerk scoops it up with her ladle and checks the bags herself."
       },
       "onAssisted": {
         "goto": "scene_gull_dive",
-        "narration": "The clerk fills a gap beside you. Together you get the letters into the bags you prepared.",
+        "narration": "The clerk jumps in beside you, and together you fill the bags.",
         "effects": [
           {
             "type": "setFlag",
@@ -3000,7 +3000,7 @@
       ],
       "art": "scenes/gemfall/empty-chair-tavern",
       "type": "story",
-      "narration": "Flint makes room beside the hearth. Each hero tells a little of the red night, or adds a sound to the story. Take your time. Flint has put his nightcap over the bidding bell.",
+      "narration": "Flint makes room by the fire. Each hero tells a bit of the red night, or adds a sound.",
       "choices": [
         {
           "id": "sky",
@@ -3024,7 +3024,7 @@
     },
     "interaction_crew_introduction": {
       "type": "interaction",
-      "narration": "Hesper lowers her clipboard. Say why your hero is going north, or name a job you can help with. Each hero gets a turn. A turnip rolls out of the cargo wagon and waits at her feet like another applicant.",
+      "narration": "Each hero takes a turn: say why you are going north, or name a job you can do. A turnip rolls out of a wagon, as if it wants a job too.",
       "interaction": {
         "kind": "play",
         "cue": "Each hero shares a reason to travel or a way to help.",
@@ -3068,7 +3068,7 @@
       },
       "onAssisted": {
         "goto": "scene_hired",
-        "narration": "Hesper asks one question at a time while you answer. Together you find a place for your party on the crew list.",
+        "narration": "Hesper asks one question at a time, and together you find your place on the crew list.",
         "effects": [
           {
             "type": "setFlag",
@@ -3088,7 +3088,7 @@
     },
     "interaction_inn_account_response_sky": {
       "type": "story",
-      "narration": "Your part of the sky joins the story. Flint stops counting offers. Flint thanks you for the story and gives you a warm place for the night.",
+      "narration": "Your part of the sky joins the story. Flint stops counting offers. The bed is yours.",
       "choices": [
         {
           "id": "continue",
@@ -3107,7 +3107,7 @@
     },
     "interaction_inn_account_response_city": {
       "type": "story",
-      "narration": "Your memory of the city gets a nod from someone who was there. Flint thanks you for the story and gives you a warm place for the night.",
+      "narration": "Your memory of the city gets a nod from someone who was there. The bed is yours.",
       "choices": [
         {
           "id": "continue",
@@ -3126,7 +3126,7 @@
     },
     "interaction_inn_account_response_sound": {
       "type": "story",
-      "narration": "The room answers your sound with another. Flint laughs into his dishcloth. Flint thanks you for the story and gives you a warm place for the night.",
+      "narration": "The room answers your sound with another. Flint laughs into his dishcloth. The bed is yours.",
       "choices": [
         {
           "id": "continue",

@@ -309,6 +309,26 @@ What it does beyond the look:
 Put the fact in the narration itself, in plain words. The ribbon tells the room to pay attention;
 it cannot tell them what to pay attention to.
 
+## Who owns a beat
+
+Every moment the story hands one hero goes to the beat's **owner**: a Story choice with more than
+one way on, an ordinary check's die (`roller` absent or `"party"`), the lead of a game. The owner
+is the story-turn holder, and the shared screen puts their face and name on the plate ("Pip's turn
+to choose", "Pip's roll"), so a stretch of the chapter is centred on one kid instead of the die
+hopping round the table scene by scene.
+
+The owner keeps the spotlight for three moments (`SPOTLIGHT_BEAT`), then it passes to the next
+seat. It also passes early, once the owner has had a moment:
+
+- at a Rest, where a beat naturally breaks;
+- at a scene with `"spotlight": "next"`, where you start a new beat: the party reaches a new place,
+  or a new person takes the stage. Put it on the scene that opens the beat.
+
+A vote is the whole party's and is nobody's moment (the owner breaks its ties). A `best`, `active`
+or `all` check is nobody's moment either. Write the beat for its owner: one person's problem, a
+choice and a roll that follow from each other. The words never name them (a recorded voice cannot
+say a player's name), and the screen does.
+
 ## The chapter's goal
 
 Every chapter says what the party is trying to do, and the table can see it the whole time
