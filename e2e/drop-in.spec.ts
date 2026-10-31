@@ -39,6 +39,7 @@ interface State {
   seq: number;
   phase: string;
   sceneId: string | null;
+  endingRead?: boolean;
   party: Member[];
   prompt: { kind: string } | null;
   encounter?: {
@@ -310,6 +311,10 @@ test.describe("drop in, drop out", () => {
     // --- The chapter's end: Sam is done, Rosie leaves without saying so ---
     await act(samSession, code, { type: "PLAYTEST_GOTO", sceneId: "rest_lanternfall" });
     await expect.poll(async () => (await state()).phase, TAP).toBe("chapter_complete");
+    await openPlayerTask(sam);
+    // The ending's own page first; one tap turns every screen to the rewards.
+    await sam.getByRole("button", { name: "See our rewards" }).click(TAP);
+    await expect.poll(async () => (await state()).endingRead, TAP).toBe(true);
     await openPlayerTask(sam);
     await sam.getByRole("button", { name: "Back to the lobby" }).click(TAP);
     await stepAway(rosie, "Rosie");
