@@ -1478,3 +1478,60 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
   font-size: 0.8em;
   font-weight: 700;
 }
+
+/* --- TV focus (layout/tv-focus.ts) --------------------------------------
+ * The shell has a TV and this device asked to look at it. With nothing to do,
+ * one card fills the pane and points up; with a turn, a single line says where
+ * the story is. No viewport units: the pane is the size (PlayerView's rule 2).
+ */
+
+.player__tv-rest {
+  flex: 1 1 auto;
+  min-block-size: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3, 0.75em);
+  padding: var(--space-4, 1em) var(--space-3, 0.75em);
+  text-align: center;
+}
+
+.player__tv-rest > .player__tv-glyph {
+  inline-size: 5em;
+  block-size: 5em;
+  color: var(--color-accent, #ffd66b);
+}
+
+.player__tv-rest-title {
+  margin: 0;
+  font-size: var(--font-size-xl, 1.6em);
+}
+
+.player__tv-rest-line {
+  margin: 0;
+  max-inline-size: 22em;
+  font-size: var(--font-size-lg, 1.2em);
+  line-height: 1.35;
+}
+
+.player__tv-rest-note {
+  margin: 0;
+  max-inline-size: 22em;
+}
+
+.player__tv-cue {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0 0 var(--space-3, 0.75em);
+  color: var(--color-text-muted, #b9b0d8);
+  font-size: var(--font-size-md, 1em);
+}
+
+.player__tv-cue > .player__tv-glyph {
+  flex: 0 0 auto;
+  inline-size: 1.6em;
+  block-size: 1.6em;
+}
