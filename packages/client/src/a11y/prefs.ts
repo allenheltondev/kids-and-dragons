@@ -8,6 +8,8 @@
  *   data-contrast="high"            stronger ink, borders and focus ring
  *   data-motion="reduced"           the blanket motion flattening in theme.css, and the JS checks
  *   data-hand="right" | "left"      one-handed play: the corner controls drop to the thumb
+ *   data-focus="tv"                 TV focus: a Party Mode phone shows only what there is to tap
+ *                                   (layout/tv-focus.ts; the shell decides where it applies)
  *
  * The device's own preference is the floor, never overridden: `prefers-contrast: more` and
  * `prefers-reduced-motion: reduce` turn their attribute on whatever was stored, and a stored
@@ -27,9 +29,11 @@ export interface A11yPrefs {
   /** Always reduced motion, on top of the device preference. */
   motion: boolean;
   hand: Hand;
+  /** TV focus: the shared screen tells the story, the phone shows only the thing to do now. */
+  focus: boolean;
 }
 
-export const DEFAULT_PREFS: A11yPrefs = { text: "normal", contrast: false, motion: false, hand: "off" };
+export const DEFAULT_PREFS: A11yPrefs = { text: "normal", contrast: false, motion: false, hand: "off", focus: false };
 
 const TEXT_SIZES: readonly TextSize[] = ["normal", "large", "largest"];
 const HANDS: readonly Hand[] = ["off", "right", "left"];
@@ -44,6 +48,7 @@ export function loadPrefs(): A11yPrefs {
       contrast: raw.contrast === true,
       motion: raw.motion === true,
       hand: HANDS.includes(raw.hand as Hand) ? (raw.hand as Hand) : "off",
+      focus: raw.focus === true,
     };
   } catch {
     return DEFAULT_PREFS;
@@ -80,7 +85,17 @@ export function applyPrefs(prefs: A11yPrefs, root: HTMLElement = document.docume
   setAttribute(root, "data-contrast", prefs.contrast || deviceWantsContrast() ? "high" : null);
   setAttribute(root, "data-motion", prefs.motion || deviceWantsLessMotion() ? "reduced" : null);
   setAttribute(root, "data-hand", prefs.hand === "off" ? null : prefs.hand);
+  setAttribute(root, "data-focus", prefs.focus ? "tv" : null);
+  // The one setting React reads (TV focus changes what renders, not just how it looks).
+  try {
+    root.ownerDocument.dispatchEvent(new Event(PREFS_EVENT));
+  } catch {
+    /* no DOM events: the attribute is still right */
+  }
 }
+
+/** Fired on the document whenever the settings are applied. */
+export const PREFS_EVENT = "kad:a11y";
 
 /** Applies what was saved, and keeps following the device's own preferences while the page is open. */
 export function startA11y(): void {

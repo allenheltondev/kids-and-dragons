@@ -803,6 +803,13 @@
   display: none;
 }
 
+/* TV focus (layout/tv-focus.ts): no world beside the controls, so on a wide screen (a tablet,
+   upright or on its side) they would stretch across all of it. A column a big phone wide, in the
+   middle, keeps every answer one reach from the last. Percent padding is the pane's width. */
+.kad-party--player[data-tv-focus] > [data-pane="player"] > .kad-surface--player {
+  padding-inline: max(0px, (100% - 34rem) / 2);
+}
+
 /* Larger text (#262): the tray is rem-sized art and labels, and html's font-size is the text
    scale, so it would grow into a third of a small phone. Cancel the scale on the shelf, and
    hand the labels most of it back, so what grows is the word under the object. */
