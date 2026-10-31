@@ -1013,6 +1013,45 @@ describe("story turns (spec §6.1)", () => {
     expect(stoodIn.state.spotlightMoments).toBe(1);
   });
 
+  it("starts every chapter on a fresh beat, whatever the last one left uncounted", () => {
+    const context = ctx({ rng: fixedRng(20) });
+    // A chapter that ended two moments into p_2's beat, back in the lobby and ready to go again.
+    const lobby = {
+      ...seatedParty(context),
+      storyTurn: 1,
+      spotlightMoments: 2,
+    };
+    const started = applyIntent(lobby, { playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } }, context);
+    expect(started.error).toBeUndefined();
+    // The seat stays rotated; the count does not carry, so p_2 gets a whole beat.
+    expect(storyTurnHolder(started.state)?.playerId).toBe("p_2");
+    expect(started.state.spotlightMoments ?? 0).toBe(0);
+    const taken = applyIntent(started.state, { playerId: "p_2", intent: { type: "CHOOSE", choiceId: "squeeze" } }, context);
+    expect(storyTurnHolder(taken.state)?.playerId).toBe("p_2");
+    expect(taken.state.spotlightMoments).toBe(1);
+  });
+
+  it("hands an away owner's die to the seat standing in, and a downed owner's to the rotation", () => {
+    const chapter = chapterWithForkedShrine();
+    chapter.scenes["check_squeeze"] = { ...chapter.scenes["check_squeeze"]!, roller: "party" } as Scene;
+    const context = ctx({ rng: fixedRng(20), chapter });
+    const state = atFirstStory(context);
+    const [, second] = state.party;
+
+    // p_1's phone has dropped: the next connected seat holds the turn, and rolls.
+    const away = enterScene(withConnected(state, "p_1", false), "check_squeeze", context).state;
+    expect(away.prompt).toMatchObject({ kind: "roll", characterId: second!.character.id });
+
+    // p_1 is here but knocked down: nobody holds a turn they cannot take, so the rotation picks.
+    const down = {
+      ...state,
+      party: state.party.map((m) => (m.playerId === "p_1" ? { ...m, down: true } : m)),
+      checkRolls: { [second!.character.id]: 0 },
+    };
+    const rotated = enterScene(down, "check_squeeze", context).state;
+    expect(rotated.prompt).toMatchObject({ kind: "roll", characterId: second!.character.id });
+  });
+
   it("leaves a rest scene's way out open to anyone", () => {
     const context = ctx({ rng: fixedRng(20) });
     const atCamp = walk(
@@ -1280,11 +1319,12 @@ describe("whole-party checks", () => {
     expect(done.checkRolls).toEqual({ [unicorn!]: 1, [other!]: 1 });
 
     // Back online, and the next shared check comes round while the beat's
-    // owner (p_1) is away: the rotation picks, and the griffin is due.
+    // owner (p_1) is knocked down and cannot roll: the rotation picks, and the
+    // griffin, who has rolled the fewest, is due.
     const back = {
       ...done,
       party: done.party.map((m) =>
-        m.playerId === "p_2" ? { ...m, connected: true } : m.playerId === "p_1" ? { ...m, connected: false } : m,
+        m.playerId === "p_2" ? { ...m, connected: true } : m.playerId === "p_1" ? { ...m, down: true } : m,
       ),
     };
     const rotating = makeChapter();

@@ -179,7 +179,8 @@ export function ChapterCompletePanel(): ReactElement {
    * aloud too, because a recap that only exists on the television is a recap nobody hears). Held
    * until the chapter has loaded, so the recap is in the same utterance rather than missing from
    * it; a chapter that never loads never holds it up. While an epilogue is still to play the
-   * ending is said alone, so the paintings are not talked over; while it cannot yet be known
+   * ending is said alone, so the paintings are not talked over, and the fights and the recap are
+   * read once it is done (or skipped), still ahead of the tally; while it cannot yet be known
    * whether one follows (the campaign file is on its way, `pending`, a few seconds at most)
    * nothing is said at all.
    *
@@ -192,6 +193,8 @@ export function ChapterCompletePanel(): ReactElement {
   // Absent is a summary persisted before the ending had its own page: straight to the tally.
   const onEnding = state?.endingRead === false || holding;
   const endingSpoken = useRef(false);
+  // The fights and the recap, held back while an epilogue played; false once they are owed.
+  const restSpoken = useRef(true);
   const tallySpoken = useRef(false);
   const chapterReady = chapter !== null && chapter.id === chapterId;
   const [waited, setWaited] = useState(false);
@@ -205,10 +208,17 @@ export function ChapterCompletePanel(): ReactElement {
     if (endingSpoken.current || !(state?.endingRead === false || epilogueDue)) return;
     if (endPlates.pending || (!chapterReady && !waited)) return;
     endingSpoken.current = true;
+    restSpoken.current = !epilogueDue;
     const lines = epilogueDue ? [ending] : [ending, ...fightEndings.map(fightEndingLine), ...recap];
     const said = lines.filter((line) => line !== "").join(" ");
     if (said !== "") speak(said, { source: "narration", interrupt: true });
   }, [state?.endingRead, endPlates.pending, chapterReady, waited, epilogueDue, ending, fightEndings, recap]);
+  useEffect(() => {
+    if (restSpoken.current || holding) return;
+    restSpoken.current = true;
+    const said = [...fightEndings.map(fightEndingLine), ...recap].join(" ");
+    if (said !== "") speak(said, { source: "narration" });
+  }, [holding, fightEndings, recap]);
   useEffect(() => {
     if (tallySpoken.current || onEnding) return;
     tallySpoken.current = true;
