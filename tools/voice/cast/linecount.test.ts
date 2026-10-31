@@ -276,3 +276,30 @@ describe("'she says' with nobody named, in a scene with one she", () => {
     expect(attributeQuotes('Wick waves. "Hello," she says.', speakers).map((q) => q.id)).toEqual(["herder"]);
   });
 });
+
+describe("someone known only by what they are, and a gender the notes already state", () => {
+  const campaign: ChapterLike[] = [
+    { id: "a", campaignId: "gem", voiceGuide: { npcVoices: { beech_tree: "old, slow; whispers in long sentences" } }, scenes: { s: { cast: [{ name: "Beech Tree" }] } } },
+    { id: "b", campaignId: "gem", voiceGuide: { npcVoices: { Pib: "Pib, a sprite" } }, scenes: { s: { cast: [{ name: "Pib" }] } } },
+  ];
+
+  it("lets a role-named character be 'the beech' in a chapter that does not cast them, when nobody else in the campaign is", () => {
+    const sheet = buildSheet({ chapters: campaign, individuals: [], narration: [{ chapter: "b", address: "b/s/narration", text: 'A huge beech sits across the path. "Why did you come?" it whispers.' }] }, null);
+    expect(sheet.speakers.beech_tree!.lineCount).toBe(1);
+  });
+
+  it("takes the elder for the Elder Unicorn where no other elder is in the scene", () => {
+    const names = new Map([["unicorn", "Elder Unicorn"], ["pib", "Pib"]]);
+    const speakers = [{ id: "unicorn", names: ["Elder Unicorn"] }, { id: "pib", names: ["Pib"] }];
+    const here = withSceneRoles(speakers, new Set(["unicorn", "pib"]), names);
+    expect(here.find((speaker) => speaker.id === "unicorn")!.names).toEqual(expect.arrayContaining(["elder", "unicorn"]));
+    expect(attributeQuotes('"We are mending," says the elder.', here).map((q) => q.id)).toEqual(["unicorn"]);
+  });
+
+  it("does not let a 'he' the counter heard overturn a woman the notes describe", () => {
+    const chapters: ChapterLike[] = [{ id: "c", voiceGuide: { npcVoices: { archivist: "brisk archivist; warm once she decides you matter" } }, scenes: { s: { cast: [{ name: "Archivist" }] } } }];
+    const sheet = buildSheet({ chapters, individuals: [], narration: [{ chapter: "c", address: "c/s/narration", text: 'The archivist waits. "Wipe your feet," he says. "Please."' }] }, null);
+    expect(sheet.speakers.archivist!.pronouns).toBeUndefined();
+    expect(sheet.speakers.archivist!.gender).toBe("female");
+  });
+});

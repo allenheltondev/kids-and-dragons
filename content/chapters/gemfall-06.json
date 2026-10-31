@@ -174,7 +174,7 @@
           "name": "Grandmother"
         }
       ],
-      "narration": "Dunmore has planted his claim flag on the grandmother's step. \"It hums!\" So does every stone here. She rings louder. He goes pink, but holds his pick. Her little round window has curtains.",
+      "narration": "Dunmore has planted his claim flag on the grandmother's step. \"It hums!\" says Dunmore. So does every stone here. She rings louder. He goes pink, but holds his pick. Her little round window has curtains.",
       "choices": [
         {
           "id": "talk",
@@ -863,7 +863,7 @@
           "name": "Grandmother Tull"
         }
       ],
-      "narration": "At the morning bench, Grandmother Tull teaches tiny dragonlings the ordinary bell calls. A spare bell sits wrapped in a sock, untouched. \"Nothing to worry about.\" Up the ridge, the citadel watch is listening. Learn the traveling call, ask about the sock, or get supplies before climbing.",
+      "narration": "At the morning bench, Grandmother Tull teaches tiny dragonlings the ordinary bell calls. A spare bell sits wrapped in a sock, untouched. \"Nothing to worry about,\" says Tull. Up the ridge, the citadel watch is listening. Learn the traveling call, ask about the sock, or get supplies before climbing.",
       "choices": [
         {
           "id": "learn",
@@ -1262,7 +1262,7 @@
         "faction.skywardens"
       ],
       "art": "scenes/gemfall/redspire-citadel",
-      "narration": "Redspire's windows all face up. Inside, clerk Pellam logs your names twice. \"The captain has a table.\" He checks both entries, then remembers the notebook for people he has met twice.",
+      "narration": "Redspire's windows all face up. Inside, clerk Pellam logs your names twice. \"The captain has a table,\" he says. He checks both entries, then remembers the notebook for people he has met twice.",
       "cast": [
         {
           "figure": "entities/skywardens",
@@ -1371,7 +1371,7 @@
           "name": "Skywardens"
         }
       ],
-      "narration": "Pellam logs what you show him, draws tiny pictures, then hands it back. He stamps your hands LOGGED. \"Honest on paper. The best kind.\" The ink will last for days.",
+      "narration": "Pellam logs what you show him, draws tiny pictures, then hands it back. He stamps your hands LOGGED. \"Honest on paper. The best kind,\" he says. The ink will last for days.",
       "choices": [
         {
           "id": "on",
@@ -1441,7 +1441,7 @@
     "scene_truth_table": {
       "type": "story",
       "art": "scenes/gemfall/facet-table",
-      "narration": "Captain Orla Voss waits at a long table of watch-logs and one humming stone. She commands the Skywardens. \"Show us what the road taught you.\" Compare the dated records yourselves, or ask the wardens to read and answer questions.",
+      "narration": "Captain Orla Voss waits at a long table of watch-logs and one humming stone. She commands the Skywardens. \"Show us what the road taught you,\" says Voss. Compare the dated records yourselves, or ask the wardens to read and answer questions.",
       "cast": [
         {
           "figure": "entities/skywardens",
@@ -2459,21 +2459,21 @@
           "when": {
             "flag": "read_restore"
           },
-          "text": "\"Helping. Fixing. Putting things back,\" he reads. \"None of that is the same as holding the leash.\"",
+          "text": "\"Helping. Fixing. Putting things back,\" Pellam reads. \"None of that is the same as holding the leash,\" says Voss.",
           "at": "start"
         },
         {
           "when": {
             "flag": "read_hoard"
           },
-          "text": "\"Pockets. A great many pockets,\" he reads. \"None of that is the same as holding the leash.\"",
+          "text": "\"Pockets. A great many pockets,\" Pellam reads. \"None of that is the same as holding the leash,\" says Voss.",
           "at": "start"
         },
         {
           "when": {
             "flag": "read_leash"
           },
-          "text": "\"Questions about the power, and who gets to hold it,\" he reads. \"You have been asking about the leash the whole way up.\"",
+          "text": "\"Questions about the power, and who gets to hold it,\" Pellam reads. \"You have been asking about the leash the whole way up,\" says Voss.",
           "at": "start"
         }
       ],
@@ -2665,21 +2665,21 @@
           "when": {
             "flag": "read_restore"
           },
-          "text": "\"Helping. Fixing. Putting things back,\" he reads. \"The pages and the promise say the same thing.\"",
+          "text": "\"Helping. Fixing. Putting things back,\" Pellam reads. \"The pages and the promise say the same thing,\" he adds.",
           "at": "start"
         },
         {
           "when": {
             "flag": "read_hoard"
           },
-          "text": "\"Pockets. A great many pockets,\" he reads. \"And now you say put it back. That is a long way to turn around. People do.\"",
+          "text": "\"Pockets. A great many pockets,\" Pellam reads. \"And now you say put it back. That is a long way to turn around. People do,\" says Voss.",
           "at": "start"
         },
         {
           "when": {
             "flag": "read_leash"
           },
-          "text": "\"Questions about the power, and who gets to hold it,\" he reads. \"And now you say put it back. People do turn around.\"",
+          "text": "\"Questions about the power, and who gets to hold it,\" Pellam reads. \"And now you say put it back. People do turn around,\" says Voss.",
           "at": "start"
         }
       ],
@@ -3155,7 +3155,7 @@
     "scene_crawlers_rescued": {
       "type": "story",
       "art": "scenes/gemfall/citadel-cellar-hall",
-      "narration": "A line of wardens marches in with brooms and sweeps the crawlers down the stairs like autumn leaves. Nobody is hurt. A warden hands out hot tea and a blanket, and the old logs are safe. You do not get a whistle for this one, but Pellam writes your names in the margin anyway. Then he straightens his collar. \"Now. Before the captain, the tags.\"",
+      "narration": "A line of wardens marches in with brooms and sweeps the crawlers down the stairs like autumn leaves. Nobody is hurt. A warden hands out hot tea and a blanket, and the old logs are safe. You do not get a whistle for this one, but Pellam writes your names in the margin anyway. Then he straightens his collar. \"Now. Before the captain, the tags,\" he says.",
       "cast": [
         {
           "figure": "entities/skywardens",
@@ -3228,7 +3228,7 @@
       ],
       "art": "scenes/gemfall/pellam-tea-table",
       "type": "story",
-      "narration": "Pellam pours the promised tea while you make space at the table. Captain Voss takes the smallest cup and drinks without a word. For a little while, the only question is Pellam's: \"More tea, anyone?\" Then Pellam turns to a fresh page.",
+      "narration": "Pellam pours the promised tea while you make space at the table. Captain Voss takes the smallest cup and drinks without a word. For a little while, the only question is his: \"More tea, anyone?\" asks Pellam. Then Pellam turns to a fresh page.",
       "choices": [
         {
           "id": "continue",

@@ -135,7 +135,7 @@
     },
     "scene_flooded_paths": {
       "type": "story",
-      "narration": "You come in late and dripping, along paths that are mostly puddle, under the green roofs near MossHome, the bigfoot town. Maybe you chose this forest. Maybe the river chose it for you. A MossHome flood-warden in very tall boots hands you a jar of mosslight and says, \"Happens every season. Not usually to this many.\"",
+      "narration": "You come in late and dripping, along paths that are mostly puddle, under the green roofs near MossHome, the bigfoot town. Maybe you chose this forest. Maybe the river chose it for you. A MossHome flood-warden in very tall boots hands you a jar of mosslight. \"Happens every season. Not usually to this many,\" says the flood-warden.",
       "cast": [
         {
           "figure": "cast/flood_warden",
