@@ -203,7 +203,9 @@ export async function seedRoom(input: SeedRequest, deps: HandlerDeps): Promise<H
     if (!settled.ok) return settled;
     const room = settled.value;
     if (!room) return fail("NOT_FOUND", `no open room ${code}`);
-    const admitted = await admitNewPhone(room, undefined, deps);
+    // A seeded table is one family's phones: every one joins as family, as the
+    // household's own new phones once did, rather than as a visitor.
+    const admitted = await admitNewPhone(room, true, deps);
     if (!admitted.ok) return admitted;
     const name = vetTypedName(hero.player ?? "Player", "Player");
     if (!name.ok) return name;

@@ -434,6 +434,15 @@ export interface CommitInput {
    * taking the same slot at once cannot both have it (handlers/crew.ts).
    */
   crew?: CrewRecord;
+  /**
+   * Crew names this commit sets, gated on the household's crew-names version
+   * (`CREWNAMES`): the commit is refused, as a lost seq race is, unless that
+   * version is still `expectedVersion`, and it lands version + 1. `crew` null is
+   * the first crew (`FIRSTCREW`); otherwise the crew's row, which must exist.
+   * A new crew's commit carries it with no `names`, so its pick of a free name
+   * cannot race a rename (handlers/crew.ts).
+   */
+  crewNames?: { householdId: string; expectedVersion: number; names: { crew: string | null; name: string }[] };
 }
 
 /** `HH#<hhId>` / `OWNER#<sub>`: one grown-up who may manage the household (#248). */
@@ -877,12 +886,8 @@ export interface GameRepository {
    * first. Written only by a lobby's commit (`CommitInput.crew`).
    */
   listCrews(householdId: string): Promise<CrewRecord[]>;
-  /**
-   * Give a crew another name. `crew` null is the household's first, which keeps
-   * its name in a row of its own (`FIRSTCREW`); otherwise the crew's row is
-   * rewritten. False when there is no such crew.
-   */
-  renameCrew(householdId: string, crew: string | null, name: string): Promise<boolean>;
+  /** The household's crew-names version (`CREWNAMES`), 0 before any crew was named. Strongly consistent. */
+  getCrewNamesVersion(householdId: string): Promise<number>;
   /** The name the household gave its first crew, or null while it has none. */
   getFirstCrewName(householdId: string): Promise<string | null>;
 
