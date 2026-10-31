@@ -1998,6 +1998,7 @@
       "pronounsFrom": "narration",
       "gender": "female",
       "genderFrom": "narration",
+      "figure": "cast/elder_sefa",
       "voiceNotes": [
         {
           "chapter": "gemfall-04a",
@@ -2007,21 +2008,28 @@
       "chapters": [
         "gemfall-04a"
       ],
-      "aliases": [],
+      "aliases": [
+        "Elder Sefa"
+      ],
       "gemini": {
         "voice": "Leda"
       },
       "lines": [
         {
-          "text": "I have tried counting cubs.",
+          "text": "I have tried counting cubs. They keep changing places.",
           "address": "gemfall-04a/choice_cub_nap/narration"
         },
         {
-          "text": "Come to the fire.",
-          "address": "gemfall-04a/scene_leave_stone/narration"
+          "text": "Then they had better come to the fire.",
+          "address": "gemfall-04a/scene_pride_greeting_cubs_introduce/narration"
+        },
+        {
+          "text": "We'll wait here. We always wait here.",
+          "address": "gemfall-04a/rest_waystation_with_escort/narration"
         }
       ],
-      "lineCount": 2,
+      "lineCount": 9,
+      "guessedLines": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -5211,41 +5219,6 @@
       "lines": [],
       "lineCount": 0,
       "speaks": false,
-      "status": "provisional"
-    },
-    "elder_sefa": {
-      "name": "Elder Sefa",
-      "kind": "character",
-      "who": "Elder Sefa.",
-      "pronouns": "she/her",
-      "pronounsFrom": "narration",
-      "gender": "female",
-      "genderFrom": "narration",
-      "figure": "cast/elder_sefa",
-      "chapters": [
-        "gemfall-04a"
-      ],
-      "aliases": [],
-      "gemini": {
-        "voice": "Gacrux"
-      },
-      "lines": [
-        {
-          "text": "The cubs dream of humming near gem wagons.",
-          "address": "gemfall-04a/scene_pride_camp/narration"
-        },
-        {
-          "text": "Then they had better come to the fire.",
-          "address": "gemfall-04a/scene_pride_greeting_cubs_introduce/narration"
-        },
-        {
-          "text": "We'll wait here. We always wait here.",
-          "address": "gemfall-04a/rest_waystation_with_escort/narration"
-        }
-      ],
-      "lineCount": 7,
-      "guessedLines": 2,
-      "speaks": true,
       "status": "provisional"
     },
     "road_warden": {
