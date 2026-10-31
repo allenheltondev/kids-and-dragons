@@ -551,6 +551,7 @@ function CrewSwitch({
 }): React.JSX.Element {
   const switchCrew = useGameStore((store) => store.switchCrew);
   const renameCrew = useGameStore((store) => store.renameCrew);
+  const keepCrew = useGameStore((store) => store.keepCrew);
   const [renaming, setRenaming] = useState(false);
   const { current, others } = crewChoices(state);
   if (empty) {
@@ -570,6 +571,30 @@ function CrewSwitch({
   return (
     <div className="kad-host__crew" role="group" aria-label="Which crew is playing">
       <CrewIdentity name={current} />
+      {/* Heroes new to this crew's adventure (crew.ts, `checkNewcomers`): the
+          lobby says so, and the answer is here. Starting fresh is the new-crew
+          button below. */}
+      {state.crewCheck ? (
+        <>
+          <p className="kad-host__hint">
+            None of these heroes have been on {state.crewCheck.title} yet. Keep going with it, or start a new crew.
+          </p>
+          <Button
+            icon={<Icon name="map" />}
+            variant="primary"
+            size="md"
+            block
+            disabled={busy}
+            onClick={() => void run(async () => {
+              const kept = await keepCrew(state.crewCheck!.campaignId);
+              if (kept) setRoomOpen(false);
+              return kept;
+            })}
+          >
+            Keep going with {state.crewCheck.title}
+          </Button>
+        </>
+      ) : null}
       {renaming ? (
         <div className="kad-host__crew-names" role="group" aria-label="Pick a name for this crew">
           {CREW_NAMES.filter((name) => name === current || !others.some((crew) => crew.name === name)).map((name) => (

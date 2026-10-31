@@ -23,8 +23,6 @@ import { Icon } from "./icons";
 import { savedHeading, savedHeroes, savedWhere } from "./save-copy";
 import { crewChoices } from "./crew-copy";
 import { CrewIdentity } from "./CrewIdentity";
-import { canSwitchCrew, openRoomPanel } from "./HostControls";
-import { Button } from "../ui";
 import { VoteTicks } from "./VoteTicks";
 import { useHelp } from "../help/content";
 import { joinUrl } from "../ui/share-invite";
@@ -132,13 +130,7 @@ export function LobbyContent(): ReactElement {
   const party = useParty();
   const sessionCode = useGameStore((s) => s.session?.roomCode ?? null);
   const host = useGameStore((s) => s.session?.host === true);
-  const keepCrew = useGameStore((s) => s.keepCrew);
-  const switchCrew = useGameStore((s) => s.switchCrew);
-  const [deciding, setDeciding] = useState(false);
-  const decide = (task: () => Promise<boolean>): void => {
-    setDeciding(true);
-    void task().finally(() => setDeciding(false));
-  };
+
   // A room open to visitors (#249) shows its longer code, which anybody can
   // join with: a phone from another household needs it, and one from the
   // room's own takes it as well as the short one.
@@ -175,13 +167,9 @@ export function LobbyContent(): ReactElement {
       {state ? (
         <div className="lobby__crew">
           <CrewIdentity name={crewChoices(state).current} compact />
-          {/* The Room panel holds the crews; this is the way to it from the lobby
-              itself, for the grown-up who runs the room. */}
-          {host && canSwitchCrew(state) ? (
-            <Button variant="secondary" size="md" icon={<Icon name="crew" />} onClick={openRoomPanel}>
-              Change crew
-            </Button>
-          ) : null}
+          {/* The shared screen is read, not driven (docs/tv-read-only-audit.md):
+              the crews are in the Room panel, and this says where. */}
+          {host ? <span className="lobby__crew-hint kad-muted">Change crew in Room</span> : null}
         </div>
       ) : null}
       {state?.crewSetup ? (
@@ -192,7 +180,8 @@ export function LobbyContent(): ReactElement {
       {/* Heroes new to the adventure this crew is partway through: nothing
           resumes until the grown-up running the game picks (crew.ts,
           `checkNewcomers`), so nobody lands in the middle of somebody else's
-          story by accident. */}
+          story by accident. Said here; picked in the Room panel, since the
+          shared screen has nothing to click (docs/tv-read-only-audit.md). */}
       {state?.crewCheck ? (
         <div className="lobby__premise lobby__crew-check" role="group" aria-label="Keep going or start fresh?">
           <p className="lobby__premise-title">
@@ -202,30 +191,8 @@ export function LobbyContent(): ReactElement {
           <p className="lobby__premise-text">
             {crewChoices(state).current} is partway through {state.crewCheck.title}. None of these heroes have been
             on it yet.
-            {host ? null : " The grown-up running the game picks."}
+            {host ? " Tap Room to keep going or start a new crew." : " The grown-up running the game picks."}
           </p>
-          {host ? (
-            <div className="lobby__crew-check-actions">
-              <Button
-                variant="primary"
-                size="md"
-                icon={<Icon name="map" />}
-                disabled={deciding}
-                onClick={() => decide(() => keepCrew(state.crewCheck!.campaignId))}
-              >
-                Keep going with {state.crewCheck.title}
-              </Button>
-              <Button
-                variant="secondary"
-                size="md"
-                icon={<Icon name="plus" />}
-                disabled={deciding}
-                onClick={() => decide(() => switchCrew("new"))}
-              >
-                Start fresh as a new crew
-              </Button>
-            </div>
-          ) : null}
         </div>
       ) : null}
       {/* A chapter this household stopped partway (#259): said to the room, and

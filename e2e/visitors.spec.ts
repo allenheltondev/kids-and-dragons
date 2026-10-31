@@ -88,6 +88,7 @@ test.describe("a room open to visitors", () => {
     expect(await deviceHousehold(visitor)).not.toBe(await deviceHousehold(host));
 
     // The host sees who is visiting.
+    await host.getByText("Running this room").click();
     const roster = host.getByRole("list", { name: "Who is in this room" });
     await expect(roster.getByRole("listitem").filter({ hasText: /visiting/ })).toHaveCount(1, TAP);
 
