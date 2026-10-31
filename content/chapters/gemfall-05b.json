@@ -473,7 +473,7 @@
     "scene_knot_cords": {
       "type": "story",
       "priority": 1,
-      "narration": "The oldest archivist brings knotted cords in a box. A bird nests in his beard, so he walks very slowly. \"The paths flinched like this long ago. The stones are older than the mountain's name.\" One cord is worn smooth from checking.",
+      "narration": "The oldest archivist brings knotted cords in a box. A bird nests in his beard, so he walks very slowly. \"The paths flinched like this long ago. The stones are older than the mountain's name,\" says the oldest archivist. One cord is worn smooth from checking.",
       "cast": [
         {
           "figure": "cast/mosshome_archivist",
@@ -509,7 +509,7 @@
     },
     "scene_knot_cords_rest": {
       "type": "story",
-      "narration": "You thank him. He tells an old cord, a little too loudly, \"Did not ask what the forest keeps.\" The archivist at the door sighs and turns you gently back.",
+      "narration": "You thank him. \"Did not ask what the forest keeps,\" the oldest archivist tells an old cord, a little too loudly. The archivist at the door sighs and turns you gently back.",
       "cast": [
         {
           "figure": "cast/mosshome_archivist",

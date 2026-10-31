@@ -36,7 +36,7 @@
   "scenes": {
     "arrival": {
       "type": "story",
-      "narration": "Pip Thistledown, a young manticore scout, stops so suddenly that his notebook bumps his nose. Water is roaring through a valley his sketch shows dry. The road toward the glacier ends at the new stream. A yeti worker raises a staff from the high bank. \"Stay up there! Help me warn the next traveler, then get us and our tools across.\" Pip shuts the notebook. \"The road has made changes without telling the map.\"",
+      "narration": "Pip Thistledown, a young manticore scout, stops so suddenly that his notebook bumps his nose. Water is roaring through a valley his sketch shows dry. The road toward the glacier ends at the new stream. A yeti worker raises a staff from the high bank. \"Stay up there! Help me warn the next traveler, then get us and our tools across,\" the worker calls. Pip shuts the notebook. \"The road has made changes without telling the map.\"",
       "choices": [
         {
           "id": "continue",
@@ -344,7 +344,7 @@
     },
     "worksite": {
       "type": "story",
-      "narration": "A yeti route worker meets you on the near bank. Across the changed stream, a second worker waits on a low shelf beside tools and an unlit lantern. A high path leads from that shelf toward the reading rooms. The near worker has two ropes and a carrying board. \"One job before you cross: lift the tools high, or prepare her upper handline. We will need the other if the water changes.\" Pip studies both valleys.",
+      "narration": "A yeti route worker meets you on the near bank. Across the changed stream, a second worker waits on a low shelf beside tools and an unlit lantern. A high path leads from that shelf toward the reading rooms. The near worker has two ropes and a carrying board. \"One job before you cross: lift the tools high, or prepare her upper handline. We will need the other if the water changes,\" says the route worker. Pip studies both valleys.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -431,7 +431,7 @@
     },
     "flow_result": {
       "type": "story",
-      "narration": "The calm pocket leads to a low shelf crossing. A longer high rock reach avoids it. The worker squints at the stream. \"Neither one promises the water will stay here.\" The workers pass a guide rope across the calm pocket and test it from both banks. The far worker lights her lantern and lifts it to show she can see you, then waits for your plan.",
+      "narration": "The calm pocket leads to a low shelf crossing. A longer high rock reach avoids it. The worker squints at the stream. \"Neither one promises the water will stay here,\" says the route worker. The workers pass a guide rope across the calm pocket and test it from both banks. The far worker lights her lantern and lifts it to show she can see you, then waits for your plan.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -869,7 +869,7 @@
     },
     "crossing_choice": {
       "type": "choice_point",
-      "narration": "The low shelf has a guide rope and a calm pocket. The high rock reach takes longer but stays above the low ice. The worker nods at both routes. \"If your route shifts, we will help you use the other one.\" You will play that changed crossing, not repeat the same attempt. Which route will your party try?",
+      "narration": "The low shelf has a guide rope and a calm pocket. The high rock reach takes longer but stays above the low ice. The worker nods at both routes. \"If your route shifts, we will help you use the other one,\" says the route worker. You will play that changed crossing, not repeat the same attempt. Which route will your party try?",
       "cast": [
         {
           "figure": "cast/pip_thistledown",

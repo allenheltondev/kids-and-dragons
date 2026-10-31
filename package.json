@@ -54,6 +54,7 @@
     "voice:generate": "tsx tools/voice/generate.ts",
     "voice:bakeoff": "tsx tools/voice/bakeoff/run.ts",
     "voice:cast": "tsx tools/voice/cast/build.ts",
+    "voice:untagged": "tsx tools/voice/cast/untagged.ts",
     "voice:clean": "tsx tools/voice/bakeoff/clean-report.ts",
     "load": "tsx tools/load/run.ts",
     "perf:bundle": "tsx tools/perf/bundle-budget.ts",

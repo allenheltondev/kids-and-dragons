@@ -2997,7 +2997,7 @@
       },
       "onSuccess": {
         "goto": "scene_claim_boulder",
-        "narration": "The wheel pops out of the rut with a sound like a cork. Forty wagons cheer, forty drovers claim it was their idea, and the centaur drover presses three coins into your hand. \"Toll refund,\" the drover says. \"Do not ask which toll.\"",
+        "narration": "The wheel pops out of the rut with a sound like a cork. Forty wagons cheer, forty drovers claim it was their idea, and the centaur drover presses three coins into your hand. \"Toll refund,\" the centaur drover says. \"Do not ask which toll.\"",
         "effects": [
           {
             "type": "grantCoins",
@@ -3011,7 +3011,7 @@
       },
       "onAssisted": {
         "goto": "scene_claim_boulder",
-        "narration": "The drovers lean in beside you, and together you rock the wagon free. It pops out of the rut with a sound like a cork, and the centaur drover presses three coins into your hand. \"Toll refund,\" the drover says. \"Do not ask which toll.\"",
+        "narration": "The drovers lean in beside you, and together you rock the wagon free. It pops out of the rut with a sound like a cork, and the centaur drover presses three coins into your hand. \"Toll refund,\" the centaur drover says. \"Do not ask which toll.\"",
         "effects": [
           {
             "type": "grantCoins",
