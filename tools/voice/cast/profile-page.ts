@@ -242,7 +242,9 @@ ${MODE_CSS}</style>
 
   // ---- Header ----
   KadMode.mountSwitch({
-    prefs, data, keys, live, savePrefs, saveKeys,
+    prefs, data, keys, live, savePrefs, saveKeys, call,
+    // A voice added from the library is on the account now: list it.
+    onAdded: async () => { await ensureElevenVoices(true); await refreshState(); if (current) { draw(); loadTold(); } },
     // A new mode or model or key: the voices on offer, who is still waiting, and what is rendered all change.
     onChange: async (keyChanged) => {
       note("");
@@ -869,6 +871,8 @@ ${MODE_CSS}</style>
   });
 
   (async () => {
+    // Already in ElevenLabs mode from the last visit: the account's voices are needed before the first character draws.
+    await ensureElevenVoices();
     await refreshState();
     const asked = new URLSearchParams(location.search).get("id");
     const first = asked && data.speakers[asked] ? asked : data.order.find(isWaiting);

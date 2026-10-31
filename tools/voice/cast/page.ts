@@ -185,7 +185,9 @@ ${MODE_CSS}</style>
 
   // ---- Header controls ----
   KadMode.mountSwitch({
-    prefs, data, keys, live, savePrefs, saveKeys,
+    prefs, data, keys, live, savePrefs, saveKeys, call,
+    // A voice added from the library is on the account now: list it.
+    onAdded: async () => { await ensureElevenVoices(true); await refresh(); },
     // A new mode or model or key: the voices on offer, who has one, and what is already rendered all change.
     onChange: async (keyChanged) => { note(""); await ensureElevenVoices(keyChanged); await refresh(); },
   });
@@ -382,7 +384,7 @@ ${MODE_CSS}</style>
     const list = shown();
     const all = Object.values(data.speakers);
     const retrying = all.filter((e) => KadMode.lastRejected(e, provider())).length;
-    document.getElementById("meta").textContent = KadMode.NAMES[provider()] + " voices · " + all.length + " speakers · " + all.filter((e) => KadMode.approved(e, provider())).length + " approved · " + retrying + " rejected, to hear again · " + Object.values(clashes).filter((c) => c.length).length + " sharing a voice · showing " + list.length;
+    document.getElementById("meta").textContent = KadMode.NAMES[provider()] + " voices · " + all.length + " speakers · " + all.filter((e) => KadMode.approved(e, provider())).length + " approved · " + (cover => cover.percent + "% of " + cover.lines + " lines covered")(KadMode.coverage(data.speakers, provider())) + " · " + retrying + " rejected, to hear again · " + Object.values(clashes).filter((c) => c.length).length + " sharing a voice · showing " + list.length;
     document.getElementById("cards").replaceChildren(...list.map(([id, entry]) => card(id, entry)));
     drawBudget();
   }

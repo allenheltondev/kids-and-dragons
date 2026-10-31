@@ -119,6 +119,7 @@ export function sheetCast(sheet: CastSheet, base: CastFile): CastFile {
         {
           describe: describe(entry),
           ...(entry.accent ? { accent: entry.accent } : {}),
+          ...(entry.direction ? { direction: entry.direction } : {}),
           gemini: { voice: entry.gemini.voice },
           ...(entry.elevenlabs?.voiceId ? { elevenlabs: { voiceId: entry.elevenlabs.voiceId, ...(entry.elevenlabs.name ? { name: entry.elevenlabs.name } : {}) } } : {}),
         },
