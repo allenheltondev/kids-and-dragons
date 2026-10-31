@@ -134,6 +134,21 @@ function A11ySheet({ onClose }: { onClose: () => void }): React.JSX.Element {
           </div>
         </section>
 
+        <section className="kad-a11y__group" aria-label="TV focus">
+          <h3 className="kad-a11y__heading">TV focus</h3>
+          <p className="kad-a11y__note">Watch the TV. The phone shows only what to tap, right when it is your turn.</p>
+          <div className="kad-a11y__row">
+            <Button variant="secondary" size="md" selected={!prefs.focus}
+              className="kad-a11y__option" aria-label="TV focus off" onClick={() => set({ focus: false })}>
+              Off
+            </Button>
+            <Button variant="secondary" size="md" selected={prefs.focus}
+              className="kad-a11y__option" aria-label="TV focus on" onClick={() => set({ focus: true })}>
+              On
+            </Button>
+          </div>
+        </section>
+
         <section className="kad-a11y__group" aria-label="Looks and motion">
           <div className="kad-a11y__row">
             <Button variant="secondary" size="md" selected={prefs.contrast}
