@@ -247,7 +247,7 @@ describe("the committed sheet", () => {
 
   it("has real lines for the people we know speak", () => {
     // A speech tag mid-line splits a quote in two; the sheet joins it back up.
-    expect(sheet.speakers.pib!.lines.map((l) => l.text)).toContain("I can only spare one. The hedge says you should choose it together.");
+    expect(sheet.speakers.pib!.lines.map((l) => l.text)).toContain("I can only spare one gift for you. The hedge says you should choose it together.");
     expect(sheet.speakers.orin_vale!.pronouns).toBe("he/him");
     expect(sheet.speakers.coralie_fenn!.aliases).toContain("Madame Fenn");
   });

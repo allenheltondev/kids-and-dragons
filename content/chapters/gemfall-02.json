@@ -1911,7 +1911,7 @@
     },
     "choice_pib_gift": {
       "type": "choice_point",
-      "narration": "Inside, Pib walks you up the lane to an inn with very tall doors, then digs in the satchel. \"I can only spare one gift,\" says Pib. \"The hedge says choose together.\" Which one? Everybody vote.",
+      "narration": "Inside, Pib walks you up the lane to an inn with very tall doors, then digs in the satchel. \"I can only spare one gift for you,\" says Pib. \"The hedge says you should choose it together.\" Which one? Everybody vote.",
       "cast": [
         {
           "figure": "cast/pib",
@@ -2875,7 +2875,7 @@
     },
     "interaction_hedge_request_response_ask": {
       "type": "story",
-      "narration": "The hedge gives a thoughtful rustle. Pib repeats your request gently. A path opens at your height.",
+      "narration": "Your request gets a thoughtful rustle. Pib repeats your request gently. A path opens at your height.",
       "choices": [
         {
           "id": "continue",
@@ -2902,7 +2902,7 @@
     },
     "interaction_hedge_request_response_reason": {
       "type": "story",
-      "narration": "The hedge listens to your whole answer. Pib repeats it gently. A path opens at your height.",
+      "narration": "The hedge listens without interrupting your answer. Pib repeats it gently. A path opens at your height.",
       "choices": [
         {
           "id": "continue",
@@ -2929,7 +2929,7 @@
     },
     "interaction_hedge_request_response_help": {
       "type": "story",
-      "narration": "Pib names a small job, and the leaf leans closer. Pib helps you ask one part at a time, until the hedge listens.",
+      "narration": "Pib names a small job, and the listening leaf leans closer. Pib helps you ask one part at a time, until the hedge listens.",
       "choices": [
         {
           "id": "continue",

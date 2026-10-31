@@ -70,16 +70,16 @@
       },
       "lines": [
         {
+          "text": "I can only spare one gift for you. The hedge says you should choose it together.",
+          "address": "gemfall-02/choice_pib_gift/narration"
+        },
+        {
           "text": "I'm Pib. I keep the hedges. They only open for people who ask properly. Will you?",
           "address": "gemfall-02/scene_hedge_mob/narration"
         },
         {
           "text": "The hedge kept it for somebody clever. It thinks that might be you. It isn't sure.",
           "address": "gemfall-02/choice_pib_gift_feather/narration"
-        },
-        {
-          "text": "When things go wrong, look through the hole, and they go a bit less wrong.",
-          "address": "gemfall-02/choice_pib_gift_pebble/narration"
         }
       ],
       "lineCount": 8,
@@ -2995,7 +2995,7 @@
           "address": "gemfall-05a/check_string/onSuccess/narration"
         },
         {
-          "text": "Hold this end? It only reads true when it's tight. One of you reads the knots. Everyone else pulls.",
+          "text": "Hold this end? It only reads true when it's tight. One hero reads the knots. Everyone else pulls.",
           "address": "gemfall-05a/check_string/narration"
         },
         {
@@ -4350,7 +4350,7 @@
         }
       ],
       "lineCount": 78,
-      "guessedLines": 20,
+      "guessedLines": 19,
       "speaks": true,
       "status": "provisional"
     },
@@ -5227,12 +5227,20 @@
       },
       "lines": [
         {
+          "text": "The new detours glow in the order the stones fell. Watch, then put them back in order.",
+          "address": "gemfall-04a/check_sashes/narration"
+        },
+        {
           "text": "Every sash needs changing this season. Help me see why.",
           "address": "gemfall-04a/scene_waystation/narration"
+        },
+        {
+          "text": "River first, then pride, bridge, pride.",
+          "address": "gemfall-04a/scene_waystation_lesson/narration"
         }
       ],
-      "lineCount": 5,
-      "guessedLines": 4,
+      "lineCount": 4,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },

@@ -2332,7 +2332,7 @@
     },
     "interaction_camp_response_tea": {
       "type": "story",
-      "narration": "Tea steam curls into the dusk. The fire glows, the blankets are warm, and the tea tastes like a rainy afternoon.",
+      "narration": "Tea steam curls up into the dusk. The fire glows, the blankets are warm, and the tea tastes like a rainy afternoon.",
       "choices": [
         {
           "id": "continue",

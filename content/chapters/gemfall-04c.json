@@ -2483,7 +2483,7 @@
     },
     "interaction_pony_response_brush": {
       "type": "story",
-      "narration": "Dumpling leans into the brush, groaning with joy, and blows a raspberry on your sleeve. The courier laughs and tips you three coppers. Off she rings, and you follow the sound of singing to the relay campfire.",
+      "narration": "Dumpling leans into the brush and groans with joy. She blows a raspberry on your sleeve. The courier laughs and tips you three coppers. Off she rings, and you follow the sound of singing to the relay campfire.",
       "choices": [
         {
           "id": "continue",
@@ -2512,7 +2512,7 @@
     },
     "interaction_pony_response_water": {
       "type": "story",
-      "narration": "Dumpling slurps the bucket dry and blows a raspberry on your sleeve. The courier laughs and tips you three coppers. Off she rings, and you follow the sound of singing to the relay campfire.",
+      "narration": "Dumpling slurps until the bucket is just a shiny bottom. She blows a raspberry on your sleeve. The courier laughs and tips you three coppers. Off she rings, and you follow the sound of singing to the relay campfire.",
       "choices": [
         {
           "id": "continue",
@@ -2541,7 +2541,7 @@
     },
     "interaction_pony_response_hum": {
       "type": "story",
-      "narration": "Dumpling's tail swishes in time, and she blows a raspberry on your sleeve. The courier laughs and tips you three coppers. Off she rings, and you follow the sound of singing to the relay campfire.",
+      "narration": "Dumpling's tail swishes in time. She blows a raspberry on your sleeve. The courier laughs and tips you three coppers. Off she rings, and you follow the sound of singing to the relay campfire.",
       "choices": [
         {
           "id": "continue",

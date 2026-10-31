@@ -5916,7 +5916,7 @@
     },
     "interaction_verdict_council_response_carried": {
       "type": "story",
-      "narration": "You name what you carried, and what it changed. Then it moves aside. \"You came a long way to give your own answers,\" it says.",
+      "narration": "The dragon asks what changed because you carried it. Then it moves aside. \"You came a long way to give your own answers,\" it says.",
       "choices": [
         {
           "id": "continue",
@@ -5942,7 +5942,7 @@
     },
     "interaction_verdict_council_response_helped": {
       "type": "story",
-      "narration": "You name who helped you. A moth settles closer to listen. Then it moves aside. \"You came a long way to give your own answers,\" it says.",
+      "narration": "An embermoth settles closer to listen. Then it moves aside. \"You came a long way to give your own answers,\" it says.",
       "choices": [
         {
           "id": "continue",
@@ -5968,7 +5968,7 @@
     },
     "interaction_verdict_council_response_choice": {
       "type": "story",
-      "narration": "You say what should happen now, and the dragon waits for every answer. Then it moves aside. \"You came a long way to give your own answers,\" it says.",
+      "narration": "The Seal-Keeper waits until your answer is complete. Then it moves aside. \"You came a long way to give your own answers,\" it says.",
       "choices": [
         {
           "id": "continue",
