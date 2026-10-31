@@ -84,10 +84,10 @@
       "address": "gemfall-02/choice_pib_gift/narration",
       "group": "pib",
       "script": [
-        { "by": "narrator", "text": "Inside the hedges, Pib trots up the lane beside you, narrating every leaf on the way. At the door of an inn with very tall doors they stop and dig in the big satchel. Out come three things you did not ask for." },
-        { "by": "pib", "text": "<sigh> \"I can only spare one,\"" },
+        { "by": "narrator", "text": "Inside, Pib walks you up the lane to an inn with very tall doors, then digs in the satchel." },
+        { "by": "pib", "text": "<sigh> \"I can only spare one gift,\"" },
         { "by": "narrator", "text": "says Pib." },
-        { "by": "pib", "text": "\"The hedge says you should choose it together.\"" },
+        { "by": "pib", "text": "\"The hedge says choose together.\"" },
         { "by": "narrator", "text": "Which one? Everybody vote." }
       ]
     },
@@ -123,16 +123,14 @@
       "id": "pib-hedge-mob",
       "tier": "4-ensemble",
       "title": "A shouting mob, and Pib not letting them in",
-      "tests": "A crowd shouting together, then Pib, then a question handed to the party.",
+      "tests": "A crowd shouting together, then Pib asking the party a question.",
       "address": "gemfall-02/scene_hedge_mob/narration",
       "group": "pib",
       "script": [
-        { "by": "narrator", "text": "Outside Bramblewood's tall hedges, a mob of treasure hunters is camped and shouting," },
-        { "by": "mob", "text": "\"Open up! Let us through!\"", "delivery": "chorus" },
-        { "by": "narrator", "text": "The hedges are not listening. Along the wall, a small thorny sprite with a satchel too big for them is trimming one leaf at a time and narrating it." },
-        { "by": "pib", "text": "\"I'm Pib,\"" },
-        { "by": "narrator", "text": "they say." },
-        { "by": "pib", "text": "\"I can't let them in. The hedges don't listen to people who haven't asked properly. What about you?\"" }
+        { "by": "narrator", "text": "Outside Bramblewood's tall hedges, a mob of treasure hunters shouts," },
+        { "by": "mob", "text": "\"Open up!\"", "delivery": "chorus" },
+        { "by": "narrator", "text": "The hedges ignore them. A small thorny sprite with a huge satchel trims one leaf at a time." },
+        { "by": "pib", "text": "\"I'm Pib. I keep the hedges. They only open for people who ask properly. Will you?\"" }
       ]
     },
     {
@@ -162,11 +160,11 @@
       "tests": "A flock answering together, slightly out of step, then single sheeple finishing each other's thoughts.",
       "address": "gemfall-02/scene_flock_ridge/narration",
       "script": [
-        { "by": "narrator", "text": "On the low ridge above the road, about thirty sheeple are standing in one tight woolly knot. Every one of them is wearing the same felted hat with seven brims. When you walk up, nobody says anything for a whole minute, because each sheeple is waiting for another one to say hello first. Then twenty of them say hello at once." },
+        { "by": "narrator", "text": "About thirty sheeple stand in one woolly knot, all in the same seven-brimmed hat." },
         { "by": "sheeple_middle", "text": "\"What do we think?\"" },
-        { "by": "narrator", "text": "asks the one in the middle." },
+        { "by": "narrator", "text": "asks the middle one." },
         { "by": "sheeple", "text": "\"We think wolves,\"", "delivery": "chorus" },
-        { "by": "narrator", "text": "they all answer, slightly out of step." },
+        { "by": "narrator", "text": "they answer, out of step." },
         { "by": "sheeple_a", "text": "\"In the grass.\"" },
         { "by": "sheeple_b", "text": "\"We all saw them.\"" },
         { "by": "sheeple_middle", "text": "<pause> \"Because one of us did.\"" }
@@ -198,14 +196,10 @@
       "address": "gemfall-06/scene_soup_tent/narration",
       "tokens": { "party": 2 },
       "script": [
-        { "by": "narrator", "text": "At the top of the road is a soup tent with a sign: FREE, NO QUESTIONS. A woman called Hessa Wren ladles a bowl for {party}, asks for names, and remembers them. Behind her, helpers in painted bark masks stir the pots and hum one low note, all together." },
+        { "by": "narrator", "text": "At the top of the road, a soup tent says FREE, NO QUESTIONS. A woman called Hessa Wren ladles soup for {party} and remembers every name. Helpers in painted bark masks stir the pots, humming one low note." },
         { "by": "hessa", "text": "\"My friends from the Deep Hollow,\"" },
-        { "by": "narrator", "text": "says Hessa." },
-        { "by": "hessa", "text": "\"The masks are for singing to the mountain.\"" },
-        { "by": "narrator", "text": "Then she leans in." },
-        { "by": "hessa", "text": "<breath> \"The world's laws are broken,\"", "delivery": "kindly" },
-        { "by": "narrator", "text": "she says kindly, as if she were telling you it might rain." },
-        { "by": "hessa", "text": "\"There's a seal on the mountain, like a lid on a pot. It isn't protecting anyone. It's a cage on the cure.\"", "delivery": "kindly" }
+        { "by": "narrator", "text": "she says. Then, kindly:" },
+        { "by": "hessa", "text": "<breath> \"There's a seal on the mountain, like a lid on a pot. It's a cage on the cure. Will you help us open it?\"", "delivery": "kindly" }
       ]
     },
     {
