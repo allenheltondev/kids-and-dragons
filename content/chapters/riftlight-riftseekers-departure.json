@@ -41,17 +41,17 @@
   "scenes": {
     "map": {
       "type": "story",
-      "narration": "The griffin calls to the unicorn. \"Olivia. Your hoof.\" She steps aside. He folds his map, finds another corner stuck under a bag, and gives up. \"Good morning. I'm Orin Vale.\" \"I'm Lady Olivia,\" the unicorn adds. Behind them, a kitsune tightens a strap on a case of small rings. \"I'm Seren Wisp,\" she says, waving. An open case of little brass instruments rests beside Orin's pack. \"Were you the noise over the ridge?\" he asks. Your job today: meet these travelers, help them pack, and get ready for the road ahead.",
+      "narration": "The griffin calls to the unicorn. \"Olivia. Your hoof.\" She steps aside. Another corner is stuck under a bag, so he gives up on the map. \"Good morning. I'm Orin Vale.\" \"I'm Lady Olivia,\" says the unicorn. Behind them, a kitsune straps up a case of small rings. \"Seren Wisp,\" she says, waving. Beside Orin's pack sits a case of little brass instruments. Your job today: meet these travelers, help them pack, and get ready for the road ahead.",
       "choices": [
         {
           "id": "tell",
-          "label": "Tell them how you arrived",
+          "label": "Tell how you arrived",
           "icon": "hand",
           "goto": "arrival_story"
         },
         {
           "id": "ask",
-          "label": "Ask whether they saw the fold",
+          "label": "Ask about the fold",
           "icon": "hand",
           "goto": "arrival_question"
         }
@@ -74,7 +74,7 @@
     },
     "arrival_story": {
       "type": "story",
-      "narration": "You tell Orin about the snow, the kid, and the quay vanishing behind you. He writes down \"goat\" and underlines it. \"A place arrived first. Then you crossed,\" he says. Olivia leans over his shoulder. \"And it reached all the way here.\"",
+      "narration": "You tell Orin about the snow, the kid, and the quay vanishing behind you. He writes down \"goat\" and underlines it. Olivia leans over his shoulder. \"And it reached all the way here.\"",
       "choices": [
         {
           "id": "continue",
@@ -97,11 +97,11 @@
     },
     "arrival_question": {
       "type": "story",
-      "narration": "\"We saw it close,\" says Seren. She checks that everyone is standing steady. \"You all came through together? Good.\" Orin opens his notebook. Olivia is watching the slope where the fold closed.",
+      "narration": "\"We saw it close,\" says Seren. \"You all came through together? Good.\" Orin opens his notebook. Olivia watches the slope where the fold closed.",
       "choices": [
         {
           "id": "continue",
-          "label": "Ask what they are doing here",
+          "label": "Ask what they're doing",
           "icon": "hand",
           "goto": "fellowship"
         }
@@ -124,24 +124,24 @@
     },
     "fellowship": {
       "type": "choice_point",
-      "narration": "\"Riftseekers,\" says Orin, touching the broken-circle clasp on his cloak. \"We call these openings rifts. We follow them and write down what they do.\" \"Some of us would like to do more than write,\" says Lady Olivia. Seren closes her ring case. \"Some of us would like to arrive with all our luggage.\" Beside them, the travelers' sled leans like a sleepy goat. Orin frowns at it. \"We leave when it stops leaning. Hands would help.\"",
+      "narration": "\"Riftseekers,\" says Orin, touching the broken-circle clasp on his cloak. \"We call these openings rifts. We follow them and write down what they do.\" \"Some of us want to do more than write,\" says Lady Olivia. The travelers' sled leans like a sleepy goat. \"We leave when it stops leaning,\" says Orin.",
       "choices": [
         {
           "id": "lift",
-          "label": "Lift the trunks onto the sled together",
+          "label": "Load the sled together",
           "icon": "might",
           "goto": "sledge_lift"
         },
         {
           "id": "brace",
-          "label": "Use brace to hold the leaning sled steady",
+          "label": "Brace the leaning sled",
           "icon": "shield",
           "goto": "sledge_brace",
           "requiresClass": "thornguard"
         },
         {
           "id": "smash",
-          "label": "Smash the ice off the sled runners",
+          "label": "Smash the ice off",
           "icon": "fist",
           "goto": "sledge_smash",
           "requiresSpecies": "bigfoot"
@@ -165,7 +165,7 @@
     },
     "sledge_lift": {
       "type": "interaction",
-      "narration": "Four trunks, three sacks, a crate of notebooks and a barrel that sloshes. Olivia points with one hoof. \"Heavy things low, light things high.\" Orin has drawn a diagram on his sleeve. \"Hand to hand,\" he says. \"Nobody carries the whole pile.\"",
+      "narration": "Four trunks, three sacks, a crate of notebooks and a barrel that sloshes. \"Heavy things low,\" says Olivia. \"Hand to hand,\" says Orin.",
       "interaction": {
         "kind": "relay",
         "cue": "Catch each trunk and pass it along to the sled.",
@@ -174,7 +174,7 @@
       },
       "onSuccess": {
         "goto": "ring_sort",
-        "narration": "Up it all goes, hand to hand. The sled stops leaning and sits level as a loaf. Olivia lifts the lid of a small clay jar to check it. \"Mosslight, for the road. You earned it.\" The moss inside glows like a sleepy star.",
+        "narration": "Up it all goes. The sled sits level as a loaf. Olivia hands you a small clay jar. \"Mosslight, for the road. You earned it.\"",
         "effects": [
           {
             "type": "grantItem",
@@ -185,7 +185,7 @@
       },
       "onFailure": {
         "goto": "ring_sort",
-        "narration": "The barrel goes up faster than the trunks, and everything meets in the middle. A sack of oats bursts. Olivia hops over it with great dignity. You restack the load, but the sled keeps its lean.",
+        "narration": "The barrel and the trunks meet in the middle, and a sack of oats bursts. The sled keeps its lean.",
         "effects": [
           {
             "type": "setFlag",
@@ -195,7 +195,7 @@
       },
       "onAssisted": {
         "goto": "ring_sort",
-        "narration": "Orin steadies the chain with a long pole, and the trunks glide along. The sled sits level as a loaf. Olivia lifts the lid of a small clay jar to check it. \"Mosslight, for the road. You earned it.\" The moss inside glows like a sleepy star.",
+        "narration": "Orin steadies the line with a pole. The sled sits level. Olivia hands you a small clay jar. \"Mosslight, for the road.\"",
         "effects": [
           {
             "type": "grantItem",
@@ -221,11 +221,11 @@
       "stat": "might",
       "tn": 8,
       "roller": "best",
-      "narration": "Brace is a stout sort of magic: plant your feet and become a wall. You set a shoulder to the sled while the others lift.",
+      "narration": "Brace is a stout sort of magic: plant your feet and become a wall.",
       "prompt": "Hold the sled steady while the heavy trunks go on.",
       "onSuccess": {
         "goto": "ring_sort",
-        "narration": "Not one runner wobbles. The trunks settle in with soft thumps, and the sled sits level as a loaf. Olivia lifts the lid of a small clay jar to check it. \"Mosslight, for the road. You earned it.\" The moss inside glows like a sleepy star.",
+        "narration": "Not one runner wobbles. Olivia hands you a small clay jar. \"Mosslight, for the road. You earned it.\"",
         "effects": [
           {
             "type": "grantItem",
@@ -236,7 +236,7 @@
       },
       "onFailure": {
         "goto": "ring_sort",
-        "narration": "The barrel goes up faster than the trunks, and everything meets in the middle. A sack of oats bursts. Olivia hops over it with great dignity. You restack the load, but the sled keeps its lean.",
+        "narration": "The barrel and the trunks meet in the middle, and a sack of oats bursts. The sled keeps its lean.",
         "effects": [
           {
             "type": "setFlag",
@@ -260,11 +260,11 @@
         "force"
       ],
       "roller": "best",
-      "narration": "A crust of old ice holds the sled runners like a hand. Smash is a good answer to a crust.",
+      "narration": "Old ice grips the runners like a hand. Smash is a good answer to that.",
       "prompt": "Smash the ice off the runners, then shove the sled level.",
       "onSuccess": {
         "goto": "ring_sort",
-        "narration": "Crack! The ice flies off in a shower of glitter, and the sled rocks upright. Everyone pats the trunks into place. Olivia lifts the lid of a small clay jar to check it. \"Mosslight, for the road. You earned it.\" The moss inside glows like a sleepy star.",
+        "narration": "Crack! Ice flies off like glitter, and the sled rocks upright. Olivia hands you a small clay jar. \"Mosslight, for the road.\"",
         "effects": [
           {
             "type": "grantItem",
@@ -275,7 +275,7 @@
       },
       "onFailure": {
         "goto": "ring_sort",
-        "narration": "The barrel goes up faster than the trunks, and everything meets in the middle. A sack of oats bursts. Olivia hops over it with great dignity. You restack the load, but the sled keeps its lean.",
+        "narration": "The barrel and the trunks meet in the middle, and a sack of oats bursts. The sled keeps its lean.",
         "effects": [
           {
             "type": "setFlag",
@@ -293,7 +293,7 @@
     },
     "ring_sort": {
       "type": "interaction",
-      "narration": "Seren sets her ring case on a flat stone and lifts the lid. Rings of every size lie inside, each with its own tiny hum. The rush has jostled them. \"They go back in order,\" she says, \"or the lid will not close, and the lid is all that keeps them from singing in my pack all night.\" She hands out little cards. \"Each card knows something. Share what yours says.\"",
+      "narration": "Seren opens her ring case. Rings of every size lie inside, each with a tiny hum, all jumbled. \"They go back in order, or they'll sing in my pack all night.\" She hands out cards. \"Each card knows something. Share what yours says.\"",
       "interaction": {
         "kind": "sequence",
         "cue": "Share your clues, then put the rings in order.",
@@ -328,15 +328,15 @@
       },
       "onSuccess": {
         "goto": "seren",
-        "narration": "Click, click, click. The last ring drops in with a note like a dropped spoon. Seren blinks. \"Hm. You are better at this than Orin.\" The lid closes with a satisfied sigh."
+        "narration": "Click, click, click. \"Hm,\" says Seren. \"You are better at this than Orin.\""
       },
       "onFailure": {
         "goto": "seren",
-        "narration": "Two rings land in the wrong grooves. The lid closes anyway, and the case hums a little crooked. Seren sighs fondly. \"I will fix it by the fire. Rings are patient.\""
+        "narration": "Two rings land in the wrong grooves. \"I'll fix it by the fire,\" says Seren. \"Rings are patient.\""
       },
       "onAssisted": {
         "goto": "seren",
-        "narration": "You lay every card side by side. Low, high, middle. The lid closes with a satisfied sigh, and Seren tucks the case under her arm."
+        "narration": "You lay the cards side by side. Low, high, middle. Click."
       },
       "cast": [
         {
@@ -352,11 +352,11 @@
     },
     "seren": {
       "type": "story",
-      "narration": "\"Where did the opening appear, and how long did it last?\" Seren asks. She listens without interrupting. Orin rolls the map around a wooden rod so nobody can stand on it again.",
+      "narration": "Seren asks where the opening appeared and how long it lasted. She listens without interrupting. Orin rolls his map around a rod so nobody can stand on it again.",
       "choices": [
         {
           "id": "continue",
-          "label": "Help Orin with his instruments",
+          "label": "Help with the instruments",
           "icon": "hand",
           "goto": "instruments"
         }
@@ -366,13 +366,13 @@
           "when": {
             "flag": "starweaver_read_first_rift"
           },
-          "text": "When you describe studying the light around the opening, Seren looks up. \"One of you can see it. Keep looking. Later, I can show you how to listen too,\" she says."
+          "text": "When you tell her about the light around the opening, Seren looks up. \"You can see it. Keep looking. Later, I can show you how to listen too.\""
         },
         {
           "when": {
             "notFlag": "starweaver_read_first_rift"
           },
-          "text": "\"You can learn a good deal without seeing what I see,\" Seren says. She glances at Orin's instruments. \"He brought half a bag of help,\" Seren adds."
+          "text": "\"You can learn a lot without seeing what I see,\" says Seren."
         }
       ],
       "cast": [
@@ -388,7 +388,7 @@
       "art": "scenes/riftlight/departure-loaded-sledge"
     },
     "instruments": {
-      "narration": "Orin opens the case of little brass instruments. Frost has crept into every hinge. A horn whines. A tiny trumpet will not move at all. \"The best ears should find the flat one,\" he says, \"and the best fingers should fix it. I have no idea who has which.\" The flat one is the little trumpet. A drop of warm tea in its hinge, a twist, and it sings true. Orin holds it to his ear like a shell. \"Better than new,\" he tells Seren. Seren says that is not possible, and smiles.",
+      "narration": "Orin opens his case of little brass instruments. Frost has crept into every hinge, and a tiny trumpet won't move at all. A drop of warm tea, a twist, and it sings true. \"Better than new,\" Orin tells Seren. Seren says that is not possible, and smiles.",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -408,14 +408,14 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Back to the sled",
           "icon": "forward",
           "goto": "corner_hunt"
         }
       ]
     },
     "corner_hunt": {
-      "narration": "Orin pats his coat, his bag, his hat. \"My map is still pinned under the load,\" he says. \"If it tears, the pass tears with it.\" He looks at you hopefully. Trunks are heavy, and paper is not. Slip, slide, free. The map comes out whole and flat. Orin hugs it, then remembers himself and only pats it. \"Thank you. I would have drawn the pass in the wrong place forever.\"",
+      "narration": "Orin unrolls his map and groans. One corner is torn off. \"It's still under the load!\" Trunks are heavy, and paper is not. Slip, slide, free. Orin hugs the corner, then remembers himself and only pats it.",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -427,7 +427,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Hear Orin's plan",
           "icon": "forward",
           "goto": "lead"
         }
@@ -435,11 +435,11 @@
     },
     "lead": {
       "type": "story",
-      "narration": "Orin unrolls his map and points east. \"The griffins at Frostfang keep a ledger of their passes. Last season, no pass here. This season, cairns and a path. They call it the Cairnstep.\" He marks the herder's flooded grazing route beside it. \"If the pass reaches this bank, supplies could get through to the herd. It might also show us why a road no longer leads where people expect. We need to find where it really goes,\" says Orin.",
+      "narration": "Orin spreads the mended map and points east. \"The griffins at Frostfang keep a record of their passes. Last season, no pass here. This season, cairns and a path. They call it the Cairnstep.\" He marks the herder's flooded grazing route beside it. \"If the pass reaches this bank, food could reach the herd. It might also show us why roads no longer go where people expect.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Ask what they would do first",
+          "label": "Ask what comes first",
           "icon": "hand",
           "goto": "olivia"
         }
@@ -465,17 +465,17 @@
     },
     "olivia": {
       "type": "choice_point",
-      "narration": "Olivia taps the flooded route on the map. \"There is food in my pack. If we could carry it through an opening, the herd could eat today.\" Orin lifts his own pack. \"I will carry food. But I will not send someone into a rift before we know whether they can return.\" Seren watches your faces. \"What would you put first?\"",
+      "narration": "Olivia taps the flooded route. \"I have food in my pack. Carry it through an opening, and the herd eats today.\" \"I will carry food,\" says Orin. \"But I will not send anyone into a rift before we know they can come back.\" Seren watches your faces. \"What comes first?\"",
       "choices": [
         {
           "id": "help",
-          "label": "Help the people waiting now",
+          "label": "Help the herd now",
           "icon": "hand",
           "goto": "help_now"
         },
         {
           "id": "routes",
-          "label": "Find safe routes for the next travelers",
+          "label": "Find safe routes first",
           "icon": "hand",
           "goto": "safe_routes"
         }
@@ -498,11 +498,11 @@
     },
     "help_now": {
       "type": "story",
-      "narration": "Olivia takes a supper bundle from her pack and calls the herder over. \"This much can go by hand,\" says Olivia. Orin makes room for it on the sled. \"And we can learn the route before we send more.\" Seren nods to you. \"A useful place to begin.\"",
+      "narration": "Olivia takes a supper bundle from her pack and calls the herder over. \"This much can go by hand.\" Orin makes room for it on the sled. \"And we learn the route before we send more.\" Seren nods. \"A good place to begin.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Pull the sled to the herder's tent",
+          "label": "Haul the supper over",
           "icon": "hand",
           "goto": "haul_supper"
         }
@@ -531,11 +531,11 @@
     },
     "safe_routes": {
       "type": "story",
-      "narration": "Orin draws a careful line beside the Cairnstep. \"A route people can trust. Yes.\" Olivia leaves a supper bundle for the herder. \"We can feed someone while you check it,\" says Olivia. Seren looks at the glacier. \"And listen here, if the road is not the question you want to follow.\"",
+      "narration": "Orin draws a careful line beside the Cairnstep. \"A route people can trust. Yes.\" Olivia leaves a supper bundle for the herder anyway. Seren looks at the glacier. \"And if the road is not your question, listen here.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Mark the safe bank for Orin",
+          "label": "Mark the safe bank",
           "icon": "hand",
           "goto": "chalk_route"
         }
@@ -567,11 +567,11 @@
       "stat": "quick",
       "tn": 8,
       "roller": "party",
-      "narration": "The herder's tent stands across a yard of slick, packed ice. The supper has to get there warm, and the sled has to get there upright.",
+      "narration": "The herder's tent stands across a yard of slick ice.",
       "prompt": "Steer the sled around the slick patches to the herder's tent.",
       "onSuccess": {
         "goto": "route",
-        "narration": "The sled glides like a duck on a pond. The herder lifts the lid, sniffs, and closes her eyes. \"Warm.\" Orin taps a flat tin on his belt, the Riftseekers' helper fund. \"Everyone who hauls gets paid.\" Four coins clink into your hands, and the herder slips you a honeycake too.",
+        "narration": "The sled glides like a duck on a pond. \"Warm,\" sighs the herder. Orin pays you four coins from a flat tin, the Riftseekers' helper fund. The herder adds a honeycake.",
         "effects": [
           {
             "type": "grantCoins",
@@ -586,7 +586,7 @@
       },
       "onFailure": {
         "goto": "route",
-        "narration": "The sled hits glare ice and spins once, slowly, with everyone's dignity. The supper arrives a little shaken, and the goats rush over to check it. The herder laughs into her sleeve. Orin counts two coins from a flat tin, the Riftseekers' helper fund. \"For effort.\"",
+        "narration": "The sled spins once on glare ice, slowly, with great dignity. Orin counts two coins from a flat tin, the Riftseekers' helper fund. \"For effort.\"",
         "effects": [
           {
             "type": "grantCoins",
@@ -611,11 +611,11 @@
       "stat": "clever",
       "tn": 8,
       "roller": "best",
-      "narration": "Orin hands you a stick of chalk and his longest list of questions. Which stones sit steady? Which snow hangs over an edge? The herder watches from her tent door. \"Mark the bank where my goats walk,\" she says, \"and mark it right.\"",
+      "narration": "Orin hands you a stick of chalk. \"Mark the bank where my goats walk,\" says the herder, \"and mark it right.\"",
       "prompt": "Walk the bank beside the hall and chalk every steady stone.",
       "onSuccess": {
         "goto": "route",
-        "narration": "Your chalk runs straight along the bank, steady stone to steady stone. Orin traces it with a finger. \"A route people can trust.\" He taps a flat tin on his belt, the Riftseekers' helper fund, and counts four coins into your hand. The herder sends over a warm honeycake.",
+        "narration": "Your chalk line runs straight, steady stone to steady stone. Orin pays you four coins from a flat tin, the Riftseekers' helper fund. The herder adds a warm honeycake.",
         "effects": [
           {
             "type": "grantCoins",
@@ -630,7 +630,7 @@
       },
       "onFailure": {
         "goto": "route",
-        "narration": "Your chalk marks one stone wrong, and a goat points it out by sitting on it. It skids. You rub out the mark and try the next stone. Orin counts two coins from a flat tin, the Riftseekers' helper fund. \"For honesty.\"",
+        "narration": "You chalk a wobbly stone, and a goat proves it by sitting on it. Orin counts two coins from a flat tin, the Riftseekers' helper fund. \"For honesty.\"",
         "effects": [
           {
             "type": "grantCoins",
@@ -656,7 +656,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Look over the river for yourselves",
+          "label": "Look over the river",
           "icon": "hand",
           "goto": "lookout"
         }
@@ -675,23 +675,23 @@
     },
     "lookout": {
       "type": "choice_point",
-      "narration": "From the ledge by the hall you can see how the land lies. Melt channels braid down toward the Great River. Above them, the ice shelf shines. Orin hands you his spyglass, then takes it back to find which end is the right end. \"Look first,\" he says. \"Then walk.\" How will you look?",
+      "narration": "From the ledge by the hall, melt channels braid down toward the Great River. Above them, the ice shelf shines. Orin hands you his spyglass, then takes it back to find the right end. \"Look first,\" he says. \"Then walk.\"",
       "choices": [
         {
           "id": "climb",
-          "label": "Climb the rock stair to the high ledge",
+          "label": "Climb to the high ledge",
           "icon": "boot",
           "goto": "lookout_climb"
         },
         {
           "id": "sky",
-          "label": "Read the clouds and wind from where you stand",
+          "label": "Read the wind and clouds",
           "icon": "eye",
           "goto": "lookout_sky"
         },
         {
           "id": "fly",
-          "label": "Take to your wings for a better look",
+          "label": "Fly up for a look",
           "icon": "wing",
           "goto": "lookout_fly",
           "requiresSpecies": [
@@ -716,11 +716,11 @@
         "climb"
       ],
       "roller": "party",
-      "narration": "The rock stair is a rumor of steps, glued together with frost.",
+      "narration": "The rock stair is more of a rumor than a stair, glued together with frost.",
       "prompt": "Climb to the high ledge without losing a boot.",
       "onSuccess": {
         "goto": "sketch",
-        "narration": "From the ledge the river lies below like a long silver ribbon. The ice shelf above it has one dark patch where the surface looks thin. You hold on tight and remember where.",
+        "narration": "The river lies below like a silver ribbon. One dark patch on the shelf looks thin. You remember where.",
         "effects": [
           {
             "type": "setFlag",
@@ -730,7 +730,7 @@
       },
       "onFailure": {
         "goto": "sketch",
-        "narration": "Halfway up, a step turns out to be a rumor. You slide back down and land in a soft drift. From the bottom you can still see the shelf, but only most of it."
+        "narration": "A step turns out to be only a rumor. You slide into a soft drift, but you can still see most of the shelf."
       },
       "art": "scenes/riftlight/ice-shelf-headwaters"
     },
@@ -739,11 +739,11 @@
       "stat": "clever",
       "tn": 8,
       "roller": "best",
-      "narration": "Wind tells you what the ice is doing, if you watch the snow it drags.",
-      "prompt": "Watch the drifting snow and the clouds, and work out where the air is coming from.",
+      "narration": "The wind drags snow across the ice. Watch the snow, and you see what the ice is doing.",
+      "prompt": "Watch the drifting snow and clouds. Where is the air coming from?",
       "onSuccess": {
         "goto": "sketch",
-        "narration": "The snow streams off one place on the shelf faster than anywhere else. That patch is thin, or hollow, or both. You keep it in your head.",
+        "narration": "Snow streams off one patch of the shelf faster than anywhere else. That patch is thin.",
         "effects": [
           {
             "type": "setFlag",
@@ -753,7 +753,7 @@
       },
       "onFailure": {
         "goto": "sketch",
-        "narration": "The clouds say rain, snow, or nothing at all. You decide the sky is being mysterious on purpose."
+        "narration": "The clouds say rain, snow, or nothing. The sky is being mysterious on purpose."
       },
       "art": "scenes/riftlight/ice-shelf-headwaters"
     },
@@ -762,11 +762,11 @@
       "stat": "quick",
       "tn": 8,
       "roller": "best",
-      "narration": "Wings make a lookout easy, if the wind agrees. One of you rises, and the others call up what to find.",
-      "prompt": "Fly a slow circle over the shelf and read the ice from above.",
+      "narration": "Wings make a lookout easy, if the wind agrees. One hero rises while the others call up what to look for.",
+      "prompt": "Fly a slow circle and read the ice from above.",
       "onSuccess": {
         "goto": "sketch",
-        "narration": "From above, the whole shelf lies flat like a map. One dark patch shows where the ice is thin. You land and point at it before you forget.",
+        "narration": "From above, one dark patch shows where the ice is thin.",
         "effects": [
           {
             "type": "setFlag",
@@ -776,29 +776,29 @@
       },
       "onFailure": {
         "goto": "sketch",
-        "narration": "A gust flips you sideways. You flutter down laughing, with snow in your feathers and a lot of sky in your eyes."
+        "narration": "A gust flips you sideways. You flutter down laughing, with snow in your feathers."
       },
       "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "sketch": {
       "type": "choice_point",
-      "narration": "Orin unrolls his map beside the sled and hands you his pencil. \"Draw what you saw,\" he says. \"Maps are made by whoever looked last.\" Seren props a corner with a rock. What do you add?",
+      "narration": "Orin unrolls his map beside the sled and hands you his pencil. \"Draw what you saw. Maps are made by whoever looked last.\" What do you add?",
       "choices": [
         {
           "id": "shelf",
-          "label": "Draw the ice shelf and its edge",
+          "label": "Draw the ice shelf",
           "icon": "map",
           "goto": "sketch_shelf"
         },
         {
           "id": "bend",
-          "label": "Draw the river's first bend",
+          "label": "Draw the river's bend",
           "icon": "arrow",
           "goto": "sketch_bend"
         },
         {
           "id": "hall",
-          "label": "Draw the singing hall and its sealed seam",
+          "label": "Draw the sealed seam",
           "icon": "ear",
           "goto": "sketch_hall"
         }
@@ -817,7 +817,7 @@
     },
     "sketch_shelf": {
       "type": "story",
-      "narration": "You draw the shelf as a long white tongue above the river, edges wobbling. Orin leans in. \"Wobbly and true beats neat and wrong,\" he says. Olivia lifts her nose. \"Wind is coming,\" she says. \"Hold the cover!\"",
+      "narration": "You draw the shelf like a long white tongue above the river. \"Wobbly and true beats neat and wrong,\" says Orin. Olivia lifts her nose. \"Wind is coming! Hold the cover!\"",
       "choices": [
         {
           "id": "continue",
@@ -848,7 +848,7 @@
     },
     "sketch_bend": {
       "type": "story",
-      "narration": "You draw the river's first bend, where the melt channels pour in. Seren taps the bend. \"Loud water hides small sounds,\" she says. \"Remember that.\" Olivia lifts her nose. \"Wind is coming,\" she says. \"Hold the cover!\"",
+      "narration": "You draw the river's first bend, where the melt channels pour in. \"Loud water hides small sounds,\" says Seren. \"Remember that.\" Olivia lifts her nose. \"Wind is coming! Hold the cover!\"",
       "choices": [
         {
           "id": "continue",
@@ -871,7 +871,7 @@
     },
     "sketch_hall": {
       "type": "story",
-      "narration": "You draw the singing hall and the sealed seam behind it. Orin says nothing for a moment. Then he writes \"ASK\" beside it, very small. \"That is a question worth a trip,\" he says. Olivia lifts her nose. \"Wind is coming,\" she says. \"Hold the cover!\"",
+      "narration": "You draw the singing hall and the sealed seam behind it. Orin writes \"ASK\" beside it, very small. \"That is a question worth a trip.\" Olivia lifts her nose. \"Wind is coming! Hold the cover!\"",
       "choices": [
         {
           "id": "continue",
@@ -897,23 +897,23 @@
       "stat": "quick",
       "tn": 8,
       "roller": "all",
-      "narration": "The gust arrives, cold and rude. It slides under the sled cover and lifts it high. \"Our cover thinks it is a sail!\" shouts Olivia.",
+      "narration": "The gust slides under the sled cover and lifts it high. \"Our cover thinks it is a sail!\" shouts Olivia.",
       "variants": [
         {
           "when": {
             "flag": "sledge_leans"
           },
-          "text": " The leaning sled catches the wind like a sail, too."
+          "text": " The leaning sled catches the wind too."
         }
       ],
-      "prompt": "Everyone grab a corner and tie the cover down before it flies!",
+      "prompt": "Everyone grab a corner and tie the cover down!",
       "onSuccess": {
         "goto": "tea",
-        "narration": "Knot, knot, knot. The cover snaps once, then lies down like a tired dog. Olivia checks every knot and, to her own surprise, finds nothing to fix."
+        "narration": "Knot, knot, knot. The cover snaps once, then lies down like a tired dog."
       },
       "onFailure": {
         "goto": "tea",
-        "narration": "The cover escapes with a slap and flaps across the yard like a fat white bird. You chase it into a drift and drag it back. Everyone is cold, and somebody has a bruised elbow.",
+        "narration": "The cover escapes like a fat white bird. You chase it into a drift and drag it back, cold and bruised.",
         "effects": [
           {
             "type": "damage",
@@ -934,17 +934,17 @@
     "tea": {
       "type": "rest",
       "heal": 2,
-      "narration": "Seren builds a small stove from a tin and a candle in the lee of the sled. Steam fogs Orin's glasses at once. He leaves them fogged. \"Hands first,\" says Seren. \"Questions after.\" You sit in a row on the trunks. Whose story do you ask for while the tea warms?",
+      "narration": "Seren builds a small stove from a tin and a candle. Steam fogs Orin's glasses. He leaves them fogged. \"Hands first,\" says Seren. \"Questions after.\" Whose story do you ask for?",
       "choices": [
         {
           "id": "seren",
-          "label": "Ask Seren how she first met a rift",
+          "label": "Ask Seren's rift story",
           "icon": "ear",
           "goto": "tea_seren"
         },
         {
           "id": "olivia",
-          "label": "Ask Olivia what she wants rifts for",
+          "label": "Ask what Olivia wants",
           "icon": "spark",
           "goto": "tea_olivia"
         }
@@ -963,7 +963,7 @@
     },
     "tea_seren": {
       "type": "story",
-      "narration": "Seren holds her cup in both paws. \"A hum like a kettle, behind a barn. I followed it in my slippers.\" She sips. \"Never follow a kettle in slippers. Bring boots. Bring somebody who will pull you back.\"",
+      "narration": "Seren holds her cup in both paws. \"I heard a hum like a kettle, behind a barn. I followed it in my slippers.\" She sips. \"Never follow a kettle in slippers. Bring boots. Bring somebody who will pull you back.\"",
       "choices": [
         {
           "id": "continue",
@@ -982,7 +982,7 @@
     },
     "tea_olivia": {
       "type": "story",
-      "narration": "Olivia swirls her tea. \"A door that opens by itself? I would like to know whose hand is on it, and whether I could borrow it for the herd.\" She winks. Orin coughs into his mug. \"Ask. Do not borrow.\" \"I always ask,\" says Olivia. \"Loudly.\"",
+      "narration": "Olivia swirls her tea. \"A door that opens by itself? I want to know whose hand is on it, and whether I could borrow it for the herd.\" Orin coughs. \"Ask. Do not borrow.\" \"I always ask,\" says Olivia. \"Loudly.\"",
       "choices": [
         {
           "id": "continue",
@@ -1005,11 +1005,11 @@
     },
     "supplies": {
       "type": "choice_point",
-      "narration": "Seren props open the lid of a battered tin on the sled. Inside lie spare things for the road: a coil of cord, a very small spoon, and a brass whistle on a loop. \"Fair swaps,\" she says. \"A brave whistle costs three coins.\" Behind the sled, the herder's goats are chewing the tow rope again, and they look hungry. What do you do with your last minutes here?",
+      "narration": "Seren opens a battered tin of spares: cord, a very small spoon, and a brass whistle on a loop. \"A brave whistle costs three coins.\" Behind the sled, the herder's goats are chewing the tow rope again. What do you do with your last minutes here?",
       "choices": [
         {
           "id": "buy",
-          "label": "Buy the brave whistle for 3 coins",
+          "label": "Buy the whistle (3 coins)",
           "icon": "note",
           "goto": "supplies_buy",
           "when": {
@@ -1026,7 +1026,7 @@
         },
         {
           "id": "feed",
-          "label": "Share a supper with the hungry goats",
+          "label": "Feed the hungry goats",
           "icon": "cake",
           "goto": "supplies_feed",
           "when": {
@@ -1050,13 +1050,13 @@
         },
         {
           "id": "tighten",
-          "label": "Tighten every knot on the sled ropes",
+          "label": "Tighten the sled knots",
           "icon": "hand",
           "goto": "supplies_tight"
         },
         {
           "id": "oil",
-          "label": "Rub tallow on the sled runners",
+          "label": "Grease the sled runners",
           "icon": "hand",
           "goto": "supplies_oil"
         }
@@ -1075,7 +1075,7 @@
     },
     "supplies_buy": {
       "type": "story",
-      "narration": "Three coins clink into Seren's tin. She hands over the whistle. \"One loud note,\" she says. \"Use it when you need to be heard, not when you want to be.\"",
+      "narration": "Three coins clink into Seren's tin. She hands over the whistle. \"One loud note. Use it when you need to be heard, not when you want to be.\"",
       "choices": [
         {
           "id": "continue",
@@ -1105,7 +1105,7 @@
     },
     "supplies_feed": {
       "type": "story",
-      "narration": "The goats bundle around you, soft noses everywhere. The herder pulls a river charm from her coat and presses it into your hand. \"I found it in a melt channel,\" she says. \"It likes people who share.\"",
+      "narration": "The goats bundle around you, soft noses everywhere. The herder presses a river charm into your hand. \"Found it in a melt channel. It likes people who share.\"",
       "choices": [
         {
           "id": "continue",
@@ -1131,7 +1131,7 @@
     },
     "supplies_tight": {
       "type": "story",
-      "narration": "You check every knot twice and tug the lashings tight. The sled stops creaking. Seren nods at the ropes. \"The best spare is a good knot.\"",
+      "narration": "You check every knot twice and tug the lashings tight. The sled stops creaking. \"The best spare is a good knot,\" says Seren.",
       "choices": [
         {
           "id": "continue",
@@ -1150,7 +1150,7 @@
     },
     "supplies_oil": {
       "type": "story",
-      "narration": "The tallow smells like warm candles. You rub it into the runners until they shine. The sled slides forward at a nudge, and Olivia has to catch it by the tail.",
+      "narration": "You rub tallow into the runners until they shine. It smells like warm candles. The sled slides forward at one nudge, and Olivia has to catch it.",
       "choices": [
         {
           "id": "continue",
@@ -1169,11 +1169,11 @@
     },
     "chime": {
       "type": "story",
-      "narration": "Orin takes a little chime from his bag. \"A Listening Chime, for you. Strike it near an opening. A sour note means it cannot open yet. An echo means it will stay open and let you come back.\" He waits while you take it. \"No echo? Do not promise anybody a return trip. Away from a rift, it is only a very small bell.\"",
+      "narration": "Orin takes a little chime from his bag. \"A Listening Chime, for you. Strike it near an opening. A sour note means it cannot open yet. An echo means it will stay open and let you come back. No echo? Then promise nobody a trip home. Away from a rift, it is only a very small bell.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Try the Listening Chime",
+          "label": "Try the chime",
           "icon": "hand",
           "goto": "test_chime"
         }
@@ -1194,30 +1194,30 @@
     },
     "test_chime": {
       "type": "choice_point",
-      "narration": "The Listening Chime hangs from a short cord. It is light enough to carry in one hand. Orin holds his bag open. \"How would you test it?\" he asks.",
+      "narration": "The Listening Chime hangs from a short cord, light enough for one hand. \"How would you test it?\" asks Orin.",
       "choices": [
         {
           "id": "ring",
-          "label": "Ring it beside the empty air",
+          "label": "Ring it at empty air",
           "icon": "bell",
           "goto": "ring"
         },
         {
           "id": "wrap",
-          "label": "Wrap it carefully and repeat the rules",
+          "label": "Wrap it up safely",
           "icon": "hand",
           "goto": "wrap"
         },
         {
           "id": "jar",
-          "label": "Hold the mosslight jar close and look at the chime",
+          "label": "Look by mosslight",
           "icon": "lantern",
           "goto": "chime_jar",
           "requiresItem": "mosslight_jar"
         },
         {
           "id": "whistle",
-          "label": "Blow the brave whistle and see if it answers",
+          "label": "Whistle at the chime",
           "icon": "note",
           "goto": "chime_whistle",
           "requiresItem": "brave_whistle"
@@ -1233,11 +1233,11 @@
     },
     "ring": {
       "type": "story",
-      "narration": "You strike it. One clear note rings over the snow and fades. No opening answers. Orin nods. \"See? A very small bell.\" Seren smiles. \"Still worth keeping.\"",
+      "narration": "You strike it. One clear note rings over the snow and fades. No opening answers. \"See?\" says Orin. \"A very small bell.\" \"Still worth keeping,\" says Seren.",
       "choices": [
         {
           "id": "continue",
-          "label": "Get ready for Seren's practice",
+          "label": "Go to Seren's practice",
           "icon": "hand",
           "goto": "trial_intro"
         }
@@ -1262,7 +1262,7 @@
     },
     "wrap": {
       "type": "story",
-      "narration": "\"Sour: not ready. Echo: a way back,\" you say. Orin nods and gives you a scrap of soft cloth for the chime. \"And never ask it for the name of a place. It does not know the names.\"",
+      "narration": "\"Sour means not ready. Echo means a way back,\" you say. Orin nods and hands you a soft cloth for it. \"And never ask it the name of a place. It does not know names.\"",
       "choices": [
         {
           "id": "continue",
@@ -1287,11 +1287,11 @@
     },
     "chime_jar": {
       "type": "story",
-      "narration": "You hold the jar close. The moss glows soft and warm, and the chime throws a shivery shadow across the snow. Seren smiles. \"Now you know where it hangs in the dark. Useful.\" Orin writes in his notebook: \"Chime, visible by lamplight.\"",
+      "narration": "You hold the mosslight jar close. The chime throws a shivery shadow across the snow. \"Now you can find it in the dark,\" says Seren. Orin writes: \"Chime, visible by lamplight.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Get ready for Seren's practice",
+          "label": "Go to Seren's practice",
           "icon": "hand",
           "goto": "trial_intro"
         }
@@ -1316,11 +1316,11 @@
     },
     "chime_whistle": {
       "type": "story",
-      "narration": "You blow the brave whistle. One loud note rolls over the camp, and every goat looks up. The chime does not answer at all. \"It does not take orders from whistles,\" says Orin. \"Good. That would be a very bossy chime.\"",
+      "narration": "You blow the brave whistle. Every goat looks up. The chime does not answer at all. \"It does not take orders from whistles,\" says Orin. \"Good. That would be a very bossy chime.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Get ready for Seren's practice",
+          "label": "Go to Seren's practice",
           "icon": "hand",
           "goto": "trial_intro"
         }
@@ -1341,7 +1341,7 @@
     },
     "trial_intro": {
       "type": "story",
-      "narration": "Seren sets three rings on a flat stone and turns her back. Olivia flaps a blanket to make wind. Orin plays one squeaky note on his horn. \"Training,\" says Seren. \"A rift will not be quiet for you. Two of these rings ring true. One rings sour. If you can hear it through all this noise, you can hear it anywhere.\"",
+      "narration": "Seren sets three rings on a flat stone and turns her back. Olivia flaps a blanket. Orin plays a squeaky note on his horn. \"A rift won't be quiet for you,\" says Seren. \"Two rings ring true. One rings sour. Find the sour one through all this noise.\"",
       "choices": [
         {
           "id": "continue",
@@ -1368,23 +1368,23 @@
     },
     "trial_read": {
       "type": "choice_point",
-      "narration": "The three rings sit in a row on the stone. The blanket flaps. The horn squeaks. Which ring is sour, and how will you find out?",
+      "narration": "The rings sit in a row. The blanket flaps. The horn squeaks. Which ring is sour, and how will you find out?",
       "choices": [
         {
           "id": "still",
-          "label": "Close your eyes and listen past the noise",
+          "label": "Listen past the noise",
           "icon": "ear",
           "goto": "trial_ear"
         },
         {
           "id": "chime",
-          "label": "Hold your chime beside each ring and compare",
+          "label": "Compare with your chime",
           "icon": "bell",
           "goto": "trial_chime"
         },
         {
           "id": "hum",
-          "label": "Use rally to hum each ring's note back",
+          "label": "Hum to each ring",
           "icon": "song",
           "goto": "trial_hum",
           "requiresClass": "songkeeper"
@@ -1397,8 +1397,8 @@
       "stat": "clever",
       "tn": 8,
       "roller": "best",
-      "narration": "You shut your eyes. The blanket flaps, the horn squeaks, and under it all, three rings hum.",
-      "prompt": "Pick out the sour ring through the flapping and squeaking.",
+      "narration": "You shut your eyes. Under the flapping and squeaking, three rings hum.",
+      "prompt": "Pick out the sour ring through the noise.",
       "onSuccess": {
         "goto": "trial_report",
         "narration": "You point at the middle ring. Seren's ears twitch, which means yes."
@@ -1420,8 +1420,8 @@
       "stat": "quick",
       "tn": 8,
       "roller": "party",
-      "narration": "Here the chime is only a bell. It is a bell with a good ear for company, though. It rings sweet beside a true ring, and it buzzes beside a flawed one.",
-      "prompt": "Swing the chime beside each ring, one after another, before Olivia flaps the blanket again.",
+      "narration": "Here the chime is only a bell, but a bell with a good ear. It rings sweet beside a true ring and buzzes beside a sour one.",
+      "prompt": "Swing the chime by each ring before Olivia flaps the blanket again.",
       "onSuccess": {
         "goto": "trial_report",
         "narration": "You point at the middle ring. Seren's ears twitch, which means yes."
@@ -1448,7 +1448,7 @@
       "tn": 8,
       "checkKind": "doing",
       "roller": "party",
-      "narration": "Rally listens before it sings. You hum a low note and wait to see which ring hums back kindly, and which one hums back crooked.",
+      "narration": "Rally listens before it sings. You hum, and wait to hear which ring hums back crooked.",
       "prompt": "Hum to each ring and hear which one answers wrong.",
       "onSuccess": {
         "goto": "trial_report",
@@ -1468,7 +1468,7 @@
     },
     "trial_report": {
       "type": "story",
-      "narration": "Seren turns back around. \"The sour one was the middle ring,\" she says. \"A rift gives the same warning: one wrong note among right ones. Hear it, and you do not walk in. Hear the echo, and it will keep a door open behind you.\" Orin writes that down, then crosses it out. \"Too wordy.\"",
+      "narration": "Seren turns around. \"The middle ring was sour. A rift warns you the same way: one wrong note among right ones. Hear it, and you do not walk in. Hear the echo, and a door stays open behind you.\" Orin writes it down, then crosses it out. \"Too wordy.\"",
       "choices": [
         {
           "id": "continue",
@@ -1491,7 +1491,7 @@
     },
     "trial_echo": {
       "type": "interaction",
-      "narration": "\"Listen,\" says Seren, holding up one paw, and the blanket goes still. She taps the three rings in a pattern, slow and clear. Orin leans in. Olivia stops breathing, which for Olivia is a lot.",
+      "narration": "\"Listen,\" says Seren, and the blanket goes still. She taps the three rings in a slow, clear pattern. Olivia holds her breath, which for Olivia is a lot.",
       "interaction": {
         "kind": "memory",
         "cue": "Watch Seren tap the rings, then tap the same rings in the same order.",
@@ -1523,15 +1523,15 @@
       },
       "onSuccess": {
         "goto": "trial_all",
-        "narration": "Low, high, middle, low. Seren's ears twitch twice, which means yes. \"An echo is only a pattern that remembers itself,\" she says."
+        "narration": "Low, high, middle, low. Seren's ears twitch twice, which means yes."
       },
       "onFailure": {
         "goto": "trial_all",
-        "narration": "Your echo comes out a little jumbled. Seren taps it once more, slowly, and you hear where it wandered off."
+        "narration": "Your echo comes out jumbled. Seren taps it again, slowly, and you hear where it wandered."
       },
       "onAssisted": {
         "goto": "trial_all",
-        "narration": "Seren taps the pattern again while Orin hums it under his breath. Low, high, middle, low. This time it sticks."
+        "narration": "Seren taps it again while Orin hums along. This time it sticks."
       },
       "cast": [
         {
@@ -1550,7 +1550,7 @@
       "art": "scenes/riftlight/departure-chime-rest"
     },
     "trial_all": {
-      "narration": "Seren shuffles the rings behind her back, then strikes one. Olivia flaps the blanket harder. Orin plays his squeaky note with great pride. Every finger points the same way. Seren strikes the ring again to check, and the sour note proves you right. Olivia salutes with the blanket.",
+      "narration": "Seren shuffles the rings behind her back and strikes one. Olivia flaps harder. Orin plays his squeaky note with great pride. Every finger points the same way, and the sour note proves you right. Olivia salutes with the blanket.",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -1570,7 +1570,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Get ready to go",
           "icon": "forward",
           "goto": "prep"
         }
@@ -1578,36 +1578,36 @@
     },
     "prep": {
       "type": "choice_point",
-      "narration": "The sled is packed. The practice is done. Orin taps the ice shelf on the rolled-up map. Seren glances back at the singing hall. \"Two roads are worth walking ready,\" she says. \"The shelf toward the Cairnstep, with food for the herd, or the glacier, looking for openings. There is also the long bank road to Ashspan Bridge, if you would rather stay off the ice.\" Which road do you get ready for?",
+      "narration": "The sled is packed. Orin taps the ice shelf on his map. Seren glances back at the singing hall. \"Three roads,\" she says. \"The shelf toward the Cairnstep, with food for the herd. The glacier, looking for openings. Or the long bank road to Ashspan Bridge, off the ice.\" Which road do you get ready for?",
       "choices": [
         {
           "id": "ice",
-          "label": "Practice testing ice for the shelf",
+          "label": "Test ice for the shelf",
           "icon": "boot",
           "goto": "prep_ice"
         },
         {
           "id": "seam",
-          "label": "Practice listening at the glacier wall with Seren",
+          "label": "Listen at the glacier wall",
           "icon": "ear",
           "goto": "prep_seam"
         },
         {
           "id": "bank",
-          "label": "Walk the first markers of the long bank road",
+          "label": "Walk the bank road markers",
           "icon": "map",
           "goto": "prep_bank"
         },
         {
           "id": "dash",
-          "label": "Scout the bank road at a run",
+          "label": "Run the bank road",
           "icon": "quick",
           "goto": "prep_dash",
           "requiresClass": "duskrunner"
         },
         {
           "id": "jar",
-          "label": "Light the mosslight jar and read the glacier wall",
+          "label": "Light up the glacier wall",
           "icon": "lantern",
           "goto": "prep_jar",
           "requiresItem": "mosslight_jar"
@@ -1626,7 +1626,7 @@
       "art": "scenes/riftlight/singing-hall-camp"
     },
     "prep_ice": {
-      "narration": "Orin lays a slab of old ice on the snow. \"Thick ice rings when you tap it,\" he says. \"Thin ice thuds.\" He hands you a stone. \"Stamp, tap, listen.\" Ring, ring, thud! You find the thin spot with one tap. Orin cheers very quietly, so as not to wake the ice.",
+      "narration": "Orin lays a slab of old ice on the snow. \"Thick ice rings when you tap it. Thin ice thuds.\" Ring, ring, thud! You find the thin spot. Orin cheers very quietly, so as not to wake the ice.",
       "variants": [
         {
           "when": {
@@ -1646,7 +1646,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Join the others",
           "icon": "forward",
           "goto": "parting",
           "effects": [
@@ -1659,7 +1659,7 @@
       ]
     },
     "prep_seam": {
-      "narration": "Seren leads you along the glacier wall behind the hall and presses an ear to the ice. \"Listen for a tick,\" she says. \"Listen for a hum. Listen for a quiet that is too tidy.\" You find the spot where the sealed seam's hum is clearest and mark it with a pebble. Seren nods. \"A hum that holds still can be learned.\"",
+      "narration": "Seren presses an ear to the glacier wall. \"Listen for a tick. Listen for a hum.\" You find where the seam hums clearest and mark it with a pebble. \"A hum that holds still can be learned,\" says Seren.",
       "cast": [
         {
           "figure": "cast/seren_wisp",
@@ -1671,7 +1671,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Join the others",
           "icon": "forward",
           "goto": "parting",
           "effects": [
@@ -1684,7 +1684,7 @@
       ]
     },
     "prep_jar": {
-      "narration": "With the mosslight jar held up, the glacier wall glows from inside, as if the ice were a lantern. Frost patterns bloom across it like ferns. One frost line runs straight to the sealed seam and stops. \"Look at that,\" says Seren. \"The ice remembers where the seam is.\"",
+      "narration": "You hold up the mosslight jar, and the glacier wall glows like a lantern. One frost line runs straight to the sealed seam and stops. \"The ice remembers where the seam is,\" says Seren.",
       "cast": [
         {
           "figure": "cast/seren_wisp",
@@ -1696,7 +1696,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Join the others",
           "icon": "forward",
           "goto": "parting",
           "effects": [
@@ -1709,7 +1709,7 @@
       ]
     },
     "prep_bank": {
-      "narration": "A line of little stone markers runs away along the bank, each one a neat heap. Some have tipped over in the wind. Every marker stands straight again, and the road to the bridge looks friendlier. Orin ticks something off in his notebook.",
+      "narration": "Little stone markers run along the bank, each a neat heap. The wind has tipped some over. You set every one straight, and the road to the bridge looks friendlier. Orin ticks something off in his notebook.",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -1721,7 +1721,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Join the others",
           "icon": "forward",
           "goto": "parting",
           "effects": [
@@ -1734,7 +1734,7 @@
       ]
     },
     "prep_dash": {
-      "narration": "A duskrunner's feet know the quiet way. One of you takes off along the bank road, light and fast, while the others watch from the sled. You come back breathless, with the road clear in your head: no gaps, no drifts, only a goat on a rock. Orin writes down \"goat on rock.\"",
+      "narration": "A duskrunner's feet know the quiet way. One hero runs the bank road and comes back breathless: no gaps, no drifts, only a goat on a rock. Orin writes down \"goat on rock.\"",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -1750,7 +1750,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Join the others",
           "icon": "forward",
           "goto": "parting",
           "effects": [
@@ -1764,11 +1764,11 @@
     },
     "parting": {
       "type": "story",
-      "narration": "Olivia shoulders her pack. Seren counts the cases once, then again. Orin takes the path behind them, holding the map up where everyone can see it. \"If the Cairnstep has moved,\" he calls back, \"do draw it in the right place.\"",
+      "narration": "Olivia shoulders her pack. Seren counts the cases twice. Orin leads the way down the path, holding up the map. \"If the Cairnstep has moved,\" he calls back, \"do draw it in the right place.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Choose your next direction",
+          "label": "Wave them off",
           "icon": "hand",
           "goto": "camp_play"
         }
@@ -1778,7 +1778,7 @@
           "when": {
             "flag": "sledge_leans"
           },
-          "text": " The sled still leans a little. Olivia pats it. \"Character,\" she says."
+          "text": " The sled still leans a little. Olivia pats it. \"Character.\""
         }
       ],
       "cast": [
@@ -1799,7 +1799,7 @@
     },
     "camp_play": {
       "type": "interaction",
-      "narration": "The Riftseekers are gone down the path. The herder's goats wander over to the sled, and the yetis lean out of the hall door. \"Nobody leaves a road without a real send-off,\" says the herder.",
+      "narration": "The Riftseekers are gone down the path. The goats wander over, and the yetis lean out of the hall door. \"Nobody leaves without a send-off,\" says the herder.",
       "interaction": {
         "kind": "play",
         "cue": "Give the goats and the hall a proper send-off.",
@@ -1828,11 +1828,11 @@
       },
       "onSuccess": {
         "goto": "camp",
-        "narration": "The low note rolls out of the hall, and the goats hum along in their own way. The herder waves, and her kid goat tries to wave too."
+        "narration": "The low note rolls out of the hall. The herder waves, and the little goat tries to wave too."
       },
       "onFailure": {
         "goto": "camp",
-        "narration": "The goats are busy with the tow rope, and the yetis are busy with a very long note. You wave anyway."
+        "narration": "The goats are busy with the tow rope, and the yetis with a very long note. You wave anyway."
       },
       "cast": [
         {
@@ -1848,17 +1848,17 @@
     "camp": {
       "type": "rest",
       "heal": 2,
-      "narration": "You sit on a dry stone beside the singing hall. East, the ice shelf leads toward the Cairnstep: perhaps a supply route for the herd, if the shifting ice lets you reach it. Behind you, the sealed seam answered your song. Exploring the glacier might teach you how to find another opening. The Listening Chime rests between you. Safe roads for the people already here, or a better understanding of the openings that brought you? Your party has something to talk about before setting out. A longer marked bank road leads to Ashspan Bridge without crossing the ice shelf.",
+      "narration": "You sit on a dry stone by the singing hall, the Listening Chime between you. East, the ice shelf leads to the Cairnstep, and maybe food for the herd. Behind you, the sealed seam answered your song, and the glacier may hide more openings. Or the long marked bank road goes to Ashspan Bridge, off the ice. Which matters most? Talk it over.",
       "choices": [
         {
           "id": "set_out",
-          "label": "Talk it over and set out",
+          "label": "Talk it over and go",
           "icon": "travel",
           "goto": "set_out"
         },
         {
           "id": "supper",
-          "label": "Eat a proper supper together",
+          "label": "Eat supper together",
           "icon": "cake",
           "goto": "camp_supper",
           "when": {
@@ -1882,7 +1882,7 @@
         },
         {
           "id": "look",
-          "label": "Look back at the singing hall",
+          "label": "Look back at the hall",
           "icon": "ear",
           "goto": "camp_hall"
         }
@@ -1891,11 +1891,11 @@
     },
     "camp_supper": {
       "type": "story",
-      "narration": "You split the food on the dry stone, crumb by crumb. It is warm, and it tastes like a good decision. The Listening Chime swings gently between you, as if it is licking its lips.",
+      "narration": "You split the food on the dry stone, crumb by crumb. It tastes like a good decision. The Listening Chime swings gently, as if it is licking its lips.",
       "choices": [
         {
           "id": "continue",
-          "label": "Talk it over and set out",
+          "label": "Talk it over and go",
           "icon": "hand",
           "goto": "set_out"
         }
@@ -1911,11 +1911,11 @@
     },
     "camp_hall": {
       "type": "story",
-      "narration": "Through the hall door, a yeti hums the low note you learned. It rises to meet you, then fades. The hall will keep your note until you come back to sing it.",
+      "narration": "Through the hall door, a yeti hums the low note you learned. It rises to meet you, then fades. The hall will keep your note until you come back.",
       "choices": [
         {
           "id": "continue",
-          "label": "Talk it over and set out",
+          "label": "Talk it over and go",
           "icon": "hand",
           "goto": "set_out"
         }
@@ -1924,7 +1924,7 @@
     },
     "set_out": {
       "type": "rest",
-      "narration": "You brush the snow off your packs and stand. Inside the hall, the yetis hold their low note a little longer, as if they are waving. The shelf, the glacier openings, or the long bank road to the bridge: which road comes first?",
+      "narration": "You brush the snow off your packs and stand. Inside the hall, the yetis hold their low note a little longer, as if they are waving. The shelf, the glacier openings, or the long bank road: which comes first?",
       "heal": 0,
       "choices": [],
       "outcome": "success",
