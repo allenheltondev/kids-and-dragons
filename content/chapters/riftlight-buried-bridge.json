@@ -41,7 +41,7 @@
   "scenes": {
     "bank": {
       "type": "story",
-      "narration": "A Skupper guide stops above a dry riverbed. \"Buried bridge,\" says the guide. \"No river. Still not walking on it.\" Master Orin Vale, the griffin Riftseeker you met on the glacier, brushes grit from an arch. His next brushful lands on his own foot. \"A very dusty discovery.\"",
+      "narration": "A Skupper guide stops above a dry riverbed. \"Buried bridge,\" says the guide. \"No river. Still not walking on it.\" Master Orin Vale, the griffin Riftseeker you met on the glacier, brushes grit from an arch. His next brushful lands on his own foot. \"A very dusty discovery,\" says Orin.",
       "choices": [
         {
           "id": "ask",
@@ -146,7 +146,7 @@
     },
     "guide_limits": {
       "type": "story",
-      "narration": "Your guide plants both front fins in the wet mud at the edge of the bank. \"This far. No farther.\" You mark a stopping line on dry ground. Orin sets his tools behind it. \"Even my brush stays on this side.\" A trickle runs through a little groove below the shelf. \"The tide reaches this pocket later,\" the guide says. \"We have time to look, then we pack up. No crossing.\" Orin turns to you. \"Then let us make a proper little expedition.\"",
+      "narration": "Your guide plants both front fins in the wet mud at the edge of the bank. \"This far. No farther,\" says the guide. You mark a stopping line on dry ground. Orin sets his tools behind it. \"Even my brush stays on this side.\" A trickle runs through a little groove below the shelf. \"The tide reaches this pocket later,\" the guide says. \"We have time to look, then we pack up. No crossing.\" Orin turns to you. \"Then let us make a proper little expedition.\"",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -340,7 +340,7 @@
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "type": "choice_point",
-      "narration": "Time to pack up. Bring the board and cord back from whichever job they did. Loose silt stays on the dry side. Everyone choose a last job. The guide checks the upper return path while Orin counts his kit aloud. \"One notebook. One brush. Two sandwiches. A remarkable improvement on last Tuesday.\"",
+      "narration": "Time to pack up. Bring the board and cord back from whichever job they did. Loose silt stays on the dry side. Everyone choose a last job. The guide checks the upper return path while Orin counts his kit aloud. \"One notebook. One brush. Two sandwiches. A remarkable improvement on last Tuesday,\" says Orin.",
       "choices": [
         {
           "id": "play0",
@@ -1327,7 +1327,7 @@
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "type": "choice_point",
-      "narration": "Orin pretends he has never been here. He walks to the stopping sign and peers at your sketch. \"Where do I put my feet?\" Everyone chooses a useful part of the welcome. The guide listens. If your words offer a bridge crossing, she stops the pretend tour and helps you correct it.",
+      "narration": "Orin pretends he has never been here. He walks to the stopping sign and peers at your sketch. \"Where do I put my feet?\" asks Orin. Everyone chooses a useful part of the welcome. The guide listens. If your words offer a bridge crossing, she stops the pretend tour and helps you correct it.",
       "choices": [
         {
           "id": "stop",
