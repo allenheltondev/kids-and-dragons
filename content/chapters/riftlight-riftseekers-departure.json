@@ -41,7 +41,7 @@
   "scenes": {
     "map": {
       "type": "story",
-      "narration": "The griffin calls to the unicorn. \"Olivia. Your hoof.\" She steps aside. He folds his map, finds another corner stuck under a bag, and gives up. \"Good morning. I'm Orin Vale.\" \"Lady Olivia,\" the unicorn adds. Behind them, a kitsune tightens a strap on a case of small rings. \"Seren Wisp,\" she says, waving. An open case of little brass instruments rests beside Orin's pack. \"Were you the noise over the ridge?\" he asks. Your job today: meet these travelers, help them pack, and get ready for the road ahead.",
+      "narration": "The griffin calls to the unicorn. \"Olivia. Your hoof.\" She steps aside. He folds his map, finds another corner stuck under a bag, and gives up. \"Good morning. I'm Orin Vale.\" \"I'm Lady Olivia,\" the unicorn adds. Behind them, a kitsune tightens a strap on a case of small rings. \"I'm Seren Wisp,\" she says, waving. An open case of little brass instruments rests beside Orin's pack. \"Were you the noise over the ridge?\" he asks. Your job today: meet these travelers, help them pack, and get ready for the road ahead.",
       "choices": [
         {
           "id": "tell",
@@ -74,7 +74,7 @@
     },
     "arrival_story": {
       "type": "story",
-      "narration": "You tell Orin about the snow, the kid, and the quay vanishing behind you. He writes down \"goat\" and underlines it. \"A place arrived first. Then you crossed.\" Olivia leans over his shoulder. \"And it reached all the way here.\"",
+      "narration": "You tell Orin about the snow, the kid, and the quay vanishing behind you. He writes down \"goat\" and underlines it. \"A place arrived first. Then you crossed,\" he says. Olivia leans over his shoulder. \"And it reached all the way here.\"",
       "choices": [
         {
           "id": "continue",
@@ -366,13 +366,13 @@
           "when": {
             "flag": "starweaver_read_first_rift"
           },
-          "text": "When you describe studying the light around the opening, Seren looks up. \"One of you can see it. Keep looking. Later, I can show you how to listen too.\""
+          "text": "When you describe studying the light around the opening, Seren looks up. \"One of you can see it. Keep looking. Later, I can show you how to listen too,\" she says."
         },
         {
           "when": {
             "notFlag": "starweaver_read_first_rift"
           },
-          "text": "\"You can learn a good deal without seeing what I see,\" Seren says. She glances at Orin's instruments. \"He brought half a bag of help.\""
+          "text": "\"You can learn a good deal without seeing what I see,\" Seren says. She glances at Orin's instruments. \"He brought half a bag of help,\" Seren adds."
         }
       ],
       "cast": [
@@ -435,7 +435,7 @@
     },
     "lead": {
       "type": "story",
-      "narration": "Orin unrolls his map and points east. \"The griffins at Frostfang keep a ledger of their passes. Last season, no pass here. This season, cairns and a path. They call it the Cairnstep.\" He marks the herder's flooded grazing route beside it. \"If the pass reaches this bank, supplies could get through to the herd. It might also show us why a road no longer leads where people expect. We need to find where it really goes.\"",
+      "narration": "Orin unrolls his map and points east. \"The griffins at Frostfang keep a ledger of their passes. Last season, no pass here. This season, cairns and a path. They call it the Cairnstep.\" He marks the herder's flooded grazing route beside it. \"If the pass reaches this bank, supplies could get through to the herd. It might also show us why a road no longer leads where people expect. We need to find where it really goes,\" says Orin.",
       "choices": [
         {
           "id": "continue",
@@ -498,7 +498,7 @@
     },
     "help_now": {
       "type": "story",
-      "narration": "Olivia takes a supper bundle from her pack and calls the herder over. \"This much can go by hand.\" Orin makes room for it on the sled. \"And we can learn the route before we send more.\" Seren nods to you. \"A useful place to begin.\"",
+      "narration": "Olivia takes a supper bundle from her pack and calls the herder over. \"This much can go by hand,\" says Olivia. Orin makes room for it on the sled. \"And we can learn the route before we send more.\" Seren nods to you. \"A useful place to begin.\"",
       "choices": [
         {
           "id": "continue",
@@ -531,7 +531,7 @@
     },
     "safe_routes": {
       "type": "story",
-      "narration": "Orin draws a careful line beside the Cairnstep. \"A route people can trust. Yes.\" Olivia leaves a supper bundle for the herder. \"We can feed someone while you check it.\" Seren looks at the glacier. \"And listen here, if the road is not the question you want to follow.\"",
+      "narration": "Orin draws a careful line beside the Cairnstep. \"A route people can trust. Yes.\" Olivia leaves a supper bundle for the herder. \"We can feed someone while you check it,\" says Olivia. Seren looks at the glacier. \"And listen here, if the road is not the question you want to follow.\"",
       "choices": [
         {
           "id": "continue",

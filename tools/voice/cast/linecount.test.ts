@@ -161,7 +161,7 @@ describe("naming someone by what they are, in the scene they are in", () => {
     expect(rolesOf(["drover_a", "drover_b"], "drover_a")).toEqual(["Centaur drover"]);
     // Someone not in the scene keeps just their own names.
     expect(rolesOf(["gullet"], "cousins")).toEqual(["Gullet's Cousins"]);
-    expect(withSceneRoles(speakers, undefined, names)).toEqual(speakers);
+    expect(withSceneRoles(speakers, undefined, names)).toEqual(speakers.map((speaker) => ({ ...speaker, here: false })));
   });
 
   it("reads 'says a cousin' and 'groans the guide' as tags, and a bare 'the drover says' only when one drover is there", () => {
@@ -229,5 +229,50 @@ describe("a character cast in another chapter of the campaign", () => {
     expect(before.speakers.wisp).toMatchObject({ pronouns: "she/her", pronounsFrom: "narration" });
     const later = buildSheet({ chapters: campaign, individuals: [], narration: [] }, before);
     expect(later.speakers.wisp).toMatchObject({ pronouns: "she/her", pronounsFrom: "narration" });
+  });
+});
+
+describe("three more ways the prose names a speaker", () => {
+  const speakers = [{ id: "corvane", names: ["Corvane"] }, { id: "seal", names: ["Seal Keeper"] }, { id: "guide", names: ["guide"] }];
+
+  it("takes a hyphen for a space in a name: 'Seal-Keeper' is the Seal Keeper", () => {
+    expect(attributeQuotes('"Catch it!" roars the Seal-Keeper.', speakers).map((q) => q.id)).toEqual(["seal"]);
+    expect(attributeQuotes('"Catch it!" roars the Seal Keeper.', speakers).map((q) => q.id)).toEqual(["seal"]);
+  });
+
+  it("lets a quote that introduces its speaker name them, when a he or she tag has nobody before it", () => {
+    const text = 'The figure steps into view. "I am Corvane," he says. "Emperor of Pangea."';
+    expect(attributeQuotes(text, speakers).map((q) => [q.id, q.words])).toEqual([["corvane", "I am Corvane,"], ["corvane", "Emperor of Pangea."]]);
+    // Not when somebody is named before it: that is who "he" is.
+    expect(attributeQuotes('The guide waits. "I am Corvane," he says.', speakers).map((q) => q.id)).toEqual(["guide"]);
+  });
+
+  it("reads 'repeats' and 'observes' as speaking", () => {
+    expect(attributeQuotes('"An old river," the guide repeats. "Still no tours."', speakers).map((q) => q.id)).toEqual(["guide", "guide"]);
+  });
+});
+
+describe("'she says' with nobody named, in a scene with one she", () => {
+  const speakers = [
+    { id: "herder", names: ["Yeti herder"], pronoun: "she" as const, here: true },
+    { id: "wick", names: ["Wick"], pronoun: "he" as const, here: true },
+    { id: "other", names: ["Moss"], pronoun: "she" as const, here: false },
+  ];
+
+  it("is the one she in the scene, for a tag and for a sentence that starts with she", () => {
+    const text = 'She stops at the sight of the kid. "There you are." Then she notices the rest of you. "There you all are," she says.';
+    expect(attributeQuotes(text, speakers).map((q) => q.id)).toEqual(["herder", "herder"]);
+    expect(attributeQuotes('He tugs his cap. "Mornin\'," he says.', speakers).map((q) => q.id)).toEqual(["wick"]);
+  });
+
+  it("is nobody when two of the scene are she, and not someone who is not in the scene", () => {
+    const two = [...speakers, { id: "kid", names: ["Kid"], pronoun: "she" as const, here: true }];
+    expect(attributeQuotes('"There you are," she says.', two)).toEqual([]);
+    expect(attributeQuotes('"There you are," she says.', speakers).map((q) => q.id)).toEqual(["herder"]);
+  });
+
+  it("gives way to a name the narration used, unless the sheet knows that person is a he", () => {
+    expect(attributeQuotes('Moss waves. "Hello," she says.', speakers).map((q) => q.id)).toEqual(["other"]);
+    expect(attributeQuotes('Wick waves. "Hello," she says.', speakers).map((q) => q.id)).toEqual(["herder"]);
   });
 });
