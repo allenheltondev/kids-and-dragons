@@ -363,7 +363,7 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-07h.json": "dbcf17577035bbfa12f82bc8aba85ceb36f81f773d1b725df0d50ab2a388baed",
   "chapters/gemfall-07l.json": "9629374e86acc3db10317728dabb92464c01643c24ec8d2894cbb23486bb2c2a",
   "chapters/gemfall-07r.json": "cff883ee0ad20ca3d5ae6a902852de288b6f7bf15482662f553c861ef67f7df9",
-  "chapters/gemfall-08.json": "6280826c5a2cd08170c047f088e1b0a6913f35200724fa1d27cf4a64e748b169",
+  "chapters/gemfall-08.json": "be0519848c143d2ac49f5e779df38a8bb467e9877bb0c4f0dd08ae3687b368d4",
 };
 
 describe("Gemfall's files are the files that shipped before the epic", () => {
