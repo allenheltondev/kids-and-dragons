@@ -14,7 +14,7 @@
 import { Suspense, useEffect, useLayoutEffect, useRef } from "react";
 import { ChunkBoundary, lazyChunk } from "../ui/ChunkBoundary";
 import type { ReactElement } from "react";
-import { combatTurnAway, currentActorId, speak, turnHolderAway } from "@kad/shared";
+import { combatTurnAway, currentActorId, rollerAway, speak, turnHolderAway } from "@kad/shared";
 import type { PartyMember } from "@kad/shared";
 import type { ScenePriority } from "@kad/shared";
 import { useAbilities, useItems, useParty, usePreviews, useRules, useRunState } from "../store";
@@ -22,7 +22,9 @@ import { describeCombatPreview, tablePreviews } from "../world/previews";
 import { setStageInsetBottom, setStageInsetTop } from "../world/stage-inset";
 import { fitPlate, unfitPlate } from "./fit-plate";
 import { Icon } from "./icons";
+import { CharacterPortrait } from "./CharacterPortrait";
 import { ClassToken } from "./ClassToken";
+import { aheadBadge } from "./choice-ahead-copy";
 import { VoteTicks } from "./VoteTicks";
 import { ClassPlaceRoll } from "./ClassPlace";
 import { checkPlan } from "./DiceOverlay";
@@ -133,10 +135,25 @@ export function NarrationPanel(): ReactElement | null {
    */
   const turnPrompt =
     prompt !== null && prompt.kind === "choice" && !prompt.vote && prompt.forPlayerIds.length === 1;
-  const turnName =
-    turnPrompt && !turnHolderAway(party, prompt)
-      ? party.find((m) => m.playerId === prompt.forPlayerIds[0])?.character.name ?? null
+  const turnHolderMember =
+    turnPrompt && !turnHolderAway(party, prompt) ? party.find((m) => m.playerId === prompt.forPlayerIds[0]) ?? null : null;
+  const turnName = turnHolderMember?.character.name ?? null;
+  /*
+   * Who owns this moment (chapter.ts `SceneSpotlight`): the hero whose call a
+   * Story choice is, or whose die a check is. The biggest thing on the plate
+   * after the story, face and name, because "whose turn is it?" is the
+   * question the room asks the screen. A whole-party roll is everyone's, and
+   * a roll whose nominee has dropped is open to anyone, so neither names one.
+   */
+  const rollOwner =
+    prompt !== null && prompt.kind === "roll" && !prompt.group && !rollerAway(party, prompt)
+      ? party.find((m) => m.character.id === prompt.characterId) ?? null
       : null;
+  const owner = turnHolderMember ?? rollOwner;
+  const ownerLine = owner === null ? null : rollOwner !== null ? "’s roll" : "’s turn to choose";
+  // The seat is held for a turn-held choice even while its holder is away, so the
+  // name coming and going cannot push the story down a line and back up.
+  const ownerSeat = (choices !== null && choices.length > 0 && turnPrompt) || rollOwner !== null;
 
   // Who stepped away (#258), and whether the fight is waiting on one of them.
   const away = party.filter((m) => !m.connected);
@@ -493,17 +510,38 @@ export function NarrationPanel(): ReactElement | null {
       */}
       <div className={`narration__plate${prompt?.kind === "interaction" ? " narration__plate--game" : ""}`} ref={plate}>
         <div className="narration__story">
-          {choices !== null && choices.length > 0 && turnPrompt ? (
-            <p className={`narration__turn${turnName === null ? " narration__turn--empty" : ""}`}>
-              {turnName === null ? "\u00a0" : <>{turnName}&rsquo;s turn to choose</>}
-            </p>
-          ) : null}
+          {/* What got the party here: a quiet line of record, never louder than whose turn it is. */}
           {decisionLine === null || decided === null ? null : (
-            <p className="narration__hint" key={`decision:${sceneId ?? "-"}`} data-testid="decision">
+            <p className="narration__decision" key={`decision:${sceneId ?? "-"}`} data-testid="decision">
               <Icon name={decided.vote ? "vote" : "hand"} />
               <span>{decisionLine}</span>
             </p>
           )}
+          {ownerSeat ? (
+            <p
+              className={`narration__turn${owner === null ? " narration__turn--empty" : ""}`}
+              data-testid="turn-owner"
+            >
+              {owner === null ? (
+                "\u00a0"
+              ) : (
+                <>
+                  <CharacterPortrait
+                    backdrop
+                    species={owner.character.species}
+                    accent={owner.character.appearance.accent}
+                    tier={owner.character.tier}
+                    characterClass={owner.character.class}
+                    className="narration__turn-face"
+                  />
+                  <span>
+                    <b>{owner.character.name}</b>
+                    {ownerLine}
+                  </span>
+                </>
+              )}
+            </p>
+          ) : null}
           {ribbon === null ? null : (
             <p className="narration__ribbon" key={`ribbon:${narration}`}>
               <Icon name={ribbon.icon} />
@@ -554,6 +592,7 @@ export function NarrationPanel(): ReactElement | null {
               // name appearing and disappearing cannot rewrap the label. A group
               // vote never lights (see `voting`); a single kid's pick does.
               const leaningNow = !voting && (leaning.choices[choice.id] ?? []).length > 0;
+              const ahead = aheadBadge(choice.ahead);
               // A locked vote is a tick in the voter's color, the same as on
               // the phones (PlayerPanel): a seat per voter, drawn from the
               // start, so a vote landing cannot grow the pill and rewrap the row.
@@ -570,6 +609,13 @@ export function NarrationPanel(): ReactElement | null {
                 >
                   <Icon name={choice.icon} />
                   <span>{choice.label}</span>
+                  {/* What picking it leads to: a roll, a game or a fight. */}
+                  {ahead === null ? null : (
+                    <span className="narration__ahead" data-testid="choice-ahead">
+                      <Icon name={ahead.icon} />
+                      <span>{ahead.text}</span>
+                    </span>
+                  )}
                   {prompt?.kind === "choice" && prompt.vote ? (
                     <VoteTicks
                       className="narration__voters"

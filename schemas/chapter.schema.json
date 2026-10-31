@@ -1316,6 +1316,9 @@
         "priority": {
           "$ref": "#/$defs/priority"
         },
+        "spotlight": {
+          "$ref": "#/$defs/spotlight"
+        },
         "rift": {
           "$ref": "#/$defs/sceneRift"
         },
@@ -1402,6 +1405,9 @@
         "priority": {
           "$ref": "#/$defs/priority"
         },
+        "spotlight": {
+          "$ref": "#/$defs/spotlight"
+        },
         "rift": {
           "$ref": "#/$defs/sceneRift"
         },
@@ -1471,6 +1477,9 @@
         "priority": {
           "$ref": "#/$defs/priority"
         },
+        "spotlight": {
+          "$ref": "#/$defs/spotlight"
+        },
         "rift": {
           "$ref": "#/$defs/sceneRift"
         },
@@ -1537,6 +1546,9 @@
         },
         "priority": {
           "$ref": "#/$defs/priority"
+        },
+        "spotlight": {
+          "$ref": "#/$defs/spotlight"
         },
         "rift": {
           "$ref": "#/$defs/sceneRift"
@@ -2529,6 +2541,12 @@
         2
       ]
     },
+    "spotlight": {
+      "description": "SceneSpotlight in chapter.ts: \"next\" ends the beat as this scene opens, so the spotlight passes to the next hero once its owner has had a moment. content/README.md, \"Who owns a beat\".",
+      "enum": [
+        "next"
+      ]
+    },
     "sceneRift": {
       "description": "SceneRift in chapter.ts (#401): a rift in plain view in this scene, drawn as the neutral shimmer on every screen, standing between the party and the cast. \"steady\" is there; \"open\" opens as the scene does, then stays; \"collapse\" folds shut as the scene does, then is gone. content/README.md, \"A rift in view\".",
       "enum": [
@@ -2646,6 +2664,9 @@
         },
         "priority": {
           "$ref": "#/$defs/priority"
+        },
+        "spotlight": {
+          "$ref": "#/$defs/spotlight"
         },
         "rift": {
           "$ref": "#/$defs/sceneRift"

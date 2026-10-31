@@ -360,7 +360,7 @@ describe("one person under a title in the scenes and without it in the notes", (
     {
       id: "p",
       voiceGuide: { npcVoices: { "Sefa Tallgrass": "pride elder; voice like warm gravel", "Captain Voss": "a captain", "Captain Thimble": "a ferry captain" } },
-      scenes: { camp: { cast: [{ name: "Elder Sefa" }] }, quay: { cast: [{ name: "Captain Voss" }, { name: "Captain Thimble" }] } },
+      scenes: { camp: { cast: [{ name: "Elder Sefa", figure: "cast/elder_sefa" }] }, quay: { cast: [{ name: "Captain Voss" }, { name: "Captain Thimble" }] } },
     },
   ];
 
@@ -370,8 +370,53 @@ describe("one person under a title in the scenes and without it in the notes", (
     expect(sefa).toHaveLength(1);
     expect(sefa[0]!.name).toBe("Sefa Tallgrass");
     expect(sefa[0]!.aliases).toContain("Elder Sefa");
+    // The figure the scenes draw her with comes with her.
+    expect(sefa[0]!.figure).toBe("cast/elder_sefa");
     expect(sefa[0]!.lineCount).toBe(1);
     // Voss and Thimble are both captains, and two people.
     expect(Object.values(sheet.speakers).filter((speaker) => /Captain/.test(speaker.name))).toHaveLength(2);
+  });
+});
+
+describe("a name whose first word is also an ordinary word", () => {
+  it("is not the first word alone: a soup line is not the Soup Woman, and the runner's quotes are the runner's", () => {
+    const chapters: ChapterLike[] = [
+      {
+        id: "g",
+        voiceGuide: { npcVoices: { "Soup Woman": "Marigold; warm, runs the soup tent", "MossHome Runner": "a runner; brisk" } },
+        scenes: { tent: { cast: [{ name: "Soup Woman" }] }, post: { cast: [{ name: "MossHome Runner" }] } },
+      },
+    ];
+    const narration: NarrationLine[] = [
+      { chapter: "g", address: "g/tent/narration", text: 'The tent smells of onions. Soup for everyone, and a soup ladle the size of an oar. "Eat," she says.' },
+      { chapter: "g", address: "g/post/narration", text: '"The rush road?" A runner puffs out the news. A ford line two days long. And a soup line, very kind, that keeps asking people about the mountain. "Same shape as here," she says. "Different country. Everybody\'s noticing."' },
+    ];
+    const sheet = buildSheet({ chapters, individuals: [], narration }, null);
+    const named = (name: string) => Object.values(sheet.speakers).find((speaker) => speaker.name === name)!;
+    expect(named("Soup Woman").lines.map((line) => line.text).join(" ")).not.toMatch(/Same shape/);
+    expect(named("MossHome Runner").lines.map((line) => line.text).join(" ")).toMatch(/Same shape as here/);
+    // Her own name still works.
+    const again = buildSheet({ chapters, individuals: [], narration: [{ chapter: "g", address: "g/post/narration", text: '"Hello," says Soup Woman.' }] }, null);
+    expect(Object.values(again.speakers).find((speaker) => speaker.name === "Soup Woman")!.lineCount).toBe(1);
+  });
+});
+
+describe("matching a title-less name to a voice note, only when it is unambiguous", () => {
+  const sheetOf = (notes: Record<string, string>, cast: string) =>
+    buildSheet({ chapters: [{ id: "q", voiceGuide: { npcVoices: notes }, scenes: { s: { cast: [{ name: cast }] } } }], individuals: [], narration: [] }, null);
+  const named = (sheet: ReturnType<typeof sheetOf>, name: string) => Object.values(sheet.speakers).filter((speaker) => speaker.name === name);
+
+  it("does not pick a person when two voice notes share the given name", () => {
+    const sheet = sheetOf({ "Sefa Tallgrass": "pride elder", "Sefa Dunmore": "a miller" }, "Elder Sefa");
+    // Which Sefa? Nobody can say, so "Elder Sefa" stays her own entry and neither note absorbs her.
+    expect(named(sheet, "Elder Sefa")).toHaveLength(1);
+    expect(named(sheet, "Sefa Tallgrass")).toHaveLength(1);
+    expect(named(sheet, "Sefa Dunmore")).toHaveLength(1);
+  });
+
+  it("only takes a title off the front of a name, not a word inside it", () => {
+    const sheet = sheetOf({ "Sefa Tallgrass": "pride elder" }, "Sefa Mother");
+    expect(named(sheet, "Sefa Mother")).toHaveLength(1);
+    expect(named(sheet, "Sefa Tallgrass")).toHaveLength(1);
   });
 });

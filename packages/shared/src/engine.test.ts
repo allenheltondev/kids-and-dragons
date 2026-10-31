@@ -8,6 +8,7 @@ import {
   enterScene,
   isPartyDown,
   storyTurnHolder,
+  SPOTLIGHT_BEAT,
 } from "./engine.js";
 import { combatTurnAway, readyWithoutAway, swapOwnerAway, voteWaitsOnlyOnAway } from "./away.js";
 import type { EngineContext, EngineResult } from "./engine.js";
@@ -211,14 +212,17 @@ function walk(
     /*
      * A Story choice belongs to whoever holds the story turn (spec §6.1), and
      * these walks are about what lies past the choice, not who makes it — so
-     * a scripted CHOOSE on a turn-held prompt is made by the holder. The turn
-     * rule itself is "story turns" below, which never goes through here.
+     * a scripted CHOOSE on a turn-held prompt is made by the holder, and a
+     * scripted ROLL by the nominated roller (the beat's owner). The turn rule
+     * itself is "story turns" below, which never goes through here.
      */
     const prompt = result.state.prompt;
     const step =
       raw.intent.type === "CHOOSE" && prompt?.kind === "choice" && !prompt.vote && prompt.forPlayerIds.length === 1
         ? { ...raw, playerId: prompt.forPlayerIds[0] as string }
-        : raw;
+        : raw.intent.type === "ROLL" && prompt?.kind === "roll" && !prompt.group
+          ? { ...raw, playerId: result.state.party.find((m) => m.character.id === prompt.characterId)?.playerId ?? raw.playerId }
+          : raw;
     result = applyIntent(result.state, step, context);
     if (result.error) {
       throw new Error(`${step.intent.type} rejected: ${result.error.code} ${result.error.message}`);
@@ -911,32 +915,59 @@ describe("story turns (spec §6.1)", () => {
     expect(jumped.error?.code).toBe("FORBIDDEN");
   });
 
-  it("passes the turn to the next seat once the choice is made, and wraps around", () => {
-    const context = ctx({ rng: fixedRng(20), chapter: chapterWithForkedShrine() });
+  it("keeps a beat on its owner, and passes the spotlight after its last moment", () => {
+    const chapter = chapterWithForkedShrine();
+    // An ordinary check, the beat's owner's to roll (the fixture's goes to the best at it).
+    chapter.scenes["check_squeeze"] = { ...chapter.scenes["check_squeeze"]!, roller: "party" } as Scene;
+    const context = ctx({ rng: fixedRng(20), chapter });
     const state = atFirstStory(context);
     const taken = applyIntent(state, { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } }, context);
     expect(taken.error).toBeUndefined();
-    expect(storyTurnHolder(taken.state)?.playerId).toBe("p_2");
+    expect(storyTurnHolder(taken.state)?.playerId).toBe("p_1");
+    expect(taken.state.spotlightMoments).toBe(1);
 
-    // Past the check, the next story beat is p_2's — and then p_1's again.
-    const rolled = applyIntent(taken.state, { playerId: "p_2", intent: { type: "ROLL" } }, context).state;
-    expect(rolled.prompt).toMatchObject({ kind: "choice", forPlayerIds: ["p_2"] });
-    const second = applyIntent(rolled, { playerId: "p_2", intent: { type: "CHOOSE", choiceId: "east" } }, context);
+    // The check is the owner's to roll, and the next decision is theirs too.
+    const owner = taken.state.party[0]!.character.id;
+    expect(taken.state.prompt).toMatchObject({ kind: "roll", characterId: owner });
+    const rolled = applyIntent(taken.state, { playerId: "p_1", intent: { type: "ROLL" } }, context).state;
+    expect(rolled.spotlightMoments).toBe(2);
+    expect(rolled.prompt).toMatchObject({ kind: "choice", forPlayerIds: ["p_1"] });
+    // The third moment is the beat's last: the spotlight passes to p_2.
+    expect(SPOTLIGHT_BEAT).toBe(3);
+    const second = applyIntent(rolled, { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "east" } }, context);
     expect(second.error).toBeUndefined();
-    expect(storyTurnHolder(second.state)?.playerId).toBe("p_1");
+    expect(storyTurnHolder(second.state)?.playerId).toBe("p_2");
+    expect(second.state.spotlightMoments).toBe(0);
+  });
+
+  it("ends a beat early at a scene that starts a new one, once its owner has had a moment", () => {
+    const chapter = chapterWithForkedShrine();
+    chapter.scenes["check_squeeze"] = { ...chapter.scenes["check_squeeze"]!, spotlight: "next" } as Scene;
+    const context = ctx({ rng: fixedRng(20), chapter });
+    const taken = applyIntent(atFirstStory(context), { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } }, context);
+    // p_1 has had their moment, so the check opens on p_2's beat.
+    expect(storyTurnHolder(taken.state)?.playerId).toBe("p_2");
+    expect(taken.state.prompt).toMatchObject({ kind: "roll", characterId: taken.state.party[1]!.character.id });
+
+    // A beat nobody has had a moment of yet is not cut short.
+    const fresh = enterScene(taken.state, "check_squeeze", context).state;
+    expect(storyTurnHolder(fresh)?.playerId).toBe("p_2");
   });
 
   it("keeps the turn where it is on a beat with only one way on", () => {
     const context = ctx({ rng: fixedRng(20) });
     const state = atFirstStory(context);
     const taken = applyIntent(state, { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } }, context);
+    // The fixture's check goes to whoever is best at it, which is nobody's moment.
     const rolled = applyIntent(taken.state, { playerId: "p_2", intent: { type: "ROLL" } }, context).state;
-    // The shrine offers only "Take the path east": p_2 reads on, and the
-    // next real decision is still theirs.
-    expect(rolled.prompt).toMatchObject({ kind: "choice", forPlayerIds: ["p_2"] });
-    const onward = applyIntent(rolled, { playerId: "p_2", intent: { type: "CHOOSE", choiceId: "east" } }, context);
+    expect(rolled.spotlightMoments).toBe(1);
+    // The shrine offers only "Take the path east": p_1 reads on, and it is
+    // not a moment of their beat either.
+    expect(rolled.prompt).toMatchObject({ kind: "choice", forPlayerIds: ["p_1"] });
+    const onward = applyIntent(rolled, { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "east" } }, context);
     expect(onward.error).toBeUndefined();
-    expect(storyTurnHolder(onward.state)?.playerId).toBe("p_2");
+    expect(storyTurnHolder(onward.state)?.playerId).toBe("p_1");
+    expect(onward.state.spotlightMoments).toBe(1);
   });
 
   it("counts only the options the party can see when deciding if a beat is a decision", () => {
@@ -976,8 +1007,49 @@ describe("story turns (spec §6.1)", () => {
 
     const stoodIn = applyIntent(state, { playerId: "p_2", intent: { type: "CHOOSE", choiceId: "squeeze" } }, context);
     expect(stoodIn.error).toBeUndefined();
-    // The marker moves on from the stand-in, so p_1 is next when they are back.
-    expect(stoodIn.state.storyTurn).toBe(2);
+    // The stand-in spends the owner's moment, not one of their own: the beat
+    // is still p_1's when they are back.
+    expect(stoodIn.state.storyTurn ?? 0).toBe(0);
+    expect(stoodIn.state.spotlightMoments).toBe(1);
+  });
+
+  it("starts every chapter on a fresh beat, whatever the last one left uncounted", () => {
+    const context = ctx({ rng: fixedRng(20) });
+    // A chapter that ended two moments into p_2's beat, back in the lobby and ready to go again.
+    const lobby = {
+      ...seatedParty(context),
+      storyTurn: 1,
+      spotlightMoments: 2,
+    };
+    const started = applyIntent(lobby, { playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } }, context);
+    expect(started.error).toBeUndefined();
+    // The seat stays rotated; the count does not carry, so p_2 gets a whole beat.
+    expect(storyTurnHolder(started.state)?.playerId).toBe("p_2");
+    expect(started.state.spotlightMoments ?? 0).toBe(0);
+    const taken = applyIntent(started.state, { playerId: "p_2", intent: { type: "CHOOSE", choiceId: "squeeze" } }, context);
+    expect(storyTurnHolder(taken.state)?.playerId).toBe("p_2");
+    expect(taken.state.spotlightMoments).toBe(1);
+  });
+
+  it("hands an away owner's die to the seat standing in, and a downed owner's to the rotation", () => {
+    const chapter = chapterWithForkedShrine();
+    chapter.scenes["check_squeeze"] = { ...chapter.scenes["check_squeeze"]!, roller: "party" } as Scene;
+    const context = ctx({ rng: fixedRng(20), chapter });
+    const state = atFirstStory(context);
+    const [, second] = state.party;
+
+    // p_1's phone has dropped: the next connected seat holds the turn, and rolls.
+    const away = enterScene(withConnected(state, "p_1", false), "check_squeeze", context).state;
+    expect(away.prompt).toMatchObject({ kind: "roll", characterId: second!.character.id });
+
+    // p_1 is here but knocked down: nobody holds a turn they cannot take, so the rotation picks.
+    const down = {
+      ...state,
+      party: state.party.map((m) => (m.playerId === "p_1" ? { ...m, down: true } : m)),
+      checkRolls: { [second!.character.id]: 0 },
+    };
+    const rotated = enterScene(down, "check_squeeze", context).state;
+    expect(rotated.prompt).toMatchObject({ kind: "roll", characterId: second!.character.id });
   });
 
   it("leaves a rest scene's way out open to anyone", () => {
@@ -1246,10 +1318,14 @@ describe("whole-party checks", () => {
     expect(done.lastRoll?.group).toEqual({ made: 2, of: 2, result: "success" });
     expect(done.checkRolls).toEqual({ [unicorn!]: 1, [other!]: 1 });
 
-    // Back online, and the next shared check comes round: the griffin is due.
+    // Back online, and the next shared check comes round while the beat's
+    // owner (p_1) is knocked down and cannot roll: the rotation picks, and the
+    // griffin, who has rolled the fewest, is due.
     const back = {
       ...done,
-      party: done.party.map((m) => (m.playerId === "p_2" ? { ...m, connected: true } : m)),
+      party: done.party.map((m) =>
+        m.playerId === "p_2" ? { ...m, connected: true } : m.playerId === "p_1" ? { ...m, down: true } : m,
+      ),
     };
     const rotating = makeChapter();
     const next = enterScene(back, "check_squeeze", {
@@ -1397,6 +1473,13 @@ describe("a full walk of a chapter", () => {
     expect(secondVote.state.phase).toBe("chapter_complete");
     expect(secondVote.state.prompt).toBeNull();
     expect(secondVote.state.xpEarned).toBe(300);
+    // The ending's own page comes first; any seated phone turns it to the tally.
+    expect(secondVote.state.endingRead).toBe(false);
+    const read = applyIntent(secondVote.state, { playerId: "p_2", intent: { type: "ENDING_READ" } }, context);
+    expect(read.error).toBeUndefined();
+    expect(read.state.endingRead).toBe(true);
+    expect(applyIntent(read.state, { playerId: "p_9", intent: { type: "ENDING_READ" } }, context).error?.code).toBe("FORBIDDEN");
+    expect(applyIntent(firstVote.state, { playerId: "p_1", intent: { type: "ENDING_READ" } }, context).error?.code).toBe("ILLEGAL");
     // The fixture's ending declares no outcome, so it is a success and pays in
     // full — the guarantee that every chapter written before spec §8.2 keeps
     // working without being edited.
@@ -1425,24 +1508,24 @@ describe("a full walk of a chapter", () => {
       context,
     ).state;
 
-    // Two story beats taken in turn (p_1, then p_2) hand the marker back to
-    // p_1; the rest scene's open choice does not move it.
-    expect(storyTurnHolder(atRidge)?.playerId).toBe("p_1");
+    // p_1's beat (two choices) ends at the camp, where a beat breaks, and
+    // hands the marker to p_2; the rest scene's open choice does not move it.
+    expect(storyTurnHolder(atRidge)?.playerId).toBe("p_2");
 
     // One vote each, so it is tied — the turn holder's vote wins.
     const settled = applyIntent(atRidge, { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "high" } }, context);
-    expect(settled.state.flags["took_high"]).toBe(true);
-    expect(settled.state.flags["took_low"]).toBeUndefined();
+    expect(settled.state.flags["took_low"]).toBe(true);
+    expect(settled.state.flags["took_high"]).toBeUndefined();
 
-    // The same tie with the marker on p_2 goes p_2's way: it is the turn, not
+    // The same tie with the marker on p_1 goes p_1's way: it is the turn, not
     // party order, that breaks it.
     const theirTurn = applyIntent(
-      { ...atRidge, storyTurn: 1 },
+      { ...atRidge, storyTurn: 0 },
       { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "high" } },
       context,
     );
-    expect(theirTurn.state.flags["took_low"]).toBe(true);
-    expect(theirTurn.state.flags["took_high"]).toBeUndefined();
+    expect(theirTurn.state.flags["took_high"]).toBe(true);
+    expect(theirTurn.state.flags["took_low"]).toBeUndefined();
   });
 
   it("records what the party voted for, on the scene the vote led to (RunState.decision)", () => {
@@ -1463,12 +1546,13 @@ describe("a full walk of a chapter", () => {
       context,
     ).state;
     const ridge = chapter.scenes["scene_ridge"] as { choices: { id: string; label: string }[] };
-    const high = ridge.choices.find((c) => c.id === "high");
+    // Tied, and broken toward p_2, whose beat began at the camp.
+    const low = ridge.choices.find((c) => c.id === "low");
 
     const settled = applyIntent(atRidge, { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "high" } }, context).state;
     expect(settled.decision).toEqual({
       sceneId: settled.sceneId,
-      label: high?.label,
+      label: low?.label,
       byPlayerId: "p_1",
       vote: true,
     });
