@@ -18,7 +18,7 @@ import path from "node:path";
 import { randomBytes } from "node:crypto";
 import { cellOf, estimate, renderCell, type Workspace } from "./bakeoff.ts";
 import { renderPage, type LiveConfig } from "./page.ts";
-import { GEMINI_VOICES, engineOf, listModels, listVoices, type CastFile, type EngineConfig, type Fetch, type Keys, type ModelInfo } from "./providers.ts";
+import { GEMINI_VOICES, addLibraryVoice, engineOf, listModels, listVoices, searchLibrary, type CastFile, type EngineConfig, type Fetch, type Keys, type ModelInfo } from "./providers.ts";
 import type { Sample } from "./samples.ts";
 import { renderCastPage } from "../cast/page.ts";
 import { ART, REALM_MAP } from "../cast/profile.ts";
@@ -153,6 +153,16 @@ export function createBakeoffServer(options: ServerOptions): { server: http.Serv
       case "/api/voices": {
         const provider = engineFrom({ provider: body.provider, model: "x", mode: "lines", delivery: "none" }, []).provider;
         return send(response, 200, { voices: await listVoices(provider, keys, options.fetch) });
+      }
+      case "/api/voices/library": {
+        return send(response, 200, await searchLibrary(keys, { search: String(body.search ?? ""), gender: String(body.gender ?? ""), page: Number(body.page) || 0 }, options.fetch));
+      }
+      case "/api/voices/add": {
+        // The one call here that changes the ElevenLabs account, so it takes the three things a person clicked on.
+        const { ownerId, voiceId, name } = body as { ownerId?: unknown; voiceId?: unknown; name?: unknown };
+        if (typeof ownerId !== "string" || typeof voiceId !== "string" || !ownerId || !voiceId) throw new BadRequest("ownerId and voiceId are required");
+        const id = await addLibraryVoice(keys, { ownerId, voiceId, name: typeof name === "string" && name ? name : voiceId }, options.fetch);
+        return send(response, 200, { voiceId: id });
       }
       case "/api/columns": {
         // Every column's cells from disk, and what rendering the rest would cost. Sends nothing.
