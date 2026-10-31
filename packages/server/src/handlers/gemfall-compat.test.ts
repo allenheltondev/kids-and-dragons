@@ -342,10 +342,14 @@ const DIGESTS: PreEpicSave["digests"] = {
 // and continuity fixes at merge points). The nine legacy checks and
 // resumeInteractions keep their shipped words; no scene, edge, flag, effect,
 // stat or TN moved, and the gameplay digests are unchanged.
+// Re-pinned for the prose pass on chapters 2 to 8 from family playtest feedback (#582): narration,
+// labels, branch and variant text only, shorter and plainer with continuity fixed at merge points.
+// The legacy checks and resumeInteractions keep their shipped words; no scene, edge, flag, effect,
+// stat or TN moved, and the gameplay digests are unchanged.
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "43d406c6e7d81ee2586a4041b2cbe3677762c30b389e1dcd666ea7a75a374463",
   "chapters/gemfall-01.json": "7e8b9cb36ec0e205591b9067162b71b97af8063d383649c70eb9cd50afec9bf1",
-  "chapters/gemfall-02.json": "e108f73bc35a866ffce68a70ce7b417f4ac009e6842f6dc5f4e1a21c2b4ba5d5",
+  "chapters/gemfall-02.json": "2d2db75bb7662d8a026503905748f1699b5fcfae8cf426dca9699ca3e5451f9e",
   "chapters/gemfall-03a.json": "6bd4fe160b127075630ce31d35517fd1c062beafc0ca29219b23b71c8dd6b90b",
   "chapters/gemfall-03b.json": "55bd07f46c9048a67346e27ce2e9633eb9381d304d8044d415dd7343ceb5b788",
   "chapters/gemfall-03c.json": "ff38b900b60e71c8170b1853b354e8af76c87e4fa51776f87524f4f50a2360b6",
@@ -355,7 +359,7 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-05a.json": "0b2edfce9380935c66bee73bf598032582ec0500ae29f7e31a144c124db2675f",
   "chapters/gemfall-05b.json": "da4bd928e893ed537ddc0d0ba52554a7c73f0a40fb9e15dc23f4a3c1ab6f5115",
   "chapters/gemfall-05c.json": "063e38f86dbf86ff3161351f2d4612c067c40b5d3b3c6ac59d177e5974a0a85e",
-  "chapters/gemfall-06.json": "507a9c410d5cfdead490c5ac44e7404581e50fa043f76fbcd1f5dd19eec30b3f",
+  "chapters/gemfall-06.json": "13243be3a53a66f376a518ca62064038969f1444fd297e56bd759369d33ab765",
   "chapters/gemfall-07h.json": "4f742326dd0463d89c45860b177a35661f3d4a5129e597303f2e0523f84bad85",
   "chapters/gemfall-07l.json": "fbc767dfb458a479ca480aae131a2d4d6a8fbb3f4df206586386f127af1f431e",
   "chapters/gemfall-07r.json": "cb6d0fa98a22b8196dbd57721147711074890830a01ab111f51557b6649de3b7",
