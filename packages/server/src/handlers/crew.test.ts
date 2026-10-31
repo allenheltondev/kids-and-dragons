@@ -13,6 +13,7 @@ import { applyAction } from "./action.ts";
 import { confirmCrew, followCrew, MAX_CREWS, parseCrewChoice, parseCrewRename, renameCrew, switchCrew, CREW_NAMES } from "./crew.ts";
 import { createRoom, joinRoom } from "./room.ts";
 import { resumeGame, stopForToday } from "./save.ts";
+import { removePlayer } from "./remove.ts";
 
 const ROOT = path.resolve(import.meta.dirname, "..", "..", "..", "..");
 const content = await loadContent(path.join(ROOT, "content"));
@@ -592,6 +593,52 @@ describe("review of #580", () => {
     expect(first).toMatchObject({ ok: false, error: { message: "Another crew already has that name." } });
     expect((await h.harness.repo.listCrews(h.householdId)).map((c) => c.name)).toEqual([CREW_NAMES[4]]);
     expect(await h.harness.repo.getFirstCrewName(h.householdId)).toBeNull();
+  });
+
+  it("asks again when the lineup the host said keep going for is not the one seated", async () => {
+    const h = await household(4);
+    await partway(h);
+    const evening = await room(h);
+    const a = await sit(h, evening.code, evening.runId, 2);
+    await a.must({ type: "CREATE_CHARACTER", name: "Newcomer A", ...HERO });
+    expect((await a.state()).crewCheck?.campaignId).toBe(GEMFALL);
+    expect((await confirmCrew({ code: evening.code, principal: host(h), campaignId: GEMFALL }, h.harness.deps)).ok).toBe(true);
+    expect((await a.state()).crewConfirmed).toBe(GEMFALL);
+
+    // A is taken out, and B, who nobody said keep going for, sits down instead.
+    expect((await removePlayer({ code: evening.code, principal: host(h), playerId: a.playerId }, h.harness.deps)).ok).toBe(true);
+    const b = await sit(h, evening.code, evening.runId, 3);
+    await b.must({ type: "CREATE_CHARACTER", name: "Newcomer B", ...HERO });
+    const after = await b.state();
+    expect(after.crewConfirmed).toBeUndefined();
+    expect(after.crewCheck?.campaignId).toBe(GEMFALL);
+
+    await b.must({ type: "READY", ready: true });
+    const send = async (intent: ClientIntent) =>
+      applyAction({ runId: evening.runId, playerId: b.playerId, seq: (await b.state()).seq, intent }, h.harness.deps);
+    expect(await send({ type: "CONTINUE_CAMPAIGN", campaignId: GEMFALL })).toMatchObject({ ok: false, error: { code: "ILLEGAL" } });
+    expect(await send({ type: "START_CHAPTER", chapterId: content.campaign(GEMFALL)!.chapters[1]! })).toMatchObject({
+      ok: false,
+      error: { message: expect.stringMatching(/partway through/) },
+    });
+    expect((await b.state()).chapterId).toBeNull();
+  });
+
+  it("asks when the one seated hero who was on the adventure is taken out", async () => {
+    const h = await household(4);
+    await partway(h);
+    const evening = await room(h);
+    // Pip, on the adventure, sits beside a newcomer: nothing to ask.
+    const pip = await sit(h, evening.code, evening.runId, 1);
+    const heroes = await h.harness.repo.listCharacters(h.householdId);
+    const pipsHero = heroes.find((c) => c.name === "Pip")!;
+    await pip.must({ type: "SEAT_CHARACTER", characterId: pipsHero.id });
+    const kid = await sit(h, evening.code, evening.runId, 2);
+    await kid.must({ type: "CREATE_CHARACTER", name: "Newcomer", ...HERO });
+    expect((await kid.state()).crewCheck).toBeUndefined();
+    // Pip goes: the newcomer is alone on somebody else's adventure.
+    expect((await removePlayer({ code: evening.code, principal: host(h), playerId: pip.playerId }, h.harness.deps)).ok).toBe(true);
+    expect((await kid.state()).crewCheck?.campaignId).toBe(GEMFALL);
   });
 
   it("refuses a keep-going answer to a question the lobby no longer asks, and takes a repeat", async () => {
