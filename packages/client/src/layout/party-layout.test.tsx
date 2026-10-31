@@ -140,6 +140,19 @@ describe("Party Mode and the map", () => {
     expect(showing(container)).toEqual(["player"]);
   });
 
+  it("opens on the turn, not the bag, for a phone that reloads or rejoins mid-turn", () => {
+    mount({
+      kind: "choice",
+      sceneId: "scene_hedge_wall",
+      options: [{ id: "squeeze", label: "Look for a gap", icon: "eye" }],
+      forPlayerIds: ["p_1"],
+      vote: false,
+    });
+    // Visible: a role query skips anything under `hidden`.
+    expect(screen.getByRole("button", { name: /Look for a gap/ })).not.toBeNull();
+    expect(screen.queryByRole("button", { name: "Your turn" })).toBeNull();
+  });
+
   it("takes the map away the moment the game asks you something", () => {
     const { container } = mount();
     act(() => {

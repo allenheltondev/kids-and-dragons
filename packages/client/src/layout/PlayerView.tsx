@@ -20,7 +20,7 @@
  * ===========================================================================
  */
 
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import type { ReactNode } from "react";
 import { PlayerPanel, SignInFlow, WelcomeBack } from "../screens";
 import { FieldGuideToast } from "../screens/FieldGuideNews";
@@ -50,7 +50,13 @@ export function PlayerView({ roomControls }: { roomControls?: ReactNode }): Reac
   const session = useSession();
   const runId = session?.runId;
   const state = useRunState();
-  useEffect(() => { dismissPlayerSheet(); }, [runId]);
+  /*
+   * A new room starts on the bag. A layout effect, so it comes first: React runs a child's effects
+   * before its parent's, and as a plain effect this reset landed after PlayerPanel had opened a
+   * question that was already waiting, so a phone that reloaded or rejoined mid-turn opened on
+   * the bag with a "Your turn" button to find instead of on its turn.
+   */
+  useLayoutEffect(() => { dismissPlayerSheet(); }, [runId]);
   // "Still here" to the server, the only way production learns a phone has
   // gone (#258). A phone only: the TV renders no PlayerView.
   usePresenceBeat();
