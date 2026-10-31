@@ -8,7 +8,8 @@
 
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, render, screen } from "@testing-library/react";
-import type { Prompt } from "@kad/shared";
+import { beginEncounter, parseBoard, type EncounterState, type Prompt } from "@kad/shared";
+import { makeRules } from "../../../shared/src/test-fixtures";
 import { makeCharacter, makeMember, makeState } from "../testing/fixtures";
 import { useGameStore } from "../store";
 import { resetFieldGuideCache } from "../screens/content";
@@ -45,6 +46,57 @@ function seat(prompt: Prompt | null = null, mode: "party" | "travel" = "party", 
     presentation: null,
     loadContent: async () => undefined,
     loadChapter: async () => undefined,
+  });
+}
+
+/** A real fight between two heroes and a wisp, on whichever turn is asked for. */
+function fight(turnOf: "c_a" | "c_b" | "enemy"): EncounterState {
+  const hero = (id: string, owner: string, quick: number) =>
+    makeCharacter({ id, ownerPlayerId: owner, stats: { might: 2, quick, clever: 1, heart: 1 } });
+  const encounter = beginEncounter(
+    {
+      board: parseBoard([".....", ".....", ".....", ".....", "....."]),
+      party: [{ character: hero("c_a", "p_1", 9), at: { x: 1, y: 1 } }, { character: hero("c_b", "p_2", 8), at: { x: 1, y: 3 } }],
+      enemies: [{ spec: { id: "wisp", name: "Bramblewisp", count: 1, hp: 6, guard: 11, quick: 3, steps: 5, attack: 3 }, at: { x: 3, y: 2 } }],
+    },
+    { rules: makeRules(), abilities: {}, rng: { next: () => 0.5 } },
+  );
+  const index = encounter.order.findIndex((id) => (turnOf === "enemy" ? id.startsWith("wisp") : id === turnOf));
+  return { ...encounter, turnIndex: index };
+}
+
+/** p_1 (hero c_a) and p_2 (hero c_b) in a fight, seen from p_1's phone. */
+function seatInFight(turnOf: "c_a" | "c_b" | "enemy", p2Connected = true): void {
+  localStorage.setItem("kad.device", JSON.stringify({ deviceToken: "dev_1" }));
+  const encounter = fight(turnOf);
+  const member = (id: string, playerId: string, connected: boolean) =>
+    makeMember({ playerId, connected, character: makeCharacter({ id, ownerPlayerId: playerId }) });
+  useGameStore.setState({
+    session: { runId: "r_1", roomCode: "ABCD", playerId: "p_1", mode: "party", sessionToken: "t" },
+    state: makeState({
+      mode: "party",
+      phase: "scene",
+      sceneType: "encounter",
+      chapterId: "bramblewood-01",
+      sceneId: "scene_hedge_wall",
+      party: [member("c_a", "p_1", true), member("c_b", "p_2", p2Connected)],
+      prompt: null,
+      encounter,
+    }),
+    rules: makeRules(),
+    abilities: {},
+    chapter: null,
+    progression: null,
+    presentation: null,
+    loadContent: async () => undefined,
+    loadChapter: async () => undefined,
+  });
+}
+
+function turnTo(turnOf: "c_a" | "c_b" | "enemy"): void {
+  act(() => {
+    const state = useGameStore.getState().state!;
+    useGameStore.setState({ state: { ...state, seq: state.seq + 1, encounter: fight(turnOf) } });
   });
 }
 
@@ -150,6 +202,83 @@ describe("TV focus on a Party Mode phone", () => {
     render(<PartyLayout surface="player" />);
     focus(true);
     expect(tabs()).toEqual(["World", "You"]);
+  });
+});
+
+describe("TV focus in the lobby", () => {
+  it("leaves the lobby as it was, and takes over once the chapter starts", () => {
+    seat();
+    act(() => {
+      const state = useGameStore.getState().state!;
+      useGameStore.setState({ state: { ...state, phase: "lobby", prompt: null } });
+    });
+    applyPrefs({ ...DEFAULT_PREFS, focus: true });
+    const { container } = render(<PartyLayout surface="player" />);
+    expect(tabs()).toEqual(["World", "You", "Map", "Guide"]);
+    expect(screen.queryByTestId("tv-rest")).toBeNull();
+    expect(container.querySelector(".kad-party--player")?.hasAttribute("data-tv-focus")).toBe(false);
+
+    act(() => {
+      const state = useGameStore.getState().state!;
+      useGameStore.setState({ state: { ...state, seq: state.seq + 1, phase: "scene" } });
+    });
+    expect(tabs()).toEqual(["You"]);
+    expect(screen.getByTestId("tv-rest")).not.toBeNull();
+  });
+
+  it("leaves a phone still making its hero alone, Guide and all", () => {
+    seat();
+    act(() => {
+      const state = useGameStore.getState().state!;
+      useGameStore.setState({ state: { ...state, party: [] } });
+    });
+    applyPrefs({ ...DEFAULT_PREFS, focus: true });
+    render(<PartyLayout surface="player" />);
+    expect(tabs()).toContain("Guide");
+  });
+});
+
+describe("TV focus in a fight", () => {
+  it("shows the TV card on a friend's turn and an enemy's, and the board when the turn is hers", () => {
+    seatInFight("c_b");
+    applyPrefs({ ...DEFAULT_PREFS, focus: true });
+    const { container } = render(<PartyLayout surface="player" />);
+    expect(screen.getByTestId("tv-rest").textContent).toContain("turn to fight");
+    expect(container.querySelector(".player__prompt")?.hasAttribute("hidden")).toBe(true);
+
+    turnTo("enemy");
+    expect(screen.getByTestId("tv-rest").textContent).toContain("The other side is moving");
+
+    turnTo("c_a");
+    expect(screen.queryByTestId("tv-rest")).toBeNull();
+    expect(container.querySelector(".player__prompt")?.hasAttribute("hidden")).toBe(false);
+    expect(container.querySelector(".combat")).not.toBeNull();
+
+    turnTo("c_b");
+    expect(screen.getByTestId("tv-rest")).not.toBeNull();
+  });
+
+  it("opens the bag, not the board, from the card mid-fight", () => {
+    seatInFight("enemy");
+    applyPrefs({ ...DEFAULT_PREFS, focus: true });
+    const { container } = render(<PartyLayout surface="player" />);
+    act(() => screen.getByRole("button", { name: "Look in my bag" }).click());
+    expect(screen.getByText("Your stats").closest("[hidden]")).toBeNull();
+    expect(container.querySelector(".player__prompt")?.hasAttribute("hidden")).toBe(true);
+    expect(screen.getByRole("button", { name: "Back to the TV" })).not.toBeNull();
+  });
+
+  it("keeps the board up for a friend's turn whose phone is gone, which anybody here may pass", () => {
+    seatInFight("c_b", false);
+    applyPrefs({ ...DEFAULT_PREFS, focus: true });
+    render(<PartyLayout surface="player" />);
+    expect(screen.queryByTestId("tv-rest")).toBeNull();
+  });
+
+  it("changes nothing in a fight with the setting off", () => {
+    seatInFight("c_b");
+    render(<PartyLayout surface="player" />);
+    expect(screen.queryByTestId("tv-rest")).toBeNull();
   });
 });
 
