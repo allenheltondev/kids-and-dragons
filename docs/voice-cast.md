@@ -346,6 +346,10 @@ npm run voice:cast -- --review --out review.json
 Both are reports of the sheet. `content/voice/cast.json`, committed with its history, stays the
 source of truth.
 
+## One person, two names
+
+A person the scenes call "Elder Sefa" and the chapter's voice notes call "Sefa Tallgrass" is one entry, with the other name as an alias and the figure kept. A title (Elder, Old, Captain, Lady…) is not part of who someone is when the cast name is matched to a voice note, so it needs no rename in the content. Two people who share a title ("Captain Voss", "Captain Thimble") stay two: only the part of the name after a leading title has to match, only a title at the front comes off ("Sefa Mother" is not "Sefa"), and it must fit exactly one voice note (two notes for different Sefas leave "Elder Sefa" her own entry rather than guessing). If two entries on the sheet are one person and a title does not explain it, the fix is in `collectCharacters` (tools/voice/cast/sheet.ts), not by hand in the sheet, which a rebuild rewrites.
+
 ## Tagging lines
 
 `npm run voice:untagged` lists the quotes nobody is tagged for (only the ones that read as something said), by
