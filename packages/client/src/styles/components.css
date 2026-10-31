@@ -854,6 +854,14 @@ html[data-text] .kad-tray__label {
       0.25rem 0 0.75rem rgba(0, 0, 0, 0.35);
   }
 
+  /* Side by side, the page footer is a narrow column at the row's end, not a
+     strip under it: its links and copyright stack, as they did before the footer
+     became one row, so it never takes width from the page beside it (the
+     adventure book's hero sheet at 844px, largest text). */
+  :is(.kad-travel, .kad-party--player) > .privacy-footer {
+    flex-direction: column;
+  }
+
   /* The worn gold rim, down the edge that faces the game. */
   :is(.kad-travel, .kad-party--player) > .kad-tray::before {
     inset-inline: auto -0.2rem;
