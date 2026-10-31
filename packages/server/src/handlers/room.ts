@@ -774,20 +774,20 @@ export async function findRoom(
  * `joinRoom` refuse afterwards would leave a refused phone a member of the
  * room's household anyway, with a month-long token to prove it.
  *
- *  - `family`: a room never opened to visitors, as it always was. Its code is
- *    the family's invitation, and the phone becomes a player in the room's
- *    household. Unless the room is locked (#263): then it is refused, unbound.
- *  - `visitor`: the room is open and the phone brought its visitor code. It
- *    gets a guest household of its own (`bindNewPhone`).
- *  - refused: any other way into a room that has ever been open
- *    (`RunState.visitorsOpened`). The room's four letters were shown to every
- *    visitor, so they no longer prove somebody is family, while the room is
- *    open or after the switch is off. A family's own new phone comes in on the
- *    visitor code while the room is open, and can be moved home later (#251).
+ *  - `family`: the phone that founds the room's household, joining a TV's room
+ *    nobody has settled yet (`founding`, `RoomRecord.claimable`). It becomes a
+ *    player in the household the TV made, as it always was.
+ *  - `visitor`: every other new phone, on whichever code. A room is joined on
+ *    its four letters from any household (#249), so those letters no longer
+ *    prove somebody is family: a never-seen phone gets a guest household of its
+ *    own (`bindNewPhone`), and its hero lives there. A family's own new phone
+ *    can be moved home later (#251), or paired from a phone already at home.
+ *  - refused: a locked room (#263), unbound.
  */
 export async function admitNewPhone(
   room: RoomRecord,
-  visitorCode: string | undefined,
+  /** The room was a TV's, nobody's yet, until this phone settled it (`settleRoom`). */
+  founding: boolean,
   deps: Pick<HandlerDeps, "repo" | "now" | "channel">,
 ): Promise<HandlerResult<"family" | "visitor">> {
   const state = await deps.repo.getState(room.runId);
@@ -797,17 +797,8 @@ export async function admitNewPhone(
   if (isClosed(state) || (await closeIfIdle(room, state, deps))) {
     return fail("NOT_FOUND", `no open room ${room.code.toUpperCase()}`);
   }
-  if (state.visitorsOpened === true || state.visitorCode !== undefined) {
-    if (visitorCode !== undefined && state.visitorCode === visitorCode) return ok("visitor");
-    return fail(
-      "FORBIDDEN",
-      state.visitorCode !== undefined
-        ? "New players join this game with its visitor code. Ask whoever is running it."
-        : "This game isn't taking new players. Ask whoever is running it.",
-    );
-  }
   if (state.locked) return fail("FORBIDDEN", "This game is locked. Ask whoever is running it to unlock it.");
-  return ok("family");
+  return ok(founding ? "family" : "visitor");
 }
 
 /**

@@ -334,7 +334,7 @@ async function main(): Promise<void> {
     if (!existing && !joinerName.ok) return sendError(res, statusFor(joinerName.error), joinerName.error.code, joinerName.error.message);
     let admitted: "family" | "visitor" | null = null;
     if (!existing) {
-      const admission = await admitNewPhone(room, named.visitorCode, deps);
+      const admission = await admitNewPhone(room, found.claimable === true, deps);
       if (!admission.ok) {
         return sendError(res, statusFor(admission.error), admission.error.code, admission.error.message);
       }

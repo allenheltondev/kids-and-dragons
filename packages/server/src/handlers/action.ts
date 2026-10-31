@@ -186,20 +186,6 @@ export async function applyAction(
     if (!campaignId) {
       return { ok: false, seq: state.seq, error: { code: "ILLEGAL", message: "no campaign to continue" } };
     }
-    // A crew partway through this adventure, and nobody seated has been on it:
-    // the host chooses first (crew.ts, `checkNewcomers`), rather than these
-    // heroes being dropped into the middle of somebody else's story.
-    if (await newcomersTo(state, auth.run.householdId, campaignId, deps)) {
-      const title = deps.content.campaign(campaignId)?.title ?? campaignId;
-      return {
-        ok: false,
-        seq: state.seq,
-        error: {
-          code: "ILLEGAL",
-          message: `This crew is partway through ${title}, and none of these heroes have been on it yet. The grown-up running the game picks: keep going, or start a new crew.`,
-        },
-      };
-    }
     const next = await nextChapter(campaignId, auth.run.householdId, seatedParty(state), deps, state.crew);
     if ("refusal" in next) {
       return { ok: false, seq: state.seq, error: { code: next.code, message: next.refusal } };
@@ -259,6 +245,27 @@ export async function applyAction(
   // The household had already played this chapter (session timing, #511).
   let revisit = false;
   if (input.intent.type === "START_CHAPTER" && chapter) {
+    // A crew partway through this adventure, and nobody seated has been on it:
+    // the host chooses first (crew.ts, `checkNewcomers`), rather than these
+    // heroes being dropped into the middle of somebody else's story. Here, on
+    // every start, so a START_CHAPTER sent straight is asked the same as
+    // CONTINUE_CAMPAIGN; the practice and a playtest start have no attempt.
+    const forced = deps.playtest && deps.playtestStart?.chapterId === chapter.id;
+    if (
+      !forced &&
+      !isPracticeCampaign(chapter.campaignId) &&
+      (await newcomersTo(state, auth.run.householdId, chapter.campaignId, deps))
+    ) {
+      const title = deps.content.campaign(chapter.campaignId)?.title ?? chapter.campaignId;
+      return {
+        ok: false,
+        seq: state.seq,
+        error: {
+          code: "ILLEGAL",
+          message: `This crew is partway through ${title}, and none of these heroes have been on it yet. The grown-up running the game picks: keep going, or start a new crew.`,
+        },
+      };
+    }
     const road = await roadTo(chapter, auth.run.householdId, seatedParty(state), deps, state.crew);
     if ("refusal" in road) {
       return { ok: false, seq: state.seq, error: { code: "ILLEGAL", message: road.refusal } };

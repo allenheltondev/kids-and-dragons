@@ -21,7 +21,7 @@
  */
 
 import { claimOf, CREW_NAMES, FIRST_CREW_NAME, lobbyCampaign, memberHome, parseClaim, type Character, type RunState } from "@kad/shared";
-import type { CrewRecord } from "../store/repository.ts";
+import type { CommitInput, CrewRecord } from "../store/repository.ts";
 import { claimIsLive } from "./claim.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 import { commitRoomChange, hostedRoom, type HostPrincipal } from "./host.ts";
@@ -80,6 +80,8 @@ export async function switchCrew(
   // Decided afresh on every attempt, from the crews as they stand then.
   let target: string | null = null;
   let made: CrewRecord | undefined;
+  // The crew-names version a new crew's name was picked from (`CommitInput.crewNames`).
+  let namesRead = 0;
   // Asserted rather than annotated: set in the change below, which TypeScript cannot see.
   let refusal = null as { code: "ILLEGAL" | "NOT_FOUND"; message: string } | null;
 
@@ -89,6 +91,7 @@ export async function switchCrew(
     async (state) => {
       made = undefined;
       refusal = null;
+      namesRead = await deps.repo.getCrewNamesVersion(room.householdId);
       if (!betweenGames(state)) {
         refusal = { code: "ILLEGAL", message: "Change crews before the adventure starts." };
         return null;
@@ -98,16 +101,22 @@ export async function switchCrew(
       if (retried) {
         target = retried.id;
       } else if (input.crew === "new") {
+        // The slot is the id, the name the first one no crew holds: the first
+        // crew's own name included, since a rename may have given it one of
+        // the list's. One name per crew, so the list is the cap, the first
+        // crew's name counted when it holds one.
         const taken = new Set(crews.map((c) => c.id));
         const slot = CREW_NAMES.findIndex((_, i) => !taken.has(crewSlot(i)));
-        if (slot < 0) {
+        const held = await heldNames(room.householdId, crews, undefined, deps);
+        const name = CREW_NAMES.find((n) => !held.includes(n));
+        if (slot < 0 || name === undefined) {
           refusal = { code: "ILLEGAL", message: "This game already has as many crews as it can keep." };
           return null;
         }
         made = {
           householdId: room.householdId,
           id: crewSlot(slot),
-          name: CREW_NAMES[slot]!,
+          name,
           createdAt: iso(deps.now()),
           ...(input.request ? { request: input.request } : {}),
         };
@@ -143,11 +152,32 @@ export async function switchCrew(
       return next;
     },
     deps,
-    { crew: () => made },
+    {
+      crew: () => made,
+      // A new crew's name was picked from the names as they stood: gated on them.
+      crewNames: () => (made ? { householdId: room.householdId, expectedVersion: namesRead, names: [] } : undefined),
+    },
   );
   if (!result.ok) return result;
   if (refusal) return fail(refusal.code, refusal.message);
   return ok({ seq: result.value.seq, crew: target });
+}
+
+/**
+ * Every name the household's crews go by, but `except`'s (a crew's id, or null
+ * for the first): the first crew's when it was given one, and every other crew's.
+ */
+async function heldNames(
+  householdId: string,
+  crews: CrewRecord[],
+  except: string | null | undefined,
+  deps: HandlerDeps,
+): Promise<string[]> {
+  const first = await deps.repo.getFirstCrewName(householdId);
+  return [
+    ...crews.filter((c) => c.id !== except).map((c) => c.name),
+    ...(except === null ? [] : [first ?? FIRST_CREW_NAME]),
+  ];
 }
 
 export interface RenameCrewInput {
@@ -189,40 +219,39 @@ export async function renameCrew(
   if (!run) return fail("NOT_FOUND", `no run ${room.runId}`);
 
   let refusal = null as { code: "ILLEGAL" | "NOT_FOUND"; message: string } | null;
+  // The rename this attempt chose, and the crew-names version it chose it from:
+  // it lands with the run's commit, and only on that version, so a lost race
+  // writes nothing and its retry reads the names again (`CommitInput.crewNames`).
+  let naming: NonNullable<CommitInput["crewNames"]> | undefined;
   const result = await commitRoomChange(
     room,
     input.principal.playerId,
     async (state) => {
       refusal = null;
+      naming = undefined;
       if (!betweenGames(state)) {
         refusal = { code: "ILLEGAL", message: "Rename a crew before the adventure starts." };
         return null;
       }
+      const version = await deps.repo.getCrewNamesVersion(room.householdId);
       const crews = await deps.repo.listCrews(room.householdId);
       if (input.crew !== null && !crews.some((c) => c.id === input.crew)) {
         refusal = { code: "NOT_FOUND", message: "There is no crew like that in this game." };
         return null;
       }
-      const first = await deps.repo.getFirstCrewName(room.householdId);
-      const held = [
-        ...crews.filter((c) => c.id !== input.crew).map((c) => c.name),
-        ...(input.crew === null ? [] : [first ?? FIRST_CREW_NAME]),
-      ];
-      if (held.includes(input.name)) {
+      if ((await heldNames(room.householdId, crews, input.crew, deps)).includes(input.name)) {
         refusal = { code: "ILLEGAL", message: "Another crew already has that name." };
         return null;
       }
-      if (!(await deps.repo.renameCrew(room.householdId, input.crew, input.name))) {
-        refusal = { code: "NOT_FOUND", message: "There is no crew like that in this game." };
-        return null;
-      }
+      naming = { householdId: room.householdId, expectedVersion: version, names: [{ crew: input.crew, name: input.name }] };
+      // The screens show the new name with the commit that sets it.
       const next: RunState = { ...state };
-      await offerCampaigns(next, room.householdId, run.campaignId, deps);
-      // `offerCampaigns` picks a fresh campaign and drops votes cast; a rename changes neither.
-      next.campaignVotes = state.campaignVotes ?? {};
+      if (input.crew === null) next.firstCrewName = input.name;
+      else next.crews = (state.crews ?? []).map((c) => (c.id === input.crew ? { ...c, name: input.name } : c));
       return next;
     },
     deps,
+    { crewNames: () => naming },
   );
   if (!result.ok) return result;
   if (refusal) return fail(refusal.code, refusal.message);
@@ -335,7 +364,13 @@ export async function confirmCrew(
         refusal = "Choose before the adventure starts.";
         return null;
       }
+      // A repeat of the answer already given is fine; an answer to a question
+      // the lobby no longer asks (the vote moved to another adventure) is not.
       if (state.crewConfirmed === input.campaignId && state.crewCheck === undefined) return null;
+      if (state.crewCheck?.campaignId !== input.campaignId) {
+        refusal = "The lobby is asking about another adventure now. Choose again.";
+        return null;
+      }
       const next: RunState = { ...state, crewConfirmed: input.campaignId };
       delete next.crewCheck;
       return next;

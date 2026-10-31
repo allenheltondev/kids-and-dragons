@@ -522,3 +522,89 @@ describe("heroes new to the crew's adventure", () => {
     expect((await kid.state()).crewCheck).toBeUndefined();
   });
 });
+
+describe("review of #580", () => {
+  /** The family's Pip is on the first crew's Gemfall, and it is partway: a chapter finished. */
+  async function partway(h: Household) {
+    await familyStops(h);
+    const attempt = (await h.harness.repo.getCampaignProgress(h.householdId, GEMFALL))!;
+    await h.harness.repo.putCampaignProgress({ ...attempt, lastIndex: 1 });
+  }
+
+  it("asks before a START_CHAPTER sent straight, not only before Begin", async () => {
+    const h = await household();
+    await partway(h);
+    const evening = await room(h);
+    const kid = await sit(h, evening.code, evening.runId, 2);
+    await kid.must({ type: "CREATE_CHARACTER", name: "Newcomer", ...HERO });
+    await kid.must({ type: "READY", ready: true });
+    const next = content.campaign(GEMFALL)!.chapters[1]!;
+    const sent = await applyAction(
+      { runId: evening.runId, playerId: kid.playerId, seq: (await kid.state()).seq, intent: { type: "START_CHAPTER", chapterId: next } },
+      h.harness.deps,
+    );
+    expect(sent).toMatchObject({ ok: false, error: { code: "ILLEGAL", message: expect.stringMatching(/partway through/) } });
+    expect((await kid.state()).chapterId).toBeNull();
+  });
+
+  it("gives a new crew a name nobody holds, the first crew's renamed one included", async () => {
+    const h = await household();
+    const evening = await room(h);
+    await sit(h, evening.code, evening.runId, 1);
+    expect((await renameCrew({ code: evening.code, principal: host(h), crew: null, name: CREW_NAMES[0] }, h.harness.deps)).ok).toBe(true);
+    await switchCrew({ code: evening.code, principal: host(h), crew: "new", request: "tap-after-rename" }, h.harness.deps);
+    const crews = await h.harness.repo.listCrews(h.householdId);
+    expect(crews.map((c) => c.name)).toEqual([CREW_NAMES[1]]);
+    expect(await h.harness.repo.getFirstCrewName(h.householdId)).toBe(CREW_NAMES[0]);
+  });
+
+  it("renames nothing when the run's commit fails", async () => {
+    const h = await household();
+    const evening = await room(h);
+    await sit(h, evening.code, evening.runId, 1);
+    h.harness.repo.commit = async () => false;
+    const named = await renameCrew({ code: evening.code, principal: host(h), crew: null, name: CREW_NAMES[2] }, h.harness.deps);
+    expect(named.ok).toBe(false);
+    expect(await h.harness.repo.getFirstCrewName(h.householdId)).toBeNull();
+    expect(await h.harness.repo.getCrewNamesVersion(h.householdId)).toBe(0);
+  });
+
+  it("lets only one of two renames racing for one name have it", async () => {
+    const h = await household();
+    const evening = await room(h);
+    await sit(h, evening.code, evening.runId, 1);
+    await switchCrew({ code: evening.code, principal: host(h), crew: "new", request: "tap-race" }, h.harness.deps);
+    // Back to the first crew, so both renames run between games in this lobby.
+    await switchCrew({ code: evening.code, principal: host(h), crew: null }, h.harness.deps);
+    const commit = h.harness.repo.commit.bind(h.harness.repo);
+    let raced = false;
+    h.harness.repo.commit = async (input) => {
+      // The first crew's rename has read the names; the other crew's lands first.
+      if (!raced && input.crewNames?.names[0]?.crew === null) {
+        raced = true;
+        const other = await renameCrew({ code: evening.code, principal: host(h), crew: "cw_1", name: CREW_NAMES[4] }, h.harness.deps);
+        expect(other.ok).toBe(true);
+      }
+      return commit(input);
+    };
+    const first = await renameCrew({ code: evening.code, principal: host(h), crew: null, name: CREW_NAMES[4] }, h.harness.deps);
+    expect(raced).toBe(true);
+    expect(first).toMatchObject({ ok: false, error: { message: "Another crew already has that name." } });
+    expect((await h.harness.repo.listCrews(h.householdId)).map((c) => c.name)).toEqual([CREW_NAMES[4]]);
+    expect(await h.harness.repo.getFirstCrewName(h.householdId)).toBeNull();
+  });
+
+  it("refuses a keep-going answer to a question the lobby no longer asks, and takes a repeat", async () => {
+    const h = await household();
+    await partway(h);
+    const evening = await room(h);
+    const kid = await sit(h, evening.code, evening.runId, 2);
+    await kid.must({ type: "CREATE_CHARACTER", name: "Newcomer", ...HERO });
+    expect((await kid.state()).crewCheck?.campaignId).toBe(GEMFALL);
+    const stale = await confirmCrew({ code: evening.code, principal: host(h), campaignId: "riftlight" }, h.harness.deps);
+    expect(stale.ok).toBe(false);
+    expect((await kid.state()).crewCheck?.campaignId).toBe(GEMFALL);
+    expect((await confirmCrew({ code: evening.code, principal: host(h), campaignId: GEMFALL }, h.harness.deps)).ok).toBe(true);
+    expect((await confirmCrew({ code: evening.code, principal: host(h), campaignId: GEMFALL }, h.harness.deps)).ok).toBe(true);
+  });
+});

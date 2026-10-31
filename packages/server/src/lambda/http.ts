@@ -443,15 +443,15 @@ async function postJoin(req: Req, deps: HandlerDeps, typed: string) {
   const room = settled.value;
   if (!room) return error(404, "NOT_FOUND", `no open room ${code}`);
   // An unbound device joining a room gets a player created for it on the spot,
-  // so a phone that has never seen this game joins in one tap. On a visitor
-  // code it is a visitor, in a guest household of its own (#249).
+  // so a phone that has never seen this game joins in one tap. Unless it is
+  // founding a TV's room, it is a visitor, in a guest household of its own (#249).
   // Never-seen phones are admitted *before* anything is bound to them
   // (`admitNewPhone`): a refused one must leave no membership behind.
   const joinerName = vetTypedName(req.body.displayName, "Player");
   if (!existing && !joinerName.ok) return fromError(joinerName.error);
   let admitted: "family" | "visitor" | null = null;
   if (!existing) {
-    const admission = await admitNewPhone(room, named.visitorCode, deps);
+    const admission = await admitNewPhone(room, found.claimable === true, deps);
     if (!admission.ok) return fromError(admission.error);
     admitted = admission.value;
   }
