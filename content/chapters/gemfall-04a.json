@@ -2320,7 +2320,7 @@
     },
     "interaction_cub_lullaby_response_hum": {
       "type": "story",
-      "narration": "A cub folds one ear toward your hum. The cubs settle into a furry heap, and Sefa mouths thank you. Your packs still hum, but the cubs are asleep.",
+      "narration": "A cub folds one ear toward the hum. The cubs settle into a furry heap, and Sefa mouths thank you. Your packs still hum, but the cubs are asleep.",
       "choices": [
         {
           "id": "continue",
@@ -2340,7 +2340,7 @@
     },
     "interaction_cub_lullaby_response_beat": {
       "type": "story",
-      "narration": "Sefa taps softly under your beat. The cubs settle into a furry heap, and she mouths thank you. Your packs still hum, but the cubs are asleep.",
+      "narration": "Sefa taps softly underneath your beat. The cubs settle into a furry heap, and she mouths thank you. Your packs still hum, but the cubs are asleep.",
       "choices": [
         {
           "id": "continue",
@@ -2360,7 +2360,7 @@
     },
     "interaction_cub_lullaby_response_word": {
       "type": "story",
-      "narration": "A cub yawns your word back at you. The cubs settle into a furry heap, and Sefa mouths thank you. Your packs still hum, but the cubs are asleep.",
+      "narration": "A cub repeats your word into a yawn. The cubs settle into a furry heap, and Sefa mouths thank you. Your packs still hum, but the cubs are asleep.",
       "choices": [
         {
           "id": "continue",
@@ -2393,7 +2393,7 @@
     },
     "interaction_lost_moths_response_hum": {
       "type": "story",
-      "narration": "The moths lean toward your hum and glow brighter. Then they all rise and fly south, glowing steady. Ahead, the ground turns soft and muddy.",
+      "narration": "The moths lean toward the sound, glowing a little brighter. Then they all rise and fly south, glowing steady. Ahead, the ground turns soft and muddy.",
       "choices": [
         {
           "id": "continue",
@@ -2406,7 +2406,7 @@
     },
     "interaction_lost_moths_response_dim": {
       "type": "story",
-      "narration": "The moths settle into your cupped hands like birds in a nest. Then they all rise and fly south, glowing steady. Ahead, the ground turns soft and muddy.",
+      "narration": "The moths settle into the shadow, like birds into a nest. Then they all rise and fly south, glowing steady. Ahead, the ground turns soft and muddy.",
       "choices": [
         {
           "id": "continue",

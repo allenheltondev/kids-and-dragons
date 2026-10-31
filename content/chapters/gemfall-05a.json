@@ -2293,7 +2293,7 @@
     },
     "interaction_survey_evidence_response_road": {
       "type": "story",
-      "narration": "You trace your road on the survey. Brask marks every bend. Your road and her cracks curve the same way.",
+      "narration": "Your road goes beside the crack lines. Brask checks where it bends. Your road and her cracks curve the same way.",
       "choices": [
         {
           "id": "continue",
@@ -2319,7 +2319,7 @@
     },
     "interaction_survey_evidence_response_stone": {
       "type": "story",
-      "narration": "You describe the places near the stones. Brask marks each one. Your clues and her cracks curve the same way.",
+      "narration": "Brask marks the places you describe, asking where the observation came from. Your clues and her cracks curve the same way.",
       "choices": [
         {
           "id": "continue",
@@ -2345,7 +2345,7 @@
     },
     "interaction_survey_evidence_response_measure": {
       "type": "story",
-      "narration": "Brask reads out yesterday's crack and today's. A pencil falls out of her hair. Her numbers and your clues curve the same way.",
+      "narration": "Brask reads yesterday and today from the survey. One pencil falls out of her hair. Her numbers and your clues curve the same way.",
       "choices": [
         {
           "id": "continue",

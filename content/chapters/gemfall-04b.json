@@ -2455,7 +2455,7 @@
     },
     "interaction_forest_inventory_response_check": {
       "type": "story",
-      "narration": "A fern helps lift the edge of a hood, just in case. One pocket at a time, you check and name what you carry.",
+      "narration": "A fern helps lift the edge of a hood. Just in case. One pocket at a time, you check and name what you carry.",
       "choices": [
         {
           "id": "continue",
@@ -2480,7 +2480,7 @@
     },
     "interaction_forest_inventory_response_help": {
       "type": "story",
-      "narration": "The trees wait while a friend helps you check. One pocket at a time, you name what you carry.",
+      "narration": "The trees wait while the check is finished together. One pocket at a time, you name what you carry.",
       "choices": [
         {
           "id": "continue",

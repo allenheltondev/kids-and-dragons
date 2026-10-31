@@ -85,9 +85,9 @@
       "group": "pib",
       "script": [
         { "by": "narrator", "text": "Inside, Pib walks you up the lane to an inn with very tall doors, then digs in the satchel." },
-        { "by": "pib", "text": "<sigh> \"I can only spare one gift,\"" },
+        { "by": "pib", "text": "<sigh> \"I can only spare one gift for you,\"" },
         { "by": "narrator", "text": "says Pib." },
-        { "by": "pib", "text": "\"The hedge says choose together.\"" },
+        { "by": "pib", "text": "\"The hedge says you should choose it together.\"" },
         { "by": "narrator", "text": "Which one? Everybody vote." }
       ]
     },

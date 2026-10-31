@@ -2431,7 +2431,7 @@
     },
     "interaction_gear_inventory_response_show": {
       "type": "story",
-      "narration": "The grandmother checks what you show against her tally. She writes down your gear and waves you through.",
+      "narration": "The grandmother checks the things you show against her tally. She writes down your gear and waves you through.",
       "choices": [
         {
           "id": "continue",
@@ -2450,7 +2450,7 @@
     },
     "interaction_gear_inventory_response_use": {
       "type": "story",
-      "narration": "She writes each use beside each thing. The sock gets a question mark. Then she waves you through.",
+      "narration": "She writes the uses beside the gear. The sock receives a question mark. Then she waves you through.",
       "choices": [
         {
           "id": "continue",
@@ -2469,7 +2469,7 @@
     },
     "interaction_gear_inventory_response_check": {
       "type": "story",
-      "narration": "She checks one pocket at a time with you, waiting for your answers. Then she writes it all down and waves you through.",
+      "narration": "She helps check one pocket at a time, leaving room for your answer. Then she writes it all down and waves you through.",
       "choices": [
         {
           "id": "continue",
@@ -2488,7 +2488,7 @@
     },
     "interaction_crowd_account_response_moths": {
       "type": "story",
-      "narration": "You tell them about the moths going south. The grandmothers pass your words down the line. The crowd listens, and the pushing stops.",
+      "narration": "Your account of the southbound moths gives the waiting people something to listen to. The grandmothers pass your words down the line. The crowd listens, and the pushing stops.",
       "choices": [
         {
           "id": "continue",
@@ -2526,7 +2526,7 @@
     },
     "interaction_crowd_account_response_rule": {
       "type": "story",
-      "narration": "You explain what the mountain drops and what it holds. Somebody lowers a digging tool. The grandmothers pass your words down the line, and the pushing stops.",
+      "narration": "You explain what is freely dropped and what must stay held. A listener lowers a digging tool. The grandmothers pass your words down the line, and the pushing stops.",
       "choices": [
         {
           "id": "continue",

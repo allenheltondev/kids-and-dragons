@@ -3596,7 +3596,7 @@
     },
     "interaction_watch_logs_response_date": {
       "type": "story",
-      "narration": "Pellam reads the old date aloud. The wardens answer your questions. Voss turns to the oldest explanation.",
+      "narration": "Pellam points to the old date and reads it aloud. The wardens answer your questions. Voss turns to the oldest explanation.",
       "choices": [
         {
           "id": "continue",
@@ -3615,7 +3615,7 @@
     },
     "interaction_watch_logs_response_road": {
       "type": "story",
-      "narration": "Voss sets your road beside the watch records. The wardens answer your questions. Voss turns to the oldest explanation.",
+      "narration": "Voss sets your observation beside the watch records. The wardens answer your questions. Voss turns to the oldest explanation.",
       "choices": [
         {
           "id": "continue",
@@ -3634,7 +3634,7 @@
     },
     "interaction_watch_logs_response_question": {
       "type": "story",
-      "narration": "Pellam sorts the known facts from the open questions. Voss turns to the oldest explanation.",
+      "narration": "Pellam separates the recorded facts from the questions still open. Voss turns to the oldest explanation.",
       "choices": [
         {
           "id": "continue",
@@ -3653,7 +3653,7 @@
     },
     "interaction_purpose_council_response_protect": {
       "type": "story",
-      "narration": "The table listens to what you want to keep safe. Now choose your next road together.",
+      "narration": "The table listens to what you hope to keep safe. Now choose your next road together.",
       "choices": [
         {
           "id": "continue",
@@ -3672,7 +3672,7 @@
     },
     "interaction_purpose_council_response_ask": {
       "type": "story",
-      "narration": "Voss hears your question and gives everyone time to talk it over. Now choose your next road together.",
+      "narration": "Voss hears your question and leaves time for everyone to discuss it. Now choose your next road together.",
       "choices": [
         {
           "id": "continue",
@@ -3691,7 +3691,7 @@
     },
     "interaction_purpose_council_response_try": {
       "type": "story",
-      "narration": "Pellam listens, and writes nothing beside your name. Now choose your next road together.",
+      "narration": "Pellam listens without putting a choice beside your name. Now choose your next road together.",
       "choices": [
         {
           "id": "continue",
