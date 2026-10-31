@@ -257,7 +257,7 @@ export function traitsOf(entry: Pick<CastEntry, "name" | "who">): string[] {
   return traits;
 }
 
-const SPEECH_VERBS = "says|said|asks|adds|croaks|squawks|whispers|calls|shouts|booms|sighs|laughs|mutters|sings|grumbles|answers|replies|bellows|squeaks|hums|announces|explains|tells you|puffs|rumbles|snaps|chirps|cries|murmurs|declares|beams|grins|wheezes|honks|bleats|purrs|say|ask|whisper|call|shout|answer|groans|corrects|decides|promises|insists|warns|urges|offers|suggests|agrees|admits|demands|complains|grunts|gasps|yells|exclaims|remarks|continues|reminds|pleads|scolds|teases|hisses|growls|chuckles|giggles|cheers|moans|sniffs|barks|croak|groan|cry|mutter|explain|tells|repeats|echoes|states|notes|observes|wonders|insists|adds|growls|squeals|calls out|cheers|roars|howls|thunders|screeches|trills|coos|yelps|screams|warbles|rasps|writes|jots|scribbles";
+const SPEECH_VERBS = "says|said|asks|adds|croaks|squawks|whispers|calls|shouts|booms|sighs|laughs|mutters|sings|grumbles|answers|replies|bellows|squeaks|hums|announces|explains|tells you|puffs|rumbles|snaps|chirps|cries|murmurs|declares|beams|grins|wheezes|honks|bleats|purrs|say|ask|whisper|call|shout|answer|groans|corrects|decides|promises|insists|warns|urges|offers|suggests|agrees|admits|demands|complains|grunts|gasps|yells|exclaims|remarks|continues|reminds|pleads|scolds|teases|hisses|growls|chuckles|giggles|cheers|moans|sniffs|barks|croak|groan|cry|mutter|explain|tells|repeats|echoes|states|notes|observes|wonders|insists|adds|growls|squeals|calls out|cheers|roars|howls|thunders|screeches|trills|coos|yelps|screams|warbles|rasps|writes|jots|scribbles|reads";
 const QUOTE = /["“]([^"”]{2,400})["”]/g;
 const escape = (text: string): string => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
@@ -287,9 +287,12 @@ export function withSceneRoles(present: readonly Speaker[], inScene: ReadonlySet
   if (!inScene || inScene.size < 1) return present.map((speaker) => ({ ...speaker, here: false }));
   const owners = new Map<string, string[]>();
   for (const id of inScene) {
-    const last = nameOf.get(id)?.toLowerCase().replace(/['’]s\b/g, "").split(/\s+/).pop();
+    const words = nameOf.get(id)?.toLowerCase().replace(/['’]s\b/g, "").split(/\s+/) ?? [];
+    const last = words[words.length - 1];
     if (!last || last.length < 4) continue;
-    for (const word of new Set([last, last.length > 4 ? last.replace(/s$/, "") : last])) owners.set(word, [...(owners.get(word) ?? []), id]);
+    // The last word ("the keeper"), and any other word of the name that is a role ("the elder" for the Elder Unicorn).
+    const named = new Set([last, last.length > 4 ? last.replace(/s$/, "") : last, ...words.filter((word) => word.length >= 4 && ROLE_WORDS.test(word)).map((word) => word.replace(/s$/, ""))]);
+    for (const word of named) owners.set(word, [...(owners.get(word) ?? []), id]);
   }
   return present.map((speaker) => {
     const mine = [...owners].filter(([, ids]) => ids.length === 1 && ids[0] === speaker.id).map(([word]) => word);
@@ -614,6 +617,14 @@ function namesFor(draft: Pick<Draft, "name" | "aliases">): string[] {
 // Jobs and roles, never peoples: "the merfolk" in a chapter with two merfolk is anybody's.
 const ROLE_WORDS = /^(captain|keeper|guide|grandmother|drover|ferrier|runner|cook|prospector|driver|seller|leader|warden|tree|beech|voice|door|postmaster|innkeeper|fishmonger|boy|girl|elder|clerk|courier|lamplighter|scholar|cobbler|foreman|provisioner|ladler|actor|grocer|toll-taker|ferryman|ferrywoman|engineer|sergeant|corporal|archivist|messenger|watcher|herder|builder|pilot|singer|student|worker|boss|carter|claimant|expert|gatherer)s?$/i;
 
+/** The pronoun the sheet already has for someone: canon's or the last build's, else the one their notes imply ("warm once she decides you matter"). */
+function knownPronoun(draft: Pick<Draft, "name" | "who" | "pronouns">, before: string | undefined): Speaker["pronoun"] {
+  const stated = pronounWord(draft.pronouns ?? before);
+  if (stated) return stated;
+  const guess = genderOf({ name: draft.name, who: draft.who, pronouns: undefined });
+  return guess === "f" ? "she" : guess === "m" ? "he" : undefined;
+}
+
 /** A name for several of them ("Gullet's Cousins", "Marker Movers"): its last word is a plural. */
 export function isGroupName(name: string): boolean {
   const last = name.trim().split(/\s+/).pop() ?? "";
@@ -635,7 +646,11 @@ function isRoleName(name: string): boolean {
 function roleWords(draft: Pick<Draft, "name" | "aliases" | "who">): string[] {
   const words = new Set<string>();
   for (const name of [draft.name, ...draft.aliases]) {
-    if (isRoleName(name)) words.add(name.toLowerCase().split(/\s+/).pop()!.replace(/s$/, ""));
+    if (isRoleName(name)) {
+      // "Beech Tree" is "the tree" and "the beech": each word of a role name that is a role word.
+      for (const word of name.toLowerCase().split(/\s+/)) if (ROLE_WORDS.test(word)) words.add(word.replace(/s$/, ""));
+      words.add(name.toLowerCase().split(/\s+/).pop()!.replace(/s$/, ""));
+    }
   }
   const lead = /^(?:an?|the)\s+((?:[a-z-]+\s+){0,3}?[a-z-]+?)(?:\s+(?:of|in|on|with|who|from|at|that|whose)\b|[;,.(]|$)/i.exec(draft.who.trim());
   if (lead) {
@@ -881,7 +896,7 @@ export function buildSheet(sources: Sources, previous: CastSheet | null, untagge
   // The pronouns the narration's own speech tags use for each speaker ("…," she says).
   const tagged = new Map<string, Record<string, number>>();
   const inChapter = new Map<string, Speaker[]>();
-  for (const draft of drafts) for (const chapter of draft.chapters) inChapter.set(chapter, [...(inChapter.get(chapter) ?? []), { id: draft.id, names: namesFor(draft), pronoun: kindOf(draft.id, draft.name, draft.who) === "creature" ? undefined : pronounWord(draft.pronouns ?? previous?.speakers[draft.id]?.pronouns) }]);
+  for (const draft of drafts) for (const chapter of draft.chapters) inChapter.set(chapter, [...(inChapter.get(chapter) ?? []), { id: draft.id, names: namesFor(draft), pronoun: kindOf(draft.id, draft.name, draft.who) === "creature" ? undefined : knownPronoun(draft, previous?.speakers[draft.id]?.pronouns) }]);
   // A role word ("the captain") names someone only where nobody else in the chapter answers to it.
   for (const [chapter, present] of inChapter) {
     const roles = new Map<string, string[]>();
@@ -901,7 +916,16 @@ export function buildSheet(sources: Sources, previous: CastSheet | null, untagge
     const visiting: Speaker[] = [];
     const prose = (narrationByChapter.get(chapter) ?? []).map((line) => line.text).join(" ");
     for (const draft of drafts) {
-      if (draft.generic || isRoleName(draft.name) || draft.chapters.has(chapter) || campaign === undefined || !draft.campaigns.has(campaign)) continue;
+      if (draft.chapters.has(chapter) || campaign === undefined || !draft.campaigns.has(campaign)) continue;
+      // Someone known only by what they are ("the beech") can speak in a chapter that does not cast them, but only when
+      // nobody else in the campaign is that thing: "the keeper" is far too many people to be anyone.
+      if (isRoleName(draft.name)) {
+        const mine = roleWords(draft).filter((word) => !taken.has(word) && drafts.filter((other) => other !== draft && other.campaigns.has(campaign) && roleWords(other).includes(word)).length === 0);
+        const names = mine.filter((word) => word.length >= 4);
+        if (names.length > 0) visiting.push({ id: draft.id, names });
+        continue;
+      }
+      if (draft.generic) continue;
       // A name this chapter also uses as a plain noun ("a wisp line") is not safe to take for the person.
       const names = namesFor(draft).filter((name) => name.length >= 4 && /^[A-Z]/.test(name) && !taken.has(name.toLowerCase()) && !new RegExp(`\\b${escape(name.toLowerCase())}\\b`).test(prose));
       if (names.length > 0) visiting.push({ id: draft.id, names, exact: true });
@@ -974,7 +998,10 @@ export function buildSheet(sources: Sources, previous: CastSheet | null, untagge
     // A group ("Gullet's Cousins") is not a she or a he because one of them was. What the narration once told us is
     // kept: a rebuild that moves a quote to someone else does not take back a trait that was already established.
     const group = isGroupName(draft.name);
-    if (!draft.pronouns && heardPronoun && !group) {
+    // What the notes say outright is not overturned by a "he" the counter heard: one of them is wrong, and it is the counter.
+    const fromNotes = genderOf({ name: draft.name, who: draft.who, pronouns: undefined });
+    const contradicts = (fromNotes === "f" && heardPronoun === "he/him") || (fromNotes === "m" && heardPronoun === "she/her");
+    if (!draft.pronouns && heardPronoun && !group && !contradicts) {
       draft.pronouns = heardPronoun;
       draft.pronounsFrom = "narration";
     } else if (!draft.pronouns && old?.pronouns && old.pronounsFrom === "narration") {

@@ -74,7 +74,7 @@
       "discovers": [
         "character.bigfoot"
       ],
-      "narration": "Find out what MossHome remembers, then climb to the foothills. Houses grow inside trees; stairs are roots. A leaning chair has a sign: FILE OPENED. The bigfoot runner from the woods jogs past. \"Archive first! Wipe your feet!\" She manages both without stopping.",
+      "narration": "Find out what MossHome remembers, then climb to the foothills. Houses grow inside trees; stairs are roots. A leaning chair has a sign: FILE OPENED. The bigfoot runner from the woods jogs past. \"Archive first! Wipe your feet!\" she calls. She manages both without stopping.",
       "cast": [
         {
           "figure": "cast/mosshome_runner",
@@ -279,7 +279,7 @@
     },
     "scene_archive_table_newest": {
       "type": "story",
-      "narration": "The archivist points to fresh thorns: a folding path, a hedge holding prospectors, a beech sitting across the way. \"Somebody walked those this week.\" She looks at your boots. The welcome moss has missed a spot.",
+      "narration": "The archivist points to fresh thorns: a folding path, a hedge holding prospectors, a beech sitting across the way. \"Somebody walked those this week,\" she says. She looks at your boots. The welcome moss has missed a spot.",
       "cast": [
         {
           "figure": "cast/mosshome_archivist",
@@ -415,7 +415,7 @@
     },
     "scene_spiral_hum": {
       "type": "story",
-      "narration": "You hum the note, the one the stones hum. Every archivist in the room stops. One drops a whole spool of cord, and it rolls away under the table, unwinding, and nobody chases it. \"That note,\" says the archivist, very quietly. \"The oldest knots were tied to that note.\" Then she will not say another word until somebody fetches the oldest archivist.",
+      "narration": "You hum the note, the one the stones hum. Every archivist in the room stops. One drops a whole spool of cord, and it rolls away under the table, unwinding, and nobody chases it. \"That note,\" says the archivist, very quietly. \"The oldest knots were tied to that note,\" she adds. Then she will not say another word until somebody fetches the oldest archivist.",
       "cast": [
         {
           "figure": "cast/mosshome_archivist",
@@ -618,7 +618,7 @@
     },
     "scene_pile_visit": {
       "type": "story",
-      "narration": "In a root hollow lie picks, sieves, three hats and humming gems. One stone sings louder. \"That one wants north,\" says the archivist. \"Carry it if you like. We will record who has it.\"",
+      "narration": "In a root hollow lie picks, sieves, three hats and humming gems. One stone sings louder. \"That one wants north,\" says the archivist. \"Carry it if you like. We will record who has it,\" she adds.",
       "cast": [
         {
           "figure": "cast/mosshome_archivist",
@@ -649,7 +649,7 @@
     },
     "scene_pile_visit_leave": {
       "type": "story",
-      "narration": "You leave the loud stone where the forest put it. The archivist does not look surprised. She ties a small knot in a cord anyway, a different knot, and says, \"The record will remember that too.\" Behind you the pile hums on in the dark, keeping itself company.",
+      "narration": "You leave the loud stone where the forest put it. The archivist does not look surprised. She ties a small knot in a cord anyway, a different knot. \"The record will remember that too,\" she says. Behind you the pile hums on in the dark, keeping itself company.",
       "cast": [
         {
           "figure": "cast/mosshome_archivist",
@@ -1160,7 +1160,7 @@
     },
     "scene_runner": {
       "type": "story",
-      "narration": "The runner gives you a knotted cord: the forest's receipt for your visit. \"Show it when the record needs to know you.\" Then she jogs away, already late for something she has not stopped doing.",
+      "narration": "The runner gives you a knotted cord: the forest's receipt for your visit. \"Show it when the record needs to know you,\" she says. Then she jogs away, already late for something she has not stopped doing.",
       "cast": [
         {
           "figure": "cast/mosshome_runner",
@@ -1278,7 +1278,7 @@
     },
     "scene_falls_stair_dripping": {
       "type": "story",
-      "narration": "\"The flooded paths?\" The flood-warden's whole face cracks into a grin. \"You're the soggy ones! The whole forest heard about you!\" She laughs, a big bigfoot laugh that echoes off the falls, and then she scoops you up and carries you across the worst of the steps like laundry, and sets you down dry at the top. \"Mind you stay that way,\" she says.",
+      "narration": "\"The flooded paths?\" says the flood-warden, and her whole face cracks into a grin. \"You're the soggy ones! The whole forest heard about you!\" She laughs, a big bigfoot laugh that echoes off the falls, and then she scoops you up and carries you across the worst of the steps like laundry, and sets you down dry at the top. \"Mind you stay that way,\" she says.",
       "cast": [
         {
           "figure": "cast/flood_warden",
@@ -1487,7 +1487,7 @@
     },
     "scene_halfway_hut": {
       "type": "story",
-      "narration": "An old bigfoot path-keeper has a huge visitors' book outside his hut. \"Names going up, so I know who to find coming down.\" The oldest pages are knots. His cake tin has its own tiny visitors' book.",
+      "narration": "An old bigfoot path-keeper has a huge visitors' book outside his hut. \"Names going up, so I know who to find coming down,\" he says. The oldest pages are knots. His cake tin has its own tiny visitors' book.",
       "cast": [
         {
           "figure": "cast/path_keeper",
@@ -2078,7 +2078,7 @@
       },
       "onFailure": {
         "goto": "scene_soup_tent",
-        "narration": "A log rolls the wrong way and you sit down in the falls with a splash. The flood-warden hauls you out with one hand, sets you on the top step, and says, \"Happens every season. Not usually to this many.\" Then she drags the logs across herself, as if they weigh nothing at all."
+        "narration": "A log rolls the wrong way and you sit down in the falls with a splash. The flood-warden hauls you out with one hand, sets you on the top step. \"Happens every season. Not usually to this many,\" she says. Then she drags the logs across herself, as if they weigh nothing at all."
       },
       "onAssisted": {
         "goto": "scene_soup_tent",

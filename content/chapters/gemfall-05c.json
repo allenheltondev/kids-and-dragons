@@ -210,7 +210,7 @@
       "discovers": [
         "character.dragonling"
       ],
-      "narration": "Bells hang from poles, packs and one goat. Grandmothers check every digging tool. \"Take what the mountain drops. Never pry at what it holds.\" A man with a huge pry bar says he did not hear. The goat heard.",
+      "narration": "Bells hang from poles, packs and one goat. Grandmothers check every digging tool. \"Take what the mountain drops. Never pry at what it holds,\" says a grandmother. A man with a huge pry bar says he did not hear. The goat heard.",
       "cast": [
         {
           "figure": "cast/dragonling_grandmother",
@@ -656,7 +656,7 @@
     },
     "scene_tallies": {
       "type": "story",
-      "narration": "Great-Grandma Ashby opens a book in the tally house. Eruptions fill its pages in orderly marks. This season's page is mostly question marks. \"Show me what you know,\" says the oldest grandmother. \"We will compare.\"",
+      "narration": "Great-Grandma Ashby opens a book in the tally house. Eruptions fill its pages in orderly marks. This season's page is mostly question marks. \"Show me what you know,\" says Ashby. \"We will compare.\"",
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
@@ -1026,7 +1026,7 @@
           "count": 4
         }
       ],
-      "narration": "Embermoths stream south over the porch. One bell rings. The small bell-code expert tugs your sleeve. \"Moths leaving. Every night this month.\" She knows this code. She wishes she had happier news.",
+      "narration": "Embermoths stream south over the porch. One bell rings. The small bell-code expert tugs your sleeve. \"Moths leaving. Every night this month,\" she says. She knows this code. She wishes she had happier news.",
       "choices": [
         {
           "id": "follow",
@@ -1522,7 +1522,7 @@
       "discovers": [
         "npc.centaur"
       ],
-      "narration": "With the crowd settled, centaur guide Perrin Nine-Verse beckons behind a stone. \"A Shortcut through the hills. My family has argued about it for nine generations. Nobody has walked it.\" He checks behind him twice.",
+      "narration": "With the crowd settled, centaur guide Perrin Nine-Verse beckons behind a stone. \"A Shortcut through the hills. My family has argued about it for nine generations. Nobody has walked it,\" says Perrin. He checks behind him twice.",
       "cast": [
         {
           "figure": "cast/perrin_nine_verse",
@@ -1902,7 +1902,7 @@
     },
     "interaction_bell_cart": {
       "type": "interaction",
-      "narration": "Before the morning crowd gets any worse, the grandmothers wheel their loudest hand bell down to the stones on a little cart. One wheel has stuck in a rut. \"Somebody steer!\" calls the small bell-code expert, hopping up and down. \"Everybody push! Quickly, quickly, quickly!\"",
+      "narration": "Before the morning crowd gets any worse, the grandmothers wheel their loudest hand bell down to the stones on a little cart. One wheel has stuck in a rut. \"Somebody steer!\" calls the small bell-code expert, hopping up and down. \"Everybody push! Quickly, quickly, quickly!\" she cries.",
       "interaction": {
         "kind": "cooperate",
         "cue": "Friends push the cart while someone steers it out of the rut.",
