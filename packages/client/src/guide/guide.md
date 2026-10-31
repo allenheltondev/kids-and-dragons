@@ -122,7 +122,8 @@ A hero in a saved game is held by that game. If a kid will not be back, the grow
 Each screen has a row of small buttons in its corner. They change only that screen.
 
 - **?** is help, on a kid's phone in a game. It says what this screen is for, out loud too. **Hear it again** repeats it, and **How to play** opens a few short cards a kid can tap to hear. Press and hold anything on the screen, like a card, to hear what it is.
-- **Aa** is **Display settings**: **Text size**, **One-handed play** (buttons move to the thumb), **High contrast** and **Less movement**. "Saved on this device."
+- **Aa** is **Display settings**: **Text size**, **One-handed play** (buttons move to the thumb), **TV focus**, **High contrast** and **Less movement**. "Saved on this device."
+- **TV focus** is for a kid who gets lost in the phone. With a TV in the room, the phone stops repeating the story and shows only what to tap, right when it is that kid's turn. While someone else is choosing, it shows one card that says **Look at the TV**, with **Look in my bag** a tap away. The tray keeps only **You** (a Starweaver keeps **World** too, for the Riftlight). It does nothing in Travel Mode, where the phone is the only screen.
 - The speech bubble turns read-aloud on. On the big screen, it reads the story out loud. On a kid's phone, each choice gets a speaker button to hear it first. Hearing a choice never picks it.
 - The speaker turns the sound on or off.
 
