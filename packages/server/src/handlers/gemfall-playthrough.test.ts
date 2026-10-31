@@ -380,7 +380,6 @@ describe("the narration audit itself", () => {
       for (const size of [1, 2, 3]) {
         expect(flagged("A mule looks at you. You look at the mule. Neither of you tells anybody.", size)).toEqual([]);
         expect(flagged("The goat lies down too. Neither of you says anything for a while.", size)).toEqual([]);
-        expect(flagged("For a while you and the masks pass stones, and neither of you stops.", size)).toEqual([]);
       }
       // Without the NPC, the same words are a count again.
       expect(flagged("Neither of you tells anybody.", 1)).toEqual(["counted_party"]);

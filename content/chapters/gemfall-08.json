@@ -5405,7 +5405,7 @@
       "type": "story",
       "priority": 2,
       "art": "scenes/gemfall/seal-chamber",
-      "narration": "The crown stone, the Keystone, is bigger than your head and warm as bread. Under it, the titan's eye opens wide. \"Collectors may lift it,\" says the Seal-Keeper. \"Anyone else must pry, and gets one try.\"",
+      "narration": "The crown stone is bigger than your head and warm as bread. Under it, the titan's eye opens wide. \"Collectors may lift it,\" says the Seal-Keeper. \"Anyone else must pry, and gets one try.\"",
       "variants": [
         {
           "when": {

@@ -1461,7 +1461,7 @@
     },
     "check_string": {
       "type": "interaction",
-      "narration": "The apprentice stretches the knotted string along the crack. \"Hold this end? It only reads true when it's tight. One of you reads the knots. Everyone else pulls.\"",
+      "narration": "The apprentice stretches the knotted string along the crack. \"Hold this end? It only reads true when it's tight. One hero reads the knots. Everyone else pulls.\"",
       "interaction": {
         "kind": "cooperate",
         "cue": "Friends pull the string tight while someone reads the knots.",
@@ -2217,7 +2217,7 @@
     },
     "interaction_survey_line": {
       "type": "interaction",
-      "narration": "The warden has checked the crossing rope. Hold it tight, the way you practiced, while one of you guides the crossing. Alone, use the fixed post.",
+      "narration": "The warden has checked the crossing rope. Hold it tight, the way you practiced, while one hero guides the crossing. Alone, use the fixed post.",
       "interaction": {
         "kind": "cooperate",
         "cue": "Brace the checked rope while the acting hero guides the crossing.",
