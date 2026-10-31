@@ -2035,7 +2035,7 @@
     },
     "choice_the_test_borrowed": {
       "type": "story",
-      "narration": "A warden hands you a gray tuning stone. A mask hands you a red one. Neither looks at the other. You let the two stones hum together until they find one note. Now you have an instrument, borrowed from both sides.",
+      "narration": "A warden hands you a gray tuning stone. A mask hands you a red one. Neither looks at the other. You let them hum together until they find one note. Now you have an instrument, borrowed from both sides.",
       "choices": [
         {
           "id": "on",

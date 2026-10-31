@@ -2102,7 +2102,7 @@
     },
     "interaction_ivy_ledge": {
       "type": "interaction",
-      "narration": "Use the ivy brace you practiced at the falls. Hold the line tight while one of you guides the way along the ledge. Alone, use the rock post.",
+      "narration": "Use the ivy brace you practiced at the falls. Hold the line tight while one hero guides the way along the ledge. Alone, use the rock post.",
       "interaction": {
         "kind": "cooperate",
         "cue": "Keep the ivy line taut while the acting hero guides the ledge.",

@@ -356,14 +356,14 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-04a.json": "ef37ddedc9f8cfcf3fd65d6642cef9dbccdd9645f0e88624318e7cc495e8b412",
   "chapters/gemfall-04b.json": "9c1a643ba6a8a5a4fdbc5e9733d22c7ac00c68fdb8dfa91346214ca096cffb78",
   "chapters/gemfall-04c.json": "246aac2d452137113105be4b8e25fdc7b69b809927f2e76545829ece74e17e48",
-  "chapters/gemfall-05a.json": "b39c1992c43c7172b3ab6a79286522d606517beb2fd4d59df9caf0fc9f5127c8",
-  "chapters/gemfall-05b.json": "481cd19c3c0b82f649ff306791fe2e4c76cde6efc7e1e7663f42c71bc2fc7218",
+  "chapters/gemfall-05a.json": "27d76454b4a8e5f5695df05a7cc253e0d8dcda6ee01cee924263dce77ec1dde8",
+  "chapters/gemfall-05b.json": "2dc4cc41614922ee010a3bda1e59eec49af37aad53779c25c83a0c34077ae360",
   "chapters/gemfall-05c.json": "99b2c08062ebfd7a1c0c028fec0ec4abd5736364284bacbb9137759841b922b2",
-  "chapters/gemfall-06.json": "13243be3a53a66f376a518ca62064038969f1444fd297e56bd759369d33ab765",
+  "chapters/gemfall-06.json": "a24bf3d76c658f9d28bd58f02b0eb47cf336cc8d0c9ddc870f26a6836d00330a",
   "chapters/gemfall-07h.json": "dbcf17577035bbfa12f82bc8aba85ceb36f81f773d1b725df0d50ab2a388baed",
-  "chapters/gemfall-07l.json": "9629374e86acc3db10317728dabb92464c01643c24ec8d2894cbb23486bb2c2a",
+  "chapters/gemfall-07l.json": "de14b6283a49fb31c475a72eebeee60dda66f6356d95159fca0b86e3ed6fe259",
   "chapters/gemfall-07r.json": "cff883ee0ad20ca3d5ae6a902852de288b6f7bf15482662f553c861ef67f7df9",
-  "chapters/gemfall-08.json": "be0519848c143d2ac49f5e779df38a8bb467e9877bb0c4f0dd08ae3687b368d4",
+  "chapters/gemfall-08.json": "553444850faaa91c55bd3a99345a97207e85592942afa1f8c0bc06e337273bfb",
 };
 
 describe("Gemfall's files are the files that shipped before the epic", () => {

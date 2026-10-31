@@ -3240,7 +3240,7 @@
     },
     "interaction_doorstep": {
       "type": "interaction",
-      "narration": "Stand with the grandmother while one of you guides Dunmore's pick away from her step. On your own, lean on the doorpost. Her cookie tin is safe behind the door.",
+      "narration": "Stand with the grandmother while one hero guides Dunmore's pick away from her step. On your own, lean on the doorpost. Her cookie tin is safe behind the door.",
       "interaction": {
         "kind": "cooperate",
         "cue": "Hold the doorstep clear while the pick is guided aside.",
