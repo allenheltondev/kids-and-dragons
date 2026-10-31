@@ -181,7 +181,7 @@ describe("Riftlight's authored opening", () => {
       const state = start(chapter, "manticore", "duskrunner", read ? { starweaver_read_first_rift: true } : {});
       const result = enterScene(state, "seren", context(chapter));
       expect(result.error).toBeUndefined();
-      expect(result.state.narration.includes("One of you can see it")).toBe(read);
+      expect(result.state.narration.includes("Seren turns to the hero who saw it.")).toBe(read);
       allPaths(chapter, "manticore", "duskrunner", read ? { starweaver_read_first_rift: true } : {});
     }
   });

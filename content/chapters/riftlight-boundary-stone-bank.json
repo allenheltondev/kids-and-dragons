@@ -41,7 +41,7 @@
   "scenes": {
     "stones": {
       "type": "story",
-      "narration": "You climb onto the east bank of the Great River. Old boundary stones march up the slope in a crooked row, and a dragonling keeper hurries down it with a dry cloth. \"This region is called the Red Sky Foothills,\" she says. \"Check your friends first. The river shoved my lowest stone out of line in the night. Help me set the river stones right, and there will be tea.\"",
+      "narration": "You reach the east bank of the Great River. Old boundary stones march up the slope in a crooked row. A dragonling keeper hurries down with a dry cloth. \"These hills are called the Red Sky Foothills,\" she says. \"Everyone in one piece? Good. The river shoved my lowest stone out of line last night. Help me set the river stones right, and there will be tea.\"",
       "choices": [
         {
           "id": "continue",
@@ -60,17 +60,17 @@
     },
     "markings": {
       "type": "choice_point",
-      "narration": "She waves at the slope, because her other hand holds a ball of cord. \"Two small jobs first. The oldest stone at the top is carved with a mountain and a plume of smoke, and my record board wants a rubbing of it. And my wet river marker slid down the gravel into the shallows.\" She taps the board on her belt. It is full of crossed-out dates. \"The numbers do not agree. Not even the oldest ones. Which job first?\"",
+      "narration": "She waves one hand, because the other holds a ball of cord. \"Two small jobs first. The oldest stone at the top is carved with a mountain and a plume of smoke, and my record board needs a rubbing of it. And my wet river marker slid into the shallows.\" Her board is full of crossed-out dates. \"The numbers never agree. Which job first?\"",
       "choices": [
         {
           "id": "look",
-          "label": "Make a rubbing of the carved stone",
+          "label": "Rub the carved stone",
           "icon": "hand",
           "goto": "carving"
         },
         {
           "id": "help",
-          "label": "Haul the river marker out of the shallows",
+          "label": "Haul out the marker",
           "icon": "hand",
           "goto": "marker"
         }
@@ -85,7 +85,7 @@
     },
     "carving": {
       "type": "story",
-      "narration": "The oldest stone stands at the top of the row, taller than the keeper and a good deal grumpier. The mountain is cut deep into its face, with a plume spreading across the sky. She tapes damp paper over the carving and hands you a lump of charcoal wrapped in a rag. \"Rub it like you are polishing a pot,\" she says. \"Gently. All of it. Before the wind wakes up.\" The grass is already leaning.",
+      "narration": "The oldest stone is taller than the keeper, and grumpier. She tapes damp paper over the carving and hands you charcoal in a rag. \"Rub it like you are polishing a pot,\" she says. \"Before the wind wakes up.\" The grass is already leaning.",
       "choices": [
         {
           "id": "continue",
@@ -106,7 +106,7 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "prompt": "Everyone takes a corner of the paper. Hold it flat and rub together before the wind lifts it!",
+      "prompt": "Everyone take a corner. Hold the paper flat and rub before the wind lifts it!",
       "roller": "all",
       "onSuccess": {
         "goto": "rubbed"
@@ -124,11 +124,11 @@
     },
     "rubbed": {
       "type": "story",
-      "narration": "The rubbing comes off whole: the mountain, the plume, even the tiny chips in the stone. The wind arrives late and pats the paper flat, as if it meant to help all along. \"Nobody gets a clean one,\" says the keeper, amazed. She pegs it to a rock to dry and checks it twice. Then she looks suspiciously at the sky, in case it is up to something.",
+      "narration": "The rubbing comes off whole: the mountain, the plume, even the tiny chips. \"Nobody gets a clean one!\" says the keeper. She pegs it on a rock to dry, then squints at the sky in case it is up to something.",
       "choices": [
         {
           "id": "continue",
-          "label": "Back to the cord",
+          "label": "Go to the lowest stone",
           "icon": "hand",
           "goto": "row"
         }
@@ -149,11 +149,11 @@
     },
     "rub_torn": {
       "type": "story",
-      "narration": "The wind snatches the paper and flaps it away over the grass like a startled hen. The keeper chases it, then sits on it. What is left is a torn rubbing with most of a mountain. \"Half a mountain is still a mountain,\" she says, brushing grass from her scales. Her tea, left on a rock, has fallen over. She looks at it sadly.",
+      "narration": "The wind snatches the paper and flaps it away like a startled hen. The keeper chases it, then sits on it. What is left has most of a mountain. \"Half a mountain is still a mountain,\" she says.",
       "choices": [
         {
           "id": "continue",
-          "label": "Back to the cord",
+          "label": "Go to the lowest stone",
           "icon": "hand",
           "goto": "row"
         }
@@ -174,11 +174,11 @@
     },
     "marker": {
       "type": "story",
-      "narration": "The river marker is a short stone post with a rope ring on top. The river shoved it down the gravel and left it standing in the shallows, like a grumpy heron. \"Today's river first,\" says the keeper. \"Set it up where the water reached, so the next traveler can see how high it came. Yesterday's mountain can wait.\" She lends you a pair of mittens that smell of fish.",
+      "narration": "The river marker is a short stone post with a rope ring on top. It stands in the shallows like a grumpy heron. \"Set it where the water reached,\" says the keeper, \"so travelers can see how high it came.\" She lends you mittens that smell of fish.",
       "choices": [
         {
           "id": "continue",
-          "label": "Take hold of the post",
+          "label": "Grab the post",
           "icon": "hand",
           "goto": "marker_haul"
         }
@@ -195,7 +195,7 @@
       "type": "check",
       "stat": "might",
       "tn": 12,
-      "prompt": "The post is heavy and slick. Whoever is strongest heaves it up the gravel while everyone else steers and shouts.",
+      "prompt": "The post is heavy and slick. The strongest hero heaves it up the gravel while everyone else steers and shouts.",
       "roller": "best",
       "onSuccess": {
         "goto": "marker_set"
@@ -213,11 +213,11 @@
     },
     "marker_set": {
       "type": "story",
-      "narration": "The post thumps into its hole, high above the wet gravel. The keeper scratches the new height on her record board and whistles. \"Higher than my grandmother's year,\" she says. \"And she complained about that one for a month.\" She pats the post. It is the first thing the river has not shoved around today.",
+      "narration": "The post thumps into its hole, high above the wet gravel. The keeper scratches the height on her record board and whistles. \"Higher than my grandmother's year! She complained about that one for a month.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Back to the cord",
+          "label": "Go to the lowest stone",
           "icon": "hand",
           "goto": "row"
         }
@@ -238,11 +238,11 @@
     },
     "marker_slid": {
       "type": "story",
-      "narration": "The post slides back into the shallows with a splash and a rude noise. Wet to the knees, you loop the rope ring over a pole instead and walk it up the bank together, step by step, with the fish mittens squelching. \"Heavy things need two tries and a rope,\" says the keeper, handing round the dry cloth again. The post stands. It looks insulted.",
+      "narration": "The post slides back into the shallows with a rude splash. So you loop its ring over a pole and walk it up the bank together, fish mittens squelching. The keeper hands around her dry cloth again. The post stands. It looks insulted.",
       "choices": [
         {
           "id": "continue",
-          "label": "Back to the cord",
+          "label": "Go to the lowest stone",
           "icon": "hand",
           "goto": "row"
         }
@@ -269,7 +269,7 @@
     },
     "row": {
       "type": "story",
-      "narration": "Nine stones climb the bank like steps made for a giant. Each has a notch cut for the highest water of one year, and a ring for the count cord that ties them together. At the bottom, the lowest stone leans toward the river like a sleepy goat. The keeper calls him Splash, which he does not enjoy. \"Straight row, straight count,\" she says. \"Crooked row, and the notches argue all night.\"",
+      "narration": "Nine stones climb the bank like steps for a giant. Each has a notch for one year's highest water, and a ring for the count cord that ties them together. The lowest stone leans toward the river like a sleepy goat. The keeper calls him Splash, which he does not enjoy.",
       "choices": [
         {
           "id": "continue",
@@ -308,23 +308,23 @@
     },
     "plan": {
       "type": "choice_point",
-      "narration": "Splash is wedged in the clay, leaning toward the water as if he might still make a break for the sea. The old cord has snapped, and the river is rising again, slowly, with a sound like somebody sipping soup. The keeper wrings her hands. \"He is very heavy and a little proud,\" she says. How will you stand him up?",
+      "narration": "Splash is stuck in the clay, leaning as if he might still run off to the sea. The old cord has snapped, and the river is rising again. \"He is very heavy and a little proud,\" says the keeper. How will you stand him up?",
       "choices": [
         {
           "id": "lever",
-          "label": "Lever him up with a long pole",
+          "label": "Lever him with a pole",
           "icon": "hand",
           "goto": "lever_check"
         },
         {
           "id": "trench",
-          "label": "Dig a trench so he slides upright",
+          "label": "Dig a trench",
           "icon": "hand",
           "goto": "trench_check"
         },
         {
           "id": "smash",
-          "label": "Have a bigfoot smash the packed clay",
+          "label": "Smash the packed clay",
           "icon": "fist",
           "goto": "smash_check",
           "requiresSpecies": "bigfoot"
@@ -342,7 +342,7 @@
       "type": "check",
       "stat": "might",
       "tn": 12,
-      "prompt": "Set the pole under Splash and heave until he stands. Choose who leads; everyone can help.",
+      "prompt": "Set the pole under Splash and heave until he stands.",
       "roller": "party",
       "onSuccess": {
         "goto": "splash_up"
@@ -362,7 +362,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Work out which way the trench must run, then dig it so Splash slides upright. Choose who leads; everyone can help.",
+      "prompt": "Work out which way the trench should run, then dig so Splash slides upright.",
       "roller": "party",
       "onSuccess": {
         "goto": "splash_up"
@@ -382,7 +382,7 @@
       "type": "check",
       "stat": "might",
       "tn": 8,
-      "prompt": "A bigfoot's smash cracks the packed clay around Splash. Can you steer him upright with the pole while he tips?",
+      "prompt": "Your bigfoot smashes the clay around Splash. Can you steer him upright as he tips?",
       "roller": "best",
       "onSuccess": {
         "goto": "splash_up"
@@ -400,7 +400,7 @@
     },
     "splash_slip": {
       "type": "story",
-      "narration": "Splash tips the wrong way and sits down in the shallows with a sploosh. Cold water slaps your legs. The keeper does not scold. She loops a rope round him and everyone hauls from the bank instead, which takes twice as long and half the dignity. Splash ends up straight at last, looking like he has been through something.",
+      "narration": "Splash tips the wrong way and sits down in the shallows. Sploosh! The keeper does not scold. She loops a rope around him, and everyone hauls from the bank. It takes twice as long and half the dignity.",
       "choices": [
         {
           "id": "continue",
@@ -427,11 +427,11 @@
     },
     "splash_up": {
       "type": "story",
-      "narration": "Splash stands straight at last. The keeper pats him and thanks him, because she thanks every stone. Then she stops with her hand in the air. Upriver, a brown ripple is racing down the middle of the river, carrying branches, a boot, and one very surprised duck. \"Melt surge,\" she says. \"Grab everything the river might like!\"",
+      "narration": "Splash stands straight at last. The keeper thanks him. She thanks every stone. Then she freezes. A brown ripple races down the river, carrying branches, a boot and one very surprised duck. \"Melt surge!\" she says. \"Grab everything the river might like!\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Grab what the water wants",
+          "label": "Grab the gear",
           "icon": "hand",
           "goto": "surge_check"
         }
@@ -452,7 +452,7 @@
     },
     "surge_check": {
       "type": "interaction",
-      "narration": "A melt surge is racing down the river! Everything the river might like must go up the bank, fast, passed from hand to hand: the cord, the board, the kettle and the tea things.",
+      "narration": "Up the bank it all goes, fast, hand to hand: the cord, the board, the kettle and the tea things.",
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
@@ -472,16 +472,16 @@
       },
       "onFailure": {
         "goto": "surge_safe",
-        "narration": "A sock goes one way, the kettle goes another, and the surge takes both."
+        "narration": "A sock goes one way, a teacup the other, and the surge takes both."
       },
       "onAssisted": {
         "goto": "surge_safe",
-        "narration": "The keeper lends a pair of arms, and the pile climbs the bank in a neat little line."
+        "narration": "The keeper lends a pair of arms, and the pile climbs the bank."
       }
     },
     "surge_safe": {
       "type": "story",
-      "narration": "You scramble up the bank with your arms full as the surge slaps the gravel behind you. It swirls round Splash's feet, and Splash stands. The surge hurries on, and so does the duck, quacking its opinion. \"Kettle saved,\" says the keeper, counting it twice. \"Good. The river wanted that kettle. It has no idea how to make tea.\" She presses a jar of glowing moss into your hands. \"Mosslight. For finishing work when the dusk comes.\"",
+      "narration": "The surge slaps the gravel and swirls around Splash's feet. Splash stands firm. The duck sails past, quacking its opinion. \"Kettle saved,\" says the keeper. \"The river has no idea how to make tea.\" She gives you a jar of glowing moss. \"Mosslight. For work at dusk.\"",
       "choices": [
         {
           "id": "continue",
@@ -507,30 +507,30 @@
     },
     "notch_plan": {
       "type": "choice_point",
-      "narration": "The water has gone down, and it left a dark line of damp on Splash: the highest it reached this year. The keeper hands you a chisel the size of a spoon. \"The notch must be cut right on that line,\" she says, \"and it will stay for a thousand years. No pressure.\" She is pressing her hands together very hard. How will you cut it?",
+      "narration": "The water left a dark, damp line on Splash: this year's highest. The keeper hands you a chisel the size of a spoon. \"Cut the notch right on that line. It will stay for a thousand years. No pressure.\" How will you cut it?",
       "choices": [
         {
           "id": "chisel",
-          "label": "Tap it out with the chisel, straight along the line",
+          "label": "Chisel along the line",
           "icon": "hand",
           "goto": "chisel_check"
         },
         {
           "id": "chalk",
-          "label": "Chalk the line first, then cut a little at a time",
+          "label": "Chalk it, then cut",
           "icon": "hand",
           "goto": "chalk_check"
         },
         {
           "id": "beat",
-          "label": "Let a songkeeper hum a steady tapping beat",
+          "label": "Hum a tapping beat",
           "icon": "song",
           "goto": "beat_check",
           "requiresClass": "songkeeper"
         },
         {
           "id": "moss",
-          "label": "Light the line with the mosslight jar",
+          "label": "Light it with mosslight",
           "icon": "spark",
           "goto": "moss_check",
           "requiresItem": "mosslight_jar"
@@ -548,7 +548,7 @@
       "type": "check",
       "stat": "quick",
       "tn": 12,
-      "prompt": "Whoever has the steadiest hands taps the chisel along the damp line. Everyone else keeps Splash from wobbling.",
+      "prompt": "The steadiest hands tap the chisel along the damp line while everyone keeps Splash still.",
       "roller": "best",
       "onSuccess": {
         "goto": "notch_cut"
@@ -568,7 +568,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Chalk the line, check it against the cord, and cut the notch in small, careful steps. Choose who leads; everyone can help.",
+      "prompt": "Chalk the line, check it against the cord, and cut the notch in small, careful steps.",
       "roller": "party",
       "onSuccess": {
         "goto": "notch_cut"
@@ -627,7 +627,7 @@
     },
     "notch_cut": {
       "type": "story",
-      "narration": "The notch comes out clean and straight, with a curl of stone like a ribbon. The keeper runs her finger along it. \"That is this year,\" she says softly. \"Someone will read it when I am a very old dragon.\" She blows the dust away and puts the chisel in its own little bag. \"Next, a chalk line, to check it.\" She presses four coins and a honeycake into your hand. \"The counters pay me in coins, and I pay my helpers in cake.\"",
+      "narration": "The notch comes out clean, with a curl of stone like a ribbon. \"That is this year,\" the keeper says softly. She gives you four coins and a honeycake. \"The stone counters up the road pay me in coins. I pay my helpers in cake. Now, a chalk line to check it.\"",
       "choices": [
         {
           "id": "continue",
@@ -657,7 +657,7 @@
     },
     "notch_crooked": {
       "type": "story",
-      "narration": "The notch wobbles like a worm. The keeper studies it for a long moment. \"Honest,\" she says at last. \"An honest notch. Next year's keeper can learn from it.\" You rub a blister on your thumb, and she gives you a leaf to hold on it. \"Now, a chalk line, to check it.\" She presses four coins and a honeycake into your hand. \"The counters pay me in coins, and I pay my helpers in cake.\"",
+      "narration": "The notch wobbles like a worm. \"Honest,\" says the keeper at last. \"An honest notch.\" She gives you a leaf for your blistered thumb, then four coins and a honeycake. \"The stone counters up the road pay me in coins. I pay my helpers in cake. Now, a chalk line to check it.\"",
       "choices": [
         {
           "id": "continue",
@@ -693,7 +693,7 @@
     },
     "chalk_snap": {
       "type": "interaction",
-      "narration": "The keeper dusts a piece of cord with chalk and holds it tight from the new notch to the top stone. \"One snap,\" she says, \"and the line shows if the notch sits true. You do the snapping. My arms are tired from being right all day.\"",
+      "narration": "The keeper holds a chalky cord tight from the new notch to the top stone. \"One snap shows if the notch sits true. You do it. My arms are tired from being right all day.\"",
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
@@ -711,36 +711,36 @@
       "art": "scenes/riftlight/boundary-river-row",
       "onSuccess": {
         "goto": "cord_plan",
-        "narration": "Snap! A thin chalk line runs straight up the row, and the notch sits right on it."
+        "narration": "Snap! A chalk line runs straight up the row, right through the notch."
       },
       "onFailure": {
         "goto": "cord_plan",
-        "narration": "The cord snaps against her finger instead. \"Ow,\" she says, happily. \"Honest chalk. The notch is true enough.\""
+        "narration": "The cord snaps her finger instead. \"Ow,\" she says, happily. \"True enough.\""
       },
       "onAssisted": {
         "goto": "cord_plan",
-        "narration": "She holds the cord steady and nods at you. Snap! The line runs straight and the notch sits right on it."
+        "narration": "She holds the cord steady and nods. Snap! The line runs straight through the notch."
       }
     },
     "cord_plan": {
       "type": "choice_point",
-      "narration": "The old count cord hangs there like a sad noodle, snapped in three places, so a new one must run from Splash up through the ring on every stone. The keeper hands you the ball. It is as big as a cabbage and twice as tight. \"Every ring,\" she says. \"Miss one, and the row will whisper about it.\" How will you carry the cord up?",
+      "narration": "The old count cord hangs like a sad noodle, snapped in three places. A new one must run from Splash up through every stone's ring. The keeper hands you a ball of cord as big as a cabbage. \"Miss one ring, and the row will whisper about it.\" How will you thread it?",
       "choices": [
         {
           "id": "climb",
-          "label": "Climb the row and thread each ring by hand",
+          "label": "Climb and thread by hand",
           "icon": "hand",
           "goto": "climb_check"
         },
         {
           "id": "throw",
-          "label": "Toss the weighted end from stone to stone",
+          "label": "Toss it ring to ring",
           "icon": "hand",
           "goto": "throw_check"
         },
         {
           "id": "wings",
-          "label": "Carry the cord up the row on wings",
+          "label": "Fly the cord up",
           "icon": "wing",
           "goto": "wing_check",
           "requiresSpecies": [
@@ -761,7 +761,7 @@
       "type": "check",
       "stat": "quick",
       "tn": 12,
-      "prompt": "Scramble up the row and thread the cord through every ring. Choose who leads; everyone can help.",
+      "prompt": "Scramble up the row and thread the cord through every ring.",
       "roller": "party",
       "onSuccess": {
         "goto": "cord_run"
@@ -781,7 +781,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Work out the angle, then toss the weighted end through each ring in turn. Choose who leads; everyone can help.",
+      "prompt": "Work out the angle, then toss the weighted end through each ring in turn.",
       "roller": "party",
       "onSuccess": {
         "goto": "cord_run"
@@ -801,7 +801,7 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "prompt": "Wings lift the cord's end up the row. Can you keep it from tangling in the grass?",
+      "prompt": "Wings lift the cord's end up the row. Can you keep it out of the grass?",
       "roller": "best",
       "onSuccess": {
         "goto": "cord_run"
@@ -819,11 +819,11 @@
     },
     "cord_tangle": {
       "type": "story",
-      "narration": "The cord ties itself into a knot as big as a pillow. You sit in the grass and untangle it one loop at a time while the keeper hums and hands around crackers. A loop snaps tight around a wrist, then lets go, embarrassed. By the end the cord is threaded, the crackers are gone, and nobody can say who ate the last one.",
+      "narration": "The cord ties itself into a knot as big as a pillow. You pick it apart, loop by loop, while the keeper hands out crackers. By the end, the cord is threaded, and nobody can say who ate the last cracker.",
       "choices": [
         {
           "id": "continue",
-          "label": "Thread it again",
+          "label": "Look up the row",
           "icon": "hand",
           "goto": "cord_run"
         }
@@ -846,7 +846,7 @@
     },
     "cord_run": {
       "type": "story",
-      "narration": "The new cord runs through all nine rings, from Splash up to the oldest stone. It sags in the middle like a washing line with nothing on it. \"Now it must be tight,\" says the keeper. \"A slack cord tells fibs about straight. Everyone, take hold, and lean uphill. Slowly. Like you are persuading a cow.\"",
+      "narration": "The new cord runs through all nine rings, from Splash to the oldest stone. It sags like an empty washing line. \"Now pull it tight,\" says the keeper. \"A slack cord tells fibs. Lean uphill, slowly, like you are persuading a cow.\"",
       "choices": [
         {
           "id": "continue",
@@ -865,7 +865,7 @@
     },
     "tighten": {
       "type": "interaction",
-      "narration": "The new cord sags between the stones like a washing line. Everyone takes hold of a loop of it. Lean too far and it snaps back; lean too little and it just sags.",
+      "narration": "Everyone takes hold. Lean too hard, and it snaps back. Lean too little, and it sags.",
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
@@ -885,20 +885,20 @@
       },
       "onFailure": {
         "goto": "tight",
-        "narration": "The cord wobbles, flops, and sits down in the grass."
+        "narration": "The cord wobbles and flops, then slowly comes up as the keeper helps."
       },
       "onAssisted": {
         "goto": "tight",
-        "narration": "The keeper steadies the cord with a claw, and you feel it come tight."
+        "narration": "The keeper steadies the cord with a claw, and it comes tight."
       }
     },
     "tight": {
       "type": "story",
-      "narration": "The cord rises out of the grass and hums one low note. The keeper plucks it with a claw and beams. A beetle on the cord goes for a ride, all the way to the top, and looks very pleased with itself. \"Now,\" she says, \"a tight cord is an honest line. Now the ends, or it will un-hum the moment you let go.\"",
+      "narration": "The cord hums one low note. A beetle rides it all the way to the top, very pleased with itself. \"A tight cord is an honest line,\" says the keeper. \"Now the ends, or it will un-hum the moment you let go.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Look at the ends",
+          "label": "Tie off the ends",
           "icon": "hand",
           "goto": "tie_plan"
         }
@@ -919,23 +919,23 @@
     },
     "tie_plan": {
       "type": "choice_point",
-      "narration": "A tight cord is only as good as its ends. If a knot slips, the whole line goes slack and the river laughs. The keeper holds out both loose ends. \"Knots at the bottom ring and at the top,\" she says. \"Knots that will not slip when the river sulks.\" Which knot will you tie?",
+      "narration": "A tight cord is only as good as its knots. If one slips, the line goes slack and the river laughs. The keeper holds out both loose ends. Which knot will you tie?",
       "choices": [
         {
           "id": "loop",
-          "label": "Tie the keeper's favorite loop knot",
+          "label": "Tie her loop knot",
           "icon": "hand",
           "goto": "loop_check"
         },
         {
           "id": "hitch",
-          "label": "Wrap it twice round the ring and hitch it",
+          "label": "Hitch it twice around",
           "icon": "hand",
           "goto": "hitch_check"
         },
         {
           "id": "quickhitch",
-          "label": "Have a duskrunner flick a fast hitch on the high ring",
+          "label": "Flick a fast hitch",
           "icon": "spark",
           "goto": "flick_check",
           "requiresClass": "duskrunner"
@@ -958,11 +958,11 @@
       ],
       "art": "scenes/riftlight/boundary-river-row",
       "type": "story",
-      "narration": "The keeper shows the loop knot slowly. You tie the ends together, and she checks them before anyone lets go.",
+      "narration": "The keeper shows you her loop knot, slowly. You tie both ends, and she checks them.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Test the knots",
           "icon": "forward",
           "goto": "tie_good"
         }
@@ -977,11 +977,11 @@
       ],
       "art": "scenes/riftlight/boundary-river-row",
       "type": "story",
-      "narration": "You wrap each ring twice and pull the hitches snug. The keeper checks the loose ends with you.",
+      "narration": "You wrap each ring twice and pull the hitches snug.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Test the knots",
           "icon": "forward",
           "goto": "tie_good"
         }
@@ -996,11 +996,11 @@
       ],
       "art": "scenes/riftlight/boundary-river-row",
       "type": "story",
-      "narration": "Your duskrunner ties the high hitch while the keeper and your friends hold the cord.",
+      "narration": "Your duskrunner flicks a fast hitch onto the high ring while everyone holds the cord.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Test the knots",
           "icon": "forward",
           "goto": "tie_good"
         }
@@ -1008,7 +1008,7 @@
     },
     "tie_good": {
       "type": "story",
-      "narration": "Both ends are knotted and snug. The keeper tugs the cord with one claw and it answers with a tidy little twang, like a banjo being polite. \"That will hold till the river grows up,\" she says. \"Now we can see which of my stones has been telling fibs.\" She squints along the row and sees only her own nose.",
+      "narration": "The keeper tugs the cord. It answers with a tidy twang, like a polite banjo. \"That will hold till the river grows up,\" she says. \"Now let us see which stone has been telling fibs.\"",
       "choices": [
         {
           "id": "continue",
@@ -1027,23 +1027,23 @@
     },
     "sight_plan": {
       "type": "choice_point",
-      "narration": "A tight cord makes a straight line. If any stone leans away from it, someone will see. The keeper squints along the row and sees nine stones, then ten, then a moth. \"My eyes have been up since dawn,\" she admits. \"Yours are fresh. Who looks along it, and how?\"",
+      "narration": "If any stone leans off the straight cord, someone will see it. The keeper squints along the row and counts nine stones, then ten, then a moth. \"Your eyes are fresher than mine,\" she says. \"How will you look?\"",
       "choices": [
         {
           "id": "eyes",
-          "label": "Crouch low and squint along the cord",
+          "label": "Squint along the cord",
           "icon": "eye",
           "goto": "sight_check"
         },
         {
           "id": "pebbles",
-          "label": "Balance a pebble on top of every stone",
+          "label": "Balance pebbles on top",
           "icon": "hand",
           "goto": "pebble_check"
         },
         {
           "id": "star",
-          "label": "Let a starweaver draw a star-line along the cord",
+          "label": "Draw a star-line",
           "icon": "star",
           "goto": "star_check",
           "requiresClass": "starweaver"
@@ -1070,7 +1070,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Find the leaning stone",
           "icon": "forward",
           "goto": "sight_found"
         }
@@ -1085,11 +1085,11 @@
       ],
       "art": "scenes/riftlight/boundary-river-row",
       "type": "story",
-      "narration": "You set pebbles on the stones while the keeper watches from the bottom of the row.",
+      "narration": "You set a pebble on every stone. One pebble rolls right off.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Find the leaning stone",
           "icon": "forward",
           "goto": "sight_found"
         }
@@ -1104,11 +1104,11 @@
       ],
       "art": "scenes/riftlight/boundary-river-row",
       "type": "story",
-      "narration": "Your starweaver draws a star-line along the cord. Everyone can see where the stone leans.",
+      "narration": "Your starweaver draws a line of starlight along the cord. Anything crooked shows at once.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Find the leaning stone",
           "icon": "forward",
           "goto": "sight_found"
         }
@@ -1116,11 +1116,11 @@
     },
     "sight_found": {
       "type": "story",
-      "narration": "There! The fourth stone from the bottom leans out like a sleepy duck. Every other stone is straight as a ruler. The keeper chalks a big X on it. \"Thank you, Splash,\" she calls down the row, \"for being such a good example.\" Splash, being a stone, says nothing. But he looks smug.",
+      "narration": "There! The fourth stone from the bottom leans out like a sleepy duck. The keeper chalks a big X on it. \"Thank you, Splash,\" she calls, \"for being such a good example.\" Splash says nothing. But he looks smug.",
       "choices": [
         {
           "id": "continue",
-          "label": "Look at the fourth stone",
+          "label": "Fix the fourth stone",
           "icon": "hand",
           "goto": "nudge_plan"
         }
@@ -1135,23 +1135,23 @@
     },
     "nudge_plan": {
       "type": "choice_point",
-      "narration": "The fourth stone leans only a little, but it is big as a bathtub and twice as stubborn. The keeper walks around it twice, like a cat deciding about a box. \"It does not want to move,\" she says. \"It would like us to know that.\" How will you straighten it?",
+      "narration": "The fourth stone leans only a little, but it is as big as a bathtub and twice as stubborn. The keeper walks around it like a cat deciding about a box. How will you straighten it?",
       "choices": [
         {
           "id": "push",
-          "label": "Lean on it together on a count of three",
+          "label": "Push it on three",
           "icon": "hand",
           "goto": "push_check"
         },
         {
           "id": "wedge",
-          "label": "Pack stones under its low side",
+          "label": "Wedge its low side",
           "icon": "hand",
           "goto": "wedge_check"
         },
         {
           "id": "brace",
-          "label": "Use brace to hold the stone steady",
+          "label": "Brace it steady",
           "icon": "shield",
           "goto": "brace_check",
           "requiresClass": "thornguard"
@@ -1169,7 +1169,7 @@
       "type": "check",
       "stat": "might",
       "tn": 12,
-      "prompt": "Everyone leans on the fourth stone together. Ready? One, two, three, push!",
+      "prompt": "Everyone lean on the fourth stone together. One, two, three, push!",
       "roller": "all",
       "onSuccess": {
         "goto": "fourth_ok"
@@ -1189,7 +1189,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Find the low side, choose the right stones, and pack them under so the fourth stone settles. Choose who leads; everyone can help.",
+      "prompt": "Find the low side and pack the right stones under it so the fourth stone settles.",
       "roller": "party",
       "onSuccess": {
         "goto": "fourth_ok"
@@ -1209,7 +1209,7 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "prompt": "A thornguard's brace holds the fourth stone steady. Can you pack the wedges under it before it creeps back?",
+      "prompt": "Your thornguard braces the fourth stone. Can you pack wedges under it before it creeps back?",
       "roller": "best",
       "onSuccess": {
         "goto": "fourth_ok"
@@ -1227,7 +1227,7 @@
     },
     "fourth_ok": {
       "type": "story",
-      "narration": "The fourth stone settles with a deep thud. A line of ants walks out from under it in a polite line, carrying their furniture. Now all nine stones stand along the cord like children waiting for supper, and the keeper walks the row twice just to look at it. \"Straight,\" she says. \"Straight!\"",
+      "narration": "The fourth stone settles with a deep thud. A line of ants marches out from under it, carrying their furniture. All nine stones stand straight along the cord. \"Straight!\" says the keeper.",
       "choices": [
         {
           "id": "continue",
@@ -1246,7 +1246,7 @@
     },
     "fourth_shift": {
       "type": "story",
-      "narration": "The stone shifts, then settles crooked the other way. \"Good enough for today,\" sighs the keeper. \"It can be fixed again after the rain.\" You add one more wedge anyway, and pinch a finger doing it. The ants who live underneath come out to complain, then go back in to complain indoors.",
+      "narration": "The stone shifts, then settles crooked the other way. \"Good enough for today,\" sighs the keeper. You add one more wedge and pinch a finger. The ants underneath come out to complain, then go back in to complain indoors.",
       "choices": [
         {
           "id": "continue",
@@ -1273,11 +1273,11 @@
     },
     "top_stone": {
       "type": "story",
-      "narration": "With the row straight, you climb to the oldest stone at the top. The mountain carved in its face looks out over the hills. The keeper spreads her record board on the grass. The notches count the years. The carving shows the old eruption. \"They are supposed to tell one story,\" she says. \"They never do. I have kept this row for nine years and never once caught them agreeing.\"",
+      "narration": "You climb to the oldest stone at the top. Its carved mountain looks out over the hills. The keeper lays her record board in the grass. \"The notches count the years. The carving shows the old eruption. They should tell one story,\" she says. \"In nine years, I have never caught them agreeing.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Look at the three old stones",
+          "label": "Sort the old stones",
           "icon": "hand",
           "goto": "stone_order"
         }
@@ -1287,7 +1287,7 @@
           "when": {
             "flag": "rubbed_the_carving"
           },
-          "text": "She holds your rubbing against the stone, and the little chips line up."
+          "text": "She holds your rubbing up to the stone, and the little chips line up."
         },
         {
           "when": {
@@ -1312,7 +1312,7 @@
     },
     "stone_order": {
       "type": "interaction",
-      "narration": "Three of the oldest stones near the top have been shoved about by the river. The keeper hands you scraps of paper with her notes. \"Put them back in order, oldest first,\" she says. \"Share what you read. The scraps are all I have, and they are mostly tea.\"",
+      "narration": "Near the top, the river has shoved three old stones out of order. The keeper hands out scraps of her notes. \"Oldest first,\" she says. \"Read them out. They are mostly tea.\"",
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
@@ -1354,30 +1354,30 @@
       "art": "scenes/riftlight/boundary-mountain-carving",
       "onSuccess": {
         "goto": "compare",
-        "narration": "Mossy, notched, carved. The three stones sit in their old places, and the row looks calmer for it."
+        "narration": "Mossy, notched, carved. The three stones sit in their old places."
       },
       "onFailure": {
         "goto": "compare",
-        "narration": "The stones end up in a funny order. The keeper tuts, then moves them herself. \"The tea got to the notes,\" she says."
+        "narration": "The keeper tuts and fixes the order herself. \"The tea got to my notes.\""
       },
       "onAssisted": {
         "goto": "compare",
-        "narration": "You spread every clue side by side. Mossy, notched, carved. Together you set them right."
+        "narration": "You spread the clues side by side. Mossy, notched, carved."
       }
     },
     "compare": {
       "type": "choice_point",
-      "narration": "Two things can be checked before the light goes. The notches can be counted up the row against her record board. Or the carved mountain can be compared with the real peak on the horizon, standing over the hills with a flat shoulder like a sleeping cat. What should you check first?",
+      "narration": "Two things can be checked before dark. You can count the notches against her record board. Or you can hold the carved mountain up to the real peak on the skyline, which has a flat shoulder like a sleeping cat. Which first?",
       "choices": [
         {
           "id": "notches",
-          "label": "Count the notches against her board",
+          "label": "Count the notches",
           "icon": "hand",
           "goto": "notch_count_check"
         },
         {
           "id": "peak",
-          "label": "Compare the carved mountain with the real peak",
+          "label": "Compare the peaks",
           "icon": "hand",
           "goto": "peak_check"
         }
@@ -1394,7 +1394,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Count the notches from Splash up to the top and match each one with a date on the board. Choose who leads; everyone can help.",
+      "prompt": "Count the notches from Splash to the top and match each to a date on the board.",
       "roller": "party",
       "onSuccess": {
         "goto": "clue"
@@ -1414,7 +1414,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Look from the carved mountain to the real peak and back again. Where do the shapes agree, and where not? Choose who leads; everyone can help.",
+      "prompt": "Look from the carving to the real peak and back. Where do the shapes agree, and where not?",
       "roller": "party",
       "onSuccess": {
         "goto": "clue"
@@ -1432,7 +1432,7 @@
     },
     "muddle": {
       "type": "story",
-      "narration": "The numbers swim and you lose count three times. \"That is exactly how my board got this way,\" says the keeper cheerfully. She counts with you, finger by finger, notch by notch, until you land on the same answer she did. \"Two heads,\" she says, \"and two sets of fingers. Still wrong, but together.\"",
+      "narration": "The numbers swim, and you lose count three times. \"That is how my board got this way,\" says the keeper cheerfully. She counts with you, notch by notch, until you land on her answer.",
       "choices": [
         {
           "id": "continue",
@@ -1451,7 +1451,7 @@
     },
     "clue": {
       "type": "story",
-      "narration": "Whichever you checked, it comes out the same. The notches add up to one number of years, and her board to another. The carved mountain has its shoulder in the wrong place, too: on the real peak it sits farther left. The keeper does not guess why. \"One question at a time,\" she says. \"Today's question was the row. Tomorrow's can have a bigger hat.\"",
+      "narration": "Whichever you checked, the answer is the same. The notches add up to one number of years. The board says another. And the carved mountain's shoulder is in the wrong place. On the real peak, it sits farther left. The keeper does not guess why. \"One question at a time,\" she says.",
       "choices": [
         {
           "id": "continue",
@@ -1471,17 +1471,17 @@
     },
     "record_plan": {
       "type": "choice_point",
-      "narration": "The keeper holds her chalk over a clean corner of the record board, and for once she does not hurry. A board only helps if it is honest. \"What should I write about the shoulder?\" she asks. \"I would like it to be true, and I would like it to be small.\"",
+      "narration": "The keeper holds her chalk over a clean corner of the board. For once, she does not hurry. \"What should I write about the shoulder? I want it true, and I want it small.\"",
       "choices": [
         {
           "id": "plain",
-          "label": "Write only what you both saw, and nothing more",
+          "label": "Write only what you saw",
           "icon": "hand",
           "goto": "wrote_plain"
         },
         {
           "id": "both",
-          "label": "Draw the carved shoulder and the real one side by side",
+          "label": "Draw both shoulders",
           "icon": "hand",
           "goto": "drew_both"
         }
@@ -1496,7 +1496,7 @@
     },
     "wrote_plain": {
       "type": "story",
-      "narration": "She writes one short line: \"The carved shoulder and the real shoulder do not match.\" She does not write why. She underlines it once, very neatly, and then adds a tiny drawing of a mountain wearing a hat. \"For luck,\" she says. \"The hat is not evidence.\"",
+      "narration": "She writes one line: \"The carved shoulder and the real one do not match.\" She does not write why. Then she adds a tiny mountain wearing a hat. \"For luck,\" she says. \"The hat is not evidence.\"",
       "choices": [
         {
           "id": "continue",
@@ -1521,7 +1521,7 @@
     },
     "drew_both": {
       "type": "story",
-      "narration": "She draws the carved mountain, and next to it the real peak, with a dotted line joining their shoulders. The two shapes sit side by side, like cousins who have not met. \"Let the counters look at that,\" she says, \"and decide for themselves. I am only the keeper.\" She blows on the chalk.",
+      "narration": "She draws the carved mountain and the real peak side by side, with a dotted line between their shoulders. They look like cousins who have never met. \"Let the counters decide for themselves,\" she says.",
       "choices": [
         {
           "id": "continue",
@@ -1546,7 +1546,7 @@
     },
     "runner": {
       "type": "story",
-      "narration": "Boots thump up the slope. A young dragonling runner skids to a stop, red in the face and out of breath. \"Keeper! The big stone at the counting circle moved in the night! It left a hole behind! The counters want everyone who can measure!\" The keeper looks at her row, then at you. \"You have good hands and good eyes,\" she says. \"Will you walk with me?\"",
+      "narration": "Boots thump up the slope. A young dragonling runner skids to a stop, red-faced and puffing. \"Keeper! The big stone at the counting circle moved in the night! The counters need everyone who can measure!\" The keeper looks at her row, then at you. \"You have good hands and good eyes. Will you walk with me?\"",
       "choices": [
         {
           "id": "continue",
@@ -1580,17 +1580,17 @@
         }
       ],
       "art": "scenes/riftlight/boundary-mountain-carving",
-      "narration": "The keeper offers the runner a cup. \"She needs a breath before another question.\" You can sit with her for the whole account, or ask for the urgent news and let her rest. What would help her now?",
+      "narration": "The keeper hands the runner a cup. \"She needs a breath before another question.\" Will you hear the whole story, or just the urgent news so she can rest?",
       "choices": [
         {
           "id": "listen",
-          "label": "Sit with her and hear the whole account",
+          "label": "Hear the whole story",
           "icon": "ear",
           "goto": "runner_told"
         },
         {
           "id": "rest",
-          "label": "Ask for the urgent news, then give her quiet",
+          "label": "Just the urgent news",
           "icon": "rest",
           "goto": "runner_short"
         }
@@ -1598,11 +1598,11 @@
     },
     "runner_told": {
       "type": "story",
-      "narration": "The runner breathes, and tells it in order. The big stone sits where it always did, beside a pale hollow in the grass. The hollow is empty, and there are no marks in the grass between them. \"It just moved,\" she finishes, and sits down on her own feet. \"The counters are measuring everything. They have run out of string.\"",
+      "narration": "The runner catches her breath and tells it in order. The big stone now sits beside a pale, empty hollow, the spot where it used to be. There are no drag marks between them. \"It just moved,\" she says, and sits down on her own feet. \"The counters have run out of string.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Think about the walk",
+          "label": "Get ready to go",
           "icon": "hand",
           "goto": "go_plan"
         }
@@ -1621,11 +1621,11 @@
     },
     "runner_short": {
       "type": "story",
-      "narration": "You ask only what the next travelers need to know. \"It moved! No marks!\" the runner says. You let her rest with the keeper's cup. \"Run, run, run,\" the keeper says, \"and then sit, sit, sit. That is the proper order.\"",
+      "narration": "\"It moved! No marks!\" says the runner, and that is all you ask. You let her rest. \"Run, run, run,\" says the keeper, \"then sit, sit, sit. That is the proper order.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Think about the walk",
+          "label": "Get ready to go",
           "icon": "hand",
           "goto": "go_plan"
         }
@@ -1644,23 +1644,23 @@
     },
     "go_plan": {
       "type": "choice_point",
-      "narration": "The keeper cannot leave her row loose and her board behind. She hops from foot to foot, which is how she thinks. \"The row will keep until morning if it is tied,\" she says. \"But the board must go with me, and I have only two arms.\" What helps most before you go?",
+      "narration": "The keeper hops from foot to foot, which is how she thinks. \"The row will keep till morning if it is tied,\" she says. \"But my board must come with me, and I have only two arms.\" What helps most before you go?",
       "choices": [
         {
           "id": "carry",
-          "label": "Carry her record board and rubbing to the counting circle",
+          "label": "Carry her record board",
           "icon": "hand",
           "goto": "carry_board"
         },
         {
           "id": "tie",
-          "label": "Pack up the tools and check Splash's feet",
+          "label": "Pack up the tools",
           "icon": "hand",
           "goto": "tie_off"
         },
         {
           "id": "cake",
-          "label": "Give the runner your honeycake",
+          "label": "Give the runner honeycake",
           "icon": "hand",
           "goto": "runner_cake",
           "requiresItem": "honeycake"
@@ -1680,7 +1680,7 @@
     },
     "runner_cake": {
       "type": "story",
-      "narration": "The runner takes the honeycake in both hands and eats it in three bites, with her eyes shut. Color comes back to her cheeks. \"Best thing,\" she mumbles, \"all day.\" The keeper beams at you over her head, and ties your sleeve with a little reed charm for kindness.",
+      "narration": "The runner eats the honeycake in three bites, eyes shut. Color comes back to her cheeks. \"Best thing,\" she mumbles, \"all day.\" The keeper beams at you over her head.",
       "choices": [
         {
           "id": "continue",
@@ -1713,7 +1713,7 @@
     },
     "carry_board": {
       "type": "story",
-      "narration": "You slip the record board under your arm. It is heavier than it looks, full of years that disagree. The keeper locks her toolshed with a key she wears as a necklace, and hums as she walks. The board hums back, faintly. Probably the wind. Probably.",
+      "narration": "You tuck the record board under your arm. It is heavier than it looks, full of years that disagree. The keeper locks her toolshed with a key she wears as a necklace. The board hums faintly. Probably the wind. Probably.",
       "choices": [
         {
           "id": "continue",
@@ -1738,7 +1738,7 @@
     },
     "tie_off": {
       "type": "story",
-      "narration": "You pack the chisel and the chalk into the toolbag, and check Splash's feet one last time. He stands straight and, for a stone, seems proud. The keeper pats him. \"I will be back by breakfast,\" she tells the row. \"Behave.\" Nine stones stand perfectly still, which is their way of behaving.",
+      "narration": "You pack the chisel and chalk and check Splash's feet one last time. \"Back by breakfast,\" the keeper tells the row. \"Behave.\" Nine stones stand perfectly still.",
       "choices": [
         {
           "id": "continue",
@@ -1763,24 +1763,24 @@
     },
     "rest_row": {
       "type": "rest",
-      "narration": "The sun slides toward the hills, and the keeper claps her hands. \"Nobody walks anywhere hungry.\" She boils water and pours tea into cups that do not match. Splash watches from the bottom of the row. The river hurries by, a little lower than before. Everyone's knees hurt in a good way.",
+      "narration": "The sun slides toward the hills. \"Nobody walks anywhere hungry,\" says the keeper. She pours tea into cups that do not match. The river hurries by, a little lower than before.",
       "heal": 3,
       "choices": [
         {
           "id": "supper",
-          "label": "Share supper with the keeper",
+          "label": "Have tea and stories",
           "icon": "hand",
           "goto": "supper"
         },
         {
           "id": "watch",
-          "label": "Sit by Splash and watch the river",
+          "label": "Watch the river",
           "icon": "hand",
           "goto": "watch"
         },
         {
           "id": "honey",
-          "label": "Buy a jar of the keeper's honey (2 coins)",
+          "label": "Buy honeycake (2 coins)",
           "icon": "hand",
           "goto": "honey_buy",
           "when": {
@@ -1791,7 +1791,7 @@
         },
         {
           "id": "share",
-          "label": "Share your supper with the keeper",
+          "label": "Share your own supper",
           "icon": "hand",
           "goto": "share_supper",
           "when": {
@@ -1815,7 +1815,7 @@
     },
     "honey_buy": {
       "type": "story",
-      "narration": "The keeper sells you a small jar of honey, with a comb still in it, and counts the coins into a tin as if each one were a rare beetle. \"Honey is the river's opposite,\" she says. \"It stays where you put it.\" You get a honeycake too, for the road, because she can't help herself.",
+      "narration": "The keeper sells you a honeycake wrapped in a leaf. She drops your coins in a tin like rare beetles. \"Honey is the river's opposite,\" she says. \"It stays where you put it.\"",
       "choices": [
         {
           "id": "continue",
@@ -1845,7 +1845,7 @@
     },
     "share_supper": {
       "type": "story",
-      "narration": "You split your supper with the keeper, and she splits it again with Splash, by setting a crumb on his head. The bread is good. The cheese is better. \"Fair is fair,\" she says, and hangs a river charm round your neck. It smells faintly of fish, like all her gifts.",
+      "narration": "You split your supper with the keeper. She shares hers with Splash by setting a crumb on his head. \"Fair is fair,\" she says, and hangs a river charm around your neck. It smells faintly of fish, like all her gifts.",
       "choices": [
         {
           "id": "continue",
@@ -1878,7 +1878,7 @@
     },
     "supper": {
       "type": "story",
-      "narration": "The keeper tells you the names of all nine stones, and what each one did wrong when it was little. The fourth stone, she says, once tried to leave for the sea. The tea is hot and tastes faintly of river. A moth lands on the rim of your cup and stays for the warmth. Nobody minds.",
+      "narration": "The keeper tells you the names of all nine stones, and what each did wrong when it was little. The fourth stone once tried to run off to the sea. The tea tastes faintly of river. Nobody minds.",
       "choices": [
         {
           "id": "continue",
@@ -1897,7 +1897,7 @@
     },
     "watch": {
       "type": "story",
-      "narration": "You sit by Splash with your feet near the water. A line of ants crosses his new notch like a bridge. Far upriver, something flashes once in the dusk, then is gone. The keeper does not look up from her tea. \"Rivers do that,\" she says. She is wrong, but kindly.",
+      "narration": "You sit by Splash with your feet near the water. Ants cross his new notch like a bridge. Far upriver, something flashes once in the dusk, then is gone. \"Rivers do that,\" says the keeper. She is wrong, but kindly.",
       "choices": [
         {
           "id": "continue",
@@ -1916,7 +1916,7 @@
     },
     "bank_rest": {
       "type": "rest",
-      "narration": "\"I walk to the counting circle at first light,\" says the keeper. \"You are welcome to come.\" A road follows the east bank to a crossing called Ashspan Bridge. The carved mountain gives you a reason to stay; the road gives you another way onward. For tonight, there is a warm cup and nine straight stones.",
+      "narration": "\"I walk to the counting circle at first light,\" says the keeper. \"You are welcome to come.\" A road also follows the east bank to a crossing called Ashspan Bridge. For tonight, there is a warm cup and nine stones in a row.",
       "heal": 0,
       "choices": [],
       "outcome": "success",
