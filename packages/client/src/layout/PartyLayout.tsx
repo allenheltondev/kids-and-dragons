@@ -29,7 +29,7 @@ import { TrayObject } from "../screens/TrayObjects";
 import { RiftlightIndicator } from "../screens/RiftSight";
 import { GuideTab } from "./GuideTab";
 import { BookTab } from "./BookTab";
-import { useMyTurnKey } from "../store";
+import { useMe, useMyTurnKey, useRunState } from "../store";
 import { setHelpPane } from "../help/focus";
 import { PlayerShell, useSideBySide } from "./landscape";
 import { PaneFrame } from "./PaneFrame";
@@ -69,8 +69,16 @@ function PhoneLayout(): React.JSX.Element {
    * TV focus (Display settings): there is a TV in Party Mode, so the story lives there and this
    * phone keeps only You. Held sideways, that means no world beside the controls either: one
    * pane at a time, as upright, with the rail still down the side.
+   *
+   * Only once there is a story to watch: in the lobby, and while a hero is being made, the phone
+   * is the whole job (the guide, the map, the world beside the sheet), so the setting waits for
+   * the chapter to start. The tray, the layout and the context all read this one value.
    */
-  const focus = useTvFocusSetting();
+  const focusSetting = useTvFocusSetting();
+  const runState = useRunState();
+  const hasHero = useMe() !== null;
+  const playing = runState !== null && runState.phase !== "lobby" && runState.phase !== "creation" && hasHero;
+  const focus = focusSetting && playing;
   const sideBySide = useSideBySide() && !focus;
   // Each new question takes focus, including two consecutive questions for
   // the same player. An update to the current question (such as another vote)

@@ -36,6 +36,8 @@ import {
   riftPartyOf,
   sameHome,
   swapOwnerAway,
+  combatTurnAway,
+  currentActor,
   voteWaitsOnlyOnAway,
   type RankUp,
 } from "@kad/shared";
@@ -43,6 +45,7 @@ import { checkTarget } from "./DiceOverlay";
 import { checkBuffLine } from "./buff-copy";
 import type {
   ClientIntent,
+  EncounterState,
   InventoryEntry,
   JourneyExitView,
   ItemCatalog,
@@ -509,6 +512,14 @@ function SceneBackdrop({ src }: { src: string }): ReactElement | null {
 
 // ---------------------------------------------------------------------------
 
+/** Whose go it is in a fight, for the TV focus card: a friend by name, or the other side. */
+function fightWaitingLine(encounter: EncounterState | null, party: PartyMember[]): string | null {
+  if (!encounter) return null;
+  const actor = currentActor(encounter);
+  if (actor?.side === "party") return `It's ${nameOfCharacter(party, actor.id)}'s turn to fight.`;
+  return "The other side is moving. Watch the TV!";
+}
+
 /* A television, drawn here: the icon set has none, and only TV focus asks for one. */
 function TvGlyph(): ReactElement {
   return (
@@ -656,10 +667,18 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   const atClassPlace = state?.phase === "scene" && state.classPlace !== undefined;
   // Until everyone there has answered, the way on waits, so its choices do too.
   const classPlaceWaiting = state ? classPlaceWaitingOn(state).length > 0 : false;
-  const hasTask = myPrompt !== null || canHelp || awaySwap !== null || state?.encounter != null || inLobby || state?.phase === "chapter_complete" ||
+  // Everything this phone is asked to do, less watching a fight, which every phone gets while one
+  // is on (the board to look at) whoever's turn it is.
+  const ownTask = myPrompt !== null || canHelp || awaySwap !== null || inLobby || state?.phase === "chapter_complete" ||
     atClassPlace ||
     (state?.phase === "scene" && state.sceneType === "rest" && !practicing && (me?.character.unspentPoints ?? 0) > 0) ||
     (state?.trades ?? []).some((offer) => offer.toPlayerId === me?.playerId);
+  const hasTask = ownTask || state?.encounter != null;
+  /*
+   * What TV focus counts as something to do: a fight only on this hero's turn, or on a turn whose
+   * phone is gone and anybody here may pass (#258). Any other turn of a fight is watched on the TV.
+   */
+  const focusTask = ownTask || isMyCombatTurn || (state !== null && combatTurnAway(state));
   useEffect(() => {
     if (!hasTask && section === "turn") setPlayerSection("bag");
   }, [hasTask, section]);
@@ -671,8 +690,8 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   const focus = useTvFocus();
   const [peek, setPeek] = useState(false);
   useEffect(() => {
-    if (hasTask || !focus) setPeek(false);
-  }, [hasTask, focus]);
+    if (focusTask || !focus) setPeek(false);
+  }, [focusTask, focus]);
 
   /*
    * A new question opens the turn page by itself. The layout shells already
@@ -850,7 +869,9 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
       state.phase === "chapter_complete");
   const showSheet = section === "bag" || !hasTask;
   // Nothing to do and nothing asked of this phone: under TV focus, the card that says look up.
-  const tvRest = focus && !hasTask && !inLobby && !peek;
+  const tvRest = focus && !focusTask && !inLobby && !peek;
+  // "Look in my bag" from that card opens the bag, in a fight too, where the turn page is the board.
+  const sheetUp = (showSheet || (focus && peek && !focusTask)) && !tvRest;
   /*
    * Which picture to stand the controls in: the scene's own illustration when
    * it has one, else the chapter's biome — the same choice the stage makes.
@@ -1030,7 +1051,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
       */}
       {/* `hidden`, not unmounted: an aim half-made in a fight survives a look
           at the bag. */}
-      <div className={`player__prompt${myPrompt?.kind === "interaction" ? " player__prompt--game" : ""}`} ref={promptBox} hidden={showSheet}>
+      <div className={`player__prompt${myPrompt?.kind === "interaction" ? " player__prompt--game" : ""}`} ref={promptBox} hidden={sheetUp || tvRest}>
         {/* Inside the prompt's scroll box rather than above it, so that while
             deciding the words sit at the top and the answers sink to the
             bottom — read down, tap at the thumb — with the scene showing
@@ -2047,16 +2068,16 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
       </div>
 
       {tvRest ? (
-        <TvRest waiting={globalPrompt !== null ? waitingLine(globalPrompt, party) : "Listen to the story…"} onPeek={() => setPeek(true)} />
+        <TvRest waiting={fightWaitingLine(state.encounter ?? null, party) ?? (globalPrompt !== null ? waitingLine(globalPrompt, party) : "Listen to the story…")} onPeek={() => setPeek(true)} />
       ) : null}
-      <div className="player__scroll kad-scroll" hidden={!showSheet || tvRest}>
+      <div className="player__scroll kad-scroll" hidden={!sheetUp}>
         {/* One seat at the top of the bag, the big button's height, for
             either the way into your task or what the table is waiting on.
             Both change as other people act; sharing a fixed seat, neither
             moves the bag under a finger that is in the middle of it. */}
         {inLobby ? null : (
           <div className="player__task-slot">
-            {hasTask ? (
+            {hasTask && !(focus && !focusTask) ? (
               <Button variant="primary" size="lg" block className="player__task-entry"
                 icon={<Icon name="hand" />} onClick={() => setPlayerSection("turn")}>
                 {offersToMe.length > 0 ? "A gift for you" : state.phase === "chapter_complete" ? state.endingRead === false ? "How the chapter ended" : "Chapter rewards" : atRest && banked > 0 ? banked === 1 ? "Spend your stat point" : "Spend your stat points" : myPrompt !== null || isMyCombatTurn ? "Your turn" : helping !== null ? `Help ${helping}` : awaySwap !== null ? `Help ${awaySwap}'s bag` : "View the fight"}
