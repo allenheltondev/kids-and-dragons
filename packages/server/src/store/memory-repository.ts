@@ -62,6 +62,8 @@ import {
   CAMPAIGN_SK,
   CREW_SK,
   CREWSAVE_PREFIX,
+  CREWNAMES,
+  FIRSTCREW,
   CHAPTER_SK,
   CHAR_SK,
   DEVICE_SK,
@@ -825,6 +827,19 @@ export class MemoryRepository implements GameRepository {
       .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
   }
 
+  async getCrewNamesVersion(householdId: string): Promise<number> {
+    return this.crewNamesVersion(householdId);
+  }
+
+  private crewNamesVersion(householdId: string): number {
+    return (this.get(HH(householdId), CREWNAMES)?.data as { version?: number } | undefined)?.version ?? 0;
+  }
+
+  async getFirstCrewName(householdId: string): Promise<string | null> {
+    const item = this.get(HH(householdId), FIRSTCREW);
+    return (item?.data as { name?: string } | undefined)?.name ?? null;
+  }
+
   async getFieldGuide(householdId: string): Promise<FieldGuideRecord> {
     return this.readFieldGuide(householdId);
   }
@@ -929,6 +944,13 @@ export class MemoryRepository implements GameRepository {
     }
     // A new crew takes a slot nobody holds yet.
     if (input.crew && this.get(HH(input.crew.householdId), CREW_SK(input.crew.id))) return false;
+    // Crew names land only on the crew-names version they were chosen from, and
+    // only on a crew that exists.
+    if (input.crewNames) {
+      const { householdId, expectedVersion, names } = input.crewNames;
+      if (this.crewNamesVersion(householdId) !== expectedVersion) return false;
+      if (names.some(({ crew }) => crew !== null && !this.get(HH(householdId), CREW_SK(crew)))) return false;
+    }
 
     // No await from here through the final row: this is the local equivalent of
     // one TransactWriteItems, including across two different run partitions.
@@ -962,6 +984,18 @@ export class MemoryRepository implements GameRepository {
     }
     if (input.crew) {
       this.put({ PK: HH(input.crew.householdId), SK: CREW_SK(input.crew.id), entity: "crew", data: input.crew });
+    }
+    if (input.crewNames) {
+      const { householdId, expectedVersion, names } = input.crewNames;
+      const pk = HH(householdId);
+      this.put({ PK: pk, SK: CREWNAMES, entity: "crew", data: { version: expectedVersion + 1 } });
+      for (const { crew, name } of names) {
+        if (crew === null) this.put({ PK: pk, SK: FIRSTCREW, entity: "crew", data: { name } });
+        else {
+          const row = this.get(pk, CREW_SK(crew))!;
+          this.put({ ...row, data: { ...(row.data as CrewRecord), name } });
+        }
+      }
     }
     if (chapterProgress) {
       this.put({

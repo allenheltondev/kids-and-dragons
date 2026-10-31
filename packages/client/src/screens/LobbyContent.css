@@ -516,3 +516,15 @@
   white-space: normal;
   font-size: 0.8em;
 }
+
+/* The crew this lobby plays, and the host's way to change it. */
+.lobby__crew {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3, 0.75em);
+}
+
+.lobby__crew-hint {
+  font-size: 0.85em;
+}

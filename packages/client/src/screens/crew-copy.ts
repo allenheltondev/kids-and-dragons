@@ -4,20 +4,22 @@
  * in the host's lazy chunk for one line.
  */
 
-import type { RunState } from "@kad/shared";
+import { CREW_NAMES, FIRST_CREW_NAME, type RunState } from "@kad/shared";
+
+export { CREW_NAMES };
 
 /** What the household's first crew, which has no row and no name of its own, is called. */
-export const FIRST_CREW = "The first crew";
+export const FIRST_CREW = FIRST_CREW_NAME;
 
 /** The crew this lobby plays, by name, and the ones it could switch to. */
-export function crewChoices(state: Pick<RunState, "crew" | "crews">): {
+export function crewChoices(state: Pick<RunState, "crew" | "crews" | "firstCrewName">): {
   current: string;
   others: { id: string | null; name: string }[];
 } {
-  const all = [{ id: null as string | null, name: FIRST_CREW }, ...(state.crews ?? [])];
+  const all = [{ id: null as string | null, name: state.firstCrewName ?? FIRST_CREW }, ...(state.crews ?? [])];
   const mine = state.crew ?? null;
   return {
-    current: all.find((crew) => crew.id === mine)?.name ?? FIRST_CREW,
+    current: all.find((crew) => crew.id === mine)?.name ?? (state.firstCrewName ?? FIRST_CREW),
     others: all.filter((crew) => crew.id !== mine),
   };
 }

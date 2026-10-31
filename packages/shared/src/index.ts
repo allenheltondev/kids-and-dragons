@@ -27,6 +27,7 @@ export * from "./player-colors.js";
 export * from "./migrate.js";
 export * from "./field-guide-record.js";
 export * from "./kid-profile.js";
+export * from "./crews.js";
 export * from "./dice.js";
 export * from "./inventory.js";
 export * from "./bestiary.js";

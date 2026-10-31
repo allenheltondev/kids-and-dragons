@@ -20,25 +20,15 @@
  * lobby, before a chapter starts or a save is picked up.
  */
 
-import { claimOf, memberHome, parseClaim, type RunState } from "@kad/shared";
-import type { CrewRecord } from "../store/repository.ts";
+import { claimOf, CREW_NAMES, FIRST_CREW_NAME, lobbyCampaign, memberHome, parseClaim, type Character, type RunState } from "@kad/shared";
+import type { CommitInput, CrewRecord } from "../store/repository.ts";
 import { claimIsLive } from "./claim.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 import { commitRoomChange, hostedRoom, type HostPrincipal } from "./host.ts";
 import { seatedParty, UNDER_WAY } from "./progression.ts";
 import { offerCampaigns } from "./room.ts";
 
-/** What a new crew is called: no typing on a TV remote, and every name is a kid's. */
-export const CREW_NAMES = [
-  "The Otter Crew",
-  "The Lantern Crew",
-  "The Acorn Crew",
-  "The Comet Crew",
-  "The Puddle Crew",
-  "The Kettle Crew",
-  "The Thistle Crew",
-  "The Pebble Crew",
-] as const;
+export { CREW_NAMES };
 
 /** Enough for every group a household plays with, and a bound on the rows a host can make: one slot per name. */
 export const MAX_CREWS = CREW_NAMES.length;
@@ -90,6 +80,8 @@ export async function switchCrew(
   // Decided afresh on every attempt, from the crews as they stand then.
   let target: string | null = null;
   let made: CrewRecord | undefined;
+  // The crew-names version a new crew's name was picked from (`CommitInput.crewNames`).
+  let namesRead = 0;
   // Asserted rather than annotated: set in the change below, which TypeScript cannot see.
   let refusal = null as { code: "ILLEGAL" | "NOT_FOUND"; message: string } | null;
 
@@ -99,6 +91,7 @@ export async function switchCrew(
     async (state) => {
       made = undefined;
       refusal = null;
+      namesRead = await deps.repo.getCrewNamesVersion(room.householdId);
       if (!betweenGames(state)) {
         refusal = { code: "ILLEGAL", message: "Change crews before the adventure starts." };
         return null;
@@ -108,16 +101,22 @@ export async function switchCrew(
       if (retried) {
         target = retried.id;
       } else if (input.crew === "new") {
+        // The slot is the id, the name the first one no crew holds: the first
+        // crew's own name included, since a rename may have given it one of
+        // the list's. One name per crew, so the list is the cap, the first
+        // crew's name counted when it holds one.
         const taken = new Set(crews.map((c) => c.id));
         const slot = CREW_NAMES.findIndex((_, i) => !taken.has(crewSlot(i)));
-        if (slot < 0) {
+        const held = await heldNames(room.householdId, crews, undefined, deps);
+        const name = CREW_NAMES.find((n) => !held.includes(n));
+        if (slot < 0 || name === undefined) {
           refusal = { code: "ILLEGAL", message: "This game already has as many crews as it can keep." };
           return null;
         }
         made = {
           householdId: room.householdId,
           id: crewSlot(slot),
-          name: CREW_NAMES[slot]!,
+          name,
           createdAt: iso(deps.now()),
           ...(input.request ? { request: input.request } : {}),
         };
@@ -135,6 +134,8 @@ export async function switchCrew(
       const { crew: _crew, ...rest } = state;
       const next: RunState = target === null ? (rest as RunState) : { ...rest, crew: target };
       delete next.crewSetup;
+      delete next.crewCheck;
+      delete next.crewConfirmed;
       // A deliberate crew choice also chooses a different lineup. The phones
       // stay connected and can bring that crew's saved heroes or make new ones.
       next.party = [];
@@ -151,11 +152,265 @@ export async function switchCrew(
       return next;
     },
     deps,
-    { crew: () => made },
+    {
+      crew: () => made,
+      // A new crew's name was picked from the names as they stood: gated on them.
+      crewNames: () => (made ? { householdId: room.householdId, expectedVersion: namesRead, names: [] } : undefined),
+    },
   );
   if (!result.ok) return result;
   if (refusal) return fail(refusal.code, refusal.message);
   return ok({ seq: result.value.seq, crew: target });
+}
+
+/**
+ * Every name the household's crews go by, but `except`'s (a crew's id, or null
+ * for the first): the first crew's when it was given one, and every other crew's.
+ */
+async function heldNames(
+  householdId: string,
+  crews: CrewRecord[],
+  except: string | null | undefined,
+  deps: HandlerDeps,
+): Promise<string[]> {
+  const first = await deps.repo.getFirstCrewName(householdId);
+  return [
+    ...crews.filter((c) => c.id !== except).map((c) => c.name),
+    ...(except === null ? [] : [first ?? FIRST_CREW_NAME]),
+  ];
+}
+
+export interface RenameCrewInput {
+  code: string;
+  principal: HostPrincipal;
+  /** The crew to rename: its id, or null for the household's first. */
+  crew: string | null;
+  /** One of `CREW_NAMES`: no typing on a TV remote. */
+  name: string;
+}
+
+/** What a rename body asks for, or undefined when it cannot be read. */
+export const RENAME_BODY = 'expected { crew: "<crew id>" | null, name: "<one of the offered names>" }';
+
+export function parseCrewRename(body: Record<string, unknown>): Pick<RenameCrewInput, "crew" | "name"> | undefined {
+  const { crew, name } = body;
+  if (typeof name !== "string" || !(CREW_NAMES as readonly string[]).includes(name)) return undefined;
+  if (crew === null) return { crew, name };
+  return typeof crew === "string" && /^cw_[a-z0-9]{1,20}$/.test(crew) ? { crew, name } : undefined;
+}
+
+/**
+ * Give one of the household's crews another of the offered names. The names are
+ * a fixed list, so a kid's crew never carries anything typed at the TV, and no
+ * two crews share one. The lobby is rebuilt in the same commit so the Room panel
+ * and the lobby screen show it at once.
+ */
+export async function renameCrew(
+  input: RenameCrewInput,
+  deps: HandlerDeps,
+): Promise<HandlerResult<{ seq: number }>> {
+  const hosted = await hostedRoom(input.code, input.principal, deps);
+  if (!hosted.ok) return hosted;
+  const room = hosted.value;
+  if (room.claimable === true) {
+    return fail("ILLEGAL", "Let somebody join first, so the game knows whose crews these are.");
+  }
+  const run = await deps.repo.getRun(room.runId);
+  if (!run) return fail("NOT_FOUND", `no run ${room.runId}`);
+
+  let refusal = null as { code: "ILLEGAL" | "NOT_FOUND"; message: string } | null;
+  // The rename this attempt chose, and the crew-names version it chose it from:
+  // it lands with the run's commit, and only on that version, so a lost race
+  // writes nothing and its retry reads the names again (`CommitInput.crewNames`).
+  let naming: NonNullable<CommitInput["crewNames"]> | undefined;
+  const result = await commitRoomChange(
+    room,
+    input.principal.playerId,
+    async (state) => {
+      refusal = null;
+      naming = undefined;
+      if (!betweenGames(state)) {
+        refusal = { code: "ILLEGAL", message: "Rename a crew before the adventure starts." };
+        return null;
+      }
+      const version = await deps.repo.getCrewNamesVersion(room.householdId);
+      const crews = await deps.repo.listCrews(room.householdId);
+      if (input.crew !== null && !crews.some((c) => c.id === input.crew)) {
+        refusal = { code: "NOT_FOUND", message: "There is no crew like that in this game." };
+        return null;
+      }
+      if ((await heldNames(room.householdId, crews, input.crew, deps)).includes(input.name)) {
+        refusal = { code: "ILLEGAL", message: "Another crew already has that name." };
+        return null;
+      }
+      naming = { householdId: room.householdId, expectedVersion: version, names: [{ crew: input.crew, name: input.name }] };
+      // The screens show the new name with the commit that sets it.
+      const next: RunState = { ...state };
+      if (input.crew === null) next.firstCrewName = input.name;
+      else next.crews = (state.crews ?? []).map((c) => (c.id === input.crew ? { ...c, name: input.name } : c));
+      return next;
+    },
+    deps,
+    { crewNames: () => naming },
+  );
+  if (!result.ok) return result;
+  if (refusal) return fail(refusal.code, refusal.message);
+  return ok({ seq: result.value.seq });
+}
+
+/**
+ * Whether the heroes seated are all new to the adventure this crew has under
+ * way in `campaignId`: the crew is partway through it (a chapter finished, or
+ * a journey begun), other heroes of the household are on it, and no seated
+ * hero is. Then it is somebody else's story, and the lobby must not quietly
+ * resume it for them; the host chooses (`confirmCrew`, or a new crew). An
+ * attempt no hero is on asks nothing. False whenever anything cannot be read,
+ * so a failed lookup never stands between a returning crew and its game.
+ */
+export async function newcomersTo(
+  state: RunState,
+  householdId: string,
+  campaignId: string,
+  deps: Pick<HandlerDeps, "repo">,
+): Promise<boolean> {
+  if (!betweenGames(state) || state.crewSetup || state.crewConfirmed === campaignId) return false;
+  const party = seatedParty(state);
+  if (party.length === 0) return false;
+  const attempt = await deps.repo.getCampaignProgress(householdId, campaignId, state.crew);
+  if (!attempt || attempt.status !== "active") return false;
+  if (attempt.lastIndex === undefined && attempt.journey === undefined) return false;
+  const onIt = (hero: Character): boolean => {
+    const held = claimOf(hero);
+    if (held === null) return false;
+    const claim = parseClaim(held, hero);
+    return claim.campaignId === campaignId && claim.table === householdId && (claim.crew ?? null) === (state.crew ?? null);
+  };
+  let household: Character[];
+  try {
+    household = await deps.repo.listCharacters(householdId);
+  } catch (err) {
+    console.error(`crews: could not list ${householdId}'s heroes:`, err);
+    return false;
+  }
+  const seated = new Set(party.map((member) => member.character.id));
+  if (!household.some((hero) => !seated.has(hero.id) && onIt(hero))) return false;
+  for (const member of party) {
+    let hero;
+    try {
+      hero = await deps.repo.getCharacter(memberHome(member, householdId), member.character.id);
+    } catch (err) {
+      console.error(`crews: could not read ${member.character.id}:`, err);
+      return false;
+    }
+    if (hero && onIt(hero)) return false;
+  }
+  return true;
+}
+
+/**
+ * Keeps `RunState.crewCheck` true to who is seated and which adventure the
+ * lobby rests on. Called whenever the party or the votes in the lobby change.
+ * Returns the state unchanged (the same object) when nothing moved.
+ */
+export async function checkNewcomers(state: RunState, householdId: string, deps: Pick<HandlerDeps, "repo">): Promise<RunState> {
+  const leader = lobbyCampaign(state).leader;
+  const found =
+    leader && leader.locked === undefined && (await newcomersTo(state, householdId, leader.id, deps))
+      ? { campaignId: leader.id, title: leader.title }
+      : null;
+  const same = found
+    ? state.crewCheck?.campaignId === found.campaignId && state.crewCheck.title === found.title
+    : state.crewCheck === undefined;
+  if (same) return state;
+  const next: RunState = { ...state };
+  if (found) next.crewCheck = found;
+  else delete next.crewCheck;
+  return next;
+}
+
+/** Who the host's keep-going was for: the heroes seated, and the crew whose adventure it is. */
+function lineup(state: RunState): string {
+  const heroes = seatedParty(state).map((m) => m.character.id).sort().join(" ");
+  return `${state.crew ?? ""}|${heroes}`;
+}
+
+/**
+ * The lobby moved from `before` to `after`: when the heroes seated (somebody
+ * sat down, got up, or was taken out) or the crew changed, the host's
+ * keep-going was for a lineup that is not this one, so it is dropped
+ * (`crewConfirmed`) and the question asked again for these heroes. A change of
+ * the adventure the lobby rests on asks again too. Anything else leaves the
+ * state as it is (the same object). Lobby-only.
+ */
+export async function rethinkNewcomers(
+  before: RunState,
+  after: RunState,
+  householdId: string,
+  deps: Pick<HandlerDeps, "repo">,
+): Promise<RunState> {
+  if (after.phase !== "lobby" && after.phase !== "creation") return after;
+  const moved = lineup(before) !== lineup(after);
+  if (!moved && before.campaignVotes === after.campaignVotes) return after;
+  let next = after;
+  if (moved && next.crewConfirmed !== undefined) {
+    next = { ...next };
+    delete next.crewConfirmed;
+  }
+  return checkNewcomers(next, householdId, deps);
+}
+
+export interface ConfirmCrewInput {
+  code: string;
+  principal: HostPrincipal;
+  /** The adventure the host chose to keep going with (`crewCheck.campaignId`). */
+  campaignId: string;
+}
+
+/** What a keep-going body asks for, or undefined when it cannot be read. */
+export const KEEP_BODY = 'expected { campaignId: "<campaign id>" }';
+
+export function parseCrewKeep(body: Record<string, unknown>): Pick<ConfirmCrewInput, "campaignId"> | undefined {
+  const { campaignId } = body;
+  return typeof campaignId === "string" && /^[a-z0-9-]{1,64}$/.test(campaignId) ? { campaignId } : undefined;
+}
+
+/**
+ * The host's answer to `crewCheck`: these heroes join the crew's adventure
+ * where it stands. Starting fresh instead is `switchCrew("new")`.
+ */
+export async function confirmCrew(
+  input: ConfirmCrewInput,
+  deps: HandlerDeps,
+): Promise<HandlerResult<{ seq: number }>> {
+  const hosted = await hostedRoom(input.code, input.principal, deps);
+  if (!hosted.ok) return hosted;
+  const room = hosted.value;
+  let refusal = null as string | null;
+  const result = await commitRoomChange(
+    room,
+    input.principal.playerId,
+    async (state) => {
+      refusal = null;
+      if (!betweenGames(state)) {
+        refusal = "Choose before the adventure starts.";
+        return null;
+      }
+      // A repeat of the answer already given is fine; an answer to a question
+      // the lobby no longer asks (the vote moved to another adventure) is not.
+      if (state.crewConfirmed === input.campaignId && state.crewCheck === undefined) return null;
+      if (state.crewCheck?.campaignId !== input.campaignId) {
+        refusal = "The lobby is asking about another adventure now. Choose again.";
+        return null;
+      }
+      const next: RunState = { ...state, crewConfirmed: input.campaignId };
+      delete next.crewCheck;
+      return next;
+    },
+    deps,
+  );
+  if (!result.ok) return result;
+  if (refusal) return fail("ILLEGAL", refusal);
+  return ok({ seq: result.value.seq });
 }
 
 /** A crew's id by slot: `cw_1` for the first slot. Never the claim's separators. */

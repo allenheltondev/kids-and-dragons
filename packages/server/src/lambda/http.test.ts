@@ -418,14 +418,16 @@ describe("POST /api/room", () => {
     expect(joined.statusCode).toBe(200);
     expect((await harness.repo.getRoom(opened.code))?.householdId).toBe(householdId);
 
-    // And a new phone after it joins the family, not the TV.
+    // A never-seen phone after it is a visitor, in a household of its own:
+    // the room's four letters do not make anybody family (#249).
     const fresh = await respond(
       event("POST", `/api/room/${opened.code}/join`, { body: { displayName: "Sam" } }),
       rt,
     );
     expect(fresh.statusCode).toBe(200);
     const freshId = (bodyOf(fresh) as unknown as { playerId: string }).playerId;
-    expect(await harness.repo.getPlayer(householdId, freshId)).not.toBeNull();
+    expect(await harness.repo.getPlayer(householdId, freshId)).toBeNull();
+    expect((await harness.repo.getRoom(opened.code))?.householdId).toBe(householdId);
   });
 
   it("refuses a TV for a Travel Mode room", async () => {
@@ -517,8 +519,7 @@ describe("POST /api/room/:code/join", () => {
     });
   });
 
-  it("refuses a device from another household with 403", async () => {
-    // The FORBIDDEN → 403 leg of `statusFor`.
+  it("lets a device from another household in, as a visitor", async () => {
     const harness = makeHarness();
     const room = await seedRoom(harness);
     await harness.repo.putHousehold({
@@ -545,8 +546,8 @@ describe("POST /api/room/:code/join", () => {
       }),
       runtimeFor(harness),
     );
-    expect(result.statusCode).toBe(403);
-    expect(bodyOf(result).error).toMatchObject({ code: "FORBIDDEN" });
+    expect(result.statusCode).toBe(200);
+    expect(bodyOf(result)).toMatchObject({ playerId: "p_x" });
   });
 });
 
@@ -590,11 +591,11 @@ describe("a room open to visitors (#249)", () => {
     expect((await respond(opening("WXYZ", true), rt)).statusCode).toBe(404);
   });
 
-  it("lets a phone from another household join with the six-letter code only", async () => {
+  it("lets a phone from another household join with the room's code, or an open room's six letters", async () => {
     const { room, rt, visitorToken } = await openable();
     const join = (code: string) =>
       respond(event("POST", `/api/room/${code}/join`, { headers: { "x-kad-device-token": visitorToken } }), rt);
-    expect((await join(room.code)).statusCode).toBe(403);
+    expect((await join(room.code)).statusCode).toBe(200);
 
     rt.account = OWNER;
     const opened = await respond(opening(room.code, true), rt);
@@ -602,9 +603,8 @@ describe("a room open to visitors (#249)", () => {
     const visitorCode = String(bodyOf(opened).visitorCode);
     expect(visitorCode).toMatch(new RegExp(`^${room.code}[A-Z]{2}$`));
 
-    // Still refused on the short code; in on the long one, answered with the
-    // room's own code, which every later call names.
-    expect((await join(room.code)).statusCode).toBe(403);
+    // In on the long one too, answered with the room's own code, which every
+    // later call names.
     const joined = await join(visitorCode.toLowerCase());
     expect(joined.statusCode).toBe(200);
     expect(bodyOf(joined)).toMatchObject({ code: room.code, roomCode: room.code, playerId: "p_x" });
@@ -650,20 +650,19 @@ describe("a room open to visitors (#249)", () => {
     const prefix = visitorCode.slice(0, 4);
     expect(prefix).toBe(room.code);
     const before = await members(harness, room.householdId);
+    const visiting = async () => {
+      const joined = await respond(event("POST", `/api/room/${prefix}/join`, { body: { displayName: "Stranger" } }), rt);
+      expect(joined.statusCode).toBe(200);
+      const device = await harness.identity.resolveDevice(String(bodyOf(joined).deviceToken));
+      expect(device?.householdId).not.toBe(room.householdId);
+    };
 
-    const whileOpen = await respond(event("POST", `/api/room/${prefix}/join`, { body: { displayName: "Stranger" } }), rt);
-    expect(whileOpen.statusCode).toBe(403);
-    expect(bodyOf(whileOpen).deviceToken).toBeUndefined();
+    // In, as a visitor with a household of its own, while the room is open...
+    await visiting();
     expect(await members(harness, room.householdId)).toEqual(before);
-
-    // The switch goes off. The four letters are still out there, and still prove nothing.
+    // ...and after the switch goes off.
     expect((await respond(opening(room.code, false), rt)).statusCode).toBe(200);
-    const afterOff = await respond(event("POST", `/api/room/${prefix}/join`, { body: { displayName: "Stranger" } }), rt);
-    expect(afterOff.statusCode).toBe(403);
-    expect(bodyOf(afterOff).deviceToken).toBeUndefined();
-    // Nor does the old long code, which is a wrong code now.
-    const oldLong = await respond(event("POST", `/api/room/${visitorCode}/join`, { body: { displayName: "Stranger" } }), rt);
-    expect(oldLong.statusCode).toBe(404);
+    await visiting();
     expect(await members(harness, room.householdId)).toEqual(before);
 
     // The family's own phone, already bound, still comes back on the four letters.
@@ -687,12 +686,16 @@ describe("a room open to visitors (#249)", () => {
     expect(await members(harness, room.householdId)).toEqual(before);
   });
 
-  it("still makes a brand-new phone family in a room that was never opened", async () => {
+  it("makes a brand-new phone a visitor with a household of its own, in a room never opened too", async () => {
     const { harness, room, rt } = await openable();
     const joined = await respond(event("POST", `/api/room/${room.code}/join`, { body: { displayName: "Kid" } }), rt);
     expect(joined.statusCode).toBe(200);
-    const kin = await harness.identity.resolveDevice(String(bodyOf(joined).deviceToken));
-    expect(kin?.householdId).toBe(room.householdId);
+    const guest = await harness.identity.resolveDevice(String(bodyOf(joined).deviceToken));
+    expect(guest?.householdId).toBeDefined();
+    expect(guest?.householdId).not.toBe(room.householdId);
+    // Seated as a visitor: the hero it makes lives at its own home.
+    const state = await harness.repo.getState(room.runId);
+    expect(state?.seats?.[guest!.playerId]?.homeHouseholdId).toBe(guest!.householdId);
   });
 });
 
@@ -1768,16 +1771,21 @@ describe("POST /api/auth/link", () => {
     const stranger = bodyOf(joined) as unknown as { deviceToken: string; keeper?: boolean };
     expect(joined.statusCode).toBe(200);
     expect(stranger.keeper).toBeUndefined();
+    // The join made it a visitor with a household of its own (#249), so its
+    // token is for that household and never for the host's.
+    const hostHousehold = (await harness.repo.getRoom(host.code))!.householdId;
+    expect((await harness.identity.resolveDevice(stranger.deviceToken))?.householdId).not.toBe(hostHousehold);
 
     const rt = runtimeFor(harness);
     rt.account = { cognitoSub: "sub-stranger" };
-    const result = await respond(
+    await respond(
       event("POST", "/api/auth/link", {
         headers: { authorization: "Bearer good", "x-kad-device-token": stranger.deviceToken },
       }),
       rt,
     );
-    expect(result.statusCode).toBe(403);
+    // Whatever signing in did, it did to the stranger's own household.
+    expect((await harness.repo.getHousehold(hostHousehold))?.ownerSub ?? null).toBeNull();
   });
 });
 
@@ -1786,11 +1794,16 @@ describe("POST /api/room/:code/keeper (#272)", () => {
     const harness = makeHarness();
     const created = await respond(event("POST", "/api/room", { body: { mode: "travel" } }), runtimeFor(harness));
     const host = bodyOf(created) as unknown as { code: string; deviceToken: string; playerId: string };
+    // Mia's phone is the family's own (paired from home, say): a never-seen
+    // phone on the code would be a visitor, and a visitor never keeps a game.
+    const householdId = (await harness.repo.getRoom(host.code))!.householdId;
+    await harness.repo.putPlayer({ id: "p_mia", householdId, displayName: "Mia", color: "#E8A33D" });
+    const { token } = await harness.identity.issueDeviceToken({ householdId, playerId: "p_mia" });
     const joined = await respond(
-      event("POST", `/api/room/${host.code}/join`, { body: { displayName: "Mia" } }),
+      event("POST", `/api/room/${host.code}/join`, { headers: { "x-kad-device-token": token } }),
       runtimeFor(harness),
     );
-    const mia = bodyOf(joined) as unknown as { deviceToken: string; playerId: string };
+    const mia = { ...(bodyOf(joined) as unknown as { playerId: string }), deviceToken: token };
 
     const refused = await respond(
       event("POST", `/api/room/${host.code}/keeper`, {
@@ -2101,6 +2114,10 @@ const SHARED = [
   { path: "/api/room/:code/quiet", method: "POST", probe: "/api/room/ABCD/quiet" },
   // Which of the household's crews the lobby plays (handlers/crew.ts).
   { path: "/api/room/:code/crew", method: "POST", probe: "/api/room/ABCD/crew" },
+  // Heroes new to a crew's adventure keep going with it (handlers/crew.ts).
+  { path: "/api/room/:code/crewkeep", method: "POST", probe: "/api/room/ABCD/crewkeep" },
+  // One of the offered names for a crew (handlers/crew.ts).
+  { path: "/api/room/:code/crewname", method: "POST", probe: "/api/room/ABCD/crewname" },
   // The session clock: pause, resume, note, off (#511, handlers/timing.ts).
   { path: "/api/room/:code/timing", method: "POST", probe: "/api/room/ABCD/timing" },
   { path: "/api/room/:code/close", method: "POST", probe: "/api/room/ABCD/close" },

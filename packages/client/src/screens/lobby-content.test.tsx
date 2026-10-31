@@ -271,3 +271,24 @@ describe("the join step on the shared screen (#256)", { timeout: 30_000 }, () =>
     expect(await screen.findByText(help.join.text, {}, { timeout: 10_000 })).toBeTruthy();
   });
 });
+
+describe("heroes new to the crew's adventure", () => {
+  const check = { crewCheck: { campaignId: "riftlight", title: "Riftlight" }, party: [makeMember()] };
+
+  it("tells the host where to pick, and has nothing to click itself", () => {
+    useGameStore.setState({
+      session: { runId: "r_1", roomCode: "ABCD", playerId: "", mode: "party", sessionToken: "t", host: true },
+      state: makeState({ phase: "lobby", ...check }),
+    });
+    render(<LobbyContent />);
+    expect(screen.getByText(/is partway through Riftlight/)).toBeTruthy();
+    expect(screen.getByText(/Tap Room to keep going or start a new crew/)).toBeTruthy();
+    expect(screen.queryAllByRole("button")).toEqual([]);
+  });
+
+  it("tells a screen that is not the host's who picks", () => {
+    mount(check);
+    expect(screen.getByText(/The grown-up running the game picks/)).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Keep going with Riftlight" })).toBeNull();
+  });
+});

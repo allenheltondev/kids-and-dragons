@@ -24,7 +24,7 @@ import type { Campaign, Chapter, ClientIntent, StoryScene } from "@kad/shared";
 import type { DeviceIdentity } from "../identity.ts";
 import type { Engine } from "../engine/port.ts";
 import { makeChapter } from "../../../shared/src/test-fixtures.ts";
-import { makeContent, makeHarness, seedHousehold, type TestHarness } from "../test-support.ts";
+import { makeContent, makeHarness, seedHousehold, type TestHarness, keepGoing } from "../test-support.ts";
 import { applyAction } from "./action.ts";
 import { createRoom, joinRoom } from "./room.ts";
 
@@ -91,6 +91,8 @@ async function room(harness: TestHarness, householdId: string, principal: Device
   const joined = await joinRoom({ code, principal }, harness.deps);
   if (!joined.ok) throw new Error("join");
   const send = async (intent: ClientIntent) => {
+    // The TV's "Keep going" for heroes new to the adventure (crew.ts): these tests are about what follows.
+    if (intent.type === "CONTINUE_CAMPAIGN") await keepGoing(harness, runId, intent.campaignId);
     const seq = (await harness.repo.getState(runId))?.seq ?? 0;
     return applyAction({ runId, playerId: joined.value.playerId, seq, intent }, harness.deps);
   };

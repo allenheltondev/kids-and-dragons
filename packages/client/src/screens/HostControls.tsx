@@ -15,10 +15,8 @@
  *   - in the lobby, play as another crew: a new group of players at the same
  *     TV starts its own adventure, and everyone else's save stays as it was
  *
- * And one that is not the host's alone: opening the room to visitors (#249),
- * which lowers the barrier to joining, so a grown-up who runs the game signs
- * in to turn it on (`VisitorSwitch`). The host's view is where it lives,
- * because that is where somebody running the evening looks.
+ * Visitors (#249) need no switch: a phone from another household joins with
+ * the room's own code, and Lock is what keeps newcomers out.
  *
  * The roster is read from the run (`RunState.seats`, with `party` for heroes
  * and who is connected), so unlike the arrival notices it survives a refresh
@@ -31,13 +29,12 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
 import type { RunState } from "@kad/shared";
 import { useGameStore, useRunState, useSession } from "../store";
-import { useKeepsakeStore } from "../store/keepsake";
 import { Button } from "../ui";
 import { inviteData, joinUrl, shareInvite, type ShareOutcome } from "../ui/share-invite";
 import { Icon } from "./icons";
 import { SignInFlow } from "./SignInFlow";
 import { LET_GO_NOTE, STOP_CONFIRM, STOP_OFFER } from "./save-copy";
-import { crewChoices } from "./crew-copy";
+import { CREW_NAMES, crewChoices } from "./crew-copy";
 import { CrewIdentity } from "./CrewIdentity";
 import "./HostControls.css";
 
@@ -234,6 +231,10 @@ function setRoomOpen(next: boolean): void {
   roomOpen = next;
   for (const listener of roomListeners) listener();
 }
+/** The lobby's "Change crew" button opens the Room panel, where the crews are. */
+export function openRoomPanel(): void {
+  setRoomOpen(true);
+}
 function useRoomOpen(): boolean {
   return useSyncExternalStore(
     (listener) => { roomListeners.add(listener); return () => { roomListeners.delete(listener); }; },
@@ -381,6 +382,14 @@ function HostPanel({ state, me, code, invite = false }: { state: RunState; me: s
         <div><strong>Room {code}</strong><p className="kad-host__hint">Look after the group</p></div>
         {!invite ? <Button variant="ghost" size="md" icon={<Icon name="close" />} aria-label="Dismiss room controls" onClick={dismiss}>Done</Button> : null}
       </header>
+      {/* First, and open: a table that wants another crew should not have to
+          scroll a full roster to find it. */}
+      {canSwitchCrew(state) ? (
+        <details className="kad-host__crew-menu" open>
+          <summary className="kad-focusable"><Icon name="crew" /> Crews <span className="kad-host__hint">Pause this adventure and change who is playing</span></summary>
+          <CrewSwitch state={state} busy={busy} run={run} empty={rows.length === 0} />
+        </details>
+      ) : null}
       <details className="kad-host__people" open={invite}>
       <summary className="kad-focusable">Players <span className="kad-host__hint">{rows.length} in this room</span></summary>
       {rows.length === 0 ? (
@@ -431,7 +440,6 @@ function HostPanel({ state, me, code, invite = false }: { state: RunState; me: s
       </details>
       <div className="kad-host__actions">
         {invite ? <ShareInvite code={code} /> : null}
-        <VisitorSwitch state={state} code={code} busy={busy} />
 
         <div className="kad-host__quick-settings">
         <div className="kad-host__setting">
@@ -472,13 +480,6 @@ function HostPanel({ state, me, code, invite = false }: { state: RunState; me: s
         </p>
         </div>
         </div>
-
-        {rows.length > 0 && canSwitchCrew(state) ? (
-          <details className="kad-host__crew-menu">
-            <summary className="kad-focusable"><Icon name="crew" /> Crews <span className="kad-host__hint">Change who is playing</span></summary>
-            <CrewSwitch state={state} busy={busy} run={run} />
-          </details>
-        ) : null}
 
         {canStop(state) ? (
           stopping ? (
@@ -540,13 +541,28 @@ function CrewSwitch({
   state,
   busy,
   run,
+  empty,
 }: {
   state: RunState;
   busy: boolean;
   run: (task: () => Promise<boolean>) => Promise<void>;
+  /** Nobody has joined: the room is nobody's yet, so it has no crews to offer. */
+  empty: boolean;
 }): React.JSX.Element {
   const switchCrew = useGameStore((store) => store.switchCrew);
+  const renameCrew = useGameStore((store) => store.renameCrew);
+  const keepCrew = useGameStore((store) => store.keepCrew);
+  const [renaming, setRenaming] = useState(false);
   const { current, others } = crewChoices(state);
+  if (empty) {
+    return (
+      <div className="kad-host__crew" role="group" aria-label="Which crew is playing">
+        <p className="kad-host__hint">
+          Once somebody joins on a phone, you can change crews here. Each crew keeps its own adventure saved.
+        </p>
+      </div>
+    );
+  }
   const chooseCrew = async (crew: string | null | "new"): Promise<boolean> => {
     const changed = await switchCrew(crew);
     if (changed) setRoomOpen(false);
@@ -555,6 +571,52 @@ function CrewSwitch({
   return (
     <div className="kad-host__crew" role="group" aria-label="Which crew is playing">
       <CrewIdentity name={current} />
+      {/* Heroes new to this crew's adventure (crew.ts, `checkNewcomers`): the
+          lobby says so, and the answer is here. Starting fresh is the new-crew
+          button below. */}
+      {state.crewCheck ? (
+        <>
+          <p className="kad-host__hint">
+            None of these heroes have been on {state.crewCheck.title} yet. Keep going with it, or start a new crew.
+          </p>
+          <Button
+            icon={<Icon name="map" />}
+            variant="primary"
+            size="md"
+            block
+            disabled={busy}
+            onClick={() => void run(async () => {
+              const kept = await keepCrew(state.crewCheck!.campaignId);
+              if (kept) setRoomOpen(false);
+              return kept;
+            })}
+          >
+            Keep going with {state.crewCheck.title}
+          </Button>
+        </>
+      ) : null}
+      {renaming ? (
+        <div className="kad-host__crew-names" role="group" aria-label="Pick a name for this crew">
+          {CREW_NAMES.filter((name) => name === current || !others.some((crew) => crew.name === name)).map((name) => (
+            <Button
+              key={name}
+              variant={name === current ? "primary" : "ghost"}
+              size="md"
+              disabled={busy || name === current}
+              onClick={() => void run(() => renameCrew(state.crew ?? null, name)).then(() => setRenaming(false))}
+            >
+              {name}
+            </Button>
+          ))}
+          <Button variant="ghost" size="md" disabled={busy} onClick={() => setRenaming(false)}>
+            Keep the name
+          </Button>
+        </div>
+      ) : (
+        <Button variant="ghost" size="md" block disabled={busy} onClick={() => setRenaming(true)}>
+          Rename this crew
+        </Button>
+      )}
       <p className="kad-host__hint">Your other crew&rsquo;s adventure stays saved. Existing heroes are kept.</p>
       {others.map((crew) => (
         <Button
@@ -579,44 +641,3 @@ function CrewSwitch({
   );
 }
 
-/**
- * Open to visitors, or not (#249). Either way round, the tap opens the sign-in
- * for a grown-up who runs the game; the server refuses anybody else. Once it
- * is open, the visitor code is said here as well as on the room's screens.
- */
-function VisitorSwitch({ state, code, busy }: { state: RunState; code: string; busy: boolean }): React.JSX.Element | null {
-  const available = useKeepsakeStore((s) => s.available);
-  const check = useKeepsakeStore((s) => s.check);
-  const openVisitors = useKeepsakeStore((s) => s.openVisitors);
-  useEffect(() => {
-    void check();
-  }, [check]);
-  // No sign-in on this deployment, so nobody could turn it on.
-  if (available === false && state.visitorCode === undefined) return null;
-
-  const open = state.visitorCode !== undefined;
-  return (
-    <>
-      <Button
-        variant="secondary"
-        size="md"
-        block
-        disabled={busy || available !== true}
-        aria-pressed={open}
-        onClick={() => openVisitors(code, !open)}
-      >
-        {open ? "Stop new visitors" : "Let visitors join"}
-      </Button>
-      <p className="kad-host__hint">
-        {open ? (
-          <>
-            Kids from other families join with <strong className="kad-host__code">{state.visitorCode}</strong>.
-            A grown-up signs in to change this.
-          </>
-        ) : (
-          "Kids from other families can join with their own heroes. A grown-up who runs this game signs in to turn it on."
-        )}
-      </p>
-    </>
-  );
-}

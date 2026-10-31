@@ -8,7 +8,6 @@ test("a child can peek at details, choose a role, and ask for editable strengths
   try {
     await Promise.all([onAir(tv.page), onAir(phone.page)]);
     await tv.page.getByRole("button", { name: "Room", exact: true }).click();
-    await tv.page.locator(".kad-host__crew-menu > summary").click();
     await tv.page.getByRole("button", { name: "New players? Start a new crew" }).click();
     await expect(phone.page.getByText("Pick your creature to keep going.")).toBeVisible();
     await phone.page.getByText("More about Unicorn", { exact: true }).click();

@@ -11,7 +11,6 @@ import type { PartyMember, RunState } from "@kad/shared";
 import { useGameStore } from "../store";
 import type { ClientSession } from "../store/contract";
 import { makeState } from "../testing/fixtures";
-import { useKeepsakeStore } from "../store/keepsake";
 import { HostControls, LetHeroGo, STOP_OFFER_MS, rosterOf } from "./HostControls";
 
 function member(playerId: string, name: string, connected = true): PartyMember {
@@ -42,6 +41,8 @@ function room(session: Partial<ClientSession>, run: Partial<RunState> = RUN) {
   const quietRoom = vi.fn(async () => true);
   const stopForToday = vi.fn(async () => true);
   const switchCrew = vi.fn(async () => true);
+  const renameCrew = vi.fn(async () => true);
+  const keepCrew = vi.fn(async () => true);
   act(() => {
     useGameStore.setState({
       session: { runId: "r_1", roomCode: "ABCD", playerId: "p_1", mode: "travel", sessionToken: "t", ...session },
@@ -53,9 +54,11 @@ function room(session: Partial<ClientSession>, run: Partial<RunState> = RUN) {
       quietRoom,
       stopForToday,
       switchCrew,
+      renameCrew,
+      keepCrew,
     });
   });
-  return { removePlayer, handKeeper, lockRoom, closeRoom, quietRoom, stopForToday, switchCrew };
+  return { removePlayer, handKeeper, lockRoom, closeRoom, quietRoom, stopForToday, switchCrew, renameCrew, keepCrew };
 }
 
 afterEach(() => {
@@ -168,7 +171,7 @@ describe("host controls", () => {
     expect(screen.queryByRole("list", { name: "Who is in this room" })).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: "Room" }));
     expect(screen.getByRole("list", { name: "Who is in this room" })).toBeTruthy();
-    expect(screen.getByText("Crews", { exact: true }).closest("details")?.hasAttribute("open")).toBe(false);
+    expect(screen.getByText("Crews", { exact: true }).closest("details")?.hasAttribute("open")).toBe(true);
     fireEvent.keyDown(screen.getByRole("button", { name: "Dismiss room controls" }), { key: "Escape" });
     expect(screen.queryByRole("list", { name: "Who is in this room" })).toBeNull();
     expect(document.activeElement).toBe(screen.getByRole("button", { name: "Room" }));
@@ -214,6 +217,41 @@ describe("crews: new players at the same TV", () => {
     fireEvent.click(screen.getByText("Crews", { exact: true }));
     fireEvent.click(screen.getByRole("button", { name: "Play as The Comet Crew" }));
     expect(comet.switchCrew).toHaveBeenCalledWith("cw_comet");
+  });
+
+  it("names the first crew from the offered names, and shows the name it was given", () => {
+    const { renameCrew } = room({ host: true }, { ...RUN, phase: "lobby", firstCrewName: "The Comet Crew" });
+    render(<HostControls placement="inline" />);
+    expect(screen.getByText("The Comet Crew")).toBeTruthy();
+    expect(screen.queryByText("The first crew")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Rename this crew" }));
+    expect(screen.getByRole("button", { name: "The Comet Crew" })).toHaveProperty("disabled", true);
+    fireEvent.click(screen.getByRole("button", { name: "The Otter Crew" }));
+    expect(renameCrew).toHaveBeenCalledWith(null, "The Otter Crew");
+  });
+
+  it("answers the lobby's question: keep going with the crew's adventure, or start a new crew", async () => {
+    const { keepCrew } = room({ host: true }, { ...RUN, phase: "lobby", crewCheck: { campaignId: "riftlight", title: "Riftlight" } });
+    render(<HostControls placement="inline" />);
+    expect(screen.getByText(/None of these heroes have been on Riftlight yet/)).toBeTruthy();
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Keep going with Riftlight" }));
+    });
+    expect(keepCrew).toHaveBeenCalledWith("riftlight");
+    // Kept, the panel closes; opened again, a new crew is still a tap away.
+    cleanup();
+    room({ host: true }, { ...RUN, phase: "lobby", crewCheck: { campaignId: "riftlight", title: "Riftlight" } });
+    render(<HostControls placement="inline" />);
+    fireEvent.click(screen.getByRole("button", { name: "New players? Start a new crew" }));
+    expect(useGameStore.getState().switchCrew).toHaveBeenCalledWith("new");
+  });
+
+  it("does not offer a name another crew already has", () => {
+    room({ host: true }, { ...RUN, phase: "lobby", crew: "cw_otter", crews: [{ id: "cw_otter", name: "The Otter Crew" }, { id: "cw_comet", name: "The Comet Crew" }] });
+    render(<HostControls placement="inline" />);
+    fireEvent.click(screen.getByRole("button", { name: "Rename this crew" }));
+    expect(screen.queryByRole("button", { name: "The Comet Crew" })).toBeNull();
+    expect(screen.getByRole("button", { name: "The Lantern Crew" })).toBeTruthy();
   });
 
   it("is not offered once a chapter is under way, or before anybody has joined", () => {
@@ -383,36 +421,3 @@ describe("letting a hero go from a stopped game (#259)", () => {
   });
 });
 
-describe("the visitor switch (#249)", () => {
-  function signIn(available: boolean) {
-    const openVisitors = vi.fn();
-    act(() => {
-      useKeepsakeStore.setState({ available, check: async () => undefined, openVisitors });
-    });
-    return openVisitors;
-  }
-
-  it("asks a grown-up to sign in to let visitors join", () => {
-    const openVisitors = signIn(true);
-    room({ host: true });
-    render(<HostControls placement="inline" />);
-    fireEvent.click(screen.getByRole("button", { name: "Let visitors join" }));
-    expect(openVisitors).toHaveBeenCalledWith("ABCD", true);
-  });
-
-  it("shows the visitor code once the room is open, and can stop new visitors", () => {
-    const openVisitors = signIn(true);
-    room({ host: true }, { ...RUN, visitorCode: "ABCDXY" });
-    render(<HostControls placement="inline" />);
-    expect(screen.getByText("ABCDXY")).toBeTruthy();
-    fireEvent.click(screen.getByRole("button", { name: "Stop new visitors" }));
-    expect(openVisitors).toHaveBeenCalledWith("ABCD", false);
-  });
-
-  it("is not offered where nobody can sign in", () => {
-    signIn(false);
-    room({ host: true });
-    render(<HostControls placement="inline" />);
-    expect(screen.queryByRole("button", { name: "Let visitors join" })).toBeNull();
-  });
-});

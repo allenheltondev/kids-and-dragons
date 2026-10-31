@@ -1581,6 +1581,17 @@ any character — characters belong to the household.
 
 #### Visitors: a room open to more than one household
 
+> **Changed:** a phone already bound to another household now joins any room on
+> the room's own four letters, as a visitor (`joinRoom`), with no switch to turn
+> on first; the host's view no longer shows the switch. The owner chose that over
+> the guard below, accepting that a guessed code admits a stranger's phone; the
+> host's Lock is what closes a room once everyone is in. A never-seen phone is a
+> visitor too, with a guest household of its own (`admitNewPhone`), except the
+> phone that founds a TV's unsettled room (`RoomRecord.claimable`): the four
+> letters no longer prove anybody is family. A family's own new phone pairs from
+> home or is moved home later (#251). The switch and its longer code remain on
+> the server for rooms already open; what follows is how they work.
+
 A kid who brings their own phone to a friend's game, or two families sharing an
 adventure (#249). **One room-level switch**, not an approval for each visitor,
 and only a signed-in owner of the room's household may turn it on
@@ -1654,6 +1665,24 @@ and every device stay the household's, so anyone may sit down with any crew.
   as they were: `RunState.crew` absent, progress at `CAMPAIGN#<campaignId>`,
   claims the bare campaign id. No run, save or claim from before crews moves,
   and Gemfall's pinned digests do not.
+  Its name, when the household picks one, is the one `FIRSTCREW` row
+  (`entity: "crew"`), outside `CREW#` so `listCrews` still lists only the others.
+  A host renames any crew, from the same fixed list, at `POST /api/room/:code/crewname`.
+- **Heroes new to a crew's adventure are asked about first.** When the lobby's
+  adventure is partway for the crew, other heroes of the household are on it
+  (they hold its claim), and none of the seated heroes are, the lobby carries
+  `RunState.crewCheck` and Begin is refused until the host picks: keep going
+  (`POST /api/room/:code/crewkeep`, `crewConfirmed`) or start a new crew. An
+  attempt no hero is on asks nothing. Every chapter start is asked, so a
+  `START_CHAPTER` sent straight cannot step round it. A keep-going is for the
+  lineup it was given for: when the heroes seated or the crew change (a hero
+  sits down, gets up, or is taken out), it is dropped and the lobby asks again
+  (`rethinkNewcomers`).
+- **Crew names are one per crew.** A new crew takes the first listed name no
+  crew holds (the first crew's chosen name included), and a rename only a free
+  one. Both land in the run's commit, gated on the household's crew-names
+  version (`HH#…/CREWNAMES`, `CommitInput.crewNames`), so a lost race names
+  nothing and two rooms cannot take one name.
 - **Every other crew** is `HH#…/CREW#<id>` (`CrewRecord`: id, a name from a
   fixed list so a TV remote never types, created). Its attempts live at
   `CREWSAVE#<id>#<campaignId>` and carry `crew`; that prefix is not a prefix

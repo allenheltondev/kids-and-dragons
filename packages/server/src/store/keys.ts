@@ -110,6 +110,19 @@ export const CREWSAVE_PREFIX = (crew: string) => `CREWSAVE#${crew}#`;
 export const CREW_SK = (crew: string) => `CREW#${crew}`;
 
 /**
+ * The name a household gave its first crew, which has no `CrewRecord`. Not under
+ * `CREW#`, so `listCrews` still lists only the crews beyond the first.
+ */
+export const FIRSTCREW = "FIRSTCREW";
+
+/**
+ * The household's crew-names gate: a version, bumped by every commit that names
+ * a crew (a rename, a new crew), and conditioned on by the next, so two rooms
+ * naming crews at once cannot both win and no two crews end up sharing a name.
+ */
+export const CREWNAMES = "CREWNAMES";
+
+/**
  * A table a kid has played at as a visitor (#249, #252): one row per kid and
  * table, keyed by the kid rather than by her home, so a move (#251) never has
  * to carry it. It is what lets "delete her" find the other tables' saves that
