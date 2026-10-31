@@ -6330,10 +6330,10 @@
       "speaks": true,
       "status": "provisional"
     },
-    "young_river_drakes": {
-      "name": "Young river drakes",
+    "young_river_drake": {
+      "name": "Young river drake",
       "kind": "creature",
-      "who": "Young river drakes.",
+      "who": "Young river drake.",
       "gender": "unknown",
       "genderFrom": "none",
       "figure": "entities/river_drake",

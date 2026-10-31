@@ -366,7 +366,7 @@
           "when": {
             "flag": "starweaver_read_first_rift"
           },
-          "text": "When you tell her about the light around the opening, Seren looks up. \"You can see it. Keep looking. Later, I can show you how to listen too.\""
+          "text": "When you tell her about the light around the opening, Seren turns to the hero who saw it. \"You saw the light. Keep looking. Later I can show you how to listen, too.\""
         },
         {
           "when": {
