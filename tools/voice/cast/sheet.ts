@@ -487,6 +487,12 @@ interface Draft {
   generic: boolean;
 }
 
+/** The one element of a list, or nothing when there are none or several. */
+const only = <T>(list: readonly T[]): T | undefined => (list.length === 1 ? list[0] : undefined);
+
+/** Words that come before a name as a title, not as part of it ("Elder Sefa"): as identity() writes them. */
+const TITLE_PARTS = new Set(["elder", "old", "professor", "postmaster", "madame", "mrs", "mr", "innkeeper", "granny", "mother", "captain", "sergeant", "clerk", "corporal", "master", "lady", "engineer", "aunt", "cadet", "warden", "great", "gran"]);
+
 /** npcVoices keys are ids (`old_wick`) in most chapters and display names ("Orin Vale") in some. */
 const idOfKey = (key: string): string => (/[A-Z\s]/.test(key) ? identity(key) : key);
 
@@ -538,12 +544,18 @@ export function collectCharacters(sources: Sources, scenes?: SceneCasts): Draft[
     for (const [name, figures] of names) {
       const s = identity(name);
       const parts = s.split("_");
+      // Only a title at the front comes off ("Elder Sefa"), never a word inside the name ("Sefa Elder").
+      const firstReal = parts.findIndex((part) => !TITLE_PARTS.has(part));
+      const bare = firstReal < 0 ? [] : parts.slice(firstReal);
       // The chapter's own voice notes, if they are about this person: same key, or one inside the other's name.
       // The figure names them too ("cast/nan_rummage"), and survives a rename of the display name.
       const key =
         keys.find((k) => k === s) ??
         keys.find((k) => figures.has(`cast/${k}`)) ??
         keys.find((k) => parts.includes(k) || k.split("_").every((part) => parts.includes(part)) || (!isRoleName(name) && parts.every((part) => k.split("_").includes(part)))) ??
+        // "Elder Sefa" in the scenes is "Sefa Tallgrass" in the notes: a title is not part of who someone is.
+        // Only when exactly one voice note fits: two people with the same given name are two, not whichever is first.
+        (isRoleName(name) || bare.length === 0 || bare.length === parts.length ? undefined : only(keys.filter((k) => bare.every((part) => k.split("_").includes(part))))) ??
         keyed.find((k) => identity(nameFromNotes(k.id, k.notes)) === s)?.id;
       // Elsewhere in the game under a fuller or shorter form of the same proper name: "Madame Fenn" is "Coralie Fenn".
       // Only within one campaign, and only between real names: Riftlight's "Seren Wisp" is not Bramblewood's wisp.
