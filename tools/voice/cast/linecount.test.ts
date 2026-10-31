@@ -303,3 +303,12 @@ describe("someone known only by what they are, and a gender the notes already st
     expect(sheet.speakers.archivist!.gender).toBe("female");
   });
 });
+
+describe("a quote that says who is speaking, after a sentence about someone else", () => {
+  it("is the one it names, not the one the sentence before it was about", () => {
+    const speakers = [{ id: "guide", names: ["guide"] }, { id: "corvane", names: ["Corvane"] }];
+    expect(attributeQuotes('The guide waits. "I\'m Corvane."', speakers).map((q) => q.id)).toEqual(["corvane"]);
+    // With nothing in the quote naming anyone, the sentence before it still says whose it is.
+    expect(attributeQuotes('The guide waits. "Mind the step."', speakers).map((q) => q.id)).toEqual(["guide"]);
+  });
+});
