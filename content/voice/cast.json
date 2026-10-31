@@ -1985,6 +1985,7 @@
       "pronounsFrom": "narration",
       "gender": "female",
       "genderFrom": "narration",
+      "figure": "cast/elder_sefa",
       "voiceNotes": [
         {
           "chapter": "gemfall-04a",
@@ -1994,21 +1995,28 @@
       "chapters": [
         "gemfall-04a"
       ],
-      "aliases": [],
+      "aliases": [
+        "Elder Sefa"
+      ],
       "gemini": {
         "voice": "Leda"
       },
       "lines": [
         {
-          "text": "I have tried counting cubs.",
+          "text": "Welcome, travelers. Greet us back properly, and you may sit at our fire.",
+          "address": "gemfall-04a/scene_pride_greeting/narration"
+        },
+        {
+          "text": "I have tried counting cubs. They keep changing places.",
           "address": "gemfall-04a/choice_cub_nap/narration"
         },
         {
-          "text": "Come to the fire.",
-          "address": "gemfall-04a/scene_leave_stone/narration"
+          "text": "Then they had better come to the fire.",
+          "address": "gemfall-04a/scene_pride_greeting_cubs_introduce/narration"
         }
       ],
-      "lineCount": 2,
+      "lineCount": 8,
+      "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -5174,41 +5182,6 @@
       "speaks": false,
       "status": "provisional"
     },
-    "elder_sefa": {
-      "name": "Elder Sefa",
-      "kind": "character",
-      "who": "Elder Sefa.",
-      "pronouns": "she/her",
-      "pronounsFrom": "narration",
-      "gender": "female",
-      "genderFrom": "narration",
-      "figure": "cast/elder_sefa",
-      "chapters": [
-        "gemfall-04a"
-      ],
-      "aliases": [],
-      "gemini": {
-        "voice": "Gacrux"
-      },
-      "lines": [
-        {
-          "text": "Welcome, travelers. Greet us back properly, and you may sit at our fire.",
-          "address": "gemfall-04a/scene_pride_greeting/narration"
-        },
-        {
-          "text": "My cubs dream of humming near gem wagons.",
-          "address": "gemfall-04a/scene_pride_camp/narration"
-        },
-        {
-          "text": "Then they had better come to the fire.",
-          "address": "gemfall-04a/scene_pride_greeting_cubs_introduce/narration"
-        }
-      ],
-      "lineCount": 6,
-      "guessedLines": 1,
-      "speaks": true,
-      "status": "provisional"
-    },
     "road_warden": {
       "name": "Road-Warden",
       "kind": "character",
@@ -5227,20 +5200,12 @@
       },
       "lines": [
         {
-          "text": "The new detours glow in the order the stones fell. Watch, then put them back in order.",
-          "address": "gemfall-04a/check_sashes/narration"
-        },
-        {
           "text": "Every sash needs changing this season. Help me see why.",
           "address": "gemfall-04a/scene_waystation/narration"
-        },
-        {
-          "text": "River first, then pride, bridge, pride.",
-          "address": "gemfall-04a/scene_waystation_lesson/narration"
         }
       ],
-      "lineCount": 4,
-      "guessedLines": 1,
+      "lineCount": 5,
+      "guessedLines": 4,
       "speaks": true,
       "status": "provisional"
     },
