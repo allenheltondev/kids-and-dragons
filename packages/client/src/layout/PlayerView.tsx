@@ -44,6 +44,7 @@ import { usePersistStorage } from "../storage/persist";
 import { usePromptBuzz } from "../ui/prompt-buzz";
 import { useAppBadge } from "../ui/app-badge";
 import { HeroArrival } from "../screens/HeroArrival";
+import { useTvFocus } from "./tv-focus";
 
 export function PlayerView({ roomControls }: { roomControls?: ReactNode }): React.JSX.Element {
   const me = useMe();
@@ -103,6 +104,8 @@ export function PlayerView({ roomControls }: { roomControls?: ReactNode }): Reac
   // creation flow, which stays mounted (hidden) so a half-made hero survives.
   const section = usePlayerNavigation((navigation) => navigation.section);
   const guideOverCreation = creating && section === "guide";
+  // TV focus (layout/tv-focus.ts): nothing pops up that is not a thing to do.
+  const focus = useTvFocus();
 
   return (
     <div className="kad-surface kad-surface--player" data-surface="player">
@@ -131,8 +134,9 @@ export function PlayerView({ roomControls }: { roomControls?: ReactNode }): Reac
           it and closing it costs nobody their place. Renders nothing until
           somebody opens it. */}
       <SignInFlow />
-      {/* Field Guide finds; waits while a turn prompt is open. */}
-      <FieldGuideToast />
+      {/* Field Guide finds; waits while a turn prompt is open. Not under TV
+          focus: the finds are still kept, for when the guide is back. */}
+      {focus ? null : <FieldGuideToast />}
       {/*
        * Roadmap chapter 6's playtest drawer — warp to a scene, load the next
        * d20. `import.meta.env.DEV` is replaced with a literal `false` in the
