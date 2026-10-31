@@ -65,10 +65,16 @@ function PhoneLayout(): React.JSX.Element {
   // Side by side, your controls are a drawer (see TravelLayout): You slides it away and back.
   const [youOpen, setYouOpen] = useState(true);
 
+  /*
+   * TV focus (Display settings): there is a TV in Party Mode, so the story lives there and this
+   * phone keeps only You. Held sideways, that means no world beside the controls either: one
+   * pane at a time, as upright, with the rail still down the side.
+   */
+  const focus = useTvFocusSetting();
+  const sideBySide = useSideBySide() && !focus;
   // Each new question takes focus, including two consecutive questions for
   // the same player. An update to the current question (such as another vote)
   // does not: the player can keep looking at the map while thinking.
-  const sideBySide = useSideBySide();
   const turnKey = useMyTurnKey();
   const previousTurnKey = useRef<string | null>(null);
   useEffect(() => {
@@ -89,12 +95,10 @@ function PhoneLayout(): React.JSX.Element {
 
   const section = usePlayerNavigation((navigation) => navigation.section);
   /*
-   * TV focus (Display settings): there is a TV in Party Mode, so the story lives there and this
-   * phone keeps only You. The World tab stays for a Starweaver, whose phone alone shows the
+   * Under TV focus the World tab stays for a Starweaver, whose phone alone shows the
    * Riftlight; Map, Guide and Book come back when the setting goes off. A pane she was looking
    * at when it went on gives way to her controls.
    */
-  const focus = useTvFocusSetting();
   const seesRiftlight = useSeesRiftlight();
   const worldTab = !focus || seesRiftlight;
   useEffect(() => {

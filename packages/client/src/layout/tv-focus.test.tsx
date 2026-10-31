@@ -161,3 +161,28 @@ describe("TV focus where there is no TV", () => {
     expect(screen.queryByTestId("tv-rest")).toBeNull();
   });
 });
+
+describe("TV focus on a tablet held sideways", () => {
+  it("shows the controls alone, not the world beside them", () => {
+    vi.stubGlobal("matchMedia", (query: string) => ({
+      matches: query.includes("orientation: landscape") && query.includes("min-width: 900px"),
+      addEventListener: () => undefined,
+      removeEventListener: () => undefined,
+    }));
+    seat();
+    const { container } = render(<PartyLayout surface="player" />);
+    const layout = container.querySelector(".kad-party--player")!;
+    const showing = (): (string | null)[] =>
+      [...container.querySelectorAll('.kad-party__pane[data-showing="true"]')].map((pane) => pane.getAttribute("data-pane"));
+    expect(layout.hasAttribute("data-side-by-side")).toBe(true);
+    expect(showing()).toEqual(["player", "world"]);
+
+    focus(true);
+    expect(layout.hasAttribute("data-side-by-side")).toBe(false);
+    expect(showing()).toEqual(["player"]);
+    expect(screen.getByTestId("tv-rest")).not.toBeNull();
+
+    focus(false);
+    expect(showing()).toEqual(["player", "world"]);
+  });
+});
