@@ -268,7 +268,7 @@
     },
     "scene_ribbon_line_help": {
       "type": "story",
-      "narration": "You hold the pole while the cousins retie their bell ribbon. \"Good hands,\" croaks the one in three hats. \"We will carry you across the weir later.\" She lifts the ribbon for your raft.",
+      "narration": "You hold the pole while the cousins retie their bell ribbon. \"Good hands,\" croaks the cousin in three hats. \"We will carry you across the weir later.\" She lifts the ribbon for your raft.",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -502,7 +502,7 @@
     },
     "scene_boggart_clue_lost": {
       "type": "story",
-      "narration": "Nana tells the teapot lid what she found: umbrellas, a brown hat, and three prospectors. \"Barge spat them out. Sitting north of here on a tussock. Too loud for my collection.\"",
+      "narration": "Nana tells the teapot lid what she found: umbrellas, a brown hat, and three prospectors. \"Barge spat them out. Sitting north of here on a tussock. Too loud for my collection,\" she says.",
       "cast": [
         {
           "figure": "cast/gullet",
