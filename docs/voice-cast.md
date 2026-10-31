@@ -233,7 +233,7 @@ One click tries it, and a click on the one in use puts the sheet's own accent ba
 to hear and judge, kept in `tools/voice/cast/accents.ts` (`REGION_IDEAS`), where you can change
 them; a test checks that every place named there is a real biome in canon. Only regional accents of
 English are offered, never another language's English, which too easily becomes a caricature.
-ElevenLabs is not told the accent: it steers only Gemini.
+Gemini is told the accent in words. ElevenLabs has no style prompt, so only v3 and later get it, as a tag in front of each line (see [ElevenLabs mode](#elevenlabs-mode)).
 
 ## ElevenLabs mode
 
@@ -250,17 +250,36 @@ voice, and nothing there touches the Gemini one:
   stays in the list. **Preview** plays the highlighted voice's own sample, which is free, so you
   can sift by ear before paying for an audition on the character's real lines. (Each card's list
   is only built when you reach for it: a page of 200 cards would otherwise carry 25,000 options.)
-  The list is the account's own voices: a voice from ElevenLabs' public library appears here
-  once it has been added to the account. A character's choice is saved as `elevenlabs` on the sheet, and **No voice yet** takes
+  A **gender filter** (any, women, men) beside the search uses ElevenLabs' own gender label; a
+  voice with none shows only under "any". The list is the account's own voices, which for a new account is a couple of
+  dozen (the premade ones). **Find more voices in the ElevenLabs library** in the header searches the public Voice Library
+  (thousands of voices; searching changes nothing, and each has a free sample). **Add to my account** puts one on your
+  account after a confirmation, since that changes the account and may use one of your plan's voice slots; it then
+  appears in every picker. A character's choice is saved as `elevenlabs` on the sheet, and **No voice yet** takes
   it back. A voice that has left the account is still listed, marked, so the picker never hides
   what is saved.
+- **Designing a voice** is an option on every character's voice picker, for when nothing in the account or the library
+  fits: **Design a new voice for Pib** opens a description and a sample text, prefilled from the sheet. The description
+  is who they are (their notes, with their name taken out: a name the model might take for a real person is a way to
+  get a voice that sounds like one), a man's or a woman's voice, the direction you gave, their accent, and a line asking
+  for an adult storyteller's voice that is warm, clear and never scary. The sample text is their own lines from the game
+  (topped up with the stand-in line when they have under 100 characters of them). Edit either, then **Hear 3 candidates**:
+  ElevenLabs makes three voices from the description and each says the text. That step spends: it is priced and held
+  to the session's cap like an audition (the cost is shown first, and a design that fails is not charged). **Use this
+  voice** names it, asks, and saves it to the ElevenLabs account (it may use one of the plan's voice slots) and gives
+  it to the character, unapproved. Nothing changes the account until that click. Design runs on ElevenLabs' own design model (`eleven_ttv_v3`), not a speech model, and bills the sample text once however many candidates come back. `pricing.json` has no design rate, so the cap's price is an estimate: the text priced once as `eleven_v3` speech (itself an unconfirmed rate there). It is asked for again whenever the text is edited, shown beside the button, and sent with the request: if the words changed, the server answers with the new price instead of spending on the old one. Editing either box also takes the candidates away, so a voice is only ever saved under the description it was made from. Check what a design really costs on your account. ElevenLabs takes a description of 20 to 1,000
+  characters and a sample text of 100 to 1,000.
 - **Nothing is chosen for you.** Gemini's voices come with traits that a builder can match to a
   character; an account's don't, so nobody has an ElevenLabs voice until you pick one. Until then
   they have nothing to render or approve, and their buttons say so.
 - **Auditions** render with the mode's model (`eleven_v4` to start) in the voice you picked, and
-  count against the same session cap. ElevenLabs is not told who they are or how they talk: it gets
-  the voice and the words (with a delivery tag in front on v3 and later), so the description,
-  accent and direction steer only Gemini. The profile page shows exactly what is sent.
+  count against the same session cap. ElevenLabs has no style prompt, so it is not told who they are
+  or how they talk. It gets the voice and the words, with tags in front on v3 and later: their own accent (the sheet's
+  default is the voice's own, so it is not a tag) as `[Scottish Highland accent]`, and a direction of 80 characters or
+  fewer as `[the direction]`, then the line's delivery tag. A longer direction is left out rather than risk it being
+  read aloud, and older models (v2 and before) take neither: pick a voice that already sounds right. The description
+  steers only Gemini.
+- **Coverage** is in the cards page's header line: "30% of 1,430 lines covered" is the share of the game's spoken lines (not the narrator's or the party's) that belong to a character approved in the mode you are in.
 - **Approve** pins that voice on its own (`elevenlabs.approved`), and Gemini's approval is
   unchanged. **Reject** records the voice and your note and takes the choice back, so you can pick
   another; a voice you rejected for a character is left out of their picker.
@@ -327,16 +346,26 @@ npm run voice:cast -- --review --out review.json
 Both are reports of the sheet. `content/voice/cast.json`, committed with its history, stays the
 source of truth.
 
+## Tagging lines
+
+`npm run voice:untagged` lists the quotes nobody is tagged for (only the ones that read as something said), by
+chapter, so a writer can add the tag in the chapter: `-- --chapter gemfall-06` for one chapter with the scene's cast
+and the words either side, `-- --who skupper_cousin` for the scenes a character is in, `-- --silent` for scenes with a
+speaker who has no counted lines yet. It reports and never edits. Tag a quote by name or by the role the scene
+gives them (`says the oldest archivist`), not with "he" or "she" after a sentence that names two people: a pronoun
+goes to whoever was named last. Adding a tag changes the words, so do it before a chapter is recorded.
+
 ## What's still rough
 
 - **Lines are counted from speech tags, plus a guess.** A quote is given to whoever it is tagged for ("…," says
-  Pib). Most quotes are not tagged for anyone: of about 2,600 quoted passages, 1,205 were. So where a scene has
+  Pib), by name or by what they are in that scene ("says a cousin", "the keeper asks": the last word of their name, where
+  nobody else in the scene shares it), and a named character the campaign knows is tagged in a chapter they are not cast in ("asks Voss" in a chapter that only casts the Skywardens), but only by their name as written: "Wisp", never the noun in "a wisp line", and never a name the chapter also uses as a plain word. A group ("Gullet's Cousins") is not given a he or she from the narration, and a trait the narration once gave someone is kept when a rebuild moves a quote to somebody else. Of about 2,600 quoted passages, about 1,300 are tagged. So where a scene has
   only one character who could be speaking, the quotes nobody is tagged for are counted for them as a **guess**,
   shown apart ("52 lines, 4 guessed"). A guess skips what is not a sentence someone said (a fragment, a sign,
   something sold, the party's own "you say") and any quote with someone else named beside it. On the real cast
-  that adds about 250 lines, 28 of them for the Skywardens alone, and on a read of 26 of them (before the last guard was added) about
+  that is about 195 lines, and on a read of 26 of them (before the last guard was added) about
   four in five were right. A crowded scene's untagged quotes are still counted for nobody, so someone who talks a lot among
-  others is counted low, and 58 characters (47 of whom speak) still have none. They audition on the stand-in until
+  others is counted low, and 35 characters who speak still have none. They audition on the stand-in until
   a chapter gives them words. Treat the order as a good guide to who speaks most, not an exact tally.
 - **The voice genders and traits** are from Google's one-word descriptions and best knowledge,
   not a listening pass. The page is the listening pass.

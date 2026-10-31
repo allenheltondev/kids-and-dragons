@@ -10,7 +10,7 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { castOrder, castPageData } from "./routes.ts";
 import { reviewJson } from "./review.ts";
-import { attributeQuotes, buildSheet, looksSpoken, type CastSheet, type ChapterLike, type LooseQuote, type NarrationLine } from "./sheet.ts";
+import { attributeQuotes, buildSheet, looksSpoken, withSceneRoles, type CastSheet, type ChapterLike, type LooseQuote, type NarrationLine } from "./sheet.ts";
 
 const chapters: ChapterLike[] = [
   { id: "c1", voiceGuide: { npcVoices: { pib: "a bramble sprite; he chirps", wisp: "a shy ghost; she whispers", mute: "a goat; only bleats" } } },
@@ -147,5 +147,87 @@ describe("guessing at quotes nobody is tagged for", () => {
   it("does not guess when someone else is named right beside the quote", () => {
     const withWisp = buildSheet({ chapters: hedge, individuals: [], narration: [{ chapter: "h1", address: "h1/alone/narration", text: 'Wisp drifts past the gate. "The hedge remembers everyone who passes."' }] }, null);
     expect(withWisp.speakers.pib!.lineCount).toBe(0);
+  });
+});
+
+describe("naming someone by what they are, in the scene they are in", () => {
+  const names = new Map([["cousins", "Gullet's Cousins"], ["gullet", "Gullet"], ["drover_a", "Centaur drover"], ["drover_b", "Faun drover"]]);
+  const speakers = [{ id: "cousins", names: ["Gullet's Cousins"] }, { id: "gullet", names: ["Gullet"] }, { id: "drover_a", names: ["Centaur drover"] }, { id: "drover_b", names: ["Faun drover"] }];
+  const rolesOf = (here: string[], id: string): readonly string[] => withSceneRoles(speakers, new Set(here), names).find((speaker) => speaker.id === id)!.names;
+
+  it("lets the last word of a name stand for them where nobody else in the scene shares it", () => {
+    expect(rolesOf(["cousins", "gullet"], "cousins")).toEqual(["Gullet's Cousins", "cousins", "cousin"]);
+    // Two drovers in one scene: "the drover" is nobody's, but "the centaur drover" still is.
+    expect(rolesOf(["drover_a", "drover_b"], "drover_a")).toEqual(["Centaur drover"]);
+    // Someone not in the scene keeps just their own names.
+    expect(rolesOf(["gullet"], "cousins")).toEqual(["Gullet's Cousins"]);
+    expect(withSceneRoles(speakers, undefined, names)).toEqual(speakers);
+  });
+
+  it("reads 'says a cousin' and 'groans the guide' as tags, and a bare 'the drover says' only when one drover is there", () => {
+    const here = withSceneRoles(speakers, new Set(["cousins", "gullet"]), names);
+    expect(attributeQuotes('"Tall lady with cords," says a cousin. "Never stopped jogging."', here).map((q) => q.id)).toEqual(["cousins", "cousins"]);
+    expect(attributeQuotes('"My cousin," groans the cousin.', here).map((q) => q.id)).toEqual(["cousins"]);
+    const drovers = withSceneRoles(speakers, new Set(["drover_a", "drover_b"]), names);
+    const loose: LooseQuote[] = [];
+    expect(attributeQuotes('"Toll refund," the drover says.', drovers, loose)).toEqual([]);
+    expect(loose).toHaveLength(1);
+    expect(attributeQuotes('"Toll refund," the centaur drover says.', drovers).map((q) => q.id)).toEqual(["drover_a"]);
+  });
+});
+
+describe("a scene variant that carries on from the scene's narration", () => {
+  const speakers = [{ id: "pellam", names: ["Pellam"] }];
+  const base = 'Pellam opens the ledger. "Here it is."';
+  const variant = '"Pockets," he reads. "A great many pockets."';
+
+  it("takes its 'he' from who the narration last named, and counts only its own quotes", () => {
+    const loose: LooseQuote[] = [];
+    const alone = attributeQuotes(variant, speakers, loose);
+    expect(alone).toEqual([]);
+    expect(loose).toHaveLength(2);
+    const sink: LooseQuote[] = [];
+    const joined = attributeQuotes(`${base} ${variant}`, speakers, sink, base.length + 1);
+    expect(joined.map((q) => [q.id, q.words])).toEqual([["pellam", "Pockets,"], ["pellam", "A great many pockets."]]);
+    expect(sink).toEqual([]);
+  });
+});
+
+describe("a character cast in another chapter of the campaign", () => {
+  // Wisp is cast in chapter w1. In chapter r1 only the runner is, and the prose says "the wisp line" (a noun, not the person).
+  const campaign: ChapterLike[] = [
+    { id: "w1", campaignId: "gem", voiceGuide: { npcVoices: { wisp: "Wisp, a shy ghost; she whispers", cousins: "Gullet's Cousins, croaky frog folk" } }, scenes: { a: { cast: [{ name: "Wisp" }, { name: "Gullet's Cousins" }] } } },
+    { id: "r1", campaignId: "gem", voiceGuide: { npcVoices: { runner: "a MossHome runner; brisk" } }, scenes: { post: { cast: [{ name: "Runner" }] } } },
+  ];
+  const text = 'And the ribbon crew moved the wisp line out twice more this week. "She said to tell anybody who asked," he puffs, "that she is not worried. Which means she is."';
+
+  it("keeps a lowercase noun from being the person: the wisp line is not Wisp, so the runner's quote is not hers", () => {
+    const sheet = buildSheet({ chapters: campaign, individuals: [], narration: [{ chapter: "r1", address: "r1/post/narration", text }] }, null);
+    expect(sheet.speakers.wisp!.lineCount).toBe(0);
+    expect(sheet.speakers.wisp!.pronouns).toBeUndefined();
+    expect(sheet.speakers.runner!.lineCount).toBe(1);
+  });
+
+  it("still tags them by their own name in a chapter that does not cast them", () => {
+    const sheet = buildSheet({ chapters: campaign, individuals: [], narration: [{ chapter: "r1", address: "r1/post/narration", text: 'Wisp drifts by. "The ribbon is loose," says Wisp.' }] }, null);
+    expect(sheet.speakers.wisp!.lineCount).toBe(1);
+  });
+
+  it("masks a name that only counts as written, and keeps the words and the places of the text", () => {
+    const speakers = [{ id: "runner", names: ["Runner"] }, { id: "wisp", names: ["Wisp"], exact: true }];
+    expect(attributeQuotes(text, speakers).map((q) => q.id)).not.toContain("wisp");
+    expect(attributeQuotes('Wisp says, "Hello there."', speakers).map((q) => q.id)).toEqual(["wisp"]);
+    expect(attributeQuotes('"Hello there," says wisp.', speakers)).toEqual([]);
+  });
+
+  it("does not take a group for a she because one of them was, and keeps what a rebuild had already learned", () => {
+    const told = [{ chapter: "w1", address: "w1/a/narration", text: '"Good hands," croaks the cousin. "We will carry you across," she says.' }];
+    const first = buildSheet({ chapters: campaign, individuals: [], narration: told }, null);
+    expect(first.speakers.cousins!.pronouns).toBeUndefined();
+    // Something once learned from the narration stays when the quotes later go elsewhere.
+    const before = buildSheet({ chapters: campaign, individuals: [], narration: [{ chapter: "w1", address: "w1/a/narration", text: '"I am here," Wisp says. "Come along," she whispers.' }] }, null);
+    expect(before.speakers.wisp).toMatchObject({ pronouns: "she/her", pronounsFrom: "narration" });
+    const later = buildSheet({ chapters: campaign, individuals: [], narration: [] }, before);
+    expect(later.speakers.wisp).toMatchObject({ pronouns: "she/her", pronounsFrom: "narration" });
   });
 });
