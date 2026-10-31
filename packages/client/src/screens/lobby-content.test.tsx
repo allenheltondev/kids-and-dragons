@@ -9,7 +9,7 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { CampaignView, RunState } from "@kad/shared";
@@ -275,23 +275,15 @@ describe("the join step on the shared screen (#256)", { timeout: 30_000 }, () =>
 describe("heroes new to the crew's adventure", () => {
   const check = { crewCheck: { campaignId: "riftlight", title: "Riftlight" }, party: [makeMember()] };
 
-  it("lets the host keep going or start fresh, and resumes nothing by itself", async () => {
-    const keepCrew = vi.fn(async () => true);
-    const switchCrew = vi.fn(async () => true);
+  it("tells the host where to pick, and has nothing to click itself", () => {
     useGameStore.setState({
       session: { runId: "r_1", roomCode: "ABCD", playerId: "", mode: "party", sessionToken: "t", host: true },
       state: makeState({ phase: "lobby", ...check }),
-      keepCrew,
-      switchCrew,
     });
     render(<LobbyContent />);
     expect(screen.getByText(/is partway through Riftlight/)).toBeTruthy();
-    await act(async () => {
-      fireEvent.click(screen.getByRole("button", { name: "Keep going with Riftlight" }));
-    });
-    expect(keepCrew).toHaveBeenCalledWith("riftlight");
-    fireEvent.click(screen.getByRole("button", { name: "Start fresh as a new crew" }));
-    expect(switchCrew).toHaveBeenCalledWith("new");
+    expect(screen.getByText(/Tap Room to keep going or start a new crew/)).toBeTruthy();
+    expect(screen.queryAllByRole("button")).toEqual([]);
   });
 
   it("tells a screen that is not the host's who picks", () => {

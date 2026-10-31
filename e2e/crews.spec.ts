@@ -15,7 +15,7 @@ test("the TV starts friends night on connected phones, then can return to the us
     await Promise.all([tv.page, one.page, two.page].map(page => onAir(page)));
     await expect(tv.page.getByRole("button", { name: "New players? Start a new crew" })).toBeHidden();
     await tv.page.getByRole("button", { name: "Room", exact: true }).click();
-    await tv.page.locator(".kad-host__crew-menu > summary").click();
+    // Crews is open as the panel opens: first, so it is never scrolled past.
     await tv.page.getByRole("button", { name: "New players? Start a new crew" }).click();
     await expect(tv.page.getByText(/Make new heroes on your phones/)).toBeVisible();
     for (const phone of [one.page, two.page]) {
@@ -42,7 +42,7 @@ test("the TV starts friends night on connected phones, then can return to the us
     expect(state.party.map(m => m.character.name).sort()).toEqual(["Fern", "Moss"]);
     expect(state.crew).toBe("cw_1");
     await tv.page.getByRole("button", { name: "Room", exact: true }).click();
-    await tv.page.locator(".kad-host__crew-menu > summary").click();
+    // Crews is open as the panel opens: first, so it is never scrolled past.
     await tv.page.getByRole("button", { name: "Play as The first crew" }).click();
     for (const phone of [one.page, two.page]) {
       await expect(phone.getByText(/Welcome back! Who are you bringing/)).toBeVisible();

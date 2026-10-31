@@ -110,7 +110,11 @@ const DIST = path.join(ROOT, "packages", "client", "dist");
 // "hero" before any speaker can; the other is the store recording each state's server stamp,
 // which has to see every state as it lands, before a lazy screen exists to ask. The surface
 // list, the interaction controls and their clock maths stay in lazy chunks.
-const FIRST_PAINT_BUDGET_KB = 324;
+// 324 -> 326 for naming crews and asking before new heroes resume one (#580): 325KB measured,
+// 324 before. The crew names list now lives in @kad/shared (the server picks from it, the Room
+// panel offers it), and the store carries the rename and keep-going host controls beside the
+// other host controls it already holds. The Room panel and the lobby that use them stay lazy.
+const FIRST_PAINT_BUDGET_KB = 326;
 
 /**
  * Everything, including what is lazily fetched.

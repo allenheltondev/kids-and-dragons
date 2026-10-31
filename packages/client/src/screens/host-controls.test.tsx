@@ -42,6 +42,7 @@ function room(session: Partial<ClientSession>, run: Partial<RunState> = RUN) {
   const stopForToday = vi.fn(async () => true);
   const switchCrew = vi.fn(async () => true);
   const renameCrew = vi.fn(async () => true);
+  const keepCrew = vi.fn(async () => true);
   act(() => {
     useGameStore.setState({
       session: { runId: "r_1", roomCode: "ABCD", playerId: "p_1", mode: "travel", sessionToken: "t", ...session },
@@ -54,9 +55,10 @@ function room(session: Partial<ClientSession>, run: Partial<RunState> = RUN) {
       stopForToday,
       switchCrew,
       renameCrew,
+      keepCrew,
     });
   });
-  return { removePlayer, handKeeper, lockRoom, closeRoom, quietRoom, stopForToday, switchCrew, renameCrew };
+  return { removePlayer, handKeeper, lockRoom, closeRoom, quietRoom, stopForToday, switchCrew, renameCrew, keepCrew };
 }
 
 afterEach(() => {
@@ -226,6 +228,22 @@ describe("crews: new players at the same TV", () => {
     expect(screen.getByRole("button", { name: "The Comet Crew" })).toHaveProperty("disabled", true);
     fireEvent.click(screen.getByRole("button", { name: "The Otter Crew" }));
     expect(renameCrew).toHaveBeenCalledWith(null, "The Otter Crew");
+  });
+
+  it("answers the lobby's question: keep going with the crew's adventure, or start a new crew", async () => {
+    const { keepCrew } = room({ host: true }, { ...RUN, phase: "lobby", crewCheck: { campaignId: "riftlight", title: "Riftlight" } });
+    render(<HostControls placement="inline" />);
+    expect(screen.getByText(/None of these heroes have been on Riftlight yet/)).toBeTruthy();
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Keep going with Riftlight" }));
+    });
+    expect(keepCrew).toHaveBeenCalledWith("riftlight");
+    // Kept, the panel closes; opened again, a new crew is still a tap away.
+    cleanup();
+    room({ host: true }, { ...RUN, phase: "lobby", crewCheck: { campaignId: "riftlight", title: "Riftlight" } });
+    render(<HostControls placement="inline" />);
+    fireEvent.click(screen.getByRole("button", { name: "New players? Start a new crew" }));
+    expect(useGameStore.getState().switchCrew).toHaveBeenCalledWith("new");
   });
 
   it("does not offer a name another crew already has", () => {
