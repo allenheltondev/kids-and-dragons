@@ -48,7 +48,7 @@
   "scenes": {
     "arrival": {
       "type": "story",
-      "narration": "Beyond the memory reading room, yeti builders have stopped carving a new chamber for the memory readers. A frost wyrm has curled across their doorway, using a bench as a pillow. Its breath covers the wall in tiny ice ferns. \"Make room for us and the wyrm without waking the old ice,\" says a builder. \"We can move the room. We cannot ask the mountain for a second mountain.\" The wyrm opens one eye. Pip stays in the old reading room to help the elder sort the notes while you work below.",
+      "narration": "Beyond the memory reading room, yeti builders have stopped carving a new chamber for the memory readers. A frost wyrm has curled across their doorway, using a bench as a pillow. It opens one eye. \"Help us make room for the readers and the wyrm,\" whispers a builder, \"without waking the old ice.\" Pip stays in the old reading room to help the elder sort the notes.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -71,7 +71,7 @@
     },
     "listen": {
       "type": "story",
-      "narration": "A chisel scrapes. The wyrm tightens around its bench, then loosens when the builder steps back. Watch the tail and breathing pattern from the far wall. \"The bench has become a very expensive pillow,\" whispers the builder.",
+      "narration": "A chisel scrapes. The wyrm squeezes its bench tight, then loosens when the builder steps back. \"That bench has become a very expensive pillow,\" the builder whispers.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -86,7 +86,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Watch its tail",
           "goto": "watch_check",
           "icon": "hand"
         }
@@ -94,7 +94,7 @@
     },
     "watch_check": {
       "type": "interaction",
-      "narration": "Watch the wyrm curl, breathe and relax. Echo the observed pattern before anyone marks a lane. A builder nods at the wyrm. \"The marks show its reach today. Not a command it must obey.\"",
+      "narration": "Watch the wyrm curl, breathe and rest, then copy it. \"This shows its reach today,\" says a builder. \"Not a rule it must obey.\"",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -108,7 +108,7 @@
       "art": "scenes/riftlight/wyrm-nest",
       "interaction": {
         "kind": "memory",
-        "cue": "Watch the nest pattern, then echo it.",
+        "cue": "Watch the nest, then copy the pattern.",
         "actionLabel": "Show what we saw",
         "options": [
           {
@@ -137,7 +137,7 @@
       },
       "onSuccess": {
         "goto": "boundary",
-        "narration": "You mark the observed reach, with a clear margin.",
+        "narration": "You mark the tail's reach and a safe gap.",
         "effects": [
           {
             "type": "setFlag",
@@ -153,7 +153,7 @@
       },
       "onFailure": {
         "goto": "boundary",
-        "narration": "The builder checks the shifting tail and adds a wider margin. Your record names this as a helped observation.",
+        "narration": "A builder marks a wider gap for you.",
         "effects": [
           {
             "type": "setFlag",
@@ -169,7 +169,7 @@
       },
       "onAssisted": {
         "goto": "boundary",
-        "narration": "The builder checks the shifting tail and adds a wider margin. Your record names this as a helped observation.",
+        "narration": "A builder marks a wider gap for you.",
         "effects": [
           {
             "type": "setFlag",
@@ -186,7 +186,7 @@
     },
     "boundary": {
       "type": "choice_point",
-      "narration": "Help the builders move everything outside that margin. \"Nothing is taken from under the wyrm,\" says a builder. Choose a quiet job. One builder knits a hat for a chisel that does not yet have a hat.",
+      "narration": "Help the builders move everything outside that gap. \"Nothing gets taken from under the wyrm,\" says one. Pick a quiet job. One builder is knitting a hat for a chisel.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -201,7 +201,7 @@
       "choices": [
         {
           "id": "pad",
-          "label": "Pad loose tools",
+          "label": "Pad the loose tools",
           "icon": "hand",
           "goto": "boundary_response_pad"
         },
@@ -213,7 +213,7 @@
         },
         {
           "id": "sign",
-          "label": "Show the no-scrape edge",
+          "label": "Mark the no-scrape edge",
           "icon": "hand",
           "goto": "boundary_response_sign"
         }
@@ -221,7 +221,7 @@
     },
     "supplies": {
       "type": "choice_point",
-      "narration": "The readers will need furniture after the encounter. A folded table travels easily if the room must move, but takes more setting up if you win this doorway. Shelf parts make a sturdy low shelf here; after a retreat they must be unpacked into a temporary tabletop. Which kit will you carry?",
+      "narration": "The readers will need furniture. A folded table travels well if the room must move, but is slow to set up here. Shelf parts make a sturdy low shelf here, but only a rough table anywhere else.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -236,7 +236,7 @@
       "choices": [
         {
           "id": "portable",
-          "label": "Carry the folding table kit",
+          "label": "Carry the folding table",
           "goto": "table_kit",
           "icon": "hand",
           "effects": [
@@ -249,7 +249,7 @@
         },
         {
           "id": "fixed",
-          "label": "Carry the low-shelf parts",
+          "label": "Carry the shelf parts",
           "goto": "shelf_kit",
           "icon": "hand",
           "effects": [
@@ -264,7 +264,7 @@
     },
     "table_kit": {
       "type": "interaction",
-      "narration": "Level the folded table before carrying it to the safe alcove. It folds very small. The builder briefly folds the instruction sheet into something much larger.",
+      "narration": "Level the folded table for carrying. It folds very small. A builder folds the instruction sheet into something much bigger.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -284,20 +284,20 @@
       },
       "onSuccess": {
         "goto": "cold_opening",
-        "narration": "The portable kit waits outside the nest."
+        "narration": "The folding table waits outside the nest."
       },
       "onFailure": {
         "goto": "cold_opening",
-        "narration": "The portable kit waits outside the nest."
+        "narration": "The folding table waits outside the nest."
       },
       "onAssisted": {
         "goto": "cold_opening",
-        "narration": "The portable kit waits outside the nest."
+        "narration": "The folding table waits outside the nest."
       }
     },
     "shelf_kit": {
       "type": "interaction",
-      "narration": "Pass the wide shelf blocks and bundled top to the alcove. Each bright mark belongs to the builders; none is a piece of old ice.",
+      "narration": "Pass the shelf blocks and the bundled top to the alcove. Every bright mark means builders' wood, not old ice.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -317,7 +317,7 @@
       },
       "onSuccess": {
         "goto": "cold_opening",
-        "narration": "The shelf kit waits outside the nest.",
+        "narration": "The shelf parts wait outside the nest.",
         "effects": [
           {
             "type": "setFlag",
@@ -328,7 +328,7 @@
       },
       "onFailure": {
         "goto": "cold_opening",
-        "narration": "The shelf kit waits outside the nest.",
+        "narration": "The shelf parts wait outside the nest.",
         "effects": [
           {
             "type": "setFlag",
@@ -339,7 +339,7 @@
       },
       "onAssisted": {
         "goto": "cold_opening",
-        "narration": "The shelf kit waits outside the nest.",
+        "narration": "The shelf parts wait outside the nest.",
         "effects": [
           {
             "type": "setFlag",
@@ -351,7 +351,7 @@
     },
     "cold_opening": {
       "type": "choice_point",
-      "narration": "An opening in the far wall shows a sheltered snow hollow. The Listening Chime is the travelers' chime: its echo checks an open way back; it cannot command a rift. Loose bones rattle on this side, and the builders leave them alone. Check the hollow before inviting any creature into it.",
+      "narration": "An opening in the far wall shows a sheltered snow hollow. The Listening Chime can check for a way back. It cannot boss a rift around. Loose bones rattle on this side, and the builders leave them alone. Is the hollow safe?",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -366,19 +366,19 @@
       "choices": [
         {
           "id": "view",
-          "label": "Observe the full floor from here",
+          "label": "Look from here",
           "goto": "hollow_view",
           "icon": "hand"
         },
         {
           "id": "builder",
-          "label": "Support a builder checking both sides",
+          "label": "Help a builder check",
           "goto": "hollow_check",
           "icon": "hand"
         },
         {
           "id": "starweaver",
-          "label": "Let our starweaver study the opening",
+          "label": "Our starweaver reads it",
           "goto": "hollow_attuned",
           "icon": "hand",
           "requiresClass": "starweaver"
@@ -387,7 +387,7 @@
     },
     "hollow_view": {
       "type": "interaction",
-      "narration": "Wait for the drifting snow to reveal the whole hollow. Check tracks, floor and the return opening; a boot-shaped lump is only snow.",
+      "narration": "Wait for the drifting snow to clear. Look for tracks and a way back. That boot-shaped lump is only snow.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -401,7 +401,7 @@
       "art": "scenes/riftlight/wyrm-nest",
       "interaction": {
         "kind": "timing",
-        "cue": "Check the hollow during the full clear view.",
+        "cue": "Check the hollow during the clear view.",
         "actionLabel": "Check the sheltered floor",
         "target": 0.5,
         "width": 0.3,
@@ -409,7 +409,7 @@
       },
       "onSuccess": {
         "goto": "bed",
-        "narration": "The floor is unoccupied and the way back remains visible.",
+        "narration": "Empty floor, clear way back.",
         "effects": [
           {
             "type": "setFlag",
@@ -420,11 +420,11 @@
       },
       "onFailure": {
         "goto": "hollow_help",
-        "narration": "The far edge was hidden. A builder will check it from the open side before anyone offers the space."
+        "narration": "The far edge stays hidden. A builder goes to check."
       },
       "onAssisted": {
         "goto": "bed",
-        "narration": "The floor is unoccupied and the way back remains visible.",
+        "narration": "Empty floor, clear way back.",
         "effects": [
           {
             "type": "setFlag",
@@ -436,7 +436,7 @@
     },
     "hollow_help": {
       "type": "interaction",
-      "narration": "Support the marker line while the builder clears the hidden drift, checks for tracks and returns. The party stays at the tunnel marker.",
+      "narration": "Hold the marker line while the builder clears the hidden drift and comes back. Everyone stays at the tunnel marker.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -450,13 +450,13 @@
       "art": "scenes/riftlight/wyrm-nest",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Support the marker line for the builder.",
+        "cue": "Hold the marker line for the builder.",
         "actionLabel": "Recover the marker",
         "supportLabel": "Hold the line"
       },
       "onSuccess": {
         "goto": "bed",
-        "narration": "The checked hollow is empty and sheltered.",
+        "narration": "The hollow is empty and sheltered.",
         "effects": [
           {
             "type": "setFlag",
@@ -467,7 +467,7 @@
       },
       "onFailure": {
         "goto": "bed",
-        "narration": "The checked hollow is empty and sheltered.",
+        "narration": "The hollow is empty and sheltered.",
         "effects": [
           {
             "type": "setFlag",
@@ -478,7 +478,7 @@
       },
       "onAssisted": {
         "goto": "bed",
-        "narration": "The checked hollow is empty and sheltered.",
+        "narration": "The hollow is empty and sheltered.",
         "effects": [
           {
             "type": "setFlag",
@@ -490,7 +490,7 @@
     },
     "hollow_check": {
       "type": "interaction",
-      "narration": "Hold the marker line while the builder crosses the visible opening, checks the ground and returns. Nobody tests unknown old ice.",
+      "narration": "Hold the marker line while a builder steps through to check the ground. Nobody tests strange old ice.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -504,13 +504,13 @@
       "art": "scenes/riftlight/wyrm-nest",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Support the marker while the builder checks the hollow.",
+        "cue": "Hold the marker while the builder checks.",
         "actionLabel": "Gather the returned marker",
         "supportLabel": "Hold the marker line"
       },
       "onSuccess": {
         "goto": "bed",
-        "narration": "The builder has checked both sides and returned.",
+        "narration": "The builder is back. All clear.",
         "effects": [
           {
             "type": "setFlag",
@@ -521,7 +521,7 @@
       },
       "onFailure": {
         "goto": "bed",
-        "narration": "The builder has checked both sides and returned.",
+        "narration": "The builder is back. All clear.",
         "effects": [
           {
             "type": "setFlag",
@@ -532,7 +532,7 @@
       },
       "onAssisted": {
         "goto": "bed",
-        "narration": "The builder has checked both sides and returned.",
+        "narration": "The builder is back. All clear.",
         "effects": [
           {
             "type": "setFlag",
@@ -544,7 +544,7 @@
     },
     "hollow_attuned": {
       "type": "story",
-      "narration": "Your starweaver studies the opening's light while the builders check its echo and empty floor. This replaces the separate viewing task, not the ordinary ground checks. A clear way back is still required.",
+      "narration": "Your starweaver reads the opening's light while the builders check the empty floor. The way back is clear.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -566,7 +566,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Make a bed",
           "goto": "bed",
           "icon": "hand"
         }
@@ -574,7 +574,7 @@
     },
     "bed": {
       "type": "choice_point",
-      "narration": "The hollow is safe. Soft new snow will make a welcoming bowl: on the board, holding its approach for one clear round can invite the wyrm in. A broad slab takes two clear rounds to invite it, but can later be recovered as a low reader step if the hollow stays empty. A builder shrugs. \"Neither plan promises the wyrm will cooperate.\"",
+      "narration": "The hollow is safe. A soft snow bed needs its path guarded for one clear round to invite the wyrm. A broad slab needs two, but an unused slab can become a reader step. A builder shrugs. \"Neither plan promises the wyrm will cooperate.\"",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -607,7 +607,7 @@
         },
         {
           "id": "slab",
-          "label": "Set a broad slab we can recover if unused",
+          "label": "Set a broad slab",
           "goto": "bed_slab",
           "icon": "hand",
           "effects": [
@@ -627,7 +627,7 @@
     },
     "bed_snow": {
       "type": "interaction",
-      "narration": "Shape loose new snow into a broad shallow bowl without taking anything from the nest. Level the base so the hollow still has a clear exit.",
+      "narration": "Shape loose new snow into a wide, shallow bowl. Keep it level, with a clear way out.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -647,20 +647,20 @@
       },
       "onSuccess": {
         "goto": "lanes",
-        "narration": "The softer bed needs one clear held round to invite the wyrm on the board."
+        "narration": "The soft bed is ready."
       },
       "onFailure": {
         "goto": "lanes",
-        "narration": "The softer bed needs one clear held round to invite the wyrm on the board."
+        "narration": "The soft bed is ready."
       },
       "onAssisted": {
         "goto": "lanes",
-        "narration": "The softer bed needs one clear held round to invite the wyrm on the board."
+        "narration": "The soft bed is ready."
       }
     },
     "bed_slab": {
       "type": "interaction",
-      "narration": "Support a loose slab while the builder slides it below the wind lip. No one chips old ice to make a pillow.",
+      "narration": "Hold a loose slab while the builder slides it into place. Nobody chips old ice for a pillow.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -674,26 +674,26 @@
       "art": "scenes/riftlight/wyrm-nest",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Support the loose slab at the hollow.",
+        "cue": "Hold the loose slab at the hollow.",
         "actionLabel": "Set the slab",
         "supportLabel": "Support the slab"
       },
       "onSuccess": {
         "goto": "lanes",
-        "narration": "The resting slab is ready. An invitation still needs two clear held rounds."
+        "narration": "The slab is ready."
       },
       "onFailure": {
         "goto": "lanes",
-        "narration": "The resting slab is ready. An invitation still needs two clear held rounds."
+        "narration": "The slab is ready."
       },
       "onAssisted": {
         "goto": "lanes",
-        "narration": "The resting slab is ready. An invitation still needs two clear held rounds."
+        "narration": "The slab is ready."
       }
     },
     "lanes": {
       "type": "interaction",
-      "narration": "Move the empty benches so the people's withdrawal lane never crosses the broad route to the hollow. Solo heroes use the builders' fixed supports. One lunch bag is removed from duty as a barrier.",
+      "narration": "Move the empty benches so the people's way out never crosses the wyrm's path. A builder's lunch bag was being used as a wall. It retires.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -707,37 +707,37 @@
       "art": "scenes/riftlight/wyrm-nest",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Support the bench while the withdrawal lane is cleared.",
+        "cue": "Hold the bench while the way is cleared.",
         "actionLabel": "Set down the bench",
         "supportLabel": "Support the bench"
       },
       "onSuccess": {
         "goto": "rest",
-        "narration": "Both routes are clear; nobody stands between the wyrm and shelter."
+        "narration": "Nobody stands between the wyrm and shelter."
       },
       "onFailure": {
         "goto": "rest",
-        "narration": "Both routes are clear; nobody stands between the wyrm and shelter."
+        "narration": "Nobody stands between the wyrm and shelter."
       },
       "onAssisted": {
         "goto": "rest",
-        "narration": "Both routes are clear; nobody stands between the wyrm and shelter."
+        "narration": "Nobody stands between the wyrm and shelter."
       }
     },
     "rest": {
       "type": "rest",
-      "narration": "The builders lead you into a side alcove, away from the nest. They share oat cakes from a tool tin scrubbed clean for lunches. You rest on folded work blankets. One cake has the shape of a very blunt chisel. A builder beams at it. \"My best work.\"",
+      "narration": "The builders lead you into a side alcove, away from the nest. They share oat cakes from a scrubbed tool tin. One cake is shaped like a very blunt chisel. A builder beams at it. \"My best work.\"",
       "heal": 2,
       "choices": [
         {
           "id": "rest",
-          "label": "Rest before the encounter",
+          "label": "Rest before the fight",
           "goto": "signal",
           "icon": "hand"
         },
         {
           "id": "watch",
-          "label": "Eat while a builder keeps watch",
+          "label": "Eat while builders watch",
           "goto": "signal",
           "icon": "hand"
         }
@@ -752,7 +752,7 @@
     },
     "signal": {
       "type": "interaction",
-      "narration": "A builder raises a mitten for wait, spreads both palms for clear and lowers them to finish. Remember the observed signal round. The builder wiggles the mitten. \"These are for us. They do not control the wyrm.\"",
+      "narration": "A builder raises a mitten for wait, opens both palms for clear and lowers them for finish. She wiggles the mitten. \"These are for us. They do not control the wyrm.\"",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -766,7 +766,7 @@
       "art": "scenes/riftlight/wyrm-nest",
       "interaction": {
         "kind": "memory",
-        "cue": "Watch the builder signals, then echo them.",
+        "cue": "Watch the signals, then copy them.",
         "actionLabel": "Show what we saw",
         "options": [
           {
@@ -795,7 +795,7 @@
       },
       "onSuccess": {
         "goto": "offer",
-        "narration": "You can later show readers the checked signal round.",
+        "narration": "You can show the readers later.",
         "effects": [
           {
             "type": "setFlag",
@@ -806,7 +806,7 @@
       },
       "onFailure": {
         "goto": "offer",
-        "narration": "A builder will lead the readers by visible markers instead of crediting a guessed signal round.",
+        "narration": "A builder will lead the readers by markers.",
         "effects": [
           {
             "type": "setFlag",
@@ -817,7 +817,7 @@
       },
       "onAssisted": {
         "goto": "offer",
-        "narration": "A builder will lead the readers by visible markers instead of crediting a guessed signal round.",
+        "narration": "A builder will lead the readers by markers.",
         "effects": [
           {
             "type": "setFlag",
@@ -829,7 +829,7 @@
     },
     "offer": {
       "type": "story",
-      "narration": "The hollow is ready and the people are behind the benches. On the board you may drive the creatures from the doorway, or hold the quiet approach to invite the wyrm into the hollow. Only the held approach makes it your ally. Defeat means moving the reading work to the old room, not fighting again. You may use the ordinary two-round invitation without relying on the bedding, or choose the soft-bed advantage if you prepared it.",
+      "narration": "The hollow is ready, and the people wait behind the benches. Drive the creatures from the doorway, or guard the quiet path and invite the wyrm in. Only an invitation makes it a friend. If you lose, the readers simply stay in their old room.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -844,13 +844,13 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Use the ordinary two-round invitation, or drive them clear",
+          "label": "Face the wyrm",
           "goto": "fight",
           "icon": "hand"
         },
         {
           "id": "continue_soft",
-          "label": "Use our soft bed for a one-round invitation",
+          "label": "Invite with the soft bed",
           "goto": "fight_soft",
           "icon": "hand",
           "when": {
@@ -862,7 +862,7 @@
     "fight": {
       "type": "encounter",
       "map": "riftlight_wyrm_nest",
-      "narration": "The frost wyrm rises and the loose bones rattle upright. Drive the creatures from the doorway, or hold the hollow approach for 2 clear rounds to invite the wyrm into shelter. The slick new-ice strip still slows anyone stopping there.",
+      "narration": "The frost wyrm rises, and the loose bones rattle upright. Drive them from the doorway, or guard the hollow path for 2 clear rounds to invite the wyrm in. The slick new ice slows anyone who stops on it.",
       "enemies": [
         {
           "id": "wyrm",
@@ -948,7 +948,7 @@
     "fight_soft": {
       "type": "encounter",
       "map": "riftlight_wyrm_nest",
-      "narration": "The frost wyrm rises and the loose bones rattle upright. Drive the creatures from the doorway, or hold the hollow approach for 1 clear round to invite the wyrm into shelter. The slick new-ice strip still slows anyone stopping there.",
+      "narration": "The frost wyrm rises, and the loose bones rattle upright. Drive them from the doorway, or guard the hollow path for 1 clear round to invite the wyrm in. The slick new ice slows anyone who stops on it.",
       "enemies": [
         {
           "id": "wyrm",
@@ -1033,11 +1033,11 @@
     },
     "room_clear": {
       "type": "story",
-      "narration": "The doorway is clear and the builders lower their mittens. The new room can be used without squeezing past a turning tail. The bench has a frost-wyrm-shaped dent; the builders decide it is now a special chair.",
+      "narration": "The doorway is clear, and the builders lower their mittens. The bench has a wyrm-shaped dent. The builders decide it is a special chair.",
       "choices": [
         {
           "id": "continue",
-          "label": "Prepare the actual reading place",
+          "label": "Set up the reading place",
           "goto": "shelves",
           "icon": "hand"
         }
@@ -1047,13 +1047,13 @@
           "when": {
             "flag": "wyrm_ally"
           },
-          "text": "The wyrm settles in the sheltered hollow through the opening. When a builder hums from the tunnel, it answers softly. You have a neighbor who will remember being given room."
+          "text": "The wyrm settles into the sheltered hollow. When a builder hums, it hums back. You have a new neighbor."
         },
         {
           "when": {
             "notFlag": "wyrm_ally"
           },
-          "text": "The wyrm backs into the broad outer tunnel, leaving the readers' doorway. The builders leave the sheltered hollow available. It has not chosen the hollow."
+          "text": "The wyrm backs into the outer tunnel. It has not picked the hollow, but the builders leave it open."
         }
       ],
       "cast": [
@@ -1073,11 +1073,11 @@
     },
     "room_moved": {
       "type": "story",
-      "narration": "The wyrm holds its doorway and your party withdraws behind the benches. The builders help you rest, then unroll the wall plan. \"The room can go here,\" one says, pointing down the clear tunnel. The new reading room will open later, away from the nest. Nobody is sent back into the fight.",
+      "narration": "The wyrm keeps its doorway, and you pull back behind the benches. The builders help you rest, then unroll the wall plan. \"The room can go here,\" says one, pointing down a clear tunnel. The new reading room will open later, away from the nest.",
       "choices": [
         {
           "id": "continue",
-          "label": "Prepare the actual reading place",
+          "label": "Set up the reading place",
           "goto": "shelves",
           "icon": "hand"
         }
@@ -1092,7 +1092,7 @@
     },
     "shelves": {
       "type": "choice_point",
-      "narration": "Choose furniture for the room you actually have. The shelf kit can become a low shelf on sound floor here, or a temporary tabletop after unpacking. The folding kit can open in either room; after victory it also needs a separate low stand assembled.",
+      "narration": "Choose furniture for the room you have. Whatever kit you carried can become a working table.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -1105,19 +1105,19 @@
           "when": {
             "flag": "wyrm_nest_kept"
           },
-          "text": "The new site needs more carving, and its floor cannot hold shelf blocks yet. For now only the broad table fits in the old room. The builders must finish the new chamber after you leave."
+          "text": "The new site needs more carving, and its floor cannot hold shelf blocks yet. For now only the broad table fits in the old room. The builders will finish the new chamber after you leave."
         }
       ],
       "choices": [
         {
           "id": "plan_2",
-          "label": "Prepare our kit piece by piece as a table",
+          "label": "Make a working table",
           "goto": "unpack_shelf",
           "icon": "hand"
         },
         {
           "id": "portable_old",
-          "label": "Open the folded table in the old room",
+          "label": "Open the folded table",
           "goto": "shelves_check",
           "icon": "hand",
           "when": {
@@ -1127,7 +1127,7 @@
         },
         {
           "id": "plan_1",
-          "label": "Build the low shelf on the won floor",
+          "label": "Build the low shelf",
           "goto": "shelf_build",
           "icon": "hand",
           "when": {
@@ -1139,7 +1139,7 @@
     },
     "shelf_build": {
       "type": "interaction",
-      "narration": "Support the low top while the builders secure its wide blocks. No shelf is fixed to the old ice.",
+      "narration": "Hold the low top while the builders fix its wide blocks. Nothing gets fixed to the old ice.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -1189,7 +1189,7 @@
     },
     "unpack_shelf": {
       "type": "interaction",
-      "narration": "Pass the shelf pieces into position for a temporary tabletop. The broad top will hold the notes; the blocks stay loose until the replacement room is ready.",
+      "narration": "Pass the shelf pieces into place for a working table. The broad top holds the notes. The blocks stay loose for now.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -1205,15 +1205,15 @@
       },
       "onSuccess": {
         "goto": "shelves_check",
-        "narration": "The parts are ready to level as a tabletop."
+        "narration": "The parts are ready to level."
       },
       "onFailure": {
         "goto": "shelves_check",
-        "narration": "The parts are ready to level as a tabletop."
+        "narration": "The parts are ready to level."
       },
       "onAssisted": {
         "goto": "shelves_check",
-        "narration": "The parts are ready to level as a tabletop."
+        "narration": "The parts are ready to level."
       },
       "variants": [
         {
@@ -1221,13 +1221,13 @@
             "flag": "nest_portable_kit"
           },
           "replace": true,
-          "text": "Pass the folding kit's stand pieces to the builder. On this uneven threshold, the table needs its low stand. The builder consults the instruction sheet, which has unfolded into a small tent."
+          "text": "On this bumpy floor, the folding table needs its low stand. Pass the pieces over. The instruction sheet has unfolded into a small tent."
         }
       ]
     },
     "shelves_check": {
       "type": "interaction",
-      "narration": "Level the working table on checked floor. A sliding book is becoming a very short story. Nobody enters the unfinished replacement chamber after retreat.",
+      "narration": "Level the working table on checked floor. A sliding book is becoming a very short story.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -1243,20 +1243,20 @@
       },
       "onSuccess": {
         "goto": "slab_route",
-        "narration": "The notes have a steady working place."
+        "narration": "The notes have a steady place to work."
       },
       "onFailure": {
         "goto": "slab_route",
-        "narration": "The notes have a steady working place."
+        "narration": "The notes have a steady place to work."
       },
       "onAssisted": {
         "goto": "slab_route",
-        "narration": "The notes have a steady working place."
+        "narration": "The notes have a steady place to work."
       }
     },
     "slab_route": {
       "type": "story",
-      "narration": "A resting slab used by the wyrm stays with the wyrm. If your prepared slab is unused, it can become a low step for readers; loose new snow is left where it was shaped.",
+      "narration": "Whatever the wyrm sleeps on stays with the wyrm. Loose new snow stays where you shaped it.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -1267,7 +1267,7 @@
       "choices": [
         {
           "id": "recover",
-          "label": "Recover the unused slab for a reader step",
+          "label": "Make the slab a step",
           "goto": "reader_step",
           "icon": "hand",
           "when": {
@@ -1276,7 +1276,7 @@
         },
         {
           "id": "leave",
-          "label": "Leave the hollow undisturbed",
+          "label": "Leave the hollow alone",
           "goto": "readers",
           "icon": "hand"
         }
@@ -1284,7 +1284,7 @@
     },
     "reader_step": {
       "type": "interaction",
-      "narration": "Support the unused slab while the builder brings it back along the checked lane and sets a low step beside the notes. It is loose new ice, not a piece carved from the old wall.",
+      "narration": "Hold the unused slab while the builder carries it to the notes. It is new ice, not a piece of the old wall.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -1294,13 +1294,13 @@
       "art": "scenes/riftlight/wyrm-nest",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Support the unused slab for the low step.",
+        "cue": "Hold the slab for the low step.",
         "actionLabel": "Set the reader step",
         "supportLabel": "Support the step"
       },
       "onSuccess": {
         "goto": "readers",
-        "narration": "A low step now helps readers reach their notes.",
+        "narration": "Now readers can reach their notes.",
         "effects": [
           {
             "type": "setFlag",
@@ -1311,7 +1311,7 @@
       },
       "onFailure": {
         "goto": "readers",
-        "narration": "A low step now helps readers reach their notes.",
+        "narration": "Now readers can reach their notes.",
         "effects": [
           {
             "type": "setFlag",
@@ -1322,7 +1322,7 @@
       },
       "onAssisted": {
         "goto": "readers",
-        "narration": "A low step now helps readers reach their notes.",
+        "narration": "Now readers can reach their notes.",
         "effects": [
           {
             "type": "setFlag",
@@ -1334,7 +1334,7 @@
     },
     "readers": {
       "type": "choice_point",
-      "narration": "The readers wait with their notes in the old room. You can show the signal round you remembered, or place builders at visible corners and pass the bundles. Bring every reader to the furniture you actually prepared.",
+      "narration": "The readers wait with their notes in the old room. Show them the builder signals you remembered, or pass the bundles along builder markers.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -1353,19 +1353,19 @@
             "notFlag": "nest_signal_read"
           },
           "replace": true,
-          "text": "The readers wait with their notes in the old room. Your builder will lead the visible-marker route. Pass the bundles from mitten to mitten until the readers reach their working place."
+          "text": "The readers wait with their notes in the old room. A builder will lead them by markers. Pass the bundles from mitten to mitten."
         },
         {
           "when": {
             "flag": "wyrm_nest_kept"
           },
-          "text": "Today the lane stays inside the old room. You must get the notes past the crowded benches to the extra table."
+          "text": "Today the path stays inside the old room, past the crowded benches."
         }
       ],
       "choices": [
         {
           "id": "signals",
-          "label": "Show the remembered builder signals",
+          "label": "Show the builder signals",
           "goto": "readers_check",
           "icon": "hand",
           "when": {
@@ -1374,7 +1374,7 @@
         },
         {
           "id": "markers",
-          "label": "Pass notes along the visible builder markers",
+          "label": "Pass notes by markers",
           "goto": "readers_markers",
           "icon": "hand"
         }
@@ -1382,7 +1382,7 @@
     },
     "readers_check": {
       "type": "interaction",
-      "narration": "Echo the builder signals while the readers watch from the safe lane. The round you saw was wait, clear, wait, finish; you may ask for help rather than guess.",
+      "narration": "Show the readers the builder signals. You saw wait, clear, wait, finish. Ask for help rather than guess.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -1397,7 +1397,7 @@
       "art": "scenes/riftlight/wyrm-nest",
       "interaction": {
         "kind": "memory",
-        "cue": "Show the checked signal round to the readers.",
+        "cue": "Show the signals to the readers.",
         "actionLabel": "Show what we saw",
         "options": [
           {
@@ -1426,20 +1426,20 @@
       },
       "onSuccess": {
         "goto": "readers_clear",
-        "narration": "The readers follow the checked round to their working place."
+        "narration": "The readers follow your signals."
       },
       "onFailure": {
         "goto": "readers_markers",
-        "narration": "Use the visible builder markers and shared bundles instead of repeating a missed round."
+        "narration": "Switch to the builder markers instead."
       },
       "onAssisted": {
         "goto": "readers_markers",
-        "narration": "Use the visible builder markers and shared bundles instead of repeating a missed round."
+        "narration": "Switch to the builder markers instead."
       }
     },
     "readers_markers": {
       "type": "interaction",
-      "narration": "Pass the heavy bundles along builders who can see the next mitten. The route remains inside the old room if the doorway stayed occupied.",
+      "narration": "Pass the heavy bundles from builder to builder, each one in sight of the next mitten.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -1454,26 +1454,26 @@
       "art": "scenes/riftlight/wyrm-nest",
       "interaction": {
         "kind": "relay",
-        "cue": "Pass the note bundles along the visible markers.",
+        "cue": "Pass the bundles along the markers.",
         "actionLabel": "Pass the notes",
         "objectLabel": "memory notes"
       },
       "onSuccess": {
         "goto": "readers_clear",
-        "narration": "The readers and every bundle reach their working place."
+        "narration": "The readers and every bundle arrive."
       },
       "onFailure": {
         "goto": "readers_clear",
-        "narration": "The readers and every bundle reach their working place."
+        "narration": "The readers and every bundle arrive."
       },
       "onAssisted": {
         "goto": "readers_clear",
-        "narration": "The readers and every bundle reach their working place."
+        "narration": "The readers and every bundle arrive."
       }
     },
     "readers_clear": {
       "type": "story",
-      "narration": "The readers reach their safe working place with their notes. One reader pats the stack. \"Every page is here.\"",
+      "narration": "The readers reach their work place with their notes. One reader pats the stack. \"Every page is here.\"",
       "onEnter": [
         {
           "type": "setFlag",
@@ -1483,7 +1483,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Agree on quiet neighbor rules",
+          "label": "Agree on neighbor rules",
           "goto": "quiet",
           "icon": "hand"
         }
@@ -1505,13 +1505,13 @@
           "when": {
             "flag": "wyrm_nest_kept"
           },
-          "text": "Their working place is a crowded corner of the old room. The new chamber is still a building job, with tools and blankets needed for another day."
+          "text": "Their work place is a crowded corner of the old room. The new chamber is a job for another day."
         }
       ]
     },
     "quiet": {
       "type": "choice_point",
-      "narration": "Choose one useful agreement for readers and builders. Nobody promises that a wild wyrm will obey a sign. \"The new rule is for us,\" says a builder, \"the people holding the chisels.\"",
+      "narration": "Pick one good rule for readers and builders. Nobody expects a wild wyrm to obey a sign. \"The new rule is for us,\" says a builder, \"the people holding the chisels.\"",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -1527,19 +1527,19 @@
       "choices": [
         {
           "id": "tools",
-          "label": "Keep the tools padded",
+          "label": "Keep tools padded",
           "icon": "hand",
           "goto": "quiet_response_tools"
         },
         {
           "id": "space",
-          "label": "Keep the nest margin visible",
+          "label": "Keep the gap marked",
           "icon": "hand",
           "goto": "quiet_response_space"
         },
         {
           "id": "notes",
-          "label": "Keep notes off the walking lane",
+          "label": "Keep notes off paths",
           "icon": "hand",
           "goto": "quiet_response_notes"
         }
@@ -1547,7 +1547,7 @@
     },
     "ending": {
       "type": "story",
-      "narration": "The readers have room for their notes. The wyrm has room to rest. The old ice stays quiet. A builder hangs the chisel hats beside the doorway with one last reminder: \"No scraping near the neighbor.\" You leave a glacier where people and wyrm have more room because your party made it.",
+      "narration": "The readers have room for their notes. The wyrm has room to rest. The old ice stays quiet. A builder hangs the chisel hats by the door. \"No scraping near the neighbor.\"",
       "choices": [],
       "outcome": "success",
       "variants": [
@@ -1555,43 +1555,43 @@
           "when": {
             "flag": "wyrm_ally"
           },
-          "text": "From the sheltered hollow comes a soft answering rumble. The builders will keep that approach open if your party needs help here again."
+          "text": "A soft rumble answers from the hollow. The builders will keep that path open for you."
         },
         {
           "when": {
             "flag": "wyrm_nest_kept"
           },
-          "text": "The new chamber must wait. Today the readers share their old room with the extra table, and the builders give up their free morning to finish the move."
+          "text": "The new chamber must wait. The builders give up their free morning to finish the move."
         },
         {
           "when": {
             "flag": "nest_reader_step"
           },
-          "text": "The unused resting slab has become a low reader step. Nothing was taken from beneath the wyrm."
+          "text": "The unused resting slab has become a low reader step."
         },
         {
           "when": {
             "flag": "nest_portable_kit"
           },
-          "text": "The folding kit is now a working table, in the room the readers can actually use."
+          "text": "The folding table now holds the readers' notes."
         },
         {
           "when": {
             "flag": "nest_shelf_built"
           },
-          "text": "The shelf kit stands as a low shelf on the checked floor; the readers can reach it without climbing."
+          "text": "The low shelf stands on checked floor, easy to reach."
         },
         {
           "when": {
             "flag": "nest_pattern_read"
           },
-          "text": "Your nest diagram records the tail pattern your party observed."
+          "text": "Your nest drawing shows the tail pattern you saw."
         },
         {
           "when": {
             "notFlag": "nest_pattern_read"
           },
-          "text": "The builder-checked nest margin stays labeled as a helped observation."
+          "text": "Your nest drawing notes a builder's help."
         }
       ],
       "cast": [
@@ -1604,11 +1604,11 @@
     },
     "boundary_response_pad": {
       "type": "story",
-      "narration": "The chisels travel without scraping. The builders can prepare a reading place without testing the nest with a foot.",
+      "narration": "The padded chisels make no scrape. Now the builders can start a reading place.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Pick the furniture",
           "icon": "forward",
           "goto": "supplies"
         }
@@ -1627,11 +1627,11 @@
     },
     "boundary_response_stool": {
       "type": "story",
-      "narration": "The stool is beyond the tail mark. The builders can prepare a reading place without testing the nest with a foot.",
+      "narration": "The stool sits past the tail mark. Now the builders can start a reading place.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Pick the furniture",
           "icon": "forward",
           "goto": "supplies"
         }
@@ -1650,11 +1650,11 @@
     },
     "boundary_response_sign": {
       "type": "story",
-      "narration": "A builder marks only the new surface. The builders can prepare a reading place without testing the nest with a foot.",
+      "narration": "A builder chalks the edge on new ice only. Now the builders can start a reading place.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Pick the furniture",
           "icon": "forward",
           "goto": "supplies"
         }
@@ -1673,11 +1673,11 @@
     },
     "quiet_response_tools": {
       "type": "story",
-      "narration": "The builder re-hats the largest chisel. The readers can work without anyone testing the old ice.",
+      "narration": "The builder puts a hat back on the biggest chisel. The readers can work without anyone poking the old ice.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Say goodbye",
           "icon": "forward",
           "goto": "ending"
         }
@@ -1697,11 +1697,11 @@
     },
     "quiet_response_space": {
       "type": "story",
-      "narration": "Readers can see where not to stand. The readers can work without anyone testing the old ice.",
+      "narration": "Now readers can see where not to stand. The readers can work without anyone poking the old ice.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Say goodbye",
           "icon": "forward",
           "goto": "ending"
         }
@@ -1721,11 +1721,11 @@
     },
     "quiet_response_notes": {
       "type": "story",
-      "narration": "The smallest reader carries the last loose page. The readers can work without anyone testing the old ice.",
+      "narration": "The smallest reader carries the last loose page. The readers can work without anyone poking the old ice.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Say goodbye",
           "icon": "forward",
           "goto": "ending"
         }
