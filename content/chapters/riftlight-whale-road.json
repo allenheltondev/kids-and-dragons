@@ -806,7 +806,7 @@
     },
     "small_whale_result": {
       "type": "rest",
-      "narration": "The small whale has room, but the whole group is still circling. The keeper brings warm barley cakes to your chosen waiting place. Olivia watches a crumb take flight, then eats the next one quickly. A new kitsune keeper arrives to take over, a little out of breath. \"Show me your signals before anyone decides about the folds.\"",
+      "narration": "The small whale has room, but the whole group is still circling. The keeper brings warm barley cakes to your chosen waiting place. Olivia watches a crumb take flight, then eats the next one quickly. A new kitsune keeper arrives to take over, a little out of breath. \"Show me your signals before anyone decides about the folds,\" says the new keeper.",
       "cast": [
         {
           "figure": "cast/island_keeper",

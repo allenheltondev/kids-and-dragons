@@ -28,10 +28,10 @@ const picker = (value = "", onPick: (v: string) => void = () => undefined) => {
   return {
     el,
     search: el.querySelector("input") as any,
-    select: el.querySelector("select") as any,
+    select: el.querySelector("select:not(.gender)") as any,
     preview: el.querySelector("button") as any,
     count: el.querySelector(".hint") as any,
-    values: (): string[] => [...el.querySelector("select").options].map((o: any) => o.value),
+    values: (): string[] => [...el.querySelector("select:not(.gender)").options].map((o: any) => o.value),
   };
 };
 
@@ -53,6 +53,23 @@ describe("the voice picker", () => {
     expect(search.placeholder).toBe("Search 3 voices: name, accent, gender, age…");
     expect(search.getAttribute("aria-label")).toBe("Search ElevenLabs voices");
     expect(select.getAttribute("aria-label")).toBe("Voice");
+  });
+
+  it("narrows the list to women or men from the gender filter, and says how many are showing", () => {
+    const gendered = [
+      { value: "", label: "none" },
+      { value: "w", label: "Wren · premade", gender: "f" },
+      { value: "m", label: "Marsh · premade", gender: "m" },
+      { value: "x", label: "Xan · premade" },
+    ];
+    const el = mode.voicePicker({ options: gendered, value: "", label: "Voice", onPick: () => undefined });
+    dom.document.body.append(el);
+    const gender = el.querySelector("select.gender");
+    expect([...gender.options].map((o: any) => o.value)).toEqual(["", "f", "m"]);
+    gender.value = "f";
+    gender.dispatchEvent(event("change"));
+    expect([...el.querySelector("select:not(.gender)").options].map((o: any) => o.value)).toEqual(["", "w"]);
+    expect(el.querySelector(".hint").textContent).toBe("1 of 3");
   });
 
   it("builds the whole list when the list is reached for", () => {

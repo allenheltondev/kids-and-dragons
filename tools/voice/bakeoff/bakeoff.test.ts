@@ -12,7 +12,7 @@ import type { AddressInfo } from "node:net";
 import { afterEach, describe, expect, it } from "vitest";
 import type { Pricing } from "../cost-model.ts";
 import { cellOf, estimate, runBakeoff, type BatchOptions, type Workspace } from "./bakeoff.ts";
-import { engineOf, familyOf, listModels, listVoices, pcmToWav, plan, send, spoken, type CastFile, type EngineConfig, type Fetch, type Job, type ModelInfo } from "./providers.ts";
+import { addLibraryVoice, elevenTags, engineOf, familyOf, listModels, listVoices, pcmToWav, plan, searchLibrary, send, spoken, type CastFile, type EngineConfig, type Fetch, type Job, type ModelInfo } from "./providers.ts";
 import { beatsIn, contentLines, fillSampleTokens, readSampleFile, resolveSamples, withoutBeats, type Sample } from "./samples.ts";
 import { castWith, createBakeoffServer } from "./server.ts";
 
@@ -223,6 +223,21 @@ describe("the requests", () => {
     expect(castWith(cast, { nobody: { gemini: "Kore" } })).toEqual(cast);
   });
 
+  it("tells ElevenLabs v3 a character's own accent and a short direction as tags, and older models nothing", () => {
+    const who = Object.keys(cast.speakers)[0]!;
+    const told = { ...cast, accent: "General American", speakers: { ...cast.speakers, [who]: { ...cast.speakers[who]!, accent: "Scottish (Highland)", direction: "Gruff, but kind underneath." } } };
+    const v3 = column("elevenlabs", "eleven_v3");
+    expect(elevenTags(v3, told, who)).toBe("[Scottish Highland accent] [Gruff, but kind underneath]");
+    expect(elevenTags(column("elevenlabs", "eleven_multilingual_v2"), told, who)).toBe("");
+    expect(elevenTags(column("gemini", "gemini-3.8-flash-tts"), told, who)).toBe("");
+    const sample = samples.find((s) => s.lines.some((l) => l.by === who))!;
+    const sent = (plan(v3, told, sample, 1) as Job[]).find((j) => (j.request.body as { text: string }).text.startsWith("[Scottish"))!;
+    expect(sent).toBeDefined();
+    // The sheet's own default accent, and a direction too long to be a tag, add nothing.
+    const plain = { ...told, speakers: { ...told.speakers, [who]: { ...told.speakers[who]!, accent: "General American", direction: "x".repeat(81) } } };
+    expect(elevenTags(v3, plain, who)).toBe("");
+  });
+
   it("never puts an API key in a request it plans", () => {
     for (const preset of presets) {
       for (const s of samples) {
@@ -310,6 +325,39 @@ describe("talking to the providers", () => {
     ]);
     const gemini = await listVoices("gemini", {}, async () => { throw new Error("no call"); });
     expect(gemini.find((v) => v.id === "Sulafat")?.about).toBe("warm");
+  });
+});
+
+describe("the ElevenLabs voice library", () => {
+  it("lists voices with their gender, and a search with the owner each is added from", async () => {
+    const urls: string[] = [];
+    const fetch: Fetch = async (url) => {
+      urls.push(String(url));
+      return response(JSON.stringify({ has_more: true, total_count: 812, voices: [{ public_owner_id: "own1", voice_id: "v9", name: "Mabel", gender: "female", age: "old", accent: "british", use_case: "characters", preview_url: "https://example.test/m.mp3" }] }));
+    };
+    const page = await searchLibrary({ elevenlabs: "k" }, { search: " grandmother ", gender: "female", page: 2 }, fetch);
+    expect(page).toEqual({ voices: [{ id: "v9", ownerId: "own1", name: "Mabel", about: "female, old, british, characters", gender: "f", preview: "https://example.test/m.mp3" }], hasMore: true, total: 812 });
+    expect(urls[0]).toContain("search=grandmother");
+    expect(urls[0]).toContain("gender=female");
+    expect(urls[0]).toContain("page=2");
+    await searchLibrary({ elevenlabs: "k" }, { gender: "anything" }, fetch);
+    expect(urls[1]).not.toContain("gender=");
+  });
+
+  it("adds a voice to the account only by its owner and id, and returns the account's id for it", async () => {
+    const calls: { url: string; method?: string; body?: unknown }[] = [];
+    const fetch: Fetch = async (url, init) => {
+      calls.push({ url: String(url), method: init?.method, body: init?.body });
+      return response(JSON.stringify({ voice_id: "mine1" }));
+    };
+    expect(await addLibraryVoice({ elevenlabs: "k" }, { ownerId: "own1", voiceId: "v9", name: "Mabel" }, fetch)).toBe("mine1");
+    expect(calls[0]).toMatchObject({ url: "https://api.elevenlabs.io/v1/voices/add/own1/v9", method: "POST" });
+    expect(JSON.parse(String(calls[0]!.body))).toEqual({ new_name: "Mabel" });
+  });
+
+  it("reads each account voice's gender from its labels", async () => {
+    const fetch: Fetch = async () => response(JSON.stringify({ voices: [{ voice_id: "a", name: "A", labels: { gender: "female" } }, { voice_id: "b", name: "B", labels: { gender: "male" } }, { voice_id: "c", name: "C" }] }));
+    expect((await listVoices("elevenlabs", { elevenlabs: "k" }, fetch)).map((v) => v.gender)).toEqual(["f", "m", undefined]);
   });
 });
 
