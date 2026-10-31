@@ -24,7 +24,8 @@ describe("whose line is it", () => {
   ];
 
   it("follows a name in the speech tag, before or after the quote", () => {
-    expect(attributeQuotes('"I\'m Pib," says the sprite. Pib says, "Hello."', speakers)).toEqual([{ id: "pib", words: "Hello." }]);
+    // A quote that says who is speaking names them, even when its tag only says "the sprite".
+    expect(attributeQuotes('"I\'m Pib," says the sprite. Pib says, "Hello."', speakers)).toEqual([{ id: "pib", words: "I'm Pib," }, { id: "pib", words: "Hello." }]);
     expect(attributeQuotes('"Help," says the dragon, trying out the word.', speakers)).toEqual([{ id: "keeper", words: "Help," }]);
   });
 
