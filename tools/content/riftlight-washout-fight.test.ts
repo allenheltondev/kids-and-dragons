@@ -27,7 +27,7 @@ function gotos(value: unknown, out: string[] = []): string[] {
   return out;
 }
 
-it("the young river drakes stand on every road to every ending", () => {
+it("the young river drake stands on every road to every ending", () => {
   const fight = chapter.scenes.drake_fight!;
   expect(fight.type).toBe("encounter");
   const endings = Object.keys(chapter.scenes).filter((id) => gotos(chapter.scenes[id]).length === 0);

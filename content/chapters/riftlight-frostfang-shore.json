@@ -41,11 +41,11 @@
   "scenes": {
     "bank": {
       "type": "story",
-      "narration": "You crawl onto the east bank under Frostfang, wet to the whiskers. High above, the broken shelf hangs like a bitten cracker. Behind you the river is climbing the stones, one pebble at a time. A griffin on a low ridge has been watching. \"I am Tamsin! I keep the river line for the aerie,\" she calls. \"The path to the pass starts up here, but the water is rising. Are all of you here? I can lower a ladder.\" Tonight you need a dry way back uphill, toward the mountain pass called the Cairnstep.",
+      "narration": "You come out on the stony shore under the Frostfang Peaks. Behind you, the river is climbing the stones. A griffin calls down from a low ridge. \"I am Tamsin! I keep the river line for the griffin aerie up here. The water is rising. Is everyone here?\" She waves a wing and nearly falls off. Tonight your job is to find a dry way back uphill, to the mountain pass called the Cairnstep.",
       "choices": [
         {
           "id": "continue",
-          "label": "Show her everyone is safe",
+          "label": "Wave that everyone's safe",
           "icon": "hand",
           "goto": "count"
         }
@@ -60,17 +60,17 @@
     },
     "count": {
       "type": "choice_point",
-      "narration": "\"Good!\" calls Tamsin. \"Stay right there. My ladder is stuck under a rock, and I need a minute to free it.\" The water licks at your boots. A minute is not long. Your rope is wet and tangled, and your packs are sitting right where the river wants them. What comes first?",
+      "narration": "\"Good!\" calls Tamsin. \"Stay put. My ladder is stuck under a rock.\" The water licks your boots. Your rope is tangled, and your packs sit right where the river wants them. What comes first?",
       "choices": [
         {
           "id": "rope",
-          "label": "Wring out the rope and coil it",
+          "label": "Coil the wet rope",
           "icon": "hand",
           "goto": "count_rope"
         },
         {
           "id": "packs",
-          "label": "Carry the packs above the waterline",
+          "label": "Carry the packs up",
           "icon": "hand",
           "goto": "count_packs"
         }
@@ -85,7 +85,7 @@
     },
     "count_rope": {
       "type": "story",
-      "narration": "You squeeze the rope and pick the swollen knots loose with your thumbs. A tiny silver fish flips out of a loop and flops back into the river. It looks offended. Soon the rope sits in a neat coil, like a sleeping snake that has decided to be friendly.",
+      "narration": "You pick the knots loose. A tiny silver fish flips out of a loop and back into the river. It looks offended. Soon the rope sits in a neat coil.",
       "choices": [
         {
           "id": "continue",
@@ -110,7 +110,7 @@
     },
     "count_packs": {
       "type": "story",
-      "narration": "You carry the packs up to a flat rock, one by one, and line them up like sleepy dogs. One pack goes glug when you lift it. You pour out a cupful of river and one very confused pebble. Now nothing can float away if the water climbs another step.",
+      "narration": "You carry the packs up to a flat rock. One pack goes glug. You pour out a cupful of river and one very confused pebble.",
       "choices": [
         {
           "id": "continue",
@@ -129,30 +129,30 @@
     },
     "help": {
       "type": "choice_point",
-      "narration": "Tamsin's ladder pops free. She lowers the rope ladder down the cliff, and its bottom rung swings just above the water. \"I can hold the top, but I cannot fix the bottom,\" she calls. \"If the foot is not on firm ground, the first climber will swing like the clapper in a bell. Can you settle it?\"",
+      "narration": "Tamsin's ladder pops free. She lowers a rope ladder down the cliff, and its bottom rung swings above the water. \"I can hold the top,\" she calls. \"But if the bottom swings, the first climber rings like a bell. Can you set it on firm ground?\"",
       "choices": [
         {
           "id": "help",
-          "label": "Move the ladder to firmer ground",
+          "label": "Move it to firm ground",
           "icon": "hand",
           "goto": "ladder"
         },
         {
           "id": "lash",
-          "label": "Lash the ladder's foot to a boulder",
+          "label": "Tie it to a boulder",
           "icon": "hand",
           "goto": "lash_foot"
         },
         {
           "id": "brace",
-          "label": "Use brace to hold the ladder steady",
+          "label": "Use brace to steady it",
           "icon": "hand",
           "goto": "brace_foot",
           "requiresClass": "thornguard"
         },
         {
           "id": "smash",
-          "label": "Use smash to set the foot on the rock",
+          "label": "Use smash to lift it",
           "icon": "hand",
           "goto": "smash_foot",
           "requiresSpecies": "bigfoot"
@@ -174,7 +174,7 @@
     },
     "ladder": {
       "type": "story",
-      "narration": "You and your friends take hold of the foot of the ladder. It is heavier than it looks, and the wet rope is slippery as a fish. A flat dry rock sits a few steps up the shingle. \"On three,\" Tamsin calls from above. \"One, two, and heave!\"",
+      "narration": "Everyone grabs the foot of the ladder. The wet rope is as slippery as a fish. A flat dry rock sits a few steps up. \"On three!\" calls Tamsin. \"One, two, heave!\"",
       "choices": [
         {
           "id": "continue",
@@ -195,11 +195,11 @@
       "type": "check",
       "stat": "might",
       "tn": 8,
-      "prompt": "Everyone grab the foot of the ladder and heave it onto the flat rock together.",
+      "prompt": "Everyone heave the ladder's foot onto the flat rock.",
       "roller": "all",
       "onSuccess": {
         "goto": "foot_set",
-        "narration": "The foot slides onto the flat rock with a crunch, and every one of you was pulling.",
+        "narration": "The foot slides onto the rock with a crunch.",
         "effects": [
           {
             "type": "setFlag",
@@ -209,7 +209,7 @@
       },
       "onFailure": {
         "goto": "foot_set",
-        "narration": "The foot slips back and the bottom rung bumps your shins. You settle for a rock that is only mostly dry.",
+        "narration": "The foot slips back and bumps your shins. You settle for a rock that is mostly dry.",
         "effects": [
           {
             "type": "damage",
@@ -231,11 +231,11 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Tie the ladder's foot to the boulder with a knot that will hold.",
-      "narration": "You take the free end of your rope and loop it around a boulder. There are a great many knots in the world, and you know a few of them. One of them might even be useful.",
+      "prompt": "Tie the ladder's foot to the boulder with a knot that holds.",
+      "narration": "You loop your rope around a boulder. You know a few knots.",
       "onSuccess": {
         "goto": "foot_set",
-        "narration": "The knot pulls tight, and the foot of the ladder stops swinging.",
+        "narration": "The knot pulls tight. The ladder stops swinging.",
         "effects": [
           {
             "type": "setFlag",
@@ -245,7 +245,7 @@
       },
       "onFailure": {
         "goto": "foot_set",
-        "narration": "The knot is a clumsy lump, but it holds the foot to the boulder. The ladder will wobble a bit."
+        "narration": "The knot is a clumsy lump, but it holds. The ladder will wobble a bit."
       },
       "cast": [
         {
@@ -259,8 +259,8 @@
       "type": "check",
       "stat": "might",
       "tn": 8,
-      "prompt": "Use brace to hold the ladder steady while the team sets its foot. The hero with brace helps; choose who leads the lift.",
-      "narration": "A thornguard knows how to stand firm so a friend can lean on them. That is what brace is for. One of you plants both feet on the shingle and holds the foot of the ladder still, while the rest of the party walks it onto the flat rock.",
+      "prompt": "Use brace to hold the ladder still while the others set its foot.",
+      "narration": "Your thornguard plants both feet and holds the ladder still.",
       "onSuccess": {
         "goto": "foot_set",
         "narration": "The foot settles on the rock like a hen on an egg.",
@@ -273,7 +273,7 @@
       },
       "onFailure": {
         "goto": "foot_set",
-        "narration": "The foot settles, but with a wobble. It will have to do."
+        "narration": "The foot settles with a wobble. It will have to do."
       },
       "cast": [
         {
@@ -287,11 +287,11 @@
       "type": "check",
       "stat": "might",
       "tn": 8,
-      "prompt": "Use smash to lift the ladder's foot onto the rock. The hero with smash helps; choose who leads the team.",
-      "narration": "A bigfoot can lift enormous things. That is what smash is for. One of you scoops up the foot of the ladder like a loaf of bread, and the rest of the party guides it to the flat rock.",
+      "prompt": "Use smash to lift the ladder's foot onto the rock.",
+      "narration": "Your bigfoot scoops up the ladder's foot like a loaf of bread.",
       "onSuccess": {
         "goto": "foot_set",
-        "narration": "The foot lands on the rock with a thump that shakes the pebbles.",
+        "narration": "It lands on the rock with a thump that shakes the pebbles.",
         "effects": [
           {
             "type": "setFlag",
@@ -301,7 +301,7 @@
       },
       "onFailure": {
         "goto": "foot_set",
-        "narration": "The foot lands a bit crooked. It will have to do."
+        "narration": "It lands a bit crooked. It will have to do."
       },
       "cast": [
         {
@@ -313,7 +313,7 @@
     },
     "foot_set": {
       "type": "story",
-      "narration": "The foot of the ladder stands on the flat rock and does not wobble at all. Tamsin tests it with one claw and gives a happy squawk. \"Now it is a real ladder,\" she says. \"Let us test it. Somebody hold it, and somebody climb three rungs.\"",
+      "narration": "The ladder's foot sits on the rock, steady. Tamsin tests it and squawks happily. \"Somebody hold it, and somebody climb three rungs.\"",
       "choices": [
         {
           "id": "continue",
@@ -341,13 +341,13 @@
             "notFlag": "foot_firm"
           },
           "replace": true,
-          "text": "The foot of the ladder stands on the rock, but it wobbles when Tamsin tests it with one claw. \"It will do for careful climbers,\" she says. \"Let us test it. Somebody hold it, and somebody climb three rungs.\""
+          "text": "The ladder's foot sits on the rock, but it wobbles. \"It will do,\" says Tamsin. \"Somebody hold it, and somebody climb three rungs.\""
         }
       ]
     },
     "ladder_hold": {
       "type": "interaction",
-      "narration": "The ladder hangs from Tamsin's claws and rests on its rock. It looks fine. Looking fine and being fine are different things, as every griffin knows. One of you will climb a few rungs, and the others will hold the ladder still.",
+      "narration": "Looking fine and being fine are different things. One hero climbs. The others hold the ladder still.",
       "interaction": {
         "kind": "cooperate",
         "cue": "Hold the ladder steady while your friend climbs three rungs.",
@@ -356,15 +356,15 @@
       },
       "onSuccess": {
         "goto": "driftline",
-        "narration": "Three rungs up, three rungs down, and not a wobble. \"Good ladder,\" says Tamsin. \"Now look along the shore. The river has tipped out its pockets.\""
+        "narration": "Not a wobble. \"Now look along the shore,\" says Tamsin."
       },
       "onFailure": {
         "goto": "driftline",
-        "narration": "The ladder gives a small wiggle, and the climber hops down. Tamsin holds the top tight with one claw. \"It will do,\" she says. \"Now look along the shore. The river has tipped out its pockets.\""
+        "narration": "The ladder wiggles, but it holds. \"Now look along the shore,\" says Tamsin."
       },
       "onAssisted": {
         "goto": "driftline",
-        "narration": "You wedge a stone under the rung and everyone holds on. Three rungs, no wobble. \"Now look along the shore,\" says Tamsin. \"The river has tipped out its pockets."
+        "narration": "You wedge a stone under it. No wobble. \"Now look along the shore,\" says Tamsin."
       },
       "cast": [
         {
@@ -376,23 +376,23 @@
     },
     "driftline": {
       "type": "choice_point",
-      "narration": "The river really has tipped out its pockets. There is driftwood in heaps, one lonely boot, and a big net of hay tied up in yeti knots. The net bobs at the water's edge, ready to float away again. \"Hay for the herd!\" says Tamsin. \"It came from upstream. If it floats off now, it is gone for good.\"",
+      "narration": "The flood has dumped driftwood, one lonely boot, and a big net of hay tied in yeti knots. The net bobs at the water's edge. \"Hay for the snowhorn herd!\" says Tamsin. \"If it floats off now, it is gone.\"",
       "choices": [
         {
           "id": "hook",
-          "label": "Hook the net with a driftwood pole",
+          "label": "Hook it with a pole",
           "icon": "hand",
           "goto": "net_hook"
         },
         {
           "id": "drag",
-          "label": "Wade in and drag the net out",
+          "label": "Wade in and drag it",
           "icon": "might",
           "goto": "net_drag"
         },
         {
           "id": "lasso",
-          "label": "Lasso the net with your coiled rope",
+          "label": "Lasso it with rope",
           "icon": "hand",
           "goto": "net_lasso",
           "requiresFlag": "rope_coiled"
@@ -411,7 +411,7 @@
       "stat": "quick",
       "tn": 12,
       "prompt": "Hook the net with the pole and draw it in.",
-      "narration": "You pick a long driftwood pole with a fork at one end, like a giant finger. The net keeps bobbing just out of reach.",
+      "narration": "You pick a driftwood pole with a fork at the end, like a giant finger.",
       "onSuccess": {
         "goto": "net_saved",
         "narration": "The fork catches a knot, and the net glides in like a sleepy seal.",
@@ -424,7 +424,7 @@
       },
       "onFailure": {
         "goto": "net_saved",
-        "narration": "The pole slips and the net spins away. You snatch a few bundles of hay out of the spray, which is better than none."
+        "narration": "The net spins away. You snatch a few bundles of hay."
       },
       "cast": [
         {
@@ -439,10 +439,10 @@
       "stat": "might",
       "tn": 12,
       "prompt": "Drag the heavy net out of the river together.",
-      "narration": "You wade in up to your knees and grab the knots. The net is full of water and does not want to leave the river.",
+      "narration": "You wade in to your knees. The net is full of water and does not want to leave.",
       "onSuccess": {
         "goto": "net_saved",
-        "narration": "The net comes out with a great slurp, and you all fall over in the gravel. The hay is safe.",
+        "narration": "Out it comes with a great slurp. The hay is safe.",
         "effects": [
           {
             "type": "setFlag",
@@ -452,7 +452,7 @@
       },
       "onFailure": {
         "goto": "net_saved",
-        "narration": "The river wins the tug of war. You save only one end of the net, with a few bundles of hay inside."
+        "narration": "The river wins the tug of war. You save one end, with a few bundles inside."
       },
       "cast": [
         {
@@ -466,11 +466,11 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "prompt": "Lasso the net and pull it in with the dry coil.",
-      "narration": "Your rope is coiled and ready. You twirl the loop once, twice, and let it fly.",
+      "prompt": "Lasso the net with your rope and pull it in.",
+      "narration": "You tie a loop, twirl it once, twice, and let it fly.",
       "onSuccess": {
         "goto": "net_saved",
-        "narration": "The loop drops over the net like a hat on a head. You haul it in, and the hay is safe.",
+        "narration": "The loop drops over the net like a hat. The hay is safe.",
         "effects": [
           {
             "type": "setFlag",
@@ -480,7 +480,7 @@
       },
       "onFailure": {
         "goto": "net_saved",
-        "narration": "The loop lands a little short. You reel in only one end of the net, with a few bundles inside."
+        "narration": "The loop lands short. You reel in one end, with a few bundles inside."
       },
       "cast": [
         {
@@ -492,7 +492,7 @@
     },
     "net_saved": {
       "type": "story",
-      "narration": "Whatever hay you have smells of sweet grass and wet wool. As you gather it, you hear a very small bell, and this time you see where it comes from. Out on a gravel bar in the river stand three snowhorn goats, huddled together, with the smallest one in the middle. \"The herd's,\" says Tamsin. \"They came down the grazing route before the water cut it off. They will not swim, and I cannot carry a goat.\" A small pouch has come loose from the net's knots. It holds five coins. Tamsin drops a supper bundle down to you. \"For the goats, or for you,\" she says.",
+      "narration": "Then you hear a tiny bell. Out on a gravel bar in the river stand three snowhorn goats, huddled tight. \"Goats from the herd!\" says Tamsin. \"The water cut off their grazing route. They will not swim, and I cannot carry a goat.\" Tucked in the wet hay, you find a pouch of five coins. Tamsin drops you a supper bundle. \"For the goats, or for you.\"",
       "choices": [
         {
           "id": "continue",
@@ -522,23 +522,23 @@
     },
     "bar": {
       "type": "choice_point",
-      "narration": "The gravel bar sits in the middle of a brown stream that was not there this morning. \"Knee deep and quick,\" Tamsin warns. The goats stare at you. The smallest one sneezes. How will you reach them?",
+      "narration": "The bar sits in a brown stream that was not there this morning. \"Knee deep and quick,\" Tamsin warns. The smallest goat sneezes. How will you reach them?",
       "choices": [
         {
           "id": "wade",
-          "label": "Wade across on a rope line, all together",
+          "label": "Wade across on a rope",
           "icon": "hand",
           "goto": "bar_wade"
         },
         {
           "id": "stones",
-          "label": "Lay flat stones as stepping stones",
+          "label": "Lay stepping stones",
           "icon": "hand",
           "goto": "bar_stones"
         },
         {
           "id": "fly",
-          "label": "Use skyward or glide to carry a rope across",
+          "label": "Fly a rope across",
           "icon": "wing",
           "goto": "bar_fly",
           "requiresSpecies": [
@@ -548,7 +548,7 @@
         },
         {
           "id": "leap",
-          "label": "Use leap to jump the stream with a rope",
+          "label": "Leap across with rope",
           "icon": "arrow",
           "goto": "bar_leap",
           "requiresSpecies": "manticore"
@@ -569,16 +569,16 @@
       "type": "check",
       "stat": "might",
       "tn": 8,
-      "prompt": "Everyone grip the rope and wade across the stream together.",
-      "narration": "You tie one end of the rope around the nearest big rock, and everyone takes hold. The water is cold enough to make your teeth sing.",
+      "prompt": "Everyone grip the rope and wade across together.",
+      "narration": "The water is cold enough to make your teeth sing.",
       "roller": "all",
       "onSuccess": {
         "goto": "bar_reached",
-        "narration": "You climb out on the gravel dripping and cheering. Nobody let go."
+        "narration": "You climb onto the gravel, dripping and cheering."
       },
       "onFailure": {
         "goto": "bar_reached",
-        "narration": "A hidden hole dunks you to the middle. You all come up sputtering, still holding the rope.",
+        "narration": "A hidden hole dunks you. You come up sputtering, still holding the rope.",
         "effects": [
           {
             "type": "damage",
@@ -603,16 +603,16 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "The sharpest eyes lay a path of flat stones across the stream, one at a time.",
-      "narration": "Flat stones lie all over the shore, like dropped plates. The sharpest eyes pick the shallow spots, and the others hand over the biggest stones.",
+      "prompt": "Lay a path of flat stones across the stream.",
+      "narration": "Flat stones lie all over the shore, like dropped plates.",
       "roller": "best",
       "onSuccess": {
         "goto": "bar_reached",
-        "narration": "Stone by stone, the path grows. The last one lands on the bar with a clack."
+        "narration": "The last stone lands on the bar with a clack."
       },
       "onFailure": {
         "goto": "bar_reached",
-        "narration": "One stone rocks and tips you in. You finish the path wet to the knees.",
+        "narration": "One stone tips you in. You finish the path wet to the knees.",
         "effects": [
           {
             "type": "damage",
@@ -637,15 +637,15 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "prompt": "Use skyward or glide to carry a rope across the stream. The hero with wings helps; choose who leads.",
-      "narration": "A griffin can fly up and read a river from above. A dragonling can glide over water the party cannot walk through. One way or the other, a rope goes over the stream, and the rest of you follow it.",
+      "prompt": "Use skyward or glide to carry a rope across the stream.",
+      "narration": "Your winged hero carries a rope over the water.",
       "onSuccess": {
         "goto": "bar_reached",
-        "narration": "The line sags, then tightens. The rest of you cross it hand over hand."
+        "narration": "The line tightens. You cross it hand over hand."
       },
       "onFailure": {
         "goto": "bar_reached",
-        "narration": "The line sags too low, and everyone gets a wet ride across the middle.",
+        "narration": "The line sags too low. Everyone gets a wet ride across.",
         "effects": [
           {
             "type": "damage",
@@ -670,15 +670,15 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "prompt": "Use leap to jump the stream with a rope. The hero with leap helps; choose who leads.",
-      "narration": "A manticore can cross a gap in a single bound, with a rope held in its teeth. One bound is all it takes.",
+      "prompt": "Use leap to jump the stream with a rope.",
+      "narration": "Your manticore takes the rope in its teeth and crouches.",
       "onSuccess": {
         "goto": "bar_reached",
-        "narration": "One big bound, and the rope is across. The rest of you cross it hand over hand."
+        "narration": "One big bound, and the rope is across. You cross hand over hand."
       },
       "onFailure": {
         "goto": "bar_reached",
-        "narration": "The bound lands short in the shallows, but the rope still reaches. You cross it with wet boots.",
+        "narration": "The bound lands in the shallows, but the rope reaches. You cross with wet boots.",
         "effects": [
           {
             "type": "damage",
@@ -701,11 +701,11 @@
     },
     "bar_reached": {
       "type": "story",
-      "narration": "You stand on the gravel bar, and the goats lean away from you, all horns and worry. The biggest goat has a cracked horn and a very disapproving face. The smallest wears a tiny bell on a faded ribbon, and the bell jingles every time it shivers. They are cold, wet and cross. And between you and them, a pair of glassback crabs, each the size of a wheelbarrow, rattle their shells. Their backs shine like windows. The flood washed out their burrow, and they have decided this gravel bar is now their house. They clack a warning, and they are very sure about it.",
+      "narration": "On the bar, the goats lean away from you. The biggest has a cracked horn and a very cross face. The smallest wears a bell that jingles when it shivers. But one of the glassback crabs that live by this river blocks the way. The flood washed out its burrow, so this bar is its house now.",
       "choices": [
         {
           "id": "continue",
-          "label": "Settle things with the crab",
+          "label": "Face the crab",
           "icon": "shield",
           "goto": "bar_crab"
         }
@@ -727,7 +727,7 @@
     "bar_crab": {
       "type": "encounter",
       "map": "ford",
-      "narration": "The glassback crabs clack their claws and sidle across the gravel. Their shells are thick, so be patient. They do not want to hurt anyone. They want their house back, and a house needs a doorstep.",
+      "narration": "The crab clacks and sidles closer. Its shell is thick, so be patient. It only wants a house.",
       "enemies": [
         {
           "id": "crab",
@@ -736,7 +736,7 @@
       ],
       "onVictory": {
         "goto": "bar_carry",
-        "narration": "The crabs tuck in their claws and clink into a new burrow under the rocks. One looks out, satisfied. In the gravel they leave behind a smooth, lucky-looking stone, which you pocket.",
+        "narration": "The crab clinks off into a new burrow under the rocks. It leaves a smooth, lucky-looking stone behind. You pocket it.",
         "effects": [
           {
             "type": "grantItem",
@@ -747,7 +747,7 @@
       },
       "onDefeat": {
         "goto": "bar_carry",
-        "narration": "Their shells are just too tough. You stumble back, wet and puffing, and Tamsin whistles a loud call from the ridge. The crabs huff and sidle off to sulk. You lose your breath and some of the afternoon.",
+        "narration": "That shell is too tough. You stumble back until Tamsin's whistle sends the crab off to sulk. It cost you some of the afternoon.",
         "effects": [
           {
             "type": "heal",
@@ -764,7 +764,7 @@
     },
     "bar_carry": {
       "type": "interaction",
-      "narration": "The smallest goat cannot wade a stream that deep. You lay it in a sling made of rope, with a friend on each side. The little goat jingles in protest. The big goats watch every step.",
+      "narration": "The smallest goat cannot wade water that deep. You lift it together in a rope sling. It jingles in protest.",
       "interaction": {
         "kind": "balance",
         "cue": "Raise or lower your side until the goat rides level.",
@@ -773,15 +773,15 @@
       },
       "onSuccess": {
         "goto": "goats",
-        "narration": "The sling stays level all the way along the line. The little goat jingles like a happy doorbell."
+        "narration": "The sling stays level. The goat jingles like a happy doorbell."
       },
       "onFailure": {
         "goto": "goats",
-        "narration": "The sling tips, and the little goat paddles the last bit itself, snorting. It is wet, offended, and fine."
+        "narration": "The sling tips. The goat paddles the rest, wet and offended."
       },
       "onAssisted": {
         "goto": "goats",
-        "narration": "You steady the sling together, a little at a time, until the goat rides level."
+        "narration": "You steady the sling bit by bit until the goat rides level."
       },
       "cast": [
         {
@@ -796,37 +796,37 @@
     },
     "goats": {
       "type": "choice_point",
-      "narration": "The smallest goat is safe in its sling. The two big goats are not so sure about the water. The biggest goat stamps. How will you bring them over?",
+      "narration": "The little goat is safe. The two big goats are not so sure about the water. The biggest one stamps. How will you bring them over?",
       "choices": [
         {
           "id": "line",
-          "label": "Walk them over, one friend to each goat",
+          "label": "Walk them over slowly",
           "icon": "hand",
           "goto": "goat_line"
         },
         {
           "id": "lead",
-          "label": "Lead the biggest goat first and let the other follow",
+          "label": "Lead the boss goat first",
           "icon": "heart",
           "goto": "goat_lead"
         },
         {
           "id": "mend",
-          "label": "Use mend on the biggest goat's sore knee",
+          "label": "Mend the big goat's knee",
           "icon": "heart",
           "goto": "goat_mend",
           "requiresSpecies": "unicorn"
         },
         {
           "id": "song",
-          "label": "Use a songkeeper's lullaby to calm them",
+          "label": "Sing them a lullaby",
           "icon": "note",
           "goto": "goat_song",
           "requiresClass": "songkeeper"
         },
         {
           "id": "bait",
-          "label": "Tempt them across with the supper bundle",
+          "label": "Tempt them with supper",
           "icon": "cake",
           "goto": "goat_bait",
           "requiresItem": "supper_bundle",
@@ -857,17 +857,17 @@
       "type": "check",
       "stat": "heart",
       "tn": 8,
-      "prompt": "Everyone take a goat by the ruff and walk it across, nice and slow.",
-      "narration": "Each big goat gets a friend. You hold a woolly ruff in one hand and the rope in the other. The goats plant their hooves like small, hairy anchors.",
+      "prompt": "Take the goats by the ruff and walk them across slowly.",
+      "narration": "The goats plant their hooves like small, hairy anchors.",
       "roller": "all",
       "checkKind": "doing",
       "onSuccess": {
         "goto": "goat_back",
-        "narration": "Hoof by hoof, the goats come across. The biggest goat even looks pleased about it."
+        "narration": "Hoof by hoof, the goats come across. The biggest even looks pleased."
       },
       "onFailure": {
         "goto": "goat_back",
-        "narration": "The goats balk halfway and splash everybody. They get across in the end, by pushing past you.",
+        "narration": "The goats balk and splash everybody. They get across by pushing past you.",
         "effects": [
           {
             "type": "damage",
@@ -892,16 +892,16 @@
       "type": "check",
       "stat": "heart",
       "tn": 12,
-      "prompt": "Coax the biggest goat into the water and let the other one follow its boss.",
-      "narration": "Goats follow their boss. The biggest goat has a cracked horn and an opinion about water. You walk beside it, murmuring, with a hand on its back.",
+      "prompt": "Coax the biggest goat in, and let the other follow its boss.",
+      "narration": "Goats follow their boss. You walk beside the biggest, murmuring.",
       "checkKind": "doing",
       "onSuccess": {
         "goto": "goat_back",
-        "narration": "The biggest goat huffs, squares its shoulders, and wades in like a king. The other goat trots after it."
+        "narration": "It huffs and wades in like a king. The other trots after it."
       },
       "onFailure": {
         "goto": "goat_back",
-        "narration": "The biggest goat refuses twice, then charges in all at once and takes everybody with it.",
+        "narration": "It refuses twice, then charges in and takes everybody with it.",
         "effects": [
           {
             "type": "damage",
@@ -926,15 +926,15 @@
       "type": "check",
       "stat": "heart",
       "tn": 8,
-      "prompt": "Use mend on the smallest goat's sore knee. The hero with mend helps; choose who leads.",
-      "narration": "A unicorn has a gentle touch that makes a scrape stop stinging. It lays a hoof on the big goat's sore knee, and the other goat watches with its ears up.",
+      "prompt": "Use mend on the biggest goat's sore knee.",
+      "narration": "Your unicorn lays a gentle hoof on the big goat's sore knee.",
       "onSuccess": {
         "goto": "goat_back",
-        "narration": "The big goat stands on its mended knee and trots into the water. The other follows, ears forward."
+        "narration": "The big goat trots into the water. The other follows, ears forward."
       },
       "onFailure": {
         "goto": "goat_back",
-        "narration": "The knee feels better, but the goats still hate the water. They cross with a lot of complaining.",
+        "narration": "The knee feels better, but the goats still hate water. They cross, complaining.",
         "effects": [
           {
             "type": "damage",
@@ -959,15 +959,15 @@
       "type": "check",
       "stat": "heart",
       "tn": 8,
-      "prompt": "Use a lullaby to calm the goats. The songkeeper helps; choose who leads.",
-      "narration": "A songkeeper hums a slow tune that sounds like a blanket. The biggest goat sits down to listen.",
+      "prompt": "Use a songkeeper's lullaby to calm the goats.",
+      "narration": "Your songkeeper hums a tune that sounds like a blanket.",
       "onSuccess": {
         "goto": "goat_back",
-        "narration": "The song rolls over the water. The goats stop stamping and follow the tune across."
+        "narration": "The goats stop stamping and follow the song across."
       },
       "onFailure": {
         "goto": "goat_back",
-        "narration": "The song is lovely, but the stream is loud. The goats cross anyway, slowly, with their eyes shut.",
+        "narration": "The stream is loud, but the goats cross anyway, slowly, with their eyes shut.",
         "effects": [
           {
             "type": "damage",
@@ -993,15 +993,15 @@
       "stat": "heart",
       "tn": 8,
       "prompt": "Hold out the supper and lead the goats across, one sniff at a time.",
-      "narration": "Goats will go anywhere for bread and cheese. You unwrap the supper bundle, and three heads turn at once. Three noses begin to twitch.",
+      "narration": "You unwrap the supper bundle. Every goat nose twitches.",
       "checkKind": "doing",
       "onSuccess": {
         "goto": "goat_back",
-        "narration": "The goats follow the smell across the stream like a very hairy parade. The biggest one gets the crust."
+        "narration": "The goats follow the smell across like a hairy parade."
       },
       "onFailure": {
         "goto": "goat_back",
-        "narration": "The goats lunge for the bundle, splash everyone, and eat it on the shore. They get across, which was the point.",
+        "narration": "The goats lunge and eat the supper on the shore. They got across, which was the point.",
         "effects": [
           {
             "type": "damage",
@@ -1024,11 +1024,11 @@
     },
     "goat_back": {
       "type": "story",
-      "narration": "The goats scramble up the shingle and shake themselves like dogs, spraying everybody. The smallest goat sneezes on the ladder. The biggest goat stamps twice, which seems to mean thank you. \"There,\" says Tamsin. \"Now the herd has all its horns again.\"",
+      "narration": "The goats scramble ashore and shake like dogs, spraying everybody. The biggest stamps twice, which seems to mean thank you. \"There,\" says Tamsin. \"The herd has all its horns again.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Rub your cold hands together",
+          "label": "Warm your cold hands",
           "icon": "flame",
           "goto": "fire"
         }
@@ -1054,29 +1054,29 @@
           "when": {
             "flag": "hay_saved"
           },
-          "text": "Then the biggest goat spots the hay and goes straight for it, which is a very goat thing to do."
+          "text": "Then the biggest goat spots the hay and goes straight for it."
         }
       ]
     },
     "fire": {
       "type": "choice_point",
-      "narration": "The goats are shivering, and so are you. Tamsin points to the lee of a big rock, out of the wind. \"Nobody climbs my ladder with stiff fingers,\" she says. \"Cold rungs are slippery rungs.\" Driftwood lies all around, but it is as wet as everything else. How will you warm up?",
+      "narration": "The goats are shivering, and so are you. \"Nobody climbs my ladder with stiff fingers,\" says Tamsin. The driftwood is as wet as everything else. How will you warm up?",
       "choices": [
         {
           "id": "build",
-          "label": "Build a fire in the lee of the big rock",
+          "label": "Build a fire",
           "icon": "flame",
           "goto": "fire_build"
         },
         {
           "id": "huddle",
-          "label": "Huddle with the goats and rub everyone dry",
+          "label": "Huddle with the goats",
           "icon": "heart",
           "goto": "fire_huddle"
         },
         {
           "id": "smash",
-          "label": "Use smash to split a log into dry kindling",
+          "label": "Smash a log open",
           "icon": "fist",
           "goto": "fire_smash",
           "requiresSpecies": "bigfoot"
@@ -1094,7 +1094,7 @@
       "art": "scenes/riftlight/frostfang-gravel-bar"
     },
     "fire_build": {
-      "narration": "Wet wood will not light, but the inside of a log is often dry. You break the thickest pieces open. Out come little curls of dry wood, like shavings. A tiny flame catches, grows, and crackles. Every face turns toward it.",
+      "narration": "The inside of a log is often dry. You break the thick pieces open. A tiny flame catches and crackles.",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
@@ -1109,14 +1109,14 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Sit by the fire",
           "icon": "forward",
           "goto": "rest_fire"
         }
       ]
     },
     "fire_huddle": {
-      "narration": "You do not need a fire to get warm. You press in close and rub everybody down with a handful of hay and your own sleeves. Goats are surprisingly hot. Soon everyone is toasty, and the smallest goat is asleep on a boot.",
+      "narration": "You press in close and rub everyone dry with hay. Goats are surprisingly hot. The smallest falls asleep on a boot.",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
@@ -1131,14 +1131,14 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Rest with the goats",
           "icon": "forward",
           "goto": "rest_fire"
         }
       ]
     },
     "fire_smash": {
-      "narration": "A bigfoot can break a barrier or lift something enormous. One whack on a log, and out spill dry splinters from the middle. The log cracks open like a nut, and the dry heart of it lights at the first spark.",
+      "narration": "One bigfoot whack, and the log cracks open like a nut. Its dry heart lights at the first spark.",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
@@ -1153,7 +1153,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Sit by the fire",
           "icon": "forward",
           "goto": "rest_fire"
         }
@@ -1161,24 +1161,24 @@
     },
     "rest_fire": {
       "type": "rest",
-      "narration": "For a few minutes, the shore is cozy. Steam rises from the goats. Steam rises from your socks too, and one sock smells like river pudding. Tamsin watches from her perch with her head on one side. \"We climb next,\" she says. \"But nobody has to hurry yet.\"",
+      "narration": "For a few minutes, the shore is cozy. Steam rises from the goats, and from your socks. One sock smells like river pudding. \"We climb next,\" says Tamsin. \"But nobody has to hurry yet.\"",
       "heal": 3,
       "choices": [
         {
           "id": "socks",
-          "label": "Dry your socks by the warm",
+          "label": "Dry your socks",
           "icon": "rest",
           "goto": "rest_socks"
         },
         {
           "id": "aerie",
-          "label": "Ask Tamsin about the aerie",
+          "label": "Ask about the aerie",
           "icon": "ear",
           "goto": "rest_story"
         },
         {
           "id": "share",
-          "label": "Share a bite of supper with Tamsin and the goats",
+          "label": "Share supper with everyone",
           "icon": "cake",
           "goto": "rest_share",
           "when": {
@@ -1214,7 +1214,7 @@
     },
     "rest_socks": {
       "type": "story",
-      "narration": "You hang your socks on a stick, and they steam like little flags. The smallest goat eats the corner of one, thoughtfully, and then spits it out. The biggest goat leans on you, warm and damp, and you feel like a very large pillow. It is nice for a minute.",
+      "narration": "Your socks steam on a stick like little flags. The smallest goat nibbles one, thinks about it, and spits it out.",
       "choices": [
         {
           "id": "continue",
@@ -1236,7 +1236,7 @@
     },
     "rest_share": {
       "type": "story",
-      "narration": "You break the supper into five fair bits, for goats do not like to be left out. Tamsin takes hers with great dignity and then gets cheese in her feathers. Pleased, she digs in her saddle bag and pulls out a bright singing-day ribbon. \"The aerie wears these on feast days,\" she says. \"Wear it for luck.\"",
+      "narration": "You share the supper, a bit for everyone, goats included. Tamsin gets cheese in her feathers. She hands you a bright ribbon from her bag. \"We wear these on feast days. Wear it for luck.\"",
       "choices": [
         {
           "id": "continue",
@@ -1265,7 +1265,7 @@
     },
     "rest_story": {
       "type": "story",
-      "narration": "\"Our aerie is above the ridge,\" says Tamsin. \"We keep a pass ledger, a big book of every road through the peaks. Our keeper writes down each new path and each path that closes. This season there is a path in the ledger that was not there before, and he cannot decide whether to believe it.\" She ruffles her wings. \"He needs someone to walk it. You are walking the right way.\"",
+      "narration": "\"Our aerie is above the ridge,\" says Tamsin. \"Our keeper keeps a pass ledger, a book of every road through the peaks. This season it shows a new path he cannot quite believe. He needs someone to walk it.\"",
       "choices": [
         {
           "id": "continue",
@@ -1287,30 +1287,30 @@
     },
     "surge": {
       "type": "choice_point",
-      "narration": "A crack like a giant's knuckle splits the air upriver. A slab of broken shelf has dropped into the water. A brown wave rolls down the shore, fast, with foam on top like a bad hat. \"Ladder! Now!\" shouts Tamsin. The goats see the narrow goat track that zigzags up the scree beside the cliff before you do, and they are already running for it.",
+      "narration": "Crack! Upriver, a slab of ice breaks off the cliffs. A brown wave rolls down the shore with foam on top, like a bad hat. \"Ladder! Now!\" shouts Tamsin. The goats are already running for a narrow goat track up the cliff.",
       "choices": [
         {
           "id": "run",
-          "label": "Run for the ladder, all together",
+          "label": "Run for the ladder",
           "icon": "quick",
           "goto": "surge_run"
         },
         {
           "id": "chain",
-          "label": "Boost the goats onto their track, then follow",
+          "label": "Boost the goats up",
           "icon": "might",
           "goto": "surge_chain"
         },
         {
           "id": "roar",
-          "label": "Use roar to keep everyone moving",
+          "label": "Roar to keep moving",
           "icon": "arrow",
           "goto": "surge_roar",
           "requiresSpecies": "manticore"
         },
         {
           "id": "brace",
-          "label": "Use brace to hold the line against the wave",
+          "label": "Brace against the wave",
           "icon": "shield",
           "goto": "surge_brace",
           "requiresClass": "thornguard"
@@ -1331,16 +1331,16 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "prompt": "Everyone run for the ladder before the wave arrives.",
-      "narration": "You run for the foot of the ladder with the wave behind you. The wet shingle slides under your boots like marbles.",
+      "prompt": "Everyone run for the ladder before the wave hits.",
+      "narration": "The wet stones slide under your boots like marbles.",
       "roller": "all",
       "onSuccess": {
         "goto": "surge_after",
-        "narration": "You reach the ladder as the wave slaps the rocks behind you. Nobody is swept off."
+        "narration": "You reach the ladder as the wave slaps the rocks behind you."
       },
       "onFailure": {
         "goto": "surge_after",
-        "narration": "The wave catches your heels and sloshes you against the cliff. You grab the rungs and hold on."
+        "narration": "The wave sloshes you against the cliff. You grab the rungs and hold on."
       },
       "cast": [
         {
@@ -1357,16 +1357,16 @@
       "type": "check",
       "stat": "might",
       "tn": 8,
-      "prompt": "Everyone lift a goat onto the goat track, then jump after it.",
-      "narration": "Goats are quick on scree, but the first step is steep. You boost them onto the track one rump at a time.",
+      "prompt": "Lift the goats onto their track, then scramble after them.",
+      "narration": "You boost the goats up one rump at a time.",
       "roller": "all",
       "onSuccess": {
         "goto": "surge_after",
-        "narration": "The last hoof leaves the shingle just as the wave arrives. The goats bound up the track like they own it."
+        "narration": "The last hoof leaves the shore just as the wave arrives."
       },
       "onFailure": {
         "goto": "surge_after",
-        "narration": "The wave soaks your boots as you shove the last goat up. It looks back at you with deep reproach."
+        "narration": "The wave soaks your boots as you shove the last goat up. It looks deeply offended."
       },
       "cast": [
         {
@@ -1383,15 +1383,15 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "prompt": "Use roar to keep everyone moving. The hero with roar helps; choose who leads.",
-      "narration": "A manticore can make a very loud noise at exactly the right moment. The roar rolls along the shore, and every goat and friend begins to run.",
+      "prompt": "Use roar to get everyone moving.",
+      "narration": "Your manticore takes a very big breath.",
       "onSuccess": {
         "goto": "surge_after",
-        "narration": "Everybody hears the roar, and nobody argues with it. You are at the ladder before the wave is."
+        "narration": "Nobody argues with that roar. You reach the ladder before the wave does."
       },
       "onFailure": {
         "goto": "surge_after",
-        "narration": "The roar is loud, but the wave is louder. You get wet to the knees before the rungs."
+        "narration": "The roar is loud, but the wave is louder. You get wet to the knees."
       },
       "cast": [
         {
@@ -1408,15 +1408,15 @@
       "type": "check",
       "stat": "might",
       "tn": 8,
-      "prompt": "Use brace to hold the line against the wave. The hero with brace helps; choose who leads.",
-      "narration": "A thornguard knows how to stand in front so friends can run behind. One digs in at the foot of the ladder and takes the first slap of the wave.",
+      "prompt": "Use brace to take the wave while the others run.",
+      "narration": "Your thornguard digs in at the foot of the ladder.",
       "onSuccess": {
         "goto": "surge_after",
-        "narration": "The wave hits the braced line and splits around it. Everyone gets to the ladder with dry elbows."
+        "narration": "The wave splits around the brace. Everyone reaches the ladder with dry elbows."
       },
       "onFailure": {
         "goto": "surge_after",
-        "narration": "The wave is bigger than it looked. The line holds, but everyone gets a shove and a splash."
+        "narration": "The brace holds, but everyone gets a shove and a splash."
       },
       "cast": [
         {
@@ -1431,7 +1431,7 @@
     },
     "surge_after": {
       "type": "story",
-      "narration": "The wave breaks around the foot of the ladder, which does not move at all. Tamsin lets out a long breath. \"Still standing,\" she says. The goats trot up the track and out of sight. The water settles into a steady, bossy flow a full body length higher, right over the stones where you stood a minute ago.",
+      "narration": "The wave breaks around the ladder, which does not budge. \"Still standing,\" says Tamsin. The river settles higher, right where you stood a minute ago.",
       "choices": [
         {
           "id": "continue",
@@ -1453,13 +1453,13 @@
             "notFlag": "foot_firm"
           },
           "replace": true,
-          "text": "The wave slams the foot of the ladder and swings it hard. Tamsin hangs on to the top with both claws, feathers flying. The ladder wobbles back into place. The goats trot up the track and out of sight. The water settles into a steady, bossy flow a full body length higher, right over the stones where you stood a minute ago."
+          "text": "The wave swings the ladder hard. Tamsin hangs on with both claws until it settles. The river settles higher, right where you stood a minute ago."
         }
       ]
     },
     "wave_gap": {
       "type": "interaction",
-      "narration": "A second, smaller wave sweeps the shore and then draws back with a long hiss. For a moment the stones at the foot of the ladder are bare. \"Wait for it,\" calls Tamsin. \"Wait... wait...\"",
+      "narration": "A smaller wave pulls back with a long hiss. For a moment, the stones by the ladder are bare. \"Wait for it,\" calls Tamsin.",
       "interaction": {
         "kind": "timing",
         "cue": "Wait for the water to pull back, then tap to run to the ladder.",
@@ -1470,15 +1470,15 @@
       },
       "onSuccess": {
         "goto": "ascend",
-        "narration": "You splash across the bare stones and grab the bottom rung with dry feet."
+        "narration": "You splash across and grab the bottom rung with dry feet."
       },
       "onFailure": {
         "goto": "ascend",
-        "narration": "You go a little early and get wet to the knees. Tamsin hauls you in by the collar."
+        "narration": "You go early and get wet to the knees. Tamsin hauls you in."
       },
       "onAssisted": {
         "goto": "ascend",
-        "narration": "Tamsin calls the moment, and everyone runs together with dry feet."
+        "narration": "Tamsin calls the moment, and everyone runs together."
       },
       "cast": [
         {
@@ -1490,23 +1490,23 @@
     },
     "ascend": {
       "type": "choice_point",
-      "narration": "The ladder is long and the rungs are wet. Above you, Tamsin leans over the edge, and above her is the ridge. The goats are already up there, looking down, as goats do. How will you climb?",
+      "narration": "The ladder is long, and the rungs are wet. The goats are already up top, looking down, as goats do. How will you climb?",
       "choices": [
         {
           "id": "line",
-          "label": "Climb in a line, each friend steadying the next",
+          "label": "Climb in a line",
           "icon": "quick",
           "goto": "climb_line"
         },
         {
           "id": "sling",
-          "label": "Haul the packs up on the rope first, then climb light",
+          "label": "Haul the packs first",
           "icon": "might",
           "goto": "climb_sling"
         },
         {
           "id": "wings",
-          "label": "Use skyward or glide to carry the packs up",
+          "label": "Fly the packs up",
           "icon": "wing",
           "goto": "climb_wings",
           "requiresSpecies": [
@@ -1516,7 +1516,7 @@
         },
         {
           "id": "rally",
-          "label": "Use rally to cheer on tired climbers",
+          "label": "Rally tired climbers",
           "icon": "note",
           "goto": "climb_rally",
           "requiresClass": "songkeeper"
@@ -1534,15 +1534,15 @@
       "type": "check",
       "stat": "quick",
       "tn": 12,
-      "prompt": "Climb the swaying ladder in a line, each friend steadying the next.",
-      "narration": "You put the lightest climber in front and the strongest at the bottom. Everyone holds the rung ahead and the rope beside it.",
+      "prompt": "Climb the swaying ladder in a line, steadying the climber ahead.",
+      "narration": "The lightest climber goes first.",
       "onSuccess": {
         "goto": "top",
-        "narration": "Hand over hand, rung by rung, the line climbs. The ladder sways, and so do your stomachs, but nobody lets go."
+        "narration": "The ladder sways, and so do your stomachs, but nobody lets go."
       },
       "onFailure": {
         "goto": "top",
-        "narration": "A rung slips under a boot, and the line swings like a conga line. Everyone hangs on and climbs the rest with shaky knees."
+        "narration": "A rung slips, and the line swings like a conga line. You climb the rest on shaky knees."
       },
       "cast": [
         {
@@ -1557,14 +1557,14 @@
       "stat": "might",
       "tn": 12,
       "prompt": "Haul the packs up on the rope, then climb with free hands.",
-      "narration": "Packs are heavy on a ladder, and wet packs are heavier. You tie them to the rope in a big bundle for Tamsin to haul.",
+      "narration": "You tie the wet packs in a bundle for Tamsin to haul.",
       "onSuccess": {
         "goto": "top",
-        "narration": "The packs go up in a swinging bundle, and Tamsin catches them one by one. Then you climb with nothing but yourselves."
+        "narration": "Tamsin catches the bundle. Then you climb with free hands."
       },
       "onFailure": {
         "goto": "top",
-        "narration": "The bundle swings into the cliff with a bonk, and a pack opens. You catch your things as you climb."
+        "narration": "The bundle bonks the cliff, and a pack pops open. You catch your things on the way up."
       },
       "cast": [
         {
@@ -1578,15 +1578,15 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "prompt": "Use skyward or glide to carry the packs up. The hero with wings helps; choose who leads.",
-      "narration": "Wings are good for more than flying yourself. A griffin or a dragonling carries the packs up in short hops, and the rest of the party climbs with free hands.",
+      "prompt": "Use skyward or glide to carry the packs up.",
+      "narration": "Your winged hero carries the packs up in short hops.",
       "onSuccess": {
         "goto": "top",
-        "narration": "The packs float up in a few quick flights, and then you climb with free hands."
+        "narration": "The packs float up. Then you climb with free hands."
       },
       "onFailure": {
         "goto": "top",
-        "narration": "A pack slips and falls with a splash, and then you fish it out. It is a bit wetter than before."
+        "narration": "A pack splashes into the river. You fish it out, a bit wetter than before."
       },
       "cast": [
         {
@@ -1600,15 +1600,15 @@
       "type": "check",
       "stat": "heart",
       "tn": 8,
-      "prompt": "Use rally to cheer on tired climbers. The songkeeper helps; choose who leads.",
-      "narration": "A songkeeper can lift a friend who is down. A quick climbing song, and tired arms find some spring in them.",
+      "prompt": "Use rally to cheer on tired climbers.",
+      "narration": "Your songkeeper starts a quick climbing song.",
       "onSuccess": {
         "goto": "top",
-        "narration": "A bright rally goes up the ladder, and every climber finds an extra rung of energy."
+        "narration": "Every climber finds an extra rung of energy."
       },
       "onFailure": {
         "goto": "top",
-        "narration": "The rally is cheerful, but the rungs are still wet. You get to the top with sore arms."
+        "narration": "The song is cheerful, but the rungs are wet. You reach the top with sore arms."
       },
       "cast": [
         {
@@ -1620,11 +1620,11 @@
     },
     "top": {
       "type": "story",
-      "narration": "You haul yourself over the edge and lie on the rock, panting. The ridge is dry. Really dry! Tamsin sits beside you, grinning with her whole beak. Along the ridge, a narrow dry path winds toward a notch in the peaks, with stacked stones lining it like stairs. \"The Cairnstep,\" she says. \"The keeper at the pass is a griffin called Brask. He keeps the ledger, and he has more ink on his feathers than on the page.\"",
+      "narration": "You flop onto the rock at the top. It is dry. Really dry! A path lined with stacked stones winds along the ridge toward a notch. \"The Cairnstep,\" says Tamsin. \"Its keeper is a griffin called Brask. He keeps the pass ledger, our book of roads. He has more ink on his feathers than on the page.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Pull up the rope and look at the ladder",
+          "label": "Look back at the ladder",
           "icon": "hand",
           "goto": "safety"
         }
@@ -1645,23 +1645,23 @@
     },
     "safety": {
       "type": "choice_point",
-      "narration": "Tamsin peers over the edge at the ladder. \"One more thing, and then I will let you go. The river will be up again tomorrow, and the next travelers will be wetter and more tired than you. A ladder is good. A ladder with a handrail is better.\" She drops the end of a long rope beside you. \"Where should it be tied?\"",
+      "narration": "\"The river will rise again tomorrow,\" says Tamsin. \"The next travelers will be wetter and more tired than you. A handrail would help them.\" She drops you a long rope. \"Where should we tie it?\"",
       "choices": [
         {
           "id": "boulder",
-          "label": "Tie the handrail to the old boulder",
+          "label": "Tie it to the boulder",
           "icon": "hand",
           "goto": "safety_boulder"
         },
         {
           "id": "peg",
-          "label": "Wedge a driftwood peg into the crack and tie to that",
+          "label": "Peg it in a crack",
           "icon": "might",
           "goto": "safety_peg"
         },
         {
           "id": "buy",
-          "label": "Buy an iron peg from Tamsin for 3 coins",
+          "label": "Buy a peg (3 coins)",
           "icon": "key",
           "goto": "safety_buy",
           "when": {
@@ -1686,7 +1686,7 @@
       "art": "scenes/riftlight/cairnstep"
     },
     "safety_boulder": {
-      "narration": "The old boulder at the top of the ladder is as wide as a table and as steady as a hill. It has been waiting a very long time for someone to tie a rope to it. The knot is round, fat and neat. Tamsin tugs it with all her weight and it does not budge.",
+      "narration": "The old boulder at the top is as steady as a hill. You tie a fat, neat knot. Tamsin tugs it with all her weight. It does not budge.",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
@@ -1698,14 +1698,14 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Check the new rail",
           "icon": "forward",
           "goto": "safety_done"
         }
       ]
     },
     "safety_peg": {
-      "narration": "You find a thick stick of driftwood and hammer it into a crack with a rock. Thunk, thunk, thunk. Then you tie the rope around it. The peg bites the crack and stays put, even when all of you hang off the rope. Tamsin looks impressed.",
+      "narration": "You hammer a driftwood peg into a crack. Thunk, thunk, thunk. You tie the rope on. The peg holds, even when everyone hangs off it.",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
@@ -1717,7 +1717,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Check the new rail",
           "icon": "forward",
           "goto": "safety_done"
         }
@@ -1725,11 +1725,11 @@
     },
     "safety_buy": {
       "type": "story",
-      "narration": "Tamsin keeps a sack of iron pegs for just this, and the aerie sells them for a few coins to buy ink. You pay, and she drops the best peg into your hand. It is cold and heavy and rings like a bell. You hammer it deep into the rock, and the rope on it feels as steady as a hill.",
+      "narration": "Tamsin sells pegs to buy the aerie's ink. She hands you her best one. It rings like a bell. You hammer it deep, and tie the rope on.",
       "choices": [
         {
           "id": "continue",
-          "label": "Tie off the rope",
+          "label": "Check the new rail",
           "icon": "hand",
           "goto": "safety_done"
         }
@@ -1744,7 +1744,7 @@
     },
     "safety_done": {
       "type": "story",
-      "narration": "The rope hangs beside the ladder, tight and straight. Tamsin tests it with one claw, then leans on it with her whole chest, which is a lot of griffin. \"Better for the next travelers too,\" she says. \"Somebody will thank you in the dark, and they will not even know your names.\" She hands you a smooth river charm on a cord. \"The aerie gives one to anyone who ties a rail.\"",
+      "narration": "Tamsin leans her whole chest on the new rail, which is a lot of griffin. It holds. \"Somebody will thank you in the dark,\" she says. She hands you a smooth river charm on a cord. \"We give one to anyone who ties a rail.\"",
       "choices": [
         {
           "id": "continue",
@@ -1770,7 +1770,7 @@
     },
     "hay_relay": {
       "type": "interaction",
-      "narration": "Tamsin lowers a basket on a rope beside the rail. \"The herd's hay should go up where it is safe,\" she says. \"Pass the bundles along, hand to hand, to the basket.\"",
+      "narration": "Tamsin lowers a basket on a rope. \"Pass the herd's hay up, hand to hand,\" she says.",
       "interaction": {
         "kind": "relay",
         "cue": "Catch the hay bundle and pass it to the next friend.",
@@ -1779,15 +1779,15 @@
       },
       "onSuccess": {
         "goto": "word",
-        "narration": "The last bundle thumps into the basket, and Tamsin hauls it up with a cheer."
+        "narration": "The last bundle thumps into the basket. Tamsin cheers."
       },
       "onFailure": {
         "goto": "word",
-        "narration": "One bundle splashes into the shallows, but the rest make it. \"Hay is hay,\" says Tamsin."
+        "narration": "One bundle splashes away, but the rest make it. \"Hay is hay,\" says Tamsin."
       },
       "onAssisted": {
         "goto": "word",
-        "narration": "You pass the bundles one at a time, slowly and carefully, until the basket is full."
+        "narration": "You pass the bundles slowly until the basket is full."
       },
       "cast": [
         {
@@ -1802,23 +1802,23 @@
             "notFlag": "hay_saved"
           },
           "replace": true,
-          "text": "Tamsin lowers a basket on a rope beside the rail. \"Even a few bundles of hay are worth keeping dry,\" she says. \"Pass them along, hand to hand, to the basket.\""
+          "text": "Tamsin lowers a basket on a rope. \"Even a little hay is worth keeping,\" she says. \"Pass it up, hand to hand.\""
         }
       ]
     },
     "word": {
       "type": "choice_point",
-      "narration": "Tamsin shakes the water off her wings. \"I must stay by the ladder, because more people may come out of that river. But Brask should hear about it from someone who was there. Which news should reach him first?\"",
+      "narration": "Tamsin shakes the water off her wings. \"I must stay by the ladder in case more people come out of that river. But Brask should hear the news. What should he hear first?\"",
       "choices": [
         {
           "id": "river",
-          "label": "The river is still climbing",
+          "label": "The river is still rising",
           "icon": "drop",
           "goto": "word_river"
         },
         {
           "id": "goats",
-          "label": "The herd's route is cut, and its goats were stranded",
+          "label": "The goats' route is cut",
           "icon": "map",
           "goto": "word_goats"
         }
@@ -1833,7 +1833,7 @@
     },
     "word_river": {
       "type": "story",
-      "narration": "Tamsin nods slowly. \"The river line, yes. If it climbs again tonight, the whole east bank goes under, and so does the old path along it.\" She scratches a small mark on her wing feather. \"I will send the news up on the wind, and Brask will have it before you do.\"",
+      "narration": "\"Yes,\" says Tamsin. \"If it climbs again tonight, the east bank goes under, and the old path with it. I will send word on the wind. Brask will know before you get there.\"",
       "choices": [
         {
           "id": "continue",
@@ -1858,7 +1858,7 @@
     },
     "word_goats": {
       "type": "story",
-      "narration": "Tamsin nods slowly. \"The herd's route, yes. The ledger has a line for it. It is a short line, but it matters.\" She scratches a small mark on her wing feather. \"I will send the news up on the wind, and Brask will have it before you do.\"",
+      "narration": "\"Yes,\" says Tamsin. \"The ledger has a line for the herd's route. A short line, but it matters. I will send word on the wind. Brask will know before you get there.\"",
       "choices": [
         {
           "id": "continue",
@@ -1883,7 +1883,7 @@
     },
     "climb": {
       "type": "rest",
-      "narration": "The dry path leads away along the ridge, under the peaks of Frostfang. At the end of it, a line of stacked stones climbs toward a notch. Behind you the river mutters, and the ladder sways. You are dry, you are together, and the goats are on their way home. Your rope and packs are still with you. \"The Cairnstep is next,\" says Tamsin.",
+      "narration": "The dry path runs along the ridge toward a notch, up a line of stacked stones. Behind you, the river mutters. You are dry, you are together, and the goats are headed home. \"The Cairnstep is next,\" says Tamsin.",
       "heal": 2,
       "choices": [],
       "outcome": "success",
