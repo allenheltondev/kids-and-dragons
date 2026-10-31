@@ -48,6 +48,7 @@ const CHAPTER = {
   entry: "s_1",
   scenes: {
     s_1: { type: "story", narration: "Two roads.", choices: [] },
+    s_truth: { type: "story", narration: "The mountain was a door all along.", priority: 1, choices: [] },
     s_heroes: { type: "story", narration: ENDING, choices: [] },
     s_home: { type: "story", narration: "You go home.", choices: [] },
   },
@@ -273,6 +274,35 @@ describe("the epilogue", () => {
     turnThePage();
     expect(spoken).toHaveLength(2);
     expect(spoken[1]).toContain("The Walk is complete!");
+  });
+});
+
+describe("the recap and the fights, around an epilogue", () => {
+  it("are read once the epilogue is done, ahead of the tally, never dropped", async () => {
+    const fight = { outcome: "escaped" as const, freed: ["Pip"], lost: [], done: [] };
+    seed({ endingRead: false, visited: ["s_truth", "s_heroes"], fightEndings: [fight] });
+    both();
+    // The ending alone first: the paintings are not talked over.
+    expect(spoken).toEqual([ENDING]);
+    await flush();
+    await act(async () => {
+      vi.advanceTimersByTime(endingHoldMs(ENDING.split(" ").length));
+    });
+    await flush();
+    expect(screen.getByTestId("story-plates")).toBeTruthy();
+    expect(spoken.some((line) => line.includes("a door all along"))).toBe(false);
+
+    // The epilogue skipped: the fight and the recap, once, and still no tally.
+    fireEvent.keyDown(window, { key: "Escape" });
+    await flush();
+    expect(spoken.at(-1)).toBe("You got out through the rift. You freed Pip. The mountain was a door all along.");
+    expect(spoken.filter((line) => line.includes("a door all along"))).toHaveLength(1);
+    expect(spoken.some((line) => line.includes("is complete!"))).toBe(false);
+
+    // Then the page turns, and the tally is the last thing said.
+    turnThePage();
+    expect(spoken.at(-1)).toMatch(/^The Walk is complete!/);
+    expect(spoken.filter((line) => line.includes("a door all along"))).toHaveLength(1);
   });
 });
 

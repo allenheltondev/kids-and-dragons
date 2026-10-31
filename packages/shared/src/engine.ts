@@ -787,10 +787,12 @@ function rollerPool(draft: RunState): PartyMember[] {
  * `"active"` is whoever is first in the party, `"best"` is the highest score
  * in the check's stat, and `"party"` (the default) is the beat's owner, the
  * story-turn holder (`SceneSpotlight`), so the kid whose stretch of story this
- * is gets the die. When the owner cannot roll (down, or their phone dropped)
- * it takes turns instead: whoever has rolled the fewest checks this run goes
- * next. Ties go to the higher stat, then party order, so among those who are
- * due the one most likely to succeed still steps up.
+ * is gets the die. An owner whose phone has dropped is already stood in for
+ * by the next connected seat (`storyTurnHolder`), who rolls. Only when the
+ * holder cannot roll at all (knocked down) does it take turns instead: whoever
+ * has rolled the fewest checks this run goes next. Ties go to the higher stat,
+ * then party order, so among those who are due the one most likely to succeed
+ * still steps up.
  */
 function pickRoller(draft: RunState, scene: Scene & { type: "check" }): PartyMember {
   const pool = rollerPool(draft);
@@ -801,8 +803,9 @@ function pickRoller(draft: RunState, scene: Scene & { type: "check" }): PartyMem
   if (scene.roller === "best") {
     return pool.reduce((best, m) => (stat(m) > stat(best) ? m : best), first);
   }
-  // An ordinary check is a moment of the beat, so the beat's owner rolls it
-  // (`SceneSpotlight`) — while they are here to; otherwise the rotation below.
+  // An ordinary check is a moment of the beat, so the beat's owner (or the
+  // seat standing in for a dropped phone) rolls it; a holder who is down
+  // cannot, and the rotation below picks.
   const owner = storyTurnHolder(draft);
   if (owner && pool.includes(owner)) return owner;
   const rolled = (m: PartyMember): number => draft.checkRolls?.[m.character.id] ?? 0;
@@ -1323,7 +1326,9 @@ function doInteract(draft: RunState, playerId: string, intent: Extract<ClientInt
     if (prompt.phase !== "result" || !prompt.outcome) throw new Illegal("ILLEGAL", "Finish the interaction first.");
     const branch = prompt.outcome === "failure" ? scene.onFailure : prompt.outcome === "assisted" ? (scene.onAssisted ?? scene.onSuccess) : scene.onSuccess;
     const owner = prompt.resolvedActorId ?? actor;
-    if (owner) passStoryTurn(draft, owner);
+    // Leading a game is a moment of the beat's owner (`SceneSpotlight`),
+    // whoever stood in to play it.
+    spendSpotlight(draft);
     return takeBranch(draft, branch, ctx, draft.party.find((member) => member.playerId === owner)?.character.id);
   }
   if (intent.action === "retry") {
@@ -1898,6 +1903,9 @@ function doStartChapter(
   if (!readyWithoutAway(draft.party)) {
     throw new Illegal("ILLEGAL", "everybody has to be ready first");
   }
+  // A new chapter starts a new beat: whatever the last one left uncounted
+  // must not cut its first owner short (the seat itself stays rotated).
+  delete draft.spotlightMoments;
 
   draft.campaignId = chapter.campaignId;
   draft.chapterId = chapter.id;
@@ -3106,6 +3114,8 @@ function returnToLobby(draft: RunState): void {
   draft.lastRoll = null;
   delete draft.deeds;
   delete draft.rankUps;
+  // A beat is chapter-scoped: the seat keeps rotating, the count starts over.
+  delete draft.spotlightMoments;
   for (const member of draft.party) member.ready = false;
 }
 
