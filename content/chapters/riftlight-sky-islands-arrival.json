@@ -43,11 +43,11 @@
         }
       ],
       "rift": "collapse",
-      "narration": "The fold opens onto cold stone high above the realm. Your party stumbles through together. Behind you the fold shuts with a pop, and wind rushes in to fill the gap. A kitsune temple keeper hooks one arm through a rope ring and waves you over. \"Hold on to something! These are called the Sky Islands, and this one is not where it belongs.\" Your goal is to find your feet up here. Find shelter, listen for the opening, and help her mark the unsafe path.",
+      "narration": "The fold opens onto cold stone high above the realm, then shuts behind you with a pop. A kitsune temple keeper hooks an arm through a rope ring. \"Hold on! These are called the Sky Islands, and this one is not where it belongs.\" Your job: find your feet up here. Learn to hear the rift, help guard the edge, and find where the singing leads.",
       "choices": [
         {
           "id": "continue",
-          "label": "Grab a ring and hold on",
+          "label": "Grab a rope ring",
           "icon": "hand",
           "goto": "landing"
         }
@@ -58,7 +58,7 @@
             "flag": "sky_arrival_flight"
           },
           "replace": true,
-          "text": "The Cairnstep griffins swoop low and set your whole party down on a stone pad high above the realm. They are gone again in three flaps. A kitsune temple keeper hooks one arm through a rope ring and waves you over. \"Hold on to something! These are called the Sky Islands. Our old landing route points into empty sky now.\" Your goal is to find your feet up here. Find shelter, listen for the opening, and help her mark the unsafe path."
+          "text": "The Cairnstep griffins set your party down on a stone pad high above the realm, then are gone in three flaps. A kitsune temple keeper hooks an arm through a rope ring. \"Hold on! These are called the Sky Islands. Our old landing route points into empty sky now.\" Your job: find your feet up here. Learn to hear the rift, help guard the edge, and find where the singing leads."
         }
       ],
       "art": "scenes/riftlight/sky-landing"
@@ -74,7 +74,7 @@
       "stat": "might",
       "tn": 8,
       "roller": "all",
-      "prompt": "The wind hits the landing pad like a slammed door. \"Everyone grab a rope ring and hold on!\" shouts the keeper.",
+      "prompt": "The wind slams the landing pad like a door. \"Grab a rope ring and hold on!\" shouts the keeper.",
       "onSuccess": {
         "goto": "landing_held"
       },
@@ -91,7 +91,7 @@
           "name": "Temple keeper"
         }
       ],
-      "narration": "Every hand finds a ring. The gust howls over your heads and moves on. The keeper counts you with her chin. \"Good grips. Most visitors arrive by sitting down hard.\" She leads you past a gold-roofed shrine with a bronze bell as big as a barrel. Wind banners snap above it, each one pointing a different way. \"Walk where I walk,\" she says. \"Ask questions when both feet are happy.\" She presses a wrapped supper bundle into your hands. \"Eat when the wind lets you.\"",
+      "narration": "Every hand finds a ring, and the gust howls past. \"Good grips,\" says the keeper. \"Most visitors arrive sitting down.\" She leads you past a gold-roofed shrine with a bronze bell as big as a barrel, and hands you a wrapped supper bundle. \"Eat when the wind lets you.\"",
       "choices": [
         {
           "id": "continue",
@@ -117,11 +117,11 @@
           "name": "Temple keeper"
         }
       ],
-      "narration": "The wind scoops your whole party off its feet. You slide across the boards like soap. The keeper flings her rope and hooks the last boot an arm's length from the edge. Everyone is safe, if scraped. Your hats keep going. One lands on a passing gull, which now looks very official. \"Welcome,\" says the keeper, dusting off her tails. \"That is how the pad says hello.\" She tosses you a wrapped supper bundle for the scrapes.",
+      "narration": "The wind scoops you off your feet, and you slide across the boards like soap. The keeper's rope hooks the last boot near the edge. Your hats keep going. One lands on a gull, which now looks very official. She leads you past a gold-roofed shrine with a bronze bell and gives you a supper bundle for the scrapes.",
       "choices": [
         {
           "id": "continue",
-          "label": "Get up and follow the keeper",
+          "label": "Follow the keeper",
           "icon": "hand",
           "goto": "lesson"
         }
@@ -157,11 +157,11 @@
           "name": "Temple keeper"
         }
       ],
-      "narration": "A kitsune named Seren Wisp is comparing notes with a young manticore named Pip Thistledown. They wear the Riftseekers' clasps. \"I am counting what has moved,\" says Pip, tapping his notebook. \"The count keeps changing. Help me and you can read it.\" Seren asks you to hum the hall note, then listen for an answering sound. \"A starweaver can learn to answer a rift's hum. That is called Attune. No one here chooses a rift's rules.\"",
+      "narration": "Seren Wisp, the kitsune from the glacier, is comparing notes with a young manticore named Pip Thistledown. \"I count what has moved,\" says Pip, tapping his notebook. \"The count keeps changing. Help me listen.\" Seren asks you to hum the hall note and listen for an answer. \"A starweaver can learn to answer a rift's hum. That is called Attune.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Hum the hall note and listen",
+          "label": "Hum and listen",
           "icon": "hand",
           "goto": "hum",
           "effects": [
@@ -174,7 +174,7 @@
         },
         {
           "id": "pip",
-          "label": "Ask Pip to show his notebook first",
+          "label": "See Pip's notebook first",
           "icon": "hand",
           "goto": "pip_notes",
           "effects": [
@@ -187,7 +187,7 @@
         },
         {
           "id": "attune",
-          "label": "Answer the hum with Attune",
+          "label": "Answer with Attune",
           "icon": "star",
           "goto": "hum_attuned",
           "requiresClass": "starweaver",
@@ -206,7 +206,7 @@
             "flag": "attune_taught"
           },
           "replace": true,
-          "text": "A kitsune named Seren Wisp and a manticore named Pip Thistledown are checking another displaced route. They wear the Riftseekers' clasps. Pip taps his notebook. \"The count keeps changing here too. Help me and you can read it.\" Seren asks you to compare the sounds with what she taught you before."
+          "text": "Seren Wisp and Pip Thistledown are here too, checking another moved route. \"The count keeps changing here too,\" says Pip. \"Help me listen.\" Seren asks you to compare the sounds with what she taught you before."
         }
       ],
       "art": "scenes/riftlight/sky-landing"
@@ -223,7 +223,7 @@
           "name": "Seren Wisp"
         }
       ],
-      "narration": "Pip opens his notebook with both paws. It is full of tiny islands and arrows that have been crossed out. \"This one was east of here at breakfast. Now it is south, and the arrow is too small to show how rude that is.\" He taps a smudge. \"There is a sound out there, and when it moves, the islands near it move too. I think. I cannot prove it alone. Will you help me listen?\"",
+      "narration": "Pip's notebook is full of tiny islands and crossed-out arrows. \"This one was east of here at breakfast. Now it is south. Rude.\" He taps a smudge. \"When a sound out there moves, the islands near it move too. I think. Will you help me listen?\"",
       "choices": [
         {
           "id": "continue",
@@ -248,7 +248,7 @@
       ],
       "stat": "clever",
       "tn": 12,
-      "prompt": "Hum the hall note, then listen hard. Which way does the answering sound come from?",
+      "prompt": "Hum the hall note, then listen hard. Where does the answering sound come from?",
       "onSuccess": {
         "goto": "hum_heard"
       },
@@ -271,7 +271,7 @@
       ],
       "stat": "clever",
       "tn": 8,
-      "prompt": "A starweaver leads the Attune answer, humming back to the rift. The qualified hero assists; choose who leads the team check.",
+      "prompt": "Hum back to the rift with Attune, and find where its answer comes from.",
       "onSuccess": {
         "goto": "hum_heard"
       },
@@ -292,11 +292,11 @@
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "A thin hum answers from far to the east. Then it answers again from the very same spot. You point. Seren's ears swing up. \"That is a rift talking. Its hum stays put while the wind runs around it. Remember the feel of it. A hum is steady. Wind is a liar.\" Pip writes EAST in his notebook and underlines it twice, in case east moves.",
+      "narration": "A thin hum answers from the east, then again from the very same spot. Seren's ears swing up. \"That is a rift. Its hum stays put while the wind runs around. A hum is steady. Wind is a liar.\" Pip writes EAST and underlines it twice, in case east moves.",
       "choices": [
         {
           "id": "continue",
-          "label": "Look at the island",
+          "label": "Look around the island",
           "icon": "hand",
           "goto": "local"
         }
@@ -321,11 +321,11 @@
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "The wind drowns your note, and your answer comes out a jumble. Seren does not sigh. She hums slowly, then has you press a palm flat to the stone. You feel it, low and steady, a hum in your hand instead of your ears. It takes longer, and it sticks. Pip writes EAST with a question mark and gives the question mark a tiny hat.",
+      "narration": "The wind swallows your note. Seren has you press a palm flat to the stone instead. There it is, low and steady, a hum in your hand. Pip writes EAST with a question mark, and gives the question mark a tiny hat.",
       "choices": [
         {
           "id": "continue",
-          "label": "Look at the island",
+          "label": "Look around the island",
           "icon": "hand",
           "goto": "local"
         }
@@ -346,23 +346,23 @@
           "name": "Temple keeper"
         }
       ],
-      "narration": "The keeper shows you a rope stretched between two marker posts. Yesterday it pointed toward a neighboring island. Now it points into empty sky. The keeper shakes her head. \"And travelers keep following it.\" A low song sounds beyond the mist. How will you help her keep travelers clear of the edge?",
+      "narration": "The keeper shows you a rope between two marker posts. Yesterday it pointed to the next island. Now it points at empty sky. \"And travelers keep following it,\" she sighs. A low song drifts in from beyond the mist. How will you keep travelers back from the edge?",
       "choices": [
         {
           "id": "markers",
-          "label": "Move the warning markers to the path",
+          "label": "Drag cairns to the path",
           "icon": "hand",
           "goto": "markers"
         },
         {
           "id": "listen",
-          "label": "Listen for the song before marking the path",
+          "label": "Listen to the song first",
           "icon": "hand",
           "goto": "song"
         },
         {
           "id": "scout",
-          "label": "Scout the edge from the air",
+          "label": "Scout the edge by air",
           "icon": "wing",
           "goto": "edge_scout",
           "requiresSpecies": [
@@ -381,7 +381,7 @@
           "name": "Temple keeper"
         }
       ],
-      "narration": "The keeper has three cairn stones, each as heavy as a sleeping goat. They belong on the path, where a traveler will see them before the rope road ends. The boards are slick with mist, and the wind keeps trying to help. Each stone rides a wooden sled. Someone strong must pull, and the rest must keep the sled straight.",
+      "narration": "The keeper has three cairn stones on wooden sleds, each stone as heavy as a sleeping goat. They belong on the path, where travelers will see them. The boards are slick with mist, and the wind keeps trying to help.",
       "choices": [
         {
           "id": "continue",
@@ -403,7 +403,7 @@
       "stat": "might",
       "tn": 12,
       "roller": "best",
-      "prompt": "Drag the cairn stones along the slick path. The strongest of you pulls, and the rest steady the sled.",
+      "prompt": "Drag the cairn sleds along the slick path, and keep them straight.",
       "onSuccess": {
         "goto": "markers_set"
       },
@@ -420,11 +420,11 @@
           "name": "Temple keeper"
         }
       ],
-      "narration": "Three cairns stand in a line, tall enough to see in fog. The keeper ties a warning cord between them and plucks it. It hums. \"One less traveler walking toward an old view.\" She pats the nearest cairn as if it were a pony, and the cairn, being a rock, says nothing. Pip salutes it anyway, just in case it is somebody important.",
+      "narration": "Three cairns stand in a line, tall enough to see in fog. The keeper strings a warning cord between them. It hums. \"One less traveler walking toward an old view.\" Pip salutes the nearest cairn, in case it is somebody important.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
+          "label": "Hear a rattle",
           "icon": "hand",
           "goto": "walker"
         }
@@ -439,11 +439,11 @@
           "name": "Temple keeper"
         }
       ],
-      "narration": "The last stone slides off its sled, rolls to the edge, and drops out of sight. You wait for a crash. Nothing comes. \"It will arrive somewhere,\" says the keeper. She ties her own washing line between the two cairns you saved and clips a spoon to it. The spoon clatters in the wind, which is more warning than you expected.",
+      "narration": "The last stone slides off its sled and drops over the edge. You wait for a crash. None comes. \"It will land somewhere,\" says the keeper. She ties her washing line between the two cairns you saved and clips a spoon to it. The spoon clatters a fine warning.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
+          "label": "Hear a rattle",
           "icon": "hand",
           "goto": "walker"
         }
@@ -458,7 +458,7 @@
           "name": "Temple keeper"
         }
       ],
-      "narration": "You wait until the low song sounds again. It travels through the mist from a spot far from where the keeper expected. She hands you her slate and a stub of chalk. \"Mark where it comes from, every time it sounds. Everyone points at once. If most of you agree, we have a true bearing.\"",
+      "narration": "You wait for the low song again. It comes from somewhere the keeper did not expect. She hands you her slate and chalk. \"Point at it every time it sounds. If most of you agree, we have a true bearing.\"",
       "choices": [
         {
           "id": "continue",
@@ -480,7 +480,7 @@
       "stat": "clever",
       "tn": 12,
       "roller": "all",
-      "prompt": "Everyone points at the sound each time it comes. If most of you agree, the keeper can chalk a true bearing.",
+      "prompt": "Point at the song each time it sounds, so the keeper can chalk a true bearing.",
       "onSuccess": {
         "goto": "song_bearing"
       },
@@ -497,11 +497,11 @@
           "name": "Temple keeper"
         }
       ],
-      "narration": "Most fingers point the same way: east, and a little down. The keeper chalks a bold line on her slate, then a second line to show where the old route pointed. They do not agree at all. \"So the song is not where it was,\" she says. \"Neither are we.\" She moves the marker posts to match your line, and hangs her spare scarf on one to make it feel important. The scarf flaps toward the east, as if it agrees.",
+      "narration": "Most fingers point the same way: east, and a little down. The keeper chalks a bold line, then the old route beside it. They do not match at all. \"The song has moved,\" she says. \"So have we.\" She moves the marker posts to your line. Her scarf, tied on top, flaps east.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
+          "label": "Hear a rattle",
           "icon": "hand",
           "goto": "walker"
         }
@@ -516,11 +516,11 @@
           "name": "Temple keeper"
         }
       ],
-      "narration": "Fingers point east, south, and one straight up at a gull. The slate looks as if a spider fell in the chalk. The keeper rubs it out with her sleeve, kindly. \"The song bounces off the mist. We will catch it again when the sky is calmer.\" She picks one guess, east, and moves the marker posts to it. The gull looks insulted.",
+      "narration": "Fingers point east, south, and one straight up at a gull. The slate looks like a spider fell in the chalk. \"The song bounces off the mist,\" says the keeper kindly. She picks east and moves the marker posts. The gull looks insulted.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
+          "label": "Hear a rattle",
           "icon": "hand",
           "goto": "walker"
         }
@@ -538,7 +538,7 @@
       "stat": "quick",
       "tn": 8,
       "roller": "best",
-      "prompt": "Wings lift you over the edge. Can the best flier hold steady in the gusts long enough to see the whole island?",
+      "prompt": "Fly out over the edge, and hold steady in the gusts long enough to see the whole island.",
       "onSuccess": {
         "goto": "edge_scouted"
       },
@@ -555,11 +555,11 @@
           "name": "Temple keeper"
         }
       ],
-      "narration": "From up here the island looks like a dropped cookie: a shrine, a landing pad, a tall pole with an iron basket on top, and a rope road that runs to nothing. Beyond the mist a long shape slides by, far away, singing. You land and draw the keeper a map in the dust. Cairns here, here and here. She nods so hard her ears flap.",
+      "narration": "From up here the island looks like a dropped cookie: a shrine, a landing pad, a pole with an iron basket, and a rope road to nowhere. Far off, a long shape slides through the mist, singing. You land and draw the keeper a map. She nods so hard her ears flap.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
+          "label": "Hear a rattle",
           "icon": "hand",
           "goto": "walker"
         }
@@ -574,11 +574,11 @@
           "name": "Temple keeper"
         }
       ],
-      "narration": "A gust spins you like a leaf. You tumble back to the pad with a bump, wings flapping, dignity gone. You saw enough to know the edge is longer than the rope. The keeper drags three cairns to the path herself, muttering, and you help her set them where you remember. They lean a little, like friends telling a secret.",
+      "narration": "A gust spins you like a leaf and drops you back on the pad. But you saw enough: the edge is longer than the rope. You help the keeper drag three cairns to the spots you remember. They lean a little, like friends telling a secret.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
+          "label": "Hear a rattle",
           "icon": "hand",
           "goto": "walker"
         }
@@ -597,23 +597,23 @@
           "name": "Dob"
         }
       ],
-      "narration": "A rattle comes down the old rope road. A kite seller is pulling a cart of kites toward the edge, his eyes on the sky and his nose in a map. The map is upside down. The road ends in empty air twenty steps ahead of him. \"Dob!\" shouts the keeper. \"Stop!\" The kite seller waves cheerfully and keeps walking. How will you stop him?",
+      "narration": "A rattle comes down the old rope road. A kite seller is pulling a cart toward the edge, nose in a map. The map is upside down. The road ends in empty air twenty steps ahead. \"Dob! Stop!\" shouts the keeper. He waves and keeps walking. How will you stop him?",
       "choices": [
         {
           "id": "catch",
-          "label": "Sprint down the boards and grab his cart rope",
+          "label": "Grab his cart rope",
           "icon": "hand",
           "goto": "walker_catch"
         },
         {
           "id": "call",
-          "label": "Wave the warning cord and call him back",
+          "label": "Call him back",
           "icon": "hand",
           "goto": "walker_call"
         },
         {
           "id": "leap",
-          "label": "Leap ahead and block the road",
+          "label": "Leap ahead and block",
           "icon": "arrow",
           "goto": "walker_leap",
           "requiresSpecies": "manticore"
@@ -635,7 +635,7 @@
       ],
       "stat": "quick",
       "tn": 12,
-      "prompt": "Sprint down the slick boards and catch the cart's rope before the front wheel reaches the last plank.",
+      "prompt": "Sprint down the slick boards, and catch the cart rope before the wheel reaches the last plank.",
       "onSuccess": {
         "goto": "walker_safe"
       },
@@ -658,7 +658,7 @@
       ],
       "stat": "heart",
       "tn": 8,
-      "prompt": "Wave the warning cord and call his name, loud and kind, until he looks up from his upside-down map.",
+      "prompt": "Wave the warning cord and call his name, loud and kind, until he looks up.",
       "onSuccess": {
         "goto": "walker_safe"
       },
@@ -682,7 +682,7 @@
       "stat": "quick",
       "tn": 8,
       "roller": "best",
-      "prompt": "Leap carries you over the cart and onto the last plank. Can you land square and turn the cart around?",
+      "prompt": "Leap over the cart onto the last plank, land square and turn the cart around.",
       "onSuccess": {
         "goto": "walker_safe"
       },
@@ -703,11 +703,11 @@
           "name": "Dob"
         }
       ],
-      "narration": "Dob stops, one wheel on the last plank, and looks down. He looks up. He looks at his map, and turns it right side up. \"Ah,\" he says. The keeper does not scold. She makes him tea he forgets to drink. \"I sell kites to the island across,\" says Dob. \"The road went wrong, and I did not. I think.\" He unrolls a bundle of bright kite-flags with long tails. \"You saved my cart. Wave these, and the whole sky will see.\" He ties a springy kite-string lace around your ankle. \"For quick feet.\" Then he counts four coins into your hand, with a bow.",
+      "narration": "Dob stops, one wheel on the last plank. He looks down. He turns his map right side up. \"Ah. The road went wrong. I did not.\" He sells kites to the next island. \"You saved my cart,\" he says, and hands you a bundle of bright kite-flags. \"Wave these, and the whole sky will see.\" He ties a springy lace on your ankle, for quick feet, and counts four coins into your hand.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
+          "label": "Talk to the keeper",
           "icon": "hand",
           "goto": "edge_merge"
         }
@@ -741,11 +741,11 @@
           "name": "Dob"
         }
       ],
-      "narration": "The cart tips at the last plank, one wheel in the sky. You and the keeper haul on the rope while kites spill off like startled birds. A few escape. Most snag on the posts. Dob dangles from his strap, smiling, his hat gone. \"Ah,\" he says. \"Wrong road.\" Back on stone, he gathers what is left, a bundle of bright kite-flags with long tails. \"I sell kites to the island across. Wave these, and the whole sky will see.\" He presses three coins into your hand, all he can find in his pockets.",
+      "narration": "The cart tips at the last plank, one wheel in the sky. You haul it back while kites spill off like startled birds. Dob dangles from his strap, smiling. \"Ah. Wrong road.\" Safe on stone, he hands you a bundle of bright kite-flags. \"Wave these, and the whole sky will see.\" He finds three coins in his pockets for you.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
+          "label": "Talk to the keeper",
           "icon": "hand",
           "goto": "edge_merge"
         }
@@ -774,11 +774,11 @@
           "name": "Dob"
         }
       ],
-      "narration": "The keeper leans on a rope ring and studies the sky. Dob sits on his cart with his map the right way up. \"Good. That is the edge told about, and one kite seller safe. Now the hard part.\" She points to a tall pole with an iron basket on top. \"The signal basket. At dusk we light it, so every island and ferry knows where we hang. The pole is crooked from the move, and our fuel is a mess. A ferry captain named Thimble is due tonight with passengers, and without a light she will never find us.\"",
+      "narration": "The keeper points to a tall pole with an iron basket on top. \"The signal basket. At dusk we light it, so islands and ferries can find us. The pole is crooked from the move, and our fuel is a mess. A ferry captain named Thimble is due tonight. Without a light, she will never find us.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Cross the pad to the pole",
+          "label": "Cross to the pole",
           "icon": "hand",
           "goto": "gust_lull"
         }
@@ -797,30 +797,30 @@
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "The pole leans like a sleepy giraffe. Its stone foot has cracked loose from the rock. Pip circles it twice, chewing his pencil. \"If that tips at dusk, the fire goes over the edge and the basket goes with it.\" The keeper hands you a coil of rope and a pile of wedge stones. Raise it straight and make it firm before dark. How will you do it?",
+      "narration": "The pole leans like a sleepy giraffe, its stone foot cracked loose. \"If that tips at dusk,\" says Pip, chewing his pencil, \"the fire goes over the edge.\" The keeper hands you rope and a pile of wedge stones. How will you set it straight before dark?",
       "choices": [
         {
           "id": "ropes",
-          "label": "Raise it with ropes, everyone hauling",
+          "label": "Haul it up with ropes",
           "icon": "hand",
           "goto": "pole_ropes"
         },
         {
           "id": "wedge",
-          "label": "Fit wedge stones under the foot, one careful try at a time",
+          "label": "Fit the wedge stones",
           "icon": "hand",
           "goto": "pole_wedge"
         },
         {
           "id": "smash",
-          "label": "Lift it upright with Smash",
+          "label": "Smash it upright",
           "icon": "fist",
           "goto": "pole_smash",
           "requiresSpecies": "bigfoot"
         },
         {
           "id": "brace",
-          "label": "Brace the foot while friends tie off the ropes",
+          "label": "Brace the foot",
           "icon": "shield",
           "goto": "pole_brace",
           "requiresClass": "thornguard"
@@ -843,7 +843,7 @@
       "stat": "might",
       "tn": 12,
       "roller": "all",
-      "prompt": "Loop the ropes around the pole and haul. Everyone heaves together on the keeper's count!",
+      "prompt": "Loop the ropes around the pole and heave together on the keeper's count!",
       "onSuccess": {
         "goto": "pole_up"
       },
@@ -866,7 +866,7 @@
       ],
       "stat": "clever",
       "tn": 12,
-      "prompt": "Find the wedge stones that fit the cracked foot. Which stone goes where, and in what order?",
+      "prompt": "Find which wedge stones fit the cracked foot, and in what order.",
       "onSuccess": {
         "goto": "pole_up"
       },
@@ -890,7 +890,7 @@
       "stat": "might",
       "tn": 8,
       "roller": "best",
-      "prompt": "Smash lifts the pole upright. Can you seat the stone foot back in its socket without cracking it again?",
+      "prompt": "Smash the pole upright, then seat its foot without cracking it again.",
       "onSuccess": {
         "goto": "pole_up"
       },
@@ -913,7 +913,7 @@
       ],
       "stat": "might",
       "tn": 8,
-      "prompt": "Brace holds the foot steady. Can the others tie off the guy ropes before the pole shifts?",
+      "prompt": "Brace the foot steady while friends tie off the ropes.",
       "onSuccess": {
         "goto": "pole_up"
       },
@@ -934,11 +934,11 @@
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "The pole stands straight as a spoon in porridge. The basket sits level on top. The keeper taps it, and it gives a proud, tinny ring. Pip, who held one rope end a moment too long, is lifted half a step off the ground. He does not mention it. Neither does anyone else, loudly. The wind banners, annoyed, all turn to point at the pole.",
+      "narration": "The pole stands as straight as a spoon in porridge. The keeper taps the basket, and it rings, proud and tinny. Pip held one rope a moment too long and got lifted off the ground. Nobody mentions it, loudly.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
+          "label": "Look for fuel",
           "icon": "hand",
           "goto": "fuel"
         }
@@ -957,11 +957,11 @@
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "The pole stands, mostly. It leans a thumb's width to the east and creaks at every gust. The keeper ties on two extra guy ropes and gives it a stern look. \"It will hold. It just has opinions.\" Whoever lights the basket will need to keep a steady hand while the pole sways.",
+      "narration": "The pole stands, mostly. It leans a thumb's width east and creaks at every gust. The keeper ties on two more ropes and gives it a stern look. \"It will hold. It just has opinions.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
+          "label": "Look for fuel",
           "icon": "hand",
           "goto": "fuel"
         }
@@ -976,30 +976,30 @@
           "name": "Temple keeper"
         }
       ],
-      "narration": "The keeper sighs. \"There is no fire without fuel.\" The oil jars cracked in the move, and her store is a sad shiny puddle. She points two ways. A woodshed under the shrine eaves holds dry logs, if you can carry them across the yard. The orchard has fresh windfall twigs, if you can catch them. The wind wants both. What will you fetch?",
+      "narration": "\"No fire without fuel,\" sighs the keeper. Her oil jars cracked in the move. The woodshed under the shrine holds dry logs, if you can carry them across the windy yard. The orchard has windfall twigs, if you can catch them first. What will you fetch?",
       "choices": [
         {
           "id": "logs",
-          "label": "Haul dry logs from the woodshed",
+          "label": "Haul logs from the woodshed",
           "icon": "hand",
           "goto": "fuel_logs"
         },
         {
           "id": "twigs",
-          "label": "Chase the windfall twigs in the orchard",
+          "label": "Chase twigs in the orchard",
           "icon": "hand",
           "goto": "fuel_twigs"
         },
         {
           "id": "dash",
-          "label": "Let a duskrunner dash for the dry logs",
+          "label": "Dash for the logs",
           "icon": "arrow",
           "goto": "fuel_dash",
           "requiresClass": "duskrunner"
         },
         {
           "id": "lace",
-          "label": "Tie on Dob's lace and run for the dry logs",
+          "label": "Lace up and run",
           "icon": "arrow",
           "goto": "fuel_lace",
           "requiresItem": "quickfoot_lace"
@@ -1017,7 +1017,7 @@
       ],
       "stat": "might",
       "tn": 12,
-      "prompt": "Carry the dry logs across the yard. The wind shoves at every armful, and the logs want to roll away.",
+      "prompt": "Carry the dry logs across the yard while the wind shoves at every armful.",
       "onSuccess": {
         "goto": "fuel_dry"
       },
@@ -1036,7 +1036,7 @@
       ],
       "stat": "quick",
       "tn": 12,
-      "prompt": "Dash after the windfall twigs before the wind scatters them over the edge. Grab and stuff them in your sacks!",
+      "prompt": "Chase the windfall twigs before the wind blows them over the edge!",
       "onSuccess": {
         "goto": "fuel_dry"
       },
@@ -1055,7 +1055,7 @@
       ],
       "stat": "quick",
       "tn": 8,
-      "prompt": "Dob's springy lace on your ankle makes your feet light. Race the gusts to the dry logs and bring them back.",
+      "prompt": "Your springy lace makes your feet light. Race the gusts to the dry logs and back.",
       "onSuccess": {
         "goto": "fuel_dry"
       },
@@ -1074,7 +1074,7 @@
       ],
       "stat": "quick",
       "tn": 8,
-      "prompt": "A duskrunner's speed gets to the dry logs before the next gust. Can the rest of you keep the armfuls from tumbling?",
+      "prompt": "Dash to the dry logs before the next gust, and get every armful back.",
       "onSuccess": {
         "goto": "fuel_dry"
       },
@@ -1095,11 +1095,11 @@
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "You stack the fuel at the foot of the pole. Dry wood smells like a warm kitchen, even in a gale. The keeper counts the logs with one finger, nods, and counts them again for luck. Pip offers to carry the last twig. It is the size of a pencil. He carries it like a sword. The keeper tucks a dry twig behind her ear for later, and promptly forgets it is there.",
+      "narration": "You stack the fuel at the foot of the pole. Dry wood smells like a warm kitchen, even in a gale. Pip carries the last twig, the size of a pencil, like a sword.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
+          "label": "Pass it up the pole",
           "icon": "hand",
           "goto": "fuel_chain"
         }
@@ -1118,11 +1118,11 @@
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "Half the wood is wet, and the other half is wetter. It will smoke when it should crackle. The keeper holds up a log and sniffs it, unhappy. \"This will burn. It will not like it.\" She trades you a bundle of dry shrine incense to help it along. \"Do not tell the shrine,\" she whispers, glancing at the bronze bell.",
+      "narration": "Half the wood is wet, and the other half is wetter. \"This will burn,\" says the keeper. \"It will not like it.\" She slips you a bundle of shrine incense to help. \"Do not tell the shrine,\" she whispers.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
+          "label": "Pass it up the pole",
           "icon": "hand",
           "goto": "fuel_chain"
         }
@@ -1141,23 +1141,23 @@
           "name": "Seren Wisp"
         }
       ],
-      "narration": "The sun slides behind the mist, and the sky turns the color of weak tea. The basket is full. Now someone must light it in a gale. The keeper holds out a flint striker in one paw and a clay pot of shrine coals in the other. Seren checks the wind with a wet finger. \"Fast and bright, or slow and careful,\" she says. \"Both can work, if nobody sneezes.\" Which will you try?",
+      "narration": "The sun sinks behind the mist. The basket is full, and someone must light it in a gale. The keeper holds out a flint striker and a clay pot of shrine coals. Seren licks a finger and checks the wind. \"Fast and bright, or slow and careful. Either works, if nobody sneezes.\"",
       "choices": [
         {
           "id": "flint",
-          "label": "Strike sparks while everyone shields the basket",
+          "label": "Strike sparks",
           "icon": "hand",
           "goto": "light_flint"
         },
         {
           "id": "coals",
-          "label": "Pass the pot of coals hand to hand up the ladder",
+          "label": "Pass the coals up",
           "icon": "hand",
           "goto": "light_coals"
         },
         {
           "id": "fox",
-          "label": "Call fox fire into the basket",
+          "label": "Call fox fire",
           "icon": "spark",
           "goto": "light_fox",
           "requiresSpecies": "kitsune"
@@ -1180,7 +1180,7 @@
       "stat": "quick",
       "tn": 12,
       "roller": "all",
-      "prompt": "Strike the flint while everyone cups cloaks and hands around the sparks, each of you on a different side of the basket.",
+      "prompt": "Strike the flint while everyone cups hands and cloaks around the sparks.",
       "onSuccess": {
         "goto": "basket_lit"
       },
@@ -1205,7 +1205,7 @@
       "tn": 12,
       "roller": "all",
       "checkKind": "doing",
-      "prompt": "Pass the pot hand to hand up the ladder, steady and calm. Anyone with shaky hands will spill the coals.",
+      "prompt": "Pass the pot of coals hand to hand up the ladder, slow and steady.",
       "onSuccess": {
         "goto": "basket_lit"
       },
@@ -1228,7 +1228,7 @@
       ],
       "stat": "clever",
       "tn": 8,
-      "prompt": "Little fox fire dances into the basket. Can you coax it to sit in the wood and hold, even when the pole sways?",
+      "prompt": "Coax your fox fire into the wood, and make it hold when the pole sways.",
       "onSuccess": {
         "goto": "basket_lit"
       },
@@ -1249,7 +1249,7 @@
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "The flame catches, flares, and stands up tall and gold. The whole basket glows like a lantern. Far off in the mist, a tiny answering light blinks once, twice. The keeper's face unclenches. \"There. Now the sky can find us.\" The edge is told about, and lit. For the first time the island feels like a place on a map. Pip bows to the basket, and the basket, being on fire, glows politely back. The keeper hands you a brass whistle from the shrine. \"One loud note, for when the sky needs to hear you.\"",
+      "narration": "The flame catches and stands up tall and gold. Far off in the mist, a tiny light blinks back. \"There,\" says the keeper. \"Now the sky can find us.\" Pip bows to the basket. The keeper hands you a brass whistle from the shrine. \"One loud note, for when the sky must hear you.\"",
       "choices": [
         {
           "id": "continue",
@@ -1287,7 +1287,7 @@
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "The wood sulks, then smokes, then gives a small orange flame that coughs at every gust. It is lit, which is the main thing. The keeper feeds it a handful of shrine incense and it brightens to a wobbly glow that smells faintly of lemon cake. It will be seen. It just will not be seen smoothly.",
+      "narration": "The wood sulks, smokes, and gives a small flame that coughs at every gust. The keeper feeds it shrine incense, and it brightens to a wobbly glow that smells like lemon cake. It will be seen. Just not smoothly.",
       "choices": [
         {
           "id": "continue",
@@ -1316,23 +1316,23 @@
           "name": "Fenwick"
         }
       ],
-      "narration": "Something drops out of the dusk and lands on the pole rail hard enough to rattle the basket. It is a griffin with a satchel and a very ruffled neck. \"Fenwick, courier! Every island in the sky has been hunting for your light.\" He flaps a wing at the mist. \"Captain Thimble's ferry is right behind me. The wind is swinging her sideways, and her passengers are shouting. She needs a landing now.\" How will you bring her in?",
+      "narration": "A griffin drops out of the dusk onto the pole rail, satchel flapping. \"Fenwick, courier! Every island has been hunting for your light. Captain Thimble's ferry is right behind me, and the wind is swinging her sideways. She needs a landing now!\" How will you bring her in?",
       "choices": [
         {
           "id": "lines",
-          "label": "Catch the ferry's trailing lines and tie them off",
+          "label": "Catch her trailing lines",
           "icon": "hand",
           "goto": "ferry_lines"
         },
         {
           "id": "flags",
-          "label": "Wave her in with Dob's kite-flags",
+          "label": "Wave Dob's kite-flags",
           "icon": "hand",
           "goto": "ferry_flags"
         },
         {
           "id": "tow",
-          "label": "Fly out and tow her line",
+          "label": "Fly out and tow",
           "icon": "wing",
           "goto": "ferry_tow",
           "requiresSpecies": [
@@ -1342,14 +1342,14 @@
         },
         {
           "id": "post",
-          "label": "Brace the mooring post against the pull",
+          "label": "Brace the mooring post",
           "icon": "shield",
           "goto": "ferry_post",
           "requiresClass": "thornguard"
         },
         {
           "id": "whistle",
-          "label": "Blow the brass whistle so she can steer by it",
+          "label": "Blow your loud whistle",
           "icon": "spark",
           "goto": "ferry_whistle",
           "requiresItem": "brave_whistle",
@@ -1385,7 +1385,7 @@
       ],
       "stat": "quick",
       "tn": 12,
-      "prompt": "Snatch the ferry's trailing lines as they whip past the pad, and loop them around the mooring posts.",
+      "prompt": "Snatch the trailing lines as they whip past, and loop them around the mooring posts.",
       "onSuccess": {
         "goto": "ferry_in"
       },
@@ -1409,7 +1409,7 @@
       "stat": "clever",
       "tn": 12,
       "roller": "best",
-      "prompt": "The sharpest eyes read the ferry's heading through the mist and call which kite-flags to wave. Left, right, hold.",
+      "prompt": "Read the ferry's heading through the mist, and wave the kite-flags: left, right, hold.",
       "onSuccess": {
         "goto": "ferry_in"
       },
@@ -1433,7 +1433,7 @@
       "stat": "quick",
       "tn": 8,
       "roller": "best",
-      "prompt": "Wings take you out over the gap. Can the best flier catch the line and pull the ferry straight?",
+      "prompt": "Fly out over the gap, catch the line and pull the ferry straight.",
       "onSuccess": {
         "goto": "ferry_in"
       },
@@ -1456,7 +1456,7 @@
       ],
       "stat": "quick",
       "tn": 8,
-      "prompt": "One loud brass note rolls out over the gap. Call the ferry in with it, note by note, so she steers straight to the pad.",
+      "prompt": "Blow one loud note, again and again, so the ferry can steer straight to the sound.",
       "onSuccess": {
         "goto": "ferry_in"
       },
@@ -1479,7 +1479,7 @@
       ],
       "stat": "might",
       "tn": 8,
-      "prompt": "Brace holds the post steady. Can the others haul the ferry in hand over hand before the wind swings her out?",
+      "prompt": "Brace the mooring post while friends haul the ferry in, hand over hand.",
       "onSuccess": {
         "goto": "ferry_in"
       },
@@ -1500,7 +1500,7 @@
           "name": "Fenwick"
         }
       ],
-      "narration": "The ferry thumps against the pad and stays there. Hens flap out of a basket and walk about with complete confidence. Out steps a kitsune in a windblown coat, a captain's hat held on with string. \"Captain Thimble. Best landing I have had all week, and that includes my own.\" Behind her, passengers cling to the rail, loudly refusing to let go. Thimble looks at you and then at the sky. \"I need a safe lane home for everyone aboard, and a very strong cup of tea.\"",
+      "narration": "The ferry thumps against the pad and stays. Hens flap out of a basket and strut about. A kitsune steps off, her captain's hat tied on with string. \"Captain Thimble. Best landing all week.\" Her passengers cling to the rail and will not let go. \"I need a safe lane home for them,\" she says, \"and a very strong cup of tea.\"",
       "choices": [
         {
           "id": "continue",
@@ -1510,7 +1510,7 @@
         },
         {
           "id": "share",
-          "label": "Share your supper with the passengers first",
+          "label": "Share your supper first",
           "icon": "heart",
           "goto": "passengers_fed",
           "when": {
@@ -1538,7 +1538,7 @@
           "when": {
             "flag": "noticed_the_sky_ship"
           },
-          "text": "Then she stops and stares. \"You! You found us. I told you to look for the washing.\" A line of damp socks flaps from the ferry rail."
+          "text": "Then she stares. \"You! From the Exchange quay! You found us. See? Same washing.\" A line of damp socks flaps from the rail."
         }
       ],
       "art": "scenes/riftlight/sky-ferry"
@@ -1555,7 +1555,7 @@
           "name": "Fenwick"
         }
       ],
-      "narration": "The ferry swings, bumps the pad, and bounces off like a ball. A crate of washing hops over the rail and spills socks across the pad. Hens flap out in all directions and walk about with complete confidence. Out steps a kitsune in a windblown coat, a captain's hat held on with string. \"Captain Thimble. I have had worse landings. Not this week.\" Her passengers cling to the rail, loudly refusing to let go. Thimble looks at you and then at the sky. \"I need a safe lane home for everyone aboard, and a very strong cup of tea.\"",
+      "narration": "The ferry bumps the pad and bounces off like a ball. A crate of washing spills socks everywhere. Hens flap out and strut about. A kitsune steps off, her captain's hat tied on with string. \"Captain Thimble. I have had worse landings. Not this week.\" Her passengers cling to the rail. \"I need a safe lane home for them, and a very strong cup of tea.\"",
       "choices": [
         {
           "id": "continue",
@@ -1565,7 +1565,7 @@
         },
         {
           "id": "share",
-          "label": "Share your supper with the passengers first",
+          "label": "Share your supper first",
           "icon": "heart",
           "goto": "passengers_fed",
           "when": {
@@ -1593,7 +1593,7 @@
           "when": {
             "flag": "noticed_the_sky_ship"
           },
-          "text": "She stops and stares. \"You! You found us. I told you to look for the washing.\" She waves a sock at you, then at the pad."
+          "text": "Then she stares. \"You! From the Exchange quay! You found us. See? Same washing.\" She waves a sock at you."
         }
       ],
       "art": "scenes/riftlight/sky-landing"
@@ -1607,17 +1607,17 @@
         }
       ],
       "art": "scenes/riftlight/sky-ferry",
-      "narration": "The ferry is secured, but its passengers still cling to the rail. The keeper brings a ladder and a blanket. There is time to help them settle. Offer a steady hand, or ask the keeper to bring her rice crackers?",
+      "narration": "The ferry is tied up, but the passengers still cling to the rail. The keeper brings a ladder and a blanket. How will you help them down?",
       "choices": [
         {
           "id": "hand",
-          "label": "Offer a steady hand and walk beside them",
+          "label": "Lend a steady hand",
           "icon": "hand",
           "goto": "passengers_calm"
         },
         {
           "id": "crackers",
-          "label": "Let them settle with the keeper's rice crackers",
+          "label": "Wait with rice crackers",
           "icon": "cake",
           "goto": "passengers_stuck"
         }
@@ -1635,7 +1635,7 @@
           "name": "Temple keeper"
         }
       ],
-      "narration": "You pass the wrapped supper around. A hungry passenger sniffs it, then smiles. One by one the passengers let go of the rail, just to hold a piece of bread. The keeper sends them to the shrine for barley tea, and the hens follow, in a line. Thimble drops onto a barrel, finally quiet enough to think.",
+      "narration": "You pass the supper around. One by one, the passengers let go of the rail to hold some bread. The keeper sends them to the shrine for barley tea, and the hens follow in a line. Thimble flops onto a barrel.",
       "choices": [
         {
           "id": "continue",
@@ -1658,7 +1658,7 @@
           "name": "Temple keeper"
         }
       ],
-      "narration": "You speak softly and offer a steady hand. One by one the passengers let go of the rail and step onto firm stone. The keeper sends them to the shrine for barley tea. The hens follow, in a line, as if they had planned it. Thimble drops onto a barrel, finally quiet enough to think.",
+      "narration": "You speak softly and offer a steady hand. One by one, the passengers step onto firm stone. The keeper sends them off for barley tea. The hens follow in a line, as if they planned it. Thimble flops onto a barrel.",
       "choices": [
         {
           "id": "continue",
@@ -1681,7 +1681,7 @@
           "name": "Temple keeper"
         }
       ],
-      "narration": "The keeper brings a plate of rice crackers. Nobody hurries the passengers. Eventually they climb down, one crunch at a time, wrapped in her blanket. Thimble sits on a barrel and watches the hens follow them. \"Next time,\" she says, \"I bring only hens.\"",
+      "narration": "The keeper brings rice crackers, and nobody hurries. The passengers climb down one crunch at a time. Thimble sits on a barrel and watches the hens follow them. \"Next time,\" she says, \"I bring only hens.\"",
       "choices": [
         {
           "id": "continue",
@@ -1704,7 +1704,7 @@
           "name": "Fenwick"
         }
       ],
-      "narration": "Thimble unrolls a chart, held flat by three hens. \"My old lane is gone, and my passengers want to go home. I used to steer by the cloud whales' song. Wherever they sing, the sky stays level and a ferry can cross. Now the song has wandered.\" She lays a paw on the ferry's rail. It hums faintly, and the hum leans east. Fenwick holds a feather beside it, and the feather leans east too. \"Flags have no word for 'the sky has moved,'\" he says. \"But you can ask the air.\" Thimble nods. \"Find the whales, and you find my lane. Find where the song comes from, and Fenwick will carry the news to every island in the sky.\"",
+      "narration": "Thimble unrolls a chart and holds it flat with three hens. \"My old lane is gone. I steered by the cloud whales' song. Where they sing, the sky stays level. Now the song has wandered.\" The ferry rail hums faintly, leaning east. Fenwick's feather leans east too. \"Find where the song comes from,\" says Thimble, \"and Fenwick will tell every island.\"",
       "choices": [
         {
           "id": "continue",
@@ -1731,11 +1731,11 @@
           "name": "Dob"
         }
       ],
-      "narration": "The keeper builds a wind wall of baskets and blankets behind the shrine. Hot barley tea goes around in chipped cups. The hens roost on Pip, who bears it nobly. Far off, the low song comes again, slower than before. Seren says the next part is the hardest to hear and the easiest to miss. Everyone gets warm. Dob has hung his kites along the wind wall like laundry, and a ribbon cart sits open beside the fire.",
+      "narration": "The keeper builds a wind wall of baskets and blankets. Hot barley tea goes around in chipped cups. The hens roost on Pip, who bears it nobly. Dob hangs his kites along the wall and opens his ribbon cart. Far off, the low song comes again.",
       "choices": [
         {
           "id": "rest",
-          "label": "Sit by the fire and rest",
+          "label": "Rest by the fire",
           "icon": "hand",
           "goto": "camp_play"
         },
@@ -1747,7 +1747,7 @@
         },
         {
           "id": "buy",
-          "label": "Buy a songbird ribbon from Dob's cart (3 coins)",
+          "label": "Buy a ribbon (3 coins)",
           "icon": "heart",
           "goto": "camp_play",
           "when": {
@@ -1769,7 +1769,7 @@
         },
         {
           "id": "mend",
-          "label": "Mend the day's scrapes first",
+          "label": "Mend the day's scrapes",
           "icon": "heart",
           "goto": "camp_play",
           "requiresSpecies": "unicorn",
@@ -1797,11 +1797,11 @@
           "name": "Temple keeper"
         }
       ],
-      "narration": "Pip's notebook is soaked at one corner. You lay the pages by the fire, and Pip reads you his list aloud, with feeling: islands that moved, three socks, a hen named Gravy. \"I do not know why it is all moving,\" he says quietly. \"I only know it is easier to count with friends.\" The hen named Gravy agrees, from his head.",
+      "narration": "Pip's notebook is soaked at one corner. You dry the pages by the fire while he reads his list aloud: islands that moved, three socks, a hen named Gravy. \"I don't know why it all moves,\" he says quietly. \"Counting is easier with friends.\" Gravy agrees, from his head.",
       "choices": [
         {
           "id": "continue",
-          "label": "Settle down for the night",
+          "label": "Settle in for the night",
           "icon": "hand",
           "goto": "camp_play"
         }
@@ -1820,7 +1820,7 @@
           "name": "Seren Wisp"
         }
       ],
-      "narration": "Night. The sky is huge and full of stars, and one drifting lantern, which is Pip's. The shrine bell shivers all by itself. The keeper brings out her slate, crowded with chalk lines of where things used to be. Then the low song comes, close and slow, rolling over the island like a wave. The keeper sets down her cup. \"That is the nearest it has been. Tonight we find which way it leads. If we can name the singer, we can help the singer, and maybe my island too.\"",
+      "narration": "Night. The sky is huge and full of stars. The shrine bell shivers all by itself. Then the low song comes, close and slow, rolling over the island like a wave. \"That is the nearest it has been,\" says the keeper. \"Tonight we find which way it leads.\"",
       "choices": [
         {
           "id": "continue",
@@ -1847,30 +1847,30 @@
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "Everyone has a piece. There is the hum you listened for this morning, the keeper's chalk slate, Thimble's ferry rail, Fenwick's feather, and Pip's notebook of crossed-out arrows. Seren curls her tail around her feet. \"Laid together, they should show where the song leads.\" Where will you start?",
+      "narration": "Everyone has a clue: the hum you heard this morning, the keeper's chalk slate, Thimble's humming rail, Fenwick's feather, and Pip's crossed-out arrows. \"Lay them together,\" says Seren, \"and they will show where the song leads.\" Where will you start?",
       "choices": [
         {
           "id": "notes",
-          "label": "Lay Pip's notebook over the keeper's slate",
+          "label": "Lay notes on the slate",
           "icon": "hand",
           "goto": "bearing_notes"
         },
         {
           "id": "air",
-          "label": "Ring the edge with feathers and lanterns, and call out",
+          "label": "Call out from the edge",
           "icon": "hand",
           "goto": "bearing_air"
         },
         {
           "id": "sing",
-          "label": "Hum back, low and long, and listen for the answer",
+          "label": "Hum back to it",
           "icon": "heart",
           "goto": "bearing_sing",
           "requiresClass": "songkeeper"
         },
         {
           "id": "chime",
-          "label": "Ring your listening chime and listen for its echo",
+          "label": "Ring your chime",
           "icon": "star",
           "goto": "bearing_chime",
           "requiresItem": "listening_chime"
@@ -1891,11 +1891,11 @@
       ],
       "art": "scenes/riftlight/windbreak-camp",
       "type": "story",
-      "narration": "You lay the notebook over the chalk slate. Thimble holds the pages while the keeper checks the crossed-out arrows.",
+      "narration": "You lay Pip's notebook over the chalk slate. The keeper checks each crossed-out arrow against her chalk lines. They all lean one way.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "See where they point",
           "icon": "forward",
           "goto": "bearing_found"
         }
@@ -1918,11 +1918,11 @@
       ],
       "art": "scenes/riftlight/windbreak-camp",
       "type": "story",
-      "narration": "You compare the feathers and lanterns from the marked edge. The keeper calls each direction back so everyone can check it.",
+      "narration": "You ring the edge with feathers and lanterns and call out. The keeper calls each direction back, so everyone can check it.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "See where they point",
           "icon": "forward",
           "goto": "bearing_found"
         }
@@ -1945,7 +1945,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "See where they point",
           "icon": "forward",
           "goto": "bearing_found"
         }
@@ -1964,11 +1964,11 @@
       ],
       "art": "scenes/riftlight/windbreak-camp",
       "type": "story",
-      "narration": "Your songkeeper answers the low song. Seren waits for the echo while friends mark its direction on the slate.",
+      "narration": "Your songkeeper answers the low song. Seren waits for the echo while friends chalk its direction on the slate.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "See where they point",
           "icon": "forward",
           "goto": "bearing_found"
         }
@@ -1990,11 +1990,11 @@
           "name": "Fenwick"
         }
       ],
-      "narration": "All the pieces point one way: east, past the dark edge, to a place where the sky is singing. Thimble taps her chart. Fenwick fluffs his feathers. The keeper smiles for the first time since you landed. \"The old keepers said the cloud whales sing where the sky is safe to cross. If they are singing there, then something has changed there, and they will need help before we do. Someone must go and see. It is a long way for a ferry and a short way for a kind heart.\"",
+      "narration": "Every clue points one way: east, past the dark edge, where the sky is singing. The keeper smiles for the first time since you landed. \"The old keepers said cloud whales sing where the sky is safe to cross. If their song has moved, they may need help. Someone must go and see.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Listen as the song comes closer",
+          "label": "Listen for the song",
           "icon": "hand",
           "goto": "song_echo"
         }
@@ -2023,17 +2023,17 @@
           "name": "Fenwick"
         }
       ],
-      "narration": "Dawn is a pale stripe. The ferry creaks at its ropes, and Fenwick stretches one wing, then the other. The keeper folds a flag-cloth stamped with her island's mark and presses it into your hands. \"Someone must go and see what is wrong with the singing. Thimble's ferry can take you part of the way. Fenwick can lead you along the stepping islands.\" How will you go?",
+      "narration": "Dawn is a pale stripe. The keeper presses a flag-cloth with her island's mark into your hands. \"Someone must see what is wrong with the singing. Thimble's ferry can take you part of the way. Fenwick can lead you along the stepping islands.\" How will you go?",
       "choices": [
         {
           "id": "ferry",
-          "label": "Ride the ferry with Captain Thimble",
+          "label": "Ride Thimble's ferry",
           "icon": "hand",
           "goto": "route_ferry"
         },
         {
           "id": "flags",
-          "label": "Follow Fenwick along the stepping islands",
+          "label": "Follow Fenwick's flags",
           "icon": "hand",
           "goto": "route_flags"
         }
@@ -2056,7 +2056,7 @@
           "name": "Dob"
         }
       ],
-      "narration": "Thimble hands out boarding ropes. \"Hold the rail with both hands, and do not sing back until I say.\" Her passengers have voted to stay with the keeper, hens included, in case there is more barley tea. Dob has loaded his cart of kites aboard, and sits on top of it with his map the right way up. The keeper tucks her island's flag-cloth into your pack and pats it twice, for luck.",
+      "narration": "Thimble hands out boarding ropes. \"Hold the rail, and no singing back until I say.\" Her passengers vote to stay with the keeper, hens and all, in case there is more tea. Dob loads his kite cart aboard and sits on top, map the right way up.",
       "choices": [
         {
           "id": "continue",
@@ -2085,7 +2085,7 @@
           "name": "Fenwick"
         }
       ],
-      "narration": "Fenwick pulls three tiny flags from his satchel and clips them to his wing. \"Steady air, steady air, steady air. I will fly ahead and wave. If I wave two, hold onto something.\" The keeper tucks her island's flag-cloth into your pack and pats it twice, for luck. A hen watches, deeply unimpressed. Dob will wait for the ferry to come back, selling kites to anyone brave enough to look up.",
+      "narration": "Fenwick clips three tiny flags to his wing. \"I fly ahead and wave. If I wave two, hold on to something.\" A hen watches, deeply unimpressed. Dob will wait for the ferry, selling kites to anyone brave enough to look up.",
       "choices": [
         {
           "id": "continue",
@@ -2110,7 +2110,7 @@
           "name": "Temple keeper"
         }
       ],
-      "narration": "Dawn. The island falls away behind you, small and gold-roofed, its signal basket still glowing. The low song rolls in from the east, slow and wide. Far off, a huge shape moves gently through the mist, singing. The cloud whales are out there. You have neighbors who trust you, a bearing, and a route to follow.",
+      "narration": "Dawn. The island falls away behind you, small and gold-roofed, its signal basket still glowing. Far off, a huge shape moves through the mist, singing. You have neighbors who trust you, a bearing, and a road to follow.",
       "choices": [],
       "variants": [
         {
@@ -2123,13 +2123,13 @@
           "when": {
             "flag": "sky_route_flags"
           },
-          "text": "Fenwick circles ahead, his flags snapping, already pointing the way."
+          "text": "Fenwick circles ahead, flags snapping."
         },
         {
           "when": {
             "flag": "noticed_the_sky_ship"
           },
-          "text": "Captain Thimble waves her string-tied hat from the rail. \"Told you!\" she calls. \"You cannot miss the washing!\""
+          "text": "Captain Thimble waves her string-tied hat. \"You cannot miss the washing!\" she calls."
         }
       ],
       "heal": 0,
@@ -2148,7 +2148,7 @@
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "Between you and the pole lies the open pad, and the wind comes in gusts. When a gust is done, every wind banner droops at once. Pip counts the gusts out loud and loses count. The keeper points. \"Wait for the lull, then cross.\"",
+      "narration": "The open pad lies between you and the pole, and the wind comes in gusts. When a gust ends, every wind banner droops. \"Wait for the lull,\" says the keeper, \"then cross.\"",
       "interaction": {
         "kind": "timing",
         "cue": "Wait until the banners droop, then run to the pole.",
@@ -2159,15 +2159,15 @@
       },
       "onSuccess": {
         "goto": "basket_plan",
-        "narration": "The banners droop, and you cross in one long stride. The wind holds its breath until you arrive."
+        "narration": "The banners droop, and you cross in one long stride."
       },
       "onFailure": {
         "goto": "basket_plan",
-        "narration": "A gust spins you twice and sits you down. The keeper reels you in on her rope, and you reach the pole dizzy and cheerful."
+        "narration": "A gust spins you twice and sits you down. The keeper reels you in on her rope."
       },
       "onAssisted": {
         "goto": "basket_plan",
-        "narration": "The keeper calls the lull for you. \"Now!\" You cross together without a single stumble."
+        "narration": "The keeper calls the lull. \"Now!\" You cross together without a stumble."
       },
       "art": "scenes/riftlight/sky-landing"
     },
@@ -2183,7 +2183,7 @@
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "The fuel must reach the basket at the top of the pole, and the ladder only fits one at a time. The keeper stands at the bottom and Pip waits at the top, holding his arms out like a very small harbor. \"Hand to hand,\" the keeper calls, \"and do not drop one on me.\"",
+      "narration": "The fuel must go up the ladder to the basket. The keeper stands at the bottom, and Pip waits at the top, arms out like a very small harbor. \"Hand to hand,\" calls the keeper, \"and do not drop one on me.\"",
       "interaction": {
         "kind": "relay",
         "cue": "Catch the logs and pass them up the line.",
@@ -2192,15 +2192,15 @@
       },
       "onSuccess": {
         "goto": "light",
-        "narration": "Pip drops the last log into the basket with a clunk and a cheer. Nobody is hit. The keeper counts this as a miracle."
+        "narration": "Pip drops the last log in with a clunk and a cheer. Nobody is hit. A miracle."
       },
       "onFailure": {
         "goto": "light",
-        "narration": "One log escapes and rolls under the shrine. The keeper fetches it, grumbling nicely, and the basket is full anyway."
+        "narration": "One log escapes and rolls under the shrine. The keeper fetches it, grumbling, and the basket fills anyway."
       },
       "onAssisted": {
         "goto": "light",
-        "narration": "The keeper hauls the last logs up on a rope and ties them off with a bow. \"A little help is still help,\" she says."
+        "narration": "The keeper hauls the last logs up on a rope. \"A little help is still help,\" she says."
       },
       "art": "scenes/riftlight/signal-pole"
     },
@@ -2216,7 +2216,7 @@
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "Everyone settles in behind the wind wall. \"What would make this a good camp tonight?\" the keeper asks. Pip suggests more hens. The hens, listening, suggest more barley. Add something to the camp, one at a time.",
+      "narration": "\"What would make a good camp tonight?\" asks the keeper. Pip suggests more hens. The hens suggest more barley.",
       "interaction": {
         "kind": "play",
         "cue": "Add something to your cozy camp.",
@@ -2251,15 +2251,15 @@
       },
       "onSuccess": {
         "goto": "night_song",
-        "narration": "The camp glows. For one quiet minute the island does not feel lost at all."
+        "narration": "The camp glows. For one quiet minute, the island does not feel lost at all."
       },
       "onFailure": {
         "goto": "night_song",
-        "narration": "The camp is a little lopsided and the hens are in the middle of it. It is perfect anyway."
+        "narration": "The camp is a little lopsided, with hens in the middle. It is perfect anyway."
       },
       "onAssisted": {
         "goto": "night_song",
-        "narration": "The keeper adds the last touches herself, humming. The camp is cozy before you know it."
+        "narration": "The keeper adds the last touches, humming. The camp is cozy before you know it."
       },
       "art": "scenes/riftlight/sky-night-windbreak"
     },
@@ -2275,7 +2275,7 @@
           "name": "Seren Wisp"
         }
       ],
-      "narration": "The low song makes a faint glow in one of three wind-bells on the shrine's edge. The glow hops from bell to bell like a flea. Seren holds a hand up for quiet. \"Watch it. Wherever it ends is the way the song leads.\"",
+      "narration": "The song lights a glow in one of three wind-bells on the shrine. The glow hops from bell to bell like a flea. \"Where it stops,\" says Seren, \"is the way the song leads.\"",
       "interaction": {
         "kind": "tracking",
         "cue": "Watch the glow hop between the bells, then pick where it ends.",
@@ -2304,15 +2304,15 @@
       },
       "onSuccess": {
         "goto": "bearing_vote",
-        "narration": "The glow settles in the east bell and stays there, humming. East, the bells agree."
+        "narration": "The glow settles in the east bell, humming. East."
       },
       "onFailure": {
         "goto": "bearing_vote",
-        "narration": "You pick the wrong bell, and the east bell rings out cheerfully all by itself. East, then."
+        "narration": "You pick the wrong bell, and the east bell rings out cheerfully by itself. East, then."
       },
       "onAssisted": {
         "goto": "bearing_vote",
-        "narration": "Seren points at the east bell, steady as a signpost. \"There. Now you know what to prove.\""
+        "narration": "Seren points at the east bell. \"There. Now you know what to prove.\""
       },
       "art": "scenes/riftlight/sky-mist-song"
     },
@@ -2328,7 +2328,7 @@
           "name": "Seren Wisp"
         }
       ],
-      "narration": "The song comes again, closer than ever, in a pattern: low, high, low, middle. Thimble says it is how the whales say here we are. Seren nods. \"Answer in the same pattern, so they know a friend is listening.\" The shrine bell hangs ready, with three notes.",
+      "narration": "The song comes again, close now, in a pattern: low, high, low, middle. \"That is how whales say here we are,\" says Thimble. \"Answer the same way,\" says Seren, \"so they know a friend is listening.\"",
       "interaction": {
         "kind": "memory",
         "cue": "Watch the pattern, then ring it back on the bell.",
@@ -2360,15 +2360,15 @@
       },
       "onSuccess": {
         "goto": "route_vote",
-        "narration": "The song stops. Then it answers with one long, warm note from the east. Seren grins. \"They heard us.\""
+        "narration": "The song stops. Then one long, warm note answers from the east. \"They heard us,\" says Seren."
       },
       "onFailure": {
         "goto": "route_vote",
-        "narration": "Your pattern wobbles, but the song answers anyway, patient as a grown-up answering a very small question."
+        "narration": "Your pattern wobbles, but the song answers anyway, patient as a grown-up."
       },
       "onAssisted": {
         "goto": "route_vote",
-        "narration": "Seren rings along and steadies each note. The song answers, long and warm, from the east."
+        "narration": "Seren rings along and steadies each note. The song answers, long and warm."
       },
       "art": "scenes/riftlight/sky-mist-song"
     },
@@ -2389,11 +2389,11 @@
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "The brighter the basket glows, the more the dusk fills with little floating lights. Two wisps tumble in on the gale, tiny and ghostly, and circle the flame like moths. They tug at it and giggle. They think the fire is a very large, very rude candle, and they want it for themselves. The wind pulls the flame sideways. The keeper grabs her rope. \"They will tear it apart! Shoo them off, gently!\"",
+      "narration": "The bright basket draws little floating lights out of the dusk. Two wisps tumble in on the gale and circle the flame, giggling. They think it is a very large, very rude candle, and they want it. \"They will pull it apart!\" cries the keeper. \"Shoo them off, gently!\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Shoo the wisps away",
+          "label": "Shoo the wisps",
           "icon": "hand",
           "goto": "wisp_fight"
         }
@@ -2403,7 +2403,7 @@
     "wisp_fight": {
       "type": "encounter",
       "map": "glade",
-      "narration": "The wisps zip in circles around the pole and dive at the flame. Drive them away from the basket before the gale and their tugging pull the fire apart.",
+      "narration": "The wisps zip around the pole and dive at the flame. Drive them off before they tug the fire apart.",
       "enemies": [
         {
           "id": "wisp",
@@ -2445,7 +2445,7 @@
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "The wisps squeak, wobble, and bob away over the edge, still giggling. The flame stands straight again. Pip, who has a jar for everything, catches a spoonful of their soft leftover glow and screws on the lid. \"For emergencies,\" he says. \"Or snacks.\" The keeper laughs so hard her ears flap.",
+      "narration": "The wisps squeak and bob away over the edge, still giggling. Pip scoops a spoonful of their leftover glow into a jar and screws on the lid. \"For emergencies,\" he says, and hands it to you. \"Or snacks.\" The keeper laughs so hard her ears flap.",
       "choices": [
         {
           "id": "continue",
@@ -2467,7 +2467,7 @@
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "The wisps swirl around you until the world is all dizzy sparkles. The keeper rings the shrine bell with both paws. Wisps hate a loud, honest bell, and they scatter into the dusk with a rude little pop. The keeper wraps everyone in blankets and passes around hot tea. Nobody gets a jar of glow tonight, but the basket is still burning, a little singed and very proud.",
+      "narration": "The wisps swirl until the world is all dizzy sparkles. The keeper rings the shrine bell with both paws. Wisps hate an honest bell, and they scatter with a rude little pop. The basket still burns, a little singed and very proud.",
       "choices": [
         {
           "id": "continue",
@@ -2489,17 +2489,17 @@
           "name": "Captain Thimble"
         }
       ],
-      "narration": "The ferry creaks at the landing pad, and Fenwick stretches his wings in the first light. Beside the pad stands a stone hut. Its door rattles in the wind. Thump. Something soft hits the wall inside. Far off, a huge shape moves through the mist, singing. You can knock, or you can set out for the cloud whales.",
+      "narration": "The ferry creaks at the pad, and Fenwick stretches in the first light. Beside the pad stands a stone hut. Its door rattles in the wind. Thump. Something soft hits the wall inside. Far off, the cloud whales sing.",
       "choices": [
         {
           "id": "hut",
-          "label": "Knock on the stone hut's door",
+          "label": "Knock on the hut",
           "icon": "hand",
           "goto": "dojo"
         },
         {
           "id": "set_out",
-          "label": "Say your goodbyes and set out",
+          "label": "Say goodbye and go",
           "icon": "travel",
           "goto": "island_done"
         }
@@ -2509,13 +2509,13 @@
     },
     "dojo": {
       "type": "story",
-      "narration": "A bigfoot named Master Dunnick opens the door a crack and pulls you in out of the wind. Then he leans his back against it. The wind pushes. He pushes back. He has held this door shut for forty years. \"This school is called the Dojo,\" he says. \"Here we train the Thornguard, a hero who holds the line.\" A thorn bracer hangs on a hook by the fire. A Thornguard's strength lives in that bracer, and a song bell worn beside it will not ring. Thump. In the corner, students are catching pillows as they drop from the rafters. \"Anyone who wants the bracer,\" says Master Dunnick, \"may try it on.\"",
+      "narration": "A bigfoot named Master Dunnick pulls you in out of the wind and leans on the door. The wind pushes. He pushes back. He has done this for forty years. \"This school is called the Dojo. Here we train the Thornguard, a hero who holds the line.\" A thorn bracer hangs by the fire. A Thornguard's strength lives in it, and a song bell worn beside it will not ring. Thump. Students catch pillows falling from the rafters. \"Anyone may try the bracer on.\"",
       "variants": [
         {
           "when": {
             "flag": "met_master_dunnick"
           },
-          "text": "Master Dunnick is still leaning on the door of the Dojo. \"Back already? Good. The wind never stops, so neither do we.\" The thorn bracer waits on its hook for anyone who wants to try it on. Thump. Another pillow drops.",
+          "text": "Master Dunnick is still leaning on the Dojo door. \"Back already? Good.\" The thorn bracer waits on its hook. Thump. Another pillow drops.",
           "replace": true
         }
       ],
@@ -2529,7 +2529,7 @@
       "choices": [
         {
           "id": "pillows",
-          "label": "Catch the falling pillows",
+          "label": "Catch falling pillows",
           "icon": "shield",
           "goto": "dojo_pillows",
           "effects": [
@@ -2542,7 +2542,7 @@
         },
         {
           "id": "back",
-          "label": "Back to the sheltered path",
+          "label": "Back to the path",
           "icon": "back",
           "goto": "island_rest",
           "effects": [
@@ -2558,7 +2558,7 @@
     },
     "dojo_pillows": {
       "type": "story",
-      "narration": "A student unties a rope. Pillows tumble from the rafters. You plant your feet and catch one, then another, then another. The next one lands on your head. Master Dunnick nods without leaving the door. \"That is how you brace. Stand still, and let it come to you.\"",
+      "narration": "A student unties a rope, and pillows tumble from the rafters. You plant your feet and catch one, then another. The next lands on your head. \"That is how you brace,\" says Master Dunnick. \"Stand still, and let it come.\"",
       "cast": [
         {
           "figure": "cast/master_dunnick",
@@ -2568,7 +2568,7 @@
       "choices": [
         {
           "id": "back",
-          "label": "Back to the sheltered path",
+          "label": "Back to the path",
           "icon": "back",
           "goto": "island_rest",
           "effects": [

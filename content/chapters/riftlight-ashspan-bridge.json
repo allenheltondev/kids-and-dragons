@@ -41,7 +41,7 @@
   "scenes": {
     "bridge": {
       "type": "story",
-      "narration": "A stone bridge called Ashspan Bridge crosses the Great River here, but the melt has taken half the planks from its middle. Old Ossley, a frogfolk boatman, leans on a long pole beside his flat boat. \"Changed melt,\" he says, watching a branch turn in the current. \"Busy year. Folk cannot walk over, so they ride with me. Help me get them across, and then the bridge wants mending.\"",
+      "narration": "Ashspan Bridge crosses the Great River here, but the melt has torn the planks out of its middle. Old Ossley, the frogfolk boatman, leans on the pole of his flat boat. \"Folk cannot walk over, so they ride with me,\" he says. \"Help me ferry them across. Then help me mend the bridge.\"",
       "choices": [
         {
           "id": "continue",
@@ -55,7 +55,7 @@
           "when": {
             "flag": "ossley_rescued"
           },
-          "text": "He checks the blanket around your shoulders before returning to his pole."
+          "text": "He checks the blanket around your shoulders before he takes up his pole."
         }
       ],
       "cast": [
@@ -68,23 +68,23 @@
     },
     "landing": {
       "type": "choice_point",
-      "narration": "A mooring rope has dragged the landing plank loose, and the plank is wobbling like a loose tooth. Ossley is holding the boat steady with his pole while two travelers wait with their bags. One bag quacks, loudly. The other traveler pretends not to hear it. What will you do?",
+      "narration": "A mooring rope has dragged the landing plank loose. It wobbles like a loose tooth. Ossley holds the boat steady while two travelers wait with their bags. One bag quacks. How will you get them aboard?",
       "choices": [
         {
           "id": "plank",
-          "label": "Hold the plank while the travelers board",
+          "label": "Hold the plank steady",
           "icon": "hand",
           "goto": "plank_check"
         },
         {
           "id": "rope",
-          "label": "Help move the rope off the plank",
+          "label": "Lift the rope off",
           "icon": "hand",
           "goto": "rope_check"
         },
         {
           "id": "brace",
-          "label": "Use brace to hold the plank end like a post",
+          "label": "Brace the plank end",
           "icon": "shield",
           "goto": "brace_check",
           "requiresClass": "thornguard"
@@ -113,7 +113,7 @@
       "type": "check",
       "stat": "might",
       "tn": 12,
-      "prompt": "Hold the plank flat and steady while the travelers step aboard. Choose who leads; everyone can help.",
+      "prompt": "Hold the plank flat and still while the travelers step aboard.",
       "roller": "party",
       "onSuccess": {
         "goto": "plank"
@@ -138,7 +138,7 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "prompt": "Flip the mooring rope off the plank before the boat drifts away. Choose who leads; everyone can help.",
+      "prompt": "Flip the mooring rope off the plank before the boat drifts away.",
       "roller": "party",
       "onSuccess": {
         "goto": "rope"
@@ -163,7 +163,7 @@
       "type": "check",
       "stat": "might",
       "tn": 8,
-      "prompt": "A thornguard's brace holds the plank end like a post. Can you walk the heavy bags across it without a wobble?",
+      "prompt": "Brace the plank end like a post while the heavy bags cross.",
       "roller": "best",
       "onSuccess": {
         "goto": "brace_done"
@@ -186,7 +186,7 @@
     },
     "plank": {
       "type": "story",
-      "narration": "You hold the plank flat until both travelers are aboard. Ossley tests it once with his pole and nods. \"That will do.\" One traveler pats the plank as she passes, the way you would pat a good horse.",
+      "narration": "You hold the plank flat until both travelers are aboard. Ossley tests it with his pole. \"That will do.\" One traveler pats the plank, the way you pat a good horse.",
       "choices": [
         {
           "id": "continue",
@@ -216,7 +216,7 @@
     },
     "rope": {
       "type": "story",
-      "narration": "You lift the rope clear and seat the plank on its supports. The travelers board without wetting their bags. Ossley gives you a brief nod, which from a frogfolk boatman is a parade. The loose rope coils itself on the deck like a sleeping snake.",
+      "narration": "You lift the rope clear, and the plank settles. The travelers board with dry bags. Ossley gives you a tiny nod. From a frogfolk boatman, that is a parade.",
       "choices": [
         {
           "id": "continue",
@@ -246,7 +246,7 @@
     },
     "brace_done": {
       "type": "story",
-      "narration": "The plank end does not move, not even when the heaviest bag thumps across. Both travelers board with dry shoes. Ossley gives the plank an admiring tap. \"Like a post,\" he says. \"A post that gets out of the way afterward. Hard to find.\"",
+      "narration": "The plank end does not budge, even when the heaviest bag thumps across. Ossley taps it. \"Like a post,\" he says. \"A post that gets out of the way after. Hard to find.\"",
       "choices": [
         {
           "id": "continue",
@@ -276,7 +276,7 @@
     },
     "board_wet": {
       "type": "story",
-      "narration": "The plank tips and one bag drops into the shallows, quacking. Everyone fishes it out together. The travelers board soaked and cheerful. \"It floats,\" says one. \"It is a very good bag.\" Ossley wrings out his hat and says nothing at all, which is how frogfolk laugh.",
+      "narration": "The plank tips, and one bag drops into the shallows, quacking. Everyone fishes it out. \"It floats,\" says its owner. \"It is a very good bag.\" Ossley wrings out his hat and says nothing. That is how frogfolk laugh.",
       "choices": [
         {
           "id": "continue",
@@ -312,7 +312,7 @@
     },
     "ferry_ask": {
       "type": "story",
-      "narration": "The nearer traveler hugs her bag. \"Tilly,\" she says. \"Duck eggs, for market across the water. They are not due for days.\" The bag quacks. \"They disagree.\" Ossley pushes off, and the bridge slides slowly past overhead, full of holes like cheese. \"The river is strong this year, and a flat boat spins when the weight sits wrong,\" he says. The current tugs at the boat like a dog at a sleeve.",
+      "narration": "The nearer traveler hugs her bag. \"I'm Tilly. Duck eggs, for market across the river. They are not due for days.\" The bag quacks. \"They disagree.\" Ossley pushes off. \"Strong river this year,\" he says. \"A flat boat spins if the weight sits wrong.\"",
       "choices": [
         {
           "id": "continue",
@@ -335,23 +335,23 @@
     },
     "ferry_plan": {
       "type": "choice_point",
-      "narration": "Ossley hands out jobs. \"The boat needs steadying, and the river needs watching,\" he says. \"I only have the two eyes, and one of them is on my hat.\" The far landing looks very small from here. How will you help get across?",
+      "narration": "Ossley hands out jobs. \"The boat needs steadying, and the river needs watching. I only have two eyes, and one is on my hat.\" How will you help him across?",
       "choices": [
         {
           "id": "lean",
-          "label": "Lean together on Ossley's call",
+          "label": "Lean on Ossley's call",
           "icon": "hand",
           "goto": "ferry_hold"
         },
         {
           "id": "pole",
-          "label": "Take the pole with Ossley and push against the current",
+          "label": "Push with the pole",
           "icon": "hand",
           "goto": "pole_check"
         },
         {
           "id": "watch",
-          "label": "Fly ahead and watch for snags in the water",
+          "label": "Fly ahead for snags",
           "icon": "wing",
           "goto": "watch_check",
           "requiresSpecies": [
@@ -376,7 +376,7 @@
       "type": "check",
       "stat": "might",
       "tn": 12,
-      "prompt": "Take the pole beside Ossley and push against the current, stroke after stroke. Choose who leads; everyone can help.",
+      "prompt": "Push the pole against the current beside Ossley, stroke after stroke.",
       "roller": "party",
       "onSuccess": {
         "goto": "crossing"
@@ -400,7 +400,7 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "prompt": "Wings lift you above the water to watch for snags. Can you call a safe line back to Ossley?",
+      "prompt": "Fly above the water, spot the snags and call a safe line back to Ossley.",
       "roller": "best",
       "onSuccess": {
         "goto": "crossing"
@@ -424,7 +424,7 @@
       "type": "check",
       "stat": "quick",
       "tn": 12,
-      "prompt": "Ossley calls the lean! Everyone shift your weight the same way, then back, and keep the flat boat from spinning!",
+      "prompt": "Ossley calls the lean! Shift your weight together, then back, so the boat cannot spin.",
       "roller": "all",
       "onSuccess": {
         "goto": "crossing"
@@ -446,7 +446,7 @@
     },
     "crossing": {
       "type": "story",
-      "narration": "You lean left, then right, then left again. The flat boat wobbles like a duck and slides across, straight as a plank. \"Good,\" says Ossley. \"Frogfolk dislike spinning.\" He bumps the far landing as gently as a sleepy cat. Tilly counts her eggs, which takes no time, since they are all in one bag. The bag quacks the total.",
+      "narration": "The flat boat wobbles like a duck, then slides across as straight as a plank. \"Good,\" says Ossley. \"Frogfolk dislike spinning.\" Tilly counts her eggs. It takes no time, since they are all in one bag.",
       "choices": [
         {
           "id": "continue",
@@ -469,7 +469,7 @@
     },
     "ferry_spin": {
       "type": "story",
-      "narration": "The boat does one slow circle. The bridge goes by twice. Ossley says nothing, but his throat puffs out like a drum. Then he drives the pole into the mud and the boat stops, a little dizzy, a little late. Tilly checks her eggs. \"Still quacking,\" she says, and everyone breathes again.",
+      "narration": "The boat turns one slow circle. The bridge goes by twice. Ossley's throat puffs out like a drum. He jams his pole into the mud, and the boat stops, a little dizzy. Tilly checks her bag. \"Still quacking.\"",
       "choices": [
         {
           "id": "continue",
@@ -500,7 +500,7 @@
     },
     "ferry_dock": {
       "type": "interaction",
-      "narration": "The far landing is coming up fast. Ossley sets his pole like a brake. \"Easy,\" he says. \"Bump, do not crash. Tell me when.\" Tilly covers her bag with both hands.",
+      "narration": "The far landing comes up fast. \"Bump, do not crash,\" says Ossley. \"Tell me when.\" Tilly covers her bag with both hands.",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -522,20 +522,20 @@
       "art": "scenes/riftlight/ashspan-ferry-landing",
       "onSuccess": {
         "goto": "far_bank",
-        "narration": "A gentle bump. The flat boat stops like a sleepy cat, and the eggs do not even quack."
+        "narration": "A gentle bump. The boat stops, and the eggs do not even quack."
       },
       "onFailure": {
         "goto": "far_bank",
-        "narration": "The boat kisses the dock a little hard. The eggs quack, and Ossley's throat puffs. \"Landed,\" he says. \"Technically.\""
+        "narration": "The boat hits the dock a little hard. The eggs quack. \"Landed,\" says Ossley. \"Mostly.\""
       },
       "onAssisted": {
         "goto": "far_bank",
-        "narration": "Ossley eases the pole and the boat slides in all by itself, and he pretends it was you."
+        "narration": "Ossley eases the pole, and the boat slides in. He pretends it was you."
       }
     },
     "far_bank": {
       "type": "story",
-      "narration": "The far landing has a muddy ramp and a heap of old planks piled at its edge. A dragonling bridge-mender named Bryn stands with her hands on her hips, glaring at the broken deck. \"Planks, I have,\" she says, \"up the bank in my cart. Hands, I do not. Help me fix this, and the market folk can cross, and Ossley can rest his pole.\" Tilly nods hard. \"And my eggs can get to market,\" she says. Ossley says nothing, but his pole sags with relief.",
+      "narration": "A dragonling bridge-mender named Bryn glares at the broken deck. \"Planks, I have, in my cart up the bank. Hands, I do not. Help me fix this, and the market folk can cross.\" \"And my eggs can get to market,\" says Tilly. A heap of old planks blocks the ramp.",
       "choices": [
         {
           "id": "continue",
@@ -562,17 +562,17 @@
     },
     "plank_pile": {
       "type": "choice_point",
-      "narration": "Bryn nods at the heap of old planks lying on the ramp. \"That pile has to move before my cart can come down,\" she says. \"It has been there since dawn. I think it has also been breathing.\" The pile gives a small, damp sigh. Tilly holds her bag tighter.",
+      "narration": "Bryn frowns at the heap. \"That pile must move before my cart can come down. It has been there since dawn. I think it is breathing.\" The pile gives a small, damp sigh.",
       "choices": [
         {
           "id": "poke",
-          "label": "Poke the pile with Ossley's pole",
+          "label": "Poke it with the pole",
           "icon": "hand",
           "goto": "poke_reveal"
         },
         {
           "id": "stamp",
-          "label": "Stamp on the ramp to see what jumps",
+          "label": "Stamp on the ramp",
           "icon": "hand",
           "goto": "stamp_reveal"
         }
@@ -595,11 +595,11 @@
     },
     "poke_reveal": {
       "type": "story",
-      "narration": "You poke the pile with Ossley's pole. The pile blinks. Eyes open under the top plank, then a wide wet mouth, then stubby legs. It is a pair of mire mimics, a big one and a little one, marsh creatures that dress up as whatever lies on the ground and wait for a snack. They have been hungry since dawn, and Tilly's bag smells very like duck.",
+      "narration": "You poke the pile. It blinks. Eyes open under the top plank, then a wide wet mouth. They are two mire mimics, a big one and a little one. Mimics dress up as whatever lies on the ground and wait for a snack. Tilly's bag smells like duck.",
       "choices": [
         {
           "id": "continue",
-          "label": "Shoo the mimic",
+          "label": "Shoo the mimics",
           "icon": "hand",
           "goto": "mimic_fight"
         }
@@ -622,11 +622,11 @@
     },
     "stamp_reveal": {
       "type": "story",
-      "narration": "You stamp the ramp, thump, thump, thump, and the whole pile jumps. Under the top plank a mouth opens, and stubby legs unfold. It is a pair of mire mimics, a big one and a little one, marsh creatures that dress up as whatever lies on the ground and wait for a snack. They have been hungry since dawn, and Tilly's bag smells very like duck.",
+      "narration": "Thump, thump, thump! The whole pile jumps. A mouth opens under the top plank, and stubby legs unfold. They are two mire mimics, a big one and a little one. Mimics dress up as whatever lies on the ground and wait for a snack. Tilly's bag smells like duck.",
       "choices": [
         {
           "id": "continue",
-          "label": "Shoo the mimic",
+          "label": "Shoo the mimics",
           "icon": "hand",
           "goto": "mimic_fight"
         }
@@ -650,7 +650,7 @@
     "mimic_fight": {
       "type": "encounter",
       "map": "reedbank",
-      "narration": "The two mire mimics wobble up on their little legs, planks clattering down their backs. They do not want to hurt anybody. They want a snack, a nap and to be left alone, in that order. Shoo them back to the reeds before they eat Tilly's bag!",
+      "narration": "The mire mimics wobble up, planks clattering down their backs. They want a snack, a nap and some peace, in that order. Shoo them back to the reeds before they eat Tilly's bag!",
       "enemies": [
         {
           "id": "mimic",
@@ -682,11 +682,11 @@
     },
     "mimic_won": {
       "type": "story",
-      "narration": "The mimics give a surprised hiccup, drop their planks, and waddle off toward the reeds to find nicer ground to pretend to be. They leave behind a bootlace one of them once swallowed. \"Not mine,\" says Bryn. \"Yours.\" Ossley nods. \"Good. It is hard to unload a pile that argues.\"",
+      "narration": "The mimics hiccup, drop their planks and waddle off to the reeds. They leave behind a springy bootlace one of them once swallowed. \"Not mine,\" says Bryn. \"Yours.\" Ossley nods. \"Hard to unload a pile that argues.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Look at the stuck cart",
+          "label": "Go up to the cart",
           "icon": "hand",
           "goto": "cart_plan"
         }
@@ -709,11 +709,11 @@
     },
     "mimic_shooed": {
       "type": "story",
-      "narration": "The mimics are faster than they look, and you end up sitting in the mud with a plank on your head. Ossley hooks the big mimic's top plank with his pole and tips it, whump, back into the reeds, and the little one follows. \"They like a good fuss,\" he says. He pours you warm tea from a flask. Bryn rubs the mud from your ear. Up the bank, a cart waits in the mud.",
+      "narration": "The mimics are faster than they look. You end up in the mud with a plank on your head. Ossley tips both mimics into the reeds with his pole, then pours you warm tea from a flask.",
       "choices": [
         {
           "id": "continue",
-          "label": "Look at the stuck cart",
+          "label": "Go up to the cart",
           "icon": "hand",
           "goto": "cart_plan"
         }
@@ -736,7 +736,7 @@
     },
     "cart_plan": {
       "type": "choice_point",
-      "narration": "The cart that carries the new planks sits in mud up to its axle. Bryn's two pack goats strain at the front, but they only slip. One of them sits down, as if to say, call me when it's over. How will you get the cart out?",
+      "narration": "Bryn's cart of new planks sits in mud up to its axle. Her two pack goats pull and slip. One sits down, as if to say, call me when it is over. How will you free the cart?",
       "choices": [
         {
           "id": "dig",
@@ -746,13 +746,13 @@
         },
         {
           "id": "track",
-          "label": "Lay old planks under the wheel as a track",
+          "label": "Lay a plank track",
           "icon": "hand",
           "goto": "track_check"
         },
         {
           "id": "roar",
-          "label": "Use roar to start the goats pulling together",
+          "label": "Roar the goats on",
           "icon": "spark",
           "goto": "roar_check",
           "requiresSpecies": "manticore"
@@ -778,7 +778,7 @@
       "type": "check",
       "stat": "might",
       "tn": 12,
-      "prompt": "Dig the mud from around the wheel and push the cart out. Choose who leads; everyone can help.",
+      "prompt": "Dig the mud away from the wheel and push the cart free.",
       "roller": "party",
       "onSuccess": {
         "goto": "cart_free"
@@ -806,7 +806,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Work out where the old planks must lie so the wheel can climb out of the mud. Choose who leads; everyone can help.",
+      "prompt": "Work out where the old planks go so the wheel can climb out.",
       "roller": "party",
       "onSuccess": {
         "goto": "cart_free"
@@ -834,7 +834,7 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "prompt": "A manticore's roar startles the goats into pulling together. Can you steer the cart straight out of the mud?",
+      "prompt": "Roar so the goats pull together, then steer the cart out straight.",
       "roller": "best",
       "onSuccess": {
         "goto": "cart_free"
@@ -860,11 +860,11 @@
     },
     "cart_free": {
       "type": "story",
-      "narration": "The wheel pops out of the mud with a slurp. The goats trot up the bank as if it had been their idea all along, and the cart rolls toward the bridge with a creak. Bryn counts the planks twice. \"All there,\" she says, and kisses the nearest goat on the nose. The goat looks away, deeply embarrassed, and eats her sleeve.",
+      "narration": "The wheel pops free with a slurp. The goats trot up the bank as if it were their idea. Bryn kisses one on the nose, and it eats her sleeve. She hands you a brave whistle. \"For calling goats. They ignore it, but it is very loud.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Carry the planks to the bridge",
+          "label": "Carry planks to the bridge",
           "icon": "hand",
           "goto": "unload_relay"
         }
@@ -898,11 +898,11 @@
     },
     "cart_stuck": {
       "type": "story",
-      "narration": "You push, the cart sinks, and the mud wins. In the end Ossley's mooring rope and everyone's backs haul it out together, but one plank snaps on the way. Bryn holds up the two halves. \"Kindling,\" she says. \"I will make do.\" She hands you a brave whistle from her belt. \"For calling goats. They ignore it, but it is very loud.\" The goats stand a long way off, pretending to be somebody else's goats.",
+      "narration": "The mud wins, until Ossley's rope and everyone's backs haul the cart out. One plank snaps. \"Kindling,\" sighs Bryn. She hands you a brave whistle. \"For calling goats. They ignore it.\" The goats pretend to be someone else's goats.",
       "choices": [
         {
           "id": "continue",
-          "label": "Carry the planks to the bridge",
+          "label": "Carry planks to the bridge",
           "icon": "hand",
           "goto": "unload_relay"
         }
@@ -946,7 +946,7 @@
     },
     "unload_relay": {
       "type": "interaction",
-      "narration": "The cart cannot cross the broken bridge end, so the planks must go by hand. Bryn stands at the bridge. The rest of you make a line, and one goat watches the whole thing, unhelpfully.",
+      "narration": "The cart cannot cross the broken end, so the planks go by hand. Everyone makes a line down to Bryn. One goat watches, no help at all.",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -970,11 +970,11 @@
       "art": "scenes/riftlight/ashspan-ferry-landing",
       "onSuccess": {
         "goto": "bridge_head",
-        "narration": "Plank after plank goes hand to hand, tap, tap, tap, until the stack stands at the bridge end."
+        "narration": "Plank after plank goes hand to hand, tap, tap, tap, all the way to the bridge."
       },
       "onFailure": {
         "goto": "bridge_head",
-        "narration": "A plank slips from the line and lands in the mud with a flat splat. Bryn scrapes it clean, but it is cracked.",
+        "narration": "A plank slips into the mud with a splat. Bryn scrapes it clean, but it is cracked.",
         "effects": [
           {
             "type": "setFlag",
@@ -984,12 +984,12 @@
       },
       "onAssisted": {
         "goto": "bridge_head",
-        "narration": "Bryn takes the middle of the line herself, and the planks fly down it like loaves at a bakery."
+        "narration": "Bryn takes the middle, and the planks fly down the line like loaves at a bakery."
       }
     },
     "bridge_head": {
       "type": "story",
-      "narration": "The planks are stacked at the bridge end. At the first stone pier, logs and branches have jammed into a heap. The river is pushing the whole heap against the stone. \"Debris,\" says Bryn. \"The river has thrown its furniture at us.\" If the heap shifts, it will shove the bridge crooked. Ossley sniffs. \"I have seen it do worse. Not often. But I have.\"",
+      "narration": "The planks are stacked at the bridge end. Below, logs and branches have jammed against the first stone pier. \"The river threw its furniture at us,\" says Bryn. If the heap shifts, it will shove the bridge crooked.",
       "choices": [
         {
           "id": "continue",
@@ -1016,23 +1016,23 @@
     },
     "jam_plan": {
       "type": "choice_point",
-      "narration": "The jam is a heap of logs, roots and one entire fence. Ossley squints at it. \"Pull the wrong log and the rest may roll.\" What will you do about the jam?",
+      "narration": "The jam is logs, roots and one whole fence. Ossley squints at it. \"Pull the wrong log, and the rest may roll.\" What will you do?",
       "choices": [
         {
           "id": "hook",
-          "label": "Hook the logs out one at a time",
+          "label": "Hook logs one by one",
           "icon": "hand",
           "goto": "hook_check"
         },
         {
           "id": "haul",
-          "label": "Tie a rope round the heap and everyone pulls",
+          "label": "Rope it, everyone pulls",
           "icon": "hand",
           "goto": "haul_check"
         },
         {
           "id": "slip",
-          "label": "Have a duskrunner slip along the pier and free the key log",
+          "label": "Slip out the key log",
           "icon": "spark",
           "goto": "slip_check",
           "requiresClass": "duskrunner"
@@ -1058,7 +1058,7 @@
       "type": "check",
       "stat": "quick",
       "tn": 12,
-      "prompt": "Hook each log with the long pole and draw it clear of the pier. Choose who leads; everyone can help.",
+      "prompt": "Hook each log with the long pole and pull it clear of the pier.",
       "roller": "party",
       "onSuccess": {
         "goto": "jam_clear"
@@ -1086,7 +1086,7 @@
       "type": "check",
       "stat": "might",
       "tn": 12,
-      "prompt": "Everyone take the rope. Pull the whole heap loose together, on Ossley's call!",
+      "prompt": "Grab the rope. Pull the whole heap loose on Ossley's call!",
       "roller": "all",
       "onSuccess": {
         "goto": "jam_clear"
@@ -1114,7 +1114,7 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "prompt": "A duskrunner slips along the pier and spots the key log. Can you pull it out cleanly?",
+      "prompt": "Slip along the pier, find the key log and pull it out clean.",
       "roller": "best",
       "onSuccess": {
         "goto": "jam_clear"
@@ -1140,11 +1140,11 @@
     },
     "jam_shift": {
       "type": "story",
-      "narration": "The heap lurches and the pier shudders. A plank slides off the cart and splashes in. Ossley hooks it back with his pole before the river can take it, and the pier is still straight. \"Rude,\" he tells the river, quite loudly. The river, being a river, does not apologize.",
+      "narration": "The heap lurches, and the pier shudders. A plank slides off the stack and splashes in. Ossley hooks it back with his pole. \"Rude,\" he tells the river. The river does not say sorry.",
       "choices": [
         {
           "id": "continue",
-          "label": "Watch the water",
+          "label": "Watch the logs go",
           "icon": "hand",
           "goto": "jam_clear"
         }
@@ -1175,7 +1175,7 @@
     },
     "jam_clear": {
       "type": "story",
-      "narration": "The last log slides free and bobs away. One log floats upriver for a few lengths, as if it changed its mind, then turns around and follows the rest. Ossley watches it go. \"Changed melt,\" he says again, more quietly this time. The pier stands straight, and the deck waits above it with a cracked middle beam. Even the goats look thoughtful.",
+      "narration": "The last log slides free and bobs away. Then one log floats back upriver, against the current, before it turns and follows the rest. \"Changed melt,\" Ossley says quietly. The pier stands straight. Above it waits the cracked middle beam.",
       "choices": [
         {
           "id": "continue",
@@ -1203,7 +1203,7 @@
     },
     "carry_beam": {
       "type": "interaction",
-      "narration": "Bryn climbs down to the pier and points under the deck. The middle beam is cracked right through. A new beam lies on the bank, thick as a sleeping cow, and it has to travel to the pier. Everyone takes a place along it. Bryn walks backward in front, calling, \"Level! Level! Mostly level!\"",
+      "narration": "The new beam lies on the bank, thick as a sleeping cow. Everyone takes a place along it. Bryn walks backward in front, calling, \"Level! Level! Mostly level!\"",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -1227,43 +1227,43 @@
       "art": "scenes/riftlight/ashspan-broken-deck",
       "onSuccess": {
         "goto": "beam_plan",
-        "narration": "The beam rides level all the way to the pier, like a very long and serious tray."
+        "narration": "The beam rides level all the way, like a very long, very serious tray."
       },
       "onFailure": {
         "goto": "beam_plan",
-        "narration": "The beam tips and bonks a goat on the rump. The goat is more surprised than hurt. You set it down and carry it again, slower."
+        "narration": "The beam tips and bonks a goat on the rump. The goat is more surprised than hurt. You go again, slower."
       },
       "onAssisted": {
         "goto": "beam_plan",
-        "narration": "Bryn takes the middle of the beam, and it rides level the whole way."
+        "narration": "Bryn takes the middle, and the beam rides level the whole way."
       }
     },
     "beam_plan": {
       "type": "choice_point",
-      "narration": "The new beam must go up and into its notches, level, with nobody underneath. How will you raise it?",
+      "narration": "The new beam must go up into its notches, level, with nobody underneath. How will you raise it?",
       "choices": [
         {
           "id": "lift",
-          "label": "Everyone lifts it together on Ossley's count",
+          "label": "Lift on Ossley's count",
           "icon": "hand",
           "goto": "lift_check"
         },
         {
           "id": "roll",
-          "label": "Roll it up on log rollers",
+          "label": "Roll it up on logs",
           "icon": "hand",
           "goto": "roll_check"
         },
         {
           "id": "smash",
-          "label": "Have a bigfoot smash the old beam out of its notches",
+          "label": "Smash the old beam out",
           "icon": "fist",
           "goto": "smash_check",
           "requiresSpecies": "bigfoot"
         },
         {
           "id": "hum",
-          "label": "Have a songkeeper hum a count everyone can lift to",
+          "label": "Hum a lifting count",
           "icon": "song",
           "goto": "hum_check",
           "requiresClass": "songkeeper"
@@ -1289,7 +1289,7 @@
       "type": "check",
       "stat": "might",
       "tn": 12,
-      "prompt": "Everyone take hold of the beam. Lift together when Ossley counts three!",
+      "prompt": "Grab the beam. Lift together when Ossley counts three!",
       "roller": "all",
       "onSuccess": {
         "goto": "beam_up"
@@ -1317,7 +1317,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Set the rollers and the slope so the beam rolls up instead of sticking. Choose who leads; everyone can help.",
+      "prompt": "Set the log rollers and the slope so the beam rolls up, not sideways.",
       "roller": "party",
       "onSuccess": {
         "goto": "beam_up"
@@ -1345,7 +1345,7 @@
       "type": "check",
       "stat": "might",
       "tn": 8,
-      "prompt": "A bigfoot's smash knocks the cracked beam loose. Can you slide the new one into the empty notches?",
+      "prompt": "Smash the cracked beam loose, then slide the new one into the notches.",
       "roller": "best",
       "onSuccess": {
         "goto": "beam_up"
@@ -1373,7 +1373,7 @@
       "type": "check",
       "stat": "heart",
       "tn": 8,
-      "prompt": "A songkeeper's hum keeps the count. Can you keep the beam level while everyone lifts?",
+      "prompt": "Hum a steady count so everyone lifts at once, and keep the beam level.",
       "roller": "best",
       "checkKind": "doing",
       "onSuccess": {
@@ -1400,11 +1400,11 @@
     },
     "beam_up": {
       "type": "story",
-      "narration": "The beam slides into its notches with a deep thunk. Bryn pats it like a pony. \"Good beam,\" she says. \"Do not tell the old one it was replaced.\" Ossley taps it with his pole. It rings, deep and clear. Somewhere in the stone, the whole bridge seems to relax, like a cat settling on a warm step.",
+      "narration": "The beam drops into its notches with a deep thunk. Bryn pats it like a pony. \"Do not tell the old one.\" Ossley taps it, and it rings clear. Bryn hands around her lunch pail: a supper bundle, still warm.",
       "choices": [
         {
           "id": "continue",
-          "label": "Look around",
+          "label": "Hear a tiny crack",
           "icon": "hand",
           "goto": "hatch"
         }
@@ -1438,11 +1438,11 @@
     },
     "beam_slip": {
       "type": "story",
-      "narration": "The beam sags and thumps into the notches off by a finger, scraping everyone's hands. Bryn taps it with a mallet until it sits straight. \"It was shy,\" she says. \"Now it is brave.\" Ossley taps it with his pole. It rings, a bit flat, but it rings. Bryn passes around her lunch pail: a supper bundle, still warm.",
+      "narration": "The beam thumps in a finger crooked and scrapes everyone's hands. Bryn taps it straight with a mallet. \"It was shy. Now it is brave.\" It rings a bit flat, but it rings. Bryn hands around her lunch pail: a supper bundle, still warm.",
       "choices": [
         {
           "id": "continue",
-          "label": "Look around",
+          "label": "Hear a tiny crack",
           "icon": "hand",
           "goto": "hatch"
         }
@@ -1482,7 +1482,7 @@
     },
     "hatch": {
       "type": "story",
-      "narration": "Tilly's bag cracks. A tiny beak pokes out. \"Oh no,\" says Tilly. \"Oh yes,\" says Ossley. A duckling the size of a teacup tumbles out, then another, then a whole fluffy handful. They waddle straight toward the gap in the deck, singing one word, which is \"peep.\"",
+      "narration": "Tilly's bag cracks. A tiny beak pokes out. \"Oh no,\" says Tilly. \"Oh yes,\" says Ossley. A duckling the size of a teacup tumbles out, then a whole fluffy handful. They waddle toward the gap in the deck, peeping.",
       "choices": [
         {
           "id": "continue",
@@ -1510,7 +1510,7 @@
     },
     "duck_play": {
       "type": "interaction",
-      "narration": "Tilly's bag is mostly feathers now. The ducklings peep in a circle round everyone's boots, too excited to listen to anybody.",
+      "narration": "The ducklings peep in circles around everyone's boots, far too excited to listen.",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -1554,11 +1554,11 @@
       "art": "scenes/riftlight/ashspan-mended-deck",
       "onSuccess": {
         "goto": "duck_plan",
-        "narration": "The ducklings settle into one warm heap, every one of them yawning."
+        "narration": "The ducklings settle into one warm heap, yawning."
       },
       "onFailure": {
         "goto": "duck_plan",
-        "narration": "A few ducklings keep peeping, but they stay close to your boots."
+        "narration": "A few keep peeping, but they stay close to your boots."
       },
       "onAssisted": {
         "goto": "duck_plan",
@@ -1567,23 +1567,23 @@
     },
     "duck_plan": {
       "type": "choice_point",
-      "narration": "The ducklings are calmer now, but very curious. The nearest wanders to the edge of the bridge head and looks down at the water with great interest. \"Eggs,\" says Tilly faintly, \"are supposed to wait until market.\" How will you get them to safety?",
+      "narration": "One duckling wanders to the edge and peers down at the water with great interest. \"Eggs,\" says Tilly faintly, \"are supposed to wait until market.\" She holds out an empty basket. How will you get them to safety?",
       "choices": [
         {
           "id": "scoop",
-          "label": "Scoop them up in Tilly's basket",
+          "label": "Scoop them in the basket",
           "icon": "hand",
           "goto": "scoop_check"
         },
         {
           "id": "coax",
-          "label": "Coax them with a low, calm voice",
+          "label": "Coax them softly",
           "icon": "hand",
           "goto": "coax_check"
         },
         {
           "id": "trail",
-          "label": "Use beguile to draw a bright trail they will follow",
+          "label": "Draw a bright trail",
           "icon": "spark",
           "goto": "trail_check",
           "requiresSpecies": "kitsune"
@@ -1610,7 +1610,7 @@
       "type": "check",
       "stat": "quick",
       "tn": 12,
-      "prompt": "Sweep the ducklings into the basket before they reach the gap. Choose who leads; everyone can help.",
+      "prompt": "Sweep the ducklings into Tilly's basket before they reach the gap.",
       "roller": "party",
       "onSuccess": {
         "goto": "ducks_safe"
@@ -1639,7 +1639,7 @@
       "type": "check",
       "stat": "heart",
       "tn": 8,
-      "prompt": "Crouch low and call to the ducklings softly until they follow you. Choose who speaks; everyone can help.",
+      "prompt": "Crouch low and call softly until the ducklings follow you.",
       "roller": "party",
       "onSuccess": {
         "goto": "ducks_safe"
@@ -1668,7 +1668,7 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "prompt": "A kitsune's beguile draws a bright trail through the air. Can you lead the ducklings along it and into the basket?",
+      "prompt": "Draw a bright trail through the air and lead the ducklings into the basket.",
       "roller": "best",
       "onSuccess": {
         "goto": "ducks_safe"
@@ -1695,11 +1695,11 @@
     },
     "ducks_safe": {
       "type": "story",
-      "narration": "The ducklings tumble into the basket in a fluffy heap and go quiet at once. Tilly counts, loses count, and counts again. \"All of them,\" she says. \"My heroes.\" One duckling climbs onto Ossley's hat and falls asleep. He does not move for a long time, for fear of the peeping. Tilly ties a songbird ribbon round your wrist. \"For the heroes,\" she says.",
+      "narration": "The ducklings tumble into the basket and go quiet. Tilly counts, loses count and counts again. \"All of them!\" One falls asleep on Ossley's hat, and he does not dare move. Tilly ties a songbird ribbon around your wrist. \"For my heroes.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Get back to the planks",
+          "label": "Back to the planks",
           "icon": "hand",
           "goto": "planks_plan"
         }
@@ -1734,11 +1734,11 @@
     },
     "ducks_loose": {
       "type": "story",
-      "narration": "Three ducklings dart through to the edge of the gap and cling to a plank end, peeping furiously. Ossley fishes them out with his pole and net, dripping and unimpressed. One pecks your ankle. Tilly gathers all of them into her hat. \"They'll learn,\" she says. \"Eventually. Possibly in about a year.\" She ties a songbird ribbon round your wrist. \"For the heroes,\" she says.",
+      "narration": "Three ducklings dash for the gap and cling to a plank end, peeping. Ossley fishes them out with his net. One pecks your ankle. Tilly tucks them all in the basket. \"They will learn. In about a year.\" She ties a songbird ribbon around your wrist.",
       "choices": [
         {
           "id": "continue",
-          "label": "Get back to the planks",
+          "label": "Back to the planks",
           "icon": "hand",
           "goto": "planks_plan"
         }
@@ -1779,23 +1779,23 @@
     },
     "planks_plan": {
       "type": "choice_point",
-      "narration": "Now the deck. Bryn's planks wait on the bank, and the gap yawns between the two ends of the bridge. How will you get the planks across?",
+      "narration": "Now the deck. Bryn's planks wait at the bridge end, and the gap yawns between the two halves. How will you get the planks across?",
       "choices": [
         {
           "id": "rope2",
-          "label": "Slide the planks across on a rope line",
+          "label": "Slide them on a rope",
           "icon": "hand",
           "goto": "rope2_check"
         },
         {
           "id": "pass",
-          "label": "Pass them hand to hand along the bridge",
+          "label": "Pass them hand to hand",
           "icon": "hand",
           "goto": "pass_check"
         },
         {
           "id": "pwings",
-          "label": "Carry the plank line across on wings",
+          "label": "Fly the line across",
           "icon": "wing",
           "goto": "pwing_check",
           "requiresSpecies": [
@@ -1824,7 +1824,7 @@
       "type": "check",
       "stat": "quick",
       "tn": 12,
-      "prompt": "Slide each plank along the rope line, tap it into place, and send the next. Choose who leads; everyone can help.",
+      "prompt": "Slide each plank along the rope line, tap it in, and send the next.",
       "roller": "party",
       "onSuccess": {
         "goto": "planks_laid"
@@ -1852,7 +1852,7 @@
       "type": "check",
       "stat": "heart",
       "tn": 12,
-      "prompt": "Pass each plank hand to hand with a steady rhythm. Choose who sets the beat; everyone can help.",
+      "prompt": "Pass each plank hand to hand, and keep a steady rhythm going.",
       "roller": "party",
       "checkKind": "doing",
       "onSuccess": {
@@ -1881,7 +1881,7 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "prompt": "Wings carry the line across the gap. Can you land every plank square?",
+      "prompt": "Fly the line across the gap and land every plank square.",
       "roller": "best",
       "onSuccess": {
         "goto": "planks_laid"
@@ -1907,7 +1907,7 @@
     },
     "planks_dropped": {
       "type": "story",
-      "narration": "A plank slips off the line and slaps into the river. Ossley hooks it with his pole and drags it dripping to the landing, grumbling about wet wood. It takes two trips and a very damp plank, but the deck gets laid. Bryn wrings out the plank like laundry.",
+      "narration": "A plank slips off and slaps into the river. Ossley drags it back with his pole, grumbling about wet wood. Bryn wrings it out like laundry, and the deck gets laid anyway.",
       "choices": [
         {
           "id": "continue",
@@ -1942,7 +1942,7 @@
     },
     "planks_laid": {
       "type": "story",
-      "narration": "The planks go down one by one, tap tap tap, until the deck has only one small hole left, about the size of a goat. Bryn fits the last plank with a mallet. \"Now,\" she says, \"it needs tying down, so it stays put when the river sulks.\" One of the goats looks at the last hole, then at Bryn, then very slowly walks away.",
+      "narration": "The planks go down, tap, tap, tap, until one hole is left, about the size of a goat. Bryn fits the last plank. \"Now we tie it down.\" A goat eyes the hole and slowly walks away.",
       "choices": [
         {
           "id": "continue",
@@ -1956,7 +1956,7 @@
           "when": {
             "flag": "lost_a_plank"
           },
-          "text": "One plank went to the mud, so Ossley gives up a spare board from his boat. He does not say a word, but he is sniffing."
+          "text": "One plank was lost in the mud, so Ossley gives up a spare board from his boat, sniffing."
         }
       ],
       "cast": [
@@ -1977,30 +1977,30 @@
     },
     "lash_plan": {
       "type": "choice_point",
-      "narration": "Bryn taps a loose plank. \"A deck stays only if it is tied down.\" The long ropes wait in a coil, the pegs in a bucket. How will you lash the planks?",
+      "narration": "Bryn taps a loose plank. \"A deck only stays if it is tied down.\" The ropes wait in a coil, the pegs in a bucket. How will you fasten the deck?",
       "choices": [
         {
           "id": "knots",
-          "label": "Tie every plank to the beams with careful knots",
+          "label": "Tie careful knots",
           "icon": "hand",
           "goto": "knots_check"
         },
         {
           "id": "pegs",
-          "label": "Hammer in wooden pegs",
+          "label": "Hammer in pegs",
           "icon": "hand",
           "goto": "pegs_check"
         },
         {
           "id": "straps",
-          "label": "Have a duskrunner secure the loose straps",
+          "label": "Strap down loose ends",
           "icon": "spark",
           "goto": "straps_check",
           "requiresClass": "duskrunner"
         },
         {
           "id": "whistle",
-          "label": "Blow the brave whistle to bring the goats to pull",
+          "label": "Whistle for the goats",
           "icon": "hand",
           "goto": "whistle_check",
           "requiresItem": "brave_whistle"
@@ -2039,11 +2039,11 @@
       ],
       "art": "scenes/riftlight/ashspan-broken-deck",
       "type": "story",
-      "narration": "You tie the plank ends to the beams while Bryn checks each knot.",
+      "narration": "You tie each plank end to the beams. Bryn checks every knot and tugs it twice.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Finish the lashing",
           "icon": "forward",
           "goto": "lashed"
         }
@@ -2066,11 +2066,11 @@
       ],
       "art": "scenes/riftlight/ashspan-broken-deck",
       "type": "story",
-      "narration": "You drive the pegs while Bryn holds the planks square.",
+      "narration": "You drive in the pegs while Bryn holds the planks square. Bonk, bonk, bonk.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Finish the lashing",
           "icon": "forward",
           "goto": "lashed"
         }
@@ -2093,11 +2093,11 @@
       ],
       "art": "scenes/riftlight/ashspan-broken-deck",
       "type": "story",
-      "narration": "The whistle brings the goats. Ossley hitches them to the line, and you walk it tight together.",
+      "narration": "The whistle brings the goats, for once. Ossley hitches them to the line, and together you walk it tight.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Finish the lashing",
           "icon": "forward",
           "goto": "lashed"
         }
@@ -2120,11 +2120,11 @@
       ],
       "art": "scenes/riftlight/ashspan-broken-deck",
       "type": "story",
-      "narration": "Your duskrunner secures the straps while friends hold the loose ends.",
+      "narration": "Your duskrunner darts along the deck, cinching straps while friends hold the loose ends.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Finish the lashing",
           "icon": "forward",
           "goto": "lashed"
         }
@@ -2132,7 +2132,7 @@
     },
     "lashed": {
       "type": "story",
-      "narration": "The last knot snaps tight, and the deck stops creaking. Bryn walks its whole length like a cat that owns the place. \"One more thing,\" she says. \"A bridge has to carry everyone at once. Not one at a time, like a polite bridge. Everyone, on the deck, now. Ossley too.\" Ossley sighs and hops up.",
+      "narration": "The last knot snaps tight, and the deck stops creaking. Bryn struts along it like a cat that owns the place. \"A bridge must carry everyone at once,\" she says. \"Everyone on the deck. Ossley too.\" Ossley sighs and hops up.",
       "choices": [
         {
           "id": "continue",
@@ -2174,11 +2174,11 @@
       ],
       "art": "scenes/riftlight/ashspan-mended-deck",
       "type": "story",
-      "narration": "You walk the finished deck with Bryn, stopping at each plank. \"Fastenings first,\" she says. \"Then I call the travelers.\"",
+      "narration": "You walk the deck with Bryn, plank by plank. Nothing wobbles. \"Fastenings first,\" she says. \"Then I call the travelers.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Call the travelers",
           "icon": "forward",
           "goto": "bridge_open"
         }
@@ -2186,7 +2186,7 @@
     },
     "bridge_open": {
       "type": "story",
-      "narration": "Every plank holds. Bryn does a small dance, then pretends she did not. At the far end, the market folk, who have been waiting all afternoon with baskets on their heads, start across in a long, chattering line. For one beautiful moment, everything is exactly as it should be.",
+      "narration": "Every plank holds. Bryn does a small dance, then pretends she did not. At the far end, the market folk start across in a long, chattering line, baskets on their heads.",
       "choices": [
         {
           "id": "continue",
@@ -2219,11 +2219,11 @@
     },
     "folk_cross": {
       "type": "story",
-      "narration": "The market folk file across the mended deck. Tilly follows, with her basket of peeping ducklings. She stops by Ossley. \"I would have missed market,\" she says. \"Thank you.\" Ossley takes off his hat. \"The river brought you my way,\" he says. \"I only had to be going it.\" He puts the hat back on, then, very carefully, checks it for ducks. Bryn pays you six coins from the toll box, since a bridge should pay its menders.",
+      "narration": "Tilly crosses last with her peeping ducklings. \"I would have missed market,\" she tells Ossley. \"Thank you.\" He tips his hat, then checks it for ducks. Bryn pays you six coins from the toll box. \"A bridge pays its menders.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "See what Tilly wants to give",
+          "label": "See Tilly's gift",
           "icon": "hand",
           "goto": "gift_plan"
         }
@@ -2252,23 +2252,23 @@
     },
     "gift_plan": {
       "type": "choice_point",
-      "narration": "Tilly rummages in her bag, which is now mostly feathers. \"I have to give you something,\" she says. \"I have oat cakes, and I have a story about a goose. The oat cakes are better. The story is longer.\" Bryn leans on her mallet and waits, too.",
+      "narration": "Tilly rummages in her feathery bag. \"I must give you something. I have oat cakes, and a story about a goose. The cakes are better. The story is longer.\"",
       "choices": [
         {
           "id": "cakes",
-          "label": "Take Tilly's warm oat cakes",
+          "label": "Take the oat cakes",
           "icon": "hand",
           "goto": "cakes"
         },
         {
           "id": "story",
-          "label": "Ask for the story about the goose",
+          "label": "Hear the goose story",
           "icon": "hand",
           "goto": "goose"
         },
         {
           "id": "buy",
-          "label": "Buy a bag of Tilly's oat cakes (3 coins)",
+          "label": "Buy more cakes (3 coins)",
           "icon": "hand",
           "goto": "buy_cakes",
           "when": {
@@ -2296,11 +2296,11 @@
     },
     "buy_cakes": {
       "type": "story",
-      "narration": "Tilly counts out a bag of oat cakes and takes your three coins with great seriousness, then gives one coin back for luck. Then she takes it back. \"No,\" she says. \"Business is business.\" The cakes are still warm and have a faint smell of duckling.",
+      "narration": "Tilly takes your three coins very seriously. She gives one back for luck, then takes it back. \"Business is business.\" The cakes are warm, and smell faintly of duckling.",
       "choices": [
         {
           "id": "continue",
-          "label": "Take a seat",
+          "label": "Rest in the bridge-house",
           "icon": "hand",
           "goto": "rest_hut"
         }
@@ -2334,11 +2334,11 @@
     },
     "cakes": {
       "type": "story",
-      "narration": "Tilly presses a warm bundle of oat cakes into your hands. They smell of butter and the inside of a good oven. \"Do not share them with ducks,\" she says. \"They will take advantage.\" A duckling peeps from the basket, exactly as if it were being accused.",
+      "narration": "Tilly presses warm oat cakes into your hands. \"Do not share them with ducks,\" she says. \"They take advantage.\" A duckling peeps, as if accused.",
       "choices": [
         {
           "id": "continue",
-          "label": "Take a seat",
+          "label": "Rest in the bridge-house",
           "icon": "hand",
           "goto": "rest_hut"
         }
@@ -2368,11 +2368,11 @@
     },
     "goose": {
       "type": "story",
-      "narration": "Tilly tells the story of the goose who tried to marry a weathervane. It takes a long time and has three endings. Ossley falls asleep halfway through, standing up, and Bryn pretends not to notice. You find that you like the goose very much, and the weathervane a little less.",
+      "narration": "Tilly tells the story of a goose who tried to marry a weathervane. It has three endings. Ossley falls asleep standing up. You like the goose very much, and the weathervane a little less.",
       "choices": [
         {
           "id": "continue",
-          "label": "Take a seat",
+          "label": "Rest in the bridge-house",
           "icon": "hand",
           "goto": "rest_hut"
         }
@@ -2395,24 +2395,24 @@
     },
     "rest_hut": {
       "type": "rest",
-      "narration": "Bryn lights a small stove in the bridge-house. It smells of hot oats and slightly of goat. The sun slides low over the river, and the new deck glows like a table after supper. Ossley points to a raised footpath into the Whispering Marsh. \"There is a school called the Academy in the village up there,\" he says. \"They made me a dry reed mat for my deck, and nobody has fetched it. Follow the posts. The ducks take shortcuts. You should not.\"",
+      "narration": "Bryn lights a stove in the bridge-house. It smells of oats, and a little of goat. Ossley points to a raised footpath into the Whispering Marsh. \"A school called the Academy is up there. They made me a reed mat, and nobody has fetched it. Follow the posts. The ducks take shortcuts. You should not.\"",
       "heal": 3,
       "choices": [
         {
           "id": "dangle",
-          "label": "Sit on the new deck and dangle your feet",
+          "label": "Dangle your feet",
           "icon": "hand",
           "goto": "dangle"
         },
         {
           "id": "tie",
-          "label": "Help Ossley tie up his boat for the night",
+          "label": "Help tie up the boat",
           "icon": "hand",
           "goto": "tie_boat"
         },
         {
           "id": "share",
-          "label": "Share your supper with Bryn and Ossley",
+          "label": "Share your supper",
           "icon": "hand",
           "goto": "share_bryn",
           "when": {
@@ -2427,7 +2427,7 @@
         },
         {
           "id": "marsh",
-          "label": "Visit the Academy in the marsh",
+          "label": "Visit the marsh Academy",
           "icon": "star",
           "goto": "marsh_path"
         }
@@ -2450,7 +2450,7 @@
     },
     "share_bryn": {
       "type": "story",
-      "narration": "You set out your supper, and Bryn adds her oats, and Ossley adds a fish that nobody asked about. It is a very odd meal and a very good one. Afterward Bryn hangs a river charm round your neck. \"A bridge-mender's thanks,\" she says. \"It keeps the wet out of your boots. Mostly.\"",
+      "narration": "You set out your supper. Bryn adds oats, and Ossley adds a fish nobody asked about. It is an odd meal and a very good one. Bryn hangs a river charm around your neck. \"It keeps the wet out of your boots. Mostly.\"",
       "choices": [
         {
           "id": "continue",
@@ -2491,7 +2491,7 @@
     },
     "dangle": {
       "type": "story",
-      "narration": "The deck is warm from the sun. Below your feet the river goes by, busy and brown. Ossley sits beside you and tells you the names of seven fish he has argued with. The worst, he says, is called Gerald. Gerald, apparently, always wins. He says it with great respect, and a little with his hat.",
+      "narration": "The deck is warm from the sun. Ossley sits beside you and names seven fish he has argued with. The worst is called Gerald. Gerald always wins.",
       "choices": [
         {
           "id": "continue",
@@ -2510,7 +2510,7 @@
     },
     "tie_boat": {
       "type": "story",
-      "narration": "Ossley shows you his favorite knot, the one that comes undone when he whistles. You practice until it only comes undone when you whistle. He looks at it for a long time. \"You are a natural,\" he says, \"or a menace.\" He has not decided which.",
+      "narration": "Ossley shows you his favorite knot, the one that comes undone when he whistles. You practice until it comes undone when you whistle. \"A natural,\" he says, \"or a menace.\"",
       "choices": [
         {
           "id": "continue",
@@ -2529,17 +2529,17 @@
     },
     "ossley_routes": {
       "type": "choice_point",
-      "narration": "Ossley coils his rope. \"Tomorrow's tide takes me downriver,\" he says. \"The coast down there is called the Saltrot, and it is not like here.\" He points the other way, up the road. \"Or there are the old boundary stones, where the keepers count things. Ask me one, and I will tell you what I know.\"",
+      "narration": "Ossley coils his rope. \"Tomorrow's tide takes me downriver, to the coast called the Saltrot.\" He points up the road. \"Or there are the old boundary stones, where the keepers count things. Ask me about one.\"",
       "choices": [
         {
           "id": "coast",
-          "label": "Ask about the coast downriver",
+          "label": "Ask about the coast",
           "icon": "hand",
           "goto": "coast_talk"
         },
         {
           "id": "inland",
-          "label": "Ask about the stone keepers up the road",
+          "label": "Ask about the stones",
           "icon": "hand",
           "goto": "inland_talk"
         }
@@ -2554,7 +2554,7 @@
     },
     "coast_talk": {
       "type": "story",
-      "narration": "\"Salt flats and silt,\" says Ossley. \"This year the silt came from nowhere I know. A flood year, the kind where a boat can go places it should not.\" He pats his pole. \"I will be going that way again, and I will take whoever wants to come. I am generally going your way.\" Then he looks at his hat. \"Sometimes the river even agrees.\"",
+      "narration": "\"Salt flats and silt,\" says Ossley. \"This year the silt came from somewhere I do not know. I will take whoever wants to come. I am generally going your way.\" He looks at his hat. \"Sometimes the river agrees.\"",
       "choices": [
         {
           "id": "continue",
@@ -2573,7 +2573,7 @@
     },
     "inland_talk": {
       "type": "story",
-      "narration": "\"The keepers up the road count old stones,\" says Ossley. \"They have been asking the river questions for years, and the river never answers in the same order. Ask them nicely. Bring a cheese, if you have one.\" He blinks both eyelids at once, which means a joke.",
+      "narration": "\"The keepers count old stones,\" says Ossley. \"They ask the river questions, and it never answers in the same order. Ask nicely. Bring a cheese.\" He blinks both eyelids at once. That means a joke.",
       "choices": [
         {
           "id": "continue",
@@ -2592,7 +2592,7 @@
     },
     "routes": {
       "type": "rest",
-      "narration": "Ossley points downriver, toward the coast called the Saltrot, and then up the road toward the boundary stones. The bridge behind you is whole, and the landing is safe. He marks an upper bank road north to a landing called Frostfang Shore. \"Dry ground. Long walk. Griffin country at the far end.\" Whichever way you go, you have a boatman who is generally going the same way. The river goes on, busy as ever, carrying its furniture.",
+      "narration": "The bridge is whole, and the landing is safe. Ossley points downriver to the Saltrot and up the road to the boundary stones. Then he marks the upper bank road north to Frostfang Shore. \"Long walk. Griffin country at the end.\" Whichever way you go, he is generally going it too.",
       "heal": 0,
       "choices": [],
       "outcome": "success",
@@ -2606,17 +2606,17 @@
     },
     "marsh_path": {
       "type": "choice_point",
-      "narration": "The raised path carries you into the Whispering Marsh. Reeds brush your sleeves. Ahead, a village stands on wooden legs above the water. A rolled reed mat waits beside a notice: \"For the ferry. Please keep dry.\" A puddle fills the last stretch of path. How will you carry the mat back?",
+      "narration": "The raised path carries you into the Whispering Marsh. Ahead stands a village on wooden legs. A rolled reed mat waits by a sign: \"For the ferry. Please keep dry.\" A puddle covers the last stretch. How will you carry the mat?",
       "choices": [
         {
           "id": "high",
-          "label": "Carry it high above the puddle",
+          "label": "Hold it up high",
           "icon": "hand",
           "goto": "mat_high"
         },
         {
           "id": "wrap",
-          "label": "Wrap it in your dry cloak",
+          "label": "Wrap it in a cloak",
           "icon": "hand",
           "goto": "mat_wrap"
         }
@@ -2625,7 +2625,7 @@
     },
     "mat_high": {
       "type": "story",
-      "narration": "You lift the mat overhead and carry it to a dry bench in the village. A duck walks under it. For a moment, the duck has a roof.",
+      "narration": "You carry the mat overhead to a dry bench in the village. A duck walks under it. For a moment, the duck has a roof.",
       "choices": [
         {
           "id": "continue",
@@ -2638,7 +2638,7 @@
     },
     "mat_wrap": {
       "type": "story",
-      "narration": "You wrap the mat in a dry cloak and carry it to a bench in the village. Water splashes your ankles. The mat stays dry. Your socks are less lucky.",
+      "narration": "You wrap the mat in a dry cloak and carry it to a bench in the village. The mat stays dry. Your socks do not.",
       "choices": [
         {
           "id": "continue",
@@ -2652,17 +2652,17 @@
     "village_rest": {
       "type": "rest",
       "heal": 0,
-      "narration": "You rest beside the dry mat in the marsh village. A round tower rises above the reeds. It has no roof. A page of homework floats down and lands on a duck. The duck looks pleased with its marks. The posted path will take you back to the ferry.",
+      "narration": "You rest by the dry mat. A round tower rises above the reeds. It has no roof. A page of homework floats down and lands on a duck. The duck looks proud of its marks.",
       "choices": [
         {
           "id": "tower",
-          "label": "Climb the tower with no roof",
+          "label": "Climb the roofless tower",
           "icon": "star",
           "goto": "academy"
         },
         {
           "id": "return",
-          "label": "Carry the mat back to the ferry",
+          "label": "Take the mat back",
           "icon": "travel",
           "goto": "mat_return"
         }
@@ -2671,7 +2671,7 @@
     },
     "mat_return": {
       "type": "story",
-      "narration": "You follow the posts out of the marsh and back to the bridge. Ossley unrolls the dry mat across his wet deck. The travelers step onto it without slipping. \"Better,\" he says. He tucks a corner under a rope so it will stay put.",
+      "narration": "You follow the posts back to the bridge. Ossley unrolls the dry mat across his wet deck. The travelers step on without slipping. \"Better,\" he says.",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -2681,7 +2681,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Discuss the roads ahead",
+          "label": "Talk about the roads",
           "icon": "hand",
           "goto": "ossley_routes"
         }
@@ -2690,13 +2690,13 @@
     },
     "academy": {
       "type": "story",
-      "narration": "Above the marsh village, at the top of the tower is a classroom with no roof at all, only sky. This school is called the Academy. Here students learn to be a Starweaver, a hero who reads the stars. A dragonling named Professor Nettle stands beside a huge brass telescope. Homework floats up off the desks and drifts away over the reeds. Nobody chases it. \"It comes down somewhere,\" says the professor. On a cushion sits a star circlet. A Starweaver's light lives in that circlet, and a dusk hood worn beside it starts to itch. \"Anyone who wants the circlet,\" says Professor Nettle, \"may try it on.\"",
+      "narration": "At the top of the tower above the marsh village is a classroom with no roof. This school is called the Academy. Here you can learn to be a Starweaver, a hero who reads the stars. A dragonling named Professor Nettle stands by a huge brass telescope while homework drifts off the desks. A star circlet rests on a cushion. A Starweaver's light lives in it, and a dusk hood worn beside it starts to itch. \"Anyone may try it on,\" says the professor.",
       "variants": [
         {
           "when": {
             "flag": "met_professor_nettle"
           },
-          "text": "Professor Nettle waves from beside the big brass telescope. \"Back at the Academy! Mind the homework.\" A page floats past your nose and off over the reeds. The star circlet waits on its cushion for anyone who wants to try it on.",
+          "text": "Professor Nettle waves from the brass telescope. \"Back at the Academy! Mind the homework.\" The star circlet waits on its cushion.",
           "replace": true
         }
       ],
@@ -2739,7 +2739,7 @@
     },
     "academy_stars": {
       "type": "story",
-      "narration": "Professor Nettle lets you look through the telescope. Even by day, the stars are so close you could count their points. Then the telescope sneezes. Brass rattles. Dust puffs out of the far end. \"Bless you,\" says the professor, to the telescope. \"It does that when it sees something new.\"",
+      "narration": "Professor Nettle lets you look through the telescope. Even by day, the stars look close enough to count their points. Then the telescope sneezes. Dust puffs out. \"Bless you,\" says the professor. \"It does that when it sees something new.\"",
       "cast": [
         {
           "figure": "cast/professor_nettle",
