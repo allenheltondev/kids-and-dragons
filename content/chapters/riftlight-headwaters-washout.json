@@ -2094,11 +2094,11 @@
     },
     "drake_shallows": {
       "type": "story",
-      "narration": "Your boots scrape onto a gravel ford. In the shallows sit two young river drakes, gray and bumpy as wet stones. River drakes like to be paid in dropped food. These two have decided you are the toll. They puff up and splash.",
+      "narration": "Your boots scrape onto a gravel ford. In the shallows sits a young river drake, gray and bumpy as a wet stone. River drakes like to be paid in dropped food. This one has decided you are the toll. It puffs up and splashes.",
       "choices": [
         {
           "id": "continue",
-          "label": "Shoo the drakes off",
+          "label": "Shoo the drake off",
           "icon": "hand",
           "goto": "drake_fight"
         }
@@ -2106,7 +2106,7 @@
       "cast": [
         {
           "figure": "entities/river_drake",
-          "name": "Young river drakes"
+          "name": "Young river drake"
         }
       ],
       "art": "scenes/riftlight/fight-headwaters-ford"
@@ -2114,7 +2114,7 @@
     "drake_fight": {
       "type": "encounter",
       "map": "ford",
-      "narration": "The drakes slap the water and rush at the nearest boots. Shoo them off the ford, and the way on is clear.",
+      "narration": "The drake slaps the water and rushes at the nearest boots. Shoo it off the ford, and the way on is clear.",
       "enemies": [
         {
           "id": "drake",
@@ -2124,7 +2124,7 @@
       ],
       "onVictory": {
         "goto": "ledge_ahead",
-        "narration": "The drakes hiccup, offended, and slide away tails first. Where they sat lies a smooth charm of river glass. You keep it.",
+        "narration": "The drake hiccups, offended, and slides away tail first. Where it sat lies a smooth charm of river glass. You keep it.",
         "effects": [
           {
             "type": "grantItem",
@@ -2147,7 +2147,7 @@
     },
     "drake_rescued": {
       "type": "story",
-      "narration": "The drakes win the ford, loudly. A tail flick sweeps you back into the stream. Behind you, the drakes look very pleased. Nobody is hurt, only humbled.",
+      "narration": "The drake wins the ford, loudly. A tail flick sweeps you back into the stream. Behind you, the drake looks very pleased. Nobody is hurt, only humbled.",
       "choices": [
         {
           "id": "continue",
@@ -2217,8 +2217,8 @@
           "defeat": [
             {
               "figure": "entities/river_drake",
-              "name": "Young river drakes",
-              "count": 2
+              "name": "Young river drake",
+              "count": 1
             }
           ]
         }
