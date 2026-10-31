@@ -354,3 +354,24 @@ describe("names that are mostly a common word", () => {
     expect(Object.values(sheet.speakers).find((speaker) => speaker.name === "The Eldest")!.lineCount).toBe(2);
   });
 });
+
+describe("one person under a title in the scenes and without it in the notes", () => {
+  const chapters: ChapterLike[] = [
+    {
+      id: "p",
+      voiceGuide: { npcVoices: { "Sefa Tallgrass": "pride elder; voice like warm gravel", "Captain Voss": "a captain", "Captain Thimble": "a ferry captain" } },
+      scenes: { camp: { cast: [{ name: "Elder Sefa" }] }, quay: { cast: [{ name: "Captain Voss" }, { name: "Captain Thimble" }] } },
+    },
+  ];
+
+  it("is one character, whose figure and lines are shared, and does not fold two people who share a title", () => {
+    const sheet = buildSheet({ chapters, individuals: [], narration: [{ chapter: "p", address: "p/camp/narration", text: '"Welcome," says Elder Sefa. "Come in," says Sefa Tallgrass.' }] }, null);
+    const sefa = Object.values(sheet.speakers).filter((speaker) => /Sefa/.test(speaker.name));
+    expect(sefa).toHaveLength(1);
+    expect(sefa[0]!.name).toBe("Sefa Tallgrass");
+    expect(sefa[0]!.aliases).toContain("Elder Sefa");
+    expect(sefa[0]!.lineCount).toBe(1);
+    // Voss and Thimble are both captains, and two people.
+    expect(Object.values(sheet.speakers).filter((speaker) => /Captain/.test(speaker.name))).toHaveLength(2);
+  });
+});

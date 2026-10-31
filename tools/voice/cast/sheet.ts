@@ -487,6 +487,9 @@ interface Draft {
   generic: boolean;
 }
 
+/** Words that come before a name as a title, not as part of it ("Elder Sefa"): as identity() writes them. */
+const TITLE_PARTS = new Set(["elder", "old", "professor", "postmaster", "madame", "mrs", "mr", "innkeeper", "granny", "mother", "captain", "sergeant", "clerk", "corporal", "master", "lady", "engineer", "aunt", "cadet", "warden", "great", "gran"]);
+
 /** npcVoices keys are ids (`old_wick`) in most chapters and display names ("Orin Vale") in some. */
 const idOfKey = (key: string): string => (/[A-Z\s]/.test(key) ? identity(key) : key);
 
@@ -538,12 +541,15 @@ export function collectCharacters(sources: Sources, scenes?: SceneCasts): Draft[
     for (const [name, figures] of names) {
       const s = identity(name);
       const parts = s.split("_");
+      const bare = parts.filter((part) => !TITLE_PARTS.has(part));
       // The chapter's own voice notes, if they are about this person: same key, or one inside the other's name.
       // The figure names them too ("cast/nan_rummage"), and survives a rename of the display name.
       const key =
         keys.find((k) => k === s) ??
         keys.find((k) => figures.has(`cast/${k}`)) ??
         keys.find((k) => parts.includes(k) || k.split("_").every((part) => parts.includes(part)) || (!isRoleName(name) && parts.every((part) => k.split("_").includes(part)))) ??
+        // "Elder Sefa" in the scenes is "Sefa Tallgrass" in the notes: a title is not part of who someone is.
+        (isRoleName(name) || bare.length === 0 ? undefined : keys.find((k) => bare.every((part) => k.split("_").includes(part)))) ??
         keyed.find((k) => identity(nameFromNotes(k.id, k.notes)) === s)?.id;
       // Elsewhere in the game under a fuller or shorter form of the same proper name: "Madame Fenn" is "Coralie Fenn".
       // Only within one campaign, and only between real names: Riftlight's "Seren Wisp" is not Bramblewood's wisp.
