@@ -53,24 +53,58 @@ describe("authoritative story interactions", () => {
     expect(prompt(reopened.state).playerIds).toEqual(["p1", "p2"]);
   });
 
-  it("passes the story turn from the nominated hero, even when another friend continues", () => {
+  it("counts a game as one moment of the owner's beat, even when another friend continues", () => {
     const { state, ctx } = setup(precision, 3);
     state.party[0]!.connected = false;
     const reopened = enterScene(state, "interaction_test", ctx).state;
     const result = step(reopened, ctx, { action: "assist" }, "p1");
     const next = step(result, ctx, { action: "continue" }, "p2");
-    expect(next.storyTurn).toBe(2);
-    expect(next.prompt).toMatchObject({ kind: "choice", forPlayerIds: ["p2"] });
+    // The beat is still p1's (standing in for p0's dropped phone): one moment spent, no pass.
+    expect(next.storyTurn ?? 0).toBe(0);
+    expect(next.spotlightMoments).toBe(1);
+    expect(next.prompt).toMatchObject({ kind: "choice", forPlayerIds: ["p1"] });
   });
 
-  it("passes from the fallback actor after the nominee disconnects", () => {
+  it("counts the game for the beat after the nominee disconnects, and the stand-in keeps it", () => {
     const { state, ctx } = setup(precision, 3);
     expect(prompt(state).actorId).toBe("p0");
     state.party[0]!.connected = false;
     const result = step(state, ctx, { action: "assist" }, "p1");
     const next = step(result, ctx, { action: "continue" }, "p2");
-    expect(next.storyTurn).toBe(2);
-    expect(next.prompt).toMatchObject({ kind: "choice", forPlayerIds: ["p2"] });
+    expect(next.storyTurn ?? 0).toBe(0);
+    expect(next.spotlightMoments).toBe(1);
+    expect(next.prompt).toMatchObject({ kind: "choice", forPlayerIds: ["p1"] });
+  });
+
+  it("keeps the beat on its owner from a choice, through a game, to the next choice", () => {
+    const { state, ctx } = setup(precision, 3);
+    ctx.chapter!.scenes["fork_test"] = {
+      type: "story",
+      narration: "Two ways to the bell.",
+      choices: [
+        { id: "left", label: "Left", icon: "forward", goto: "interaction_test" },
+        { id: "right", label: "Right", icon: "forward", goto: "interaction_test" },
+      ],
+    };
+    let next = enterScene(state, "fork_test", ctx).state;
+    next = applyIntent(next, { playerId: "p0", intent: { type: "CHOOSE", choiceId: "left" } }, ctx).state;
+    expect(next.spotlightMoments).toBe(1);
+    expect(prompt(next).actorId).toBe("p0");
+    next = step(next, ctx, { action: "start", relaxed: false });
+    next = step(next, ctx, { action: "stop", position: 0.5 });
+    next = step(next, ctx, { action: "continue" });
+    // Two moments, not three: the next decision is still p0's.
+    expect(next.spotlightMoments).toBe(2);
+    expect(next.prompt).toMatchObject({ kind: "choice", forPlayerIds: ["p0"] });
+
+    // A game that is the beat's third moment passes the spotlight on.
+    const third = enterScene({ ...next, spotlightMoments: 2 }, "interaction_test", ctx).state;
+    let done = step(third, ctx, { action: "start", relaxed: false });
+    done = step(done, ctx, { action: "stop", position: 0.5 });
+    done = step(done, ctx, { action: "continue" });
+    expect(done.storyTurn).toBe(1);
+    expect(done.spotlightMoments).toBe(0);
+    expect(done.prompt).toMatchObject({ kind: "choice", forPlayerIds: ["p1"] });
   });
 
   it("tracks the hidden object through swaps and rejects guesses during playback", () => {
@@ -182,7 +216,9 @@ describe("authoritative story interactions", () => {
     expect(prompt(next).resolvedActorId).toBe("p0");
     next.party[0]!.connected = false;
     next = step(next, ctx, { action: "continue" }, "p1");
-    expect(next.storyTurn).toBe(1);
+    // The owner's moment is spent; their beat is not over, and p1 stands in while they are away.
+    expect(next.storyTurn ?? 0).toBe(0);
+    expect(next.spotlightMoments).toBe(1);
     expect(next.flags["interaction_won"]).toBe(true);
   });
   it("uses the authored failure and assisted branches", () => {

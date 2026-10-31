@@ -14,6 +14,7 @@ import type { FactId, FactValue, JourneyView, NodeId } from "./campaign-graph.js
 import type { BuffId, CheckBuffOffer, RunBuff } from "./buffs.js";
 import type { MatchupNote } from "./matchups.js";
 import type { NarrationPart } from "../narration.js";
+import type { ChoiceAhead } from "../choice-ahead.js";
 
 export type RoomMode = "party" | "travel";
 
@@ -155,7 +156,17 @@ export type Prompt =
        * Choices already filtered for party eligibility (`requires*` and
        * `when`), with label tokens already filled (#159).
        */
-      options: { id: string; label: string; icon: string }[];
+      options: {
+        id: string;
+        label: string;
+        icon: string;
+        /**
+         * What picking it leads to: a roll, a game or a fight
+         * (choice-ahead.ts), drawn as a badge beside the label. Absent when it
+         * leads to more story, and on prompts opened before options said.
+         */
+        ahead?: ChoiceAhead;
+      }[];
       /** Empty means anyone may answer. */
       forPlayerIds: string[];
       /** choice_point scenes tally votes rather than taking the first answer. */
@@ -465,6 +476,26 @@ export interface RunState {
    * above: runs persisted before it existed come back without it.
    */
   storyTurn?: number;
+  /**
+   * How many moments the story-turn holder has had in the beat they own
+   * (chapter.ts `SceneSpotlight`): turn-held choices, ordinary checks. The
+   * marker moves on at `SPOTLIGHT_BEAT`, at a Rest, or at a scene that starts
+   * a new beat, and this goes back to 0.
+   *
+   * Optional, and read as 0 when absent: a run persisted before beats had
+   * owners starts its holder's beat afresh.
+   */
+  spotlightMoments?: number;
+  /**
+   * On a chapter's summary (`phase === "chapter_complete"`), whether the table
+   * has heard the ending yet. `false` from the moment the chapter completes:
+   * the shared screen shows how the story ended, on its own plate, and the
+   * XP waits behind it until a phone sends ENDING_READ, which sets `true`.
+   *
+   * Optional, and absent reads as read: a summary persisted before the
+   * ending had its own plate goes straight to the XP, as it always did.
+   */
+  endingRead?: boolean;
   /**
    * A d20 face the next roll will come up (roadmap chapter 6's playtest mode).
    *

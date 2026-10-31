@@ -259,7 +259,7 @@ describe("the story turn (spec §6.1)", () => {
 
   it("tells the room whose turn it is, on screen and out loud", () => {
     mount(storyChoice(["p_2"]));
-    expect(screen.getByText(/Thistle.s turn to choose/)).toBeTruthy();
+    expect(screen.getByTestId("turn-owner").textContent).toMatch(/Thistle.s turn to choose/);
     // The name is on screen; the room hears "hero" (#552).
     expect(spoken).toContain("Hero's turn.");
     expect(spoken.join(" ")).not.toContain("Thistle");
