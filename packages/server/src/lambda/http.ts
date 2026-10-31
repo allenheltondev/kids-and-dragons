@@ -41,7 +41,7 @@ import { setVisitors } from "../handlers/visitors.ts";
 import { removePlayer } from "../handlers/remove.ts";
 import { handKeeper } from "../handlers/keeper.ts";
 import { closeRoom, lockRoom, setQuiet, type HostPrincipal } from "../handlers/host.ts";
-import { CREW_BODY, parseCrewChoice, switchCrew } from "../handlers/crew.ts";
+import { confirmCrew, CREW_BODY, KEEP_BODY, RENAME_BODY, parseCrewChoice, parseCrewKeep, parseCrewRename, renameCrew, switchCrew } from "../handlers/crew.ts";
 import { parseTimingControl, setTiming, TIMING_BODY, type TimingControl } from "../handlers/timing.ts";
 import { releaseSavedHero, resumeGame, stopForToday } from "../handlers/save.ts";
 import { listHeroes } from "../handlers/heroes.ts";
@@ -209,6 +209,16 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
     if (crew?.[1]) {
       const code = crew[1].toUpperCase();
       return (deps) => postCrew(req, deps, code);
+    }
+    const crewKeep = /^\/api\/room\/([A-Za-z]{4})\/crewkeep$/.exec(req.path);
+    if (crewKeep?.[1]) {
+      const code = crewKeep[1].toUpperCase();
+      return (deps) => postCrewKeep(req, deps, code);
+    }
+    const crewName = /^\/api\/room\/([A-Za-z]{4})\/crewname$/.exec(req.path);
+    if (crewName?.[1]) {
+      const code = crewName[1].toUpperCase();
+      return (deps) => postCrewName(req, deps, code);
     }
     const timing = /^\/api\/room\/([A-Za-z]{4})\/timing$/.exec(req.path);
     if (timing?.[1]) {
@@ -433,15 +443,15 @@ async function postJoin(req: Req, deps: HandlerDeps, typed: string) {
   const room = settled.value;
   if (!room) return error(404, "NOT_FOUND", `no open room ${code}`);
   // An unbound device joining a room gets a player created for it on the spot,
-  // so a phone that has never seen this game joins in one tap. On a visitor
-  // code it is a visitor, in a guest household of its own (#249).
+  // so a phone that has never seen this game joins in one tap. Unless it is
+  // founding a TV's room, it is a visitor, in a guest household of its own (#249).
   // Never-seen phones are admitted *before* anything is bound to them
   // (`admitNewPhone`): a refused one must leave no membership behind.
   const joinerName = vetTypedName(req.body.displayName, "Player");
   if (!existing && !joinerName.ok) return fromError(joinerName.error);
   let admitted: "family" | "visitor" | null = null;
   if (!existing) {
-    const admission = await admitNewPhone(room, named.visitorCode, deps);
+    const admission = await admitNewPhone(room, found.claimable === true, deps);
     if (!admission.ok) return fromError(admission.error);
     admitted = admission.value;
   }
@@ -600,6 +610,22 @@ async function postCrew(req: Req, deps: HandlerDeps, code: string) {
   const choice = parseCrewChoice(req.body);
   return postHostControl(req, deps, code, choice === undefined ? CREW_BODY : null, (principal) =>
     switchCrew({ code, principal, ...choice! }, deps),
+  );
+}
+
+/** The host keeping the crew's adventure going for heroes new to it (handlers/crew.ts). */
+async function postCrewKeep(req: Req, deps: HandlerDeps, code: string) {
+  const keep = parseCrewKeep(req.body);
+  return postHostControl(req, deps, code, keep === undefined ? KEEP_BODY : null, (principal) =>
+    confirmCrew({ code, principal, ...keep! }, deps),
+  );
+}
+
+/** The host giving one of the household's crews another of the offered names (handlers/crew.ts). */
+async function postCrewName(req: Req, deps: HandlerDeps, code: string) {
+  const rename = parseCrewRename(req.body);
+  return postHostControl(req, deps, code, rename === undefined ? RENAME_BODY : null, (principal) =>
+    renameCrew({ code, principal, ...rename! }, deps),
   );
 }
 

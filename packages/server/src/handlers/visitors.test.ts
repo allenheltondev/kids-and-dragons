@@ -13,7 +13,7 @@ import type { DeviceIdentity } from "../identity.ts";
 import { applyAction } from "./action.ts";
 import { lockRoom } from "./host.ts";
 import { removePlayer } from "./remove.ts";
-import { createRoom, findRoom, joinRoom, watchRoom } from "./room.ts";
+import { admitNewPhone, bindNewPhone, createRoom, findRoom, joinRoom, watchRoom } from "./room.ts";
 import { getState } from "./state.ts";
 import { setVisitors } from "./visitors.ts";
 
@@ -107,12 +107,10 @@ async function open(t: Awaited<ReturnType<typeof hostTable>>): Promise<string> {
 }
 
 describe("a closed room (#249)", () => {
-  it("still refuses a phone from another household, exactly as before", async () => {
+  it("lets a phone from another household in with the room's own code, as a visitor", async () => {
     const t = await hostTable();
-    expect(await joinRoom({ code: t.code, principal: t.visitor }, t.harness.deps)).toEqual({
-      ok: false,
-      error: { code: "FORBIDDEN", message: "this device belongs to a different household" },
-    });
+    expect(await joinRoom({ code: t.code, principal: t.visitor }, t.harness.deps)).toMatchObject({ ok: true });
+    expect((await t.state()).seats?.[t.visitor.playerId]).toMatchObject({ homeHouseholdId: "h_visit" });
     // A six-letter code names no room while the room is closed.
     expect(await findRoom(`${t.code}AB`, t.harness.deps)).toBeNull();
     expect((await t.state()).visitorCode).toBeUndefined();
@@ -168,13 +166,9 @@ describe("opening a room to visitors (#249)", () => {
     expect(again).toMatchObject({ ok: true, value: { visitorCode } });
   });
 
-  it("lets a visitor in with the long code only, on a session for their own household", async () => {
+  it("lets a visitor in with the long code too, on a session for their own household", async () => {
     const t = await hostTable();
     const visitorCode = await open(t);
-    expect(await joinRoom({ code: t.code, principal: t.visitor }, t.harness.deps)).toMatchObject({
-      ok: false,
-      error: { code: "FORBIDDEN" },
-    });
     const joined = await joinRoom({ code: t.code, principal: t.visitor, visitorCode }, t.harness.deps);
     if (!joined.ok) throw new Error(joined.error.message);
     expect(joined.value.keeper).toBeUndefined();
@@ -185,7 +179,7 @@ describe("opening a room to visitors (#249)", () => {
     expect((await t.state()).seats?.[t.host.playerId]?.homeHouseholdId).toBeUndefined();
   });
 
-  it("turned off, lets no new visitor in and keeps the ones already playing", async () => {
+  it("turned off, retires the long code and keeps the visitors already playing", async () => {
     const t = await hostTable();
     const visitorCode = await open(t);
     await joinRoom({ code: t.code, principal: t.visitor, visitorCode }, t.harness.deps);
@@ -195,10 +189,8 @@ describe("opening a room to visitors (#249)", () => {
     expect(shut).toMatchObject({ ok: true });
     expect((await t.state()).visitorCode).toBeUndefined();
     expect(await findRoom(visitorCode, t.harness.deps)).toBeNull();
-    expect(await joinRoom({ code: t.code, principal: late, visitorCode }, t.harness.deps)).toMatchObject({
-      ok: false,
-      error: { code: "FORBIDDEN" },
-    });
+    // The room's own code still lets a new visitor in.
+    expect(await joinRoom({ code: t.code, principal: late }, t.harness.deps)).toMatchObject({ ok: true });
     // A visitor on the roster comes back with the room's own code.
     expect(await joinRoom({ code: t.code, principal: t.visitor }, t.harness.deps)).toMatchObject({ ok: true });
     expect(await t.act(t.visitor, hero("Wren's Hero"))).toMatchObject({ ok: true });
@@ -243,27 +235,6 @@ describe("opening a room to visitors (#249)", () => {
     });
     expect((await t.state()).closed).toBe(true);
     expect(await t.harness.repo.getRoom(t.code)).toBeNull();
-  });
-
-  it("turns away a visitor whose join races the switch going off", async () => {
-    const t = await hostTable();
-    const visitorCode = await open(t);
-    // The owner turns visitors off while this join is part-way through.
-    const getPlayer = t.harness.repo.getPlayer.bind(t.harness.repo);
-    let raced = false;
-    t.harness.repo.getPlayer = async (householdId, playerId) => {
-      if (!raced && playerId === t.visitor.playerId) {
-        raced = true;
-        await setVisitors({ ...OWNER, code: t.code, open: false }, t.harness.deps);
-      }
-      return getPlayer(householdId, playerId);
-    };
-    expect(await joinRoom({ code: t.code, principal: t.visitor, visitorCode }, t.harness.deps)).toMatchObject({
-      ok: false,
-      error: { code: "FORBIDDEN" },
-    });
-    expect(raced).toBe(true);
-    expect((await t.state()).seats?.[t.visitor.playerId]).toBeUndefined();
   });
 
   it("lets the host take a visitor out", async () => {
@@ -363,5 +334,41 @@ describe("two households, one chapter (#249)", () => {
     const visitorBook = await t.harness.repo.getFieldGuide("h_visit");
     expect(hostBook.entries[GATE]).toMatchObject({ firstFoundBy: t.host.playerId, runId: t.runId });
     expect(visitorBook.entries[GATE]).toBeUndefined();
+  });
+});
+
+describe("a never-seen phone on the room's own code (#249)", () => {
+  it("is a visitor with a household of its own, and its hero lives there", async () => {
+    const t = await hostTable();
+    const room = (await t.harness.repo.getRoom(t.code))!;
+    const admitted = await admitNewPhone(room, false, t.harness.deps);
+    expect(admitted).toEqual({ ok: true, value: "visitor" });
+    const bound = await bindNewPhone(room, "visitor", { displayName: "Juniper" }, t.harness.deps);
+    expect(bound.principal.householdId).not.toBe(t.householdId);
+
+    const joined = await joinRoom({ code: t.code, principal: bound.principal }, t.harness.deps);
+    if (!joined.ok) throw new Error(joined.error.message);
+    expect((await t.state()).seats?.[bound.principal.playerId]).toMatchObject({ homeHouseholdId: bound.principal.householdId });
+    expect(await t.act(bound.principal, hero("Juniper's Hero"))).toMatchObject({ ok: true });
+
+    const home = await t.harness.repo.listCharacters(bound.principal.householdId);
+    expect(home.map((c) => c.name)).toEqual(["Juniper's Hero"]);
+    const hosts = await t.harness.repo.listCharacters(t.householdId);
+    expect(hosts.map((c) => c.name)).not.toContain("Juniper's Hero");
+    expect(await t.harness.repo.getPlayer(t.householdId, bound.principal.playerId)).toBeNull();
+  });
+
+  it("is a visitor in a room that was once open to visitors too", async () => {
+    const t = await hostTable();
+    await open(t);
+    await setVisitors({ ...OWNER, code: t.code, open: false }, t.harness.deps);
+    const room = (await t.harness.repo.getRoom(t.code))!;
+    expect(await admitNewPhone(room, false, t.harness.deps)).toEqual({ ok: true, value: "visitor" });
+  });
+
+  it("founds the household when it settles a TV's room nobody has joined", async () => {
+    const t = await hostTable();
+    const room = (await t.harness.repo.getRoom(t.code))!;
+    expect(await admitNewPhone(room, true, t.harness.deps)).toEqual({ ok: true, value: "family" });
   });
 });

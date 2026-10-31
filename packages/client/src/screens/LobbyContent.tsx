@@ -129,6 +129,8 @@ export function LobbyContent(): ReactElement {
   const state = useRunState();
   const party = useParty();
   const sessionCode = useGameStore((s) => s.session?.roomCode ?? null);
+  const host = useGameStore((s) => s.session?.host === true);
+
   // A room open to visitors (#249) shows its longer code, which anybody can
   // join with: a phone from another household needs it, and one from the
   // room's own takes it as well as the short one.
@@ -162,11 +164,36 @@ export function LobbyContent(): ReactElement {
       {/* The household's table, when the family named it: where the game is
           kept, not the phones. */}
       {state?.location ? <p className="lobby__place kad-muted">{state.location}</p> : null}
-      {state ? <CrewIdentity name={crewChoices(state).current} compact /> : null}
+      {state ? (
+        <div className="lobby__crew">
+          <CrewIdentity name={crewChoices(state).current} compact />
+          {/* The shared screen is read, not driven (docs/tv-read-only-audit.md):
+              the crews are in the Room panel, and this says where. */}
+          {host ? <span className="lobby__crew-hint kad-muted">Change crew in Room</span> : null}
+        </div>
+      ) : null}
       {state?.crewSetup ? (
         <p className="lobby__place" role="status">
           Make new heroes on your phones. Your other crew&rsquo;s adventure is saved.
         </p>
+      ) : null}
+      {/* Heroes new to the adventure this crew is partway through: nothing
+          resumes until the grown-up running the game picks (crew.ts,
+          `checkNewcomers`), so nobody lands in the middle of somebody else's
+          story by accident. Said here; picked in the Room panel, since the
+          shared screen has nothing to click (docs/tv-read-only-audit.md). */}
+      {state?.crewCheck ? (
+        <div className="lobby__premise lobby__crew-check" role="group" aria-label="Keep going or start fresh?">
+          <p className="lobby__premise-title">
+            <Icon name="crew" />
+            <span>New heroes, or the same crew?</span>
+          </p>
+          <p className="lobby__premise-text">
+            {crewChoices(state).current} is partway through {state.crewCheck.title}. None of these heroes have been
+            on it yet.
+            {host ? " Tap Room to keep going or start a new crew." : " The grown-up running the game picks."}
+          </p>
+        </div>
       ) : null}
       {/* A chapter this household stopped partway (#259): said to the room, and
           taken up from any phone. */}

@@ -11,7 +11,7 @@
  * disagreeing about the rules.
  */
 
-import { campaignMode, chapterFor, parseCampaignGraph } from "@kad/shared";
+import { campaignMode, chapterFor, lobbyCampaign, parseCampaignGraph } from "@kad/shared";
 import { makeChapter, makeItems, makeMap, makeRules } from "../../shared/src/test-fixtures.ts";
 import { makeRng } from "@kad/shared";
 import type {
@@ -263,4 +263,20 @@ export async function seedHousehold(
     players.push({ principal: { deviceId, householdId, playerId }, deviceToken: token });
   }
   return { householdId, players };
+}
+
+/**
+ * The host's "Keep going" in the lobby (crew.ts, `confirmCrew`), for a test whose
+ * freshly made heroes resume an adventure other heroes of the household are on.
+ * In the game the TV asks first; these tests are about what comes after.
+ */
+export async function keepGoing(harness: Pick<TestHarness, "repo">, runId: string, campaignId?: string): Promise<void> {
+  const state = await harness.repo.getState(runId);
+  if (!state) throw new Error(`keepGoing: no state for ${runId}`);
+  // The lobby's pick when it offers one, as CONTINUE_CAMPAIGN reads it; else the one asked for.
+  const id = (state.campaignOptions?.length ? lobbyCampaign(state).leader?.id : undefined) ?? campaignId ?? state.campaignId;
+  if (!id) return;
+  const next = { ...state, crewConfirmed: id };
+  delete next.crewCheck;
+  await harness.repo.putState(next);
 }

@@ -22,7 +22,7 @@
 
 import { idleOpenRoom, type RunState, type TimingNote } from "@kad/shared";
 import type { DeviceIdentity } from "../identity.ts";
-import type { CrewRecord, EventRecord, RoomRecord } from "../store/repository.ts";
+import type { CommitInput, CrewRecord, EventRecord, RoomRecord } from "../store/repository.ts";
 import { diff } from "../json-patch.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 import { recordTiming } from "./timing.ts";
@@ -89,6 +89,8 @@ export async function commitRoomChange(
      * `change` has run on each attempt, so a retry names the slot it chose then.
      */
     crew?: () => CrewRecord | undefined;
+    /** Crew names this change sets (`CommitInput.crewNames`), asked once `change` has run on each attempt. */
+    crewNames?: () => CommitInput["crewNames"];
   } = {},
 ): Promise<HandlerResult<{ seq: number; state: RunState; changed: boolean }>> {
   for (let attempt = 1; ; attempt++) {
@@ -105,6 +107,7 @@ export async function commitRoomChange(
     const next: RunState = { ...changed, seq: state.seq + 1, updatedAt: iso(nowMs) };
     const timing = options.timing?.();
     const crew = options.crew?.();
+    const crewNames = options.crewNames?.();
     const event: EventRecord = {
       seq: next.seq,
       runId: next.runId,
@@ -121,6 +124,7 @@ export async function commitRoomChange(
         ...(options.founder ? { founder: options.founder } : {}),
         ...(unfound ? { unfound } : {}),
         ...(crew ? { crew } : {}),
+        ...(crewNames ? { crewNames } : {}),
       })
     ) {
       await deps.channel.publish(next.roomCode, {

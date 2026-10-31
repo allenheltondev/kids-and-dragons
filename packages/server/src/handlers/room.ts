@@ -217,6 +217,9 @@ export async function offerCampaigns(
   const crews = await listCrewViews(householdId, deps);
   if (crews.length > 0) state.crews = crews;
   else delete state.crews;
+  const firstName = await firstCrewName(householdId, deps);
+  if (firstName !== null) state.firstCrewName = firstName;
+  else delete state.firstCrewName;
   // A campaign the crew has under way is what the picker rests on, the most
   // recently played first; with none, the first startable one.
   const attempts = await deps.repo.listCampaignProgress(householdId, crew);
@@ -239,6 +242,16 @@ async function listCrewViews(householdId: string, deps: HandlerDeps): Promise<Cr
   } catch (err) {
     console.error(`crews: could not list ${householdId}'s crews:`, err);
     return [];
+  }
+}
+
+/** What the household named its first crew, or null: a failed lookup leaves it on the default. */
+async function firstCrewName(householdId: string, deps: HandlerDeps): Promise<string | null> {
+  try {
+    return await deps.repo.getFirstCrewName(householdId);
+  } catch (err) {
+    console.error(`crews: could not read ${householdId}'s first crew name:`, err);
+    return null;
   }
 }
 
@@ -437,13 +450,12 @@ export async function joinRoom(
   const room = settled.value;
   if (!room) return fail("NOT_FOUND", `no open room ${input.code.toUpperCase()}`);
 
-  // The device resolves to a household; that household must own this run
-  // (§4.5), unless the room is open to visitors and this phone is one (#249).
+  // A phone from another household joins as a visitor (#249): any phone with
+  // the room's code is welcome, so a kid's own phone works at a friend's TV
+  // without a grown-up opening the room first. Their heroes stay theirs and go
+  // home with them; the host's Lock is what keeps newcomers out.
   const visiting = room.householdId !== input.principal.householdId;
   const visit: Visit = visiting ? { householdId: input.principal.householdId, visitorCode: input.visitorCode } : null;
-  if (visit && !(await mayVisit(room, input.principal.playerId, visit, deps))) {
-    return fail("FORBIDDEN", "this device belongs to a different household");
-  }
 
   const player =
     early ?? (await deps.repo.getPlayer(input.principal.householdId, input.principal.playerId));
@@ -510,28 +522,6 @@ export async function joinRoom(
 
 /** A join from another household (#249): whose, and the code it came with. Null for the room's own. */
 type Visit = { householdId: string; visitorCode?: string | undefined } | null;
-
-/**
- * Whether a phone from another household may join this run (#249): it is a
- * visitor already on the roster, coming back, or the room is open and the
- * phone has its visitor code. Read from the run, which is where the switch
- * lives, so turning it off stops new visitors at once and leaves the ones
- * already playing in the game.
- */
-function visitorAdmitted(state: RunState, playerId: string, visit: NonNullable<Visit>): boolean {
-  if (state.seats?.[playerId]?.homeHouseholdId === visit.householdId) return true;
-  return (
-    state.visitorCode !== undefined &&
-    visit.visitorCode !== undefined &&
-    visit.visitorCode.toUpperCase() === state.visitorCode
-  );
-}
-
-/** `visitorAdmitted`, against the run as it stands before anything is read for the join. */
-async function mayVisit(room: RoomRecord, playerId: string, visit: NonNullable<Visit>, deps: HandlerDeps): Promise<boolean> {
-  const state = await deps.repo.getState(room.runId);
-  return state !== null && visitorAdmitted(state, playerId, visit);
-}
 
 /**
  * Tells the room who just arrived (`ArrivalMessage`, #267), so a stranger with
@@ -645,14 +635,9 @@ export async function watchRoom(
  *  - locked by the host (#263): only somebody already in the room comes back.
  *    The party counts as well as the roster, for a hero seated in a run from
  *    before the roster existed.
- *  - a visitor (#249), when the room has stopped letting new ones in and
- *    this one is not on the roster already (`visitorAdmitted`)
- */
+ * */
 function admission(state: RunState, playerId: string, code: string, visit: Visit): HandlerResult<never> | null {
   if (isRemoved(state, playerId)) return fail("FORBIDDEN", "This phone was taken out of that game.");
-  if (visit && !visitorAdmitted(state, playerId, visit)) {
-    return fail("FORBIDDEN", "this device belongs to a different household");
-  }
   if (isClosed(state)) return fail("NOT_FOUND", `no open room ${code.toUpperCase()}`);
   const inRoom = state.seats?.[playerId] !== undefined || state.party.some((m) => m.playerId === playerId);
   if (state.locked && !inRoom) {
@@ -789,20 +774,20 @@ export async function findRoom(
  * `joinRoom` refuse afterwards would leave a refused phone a member of the
  * room's household anyway, with a month-long token to prove it.
  *
- *  - `family`: a room never opened to visitors, as it always was. Its code is
- *    the family's invitation, and the phone becomes a player in the room's
- *    household. Unless the room is locked (#263): then it is refused, unbound.
- *  - `visitor`: the room is open and the phone brought its visitor code. It
- *    gets a guest household of its own (`bindNewPhone`).
- *  - refused: any other way into a room that has ever been open
- *    (`RunState.visitorsOpened`). The room's four letters were shown to every
- *    visitor, so they no longer prove somebody is family, while the room is
- *    open or after the switch is off. A family's own new phone comes in on the
- *    visitor code while the room is open, and can be moved home later (#251).
+ *  - `family`: the phone that founds the room's household, joining a TV's room
+ *    nobody has settled yet (`founding`, `RoomRecord.claimable`). It becomes a
+ *    player in the household the TV made, as it always was.
+ *  - `visitor`: every other new phone, on whichever code. A room is joined on
+ *    its four letters from any household (#249), so those letters no longer
+ *    prove somebody is family: a never-seen phone gets a guest household of its
+ *    own (`bindNewPhone`), and its hero lives there. A family's own new phone
+ *    can be moved home later (#251), or paired from a phone already at home.
+ *  - refused: a locked room (#263), unbound.
  */
 export async function admitNewPhone(
   room: RoomRecord,
-  visitorCode: string | undefined,
+  /** The room was a TV's, nobody's yet, until this phone settled it (`settleRoom`). */
+  founding: boolean,
   deps: Pick<HandlerDeps, "repo" | "now" | "channel">,
 ): Promise<HandlerResult<"family" | "visitor">> {
   const state = await deps.repo.getState(room.runId);
@@ -812,17 +797,8 @@ export async function admitNewPhone(
   if (isClosed(state) || (await closeIfIdle(room, state, deps))) {
     return fail("NOT_FOUND", `no open room ${room.code.toUpperCase()}`);
   }
-  if (state.visitorsOpened === true || state.visitorCode !== undefined) {
-    if (visitorCode !== undefined && state.visitorCode === visitorCode) return ok("visitor");
-    return fail(
-      "FORBIDDEN",
-      state.visitorCode !== undefined
-        ? "New players join this game with its visitor code. Ask whoever is running it."
-        : "This game isn't taking new players. Ask whoever is running it.",
-    );
-  }
   if (state.locked) return fail("FORBIDDEN", "This game is locked. Ask whoever is running it to unlock it.");
-  return ok("family");
+  return ok(founding ? "family" : "visitor");
 }
 
 /**

@@ -77,6 +77,8 @@ import {
   CAMPAIGN_SK,
   CREW_SK,
   CREWSAVE_PREFIX,
+  CREWNAMES,
+  FIRSTCREW,
   CHAPTER_SK,
   CHAR_SK,
   DEVICE_SK,
@@ -1358,6 +1360,16 @@ export class DynamoRepository implements GameRepository {
     return items.map((i) => i.data as CrewRecord).sort((a, b) => a.createdAt.localeCompare(b.createdAt));
   }
 
+  async getCrewNamesVersion(householdId: string): Promise<number> {
+    const item = await this.get(HH(householdId), CREWNAMES, true);
+    return (item?.data as { version?: number } | undefined)?.version ?? 0;
+  }
+
+  async getFirstCrewName(householdId: string): Promise<string | null> {
+    const item = await this.get(HH(householdId), FIRSTCREW, true);
+    return (item?.data as { name?: string } | undefined)?.name ?? null;
+  }
+
   async getFieldGuide(householdId: string): Promise<FieldGuideRecord> {
     const item = await this.get(HH(householdId), FIELDGUIDE);
     if (!item) return migrateFieldGuide({}, FIELD_GUIDE_VERSION);
@@ -1575,6 +1587,8 @@ export class DynamoRepository implements GameRepository {
                   },
                 ]
               : []),
+            // Crew names, gated on the household's crew-names version.
+            ...(input.crewNames ? crewNameTransaction(this.table, input.crewNames) : []),
             // If the run has moved on, the whole transaction is rejected and
             // these never land: that is the point of putting them here. Each
             // also carries its hero's claim and the version read (#282), since
@@ -2001,4 +2015,41 @@ function isTransactionCancelled(err: unknown): boolean {
 
 function nameOf(err: unknown): string | undefined {
   return typeof err === "object" && err !== null ? (err as { name?: string }).name : undefined;
+}
+
+/**
+ * The transaction items that name crews (`CommitInput.crewNames`): the version
+ * row, put only if it still holds the version read, then each name. The first
+ * crew's is a row of its own; another crew's is set on its row, which must exist.
+ */
+function crewNameTransaction(
+  table: string,
+  input: NonNullable<CommitInput["crewNames"]>,
+): TransactItem[] {
+  const pk = HH(input.householdId);
+  const gate = {
+    Put: {
+      TableName: table,
+      Item: { PK: pk, SK: CREWNAMES, entity: "crew", data: { version: input.expectedVersion + 1 } } satisfies TableItem,
+      ConditionExpression:
+        input.expectedVersion === 0 ? "attribute_not_exists(PK) OR #d.#v = :v" : "#d.#v = :v",
+      ExpressionAttributeNames: { "#d": "data", "#v": "version" },
+      ExpressionAttributeValues: { ":v": input.expectedVersion },
+    },
+  };
+  const names = input.names.map(({ crew, name }) =>
+    crew === null
+      ? { Put: { TableName: table, Item: { PK: pk, SK: FIRSTCREW, entity: "crew", data: { name } } satisfies TableItem } }
+      : {
+          Update: {
+            TableName: table,
+            Key: { PK: pk, SK: CREW_SK(crew) },
+            UpdateExpression: "SET #d.#n = :name",
+            ConditionExpression: "attribute_exists(PK)",
+            ExpressionAttributeNames: { "#d": "data", "#n": "name" },
+            ExpressionAttributeValues: { ":name": name },
+          },
+        },
+  );
+  return [gate, ...names];
 }

@@ -39,8 +39,8 @@
 
 .kad-host--float .kad-host__panel {
   inline-size: 100%;
-  max-block-size: 70vh;
-  overflow-y: auto;
+  /* As tall as its content, so a player joining grows the panel instead of
+     putting a scroll bar inside it. */
   border: 1px solid var(--kad-border);
   border-radius: var(--kad-radius-md);
   background: var(--kad-bg-raised);
@@ -96,6 +96,7 @@
 .kad-host__crew-menu > summary::after { content: "+"; margin-inline-start: auto; }
 .kad-host__crew-menu[open] > summary::after { content: "−"; }
 .kad-host__crew-menu > summary .kad-host__hint { font-weight: 400; }
+.kad-host__crew-names { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.4rem; }
 .kad-host__crew-menu .kad-host__crew { margin: 0 0.6rem 0.6rem; }
 .kad-host__close { border-block-start: 1px solid var(--kad-border); margin-block-start: 0.35rem; }
 

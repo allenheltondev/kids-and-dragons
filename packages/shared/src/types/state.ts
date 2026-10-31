@@ -631,6 +631,23 @@ export interface RunState {
    */
   crews?: CrewView[];
   /**
+   * What the household named its first crew, when it did (`renameCrew`).
+   * Absent while the first crew goes by the default name. Filled where the
+   * lobby's campaigns are (`offerCampaigns`).
+   */
+  firstCrewName?: string;
+  /**
+   * The crew is partway through this adventure and none of the heroes seated
+   * have been on it, so the TV asks before anything resumes: keep going, or
+   * start a new crew (`checkNewcomers`). Lobby-only.
+   */
+  crewCheck?: { campaignId: string; title: string };
+  /**
+   * The host chose to keep going with this campaign (its id) despite
+   * `crewCheck`. Lobby-only; cleared by a crew switch or a chapter start.
+   */
+  crewConfirmed?: string;
+  /**
    * What the family calls its table, the household's place at the game ("Kitchen table"),
    * from the TV that opened it. Absent when the table was never named.
    */

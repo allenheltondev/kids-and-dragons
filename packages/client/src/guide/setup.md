@@ -45,11 +45,7 @@ A grown-up can make the same code from **Run a group**: tap **Pair a device** be
 
 ## Visitors from another family
 
-A kid from another family plays with their own hero, and everything they earn goes home with them. They cannot join with the four letters. The game tells them their phone belongs to a different household.
-
-To let them in, open the room controls and tap **Let visitors join**. It asks you to sign in as a grown-up who runs this game. The room then has a six-letter code, and the big screen says **Room code (visitors welcome)**. Visitors type those six letters. **Stop new visitors** closes it again, and visitors who are already here stay.
-
-![A room open to visitors](../../public/guide-pictures/visitors.jpg)
+A kid from another family plays with their own hero, and everything they earn goes home with them. They join with the same four letters as everyone else, from their own phone. A phone that has never played joins as a visitor too, with a game of its own; to add a phone to your family, use **Play as me on another device** from a phone already in it. Once everyone is here, tap **Lock the room** in the room controls so nobody else can join.
 
 ## Running a group
 

@@ -7,7 +7,8 @@
  * tapping one, and neither page needs an account or a room. The guide leaves itself out of its own
  * footer (`guide={false}`). `compact` drops the copyright line while a phone waits in the lobby.
  * PhoneFrame keeps pregame links below navigation, including while making a hero.
- * The footer disappears once the adventure starts.
+ * The footer disappears once the adventure starts. The links and the copyright line share one row
+ * (wrapping only where a phone is too narrow for both).
  */
 
 import type { ReactElement } from "react";

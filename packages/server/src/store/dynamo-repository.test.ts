@@ -164,6 +164,31 @@ describe("DynamoRepository character persistence", () => {
     });
   });
 
+  it("names crews in the run transaction, gated on the household's crew-names version", async () => {
+    send.mockResolvedValueOnce({});
+    const repo = new DynamoRepository({ tableName: "kad-test", client });
+    await expect(
+      repo.commit({
+        runId: "r_1",
+        expectedSeq: 0,
+        state: state(1),
+        event: { runId: "r_1", seq: 1, patch: [], at: "2026-07-04T18:00:00.000Z" },
+        crewNames: { householdId: "h_1", expectedVersion: 2, names: [{ crew: null, name: "The Comet Crew" }, { crew: "cw_1", name: "The Otter Crew" }] },
+      }),
+    ).resolves.toBe(true);
+    const items = send.mock.calls[0]?.[0].input.TransactItems ?? [];
+    const gate = items.find((i: { Put?: { Item?: { SK?: string } } }) => i.Put?.Item?.SK === "CREWNAMES")?.Put;
+    expect(gate).toMatchObject({
+      Item: { PK: "HH#h_1", SK: "CREWNAMES", entity: "crew", data: { version: 3 } },
+      ConditionExpression: "#d.#v = :v",
+      ExpressionAttributeValues: { ":v": 2 },
+    });
+    const first = items.find((i: { Put?: { Item?: { SK?: string } } }) => i.Put?.Item?.SK === "FIRSTCREW")?.Put;
+    expect(first?.Item).toMatchObject({ PK: "HH#h_1", data: { name: "The Comet Crew" } });
+    const other = items.find((i: { Update?: { Key?: { SK?: string } } }) => i.Update?.Key?.SK === "CREW#cw_1")?.Update;
+    expect(other).toMatchObject({ ConditionExpression: "attribute_exists(PK)", ExpressionAttributeValues: { ":name": "The Otter Crew" } });
+  });
+
   function cancelled(...codes: string[]) {
     return Object.assign(new Error("Transaction cancelled"), {
       name: "TransactionCanceledException",
