@@ -1674,7 +1674,10 @@ and every device stay the household's, so anyone may sit down with any crew.
   `RunState.crewCheck` and Begin is refused until the host picks: keep going
   (`POST /api/room/:code/crewkeep`, `crewConfirmed`) or start a new crew. An
   attempt no hero is on asks nothing. Every chapter start is asked, so a
-  `START_CHAPTER` sent straight cannot step round it.
+  `START_CHAPTER` sent straight cannot step round it. A keep-going is for the
+  lineup it was given for: when the heroes seated or the crew change (a hero
+  sits down, gets up, or is taken out), it is dropped and the lobby asks again
+  (`rethinkNewcomers`).
 - **Crew names are one per crew.** A new crew takes the first listed name no
   crew holds (the first crew's chosen name included), and a rename only a free
   one. Both land in the run's commit, gated on the household's crew-names

@@ -271,7 +271,7 @@ export async function newcomersTo(
   state: RunState,
   householdId: string,
   campaignId: string,
-  deps: HandlerDeps,
+  deps: Pick<HandlerDeps, "repo">,
 ): Promise<boolean> {
   if (!betweenGames(state) || state.crewSetup || state.crewConfirmed === campaignId) return false;
   const party = seatedParty(state);
@@ -312,7 +312,7 @@ export async function newcomersTo(
  * lobby rests on. Called whenever the party or the votes in the lobby change.
  * Returns the state unchanged (the same object) when nothing moved.
  */
-export async function checkNewcomers(state: RunState, householdId: string, deps: HandlerDeps): Promise<RunState> {
+export async function checkNewcomers(state: RunState, householdId: string, deps: Pick<HandlerDeps, "repo">): Promise<RunState> {
   const leader = lobbyCampaign(state).leader;
   const found =
     leader && leader.locked === undefined && (await newcomersTo(state, householdId, leader.id, deps))
@@ -326,6 +326,37 @@ export async function checkNewcomers(state: RunState, householdId: string, deps:
   if (found) next.crewCheck = found;
   else delete next.crewCheck;
   return next;
+}
+
+/** Who the host's keep-going was for: the heroes seated, and the crew whose adventure it is. */
+function lineup(state: RunState): string {
+  const heroes = seatedParty(state).map((m) => m.character.id).sort().join(" ");
+  return `${state.crew ?? ""}|${heroes}`;
+}
+
+/**
+ * The lobby moved from `before` to `after`: when the heroes seated (somebody
+ * sat down, got up, or was taken out) or the crew changed, the host's
+ * keep-going was for a lineup that is not this one, so it is dropped
+ * (`crewConfirmed`) and the question asked again for these heroes. A change of
+ * the adventure the lobby rests on asks again too. Anything else leaves the
+ * state as it is (the same object). Lobby-only.
+ */
+export async function rethinkNewcomers(
+  before: RunState,
+  after: RunState,
+  householdId: string,
+  deps: Pick<HandlerDeps, "repo">,
+): Promise<RunState> {
+  if (after.phase !== "lobby" && after.phase !== "creation") return after;
+  const moved = lineup(before) !== lineup(after);
+  if (!moved && before.campaignVotes === after.campaignVotes) return after;
+  let next = after;
+  if (moved && next.crewConfirmed !== undefined) {
+    next = { ...next };
+    delete next.crewConfirmed;
+  }
+  return checkNewcomers(next, householdId, deps);
 }
 
 export interface ConfirmCrewInput {

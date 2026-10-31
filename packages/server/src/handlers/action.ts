@@ -56,7 +56,7 @@ import {
 import type { DeviceIdentity } from "../identity.ts";
 import type { ApplyIntentResult, EngineContext } from "../engine/port.ts";
 import type { CampaignProgressRecord, CharacterWrite, EventRecord, RunRecord } from "../store/repository.ts";
-import { checkNewcomers, followCrew, newcomersTo } from "./crew.ts";
+import { followCrew, newcomersTo, rethinkNewcomers } from "./crew.ts";
 import { diff } from "../json-patch.ts";
 import { keepGuestHousehold } from "./account.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
@@ -467,15 +467,9 @@ export async function applyAction(
     result = { ...result, state: await followCrew(result.state, auth.run.householdId, auth.run.campaignId, deps) };
   }
   // Whether the heroes now seated are new to the adventure the lobby rests on
-  // (crew.ts): rechecked when who is seated or which adventure leads changes.
-  if (
-    (result.state.phase === "lobby" || result.state.phase === "creation") &&
-    (!sameParty(state.party, result.state.party) ||
-      state.campaignVotes !== result.state.campaignVotes ||
-      state.crew !== result.state.crew)
-  ) {
-    result = { ...result, state: await checkNewcomers(result.state, auth.run.householdId, deps) };
-  }
+  // (crew.ts): asked again, and any keep-going dropped, when who is seated or
+  // the crew changes; asked again when the adventure that leads changes.
+  result = { ...result, state: await rethinkNewcomers(state, result.state, auth.run.householdId, deps) };
 
   /*
    * Progression, computed here and committed below.
