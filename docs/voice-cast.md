@@ -258,6 +258,17 @@ voice, and nothing there touches the Gemini one:
   appears in every picker. A character's choice is saved as `elevenlabs` on the sheet, and **No voice yet** takes
   it back. A voice that has left the account is still listed, marked, so the picker never hides
   what is saved.
+- **Designing a voice** is an option on every character's voice picker, for when nothing in the account or the library
+  fits: **Design a new voice for Pib** opens a description and a sample text, prefilled from the sheet. The description
+  is who they are (their notes, with their name taken out: a name the model might take for a real person is a way to
+  get a voice that sounds like one), a man's or a woman's voice, the direction you gave, their accent, and a line asking
+  for an adult storyteller's voice that is warm, clear and never scary. The sample text is their own lines from the game
+  (topped up with the stand-in line when they have under 100 characters of them). Edit either, then **Hear 3 candidates**:
+  ElevenLabs makes three voices from the description and each says the text. That step spends: it is priced and held
+  to the session's cap like an audition (the cost is shown first, and a design that fails is not charged). **Use this
+  voice** names it, asks, and saves it to the ElevenLabs account (it may use one of the plan's voice slots) and gives
+  it to the character, unapproved. Nothing changes the account until that click. Design runs on ElevenLabs' own design model (`eleven_ttv_v3`), not a speech model, and bills the sample text once however many candidates come back. `pricing.json` has no design rate, so the cap's price is an estimate: the text priced once as `eleven_v3` speech (itself an unconfirmed rate there). It is asked for again whenever the text is edited, shown beside the button, and sent with the request: if the words changed, the server answers with the new price instead of spending on the old one. Editing either box also takes the candidates away, so a voice is only ever saved under the description it was made from. Check what a design really costs on your account. ElevenLabs takes a description of 20 to 1,000
+  characters and a sample text of 100 to 1,000.
 - **Nothing is chosen for you.** Gemini's voices come with traits that a builder can match to a
   character; an account's don't, so nobody has an ElevenLabs voice until you pick one. Until then
   they have nothing to render or approve, and their buttons say so.
