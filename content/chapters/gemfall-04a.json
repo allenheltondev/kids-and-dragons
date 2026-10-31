@@ -94,7 +94,7 @@
     },
     "scene_caravan_dry": {
       "type": "story",
-      "narration": "You fall in with the caravans coming off Stone Crossing, and there is Parsnip the donkey, with her driver, who is furious. \"The pride escort wouldn't camp at the usual rest stop! Wouldn't go within a day of it! We booked them three seasons ahead!\" Parsnip, who has to sleep near the gem crates, seems to agree with the prides.",
+      "narration": "You fall in with the caravans coming off Stone Crossing, and there is Parsnip the donkey, with her driver, who is furious. \"The pride escort wouldn't camp at the usual rest stop! Wouldn't go within a day of it! We booked them three seasons ahead!\" the driver shouts. Parsnip, who has to sleep near the gem crates, seems to agree with the prides.",
       "choices": [
         {
           "id": "leave_caravan",

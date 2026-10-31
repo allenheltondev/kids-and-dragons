@@ -1712,7 +1712,7 @@
     },
     "pull": {
       "type": "choice_point",
-      "narration": "The rope snaps straight. Crates scrape over the boards. The kid skids toward the opening, all four hooves spread. A dock worker throws you a loose line and shouts, \"Grab this!\" You have time to make one move.",
+      "narration": "The rope snaps straight. Crates scrape over the boards. The kid skids toward the opening, all four hooves spread. A dock worker throws you a loose line. \"Grab this!\" shouts the worker. You have time to make one move.",
       "choices": [
         {
           "id": "catch",
