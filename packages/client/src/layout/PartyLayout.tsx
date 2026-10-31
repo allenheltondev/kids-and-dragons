@@ -34,6 +34,8 @@ import { setHelpPane } from "../help/focus";
 import { PlayerShell, useSideBySide } from "./landscape";
 import { PaneFrame } from "./PaneFrame";
 import { PhoneFrame } from "./PhoneFrame";
+import { TvFocus, useTvFocusSetting } from "./tv-focus";
+import { useSeesRiftlight } from "../screens/RiftSight";
 
 export interface PartyLayoutProps {
   surface: "world" | "player";
@@ -86,6 +88,21 @@ function PhoneLayout(): React.JSX.Element {
   }, [sideBySide, turnKey]);
 
   const section = usePlayerNavigation((navigation) => navigation.section);
+  /*
+   * TV focus (Display settings): there is a TV in Party Mode, so the story lives there and this
+   * phone keeps only You. The World tab stays for a Starweaver, whose phone alone shows the
+   * Riftlight; Map, Guide and Book come back when the setting goes off. A pane she was looking
+   * at when it went on gives way to her controls.
+   */
+  const focus = useTvFocusSetting();
+  const seesRiftlight = useSeesRiftlight();
+  const worldTab = !focus || seesRiftlight;
+  useEffect(() => {
+    if (!focus) return;
+    setShowing((at) => (at === "map" || (at === "world" && !seesRiftlight) ? "player" : at));
+    if (section === "guide") dismissPlayerSheet();
+  }, [focus, seesRiftlight, section]);
+
   // The "?" in the corner row (#256) explains whatever pane is up; side by side, the one she is in.
   const beside: Showing = showing === "map" ? "map" : "world";
   const helpPane: Showing = sideBySide ? (engaged === "player" && !youOpen ? beside : engaged) : showing;
@@ -112,10 +129,10 @@ function PhoneLayout(): React.JSX.Element {
 
   return (
     <PlayerShell.Provider value>
-      <div className="kad-party kad-party--player" data-side-by-side={sideBySide || undefined}>
+      <div className="kad-party kad-party--player" data-side-by-side={sideBySide || undefined} data-tv-focus={focus || undefined}>
         {/* Four destinations on every phone; the TV stays a pure display. */}
         <nav className="kad-party__bar kad-tray" aria-label="What to look at">
-          <button
+          {worldTab ? <button
             type="button"
             className={`kad-tray__tab kad-tap kad-focusable${shows("world") ? " kad-tray__tab--on" : ""}`}
             aria-pressed={shows("world")}
@@ -128,7 +145,7 @@ function PhoneLayout(): React.JSX.Element {
               <RiftlightIndicator onWorld={shows("world")} />
             </span>
             <span className="kad-tray__label">World</span>
-          </button>
+          </button> : null}
           <button
             type="button"
             className={`kad-tray__tab kad-tray__tab--primary kad-tap kad-focusable${shows("player") && !inGuide ? " kad-tray__tab--on" : ""}`}
@@ -152,7 +169,7 @@ function PhoneLayout(): React.JSX.Element {
             </span>
             <span className="kad-tray__label">You</span>
           </button>
-          <button
+          {focus ? null : <button
             type="button"
             className={`kad-tray__tab kad-tap kad-focusable${onMap ? " kad-tray__tab--on" : ""}`}
             aria-pressed={onMap}
@@ -162,15 +179,17 @@ function PhoneLayout(): React.JSX.Element {
               <TrayObject name="map" />
             </span>
             <span className="kad-tray__label">Map</span>
-          </button>
-          <GuideTab on={inGuide} onShowPlayer={showPlayer} />
-          <BookTab />
+          </button>}
+          {focus ? null : <GuideTab on={inGuide} onShowPlayer={showPlayer} />}
+          {focus ? null : <BookTab />}
         </nav>
 
         {/* `hidden` rather than unmounted, like the Travel panes: a selection
             half-made in the bag survives a look at the map. */}
         <div className="kad-party__pane" data-pane="player" data-showing={shows("player")}>
-          <PlayerView roomControls={<ModeSwitch />} />
+          <TvFocus.Provider value={focus}>
+            <PlayerView roomControls={<ModeSwitch />} />
+          </TvFocus.Provider>
         </div>
         <div className="kad-party__pane" data-pane="world" data-showing={shows("world")}>
           {/* Mounted behind the controls, so it says when it is actually seen. */}
