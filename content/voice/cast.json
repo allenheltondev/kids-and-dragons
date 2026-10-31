@@ -38,7 +38,7 @@
       ],
       "speaks": true,
       "status": "provisional",
-      "lineCount": 57
+      "lineCount": 56
     },
     "pib": {
       "name": "Pib",
@@ -1343,19 +1343,20 @@
       },
       "lines": [
         {
-          "text": "The river is strong this year, and a flat boat spins when the weight sits wrong.",
-          "address": "riftlight-ashspan-bridge/ferry_ask/narration"
-        },
-        {
           "text": "Carry this one up yourself. When you put it down, say thank you to the river.",
           "address": "gemfall-07r/scene_ossley_debt/narration"
         },
         {
           "text": "Stones want to go home. We only kept them until someone was going that way.",
           "address": "gemfall-07r/scene_ossley/narration"
+        },
+        {
+          "text": "When you want to go upriver, I am your frog. Honest work, honest pay.",
+          "address": "riftlight-saltrot-arrival/ossley_done/narration"
         }
       ],
-      "lineCount": 38,
+      "lineCount": 34,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -1778,16 +1779,16 @@
       },
       "lines": [
         {
-          "text": "Hay for the herd! It came from upstream. If it floats off now, it is gone for good.",
-          "address": "riftlight-frostfang-shore/driftline/narration"
+          "text": "Somebody will thank you in the dark. We give one to anyone who ties a rail.",
+          "address": "riftlight-frostfang-shore/safety_done/narration"
         },
         {
-          "text": "Good ladder. Now look along the shore. The river has tipped out its pockets.",
-          "address": "riftlight-frostfang-shore/ladder_hold/onSuccess/narration"
+          "text": "It will do. Somebody hold it, and somebody climb three rungs.",
+          "address": "riftlight-frostfang-shore/foot_set/variants/0"
         },
         {
-          "text": "It will do. Now look along the shore. The river has tipped out its pockets.",
-          "address": "riftlight-frostfang-shore/ladder_hold/onFailure/narration"
+          "text": "Even a little hay is worth keeping. Pass it up, hand to hand.",
+          "address": "riftlight-frostfang-shore/hay_relay/variants/0"
         }
       ],
       "lineCount": 33,
@@ -2410,7 +2411,7 @@
           "address": "gemfall-05b/scene_runners_post_rush/narration"
         }
       ],
-      "lineCount": 15,
+      "lineCount": 16,
       "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
@@ -2839,20 +2840,19 @@
       },
       "lines": [
         {
-          "text": "The neck will have to be careful by itself. Let us at least put up a good cairn.",
-          "address": "riftlight-cairnstep-pass/mark_open/narration"
-        },
-        {
-          "text": "So the herd could use it, if the shelf is real. Show me where it joins the cairns.",
+          "text": "So the herd could use it, if the shelf is real. Where does it meet the cairns?",
           "address": "riftlight-cairnstep-pass/supplies/narration"
         },
         {
-          "text": "Now we measure it. Length, width, and any place that would make a goat say no.",
-          "address": "riftlight-cairnstep-pass/survey/narration"
+          "text": "A goat could walk it. A goat should walk it on a rope. Now, what do we write?",
+          "address": "riftlight-cairnstep-pass/neck_done/narration"
+        },
+        {
+          "text": "The neck. The narrow bridge of rock at the top of the pass. It is hollow underneath.",
+          "address": "riftlight-cairnstep-pass/tested/narration"
         }
       ],
-      "lineCount": 49,
-      "guessedLines": 1,
+      "lineCount": 47,
       "speaks": true,
       "status": "provisional"
     },
@@ -4459,7 +4459,8 @@
           "address": "riftlight-buried-bridge/equipment/narration"
         }
       ],
-      "lineCount": 73,
+      "lineCount": 69,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -4498,7 +4499,7 @@
           "address": "riftlight-convergence/ending/variants/1"
         },
         {
-          "text": "There is food in my pack. If we could carry it through an opening, the herd could eat today.",
+          "text": "I have food in my pack. Carry it through an opening, and the herd eats today.",
           "address": "riftlight-riftseekers-departure/olivia/narration"
         },
         {
@@ -4506,7 +4507,7 @@
           "address": "riftlight-convergence/decision/narration"
         }
       ],
-      "lineCount": 31,
+      "lineCount": 29,
       "speaks": true,
       "status": "provisional"
     },
@@ -4587,19 +4588,19 @@
       },
       "lines": [
         {
-          "text": "One of you can see it. Keep looking. Later, I can show you how to listen too.",
-          "address": "riftlight-riftseekers-departure/seren/variants/0"
-        },
-        {
-          "text": "You can learn a good deal without seeing what I see. He brought half a bag of help.",
-          "address": "riftlight-riftseekers-departure/seren/variants/1"
+          "text": "Listen for a tick. Listen for a hum. A hum that holds still can be learned.",
+          "address": "riftlight-riftseekers-departure/prep_seam/narration"
         },
         {
           "text": "One loud note. Use it when you need to be heard, not when you want to be.",
           "address": "riftlight-riftseekers-departure/supplies_buy/narration"
+        },
+        {
+          "text": "Fast and bright, or slow and careful. Either works, if nobody sneezes.",
+          "address": "riftlight-sky-islands-arrival/light/narration"
         }
       ],
-      "lineCount": 46,
+      "lineCount": 44,
       "speaks": true,
       "status": "provisional"
     },
@@ -4645,19 +4646,19 @@
       },
       "lines": [
         {
-          "text": "If that tips at dusk, the fire goes over the edge and the basket goes with it.",
-          "address": "riftlight-sky-islands-arrival/basket_plan/narration"
+          "text": "The drawing goes in the traveling pages, not my tea-stained scrap.",
+          "address": "riftlight-reading-room/rest/narration"
         },
         {
-          "text": "The firm bank first. The silt second. The stone last, and only from the bank.",
-          "address": "riftlight-saltrot-arrival/bridge_plan/narration"
+          "text": "That is a rift. Its hum stays put while the wind runs around. A hum is steady. Wind is a liar.",
+          "address": "riftlight-sky-islands-arrival/hum_heard/narration"
         },
         {
-          "text": "I do not know why it is all moving. I only know it is easier to count with friends.",
-          "address": "riftlight-sky-islands-arrival/pip_night/narration"
+          "text": "Next time the road argues with the map, we have a starting point.",
+          "address": "riftlight-stone-counters/route_copy/narration"
         }
       ],
-      "lineCount": 39,
+      "lineCount": 36,
       "speaks": true,
       "status": "provisional"
     },
@@ -4686,19 +4687,19 @@
       },
       "lines": [
         {
-          "text": "The wind is coming from between those crates. Wind should have more room than that.",
+          "text": "The wind comes from between those crates. Wind should have more room than that.",
           "address": "riftlight-exchange-rift/ship_cold/narration"
         },
         {
-          "text": "I need a safe lane home for everyone aboard, and a very strong cup of tea.",
-          "address": "riftlight-sky-islands-arrival/ferry_in/narration"
+          "text": "Never trust a map on a windy day. Look for me if you reach the islands. You'll know my washing.",
+          "address": "riftlight-exchange-rift/ship_flap/narration"
         },
         {
-          "text": "Hold the rail with both hands, and do not sing back until I say.",
-          "address": "riftlight-sky-islands-arrival/route_ferry/narration"
+          "text": "I need a safe lane home for them, and a very strong cup of tea.",
+          "address": "riftlight-sky-islands-arrival/ferry_in/narration"
         }
       ],
-      "lineCount": 13,
+      "lineCount": 11,
       "speaks": true,
       "status": "provisional"
     },
@@ -4726,20 +4727,19 @@
       },
       "lines": [
         {
-          "text": "That, was the best thing that has happened to me today. Thank you. Don't tell the other gulls I said so.",
+          "text": "Best thing all day. Hoofprints! Little ones! That way! Don't tell the other gulls I said thank you.",
           "address": "riftlight-exchange-rift/gull_fed/narration"
         },
         {
-          "text": "For the record. I did not ask to become a winter bird.",
-          "address": "riftlight-exchange-rift/gull_help/narration"
+          "text": "Cold. Still cold. That is the wind. Not my stomach.",
+          "address": "riftlight-exchange-rift/gull/narration"
         },
         {
-          "text": "That is the wind. Not my stomach.",
-          "address": "riftlight-exchange-rift/gull/narration"
+          "text": "For the record, I did not ask to be a winter bird.",
+          "address": "riftlight-exchange-rift/gull_help/narration"
         }
       ],
-      "lineCount": 7,
-      "guessedLines": 2,
+      "lineCount": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -4767,19 +4767,20 @@
       },
       "lines": [
         {
-          "text": "Something else stepped off that patch of grass. Little hooves. Went that way.",
+          "text": "Something stepped off that patch of grass. Little hooves. Went that way.",
           "address": "riftlight-exchange-rift/fish_help/narration"
         },
         {
-          "text": "I ordered ice. Ice stays where you put it. Somebody move these, before my fish catch cold!",
-          "address": "riftlight-exchange-rift/fish/narration"
+          "text": "Nobody lost a fish, but I lost count. Something stepped off that grass. Little hooves. Went that way.",
+          "address": "riftlight-exchange-rift/fish_slosh/narration"
         },
         {
-          "text": "Nobody lost a fish, but I lost count of twelve. Something else stepped off that patch of grass. Little hooves. Went that way.",
-          "address": "riftlight-exchange-rift/fish_slosh/narration"
+          "text": "I ordered ice. Ice stays where you put it.",
+          "address": "riftlight-exchange-rift/fish/narration"
         }
       ],
-      "lineCount": 3,
+      "lineCount": 4,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -4850,19 +4851,20 @@
       },
       "lines": [
         {
-          "text": "The glacier is changing. But it will not catch us today. Go on. And thank you.",
-          "address": "riftlight-glacier-survival/ledge_done/narration"
+          "text": "Three coins a pair. Quickest laces on the glacier. Or sit and be warm for free.",
+          "address": "riftlight-glacier-survival/hall_table/narration"
         },
         {
-          "text": "For calling a herd off thin snow. One loud note. Do not blow it indoors.",
-          "address": "riftlight-glacier-survival/hall_share/narration"
+          "text": "My grandmother's. She never found out what ticked. Put an ear in and tell me.",
+          "address": "riftlight-hidden-glacier-rift/post/narration"
         },
         {
-          "text": "That is a good kid. That is a terrible kid. Same kid. For the climb. Do not tell the kid.",
-          "address": "riftlight-hidden-glacier-rift/kid_done/narration"
+          "text": "My herd must never wander in there. Goats go through anything. How do we keep them out?",
+          "address": "riftlight-hidden-glacier-rift/cairn/narration"
         }
       ],
-      "lineCount": 58,
+      "lineCount": 54,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -5200,12 +5202,20 @@
       },
       "lines": [
         {
+          "text": "The new detours glow in the order the stones fell. Watch, then put them back in order.",
+          "address": "gemfall-04a/check_sashes/narration"
+        },
+        {
           "text": "Every sash needs changing this season. Help me see why.",
           "address": "gemfall-04a/scene_waystation/narration"
+        },
+        {
+          "text": "River first, then pride, bridge, pride.",
+          "address": "gemfall-04a/scene_waystation_lesson/narration"
         }
       ],
-      "lineCount": 5,
-      "guessedLines": 4,
+      "lineCount": 4,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -5737,11 +5747,11 @@
       },
       "lines": [
         {
-          "text": "It floats. It is a very good bag.",
-          "address": "riftlight-ashspan-bridge/board_wet/narration"
+          "text": "Better.",
+          "address": "riftlight-ashspan-bridge/mat_return/narration"
         }
       ],
-      "lineCount": 2,
+      "lineCount": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -5763,19 +5773,19 @@
       },
       "lines": [
         {
-          "text": "Tilly. Duck eggs, for market across the water. They are not due for days. They disagree.",
+          "text": "I'm Tilly. Duck eggs, for market across the river. They are not due for days. They disagree.",
           "address": "riftlight-ashspan-bridge/ferry_ask/narration"
         },
         {
-          "text": "They'll learn. Eventually. Possibly in about a year. For the heroes.",
-          "address": "riftlight-ashspan-bridge/ducks_loose/narration"
+          "text": "Do not share them with ducks. They take advantage.",
+          "address": "riftlight-ashspan-bridge/cakes/narration"
         },
         {
-          "text": "Do not share them with ducks. They will take advantage.",
-          "address": "riftlight-ashspan-bridge/cakes/narration"
+          "text": "I must give you something. I have oat cakes, and a story about a goose. The cakes are better. The story is longer.",
+          "address": "riftlight-ashspan-bridge/gift_plan/narration"
         }
       ],
-      "lineCount": 10,
+      "lineCount": 9,
       "speaks": true,
       "status": "provisional"
     },
@@ -5797,19 +5807,19 @@
       },
       "lines": [
         {
-          "text": "Kindling. I will make do. For calling goats. They ignore it, but it is very loud.",
+          "text": "That pile must move before my cart can come down. It has been there since dawn. I think it is breathing.",
+          "address": "riftlight-ashspan-bridge/plank_pile/narration"
+        },
+        {
+          "text": "Kindling. For calling goats. They ignore it.",
           "address": "riftlight-ashspan-bridge/cart_stuck/narration"
         },
         {
-          "text": "A bridge-mender's thanks. It keeps the wet out of your boots. Mostly.",
-          "address": "riftlight-ashspan-bridge/share_bryn/narration"
-        },
-        {
-          "text": "Now, it needs tying down, so it stays put when the river sulks.",
-          "address": "riftlight-ashspan-bridge/planks_laid/narration"
+          "text": "Fastenings first. Then I call the travelers.",
+          "address": "riftlight-ashspan-bridge/test_check/narration"
         }
       ],
-      "lineCount": 13,
+      "lineCount": 12,
       "speaks": true,
       "status": "provisional"
     },
@@ -5827,8 +5837,13 @@
       "gemini": {
         "voice": "Rasalgethi"
       },
-      "lines": [],
-      "lineCount": 0,
+      "lines": [
+        {
+          "text": "I would have missed market.",
+          "address": "riftlight-ashspan-bridge/folk_cross/narration"
+        }
+      ],
+      "lineCount": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -5848,16 +5863,16 @@
       },
       "lines": [
         {
-          "text": "It comes down somewhere. Anyone who wants the circlet, may try it on.",
-          "address": "riftlight-ashspan-bridge/academy/narration"
-        },
-        {
           "text": "Bless you. It does that when it sees something new.",
           "address": "riftlight-ashspan-bridge/academy_stars/narration"
         },
         {
           "text": "Back at the Academy! Mind the homework.",
           "address": "riftlight-ashspan-bridge/academy/variants/0"
+        },
+        {
+          "text": "Anyone may try it on.",
+          "address": "riftlight-ashspan-bridge/academy/narration"
         }
       ],
       "lineCount": 3,
@@ -5918,20 +5933,20 @@
       },
       "lines": [
         {
-          "text": "Rub it like you are polishing a pot. Gently. All of it. Before the wind wakes up.",
-          "address": "riftlight-boundary-stone-bank/carving/narration"
+          "text": "Kettle saved. The river has no idea how to make tea. Mosslight. For work at dusk.",
+          "address": "riftlight-boundary-stone-bank/surge_safe/narration"
         },
         {
-          "text": "Higher than my grandmother's year. And she complained about that one for a month.",
+          "text": "Cut the notch right on that line. It will stay for a thousand years. No pressure.",
+          "address": "riftlight-boundary-stone-bank/notch_plan/narration"
+        },
+        {
+          "text": "Higher than my grandmother's year! She complained about that one for a month.",
           "address": "riftlight-boundary-stone-bank/marker_set/narration"
-        },
-        {
-          "text": "Let the counters look at that, and decide for themselves. I am only the keeper.",
-          "address": "riftlight-boundary-stone-bank/drew_both/narration"
         }
       ],
-      "lineCount": 52,
-      "guessedLines": 3,
+      "lineCount": 46,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -5950,7 +5965,8 @@
         "voice": "Zubenelgenubi"
       },
       "lines": [],
-      "lineCount": 0,
+      "lineCount": 1,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -5972,16 +5988,16 @@
       },
       "lines": [
         {
-          "text": "Four hundred steps long. Wide as two goats at its narrowest. One hollow neck.",
-          "address": "riftlight-cairnstep-pass/survey_done/narration"
+          "text": "Herders, with their goats. They will want to know if this path is real.",
+          "address": "riftlight-cairnstep-pass/tea_x/narration"
         },
         {
-          "text": "It was true when I drew it. Now it is true again. I packed too much. Nervous packing.",
+          "text": "This goes on top. You do it. For a moment that needs one loud note.",
+          "address": "riftlight-cairnstep-pass/capstone_done/narration"
+        },
+        {
+          "text": "It was true when I drew it. Now it is true again. Nervous packing.",
           "address": "riftlight-cairnstep-pass/pebble_done/narration"
-        },
-        {
-          "text": "It makes your feet quick. Mine are quick enough. Mostly.",
-          "address": "riftlight-cairnstep-pass/tea_share/narration"
         }
       ],
       "lineCount": 12,
@@ -6006,20 +6022,19 @@
       },
       "lines": [
         {
-          "text": "That is for trying. The broth is for the gutter. The gutter is very pleased.",
-          "address": "riftlight-exchange-rift/awning_flap/narration"
+          "text": "For later. Don't tell the pot. The pot thinks everything is for the pot.",
+          "address": "riftlight-exchange-rift/awning_up/narration"
         },
         {
-          "text": "Find your snow in a minute! First I need hands. This awning is heavy, and I pay in coins.",
+          "text": "First, I need hands! This awning is heavy, and I pay in coins.",
           "address": "riftlight-exchange-rift/market/narration"
         },
         {
-          "text": "Eat it warm, or save it for somebody who needs it more than you do.",
+          "text": "Eat it warm, or save it for somebody who needs it.",
           "address": "riftlight-exchange-rift/noodle_buy/narration"
         }
       ],
-      "lineCount": 7,
-      "guessedLines": 1,
+      "lineCount": 6,
       "speaks": true,
       "status": "provisional"
     },
@@ -6041,19 +6056,19 @@
       },
       "lines": [
         {
-          "text": "This will do for tonight. Tomorrow I have to find where my landing went.",
-          "address": "riftlight-exchange-rift/moor_drift/narration"
+          "text": "For the river. It keeps your feet sure on wet boards. Now, where did my landing go?",
+          "address": "riftlight-exchange-rift/delivery_moor/narration"
         },
         {
-          "text": "Throw me the end of that rope! Right over my hook, if you please!",
-          "address": "riftlight-exchange-rift/barge_toss/narration"
-        },
-        {
-          "text": "Pass them down the line, friend to friend. And watch out for the puddles. Potatoes hate puddles.",
+          "text": "Pass the sacks friend to friend. And mind the puddles. Potatoes hate puddles.",
           "address": "riftlight-exchange-rift/sack_chain/narration"
+        },
+        {
+          "text": "Six crews eating tonight. Mosslight. It glows when it's happy. Still need a way home.",
+          "address": "riftlight-exchange-rift/delivery_sacks/narration"
         }
       ],
-      "lineCount": 14,
+      "lineCount": 12,
       "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
@@ -6076,15 +6091,12 @@
       },
       "lines": [
         {
-          "text": "Back again. Remember. Once you leave the Exchange, our ladder is gone for you.",
-          "address": "riftlight-exchange-rift/rookery/variants/0"
-        },
-        {
-          "text": "Saw that. Nice. Don't mess with us.",
-          "address": "riftlight-exchange-rift/rookery_lesson/narration"
+          "text": "Wipe your feet.",
+          "address": "riftlight-exchange-rift/rookery/narration"
         }
       ],
-      "lineCount": 3,
+      "lineCount": 5,
+      "guessedLines": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -6106,11 +6118,12 @@
       },
       "lines": [
         {
-          "text": "Right. Nobody tell the crate's owner.",
-          "address": "riftlight-exchange-rift/crates_slid/narration"
+          "text": "Good crate.",
+          "address": "riftlight-exchange-rift/crates_back/narration"
         }
       ],
       "lineCount": 2,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -6136,7 +6149,7 @@
       },
       "lines": [
         {
-          "text": "My herd keeps stopping at the east ridge. Ears up, all pointing one way. Something up there ticks. Find it before a goat does.",
+          "text": "My herd keeps stopping at the east ridge. Ears up, all one way. Something up there ticks. Find it before a goat does.",
           "address": "riftlight-hidden-glacier-rift/search/narration"
         }
       ],
@@ -6161,7 +6174,7 @@
       },
       "lines": [
         {
-          "text": "You saved my fish. Let us save that little one.",
+          "text": "You saved my fish. Let us save that little one!",
           "address": "riftlight-exchange-rift/pull/variants/1"
         }
       ],
@@ -6237,16 +6250,16 @@
       },
       "lines": [
         {
-          "text": "Anyone who wants the bell, may try it on.",
-          "address": "riftlight-glacier-survival/conservatory/narration"
-        },
-        {
           "text": "The cactus never turns. Keep singing.",
           "address": "riftlight-glacier-survival/conservatory_sing/narration"
         },
         {
           "text": "Back to the Conservatory? Good.",
           "address": "riftlight-glacier-survival/conservatory/variants/0"
+        },
+        {
+          "text": "Anyone may try it on.",
+          "address": "riftlight-glacier-survival/conservatory/narration"
         }
       ],
       "lineCount": 3,
@@ -6286,13 +6299,8 @@
       "gemini": {
         "voice": "Zubenelgenubi"
       },
-      "lines": [
-        {
-          "text": "It will not fold.",
-          "address": "riftlight-glacier-survival/departure/narration"
-        }
-      ],
-      "lineCount": 1,
+      "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -6300,8 +6308,10 @@
       "name": "Cloaked unicorn",
       "kind": "character",
       "who": "Cloaked unicorn.",
-      "gender": "unknown",
-      "genderFrom": "none",
+      "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
       "figure": "cast/lady_olivia",
       "chapters": [
         "riftlight-glacier-survival"
@@ -6310,8 +6320,13 @@
       "gemini": {
         "voice": "Algenib"
       },
-      "lines": [],
-      "lineCount": 0,
+      "lines": [
+        {
+          "text": "It will not fold.",
+          "address": "riftlight-glacier-survival/departure/narration"
+        }
+      ],
+      "lineCount": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -6460,16 +6475,16 @@
           "address": "riftlight-saltrot-arrival/lead/narration"
         },
         {
-          "text": "Luckstone. They keep one in their shells. That is a very good manners crab.",
-          "address": "riftlight-saltrot-arrival/crab_done/narration"
+          "text": "Wrong order, and they roll. Put it together. I am a guide, not a parrot.",
+          "address": "riftlight-saltrot-arrival/shell_path/narration"
         },
         {
-          "text": "Wrong order and they roll. Put it together. I am a guide, not a parrot.",
-          "address": "riftlight-saltrot-arrival/shell_path/narration"
+          "text": "Sorry. This morning I saw old posts upriver, where the pale silt starts, standing in dry mud.",
+          "address": "riftlight-saltrot-arrival/puff_off/narration"
         }
       ],
       "lineCount": 50,
-      "guessedLines": 4,
+      "guessedLines": 6,
       "speaks": true,
       "status": "provisional"
     },
@@ -6521,7 +6536,7 @@
       },
       "lines": [
         {
-          "text": "Thank you. I saw something upriver this morning, where the pale silt starts. A line of old posts, standing in dry mud where no water should be dry.",
+          "text": "Thank you. This morning I saw old posts upriver, where the pale silt starts, standing in dry mud.",
           "address": "riftlight-saltrot-arrival/puff_done/narration"
         }
       ],
@@ -6548,20 +6563,20 @@
       },
       "lines": [
         {
-          "text": "There. Now the sky can find us. One loud note, for when the sky needs to hear you.",
+          "text": "Point at it every time it sounds. If most of you agree, we have a true bearing.",
+          "address": "riftlight-sky-islands-arrival/song/narration"
+        },
+        {
+          "text": "There. Now the sky can find us. One loud note, for when the sky must hear you.",
           "address": "riftlight-sky-islands-arrival/basket_lit/narration"
         },
         {
-          "text": "The song bounces off the mist. We will catch it again when the sky is calmer.",
-          "address": "riftlight-sky-islands-arrival/song_muddled/narration"
-        },
-        {
-          "text": "There is shelter for everyone, even the bell rope's spare raincoat.",
-          "address": "riftlight-squall-temple/messages/narration"
+          "text": "Good grips. Most visitors arrive sitting down. Eat when the wind lets you.",
+          "address": "riftlight-sky-islands-arrival/landing_held/narration"
         }
       ],
-      "lineCount": 40,
-      "guessedLines": 3,
+      "lineCount": 37,
+      "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -6583,19 +6598,15 @@
       },
       "lines": [
         {
-          "text": "Good. That is the edge told about, and one kite seller safe. Now the hard part.",
-          "address": "riftlight-sky-islands-arrival/edge_merge/narration"
-        },
-        {
-          "text": "Ah. Wrong road.",
-          "address": "riftlight-sky-islands-arrival/walker_dragged/narration"
-        },
-        {
-          "text": "Ah. I sell kites to the island across. The road went wrong, and I did not. I think. You saved my cart. Wave these, and the whole sky will see. For quick feet.",
+          "text": "Ah. The road went wrong. I did not. You saved my cart. Wave these, and the whole sky will see.",
           "address": "riftlight-sky-islands-arrival/walker_safe/narration"
+        },
+        {
+          "text": "Ah. Wrong road. Wave these, and the whole sky will see.",
+          "address": "riftlight-sky-islands-arrival/walker_dragged/narration"
         }
       ],
-      "lineCount": 3,
+      "lineCount": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -6621,15 +6632,11 @@
           "address": "riftlight-sky-islands-arrival/dusk_ferry/variants/0"
         },
         {
-          "text": "Flags have no word for 'the sky has moved,' But you can ask the air.",
-          "address": "riftlight-sky-islands-arrival/thimble/narration"
-        },
-        {
-          "text": "Steady air, steady air, steady air. I will fly ahead and wave. If I wave two, hold onto something.",
+          "text": "I fly ahead and wave. If I wave two, hold on to something.",
           "address": "riftlight-sky-islands-arrival/route_flags/narration"
         }
       ],
-      "lineCount": 4,
+      "lineCount": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -6651,19 +6658,20 @@
       },
       "lines": [
         {
-          "text": "Back already? Good. The wind never stops, so neither do we.",
-          "address": "riftlight-sky-islands-arrival/dojo/variants/0"
+          "text": "This school is called the Dojo. Here we train the Thornguard, a hero who holds the line.",
+          "address": "riftlight-sky-islands-arrival/dojo/narration"
         },
         {
-          "text": "That is how you brace. Stand still, and let it come to you.",
+          "text": "That is how you brace. Stand still, and let it come.",
           "address": "riftlight-sky-islands-arrival/dojo_pillows/narration"
         },
         {
-          "text": "This school is called the Dojo. Here we train the Thornguard, a hero who holds the line. Anyone who wants the bracer, may try it on.",
-          "address": "riftlight-sky-islands-arrival/dojo/narration"
+          "text": "Back already? Good.",
+          "address": "riftlight-sky-islands-arrival/dojo/variants/0"
         }
       ],
-      "lineCount": 3,
+      "lineCount": 4,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
