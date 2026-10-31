@@ -701,14 +701,14 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
    * each land here, and a vote ticking over on the current one does not drag
    * her off the bag she went back to on purpose. "creation" is no question.
    */
+  // No "last key" to compare against: the effect only runs again when the key changes, and a
+  // remembered key made the development double run (StrictMode) skip the turn a reload landed on.
   const turnKey = useMyTurnKey();
-  const previousTurnKey = useRef<string | null>(null);
   useEffect(() => {
-    if (turnKey !== null && turnKey !== "creation" && turnKey !== previousTurnKey.current) {
+    if (turnKey !== null && turnKey !== "creation") {
       setPlayerSection("turn");
       setSheetFor(null);
     }
-    previousTurnKey.current = turnKey;
   }, [turnKey]);
 
   const globalPrompt = state?.prompt ?? null;
