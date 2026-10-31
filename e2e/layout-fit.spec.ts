@@ -83,14 +83,18 @@ const TV_SIZES: Case[] = [
 
 /** Your controls up, whatever the screen: held sideways they are a drawer that a tap on You would shut. */
 /**
- * The bag: You, unless it is already up. You can be selected with the turn page showing (a phone
- * that rejoins mid-turn opens on its turn, #588), and tapping it then is what brings the bag back.
- * Never a second tap with the bag up: side by side, that slides the drawer shut.
+ * The bag. You can be selected with the turn page showing (a phone that rejoins mid-turn opens on
+ * its turn, #588), and tapping it then brings the bag back. Side by side, though, a tap on You with
+ * the controls open slides the drawer shut, so there it takes a second tap, which opens the drawer
+ * on the bag, as a kid would do it.
  */
 async function showYou(page: Page): Promise<void> {
   const you = page.getByRole("button", { name: "You", exact: true });
-  const bagUp = await page.locator(".player__scroll:not([hidden])").isVisible().catch(() => false);
-  if ((await you.getAttribute("aria-pressed")) !== "true" || !bagUp) await you.click(TAP);
+  const bag = page.locator(".player__scroll:not([hidden])");
+  for (let tap = 0; tap < 2; tap++) {
+    if ((await you.getAttribute("aria-pressed")) === "true" && (await bag.isVisible().catch(() => false))) return;
+    await you.click(TAP);
+  }
 }
 
 interface Member {
