@@ -84,6 +84,7 @@ import { CharacterSheet } from "./CharacterSheet";
 import { XpMeter } from "./XpMeter";
 import { ClassToken, SpareTokens, TokenCard, TokenGlyph, tokenName } from "./ClassToken";
 import { Icon } from "./icons";
+import { aheadBadge } from "./choice-ahead-copy";
 import { ChapterGoalCard } from "./ChapterGoal";
 import { CheckMatchupBadges } from "./MatchupHints";
 import { useSideBySide } from "../layout/landscape";
@@ -1162,6 +1163,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                   .filter(([, choiceId]) => choiceId === option.id)
                   .map(([playerId]) => playerId);
                 const selected = pendingChoice === option.id || myVote === option.id;
+                const ahead = aheadBadge(option.ahead);
                 return (
                   <li key={option.id} className={readAloud ? "prompt__option--hear" : undefined}>
                     <button
@@ -1174,7 +1176,16 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                       <span className="choice__icon">
                         <Icon name={option.icon} size="1.8em" />
                       </span>
-                      <span className="choice__label">{option.label}</span>
+                      <span className="choice__label">
+                        {option.label}
+                        {/* What picking it leads to: a roll, a game or a fight. */}
+                        {ahead === null ? null : (
+                          <span className="choice__ahead" data-testid="choice-ahead">
+                            <Icon name={ahead.icon} />
+                            <span>{ahead.text}</span>
+                          </span>
+                        )}
+                      </span>
                       <span className="choice__trail">
                         {/* The seats are always here; only the check and the
                             ticks come and go, so somebody else voting cannot
@@ -1849,51 +1860,73 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
              * It sits *above* "Back to the lobby" but is not in the way of it —
              * the lobby button is still the primary action and still one tap.
              */}
-            <KeepsakeOffer />
             {/*
-             * A vote, like the ready-up before a fight: one phone's tap used
-             * to take every phone off this screen, mid-read. The table goes
-             * back together once everyone has said they're done (engine.ts
-             * doReady), and anyone who tapped early can take it back.
+             * The shared screen is on the ending's own words (RunState.endingRead).
+             * One tap from anyone turns every screen to the rewards: the table
+             * hears the story out together, then sees what it earned.
              */}
-            {me.ready ? (
-              <Button
-                variant="secondary"
-                size="lg"
-                icon={<Icon name="back" />}
-                disabled={held}
-                onClick={() => void dispatch({ type: "READY", ready: false })}
-              >
-                Wait, I'm still looking
-              </Button>
-            ) : (
-              <Button
-                variant="primary"
-                size="lg"
-                icon={<Icon name="forward" />}
-                disabled={held}
-                onClick={() => void dispatch({ type: "READY", ready: true })}
-              >
-                Back to the lobby
-              </Button>
-            )}
-            {party.length > 1 ? (
+            {state.endingRead === false ? (
               <>
-                <p className="prompt__sub kad-muted">
-                  {me.ready
-                    ? "Everyone goes back when everyone's done."
-                    : "Take your time. Everyone goes back together."}
-                </p>
-                <ul className="prompt__party">
-                  {party.map((member) => (
-                    <li className={`kad-chip${member.ready ? " kad-chip--ok" : ""}`} key={member.playerId}>
-                      <Icon name={member.ready ? "check" : "waiting"} />
-                      <span>{member.character.name}</span>
-                    </li>
-                  ))}
-                </ul>
+                <p className="prompt__sub kad-muted">Listen to how the chapter ended.</p>
+                <Button
+                  variant="primary"
+                  size="lg"
+                  icon={<Icon name="star" />}
+                  disabled={held}
+                  onClick={() => void dispatch({ type: "ENDING_READ" })}
+                >
+                  See our rewards
+                </Button>
               </>
-            ) : null}
+            ) : (
+              <>
+                <KeepsakeOffer />
+                {/*
+                 * A vote, like the ready-up before a fight: one phone's tap used
+                 * to take every phone off this screen, mid-read. The table goes
+                 * back together once everyone has said they're done (engine.ts
+                 * doReady), and anyone who tapped early can take it back.
+                 */}
+                {me.ready ? (
+                  <Button
+                    variant="secondary"
+                    size="lg"
+                    icon={<Icon name="back" />}
+                    disabled={held}
+                    onClick={() => void dispatch({ type: "READY", ready: false })}
+                  >
+                    Wait, I'm still looking
+                  </Button>
+                ) : (
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    icon={<Icon name="forward" />}
+                    disabled={held}
+                    onClick={() => void dispatch({ type: "READY", ready: true })}
+                  >
+                    Back to the lobby
+                  </Button>
+                )}
+                {party.length > 1 ? (
+                  <>
+                    <p className="prompt__sub kad-muted">
+                      {me.ready
+                        ? "Everyone goes back when everyone's done."
+                        : "Take your time. Everyone goes back together."}
+                    </p>
+                    <ul className="prompt__party">
+                      {party.map((member) => (
+                        <li className={`kad-chip${member.ready ? " kad-chip--ok" : ""}`} key={member.playerId}>
+                          <Icon name={member.ready ? "check" : "waiting"} />
+                          <span>{member.character.name}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                ) : null}
+              </>
+            )}
           </div>
         ) : null}
 
@@ -1973,7 +2006,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
             {hasTask ? (
               <Button variant="primary" size="lg" block className="player__task-entry"
                 icon={<Icon name="hand" />} onClick={() => setPlayerSection("turn")}>
-                {offersToMe.length > 0 ? "A gift for you" : state.phase === "chapter_complete" ? "Chapter rewards" : atRest && banked > 0 ? banked === 1 ? "Spend your stat point" : "Spend your stat points" : myPrompt !== null || isMyCombatTurn ? "Your turn" : helping !== null ? `Help ${helping}` : awaySwap !== null ? `Help ${awaySwap}'s bag` : "View the fight"}
+                {offersToMe.length > 0 ? "A gift for you" : state.phase === "chapter_complete" ? state.endingRead === false ? "How the chapter ended" : "Chapter rewards" : atRest && banked > 0 ? banked === 1 ? "Spend your stat point" : "Spend your stat points" : myPrompt !== null || isMyCombatTurn ? "Your turn" : helping !== null ? `Help ${helping}` : awaySwap !== null ? `Help ${awaySwap}'s bag` : "View the fight"}
               </Button>
             ) : (
               <p className="player__waiting" role="status"><Icon name="waiting" />

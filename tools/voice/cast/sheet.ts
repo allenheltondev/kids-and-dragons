@@ -598,7 +598,7 @@ export function collectCharacters(sources: Sources, scenes?: SceneCasts): Draft[
 }
 
 /** Names a speech tag might use for this character: their name, their aliases, and a titled name's last word. */
-function namesFor(draft: Pick<Draft, "name" | "aliases">): string[] {
+function namesFor(draft: Pick<Draft, "name" | "aliases">, common: ReadonlySet<string> = new Set()): string[] {
   const names = new Set<string>([draft.name, ...draft.aliases]);
   for (const name of [draft.name, ...draft.aliases]) {
     const words = name.split(/\s+/);
@@ -609,7 +609,7 @@ function namesFor(draft: Pick<Draft, "name" | "aliases">): string[] {
     } else if (words.length > 1 && /^[A-Z]/.test(words[0]!) && /^[A-Z]/.test(words[1]!) && !isRoleName(name)) {
       // "Tobble Reedpipe" is "Tobble" in the prose. "The Eldest" is not "The": every "the" would be them.
       // Nor "Small Dragonling" "Small", nor "Red Scarves" "Red": a word that describes is not a name.
-      if (!/^(the|an?|small|tiny|little|big|great|tall|young|new|old|red|blue|green|black|white|gray|grey|brass|stone|wild|dark|deep|high|low|north|south|east|west|first|last)$/i.test(words[0]!)) names.add(words[0]!);
+      if (!/^(the|an?|small|tiny|little|big|great|tall|young|new|old|red|blue|green|black|white|gray|grey|brass|stone|wild|dark|deep|high|low|north|south|east|west|first|last)$/i.test(words[0]!) && !common.has(words[0]!.toLowerCase())) names.add(words[0]!);
     }
   }
   return [...names];
@@ -901,8 +901,12 @@ export function buildSheet(sources: Sources, previous: CastSheet | null, untagge
   const guessed = new Map<string, number>();
   // The pronouns the narration's own speech tags use for each speaker ("…," she says).
   const tagged = new Map<string, Record<string, number>>();
+  // A first word the prose also writes in lower case ("a soup line", "the red door") is a word, not a nickname: no one is "Soup".
+  const lowerUses = new Map<string, number>();
+  for (const line of sources.narration) for (const word of line.text.match(/\b[a-z][a-z'-]{2,}\b/g) ?? []) lowerUses.set(word, (lowerUses.get(word) ?? 0) + 1);
+  const commonWords: ReadonlySet<string> = new Set([...lowerUses].filter(([, count]) => count >= 2).map(([word]) => word));
   const inChapter = new Map<string, Speaker[]>();
-  for (const draft of drafts) for (const chapter of draft.chapters) inChapter.set(chapter, [...(inChapter.get(chapter) ?? []), { id: draft.id, names: namesFor(draft), pronoun: kindOf(draft.id, draft.name, draft.who) === "creature" ? undefined : knownPronoun(draft, previous?.speakers[draft.id]?.pronouns) }]);
+  for (const draft of drafts) for (const chapter of draft.chapters) inChapter.set(chapter, [...(inChapter.get(chapter) ?? []), { id: draft.id, names: namesFor(draft, commonWords), pronoun: kindOf(draft.id, draft.name, draft.who) === "creature" ? undefined : knownPronoun(draft, previous?.speakers[draft.id]?.pronouns) }]);
   // A role word ("the captain") names someone only where nobody else in the chapter answers to it.
   for (const [chapter, present] of inChapter) {
     const roles = new Map<string, string[]>();
@@ -927,7 +931,7 @@ export function buildSheet(sources: Sources, previous: CastSheet | null, untagge
       if (isRoleName(draft.name)) continue;
       if (draft.generic) continue;
       // A name this chapter also uses as a plain noun ("a wisp line") is not safe to take for the person.
-      const names = namesFor(draft).filter((name) => name.length >= 4 && /^[A-Z]/.test(name) && !taken.has(name.toLowerCase()) && !new RegExp(`\\b${escape(name.toLowerCase())}\\b`).test(prose));
+      const names = namesFor(draft, commonWords).filter((name) => name.length >= 4 && /^[A-Z]/.test(name) && !taken.has(name.toLowerCase()) && !new RegExp(`\\b${escape(name.toLowerCase())}\\b`).test(prose));
       if (names.length > 0) visiting.push({ id: draft.id, names, exact: true });
     }
     if (visiting.length > 0) inChapter.set(chapter, [...here, ...visiting]);
