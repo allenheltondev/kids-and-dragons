@@ -67,25 +67,25 @@
   "scenes": {
     "scene_east_bank": {
       "type": "story",
-      "narration": "Cross pride country and find out why its roads bend the long way around. The Eastern Plains roll away in gold grass. Ahead, the river bridge is cracked and its sky is red. Every caravan is taking a detour. The wind smells faintly of lion.",
+      "narration": "Cross pride country and find out why its roads bend the long way around. The Eastern Plains roll away in gold grass. Far north, the big river bridge is cracked. Every caravan is taking a detour. The wind smells a little of lion.",
       "choices": [
         {
           "id": "ride_caravans",
-          "label": "Ride north with the crossing caravans",
+          "label": "Ride with the caravans",
           "icon": "travel",
           "requiresFlag": "crossed_dry",
           "goto": "scene_caravan_dry"
         },
         {
           "id": "walk_mouthlands",
-          "label": "Squelch north out of the mouth-lands",
+          "label": "Squelch up from the mouth-lands",
           "icon": "boot",
           "requiresFlag": "river_took_us",
           "goto": "scene_mouthlands_walk"
         },
         {
           "id": "pride_road",
-          "label": "Take the pride road north",
+          "label": "Take the pride road",
           "icon": "arrow",
           "goto": "scene_brass_rope"
         }
@@ -94,11 +94,11 @@
     },
     "scene_caravan_dry": {
       "type": "story",
-      "narration": "You fall in with the caravans coming off Stone Crossing, and there is Parsnip the donkey, with her driver, who is furious. \"The pride escort wouldn't camp at the usual rest stop! Wouldn't go within a day of it! We booked them three seasons ahead!\" the driver shouts. Parsnip, who has to sleep near the gem crates, seems to agree with the prides.",
+      "narration": "You join the caravans from Stone Crossing. Parsnip the donkey's driver is furious. \"The pride escort won't camp at the usual rest stop!\" Parsnip sleeps by the gem crates. She agrees with the prides.",
       "choices": [
         {
           "id": "leave_caravan",
-          "label": "Turn off onto the pride road",
+          "label": "Turn onto the pride road",
           "icon": "arrow",
           "goto": "scene_brass_rope"
         }
@@ -117,7 +117,7 @@
     },
     "scene_mouthlands_walk": {
       "type": "story",
-      "narration": "Walking up from the south, where nobody on the main road ever comes, you see it first: a long line of pride markers, every one pulled up and planted again in a curve. A whole road bent wide, the way you'd walk around a hot pan. In your pocket, Old Ossley's reed knot is still wet. He fished you out of the river and said, \"Later. When I'm going your way.\" Somewhere out there, you still owe a frog a favor.",
+      "narration": "Walking up from the south, you see it first: the pride markers, replanted in a curve, like a road walking around a hot pan. Old Ossley's reed knot is still wet in your pocket. You owe that frog a favor.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -128,7 +128,7 @@
       "choices": [
         {
           "id": "follow_curve",
-          "label": "Follow the bent road north",
+          "label": "Follow the bent road",
           "icon": "arrow",
           "goto": "scene_brass_rope"
         }
@@ -140,7 +140,7 @@
       "discovers": [
         "creature.embermoth"
       ],
-      "narration": "Pride markers stand along the road: painted posts with tufts of tail-fur tied on top. You walk around them, never over. The detour is the point. Overhead, a cloud of embermoths drifts south, away from the mountain, which is a thing embermoths never do.",
+      "narration": "Pride markers line the road: painted posts with tufts of tail-fur on top. You walk around them, never over. Overhead, embermoths drift south, away from the mountain. Embermoths never do that.",
       "cast": [
         {
           "figure": "entities/embermoth",
@@ -156,13 +156,13 @@
         },
         {
           "id": "to_pride",
-          "label": "Head for the pride on the ridge",
+          "label": "Climb up to the pride",
           "icon": "crown",
           "goto": "interaction_ridge_creep"
         },
         {
           "id": "fly_up",
-          "label": "Fly up and look at the pride routes",
+          "label": "Fly up and look",
           "icon": "wing",
           "requiresSpecies": "griffin",
           "goto": "scene_bend_from_above"
@@ -175,7 +175,7 @@
       "discovers": [
         "creature.jackalope"
       ],
-      "narration": "The moths lead you along the edge of the grass, glowing like slow sparks, and the pride markers curve the same way, bending wide around something you can't see yet. Forty jackalopes have squashed themselves together along the pride edge, for safety. It is mostly ears.",
+      "narration": "The glowing moths lead you along the grass. The pride markers curve the same way, around something you can't see yet. Forty jackalopes have squashed together by the road. It is mostly ears.",
       "cast": [
         {
           "figure": "entities/embermoth",
@@ -205,7 +205,7 @@
     },
     "scene_bend_from_above": {
       "type": "story",
-      "narration": "From up high the plains are a map. The pride routes used to run straight as string. Now every single one bends, wide and careful, around the same patch of grass in the middle, the way you'd tiptoe around a sleeping dog.",
+      "narration": "From up high, the plains are a map. The pride roads used to run straight as string. Now every one bends wide around the same patch of grass, like you tiptoe past a sleeping dog.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -227,7 +227,7 @@
       "discovers": [
         "character.manticore"
       ],
-      "narration": "A manticore elder greets you with her tail curled politely away. Somebody in a caravan faints anyway. \"Every time,\" sighs Elder Sefa. \"Welcome, travelers.\" Answer the formal greeting, come home as a manticore, or let the cubs introduce you if they offered.",
+      "narration": "A manticore elder named Sefa greets you, her tail curled politely away. \"Welcome, travelers,\" she says. \"Greet us back properly, and you may sit at our fire.\"",
       "cast": [
         {
           "figure": "cast/elder_sefa",
@@ -238,7 +238,7 @@
       "choices": [
         {
           "id": "greet_back",
-          "label": "Greet them back properly",
+          "label": "Greet them properly",
           "icon": "hand",
           "goto": "check_greeting"
         },
@@ -305,7 +305,7 @@
     },
     "scene_hospitality": {
       "type": "story",
-      "narration": "The elder sees your silhouette and drops the formal greeting completely. \"Look who's come home the front way!\" Cubs pile on you. Somebody's grandmother insists you eat. You are given a honeycake whether you want one or not.",
+      "narration": "The elder sees you and drops the formal greeting. \"Look who's come home the front way!\" Cubs pile on you. Somebody's grandmother hands you a honeycake, whether you want one or not.",
       "cast": [
         {
           "figure": "cast/elder_sefa",
@@ -342,7 +342,7 @@
     "scene_pride_camp": {
       "type": "story",
       "priority": 2,
-      "narration": "\"The cubs dream of humming near gem wagons,\" says Elder Sefa Tallgrass. \"We den farther away now. Ask the centaur road-wardens. They stitch every road onto their sashes at the waystation. After the cubs' nap, I will send you there.\"",
+      "narration": "\"My cubs dream of humming near gem wagons,\" says Elder Sefa Tallgrass. \"So we den farther away. The centaur wardens at the waystation map every road. After nap time, I will send you there.\"",
       "cast": [
         {
           "figure": "cast/elder_sefa",
@@ -353,13 +353,13 @@
       "choices": [
         {
           "id": "ask_account",
-          "label": "Ask about the riddle account",
+          "label": "Ask about her riddles",
           "icon": "scroll",
           "goto": "scene_riddle_account"
         },
         {
           "id": "to_waystation",
-          "label": "Stay for the cubs' nap time",
+          "label": "Stay for nap time",
           "icon": "arrow",
           "goto": "choice_cub_nap"
         }
@@ -368,7 +368,7 @@
     },
     "scene_riddle_account": {
       "type": "story",
-      "narration": "Sefa keeps a riddle account with Old Lintel, the toll-troll at Stone Crossing. Their scores have never agreed. Add his question about where a stone came from and where it is going, or risk solving their oldest riddle. Sefa has sharpened three pencils for this.",
+      "narration": "Sefa keeps a riddle score with Old Lintel, the toll-troll at Stone Crossing. You could write Lintel's question in her ledger: where did it come from, and where is it going? Or try their oldest riddle.",
       "cast": [
         {
           "figure": "cast/elder_sefa",
@@ -379,7 +379,7 @@
       "choices": [
         {
           "id": "write_question",
-          "label": "Write the question in the ledger in your own hand",
+          "label": "Write Lintel's question down",
           "icon": "scroll",
           "goto": "choice_cub_nap",
           "effects": [
@@ -392,7 +392,7 @@
         },
         {
           "id": "old_riddle",
-          "label": "Try the sixty-year riddle",
+          "label": "Try the oldest riddle",
           "icon": "clever",
           "goto": "check_old_riddle"
         }
@@ -434,7 +434,7 @@
       "discovers": [
         "npc.centaur"
       ],
-      "narration": "At the centaur waystation, road maps are stitched onto sashes. A warden waves you to her table, spools in her mouth. \"Tsk. Every sash needs changing this season,\" she mutters. Compare her lantern pattern, help prepare pinned clues, or pay a coin for prepared tags.",
+      "narration": "At the centaur waystation, road maps are stitched onto long sashes. A road-warden waves you over, spools in her mouth. \"Every sash needs changing this season,\" she mutters. \"Help me see why.\"",
       "cast": [
         {
           "figure": "cast/road_warden",
@@ -444,26 +444,26 @@
       "choices": [
         {
           "id": "lay_out",
-          "label": "Lay the sashes side by side",
+          "label": "Line up the sashes",
           "icon": "map",
           "goto": "check_sashes"
         },
         {
           "id": "stitch_first",
-          "label": "Help unpick and stitch a sash first",
+          "label": "Pin a sash first",
           "icon": "feather",
           "goto": "scene_waystation_stitch_first"
         },
         {
           "id": "letters_arrived",
-          "label": "Say hello. Your letters got here first.",
+          "label": "Your letters got here first",
           "icon": "wing",
           "requiresFlag": "ran_relay",
           "goto": "scene_waystation_letters_arrived"
         },
         {
           "id": "pay_lesson",
-          "label": "Pay a centaur a coin for a quick lesson in reading sashes",
+          "label": "Pay for a quick lesson",
           "icon": "bead",
           "goto": "scene_waystation_lesson",
           "when": {
@@ -483,7 +483,7 @@
     },
     "check_sashes": {
       "type": "interaction",
-      "narration": "The centaur with the spools in her mouth lights a lantern behind each sash, one at a time. \"Quick,\" she says around the thread. \"The new detours glow in the order the stones fell. Watch them go by, then stitch them back the same way.\"",
+      "narration": "The warden lights a lantern behind each sash. \"The new detours glow in the order the stones fell,\" she says. \"Watch, then put them back in order.\"",
       "interaction": {
         "kind": "memory",
         "cue": "Watch the roads glow, then stitch them back in order.",
@@ -521,7 +521,7 @@
       ],
       "onSuccess": {
         "goto": "scene_spiral",
-        "narration": "Sash by sash, thread by thread, you line the new detours up. The centaur takes the spools out of her mouth to say \"oh.\"",
+        "narration": "Sash by sash, you line them up. The warden drops her spools. \"Oh.\"",
         "effects": [
           {
             "type": "setFlag",
@@ -532,11 +532,11 @@
       },
       "onFailure": {
         "goto": "scene_spiral",
-        "narration": "The sashes tangle into one enormous woolly knot. The oldest centaur sighs, untangles it in about a minute, and lays them out for you, clucking her tongue."
+        "narration": "The sashes tangle into a woolly knot. The warden untangles it and lays them out."
       },
       "onAssisted": {
         "goto": "scene_spiral",
-        "narration": "The oldest centaur holds the lanterns steady for as long as you need. Sash by sash, thread by thread, you line the new detours up. She takes the spools out of her mouth to say \"oh.\"",
+        "narration": "The warden holds the lanterns steady. Sash by sash, you line them up.",
         "effects": [
           {
             "type": "setFlag",
@@ -550,7 +550,7 @@
     "scene_spiral": {
       "type": "story",
       "priority": 1,
-      "narration": "Side by side, the new detours are not random. They spiral. Every road on every sash bends around the places where the stones fell, like water going around rocks. The roads are flinching. And the widest spiral of all is centered on a patch of grass a short walk from here.",
+      "narration": "Side by side, the new detours are not random. They spiral. Every road bends around the places where the stones fell, like water around rocks. The roads are flinching from the stones. The widest spiral centers on a patch of grass not far from here.",
       "cast": [
         {
           "figure": "cast/road_warden",
@@ -560,13 +560,13 @@
       "choices": [
         {
           "id": "to_rest",
-          "label": "Stay for supper first",
+          "label": "Stay for supper",
           "icon": "rest",
           "goto": "rest_waystation"
         },
         {
           "id": "mark_falls",
-          "label": "Mark every fall on the big map in red",
+          "label": "Mark the falls in red",
           "icon": "map",
           "goto": "scene_spiral_mark_falls"
         }
@@ -581,7 +581,7 @@
     },
     "rest_waystation": {
       "type": "rest",
-      "narration": "The centaurs feed you oat-cakes, wrap up a supper bundle for the road, and argue about whose stitching is neatest. \"Mine,\" says the warden with a sniff. The barn smells of hay and new thread. Sit a while and get your breath.",
+      "narration": "The centaurs feed you oat-cakes and pack you a supper bundle. Then they argue about whose stitching is neatest. \"Mine,\" sniffs the warden. Rest a while in the hay.",
       "cast": [
         {
           "figure": "cast/road_warden",
@@ -592,13 +592,13 @@
       "choices": [
         {
           "id": "walk_out",
-          "label": "Walk out to the widest bend",
+          "label": "Walk to the widest bend",
           "icon": "boot",
           "goto": "scene_dawn_moths"
         },
         {
           "id": "with_escort",
-          "label": "Ask the pride escort to walk with you",
+          "label": "Ask the pride along",
           "icon": "crown",
           "requiresFlag": "pride_friends",
           "goto": "rest_waystation_with_escort",
@@ -622,7 +622,7 @@
     },
     "rest_waystation_with_escort": {
       "type": "story",
-      "narration": "At dawn Elder Sefa walks out with you herself, and two cubs come too, because nobody told them not to. Out on the plain, the grass ahead begins to lean, just a little, away from something. Right there, Sefa stops, and the cubs stop, and nobody takes one step further. \"We'll wait here,\" she says. \"We always wait here.\"",
+      "narration": "At dawn, Elder Sefa walks out with you, and two cubs, because nobody told them not to. Ahead, the grass leans away from something. Sefa stops. \"We always wait here,\" she says.",
       "cast": [
         {
           "figure": "cast/elder_sefa",
@@ -637,7 +637,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Walk on alone toward the middle",
+          "label": "Walk on alone",
           "icon": "crown",
           "goto": "scene_dawn_moths"
         }
@@ -646,7 +646,7 @@
     },
     "scene_widest_bend": {
       "type": "story",
-      "narration": "At the widest bend, a humming gem sits in a little crater. The grass leans away. So did the wolf. Taking it means the pride will keep its distance tonight; leaving it means a welcome at their fire. Decide before reaching in.",
+      "narration": "At the widest bend, a humming gem sits in a little crater. The grass leans away from it. Take it, and the pride must keep its distance tonight. Leave it, and they will welcome you at their fire.",
       "choices": [
         {
           "id": "take_stone",
@@ -671,7 +671,7 @@
     },
     "scene_take_stone": {
       "type": "story",
-      "narration": "The Pride Stone is heavy and warm and hums right through your fingers. When you walk back, the pride comes down off the ridge to walk with you, but further off than before. Tonight they will not camp near you. They are very sorry. They just can't.",
+      "narration": "The Pride Stone is heavy and warm. It hums right through your fingers. The pride walks back with you, but farther off than before. Tonight they cannot camp near you. They are very sorry.",
       "onEnter": [
         {
           "type": "grantQuestItem",
@@ -686,7 +686,7 @@
       "choices": [
         {
           "id": "camp_alone",
-          "label": "Make camp on your own",
+          "label": "Make camp alone",
           "icon": "flame",
           "goto": "scene_wolves"
         }
@@ -695,7 +695,7 @@
     },
     "scene_leave_stone": {
       "type": "story",
-      "narration": "You leave it humming in its crater. When you turn around, Elder Sefa is standing on the ridge. She bows, tail curled away, slow and deep. \"Come to the fire,\" she says.",
+      "narration": "You leave it humming in its crater. When you turn around, Elder Sefa is on the ridge. She bows, slow and deep. \"Come to the fire,\" she says.",
       "cast": [
         {
           "figure": "cast/elder_sefa",
@@ -725,7 +725,7 @@
       "discovers": [
         "creature.cinder_wolf"
       ],
-      "narration": "You make camp at the old caravan rest stop, among carts nobody has used since the stone fell. Your little fire is the only warm thing for miles. Out in the dark: ember eyes. A cinder wolf pack, thin and cold and a long way from home, creeping toward the heat. They do not like the humming in your packs. They like the fire very, very much.",
+      "narration": "You camp at the old caravan rest stop, among empty carts. Out in the dark: ember eyes. Cinder wolves, thin and cold, creep toward your fire. They hate the humming. They love the warm.",
       "cast": [
         {
           "figure": "entities/cinder_wolf",
@@ -759,20 +759,20 @@
         },
         {
           "id": "call_escort",
-          "label": "Call for the pride escort",
+          "label": "Call for the pride",
           "icon": "crown",
           "requiresFlag": "escorted",
           "goto": "scene_escort_answers"
         },
         {
           "id": "chase_off",
-          "label": "Chase them away from the fire",
+          "label": "Chase them away",
           "icon": "swords",
           "goto": "encounter_wolves"
         },
         {
           "id": "brace_fire",
-          "label": "Use the long brace you learned to steady a camp windbreak",
+          "label": "Brace a windbreak",
           "goto": "interaction_pride_windbreak",
           "icon": "hand",
           "requiresFlag": "pride_brace_learned"
@@ -805,7 +805,7 @@
     "encounter_wolves": {
       "type": "encounter",
       "map": "roadside",
-      "narration": "The wolves circle the old caravan carts at the rest stop, trying to get between you and the warm.",
+      "narration": "The wolves circle the old carts, trying to get between you and the warm.",
       "enemies": [
         {
           "id": "wolf",
@@ -815,16 +815,16 @@
       ],
       "onVictory": {
         "goto": "rest_wolf_fire",
-        "narration": "The pack backs off to a polite distance and piles up into one warm glowing heap. They are not beaten, exactly. They have just decided you are too much bother."
+        "narration": "The pack backs off into one glowing heap. You are too much bother."
       },
       "onDefeat": {
         "goto": "rest_scattered",
-        "narration": "The wolves want the fire more than you do, and in the end they simply have it."
+        "narration": "The wolves want the fire more than you do. In the end, they simply take it."
       }
     },
     "rest_pride_fire": {
       "type": "rest",
-      "narration": "Pride fire is the best fire. The cubs fall asleep on your boots, and the elders tell the story of the riddle nobody can answer. Out in the dark the gem you left hums in its crater, alone. North, tomorrow, the broken bridge.",
+      "narration": "Pride fire is the best fire. The cubs fall asleep on your boots. Out in the dark, the stone you left hums alone. Tomorrow, north to the broken bridge.",
       "cast": [
         {
           "figure": "cast/elder_sefa",
@@ -844,19 +844,19 @@
           "when": {
             "flag": "pride_windbreak_used"
           },
-          "text": "The marker-post brace steadied your camp cover. The pride never had to come close to the stone."
+          "text": "Your brace held the cover."
         },
         {
           "when": {
             "flag": "pride_sashes_helped"
           },
-          "text": "The warden helped check the pinned map. Your account includes her part."
+          "text": "The warden helped pin the sashes."
         }
       ]
     },
     "rest_wolf_fire": {
       "type": "rest",
-      "narration": "By midnight the cinder wolves are stacked in a glowing pile on the far side of your fire, taking turns at the bottom by some rule nobody understands. It is the warmest camp you have ever had. North, tomorrow, the broken bridge.",
+      "narration": "By midnight the cinder wolves are stacked in a glowing pile across the fire. It is the warmest camp ever. Tomorrow, north to the broken bridge.",
       "cast": [
         {
           "figure": "entities/cinder_wolf",
@@ -871,19 +871,19 @@
           "when": {
             "flag": "pride_windbreak_used"
           },
-          "text": "The marker-post brace steadied your camp cover. The pride never had to come close to the stone."
+          "text": "Your brace held the cover."
         },
         {
           "when": {
             "flag": "pride_sashes_helped"
           },
-          "text": "The warden helped check the pinned map. Your account includes her part."
+          "text": "The warden helped pin the sashes."
         }
       ]
     },
     "rest_scattered": {
       "type": "rest",
-      "narration": "Nobody is hurt. The wolves just wanted the warm more than you did. You spend the night squashed under a cart cover, and the morning finds your camp spread across a mile of grass. It takes all day to find everything. The Pride Stone hums the whole time, as if it is not sorry at all.",
+      "narration": "Nobody is hurt. The wolves just wanted the warm more than you did. You sleep under a cart cover. By morning, your camp is spread across a mile of grass. The Pride Stone hums, not sorry at all.",
       "heal": 3,
       "outcome": "setback",
       "choices": [],
@@ -893,19 +893,19 @@
           "when": {
             "flag": "pride_windbreak_used"
           },
-          "text": "The marker-post brace steadied your camp cover. The pride never had to come close to the stone."
+          "text": "Your brace held the cover."
         },
         {
           "when": {
             "flag": "pride_sashes_helped"
           },
-          "text": "The warden helped check the pinned map. Your account includes her part."
+          "text": "The warden helped pin the sashes."
         }
       ]
     },
     "scene_escort_answers": {
       "type": "story",
-      "narration": "You call out toward the ridge. Nothing, for a long moment. Then Elder Sefa's voice comes back out of the dark, from exactly as close as a pride will come to a humming pack and not one step nearer, and the cubs with her start a growl so low you feel it in your boots. Every ember eye on the road turns toward the ridge, thinks about it, and decides your fire is not worth the argument. The pack slinks around to the far side of your camp, as far from the pride as the warm will let them.",
+      "narration": "You call toward the ridge. Elder Sefa answers from the dark, and the cubs growl so low you feel it in your boots. The wolves think it over, and slink to the far side of camp.",
       "cast": [
         {
           "figure": "entities/cinder_wolf",
@@ -915,7 +915,7 @@
       "choices": [
         {
           "id": "settle",
-          "label": "Settle in, with the pride on the ridge",
+          "label": "Settle in by the fire",
           "icon": "rest",
           "goto": "rest_wolf_fire"
         }
@@ -924,23 +924,23 @@
     },
     "scene_brass_rope": {
       "type": "story",
-      "narration": "Six brass hats have stretched a rope across the road. \"Brassbuckle Expedition toll,\" says the scout smoothly. \"Brand new, and very official.\" Ask Old Lintel's question, walk around, or ask whose road this is. The rope is not attached to anything very convincing.",
+      "narration": "Six people in brass hats have stretched a rope across the road. \"Brassbuckle Expedition toll,\" says their scout. \"Brand new. Very official.\" They want your coins. The rope is tied to nothing much.",
       "choices": [
         {
           "id": "ask_question",
-          "label": "Ask them the troll's question",
+          "label": "Ask where it came from",
           "icon": "ear",
           "goto": "scene_brass_rope_ask_question"
         },
         {
           "id": "walk_round",
-          "label": "Walk around the rope, the pride way",
+          "label": "Walk around the rope",
           "icon": "boot",
           "goto": "scene_brass_rope_walk_round"
         },
         {
           "id": "whose_road",
-          "label": "Tell them whose road this is",
+          "label": "Say whose road this is",
           "icon": "crown",
           "requiresSpecies": "manticore",
           "goto": "scene_brass_rope_whose_road"
@@ -960,7 +960,7 @@
     },
     "scene_brass_rope_ask_question": {
       "type": "story",
-      "narration": "\"Where did you get that rope?\" you ask. \"And where is this road going?\" The Brassbuckles look at each other. Nobody knows where the road goes. Nobody even knows where the rope came from. \"Tuesday?\" says the recordkeeper. They take the sign down, quite quietly, and fold their stools.",
+      "narration": "\"Where did you get that rope?\" you ask, the way Old Lintel would. \"And where is this road going?\" Nobody knows. \"Tuesday?\" says their recordkeeper. They take the rope down quietly.",
       "choices": [
         {
           "id": "on",
@@ -983,7 +983,7 @@
     },
     "scene_brass_rope_walk_round": {
       "type": "story",
-      "narration": "You walk around the end of the rope, the way pride folk walk around everything, slowly and politely. It turns out the rope does not stop anybody at all. It is just a rope in a field. Behind you the Brassbuckles have a long, cross talk about fences.",
+      "narration": "You walk around the end of the rope, slow and polite, the pride way. The rope stops nobody. It is just a rope in a field. Behind you, the Brassbuckles argue about fences.",
       "choices": [
         {
           "id": "on",
@@ -1006,7 +1006,7 @@
     },
     "scene_brass_rope_whose_road": {
       "type": "story",
-      "narration": "\"This is a pride road,\" you say, tail curled politely away, \"and it has been since before your hats were invented.\" Six Brassbuckles look at you, then at each other, then at the ridge, where a lot of manticore ears have just popped up out of the grass. The rope comes down very fast indeed.",
+      "narration": "\"This is a pride road,\" you say, tail curled politely away. \"It was here before your hats.\" Manticore ears pop up all along the ridge. The rope comes down very fast.",
       "choices": [
         {
           "id": "on",
@@ -1032,7 +1032,7 @@
       "discovers": [
         "npc.centaur"
       ],
-      "narration": "A centaur skids beside you. \"Bracken Swiftmile, relay,\" she pants. Letters fill her sash. \"News from the west? News going north? Quick. Relay waits for nobody.\" Ask, race, or fly her letters ahead if you can.",
+      "narration": "A centaur skids up, her sash stuffed with letters. \"Bracken Swiftmile, relay runner!\" she pants. \"News from the west? News going north? Quick. The relay waits for nobody.\"",
       "cast": [
         {
           "figure": "cast/bracken_swiftmile",
@@ -1042,19 +1042,19 @@
       "choices": [
         {
           "id": "news_west",
-          "label": "Ask for news from the marsh road",
+          "label": "Ask for western news",
           "icon": "ear",
           "goto": "scene_relay_runner_news_west"
         },
         {
           "id": "race_her",
-          "label": "Race her to the next post",
+          "label": "Race her to the post",
           "icon": "quick",
           "goto": "check_race"
         },
         {
           "id": "carry_letters",
-          "label": "Offer to fly her letters ahead",
+          "label": "Fly her letters ahead",
           "icon": "wing",
           "requiresSpecies": "griffin",
           "goto": "scene_relay_runner_carry_letters",
@@ -1071,7 +1071,7 @@
     },
     "scene_relay_runner_news_west": {
       "type": "story",
-      "narration": "\"West road's strange,\" says Bracken. \"Marsh lights gossiping about a gate in the reeds that hums. Boggarts charging folk to cross their own puddles. And on the middle road the witches' bell charms keep ringing whenever a gem goes by.\" She frowns. \"Everybody's stones are humming, everywhere. Funny, isn't it?\" Then she is gone in a cloud of dust.",
+      "narration": "\"West road's strange,\" says Bracken. \"Marsh lights gossip about a humming gate. Witches' bells ring when a gem goes by. Every stone is humming!\" Then she is gone in a cloud of dust.",
       "cast": [
         {
           "figure": "cast/bracken_swiftmile",
@@ -1112,11 +1112,11 @@
     },
     "scene_relay_runner_carry_letters": {
       "type": "story",
-      "narration": "Bracken hands over a bundle of letters for the centaur waystation up the road, where the road-wardens keep their maps, and you fly them ahead, low over the gold grass, and drop them on the big table before she has even reached the next post. When she trots in later she tells every centaur in the barn about you. Twice.",
+      "narration": "Bracken hands you letters for the centaur waystation up the road. You fly them ahead and drop them on the big table. Later she tells every centaur in the barn about you. Twice.",
       "choices": [
         {
           "id": "on",
-          "label": "Land back on the road",
+          "label": "Land on the road",
           "icon": "wing",
           "goto": "scene_pride_road"
         }
@@ -1125,7 +1125,7 @@
     },
     "scene_cub_scouts": {
       "type": "story",
-      "narration": "Two rocks on the ridge are breathing. They have ears and tufted tails. Manticore cubs, pretending hard to be rocks. One giggles. \"We are rocks,\" it whispers. Pretend not to see them, play along, or ask about the road.",
+      "narration": "Two rocks on the ridge are breathing. They have ears and tufted tails. They are manticore cubs, pretending very hard. One giggles. \"We are rocks,\" it whispers.",
       "cast": [
         {
           "figure": "characters/manticore",
@@ -1135,7 +1135,7 @@
       "choices": [
         {
           "id": "pretend",
-          "label": "Pretend you haven't seen them",
+          "label": "Pretend not to see",
           "icon": "eye",
           "goto": "scene_cub_scouts_pretend",
           "effects": [
@@ -1154,7 +1154,7 @@
         },
         {
           "id": "ask_why",
-          "label": "Ask them why the road bends",
+          "label": "Ask why the road bends",
           "icon": "ear",
           "goto": "scene_cub_scouts_ask_why"
         }
@@ -1163,7 +1163,7 @@
     },
     "scene_cub_scouts_pretend": {
       "type": "story",
-      "narration": "You walk right past, saying loudly what a lot of nice rocks there are around here. The rocks are thrilled. They follow you all the way up the ridge, ducking whenever you turn around, and then gallop ahead to announce that they have caught some visitors all by themselves.",
+      "narration": "You walk past, saying loudly what nice rocks these are. The rocks are thrilled. They follow you, ducking whenever you turn, then gallop ahead to say they caught some visitors.",
       "cast": [
         {
           "figure": "characters/manticore",
@@ -1182,7 +1182,7 @@
     },
     "scene_cub_scouts_play_rocks": {
       "type": "story",
-      "narration": "You become rocks too. A beetle crosses a boot. \"You moved!\" shouts a cub. You did not. The cubs win anyway, because they made the rules.",
+      "narration": "You become rocks too. A beetle crosses your boot. \"You moved!\" shouts a cub. You did not. The cubs win anyway, because they made the rules.",
       "cast": [
         {
           "figure": "characters/manticore",
@@ -1201,7 +1201,7 @@
     },
     "scene_cub_scouts_ask_why": {
       "type": "story",
-      "narration": "\"Why does the road go the long way around?\" you ask the rocks. The rocks forget to be rocks. \"Because of the humming,\" says the big one. \"When we sleep near it, we dream the ground is singing,\" says the little one. \"Grown-ups don't know why. We don't either.\" Then they remember they are rocks, and freeze.",
+      "narration": "\"Why does the road go the long way?\" you ask. The rocks forget to be rocks. \"Because of the humming,\" says the big one. \"It makes us dream the ground sings.\" Then they freeze again.",
       "cast": [
         {
           "figure": "characters/manticore",
@@ -1211,7 +1211,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Walk on up the ridge",
+          "label": "Walk on up",
           "icon": "ear",
           "goto": "scene_pride_greeting"
         }
@@ -1220,7 +1220,7 @@
     },
     "scene_pride_greeting_cubs_introduce": {
       "type": "story",
-      "narration": "The two cubs march you up to the elder like prizes. \"We caught them,\" says the big one. \"They didn't even see us,\" says the little one. The elder looks at you over their heads, and you look back, and you and the elder both keep a perfectly straight face. \"Then they had better come to the fire,\" she says.",
+      "narration": "The cubs march you up to the elder like prizes. \"We caught them!\" says the big one. You and the elder keep perfectly straight faces. \"Then they had better come to the fire,\" she says.",
       "cast": [
         {
           "figure": "cast/elder_sefa",
@@ -1240,7 +1240,7 @@
     },
     "scene_granny_cake": {
       "type": "story",
-      "narration": "Granny Ash, a manticore grandmother, bars the fire with a plate of spiced grass-cake. \"Nobody has ever finished a slice,\" she says proudly. The cubs want to see if you can. Granny Ash also accepts a serious interest in her recipe.",
+      "narration": "Granny Ash, a manticore grandmother, blocks the fire with a plate of spiced grass-cake. \"Nobody has ever finished a slice,\" she says proudly. The cubs want to see you try.",
       "cast": [
         {
           "figure": "cast/granny_ash",
@@ -1256,13 +1256,13 @@
         },
         {
           "id": "recipe",
-          "label": "Ask her for the recipe",
+          "label": "Ask for the recipe",
           "icon": "scroll",
           "goto": "scene_granny_cake_recipe"
         },
         {
           "id": "share_back",
-          "label": "Offer her something from your packs",
+          "label": "Offer her something back",
           "icon": "hand",
           "goto": "scene_granny_cake_share_back"
         }
@@ -1300,7 +1300,7 @@
     },
     "scene_granny_cake_recipe": {
       "type": "story",
-      "narration": "Granny Ash recites ingredients. The cubs look impressed. One ingredient appears to be thunder. You ask about the timing. She asks you to pass the plates.",
+      "narration": "Granny Ash recites the ingredients. One of them seems to be thunder. The cubs are very impressed. Then she asks you to help carry the plates.",
       "cast": [
         {
           "figure": "cast/granny_ash",
@@ -1310,7 +1310,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Sit down at the fire",
+          "label": "Help with the plates",
           "icon": "scroll",
           "goto": "interaction_plates"
         }
@@ -1319,7 +1319,7 @@
     },
     "scene_granny_cake_share_back": {
       "type": "story",
-      "narration": "You dig in your packs for something to give back. As you open them, the humming gets louder, and Granny Ash takes one big step back without meaning to. Then another. She looks surprised at her own feet. \"Bless me,\" she says. \"It's not you, dear. It's whatever is singing in there.\"",
+      "narration": "You open your packs to find her a gift. The humming gets louder, and Granny Ash steps back without meaning to. \"It's not you, dear,\" she says. \"It's whatever is singing in there.\"",
       "cast": [
         {
           "figure": "cast/granny_ash",
@@ -1329,7 +1329,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Close your packs and sit down",
+          "label": "Close up and help serve",
           "icon": "hand",
           "goto": "interaction_plates"
         }
@@ -1338,7 +1338,7 @@
     },
     "choice_cub_nap": {
       "type": "choice_point",
-      "narration": "Nap time. The cubs stare at your humming packs and cannot sleep. Move the packs to study the grass outside, make a soft song together, or tell Old Lintel's story. \"I have tried counting cubs,\" Sefa sighs. \"They keep changing places.\"",
+      "narration": "Nap time. But the cubs stare at your humming packs and cannot sleep. \"I have tried counting cubs,\" Sefa sighs. \"They keep changing places.\" How will you help them sleep?",
       "cast": [
         {
           "figure": "cast/elder_sefa",
@@ -1349,7 +1349,7 @@
       "choices": [
         {
           "id": "packs_away",
-          "label": "Carry your packs far out of camp",
+          "label": "Carry the packs away",
           "icon": "boot",
           "goto": "choice_cub_nap_packs_away",
           "effects": [
@@ -1362,33 +1362,33 @@
         },
         {
           "id": "sing",
-          "label": "Make a quiet bedtime song together",
+          "label": "Make a bedtime song",
           "icon": "note",
           "goto": "interaction_cub_lullaby"
         },
         {
           "id": "lintel_story",
-          "label": "Tell them about Old Lintel and his question",
+          "label": "Tell Old Lintel's story",
           "icon": "scroll",
           "goto": "choice_cub_nap_lintel_story"
         },
         {
           "id": "reed_knot",
-          "label": "Wrap the packs in Ossley's wet reed knot",
+          "label": "Wrap packs in the knot",
           "icon": "drop",
           "requiresItem": "ossley_reed_knot",
           "goto": "choice_cub_nap_reed_knot"
         },
         {
           "id": "songkeeper_lullaby",
-          "label": "Have a songkeeper start a lullaby, and everyone join in",
+          "label": "A songkeeper leads a lullaby",
           "icon": "note",
           "requiresClass": "songkeeper",
           "goto": "check_lullaby"
         },
         {
           "id": "quick_song",
-          "label": "Risk a quick song over the stones' hum",
+          "label": "Risk a quick song",
           "goto": "check_lullaby",
           "icon": "note"
         }
@@ -1397,11 +1397,11 @@
     },
     "choice_cub_nap_packs_away": {
       "type": "story",
-      "narration": "You move the humming packs out of camp. The cubs sleep. Around the packs, grass leans away from the note. You trace its outer edge, a useful line for tomorrow, then collect the packs before leaving. Nothing from your inventory stays behind.",
+      "narration": "You carry the humming packs far out of camp, and the cubs fall asleep. Around the packs, the grass leans away. You trace that edge for tomorrow, then fetch the packs back.",
       "choices": [
         {
           "id": "on",
-          "label": "Go back for the packs later",
+          "label": "Head back to camp",
           "icon": "boot",
           "goto": "scene_moving_marker"
         }
@@ -1440,7 +1440,7 @@
     },
     "choice_cub_nap_lintel_story": {
       "type": "story",
-      "narration": "You tell the cubs about Old Lintel, who is mostly moss, and asks everybody, \"Where did you get that? And where is it going?\" The cubs love it. They fall asleep asking it, in smaller and smaller voices. The last thing the little one mumbles is, \"Where's it going?\"",
+      "narration": "You tell the cubs about Old Lintel, the mossy troll who asks everybody, \"Where did you get that? And where is it going?\" They fall asleep asking it in smaller and smaller voices.",
       "choices": [
         {
           "id": "on",
@@ -1453,7 +1453,7 @@
     },
     "choice_cub_nap_reed_knot": {
       "type": "story",
-      "narration": "You wind Old Ossley's reed knot around your packs. It is still wet, of course, and as the damp creeps through, the hum goes soft, like a river running over stones a long way off. The cubs are asleep in a minute. Elder Sefa raises one eyebrow at the knot, and does not ask.",
+      "narration": "You wind Old Ossley's wet reed knot around your packs. The hum goes soft, like a far-off river. The cubs are asleep in a minute. Sefa raises one eyebrow, and does not ask.",
       "choices": [
         {
           "id": "on",
@@ -1466,17 +1466,17 @@
     },
     "scene_moving_marker": {
       "type": "story",
-      "narration": "Two manticores are moving a pride marker farther from a caravan stop. Choose your part: carry its weight and learn a brace useful at tonight's camp, or study the new line to avoid tomorrow's uncertain trail search. Everyone can help plant the post afterward.",
+      "narration": "Near camp, two manticores are moving a heavy pride marker farther from the caravan road. \"Hands welcome,\" puffs one. Carry it, and they will teach you to brace a long load. Or ask where the new line goes.",
       "choices": [
         {
           "id": "carry_post",
-          "label": "Level the marker post between you before carrying it",
+          "label": "Help carry the post",
           "icon": "might",
           "goto": "interaction_marker_load"
         },
         {
           "id": "ask_where",
-          "label": "Ask where the new line goes",
+          "label": "Ask where it goes",
           "icon": "map",
           "goto": "scene_moving_marker_ask_where",
           "effects": [
@@ -1489,7 +1489,7 @@
         },
         {
           "id": "fly_line",
-          "label": "Fly up and look at the whole line",
+          "label": "Fly up and look",
           "icon": "wing",
           "requiresSpecies": "griffin",
           "goto": "scene_moving_marker_fly_line",
@@ -1503,7 +1503,7 @@
         },
         {
           "id": "thornguard_post",
-          "label": "Have a thornguard take the heavy end of the post",
+          "label": "A thornguard takes the end",
           "icon": "shield",
           "requiresClass": "thornguard",
           "goto": "check_marker_post"
@@ -1529,11 +1529,11 @@
     },
     "scene_moving_marker_ask_where": {
       "type": "story",
-      "narration": "\"Farther from the caravans,\" says a mover. She walks you along the old holes. You check the outward-leaning grass between them: a route you can use tomorrow without tracking uncertain prints. The post still needs planting.",
+      "narration": "\"Farther from the caravans,\" says a mover. She walks you along the old holes. Between them, the grass leans outward, a line you could follow tomorrow. The post still needs planting.",
       "choices": [
         {
           "id": "on",
-          "label": "Walk on to the waystation",
+          "label": "Help plant the post",
           "icon": "map",
           "goto": "interaction_post_hole"
         }
@@ -1549,11 +1549,11 @@
     },
     "scene_moving_marker_fly_line": {
       "type": "story",
-      "narration": "From up high you see the new hole, and the old holes, and the older holes, a long dotted line of them, each one a little further from the caravan road than the last. Something is pushing the markers out, a month at a time. You land and tell the manticores. They just nod. They know.",
+      "narration": "From up high you see the new hole, the old holes and older holes, each farther from the caravan road. Something is pushing the markers out. The manticores just nod. They know.",
       "choices": [
         {
           "id": "on",
-          "label": "Walk on to the waystation",
+          "label": "Help plant the post",
           "icon": "wing",
           "goto": "interaction_post_hole"
         }
@@ -1562,7 +1562,7 @@
     },
     "scene_waystation_stitch_first": {
       "type": "story",
-      "narration": "You choose to help pin a sash flat before comparing the roads. That takes one more job now, but leaves visible route clues instead of relying on memory. The warden removes a spool from her mouth so nobody mistakes it for a button.",
+      "narration": "You help pin a sash flat on a frame first. Then the clues stay where everyone can see them. The warden takes out a spool, so nobody mistakes it for a button.",
       "cast": [
         {
           "figure": "cast/road_warden",
@@ -1572,7 +1572,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Now lay them all out together",
+          "label": "Pin the tags",
           "icon": "feather",
           "goto": "interaction_sash_frame"
         }
@@ -1581,7 +1581,7 @@
     },
     "scene_waystation_letters_arrived": {
       "type": "story",
-      "narration": "The whole barn turns around. \"The griffin from the letters!\" Somebody takes the spools out of her mouth to shake your hand. Bracken's letters are already pinned up on the wall, and the centaurs have been waiting for you so they could start the big table. They pull out a stool for everybody.",
+      "narration": "The whole barn turns around. \"The griffin from the letters!\" The warden takes the spools out of her mouth to shake your hand. Bracken's letters are already pinned on the wall.",
       "cast": [
         {
           "figure": "cast/road_warden",
@@ -1591,7 +1591,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Lay the sashes out together",
+          "label": "Line up the sashes",
           "icon": "wing",
           "goto": "check_sashes"
         }
@@ -1600,7 +1600,7 @@
     },
     "scene_spiral_mark_falls": {
       "type": "story",
-      "narration": "You mark the falls in red. Every road bends away from the dots. The map looks like it has measles. The oldest centaur hangs it up where everyone can see.",
+      "narration": "You mark each fall in red. Every road bends away from the dots. The map looks like it has measles. The warden hangs it up where everyone can see.",
       "cast": [
         {
           "figure": "cast/road_warden",
@@ -1622,7 +1622,7 @@
       "discovers": [
         "creature.embermoth"
       ],
-      "narration": "At dawn, embermoths drift south in a glowing river, away from the mountain. One touches your pack and darts off. Let them pass, or try gently cupping one. The sky is orange in the wrong place.",
+      "narration": "At dawn, embermoths drift south in a glowing river, away from the mountain. One bumps your pack and darts off. The sky is orange in the wrong place.",
       "cast": [
         {
           "figure": "entities/embermoth",
@@ -1632,19 +1632,19 @@
       "choices": [
         {
           "id": "let_pass",
-          "label": "Stand still and let them pass",
+          "label": "Let them pass",
           "icon": "rest",
           "goto": "scene_dawn_moths_let_pass"
         },
         {
           "id": "catch_one",
-          "label": "Catch one gently and look at it",
+          "label": "Catch one gently",
           "icon": "quick",
           "goto": "check_moth"
         },
         {
           "id": "duskrunner_moth",
-          "label": "Have a duskrunner dart in and cup one",
+          "label": "A duskrunner cups one",
           "icon": "spark",
           "requiresClass": "duskrunner",
           "goto": "check_moth"
@@ -1654,11 +1654,11 @@
     },
     "scene_dawn_moths_let_pass": {
       "type": "story",
-      "narration": "You wait while the moths swerve around your packs. The last ones hurry south. A few small lights remain in the grass.",
+      "narration": "You stand still while the moths swerve around your packs. The last ones hurry south. A few small lights are left behind in the grass.",
       "choices": [
         {
           "id": "on",
-          "label": "Walk on",
+          "label": "Look closer",
           "icon": "rest",
           "goto": "interaction_lost_moths"
         }
@@ -1692,7 +1692,7 @@
       "discovers": [
         "creature.jackalope"
       ],
-      "narration": "A wall of jackalope ears blocks the bend. They face away from its middle. Crawl carefully, ask the oldest, or spend a honeycake. The oldest has one torn ear and a very complete opinion of you.",
+      "narration": "A wall of jackalope ears blocks the bend. Every jackalope faces away from the middle. The oldest has one torn ear and a very firm opinion of you.",
       "cast": [
         {
           "figure": "entities/jackalope",
@@ -1702,19 +1702,19 @@
       "choices": [
         {
           "id": "crawl",
-          "label": "Crawl through on hands and knees, very politely",
+          "label": "Crawl through politely",
           "icon": "quick",
           "goto": "check_jackalopes"
         },
         {
           "id": "ask_oldest",
-          "label": "Ask the oldest jackalope",
+          "label": "Ask the oldest",
           "icon": "ear",
           "goto": "scene_jackalope_wall_ask_oldest"
         },
         {
           "id": "honeycake",
-          "label": "Offer them a honeycake",
+          "label": "Offer a honeycake",
           "icon": "cake",
           "requiresItem": "honeycake",
           "goto": "scene_jackalope_wall_honeycake",
@@ -1752,7 +1752,7 @@
     },
     "scene_jackalope_wall_ask_oldest": {
       "type": "story",
-      "narration": "The oldest thumps: thump, thump, pause, thump. The line opens, then closes behind you. You are fairly sure that meant \"on your own head be it.\"",
+      "narration": "The oldest thumps: thump, thump, pause, thump. The line opens, then closes behind you. You think that meant \"on your own head be it.\"",
       "cast": [
         {
           "figure": "entities/jackalope",
@@ -1762,7 +1762,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Walk on into the bend",
+          "label": "Walk into the bend",
           "icon": "ear",
           "goto": "scene_wolf_sign"
         }
@@ -1771,7 +1771,7 @@
     },
     "scene_jackalope_wall_honeycake": {
       "type": "story",
-      "narration": "You break a honeycake into fifty very small pieces. It takes ages. The jackalopes eat every crumb, very fast and very politely, and then shuffle aside to let you through. As you go, a few of the little ones try to follow, and their mothers pull them back by the ears.",
+      "narration": "You break a honeycake into fifty tiny pieces. The jackalopes eat every crumb, then shuffle aside. A few little ones try to follow you. Their mothers pull them back by the ears.",
       "cast": [
         {
           "figure": "entities/jackalope",
@@ -1781,7 +1781,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Walk on into the bend",
+          "label": "Walk into the bend",
           "icon": "cake",
           "goto": "scene_wolf_sign"
         }
@@ -1793,29 +1793,29 @@
       "discovers": [
         "creature.cinder_wolf"
       ],
-      "narration": "Warm paw prints cross the ash. A cinder wolf has wandered far from its usual country. Follow its outer trail, cover the prints so cubs will not follow, or use a line you already checked.",
+      "narration": "Warm paw prints cross a patch of ash. A cinder wolf has wandered far from home. Its prints curve around and around something. A cub would want to follow them, and a cub should not.",
       "choices": [
         {
           "id": "follow_prints",
-          "label": "Follow the last warm paw-print through the grass",
+          "label": "Follow the warm prints",
           "icon": "eye",
           "goto": "interaction_wolf_trail"
         },
         {
           "id": "cover_prints",
-          "label": "Scuff the ash away so the cubs don't find it",
+          "label": "Scuff the prints away",
           "icon": "hand",
           "goto": "scene_wolf_sign_cover_prints"
         },
         {
           "id": "guess_prints",
-          "label": "Risk following the prints from a quick look",
+          "label": "Risk a quick look",
           "goto": "check_wolf_prints",
           "icon": "eye"
         },
         {
           "id": "checked_line",
-          "label": "Use the outer line you already checked",
+          "label": "Use the line you traced",
           "goto": "scene_pride_checked_line",
           "icon": "map",
           "requiresFlag": "pride_line_checked"
@@ -1841,7 +1841,7 @@
     },
     "scene_wolf_sign_cover_prints": {
       "type": "story",
-      "narration": "You scuff the warm ash into the grass until there is nothing left to see. A cub would want to follow it, and a cub should not. Then you stand up, dust off your hands, and walk on alone into the middle of the bend, where the grass leans furthest of all.",
+      "narration": "You scuff the warm ash into the grass until nothing is left. Then you walk into the middle of the bend, where the grass leans farthest of all.",
       "choices": [
         {
           "id": "on",
@@ -1854,7 +1854,7 @@
     },
     "scene_waystation_lesson": {
       "type": "story",
-      "narration": "Your coin pays for the warden's prepared tags. \"River first, then pride, bridge, pride,\" she says. She pins them where everyone can read the clues. You can compare instead of memorizing the lantern flashes.",
+      "narration": "Your coin buys the warden's ready-made tags. \"River first, then pride, bridge, pride,\" she says, pinning them up. Now you can compare clues instead of remembering lantern flashes.",
       "cast": [
         {
           "figure": "cast/road_warden",
@@ -1864,7 +1864,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Now lay them all out together",
+          "label": "Line up the tags",
           "icon": "feather",
           "goto": "interaction_sashes_pinned"
         }
@@ -1873,7 +1873,7 @@
     },
     "interaction_ridge_creep": {
       "type": "interaction",
-      "narration": "The ridge path climbs through tall gold grass, and the wind comes in gusts. A pride lives up there, and a pride likes to know who is coming. The grass only hides your footsteps while it is rushing. When it goes still, so must you.",
+      "narration": "The ridge path climbs through tall grass, and prides like to know who is coming. The grass hides your steps only while the wind rushes. When it stops, freeze.",
       "interaction": {
         "kind": "timing",
         "cue": "Tap to creep only while the wind is rushing through the grass.",
@@ -1884,15 +1884,15 @@
       },
       "onSuccess": {
         "goto": "scene_cub_scouts",
-        "narration": "Step, rush, freeze, step. You climb the slope without one rustle you could be blamed for."
+        "narration": "Step, rush, freeze, step. Not one rustle."
       },
       "onFailure": {
         "goto": "scene_cub_scouts",
-        "narration": "Crunch. A twig the size of a loaf snaps under your boot. Somewhere ahead, something small and hidden snorts, the way a person does when they are trying very hard not to laugh."
+        "narration": "Crunch! A twig snaps under your boot. Somewhere ahead, something small snorts with laughter."
       },
       "onAssisted": {
         "goto": "scene_cub_scouts",
-        "narration": "The wind rushes at just the right moments, and you climb the slope without one rustle you could be blamed for."
+        "narration": "The wind rushes at just the right moments. Not one rustle."
       },
       "art": "scenes/gemfall/pride-marker-road"
     },
@@ -1905,11 +1905,11 @@
       ],
       "art": "scenes/gemfall/sefa-ridge-camp",
       "type": "story",
-      "narration": "You and Granny Ash carry the plates down the pride's long table. A cub solemnly guards each slice until its owner sits down. Cake this spicy deserves an escort. Every plate arrives, and not one slice jumps off. Granny Ash tucks a honeycake into your pack. \"For later,\" she says. \"Something normal.\"",
+      "narration": "You help Granny Ash carry plates down the long table. A cub guards each slice until its owner sits down. Granny Ash tucks a honeycake into your pack. \"For later,\" she says. \"Something normal.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Sit down to eat",
           "icon": "forward",
           "goto": "scene_pride_camp",
           "effects": [
@@ -1925,11 +1925,11 @@
     "interaction_post_hole": {
       "art": "scenes/gemfall/pride-marker-road",
       "type": "story",
-      "narration": "The post is already level from your carrying work. The movers take its weight while you guide it into the hole. Nobody lets go until the new marker stands. The post goes in straight the first time. The manticores tie a fresh tuft of tail-fur on top and say it is the neatest move all month. The smaller one pays you three coins from the pride jar. \"Hole-digging wages,\" she says. \"Do not tell the Brassbuckles.\"",
+      "narration": "The movers hold the post while you guide it in. It goes in straight. The smaller one pays you three coins. \"Hole-digging wages,\" she says. \"Do not tell the Brassbuckles.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Go to the waystation",
           "icon": "forward",
           "goto": "scene_waystation",
           "effects": [
@@ -1944,7 +1944,7 @@
     "interaction_lost_moths": {
       "art": "scenes/gemfall/pride-stone-crater",
       "type": "story",
-      "narration": "The glowing river has gone, but a handful of little moths got left behind. They huddle in the grass, flickering, too scared to fly south by themselves.",
+      "narration": "The glowing river has gone. But a few little moths got left behind. They huddle in the grass, flickering, too scared to fly alone.",
       "choices": [
         {
           "id": "hand",
@@ -1960,7 +1960,7 @@
         },
         {
           "id": "dim",
-          "label": "Cup your hands around the glow",
+          "label": "Cup your hands around it",
           "icon": "play_cupped_hands",
           "goto": "interaction_lost_moths_response_dim"
         }
@@ -1971,7 +1971,7 @@
       "discovers": [
         "creature.mire_mimic"
       ],
-      "narration": "Two marker posts stand beside the muddy path. Nobody planted them. One blinks and burps a boot. Mire mimics. They have been collecting pride tufts and footwear, and your boots have caught their attention.",
+      "narration": "Two marker posts stand by the muddy path. Nobody planted them. One blinks, and burps up a boot. Mire mimics! They collect pride tufts and boots, and they like the look of yours.",
       "cast": [
         {
           "figure": "entities/mire_mimic",
@@ -1981,7 +1981,7 @@
       "choices": [
         {
           "id": "stomp",
-          "label": "Stomp the posts until they give up",
+          "label": "Stomp the posts",
           "icon": "swords",
           "goto": "encounter_mimics"
         }
@@ -1991,7 +1991,7 @@
     "encounter_mimics": {
       "type": "encounter",
       "map": "glade",
-      "narration": "The posts pull up out of the mud on short wet legs and shuffle toward your boots. Stomp them back to being mud before they get a toehold.",
+      "narration": "The posts pull up out of the mud on short wet legs and shuffle toward your boots. Stomp them back into mud!",
       "enemies": [
         {
           "id": "mimic",
@@ -2022,7 +2022,7 @@
     },
     "scene_mimics_unmasked": {
       "type": "story",
-      "narration": "The mimics slump into mud and cough up boots, hats, tufts and a brave whistle. You pile the pride's tufts by the road for the cubs. The way to the bend is clear.",
+      "narration": "The mimics slump into mud and cough up boots, hats, tufts and a brave whistle. You leave the tufts by the road for the cubs. The way to the bend is clear.",
       "cast": [
         {
           "figure": "entities/mire_mimic",
@@ -2032,7 +2032,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Walk on toward the leaning grass",
+          "label": "Walk toward the bend",
           "icon": "boot",
           "goto": "scene_jackalope_wall"
         }
@@ -2041,11 +2041,11 @@
     },
     "scene_mimics_took_boots": {
       "type": "story",
-      "narration": "The mimics win your boots. Cubs arrive with sticks and hook them back out of the mud, laughing. Hot tea follows. No whistle, but your boots and the path are safe.",
+      "narration": "The mimics win your boots. Then cubs arrive with sticks and hook them out of the mud, laughing. Your boots are muddy, but safe.",
       "choices": [
         {
           "id": "on",
-          "label": "Walk on toward the leaning grass",
+          "label": "Walk toward the bend",
           "icon": "boot",
           "goto": "scene_jackalope_wall"
         }
@@ -2062,7 +2062,7 @@
       ],
       "art": "scenes/gemfall/sefa-ridge-camp",
       "type": "story",
-      "narration": "The cubs need a soft sound. Each hero adds a hum, a gentle beat or a sleepy word. Make it aloud if you like. Sefa keeps the cubs' tails from drumming on the bowls. That part is harder than it looks.",
+      "narration": "The cubs need a soft sound. Each hero adds a hum, a gentle beat or a sleepy word. Say it out loud if you like. Sefa keeps the cubs' tails from drumming on the bowls.",
       "choices": [
         {
           "id": "hum",
@@ -2086,7 +2086,7 @@
     },
     "interaction_marker_load": {
       "type": "interaction",
-      "narration": "Raise or lower your end until the post is level, then carry it to the new hole. The movers show you how to brace a long load. One tuft of tail-fur keeps tickling somebody's nose. It is not helping.",
+      "narration": "Raise or lower your end until the post is level. Then carry it to the new hole. A tuft of tail-fur tickles somebody's nose.",
       "interaction": {
         "kind": "balance",
         "cue": "Raise or lower your side to level the marker post.",
@@ -2095,7 +2095,7 @@
       },
       "onSuccess": {
         "goto": "interaction_post_hole",
-        "narration": "The post reaches its hole level. You remember the long brace: it can steady a windbreak at camp.",
+        "narration": "Level all the way! The movers teach you their long brace. It could steady a windbreak.",
         "effects": [
           {
             "type": "setFlag",
@@ -2106,11 +2106,11 @@
       },
       "onFailure": {
         "goto": "interaction_post_hole",
-        "narration": "The post is heavier than it looks, and it looks very heavy. You wobble all the way there, and it ends up leaning against the hole like a tired giraffe."
+        "narration": "You wobble all the way. The post leans on its hole like a tired giraffe."
       },
       "onAssisted": {
         "goto": "interaction_post_hole",
-        "narration": "A mover props the heavy end while you level the post. Together you learn its long brace, useful for a camp windbreak.",
+        "narration": "A mover props the heavy end. You learn their long brace, good for a windbreak.",
         "effects": [
           {
             "type": "setFlag",
@@ -2123,7 +2123,7 @@
     },
     "interaction_sash_frame": {
       "type": "interaction",
-      "narration": "Hold the cloth flat while the acting hero pins its detour tags. Alone, use the frame prop. The warden calls the landmarks as you work; the clues stay with the pinned cloth.",
+      "narration": "Hold the sash flat while the acting hero pins its tags. Alone, use the frame. The warden calls out landmarks.",
       "interaction": {
         "kind": "cooperate",
         "cue": "Hold the sash flat while the acting hero pins its tags.",
@@ -2132,15 +2132,15 @@
       },
       "onSuccess": {
         "goto": "interaction_sashes_pinned",
-        "narration": "The tags stay visible. Share the clues to line the roads up."
+        "narration": "The tags stay put. Now share the clues and line up the roads."
       },
       "onFailure": {
         "goto": "check_sashes",
-        "narration": "The pins slip. The warden uses her lanterns instead; watch their pattern."
+        "narration": "The pins slip. The warden reaches for her lanterns instead. Watch closely."
       },
       "onAssisted": {
         "goto": "interaction_sashes_pinned",
-        "narration": "The warden holds one corner while you pin. The tags stay visible for a shared comparison."
+        "narration": "The warden holds a corner while you pin. The tags stay put."
       },
       "art": "scenes/gemfall/centaur-sash-barn",
       "cast": [
@@ -2152,7 +2152,7 @@
     },
     "interaction_sashes_pinned": {
       "type": "interaction",
-      "narration": "Read the pinned tags together. River, pride, bridge and another pride road belong in one account. The warden has put the spools in a cup. The cup is now the safest thing in the barn.",
+      "narration": "Read the pinned tags together. River, pride, bridge and another pride road fit into one picture. The warden's spools sit safe in a cup.",
       "interaction": {
         "kind": "sequence",
         "cue": "Share the pinned clues and line up four road sections.",
@@ -2188,7 +2188,7 @@
       },
       "onSuccess": {
         "goto": "scene_spiral",
-        "narration": "The four sections line up against the pins. Now the whole detour shape can be seen.",
+        "narration": "The four roads line up. Now you see the whole shape.",
         "effects": [
           {
             "type": "setFlag",
@@ -2199,11 +2199,11 @@
       },
       "onFailure": {
         "goto": "scene_spiral",
-        "narration": "The warden corrects the pinned sections. You see the whole shape with her help, not from a checked arrangement of your own."
+        "narration": "The warden moves a few tags. With her help, you see the shape."
       },
       "onAssisted": {
         "goto": "scene_spiral",
-        "narration": "The warden checks each tag beside you. Together you line up the detours.",
+        "narration": "The warden checks each tag with you. Together you line them up.",
         "effects": [
           {
             "type": "setFlag",
@@ -2227,7 +2227,7 @@
     },
     "interaction_wolf_trail": {
       "type": "interaction",
-      "narration": "The wolf's warm ash-print glows between moving grass clumps. Follow its last position. You want the wolf's outer route, not the trail your own boots have just made.",
+      "narration": "The wolf's warm prints glow in the swaying grass. Follow the last one, not your own boot prints!",
       "interaction": {
         "kind": "tracking",
         "cue": "Follow the warm print and choose its final position.",
@@ -2256,21 +2256,21 @@
       },
       "onSuccess": {
         "goto": "scene_widest_bend",
-        "narration": "You follow the outer paw-print line until the crater is in sight. The wolf never went close to its middle."
+        "narration": "The prints circle wide to a crater. The wolf never went near its middle."
       },
       "onFailure": {
         "goto": "scene_widest_bend",
-        "narration": "Those are your boot prints. A cub on the ridge points out the crater. You arrive with a correction, without claiming you tracked the wolf."
+        "narration": "Those are your own boot prints! A giggling cub points out the crater."
       },
       "onAssisted": {
         "goto": "scene_widest_bend",
-        "narration": "A breeze parts the grass around the warm print. With that help, you follow the outer route to the crater."
+        "narration": "A breeze parts the grass. You follow the wolf's wide circle to a crater."
       },
       "art": "scenes/gemfall/pride-stone-crater"
     },
     "scene_pride_checked_line": {
       "type": "story",
-      "narration": "You follow the outward-leaning grass you checked earlier. No uncertain print search is needed. At its widest curve, the line opens onto the crater.",
+      "narration": "You follow the leaning grass you traced earlier. No tracking needed. At its widest curve, the line opens onto a little crater.",
       "choices": [
         {
           "id": "on",
@@ -2283,7 +2283,7 @@
     },
     "interaction_pride_windbreak": {
       "type": "interaction",
-      "narration": "An old cart cover keeps falling into the firelight. Use the marker-post brace you learned: hold the long support while the acting hero fixes the cover. Leave a warm patch on the far side for the wolves, away from the humming packs.",
+      "narration": "A cart cover keeps flopping into the fire. Hold the long brace while the acting hero fixes it. Leave the wolves a warm patch, away from the humming packs.",
       "interaction": {
         "kind": "cooperate",
         "cue": "Hold the long brace while the acting hero fixes the windbreak.",
@@ -2292,7 +2292,7 @@
       },
       "onSuccess": {
         "goto": "rest_wolf_fire",
-        "narration": "The cover steadies. Heat reaches the far side, and the wolves settle there. The brace you learned at the marker has made a different camp.",
+        "narration": "The cover holds, and the wolves settle in their warm patch.",
         "effects": [
           {
             "type": "setFlag",
@@ -2303,11 +2303,11 @@
       },
       "onFailure": {
         "goto": "encounter_wolves",
-        "narration": "The cover drops. The wolves still want the fire, and you must face them."
+        "narration": "The cover drops. The wolves still want the fire. Here they come!"
       },
       "onAssisted": {
         "goto": "rest_wolf_fire",
-        "narration": "An old wagon wheel props the long brace. With that support, you fix the cover and leave the wolves a warm patch away from the packs.",
+        "narration": "A wagon wheel props the brace. The cover holds, and the wolves settle.",
         "effects": [
           {
             "type": "setFlag",
@@ -2320,11 +2320,11 @@
     },
     "interaction_cub_lullaby_response_hum": {
       "type": "story",
-      "narration": "A cub folds one ear toward the hum. The cubs settle into a furry heap. Sefa mouths thank you. Your packs still hum; the song has helped the cubs, not silenced the stones.",
+      "narration": "A cub folds one ear toward your hum. The cubs settle into a furry heap, and Sefa mouths thank you. Your packs still hum, but the cubs are asleep.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Tiptoe away",
           "icon": "forward",
           "goto": "scene_moving_marker"
         }
@@ -2340,11 +2340,11 @@
     },
     "interaction_cub_lullaby_response_beat": {
       "type": "story",
-      "narration": "Sefa taps softly underneath your beat. The cubs settle into a furry heap. Sefa mouths thank you. Your packs still hum; the song has helped the cubs, not silenced the stones.",
+      "narration": "Sefa taps softly under your beat. The cubs settle into a furry heap, and she mouths thank you. Your packs still hum, but the cubs are asleep.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Tiptoe away",
           "icon": "forward",
           "goto": "scene_moving_marker"
         }
@@ -2360,11 +2360,11 @@
     },
     "interaction_cub_lullaby_response_word": {
       "type": "story",
-      "narration": "A cub repeats your word into a yawn. The cubs settle into a furry heap. Sefa mouths thank you. Your packs still hum; the song has helped the cubs, not silenced the stones.",
+      "narration": "A cub yawns your word back at you. The cubs settle into a furry heap, and Sefa mouths thank you. Your packs still hum, but the cubs are asleep.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Tiptoe away",
           "icon": "forward",
           "goto": "scene_moving_marker"
         }
@@ -2380,11 +2380,11 @@
     },
     "interaction_lost_moths_response_hand": {
       "type": "story",
-      "narration": "A moth lands on your thumb and stops shaking. The moths rise together and go south after the others, glowing steady. The grass is quiet. Ahead, the ground turns soft.",
+      "narration": "A moth lands on your thumb and stops shaking. Then they all rise and fly south, glowing steady. Ahead, the ground turns soft and muddy.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Walk on",
           "icon": "forward",
           "goto": "scene_mud_posts"
         }
@@ -2393,11 +2393,11 @@
     },
     "interaction_lost_moths_response_hum": {
       "type": "story",
-      "narration": "The moths lean toward the sound, glowing a little brighter. The moths rise together and go south after the others, glowing steady. The grass is quiet. Ahead, the ground turns soft.",
+      "narration": "The moths lean toward your hum and glow brighter. Then they all rise and fly south, glowing steady. Ahead, the ground turns soft and muddy.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Walk on",
           "icon": "forward",
           "goto": "scene_mud_posts"
         }
@@ -2406,11 +2406,11 @@
     },
     "interaction_lost_moths_response_dim": {
       "type": "story",
-      "narration": "The moths settle into the shadow, like birds into a nest. The moths rise together and go south after the others, glowing steady. The grass is quiet. Ahead, the ground turns soft.",
+      "narration": "The moths settle into your cupped hands like birds in a nest. Then they all rise and fly south, glowing steady. Ahead, the ground turns soft and muddy.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Walk on",
           "icon": "forward",
           "goto": "scene_mud_posts"
         }
