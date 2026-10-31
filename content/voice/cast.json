@@ -1061,10 +1061,8 @@
       "name": "Cook",
       "kind": "character",
       "who": "the caravan cook; only ever talks in her sleep, about gravy",
-      "pronouns": "she/her",
-      "pronounsFrom": "narration",
       "gender": "female",
-      "genderFrom": "narration",
+      "genderFrom": "notes",
       "voiceNotes": [
         {
           "chapter": "gemfall-02",
@@ -1080,15 +1078,11 @@
       },
       "lines": [
         {
-          "text": "Better than the porridge at MILE 3. That is not hard.",
-          "address": "gemfall-03a/interaction_pot/narration"
-        },
-        {
           "text": "Pass the gravy",
           "address": "gemfall-02/scene_tremor_snore/narration"
         }
       ],
-      "lineCount": 2,
+      "lineCount": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -1540,19 +1534,19 @@
       },
       "lines": [
         {
+          "text": "She said to tell anybody who asked, that she is not worried. Which means she is.",
+          "address": "gemfall-05b/scene_runners_post_gullet/narration"
+        },
+        {
           "text": "They only want to keep their shine. Show them it is not worth the trouble.",
           "address": "gemfall-03b/scene_crab_shallows/narration"
         },
         {
           "text": "Too many. Ask the boggarts. They keep lost things on their island.",
           "address": "gemfall-03b/scene_poling_in/narration"
-        },
-        {
-          "text": "Fend it off! One pushes with the pole. Everybody else keeps the raft still, or we all go for a swim.",
-          "address": "gemfall-03b/interaction_stumps/narration"
         }
       ],
-      "lineCount": 21,
+      "lineCount": 22,
       "guessedLines": 5,
       "speaks": true,
       "status": "provisional"
@@ -1949,19 +1943,19 @@
       },
       "lines": [
         {
+          "text": "Climb up, darling, and be a MOUNTAIN!",
+          "address": "gemfall-03c/check_play_mountain/narration"
+        },
+        {
           "text": "Better. Annoyingly better.",
           "address": "gemfall-03c/scene_campfire_play_rewrite/narration"
         },
         {
           "text": "New mountain, darlings!",
           "address": "gemfall-03c/scene_campfire_play/narration"
-        },
-        {
-          "text": "Much spookier.",
-          "address": "gemfall-03c/scene_campfire_play_tell_true/narration"
         }
       ],
-      "lineCount": 4,
+      "lineCount": 5,
       "speaks": true,
       "status": "provisional"
     },
@@ -2351,7 +2345,7 @@
       },
       "lines": [
         {
-          "text": "The flooded paths? You're the soggy ones! The whole forest heard about you!",
+          "text": "The flooded paths? You're the soggy ones! The whole forest heard about you! Mind you stay that way.",
           "address": "gemfall-05b/scene_falls_stair_dripping/narration"
         },
         {
@@ -2363,7 +2357,8 @@
           "address": "gemfall-05b/scene_falls_stair/narration"
         }
       ],
-      "lineCount": 4,
+      "lineCount": 6,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -2436,7 +2431,7 @@
           "address": "gemfall-04b/check_runner_path/onSuccess/narration"
         }
       ],
-      "lineCount": 14,
+      "lineCount": 19,
       "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
@@ -2825,7 +2820,7 @@
           "address": "gemfall-06/scene_record_leash/narration"
         }
       ],
-      "lineCount": 60,
+      "lineCount": 63,
       "speaks": true,
       "status": "provisional"
     },
@@ -2869,7 +2864,7 @@
           "address": "riftlight-cairnstep-pass/survey/narration"
         }
       ],
-      "lineCount": 49,
+      "lineCount": 50,
       "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
@@ -2989,7 +2984,8 @@
           "address": "gemfall-05a/scene_survey_guard_clerks_stone/narration"
         }
       ],
-      "lineCount": 2,
+      "lineCount": 3,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -3090,21 +3086,8 @@
       "gemini": {
         "voice": "Vindemiatrix"
       },
-      "lines": [
-        {
-          "text": "Warden's issue. For loud moments. Log it if you use it. Now. Before the captain, the tags.",
-          "address": "gemfall-06/scene_crawlers_home/narration"
-        },
-        {
-          "text": "Shoo them off my lamps! Before I am halfway to the sea!",
-          "address": "gemfall-01/scene_quay_wisps/narration"
-        },
-        {
-          "text": "Harvest sprites. They do not give those to many.",
-          "address": "gemfall-08/scene_keeper_medal/narration"
-        }
-      ],
-      "lineCount": 6,
+      "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -3169,19 +3152,19 @@
       },
       "lines": [
         {
-          "text": "She said to tell anybody who asked, that she is not worried. Which means she is.",
-          "address": "gemfall-05b/scene_runners_post_gullet/narration"
-        },
-        {
-          "text": "The pile is the forest's. We keep the record. The record decides who it trusts.",
-          "address": "gemfall-05b/scene_pile_question/narration"
-        },
-        {
           "text": "Nobody yet. Careful. Careful is a kind of telling, too. When you do tell. Second.",
           "address": "gemfall-05b/choice_elders_close/narration"
+        },
+        {
+          "text": "The gatherer grandmothers. Tell them we said so. And tell us second.",
+          "address": "gemfall-05b/choice_elders_gatherers/narration"
+        },
+        {
+          "text": "The wardens. They write things down. That is not nothing. Second.",
+          "address": "gemfall-05b/choice_elders_wardens/narration"
         }
       ],
-      "lineCount": 28,
+      "lineCount": 5,
       "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
@@ -3212,11 +3195,19 @@
       },
       "lines": [
         {
+          "text": "Same shape as here. Different country. Everybody's noticing.",
+          "address": "gemfall-05b/scene_runners_post_rush/narration"
+        },
+        {
+          "text": "Thank you. It'll wake so gently.",
+          "address": "gemfall-05b/scene_soup_tent_coins/narration"
+        },
+        {
           "text": "Soup's still soup.",
           "address": "gemfall-05b/scene_soup_tent_refuse/narration"
         }
       ],
-      "lineCount": 2,
+      "lineCount": 4,
       "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
@@ -3287,20 +3278,20 @@
       },
       "lines": [
         {
-          "text": "Grandmothers say it at every boundary stone. Nobody listens this year.",
+          "text": "Even they don't know where to go.",
+          "address": "gemfall-05b/check_follow_moths/onFailure/narration"
+        },
+        {
+          "text": "Take what the mountain drops. Never pry at what it holds. Grandmothers say it at every boundary stone. Nobody listens this year.",
           "address": "gemfall-05b/scene_cloud_gatherer_walk/narration"
         },
         {
           "text": "I'm telling my grandmother.",
           "address": "gemfall-05b/check_follow_moths/onSuccess/narration"
-        },
-        {
-          "text": "They never go that way.",
-          "address": "gemfall-05b/scene_cloud_gatherer/narration"
         }
       ],
-      "lineCount": 4,
-      "guessedLines": 1,
+      "lineCount": 7,
+      "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -3436,7 +3427,7 @@
           "address": "gemfall-05c/scene_moths_leaving_hold_one/narration"
         }
       ],
-      "lineCount": 4,
+      "lineCount": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -4246,10 +4237,8 @@
       "name": "Warden Sergeant",
       "kind": "character",
       "who": "rigid, honest, tired; counts everything; secretly hates making children cry",
-      "pronouns": "he/him",
-      "pronounsFrom": "narration",
-      "gender": "male",
-      "genderFrom": "narration",
+      "gender": "unknown",
+      "genderFrom": "none",
       "voiceNotes": [
         {
           "chapter": "gemfall-07r",
@@ -4263,17 +4252,8 @@
       "gemini": {
         "voice": "Orus"
       },
-      "lines": [
-        {
-          "text": "Honest work. I have never been so glad to be bored.",
-          "address": "gemfall-07r/interaction_stone_chain/narration"
-        },
-        {
-          "text": "Road closed.",
-          "address": "gemfall-07r/scene_morning_slide/narration"
-        }
-      ],
-      "lineCount": 3,
+      "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -4398,7 +4378,7 @@
           "address": "gemfall-08/scene_seal_chamber/narration"
         }
       ],
-      "lineCount": 77,
+      "lineCount": 78,
       "guessedLines": 20,
       "speaks": true,
       "status": "provisional"
@@ -5496,19 +5476,19 @@
       },
       "lines": [
         {
-          "text": "Oh. Oh, come in. Wipe your feet. Wipe them twice.",
-          "address": "gemfall-05b/check_archive_door/onSuccess/narration"
+          "text": "That glade. The path record changed this morning. It got better. In. Feet.",
+          "address": "gemfall-05b/scene_mosshome_glade_word/narration"
         },
         {
-          "text": "Carry it if you like. We will record who has it.",
+          "text": "Don't tell me your road. Show me. Every path that moved under your boots.",
+          "address": "gemfall-05b/check_archive_door/narration"
+        },
+        {
+          "text": "That one wants north. Carry it if you like. We will record who has it.",
           "address": "gemfall-05b/scene_pile_visit/narration"
-        },
-        {
-          "text": "Twice. Nobody from outside ever wipes twice.",
-          "address": "gemfall-05b/scene_mosshome_feet/narration"
         }
       ],
-      "lineCount": 9,
+      "lineCount": 14,
       "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
@@ -5543,7 +5523,8 @@
           "address": "gemfall-05c/scene_moths_leaving/narration"
         }
       ],
-      "lineCount": 5,
+      "lineCount": 6,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -5561,13 +5542,8 @@
       "gemini": {
         "voice": "Schedar"
       },
-      "lines": [
-        {
-          "text": "Don't you take that tone with me.",
-          "address": "gemfall-05a/scene_engineers/narration"
-        }
-      ],
-      "lineCount": 1,
+      "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
@@ -5682,8 +5658,8 @@
         "voice": "Zubenelgenubi"
       },
       "lines": [],
-      "lineCount": 1,
-      "guessedLines": 1,
+      "lineCount": 2,
+      "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -5935,16 +5911,19 @@
       },
       "lines": [
         {
-          "text": "Anyone who wants the circlet, may try it on.",
+          "text": "It comes down somewhere. Anyone who wants the circlet, may try it on.",
           "address": "riftlight-ashspan-bridge/academy/narration"
+        },
+        {
+          "text": "Bless you. It does that when it sees something new.",
+          "address": "riftlight-ashspan-bridge/academy_stars/narration"
         },
         {
           "text": "Back at the Academy! Mind the homework.",
           "address": "riftlight-ashspan-bridge/academy/variants/0"
         }
       ],
-      "lineCount": 5,
-      "guessedLines": 3,
+      "lineCount": 3,
       "speaks": true,
       "status": "provisional"
     },
