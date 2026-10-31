@@ -41,17 +41,17 @@
   "scenes": {
     "search": {
       "type": "story",
-      "narration": "You stay near the singing hall instead of taking the shelf path. Your job today is to search the glacier for another opening. The seam you tested is still sealed, and it only answers your song. The yeti herder waits at the door with the kid goat under one arm. \"My herd keeps stopping at the east ridge,\" she says. \"Ears up, all pointing one way. Something up there ticks. Find it before a goat does.\"",
+      "narration": "You stay at the singing hall instead of taking the shelf path. Your job today is to search the glacier for another opening. The seam you tested stays sealed. The yeti herder waits at the door with the kid goat under one arm. \"My herd keeps stopping at the east ridge,\" she says. \"Ears up, all one way. Something up there ticks. Find it before a goat does.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Ask the herder where to start",
+          "label": "Ask where to start",
           "icon": "hand",
           "goto": "plan"
         },
         {
           "id": "back",
-          "label": "Walk straight back to the fold",
+          "label": "Walk back to the fold",
           "icon": "hand",
           "goto": "back_at_fold",
           "requiresFlag": "glacier_rift_woken"
@@ -63,7 +63,7 @@
             "flag": "glacier_rift_woken"
           },
           "replace": true,
-          "text": "You step out of the fold into cold glacier air, in the narrow passage behind the singing hall. The opening stays awake behind you. Out in the snow, the herder waves with the kid goat under one arm. You can walk straight back to the fold, or search the glacier again with her."
+          "text": "The passage behind the singing hall is as you left it, and the fold is still awake. Out in the snow, the herder waves with the kid goat under one arm. Walk back to the fold, or search the glacier again with her?"
         }
       ],
       "art": "scenes/riftlight/singing-hall-camp",
@@ -80,7 +80,7 @@
     },
     "back_at_fold": {
       "type": "story",
-      "narration": "You follow your old marks back along the passage. The cairn is still there, and the fold waits, wide and steady, with salt wind on your cheeks. Nothing about it has changed, except that you know it better now.",
+      "narration": "You walk back down the passage. The herder's cairn still guards its mouth. The fold waits, wide and steady, with salt wind on your cheeks.",
       "choices": [
         {
           "id": "continue",
@@ -112,17 +112,17 @@
     },
     "plan": {
       "type": "choice_point",
-      "narration": "The herder points at the east ridge. \"Snow is soft up there. Haul the sled, or go light?\" Her sled waits by the door with a coil of rope and a lantern tied on. The kid goat has already started chewing the rope. Beside the door, the hay pile is shorter than it was yesterday, and she keeps glancing at it.",
+      "narration": "The herder points at the east ridge. \"Soft snow up there. Haul the sled, or go light?\" Her sled has a coil of rope and a lantern tied on. The kid is chewing the rope. By the door, the hay pile is shorter than yesterday.",
       "choices": [
         {
           "id": "loaded",
-          "label": "Load the sled and haul it up",
+          "label": "Haul the loaded sled",
           "icon": "hand",
           "goto": "plan_a"
         },
         {
           "id": "light",
-          "label": "Go light with just the rope and lantern",
+          "label": "Go light with the rope",
           "icon": "hand",
           "goto": "plan_b"
         }
@@ -141,11 +141,11 @@
     },
     "plan_a": {
       "type": "story",
-      "narration": "You stack the rope, the lantern and a bundle of hay on the sled. The kid climbs on top of the hay and will not get off. The runners squeak like mice. \"Every hand on the rope,\" says the herder. \"Hay is heavy when it has opinions.\"",
+      "narration": "You load the rope, the lantern and a bundle of hay. The kid climbs on the hay and will not get off. \"Every hand on the rope,\" says the herder. \"Hay is heavy when it has opinions.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Haul together",
+          "label": "Haul it up together",
           "icon": "hand",
           "goto": "climb_a"
         }
@@ -164,11 +164,11 @@
     },
     "plan_b": {
       "type": "story",
-      "narration": "You tie the lantern to your belt and loop the rope across your chest. The kid trots ahead, delighted. The snow squeaks under your boots. \"Keep moving,\" says the herder. \"The crust only holds you if you do not stop.\"",
+      "narration": "You tie the lantern to your belt and loop the rope across your chest. The kid trots ahead. \"Keep moving,\" says the herder. \"The crust only holds you if you do not stop.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Scramble up together",
+          "label": "Scramble up the crust",
           "icon": "hand",
           "goto": "climb_b"
         }
@@ -189,7 +189,7 @@
       "type": "check",
       "stat": "might",
       "tn": 8,
-      "prompt": "Every hand on the rope! Haul the loaded sled up the soft slope, step by step.",
+      "prompt": "Every hand on the rope! Haul the sled up the soft slope.",
       "roller": "all",
       "onSuccess": {
         "goto": "climb_done"
@@ -213,7 +213,7 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "prompt": "Everyone scramble up the crust without stopping. Light feet, no pauses!",
+      "prompt": "Scramble up the crust. Light feet, no stopping!",
       "roller": "all",
       "onSuccess": {
         "goto": "climb_done"
@@ -235,11 +235,11 @@
     },
     "climb_done": {
       "type": "story",
-      "narration": "At the top, the wind falls quiet, as if it is listening too. A line of goats stands along the ridge with their ears pointed west, toward the hall. The kid trots over and points its ears the same way. It looks very serious about it.",
+      "narration": "At the top, the wind goes quiet. A line of goats stands on the ridge, ears pointed west, toward the hall. The kid joins them and points its ears too, very seriously.",
       "choices": [
         {
           "id": "continue",
-          "label": "Look at what the goats are facing",
+          "label": "See what they face",
           "icon": "hand",
           "goto": "ridge"
         }
@@ -258,11 +258,11 @@
     },
     "climb_slip": {
       "type": "story",
-      "narration": "The crust cracks and you slide back a few steps. The kid bleats with laughter. The herder hauls you up by the rope, and you reach the ridge with snow in your boots. A line of goats stands there with their ears pointed west, toward the hall. The kid joins them and does the same.",
+      "narration": "The crust cracks, and you slide back. The kid bleats with laughter. The herder hauls you up by the rope. On the ridge, a line of goats points their ears west, toward the hall.",
       "choices": [
         {
           "id": "continue",
-          "label": "Look at what the goats are facing",
+          "label": "See what they face",
           "icon": "hand",
           "goto": "ridge"
         }
@@ -281,23 +281,23 @@
     },
     "ridge": {
       "type": "choice_point",
-      "narration": "The ridge is bare ice and wind. A dark hole the size of a bucket breathes out a cold, hooting draft. Beyond it, the goats stare at nothing at all. \"A goat once fell asleep in that hole,\" says the herder. \"He still brags about it.\" Tick. Tick. Tick. Something is ticking, very faintly. Is the hole the answer?",
+      "narration": "The ridge is bare ice and wind. A dark hole the size of a bucket breathes out a cold, hooting draft. \"A goat once fell asleep in there,\" says the herder. \"He still brags about it.\" Tick. Tick. Tick. Something ticks, very faintly. Is the hole the answer?",
       "choices": [
         {
           "id": "listen",
-          "label": "Lie flat and listen along the ice",
+          "label": "Listen flat on the ice",
           "icon": "hand",
           "goto": "ridge_a"
         },
         {
           "id": "walk",
-          "label": "Walk the ridge and test each draft",
+          "label": "Test each draft",
           "icon": "hand",
           "goto": "ridge_b"
         },
         {
           "id": "chime",
-          "label": "Ring the Listening Chime over the hole",
+          "label": "Ring the chime over it",
           "icon": "hand",
           "goto": "ridge_chime",
           "requiresItem": "listening_chime"
@@ -319,7 +319,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Lie flat with an ear to the ice. Follow the ticking to where it is loudest. Choose who leads; everyone can help.",
+      "prompt": "Lie flat, ear to the ice, and follow the ticking to its loudest spot.",
       "onSuccess": {
         "goto": "ridge_done"
       },
@@ -342,7 +342,7 @@
       "type": "check",
       "stat": "quick",
       "tn": 12,
-      "prompt": "Walk the ridge and test every draft with a wet finger. Be quick, the wind keeps changing! Choose who leads; everyone can help.",
+      "prompt": "Test every draft with a wet finger. Quick, the wind keeps changing!",
       "onSuccess": {
         "goto": "ridge_done"
       },
@@ -363,11 +363,11 @@
     },
     "ridge_chime": {
       "type": "story",
-      "narration": "You ring the chime over the hole. One clear note rings out. It does not go sour, and it does not echo. \"Away from a rift, a very small bell,\" you remember Orin saying. The hole is only wind in a tube of ice.",
+      "narration": "You ring the chime over the hole. One clear note, not sour, no echo. Away from a rift, Orin said, it is only a very small bell. The hole is just wind in a tube of ice.",
       "choices": [
         {
           "id": "continue",
-          "label": "Listen for the real ticking",
+          "label": "Listen for the ticking",
           "icon": "hand",
           "goto": "ridge_done"
         }
@@ -386,7 +386,7 @@
     },
     "ridge_done": {
       "type": "story",
-      "narration": "The hole only hoots. But the ticking is louder to the west, back toward the hall, and low down, as if it were coming up through the ice from far below. The goats turn their ears that way. You pack snow around the hole so no goat can nose inside. \"One place the herd can stop worrying about,\" says the herder. She sounds relieved, and then worried again.",
+      "narration": "The hole only hoots. The real ticking is west, toward the hall, and low, under the ice. You pack snow around the hole so no goat noses in. \"One less worry,\" says the herder.",
       "choices": [
         {
           "id": "continue",
@@ -415,7 +415,7 @@
     },
     "ridge_off": {
       "type": "story",
-      "narration": "The wind swings around, and the hole hoots at you rudely. You lose the trail for a while. Then the kid sits down in the one spot where the ticking is loudest, just to see what happens. West, and low down. You pack snow around the hole so no goat can nose inside.",
+      "narration": "The wind swings, and the hole hoots at you rudely. You lose the trail. Then the kid sits down right where the ticking is loudest: west, and low. You pack snow around the hole so no goat noses in.",
       "choices": [
         {
           "id": "continue",
@@ -444,7 +444,7 @@
     },
     "holes": {
       "type": "interaction",
-      "narration": "West of the hole, three snow mounds lie in a row, and the ticking seems to jump between them. The kid is sure it knows. It dives into one mound, wiggles, and pops out of another with a snowy nose, then dives again. The herder squints. \"Watch the tail. Where does it end up?\"",
+      "narration": "West of the hole, three snow mounds lie in a row, and the ticking jumps between them. The kid dives into one and pops out of another. \"Watch the tail,\" says the herder. \"Where does it end up?\"",
       "interaction": {
         "kind": "tracking",
         "cue": "Watch the kid dive between the mounds, then pick where it ends up.",
@@ -473,15 +473,15 @@
       },
       "onSuccess": {
         "goto": "kid",
-        "narration": "You dig out the right mound, and there is the kid with its ear pressed to a patch of ice that ticks. West and low, again. The kid sneezes snow on your boots."
+        "narration": "Right mound! The kid has its ear pressed to ticking ice. It sneezes on your boots."
       },
       "onFailure": {
         "goto": "kid",
-        "narration": "You dig out an empty mound. The kid pops out of the next one, delighted, and sits on the loudest patch of ice to help. West and low, it ticks."
+        "narration": "Empty! The kid pops out next door and sits on the ticking ice to help."
       },
       "onAssisted": {
         "goto": "kid",
-        "narration": "The herder holds the kid still long enough for you to see it settle by the loudest patch of ice. West and low, it ticks."
+        "narration": "The herder holds the kid still, right by the ticking ice."
       },
       "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
@@ -497,17 +497,17 @@
     },
     "kid": {
       "type": "choice_point",
-      "narration": "A gust shoves the kid sideways. It slides on its belly toward a thin crust of ice over a melt pool. The herder is far too heavy to follow onto that ice. \"Kid!\" she calls. The kid does not care. It is having the best day of its life. How will you stop it?",
+      "narration": "A gust shoves the kid sideways. It slides on its belly toward thin ice over a melt pool. The herder is too heavy to follow. \"Kid!\" she calls. The kid is having the best day of its life. How will you stop it?",
       "choices": [
         {
           "id": "rope",
-          "label": "Throw the rope loop over its horns",
+          "label": "Rope its horns",
           "icon": "hand",
           "goto": "kid_a"
         },
         {
           "id": "note",
-          "label": "Call it back with the low hall note",
+          "label": "Sing the low note",
           "icon": "hand",
           "goto": "kid_b"
         },
@@ -538,7 +538,7 @@
       "type": "check",
       "stat": "quick",
       "tn": 12,
-      "prompt": "Throw the rope loop over the kid's horns. The steadiest arm should throw!",
+      "prompt": "Throw the rope loop over the kid's horns!",
       "roller": "best",
       "onSuccess": {
         "goto": "kid_done"
@@ -562,7 +562,7 @@
       "type": "check",
       "stat": "heart",
       "tn": 12,
-      "prompt": "Sing the low hall note across the ice so the kid turns toward you. The steadiest voice should lead!",
+      "prompt": "Sing the low hall note so the kid turns toward you.",
       "roller": "best",
       "checkKind": "doing",
       "onSuccess": {
@@ -585,11 +585,11 @@
     },
     "kid_wing": {
       "type": "story",
-      "narration": "A winged friend leaps into the wind. The wind carries them over the thin crust in a long, easy glide. The rest of you keep the rope clear and ready. The hero who is best at catching can lead; nobody needs to pretend they flew.",
+      "narration": "A winged friend leaps into the wind and glides over the thin ice. Everyone else keeps the rope ready for the catch.",
       "choices": [
         {
           "id": "continue",
-          "label": "Work together using that help",
+          "label": "Make the catch",
           "icon": "hand",
           "goto": "kid_wing_check"
         }
@@ -610,7 +610,7 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "prompt": "A winged hero glides over the thin ice. The qualified hero assists; choose who leads the team check.",
+      "prompt": "Glide low and grab the kid, with the rope ready behind you.",
       "onSuccess": {
         "goto": "kid_done"
       },
@@ -631,7 +631,7 @@
     },
     "kid_done": {
       "type": "story",
-      "narration": "The kid pops into your arms, warm and wriggling, and licks your chin with a very cold tongue. \"That is a good kid,\" says the herder. \"That is a terrible kid. Same kid.\" Behind you, the thin crust finally cracks, and dark water shows where the kid would have been. The herder tucks her own lunch bundle into your pack. \"For the climb. Do not tell the kid.\"",
+      "narration": "The kid pops into your arms and licks your chin with a very cold tongue. \"Good kid,\" says the herder. \"Terrible kid. Same kid.\" She tucks her lunch bundle into your pack. \"For the climb. Do not tell the kid.\"",
       "choices": [
         {
           "id": "continue",
@@ -661,7 +661,7 @@
     },
     "kid_off": {
       "type": "story",
-      "narration": "You miss. The kid slides into a soft drift and pops out with a snowy beard, completely pleased. The herder fishes it out by one leg, and it sneezes on her. She tucks it inside her coat for the rest of the climb, where it chews her buttons.",
+      "narration": "You miss. The kid slides into a soft drift and pops out with a snowy beard, very pleased. The herder tucks it in her coat, where it chews her buttons.",
       "choices": [
         {
           "id": "continue",
@@ -684,23 +684,23 @@
     },
     "crack": {
       "type": "choice_point",
-      "narration": "West of the ridge, the glacier ends at a long crack. Steam curls out of it. The ticking is louder here, and it comes from below. The air smells like warm wet wool, which makes no sense on a glacier. A narrow bridge of snow crosses the crack. The long way around is safe but slow. \"My herd goes around,\" says the herder. \"Your choice.\"",
+      "narration": "West of the ridge, the glacier splits in a long crack. Steam curls out, smelling like warm wet wool. The ticking comes from below. A narrow snow bridge crosses it. \"My herd goes the long way around,\" says the herder. \"Safe, but slow.\"",
       "choices": [
         {
           "id": "bridge",
-          "label": "Rope up and cross the snow bridge together",
+          "label": "Rope up and cross",
           "icon": "hand",
           "goto": "crack_a"
         },
         {
           "id": "around",
-          "label": "Take the long way around the crack",
+          "label": "Go the long way",
           "icon": "hand",
           "goto": "crack_b"
         },
         {
           "id": "fly",
-          "label": "Fly the rope end across first",
+          "label": "Fly the rope over",
           "icon": "wing",
           "goto": "crack_wing",
           "requiresSpecies": [
@@ -725,7 +725,7 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "prompt": "Rope up! Everyone steps across the snow bridge in time, light and quick.",
+      "prompt": "Rope up! Step across the snow bridge, light and quick.",
       "roller": "all",
       "onSuccess": {
         "goto": "crack_done"
@@ -749,7 +749,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Read the cracks and shadows. Pick the safest curve around the steaming crack. Choose who leads; everyone can help.",
+      "prompt": "Read the cracks and shadows. Find the safest curve around.",
       "onSuccess": {
         "goto": "crack_done"
       },
@@ -770,11 +770,11 @@
     },
     "crack_wing": {
       "type": "story",
-      "narration": "A winged friend takes the rope end and flies it over the steam. On the far side, they tie it to a rock. The rest of you walk the rope bridge with a hand on the line. The best flier can lead the team; nobody has to pretend they have wings.",
+      "narration": "A winged friend flies the rope over the steam and ties it to a rock. The others cross the snow bridge with a hand on the line.",
       "choices": [
         {
           "id": "continue",
-          "label": "Work together using that help",
+          "label": "Cross on the line",
           "icon": "hand",
           "goto": "crack_wing_check"
         }
@@ -795,7 +795,7 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "prompt": "A winged hero flies the rope across. The qualified hero assists; choose who leads the team check.",
+      "prompt": "Fly the rope across the steam and tie it fast.",
       "onSuccess": {
         "goto": "crack_done"
       },
@@ -816,11 +816,11 @@
     },
     "crack_done": {
       "type": "story",
-      "narration": "On the far side, the herder counts heads and finds the right number, which she says is her favorite sum. The steam warms your faces and fogs everyone's eyebrows. The ticking is almost under your boots now.",
+      "narration": "On the far side, the herder counts heads. The right number is her favorite sum. Steam fogs everyone's eyebrows. The ticking is almost under your boots now.",
       "choices": [
         {
           "id": "continue",
-          "label": "Follow the ticking down the slope",
+          "label": "Follow it downhill",
           "icon": "hand",
           "goto": "post"
         }
@@ -839,11 +839,11 @@
     },
     "crack_slip": {
       "type": "story",
-      "narration": "The snow gives way. You slide down onto a lower ledge on your bottom. It is warm and steamy and smells like wet wool. The herder lowers a rope and hauls you up, one at a time, grunting. Your pride hurts more than your knee. The ticking is almost under your boots now.",
+      "narration": "The snow gives way. You slide onto a warm, steamy ledge below. The herder hauls you up, grunting. Your pride hurts more than your knee. The ticking is almost under your boots now.",
       "choices": [
         {
           "id": "continue",
-          "label": "Follow the ticking down the slope",
+          "label": "Follow it downhill",
           "icon": "hand",
           "goto": "post"
         }
@@ -870,17 +870,17 @@
     },
     "post": {
       "type": "choice_point",
-      "narration": "Under a lip of ice stands an old yeti listening post, a pole with a cup of carved ice on top like a giant ear. The herder pats it. \"My grandmother's. She listened here when she was small, and never found out what ticked.\" She nudges you toward the cup. \"Put an ear in and tell me what you hear.\" The ticking is much louder here, and it has a beat.",
+      "narration": "Under a lip of ice stands an old yeti listening post: a pole topped with a carved ice cup, like a giant ear. \"My grandmother's,\" says the herder. \"She never found out what ticked. Put an ear in and tell me.\" Here the ticking is louder, and it has a beat.",
       "choices": [
         {
           "id": "hum",
-          "label": "Hum the hall note into the cup",
+          "label": "Hum into the cup",
           "icon": "hand",
           "goto": "post_a"
         },
         {
           "id": "count",
-          "label": "Count the ticks against your heartbeat",
+          "label": "Count the ticks",
           "icon": "hand",
           "goto": "post_b"
         }
@@ -899,11 +899,11 @@
     },
     "post_a": {
       "type": "story",
-      "narration": "You hum the low hall note into the cup. The ice hums back, a little flat, and the ticking answers a beat later. The herder's ears go up. \"It is listening,\" she whispers. \"Do not stop.\"",
+      "narration": "You hum the low hall note into the cup. The ice hums back, a little flat. The ticking answers a beat later. The herder's ears go up. \"It is listening. Do not stop.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Keep the hum going",
+          "label": "Keep humming",
           "icon": "hand",
           "goto": "post_a_check"
         }
@@ -922,7 +922,7 @@
     },
     "post_b": {
       "type": "story",
-      "narration": "You press a hand to your chest and count. Tick, tick, then a pause, then tick. The pattern repeats. The kid counts too, with its hoof, and gets it wrong in a very confident way.",
+      "narration": "You count against your heartbeat. Tick, tick, pause, tick. It repeats. The kid counts too, with its hoof, wrongly and very confidently.",
       "choices": [
         {
           "id": "continue",
@@ -956,11 +956,11 @@
         }
       ],
       "type": "story",
-      "narration": "You hum into the listening cup while the herder listens. She joins your note, then falls quiet to hear what answers.",
+      "narration": "The herder joins your note, then goes quiet to hear what answers.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Listen for the answer",
           "icon": "forward",
           "goto": "post_done"
         }
@@ -979,11 +979,11 @@
         }
       ],
       "type": "story",
-      "narration": "You count the ticks together and draw them in the snow. The herder places a claw beside each mark. Her grandmother listened here too.",
+      "narration": "You draw the ticks in the snow. The herder sets a claw beside each mark. Her grandmother listened here too.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Read the marks",
           "icon": "forward",
           "goto": "post_done"
         }
@@ -991,11 +991,11 @@
     },
     "post_done": {
       "type": "story",
-      "narration": "The pattern matches the song you learned in the hall. Slow, slow, quick. The ticking is not random. It is the hall note, answered from far below. \"Under the hall,\" says the herder. \"Of course it is.\"",
+      "narration": "The pattern matches the song you learned in the hall: slow, slow, quick. The ticking is the hall note, answered from far below. \"Under the hall,\" says the herder. \"Of course.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Take a breath with the herder",
+          "label": "Rest with the herder",
           "icon": "hand",
           "goto": "warm"
         }
@@ -1014,12 +1014,12 @@
     },
     "warm": {
       "type": "rest",
-      "narration": "The herder finds a dry hollow and sets out a little stove of warm stones. Tea steams. The kid falls asleep on someone's boots. She looks at the shrinking hay pile, then at the slope. \"The ticking comes from under the hall,\" she says. \"If you find where it goes, maybe I find a way to feed my herd. There is a tunnel at the foot of this slope. Too narrow for me. I will go around by the hall's wide back door and meet you. Small folk first.\" She hangs the lantern on your rope and presses a small jar of glowing moss into your hand. \"Mosslight. My grandmother's. For dark places.\"",
+      "narration": "The herder sets out a little stove of warm stones. The kid falls asleep on someone's boots. \"Find where the ticking goes, and maybe I find a way to feed my herd,\" she says. \"The tunnel below is too narrow for me. I will go around by the hall's back door and meet you.\" She gives you a jar of glowing moss. \"Mosslight. For dark places.\"",
       "heal": 2,
       "choices": [
         {
           "id": "continue",
-          "label": "Go down into the tunnel",
+          "label": "Go into the tunnel",
           "icon": "hand",
           "goto": "tunnel"
         }
@@ -1045,23 +1045,23 @@
     },
     "tunnel": {
       "type": "choice_point",
-      "narration": "The tunnel mouth is a low arch of clear ice. Beyond it is dark. Your breath hangs in the lantern light, and the ticking goes on somewhere ahead. Every wall looks the same, and your own footsteps come back to you a moment late, like a shy echo. How will you find your way?",
+      "narration": "The tunnel mouth is a low arch of clear ice. Beyond it is dark. Your footsteps come back to you late, like a shy echo. The ticking goes on ahead. How will you find your way?",
       "choices": [
         {
           "id": "lantern",
-          "label": "Light the lantern and search the walls in sections",
+          "label": "Search the walls by lantern",
           "icon": "hand",
           "goto": "tunnel_a"
         },
         {
           "id": "hum",
-          "label": "Close your eyes and follow the hall note's echo",
+          "label": "Follow the note's echo",
           "icon": "hand",
           "goto": "tunnel_b"
         },
         {
           "id": "moss",
-          "label": "Open the jar of mosslight and hold it up",
+          "label": "Open the mosslight jar",
           "icon": "spark",
           "goto": "tunnel_moss",
           "requiresItem": "mosslight_jar",
@@ -1074,7 +1074,7 @@
         },
         {
           "id": "glimmer",
-          "label": "Let a starweaver light the frost with starlight",
+          "label": "Light the frost with starlight",
           "icon": "star",
           "goto": "tunnel_star",
           "requiresClass": "starweaver"
@@ -1084,11 +1084,11 @@
     },
     "tunnel_a": {
       "type": "story",
-      "narration": "You hang the lantern on the rope and run the rope along the wall. Each of you takes a stretch of ice to study. Frost makes patterns here. Some look like feathers. One stretch looks like a row of little stitches.",
+      "narration": "You run the lantern along the wall, a stretch at a time. Frost makes patterns, mostly feathers. One stretch looks like a row of little stitches.",
       "choices": [
         {
           "id": "continue",
-          "label": "Search together",
+          "label": "Study the stitches",
           "icon": "hand",
           "goto": "tunnel_a_check"
         }
@@ -1097,7 +1097,7 @@
     },
     "tunnel_b": {
       "type": "story",
-      "narration": "You line up with a hand on the shoulder in front and close your eyes. You hum the hall note. It comes back from the left, a little louder. Hum again, and it comes back from lower down. The ice hums like a very large, very shy cat.",
+      "narration": "Hand on the shoulder in front, eyes closed, you hum the hall note. It comes back from the left, then from lower down. The ice hums like a very large, very shy cat.",
       "choices": [
         {
           "id": "continue",
@@ -1110,11 +1110,11 @@
     },
     "tunnel_star": {
       "type": "story",
-      "narration": "A starweaver breathes on the wall, and starlight makes the frost sparkle. The ticking line shows up like a path of tiny stars. The others hold the lantern steady and watch their footing. The best reader of frost can lead.",
+      "narration": "A starweaver breathes on the wall, and the frost sparkles. The ticking line shows up like a path of tiny stars. The others hold the lantern steady.",
       "choices": [
         {
           "id": "continue",
-          "label": "Work together using that help",
+          "label": "Follow the stars",
           "icon": "hand",
           "goto": "tunnel_star_check"
         }
@@ -1123,7 +1123,7 @@
     },
     "tunnel_moss": {
       "type": "story",
-      "narration": "You unscrew the herder's jar. Soft light spills out, and the frost wakes up all along the wall. The ticking line shows as a row of tiny shining stitches. The moss fades as you walk, as if it had only one good evening in it, and you tuck the empty jar away.",
+      "narration": "You open the herder's jar. Soft light spills out, and the ticking line shines on the wall like tiny stitches. The moss fades as you go, and you tuck the empty jar away.",
       "choices": [
         {
           "id": "continue",
@@ -1138,7 +1138,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 8,
-      "prompt": "Follow the shining stitches along the wall. Choose who leads; everyone can help.",
+      "prompt": "Follow the shining stitches along the wall.",
       "onSuccess": {
         "goto": "tunnel_done"
       },
@@ -1151,7 +1151,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 8,
-      "prompt": "Everyone studies a different stretch of wall. Half of you must spot the line of ticks.",
+      "prompt": "Study the wall, stretch by stretch, and spot the line of ticks.",
       "roller": "all",
       "onSuccess": {
         "goto": "tunnel_done"
@@ -1165,7 +1165,7 @@
       "type": "check",
       "stat": "heart",
       "tn": 8,
-      "prompt": "Everyone hums the hall note together and follows the loudest echo, hand on shoulder.",
+      "prompt": "Hum together and follow the loudest echo, hand on shoulder.",
       "roller": "all",
       "checkKind": "doing",
       "onSuccess": {
@@ -1180,7 +1180,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 8,
-      "prompt": "Starlight lights the frost. The starweaver assists; choose who leads the team check.",
+      "prompt": "Read the starlit frost and lead the way.",
       "onSuccess": {
         "goto": "tunnel_done"
       },
@@ -1191,7 +1191,7 @@
     },
     "tunnel_done": {
       "type": "story",
-      "narration": "The ticks run along the wall like stitches, then turn down toward a crack at the tunnel's end. Your lantern light jumps, but the line holds. At the crack, the tunnel shrinks around you. You will have to squeeze.",
+      "narration": "The ticks run along the wall like stitches, then turn down to a crack at the tunnel's end. There, the tunnel shrinks around you. You will have to squeeze.",
       "choices": [
         {
           "id": "continue",
@@ -1210,7 +1210,7 @@
     },
     "tunnel_off": {
       "type": "story",
-      "narration": "The lantern swings, and the frost blurs into feathers and stitches and more feathers. You wander in a slow circle and bump into the same wall twice. The third time, you notice the ticks under your hand. They lead to a crack at the tunnel's end, where the tunnel shrinks around you.",
+      "narration": "The frost blurs into feathers and more feathers. You bump the same wall twice. The third time, you feel ticks under your hand. They lead to a crack where the tunnel shrinks around you.",
       "choices": [
         {
           "id": "continue",
@@ -1229,30 +1229,30 @@
     },
     "squeeze": {
       "type": "choice_point",
-      "narration": "The crack is just wide enough for one body at a time, and far too narrow for packs. Through it, the ticking is much louder. Cold air slides out, with a faint smell of salt. Part of the roof looks loose. How will you get through?",
+      "narration": "The crack fits one body at a time, and no packs. Through it, the ticking is louder. Cold air slides out, smelling faintly of salt. Part of the roof looks loose. How will you get through?",
       "choices": [
         {
           "id": "chip",
-          "label": "Chip the crack wider with the rope hooks",
+          "label": "Chip it wider",
           "icon": "hand",
           "goto": "squeeze_a"
         },
         {
           "id": "pass",
-          "label": "Work out an order and pass the packs along",
+          "label": "Pass the packs through",
           "icon": "hand",
           "goto": "squeeze_b"
         },
         {
           "id": "brace",
-          "label": "Hold up the loose roof with brace",
+          "label": "Brace the loose roof",
           "icon": "shield",
           "goto": "squeeze_brace",
           "requiresClass": "thornguard"
         },
         {
           "id": "slip",
-          "label": "Slip through first and tie the rope on the far side",
+          "label": "Slip through with rope",
           "icon": "feather",
           "goto": "squeeze_slip",
           "requiresClass": "duskrunner"
@@ -1264,7 +1264,7 @@
       "type": "check",
       "stat": "might",
       "tn": 12,
-      "prompt": "Chip the crack wider with the rope hooks. The strongest arm should lead!",
+      "prompt": "Chip the crack wider with the rope hooks.",
       "roller": "best",
       "onSuccess": {
         "goto": "squeeze_done"
@@ -1278,7 +1278,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Smallest first, packs on the rope, nobody stuck. Work out the order. Choose who leads; everyone can help.",
+      "prompt": "Smallest first, packs on the rope, nobody stuck. Work out the order.",
       "onSuccess": {
         "goto": "squeeze_done"
       },
@@ -1289,11 +1289,11 @@
     },
     "squeeze_brace": {
       "type": "story",
-      "narration": "A thornguard plants both feet and holds up the loose roof with brace. The others edge past, one at a time, with the packs on the rope. The strongest helper can lead the careful work; nobody needs to pretend they brought another hero's ability.",
+      "narration": "A thornguard plants both feet and holds up the loose roof. The others edge past, one at a time, with the packs on the rope.",
       "choices": [
         {
           "id": "continue",
-          "label": "Work together using that help",
+          "label": "Edge past the thornguard",
           "icon": "hand",
           "goto": "squeeze_brace_check"
         }
@@ -1302,11 +1302,11 @@
     },
     "squeeze_slip": {
       "type": "story",
-      "narration": "A duskrunner slides through the crack like a ribbon and ties the rope to a knob of ice on the far side. Then the packs go over the rope, and the others follow. The quickest helper can lead the pulling; nobody needs to pretend they slid.",
+      "narration": "A duskrunner slides through like a ribbon and ties the rope to a knob of ice. The packs go over the rope, and the others follow.",
       "choices": [
         {
           "id": "continue",
-          "label": "Work together using that help",
+          "label": "Follow the rope through",
           "icon": "hand",
           "goto": "squeeze_slip_check"
         }
@@ -1317,7 +1317,7 @@
       "type": "check",
       "stat": "might",
       "tn": 8,
-      "prompt": "A thornguard holds up the roof. The thornguard assists; choose who leads the team check.",
+      "prompt": "Hold the roof up while everyone edges through.",
       "onSuccess": {
         "goto": "squeeze_done"
       },
@@ -1330,7 +1330,7 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "prompt": "A duskrunner ties the rope. The qualified hero assists; choose who leads the team check.",
+      "prompt": "Slip through and tie the rope on the far side.",
       "onSuccess": {
         "goto": "squeeze_done"
       },
@@ -1341,7 +1341,7 @@
     },
     "squeeze_done": {
       "type": "story",
-      "narration": "The crack is wide enough for a person now. As you edge in, small chips of ice pat down from the roof, and the roof gives a long, low creak.",
+      "narration": "The crack is wide enough now. As you edge in, ice chips pat down from the roof. It gives a long, low creak.",
       "choices": [
         {
           "id": "continue",
@@ -1354,7 +1354,7 @@
     },
     "squeeze_off": {
       "type": "story",
-      "narration": "The crack is only half as wide as you hoped. A bucket of ice chips rains onto your heads, and the roof gives a long, low creak. Everyone has frost eyebrows.",
+      "narration": "The crack is only half as wide as you hoped. Ice chips rain on your heads, and the roof creaks. Everyone gets frosty eyebrows.",
       "choices": [
         {
           "id": "continue",
@@ -1367,7 +1367,7 @@
     },
     "squeeze_hold": {
       "type": "interaction",
-      "narration": "The loose roof will not stay up by itself. Somebody has to hold it while somebody else crawls through with the rope. Little pebbles patter on your helmets, and the ticking on the far side is louder than ever.",
+      "narration": "The loose roof will not stay up by itself. Someone holds it while a friend crawls through with the rope.",
       "interaction": {
         "kind": "cooperate",
         "cue": "Hold the roof while your friend crawls through with the rope.",
@@ -1376,11 +1376,11 @@
       },
       "onSuccess": {
         "goto": "seam_back",
-        "narration": "One by one, you come through. The packs follow on the rope. The last one through leaves a streak of frost on the crack, and laughs when it stings their ear."
+        "narration": "One by one, you come through, packs and all."
       },
       "onFailure": {
         "goto": "seam_back",
-        "narration": "The roof sheds one more shower of ice chips, and the lantern goes through last, swinging. Nobody is hurt, and everybody is a little more frosty."
+        "narration": "The roof sheds one more shower of chips. Nobody is hurt, just frostier."
       },
       "onAssisted": {
         "goto": "seam_back",
@@ -1390,17 +1390,17 @@
     },
     "seam_back": {
       "type": "choice_point",
-      "narration": "You come out in a small round chamber. One wall is smooth and glossy. It is the back of the sealed seam in the singing hall, and it is warm to the touch. The ticking is here, loud as a heartbeat. You are standing right behind the hall's wall. How will you test it from this side?",
+      "narration": "You come out in a small round chamber. One wall is smooth and warm: the back of the sealed seam in the singing hall. Here the ticking is loud as a heartbeat. How will you test it?",
       "choices": [
         {
           "id": "hum",
-          "label": "Hum the hall note softly at the seam",
+          "label": "Hum at the seam",
           "icon": "hand",
           "goto": "seam_a"
         },
         {
           "id": "tap",
-          "label": "Tap the beat on the seam with a stone",
+          "label": "Tap the beat",
           "icon": "hand",
           "goto": "seam_b"
         }
@@ -1410,11 +1410,11 @@
     "seam_a": {
       "art": "scenes/riftlight/hidden-sealed-seam",
       "type": "story",
-      "narration": "You hum the familiar hall note at the back of the seam. The herder listens with you.",
+      "narration": "You hum the hall note softly at the back of the seam, and wait.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Wait for an answer",
           "icon": "forward",
           "goto": "seam_done"
         }
@@ -1423,11 +1423,11 @@
     "seam_b": {
       "art": "scenes/riftlight/hidden-sealed-seam",
       "type": "story",
-      "narration": "You tap slow, slow, quick against the seam. Then everyone leaves a little silence for its answer.",
+      "narration": "You tap slow, slow, quick on the seam with a stone. Then everyone leaves a little silence for its answer.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Wait for an answer",
           "icon": "forward",
           "goto": "seam_done"
         }
@@ -1435,7 +1435,7 @@
     },
     "seam_done": {
       "type": "story",
-      "narration": "The seam ticks back at you, quicker. Frost sparkles down the wall in a pattern, over and over, as if it wants you to say it back.",
+      "narration": "The seam ticks back, quicker. Frost sparkles down the wall in a pattern, over and over, as if it wants you to say it back.",
       "choices": [
         {
           "id": "continue",
@@ -1448,7 +1448,7 @@
     },
     "seam_echo": {
       "type": "interaction",
-      "narration": "The frost sparkles in a pattern: tick, tock, tock, tick. The seam wants it said back, and you are sure of it. Everyone watches the wall, because everyone sees the sparkles a little differently.",
+      "narration": "The frost sparkles a pattern: tick, tock, tock, tick. The seam wants it said back. Everyone sees the sparkles a little differently.",
       "interaction": {
         "kind": "memory",
         "cue": "Watch the frost sparkle, then tap the same pattern.",
@@ -1480,25 +1480,25 @@
       },
       "onSuccess": {
         "goto": "behind",
-        "narration": "The seam hums, pleased. A thin line of light draws itself along the ice to a crack in the corner, as narrow as a door left open for a cat. The seam itself stays shut. The crack is where the ticking is going."
+        "narration": "The seam hums, pleased, but stays shut. A line of light runs to a crack in the corner, narrow as a cat door. The ticking goes through it."
       },
       "onFailure": {
         "goto": "behind",
-        "narration": "The seam sulks, then slides a thin line of frost down the wall all by itself, to a crack in the corner as narrow as a door left open for a cat. The seam itself stays shut. The crack is where the ticking is going."
+        "narration": "The seam sulks and stays shut. Then it slides a line of frost to a crack in the corner, narrow as a cat door. The ticking goes through it."
       },
       "onAssisted": {
         "goto": "behind",
-        "narration": "You trace the pattern together on the wall. A thin line of light draws itself along the ice to a crack in the corner, as narrow as a door left open for a cat. The seam itself stays shut."
+        "narration": "You trace the pattern together. The seam stays shut, but a line of light runs to a narrow crack in the corner."
       },
       "art": "scenes/riftlight/hidden-sealed-seam"
     },
     "behind": {
       "type": "story",
-      "narration": "You slip through the corner crack into a narrow passage that runs behind the singing hall. It is cold, and it smells of salt. Water beads on the rock. Far off, you hear the yetis in the hall holding their low note. Ahead, the ticking stops, and something shimmers. Your ears feel strange without it, like a clock that has just been wound down.",
+      "narration": "You slip through the corner crack into a narrow passage behind the singing hall. It smells of salt. Far off, the yetis in the hall hold their low note. Ahead, the ticking stops, and something shimmers.",
       "choices": [
         {
           "id": "continue",
-          "label": "Walk to the end of the passage",
+          "label": "Walk to the shimmer",
           "icon": "hand",
           "goto": "passage"
         }
@@ -1507,7 +1507,7 @@
     },
     "passage": {
       "type": "choice_point",
-      "narration": "The passage ends at a fold in the air, quite separate from the hall wall. Beyond its shimmer you smell salt wind and hear gulls. Water beads on the rock beside it. What will you try? The light around the fold is called Riftlight.",
+      "narration": "The passage ends at a fold in the air. Beyond its shimmer, you smell salt wind and hear gulls. The light around the fold is called Riftlight. What will you try?",
       "choices": [
         {
           "id": "chime",
@@ -1525,13 +1525,13 @@
         },
         {
           "id": "listen",
-          "label": "Listen before deciding",
+          "label": "Listen first",
           "icon": "hand",
           "goto": "listen"
         },
         {
           "id": "look",
-          "label": "Study the rock around the fold",
+          "label": "Study the rock",
           "icon": "hand",
           "goto": "look"
         }
@@ -1541,11 +1541,11 @@
     },
     "chime": {
       "type": "story",
-      "narration": "You strike the chime. Its note goes sour and does not echo. The way is not ready. You wait for silence and hear a lower note trembling under your feet.",
+      "narration": "You strike the chime. Its note goes sour, with no echo. The way is not ready yet. In the quiet after, a lower note trembles under your feet.",
       "choices": [
         {
           "id": "continue",
-          "label": "Choose what to do",
+          "label": "Find the fold's beat",
           "icon": "hand",
           "goto": "beat"
         }
@@ -1556,7 +1556,7 @@
             "flag": "glacier_rift_woken"
           },
           "replace": true,
-          "text": "The chime answers with a clear note and an echo. The opening is still ready, and the return remains available. Your first song was enough."
+          "text": "The chime answers with a clear note and an echo. The opening is still ready, and the way back is still there. Your first song was enough."
         }
       ],
       "onEnter": [
@@ -1570,11 +1570,11 @@
     },
     "read": {
       "type": "story",
-      "narration": "Your starweaver studies the light while the others see a neutral shimmer. The opening hums faintly back. Nothing steps through it, and no one can name the place beyond.",
+      "narration": "Your starweaver studies the light. The others see only a shimmer. The opening hums back faintly. Nothing steps through, and nobody can name the place beyond.",
       "choices": [
         {
           "id": "continue",
-          "label": "Choose what to do",
+          "label": "Find the fold's beat",
           "icon": "hand",
           "goto": "beat"
         }
@@ -1590,11 +1590,11 @@
     },
     "listen": {
       "type": "story",
-      "narration": "You put an ear near the rock. Under the gull cries, a low note rises and falls. It matches the one you learned in the hall. The smell of salt comes and goes with it.",
+      "narration": "You put an ear near the rock. Under the gull cries, a low note rises and falls. It matches the one you learned in the hall.",
       "choices": [
         {
           "id": "continue",
-          "label": "Choose what to do",
+          "label": "Find the fold's beat",
           "icon": "hand",
           "goto": "beat"
         }
@@ -1610,11 +1610,11 @@
     },
     "look": {
       "type": "story",
-      "narration": "You study the rock around the fold. Frost lines run toward it like the spokes of a wheel, and every line is ticking. Beside the fold, someone long ago scratched a tally into the stone, one mark for every visit. There are not many marks.",
+      "narration": "Frost lines run toward the fold like the spokes of a wheel, and every line ticks. Beside it, someone long ago scratched a tally into the stone, one mark for each visit. There are not many marks.",
       "choices": [
         {
           "id": "continue",
-          "label": "Choose what to do",
+          "label": "Find the fold's beat",
           "icon": "hand",
           "goto": "beat"
         }
@@ -1630,7 +1630,7 @@
     },
     "beat": {
       "type": "interaction",
-      "narration": "The fold ticks in front of you, steady as a clock. The ticking has a beat, and the beat has an order. Each of you holds a clue. Which taps, in which order, match it?",
+      "narration": "The fold ticks, steady as a clock. The beat has an order, and everyone holds a clue. Which taps, in which order?",
       "interaction": {
         "kind": "sequence",
         "cue": "Share your clues, then tap the beat in order.",
@@ -1677,7 +1677,7 @@
     },
     "beat_done": {
       "type": "story",
-      "narration": "Your taps and the ticking line up: slow, slow, quick. The fold brightens, and the salt wind leans in, as if it likes the sound. A gull cries on the other side, very close, and then goes quiet, as if it is listening too. This is no trick of the ice. The fold is answering the hall note, the same note you sang to the seam.",
+      "narration": "Your taps and the ticking line up: slow, slow, quick. The fold brightens. A gull cries on the other side, very close. The fold is answering the hall note, the same note you sang to the seam.",
       "choices": [
         {
           "id": "continue",
@@ -1691,7 +1691,7 @@
     },
     "beat_off": {
       "type": "story",
-      "narration": "The taps tumble into a clatter, and the fold dims. A puff of cold air knocks the pebbles out of your hands. You stop tapping and listen instead, and still catch the pattern: slow, slow, quick. It is the hall note, answered. The fold brightens again.",
+      "narration": "The taps tumble into a clatter, and the fold dims. A puff of cold air ruffles your hair. You stop and listen instead: slow, slow, quick. It is the hall note, answered. The fold brightens again.",
       "choices": [
         {
           "id": "continue",
@@ -1705,23 +1705,23 @@
     },
     "cairn": {
       "type": "choice_point",
-      "narration": "The herder squeezes in from the hall's wide back door, huffing frost, with the kid under her arm and a bit of hay stuck in her fur. She sees the fold, sniffs the salt wind, and takes a big step back. \"That,\" she says, \"is where my herd must never wander. Goats go through anything. How do we keep them out?\"",
+      "narration": "The herder squeezes in from the hall's wide back door, with hay in her fur and the kid under her arm. She sniffs the salt wind and steps back. \"My herd must never wander in there. Goats go through anything. How do we keep them out?\"",
       "choices": [
         {
           "id": "blocks",
-          "label": "Stack ice blocks across the passage mouth",
+          "label": "Stack ice blocks",
           "icon": "hand",
           "goto": "cairn_a"
         },
         {
           "id": "bells",
-          "label": "String a bell line across the passage mouth",
+          "label": "String goat bells across",
           "icon": "hand",
           "goto": "cairn_b"
         },
         {
           "id": "smash",
-          "label": "Smash big blocks into place",
+          "label": "Smash big blocks in",
           "icon": "fist",
           "goto": "cairn_smash",
           "requiresSpecies": "bigfoot"
@@ -1754,11 +1754,11 @@
       ],
       "rift": "steady",
       "type": "story",
-      "narration": "You stack the passage marker with the herder, leaving room for people to pass. She tests the blocks before calling the kid back.",
+      "narration": "You and the herder stack blocks across the passage mouth, leaving a gap for people. She tests each block before she calls the kid back.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Step back and look",
           "icon": "forward",
           "goto": "cairn_done"
         }
@@ -1778,11 +1778,11 @@
       ],
       "rift": "steady",
       "type": "story",
-      "narration": "You tie the bells across the passage mouth. The herder checks their height against the kid, who immediately tries to eat one.",
+      "narration": "You tie the herder's spare goat bells across the passage mouth. She checks their height against the kid, who tries to eat a bell.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Step back and look",
           "icon": "forward",
           "goto": "cairn_done"
         }
@@ -1790,11 +1790,11 @@
     },
     "cairn_smash": {
       "type": "story",
-      "narration": "A bigfoot lifts the biggest blocks and settles them with a mighty smash, thump, thump, thump. The others fit the small stones in the gaps. The strongest helper can lead; nobody needs to pretend they smashed.",
+      "narration": "A bigfoot lifts the biggest blocks. Smash, thump, thump! The others fit small stones into the gaps.",
       "choices": [
         {
           "id": "continue",
-          "label": "Work together using that help",
+          "label": "Fill the gaps",
           "icon": "hand",
           "goto": "cairn_smash_check"
         }
@@ -1826,11 +1826,11 @@
       ],
       "rift": "steady",
       "type": "story",
-      "narration": "Your bigfoot sets the broad blocks while friends mark a gap for travelers. The herder checks that a curious goat cannot squeeze through.",
+      "narration": "Your bigfoot sets the last broad block, and everyone marks a gap for travelers. The herder checks that no curious goat can squeeze through.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Step back and look",
           "icon": "forward",
           "goto": "cairn_done"
         }
@@ -1838,7 +1838,7 @@
     },
     "cairn_done": {
       "type": "story",
-      "narration": "The passage mouth is marked. Goats will stay out, and travelers will know to look before they step in. The herder pats the cairn as if it were a friend's head. \"There. It can be as strange as it likes, on the other side of that.\"",
+      "narration": "The passage mouth is marked. Goats will stay out, and travelers will look before they step in. The herder pats the cairn like a friend's head. \"There. It can be as strange as it likes on the other side.\"",
       "choices": [
         {
           "id": "continue",
@@ -1862,7 +1862,7 @@
     },
     "herder_say": {
       "type": "story",
-      "narration": "The herder rubs her chin. \"So. The ticking is the hall's note, answered from somewhere else. Maybe your song wakes it. Maybe it only wakes whatever waits on the other side. I cannot tell you which.\" She looks at the salt wind. \"It is your road, not mine. I will keep my herd out of it either way.\" She presses a few coins from the hall's tin into your hand, and a small warm bead after them. \"Keepers' fee. The bead is from my grandmother's string.\"",
+      "narration": "\"The ticking is the hall's note, answered from somewhere else,\" says the herder. \"Maybe your song wakes it. Maybe it wakes whatever waits beyond. It is your road, not mine.\" She presses four coins from the hall's tin into your hand, and a small warm bead. \"Keepers' fee. The bead was my grandmother's.\"",
       "choices": [
         {
           "id": "continue",
@@ -1872,7 +1872,7 @@
         },
         {
           "id": "share",
-          "label": "Share a supper bundle with the hungry herder",
+          "label": "Share food with her",
           "icon": "hand",
           "goto": "herder_share",
           "when": {
@@ -1921,7 +1921,7 @@
     },
     "herder_share": {
       "type": "story",
-      "narration": "She eats it in two bites, then looks embarrassed. \"The hay is not all that is low,\" she admits. She gives the kid the crust. The kid looks at you as if you were the best person in the world, and then eats the herder's glove.",
+      "narration": "She eats it in two bites and looks embarrassed. \"The hay is not the only thing running low.\" The kid gets the crust, and then eats her glove.",
       "choices": [
         {
           "id": "continue",
@@ -1945,23 +1945,23 @@
     },
     "footing": {
       "type": "choice_point",
-      "narration": "Before anyone sings beside the fold, the herder checks the floor with her heel and frowns. Meltwater from the beaded rock has made a slick skin of ice that slopes toward the shimmer. \"One wobble and somebody slides in feet first,\" she says. \"That is no door to go through by accident.\" The kid watches a drip run down the wall with enormous interest. \"The hall keeps grit by the back door,\" she adds. \"Two coins a sack.\"",
+      "narration": "The herder scuffs the floor and frowns. Meltwater has left a slick skin of ice sloping toward the shimmer. \"One wobble, and somebody slides in feet first.\" By the back door lie old planks and a little grit. The kid stares at a drip, fascinated.",
       "choices": [
         {
           "id": "steps",
-          "label": "Chip steps into the icy floor",
+          "label": "Chip steps in",
           "icon": "hand",
           "goto": "footing_a"
         },
         {
           "id": "grit",
-          "label": "Spread grit and lay a plank walkway",
+          "label": "Lay planks and grit",
           "icon": "hand",
           "goto": "footing_b"
         },
         {
           "id": "buy",
-          "label": "Buy a sack of the hall's grit (2 coins)",
+          "label": "Buy hall grit (2 coins)",
           "icon": "hand",
           "goto": "footing_buy",
           "when": {
@@ -1994,7 +1994,7 @@
       "type": "check",
       "stat": "might",
       "tn": 12,
-      "prompt": "Chip small steps into the slick floor, deep enough to grip. Choose who leads; everyone can help.",
+      "prompt": "Chip small steps into the slick floor, deep enough to grip.",
       "onSuccess": {
         "goto": "footing_done"
       },
@@ -2018,7 +2018,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Pick the safest line for the planks and spread grit where the ice is thinnest. Choose who leads; everyone can help.",
+      "prompt": "Lay the planks on the safest line, and grit the thinnest ice.",
       "onSuccess": {
         "goto": "footing_done"
       },
@@ -2040,11 +2040,11 @@
     },
     "footing_buy": {
       "type": "story",
-      "narration": "A young yeti trots up from the hall with a sack of coarse grit and a sign that says GRIT. The herder pays no attention to the sign. You spread the grit in a wide fan, and it bites into the ice at once. Nobody will slide anywhere they do not mean to go. The kid eats a pinch and regrets it.",
+      "narration": "A young yeti trots up with a sack of grit and a sign that says GRIT. You spread it, and it bites into the ice. The kid eats a pinch and regrets it.",
       "choices": [
         {
           "id": "continue",
-          "label": "Think about what to do",
+          "label": "Decide about the fold",
           "icon": "hand",
           "goto": "decide"
         }
@@ -2068,11 +2068,11 @@
     },
     "footing_done": {
       "type": "story",
-      "narration": "The floor bites back at your boots now. The herder stamps on the planks, then on the steps, then on the kid's tail by mistake, and everybody apologizes. Nobody will slide anywhere they do not mean to go.",
+      "narration": "The floor grips your boots now. The herder stamps on it, then on the kid's tail by mistake, and everybody apologizes. Nobody will slide anywhere by accident.",
       "choices": [
         {
           "id": "continue",
-          "label": "Think about what to do",
+          "label": "Decide about the fold",
           "icon": "hand",
           "goto": "decide"
         }
@@ -2092,11 +2092,11 @@
     },
     "footing_off": {
       "type": "story",
-      "narration": "A boot skids, and someone sits down hard on the ice with a thump that makes the fold shiver. Everyone laughs, and the herder hauls them upright. You spread the last of the grit more carefully. The floor is rougher than you wanted, but it holds.",
+      "narration": "A boot skids, and someone sits down hard. The thump makes the fold shiver. The herder hauls them up, laughing. The floor is rough, but it holds.",
       "choices": [
         {
           "id": "continue",
-          "label": "Think about what to do",
+          "label": "Decide about the fold",
           "icon": "hand",
           "goto": "decide"
         }
@@ -2124,11 +2124,11 @@
     },
     "decide": {
       "type": "choice_point",
-      "narration": "You remember how the hall seam answered your song. Here the sound comes from the fold itself, and its beat is the beat of your song. The herder waits by the cairn. You can sing the hall note together and see what the fold does, or leave the opening alone and go back to the hall.",
+      "narration": "The hall seam answered your song. Here the fold itself ticks to the beat of that song. The herder waits by the cairn. Sing the hall note together and see what the fold does? Or leave it alone and go back to the hall?",
       "choices": [
         {
           "id": "sing",
-          "label": "Sing the hall note together",
+          "label": "Sing the hall note",
           "icon": "hand",
           "goto": "hold",
           "effects": [
@@ -2140,7 +2140,7 @@
         },
         {
           "id": "leave",
-          "label": "Return to the hall and the shelf path",
+          "label": "Go back to the hall",
           "icon": "hand",
           "goto": "leave",
           "effects": [
@@ -2168,7 +2168,7 @@
       "type": "check",
       "stat": "heart",
       "tn": 8,
-      "prompt": "Everyone sings the low hall note and holds it. Half of you must keep it steady all the way to the end.",
+      "prompt": "Everyone sings the low hall note and holds it to the end.",
       "roller": "all",
       "checkKind": "doing",
       "onSuccess": {
@@ -2192,7 +2192,7 @@
     },
     "sing_wobble": {
       "type": "story",
-      "narration": "The note wobbles. Frost shakes loose from the ceiling in a glittering shower, right down someone's collar. Then the herder hums the low part from the cairn, deep and slow, and you find your note again. It is not a tidy song. It is enough.",
+      "narration": "The note wobbles. Frost showers down someone's collar. Then the herder hums the low part from the cairn, deep and slow, and you find your note again. It is not tidy. It is enough.",
       "choices": [
         {
           "id": "continue",
@@ -2216,11 +2216,11 @@
     },
     "sing": {
       "type": "story",
-      "narration": "You sing the low note. The ticking steadies. The fold widens, letting salt wind brush your cheeks. When you stop singing, it stays open. You have met its condition; you have not changed its rules.",
+      "narration": "You sing the low note. The ticking steadies. The fold widens, and salt wind brushes your cheeks. When you stop, it stays open. You answered it. You did not change its rules.",
       "choices": [
         {
           "id": "continue",
-          "label": "Test the way before stepping through",
+          "label": "Test the way first",
           "icon": "hand",
           "goto": "test_open",
           "effects": [
@@ -2238,7 +2238,7 @@
             "flag": "glacier_rift_woken"
           },
           "replace": true,
-          "text": "You hum again. The opening stays just as wide. It does not need another note; it has stayed open since your first song."
+          "text": "You hum again. The opening stays just as wide. It does not need another note. It has stayed open since your first song."
         }
       ],
       "art": "scenes/riftlight/hidden-ticking-fold",
@@ -2246,7 +2246,7 @@
     },
     "test_open": {
       "type": "story",
-      "narration": "The chime answers with a clear note and an echo. The opening is ready, and it offers a way back. On the other side, shallow water ripples around patches of mud. You can cross together or return to camp first.",
+      "narration": "The chime answers with a clear note and an echo. The opening is ready, with a way back. Beyond, shallow water ripples around mud. Cross together, or go back to camp first.",
       "choices": [
         {
           "id": "continue",
@@ -2261,7 +2261,7 @@
             "notItem": "listening_chime"
           },
           "replace": true,
-          "text": "The opening stays wide after your song ends. Salt wind and gull cries continue. You can return to camp for the Listening Chime before trusting the crossing."
+          "text": "The opening stays wide after your song. Salt wind and gull cries keep coming. You could fetch the Listening Chime from camp before you trust it."
         }
       ],
       "art": "scenes/riftlight/hidden-ticking-fold",
@@ -2269,7 +2269,7 @@
     },
     "ready": {
       "type": "rest",
-      "narration": "You stand together beside the fold, with the passage back to the singing hall behind you and the herder's cairn guarding its mouth. The open air smells of the coast. Nobody knows its name yet.",
+      "narration": "You stand together by the fold. The passage to the singing hall is behind you, and the herder's cairn guards its mouth. The air smells of a coast nobody can name yet.",
       "heal": 0,
       "choices": [],
       "outcome": "success",
@@ -2278,7 +2278,7 @@
     },
     "leave": {
       "type": "rest",
-      "narration": "The herder walks you back to the hall by the wide back door, the kid trotting ahead. The cairn stands guard at the passage mouth. The Cairnstep lead is still yours to follow. You can come back and sing the note later.",
+      "narration": "The herder walks you back to the hall by the wide back door. The kid trots ahead. The cairn guards the passage mouth. The Cairnstep lead is still yours, and you can come back to sing the note later.",
       "heal": 0,
       "choices": [],
       "outcome": "success",
