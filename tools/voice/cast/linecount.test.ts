@@ -283,8 +283,8 @@ describe("someone known only by what they are, and a gender the notes already st
     { id: "b", campaignId: "gem", voiceGuide: { npcVoices: { Pib: "Pib, a sprite" } }, scenes: { s: { cast: [{ name: "Pib" }] } } },
   ];
 
-  it("lets a role-named character be 'the beech' in a chapter that does not cast them, when nobody else in the campaign is", () => {
-    const sheet = buildSheet({ chapters: campaign, individuals: [], narration: [{ chapter: "b", address: "b/s/narration", text: 'A huge beech sits across the path. "Why did you come?" it whispers.' }] }, null);
+  it("lets a tree be 'the beech' in a scene that does not cast it", () => {
+    const sheet = buildSheet({ chapters: campaign, individuals: [], narration: [{ chapter: "a", address: "a/other/narration", text: 'A huge beech sits across the path. "Why did you come?" it whispers.' }] }, null);
     expect(sheet.speakers.beech_tree!.lineCount).toBe(1);
   });
 
@@ -310,5 +310,47 @@ describe("a quote that says who is speaking, after a sentence about someone else
     expect(attributeQuotes('The guide waits. "I\'m Corvane."', speakers).map((q) => q.id)).toEqual(["corvane"]);
     // With nothing in the quote naming anyone, the sentence before it still says whose it is.
     expect(attributeQuotes('The guide waits. "Mind the step."', speakers).map((q) => q.id)).toEqual(["guide"]);
+  });
+});
+
+describe("names that are mostly a common word", () => {
+  const campaign: ChapterLike[] = [
+    {
+      id: "c",
+      voiceGuide: { npcVoices: { "The Eldest": "MossHome elder; mild", "MossHome Runner": "a runner; brisk", "Door Archivist": "brisk archivist; warm once she decides you matter" } },
+      scenes: { quay: { cast: [{ name: "MossHome Runner" }] }, hall: { cast: [{ name: "Door Archivist" }] } },
+    },
+    { id: "d", voiceGuide: { npcVoices: { Gullet: "Gullet, a marsh frog" } }, scenes: { a: { cast: [{ name: "Gullet" }] } } },
+  ];
+
+  it("does not make 'The' or 'door' a name: the Eldest and the Door Archivist are not credited with the quotes around them", () => {
+    const narration: NarrationLine[] = [
+      { chapter: "c", address: "c/quay/narration", text: 'The runner skids to a stop at the tavern door. "Shoo them off my lamps!" she says.' },
+      { chapter: "c", address: "c/quay/narration", text: 'The Seal-Keeper opens an eye the size of a door. "Harvest sprites. They do not give those to many," it says.' },
+      { chapter: "c", address: "c/quay/narration", text: 'He shuts the door and hands over the whistle. "Now. Before the captain, the tags," he says.' },
+    ];
+    const sheet = buildSheet({ chapters: campaign, individuals: [], narration }, null);
+    const named = (name: string) => Object.values(sheet.speakers).find((speaker) => speaker.name === name)!;
+    expect(named("The Eldest").lineCount).toBe(0);
+    expect(named("Door Archivist").lineCount).toBe(0);
+    expect(named("MossHome Runner").lineCount).toBeGreaterThanOrEqual(1);
+  });
+
+  it("does not take the describing first word of a name for the name: 'a small thing' is not the Small Dragonling", () => {
+    const chapters: ChapterLike[] = [{ id: "e", voiceGuide: { npcVoices: { "Small Dragonling": "a small dragonling", "Tobble Reedpipe": "Tobble Reedpipe, a faun" } }, scenes: { s: { cast: [{ name: "Tobble Reedpipe" }] } } }];
+    const sheet = buildSheet({ chapters, individuals: [], narration: [{ chapter: "e", address: "e/s/narration", text: 'A small bell rings. "Hello," Tobble says. A small cheer goes up. "Welcome!" says Tobble.' }] }, null);
+    const named = (name: string) => Object.values(sheet.speakers).find((speaker) => speaker.name === name)!;
+    expect(named("Small Dragonling").lineCount).toBe(0);
+    // A given name is still a name.
+    expect(named("Tobble Reedpipe").lineCount).toBeGreaterThanOrEqual(1);
+  });
+
+  it("still tags the Eldest by 'the eldest' and by their full name", () => {
+    const narration: NarrationLine[] = [
+      { chapter: "c", address: "c/hall/narration", text: '"You have the outline of it now," says the eldest.' },
+      { chapter: "c", address: "c/hall/second", text: '"Nobody yet," says The Eldest.' },
+    ];
+    const sheet = buildSheet({ chapters: campaign, individuals: [], narration }, null);
+    expect(Object.values(sheet.speakers).find((speaker) => speaker.name === "The Eldest")!.lineCount).toBe(2);
   });
 });

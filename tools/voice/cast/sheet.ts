@@ -291,7 +291,7 @@ export function withSceneRoles(present: readonly Speaker[], inScene: ReadonlySet
     const last = words[words.length - 1];
     if (!last || last.length < 4) continue;
     // The last word ("the keeper"), and any other word of the name that is a role ("the elder" for the Elder Unicorn).
-    const named = new Set([last, last.length > 4 ? last.replace(/s$/, "") : last, ...words.filter((word) => word.length >= 4 && ROLE_WORDS.test(word)).map((word) => word.replace(/s$/, ""))]);
+    const named = new Set([last, last.length > 4 ? last.replace(/s$/, "") : last, ...words.filter((word) => word.length >= 4 && PERSON_TITLES.test(word)).map((word) => word.replace(/s$/, ""))]);
     for (const word of named) owners.set(word, [...(owners.get(word) ?? []), id]);
   }
   return present.map((speaker) => {
@@ -607,12 +607,16 @@ function namesFor(draft: Pick<Draft, "name" | "aliases">): string[] {
       const last = words[words.length - 1]!;
       if (last.length >= 4) names.add(last);
     } else if (words.length > 1 && /^[A-Z]/.test(words[0]!) && /^[A-Z]/.test(words[1]!) && !isRoleName(name)) {
-      // "Tobble Reedpipe" is "Tobble" in the prose.
-      names.add(words[0]!);
+      // "Tobble Reedpipe" is "Tobble" in the prose. "The Eldest" is not "The": every "the" would be them.
+      // Nor "Small Dragonling" "Small", nor "Red Scarves" "Red": a word that describes is not a name.
+      if (!/^(the|an?|small|tiny|little|big|great|tall|young|new|old|red|blue|green|black|white|gray|grey|brass|stone|wild|dark|deep|high|low|north|south|east|west|first|last)$/i.test(words[0]!)) names.add(words[0]!);
     }
   }
   return [...names];
 }
+
+/** The first word of a name that is someone's title ("the elder"), as opposed to a thing ("the door"). */
+const PERSON_TITLES = /^(captain|elder|eldest|oldest|warden|sergeant|corporal|engineer|professor|clerk|grandmother|master|lady|keeper|guide|drover|runner|archivist|singer|worker|builder|pilot)s?$/i;
 
 // Jobs and roles, never peoples: "the merfolk" in a chapter with two merfolk is anybody's.
 const ROLE_WORDS = /^(captain|keeper|guide|grandmother|drover|ferrier|runner|cook|prospector|driver|seller|leader|warden|tree|beech|voice|door|postmaster|innkeeper|fishmonger|boy|girl|elder|clerk|courier|lamplighter|scholar|cobbler|foreman|provisioner|ladler|actor|grocer|toll-taker|ferryman|ferrywoman|engineer|sergeant|corporal|archivist|messenger|watcher|herder|builder|pilot|singer|student|worker|boss|carter|claimant|expert|gatherer)s?$/i;
@@ -647,9 +651,11 @@ function roleWords(draft: Pick<Draft, "name" | "aliases" | "who">): string[] {
   const words = new Set<string>();
   for (const name of [draft.name, ...draft.aliases]) {
     if (isRoleName(name)) {
-      // "Beech Tree" is "the tree" and "the beech": each word of a role name that is a role word.
-      for (const word of name.toLowerCase().split(/\s+/)) if (ROLE_WORDS.test(word)) words.add(word.replace(/s$/, ""));
-      words.add(name.toLowerCase().split(/\s+/).pop()!.replace(/s$/, ""));
+      const parts = name.toLowerCase().split(/\s+/);
+      // "Beech Tree" is "the tree" and "the beech": the kind of tree comes first. No other first word is a role: "Door
+      // Archivist" is the archivist, never "the door".
+      if (parts.length > 1 && parts[parts.length - 1] === "tree") words.add(parts[0]!);
+      words.add(parts.pop()!.replace(/s$/, ""));
     }
   }
   const lead = /^(?:an?|the)\s+((?:[a-z-]+\s+){0,3}?[a-z-]+?)(?:\s+(?:of|in|on|with|who|from|at|that|whose)\b|[;,.(]|$)/i.exec(draft.who.trim());
@@ -917,14 +923,8 @@ export function buildSheet(sources: Sources, previous: CastSheet | null, untagge
     const prose = (narrationByChapter.get(chapter) ?? []).map((line) => line.text).join(" ");
     for (const draft of drafts) {
       if (draft.chapters.has(chapter) || campaign === undefined || !draft.campaigns.has(campaign)) continue;
-      // Someone known only by what they are ("the beech") can speak in a chapter that does not cast them, but only when
-      // nobody else in the campaign is that thing: "the keeper" is far too many people to be anyone.
-      if (isRoleName(draft.name)) {
-        const mine = roleWords(draft).filter((word) => !taken.has(word) && drafts.filter((other) => other !== draft && other.campaigns.has(campaign) && roleWords(other).includes(word)).length === 0);
-        const names = mine.filter((word) => word.length >= 4);
-        if (names.length > 0) visiting.push({ id: draft.id, names });
-        continue;
-      }
+      // Someone known only by what they are is never imported by a word like "door" or "keeper" into a chapter that does not cast them.
+      if (isRoleName(draft.name)) continue;
       if (draft.generic) continue;
       // A name this chapter also uses as a plain noun ("a wisp line") is not safe to take for the person.
       const names = namesFor(draft).filter((name) => name.length >= 4 && /^[A-Z]/.test(name) && !taken.has(name.toLowerCase()) && !new RegExp(`\\b${escape(name.toLowerCase())}\\b`).test(prose));
