@@ -428,9 +428,9 @@ export function attributeQuotes(text: string, speakers: readonly Speaker[], unat
       const byScene = inSceneWith(pronoun);
       id = lastNamed !== null && !(lastKnown && lastKnown !== pronoun && byScene) ? lastNamed : (introducedIn(match[1]!) ?? byScene);
     } else if (tag !== null) id = tag;
-    else if (beatBefore(start)) ({ id, pronoun } = beatBefore(start)!);
-    // "I'm Orin Vale." names its own speaker, tag or none.
+    // "I'm Orin Vale." names its own speaker, and that is stronger than the sentence before it being about someone else.
     else if (introducedIn(match[1]!) !== null) id = introducedIn(match[1]!);
+    else if (beatBefore(start)) ({ id, pronoun } = beatBefore(start)!);
     else if (previous !== null && start - previous.end <= 60) {
       // Untagged right after an attributed quote: theirs, unless someone new is named between.
       const between = mentions.filter((m) => m.at > previous!.end && m.at < start && m.id !== previous!.id);
