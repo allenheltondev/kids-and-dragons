@@ -69,7 +69,7 @@ describe("the samples", () => {
   it("fill tokens the way the engine does", () => {
     expect(fillSampleTokens("for {party}", { party: 4 })).toBe("for all four of you");
     expect(fillSampleTokens("{facets} stones", { facets: 3 })).toBe("three stones");
-    expect(byId("hessa-soup").lines[0]!.text).toContain("ladles a bowl for both of you,");
+    expect(byId("hessa-soup").lines[0]!.text).toContain("ladles soup for both of you and");
   });
 
   it("refuse a script that no longer joins to the authored words", () => {
