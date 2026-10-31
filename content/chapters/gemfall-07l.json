@@ -87,7 +87,7 @@
   "scenes": {
     "scene_the_table": {
       "type": "story",
-      "narration": "Pellam the clerk walks you down to the Pinch, the one gap between two red hills that every road squeezes through. \"You said hold it,\" he says. \"Not break it, not bury it. So: gather the ledger, the chord and a true answer, then hold the stone's hum at the bend.\" The stone rides in tomorrow's caravan, so loud the mules wear earmuffs. Holding it still is like a hand on a ringing bell. The chord belongs to Hessa's friends, the Deep Hollow. They wear bark masks to sing to the mountain, and want to wake it so it can fix things.",
+      "narration": "Pellam the clerk walks you down to the Pinch, a gap between two red hills. \"You said hold it,\" he says. \"Not break it. So: gather the ledger, the chord and a true answer, then hold the stone's hum at the bend.\" The stone rides in tomorrow's caravan, so loud the mules wear earmuffs. The chord belongs to Hessa's friends, the Deep Hollow, who sing in bark masks.",
       "choices": [
         {
           "id": "wardens_first",
@@ -97,7 +97,7 @@
         },
         {
           "id": "grandmothers_chair",
-          "label": "Ask the grandmothers to chair the table",
+          "label": "Ask a grandmother to chair",
           "icon": "dragonling",
           "requiresFlag": "told_gatherers",
           "goto": "scene_the_table_grandmothers_chair",
@@ -113,7 +113,7 @@
     },
     "scene_the_table_grandmothers_chair": {
       "type": "story",
-      "narration": "You ask a grandmother to chair your table. She brings her knitting and a stool, sits down, and says nothing at all. Within a minute, a warden and a mask have both stopped shouting, because it is very hard to shout near a grandmother who is knitting. \"Well?\" she says. \"Build it, then.\"",
+      "narration": "A grandmother brings her knitting and a stool, and says nothing at all. Soon a warden and a mask stop shouting. It is very hard to shout near a knitting grandmother. \"Well?\" she says. \"Build it.\"",
       "cast": [
         {
           "figure": "cast/dragonling_grandmother",
@@ -131,7 +131,7 @@
     },
     "choice_the_rule": {
       "type": "choice_point",
-      "narration": "Your door-table stands between the wardens and the masked choir. Pick one rule. Tonight it can help them meet: quiet voices make room for questions; visible faces let them work side by side; sharing gives them a reason to pass something across. Only one rule will fit in Pellam's enormous chalk letters.",
+      "narration": "Your door-table stands between the wardens and the masked choir. Chalk one rule on it. Quiet voices make room for questions. Faces showing help people work together. Sharing gives them something to pass across.",
       "choices": [
         {
           "id": "no_shouting",
@@ -148,7 +148,7 @@
         },
         {
           "id": "masks_up",
-          "label": "Masks up and faces showing at the table",
+          "label": "Masks up, faces showing",
           "icon": "eye",
           "goto": "choice_the_rule_masks_up",
           "effects": [
@@ -161,7 +161,7 @@
         },
         {
           "id": "bring_one",
-          "label": "Everyone who sits brings one thing to share",
+          "label": "Everyone brings something",
           "icon": "cake",
           "goto": "choice_the_rule_bring_one",
           "effects": [
@@ -176,7 +176,7 @@
     },
     "choice_the_rule_no_shouting": {
       "type": "story",
-      "narration": "You chalk NOBODY SHOUTS across the middle of the door in big letters. Within five minutes a warden forgets and shouts, and everybody looks at the chalk, and then at him. He goes red, sits down, and pours the tea for everyone, which turns out to be the punishment.",
+      "narration": "You chalk NOBODY SHOUTS across the door. Five minutes later, a warden forgets and shouts. Everybody looks at the chalk. He goes red and pours tea for everyone, which turns out to be the punishment.",
       "choices": [
         {
           "id": "on",
@@ -188,7 +188,7 @@
     },
     "choice_the_rule_masks_up": {
       "type": "story",
-      "narration": "You chalk MASKS UP, FACES SHOWING. The masks look at each other for a long moment. Then a young one pushes hers up onto her head, and she has freckles, and the warden opposite blinks as if he had forgotten there were people under there. After that, the others do it too.",
+      "narration": "You chalk MASKS UP, FACES SHOWING. A young mask pushes hers up, and she has freckles. The warden across from her blinks, as if he forgot there were people under there. Soon the others do it too.",
       "choices": [
         {
           "id": "on",
@@ -200,7 +200,7 @@
     },
     "choice_the_rule_bring_one": {
       "type": "story",
-      "narration": "You chalk BRING ONE THING TO SHARE. By noon the table holds a warden's cookie tin, a pot of the masks' soup, a pencil, a lump of honeycomb, and a very old map nobody can read. People sit down just to see what is on it. That was the idea.",
+      "narration": "You chalk BRING ONE THING TO SHARE. By noon the table holds a cookie tin, a pot of soup, some honeycomb, and an old map nobody can read. People sit down just to see.",
       "choices": [
         {
           "id": "on",
@@ -215,7 +215,7 @@
       "discovers": [
         "faction.skywardens"
       ],
-      "narration": "At the wardens' camp, Pellam sits down behind a desk and turns back into a clerk. The cage ledger is as thick as a doorstep, and it is chained to the desk. \"It never leaves this desk,\" he says. \"Not for anybody. Not even for you.\" Then he looks at the desk, and at you, as if he has said something more useful than he meant to.",
+      "narration": "At the wardens' camp, Pellam sits behind a desk. The wardens' ledger holds all their rules and plans. It is as thick as a doorstep and chained to the desk. \"It never leaves this desk,\" he says. Then he looks at the desk, as if he said something more useful than he meant.",
       "cast": [
         {
           "figure": "cast/pellam",
@@ -225,7 +225,7 @@
       "choices": [
         {
           "id": "friend",
-          "label": "You told the wardens first. Ask as a friend.",
+          "label": "Ask as a friend",
           "icon": "heart",
           "requiresFlag": "told_wardens",
           "goto": "scene_ledger_friend",
@@ -243,13 +243,13 @@
         },
         {
           "id": "honest",
-          "label": "Carry it honestly: chain, desk and all",
+          "label": "Carry the desk too",
           "icon": "clever",
           "goto": "check_ledger"
         },
         {
           "id": "false_promise",
-          "label": "Promise them the choir's secret chord in trade (you won't)",
+          "label": "Make a false promise",
           "icon": "moon",
           "goto": "scene_ledger_false_promise",
           "effects": [
@@ -263,7 +263,7 @@
     },
     "scene_ledger_false_promise": {
       "type": "story",
-      "narration": "You promise him the masks' secret chord in trade. You do not mean it, and Pellam writes down the promise anyway, in full, and makes you watch him do it. The ledger is heavy in your arms all the way up the valley, and it is not the pages that make it heavy.",
+      "narration": "You promise him the choir's secret chord. You do not mean it. Pellam writes the promise down and makes you watch. The ledger feels heavy all the way up the valley, and not because of the pages.",
       "cast": [
         {
           "figure": "cast/pellam",
@@ -273,7 +273,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Up the valley to the choir",
+          "label": "Up to the choir",
           "icon": "moon",
           "goto": "scene_two_scouts"
         }
@@ -281,7 +281,7 @@
     },
     "scene_ledger_friend": {
       "type": "story",
-      "narration": "\"We told you first,\" you say. \"We're asking as friends.\" Pellam looks at the chain for a long time. Then he unlocks it, and writes LENT in a column that has never had anything written in it. \"Bring it back,\" he says. \"I shall know if a page is bent.\"",
+      "narration": "\"We're asking as friends,\" you say. Pellam looks at the chain a long time. Then he unlocks it and writes LENT in a column never used before. \"Bring it back. I shall know if a page is bent.\"",
       "cast": [
         {
           "figure": "cast/pellam",
@@ -291,7 +291,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Up the valley to the choir",
+          "label": "Up to the choir",
           "icon": "heart",
           "goto": "scene_two_scouts"
         }
@@ -341,23 +341,23 @@
           "name": "Rook"
         }
       ],
-      "narration": "Halfway up the side valley, two young people are having a tug-of-war across the path: a warden cadet called Linnet on one end, and a young mask called Rook on the other. The rope is somebody's choir sash, and they are both pulling very hard. \"Tell her it's ours!\" puffs Rook. \"Tell him it's evidence!\" puffs Linnet. Then they both look at you, still pulling.",
+      "narration": "Up the valley, two young people play tug-of-war with a choir sash. A warden cadet called Linnet pulls one end. A young mask called Rook pulls the other. \"Tell her it's ours!\" puffs Rook. \"Tell him it's evidence!\" puffs Linnet. They both want you to decide.",
       "choices": [
         {
           "id": "truth",
-          "label": "Grab the middle of the rope and hold it steady",
+          "label": "Hold the rope steady",
           "icon": "heart",
           "goto": "check_two_scouts"
         },
         {
           "id": "fib",
-          "label": "Tell each one what they want to hear",
+          "label": "Tell each what they want",
           "icon": "moon",
           "goto": "scene_two_scouts_fib"
         },
         {
           "id": "table_stone",
-          "label": "Set the Table Stone down between them",
+          "label": "Set down the Table Stone",
           "icon": "gem",
           "goto": "scene_two_scouts_table_stone",
           "requiresItem": "facet_table",
@@ -406,11 +406,11 @@
     },
     "scene_two_scouts_fib": {
       "type": "story",
-      "narration": "You tell Linnet what a warden wants to hear, and Rook what a mask wants to hear. Both of them drop the rope and go away happy. Later, from higher up the valley, you see them sitting on the same rock, comparing notes. They both look up at you at exactly the same moment.",
+      "narration": "You tell each of them what they want to hear. Both go off happy. Later you see them on one rock, comparing notes. They both look up at you at exactly the same moment.",
       "choices": [
         {
           "id": "on",
-          "label": "Up the valley to the choir",
+          "label": "Up to the choir",
           "icon": "moon",
           "goto": "scene_choir"
         }
@@ -438,11 +438,11 @@
           "name": "Rook"
         }
       ],
-      "narration": "You set the Table Stone down on the path, the stone from the truth-table at Redspire, logged twice. It hums. Linnet knows it from the citadel. Rook knows the note from the choir. They drop the rope and crouch on either side of the stone, listening, and forget to glare. \"It's the same stone,\" says Rook. \"It's the same stone,\" says Linnet.",
+      "narration": "You set down the Table Stone from the truth-table at Redspire. It hums. Linnet knows it from the citadel. Rook knows the note from the choir. They drop the rope to listen. \"It's the same stone,\" they say together.",
       "choices": [
         {
           "id": "on",
-          "label": "Up the valley to the choir",
+          "label": "Up to the choir",
           "icon": "gem",
           "goto": "scene_choir"
         }
@@ -453,7 +453,7 @@
       "discovers": [
         "faction.deep_hollow_cult"
       ],
-      "narration": "Up a side valley, Hessa's soup-tent people, the Deep Hollow, are humming in a ring with their painted bark masks pushed up on their heads. This is how they sing to the mountain. \"We wake it gently, so it can fix things,\" Hessa whispers. Their chord is three notes long, and they do not teach it to strangers. The stones in your packs hum along anyway, as if they know the words.",
+      "narration": "Up the valley, Hessa's soup-tent people, the Deep Hollow, hum in a ring with their bark masks pushed up. \"We wake the mountain gently, so it can fix things,\" Hessa whispers. Their chord is three notes long, and they never teach it to strangers.",
       "variants": [
         {
           "when": {
@@ -462,26 +462,26 @@
               "min": 5
             }
           },
-          "text": "Your {facets} great stones hum loudest of all. A few of the singers glance at each other and lower their voices, as if they cannot decide whether to sing with you or ask your pardon."
+          "text": "Your {facets} great stones hum loudest of all. The singers glance at each other."
         }
       ],
       "choices": [
         {
           "id": "ask",
-          "label": "Hum their three notes back to them",
+          "label": "Hum the notes back",
           "icon": "heart",
           "goto": "check_chord"
         },
         {
           "id": "songkeeper_note",
-          "label": "Have a songkeeper find the first note for everyone",
+          "label": "A songkeeper finds the note",
           "icon": "note",
           "requiresClass": "songkeeper",
           "goto": "check_chord"
         },
         {
           "id": "vouch",
-          "label": "Ask the grandmothers to vouch for you",
+          "label": "Ask the grandmother to vouch",
           "icon": "dragonling",
           "requiresFlag": "grandmothers_chair",
           "goto": "scene_choir_vouch",
@@ -499,7 +499,7 @@
         },
         {
           "id": "sell_secrets",
-          "label": "Trade them the wardens' cage plans, page by page",
+          "label": "Trade them the wardens' plans",
           "icon": "scroll",
           "requiresItem": "tether_ledger",
           "goto": "scene_choir_sell_secrets",
@@ -517,7 +517,7 @@
         },
         {
           "id": "pay_stone",
-          "label": "Pay them with a rush gem from your pack",
+          "label": "Pay with a rush gem",
           "icon": "gem",
           "goto": "scene_choir_pay_stone",
           "effects": [
@@ -529,7 +529,7 @@
         },
         {
           "id": "hum_along",
-          "label": "Hum along until they forget you are not one of them",
+          "label": "Hum along with them",
           "icon": "kitsune",
           "requiresSpecies": "kitsune",
           "goto": "scene_choir_hum_along",
@@ -558,7 +558,7 @@
     },
     "scene_choir_hum_along": {
       "type": "story",
-      "narration": "Your kitsune hums along, badly at first and then not badly at all, until the choir forgets your kitsune is not one of them and sings the whole chord out plain. Three notes. Your kitsune hums them all the way back down the valley, very quietly, and nobody comes after you.",
+      "narration": "Your kitsune hums along, badly, then not badly at all. Soon the choir forgets your kitsune is not one of them, and sings the whole chord out plain.",
       "choices": [
         {
           "id": "on",
@@ -584,7 +584,7 @@
     },
     "scene_choir_pay_stone": {
       "type": "story",
-      "narration": "You pay with a rush gem from your pack. The choir passes it from hand to hand, humming, and the stone hums back, and then it is in a sack and gone. They teach you the chord. The pack is one gem lighter and you can feel exactly where it used to sit.",
+      "narration": "You pay with a rush gem. The choir passes it around, humming, and then it is gone into a sack. They teach you the chord. Your pack feels one gem lighter.",
       "choices": [
         {
           "id": "on",
@@ -610,7 +610,7 @@
     },
     "scene_choir_sell_secrets": {
       "type": "story",
-      "narration": "You trade them the wardens' cage plans, page by page, and Hessa reads each one with her lips moving. \"Pellam will know,\" she says, not unkindly, and teaches you the chord in return, three notes that stay in your head like a tune you did not choose. The ledger feels lighter now, and that is not a good feeling.",
+      "narration": "You trade them the wardens' plans, page by page. \"Pellam will know,\" says Hessa, not unkindly, and teaches you the chord. The ledger feels lighter, and that is not a good feeling.",
       "choices": [
         {
           "id": "on",
@@ -636,7 +636,7 @@
     },
     "scene_choir_vouch": {
       "type": "story",
-      "narration": "The grandmother hums with them. Not the chord, just a low knitting sort of hum, and the choir softens around it the way a room softens when somebody's grandma comes in. \"Teach them,\" she says, and they do, slowly, three notes, until you have them.",
+      "narration": "The grandmother hums with them, a low knitting sort of hum. The choir softens, the way a room does when a grandma walks in. \"Teach them,\" she says. And they do.",
       "cast": [
         {
           "figure": "cast/dragonling_grandmother",
@@ -701,24 +701,24 @@
           "name": "Pellam"
         }
       ],
-      "narration": "Back at the table, it finally happens: Pellam sits down on one side, and Hessa sits down on the other. Nobody speaks. Then the ground shrugs, the sock shoots out from under the short leg, and the whole table tips toward Pellam. Hessa grabs her soup. Pellam grabs his ledger. \"That will need writing down,\" says Pellam. Everyone looks at you.",
+      "narration": "Back at the table, Pellam sits on one side and Hessa on the other. Nobody speaks. Then the ground shrugs. The folded sock under the short leg shoots out, and the table tips. Hessa grabs her soup. Pellam grabs his ledger. Everyone looks at you.",
       "choices": [
         {
           "id": "fix_leg",
-          "label": "Fix the wobbly leg properly",
+          "label": "Fix the wobbly leg",
           "icon": "clever",
           "goto": "check_first_sitting"
         },
         {
           "id": "thornguard_leg",
-          "label": "Have a thornguard plant a boot against the short leg",
+          "label": "A thornguard braces it",
           "icon": "shield",
           "requiresClass": "thornguard",
           "goto": "check_first_sitting"
         },
         {
           "id": "wobbly_side",
-          "label": "Swap seats, and take the wobbly side",
+          "label": "Take the wobbly side",
           "icon": "hand",
           "goto": "scene_first_sitting_wobbly_side"
         },
@@ -760,7 +760,7 @@
           "name": "Pellam"
         }
       ],
-      "narration": "You swap seats and sit on the wobbly side yourselves, with your elbows holding it level. It is not comfortable. Pellam notices. Hessa notices. Neither of them says anything, but both of them lean in a little, the way people do when somebody else has taken the worst chair.",
+      "narration": "You swap seats and hold the wobbly side level with your elbows. It is not comfortable. Pellam and Hessa both notice, and both lean in a little.",
       "variants": [
         {
           "when": {
@@ -769,7 +769,7 @@
             }
           },
           "replace": true,
-          "text": "You swap seats and sit on the wobbly side yourself, with your elbows holding it level. It is not comfortable. Pellam notices. Hessa notices. Neither of them says anything, but both of them lean in a little, the way people do when somebody else has taken the worst chair."
+          "text": "You swap seats and hold the wobbly side level with your elbows. It is not comfortable. Pellam and Hessa both notice, and both lean in a little."
         }
       ],
       "choices": [
@@ -793,7 +793,7 @@
           "name": "Grandmother"
         }
       ],
-      "narration": "You look at the grandmother. The grandmother looks at the table leg. Without dropping a stitch, she puts out one foot and rests it under the short corner, and leaves it there for the rest of the afternoon. Nobody, warden or mask, dares to tip the table after that.",
+      "narration": "The grandmother rests one foot under the short corner without dropping a stitch, and leaves it there all afternoon. Nobody dares tip the table after that.",
       "choices": [
         {
           "id": "on",
@@ -805,46 +805,46 @@
     },
     "scene_road_gifts": {
       "type": "story",
-      "narration": "Back at your wobbly table, Pellam takes out his own small notebook, opens it at your page, and reads it out. \"Hold it,\" he reads. \"That is what you told me at the citadel. Still your word?\" It is. Then something strange starts happening. The road begins bringing things back to you: things you did on the way here, walking up the hill on their own legs, as if the whole realm had been keeping your receipts.",
+      "narration": "Pellam reads from his notebook. \"Hold it. That is what you told me at the citadel. Still your word?\" It is. Then the road starts bringing back things you did on the way here, as if the realm kept your receipts.",
       "choices": [
         {
           "id": "ossley",
-          "label": "A flat boat is coming up the dry creek",
+          "label": "A flat boat comes",
           "icon": "drop",
           "requiresFlag": "route_river",
           "goto": "scene_ossley"
         },
         {
           "id": "runner",
-          "label": "A MossHome runner is waving a knotted cord",
+          "label": "A MossHome runner waves",
           "icon": "bigfoot",
           "requiresItem": "knot_cord",
           "goto": "scene_mosshome_runner"
         },
         {
           "id": "boggart",
-          "label": "A boggart is sidling up with a satchel",
+          "label": "A boggart sidles up",
           "icon": "scroll",
           "requiresFlag": "route_wild",
           "goto": "scene_boggart"
         },
         {
           "id": "boggart_walked_over",
-          "label": "A boggart is sidling up with a satchel",
+          "label": "A boggart sidles up",
           "icon": "scroll",
           "requiresFlag": "walked_over",
           "goto": "scene_boggart"
         },
         {
           "id": "ford_witch",
-          "label": "Mother Thrum from the ford is here, with a ringing sock",
+          "label": "Mother Thrum is here",
           "icon": "charm",
           "goto": "scene_ford_witch",
           "requiresItem": "charm_ford_witch"
         },
         {
           "id": "stall",
-          "label": "Visit the witch's stall at the end of the road",
+          "label": "Visit the witch's stall",
           "icon": "charm",
           "goto": "scene_stall_witch"
         }
@@ -856,7 +856,7 @@
         "individual.old_ossley",
         "npc.frogfolk"
       ],
-      "narration": "A frog in a very old hat is poling a flat boat up a creek with no water in it: the frog from the reeds of the Great River, with OLD OSSLEY painted on the side of his boat, and a boat full of every stone the river took off somebody this season. He looks at your packs, and listens to you hum, and says: \"Leashes are for things that want to run.\" Then he says nothing for quite a while.",
+      "narration": "A frog in a very old hat poles a flat boat up a dry creek: Old Ossley, the frog from the reeds of the Great River. He looks at your packs. \"Leashes are for things that want to run,\" he says. Then nothing for quite a while.",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -867,14 +867,14 @@
       "choices": [
         {
           "id": "debt",
-          "label": "Ask what you still owe him from the river",
+          "label": "Ask what you owe",
           "icon": "drop",
           "requiresFlag": "river_took_us",
           "goto": "scene_ossley_debt"
         },
         {
           "id": "on",
-          "label": "Thank him, and go and find the witch",
+          "label": "Thank him and walk on",
           "icon": "forward",
           "goto": "scene_stall_witch"
         }
@@ -882,7 +882,7 @@
     },
     "scene_ossley_debt": {
       "type": "story",
-      "narration": "Ossley's price is not coin. It never was. \"Whatever you tie,\" he says, \"tie it with a knot you can undo.\" He makes you show him the knot, there and then, on his boat rope. It takes three tries.",
+      "narration": "Ossley's price was never coin. \"Whatever you tie,\" he says, \"tie it with a knot you can undo.\" He makes you show him, right there, on his boat rope. It takes three tries.",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -908,7 +908,7 @@
     },
     "scene_mosshome_runner": {
       "type": "story",
-      "narration": "A MossHome runner jogs up with a string of grumbling mules carrying everything the Woods confiscated from careless hunters. She counts the knots on your cord, unloads it all, and passes on one message from the elders: \"Whatever you are tying, tie it loose.\"",
+      "narration": "A MossHome runner jogs up with mules, carrying things the Woods took from careless hunters. Your knotted cord says some are yours. She unloads it all with a message: \"Whatever you are tying, tie it loose.\"",
       "cast": [
         {
           "figure": "cast/mosshome_runner",
@@ -919,7 +919,7 @@
       "choices": [
         {
           "id": "thank",
-          "label": "Thank her, and the Woods",
+          "label": "Thank her and the Woods",
           "icon": "leaf",
           "goto": "scene_stall_witch",
           "effects": [
@@ -937,7 +937,7 @@
       "discovers": [
         "npc.boggart"
       ],
-      "narration": "A boggart with a satchel of scribbled paper sidles up, not looking at you, and says to nobody: \"Catalog. Who bought what. Who sold to who. Costs one really good sentence you overheard.\"",
+      "narration": "A boggart with a satchel of scribbled paper sidles up, not looking at you. \"Catalog,\" it tells nobody. \"Who bought what. Who sold to who. Costs one really good sentence you overheard.\"",
       "cast": [
         {
           "figure": "entities/boggart"
@@ -946,7 +946,7 @@
       "choices": [
         {
           "id": "brisk_said",
-          "label": "Tell it what Pellam mutters to his ledger",
+          "label": "Repeat what Pellam mutters",
           "icon": "ear",
           "goto": "scene_boggart_brisk_said",
           "effects": [
@@ -959,7 +959,7 @@
         },
         {
           "id": "choir_said",
-          "label": "Tell it what the choir hums when nobody is listening",
+          "label": "Hum the choir's secret hum",
           "icon": "note",
           "goto": "scene_boggart_choir_said",
           "effects": [
@@ -974,7 +974,7 @@
     },
     "scene_boggart_choir_said": {
       "type": "story",
-      "narration": "You hum what the choir hums when nobody is listening, which is the same three notes, only sadder. The boggart goes completely still and listens with its whole body. \"Sidelong,\" it says at last, approvingly, and hands over the catalog without ever once looking at you.",
+      "narration": "You hum what the choir hums when nobody is listening: the same three notes, only sadder. The boggart goes completely still. \"Sidelong,\" it says at last, approvingly, and hands over the catalog without looking at you.",
       "cast": [
         {
           "figure": "entities/boggart"
@@ -983,7 +983,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Go and find the witch's stall",
+          "label": "Walk on down the road",
           "icon": "note",
           "goto": "scene_stall_witch"
         }
@@ -991,7 +991,7 @@
     },
     "scene_boggart_brisk_said": {
       "type": "story",
-      "narration": "You tell it what Pellam mutters to his ledger when he thinks nobody is listening, which is mostly numbers and once, very quietly, \"oh dear.\" The boggart hugs itself. \"A clerk's oh dear,\" it tells nobody. \"Rarer than rubies.\" The catalog is in your hands before you notice it has let go.",
+      "narration": "You repeat what Pellam mutters to his ledger, which is mostly numbers and one quiet \"oh dear.\" The boggart hugs itself. \"A clerk's oh dear,\" it tells nobody. \"Rarer than rubies.\" It hands over the catalog.",
       "cast": [
         {
           "figure": "entities/boggart"
@@ -1000,7 +1000,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Go and find the witch's stall",
+          "label": "Walk on down the road",
           "icon": "ear",
           "goto": "scene_stall_witch"
         }
@@ -1011,7 +1011,7 @@
       "discovers": [
         "npc.witch_order"
       ],
-      "narration": "Mother Thrum, the witch from the ford line, has come all the way up the road with a wool sock under one arm, and something in it is ringing. \"I always ask twice,\" she says. \"Once at the ford, and once at the mountain. What do you actually want?\"",
+      "narration": "Mother Thrum, the witch from the ford, has come up the road with a ringing wool sock. \"I always ask twice,\" she says. \"Answer true, and I'll lend you my question. What do you actually want?\"",
       "cast": [
         {
           "figure": "cast/mother_thrum",
@@ -1021,7 +1021,7 @@
       "choices": [
         {
           "id": "hold_safe",
-          "label": "\"To hold it still, so nobody gets hurt.\"",
+          "label": "\"So nobody gets hurt.\"",
           "icon": "heart",
           "goto": "scene_ford_witch_hold_safe",
           "effects": [
@@ -1037,7 +1037,7 @@
         },
         {
           "id": "hold_power",
-          "label": "\"To hold it, because we can.\"",
+          "label": "\"Because we can.\"",
           "icon": "crown",
           "goto": "scene_ford_witch_hold_power",
           "effects": [
@@ -1049,7 +1049,7 @@
         },
         {
           "id": "flatter",
-          "label": "Say whatever will get you the question",
+          "label": "Say what she wants",
           "icon": "moon",
           "goto": "scene_ford_witch_flatter"
         }
@@ -1057,7 +1057,7 @@
     },
     "scene_ford_witch_flatter": {
       "type": "story",
-      "narration": "You say whatever you think will get you the question. Mother Thrum listens to all of it with her head on one side. \"No,\" she says, pleasantly, when you finish. \"That's not a want. That's a wish for a want.\" She lends you nothing, and her charms ring once, as if amused.",
+      "narration": "You say whatever might get you the question. \"No,\" says Mother Thrum pleasantly. \"That's not a want. That's a wish for a want.\" Her charms ring once, amused.",
       "cast": [
         {
           "figure": "cast/mother_thrum",
@@ -1075,7 +1075,7 @@
     },
     "scene_ford_witch_hold_power": {
       "type": "story",
-      "narration": "\"To hold it, because we can.\" Mother Thrum does not look away. \"Honest,\" she says. \"I'll give you honest.\" She lends you the question anyway, but she holds onto it a heartbeat longer than she needs to before she lets go. \"Ask it of yourselves first,\" she says.",
+      "narration": "Mother Thrum does not look away. \"Honest. I'll give you honest.\" She lends you the question, but holds it a heartbeat longer than she needs to. \"Ask it of yourselves first.\"",
       "cast": [
         {
           "figure": "cast/mother_thrum",
@@ -1093,7 +1093,7 @@
     },
     "scene_ford_witch_hold_safe": {
       "type": "story",
-      "narration": "\"To hold it still, so nobody gets hurt.\" Mother Thrum looks at you for a long moment, and then nods, once. \"That one I'll lend,\" she says, and presses the question into your hands like a small warm coin. \"Ask it of anything. Even me.\" Then she tips the ringing thing out of her sock as well, a stone from the ford, and it goes quiet in your hand.",
+      "narration": "Mother Thrum nods once. \"That one I'll lend.\" She presses the question into your hands like a small warm coin. \"Ask it of anything. Even me.\" Then she tips a stone from the ford out of her sock.",
       "cast": [
         {
           "figure": "cast/mother_thrum",
@@ -1114,7 +1114,7 @@
       "discovers": [
         "npc.witch_order"
       ],
-      "narration": "At the end of the road a witch in a patched hat runs a remedy stall, and every charm on it is ringing by itself. \"I'll lend you my question,\" she says, \"if you answer it first. What do you actually want?\"",
+      "narration": "At the end of the road, a witch in a patched hat runs a remedy stall. Every charm on it rings by itself. \"Answer my question first,\" she says, \"and I'll lend it to you. What do you actually want?\"",
       "cast": [
         {
           "figure": "cast/stall_witch",
@@ -1124,7 +1124,7 @@
       "choices": [
         {
           "id": "hold_safe",
-          "label": "\"To hold it still, so nobody gets hurt.\"",
+          "label": "\"So nobody gets hurt.\"",
           "icon": "heart",
           "goto": "scene_stall_witch_hold_safe",
           "effects": [
@@ -1136,7 +1136,7 @@
         },
         {
           "id": "hold_power",
-          "label": "\"To hold it, because we can.\"",
+          "label": "\"Because we can.\"",
           "icon": "crown",
           "goto": "scene_stall_witch_hold_power",
           "effects": [
@@ -1148,7 +1148,7 @@
         },
         {
           "id": "flatter",
-          "label": "Say whatever will get you the question",
+          "label": "Say what she wants",
           "icon": "moon",
           "goto": "scene_stall_witch_flatter"
         }
@@ -1156,7 +1156,7 @@
     },
     "scene_stall_witch_flatter": {
       "type": "story",
-      "narration": "You say whatever you think will get you the question. The stall witch listens to all of it with her head on one side. \"No,\" she says, pleasantly, when you finish. \"That's not a want. That's a wish for a want.\" She lends you nothing, and her charms ring once, as if amused.",
+      "narration": "You say whatever might get you the question. \"No,\" says the stall witch pleasantly. \"That's not a want. That's a wish for a want.\" Her charms ring once, amused.",
       "cast": [
         {
           "figure": "cast/stall_witch",
@@ -1174,7 +1174,7 @@
     },
     "scene_stall_witch_hold_power": {
       "type": "story",
-      "narration": "\"To hold it, because we can.\" The stall witch does not look away. \"Honest,\" she says. \"I'll give you honest.\" She lends you the question anyway, but she holds onto it a heartbeat longer than she needs to before she lets go. \"Ask it of yourselves first,\" she says.",
+      "narration": "The stall witch does not look away. \"Honest. I'll give you honest.\" She lends you the question, but holds it a heartbeat longer than she needs to. \"Ask it of yourselves first.\"",
       "cast": [
         {
           "figure": "cast/stall_witch",
@@ -1192,7 +1192,7 @@
     },
     "scene_stall_witch_hold_safe": {
       "type": "story",
-      "narration": "\"To hold it still, so nobody gets hurt.\" The stall witch looks at you for a long moment, and then nods, once. \"That one I'll lend,\" she says, and presses the question into your hands like a small warm coin. \"Ask it of anything. Even me.\"",
+      "narration": "The stall witch nods once. \"That one I'll lend,\" she says, and presses the question into your hands like a small warm coin. \"Ask it of anything. Even me.\"",
       "cast": [
         {
           "figure": "cast/stall_witch",
@@ -1216,23 +1216,23 @@
           "name": "Grandmother"
         }
       ],
-      "narration": "On the way back, a grandmothers' cart full of stones going home has stuck on the steep bit, and the grandmother pushing it is very small. \"Only a little stuck, dear,\" she puffs. But tomorrow is the test at the bend, and you have never held a hum still in your life. There is one afternoon left. Help with the cart, or practice?",
+      "narration": "On the way back, a grandmother's cart of stones going home is stuck on the steep bit. \"Only a little stuck, dear,\" she puffs. But tomorrow is the test, and you have never held a hum still. One afternoon left. Help, or practice?",
       "choices": [
         {
           "id": "push",
-          "label": "Help push the cart up the hill",
+          "label": "Push the cart",
           "icon": "might",
           "goto": "check_returning_cart"
         },
         {
           "id": "practice",
-          "label": "Practice a small hum; a warden takes the cart",
+          "label": "Practice holding a hum",
           "icon": "note",
           "goto": "interaction_small_hum"
         },
         {
           "id": "both",
-          "label": "Push one-handed and practice with the other",
+          "label": "Push and practice",
           "icon": "bigfoot",
           "goto": "scene_returning_cart_both",
           "requiresSpecies": "bigfoot",
@@ -1294,7 +1294,7 @@
           "name": "Grandmother"
         }
       ],
-      "narration": "Your bigfoot puts one enormous hand on the cart and pushes it up the hill as if it were a stroller, while holding a small humming stone in the other hand and frowning at it. Halfway up, the stone goes still for half a breath. The grandmother says she has never seen anything like it, and she has seen a lot.",
+      "narration": "Your bigfoot pushes the cart one-handed, like a stroller, holding a humming stone in the other hand. Halfway up, the stone goes still for half a breath. The grandmother has never seen anything like it.",
       "choices": [
         {
           "id": "on",
@@ -1306,32 +1306,32 @@
     },
     "scene_evening": {
       "type": "story",
-      "narration": "Evening. Campfires pop up all along the road, and the wardens' fires and the masks' fires are as far apart as they can possibly get. Your table is exactly in the middle. Somebody has left a cup of tea on it, and nobody will say who.",
+      "narration": "Evening. The wardens' fires and the masks' fires are as far apart as they can get. Your table sits right in the middle. Somebody has left a cup of tea on it.",
       "choices": [
         {
           "id": "relay",
-          "label": "A centaur relay is cantering in with news",
+          "label": "A centaur relay arrives",
           "icon": "travel",
           "requiresFlag": "route_river",
           "goto": "scene_centaur_relay"
         },
         {
           "id": "relay_sing",
-          "label": "Listen to the singers at the campfires",
+          "label": "Listen to the singers",
           "icon": "note",
           "requiresFlag": "route_rush",
           "goto": "scene_relay_sing"
         },
         {
           "id": "exchange",
-          "label": "An Exchange caravan rolls in, and someone is waving",
+          "label": "Someone waves from a caravan",
           "icon": "gem",
           "requiresFlag": "ember_sold",
           "goto": "scene_ember"
         },
         {
           "id": "between",
-          "label": "Walk the dark road between the two sides' fires",
+          "label": "Walk between the fires",
           "icon": "lantern",
           "goto": "scene_evening_between"
         },
@@ -1345,7 +1345,7 @@
     },
     "scene_evening_between": {
       "type": "story",
-      "narration": "You walk the dark strip of road between the wardens' fires and the masks' fires. On one side, somebody is singing a counting song. On the other, somebody is singing the same tune with different words. Neither side knows. You stand in the middle and hear both at once, and it sounds like one song.",
+      "narration": "You walk the dark road between the camps. One side sings a counting song. The other sings the same tune with different words. Neither knows. In the middle, it sounds like one song.",
       "choices": [
         {
           "id": "on",
@@ -1360,7 +1360,7 @@
       "discovers": [
         "npc.centaur"
       ],
-      "narration": "The centaur relay pulls up at your table and unrolls a sash-map. \"Fat caravan tomorrow, biggest stone in the funnel,\" says the lead runner. \"Where do you want it?\" You point at the worst bend, and she nods as if that is the most sensible thing anyone has said all day.",
+      "narration": "A centaur relay pulls up and unrolls a sash-map. \"Fat caravan tomorrow,\" says the lead runner. \"Where do you want it?\" You point at the worst bend. She nods, as if that is the most sensible thing all day.",
       "cast": [
         {
           "figure": "cast/relay_runner",
@@ -1377,7 +1377,7 @@
       "choices": [
         {
           "id": "sleep",
-          "label": "Thank the relay and get some sleep",
+          "label": "Thank her and sleep",
           "icon": "rest",
           "goto": "scene_night_visitor"
         }
@@ -1386,7 +1386,7 @@
     "scene_relay_sing": {
       "type": "story",
       "priority": 2,
-      "narration": "The relay singers have new verses about wagons that have not arrived yet, so you hear tomorrow's traffic tonight. Then a grandmother's runner brings you a list of caves nobody may ever dig. It is exactly the list a seal's keeper would keep.",
+      "narration": "The centaur relay singers at the campfires sing about wagons that have not come yet. A grandmother's runner brings you a list of caves nobody may ever dig. It is exactly the list a seal's keeper would keep.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -1397,7 +1397,7 @@
       "choices": [
         {
           "id": "sleep",
-          "label": "Fold the list away and get some sleep",
+          "label": "Fold it away and sleep",
           "icon": "scroll",
           "goto": "scene_night_visitor"
         }
@@ -1408,7 +1408,7 @@
       "discovers": [
         "npc.merfolk"
       ],
-      "narration": "\"Darlings! From the docks!\" cries Madame Coralie Fenn, lashed to the top of the caravan in her barrel on wheels, waving with both arms. She remembers you fondly. She also remembers the warm red stone you sold her on the quay, your very first one. It is right here in a velvet box with a new gold label, and its price has gone up a very great deal since then.",
+      "narration": "\"Darlings!\" cries Madame Coralie Fenn from her barrel on wheels, tied to a caravan roof. She has the warm red stone you sold her on the quay, your very first. It sits in a velvet box, and its price has gone way up.",
       "cast": [
         {
           "figure": "cast/coralie_fenn",
@@ -1418,7 +1418,7 @@
       "choices": [
         {
           "id": "buy_back",
-          "label": "Buy it back. A tether needs an anchor.",
+          "label": "Buy it back",
           "icon": "gem",
           "goto": "scene_ember_buy_back",
           "effects": [
@@ -1439,7 +1439,7 @@
         },
         {
           "id": "wave",
-          "label": "Wave, and let it go on its way",
+          "label": "Wave goodbye",
           "icon": "hand",
           "goto": "scene_ember_wave"
         }
@@ -1447,7 +1447,7 @@
     },
     "scene_ember_wave": {
       "type": "story",
-      "narration": "You wave. Madame Fenn waves back with both arms and the barrel wobbles alarmingly on its lashings. \"Next time, darlings!\" she calls, and the caravan rolls on toward the camps with your very first stone humming in a velvet box on top of it. You watch until the lanterns turn the corner.",
+      "narration": "You wave. Madame Fenn waves back with both arms, and her barrel wobbles. \"Next time, darlings!\" The caravan rolls on, with your very first stone humming on top.",
       "cast": [
         {
           "figure": "cast/coralie_fenn",
@@ -1457,7 +1457,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Find somewhere to sleep",
+          "label": "Go to sleep",
           "icon": "hand",
           "goto": "scene_night_visitor"
         }
@@ -1465,7 +1465,7 @@
     },
     "scene_ember_buy_back": {
       "type": "story",
-      "narration": "You pay what Madame Fenn asks, which is a great deal, and she counts it twice and hugs the velvet box before she hands it over. \"I always hoped it would be you, darlings,\" she says, and seems to mean it. The Ember Facet is warm as toast, exactly as you remember, and it hums as if it remembers you too.",
+      "narration": "You pay. Madame Fenn hugs the velvet box before handing it over. \"I always hoped it would be you, darlings.\" The Ember Facet is warm as toast, and it hums as if it remembers you.",
       "cast": [
         {
           "figure": "cast/coralie_fenn",
@@ -1475,7 +1475,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Find somewhere to sleep",
+          "label": "Go to sleep",
           "icon": "gem",
           "goto": "scene_night_visitor"
         }
@@ -1489,25 +1489,25 @@
           "name": "Pellam"
         }
       ],
-      "narration": "Late at night, Pellam comes to your table alone, with no ledger under his arm for once. He sits down carefully on the steady side. \"One question,\" he says quietly. \"Where does the choir sing at night? I only want to know.\" Across the road, a mask's fire crackles, and somebody over there is very still.",
+      "narration": "Late at night, Pellam comes to your table alone. \"One question,\" he says quietly. \"Where does the choir sing at night? I only want to know.\" Across the road, by a mask's fire, somebody goes very still.",
       "choices": [
         {
           "id": "rule_bring_one",
-          "label": "Sharing: pass the soup across",
+          "label": "Share soup with Hessa",
           "icon": "party",
           "goto": "interaction_shared_soup",
           "requiresFlag": "rule_bring_one"
         },
         {
           "id": "rule_masks_up",
-          "label": "Faces showing: welcome a helper from each camp",
+          "label": "Seat a helper from each",
           "icon": "party",
           "goto": "interaction_open_table",
           "requiresFlag": "rule_masks_up"
         },
         {
           "id": "rule_no_shouting",
-          "label": "Quiet voices: hear a question from every hero",
+          "label": "Ask quiet questions",
           "icon": "party",
           "goto": "interaction_quiet_council",
           "requiresFlag": "rule_no_shouting"
@@ -1520,13 +1520,13 @@
         },
         {
           "id": "not_mine",
-          "label": "Tell him it isn't yours to tell",
+          "label": "It isn't yours to tell",
           "icon": "heart",
           "goto": "scene_night_visitor_not_mine"
         },
         {
           "id": "invite",
-          "label": "Wave Hessa over, and let them ask each other",
+          "label": "Wave Hessa over",
           "icon": "party",
           "goto": "check_night_visitor"
         }
@@ -1534,7 +1534,7 @@
     },
     "scene_night_visitor_tell": {
       "type": "story",
-      "narration": "You tell him. Pellam writes it down twice and thanks you, very politely, and goes back to the warden fires. Across the road, the still mask gets up and goes into a tent, and does not come out again. Nobody says anything about it in the morning. Nobody has to.",
+      "narration": "You tell him. Pellam writes it down twice and thanks you. Across the road, the still mask gets up and goes into a tent. Nobody mentions it in the morning. Nobody has to.",
       "choices": [
         {
           "id": "on",
@@ -1552,7 +1552,7 @@
           "name": "Pellam"
         }
       ],
-      "narration": "\"It isn't your secret to tell,\" you say. Pellam looks at you for a long moment. Then he nods, takes out a small notebook, and writes one word in it. You lean over to read it. The word is FAIR. He underlines it twice and goes back to bed.",
+      "narration": "\"That isn't ours to tell,\" you say. Pellam nods and writes one word in his notebook: FAIR. He underlines it twice and goes back to bed.",
       "choices": [
         {
           "id": "on",
@@ -1592,12 +1592,12 @@
     },
     "rest_under_the_table": {
       "type": "rest",
-      "narration": "You sleep under your own wobbly table, between the wardens' fires and the masks' fires. In the night a warden and a mask both come over to borrow the teapot at the same moment, and stand there not looking at each other until somebody says please. Patch up your scrapes. The teapot survives.",
+      "narration": "You sleep under your table, between the two camps. In the night, a warden and a mask both come to borrow the teapot. They stand there, not looking at each other, until somebody says please. Patch up your scrapes.",
       "heal": 3,
       "choices": [
         {
           "id": "up",
-          "label": "Up the switchback to the bend",
+          "label": "Up to the bend",
           "icon": "boot",
           "goto": "scene_rope_bridge"
         }
@@ -1613,17 +1613,17 @@
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "narration": "On the way to the switchback, the road crosses a deep gully on a rope bridge. It was a perfectly good bridge yesterday. Today, every time the ground shrugs, it swings gently from side to side, like a hammock with opinions. A snowhorn goat is standing in the middle of it, chewing, refusing to go either way.",
+      "narration": "The road crosses a deep gully on a rope bridge. Each time the ground shrugs, it swings like a hammock with opinions. A snowhorn goat stands in the middle, chewing, refusing to move.",
       "choices": [
         {
           "id": "one_by_one",
-          "label": "Cross quick and light, between tremors",
+          "label": "Dash across between tremors",
           "icon": "quick",
           "goto": "check_rope_bridge"
         },
         {
           "id": "duskrunner_gaps",
-          "label": "Have a duskrunner watch the swing and call the gaps",
+          "label": "A duskrunner calls the gaps",
           "icon": "quick",
           "requiresClass": "duskrunner",
           "goto": "check_rope_bridge"
@@ -1636,7 +1636,7 @@
         },
         {
           "id": "loose_knot",
-          "label": "Tie on with a knot you can undo, the way you were told",
+          "label": "Tie a loose knot",
           "icon": "drop",
           "goto": "scene_rope_bridge_loose_knot",
           "requiresFlag": "loose_knot"
@@ -1665,7 +1665,7 @@
     },
     "scene_rope_bridge_roped": {
       "type": "story",
-      "narration": "You rope yourselves together, front to back, and go over so slowly that a snail would be embarrassed. When the bridge swings, you all lean the same way at once, without even saying. Being tied to each other turns out to feel a lot like being a team. The goat lets you pass.",
+      "narration": "You rope yourselves together and go over so slowly a snail would be embarrassed. When the bridge swings, you all lean the same way at once. The goat lets you pass.",
       "variants": [
         {
           "when": {
@@ -1674,13 +1674,13 @@
             }
           },
           "replace": true,
-          "text": "You tie the rope around your waist and the other end to the handrail, and go over so slowly that a snail would be embarrassed. When the bridge swings, you lean with it. Being tied to something solid turns out to feel a lot like having a friend. The goat lets you pass."
+          "text": "You tie yourself to the handrail and go over so slowly a snail would be embarrassed. When the bridge swings, you lean with it. The goat lets you pass."
         }
       ],
       "choices": [
         {
           "id": "on",
-          "label": "Up to the switchback",
+          "label": "Up the switchback",
           "icon": "ribbon",
           "goto": "scene_switchback"
         }
@@ -1688,11 +1688,11 @@
     },
     "scene_rope_bridge_loose_knot": {
       "type": "story",
-      "narration": "You tie on to the handrail with a loose knot, the kind you can undo. Every few steps, you undo it and tie it again further along. It is slow, and very safe, and by the far side you could tie that knot in your sleep. Which was, you suspect, the point.",
+      "narration": "You tie on to the handrail with a loose knot. Every few steps you untie it and tie it farther along. It is slow and very safe. By the far side, you could tie that knot in your sleep.",
       "choices": [
         {
           "id": "on",
-          "label": "Up to the switchback",
+          "label": "Up the switchback",
           "icon": "drop",
           "goto": "scene_switchback"
         }
@@ -1704,7 +1704,7 @@
         "creature.echo_hunter",
         "creature.cinder_wolf"
       ],
-      "narration": "Halfway up the switchback the road runs through a narrow cutting, and something in the cutting is repeating every sound you make, half a breath late. Your footsteps. Your whispers. Your humming stones. With it, a lone cinder wolf, coming down off the mountain with its ears flat.",
+      "narration": "Halfway up, the road runs through a narrow cutting. An echo hunter hides in the rock, repeating every sound you make, half a breath late. With it comes a lone cinder wolf, ears flat.",
       "cast": [
         {
           "figure": "entities/echo_hunter"
@@ -1716,7 +1716,7 @@
       "choices": [
         {
           "id": "racket",
-          "label": "Make a racket, everything at once",
+          "label": "Make a racket",
           "icon": "clever",
           "goto": "check_echoes"
         },
@@ -1728,14 +1728,14 @@
         },
         {
           "id": "sprite_knots",
-          "label": "Follow the trail of tiny tied grass knots around the cutting",
+          "label": "Follow the sprites' grass knots",
           "icon": "leaf",
           "requiresFlag": "sprites_friends",
           "goto": "scene_switchback_sprite_knots"
         },
         {
           "id": "fly_over",
-          "label": "Fly up and over the cutting",
+          "label": "Fly over the cutting",
           "icon": "griffin",
           "requiresSpecies": "griffin",
           "goto": "scene_switchback_fly_over"
@@ -1744,7 +1744,7 @@
     },
     "scene_switchback_fly_over": {
       "type": "story",
-      "narration": "You go up and over the cutting, and the echo hunter repeats the sound of your wings to the rocks, half a breath late, and gets very confused about which way you went. The wolf has already gone. You come down on the far side with your humming stones still rattling in your packs.",
+      "narration": "You fly over the cutting. The echo hunter copies the sound of your wings and gets very confused. The wolf is already gone.",
       "cast": [
         {
           "figure": "entities/echo_hunter"
@@ -1761,7 +1761,7 @@
     },
     "scene_switchback_sprite_knots": {
       "type": "story",
-      "narration": "Tiny knots of grass, tied at ankle height, lead off the road and over the top of the cutting. Harvest sprites, this far north, still looking out for you. You follow the knots, and the echo below you repeats your footsteps to an empty road.",
+      "narration": "Tiny grass knots, tied at ankle height, lead up and over the cutting. The harvest sprites are still looking out for you. Below, the echo repeats your footsteps to an empty road.",
       "choices": [
         {
           "id": "on",
@@ -1797,7 +1797,7 @@
     "encounter_echoes": {
       "type": "encounter",
       "map": "switchback",
-      "narration": "The echo hunter unfolds out of the rock wall, and the wolf, frightened half silly, sticks close beside it.",
+      "narration": "The echo hunter unfolds out of the rock wall. The wolf, scared half silly, sticks close beside it.",
       "enemies": [
         {
           "id": "echo",
@@ -1814,26 +1814,26 @@
       ],
       "onVictory": {
         "goto": "scene_bend_crowds",
-        "narration": "The echo hunter folds itself back into the rock, sulking, and the wolf bolts down the hill. The cutting is just a cutting again."
+        "narration": "The echo hunter folds back into the rock, sulking. The wolf bolts downhill."
       },
       "onDefeat": {
         "goto": "ending_lost_in_echoes",
-        "narration": "The echoes get louder and louder until you cannot hear yourselves think. You stumble back down the switchback the way you came, and your humming stones rattle loose in your packs."
+        "narration": "The echoes get so loud you cannot think. You stumble back down the switchback, stones rattling."
       }
     },
     "scene_bend_crowds": {
       "type": "story",
-      "narration": "At the worst bend, both sides got there first. Wardens are stacking numbered boxes on one side of the road. Masks are unrolling sacks on the other. Both are planning to grab the caravan's big stone the moment it arrives, which would end your test before it starts. Far below, the caravan is coming.",
+      "narration": "At the worst bend, wardens stack numbered boxes on one side. Masks unroll sacks on the other. Both plan to grab the big stone the moment it arrives, which would end your test before it starts. Far below, the caravan is coming.",
       "choices": [
         {
           "id": "chalk_line",
-          "label": "Draw a line across the road: nobody crosses until you try",
+          "label": "Draw a chalk line",
           "icon": "map",
           "goto": "scene_bend_crowds_chalk_line"
         },
         {
           "id": "helpers",
-          "label": "Ask each side for one helper",
+          "label": "Ask each for a helper",
           "icon": "heart",
           "goto": "check_bend_crowds"
         },
@@ -1855,7 +1855,7 @@
     },
     "scene_bend_crowds_chalk_line": {
       "type": "story",
-      "narration": "You draw a chalk line right across the road and stand on it. \"One breath,\" you say. \"Give us one breath to try. Then you can argue.\" The wardens look at the masks. The masks look at the wardens. Neither side wants to be the one who crossed the line first, so nobody does.",
+      "narration": "You draw a chalk line across the road and stand on it. \"Give us one breath to try,\" you say. \"Then you can argue.\" Nobody wants to cross first, so nobody does.",
       "choices": [
         {
           "id": "on",
@@ -1899,7 +1899,7 @@
           "name": "Rook"
         }
       ],
-      "narration": "Linnet and Rook come running from opposite ends of the bend and stand beside you, one on each side. The wardens stare. The masks stare. Then, slowly, both sides put down their boxes and sacks, because their own people are standing with you, and you cannot grab something out from under your own people.",
+      "narration": "Linnet and Rook run from opposite ends of the bend and stand beside you. Both sides stare. Then they put down their boxes and sacks. You cannot grab something from under your own people.",
       "choices": [
         {
           "id": "on",
@@ -1911,7 +1911,7 @@
     },
     "choice_the_test": {
       "type": "choice_point",
-      "narration": "At the worst bend, the fattest caravan in the funnel is coming, and the stone in its middle wagon hums so loudly the mules wear earmuffs. This is the test Pellam told you about. Hold that one stone's hum still for one breath, like a hand on a ringing bell, and you can hold a leash on anything. Wardens on one side, masks on the other, both watching you.",
+      "narration": "The fattest caravan is coming. The stone in its middle wagon hums so loudly the mules wear earmuffs. This is Pellam's test: hold that hum still for one breath, like a hand on a ringing bell. Wardens on one side, masks on the other, all watching you.",
       "variants": [
         {
           "when": {
@@ -1920,7 +1920,7 @@
               "max": 0
             }
           },
-          "text": "Your packs hold only rush gems, and they hum along with everything. But both camps have set small stones out on their tables for tuning, and nobody would mind if you borrowed some."
+          "text": "You have only rush gems. But both camps have small tuning stones on their tables, and nobody would mind if you borrowed some."
         },
         {
           "when": {
@@ -1930,7 +1930,7 @@
               "max": 4
             }
           },
-          "text": "The great stones in your packs lean toward the wagon, humming, the way iron filings lean toward a magnet."
+          "text": "Your great stones lean toward the wagon, like iron filings toward a magnet."
         },
         {
           "when": {
@@ -1939,83 +1939,83 @@
               "min": 5
             }
           },
-          "text": "All {facets} great stones in your packs lean toward the wagon at once. It is like tuning a whole choir against a single voice, and the choir is yours."
+          "text": "All {facets} great stones lean toward the wagon at once."
         }
       ],
       "choices": [
         {
           "id": "question",
-          "label": "Ask the stone the witch's question",
+          "label": "Ask the witch's question",
           "icon": "charm",
           "requiresItem": "tether_question",
           "goto": "check_hold_easy"
         },
         {
           "id": "rerouted",
-          "label": "The relay sent the caravan right to you. Be ready.",
+          "label": "The relay sent it here",
           "icon": "travel",
           "requiresFlag": "caravan_rerouted",
           "goto": "check_hold"
         },
         {
           "id": "heard_it",
-          "label": "You heard this caravan in last night's song. Be ready.",
+          "label": "You heard this caravan coming",
           "icon": "note",
           "requiresFlag": "heard_tomorrow",
           "goto": "check_hold"
         },
         {
           "id": "buyers",
-          "label": "The catalog says whose stone it is. Ask them first.",
+          "label": "Ask the stone's owner first",
           "icon": "scroll",
           "requiresFlag": "knows_buyers",
           "goto": "check_hold"
         },
         {
           "id": "loose_knot",
-          "label": "Tie it with a knot you can undo",
+          "label": "Use the loose knot",
           "icon": "ribbon",
           "requiresFlag": "loose_knot",
           "goto": "check_hold"
         },
         {
           "id": "ledger",
-          "label": "Open the wardens' ledger you carried, page by page",
+          "label": "Open the wardens' ledger",
           "icon": "scroll",
           "requiresItem": "tether_ledger",
           "goto": "interaction_ledger_limits"
         },
         {
           "id": "chord",
-          "label": "Hum the choir's three notes",
+          "label": "Hum the three notes",
           "icon": "note",
           "requiresItem": "tether_chord",
           "goto": "interaction_chord_hold"
         },
         {
           "id": "practiced",
-          "label": "You practiced on a small stone. You know the feeling.",
+          "label": "Use your practice",
           "icon": "note",
           "goto": "interaction_practiced_hold",
           "requiresFlag": "practiced"
         },
         {
           "id": "two_helpers",
-          "label": "A warden and a mask hold on with you",
+          "label": "Hold on with your helpers",
           "icon": "party",
           "goto": "scene_helpers_brace",
           "requiresFlag": "two_helpers"
         },
         {
           "id": "table_works",
-          "label": "Pellam and Hessa both nod to you to begin",
+          "label": "Pellam and Hessa nod",
           "icon": "heart",
           "goto": "scene_visitors_brace",
           "requiresFlag": "table_works"
         },
         {
           "id": "borrowed",
-          "label": "Borrow small stones from both camps, and tune with those",
+          "label": "Borrow stones from both camps",
           "icon": "hand",
           "goto": "choice_the_test_borrowed",
           "when": {
@@ -2027,7 +2027,7 @@
         },
         {
           "id": "bare_hands",
-          "label": "Hold it with nothing but nerve",
+          "label": "Hold it with bare nerve",
           "icon": "heart",
           "goto": "check_hold_hard"
         }
@@ -2035,7 +2035,7 @@
     },
     "choice_the_test_borrowed": {
       "type": "story",
-      "narration": "A warden hands you a small gray stone from the cage tray. A mask hands you a small red one from her soup sack. Neither of them looks at the other while they do it. You hold one in each hand and let them hum against each other until they find the same note, and then you have an instrument, borrowed from both sides. The caravan is almost here.",
+      "narration": "A warden hands you a gray tuning stone. A mask hands you a red one. Neither looks at the other. You let the two stones hum together until they find one note. Now you have an instrument, borrowed from both sides.",
       "choices": [
         {
           "id": "on",
@@ -2094,7 +2094,7 @@
     },
     "scene_tether_holds": {
       "type": "story",
-      "narration": "The caravan master climbs down, hands you the Caravan Stone in both arms, and says, \"Please keep it. It's been humming at me for a month.\" A warden writes something in a notebook. A mask takes off her mask. For a moment, everyone is looking at the same thing: you.",
+      "narration": "The caravan master climbs down and hands you the Caravan Stone. \"Please keep it. It's been humming at me for a month.\" A mask takes off her mask. For a moment, everyone is looking at you.",
       "variants": [
         {
           "when": {
@@ -2104,7 +2104,7 @@
               "max": 1
             }
           },
-          "text": "It is the only great stone in your packs, and it hums like a small, loud heart."
+          "text": "It is your only great stone, and it hums like a small, loud heart."
         },
         {
           "when": {
@@ -2114,7 +2114,7 @@
               "max": 4
             }
           },
-          "text": "It settles in among the others, and the great stones in your packs hum back at it like old friends."
+          "text": "Your other great stones hum back at it like old friends."
         },
         {
           "when": {
@@ -2123,7 +2123,7 @@
               "min": 5
             }
           },
-          "text": "That makes {facets} great stones now. The Caravan Stone slots into the hum like the last voice in a choir, and the mules, who have heard a lot of humming this month, look impressed."
+          "text": "That makes {facets} great stones, humming like a choir."
         }
       ],
       "onEnter": [
@@ -2149,7 +2149,7 @@
       "choices": [
         {
           "id": "climb",
-          "label": "Go back to the table one last time",
+          "label": "Back to the table",
           "icon": "forward",
           "goto": "scene_who_keeps_table"
         }
@@ -2163,7 +2163,7 @@
     },
     "scene_tether_slips": {
       "type": "story",
-      "narration": "The hum jumps free, and the ground answers with a long, rolling shake. In the muddle the masks drive the middle wagon away up a side track, apologizing as they go. The tremors do not stop after that. They settle into a slow, patient rhythm, like a drum.",
+      "narration": "The hum jumps free, and the ground answers with a long, rolling shake. In the muddle, the masks drive the wagon up a side track, saying sorry. The tremors settle into a slow, patient rhythm.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -2178,7 +2178,7 @@
       "choices": [
         {
           "id": "climb",
-          "label": "Go back to the table one last time",
+          "label": "Back to the table",
           "icon": "forward",
           "goto": "scene_who_keeps_table"
         }
@@ -2192,7 +2192,7 @@
           "name": "Pellam"
         }
       ],
-      "narration": "Before you climb, you go back down to the Pinch one last time. Your old door is still there on its two barrels, chalk and all. People are packing up and running. \"Somebody has to keep the table while you are up the mountain,\" says Pellam, \"or there will be nothing to come back to.\" Who?",
+      "narration": "Before you climb, you go back to the Pinch. Your old door still sits on its barrels, chalk and all. People are packing up and running. \"Somebody must keep the table while you're up the mountain,\" says Pellam, \"or there will be nothing to come back to.\" Who?",
       "variants": [
         {
           "when": {
@@ -2201,7 +2201,7 @@
               "max": 0
             }
           },
-          "text": "The only stones you carry are rush gems, humming along. You look at the old door and think it may be the greatest thing you have made."
+          "text": "It may be the greatest thing you have made."
         },
         {
           "when": {
@@ -2211,7 +2211,7 @@
               "max": 4
             }
           },
-          "text": "The great stones in your packs hum faintly, as if they want to stay and watch over the table too."
+          "text": "Your great stones hum faintly, as if they want to stay and watch."
         },
         {
           "when": {
@@ -2220,13 +2220,13 @@
               "min": 5
             }
           },
-          "text": "{facets} great stones hum in your packs, loud enough that wardens and masks both look over. It is the sound of a whole realm trying to stay in one piece."
+          "text": "Your {facets} great stones hum, like a realm trying to stay in one piece."
         }
       ],
       "choices": [
         {
           "id": "both",
-          "label": "Ask Pellam and Hessa to keep it together",
+          "label": "Ask Pellam and Hessa",
           "icon": "heart",
           "goto": "check_who_keeps_table"
         },
@@ -2238,7 +2238,7 @@
         },
         {
           "id": "ossley",
-          "label": "Whistle down the dry creek for the frog from the river",
+          "label": "Whistle down the dry creek",
           "icon": "drop",
           "goto": "scene_who_keeps_table_ossley",
           "requiresFlag": "route_river"
@@ -2274,7 +2274,7 @@
           "name": "Grandmother"
         }
       ],
-      "narration": "You give the table to the grandmothers. Two of them tip it up, tuck it under their arms like a tray, and carry it off downhill, still knitting. \"We'll keep your chalk on it, dear,\" one of them calls back. \"Somebody will want reminding.\"",
+      "narration": "Two grandmothers tuck the table under their arms like a tray and carry it downhill, still knitting. \"We'll keep your chalk on it, dear. Somebody will want reminding.\"",
       "choices": [
         {
           "id": "on",
@@ -2293,7 +2293,7 @@
           "size": "small_to_medium"
         }
       ],
-      "narration": "A frog in a very old hat comes poling his flat boat up the dry creek, as if he had been waiting to be asked: the frog from the reeds of the Great River, with OLD OSSLEY painted on his boat. He looks at the table for a long time, and then lays it across his boat like a roof. \"Tables float,\" he says. That is all he says. The boat slides away down a creek with no water in it, carrying your table somewhere safe.",
+      "narration": "Old Ossley, the frog from the reeds of the Great River, poles his flat boat up the dry creek as if he had been waiting. He lays your table across his boat like a roof. \"Tables float,\" he says. That is all.",
       "choices": [
         {
           "id": "on",
@@ -2305,7 +2305,7 @@
     },
     "rest_up_the_mountain": {
       "type": "rest",
-      "narration": "At the tree line you look back. Wardens, masks, wagons and mules are all running downhill, together for once. There is not a single embermoth left in the foothills. You turn around and walk up the mountain everyone else is running away from, carrying whatever you managed to borrow, a ledger or a chord or a question, and a great deal of nerve. You said hold it. Now you find out.",
+      "narration": "At the tree line you look back. Wardens, masks and mules are running downhill, together for once. You turn and climb the mountain everyone else is leaving. You said hold it. Now you find out.",
       "variants": [
         {
           "when": {
@@ -2314,7 +2314,7 @@
               "max": 0
             }
           },
-          "text": "Nothing in your packs but rush gems, humming along. You have the tune, and the tune will have to do."
+          "text": "You have only rush gems, and the tune. The tune will have to do."
         },
         {
           "when": {
@@ -2323,7 +2323,7 @@
               "min": 5
             }
           },
-          "text": "{facets} great stones hum in your packs and climb with you. The mountain can hear you coming."
+          "text": "{facets} great stones climb with you. The mountain can hear you coming."
         }
       ],
       "onEnter": [
@@ -2338,7 +2338,7 @@
     },
     "ending_lost_in_echoes": {
       "type": "rest",
-      "narration": "By the time the echoes let you go and you find the road again, the fattest caravan has long gone by, and the ground is shaking in a slow, patient rhythm. Nobody is at the table any more. You climb anyway, a long way behind, humming to yourselves to keep your courage up.",
+      "narration": "By the time the echoes let you go, the caravan is long gone, and the ground shakes in a slow, patient rhythm. Nobody is at the table. You climb anyway, far behind, humming to keep your courage up.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -2357,7 +2357,7 @@
     },
     "interaction_set_table": {
       "type": "interaction",
-      "narration": "In the middle of the Pinch lie an old door and two barrels. Pellam taps the door with his pencil. \"A table,\" he says. \"Level, please. I will be measuring.\" The door is heavy, and the barrels are not the same height.",
+      "narration": "In the middle of the Pinch lie an old door and two barrels of different heights. \"A table,\" says Pellam, tapping it with his pencil. \"Level, please. I will be measuring.\"",
       "interaction": {
         "kind": "balance",
         "cue": "Everyone lift or lower your side until the door is flat, then carry it onto the barrels.",
@@ -2366,15 +2366,15 @@
       },
       "onSuccess": {
         "goto": "choice_the_rule",
-        "narration": "The door settles onto the barrels, almost flat. Pellam lays his pencil on top, and it rolls only a little. \"Acceptable,\" he says, which from Pellam is a cheer."
+        "narration": "The door settles, almost flat. Pellam's pencil rolls only a little. \"Acceptable,\" he says, which from Pellam is a cheer."
       },
       "onFailure": {
         "goto": "choice_the_rule",
-        "narration": "The door slides off one barrel with a thump, and the pencil rolls away. Pellam fetches it. \"Almost level,\" he says kindly. \"Nobody will notice.\" Everybody notices."
+        "narration": "The door slides off with a thump. \"Almost level,\" says Pellam kindly. \"Nobody will notice.\" Everybody notices."
       },
       "onAssisted": {
         "goto": "choice_the_rule",
-        "narration": "Pellam props up one corner of the door with his boot. The door settles onto the barrels, almost flat, and he lays his pencil on top. \"Acceptable,\" he says."
+        "narration": "Pellam props one corner with his boot. The door settles onto the barrels, almost flat. \"Acceptable,\" he says."
       },
       "cast": [
         {
@@ -2386,7 +2386,7 @@
     },
     "interaction_choir_warmup": {
       "type": "interaction",
-      "narration": "The three notes are not the whole song. Before you leave, Hessa taps her painted mask, and the choir goes quiet. \"Warm-up,\" she says. \"Even a table gets one. I hum, you hum back. No cheating, and no giggling at the low one.\"",
+      "narration": "Before you leave, Hessa taps her mask. \"Warm-up,\" she says. \"I hum, you hum back. No giggling at the low one.\"",
       "interaction": {
         "kind": "memory",
         "cue": "Watch the notes glow, then hum them back in order.",
@@ -2418,7 +2418,7 @@
       },
       "onSuccess": {
         "goto": "scene_first_sitting",
-        "narration": "The last note hangs in the air like a held door. Hessa nods once. A singer ties a bit of ribbon to your pack. \"For luck,\" she whispers. \"Don't tell the others I'm soft.\"",
+        "narration": "The last note hangs in the air. A singer ties a ribbon to your pack. \"For luck. Don't tell the others I'm soft.\"",
         "effects": [
           {
             "type": "grantItem",
@@ -2429,11 +2429,11 @@
       },
       "onFailure": {
         "goto": "scene_first_sitting",
-        "narration": "You wobble on the second note and lose the third. The choir hums the rest for you, gently, the way you would help a small child across a stream. Nobody minds. Somebody's mask slips off, giggling."
+        "narration": "You lose the third note. The choir hums the rest for you, gently. Somebody's mask slips off, giggling."
       },
       "onAssisted": {
         "goto": "scene_first_sitting",
-        "narration": "The choir hums along under you, softly, until the last note comes out right. A singer ties a bit of ribbon to your pack. \"For luck,\" she whispers.",
+        "narration": "The choir hums under you until the last note comes out right. A singer ties a ribbon to your pack. \"For luck,\" she whispers.",
         "effects": [
           {
             "type": "grantItem",
@@ -2467,11 +2467,11 @@
       ],
       "art": "scenes/gemfall/warden-fire-tea",
       "type": "story",
-      "narration": "You carry the tea across with Pellam and Hessa's helpers. Each camp makes room for the other's mugs. A warden turns his cup around to hide the words NOT SOUP. Not a drop spills. At the far end Hessa takes the last mug, sniffs it, and sends a warm honeycake back down the line. Pellam counts three coins out of the camp's tea fund. \"Courier's pay,\" he says. \"I will log it as tea.\"",
+      "narration": "You carry the tea across with helpers from both camps. A warden turns his cup to hide the words NOT SOUP. Not a drop spills. Hessa sends back a honeycake. Pellam counts out three coins. \"Courier's pay. I'll log it as tea.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "On into the evening",
           "icon": "forward",
           "goto": "scene_evening",
           "effects": [
@@ -2490,7 +2490,7 @@
     },
     "interaction_box_slide": {
       "type": "interaction",
-      "narration": "The caravan is almost here when the ground shrugs. The wardens' tall stacks of numbered boxes lean, creak, and begin to slide down the bend toward the masks' sacks, one stack after another, rumbling. Both sides yelp. The road is about to be very busy with boxes.",
+      "narration": "The caravan is almost here when the ground shrugs. The wardens' tall stacks of boxes start sliding down the bend. Both sides yelp. Time your dash.",
       "interaction": {
         "kind": "timing",
         "cue": "Dash across when the sliding boxes pause.",
@@ -2501,15 +2501,15 @@
       },
       "onSuccess": {
         "goto": "scene_box_crawlers",
-        "narration": "You dart through the gap, and the last stack thuds against a rock exactly where you were standing. The top box bursts open. Something inside it clicks."
+        "narration": "You dart through the gap. The last stack thuds against a rock, and the top box bursts open. Something inside clicks."
       },
       "onFailure": {
         "goto": "scene_box_crawlers",
-        "narration": "A box bumps you gently off your feet and sets you down in the heather, quite unhurt. The last stack thuds against a rock, and the top box bursts open. Something inside it clicks."
+        "narration": "A box bumps you into the heather, unhurt. The last stack thuds against a rock, and the top box bursts open. Something inside clicks."
       },
       "onAssisted": {
         "goto": "scene_box_crawlers",
-        "narration": "A warden grabs your sleeve and a mask grabs the other one, and the two of them haul you clear together. The last stack thuds against a rock, and the top box bursts open. Something inside it clicks."
+        "narration": "A warden and a mask haul you clear together. The top box bursts open. Something inside clicks."
       },
       "art": "scenes/gemfall/box-stack-slide"
     },
@@ -2518,7 +2518,7 @@
       "discovers": [
         "creature.bone_crawler"
       ],
-      "narration": "Out of the burst box tumble two bone crawlers: little scuttlers in shells of borrowed bone, no bigger than footstools, with elbows everywhere. They have been riding in the box all day, nibbling the tags. Now they lift their heads, and both small noses point down the hill at the caravan. They can smell the hum of the big stone in its middle wagon, and they want it for a snack. Wardens and masks freeze. If the crawlers reach that stone, nobody will hold anything still.",
+      "narration": "Out of the box tumble two bone crawlers: little scuttlers in borrowed bone, no bigger than footstools, all elbows. Their noses point down the hill. They smell the big stone's hum, and they want it for a snack. If they reach it, nobody will hold anything still.",
       "cast": [
         {
           "figure": "entities/bone_crawler",
@@ -2528,7 +2528,7 @@
       "choices": [
         {
           "id": "shoo",
-          "label": "Shoo the crawlers off before the caravan arrives",
+          "label": "Shoo the crawlers off",
           "icon": "swords",
           "goto": "encounter_crawlers"
         }
@@ -2570,7 +2570,7 @@
     },
     "scene_crawlers_scattered": {
       "type": "story",
-      "narration": "The crawlers clatter away down the slope with their elbows in the air, and they do not come back. In the burst box, under a heap of chewed tags, lies a smooth little pebble that glints like a wink. A warden pounces on it. \"My lucky stone! Nine weeks I have been looking for that!\" She presses it into your hand. \"Take it. I will stop losing things.\" Down the hill, the first wagon comes around the corner.",
+      "narration": "The crawlers clatter off, elbows in the air. In the burst box lies a pebble that glints like a wink. \"My lucky stone!\" cries a warden. \"Nine weeks I've looked for that!\" She presses it into your hand. \"Take it. I'll stop losing things.\" The first wagon comes around the corner.",
       "choices": [
         {
           "id": "on",
@@ -2583,7 +2583,7 @@
     },
     "scene_crawlers_boxed": {
       "type": "story",
-      "narration": "The crawlers swirl around you until the whole bend is clatter. Then a mask drops a soup sack over the biggest one, and a warden slams the lid on the box, and the two of them sit on it together, arguing about who sat first. Little knocks drum from inside. They hand you hot tea and a blanket, and nobody has the breath to chase the small glinting thing that rolled out of the box and away down the hill. Below you, the first wagon comes around the corner.",
+      "narration": "The crawlers swirl until the bend is all clatter. Then a mask drops a sack over one, and a warden slams the box lid. They sit on it together, arguing about who sat first. Something small and glinting rolls away downhill. The first wagon comes around the corner.",
       "choices": [
         {
           "id": "on",
@@ -2607,7 +2607,7 @@
       ],
       "art": "scenes/gemfall/pinch-door-table",
       "type": "choice_point",
-      "narration": "You point to NOBODY SHOUTS. Pellam invites Hessa over to ask her directly. Each hero can offer a question, a worry or a hope. Hessa puts her ladle down so she can listen properly.",
+      "narration": "You point to NOBODY SHOUTS. Pellam calls Hessa over to ask her straight. Each hero can offer a question, a worry or a hope. Hessa puts her ladle down so she can listen properly.",
       "choices": [
         {
           "id": "question",
@@ -2617,13 +2617,13 @@
         },
         {
           "id": "worry",
-          "label": "Name a worry about control",
+          "label": "Name a worry",
           "icon": "heart",
           "goto": "interaction_quiet_council_response_worry"
         },
         {
           "id": "hope",
-          "label": "Share a hope for working together",
+          "label": "Share a hope",
           "icon": "note",
           "goto": "interaction_quiet_council_response_hope"
         }
@@ -2642,11 +2642,11 @@
       ],
       "art": "scenes/gemfall/pinch-door-table",
       "type": "story",
-      "narration": "You point to FACES SHOWING. Hessa lifts her mask; Pellam shifts his ledger. They help steady the door-table while a helper from each camp sits down. A warden and a singer agree to stand beside you tomorrow. The table has done its job.",
+      "narration": "You wave Hessa over and point to FACES SHOWING. Hessa lifts her mask. A helper from each camp sits down, and they agree to stand beside you tomorrow.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Sleep under the table",
           "icon": "forward",
           "goto": "rest_under_the_table",
           "effects": [
@@ -2672,11 +2672,11 @@
       ],
       "art": "scenes/gemfall/warden-fire-tea",
       "type": "story",
-      "narration": "You point to BRING ONE THING TO SHARE. Hessa brings soup; Pellam brings mugs. Both visitors help serve across the table. Neither has to leave their camp to listen to the other. They stay to talk. Tomorrow they will help brace the wagon together. Pellam turns his mug around.",
+      "narration": "You wave Hessa over and point to BRING ONE THING TO SHARE. Hessa brings soup. Pellam brings mugs. They serve each other and stay to talk. Tomorrow they will help brace the wagon together.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Sleep under the table",
           "icon": "forward",
           "goto": "rest_under_the_table",
           "effects": [
@@ -2691,7 +2691,7 @@
     },
     "interaction_small_hum": {
       "type": "interaction",
-      "narration": "A passing warden takes the cart. You find a quiet rock and rest a little humming stone between your hands. Wait for the calm middle of its pulse. The first time it goes quiet, a nearby goat checks whether its ears still work.",
+      "narration": "A passing warden takes the cart. You hold a little humming stone on a quiet rock. Wait for the calm middle of its pulse. A goat watches, chewing.",
       "interaction": {
         "kind": "precision",
         "cue": "Tap at the calm middle of the hum.",
@@ -2702,7 +2702,7 @@
       },
       "onSuccess": {
         "goto": "scene_returning_cart_practice",
-        "narration": "For half a breath the hum rests. Remember that feeling: it will give you a wider opening at the wagon.",
+        "narration": "For half a breath the hum rests. Remember that feeling for the wagon.",
         "effects": [
           {
             "type": "setFlag",
@@ -2713,11 +2713,11 @@
       },
       "onFailure": {
         "goto": "interaction_tea_cups",
-        "narration": "The hum slips away. The cart still reaches the cairn, and your other instruments can help tomorrow."
+        "narration": "The hum slips away. The cart still gets home, and your other tools can help tomorrow."
       },
       "onAssisted": {
         "goto": "scene_returning_cart_practice",
-        "narration": "A singer hums under your note until it settles. You know the feeling now.",
+        "narration": "A singer hums under your note until it settles. Now you know the feeling.",
         "effects": [
           {
             "type": "setFlag",
@@ -2729,7 +2729,7 @@
     },
     "interaction_practiced_hold": {
       "type": "interaction",
-      "narration": "You recognize the calm place inside the wagon's hum. It is larger than the practice stone, but it has the same pulse. The mules wait with their earmuffs half off.",
+      "narration": "You find the calm place inside the wagon's hum. It is bigger than the practice stone, with the same pulse. The mules wait, earmuffs half off.",
       "interaction": {
         "kind": "precision",
         "cue": "Tap at the calm middle, just as you practiced.",
@@ -2740,11 +2740,11 @@
       },
       "onSuccess": {
         "goto": "scene_tether_holds",
-        "narration": "The hum rests for one long breath. You let it return gently."
+        "narration": "The hum rests for one long breath. You let it go gently."
       },
       "onFailure": {
         "goto": "scene_tether_slips",
-        "narration": "The pulse slips past your hands. The masks take the wagon up the side track."
+        "narration": "The pulse slips past your hands. The masks take the wagon."
       },
       "onAssisted": {
         "goto": "scene_tether_holds",
@@ -2754,7 +2754,7 @@
     },
     "interaction_ledger_limits": {
       "type": "interaction",
-      "narration": "The borrowed ledger shows how to hold a hum without squeezing it harder: listen first, hold for one breath, then release. Pellam has underlined RELEASE so hard the next page has a dent.",
+      "narration": "The ledger says how to hold a hum: listen first, hold for one breath, then let go. Pellam underlined RELEASE so hard the next page has a dent.",
       "interaction": {
         "kind": "sequence",
         "cue": "Set the safe limits in order: listen, hold, release.",
@@ -2789,15 +2789,15 @@
       },
       "onSuccess": {
         "goto": "scene_tether_holds",
-        "narration": "You follow the safe limits. One breath of quiet, then a gentle release."
+        "narration": "One breath of quiet, then a gentle release."
       },
       "onFailure": {
         "goto": "scene_tether_slips",
-        "narration": "The steps tangle and the hum breaks free. The masks drive the wagon up the side track."
+        "narration": "The steps tangle and the hum breaks free. The masks take the wagon."
       },
       "onAssisted": {
         "goto": "scene_tether_holds",
-        "narration": "Pellam reads the limits while you work. The hum rests for one breath."
+        "narration": "Pellam reads the steps while you work. The hum rests for one breath."
       },
       "art": "scenes/gemfall/caravan-bells-hairpin",
       "cast": [
@@ -2809,7 +2809,7 @@
     },
     "interaction_chord_hold": {
       "type": "interaction",
-      "narration": "Hessa sounds the choir's three notes: middle, low, high, middle. Echo them toward the wagon so the stone has a note to rest against. One mule hums the low part, badly.",
+      "narration": "Hessa sounds the notes: middle, low, high, middle. Echo them toward the wagon, so the stone has a note to rest on. One mule hums along, badly.",
       "interaction": {
         "kind": "memory",
         "cue": "Echo middle, low, high, middle after the notes glow.",
@@ -2841,11 +2841,11 @@
       },
       "onSuccess": {
         "goto": "scene_tether_holds",
-        "narration": "Your chord meets the stone's note. For one breath the hillside is quiet."
+        "narration": "Your chord meets the stone's note. For one breath, the hillside is quiet."
       },
       "onFailure": {
         "goto": "scene_tether_slips",
-        "narration": "The chord wobbles and the hum escapes. The masks drive the wagon up the side track."
+        "narration": "The chord wobbles and the hum escapes. The masks take the wagon."
       },
       "onAssisted": {
         "goto": "scene_tether_holds",
@@ -2861,7 +2861,7 @@
     },
     "interaction_tether_team": {
       "type": "interaction",
-      "narration": "A warden blocks the wheel. A singer steadies the side. They have agreed to help: brace the wagon together while you quiet its stone. Nobody has to hold the whole hillside alone.",
+      "narration": "A warden blocks the wheel. A singer steadies the side. Brace together while you quiet the stone.",
       "interaction": {
         "kind": "cooperate",
         "cue": "Brace together while the stone is held for one breath.",
@@ -2870,11 +2870,11 @@
       },
       "onSuccess": {
         "goto": "scene_tether_holds",
-        "narration": "The wagon stands steady. You hold the hum for one breath, then let it return. Both helpers remember to breathe too."
+        "narration": "The wagon stands steady. You hold the hum for one breath, then let it go."
       },
       "onFailure": {
         "goto": "scene_tether_holds",
-        "narration": "The helpers set another wheel block. Together you finish the one-breath test."
+        "narration": "The helpers set another wheel block. Together you finish the test."
       },
       "onAssisted": {
         "goto": "scene_tether_holds",
@@ -2884,11 +2884,11 @@
     },
     "scene_helpers_brace": {
       "type": "story",
-      "narration": "The warden and singer you invited step beside the wagon. One brings a wheel block; the other brings a steady note. They wait for your signal.",
+      "narration": "The warden and the singer step up beside the wagon. One brings a wheel block. The other brings a steady note. They wait for your signal.",
       "choices": [
         {
           "id": "on",
-          "label": "Brace the wagon together",
+          "label": "Brace the wagon",
           "icon": "hand",
           "goto": "interaction_tether_team"
         }
@@ -2900,7 +2900,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Brace the wagon together",
+          "label": "Brace the wagon",
           "icon": "hand",
           "goto": "interaction_tether_team"
         }
@@ -2912,7 +2912,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Sleep under the table",
           "icon": "forward",
           "goto": "rest_under_the_table",
           "effects": [
@@ -2942,7 +2942,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Sleep under the table",
           "icon": "forward",
           "goto": "rest_under_the_table",
           "effects": [
@@ -2972,7 +2972,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Sleep under the table",
           "icon": "forward",
           "goto": "rest_under_the_table",
           "effects": [
