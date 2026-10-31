@@ -70,9 +70,10 @@ test.describe("running the room", () => {
     await host.getByRole("button", { name: "Turn quiet mode off" }).click();
     await expect(quietOn()).toHaveCount(0, TAP);
 
-    // --- Keeper: the host hands the keeper role to a phone in the room (#272) ---
-    await guestRow.getByRole("button", { name: /^Let .* keep this game$/ }).click();
-    await expect(guestRow.getByText(/keeps the game/)).toBeVisible(TAP);
+    // --- Keeper: a never-seen phone is a visitor, with a game of its own (#249),
+    // and a visitor never keeps somebody else's. Handing the role to a family
+    // phone is http.test.ts's ("lets the host hand the keeper role…"). ---
+    await expect(guestRow.getByText(/visiting/)).toBeVisible(TAP);
     await expect(guestRow.getByRole("button", { name: /keep this game$/ })).toHaveCount(0);
 
     // --- Removed: the guest is out ---

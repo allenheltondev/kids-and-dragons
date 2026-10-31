@@ -140,15 +140,23 @@ test.describe("stop anytime, pick up where you left off", () => {
     await allen.getByRole("button", { name: /back to the start/i }).click(TAP);
     await sam.getByRole("button", { name: /back to the start/i }).click(TAP);
 
-    // --- Night two: Sam, on the other phone, opens a new room ---
-    await sam.goto("/");
-    await sam.getByRole("button", { name: /host a game/i }).click();
-    await sam.getByText("Phone Mode").click();
-    await sam.getByLabel(/adventurer name/i).fill("Sam");
-    await sam.getByRole("button", { name: /^start a game$/i }).click();
-    await expect(sam).toHaveURL(/\/p\/[A-Z]{4}$/, TAP);
-    const second = new URL(sam.url()).pathname.split("/").pop() ?? "";
+    // --- Night two: a new room, and Sam's phone picks the game back up ---
+    // Sam's phone came in new on night one, so it is a visitor with a game of
+    // its own (#249): Allen opens the room, and Sam brings Bo back to it.
+    await allen.goto("/");
+    await allen.getByRole("button", { name: /host a game/i }).click();
+    await allen.getByText("Phone Mode").click();
+    await allen.getByLabel(/adventurer name/i).fill("Allen");
+    await allen.getByRole("button", { name: /^start a game$/i }).click();
+    await expect(allen).toHaveURL(/\/p\/[A-Z]{4}$/, TAP);
+    const second = new URL(allen.url()).pathname.split("/").pop() ?? "";
     expect(second).not.toBe(first);
+    await bringHero(allen, "Pip");
+
+    await sam.goto("/");
+    await sam.getByLabel(/room code/i).fill(second);
+    await sam.getByRole("button", { name: /join a game/i }).click();
+    await expect(sam).toHaveURL(new RegExp(`/p/${second}$`), TAP);
     await bringHero(sam, "Bo");
 
     // The room says where they stopped, in a line a kid can follow.
@@ -159,13 +167,6 @@ test.describe("stop anytime, pick up where you left off", () => {
     expect(["lobby", "creation"]).toContain(lobby.phase);
     expect(lobby.saved?.heroes).toEqual(["Pip", "Bo"]);
     expect(lobby.saved?.chapter.title).toBe(before.chapterInfo?.title);
-
-    // Allen joins late, on the phone that hosted last time.
-    await allen.goto("/");
-    await allen.getByLabel(/room code/i).fill(second);
-    await allen.getByRole("button", { name: /join a game/i }).click();
-    await expect(allen).toHaveURL(new RegExp(`/p/${second}$`), TAP);
-    await bringHero(allen, "Pip");
 
     // --- One tap, and the chapter is back ---
     await sam.getByRole("button", { name: /keep going/i }).click(TAP);
