@@ -1,7 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 import type { ClientIntent, RunState } from "../packages/shared/src/index";
 import { roomState } from "./room-state";
-import { openPlayerTask } from "./player-navigation";
 import { API } from "./api";
 
 // Three live rendered surfaces are expensive to trace on a local Windows host.
@@ -67,8 +66,8 @@ test("reusable interactions run through real phones, TV, refresh, and authored b
     await expect(controls(two).getByRole("button", { name: "See what happens next" })).toBeVisible();
     await two.reload();
     await two.getByRole("button", { name: "Got it", exact: true }).click();
-    await expect(two.getByRole("button", { name: "Your turn", exact: true })).toBeVisible();
-    await openPlayerTask(two);
+    // A reloaded phone opens on its turn, not on the bag with a "Your turn" button to find (#588).
+    await expect(two.getByRole("button", { name: "Your turn", exact: true })).toBeHidden();
     await expect(controls(two).getByRole("button", { name: "See what happens next" })).toBeVisible();
     await controls(two).getByRole("button", { name: "See what happens next" }).click();
     await expect(world).toContainText("Hold the branch");
