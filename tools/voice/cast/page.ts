@@ -300,6 +300,8 @@ ${MODE_CSS}</style>
     if (mode === "elevenlabs") {
       // An account can have hundreds: search them, and hear each one's own sample before spending anything on an audition.
       voice = KadMode.voicePicker({ options: KadMode.voiceOptions(mode, entry, data.voices, elevenVoices), value: mine, label: voiceLabel, onPick: pick });
+      // Nothing in the account fits? Design one from what the sheet knows of them.
+      voice.append(KadMode.voiceDesigner({ id, name: entry.name, call, onSaved: async (made, updated) => { data.speakers[id] = updated; elevenVoices = elevenVoices.concat(made); await ensureElevenVoices(true); await refresh(); } }));
     } else {
       voice = el("select", { "aria-label": voiceLabel }, KadMode.voiceOptions(mode, entry, data.voices, elevenVoices).map((o) => el("option", { value: o.value }, o.label)));
       voice.value = mine;
