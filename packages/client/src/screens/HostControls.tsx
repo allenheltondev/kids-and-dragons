@@ -104,6 +104,9 @@ export function canSwitchCrew(state: Pick<RunState, "phase" | "chapterId" | "cam
   return state.chapterId === null && state.phase !== "chapter_complete" && !canStop(state);
 }
 
+/** Why the Room panel's Crews cannot switch yet: a game is open (`canSwitchCrew`). */
+export const CREW_LOCKED = "Stop this adventure to change crews";
+
 /** How long the shared screen offers to stop at a Rest before it keeps playing by itself. */
 export const STOP_OFFER_MS = 15_000;
 
@@ -384,12 +387,21 @@ function HostPanel({ state, me, code, invite = false }: { state: RunState; me: s
       </header>
       {/* First, and open: a table that wants another crew should not have to
           scroll a full roster to find it. */}
+      {/* Always here, so a host mid-chapter can find crews and learn when they open
+          up; only switchable between games (`canSwitchCrew`). */}
       {canSwitchCrew(state) ? (
         <details className="kad-host__crew-menu" open>
           <summary className="kad-focusable"><Icon name="crew" /> Crews <span className="kad-host__hint">Pause this adventure and change who is playing</span></summary>
           <CrewSwitch state={state} busy={busy} run={run} empty={rows.length === 0} />
         </details>
-      ) : null}
+      ) : (
+        <details className="kad-host__crew-menu">
+          <summary className="kad-focusable"><Icon name="crew" /> Crews <span className="kad-host__hint">{CREW_LOCKED}</span></summary>
+          <div className="kad-host__crew" role="group" aria-label="Which crew is playing">
+            <p className="kad-host__hint">{CREW_LOCKED}. Each crew keeps its own adventure saved.</p>
+          </div>
+        </details>
+      )}
       <details className="kad-host__people" open={invite}>
       <summary className="kad-focusable">Players <span className="kad-host__hint">{rows.length} in this room</span></summary>
       {rows.length === 0 ? (
