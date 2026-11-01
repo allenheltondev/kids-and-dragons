@@ -222,19 +222,15 @@ async function foundIfVacant(householdId: string, deviceId: string, deps: Accoun
 }
 
 /**
- * Whether `deviceId` may claim this guest household: its founder, or, on a
- * household made before founders were recorded, any device playing in it (the
- * old rule); the store applies the same rule in the claim's write.
- *
- * Temporary, but not yet over (#272): #265 shipped on 2026-10-17, and an idle
- * household expires a week after it was last played, but one still being played
- * is renewed each time, so an old one can outlive the week. Delete `legacy`
- * here, in the memory store's `claimHousehold` and in the DynamoDB claim
- * condition once none is left (`GUEST` index entries with no founder).
+ * Whether `deviceId` may claim this guest household: only its founder. A
+ * household with no founder, whether still awaiting one, dropped by a host
+ * (`""`) or with none recorded at all, is claimable by nobody; the store applies
+ * the same rule in the claim's write. (Households made before founders were
+ * recorded once kept the old any-device rule; #272 removed it.)
  */
 export function mayClaim(household: Household, deviceId: string): boolean {
-  const legacy = household.founderDeviceId === undefined && household.awaitingFounder !== true;
-  return legacy || (household.founderDeviceId !== "" && household.founderDeviceId === deviceId);
+  const founder = household.founderDeviceId;
+  return founder !== undefined && founder !== "" && founder === deviceId;
 }
 
 // ---------------------------------------------------------------------------

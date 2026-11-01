@@ -411,8 +411,8 @@ export interface CommitInput {
    * the room, which the run records as `keeperPlayerId`. One write, so the
    * household and the screens can never disagree about who may keep it, with
    * nothing to roll back when two hand-overs overlap or the run loses its
-   * seq race. Whoever it was or was not until now (dropped, awaiting, from
-   * before founders). Conditional on a guest household nobody has kept and the
+   * seq race. Whoever it was or was not until now (dropped, awaiting, or
+   * none recorded). Conditional on a guest household nobody has kept and the
    * sweeper has not begun on, as the claim is: when it does not hold the whole
    * commit is refused, exactly as a lost seq race is.
    */
@@ -420,8 +420,8 @@ export interface CommitInput {
   /**
    * Take `deviceId` off the household as its founder, in the same transaction
    * as the state and the event (#272): a host's Remove of the phone that kept
-   * the game. Leaves nobody (`founderDeviceId: ""`, never absent, which would
-   * read as a household from before founders), as `dropFounder` does.
+   * the game. Leaves nobody (`founderDeviceId: ""`, which reads the same as
+   * absent), as `dropFounder` does.
    * Conditional on `deviceId` still being the founder: when it is not, the
    * whole commit is refused as a lost seq race is, and the caller reads the
    * household again. Never together with `founder`, which writes the same row.
@@ -655,8 +655,8 @@ export interface GameRepository {
    * account — one family's guest session cannot be stolen by the next person to
    * sign in on that phone — if the sweeper has already begun deleting it, or if
    * `deviceId` is not the household's founder (`Household.founderDeviceId`,
-   * #265). A household from before founders (neither field) is claimable from
-   * any device until it expires. The founder is checked in the same write as the claim, so a founder
+   * #265). A household with no founder (absent, awaiting or `""`) is claimable
+   * by nobody (#272). The founder is checked in the same write as the claim, so a founder
    * dropped a moment ago (`dropFounder`) cannot claim on a stale read.
    */
   claimHousehold(householdId: string, cognitoSub: string, deviceId: string): Promise<boolean>;
@@ -669,8 +669,8 @@ export interface GameRepository {
   takeFounding(householdId: string, deviceId: string): Promise<boolean>;
   /**
    * Take `deviceId` off the household as its founder, and leave nobody in its
-   * place (`founderDeviceId: ""`, never absent, which would read as a
-   * household from before founders): the household can no longer be claimed by signing in. For a host
+   * place (`founderDeviceId: ""`, which reads the same as absent): the
+   * household can no longer be claimed by signing in. For a host
    * taking out a phone that founded a TV's household (#267). A no-op when
    * `deviceId` is not the founder.
    */
