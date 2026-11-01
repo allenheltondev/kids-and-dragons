@@ -291,9 +291,9 @@ export class MemoryRepository implements GameRepository {
     // that family's characters.
     if (household.ownerSub && household.ownerSub !== cognitoSub) return false;
     // Only the device that started it, unless it is already this account's.
-    // A household from before founders keeps the old rule until it expires.
-    const legacy = household.founderDeviceId === undefined && household.awaitingFounder !== true;
-    if (household.ownerSub !== cognitoSub && !legacy && household.founderDeviceId !== deviceId) return false;
+    // No founder (absent, awaiting or dropped) means nobody may claim it.
+    const founder = household.founderDeviceId;
+    if (household.ownerSub !== cognitoSub && (!founder || founder !== deviceId)) return false;
 
     const { expiresAt: _dropped, ...rest } = household;
     // Dropping GSI1PK/GSI1SK is the whole promotion: no sweep entry, no sweep.
