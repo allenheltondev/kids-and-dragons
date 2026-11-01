@@ -58,11 +58,11 @@
   "scenes": {
     "arrival": {
       "type": "story",
-      "narration": "Beyond the whales' turning place, a kitsune keeper stands beside a lookout bell. Pip Thistledown, the manticore scout, holds its rope clear of his tail. A flat island appears beneath the cloud. Beside you wait a folded landing board, signal cloths and a wooden box of song slips. \"Help us meet that island,\" says the keeper. \"It is due back. I expected more time to get the board out.\"",
+      "narration": "Beyond the whales' turning place, a kitsune keeper and her helpers stand beside a lookout bell. Pip Thistledown, the manticore scout, holds the bell rope clear of his tail. A flat island drifts beneath the cloud. Beside you wait a folded landing board, signal cloths and a wooden box of song slips. \"Help us meet that island,\" says the keeper. \"It is due back. I expected more time to get the board out.\" Your job is to help them reach it, and get back safely.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Listen to the keeper",
           "icon": "hand",
           "goto": "return_song"
         }
@@ -124,13 +124,13 @@
           "when": {
             "flag": "whales_scattered"
           },
-          "text": "The scattered cloud whales have not returned to the lookout. The keeper has lost the circling song she usually listens for before an island comes in. \"We will need sightings from the ground,\" she says. Nobody claims to know where the whales went."
+          "text": "The scattered cloud whales have not come back. Without their song, the keeper must spot the island by eye. Nobody knows where the whales went."
         },
         {
           "when": {
             "flag": "whales_guided"
           },
-          "text": "The cloud whales you guided clear are singing beyond the open lane. The keeper hears a turning note and points beneath the cloud. \"They have seen something low. We should look there first.\" Their song offers a place to look, not a promise about where the island will stop."
+          "text": "The cloud whales you guided clear are singing nearby. The keeper hears a turning note and points under the cloud. \"Look there first.\""
         }
       ],
       "cast": [
@@ -147,7 +147,7 @@
     },
     "return_song": {
       "type": "story",
-      "narration": "The keeper opens the song box. As the welcome tune plays, she points to a different shape on each slip. Pip searches beneath the cloud. \"A song with directions. Much harder to lose than my map.\" You listen while the island's outline gathers out of the mist.",
+      "narration": "The keeper opens the song box. As a welcome tune plays, she points to a shape on each slip. \"A song with directions,\" says Pip. \"Much harder to lose than my map.\"",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -162,7 +162,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Look for the island",
           "icon": "forward",
           "goto": "sightings"
         }
@@ -170,23 +170,23 @@
     },
     "sightings": {
       "type": "choice_point",
-      "narration": "A notch on the approaching island slides past a distant cloud break. The keeper plants two sighting sticks beside the lookout. \"The clouds move too. Check the notch against the roof corner, or follow it through the cloud banks.\" Which sighting will you test?",
+      "narration": "A notch on the approaching island slides past a distant cloud break. The keeper plants two sighting sticks. \"The clouds move too. Check the notch against the roof corner, or follow it through the cloud banks.\" Which will you try?",
       "choices": [
         {
           "id": "option_1",
-          "label": "Compare the notch from two fixed viewpoints",
+          "label": "Check the roof corner",
           "icon": "hand",
           "goto": "sightings_1"
         },
         {
           "id": "option_2",
-          "label": "Time the notch against the lookout roof",
+          "label": "Follow it through clouds",
           "icon": "hand",
           "goto": "sightings_2"
         },
         {
           "id": "sightings_whales",
-          "label": "Use the guided whales' turning note",
+          "label": "Use the whales' note",
           "icon": "hand",
           "goto": "sightings_whales",
           "when": {
@@ -209,11 +209,11 @@
     },
     "sightings_1": {
       "type": "story",
-      "narration": "Use the fixed roof corner to check when the moving notch passes it. Pip keeps yesterday's sketch out of the way.",
+      "narration": "Watch the roof corner. It stays put while the notch slides past.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Watch the corner",
           "icon": "hand",
           "goto": "sightings_1_check"
         }
@@ -232,7 +232,7 @@
     },
     "sightings_1_check": {
       "type": "interaction",
-      "narration": "Track the approaching island from the marked ground. Use the fixed lookout corner or follow the notch through the moving cloud; a drifting cloud alone is no landmark.",
+      "narration": "Track the island from the marked ground. A drifting cloud is no landmark. The roof corner is.",
       "interaction": {
         "kind": "timing",
         "cue": "Mark the notch as it passes the fixed roof corner.",
@@ -264,11 +264,11 @@
     },
     "sightings_1_done": {
       "type": "story",
-      "narration": "Your two calls make a clear sequence: the island will pass below the left side of the lookout. The keeper moves the loose board to that side. A second sighting agrees. There is still work before a crossing, but the waiting place is no longer a guess.",
+      "narration": "Your two calls agree: the island will pass below the left side of the lookout. The keeper drags the board to that side. Now the waiting place is no longer a guess.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Get ready for it",
           "icon": "hand",
           "goto": "priority"
         }
@@ -293,11 +293,11 @@
     },
     "sightings_1_changed": {
       "type": "story",
-      "narration": "A cloud hides the notch before your second call. You leave the missing sighting blank. The keeper keeps the board folded until the island comes fully into view; then she moves it to the left. Waiting costs preparation time, not anyone's footing.",
+      "narration": "A cloud hides the notch before your second call. The keeper waits until the island comes fully into view, then moves the board to the left. Waiting costs a little time, but nobody slips.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Get ready for it",
           "icon": "hand",
           "goto": "priority"
         }
@@ -322,11 +322,11 @@
     },
     "sightings_2": {
       "type": "story",
-      "narration": "Follow the same notch through the moving cloud banks. The keeper points out its shape before the cloud hides it.",
+      "narration": "Follow the notch through the moving clouds. The keeper points out its shape before a cloud swallows it.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Follow the notch",
           "icon": "hand",
           "goto": "sightings_2_check"
         }
@@ -345,7 +345,7 @@
     },
     "sightings_2_check": {
       "type": "interaction",
-      "narration": "Track the approaching island from the marked ground. Use the fixed lookout corner or follow the notch through the moving cloud; a drifting cloud alone is no landmark.",
+      "narration": "Track the island from the marked ground. Keep your eyes on the notch, not the drifting cloud.",
       "interaction": {
         "kind": "tracking",
         "cue": "Follow the marked notch-view through the cloud banks.",
@@ -395,11 +395,11 @@
     },
     "sightings_2_done": {
       "type": "story",
-      "narration": "Two careful counts put the island below the left side of the lookout. The keeper shifts the folded board there while the ground between you is clear. Pip ties a little knot in his string for the count; the knot is a note, not a mooring line.",
+      "narration": "Two careful counts put the island below the left side of the lookout. The keeper moves the board there. Pip ties a knot in his string to remember the count. Then he ties another one by accident.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Get ready for it",
           "icon": "hand",
           "goto": "priority"
         }
@@ -424,11 +424,11 @@
     },
     "sightings_2_changed": {
       "type": "story",
-      "narration": "Your first count follows the cloud instead of the notch. Pip catches the mismatch and lowers the string. You wait for the island to clear the mist, then the keeper moves the board to the left. Nobody turns an uncertain count into permission to cross.",
+      "narration": "Your first count follows a cloud instead of the notch. Pip spots the mix-up. You wait for the island to clear the mist, then the keeper moves the board to the left.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Get ready for it",
           "icon": "hand",
           "goto": "priority"
         }
@@ -453,17 +453,17 @@
     },
     "priority": {
       "type": "choice_point",
-      "narration": "A gust rattles the song box. A messenger's letter bag slides toward the low fence; a keeper has hold of the messenger herself. Your team can recover the sealed letters or ready the signal station. The other job must wait. Dry letters preserve a messenger departure; a ready station can send a temple signal. \"My letters!\" calls the messenger. Which comes first?",
+      "narration": "A gust rattles the song box. A griffin messenger's letter bag slides toward the low fence. \"My letters!\" she calls. The signal frame is tipping, too. With a working frame, you could signal the temple on the next island. With dry letters, the messenger could carry a note. There is only time for one. Which comes first?",
       "choices": [
         {
           "id": "option_1",
-          "label": "Recover the messenger bag before the next gust",
+          "label": "Save the letter bag",
           "icon": "hand",
           "goto": "priority_1"
         },
         {
           "id": "option_2",
-          "label": "Secure the song slips and signal station",
+          "label": "Fix the signal frame",
           "icon": "hand",
           "goto": "priority_2"
         }
@@ -486,11 +486,11 @@
     },
     "priority_1": {
       "type": "story",
-      "narration": "The messenger points out her bag's strong strap. The other keepers cover the song slips while your party goes to the fence.",
+      "narration": "The messenger points at her bag's strong strap. The helpers cover the song slips while you run to the fence.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Reach for the bag",
           "icon": "hand",
           "goto": "letters"
         }
@@ -513,11 +513,11 @@
     },
     "priority_2": {
       "type": "story",
-      "narration": "Your party takes the signal frame. The messenger stays with a keeper while her low bag waits for recovery.",
+      "narration": "Your party grabs the signal frame. The messenger's bag will have to wait.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Steady the frame",
           "icon": "hand",
           "goto": "station"
         }
@@ -540,23 +540,23 @@
     },
     "letters": {
       "type": "choice_point",
-      "narration": "The mailbag catches inside the fence. Reach its strong strap with a looped pole, or pass a hauling line toward the gate. The messenger points at the flap. \"Not that bit. That bit is mostly wishes.\" Which way will you bring it in?",
+      "narration": "The mailbag catches inside the fence. You could hook its strap with a looped pole, or slide it along the fence with a rope. The messenger points at the flap. \"Not that bit. That bit is mostly wishes.\" How will you bring it in?",
       "choices": [
         {
           "id": "option_1",
-          "label": "Lift the strap with a looped pole",
+          "label": "Hook it with a pole",
           "icon": "hand",
           "goto": "letters_1"
         },
         {
           "id": "option_2",
-          "label": "Draw the bag sideways along the fence",
+          "label": "Slide it along the fence",
           "icon": "hand",
           "goto": "letters_2"
         },
         {
           "id": "letters_runner",
-          "label": "Have a duskrunner secure the bag strap",
+          "label": "Our duskrunner grabs it",
           "icon": "hand",
           "goto": "letters_runner",
           "requiresClass": "duskrunner"
@@ -580,11 +580,11 @@
     },
     "letters_1": {
       "type": "story",
-      "narration": "Reach the looped pole from the dry path. Aim at the strap the messenger pointed out, not the loose flap.",
+      "narration": "Reach the looped pole out from the dry path. Aim for the strap, not the flap.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Swing the pole",
           "icon": "hand",
           "goto": "letters_1_check"
         }
@@ -628,7 +628,7 @@
         }
       ],
       "art": "scenes/riftlight/island-due-back",
-      "narration": "The mailbag hangs by its strap beside the fence. Reach with the looped pole from the marked ground. The letters are taking an unscheduled vacation.",
+      "narration": "The mailbag hangs by its strap beside the fence. The letters are taking an unscheduled vacation.",
       "interaction": {
         "kind": "precision",
         "cue": "Tap when the marker reaches the gold.",
@@ -643,11 +643,11 @@
     },
     "letters_1_done": {
       "type": "story",
-      "narration": "The loop catches the strap and you lift the bag onto the path. The sealed letters are dry. Their owner hugs the bag, then checks the seal on each packet. She can leave with the first clear signal instead of spending the afternoon making replacements.",
+      "narration": "The loop catches the strap and you lift the bag onto the path. The letters are dry. The messenger hugs the bag. Now she can leave with the first clear signal.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Rest at the lookout",
           "icon": "hand",
           "goto": "camp"
         }
@@ -677,11 +677,11 @@
     },
     "letters_1_changed": {
       "type": "story",
-      "narration": "The loop slips off as the gust changes. You draw the pole back. A keeper reaches the gate below and retrieves the bag after the wind settles, but water has entered one corner. The messenger keeps the sealed packets to dry; she cannot promise an immediate delivery.",
+      "narration": "The loop slips off in the gust. A helper fetches the bag once the wind settles, but one corner is soaked. The messenger must dry her letters before she can go.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Rest at the lookout",
           "icon": "hand",
           "goto": "camp"
         }
@@ -711,11 +711,11 @@
     },
     "letters_2": {
       "type": "story",
-      "narration": "Pass a hauling line along the inside fence toward the gate. The messenger can draw the bag sideways from there.",
+      "narration": "Pass a rope along the inside of the fence toward the gate. The messenger can pull the bag along it.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Pass the rope",
           "icon": "hand",
           "goto": "letters_2_check"
         }
@@ -738,7 +738,7 @@
     },
     "letters_2_check": {
       "type": "interaction",
-      "narration": "Pass the hauling line along the inside of the fence. The messenger draws the bag toward the gate while the keeper holds the slope clear.",
+      "narration": "Pass the rope along the inside of the fence. The messenger pulls the bag toward the gate.",
       "interaction": {
         "kind": "relay",
         "cue": "Pass the hauling line toward the fence gate.",
@@ -772,11 +772,11 @@
     },
     "letters_2_done": {
       "type": "story",
-      "narration": "The bag travels along the inside of the fence and comes through the gate. Every sealed letter is dry. The messenger checks them without opening them and offers to carry an authorized warning as soon as your signal is ready. Your rescue has saved her departure time.",
+      "narration": "The bag slides along the fence and through the gate. Every letter is dry. The messenger offers to carry a warning for you as soon as you need one.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Rest at the lookout",
           "icon": "hand",
           "goto": "camp"
         }
@@ -806,11 +806,11 @@
     },
     "letters_2_changed": {
       "type": "story",
-      "narration": "The line catches on the fence post. You stop instead of pulling the bag apart. The keeper below works it free later; one corner has soaked through. The messenger must dry the sealed packets before leaving, so a fast warning will need the lookout flags.",
+      "narration": "The rope snags on a post. You stop before the bag rips. A helper frees it later, but one corner is soaked. The messenger must dry her letters before she can go.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Rest at the lookout",
           "icon": "hand",
           "goto": "camp"
         }
@@ -840,7 +840,7 @@
     },
     "station": {
       "type": "interaction",
-      "narration": "The signal frame rocks in the wet grass. Level its weighted feet while the keeper covers the song box. The frame must turn freely for both cloths to show. A working frame will let you prepare a temple signal instead of packing a longer hand relay.",
+      "narration": "The signal frame rocks in the wet grass. Level its heavy feet while the keeper covers the song box. A working frame can flash signals to the temple fast.",
       "interaction": {
         "kind": "balance",
         "cue": "Level the signal frame before securing its feet.",
@@ -849,15 +849,15 @@
       },
       "onSuccess": {
         "goto": "station_1_done",
-        "narration": "The frame stands level. Both cloths turn freely."
+        "narration": "The frame stands level. Both cloths swing freely."
       },
       "onFailure": {
         "goto": "station_1_changed",
-        "narration": "A foot slides. You lower the frame and keep the song slips dry; messages will need a hand relay."
+        "narration": "A foot slides. You lower the frame and keep the song slips dry."
       },
       "onAssisted": {
         "goto": "station_1_done",
-        "narration": "The frame stands level. Both cloths turn freely."
+        "narration": "The frame stands level. Both cloths swing freely."
       },
       "cast": [
         {
@@ -873,11 +873,11 @@
     },
     "station_1_done": {
       "type": "story",
-      "narration": "The frame stays level through the next gust. The keeper lifts both cloths and turns them toward the neighboring temple lookout; they fall freely when she lowers them. The song slips stay dry. You have a working station for a warning that must be seen quickly.",
+      "narration": "The frame stays level through the next gust. The keeper turns both cloths toward the temple lookout. They swing freely. Now you can send a warning fast.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Rest at the lookout",
           "icon": "hand",
           "goto": "camp"
         }
@@ -903,11 +903,11 @@
     },
     "station_1_changed": {
       "type": "story",
-      "narration": "One foot slides in the wet grass. You lower the frame together and keep the box covered. The keeper will repair the footing before using it. Until then, signals must be carried by hand from the shelter; they will take an extra relay.",
+      "narration": "The keeper will fix the frame's foot later. Until then, messages must go by hand, and that takes longer.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Rest at the lookout",
           "icon": "hand",
           "goto": "camp"
         }
@@ -933,17 +933,17 @@
     },
     "signal_plan": {
       "type": "choice_point",
-      "narration": "The keeper lays out the cloths: white means watch; striped means stop. Pip can repeat your signal so you know it reached him, or keep watching the island while the keeper calls. Repeating will help with the later bearing; continuous watching follows the notch. Which job will you practice?",
+      "narration": "The keeper lays out the cloths: white means watch; striped means stop. Pip can repeat each signal back, so you know it reached him. Or he can keep watching the island while the keeper calls. Which will you practice?",
       "choices": [
         {
           "id": "option_1",
-          "label": "Have Pip repeat each sign before anyone moves",
+          "label": "Pip repeats each signal",
           "icon": "hand",
           "goto": "signal_plan_1"
         },
         {
           "id": "option_2",
-          "label": "Keep Pip watching the island and use the keeper's call",
+          "label": "Pip watches the island",
           "icon": "hand",
           "goto": "signal_plan_2"
         }
@@ -962,7 +962,7 @@
     },
     "signal_plan_1": {
       "type": "interaction",
-      "narration": "Pass the striped stop signal along the marked ground. Pip repeats it only after it reaches him. The keeper waits for that echo before anyone uses the board.",
+      "narration": "Pass the striped stop signal along. Pip repeats it back. The keeper waits for his echo before anyone moves.",
       "interaction": {
         "kind": "relay",
         "cue": "Catch the stop signal, then pass it to the next watcher.",
@@ -971,7 +971,7 @@
       },
       "onSuccess": {
         "goto": "bearings",
-        "narration": "Every watcher echoes the stop before the next move.",
+        "narration": "Everyone echoes the stop before the next move.",
         "effects": [
           {
             "type": "setFlag",
@@ -982,7 +982,7 @@
       },
       "onFailure": {
         "goto": "bearings",
-        "narration": "Every watcher echoes the stop before the next move.",
+        "narration": "Everyone echoes the stop before the next move.",
         "effects": [
           {
             "type": "setFlag",
@@ -993,7 +993,7 @@
       },
       "onAssisted": {
         "goto": "bearings",
-        "narration": "Every watcher echoes the stop before the next move.",
+        "narration": "Everyone echoes the stop before the next move.",
         "effects": [
           {
             "type": "setFlag",
@@ -1016,7 +1016,7 @@
     },
     "signal_plan_2": {
       "type": "interaction",
-      "narration": "Keep watching the island's notch through the cloud while the keeper gives the cloth calls. You gain one continuous view rather than a repeated signal; the normal measuring interval will still apply.",
+      "narration": "Keep watching the island's notch through the cloud while the keeper calls the cloths.",
       "interaction": {
         "kind": "tracking",
         "cue": "Follow the notch-view without changing watchers.",
@@ -1045,7 +1045,7 @@
       },
       "onSuccess": {
         "goto": "bearings",
-        "narration": "The keeper has a continuous sighting while she calls the cloths.",
+        "narration": "The keeper has a clear view while she calls the cloths.",
         "effects": [
           {
             "type": "setFlag",
@@ -1056,7 +1056,7 @@
       },
       "onFailure": {
         "goto": "bearings",
-        "narration": "The keeper takes over the hidden sighting. You will use her second lookout for any unfinished measure.",
+        "narration": "The keeper takes over the watching. Her second lookout will help with any measuring.",
         "effects": [
           {
             "type": "setFlag",
@@ -1067,7 +1067,7 @@
       },
       "onAssisted": {
         "goto": "bearings",
-        "narration": "The keeper has a continuous sighting while she calls the cloths.",
+        "narration": "The keeper has a clear view while she calls the cloths.",
         "effects": [
           {
             "type": "setFlag",
@@ -1090,23 +1090,23 @@
     },
     "bearings": {
       "type": "choice_point",
-      "narration": "The returning island clears the cloud with its flat shelf and stone's empty eye. The landing board fits only while the shelves are close. Compare its painted marks with the gap, or follow the shelves' movement. Your repeated signal, if practiced, gives a wider measuring interval. How will you check the approach?",
+      "narration": "The returning island clears the cloud with its flat shelf and stone's empty eye. The landing board fits only when the two shelves are close. How will you check the gap?",
       "choices": [
         {
           "id": "option_1",
-          "label": "Compare the gap with the board's painted marks",
+          "label": "Use the board's marks",
           "icon": "hand",
           "goto": "bearings_1"
         },
         {
           "id": "option_2",
-          "label": "Call the shelves' closest points together",
+          "label": "Call the closest moment",
           "icon": "hand",
           "goto": "bearings_2"
         },
         {
           "id": "relay",
-          "label": "Use the practiced repeating signal",
+          "label": "Use the repeated signal",
           "icon": "hand",
           "goto": "bearings_relay",
           "when": {
@@ -1128,11 +1128,11 @@
     },
     "bearings_1": {
       "type": "story",
-      "narration": "Compare the gap with the board's painted limit. Call the close interval from the lookout; the keeper will repeat the measure.",
+      "narration": "The board has painted marks. Compare them with the gap, and call out when it fits.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Measure the gap",
           "icon": "hand",
           "goto": "bearings_1_check"
         }
@@ -1168,19 +1168,19 @@
         }
       ],
       "art": "scenes/riftlight/island-due-back",
-      "narration": "Watch the two shelves from the lookout. Wait for their closest point, then call your measure. The keeper will repeat it before laying down the board. Nobody steps into the gap to test it.",
+      "narration": "Watch the two shelves. Wait for their closest point, then call it. Nobody steps into the gap to test it.",
       "stat": "clever",
       "tn": 12,
       "roller": "party",
-      "prompt": "Judge the distance between the moving shelves through the cloud. A clear measure lets the keeper set the board; a missed view needs a different landing plan. Choose who measures; everyone can help."
+      "prompt": "Judge the gap through the cloud. The keeper calls, \"Tell me when it fits!\""
     },
     "bearings_1_done": {
       "type": "story",
-      "narration": "Two measures agree on a narrow, steady gap. The keeper points to the painted limit that makes the board usable. Pip records where the shelves line up so the return can be checked too. You have verified a crossing window rather than guessed from one lucky glance.",
+      "narration": "Two measures agree on a narrow, steady gap. Pip writes down where the shelves line up, so the trip back can be checked too.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Lay down the board",
           "icon": "hand",
           "goto": "landing"
         }
@@ -1211,11 +1211,11 @@
     },
     "bearings_1_changed": {
       "type": "story",
-      "narration": "Your two measures disagree. The keeper keeps the board back while the island slides a little farther past. She takes the next pair herself and finds a shorter window. You can still cross with her watching every step, but your own estimate is not marked as verified.",
+      "narration": "Your two measures disagree. The keeper holds the board back and measures again herself. She finds a shorter safe moment. You can cross with her watching.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Lay down the board",
           "icon": "hand",
           "goto": "landing"
         }
@@ -1246,11 +1246,11 @@
     },
     "bearings_2": {
       "type": "story",
-      "narration": "Follow the shelf edge through the mist. Keep the same shelf in view while the keeper checks the gap.",
+      "narration": "Keep one shelf edge in view through the mist while the keeper checks the gap.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Watch the edge",
           "icon": "hand",
           "goto": "bearings_2_check"
         }
@@ -1286,19 +1286,19 @@
         }
       ],
       "art": "scenes/riftlight/island-due-back",
-      "narration": "Watch the two shelves from the lookout. Wait for their closest point, then call your measure. The keeper will repeat it before laying down the board. Nobody steps into the gap to test it.",
+      "narration": "Watch the two shelves. Wait for their closest point, then call it. Nobody steps into the gap to test it.",
       "stat": "clever",
       "tn": 12,
       "roller": "party",
-      "prompt": "Judge the distance between the moving shelves through the cloud. A clear measure lets the keeper set the board; a missed view needs a different landing plan. Choose who measures; everyone can help."
+      "prompt": "Judge the gap through the cloud. The keeper calls, \"Tell me when it fits!\""
     },
     "bearings_2_done": {
       "type": "story",
-      "narration": "Your calls agree for two full beats. The keeper marks the board's safe limit and Pip notes the position for the return. The crossing window is small but checked by your observers. You can explain exactly which alignment you used without promising that it will last.",
+      "narration": "Your calls agree twice in a row. The keeper marks the board's safe limit. Pip notes the spot for the trip back.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Lay down the board",
           "icon": "hand",
           "goto": "landing"
         }
@@ -1329,11 +1329,11 @@
     },
     "bearings_2_changed": {
       "type": "story",
-      "narration": "A gust covers one call. You stop the count instead of pretending everyone heard. The keeper takes a second set of observations and offers a shorter, supervised window. Your party can cross safely on her signals, but your own timing stays an unfinished test.",
+      "narration": "A gust covers one call. You stop counting instead of guessing. The keeper measures again and offers a shorter safe moment. You can cross on her signal.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Lay down the board",
           "icon": "hand",
           "goto": "landing"
         }
@@ -1364,11 +1364,11 @@
     },
     "bearings_relay": {
       "type": "story",
-      "narration": "Use the repeated signal you practiced. The keeper's echoed call makes the close interval easier to follow.",
+      "narration": "Use the repeated signal you practiced. Each call echoes back, so the right moment is easier to catch.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Measure the gap",
           "icon": "hand",
           "goto": "bearings_relay_check"
         }
@@ -1404,31 +1404,31 @@
         }
       ],
       "art": "scenes/riftlight/island-due-back",
-      "narration": "Watch the two shelves from the lookout. Wait for their closest point, then call your measure. The keeper will repeat it before laying down the board. Nobody steps into the gap to test it.",
+      "narration": "Watch the two shelves. Wait for their closest point, then call it. Nobody steps into the gap to test it.",
       "stat": "clever",
       "tn": 12,
       "roller": "party",
-      "prompt": "Judge the distance between the moving shelves through the cloud. A clear measure lets the keeper set the board; a missed view needs a different landing plan. Choose who measures; everyone can help."
+      "prompt": "Judge the gap through the cloud. Pip echoes every call."
     },
     "landing": {
       "type": "choice_point",
-      "narration": "The keeper lays the board between the close shelves. A second keeper secures the far rope. You can center the near foot, or level the loaded board before following its side ropes. \"We will watch the gap the whole time,\" the keeper promises, \"and call you back.\" Which job will you take?",
+      "narration": "The keeper lays the board between the close shelves. A helper ties the far rope. \"We will watch the gap the whole time,\" the keeper promises, \"and call you back.\" Which job will you take?",
       "choices": [
         {
           "id": "option_1",
-          "label": "Steady the board while its foot is secured",
+          "label": "Steady the board's foot",
           "icon": "hand",
           "goto": "landing_1"
         },
         {
           "id": "option_2",
-          "label": "Check the side ropes and guide careful steps",
+          "label": "Check the side ropes",
           "icon": "hand",
           "goto": "landing_2"
         },
         {
           "id": "landing_brace",
-          "label": "Have a thornguard brace the landing board",
+          "label": "Our thornguard braces it",
           "icon": "hand",
           "goto": "landing_brace",
           "requiresClass": "thornguard"
@@ -1439,13 +1439,13 @@
           "when": {
             "flag": "island_approach_verified"
           },
-          "text": "Pip keeps your checked alignment ready for the return."
+          "text": "Pip keeps your checked alignment ready for the trip back."
         },
         {
           "when": {
             "notFlag": "island_approach_verified"
           },
-          "text": "Your estimate is unfinished; the second lookout will call the return gap."
+          "text": "The keeper's second lookout will call the gap for the trip back."
         }
       ],
       "cast": [
@@ -1462,11 +1462,11 @@
     },
     "landing_1": {
       "type": "story",
-      "narration": "Watch the near foot while the keeper takes the tie. Center it before the party crosses with its kit.",
+      "narration": "Watch the board's near foot while the keeper ties it. It must sit in the middle before anyone crosses.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Watch the foot",
           "icon": "hand",
           "goto": "landing_1_check"
         }
@@ -1485,7 +1485,7 @@
     },
     "landing_1_check": {
       "type": "interaction",
-      "narration": "The keeper secures the board foot while you watch its movement on the near shelf. Wait for its centered interval before she tightens the tie. Nobody crosses until the foot is fixed.",
+      "narration": "The board's foot slides on the near shelf. Call it when it sits in the middle, so the keeper can tie it.",
       "interaction": {
         "kind": "timing",
         "cue": "Secure the board foot in its centered interval.",
@@ -1517,11 +1517,11 @@
     },
     "landing_1_done": {
       "type": "story",
-      "narration": "The board stays square while the keeper secures its foot. Your party crosses in order and waits behind the far rope. Pip brings up the end without jumping. The second keeper checks the alignment again before allowing the lookout helpers to cross after you.",
+      "narration": "The board stays square. Your party crosses in a line and waits behind the far rope. Pip comes last, very carefully, without jumping.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Step onto the island",
           "icon": "hand",
           "goto": "stone_care"
         }
@@ -1540,11 +1540,11 @@
     },
     "landing_1_changed": {
       "type": "story",
-      "narration": "The gust shifts the board before its foot is secure. Everyone steps onto grass. You lift the board together. Before laying it again, your party must reduce the load or change how it carries the kit.",
+      "narration": "A gust shifts the board before it is tied. Everyone steps back onto the grass. Your kit is too heavy to carry in one go. You need a lighter plan.",
       "choices": [
         {
           "id": "continue",
-          "label": "Choose a lighter crossing plan",
+          "label": "Find a lighter plan",
           "icon": "hand",
           "goto": "landing_recovery"
         }
@@ -1563,11 +1563,11 @@
     },
     "landing_2": {
       "type": "story",
-      "narration": "Level the loaded board while the keeper checks the side ropes. Follow her call across the steady span.",
+      "narration": "Check the side ropes while the keeper levels the board. Then cross on her call.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Check the ropes",
           "icon": "hand",
           "goto": "landing_2_check"
         }
@@ -1586,7 +1586,7 @@
     },
     "landing_2_check": {
       "type": "interaction",
-      "narration": "Keep the board level while the second keeper secures the far-side rope. Your party follows the checked side ropes across once the board is steady.",
+      "narration": "Keep the loaded board level while the helper ties the far rope. Cross once it is steady.",
       "interaction": {
         "kind": "balance",
         "cue": "Level the board before crossing with the kit.",
@@ -1616,11 +1616,11 @@
     },
     "landing_2_done": {
       "type": "story",
-      "narration": "The side ropes hold their clear line and each traveler can see the next handhold. The keeper keeps the board square while your party crosses. Pip waits until the last person is on grass before he moves. The helpers follow only after a fresh check of the gap.",
+      "narration": "The side ropes hold tight. Everyone can see the next handhold. Pip waits until the last hero is on the grass before he moves.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Step onto the island",
           "icon": "hand",
           "goto": "stone_care"
         }
@@ -1639,11 +1639,11 @@
     },
     "landing_2_changed": {
       "type": "story",
-      "narration": "A side rope sags during the practice halt. You return to grass and lower the board. The keeper replaces the rope while your party decides what to carry on the next close alignment.",
+      "narration": "A side rope sags. You hurry back to the grass. The keeper fixes the rope, but your kit is too heavy to carry in one go. You need a lighter plan.",
       "choices": [
         {
           "id": "continue",
-          "label": "Choose a lighter crossing plan",
+          "label": "Find a lighter plan",
           "icon": "hand",
           "goto": "landing_recovery"
         }
@@ -1662,7 +1662,7 @@
     },
     "stone_care": {
       "type": "choice_point",
-      "narration": "On the returning island, a round hole looks through an old standing stone. Grooves wind between three raised shapes below it. Pip crouches to move his shadow away. \"Nobody touch a worn line,\" he whispers. Choose a small job to prepare the reading place.",
+      "narration": "On the returning island, a round hole looks through an old standing stone. Grooves wind between three raised shapes below it. Pip crouches to move his shadow away. \"Nobody touch a worn line,\" he whispers. What will you do first?",
       "onEnter": [
         {
           "type": "setFlag",
@@ -1683,19 +1683,19 @@
       "choices": [
         {
           "id": "feet",
-          "label": "Mark where readers can stand",
+          "label": "Mark where to stand",
           "icon": "hand",
           "goto": "stone_care_response_feet"
         },
         {
           "id": "grass",
-          "label": "Move loose grass away from the tool place",
+          "label": "Clear the loose grass",
           "icon": "hand",
           "goto": "stone_care_response_grass"
         },
         {
           "id": "shade",
-          "label": "Move your shadow off the grooves",
+          "label": "Move your shadow",
           "icon": "hand",
           "goto": "stone_care_response_shade"
         }
@@ -1703,23 +1703,23 @@
     },
     "carving": {
       "type": "choice_point",
-      "narration": "The shallow grooves are hard to separate from grass shadows. Brush loose dust, or hold a sheet as shade. Rounded carved edges cross a sharp later crack; keep uncertain parts dotted. A complete kit adds a broad copying frame. A borrowed pocket kit leaves that wider support behind. Which tool will you use?",
+      "narration": "The shallow grooves are hard to separate from grass shadows. A sharp crack cuts across the old rounded lines. You can brush the dust away, or hold a sheet up for shade. If you brought your big kit, its copying frame can help. Which will you use?",
       "choices": [
         {
           "id": "option_1",
-          "label": "Brush loose dust and copy only clear grooves",
+          "label": "Brush away the dust",
           "icon": "hand",
           "goto": "carving_1"
         },
         {
           "id": "option_2",
-          "label": "Shade the face and copy it from the side",
+          "label": "Shade it with a sheet",
           "icon": "hand",
           "goto": "carving_2"
         },
         {
           "id": "frame",
-          "label": "Use our broad copying frame",
+          "label": "Use our copying frame",
           "icon": "hand",
           "goto": "carving_frame",
           "when": {
@@ -1741,11 +1741,11 @@
     },
     "carving_1": {
       "type": "story",
-      "narration": "Brush loose dust beside the rounded grooves. Leave the sharp crack and any uncertain meeting point out of the solid copied line.",
+      "narration": "Brush the dust gently beside the rounded grooves. Leave the sharp crack alone.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Start brushing",
           "icon": "hand",
           "goto": "carving_1_check"
         }
@@ -1764,7 +1764,7 @@
     },
     "carving_1_check": {
       "type": "interaction",
-      "narration": "Guide the soft brush across the loose dust beside a carved groove. Keep clear of the sharp crack. Record only the rounded edges you can distinguish.",
+      "narration": "Guide the soft brush along a carved groove. Stay clear of the crack. Copy only the edges you can see.",
       "interaction": {
         "kind": "precision",
         "cue": "Trace the clear carved edge, leaving the crack alone.",
@@ -1796,11 +1796,11 @@
     },
     "carving_1_done": {
       "type": "story",
-      "narration": "Loose dust falls away from the joined grooves. Their carved edges are rounded alike; the sharp crack cuts across both. You can show where the two old lines meet without drawing the crack into them. Pip leaves a dotted patch where the stone is still worn.",
+      "narration": "The old grooves show clearly now. They meet beneath the stone's eye, and the sharp crack cuts across them. You copy where the two lines join. Pip dots in the patch that is too worn to read.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Compare with the ridges",
           "icon": "hand",
           "goto": "orientation"
         }
@@ -1826,11 +1826,11 @@
     },
     "carving_1_changed": {
       "type": "story",
-      "narration": "Dust hides the meeting point. You stop before the brush catches a loose edge. The keeper can show you the broad pattern, but the little join stays dotted on your drawing. A readable clue does not require every worn line to become a confident new one.",
+      "narration": "The place where the lines meet stays hard to see. You stop before you scratch the stone. The keeper shows you the big pattern, and you dot in the part you could not see.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Compare with the ridges",
           "icon": "hand",
           "goto": "orientation"
         }
@@ -1856,11 +1856,11 @@
     },
     "carving_2": {
       "type": "story",
-      "narration": "Hold a sheet beside the stone to shade its face. The keeper points out rounded grooves while Pip copies them.",
+      "narration": "Hold a sheet beside the stone to shade it. The keeper points out the grooves while Pip copies them.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Hold the sheet",
           "icon": "hand",
           "goto": "carving_2_check"
         }
@@ -1879,7 +1879,7 @@
     },
     "carving_2_check": {
       "type": "interaction",
-      "narration": "Hold the sheet as a shade while the keeper points out rounded grooves and the sharper crack. Keep the shade steady as Pip copies the visible distinction.",
+      "narration": "Keep the shade steady while Pip copies the grooves and the crack.",
       "interaction": {
         "kind": "cooperate",
         "cue": "Hold a steady shade beside the old stone.",
@@ -1909,11 +1909,11 @@
     },
     "carving_2_done": {
       "type": "story",
-      "narration": "In the even shade the two grooves meet cleanly beneath the eye. The crack stays sharp and separate. You copy both kinds of mark with different strokes. Pip points out the worn corner and you leave it dotted; the clearer join does not repair that missing piece.",
+      "narration": "In the even shade, the two grooves meet cleanly beneath the eye. The crack stays separate. You copy each kind of mark its own way. The worn corner stays dotted.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Compare with the ridges",
           "icon": "hand",
           "goto": "orientation"
         }
@@ -1939,11 +1939,11 @@
     },
     "carving_2_changed": {
       "type": "story",
-      "narration": "The sheet flickers in the gust. A shadow seems to join two lines, then moves away. You lower the sheet and copy the broad pattern with the keeper's help. The meeting point stays dotted so nobody later mistakes the shifting shadow for something carved.",
+      "narration": "The sheet flaps in the gust. A shadow seems to join two lines, then wiggles away. You copy the big pattern with the keeper's help and dot in the joining place.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Compare with the ridges",
           "icon": "hand",
           "goto": "orientation"
         }
@@ -1969,7 +1969,7 @@
     },
     "orientation": {
       "type": "story",
-      "narration": "Three ridges show through the cloud. Three raised marks sit on the stone. You and Pip put both pages with the old rope groove at the top. The lines must agree from this view. Pip turns his head instead of the page. \"Very inconvenient for my theory.\"",
+      "narration": "Three ridges show through the cloud. Three raised marks sit on the stone. Pip sketches the ridges from here. You hold your carving copy beside his sketch, both the right way up. Pip tilts his head instead of the page. \"Very inconvenient for my theory.\"",
       "onEnter": [
         {
           "type": "setFlag",
@@ -1990,7 +1990,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Compare the two pages",
           "icon": "forward",
           "goto": "comparison"
         }
@@ -1998,23 +1998,23 @@
     },
     "comparison": {
       "type": "choice_point",
-      "narration": "Three raised marks appear on your copy beside today's three-ridge sketch. Grooves bend between the old marks, interrupted by a worn patch. Compare the ridge spacing or the channel's order. A clear copied join gives a wider scale target. Test the match before deciding what the spaces mean.",
+      "narration": "Three raised marks appear on your copy beside today's three-ridge sketch. Grooves bend between the marks, with a worn patch in the middle. Pip holds up a measuring stalk. Will you compare the spacing, or follow the grooves?",
       "choices": [
         {
           "id": "option_1",
-          "label": "Compare the order and spacing of the three ridges",
+          "label": "Compare the spacing",
           "icon": "hand",
           "goto": "comparison_1"
         },
         {
           "id": "option_2",
-          "label": "Follow the channel past each fixed ridge",
+          "label": "Follow the grooves",
           "icon": "hand",
           "goto": "comparison_2"
         },
         {
           "id": "comparison_clear",
-          "label": "Use the clearly recorded carved join",
+          "label": "Use our clear copy",
           "icon": "hand",
           "goto": "comparison_clear",
           "when": {
@@ -2027,13 +2027,13 @@
           "when": {
             "flag": "island_carving_clear"
           },
-          "text": "Your clear copy distinguishes the carved join from the crack."
+          "text": "Your copy shows clearly where the old lines meet."
         },
         {
           "when": {
             "notFlag": "island_carving_clear"
           },
-          "text": "The uncertain meeting point remains dotted on your copy."
+          "text": "The meeting place is still dotted on your copy."
         }
       ],
       "cast": [
@@ -2050,11 +2050,11 @@
     },
     "comparison_1": {
       "type": "story",
-      "narration": "Keep both pages upright. Compare the ridge spaces with your stalk scale, leaving the worn patch untouched.",
+      "narration": "Keep both pages upright. Measure the spaces between the ridges with Pip's stalk. Leave the worn patch alone.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Measure the spaces",
           "icon": "hand",
           "goto": "comparison_1_check"
         }
@@ -2073,7 +2073,7 @@
     },
     "comparison_1_check": {
       "type": "interaction",
-      "narration": "Compare the spacing of the three ridge marks with the lookout sketch. Place the scale at the clear measuring interval. Do not fill the worn patch to make it fit.",
+      "narration": "Do the gaps on the stone match the gaps between the ridges? Do not fill in the worn patch to make it fit.",
       "interaction": {
         "kind": "precision",
         "cue": "Match the scale to the checked ridge spacing.",
@@ -2105,11 +2105,11 @@
     },
     "comparison_1_done": {
       "type": "story",
-      "narration": "The ridge spaces fit without turning the paper. Between them, the carved surface continues across today's gaps. \"So the land was joined here,\" Pip says. You keep the checked measurements and leave the date and cause blank.",
+      "narration": "The spaces fit without turning the paper. Between them, the carved grooves run straight across today's gaps. \"So the land was joined here,\" Pip says. Nobody knows when, or why.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Think about what it means",
           "icon": "hand",
           "goto": "alternative"
         }
@@ -2135,11 +2135,11 @@
     },
     "comparison_1_changed": {
       "type": "story",
-      "narration": "The worn middle mark will not give a clean measure. You stop with two distances that disagree. The keeper leaves both papers in your hands. Which different comparison could your party try?",
+      "narration": "The worn middle mark will not give a clean measure. Your two distances disagree. The keeper hands both pages back to you. Is there another way to compare them?",
       "choices": [
         {
           "id": "continue",
-          "label": "Choose another way to compare",
+          "label": "Try another way",
           "icon": "hand",
           "goto": "comparison_recovery"
         }
@@ -2165,11 +2165,11 @@
     },
     "comparison_2": {
       "type": "story",
-      "narration": "Keep the fixed top in view while following the channel past each ridge. Do not let the reflection turn the paper for you.",
+      "narration": "Keep the top of the page fixed and follow the grooves past each ridge. Do not let the reflection turn the paper.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Follow the grooves",
           "icon": "hand",
           "goto": "comparison_2_check"
         }
@@ -2188,7 +2188,7 @@
     },
     "comparison_2_check": {
       "type": "interaction",
-      "narration": "Follow the channel past the three fixed ridge marks. Watch the ridge-order pattern before the cloudy reflection covers it, then echo the order without inventing the missing bend.",
+      "narration": "Follow the grooves past the three ridge marks. Watch the order, then show it. Do not invent the missing bend.",
       "interaction": {
         "kind": "memory",
         "cue": "Watch the fixed-ridge pattern, then echo it.",
@@ -2240,11 +2240,11 @@
     },
     "comparison_2_done": {
       "type": "story",
-      "narration": "The fixed ridges appear in the same order in both views. The old surface continues between them where today's sketch has gaps: the land was joined here. Your checked order stays beside the copy. Its date and cause remain unknown.",
+      "narration": "The ridges come in the same order in both pictures. The old grooves run across the places where today there are gaps: the land was joined here. Nobody knows when, or why.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Think about what it means",
           "icon": "hand",
           "goto": "alternative"
         }
@@ -2270,11 +2270,11 @@
     },
     "comparison_2_changed": {
       "type": "story",
-      "narration": "The dotted patch hides the middle turn. You cannot finish that tracing. Pip lowers his measuring stalk and the keeper waits. Your party can try a different comparison without pretending the missing turn is visible.",
+      "narration": "The worn patch hides the middle turn. Pip lowers his measuring stalk. The keeper waits. Is there another way to compare them?",
       "choices": [
         {
           "id": "continue",
-          "label": "Choose another way to compare",
+          "label": "Try another way",
           "icon": "hand",
           "goto": "comparison_recovery"
         }
@@ -2300,7 +2300,7 @@
     },
     "alternative": {
       "type": "choice_point",
-      "narration": "Pip looks from the stone to the lookout sketch. \"The land was joined here. But when?\" The stone and song give no date. Leave a question that would help another reader test what you found, without inventing who moved the land.",
+      "narration": "Pip looks from the stone to the lookout sketch. \"The land was joined here. But when?\" The stone gives no date. What question should you leave for the next reader?",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -2315,19 +2315,19 @@
       "choices": [
         {
           "id": "date",
-          "label": "What could date the carving?",
+          "label": "How old is the carving?",
           "icon": "hand",
           "goto": "alternative_response_date"
         },
         {
           "id": "test",
-          "label": "Could another view challenge the match?",
+          "label": "Could another view disagree?",
           "icon": "hand",
           "goto": "alternative_response_test"
         },
         {
           "id": "cause",
-          "label": "What could explain the change?",
+          "label": "What changed the land?",
           "icon": "hand",
           "goto": "alternative_response_cause"
         }
@@ -2335,23 +2335,23 @@
     },
     "record": {
       "type": "choice_point",
-      "narration": "The keeper asks permission to keep a copy of your observations. Your sketch can stay private or help other readers test the match. The keeper smiles. \"The stone stays here either way.\" What may she copy?",
+      "narration": "The keeper asks permission to keep a copy of your observations. Your sketch can stay private, or other readers can use it. The keeper smiles. \"The stone stays here either way.\" What may she copy?",
       "choices": [
         {
           "id": "option_1",
-          "label": "Share the checked observations with their limits",
+          "label": "Share what we found",
           "icon": "hand",
           "goto": "record_1"
         },
         {
           "id": "option_2",
-          "label": "Keep the party's account private",
+          "label": "Keep our sketch private",
           "icon": "hand",
           "goto": "record_2"
         },
         {
           "id": "whale_report",
-          "label": "Deliver the route report we promised the whale keeper",
+          "label": "Give her the whale report",
           "icon": "hand",
           "goto": "whale_report",
           "when": {
@@ -2365,20 +2365,20 @@
           "when": {
             "flag": "island_land_match"
           },
-          "text": "Your independent comparison succeeded; a shared copy will credit its test."
+          "text": "You found the match yourselves. A shared copy will say so."
         },
         {
           "when": {
             "notFlag": "island_land_match"
           },
-          "text": "A shared copy will credit the follow-up your party made with help. The unfinished test stays marked."
+          "text": "A shared copy will credit the follow-up your party made with help."
         },
         {
           "when": {
             "flag": "sky_followup_promised",
             "notFlag": "whale_report_delivered"
           },
-          "text": "The promised whale report can be delivered separately from your stone sketch."
+          "text": "You also carry the whale report you promised. It can go to her on its own."
         }
       ],
       "cast": [
@@ -2395,11 +2395,11 @@
     },
     "record_1": {
       "type": "story",
-      "narration": "You authorize a shared copy with its credit, missing detail and helped work marked. Pip keeps your original page beside it.",
+      "narration": "You let her copy it, with the helped parts and blank parts marked. Pip keeps your page.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Look toward the temple",
           "icon": "hand",
           "goto": "departure"
         }
@@ -2425,11 +2425,11 @@
     },
     "record_2": {
       "type": "story",
-      "narration": "Your sketch stays with your party. The keeper accepts that choice and keeps her own public-warning observations separate.",
+      "narration": "Your sketch stays with your party. The keeper nods and keeps her own notes.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Look toward the temple",
           "icon": "hand",
           "goto": "departure"
         }
@@ -2455,17 +2455,17 @@
     },
     "departure": {
       "type": "choice_point",
-      "narration": "The temple roofs appear through the cloud ahead. The island is still moving toward them. \"They should know,\" says Pip. Choose the first message: a course warning or an invitation to inspect the stone. Neither needs your private sketch. You will dispatch it after returning to the lookout.",
+      "narration": "The temple roofs appear through the cloud ahead. The island is drifting toward them. \"They should know,\" says Pip. What should the first message be: a warning about the island's path, or an invitation to come see the stone? You will send it once you are back at the lookout.",
       "choices": [
         {
           "id": "option_1",
-          "label": "Send the temple a course warning first",
+          "label": "Warn the temple first",
           "icon": "hand",
           "goto": "departure_1"
         },
         {
           "id": "option_2",
-          "label": "Invite another keeper to inspect the stone first",
+          "label": "Invite them to the stone",
           "icon": "hand",
           "goto": "departure_2"
         }
@@ -2483,19 +2483,19 @@
             "flag": "island_station_ready",
             "notFlag": "island_relay_delayed"
           },
-          "text": "Your ready station has a temple dispatch slot."
+          "text": "Your signal frame is ready to flash it."
         },
         {
           "when": {
             "flag": "island_relay_delayed"
           },
-          "text": "The relay will leave after your party finishes returning the kit."
+          "text": "The relay will leave after your party finishes carrying the kit back."
         },
         {
           "when": {
             "flag": "whale_report_delivered"
           },
-          "text": "The whale report you promised is delivered and helps the next watcher. Your separate stone sketch was not included."
+          "text": "The whale report you promised is delivered and helps the next watcher."
         }
       ],
       "cast": [
@@ -2512,11 +2512,11 @@
     },
     "departure_1": {
       "type": "story",
-      "narration": "You choose the course warning first. The keeper prepares its direction and timing without adding a private sketch.",
+      "narration": "The warning goes first. The keeper writes down the island's path and timing.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Head back across",
           "icon": "hand",
           "goto": "return_load",
           "effects": [
@@ -2542,11 +2542,11 @@
     },
     "departure_2": {
       "type": "story",
-      "narration": "You choose an invitation for another reader first. The course warning must wait for the next relay.",
+      "narration": "The invitation goes first. The warning will have to wait for the next message.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Head back across",
           "icon": "hand",
           "goto": "return_load",
           "effects": [
@@ -2572,11 +2572,11 @@
     },
     "return": {
       "type": "story",
-      "narration": "Your party and kit are back. The keepers lift the board; the island moves on freely. Pip watches the stone's empty eye vanish into cloud. Your checked clue shows land between these ridges was once joined. Its date and cause remain unknown.",
+      "narration": "You and your kit are back. The keepers lift the board, and the island drifts on. Pip watches the stone's empty eye disappear into the cloud. Your clue shows that land between these ridges was once joined. Nobody knows when, or why.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Rest at the lookout",
           "icon": "hand",
           "goto": "rest"
         }
@@ -2586,56 +2586,56 @@
           "when": {
             "flag": "island_warning_sent"
           },
-          "text": "The first message is the course warning. The keeper logs its departure and waits for a reply."
+          "text": "The first message is the course warning. The keeper waits for a reply."
         },
         {
           "when": {
             "notFlag": "island_warning_sent"
           },
-          "text": "The first message asks for another reader. The course warning waits for the next relay."
+          "text": "The first message asks for another reader. The warning waits for the next one."
         },
         {
           "when": {
             "flag": "island_messages_saved",
             "notFlag": "island_relay_delayed"
           },
-          "text": "The messenger carries her dry letters and only the message you authorized."
+          "text": "The messenger flies off with her dry letters and your message."
         },
         {
           "when": {
             "flag": "island_station_ready"
           },
-          "text": "The station cloths lift freely; its song slips remain dry."
+          "text": "The frame's cloths swing freely. The song slips are dry."
         },
         {
           "when": {
             "flag": "island_land_match"
           },
-          "text": "Your independent test stays credited in the account."
+          "text": "You found the match yourselves, and the notes say so."
         },
         {
           "when": {
             "notFlag": "island_land_match"
           },
-          "text": "The account credits the follow-up your party made with help, beside the first unfinished test."
+          "text": "The notes credit the follow-up your party made with help."
         },
         {
           "when": {
             "flag": "island_record_shared"
           },
-          "text": "The keeper stores your shared copy with its credit and limits."
+          "text": "The keeper stores your shared copy."
         },
         {
           "when": {
             "notFlag": "island_record_shared"
           },
-          "text": "Your private sketch stays with your party. The keeper files her own observations."
+          "text": "Your private sketch stays with your party."
         },
         {
           "when": {
             "flag": "island_relay_delayed"
           },
-          "text": "The extra kit relay leaves later than a light-kit crossing. Its delay stays in the log."
+          "text": "Carrying all that kit made the message leave later than a light-kit crossing would have."
         }
       ],
       "onEnter": [
@@ -2658,7 +2658,7 @@
     },
     "rest": {
       "type": "rest",
-      "narration": "The board is stowed and the next watcher takes the bell rope. Your party rests on the grass. The old stone has given you a clue about the land below, and the moving island carries the original onward toward the temple route. You keep what you learned. The island keeps its stone. You can pause at the lookout or return to the whales' turning place before following the temple route.",
+      "narration": "The board is stowed, and the next watcher takes the bell rope. Your party rests on the grass. The stone gave you a clue about the land below. Now the island carries it on toward the temple. You keep what you learned. The island keeps its stone. You can rest here or go back to the whales' turning place before you follow the temple route.",
       "choices": [],
       "heal": 0,
       "outcome": "success",
@@ -2673,11 +2673,11 @@
     },
     "landing_brace": {
       "type": "story",
-      "narration": "Your thornguard uses a skill called Brace to hold the board foot while the keeper secures its tie. The foot stays centered while she fastens the tie. The keepers still watch the gap as your party follows the side ropes across; no one is holding the islands in place.",
+      "narration": "Your thornguard uses a skill called Brace to hold the board's foot still while the keeper ties it. Everyone crosses by the side ropes.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Cross the board",
           "icon": "hand",
           "goto": "landing_1_done"
         }
@@ -2696,11 +2696,11 @@
     },
     "letters_runner": {
       "type": "story",
-      "narration": "A duskrunner threads the recovery loop through the strap from the firm path. Pip steadies the pole. Their quick hands steady the pole, giving you a wider target for the lift. Nobody climbs beyond the fence, and the sealed letters stay closed.",
+      "narration": "Your duskrunner threads the loop through the strap from the firm path. Pip steadies the pole. Nobody climbs past the fence.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Lift the bag",
           "icon": "hand",
           "goto": "letters_runner_check"
         }
@@ -2744,7 +2744,7 @@
         }
       ],
       "art": "scenes/riftlight/island-due-back",
-      "narration": "The mailbag hangs by its strap beside the fence. Reach with the looped pole from the marked ground. The letters are taking an unscheduled vacation.",
+      "narration": "The mailbag hangs by its strap beside the fence. The letters are taking an unscheduled vacation.",
       "interaction": {
         "kind": "precision",
         "cue": "Tap when the marker reaches the gold.",
@@ -2759,11 +2759,11 @@
     },
     "sightings_whales": {
       "type": "story",
-      "narration": "The whales beyond the clear lane turn together. The keeper listens to their low note while your party sights the notch from the marked ground. The song tells you where to look first; you still need to confirm the fixed view. You do not call or ride the whales.",
+      "narration": "The whales beyond the clear lane turn together. The keeper listens to their low note. It tells you where to look first. You still have to check it with your own eyes.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Look where they sing",
           "icon": "hand",
           "goto": "sightings_whales_check"
         }
@@ -2782,7 +2782,7 @@
     },
     "sightings_whales_check": {
       "type": "interaction",
-      "narration": "The whales you guided give the keeper a place to look. Wait for the notch to clear that patch of cloud, then check it against the fixed roof corner. The song helps the sighting; it cannot move the island.",
+      "narration": "Wait for the notch to clear the patch of cloud the whales sang about. Then check it against the roof corner.",
       "interaction": {
         "kind": "timing",
         "cue": "Check the notch in the whale-indicated clear interval.",
@@ -2814,11 +2814,11 @@
     },
     "comparison_clear": {
       "type": "story",
-      "narration": "Your clear copy distinguishes the old join from the crack. Use it for a wider scale check against the present sketch.",
+      "narration": "Your clear copy shows the old join apart from the crack. That makes the measuring easier.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on with this result",
+          "label": "Measure the join",
           "icon": "hand",
           "goto": "comparison_clear_check"
         }
@@ -2837,7 +2837,7 @@
     },
     "comparison_clear_check": {
       "type": "interaction",
-      "narration": "Your clear copy separates the old join from the later crack. That gives a wider interval for placing the scale; you still need to test it against the lookout sketch.",
+      "narration": "Your clear copy gives you more room to place the scale. Check it against the ridge sketch.",
       "interaction": {
         "kind": "precision",
         "cue": "Compare the clearly copied join with the present sketch.",
@@ -2869,17 +2869,17 @@
     },
     "comparison_recovery": {
       "type": "choice_point",
-      "narration": "Two clear marks remain beside the worn patch. Compare them with the keeper holding a scale, or with Pip pointing from the viewing mark. The missing middle stays unanswered. Who will help your follow-up?",
+      "narration": "Two clear marks remain beside the worn patch. The keeper can hold a scale for you, or Pip can point from the viewing spot. Who will help?",
       "choices": [
         {
           "id": "keeper",
-          "label": "Measure two clear marks with the keeper",
+          "label": "Measure with the keeper",
           "icon": "hand",
           "goto": "comparison_recover_scale"
         },
         {
           "id": "pip",
-          "label": "Trace the two clear heights with Pip",
+          "label": "Trace with Pip",
           "icon": "hand",
           "goto": "comparison_recover_view"
         }
@@ -2898,7 +2898,7 @@
     },
     "comparison_recover_scale": {
       "type": "interaction",
-      "narration": "Your first measure stays unfinished. Support the keeper's scale for a different comparison of the clear outer marks. Leave the worn middle dotted.",
+      "narration": "Hold the keeper's scale while she measures the two clear outer marks. The worn middle stays dotted.",
       "interaction": {
         "kind": "cooperate",
         "cue": "Hold the scale while the keeper checks the clear outer marks.",
@@ -2907,15 +2907,15 @@
       },
       "onSuccess": {
         "goto": "comparison_recover_scale_done",
-        "narration": "The helped comparison is ready for your party to interpret."
+        "narration": "The measuring is done. What does it show?"
       },
       "onFailure": {
         "goto": "comparison_recover_scale_done",
-        "narration": "Pip and the keeper hold the fixed reference together. You complete the helped comparison without filling the worn middle."
+        "narration": "Pip and the keeper hold the scale together. You finish without filling in the worn middle."
       },
       "onAssisted": {
         "goto": "comparison_recover_scale_done",
-        "narration": "The helped comparison is ready for your party to interpret."
+        "narration": "The measuring is done. What does it show?"
       },
       "cast": [
         {
@@ -2931,7 +2931,7 @@
     },
     "comparison_recover_view": {
       "type": "interaction",
-      "narration": "Your first tracing stays unfinished. Share Pip's fixed view and the clear outer marks for a different comparison. Leave the worn middle dotted.",
+      "narration": "Pip points from the viewing spot while you trace the two clear outer marks. The worn middle stays dotted.",
       "interaction": {
         "kind": "sequence",
         "cue": "Compare two clear heights without using the worn middle.",
@@ -2966,15 +2966,15 @@
       },
       "onSuccess": {
         "goto": "comparison_recover_view_done",
-        "narration": "The helped comparison is ready for your party to interpret."
+        "narration": "The tracing is done. What does it show?"
       },
       "onFailure": {
         "goto": "comparison_recover_view_done",
-        "narration": "Pip and the keeper hold the fixed reference together. You complete the helped comparison without filling the worn middle."
+        "narration": "Pip and the keeper point out the marks together. You finish without filling in the worn middle."
       },
       "onAssisted": {
         "goto": "comparison_recover_view_done",
-        "narration": "The helped comparison is ready for your party to interpret."
+        "narration": "The tracing is done. What does it show?"
       },
       "cast": [
         {
@@ -2990,17 +2990,17 @@
     },
     "landing_recovery": {
       "type": "choice_point",
-      "narration": "The keeper has a checked crossing, but your bulky kit is awkward in this wind. Borrow her pocket brush and sheet to keep the message relay's place; you will leave your broad copying frame behind. Or pass your complete kit in batches: more carrying, but the full frame comes with you and the message relay must wait. Which cost will you take?",
+      "narration": "The keeper has a checked crossing, but your bulky kit is awkward in this wind. You can borrow her small pocket kit and leave your big copying frame behind. Then the message can still go out on time. Or carry all your kit across in small loads. That keeps the frame, but the message has to wait.",
       "choices": [
         {
           "id": "batches",
-          "label": "Carry the kit in batches; delay the message relay",
+          "label": "Carry it in loads",
           "icon": "hand",
           "goto": "landing_batches"
         },
         {
           "id": "borrow",
-          "label": "Leave bulky gear and borrow the keeper's small kit",
+          "label": "Borrow the small kit",
           "icon": "hand",
           "goto": "landing_borrow"
         }
@@ -3019,7 +3019,7 @@
     },
     "landing_batches": {
       "type": "interaction",
-      "narration": "Pass the complete kit in small loads along the checked board. Its broad frame will come with you. The extra carrying keeps your message relay waiting for the return.",
+      "narration": "Pass your kit across the board in small loads. Your big copying frame comes too.",
       "interaction": {
         "kind": "relay",
         "cue": "Pass each small load to the next helper.",
@@ -3028,7 +3028,7 @@
       },
       "onSuccess": {
         "goto": "stone_care",
-        "narration": "The complete kit reaches the island. Its larger tools remain available, but the message relay will leave later.",
+        "narration": "All your kit reaches the island. The message will leave later.",
         "effects": [
           {
             "type": "setFlag",
@@ -3044,7 +3044,7 @@
       },
       "onFailure": {
         "goto": "stone_care",
-        "narration": "The complete kit reaches the island. Its larger tools remain available, but the message relay will leave later.",
+        "narration": "All your kit reaches the island. The message will leave later.",
         "effects": [
           {
             "type": "setFlag",
@@ -3060,7 +3060,7 @@
       },
       "onAssisted": {
         "goto": "stone_care",
-        "narration": "The complete kit reaches the island. Its larger tools remain available, but the message relay will leave later.",
+        "narration": "All your kit reaches the island. The message will leave later.",
         "effects": [
           {
             "type": "setFlag",
@@ -3088,7 +3088,7 @@
     },
     "landing_borrow": {
       "type": "interaction",
-      "narration": "Level the keeper's pocket tray, borrow its brush and sheet, then cross on her checked alignment. The small kit preserves the message slot. Your broad copying frame stays behind.",
+      "narration": "Level the keeper's pocket tray, with its little brush and sheet, then cross on her signal. Your big copying frame stays behind.",
       "interaction": {
         "kind": "balance",
         "cue": "Level the small borrowed tray before crossing.",
@@ -3097,7 +3097,7 @@
       },
       "onSuccess": {
         "goto": "stone_care",
-        "narration": "The small kit is across. The message relay keeps its place; the broad copying frame stays behind.",
+        "narration": "The small kit is across. The message can still leave on time.",
         "effects": [
           {
             "type": "setFlag",
@@ -3113,7 +3113,7 @@
       },
       "onFailure": {
         "goto": "stone_care",
-        "narration": "The small kit is across. The message relay keeps its place; the broad copying frame stays behind.",
+        "narration": "The small kit is across. The message can still leave on time.",
         "effects": [
           {
             "type": "setFlag",
@@ -3129,7 +3129,7 @@
       },
       "onAssisted": {
         "goto": "stone_care",
-        "narration": "The small kit is across. The message relay keeps its place; the broad copying frame stays behind.",
+        "narration": "The small kit is across. The message can still leave on time.",
         "effects": [
           {
             "type": "setFlag",
@@ -3157,7 +3157,7 @@
     },
     "whale_report": {
       "type": "story",
-      "narration": "You give the promised whale-route page to the lookout keeper and show her its checked landmarks. She files it with the route reports. That promise is kept. Your separate stone sketch stays private until you decide who should have it.",
+      "narration": "You give the keeper the whale-route page you promised, and show her its landmarks. She files it with her reports. Promise kept! Your stone sketch stays yours.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -3174,19 +3174,19 @@
           "when": {
             "flag": "whales_guided"
           },
-          "text": "Your report says the whales followed the clear lane and left the paired openings ready."
+          "text": "Your report says the whales followed the clear lane."
         },
         {
           "when": {
             "flag": "whales_scattered"
           },
-          "text": "Your report says the early opening scattered the whales. The keeper marks that the familiar whale signs may be missing."
+          "text": "Your report says the early opening scattered the whales. The keeper notes that their song may be missing for a while."
         }
       ],
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Back to the stone sketch",
           "icon": "forward",
           "goto": "record",
           "effects": [
@@ -3200,7 +3200,7 @@
     },
     "camp": {
       "type": "rest",
-      "narration": "The keeper brings ginger tea to the lookout roof while your party rests. Pip tries to weigh down a song slip with his cup, then remembers that he wants the tea. Outside, the island keeps its slow course. The landing board and signal cloths are ready for the next job.",
+      "narration": "The keeper brings ginger tea to the lookout roof. Pip tries to weigh down a song slip with his cup, then remembers he wants the tea. Outside, the island drifts closer.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -3216,13 +3216,13 @@
       "choices": [
         {
           "id": "rest",
-          "label": "Rest, then practice the signals",
+          "label": "Rest, then practice signals",
           "icon": "hand",
           "goto": "signal_plan"
         },
         {
           "id": "watch",
-          "label": "Rest while watching the island",
+          "label": "Rest and watch the island",
           "icon": "hand",
           "goto": "signal_plan"
         }
@@ -3230,7 +3230,7 @@
     },
     "carving_frame": {
       "type": "interaction",
-      "narration": "Your complete kit includes a broad frame that steadies the sheet beside the stone. Record the rounded carved edge without turning the sharp crack into a road.",
+      "narration": "Your big copying frame holds the sheet steady beside the stone. Copy the rounded grooves. Do not turn the crack into a road.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -3262,11 +3262,11 @@
     },
     "comparison_recover_scale_done": {
       "type": "story",
-      "narration": "With the keeper holding the scale, your outer marks fit the two ridges. The carved surface between them continues across today's gaps: the land was joined here. This is your helped follow-up. The worn middle stays dotted.",
+      "narration": "With the keeper's help, your two outer marks fit the two ridges. The grooves between them run across today's gaps: the land was joined here. The worn middle stays dotted.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue with what you found",
+          "label": "Think about what it means",
           "icon": "hand",
           "goto": "alternative"
         }
@@ -3285,11 +3285,11 @@
     },
     "comparison_recover_view_done": {
       "type": "story",
-      "narration": "Pip supplies the fixed viewpoint while you trace the clear outer heights. The old surface continues across today's gaps: the land was joined here. You show the keeper the match. Your first tracing and its missing bend remain unfinished.",
+      "narration": "With Pip pointing the way, your two outer marks fit the ridges. The old grooves cross today's gaps: the land was joined here. You show the keeper. The missing bend stays blank.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue with what you found",
+          "label": "Think about what it means",
           "icon": "hand",
           "goto": "alternative"
         }
@@ -3308,7 +3308,7 @@
     },
     "return_load": {
       "type": "choice_point",
-      "narration": "The return gap is checked. Help pass the crew kit back, or take the light crossing if you borrowed a pocket kit. Any batch carrying must finish before its waiting message relay can leave.",
+      "narration": "The way back is checked. You can help pass the heavy kit back across. If you borrowed the pocket kit, you can travel light.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -3323,13 +3323,13 @@
       "choices": [
         {
           "id": "crew",
-          "label": "Help pass the crew kit back, then cross",
+          "label": "Pass the kit back",
           "icon": "hand",
           "goto": "return_kit"
         },
         {
           "id": "light",
-          "label": "Return with the borrowed pocket kit",
+          "label": "Cross back light",
           "icon": "hand",
           "goto": "return_light",
           "when": {
@@ -3340,7 +3340,7 @@
     },
     "return_kit": {
       "type": "interaction",
-      "narration": "Pass small kit loads to the lookout helpers while the keepers watch the gap. Follow the side ropes back when the receiving keeper calls. The island keeps moving freely.",
+      "narration": "Pass the kit loads to the helpers while the keepers watch the gap. Then follow the side ropes back.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -3360,20 +3360,20 @@
       },
       "onSuccess": {
         "goto": "dispatch",
-        "narration": "The last kit load and your whole party reach the lookout."
+        "narration": "The last load and your whole party reach the lookout."
       },
       "onFailure": {
         "goto": "dispatch",
-        "narration": "The last kit load and your whole party reach the lookout."
+        "narration": "The last load and your whole party reach the lookout."
       },
       "onAssisted": {
         "goto": "dispatch",
-        "narration": "The last kit load and your whole party reach the lookout."
+        "narration": "The last load and your whole party reach the lookout."
       }
     },
     "return_light": {
       "type": "interaction",
-      "narration": "The pocket brush and folded sheet leave your hands free for the side ropes. Keep the board supported as the last helper returns with the light tray.",
+      "narration": "The little brush and sheet leave your hands free for the side ropes. Steady the board as the last helper crosses.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -3393,20 +3393,20 @@
       },
       "onSuccess": {
         "goto": "dispatch",
-        "narration": "Your party returns with the pocket kit. You give the brush back to its keeper."
+        "narration": "You are back. You give the brush back to the keeper."
       },
       "onFailure": {
         "goto": "dispatch",
-        "narration": "Your party returns with the pocket kit. You give the brush back to its keeper."
+        "narration": "You are back. You give the brush back to the keeper."
       },
       "onAssisted": {
         "goto": "dispatch",
-        "narration": "Your party returns with the pocket kit. You give the brush back to its keeper."
+        "narration": "You are back. You give the brush back to the keeper."
       }
     },
     "dispatch": {
       "type": "choice_point",
-      "narration": "You are back at the lookout with the authorized temple message. Prepare a hand relay, or use the station or messenger whose slot you preserved. The private stone sketch stays separate.",
+      "narration": "You are back at the lookout with your message for the temple. How will it go? Your stone sketch stays separate.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -3421,13 +3421,13 @@
       "choices": [
         {
           "id": "hand",
-          "label": "Prepare and pass the authorized hand-relay message",
+          "label": "Send it by hand",
           "icon": "hand",
           "goto": "message_pack"
         },
         {
           "id": "station",
-          "label": "Use the station we prepared",
+          "label": "Flash it from the frame",
           "icon": "hand",
           "goto": "message_frame",
           "when": {
@@ -3437,7 +3437,7 @@
         },
         {
           "id": "messenger",
-          "label": "Give the authorized message to the ready messenger",
+          "label": "Give it to the messenger",
           "icon": "hand",
           "goto": "message_messenger",
           "when": {
@@ -3449,7 +3449,7 @@
     },
     "message_pack": {
       "type": "story",
-      "narration": "The keeper writes the lookout sender and temple destination on your packet, then reads the authorized message back to you. The stone sketch has its own chosen owner. She ties the packet closed. \"A message can travel without taking every secret in the bag.\"",
+      "narration": "The keeper writes the lookout and the temple on your packet, then reads the message back to you. She ties it shut. \"A message can travel without taking every secret in the bag.\"",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -3464,7 +3464,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Hand it to the runner",
           "icon": "forward",
           "goto": "message_hand"
         }
@@ -3472,7 +3472,7 @@
     },
     "message_hand": {
       "type": "story",
-      "narration": "The keeper hands the authorized packet to the waiting relay. She logs its departure. No reply has arrived yet. Pip watches the next helper take it along the lookout path, then puts his own notebook away.",
+      "narration": "A helper takes the packet down the lookout path at a run. The keeper writes down when it left. No reply yet. Pip puts his notebook away.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -3487,7 +3487,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Watch the island go",
           "icon": "forward",
           "goto": "return"
         }
@@ -3495,7 +3495,7 @@
     },
     "message_frame": {
       "type": "story",
-      "narration": "The keeper uses the dispatch slot your station kept ready. She confirms the cloth message with the next watcher and logs its departure. Your private drawing stays with its chosen owner. Now the lookout waits for a reply.",
+      "narration": "The keeper flashes your message from the frame you fixed. Then she waits for a reply. Your stone sketch stays with you.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -3510,7 +3510,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Watch the island go",
           "icon": "forward",
           "goto": "return"
         }
@@ -3518,7 +3518,7 @@
     },
     "message_messenger": {
       "type": "story",
-      "narration": "The messenger accepts the authorized temple message beside her dry letters. Your saved departure slot lets her leave now. She checks the bag clasp and waves. The stone sketch stays with its chosen owner.",
+      "narration": "The messenger tucks your message in with her dry letters. She can leave right now. She checks the clasp, waves and flies off.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -3533,7 +3533,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Watch the island go",
           "icon": "forward",
           "goto": "return"
         }
@@ -3541,11 +3541,11 @@
     },
     "stone_care_response_feet": {
       "type": "story",
-      "narration": "Boots stay back from the worn stone face. The stone and the reading place are ready for a closer look.",
+      "narration": "Boots stay back from the worn stone face. Now the stone is ready for a closer look.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Study the carving",
           "icon": "forward",
           "goto": "carving"
         }
@@ -3564,11 +3564,11 @@
     },
     "stone_care_response_grass": {
       "type": "story",
-      "narration": "The brush and sheet have a clean resting place. The stone and the reading place are ready for a closer look.",
+      "narration": "The brush and sheet have a clean resting place. Now the stone is ready for a closer look.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Study the carving",
           "icon": "forward",
           "goto": "carving"
         }
@@ -3587,11 +3587,11 @@
     },
     "stone_care_response_shade": {
       "type": "story",
-      "narration": "Pip shifts sideways until the old lines are visible. The stone and the reading place are ready for a closer look.",
+      "narration": "Pip shifts sideways until the old lines are visible. Now the stone is ready for a closer look.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Study the carving",
           "icon": "forward",
           "goto": "carving"
         }
@@ -3610,11 +3610,11 @@
     },
     "alternative_response_date": {
       "type": "story",
-      "narration": "The date stays open beside the copied shapes. Your observation and unanswered questions remain separate.",
+      "narration": "The date stays open beside the copied shapes. The question goes in the notes, beside what you saw.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Decide who gets a copy",
           "icon": "forward",
           "goto": "record"
         }
@@ -3633,11 +3633,11 @@
     },
     "alternative_response_test": {
       "type": "story",
-      "narration": "The keeper marks a comparison another reader can test. Your observation and unanswered questions remain separate.",
+      "narration": "The keeper marks a comparison another reader can test. The question goes in the notes, beside what you saw.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Decide who gets a copy",
           "icon": "forward",
           "goto": "record"
         }
@@ -3656,11 +3656,11 @@
     },
     "alternative_response_cause": {
       "type": "story",
-      "narration": "The cause remains unknown. The observation stays on the page. Your observation and unanswered questions remain separate.",
+      "narration": "The cause remains unknown. The question goes in the notes, beside what you saw.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Decide who gets a copy",
           "icon": "forward",
           "goto": "record"
         }
