@@ -180,15 +180,15 @@
           "address": "first-steps-01/interaction_roots/narration"
         },
         {
-          "text": "Welcome to the practice meadow. New heroes learn the ropes here. Who wants to go first?",
-          "address": "first-steps-01/scene_tansy/narration"
+          "text": "Good aiming, good helping, good listening. Those are all ways to be a hero.",
+          "address": "first-steps-01/scene_team_tricks_done/narration"
         },
         {
-          "text": "Lift your side a little at a time. We want the rolls to travel, not roll.",
-          "address": "first-steps-01/interaction_balance/narration"
+          "text": "Welcome to the practice meadow. New heroes learn the ropes here. Who wants to go first?",
+          "address": "first-steps-01/scene_tansy/narration"
         }
       ],
-      "lineCount": 28,
+      "lineCount": 27,
       "speaks": true,
       "status": "provisional"
     },
@@ -228,7 +228,7 @@
           "address": "first-steps-01/interaction_bell/narration"
         }
       ],
-      "lineCount": 13,
+      "lineCount": 12,
       "speaks": true,
       "status": "provisional"
     },
@@ -2852,7 +2852,7 @@
           "address": "riftlight-cairnstep-pass/tested/narration"
         }
       ],
-      "lineCount": 47,
+      "lineCount": 46,
       "speaks": true,
       "status": "provisional"
     },
@@ -3373,7 +3373,7 @@
         }
       ],
       "lineCount": 32,
-      "guessedLines": 10,
+      "guessedLines": 11,
       "speaks": true,
       "status": "provisional"
     },
@@ -6002,7 +6002,7 @@
           "address": "riftlight-cairnstep-pass/pebble_done/narration"
         }
       ],
-      "lineCount": 12,
+      "lineCount": 11,
       "speaks": true,
       "status": "provisional"
     },
