@@ -54,11 +54,11 @@
   "scenes": {
     "arrival": {
       "type": "story",
-      "narration": "At a sheltered glacier ledge, Orin waves you over to a map on an upturned sled. Olivia greets you and steadies one corner. Your Riftseeker friends have made room for your account. A bigfoot named Bram Lock keeps the path clear. \"Help me keep everyone behind the line when an opening comes,\" he asks. Orin weights the map with his boot. \"Compare your discoveries. Then help us steady any opening before people go near it.\" His boot is still on his foot.",
+      "narration": "At a sheltered glacier ledge, Orin waves you over to a map on an upturned sled. Olivia steadies one corner. Your Riftseeker friends make room for you. A bigfoot named Bram Lock keeps the path clear. \"If an opening comes, help me keep everyone behind the line,\" he says. Orin pins the map with his boot. \"Tonight we compare what you found,\" he says. \"Then we steady any opening before people go near it.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Gather around the map",
           "goto": "accounts",
           "icon": "hand"
         }
@@ -81,7 +81,7 @@
     },
     "accounts": {
       "type": "choice_point",
-      "narration": "Orin makes room for your accounts. \"Only the ones you actually brought.\" Seren Wisp, the kitsune teacher, brings her chime; Pip catches a page with his tail and pretends he meant to. Choose a comparison your road supports, or ask Orin to guide your two checked pages. Nothing here requires taking a memory or a stone.",
+      "narration": "Orin makes room for your accounts. \"Only what you really saw,\" he says. Seren Wisp, the kitsune teacher, sets down her chime. Pip catches a page with his tail and pretends he meant to. Which two places will you compare?",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -100,13 +100,13 @@
       "choices": [
         {
           "id": "guided",
-          "label": "Let Orin guide our two checked accounts",
+          "label": "Let Orin guide us",
           "goto": "accounts_guided",
           "icon": "hand"
         },
         {
           "id": "paths_coast",
-          "label": "Compare the memory-ice account and bridge drawing",
+          "label": "Compare ice and bridge",
           "goto": "compare_paths_coast",
           "icon": "hand",
           "requiresFlag": "fragment_paths_learned",
@@ -116,7 +116,7 @@
         },
         {
           "id": "paths_sky",
-          "label": "Compare the memory-ice account and island record",
+          "label": "Compare ice and island",
           "goto": "compare_paths_sky",
           "icon": "hand",
           "requiresFlag": "fragment_paths_learned",
@@ -126,7 +126,7 @@
         },
         {
           "id": "coast_sky",
-          "label": "Compare the bridge drawing and island record",
+          "label": "Compare bridge and island",
           "goto": "compare_coast_sky",
           "icon": "hand",
           "requiresFlag": "fragment_coast_learned",
@@ -138,7 +138,7 @@
     },
     "accounts_guided": {
       "type": "interaction",
-      "narration": "Hold the first checked page flat while Orin places the other beside it. Name which edges you actually saw and leave the missing stretches blank. This is a guided comparison, not an independent new reading.",
+      "narration": "Hold the first page flat while Orin lays the other beside it. Name the edges you really saw. Leave the rest blank.",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -156,26 +156,26 @@
       "art": "scenes/riftlight/convergence-ledge",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Hold the two checked pages apart for Orin.",
+        "cue": "Hold the pages apart for Orin.",
         "actionLabel": "Compare the checked edges",
         "supportLabel": "Hold the first page"
       },
       "onSuccess": {
         "goto": "measure",
-        "narration": "Orin labels the guided comparison without inventing a third account."
+        "narration": "Orin labels only what you saw."
       },
       "onFailure": {
         "goto": "measure",
-        "narration": "Orin labels the guided comparison without inventing a third account."
+        "narration": "Orin labels only what you saw."
       },
       "onAssisted": {
         "goto": "measure",
-        "narration": "Orin labels the guided comparison without inventing a third account."
+        "narration": "Orin labels only what you saw."
       }
     },
     "compare_paths_coast": {
       "type": "interaction",
-      "narration": "Follow the marked river-copy as Orin slides the covered paper layers. The copy came from the memory readers; your bridge drawing shows a different present place. These are drawings on the sled, not objects moved out of those places.",
+      "narration": "Orin slides paper sheets over one another. Follow the sheet with the river copy from the memory readers. Your bridge drawing shows a different place today.",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -193,7 +193,7 @@
       "art": "scenes/riftlight/convergence-ledge",
       "interaction": {
         "kind": "tracking",
-        "cue": "Follow the marked river-copy through the paper layers.",
+        "cue": "Follow the marked river copy.",
         "actionLabel": "Point out the marked copy",
         "covers": [
           "Ice-account sheet",
@@ -219,20 +219,20 @@
       },
       "onSuccess": {
         "goto": "measure",
-        "narration": "You identify the marked copy and keep the two sources separate."
+        "narration": "You spot the marked copy and keep the two pages apart."
       },
       "onFailure": {
         "goto": "measure",
-        "narration": "Orin uncovers the marked copy and labels the comparison as helped."
+        "narration": "Orin lifts the sheets to show you."
       },
       "onAssisted": {
         "goto": "measure",
-        "narration": "Orin uncovers the marked copy and labels the comparison as helped."
+        "narration": "Orin lifts the sheets to show you."
       }
     },
     "compare_paths_sky": {
       "type": "interaction",
-      "narration": "Orin points to a river curve, a copied boundary notch and the blank between them. Watch his four pointing marks, then echo them without drawing a joining line. Your island record and the memory readers' account remain separate sources.",
+      "narration": "Orin points to a river curve, a copied notch and a blank gap. Watch his four points, then copy them. Nobody draws a line to join them.",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -250,7 +250,7 @@
       "art": "scenes/riftlight/convergence-ledge",
       "interaction": {
         "kind": "memory",
-        "cue": "Watch the pointing marks, then echo them.",
+        "cue": "Watch Orin point, then copy him.",
         "actionLabel": "Show what we saw",
         "options": [
           {
@@ -279,20 +279,20 @@
       },
       "onSuccess": {
         "goto": "measure",
-        "narration": "You distinguish the copied marks from the unobserved gap."
+        "narration": "You can tell the copied marks from the blank gap."
       },
       "onFailure": {
         "goto": "measure",
-        "narration": "Orin repeats the pointing round and labels the comparison as helped."
+        "narration": "Orin points again, slowly, and you follow along."
       },
       "onAssisted": {
         "goto": "measure",
-        "narration": "Orin repeats the pointing round and labels the comparison as helped."
+        "narration": "Orin points again, slowly, and you follow along."
       }
     },
     "compare_coast_sky": {
       "type": "interaction",
-      "narration": "Move the bridge-copy edge beside the copied island carving while Orin holds their scales steady. Stop at the checked marks; the gap between them stays unclaimed.",
+      "narration": "Slide the bridge drawing's edge next to the copied island carving while Orin holds them steady. Stop at the checked marks. The gap between stays blank.",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -310,7 +310,7 @@
       "art": "scenes/riftlight/convergence-ledge",
       "interaction": {
         "kind": "precision",
-        "cue": "Align the checked copied edges.",
+        "cue": "Line up the checked edges.",
         "actionLabel": "Set the comparison edge",
         "target": 0.5,
         "width": 0.3,
@@ -318,20 +318,20 @@
       },
       "onSuccess": {
         "goto": "measure",
-        "narration": "The two checked edges can be compared without stretching their scales."
+        "narration": "The two edges line up without stretching."
       },
       "onFailure": {
         "goto": "measure",
-        "narration": "The scale slipped. Orin restores the broad comparison and marks the fine alignment as unchecked."
+        "narration": "The page slips. Orin lines them up roughly."
       },
       "onAssisted": {
         "goto": "measure",
-        "narration": "The scale slipped. Orin restores the broad comparison and marks the fine alignment as unchecked."
+        "narration": "The page slips. Orin lines them up roughly."
       }
     },
     "measure": {
       "type": "choice_point",
-      "narration": "Two accounts are ready. Loose sheets can be weighted with stones, leaving the felt-wrapped prop free for your holding lesson later. A string measure uses that prop to pin its end; you must retrieve it before using it in the lesson. Which setup will you play?",
+      "narration": "The wind keeps lifting the sheets. Weigh them down with stones, and the felt-wrapped prop stays free for your lesson later. A string measure is more exact, but it needs that prop to pin its end.",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -350,7 +350,7 @@
       "choices": [
         {
           "id": "sheets",
-          "label": "Level the separate pages under smooth weights",
+          "label": "Weigh the pages down",
           "goto": "measure_sheets",
           "icon": "hand",
           "effects": [
@@ -363,7 +363,7 @@
         },
         {
           "id": "line",
-          "label": "Guide the string measure onto its reference mark",
+          "label": "Use the string measure",
           "goto": "measure_line",
           "icon": "hand",
           "effects": [
@@ -378,7 +378,7 @@
     },
     "measure_sheets": {
       "type": "interaction",
-      "narration": "Level the loose sheets under smooth weights. Orin moves his boot off the paper first. He is learning.",
+      "narration": "Set smooth stones on the loose sheets. Orin moves his boot off the paper first. He is learning.",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -396,13 +396,13 @@
       "art": "scenes/riftlight/convergence-ledge",
       "interaction": {
         "kind": "balance",
-        "cue": "Level the separate comparison sheets.",
+        "cue": "Keep the sheets level.",
         "actionLabel": "Set the weighted pages",
         "objectLabel": "comparison sheets"
       },
       "onSuccess": {
         "goto": "evidence",
-        "narration": "The checked outlines are ready. The felt-wrapped prop stays free.",
+        "narration": "The felt prop stays free.",
         "effects": [
           {
             "type": "setFlag",
@@ -413,7 +413,7 @@
       },
       "onFailure": {
         "goto": "evidence",
-        "narration": "The checked outlines are ready. The felt-wrapped prop stays free.",
+        "narration": "The felt prop stays free.",
         "effects": [
           {
             "type": "setFlag",
@@ -424,7 +424,7 @@
       },
       "onAssisted": {
         "goto": "evidence",
-        "narration": "The checked outlines are ready. The felt-wrapped prop stays free.",
+        "narration": "The felt prop stays free.",
         "effects": [
           {
             "type": "setFlag",
@@ -436,7 +436,7 @@
     },
     "measure_line": {
       "type": "interaction",
-      "narration": "Guide the string to the reference mark while the felt-wrapped prop pins its far end. Nobody ties it around a traveler.",
+      "narration": "Guide the string to its mark while the felt-wrapped prop pins the far end. Nobody ties it around a traveler.",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -462,7 +462,7 @@
       },
       "onSuccess": {
         "goto": "evidence",
-        "narration": "The string records the checked span; its prop stays in use.",
+        "narration": "The string marks the span.",
         "effects": [
           {
             "type": "setFlag",
@@ -473,7 +473,7 @@
       },
       "onFailure": {
         "goto": "evidence",
-        "narration": "Bram checks the broad span after the slip. Fine distances stay unclaimed; the prop still pins the string.",
+        "narration": "The string slips. Bram checks the rough span.",
         "effects": [
           {
             "type": "setFlag",
@@ -484,7 +484,7 @@
       },
       "onAssisted": {
         "goto": "evidence",
-        "narration": "Bram checks the broad span after the slip. Fine distances stay unclaimed; the prop still pins the string.",
+        "narration": "The string slips. Bram checks the rough span.",
         "effects": [
           {
             "type": "setFlag",
@@ -496,11 +496,11 @@
     },
     "evidence": {
       "type": "story",
-      "narration": "Orin labels the places your party actually visited. Checked observations and the help you received stay on the page together. Orin grins. \"A very confident guess still gets a question mark.\"",
+      "narration": "Orin labels the places you really visited, and the help you had along the way. He grins. \"A very confident guess still gets a question mark.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Watch the snow move",
           "goto": "pull",
           "icon": "hand"
         }
@@ -525,25 +525,25 @@
           "when": {
             "flag": "fragment_paths_learned"
           },
-          "text": "The memory readers showed you an old arrangement in the ice. Their memory stays with them; your account can be compared here."
+          "text": "The memory readers showed you an old shape in the ice."
         },
         {
           "when": {
             "flag": "fragment_coast_learned"
           },
-          "text": "At the buried bridge, you checked an old river crossing against the coast around it. Your drawing carries the shape, without taking any stone."
+          "text": "At the buried bridge, you matched an old river crossing to today's coast."
         },
         {
           "when": {
             "flag": "fragment_sky_learned"
           },
-          "text": "The island mooring stone showed an old boundary unlike the ground below it today. The stone stays with its keepers."
+          "text": "The island mooring stone showed an old boundary unlike the ground below it."
         }
       ]
     },
     "pull": {
       "type": "interaction",
-      "narration": "Snow grains slide toward the deep passage. \"Could you steady my board while your friend marks the grains?\" Bram asks. Your Listening Chime tests readiness and an open way back; it cannot tell an opening where to go. Pip moves his tail out of the experiment.",
+      "narration": "Snow grains slide toward the deep passage all by themselves. \"Something is pulling,\" says Bram. \"Can you steady my board while someone marks the grains?\" Your Listening Chime can tell if a way back is open, but not where an opening goes. Pip moves his tail out of the way.",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -561,26 +561,26 @@
       "art": "scenes/riftlight/convergence-ledge",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Hold the measuring board while a friend marks the pull.",
+        "cue": "Hold the board steady while the pull is marked.",
         "actionLabel": "Mark the moving snow",
         "supportLabel": "Steady the board"
       },
       "onSuccess": {
         "goto": "clear_path",
-        "narration": "The sheltered grains mark a pull toward the deep passage."
+        "narration": "The grains point to the deep passage."
       },
       "onFailure": {
         "goto": "clear_path",
-        "narration": "The sheltered grains mark a pull toward the deep passage."
+        "narration": "The grains point to the deep passage."
       },
       "onAssisted": {
         "goto": "clear_path",
-        "narration": "The sheltered grains mark a pull toward the deep passage."
+        "narration": "The grains point to the deep passage."
       }
     },
     "clear_path": {
       "type": "story",
-      "narration": "You and Bram move the loose benches behind the working line. He checks the passage with his shoulders. There is room to turn back together. Orin rescues his notebook from beneath a bench leg. \"An excellent support. A poor library.\"",
+      "narration": "You and Bram move loose benches behind the working line. There is room to turn back together. Orin rescues his notebook from under a bench leg. \"Excellent support. Poor library.\"",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -599,7 +599,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Learn the safety signals",
           "icon": "forward",
           "goto": "signals"
         }
@@ -607,7 +607,7 @@
     },
     "signals": {
       "type": "interaction",
-      "narration": "Seren shows wait, shelter, wait. Watch the signals and echo them before the experiment. Pip checks that his wings do not hide the hand from the back row.",
+      "narration": "Seren shows the safety signals: wait, shelter, wait. Watch, then copy them. Pip makes sure his wings do not hide her hand from the back.",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -625,7 +625,7 @@
       "art": "scenes/riftlight/convergence-ledge",
       "interaction": {
         "kind": "memory",
-        "cue": "Watch the safe-lane signals, then echo them.",
+        "cue": "Watch the signals, then copy them.",
         "actionLabel": "Show what we saw",
         "options": [
           {
@@ -648,7 +648,7 @@
       },
       "onSuccess": {
         "goto": "rest",
-        "narration": "Your party can lead the checked signal round.",
+        "narration": "You can lead the signals yourselves.",
         "effects": [
           {
             "type": "setFlag",
@@ -659,7 +659,7 @@
       },
       "onFailure": {
         "goto": "rest",
-        "narration": "Bram will lead visible signals from the clear lane. Your record names that help.",
+        "narration": "Bram will lead the signals.",
         "effects": [
           {
             "type": "setFlag",
@@ -670,7 +670,7 @@
       },
       "onAssisted": {
         "goto": "rest",
-        "narration": "Bram will lead visible signals from the clear lane. Your record names that help.",
+        "narration": "Bram will lead the signals.",
         "effects": [
           {
             "type": "setFlag",
@@ -682,12 +682,12 @@
     },
     "rest": {
       "type": "rest",
-      "narration": "Orin rolls the map away from the sled seat and opens the camp supper bag. You share dried apple rings and warm water from the camp flask. Pip tries to weigh a page with an apple ring, then eats the paperweight.",
+      "narration": "Orin rolls up the map and opens the supper bag. You share dried apple rings and warm water. Pip pins a page down with an apple ring, then eats the paperweight.",
       "heal": 2,
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Hear Olivia's idea",
           "goto": "proposal",
           "icon": "hand"
         }
@@ -706,7 +706,7 @@
     },
     "proposal": {
       "type": "choice_point",
-      "narration": "\"Let me call one small opening near the pull,\" says Olivia. Orin asks for more observations; Bram keeps the retreat clear. Give one condition the people must meet before anyone approaches. Olivia still believes she can choose what she calls.",
+      "narration": "Olivia steps forward. \"Let me call one small opening, right here by the pull.\" Orin wants more watching first. Bram keeps the way back clear. Olivia believes she can choose what she calls. What must happen before anyone goes near it?",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -737,7 +737,7 @@
         },
         {
           "id": "watch",
-          "label": "Keep someone watching the way back",
+          "label": "Watch the way back",
           "icon": "hand",
           "goto": "proposal_response_watch"
         }
@@ -745,11 +745,11 @@
     },
     "summoning": {
       "type": "story",
-      "narration": "Olivia lifts her working hand. An opening unfolds above the empty snow: wind, moving grit, a light she studies twice. She gestures again. It stops widening, but does nothing else she asked. The chime sounds sour. Bram reaches toward her hand. \"Enough. Step back.\" Pip starts toward Olivia, then looks at you. The opening is real. So is the choice about what happens next.",
+      "narration": "Olivia lifts her hand. An opening unfolds above the empty snow: wind, grit and a light she studies twice. She gestures again. It stops growing, but does nothing else she asks. The chime sounds sour. Bram reaches toward her hand. \"Enough. Step back.\" Pip starts toward Olivia, then looks at you.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Decide what to do",
           "goto": "decision",
           "icon": "hand"
         }
@@ -778,19 +778,19 @@
       "choices": [
         {
           "id": "bram",
-          "label": "Help Bram bring Olivia behind the boundary",
+          "label": "Help Bram bring her back",
           "icon": "hand",
           "goto": "bram_plan"
         },
         {
           "id": "olivia",
-          "label": "Stay with Olivia while she stops and observes",
+          "label": "Stay beside Olivia",
           "icon": "hand",
           "goto": "olivia_plan"
         },
         {
           "id": "orin",
-          "label": "Ask Orin to talk her back with your readings",
+          "label": "Let Orin talk her back",
           "icon": "hand",
           "goto": "orin_plan",
           "requiresFlag": "orin_chime_shared"
@@ -815,7 +815,7 @@
     },
     "bram_plan": {
       "type": "story",
-      "narration": "You stand with Bram across the lane, leaving Olivia room to step away. \"Look at us, not the opening,\" he says. Pip stops behind the boundary when he sees your choice. Olivia lowers her hand instead of reaching through.",
+      "narration": "You stand with Bram across the lane and leave Olivia room to step away. \"Look at us, not the opening,\" he says. Pip stops behind the line. Olivia lowers her hand.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -834,7 +834,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Clear the loose gear",
           "goto": "bram_clear",
           "icon": "hand"
         }
@@ -858,7 +858,7 @@
     },
     "olivia_plan": {
       "type": "story",
-      "narration": "You stay on the marked working ground beside Olivia. She stops the summoning gesture, and you hold the retreat lane clear. Pip follows you, keeping his paws behind the mark. \"We watch,\" Olivia says. \"We do not cross.\" Bram stays ready at the shelter.",
+      "narration": "You stay beside Olivia on the marked ground. She stops her gesture, and you keep the way back clear. Pip follows, paws behind the mark. \"We watch,\" Olivia says. \"We do not cross.\" Bram waits at the shelter.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -878,7 +878,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Watch the opening",
           "goto": "olivia_watch",
           "icon": "hand"
         }
@@ -902,7 +902,7 @@
     },
     "orin_plan": {
       "type": "story",
-      "narration": "Orin repeats the chime readings your party shared beside the buried bridge. \"We learned something by waiting,\" he says. \"Let this one answer first.\" Olivia lowers her hand and walks behind the boundary. Pip stays back with you. Bram lets out the breath he was holding.",
+      "narration": "Orin repeats the chime readings you shared at the buried bridge. \"We learned something by waiting,\" he says. \"Let this one answer first.\" Olivia hesitates, her hand still raised. Pip stays back with you.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -921,7 +921,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Pick the best reading",
           "goto": "orin_account",
           "icon": "hand"
         }
@@ -945,7 +945,7 @@
     },
     "bram_clear": {
       "type": "interaction",
-      "narration": "Pass the loose gear behind Bram's line while he brings Olivia back. Your party follows the choice you made; nobody grabs her or corners her against the opening.",
+      "narration": "Pass the loose gear behind Bram's line while he walks Olivia back. Nobody grabs her or pushes her toward the opening.",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -963,13 +963,13 @@
       "art": "scenes/riftlight/convergence-ledge",
       "interaction": {
         "kind": "relay",
-        "cue": "Pass the loose gear behind the boundary.",
+        "cue": "Pass the gear behind the line.",
         "actionLabel": "Pass the gear",
         "objectLabel": "loose camp gear"
       },
       "onSuccess": {
         "goto": "count",
-        "narration": "Everyone and the gear are clear of the pull.",
+        "narration": "Everyone and the gear are clear.",
         "effects": [
           {
             "type": "setFlag",
@@ -980,7 +980,7 @@
       },
       "onFailure": {
         "goto": "count",
-        "narration": "Everyone and the gear are clear of the pull.",
+        "narration": "Everyone and the gear are clear.",
         "effects": [
           {
             "type": "setFlag",
@@ -991,7 +991,7 @@
       },
       "onAssisted": {
         "goto": "count",
-        "narration": "Everyone and the gear are clear of the pull.",
+        "narration": "Everyone and the gear are clear.",
         "effects": [
           {
             "type": "setFlag",
@@ -1005,19 +1005,19 @@
           "when": {
             "flag": "converge_signals_read"
           },
-          "text": "Your checked retreat signals help Bram guide the party."
+          "text": "Your signals help Bram guide everyone back."
         },
         {
           "when": {
             "notFlag": "converge_signals_read"
           },
-          "text": "Bram leads the visible retreat signals; the account credits his help."
+          "text": "Bram leads the signals, and everyone follows him."
         }
       ]
     },
     "olivia_watch": {
       "type": "interaction",
-      "narration": "Olivia stops feeding the opening. Mark its next clear view from the working ground without crossing. Pip stays with your party; Bram holds the retreat lane.",
+      "narration": "Olivia stops feeding the opening. From the working ground, mark the moment you see it clearly. Pip stays with you, and Bram holds the way back.",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -1035,7 +1035,7 @@
       "art": "scenes/riftlight/convergence-ledge",
       "interaction": {
         "kind": "timing",
-        "cue": "Observe the stopped opening during its clear interval.",
+        "cue": "Mark it when the view clears.",
         "actionLabel": "Mark the stopped view",
         "target": 0.5,
         "width": 0.3,
@@ -1043,7 +1043,7 @@
       },
       "onSuccess": {
         "goto": "steady_check",
-        "narration": "You record what remained after the gesture stopped.",
+        "narration": "You write down what stayed.",
         "effects": [
           {
             "type": "setFlag",
@@ -1054,7 +1054,7 @@
       },
       "onFailure": {
         "goto": "steady_check",
-        "narration": "The view narrowed before your mark. Leave it unclaimed and secure the gear; do not move closer.",
+        "narration": "The view shrinks too fast. You leave it blank.",
         "effects": [
           {
             "type": "setFlag",
@@ -1065,7 +1065,7 @@
       },
       "onAssisted": {
         "goto": "steady_check",
-        "narration": "The view narrowed before your mark. Leave it unclaimed and secure the gear; do not move closer.",
+        "narration": "The view shrinks too fast. You leave it blank.",
         "effects": [
           {
             "type": "setFlag",
@@ -1077,7 +1077,7 @@
     },
     "steady_check": {
       "type": "interaction",
-      "narration": "Support the loose screen while Bram pins its edge from the safe lane. Olivia and Pip draw back with you before anyone compares the chime.",
+      "narration": "A loose screen catches the wind. Hold it while Bram pins its edge from the safe lane. Olivia and Pip draw back with you.",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -1095,13 +1095,13 @@
       "art": "scenes/riftlight/convergence-ledge",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Support the wind-caught screen from the safe lane.",
+        "cue": "Hold the screen from the safe lane.",
         "actionLabel": "Pin the screen edge",
         "supportLabel": "Hold the screen edge"
       },
       "onSuccess": {
         "goto": "count",
-        "narration": "The people and gear are behind the safe line.",
+        "narration": "Everyone is behind the safe line.",
         "effects": [
           {
             "type": "setFlag",
@@ -1112,7 +1112,7 @@
       },
       "onFailure": {
         "goto": "count",
-        "narration": "The people and gear are behind the safe line.",
+        "narration": "Everyone is behind the safe line.",
         "effects": [
           {
             "type": "setFlag",
@@ -1123,7 +1123,7 @@
       },
       "onAssisted": {
         "goto": "count",
-        "narration": "The people and gear are behind the safe line.",
+        "narration": "Everyone is behind the safe line.",
         "effects": [
           {
             "type": "setFlag",
@@ -1135,7 +1135,7 @@
     },
     "orin_account": {
       "type": "choice_point",
-      "narration": "Orin has the chime account you shared beside the buried bridge. Choose which checked limit helps him talk Olivia back. The opening is not required to obey anybody's request.",
+      "narration": "Which reading will help Orin talk Olivia back? Remember, an opening does not have to obey anyone.",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -1154,19 +1154,19 @@
       "choices": [
         {
           "id": "wait",
-          "label": "Waiting gave us a clearer reading",
+          "label": "Waiting gave a clearer reading",
           "icon": "hand",
           "goto": "orin_account_response_wait"
         },
         {
           "id": "back",
-          "label": "An echo checked an open way back",
+          "label": "Echoes check the way back",
           "icon": "hand",
           "goto": "orin_account_response_back"
         },
         {
           "id": "rules",
-          "label": "A clear note never chose a destination",
+          "label": "Notes never choose places",
           "icon": "hand",
           "goto": "orin_account_response_rules"
         }
@@ -1174,7 +1174,7 @@
     },
     "count": {
       "type": "story",
-      "narration": "A screen cord flaps and the chime note wavers. Seren holds that ordinary cord still; the note changes. She lets it move and the note changes back. \"The cord,\" she says. \"We will change that, and listen to the separate chime.\" Nobody crosses the experimental opening.",
+      "narration": "A screen cord flaps, and the chime note wobbles. Seren holds the cord still, and the note changes. She lets it go, and the note changes back. \"The cord,\" she says. \"We will change that, and listen to the separate chime.\"",
       "cast": [
         {
           "figure": "cast/seren_wisp",
@@ -1193,7 +1193,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Hold the cord still",
           "goto": "count_check",
           "icon": "hand"
         }
@@ -1201,7 +1201,7 @@
     },
     "count_check": {
       "type": "interaction",
-      "narration": "Hold the screen cord still while a friend notes the chime's answer. The control moves the cord, not the chime. Solo heroes can support it on Seren's fixed hook.",
+      "narration": "Hold the screen cord still while the chime's note is written down. Seren's hook can help hold it too.",
       "cast": [
         {
           "figure": "cast/seren_wisp",
@@ -1219,26 +1219,26 @@
       "art": "scenes/riftlight/convergence-ledge",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Hold the screen cord while a friend records the chime note.",
+        "cue": "Hold the cord while the note is written.",
         "actionLabel": "Record the held-cord note",
         "supportLabel": "Hold the screen cord"
       },
       "onSuccess": {
         "goto": "cord_release",
-        "narration": "The held-cord answer is recorded. Now compare the released cord."
+        "narration": "The note is written down. Now let the cord go."
       },
       "onFailure": {
         "goto": "cord_release",
-        "narration": "The held-cord answer is recorded. Now compare the released cord."
+        "narration": "The note is written down. Now let the cord go."
       },
       "onAssisted": {
         "goto": "cord_release",
-        "narration": "The held-cord answer is recorded. Now compare the released cord."
+        "narration": "The note is written down. Now let the cord go."
       }
     },
     "cord_release": {
       "type": "interaction",
-      "narration": "Release the cord from behind the line and compare the note during the clear listening interval. The opening's destination does not change.",
+      "narration": "From behind the line, let the cord go. Listen in the quiet moment between gusts.",
       "cast": [
         {
           "figure": "cast/seren_wisp",
@@ -1264,7 +1264,7 @@
       },
       "onSuccess": {
         "goto": "lesson",
-        "narration": "The note wavers again with the cord loose. Seren nods. \"Holding it changed a condition, not an opening's rule.\"",
+        "narration": "The note wobbles again. Seren nods. \"Holding the cord changed a condition, not the opening's rule.\"",
         "effects": [
           {
             "type": "setFlag",
@@ -1275,7 +1275,7 @@
       },
       "onFailure": {
         "goto": "cord_help",
-        "narration": "A gust hid the comparison. Shelter the listening position while Seren demonstrates the released cord.",
+        "narration": "A gust drowns the note. Seren will show you.",
         "effects": [
           {
             "type": "setFlag",
@@ -1286,7 +1286,7 @@
       },
       "onAssisted": {
         "goto": "cord_help",
-        "narration": "A gust hid the comparison. Shelter the listening position while Seren demonstrates the released cord.",
+        "narration": "A gust drowns the note. Seren will show you.",
         "effects": [
           {
             "type": "setFlag",
@@ -1298,7 +1298,7 @@
     },
     "cord_help": {
       "type": "interaction",
-      "narration": "Pass the loose wind cover to Bram at the sheltered listening position. Seren releases the cord and lets everyone hear the checked comparison. Your record credits her demonstration.",
+      "narration": "Pass the loose wind cover to Bram at the listening spot. Seren lets the cord go, and everyone hears the note wobble.",
       "cast": [
         {
           "figure": "cast/seren_wisp",
@@ -1316,26 +1316,26 @@
       "art": "scenes/riftlight/convergence-ledge",
       "interaction": {
         "kind": "relay",
-        "cue": "Pass wind cover to the listening position.",
+        "cue": "Pass the wind cover over.",
         "actionLabel": "Pass the wind cover",
         "objectLabel": "wind cover"
       },
       "onSuccess": {
         "goto": "lesson",
-        "narration": "You have a checked, helped comparison without repeating the gust-spoiled test."
+        "narration": "Now everyone has heard it."
       },
       "onFailure": {
         "goto": "lesson",
-        "narration": "You have a checked, helped comparison without repeating the gust-spoiled test."
+        "narration": "Now everyone has heard it."
       },
       "onAssisted": {
         "goto": "lesson",
-        "narration": "You have a checked, helped comparison without repeating the gust-spoiled test."
+        "narration": "Now everyone has heard it."
       }
     },
     "lesson": {
       "type": "choice_point",
-      "narration": "Seren calls the lesson Manipulate. \"Hold a condition that is already there. Do not change a one-way rule or grant a second use.\" Practice by handing the padded grip from helper to helper, or by balancing the felt prop at the cord's mark. A prop still pinning your string measure must first be brought back.",
+      "narration": "Seren calls the lesson Manipulate. \"You hold a condition that is already there,\" she says. \"You never change an opening's rules.\" Practice by passing the padded grip along, or by balancing the felt prop on the cord's mark. If the prop still pins your string, fetch it first.",
       "cast": [
         {
           "figure": "cast/seren_wisp",
@@ -1354,13 +1354,13 @@
       "choices": [
         {
           "id": "team",
-          "label": "Pass the holding grip through the team",
+          "label": "Pass the padded grip",
           "goto": "lesson_team",
           "icon": "hand"
         },
         {
           "id": "prop",
-          "label": "Use our free felt prop",
+          "label": "Balance the felt prop",
           "goto": "lesson_prop",
           "icon": "hand",
           "when": {
@@ -1369,7 +1369,7 @@
         },
         {
           "id": "retrieve",
-          "label": "Retrieve the prop from our string measure",
+          "label": "Fetch the prop first",
           "goto": "retrieve_prop",
           "icon": "hand",
           "when": {
@@ -1378,7 +1378,7 @@
         },
         {
           "id": "starweaver",
-          "label": "Practice with our starweaver and Seren",
+          "label": "Our starweaver tries it",
           "goto": "lesson_attuned",
           "icon": "hand",
           "requiresClass": "starweaver"
@@ -1387,7 +1387,7 @@
     },
     "lesson_team": {
       "type": "interaction",
-      "narration": "Pass the padded holding grip while the next helper takes the marked position. Seren watches the cord; the paper record already preserves the string measurement. Nobody calls a new opening into being.",
+      "narration": "Pass the padded grip along while the next helper takes the marked spot. Seren watches the cord. Nobody calls up a new opening.",
       "cast": [
         {
           "figure": "cast/seren_wisp",
@@ -1405,26 +1405,26 @@
       "art": "scenes/riftlight/convergence-ledge",
       "interaction": {
         "kind": "relay",
-        "cue": "Pass the holding grip without losing the marked position.",
+        "cue": "Pass the grip without losing the spot.",
         "actionLabel": "Pass the padded grip",
         "objectLabel": "padded holding grip"
       },
       "onSuccess": {
         "goto": "lesson_clear",
-        "narration": "Every helper has practiced the shared holding job."
+        "narration": "Everyone has had a turn."
       },
       "onFailure": {
         "goto": "lesson_clear",
-        "narration": "Every helper has practiced the shared holding job."
+        "narration": "Everyone has had a turn."
       },
       "onAssisted": {
         "goto": "lesson_clear",
-        "narration": "Every helper has practiced the shared holding job."
+        "narration": "Everyone has had a turn."
       }
     },
     "retrieve_prop": {
       "type": "interaction",
-      "narration": "Pass the felt prop back from the string board. Orin keeps your checked measurement on paper; the measuring string can now be packed.",
+      "narration": "Pass the felt prop back from the string board. Orin already wrote down your measurement, so the string can be packed.",
       "cast": [
         {
           "figure": "cast/seren_wisp",
@@ -1442,13 +1442,13 @@
       "art": "scenes/riftlight/convergence-ledge",
       "interaction": {
         "kind": "relay",
-        "cue": "Pass the used measuring prop back for the lesson.",
+        "cue": "Pass the felt prop back.",
         "actionLabel": "Pass the felt prop",
         "objectLabel": "felt-wrapped prop"
       },
       "onSuccess": {
         "goto": "lesson_prop",
-        "narration": "The prop is free after the extra handling job.",
+        "narration": "The prop is free.",
         "effects": [
           {
             "type": "setFlag",
@@ -1459,7 +1459,7 @@
       },
       "onFailure": {
         "goto": "lesson_prop",
-        "narration": "The prop is free after the extra handling job.",
+        "narration": "The prop is free.",
         "effects": [
           {
             "type": "setFlag",
@@ -1470,7 +1470,7 @@
       },
       "onAssisted": {
         "goto": "lesson_prop",
-        "narration": "The prop is free after the extra handling job.",
+        "narration": "The prop is free.",
         "effects": [
           {
             "type": "setFlag",
@@ -1482,7 +1482,7 @@
     },
     "lesson_prop": {
       "type": "interaction",
-      "narration": "Balance the felt-wrapped prop at the cord's marked point. Seren checks the note while the party watches for slack. The tiny knitted cover keeps the prop from scratching the screen.",
+      "narration": "Balance the felt-wrapped prop on the cord's mark while Seren listens to the note. Its tiny knitted cover keeps it from scratching the screen.",
       "cast": [
         {
           "figure": "cast/seren_wisp",
@@ -1500,26 +1500,26 @@
       "art": "scenes/riftlight/convergence-ledge",
       "interaction": {
         "kind": "balance",
-        "cue": "Level the padded prop at the marked cord.",
+        "cue": "Balance the prop on the mark.",
         "actionLabel": "Set the holding prop",
         "objectLabel": "felt-wrapped prop"
       },
       "onSuccess": {
         "goto": "lesson_clear",
-        "narration": "The prop holds the observed condition for the group."
+        "narration": "The prop holds it steady."
       },
       "onFailure": {
         "goto": "lesson_clear",
-        "narration": "The prop holds the observed condition for the group."
+        "narration": "The prop holds it steady."
       },
       "onAssisted": {
         "goto": "lesson_clear",
-        "narration": "The prop holds the observed condition for the group."
+        "narration": "The prop holds it steady."
       }
     },
     "lesson_attuned": {
       "type": "story",
-      "narration": "Your starweaver holds the observed condition with Seren while the party checks the cord and note. This replaces the separate grip-passing or prop-setting job. It does not change the destination or permit a crossing.",
+      "narration": "Your starweaver holds the condition with Seren while everyone watches the cord and listens. It does not move the opening or let anyone cross.",
       "cast": [
         {
           "figure": "cast/seren_wisp",
@@ -1538,7 +1538,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Finish the lesson",
           "goto": "lesson_clear",
           "icon": "hand"
         }
@@ -1546,7 +1546,7 @@
     },
     "lesson_clear": {
       "type": "story",
-      "narration": "You have practiced Manipulate: hold a condition long enough for the group while the opening keeps its own rules. Seren releases the cord only after everyone is behind the mark. The sour note returns; the ordinary walking passage stays your route.",
+      "narration": "You have learned Manipulate: hold a condition still, and leave the opening's rules alone. Seren lets the cord go once everyone is behind the mark. The sour note returns.",
       "cast": [
         {
           "figure": "cast/seren_wisp",
@@ -1577,7 +1577,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Write it all down",
           "goto": "account",
           "icon": "hand"
         }
@@ -1585,7 +1585,7 @@
     },
     "account": {
       "type": "choice_point",
-      "narration": "Make the experiment useful to the next watcher. Choose one checked result to add; guesses stay questions. Olivia adds her own sentence: \"I called an opening, but I did not choose its rules.\"",
+      "narration": "Orin opens his notebook for the next watcher. \"Only checked results,\" he says. \"Guesses stay questions.\" Olivia adds a sentence of her own: \"I called an opening, but I did not choose its rules.\"",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -1604,19 +1604,19 @@
       "choices": [
         {
           "id": "cord",
-          "label": "Draw the held and released cord",
+          "label": "Draw the cord test",
           "icon": "hand",
           "goto": "account_response_cord"
         },
         {
           "id": "lane",
-          "label": "Draw where everyone withdrew",
+          "label": "Draw the way back",
           "icon": "hand",
           "goto": "account_response_lane"
         },
         {
           "id": "limit",
-          "label": "Leave the unknown destination blank",
+          "label": "Leave the unknown blank",
           "icon": "hand",
           "goto": "account_response_limit"
         }
@@ -1624,11 +1624,11 @@
     },
     "ending": {
       "type": "story",
-      "narration": "The travelers have heard the party's discoveries, the experiment is safely stopped, and you have learned to hold a condition without changing a rule. The pull points down the deep passage. Your party is ready to follow the ordinary walking route and find out.",
+      "narration": "The travelers have heard your discoveries. The experiment is stopped, and you can hold a condition without changing a rule. The pull points down the deep passage. Time to follow the walking path.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Head down the passage",
           "goto": "finish",
           "icon": "hand"
         }
@@ -1639,39 +1639,39 @@
             "flag": "olivia_trusted",
             "notFlag": "olivia_continued"
           },
-          "text": "Olivia remembers that you backed her at the whales and told her no here. \"I will compare the notes with Orin,\" she says. Pip stays beside the safe mark."
+          "text": "Olivia remembers you backed her at the whales and told her no here. \"I will compare notes with Orin,\" she says. Pip stays by the safe mark."
         },
         {
           "when": {
             "flag": "olivia_trusted",
             "notFlag": "helped_bram"
           },
-          "text": "Olivia remembers your help at the whales. \"I can hold a condition too,\" she says. \"If the ground starts moving, I will help hold it.\" Pip walks with her, watching the marked lane."
+          "text": "Olivia remembers your help at the whales. \"I can hold a condition too,\" she says. \"If the ground starts moving, I will help hold it.\" Pip walks with her."
         },
         {
           "when": {
             "notFlag": "olivia_trusted"
           },
-          "text": "Olivia closes her notebook and chooses her own work. \"I still think we can do more,\" she says. She leaves by the open walking path, free to disagree."
+          "text": "Olivia closes her notebook. \"I still think we can do more,\" she says. She leaves by the open path, free to disagree."
         },
         {
           "when": {
             "flag": "converge_cord_compared"
           },
-          "text": "Your party recorded the held-and-released cord comparison."
+          "text": "The notebook says you tested the cord yourselves."
         },
         {
           "when": {
             "notFlag": "converge_cord_compared"
           },
-          "text": "The cord comparison is credited to Seren's checked demonstration."
+          "text": "The cord test is credited to Seren."
         },
         {
           "when": {
             "flag": "olivia_continued",
             "notFlag": "converge_stopped_view"
           },
-          "text": "Your glimpse after the summoning stopped remains unclaimed; nobody fills it in from a guess."
+          "text": "Your glimpse after the summoning stays blank. Nobody fills it in with a guess."
         }
       ],
       "cast": [
@@ -1685,7 +1685,7 @@
     },
     "finish": {
       "type": "story",
-      "narration": "Seren checks the shelter once more. The experimental opening stays marked for watchers. You carry the map down the walking passage toward the heart of the glacier.",
+      "narration": "Seren checks the shelter once more. The new opening stays marked for watchers. You carry the map down the walking passage, toward the heart of the glacier.",
       "choices": [],
       "outcome": "success",
       "cast": [
@@ -1699,11 +1699,11 @@
     },
     "proposal_response_wait": {
       "type": "story",
-      "narration": "Bram moves the last loose gear back. The people have a boundary and a way back.",
+      "narration": "Bram moves the last loose gear back. Everyone has a way back.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Watch Olivia call it",
           "icon": "forward",
           "goto": "summoning"
         }
@@ -1726,11 +1726,11 @@
     },
     "proposal_response_stop": {
       "type": "story",
-      "narration": "Olivia agrees to stop before anyone crosses. The people have a boundary and a way back.",
+      "narration": "Olivia agrees to stop before anyone crosses. Everyone has a way back.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Watch Olivia call it",
           "icon": "forward",
           "goto": "summoning"
         }
@@ -1753,11 +1753,11 @@
     },
     "proposal_response_watch": {
       "type": "story",
-      "narration": "Seren takes a clear view of the retreat lane. The people have a boundary and a way back.",
+      "narration": "Seren takes a clear view of the retreat lane. Everyone has a way back.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Watch Olivia call it",
           "icon": "forward",
           "goto": "summoning"
         }
@@ -1780,11 +1780,11 @@
     },
     "orin_account_response_wait": {
       "type": "story",
-      "narration": "Orin asks Olivia to let this opening answer first. Olivia agrees to step behind the line with you.",
+      "narration": "Orin asks Olivia to let this opening answer first. She steps back with you.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Clear the loose gear",
           "icon": "forward",
           "goto": "bram_clear"
         }
@@ -1807,11 +1807,11 @@
     },
     "orin_account_response_back": {
       "type": "story",
-      "narration": "Orin points to the walking route you already have. Olivia agrees to step behind the line with you.",
+      "narration": "Orin points to the walking route you already have. Olivia steps back with you.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Clear the loose gear",
           "icon": "forward",
           "goto": "bram_clear"
         }
@@ -1834,11 +1834,11 @@
     },
     "orin_account_response_rules": {
       "type": "story",
-      "narration": "Olivia lowers her hand and listens. Olivia agrees to step behind the line with you.",
+      "narration": "Olivia lowers her hand and listens. Then she steps back with you, and Bram lets out his breath.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Clear the loose gear",
           "icon": "forward",
           "goto": "bram_clear"
         }
@@ -1861,11 +1861,11 @@
     },
     "account_response_cord": {
       "type": "story",
-      "narration": "Seren labels the changed condition. Your account names what changed and what did not.",
+      "narration": "Seren labels the changed condition. The page shows what changed.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Close the notebook",
           "icon": "forward",
           "goto": "ending"
         }
@@ -1888,11 +1888,11 @@
     },
     "account_response_lane": {
       "type": "story",
-      "narration": "Bram thickens the safe boundary line. Your account names what changed and what did not.",
+      "narration": "Bram thickens the safe boundary line. The page shows what changed.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Close the notebook",
           "icon": "forward",
           "goto": "ending"
         }
@@ -1915,11 +1915,11 @@
     },
     "account_response_limit": {
       "type": "story",
-      "narration": "Orin puts a question beside the blank, then another beside Pip's confident doodle. Your account names what changed and what did not.",
+      "narration": "Orin puts a question beside the blank, then another beside Pip's confident doodle.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Close the notebook",
           "icon": "forward",
           "goto": "ending"
         }
