@@ -17,7 +17,9 @@
  * `speak()`'s rules are kept: `interrupt` cuts off what is playing and everything queued; any
  * other line waits its turn. Device lines are handed straight to the browser's own queue, as
  * they always were. A recorded line waits for the device lines ahead of it to end, and the
- * device lines behind it wait for it, so the two voices never talk over each other.
+ * device lines behind it wait for it, so the two voices never talk over each other. A line whose
+ * clips turn out not to be there is a device line like any other: it joins the browser's queue
+ * at once, never waiting on an "ended" a browser may not send (#593's e2e found the wait).
  *
  * Manifests are fetched the first time a chapter's line is spoken, one file per chapter, never
  * at first paint. Clips are fetched when their line is queued, so a line queued behind the
@@ -68,6 +70,8 @@ interface Job {
   opts: SpeakOptions | undefined;
   /** The decoded clips to play, or null for the device voice. Absent for a line with no parts. */
   clips?: Promise<VoiceBuffer[] | null>;
+  /** Set once `clips` has settled to null: the line is the device voice's, and need not wait. */
+  deviceOnly?: boolean;
 }
 
 export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
@@ -219,7 +223,7 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
   function pump(): void {
     while (queue.length > 0 && !recording) {
       const job = queue[0]!;
-      if (job.clips === undefined) {
+      if (job.clips === undefined || job.deviceOnly) {
         queue.shift();
         deviceSay(job);
         continue;
@@ -252,7 +256,17 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
     if (opts?.interrupt) cancel();
     const { interrupt: _interrupt, parts, ...rest } = opts ?? {};
     const job: Job = { text, opts: Object.keys(rest).length > 0 ? rest : undefined };
-    if (parts !== undefined && parts.length > 0) job.clips = resolve(parts);
+    if (parts !== undefined && parts.length > 0) {
+      const clips = resolve(parts);
+      job.clips = clips;
+      const at = generation;
+      // Nothing to play: hand it to the browser behind what it already has, now.
+      void clips.then((buffers) => {
+        if (buffers !== null || at !== generation) return;
+        job.deviceOnly = true;
+        pump();
+      });
+    }
     queue.push(job);
     pump();
   };
