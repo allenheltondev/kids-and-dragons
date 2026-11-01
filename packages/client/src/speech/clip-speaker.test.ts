@@ -321,6 +321,17 @@ describe("speak()'s queue and interrupt rules", () => {
     expect(t.speaking).toEqual([true, false]);
   });
 
+  it("a line with nothing recorded follows a device line at once, though that line never says it ended", async () => {
+    // The browser's own queue keeps the order; waiting for an "ended" some browsers never send
+    // would hold the story back for the watchdog's length (the preface e2e on #593).
+    const { speaker, device } = setup({});
+    speaker("Here we go! The hedge is listening.");
+    speaker("Your goal: find the door.", { parts: [{ address: "ch/s1/narration", line: "Your goal: find the door." }] });
+    speaker("A wall of thorns.");
+    await settle();
+    expect(device.texts()).toEqual(["Here we go! The hedge is listening.", "Your goal: find the door.", "A wall of thorns."]);
+  });
+
   it("a device line that never says it ended holds a recorded one only so long", async () => {
     const t = setup();
     t.speaker("Hi.");
