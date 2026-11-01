@@ -34,6 +34,8 @@ import { createSynthSpeaker, type DeviceVoice } from "./synth-speaker";
 /** The slice of `fetch`'s answer in use, so a test can hand in plain objects. */
 export interface FetchedLike {
   ok: boolean;
+  /** The HTTP status; absent reads as 404. */
+  status?: number;
   json(): Promise<unknown>;
   arrayBuffer(): Promise<ArrayBuffer>;
 }
@@ -49,6 +51,12 @@ export interface ClipSpeakerEnv {
   /** How long a recorded line may take to arrive before the device voice reads it instead. */
   resolveMs?: number;
 }
+
+/**
+ * Answers that mean a chapter has no manifest yet, kept for the evening. S3 behind CloudFront
+ * answers a missing key with 403. Anything else that is not OK is a passing trouble.
+ */
+const MISSING: ReadonlySet<number> = new Set([403, 404, 410]);
 
 /** Long enough for a few small clips over house wifi; short enough that a dead line is not a pause. */
 export const RESOLVE_MS = 2500;
@@ -114,7 +122,12 @@ export function createClipSpeaker(env: ClipSpeakerEnv): Speaker {
       // no signal is not, so the next line asks again.
       loading = env
         .fetch(manifestPath(name))
-        .then((response) => (response.ok ? (response.json() as Promise<VoiceManifest>) : null))
+        .then((response) => {
+          if (response.ok) return response.json() as Promise<VoiceManifest>;
+          // Only "not here" is kept: a 429 or a 503 is asked again on the next line (#593 review).
+          if (!MISSING.has(response.status ?? 404)) manifests.delete(name);
+          return null;
+        })
         .catch(() => {
           manifests.delete(name);
           return null;
