@@ -258,6 +258,9 @@ describe("crews: new players at the same TV", () => {
     room({ host: true }, { ...RUN, phase: "scene", campaignId: "gemfall", chapterId: "gemfall-01" });
     render(<HostControls placement="inline" />);
     expect(screen.queryByRole("button", { name: "New players? Start a new crew" })).toBeNull();
+    // Still listed, and says how to get to it.
+    expect(screen.getByText("Crews", { exact: true }).closest("details")?.hasAttribute("open")).toBe(false);
+    expect(screen.getAllByText(/Stop this adventure to change crews/).length).toBeGreaterThan(0);
     cleanup();
     room({ host: true }, { phase: "lobby", seats: {}, party: [] });
     render(<HostControls placement="inline" />);
