@@ -240,6 +240,19 @@ describe("three more ways the prose names a speaker", () => {
     expect(attributeQuotes('"Catch it!" roars the Seal Keeper.', speakers).map((q) => q.id)).toEqual(["seal"]);
   });
 
+  it("does not read reported speech after a finished quote as its tag", () => {
+    const speakers = [
+      { id: "flick", names: ["Flick"] },
+      { id: "tansy", names: ["Tansy"] },
+    ];
+    // "Tansy says a real fight…" is what Tansy says next, not who said "Bet you can't tag me!".
+    expect(attributeQuotes('"Now tag!" squeaks Flick. "Bet you can\'t tag me!" Tansy says a real fight works like tag.', speakers).map((q) => q.id)).toEqual(["flick", "flick"]);
+    // A tag that ends there, and an action beat after a quote, still count.
+    expect(attributeQuotes('"Bet you can\'t tag me!" Tansy says.', speakers).map((q) => q.id)).toEqual(["tansy"]);
+    expect(attributeQuotes('"Rush prices!" Tansy offers a huge price.', speakers).map((q) => q.id)).toEqual(["tansy"]);
+    expect(attributeQuotes('"Welcome," Tansy says a little shyly.', speakers).map((q) => q.id)).toEqual(["tansy"]);
+  });
+
   it("lets a quote that introduces its speaker name them, when a he or she tag has nobody before it", () => {
     const text = 'The figure steps into view. "I am Corvane," he says. "Emperor of Pangea."';
     expect(attributeQuotes(text, speakers).map((q) => [q.id, q.words])).toEqual([["corvane", "I am Corvane,"], ["corvane", "Emperor of Pangea."]]);
