@@ -11,7 +11,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { clipPath, manifestPath, type NarrationPart, type SpeakOptions, type VoiceManifest } from "@kad/shared";
 import type { VoiceBuffer, VoiceChannel } from "../audio/cue";
 import { createClipSpeaker, manifestOf, RESOLVE_MS, type FetchedLike } from "./clip-speaker";
-import type { DeviceVoice } from "./synth-speaker";
+import { createSynthSpeaker, type DeviceVoice } from "./synth-speaker";
 
 const A = "a".repeat(64);
 const B = "b".repeat(64);
@@ -82,7 +82,7 @@ function fakeFetch(routes: Record<string, Route>) {
     const route = routes[url];
     if (route === "offline") return Promise.reject(new TypeError("Failed to fetch"));
     if (route === "hang") return new Promise(() => undefined);
-    return Promise.resolve(route ?? { ok: false, json: () => Promise.reject(new Error("404")), arrayBuffer: () => Promise.reject(new Error("404")) });
+    return Promise.resolve(route ?? { ok: false, status: 404, json: () => Promise.reject(new Error("404")), arrayBuffer: () => Promise.reject(new Error("404")) });
   };
   return { fetch, asked };
 }
@@ -211,6 +211,30 @@ describe("all or nothing: the device voice reads the whole line", () => {
     expect(t.device.texts()).toEqual([text]);
   });
 
+  it("when the manifest answers 503, and asks for it again next time; a 404 is asked once", async () => {
+    const busy: FetchedLike = { ok: false, status: 503, json: () => Promise.reject(new Error("503")), arrayBuffer: () => Promise.reject(new Error("503")) };
+    const routes = allThere();
+    routes[manifestPath("ch")] = busy;
+    const t = setup(routes);
+    t.speaker(text, { parts: S1 });
+    await settle();
+    expect(t.device.texts()).toEqual([text]);
+    t.device.finish();
+    t.speaker(text, { parts: S1 });
+    await settle();
+    expect(t.net.asked.filter((url) => url === manifestPath("ch"))).toHaveLength(2);
+
+    const gone = allThere();
+    delete gone[manifestPath("ch")];
+    const u = setup(gone);
+    u.speaker(text, { parts: S1 });
+    await settle();
+    u.device.finish();
+    u.speaker(text, { parts: S1 });
+    await settle();
+    expect(u.net.asked.filter((url) => url === manifestPath("ch"))).toHaveLength(1);
+  });
+
   it("when there is no signal, and asks for the manifest again next time", async () => {
     const routes = allThere();
     routes[manifestPath("ch")] = "offline";
@@ -330,6 +354,34 @@ describe("speak()'s queue and interrupt rules", () => {
     speaker("A wall of thorns.");
     await settle();
     expect(device.texts()).toEqual(["Here we go! The hedge is listening.", "Your goal: find the door.", "A wall of thorns."]);
+  });
+
+  it("a device line whose first piece fails holds the recorded line until its last piece is said", async () => {
+    // The real device voice over a browser queue that lets the test end or fail each piece.
+    const queue: { text: string; onend: (() => void) | null; onerror: ((e: { error: string }) => void) | null }[] = [];
+    const device = createSynthSpeaker({
+      synth: {
+        speak: (u: SpeechSynthesisUtterance) => void queue.push(u as unknown as (typeof queue)[number]),
+        cancel: () => void (queue.length = 0),
+        getVoices: () => [],
+      } as unknown as SpeechSynthesis,
+      createUtterance: (t) => ({ text: t, onend: null, onerror: null }) as unknown as SpeechSynthesisUtterance,
+    });
+    const { channel, plays } = fakeChannel();
+    const net = fakeFetch(allThere());
+    const speaker = createClipSpeaker({ device, channel: () => channel, fetch: net.fetch });
+    const long = Array.from({ length: 8 }, (_, i) => `Sentence number ${String(i)} is here and goes on a while.`).join(" ");
+    speaker(long);
+    speaker("The gate creaks. All three of you step through.", { parts: S1 });
+    await settle();
+    const pieces = [...queue];
+    expect(pieces.length).toBeGreaterThan(2);
+    pieces[0]!.onerror?.({ error: "synthesis-failed" });
+    await settle();
+    expect(plays).toEqual([]);
+    for (const piece of pieces.slice(1)) piece.onend?.();
+    await settle();
+    expect(plays.map((p) => p.buffers)).toEqual([[A, B, C]]);
   });
 
   it("a device line that never says it ended holds a recorded one only so long", async () => {

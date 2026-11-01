@@ -120,6 +120,14 @@ export function createSynthSpeaker(env: SynthSpeakerEnv): DeviceVoice {
       done?.();
     };
     if (pieces.length === 0) finish();
+    // Pieces that have ended or failed. The browser speaks them in order, so the last one ending
+    // means the line is over; a failed piece only ends the line once no other piece is still
+    // queued, or the next voice would start over the rest of this line (#593 review).
+    let settled = 0;
+    const settle = (): void => {
+      settled += 1;
+      if (settled === pieces.length) finish();
+    };
     pieces.forEach((piece, index) => {
       const utterance = createUtterance(piece);
       utterance.rate = opts?.rate ?? DEFAULT_RATE;
@@ -129,12 +137,14 @@ export function createSynthSpeaker(env: SynthSpeakerEnv): DeviceVoice {
       utterance.onend = () => {
         live.delete(utterance);
         if (index === pieces.length - 1) finish();
+        else settle();
       };
       utterance.onerror = (event) => {
         live.delete(utterance);
         if (event.error === "not-allowed") holdForGesture(text, opts);
-        // Refused, cut off or broken: the line is over either way, and whatever waits on it goes on.
-        finish();
+        // Refused, cut off or broken: this piece is over. A cancel errors every piece, so a cut-off
+        // line still ends at once; a browser that reports nothing is the clip speaker's watchdog's.
+        settle();
       };
       synth.speak(utterance);
     });
