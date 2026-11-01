@@ -336,20 +336,18 @@ export class DynamoRepository implements GameRepository {
           /*
            * And only from the device that started it (#265), unless it is
            * already this account's: a room code gets a phone a seat in the
-           * household, never the household. A household from before founders
-           * (neither attribute) keeps the old rule until it expires.
+           * household, never the household. With no founder (absent, awaiting
+           * or dropped to "") nobody may claim it (#272).
            */
           ConditionExpression:
             "attribute_exists(PK) AND attribute_not_exists(sweeping) AND (#d.#owner = :sub OR (" +
-            "(attribute_not_exists(#d.#owner) OR #d.#owner = :null) AND (#d.#founder = :device OR " +
-            "(attribute_not_exists(#d.#founder) AND attribute_not_exists(#d.#awaiting)))))",
+            "(attribute_not_exists(#d.#owner) OR #d.#owner = :null) AND #d.#founder = :device))",
           ExpressionAttributeNames: {
             "#d": "data",
             "#owner": "ownerSub",
             "#guest": "guest",
             "#expires": "expiresAt",
             "#founder": "founderDeviceId",
-            "#awaiting": "awaitingFounder",
           },
           ExpressionAttributeValues: { ":sub": cognitoSub, ":no": false, ":null": null, ":device": deviceId },
         }),
@@ -387,7 +385,7 @@ export class DynamoRepository implements GameRepository {
         new UpdateCommand({
           TableName: this.table,
           Key: { PK: HH(householdId), SK: META },
-          // Empty, not removed: absent reads as a household from before founders.
+          // Empty, the same as absent: nobody may claim it.
           UpdateExpression: "SET #d.#founder = :nobody",
           ConditionExpression: "attribute_exists(PK) AND #d.#founder = :device",
           ExpressionAttributeNames: { "#d": "data", "#founder": "founderDeviceId" },
@@ -1560,7 +1558,7 @@ export class DynamoRepository implements GameRepository {
                     Update: {
                       TableName: this.table,
                       Key: { PK: HH(input.unfound.householdId), SK: META },
-                      // Empty, not removed: absent reads as a household from before founders.
+                      // Empty, the same as absent: nobody may claim it.
                       UpdateExpression: "SET #d.#founder = :nobody",
                       ConditionExpression: "attribute_exists(PK) AND #d.#founder = :device",
                       ExpressionAttributeNames: { "#d": "data", "#founder": "founderDeviceId" },

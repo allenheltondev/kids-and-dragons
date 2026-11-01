@@ -681,12 +681,12 @@ table's save (see "Who owns what", below), a kid's hero is hers and is not lost
 with it, and a family tablet exists only in a household an account already
 keeps, so none can found a guest game for every kid who uses it.
 
-Guest households from before founders were recorded keep the old rule (any
-device playing in one may claim it). #265 shipped it on 2026-10-17 and a guest
-household expires a week after it was last played, but a game still being
-played keeps renewing, so the rule goes only once none is left to find: delete
-the `legacy` branches in `mayClaim`, the memory store's `claimHousehold` and
-the DynamoDB claim condition then (#272).
+A household with no founder recorded (`founderDeviceId` absent, as on one
+awaiting its founder or one made before #265, or `""` after a Remove) is
+claimable by nobody. Guest households made before founders were recorded kept
+the old rule (any device playing in one may claim it) for a week after #265
+shipped on 2026-10-17; #272 removed it. Such a household still plays, but it
+can no longer be kept by signing in.
 
 The device that opened a room may take a
 player out of that room, a low-stakes control that a TV or a kid's phone may

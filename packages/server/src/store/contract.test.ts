@@ -786,10 +786,12 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
         expect(await repo.claimHousehold("h_1", "sub_a", "d_1")).toBe(false);
       });
 
-      it("claims a household made before founders from any device, as before (#265)", async () => {
-        const { founderDeviceId: _none, ...legacy } = guest("h_1", new Date(Date.now() + DAY).toISOString());
-        await repo.putHousehold(legacy);
-        expect(await repo.claimHousehold("h_1", "sub_a", "d_anyone")).toBe(true);
+      it("will not claim a household with no founder recorded, from any device (#272)", async () => {
+        const { founderDeviceId: _none, ...founderless } = guest("h_1", new Date(Date.now() + DAY).toISOString());
+        await repo.putHousehold(founderless);
+        expect(await repo.claimHousehold("h_1", "sub_a", "d_anyone")).toBe(false);
+        expect(await repo.claimHousehold("h_1", "sub_a", "d_1")).toBe(false);
+        expect(await repo.getHousehold("h_1")).toMatchObject({ guest: true, ownerSub: null });
       });
 
       it("will not claim a household still awaiting its founder", async () => {
@@ -896,7 +898,7 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
 
         expect(await dropIn(1, "d_1")).toBe(true);
         expect((await repo.getState("r_1"))?.seq).toBe(1);
-        // Nobody, not absent: absent reads as a household from before founders.
+        // Nobody, written as "" (absent reads the same).
         expect((await repo.getHousehold("h_1"))?.founderDeviceId).toBe("");
         expect(await repo.claimHousehold("h_1", "sub_a", "d_1")).toBe(false);
         // And a second drop of the same device no longer holds.
