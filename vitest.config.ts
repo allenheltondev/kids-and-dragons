@@ -24,6 +24,10 @@ export default defineConfig({
     // DOM workers and Python image checks are memory-heavy; avoid spawning
     // one of each per CPU and timing out otherwise fast tests under load.
     maxWorkers: 4,
+    // The content suites walk whole story graphs (Riftlight's is large), which
+    // takes longer than vitest's 5s default on a loaded CI runner. Main's CI
+    // failed on exactly two such timeouts and so never reached production.
+    testTimeout: 30_000,
 
     /*
      * Coverage is off unless asked for (`npm run test:coverage`), so `npm test`
