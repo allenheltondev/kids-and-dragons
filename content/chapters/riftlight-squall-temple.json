@@ -48,7 +48,7 @@
   "scenes": {
     "arrival": {
       "type": "story",
-      "narration": "The island you helped welcome home is drifting toward a temple island through heavy rain. A different kitsune keeper from the one at the lookout rings a lookout bell; its rope wears a tiny raincoat. Beside the temple, a fresh opening spills bone crawlers onto the wet landing: little scuttling creatures with jointed legs and rattling backs. \"Keep the temple safe as that island drifts toward us,\" the keeper calls. \"We can push its approach clear, or shelter this landing and let it settle.\" She points to people still carrying cushions across the yard.",
+      "narration": "The island you helped welcome home is drifting toward a temple island through heavy rain. A different kitsune keeper from the one at the lookout rings a bell. Its rope wears a tiny raincoat. Beside the temple, a fresh opening spills bone crawlers onto the wet landing: little scuttling creatures with rattling backs. \"Help us keep the temple safe as that island drifts in!\" the keeper calls. \"First, get everyone under cover.\"",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -61,20 +61,20 @@
           "when": {
             "flag": "island_warning_sent"
           },
-          "text": "Your earlier course warning reached this bell tower. The keepers have already moved the heavy furniture inside."
+          "text": "Your warning reached this bell tower in time. The keepers have already moved the heavy furniture inside."
         },
         {
           "when": {
             "notFlag": "island_warning_sent"
           },
-          "text": "Your first message asked for another reader. The keepers were checking the old carving when the storm bell rang; furniture still waits in the yard."
+          "text": "Your course warning has not reached them yet. Their furniture still waits in the yard."
         }
       ],
       "rift": "steady",
       "choices": [
         {
           "id": "continue",
-          "label": "Find a clear view",
+          "label": "Watch the island come",
           "goto": "look",
           "icon": "hand"
         }
@@ -82,7 +82,7 @@
     },
     "look": {
       "type": "interaction",
-      "narration": "From behind the low fence, watch the drifting island edge against the fixed bell tower. Mark the clear sighting interval. The bell rope has a tiny raincoat and is taking the weather very seriously.",
+      "narration": "From behind the fence, watch the island's edge creep past the bell tower. Mark it between gusts.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -92,7 +92,7 @@
       "art": "scenes/riftlight/temple-island-squall",
       "interaction": {
         "kind": "timing",
-        "cue": "Mark the island edge during the clear sighting.",
+        "cue": "Mark the edge when the rain clears.",
         "actionLabel": "Mark the approach",
         "target": 0.5,
         "width": 0.3,
@@ -100,20 +100,20 @@
       },
       "onSuccess": {
         "goto": "people",
-        "narration": "The keeper confirms the approaching edge from another window."
+        "narration": "\"Coming close,\" the keeper says."
       },
       "onFailure": {
         "goto": "people",
-        "narration": "Rain hid your sighting. The keeper checks the nearer fence and tower before opening any lane."
+        "narration": "Rain hides the edge. The keeper checks it herself."
       },
       "onAssisted": {
         "goto": "people",
-        "narration": "The keeper confirms the approaching edge from another window."
+        "narration": "\"Coming close,\" the keeper says."
       }
     },
     "people": {
       "type": "story",
-      "narration": "The keeper points across the yard. \"Everyone needs a dry lane into the hall.\" Your earlier warning, if sent, has already moved the heavy furniture; otherwise the folded screen still blocks the doorway. Check the actual yard before doing another carrying job.",
+      "narration": "Keepers are still hauling cushions across the yard. \"Everyone needs a dry lane into the hall,\" says the keeper. \"Let's see what still blocks the door.\"",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -124,13 +124,13 @@
       "choices": [
         {
           "id": "move",
-          "label": "Inspect and clear the remaining doorway load",
+          "label": "Clear the doorway",
           "goto": "screen",
           "icon": "hand"
         },
         {
           "id": "warned",
-          "label": "Use the lane our warning already cleared",
+          "label": "Take the lane already clear",
           "goto": "ready_lane",
           "icon": "hand",
           "when": {
@@ -141,7 +141,7 @@
     },
     "screen": {
       "type": "choice_point",
-      "narration": "The screen balloons across the doorway. \"It would like to come in first,\" says a keeper. Carry it flat, or tie and pass the bundle along the fence.",
+      "narration": "A folded screen flaps in the doorway like a sail. \"It wants to come in first,\" says the keeper. Carry it flat, or tie it and pass it along the fence?",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -152,13 +152,13 @@
       "choices": [
         {
           "id": "flat",
-          "label": "Level the screen and carry it flat",
+          "label": "Carry it in flat",
           "goto": "people_check",
           "icon": "hand"
         },
         {
           "id": "tie",
-          "label": "Tie the screen and pass it inward",
+          "label": "Tie it and pass it",
           "goto": "screen_relay",
           "icon": "hand"
         }
@@ -169,13 +169,13 @@
             "flag": "island_warning_sent"
           },
           "replace": true,
-          "text": "Your warning already brought the heavy screen inside. Only a small cushion bundle remains at the doorway. Carry it flat, or tie and pass it along the fence. The top cushion is determined to be a hat."
+          "text": "Your warning got the heavy screen inside. Only a cushion bundle is left, and the top cushion is trying to be a hat. Carry it flat, or tie it and pass it along?"
         }
       ]
     },
     "people_check": {
       "type": "interaction",
-      "narration": "Level the screen while keepers guide the far edge through the doorway. The painted birds arrive beak-first.",
+      "narration": "Keep the screen level while the keeper guides it through the door. Its painted birds go in beak first.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -185,21 +185,21 @@
       "art": "scenes/riftlight/temple-island-squall",
       "interaction": {
         "kind": "balance",
-        "cue": "Level the doorway load before carrying it in.",
-        "actionLabel": "Carry the screen inside",
+        "cue": "Keep the load level.",
+        "actionLabel": "Carry it inside",
         "objectLabel": "doorway load"
       },
       "onSuccess": {
         "goto": "ready_lane",
-        "narration": "The remaining load reaches the hall and the doorway is clear."
+        "narration": "The doorway is clear."
       },
       "onFailure": {
         "goto": "ready_lane",
-        "narration": "The remaining load reaches the hall and the doorway is clear."
+        "narration": "The doorway is clear."
       },
       "onAssisted": {
         "goto": "ready_lane",
-        "narration": "The remaining load reaches the hall and the doorway is clear."
+        "narration": "The doorway is clear."
       },
       "variants": [
         {
@@ -207,13 +207,13 @@
             "flag": "island_warning_sent"
           },
           "replace": true,
-          "text": "Level the last cushion bundle while the keeper guides its far end through the doorway. The heavy screen is already inside, thanks to your warning."
+          "text": "Keep the cushion bundle level while the keeper guides it through the door."
         }
       ]
     },
     "screen_relay": {
       "type": "interaction",
-      "narration": "Pass the tied screen along the sheltered fence, keeping the people's lane clear.",
+      "narration": "Pass the tied screen hand to hand along the fence.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -223,21 +223,21 @@
       "art": "scenes/riftlight/temple-island-squall",
       "interaction": {
         "kind": "relay",
-        "cue": "Pass the tied doorway bundle into the hall.",
-        "actionLabel": "Pass the screen",
+        "cue": "Pass the bundle into the hall.",
+        "actionLabel": "Pass it along",
         "objectLabel": "doorway bundle"
       },
       "onSuccess": {
         "goto": "ready_lane",
-        "narration": "The remaining load reaches the hall and the doorway is clear."
+        "narration": "The doorway is clear."
       },
       "onFailure": {
         "goto": "ready_lane",
-        "narration": "The remaining load reaches the hall and the doorway is clear."
+        "narration": "The doorway is clear."
       },
       "onAssisted": {
         "goto": "ready_lane",
-        "narration": "The remaining load reaches the hall and the doorway is clear."
+        "narration": "The doorway is clear."
       },
       "variants": [
         {
@@ -245,13 +245,13 @@
             "flag": "island_warning_sent"
           },
           "replace": true,
-          "text": "Pass the last small cushion bundle along the fence. The heavy screen is already inside; you are finishing the remaining light work."
+          "text": "Pass the cushion bundle hand to hand along the fence."
         }
       ]
     },
     "ready_lane": {
       "type": "choice_point",
-      "narration": "Check the yard together and help the last cushion carrier into the hall. \"Nobody stays outside to rescue a cushion,\" says the keeper. Her very soft helmet comes inside too.",
+      "narration": "One last keeper is still hugging a cushion in the rain. \"Nobody stays outside to rescue a cushion,\" says the temple keeper. How do you help?",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -268,13 +268,13 @@
         },
         {
           "id": "count",
-          "label": "Count back the keepers together",
+          "label": "Count the keepers in",
           "icon": "hand",
           "goto": "ready_lane_response_count"
         },
         {
           "id": "cushion",
-          "label": "Take the bulky cushions",
+          "label": "Carry the cushions",
           "icon": "hand",
           "goto": "ready_lane_response_cushion"
         }
@@ -282,7 +282,7 @@
     },
     "messages": {
       "type": "story",
-      "narration": "The last keeper reaches the covered hall. \"There is shelter for everyone,\" the temple keeper says, \"even the bell rope's spare raincoat.\" Your party can now work on the landing while the keepers signal from inside. The temple's own griffin messenger shelters at the back of the hall, ready to carry travelers down to the Cairnstep once the wind clears.",
+      "narration": "The last keeper reaches the covered hall. \"Shelter for everyone,\" says the temple keeper, \"even the bell rope's spare raincoat.\" The temple's own griffin messenger rests at the back. When the wind clears, it can fly travelers down to the mountain pass called the Cairnstep.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -292,7 +292,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Choose our working preparation",
+          "label": "Get ready for the landing",
           "goto": "gear",
           "icon": "hand"
         }
@@ -303,13 +303,13 @@
             "flag": "island_messages_saved",
             "notFlag": "island_relay_delayed"
           },
-          "text": "The island letter courier whose sealed letters you saved offers to relay your signals from the hall."
+          "text": "The island letter courier, whose sealed letters you saved, offers to relay your signals from the hall."
         },
         {
           "when": {
             "flag": "island_relay_delayed"
           },
-          "text": "The island letter courier is still finishing the delayed letter relay. A keeper takes the signal station until that courier arrives."
+          "text": "The island letter courier is still finishing the delayed letter relay. A keeper minds the signals for now."
         }
       ],
       "cast": [
@@ -326,7 +326,7 @@
     },
     "gear": {
       "type": "choice_point",
-      "narration": "One team can prepare the long turning rope, shortening the push objective from three working turns to two, or fasten wind cover that removes the storm's Guard penalty from your party. The other job stays ordinary. Neither removes the crawlers or the crosswind tiles. Which advantage fits your plan?",
+      "narration": "There are two jobs and time for one. Rig the long turning rope, so pushing the island away goes faster. Or fasten wind cover, so the gusts cannot knock you about. Neither stops the crawlers.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -337,7 +337,7 @@
       "choices": [
         {
           "id": "rope",
-          "label": "Prepare the long turning rope",
+          "label": "Rig the long turning rope",
           "goto": "gear_rope",
           "icon": "hand",
           "effects": [
@@ -355,7 +355,7 @@
         },
         {
           "id": "cover",
-          "label": "Prepare wind cover for the party",
+          "label": "Fasten the wind cover",
           "goto": "shelter_check",
           "icon": "hand",
           "effects": [
@@ -373,7 +373,7 @@
         },
         {
           "id": "brace",
-          "label": "Have our thornguard brace the wind cover",
+          "label": "Our thornguard braces it",
           "goto": "shelter_braced",
           "icon": "hand",
           "requiresClass": "thornguard",
@@ -394,7 +394,7 @@
     },
     "gear_rope": {
       "type": "interaction",
-      "narration": "Guide the long rope loop through the working post from behind the fence. A missed alignment needs a shorter line, not another identical attempt. The keeper moves the marker to match its reach.",
+      "narration": "Guide the long rope loop over the turning post. Somebody's socks flap on a line right beside it. Do not catch the socks.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -404,7 +404,7 @@
       "art": "scenes/riftlight/temple-island-squall",
       "interaction": {
         "kind": "precision",
-        "cue": "Guide the rope loop through the post.",
+        "cue": "Drop the loop over the post.",
         "actionLabel": "Set the turning loop",
         "target": 0.5,
         "width": 0.3,
@@ -412,7 +412,7 @@
       },
       "onSuccess": {
         "goto": "signals",
-        "narration": "The long turning line is ready: pushing can use two working turns.",
+        "narration": "The long rope is ready. A push will go faster.",
         "effects": [
           {
             "type": "setFlag",
@@ -423,7 +423,7 @@
       },
       "onFailure": {
         "goto": "short_line",
-        "narration": "The loop caught on the sock line. Set it aside and rig the shorter store rope; pushing will need three working turns.",
+        "narration": "The loop snags the socks! Rig the shorter store rope instead.",
         "effects": [
           {
             "type": "setFlag",
@@ -434,7 +434,7 @@
       },
       "onAssisted": {
         "goto": "signals",
-        "narration": "The keeper helps align the long loop. It is ready for the two-turn push job.",
+        "narration": "With the keeper's help, the long rope is ready.",
         "effects": [
           {
             "type": "setFlag",
@@ -446,7 +446,7 @@
     },
     "short_line": {
       "type": "interaction",
-      "narration": "Pass the shorter store rope to the nearer post while the keeper checks its reach. The socks stay completely outside the rescue plan.",
+      "narration": "Pass the shorter store rope to the nearer post. The socks are not invited.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -462,20 +462,20 @@
       },
       "onSuccess": {
         "goto": "signals",
-        "narration": "The short line is checked. The ordinary three-turn push remains available."
+        "narration": "The short rope is tied on."
       },
       "onFailure": {
         "goto": "signals",
-        "narration": "The short line is checked. The ordinary three-turn push remains available."
+        "narration": "The short rope is tied on."
       },
       "onAssisted": {
         "goto": "signals",
-        "narration": "The short line is checked. The ordinary three-turn push remains available."
+        "narration": "The short rope is tied on."
       }
     },
     "shelter_check": {
       "type": "interaction",
-      "narration": "Hold wind cover low along the landing while a keeper secures its ties. It protects party figures from the Guard penalty, not from crawlers or crosswind pushes. Solo heroes can use the fixed posts as supports.",
+      "narration": "Hold the wind cover low while the keeper ties it down. It keeps off gusts, not crawlers.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -485,13 +485,13 @@
       "art": "scenes/riftlight/temple-island-squall",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Support the wind cover while its edges are tied.",
+        "cue": "Hold the cover while it is tied.",
         "actionLabel": "Fasten the cover",
         "supportLabel": "Hold the cover"
       },
       "onSuccess": {
         "goto": "signals",
-        "narration": "The party's working lane has wind cover.",
+        "narration": "The cover snaps tight.",
         "effects": [
           {
             "type": "setFlag",
@@ -502,7 +502,7 @@
       },
       "onFailure": {
         "goto": "signals",
-        "narration": "The party's working lane has wind cover.",
+        "narration": "The cover snaps tight.",
         "effects": [
           {
             "type": "setFlag",
@@ -513,7 +513,7 @@
       },
       "onAssisted": {
         "goto": "signals",
-        "narration": "The party's working lane has wind cover.",
+        "narration": "The cover snaps tight.",
         "effects": [
           {
             "type": "setFlag",
@@ -525,7 +525,7 @@
     },
     "shelter_braced": {
       "type": "story",
-      "narration": "Your thornguard uses a skill called Brace to keep the wind cover steady while the keepers secure it. That replaces the separate holding task. The other party members check the sight line; the turning rope remains ordinary.",
+      "narration": "Your thornguard uses a skill called Brace and holds the wind cover steady while the keeper ties it down. It barely flaps. Everyone else keeps an eye on the island.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -536,7 +536,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Watch the keeper's signals",
           "goto": "signals",
           "icon": "hand"
         }
@@ -544,7 +544,7 @@
     },
     "signals": {
       "type": "interaction",
-      "narration": "The keeper raises a cloth for hold and lowers it for release. \"Watch me once before anyone takes the load.\" Shouted guesses would vanish into the squall.",
+      "narration": "The keeper raises a cloth for hold and lowers it for release. \"Watch once,\" she says. \"Shouts get lost in a squall.\"",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -554,7 +554,7 @@
       "art": "scenes/riftlight/temple-island-squall",
       "interaction": {
         "kind": "memory",
-        "cue": "Watch the cloth round, then echo it.",
+        "cue": "Watch the cloth, then copy it.",
         "actionLabel": "Show what we saw",
         "options": [
           {
@@ -578,7 +578,7 @@
       },
       "onSuccess": {
         "goto": "rest",
-        "narration": "Your checked cloth round can be taught to the relief watch.",
+        "narration": "You copy every call.",
         "effects": [
           {
             "type": "setFlag",
@@ -589,7 +589,7 @@
       },
       "onFailure": {
         "goto": "rest",
-        "narration": "The keeper will lead the cloth calls. Your account names this as helped signal work.",
+        "narration": "The keeper will lead the calls herself.",
         "effects": [
           {
             "type": "setFlag",
@@ -600,7 +600,7 @@
       },
       "onAssisted": {
         "goto": "rest",
-        "narration": "The keeper will lead the cloth calls. Your account names this as helped signal work.",
+        "narration": "The keeper will lead the calls herself.",
         "effects": [
           {
             "type": "setFlag",
@@ -612,18 +612,18 @@
     },
     "rest": {
       "type": "rest",
-      "narration": "\"Rice buns for everyone!\" the keeper calls, passing a basket around the covered hall. You rest on cushions rescued from the rain. One cushion has a solemn embroidered bird with a bun crumb on its beak.",
+      "narration": "\"Rice buns for everyone!\" the keeper calls, passing a basket around the hall. You rest on rescued cushions. One has an embroidered bird with a bun crumb on its beak.",
       "heal": 2,
       "choices": [
         {
           "id": "rest",
-          "label": "Rest before the landing work",
+          "label": "Rest, then go out",
           "goto": "plan",
           "icon": "hand"
         },
         {
           "id": "watch",
-          "label": "Eat while the keeper holds watch",
+          "label": "Eat while she keeps watch",
           "goto": "plan",
           "icon": "hand"
         }
@@ -638,7 +638,7 @@
     },
     "plan": {
       "type": "choice_point",
-      "narration": "The island's low edge comes alongside the posts. Choose the job your party will play on the board: turn it away, or hold the sheltered landing until it settles. Your preparation changes that encounter; it does not settle the island by itself.",
+      "narration": "The island's low edge slides up beside the mooring posts. \"Now we choose,\" says the keeper. \"Turn it away, or hold the landing and let it settle here.\"",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -655,7 +655,7 @@
         },
         {
           "id": "shelter",
-          "label": "Hold shelter and let the island settle",
+          "label": "Let it settle here",
           "goto": "shelter_plan",
           "icon": "hand"
         }
@@ -663,7 +663,7 @@
     },
     "push_plan": {
       "type": "story",
-      "narration": "You run the strong ropes through the mooring posts and leave room for them to slip free afterward. The keeper holds the release cloth ready. The plan is a small turn at the edge, not a tug across the sky.",
+      "narration": "You run the strong ropes through the mooring posts, loose enough to slip free after. The keeper holds the release cloth ready. \"A small turn,\" she says. \"Not a tug across the sky.\"",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -681,13 +681,13 @@
       "choices": [
         {
           "id": "ordinary",
-          "label": "Work the ordinary exposed lane",
+          "label": "Work the open lane",
           "goto": "fight_push",
           "icon": "hand"
         },
         {
           "id": "rope",
-          "label": "Use our prepared turning line",
+          "label": "Use the long rope",
           "goto": "fight_push_rope",
           "icon": "hand",
           "when": {
@@ -696,7 +696,7 @@
         },
         {
           "id": "cover",
-          "label": "Work inside our prepared wind cover",
+          "label": "Work under the cover",
           "goto": "fight_push_cover",
           "icon": "hand",
           "when": {
@@ -708,7 +708,7 @@
     "fight_push": {
       "type": "encounter",
       "map": "riftlight_squall_temple",
-      "narration": "End 3 turns beside the working post to turn the island clear, or clear the crawlers so the keepers can finish. The squall lowers everyone's Guard by one. Crosswind tiles still push figures west.",
+      "narration": "Bone crawlers rattle up the landing! Hold the turning post for three turns to swing the island clear, or chase the crawlers off. Gusts knock everyone about, and the crosswind shoves you west.",
       "enemies": [
         {
           "id": "crawler",
@@ -788,7 +788,7 @@
     "fight_push_rope": {
       "type": "encounter",
       "map": "riftlight_squall_temple",
-      "narration": "End 2 turns beside the working post to turn the island clear, or clear the crawlers so the keepers can finish. The squall lowers everyone's Guard by one. Crosswind tiles still push figures west.",
+      "narration": "Bone crawlers rattle up the landing! With the long rope, two turns at the post will swing the island clear. Or chase the crawlers off. Gusts knock everyone about, and the crosswind shoves you west.",
       "enemies": [
         {
           "id": "crawler",
@@ -868,7 +868,7 @@
     "fight_push_cover": {
       "type": "encounter",
       "map": "riftlight_squall_temple",
-      "narration": "End 3 turns beside the working post to turn the island clear, or clear the crawlers so the keepers can finish. Your wind cover removes the party Guard penalty; enemies still lose one Guard. Crosswind tiles still push figures west.",
+      "narration": "Bone crawlers rattle up the landing! Hold the turning post for three turns to swing the island clear, or chase the crawlers off. Your cover keeps the gusts off you, not them. The crosswind still shoves you west.",
       "enemies": [
         {
           "id": "crawler",
@@ -947,7 +947,7 @@
     },
     "shelter_plan": {
       "type": "story",
-      "narration": "You draw the sheltered corner tight and leave a clear place for the island's low edge to rest. The keeper marks a boundary the temple cushions must never cross, even after the storm.",
+      "narration": "You pull the sheltered corner tight and leave room for the island's edge to rest. The keeper chalks a line the temple cushions must never cross, even after the storm.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -965,13 +965,13 @@
       "choices": [
         {
           "id": "ordinary",
-          "label": "Work the ordinary exposed lane",
+          "label": "Work the open lane",
           "goto": "fight_shelter",
           "icon": "hand"
         },
         {
           "id": "rope",
-          "label": "Use our prepared turning line",
+          "label": "Use the long rope",
           "goto": "fight_shelter_rope",
           "icon": "hand",
           "when": {
@@ -980,7 +980,7 @@
         },
         {
           "id": "cover",
-          "label": "Work inside our prepared wind cover",
+          "label": "Work under the cover",
           "goto": "fight_shelter_cover",
           "icon": "hand",
           "when": {
@@ -992,7 +992,7 @@
     "fight_shelter": {
       "type": "encounter",
       "map": "riftlight_squall_temple",
-      "narration": "Hold the sheltered landing for two clear rounds, or clear the crawlers so the keepers can finish holding it. The squall lowers everyone's Guard by one. Crosswind tiles still push figures west.",
+      "narration": "Bone crawlers rattle up the landing! Hold the sheltered corner for two rounds while the island settles, or chase the crawlers off. Gusts knock everyone about, and the crosswind shoves you west.",
       "enemies": [
         {
           "id": "crawler",
@@ -1078,7 +1078,7 @@
     "fight_shelter_rope": {
       "type": "encounter",
       "map": "riftlight_squall_temple",
-      "narration": "Hold the sheltered landing for two clear rounds, or clear the crawlers so the keepers can finish holding it. The squall lowers everyone's Guard by one. Crosswind tiles still push figures west.",
+      "narration": "Bone crawlers rattle up the landing! Hold the sheltered corner for two rounds while the island settles, or chase the crawlers off. Gusts knock everyone about, and the crosswind shoves you west.",
       "enemies": [
         {
           "id": "crawler",
@@ -1164,7 +1164,7 @@
     "fight_shelter_cover": {
       "type": "encounter",
       "map": "riftlight_squall_temple",
-      "narration": "Hold the sheltered landing for two clear rounds, or clear the crawlers so the keepers can finish holding it. Your wind cover removes the party Guard penalty; enemies still lose one Guard. Crosswind tiles still push figures west.",
+      "narration": "Bone crawlers rattle up the landing! Hold the sheltered corner for two rounds while the island settles, or chase the crawlers off. Your cover keeps the gusts off you, not them. The crosswind still shoves you west.",
       "enemies": [
         {
           "id": "crawler",
@@ -1249,11 +1249,11 @@
     },
     "pushed": {
       "type": "story",
-      "narration": "The island's low edge turns past the posts. The keepers finish the pull from their sheltered side and release the line. The island drifts clear of the temple, leaving only a trail of rain from its grass. The keeper lowers the cloth and sits on a cushion immediately.",
+      "narration": "The island's low edge turns past the posts. The keepers let the rope go, and the island drifts clear, trailing rain from its grass. The keeper sits straight down on a cushion.",
       "choices": [
         {
           "id": "continue",
-          "label": "Check the actual landing",
+          "label": "Check the landing boards",
           "goto": "boards_check",
           "icon": "hand"
         }
@@ -1268,11 +1268,11 @@
     },
     "settled": {
       "type": "story",
-      "narration": "The low island edge settles beside the sheltered landing. Your cover holds. The keepers close the outer gate to mark where temple ends and new ground begins. Someone hangs a polite notice on the gate: PLEASE KNOCK, EVEN IF YOU ARE AN ISLAND.",
+      "narration": "The island's low edge settles beside the landing. Your cover holds. The keepers close the outer gate to mark where the temple ends. Someone hangs a polite sign on it: PLEASE KNOCK, EVEN IF YOU ARE AN ISLAND.",
       "choices": [
         {
           "id": "continue",
-          "label": "Check the actual landing",
+          "label": "Check the landing boards",
           "goto": "boards_check",
           "icon": "hand"
         }
@@ -1287,11 +1287,11 @@
     },
     "damaged": {
       "type": "story",
-      "narration": "The crawlers force your party back behind the gate. The keepers pull the shelter shut and help you recover inside. The island bumps the empty landing. Boards crack and the outer awning folds; everyone is already under the stone roof. The outer landing must stay closed tonight. The morning crew will need your spare gear to repair it.",
+      "narration": "The crawlers drive everyone back behind the gate. The island bumps the empty landing. Boards crack and the awning folds, but everyone is safe under the stone roof. The landing must stay closed tonight. The morning crew will need your spare boards to fix it.",
       "choices": [
         {
           "id": "continue",
-          "label": "Check the actual landing",
+          "label": "Check the landing boards",
           "goto": "boards_check",
           "icon": "hand"
         }
@@ -1306,7 +1306,7 @@
     },
     "boards_check": {
       "type": "interaction",
-      "narration": "Sight the near boards from the stone threshold. \"Rain can hide a shifted edge,\" the keeper warns. A damaged outer landing remains closed even if you make a clear observation now.",
+      "narration": "From the stone doorstep, look along the near boards. \"Rain hides loose edges,\" the keeper warns.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -1316,7 +1316,7 @@
       "art": "scenes/riftlight/temple-island-squall",
       "interaction": {
         "kind": "timing",
-        "cue": "Mark the near board edge during a clear view.",
+        "cue": "Mark the board edge when the rain clears.",
         "actionLabel": "Mark the checked edge",
         "target": 0.5,
         "width": 0.3,
@@ -1324,7 +1324,7 @@
       },
       "onSuccess": {
         "goto": "roof",
-        "narration": "The keeper marks only checked ground. Damage stays marked for repair.",
+        "narration": "The keeper chalks the boards you checked.",
         "effects": [
           {
             "type": "setFlag",
@@ -1335,7 +1335,7 @@
       },
       "onFailure": {
         "goto": "roof",
-        "narration": "The keeper closes the outer boards and keeps work at the stone threshold.",
+        "narration": "The keeper closes the outer boards to be safe.",
         "effects": [
           {
             "type": "setFlag",
@@ -1346,7 +1346,7 @@
       },
       "onAssisted": {
         "goto": "roof",
-        "narration": "The keeper checks the near board edge with you. The record names the helped inspection.",
+        "narration": "The keeper checks them with you, board by board.",
         "effects": [
           {
             "type": "setFlag",
@@ -1358,7 +1358,7 @@
     },
     "roof": {
       "type": "choice_point",
-      "narration": "\"Drips are finding every dry cushion,\" the keeper sighs. Clear the leaf wad with the long pole from inside the fence, or level a basin under the loose gutter end. Both jobs stay below the roof and behind the checked edge.",
+      "narration": "\"Drips are finding every dry cushion,\" the keeper sighs. Leaves plug the gutter. Poke them clear with the long pole, or set a basin under the loose gutter end?",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -1369,13 +1369,13 @@
       "choices": [
         {
           "id": "pole",
-          "label": "Guide the pole to the leaf wad",
+          "label": "Poke the leaves clear",
           "goto": "roof_pole",
           "icon": "hand"
         },
         {
           "id": "basin",
-          "label": "Level the runoff basin",
+          "label": "Set out the basin",
           "goto": "roof_basin",
           "icon": "hand"
         }
@@ -1383,7 +1383,7 @@
     },
     "roof_pole": {
       "type": "interaction",
-      "narration": "Guide the pole tip to the leaf wad from the sheltered side. The keeper braces the pole's rest. A good plop is the only applause required.",
+      "narration": "From the dry side, guide the pole to the leaf wad. A good plop is all the applause you need.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -1393,7 +1393,7 @@
       "art": "scenes/riftlight/temple-island-squall",
       "interaction": {
         "kind": "precision",
-        "cue": "Guide the pole tip inside the leaf-wad interval.",
+        "cue": "Guide the pole tip to the leaves.",
         "actionLabel": "Clear the gutter",
         "target": 0.5,
         "width": 0.3,
@@ -1401,20 +1401,20 @@
       },
       "onSuccess": {
         "goto": "repair",
-        "narration": "The leaf wad plops into a bucket and runoff clears the doorway."
+        "narration": "Plop! The water runs away from the door."
       },
       "onFailure": {
         "goto": "runoff_help",
-        "narration": "The first splash reaches the threshold. Use a mat and broom to redirect it instead of repeating the poke."
+        "narration": "Splash! Water spills onto the doorstep. Grab a broom."
       },
       "onAssisted": {
         "goto": "repair",
-        "narration": "The leaf wad plops into a bucket and runoff clears the doorway."
+        "narration": "Plop! The water runs away from the door."
       }
     },
     "roof_basin": {
       "type": "interaction",
-      "narration": "Level the basin under the lowered gutter end. The keeper holds the gutter from inside the window. No one climbs onto the wet roof.",
+      "narration": "Set the basin level under the gutter while the keeper holds it from the window.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -1424,26 +1424,26 @@
       "art": "scenes/riftlight/temple-island-squall",
       "interaction": {
         "kind": "balance",
-        "cue": "Level the runoff basin.",
+        "cue": "Keep the basin level.",
         "actionLabel": "Set the basin down",
         "objectLabel": "runoff basin"
       },
       "onSuccess": {
         "goto": "repair",
-        "narration": "The basin sends runoff away from the doorway."
+        "narration": "The basin catches the drips."
       },
       "onFailure": {
         "goto": "repair",
-        "narration": "The basin sends runoff away from the doorway."
+        "narration": "The basin catches the drips."
       },
       "onAssisted": {
         "goto": "repair",
-        "narration": "The basin sends runoff away from the doorway."
+        "narration": "The basin catches the drips."
       }
     },
     "runoff_help": {
       "type": "interaction",
-      "narration": "Pass the dry-side broom and rolled threshold mat to the keeper. Sweep the first puddle out while the gutter drains into the basin.",
+      "narration": "Pass the broom and doormat to the keeper and sweep the puddle out.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -1453,26 +1453,26 @@
       "art": "scenes/riftlight/temple-island-squall",
       "interaction": {
         "kind": "relay",
-        "cue": "Pass the threshold kit from the dry side.",
+        "cue": "Pass the broom and mat along.",
         "actionLabel": "Pass the broom",
-        "objectLabel": "threshold kit"
+        "objectLabel": "broom and mat"
       },
       "onSuccess": {
         "goto": "repair",
-        "narration": "The small puddle is cleared. The outer boards keep their actual repair marks."
+        "narration": "The doorstep is dry again."
       },
       "onFailure": {
         "goto": "repair",
-        "narration": "The small puddle is cleared. The outer boards keep their actual repair marks."
+        "narration": "The doorstep is dry again."
       },
       "onAssisted": {
         "goto": "repair",
-        "narration": "The small puddle is cleared. The outer boards keep their actual repair marks."
+        "narration": "The doorstep is dry again."
       }
     },
     "repair": {
       "type": "choice_point",
-      "narration": "The keeper taps the log. \"The next crew needs a real handover.\" You may leave your spare boards and line with her, or recover the unused kit from checked ground. Your boundary marks stay in place either way.",
+      "narration": "The keeper taps her logbook. \"The next crew needs to know what we leave them,\" she says. Leave your spare boards and line, or pack them back up?",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -1483,13 +1483,13 @@
       "choices": [
         {
           "id": "leave",
-          "label": "Leave the spare kit for the morning crew",
+          "label": "Leave the kit for them",
           "goto": "repair_1",
           "icon": "hand"
         },
         {
           "id": "pack",
-          "label": "Recover unused kit from checked ground",
+          "label": "Pack the kit back up",
           "goto": "repair_2",
           "icon": "hand",
           "when": {
@@ -1503,13 +1503,13 @@
             "flag": "temple_damaged"
           },
           "replace": true,
-          "text": "The outer landing is broken and stays closed tonight. The morning crew needs your spare boards and line for repairs. Pass that kit into the temple store from behind the safe boundary; it must stay here when your party leaves."
+          "text": "The outer landing is broken and stays closed tonight. The morning crew needs your spare boards and line to fix it."
         }
       ]
     },
     "repair_1": {
       "type": "interaction",
-      "narration": "Pass the spare boards and line to the keeper from behind the safe boundary. This is a kit left with the temple; it will not quietly reappear in the ending.",
+      "narration": "Hand the spare boards and line to the keeper. One board tries to fly off like a kite.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -1519,13 +1519,13 @@
       "art": "scenes/riftlight/temple-island-squall",
       "interaction": {
         "kind": "relay",
-        "cue": "Pass the repair kit to the morning crew's store.",
+        "cue": "Pass the kit into the store.",
         "actionLabel": "Pass the spare boards",
         "objectLabel": "repair kit"
       },
       "onSuccess": {
         "goto": "record",
-        "narration": "The spare kit stays with the temple crew.",
+        "narration": "The kit stays with the temple.",
         "effects": [
           {
             "type": "setFlag",
@@ -1536,7 +1536,7 @@
       },
       "onFailure": {
         "goto": "record",
-        "narration": "The spare kit stays with the temple crew.",
+        "narration": "The kit stays with the temple.",
         "effects": [
           {
             "type": "setFlag",
@@ -1547,7 +1547,7 @@
       },
       "onAssisted": {
         "goto": "record",
-        "narration": "The spare kit stays with the temple crew.",
+        "narration": "The kit stays with the temple.",
         "effects": [
           {
             "type": "setFlag",
@@ -1559,7 +1559,7 @@
     },
     "repair_2": {
       "type": "interaction",
-      "narration": "Support the spare kit while the keeper releases its storage ties from checked ground. Your party can take this unused kit; any damaged boards remain the temple's repair job.",
+      "narration": "Hold the spare kit while the keeper unties it. Take back what you never used.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -1569,13 +1569,13 @@
       "art": "scenes/riftlight/temple-island-squall",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Support the unused spare kit.",
+        "cue": "Hold the kit steady.",
         "actionLabel": "Pack the kit",
-        "supportLabel": "Support the spare boards"
+        "supportLabel": "Hold the boards"
       },
       "onSuccess": {
         "goto": "record",
-        "narration": "The unused spare kit returns to your party.",
+        "narration": "The kit goes back in your packs.",
         "effects": [
           {
             "type": "setFlag",
@@ -1586,7 +1586,7 @@
       },
       "onFailure": {
         "goto": "record",
-        "narration": "The unused spare kit returns to your party.",
+        "narration": "The kit goes back in your packs.",
         "effects": [
           {
             "type": "setFlag",
@@ -1597,7 +1597,7 @@
       },
       "onAssisted": {
         "goto": "record",
-        "narration": "The unused spare kit returns to your party.",
+        "narration": "The kit goes back in your packs.",
         "effects": [
           {
             "type": "setFlag",
@@ -1609,7 +1609,7 @@
     },
     "record": {
       "type": "choice_point",
-      "narration": "The keeper opens the log beside the old island songs. \"Tomorrow needs the real landing,\" she says, moving the book away from a determined raindrop. Make a signal account for a cloth drill, or a boundary map for a sight-line drill.",
+      "narration": "The keeper opens her logbook beside the old island songs and slides it away from a raindrop. \"Tomorrow's watch needs the truth,\" she says. Write down the cloth signals, or draw a map of the safe edge?",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -1620,7 +1620,7 @@
       "choices": [
         {
           "id": "plan_1",
-          "label": "Record the signal work for the next watch",
+          "label": "Write down the signals",
           "goto": "record_signals",
           "icon": "hand",
           "effects": [
@@ -1633,7 +1633,7 @@
         },
         {
           "id": "plan_2",
-          "label": "Map the actual landing boundary",
+          "label": "Draw the safe edge",
           "goto": "record_map",
           "icon": "hand",
           "effects": [
@@ -1648,7 +1648,7 @@
     },
     "record_signals": {
       "type": "story",
-      "narration": "You and the keeper record the preparation, board work and actual result. She adds the island's present position and any damaged outer landing. Checked cloth calls go on the page; places where a keeper led remain marked as helped work. Rain ticks against the hall window.",
+      "narration": "You and the keeper write down the night: the ropes, the fight and where the island is now. Rain ticks on the window.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -1661,19 +1661,19 @@
           "when": {
             "flag": "temple_signals_read"
           },
-          "text": "The first cloth round was recalled by your party; the log can say so."
+          "text": "The log says you copied the first cloth calls yourselves."
         },
         {
           "when": {
             "notFlag": "temple_signals_read"
           },
-          "text": "The first cloth round was keeper-led. The log credits that help even if your later drill goes well."
+          "text": "The log says the keeper led the first cloth calls."
         }
       ],
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Meet the relief watch",
           "icon": "forward",
           "goto": "watch"
         }
@@ -1681,7 +1681,7 @@
     },
     "record_map": {
       "type": "interaction",
-      "narration": "Trace the checked boundary, leaving unchecked boards blank. The keeper labels the island's actual position and any broken landing.",
+      "narration": "Trace the edge you checked. Leave the unchecked boards blank.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -1691,7 +1691,7 @@
       "art": "scenes/riftlight/temple-island-squall",
       "interaction": {
         "kind": "precision",
-        "cue": "Mark only the checked boundary interval.",
+        "cue": "Mark only the edge you checked.",
         "actionLabel": "Mark the boundary map",
         "target": 0.5,
         "width": 0.3,
@@ -1699,20 +1699,20 @@
       },
       "onSuccess": {
         "goto": "watch",
-        "narration": "The map distinguishes checked ground from the unchecked edge."
+        "narration": "The map shows which boards are safe."
       },
       "onFailure": {
         "goto": "watch",
-        "narration": "The keeper marks the broad safe threshold and leaves fine board detail unclaimed."
+        "narration": "The keeper marks only the safe doorstep."
       },
       "onAssisted": {
         "goto": "watch",
-        "narration": "The map distinguishes checked ground from the unchecked edge."
+        "narration": "The map shows which boards are safe."
       }
     },
     "watch": {
       "type": "story",
-      "narration": "A boundary observation station is always useful. If you chose a signal account, you can instead use it to lead the cloth drill. Choose the job you will actually show the next watch.",
+      "narration": "The relief watch arrives, shaking rain off their tails. Any watch can use a fixed lookout spot. If you wrote down the signals, you can teach the cloth drill instead. Which will you show them?",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -1723,13 +1723,13 @@
       "choices": [
         {
           "id": "map",
-          "label": "Show a fixed boundary observation station",
+          "label": "Show the lookout spot",
           "goto": "watch_map",
           "icon": "hand"
         },
         {
           "id": "signals",
-          "label": "Teach the cloth drill from our signal account",
+          "label": "Teach the cloth drill",
           "goto": "watch_signals",
           "icon": "hand",
           "when": {
@@ -1740,7 +1740,7 @@
     },
     "watch_signals": {
       "type": "interaction",
-      "narration": "Watch the keeper demonstrate hold, hold, release, hold. Echo it for the relief watch. If you need help, the keeper leads; nobody hands a guessed signal round to the next crew.",
+      "narration": "The keeper shows the calls: hold, hold, release, hold. Copy them for the relief watch.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -1750,7 +1750,7 @@
       "art": "scenes/riftlight/temple-island-squall",
       "interaction": {
         "kind": "memory",
-        "cue": "Echo the keeper's relief-watch cloth round.",
+        "cue": "Copy the keeper's cloth calls.",
         "actionLabel": "Show what we saw",
         "options": [
           {
@@ -1774,20 +1774,20 @@
       },
       "onSuccess": {
         "goto": "ending",
-        "narration": "The relief watch has practiced the checked round."
+        "narration": "The relief watch learns your calls."
       },
       "onFailure": {
         "goto": "watch_help",
-        "narration": "The keeper will lead a visible demonstration rather than pass along a guessed round."
+        "narration": "The keeper will show them herself."
       },
       "onAssisted": {
         "goto": "watch_help",
-        "narration": "The keeper will lead a visible demonstration rather than pass along a guessed round."
+        "narration": "The keeper will show them herself."
       }
     },
     "watch_help": {
       "type": "choice_point",
-      "narration": "Help the keeper demonstrate the actual hold and release calls. The relief watch can see her cloth and practice without a loaded rope.",
+      "narration": "Help the keeper show the hold and release calls. The relief watch copies her cloth with a slack practice rope.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -1810,7 +1810,7 @@
         },
         {
           "id": "account",
-          "label": "Name the helped signal round",
+          "label": "Write it in the log",
           "icon": "hand",
           "goto": "watch_help_response_account"
         }
@@ -1818,7 +1818,7 @@
     },
     "watch_map": {
       "type": "interaction",
-      "narration": "Use the fixed fence post and tower edge to mark a change from shelter. Only the view is checked; the party does not step onto the outer boards.",
+      "narration": "Line up the fence post with the tower's edge to make a lookout spot.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -1828,28 +1828,28 @@
       "art": "scenes/riftlight/temple-island-squall",
       "interaction": {
         "kind": "timing",
-        "cue": "Compare the edge during the clear sight-line interval.",
-        "actionLabel": "Show the watch station",
+        "cue": "Mark the edge when the rain clears.",
+        "actionLabel": "Show the lookout spot",
         "target": 0.5,
         "width": 0.3,
         "periodMs": 6000
       },
       "onSuccess": {
         "goto": "ending",
-        "narration": "The relief watch can observe from checked ground."
+        "narration": "The relief watch can see the edge from safe ground."
       },
       "onFailure": {
         "goto": "watch_map_help",
-        "narration": "Rain hid the edge. Set a nearer watch station at the stone threshold."
+        "narration": "Rain hides the edge. Set a lookout at the doorstep instead."
       },
       "onAssisted": {
         "goto": "ending",
-        "narration": "The relief watch can observe from checked ground."
+        "narration": "The relief watch can see the edge from safe ground."
       }
     },
     "watch_map_help": {
       "type": "interaction",
-      "narration": "Pass a bright marker to the keeper at the stone threshold. The relief watch will use her nearer fixed view, not a guessed distant line.",
+      "narration": "Pass a bright marker to the keeper at the stone doorstep.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -1859,21 +1859,21 @@
       "art": "scenes/riftlight/temple-island-squall",
       "interaction": {
         "kind": "relay",
-        "cue": "Pass the near-station marker to the keeper.",
+        "cue": "Pass the marker to the keeper.",
         "actionLabel": "Pass the watch marker",
         "objectLabel": "watch marker"
       },
       "onSuccess": {
         "goto": "ending",
-        "narration": "A nearer watch station is ready behind the closed edge."
+        "narration": "A nearer lookout is ready."
       },
       "onFailure": {
         "goto": "ending",
-        "narration": "A nearer watch station is ready behind the closed edge."
+        "narration": "A nearer lookout is ready."
       },
       "onAssisted": {
         "goto": "ending",
-        "narration": "A nearer watch station is ready behind the closed edge."
+        "narration": "A nearer lookout is ready."
       }
     },
     "ending": {
@@ -1885,7 +1885,7 @@
         }
       ],
       "rift": "collapse",
-      "narration": "The temple is safe to shelter in, and every keeper has a dry place. The bell rope sheds its tiny raincoat into a bucket. A griffin messenger can carry you down to the Cairnstep when the wind clears; the path behind returns to the island's lookout. You have changed what the next watch will find. As the squall eases, the fresh opening shrinks shut. The keepers watch from behind a striped wait sign until its last shimmer is gone; no new crawlers can enter the hall.",
+      "narration": "The temple is safe, and every keeper is dry. As the squall eases, the fresh opening shrinks shut, and no more crawlers can get in. The bell rope drops its tiny raincoat into a bucket. Soon the griffin messenger can fly you down to the Cairnstep, or you can go back to the island lookout.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -1895,7 +1895,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
+          "label": "Close the logbook",
           "icon": "hand",
           "goto": "finish"
         }
@@ -1905,38 +1905,38 @@
           "when": {
             "flag": "temple_damaged"
           },
-          "text": "The landing stays closed for repairs. Your account records the lost boards and the shelter that kept everyone safe."
+          "text": "The landing stays closed for repairs, but everyone is safe."
         },
         {
           "when": {
             "flag": "temple_island_settled"
           },
-          "text": "The returned island now rests beside the temple. The keepers will watch the new boundary instead of pretending the two islands always lay together."
+          "text": "The returned island now rests beside the temple, with a brand-new edge to watch."
         },
         {
           "when": {
             "flag": "temple_repair_gear_left"
           },
-          "text": "Your spare boards and line stay with the morning crew. Your party leaves without that local repair kit."
+          "text": "Your spare boards and line stay with the morning crew."
         },
         {
           "when": {
             "notFlag": "temple_repair_gear_left"
           },
-          "text": "Your unused spare kit is packed with your party; the temple keeps its checked boundary marked."
+          "text": "Your unused kit rides along in your packs."
         },
         {
           "when": {
             "notFlag": "temple_edge_read"
           },
-          "text": "Your inspection did not establish a fine outer-board route. The next watch uses the stone threshold until the keepers finish checking it."
+          "text": "The outer boards still need checking."
         }
       ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "finish": {
       "type": "story",
-      "narration": "The keeper closes the log fast. \"Before the pages drink any more rain!\" Your party can rest, return to the lookout, or follow the griffin messenger down to the Cairnstep.",
+      "narration": "The keeper shuts the log fast. \"Before the pages drink any more rain!\" You can rest here, go back to the lookout, or fly with the griffin messenger down to the Cairnstep.",
       "choices": [],
       "outcome": "success",
       "cast": [
@@ -1953,7 +1953,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Into the hall",
           "icon": "forward",
           "goto": "messages"
         }
@@ -1972,7 +1972,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Into the hall",
           "icon": "forward",
           "goto": "messages"
         }
@@ -1991,7 +1991,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Into the hall",
           "icon": "forward",
           "goto": "messages"
         }
@@ -2006,11 +2006,11 @@
     },
     "watch_help_response_hold": {
       "type": "story",
-      "narration": "Nobody loads the line during the drill. The relief watch finishes its keeper-led practice.",
+      "narration": "Nobody loads the line during the drill. The relief watch knows the calls now.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Finish the night",
           "icon": "forward",
           "goto": "ending"
         }
@@ -2025,11 +2025,11 @@
     },
     "watch_help_response_cloth": {
       "type": "story",
-      "narration": "The relief watch follows the keeper. The relief watch finishes its keeper-led practice.",
+      "narration": "The relief watch follows the keeper. Soon they know every call.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Finish the night",
           "icon": "forward",
           "goto": "ending"
         }
@@ -2044,11 +2044,11 @@
     },
     "watch_help_response_account": {
       "type": "story",
-      "narration": "The log credits the keeper-led demonstration. The relief watch finishes its keeper-led practice.",
+      "narration": "The log credits the keeper-led demonstration. The relief watch knows the calls now.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Finish the night",
           "icon": "forward",
           "goto": "ending"
         }
