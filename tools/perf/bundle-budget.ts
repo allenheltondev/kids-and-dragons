@@ -150,7 +150,11 @@ const FIRST_PAINT_BUDGET_KB = 326;
 // The editable strength suggestion, optional choice details, lobby readiness
 // and creation-only hero greeting live in the lazy room/layout graph. First
 // paint remains within its unchanged 324KB cap; painted assets remain files.
-const TOTAL_BUDGET_KB = 1520;
+// 1520 -> 1528 for recorded narration (#546): 1521KB measured, 1516 before it. The
+// clip speaker, which now carries the device voice in the same lazy chunk (4KB),
+// the engine's voice bus and the narration panel's speaking mark. The first paint
+// did not move (325KB): the speaker loads only once read-aloud is on.
+const TOTAL_BUDGET_KB = 1528;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

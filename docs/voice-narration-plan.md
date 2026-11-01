@@ -1,6 +1,6 @@
 # Voice narration plan (ElevenLabs or Gemini TTS)
 
-**Status: plan. Built so far: `npm run voice:cost` (§9), the script sidecar schema and join-equals-source check in `content:validate` (§3), the clip key, desired-clip list and `npm run voice:status` (§4: `tools/voice/clip-key.ts`, `desired.ts`, `manifest.ts`), the cast sheet and lexicon gate in `content:validate` with `npm run voice:lexicon` (§2, #539), `npm run content:dialogue` (§3), `npm run voice:generate` with direct-to-S3 upload and the shared clip layout (`packages/shared/src/voice-clips.ts`, §4-§5), `npm run voice:extract`, the line inventory (§1, phase 1 minus `narrationParts`), the phase-0 bake-off harness `npm run voice:bakeoff` ([voice-bakeoff.md](./voice-bakeoff.md)), the cast voice sheet `npm run voice:cast` and its `/cast` page ([voice-cast.md](./voice-cast.md)), and read-aloud on by default on the TV (§7).** This covers recorded, multi-voice narration: a narrator plus a
+**Status: plan. Built so far: `npm run voice:cost` (§9), the script sidecar schema and join-equals-source check in `content:validate` (§3), the clip key, desired-clip list and `npm run voice:status` (§4: `tools/voice/clip-key.ts`, `desired.ts`, `manifest.ts`), the cast sheet and lexicon gate in `content:validate` with `npm run voice:lexicon` (§2, #539), `npm run content:dialogue` (§3), `npm run voice:generate` with direct-to-S3 upload and the shared clip layout (`packages/shared/src/voice-clips.ts`, §4-§5), `npm run voice:extract`, the line inventory (§1, phase 1 minus `narrationParts`), the phase-0 bake-off harness `npm run voice:bakeoff` ([voice-bakeoff.md](./voice-bakeoff.md)), the cast voice sheet `npm run voice:cast` and its `/cast` page ([voice-cast.md](./voice-cast.md)), and read-aloud on by default on the TV (§7), and the client's clip speaker with ducking and device-voice fallback (§7, #546: `packages/client/src/speech/clip-speaker.ts`; prefetch and the service worker's `voice` cache are #547).** This covers recorded, multi-voice narration: a narrator plus a
 consistent voice for each cast member. It also covers the pipeline that turns authored text into
 audio linked to that text, knows what needs (re)generating, and caches hard at every layer.
 
@@ -333,7 +333,7 @@ GEMINI_API_KEY=… npm run voice:generate -- --chapter bramblewood-01 --stage st
 | **Service worker** | a new `voice` strategy in `sw/policy.ts`: cache-first, no fingerprint lookup needed (the URL is the hash), in its own `kad-voice-v1` cache with an LRU cap (around 150 MB) |
 | **Prefetch** | when a scene opens, the speaking device fetches the clips for this scene and for every `goto` one step ahead (the choices, both check branches). In a 30-scene chapter that's a handful of small files, and nobody waits on a click |
 | **Offline** | Travel Mode can "Keep this chapter's voices" (around 7 MB), precached from the manifest |
-| **Manifest** | loaded alongside the chapter JSON through the existing content fingerprint path |
+| **Manifest** | a `/content/*.json` file, so the service worker's content strategy already covers it; fetched by the clip speaker the first time a chapter's line is spoken (built, §7) |
 
 ---
 
@@ -353,13 +353,37 @@ GEMINI_API_KEY=… npm run voice:generate -- --chapter bramblewood-01 --stage st
 
 ## 7. The client
 
-- **`clip-speaker.ts`**, a new `Speaker`: `speak(text, { parts })` resolves the parts through the
-  manifest into a playlist of clips. If **every** clip is present, it plays them. If any is
-  missing, the **whole utterance** goes to the device voice. Half Pib, half robot would be worse
-  than consistently robot. `speak()`'s queue/interrupt rules are unchanged.
-- **Playback through the existing audio engine** (`packages/client/src/audio/`), not an
-  `<audio>` tag. Music ducks around 10 dB while a voice plays and comes back afterwards. Cues
-  still fire over it.
+- **`clip-speaker.ts` (built, #546)**, a `Speaker` in front of the device voice:
+  `speak(text, { parts })` resolves the parts through the chapter's manifest
+  (`playlistFor` in `voice-clips.ts`) into a playlist of clips, fetches and decodes them, and
+  plays them in order. If any is missing (not in the manifest, a part with no address, a 404, no
+  signal, a clip that will not decode, no running audio engine, or longer than 2.5 s to arrive),
+  the **whole utterance** goes to the device voice. Half Pib, half robot would be worse than
+  consistently robot. `speak()`'s queue/interrupt rules are unchanged: `interrupt` cuts off the
+  clips and the queue; device lines still go straight into the browser's own queue, and a
+  recorded line waits for the device lines ahead of it (and they for it), with a watchdog on
+  each so a browser that never says a line ended cannot hold up the scene.
+  - What carries parts: the scene's narration (`RunState.narrationParts`, said as its own line;
+    the decision and priority ribbon ahead of it stay with the device voice) and the goal
+    ("Your goal: …", `<chapter>/@goal`, also as the "Last time…" card's last line). Everything
+    else (turns, decision lines, roll prompts, the fight log, hand-offs, rank-ups, hints, the
+    "Last time…" lines, plates, help) is still the device voice. Recording roll prompts, hints
+    and the campaign's `_<campaign>` lines needs only parts at those call sites.
+  - Manifests are fetched the first time a chapter's line is spoken, one per chapter
+    (`/content/voice/manifest/<chapter>.json`), never at first paint: the speaker is in the lazy
+    read-aloud chunk. A 404 is remembered for the session, no signal is asked again. Clips are
+    fetched when their line is queued; caching beyond the browser's HTTP cache is #547.
+- **Playback through the existing audio engine** (built): `AudioSink.voice` (`audio/cue.ts`) is
+  a voice bus beside master in `engine.ts`. Music ducks 10 dB (`VOICE_DUCK_DB`) while a
+  voice plays and comes back afterwards, or at once when it is cut off. Cues still fire over
+  it. The bus follows the volume and quiet mode but not mute: mute is the sound switch,
+  read-aloud has its own, and the device voice was never muted by it. A device with no started
+  engine (no gesture yet, a Party Mode phone) uses the device voice.
+- **Trying it without a provider:** `npm run voice:generate -- --chapter bramblewood-01 --fake
+  --dir /tmp/kad-voice --render` writes fake-tone clips to `/tmp/kad-voice/voice/…` and, for a
+  fake run only, their manifest to `/tmp/kad-voice/content/voice/manifest/` (never into
+  `content/`). `KAD_VOICE_DIR=/tmp/kad-voice npm run dev` (an absolute path) serves both at their
+  prod URLs, and the TV plays tones for every line that has them (tap once so the audio engine starts).
 - **On by default on the TV (built).** The shared screen reads aloud unless somebody has
   switched it off on that device. Turning it off (or back on) is remembered in `localStorage`
   (`kad.readaloud`) and beats the default. Phones stay off by default. See
@@ -367,8 +391,9 @@ GEMINI_API_KEY=… npm run voice:generate -- --chapter bramblewood-01 --stage st
 - **Who speaks:** unchanged. The TV in Party Mode, the phone in Travel Mode. Phones in Party Mode
   keep the device voice for their own choice labels. Labels can come later; it means phones
   downloading clips.
-- **A spoken-line cue:** the TV shows a small "speaking" state on the narration panel, plus the
-  cast pulse above.
+- **A spoken-line cue:** the TV shows a small "speaking" state on the narration panel (built: a
+  gold edge breathing down the plate while either voice speaks, `data-speaking`), plus the
+  cast pulse above (not yet).
 
 ---
 

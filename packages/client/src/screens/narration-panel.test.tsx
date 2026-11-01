@@ -18,10 +18,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, render, screen } from "@testing-library/react";
 import { setSpeaker } from "@kad/shared";
-import type { ItemCatalog, PartyMember, ResolvedCharacter, RunState } from "@kad/shared";
+import type { ItemCatalog, PartyMember, ResolvedCharacter, RunState, SpeakOptions } from "@kad/shared";
 import { makeItems } from "../../../shared/src/test-fixtures";
 import { useGameStore } from "../store";
-import { NarrationPanel } from "./NarrationPanel";
+import { goalParts, NarrationPanel } from "./NarrationPanel";
 import { RANK_UP_MS } from "./RankUpMoment";
 
 const ITEMS: ItemCatalog = makeItems();
@@ -609,5 +609,50 @@ describe("a hero's name is shown, never spoken (#552)", () => {
     expect(heard).toContain("Hero's turn.");
     expect(heard).toContain("Hero wants to give another hero a Sunbloom Draught.");
     expect(heard).not.toMatch(/Zephyrine|Quillfeather|Thistle/);
+  });
+});
+
+describe("recorded voice: the story as its own line, with its parts (voice plan §7)", () => {
+  const PARTS = [{ address: "bramblewood-01/camp/narration", line: "The gate swings open." }];
+  let heard: { text: string; opts: SpeakOptions | undefined }[] = [];
+  beforeEach(() => {
+    heard = [];
+    setSpeaker((text, opts) => void heard.push({ text, opts }));
+  });
+
+  it("says the decision and the ribbon in the device voice, then the story with the parts it was composed from", () => {
+    mount({
+      sceneId: "camp",
+      sceneType: "story",
+      narration: "The gate swings open.",
+      narrationParts: PARTS,
+      scenePriority: 1,
+      decision: { sceneId: "camp", label: "Open the gate.", byPlayerId: "p_2", vote: true },
+    });
+    expect(heard.map((h) => h.text)).toEqual(["The party voted: Open the gate.", "Remember this!", "The gate swings open."]);
+    expect(heard[0]!.opts).toEqual({ source: "narration", interrupt: true });
+    expect(heard[1]!.opts?.parts).toBeUndefined();
+    expect(heard[2]!.opts).toEqual({ source: "narration", parts: PARTS });
+  });
+
+  it("files the goal line under the chapter's @goal address, and never one with a token in it", () => {
+    expect(goalParts("bramblewood-01", "Find the lost bell.")).toEqual([
+      { address: "bramblewood-01/@goal", line: "Your goal: Find the lost bell." },
+    ]);
+    expect(goalParts("bramblewood-01", "Bring {facets} home.")).toBeUndefined();
+    expect(goalParts(null, "Find it.")).toBeUndefined();
+  });
+});
+
+describe("the speaking mark", () => {
+  it("is on the plate while this screen is saying something, and off otherwise", async () => {
+    const { container } = mount();
+    const plate = container.querySelector(".narration__plate")!;
+    expect(plate.hasAttribute("data-speaking")).toBe(false);
+    const { markSpeaking } = await import("../speech/read-aloud");
+    act(() => markSpeaking(true));
+    expect(plate.hasAttribute("data-speaking")).toBe(true);
+    act(() => markSpeaking(false));
+    expect(plate.hasAttribute("data-speaking")).toBe(false);
   });
 });
