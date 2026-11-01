@@ -4459,7 +4459,7 @@
           "address": "riftlight-buried-bridge/equipment/narration"
         }
       ],
-      "lineCount": 69,
+      "lineCount": 67,
       "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
@@ -4495,19 +4495,19 @@
       },
       "lines": [
         {
+          "text": "If you meet the lookout keepers on your travels, tell them how the whales fared.",
+          "address": "riftlight-whale-road/sky_repair/narration"
+        },
+        {
           "text": "I can hold a condition too. If the ground starts moving, I will help hold it.",
           "address": "riftlight-convergence/ending/variants/1"
         },
         {
           "text": "I have food in my pack. Carry it through an opening, and the herd eats today.",
           "address": "riftlight-riftseekers-departure/olivia/narration"
-        },
-        {
-          "text": "Stay beside me. I will stop feeding it and watch what it does.",
-          "address": "riftlight-convergence/decision/narration"
         }
       ],
-      "lineCount": 29,
+      "lineCount": 30,
       "speaks": true,
       "status": "provisional"
     },
@@ -4535,11 +4535,11 @@
       },
       "lines": [
         {
-          "text": "Could you steady my board while your friend marks the grains?",
+          "text": "Something is pulling. Can you steady my board while someone marks the grains?",
           "address": "riftlight-convergence/pull/narration"
         },
         {
-          "text": "Help me keep everyone behind the line when an opening comes.",
+          "text": "If an opening comes, help me keep everyone behind the line.",
           "address": "riftlight-convergence/arrival/narration"
         },
         {
@@ -4588,19 +4588,19 @@
       },
       "lines": [
         {
+          "text": "You hold a condition that is already there. You never change an opening's rules.",
+          "address": "riftlight-convergence/lesson/narration"
+        },
+        {
           "text": "Listen for a tick. Listen for a hum. A hum that holds still can be learned.",
           "address": "riftlight-riftseekers-departure/prep_seam/narration"
         },
         {
           "text": "One loud note. Use it when you need to be heard, not when you want to be.",
           "address": "riftlight-riftseekers-departure/supplies_buy/narration"
-        },
-        {
-          "text": "Fast and bright, or slow and careful. Either works, if nobody sneezes.",
-          "address": "riftlight-sky-islands-arrival/light/narration"
         }
       ],
-      "lineCount": 44,
+      "lineCount": 46,
       "speaks": true,
       "status": "provisional"
     },
@@ -4658,7 +4658,7 @@
           "address": "riftlight-stone-counters/route_copy/narration"
         }
       ],
-      "lineCount": 36,
+      "lineCount": 41,
       "speaks": true,
       "status": "provisional"
     },
@@ -4855,12 +4855,12 @@
           "address": "riftlight-glacier-survival/hall_table/narration"
         },
         {
-          "text": "My grandmother's. She never found out what ticked. Put an ear in and tell me.",
-          "address": "riftlight-hidden-glacier-rift/post/narration"
+          "text": "I will take it from here. You stay on the flats. That gap is no place for people.",
+          "address": "riftlight-stuttering-flats/glimpse/narration"
         },
         {
-          "text": "My herd must never wander in there. Goats go through anything. How do we keep them out?",
-          "address": "riftlight-hidden-glacier-rift/cairn/narration"
+          "text": "My grandmother's. She never found out what ticked. Put an ear in and tell me.",
+          "address": "riftlight-hidden-glacier-rift/post/narration"
         }
       ],
       "lineCount": 54,
@@ -4931,8 +4931,10 @@
       "name": "Passing fisher",
       "kind": "character",
       "who": "A fisher passing along the flats. She stops to study your warning, then makes up her own mind.",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
       "gender": "female",
-      "genderFrom": "notes",
+      "genderFrom": "narration",
       "figure": "cast/passing_fisher",
       "voiceNotes": [
         {
@@ -4990,15 +4992,15 @@
           "address": "riftlight-whale-road/whale_listen/narration"
         },
         {
-          "text": "Now they can travel without circling us.",
-          "address": "riftlight-whale-road/gentle/narration"
+          "text": "Help me ready the island before those folds open. We need a clear lane and a signal everyone understands.",
+          "address": "riftlight-whale-road/whales/narration"
         },
         {
-          "text": "Both leave the whale free to turn away.",
-          "address": "riftlight-whale-road/keeper_lesson/narration"
+          "text": "Now they can travel without circling us.",
+          "address": "riftlight-whale-road/gentle/narration"
         }
       ],
-      "lineCount": 13,
+      "lineCount": 12,
       "speaks": true,
       "status": "provisional"
     },
@@ -5024,8 +5026,8 @@
       },
       "lines": [
         {
-          "text": "Show me your signals before anyone decides about the folds.",
-          "address": "riftlight-whale-road/small_whale_result/narration"
+          "text": "A whale's turn means watch. It never means cross the rope.",
+          "address": "riftlight-whale-road/keeper_echo/narration"
         }
       ],
       "lineCount": 1,
@@ -5902,15 +5904,15 @@
           "address": "riftlight-buried-bridge/guide_limits/narration"
         },
         {
-          "text": "A useful warning needs the whole account. Inconvenient bits too.",
-          "address": "riftlight-bone-yard/report/narration"
+          "text": "Tonight, clear a safe way past those ruins. And take nothing. Here, anything taken comes back.",
+          "address": "riftlight-bone-yard/arrival/narration"
         },
         {
-          "text": "The yard is very particular about whose things are whose.",
-          "address": "riftlight-bone-yard/test/narration"
+          "text": "A good warning tells the whole story. Even the annoying bits.",
+          "address": "riftlight-bone-yard/report/narration"
         }
       ],
-      "lineCount": 19,
+      "lineCount": 17,
       "speaks": true,
       "status": "provisional"
     },
@@ -5945,7 +5947,7 @@
           "address": "riftlight-boundary-stone-bank/marker_set/narration"
         }
       ],
-      "lineCount": 46,
+      "lineCount": 47,
       "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
@@ -6200,7 +6202,7 @@
       },
       "lines": [
         {
-          "text": "I will keep the retreat open. I will not go into the tear.",
+          "text": "I will keep the retreat open. But I will not go into the tear.",
           "address": "riftlight-finale/shelter/narration"
         },
         {
@@ -6422,9 +6424,13 @@
         {
           "text": "I need a route from a visitor's question to the checked view.",
           "address": "riftlight-reading-room/catalog_test/narration"
+        },
+        {
+          "text": "I could post a visitor guide.",
+          "address": "riftlight-reading-room/catalog_test_1_done/narration"
         }
       ],
-      "lineCount": 1,
+      "lineCount": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -6483,7 +6489,7 @@
           "address": "riftlight-saltrot-arrival/puff_off/narration"
         }
       ],
-      "lineCount": 50,
+      "lineCount": 53,
       "guessedLines": 6,
       "speaks": true,
       "status": "provisional"
@@ -6571,11 +6577,11 @@
           "address": "riftlight-sky-islands-arrival/basket_lit/narration"
         },
         {
-          "text": "Good grips. Most visitors arrive sitting down. Eat when the wind lets you.",
-          "address": "riftlight-sky-islands-arrival/landing_held/narration"
+          "text": "Everyone needs a dry lane into the hall. Let's see what still blocks the door.",
+          "address": "riftlight-squall-temple/people/narration"
         }
       ],
-      "lineCount": 37,
+      "lineCount": 41,
       "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
@@ -6724,7 +6730,7 @@
           "address": "riftlight-the-island-due-back/message_pack/narration"
         }
       ],
-      "lineCount": 7,
+      "lineCount": 8,
       "speaks": true,
       "status": "provisional"
     },
@@ -6732,8 +6738,10 @@
       "name": "Letter messenger",
       "kind": "character",
       "who": "Letter messenger.",
-      "gender": "unknown",
-      "genderFrom": "none",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
       "figure": "cast/courier_griffin",
       "chapters": [
         "riftlight-the-island-due-back"
@@ -6838,20 +6846,20 @@
       },
       "lines": [
         {
+          "text": "Help us make room for the readers and the wyrm, without waking the old ice.",
+          "address": "riftlight-wyrm-nest/arrival/narration"
+        },
+        {
           "text": "The new rule is for us, the people holding the chisels.",
           "address": "riftlight-wyrm-nest/quiet/narration"
         },
         {
-          "text": "These are for us. They do not control the wyrm.",
-          "address": "riftlight-wyrm-nest/signal/narration"
-        },
-        {
-          "text": "Neither plan promises the wyrm will cooperate.",
-          "address": "riftlight-wyrm-nest/bed/narration"
+          "text": "This shows its reach today. Not a rule it must obey.",
+          "address": "riftlight-wyrm-nest/watch_check/narration"
         }
       ],
-      "lineCount": 9,
-      "guessedLines": 2,
+      "lineCount": 8,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },

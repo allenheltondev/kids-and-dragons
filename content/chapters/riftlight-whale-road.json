@@ -47,7 +47,7 @@
         }
       ],
       "rift": "steady",
-      "narration": "Cloud whales sweep their long fins through the mist above a grassy island. Two folds pulse together. Each pulse sends the whales circling back. A kitsune keeper lifts a rope to stop the waiting travelers. \"Help me ready the island before those folds open. We need a clear lane and a signal everyone understands.\" A whale's enormous eye passes overhead. The keeper smooths her whiskers. \"They have been watching us make a mess of this all morning.\"",
+      "narration": "Cloud whales sweep their long fins through the mist above a grassy island. Two folds pulse together, and each pulse sends the whales circling back. A kitsune keeper holds up a rope to stop the waiting travelers. \"Help me ready the island before those folds open. We need a clear lane and a signal everyone understands.\" A huge whale eye drifts overhead. \"They have watched us fuss all morning.\"",
       "choices": [
         {
           "id": "watch",
@@ -71,11 +71,11 @@
         }
       ],
       "rift": "steady",
-      "narration": "Lady Olivia, the unicorn Riftseeker you met on the glacier, waits with a notebook. \"Those openings answer each other. I want to open them now.\" The keeper shakes her head. \"The whales are using this space.\" Olivia points to the rope. \"Help me hold the note and I can wake the pair early. It will scatter them. Or guide them clear first. Your choice.\"",
+      "narration": "Lady Olivia, the unicorn Riftseeker you met on the glacier, waits with a notebook. \"Help me hold the note, and I can wake those folds early,\" she says. \"It will scatter the whales.\" \"Or guide them clear first,\" says the keeper. Olivia shrugs. \"Your choice.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Prepare a safe approach before deciding",
+          "label": "Get the island ready first",
           "icon": "hand",
           "goto": "sky_map"
         }
@@ -84,7 +84,7 @@
     },
     "sky_map": {
       "type": "story",
-      "narration": "The keeper unfolds a cloth map. Yesterday's lane runs straight into today's sky. She has a rock marker, a waiting rope and a broad grass lane to arrange before anyone approaches the folds. Share the keeper's clues to lay out the approach. Olivia holds a corner before the wind can improve the map again.",
+      "narration": "The keeper unfolds a cloth map. Yesterday's whale lane runs straight into empty sky. Before anyone goes near the folds, she needs a waiting rope by the big rock and a wide grass lane. The wind tries to fold the map. Olivia pins it with a hoof.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -99,7 +99,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Set out the lane",
           "icon": "hand",
           "goto": "route_layout"
         }
@@ -107,7 +107,7 @@
     },
     "route_layout": {
       "type": "story",
-      "narration": "The keeper spreads yesterday's map on the grass. Its whale lane points straight into empty sky. Together you put the waiting rope inland and leave the broad grass lane clear. Olivia erases yesterday's route. The smallest whale rolls overhead, watching the eraser.",
+      "narration": "You move the waiting rope inland and leave a wide grass lane clear. Olivia rubs out yesterday's route. The smallest whale rolls overhead to watch the eraser.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -122,7 +122,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Watch the whales",
           "icon": "forward",
           "goto": "whale_listen"
         }
@@ -130,7 +130,7 @@
     },
     "whale_listen": {
       "type": "story",
-      "narration": "A smaller whale with a notched fin vanishes into moving banks of mist. The keeper points out where it went. \"Follow that one. We need to know whether it comes around to our lane.\" Watch the marked mist bank as the banks trade places.",
+      "narration": "A smaller whale with a notched fin vanishes into moving banks of mist. The keeper points. \"Follow that one. We need to know whether it comes around to our lane.\"",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -145,7 +145,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Track the notched fin",
           "icon": "hand",
           "goto": "follow_whale"
         }
@@ -153,7 +153,7 @@
     },
     "follow_whale": {
       "type": "interaction",
-      "narration": "Keep track of the notched-fin whale behind the moving mist banks. You are watching from behind the rope.",
+      "narration": "Watch the mist bank that hides the notched fin. Stay behind the rope.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -193,20 +193,20 @@
       },
       "onSuccess": {
         "goto": "song_watch",
-        "narration": "The notched fin comes out where you pointed. Now you can watch that whale through a whole turn."
+        "narration": "The notched fin pops out right where you pointed."
       },
       "onFailure": {
         "goto": "keeper_points",
-        "narration": "The whale comes out on the other side. You keep your place behind the rope instead of following a guess."
+        "narration": "The whale pops out somewhere else. You stay put instead of chasing a guess."
       },
       "onAssisted": {
         "goto": "song_watch",
-        "narration": "The notched fin comes out where you pointed. Now you can watch that whale through a whole turn."
+        "narration": "The notched fin pops out right where you pointed."
       }
     },
     "keeper_points": {
       "type": "story",
-      "narration": "The keeper points to the notch as the fin clears the mist. \"There. Same whale, new view.\" You watch it together until it faces the lane. Its eye is almost as large as Olivia's notebook.",
+      "narration": "The keeper points as the notch clears the mist. \"There. Same whale, new view.\" Its eye is almost as big as Olivia's notebook.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -221,7 +221,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Watch it turn",
           "icon": "hand",
           "goto": "song_watch"
         }
@@ -229,7 +229,7 @@
     },
     "song_watch": {
       "type": "story",
-      "narration": "The whale folds one fin, faces the lane, then leaves a quiet pause. The keeper raises her paw in that pause. \"That is when it listens.\" Its next note rumbles through the grass beneath your feet. Olivia stops writing until the sound has passed.",
+      "narration": "The whale folds one fin, faces the lane, and goes quiet. \"That pause is when it listens,\" says the keeper. Its next note rumbles through the grass under your feet.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -244,7 +244,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Learn a greeting",
           "icon": "forward",
           "goto": "keeper_lesson"
         }
@@ -252,7 +252,7 @@
     },
     "keeper_lesson": {
       "type": "choice_point",
-      "narration": "The keeper can teach a quiet note or a slow arm signal. The note lets you time an invitation when a whale faces the lane. The arm signal lets your friends hold a visible greeting while another keeper watches its response. The keeper smiles. \"Both leave the whale free to turn away.\" Which greeting will you practice?",
+      "narration": "The keeper can teach a quiet note or a slow arm signal. The note fits inside the whale's listening pause. The arm signal is held where the whale can see it. \"Both leave the whale free to turn away.\"",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -267,7 +267,7 @@
       "choices": [
         {
           "id": "note",
-          "label": "Learn the quiet answering note",
+          "label": "Learn the quiet note",
           "icon": "hand",
           "goto": "note_practice",
           "effects": [
@@ -280,7 +280,7 @@
         },
         {
           "id": "arms",
-          "label": "Learn the slow arm signal",
+          "label": "Learn the arm signal",
           "icon": "hand",
           "goto": "arm_practice",
           "effects": [
@@ -293,7 +293,7 @@
         },
         {
           "id": "songkeeper",
-          "label": "Let our songkeeper lead the note",
+          "label": "Let our songkeeper sing",
           "icon": "hand",
           "goto": "songkeeper_practice",
           "requiresClass": "songkeeper",
@@ -309,7 +309,7 @@
     },
     "note_practice": {
       "type": "interaction",
-      "narration": "The keeper raises a paw for the whale's listening pause. Offer one soft note in that pause, then let the answer come. \"Hello,\" she says. \"Not a request for breakfast.\"",
+      "narration": "The keeper raises a paw for the listening pause. Offer one soft note inside it. \"Hello,\" she says. \"Not a request for breakfast.\"",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -331,7 +331,7 @@
       },
       "onSuccess": {
         "goto": "lesson_result",
-        "narration": "A soft answering breath rolls back from the mist.",
+        "narration": "A soft breath answers from the mist.",
         "effects": [
           {
             "type": "setFlag",
@@ -342,11 +342,11 @@
       },
       "onFailure": {
         "goto": "slow_greeting",
-        "narration": "Your note overlaps the whale's. You stop and let the keeper show a slower greeting."
+        "narration": "Your note bumps into the whale's. The keeper shows you a slower way."
       },
       "onAssisted": {
         "goto": "lesson_result",
-        "narration": "A soft answering breath rolls back from the mist.",
+        "narration": "A soft breath answers from the mist.",
         "effects": [
           {
             "type": "setFlag",
@@ -358,7 +358,7 @@
     },
     "songkeeper_practice": {
       "type": "interaction",
-      "narration": "The keeper raises a paw for the whale's listening pause. Offer one soft note in that pause, then let the answer come. \"Hello,\" she says. \"Not a request for breakfast.\" Your songkeeper can carry the note across a wider part of the pause.",
+      "narration": "The keeper raises a paw for the listening pause. Your songkeeper can stretch one soft note across it. \"Hello,\" she says. \"Not a request for breakfast.\"",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -380,7 +380,7 @@
       },
       "onSuccess": {
         "goto": "lesson_result",
-        "narration": "A soft answering breath rolls back from the mist.",
+        "narration": "A soft breath answers from the mist.",
         "effects": [
           {
             "type": "setFlag",
@@ -391,11 +391,11 @@
       },
       "onFailure": {
         "goto": "slow_greeting",
-        "narration": "Your note overlaps the whale's. You stop and let the keeper show a slower greeting."
+        "narration": "Your note bumps into the whale's. The keeper shows you a slower way."
       },
       "onAssisted": {
         "goto": "lesson_result",
-        "narration": "A soft answering breath rolls back from the mist.",
+        "narration": "A soft breath answers from the mist.",
         "effects": [
           {
             "type": "setFlag",
@@ -407,7 +407,7 @@
     },
     "arm_practice": {
       "type": "interaction",
-      "narration": "Hold the keeper's low, open-arm greeting while your acting friend watches the whale. Solo heroes can rest the signal arm on the padded post.",
+      "narration": "Hold the keeper's low, open-arm greeting while the whale looks over. Tired arms can rest on the padded post.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -427,7 +427,7 @@
       },
       "onSuccess": {
         "goto": "lesson_result",
-        "narration": "The whale turns one eye toward the steady greeting.",
+        "narration": "The whale turns one eye toward you.",
         "effects": [
           {
             "type": "setFlag",
@@ -438,7 +438,7 @@
       },
       "onFailure": {
         "goto": "lesson_result",
-        "narration": "The whale turns one eye toward the steady greeting.",
+        "narration": "The whale turns one eye toward you.",
         "effects": [
           {
             "type": "setFlag",
@@ -449,7 +449,7 @@
       },
       "onAssisted": {
         "goto": "lesson_result",
-        "narration": "The whale turns one eye toward the steady greeting.",
+        "narration": "The whale turns one eye toward you.",
         "effects": [
           {
             "type": "setFlag",
@@ -461,7 +461,7 @@
     },
     "slow_greeting": {
       "type": "story",
-      "narration": "The keeper offers the greeting herself, leaving a long quiet pause. The whale answers. You listen beside her. Olivia lowers her pencil. \"I was about to fill that silence.\" The keeper smiles. \"It was already being used.\"",
+      "narration": "The keeper offers the greeting herself and leaves a long, quiet pause. The whale answers. Olivia lowers her pencil. \"I nearly filled that silence.\" \"It was already being used,\" says the keeper.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -476,7 +476,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Try it her way",
           "icon": "forward",
           "goto": "lesson_result",
           "effects": [
@@ -491,7 +491,7 @@
     },
     "lesson_result": {
       "type": "story",
-      "narration": "The whale resumes its circle. \"You have a greeting, not a leash,\" says the keeper. Olivia sketches its fin, then has to move her notebook when a rolled shelter cloth starts sliding past her hoof.",
+      "narration": "The whale goes back to circling. \"You have a greeting, not a leash,\" says the keeper. Olivia sketches its fin, then has to move her notebook when a rolled shelter cloth starts sliding past her hoof.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -506,7 +506,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Grab the cloth",
           "icon": "hand",
           "goto": "loose_kit"
         }
@@ -514,7 +514,7 @@
     },
     "loose_kit": {
       "type": "story",
-      "narration": "Olivia catches the rolling shelter cloth against her notebook. For a moment she is a unicorn wearing a very practical curtain. The keeper helps peel it away. \"One cloth, and two places that need it.\"",
+      "narration": "Olivia stops the cloth with her notebook. For a moment she is a unicorn wearing a very practical curtain. The keeper peels it off. \"One cloth, and two places that need it.\"",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -529,7 +529,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Choose its place",
           "icon": "forward",
           "goto": "waiting_place"
         }
@@ -537,7 +537,7 @@
     },
     "waiting_place": {
       "type": "choice_point",
-      "narration": "There is one shelter cloth. Put it behind the rock and the waiting travelers stay out of the wind, but a watcher must pass signals around the blind turn. Put it at the open viewpoint and the watchers see both folds, but the cloth will need bracing in the gusts. Which work will your party prepare for?",
+      "narration": "There is one shelter cloth. Behind the rock, it keeps travelers out of the wind, but signals must go around the blind turn. At the open viewpoint, watchers see both folds, but the cloth needs bracing in the gusts. Where does it go?",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -552,7 +552,7 @@
       "choices": [
         {
           "id": "shelter",
-          "label": "Keep visitors sheltered; relay signals around the rock",
+          "label": "Shelter behind the rock",
           "icon": "hand",
           "goto": "shelter_setup",
           "effects": [
@@ -565,7 +565,7 @@
         },
         {
           "id": "view",
-          "label": "Keep both folds in view; brace the exposed cloth",
+          "label": "Up at the viewpoint",
           "icon": "hand",
           "goto": "view_setup",
           "effects": [
@@ -580,7 +580,7 @@
     },
     "shelter_setup": {
       "type": "interaction",
-      "narration": "Stretch the cloth behind the rock while the keeper checks the waiting rope. Leave the signal path clear around the blind turn.",
+      "narration": "Stretch the cloth behind the rock. Leave a clear path around the blind turn.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -600,20 +600,20 @@
       },
       "onSuccess": {
         "goto": "site_ready",
-        "narration": "The visitors have a dry lee. A watcher will need to carry each signal around the rock."
+        "narration": "The travelers have a calm, dry corner. Signals must go around the rock."
       },
       "onFailure": {
         "goto": "site_ready",
-        "narration": "The visitors have a dry lee. A watcher will need to carry each signal around the rock."
+        "narration": "The travelers have a calm, dry corner. Signals must go around the rock."
       },
       "onAssisted": {
         "goto": "site_ready",
-        "narration": "The visitors have a dry lee. A watcher will need to carry each signal around the rock."
+        "narration": "The travelers have a calm, dry corner. Signals must go around the rock."
       }
     },
     "view_setup": {
       "type": "interaction",
-      "narration": "The wind pushes at the cloth. Set its two weighted poles evenly before opening the waiting place. Olivia's mane is attempting to join the flags.",
+      "narration": "The wind tugs at the cloth. Set its two weighted poles evenly. Olivia's mane tries to join the flags.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -633,20 +633,20 @@
       },
       "onSuccess": {
         "goto": "site_ready",
-        "narration": "Both folds are visible from the waiting place. The braced poles hold the cloth."
+        "narration": "The poles hold. Both folds are in view."
       },
       "onFailure": {
         "goto": "site_ready",
-        "narration": "Both folds are visible from the waiting place. The braced poles hold the cloth."
+        "narration": "The poles hold. Both folds are in view."
       },
       "onAssisted": {
         "goto": "site_ready",
-        "narration": "Both folds are visible from the waiting place. The braced poles hold the cloth."
+        "narration": "The poles hold. Both folds are in view."
       }
     },
     "site_ready": {
       "type": "story",
-      "narration": "The keeper checks your waiting place and takes the first watch. A little whale turns toward the open lane, then hesitates as the folds pulse. Its fin stirs the empty grass. \"Give it room to finish that turn,\" the keeper whispers.",
+      "narration": "The keeper takes the first watch. A little whale turns toward the open lane, then stops as the folds pulse. \"Give it room to finish that turn,\" the keeper whispers.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -669,13 +669,13 @@
           "when": {
             "notFlag": "whale_open_view"
           },
-          "text": "Behind the rock, the keeper carries the first sighting back to the sheltered travelers."
+          "text": "Behind the rock, the keeper passes the first sighting to the travelers."
         }
       ],
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Offer the lane",
           "icon": "hand",
           "goto": "little_turn"
         }
@@ -683,7 +683,7 @@
     },
     "little_turn": {
       "type": "interaction",
-      "narration": "Wait for the fin to point across the clear grass, then offer the keeper's invitation. The whale decides whether to use the space.",
+      "narration": "Wait until the fin points across the clear grass, then offer the keeper's invitation. The whale decides.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -705,7 +705,7 @@
       },
       "onSuccess": {
         "goto": "small_whale_result",
-        "narration": "The small whale turns into the space and swings back toward its family.",
+        "narration": "The little whale swings into the space, then back to its family.",
         "effects": [
           {
             "type": "setFlag",
@@ -716,11 +716,11 @@
       },
       "onFailure": {
         "goto": "quiet_wait",
-        "narration": "The whale turns away from the overlapping signals. You lower them and leave the lane open."
+        "narration": "Too many signals at once. The whale turns away. You go quiet."
       },
       "onAssisted": {
         "goto": "small_whale_result",
-        "narration": "The small whale turns into the space and swings back toward its family.",
+        "narration": "The little whale swings into the space, then back to its family.",
         "effects": [
           {
             "type": "setFlag",
@@ -732,7 +732,7 @@
     },
     "quiet_wait": {
       "type": "interaction",
-      "narration": "The keeper asks for one quiet circle. Choose how you will help the waiting place stay calm while the whale looks again.",
+      "narration": "The keeper asks for one quiet circle. How will you help everyone stay calm?",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -758,7 +758,7 @@
           },
           {
             "id": "gear",
-            "label": "Tuck loose gear behind the rope",
+            "label": "Tuck gear behind the rope",
             "icon": "hand",
             "reaction": "The lane stays empty for the whale."
           },
@@ -772,7 +772,7 @@
       },
       "onSuccess": {
         "goto": "small_whale_result",
-        "narration": "With the calls quiet, the small whale finds the open turning space.",
+        "narration": "In the quiet, the little whale finds its turning space.",
         "effects": [
           {
             "type": "setFlag",
@@ -783,7 +783,7 @@
       },
       "onFailure": {
         "goto": "small_whale_result",
-        "narration": "With the calls quiet, the small whale finds the open turning space.",
+        "narration": "In the quiet, the little whale finds its turning space.",
         "effects": [
           {
             "type": "setFlag",
@@ -794,7 +794,7 @@
       },
       "onAssisted": {
         "goto": "small_whale_result",
-        "narration": "With the calls quiet, the small whale finds the open turning space.",
+        "narration": "In the quiet, the little whale finds its turning space.",
         "effects": [
           {
             "type": "setFlag",
@@ -806,7 +806,7 @@
     },
     "small_whale_result": {
       "type": "rest",
-      "narration": "The small whale has room, but the whole group is still circling. The keeper brings warm barley cakes to your chosen waiting place. Olivia watches a crumb take flight, then eats the next one quickly. A new kitsune keeper arrives to take over, a little out of breath. \"Show me your signals before anyone decides about the folds,\" says the new keeper.",
+      "narration": "The little whale has room, but the others still circle. The keeper hands out barley cakes. Olivia's crumb blows away, so she eats the next cake very fast. A new kitsune keeper arrives to take over, a little out of breath. \"Show me your signals before anyone decides about the folds.\"",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -826,13 +826,13 @@
       "choices": [
         {
           "id": "rest",
-          "label": "Rest, then show the new keeper",
+          "label": "Rest, then teach her",
           "icon": "hand",
           "goto": "handoff_sky"
         },
         {
           "id": "watch",
-          "label": "Rest while watching one more circle",
+          "label": "Rest and watch the whales",
           "icon": "hand",
           "goto": "handoff_sky"
         }
@@ -840,7 +840,7 @@
     },
     "handoff_sky": {
       "type": "choice_point",
-      "narration": "The new keeper has not seen your work. The first keeper shows the two cloths: white means watch this approach; striped means stop and wait. The newcomer needs to pass a stop signal from the watcher to the waiting travelers. Anyone can rehearse the relay around the rock. With an open viewpoint, you can instead teach her to watch the cloth signals directly. Which handover will you demonstrate?",
+      "narration": "The first keeper shows the new one two signal cloths. White means watch. Striped means stop and wait. The new keeper must pass each stop from the watcher to the waiting travelers. How will you teach her?",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -859,13 +859,13 @@
       "choices": [
         {
           "id": "relay",
-          "label": "Rehearse the watcher-to-waiting-place relay",
+          "label": "Practice the relay",
           "icon": "hand",
           "goto": "signal_relay"
         },
         {
           "id": "direct",
-          "label": "Use our open view to recognize signals directly",
+          "label": "Let her watch directly",
           "icon": "hand",
           "goto": "signal_memory",
           "when": {
@@ -876,7 +876,7 @@
     },
     "signal_relay": {
       "type": "interaction",
-      "narration": "Pass the watcher's stop message along the waiting line. The new keeper receives it at the rock and echoes it toward the travelers.",
+      "narration": "Pass the watcher's stop message down the line. The new keeper catches it at the rock and calls it to the travelers.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -900,20 +900,20 @@
       },
       "onSuccess": {
         "goto": "keeper_echo",
-        "narration": "The stop message reaches the waiting place without anyone entering the lane."
+        "narration": "The stop reaches the travelers. Nobody steps into the lane."
       },
       "onFailure": {
         "goto": "keeper_echo",
-        "narration": "The stop message reaches the waiting place without anyone entering the lane."
+        "narration": "The stop reaches the travelers. Nobody steps into the lane."
       },
       "onAssisted": {
         "goto": "keeper_echo",
-        "narration": "The stop message reaches the waiting place without anyone entering the lane."
+        "narration": "The stop reaches the travelers. Nobody steps into the lane."
       }
     },
     "signal_memory": {
       "type": "interaction",
-      "narration": "From your exposed viewpoint, show the new keeper the cloth changes. She must remember the stop and waiting signs when the watcher turns away.",
+      "narration": "From the viewpoint, show the new keeper the cloths changing. She must remember them when the watcher looks away.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -959,20 +959,20 @@
       },
       "onSuccess": {
         "goto": "keeper_echo",
-        "narration": "The new keeper recognizes the changing cloths from the open viewpoint."
+        "narration": "The new keeper reads every cloth."
       },
       "onFailure": {
         "goto": "signal_relay",
-        "narration": "The new keeper mixes up two cloths. You switch to the watcher relay so every stop gets passed aloud."
+        "narration": "She mixes up two cloths. You switch to the relay, so every stop is called aloud."
       },
       "onAssisted": {
         "goto": "keeper_echo",
-        "narration": "The new keeper recognizes the changing cloths from the open viewpoint."
+        "narration": "The new keeper reads every cloth."
       }
     },
     "keeper_echo": {
       "type": "story",
-      "narration": "The new keeper repeats the stop signal, then points out the waiting place on your copied route. The first keeper checks it with her. A whale's turn is an invitation to watch; it is never permission for travelers to cross the rope. The keepers take the watch together.",
+      "narration": "The new keeper repeats the stop signal and points to the waiting place on the map. \"A whale's turn means watch,\" says the first keeper. \"It never means cross the rope.\" The keepers take the watch together.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -991,7 +991,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Hear the keepers' request",
           "icon": "forward",
           "goto": "sky_repair",
           "effects": [
@@ -1006,7 +1006,7 @@
     },
     "sky_repair": {
       "type": "choice_point",
-      "narration": "The keepers have their route copy. Olivia keeps the song observations. If your party meets the lookout keepers farther along this route, you can carry a report of what happens to the whales. It is a promise to bring news, not to make the whales return. Will you take that follow-up job?",
+      "narration": "Olivia keeps her song notes, and the keepers keep the new map. \"If you meet the lookout keepers on your travels, tell them how the whales fared.\" It is a promise to bring news, not to make the whales return. Will you?",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -1025,13 +1025,13 @@
       "choices": [
         {
           "id": "report",
-          "label": "Promise to bring a whale-route report",
+          "label": "Promise to bring news",
           "icon": "hand",
           "goto": "sky_repair_1"
         },
         {
           "id": "local",
-          "label": "Leave today's copies here without promising a report",
+          "label": "Leave it with the keepers",
           "icon": "hand",
           "goto": "sky_repair_2"
         }
@@ -1054,12 +1054,12 @@
         }
       ],
       "rift": "steady",
-      "narration": "You agree to show the copied map when you meet neighbors who use the island routes. You will say whether the whales were guided or scattered once that choice is made. The keeper asks for honest news, not a promise to make the whales return.",
+      "narration": "You promise to show the map to neighbors on the island routes, and to tell them whether the whales were guided or scattered. \"Honest news,\" says the keeper. \"That is all I ask.\"",
       "art": "scenes/riftlight/whale-road",
       "choices": [
         {
           "id": "continue",
-          "label": "See what follows",
+          "label": "Back to the whales",
           "icon": "hand",
           "goto": "opening_decision",
           "effects": [
@@ -1089,12 +1089,12 @@
         }
       ],
       "rift": "steady",
-      "narration": "You explain that your party does not know where its next crossing will lead. The keeper accepts the limit and keeps the route copies here. Olivia keeps her observations. You have helped make today's choice clear without speaking for a future party you cannot know.",
+      "narration": "You explain that you do not know where your next crossing leads. The keeper nods and keeps the map here. \"Then today's help is enough.\"",
       "art": "scenes/riftlight/whale-road",
       "choices": [
         {
           "id": "continue",
-          "label": "See what follows",
+          "label": "Back to the whales",
           "icon": "hand",
           "goto": "opening_decision",
           "effects": [
@@ -1120,17 +1120,17 @@
         }
       ],
       "rift": "steady",
-      "narration": "The waiting rope is set. The lane is clear. Olivia looks from her notebook to the circling whales. \"Waiting is so slow,\" she sighs. You can finish the gentle invitation and wait for them to move, or hear her offer to wake the folds early. That shortcut would scatter the whales and disrupt the island neighbors' familiar route. Nobody else will choose for your party. What do you decide?",
+      "narration": "The rope is set. The lane is clear. \"Waiting is so slow,\" Olivia sighs. You can finish the gentle invitation, or hear her shortcut: wake the folds early. That would scatter the whales and muddle the neighbors' routes.",
       "choices": [
         {
           "id": "guide",
-          "label": "Guide the whales clear first",
+          "label": "Guide the whales clear",
           "icon": "hand",
           "goto": "guide"
         },
         {
           "id": "consider",
-          "label": "Hear the shortcut before deciding at the rift",
+          "label": "Hear Olivia's shortcut",
           "icon": "hand",
           "goto": "offer"
         }
@@ -1150,7 +1150,7 @@
         }
       ],
       "rift": "open",
-      "narration": "The last tail slips beyond the folds. Both openings spread at once and hold steady. The keeper lowers the rope. \"Now they can travel without circling us.\" Olivia closes her notebook. The pair is ready to cross, or you can pause on the island.",
+      "narration": "The last tail slips past the folds. Both openings spread wide and hold steady. The keeper lowers the rope. \"Now they can travel without circling us.\" The pair is ready to cross, or you can rest here.",
       "heal": 0,
       "choices": [],
       "outcome": "success",
@@ -1176,7 +1176,7 @@
         }
       ],
       "rift": "steady",
-      "narration": "Olivia waits beside the rope. Nothing has opened yet. At the rift, Lady Olivia's way will wake the pair early and scatter the whales. You can still choose to guide them clear instead. The keeper leaves the broad lane open.",
+      "narration": "Nothing has opened yet. At the rift, Lady Olivia's way will wake the pair early and scatter the whales. You can still guide them clear instead. The keeper leaves the lane open.",
       "heal": 0,
       "choices": [],
       "outcome": "success",
@@ -1184,7 +1184,7 @@
     },
     "guide": {
       "type": "choice_point",
-      "narration": "The keeper waits beside the open lane. Your party can relay her invitation from watcher to watcher. Your practiced greeting also offers another way: time the quiet note yourself, or hold the slow arm signal while she watches the whales. The whales must choose their own turn. How will you help them clear the folds?",
+      "narration": "The keeper waits beside the open lane. You can pass her invitation from watcher to watcher, or use the greeting you practiced. Either way, the whales choose their own turn. How will you help?",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -1203,13 +1203,13 @@
       "choices": [
         {
           "id": "keeper",
-          "label": "Relay the keeper's invitation",
+          "label": "Relay her invitation",
           "icon": "hand",
           "goto": "guide_relay"
         },
         {
           "id": "note",
-          "label": "Time our practiced quiet note",
+          "label": "Sing our quiet note",
           "icon": "hand",
           "goto": "guide_note",
           "when": {
@@ -1218,7 +1218,7 @@
         },
         {
           "id": "arms",
-          "label": "Hold our practiced arm greeting",
+          "label": "Hold our arm greeting",
           "icon": "hand",
           "goto": "guide_arms",
           "when": {
@@ -1229,7 +1229,7 @@
     },
     "guide_relay": {
       "type": "interaction",
-      "narration": "The keeper waits for the leading fin to face the lane. Carry her quiet invitation along the watcher line without adding another call.",
+      "narration": "When the leading fin faces the lane, pass the keeper's quiet invitation down the line. No extra calls.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -1253,20 +1253,20 @@
       },
       "onSuccess": {
         "goto": "last_tail",
-        "narration": "The leading whale turns. The others follow its sweep into clear sky."
+        "narration": "The leading whale turns. The others follow it into clear sky."
       },
       "onFailure": {
         "goto": "last_tail",
-        "narration": "The leading whale turns. The others follow its sweep into clear sky."
+        "narration": "The leading whale turns. The others follow it into clear sky."
       },
       "onAssisted": {
         "goto": "last_tail",
-        "narration": "The leading whale turns. The others follow its sweep into clear sky."
+        "narration": "The leading whale turns. The others follow it into clear sky."
       }
     },
     "guide_note": {
       "type": "interaction",
-      "narration": "Wait for the leading fin to face the open lane. Offer the note in that listening interval, then leave the whale space to answer.",
+      "narration": "Wait for the leading fin to face the lane. Offer your note in the pause.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -1292,20 +1292,20 @@
       },
       "onSuccess": {
         "goto": "last_tail",
-        "narration": "The leading whale answers your note and turns. The others follow."
+        "narration": "The leading whale answers and turns. The others follow."
       },
       "onFailure": {
         "goto": "guide_wait",
-        "narration": "The whale turns away from the mistimed note. You stop calling; the keeper will lead the next invitation."
+        "narration": "Too soon! The whale turns away. The keeper will lead the next try."
       },
       "onAssisted": {
         "goto": "last_tail",
-        "narration": "The leading whale answers your note and turns. The others follow."
+        "narration": "The leading whale answers and turns. The others follow."
       }
     },
     "guide_arms": {
       "type": "interaction",
-      "narration": "Hold the low arm greeting where the leading whale can see it. The keeper watches its fin while your friends steady the signal.",
+      "narration": "Hold the low arm greeting where the leading whale can see it.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -1329,20 +1329,20 @@
       },
       "onSuccess": {
         "goto": "last_tail",
-        "narration": "The leading fin tilts toward the greeting. The group follows the new curve."
+        "narration": "The leading fin tilts toward you. The others follow."
       },
       "onFailure": {
         "goto": "last_tail",
-        "narration": "The leading fin tilts toward the greeting. The group follows the new curve."
+        "narration": "The leading fin tilts toward you. The others follow."
       },
       "onAssisted": {
         "goto": "last_tail",
-        "narration": "The leading fin tilts toward the greeting. The group follows the new curve."
+        "narration": "The leading fin tilts toward you. The others follow."
       }
     },
     "guide_wait": {
       "type": "interaction",
-      "narration": "The keeper leads one last quiet invitation. Help the waiting travelers leave the lane clear while she watches for an answer.",
+      "narration": "The keeper sings one last quiet invitation. Help keep the lane clear while she waits.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -1366,13 +1366,13 @@
         "options": [
           {
             "id": "quiet",
-            "label": "Keep the waiting line quiet",
+            "label": "Keep the line quiet",
             "icon": "hand",
             "reaction": "Only the keeper's low note carries."
           },
           {
             "id": "space",
-            "label": "Clear a loose bag from the rope",
+            "label": "Move a bag off the rope",
             "icon": "hand",
             "reaction": "The turning lane stays wide."
           },
@@ -1386,20 +1386,20 @@
       },
       "onSuccess": {
         "goto": "last_tail",
-        "narration": "The keeper's invitation reaches the listening whale. It turns, and its family follows."
+        "narration": "The whale turns, and its family follows."
       },
       "onFailure": {
         "goto": "last_tail",
-        "narration": "The keeper's invitation reaches the listening whale. It turns, and its family follows."
+        "narration": "The whale turns, and its family follows."
       },
       "onAssisted": {
         "goto": "last_tail",
-        "narration": "The keeper's invitation reaches the listening whale. It turns, and its family follows."
+        "narration": "The whale turns, and its family follows."
       }
     },
     "last_tail": {
       "type": "story",
-      "narration": "The smallest whale takes its own enormous time. At last its tail clears the folds. The keeper lowers her whistle. Olivia has stopped drawing long enough to watch the sky.",
+      "narration": "The smallest whale takes its own enormous time. At last its tail clears the folds. The keeper lowers her paw. Olivia stops drawing long enough to just watch the sky.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -1418,7 +1418,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Watch the folds open",
           "icon": "hand",
           "goto": "gentle"
         }

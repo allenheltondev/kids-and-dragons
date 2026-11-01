@@ -41,11 +41,11 @@
   "scenes": {
     "bank": {
       "type": "story",
-      "narration": "A Skupper guide stops above a dry riverbed. \"Buried bridge,\" says the guide. \"No river. Still not walking on it.\" Master Orin Vale, the griffin Riftseeker you met on the glacier, brushes grit from an arch. His next brushful lands on his own foot. \"A very dusty discovery,\" says Orin.",
+      "narration": "Your Skupper guide stops above a dry riverbed. \"Buried bridge,\" she says. \"No river. Still not walking on it.\" Master Orin Vale, the griffin Riftseeker you met on the glacier, brushes grit from an arch. The next brushful lands on his own foot. \"A very dusty discovery.\" Today you will solve the missing-river mystery, all from the bank.",
       "choices": [
         {
           "id": "ask",
-          "label": "Ask Orin what he has found",
+          "label": "Ask Orin what he found",
           "icon": "hand",
           "goto": "orin"
         }
@@ -64,17 +64,17 @@
     },
     "orin": {
       "type": "choice_point",
-      "narration": "\"This grit matches the glacier,\" says Orin. \"Perhaps water came through a rift.\" Across the bridge stands a sealed door. \"That stays shut. Today we have one question: where did the river go?\" He opens his notebook. Will you share your listening chime readings, or keep them private?",
+      "narration": "\"This grit matches the glacier,\" says Orin. \"Maybe water came through a rift.\" Across the bridge stands a sealed door. \"That stays shut. Today's question is simpler: where did the river go?\" He opens his notebook. Will you share your listening chime's readings with him?",
       "choices": [
         {
           "id": "share",
-          "label": "Share the listening chime's readings with Orin",
+          "label": "Share the chime readings",
           "icon": "hand",
           "goto": "share"
         },
         {
           "id": "keep",
-          "label": "Keep your readings and compare the stonework",
+          "label": "Keep them private",
           "icon": "hand",
           "goto": "keep"
         }
@@ -93,11 +93,11 @@
     },
     "share": {
       "type": "story",
-      "narration": "You sound the listening chime. Orin copies its rhythm beside his glacier notes. \"Thank you. A sound we can compare.\" He draws an ear. It looks rather like a cabbage.",
+      "narration": "You sound the listening chime. Orin copies its rhythm beside his glacier notes. \"A sound we can compare!\" He draws an ear. It looks like a cabbage.",
       "choices": [
         {
           "id": "work",
-          "label": "Inspect the bridge from the bank",
+          "label": "Look from the bank",
           "icon": "hand",
           "goto": "guide_limits",
           "effects": [
@@ -123,11 +123,11 @@
     },
     "keep": {
       "type": "story",
-      "narration": "You keep your chime readings private. Orin puts his pencil away. \"Fair enough. The stones have plenty to tell us.\" A sprinkle of grit lands on his foot again. \"Rather persistently.\"",
+      "narration": "You keep your readings private. \"Fair enough,\" says Orin. \"The stones have plenty to say.\" More grit lands on his foot. \"Rather persistently.\"",
       "choices": [
         {
           "id": "work",
-          "label": "Inspect the bridge from the bank",
+          "label": "Look from the bank",
           "icon": "hand",
           "goto": "guide_limits"
         }
@@ -146,7 +146,7 @@
     },
     "guide_limits": {
       "type": "story",
-      "narration": "Your guide plants both front fins in the wet mud at the edge of the bank. \"This far. No farther,\" says the guide. You mark a stopping line on dry ground. Orin sets his tools behind it. \"Even my brush stays on this side.\" A trickle runs through a little groove below the shelf. \"The tide reaches this pocket later,\" the guide says. \"We have time to look, then we pack up. No crossing.\" Orin turns to you. \"Then let us make a proper little expedition.\"",
+      "narration": "Your guide plants both front fins at the edge of the bank. \"This far. No farther.\" You mark a stopping line, and Orin sets his tools behind it. A trickle runs through a groove below. \"The tide reaches this pocket later,\" the guide says. \"We have time to look, then we pack up. No crossing.\"",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -161,7 +161,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Find our work spot",
+          "label": "Find a work spot",
           "icon": "eye",
           "goto": "ground_test"
         }
@@ -180,11 +180,11 @@
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "type": "story",
-      "narration": "The guide tests the bank with Orin's measuring stick. Dark mud swallows its tip. Shells wobble. The rock shelf holds. You gather there with the tools. \"A floor,\" says Orin. \"My favorite discovery so far.\"",
+      "narration": "The guide pokes the bank with Orin's measuring stick. Dark mud swallows the tip. Shells wobble. A rock shelf holds firm. \"A floor,\" says Orin. \"My favorite discovery so far.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Set up on the shelf",
           "icon": "forward",
           "goto": "equipment",
           "effects": [
@@ -198,23 +198,23 @@
     },
     "work": {
       "type": "choice_point",
-      "narration": "Loose silt covers the nearest arch. You can brush it away from the bank, or hold a viewing plank steady while a friend looks down. Both keep you behind the stopping line. Which job sounds better?",
+      "narration": "Loose silt covers the nearest arch. You can brush it away, or hold a plank steady and peek under with a little mirror. Both keep you behind the stopping line.",
       "choices": [
         {
           "id": "clear",
-          "label": "Brush out a buried clue",
+          "label": "Brush out a clue",
           "icon": "eye",
           "goto": "brush_clue"
         },
         {
           "id": "brace",
-          "label": "Hold a viewing plank together",
+          "label": "Hold the viewing plank",
           "icon": "hand",
           "goto": "hold_plank"
         },
         {
           "id": "class_brace",
-          "label": "Let our thornguard brace the plank",
+          "label": "Let our thornguard brace it",
           "icon": "hand",
           "requiresClass": "thornguard",
           "goto": "braced_plank"
@@ -236,23 +236,23 @@
           "when": {
             "flag": "bridge_rail_ready"
           },
-          "text": "Your fixed rail gives you a ready viewing support. The kit still has to be carried by hand."
+          "text": "Your rail runs along the dry side, ready to lean on."
         },
         {
           "when": {
             "flag": "bridge_sled_ready"
           },
-          "text": "Your sled keeps the kit together. For a mirror view, you will need to hold a temporary plank support."
+          "text": "Your sled waits behind the rock with the kit."
         }
       ]
     },
     "clear": {
       "type": "story",
-      "narration": "Under the dust: a waterline carved into the arch, and smooth river pebbles below it. But the riverbed is dry. Orin draws all three. \"A bridge. A riverbed. A missing river.\" The guide leans closer from the bank.",
+      "narration": "Under the dust: a waterline carved into the arch, and smooth river pebbles below it. But the riverbed is dry. Orin draws all three. \"A bridge. A riverbed. A missing river.\"",
       "choices": [
         {
           "id": "record",
-          "label": "Draw the waterline and dry channel",
+          "label": "Ask where the water went",
           "icon": "hand",
           "goto": "water_question"
         }
@@ -277,11 +277,11 @@
     },
     "brace": {
       "type": "story",
-      "narration": "In the mirror you spot smooth river pebbles beneath the arches. A waterline marks the stone above them. Today the riverbed is dry. Orin sketches the view. \"A bridge. A riverbed. A missing river.\"",
+      "narration": "In the mirror, you spot smooth river pebbles under the arches, and a waterline on the stone above them. But the riverbed is dry. \"A bridge. A riverbed. A missing river,\" says Orin.",
       "choices": [
         {
           "id": "record",
-          "label": "Draw the waterline and dry channel",
+          "label": "Ask where the water went",
           "icon": "hand",
           "goto": "water_question"
         }
@@ -317,11 +317,11 @@
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "type": "story",
-      "narration": "Orin lays the drawing beside the stones. A high waterline. Smooth river pebbles. A dry channel. Water once flowed beneath these arches, and now it is gone from here. \"A bridge remembers a river,\" he says. Beyond it, the sealed door stays silent. Where the river went is still a mystery.",
+      "narration": "Orin lays the drawing beside the stones. A high waterline. Smooth river pebbles. A dry channel. A river once flowed under these arches, and now it is gone. \"A bridge remembers a river,\" he says. The sealed door stays silent. Where the river went is still a mystery.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Decide who gets a copy",
           "icon": "forward",
           "goto": "record_decision"
         }
@@ -340,7 +340,7 @@
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "type": "choice_point",
-      "narration": "Time to pack up. Bring the board and cord back from whichever job they did. Loose silt stays on the dry side. Everyone choose a last job. The guide checks the upper return path while Orin counts his kit aloud. \"One notebook. One brush. Two sandwiches. A remarkable improvement on last Tuesday,\" says Orin.",
+      "narration": "Time to pack up. Bring back the board and cord, and leave the loose silt on the dry side. The guide checks the high path. Orin counts his kit aloud. \"One notebook. One brush. Two sandwiches. A remarkable improvement on last Tuesday,\" says Orin. What will you do last?",
       "choices": [
         {
           "id": "play0",
@@ -356,7 +356,7 @@
         },
         {
           "id": "play2",
-          "label": "Mark the stopping line",
+          "label": "Mark the line with stones",
           "icon": "hand",
           "goto": "restore_bank_response_play2"
         }
@@ -375,7 +375,7 @@
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "type": "story",
-      "narration": "You show the guide the waterline, the river pebbles, and your stopping line. \"An old river,\" the guide repeats. \"Still no bridge tours.\" Orin hands over a copy of the sketch. Nobody has to cross to see what you found.",
+      "narration": "You show the guide the waterline, the river pebbles and your stopping line. \"An old river,\" the guide repeats. \"Still no bridge tours.\"",
       "onEnter": [
         {
           "type": "setFlag",
@@ -385,7 +385,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Take our missing-river clue onward",
+          "label": "Head back along the bank",
           "icon": "travel",
           "goto": "rest"
         }
@@ -395,25 +395,25 @@
           "when": {
             "flag": "bridge_public_view"
           },
-          "text": "Your tested signs leave a public viewing point on the high bank. The guide has the useful copy; Orin has his own field notes."
+          "text": "Your signs make a viewpoint on the high bank, and the guide has the copy."
         },
         {
           "when": {
             "flag": "bridge_research_copy"
           },
-          "text": "Orin carries the careful copy to the Riftseekers. Your closed-work-area sign asks visitors to wait for a later visit."
+          "text": "Orin will carry the careful copy to the Riftseekers."
         },
         {
           "when": {
             "flag": "bridge_notes_rebuilt"
           },
-          "text": "You label the drawing as rebuilt after the tide and leave out the lost fine measurements."
+          "text": "Your drawing says plainly that it was redrawn."
         }
       ]
     },
     "rest": {
       "type": "rest",
-      "narration": "You draw the arches, the waterline, and the dry riverbed on one page. The river this bridge served is gone from here. Orin copies only what the stones show. The sealed door remains shut. Your guide leads you back along the firm bank.",
+      "narration": "The arches, the waterline and the dry riverbed are all on one page. The river this bridge served is gone from here. The sealed door stays shut. Your guide leads you back along the firm bank.",
       "heal": 0,
       "choices": [],
       "outcome": "success",
@@ -440,25 +440,25 @@
           "when": {
             "flag": "bridge_local_copy_tested"
           },
-          "text": "Behind you, the guide lays your local sketch beside the stopping sign. People can learn from the high bank without setting foot on the bridge."
+          "text": "Behind you, the guide props your sketch by the stopping sign. People can learn from the high bank without setting foot on the bridge."
         },
         {
           "when": {
             "flag": "bridge_research_copy_sent"
           },
-          "text": "The work area is closed behind you. Orin tucks the research copy inside his cloak, ready to compare this missing river with other finds."
+          "text": "The work area is closed behind you. Orin tucks the copy in his cloak, to compare with other finds."
         },
         {
           "when": {
             "flag": "bridge_records_first"
           },
-          "text": "You saved the original measurements and rebuilt the washed-out markers before leaving."
+          "text": "You saved the original measurements and remade the path markers before leaving."
         },
         {
           "when": {
             "flag": "bridge_path_first"
           },
-          "text": "You kept the return route clear and rebuilt a simpler drawing after the tide soaked the original."
+          "text": "You kept the path back clear and rebuilt a simpler drawing after the tide."
         }
       ]
     },
@@ -475,7 +475,7 @@
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "type": "interaction",
-      "narration": "You reach with a long brush from the rock shelf. A pale mark peeks through the dust. Orin holds a cloth under it. \"Brush the stone, please. My feet are quite clean enough.\"",
+      "narration": "Reach out with a long brush from the rock shelf. A pale mark peeks through the dust. Orin holds a cloth under it. \"Brush the stone, please. My feet are clean enough.\"",
       "interaction": {
         "kind": "precision",
         "cue": "Tap when the marker reaches the gold.",
@@ -489,7 +489,7 @@
       },
       "onFailure": {
         "goto": "clear",
-        "narration": "Pffft! Your brush catches a dust pocket. Orin sneezes, then helps clear the last handful. The mark is visible."
+        "narration": "Pffft! A dust cloud. Orin sneezes, then helps clear the last bit. The mark shows."
       },
       "onAssisted": {
         "goto": "clear"
@@ -508,10 +508,10 @@
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "type": "interaction",
-      "narration": "The viewing plank rests between two firm rocks behind the stopping line. Hold it steady while a friend uses a little mirror to look beneath the arch. \"My tail is not a spare support,\" Orin says, moving it.",
+      "narration": "The plank rests between two firm rocks behind the stopping line. Hold it steady while the little mirror goes down under the arch. \"My tail is not a spare support,\" says Orin, moving it.",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Hold the plank while your friend lifts the mirror.",
+        "cue": "Hold the plank while the mirror is lifted.",
         "supportLabel": "Steady the plank",
         "actionLabel": "Lift the mirror"
       },
@@ -538,7 +538,7 @@
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "type": "story",
-      "narration": "Your thornguard braces the plank against the firm rocks. The mirror gives everyone a clear view beneath the arch. Orin folds his tail safely away. \"Excellent. All supports accounted for.\"",
+      "narration": "Your thornguard braces the plank against the rocks. Everyone gets a clear look in the mirror. Orin tucks his tail away. \"All supports accounted for.\"",
       "choices": [
         {
           "id": "look",
@@ -561,11 +561,11 @@
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "type": "choice_point",
-      "narration": "Orin has one broad board and enough cord for one job. Fix the board as a viewing rail, and everyone can study the arch together. Make it a carrying sled, and you can move the drawings and tools quickly if the tide creeps up. You cannot build both. \"I packed two sandwiches,\" says Orin. \"Apparently that is not the same thing as two boards.\" Which will you prepare?",
+      "narration": "Orin has one broad board and enough cord for one job. A viewing rail lets everyone study the arch. A carrying sled lets you move the drawings fast if the tide creeps up. \"I packed two sandwiches,\" says Orin. \"Apparently that is not the same thing as two boards.\"",
       "choices": [
         {
           "id": "rail",
-          "label": "Build a fixed viewing rail",
+          "label": "Build a viewing rail",
           "icon": "hand",
           "goto": "build_rail",
           "effects": [
@@ -583,7 +583,7 @@
         },
         {
           "id": "sled",
-          "label": "Build a portable kit sled",
+          "label": "Build a kit sled",
           "icon": "hand",
           "goto": "build_sled",
           "effects": [
@@ -614,7 +614,7 @@
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "type": "interaction",
-      "narration": "The guide points out three sound posts on the dry shelf. Pass the cord along them, one hero at a time, while Orin sets the board on the supports. The rail will stay here until you leave. You give it a gentle test from the dry side. Orin leans on it, nods, and carefully retrieves the sandwich he left underneath.",
+      "narration": "The guide points out three solid posts on the dry shelf. Pass the cord along them while Orin sets the board on top. He leans on the rail, then rescues the sandwich he left under it.",
       "interaction": {
         "kind": "relay",
         "objectLabel": "rail cord",
@@ -623,15 +623,15 @@
       },
       "onSuccess": {
         "goto": "work",
-        "narration": "The rail stays solid. Your viewing spot will be ready when the tide reaches the lower groove."
+        "narration": "The rail holds firm. Now you have a steady place to look from."
       },
       "onFailure": {
         "goto": "work",
-        "narration": "The rail stays solid. Your viewing spot will be ready when the tide reaches the lower groove."
+        "narration": "The rail holds firm. Now you have a steady place to look from."
       },
       "onAssisted": {
         "goto": "work",
-        "narration": "The rail stays solid. Your viewing spot will be ready when the tide reaches the lower groove."
+        "narration": "The rail holds firm. Now you have a steady place to look from."
       }
     },
     "build_sled": {
@@ -647,7 +647,7 @@
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "type": "interaction",
-      "narration": "The board rests on two short runners from Orin's kit. Put the bag in the middle and level your sides before sliding it. The guide shows a dry parking place behind a rock. Orin adds his notebook, then removes his sandwich. \"Important equipment. Separate pocket.\" The sled can move, but it cannot serve as a fixed rail.",
+      "narration": "The board sits on two short runners from Orin's kit. Load the bag and keep it level. Orin adds his notebook, then takes out his sandwich. \"Important equipment. Separate pocket.\"",
       "interaction": {
         "kind": "balance",
         "objectLabel": "kit sled",
@@ -656,15 +656,15 @@
       },
       "onSuccess": {
         "goto": "work",
-        "narration": "The loaded sled slides neatly into its dry parking place. It will be useful if you must move things in a hurry."
+        "narration": "The sled waits behind a rock, ready if you must move fast."
       },
       "onFailure": {
         "goto": "work",
-        "narration": "The loaded sled slides neatly into its dry parking place. It will be useful if you must move things in a hurry."
+        "narration": "The sled waits behind a rock, ready if you must move fast."
       },
       "onAssisted": {
         "goto": "work",
-        "narration": "The loaded sled slides neatly into its dry parking place. It will be useful if you must move things in a hurry."
+        "narration": "The sled waits behind a rock, ready if you must move fast."
       }
     },
     "water_question": {
@@ -680,11 +680,11 @@
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "type": "story",
-      "narration": "Orin turns the drawing so everyone can see. \"The waterline is up here. The round pebbles are down there. But that new trickle smells salty.\" The guide dips a fin into the low groove. \"Tide water. This old riverbed is much bigger.\" You have two different stories in one place: an old river, and a little tide arriving today. Test the little groove before mixing them up.",
+      "narration": "\"The waterline is up here,\" says Orin. \"The pebbles are down there. But that trickle smells salty.\" The guide dips a fin in the groove. \"Tide water.\" So there are two stories here: an old river, and a little tide today. Test the groove to tell them apart.",
       "choices": [
         {
           "id": "test",
-          "label": "Watch the groove through a whole pulse",
+          "label": "Watch the groove",
           "icon": "hand",
           "goto": "watch_pulse"
         }
@@ -703,7 +703,7 @@
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "type": "interaction",
-      "narration": "A scrap of reed turns in the groove. Water pushes it forward, pauses, then pulls it back. The guide marks one edge with a shell. Wait for the reed to return to that mark, then call it. Orin watches a different reed. It remains perfectly still. \"That one is my pencil,\" he admits.",
+      "narration": "A scrap of reed floats in the groove. Water pushes it forward, then pulls it back. The guide marks the spot with a shell. Call it when the reed returns. Orin watches a different reed. It never moves. \"That one is my pencil.\"",
       "interaction": {
         "kind": "timing",
         "cue": "Tap in the gold when the reed returns to the shell mark.",
@@ -714,15 +714,15 @@
       },
       "onSuccess": {
         "goto": "compare_pulse",
-        "narration": "The reed comes back to the same shell. The guide watches a second pulse and confirms it: today's little tide moves both ways."
+        "narration": "The reed comes back to the shell. This little tide goes both ways."
       },
       "onFailure": {
         "goto": "compare_pulse",
-        "narration": "You call a little early. The guide keeps the shell in place and helps you watch the next complete pulse. The reed comes back; this tide moves both ways."
+        "narration": "Too early! You wait for the next pulse. The reed comes back. This tide goes both ways."
       },
       "onAssisted": {
         "goto": "compare_pulse",
-        "narration": "The reed comes back to the same shell. The guide watches a second pulse and confirms it: today's little tide moves both ways."
+        "narration": "The reed comes back to the shell. This little tide goes both ways."
       }
     },
     "compare_pulse": {
@@ -738,11 +738,11 @@
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "type": "story",
-      "narration": "Orin catches a sample label against his beak. You help him stick it back on the pot. The glacier grit and arch dust are pale; today's tide mud is dark. The little salty tide moves both ways. It cannot explain that high waterline. Orin looks up at the arch. \"Something much bigger used to come through here.\"",
+      "narration": "Orin lines up his sample pots. The glacier grit and arch dust are pale. Today's tide mud is dark. A little tide cannot leave a waterline that high. \"Something much bigger used to come through here,\" says Orin.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Keep looking",
           "icon": "forward",
           "goto": "tide_turn"
         }
@@ -761,11 +761,11 @@
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "type": "choice_point",
-      "narration": "Plip. Water reaches the lower tool shelf sooner than expected. Everyone is already on the high rock shelf, but a tray of drawings sits low beside the return path. There is time to do one job first. Save the drawings, and the path markers will need rebuilding. Secure the return path, and the drawings will get wet; you will have to piece their marks together. Orin holds both sandwiches above his head. \"I have secured lunch. What first?\"",
+      "narration": "Plip! Water reaches the lower shelf sooner than expected. You are safe up high, but a tray of drawings sits low by the path back. There is time for one job. Save the drawings, and the path markers wash away. Mark the path, and the drawings get wet. Orin holds both sandwiches over his head. \"Lunch is safe!\"",
       "choices": [
         {
           "id": "records",
-          "label": "Save the drawings; rebuild the path afterward",
+          "label": "Save the drawings",
           "icon": "hand",
           "goto": "save_records",
           "effects": [
@@ -783,7 +783,7 @@
         },
         {
           "id": "path",
-          "label": "Secure the path; reconstruct the wet drawings",
+          "label": "Mark the path back",
           "icon": "hand",
           "goto": "save_path",
           "effects": [
@@ -814,11 +814,11 @@
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "type": "choice_point",
-      "narration": "You choose the drawings. The little tide runs under the low tray while you stay on the high shelf. Use the equipment you prepared. The guide watches the water and calls a stop if it reaches the next shell. The far bank and the sealed door stay well beyond your work.",
+      "narration": "You go for the drawings. Water runs under the low tray while you stay on the high shelf. The guide watches the water and will call a stop if it climbs.",
       "choices": [
         {
           "id": "rail",
-          "label": "Use our fixed rail to lift the tray",
+          "label": "Lift it with our rail",
           "icon": "hand",
           "goto": "rail_lift",
           "when": {
@@ -827,7 +827,7 @@
         },
         {
           "id": "sled",
-          "label": "Bring the tray back on a carrying board",
+          "label": "Slide it onto a board",
           "icon": "hand",
           "goto": "sled_lift",
           "effects": [
@@ -852,16 +852,16 @@
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "type": "interaction",
-      "narration": "Your fixed rail holds firm. One friend supports the long lifting cord while another tips the tray toward the high shelf. Orin is ready with a dry cloth. A page starts to curl. \"No flying lessons today,\" he tells it. Keep the cord steady until the whole tray reaches the cloth.",
+      "narration": "Your rail holds firm. Keep the lifting cord steady while the tray tips up to the shelf. A page starts to curl. \"No flying lessons today,\" Orin tells it.",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Hold the lifting cord while your friend brings the tray in.",
+        "cue": "Hold the lifting cord while the tray comes in.",
         "supportLabel": "Hold the cord",
         "actionLabel": "Lift the tray"
       },
       "onSuccess": {
         "goto": "path_repair",
-        "narration": "The drawings arrive dry. The low path markers have washed loose, so you must rebuild the return route.",
+        "narration": "The drawings arrive dry. But the low path markers wash loose.",
         "effects": [
           {
             "type": "setFlag",
@@ -872,7 +872,7 @@
       },
       "onFailure": {
         "goto": "path_repair",
-        "narration": "The drawings arrive dry. The low path markers have washed loose, so you must rebuild the return route.",
+        "narration": "The drawings arrive dry. But the low path markers wash loose.",
         "effects": [
           {
             "type": "setFlag",
@@ -883,7 +883,7 @@
       },
       "onAssisted": {
         "goto": "path_repair",
-        "narration": "The drawings arrive dry. The low path markers have washed loose, so you must rebuild the return route.",
+        "narration": "The drawings arrive dry. But the low path markers wash loose.",
         "effects": [
           {
             "type": "setFlag",
@@ -906,7 +906,7 @@
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "type": "interaction",
-      "narration": "Your carrying board slides beneath the tray from the high side. Level the board so the drawings do not slip as you bring them back. Orin reaches for the notebook, then checks with you before lifting it. The guide stays at the marked shell, watching the water rather than asking anyone to hurry.",
+      "narration": "Slide your board under the tray from the high side. Keep it level so the drawings do not slip. Orin reaches for his notebook, then checks with you first.",
       "interaction": {
         "kind": "balance",
         "objectLabel": "drawing sled",
@@ -915,7 +915,7 @@
       },
       "onSuccess": {
         "goto": "path_repair",
-        "narration": "The drawings arrive dry. Your sled helped save them, but the low path markers have washed loose.",
+        "narration": "The drawings arrive dry. But the low path markers wash loose.",
         "effects": [
           {
             "type": "setFlag",
@@ -926,7 +926,7 @@
       },
       "onFailure": {
         "goto": "path_repair",
-        "narration": "The drawings arrive dry. Your sled helped save them, but the low path markers have washed loose.",
+        "narration": "The drawings arrive dry. But the low path markers wash loose.",
         "effects": [
           {
             "type": "setFlag",
@@ -937,7 +937,7 @@
       },
       "onAssisted": {
         "goto": "path_repair",
-        "narration": "The drawings arrive dry. Your sled helped save them, but the low path markers have washed loose.",
+        "narration": "The drawings arrive dry. But the low path markers wash loose.",
         "effects": [
           {
             "type": "setFlag",
@@ -952,7 +952,7 @@
             "flag": "bridge_rail_ready"
           },
           "at": "start",
-          "text": "You choose to change your plan: take the board off its fixed posts and lash it to the spare runners. The viewing rail is gone; you now have a carrying sled."
+          "text": "You take the board off the rail posts and tie on the runners from Orin's kit. Now it is a sled."
         }
       ]
     },
@@ -969,11 +969,11 @@
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "type": "story",
-      "narration": "Saving the drawings cost you the low return markers. The guide leads you behind the tall rock, past the split post, and up the dry steps. You mark that upper route together. Orin carries the dry pages against his chest. He has finally stopped offering suggestions about tea stalls.",
+      "narration": "Saving the drawings cost you the low path markers. The guide leads you behind the tall rock, past the split post and up the dry steps. You mark that high way back together. Orin hugs the dry pages like a baby bird.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Check everything",
           "icon": "forward",
           "goto": "records_review",
           "effects": [
@@ -999,11 +999,11 @@
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "type": "choice_point",
-      "narration": "You choose the return path. The lowest marker wobbles in the water. Keep everyone on the high shelf and move the warning back before it falls. Your drawings will get wet while you do this. Orin looks at the tray, then at the path. \"People first. We can draw again.\" How will your prepared equipment help?",
+      "narration": "You go for the path. The lowest marker wobbles in the water. Move it up to the high side before it falls. The drawings will get wet. Orin looks at the tray, then at the path. \"People first. We can draw again.\"",
       "choices": [
         {
           "id": "rail",
-          "label": "Secure the upper warning to our fixed rail",
+          "label": "Tie it to our rail",
           "icon": "hand",
           "goto": "rail_warning",
           "when": {
@@ -1012,7 +1012,7 @@
         },
         {
           "id": "sled",
-          "label": "Move the warning on a carrying board",
+          "label": "Carry it on a board",
           "icon": "hand",
           "goto": "sled_warning",
           "effects": [
@@ -1037,16 +1037,16 @@
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "type": "interaction",
-      "narration": "The rail makes a sturdy anchor for the new warning. Hold the cord while a friend secures the marker on the high side. The guide checks that it points toward the dry steps. Below you, the tray gives a soft splash. Orin winces. \"That was the notebook. I do hope the cabbage ear can swim.\"",
+      "narration": "The rail makes a sturdy anchor. Hold the cord while the marker is tied on, pointing to the dry steps. Below, the tray goes splash. Orin winces. \"I do hope my notes can swim.\"",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Hold the warning cord while your friend ties the marker.",
+        "cue": "Hold the warning cord while the marker is tied.",
         "supportLabel": "Hold the warning cord",
         "actionLabel": "Secure the marker"
       },
       "onSuccess": {
         "goto": "wet_notes",
-        "narration": "The upper return path stays clearly marked. The drawings are wet, and you will need to reconstruct their details.",
+        "narration": "The way back is marked. The drawings are soaked.",
         "effects": [
           {
             "type": "setFlag",
@@ -1062,7 +1062,7 @@
       },
       "onFailure": {
         "goto": "wet_notes",
-        "narration": "The upper return path stays clearly marked. The drawings are wet, and you will need to reconstruct their details.",
+        "narration": "The way back is marked. The drawings are soaked.",
         "effects": [
           {
             "type": "setFlag",
@@ -1078,7 +1078,7 @@
       },
       "onAssisted": {
         "goto": "wet_notes",
-        "narration": "The upper return path stays clearly marked. The drawings are wet, and you will need to reconstruct their details.",
+        "narration": "The way back is marked. The drawings are soaked.",
         "effects": [
           {
             "type": "setFlag",
@@ -1106,7 +1106,7 @@
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "type": "interaction",
-      "narration": "Load the warning board onto your sled. Pass its guide cord from friend to friend along the upper shelf so it never swings into the wet groove. At the dry steps, Orin wedges the marker between two sound rocks. Down below, the notebook takes a small, undignified bath.",
+      "narration": "Load the marker onto your sled. Pass its cord hand to hand along the high shelf. Orin wedges the marker by the dry steps. Below, the notebook takes a small, rude bath.",
       "interaction": {
         "kind": "relay",
         "objectLabel": "warning sled cord",
@@ -1115,7 +1115,7 @@
       },
       "onSuccess": {
         "goto": "wet_notes",
-        "narration": "The upper return path stays clearly marked. The wet drawings will need to be pieced together.",
+        "narration": "The way back is marked. The drawings are soaked.",
         "effects": [
           {
             "type": "setFlag",
@@ -1131,7 +1131,7 @@
       },
       "onFailure": {
         "goto": "wet_notes",
-        "narration": "The upper return path stays clearly marked. The wet drawings will need to be pieced together.",
+        "narration": "The way back is marked. The drawings are soaked.",
         "effects": [
           {
             "type": "setFlag",
@@ -1147,7 +1147,7 @@
       },
       "onAssisted": {
         "goto": "wet_notes",
-        "narration": "The upper return path stays clearly marked. The wet drawings will need to be pieced together.",
+        "narration": "The way back is marked. The drawings are soaked.",
         "effects": [
           {
             "type": "setFlag",
@@ -1167,7 +1167,7 @@
             "flag": "bridge_rail_ready"
           },
           "at": "start",
-          "text": "You choose to change your plan: take the board off the rail posts and lash it to the spare runners. The fixed rail becomes a carrying sled."
+          "text": "You take the board off the rail posts and tie on the runners from Orin's kit. Now it is a sled."
         }
       ]
     },
@@ -1184,11 +1184,11 @@
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "type": "story",
-      "narration": "The return path is marked, but water has blurred the drawings. You and Orin redraw the arch, waterline and pebbles from the stonework still in view. The fine measurements are gone. He writes \"reconstructed\" across the top. \"Useful,\" he says, looking at the wet original. \"Just less smug.\"",
+      "narration": "Water has blurred the drawings. You and Orin redraw the arch, waterline and pebbles from what you can still see. The fine measurements are gone. He writes \"redrawn\" across the top. \"Useful,\" he says. \"Just less smug.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Check everything",
           "icon": "forward",
           "goto": "records_review",
           "effects": [
@@ -1214,11 +1214,11 @@
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "type": "story",
-      "narration": "You spread the pages on dry stone and check every hero, every tool, and the return markers. The guide shakes water off one fin. Orin shakes water off his brush. Only one of them splashes the notebook. \"Sorry,\" says Orin. The guide says nothing at all, which is somehow worse. You have enough evidence to explain the old river, even if today changed your plans.",
+      "narration": "You spread the pages on dry stone and check every tool and the path markers. Orin shakes water off his brush, right onto the notebook. \"Sorry,\" he says. The guide says nothing, which is somehow worse.",
       "choices": [
         {
           "id": "continue",
-          "label": "Make our river explanation",
+          "label": "Explain the old river",
           "icon": "hand",
           "goto": "river_explain"
         }
@@ -1228,13 +1228,13 @@
           "when": {
             "flag": "bridge_drawings_dry"
           },
-          "text": "Your original drawings and measurements are dry. You can give Orin a precise copy, but had to spend time rebuilding the return path."
+          "text": "Your drawings and measurements are dry, but you had to mark a new way back."
         },
         {
           "when": {
             "flag": "bridge_notes_rebuilt"
           },
-          "text": "The return path stayed marked throughout. Your rebuilt sketch shows the main clues, but the fine measurements must wait for a later visit."
+          "text": "The path stayed marked, but the fine measurements are gone."
         }
       ]
     },
@@ -1251,11 +1251,11 @@
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "type": "choice_point",
-      "narration": "\"I can make one careful extra copy before you leave,\" says Orin. Give it to the guide, and your group can help mark a public viewing point on the high bank. Send it with Orin, and other Riftseekers can compare the missing river with their own finds; the work area here will stay closed until someone returns. Your private chime readings stay private either way. Who needs this copy first?",
+      "narration": "\"I can make one careful copy,\" says Orin. Give it to the guide, and you can set up a viewpoint for visitors on the high bank. Or Orin takes it to the Riftseekers, and this work area stays closed. Who needs it first?",
       "choices": [
         {
           "id": "local",
-          "label": "Open a marked bank viewpoint for local visitors",
+          "label": "Give it to the guide",
           "icon": "hand",
           "goto": "visitor_plan",
           "effects": [
@@ -1273,7 +1273,7 @@
         },
         {
           "id": "research",
-          "label": "Send the careful copy with Orin; close this work area",
+          "label": "Send it with Orin",
           "icon": "hand",
           "goto": "research_plan",
           "effects": [
@@ -1304,11 +1304,11 @@
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "type": "story",
-      "narration": "You and the guide set a stopping sign, a waterline sketch and a return arrow on the high bank. Visitors can see the mystery from here without crossing the bridge. \"Could add a tea stall,\" Orin suggests. The guide looks at the mud. \"No.\"",
+      "narration": "You and the guide set a stopping sign, a waterline sketch and a return arrow on the high bank. Visitors can see the mystery without crossing. \"Could add a tea stall,\" Orin suggests. The guide looks at the mud. \"No.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Try it on a visitor",
           "icon": "forward",
           "goto": "visitor_trial"
         }
@@ -1327,23 +1327,23 @@
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "type": "choice_point",
-      "narration": "Orin pretends he has never been here. He walks to the stopping sign and peers at your sketch. \"Where do I put my feet?\" asks Orin. Everyone chooses a useful part of the welcome. The guide listens. If your words offer a bridge crossing, she stops the pretend tour and helps you correct it.",
+      "narration": "Orin pretends he has never been here. He walks up to the stopping sign and squints at your sketch. \"Where do I put my feet?\" What do you show him?",
       "choices": [
         {
           "id": "stop",
-          "label": "Show him the waiting line",
+          "label": "Show the stopping line",
           "icon": "hand",
           "goto": "visitor_trial_response_stop"
         },
         {
           "id": "clue",
-          "label": "Point out the waterline and pebbles",
+          "label": "Point out the clues",
           "icon": "eye",
           "goto": "visitor_trial_response_clue"
         },
         {
           "id": "return",
-          "label": "Show him the dry return steps",
+          "label": "Show the dry steps",
           "icon": "travel",
           "goto": "visitor_trial_response_return"
         }
@@ -1362,11 +1362,11 @@
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "type": "story",
-      "narration": "Orin copies the old waterline, rounded pebbles and dry channel onto one page. The far door goes in a box marked \"not visited.\" His box for questions is larger than his box for answers. \"Room to grow,\" he says. The guide closes the low work area while he folds the page.",
+      "narration": "Orin copies the waterline, pebbles and dry channel onto one page. The far door goes in a box marked \"not visited.\" His box for questions is bigger than his box for answers. \"Room to grow,\" he says. The guide closes off the low work area.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Pack the copy",
           "icon": "forward",
           "goto": "copy_relay"
         }
@@ -1385,11 +1385,11 @@
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "type": "story",
-      "narration": "You tuck the research copy inside its cover and hand it to Orin. The guide rolls the closed-work-area sign into place. \"Visitors wait for a later trip.\" Orin puts the packet in his bag and checks it twice. His sandwich has finally found its proper pocket.",
+      "narration": "You tuck the copy in its cover and hand it to Orin. The guide sets a closed sign on the bank. \"Visitors wait for a later trip.\" Orin checks his bag twice. His sandwich has finally found its proper pocket.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Start packing up",
           "icon": "forward",
           "goto": "restore_bank",
           "effects": [
@@ -1408,7 +1408,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Show the guide",
           "icon": "forward",
           "goto": "guide_handover",
           "effects": [
@@ -1437,7 +1437,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Show the guide",
           "icon": "forward",
           "goto": "guide_handover",
           "effects": [
@@ -1466,7 +1466,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Show the guide",
           "icon": "forward",
           "goto": "guide_handover",
           "effects": [
@@ -1491,11 +1491,11 @@
     },
     "visitor_trial_response_stop": {
       "type": "story",
-      "narration": "Orin plants both feet behind it. \"Even the dusty foot?\" Yes, that one too. The viewpoint stays open on the high bank. Your guide keeps the local copy; Orin will compare his own notes later.",
+      "narration": "Orin plants both feet behind it. \"Even the dusty foot?\" Yes, that one too. The viewpoint is ready, and the guide keeps the copy.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Start packing up",
           "icon": "forward",
           "goto": "restore_bank",
           "effects": [
@@ -1521,11 +1521,11 @@
     },
     "visitor_trial_response_clue": {
       "type": "story",
-      "narration": "Orin follows your pointing hand from the arch to the old riverbed. \"I can see it from here.\" The viewpoint stays open on the high bank. Your guide keeps the local copy; Orin will compare his own notes later.",
+      "narration": "Orin follows your pointing hand from the arch to the old riverbed. \"I can see it from here!\" The viewpoint is ready, and the guide keeps the copy.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Start packing up",
           "icon": "forward",
           "goto": "restore_bank",
           "effects": [
@@ -1551,11 +1551,11 @@
     },
     "visitor_trial_response_return": {
       "type": "story",
-      "narration": "Orin follows the arrow back to the steps. The guide nods: a visit with a way home. The viewpoint stays open on the high bank. Your guide keeps the local copy; Orin will compare his own notes later.",
+      "narration": "Orin follows the arrow back to the steps. A visit with a way home! The viewpoint is ready, and the guide keeps the copy.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Start packing up",
           "icon": "forward",
           "goto": "restore_bank",
           "effects": [
