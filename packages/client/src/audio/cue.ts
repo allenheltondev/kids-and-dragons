@@ -76,7 +76,31 @@ export type CueId =
 
 export type AmbienceId = "gate-hum" | "cavern-air";
 
+/** A decoded clip: an `AudioBuffer` in the game, named by what the speaker reads off it (this file is shared with tools that have no DOM). */
+export interface VoiceBuffer {
+  readonly duration: number;
+}
+
+/**
+ * Recorded narration's way out (docs/voice-narration-plan.md §7): clips are decoded in the
+ * engine's context and played on their own bus, with the music ducked under them, rather than
+ * through an `<audio>` tag that knows nothing of the music. Only a started engine has one.
+ */
+export interface VoiceChannel {
+  /** True when a clip played now would be heard: a context a gesture has started and the browser runs. */
+  ready(): boolean;
+  /** Decodes a clip's bytes. Rejects when they will not decode, or there is no context to decode in. */
+  decode(bytes: ArrayBuffer): Promise<VoiceBuffer>;
+  /**
+   * Plays the buffers back to back with the music ducked, and calls `onEnd` once the last one
+   * has finished. Returns the way to stop early, which restores the music and never calls `onEnd`.
+   */
+  play(buffers: readonly VoiceBuffer[], onEnd: () => void): () => void;
+}
+
 export interface AudioSink {
+  /** Recorded voice, when this sink can play it (speech/clip-speaker.ts). */
+  voice?: VoiceChannel;
   /** Sustained location sound; changing scenes inside the location does not restart it. */
   ambience?(id: AmbienceId | null): void;
   /** Stop location effects when the story leaves their scene. */

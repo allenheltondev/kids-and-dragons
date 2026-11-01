@@ -57,9 +57,15 @@ calls `hear()` (`PlayerPanel`), so a kid who missed it does not need a grown-up 
 
 ## Swapping the voice
 
-The engine is `packages/client/src/speech/synth-speaker.ts`, loaded on demand so the entry chunk
-doesn't pay for it. A better voice is another `Speaker` (a function with an optional `cancel`)
-returned from `loadEngine()` in `read-aloud.ts`.
+The engine is loaded on demand so the entry chunk doesn't pay for it: `loadEngine()` in
+`read-aloud.ts` returns the recorded voice (`clip-speaker.ts`) in front of the device voice
+(`synth-speaker.ts`). A line spoken with `parts` (a scene's narration, the goal) plays its
+recorded clips when every one is there, through the audio engine with the music ducked, and is
+read by the device voice whole otherwise. Every other line is the device voice, as before. See
+[voice-narration-plan.md §7](./voice-narration-plan.md#7-the-client).
+
+While either voice is speaking, the narration plate on the shared screen shows a soft gold
+edge (`useSpeaking()`).
 
 ## Help (#256)
 
