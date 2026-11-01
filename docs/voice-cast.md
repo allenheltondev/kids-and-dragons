@@ -357,7 +357,7 @@ chapter, so a writer can add the tag in the chapter: `-- --chapter gemfall-06` f
 and the words either side, `-- --who skupper_cousin` for the scenes a character is in, `-- --silent` for scenes with a
 speaker who has no counted lines yet, `-- --missing` for the quotes counted for nobody at all (the rest are counted as guesses for the one speaker in their scene). It reports and never edits. Tag a quote by name or by the role the scene
 gives them (`says the oldest archivist`), not with "he" or "she" after a sentence that names two people: a pronoun
-goes to whoever was named last. Adding a tag changes the words, so do it before a chapter is recorded.
+goes to whoever was named last. Adding a tag changes the words, so do it before a chapter is recorded. The same attributor cuts the script sidecars (`npm run voice:script`, [voice-narration-plan.md §3](./voice-narration-plan.md#drafting-scripts)): a quote nobody is tagged for stays with the narrator there and is listed as needing a person, so a tag added here is also a quote voiced in its speaker's voice. After a quote that ends its sentence, "Tansy says a real fight works like tag" is reported speech, what Tansy says next, and not a tag for the quote before it; "Tansy says." and an action beat ("Tansy offers a huge price") still are.
 
 ## What's still rough
 

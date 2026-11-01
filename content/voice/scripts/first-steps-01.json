@@ -1,0 +1,667 @@
+{
+  "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "first-steps-01/scene_tansy/narration": {
+    "source": "sha256:d6cfb36f250fb6cb4eb6c6a0532d7eb6f1bbec601417d3ff8f3e41db95d92ed5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "On the other side stands a faun named Tansy, with curly horns and a clipboard made of bark."
+      },
+      {
+        "by": "tansy",
+        "text": "\"Welcome to the practice meadow,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "tansy",
+        "text": "\"New heroes learn the ropes here. Who wants to go first?\""
+      }
+    ]
+  },
+  "first-steps-01/scene_tansy_meadow/narration": {
+    "source": "sha256:dbee45b5e9bc29dade745a12cab33c7d6bb21dca2fb959bb02f299a662607e82",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "tansy",
+        "text": "\"You practice!\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tansy."
+      },
+      {
+        "by": "tansy",
+        "text": "\"Walking, rolling, playing tag, helping friends up. Nobody can lose anything here. Not even a sock.\""
+      }
+    ]
+  },
+  "first-steps-01/scene_tansy_clipboard/narration": {
+    "source": "sha256:7150caa96f0c662ee93d5db778aed5e30cc35d1806351708a6f0aecdb601aba2",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tansy shows you the clipboard. It is a list of every hero who ever practiced here, and next to each name she drew a little star."
+      },
+      {
+        "by": "tansy",
+        "text": "\"You get a star at the end,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      }
+    ]
+  },
+  "first-steps-01/scene_flick_wakes/narration": {
+    "source": "sha256:d2cecf4223bc5541de8bec510f358e3ff6040e6e541e56bfa005812c06f9ac0b",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Flick wakes up with a snort, waves back with his whole glow, and zooms onto the stepping stones with Dot right behind him."
+      },
+      {
+        "by": "flick",
+        "text": "\"Race you to the garden gate!\""
+      },
+      {
+        "by": "narrator",
+        "text": "they squeak."
+      }
+    ]
+  },
+  "first-steps-01/scene_tag_field/narration": {
+    "source": "sha256:84d9b303a95277a61b26e33b89da53dbaf0b3951502d8dbbd71f3288d3627de9",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Flick and Dot zoom in a circle over your heads."
+      },
+      {
+        "by": "flick",
+        "text": "\"Now tag!\""
+      },
+      {
+        "by": "narrator",
+        "text": "squeaks Flick."
+      },
+      {
+        "by": "flick",
+        "text": "\"Bet you can't tag me!\""
+      },
+      {
+        "by": "narrator",
+        "text": "Tansy says a real fight works just like tag, only with cards."
+      }
+    ]
+  },
+  "first-steps-01/scene_tag_rules/narration": {
+    "source": "sha256:4d6af9d01b055c3ac02f6c9145e196ec975069f0f842fd899c29118202220a14",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "tansy",
+        "text": "\"Each card is one thing your hero can do,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tansy."
+      },
+      {
+        "by": "tansy",
+        "text": "\"Some tag, some help, some do something special. In the practice meadow, every card is gentle.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Flick and Dot are already bouncing."
+      }
+    ]
+  },
+  "first-steps-01/encounter_tag/onVictory/narration": {
+    "source": "sha256:f06d5e3c08cabb0104fd4a707ed501e8e0bbc90d693ef30dae376478f0892a31",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tag, and tag! Flick spins in the air and lands upside down on a dandelion, and Dot lands on top of him."
+      },
+      {
+        "by": "flick",
+        "text": "\"No fair,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Flick."
+      },
+      {
+        "by": "flick",
+        "text": "\"Again tomorrow.\""
+      }
+    ]
+  },
+  "first-steps-01/scene_bun_waits/narration": {
+    "source": "sha256:50e9ce8afc20db3f0785c661b24c38b87386cf052aad18e981b84c4da1ca791a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "party",
+        "text": "\"Hold on, Bun!\""
+      },
+      {
+        "by": "narrator",
+        "text": "you call. Bun bleats back and wiggles all four legs at once, which means thank you in goat."
+      }
+    ]
+  },
+  "first-steps-01/scene_bun_safe/narration": {
+    "source": "sha256:dced51945aa0b88a2e9aa5127fa8ef586098c4749cb407660753561db6f72f4a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Bun shakes the mud off her coat, all over everybody. Tansy laughs and wipes her clipboard."
+      },
+      {
+        "by": "tansy",
+        "text": "\"Picnic time,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "tansy",
+        "text": "\"Every hero needs a rest.\""
+      }
+    ]
+  },
+  "first-steps-01/scene_favorite_part/narration": {
+    "source": "sha256:66c88390ac6438c396fa9ddb79a0cbb4da2632239fccd866971b34a1cbc29799",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tansy writes your favorite part on her clipboard, very carefully, with her tongue sticking out."
+      },
+      {
+        "by": "flick",
+        "text": "\"That was my favorite part too,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Flick, who was asleep for most of it."
+      }
+    ]
+  },
+  "first-steps-01/scene_last_tip/narration": {
+    "source": "sha256:6e21732c88a4525627e727ddef18f80cb7d97725f7c5352082c5e2b3823757e3",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "tansy",
+        "text": "\"When you are stuck, look at your phone,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tansy."
+      },
+      {
+        "by": "tansy",
+        "text": "\"It only ever shows things you can really do. And if you tap the speaker, it reads them to you.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Bun nods, as if she knew that already."
+      }
+    ]
+  },
+  "first-steps-01/rest_ready/narration": {
+    "source": "sha256:c5e4ae76f7c962efb6010cd983cc6b2ed8d8ec5ba4d80994fc7b5accbbf021fd",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tansy draws a star next to your names on the clipboard. Then she opens a second gate, the one at the back of the meadow, and points at the road beyond it."
+      },
+      {
+        "by": "tansy",
+        "text": "\"You are ready,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "tansy",
+        "text": "\"Go have a real adventure.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Flick waves with his whole glow."
+      }
+    ]
+  },
+  "first-steps-01/interaction_bell/narration": {
+    "source": "sha256:0a59651a5c7d20aad8fd53b2343523bceee2074dc2b7777bf6c6a2df2ecaab80",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tansy hangs a little bell from the gate."
+      },
+      {
+        "by": "tansy",
+        "text": "“Send this soft seed into the bell,”"
+      },
+      {
+        "by": "narrator",
+        "text": "she says. Flick floats beside it."
+      },
+      {
+        "by": "flick",
+        "text": "“I will provide encouragement. DING. Like that.”"
+      }
+    ]
+  },
+  "first-steps-01/interaction_bell/onFailure/narration": {
+    "source": "sha256:c95ed85eb792af7e21fd3316ef85e1c9c1eaea14e84070f1ad0761ff2d3783b5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The seed lands in Tansy’s pocket."
+      },
+      {
+        "by": "tansy",
+        "text": "“Excellent pocket aim,”"
+      },
+      {
+        "by": "narrator",
+        "text": "she says, and rings the bell herself."
+      }
+    ]
+  },
+  "first-steps-01/interaction_roots/narration": {
+    "source": "sha256:896158155d2e3d7d7a2239baf249759233ac1fc45b0c109445147a5839448c62",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Bun has tucked her ribbon beneath a springy branch."
+      },
+      {
+        "by": "tansy",
+        "text": "“Somebody hold the branch while somebody fetches it,”"
+      },
+      {
+        "by": "narrator",
+        "text": "says Tansy."
+      },
+      {
+        "by": "tansy",
+        "text": "“A sturdy prop works too.”"
+      },
+      {
+        "by": "narrator",
+        "text": "Bun nods. She seems very pleased with this lesson."
+      }
+    ]
+  },
+  "first-steps-01/interaction_stones/narration": {
+    "source": "sha256:fd583eda43e79bca8f9746e0a51832cc870ca7a9524c1282a4a9ee6ed5491bf4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Three painted stepping stones lead back to the picnic. Tansy hands out scraps from her clipboard."
+      },
+      {
+        "by": "tansy",
+        "text": "“The scraps hold clues. Share what you find!”"
+      },
+      {
+        "by": "narrator",
+        "text": "Flick peers at his empty hands."
+      },
+      {
+        "by": "flick",
+        "text": "“I know I would like more picnic.”"
+      }
+    ]
+  },
+  "first-steps-01/interaction_stones/onFailure/narration": {
+    "source": "sha256:e0fce05a19a10bc6389fd210b6321eed132b098fbd99d9f1911b7ef56343ed1a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The stones wiggle and carry you gently back to Tansy."
+      },
+      {
+        "by": "tansy",
+        "text": "“A very scenic route,”"
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      }
+    ]
+  },
+  "first-steps-01/scene_team_tricks_done/narration": {
+    "source": "sha256:66cb1006a3d20fa28a10f5bf4a208ebc4f557305446a3f51485f335e76af6367",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "tansy",
+        "text": "“Good aiming, good helping, good listening,”"
+      },
+      {
+        "by": "narrator",
+        "text": "says Tansy."
+      },
+      {
+        "by": "tansy",
+        "text": "“Those are all ways to be a hero.”"
+      },
+      {
+        "by": "narrator",
+        "text": "Flick adds a very small star to her clipboard."
+      }
+    ]
+  },
+  "first-steps-01/scene_more_meadow_games/narration": {
+    "source": "sha256:1946fcbd8644c2a0dd7116f22c939d71093827be74c8bca5c5551e923529514a",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tansy opens a box marked SMALL ADVENTURES. Flick is already inside it."
+      },
+      {
+        "by": "flick",
+        "text": "\"I am the surprise,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says. Bun eats the corner of the label."
+      }
+    ]
+  },
+  "first-steps-01/interaction_cups/narration": {
+    "source": "sha256:6559d57aa256cc659ff24c63f62e0031cb134e768dda04712db993caad2d24d5",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Flick hides his glow beneath a little cup. Tansy slides the cups around the picnic cloth."
+      },
+      {
+        "by": "tansy",
+        "text": "\"Follow the light,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      },
+      {
+        "by": "tansy",
+        "text": "\"Flick, no peeking out.\""
+      }
+    ]
+  },
+  "first-steps-01/interaction_cups/onSuccess/narration": {
+    "source": "sha256:de47461ea87ca6487bc4765f18f4f506795930ab767d1fc2abe84be6450511d4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "There is Flick!"
+      },
+      {
+        "by": "flick",
+        "text": "\"An excellent hiding place,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says, as if this was his success."
+      }
+    ]
+  },
+  "first-steps-01/interaction_echo/narration": {
+    "source": "sha256:a3367e9386c855b873a1edb6318e1c85820e36d5c371d62ab1922c6b541e41ba",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Flick makes little shapes of light above the picnic."
+      },
+      {
+        "by": "flick",
+        "text": "\"Say it back with your buttons,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "flick",
+        "text": "\"This is a very important wisp greeting.\""
+      }
+    ]
+  },
+  "first-steps-01/interaction_echo/onSuccess/narration": {
+    "source": "sha256:b915ba645f52ea36a4b26130e9566bd2ae3b721c4b970de303e6322dbfcc9908",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Flick bows so deeply that his glow touches the grass."
+      },
+      {
+        "by": "flick",
+        "text": "\"A very polite greeting!\""
+      }
+    ]
+  },
+  "first-steps-01/interaction_echo/onFailure/narration": {
+    "source": "sha256:63e4f8ef8736b401651046049691c0fcf33cd943509d686075d53075d3e1c226",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Flick listens to your new pattern."
+      },
+      {
+        "by": "flick",
+        "text": "\"That means extra picnic,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he decides."
+      }
+    ]
+  },
+  "first-steps-01/interaction_sneak/narration": {
+    "source": "sha256:c3480f978122d03fe1fd9e9a1c761e480bafca3bef51eadf5afe5b99dc874523",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tansy covers her eyes and pretends to be a very sleepy gatekeeper."
+      },
+      {
+        "by": "tansy",
+        "text": "\"I shall never notice anybody going past,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says. Bun walks straight past her."
+      }
+    ]
+  },
+  "first-steps-01/interaction_sneak/onFailure/narration": {
+    "source": "sha256:79c5b7cefe887f0f7536cacfa6faee27a1513ea4965cb7eb2fac0331b7ce6df1",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tansy opens one eye."
+      },
+      {
+        "by": "tansy",
+        "text": "\"Aha! Visitors! Would you like some picnic?\""
+      }
+    ]
+  },
+  "first-steps-01/interaction_balance/narration": {
+    "source": "sha256:8cc099667b09bc34b5fcb5209ad58c113c20653bff5f226ee9fbb10487a560f4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "A basket of soft rolls rests on a wide carrying tray."
+      },
+      {
+        "by": "tansy",
+        "text": "\"Lift your side a little at a time,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tansy."
+      },
+      {
+        "by": "tansy",
+        "text": "\"We want the rolls to travel, not roll.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Bun looks disappointed."
+      }
+    ]
+  },
+  "first-steps-01/interaction_balance/onFailure/narration": {
+    "source": "sha256:41654288736937a403de79f8cd45919a9f6f2ba286df17db85e84d16e6da4444",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tansy catches the rolls in her apron."
+      },
+      {
+        "by": "tansy",
+        "text": "\"Delivery accepted!\""
+      }
+    ]
+  },
+  "first-steps-01/interaction_spark/narration": {
+    "source": "sha256:e6169967c66e7bd9ce8d9b2446a031e65c93e062a115a0fd2e14ae11fdaf5373",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Flick makes a tiny star and sends it floating toward your hands."
+      },
+      {
+        "by": "flick",
+        "text": "\"Catch it, then pass it along,\""
+      },
+      {
+        "by": "narrator",
+        "text": "he says."
+      },
+      {
+        "by": "flick",
+        "text": "\"It tickles a little.\""
+      }
+    ]
+  },
+  "first-steps-01/scene_playful_meadow/narration": {
+    "source": "sha256:e4d344e37978607287a6f943cd2f440c5759b62acfac171c74db0c3170131509",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "tansy",
+        "text": "\"We can just enjoy being here, too,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tansy. Flick has several suggestions. Bun has already chosen hers."
+      }
+    ]
+  },
+  "first-steps-01/interaction_feed/narration": {
+    "source": "sha256:f1b051bc96b1c36ff72bbeb005e141ca728c7515c99674f907178eed7adb9b44",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Bun noses at the picnic bag. Tansy holds out a few little treats."
+      },
+      {
+        "by": "tansy",
+        "text": "\"Let her decide what she likes,\""
+      },
+      {
+        "by": "narrator",
+        "text": "she says."
+      }
+    ]
+  },
+  "first-steps-01/interaction_camp/narration": {
+    "source": "sha256:022a9ee1d5147687ae531339c7fd008dfc57bf78239b43b2a60d96a6a6b8892c",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "Tansy spreads a blanket beneath the trees."
+      },
+      {
+        "by": "tansy",
+        "text": "\"What would make this a good camp?\""
+      },
+      {
+        "by": "narrator",
+        "text": "she asks. Flick votes for more glow."
+      }
+    ]
+  },
+  "first-steps-01/interaction_cheer/narration": {
+    "source": "sha256:67e929b687d8b31658bd71865dc1bf4052b992f1d6fe44011bfb1b13407c96f4",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "tansy",
+        "text": "\"A celebration is a perfectly good use of a meadow,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says Tansy. Flick is already spinning."
+      }
+    ]
+  },
+  "first-steps-01/interaction_wake/narration": {
+    "source": "sha256:1a1a674f69d7651a2a9bb8722067ffd4dd845b2a4e7674fccb23fc19cfd45144",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "narrator",
+        "text": "The old stump beside the picnic has a face, and its face is asleep."
+      },
+      {
+        "by": "tansy",
+        "text": "\"He enjoys a gentle hello,\""
+      },
+      {
+        "by": "narrator",
+        "text": "whispers Tansy."
+      }
+    ]
+  }
+}
