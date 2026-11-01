@@ -1,6 +1,6 @@
 # Voice narration plan (ElevenLabs or Gemini TTS)
 
-**Status: plan. Built so far: `npm run voice:cost` (§9), the script sidecar schema and join-equals-source check in `content:validate` (§3), the clip key, desired-clip list and `npm run voice:status` (§4: `tools/voice/clip-key.ts`, `desired.ts`, `manifest.ts`), the cast sheet and lexicon gate in `content:validate` with `npm run voice:lexicon` (§2, #539), `npm run content:dialogue` (§3), `npm run voice:generate` with direct-to-S3 upload and the shared clip layout (`packages/shared/src/voice-clips.ts`, §4-§5), `npm run voice:extract`, the line inventory (§1, phase 1 minus `narrationParts`), the phase-0 bake-off harness `npm run voice:bakeoff` ([voice-bakeoff.md](./voice-bakeoff.md)), the cast voice sheet `npm run voice:cast` and its `/cast` page ([voice-cast.md](./voice-cast.md)), and read-aloud on by default on the TV (§7).** This covers recorded, multi-voice narration: a narrator plus a
+**Status: plan. Built so far: `npm run voice:cost` (§9), the script sidecar schema and join-equals-source check in `content:validate` (§3), `npm run voice:script` drafting the sidecars, with `bramblewood-01` and `first-steps-01` drafted and awaiting review (§3, #541: `tools/voice/scriptdraft.ts`), the clip key, desired-clip list and `npm run voice:status` (§4: `tools/voice/clip-key.ts`, `desired.ts`, `manifest.ts`), the cast sheet and lexicon gate in `content:validate` with `npm run voice:lexicon` (§2, #539), `npm run content:dialogue` (§3), `npm run voice:generate` with direct-to-S3 upload and the shared clip layout (`packages/shared/src/voice-clips.ts`, §4-§5), `npm run voice:extract`, the line inventory (§1, phase 1 minus `narrationParts`), the phase-0 bake-off harness `npm run voice:bakeoff` ([voice-bakeoff.md](./voice-bakeoff.md)), the cast voice sheet `npm run voice:cast` and its `/cast` page ([voice-cast.md](./voice-cast.md)), and read-aloud on by default on the TV (§7).** This covers recorded, multi-voice narration: a narrator plus a
 consistent voice for each cast member. It also covers the pipeline that turns authored text into
 audio linked to that text, knows what needs (re)generating, and caches hard at every layer.
 
@@ -182,11 +182,24 @@ Gemini 3.8, an SSML break for a pause on ElevenLabs v2. The bake-off already doe
 
 ### Drafting scripts
 
-`voice:script --chapter X` drafts entries. It splits on quotation marks and attributes each quote
-from the nearest speech tag ("says Pib", "he croaks") and the scene's `cast`. Anything ambiguous
-goes to an LLM pass with the chapter's `voiceGuide` and cast. Every draft is marked
-`"reviewed": false` until a person (or the `chapter-cohesion` review) confirms it. Re-running it
-only touches missing or stale entries.
+`npm run voice:script -- --chapter X` (or `--all`, and `--dry-run` to see without writing) drafts
+entries (built, #541: `tools/voice/scriptdraft.ts`, run by `tools/voice/draft-scripts.ts`). It
+splits each recorded line on quotation marks: the narrator gets every span outside them, and each
+quote goes to whoever the cast sheet's own attributor gives it to (`attributeLines` in
+`tools/voice/cast/sheet.ts`: the speech tag, "says Pib", "he croaks", read against the scene's
+`cast`; the same code `voice:cast` counts lines with and `voice:untagged` reports from), so a
+script and the sheet never disagree about a quote. Every span is a slice of the authored text, so
+the join check always passes on a fresh draft. Choice labels and lines filled at run time are
+skipped. Every draft is marked `"reviewed": false` until a person (or the `chapter-cohesion`
+review) confirms it. Re-running it only touches missing or stale entries: a fresh entry, reviewed
+or not, is never rewritten, and a stale one is re-cut as a new unreviewed draft.
+
+A quote it cannot be sure of (no tag, a tag for someone not on the cast sheet, or only the sheet's
+guess for a scene's one speaker) stays with the narrator and is listed under **needs a person**,
+with the guess when there is one. The LLM pass for those, with the chapter's `voiceGuide` and
+cast, is **not built**: today a person settles them, by adding a speech tag in the chapter (see
+[voice-cast.md, "Tagging lines"](./voice-cast.md#tagging-lines)) or by editing the entry by hand.
+Nothing in `voice:script` calls a network service.
 
 ### Writing more dialogue
 
@@ -220,7 +233,7 @@ New `tools/voice/` (the `tools/audio` pattern), with npm scripts:
 | Command | Does | Gates? |
 |---|---|---|
 | `voice:extract` | builds the line inventory: address, text, kind, token expansions, speakers. Writes nothing to content | no |
-| `voice:script` | drafts or refreshes script sidecars (above) | no |
+| `voice:script` | drafts or refreshes script sidecars (above; built, #541) | no |
 | `voice:status` | desired clips vs. manifest: **missing / stale / unreviewed / approved / orphaned**, per chapter, with a character count and cost estimate for each provider | no |
 | `voice:generate` | renders only missing clips. `--chapter`, `--speaker`, `--provider`, `--dry-run`, `--max-chars` budget cap, concurrency, retries with backoff | no |
 | `voice:review` | a listening page per chapter (like `audio:preview`): play a scene's playlist, approve, reject with a note, regenerate a take | no |
