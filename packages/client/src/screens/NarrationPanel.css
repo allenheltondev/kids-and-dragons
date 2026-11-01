@@ -257,6 +257,24 @@
 }
 
 /*
+ * Being read aloud (docs/voice-narration-plan.md §7): a soft gold edge down the plate's side,
+ * breathing while the voice speaks. A shadow, not a box, so the fit (fit-plate.ts) never moves.
+ */
+.narration__plate[data-speaking] {
+  box-shadow: inset 0.3em 0 0 0 rgb(245 200 108 / 60%);
+  animation: narration-speaking 1.6s ease-in-out infinite alternate;
+}
+@keyframes narration-speaking {
+  from { box-shadow: inset 0.3em 0 0 0 rgb(245 200 108 / 30%); }
+  to { box-shadow: inset 0.3em 0 0 0 rgb(245 200 108 / 75%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .narration__plate[data-speaking] {
+    animation: none;
+  }
+}
+
+/*
  * A fight: the board is the picture and the words are a caption. The panel
  * drops its chapter label and clamps the body to two lines at reading size,
  * so on a phone's world pane the tiles — and the unicorn on them — stay in

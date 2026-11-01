@@ -30,6 +30,8 @@ export default defineConfig({
       "/events": { target: apiTarget, changeOrigin: true },
       "/assets": { target: apiTarget, changeOrigin: true },
       "/content": { target: apiTarget, changeOrigin: true },
+      // Recorded narration (voice plan §7): CloudFront in prod; the dev server with KAD_VOICE_DIR.
+      "/voice": { target: apiTarget, changeOrigin: true },
     },
     fs: { allow: [repoRoot] },
   },

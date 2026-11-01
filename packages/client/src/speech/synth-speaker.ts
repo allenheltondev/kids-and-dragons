@@ -74,7 +74,16 @@ function pickVoice(voices: SpeechSynthesisVoice[], wanted: string | undefined): 
   return voices.find((v) => v.voiceURI === wanted || v.name === wanted) ?? null;
 }
 
-export function createSynthSpeaker(env: SynthSpeakerEnv): Speaker {
+/**
+ * The device voice, plus a way to hear when a line is over: the recorded-voice speaker
+ * (clip-speaker.ts) queues clips and device lines in one order, so it waits on each.
+ */
+export type DeviceVoice = Speaker & {
+  /** Says `text` as the speaker would, and calls `done` once when it ends, fails or is cut off. */
+  sayThen(text: string, opts: SpeakOptions | undefined, done: () => void): void;
+};
+
+export function createSynthSpeaker(env: SynthSpeakerEnv): DeviceVoice {
   const { synth, createUtterance } = env;
   let refused: { text: string; opts?: SpeakOptions } | null = null;
   let waiting = false;
@@ -97,22 +106,42 @@ export function createSynthSpeaker(env: SynthSpeakerEnv): Speaker {
     env.gestureTarget.addEventListener("keydown", retry);
   };
 
-  function say(text: string, opts?: SpeakOptions): void {
+  // Utterances still to finish, held so a browser cannot collect one before its `end` fires.
+  const live = new Set<SpeechSynthesisUtterance>();
+
+  function say(text: string, opts?: SpeakOptions, done?: () => void): void {
     if (opts?.interrupt) synth.cancel();
     const voice = pickVoice(synth.getVoices(), opts?.voice);
-    for (const piece of sentencePieces(text)) {
+    const pieces = sentencePieces(text);
+    let finished = false;
+    const finish = (): void => {
+      if (finished) return;
+      finished = true;
+      done?.();
+    };
+    if (pieces.length === 0) finish();
+    pieces.forEach((piece, index) => {
       const utterance = createUtterance(piece);
       utterance.rate = opts?.rate ?? DEFAULT_RATE;
       if (voice) utterance.voice = voice;
       else utterance.lang = "en-US";
+      live.add(utterance);
+      utterance.onend = () => {
+        live.delete(utterance);
+        if (index === pieces.length - 1) finish();
+      };
       utterance.onerror = (event) => {
+        live.delete(utterance);
         if (event.error === "not-allowed") holdForGesture(text, opts);
+        // Refused, cut off or broken: the line is over either way, and whatever waits on it goes on.
+        finish();
       };
       synth.speak(utterance);
-    }
+    });
   }
 
-  const speaker: Speaker = (text, opts) => say(text, opts);
+  const speaker = ((text, opts) => say(text, opts)) as DeviceVoice;
+  speaker.sayThen = (text, opts, done) => say(text, opts, done);
   speaker.cancel = () => {
     refused = null;
     synth.cancel();

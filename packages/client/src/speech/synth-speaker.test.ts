@@ -24,6 +24,7 @@ class FakeUtterance {
   lang = "";
   voice: unknown = null;
   onerror: ((e: { error: string }) => void) | null = null;
+  onend: (() => void) | null = null;
   constructor(public text: string) {}
 }
 
@@ -127,5 +128,31 @@ describe("createSynthSpeaker", () => {
     synth.spoken.length = 0;
     listeners.get("keydown")?.();
     expect(synth.spoken).toEqual([]);
+  });
+});
+
+describe("sayThen: hearing that a line is over (for clip-speaker.ts)", () => {
+  const long = Array.from({ length: 8 }, (_, i) => `Sentence number ${String(i)} is here and goes on a while.`).join(" ");
+
+  it("calls done once, when the last piece ends", () => {
+    const { synth, speaker } = setup();
+    let done = 0;
+    speaker.sayThen(long, undefined, () => { done += 1; });
+    expect(synth.queue.length).toBeGreaterThan(1);
+    synth.queue[0]!.onend?.();
+    expect(done).toBe(0);
+    synth.queue.at(-1)!.onend?.();
+    synth.queue.at(-1)!.onend?.();
+    expect(done).toBe(1);
+  });
+
+  it("calls done when the line is refused or cut off, so nothing waits on it for ever", () => {
+    const { synth, speaker } = setup();
+    let done = 0;
+    speaker.sayThen("Hello.", undefined, () => { done += 1; });
+    synth.queue[0]!.onerror?.({ error: "interrupted" });
+    expect(done).toBe(1);
+    speaker.sayThen("   ", undefined, () => { done += 1; });
+    expect(done).toBe(2);
   });
 });

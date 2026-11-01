@@ -1068,6 +1068,16 @@ async function main(): Promise<void> {
   // Static + health
   // -------------------------------------------------------------------------
 
+  // Recorded narration to try at home (docs/voice-narration-plan.md §7): a folder written by
+  // `voice:generate --fake --dir D --render` holds clips at D/voice/… and their manifests at
+  // D/content/voice/manifest/…, the layout of the site bucket. With KAD_VOICE_DIR=D both are
+  // served at their prod URLs; without it a manifest is a 404 and the TV reads with the device voice.
+  const voiceDir = process.env.KAD_VOICE_DIR;
+  if (voiceDir) {
+    app.use("/voice", express.static(path.join(voiceDir, "voice"), { fallthrough: false, immutable: true, maxAge: "1y" }));
+    app.use("/content/voice/manifest", express.static(path.join(voiceDir, "content", "voice", "manifest")));
+  }
+
   // Same URLs as prod, where CloudFront serves both prefixes from S3.
   app.use("/assets", express.static(assetsDir(), { fallthrough: false }));
   app.use("/content", express.static(contentDir(), { fallthrough: false }));
