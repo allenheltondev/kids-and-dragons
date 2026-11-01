@@ -47,11 +47,11 @@
         }
       ],
       "type": "story",
-      "narration": "Three dragonling keepers stare at a stone beside an empty hollow. \"Our counting stone moved overnight,\" says one. \"Now the water cart cannot make its turn. Help us find what moved and get the neighbors safely past it.\" Pip Thistledown, a young manticore Riftseeker, measures the hollow with his tail. A keeper hands him a cord. \"Try something that does not twitch.\"",
+      "narration": "Three dragonling keepers stare at a stone beside an empty hollow. \"Our counting stone moved overnight,\" says one. \"Now the water cart cannot make its turn. Help us find what moved, and get the neighbors safely past it.\" Pip Thistledown, a young manticore Riftseeker, measures the hollow with his tail. A keeper hands him a cord. \"Try something that does not twitch.\"",
       "choices": [
         {
           "id": "look",
-          "label": "Start with the empty hollow",
+          "label": "Check the empty hollow",
           "icon": "hand",
           "goto": "marks"
         }
@@ -70,11 +70,11 @@
         }
       ],
       "type": "story",
-      "narration": "The stone carries a carved mountain throwing sparks. \"An eruption,\" says a keeper. \"Our oldest counts disagree about when it happened.\" One stroke is chipped. Nobody fills it in. The empty hollow fits the stone, but there are no drag marks between them. Pip writes that down before his tail can add any.",
+      "narration": "The stone shows a carved mountain throwing sparks. \"An eruption,\" says a keeper. \"Our oldest counts disagree about when.\" One stroke is chipped. The hollow fits the stone exactly, but nothing dragged it there. Pip writes that down before his tail can add anything.",
       "choices": [
         {
           "id": "continue",
-          "label": "Compare the ground and the old drawings",
+          "label": "Listen for what moved",
           "icon": "hand",
           "goto": "lesson"
         }
@@ -82,7 +82,7 @@
     },
     "lesson": {
       "type": "story",
-      "narration": "A kitsune named Seren Wisp is comparing notes with a young manticore named Pip Thistledown. They wear the Riftseekers' clasps. \"I am finding what has moved,\" says Pip. Seren asks you to hum the hall note, then listen for an answering sound. \"A starweaver can learn to answer a rift's hum. That is called Attune. No one here chooses a rift's rules.\"",
+      "narration": "Seren Wisp, the kitsune from the glacier, sits down beside Pip with her own notes. Seren asks you to hum the hall note and listen for an answer. \"A starweaver can learn to answer a rift's hum. That is called Attune. Answering never changes a rift's rules.\"",
       "choices": [
         {
           "id": "continue",
@@ -104,7 +104,7 @@
             "flag": "attune_taught"
           },
           "replace": true,
-          "text": "A kitsune named Seren Wisp and a manticore named Pip Thistledown are checking another displaced route. Seren asks you to compare the sounds with what she taught you before. Pip adds the new place to his notes."
+          "text": "Seren Wisp is here too, comparing notes with Pip. \"Another moved place,\" she says, and asks you to compare the sounds with what she taught you before."
         }
       ],
       "cast": [
@@ -132,11 +132,11 @@
         }
       ],
       "type": "story",
-      "narration": "One keeper points from the forked rock. Another checks from the ridge. Their sight lines meet at yesterday's empty hollow. Pip draws a line through the map. \"That stone is definitely not where we left it.\"",
+      "narration": "A faint hum answers from beside the stone, then fades. The keepers bring two old drawings of the stone. One was drawn from the road, by the forked rock. One was drawn from the ridge. Their sight lines meet at the empty hollow. \"That stone,\" says Pip, \"is definitely not where we left it.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Check the grass between",
           "icon": "forward",
           "goto": "grass_test",
           "effects": [
@@ -162,7 +162,7 @@
         }
       ],
       "type": "interaction",
-      "narration": "A gust combs the grass between stone and hollow. When it drops, you can see the pressed blades underneath. Call the quiet moment so a friend can trace the undisturbed strip. A dragged stone should have scraped it. There is no scrape. Pip opens his mouth, then writes \"no scrape\" instead of guessing what did it.",
+      "narration": "Wind combs the grass between the stone and the hollow. A dragged stone would leave a scrape. \"Tell me when it lies still,\" says a keeper. Pip opens his mouth to guess, then wisely shuts it.",
       "interaction": {
         "kind": "timing",
         "cue": "Tap in the gold when the grass lies still.",
@@ -173,15 +173,15 @@
       },
       "onSuccess": {
         "goto": "views",
-        "narration": "The grass between the two places is untouched. Something changed without dragging the stone along that strip."
+        "narration": "The grass is untouched. Nothing dragged the stone."
       },
       "onFailure": {
         "goto": "views",
-        "narration": "The gust hides your first look. A keeper holds a windbreak while you check again. The grass is untouched; there is no dragged track."
+        "narration": "A gust hides your first look. A keeper blocks the wind, and you look again. The grass is untouched."
       },
       "onAssisted": {
         "goto": "views",
-        "narration": "The grass between the two places is untouched. Something changed without dragging the stone along that strip."
+        "narration": "The grass is untouched. Nothing dragged the stone."
       }
     },
     "views": {
@@ -197,11 +197,11 @@
         }
       ],
       "type": "story",
-      "narration": "You lay the road drawing beside the ridge drawing. A rock hidden from the road stands in plain view from the ridge. Both keepers lean in. \"Two honest drawings,\" one says. \"One very inconvenient stone.\" Neither record needs erasing.",
+      "narration": "You lay the road drawing beside the ridge drawing. A rock hidden from the road stands in plain view from the ridge. \"Two honest drawings,\" says a keeper. \"One very rude stone.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Mark both spots",
           "icon": "forward",
           "goto": "witness_result"
         }
@@ -220,7 +220,7 @@
         }
       ],
       "type": "story",
-      "narration": "Together you mark the old hollow and today's stone. The drawings disagree about the view, not about whose work to trust. The eruption date is still uncertain. Wheels squeak on the road: the water cart has arrived. Its owner studies the new turn, then the jars. \"Please tell me one of those is the thing you can move back.\"",
+      "narration": "You mark the old hollow and today's stone. The eruption date stays a mystery. Then wheels squeak. The water cart has arrived. Its owner looks at the blocked turn, then at her jars. \"Please tell me that stone moves back.\"",
       "choices": [
         {
           "id": "cart",
@@ -243,11 +243,11 @@
         }
       ],
       "type": "choice_point",
-      "narration": "The moved stone blocks the cart's old turn. Keep the jars aboard and build a short ramp around it: you will balance a heavy load, but the cart can use the ramp again. Or leave the cart above the turn and carry the jars along the high path: more passing, less weight near the hollow. The empty cart will still need guiding. Which plan suits your team?",
+      "narration": "The jars must reach the keepers' counting circle, below the turn, but the stone blocks the way. Build a short ramp and roll the loaded cart over: heavy work, but the ramp stays for tomorrow. Or carry the jars along the high path, then bring the empty cart down. Which plan?",
       "choices": [
         {
           "id": "ramp",
-          "label": "Build a reusable ramp for the loaded cart",
+          "label": "Build a ramp",
           "icon": "hand",
           "goto": "ramp_setup",
           "effects": [
@@ -265,7 +265,7 @@
         },
         {
           "id": "carry",
-          "label": "Pass the jars along the high path",
+          "label": "Carry the jars",
           "icon": "hand",
           "goto": "jar_relay",
           "effects": [
@@ -283,7 +283,7 @@
         },
         {
           "id": "brace",
-          "label": "Have our thornguard brace the ramp",
+          "label": "Let our thornguard brace it",
           "icon": "hand",
           "goto": "braced_ramp",
           "effects": [
@@ -315,24 +315,24 @@
         }
       ],
       "type": "interaction",
-      "narration": "The keeper lays two short boards on sound ground around the turn. Hold them while a friend threads cord beneath the ends. Pip checks the wheel tracks. He starts to draw a proud little flag on the ramp. The cart owner clears her throat. He adds the other wheel track first.",
+      "narration": "A keeper lays two boards around the turn. Hold them steady while the cord goes under. Pip starts drawing a proud little flag on the ramp. The owner clears her throat. He draws the wheel tracks first.",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Hold the ramp while your friend secures the cord.",
+        "cue": "Hold the boards while the cord is tied.",
         "supportLabel": "Hold the boards",
         "actionLabel": "Tie the ramp"
       },
       "onSuccess": {
         "goto": "cart_balance",
-        "narration": "The ramp stays solid. Now bring the loaded cart across it."
+        "narration": "The ramp holds. Bring the cart across."
       },
       "onFailure": {
         "goto": "cart_balance",
-        "narration": "The ramp stays solid. Now bring the loaded cart across it."
+        "narration": "The ramp holds. Bring the cart across."
       },
       "onAssisted": {
         "goto": "cart_balance",
-        "narration": "The ramp stays solid. Now bring the loaded cart across it."
+        "narration": "The ramp holds. Bring the cart across."
       }
     },
     "braced_ramp": {
@@ -348,7 +348,7 @@
         }
       ],
       "type": "story",
-      "narration": "Your thornguard braces the boards against the sound stones. The cord can be secured without everyone holding a board, so your team skips the extra support job. The cart owner pats a jar. \"Your turn to be steady.\"",
+      "narration": "Your thornguard braces the boards against the stones, so nobody else has to hold them. The cart owner pats a jar. \"Your turn to be steady.\"",
       "choices": [
         {
           "id": "cart",
@@ -371,7 +371,7 @@
         }
       ],
       "type": "interaction",
-      "narration": "Each side of the cart rises or dips as the jars shift. Level it before moving across your ramp. One lid rattles like a tiny bell. The owner walks beside the wheel while Pip keeps his tail firmly out of the spokes. The water belongs in the jars until it reaches the keepers.",
+      "narration": "The cart tips as the jars slosh. Keep it level across the ramp. One lid rattles like a tiny bell. Pip keeps his tail far from the spokes.",
       "interaction": {
         "kind": "balance",
         "objectLabel": "water cart",
@@ -380,15 +380,15 @@
       },
       "onSuccess": {
         "goto": "water_delivered",
-        "narration": "The loaded cart rolls over the new ramp. The owner can use this turn again tomorrow."
+        "narration": "The cart rolls over. The ramp will work again tomorrow."
       },
       "onFailure": {
         "goto": "water_delivered",
-        "narration": "The loaded cart rolls over the new ramp. The owner can use this turn again tomorrow."
+        "narration": "The cart wobbles, then rolls over. The ramp will work again tomorrow."
       },
       "onAssisted": {
         "goto": "water_delivered",
-        "narration": "The loaded cart rolls over the new ramp. The owner can use this turn again tomorrow."
+        "narration": "The cart rolls over. The ramp will work again tomorrow."
       }
     },
     "jar_relay": {
@@ -404,24 +404,24 @@
         }
       ],
       "type": "interaction",
-      "narration": "Pass the sealed water jars along the high path. Each friend catches before passing on; the owner waits at the counting circle to receive them. One keeper calls the order. Pip volunteers to carry two jars at once, looks at his tail, and decides that one is already a full conversation.",
+      "narration": "Pass the sealed jars hand to hand along the high path, down to the counting circle. Pip offers to carry two at once. He looks at his tail and decides one is plenty.",
       "interaction": {
         "kind": "relay",
         "objectLabel": "sealed water jar",
-        "cue": "Catch the water jar, then pass it to the next friend.",
+        "cue": "Catch the water jar, then pass it on.",
         "actionLabel": "Pass the jar"
       },
       "onSuccess": {
         "goto": "empty_cart",
-        "narration": "The jars reach the counting circle without using the fragile turn. You still have an empty cart to bring down."
+        "narration": "The jars reach the circle. Now the empty cart."
       },
       "onFailure": {
         "goto": "empty_cart",
-        "narration": "The jars reach the counting circle without using the fragile turn. You still have an empty cart to bring down."
+        "narration": "The jars reach the circle. Now the empty cart."
       },
       "onAssisted": {
         "goto": "empty_cart",
-        "narration": "The jars reach the counting circle without using the fragile turn. You still have an empty cart to bring down."
+        "narration": "The jars reach the circle. Now the empty cart."
       }
     },
     "empty_cart": {
@@ -437,7 +437,7 @@
         }
       ],
       "type": "interaction",
-      "narration": "With the jars off, the cart is light enough to turn around the hollow. Guide its front wheel between two sound stones. The owner holds the handles and waits for your call. An empty jar would make an excellent wheel chock, Pip suggests. \"It would make an empty jar in pieces,\" she replies.",
+      "narration": "The empty cart is light enough to squeeze around the hollow. Guide its front wheel between two stones. \"A jar would make a fine wheel stop,\" says Pip. \"A broken jar,\" says the owner.",
       "interaction": {
         "kind": "precision",
         "cue": "Tap in the gold to guide the wheel through the clear gap.",
@@ -448,15 +448,15 @@
       },
       "onSuccess": {
         "goto": "water_delivered",
-        "narration": "The empty cart reaches the circle. For the next delivery, the jars will need this passing line again."
+        "narration": "The empty cart reaches the circle."
       },
       "onFailure": {
         "goto": "water_delivered",
-        "narration": "The wheel catches a loose pebble. You stop, move the pebble and guide it through together. The jar-passing route will be needed again."
+        "narration": "The wheel bumps a pebble. You move it and try again. The cart reaches the circle."
       },
       "onAssisted": {
         "goto": "water_delivered",
-        "narration": "The empty cart reaches the circle. For the next delivery, the jars will need this passing line again."
+        "narration": "The empty cart reaches the circle."
       }
     },
     "water_delivered": {
@@ -472,11 +472,11 @@
         }
       ],
       "type": "story",
-      "narration": "Water reaches the counting circle. The keepers fill their cups before returning to the mystery. Pip drinks, counts the cups, and carefully does not count the party. The owner asks for one more useful thing: a warning that will stop the next traveler trusting the old turn.",
+      "narration": "Water reaches the counting circle, and the keepers fill their cups. Pip drinks too fast and hiccups so hard his tail jumps. The owner asks for one more thing: a warning, so nobody trusts the old turn.",
       "choices": [
         {
           "id": "rest",
-          "label": "Take a drink and plan the warning",
+          "label": "Rest, then plan a warning",
           "icon": "hand",
           "goto": "camp"
         }
@@ -503,17 +503,17 @@
       ],
       "type": "rest",
       "heal": 0,
-      "narration": "You rest on a low stone while the owner parks the cart. A keeper shares apple slices. Pip uses one to hold his drawing flat, takes a bite, then wonders where his paperweight went. Two neighbors are due: a walker from below the blind rise, and a cart from the upper road. Both will need the new turn explained.",
+      "narration": "You rest on a low stone. A keeper shares apple slices. Pip uses one to hold his drawing flat, then eats it, then wonders where his paperweight went. Two neighbors are coming: a walker from below the blind rise, and a cart from the upper road.",
       "choices": [
         {
           "id": "plan",
-          "label": "Plan the warning together",
+          "label": "Plan the warning",
           "icon": "hand",
           "goto": "warning"
         },
         {
           "id": "joke",
-          "label": "Help Pip find a better paperweight",
+          "label": "Find Pip a paperweight",
           "icon": "hand",
           "goto": "paperweight"
         }
@@ -532,23 +532,23 @@
         }
       ],
       "type": "choice_point",
-      "narration": "Pip holds the flapping page with one paw and the remains of his apple with the other. The keepers have seen this before. Each friend can help solve the extremely local problem of keeping a drawing on a rock.",
+      "narration": "Pip holds the flapping page in one paw and his apple core in the other. The keepers have seen this before. How do you keep a drawing on a rock?",
       "choices": [
         {
           "id": "rock",
-          "label": "Offer a small clean pebble",
+          "label": "Offer a clean pebble",
           "icon": "hand",
           "goto": "paperweight_response_rock"
         },
         {
           "id": "fold",
-          "label": "Fold the empty edge under the slate",
+          "label": "Tuck the edge under",
           "icon": "hand",
           "goto": "paperweight_response_fold"
         },
         {
           "id": "hold",
-          "label": "Hold the corner while he finishes",
+          "label": "Hold the corner",
           "icon": "hand",
           "goto": "paperweight_response_hold"
         }
@@ -567,11 +567,11 @@
         }
       ],
       "type": "choice_point",
-      "narration": "There is one large board for a warning and loose stones for a smaller marker. Put the big sign below the blind rise and walkers will stop in time; your team will need to guide the upper cart. Put it above the turn and carts will have room to brake; your team must meet the walker below. \"Both neighbors are coming,\" Pip reminds you. Which approach should the large sign protect?",
+      "narration": "There is one big board for a warning and a few stones for a small one. Put the big sign below the blind rise, and walkers stop in time, but you must guide the cart. Put it above the turn, and carts can brake, but you must meet the walker. \"Both neighbors are coming,\" Pip reminds you.",
       "choices": [
         {
           "id": "lower",
-          "label": "Warn the walkers below; we will guide the cart",
+          "label": "Big sign for walkers",
           "icon": "hand",
           "goto": "lower_sign",
           "effects": [
@@ -584,7 +584,7 @@
         },
         {
           "id": "upper",
-          "label": "Warn the carts above; we will meet the walker",
+          "label": "Big sign for carts",
           "icon": "hand",
           "goto": "upper_sign",
           "effects": [
@@ -610,24 +610,24 @@
         }
       ],
       "type": "interaction",
-      "narration": "Carry the large warning down the dry path and pass its cord around the lower posts. From below, the board appears before the hollow. The keeper checks it at a walker's height. Above you, wheels begin to rattle. The smaller marker cannot stop that driver by itself; that is your team's next job.",
+      "narration": "Carry the big board down the dry path and tie it to the lower posts. Walkers will see it before the hollow. Above you, wheels begin to rattle.",
       "interaction": {
         "kind": "relay",
         "objectLabel": "warning cord",
-        "cue": "Catch and pass the cord around the lower warning posts.",
+        "cue": "Catch the cord and pass it around the posts.",
         "actionLabel": "Pass the warning cord"
       },
       "onSuccess": {
         "goto": "upper_cart",
-        "narration": "The walker sees the large warning and waits safely below. Your team heads up to guide the approaching cart."
+        "narration": "The walker sees the sign and waits. Hurry up to the cart!"
       },
       "onFailure": {
         "goto": "upper_cart",
-        "narration": "The walker sees the large warning and waits safely below. Your team heads up to guide the approaching cart."
+        "narration": "The cord slips, then holds. The walker waits. Hurry up to the cart!"
       },
       "onAssisted": {
         "goto": "upper_cart",
-        "narration": "The walker sees the large warning and waits safely below. Your team heads up to guide the approaching cart."
+        "narration": "The walker sees the sign and waits. Hurry up to the cart!"
       }
     },
     "upper_sign": {
@@ -643,24 +643,24 @@
         }
       ],
       "type": "interaction",
-      "narration": "Set the board well before the upper turn, leaving room for a cart to stop. Hold it while a friend ties the second corner. The cart driver spots it and brakes. Below the blind rise, a walking neighbor waves at the little stone arrow. She cannot see the hollow from there; you will need to show her.",
+      "narration": "Set the big board well before the upper turn, so a cart has room to stop. Hold it while the corner is tied. Below the blind rise, the walker waves at the little stone arrow. She cannot see the hollow from there.",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Hold the upper sign while your friend ties it.",
+        "cue": "Hold the sign while the corner is tied.",
         "supportLabel": "Hold the sign",
         "actionLabel": "Tie the corner"
       },
       "onSuccess": {
         "goto": "lower_neighbor",
-        "narration": "The cart driver waits above the turn. Your team goes down to meet the walker."
+        "narration": "The cart driver spots the sign and stops. Now go meet the walker."
       },
       "onFailure": {
         "goto": "lower_neighbor",
-        "narration": "The cart driver waits above the turn. Your team goes down to meet the walker."
+        "narration": "The board tilts, then holds. The driver stops. Now go meet the walker."
       },
       "onAssisted": {
         "goto": "lower_neighbor",
-        "narration": "The cart driver waits above the turn. Your team goes down to meet the walker."
+        "narration": "The cart driver spots the sign and stops. Now go meet the walker."
       }
     },
     "upper_cart": {
@@ -676,7 +676,7 @@
         }
       ],
       "type": "interaction",
-      "narration": "Your big sign is protecting the walker below. Here, the cart driver needs your signal to take the new turn. Wait until the front wheel reaches the keeper's white marker, then call it. Pip holds his tail out as an arrow. It points three different ways. You use your hand instead.",
+      "narration": "Up here, the cart driver needs your signal. Call it when the front wheel reaches the keeper's white marker. Pip holds out his tail as an arrow. It points three ways at once. You use your hand.",
       "interaction": {
         "kind": "timing",
         "cue": "Tap in the gold when the wheel reaches the turning marker.",
@@ -687,15 +687,15 @@
       },
       "onSuccess": {
         "goto": "neighbor_result",
-        "narration": "The driver follows your turn and stops at the circle. The unguarded approach needed your help, just as you planned."
+        "narration": "The driver takes the new turn and stops at the circle."
       },
       "onFailure": {
         "goto": "neighbor_result",
-        "narration": "You call early. The driver stops while the keeper resets the marker, then follows your clearer signal. Your team has shown where an extra upper warning is needed."
+        "narration": "You call too early. The driver waits for your second call. The upper road needs a bigger sign."
       },
       "onAssisted": {
         "goto": "neighbor_result",
-        "narration": "The driver follows your turn and stops at the circle. The unguarded approach needed your help, just as you planned."
+        "narration": "The driver takes the new turn and stops at the circle."
       }
     },
     "lower_neighbor": {
@@ -711,7 +711,7 @@
         }
       ],
       "type": "interaction",
-      "narration": "The cart is safely stopped by your upper sign. Walk the neighbor past the blind rise using the route you actually checked: wait by the forked rock, go around the high side of the hollow, then join the counting circle. Share your landmarks so she can follow without guessing what is behind the rise.",
+      "narration": "Walk the neighbor past the blind rise the way you checked it. Tell her the landmarks in order, so she never has to guess what is behind the rise.",
       "interaction": {
         "kind": "sequence",
         "cue": "Give the walker the route from below.",
@@ -746,15 +746,15 @@
       },
       "onSuccess": {
         "goto": "neighbor_result",
-        "narration": "The neighbor reaches the circle and can repeat the new route. The small lower marker needed your help, as you planned."
+        "narration": "The walker reaches the circle and repeats the route back."
       },
       "onFailure": {
         "goto": "neighbor_result",
-        "narration": "The neighbor points out a confusing instruction. You walk the checked route with her and correct it. The smaller lower marker still needs an extra warning."
+        "narration": "\"Wait, which rock?\" asks the walker. You walk it with her. The lower path needs a bigger sign."
       },
       "onAssisted": {
         "goto": "neighbor_result",
-        "narration": "The neighbor reaches the circle and can repeat the new route. The small lower marker needed your help, as you planned."
+        "narration": "The walker reaches the circle and repeats the route back."
       }
     },
     "neighbor_result": {
@@ -770,11 +770,11 @@
         }
       ],
       "type": "story",
-      "narration": "Both neighbors are at the counting circle. Your one large sign helped one approach; your team helped the other. The owner marks where another board is needed tomorrow. \"Explain the turn back to me,\" Pip asks the neighbors. They can. Then a thin trickle begins running down the ridge toward the empty hollow.",
+      "narration": "Both neighbors reach the counting circle. \"Explain the turn back to me,\" Pip asks them. They can. Then a thin trickle of water starts down the ridge, toward the empty hollow.",
       "choices": [
         {
           "id": "water",
-          "label": "See where the new water is going",
+          "label": "Follow the trickle",
           "icon": "hand",
           "goto": "runoff"
         }
@@ -791,13 +791,13 @@
           "when": {
             "flag": "stone_sign_lower"
           },
-          "text": "The lower approach has the big warning. The upper approach still needs a larger sign for carts arriving without your team."
+          "text": "The lower road has the big sign. The upper road needs a bigger one."
         },
         {
           "when": {
             "notFlag": "stone_sign_lower"
           },
-          "text": "The upper approach has the big warning. Walkers below the blind rise will still need a larger sign of their own."
+          "text": "The upper road has the big sign. The lower road needs a bigger one."
         }
       ]
     },
@@ -814,17 +814,17 @@
         }
       ],
       "type": "choice_point",
-      "narration": "The trickle will wash away the sharp edge that helped you measure the hollow. You can aim a small drain into the empty gravel and try to preserve that edge. Or spread loose gravel across the wet patch: a steadier road surface, but the fine footprint will be covered and your drawing must rely on the landmarks you already checked. Which work should last after you leave?",
+      "narration": "The trickle will wash away the hollow's sharp edge, your best clue. A small drain could steer the water past it. Or spread gravel over the wet patch: a stronger road, but it buries the edge. What should last?",
       "choices": [
         {
           "id": "drain",
-          "label": "Protect the footprint with a small drain",
+          "label": "Dig a small drain",
           "icon": "hand",
           "goto": "drain"
         },
         {
           "id": "gravel",
-          "label": "Strengthen the wet road; preserve a simpler drawing",
+          "label": "Gravel the road",
           "icon": "hand",
           "goto": "gravel",
           "effects": [
@@ -850,7 +850,7 @@
         }
       ],
       "type": "interaction",
-      "narration": "From the dry side, use a narrow board to guide the trickle into the empty gravel. Aim past the hollow's sharp edge. Pip follows the water with his pencil, then remembers pencils are not boats. He catches it just before a tiny voyage begins.",
+      "narration": "Steer the trickle past the sharp edge with a narrow board. Pip follows the water with his pencil, then drops it. He grabs it just before it sails away.",
       "interaction": {
         "kind": "precision",
         "cue": "Tap in the gold to guide the trickle past the hollow.",
@@ -861,7 +861,7 @@
       },
       "onSuccess": {
         "goto": "evidence_decision",
-        "narration": "The fine edge stays visible. Your page can include its exact outline.",
+        "narration": "The sharp edge stays clear.",
         "effects": [
           {
             "type": "setFlag",
@@ -872,7 +872,7 @@
       },
       "onFailure": {
         "goto": "evidence_decision",
-        "narration": "The first trickle washes a corner before you settle the drain. The road stays clear, but your page must leave that fine edge uncertain.",
+        "narration": "Water washes one corner before the drain is set. That edge is lost.",
         "effects": [
           {
             "type": "setFlag",
@@ -883,7 +883,7 @@
       },
       "onAssisted": {
         "goto": "evidence_decision",
-        "narration": "The fine edge stays visible. Your page can include its exact outline.",
+        "narration": "The sharp edge stays clear.",
         "effects": [
           {
             "type": "setFlag",
@@ -906,7 +906,7 @@
         }
       ],
       "type": "interaction",
-      "narration": "Level the shallow gravel tray before spreading its load over the wet patch. The owner tests the new road surface from the dry side. It holds. The fragile outline is now underneath it. \"Better wheels,\" says the keeper. \"A simpler drawing. We chose both parts of that.\"",
+      "narration": "Level the gravel tray, then spread it on the wet patch. The sharp edge disappears underneath. \"Better wheels,\" says a keeper. \"A simpler drawing. We chose both.\"",
       "interaction": {
         "kind": "balance",
         "objectLabel": "gravel tray",
@@ -915,15 +915,15 @@
       },
       "onSuccess": {
         "goto": "evidence_decision",
-        "narration": "The road surface is steadier. Your record will use the checked landmarks rather than an uncovered fine edge."
+        "narration": "The road is firm. Your drawing will use landmarks."
       },
       "onFailure": {
         "goto": "evidence_decision",
-        "narration": "The road surface is steadier. Your record will use the checked landmarks rather than an uncovered fine edge."
+        "narration": "The road is firm. Your drawing will use landmarks."
       },
       "onAssisted": {
         "goto": "evidence_decision",
-        "narration": "The road surface is steadier. Your record will use the checked landmarks rather than an uncovered fine edge."
+        "narration": "The road is firm. Your drawing will use landmarks."
       }
     },
     "evidence_decision": {
@@ -939,11 +939,11 @@
         }
       ],
       "type": "choice_point",
-      "narration": "You have the old drawings, today's measurements and whatever the water left visible. Make the traveling page match that evidence. The stone fits its old hollow. The grass has no dragged track. None of this supplies a date for the eruption. Pip leaves the uncertain stroke dotted and offers you the pencil. \"Only what we saw.\"",
+      "narration": "Time to make the traveling page. The stone fits its hollow. The grass has no scrape. Nothing tells you the eruption's date. Pip dots in the chipped stroke and hands you the pencil. \"Only what we saw.\"",
       "choices": [
         {
           "id": "exact",
-          "label": "Copy the sharp edge we preserved",
+          "label": "Copy the sharp edge",
           "icon": "hand",
           "goto": "exact_copy",
           "when": {
@@ -952,7 +952,7 @@
         },
         {
           "id": "landmarks",
-          "label": "Build a careful landmark sketch",
+          "label": "Sketch the landmarks",
           "icon": "hand",
           "goto": "landmark_copy"
         }
@@ -971,11 +971,11 @@
         }
       ],
       "type": "story",
-      "narration": "You copy the visible outline with the keeper. Even on the precise page, the chipped corner stays dotted. Pip adds a tiny question mark. \"Does it need a hat?\" The keeper gives him a look that answers a different question.",
+      "narration": "You copy the sharp outline. The chipped stroke stays dotted. Pip adds a tiny question mark. \"Does it need a hat?\" The keeper gives him a look.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Show it to Seren",
           "icon": "forward",
           "goto": "motion"
         }
@@ -994,11 +994,11 @@
         }
       ],
       "type": "story",
-      "narration": "The keeper records the forked rock, old hollow and today's stone. The washed or covered fine edge stays blank. She writes \"from the road\" above the drawing. The next keeper will know where you stood, even where you could not measure.",
+      "narration": "A keeper draws the forked rock, the old hollow and today's stone. She leaves the lost edge blank and writes \"from the road\" on top.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Show it to Seren",
           "icon": "forward",
           "goto": "motion"
         }
@@ -1017,17 +1017,17 @@
         }
       ],
       "type": "choice_point",
-      "narration": "Beside the stone, a fold in the air is narrowing. Seren holds two fingers apart, then brings them closer. \"We should show late travelers what that means.\" You can copy its changing width, or a starweaver can use a skill called Attune to compare its hum. Nobody needs to cross it to learn that its remaining time is shrinking.",
+      "narration": "Beside the stone, a fold in the air is narrowing. Seren holds two fingers apart, then pinches them closer. \"Late travelers should know what that means.\" Nobody needs to cross it. You just need to show its time is running out.",
       "choices": [
         {
           "id": "measure",
-          "label": "Remember how its width changes",
+          "label": "Copy how it shrinks",
           "icon": "hand",
           "goto": "motion_memory"
         },
         {
           "id": "attune",
-          "label": "Have our starweaver compare its changing hum",
+          "label": "Our starweaver hums along",
           "icon": "hand",
           "goto": "motion_attuned",
           "requiresClass": "starweaver"
@@ -1047,7 +1047,7 @@
         }
       ],
       "type": "interaction",
-      "narration": "Pip marks the fold's width each time Seren taps the slate. For two taps it stays wide; then it narrows, then narrows again. Watch and copy that pattern. A keeper lays a little cord circle beside the marks. \"This is the waiting place. It is not an invitation to jump.\"",
+      "narration": "Seren taps a small slate. Each time, Pip marks the fold's width. Watch, then copy. A keeper lays a cord circle beside the marks. \"This is a waiting place. Not a jumping place.\"",
       "interaction": {
         "kind": "memory",
         "cue": "Watch the width marks, then copy the change.",
@@ -1079,15 +1079,15 @@
       },
       "onSuccess": {
         "goto": "stone_priority",
-        "narration": "Your marks show time running out, not where the opening goes."
+        "narration": "Your marks show time running out."
       },
       "onFailure": {
         "goto": "stone_priority",
-        "narration": "Seren repeats the observations slowly and you correct the marks. The opening is shrinking; the destination remains unknown."
+        "narration": "Seren taps slowly, and you fix the marks. The fold is shrinking."
       },
       "onAssisted": {
         "goto": "stone_priority",
-        "narration": "Your marks show time running out, not where the opening goes."
+        "narration": "Your marks show time running out."
       }
     },
     "motion_attuned": {
@@ -1103,10 +1103,10 @@
         }
       ],
       "type": "interaction",
-      "narration": "Your starweaver answers the fold's hum with Attune while the party watches its edges. The steady answering note gives you a wider target for matching the next pulse. A friend can make the call. The sound helps with timing; it does not change the opening's rules.",
+      "narration": "Your starweaver hums back at the fold, the way Seren taught. The answering note makes its pulse easy to catch. It does not change the fold's rules.",
       "interaction": {
         "kind": "timing",
-        "cue": "Use the answering note to match the pulse in the wider gold band.",
+        "cue": "Use the answering note to catch the pulse in the wide gold band.",
         "actionLabel": "Match the narrowing pulse",
         "target": 0.5,
         "width": 0.6,
@@ -1114,15 +1114,15 @@
       },
       "onSuccess": {
         "goto": "stone_priority",
-        "narration": "The answered pulse and the visible narrowing agree. The opening is running out of time."
+        "narration": "The pulse and the edges agree. The fold is running out of time."
       },
       "onFailure": {
         "goto": "stone_priority",
-        "narration": "You miss one pulse. Seren helps you compare the next with its edges. It is still narrowing; the answer does not change its rules."
+        "narration": "You miss one pulse, then catch the next. It is still shrinking."
       },
       "onAssisted": {
         "goto": "stone_priority",
-        "narration": "The answered pulse and the visible narrowing agree. The opening is running out of time."
+        "narration": "The pulse and the edges agree. The fold is running out of time."
       }
     },
     "stone_priority": {
@@ -1138,11 +1138,11 @@
         }
       ],
       "type": "choice_point",
-      "narration": "Pip holds up his traveling page. \"I can give one drawing the biggest space.\" A road plan will be useful at the next changed crossing; an old-mark drawing preserves the uncertain count for comparison with another stone. The keepers retain both full records here. Choose which work your party will finish and carry forward first.",
+      "narration": "Pip holds up his traveling page. \"Room for one big drawing.\" A road plan helps at the next moved crossing. The old marks let you compare this count with another stone. The keepers keep both here. Which do you carry?",
       "choices": [
         {
           "id": "route",
-          "label": "Finish the traveling road plan",
+          "label": "Carry the road plan",
           "icon": "hand",
           "goto": "route_copy",
           "effects": [
@@ -1155,7 +1155,7 @@
         },
         {
           "id": "carving",
-          "label": "Finish the old-mark comparison page",
+          "label": "Carry the old marks",
           "icon": "hand",
           "goto": "carving_copy",
           "effects": [
@@ -1181,11 +1181,11 @@
         }
       ],
       "type": "story",
-      "narration": "The cart owner keeps the local road plan for tomorrow's delivery. Pip checks the traveling copy with you and slides it into his notebook. \"Next time the road argues with the map, we have a starting point.\"",
+      "narration": "The owner keeps a road plan for tomorrow. Pip tucks the traveling copy in his notebook. \"Next time the road argues with the map, we have a starting point.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Pack up",
           "icon": "forward",
           "goto": "rest"
         }
@@ -1204,11 +1204,11 @@
         }
       ],
       "type": "story",
-      "narration": "The keeper copies the long stroke, short strokes and uncertain chip. The chip stays a question. The eruption still has no agreed date. Pip draws a dotted box beside the marks. \"For the bit we do not know. Might need a bigger notebook.\"",
+      "narration": "A keeper copies the long stroke, the short strokes and the chip. Pip draws a dotted box beside them. \"For the bit we do not know. Might need a bigger notebook.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Pack up",
           "icon": "forward",
           "goto": "rest"
         }
@@ -1228,7 +1228,7 @@
       ],
       "type": "rest",
       "heal": 0,
-      "narration": "The water jars stand beside full cups. The old hollow and today's stone are recorded, with no invented eruption date. Both neighbors can explain the new turn. Pip packs the traveling page. \"Thank you, team.\" The road to Ashspan Bridge is open. The narrowing fold is another possible way onward; if you take the road instead, its remaining chance will pass.",
+      "narration": "Water jars stand beside full cups. The stone and its hollow are on the page, with no made-up date. Both neighbors know the new turn. \"Thank you,\" says Pip. The road to Ashspan Bridge is open. The shrinking fold is another way on, but not for long.",
       "choices": [],
       "outcome": "success",
       "variants": [
@@ -1236,47 +1236,47 @@
           "when": {
             "flag": "stone_sign_lower"
           },
-          "text": "Your large sign warns walkers below the rise. The keepers will add a larger upper sign for the next carts."
+          "text": "The keepers will add a larger upper sign for carts."
         },
         {
           "when": {
             "notFlag": "stone_sign_lower"
           },
-          "text": "Your large sign stops carts above the turn. The keepers will add a larger lower warning for walkers."
+          "text": "The keepers will add a larger lower warning for walkers."
         },
         {
           "when": {
             "flag": "stone_ramp_used"
           },
-          "text": "The reusable ramp remains for tomorrow's water delivery."
+          "text": "Your reusable ramp stays for tomorrow."
         },
         {
           "when": {
             "flag": "stone_jars_carried"
           },
-          "text": "Tomorrow's jars will need the high-path passing line again; the cart route has not become a loaded ramp."
+          "text": "Tomorrow's jars will need the passing line again."
         },
         {
           "when": {
             "flag": "stone_hollow_clear"
           },
-          "text": "The original fine edge remains available for another measurement."
+          "text": "The sharp edge is still there to measure."
         },
         {
           "when": {
             "notFlag": "stone_hollow_clear"
           },
-          "text": "The fine edge is no longer clear. The checked landmarks remain on the page; the missing detail stays missing."
+          "text": "The sharp edge is gone, and the missing detail stays missing."
         }
       ]
     },
     "paperweight_response_rock": {
       "type": "story",
-      "narration": "Pip puts the pebble on the corner. \"A paperweight that does not become lunch. Excellent.\" With the drawing safely weighted, you can deal with the actual road.",
+      "narration": "Pip puts the pebble on the corner. \"A paperweight I cannot eat. Excellent.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Plan the warning",
           "icon": "forward",
           "goto": "warning"
         }
@@ -1295,11 +1295,11 @@
     },
     "paperweight_response_fold": {
       "type": "story",
-      "narration": "The page stays flat. Pip gives the folded corner a suspicious look, then nods. With the drawing safely weighted, you can deal with the actual road.",
+      "narration": "The page stays flat. Pip gives the folded corner a suspicious look, then nods.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Plan the warning",
           "icon": "forward",
           "goto": "warning"
         }
@@ -1318,11 +1318,11 @@
     },
     "paperweight_response_hold": {
       "type": "story",
-      "narration": "Pip finishes the line and thanks you. His tail tries to help. You move it off the ink. With the drawing safely weighted, you can deal with the actual road.",
+      "narration": "Pip finishes the line and thanks you. His tail tries to help. You move it off the ink.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue",
+          "label": "Plan the warning",
           "icon": "forward",
           "goto": "warning"
         }
