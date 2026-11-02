@@ -25,14 +25,21 @@ import { DICE_PLAYBACK_RATE } from "../dice-timing";
  *   voices → sfx gain ─┐
  *                      ├→ master gain → destination
  *   music pad ─────────┘
+ *   narration clips → voice gain ───→ destination
  *
  * Master carries volume × mute; the two stages under it exist so music can sit
  * well under the effects without every recipe knowing that. Muting sets master
  * to zero rather than tearing the pad down: the pad is three oscillators, and
  * keeping it running means unmute is instant instead of a rebuild.
+ *
+ * Recorded narration has a bus of its own beside master (`sink.voice`,
+ * speech/clip-speaker.ts). It follows the volume and quiet mode but not mute:
+ * mute is the sound switch, read-aloud has its own, and the device voice it
+ * stands in for was never muted by it either. While a clip plays the music
+ * ducks VOICE_DUCK_DB and comes back when the voice ends or is cut off.
  */
 
-import type { AmbienceId, AudioSink, AudioState, CueId } from "./cue";
+import type { AmbienceId, AudioSink, AudioState, CueId, VoiceChannel } from "./cue";
 import { createSampleLibrary, type SampleLibrary, type SampleLoaderOptions } from "./samples";
 import { CUE_QUIET } from "./cues";
 import { QUIET_VOLUME_SCALE, isQuiet } from "../quiet";
@@ -52,6 +59,11 @@ const MUSIC_LEVEL = 0.45;
 const SFX_LEVEL = 1;
 /** Seconds to walk one pad out and the next in. */
 const MUSIC_FADE_S = 1.5;
+/** How far the music drops under a recorded voice, and how fast it goes down and comes back. */
+export const VOICE_DUCK_DB = -10;
+const VOICE_DUCK = 10 ** (VOICE_DUCK_DB / 20);
+const DUCK_S = 0.25;
+const UNDUCK_S = 0.8;
 
 /** The slice of Storage this uses, so tests can hand in a plain object. */
 export interface PrefStore {
@@ -169,6 +181,9 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
   let master: GainNode | null = null;
   let sfx: GainNode | null = null;
   let musicBus: GainNode | null = null;
+  let voiceBus: GainNode | null = null;
+  /** Clip playlists playing now, by their stop; the music is ducked while there is any. */
+  const voicePlays = new Set<() => void>();
 
   /** The biome whose pad is (or would be) playing, and its teardown. */
   let musicBiome: string | null = null;
@@ -185,7 +200,20 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
   }
 
   function masterLevel(): number {
-    return prefs.muted ? 0 : prefs.volume * (quiet ? QUIET_VOLUME_SCALE : 1);
+    return prefs.muted ? 0 : voiceLevel();
+  }
+
+  function voiceLevel(): number {
+    return prefs.volume * (quiet ? QUIET_VOLUME_SCALE : 1);
+  }
+
+  function duckMusic(down: boolean): void {
+    if (!ctx || !musicBus) return;
+    const at = ctx.currentTime;
+    const gain = musicBus.gain;
+    gain.cancelScheduledValues(at);
+    gain.setValueAtTime(gain.value, at);
+    gain.linearRampToValueAtTime(down ? MUSIC_LEVEL * VOICE_DUCK : MUSIC_LEVEL, at + (down ? DUCK_S : UNDUCK_S));
   }
 
   /**
@@ -226,6 +254,9 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
     musicBus = ctx.createGain();
     musicBus.gain.setValueAtTime(MUSIC_LEVEL, ctx.currentTime);
     musicBus.connect(master);
+    voiceBus = ctx.createGain();
+    voiceBus.gain.setValueAtTime(voiceLevel(), ctx.currentTime);
+    voiceBus.connect(ctx.destination);
 
     // The context may still arrive suspended even inside a gesture handler.
     resume(ctx);
@@ -402,7 +433,57 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
     };
   }
 
+  const voice: VoiceChannel = {
+    ready: () => ctx !== null && voiceBus !== null && ctx.state === "running",
+    decode(bytes) {
+      return ctx ? ctx.decodeAudioData(bytes) : Promise.reject(new Error("no audio context"));
+    },
+    play(buffers, onEnd) {
+      if (!ctx || !voiceBus || buffers.length === 0) {
+        onEnd();
+        return () => undefined;
+      }
+      const context = ctx;
+      const bus = voiceBus;
+      const sources: AudioBufferSourceNode[] = [];
+      // Back to back on the context's clock, so no timer can open a gap between clips.
+      let at = context.currentTime + 0.05;
+      for (const buffer of buffers) {
+        const source = context.createBufferSource();
+        // Only `decode` above makes these, so each is the context's own AudioBuffer.
+        source.buffer = buffer as AudioBuffer;
+        source.connect(bus);
+        source.start(at);
+        at += buffer.duration;
+        sources.push(source);
+      }
+      let over = false;
+      const end = (natural: boolean): void => {
+        if (over) return;
+        over = true;
+        voicePlays.delete(stop);
+        for (const source of sources) {
+          source.onended = null;
+          try {
+            source.stop();
+            source.disconnect();
+          } catch {
+            // Already ended, or a context torn down under it.
+          }
+        }
+        if (voicePlays.size === 0) duckMusic(false);
+        if (natural) onEnd();
+      };
+      const stop = (): void => end(false);
+      sources[sources.length - 1]!.onended = () => end(true);
+      if (voicePlays.size === 0) duckMusic(true);
+      voicePlays.add(stop);
+      return stop;
+    },
+  };
+
   const sink: AudioSink = {
+    voice,
     ambience(id) {
       if (id === ambienceId) return;
       ambienceId = id;
@@ -455,6 +536,7 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
   function applyMaster(): void {
     if (!ctx || !master) return;
     master.gain.setValueAtTime(masterLevel(), ctx.currentTime);
+    voiceBus?.gain.setValueAtTime(voiceLevel(), ctx.currentTime);
   }
 
   return {
@@ -489,6 +571,7 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
       applyMaster();
     },
     dispose(): void {
+      for (const stop of [...voicePlays]) stop();
       stopAmbience?.(); stopAmbience = null; ambienceId = null;
       stopSceneCues();
       stopPad?.();
@@ -502,6 +585,7 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
       master = null;
       sfx = null;
       musicBus = null;
+      voiceBus = null;
     },
   };
 }

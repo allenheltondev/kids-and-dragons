@@ -166,7 +166,12 @@ const FIRST_PAINT_BUDGET_KB = 328;
 // in the stage chunks every TV fetched (the 8.22 bump above was most of it). A TV opening a fight
 // fetches 73KB less JavaScript. First paint did not move (327KB). Keep this close to the
 // measurement: a feature that needs more gives something back, or raises it as its own decision.
-const TOTAL_BUDGET_KB = 1461;
+// 1461 -> 1462, deliberately, for recorded narration (#546, PR #593): 1462KB measured, 1458 before
+// it. The clip speaker (which now also carries the device voice) in the lazy read-aloud chunk, the
+// engine's voice bus and the narration panel's speaking mark, about 4KB, all lazy; first paint did
+// not move (327KB). Agreed with the owner as its own decision rather than a give-back, and set to
+// the measurement with no slack: the next feature that needs more gives something back.
+const TOTAL_BUDGET_KB = 1462;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);
