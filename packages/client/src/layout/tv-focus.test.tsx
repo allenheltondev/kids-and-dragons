@@ -7,7 +7,7 @@
  */
 
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { act, cleanup, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { beginEncounter, parseBoard, type EncounterState, type Prompt } from "@kad/shared";
 import { makeRules } from "../../../shared/src/test-fixtures";
 import { makeCharacter, makeMember, makeState } from "../testing/fixtures";
@@ -168,6 +168,10 @@ describe("TV focus on a Party Mode phone", () => {
     act(() => screen.getByRole("button", { name: "Look in my bag" }).click());
     expect(screen.queryByTestId("tv-rest")).toBeNull();
     expect(screen.getByLabelText("Your page").closest("[hidden]")).toBeNull();
+    act(() => fireEvent.change(screen.getByLabelText("Your page"), { target: { value: "stats" } }));
+    expect(screen.getByRole("button", { name: "Your stats" })).toBeTruthy();
+    act(() => fireEvent.change(screen.getByLabelText("Your page"), { target: { value: "bag" } }));
+    expect(screen.getByRole("button", { name: /^Your things/ })).toBeTruthy();
     act(() => screen.getByRole("button", { name: "Back to the TV" }).click());
     expect(screen.getByTestId("tv-rest")).not.toBeNull();
   });
