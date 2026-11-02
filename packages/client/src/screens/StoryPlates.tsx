@@ -16,8 +16,8 @@
  *   itself, a plate staying up as long as its words take to say, and has no button there. A
  *   remote's OK (Enter) turns a page and Escape skips the rest, on any screen. A phone's pane
  *   (Travel Mode) gets Next and Skip.
- * - **The story waits behind it.** While a reel is up `useStartPreface` is pending, so "Last time…"
- *   and the first scene's read-aloud start the moment it is done, never over it.
+ * - **The story waits behind it.** While a reel is up `useStartPreface` is pending, so the
+ *   first scene's read-aloud starts the moment it is done, never over it.
  * - **A painting that has not landed is left out.** Every painting is fetched up front; the ones
  *   that arrive (within PLATE_LOAD_MS) play, in order, and a reel with none is passed over for
  *   this page load without being marked seen, so it plays the day the art ships.
