@@ -129,7 +129,7 @@ function PersonalHome(): ReactElement {
   const [displayName, setDisplayName] = useState(() => randomName());
   const [hosting, setHosting] = useState(false);
   /*
-   * "Show a game from another place": `null` while closed, else the code it
+   * "Join a game lobby": `null` while closed, else the code it
    * opens with. A `?screen=` link the leader sent opens it with the code typed,
    * one tap from the game, and never spends it by itself.
    */
@@ -487,7 +487,7 @@ function PersonalHome(): ReactElement {
               {/* A second TV for a game played from two places. Quiet: most
                   evenings are one TV, and this is for the other one. */}
               <button type="button" className="home__link kad-focusable" onClick={() => setShowing("")}>
-                Show a game from another place
+                Join a game lobby
               </button>
               <button
                 type="button"

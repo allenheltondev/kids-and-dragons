@@ -46,7 +46,7 @@ function useExpired(expiresAt: string | null): boolean {
 
 /** What the leader sends to the other place: the link, and the code in words for a TV that cannot open links. */
 export function screenShareText(code: string, url: string): string {
-  return `Show our Kids & Dragons game on your TV: open ${url}, or tap Host a game, then Show a game from another place, and type ${formatPairingCode(code)}.`;
+  return `Show our Kids & Dragons game on your TV: open ${url}, or tap Host a game, then Join a game lobby, and type ${formatPairingCode(code)}.`;
 }
 
 /**
@@ -114,7 +114,7 @@ export function AddScreen({ roomCode, shareable }: { roomCode: string; shareable
         ) : (
           <div className="pair__card kad-screens__card" role="status">
             <p className="pair__note">
-              On the other TV, tap <b>Host a game</b>, then <b>Show a game from another place</b>, and type:
+              On the other TV, tap <b>Host a game</b>, then <b>Join a game lobby</b>, and type:
             </p>
             <p className="pair__code" aria-label="Code for the other TV">
               {formatPairingCode(made.code)}
@@ -176,7 +176,7 @@ export function ShowHere({ initialCode, onClose }: { initialCode: string; onClos
     <section className="home__card pair" aria-labelledby="show-here">
       <h2 className="home__card-title" id="show-here">
         <Icon name="party" />
-        <span>Show a game from another place</span>
+        <span>Join a game lobby</span>
       </h2>
       <p className="home__hint kad-muted">
         Playing together from different places? Whoever runs the game opens <b>Room</b>, then <b>Another TV</b>, and

@@ -49,7 +49,7 @@ test.describe("another TV in another place", () => {
     const follower = await tv(browser);
     await follower.goto("/");
     await follower.getByRole("button", { name: /host a game/i }).click();
-    await follower.getByRole("button", { name: "Show a game from another place" }).click();
+    await follower.getByRole("button", { name: "Join a game lobby" }).click();
     await follower.getByLabel("Code for this TV").fill(code.toLowerCase());
     await follower.getByRole("button", { name: "Show the game here" }).click();
     await expect(follower).toHaveURL(new RegExp(`/tv/${room}$`), TAP);
