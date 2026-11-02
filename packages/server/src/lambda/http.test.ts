@@ -1522,6 +1522,17 @@ describe("/api/room/:code/screens and /api/screens/redeem", () => {
 
     const again = await respond(event("POST", "/api/screens/redeem", { headers: {}, body: { code: screen } }), rt);
     expect(again.statusCode).toBe(404);
+
+    // The follower says it is here, and the room counts it; the room's own TV is not counted.
+    const beat = await respond(event("POST", "/api/presence", { headers: { authorization: `Bearer ${view.viewerToken}` }, body: {} }), rt);
+    expect(beat.statusCode).toBe(200);
+    expect((await harness.repo.getState(runId))?.screens).toHaveLength(1);
+    const own = await harness.identity.issueViewerToken({ runId, roomCode: code, expiresAt: harness.clock.now() + 3600_000 });
+    const notCounted = await respond(event("POST", "/api/presence", { headers: { authorization: `Bearer ${own}` }, body: {} }), rt);
+    expect(notCounted.statusCode).toBe(401);
+    const bye = await respond(event("POST", "/api/presence", { headers: { authorization: `Bearer ${view.viewerToken}` }, body: { leaving: true } }), rt);
+    expect(bye.statusCode).toBe(200);
+    expect((await harness.repo.getState(runId))?.screens).toBeUndefined();
   });
 });
 

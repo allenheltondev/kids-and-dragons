@@ -55,6 +55,8 @@ test.describe("another TV in another place", () => {
     await expect(follower).toHaveURL(new RegExp(`/tv/${room}$`), TAP);
     // It shows the game, and does not run it.
     await expect(follower.getByRole("button", { name: /^Room/ })).toHaveCount(0);
+    // The leader's Room panel counts it, folded section and all.
+    await expect(leader.getByText("1 other TV is showing this game")).toBeVisible(TAP);
 
     // --- A kid at the other place joins with the room code, and both TVs see them ---
     const kid = await phone(browser);

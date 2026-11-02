@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { PartyMember, ResolvedCharacter, RunState } from "@kad/shared";
 import { makeHarness, seedHousehold, type TestHarness } from "../test-support.ts";
 import { createRoom, joinRoom } from "./room.ts";
-import { AWAY_AFTER_MS, beatPresence, setPresence } from "./presence.ts";
+import { AWAY_AFTER_MS, beatPresence, beatScreen, screenBeatKey, setPresence } from "./presence.ts";
 import { applyAction } from "./action.ts";
 
 /** A room with one seated player, which is what presence is about. */
@@ -256,5 +256,78 @@ describe("beatPresence", () => {
       event: { seq: closed.seq, runId, patch: [], at: closed.updatedAt, playerId },
     });
     expect(await beatPresence({ runId, playerId }, harness.deps)).toMatchObject({ ok: false, status: 403 });
+  });
+});
+
+describe("beatScreen: other TVs in other places", () => {
+  async function room() {
+    const { harness, runId, playerId } = await seatedRoom();
+    const code = (await harness.repo.getState(runId))!.roomCode;
+    const screen = (screenId: string, extra: { leaving?: boolean } = {}) =>
+      beatScreen({ runId, roomCode: code, screenId, ...extra }, harness.deps);
+    const screens = async () => (await harness.repo.getState(runId))?.screens;
+    return { harness, runId, playerId, code, screen, screens };
+  }
+
+  it("counts a follower once it beats, on the channel, and burns no seq while it keeps beating", async () => {
+    const { harness, code, screen, screens, runId } = await room();
+    expect(await screens()).toBeUndefined();
+    const received: unknown[] = [];
+    const stop = harness.channel.subscribe(code, (m) => received.push(m));
+    expect(await screen("s_a")).toEqual({ ok: true, connected: true });
+    expect(await screens()).toEqual(["s_a"]);
+    expect(received).toHaveLength(1);
+    const seq = (await harness.repo.getState(runId))?.seq;
+    harness.clock.advance(20_000);
+    await screen("s_a");
+    stop();
+    expect((await harness.repo.getState(runId))?.seq).toBe(seq);
+    // Two places, two screens.
+    await screen("s_b");
+    expect(await screens()).toEqual(["s_a", "s_b"]);
+  });
+
+  it("stops counting a screen that says goodbye, and drops the list when it is empty", async () => {
+    const { screen, screens } = await room();
+    await screen("s_a");
+    expect(await screen("s_a", { leaving: true })).toEqual({ ok: true, connected: false });
+    expect(await screens()).toBeUndefined();
+  });
+
+  it("stops counting a screen gone quiet, found by any beat: a phone's or another screen's", async () => {
+    const { harness, runId, playerId, screen, screens } = await room();
+    await screen("s_a");
+    await screen("s_b");
+    harness.clock.advance(AWAY_AFTER_MS);
+    await screen("s_b");
+    expect(await screens()).toEqual(["s_a", "s_b"]);
+    harness.clock.advance(1_000);
+    // A phone at either place finds the quiet one.
+    await beatPresence({ runId, playerId }, harness.deps);
+    expect(await screens()).toEqual(["s_b"]);
+    harness.clock.advance(AWAY_AFTER_MS + 1_000);
+    await screen("s_c");
+    expect(await screens()).toEqual(["s_c"]);
+  });
+
+  it("keeps its beats apart from any player's, and from the party", async () => {
+    const { harness, runId, screen } = await room();
+    await screen("s_a");
+    expect(Object.keys(await harness.repo.getPresence(runId))).toContain(screenBeatKey("s_a"));
+    const state = await harness.repo.getState(runId);
+    expect(state?.party.some((m) => m.playerId.includes("s_a"))).toBe(false);
+    expect(state?.watching).toBeUndefined();
+  });
+
+  it("refuses a screen once its game is over, or when its letters name another game", async () => {
+    const { harness, runId, code, screen, screens } = await room();
+    await screen("s_a");
+    // Another run behind the same letters: the token names the old one.
+    expect(await beatScreen({ runId: "r_other", roomCode: code, screenId: "s_x" }, harness.deps)).toMatchObject({ ok: false });
+    // Closed: nothing more is written.
+    const state = await harness.repo.getState(runId);
+    await harness.repo.putState({ ...state!, closed: true });
+    expect(await screen("s_a")).toMatchObject({ ok: false, status: 403 });
+    expect(await screens()).toEqual(["s_a"]);
   });
 });
