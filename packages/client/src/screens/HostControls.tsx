@@ -104,8 +104,10 @@ export function canSwitchCrew(state: Pick<RunState, "phase" | "chapterId" | "cam
   return state.chapterId === null && state.phase !== "chapter_complete" && !canStop(state);
 }
 
-/** Why the Room panel's Crews cannot switch yet: a game is open (`canSwitchCrew`). */
-export const CREW_LOCKED = "Stop this adventure to change crews";
+/** Why the Room panel's Crews cannot switch yet (`canSwitchCrew`): stop a chapter under way, else head back to the lobby. */
+export function crewLockedHint(state: Pick<RunState, "phase" | "campaignId">): string {
+  return canStop(state) ? "Stop this adventure to change crews" : "Return to the lobby to change crews";
+}
 
 /** How long the shared screen offers to stop at a Rest before it keeps playing by itself. */
 export const STOP_OFFER_MS = 15_000;
@@ -396,9 +398,9 @@ function HostPanel({ state, me, code, invite = false }: { state: RunState; me: s
         </details>
       ) : (
         <details className="kad-host__crew-menu">
-          <summary className="kad-focusable"><Icon name="crew" /> Crews <span className="kad-host__hint">{CREW_LOCKED}</span></summary>
+          <summary className="kad-focusable"><Icon name="crew" /> Crews <span className="kad-host__hint">{crewLockedHint(state)}</span></summary>
           <div className="kad-host__crew" role="group" aria-label="Which crew is playing">
-            <p className="kad-host__hint">{CREW_LOCKED}. Each crew keeps its own adventure saved.</p>
+            <p className="kad-host__hint">{crewLockedHint(state)}. Each crew keeps its own adventure saved.</p>
           </div>
         </details>
       )}
