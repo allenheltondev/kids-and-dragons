@@ -28,7 +28,7 @@ import { useKeepsakeStore } from "../store/keepsake";
 import { takeMoveLink } from "./move-link";
 // The one normalize helper for typed and prefilled codes — the router owns the
 // code shape, and a second filter here is how /p/AB1C once prefilled as "ABC".
-import { VISITOR_CODE_LENGTH as CODE_LENGTH, codeComplete, codeSlots, navigate, normalizeCodeInput as normalizeCode, pairingFromSearch, useRoute } from "../router";
+import { VISITOR_CODE_LENGTH as CODE_LENGTH, codeComplete, codeSlots, navigate, normalizeCodeInput as normalizeCode, pairingFromSearch, screenFromSearch, useRoute } from "../router";
 import { loadLocationName, loadPlayerDeviceToken, loadSharedDevice } from "../store/persistence";
 import { browserEnv, browserName, needsFirstLaunchChoice } from "../install/detect";
 import { firstLaunch as firstLaunchRecord } from "../install/remember";
@@ -65,6 +65,12 @@ const SharedHome = lazyChunk(() => import("./SharedHome"), (module) => module.Sh
  * is waiting to see. Closed, it draws nothing, so nothing waits on it.
  */
 const SignInFlow = lazyChunk(() => import("./SignInFlow"), (module) => module.SignInFlow);
+
+/*
+ * Showing a game from another place (OtherScreen.tsx): a grown-up's errand at a
+ * second TV, so it loads only once somebody asks for it.
+ */
+const ShowHere = lazyChunk(() => import("./OtherScreen"), (module) => module.ShowHere);
 
 /** The sign-in panel, fetched only once it is open. Shared by both homes. */
 export function LazySignInFlow(): ReactElement | null {
@@ -122,6 +128,14 @@ function PersonalHome(): ReactElement {
 
   const [displayName, setDisplayName] = useState(() => randomName());
   const [hosting, setHosting] = useState(false);
+  /*
+   * "Show a game from another place": `null` while closed, else the code it
+   * opens with. A `?screen=` link the leader sent opens it with the code typed,
+   * one tap from the game, and never spends it by itself.
+   */
+  const [showing, setShowing] = useState<string | null>(() =>
+    typeof window === "undefined" ? null : screenFromSearch(window.location.search),
+  );
   // What the family calls its table, kept on the device so the TV remembers it.
   const [location, setLocation] = useState(() => loadLocationName());
 
@@ -234,6 +248,31 @@ function PersonalHome(): ReactElement {
       setBusy(null);
     }
   }, [joinRoom, code]);
+
+  if (showing !== null) {
+    return (
+      <main className="home entry-scene-host">
+        <EntryScene scene="home-market" />
+        <div className="home__inner kad-stack">
+          <Masthead />
+          <div className="home__body home__body--top">
+            <ChunkBoundary message="That page couldn’t open.">
+              <Suspense fallback={<Spinner size="lg" label="Opening" showLabel />}>
+                <ShowHere
+                  initialCode={showing}
+                  onClose={() => {
+                    setShowing(null);
+                    if (screenFromSearch(window.location.search) !== null) navigate({ name: "home" }, { replace: true });
+                  }}
+                />
+              </Suspense>
+            </ChunkBoundary>
+          </div>
+        </div>
+        <PrivacyFooter />
+      </main>
+    );
+  }
 
   if (firstLaunch) {
     return (
@@ -444,6 +483,11 @@ function PersonalHome(): ReactElement {
             <div className="home__secondary-links">
               <button type="button" className="home__link kad-focusable" onClick={() => navigate({ name: "guide" })}>
                 New to running a game? Read the grown-up&rsquo;s guide
+              </button>
+              {/* A second TV for a game played from two places. Quiet: most
+                  evenings are one TV, and this is for the other one. */}
+              <button type="button" className="home__link kad-focusable" onClick={() => setShowing("")}>
+                Show a game from another place
               </button>
               <button
                 type="button"

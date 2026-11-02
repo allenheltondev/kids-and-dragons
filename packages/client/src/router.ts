@@ -280,6 +280,26 @@ export function pairingFromSearch(search: string): string | null {
 }
 
 /**
+ * Another TV in another place (handlers/screens.ts): `/?screen=CODE` is the
+ * start screen with "Show a game from another place" open and the code typed,
+ * one tap from showing the game. A grown-up running the game can text it to
+ * whoever is at the other TV. Eight letters, like a pairing code.
+ */
+export const SCREEN_PARAM = "screen";
+
+export function screenUrl(origin: string, code: string): string {
+  return `${origin}/?${SCREEN_PARAM}=${encodeURIComponent(code)}`;
+}
+
+/** The code a `?screen=` link carries, or `null` if the URL has none. */
+export function screenFromSearch(search: string): string | null {
+  const raw = new URLSearchParams(search).get(SCREEN_PARAM);
+  if (raw === null) return null;
+  const code = normalizePairingInput(raw);
+  return code === "" ? null : code;
+}
+
+/**
  * `/account?bring=1`: the accounts page with "Bring my hero to this device"
  * already open and nothing typed. Where an installed app's first launch sends
  * a family whose hero is still in Safari (#412).

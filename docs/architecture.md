@@ -1701,10 +1701,18 @@ nobody").
   So Close, "Stop for today" and the idle close end every follower. Individual
   followers are not revocable: a viewer token names the room, not a screen, so
   the way to drop a screen the leader did not mean to admit is to close the room.
-- **Not yet built:** the client (an "Add a screen" button in the host controls,
-  and a "Show a game from another place" entry on a TV's start screen), a count of
-  screens on the host's panel, and per-screen audio choices. The server contract
-  above is what they will call.
+- **The client** (`screens/OtherScreen.tsx`). The leader's half is a folded
+  "Another TV" section in the Room panel, which mints nothing until asked; it
+  shows the code big enough to read across a room, says the other place's
+  players join with the room's own code, and on the host's own phone offers
+  "Send it as a link" (`/?screen=CODE`). The other TV's half is a quiet link on
+  the start screen's Host card, "Show a game from another place", and the same
+  card opened by that link with the code typed, never spent until tapped. The
+  follower's session is kept like a phone's (`establish`), because it cannot ask
+  `/watch` again, so a refresh resumes on its viewer token. A bad code is said
+  once, on the card.
+- **Not yet built:** a count of follower screens on the host's panel, and
+  per-screen audio choices.
 
 #### Crews: new players at the same household
 
