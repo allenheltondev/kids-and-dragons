@@ -1667,7 +1667,9 @@ nobody").
 - **Adding a screen** (`POST /api/room/:code/screens`, host only, the same
   proof as Lock, `handlers/screens.ts`) answers `{ code, expiresAt }`: eight
   letters from the room-code alphabet, single use, ten minutes, stored as
-  `SCREEN#<code>`.
+  `SCREEN#<code>`. It names the room's *run* as well as its four letters, because a closed
+  room's letters are free to be reused: redeeming refuses a code whose room is no
+  longer that run, so a follower can never be shown a stranger's game.
 - **A follower TV spends it** (`POST /api/screens/redeem`, `{ code }`, no
   sign-in: the code is the credential) and gets what the leader's TV got from
   `/watch`: a viewer token for that room and the current state. It then

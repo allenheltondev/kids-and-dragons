@@ -390,6 +390,7 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
         return {
           code,
           roomCode: "ABCD",
+          runId: "r_1",
           createdBy: "device:d_host",
           createdAt: "2026-07-04T18:00:00.000Z",
           expiresAt,

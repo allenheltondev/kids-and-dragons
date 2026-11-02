@@ -214,7 +214,7 @@ Resources:
             ProjectionType: ALL
       TimeToLiveSpecification:
         # Single rows nothing else points at only: rooms, code-miss windows
-        # (handlers/code-guard.ts), invites, transfer and pairing codes, moved-
+        # (handlers/code-guard.ts), invites, transfer, pairing and screen codes, moved-
         # device forwards, presence. Everything else that expires spans rows and
         # partitions, and does so through the GUEST and IDLE indexes and the
         # sweeper — see the long note in store/keys.ts.
