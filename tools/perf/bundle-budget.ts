@@ -153,7 +153,13 @@ const FIRST_PAINT_BUDGET_KB = 326;
 // 1520 -> 1525 for the hero picker saying what holds each hero (#596): 1522KB
 // measured. The card lines, the dimmed can't-sit card, its tap-to-recheck and the choice note are in
 // the lazy WelcomeBack/room graph; first paint did not move (325KB of 326KB).
-const TOTAL_BUDGET_KB = 1525;
+// 1525 -> 1453, down, for leaving Pixi's WebGPU and canvas renderers out of the build
+// (packages/client/pixi-webgl-only.ts): 1450KB measured, 1522 before it. The stage only ever
+// asks for WebGL, but Pixi 8 registers all three renderers' adaptors at load, so their code rode
+// in the stage chunks every TV fetched (the 8.22 bump above was most of it). A TV opening a fight
+// fetches 73KB less JavaScript. First paint did not move (325KB). Keep this close to the
+// measurement: a feature that needs more gives something back, or raises it as its own decision.
+const TOTAL_BUDGET_KB = 1453;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);
