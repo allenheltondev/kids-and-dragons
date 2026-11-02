@@ -1,7 +1,7 @@
 /**
  * `AppSyncEventsChannel` — the prod transport, architecture §4.4.
  *
- * The room is a channel: `room/<code>`. Lambda publishes to it over the Event
+ * A game is a channel: `room/<code>/<runId>`. Lambda publishes to it over the Event
  * API's HTTP endpoint with SigV4; browsers subscribe over its WebSocket endpoint
  * with their room session token (see `lambda/channel-authorizer.ts`). That
  * asymmetry is why `subscribe()` here throws rather than being implemented —
@@ -56,8 +56,10 @@ export class AppSyncEventsChannel implements RoomChannel {
   }
 
   async publish(roomCode: string, message: ChannelMessage): Promise<void> {
+    // The run is in the channel's name (see `channelFor`); every message carries it.
+    const channel = channelFor(roomCode, message.runId);
     const body = JSON.stringify({
-      channel: channelFor(roomCode),
+      channel,
       // The Events API takes an array of **strings**, each one a serialised
       // event — not an array of objects. Passing objects is accepted and then
       // delivered as `[object Object]`, which is a genuinely confusing hour.
@@ -91,7 +93,7 @@ export class AppSyncEventsChannel implements RoomChannel {
 
     if (!response.ok) {
       throw new Error(
-        `appsync publish to ${channelFor(roomCode)} failed: ${response.status} ${await safeText(response)}`,
+        `appsync publish to ${channel} failed: ${response.status} ${await safeText(response)}`,
       );
     }
 
@@ -107,7 +109,7 @@ export class AppSyncEventsChannel implements RoomChannel {
     const failed = result.failed ?? [];
     if (failed.length > 0) {
       const detail = failed.map((f) => f.message ?? f.code ?? "unknown").join("; ");
-      throw new Error(`appsync rejected the event for ${channelFor(roomCode)}: ${detail}`);
+      throw new Error(`appsync rejected the event for ${channel}: ${detail}`);
     }
   }
 
@@ -118,14 +120,21 @@ export class AppSyncEventsChannel implements RoomChannel {
    */
   subscribe(_roomCode: string, _onMessage: (m: ChannelMessage) => void): Unsubscribe {
     throw new Error(
-      "AppSyncEventsChannel cannot subscribe: browsers subscribe to room/<code> directly",
+      "AppSyncEventsChannel cannot subscribe: browsers subscribe to room/<code>/<runId> directly",
     );
   }
 }
 
-/** Channel path for a room. Leading slash — the Events API requires it. */
-export function channelFor(roomCode: string): string {
-  return `/${ROOM_NAMESPACE}/${roomCode.toUpperCase()}`;
+/**
+ * Channel path for one game in a room. Leading slash — the Events API requires it.
+ *
+ * The run is in the name because a room's four letters are reused once it
+ * closes, and an AppSync subscription outlives its authorization: a socket that
+ * stayed open would otherwise receive the next family's game on the same
+ * channel. With the run in the name, it only ever hears its own.
+ */
+export function channelFor(roomCode: string, runId: string): string {
+  return `/${ROOM_NAMESPACE}/${roomCode.toUpperCase()}/${runId}`;
 }
 
 async function safeText(response: Response): Promise<string> {

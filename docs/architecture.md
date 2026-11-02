@@ -52,7 +52,7 @@ cross-origin request, which is why the stack configures no CORS policy at all.
                     │                         │
             ┌───────▼────────┐      ┌─────────▼─────────┐
             │  HTTP API      │      │  AppSync Events   │
-            │                │      │  room/<code>      │
+            │                │      │ room/<code>/<run> │
             └───────┬────────┘      └────▲────────▲─────┘
                     │              IAM   │        │  AWS_LAMBDA
                     │            publish │        │  connect + subscribe
@@ -379,7 +379,7 @@ phone that fell behind the couch to desync.
 }
 ```
 
-**Server → clients** (published to AppSync Events channel `room/<code>`):
+**Server → clients** (published to AppSync Events channel `room/<code>/<runId>`, one channel per game):
 
 ```jsonc
 {
@@ -1683,17 +1683,24 @@ nobody").
   are unchanged, and the table is the same table.
 - **Ending it.** A viewer token lives as long as the room's original expiry, and
   Close frees the room's four letters, so the token's own claims cannot say the
-  game is over. The server asks the room instead (`viewerStillShows`,
-  `handlers/viewer.ts`): the room must still exist, still map to the token's
-  *run*, and the run must not be closed. The channel authorizer asks it of a
-  viewer at connect and subscribe, and `GET /api/state` asks it of a viewer
-  whether it names a run or a code. So Close, "Stop for today" and the idle
-  close end every follower at once, a closed run cannot be read by its run id,
-  and an old token cannot be pointed at the family that later takes the same
-  letters. AppSync may hold a viewer's "yes" for at most a minute (the same as a
-  player's). Individual followers are not revocable: a viewer token names the
-  room, not a screen, so the way to drop a screen the leader did not mean to
-  admit is to close the room.
+  game is over. Two things end a follower:
+  - *New reads and subscriptions* ask the room (`viewerStillShows`,
+    `handlers/viewer.ts`): it must still exist, still map to the token's *run*,
+    and the run must not be closed. The channel authorizer asks it of a viewer at
+    connect and subscribe, and `GET /api/state` whether the request names a run or
+    a code. A closed run cannot be read by its run id, and an old token cannot
+    be pointed at the family that later takes the same letters.
+  - *A subscription already open* cannot be asked again: AppSync keeps it until
+    the socket closes, and a cached authorization decision does not change that.
+    So the channel's name carries the run, `room/<code>/<runId>`. The server
+    publishes each message to its own run's channel, the client subscribes to its
+    own, and the authorizer admits a subscribe only to exactly the channel of the
+    token's room and run (no wildcard, no bare `room/<code>`, no other run). A
+    socket left open on a closed game hears nothing of the next game on those
+    letters, even from a modified client.
+  So Close, "Stop for today" and the idle close end every follower. Individual
+  followers are not revocable: a viewer token names the room, not a screen, so
+  the way to drop a screen the leader did not mean to admit is to close the room.
 - **Not yet built:** the client (an "Add a screen" button in the host controls,
   and a "Show a game from another place" entry on a TV's start screen), a count of
   screens on the host's panel, and per-screen audio choices. The server contract

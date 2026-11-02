@@ -1,7 +1,7 @@
 /**
  * The browser half of the realtime transport — architecture §4.4.
  *
- * `AppSyncEventsChannel` on the server publishes to `room/<code>`; this is what
+ * `AppSyncEventsChannel` on the server publishes to `room/<code>/<runId>`; this is what
  * listens. Locally the same job is done by an `EventSource` against the dev
  * server's `/events/<code>`, and both sit behind `EventSourceLike` in
  * `channel.ts` — so the ordering, backoff and resync logic is written once and
@@ -34,6 +34,8 @@ export interface AppSyncSocketOptions {
   /** The channel namespace the API is configured with. `room`. */
   namespace: string;
   roomCode: string;
+  /** The game this socket is for, from the join or the watch. */
+  runId: string;
   /**
    * A room session token (a player) or a viewer token (the TV). The Lambda
    * authorizer accepts either and checks that it names *this* room.
@@ -83,8 +85,9 @@ export function watchdogMs(connectionTimeoutMs: number): number {
   return Math.min(connectionTimeoutMs, SILENCE_MS);
 }
 
-export function channelPath(namespace: string, roomCode: string): string {
-  return `/${namespace}/${roomCode.toUpperCase()}`;
+/** One game's channel: `room/<code>/<runId>`. The run is in the name; see the server's `channelFor`. */
+export function channelPath(namespace: string, roomCode: string, runId: string): string {
+  return `/${namespace}/${roomCode.toUpperCase()}/${runId}`;
 }
 
 /**
@@ -107,7 +110,7 @@ function connect(options: AppSyncSocketOptions): EventSourceLike {
   const adapter: EventSourceLike = { onopen: null, onerror: null, onmessage: null, close };
 
   const subscriptionId = newId();
-  const channel = channelPath(options.namespace, options.roomCode);
+  const channel = channelPath(options.namespace, options.roomCode, options.runId);
   let closed = false;
   let opened = false;
 
