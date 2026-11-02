@@ -150,8 +150,8 @@ const FIRST_PAINT_BUDGET_KB = 326;
 // The editable strength suggestion, optional choice details, lobby readiness
 // and creation-only hero greeting live in the lazy room/layout graph. First
 // paint remains within its unchanged 324KB cap; painted assets remain files.
-// 1520 -> 1525 for the hero picker saying what holds each hero (#596): 1521KB
-// in CI. The card lines, the dimmed can't-sit card and the choice note are in
+// 1520 -> 1525 for the hero picker saying what holds each hero (#596): 1522KB
+// measured. The card lines, the dimmed can't-sit card, its tap-to-recheck and the choice note are in
 // the lazy WelcomeBack/room graph; first paint did not move (325KB of 326KB).
 const TOTAL_BUDGET_KB = 1525;
 
