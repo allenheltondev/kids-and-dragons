@@ -434,7 +434,21 @@ function PersonalHome(): ReactElement {
               ))}
             </div>
 
-            {mode === "party" ? <TableNameField value={location} onChange={setLocation} /> : null}
+            {mode === "party" ? (
+              /*
+               * A TV can also show a game a family is running somewhere else
+               * (OtherScreen.tsx). Its link shares the table name's line, which
+               * has room for it: a row of its own made the card taller, and
+               * the links below the lobby button are where a remote steps to
+               * Open the lobby here (e2e/tv-read-only.spec.ts).
+               */
+              <div className="home__party-row">
+                <TableNameField value={location} onChange={setLocation} />
+                <button type="button" className="home__link home__other-tv kad-focusable" onClick={() => setShowing("")}>
+                  Join a game lobby
+                </button>
+              </div>
+            ) : null}
 
             {mode === "travel" ? (
               <div className="home__field">
@@ -483,11 +497,6 @@ function PersonalHome(): ReactElement {
             <div className="home__secondary-links">
               <button type="button" className="home__link kad-focusable" onClick={() => navigate({ name: "guide" })}>
                 New to running a game? Read the grown-up&rsquo;s guide
-              </button>
-              {/* A second TV for a game played from two places. Quiet: most
-                  evenings are one TV, and this is for the other one. */}
-              <button type="button" className="home__link kad-focusable" onClick={() => setShowing("")}>
-                Join a game lobby
               </button>
               <button
                 type="button"

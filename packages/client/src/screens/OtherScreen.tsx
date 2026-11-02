@@ -8,8 +8,8 @@
  *
  * `AddScreen` is the leader's half, folded away in the Room panel: one tap
  * makes a code, shown big enough to read across a room, with a link to send
- * from a phone. `ShowHere` is the other TV's half, behind a quiet link on the
- * start screen's Host card: type the code (or open the link) and this screen
+ * from a phone. `ShowHere` is the other TV's half, behind a quiet link in the
+ * start screen's Host card, beside Party Mode's table name: type the code (or open the link) and this screen
  * shows the game. Neither is in anybody's way on an ordinary evening.
  *
  * Grown-up-facing copy, kept short: US spelling, no dashes for breath.
