@@ -106,7 +106,7 @@ A kid who arrives late joins the same way as everyone else and makes a hero. The
 Some of the family at home, and someone else at a grandparent's house or in a hospital bed? You can all play one game, each place with its own TV.
 
 1. On the TV that opened the room, tap **Room**, then **Another TV**, then **Get a code for the other TV**. "It works one time, for 10 minutes." On a phone, **Send it as a link** sends it in a message.
-2. On the other TV, tap **Host a game**, then **Show a game from another place**. Type the code and tap **Show the game here**.
+2. On the other TV, tap **Host a game**, then **Join a game lobby**. Type the code and tap **Show the game here**.
 3. Kids at the other place join on their phones with the room code that TV shows, the same as everyone else.
 
 Both TVs show the same game, and the kids vote and take turns together. Only the first TV runs the room. **Close the room** ends the game on both TVs. For a third place, make another code.

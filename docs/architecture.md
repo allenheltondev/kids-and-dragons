@@ -1706,7 +1706,7 @@ nobody").
   shows the code big enough to read across a room, says the other place's
   players join with the room's own code, and on the host's own phone offers
   "Send it as a link" (`/?screen=CODE`). The other TV's half is a quiet link on
-  the start screen's Host card, "Show a game from another place", and the same
+  the start screen's Host card, "Join a game lobby", and the same
   card opened by that link with the code typed, never spent until tapped. The
   follower's session is kept like a phone's (`establish`), because it cannot ask
   `/watch` again, so a refresh resumes on its viewer token. A bad code is said

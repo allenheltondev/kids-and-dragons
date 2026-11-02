@@ -144,10 +144,10 @@ describe("the other TV's half", () => {
   it("is one quiet link on the start screen's Host card, and Back returns there", () => {
     render(<HomeScreen />);
     fireEvent.click(screen.getByRole("button", { name: "Host a game" }));
-    fireEvent.click(screen.getByRole("button", { name: "Show a game from another place" }));
-    return screen.findByRole("heading", { name: "Show a game from another place" }).then(() => {
+    fireEvent.click(screen.getByRole("button", { name: "Join a game lobby" }));
+    return screen.findByRole("heading", { name: "Join a game lobby" }).then(() => {
       fireEvent.click(screen.getByRole("button", { name: "Back" }));
-      expect(screen.queryByRole("heading", { name: "Show a game from another place" })).toBeNull();
+      expect(screen.queryByRole("heading", { name: "Join a game lobby" })).toBeNull();
       // Back to where they came from: the Host card, as it was.
       expect(screen.getByRole("button", { name: "Open the lobby here" })).toBeTruthy();
     });
@@ -169,6 +169,6 @@ describe("screenShareText", () => {
     const text = screenShareText("ABCDEFGH", "https://example.test/?screen=ABCDEFGH");
     expect(text).toContain("https://example.test/?screen=ABCDEFGH");
     expect(text).toContain("ABCD-EFGH");
-    expect(text).toContain("Show a game from another place");
+    expect(text).toContain("Join a game lobby");
   });
 });

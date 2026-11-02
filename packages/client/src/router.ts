@@ -281,7 +281,7 @@ export function pairingFromSearch(search: string): string | null {
 
 /**
  * Another TV in another place (handlers/screens.ts): `/?screen=CODE` is the
- * start screen with "Show a game from another place" open and the code typed,
+ * start screen with "Join a game lobby" open and the code typed,
  * one tap from showing the game. A grown-up running the game can text it to
  * whoever is at the other TV. Eight letters, like a pairing code.
  */
