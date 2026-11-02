@@ -19,7 +19,9 @@
  * Requires: ajv, ajv-formats (root devDependencies).
  */
 
-import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, writeFileSync } from "node:fs";
+import { createRequire } from "node:module";
 import { basename, dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -192,6 +194,69 @@ function describe(err) {
 }
 
 // ----------------------------------------------------------------------------- schema pass
+
+const SCHEMA_NAMES = ["rules", "items", "chapter", "campaign", "map", "abilities", "world", "help", "voice-script", "voice-cast", "voice-lexicon"];
+const AJV_OPTIONS = { allErrors: true, strict: true, allowUnionTypes: true };
+
+function compileSchemas(schemas, options = {}) {
+  const ajv = new Ajv2020({ ...AJV_OPTIONS, ...options });
+  addFormats(ajv);
+  for (const [name, schema] of schemas) ajv.addSchema(schema, name);
+  return ajv;
+}
+
+/**
+ * The schemas, as something with `getSchema(name)`.
+ *
+ * Compiling them is about 0.4 s, which is most of what a run costs when a test
+ * spawns the gate a hundred times over copies of the same schemas. When
+ * `KAD_SCHEMA_CACHE` names a directory (the test runner sets it; `npm run
+ * content:validate` and CI do not, and always compile fresh), the compiled
+ * validators are kept there as ajv standalone code, under a name that is a hash
+ * of the schema files, the ajv version and the options. A changed schema is a
+ * different file name, so a stale cache cannot be read; any trouble reading or
+ * writing the cache falls back to compiling.
+ */
+function loadSchemas(rep) {
+  const schemas = [];
+  for (const name of SCHEMA_NAMES) {
+    const path = join(SCHEMAS, `${name}.schema.json`);
+    if (!existsSync(path)) {
+      rep.fail(rel(path), "", "schema is missing");
+      continue;
+    }
+    const schema = readJson(rep, path);
+    if (schema) schemas.push([name, schema]);
+  }
+  const cacheDir = process.env.KAD_SCHEMA_CACHE;
+  if (rep.failures.length || !cacheDir) return compileSchemas(schemas);
+  let file;
+  try {
+    const require = createRequire(import.meta.url);
+    const ajvVersion = require("ajv/package.json").version;
+    const key = createHash("sha256")
+      .update(JSON.stringify([ajvVersion, AJV_OPTIONS, schemas]))
+      .digest("hex")
+      .slice(0, 24);
+    file = join(resolve(cacheDir), `schemas-${key}.cjs`);
+    if (!existsSync(file)) {
+      const standaloneCode = require("ajv/dist/standalone").default;
+      const code = standaloneCode(
+        compileSchemas(schemas, { code: { source: true, esm: false } }),
+        Object.fromEntries(schemas.map(([name]) => [name, name])),
+      );
+      mkdirSync(dirname(file), { recursive: true });
+      const tmp = `${file}.${process.pid}.tmp`;
+      writeFileSync(tmp, code);
+      renameSync(tmp, file); // atomic: parallel test workers may race to write the same file
+    }
+    const compiled = require(file);
+    return { getSchema: (name) => compiled[name] };
+  } catch {
+    return compileSchemas(schemas);
+  }
+}
+
 
 function validateAgainstSchema(rep, ajv, schemaName, path, data) {
   const validate = ajv.getSchema(schemaName);
@@ -1799,18 +1864,7 @@ function main() {
   console.log(`${BOLD}Kids & Dragons - content validate${RESET}`);
   console.log(`${DIM}schemas: ${rel(SCHEMAS)}   content: ${rel(CONTENT)}${RESET}`);
 
-  const ajv = new Ajv2020({ allErrors: true, strict: true, allowUnionTypes: true });
-  addFormats(ajv);
-
-  for (const name of ["rules", "items", "chapter", "campaign", "map", "abilities", "world", "help", "voice-script", "voice-cast", "voice-lexicon"]) {
-    const path = join(SCHEMAS, `${name}.schema.json`);
-    if (!existsSync(path)) {
-      rep.fail(rel(path), "", "schema is missing");
-      continue;
-    }
-    const schema = readJson(rep, path);
-    if (schema) ajv.addSchema(schema, name);
-  }
+  const ajv = loadSchemas(rep);
   if (rep.failures.length) return finish(rep);
 
   // --- rules + items first: chapters are checked against them
