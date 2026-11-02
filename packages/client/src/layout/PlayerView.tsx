@@ -20,7 +20,7 @@
  * ===========================================================================
  */
 
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import type { ReactNode } from "react";
 import { PlayerPanel, SignInFlow, WelcomeBack } from "../screens";
 import { FieldGuideToast } from "../screens/FieldGuideNews";
@@ -44,13 +44,20 @@ import { usePersistStorage } from "../storage/persist";
 import { usePromptBuzz } from "../ui/prompt-buzz";
 import { useAppBadge } from "../ui/app-badge";
 import { HeroArrival } from "../screens/HeroArrival";
+import { useTvFocus } from "./tv-focus";
 
 export function PlayerView({ roomControls }: { roomControls?: ReactNode }): React.JSX.Element {
   const me = useMe();
   const session = useSession();
   const runId = session?.runId;
   const state = useRunState();
-  useEffect(() => { dismissPlayerSheet(); }, [runId]);
+  /*
+   * A new room starts on the bag. A layout effect, so it comes first: React runs a child's effects
+   * before its parent's, and as a plain effect this reset landed after PlayerPanel had opened a
+   * question that was already waiting, so a phone that reloaded or rejoined mid-turn opened on
+   * the bag with a "Your turn" button to find instead of on its turn.
+   */
+  useLayoutEffect(() => { dismissPlayerSheet(); }, [runId]);
   // "Still here" to the server, the only way production learns a phone has
   // gone (#258). A phone only: the TV renders no PlayerView.
   usePresenceBeat();
@@ -103,6 +110,8 @@ export function PlayerView({ roomControls }: { roomControls?: ReactNode }): Reac
   // creation flow, which stays mounted (hidden) so a half-made hero survives.
   const section = usePlayerNavigation((navigation) => navigation.section);
   const guideOverCreation = creating && section === "guide";
+  // TV focus (layout/tv-focus.ts): nothing pops up that is not a thing to do.
+  const focus = useTvFocus();
 
   return (
     <div className="kad-surface kad-surface--player" data-surface="player">
@@ -131,8 +140,9 @@ export function PlayerView({ roomControls }: { roomControls?: ReactNode }): Reac
           it and closing it costs nobody their place. Renders nothing until
           somebody opens it. */}
       <SignInFlow />
-      {/* Field Guide finds; waits while a turn prompt is open. */}
-      <FieldGuideToast />
+      {/* Field Guide finds; waits while a turn prompt is open. Not under TV
+          focus: the finds are still kept, for when the guide is back. */}
+      {focus ? null : <FieldGuideToast />}
       {/*
        * Roadmap chapter 6's playtest drawer — warp to a scene, load the next
        * d20. `import.meta.env.DEV` is replaced with a literal `false` in the

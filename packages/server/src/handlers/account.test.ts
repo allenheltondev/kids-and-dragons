@@ -220,9 +220,9 @@ describe("linkAccount", () => {
     });
   });
 
-  it("keeps the old rule on a guest household made before founders, until it expires", async () => {
-    // Any device playing in it may claim, as before #265. Those households
-    // are gone within a week of this shipping.
+  it("no longer lets a non-founder claim a guest household made before founders (#272)", async () => {
+    // The old any-device rule is gone: with no founder recorded, a phone that
+    // only joined cannot keep the household by signing in.
     const harness = makeHarness();
     const host = await guestParty(harness);
     const { founderDeviceId: _gone, ...legacy } = host.household;
@@ -230,7 +230,9 @@ describe("linkAccount", () => {
     const joiner = await addPlayer({ householdId: host.household.id, displayName: "Sam" }, harness.deps);
 
     const result = await linkAccount({ cognitoSub: "sub_a", principal: joiner.principal }, harness.deps);
-    expect(result.ok && result.value.claimed).toBe(true);
+    expect(result).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
+    expect(await harness.repo.claimHousehold(host.household.id, "sub_a", joiner.principal.deviceId)).toBe(false);
+    expect(await harness.repo.getHousehold(host.household.id)).toMatchObject({ guest: true, ownerSub: null });
   });
 
   it("does not hand one family's session to the next person to sign in on that phone", async () => {

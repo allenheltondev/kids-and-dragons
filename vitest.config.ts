@@ -21,9 +21,17 @@ export default defineConfig({
       "tools/**/*.test.ts",
     ],
     environment: "node",
+    // Tests that spawn tools/content/validate.mjs inherit this: it keeps the compiled schemas
+    // (about 0.4 s of every run) instead of compiling them again in each of ~190 spawns. CI's
+    // own `npm run content:validate` does not set it. Under node_modules so ajv resolves.
+    env: { KAD_SCHEMA_CACHE: new URL("./node_modules/.cache/kad-content-validate", import.meta.url).pathname },
     // DOM workers and Python image checks are memory-heavy; avoid spawning
     // one of each per CPU and timing out otherwise fast tests under load.
     maxWorkers: 4,
+    // The content suites walk whole story graphs (Riftlight's is large), which
+    // takes longer than vitest's 5s default on a loaded CI runner. Main's CI
+    // failed on exactly two such timeouts and so never reached production.
+    testTimeout: 30_000,
 
     /*
      * Coverage is off unless asked for (`npm run test:coverage`), so `npm test`

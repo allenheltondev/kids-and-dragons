@@ -118,7 +118,6 @@ const SINGULAR_ASSUMING_PARTY = /\b(?:one|each|every|all|any|either|neither|none
  */
 export const PLAYER_AND_NPC_EXCEPTIONS: readonly RegExp[] = [
   /\bthe goat lies down too\.\s+neither of you\b/i, // gemfall-05c, the failed run
-  /\byou and the masks\b[^.]*\bneither of you\b/i, // gemfall-07r, scene_masks_let_be
   /\byou look at the mule\.\s+neither of you\b/i, // gemfall-07r, the failed creep
 ];
 

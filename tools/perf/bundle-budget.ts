@@ -110,7 +110,15 @@ const DIST = path.join(ROOT, "packages", "client", "dist");
 // "hero" before any speaker can; the other is the store recording each state's server stamp,
 // which has to see every state as it lands, before a lazy screen exists to ask. The surface
 // list, the interaction controls and their clock maths stay in lazy chunks.
-const FIRST_PAINT_BUDGET_KB = 324;
+// 324 -> 326 for naming crews and asking before new heroes resume one (#580): 325KB measured,
+// 324 before. The crew names list now lives in @kad/shared (the server picks from it, the Room
+// panel offers it), and the store carries the rename and keep-going host controls beside the
+// other host controls it already holds. The Room panel and the lobby that use them stay lazy.
+// 326 -> 328 for another TV in another place (OtherScreen.tsx): 327KB measured, 325 before.
+// The first paint carries the start screen's one quiet link and the code it reads from a
+// `?screen=` link, and the store the two host/follower calls beside the controls it already
+// holds. The code card and the Room panel's section are their own lazy chunk (about 6KB).
+const FIRST_PAINT_BUDGET_KB = 328;
 
 /**
  * Everything, including what is lazily fetched.
@@ -146,7 +154,24 @@ const FIRST_PAINT_BUDGET_KB = 324;
 // The editable strength suggestion, optional choice details, lobby readiness
 // and creation-only hero greeting live in the lazy room/layout graph. First
 // paint remains within its unchanged 324KB cap; painted assets remain files.
-const TOTAL_BUDGET_KB = 1520;
+// 1520 -> 1525 for the hero picker saying what holds each hero (#596): 1522KB
+// measured. The card lines, the dimmed can't-sit card, its tap-to-recheck and the choice note are in
+// the lazy WelcomeBack/room graph; first paint did not move (325KB of 326KB).
+// 1525 -> 1533 for another TV in another place: 1530KB measured, 1522 before. About 6KB is
+// the lazy OtherScreen chunk (the leader's code card and the other TV's code entry), the
+// rest the first-paint lines above.
+// 1533 -> 1461, down, for leaving Pixi's WebGPU and canvas renderers out of the build
+// (packages/client/pixi-webgl-only.ts): 1458KB measured with the other-TV work in, 1530 before it. The stage only ever
+// asks for WebGL, but Pixi 8 registers all three renderers' adaptors at load, so their code rode
+// in the stage chunks every TV fetched (the 8.22 bump above was most of it). A TV opening a fight
+// fetches 73KB less JavaScript. First paint did not move (327KB). Keep this close to the
+// measurement: a feature that needs more gives something back, or raises it as its own decision.
+// 1461 -> 1462, deliberately, for recorded narration (#546, PR #593): 1462KB measured, 1458 before
+// it. The clip speaker (which now also carries the device voice) in the lazy read-aloud chunk, the
+// engine's voice bus and the narration panel's speaking mark, about 4KB, all lazy; first paint did
+// not move (327KB). Agreed with the owner as its own decision rather than a give-back, and set to
+// the measurement with no slack: the next feature that needs more gives something back.
+const TOTAL_BUDGET_KB = 1462;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

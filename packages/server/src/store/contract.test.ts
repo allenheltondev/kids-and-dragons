@@ -385,6 +385,43 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
       });
     });
 
+    describe("screen codes", () => {
+      function screen(code: string, expiresAt: string) {
+        return {
+          code,
+          roomCode: "ABCD",
+          runId: "r_1",
+          createdBy: "device:d_host",
+          createdAt: "2026-07-04T18:00:00.000Z",
+          expiresAt,
+          ttl: Math.floor(Date.parse(expiresAt) / 1000),
+        };
+      }
+      const later = new Date(Date.now() + HOUR).toISOString();
+
+      it("is spent exactly once, and names the room", async () => {
+        expect(await repo.putScreenCodeIfAbsent(screen("ABCDEFGH", later))).toBe(true);
+        const nowIso = new Date().toISOString();
+        expect(await repo.redeemScreenCode("abcdefgh", nowIso)).toEqual(screen("ABCDEFGH", later));
+        expect(await repo.redeemScreenCode("ABCDEFGH", nowIso)).toBeNull();
+      });
+
+      it("lets exactly one of two simultaneous redeemers have it", async () => {
+        await repo.putScreenCodeIfAbsent(screen("ABCDEFGH", later));
+        const nowIso = new Date().toISOString();
+        const results = await Promise.all([repo.redeemScreenCode("ABCDEFGH", nowIso), repo.redeemScreenCode("ABCDEFGH", nowIso)]);
+        expect(results.filter((r) => r !== null)).toHaveLength(1);
+      });
+
+      it("refuses a taken code, and an expired one, and is not a pairing code", async () => {
+        expect(await repo.putScreenCodeIfAbsent(screen("ABCDEFGH", later))).toBe(true);
+        expect(await repo.putScreenCodeIfAbsent(screen("ABCDEFGH", later))).toBe(false);
+        expect(await repo.redeemPairingCode("ABCDEFGH", new Date().toISOString())).toBeNull();
+        const past = new Date(Date.now() + 2 * HOUR).toISOString();
+        expect(await repo.redeemScreenCode("ABCDEFGH", past)).toBeNull();
+      });
+    });
+
     describe("organizer invites (#248)", () => {
       function invite(code: string, expiresAt: string) {
         return {
@@ -786,10 +823,12 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
         expect(await repo.claimHousehold("h_1", "sub_a", "d_1")).toBe(false);
       });
 
-      it("claims a household made before founders from any device, as before (#265)", async () => {
-        const { founderDeviceId: _none, ...legacy } = guest("h_1", new Date(Date.now() + DAY).toISOString());
-        await repo.putHousehold(legacy);
-        expect(await repo.claimHousehold("h_1", "sub_a", "d_anyone")).toBe(true);
+      it("will not claim a household with no founder recorded, from any device (#272)", async () => {
+        const { founderDeviceId: _none, ...founderless } = guest("h_1", new Date(Date.now() + DAY).toISOString());
+        await repo.putHousehold(founderless);
+        expect(await repo.claimHousehold("h_1", "sub_a", "d_anyone")).toBe(false);
+        expect(await repo.claimHousehold("h_1", "sub_a", "d_1")).toBe(false);
+        expect(await repo.getHousehold("h_1")).toMatchObject({ guest: true, ownerSub: null });
       });
 
       it("will not claim a household still awaiting its founder", async () => {
@@ -896,7 +935,7 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
 
         expect(await dropIn(1, "d_1")).toBe(true);
         expect((await repo.getState("r_1"))?.seq).toBe(1);
-        // Nobody, not absent: absent reads as a household from before founders.
+        // Nobody, written as "" (absent reads the same).
         expect((await repo.getHousehold("h_1"))?.founderDeviceId).toBe("");
         expect(await repo.claimHousehold("h_1", "sub_a", "d_1")).toBe(false);
         // And a second drop of the same device no longer holds.

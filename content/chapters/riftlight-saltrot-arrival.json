@@ -41,11 +41,11 @@
   "scenes": {
     "flats": {
       "type": "story",
-      "narration": "Brackish water curls around ridges of mud. A small figure skips along a shell-bank, then stops before your boots sink. \"Shells, not that patch,\" says the guide. \"Welcome to the Saltrot.\" The guide is a Skupper, with bright eyes and strong front fins. \"Tide turns soon, and silt has buried my town's front door. Help me open it, and I will show you the flats.\"",
+      "narration": "Brackish water curls around ridges of mud. A small figure on a shell-bank stops you before your boots sink. \"Shells, not that patch! Welcome to the Saltrot.\" The guide is a Skupper, with bright eyes and strong front fins. \"Silt has buried my town's front door, and the tide turns soon. Help me open it, and I will show you the flats.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Follow the guide along the shells",
+          "label": "Follow the guide",
           "icon": "hand",
           "goto": "shells"
         }
@@ -55,19 +55,19 @@
           "when": {
             "flag": "saltrot_arrival_ferry"
           },
-          "text": "Old Ossley steadies his flat boat at the bank while your whole party steps ashore."
+          "text": "Behind you, Old Ossley poles his flat boat back into the channel."
         },
         {
           "when": {
             "flag": "saltrot_arrival_glacier"
           },
-          "text": "Behind you the fold still hums with cold glacier air."
+          "text": "Behind you, the fold still hums with cold glacier air."
         },
         {
           "when": {
             "flag": "saltrot_arrival_whales"
           },
-          "text": "Behind you the linked fold carries the cloud whales' distant song. Its echo still answers from the island."
+          "text": "Behind you, the linked fold carries the cloud whales' distant song."
         }
       ],
       "art": "scenes/riftlight/tidepocket-buried-hatch",
@@ -80,17 +80,17 @@
     },
     "shells": {
       "type": "choice_point",
-      "narration": "The guide skips ahead along the shell-bank toward a humped island of mud. \"Mud has opinions,\" says the guide. \"Skip where I skip, or poke before you step.\" All around, fiddler crabs wave their one big claw in rows, like a crowd at a parade.",
+      "narration": "The guide skips ahead toward a humped island of mud. \"Mud has opinions,\" she says. \"Skip where I skip, or poke before you step.\" Fiddler crabs wave their one big claw in rows, like a crowd at a parade.",
       "choices": [
         {
           "id": "skip",
-          "label": "Skip along in the guide's footprints",
+          "label": "Skip in her footprints",
           "icon": "hand",
           "goto": "shells_a"
         },
         {
           "id": "poke",
-          "label": "Poke each step with a pole before you trust it",
+          "label": "Poke each step first",
           "icon": "hand",
           "goto": "shells_b"
         }
@@ -105,7 +105,7 @@
     },
     "shells_a": {
       "type": "story",
-      "narration": "You copy the guide's skips: one big hop, two small ones, one wobble. A fiddler crab waves its huge claw at each of you. The guide says it is counting. You are not sure what it is counting.",
+      "narration": "You copy the guide's skips: one big hop, two small ones, one wobble. A fiddler crab waves its claw at every hop. The guide says it is counting. Counting what, she does not say.",
       "choices": [
         {
           "id": "continue",
@@ -124,7 +124,7 @@
     },
     "shells_b": {
       "type": "story",
-      "narration": "The guide hands you a long pole. Poke, listen for the squelch, step. Where the pole sinks to your hand, you go around. A fiddler crab holds up its huge claw as if to say, wrong way.",
+      "narration": "The guide hands you a long pole. Poke, listen for the squelch, step. Where the pole sinks, go around. A fiddler crab holds up its claw, as if to say, wrong way.",
       "choices": [
         {
           "id": "continue",
@@ -145,7 +145,7 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "prompt": "Everyone skips along in the guide's footprints. Light feet, and no stopping!",
+      "prompt": "Skip along in the guide's footprints. Light feet, and no stopping!",
       "roller": "all",
       "onSuccess": {
         "goto": "shells_done"
@@ -165,7 +165,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Poke, listen and pick the firmest shells. Choose who leads; everyone can help.",
+      "prompt": "Poke, listen and pick the firmest shells to step on.",
       "onSuccess": {
         "goto": "shells_done"
       },
@@ -182,11 +182,11 @@
     },
     "shells_done": {
       "type": "story",
-      "narration": "You make it across the first stretch with dry-ish boots. \"Good skipping,\" says the guide, which is a very high compliment. Behind you, the fiddler crabs wave, or perhaps they are cheering.",
+      "narration": "You cross the first stretch with dry-ish boots. \"Good skipping,\" says the guide. That is a very high compliment. Behind you, the fiddler crabs wave.",
       "choices": [
         {
           "id": "continue",
-          "label": "Look at the island",
+          "label": "Climb to the island",
           "icon": "hand",
           "goto": "shell_path"
         }
@@ -201,11 +201,11 @@
     },
     "shells_off": {
       "type": "story",
-      "narration": "One boot goes in to the ankle with a long, rude squelch. The guide pulls you out by the sleeve, and the mud keeps your sock. \"It does that,\" says the guide. \"Mud likes socks.\"",
+      "narration": "One boot sinks to the ankle with a long, rude squelch. The guide pulls you out by the sleeve. The mud keeps your sock. \"It does that,\" she says. \"Mud likes socks.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Look at the island",
+          "label": "Climb to the island",
           "icon": "hand",
           "goto": "shell_path"
         }
@@ -220,7 +220,7 @@
     },
     "shell_path": {
       "type": "interaction",
-      "narration": "The last steps up the island are three kinds of shell: whelk, cockle and oyster. \"Wrong order and they roll,\" says the guide. She tells you the right order in bits, and each of you hears a different bit. \"Put it together. I am a guide, not a parrot.\"",
+      "narration": "The last steps up are three kinds of shell: whelk, cockle and oyster. \"Wrong order, and they roll,\" says the guide. She tells a different bit of the order to each hero. \"Put it together. I am a guide, not a parrot.\"",
       "interaction": {
         "kind": "sequence",
         "cue": "Share your clues, then step on the shells in order.",
@@ -255,7 +255,7 @@
       },
       "onSuccess": {
         "goto": "town",
-        "narration": "Whelk, cockle, oyster. Each shell holds, and the island seems to rise to meet your boots. \"Good listening,\" says the guide.",
+        "narration": "Whelk, cockle, oyster. Every shell holds.",
         "effects": [
           {
             "type": "setFlag",
@@ -265,7 +265,7 @@
       },
       "onFailure": {
         "goto": "town",
-        "narration": "A shell rolls, and the guide catches your sleeve. \"Scenic route,\" she says, and walks you up the safe way, laughing.",
+        "narration": "A shell rolls, and the guide catches your sleeve. \"Scenic route,\" she laughs.",
         "effects": [
           {
             "type": "setFlag",
@@ -275,7 +275,7 @@
       },
       "onAssisted": {
         "goto": "town",
-        "narration": "You lay the clues side by side, and the order is clear. The guide nods, impressed in a small way.",
+        "narration": "You lay the clues side by side, and the order is clear.",
         "effects": [
           {
             "type": "setFlag",
@@ -293,23 +293,23 @@
     },
     "town": {
       "type": "choice_point",
-      "narration": "The island is hollow. A round hatch in the mud is the front door of Tidepocket, the guide's burrow town. Cold gray silt has piled over it like icing on a cake. From below comes tapping, and a loud voice. \"That is my grandmother,\" says the guide. \"She is not patient.\" Without the hatch open, nobody can get out, and the air below gets stale. The tide will not wait.",
+      "narration": "A round hatch in the mud is the front door of Tidepocket, the guide's burrow town. Cold gray silt is piled on it like icing. Tapping comes from below. \"My grandmother,\" says the guide. \"She is not patient.\" The tide will not wait either.",
       "choices": [
         {
           "id": "scoop",
-          "label": "Dig the hatch clear with shell scoops",
+          "label": "Dig with shell scoops",
           "icon": "hand",
           "goto": "town_a_check"
         },
         {
           "id": "trench",
-          "label": "Dig a trench so the silt drains away",
+          "label": "Dig a drain trench",
           "icon": "hand",
           "goto": "town_b_check"
         },
         {
           "id": "brace",
-          "label": "Hold up the sagging hatch frame with brace",
+          "label": "Brace the hatch frame",
           "icon": "shield",
           "goto": "town_brace",
           "requiresClass": "thornguard"
@@ -327,7 +327,7 @@
       "type": "check",
       "stat": "might",
       "tn": 8,
-      "prompt": "Everyone grab a shell scoop and dig! Half of you must keep digging until the hatch pops.",
+      "prompt": "Grab a shell scoop and dig until the hatch pops free!",
       "roller": "all",
       "onSuccess": {
         "goto": "town_done"
@@ -347,7 +347,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Plan a trench so the silt slides away, not back onto the hatch. Choose who leads; everyone can help.",
+      "prompt": "Plan a trench so the silt slides away, not back onto the hatch.",
       "onSuccess": {
         "goto": "town_done"
       },
@@ -364,11 +364,11 @@
     },
     "town_brace": {
       "type": "story",
-      "narration": "A thornguard plants both feet beside the hatch and holds the sagging frame up with brace, so the silt cannot slump back. The others dig around the thornguard. The strongest helper can lead the digging; nobody needs to pretend they braced.",
+      "narration": "Your thornguard plants both feet and braces the sagging hatch frame, so the silt cannot slump back. Everyone else digs around those sturdy legs.",
       "choices": [
         {
           "id": "continue",
-          "label": "Work together using that help",
+          "label": "Dig while they brace",
           "icon": "hand",
           "goto": "town_brace_check"
         }
@@ -385,7 +385,7 @@
       "type": "check",
       "stat": "might",
       "tn": 8,
-      "prompt": "A thornguard braces the hatch frame. The qualified hero assists; choose who leads the team check.",
+      "prompt": "Dig hard while your thornguard holds the hatch frame steady.",
       "onSuccess": {
         "goto": "town_done"
       },
@@ -421,7 +421,7 @@
     },
     "town_off": {
       "type": "story",
-      "narration": "The silt slumps back over half the hatch, and a Skupper child pops out through the gap anyway, like a cork. It takes longer, and everyone is muddier than you hoped, but the hatch stays open. Skuppers pour out in a cheerful line, rubbing their eyes.",
+      "narration": "The silt slumps back over half the hatch. A Skupper child pops out through the gap anyway, like a cork. Everyone is muddier than you hoped, but the hatch stays open. Skuppers pour out, rubbing their eyes.",
       "choices": [
         {
           "id": "continue",
@@ -440,7 +440,7 @@
     },
     "hatch_party": {
       "type": "interaction",
-      "narration": "The whole town is out in the thin sunlight, blinking, and everybody wants something at once. The families need many hands. The guide claps her fins. \"Pick a job and do it, and do it loudly.\" Her grandmother is last through the hatch, and she is not patient.",
+      "narration": "The whole town blinks in the sunlight, and everybody wants help at once. \"Pick a job,\" says the guide, \"and do it loudly.\" Her grandmother is still climbing the ladder, not patiently.",
       "interaction": {
         "kind": "play",
         "participation": "everyone",
@@ -468,17 +468,17 @@
         ],
         "stages": [
           "The families blink and stretch.",
-          "The steps are clear and the cakes are going round.",
+          "The steps are clear and the cakes are going around.",
           "The whole town is cheering."
         ]
       },
       "onSuccess": {
         "goto": "silt",
-        "narration": "The grandmother steps out last, hugs you, which is damp, and says, \"About time.\" A very small Skupper child holds up a very large shell like a trophy."
+        "narration": "The grandmother steps out last, gives you a damp hug and says, \"About time.\""
       },
       "onFailure": {
         "goto": "silt",
-        "narration": "The grandmother steps out last, hugs you, which is damp, and says, \"About time.\" A very small Skupper child holds up a very large shell like a trophy."
+        "narration": "The grandmother steps out last, gives you a damp hug and says, \"About time.\""
       },
       "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
@@ -490,11 +490,11 @@
     },
     "silt": {
       "type": "story",
-      "narration": "Now that the hatch is open, you can see the silt properly. It is pale and gray and cold. The guide lets a handful run through her fins. \"Saltrot mud is brown and warm. This came down the river from the cold north, and each tide brings more. It buries my paths overnight. I find them again every morning. Today I need hands.\" A small Skupper child pokes the silt with one fin and says it tastes like old pennies. Nobody asks how she knows.",
+      "narration": "Now you can see the silt properly. It is pale and gray and cold. \"Saltrot mud is brown and warm,\" says the guide. \"This came down the river from the cold north. It buries my paths overnight. Today I need hands.\" A Skupper child says it tastes like old pennies. Nobody asks how she knows.",
       "choices": [
         {
           "id": "continue",
-          "label": "Help with the day's paths",
+          "label": "Help with the paths",
           "icon": "hand",
           "goto": "local"
         }
@@ -509,17 +509,17 @@
     },
     "local": {
       "type": "choice_point",
-      "narration": "The Skupper points to a pale stripe in the mud. \"New silt. Covered the path overnight.\" On the far side of it, a traveler waves both arms. She has left a bag on a shell-bank that is slowly flooding. Gulls circle the bag, because it smells of fish. Will you help move the bag or mark a safer path?",
+      "narration": "\"New silt,\" says the guide, pointing at a pale stripe. \"It covered the path overnight.\" Beyond it, a traveler waves both arms. She left a bag on a shell-bank that is slowly flooding. Gulls circle it, because it smells of fish. How will you help?",
       "choices": [
         {
           "id": "bag",
-          "label": "Pass the bag along the shell-bank",
+          "label": "Pass the bag along",
           "icon": "hand",
           "goto": "bag"
         },
         {
           "id": "path",
-          "label": "Mark the firm shells for the traveler",
+          "label": "Mark a safe path",
           "icon": "hand",
           "goto": "path"
         }
@@ -538,7 +538,7 @@
     },
     "bag": {
       "type": "story",
-      "narration": "You line up along the shell-bank, each on a firm shell, ready to pass the bag from hand to hand. It smells very strongly of fish. The gulls are extremely interested.",
+      "narration": "You line up along the shell-bank, each on a firm shell, ready to pass the bag. It smells very strongly of fish. The gulls are extremely interested.",
       "choices": [
         {
           "id": "continue",
@@ -561,7 +561,7 @@
     },
     "path": {
       "type": "story",
-      "narration": "You follow the guide's front fins and lay empty shells along the firm route. The traveler waves from the far end, hopping on one foot to keep her boots dry. \"Trust a path once,\" says the guide. \"Then look again.\"",
+      "narration": "You follow the guide and lay empty shells along the firm route. The traveler hops on one foot to keep her boots dry. \"Trust a path once,\" says the guide. \"Then look again.\"",
       "choices": [
         {
           "id": "continue",
@@ -586,7 +586,7 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "prompt": "Pass the bag hand to hand without stepping off the shells. Half of you must keep your feet on the firm ones!",
+      "prompt": "Pass the bag hand to hand without stepping off the firm shells.",
       "roller": "all",
       "onSuccess": {
         "goto": "traveler_done"
@@ -610,7 +610,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Choose the firmest shells and lay the route. Choose who leads; everyone can help.",
+      "prompt": "Pick the firmest shells and lay a route the traveler can follow.",
       "onSuccess": {
         "goto": "traveler_done"
       },
@@ -631,11 +631,11 @@
     },
     "traveler_done": {
       "type": "story",
-      "narration": "The bag arrives dry. The traveler hugs it and gives you one dried fish, which you will not be eating. She also presses a small river charm into your hand. \"For luck on soft ground,\" she says. She hops away from shell to shell, the gulls following in a hopeful cloud.",
+      "narration": "The bag arrives dry. The traveler hugs it and gives you a dried fish, which you will not be eating, and a small river charm. \"For luck on soft ground.\" She hops away, the gulls following in a hopeful cloud.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
+          "label": "See what bobs past",
           "icon": "hand",
           "goto": "puff"
         }
@@ -665,11 +665,11 @@
     },
     "traveler_off": {
       "type": "story",
-      "narration": "A wave slaps the shells, and the bag gets a little wet. The traveler squeaks and rescues it herself. \"Still mostly dry,\" she says. \"Mostly.\" The guide scratches a note in the mud with one fin. Look again.",
+      "narration": "A wave slaps the shells and wets the bag. The traveler squeaks and grabs it herself. \"Still mostly dry,\" she says. \"Mostly.\" The guide scratches a note in the mud with one fin: look again.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
+          "label": "See what bobs past",
           "icon": "hand",
           "goto": "puff"
         }
@@ -694,23 +694,23 @@
     },
     "puff": {
       "type": "choice_point",
-      "narration": "Something bobs past in the reeds, round as a ball. It is a young Skupper, puffed up to three times her size and drifting on the tide. \"My cousin,\" groans the guide. \"She puffs when she is startled. The hatch startled her.\" The cousin waves one fin. Her spines stick out like a very small, very round hedgehog. She cannot get down.",
+      "narration": "Something round bobs past in the reeds. It is a young Skupper, puffed up to three times her size. \"My cousin,\" groans the guide. \"She puffs when she is startled.\" Her spines stick out like a very round hedgehog. She cannot get down.",
       "choices": [
         {
           "id": "rope",
-          "label": "Tow her in with a rope loop",
+          "label": "Tow her with a rope",
           "icon": "hand",
           "goto": "puff_a"
         },
         {
           "id": "hum",
-          "label": "Hum a slow, calm tune until she settles",
+          "label": "Hum her calm",
           "icon": "hand",
           "goto": "puff_b"
         },
         {
           "id": "song",
-          "label": "Let a songkeeper sing her a slow tide song",
+          "label": "Sing a tide song",
           "icon": "song",
           "goto": "puff_song",
           "requiresClass": "songkeeper"
@@ -732,7 +732,7 @@
       "type": "check",
       "stat": "quick",
       "tn": 12,
-      "prompt": "Throw the rope loop around her tail fin and tow her in. Careful, spines! The steadiest arm should throw!",
+      "prompt": "Throw the rope loop around her tail fin and tow her in. Mind the spines!",
       "roller": "best",
       "onSuccess": {
         "goto": "puff_done"
@@ -756,7 +756,7 @@
       "type": "check",
       "stat": "heart",
       "tn": 12,
-      "prompt": "Hum a slow, calm tune until she lets her breath out. The steadiest voice should lead!",
+      "prompt": "Hum a slow, calm tune until she lets her breath out.",
       "roller": "best",
       "checkKind": "doing",
       "onSuccess": {
@@ -779,11 +779,11 @@
     },
     "puff_song": {
       "type": "story",
-      "narration": "A songkeeper sings a slow song about the tide going out. The cousin's spines droop a little at a time. The others keep the rope ready and stay out of stinging range. The hero with the calmest voice can lead the team.",
+      "narration": "Your songkeeper sings a slow song about the tide going out. The cousin's spines droop, little by little. Everyone else keeps the rope ready and stays out of poking range.",
       "choices": [
         {
           "id": "continue",
-          "label": "Work together using that help",
+          "label": "Sing her down",
           "icon": "hand",
           "goto": "puff_song_check"
         }
@@ -804,7 +804,7 @@
       "type": "check",
       "stat": "heart",
       "tn": 8,
-      "prompt": "A songkeeper sings the tide song. The qualified hero assists; choose who leads the team check.",
+      "prompt": "Sing the tide song softly, and keep her calm until she shrinks.",
       "checkKind": "doing",
       "onSuccess": {
         "goto": "puff_done"
@@ -826,11 +826,11 @@
     },
     "puff_done": {
       "type": "story",
-      "narration": "The cousin lets out a long, squeaky sigh and shrinks back to her proper size, like a small round bagpipe. \"Thank you,\" she says. \"I saw something upriver this morning, where the pale silt starts. A line of old posts, standing in dry mud where no water should be dry.\" The guide goes quiet. Her family sends a honeycake after you, still warm.",
+      "narration": "The cousin lets out a squeaky sigh and shrinks, like a small round bagpipe. \"Thank you. This morning I saw old posts upriver, where the pale silt starts, standing in dry mud.\" The guide goes quiet. Her family sends a warm honeycake after you.",
       "choices": [
         {
           "id": "continue",
-          "label": "Ask the guide about the posts",
+          "label": "Ask about the posts",
           "icon": "hand",
           "goto": "ossley"
         }
@@ -856,11 +856,11 @@
     },
     "puff_off": {
       "type": "story",
-      "narration": "The cousin bobs into a tuft of reeds, startles at a gull, and puffs even bigger. At last she floats against the shell-bank, and the guide pokes her gently with a pole until she squeaks out a long sigh and shrinks. \"Sorry,\" she says. \"I saw something upriver this morning, where the pale silt starts. A line of old posts, standing in dry mud.\" The guide goes quiet. Her family sends a honeycake after you, still warm.",
+      "narration": "The cousin startles at a gull and puffs even bigger. The guide pokes her gently with a pole until she sighs and shrinks. \"Sorry. This morning I saw old posts upriver, where the pale silt starts, standing in dry mud.\" The guide goes quiet. Her family sends a warm honeycake after you.",
       "choices": [
         {
           "id": "continue",
-          "label": "Ask the guide about the posts",
+          "label": "Ask about the posts",
           "icon": "hand",
           "goto": "ossley"
         }
@@ -886,17 +886,17 @@
     },
     "ossley": {
       "type": "choice_point",
-      "narration": "\"Posts,\" says the guide. \"Hmm. Later.\" A flat boat comes poling up the channel and runs aground with a soft thump. A frogfolk boatman peers over the side. \"Old Ossley,\" he says, \"ferry man, at your service, if the tide is.\" His boat is full of crates for Tidepocket: lamp oil, flour and dried kelp. The water is already lapping at his keel. \"Hands?\"",
+      "narration": "\"Posts,\" says the guide. \"Later.\" A flat boat runs aground in the channel with a soft thump. A frogfolk boatman peers over the side. It is Old Ossley, the ferry man. His boat is full of crates for Tidepocket, and the tide is lapping at his keel. \"Hands?\"",
       "choices": [
         {
           "id": "chain",
-          "label": "Pass the crates ashore hand to hand",
+          "label": "Pass the crates ashore",
           "icon": "hand",
           "goto": "ossley_a"
         },
         {
           "id": "planks",
-          "label": "Slide planks under the keel to float him off",
+          "label": "Float him off",
           "icon": "hand",
           "goto": "ossley_b"
         }
@@ -906,7 +906,7 @@
           "when": {
             "flag": "saltrot_arrival_ferry"
           },
-          "text": "He grins at you. \"Same river, same fare, eh?\""
+          "text": "He winks at you. \"Same river, same fare, eh?\""
         }
       ],
       "art": "scenes/riftlight/saltrot-ossley-aground",
@@ -925,7 +925,7 @@
       "type": "check",
       "stat": "might",
       "tn": 8,
-      "prompt": "Form a chain and pass the crates ashore before the tide climbs. Half of you must keep passing!",
+      "prompt": "Make a chain and pass the crates ashore before the tide climbs.",
       "roller": "all",
       "onSuccess": {
         "goto": "ossley_done"
@@ -949,7 +949,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Slide planks under the keel so the boat floats free. Choose who leads; everyone can help.",
+      "prompt": "Slide planks under the keel so the boat floats free.",
       "onSuccess": {
         "goto": "ossley_done"
       },
@@ -970,11 +970,11 @@
     },
     "ossley_done": {
       "type": "story",
-      "narration": "The last crate lands on the shell-bank just as the water reaches the keel. Old Ossley floats free with a happy croak. \"I am along this river at every tide,\" he says. \"When you want to go upriver, I am your frog.\" A crate of dried kelp slides off the stack, and he catches it with his tongue, without looking. He counts five coins into your hand. \"Freight fee. Honest work gets honest pay.\"",
+      "narration": "The last crate lands as the water reaches the keel. Ossley floats free and catches a sliding crate of kelp with his tongue, without looking. \"When you want to go upriver, I am your frog.\" He pays you five coins. \"Honest work, honest pay.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Carry the lamp oil down",
+          "label": "Carry the lamp oil",
           "icon": "hand",
           "goto": "lamp_line"
         }
@@ -999,11 +999,11 @@
     },
     "ossley_off": {
       "type": "story",
-      "narration": "The tide arrives before you finish. Old Ossley scoops water out of his boat with a bucket while you carry the last crates through knee-deep water. Everything arrives, a little damp. \"I am along this river at every tide,\" he says. \"When you want to go upriver, I am your frog.\" He counts three coins into your hand. \"For the wet ones. Honest work gets honest pay.\"",
+      "narration": "The tide wins the race. Ossley bails with a bucket while you carry the last crates through knee-deep water. Everything arrives, a little damp. \"When you want to go upriver, I am your frog,\" he says, and pays you three coins. \"For the wet ones.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Carry the lamp oil down",
+          "label": "Carry the lamp oil",
           "icon": "hand",
           "goto": "lamp_line"
         }
@@ -1028,7 +1028,7 @@
     },
     "lamp_line": {
       "type": "interaction",
-      "narration": "Tidepocket's lamps need their oil before dark, and the hatch ladder is steep and slippery. The families line up along the rungs. \"One jar at a time,\" says the guide. \"Catch it, pass it, do not drop it. Lamp oil is slippery, and so is the ladder.\"",
+      "narration": "Tidepocket's lamps need oil before dark, and the hatch ladder is steep and slippery. \"One jar at a time,\" says the guide. \"Catch it, pass it, and do not drop it.\"",
       "interaction": {
         "kind": "relay",
         "cue": "Catch the jar, then pass it down the line.",
@@ -1037,15 +1037,15 @@
       },
       "onSuccess": {
         "goto": "camp",
-        "narration": "The last jar reaches the bottom without a drop. Somewhere below, a lamp pops alight, and then another. Tidepocket glows up through the hatch like a pot of warm honey."
+        "narration": "The last jar reaches the bottom. Below, the lamps pop alight, and Tidepocket glows like a pot of warm honey."
       },
       "onFailure": {
         "goto": "camp",
-        "narration": "One jar slips, and a Skupper child catches it with her tail. \"I meant to do that,\" she says. Below, the lamps pop alight, one by one."
+        "narration": "One jar slips, and a Skupper child catches it with her tail. \"I meant to do that.\""
       },
       "onAssisted": {
         "goto": "camp",
-        "narration": "You and the guide pass the jars in a steady line. Below, the lamps pop alight, one by one."
+        "narration": "You and the guide pass the jars in a steady line, and the lamps pop alight below."
       },
       "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
@@ -1057,24 +1057,24 @@
     },
     "camp": {
       "type": "rest",
-      "narration": "The families of Tidepocket press a hot kelp cake into every hand. The guide waves you forward. \"Diggers eat first.\" You rest on the dry top of the burrow while the tide comes in around you, silver and quiet. The fiddler crabs wave goodnight, or possibly good morning. Across the flats, two travelers wade toward you in Riftseeker clasps, one of them with far too many tails to count.",
+      "narration": "The families press a hot kelp cake into every hand. \"Diggers eat first,\" says the guide. You rest on top of the burrow while the tide comes in, silver and quiet. Two travelers wade toward you in Riftseeker clasps. One has far too many tails to count.",
       "heal": 2,
       "choices": [
         {
           "id": "story",
-          "label": "Listen to the grandmother's story",
+          "label": "Hear Grandmother's story",
           "icon": "hand",
           "goto": "camp_story"
         },
         {
           "id": "boots",
-          "label": "Wash the mud off your boots in the tide pool",
+          "label": "Wash your boots",
           "icon": "hand",
           "goto": "camp_boots"
         },
         {
           "id": "gift",
-          "label": "Give the grandmother a honeycake",
+          "label": "Give Grandmother a honeycake",
           "icon": "hand",
           "goto": "camp_gift",
           "when": {
@@ -1101,11 +1101,11 @@
     },
     "camp_story": {
       "type": "story",
-      "narration": "The guide's grandmother settles on a shell and tells it slowly. \"There is a bridge in the old stories, and a door in the old stories, and a rule. Show the bank. Never the stone.\" She wiggles her fins at the guide. \"Someone should have told you that before you were a guide. Oh, you know it. Good.\" Then she tells it again, shorter.",
+      "narration": "The guide's grandmother settles on a shell. \"In the old stories there is a bridge, and a door, and a rule: show the bank, never the stone.\" She squints at the guide. \"You know it? Good.\" Then she tells it again, shorter.",
       "choices": [
         {
           "id": "continue",
-          "label": "Meet the two travelers",
+          "label": "Meet the travelers",
           "icon": "hand",
           "goto": "lesson"
         }
@@ -1120,11 +1120,11 @@
     },
     "camp_gift": {
       "type": "story",
-      "narration": "The grandmother breaks the honeycake into twelve pieces and hands them down the line. Everyone gets exactly one crumb, and she keeps the smallest. \"Good manners,\" she says, chewing. \"I will tell the others you have them.\" Then she tells the bridge story anyway, with the rule at the end: show the bank, never the stone.",
+      "narration": "The grandmother breaks the honeycake into tiny pieces and hands them down the line. Everyone gets one crumb. She keeps the smallest. \"Good manners,\" she says. Then she tells her bridge story, with its rule: show the bank, never the stone.",
       "choices": [
         {
           "id": "continue",
-          "label": "Meet the two travelers",
+          "label": "Meet the travelers",
           "icon": "hand",
           "goto": "lesson"
         }
@@ -1139,11 +1139,11 @@
     },
     "camp_boots": {
       "type": "story",
-      "narration": "You rinse your boots in a tide pool. A small crab climbs out of the left one and glares at you. You hold it up for the guide. \"Mine,\" says the guide, and puts it on her head. The families clap. The crab is the best-fed in the Saltrot by sundown. Meanwhile the guide's grandmother is telling a story to anyone who sits still, and you catch the end of it: show the bank, never the stone.",
+      "narration": "You rinse your boots in a tide pool. A small crab climbs out of the left one and glares. \"Mine,\" says the guide, and puts it on her head. Nearby, the grandmother finishes a story with a rule: show the bank, never the stone.",
       "choices": [
         {
           "id": "continue",
-          "label": "Meet the two travelers",
+          "label": "Meet the travelers",
           "icon": "hand",
           "goto": "lesson"
         }
@@ -1158,7 +1158,7 @@
     },
     "lesson": {
       "type": "story",
-      "narration": "A kitsune named Seren Wisp is comparing notes with a young manticore named Pip Thistledown. They wear the Riftseekers' clasps. \"I am finding what has moved,\" says Pip. He unrolls a muddy map. \"The pale silt starts somewhere upriver. I need good ears.\" Seren asks you to hum the hall note, then listen for an answering sound. \"A starweaver can learn to answer a rift's hum. That is called Attune. No one here chooses a rift's rules.\"",
+      "narration": "Seren Wisp, the kitsune from the glacier, is traveling with a young manticore named Pip Thistledown. \"I find what has moved,\" says Pip, unrolling a muddy map. \"The pale silt starts upriver. I need good ears.\" Seren asks you to hum the hall note and listen. \"A starweaver can learn to answer a rift's hum. That is called Attune.\"",
       "choices": [
         {
           "id": "continue",
@@ -1184,7 +1184,7 @@
             "flag": "attune_taught"
           },
           "replace": true,
-          "text": "A kitsune named Seren Wisp and a manticore named Pip Thistledown are checking another displaced route. Seren asks you to compare the sounds with what she taught you before. Pip unrolls a muddy map. \"The pale silt starts somewhere upriver,\" he says. \"I need good ears.\""
+          "text": "Seren Wisp and Pip Thistledown are here too, checking another moved route. Pip unrolls a muddy map. \"The pale silt starts upriver. I need good ears.\" Seren asks you to compare the sounds with what she taught you before."
         }
       ],
       "art": "scenes/riftlight/tidepocket-open-hatch",
@@ -1205,30 +1205,30 @@
     },
     "hum": {
       "type": "choice_point",
-      "narration": "Seren sets a pebble in the mud and asks you to listen to the flats the way you listened to the hall seam. \"Every rift hums,\" she says. \"Some hum back when someone who can answer is near.\" Out across the mud, something is humming very faintly, like a bee in a bucket. Pip chews his pencil. How will you find where it comes from?",
+      "narration": "Seren sets a pebble in the mud. \"Every rift hums,\" she says. \"Some hum back when someone who can answer is near.\" Far across the flats, something hums faintly, like a bee in a bucket. How will you find where it comes from?",
       "choices": [
         {
           "id": "hum",
-          "label": "Hum the hall note together and listen",
+          "label": "Hum the hall note",
           "icon": "hand",
           "goto": "hum_a_check"
         },
         {
           "id": "map",
-          "label": "Mark the quiet spots on Pip's map",
+          "label": "Mark the quiet spots",
           "icon": "hand",
           "goto": "hum_b_check"
         },
         {
           "id": "chime",
-          "label": "Ring the Listening Chime beside the humming mud",
+          "label": "Ring the Listening Chime",
           "icon": "bell",
           "goto": "hum_chime",
           "requiresItem": "listening_chime"
         },
         {
           "id": "attune",
-          "label": "Answer the hum with attune",
+          "label": "Answer with attune",
           "icon": "star",
           "goto": "hum_star",
           "requiresClass": "starweaver"
@@ -1252,7 +1252,7 @@
     },
     "hum_chime": {
       "type": "story",
-      "narration": "You hold the Listening Chime near the mud and let it ring once. The note rises, then bends toward the north, as if something far away had answered with a slightly different pitch. Pip sticks out his tongue in concentration and draws an arrow.",
+      "narration": "You ring the Listening Chime near the mud. The note rises, then bends north, as if something far away answered in a slightly different voice. Pip sticks out his tongue and draws an arrow.",
       "choices": [
         {
           "id": "continue",
@@ -1281,7 +1281,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 8,
-      "prompt": "Follow the bend in the chime's note across the flats. Choose who leads; everyone can help.",
+      "prompt": "Follow the bend in the chime's note across the flats.",
       "onSuccess": {
         "goto": "hum_done"
       },
@@ -1308,7 +1308,7 @@
       "type": "check",
       "stat": "heart",
       "tn": 8,
-      "prompt": "Everyone hums the hall note, then holds still and listens. Half of you must hear the flats hum back.",
+      "prompt": "Hum the hall note together, then hold still and listen for the flats to hum back.",
       "roller": "all",
       "checkKind": "doing",
       "onSuccess": {
@@ -1337,7 +1337,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Walk the flats and mark every spot where the hum goes quiet. Choose who leads; everyone can help.",
+      "prompt": "Walk the flats and mark every spot where the hum goes quiet.",
       "onSuccess": {
         "goto": "hum_done"
       },
@@ -1362,11 +1362,11 @@
     },
     "hum_star": {
       "type": "story",
-      "narration": "A starweaver listens the way Seren taught, and the flats seem to hum a little louder in answer. The others keep still and watch the mud. The hero who hears best can lead the team; nobody needs to pretend they answered.",
+      "narration": "Your starweaver listens the way Seren taught, and the flats hum a little louder in answer. Everyone else keeps still and watches the mud.",
       "choices": [
         {
           "id": "continue",
-          "label": "Work together using that help",
+          "label": "Listen with them",
           "icon": "hand",
           "goto": "hum_star_check"
         }
@@ -1391,7 +1391,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 8,
-      "prompt": "A starweaver answers the hum with attune. The qualified hero assists; choose who leads the team check.",
+      "prompt": "Answer the hum with attune, and follow it across the mud.",
       "onSuccess": {
         "goto": "hum_done"
       },
@@ -1416,11 +1416,11 @@
     },
     "hum_done": {
       "type": "story",
-      "narration": "Under the mud, a low note hums back, faint and far away, in the direction of the cold north. Pip writes it down and underlines it twice. \"That is where the pale silt starts,\" says Seren. \"Or near it.\" The guide looks upriver and says nothing at all. Her tall crest folds down flat.",
+      "narration": "Under the mud, a low note hums back from the cold north. Pip writes it down and underlines it twice. \"That is where the pale silt starts,\" says Seren, \"or near it.\" The guide looks upriver, and her tall crest folds flat.",
       "choices": [
         {
           "id": "continue",
-          "label": "Help the guide with the poles",
+          "label": "Help with the poles",
           "icon": "hand",
           "goto": "poles"
         }
@@ -1443,11 +1443,11 @@
     },
     "hum_off": {
       "type": "story",
-      "narration": "The note hides in the squelch of the mud, but Seren catches it with her long ears: a low hum from the cold north. Pip writes it down and underlines it twice. \"That is where the pale silt starts,\" says Seren. \"Or near it.\" The guide looks upriver and says nothing at all. Her tall crest folds down flat.",
+      "narration": "The note hides in the squelch, but Seren's long ears catch it: a low hum from the cold north. Pip underlines it twice. \"That is where the pale silt starts,\" says Seren, \"or near it.\" The guide looks upriver, and her tall crest folds flat.",
       "choices": [
         {
           "id": "continue",
-          "label": "Help the guide with the poles",
+          "label": "Help with the poles",
           "icon": "hand",
           "goto": "poles"
         }
@@ -1470,23 +1470,23 @@
     },
     "poles": {
       "type": "choice_point",
-      "narration": "The guide drags over a bundle of reed poles. \"Every morning, I plant poles along the safe route. This morning the route is under silt.\" She points at the long gray stripe between the burrow and the river. \"Anyone crossing here tomorrow should not have to guess.\" A Tidepocket weaver waves a roll of bright cloth at you. \"Three coins, and every pole will shine.\"",
+      "narration": "The guide drags over a bundle of reed poles. \"Every morning I mark the safe route. This morning it is under silt. Nobody crossing tomorrow should have to guess.\" A Tidepocket weaver waves a roll of bright cloth. \"Three coins, and every pole will shine.\"",
       "choices": [
         {
           "id": "drive",
-          "label": "Drive poles deep along the firm shells",
+          "label": "Drive the poles deep",
           "icon": "hand",
           "goto": "poles_a_check"
         },
         {
           "id": "flags",
-          "label": "Tie reed flags so every pole shows from far away",
+          "label": "Tie on reed flags",
           "icon": "hand",
           "goto": "poles_b_check"
         },
         {
           "id": "buy",
-          "label": "Pay the weaver for bright flag cloth (3 coins)",
+          "label": "Buy bright cloth (3 coins)",
           "icon": "hand",
           "goto": "poles_buy",
           "when": {
@@ -1527,11 +1527,11 @@
         }
       ],
       "type": "story",
-      "narration": "The guide leads you along the firm shells while you plant the poles. She tests each one before the group moves on. Tomorrow's travelers will be able to follow the line.",
+      "narration": "The guide leads you along the firm shells while you plant the poles. She wiggles each one before you move on. Not one wiggles back.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Check the line",
           "icon": "forward",
           "goto": "poles_done"
         }
@@ -1550,11 +1550,11 @@
         }
       ],
       "type": "story",
-      "narration": "You tie reed flags to the guide's poles. Pip checks them from the next shell-bank, then waves both arms. Even he can see where to go.",
+      "narration": "You tie reed flags to the poles. Pip checks them from the next shell-bank and waves both arms. Even he can see where to go.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Check the line",
           "icon": "forward",
           "goto": "poles_done"
         }
@@ -1562,7 +1562,7 @@
     },
     "poles_buy": {
       "type": "story",
-      "narration": "The weaver cuts the cloth into neat strips, and you tie one on every pole. In the low light they shine like a row of tiny lanterns. The weaver looks very pleased with herself. The guide walks the line end to end with her eyes closed, then opens them and nods.",
+      "narration": "The weaver cuts the cloth into strips, and you tie one on every pole. In the low light they shine like tiny lanterns. The weaver looks very pleased with herself.",
       "choices": [
         {
           "id": "continue",
@@ -1585,7 +1585,7 @@
     },
     "poles_done": {
       "type": "story",
-      "narration": "The poles stand in a long straight line, like a row of thin sentries. The guide walks it end to end with her eyes closed and not one wobble. \"Tomorrow, silt or no silt, anyone can follow this.\"",
+      "narration": "The poles stand in a long straight line, like thin sentries. The guide walks it with her eyes closed, without one wobble. \"Silt or no silt, anyone can follow this.\"",
       "choices": [
         {
           "id": "continue",
@@ -1608,30 +1608,30 @@
     },
     "trail": {
       "type": "choice_point",
-      "narration": "Pip lays his map over a drum of reeds. The pale stripe runs upriver along the bank, getting wider. \"If we follow it to the end, we find where it starts,\" he says. \"The cousin saw posts. I want to see posts.\" Seren looks at the guide. \"Will you come?\" The guide thinks about it, with her fins folded. \"To the bank,\" she says. \"Not past it.\"",
+      "narration": "Pip lays his map on a reed drum. The pale stripe runs upriver, getting wider. \"Follow it, and we find where it starts. The cousin saw posts. I want to see posts.\" \"Will you come?\" Seren asks the guide. She folds her fins. \"To the bank. Not past it.\"",
       "choices": [
         {
           "id": "walk",
-          "label": "Follow the pale stripe along the bank",
+          "label": "Follow the pale stripe",
           "icon": "hand",
           "goto": "trail_a_check"
         },
         {
           "id": "test",
-          "label": "Test the pale silt with poles as you go",
+          "label": "Test the silt with poles",
           "icon": "hand",
           "goto": "trail_b_check"
         },
         {
           "id": "charm",
-          "label": "Follow the stripe with the river charm in your pocket",
+          "label": "Follow your river charm",
           "icon": "spark",
           "goto": "trail_charm",
           "requiresItem": "river_charm"
         },
         {
           "id": "scout",
-          "label": "Scout the stripe from the air",
+          "label": "Scout it from the air",
           "icon": "wing",
           "goto": "trail_wing",
           "requiresSpecies": [
@@ -1654,11 +1654,11 @@
     },
     "trail_charm": {
       "type": "story",
-      "narration": "The traveler's river charm warms in your pocket whenever you step on firm ground, and goes cool over soft. You start walking by temperature. The guide squints at you, then at the charm, and decides not to be offended that a pebble is better at her job.",
+      "narration": "Your river charm warms when you step on firm ground and goes cool over soft. You start walking by temperature. The guide decides not to be offended that a pebble is better at her job.",
       "choices": [
         {
           "id": "continue",
-          "label": "Follow the warm and cool",
+          "label": "Follow warm and cool",
           "icon": "hand",
           "goto": "trail_charm_check"
         }
@@ -1679,7 +1679,7 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "prompt": "Follow the charm along the stripe, warm for firm and cool for soft. Choose who leads; everyone can help.",
+      "prompt": "Follow the charm along the stripe: warm for firm, cool for soft.",
       "onSuccess": {
         "goto": "trail_done"
       },
@@ -1700,11 +1700,11 @@
     },
     "trail_wing": {
       "type": "story",
-      "narration": "A winged friend rises over the flats and follows the pale stripe like a gray ribbon. The others walk below, keeping their eyes on the flier. The best tracker can lead; nobody needs to pretend they flew.",
+      "narration": "A winged friend rises over the flats and follows the pale stripe like a gray ribbon. Everyone below keeps their eyes on the flier.",
       "choices": [
         {
           "id": "continue",
-          "label": "Work together using that help",
+          "label": "Follow the flier",
           "icon": "hand",
           "goto": "trail_wing_check"
         }
@@ -1725,7 +1725,7 @@
       "type": "check",
       "stat": "quick",
       "tn": 12,
-      "prompt": "Keep one foot on each color of mud and don't lose the stripe. Choose who leads; everyone can help.",
+      "prompt": "Keep one foot on each color of mud, and do not lose the stripe.",
       "onSuccess": {
         "goto": "trail_done"
       },
@@ -1748,7 +1748,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Work out where the solid ground ends and the soft silt begins. Choose who leads; everyone can help.",
+      "prompt": "Work out where firm ground ends and soft silt begins.",
       "onSuccess": {
         "goto": "trail_done"
       },
@@ -1771,7 +1771,7 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "prompt": "A winged hero scouts from the air. The qualified hero assists; choose who leads the team check.",
+      "prompt": "Fly along the stripe and call the way down to the walkers.",
       "onSuccess": {
         "goto": "trail_done"
       },
@@ -1792,7 +1792,7 @@
     },
     "trail_done": {
       "type": "story",
-      "narration": "The pale stripe grows wider and colder as you follow it, a gray road through the brown. Far ahead, the line begins to climb a long, low rise, as if the land were holding its breath. Behind you, every fiddler crab on the flats lifts its claw at once.",
+      "narration": "The pale stripe grows wider and colder, a gray road through the brown. Ahead, it climbs a long, low rise, as if the land were holding its breath. Behind you, every fiddler crab lifts its claw at once.",
       "choices": [
         {
           "id": "continue",
@@ -1815,7 +1815,7 @@
     },
     "trail_off": {
       "type": "story",
-      "narration": "You lose the stripe twice where fresh brown mud covers it, and find it again by following the squeak. It takes a long way round. Ahead, the pale line climbs a long, low rise, as if the land were holding its breath. Behind you, every fiddler crab on the flats lifts its claw at once.",
+      "narration": "You lose the stripe twice under fresh brown mud and find it again by the squelch. It takes the long way around. Ahead, the pale line climbs a long, low rise. Behind you, every fiddler crab lifts its claw at once.",
       "choices": [
         {
           "id": "continue",
@@ -1838,23 +1838,23 @@
     },
     "crabs": {
       "type": "choice_point",
-      "narration": "The crabs wave together, slowly, all facing the river. \"They do not do that,\" says the guide. \"They wave by the tide, and the tide is hours away.\" Pip has gone pale under his fur. \"What are they counting?\" The guide's crest stands straight up. \"Whatever it is, they know before we do. Find out. Fast.\"",
+      "narration": "The crabs wave together, all facing the river. \"They do not do that,\" says the guide. \"They wave by the tide, and the tide is hours away.\" Her crest stands straight up. \"They know something we do not. Find out. Fast.\"",
       "choices": [
         {
           "id": "time",
-          "label": "Time the waves against the water level",
+          "label": "Time the waves",
           "icon": "hand",
           "goto": "crabs_a"
         },
         {
           "id": "climb",
-          "label": "Climb the nearest rise and look upriver",
+          "label": "Climb the rise",
           "icon": "hand",
           "goto": "crabs_b"
         },
         {
           "id": "leap",
-          "label": "Leap to the high ledge for a look",
+          "label": "Leap to the ledge",
           "icon": "forward",
           "goto": "crabs_leap",
           "requiresSpecies": "manticore"
@@ -1876,7 +1876,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Count the waves and watch the water mark on a pole. Do they line up? Choose who leads; everyone can help.",
+      "prompt": "Count the waves and watch the water mark on a pole. Do they line up?",
       "onSuccess": {
         "goto": "crabs_done"
       },
@@ -1899,7 +1899,7 @@
       "type": "check",
       "stat": "might",
       "tn": 12,
-      "prompt": "Scramble up the slippery rise before the next wave of crabs. Choose who leads; everyone can help.",
+      "prompt": "Scramble up the slippery rise before the next wave of crabs.",
       "onSuccess": {
         "goto": "crabs_done"
       },
@@ -1920,11 +1920,11 @@
     },
     "crabs_leap": {
       "type": "story",
-      "narration": "A manticore crouches, wiggles their tail, and Leap carries them high onto the ledge in one bound. Pip stares with his mouth open. The others call up questions, and the manticore calls back what they see. The best talker of the team can lead the shouting.",
+      "narration": "Your manticore crouches, wiggles, and leaps high onto the ledge in one bound. Pip's mouth falls open. Everyone below shouts questions, and the manticore shouts back what they see.",
       "choices": [
         {
           "id": "continue",
-          "label": "Work together using that help",
+          "label": "Shout up questions",
           "icon": "hand",
           "goto": "crabs_leap_check"
         }
@@ -1945,7 +1945,7 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "prompt": "A manticore leaps to the ledge for a look. The qualified hero assists; choose who leads the team check.",
+      "prompt": "Leap to the ledge, look upriver and call down what you see.",
       "onSuccess": {
         "goto": "crabs_done"
       },
@@ -1966,7 +1966,7 @@
     },
     "crabs_done": {
       "type": "story",
-      "narration": "Upriver, the water is piling up behind a long gray bar of silt, higher and higher, like a bath with a plug in it. \"It will come back all at once,\" you tell the guide. She nods once, quickly. \"Early tide. But that is not what they are waving about.\" The silt beside you gives a long, slow heave.",
+      "narration": "Upriver, water is piling up behind a long gray bar of silt, like a bath with the plug in. \"It will come back all at once,\" you tell the guide. She nods. \"Early tide. But that is not what they are waving about.\" The silt beside you heaves.",
       "choices": [
         {
           "id": "continue",
@@ -1989,7 +1989,7 @@
     },
     "crabs_off": {
       "type": "story",
-      "narration": "You work it out a little late. The crabs have already stopped waving and are running sideways for the high shells, which is also an answer. Upriver, the water is piling up behind a long gray bar of silt. \"Early tide,\" says the guide. \"But that is not why they ran.\" The silt beside you gives a long, slow heave.",
+      "narration": "You work it out a little late. The crabs run sideways for the high shells, which is also an answer. Upriver, water is piling up behind a long gray bar of silt. \"Early tide,\" says the guide. \"But that is not why they ran.\" The silt beside you heaves.",
       "choices": [
         {
           "id": "continue",
@@ -2012,7 +2012,7 @@
     },
     "crab_warn": {
       "type": "story",
-      "narration": "Two big crabs push up out of the silt, shells clear and shiny as windows, claws clacking. \"Glassback crabs,\" whispers the guide. \"They sleep in the warm mud, and the cold silt froze their patch. They are cranky and cold and hungry, and they want the warm shell-bank you are standing on.\" One crab clacks at Pip's map. Pip holds it very high. \"Gently,\" says the guide. \"They are only cold.\"",
+      "narration": "Two big crabs push up out of the silt, shells clear as windows. \"Glassback crabs,\" whispers the guide. \"The cold silt froze their warm mud. Now they want the warm shell-bank you are standing on.\" One clacks at Pip's map. Pip holds it very high.",
       "choices": [
         {
           "id": "continue",
@@ -2036,7 +2036,7 @@
     "crab_fight": {
       "type": "encounter",
       "map": "reedbank",
-      "narration": "The crabs scuttle sideways at you, claws up, shells flashing in the gray light. They are not evil. They are cold and cross, and they want you off their warm ground. Hold the shell-bank until they settle.",
+      "narration": "The crabs scuttle sideways at you, claws up. They are not wicked, only cold and cross. Hold the shell-bank until they settle.",
       "enemies": [
         {
           "id": "crab",
@@ -2068,7 +2068,7 @@
     },
     "crab_done": {
       "type": "story",
-      "narration": "The crabs back off, clacking, and settle into a warm hollow by the hatch roof, glaring at the sky. One of them leaves a glassy pebble at your feet, which seems to be its way of saying sorry. \"Luckstone,\" says the guide. \"They keep one in their shells. That is a very good manners crab.\" Behind you, the water begins to slide.",
+      "narration": "The crabs back off and settle into a warm hollow, glaring at the sky. One leaves a glassy pebble at your feet. \"A luckstone,\" says the guide. \"That is a very good-mannered crab.\" Behind you, the water begins to slide.",
       "choices": [
         {
           "id": "continue",
@@ -2091,7 +2091,7 @@
     },
     "crab_rescued": {
       "type": "story",
-      "narration": "A crab shoves you off the shell-bank, and you sit down in the silt with a squelch. Then the guide whistles, and the families of Tidepocket bang their cooking pots from the hatch. The crabs flinch and scuttle into a warm hollow, grumbling. Nobody is hurt. You miss the lucky pebble they were keeping, and the guide gives you a hand up. Behind you, the water begins to slide.",
+      "narration": "A crab shoves you off the shell-bank, and you sit down in the silt with a squelch. The families bang cooking pots from the hatch, and the crabs scuttle off to a warm hollow, grumbling. Nobody is hurt. Behind you, the water begins to slide.",
       "choices": [
         {
           "id": "continue",
@@ -2114,17 +2114,17 @@
     },
     "tide": {
       "type": "choice_point",
-      "narration": "Up the channel, a gray wall of water slides toward you, quiet as a cat. \"The silt makes the water pile up,\" says the guide, and for the first time she sounds worried. \"High shells! Now!\" Pip clutches his map to his chest.",
+      "narration": "Up the channel, a gray wall of water slides toward you, quiet as a cat. \"The silt piles the water up,\" says the guide. For the first time she sounds worried. \"High shells! Now!\"",
       "choices": [
         {
           "id": "run",
-          "label": "Run for the high shells together",
+          "label": "Run for the high shells",
           "icon": "hand",
           "goto": "tide_a"
         },
         {
           "id": "rope",
-          "label": "Anchor a rope and wade in a chain",
+          "label": "Wade in a rope chain",
           "icon": "hand",
           "goto": "tide_b"
         }
@@ -2145,7 +2145,7 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "prompt": "Everyone runs for the high shells, light and fast. Half of you must beat the water!",
+      "prompt": "Run for the high shells, light and fast, and beat the water!",
       "roller": "all",
       "onSuccess": {
         "goto": "tide_done"
@@ -2169,7 +2169,7 @@
       "type": "check",
       "stat": "might",
       "tn": 12,
-      "prompt": "Anchor the rope on a firm shell and hold it while the others wade along it. The strongest arm should anchor!",
+      "prompt": "Anchor the rope on a firm shell and hold it while friends wade along.",
       "roller": "best",
       "onSuccess": {
         "goto": "tide_done"
@@ -2191,7 +2191,7 @@
     },
     "tide_done": {
       "type": "story",
-      "narration": "Everyone is across the long stretch, and Pip is counting heads. \"That is the right number,\" he says. A fiddler crab climbs onto his head and waves, unbothered. One last channel lies between you and the high shells, and the water is sliding into it.",
+      "narration": "Everyone is across, and Pip counts heads. \"Right number,\" he says. A fiddler crab sits on his head, waving. One last channel lies between you and the high shells, and the water is sliding in.",
       "choices": [
         {
           "id": "continue",
@@ -2214,7 +2214,7 @@
     },
     "tide_off": {
       "type": "story",
-      "narration": "Water fills your boots, cold as a river from the north, which it is. Everyone stays together, soggy and grumpy and safe. Pip wrings out his map. The guide wrings out Pip. One last channel lies between you and the high shells, and the water is sliding into it.",
+      "narration": "Water fills your boots, cold as a river from the north, which it is. Everyone stays together, soggy and safe. Pip wrings out his map. The guide wrings out Pip. One last channel lies ahead, and the water is sliding in.",
       "choices": [
         {
           "id": "continue",
@@ -2245,7 +2245,7 @@
     },
     "tide_dash": {
       "type": "interaction",
-      "narration": "The water pulls back from the last channel, then rushes in again, back and forth, like a very large and very rude breath. \"Wait for the pull,\" says the guide, crouching. \"Then go.\"",
+      "narration": "The water pulls back from the last channel, then rushes in again, like a giant, rude breath. \"Wait for the pull,\" says the guide. \"Then go.\"",
       "interaction": {
         "kind": "timing",
         "cue": "Go when the water pulls back.",
@@ -2256,15 +2256,15 @@
       },
       "onSuccess": {
         "goto": "lead",
-        "narration": "You hop across on dry shells. The water slides in behind you, quiet as a cat, and you are on the high shells at last."
+        "narration": "You hop across on dry shells to the high shells."
       },
       "onFailure": {
         "goto": "lead",
-        "narration": "The water gets your boots, but the guide hauls you onto the high shells by the collar, gurgling with laughter."
+        "narration": "The water gets your boots, but the guide hauls you up by the collar, laughing."
       },
       "onAssisted": {
         "goto": "lead",
-        "narration": "The guide counts out the pulls for you, one by one, and you cross on the last of them."
+        "narration": "The guide counts the pulls, and you cross on the last one."
       },
       "art": "scenes/riftlight/saltrot-high-shells",
       "cast": [
@@ -2280,11 +2280,11 @@
     },
     "lead": {
       "type": "story",
-      "narration": "From the high shells, you can see where the pale stripe ends. Beyond the last bend, the mud has pulled back from something large and old, a long line of old gray stone standing in dry ground where no water runs, like the teeth of a comb that a giant dropped. \"The buried bridge,\" says the guide, very quietly. \"My folk have a rule. We show the bank. We do not walk on it.\" Seren folds her map. \"Something moved, and uncovered it.\"",
+      "narration": "From the high shells, you see where the pale stripe ends. The mud has pulled back from a long line of old gray stone, standing in dry ground like the teeth of a giant's comb. \"The buried bridge,\" says the guide quietly. \"My folk have a rule. We show the bank. We do not walk on it.\" Seren nods. \"Something moved, and uncovered it.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Think about what to do next",
+          "label": "Plan what comes next",
           "icon": "hand",
           "goto": "bridge_ask"
         }
@@ -2313,17 +2313,17 @@
     },
     "bridge_ask": {
       "type": "choice_point",
-      "narration": "The tide slides back out, the way it came. Pip is already sketching the stone. \"Master Orin Vale will want to see this,\" Seren says. \"He studies silt.\" The guide watches the bridge, not you. What will you do before you go any closer?",
+      "narration": "The tide slides back out. Pip is already sketching the stone. \"Master Orin Vale will want to see this,\" says Seren. \"He studies silt.\" The guide watches the bridge, not you. What will you do first?",
       "choices": [
         {
           "id": "guide",
-          "label": "Ask the guide to show the buried bridge",
+          "label": "Ask to see the bridge",
           "icon": "hand",
           "goto": "bridge_go"
         },
         {
           "id": "plan",
-          "label": "Rest first, and plan with Seren and Pip",
+          "label": "Rest and plan first",
           "icon": "hand",
           "goto": "bridge_plan"
         }
@@ -2346,11 +2346,11 @@
     },
     "bridge_go": {
       "type": "story",
-      "narration": "The guide takes a long breath and puffs a little, just at the edges. \"The bank,\" she says. \"I will show you the bank. Not the stone.\" She hops onto the firmest shell and waits for you to follow.",
+      "narration": "The guide takes a long breath and puffs a little at the edges. \"The bank,\" she says. \"I will show you the bank. Not the stone.\" She hops onto the firmest shell.",
       "choices": [
         {
           "id": "continue",
-          "label": "Rest on the high shells first",
+          "label": "Rest on the high shells",
           "icon": "hand",
           "goto": "flats_rest"
         }
@@ -2373,11 +2373,11 @@
     },
     "bridge_plan": {
       "type": "story",
-      "narration": "Seren draws the route on Pip's map in three quick lines. \"The firm bank first. The silt second. The stone last, and only from the bank.\" Pip writes it down and underlines the word bank. The guide gives a very small nod.",
+      "narration": "Seren draws the route on Pip's map in three lines. \"The firm bank first. The silt second. The stone last, and only from the bank.\" Pip underlines the word bank. The guide gives a very small nod.",
       "choices": [
         {
           "id": "continue",
-          "label": "Rest on the high shells first",
+          "label": "Rest on the high shells",
           "icon": "hand",
           "goto": "flats_rest"
         }
@@ -2400,7 +2400,7 @@
     },
     "flats_rest": {
       "type": "rest",
-      "narration": "You rest on the high shells above the tide line while the water goes back out. The guide scratches the day's lesson in the mud with one fin. \"Look again,\" she says. Farther along the flats, new silt is hiding old routes. When you are ready, your guide will take you to the bank of the buried bridge.",
+      "narration": "You rest above the tide line while the water goes back out. The guide scratches the day's lesson in the mud. \"Look again,\" she says. When you are ready, she will take you to the bank of the buried bridge.",
       "heal": 0,
       "choices": [],
       "variants": [
@@ -2408,7 +2408,7 @@
           "when": {
             "flag": "glacier_rift_woken"
           },
-          "text": "The open fold still hums nearby. Its echo offers a return to the glacier."
+          "text": "The open fold still hums nearby. It could carry you back to the glacier."
         }
       ],
       "outcome": "success",

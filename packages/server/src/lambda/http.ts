@@ -32,8 +32,10 @@ import {
 import { reportClientError } from "../handlers/client-error.ts";
 import { relayPreview } from "../handlers/preview.ts";
 import { relayCheer } from "../handlers/cheer.ts";
+import { createScreenCode, isScreenSlowDown, redeemScreenCode } from "../handlers/screens.ts";
+import { viewerStillShows } from "../handlers/viewer.ts";
 import { chooseWatching } from "../handlers/watch.ts";
-import { beatPresence } from "../handlers/presence.ts";
+import { beatPresence, beatScreen } from "../handlers/presence.ts";
 import type { ActionError, HandlerDeps, HandlerResult } from "../handlers/deps.ts";
 import { iso, ok } from "../handlers/deps.ts";
 import { admitNewPhone, bindNewPhone, createRoom, findRoom, joinRoom, settleRoom, vetTableName, watchRoom } from "../handlers/room.ts";
@@ -41,7 +43,7 @@ import { setVisitors } from "../handlers/visitors.ts";
 import { removePlayer } from "../handlers/remove.ts";
 import { handKeeper } from "../handlers/keeper.ts";
 import { closeRoom, lockRoom, setQuiet, type HostPrincipal } from "../handlers/host.ts";
-import { CREW_BODY, parseCrewChoice, switchCrew } from "../handlers/crew.ts";
+import { confirmCrew, CREW_BODY, KEEP_BODY, RENAME_BODY, parseCrewChoice, parseCrewKeep, parseCrewRename, renameCrew, switchCrew } from "../handlers/crew.ts";
 import { parseTimingControl, setTiming, TIMING_BODY, type TimingControl } from "../handlers/timing.ts";
 import { releaseSavedHero, resumeGame, stopForToday } from "../handlers/save.ts";
 import { listHeroes } from "../handlers/heroes.ts";
@@ -172,6 +174,7 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
     if (req.path === "/api/auth/shared-device") return (deps) => postShareDevice(req, deps, rt);
     if (req.path === "/api/pair/code") return (deps) => postPairCode(req, deps);
     if (req.path === "/api/pair/redeem") return (deps) => postPairRedeem(req, deps);
+    if (req.path === "/api/screens/redeem") return (deps) => postScreenRedeem(req, deps);
     if (req.path === "/api/auth/forget-device") return (deps) => postForgetDevice(req, deps, rt);
 
     // Four letters, or an open room's six-letter visitor code (#249).
@@ -195,6 +198,11 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
       const code = keeper[1].toUpperCase();
       return (deps) => postKeeper(req, deps, code);
     }
+    const screens = /^\/api\/room\/([A-Za-z]{4})\/screens$/.exec(req.path);
+    if (screens?.[1]) {
+      const code = screens[1].toUpperCase();
+      return (deps) => runHostControl(req, deps, code, null, (principal) => createScreenCode({ code, principal }, deps), (made) => made);
+    }
     const lock = /^\/api\/room\/([A-Za-z]{4})\/lock$/.exec(req.path);
     if (lock?.[1]) {
       const code = lock[1].toUpperCase();
@@ -209,6 +217,16 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
     if (crew?.[1]) {
       const code = crew[1].toUpperCase();
       return (deps) => postCrew(req, deps, code);
+    }
+    const crewKeep = /^\/api\/room\/([A-Za-z]{4})\/crewkeep$/.exec(req.path);
+    if (crewKeep?.[1]) {
+      const code = crewKeep[1].toUpperCase();
+      return (deps) => postCrewKeep(req, deps, code);
+    }
+    const crewName = /^\/api\/room\/([A-Za-z]{4})\/crewname$/.exec(req.path);
+    if (crewName?.[1]) {
+      const code = crewName[1].toUpperCase();
+      return (deps) => postCrewName(req, deps, code);
     }
     const timing = /^\/api\/room\/([A-Za-z]{4})\/timing$/.exec(req.path);
     if (timing?.[1]) {
@@ -433,15 +451,15 @@ async function postJoin(req: Req, deps: HandlerDeps, typed: string) {
   const room = settled.value;
   if (!room) return error(404, "NOT_FOUND", `no open room ${code}`);
   // An unbound device joining a room gets a player created for it on the spot,
-  // so a phone that has never seen this game joins in one tap. On a visitor
-  // code it is a visitor, in a guest household of its own (#249).
+  // so a phone that has never seen this game joins in one tap. Unless it is
+  // founding a TV's room, it is a visitor, in a guest household of its own (#249).
   // Never-seen phones are admitted *before* anything is bound to them
   // (`admitNewPhone`): a refused one must leave no membership behind.
   const joinerName = vetTypedName(req.body.displayName, "Player");
   if (!existing && !joinerName.ok) return fromError(joinerName.error);
   let admitted: "family" | "visitor" | null = null;
   if (!existing) {
-    const admission = await admitNewPhone(room, named.visitorCode, deps);
+    const admission = await admitNewPhone(room, found.claimable === true, deps);
     if (!admission.ok) return fromError(admission.error);
     admitted = admission.value;
   }
@@ -493,7 +511,7 @@ async function postWatch(req: Req, deps: HandlerDeps, code: string) {
  * What a host control does once its host is known (#263, #267). It answers
  * with the run's seq, as every control is one committed change to the run.
  */
-type HostAct = (principal: HostPrincipal) => Promise<HandlerResult<{ seq: number }>>;
+type HostAct<T extends object = { seq: number }> = (principal: HostPrincipal) => Promise<HandlerResult<T>>;
 
 /**
  * Remove, lock and close: the room's host, proved by a phone's device token,
@@ -501,12 +519,18 @@ type HostAct = (principal: HostPrincipal) => Promise<HandlerResult<{ seq: number
  * body is checked only once the host is, so a stranger learns nothing from
  * it. Each looks a room up by code, so each spends the wrong-code budget.
  */
-async function postHostControl(
+function postHostControl(req: Req, deps: HandlerDeps, code: string, invalid: string | null, act: HostAct) {
+  return runHostControl(req, deps, code, invalid, act, (value) => ({ ok: true, seq: value.seq }));
+}
+
+/** `postHostControl` for a control that answers with something of its own. */
+async function runHostControl<T extends object>(
   req: Req,
   deps: HandlerDeps,
   code: string,
   invalid: string | null,
-  act: HostAct,
+  act: HostAct<T>,
+  answer: (value: T) => object,
 ) {
   const shared = await resolveShared(req, deps);
   if (shared === null) return forgottenDevice();
@@ -530,7 +554,7 @@ async function postHostControl(
   const result = await act(principal);
   const missed = !result.ok && result.error.code === "NOT_FOUND" && result.error.message.startsWith("no open room");
   if (!missed) await lookup.hit();
-  if (result.ok) return json(200, { ok: true, seq: result.value.seq }, asker);
+  if (result.ok) return json(200, answer(result.value), asker);
   return fromError(result.error);
 }
 
@@ -600,6 +624,22 @@ async function postCrew(req: Req, deps: HandlerDeps, code: string) {
   const choice = parseCrewChoice(req.body);
   return postHostControl(req, deps, code, choice === undefined ? CREW_BODY : null, (principal) =>
     switchCrew({ code, principal, ...choice! }, deps),
+  );
+}
+
+/** The host keeping the crew's adventure going for heroes new to it (handlers/crew.ts). */
+async function postCrewKeep(req: Req, deps: HandlerDeps, code: string) {
+  const keep = parseCrewKeep(req.body);
+  return postHostControl(req, deps, code, keep === undefined ? KEEP_BODY : null, (principal) =>
+    confirmCrew({ code, principal, ...keep! }, deps),
+  );
+}
+
+/** The host giving one of the household's crews another of the offered names (handlers/crew.ts). */
+async function postCrewName(req: Req, deps: HandlerDeps, code: string) {
+  const rename = parseCrewRename(req.body);
+  return postHostControl(req, deps, code, rename === undefined ? RENAME_BODY : null, (principal) =>
+    renameCrew({ code, principal, ...rename! }, deps),
   );
 }
 
@@ -775,7 +815,18 @@ async function postSpectate(req: Req, deps: HandlerDeps) {
  */
 async function postPresence(req: Req, deps: HandlerDeps) {
   const session = await resolveSession(req, deps);
-  if (!session) return error(401, "FORBIDDEN", "presence needs a room session token");
+  if (!session) {
+    // Another TV in another place says it is still showing the game. Only a
+    // follower's viewer token names a screen; the room's own TV is not counted.
+    const viewer = bearer(req) ? await deps.identity.resolveViewer(bearer(req)) : null;
+    if (viewer?.screenId === undefined) return error(401, "FORBIDDEN", "presence needs a room session token");
+    const shown = await beatScreen(
+      { runId: viewer.runId, roomCode: viewer.roomCode, screenId: viewer.screenId, leaving: req.body.leaving === true },
+      deps,
+    );
+    if (!shown.ok) return error(shown.status, shown.code, shown.message);
+    return json(200, { ok: true, connected: shown.connected });
+  }
   const result = await beatPresence(
     {
       runId: session.runId,
@@ -825,7 +876,7 @@ async function postProgressionSpend(req: Req, deps: HandlerDeps) {
 async function getHeroes(req: Req, deps: HandlerDeps) {
   const session = await resolveSession(req, deps);
   if (!session) return error(401, "FORBIDDEN", "listing heroes needs a room session token");
-  const result = await listHeroes({ householdId: session.householdId, playerId: session.playerId }, deps);
+  const result = await listHeroes({ householdId: session.householdId, playerId: session.playerId, runId: session.runId }, deps);
   return result.ok ? json(200, result.value) : fromError(result.error);
 }
 
@@ -908,6 +959,11 @@ async function getStateRoute(req: Req, deps: HandlerDeps) {
     return error(404, "NOT_FOUND", named);
   }
   if (!runId) runId = reader.runId;
+  // A viewer token outlives the game and its four letters can be reused: it
+  // reads only while its room is open and still this run (handlers/viewer.ts).
+  if (!("playerId" in reader) && !(await viewerStillShows(deps.repo, reader.runId, reader.roomCode))) {
+    return error(404, "NOT_FOUND", named);
+  }
 
   if (code) {
     const room = await deps.repo.getRoom(code);
@@ -1029,6 +1085,13 @@ async function postPairRedeem(req: Req, deps: HandlerDeps) {
     deps,
   );
   if (isSlowDown(result)) return slowDown(deps);
+  return result.ok ? json(200, result.value) : fromError(result.error);
+}
+
+/** A follower TV spends the leader's screen code: no sign-in, the code is the credential. */
+async function postScreenRedeem(req: Req, deps: HandlerDeps) {
+  const result = await redeemScreenCode({ code: req.body.code, client: req.client }, deps);
+  if (isScreenSlowDown(result)) return slowDown(deps);
   return result.ok ? json(200, result.value) : fromError(result.error);
 }
 
