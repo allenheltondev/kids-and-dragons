@@ -440,25 +440,8 @@ export async function followCrew(
   if (state.crews === undefined && state.crew === undefined) return state;
   if (!betweenGames(state)) return state;
   if (state.crewSetup) return state;
-  const known = new Set((state.crews ?? []).map((c) => c.id));
-  const crews = new Set<string | null>();
-  for (const member of seatedParty(state)) {
-    let hero;
-    try {
-      hero = await deps.repo.getCharacter(memberHome(member, householdId), member.character.id);
-    } catch (err) {
-      // A hero who cannot be read cannot say which crew: leave the lobby be.
-      console.error(`crews: could not read ${member.character.id}:`, err);
-      return state;
-    }
-    const held = hero ? claimOf(hero) : null;
-    if (!hero || held === null) continue;
-    const { table, crew } = parseClaim(held, hero);
-    if (table !== householdId || (crew !== undefined && !known.has(crew))) continue;
-    if (!(await claimIsLive(held, hero, deps))) continue;
-    crews.add(crew ?? null);
-  }
-  if (crews.size !== 1) return state;
+  const crews = await seatedCrews(state, householdId, deps);
+  if (crews === null || crews.size !== 1) return state;
   const [target] = [...crews];
   if ((state.crew ?? null) === target) return state;
   const { crew: _crew, ...rest } = state;
@@ -467,8 +450,55 @@ export async function followCrew(
   return next;
 }
 
+/**
+ * The crews whose live adventures at this household hold the heroes seated in
+ * the lobby (null: the household's first crew). A new hero, or one whose
+ * adventure is over or at another table, adds nothing. Null when a hero cannot
+ * be read, since then nobody can say which crew the lobby is.
+ */
+export async function seatedCrews(
+  state: RunState,
+  householdId: string,
+  deps: HandlerDeps,
+): Promise<Set<string | null> | null> {
+  const crews = new Set<string | null>();
+  for (const member of seatedParty(state)) {
+    let hero;
+    try {
+      hero = await deps.repo.getCharacter(memberHome(member, householdId), member.character.id);
+    } catch (err) {
+      // A hero who cannot be read cannot say which crew: leave the lobby be.
+      console.error(`crews: could not read ${member.character.id}:`, err);
+      return null;
+    }
+    const crew = hero ? await liveCrewOf(hero, state, householdId, deps) : undefined;
+    if (crew !== undefined) crews.add(crew);
+  }
+  return crews;
+}
+
+/**
+ * The crew of this household whose live adventure holds `hero` (null: the
+ * first crew), or undefined when none does: she is free, or held elsewhere,
+ * or by a crew this lobby does not know.
+ */
+export async function liveCrewOf(
+  hero: Character,
+  state: Pick<RunState, "crews">,
+  householdId: string,
+  deps: HandlerDeps,
+): Promise<string | null | undefined> {
+  const held = claimOf(hero);
+  if (held === null) return undefined;
+  const { table, crew } = parseClaim(held, hero);
+  const known = new Set((state.crews ?? []).map((c) => c.id));
+  if (table !== householdId || (crew !== undefined && !known.has(crew))) return undefined;
+  if (!(await claimIsLive(held, hero, deps))) return undefined;
+  return crew ?? null;
+}
+
 /** In the lobby, with no chapter started and none to finish. */
-function betweenGames(state: RunState): boolean {
+export function betweenGames(state: RunState): boolean {
   return state.chapterId === null && !UNDER_WAY.has(state.phase) && state.phase !== "chapter_complete";
 }
 

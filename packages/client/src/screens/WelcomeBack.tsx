@@ -26,7 +26,7 @@ import { Icon } from "./icons";
 import "./shared.css";
 import "./CreationFlow.css";
 import { savedHeroLine } from "./save-copy";
-import { crewChoices } from "./crew-copy";
+import { crewChoices, heroBlockedLine, heroHoldLine, heroHoldNote } from "./crew-copy";
 import "./WelcomeBack.css";
 
 function tierName(tier: string): string {
@@ -37,6 +37,9 @@ export function WelcomeBack(): ReactElement {
   const state = useGameStore((s) => s.state);
   const listHeroes = useGameStore((s) => s.listHeroes);
   const savedHeroes = useGameStore((s) => s.savedHeroes);
+  // What holds each hero, and what this room would do with her: a hero it
+  // cannot seat says why on her own card, before anybody taps (#282, crews).
+  const heldHeroes = useGameStore((s) => s.heldHeroes);
   const send = useSend();
   const [heroes, setHeroes] = useState<ResolvedCharacter[] | null>(null);
   const [makeNew, setMakeNew] = useState(false);
@@ -78,6 +81,7 @@ export function WelcomeBack(): ReactElement {
   }
 
   const hero = heroes.find((h) => h.id === chosen) ?? null;
+  const note = hero && heldHeroes[hero.id] ? heroHoldNote(hero.name, heldHeroes[hero.id]!) : null;
 
   const bring = async (): Promise<void> => {
     if (hero === null) return;
@@ -105,13 +109,20 @@ export function WelcomeBack(): ReactElement {
         <ul className="creation-grid welcome-back__heroes">
           {heroes.map((h) => {
             const on = h.id === chosen;
+            const hold = heldHeroes[h.id];
+            const blocked = Boolean(hold?.blocked);
+            const tone = blocked ? "bad" : hold?.crew || hold?.at ? "warn" : "calm";
             return (
               <li key={h.id}>
                 <button
                   type="button"
-                  className={`creation-card welcome-back__hero kad-tap kad-focusable${on ? " creation-card--on" : ""}`}
+                  className={`creation-card welcome-back__hero kad-tap kad-focusable${on ? " creation-card--on" : ""}${blocked ? " welcome-back__hero--blocked" : ""}`}
                   aria-pressed={on}
-                  onClick={() => setChosen(h.id)}
+                  // Still focusable and read out, so the reason is never hidden; only choosing is off.
+                  aria-disabled={blocked || undefined}
+                  onClick={() => {
+                    if (!blocked) setChosen(h.id);
+                  }}
                 >
                   <span className="welcome-back__art" aria-hidden="true">
                     <CharacterPortrait
@@ -130,8 +141,16 @@ export function WelcomeBack(): ReactElement {
                         {on ? <Icon name="check" label="Chosen" /> : null}
                       </span>
                     </span>
-                    {savedHeroes[h.id] ? (
+                    {hold ? (
+                      <span className={`creation-card__line welcome-back__hold welcome-back__hold--${tone}`}>
+                        <Icon name={hold.crew ? "crew" : hold.at ? "travel" : "story"} />
+                        <span>{heroHoldLine(hold, Boolean(savedHeroes[h.id]))}</span>
+                      </span>
+                    ) : savedHeroes[h.id] ? (
                       <span className="creation-card__line kad-muted">{savedHeroLine(h.name, savedHeroes[h.id]!)}</span>
+                    ) : null}
+                    {blocked ? (
+                      <span className="kad-chip kad-chip--bad kad-chip--wrap welcome-back__blocked">{heroBlockedLine(hold!)}</span>
                     ) : null}
                     <span className="creation-card__line kad-muted">
                       <Icon name={h.class} />
@@ -145,6 +164,13 @@ export function WelcomeBack(): ReactElement {
             );
           })}
         </ul>
+
+        {note && !refused ? (
+          <p className="kad-chip kad-chip--warn kad-chip--wrap welcome-back__note" role="status">
+            <Icon name="crew" />
+            <span>{note}</span>
+          </p>
+        ) : null}
 
         {refused ? (
           <p className="kad-chip kad-chip--bad kad-chip--wrap" role="alert">

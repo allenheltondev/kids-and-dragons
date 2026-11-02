@@ -10,18 +10,18 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import type { ResolvedCharacter } from "@kad/shared";
+import type { HeroHold, ResolvedCharacter } from "@kad/shared";
 import { makeCharacter, makeState } from "../testing/fixtures";
 import { useGameStore } from "../store";
 import { WelcomeBack } from "./WelcomeBack";
 
-function mount(heroes: ResolvedCharacter[] | Error, accepted = true, fresh = false) {
+function mount(heroes: ResolvedCharacter[] | Error, accepted = true, fresh = false, held: Record<string, HeroHold> = {}) {
   const send = vi.fn(async () => accepted);
   const listHeroes = vi.fn(async () => {
     if (heroes instanceof Error) throw heroes;
     return heroes;
   });
-  useGameStore.setState({ send, listHeroes, rules: null, loadContent: async () => undefined,
+  useGameStore.setState({ send, listHeroes, rules: null, loadContent: async () => undefined, heldHeroes: held, savedHeroes: {},
     state: makeState(fresh ? { crew: "cw_1", crewSetup: true, crews: [{ id: "cw_1", name: "The Otter Crew" }] } : {}) });
   render(<WelcomeBack />);
   return { send, listHeroes };
@@ -93,6 +93,52 @@ describe("WelcomeBack", () => {
 
     await user.click(screen.getByRole("button", { name: /make a new hero for this one/i }));
     expect(await screen.findByText(/getting the character sheet ready/i)).toBeTruthy();
+  });
+
+  it("says on her card which crew a hero is playing with, and that choosing her moves the room", async () => {
+    const user = userEvent.setup();
+    const { send } = mount([SPARKLEHOOF], true, false, {
+      c_old: { campaign: "Gemfall", crew: "The Otter Crew", switches: true },
+    });
+    expect(await screen.findByText("Playing Gemfall with The Otter Crew")).toBeTruthy();
+    // Nothing about the room until she is chosen; then what sitting her down does.
+    expect(screen.queryByRole("status")).toBeNull();
+    await user.click(screen.getByRole("button", { name: /Sparklehoof/ }));
+    expect(screen.getByRole("status").textContent).toMatch(/This room will switch to The Otter Crew so Sparklehoof can keep going/);
+    await user.click(screen.getByRole("button", { name: /play as sparklehoof/i }));
+    expect(send).toHaveBeenCalledWith({ type: "SEAT_CHARACTER", characterId: "c_old" });
+  });
+
+  it("warns before Begin when the room is playing as a different crew it will not leave", async () => {
+    const user = userEvent.setup();
+    mount([SPARKLEHOOF], true, false, { c_old: { campaign: "Gemfall", crew: "The Otter Crew" } });
+    await user.click(await screen.findByRole("button", { name: /Sparklehoof/ }));
+    expect(screen.getByRole("status").textContent).toMatch(/this room is playing as a different crew/);
+  });
+
+  it("dims a hero this room cannot seat, says why on her card, and never lets her be chosen", async () => {
+    const user = userEvent.setup();
+    const BO = makeCharacter({ id: "c_bo", name: "Bo", level: 2, tier: "fledgling" });
+    const { send } = mount([SPARKLEHOOF, BO], true, false, {
+      c_old: { campaign: "Gemfall", at: "Rue's", blocked: "Sparklehoof is in the middle of another adventure" },
+    });
+    const card = await screen.findByRole("button", { name: /Sparklehoof/ });
+    expect(card.getAttribute("aria-disabled")).toBe("true");
+    expect(screen.getByText("Partway through Gemfall at Rue's")).toBeTruthy();
+    expect(screen.getByText("Sparklehoof is in the middle of another adventure.")).toBeTruthy();
+    await user.click(card);
+    expect(card.getAttribute("aria-pressed")).toBe("false");
+    expect(screen.getByRole("button", { name: /pick a hero/i })).toHaveProperty("disabled", true);
+    // Another hero is still a tap away.
+    await user.click(screen.getByRole("button", { name: /^Bo/ }));
+    await user.click(screen.getByRole("button", { name: /play as bo/i }));
+    expect(send).toHaveBeenCalledWith({ type: "SEAT_CHARACTER", characterId: "c_bo" });
+  });
+
+  it("names the adventure of a hero partway through with this room's own crew, quietly", async () => {
+    mount([SPARKLEHOOF], true, false, { c_old: { campaign: "Gemfall" } });
+    expect(await screen.findByText("Partway through Gemfall")).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Sparklehoof/ }).getAttribute("aria-disabled")).toBeNull();
   });
 
   it("still lets them make someone new", async () => {

@@ -851,7 +851,7 @@ async function postProgressionSpend(req: Req, deps: HandlerDeps) {
 async function getHeroes(req: Req, deps: HandlerDeps) {
   const session = await resolveSession(req, deps);
   if (!session) return error(401, "FORBIDDEN", "listing heroes needs a room session token");
-  const result = await listHeroes({ householdId: session.householdId, playerId: session.playerId }, deps);
+  const result = await listHeroes({ householdId: session.householdId, playerId: session.playerId, runId: session.runId }, deps);
   return result.ok ? json(200, result.value) : fromError(result.error);
 }
 
