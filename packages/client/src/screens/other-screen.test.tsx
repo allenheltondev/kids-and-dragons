@@ -9,6 +9,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { useGameStore } from "../store";
 import { useKeepsakeStore } from "../store/keepsake";
+import { isBusy, resetBusy } from "../sw/busy";
+import { shouldReload, type CalmInputs } from "../sw/calm";
 import { makeState } from "../testing/fixtures";
 import { HostControls } from "./HostControls";
 import { HomeScreen } from "./HomeScreen";
@@ -34,6 +36,7 @@ beforeEach(() => {
 
 afterEach(() => {
   cleanup();
+  resetBusy();
   vi.useRealTimers();
   window.history.replaceState(null, "", "/");
   act(() => {
@@ -172,5 +175,54 @@ describe("screenShareText", () => {
     expect(text).toContain("https://example.test/?screen=ABCDEFGH");
     expect(text).toContain("ABCD-EFGH");
     expect(text).toContain("Join a game lobby");
+  });
+});
+
+/** A calm page with a new build waiting, but for whatever `editing` (busy.ts) says. */
+const CALM: CalmInputs = { visible: true, synced: true, picking: false, inFight: false, editing: false, keepsakeOpen: false, pairing: false };
+const reloads = (): boolean => shouldReload(true, { ...CALM, editing: isBusy() }, null, 0);
+
+describe("an update reload never takes a one-use code (sw/converge.ts)", () => {
+  it("waits while the other TV has a code typed, and while it is being spent", async () => {
+    let answer!: () => void;
+    const showFromCode = vi.fn(() => new Promise<void>((resolve) => { answer = resolve; }));
+    act(() => useGameStore.setState({ showFromCode }));
+    const { unmount } = render(<ShowHere initialCode="" onClose={() => undefined} />);
+    expect(reloads()).toBe(true);
+
+    fireEvent.change(screen.getByLabelText("Code for this TV"), { target: { value: "abcdefgh" } });
+    expect(reloads()).toBe(false);
+
+    // Spent on the server, the viewer token not yet kept: the most dangerous moment.
+    fireEvent.click(screen.getByRole("button", { name: "Show the game here" }));
+    await waitFor(() => expect(showFromCode).toHaveBeenCalled());
+    fireEvent.change(screen.getByLabelText("Code for this TV"), { target: { value: "" } });
+    expect(reloads()).toBe(false);
+
+    // Kept, and the card gives way to the game.
+    await act(async () => answer());
+    unmount();
+    expect(reloads()).toBe(true);
+  });
+
+  it("waits while a code a link brought is on the card", () => {
+    render(<ShowHere initialCode="ABCDEFGH" onClose={() => undefined} />);
+    expect(reloads()).toBe(false);
+  });
+
+  it("waits while the leader's code is on screen, and lets go once it runs out", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    host(vi.fn(async () => ({ code: "ABCDEFGH", expiresAt: new Date(Date.now() + 1000).toISOString() })));
+    render(<AddScreen roomCode="ABCD" shareable={false} />);
+    // Opening the section to read it holds nothing.
+    expect(reloads()).toBe(true);
+    fireEvent.click(screen.getByRole("button", { name: "Get a code for the other TV" }));
+    await screen.findByLabelText("Code for the other TV");
+    expect(reloads()).toBe(false);
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1500);
+    });
+    expect(screen.getByText(/That code ran out/)).toBeTruthy();
+    expect(reloads()).toBe(true);
   });
 });
