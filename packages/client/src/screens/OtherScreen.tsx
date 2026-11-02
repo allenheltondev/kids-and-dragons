@@ -23,6 +23,7 @@ import { useGameStore } from "../store";
 import { formatPairingCode } from "../store/pairing";
 import { Button } from "../ui/Button";
 import { INVITE_TITLE, shareInvite, type ShareOutcome } from "../ui/share-invite";
+import { useBusy } from "../sw/busy";
 import { Icon } from "./icons";
 import "./PairDevice.css";
 import "./OtherScreen.css";
@@ -63,6 +64,12 @@ export function AddScreen({ roomCode, shareable }: { roomCode: string; shareable
   const [busy, setBusy] = useState(false);
   const [shared, setShared] = useState<ShareOutcome | null>(null);
   const expired = useExpired(made?.expiresAt ?? null);
+  /*
+   * A live code on screen, or one on its way, is not calm for an update reload
+   * (sw/converge.ts): the server keeps no way to show it again, so a reload
+   * would take it from whoever is reading it out. Released when it runs out.
+   */
+  useBusy("screen-code-shown", busy || (made !== null && !expired));
 
   const make = useCallback(async () => {
     setBusy(true);
@@ -158,6 +165,14 @@ export function ShowHere({ initialCode, onClose }: { initialCode: string; onClos
   const [error, setError] = useState<string | null>(null);
   const fieldId = useId();
   const ready = code.length === PAIRING_CODE_LENGTH;
+  /*
+   * A code typed, or being spent, is not calm for an update reload
+   * (sw/converge.ts). Once the server has spent it, the viewer token it answers
+   * with is the only way into the game until the store has kept it, which
+   * happens before this card goes; a reload in between would leave this TV
+   * with a used code and nothing to show for it.
+   */
+  useBusy("screen-code-entry", busy || code.length > 0);
   const onChange = useCallback((e: ChangeEvent<HTMLInputElement>) => setCode(normalizePairingInput(e.target.value)), []);
 
   const submit = useCallback(async () => {
