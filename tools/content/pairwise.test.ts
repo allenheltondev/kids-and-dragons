@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { pairwise } from "./pairwise.ts";
 
 type Row = Record<string, unknown>;
@@ -14,7 +14,14 @@ describe("pairwise", () => {
   const all = product(axes);
   const keys = Object.keys(axes);
 
-  afterEach(() => { delete process.env.KAD_FULL_MATRIX; });
+  // `KAD_FULL_MATRIX=1 npm test` sets this for the whole run. These tests assert the reduction, so each
+  // starts with it unset (and the one that wants it set sets it itself), and the inherited value is put back.
+  const inherited = process.env.KAD_FULL_MATRIX;
+  beforeEach(() => { delete process.env.KAD_FULL_MATRIX; });
+  afterEach(() => {
+    if (inherited === undefined) delete process.env.KAD_FULL_MATRIX;
+    else process.env.KAD_FULL_MATRIX = inherited;
+  });
 
   it("keeps every pair of values from any two axes, in far fewer rows than the product", () => {
     const picked = pairwise(all, keys);
