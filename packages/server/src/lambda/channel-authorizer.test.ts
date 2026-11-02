@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { DevIdentity } from "../identity.ts";
 import { MemoryRepository } from "../store/memory-repository.ts";
 import { makeClock, T0 } from "../test-support.ts";
+import { viewerStillShows } from "../handlers/viewer.ts";
 import { authorize, type ChannelAuthorizerEvent } from "./channel-authorizer.ts";
 
 const ROOM_TTL = 6 * 3600_000;
@@ -10,7 +11,7 @@ function setup() {
   const clock = makeClock(T0);
   const repo = new MemoryRepository({ now: clock.now });
   const identity = new DevIdentity(repo, clock.now);
-  return { clock, identity };
+  return { clock, identity, repo };
 }
 
 function event(
@@ -92,6 +93,64 @@ describe("channel authorizer", () => {
     expect(result.isAuthorized).toBe(true);
     expect(result.handlerContext).toMatchObject({ runId: "r_1", viewer: "true" });
     expect(result.handlerContext).not.toHaveProperty("playerId");
+  });
+
+  it("turns a viewer away once its game is over, and never asks the question of a player", async () => {
+    const { identity, clock } = setup();
+    const viewer = await identity.issueViewerToken({ runId: "r_1", roomCode: "ABCD", expiresAt: clock.now() + ROOM_TTL });
+    const session = await identity.issueSessionToken({
+      runId: "r_1",
+      roomCode: "ABCD",
+      householdId: "h_1",
+      playerId: "p_1",
+      expiresAt: clock.now() + ROOM_TTL,
+    });
+    const closed = async () => false;
+    const none = async () => false;
+
+    expect((await authorize(event({ token: viewer }), identity, clock.now, none, closed)).isAuthorized).toBe(false);
+    // A connect has no channel yet, and a dead viewer is refused there too.
+    const connect = { authorizationToken: viewer, requestContext: { operation: "CONNECT" as const } };
+    expect((await authorize(connect, identity, clock.now, none, closed)).isAuthorized).toBe(false);
+    // Players have their own rule (`removed`); the viewer's does not touch them.
+    expect((await authorize(event({ token: session }), identity, clock.now, none, closed)).isAuthorized).toBe(true);
+  });
+
+  it("refuses a follower's old token once another game has taken the same four letters", async () => {
+    const { identity, clock, repo } = setup();
+    const token = await identity.issueViewerToken({ runId: "r_old", roomCode: "ABCD", expiresAt: clock.now() + ROOM_TTL });
+    const open = (runId: string, roomCode: string) => viewerStillShows(repo, runId, roomCode);
+    const room = (runId: string) => ({
+      code: "ABCD",
+      runId,
+      householdId: "h_x",
+      mode: "party" as const,
+      createdAt: new Date(clock.now()).toISOString(),
+      expiresAt: new Date(clock.now() + ROOM_TTL).toISOString(),
+      ttl: Math.floor((clock.now() + ROOM_TTL) / 1000),
+    });
+    const run = (runId: string, closed: boolean) => ({ runId, seq: 1, closed, party: [] }) as never;
+    const none = async () => false;
+
+    await repo.putState(run("r_old", false));
+    await repo.putRoomIfAbsent(room("r_old") as never);
+    expect((await authorize(event({ token }), identity, clock.now, none, open)).isAuthorized).toBe(true);
+
+    // The leader closes: the room goes, the run is closed, and the letters are free.
+    await repo.putState(run("r_old", true));
+    await repo.deleteRoom("ABCD");
+    expect((await authorize(event({ token }), identity, clock.now, none, open)).isAuthorized).toBe(false);
+
+    // Another family's game takes ABCD. The old token still names r_old.
+    await repo.putState(run("r_new", false));
+    await repo.putRoomIfAbsent(room("r_new") as never);
+    expect((await authorize(event({ token }), identity, clock.now, none, open)).isAuthorized).toBe(false);
+  });
+
+  it("holds a viewer's yes for no longer than a minute", async () => {
+    const { identity, clock } = setup();
+    const token = await identity.issueViewerToken({ runId: "r_1", roomCode: "ABCD", expiresAt: clock.now() + ROOM_TTL });
+    expect((await authorize(event({ token }), identity, clock.now)).ttlOverride).toBe(60);
   });
 
   it("never authorizes a publish, whatever the token", async () => {
