@@ -166,11 +166,10 @@ describe("the prologue", () => {
       "The Walk. Plate 1 is a painting.",
       "Plate 2 is a painting.",
       "Plate 3 is a painting.",
-      "Here we go! A walk begins.",
-      "Your goal: Get there.",
       "The story of ch_1 begins.",
+      "Your goal: Get there.",
     ]);
-    expect(screen.getByTestId("chapter-preface")).toBeTruthy();
+    expect(screen.queryByTestId("chapter-preface")).toBeNull();
   });
 
   it("is shown once: skipped or watched, it does not come back", async () => {
@@ -325,7 +324,7 @@ describe("paintings that have not landed", () => {
     await flush();
     // ...and said as usual once they are known not to be coming.
     expect(screen.queryByTestId("story-plates")).toBeNull();
-    expect(spoken).toEqual(["Here we go! A walk begins.", "Your goal: Get there.", "The story of ch_1 begins."]);
+    expect(spoken).toEqual(["The story of ch_1 begins.", "Your goal: Get there."]);
     expect(localStorage.getItem(STORY_PLATES_SEEN_KEY)).toBeNull();
   });
 });

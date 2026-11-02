@@ -1,11 +1,11 @@
 // @vitest-environment jsdom
 /**
- * ChapterPreface (#357): "Last time…" before a chapter's first scene, and "Where you left off"
- * for a screen that comes back partway. Nothing is tapped: each goes away by itself, or when
+ * ChapterPreface (#357): "Where you left off" for a screen that comes back partway (a chapter's
+ * start has no recap card). Nothing is tapped: each goes away by itself, or when
  * play moves on.
  *
  * And the order the shared screen reads a chapter's start in, which NarrationPanel owns:
- * "Last time…", then "Your goal: …", then the first scene's story, and the goal never twice.
+ * the first scene's story, then "Your goal: …", once.
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -13,7 +13,7 @@ import { act, cleanup, render, screen } from "@testing-library/react";
 import { setSpeaker } from "@kad/shared";
 import type { Campaign, Chapter, PartyMember, ResolvedCharacter, RunState } from "@kad/shared";
 import { useGameStore } from "../store";
-import { ChapterPreface, PREFACE_WAIT_MS, prefaceShowMs, resetPrefaceCampaigns } from "./ChapterPreface";
+import { ChapterPreface, prefaceShowMs, resetPrefaceCampaigns } from "./ChapterPreface";
 import { NarrationPanel } from "./NarrationPanel";
 
 const CAMPAIGN = {
@@ -104,92 +104,27 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe("Last time…, before a chapter's first scene", () => {
-  it("shows the carried road's line and ends with the goal", () => {
+describe("a chapter's start", () => {
+  it("shows no Last time card, however many roads the party carried in", () => {
     seed(run());
     render(<ChapterPreface />);
-    const card = screen.getByTestId("chapter-preface");
-    expect(card.dataset.kind).toBe("start");
-    expect(card.textContent).toContain("Last time…");
-    expect(card.textContent).toContain("You went round the lake.");
-    expect(card.textContent).not.toContain("up the hill");
-    expect(card.querySelector(".preface__goal")?.textContent).toBe("Your goal: Get the cat down from the tree.");
-  });
-
-  it("gives a party carrying nothing the opener", () => {
+    expect(screen.queryByTestId("chapter-preface")).toBeNull();
+    cleanup();
     seed(run({ flags: {} }));
     render(<ChapterPreface />);
-    const card = screen.getByTestId("chapter-preface");
-    expect(card.textContent).toContain("Here we go!");
-    expect(card.textContent).toContain("A walk begins");
-  });
-
-  it("goes away by itself, and at once when the story moves on", () => {
-    vi.useFakeTimers();
-    seed(run());
-    render(<ChapterPreface />);
-    expect(screen.queryByTestId("chapter-preface")).not.toBeNull();
-    act(() => vi.advanceTimersByTime(prefaceShowMs(40, "start")));
-    expect(screen.queryByTestId("chapter-preface")).toBeNull();
-
-    cleanup();
-    seed(run());
-    render(<ChapterPreface />);
-    expect(screen.queryByTestId("chapter-preface")).not.toBeNull();
-    act(() => useGameStore.setState({ state: run({ sceneId: "s_2", visited: ["s_1", "s_2"], narration: "The ladder wobbles." }) }));
     expect(screen.queryByTestId("chapter-preface")).toBeNull();
   });
 
-  it("never comes up after the wait has run out, however soon the files land (#378 review)", () => {
-    vi.useFakeTimers();
-    seed(run(), { chapter: null });
-    render(<ChapterPreface />);
-    expect(screen.queryByTestId("chapter-preface")).toBeNull();
-    act(() => vi.advanceTimersByTime(PREFACE_WAIT_MS));
-    act(() => useGameStore.setState({ chapter: CHAPTER }));
-    expect(screen.queryByTestId("chapter-preface")).toBeNull();
-  });
-
-  it("is not shown for a campaign without one, nor past the first scene", () => {
-    seed(run(), { campaign: { ...CAMPAIGN, lastTime: undefined } });
-    render(<ChapterPreface />);
-    expect(screen.queryByTestId("chapter-preface")).toBeNull();
-  });
-});
-
-describe("the read-aloud order at a chapter's start", () => {
-  it("says Last time, then the goal, then the story, and the goal only once", () => {
+  it("reads the story, then the goal, once, with no recap", () => {
     seed(run());
     render(<NarrationPanel />);
-    expect(spoken).toEqual(["Last time… You went round the lake.", "Your goal: Get the cat down from the tree.", "A cat is up a tree."]);
+    expect(spoken).toEqual(["A cat is up a tree.", "Your goal: Get the cat down from the tree."]);
   });
 
-  it("waits for the files, never longer than PREFACE_WAIT_MS, so nothing jumps the queue", () => {
-    vi.useFakeTimers();
+  it("does not hold the story for slow campaign files", () => {
     seed(run(), { chapter: null });
     render(<NarrationPanel />);
-    expect(spoken).toEqual([]);
-    act(() => useGameStore.setState({ chapter: CHAPTER }));
-    expect(spoken).toEqual(["Last time… You went round the lake.", "Your goal: Get the cat down from the tree.", "A cat is up a tree."]);
-  });
-
-  it("reads the story alone, then #356's goal after it, when the files are too slow", () => {
-    vi.useFakeTimers();
-    seed(run(), { chapter: null });
-    render(<NarrationPanel />);
-    act(() => vi.advanceTimersByTime(PREFACE_WAIT_MS));
     expect(spoken).toEqual(["A cat is up a tree."]);
-    act(() => useGameStore.setState({ chapter: CHAPTER }));
-    expect(spoken).toEqual(["A cat is up a tree.", "Your goal: Get the cat down from the tree."]);
-    // And the files landing late never starts the preface after the story.
-    act(() => vi.advanceTimersByTime(1000));
-    expect(spoken).toEqual(["A cat is up a tree.", "Your goal: Get the cat down from the tree."]);
-  });
-
-  it("keeps #356's order for a campaign with no Last time: the story, then the goal", () => {
-    seed(run(), { campaign: { ...CAMPAIGN, lastTime: undefined } });
-    render(<NarrationPanel />);
-    expect(spoken).toEqual(["A cat is up a tree.", "Your goal: Get the cat down from the tree."]);
   });
 
   it("says nothing of it mid-chapter", () => {
