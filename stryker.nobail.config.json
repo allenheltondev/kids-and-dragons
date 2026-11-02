@@ -1,0 +1,42 @@
+{
+  "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+  "testRunner": "vitest",
+  "vitest": {
+    "configFile": "vitest.mutation.config.ts"
+  },
+  "coverageAnalysis": "perTest",
+  "reporters": [
+    "json",
+    "progress-append-only"
+  ],
+  "jsonReporter": {
+    "fileName": "reports/mutation/nobail.json"
+  },
+  "tempDirName": ".stryker-tmp",
+  "concurrency": 4,
+  "timeoutMS": 20000,
+  "mutate": [
+    "packages/shared/src/enemy-ai.ts",
+    "packages/shared/src/character.ts",
+    "packages/shared/src/interaction-timing.ts"
+  ],
+  "tsconfigFile": "no-such-tsconfig.json",
+  "disableTypeChecks": false,
+  "ignorePatterns": [
+    "wiki",
+    "art",
+    "docs",
+    "test-results",
+    "reports",
+    "tools/art",
+    "tools/voice",
+    "tools/wiki",
+    "assets/world",
+    "assets/*.png",
+    ".github",
+    "infra"
+  ],
+  "ignoreStatic": true,
+  "incremental": false,
+  "disableBail": true
+}
