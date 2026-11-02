@@ -1714,6 +1714,14 @@ and every device stay the household's, so anyone may sit down with any crew.
   of a lost answer, gets that crew, and a fresh tap always makes another. `RunState.crews` lists the others for the Room
   panel, and is absent while the household has only its first.
 
+**The hero picker says so first** (`GET /api/heroes`, `held`). For each hero a
+live adventure holds, the list names the campaign and, when it is another
+crew's or another table's, which; given the asking room's run, it also says
+whether this room would refuse her (`blocked`, `seatHero`'s own words) or move
+its lobby to her crew (`switches`, `followCrew`'s rule with her seated). The
+phone dims a hero it cannot seat with the reason on her card, and says what
+choosing a hero of another crew will do before "Play as".
+
 **The lobby follows the kids** (`followCrew`, run beside `relockLobby`
 whenever the lobby's party changes). A new room opens on the first crew, and
 the moment a seated hero is on a live adventure of another crew at this

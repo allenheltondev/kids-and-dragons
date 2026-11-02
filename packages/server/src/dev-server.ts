@@ -722,7 +722,7 @@ async function main(): Promise<void> {
 
     const session = await resolveSession(req, base);
     if (!session) return sendError(res, 401, "FORBIDDEN", "listing heroes needs a room session token");
-    const result = await listHeroes({ householdId: session.householdId, playerId: session.playerId }, deps);
+    const result = await listHeroes({ householdId: session.householdId, playerId: session.playerId, runId: session.runId }, deps);
     if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
     res.json(result.value);
   });

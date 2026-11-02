@@ -66,6 +66,25 @@ export function busyMessage(hero: Pick<Character, "name">): string {
 const FIRST_CREW = "the first crew";
 
 /**
+ * What a sentence calls one of a household's crews (architecture §4.5,
+ * "Crews"): the first crew's chosen name, else `FIRST_CREW`, and any other
+ * crew's row. Null when the crew is not there or cannot be read, so a caller
+ * falls back to words that name no crew rather than a wrong one.
+ */
+export async function crewNameOf(
+  householdId: string,
+  crew: string | undefined,
+  deps: Pick<HandlerDeps, "repo">,
+): Promise<string | null> {
+  try {
+    if (!crew) return (await deps.repo.getFirstCrewName(householdId)) ?? FIRST_CREW;
+    return (await deps.repo.listCrews(householdId)).find((c) => c.id === crew)?.name ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/**
  * `busyMessage`, but when another crew of this same household holds the hero
  * (architecture §4.5, "Crews") it says which, and how to get there: the fix
  * is one tap in the Room panel, not a hero lost. Anything else (another
@@ -81,16 +100,8 @@ export async function crewBusyMessage(
   if (held === null) return busyMessage(hero);
   const { table, crew } = parseClaim(held, hero);
   if (table !== householdId || (crew ?? null) === (state.crew ?? null)) return busyMessage(hero);
-  let name = FIRST_CREW;
-  if (crew) {
-    try {
-      const found = (await deps.repo.listCrews(householdId)).find((c) => c.id === crew);
-      if (!found) return busyMessage(hero);
-      name = found.name;
-    } catch {
-      return busyMessage(hero);
-    }
-  }
+  const name = await crewNameOf(householdId, crew, deps);
+  if (name === null) return busyMessage(hero);
   return `${hero.name} is playing with ${name}. A grown-up can switch crews in the Room panel.`;
 }
 
