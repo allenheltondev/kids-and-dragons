@@ -104,7 +104,7 @@ test.describe("a group with two organizers", () => {
       // These new kids have no saved hero to bring, so finish creation first.
       await createCharacter(seat, i === 0 ? "unicorn" : "griffin", kid);
     }
-    const lobby = tv.getByRole("region", { name: "Everyone in?" });
+    const lobby = tv.getByRole("region", { name: "Lobby" });
     await expect(lobby.getByText("Posy", { exact: true })).toBeVisible(TAP);
     await expect(lobby.getByText("Gullet", { exact: true })).toBeVisible(TAP);
   });

@@ -1,9 +1,5 @@
 // @vitest-environment jsdom
-/**
- * "Tap for sound" on the shared screen (#264): one plain button while the
- * browser is holding sound back, gone once it is playing, never for a browser
- * with no audio, and never in the way of silent play.
- */
+/** One speaker control enables blocked audio, then mutes and unmutes it. */
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 
@@ -14,6 +10,8 @@ import { DisplayExtras } from "./DisplayExtras";
 
 class BlockedContext {
   static allowed = false;
+  static latest: BlockedContext | null = null;
+  constructor() { BlockedContext.latest = this; }
   currentTime = 0;
   state: "suspended" | "running" = "suspended";
   destination = {};
@@ -48,37 +46,62 @@ afterEach(() => {
   BlockedContext.allowed = false;
 });
 
-it("shows one button while sound is blocked, keeps it through a refused tap, and drops it once sound plays", async () => {
+it("keeps one button through blocked, enabled, and muted states", async () => {
   vi.stubGlobal("AudioContext", BlockedContext);
   screenWithSound();
-  expect(await screen.findAllByRole("button", { name: "Tap for sound" })).toHaveLength(1);
+  expect(await screen.findAllByRole("button", { name: /^(Enable sound|Turn sound)/ })).toHaveLength(1);
+  const speaker = screen.getByRole("button", { name: "Enable sound" });
+
+  expect(screen.getByRole("button", { name: "Enable sound" }).textContent).toBe("");
+  expect(screen.getByRole("button", { name: "Enable sound" }).querySelector(".kad-icon")).not.toBeNull();
 
   // A first tap the browser still refuses leaves the ask on screen.
-  await act(async () => { fireEvent.click(screen.getByRole("button", { name: "Tap for sound" })); });
-  expect(screen.getByRole("button", { name: "Tap for sound" })).toBeTruthy();
+  await act(async () => { fireEvent.click(screen.getByRole("button", { name: "Enable sound" })); });
+  expect(screen.getByRole("button", { name: "Enable sound" })).toBeTruthy();
 
   BlockedContext.allowed = true;
   await act(async () => {
-    fireEvent.click(screen.getByRole("button", { name: "Tap for sound" }));
+    fireEvent.pointerDown(speaker);
+    fireEvent.click(speaker);
     await Promise.resolve();
   });
-  expect(screen.queryByRole("button", { name: "Tap for sound" })).toBeNull();
+  expect(screen.queryByRole("button", { name: "Enable sound" })).toBeNull();
+  expect(screen.getByRole("button", { name: "Turn sound off" })).toBe(speaker);
+  expect(speaker.getAttribute("aria-pressed")).toBe("false");
+  fireEvent.click(speaker);
+  expect(screen.getByRole("button", { name: "Turn sound on" })).toBe(speaker);
 });
 
-it("stays out of the way when sound is turned off, and comes back when it is turned on", async () => {
+it("honors saved mute and enables sound from that same control", async () => {
   vi.stubGlobal("AudioContext", BlockedContext);
+  localStorage.setItem("kad-audio", JSON.stringify({ muted: true, volume: .8 }));
   screenWithSound();
-  await screen.findByRole("button", { name: "Tap for sound" });
-  await act(async () => { fireEvent.click(screen.getByRole("button", { name: "Turn sound off" })); });
-  expect(screen.queryByRole("button", { name: "Tap for sound" })).toBeNull();
-  await act(async () => { fireEvent.click(screen.getByRole("button", { name: "Turn sound on" })); });
-  expect(screen.getByRole("button", { name: "Tap for sound" })).toBeTruthy();
+  const speaker = await screen.findByRole("button", { name: "Turn sound on" });
+  expect(screen.getAllByRole("button", { name: /^(Enable sound|Turn sound)/ })).toHaveLength(1);
+  await act(async () => { fireEvent.click(speaker); });
+  expect(screen.getByRole("button", { name: "Enable sound" })).toBe(speaker);
+});
+
+it("updates the same control when a running browser suspends audio", async () => {
+  vi.stubGlobal("AudioContext", BlockedContext);
+  BlockedContext.allowed = true;
+  screenWithSound();
+  const speaker = await screen.findByRole("button", { name: "Enable sound" });
+  await act(async () => { fireEvent.keyDown(speaker, { key: "Enter" }); fireEvent.click(speaker); });
+  expect(screen.getByRole("button", { name: "Turn sound off" })).toBe(speaker);
+  act(() => {
+    BlockedContext.latest!.state = "suspended";
+    for (const notify of BlockedContext.latest!.listeners) notify();
+  });
+  expect(screen.getByRole("button", { name: "Enable sound" })).toBe(speaker);
+  await act(async () => { fireEvent.pointerDown(speaker); fireEvent.click(speaker); });
+  expect(screen.getByRole("button", { name: "Turn sound off" })).toBe(speaker);
 });
 
 it("does not ask a browser with no audio at all for a tap that cannot help", async () => {
   // jsdom: no AudioContext. Silent play is the whole story there.
   screenWithSound();
   await screen.findByRole("button", { name: "About this screen" });
-  expect(screen.queryByRole("button", { name: "Tap for sound" })).toBeNull();
+  expect(screen.queryByRole("button", { name: "Enable sound" })).toBeNull();
   expect(screen.getByRole("button", { name: "Turn sound off" })).toBeTruthy();
 });

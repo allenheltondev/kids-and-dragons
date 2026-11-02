@@ -271,6 +271,17 @@ afterEach(cleanup);
 // Whose turn it is
 // ---------------------------------------------------------------------------
 
+function pagedCard(name: RegExp) {
+  for (let page = 0; page < 10; page++) {
+    const found = screen.queryByRole("button", { name });
+    if (found) return found;
+    const more = screen.queryByRole("button", { name: "More choices" });
+    if (!more) break;
+    act(() => fireEvent.click(more));
+  }
+  return screen.getByRole("button", { name });
+}
+
 describe("whose turn it is", () => {
   it("offers nothing on somebody else's turn, and says whose", () => {
     /*
@@ -517,12 +528,12 @@ describe("a tap does the thing (spec §11)", () => {
     expect(list.hasAttribute("data-columns")).toBe(false);
     expect(list.getAttribute("data-dense")).toBe("true");
     for (const name of ["Strike", "Shout", "Volley"]) {
-      expect(screen.getByRole("button", { name: new RegExp(`^${name}`) }).textContent).toContain(`What ${name} does.`);
+      expect(pagedCard(new RegExp(`^${name}`)).textContent).toContain(`What ${name} does.`);
     }
-    expect(screen.getByRole("button", { name: /^Get Ready/ }).textContent).toContain("+2 on your next roll");
+    expect(pagedCard(/^Get Ready/).textContent).toContain("+2 on your next roll");
     expect(document.querySelector(".combat__reading")).toBeNull();
 
-    await user.click(screen.getByRole("button", { name: /^Shout/ }));
+    await user.click(pagedCard(/^Shout/));
     expect(sent).toEqual([{ type: "COMBAT_ACTION", abilityId: "shout" }]);
   });
 
@@ -971,7 +982,7 @@ describe("fitting every card on one screen", () => {
     const list = container.querySelector(".combat__actions")!;
     expect(list.getAttribute("data-dense")).toBe("true");
 
-    await user.click(screen.getByRole("button", { name: /^Use an item/ }));
+    await user.click(pagedCard(/^Use an item/));
     expect(screen.getByText("Use an item: which one?")).toBeTruthy();
     // The ability cards stepped aside: one question at a time.
     expect(screen.queryByRole("button", { name: /^Strike/ })).toBeNull();
@@ -1000,7 +1011,7 @@ describe("fitting every card on one screen", () => {
     });
     expect(screen.queryByRole("button", { name: /^Use an item/ })).toBeNull();
     expect(screen.getByRole("button", { name: /Use Sunbloom Draught/ })).toBeTruthy();
-    expect(screen.getByRole("button", { name: /Use Brave Whistle/ })).toBeTruthy();
+    expect(pagedCard(/Use Brave Whistle/)).toBeTruthy();
   });
 });
 

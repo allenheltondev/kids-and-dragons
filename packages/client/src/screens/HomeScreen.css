@@ -503,3 +503,19 @@
   display: flex;
   justify-content: center;
 }
+/* Code cells must size from their row, not the font's intrinsic line box. */
+.home__code-boxes { grid-auto-rows: minmax(0, 1fr); }
+.home__code-box { aspect-ratio: 1; line-height: 1; padding: 0; align-content: center; }
+@media (max-width: 600px) {
+  .home__inner { gap: .75em; padding-block-end: .75em; }
+  .home__body { gap: .75em; }
+  .home__code { max-inline-size: 20em; }
+}
+@media (max-width: 600px) and (max-height: 740px) {
+  .home__logo { width: 3.5rem; }
+  .home__title { font-size: 1.4em; gap: .5em; }
+  .home__card { padding: .65em; gap: .5em; }
+  .home__mode { padding: .5em; gap: .5em; }
+  .home__mode-icon { inline-size: 2.2em; block-size: 2.2em; }
+  .home .kad-button--lg { font-size: 1em; min-block-size: 44px; padding-block: .5em; }
+}

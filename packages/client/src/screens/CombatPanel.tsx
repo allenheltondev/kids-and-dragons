@@ -1,3 +1,4 @@
+import { PagedOptions } from "../ui/PagedOptions";
 /**
  * CombatControls — PlayerView's half of a fight (spec §7.2, §11).
  *
@@ -278,8 +279,8 @@ export function CombatControls(): ReactElement | null {
   useSharePreview(previewOf(selection));
 
   const beats = useBeats(encounter, me?.character.id ?? null);
-  useTallestThisTurn(dockRef, turnOf(encounter));
-  useMoreBelow(answersRef);
+
+
 
   if (!encounter || !me) return null;
 
@@ -773,7 +774,7 @@ export function CombatControls(): ReactElement | null {
             onClickCapture={held ? swallowTap : undefined}
           >
             {selection.step === "idle" && cardCount > 0 ? (
-              <ul className="prompt__options combat__actions" data-dense={dense || undefined}>
+              <PagedOptions className="prompt__options combat__actions" data-dense={dense || undefined}>
                 {actions.map((action) => (
                   <li key={action.abilityId}>
                     <button
@@ -819,12 +820,12 @@ export function CombatControls(): ReactElement | null {
                     />
                   ))
                 )}
-              </ul>
+              </PagedOptions>
             ) : null}
 
             {/* The bag, opened in place of the cards: same spot, same thumb. */}
             {inBag ? (
-              <ul className="prompt__options combat__actions" data-dense={usableItems.length >= DENSE_CARDS || undefined}>
+              <PagedOptions className="prompt__options combat__actions" data-dense={usableItems.length >= DENSE_CARDS || undefined}>
                 {usableItems.map((item) => (
                   <ItemCard
                     key={`item-${item.itemId}`}
@@ -832,11 +833,11 @@ export function CombatControls(): ReactElement | null {
                     onTap={tapItem}
                   />
                 ))}
-              </ul>
+              </PagedOptions>
             ) : null}
 
             {aimingWho !== null ? (
-              <ul className="prompt__options combat__targets" data-columns={targetPool >= 3 ? 2 : 1}>
+              <PagedOptions className="prompt__options combat__targets" data-columns={targetPool >= 3 ? 2 : 1}>
                 {targetIds.map((targetId) => {
                   const target = combatantById(encounter, targetId);
                   if (!target) return null;
@@ -869,7 +870,7 @@ export function CombatControls(): ReactElement | null {
                     </li>
                   );
                 })}
-              </ul>
+              </PagedOptions>
             ) : null}
 
             {canEnd ? (

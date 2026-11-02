@@ -112,7 +112,7 @@ const LetHeroGo = lazyChunk(() => import("./screens/HostControls"), (module) => 
 // What only a shared screen does (#264): wake lock, waking up, "About this
 // screen". A phone never loads it.
 const DisplayExtras = lazyChunk(() => import("./display/DisplayExtras"), (module) => module.DisplayExtras);
-// The shared screen's own controls in the corner row: Tap for sound and About this screen (#257).
+// The shared screen's own controls in the corner row: About this screen (#257).
 const DisplayCornerControls = lazyChunk(() => import("./display/DisplayExtras"), (module) => module.DisplayCornerControls);
 
 // The adventure book (`/journal`) is a route of its own, between games, and
@@ -228,7 +228,7 @@ export function App(): React.JSX.Element {
           </Suspense>
         </ChunkBoundary>
         {/* The shared screen's own controls (#257), in the row with the device's rather than
-            over its headings and its story: Room, About this screen, Tap for sound. */}
+            over its headings and its story: Room and About this screen. */}
         {route.name === "tv" && session ? (
           <ChunkBoundary quiet>
             <Suspense fallback={null}>

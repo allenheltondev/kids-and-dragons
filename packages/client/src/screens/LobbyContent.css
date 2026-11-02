@@ -528,3 +528,27 @@
 .lobby__crew-hint {
   font-size: 0.85em;
 }
+
+@media (max-width: 600px) {
+  :is(.kad-travel, .kad-party--player) .lobby { gap: .2em; padding: .4em; }
+  :is(.kad-travel, .kad-party--player) .lobby__campaigns { gap: .3em; }
+  :is(.kad-travel, .kad-party--player) .lobby__campaign { padding: .35em; }
+  :is(.kad-travel, .kad-party--player) .lobby__campaign :is(.campaign-art, .lobby__campaign-line) { display: none; }
+  :is(.kad-travel, .kad-party--player) .lobby__join { padding: .4em; gap: .4em; }
+  :is(.kad-travel, .kad-party--player) .lobby__qr-block { display: none; }
+  :is(.kad-travel, .kad-party--player) .lobby__lineup { flex: none; max-block-size: none; overflow: visible; gap: .3em; }
+  :is(.kad-travel, .kad-party--player) .lobby-member { padding: .3em; min-block-size: 44px; }
+  :is(.kad-travel, .kad-party--player) .lobby-member__portrait { inline-size: 2em; block-size: 2.5em; }
+  :is(.kad-travel, .kad-party--player) .lobby-member__meta { display: none; }
+}
+/* A definite line box keeps the code's baseline inside its bezel. */
+.lobby__code-letter { line-height: 1; padding-block: .18em; }
+.lobby__code-letter { inline-size: 1.6em; block-size: 1.6em; min-inline-size: 1.6em; padding: 0; }
+@media (max-width: 600px) {
+  :is(.kad-travel, .kad-party--player) .lobby__campaign { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto; }
+  :is(.kad-travel, .kad-party--player) .lobby__join-step { display: none; }
+}
+
+.lobby__code-glyph { display: block; inline-size: 100%; block-size: 100%; fill: currentColor; overflow: visible; }
+.lobby__code-glyph text { font-family: inherit; text-shadow: none; }
+.lobby__welcome-label { display: none; }

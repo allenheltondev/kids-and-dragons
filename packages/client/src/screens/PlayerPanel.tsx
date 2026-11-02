@@ -1,3 +1,5 @@
+import { SceneReading } from "../ui/SceneReading";
+import { PagedOptions } from "../ui/PagedOptions";
 import { setPlayerSection, usePlayerNavigation } from "../store/player-navigation";
 /**
  * PlayerPanel — PlayerView for everything that is not character creation.
@@ -591,6 +593,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   // "Watch the intro again" (Room settings): the campaign's prologue over the pane, nothing in the run touched.
   const runCampaign = useRunCampaign(state?.campaignId ?? null);
   const [replayingIntro, setReplayingIntro] = useState(false);
+  const [sheetPage, setSheetPage] = useState("bag");
   const closeIntro = useCallback(() => setReplayingIntro(false), []);
   const hasIntro = (runCampaign?.prologue?.plates.length ?? 0) > 0;
 
@@ -1071,9 +1074,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
         myPrompt !== null &&
         myPrompt.kind !== "interaction" &&
         !(myPrompt.kind === "roll" && myPrompt.prompt === state.narration) ? (
-          <p className="player__echo" aria-hidden="true">
-            {state.narration}
-          </p>
+          <SceneReading text={state.narration} />
         ) : null}
         {/* A rank that just landed for this hero (#310), on the scene it
             landed on: the line, as a card with the token glowing on it (#314),
@@ -1225,7 +1226,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
               </span>
             </h3>
 
-            <ul className="prompt__options">
+            <PagedOptions className="prompt__options">
               {myPrompt.options.map((option) => {
                 // Everyone with a say, so every option draws the same seats.
                 const voterIds =
@@ -1284,7 +1285,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                   </li>
                 );
               })}
-            </ul>
+            </PagedOptions>
 
             {/* Everyone who has not voted stepped away (#258). A vote only
                 counts when one lands, so this phone's own vote, sent again,
@@ -1427,7 +1428,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
               {items?.[myPrompt.incomingItemId]?.text ?? "Your bag is full. Keep it, or leave it?"}
             </p>
 
-            <ul className="prompt__options">
+            <PagedOptions className="prompt__options">
               {me.character.inventory.map((entry) => {
                 const def = items?.[entry.itemId];
                 const selected = pendingDrop === entry.itemId;
@@ -1460,7 +1461,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                   <span className="choice__label">Leave it behind</span>
                 </button>
               </li>
-            </ul>
+            </PagedOptions>
 
             {/* `undefined` is "not decided yet"; `null` is a real answer. */}
             <ConfirmBar
@@ -1518,7 +1519,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
               <Icon name="bag" />
               <span>{offersToMe.length === 1 ? "A present!" : "Presents!"}</span>
             </h3>
-            <ul className="prompt__options">
+            <PagedOptions className="prompt__options">
               {offersToMe.map((offer) => {
                 const def = items?.[offer.itemId];
                 const giver = nameOfPlayer(party, offer.fromPlayerId);
@@ -1566,7 +1567,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                         <p className="trade__text kad-muted">
                           Your bag is full. What should you put down?
                         </p>
-                        <ul className="prompt__options">
+                        <PagedOptions className="prompt__options">
                           {inventory.map((entry, index) => {
                             const held = items?.[entry.itemId];
                             const chosen = chosenDrop === entry.itemId;
@@ -1590,7 +1591,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                               </li>
                             );
                           })}
-                        </ul>
+                        </PagedOptions>
                       </>
                     ) : null}
 
@@ -1631,7 +1632,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                   </li>
                 );
               })}
-            </ul>
+            </PagedOptions>
           </div>
         ) : null}
 
@@ -1734,7 +1735,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                   <Icon name="vote" />
                   <span>Which adventure?</span>
                 </h4>
-                <ul className="prompt__options">
+                <PagedOptions className="prompt__options">
                   {(state.campaignOptions ?? []).map((option) => {
                     const myCampaignVote = state.campaignVotes?.[me.playerId];
                     const votedIds = party
@@ -1780,7 +1781,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                       </li>
                     );
                   })}
-                </ul>
+                </PagedOptions>
               </div>
             ) : null}
             {inLobby && !graphJourney && !campaignLocked && nextChapterLine(state.campaign) !== null ? (
@@ -2071,6 +2072,12 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
         <TvRest waiting={fightWaitingLine(state.encounter ?? null, party) ?? (globalPrompt !== null ? waitingLine(globalPrompt, party) : "Listen to the story…")} onPeek={() => setPeek(true)} />
       ) : null}
       <div className="player__scroll kad-scroll" hidden={!sheetUp}>
+        <label className="player__page-picker">Show
+          <select aria-label="Your page" value={sheetPage} onChange={event => { setSheetPage(event.target.value); setSelected(null); }}>
+            <option value="bag">Bag</option><option value="stats">Stats</option>
+            <option value="party">Friends</option><option value="token">Class token</option><option value="room">Settings</option>
+          </select>
+        </label>
         {/* One seat at the top of the bag, the big button's height, for
             either the way into your task or what the table is waiting on.
             Both change as other people act; sharing a fixed seat, neither
@@ -2101,9 +2108,12 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
           party and the bag start open; the token card, the longest thing a kid
           rarely needs mid-scene, starts folded to its name.
         */}
+        <div hidden={sheetPage !== "stats"}>
         <Collapsible id="stats" className="player__stats" title={<><Icon name="stats" /><span>Your stats</span></>}>
           <StatRow me={me} />
         </Collapsible>
+        </div>
+        <div hidden={sheetPage !== "token"}>
         {/* The worn token, its notches and the deed toward the next (#314). */}
         <Collapsible
           id="token"
@@ -2122,6 +2132,8 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
           "what is her Guard?" is a question a fight raises more often than a
           camp does.
         */}
+        </div>
+        <div hidden={sheetPage !== "party"}>
         <Collapsible id="party" className="party-strip" title={<><Icon name="party" /><span>Everyone</span></>}>
           <ul className="party-strip__list">
             {party.map((member) => (
@@ -2159,6 +2171,8 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
           </ul>
         </Collapsible>
 
+        </div>
+        <div hidden={sheetPage !== "bag" || selectedEntry !== null}>
         <InventoryGrid
           entries={inventory}
           questItems={me.character.questItems}
@@ -2172,6 +2186,8 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
           }}
         />
 
+        </div>
+        <div hidden={sheetPage !== "bag"}>
         {/* Using an item is a decision like any other: select, then confirm. */}
         {selectedEntry === null ? null : (
           <div className="item-detail">
@@ -2326,6 +2342,8 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
           </div>
         ) : null}
 
+        </div>
+        <div hidden={sheetPage !== "room"}>
         {roomControls || hasIntro ? (
           <Collapsible id="room" level={4} defaultOpen={false} className="player__room-settings" title={<span>Room settings</span>}>
             {roomControls}
@@ -2343,6 +2361,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
           </Collapsible>
         ) : null}
 
+        </div>
         {/* In the lobby the one thing left to do comes last, at the foot of
             the page, after the sheet you have just been looking over — and
             it is the whole answer: the tap says you are ready. */}
