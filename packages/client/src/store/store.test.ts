@@ -347,6 +347,14 @@ describe("joining", () => {
     await h.store.getState().joinRoom("ABCD", "Allen");
     await h.store.getState().listHeroes();
     expect(h.api.listHeroes).toHaveBeenCalledWith("tok_1");
+
+    // What holds each hero rides along, and a later list with none clears it.
+    const held = { c_1: { campaign: "Gemfall", crew: "The Otter Crew" } };
+    h.api.listHeroes.mockResolvedValueOnce({ heroes: [], held });
+    await h.store.getState().listHeroes();
+    expect(h.store.getState().heldHeroes).toEqual(held);
+    await h.store.getState().listHeroes();
+    expect(h.store.getState().heldHeroes).toEqual({});
   });
 
   it("opens the journal with the device binding, and not on a phone that has never played", async () => {

@@ -10,18 +10,18 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import type { ResolvedCharacter } from "@kad/shared";
+import type { HeroHold, ResolvedCharacter } from "@kad/shared";
 import { makeCharacter, makeState } from "../testing/fixtures";
 import { useGameStore } from "../store";
 import { WelcomeBack } from "./WelcomeBack";
 
-function mount(heroes: ResolvedCharacter[] | Error, accepted = true, fresh = false) {
+function mount(heroes: ResolvedCharacter[] | Error, accepted = true, fresh = false, held: Record<string, HeroHold> = {}) {
   const send = vi.fn(async () => accepted);
   const listHeroes = vi.fn(async () => {
     if (heroes instanceof Error) throw heroes;
     return heroes;
   });
-  useGameStore.setState({ send, listHeroes, rules: null, loadContent: async () => undefined,
+  useGameStore.setState({ send, listHeroes, rules: null, loadContent: async () => undefined, heldHeroes: held, savedHeroes: {},
     state: makeState(fresh ? { crew: "cw_1", crewSetup: true, crews: [{ id: "cw_1", name: "The Otter Crew" }] } : {}) });
   render(<WelcomeBack />);
   return { send, listHeroes };
@@ -93,6 +93,135 @@ describe("WelcomeBack", () => {
 
     await user.click(screen.getByRole("button", { name: /make a new hero for this one/i }));
     expect(await screen.findByText(/getting the character sheet ready/i)).toBeTruthy();
+  });
+
+  it("says on her card which crew a hero is playing with, and that choosing her moves the room", async () => {
+    const user = userEvent.setup();
+    const { send } = mount([SPARKLEHOOF], true, false, {
+      c_old: { campaign: "Gemfall", crew: "The Otter Crew", switches: true },
+    });
+    expect(await screen.findByText("Playing Gemfall with The Otter Crew")).toBeTruthy();
+    // Nothing about the room until she is chosen; then what sitting her down does.
+    expect(screen.queryByRole("status")).toBeNull();
+    await user.click(screen.getByRole("button", { name: /Sparklehoof/ }));
+    expect(screen.getByRole("status").textContent).toMatch(/This room will switch to The Otter Crew so Sparklehoof can keep going/);
+    await user.click(screen.getByRole("button", { name: /play as sparklehoof/i }));
+    expect(send).toHaveBeenCalledWith({ type: "SEAT_CHARACTER", characterId: "c_old" });
+  });
+
+  it("warns before Begin when the room is playing as a different crew it will not leave", async () => {
+    const user = userEvent.setup();
+    mount([SPARKLEHOOF], true, false, { c_old: { campaign: "Gemfall", crew: "The Otter Crew" } });
+    await user.click(await screen.findByRole("button", { name: /Sparklehoof/ }));
+    expect(screen.getByRole("status").textContent).toMatch(/this room is playing as a different crew/);
+  });
+
+  it("dims a hero this room cannot seat, says why on her card, and never lets her be chosen", async () => {
+    const user = userEvent.setup();
+    const BO = makeCharacter({ id: "c_bo", name: "Bo", level: 2, tier: "fledgling" });
+    const { send } = mount([SPARKLEHOOF, BO], true, false, {
+      c_old: { campaign: "Gemfall", at: "Rue's", blocked: "Sparklehoof is in the middle of another adventure" },
+    });
+    const card = await screen.findByRole("button", { name: /Sparklehoof/ });
+    expect(card.textContent).toMatch(/Tap to check again/);
+    expect(screen.getByText("Partway through Gemfall at Rue's")).toBeTruthy();
+    expect(screen.getByText("Sparklehoof is in the middle of another adventure.")).toBeTruthy();
+    await user.click(card);
+    expect(card.getAttribute("aria-pressed")).toBe("false");
+    expect(screen.getByRole("button", { name: /pick a hero/i })).toHaveProperty("disabled", true);
+    // Another hero is still a tap away.
+    await user.click(screen.getByRole("button", { name: /^Bo/ }));
+    await user.click(screen.getByRole("button", { name: /play as bo/i }));
+    expect(send).toHaveBeenCalledWith({ type: "SEAT_CHARACTER", characterId: "c_bo" });
+  });
+
+  it("checks a can't-sit hero again on a tap, and chooses her once her other table has let her go", async () => {
+    const user = userEvent.setup();
+    const held = { c_old: { campaign: "Gemfall", at: "Rue's", blocked: "Sparklehoof is in the middle of another adventure" } };
+    let calls = 0;
+    // As the store's listHeroes does: the hold comes with each list. Rue's lets her go after the first.
+    const listHeroes = vi.fn(async () => {
+      calls += 1;
+      useGameStore.setState({ heldHeroes: calls === 1 ? held : {} });
+      return [SPARKLEHOOF];
+    });
+    const send = vi.fn(async () => true);
+    useGameStore.setState({ send, listHeroes, rules: null, loadContent: async () => undefined, heldHeroes: {}, savedHeroes: {}, state: makeState({}) });
+    render(<WelcomeBack />);
+
+    const card = await screen.findByRole("button", { name: /Sparklehoof/ });
+    // Announced as a working button whose words say what a tap does.
+    expect(card.getAttribute("aria-disabled")).toBeNull();
+    expect(screen.getByRole("button", { name: /Tap to check again/ })).toBe(card);
+    await user.click(card);
+    await waitFor(() => expect(screen.getByRole("button", { name: /^Sparklehoof/ }).getAttribute("aria-pressed")).toBe("true"));
+    expect(listHeroes).toHaveBeenCalledTimes(2);
+    expect(screen.queryByText("Tap to check again")).toBeNull();
+    await user.click(screen.getByRole("button", { name: /play as sparklehoof/i }));
+    expect(send).toHaveBeenCalledWith({ type: "SEAT_CHARACTER", characterId: "c_old" });
+  });
+
+  it("never lets a late recheck take back a hero chosen while it was out", async () => {
+    const user = userEvent.setup();
+    const BO = makeCharacter({ id: "c_bo", name: "Bo", level: 2, tier: "fledgling" });
+    const held = { c_old: { campaign: "Gemfall", at: "Rue's", blocked: "Sparklehoof is in the middle of another adventure" } };
+    let release!: () => void;
+    let calls = 0;
+    const listHeroes = vi.fn(async () => {
+      calls += 1;
+      if (calls > 1) {
+        await new Promise<void>((resolve) => (release = resolve));
+        useGameStore.setState({ heldHeroes: {} });
+      } else {
+        useGameStore.setState({ heldHeroes: held });
+      }
+      return [SPARKLEHOOF, BO];
+    });
+    const send = vi.fn(async () => true);
+    useGameStore.setState({ send, listHeroes, rules: null, loadContent: async () => undefined, heldHeroes: {}, savedHeroes: {}, state: makeState({}) });
+    render(<WelcomeBack />);
+
+    await user.click(await screen.findByRole("button", { name: /^Sparklehoof/ }));
+    expect(await screen.findByText("Checking…")).toBeTruthy();
+    await user.click(screen.getByRole("button", { name: /^Bo/ }));
+    release();
+    await waitFor(() => expect(screen.queryByText("Checking…")).toBeNull());
+    expect(screen.getByRole("button", { name: /^Bo/ }).getAttribute("aria-pressed")).toBe("true");
+    expect(screen.getByRole("button", { name: /^Sparklehoof/ }).getAttribute("aria-pressed")).toBe("false");
+    await user.click(screen.getByRole("button", { name: /play as bo/i }));
+    expect(send).toHaveBeenCalledWith({ type: "SEAT_CHARACTER", characterId: "c_bo" });
+  });
+
+  it("keeps a hero blocked, and still choosable later, when the check says she is still busy", async () => {
+    const user = userEvent.setup();
+    mount([SPARKLEHOOF], true, false, {
+      c_old: { campaign: "Gemfall", at: "Rue's", blocked: "Sparklehoof is in the middle of another adventure" },
+    });
+    const card = await screen.findByRole("button", { name: /Sparklehoof/ });
+    await user.click(card);
+    await waitFor(() => expect(screen.getByText("Tap to check again")).toBeTruthy());
+    expect(screen.getByRole("button", { name: /^Sparklehoof/ }).getAttribute("aria-pressed")).toBe("false");
+  });
+
+  it("keeps a stopped game's own line, and adds only the other crew it belongs to", async () => {
+    useGameStore.setState({ savedHeroes: { c_old: {} } });
+    const listHeroes = vi.fn(async () => [SPARKLEHOOF]);
+    useGameStore.setState({ listHeroes, send: vi.fn(async () => true), rules: null, loadContent: async () => undefined,
+      heldHeroes: { c_old: { campaign: "Gemfall" } }, state: makeState({}) });
+    render(<WelcomeBack />);
+    expect(await screen.findByText("Sparklehoof is saved in a game.")).toBeTruthy();
+    expect(screen.queryByText("Partway through Gemfall")).toBeNull();
+    cleanup();
+    useGameStore.setState({ heldHeroes: { c_old: { campaign: "Gemfall", crew: "The Otter Crew" } } });
+    render(<WelcomeBack />);
+    expect(await screen.findByText("Sparklehoof is saved in a game.")).toBeTruthy();
+    expect(screen.getByText("Playing Gemfall with The Otter Crew")).toBeTruthy();
+  });
+
+  it("names the adventure of a hero partway through with this room's own crew, quietly", async () => {
+    mount([SPARKLEHOOF], true, false, { c_old: { campaign: "Gemfall" } });
+    expect(await screen.findByText("Partway through Gemfall")).toBeTruthy();
+    expect(screen.queryByText("Tap to check again")).toBeNull();
   });
 
   it("still lets them make someone new", async () => {
