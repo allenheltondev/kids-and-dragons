@@ -21,6 +21,12 @@ export function pairwise<T extends Record<string, unknown>>(rows: readonly T[], 
     for (let i = 0; i < keys.length; i++) for (let j = i + 1; j < keys.length; j++) out.push(tag(row, [keys[i]!, keys[j]!]));
     // Axes that only matter together get every combination, not just every pair.
     for (const group of opts.together ?? []) out.push(tag(row, group));
+    // With fewer than two axes there are no pairs to cover, which would select no rows at all
+    // (a suite that silently runs nothing). Require every single value, and at least one row.
+    if (keys.length < 2) {
+      out.push("*");
+      for (const k of keys) out.push(tag(row, [k]));
+    }
     return out;
   };
   const rowPairs = rows.map(pairsOf);
