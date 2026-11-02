@@ -218,7 +218,7 @@ API bundle, which is load-bearing — see below.
 | **SSM String** `/kad/<stage>/origin-secret` | Proves a request came through CloudFront. Made by `deploy.sh` — see below. |
 | **SSM SecureString** `/kad/<stage>/push-vapid-keys` | The VAPID key pair "It's your turn" pushes are signed with (#466). Minted by the API on first use, like the signing key, and only while pushes are on — see below. |
 | **Cognito** user pool | Optional sign-in. Essentials tier (passwordless needs it). `Retain`. |
-| **AppSync Events** | `room/<code>`. IAM publishes; the authorizer admits subscribers. |
+| **AppSync Events** | `room/<code>/<runId>`. IAM publishes; the authorizer admits subscribers. |
 | **HTTP API** + 5 Lambdas | `api`, `channel-authorizer`, `sweep`, `push-sender` (#466, invoked by `api` asynchronously), and the inline Cognito `PreSignUp` trigger. |
 | **S3 + CloudFront** | SPA, art, content. OAC — the bucket is not public. Two CloudFront functions: the SPA router, and one that passes the viewer's address to `/api/*`. |
 

@@ -759,6 +759,16 @@ export interface PairingCode {
 }
 
 /**
+ * `POST /api/room/:code/screens`: a one-time code that lets one more TV show
+ * this room, a follower at another address. Single use, about ten minutes.
+ * Redeemed at `POST /api/screens/redeem`, which answers like `/watch` does.
+ */
+export interface ScreenCode {
+  code: string;
+  expiresAt: string;
+}
+
+/**
  * `POST /api/pair/redeem` (#281): the new device's binding, as `adoptDevice`
  * gives one, and who it now is.
  */

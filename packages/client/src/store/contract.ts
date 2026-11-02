@@ -26,6 +26,7 @@ import type {
   RoomMode,
   RulesContent,
   RunState,
+  ScreenCode,
   SharedDevicePlayer,
   SharedSeatRequest,
   WorldMap,
@@ -291,6 +292,20 @@ export interface GameStore {
    * `removePlayer`.
    */
   lockRoom(locked: boolean): Promise<boolean>;
+  /**
+   * The host asks for a one-time code that lets one more TV, in another place,
+   * show this game (handlers/screens.ts). `null` when it could not; the reason
+   * lands in `error`, as a host control's does.
+   */
+  addScreen(): Promise<ScreenCode | null>;
+  /**
+   * This screen shows a game being played somewhere else: spend the code its
+   * host made and land on `/tv/:code`, a TV like any other that seats nobody.
+   * The session is kept, so a refresh comes straight back to the game. Throws
+   * for the caller to say why, and, unlike `joinRoom`, sets no `error`: the
+   * code card says it in place.
+   */
+  showFromCode(code: string): Promise<void>;
   /**
    * The host turns quiet mode on for every device in the room, or off again
    * (#260). Resolves like `removePlayer`.
