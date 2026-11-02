@@ -809,6 +809,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       arrivalsDropped: 0,
       cheers: [],
       savedHeroes: {},
+      heldHeroes: {},
       error: null,
       rules: null,
       items: null,
@@ -1004,8 +1005,8 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       async listHeroes() {
         const session = get().session;
         if (!session?.playerId) return [];
-        const { heroes, saved } = await deps.api.listHeroes(session.sessionToken);
-        set({ savedHeroes: saved ?? {} });
+        const { heroes, saved, held } = await deps.api.listHeroes(session.sessionToken);
+        set({ savedHeroes: saved ?? {}, heldHeroes: held ?? {} });
         return heroes;
       },
 
