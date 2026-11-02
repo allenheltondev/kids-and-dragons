@@ -9,7 +9,7 @@ import { itemCatalog } from "@kad/shared";
 import { withItemIcons } from "../assets/item-icons";
 import type {
   Bestiary,
-  ResolvedCharacter,
+  HeroesResponse,
   ActionRequest,
   ActionResponse,
   Campaign,
@@ -228,7 +228,7 @@ export interface Api {
    */
   fetchState(query: StateQuery, token?: string, timeoutMs?: number): Promise<StateResponse>;
   /** This player's saved characters, to bring one back (spec §5). */
-  listHeroes(token: string): Promise<{ heroes: ResolvedCharacter[]; saved?: Record<string, { at?: string }> }>;
+  listHeroes(token: string): Promise<HeroesResponse>;
   /**
    * The host of a stopped game lets one of its heroes go (#259): her gains
    * from that adventure are dropped and she is free at once. The device
@@ -559,7 +559,7 @@ export const api: Api = {
   },
 
   listHeroes(token) {
-    return request<{ heroes: ResolvedCharacter[]; saved?: Record<string, { at?: string }> }>("/api/heroes", { token });
+    return request<HeroesResponse>("/api/heroes", { token });
   },
 
   async releaseSavedHero(characterId, homeHouseholdId, deviceToken) {

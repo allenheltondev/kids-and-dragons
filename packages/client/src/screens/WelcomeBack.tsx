@@ -14,7 +14,7 @@
  * row, so nothing about the hero travels from this phone but which one.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ReactElement } from "react";
 import type { ResolvedCharacter } from "@kad/shared";
 import { useGameStore, useSend, useSynced } from "../store";
@@ -26,7 +26,7 @@ import { Icon } from "./icons";
 import "./shared.css";
 import "./CreationFlow.css";
 import { savedHeroLine } from "./save-copy";
-import { crewChoices } from "./crew-copy";
+import { crewChoices, heroBlockedLine, heroHoldLine, heroHoldNote } from "./crew-copy";
 import "./WelcomeBack.css";
 
 function tierName(tier: string): string {
@@ -37,16 +37,29 @@ export function WelcomeBack(): ReactElement {
   const state = useGameStore((s) => s.state);
   const listHeroes = useGameStore((s) => s.listHeroes);
   const savedHeroes = useGameStore((s) => s.savedHeroes);
+  // What holds each hero, and what this room would do with her: a hero it
+  // cannot seat says why on her own card, before anybody taps (#282, crews).
+  const heldHeroes = useGameStore((s) => s.heldHeroes);
   const send = useSend();
   const [heroes, setHeroes] = useState<ResolvedCharacter[] | null>(null);
   const [makeNew, setMakeNew] = useState(false);
-  const [chosen, setChosen] = useState<string | null>(null);
+  const [chosen, setChosenState] = useState<string | null>(null);
+  // The latest choice, for a recheck that answers after the kid chose someone
+  // else: her answer must not take the choice back (review of #596).
+  const chosenRef = useRef<string | null>(null);
+  const setChosen = (id: string | null): void => {
+    chosenRef.current = id;
+    setChosenState(id);
+  };
   const [busy, setBusy] = useState(false);
   // Held while catching up after a drop, like every answer (#413).
   const synced = useSynced();
   // Why the server would not seat the hero, in its words: "Sparklehoof is in
   // the middle of another adventure" (#282) names her, so it is shown as is.
   const [refused, setRefused] = useState<string | null>(null);
+  // A hero this room could not seat when the list came is asked about again
+  // on a tap: her other table may have let her go since (review of #596).
+  const [rechecking, setRechecking] = useState<string | null>(null);
 
   useEffect(() => {
     let live = true;
@@ -77,7 +90,24 @@ export function WelcomeBack(): ReactElement {
     );
   }
 
+  const recheck = async (id: string): Promise<void> => {
+    setRechecking(id);
+    const before = chosenRef.current;
+    try {
+      const found = await listHeroes();
+      setHeroes(found);
+      const free = found.some((h) => h.id === id) && !useGameStore.getState().heldHeroes[id]?.blocked;
+      // Only when nobody was chosen in the meantime: a newer tap wins.
+      if (free && chosenRef.current === before) setChosen(id);
+    } catch {
+      // Still blocked as far as anybody knows; the card keeps saying why.
+    } finally {
+      setRechecking(null);
+    }
+  };
+
   const hero = heroes.find((h) => h.id === chosen) ?? null;
+  const note = hero && heldHeroes[hero.id] ? heroHoldNote(hero.name, heldHeroes[hero.id]!) : null;
 
   const bring = async (): Promise<void> => {
     if (hero === null) return;
@@ -105,13 +135,22 @@ export function WelcomeBack(): ReactElement {
         <ul className="creation-grid welcome-back__heroes">
           {heroes.map((h) => {
             const on = h.id === chosen;
+            const hold = heldHeroes[h.id];
+            const blocked = Boolean(hold?.blocked);
+            const tone = blocked ? "bad" : hold?.crew || hold?.at ? "warn" : "calm";
             return (
               <li key={h.id}>
                 <button
                   type="button"
-                  className={`creation-card welcome-back__hero kad-tap kad-focusable${on ? " creation-card--on" : ""}`}
+                  className={`creation-card welcome-back__hero kad-tap kad-focusable${on ? " creation-card--on" : ""}${blocked ? " welcome-back__hero--blocked" : ""}`}
                   aria-pressed={on}
-                  onClick={() => setChosen(h.id)}
+                  // Enabled on purpose: a tap checks her again. Her reason and "Tap to check
+                  // again" are in the button's own words, so a screen reader hears both.
+                  aria-busy={rechecking === h.id || undefined}
+                  onClick={() => {
+                    if (!blocked) setChosen(h.id);
+                    else if (rechecking === null) void recheck(h.id);
+                  }}
                 >
                   <span className="welcome-back__art" aria-hidden="true">
                     <CharacterPortrait
@@ -133,6 +172,21 @@ export function WelcomeBack(): ReactElement {
                     {savedHeroes[h.id] ? (
                       <span className="creation-card__line kad-muted">{savedHeroLine(h.name, savedHeroes[h.id]!)}</span>
                     ) : null}
+                    {/* A stopped game's own line already says where; the hold adds only another crew. */}
+                    {hold && (!savedHeroes[h.id] || hold.crew) ? (
+                      <span className={`creation-card__line welcome-back__hold welcome-back__hold--${tone}`}>
+                        <Icon name={hold.crew ? "crew" : hold.at ? "travel" : "story"} />
+                        <span>{heroHoldLine(hold)}</span>
+                      </span>
+                    ) : null}
+                    {blocked ? (
+                      <span className="kad-chip kad-chip--bad kad-chip--wrap welcome-back__blocked">{heroBlockedLine(hold!)}</span>
+                    ) : null}
+                    {blocked ? (
+                      <span className="creation-card__line kad-muted">
+                        {rechecking === h.id ? "Checking…" : "Tap to check again"}
+                      </span>
+                    ) : null}
                     <span className="creation-card__line kad-muted">
                       <Icon name={h.class} />
                       <span>
@@ -145,6 +199,13 @@ export function WelcomeBack(): ReactElement {
             );
           })}
         </ul>
+
+        {note && !refused ? (
+          <p className="kad-chip kad-chip--warn kad-chip--wrap welcome-back__note" role="status">
+            <Icon name="crew" />
+            <span>{note}</span>
+          </p>
+        ) : null}
 
         {refused ? (
           <p className="kad-chip kad-chip--bad kad-chip--wrap" role="alert">

@@ -780,6 +780,35 @@ export interface SharedSeatRequest {
 }
 
 /**
+ * What holds one of a player's heroes, as the hero picker shows it
+ * (handlers/heroes.ts, `held`): the adventure she is partway through, and
+ * what this room would do with her now. Absent for a free hero. A stopped game
+ * that holds her is also in `saved`.
+ */
+export interface HeroHold {
+  /** The campaign she is partway through: "Gemfall". */
+  campaign: string;
+  /** Another crew of this room's household holds her: its name. */
+  crew?: string;
+  /** Another household's table holds her: its name. */
+  at?: string;
+  /** This room cannot seat her now, in the words the seat is refused with. */
+  blocked?: string;
+  /** Seating her moves this room's lobby to `crew` (crew.ts, `followCrew`). */
+  switches?: true;
+}
+
+/** `GET /api/heroes` — the heroes this player can bring back, and what holds each. */
+export interface HeroesResponse {
+  /** This player's own heroes, furthest-taken first. */
+  heroes: ResolvedCharacter[];
+  /** Hero id → where a stopped game holds her (#259); `at` names another table. */
+  saved?: Record<string, { at?: string }>;
+  /** Hero id → the adventure holding her, when one is under way. */
+  held?: Record<string, HeroHold>;
+}
+
+/**
  * `GET /api/journal` — what a phone can study with no game running.
  *
  * Authorised by the device token alone, not a room session: between games
