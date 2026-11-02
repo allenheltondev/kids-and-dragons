@@ -45,7 +45,7 @@ test.describe("another TV in another place", () => {
     await expect(shown).toHaveText(/^[A-Z]{4}-[A-Z]{4}$/, TAP);
     const code = (await shown.textContent())?.trim() ?? "";
 
-    // --- The other TV: a quiet link under hosting, then the same lobby ---
+    // --- The other TV: a quiet link in its Host card, then the same lobby ---
     const follower = await tv(browser);
     await follower.goto("/");
     await follower.getByRole("button", { name: /host a game/i }).click();

@@ -141,8 +141,10 @@ describe("the other TV's half", () => {
     expect(screen.getByRole("button", { name: "Show the game here" })).toHaveProperty("disabled", false);
   });
 
-  it("is one quiet link on the start screen's Host card, and Back returns there", () => {
+  it("is one quiet link in the Host card, beside Party Mode's table name, and Back returns there", () => {
     render(<HomeScreen />);
+    // Not on the join view, beside the kids' own Join a game.
+    expect(screen.queryByRole("button", { name: "Join a game lobby" })).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: "Host a game" }));
     fireEvent.click(screen.getByRole("button", { name: "Join a game lobby" }));
     return screen.findByRole("heading", { name: "Join a game lobby" }).then(() => {
