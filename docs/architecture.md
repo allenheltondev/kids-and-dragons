@@ -379,7 +379,7 @@ phone that fell behind the couch to desync.
 }
 ```
 
-**Server → clients** (published to AppSync Events channel `room/<code>/<runId>`, one channel per game):
+**Server → clients** (published to AppSync Events channel `room/<code>/<run>`, one channel per game; AppSync allows only letters, digits and hyphens in a segment, so the run's id is written with hyphens there, `r_4b2e…` as `r-4b2e…`, by `roomChannelPath` in `@kad/shared`, which the publisher, the browser and the authorizer all use. The run keeps its id everywhere else):
 
 ```jsonc
 {
@@ -1692,7 +1692,7 @@ nobody").
     be pointed at the family that later takes the same letters.
   - *A subscription already open* cannot be asked again: AppSync keeps it until
     the socket closes, and a cached authorization decision does not change that.
-    So the channel's name carries the run, `room/<code>/<runId>`. The server
+    So the channel's name carries the run, `room/<code>/<run>` (see above for how the id is spelled there). The server
     publishes each message to its own run's channel, the client subscribes to its
     own, and the authorizer admits a subscribe only to exactly the channel of the
     token's room and run (no wildcard, no bare `room/<code>`, no other run). A

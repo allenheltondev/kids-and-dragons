@@ -24,6 +24,7 @@
  * every patch.
  */
 
+import { roomChannelPath } from "@kad/shared";
 import type { EventSourceLike } from "./channel";
 
 export interface AppSyncSocketOptions {
@@ -87,7 +88,7 @@ export function watchdogMs(connectionTimeoutMs: number): number {
 
 /** One game's channel: `room/<code>/<runId>`. The run is in the name; see the server's `channelFor`. */
 export function channelPath(namespace: string, roomCode: string, runId: string): string {
-  return `/${namespace}/${roomCode.toUpperCase()}/${runId}`;
+  return roomChannelPath(namespace, roomCode, runId);
 }
 
 /**
