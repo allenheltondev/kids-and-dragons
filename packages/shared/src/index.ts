@@ -73,6 +73,7 @@ export * from "./spoken-names.js";
 export * from "./help.js";
 export * from "./preview.js";
 export * from "./visitors.js";
+export * from "./room-channel-path.js";
 export * from "./names.js";
 export * from "./interactions.js";
 export * from "./figure-size.js";

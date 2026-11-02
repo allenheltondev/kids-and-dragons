@@ -488,6 +488,28 @@ export interface TransferCodeRecord {
 }
 
 /**
+ * `SCREEN#<code>` / `META`: a single-use code that lets one more screen show a
+ * room, a follower TV at another address. It names the room and nothing else,
+ * so redeeming it earns a viewer token and never a player.
+ */
+export interface ScreenCodeRecord {
+  code: string;
+  /** The room's four letters. */
+  roomCode: string;
+  /**
+   * The run it was made for. Four letters are reused once a room closes, so
+   * redeeming checks that the room behind them is still this run.
+   */
+  runId: string;
+  /** The host device that made it. */
+  createdBy: string;
+  createdAt: string;
+  expiresAt: string;
+  /** Epoch seconds. DynamoDB deletes it some time after; reads check `expiresAt`. */
+  ttl: number;
+}
+
+/**
  * `PAIR#<code>` / `META`: a single-use code that makes whoever redeems it a
  * device bound to one kid (#281). TTL'd like an invite, but minutes, not days.
  */
@@ -640,6 +662,10 @@ export interface GameRepository {
    * was never issued, is spent, or has expired (`nowIso` past `expiresAt`).
    */
   redeemPairingCode(code: string, nowIso: string): Promise<PairingCodeRecord | null>;
+  /** A new screen code. `false`, and nothing written, if the code is taken. */
+  putScreenCodeIfAbsent(record: ScreenCodeRecord): Promise<boolean>;
+  /** Spend a screen code, as `redeemPairingCode` spends a pairing one: once, and not past its expiry. */
+  redeemScreenCode(code: string, nowIso: string): Promise<ScreenCodeRecord | null>;
 
   /**
    * Claim a guest household for a signed-in account (§4.5). Writes the
