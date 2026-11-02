@@ -32,6 +32,7 @@ import {
 import { reportClientError } from "../handlers/client-error.ts";
 import { relayPreview } from "../handlers/preview.ts";
 import { relayCheer } from "../handlers/cheer.ts";
+import { createScreenCode, isScreenSlowDown, redeemScreenCode } from "../handlers/screens.ts";
 import { chooseWatching } from "../handlers/watch.ts";
 import { beatPresence } from "../handlers/presence.ts";
 import type { ActionError, HandlerDeps, HandlerResult } from "../handlers/deps.ts";
@@ -172,6 +173,7 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
     if (req.path === "/api/auth/shared-device") return (deps) => postShareDevice(req, deps, rt);
     if (req.path === "/api/pair/code") return (deps) => postPairCode(req, deps);
     if (req.path === "/api/pair/redeem") return (deps) => postPairRedeem(req, deps);
+    if (req.path === "/api/screens/redeem") return (deps) => postScreenRedeem(req, deps);
     if (req.path === "/api/auth/forget-device") return (deps) => postForgetDevice(req, deps, rt);
 
     // Four letters, or an open room's six-letter visitor code (#249).
@@ -194,6 +196,11 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
     if (keeper?.[1]) {
       const code = keeper[1].toUpperCase();
       return (deps) => postKeeper(req, deps, code);
+    }
+    const screens = /^\/api\/room\/([A-Za-z]{4})\/screens$/.exec(req.path);
+    if (screens?.[1]) {
+      const code = screens[1].toUpperCase();
+      return (deps) => postHostControl(req, deps, code, null, (principal) => createScreenCode({ code, principal }, deps), (made) => made);
     }
     const lock = /^\/api\/room\/([A-Za-z]{4})\/lock$/.exec(req.path);
     if (lock?.[1]) {
@@ -503,7 +510,7 @@ async function postWatch(req: Req, deps: HandlerDeps, code: string) {
  * What a host control does once its host is known (#263, #267). It answers
  * with the run's seq, as every control is one committed change to the run.
  */
-type HostAct = (principal: HostPrincipal) => Promise<HandlerResult<{ seq: number }>>;
+type HostAct = (principal: HostPrincipal) => Promise<HandlerResult<object>>;
 
 /**
  * Remove, lock and close: the room's host, proved by a phone's device token,
@@ -517,6 +524,8 @@ async function postHostControl(
   code: string,
   invalid: string | null,
   act: HostAct,
+  /** What a success answers with; the run's seq unless the control hands something back. */
+  answer: (value: object) => object = (value) => ({ ok: true, seq: (value as { seq: number }).seq }),
 ) {
   const shared = await resolveShared(req, deps);
   if (shared === null) return forgottenDevice();
@@ -540,7 +549,7 @@ async function postHostControl(
   const result = await act(principal);
   const missed = !result.ok && result.error.code === "NOT_FOUND" && result.error.message.startsWith("no open room");
   if (!missed) await lookup.hit();
-  if (result.ok) return json(200, { ok: true, seq: result.value.seq }, asker);
+  if (result.ok) return json(200, answer(result.value), asker);
   return fromError(result.error);
 }
 
@@ -1055,6 +1064,13 @@ async function postPairRedeem(req: Req, deps: HandlerDeps) {
     deps,
   );
   if (isSlowDown(result)) return slowDown(deps);
+  return result.ok ? json(200, result.value) : fromError(result.error);
+}
+
+/** A follower TV spends the leader's screen code: no sign-in, the code is the credential. */
+async function postScreenRedeem(req: Req, deps: HandlerDeps) {
+  const result = await redeemScreenCode({ code: req.body.code, client: req.client }, deps);
+  if (isScreenSlowDown(result)) return slowDown(deps);
   return result.ok ? json(200, result.value) : fromError(result.error);
 }
 

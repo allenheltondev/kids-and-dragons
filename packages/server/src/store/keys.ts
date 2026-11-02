@@ -26,6 +26,7 @@
  * | Transfer code    | TRANSFER#<code> | META               |
  * | Moved device     | HH#<hhId>       | MOVED#<deviceId>   |
  * | Pairing code     | PAIR#<code>     | META               |
+ * | Screen code      | SCREEN#<code>   | META               |
  * | Visit            | VISIT#<playerId>| HH#<tableHhId>     |
  * | Forget job       | FORGET#<playerId>| META              |
  * | Push subscription| PUSH#<playerId> | DEVICE#<deviceId>  |
@@ -86,6 +87,12 @@ export const MOVED_SK = (deviceId: string) => `MOVED#${deviceId}`;
  * like an invite: one row, and nothing else points at it.
  */
 export const PAIR = (code: string) => `PAIR#${code.toUpperCase()}`;
+
+/**
+ * A single-use code that lets one more screen show a room (`handlers/screens.ts`).
+ * Carries a `ttl`, like a pairing code: one row, and nothing else points at it.
+ */
+export const SCREEN = (code: string) => `SCREEN#${code.toUpperCase()}`;
 
 /**
  * Wrong room codes from one client, one row per window (`handlers/code-guard.ts`).

@@ -39,6 +39,7 @@ import {
 } from "./handlers/code-guard.ts";
 import { relayPreview } from "./handlers/preview.ts";
 import { relayCheer } from "./handlers/cheer.ts";
+import { createScreenCode, isScreenSlowDown, redeemScreenCode } from "./handlers/screens.ts";
 import { chooseWatching } from "./handlers/watch.ts";
 import { beatPresence, setPresence } from "./handlers/presence.ts";
 import { PresenceTracker } from "./presence-tracker.ts";
@@ -417,9 +418,9 @@ async function main(): Promise<void> {
     principal: HostPrincipal,
     body: Record<string, unknown>,
     deps: HandlerDeps,
-  ) => Promise<HandlerResult<{ seq: number }>>;
+  ) => Promise<HandlerResult<object>>;
   const hostControl =
-    (validate: (body: Record<string, unknown>) => string | null, act: HostAct) =>
+    (validate: (body: Record<string, unknown>) => string | null, act: HostAct, answer?: (value: object) => object) =>
     async (req: Request, res: Response) => {
       const deps = await withRuntime(base, res);
       if (!deps) return;
@@ -445,7 +446,7 @@ async function main(): Promise<void> {
       const result = await act(code, principal, body, deps);
       const missed = !result.ok && result.error.code === "NOT_FOUND" && result.error.message.startsWith("no open room");
       if (!missed) await lookup.hit();
-      if (result.ok) return res.json({ ok: true, seq: result.value.seq });
+      if (result.ok) return res.json(answer ? answer(result.value) : { ok: true, seq: (result.value as { seq: number }).seq });
       sendError(res, statusFor(result.error), result.error.code, result.error.message);
     };
 
@@ -456,6 +457,12 @@ async function main(): Promise<void> {
   app.post("/api/room/:code/keeper", hostControl(
     (body) => (typeof body.playerId === "string" && body.playerId !== "" ? null : "expected { playerId }"),
     (code, principal, body, deps) => handKeeper({ code, principal, playerId: body.playerId as string }, deps),
+  ));
+  // The leader adds a follower TV: a one-time code that screen types (handlers/screens.ts).
+  app.post("/api/room/:code/screens", hostControl(
+    () => null,
+    (code, principal, _body, deps) => createScreenCode({ code, principal }, deps),
+    (made) => made,
   ));
   app.post("/api/room/:code/lock", hostControl(
     (body) => (typeof body.locked === "boolean" ? null : "expected { locked: true | false }"),
@@ -619,7 +626,7 @@ async function main(): Promise<void> {
       deps,
     );
     if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
-    res.json({ ok: true, seq: result.value.seq });
+    res.json({ ok: true, seq: (result.value as { seq: number }).seq });
   });
 
   // "Still here", or "leaving" (handlers/presence.ts): production's only
@@ -1031,6 +1038,14 @@ async function main(): Promise<void> {
       return sendError(res, 401, "FORBIDDEN", "Only a device that is already her can make a code.");
     }
     const result = await pairFromDevice(found.principal, base);
+    if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    res.json(result.value);
+  });
+
+  // A follower TV spends the leader's screen code. No sign-in: the code is the credential.
+  app.post("/api/screens/redeem", async (req: Request, res: Response) => {
+    const result = await redeemScreenCode({ code: req.body?.code, client: clientOf(req) }, base);
+    if (isScreenSlowDown(result)) return slowDown(res, base);
     if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
     res.json(result.value);
   });

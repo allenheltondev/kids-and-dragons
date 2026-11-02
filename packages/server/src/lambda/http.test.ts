@@ -1493,6 +1493,37 @@ describe("GET /api/state", () => {
 // Sign-in — the routes with no dev-server twin
 // ---------------------------------------------------------------------------
 
+describe("/api/room/:code/screens and /api/screens/redeem", () => {
+  it("lets the host's device add a follower TV that then holds a viewer token", async () => {
+    const harness = makeHarness();
+    const rt = runtimeFor(harness);
+    const { householdId, players } = await seedHousehold(harness, 2);
+    const [host, other] = players;
+    const created = await createRoom({ householdId, mode: "party", hostDeviceId: host!.principal.deviceId }, harness.deps);
+    if (!created.ok) throw new Error("setup failed");
+    const { code, runId } = created.value;
+    const asHost = { "x-kad-device-token": host!.deviceToken };
+
+    // Somebody else's phone cannot add a screen.
+    const refused = await respond(event("POST", `/api/room/${code}/screens`, { headers: { "x-kad-device-token": other!.deviceToken }, body: {} }), rt);
+    expect(refused.statusCode).toBe(403);
+
+    const made = await respond(event("POST", `/api/room/${code}/screens`, { headers: asHost, body: {} }), rt);
+    expect(made.statusCode).toBe(200);
+    const { code: screen } = bodyOf(made) as unknown as { code: string };
+
+    // The follower TV carries no credential of its own: the code is it.
+    const shown = await respond(event("POST", "/api/screens/redeem", { headers: {}, body: { code: screen } }), rt);
+    expect(shown.statusCode).toBe(200);
+    const view = bodyOf(shown) as unknown as { viewerToken: string; runId: string };
+    expect(view.runId).toBe(runId);
+    expect(await harness.identity.resolveViewer(view.viewerToken)).toMatchObject({ roomCode: code });
+
+    const again = await respond(event("POST", "/api/screens/redeem", { headers: {}, body: { code: screen } }), rt);
+    expect(again.statusCode).toBe(404);
+  });
+});
+
 describe("/api/pair/* (#281)", () => {
   const post = (path: string, headers: Record<string, string>, body: Record<string, unknown> = {}) =>
     event("POST", path, { headers, body });
@@ -2111,6 +2142,9 @@ const SHARED = [
   { path: "/api/room/:code/keeper", method: "POST", probe: "/api/room/ABCD/keeper" },
   // Host controls (#263, handlers/host.ts).
   { path: "/api/room/:code/lock", method: "POST", probe: "/api/room/ABCD/lock" },
+  // The leader adds a follower TV, which spends the code (handlers/screens.ts).
+  { path: "/api/room/:code/screens", method: "POST", probe: "/api/room/ABCD/screens" },
+  { path: "/api/screens/redeem", method: "POST", probe: "/api/screens/redeem" },
   { path: "/api/room/:code/quiet", method: "POST", probe: "/api/room/ABCD/quiet" },
   // Which of the household's crews the lobby plays (handlers/crew.ts).
   { path: "/api/room/:code/crew", method: "POST", probe: "/api/room/ABCD/crew" },

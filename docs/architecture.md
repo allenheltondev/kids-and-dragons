@@ -112,6 +112,7 @@ Single DynamoDB table, `kad`. Composite key `PK` / `SK`, one GSI (`GSI1PK` / `GS
 | Transfer code | `TRANSFER#<code>` | `META` | A single-use code that moves one kid to another home (§4.5, "Moving a kid"): → source household, playerId. Spent in the move's own transaction. **TTL 1 day.** |
 | Moved device | `HH#<hhId>` | `MOVED#<deviceId>` | Left in the household a kid moved out of, naming the one her phone's binding moved into, so a token minted before the move still finds it by primary key. Not under `DEVICE#`, so no device list sees it. **TTL 31 days**, past any token it could forward. |
 | Pairing code | `PAIR#<code>` | `META` | A single-use code that makes whoever redeems it a device bound to one kid (§4.5, "Pairing a new device"). Spent by a conditional delete. **TTL 10 minutes.** |
+| Screen code | `SCREEN#<code>` | `META` | A single-use code that lets one more TV show a room: → room code, the host device that made it. Spent by a conditional delete. **TTL 10 minutes.** See §4.5, "More than one screen". |
 | Visit | `VISIT#<playerId>` | `HH#<tableHhId>` | A table that is not her home that a kid sat down at (#249), written by the join. Keyed by the kid, so a move (#251) never carries it. Only so that deleting her can find the saves that name her (§4.5, "Deleting and keeping"). Deleted with her or her home. |
 | Forget job | `FORGET#<playerId>` | `META` | A kid being deleted (#252): her nicknames, her heroes' names, the tables still to clean, and how to finish the delete that wrote it. Written before any of her rows go, rewritten with the tables a scrub could not clean, removed when none are left. In GSI1's `FORGET` partition, so the sweeper finishes what is owed. |
 | Push subscription | `PUSH#<playerId>` | `DEVICE#<deviceId>` | One of a kid's own phones that takes "It's your turn" pushes (#466, §4.6 "Push"): the push service's endpoint for that browser and the two keys that encrypt for it. One per phone, keyed by the kid like a visit, so a move carries nothing. Forgotten when the push service says it is gone, when the phone is no longer hers, when the switch goes off, and with her or her home. |
@@ -1650,6 +1651,43 @@ leaves nobody signed in afterwards. A TV's room must be settled by a phone first
 - **No trades across households** in v1. The engine refuses an offer between
   heroes from different households (`sameHome`), and the give list leaves them
   out. Trades within a household, visitors' included, work as before.
+
+#### More than one screen: a leader and its followers
+
+A family on the sofa and a child in a hospital bed with a parent beside her are
+**one game on two TVs**. It stays one room, one run and one channel; nothing in
+the engine learns about places. Phones already reach a room from anywhere, as
+visitors (above). What a second location lacked was a second *screen*, because
+only the screen that opened a room may show it (#267, "The TV, which is
+nobody").
+
+- **The leader is the host**: the screen or phone that opened the room
+  (`RoomRecord.hostDeviceId`), which already holds Lock, Remove, Close and the
+  keeper's hand. There is no second kind of host and no hand-over of the room.
+- **Adding a screen** (`POST /api/room/:code/screens`, host only, the same
+  proof as Lock, `handlers/screens.ts`) answers `{ code, expiresAt }`: eight
+  letters from the room-code alphabet, single use, ten minutes, stored as
+  `SCREEN#<code>`.
+- **A follower TV spends it** (`POST /api/screens/redeem`, `{ code }`, no
+  sign-in: the code is the credential) and gets what the leader's TV got from
+  `/watch`: a viewer token for that room and the current state. It then
+  attaches to the channel as any TV does. The code is spent by a conditional
+  delete, so of two screens holding one exactly one gets in. Wrong codes are
+  counted per client like wrong room codes (`code-guard.ts`, key `screen:`).
+- **A follower screen is a viewer, never a player.** It is not in `party`, is not
+  counted for presence and cannot act (`ViewerIdentity`). Its people play from
+  their own phones, which join as visitors; a hospital tablet that is both
+  screen and controller joins in Travel Mode. So votes, rolls, turns and saves
+  are unchanged, and the table is the same table.
+- **Ending it.** A viewer token dies with the room, so Close, or the idle close
+  (`closeIfIdle`), ends every follower at once. A code redeemed after the room
+  closed is spent and refused. Individual followers are not revocable in this
+  version: a viewer token names the room, not a screen, and the way to drop a
+  screen the leader did not mean to admit is to close the room.
+- **Not yet built:** the client (an "Add a screen" button in the host controls,
+  and a "Show a game from another place" entry on a TV's start screen), a count of
+  screens on the host's panel, and per-screen audio choices. The server contract
+  above is what they will call.
 
 #### Crews: new players at the same household
 
