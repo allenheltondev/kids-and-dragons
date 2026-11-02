@@ -17,7 +17,7 @@ export function AudioControl({ enabled = true, soundtrack = null, ready = false,
   const previousKey = useRef(readinessKey);
   const engineRef = useRef<AudioEngine | null>(null);
   const [muted, setMuted] = useState(false);
-  const [locked, setLocked] = useState(true);
+  const [locked, setLocked] = useState(false);
   const [quiet, setQuiet] = useState(isQuiet());
   const [volume, setVolume] = useState(0.8);
 
@@ -29,16 +29,21 @@ export function AudioControl({ enabled = true, soundtrack = null, ready = false,
     setVolume(engine.volume());
     engine.setQuiet(isQuiet());
     setQuiet(isQuiet());
-    setLocked(!engine.unlocked());
+    const refreshState = (): void => {
+      const state = engine.state();
+      setLocked(state === "locked" || state === "suspended");
+    };
+    refreshState();
+    const stopState = engine.onStateChange(refreshState);
     setAudioSink(engine.sink);
     setAudioProbe(engine);
 
-    const unlock = (): void => {
+    const unlock = (event: Event): void => {
+      // This button owns its gesture: unlocking on pointerdown and then
+      // toggling on click would immediately mute the sound it just enabled.
+      if (event.target instanceof Element && event.target.closest(".kad-audio-control__button")) return;
       engine.unlock();
-      // Asking the engine rather than assuming: a browser that refuses a
-      // context leaves this locked, and the prompt stays honest rather than
-      // vanishing on a gesture that achieved nothing.
-      setLocked(!engine.unlocked());
+      refreshState();
     };
     window.addEventListener("pointerdown", unlock);
     window.addEventListener("keydown", unlock);
@@ -50,6 +55,7 @@ export function AudioControl({ enabled = true, soundtrack = null, ready = false,
     });
     return () => {
       stopQuiet();
+      stopState();
       window.removeEventListener("pointerdown", unlock);
       window.removeEventListener("keydown", unlock);
       setAudioSink(null);
@@ -72,9 +78,15 @@ export function AudioControl({ enabled = true, soundtrack = null, ready = false,
   const toggle = (): void => {
     const engine = engineRef.current;
     if (!engine) return;
+    const state = engine.state();
+    if (!engine.muted() && (state === "locked" || state === "suspended")) {
+      engine.unlock();
+      return;
+    }
     const next = !engine.muted();
     engine.setMuted(next);
     setMuted(next);
+    if (!next) engine.unlock();
   };
 
   const changeVolume = (next: number): void => {
@@ -85,10 +97,7 @@ export function AudioControl({ enabled = true, soundtrack = null, ready = false,
   if (!enabled) return null;
 
   return (
-    <div className="kad-audio-control">
-      {locked && !muted ? (
-        <p className="kad-audio-control__hint">Click or press a key for sound</p>
-      ) : null}
+    <div className="kad-audio-control" data-locked={locked && !muted || undefined}>
       {quiet && !muted ? (
         <input
           className="kad-audio-control__volume"
@@ -105,9 +114,10 @@ export function AudioControl({ enabled = true, soundtrack = null, ready = false,
         className="kad-audio-control__button"
         variant="ghost"
         size="md"
-        aria-label={muted ? "Turn sound on" : "Turn sound off"}
+        aria-label={muted ? "Turn sound on" : locked ? "Enable sound" : "Turn sound off"}
+        title={muted ? "Turn sound on" : locked ? "Enable sound" : "Turn sound off"}
         aria-pressed={muted}
-        icon={<Icon name={muted ? "muted" : "sound"} />}
+        icon={<Icon name={muted || locked ? "muted" : "sound"} />}
         onClick={toggle}
       />
     </div>

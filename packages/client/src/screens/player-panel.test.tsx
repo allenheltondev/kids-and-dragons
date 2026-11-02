@@ -25,7 +25,7 @@ import { resetFieldGuideCache } from "./content";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { setSpeaker } from "@kad/shared";
 import { setReadAloud } from "../speech";
-import { act, cleanup, render, screen, within } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type {
   Campaign,
@@ -212,6 +212,10 @@ afterEach(() => {
 // ---------------------------------------------------------------------------
 // Before there is anything to show
 // ---------------------------------------------------------------------------
+
+function selectSheetPage(value: string) {
+  act(() => fireEvent.change(screen.getByRole("combobox", { name: "Your page" }), { target: { value } }));
+}
 
 describe("before the character arrives", () => {
   it("says it is looking rather than rendering an empty sheet", () => {
@@ -1515,6 +1519,7 @@ describe("the party strip", () => {
     const user = userEvent.setup();
     twoPlayers();
 
+    selectSheetPage("party");
     await user.click(screen.getByRole("button", { name: /Sparklehoof's character sheet/ }));
     expect(screen.getByText(/Hero tiers/)).toBeTruthy();
   });
@@ -1523,6 +1528,7 @@ describe("the party strip", () => {
     const user = userEvent.setup();
     twoPlayers();
 
+    selectSheetPage("party");
     await user.click(screen.getByRole("button", { name: /Thistle's character sheet/ }));
     expect(screen.getByText(/Hero tiers/)).toBeTruthy();
   });
@@ -1531,6 +1537,7 @@ describe("the party strip", () => {
     const user = userEvent.setup();
     mount({ party: [member(), member({ character: THISTLE })] });
     act(() => dismissPlayerSheet());
+    selectSheetPage("party");
     expect(screen.getByRole("button", { name: /Thistle's character sheet/ })).toBeTruthy();
     serverSends({ prompt: choicePrompt() });
     expect(screen.getByRole("button", { name: /Take the east path/ })).toBeTruthy();
@@ -1539,6 +1546,7 @@ describe("the party strip", () => {
     // Going back to the bag on purpose sticks while the question stays the same…
     act(() => dismissPlayerSheet()); // the tray's You tab
     serverSends({ prompt: choicePrompt({ votes: { p_2: "east" } }) });
+    selectSheetPage("party");
     expect(screen.getByRole("button", { name: /Thistle's character sheet/ })).toBeTruthy();
 
     // …and the next question brings the controls straight back.
@@ -1660,6 +1668,7 @@ describe("the party strip", () => {
     expect(screen.queryByRole("button", { name: /Thistle's character sheet/ })).toBeNull();
 
     act(() => dismissPlayerSheet());
+    selectSheetPage("party");
     await user.click(screen.getByRole("button", { name: /Thistle's character sheet/ }));
     expect(screen.queryByRole("button", { name: /Take the east path/ })).toBeNull();
 
@@ -1678,6 +1687,7 @@ describe("the party strip", () => {
         }),
       ],
     });
+    selectSheetPage("party");
     expect(screen.getByRole("button", { name: /Sparklehoof's character sheet/ }).textContent).toContain(
       "1",
     );
@@ -1686,6 +1696,7 @@ describe("the party strip", () => {
   it("is available outside a Rest scene too", async () => {
     const user = userEvent.setup();
     mount({ party: [member(), member({ character: THISTLE })], sceneType: "story" });
+    selectSheetPage("party");
     await user.click(screen.getByRole("button", { name: /Thistle's character sheet/ }));
     expect(screen.getByText(/Hero tiers/)).toBeTruthy();
   });
@@ -2037,12 +2048,14 @@ describe("the token and the rank-up moment on your own phone (#314)", () => {
     mount({ party: [member({ character: character({ spares: [{ class: "thornguard", rank: "apprentice" }] }) })] });
     act(() => setPlayerSection("bag"));
     // Folded to its name at first (the You page's folds); the name is the heading's switch.
+    selectSheetPage("token");
     const token = screen.getByRole("button", { name: "Your song bell" });
     expect(token.getAttribute("aria-expanded")).toBe("false");
     act(() => token.click());
     expect(token.getAttribute("aria-expanded")).toBe("true");
     expect(screen.getAllByText("Your song bell")).toHaveLength(1);
     expect(screen.getByText("Your old gear")).toBeTruthy();
+    selectSheetPage("bag");
     expect(screen.getByRole("img", { name: "thorn bracer, 1 notch" })).toBeTruthy();
     expect(document.querySelectorAll(".inv__slot")).toHaveLength(INVENTORY_SLOTS);
   });
@@ -2114,7 +2127,10 @@ describe("while the phone is catching up", () => {
 // ---------------------------------------------------------------------------
 
 describe("the You page's sections fold under their headings", () => {
-  const heading = (name: RegExp | string) => screen.getByRole("button", { name });
+  const heading = (name: RegExp | string) => {
+    selectSheetPage(name === "Your stats" ? "stats" : name === "Everyone" ? "party" : name === "Your song bell" ? "token" : "bag");
+    return screen.getByRole("button", { name });
+  };
   const bagMember = () =>
     member({ character: character({ inventory: [POTION], questItems: ["moonkey"] }) });
 
@@ -2135,21 +2151,20 @@ describe("the You page's sections fold under their headings", () => {
     }
     // The headings are still headings: the bag's carries its purse, folded or not.
     // The count is what the hero carries (one potion and one story thing), not the purse, which is 0 here.
+    selectSheetPage("bag");
     const bagHeading = screen.getByRole("heading", { name: /Your things/ });
     expect(bagHeading.querySelector("[data-testid=bag-count]")?.textContent).toBe("2");
     expect(bagHeading.querySelector(".inv__purse")?.textContent).toBe("0");
   });
 
-  it("folds the bag on a tap and opens it on the next, keeping a half-made selection", () => {
+  it("replaces the bag with item details and returns with Close", () => {
     mount({ party: [bagMember()] });
     act(() => setPlayerSection("bag"));
     act(() => screen.getByRole("button", { name: new RegExp(POTION_NAME) }).click());
     expect(screen.getByText(POTION_NAME, { selector: ".item-detail__title span" })).toBeTruthy();
-    act(() => heading(/^Your things/).click());
-    expect(heading(/^Your things/).getAttribute("aria-expanded")).toBe("false");
     expect(screen.queryByRole("button", { name: new RegExp(POTION_NAME) })).toBeNull();
-    act(() => heading(/^Your things/).click());
-    expect(screen.getByRole("button", { name: new RegExp(POTION_NAME) }).getAttribute("aria-pressed")).toBe("true");
+    act(() => screen.getByRole("button", { name: "Close" }).click());
+    expect(screen.getByRole("button", { name: new RegExp(POTION_NAME) }).getAttribute("aria-pressed")).toBe("false");
   });
 
   it("remembers on this device how each section was left", () => {

@@ -1,0 +1,286 @@
+/* Shared display: identity reads across one header, with joining and
+   tonight's lineup above the adventure choices. Phone surfaces retain their compact flow. */
+.lobby__header { display: contents; }
+.lobby__campaign-selected { display: none; }
+.lobby__place-label, .lobby-member__pending-short { display: none; }
+
+@media (min-width: 900px) and (orientation: landscape) {
+  .kad-party--world .lobby {
+    gap: .75em;
+    padding: .8em 1.2em;
+    /* Utility controls keep a strip of their own above the shared header. */
+    padding-block-start: calc(var(--kad-safe-top, 0px) + var(--kad-corner-bottom, 44px) + .3em);
+  }
+
+  .kad-party--world .lobby__header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 1em;
+    flex: none;
+    inline-size: min(100%, 64em);
+    align-self: center;
+    padding: .35em .7em .7em;
+    box-sizing: border-box;
+    border-radius: .7em;
+    background: linear-gradient(90deg, rgb(13 11 26 / 88%), rgb(13 11 26 / 72%));
+    border-block-end: 1px solid rgb(245 200 108 / 45%);
+  }
+  .kad-party--world .lobby__header:has(.lobby__place) {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1.2fr);
+  }
+  .kad-party--world .lobby__header .lobby__heading { font-size: 1.5em; align-self: stretch; justify-content: center; }
+  .kad-party--world .lobby__header .crew-identity {
+    font-size: 1em;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+  }
+  .kad-party--world .lobby__header .crew-identity__name { font-size: 1.15em; overflow-wrap: break-word; }
+  .kad-party--world .lobby__header .crew-identity__label { font-size: .75em; }
+  .kad-party--world .lobby__header .lobby__place { display: grid; gap: .2em; font-weight: 700; overflow-wrap: break-word; }
+  .kad-party--world .lobby__place-label { display: block; font-size: .75em; font-weight: 400; color: var(--kad-ink-dim); }
+
+  .kad-party--world .lobby :is(.lobby__campaigns, .lobby__premise, .lobby__next-chapter) { inline-size: min(100%, 64em); }
+  .kad-party--world .lobby__campaigns { order: 2; flex: none; flex-wrap: nowrap; gap: .8em; }
+  .kad-party--world .lobby__campaign {
+    grid-template-columns: 4.5em minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    align-content: center;
+    align-items: center;
+    flex: 1 1 0;
+    max-inline-size: none;
+    min-block-size: 4.5em;
+    padding: .6em .8em;
+    column-gap: .75em;
+    row-gap: .2em;
+  }
+  .kad-party--world .lobby__campaign-title { font-size: 1em; text-wrap: pretty; }
+  .kad-party--world .lobby__campaign-line { font-size: .8em; }
+  .kad-party--world .lobby__campaign > .campaign-art { inline-size: 4.5em; }
+
+  .kad-party--world .lobby__next-chapter { order: 2; }
+  .kad-party--world .lobby__gather {
+    order: 1;
+    min-block-size: min-content;
+    display: grid;
+    grid-template-columns: minmax(0, .9fr) minmax(0, 1.35fr);
+    inline-size: min(100%, 64em);
+    align-self: center;
+    gap: 1.2em;
+  }
+  .kad-party--world .lobby__gather .lobby__join {
+    inline-size: 100%;
+    align-self: stretch;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: .6em;
+    padding: .8em;
+  }
+  .kad-party--world .lobby__gather .lobby__code-letter { font-size: 2em; }
+  .kad-party--world .lobby__gather .lobby__qr-block { order: 0; }
+  .kad-party--world .lobby__gather .lobby__qr { inline-size: 6.5em; block-size: 6.5em; }
+  .kad-party--world .lobby__gather .lobby__join-step {
+    order: 0;
+    flex: none;
+    font-size: .85em;
+    max-inline-size: 24em;
+    margin: 0;
+    text-align: center;
+  }
+  .kad-party--world .lobby__gather .lobby__party { inline-size: 100%; align-self: stretch; }
+  .kad-party--world .lobby__lineup { grid-template-columns: repeat(2, minmax(0, 1fr)); overflow: visible; scrollbar-gutter: auto; }
+  .kad-party--world .lobby-member { grid-template-columns: minmax(0, 3.5em) minmax(0, 1fr); gap: .3em .65em; padding: .65em; }
+  .kad-party--world .lobby-member__portrait { inline-size: 3.5em; block-size: 4.2em; }
+  .kad-party--world .lobby-member__name { font-size: 1.1em; }
+  .kad-party--world .lobby-member__status { font-size: .75em; }
+
+  .kad-party--world .lobby-member__pending-help { display: none; }
+  .kad-party--world .lobby-member__pending-short { display: inline; }
+  .kad-party--world .lobby__code:has(> :nth-child(6)) { font-size: .75em; }
+}
+
+/* A short shared display keeps the same hierarchy, with code and QR across
+   the joining card and the secondary level/token details left to the phones. */
+@media (min-width: 900px) and (orientation: landscape) and (max-height: 650px) {
+  .kad-party--world .lobby { gap: .5em; padding-block-end: .4em; }
+  .kad-party--world .lobby__header { padding-block: .15em .4em; }
+  .kad-party--world .lobby__header .lobby__heading { font-size: 1em; white-space: nowrap; }
+  .kad-party--world .lobby__header .lobby__place { font-size: .85em; }
+  .kad-party--world .lobby__header .crew-identity__art { display: none; }
+  .kad-party--world .lobby__header .crew-identity__name { font-size: .75em; }
+  .kad-party--world .lobby__header .crew-identity__label { font-size: .65em; }
+  .kad-party--world .lobby__campaign { grid-template-columns: 2.8em minmax(0, 1fr); min-block-size: 3em; padding: .35em .6em; }
+  .kad-party--world .lobby__campaign > .campaign-art { inline-size: 2.8em; }
+  .kad-party--world .lobby__campaign-title { font-size: .85em; }
+  .kad-party--world .lobby__campaign-line { font-size: .65em; }
+  .kad-party--world .lobby__gather .lobby__join {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-content: center;
+    align-items: center;
+    justify-items: center;
+    gap: .6em .35em;
+    padding: .5em;
+  }
+  .kad-party--world .lobby__gather .lobby__code-letter { font-size: 1em; }
+  .kad-party--world .lobby__gather .lobby__qr { inline-size: 3.3em; block-size: 3.3em; }
+  .kad-party--world .lobby__gather .lobby__join-step { grid-column: 1 / -1; font-size: .65em; }
+  .kad-party--world .lobby__party { gap: .4em; }
+  .kad-party--world .lobby__party-heading { font-size: 1em; }
+  .kad-party--world .lobby__next-step { font-size: .65em; padding: .25em .5em; }
+  .kad-party--world .lobby__lineup { gap: .5em; }
+  .kad-party--world .lobby-member { grid-template-columns: 2em minmax(0, 1fr); padding: .45em; }
+  .kad-party--world .lobby-member .lobby-member__portrait { inline-size: 2em; block-size: 2.5em; }
+  .kad-party--world .lobby-member__name { font-size: .85em; }
+  .kad-party--world .lobby-member__meta { display: none; }
+  .kad-party--world .lobby-member__status { font-size: .7em; }
+}
+
+@media (min-width: 900px) and (orientation: landscape) {
+  .kad-party--world .lobby__header :is(.lobby__place, .lobby__crew) {
+    position: relative;
+    isolation: isolate;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: .3em 34px;
+    margin: 0;
+  }
+  .kad-party--world .lobby__header .crew-identity__art { display: none; }
+  html:not([data-contrast="high"]) .kad-party--world .lobby__header :is(.lobby__place, .lobby__crew)::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border: solid transparent;
+    border-width: 0 32px;
+    border-image: url("../assets/chrome/heading-ribbon.webp") 0 64 fill / 0 32px stretch;
+    pointer-events: none;
+  }
+  .kad-party--world .lobby__campaign-title { flex-wrap: wrap; gap: .25em .5em; }
+  .kad-party--world .lobby__campaign-selected {
+    display: inline-flex;
+    align-items: center;
+    gap: .25em;
+    padding: .12em .45em;
+    border-radius: .4em;
+    background: var(--kad-gold, #ffc95c);
+    color: var(--kad-accent-ink, #0d0b1a);
+    font-size: .65em;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+  .kad-party--world .lobby__campaign--picked {
+    outline: 2px solid var(--kad-gold, #ffc95c);
+    outline-offset: 1px;
+    filter: drop-shadow(0 0 .4em rgb(245 200 108 / 30%));
+  }
+  .kad-party--world .lobby__campaign[data-locked="true"] { opacity: .7; }
+}
+@media (min-width: 900px) and (orientation: landscape) and (max-height: 650px) {
+  .kad-party--world .lobby__header .lobby__place { font-size: .7em; }
+  .kad-party--world .lobby__header .crew-identity__name { font-size: .7em; }
+}
+
+@media (min-width: 900px) and (orientation: landscape) and (max-height: 650px) {
+  .kad-party--world .lobby__campaign-selected {
+    position: absolute;
+    inset-block-end: .35em;
+    inset-inline-end: .7em;
+  }
+}
+
+@media (min-width: 900px) and (orientation: landscape) and (max-height: 650px) {
+  .kad-party--world .lobby__header { padding-block: .1em; }
+  .kad-party--world .lobby__header :is(.lobby__place, .lobby__crew) { padding-block: .15em; }
+  .kad-party--world .lobby__party { gap: .25em; }
+  .kad-party--world .lobby__lineup { gap: .3em; }
+}
+
+/* The identity ribbons share one size and one type scale. The scenery shows
+   between them; only the ribbons themselves provide a text background. */
+@media (min-width: 900px) and (orientation: landscape) {
+  .kad-party--world .lobby__header,
+  .kad-party--world .lobby__header:has(.lobby__place) {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
+    gap: .75em;
+    padding: 0;
+    background: none;
+    border: 0;
+    border-radius: 0;
+    font-size: 1em;
+  }
+  .kad-party--world .lobby__header:has(.lobby__place) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .kad-party--world .lobby__header > :is(.lobby__heading, .lobby__place, .lobby__crew) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: .15em;
+    inline-size: 100%;
+    min-inline-size: 0;
+    block-size: 4em;
+    font-family: var(--kad-font-ui);
+    color: var(--kad-ink);
+    box-sizing: border-box;
+    margin: 0;
+    padding: .2em 34px;
+    font-size: 1em;
+    font-weight: 700;
+    line-height: 1.15;
+    text-align: center;
+    white-space: normal;
+  }
+  .kad-party--world .lobby__header .lobby__heading > .kad-icon { display: none; }
+  .kad-party--world .lobby__header .crew-identity { font-size: 1em; justify-content: center; }
+  .kad-party--world .lobby__header .crew-identity__copy { gap: .15em; }
+  .kad-party--world .lobby__header .crew-identity__name { font-size: 1em; font-weight: 700; line-height: 1.15; }
+  .kad-party--world .lobby__header :is(.lobby__welcome-label, .lobby__place-label, .crew-identity__label) {
+    display: block;
+    font-size: .75em;
+    line-height: 1.15;
+    font-weight: 400;
+    color: var(--kad-ink-dim);
+  }
+}
+@media (min-width: 900px) and (orientation: landscape) and (max-height: 650px) {
+  .kad-party--world .lobby__header, .kad-party--world .lobby__header:has(.lobby__place) { font-size: .75em; }
+  .kad-party--world .lobby { gap: .4em; }
+  .kad-party--world .lobby__lineup { gap: .2em; }
+  .kad-party--world .lobby__party { gap: .2em; }
+}
+
+@media (min-width: 900px) and (orientation: landscape) {
+  .kad-party--world .lobby__crew-hint { display: none; }
+}
+
+/* Keep whole names readable with the wider fallback fonts used on TVs. The
+   portrait yields horizontal space before a name is forced to break. */
+@media (min-width: 900px) and (orientation: landscape) and (max-height: 650px) {
+  .kad-party--world .lobby-member { grid-template-columns: 1.5em minmax(0, 1fr); column-gap: .35em; }
+  .kad-party--world .lobby-member .lobby-member__portrait { inline-size: 1.5em; block-size: 1.9em; }
+  .kad-party--world .lobby-member__name { font-size: .8em; overflow-wrap: normal; word-break: normal; }
+  .kad-party--world .lobby { gap: .3em; padding-block-end: .25em; }
+}
+/* At the largest text size a short display uses one readable roster column.
+   Portrait, whole name and readiness share a row instead of squeezing names. */
+@media (min-width: 900px) and (orientation: landscape) and (max-height: 650px) {
+  html[data-text="largest"] .kad-party--world .lobby__lineup { grid-template-columns: minmax(0, 1fr); }
+  html[data-text="largest"] .kad-party--world .lobby-member {
+    grid-template-columns: 1.3em minmax(0, 1fr) auto;
+    grid-template-rows: auto;
+    row-gap: 0;
+    padding-block: .15em;
+  }
+  html[data-text="largest"] .kad-party--world .lobby-member > .lobby-member__seat,
+  html[data-text="largest"] .kad-party--world .lobby-member > .lobby-member__portrait { grid-row: 1; }
+  html[data-text="largest"] .kad-party--world .lobby-member .lobby-member__portrait { inline-size: 1.3em; block-size: 1.5em; }
+  html[data-text="largest"] .kad-party--world .lobby-member .lobby-member__status { grid-column: 3; grid-row: 1; }
+}
+@media (min-width: 900px) and (orientation: landscape) and (max-height: 650px) {
+  html[data-text="largest"] .kad-party--world .lobby__header > :is(.lobby__place, .lobby__crew) { block-size: 3.2em; }
+}

@@ -10,7 +10,7 @@
  * at the bottom one-handed), so the identity strip, a host's arrival notices,
  * the Rest stop offer, the room controls and the catch-up line all keep their
  * whole width; the start screen and the guide leave it the same strip. On the
- * shared screen, Room, About this screen and Tap for sound sit in the corner
+ * shared screen, Room, About this screen and Enable sound sit in the corner
  * row, and what Room opens drops below it with who just joined, so none of them
  * covers a heading or a choice; that is checked at 1280x720 and at a tablet's
  * 1024x600. This walks a real room to each of those screens and then looks
@@ -323,7 +323,7 @@ async function misfits(page: Page): Promise<string[]> {
     );
 
     // 1. Nothing under a control pinned over the screen: the corner row, and the shared
-    //    screen's Room button (#263), About this screen and Tap for sound (#264), and the sound
+    //    screen's Room button (#263), About this screen and Enable sound (#264), and the sound
     //    hint, which hangs under the row (#330).
     const corner = [...document.querySelectorAll(".kad-corner > *, .kad-about__open, .kad-host__room, .kad-tap-for-sound .kad-button, .kad-audio-control__hint")]
       .filter(shown)
@@ -575,8 +575,10 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
 
     // --- Class tokens (#314): her own view, a friend's sheet, and a rank landing ---
     await showYou(guest);
+    await guest.getByRole("combobox", { name: "Your page" }).selectOption("token");
     await expect(guest.getByText(/^Your (thorn bracer|dusk hood|star circlet|song bell)$/)).toBeVisible(TAP);
     await expectFits(guest, "guest's own view, with her worn token");
+    await guest.getByRole("combobox", { name: "Your page" }).selectOption("party");
     await guest.getByRole("button", { name: "Sparklehoof's character sheet" }).click(TAP);
     await expect(guest.getByText(/^Sparklehoof's (thorn bracer|dusk hood|star circlet|song bell)$/)).toBeVisible(TAP);
     await expectFits(guest, "a friend's sheet, with their token");
@@ -638,7 +640,7 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
 
   /**
    * A television that holds sound back until a tap, as most do (display-hardware.spec), so the
-   * "Tap for sound" ask is up the whole time and has to keep clear too; one phone with a hero at
+   * "Enable sound" ask is up the whole time and has to keep clear too; one phone with a hero at
    * its table. Each shared-screen test opens its own, so the two run on different runners.
    */
   async function sharedScreen(browser: Browser): Promise<{ tv: Page; kid: Page; code: string }> {
@@ -669,7 +671,7 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     const tv = await context.newPage();
     await tv.goto(`/tv/${code}`);
     await expect(tv.getByRole("button", { name: "About this screen" })).toBeVisible(TAP);
-    await expect(tv.getByRole("button", { name: "Tap for sound" })).toBeVisible(TAP);
+    await expect(tv.getByRole("button", { name: "Enable sound" })).toBeVisible(TAP);
     await onAir(tv);
 
     const [sparklehoof] = (await seedTable({ mode: "party", code, heroes: [{ name: "Sparklehoof", species: "unicorn" }] })).phones;
@@ -701,7 +703,7 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     expect(await tv.locator(".lobby__lineup").evaluate(lineup => lineup.scrollHeight <= lineup.clientHeight + 1)).toBe(true);
   });
 
-  test("the shared screen: its corner row (Room, About this screen, Tap for sound) keeps off the lobby, the story and a rank-up", async ({ browser }) => {
+  test("the shared screen: its corner row (Room, About this screen, Enable sound) keeps off the lobby, the story and a rank-up", async ({ browser }) => {
     test.setTimeout(240_000);
     const { tv, kid, code } = await sharedScreen(browser);
     // A television, and a tablet showing the game (#274).
@@ -783,11 +785,11 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
   test("the shared screen's corner row holds still while sound loads, asks, and unlocks", async ({ browser }) => {
     // The sound engine held back, as lazy-audio.spec does (#330): the TV's own controls (Room,
     // About this screen) and the device's (read-aloud, display settings) keep their place when the
-    // engine lands, when Tap for sound appears with it, and when the first tap unlocks sound.
+    // engine lands, when Enable sound appears with it, and when the first tap unlocks sound.
     const ENGINE = /\/(?:src\/audio\/(?:engine|AudioControl)\.tsx?|bundle\/audio-[^/]*\.js)(?:\?|$)/;
     const context = await browser.newContext({ viewport: { width: 1280, height: 720 } });
     open.push(context);
-    // Sound held back until a tap, as on most TVs (display-hardware.spec), so Tap for sound is asked.
+    // Sound held back until a tap, as on most TVs (display-hardware.spec), so Enable sound is asked.
     await context.addInitScript(() => {
       const listeners = new Set<() => void>();
       let allowed = false;
@@ -841,16 +843,16 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     const before = await where();
 
     release();
-    await expect(tv.getByRole("button", { name: /^Turn sound/ })).toBeVisible(TAP);
-    await expect(tv.getByRole("button", { name: "Tap for sound" })).toBeVisible(TAP);
-    expect(await where(), "nothing moves when the engine lands and Tap for sound appears").toEqual(before);
+    await expect(tv.getByRole("button", { name: /^(Enable sound|Turn sound)/ })).toBeVisible(TAP);
+    await expect(tv.getByRole("button", { name: "Enable sound" })).toBeVisible(TAP);
+    expect(await where(), "nothing moves when the engine lands and Enable sound appears").toEqual(before);
 
     // The first tap anywhere unlocks sound and takes the ask away: still nothing moves.
     await tv.evaluate(() => (window as unknown as { allowSound(): void }).allowSound());
     await tv.mouse.move(640, 400);
     await tv.mouse.down();
     await tv.mouse.up();
-    await expect(tv.getByRole("button", { name: "Tap for sound" })).toHaveCount(0, TAP);
+    await expect(tv.getByRole("button", { name: "Enable sound" })).toHaveCount(0, TAP);
     expect(await where(), "nothing moves when sound unlocks").toEqual(before);
 
     // And a tap on About after all that opens it.

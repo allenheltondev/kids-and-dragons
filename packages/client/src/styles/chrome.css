@@ -625,3 +625,7 @@ html:not([data-contrast="high"]) .kad-surface--player {
     padding: calc(var(--space-1, 0.25em) + 3px) calc(var(--space-2, 0.5em) + 5px);
   }
 }
+/* The socket belongs to the icon, so compact and tall cards share a centre. */
+html:not([data-contrast="high"]) .choice:has(> .choice__icon)::after { content: none; }
+html:not([data-contrast="high"]) .choice__icon { position: relative; isolation: isolate; }
+html:not([data-contrast="high"]) .choice__icon::before { content: ""; position: absolute; inset: -27% -17%; z-index: -1; background: var(--chrome-socket) center / 100% 100% no-repeat; pointer-events: none; }

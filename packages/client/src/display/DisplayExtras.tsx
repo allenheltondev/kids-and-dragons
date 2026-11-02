@@ -73,27 +73,17 @@ export function DisplayExtras({ controls = true }: { controls?: boolean } = {}):
   useReconnectOnWake();
 
   if (!controls) return null;
-  return (
-    <>
-      <SoundPrompt inCorner={false} />
-      <About inCorner={false} />
-    </>
-  );
+  return <About inCorner={false} />;
 }
 
 /**
  * The shared screen's own controls, as App draws them in its corner row (#257):
- * Tap for sound beside the sound button it is about, and About this screen as a
+ * About this screen as a
  * 44px "i" like its neighbours. Top centre and top left, they lay over the
  * lobby's heading and the chapter title at the largest text.
  */
 export function DisplayCornerControls(): React.JSX.Element {
-  return (
-    <>
-      <SoundPrompt inCorner />
-      <About inCorner />
-    </>
-  );
+  return <About inCorner />;
 }
 
 function About({ inCorner }: { inCorner: boolean }): React.JSX.Element {
@@ -132,51 +122,6 @@ function About({ inCorner }: { inCorner: boolean }): React.JSX.Element {
           About this screen
         </button>
       )}
-    </div>
-  );
-}
-
-/**
- * The one clear ask when the browser is holding sound back (#264). A TV often
- * waits for a tap before it lets a page make a sound, and nobody looks at a
- * small hint. It stands in the screen's corner row, beside the sound button it
- * is about: top centre, it lay over the lobby's heading and the chapter title
- * at the largest text (#257). Shown only while sound is `locked` or `suspended` and not turned
- * off; a browser with no audio at all (`unsupported`) is never asked, since a
- * tap cannot mend it, and the game never waits on the answer.
- */
-function SoundPrompt({ inCorner }: { inCorner: boolean }): React.JSX.Element | null {
-  const [, refresh] = useState(0);
-  useEffect(() => {
-    let stopState = (): void => undefined;
-    const attach = (): void => {
-      stopState();
-      stopState = getAudioProbe()?.onStateChange(() => { refresh((n) => n + 1); }) ?? (() => undefined);
-      refresh((n) => n + 1);
-    };
-    attach();
-    const stopProbe = onAudioProbe(attach);
-    // Turning sound off or on is a tap, not an event: read again after any.
-    const reread = (): void => { refresh((n) => n + 1); };
-    window.addEventListener("click", reread);
-    window.addEventListener("keydown", reread);
-    document.addEventListener("visibilitychange", reread);
-    return () => {
-      stopProbe();
-      stopState();
-      window.removeEventListener("click", reread);
-      window.removeEventListener("keydown", reread);
-      document.removeEventListener("visibilitychange", reread);
-    };
-  }, []);
-
-  const probe = getAudioProbe();
-  if (!probe || probe.muted()) return null;
-  const state = probe.state();
-  if (state !== "locked" && state !== "suspended") return null;
-  return (
-    <div className={`kad-tap-for-sound${inCorner ? " kad-tap-for-sound--in-corner" : ""}`}>
-      <Button size={inCorner ? "md" : "lg"} onClick={() => { probe.unlock(); }}>Tap for sound</Button>
     </div>
   );
 }
