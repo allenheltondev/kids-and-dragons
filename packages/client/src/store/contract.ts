@@ -8,6 +8,7 @@
  */
 
 import type {
+  HeroHold,
   ResolvedCharacter,
   FlairChoice,
   JournalResponse,
@@ -329,6 +330,12 @@ export interface GameStore {
    * by hero id, as the last `listHeroes` found it. `at` names another table.
    */
   savedHeroes: Record<string, { at?: string }>;
+  /**
+   * What holds each of this player's heroes, by hero id, as the last
+   * `listHeroes` found it: the adventure she is partway through and what this
+   * room would do with her (`HeroHold`). Absent for a free hero.
+   */
+  heldHeroes: Record<string, HeroHold>;
   /**
    * The host of a stopped game lets a hero go from it (#259). Resolves like
    * `removePlayer`.
