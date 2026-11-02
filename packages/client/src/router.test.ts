@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { BRING_HERO_PATH, bringHeroFromSearch, codeComplete, codeSlots, formatRoute, isRoomCode, normalizeCode, normalizeCodeInput, pairingFromSearch, parseRoute, routeCode } from "./router";
+import { BRING_HERO_PATH, bringHeroFromSearch, codeComplete, codeSlots, formatRoute, isRoomCode, normalizeCode, normalizeCodeInput, pairingFromSearch, parseRoute, routeCode, screenFromSearch, screenUrl } from "./router";
 
 describe("bringing a hero to an installed app (#412)", () => {
   it("opens the accounts page with nothing typed", () => {
@@ -140,5 +140,24 @@ describe("room codes", () => {
     expect(codeComplete("ABCDXY")).toBe(true);
     expect(codeSlots("ABCD")).toBe(4);
     expect(codeSlots("ABCDX")).toBe(6);
+  });
+});
+
+describe("a link for another TV (?screen=)", () => {
+  it("round-trips: the link the leader sends is the code the other TV reads", () => {
+    const url = new URL(screenUrl("https://example.test", "ABCDEFGH"));
+    expect(url.pathname).toBe("/");
+    expect(screenFromSearch(url.search)).toBe("ABCDEFGH");
+  });
+
+  it("reads a code as typed: any case, its dash, no stray characters", () => {
+    expect(screenFromSearch("?screen=abcd-efgh")).toBe("ABCDEFGH");
+    expect(screenFromSearch("?screen=ab cd")).toBe("ABCD");
+  });
+
+  it("is nothing on an ordinary start screen, or an empty link", () => {
+    expect(screenFromSearch("")).toBeNull();
+    expect(screenFromSearch("?pair=ABCDEFGH")).toBeNull();
+    expect(screenFromSearch("?screen=")).toBeNull();
   });
 });

@@ -30,7 +30,7 @@ sweeper (`lambda/sweep.ts`, `GuestSweepSchedule`, runs every 24 hours) deletes t
 | Visit rows (`VISIT#`) | Find a kid's saves at other tables so deleting her can scrub them | Until she or the visited household is deleted | **No change** | Deleted with her |
 | Forget job (`FORGET#`) | Finish a scrub that failed part-way | Until every table is clean; retried daily | **No change**, plus an alert if one is older than 7 days | Deleted when done |
 | Push subscription | "It's your turn" notice | Until switched off, or the kid or device is deleted | **Also delete after 90 days with no successful send** | Deleted |
-| Invite, transfer, pairing codes | One-time actions | 3 days, 1 day, 10 minutes | **No change** | DynamoDB TTL |
+| Invite, transfer, pairing, screen codes | One-time actions (a screen code lets a second TV show a room) | 3 days, 1 day, 10 minutes, 10 minutes | **No change** | DynamoDB TTL |
 | Wrong-code counters | Stop guessing room codes | 15-minute windows, about half an hour kept | **No change** | DynamoDB TTL |
 | Session timing marks | Operator measures how long chapters take | 180 days, no player id | **180 days** is a guess at a useful sample size; **90 if you cannot justify more**. Write the reason here. | DynamoDB TTL |
 | Cognito owner (parent email, passkeys) | Let a grown-up sign in and manage the household | Until the household is deleted | Deleted with the household. **Check that household deletion removes the Cognito user**: not verified in the code | Cognito `AdminDeleteUser` (confirm it is called) |

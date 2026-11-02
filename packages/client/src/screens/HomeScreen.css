@@ -409,6 +409,22 @@
   margin: calc(var(--space-2, 0.5em) * -1) 0 calc(var(--space-2, 0.5em) * -1);
 }
 
+/* Party Mode's table name, and beside it the way to show another place's game. */
+.home__party-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1em;
+}
+
+.home__party-row > :first-child {
+  flex: 1 1 auto;
+}
+
+.home__other-tv {
+  flex: none;
+}
+
 .home__secondary-links {
   display: flex;
   justify-content: space-between;
