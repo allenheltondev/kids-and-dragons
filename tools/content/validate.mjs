@@ -55,7 +55,7 @@ import { classPlaceReach, classPlaceVerdict, loadAllowList as loadClassPlaceAllo
  * Same idea as `KAD_DDB_ENDPOINT` on the repository contract suite: a gate that
  * only ever runs against the one corpus it ships with can prove that corpus has
  * not *changed*, and cannot prove it would catch anything. The override is what
- * lets `validate.test.mjs` hand it a copy of the real content with exactly one
+ * lets `validate-core.test.mjs` hand it a copy of the real content with exactly one
  * thing broken and require a specific complaint — the negative half of the gate,
  * which is the half that says whether the positive half means anything.
  */
