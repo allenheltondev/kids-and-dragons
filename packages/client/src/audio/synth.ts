@@ -152,36 +152,6 @@ export const CUE_TONES: Record<CueId, Tone[]> = {
 };
 
 /**
- * The music beds: a chord per biome, hummed very quietly by the engine.
- *
- * A biome absent from this table gets `DEFAULT_PAD` rather than silence, so
- * the seventeen Realm of Red Sky backdrops (roadmap chapter 8, Allen's side)
- * arrive with music before anybody writes them a chord. Real tracks replace
- * this table the same way samples replace `CUE_TONES`.
- */
-export const MUSIC_PADS: Record<string, number[]> = {
-  // Riftlight's D minor/add9 harmony remains available when samples cannot load.
-  "riftlight-finale": [73.42, 110, 146.83, 164.81],
-  "riftlight-theme": [146.83, 220, 293.66, 329.63],
-  "riftlight-paths": [73.42, 110, 146.83, 164.81],
-  "riftlight-sky": [146.83, 220, 329.63],
-  "riftlight-coast": [73.42, 110, 174.61, 220],
-  glacier_of_origins: [73.42, 110, 146.83, 164.81],
-  frostfang_peaks: [73.42, 110, 146.83, 164.81],
-  sky_islands: [146.83, 220, 329.63],
-  sallow_wastelands: [73.42, 110, 174.61, 220],
-  bone_yard: [73.42, 110, 174.61, 220],
-  // A low add9 — warm, a little mysterious, unmistakably "under the trees".
-  forest: [98, 147, 196, 220],
-};
-
-export const DEFAULT_PAD: number[] = [110, 165, 220];
-
-export function padFor(biome: string): number[] {
-  return MUSIC_PADS[biome] ?? DEFAULT_PAD;
-}
-
-/**
  * Renders a recipe into a running context.
  *
  * Every voice gets its own envelope — a 10ms attack so nothing clicks, a
