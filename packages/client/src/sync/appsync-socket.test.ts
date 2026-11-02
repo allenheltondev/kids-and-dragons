@@ -22,6 +22,7 @@ const OPTIONS = {
   realtimeDomain: "abc.appsync-realtime-api.us-east-1.amazonaws.com",
   namespace: "room",
   roomCode: "ABCD",
+  runId: "r_1",
   token: "tok_session",
 };
 
@@ -76,8 +77,8 @@ function parseSent(fake: Fake, index: number): Record<string, unknown> {
 }
 
 describe("channelPath", () => {
-  it("namespaces and upper-cases the room", () => {
-    expect(channelPath("room", "abcd")).toBe("/room/ABCD");
+  it("namespaces the game: the upper-cased room, then its run", () => {
+    expect(channelPath("room", "abcd", "r_1")).toBe("/room/ABCD/r_1");
   });
 });
 
@@ -119,7 +120,7 @@ describe("the handshake", () => {
     expect(parseSent(fake, 1)).toEqual({
       type: "subscribe",
       id: "sub_1",
-      channel: "/room/ABCD",
+      channel: "/room/ABCD/r_1",
       // Repeated per subscribe: connection auth admits you to the API, this
       // admits you to one room.
       authorization: { host: OPTIONS.httpDomain, Authorization: "tok_session" },

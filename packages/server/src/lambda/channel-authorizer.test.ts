@@ -22,8 +22,9 @@ function event(
     ...(token === undefined ? {} : { authorizationToken: token }),
     requestContext: {
       channelNamespace: "room",
-      operation: "SUBSCRIBE",
-      channel: { path: "/room/ABCD", segments: ["room", "ABCD"] },
+      // The shape AppSync Events documents: EVENT_* operations, and the channel as a string.
+      operation: "EVENT_SUBSCRIBE",
+      channel: "/room/ABCD/r_1",
       ...context,
     },
   };
@@ -60,11 +61,65 @@ describe("channel authorizer", () => {
       expiresAt: clock.now() + ROOM_TTL,
     });
 
-    const other = event({
-      token,
-      channel: { path: "/room/WXYZ", segments: ["room", "WXYZ"] },
-    });
+    const other = event({ token, channel: "/room/WXYZ/r_1" });
     expect((await authorize(other, identity, clock.now)).isAuthorized).toBe(false);
+  });
+
+  it("refuses a valid token that subscribes to another room, by the real AppSync event, whoever holds it", async () => {
+    const { identity, clock } = setup();
+    const viewer = await identity.issueViewerToken({ runId: "r_1", roomCode: "ABCD", expiresAt: clock.now() + ROOM_TTL });
+    const session = await identity.issueSessionToken({
+      runId: "r_1",
+      roomCode: "ABCD",
+      householdId: "h_1",
+      playerId: "p_1",
+      expiresAt: clock.now() + ROOM_TTL,
+    });
+    for (const token of [viewer, session]) {
+      for (const channel of ["/room/WXYZ/r_1", "/room/WXYZ/r_9", "/room/ABCD/r_9", "/room/ABCD", "/room/ABCD/r_1/extra", "/other/ABCD/r_1"]) {
+        const result = await authorize(event({ token, channel }), identity, clock.now);
+        expect(result.isAuthorized, channel).toBe(false);
+      }
+      expect((await authorize(event({ token }), identity, clock.now)).isAuthorized).toBe(true);
+    }
+  });
+
+  it("refuses a wildcard subscribe, which AppSync allows on EVENT_SUBSCRIBE", async () => {
+    const { identity, clock } = setup();
+    const token = await identity.issueViewerToken({ runId: "r_1", roomCode: "ABCD", expiresAt: clock.now() + ROOM_TTL });
+    for (const channel of ["/room/*", "/room/ABCD/*", "/room/*/r_1", "/*", "/room/ABCD/r_1*"]) {
+      expect((await authorize(event({ token, channel }), identity, clock.now)).isAuthorized, channel).toBe(false);
+    }
+  });
+
+  it("refuses an old game's channel once the letters belong to a new game", async () => {
+    const { identity, clock } = setup();
+    // The old follower's token names r_old; a new family now has ABCD with r_new.
+    const old = await identity.issueViewerToken({ runId: "r_old", roomCode: "ABCD", expiresAt: clock.now() + ROOM_TTL });
+    expect((await authorize(event({ token: old, channel: "/room/ABCD/r_new" }), identity, clock.now)).isAuthorized).toBe(false);
+    expect((await authorize(event({ token: old, channel: "/room/ABCD/r_old" }), identity, clock.now)).isAuthorized).toBe(true);
+  });
+
+  it("denies any operation it does not know, and any publish in either spelling", async () => {
+    const { identity, clock } = setup();
+    const token = await identity.issueViewerToken({ runId: "r_1", roomCode: "ABCD", expiresAt: clock.now() + ROOM_TTL });
+    for (const operation of ["EVENT_PUBLISH", "PUBLISH", "event_publish", "EVENT_UNSUBSCRIBE", "SOMETHING", ""]) {
+      expect((await authorize(event({ token, operation }), identity, clock.now)).isAuthorized, operation).toBe(false);
+    }
+    const none = { authorizationToken: token, requestContext: { channel: "/room/ABCD/r_1" } };
+    expect((await authorize(none, identity, clock.now)).isAuthorized).toBe(false);
+  });
+
+  it("accepts the documented connect, with no channel, and the older spellings of a subscribe", async () => {
+    const { identity, clock } = setup();
+    const token = await identity.issueViewerToken({ runId: "r_1", roomCode: "ABCD", expiresAt: clock.now() + ROOM_TTL });
+    const connect = { authorizationToken: token, requestContext: { operation: "EVENT_CONNECT", channel: null } };
+    expect((await authorize(connect, identity, clock.now)).isAuthorized).toBe(true);
+    expect((await authorize(event({ token, operation: "SUBSCRIBE" }), identity, clock.now)).isAuthorized).toBe(true);
+    const asObject = event({ token, channel: { path: "/room/ABCD/r_1", segments: ["room", "ABCD", "r_1"] } });
+    expect((await authorize(asObject, identity, clock.now)).isAuthorized).toBe(true);
+    const wrongObject = event({ token, channel: { path: "/room/WXYZ/r_1", segments: ["room", "WXYZ", "r_1"] } });
+    expect((await authorize(wrongObject, identity, clock.now)).isAuthorized).toBe(false);
   });
 
   it("refuses a subscribe that names no channel at all", async () => {
@@ -110,7 +165,7 @@ describe("channel authorizer", () => {
 
     expect((await authorize(event({ token: viewer }), identity, clock.now, none, closed)).isAuthorized).toBe(false);
     // A connect has no channel yet, and a dead viewer is refused there too.
-    const connect = { authorizationToken: viewer, requestContext: { operation: "CONNECT" as const } };
+    const connect = { authorizationToken: viewer, requestContext: { operation: "EVENT_CONNECT" } };
     expect((await authorize(connect, identity, clock.now, none, closed)).isAuthorized).toBe(false);
     // Players have their own rule (`removed`); the viewer's does not touch them.
     expect((await authorize(event({ token: session }), identity, clock.now, none, closed)).isAuthorized).toBe(true);
@@ -134,17 +189,17 @@ describe("channel authorizer", () => {
 
     await repo.putState(run("r_old", false));
     await repo.putRoomIfAbsent(room("r_old") as never);
-    expect((await authorize(event({ token }), identity, clock.now, none, open)).isAuthorized).toBe(true);
+    expect((await authorize(event({ token, channel: "/room/ABCD/r_old" }), identity, clock.now, none, open)).isAuthorized).toBe(true);
 
     // The leader closes: the room goes, the run is closed, and the letters are free.
     await repo.putState(run("r_old", true));
     await repo.deleteRoom("ABCD");
-    expect((await authorize(event({ token }), identity, clock.now, none, open)).isAuthorized).toBe(false);
+    expect((await authorize(event({ token, channel: "/room/ABCD/r_old" }), identity, clock.now, none, open)).isAuthorized).toBe(false);
 
     // Another family's game takes ABCD. The old token still names r_old.
     await repo.putState(run("r_new", false));
     await repo.putRoomIfAbsent(room("r_new") as never);
-    expect((await authorize(event({ token }), identity, clock.now, none, open)).isAuthorized).toBe(false);
+    expect((await authorize(event({ token, channel: "/room/ABCD/r_old" }), identity, clock.now, none, open)).isAuthorized).toBe(false);
   });
 
   it("holds a viewer's yes for no longer than a minute", async () => {
@@ -164,7 +219,7 @@ describe("channel authorizer", () => {
       playerId: "p_1",
       expiresAt: clock.now() + ROOM_TTL,
     });
-    const result = await authorize(event({ token, operation: "PUBLISH" }), identity, clock.now);
+    const result = await authorize(event({ token, operation: "EVENT_PUBLISH" }), identity, clock.now);
     expect(result.isAuthorized).toBe(false);
   });
 
@@ -178,7 +233,7 @@ describe("channel authorizer", () => {
       expiresAt: clock.now() + ROOM_TTL,
     });
     const result = await authorize(
-      { authorizationToken: token, requestContext: { operation: "CONNECT" } },
+      { authorizationToken: token, requestContext: { operation: "EVENT_CONNECT" } },
       identity,
       clock.now,
     );

@@ -344,6 +344,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         realtimeDomain: realtime.realtimeDomain,
         namespace: realtime.namespace,
         roomCode: session.roomCode,
+        runId: session.runId,
         token: session.sessionToken,
       });
     }

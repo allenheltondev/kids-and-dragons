@@ -880,7 +880,7 @@ async function main(): Promise<void> {
   });
 
   // -------------------------------------------------------------------------
-  // Realtime — the local stand-in for the AppSync Events channel `room/<code>`
+  // Realtime — the local stand-in for the AppSync Events channel `room/<code>/<runId>`
   // -------------------------------------------------------------------------
 
   app.get("/events/:code", async (req: Request, res: Response) => {
