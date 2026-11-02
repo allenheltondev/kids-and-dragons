@@ -115,6 +115,11 @@ export interface ViewerIdentity {
   roomCode: string;
   /** Epoch millis. Never outlives the room. */
   expiresAt: number;
+  /**
+   * A follower screen's own id (a screen code's, handlers/screens.ts), so its
+   * presence can be counted. Absent on the room's own TV, which is not counted.
+   */
+  screenId?: string;
 }
 
 export interface IssueViewerTokenInput {
@@ -122,6 +127,7 @@ export interface IssueViewerTokenInput {
   roomCode: string;
   /** Epoch millis. */
   expiresAt: number;
+  screenId?: string;
 }
 
 export interface IdentityService {

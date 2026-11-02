@@ -36,6 +36,9 @@ class FakeNode {
   connect(node: unknown): void {
     this.connectedTo.push(node);
   }
+  disconnect(): void {
+    this.connectedTo = [];
+  }
 }
 
 class FakeGain extends FakeNode {
@@ -59,7 +62,9 @@ class FakeBufferSource extends FakeNode {
   playbackRate = new FakeParam();
   loop = false;
   buffer: unknown = null;
-  start(): void {}
+  startedAt: number | null = null;
+  onended: (() => void) | null = null;
+  start(at = 0): void { this.startedAt = at; }
   stopped = false;
   stop(): void { this.stopped = true; }
 }
@@ -569,5 +574,86 @@ describe("state: what a TV that blocks sound looks like (#264)", () => {
     engine.dispose();
     ctx.allow();
     expect(calls).toBe(0);
+  });
+});
+
+describe("recorded voice (docs/voice-narration-plan.md §7)", () => {
+  class VoiceContext extends FakeContext {
+    state: "suspended" | "running" = "running";
+    decodeAudioData(bytes: ArrayBuffer): Promise<{ duration: number }> {
+      return bytes.byteLength === 0 ? Promise.reject(new Error("EncodingError")) : Promise.resolve({ duration: bytes.byteLength });
+    }
+  }
+
+  function voiced(storage?: PrefStore) {
+    let ctx!: VoiceContext;
+    const engine = createAudioEngine({ createContext: () => (ctx = new VoiceContext()) as unknown as BaseAudioContext, storage });
+    engine.unlock();
+    // master, sfx, music, voice: the order unlock() builds them in.
+    return { engine, ctx, music: ctx.gains[2]!, voiceBus: ctx.gains[3]!, voice: engine.sink.voice! };
+  }
+
+  const MUSIC = 0.45;
+  const DUCKED = MUSIC * 10 ** (-10 / 20);
+
+  it("has no channel to play on until a gesture has started a running context", () => {
+    const engine = createAudioEngine({ createContext: () => new VoiceContext() as unknown as BaseAudioContext, storage: undefined });
+    expect(engine.sink.voice!.ready()).toBe(false);
+    engine.unlock();
+    expect(engine.sink.voice!.ready()).toBe(true);
+    const held = voiced();
+    held.ctx.state = "suspended";
+    expect(held.voice.ready()).toBe(false);
+  });
+
+  it("decodes in the engine's context, and rejects bytes that will not decode", async () => {
+    const { voice } = voiced();
+    await expect(voice.decode(new ArrayBuffer(2))).resolves.toEqual({ duration: 2 });
+    await expect(voice.decode(new ArrayBuffer(0))).rejects.toThrow();
+  });
+
+  it("plays clips back to back on its own bus, ducks the music about 10 dB, and restores it after", () => {
+    const { ctx, music, voiceBus, voice } = voiced();
+    let ended = 0;
+    voice.play([{ duration: 1.5 }, { duration: 2 }], () => { ended += 1; });
+    const [first, second] = ctx.sources.slice(-2);
+    expect(first!.connectedTo).toContain(voiceBus);
+    expect(second!.startedAt! - first!.startedAt!).toBeCloseTo(1.5);
+    expect(music.gain.value).toBeCloseTo(DUCKED);
+    expect(20 * Math.log10(music.gain.value / MUSIC)).toBeCloseTo(-10);
+    second!.onended!();
+    expect(ended).toBe(1);
+    expect(music.gain.value).toBeCloseTo(MUSIC);
+  });
+
+  it("restores the music when the voice is cut off, and never says it ended", () => {
+    const { ctx, music, voice } = voiced();
+    let ended = 0;
+    const stop = voice.play([{ duration: 1 }, { duration: 1 }], () => { ended += 1; });
+    expect(music.gain.value).toBeCloseTo(DUCKED);
+    stop();
+    expect(ctx.sources.slice(-2).every((s) => s.stopped)).toBe(true);
+    expect(music.gain.value).toBeCloseTo(MUSIC);
+    expect(ended).toBe(0);
+    stop();
+    expect(ended).toBe(0);
+  });
+
+  it("follows the volume and quiet mode, but not mute: read-aloud has its own switch", () => {
+    const { engine, voiceBus } = voiced(memoryStore());
+    engine.setVolume(0.5);
+    expect(voiceBus.gain.value).toBeCloseTo(0.5);
+    engine.setMuted(true);
+    expect(voiceBus.gain.value).toBeCloseTo(0.5);
+    engine.setQuiet(true);
+    expect(voiceBus.gain.value).toBeCloseTo(0.5 * QUIET_VOLUME_SCALE);
+    engine.setQuiet(false);
+  });
+
+  it("stops a voice still playing when the engine goes", () => {
+    const { ctx, engine, voice } = voiced();
+    voice.play([{ duration: 3 }], () => undefined);
+    engine.dispose();
+    expect(ctx.sources.at(-1)!.stopped).toBe(true);
   });
 });

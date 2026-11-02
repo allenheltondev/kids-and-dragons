@@ -45,6 +45,12 @@ function useExpired(expiresAt: string | null): boolean {
   return expired;
 }
 
+/** The Room panel's line under Another TV: how many other TVs show the game, or what the section is for. */
+export function otherTvs(count: number): string {
+  if (count <= 0) return "Play together from another place";
+  return count === 1 ? "1 other TV is showing this game" : `${String(count)} other TVs are showing this game`;
+}
+
 /** What the leader sends to the other place: the link, and the code in words for a TV that cannot open links. */
 export function screenShareText(code: string, url: string): string {
   return `Show our Kids & Dragons game on your TV: open ${url}, or tap Host a game, then Join a game lobby, and type ${formatPairingCode(code)}.`;
@@ -60,6 +66,8 @@ export function screenShareText(code: string, url: string): string {
  */
 export function AddScreen({ roomCode, shareable }: { roomCode: string; shareable: boolean }): ReactElement {
   const addScreen = useGameStore((store) => store.addScreen);
+  // Other TVs showing this game right now (`RunState.screens`, kept by their beats).
+  const showing = useGameStore((store) => store.state?.screens?.length ?? 0);
   const [made, setMade] = useState<ScreenCode | null>(null);
   const [busy, setBusy] = useState(false);
   const [shared, setShared] = useState<ShareOutcome | null>(null);
@@ -99,7 +107,7 @@ export function AddScreen({ roomCode, shareable }: { roomCode: string; shareable
     <details className="kad-host__crew-menu kad-screens">
       <summary className="kad-focusable">
         <Icon name="party" /> <span className="kad-screens__title">Another TV</span>{" "}
-        <span className="kad-host__hint">Play together from another place</span>
+        <span className="kad-host__hint" aria-live="polite">{otherTvs(showing)}</span>
       </summary>
       <div className="kad-screens__body">
         {made === null || expired ? (

@@ -1018,6 +1018,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
             playerId: "",
             mode: response.mode,
             sessionToken: response.viewerToken,
+            follower: true,
           };
           await establish(display, response.state);
           deps.navigate({ name: "tv", code: roomCode }, { replace: true });
@@ -1389,7 +1390,8 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
 
       beat(leaving = false) {
         const session = get().session;
-        if (!session?.playerId || !session.sessionToken) return;
+        // A seated phone, or another TV in another place (its viewer token names it).
+        if (!session?.sessionToken || (!session.playerId && session.follower !== true)) return;
         void deps.api.postPresence(leaving, session.sessionToken).catch((error: unknown) => {
           // Fire-and-forget, but a beat that cannot get out says the stream
           // probably cannot either (#469). Not when leaving: the page is going.

@@ -42,7 +42,7 @@ import { relayCheer } from "./handlers/cheer.ts";
 import { createScreenCode, isScreenSlowDown, redeemScreenCode } from "./handlers/screens.ts";
 import { viewerStillShows } from "./handlers/viewer.ts";
 import { chooseWatching } from "./handlers/watch.ts";
-import { beatPresence, setPresence } from "./handlers/presence.ts";
+import { beatPresence, beatScreen, setPresence } from "./handlers/presence.ts";
 import { PresenceTracker } from "./presence-tracker.ts";
 import type { ActionError, HandlerDeps, HandlerResult } from "./handlers/deps.ts";
 import { iso, ok } from "./handlers/deps.ts";
@@ -643,7 +643,24 @@ async function main(): Promise<void> {
     const deps = await withRuntime(base, res);
     if (!deps) return;
     const session = await resolveSession(req, base);
-    if (!session) return sendError(res, 401, "FORBIDDEN", "presence needs a room session token");
+    if (!session) {
+      // A follower TV (handlers/screens.ts), as in lambda/http.ts.
+      const reader = await roomReader(req, base);
+      const viewer = reader && !("playerId" in reader) ? (reader as { runId: string; roomCode: string; screenId?: string }) : null;
+      if (viewer?.screenId === undefined) return sendError(res, 401, "FORBIDDEN", "presence needs a room session token");
+      const shown = await beatScreen(
+        {
+          runId: viewer.runId,
+          roomCode: viewer.roomCode,
+          screenId: viewer.screenId,
+          leaving: (req.body ?? {}).leaving === true,
+          ...(PRESENCE_AWAY_MS === undefined ? {} : { awayAfterMs: PRESENCE_AWAY_MS }),
+        },
+        deps,
+      );
+      if (!shown.ok) return sendError(res, shown.status, shown.code, shown.message);
+      return res.json({ ok: true, connected: shown.connected });
+    }
     const result = await beatPresence(
       {
         runId: session.runId,
@@ -1098,6 +1115,16 @@ async function main(): Promise<void> {
   // -------------------------------------------------------------------------
   // Static + health
   // -------------------------------------------------------------------------
+
+  // Recorded narration to try at home (docs/voice-narration-plan.md §7): a folder written by
+  // `voice:generate --fake --dir D --render` holds clips at D/voice/… and their manifests at
+  // D/content/voice/manifest/…, the layout of the site bucket. With KAD_VOICE_DIR=D both are
+  // served at their prod URLs; without it a manifest is a 404 and the TV reads with the device voice.
+  const voiceDir = process.env.KAD_VOICE_DIR;
+  if (voiceDir) {
+    app.use("/voice", express.static(path.join(voiceDir, "voice"), { fallthrough: false, immutable: true, maxAge: "1y" }));
+    app.use("/content/voice/manifest", express.static(path.join(voiceDir, "content", "voice", "manifest")));
+  }
 
   // Same URLs as prod, where CloudFront serves both prefixes from S3.
   app.use("/assets", express.static(assetsDir(), { fallthrough: false }));
