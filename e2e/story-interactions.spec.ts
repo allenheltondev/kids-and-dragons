@@ -1,7 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 import type { ClientIntent, RunState } from "../packages/shared/src/index";
 import { roomState } from "./room-state";
-import { openPlayerTask } from "./player-navigation";
 import { API } from "./api";
 
 // Three live rendered surfaces are expensive to trace on a local Windows host.
@@ -67,16 +66,22 @@ test("reusable interactions run through real phones, TV, refresh, and authored b
     await expect(controls(two).getByRole("button", { name: "See what happens next" })).toBeVisible();
     await two.reload();
     await two.getByRole("button", { name: "Got it", exact: true }).click();
-    await expect(two.getByRole("button", { name: "Your turn", exact: true })).toBeVisible();
-    await openPlayerTask(two);
+    // A reloaded phone opens on its turn, not on the bag with a "Your turn" button to find (#588).
+    await expect(two.getByRole("button", { name: "Your turn", exact: true })).toBeHidden();
     await expect(controls(two).getByRole("button", { name: "See what happens next" })).toBeVisible();
     await controls(two).getByRole("button", { name: "See what happens next" }).click();
     await expect(world).toContainText("Hold the branch");
     await expect(tv.locator(".interaction-art__main").first()).toHaveAttribute("src", "/assets/story-props/rope-loop.webp");
     await expect(one.locator(".interaction-art__main").first()).toHaveAttribute("src", "/assets/story-props/rope-loop.webp");
-    await relaxed(two);
-    await controls(two).getByRole("button", { name: "We’re ready" }).click();
-    await expect(controls(two).getByRole("button", { name: "Fetch the ribbon" })).toHaveCount(0);
+    // Whoever owns the beat leads the game (a game is one moment of the owner's beat, so the
+    // bell's lead usually leads this one too); the other phone only joins in.
+    const firstId = await one.evaluate((room) => (JSON.parse(localStorage.getItem(`kad.session.${room}`)!) as { playerId: string }).playerId, code);
+    const branch = (await roomState<RunState>(one, code)).prompt;
+    if (branch?.kind !== "interaction") throw Error("Expected the branch interaction");
+    const [branchLead, branchOther] = branch.actorId === firstId ? [one, two] : [two, one];
+    await relaxed(branchLead);
+    await controls(branchLead).getByRole("button", { name: "We’re ready" }).click();
+    await expect(controls(branchOther).getByRole("button", { name: "Fetch the ribbon" })).toHaveCount(0);
     await one.setViewportSize({ width: 390, height: 640 });
     await controls(one).getByRole("button", { name: "Hold the branch", exact: true }).scrollIntoViewIfNeeded();
     const shortPhoneAction = await controls(one).getByRole("button", { name: "Hold the branch", exact: true }).boundingBox();

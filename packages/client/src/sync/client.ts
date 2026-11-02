@@ -9,7 +9,7 @@ import { itemCatalog } from "@kad/shared";
 import { withItemIcons } from "../assets/item-icons";
 import type {
   Bestiary,
-  ResolvedCharacter,
+  HeroesResponse,
   ActionRequest,
   ActionResponse,
   Campaign,
@@ -33,6 +33,7 @@ import type {
   TransferCode,
   PairingCode,
   PairingResult,
+  ScreenCode,
   RoomMode,
   RulesContent,
   RunState,
@@ -176,7 +177,7 @@ export interface SharedPlayersLoad extends SharedDevicePlayersResponse {
 }
 
 /** What the host may do to its room (#263, #267). */
-export type HostControl = "remove" | "keeper" | "lock" | "quiet" | "crew" | "close" | "stop";
+export type HostControl = "remove" | "keeper" | "lock" | "quiet" | "crew" | "crewname" | "crewkeep" | "close" | "stop";
 
 /**
  * How the host proves it is the host: a phone's (or TV's) own device token,
@@ -228,7 +229,7 @@ export interface Api {
    */
   fetchState(query: StateQuery, token?: string, timeoutMs?: number): Promise<StateResponse>;
   /** This player's saved characters, to bring one back (spec §5). */
-  listHeroes(token: string): Promise<{ heroes: ResolvedCharacter[]; saved?: Record<string, { at?: string }> }>;
+  listHeroes(token: string): Promise<HeroesResponse>;
   /**
    * The host of a stopped game lets one of its heroes go (#259): her gains
    * from that adventure are dropped and she is free at once. The device
@@ -363,6 +364,15 @@ export interface Api {
    * binding the device already holds goes along, to be revoked.
    */
   redeemPairingCode(code: string, deviceToken?: string): Promise<PairingResult & { deviceToken: string }>;
+
+  // --- another TV in another place (handlers/screens.ts) ----------------------
+  /** The host asks for a one-time code that lets one more TV show this room. */
+  addScreen(code: string, auth: HostAuth): Promise<ScreenCode>;
+  /**
+   * The other TV spends it. No sign-in: the code is the credential. The answer
+   * is what `/watch` gives the room's own TV, without `host`.
+   */
+  redeemScreenCode(code: string): Promise<WatchRoomResponse>;
 }
 
 const JSON_HEADERS = { "content-type": "application/json" };
@@ -559,7 +569,7 @@ export const api: Api = {
   },
 
   listHeroes(token) {
-    return request<{ heroes: ResolvedCharacter[]; saved?: Record<string, { at?: string }> }>("/api/heroes", { token });
+    return request<HeroesResponse>("/api/heroes", { token });
   },
 
   async releaseSavedHero(characterId, homeHouseholdId, deviceToken) {
@@ -854,6 +864,26 @@ export const api: Api = {
     return request<PairingResult & { deviceToken: string }>("/api/pair/redeem", {
       method: "POST",
       headers: { ...JSON_HEADERS, ...(deviceToken ? { "x-kad-device-token": deviceToken } : {}) },
+      body: JSON.stringify({ code }),
+    });
+  },
+
+  addScreen(code, auth) {
+    return request<ScreenCode>(`/api/room/${encodeURIComponent(code)}/screens`, {
+      method: "POST",
+      headers: {
+        ...JSON_HEADERS,
+        ...("deviceToken" in auth ? { "x-kad-device-token": auth.deviceToken } : { "x-kad-shared-token": auth.sharedToken }),
+      },
+      ...("sessionToken" in auth && auth.sessionToken ? { token: auth.sessionToken } : {}),
+      body: JSON.stringify({}),
+    });
+  },
+
+  redeemScreenCode(code) {
+    return request<WatchRoomResponse>("/api/screens/redeem", {
+      method: "POST",
+      headers: JSON_HEADERS,
       body: JSON.stringify({ code }),
     });
   },

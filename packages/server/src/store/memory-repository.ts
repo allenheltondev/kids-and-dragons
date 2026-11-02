@@ -50,6 +50,7 @@ import type {
   MoveProfileInput,
   OrganizerInviteRecord,
   PairingCodeRecord,
+  ScreenCodeRecord,
   ProfileMove,
   PushSubscriptionRecord,
   RoomRecord,
@@ -62,6 +63,8 @@ import {
   CAMPAIGN_SK,
   CREW_SK,
   CREWSAVE_PREFIX,
+  CREWNAMES,
+  FIRSTCREW,
   CHAPTER_SK,
   CHAR_SK,
   DEVICE_SK,
@@ -84,6 +87,7 @@ import {
   MOVED_SK,
   OWNER_SK,
   PAIR,
+  SCREEN,
   PLAYER_SK,
   PREFIX,
   PRESENCE,
@@ -289,9 +293,9 @@ export class MemoryRepository implements GameRepository {
     // that family's characters.
     if (household.ownerSub && household.ownerSub !== cognitoSub) return false;
     // Only the device that started it, unless it is already this account's.
-    // A household from before founders keeps the old rule until it expires.
-    const legacy = household.founderDeviceId === undefined && household.awaitingFounder !== true;
-    if (household.ownerSub !== cognitoSub && !legacy && household.founderDeviceId !== deviceId) return false;
+    // No founder (absent, awaiting or dropped) means nobody may claim it.
+    const founder = household.founderDeviceId;
+    if (household.ownerSub !== cognitoSub && (!founder || founder !== deviceId)) return false;
 
     const { expiresAt: _dropped, ...rest } = household;
     // Dropping GSI1PK/GSI1SK is the whole promotion: no sweep entry, no sweep.
@@ -574,6 +578,20 @@ export class MemoryRepository implements GameRepository {
     return pairing;
   }
 
+  async putScreenCodeIfAbsent(record: ScreenCodeRecord): Promise<boolean> {
+    if (this.get(SCREEN(record.code), META)) return false;
+    this.put({ PK: SCREEN(record.code), SK: META, ttl: record.ttl, entity: "screen", data: record });
+    return true;
+  }
+
+  async redeemScreenCode(code: string, nowIso: string): Promise<ScreenCodeRecord | null> {
+    const record = this.get(SCREEN(code), META)?.data as ScreenCodeRecord | undefined;
+    if (!record || record.expiresAt <= nowIso) return null;
+    this.items.delete(rowKey(SCREEN(code), META));
+    this.persist();
+    return record;
+  }
+
   async putTransferCodeIfAbsent(record: TransferCodeRecord): Promise<boolean> {
     if (this.get(TRANSFER(record.code), META)) return false;
     this.put({ PK: TRANSFER(record.code), SK: META, ttl: record.ttl, entity: "transfer", data: record });
@@ -825,6 +843,19 @@ export class MemoryRepository implements GameRepository {
       .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
   }
 
+  async getCrewNamesVersion(householdId: string): Promise<number> {
+    return this.crewNamesVersion(householdId);
+  }
+
+  private crewNamesVersion(householdId: string): number {
+    return (this.get(HH(householdId), CREWNAMES)?.data as { version?: number } | undefined)?.version ?? 0;
+  }
+
+  async getFirstCrewName(householdId: string): Promise<string | null> {
+    const item = this.get(HH(householdId), FIRSTCREW);
+    return (item?.data as { name?: string } | undefined)?.name ?? null;
+  }
+
   async getFieldGuide(householdId: string): Promise<FieldGuideRecord> {
     return this.readFieldGuide(householdId);
   }
@@ -929,6 +960,13 @@ export class MemoryRepository implements GameRepository {
     }
     // A new crew takes a slot nobody holds yet.
     if (input.crew && this.get(HH(input.crew.householdId), CREW_SK(input.crew.id))) return false;
+    // Crew names land only on the crew-names version they were chosen from, and
+    // only on a crew that exists.
+    if (input.crewNames) {
+      const { householdId, expectedVersion, names } = input.crewNames;
+      if (this.crewNamesVersion(householdId) !== expectedVersion) return false;
+      if (names.some(({ crew }) => crew !== null && !this.get(HH(householdId), CREW_SK(crew)))) return false;
+    }
 
     // No await from here through the final row: this is the local equivalent of
     // one TransactWriteItems, including across two different run partitions.
@@ -962,6 +1000,18 @@ export class MemoryRepository implements GameRepository {
     }
     if (input.crew) {
       this.put({ PK: HH(input.crew.householdId), SK: CREW_SK(input.crew.id), entity: "crew", data: input.crew });
+    }
+    if (input.crewNames) {
+      const { householdId, expectedVersion, names } = input.crewNames;
+      const pk = HH(householdId);
+      this.put({ PK: pk, SK: CREWNAMES, entity: "crew", data: { version: expectedVersion + 1 } });
+      for (const { crew, name } of names) {
+        if (crew === null) this.put({ PK: pk, SK: FIRSTCREW, entity: "crew", data: { name } });
+        else {
+          const row = this.get(pk, CREW_SK(crew))!;
+          this.put({ ...row, data: { ...(row.data as CrewRecord), name } });
+        }
+      }
     }
     if (chapterProgress) {
       this.put({

@@ -15,12 +15,15 @@
  *  - a Travel Mode phone is both surfaces, so it does both, in that order.
  * Each device speaks only when its own switch is on.
  *
- * The engine (synth-speaker.ts) is a dynamic import: a device that never turns
- * this on never downloads it, and the entry chunk only pays for this small file.
+ * The engine is a dynamic import: a device that never turns this on never
+ * downloads it, and the entry chunk only pays for this small file. It is the
+ * recorded voice (clip-speaker.ts) in front of the device voice
+ * (synth-speaker.ts): a scene's narration plays its clips when every one is
+ * there, and everything else is read by the browser as before.
  */
 
 import { create } from "zustand";
-import { setSpeaker, spokenText, stopSpeaking, type SpeakOptions } from "@kad/shared";
+import { setSpeaker, spokenText, stopSpeaking, type SpeakOptions, type Speaker } from "@kad/shared";
 
 export const READ_ALOUD_KEY = "kad.readaloud";
 
@@ -43,22 +46,22 @@ function loadStored(): boolean | null {
 
 interface ReadAloudState {
   on: boolean;
+  /** Something is being said on this device right now (the narration panel's mark). */
+  speaking: boolean;
 }
 
-const useStore = create<ReadAloudState>(() => ({ on: (loadStored() ?? false) && readAloudSupported() }));
+const useStore = create<ReadAloudState>(() => ({ on: (loadStored() ?? false) && readAloudSupported(), speaking: false }));
 
-type SpeakerModule = typeof import("./synth-speaker");
-let engine: Promise<ReturnType<SpeakerModule["createSynthSpeaker"]>> | null = null;
+let engine: Promise<Speaker> | null = null;
 
-function loadEngine(): Promise<ReturnType<SpeakerModule["createSynthSpeaker"]>> {
-  engine ??= import("./synth-speaker").then((module) =>
-    module.createSynthSpeaker({
-      synth: window.speechSynthesis,
-      createUtterance: (text) => new SpeechSynthesisUtterance(text),
-      gestureTarget: window,
-    }),
-  );
+function loadEngine(): Promise<Speaker> {
+  engine ??= import("./clip-speaker").then((module) => module.createTableSpeaker(markSpeaking));
   return engine;
+}
+
+/** What the speaker reports as it starts and stops saying things. */
+export function markSpeaking(speaking: boolean): void {
+  useStore.setState({ speaking });
 }
 
 /** Installs or removes the speaker to match the switch. Safe to call again. */
@@ -104,6 +107,11 @@ export function startReadAloud(defaultOn = false): void {
 export function useReadAloud(): { supported: boolean; on: boolean; setOn: (on: boolean) => void } {
   const on = useStore((state) => state.on);
   return { supported: readAloudSupported(), on, setOn: setReadAloud };
+}
+
+/** True while this device is saying something, in either voice: the narration panel's "speaking" mark. */
+export function useSpeaking(): boolean {
+  return useStore((state) => state.speaking);
 }
 
 /** True when this device reads aloud. For a surface that adds something only then (a speaker icon). */

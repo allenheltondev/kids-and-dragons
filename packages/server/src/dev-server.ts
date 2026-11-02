@@ -39,8 +39,10 @@ import {
 } from "./handlers/code-guard.ts";
 import { relayPreview } from "./handlers/preview.ts";
 import { relayCheer } from "./handlers/cheer.ts";
+import { createScreenCode, isScreenSlowDown, redeemScreenCode } from "./handlers/screens.ts";
+import { viewerStillShows } from "./handlers/viewer.ts";
 import { chooseWatching } from "./handlers/watch.ts";
-import { beatPresence, setPresence } from "./handlers/presence.ts";
+import { beatPresence, beatScreen, setPresence } from "./handlers/presence.ts";
 import { PresenceTracker } from "./presence-tracker.ts";
 import type { ActionError, HandlerDeps, HandlerResult } from "./handlers/deps.ts";
 import { iso, ok } from "./handlers/deps.ts";
@@ -50,7 +52,7 @@ import { removePlayer } from "./handlers/remove.ts";
 import { handKeeper } from "./handlers/keeper.ts";
 import { MemoryTimingStore } from "./store/timing-store.ts";
 import { closeRoom, lockRoom, setQuiet, type HostPrincipal } from "./handlers/host.ts";
-import { CREW_BODY, parseCrewChoice, switchCrew } from "./handlers/crew.ts";
+import { confirmCrew, CREW_BODY, KEEP_BODY, RENAME_BODY, parseCrewChoice, parseCrewKeep, parseCrewRename, renameCrew, switchCrew } from "./handlers/crew.ts";
 import { localTimingReport, parseTimingControl, setTiming, TIMING_BODY, type TimingControl } from "./handlers/timing.ts";
 import { releaseSavedHero, resumeGame, stopForToday } from "./handlers/save.ts";
 import { listHeroes } from "./handlers/heroes.ts";
@@ -334,7 +336,7 @@ async function main(): Promise<void> {
     if (!existing && !joinerName.ok) return sendError(res, statusFor(joinerName.error), joinerName.error.code, joinerName.error.message);
     let admitted: "family" | "visitor" | null = null;
     if (!existing) {
-      const admission = await admitNewPhone(room, named.visitorCode, deps);
+      const admission = await admitNewPhone(room, found.claimable === true, deps);
       if (!admission.ok) {
         return sendError(res, statusFor(admission.error), admission.error.code, admission.error.message);
       }
@@ -412,14 +414,21 @@ async function main(): Promise<void> {
    * host is a phone's device token or a tablet's token plus its seated
    * player's session (#250), and the body is checked only once the host is.
    */
-  type HostAct = (
+  type HostAct<T extends object = { seq: number }> = (
     code: string,
     principal: HostPrincipal,
     body: Record<string, unknown>,
     deps: HandlerDeps,
-  ) => Promise<HandlerResult<{ seq: number }>>;
-  const hostControl =
-    (validate: (body: Record<string, unknown>) => string | null, act: HostAct) =>
+  ) => Promise<HandlerResult<T>>;
+  const hostControl = (validate: (body: Record<string, unknown>) => string | null, act: HostAct) =>
+    hostControlAnswering(validate, act, (value) => ({ ok: true, seq: value.seq }));
+  /** A host control that answers with something of its own, like a screen code. */
+  const hostControlAnswering =
+    <T extends object>(
+      validate: (body: Record<string, unknown>) => string | null,
+      act: HostAct<T>,
+      answer: (value: T) => object,
+    ) =>
     async (req: Request, res: Response) => {
       const deps = await withRuntime(base, res);
       if (!deps) return;
@@ -445,7 +454,7 @@ async function main(): Promise<void> {
       const result = await act(code, principal, body, deps);
       const missed = !result.ok && result.error.code === "NOT_FOUND" && result.error.message.startsWith("no open room");
       if (!missed) await lookup.hit();
-      if (result.ok) return res.json({ ok: true, seq: result.value.seq });
+      if (result.ok) return res.json(answer(result.value));
       sendError(res, statusFor(result.error), result.error.code, result.error.message);
     };
 
@@ -456,6 +465,12 @@ async function main(): Promise<void> {
   app.post("/api/room/:code/keeper", hostControl(
     (body) => (typeof body.playerId === "string" && body.playerId !== "" ? null : "expected { playerId }"),
     (code, principal, body, deps) => handKeeper({ code, principal, playerId: body.playerId as string }, deps),
+  ));
+  // The leader adds a follower TV: a one-time code that screen types (handlers/screens.ts).
+  app.post("/api/room/:code/screens", hostControlAnswering(
+    () => null,
+    (code, principal, _body, deps) => createScreenCode({ code, principal }, deps),
+    (made) => made,
   ));
   app.post("/api/room/:code/lock", hostControl(
     (body) => (typeof body.locked === "boolean" ? null : "expected { locked: true | false }"),
@@ -469,6 +484,16 @@ async function main(): Promise<void> {
   app.post("/api/room/:code/crew", hostControl(
     (body) => (parseCrewChoice(body) === undefined ? CREW_BODY : null),
     (code, principal, body, deps) => switchCrew({ code, principal, ...parseCrewChoice(body)! }, deps),
+  ));
+  // Heroes new to the crew's adventure keep going with it (handlers/crew.ts).
+  app.post("/api/room/:code/crewkeep", hostControl(
+    (body) => (parseCrewKeep(body) === undefined ? KEEP_BODY : null),
+    (code, principal, body, deps) => confirmCrew({ code, principal, ...parseCrewKeep(body)! }, deps),
+  ));
+  // Another of the offered names for one of the household's crews (handlers/crew.ts).
+  app.post("/api/room/:code/crewname", hostControl(
+    (body) => (parseCrewRename(body) === undefined ? RENAME_BODY : null),
+    (code, principal, body, deps) => renameCrew({ code, principal, ...parseCrewRename(body)! }, deps),
   ));
   app.post("/api/room/:code/timing", hostControl(
     (body) => (parseTimingControl(body) ? null : TIMING_BODY),
@@ -609,7 +634,7 @@ async function main(): Promise<void> {
       deps,
     );
     if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
-    res.json({ ok: true, seq: result.value.seq });
+    res.json({ ok: true, seq: (result.value as { seq: number }).seq });
   });
 
   // "Still here", or "leaving" (handlers/presence.ts): production's only
@@ -618,7 +643,24 @@ async function main(): Promise<void> {
     const deps = await withRuntime(base, res);
     if (!deps) return;
     const session = await resolveSession(req, base);
-    if (!session) return sendError(res, 401, "FORBIDDEN", "presence needs a room session token");
+    if (!session) {
+      // A follower TV (handlers/screens.ts), as in lambda/http.ts.
+      const reader = await roomReader(req, base);
+      const viewer = reader && !("playerId" in reader) ? (reader as { runId: string; roomCode: string; screenId?: string }) : null;
+      if (viewer?.screenId === undefined) return sendError(res, 401, "FORBIDDEN", "presence needs a room session token");
+      const shown = await beatScreen(
+        {
+          runId: viewer.runId,
+          roomCode: viewer.roomCode,
+          screenId: viewer.screenId,
+          leaving: (req.body ?? {}).leaving === true,
+          ...(PRESENCE_AWAY_MS === undefined ? {} : { awayAfterMs: PRESENCE_AWAY_MS }),
+        },
+        deps,
+      );
+      if (!shown.ok) return sendError(res, shown.status, shown.code, shown.message);
+      return res.json({ ok: true, connected: shown.connected });
+    }
     const result = await beatPresence(
       {
         runId: session.runId,
@@ -712,7 +754,7 @@ async function main(): Promise<void> {
 
     const session = await resolveSession(req, base);
     if (!session) return sendError(res, 401, "FORBIDDEN", "listing heroes needs a room session token");
-    const result = await listHeroes({ householdId: session.householdId, playerId: session.playerId }, deps);
+    const result = await listHeroes({ householdId: session.householdId, playerId: session.playerId, runId: session.runId }, deps);
     if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
     res.json(result.value);
   });
@@ -830,6 +872,10 @@ async function main(): Promise<void> {
       return sendError(res, 404, "NOT_FOUND", named);
     }
     if (!runId) runId = reader.runId;
+    // As lambda/http.ts: a viewer reads only while its room is open and still this run.
+    if (!("playerId" in reader) && !(await viewerStillShows(base.repo, reader.runId, reader.roomCode))) {
+      return sendError(res, 404, "NOT_FOUND", named);
+    }
 
     if (code) {
       const room = await base.repo.getRoom(code);
@@ -851,7 +897,7 @@ async function main(): Promise<void> {
   });
 
   // -------------------------------------------------------------------------
-  // Realtime — the local stand-in for the AppSync Events channel `room/<code>`
+  // Realtime — the local stand-in for the AppSync Events channel `room/<code>/<runId>`
   // -------------------------------------------------------------------------
 
   app.get("/events/:code", async (req: Request, res: Response) => {
@@ -866,6 +912,10 @@ async function main(): Promise<void> {
     }
     const room = await base.repo.getRoom(code);
     if (!room) return sendError(res, 404, "NOT_FOUND", `no open room ${code}`);
+    // The authorizer's rule for a viewer: this room, still this run, still open.
+    if (!("playerId" in reader) && !(await viewerStillShows(base.repo, reader.runId, reader.roomCode))) {
+      return sendError(res, 404, "NOT_FOUND", `no open room ${code}`);
+    }
 
     const state = await base.repo.getState(room.runId);
     if (!state) return sendError(res, 404, "NOT_FOUND", `run ${room.runId} has no state`);
@@ -1025,6 +1075,14 @@ async function main(): Promise<void> {
     res.json(result.value);
   });
 
+  // A follower TV spends the leader's screen code. No sign-in: the code is the credential.
+  app.post("/api/screens/redeem", async (req: Request, res: Response) => {
+    const result = await redeemScreenCode({ code: req.body?.code, client: clientOf(req) }, base);
+    if (isScreenSlowDown(result)) return slowDown(res, base);
+    if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    res.json(result.value);
+  });
+
   // The new device redeems it. No sign-in: the code is the credential.
   app.post("/api/pair/redeem", async (req: Request, res: Response) => {
     const previous = await resolvePrincipal(req, base);
@@ -1057,6 +1115,16 @@ async function main(): Promise<void> {
   // -------------------------------------------------------------------------
   // Static + health
   // -------------------------------------------------------------------------
+
+  // Recorded narration to try at home (docs/voice-narration-plan.md §7): a folder written by
+  // `voice:generate --fake --dir D --render` holds clips at D/voice/… and their manifests at
+  // D/content/voice/manifest/…, the layout of the site bucket. With KAD_VOICE_DIR=D both are
+  // served at their prod URLs; without it a manifest is a 404 and the TV reads with the device voice.
+  const voiceDir = process.env.KAD_VOICE_DIR;
+  if (voiceDir) {
+    app.use("/voice", express.static(path.join(voiceDir, "voice"), { fallthrough: false, immutable: true, maxAge: "1y" }));
+    app.use("/content/voice/manifest", express.static(path.join(voiceDir, "content", "voice", "manifest")));
+  }
 
   // Same URLs as prod, where CloudFront serves both prefixes from S3.
   app.use("/assets", express.static(assetsDir(), { fallthrough: false }));

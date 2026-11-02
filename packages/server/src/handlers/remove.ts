@@ -33,6 +33,7 @@
 
 import { settleChapterEndVote, type RunState } from "@kad/shared";
 import { fail, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
+import { rethinkNewcomers } from "./crew.ts";
 import { commitRoomChange, hostedRoom, type HostPrincipal } from "./host.ts";
 import { relockLobby } from "./progression.ts";
 
@@ -68,6 +69,7 @@ export async function removePlayer(
       // Out of any vote at the chapter's end too: if they were the last one
       // still reading, the table goes on now, as it does when a phone drops.
       return relockOut(
+        state,
         settleChapterEndVote({
           ...unkept(state, input.playerId),
           removed: [...(state.removed ?? []), input.playerId],
@@ -150,6 +152,7 @@ export async function takeOutEverywhere(
         const seated = state.party.some((m) => m.playerId === playerId) || state.seats?.[playerId] !== undefined;
         if (!seated || isRemoved(state, playerId)) return null;
         return relockOut(
+          state,
           settleChapterEndVote({
             ...unkept(state, playerId),
             removed: [...(state.removed ?? []), playerId],
@@ -177,12 +180,16 @@ export async function takeOutEverywhere(
  * Begin re-reads the party anyway (`lockedRefusal`, without the removed).
  */
 async function relockOut(
+  before: RunState,
   state: RunState,
   householdId: string,
   deps: Pick<HandlerDeps, "repo" | "content">,
 ): Promise<RunState> {
   if (state.phase !== "lobby" && state.phase !== "creation") return state;
-  return relockLobby(state, householdId, deps);
+  // And whether the heroes left are new to the crew's adventure (crew.ts): the
+  // one who was on it may be the one taken out, and a keep-going given for the
+  // old lineup is not one for this.
+  return rethinkNewcomers(before, await relockLobby(state, householdId, deps), householdId, deps);
 }
 
 /** On `RunState.removed`: taken out of this room, and kept out. */

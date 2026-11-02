@@ -24,7 +24,8 @@ describe("whose line is it", () => {
   ];
 
   it("follows a name in the speech tag, before or after the quote", () => {
-    expect(attributeQuotes('"I\'m Pib," says the sprite. Pib says, "Hello."', speakers)).toEqual([{ id: "pib", words: "Hello." }]);
+    // A quote that says who is speaking names them, even when its tag only says "the sprite".
+    expect(attributeQuotes('"I\'m Pib," says the sprite. Pib says, "Hello."', speakers)).toEqual([{ id: "pib", words: "I'm Pib," }, { id: "pib", words: "Hello." }]);
     expect(attributeQuotes('"Help," says the dragon, trying out the word.', speakers)).toEqual([{ id: "keeper", words: "Help," }]);
   });
 
@@ -246,7 +247,7 @@ describe("the committed sheet", () => {
 
   it("has real lines for the people we know speak", () => {
     // A speech tag mid-line splits a quote in two; the sheet joins it back up.
-    expect(sheet.speakers.pib!.lines.map((l) => l.text)).toContain("I can only spare one. The hedge says you should choose it together.");
+    expect(sheet.speakers.pib!.lines.map((l) => l.text)).toContain("I can only spare one gift for you. The hedge says you should choose it together.");
     expect(sheet.speakers.orin_vale!.pronouns).toBe("he/him");
     expect(sheet.speakers.coralie_fenn!.aliases).toContain("Madame Fenn");
   });

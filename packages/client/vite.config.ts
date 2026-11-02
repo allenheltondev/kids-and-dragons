@@ -2,6 +2,7 @@ import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { buildId, serviceWorker } from "./sw-build";
+import { pixiWebglOnly } from "./pixi-webgl-only";
 
 const repoRoot = fileURLToPath(new URL("../..", import.meta.url));
 const apiTarget = process.env.KAD_DEV_API_TARGET ?? "http://localhost:8787";
@@ -21,7 +22,7 @@ export default defineConfig({
   },
   // The service worker (src/sw/) is emitted as `/sw.js` by its own plugin:
   // a fixed URL and a single classic script, which a Vite entry is not.
-  plugins: [react(), serviceWorker(repoRoot)],
+  plugins: [react(), serviceWorker(repoRoot), pixiWebglOnly()],
   server: {
     host: "0.0.0.0",
     port: Number(process.env.KAD_CLIENT_PORT ?? 5173),
@@ -30,6 +31,8 @@ export default defineConfig({
       "/events": { target: apiTarget, changeOrigin: true },
       "/assets": { target: apiTarget, changeOrigin: true },
       "/content": { target: apiTarget, changeOrigin: true },
+      // Recorded narration (voice plan §7): CloudFront in prod; the dev server with KAD_VOICE_DIR.
+      "/voice": { target: apiTarget, changeOrigin: true },
     },
     fs: { allow: [repoRoot] },
   },

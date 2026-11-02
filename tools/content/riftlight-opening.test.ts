@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { afterAll, describe, expect, it, vi } from "vitest";
-import { enterScene, lintCampaignGraph, parseCampaignGraph, newCharacter, resolveCharacter, validateChapter, startJourney, completeVisit, takeExit, seedRunBuffs } from "@kad/shared";
+import { enterScene, parseCampaignGraph, newCharacter, resolveCharacter, validateChapter, startJourney, completeVisit, takeExit, seedRunBuffs } from "@kad/shared";
 import { APPEARANCE } from "../../packages/shared/src/test-fixtures.ts";
 import { runValidator } from "./run-validator.ts";
 import { chapterFlagsFrom } from "./journey-graph.ts";
@@ -56,7 +56,8 @@ describe("Riftlight's authored opening", () => {
     expect(parsed.problems).toEqual([]);
     const graph = parsed.graph!;
     const options = { chapterFlags: chapterFlagsFrom(allChapters), routeSets: campaign.routeSets };
-    expect(lintCampaignGraph(graph, options).findings).toEqual([]);
+    // The lint itself (no findings, with these same options) is asserted once, in riftlight-routes.test.ts,
+    // so this file does not pay for a second full-campaign search.
     const { search, coverage } = exploreRoutes(graph, options);
     expect(coverage.softlocks).toEqual([]);
     expect(coverage.nodes.every((node) => node.entered)).toBe(true);
@@ -181,7 +182,7 @@ describe("Riftlight's authored opening", () => {
       const state = start(chapter, "manticore", "duskrunner", read ? { starweaver_read_first_rift: true } : {});
       const result = enterScene(state, "seren", context(chapter));
       expect(result.error).toBeUndefined();
-      expect(result.state.narration.includes("One of you can see it")).toBe(read);
+      expect(result.state.narration.includes("Seren turns to the hero who saw it.")).toBe(read);
       allPaths(chapter, "manticore", "duskrunner", read ? { starweaver_read_first_rift: true } : {});
     }
   });

@@ -70,7 +70,7 @@ export type Family = "eleven" | "elevenClassic" | "gemini" | "geminiPrompt" | "f
 export interface CastFile {
   /** Everyone's accent, unless a speaker sets their own: written into Gemini's style and audio profile. */
   accent?: string;
-  speakers: Record<string, { describe: string; accent?: string; elevenlabs?: { voiceId: string; name?: string }; gemini?: { voice: string } }>;
+  speakers: Record<string, { describe: string; accent?: string; direction?: string; elevenlabs?: { voiceId: string; name?: string }; gemini?: { voice: string } }>;
   delivery: Record<string, { tag?: string; style?: string }>;
   beats: Record<string, Partial<Record<Exclude<Family, "fake">, string | null>>>;
 }
@@ -211,6 +211,25 @@ function accentOf(cast: CastFile, id: string): string {
   return accent ? ` Accent: ${accent}.` : "";
 }
 
+/**
+ * What ElevenLabs can be told about a character beyond the voice itself. Its text to speech has no style prompt, so
+ * v3 and later (which read audio tags) get the character's own accent and a short direction as tags in front of each
+ * line; older models get nothing, because there is nowhere to put it and the voice carries it. The sheet's default
+ * accent is not a tag: it is the voice's own. A direction too long to be a tag is left out rather than risk it being read aloud.
+ */
+export function elevenTags(engine: Pick<EngineConfig, "provider" | "model">, cast: CastFile, id: string): string {
+  if (familyOf(engine) !== "eleven") return "";
+  const who = speaker(cast, id);
+  const tags: string[] = [];
+  const accent = who.accent?.replace(/[()[\]]/g, " ").replace(/\s+/g, " ").trim();
+  if (accent && accent !== cast.accent) tags.push(/accent$/i.test(accent) ? accent : `${accent} accent`);
+  const direction = who.direction?.replace(/\s+/g, " ").trim().replace(/[.!?]+$/, "");
+  if (direction && direction.length <= 80 && !/[[\]]/.test(direction)) tags.push(direction);
+  return tags.map((tag) => `[${tag}]`).join(" ");
+}
+
+const tagged = (tags: string, text: string): string => (tags ? `${tags} ${text}` : text);
+
 /** How a line should sound, in words: the character, their accent, and the delivery when the column asks for it. */
 function styleOf(engine: Engine, cast: CastFile, line: ScriptLine): string {
   const delivery = line.delivery ? cast.delivery[line.delivery]?.style : undefined;
@@ -252,7 +271,7 @@ function lineRequest(engine: Engine, cast: CastFile, sample: Sample, index: numb
   switch (engine.provider) {
     case "elevenlabs": {
       const body: Record<string, unknown> = {
-        text: spoken(engine, cast, line),
+        text: tagged(elevenTags(engine, cast, line.by), spoken(engine, cast, line)),
         model_id: engine.model,
         ...(engine.settings ? { voice_settings: engine.settings } : {}),
         // A take is a fresh roll: same voice and settings, a different seed.
@@ -287,7 +306,7 @@ function dialogueRequest(engine: Engine, cast: CastFile, sample: Sample, take: n
         url: `${ELEVENLABS}/text-to-dialogue?output_format=${OUTPUT}`,
         headers: { "content-type": "application/json" },
         body: {
-          inputs: sample.lines.map((line) => ({ text: spoken(engine, cast, line), voice_id: elevenVoice(cast, line.by) })),
+          inputs: sample.lines.map((line) => ({ text: tagged(elevenTags(engine, cast, line.by), spoken(engine, cast, line)), voice_id: elevenVoice(cast, line.by) })),
           model_id: engine.model,
           ...(engine.settings ? { settings: { stability: engine.settings.stability } } : {}),
           ...(engine.seed !== undefined ? { seed: engine.seed + take - 1 } : {}),
@@ -516,9 +535,16 @@ export interface VoiceInfo {
   id: string;
   name: string;
   about?: string;
+  /** "f" or "m" when the provider says; the picker filters on it. */
+  gender?: "f" | "m" | "other";
   /** A short sample of the voice the provider hosts, free to play (ElevenLabs gives one for most voices). */
   preview?: string;
 }
+
+const genderOf = (word: unknown): VoiceInfo["gender"] | undefined => {
+  const gender = String(word ?? "").toLowerCase();
+  return gender === "female" ? "f" : gender === "male" ? "m" : gender ? "other" : undefined;
+};
 
 /** The voices this key can use: an ElevenLabs account's voices, or Gemini's prebuilt set. */
 export async function listVoices(provider: Provider, keys: Keys, fetch: Fetch): Promise<VoiceInfo[]> {
@@ -531,6 +557,98 @@ export async function listVoices(provider: Provider, keys: Keys, fetch: Fetch): 
     id: v.voice_id,
     name: v.name,
     about: [v.category, ...Object.values(v.labels ?? {})].filter(Boolean).join(", "),
+    ...(genderOf(v.labels?.gender) ? { gender: genderOf(v.labels?.gender) } : {}),
     ...(v.preview_url ? { preview: v.preview_url } : {}),
   }));
+}
+
+/** A voice in ElevenLabs' public Voice Library: not on the account until someone adds it. */
+export interface LibraryVoice extends VoiceInfo {
+  ownerId: string;
+}
+
+export interface LibraryPage {
+  voices: LibraryVoice[];
+  hasMore: boolean;
+  total?: number;
+}
+
+/** Searches the public Voice Library (read only: nothing on the account changes). */
+export async function searchLibrary(keys: Keys, query: { search?: string; gender?: string; page?: number }, fetch: Fetch): Promise<LibraryPage> {
+  const params = new URLSearchParams({ page_size: "30", page: String(query.page ?? 0) });
+  if (query.search?.trim()) params.set("search", query.search.trim());
+  if (query.gender === "female" || query.gender === "male") params.set("gender", query.gender);
+  const json = (await getJson(`${ELEVENLABS}/shared-voices?${params}`, authFor("elevenlabs", keys), fetch)) as {
+    voices?: { public_owner_id: string; voice_id: string; name: string; category?: string; gender?: string; age?: string; accent?: string; descriptive?: string; use_case?: string; preview_url?: string | null }[];
+    has_more?: boolean;
+    total_count?: number;
+  };
+  return {
+    voices: (json.voices ?? []).map((v) => ({
+      id: v.voice_id,
+      ownerId: v.public_owner_id,
+      name: v.name,
+      about: [v.category, v.gender, v.age, v.accent, v.descriptive, v.use_case].filter(Boolean).join(", "),
+      ...(genderOf(v.gender) ? { gender: genderOf(v.gender) } : {}),
+      ...(v.preview_url ? { preview: v.preview_url } : {}),
+    })),
+    hasMore: json.has_more === true,
+    ...(typeof json.total_count === "number" ? { total: json.total_count } : {}),
+  };
+}
+
+/** A candidate voice from ElevenLabs' voice design: audio of the sample text, and the id that saves it. */
+export interface DesignedPreview {
+  generatedVoiceId: string;
+  /** The preview audio as a data: URL, ready to play. */
+  audio: string;
+  seconds?: number;
+}
+
+/** The model voice design runs on (its own list: not the speech models), and the speech model its previews are priced as. */
+export const DESIGN_MODEL = "eleven_ttv_v3";
+export const DESIGN_PRICED_AS = "eleven_v3";
+
+/** ElevenLabs' limits on a voice description and the sample text it is previewed on. */
+export const DESIGN_LIMITS = { description: { min: 20, max: 1000 }, text: { min: 100, max: 1000 } } as const;
+
+/**
+ * Designs a voice from a description: a few candidate previews of it saying `text`. Nothing is saved to the account
+ * until createDesignedVoice, but the previews are billed.
+ */
+export async function designVoice(keys: Keys, input: { description: string; text: string }, fetch: Fetch): Promise<DesignedPreview[]> {
+  const response = await fetch(`${ELEVENLABS}/text-to-voice/design`, {
+    method: "POST",
+    headers: { ...authFor("elevenlabs", keys), "content-type": "application/json" },
+    body: JSON.stringify({ model_id: DESIGN_MODEL, voice_description: input.description, text: input.text, auto_generate_text: false }),
+  });
+  if (!response.ok) throw await failure(response);
+  const json = JSON.parse(await response.text()) as { previews?: { generated_voice_id: string; audio_base_64: string; media_type?: string; duration_secs?: number }[] };
+  return (json.previews ?? []).map((preview) => ({
+    generatedVoiceId: preview.generated_voice_id,
+    audio: `data:${preview.media_type ?? "audio/mpeg"};base64,${preview.audio_base_64}`,
+    ...(typeof preview.duration_secs === "number" ? { seconds: preview.duration_secs } : {}),
+  }));
+}
+
+/** Saves one designed preview to the account as a voice, which is what lets it be used (and may count against the plan's voice slots). */
+export async function createDesignedVoice(keys: Keys, voice: { generatedVoiceId: string; name: string; description: string }, fetch: Fetch): Promise<string> {
+  const response = await fetch(`${ELEVENLABS}/text-to-voice`, {
+    method: "POST",
+    headers: { ...authFor("elevenlabs", keys), "content-type": "application/json" },
+    body: JSON.stringify({ voice_name: voice.name, voice_description: voice.description, generated_voice_id: voice.generatedVoiceId }),
+  });
+  if (!response.ok) throw await failure(response);
+  const json = JSON.parse(await response.text()) as { voice_id?: string };
+  if (!json.voice_id) throw new Error("ElevenLabs saved the voice but did not say its id");
+  return json.voice_id;
+}
+
+/** Adds a library voice to the account, which is what lets it be used (and may count against the plan's voice slots). */
+export async function addLibraryVoice(keys: Keys, voice: { ownerId: string; voiceId: string; name: string }, fetch: Fetch): Promise<string> {
+  const url = `${ELEVENLABS}/voices/add/${encodeURIComponent(voice.ownerId)}/${encodeURIComponent(voice.voiceId)}`;
+  const response = await fetch(url, { method: "POST", headers: { ...authFor("elevenlabs", keys), "content-type": "application/json" }, body: JSON.stringify({ new_name: voice.name }) });
+  if (!response.ok) throw await failure(response);
+  const json = JSON.parse(await response.text()) as { voice_id?: string };
+  return json.voice_id ?? voice.voiceId;
 }

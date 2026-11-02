@@ -107,7 +107,9 @@ test.describe("the stat picker on a short phone", () => {
       if (size.text !== "normal") await page.evaluate((text) => document.documentElement.setAttribute("data-text", text), size.text);
 
       await bank(page, table.code, 2);
-      await page.getByRole("button", { name: /^Spend your stat points?$/ }).click(TAP);
+      // The rest stop's question is this phone's, so it opened on its turn page (#588), where the
+      // picker stands above the way on; "Spend your stat points" is only the way in from the bag.
+      await expect(page.getByRole("button", { name: /^Spend your stat points?$/ })).toBeHidden();
       const heading = page.getByRole("heading", { name: /You have 2 points to spend!/ });
       await expect(heading).toBeVisible(TAP);
 

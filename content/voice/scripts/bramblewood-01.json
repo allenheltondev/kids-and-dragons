@@ -1,0 +1,25 @@
+{
+  "$comment": "Who says which words in this chapter (docs/voice-narration-plan.md section 3). Drafted by `npm run voice:script`; a line with no entry is read by the narrator. A person checks each draft and sets `reviewed` to true; re-drafting only touches missing and stale entries.",
+  "bramblewood-01/scene_pib/narration": {
+    "source": "sha256:25c54f25cbc3106275f4aae7d0323048b6ba7c0b8e3d71a03f98f6aa6cc8cdfe",
+    "reviewed": false,
+    "lines": [
+      {
+        "by": "pib",
+        "text": "\"I'm Pib,\""
+      },
+      {
+        "by": "narrator",
+        "text": "says the sprite,"
+      },
+      {
+        "by": "pib",
+        "text": "\"and somebody took the Hollow Crown out of the old shrine, and now the wood hums all night and nobody can sleep.\""
+      },
+      {
+        "by": "narrator",
+        "text": "Pib hands you half a map, drawn in berry juice, and gives you the acorn too, because Pib is generous."
+      }
+    ]
+  }
+}

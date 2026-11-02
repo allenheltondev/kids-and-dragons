@@ -523,8 +523,9 @@ export interface Household {
    * it by signing in (#265). Knowing a room code gets a phone a seat, never the
    * household: a joiner is bound here too, so the claim has to name something a
    * joiner cannot be. `""` once a host has taken the founder out: nobody may
-   * claim it. Absent only on a household made before this field existed,
-   * which keeps the old rule (any device in it) until it expires.
+   * claim it. Absent reads the same, nobody: a household awaiting its
+   * founder, or one made before this field existed (which kept the old
+   * any-device rule until #272 removed it).
    */
   founderDeviceId?: string;
   /**

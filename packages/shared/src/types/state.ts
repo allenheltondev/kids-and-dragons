@@ -14,6 +14,7 @@ import type { FactId, FactValue, JourneyView, NodeId } from "./campaign-graph.js
 import type { BuffId, CheckBuffOffer, RunBuff } from "./buffs.js";
 import type { MatchupNote } from "./matchups.js";
 import type { NarrationPart } from "../narration.js";
+import type { ChoiceAhead } from "../choice-ahead.js";
 
 export type RoomMode = "party" | "travel";
 
@@ -155,7 +156,17 @@ export type Prompt =
        * Choices already filtered for party eligibility (`requires*` and
        * `when`), with label tokens already filled (#159).
        */
-      options: { id: string; label: string; icon: string }[];
+      options: {
+        id: string;
+        label: string;
+        icon: string;
+        /**
+         * What picking it leads to: a roll, a game or a fight
+         * (choice-ahead.ts), drawn as a badge beside the label. Absent when it
+         * leads to more story, and on prompts opened before options said.
+         */
+        ahead?: ChoiceAhead;
+      }[];
       /** Empty means anyone may answer. */
       forPlayerIds: string[];
       /** choice_point scenes tally votes rather than taking the first answer. */
@@ -466,6 +477,26 @@ export interface RunState {
    */
   storyTurn?: number;
   /**
+   * How many moments the story-turn holder has had in the beat they own
+   * (chapter.ts `SceneSpotlight`): turn-held choices, ordinary checks. The
+   * marker moves on at `SPOTLIGHT_BEAT`, at a Rest, or at a scene that starts
+   * a new beat, and this goes back to 0.
+   *
+   * Optional, and read as 0 when absent: a run persisted before beats had
+   * owners starts its holder's beat afresh.
+   */
+  spotlightMoments?: number;
+  /**
+   * On a chapter's summary (`phase === "chapter_complete"`), whether the table
+   * has heard the ending yet. `false` from the moment the chapter completes:
+   * the shared screen shows how the story ended, on its own plate, and the
+   * XP waits behind it until a phone sends ENDING_READ, which sets `true`.
+   *
+   * Optional, and absent reads as read: a summary persisted before the
+   * ending had its own plate goes straight to the XP, as it always did.
+   */
+  endingRead?: boolean;
+  /**
    * A d20 face the next roll will come up (roadmap chapter 6's playtest mode).
    *
    * On the run rather than in the request that sets it, because loading the die
@@ -553,6 +584,14 @@ export interface RunState {
    */
   watching?: string[];
   /**
+   * Other TVs in other places showing this game (a screen code's follower,
+   * handlers/screens.ts) that have said "still here" recently: one id per
+   * screen, so the Room panel can say how many there are. Written by presence
+   * alone, as `watching` is, and gone once a screen leaves or goes quiet. The
+   * room's own TV is never listed. Absent when there are none.
+   */
+  screens?: string[];
+  /**
    * The host locked the room (#263): nobody new may join. Everybody already
    * seated (`seats`) can still come back to it, from any device. Absent when
    * open.
@@ -599,6 +638,23 @@ export interface RunState {
    * lobby's campaigns are (`offerCampaigns`).
    */
   crews?: CrewView[];
+  /**
+   * What the household named its first crew, when it did (`renameCrew`).
+   * Absent while the first crew goes by the default name. Filled where the
+   * lobby's campaigns are (`offerCampaigns`).
+   */
+  firstCrewName?: string;
+  /**
+   * The crew is partway through this adventure and none of the heroes seated
+   * have been on it, so the TV asks before anything resumes: keep going, or
+   * start a new crew (`checkNewcomers`). Lobby-only.
+   */
+  crewCheck?: { campaignId: string; title: string };
+  /**
+   * The host chose to keep going with this campaign (its id) despite
+   * `crewCheck`. Lobby-only; cleared by a crew switch or a chapter start.
+   */
+  crewConfirmed?: string;
   /**
    * What the family calls its table, the household's place at the game ("Kitchen table"),
    * from the TV that opened it. Absent when the table was never named.

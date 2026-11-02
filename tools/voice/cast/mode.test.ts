@@ -73,6 +73,20 @@ describe("the cast pages' voice mode", () => {
     expect(mode.lastRejected(entry({ status: "approved", history: wick.history }), "gemini")).toBe(false);
   });
 
+  it("says how many of the game's lines the approved voices cover, leaving out the narrator and the party", () => {
+    const speakers = {
+      narrator: entry({ kind: "narrator", status: "approved", lineCount: 900 }),
+      party: entry({ kind: "party", status: "approved", lineCount: 90 }),
+      a: entry({ lineCount: 30, status: "approved" }),
+      b: entry({ lineCount: 10, elevenlabs: { voiceId: "VOICEAAAAAAA", approved: true } }),
+      c: entry({ lineCount: 60 }),
+      d: entry({}),
+    };
+    expect(mode.coverage(speakers, "gemini")).toEqual({ lines: 100, covered: 30, percent: 30 });
+    expect(mode.coverage(speakers, "elevenlabs")).toEqual({ lines: 100, covered: 10, percent: 10 });
+    expect(mode.coverage({}, "gemini")).toEqual({ lines: 0, covered: 0, percent: 0 });
+  });
+
   it("counts who shares a voice in a mode, and nobody for a voice not yet picked", () => {
     const speakers = {
       a: entry({ elevenlabs: { voiceId: "VOICEAAAAAAA" } }),
@@ -142,6 +156,19 @@ describe("searching a long list of voices", () => {
     expect(mode.filterOptions(options, "", "")).toBe(options);
     expect(mode.filterOptions(options, "   ", "")).toBe(options);
     expect(values(mode.filterOptions(options, "british", "v4"))).toEqual(["", "v3", "v4"]);
+  });
+
+  it("filters by gender, keeping the voice already picked and the blank", () => {
+    const gendered = [
+      { value: "", label: "none" },
+      { value: "a", label: "A", gender: "f" },
+      { value: "b", label: "B", gender: "m" },
+      { value: "c", label: "C" },
+    ];
+    const values = (list: { value: string }[]) => list.map((o) => o.value);
+    expect(mode.filterGender(gendered, "", "")).toBe(gendered);
+    expect(values(mode.filterGender(gendered, "f", ""))).toEqual(["", "a"]);
+    expect(values(mode.filterGender(gendered, "m", "c"))).toEqual(["", "b", "c"]);
   });
 
   it("carries a voice's own sample through to the picker", () => {
