@@ -200,7 +200,7 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
     const screens = /^\/api\/room\/([A-Za-z]{4})\/screens$/.exec(req.path);
     if (screens?.[1]) {
       const code = screens[1].toUpperCase();
-      return (deps) => postHostControl(req, deps, code, null, (principal) => createScreenCode({ code, principal }, deps), (made) => made);
+      return (deps) => runHostControl(req, deps, code, null, (principal) => createScreenCode({ code, principal }, deps), (made) => made);
     }
     const lock = /^\/api\/room\/([A-Za-z]{4})\/lock$/.exec(req.path);
     if (lock?.[1]) {
@@ -510,7 +510,7 @@ async function postWatch(req: Req, deps: HandlerDeps, code: string) {
  * What a host control does once its host is known (#263, #267). It answers
  * with the run's seq, as every control is one committed change to the run.
  */
-type HostAct = (principal: HostPrincipal) => Promise<HandlerResult<object>>;
+type HostAct<T extends object = { seq: number }> = (principal: HostPrincipal) => Promise<HandlerResult<T>>;
 
 /**
  * Remove, lock and close: the room's host, proved by a phone's device token,
@@ -518,14 +518,18 @@ type HostAct = (principal: HostPrincipal) => Promise<HandlerResult<object>>;
  * body is checked only once the host is, so a stranger learns nothing from
  * it. Each looks a room up by code, so each spends the wrong-code budget.
  */
-async function postHostControl(
+function postHostControl(req: Req, deps: HandlerDeps, code: string, invalid: string | null, act: HostAct) {
+  return runHostControl(req, deps, code, invalid, act, (value) => ({ ok: true, seq: value.seq }));
+}
+
+/** `postHostControl` for a control that answers with something of its own. */
+async function runHostControl<T extends object>(
   req: Req,
   deps: HandlerDeps,
   code: string,
   invalid: string | null,
-  act: HostAct,
-  /** What a success answers with; the run's seq unless the control hands something back. */
-  answer: (value: object) => object = (value) => ({ ok: true, seq: (value as { seq: number }).seq }),
+  act: HostAct<T>,
+  answer: (value: T) => object,
 ) {
   const shared = await resolveShared(req, deps);
   if (shared === null) return forgottenDevice();

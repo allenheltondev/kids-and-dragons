@@ -144,7 +144,7 @@ export const STORED: readonly StoredThing[] = [
   },
   {
     title: "One-time codes",
-    what: "Codes for joining as an organizer, moving a kid to another home, or pairing a new device, or adding a second TV to a game.",
+    what: "Codes for joining as an organizer, moving a kid to another home, pairing a new device, or adding a second TV to a game.",
     kept: "Until used, or ten minutes to three days.",
     owner: "grown-up",
     rows: ["Organizer invite", "Transfer code", "Pairing code", "Screen code"],

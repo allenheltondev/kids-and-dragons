@@ -413,14 +413,21 @@ async function main(): Promise<void> {
    * host is a phone's device token or a tablet's token plus its seated
    * player's session (#250), and the body is checked only once the host is.
    */
-  type HostAct = (
+  type HostAct<T extends object = { seq: number }> = (
     code: string,
     principal: HostPrincipal,
     body: Record<string, unknown>,
     deps: HandlerDeps,
-  ) => Promise<HandlerResult<object>>;
-  const hostControl =
-    (validate: (body: Record<string, unknown>) => string | null, act: HostAct, answer?: (value: object) => object) =>
+  ) => Promise<HandlerResult<T>>;
+  const hostControl = (validate: (body: Record<string, unknown>) => string | null, act: HostAct) =>
+    hostControlAnswering(validate, act, (value) => ({ ok: true, seq: value.seq }));
+  /** A host control that answers with something of its own, like a screen code. */
+  const hostControlAnswering =
+    <T extends object>(
+      validate: (body: Record<string, unknown>) => string | null,
+      act: HostAct<T>,
+      answer: (value: T) => object,
+    ) =>
     async (req: Request, res: Response) => {
       const deps = await withRuntime(base, res);
       if (!deps) return;
@@ -446,7 +453,7 @@ async function main(): Promise<void> {
       const result = await act(code, principal, body, deps);
       const missed = !result.ok && result.error.code === "NOT_FOUND" && result.error.message.startsWith("no open room");
       if (!missed) await lookup.hit();
-      if (result.ok) return res.json(answer ? answer(result.value) : { ok: true, seq: (result.value as { seq: number }).seq });
+      if (result.ok) return res.json(answer(result.value));
       sendError(res, statusFor(result.error), result.error.code, result.error.message);
     };
 
@@ -459,7 +466,7 @@ async function main(): Promise<void> {
     (code, principal, body, deps) => handKeeper({ code, principal, playerId: body.playerId as string }, deps),
   ));
   // The leader adds a follower TV: a one-time code that screen types (handlers/screens.ts).
-  app.post("/api/room/:code/screens", hostControl(
+  app.post("/api/room/:code/screens", hostControlAnswering(
     () => null,
     (code, principal, _body, deps) => createScreenCode({ code, principal }, deps),
     (made) => made,

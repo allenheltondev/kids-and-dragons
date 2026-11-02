@@ -88,6 +88,29 @@ describe("a follower screen (leader/follower tables)", () => {
     expect(await createScreenCode({ code, principal: host.principal }, harness.deps)).toMatchObject({ ok: false });
   });
 
+  it("will not show a different game that has since taken the same four letters", async () => {
+    const { harness, host, code, runId } = await leader();
+    const made = value(await createScreenCode({ code, principal: host.principal }, harness.deps));
+    expect(await closeRoom({ code, principal: host.principal }, harness.deps)).toMatchObject({ ok: true });
+    // Another family's room is now behind the same letters.
+    const room = await harness.repo.getRoom(code);
+    expect(room).toBeNull();
+    await harness.repo.putRoomIfAbsent({
+      code,
+      runId: "run_stranger",
+      householdId: "h_other",
+      mode: "party",
+      expiresAt: new Date(harness.clock.now() + 60 * 60 * 1000).toISOString(),
+      ttl: Math.floor(harness.clock.now() / 1000) + 3600,
+    } as never);
+    // ...and it is a live game, so only the run check can tell it from the leader's.
+    const old = await harness.repo.getState(runId);
+    await harness.repo.putState({ ...old!, runId: "run_stranger", closed: false } as never);
+
+    const shown = await redeemScreenCode({ code: made.code, client: CLIENT }, harness.deps);
+    expect(isScreenSlowDown(shown) ? null : shown).toMatchObject({ ok: false, error: { code: "NOT_FOUND" } });
+  });
+
   it("counts wrong codes against the client, like wrong room codes", async () => {
     const { harness } = await leader();
     for (let i = 0; i < CODE_MISS_LIMIT; i++) {
@@ -100,6 +123,10 @@ describe("a follower screen (leader/follower tables)", () => {
 
   it("refuses a code of the wrong length without spending the budget", async () => {
     const { harness } = await leader();
+    for (let i = 0; i < CODE_MISS_LIMIT + 2; i++) {
+      await redeemScreenCode({ code: "ABC", client: CLIENT }, harness.deps);
+    }
+    expect(isScreenSlowDown(await redeemScreenCode({ code: "ZZZZZZZZ", client: CLIENT }, harness.deps))).toBe(false);
     expect(await redeemScreenCode({ code: "ABC", client: CLIENT }, harness.deps)).toMatchObject({
       ok: false,
       error: { code: "ILLEGAL" },

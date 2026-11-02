@@ -496,6 +496,11 @@ export interface ScreenCodeRecord {
   code: string;
   /** The room's four letters. */
   roomCode: string;
+  /**
+   * The run it was made for. Four letters are reused once a room closes, so
+   * redeeming checks that the room behind them is still this run.
+   */
+  runId: string;
   /** The host device that made it. */
   createdBy: string;
   createdAt: string;

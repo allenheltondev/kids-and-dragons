@@ -55,6 +55,7 @@ export async function createScreenCode(
     const written = await deps.repo.putScreenCodeIfAbsent({
       code,
       roomCode: room.code,
+      runId: room.runId,
       createdBy: `device:${input.principal.deviceId}`,
       createdAt: iso(nowMs),
       expiresAt: iso(expires),
@@ -89,7 +90,8 @@ export async function redeemScreenCode(
 
   const room = await deps.repo.getRoom(record.roomCode);
   const state = room ? await deps.repo.getState(room.runId) : null;
-  if (!room || !state || isClosed(state) || (await closeIfIdle(room, state, deps))) {
+  // The same run, not merely the same letters: a closed room's code is free to be reused.
+  if (!room || room.runId !== record.runId || !state || isClosed(state) || (await closeIfIdle(room, state, deps))) {
     return fail("NOT_FOUND", "That game has finished.");
   }
   const viewerToken = await deps.identity.issueViewerToken({
