@@ -20,6 +20,10 @@
 }
 
 .playtest--shut {
+  /* Reserve space instead of floating over catch-up or confirmation buttons. */
+  position: static;
+  flex: 0 0 auto;
+  align-self: flex-end;
   padding: var(--space-2, 0.5em);
   opacity: 0.6;
 }
@@ -104,4 +108,3 @@
   margin-inline-start: var(--space-2, 0.5em);
   font-size: var(--font-size-xs, 0.75em);
 }
-.playtest--shut { inset-block-end: auto; inset-block-start: 0; }
