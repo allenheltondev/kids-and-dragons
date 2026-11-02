@@ -1,0 +1,18 @@
+/* Another TV in another place (OtherScreen.tsx). The Room panel section borrows
+   the Crews menu's folded look (HostControls.css); the code card is pairing's. */
+
+.kad-screens__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin: 0 0.6rem 0.6rem;
+}
+
+.kad-screens__body > .kad-host__hint {
+  margin: 0;
+}
+
+/* The section's name on one line, beside its hint, as Crews reads. */
+.kad-screens__title {
+  white-space: nowrap;
+}

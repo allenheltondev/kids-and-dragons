@@ -114,7 +114,11 @@ const DIST = path.join(ROOT, "packages", "client", "dist");
 // 324 before. The crew names list now lives in @kad/shared (the server picks from it, the Room
 // panel offers it), and the store carries the rename and keep-going host controls beside the
 // other host controls it already holds. The Room panel and the lobby that use them stay lazy.
-const FIRST_PAINT_BUDGET_KB = 326;
+// 326 -> 328 for another TV in another place (OtherScreen.tsx): 327KB measured, 325 before.
+// The first paint carries the start screen's one quiet link and the code it reads from a
+// `?screen=` link, and the store the two host/follower calls beside the controls it already
+// holds. The code card and the Room panel's section are their own lazy chunk (about 6KB).
+const FIRST_PAINT_BUDGET_KB = 328;
 
 /**
  * Everything, including what is lazily fetched.
@@ -153,7 +157,10 @@ const FIRST_PAINT_BUDGET_KB = 326;
 // 1520 -> 1525 for the hero picker saying what holds each hero (#596): 1522KB
 // measured. The card lines, the dimmed can't-sit card, its tap-to-recheck and the choice note are in
 // the lazy WelcomeBack/room graph; first paint did not move (325KB of 326KB).
-const TOTAL_BUDGET_KB = 1525;
+// 1525 -> 1533 for another TV in another place: 1530KB measured, 1522 before. About 6KB is
+// the lazy OtherScreen chunk (the leader's code card and the other TV's code entry), the
+// rest the first-paint lines above.
+const TOTAL_BUDGET_KB = 1533;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

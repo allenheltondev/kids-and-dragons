@@ -80,6 +80,7 @@ Tap **Players** to open the list of everyone in the room, as the picture shows i
 - **Make keeper**: Picks which phone is offered to keep the heroes. See the accounts and devices guide.
 - **Stop for today**: Saves the game for next time.
 - **Crews**: Open it, then tap **New players? Start a new crew** to start separate saves. Phones stay connected for new heroes. Existing heroes and adventures stay saved. Tap **Change crew** on the lobby screen to go straight there. To go back to another crew, tap **Play as** and its name: each crew keeps its place in its own adventure. Tap **Rename this crew** to pick a different name from the list.
+- **Another TV**: Lets a TV in another place show this game. See Playing from two places, below.
 - **Close the room**: Ends it for everyone, after one more tap on **Close it**. "Heroes and what they earned are kept."
 
 ## When a kid leaves or arrives partway
@@ -99,6 +100,16 @@ To come back, the kid opens the game on the same phone. They are straight back i
 A kid who arrives late joins the same way as everyone else and makes a hero. Their phone says "Welcome, Pip!" (with their own name) and what the party is up to, and they play from there.
 
 ![A kid coming back to the game](../../public/guide-pictures/catch-up.jpg)
+
+## Playing from two places
+
+Some of the family at home, and someone else at a grandparent's house or in a hospital bed? You can all play one game, each place with its own TV.
+
+1. On the TV that opened the room, tap **Room**, then **Another TV**, then **Get a code for the other TV**. "It works one time, for 10 minutes." On a phone, **Send it as a link** sends it in a message.
+2. On the other TV, tap **Host a game**, then **Show a game from another place**. Type the code and tap **Show the game here**.
+3. Kids at the other place join on their phones with the room code that TV shows, the same as everyone else.
+
+Both TVs show the same game, and the kids vote and take turns together. Only the first TV runs the room. **Close the room** ends the game on both TVs. For a third place, make another code.
 
 ## Stopping and coming back
 
