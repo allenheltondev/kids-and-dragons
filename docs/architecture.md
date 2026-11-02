@@ -1712,8 +1712,19 @@ nobody").
   follower's session is kept like a phone's (`establish`), because it cannot ask
   `/watch` again, so a refresh resumes on its viewer token. A bad code is said
   once, on the card.
-- **Not yet built:** a count of follower screens on the host's panel, and
-  per-screen audio choices.
+- **Counting followers.** Redeeming a code mints the follower a screen id,
+  carried in its viewer token (`ViewerIdentity.screenId`; the room's own TV's
+  token has none). The follower beats on `POST /api/presence` like a phone
+  (`beatScreen`): its beats share the run's presence row under a
+  `screen:<id>` key no player id can have, and its id is listed in
+  `RunState.screens` while it beats, dropped on its goodbye or once it has
+  been quiet past `AWAY_AFTER_MS`, found by the next beat from any phone or
+  screen. A viewer whose game is over is refused (`viewerStillShows`). The
+  Room panel's Another TV line reads the count ("1 other TV is showing this
+  game"). `screens` is the room's, so a resumed save never brings back
+  another room's followers (`save.ts`, `ROOM_KEYS`).
+- **Narration** plays on every TV whose own read-aloud setting is on, as it
+  does on any screen; there is no per-room choice of which TV speaks.
 
 #### Crews: new players at the same household
 

@@ -609,3 +609,16 @@ describe("TokenIdentity — a phone whose kid moved home (#251)", () => {
     expect(await identity.resolveDevice(token)).toBeNull();
   });
 });
+
+describe("viewer tokens", () => {
+  it("carry a follower screen's id through the signature, and none for the room's own TV", async () => {
+    const { identity } = setup();
+    const expiresAt = T0 + 3600_000;
+    const follower = await identity.issueViewerToken({ runId: "r_1", roomCode: "ABCD", expiresAt, screenId: "s_abc" });
+    expect(await identity.resolveViewer(follower)).toMatchObject({ runId: "r_1", roomCode: "ABCD", screenId: "s_abc" });
+    const own = await identity.issueViewerToken({ runId: "r_1", roomCode: "ABCD", expiresAt });
+    const resolved = await identity.resolveViewer(own);
+    expect(resolved).toMatchObject({ runId: "r_1", roomCode: "ABCD" });
+    expect(resolved).not.toHaveProperty("screenId");
+  });
+});

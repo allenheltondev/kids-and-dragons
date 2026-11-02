@@ -20,10 +20,12 @@ export const HEARTBEAT_MS = 20_000;
 export function usePresenceBeat(): void {
   const token = useSession()?.sessionToken ?? "";
   const playerId = useSession()?.playerId ?? "";
+  // Another TV in another place says it is here too, so the host can count it.
+  const follower = useSession()?.follower === true;
 
   useEffect(() => {
-    // A screen with no player (the TV) is nobody's presence.
-    if (!token || !playerId) return;
+    // The room's own TV is nobody's presence; a follower screen is its own.
+    if (!token || (!playerId && !follower)) return;
     const beat = useGameStore.getState().beat;
     const onScreen = (): boolean => typeof document === "undefined" || document.visibilityState === "visible";
 
@@ -46,5 +48,5 @@ export function usePresenceBeat(): void {
       document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("pagehide", onPageHide);
     };
-  }, [token, playerId]);
+  }, [token, playerId, follower]);
 }

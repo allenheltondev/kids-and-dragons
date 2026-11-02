@@ -52,6 +52,24 @@ describe("a follower screen (leader/follower tables)", () => {
     expect(isScreenSlowDown(again) ? null : again).toMatchObject({ ok: false, error: { code: "NOT_FOUND" } });
   });
 
+  it("names each screen it lets in, so each can be counted; the room's own TV is named by none", async () => {
+    const { harness, host, code } = await leader();
+    const spend = async () => {
+      const made = value(await createScreenCode({ code, principal: host.principal }, harness.deps));
+      const shown = await redeemScreenCode({ code: made.code, client: CLIENT }, harness.deps);
+      if (isScreenSlowDown(shown)) throw new Error("unexpected slow down");
+      return (await harness.identity.resolveViewer(value(shown).viewerToken))?.screenId;
+    };
+    const first = await spend();
+    const second = await spend();
+    expect(first).toMatch(/^s_/);
+    expect(second).toMatch(/^s_/);
+    expect(first).not.toBe(second);
+    const own = await watchRoom({ code, deviceId: host.principal.deviceId }, harness.deps);
+    if (!own.ok) throw new Error("the host's TV could not watch");
+    expect((await harness.identity.resolveViewer(own.value.viewerToken))?.screenId).toBeUndefined();
+  });
+
   it("is the host's alone, and leaves the old rule for /watch as it was", async () => {
     const { harness, other, code } = await leader();
     expect(await createScreenCode({ code, principal: other.principal }, harness.deps)).toMatchObject({
