@@ -14,7 +14,7 @@
  * row, so nothing about the hero travels from this phone but which one.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ReactElement } from "react";
 import type { ResolvedCharacter } from "@kad/shared";
 import { useGameStore, useSend, useSynced } from "../store";
@@ -43,7 +43,14 @@ export function WelcomeBack(): ReactElement {
   const send = useSend();
   const [heroes, setHeroes] = useState<ResolvedCharacter[] | null>(null);
   const [makeNew, setMakeNew] = useState(false);
-  const [chosen, setChosen] = useState<string | null>(null);
+  const [chosen, setChosenState] = useState<string | null>(null);
+  // The latest choice, for a recheck that answers after the kid chose someone
+  // else: her answer must not take the choice back (review of #596).
+  const chosenRef = useRef<string | null>(null);
+  const setChosen = (id: string | null): void => {
+    chosenRef.current = id;
+    setChosenState(id);
+  };
   const [busy, setBusy] = useState(false);
   // Held while catching up after a drop, like every answer (#413).
   const synced = useSynced();
@@ -85,10 +92,13 @@ export function WelcomeBack(): ReactElement {
 
   const recheck = async (id: string): Promise<void> => {
     setRechecking(id);
+    const before = chosenRef.current;
     try {
       const found = await listHeroes();
       setHeroes(found);
-      if (found.some((h) => h.id === id) && !useGameStore.getState().heldHeroes[id]?.blocked) setChosen(id);
+      const free = found.some((h) => h.id === id) && !useGameStore.getState().heldHeroes[id]?.blocked;
+      // Only when nobody was chosen in the meantime: a newer tap wins.
+      if (free && chosenRef.current === before) setChosen(id);
     } catch {
       // Still blocked as far as anybody knows; the card keeps saying why.
     } finally {
@@ -134,8 +144,8 @@ export function WelcomeBack(): ReactElement {
                   type="button"
                   className={`creation-card welcome-back__hero kad-tap kad-focusable${on ? " creation-card--on" : ""}${blocked ? " welcome-back__hero--blocked" : ""}`}
                   aria-pressed={on}
-                  // Still focusable and read out, so the reason is never hidden; only choosing is off.
-                  aria-disabled={blocked || undefined}
+                  // Enabled on purpose: a tap checks her again. Her reason and "Tap to check
+                  // again" are in the button's own words, so a screen reader hears both.
                   aria-busy={rechecking === h.id || undefined}
                   onClick={() => {
                     if (!blocked) setChosen(h.id);
