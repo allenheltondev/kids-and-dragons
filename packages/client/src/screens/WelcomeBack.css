@@ -56,3 +56,38 @@
     grid-column: 1 / -1;
   }
 }
+
+/*
+ * What holds a hero (crews, #282), on her card before anybody taps: calm for
+ * her own crew's adventure, the accent when she belongs to another crew or
+ * table, and a hero this room cannot seat is dimmed with the reason under her
+ * name. The reason stays at full strength so it reads.
+ */
+.welcome-back__hold--calm {
+  color: var(--color-text-muted, #b7b0d8);
+}
+
+.welcome-back__hold--warn,
+.welcome-back__hold--bad {
+  color: var(--color-accent, #ffc95c);
+  font-weight: 600;
+}
+
+.welcome-back__hero--blocked {
+  cursor: not-allowed;
+}
+
+.welcome-back__hero--blocked .welcome-back__art,
+.welcome-back__hero--blocked .creation-card__title {
+  opacity: 0.55;
+}
+
+.welcome-back__blocked {
+  justify-self: start;
+}
+
+.welcome-back__note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2, 0.5em);
+}
