@@ -40,6 +40,7 @@ import {
 import { relayPreview } from "./handlers/preview.ts";
 import { relayCheer } from "./handlers/cheer.ts";
 import { createScreenCode, isScreenSlowDown, redeemScreenCode } from "./handlers/screens.ts";
+import { viewerStillShows } from "./handlers/viewer.ts";
 import { chooseWatching } from "./handlers/watch.ts";
 import { beatPresence, setPresence } from "./handlers/presence.ts";
 import { PresenceTracker } from "./presence-tracker.ts";
@@ -854,6 +855,10 @@ async function main(): Promise<void> {
       return sendError(res, 404, "NOT_FOUND", named);
     }
     if (!runId) runId = reader.runId;
+    // As lambda/http.ts: a viewer reads only while its room is open and still this run.
+    if (!("playerId" in reader) && !(await viewerStillShows(base.repo, reader.runId, reader.roomCode))) {
+      return sendError(res, 404, "NOT_FOUND", named);
+    }
 
     if (code) {
       const room = await base.repo.getRoom(code);
@@ -890,6 +895,10 @@ async function main(): Promise<void> {
     }
     const room = await base.repo.getRoom(code);
     if (!room) return sendError(res, 404, "NOT_FOUND", `no open room ${code}`);
+    // The authorizer's rule for a viewer: this room, still this run, still open.
+    if (!("playerId" in reader) && !(await viewerStillShows(base.repo, reader.runId, reader.roomCode))) {
+      return sendError(res, 404, "NOT_FOUND", `no open room ${code}`);
+    }
 
     const state = await base.repo.getState(room.runId);
     if (!state) return sendError(res, 404, "NOT_FOUND", `run ${room.runId} has no state`);

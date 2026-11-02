@@ -33,6 +33,7 @@ import { reportClientError } from "../handlers/client-error.ts";
 import { relayPreview } from "../handlers/preview.ts";
 import { relayCheer } from "../handlers/cheer.ts";
 import { createScreenCode, isScreenSlowDown, redeemScreenCode } from "../handlers/screens.ts";
+import { viewerStillShows } from "../handlers/viewer.ts";
 import { chooseWatching } from "../handlers/watch.ts";
 import { beatPresence } from "../handlers/presence.ts";
 import type { ActionError, HandlerDeps, HandlerResult } from "../handlers/deps.ts";
@@ -947,6 +948,11 @@ async function getStateRoute(req: Req, deps: HandlerDeps) {
     return error(404, "NOT_FOUND", named);
   }
   if (!runId) runId = reader.runId;
+  // A viewer token outlives the game and its four letters can be reused: it
+  // reads only while its room is open and still this run (handlers/viewer.ts).
+  if (!("playerId" in reader) && !(await viewerStillShows(deps.repo, reader.runId, reader.roomCode))) {
+    return error(404, "NOT_FOUND", named);
+  }
 
   if (code) {
     const room = await deps.repo.getRoom(code);

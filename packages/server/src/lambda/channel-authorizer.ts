@@ -18,6 +18,7 @@ import { DynamoRepository } from "../store/dynamo-repository.ts";
 import { ssmParameterSource, TokenIdentity } from "../token-identity.ts";
 import { requiredEnv } from "./runtime.ts";
 import { isOut } from "../handlers/remove.ts";
+import { viewerStillShows } from "../handlers/viewer.ts";
 
 /** What AppSync sends. Only the fields this function reads. */
 export interface ChannelAuthorizerEvent {
@@ -80,10 +81,15 @@ async function removedFromRun(runId: string, playerId: string, householdId: stri
   return state.closed === true || (await isOut(state, playerId, householdId, table()));
 }
 
+/** A viewer token's game is still open: see `viewerStillShows`. */
+function viewerLive(runId: string, roomCode: string): Promise<boolean> {
+  return viewerStillShows(table(), runId, roomCode);
+}
+
 export async function handler(
   event: ChannelAuthorizerEvent,
 ): Promise<ChannelAuthorizerResult> {
-  return authorize(event, service(), Date.now, removedFromRun);
+  return authorize(event, service(), Date.now, removedFromRun, viewerLive);
 }
 
 /** Just the two token kinds a client can present. */
@@ -104,6 +110,12 @@ export async function authorize(
    * Asked of session tokens alone: a viewer token has no player to take out.
    */
   removed: (runId: string, playerId: string, householdId: string) => Promise<boolean> = async () => false,
+  /**
+   * Is the game a viewer token names still open, and still this run's? A token
+   * outlives Close, and Close frees the room's four letters for another
+   * family, so only the room can say. Asked of viewer tokens alone.
+   */
+  viewerOpen: (runId: string, roomCode: string) => Promise<boolean> = async () => true,
 ): Promise<ChannelAuthorizerResult> {
   const token = event.authorizationToken ?? "";
   if (!token) return DENY;
@@ -125,6 +137,7 @@ export async function authorize(
   const grant = session ?? viewer;
   if (!grant) return DENY;
   if (session && (await removed(session.runId, session.playerId, session.householdId))) return DENY;
+  if (viewer && !(await viewerOpen(viewer.runId, viewer.roomCode))) return DENY;
 
   if (operation === "SUBSCRIBE") {
     const code = roomCodeOf(event);
@@ -144,13 +157,14 @@ export async function authorize(
      * AppSync caches an authorization decision for this long. Capped by the
      * token's own remaining life so a room that has expired — or a device that
      * was just revoked — cannot keep a subscription alive on a stale yes.
-     * A player's yes is held a minute rather than five: it is the one a host
+     * Every yes is held a minute rather than five. A player's is the one a host
      * can take back (#267), and a removed phone reconnecting inside the cache
-     * would otherwise be let straight back on.
+     * would otherwise be let straight back on. A viewer's can be taken back by
+     * Close, and a follower screen's token is shared with other places.
      */
     ttlOverride: Math.max(
       0,
-      Math.min(session ? SESSION_CACHE_SECONDS : 300, Math.floor((grant.expiresAt - now()) / 1000)),
+      Math.min(SESSION_CACHE_SECONDS, Math.floor((grant.expiresAt - now()) / 1000)),
     ),
   };
 }

@@ -1681,11 +1681,19 @@ nobody").
   their own phones, which join as visitors; a hospital tablet that is both
   screen and controller joins in Travel Mode. So votes, rolls, turns and saves
   are unchanged, and the table is the same table.
-- **Ending it.** A viewer token dies with the room, so Close, or the idle close
-  (`closeIfIdle`), ends every follower at once. A code redeemed after the room
-  closed is spent and refused. Individual followers are not revocable in this
-  version: a viewer token names the room, not a screen, and the way to drop a
-  screen the leader did not mean to admit is to close the room.
+- **Ending it.** A viewer token lives as long as the room's original expiry, and
+  Close frees the room's four letters, so the token's own claims cannot say the
+  game is over. The server asks the room instead (`viewerStillShows`,
+  `handlers/viewer.ts`): the room must still exist, still map to the token's
+  *run*, and the run must not be closed. The channel authorizer asks it of a
+  viewer at connect and subscribe, and `GET /api/state` asks it of a viewer
+  whether it names a run or a code. So Close, "Stop for today" and the idle
+  close end every follower at once, a closed run cannot be read by its run id,
+  and an old token cannot be pointed at the family that later takes the same
+  letters. AppSync may hold a viewer's "yes" for at most a minute (the same as a
+  player's). Individual followers are not revocable: a viewer token names the
+  room, not a screen, so the way to drop a screen the leader did not mean to
+  admit is to close the room.
 - **Not yet built:** the client (an "Add a screen" button in the host controls,
   and a "Show a game from another place" entry on a TV's start screen), a count of
   screens on the host's panel, and per-screen audio choices. The server contract
