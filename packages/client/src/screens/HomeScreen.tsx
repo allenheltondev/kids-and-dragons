@@ -28,7 +28,7 @@ import { useKeepsakeStore } from "../store/keepsake";
 import { takeMoveLink } from "./move-link";
 // The one normalize helper for typed and prefilled codes — the router owns the
 // code shape, and a second filter here is how /p/AB1C once prefilled as "ABC".
-import { VISITOR_CODE_LENGTH as CODE_LENGTH, codeComplete, codeSlots, navigate, normalizeCodeInput as normalizeCode, pairingFromSearch, useRoute } from "../router";
+import { VISITOR_CODE_LENGTH as CODE_LENGTH, codeComplete, codeSlots, navigate, normalizeCodeInput as normalizeCode, pairingFromSearch, screenFromSearch, useRoute } from "../router";
 import { loadLocationName, loadPlayerDeviceToken, loadSharedDevice } from "../store/persistence";
 import { browserEnv, browserName, needsFirstLaunchChoice } from "../install/detect";
 import { firstLaunch as firstLaunchRecord } from "../install/remember";
@@ -65,6 +65,12 @@ const SharedHome = lazyChunk(() => import("./SharedHome"), (module) => module.Sh
  * is waiting to see. Closed, it draws nothing, so nothing waits on it.
  */
 const SignInFlow = lazyChunk(() => import("./SignInFlow"), (module) => module.SignInFlow);
+
+/*
+ * Showing a game from another place (OtherScreen.tsx): a grown-up's errand at a
+ * second TV, so it loads only once somebody asks for it.
+ */
+const ShowHere = lazyChunk(() => import("./OtherScreen"), (module) => module.ShowHere);
 
 /** The sign-in panel, fetched only once it is open. Shared by both homes. */
 export function LazySignInFlow(): ReactElement | null {
@@ -122,6 +128,14 @@ function PersonalHome(): ReactElement {
 
   const [displayName, setDisplayName] = useState(() => randomName());
   const [hosting, setHosting] = useState(false);
+  /*
+   * "Join a game lobby": `null` while closed, else the code it
+   * opens with. A `?screen=` link the leader sent opens it with the code typed,
+   * one tap from the game, and never spends it by itself.
+   */
+  const [showing, setShowing] = useState<string | null>(() =>
+    typeof window === "undefined" ? null : screenFromSearch(window.location.search),
+  );
   // What the family calls its table, kept on the device so the TV remembers it.
   const [location, setLocation] = useState(() => loadLocationName());
 
@@ -234,6 +248,31 @@ function PersonalHome(): ReactElement {
       setBusy(null);
     }
   }, [joinRoom, code]);
+
+  if (showing !== null) {
+    return (
+      <main className="home entry-scene-host">
+        <EntryScene scene="home-market" />
+        <div className="home__inner kad-stack">
+          <Masthead />
+          <div className="home__body home__body--top">
+            <ChunkBoundary message="That page couldn’t open.">
+              <Suspense fallback={<Spinner size="lg" label="Opening" showLabel />}>
+                <ShowHere
+                  initialCode={showing}
+                  onClose={() => {
+                    setShowing(null);
+                    if (screenFromSearch(window.location.search) !== null) navigate({ name: "home" }, { replace: true });
+                  }}
+                />
+              </Suspense>
+            </ChunkBoundary>
+          </div>
+        </div>
+        <PrivacyFooter />
+      </main>
+    );
+  }
 
   if (firstLaunch) {
     return (
@@ -395,7 +434,21 @@ function PersonalHome(): ReactElement {
               ))}
             </div>
 
-            {mode === "party" ? <TableNameField value={location} onChange={setLocation} /> : null}
+            {mode === "party" ? (
+              /*
+               * A TV can also show a game a family is running somewhere else
+               * (OtherScreen.tsx). Its link shares the table name's line, which
+               * has room for it: a row of its own made the card taller, and
+               * the links below the lobby button are where a remote steps to
+               * Open the lobby here (e2e/tv-read-only.spec.ts).
+               */
+              <div className="home__party-row">
+                <TableNameField value={location} onChange={setLocation} />
+                <button type="button" className="home__link home__other-tv kad-focusable" onClick={() => setShowing("")}>
+                  Join a game lobby
+                </button>
+              </div>
+            ) : null}
 
             {mode === "travel" ? (
               <div className="home__field">

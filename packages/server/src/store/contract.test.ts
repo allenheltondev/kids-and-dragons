@@ -385,6 +385,43 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
       });
     });
 
+    describe("screen codes", () => {
+      function screen(code: string, expiresAt: string) {
+        return {
+          code,
+          roomCode: "ABCD",
+          runId: "r_1",
+          createdBy: "device:d_host",
+          createdAt: "2026-07-04T18:00:00.000Z",
+          expiresAt,
+          ttl: Math.floor(Date.parse(expiresAt) / 1000),
+        };
+      }
+      const later = new Date(Date.now() + HOUR).toISOString();
+
+      it("is spent exactly once, and names the room", async () => {
+        expect(await repo.putScreenCodeIfAbsent(screen("ABCDEFGH", later))).toBe(true);
+        const nowIso = new Date().toISOString();
+        expect(await repo.redeemScreenCode("abcdefgh", nowIso)).toEqual(screen("ABCDEFGH", later));
+        expect(await repo.redeemScreenCode("ABCDEFGH", nowIso)).toBeNull();
+      });
+
+      it("lets exactly one of two simultaneous redeemers have it", async () => {
+        await repo.putScreenCodeIfAbsent(screen("ABCDEFGH", later));
+        const nowIso = new Date().toISOString();
+        const results = await Promise.all([repo.redeemScreenCode("ABCDEFGH", nowIso), repo.redeemScreenCode("ABCDEFGH", nowIso)]);
+        expect(results.filter((r) => r !== null)).toHaveLength(1);
+      });
+
+      it("refuses a taken code, and an expired one, and is not a pairing code", async () => {
+        expect(await repo.putScreenCodeIfAbsent(screen("ABCDEFGH", later))).toBe(true);
+        expect(await repo.putScreenCodeIfAbsent(screen("ABCDEFGH", later))).toBe(false);
+        expect(await repo.redeemPairingCode("ABCDEFGH", new Date().toISOString())).toBeNull();
+        const past = new Date(Date.now() + 2 * HOUR).toISOString();
+        expect(await repo.redeemScreenCode("ABCDEFGH", past)).toBeNull();
+      });
+    });
+
     describe("organizer invites (#248)", () => {
       function invite(code: string, expiresAt: string) {
         return {
