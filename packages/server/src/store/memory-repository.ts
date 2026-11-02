@@ -50,6 +50,7 @@ import type {
   MoveProfileInput,
   OrganizerInviteRecord,
   PairingCodeRecord,
+  ScreenCodeRecord,
   ProfileMove,
   PushSubscriptionRecord,
   RoomRecord,
@@ -86,6 +87,7 @@ import {
   MOVED_SK,
   OWNER_SK,
   PAIR,
+  SCREEN,
   PLAYER_SK,
   PREFIX,
   PRESENCE,
@@ -574,6 +576,20 @@ export class MemoryRepository implements GameRepository {
     this.items.delete(rowKey(PAIR(code), META));
     this.persist();
     return pairing;
+  }
+
+  async putScreenCodeIfAbsent(record: ScreenCodeRecord): Promise<boolean> {
+    if (this.get(SCREEN(record.code), META)) return false;
+    this.put({ PK: SCREEN(record.code), SK: META, ttl: record.ttl, entity: "screen", data: record });
+    return true;
+  }
+
+  async redeemScreenCode(code: string, nowIso: string): Promise<ScreenCodeRecord | null> {
+    const record = this.get(SCREEN(code), META)?.data as ScreenCodeRecord | undefined;
+    if (!record || record.expiresAt <= nowIso) return null;
+    this.items.delete(rowKey(SCREEN(code), META));
+    this.persist();
+    return record;
   }
 
   async putTransferCodeIfAbsent(record: TransferCodeRecord): Promise<boolean> {
