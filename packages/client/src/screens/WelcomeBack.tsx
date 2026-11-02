@@ -50,6 +50,9 @@ export function WelcomeBack(): ReactElement {
   // Why the server would not seat the hero, in its words: "Sparklehoof is in
   // the middle of another adventure" (#282) names her, so it is shown as is.
   const [refused, setRefused] = useState<string | null>(null);
+  // A hero this room could not seat when the list came is asked about again
+  // on a tap: her other table may have let her go since (review of #596).
+  const [rechecking, setRechecking] = useState<string | null>(null);
 
   useEffect(() => {
     let live = true;
@@ -79,6 +82,19 @@ export function WelcomeBack(): ReactElement {
       </div>
     );
   }
+
+  const recheck = async (id: string): Promise<void> => {
+    setRechecking(id);
+    try {
+      const found = await listHeroes();
+      setHeroes(found);
+      if (found.some((h) => h.id === id) && !useGameStore.getState().heldHeroes[id]?.blocked) setChosen(id);
+    } catch {
+      // Still blocked as far as anybody knows; the card keeps saying why.
+    } finally {
+      setRechecking(null);
+    }
+  };
 
   const hero = heroes.find((h) => h.id === chosen) ?? null;
   const note = hero && heldHeroes[hero.id] ? heroHoldNote(hero.name, heldHeroes[hero.id]!) : null;
@@ -120,8 +136,10 @@ export function WelcomeBack(): ReactElement {
                   aria-pressed={on}
                   // Still focusable and read out, so the reason is never hidden; only choosing is off.
                   aria-disabled={blocked || undefined}
+                  aria-busy={rechecking === h.id || undefined}
                   onClick={() => {
                     if (!blocked) setChosen(h.id);
+                    else if (rechecking === null) void recheck(h.id);
                   }}
                 >
                   <span className="welcome-back__art" aria-hidden="true">
@@ -151,6 +169,11 @@ export function WelcomeBack(): ReactElement {
                     ) : null}
                     {blocked ? (
                       <span className="kad-chip kad-chip--bad kad-chip--wrap welcome-back__blocked">{heroBlockedLine(hold!)}</span>
+                    ) : null}
+                    {blocked ? (
+                      <span className="creation-card__line kad-muted">
+                        {rechecking === h.id ? "Checking…" : "Tap to check again"}
+                      </span>
                     ) : null}
                     <span className="creation-card__line kad-muted">
                       <Icon name={h.class} />

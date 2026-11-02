@@ -135,6 +135,42 @@ describe("WelcomeBack", () => {
     expect(send).toHaveBeenCalledWith({ type: "SEAT_CHARACTER", characterId: "c_bo" });
   });
 
+  it("checks a can't-sit hero again on a tap, and chooses her once her other table has let her go", async () => {
+    const user = userEvent.setup();
+    const held = { c_old: { campaign: "Gemfall", at: "Rue's", blocked: "Sparklehoof is in the middle of another adventure" } };
+    let calls = 0;
+    // As the store's listHeroes does: the hold comes with each list. Rue's lets her go after the first.
+    const listHeroes = vi.fn(async () => {
+      calls += 1;
+      useGameStore.setState({ heldHeroes: calls === 1 ? held : {} });
+      return [SPARKLEHOOF];
+    });
+    const send = vi.fn(async () => true);
+    useGameStore.setState({ send, listHeroes, rules: null, loadContent: async () => undefined, heldHeroes: {}, savedHeroes: {}, state: makeState({}) });
+    render(<WelcomeBack />);
+
+    const card = await screen.findByRole("button", { name: /Sparklehoof/ });
+    expect(card.getAttribute("aria-disabled")).toBe("true");
+    expect(screen.getByText("Tap to check again")).toBeTruthy();
+    await user.click(card);
+    await waitFor(() => expect(screen.getByRole("button", { name: /^Sparklehoof/ }).getAttribute("aria-pressed")).toBe("true"));
+    expect(listHeroes).toHaveBeenCalledTimes(2);
+    expect(screen.queryByText("Tap to check again")).toBeNull();
+    await user.click(screen.getByRole("button", { name: /play as sparklehoof/i }));
+    expect(send).toHaveBeenCalledWith({ type: "SEAT_CHARACTER", characterId: "c_old" });
+  });
+
+  it("keeps a hero blocked, and still choosable later, when the check says she is still busy", async () => {
+    const user = userEvent.setup();
+    mount([SPARKLEHOOF], true, false, {
+      c_old: { campaign: "Gemfall", at: "Rue's", blocked: "Sparklehoof is in the middle of another adventure" },
+    });
+    const card = await screen.findByRole("button", { name: /Sparklehoof/ });
+    await user.click(card);
+    await waitFor(() => expect(screen.getByText("Tap to check again")).toBeTruthy());
+    expect(screen.getByRole("button", { name: /^Sparklehoof/ }).getAttribute("aria-pressed")).toBe("false");
+  });
+
   it("names the adventure of a hero partway through with this room's own crew, quietly", async () => {
     mount([SPARKLEHOOF], true, false, { c_old: { campaign: "Gemfall" } });
     expect(await screen.findByText("Partway through Gemfall")).toBeTruthy();
