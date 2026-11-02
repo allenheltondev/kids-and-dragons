@@ -171,6 +171,21 @@ describe("WelcomeBack", () => {
     expect(screen.getByRole("button", { name: /^Sparklehoof/ }).getAttribute("aria-pressed")).toBe("false");
   });
 
+  it("keeps a stopped game's own line, and adds only the other crew it belongs to", async () => {
+    useGameStore.setState({ savedHeroes: { c_old: {} } });
+    const listHeroes = vi.fn(async () => [SPARKLEHOOF]);
+    useGameStore.setState({ listHeroes, send: vi.fn(async () => true), rules: null, loadContent: async () => undefined,
+      heldHeroes: { c_old: { campaign: "Gemfall" } }, state: makeState({}) });
+    render(<WelcomeBack />);
+    expect(await screen.findByText("Sparklehoof is saved in a game.")).toBeTruthy();
+    expect(screen.queryByText("Partway through Gemfall")).toBeNull();
+    cleanup();
+    useGameStore.setState({ heldHeroes: { c_old: { campaign: "Gemfall", crew: "The Otter Crew" } } });
+    render(<WelcomeBack />);
+    expect(await screen.findByText("Sparklehoof is saved in a game.")).toBeTruthy();
+    expect(screen.getByText("Playing Gemfall with The Otter Crew")).toBeTruthy();
+  });
+
   it("names the adventure of a hero partway through with this room's own crew, quietly", async () => {
     mount([SPARKLEHOOF], true, false, { c_old: { campaign: "Gemfall" } });
     expect(await screen.findByText("Partway through Gemfall")).toBeTruthy();
