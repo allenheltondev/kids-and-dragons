@@ -15,8 +15,9 @@ import { Suspense, useEffect, useLayoutEffect, useRef } from "react";
 import { ChunkBoundary, lazyChunk } from "../ui/ChunkBoundary";
 import type { ReactElement } from "react";
 import { combatTurnAway, currentActorId, rollerAway, speak, turnHolderAway } from "@kad/shared";
-import type { PartyMember } from "@kad/shared";
+import type { NarrationPart, PartyMember, SpeakOptions } from "@kad/shared";
 import type { ScenePriority } from "@kad/shared";
+import { useSpeaking } from "../speech/read-aloud";
 import { useAbilities, useItems, useParty, usePreviews, useRules, useRunState } from "../store";
 import { describeCombatPreview, tablePreviews } from "../world/previews";
 import { setStageInsetBottom, setStageInsetTop } from "../world/stage-inset";
@@ -80,6 +81,16 @@ export const PRIORITY_RIBBON: Record<ScenePriority, { label: string; icon: strin
   2: { label: "A clue", icon: "eye" },
 };
 
+/**
+ * The goal line as the piece a recording is filed under: the voice inventory addresses
+ * "Your goal: …" at `<chapter>/@goal` (tools/voice/inventory.ts). None for words with a token
+ * in them, whose value this screen does not know; the device voice reads those.
+ */
+export function goalParts(chapterId: string | null, text: string): NarrationPart[] | undefined {
+  if (chapterId === null || text.includes("{")) return undefined;
+  return [{ address: `${chapterId}/@goal`, line: `Your goal: ${text}` }];
+}
+
 export function NarrationPanel(): ReactElement | null {
   const state = useRunState();
   const party = useParty();
@@ -88,6 +99,8 @@ export function NarrationPanel(): ReactElement | null {
   const rules = useRules();
   // Who is leaning toward what, on their phone, before "Do it!" (world/previews.ts).
   const leaning = tablePreviews(state, usePreviews());
+  // Something is being read aloud on this screen (§7's spoken-line cue): a small mark on the plate.
+  const speaking = useSpeaking();
   const narration = state?.narration ?? "";
   const sceneId = state?.sceneId ?? null;
   // Never in a fight: the caption strip has no room for a ribbon, and an
@@ -193,18 +206,32 @@ export function NarrationPanel(): ReactElement | null {
     const key = `${sceneId ?? "-"}:${narration}`;
     if (narration.trim() === "" || spokenNarration.current === key || prefacePending) return;
     spokenNarration.current = key;
-    const ribbonned = ribbon === null ? narration : `${ribbon.label} ${narration}`;
-    // What was picked comes first, as it is on the screen: the story follows from it.
-    const story = spokenDecision === null ? ribbonned : `${spokenDecision} ${ribbonned}`;
+    // What was picked comes first, as it is on the screen: the story follows from it. With the
+    // pieces the engine composed it from, the story is its own line, so a recorded voice can play
+    // it (speech/clip-speaker.ts); the decision and the ribbon are run-time words, and stay with
+    // the device voice. Without them it is one line, as it always was.
+    const parts = state?.narrationParts;
+    const lead = [spokenDecision, ribbon?.label ?? null].filter((line): line is string => line !== null);
+    const story: [string, SpeakOptions][] =
+      parts !== undefined && parts.length > 0
+        ? [...lead.map((line): [string, SpeakOptions] => [line, { source: "narration" }]), [narration, { source: "narration", parts }]]
+        : [[[...lead, narration].join(" "), { source: "narration" }]];
+    const sayStory = (interrupt: boolean): void =>
+      story.forEach(([line, opts], i) => speak(line, i === 0 && interrupt ? { ...opts, interrupt } : opts));
     if (preface.status === "ready" && prefaceSaid.current !== preface.key) {
       prefaceSaid.current = preface.key;
       if (preface.goal !== null) goalSaidIn.current = state?.chapterId ?? null;
-      prefaceUtterances(preface).forEach((line, i) => speak(line, { source: "narration", interrupt: i === 0 }));
-      speak(story, { source: "narration" });
+      const said = prefaceUtterances(preface);
+      said.forEach((line, i) => {
+        // The goal is the preface's last line, and has a recording of its own.
+        const goalLine = preface.goal !== null && i === said.length - 1 ? goalParts(state?.chapterId ?? null, preface.goal) : undefined;
+        speak(line, { source: "narration", interrupt: i === 0, ...(goalLine ? { parts: goalLine } : {}) });
+      });
+      sayStory(false);
       return;
     }
     // A new scene's narration replaces the last one rather than queueing behind it.
-    speak(story, { source: "narration", interrupt: true });
+    sayStory(true);
     // The ribbon follows the scene, so a new one always arrives with new words.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sceneId, narration, prefacePending]);
@@ -239,7 +266,10 @@ export function NarrationPanel(): ReactElement | null {
   useEffect(() => {
     if (goal === null || goalChapter === null || sceneId === null || spokenGoal.current === goalChapter || prefacePending) return;
     spokenGoal.current = goalChapter;
-    if (atStart && goalSaidIn.current !== goalChapter) speak(`Your goal: ${goal.goal.text}`, { source: "narration" });
+    if (atStart && goalSaidIn.current !== goalChapter) {
+      const parts = goalParts(goalChapter, goal.goal.text);
+      speak(`Your goal: ${goal.goal.text}`, { source: "narration", ...(parts ? { parts } : {}) });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [goalChapter, atStart, sceneId, prefacePending]);
 
@@ -508,7 +538,11 @@ export function NarrationPanel(): ReactElement | null {
         roadmap chapter 8's transitions, DOM half. The key is the content
         itself: same words, same node, no re-animation on unrelated patches.
       */}
-      <div className={`narration__plate${prompt?.kind === "interaction" ? " narration__plate--game" : ""}`} ref={plate}>
+      <div
+        className={`narration__plate${prompt?.kind === "interaction" ? " narration__plate--game" : ""}`}
+        ref={plate}
+        data-speaking={speaking && !fighting ? "" : undefined}
+      >
         <div className="narration__story">
           {/* What got the party here: a quiet line of record, never louder than whose turn it is. */}
           {decisionLine === null || decided === null ? null : (
