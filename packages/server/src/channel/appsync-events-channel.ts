@@ -19,7 +19,7 @@ import { Hash } from "@smithy/hash-node";
 import { HttpRequest } from "@smithy/protocol-http";
 import { SignatureV4 } from "@smithy/signature-v4";
 import type { AwsCredentialIdentityProvider } from "@smithy/types";
-import type { ChannelMessage, RoomChannel, Unsubscribe } from "@kad/shared";
+import { roomChannelPath, type ChannelMessage, type RoomChannel, type Unsubscribe } from "@kad/shared";
 
 export interface AppSyncEventsChannelOptions {
   /** The Event API's HTTP domain, e.g. `abc123.appsync-api.us-east-1.amazonaws.com`. */
@@ -131,10 +131,12 @@ export class AppSyncEventsChannel implements RoomChannel {
  * The run is in the name because a room's four letters are reused once it
  * closes, and an AppSync subscription outlives its authorization: a socket that
  * stayed open would otherwise receive the next family's game on the same
- * channel. With the run in the name, it only ever hears its own.
+ * channel. With the run in the name, it only ever hears its own. AppSync allows
+ * no underscore in a segment, so the run's id is written with hyphens there
+ * (`roomChannelPath`); the run itself keeps its id.
  */
 export function channelFor(roomCode: string, runId: string): string {
-  return `/${ROOM_NAMESPACE}/${roomCode.toUpperCase()}/${runId}`;
+  return roomChannelPath(ROOM_NAMESPACE, roomCode, runId);
 }
 
 async function safeText(response: Response): Promise<string> {

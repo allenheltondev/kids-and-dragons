@@ -14,6 +14,7 @@
  */
 
 import { describe, expect, it, vi } from "vitest";
+import { APPSYNC_CHANNEL_PATTERN, roomChannelPath } from "@kad/shared";
 import { SILENCE_MS, appSyncEventSource, channelPath, watchdogMs, type WebSocketLike } from "./appsync-socket";
 import type { EventSourceLike } from "./channel";
 
@@ -78,7 +79,19 @@ function parseSent(fake: Fake, index: number): Record<string, unknown> {
 
 describe("channelPath", () => {
   it("namespaces the game: the upper-cased room, then its run", () => {
-    expect(channelPath("room", "abcd", "r_1")).toBe("/room/ABCD/r_1");
+    expect(channelPath("room", "abcd", "r_1")).toBe("/room/ABCD/r-1");
+  });
+});
+
+describe("channelPath for a real run id", () => {
+  it("is a channel AppSync accepts, though ids carry an underscore", () => {
+    // A run id as the server makes one: `r_` and ten hex characters.
+    const runId = "r_4b2e9a07cd";
+    const path = channelPath("room", "abcd", runId);
+    expect(path).toBe("/room/ABCD/r-4b2e9a07cd");
+    expect(path).toMatch(APPSYNC_CHANNEL_PATTERN);
+    // And it is exactly the string the server publishes to and the authorizer admits.
+    expect(path).toBe(roomChannelPath("room", "ABCD", runId));
   });
 });
 
@@ -120,7 +133,7 @@ describe("the handshake", () => {
     expect(parseSent(fake, 1)).toEqual({
       type: "subscribe",
       id: "sub_1",
-      channel: "/room/ABCD/r_1",
+      channel: "/room/ABCD/r-1",
       // Repeated per subscribe: connection auth admits you to the API, this
       // admits you to one room.
       authorization: { host: OPTIONS.httpDomain, Authorization: "tok_session" },

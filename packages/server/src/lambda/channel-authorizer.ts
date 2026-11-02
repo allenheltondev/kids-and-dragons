@@ -14,6 +14,7 @@
  * separating them and four letters is a small space.
  */
 
+import { runChannelSegment } from "@kad/shared";
 import { DynamoRepository } from "../store/dynamo-repository.ts";
 import { ssmParameterSource, TokenIdentity } from "../token-identity.ts";
 import { requiredEnv } from "./runtime.ts";
@@ -194,7 +195,8 @@ function channelSegments(event: ChannelAuthorizerEvent): string[] | null {
 
 /**
  * A subscribe must name exactly the channel of the token's own game:
- * `room/<code>/<runId>`. The run is part of the name so that a subscription,
+ * `room/<code>/<run>`, the run written as `runChannelSegment` does. The run is
+ * part of the name so that a subscription,
  * which AppSync keeps for as long as the socket lives, is for one game and
  * never for whoever later takes the same four letters. Exact equality also
  * refuses a wildcard, which AppSync allows on a subscribe, a bare `room/<code>`
@@ -204,5 +206,8 @@ function subscribesTo(event: ChannelAuthorizerEvent, grant: { roomCode: string; 
   const segments = channelSegments(event);
   if (!segments || segments.length !== 3) return false;
   const [namespace, code, runId] = segments;
-  return namespace === "room" && code?.toUpperCase() === grant.roomCode.toUpperCase() && runId === grant.runId;
+  // The run's segment is its id as a channel name allows (`runChannelSegment`);
+  // an id with none can subscribe to nothing.
+  const own = runChannelSegment(grant.runId);
+  return own !== null && namespace === "room" && code?.toUpperCase() === grant.roomCode.toUpperCase() && runId === own;
 }
