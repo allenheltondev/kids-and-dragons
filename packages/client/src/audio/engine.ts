@@ -24,19 +24,18 @@ import { DICE_PLAYBACK_RATE } from "../dice-timing";
  *
  *   voices → sfx gain ─┐
  *                      ├→ master gain → destination
- *   music pad ─────────┘
+ *   music loop ─────────┘
  *
  * Master carries volume × mute; the two stages under it exist so music can sit
  * well under the effects without every recipe knowing that. Muting sets master
- * to zero rather than tearing the pad down: the pad is three oscillators, and
- * keeping it running means unmute is instant instead of a rebuild.
+ * to zero while the recorded loop keeps running, so unmute is instant.
  */
 
 import type { AmbienceId, AudioSink, AudioState, CueId } from "./cue";
 import { createSampleLibrary, type SampleLibrary, type SampleLoaderOptions } from "./samples";
 import { CUE_QUIET } from "./cues";
 import { QUIET_VOLUME_SCALE, isQuiet } from "../quiet";
-import { CUE_TONES, padFor, renderTones } from "./synth";
+import { CUE_TONES, renderTones } from "./synth";
 
 export interface AudioPrefs {
   muted: boolean;
@@ -50,7 +49,7 @@ const DEFAULT_PREFS: AudioPrefs = { muted: false, volume: 0.8 };
 /** How far under the effects the music sits. */
 const MUSIC_LEVEL = 0.45;
 const SFX_LEVEL = 1;
-/** Seconds to walk one pad out and the next in. */
+/** Seconds to walk one track out and the next in. */
 const MUSIC_FADE_S = 1.5;
 
 /** The slice of Storage this uses, so tests can hand in a plain object. */
@@ -69,8 +68,7 @@ export interface AudioEngineOptions {
   storage?: PrefStore | undefined;
   /**
    * Real audio, when there is any (samples.ts). Injected so tests can supply
-   * a library — or none at all, which is the placeholder-only path the game
-   * shipped with and still runs on.
+   * a library with recordings or unavailable samples.
    */
   samples?: ((ctx: BaseAudioContext) => SampleLibrary) | undefined;
   sampleOptions?: SampleLoaderOptions | undefined;
@@ -170,9 +168,9 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
   let sfx: GainNode | null = null;
   let musicBus: GainNode | null = null;
 
-  /** The biome whose pad is (or would be) playing, and its teardown. */
+  /** The requested music track and its playback teardown. */
   let musicBiome: string | null = null;
-  let stopPad: (() => void) | null = null;
+  let stopMusic: (() => void) | null = null;
   let library: SampleLibrary | null = null;
   let ambienceId: AmbienceId | null = null;
   let stopAmbience: (() => void) | null = null;
@@ -243,10 +241,10 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
     library = build(ctx);
     library.preload();
 
-    // A biome asked for before the gesture starts its pad now — music is a
-    // *state*, unlike a cue, so honouring it late is honouring it.
+    // Music requested before the gesture starts when its recording is ready.
+    // Music is state, unlike a cue, so honouring it late is honouring it.
     if (musicBiome !== null) {
-      startPad(musicBiome);
+      startMusic(musicBiome);
       requestMusic(musicBiome);
     }
     if (ambienceId !== null && !prefs.muted) {
@@ -315,28 +313,26 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
   function requestMusic(biome: string): void {
     library?.wantMusic(biome, () => {
       if (!ctx || musicBiome !== biome || musicRecorded || !library?.music(biome)) return;
-      stopPad?.();
-      stopPad = null;
-      startPad(biome);
+      stopMusic?.();
+      stopMusic = null;
+      startMusic(biome);
     });
   }
 
-  /**
-   * Three detuned sine voices on the biome's chord, breathing on a slow LFO.
-   * Quiet enough to talk over — it is a bed, not a soundtrack.
-   */
-  function startPad(biome: string): void {
+  /** Play recorded music only; unavailable tracks remain silent. */
+  function startMusic(biome: string): void {
     if (!ctx || !musicBus) return;
     const now = ctx.currentTime;
     // Let the lobby's sustained opening settle in gradually.
     const fadeIn = biome === "entry-lobby" ? 6 : MUSIC_FADE_S;
 
     /*
-     * A real loop, when the biome has one. Both the loop and synth pad use
+     * A real loop, when the biome has one. The recording uses
      * the slower lobby entrance, including when a download arrives late.
      */
     const recorded = library?.music(biome) ?? null;
     musicRecorded = recorded !== null;
+    // Stay silent while the recording loads, or if it is unavailable.
     if (recorded) {
       const gain = ctx.createGain();
       gain.gain.setValueAtTime(0, now);
@@ -347,7 +343,7 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
       source.loop = true;
       source.connect(gain);
       source.start(now);
-      stopPad = () => {
+      stopMusic = () => {
         const at = ctx ? ctx.currentTime : 0;
         try {
           gain.gain.cancelScheduledValues(at);
@@ -360,46 +356,6 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
       };
       return;
     }
-
-    const padGain = ctx.createGain();
-    padGain.gain.setValueAtTime(0, now);
-    padGain.gain.linearRampToValueAtTime(1, now + fadeIn);
-    padGain.connect(musicBus);
-
-    const breath = ctx.createGain();
-    breath.gain.setValueAtTime(1, now);
-    breath.connect(padGain);
-    const lfo = ctx.createOscillator();
-    lfo.frequency.setValueAtTime(0.08, now);
-    const lfoDepth = ctx.createGain();
-    lfoDepth.gain.setValueAtTime(0.25, now);
-    lfo.connect(lfoDepth);
-    lfoDepth.connect(breath.gain);
-    lfo.start(now);
-
-    const voices: OscillatorNode[] = [lfo];
-    for (const freq of padFor(biome)) {
-      const osc = ctx.createOscillator();
-      osc.type = "sine";
-      // A few cents of detune keeps a pure chord from sounding like a test
-      // tone. Deterministic per voice, so the bed is identical every night.
-      osc.frequency.setValueAtTime(freq * 1.001, now);
-      osc.connect(breath);
-      osc.start(now);
-      voices.push(osc);
-    }
-
-    stopPad = () => {
-      const at = ctx ? ctx.currentTime : 0;
-      try {
-        padGain.gain.cancelScheduledValues(at);
-        padGain.gain.setValueAtTime(padGain.gain.value, at);
-        padGain.gain.linearRampToValueAtTime(0, at + MUSIC_FADE_S);
-        for (const voice of voices) voice.stop(at + MUSIC_FADE_S);
-      } catch {
-        // A context torn down mid-fade has already achieved the silence.
-      }
-    };
   }
 
   const sink: AudioSink = {
@@ -444,10 +400,10 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
     music(biome: string | null): void {
       if (biome === musicBiome) return;
       musicBiome = biome;
-      // Play a fallback immediately; a ready callback crossfades in the file.
-      stopPad?.();
-      stopPad = null;
-      if (biome !== null) startPad(biome);
+      // Play a cached recording, or wait silently for the ready callback.
+      stopMusic?.();
+      stopMusic = null;
+      if (biome !== null) startMusic(biome);
       if (biome !== null) requestMusic(biome);
     },
   };
@@ -491,8 +447,8 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
     dispose(): void {
       stopAmbience?.(); stopAmbience = null; ambienceId = null;
       stopSceneCues();
-      stopPad?.();
-      stopPad = null;
+      stopMusic?.();
+      stopMusic = null;
       musicBiome = null;
       ctx?.removeEventListener?.("statechange", stateChanged);
       stateListeners.clear();
