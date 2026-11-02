@@ -26,15 +26,12 @@ export function crewChoices(state: Pick<RunState, "crew" | "crews" | "firstCrewN
 
 /**
  * What the hero picker says holds a hero (`HeroHold`), on her card:
- * "Playing Gemfall with The Otter Crew". `saved` when a stopped game is it.
+ * "Playing Gemfall with The Otter Crew".
  */
-export function heroHoldLine(hold: HeroHold, saved: boolean): string {
-  const where = hold.at
-    ? `Partway through ${hold.campaign} at ${hold.at}`
-    : hold.crew
-      ? `Playing ${hold.campaign} with ${hold.crew}`
-      : `Partway through ${hold.campaign}`;
-  return saved ? `${where}, saved for next time` : where;
+export function heroHoldLine(hold: HeroHold): string {
+  if (hold.at) return `Partway through ${hold.campaign} at ${hold.at}`;
+  if (hold.crew) return `Playing ${hold.campaign} with ${hold.crew}`;
+  return `Partway through ${hold.campaign}`;
 }
 
 /**

@@ -159,13 +159,15 @@ export function WelcomeBack(): ReactElement {
                         {on ? <Icon name="check" label="Chosen" /> : null}
                       </span>
                     </span>
-                    {hold ? (
+                    {savedHeroes[h.id] ? (
+                      <span className="creation-card__line kad-muted">{savedHeroLine(h.name, savedHeroes[h.id]!)}</span>
+                    ) : null}
+                    {/* A stopped game's own line already says where; the hold adds only another crew. */}
+                    {hold && (!savedHeroes[h.id] || hold.crew) ? (
                       <span className={`creation-card__line welcome-back__hold welcome-back__hold--${tone}`}>
                         <Icon name={hold.crew ? "crew" : hold.at ? "travel" : "story"} />
-                        <span>{heroHoldLine(hold, Boolean(savedHeroes[h.id]))}</span>
+                        <span>{heroHoldLine(hold)}</span>
                       </span>
-                    ) : savedHeroes[h.id] ? (
-                      <span className="creation-card__line kad-muted">{savedHeroLine(h.name, savedHeroes[h.id]!)}</span>
                     ) : null}
                     {blocked ? (
                       <span className="kad-chip kad-chip--bad kad-chip--wrap welcome-back__blocked">{heroBlockedLine(hold!)}</span>
