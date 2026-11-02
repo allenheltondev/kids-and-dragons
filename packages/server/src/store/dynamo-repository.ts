@@ -65,6 +65,7 @@ import type {
   MoveProfileInput,
   OrganizerInviteRecord,
   PairingCodeRecord,
+  ScreenCodeRecord,
   ProfileMove,
   PushSubscriptionRecord,
   RoomRecord,
@@ -102,6 +103,7 @@ import {
   MOVED_SK,
   OWNER_SK,
   PAIR,
+  SCREEN,
   PLAYER_SK,
   PREFIX,
   PRESENCE,
@@ -922,6 +924,41 @@ export class DynamoRepository implements GameRepository {
       return true;
     } catch (err) {
       if (isConditionalFailure(err)) return false;
+      throw err;
+    }
+  }
+
+  async putScreenCodeIfAbsent(record: ScreenCodeRecord): Promise<boolean> {
+    try {
+      await this.doc.send(
+        new PutCommand({
+          TableName: this.table,
+          Item: { PK: SCREEN(record.code), SK: META, ttl: record.ttl, entity: "screen", data: record } satisfies TableItem,
+          ConditionExpression: "attribute_not_exists(PK)",
+        }),
+      );
+      return true;
+    } catch (err) {
+      if (isConditionalFailure(err)) return false;
+      throw err;
+    }
+  }
+
+  async redeemScreenCode(code: string, nowIso: string): Promise<ScreenCodeRecord | null> {
+    try {
+      const { Attributes } = await this.doc.send(
+        new DeleteCommand({
+          TableName: this.table,
+          Key: { PK: SCREEN(code), SK: META },
+          ConditionExpression: "attribute_exists(PK) AND #d.#exp > :now",
+          ExpressionAttributeNames: { "#d": "data", "#exp": "expiresAt" },
+          ExpressionAttributeValues: { ":now": nowIso },
+          ReturnValues: "ALL_OLD",
+        }),
+      );
+      return (Attributes?.data as ScreenCodeRecord | undefined) ?? null;
+    } catch (err) {
+      if (isConditionalFailure(err)) return null;
       throw err;
     }
   }

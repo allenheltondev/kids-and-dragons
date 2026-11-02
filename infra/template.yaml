@@ -11,7 +11,7 @@ Transform: AWS::Serverless-2016-10-31
 #
 #   CloudFront ──┬── S3            the SPA, art assets, and content
 #                └── HTTP API      /api/* → one Lambda over handlers/
-#   AppSync Events                 room/<code>; IAM publishes, players subscribe
+#   AppSync Events                 room/<code>/<runId>; IAM publishes, players subscribe
 #   DynamoDB                       one table, one GSI, architecture §3
 #   Cognito                        optional sign-in, email OTP then passkey
 #   SSM SecureString               the key that signs device and session tokens
@@ -214,7 +214,7 @@ Resources:
             ProjectionType: ALL
       TimeToLiveSpecification:
         # Single rows nothing else points at only: rooms, code-miss windows
-        # (handlers/code-guard.ts), invites, transfer and pairing codes, moved-
+        # (handlers/code-guard.ts), invites, transfer, pairing and screen codes, moved-
         # device forwards, presence. Everything else that expires spans rows and
         # partitions, and does so through the GUEST and IDLE indexes and the
         # sweeper — see the long note in store/keys.ts.
@@ -422,14 +422,16 @@ Resources:
     Type: AWS::AppSync::ChannelNamespace
     Properties:
       ApiId: !GetAtt EventApi.ApiId
-      # `room/<code>` — the room *is* the channel (§4.4).
+      # `room/<code>/<runId>` — a game is a channel (§4.4). The run is in the
+      # name because a room's four letters are reused and an AppSync
+      # subscription outlives its authorization.
       Name: room
 
   ChannelAuthorizerFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: .build/channel-authorizer
-      Description: Decides who may subscribe to room/<code>
+      Description: Decides who may subscribe to room/<code>/<runId>
       # Only needs to read device bindings and a run's removed list (#267), and
       # verify a signature. No publish, no writes — deliberately the smallest
       # policy in the stack.
