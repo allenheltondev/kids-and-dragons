@@ -1,3 +1,4 @@
+import { revealPagedChoice } from "./choice-pages";
 import { openPlayerTask } from "./player-navigation";
 import { roomState } from "./room-state";
 /**
@@ -176,7 +177,9 @@ test.describe("the Field Guide", () => {
     await expect(guide).toBeVisible();
     await expect(tray.getByRole("button", { name: /^Guide$/ })).toHaveAttribute("aria-pressed", "true");
     await guide.getByRole("tab", { name: "Creatures" }).click(TAP);
-    await guide.getByRole("button", { name: WISP }).click(TAP);
+    const wisp = guide.getByRole("button", { name: WISP });
+    expect(await revealPagedChoice(guide, wisp)).toBe(true);
+    await wisp.click(TAP);
     await expect(guide.getByRole("heading", { name: WISP })).toBeVisible();
     await expect(guide.getByRole("heading", { name: "Story", exact: true })).toBeVisible();
     await expect(guide.getByText(/tangle in marsh magic/)).toBeVisible();

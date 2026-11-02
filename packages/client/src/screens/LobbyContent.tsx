@@ -22,12 +22,14 @@ import { ClassToken } from "./ClassToken";
 import { Icon } from "./icons";
 import { savedHeading, savedHeroes, savedWhere } from "./save-copy";
 import { crewChoices } from "./crew-copy";
+import { RoomCodeLetter } from "./RoomCodeLetter";
 import { CrewIdentity } from "./CrewIdentity";
 import { VoteTicks } from "./VoteTicks";
 import { useHelp } from "../help/content";
 import { joinUrl } from "../ui/share-invite";
 import "./shared.css";
 import "./LobbyContent.css";
+import "./TvLobby.css";
 import { EntryScene } from "./EntryScene";
 import { RiftSightings } from "./RiftSight";
 import { lobbyReadiness } from "./lobby-readiness";
@@ -118,7 +120,8 @@ function MemberCard({ member, arriving = false }: { member: PartyMember; arrivin
         </span>
         <span aria-hidden={member.ready || !member.connected} className={`kad-chip${member.ready || !member.connected ? " lobby-member__chip--off" : ""}`}>
           <Icon name="waiting" />
-          <span>Tap Ready on your phone</span>
+          <span className="lobby-member__pending-help">Tap Ready on your phone</span>
+          <span className="lobby-member__pending-short">Not ready</span>
         </span>
       </span>
     </li>
@@ -155,15 +158,12 @@ export function LobbyContent(): ReactElement {
   const cards = (state?.campaignOptions?.length ?? 0) > 1;
 
   return (
-    <section className="lobby entry-scene-host" aria-labelledby="lobby-heading">
+    <section className="lobby entry-scene-host" aria-label="Lobby">
       <EntryScene scene={readiness.allReady ? "lobby-ready" : "lobby-waiting"} />
-      <h2 className="lobby__heading" id="lobby-heading">
-        <Icon name="party" />
-        <span>Everyone in?</span>
-      </h2>
+      <header className="lobby__header">
       {/* The household's table, when the family named it: where the game is
           kept, not the phones. */}
-      {state?.location ? <p className="lobby__place kad-muted">{state.location}</p> : null}
+      {state?.location ? <p className="lobby__place kad-muted"><span className="lobby__place-label">Your table</span><span>{state.location}</span></p> : null}
       {state ? (
         <div className="lobby__crew">
           <CrewIdentity name={crewChoices(state).current} compact />
@@ -172,6 +172,7 @@ export function LobbyContent(): ReactElement {
           {host ? <span className="lobby__crew-hint kad-muted">Change crew in Room</span> : null}
         </div>
       ) : null}
+      </header>
       {state?.crewSetup ? (
         <p className="lobby__place" role="status">
           Make new heroes on your phones. Your other crew&rsquo;s adventure is saved.
@@ -241,12 +242,14 @@ export function LobbyContent(): ReactElement {
               <li
                 className={`lobby__campaign${picked ? " lobby__campaign--picked" : ""}`}
                 data-locked={option.locked !== undefined}
+                aria-label={`${option.title}${picked ? ", selected" : ""}`}
                 key={option.id}
               >
                 <CampaignArt campaignId={option.id} />
                 <span className="lobby__campaign-title">
                   <Icon name={option.locked ? "close" : picked ? "vote" : "map"} />
                   <span>{option.title}</span>
+                  {picked ? <span className="lobby__campaign-selected"><Icon name="ready" />Selected</span> : null}
                 </span>
                 <span className="lobby__campaign-line">{campaignOptionLine(option)}</span>
                 {choice?.contested && option.locked === undefined ? (
@@ -291,9 +294,7 @@ export function LobbyContent(): ReactElement {
                 ? "----"
                 : code.split("").map((letter, i) => (
                     // Position is meaningful and letters repeat, so index is the key.
-                    <span className="lobby__code-letter" key={`${letter}-${String(i)}`} aria-hidden="true">
-                      {letter}
-                    </span>
+                    <RoomCodeLetter key={`${letter}-${String(i)}`} letter={letter} />
                   ))}
             </p>
           </div>

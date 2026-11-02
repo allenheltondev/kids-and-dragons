@@ -1,0 +1,10 @@
+.scene-reading { flex: 0 1 auto; min-block-size: 0; margin-block-end: auto; }
+.scene-reading__open { display: none; }
+.scene-reading button { min-block-size: 44px; border: 1px solid var(--kad-border); border-radius: .6em; padding: .35em .75em; background: var(--kad-bg-raised); color: var(--kad-ink); font: inherit; }
+.scene-reading__dialog { max-inline-size: min(34em, 90vw); max-block-size: 85dvh; padding: 1em; border: 1px solid var(--kad-gold); border-radius: .75em; background: var(--kad-bg); color: var(--kad-ink); }
+.scene-reading__dialog::backdrop { background: rgb(0 0 0 / 80%); }
+.scene-reading__dialog p { line-height: 1.4; }
+@container prompt (max-height: 35em) {
+  .scene-reading > .player__echo { display: none; }
+  .scene-reading__open { display: block; }
+}

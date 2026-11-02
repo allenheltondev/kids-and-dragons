@@ -1,3 +1,4 @@
+import { revealPagedChoice } from "./choice-pages";
 /**
  * The adventure book with no signal — on a reload, and in a new tab — against
  * a production build, where the service worker lives
@@ -63,7 +64,7 @@ async function studyTheBook(page: Page): Promise<void> {
   for (const tab of await guide.getByRole("tab").all()) {
     await tab.click(TAP);
     const found = guide.locator("button.field-guide__card:not([disabled])");
-    if ((await found.count()) === 0) continue;
+    if (!(await revealPagedChoice(guide, found.first()))) continue;
     await found.first().click(TAP);
     await expect(guide.getByTestId("guide-detail")).toBeVisible(TAP);
     return;

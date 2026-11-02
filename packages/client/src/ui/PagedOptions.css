@@ -1,0 +1,4 @@
+.paged-options { flex: none; min-inline-size: 0; }
+.paged-options__nav { display: flex; align-items: center; justify-content: space-between; gap: .5em; margin-block-start: .4em; }
+.paged-options__nav button { min-block-size: 44px; padding: .4em .65em; border: 1px solid var(--kad-border); border-radius: .6em; background: var(--kad-bg-raised); color: var(--kad-ink); font: inherit; cursor: pointer; }
+.paged-options__nav span { white-space: nowrap; font-size: .8em; }

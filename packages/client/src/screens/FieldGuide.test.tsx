@@ -51,6 +51,26 @@ describe("FieldGuideIndex", () => {
     expect(container.innerHTML).not.toContain("Frogfolk");
   });
 
+  it("pages through discoveries, resets on a category change, and puts a new find first", async () => {
+    const user = userEvent.setup();
+    const many = Object.fromEntries(Array.from({ length: 7 }, (_, i) => [`creature.${i}`, entry(`creature.${i}`, "creatures", `Creature ${i}`)]));
+    const expanded = { version: 1, entries: { ...many, "people.a": guide.entries["people.a"]! } };
+    const discoveries = Object.fromEntries(Array.from({ length: 6 }, (_, i) => [`creature.${i}`, find()]));
+    setFieldGuideDiscoveries(discoveries);
+    render(<FieldGuideIndex guide={expanded} />);
+    expect(screen.queryByRole("button", { name: /Creature 5/ })).toBeNull();
+    await user.click(screen.getByRole("button", { name: "More choices" }));
+    await user.click(screen.getByRole("button", { name: /Creature 5/ }));
+    expect(usePlayerNavigation.getState().guideEntry).toBe("creature.5");
+    await user.click(screen.getByRole("tab", { name: "Peoples" }));
+    await user.click(screen.getByRole("tab", { name: "Creatures" }));
+    expect(screen.getByRole("button", { name: /Creature 0/ })).toBeTruthy();
+    await user.click(screen.getByRole("button", { name: "More choices" }));
+    act(() => setFieldGuideDiscoveries({ ...discoveries, "creature.6": { ...find(), foundAt: "2026-11-02T12:00:00Z" } }));
+    expect(screen.getByRole("button", { name: /Creature 6/ })).toBeTruthy();
+    expect(screen.getByRole("status").textContent).toBe("1 / 3");
+  });
+
   it("counts per section and overall", async () => {
     setFieldGuideDiscoveries({ "creature.a": find(), "creature.c": find(), "place.a": find(), "gone.x": find() });
     const user = userEvent.setup();

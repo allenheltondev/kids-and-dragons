@@ -20,8 +20,8 @@ test.describe("the practice", () => {
     await Promise.all(openContexts.splice(0).map((c) => c.close().catch(() => undefined)));
   });
 
-  test("a new hero is offered it, and plays its first steps by the hints alone", async ({ browser }) => {
-    const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
+  for (const viewport of [{ width: 390, height: 844 }, { width: 360, height: 640 }, { width: 375, height: 667 }]) test(`a new hero practices with taps at ${viewport.width}x${viewport.height}`, async ({ browser }) => {
+    const context = await browser.newContext({ viewport, isMobile: true, hasTouch: true });
     openContexts.push(context);
     const solo: Page = await context.newPage();
 
@@ -47,15 +47,16 @@ test.describe("the practice", () => {
     await expect(solo.getByRole("button", { name: "Hear the hint" })).toBeVisible();
     await guidePicture(solo, "practice-hint", { mark: solo.getByRole("button", { name: "Hear the hint" }) });
     await solo.locator(".prompt button").filter({ hasText: /open the gate/i }).first().click(TAP);
-    // Pressed rather than clicked: at phone width the dev server's Playtest
-    // drawer handle sits over the confirm bar, and production has no drawer.
-    await solo.getByRole("button", { name: /do it!/i }).press("Enter", TAP);
+    const confirm = solo.getByRole("button", { name: /do it!/i });
+    await expect(confirm).toBeInViewport({ ratio: 1 });
+    expect(await solo.locator(".player__prompt").evaluate(el => el.scrollHeight <= el.clientHeight + 1)).toBe(true);
+    await confirm.tap(TAP);
 
     // Step two: the roll, and its hint.
     await expect.poll(async () => (await roomState<{ sceneId: string }>(solo, code)).sceneId).toBe("check_latch");
     await openPlayerTask(solo);
     await expect(hint).toContainText("When your phone says Roll, tap it.");
-    await solo.getByRole("button", { name: /^roll/i }).first().press("Enter", TAP);
+    await solo.getByRole("button", { name: /^roll/i }).first().tap(TAP);
     // Pass or fail, the story goes on to meet Tansy.
     await expect
       .poll(async () => (await roomState<{ sceneId: string }>(solo, code)).sceneId, { timeout: 30_000 })

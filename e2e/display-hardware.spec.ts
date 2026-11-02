@@ -135,14 +135,14 @@ test.describe("a display that is not a laptop", () => {
     // the rest usually still has the Fullscreen API, and `withoutModernApis` does not take it.
     await expect(tv.locator('[data-capability="fullscreen"]')).toHaveCount(1);
     // No sound is no prompt: a tap cannot mend a browser with no audio.
-    await expect(tv.getByRole("button", { name: "Tap for sound" })).toHaveCount(0);
+    await expect(tv.getByRole("button", { name: "Enable sound" })).toHaveCount(0);
     expect(tvErrors).toEqual([]);
   });
 
-  test("a TV that blocks sound is asked once, in plain words, and play never waits on it", async ({ browser }) => {
+  test("a TV that blocks sound enables it from its single speaker control", async ({ browser }) => {
     const tv = await device(browser, 1280, 720, withBlockedSound);
     await openLobby(tv);
-    const ask = tv.getByRole("button", { name: "Tap for sound" });
+    const ask = tv.getByRole("button", { name: "Enable sound" });
     await expect(ask).toHaveCount(1, TAP);
     // The rest of the screen is playable with the ask still up.
     await expect(tv.getByText(/room code/i).first()).toBeVisible();
@@ -150,6 +150,11 @@ test.describe("a display that is not a laptop", () => {
     await tv.evaluate(() => (window as unknown as { allowSound(): void }).allowSound());
     await ask.click();
     await expect(ask).toHaveCount(0, TAP);
+    const speaker = tv.getByRole("button", { name: "Turn sound off" });
+    await expect(speaker).toHaveAttribute("aria-pressed", "false");
+    await expect(tv.getByRole("button", { name: /^(Enable sound|Turn sound (on|off))$/ })).toHaveCount(1);
+    await speaker.click();
+    await expect(tv.getByRole("button", { name: "Turn sound on" })).toHaveAttribute("aria-pressed", "true");
   });
 
   test("the report on a laptop's Chromium says what it proves", async ({ browser }) => {

@@ -1,6 +1,9 @@
 /* A class place (#311): the phone's "are you sure?" and the TV's roll call. */
 
 .class-place__sure {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  grid-template-columns: minmax(0, 1fr);
   display: grid;
   gap: 0.5rem;
 }
@@ -50,3 +53,8 @@
 .class-stall__words {
   margin: 0.5rem 0 0;
 }
+
+.class-place__sure .confirm__actions { flex-wrap: wrap; }
+.class-place__sure .confirm__actions > .kad-button { flex: 1 1 8em; max-inline-size: 100%; white-space: normal; }
+.class-place__sure .kad-button__label { white-space: normal; }
+.class-place__tokens { min-inline-size: 0; flex-wrap: wrap; }

@@ -62,35 +62,6 @@
 .kad-about__device { margin: 0.8em 0; color: var(--kad-ink-dim); font-size: 0.75em; word-break: break-word; }
 .kad-about__panel button { font: inherit; padding: 0.3em 0.9em; }
 
-/* The shared screen's one clear ask for sound: top centre, where a room looks first. */
-.kad-tap-for-sound {
-  position: fixed;
-  inset-block-start: calc(var(--kad-safe-top, 0px) + 0.75rem);
-  inset-inline: 0;
-  z-index: 30;
-  display: flex;
-  justify-content: center;
-  pointer-events: none;
-}
-.kad-tap-for-sound > * { pointer-events: auto; }
-
-/* In the corner row, and first in it: it goes the moment sound is allowed, and nothing
-   to its left can move when it does, so a tap on Room or About is never lost to it (#257). */
-.kad-tap-for-sound--in-corner {
-  position: static;
-  order: -4;
-  display: block;
-}
-
-/* While it is up, it is the one ask (#257): the corner row's smaller hint for the same thing
-   stands down, and the Field Guide's news drops below the row (FieldGuideNews.css reads
-   this), since the row is wider with it. */
-body:has(.kad-tap-for-sound) .kad-audio-control__hint { display: none; }
-/* The shared screen has its own ask for sound (Tap for sound, above), so the row's small hint
-   never hangs under its corner, over the room's own column (#257). */
-.kad-corner:has(.kad-about--in-corner) .kad-audio-control__hint { display: none; }
-body:has(.kad-tap-for-sound--in-corner) .kad-party--world { --kad-top-reserve: 2.75rem; }
-
 /*
  * The report's own ask (fullscreen.ts). It sits on the row that reports full screen rather
  * than in the corner row: that row is fixed to the right, proven at six controls, and held

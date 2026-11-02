@@ -19,28 +19,9 @@
   color: var(--kad-ink-dim);
 }
 .kad-audio-control__button .kad-button__icon { font-size: 1.15em; }
-/* Out of the flow, under the row: it comes with the engine and goes on the first tap, and in the
-   flow either would slide the controls beside it a button's width, or more, mid-tap. */
-.kad-audio-control__hint {
-  position: absolute;
-  inset-block-start: 100%;
-  inset-inline-end: 0;
-  white-space: nowrap;
-  margin: 4px 0 0;
-  padding: 0.35em 0.7em;
-  border-radius: 999px;
-  background: var(--kad-bg-raised);
-  color: var(--kad-ink);
-  font-size: 0.8em;
-  pointer-events: none;
-}
-/* Phones and tablets unlock sound on the first tap. The TV needs a gesture reminder. Anywhere
-   else the hint hangs past the strip the corner row keeps (and off a tablet's rail, over the
-   game), so it is the TV's alone. */
-@media (max-width: 699px) {
-  .kad-audio-control__hint { display: none; }
-}
-body:not(:has(.kad-party--world)) .kad-audio-control__hint { display: none; }
+/* A blocked browser uses the same speaker control, highlighted until enabled. */
+.kad-audio-control[data-locked] { opacity: 1; }
+.kad-audio-control[data-locked] .kad-audio-control__button { color: var(--kad-gold, #ffc95c); }
 @media (prefers-reduced-motion: reduce) {
   .kad-audio-control { transition: none; }
 }
