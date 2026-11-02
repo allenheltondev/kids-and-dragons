@@ -160,7 +160,13 @@ const FIRST_PAINT_BUDGET_KB = 328;
 // 1525 -> 1533 for another TV in another place: 1530KB measured, 1522 before. About 6KB is
 // the lazy OtherScreen chunk (the leader's code card and the other TV's code entry), the
 // rest the first-paint lines above.
-const TOTAL_BUDGET_KB = 1533;
+// 1533 -> 1461, down, for leaving Pixi's WebGPU and canvas renderers out of the build
+// (packages/client/pixi-webgl-only.ts): 1458KB measured with the other-TV work in, 1530 before it. The stage only ever
+// asks for WebGL, but Pixi 8 registers all three renderers' adaptors at load, so their code rode
+// in the stage chunks every TV fetched (the 8.22 bump above was most of it). A TV opening a fight
+// fetches 73KB less JavaScript. First paint did not move (327KB). Keep this close to the
+// measurement: a feature that needs more gives something back, or raises it as its own decision.
+const TOTAL_BUDGET_KB = 1461;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);
