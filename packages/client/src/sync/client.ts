@@ -33,6 +33,7 @@ import type {
   TransferCode,
   PairingCode,
   PairingResult,
+  ScreenCode,
   RoomMode,
   RulesContent,
   RunState,
@@ -363,6 +364,15 @@ export interface Api {
    * binding the device already holds goes along, to be revoked.
    */
   redeemPairingCode(code: string, deviceToken?: string): Promise<PairingResult & { deviceToken: string }>;
+
+  // --- another TV in another place (handlers/screens.ts) ----------------------
+  /** The host asks for a one-time code that lets one more TV show this room. */
+  addScreen(code: string, auth: HostAuth): Promise<ScreenCode>;
+  /**
+   * The other TV spends it. No sign-in: the code is the credential. The answer
+   * is what `/watch` gives the room's own TV, without `host`.
+   */
+  redeemScreenCode(code: string): Promise<WatchRoomResponse>;
 }
 
 const JSON_HEADERS = { "content-type": "application/json" };
@@ -854,6 +864,26 @@ export const api: Api = {
     return request<PairingResult & { deviceToken: string }>("/api/pair/redeem", {
       method: "POST",
       headers: { ...JSON_HEADERS, ...(deviceToken ? { "x-kad-device-token": deviceToken } : {}) },
+      body: JSON.stringify({ code }),
+    });
+  },
+
+  addScreen(code, auth) {
+    return request<ScreenCode>(`/api/room/${encodeURIComponent(code)}/screens`, {
+      method: "POST",
+      headers: {
+        ...JSON_HEADERS,
+        ...("deviceToken" in auth ? { "x-kad-device-token": auth.deviceToken } : { "x-kad-shared-token": auth.sharedToken }),
+      },
+      ...("sessionToken" in auth && auth.sessionToken ? { token: auth.sessionToken } : {}),
+      body: JSON.stringify({}),
+    });
+  },
+
+  redeemScreenCode(code) {
+    return request<WatchRoomResponse>("/api/screens/redeem", {
+      method: "POST",
+      headers: JSON_HEADERS,
       body: JSON.stringify({ code }),
     });
   },
