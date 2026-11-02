@@ -1,13 +1,13 @@
 /**
  * Environmental combat (#201) against the content gate.
  *
- * Two halves, like validate.test.mjs. The schema — the half an editor sees —
+ * Two halves, like validate-core.test.mjs. The schema — the half an editor sees —
  * has to accept the sandbox chapter the authoring doc teaches from and refuse
  * the shapes it says do not exist; the shipped chapters, none of which
  * declare an environment, must still pass untouched. And `content:validate`
  * itself has to *catch* a broken environment in real content, which is shown
  * the only way that means anything: a copy of the real tree with exactly one
- * thing bent, and a specific complaint required (validate.test.mjs explains
+ * thing bent, and a specific complaint required (validate-core.test.mjs explains
  * why that is the shape of these tests).
  */
 
