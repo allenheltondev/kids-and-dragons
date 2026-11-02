@@ -38,9 +38,13 @@ function ok(body: unknown = { failed: [], successful: [{ identifier: "e_1" }] })
 }
 
 describe("channelFor", () => {
-  it("namespaces and upper-cases the room code", () => {
+  it("namespaces the game, upper-cases the room code and keeps the run as it is", () => {
     // Codes are read aloud and typed in either case; the channel name is not.
-    expect(channelFor("abcd")).toBe("/room/ABCD");
+    expect(channelFor("abcd", "r_1")).toBe("/room/ABCD/r-1");
+  });
+
+  it("gives two games that reuse the same letters two different channels", () => {
+    expect(channelFor("ABCD", "r_old")).not.toBe(channelFor("ABCD", "r_new"));
   });
 });
 
@@ -60,7 +64,7 @@ describe("AppSyncEventsChannel", () => {
     expect(call.headers.authorization).toContain("host");
 
     const body = JSON.parse(call.body) as { channel: string; events: string[] };
-    expect(body.channel).toBe("/room/ABCD");
+    expect(body.channel).toBe(`/room/ABCD/${patch.runId.replace(/_/g, "-")}`);
     // Strings, not objects — objects arrive as "[object Object]".
     expect(body.events).toHaveLength(1);
     expect(typeof body.events[0]).toBe("string");

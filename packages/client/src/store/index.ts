@@ -344,6 +344,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         realtimeDomain: realtime.realtimeDomain,
         namespace: realtime.namespace,
         roomCode: session.roomCode,
+        runId: session.runId,
         token: session.sessionToken,
       });
     }
@@ -1002,6 +1003,32 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         }
       },
 
+      async showFromCode(code) {
+        set({ connection: "connecting", error: null });
+        try {
+          const response = await deps.api.redeemScreenCode(code);
+          const roomCode = response.state.roomCode;
+          // A screen, not a seat: no player, and never the host. Kept like a
+          // phone's session (`establish`), because this TV cannot ask `/watch`
+          // again (only the room's own screen may), and a refresh in the
+          // middle of the evening must come straight back to the game.
+          const display: ClientSession = {
+            runId: response.runId,
+            roomCode,
+            playerId: "",
+            mode: response.mode,
+            sessionToken: response.viewerToken,
+          };
+          await establish(display, response.state);
+          deps.navigate({ name: "tv", code: roomCode }, { replace: true });
+        } catch (error) {
+          // The code card says why, beside the code; a toast as well would say
+          // it twice, over the card's own Back.
+          set({ connection: "idle" });
+          throw error;
+        }
+      },
+
       async listHeroes() {
         const session = get().session;
         if (!session?.playerId) return [];
@@ -1468,6 +1495,19 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
 
       handKeeper(playerId: string) {
         return hostControl("keeper", { playerId }, "Could not hand over the game.");
+      },
+
+      async addScreen() {
+        const session = get().session;
+        if (!session?.host) return null;
+        const auth = hostAuth(session);
+        if (!auth) return null;
+        try {
+          return await deps.api.addScreen(session.roomCode, auth);
+        } catch (error) {
+          set({ error: error instanceof Error ? error.message : "We could not make a code for another TV." });
+          return null;
+        }
       },
 
       lockRoom(locked: boolean) {

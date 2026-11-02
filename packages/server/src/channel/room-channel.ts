@@ -2,7 +2,7 @@
  * `LocalSseChannel` — the dev implementation of the transport seam,
  * architecture §4.4.
  *
- * Prod publishes to an AppSync Events channel named `room/<code>`; locally we
+ * Prod publishes to an AppSync Events channel named `room/<code>/<runId>`; locally we
  * hold the fan-out in process and push it to browsers over Server-Sent Events.
  * SSE is the right dev transport for this protocol specifically because the
  * protocol is one-directional: clients send intents over HTTP POST and only
