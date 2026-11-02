@@ -19,6 +19,7 @@ import { diff } from "../json-patch.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
 import { isOut } from "./remove.ts";
 import { ROOM_TTL_MS } from "./room.ts";
+import { viewerStillShows } from "./viewer.ts";
 
 /** Presence needs no engine and no dice — just the table and the channel. */
 export type PresenceDeps = Pick<HandlerDeps, "repo" | "channel" | "now">;
@@ -130,7 +131,8 @@ async function commitPresence(
     runId: input.runId,
     patch: diff(state, next),
     at: iso(nowMs),
-    playerId: input.playerId,
+    // A screen's presence (`setScreenPresence`) is nobody's.
+    ...(input.playerId ? { playerId: input.playerId } : {}),
   };
 
   const committed = await deps.repo.commit({
@@ -251,5 +253,89 @@ export async function beatPresence(input: PresenceBeatInput, deps: PresenceDeps)
     if (playerId === input.playerId || !quiet(playerId)) continue;
     await setPresence({ runId: input.runId, playerId, connected: false }, deps);
   }
+  await sweepQuietScreens(state, beats, nowMs, input.awayAfterMs, null, deps);
   return { ok: true, connected: true };
+}
+
+// ---------------------------------------------------------------------------
+// Other TVs in other places (handlers/screens.ts)
+// ---------------------------------------------------------------------------
+
+/*
+ * A follower screen beats as a phone does, so the Room panel can say how many
+ * other TVs are showing the game (`RunState.screens`). Its beats share the
+ * presence row under a key no player id can have, and its viewer token names
+ * the screen (`ViewerIdentity.screenId`), so a screen speaks for itself alone
+ * and the room's own TV, whose token names none, is never counted.
+ */
+
+/** A follower screen's key in the presence row. Player ids have no colon. */
+export function screenBeatKey(screenId: string): string {
+  return `screen:${screenId}`;
+}
+
+export interface ScreenBeatInput {
+  /** All from the viewer token, never the body. */
+  runId: string;
+  roomCode: string;
+  screenId: string;
+  leaving?: boolean;
+  awayAfterMs?: number;
+}
+
+export async function beatScreen(input: ScreenBeatInput, deps: PresenceDeps): Promise<PresenceBeatResult> {
+  const state = await deps.repo.getState(input.runId);
+  if (!state) return { ok: false, status: 404, code: "NOT_FOUND", message: `no run ${input.runId}` };
+  // The same rule as every viewer read (handlers/viewer.ts): this room, still this run, still open.
+  if (state.closed || !(await viewerStillShows(deps.repo, input.runId, input.roomCode))) {
+    return { ok: false, status: 403, code: "FORBIDDEN", message: "this game has finished" };
+  }
+  if (input.leaving) {
+    await setScreenPresence(input.runId, input.screenId, false, deps);
+    return { ok: true, connected: false };
+  }
+  const nowMs = deps.now();
+  const beats = await deps.repo.touchPresence(
+    input.runId,
+    screenBeatKey(input.screenId),
+    iso(nowMs),
+    Math.floor((nowMs + ROOM_TTL_MS) / 1000),
+  );
+  if (!state.screens?.includes(input.screenId)) await setScreenPresence(input.runId, input.screenId, true, deps);
+  await sweepQuietScreens(state, beats, nowMs, input.awayAfterMs, input.screenId, deps);
+  return { ok: true, connected: true };
+}
+
+/** Screens whose last beat is older than `AWAY_AFTER_MS` stop being counted, by whichever beat finds them. */
+async function sweepQuietScreens(
+  state: RunState,
+  beats: Record<string, string>,
+  nowMs: number,
+  awayAfterMs: number | undefined,
+  self: string | null,
+  deps: PresenceDeps,
+): Promise<void> {
+  for (const screenId of state.screens ?? []) {
+    if (screenId === self) continue;
+    const seen = beats[screenBeatKey(screenId)];
+    if (seen === undefined || nowMs - Date.parse(seen) <= (awayAfterMs ?? AWAY_AFTER_MS)) continue;
+    await setScreenPresence(state.runId, screenId, false, deps);
+  }
+}
+
+/** List a screen as here, or not; retried on a lost race like the rest of presence. */
+async function setScreenPresence(runId: string, screenId: string, here: boolean, deps: PresenceDeps): Promise<number | null> {
+  for (let attempt = 1; ; attempt++) {
+    const state = await deps.repo.getState(runId);
+    if (!state || state.closed) return null;
+    const listed = state.screens?.includes(screenId) === true;
+    if (listed === here) return null;
+    const left = (state.screens ?? []).filter((id) => id !== screenId);
+    const { screens: _was, ...rest } = state;
+    const screens = here ? [...left, screenId] : left;
+    const next: RunState = screens.length > 0 ? { ...rest, screens } : rest;
+    const result = await commitPresence(state, next, { runId, playerId: "", connected: here }, deps);
+    if (result !== "lost-race") return result;
+    if (attempt >= COMMIT_ATTEMPTS) return null;
+  }
 }

@@ -1004,6 +1004,21 @@ describe("another TV in another place", () => {
     expect(again.store.getState().session).toMatchObject({ playerId: "", sessionToken: "tok_follow" });
   });
 
+  it("says it is here, so the host can count it; the room's own TV never does", async () => {
+    const follower = harness();
+    await follower.store.getState().showFromCode("ABCDEFGH");
+    expect(follower.store.getState().session?.follower).toBe(true);
+    follower.store.getState().beat();
+    follower.store.getState().beat(true);
+    expect(follower.api.postPresence.mock.calls).toEqual([[false, "tok_follow"], [true, "tok_follow"]]);
+
+    const own = harness();
+    await own.store.getState().openOnThisScreen();
+    await own.store.getState().attach("ABCD", "display");
+    own.store.getState().beat();
+    expect(own.api.postPresence).not.toHaveBeenCalled();
+  });
+
   it("refuses a code that did not work, leaving nothing behind", async () => {
     const h = harness();
     h.api.redeemScreenCode.mockRejectedValueOnce(new ApiError(404, "That code didn't work."));

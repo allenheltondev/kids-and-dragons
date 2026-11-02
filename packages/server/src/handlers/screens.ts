@@ -24,6 +24,7 @@
 import type { ScreenCode } from "@kad/shared";
 import { admitCodeLookup } from "./code-guard.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
+import { newId } from "../ids.ts";
 import { closeIfIdle, hostedRoom, isClosed, type HostPrincipal } from "./host.ts";
 import { ROOM_CODE_ALPHABET, type WatchRoomResult } from "./room.ts";
 
@@ -94,10 +95,13 @@ export async function redeemScreenCode(
   if (!room || room.runId !== record.runId || !state || isClosed(state) || (await closeIfIdle(room, state, deps))) {
     return fail("NOT_FOUND", "That game has finished.");
   }
+  // This screen's own id, so its presence can be counted (handlers/presence.ts,
+  // `beatScreen`). Each redemption is a screen: a third place spends a second code.
   const viewerToken = await deps.identity.issueViewerToken({
     runId: room.runId,
     roomCode: room.code,
     expiresAt: Date.parse(room.expiresAt),
+    screenId: newId("s"),
   });
   return ok({ runId: room.runId, mode: room.mode, expiresAt: room.expiresAt, viewerToken, state });
 }

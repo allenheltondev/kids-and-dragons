@@ -113,6 +113,8 @@ interface ViewerClaims {
   aud: "view";
   run: string;
   code: string;
+  /** A follower screen's id (`ViewerIdentity.screenId`). */
+  scr?: string;
   iat: number;
   exp: number;
 }
@@ -340,6 +342,7 @@ export class TokenIdentity implements IdentityService {
       aud: "view",
       run: input.runId,
       code: input.roomCode,
+      ...(input.screenId !== undefined ? { scr: input.screenId } : {}),
       iat: Math.floor(this.now() / 1000),
       exp: Math.floor(input.expiresAt / 1000),
     });
@@ -348,7 +351,12 @@ export class TokenIdentity implements IdentityService {
   async resolveViewer(token: string): Promise<ViewerIdentity | null> {
     const claims = await this.verify<ViewerClaims>(token, "view");
     if (!claims) return null;
-    return { runId: claims.run, roomCode: claims.code, expiresAt: claims.exp * 1000 };
+    return {
+      runId: claims.run,
+      roomCode: claims.code,
+      expiresAt: claims.exp * 1000,
+      ...(typeof claims.scr === "string" ? { screenId: claims.scr } : {}),
+    };
   }
 
   // --- JWT plumbing ----------------------------------------------------------

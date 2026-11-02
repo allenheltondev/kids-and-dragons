@@ -85,6 +85,8 @@ const ROOM_KEYS = [
   // crew was made must not take it off the Room panel. (`crew` itself is the
   // game's, and comes with the save, which is the lobby's crew's own.)
   "crews",
+  // Other TVs showing this room (a screen code's followers): this room's, never a save's.
+  "screens",
 ] as const satisfies readonly (keyof RunState)[];
 
 /** The first sentence of `text`, trimmed to one breath. */

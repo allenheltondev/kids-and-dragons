@@ -109,7 +109,7 @@ Some of the family at home, and someone else at a grandparent's house or in a ho
 2. On the other TV, tap **Host a game**, then **Join a game lobby**. Type the code and tap **Show the game here**.
 3. Kids at the other place join on their phones with the room code that TV shows, the same as everyone else.
 
-Both TVs show the same game, and the kids vote and take turns together. Only the first TV runs the room. **Close the room** ends the game on both TVs. For a third place, make another code.
+Both TVs show the same game, and the kids vote and take turns together. Only the first TV runs the room, and under **Another TV** it says how many other TVs are showing the game. Each TV reads the story aloud if read-aloud is turned on for that TV. **Close the room** ends the game on both TVs. For a third place, make another code.
 
 ## Stopping and coming back
 

@@ -584,6 +584,14 @@ export interface RunState {
    */
   watching?: string[];
   /**
+   * Other TVs in other places showing this game (a screen code's follower,
+   * handlers/screens.ts) that have said "still here" recently: one id per
+   * screen, so the Room panel can say how many there are. Written by presence
+   * alone, as `watching` is, and gone once a screen leaves or goes quiet. The
+   * room's own TV is never listed. Absent when there are none.
+   */
+  screens?: string[];
+  /**
    * The host locked the room (#263): nobody new may join. Everybody already
    * seated (`seats`) can still come back to it, from any device. Absent when
    * open.
