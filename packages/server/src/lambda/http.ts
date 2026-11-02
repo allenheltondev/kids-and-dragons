@@ -35,7 +35,7 @@ import { relayCheer } from "../handlers/cheer.ts";
 import { createScreenCode, isScreenSlowDown, redeemScreenCode } from "../handlers/screens.ts";
 import { viewerStillShows } from "../handlers/viewer.ts";
 import { chooseWatching } from "../handlers/watch.ts";
-import { beatPresence } from "../handlers/presence.ts";
+import { beatPresence, beatScreen } from "../handlers/presence.ts";
 import type { ActionError, HandlerDeps, HandlerResult } from "../handlers/deps.ts";
 import { iso, ok } from "../handlers/deps.ts";
 import { admitNewPhone, bindNewPhone, createRoom, findRoom, joinRoom, settleRoom, vetTableName, watchRoom } from "../handlers/room.ts";
@@ -815,7 +815,18 @@ async function postSpectate(req: Req, deps: HandlerDeps) {
  */
 async function postPresence(req: Req, deps: HandlerDeps) {
   const session = await resolveSession(req, deps);
-  if (!session) return error(401, "FORBIDDEN", "presence needs a room session token");
+  if (!session) {
+    // Another TV in another place says it is still showing the game. Only a
+    // follower's viewer token names a screen; the room's own TV is not counted.
+    const viewer = bearer(req) ? await deps.identity.resolveViewer(bearer(req)) : null;
+    if (viewer?.screenId === undefined) return error(401, "FORBIDDEN", "presence needs a room session token");
+    const shown = await beatScreen(
+      { runId: viewer.runId, roomCode: viewer.roomCode, screenId: viewer.screenId, leaving: req.body.leaving === true },
+      deps,
+    );
+    if (!shown.ok) return error(shown.status, shown.code, shown.message);
+    return json(200, { ok: true, connected: shown.connected });
+  }
   const result = await beatPresence(
     {
       runId: session.runId,

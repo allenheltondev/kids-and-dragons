@@ -14,7 +14,7 @@ import { shouldReload, type CalmInputs } from "../sw/calm";
 import { makeState } from "../testing/fixtures";
 import { HostControls } from "./HostControls";
 import { HomeScreen } from "./HomeScreen";
-import { AddScreen, ShowHere, screenShareText } from "./OtherScreen";
+import { AddScreen, ShowHere, otherTvs, screenShareText } from "./OtherScreen";
 
 const CODE = { code: "ABCDEFGH", expiresAt: new Date(Date.now() + 10 * 60_000).toISOString() };
 
@@ -166,6 +166,26 @@ describe("the other TV's half", () => {
     const field = (await screen.findByLabelText("Code for this TV")) as HTMLInputElement;
     expect(field.value).toBe("ABCD-EFGH");
     expect(showFromCode).not.toHaveBeenCalled();
+  });
+});
+
+describe("how many other TVs are showing the game", () => {
+  it("says so on the folded section, and what it is for when there are none", () => {
+    expect(otherTvs(0)).toBe("Play together from another place");
+    expect(otherTvs(1)).toBe("1 other TV is showing this game");
+    expect(otherTvs(3)).toBe("3 other TVs are showing this game");
+  });
+
+  it("follows the room's screens as they come and go, without opening the section", () => {
+    host();
+    render(<HostControls placement="inline" />);
+    const line = () => screen.getByText("Another TV").closest("summary")?.textContent ?? "";
+    expect(line()).toContain("Play together from another place");
+    act(() => useGameStore.setState({ state: { ...makeState(), screens: ["s_a"] } }));
+    expect(line()).toContain("1 other TV is showing this game");
+    act(() => useGameStore.setState({ state: { ...makeState(), screens: ["s_a", "s_b"] } }));
+    expect(line()).toContain("2 other TVs are showing this game");
+    expect(screen.getByText("Another TV").closest("details")?.open).toBe(false);
   });
 });
 
