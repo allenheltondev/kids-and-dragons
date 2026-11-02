@@ -48,6 +48,12 @@ export interface ClientSession {
   mode: RoomMode;
   sessionToken: string;
   /**
+   * Another TV in another place, showing this game from a screen code
+   * (screens/OtherScreen.tsx): a screen that seats nobody, and says it is
+   * still here so the host can see how many other TVs there are.
+   */
+  follower?: true;
+  /**
    * This device opened the room, so it sees who arrives and may take them out
    * (#267). The server decides; this only says which buttons to draw.
    */

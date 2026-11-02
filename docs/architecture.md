@@ -682,12 +682,12 @@ table's save (see "Who owns what", below), a kid's hero is hers and is not lost
 with it, and a family tablet exists only in a household an account already
 keeps, so none can found a guest game for every kid who uses it.
 
-Guest households from before founders were recorded keep the old rule (any
-device playing in one may claim it). #265 shipped it on 2026-10-17 and a guest
-household expires a week after it was last played, but a game still being
-played keeps renewing, so the rule goes only once none is left to find: delete
-the `legacy` branches in `mayClaim`, the memory store's `claimHousehold` and
-the DynamoDB claim condition then (#272).
+A household with no founder recorded (`founderDeviceId` absent, as on one
+awaiting its founder or one made before #265, or `""` after a Remove) is
+claimable by nobody. Guest households made before founders were recorded kept
+the old rule (any device playing in one may claim it) for a week after #265
+shipped on 2026-10-17; #272 removed it. Such a household still plays, but it
+can no longer be kept by signing in.
 
 The device that opened a room may take a
 player out of that room, a low-stakes control that a TV or a kid's phone may
@@ -1712,8 +1712,19 @@ nobody").
   follower's session is kept like a phone's (`establish`), because it cannot ask
   `/watch` again, so a refresh resumes on its viewer token. A bad code is said
   once, on the card.
-- **Not yet built:** a count of follower screens on the host's panel, and
-  per-screen audio choices.
+- **Counting followers.** Redeeming a code mints the follower a screen id,
+  carried in its viewer token (`ViewerIdentity.screenId`; the room's own TV's
+  token has none). The follower beats on `POST /api/presence` like a phone
+  (`beatScreen`): its beats share the run's presence row under a
+  `screen:<id>` key no player id can have, and its id is listed in
+  `RunState.screens` while it beats, dropped on its goodbye or once it has
+  been quiet past `AWAY_AFTER_MS`, found by the next beat from any phone or
+  screen. A viewer whose game is over is refused (`viewerStillShows`). The
+  Room panel's Another TV line reads the count ("1 other TV is showing this
+  game"). `screens` is the room's, so a resumed save never brings back
+  another room's followers (`save.ts`, `ROOM_KEYS`).
+- **Narration** plays on every TV whose own read-aloud setting is on, as it
+  does on any screen; there is no per-room choice of which TV speaks.
 
 #### Crews: new players at the same household
 
