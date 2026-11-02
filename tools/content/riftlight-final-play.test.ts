@@ -1,6 +1,7 @@
 import { applyEffects, completeVisit, enterScene, parseCampaignGraph, startJourney } from "@kad/shared";
 import type { Chapter, RunState } from "@kad/shared";
 import { expect, it } from "vitest";
+import { pairwise } from "./pairwise.ts";
 import { campaign, chapters, context, finishInteraction, send, start } from "./riftlight-test-support.ts";
 type Outcome = "success" | "failure" | "assisted";
 const scored = new Set(["memory", "sequence", "tracking", "timing", "precision"]);
@@ -46,7 +47,7 @@ const comparisonChoices = [
 const convCases = learnedSets.flatMap(known => ["guided", ...comparisonChoices.filter(c => c.flags.every(f => known[f])).map(c => c.id)].flatMap(source =>
   ["sheets", "line"].flatMap(setup => ["bram", "olivia", "orin"].flatMap(decision => [false, true].flatMap(trust =>
     (["success", "failure", "assisted"] as const).flatMap(outcome => [1, 2, 4].map(seats => ({ known, source, setup, decision, trust, outcome, seats }))))))));
-it.each(convCases)("convergence $source/$setup/$decision/trust:$trust/$outcome/$seats", route => {
+it.each(pairwise(convCases, ["known", "source", "setup", "decision", "trust", "outcome", "seats"]))("convergence $source/$setup/$decision/trust:$trust/$outcome/$seats", route => {
   const result = walk(conv, start(conv, "manticore", "duskrunner", { ...route.known, olivia_trusted: route.trust, orin_chime_shared: route.decision === "orin" }, route.seats), s => {
     if (s.sceneId === "accounts") return route.source;
     if (s.sceneId === "measure") return route.setup;
@@ -90,7 +91,10 @@ const campaigns: { name: string; known: Record<string, boolean>; support: string
 const finalCases = campaigns.flatMap(campaign => ["brace", "rescue"].flatMap(prep => ["line", "marks"].flatMap(route => ["case", "open"].flatMap(map =>
   (["victory", "success", "failure", "assisted"] as const).flatMap(battle => (["success", "failure", "assisted"] as const).flatMap(outcome =>
     [1, 2, 4].map(seats => ({ campaign, prep, route, map, battle, outcome, seats }))))))));
-it.each(finalCases)("finale $campaign.name/$prep/$route/$map/$battle/$outcome/$seats", row => {
+it.each(pairwise(finalCases, ["campaign", "prep", "route", "map", "battle", "outcome", "seats"], {
+  // route + battle + outcome decide whether the missed cloth recall reroutes to the lamp (loss_marks, loss_lamp).
+  together: [["route", "battle", "outcome"]],
+}))("finale $campaign.name/$prep/$route/$map/$battle/$outcome/$seats", row => {
   const fate = row.seats === 1 ? "ice" : "listen";
   const first = row.seats === 1 ? "plan_1" : row.campaign.known.fragment_paths_learned ? "plan_2" : row.seats === 2 ? "plan_3" : "plan_4";
   const { state, trace } = walk(final, start(final, "manticore", "duskrunner", { ...row.campaign.known, ...row.campaign.extra }, row.seats), s => {
