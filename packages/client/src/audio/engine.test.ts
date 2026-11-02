@@ -13,7 +13,6 @@ import { createAudioEngine, type PrefStore } from "./engine";
 import { QUIET_VOLUME_SCALE, setQuiet } from "../quiet";
 import type { CueId } from "./cue";
 import { CUE_QUIET } from "./cues";
-import { DEFAULT_PAD, padFor } from "./synth";
 
 class FakeParam {
   value = 0;
@@ -197,8 +196,9 @@ describe("promise 2: nothing before a gesture", () => {
     engine.sink.music("forest");
     engine.unlock();
     const ctx = contexts[0]!;
-    // The pad: one voice per chord note, plus the breathing LFO.
-    expect(ctx.oscillators).toHaveLength(padFor("forest").length + 1);
+    // A requested track waits silently for its recording.
+    expect(ctx.oscillators).toHaveLength(0);
+    expect(ctx.sources).toHaveLength(0);
   });
 
   it("unlocks once, however many gestures arrive", () => {
@@ -298,11 +298,14 @@ describe("real audio, when there is any", () => {
     });
     engine.unlock();
     engine.sink.music("forest");
-    const originalPad = [...ctx.oscillators];
+    expect(ctx.oscillators).toHaveLength(0);
+    expect(ctx.sources).toHaveLength(0);
     available = "forest";
     listeners.get("forest")!();
     expect(ctx.sources).toHaveLength(1);
-    expect(originalPad.every((osc) => osc.stoppedAt !== null)).toBe(true);
+    expect(ctx.oscillators).toHaveLength(0);
+    listeners.get("forest")!();
+    expect(ctx.sources).toHaveLength(1);
     engine.sink.music("gemfall-marsh");
     listeners.get("forest")!();
     expect(ctx.sources).toHaveLength(1);
@@ -367,72 +370,57 @@ describe("real audio, when there is any", () => {
 });
 
 describe("music", () => {
-  it.each([false, true])("eases lobby music in over six seconds (recorded: %s)", (recorded) => {
+  function recordedMusic() {
     const ctx = new FakeContext();
-    ctx.currentTime = 10;
     const engine = createAudioEngine({
       createContext: () => ctx as unknown as BaseAudioContext,
       storage: memoryStore(),
-      samples: () => ({ preload() {}, cue: () => null, music: () => recorded ? {} as AudioBuffer : null, wantMusic() {} }),
+      samples: () => ({ preload() {}, cue: () => null, music: () => ({} as AudioBuffer), wantMusic() {} }),
     });
     engine.unlock();
+    return { engine, ctx };
+  }
+
+  it("eases recorded lobby music in over six seconds", () => {
+    const { engine, ctx } = recordedMusic();
+    ctx.currentTime = 10;
     engine.sink.music("entry-lobby");
     const entrance = ctx.gains.find((gain) => gain.gain.history.some((event) => event.kind === "ramp" && event.value === 1));
     expect(entrance?.gain.history).toEqual([
       { kind: "set", value: 0, at: 10 },
       { kind: "ramp", value: 1, at: 16 },
     ]);
+    expect(ctx.sources[0]!.loop).toBe(true);
     engine.dispose();
   });
 
-  it("is idempotent for the biome already playing", () => {
-    const { engine, contexts } = build();
-    engine.unlock();
+  it("does not restart the track already playing", () => {
+    const { engine, ctx } = recordedMusic();
     engine.sink.music("forest");
-    const ctx = contexts[0]!;
-    const after = ctx.oscillators.length;
     engine.sink.music("forest");
-    expect(ctx.oscillators.length).toBe(after);
+    expect(ctx.sources).toHaveLength(1);
+    engine.dispose();
   });
 
-  it("fades the old pad out when the biome changes", () => {
-    const { engine, contexts } = build();
-    engine.unlock();
+  it("fades out the old recording when the track changes or clears", () => {
+    const { engine, ctx } = recordedMusic();
     engine.sink.music("forest");
-    const ctx = contexts[0]!;
-    const firstPad = [...ctx.oscillators];
-    engine.sink.music("somewhere-new");
-    // Old voices got a stop scheduled; a new pad is running.
-    expect(firstPad.every((osc) => osc.stoppedAt !== null)).toBe(true);
-    expect(ctx.oscillators.length).toBeGreaterThan(firstPad.length);
-  });
-
-  it("goes to silence for null — the lobby", () => {
-    const { engine, contexts } = build();
-    engine.unlock();
-    engine.sink.music("forest");
-    const ctx = contexts[0]!;
+    engine.sink.music("entry-lobby");
+    expect(ctx.sources).toHaveLength(2);
+    expect(ctx.sources[0]!.stopped).toBe(true);
+    expect(ctx.sources[1]!.stopped).toBe(false);
     engine.sink.music(null);
-    expect(ctx.oscillators.every((osc) => osc.stoppedAt !== null)).toBe(true);
+    expect(ctx.sources[1]!.stopped).toBe(true);
+    engine.dispose();
   });
 
-  it("hums the default pad for a chapter's track before its file exists", () => {
-    // A chapter may name a track that has no recording yet (#226). It gets the
-    // same pad as a biome nobody composed for, never silence.
+  it.each(["a-track-nobody-produced", "crystal-canyon"])("stays silent for unavailable music: %s", (track) => {
     const { engine, contexts } = build();
     engine.unlock();
-    engine.sink.music("a-track-nobody-produced");
-    const tones = contexts[0]!.oscillators.map((osc) => osc.frequency.value);
-    expect(tones).toEqual(expect.arrayContaining(DEFAULT_PAD.map((freq) => freq * 1.001)));
-  });
-
-  it("hums the default pad for a biome nobody wrote a chord for", () => {
-    // The seventeen Red Sky backdrops arrive with music before anybody
-    // composes for them (synth.ts).
-    const { engine, contexts } = build();
-    engine.unlock();
-    engine.sink.music("crystal-canyon");
-    expect(contexts[0]!.oscillators.length).toBeGreaterThan(0);
+    engine.sink.music(track);
+    expect(contexts[0]!.oscillators).toHaveLength(0);
+    expect(contexts[0]!.sources).toHaveLength(0);
+    engine.dispose();
   });
 });
 

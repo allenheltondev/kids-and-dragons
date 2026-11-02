@@ -9,7 +9,7 @@ sounds, not two hundred pictures.
 **Real audio is an upgrade, never a requirement.** Every cue has a synthesized
 recipe (`packages/client/src/audio/synth.ts`), and the game plays it whenever
 there is no file — not sourced yet, a 404, bytes that will not decode, a phone
-with no signal. Nothing in this pipeline can make the game silent, and no cue
+with no signal. Sound effects keep their synthesized fallback, and no cue
 has to wait for the whole set to be finished. Drop in `dice.webm` and the dice
 are real while everything else is still a sine wave.
 
@@ -21,9 +21,9 @@ and a **target length**. `audio:briefs` prints from it, the gate checks
 against it, and the game loads by it. Adding a sound means adding a row there
 and a `CueId`.
 
-Music is keyed by biome, like the backdrops. A biome with no entry still plays
-— `synth.ts`'s default pad — so a new destination is playable before anybody
-composes for it.
+Music is keyed by biome, like the backdrops. Only recorded tracks play: music
+remains silent while a track loads or if it cannot be fetched or decoded.
+There is no synthesized music fallback.
 
 A chapter can name a track of its own with `music`, and a scene can override
 that with its own `music`: scene beats chapter beats biome. Both must name a

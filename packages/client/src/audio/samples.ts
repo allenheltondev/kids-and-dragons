@@ -38,7 +38,7 @@ export interface SampleLibrary {
   preload(): void;
   /** The decoded cue, or null to use the recipe. */
   cue(id: CueId): AudioBuffer | null;
-  /** The decoded loop for a biome, or null to use the synth pad. */
+  /** The decoded loop for a biome, or null to keep music silent. */
   music(biome: string): AudioBuffer | null;
   /** Ask for a biome's loop. Safe to call for a biome with no file. */
   wantMusic(biome: string, ready?: () => void): void;
