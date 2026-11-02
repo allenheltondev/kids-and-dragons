@@ -12,6 +12,8 @@
  *   - stop for today (#259): save the chapter and close the room, to pick it
  *     up another day, and offered by itself at a Rest scene
  *   - close the room for everyone, after one "are you sure?"
+ *   - another TV in another place: a one-time code that lets a second screen
+ *     show this game (OtherScreen.tsx), folded away until wanted
  *   - in the lobby, play as another crew: a new group of players at the same
  *     TV starts its own adventure, and everyone else's save stays as it was
  *
@@ -36,6 +38,7 @@ import { SignInFlow } from "./SignInFlow";
 import { LET_GO_NOTE, STOP_CONFIRM, STOP_OFFER } from "./save-copy";
 import { CREW_NAMES, crewChoices } from "./crew-copy";
 import { CrewIdentity } from "./CrewIdentity";
+import { AddScreen } from "./OtherScreen";
 import "./HostControls.css";
 
 export type RosterStatus = "here" | "away" | "creating" | "out";
@@ -452,6 +455,8 @@ function HostPanel({ state, me, code, invite = false }: { state: RunState; me: s
       )}
 
       </details>
+      {/* Playing together from another place: folded until somebody wants it. */}
+      <AddScreen roomCode={code} shareable={invite} />
       <div className="kad-host__actions">
         {invite ? <ShareInvite code={code} /> : null}
 
