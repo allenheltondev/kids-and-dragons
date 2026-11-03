@@ -7,8 +7,11 @@ length; do not impose that length on practice chapters or brief travel hubs.
 
 ## Design the evening before counting scenes
 
-Write the chapter's goal and required closing beat. Sketch a few story movements
-that change what the party knows, wants or can do. Each needs a purpose beyond
+Write the chapter's goal and required closing beat. Give the goal a question the
+party answers by playing (Gemfall's "find out why its roads bend") and give the
+chapter a person who wants something from it, with a name and a voice. A rule
+or a task alone ("take nothing") is not enough to carry thirty minutes.
+Sketch a few story movements that change what the party knows, wants or can do. Each needs a purpose beyond
 another obstacle to the same action. An investigation might move through
 preparation, discovery, a complication, then deciding who benefits from the work.
 That is one example, not a required act structure.
@@ -64,6 +67,9 @@ can use investigation, a rescue priority and a quiet conclusion; a battle
 chapter needs preparation and aftermath around its fight. Neither needs every
 mode. Preserve existing meaningful risks instead of automatically converting
 checks into games; never add a roll that can undo earned game results.
+A game whose miss changes nothing is not a risk: if every result goes to the
+same scene with the same effects, it replaces a check with tapping. Give the
+miss a real cost, or narrate the job (`cohesion.mjs shape` lists these).
 
 For each proposed game, ask what players gain from performing the controls.
 If it only confirms a fact already stated or makes everyone tap to finish

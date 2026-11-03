@@ -47,6 +47,9 @@ node tools/content/cohesion.mjs opening  --chapter <id>   # goal.text beside sce
 node tools/content/cohesion.mjs merges   --chapter <id>   # every merge point and what leads in
 node tools/content/cohesion.mjs setbacks --chapter <id>   # the cheapest road to each setback
 node tools/content/cohesion.mjs idioms   --chapter <id>   # UK idioms spelling.test misses
+node tools/content/cohesion.mjs shape    --chapter <id>   # checks, fights, games, never-fail games, inert games, dead branches, echo votes, quoted scenes
+node tools/content/cohesion.mjs shape    --chapter ""     # the same for every chapter: set the campaign beside Gemfall
+git log --format='%h %ad %s' --date=short -- content/chapters/<id>.json   # which passes have touched it
 node tools/content/cohesion.mjs concept '<regex>' [--introduced-by scene,scene] --chapter <id>
 ```
 
@@ -54,6 +57,15 @@ node tools/content/cohesion.mjs concept '<regex>' [--introduced-by scene,scene] 
 Validate and continuity must be clean before and after. Pacing's interactivity table gives the
 spine (the shortest path to a success ending), its longest reading run (`read`, and the scene it
 starts at) and its doing share. Most findings sit on that spine, so walk it in the graph first.
+`shape` is the screen for a chapter that validates and still has nothing at stake. Read it
+against Gemfall's rows, not against a quota: a Gemfall chapter has 7 to 27 dice checks, a few
+inert games at most and a quoted line in 26 to 67 scenes. A chapter with no checks, mostly inert
+games, several echo votes and a dozen quoted scenes is the Riftlight failure in
+[references/examples.md](references/examples.md#riftlight-risk-converted-away), whatever pacing
+says. Compare the chapter's design note (`docs/campaigns/<campaign>/*-review.md`) with the file: a
+later pass may have changed the chapter without updating the note, so the note's spine numbers
+prove nothing until you rerun them.
+
 These numbers do not measure the quality of play. The existing dice-oriented minute model does
 not budget authored interaction time. Inspect the reachable activities and flag-dependent routes
 through the engine as well; report planned minutes separately from observed family timing.
@@ -139,6 +151,30 @@ Scene 1 says, in the story's own words, what the party is here to do tonight and
 - At merges, verify that different routes keep their costs and gains. A flag is meaningful only
   if a reachable scene consumes it. Distinguish consequences within the chapter from memories
   that the campaign actually carries; a local flag alone does not promise a later callback.
+- **Something has to be at stake.** A game whose every result leads to the same scene with the
+  same effects (`shape` calls it *inert*) is flavor, however different its three sentences
+  are: "The spare mats come with you" on success, failure and assist. One or two are fine. A
+  chapter whose play is mostly inert games and no dice has no uncertainty left, and children
+  notice quickly that what they do does not count. Give a miss a real cost (a longer route, a
+  lost tool, help that is owed, a harder fight), or narrate the job and spend the time elsewhere.
+- **Only some games can fail.** `timing`, `precision`, `tracking`, `memory` and `sequence` can
+  miss. `cooperate`, `balance`, `relay` and `play` only ever succeed or are assisted, so an
+  `onFailure` written for them is a branch no party can take, however good its words. `shape`
+  reports those games as *nofail*, counts them inert unless their assisted result differs, and
+  flags any authored failure on them as *dead*. Where a miss should cost something, use a kind
+  that can miss; keep the never-fail kinds for shared play with nothing at stake. Route tests
+  must only ask the engine for outcomes it can produce (`riftlight-failable-kinds.test.ts`
+  checks the list against the real engine).
+- **Echo votes** (`shape`): effect-free choices that all return to one scene, often through
+  "response" scenes that end on the same sentence ("The yard keeps its own things. Your gear is
+  yours to mind." three times). One is an expressive beat; several on the spine are the chapter
+  pretending to branch.
+- **Gear-handling is not a decision.** Carry the mats or travel light, plank or stone, brush
+  boots or shake packs: if most of a chapter's votes are about handling equipment, its important
+  choices are missing. The important ones are about people, priorities and what to risk.
+- **No bookkeeping tail.** After the climax, one aftermath scene pays off what the party chose
+  and who they helped. Four in a row of pocket checks, gathering gear, brushing off and filing a
+  report is the chapter running out.
 - Keep dice for uncertain risks where both outcomes move the story somewhere useful. Routine
   recording, explaining a discovery and cleanup do not each need a roll. A physical prompt whose
   stat mislabels it may use `checkKind: "doing"`; never recategorize or rewrite a conversation
@@ -162,7 +198,16 @@ Scene 1 says, in the story's own words, what the party is here to do tonight and
   07 do (the audit's other model is Marda's rumor board in 02). Gated callbacks are a bonus, never the only callback.
 - **Human read:** walk the spine once as a party that skipped every optional meeting.
 
-### 5. New people arrive with a stake
+### 5. New people arrive with a stake, and someone carries the chapter
+
+- **The chapter has a question and a person.** Gemfall's goals ask something ("find out why
+  its roads bend the long way around") and its spines are full of people with wants (Parsnip,
+  Bracken, Sefa, Granny Ash in 04a alone). A goal that is only a task or a rule ("clear a way and
+  take nothing") needs a question under it, and the chapter's main companion needs a name, a
+  voice and a want of their own, so the rule matters to someone. Something should be revealed
+  (a p1 or p2 on the spine), something should get worse, and the ending should pay it off. "The
+  origin is never explained" is fine for the campaign's protected mysteries; it is not a
+  substitute for this chapter having its own discovery.
 
 - For each first appearance (a `cast` entry, `named X`, `discovers`), the introducing scene
   says what they want from the party or what they can do for it.
@@ -183,6 +228,24 @@ Scene 1 says, in the story's own words, what the party is here to do tonight and
   - **UK idioms the spelling test misses:** `idioms` lists "round" for around, biscuit, jumper,
     sweets, crisps, "you lot", nan, teatime, full stop. A hit is a word to read, not a verdict:
     "a round table" and a character named Nan are fine.
+
+## Campaign-wide passes
+
+A pass over many chapters at once ("convert checks to games", "shorter and plainer") is where a
+campaign loses its life, because each chapter still validates and the minute model cannot see
+it: it gives interaction scenes no time, so a chapter of games reads as short and the next pass
+trims it further. Late 2026, two such passes took twelve Riftlight chapters to no dice, mostly
+inert games and about a third fewer words, without anyone noticing until a family played one.
+
+- Run `shape --chapter "<campaign>-"` before and after, and put both tables in the PR. A pass
+  that turns checks into games, adds inert games or echo votes, or drops quoted scenes has to
+  say why, chapter by chapter.
+- A word-trim pass trims sentences, never people. Keep every quoted line, every name and each
+  scene's funny detail; cut instructions and repeated explanations instead.
+- A conversion pass keeps a check wherever the risk is real and its failure goes somewhere
+  ([play-design.md](references/play-design.md#match-play-to-the-story) already says this; the
+  passes ignored it). Convert only the checks that approved work already done.
+- Play one changed chapter end to end, out loud, before applying the pass to the rest.
 
 ## Setbacks: never from one ordinary failed roll
 

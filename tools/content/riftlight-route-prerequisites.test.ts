@@ -87,4 +87,4 @@ it("proves regional prerequisites across every incoming graph route rather than 
     expect(bypass.incoming.get(node)!.has("orin")).toBe(false);
     expect(bypass.incoming.get(node)!.has("olivia")).toBe(false);
   }
-}, 60_000);
+}, 120_000); // Rewritten strand chapters carry real dice and branches again, so each walk is longer.

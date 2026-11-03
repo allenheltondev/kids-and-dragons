@@ -210,11 +210,11 @@
       "address": "riftlight-riftseekers-departure/route/narration",
       "script": [
         { "by": "narrator", "text": "Orin points below the ice shelf, where melt channels join into a broad river." },
-        { "by": "orin", "text": "\"The Great River starts here. Stay on this bank. The shelf above the headwaters leads toward Frostfang. Test the ice. If it gives, let the river carry you to a place you can get out. Do not fight it under the shelf.\"" },
-        { "by": "narrator", "text": "Seren points toward the hall." },
-        { "by": "seren", "text": "\"Or study the seam that answered your song. Look for signs of openings around the glacier. Learning what they need might help you find a way home.\"" },
-        { "by": "narrator", "text": "Orin traces a longer road above the bank." },
-        { "by": "orin", "text": "\"Or follow these markers to a ferry at a place called Ashspan Bridge. It takes longer, but it stays off the ice. From the bridge, an upper bank road goes back north to Frostfang Shore.\"" }
+        { "by": "orin", "text": "\"The Great River starts here. Three roads leave this hall. The shelf above the headwaters goes east to Frostfang and the Cairnstep. Test the ice. If it gives, let the river carry you somewhere you can climb out.\"" },
+        { "by": "narrator", "text": "Seren points back at the glacier." },
+        { "by": "seren", "text": "\"Or look for the hidden openings in the ice. That seam answered your song. Learning what they need might help you find a way home.\"" },
+        { "by": "narrator", "text": "Orin traces a longer line." },
+        { "by": "orin", "text": "\"Or take the marked bank road to a ferry at a place called Ashspan Bridge. Slower, but it stays off the ice. From the bridge, an upper bank road goes back north to Frostfang Shore.\"" }
       ]
     }
   ]

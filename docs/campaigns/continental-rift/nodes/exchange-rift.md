@@ -63,3 +63,16 @@ None. The opening is about noticing and helping, not fighting; the first fight c
 
 ## Unresolved
 Exact prose and NPC names (the kitsune captain is chapter-scoped, in `npcVoices`); whether beat 1 shows a third or fourth displacement; the sound of the rift opening on the TV (`rift-open`, brief A3).
+
+## November 2026 revision (arc.md, Opening)
+
+**What it is now.** Question: *Where is the snow on the quay coming from?* (scene 1 and `goal.text`). Beat: the party has seen snow fall from a clear sky and followed a goat kid through a tear in the air. The p1 is still `shimmer`, the tear itself, on every route; the close (`white`) answers the question with this chapter's piece and asks the next one ("how can a harbor and a mountain touch?"). The sky clue reads plainly: Captain Thimble was "due tomorrow. We docked today", and every party that meets her hears about her washing, which `sky-islands-arrival` reads back through `noticed_the_sky_ship`.
+
+**What changed, and why.** The checks, the Rookery and every journey flag stay. Three games no longer shrug off a miss: a good rope throw (`barge_toss`) lets the pilot tie up to the low ring without a roll; feeding the six crews (`sack_chain`) earns a honeycake that can tempt the kid at the tear; a cold kid at the ridge (`ridge_lee`) costs everyone warmth. The crates are the chapter's force-or-understand choice: hauling them back by force (a riskier everyone-rolls check) leaves a crooked stack nobody can climb, so the party must squeeze or crawl; working out where to wedge a plank (safer) pinches the gap shut, so the party must climb (Might TN 12) or crawl. Speakers in most scenes (the noodle seller, the pilot, the gull, the dock workers). Chapter-local flags (`barge_rope_caught` at the landing, `crates_forced` / `crates_wedged` at the gap) are cleared by the very choice that reads them, to keep the route walk bounded.
+
+| | scenes | checks | games | inert | echo | quoted | spine | votes+checks | read | words |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| before | 82 | 24 | 4 | 3 | 0 | 33 | 36 | 18 | 2 | 1324–1400 |
+| after | 83 | 25 | 4 | 0 | 0 | 73 | 36 | 17 | 2 | 1606–1738 |
+
+Tests: `tools/content/riftlight-opening-arc.test.ts` (consequences) and `riftlight-opening.test.ts` (every choice and roll, for every species and class).
