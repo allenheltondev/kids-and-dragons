@@ -3,50 +3,7 @@ import { completeVisit, enterScene, parseCampaignGraph, startJourney, takeExit }
 import { allPaths, campaign, chapters, context, start } from "./riftlight-test-support.ts";
 
 // The valley's own crossing record is played in riftlight-wrong-valley.test.ts.
-it("both crossing histories get accurate reading-room callbacks", () => {
-  const c = chapters.get("riftlight-reading-room")!;
-  for (const high of [false, true]) {
-    const result = start(c, "manticore", "duskrunner", { valley_crossed_high: high });
-    expect(result.narration.includes("high rock reach")).toBe(high);
-    expect(result.narration.includes("supported low-shelf")).toBe(!high);
-  }
-});
-
-it("the optional Coast comparison is backed by a real producer and never invented for another route", () => {
-  const bridge = chapters.get("riftlight-buried-bridge")!;
-  const source = allPaths(bridge, "manticore", "duskrunner");
-  for (const [i, end] of source.ends.entries()) {
-    expect(end.flags.fragment_coast_learned).toBe(true);
-    expect(source.endingKnowledge[i]!.has("river_evidence")).toBe(true);
-  }
-  const setters = (v: unknown): number => {
-    if (!v || typeof v !== "object") return 0;
-    const o = v as Record<string, unknown>;
-    return Number(o.type === "setFlag" && o.flag === "fragment_coast_learned" && o.value !== false)
-      + Object.values(o).reduce<number>((n, child) => n + setters(child), 0);
-  };
-  for (const c of chapters.values()) if (c.id !== bridge.id) expect(setters(c), c.id).toBe(0);
-  expect(setters(campaign.graph)).toBe(0); // No shortcut may manufacture the callback's prerequisite.
-  const c = chapters.get("riftlight-reading-room")!;
-  for (const learned of [false, true]) {
-    const flags = { fragment_coast_learned: learned, valley_crossed_high: true };
-    allPaths(c, "manticore", "duskrunner", flags);
-    const initial = start(c, "manticore", "duskrunner", flags);
-    const view = enterScene(initial, "compare_accounts", context(c)).state;
-    expect(view.narration.includes("At the Saltrot's buried bridge")).toBe(learned);
-  }
-});
-
-it("every memory path earns knowledge without an item and respects the choice to keep the account private", () => {
-  const { ends } = allPaths(chapters.get("riftlight-reading-room")!, "manticore", "duskrunner", {}, 3, 1);
-  expect(ends.some((s) => s.flags.memory_notes_shared === true)).toBe(true);
-  expect(ends.some((s) => s.flags.memory_notes_shared === false)).toBe(true);
-  for (const state of ends) {
-    expect(state.flags.fragment_paths_learned).toBe(true);
-    for (const p of state.party) { expect(p.hp).toBe(1); expect(p.down).toBe(false); }
-    expect(state.party.flatMap((p) => p.character.questItems)).toEqual(["listening_chime"]);
-  }
-});
+// The reading room's callbacks and its Coast comparison are played in its own November 2026 suite.
 
 it("the completed memory path remains a pass-through return route rather than replaying the river event", () => {
   const graph = parseCampaignGraph(campaign).graph!;

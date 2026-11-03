@@ -1,56 +1,39 @@
-# A Room Already Taken
+# A Room Already Taken (wyrm-nest)
 
-The memory readers lead to a frost wyrm occupying a planned reading room. The
-builders need space for readers without disturbing the old ice. The party
-studies the nest, checks an empty sheltered hollow through a stable opening,
-clears separate lanes and prepares a board encounter. Restless bones displaced
-by the disturbances are the second opponent; the wyrm is not turned into a pet.
+**Rewritten November 2026** to the pilot's bar ([arc.md](arc.md), Forgotten Paths strand end).
+Question: *where can a frost wyrm and the readers both live?* Flurry, the young yeti keeper
+from the reading room (`cast/younger_keeper`), carries it: the wyrm is asleep in her first room.
+Pip voices Lady Olivia ("a wyrm is only a very big lizard"); Elder Murmur closes it.
 
-Driving off the opponents frees the doorway. Holding the quiet hollow approach
-for two clear rounds guides the wyrm into shelter and records `wyrm_ally` for
-the finale. A loss leaves the nest in place; the builders move their furniture
-and plan another room farther down the clear tunnel. All routes get the readers
-to a usable space. No ordinary failed roll ends the chapter.
+## Rhythm
 
-The chime tests return access, not colors or control. The oldest ice, unnamed
-summer crevasse and protected mysteries remain untouched. A late answering
-rumble establishes why an allied wyrm may help at the same glacier later.
+Down the builders' tunnel (the curly rescue horn: "the griffins at the Cairnstep always come"),
+through the frost wall (check), the nest (a tail sweep, check), the shimmering opening the wyrm
+came through the night the river ran wrong, Pip's poke (check), looking through the opening
+(rope or lean-through check; a Starweaver reads it instead), the hollow beyond, the sleepwalking
+wyrm (hide, check), rest, then the plan:
 
-The return network connects the builders to the memory room and the Cairnstep.
-The Cairnstep return requires the nest to have been completed first. Restated
-place introductions and Pip's cast entry make the older routes safe to read
-after this loop. Chapter-only method flags stay local; only `wyrm_ally` needs
-to persist. Goal flags remain chapter-local.
+- **Force:** pots or roaring (check; in time = monsters −1 Guard), the deep sound answers and a
+  crack opens in the ceiling, fight to drive the wyrm and its wisp out. The wyrm is gone.
+- **Understand:** Flurry's blankets (a timing game; a miss wakes it) or the builders' sacks make
+  the hollow a nest; hold the quiet path two rounds (calm) or three (wary: poked, flickering
+  opening, sacks or a botched sneak). Held = `wyrm_ally`.
+- **Lost fight (either):** the wyrm keeps Flurry's room and the builders' tools; the readers get
+  the old storeroom.
 
-The expanded graph exceeded 50,000 explored states. The shared default search
-cap is now 250,000 so the integration gate can complete rather than silently
-skip trap analysis. The story walker covers combat and objective outcomes;
-it does not claim to measure encounter balance. The modeled spine is 45 scenes,
-15 decisions, six checks and one encounter, about 30 uncalibrated minutes.
-Family playtest timing remains pending.
+Then putting the room right (check), the readers arrive, carrying the slates (vote and check),
+reading the ice by the opening (or letting it rest), and Murmur's close. The ending asks the
+campaign question, the chime leans toward the heart of the glacier, and it points at the reading
+room, the Cairnstep and (with another key's piece) the convergence.
 
-## Review follow-up
+## Pacing
 
-The chamber is introduced as the memory readers' future room. Pip stays with the
-elder, who later arrives from that room. Rest belongs to the builders' side alcove;
-tools, bones and furniture are established on every path. A knockout without the
-friendship objective says only that the wyrm has not chosen the hollow.
-Retreat leaves the chamber unfinished: only a table fits for now, readers share
-the old room, and builders lose their free morning. A chosen route diagram or
-quiet sign helps the next visitor. The spine is 45 scenes, 14 decisions and six
-physical checks after the change. The original 50,000 graph-state cap is restored;
-route exploration and replay pass without increasing timeouts.
-
-### Pacing before and after review fixes
-
-| Shortest success spine | Before | After |
+| | Before | After |
 |---|---:|---:|
-| Scenes | 45 | 45 |
-| Decisions | 15 | 14 |
-| Physical checks | 6 | 6 |
-| Encounters | 1 | 1 |
-| Longest reading run | 2 | 3 |
+| Shortest spine (scenes) | 27 | 30 |
+| Votes + checks on it | 6 + 0 | 9 + 8 |
+| Dice checks / fights / games / inert / echo | 0 / 2 / 16 / 12 / 3 | 16 / 4 / 1 / 0 / 0 |
+| Quoted scenes | 11 | 38 of 52 |
 
-### Second review follow-up
-
-The lost-fight ending now has one account: the readers stay at the extra table in the old room while builders spend their free morning finishing the chamber. The walking task moves notes past crowded benches on that path; both check results fit it. Removed the broad-table carry after furniture was already placed. Wording only; the spine remains 45 scenes, 14 decisions, 6 doing checks, 1 fight and a reading run of 3. The graph cap on this PR remains 50,000. Local-only Flats and Bone Yard flags no longer cross chapter boundaries because no other chapter reads them.
+Tests: `tools/content/riftlight-wyrm-nest.test.ts` (route matrix and contract) and the nest
+boards in `riftlight-strand-combat.test.ts`. Family timing still unmeasured.

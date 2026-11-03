@@ -36,46 +36,6 @@ function walk(chapter: Chapter, initial: RunState, choose: (s: RunState) => stri
   expect(chapter.estimatedMinutes).toBe(30);
   return { state, trace };
 }
-const nest = chapters.get("riftlight-wyrm-nest")!;
-const nestCases = ["portable", "fixed"].flatMap(kit => ["snow", "slab"].flatMap(bed =>
-  (["objective", "driven", "retreat"] as const).flatMap(battle => [false, true].flatMap(table =>
-    (["success", "failure", "assisted"] as const).flatMap(outcome => [1, 2, 4].map(seats => ({ kit, bed, battle, table, outcome, seats })))))));
-// Measured on the full product: every scene, flag and outcome here depends on at most two axes, except the
-// shelf (kit + battle + table), so pairs are enough with that triple kept whole. KAD_FULL_MATRIX=1 runs all.
-it.each(pairwise(nestCases, ["kit", "bed", "battle", "table", "outcome", "seats"], { together: [["kit", "battle", "table"]] }))("nest $kit/$bed/$battle/table:$table/$outcome/$seats", route => {
-  const { state, trace } = walk(nest, start(nest, "manticore", "duskrunner", {}, route.seats), s => {
-    const fixed: Record<string, string> = { supplies: route.kit, cold_opening: "view", bed: route.bed, offer: route.bed === "snow" ? "continue_soft" : "continue" };
-    if (s.sceneId === "shelves") {
-      if (offered(s, "portable_old")) return "portable_old";
-      return !route.table && offered(s, "plan_1") ? "plan_1" : "plan_2";
-    }
-    if (s.sceneId === "slab_route") return offered(s, "recover") ? "recover" : "leave";
-    if (s.sceneId === "readers") return offered(s, "signals") ? "signals" : "markers";
-    return fixed[s.sceneId!];
-  }, route.outcome, route.battle);
-  const retreat = route.battle === "retreat", ally = route.battle === "objective";
-  expect(state.flags.wyrm_ally === true).toBe(ally);
-  expect(state.flags.wyrm_nest_kept === true).toBe(retreat);
-  const shelves = trace.get("shelves")!;
-  expect(offered(shelves, "plan_1")).toBe(route.kit === "fixed" && !retreat);
-  expect(offered(shelves, "portable_old")).toBe(route.kit === "portable" && retreat);
-  expect(trace.has("unpack_shelf")).toBe(!(route.kit === "portable" && retreat) && (route.table || route.kit === "portable" || retreat));
-  expect(trace.has("reader_step")).toBe(route.bed === "slab" && !ally);
-  expect(offered(trace.get("slab_route")!, "recover")).toBe(route.bed === "slab" && !ally);
-  expect(trace.has("hollow_help")).toBe(route.outcome === "failure");
-  expect(trace.has("readers_check")).toBe(route.outcome === "success");
-  expect(trace.has("readers_markers")).toBe(route.outcome !== "success");
-  expect(state.narration.includes("give up their free morning")).toBe(retreat);
-  expect(state.narration.includes("unused resting slab has become")).toBe(route.bed === "slab" && !ally);
-});
-it.each([1, 2, 4])("starweaver replaces the survey task without skipping the nest at %i seats", seats => {
-  const result = walk(nest, start(nest, "kitsune", "starweaver", {}, seats), s => s.sceneId === "cold_opening" ? "starweaver" : undefined, "success", "retreat");
-  expect(result.trace.has("hollow_attuned")).toBe(true);
-  expect(result.trace.has("hollow_view")).toBe(false);
-  expect(result.trace.has("bed_snow")).toBe(true);
-  expect(result.trace.has("fight")).toBe(true);
-  expect(result.trace.has("shelves_check")).toBe(true);
-});
 const temple = chapters.get("riftlight-squall-temple")!;
 const templeCases = [false, true].flatMap(warning => ["rope", "cover", "brace"].flatMap(prep => ["push", "shelter"].flatMap(plan =>
   ["plan_1", "plan_2"].flatMap(record => (["success", "failure", "assisted"] as const).flatMap(outcome =>

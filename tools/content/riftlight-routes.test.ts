@@ -22,6 +22,10 @@ it.each([...chapters.values()].filter((chapter) => chapter.index >= 4))("$id: ev
   if (chapter.id === "riftlight-the-wrong-valley") {
     for (const scene of allPaths(chapter, "manticore", "duskrunner", { stone_route_priority: true }).visited) visited.add(scene);
   }
+  if (chapter.id === "riftlight-reading-room") {
+    // The crossing and the buried bridge each add a proof only a party that has them can use.
+    for (const scene of allPaths(chapter, "manticore", "duskrunner", { valley_crossed_high: true, fragment_coast_learned: true }).visited) visited.add(scene);
+  }
   if (chapter.id === "riftlight-the-island-due-back") {
     for (const scene of allPaths(chapter, "manticore", "duskrunner", { sky_followup_promised: true, whales_guided: true }).visited) visited.add(scene);
     for (const scene of allPaths(chapter, "manticore", "duskrunner", { whales_guided: true }).visited) visited.add(scene);
