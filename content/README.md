@@ -404,9 +404,10 @@ lists every shipped chapter, and `--chapter bramblewood-` any one prefix.
 
 ## "Last time…" and "Where you left off"
 
-Before a chapter's first scene the shared screen shows, and reads aloud, a short "Last time…"
-built from the route-set flags the party carried in (#357). Each line is authored in the campaign
-file, under `lastTime`:
+A chapter's start no longer shows or reads a "Last time…" card: the goal is the one thing it puts
+up, and the prologue and chapter plates carry the story so far. The campaign's `lastTime` lines
+are still authored and validated, because the Story page in the adventure book is built from
+them (#358), in the form:
 
 ```json
 "lastTime": {
@@ -420,9 +421,8 @@ file, under `lastTime`:
 
 - A campaign with `routeSets` needs `lastTime`, with **one line for every member** and no other
   key (`content:validate`). A party carrying none hears the `opener`.
-- `lines` is in **story order**; the screen reads the newest four a party carries, then the
-  chapter's goal ("Your goal: ..."), then the first scene's story. The goal is not read again
-  after the story.
+- `lines` is in **story order**; the Story page shows the newest four a party carried. A
+  chapter's first scene is read, then the goal ("Your goal: ...").
 - A line that names a great stone reads the inventory: `{ holding, text, otherwise }`. A plain line
   may not name one. Never count the party, and in Gemfall no em dashes.
 - Write each line so it is true for **every** way a party could have earned the flag (a road can
