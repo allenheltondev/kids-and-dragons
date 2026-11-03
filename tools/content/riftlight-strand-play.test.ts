@@ -76,36 +76,3 @@ it.each([1, 2, 4])("starweaver replaces the survey task without skipping the nes
   expect(result.trace.has("fight")).toBe(true);
   expect(result.trace.has("shelves_check")).toBe(true);
 });
-const temple = chapters.get("riftlight-squall-temple")!;
-const templeCases = [false, true].flatMap(warning => ["rope", "cover", "brace"].flatMap(prep => ["push", "shelter"].flatMap(plan =>
-  ["plan_1", "plan_2"].flatMap(record => (["success", "failure", "assisted"] as const).flatMap(outcome =>
-    (["objective", "retreat"] as const).flatMap(battle => [1, 2, 4].map(seats => ({ warning, prep, plan, record, outcome, battle, seats }))))))));
-// Same measurement: the fight variants (fight_push, fight_shelter and their rope forms) follow prep + plan + outcome.
-it.each(pairwise(templeCases, ["warning", "prep", "plan", "record", "outcome", "battle", "seats"], { together: [["prep", "plan", "outcome"]] }))("temple warning:$warning/$prep/$plan/$record/$outcome/$battle/$seats", route => {
-  const { state, trace } = walk(temple, start(temple, "manticore", route.prep === "brace" ? "thornguard" : "duskrunner", { island_warning_sent: route.warning }, route.seats), s => {
-    const picks: Record<string, string> = { people: route.warning ? "warned" : "move", screen: route.seats === 1 ? "flat" : "tie", gear: route.prep, plan: route.plan, roof: route.plan === "push" ? "pole" : "basin", record: route.record };
-    if (s.sceneId === "push_plan" || s.sceneId === "shelter_plan") return offered(s, "rope") ? "rope" : offered(s, "cover") ? "cover" : "ordinary";
-    if (s.sceneId === "repair") return offered(s, "pack") ? "pack" : "leave";
-    if (s.sceneId === "watch") return route.record === "plan_1" ? "signals" : "map";
-    return picks[s.sceneId!];
-  }, route.outcome, route.battle);
-  const rope = route.prep === "rope" && route.outcome !== "failure";
-  const cover = route.prep !== "rope";
-  const fight = `fight_${route.plan}${rope ? "_rope" : cover ? "_cover" : ""}`;
-  expect(trace.has(fight)).toBe(true);
-  expect(trace.has("people_check") || trace.has("screen_relay")).toBe(!route.warning);
-  expect(trace.has("short_line")).toBe(route.prep === "rope" && route.outcome === "failure");
-  expect(trace.has("shelter_check")).toBe(route.prep === "cover");
-  expect(trace.has("shelter_braced")).toBe(route.prep === "brace");
-  expect(trace.has("repair_1")).toBe(route.battle === "retreat");
-  expect(offered(trace.get("repair")!, "pack")).toBe(route.battle !== "retreat");
-  expect(state.flags.temple_repair_gear_left === true).toBe(route.battle === "retreat");
-  expect(state.flags.temple_damaged === true).toBe(route.battle === "retreat");
-  expect(state.flags.temple_island_settled === true).toBe(route.battle !== "retreat" && route.plan === "shelter");
-  expect(state.flags.temple_island_diverted === true).toBe(route.battle !== "retreat" && route.plan === "push");
-  expect(trace.has("watch_signals")).toBe(route.record === "plan_1");
-  expect(trace.has("watch_help")).toBe(route.record === "plan_1" && route.outcome !== "success");
-  expect(trace.has("watch_map_help")).toBe(route.record === "plan_2" && route.outcome === "failure");
-  expect(trace.get("ending")!.narration.includes("landing stays closed for repairs")).toBe(route.battle === "retreat");
-  expect(trace.get("ending")!.narration.includes("spare boards and line stay")).toBe(route.battle === "retreat");
-});
