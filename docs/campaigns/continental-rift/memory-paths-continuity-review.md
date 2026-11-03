@@ -1,9 +1,7 @@
 # Forgotten Paths: crossing and memory continuity review
 
-Development-only continuation after the stone counters. Two ordinary-node drafts add 174
-scenes across alternate methods, checks and outcomes. A party visits 44 scenes in the valley
-or 42 in the reading room, rather than reading all alternatives. Two biome-matched pause
-chapters keep the unfinished wyrm/convergence boundary explicit.
+Continuation after the stone counters. The valley was rewritten in November 2026 (below); the
+reading-room notes describe that chapter as it stood before its own rewrite.
 
 ## Entry, return and carried knowledge
 
@@ -18,40 +16,45 @@ required; the reading room additionally requires the valley's actual witnessed c
 carried account. Those facts are introduced at every valley ending, rather than seeded as
 new facts by the fixture. The fact identifiers for the two local arrivals are distinct.
 
-`valley_crossed_high` records the route actually completed, including a switch to the backup
-after failure. Both true and false overwrite stale state. Reading-room arrival callbacks
-read that flag; they do not infer the route merely from a class or planned approach.
-The stone-record priority callback describes what Pip carries, not an unexplained river cause.
+`valley_crossed_high` records the route actually completed, including a fall onto the other
+route. Both true and false overwrite stale state. Reading-room arrival callbacks read that flag;
+they do not infer the route merely from a class or planned approach.
 
 `fragment_coast_learned` is the only gate for the optional buried-bridge comparison. Tests
 verify every bridge ending knows the river evidence, only that chapter can produce the flag,
 and no graph edge can mint it. The reading room's conditional entry fact and prose are checked
 with the flag both absent and present. A party without the Coast clue never invents a visit.
 
-## Valley scenes
+## Valley scenes (`riftlight-the-wrong-valley`, rewritten November 2026)
 
-Every task below introduces its equipment and limits in its decision scene. Its numbered
-method scenes, checks, success and changed-plan outcomes require that task's introduction;
-all continuing paths then reach the next task. The exact literal evidence is in `continuity.json`.
+Rebuilt to the pilot's bar ([arc.md](arc.md)); the old valley had four checks, nine inert games
+and an unnamed route worker. **Beat:** the party has crossed a river running down a valley that
+was dry, and warned the next traveler. **Question (scene 1):** where is this river going, and why?
+**Carried by** Hummock, the yeti route worker (names his rocks, thaws his frozen eyebrows in his
+tea), who wants his warning post lit before the evening sled from the singing hall drives into the
+water, and Pip. Grandma Drift drives that sled.
 
-| Scene family | Dependency and consequence checked |
+| Movement | What the table does |
 | --- | --- |
-| `arrival` | Reintroduces Pip locally, establishes the northern approach and a yeti stop signal. |
-| `look_again` | Introduces chipped route marker and two ridges before comparing the moved water. Failure corrects a hidden-ridge reading. |
-| `worker_signal` | Introduces the wet seam and a safe longer approach; nobody jumps it to begin talking. |
-| `two_jobs` | Establishes the worker's role, near-bank supplies, far tools/lantern and another worker due along the path. Warning choices protect different approaches. |
-| `test_flow` | Introduces board, central rock and hidden footing before testing from the bank. Failed visibility reduces the plan instead of licensing an unseen foothold. |
-| `bundle_plan` | The second worker arrives and waits before either hauling or crossing. Two rope coils and the carrying board are supplied explicitly. |
-| `anchor` | Tests support from firm ground before weight is carried. Brace assistance steadies the board and cannot certify untested ice. |
-| `signals` | Rehearses stop/wait/proceed before the far worker or tools move. |
-| `tools_return` | Introduces packed tools and straps on the line. A catch stops the haul; tools are recovered by the higher reach without a reroll. |
-| `crossing_choice` | Both checked routes and a backup exist before the choice. Every outcome keeps the party together and records the route used. |
-| `river_turn` | Preserves old and current observations without erasing a map or claiming permanence. |
-| `return_water` | Introduces the returning tongue of water before withdrawing equipment. Failure leaves an honestly marked low marker, not a missing hero or lost quest item. No dam changes the river's rules. |
-| `tell_together` | Collects each bank's account after the observed return; unseen moments remain uncertain. |
-| `next_witness` | Introduces the nearby memory inquiry as a lead, not as an answer already known. Witness/copy choices retain their provenance. |
-| `last_check` | Rehearses the new upper warning and corrects a misunderstood approach before handover. |
-| `rest` | Records the witnessed course change and account on every path. The river is back in its older bed; return and onward routes are explicit. |
+| A river where the map says dry | Slide down to Hummock (check). Read the valley with Pip's map, from Gertrude, or with Tally's road plan (`stone_route_priority`: TN 8 instead of 12). Up the wet stepping stones (check). |
+| Where it turns | Nothing pushed it at the fork. **p2** `old_road`: the oldest marker's wavy line points down the dry valley; the river is running an old course. The chime leans to the glacier. Down the old valley by board or by trail (checks) to a waterfall waking up. |
+| Force or understand | Pip's (Olivia's) way: **wall off the old valley** (check). It floods the low ice and the old marker, and the river comes back without it anyway. Or **watch it run** (memory game): the order the pools fill goes in the account. |
+| Across | Low ice (check), high rocks (check), wade the flooded ice, or a **thornguard holds the ice**; a fall lands on the other route. Call Hummock's jump (timing game): a miss loses his lantern. |
+| Warn the sled | Light the lantern (precision), build a stone arrow, or run and stop it (check). Help Grandma Drift around (checks). At dusk the river turns back (check for Pip's notebook): `wrong_valley_witnessed`. |
+| The account | Rest; optional moonlight (check). The account for Elder Murmur at the reading room: how you crossed, the pools, the wall, the moonlit line north. Then the campaign question. |
+
+Any lost time on the way up (a slow look, a slip, a failed wall, a muddled watch) takes the stone
+arrow off the table; a missed jump takes the lantern; with both, the party must run for the sled.
+`valley_crossed_high` is set on the scene the party actually reaches (`across_high` or
+`across_low`), overwriting any stale value; the reading room reads it.
+
+| | scenes | checks | games | inert | echo | quoted | spine scenes | votes + checks | read | spine words |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Before | 52 | 4 | 15 | 9 | 3 | 11 | 26 | 5 + 2 | 5 | 965 |
+| After | 46 | 16 | 4 | 0 | 0 | 41 | 30 | 6 + 9 | 2 | 1,573 |
+
+Planned about 30 minutes; family timing is unmeasured. Tests:
+`tools/content/riftlight-wrong-valley.test.ts` (route matrix through the real engine).
 
 ## Reading-room scenes
 
@@ -76,15 +79,9 @@ all continuing paths then reach the next task. The exact literal evidence is in 
 
 ## Scope and validation
 
-Both chapters award the agreed 140 XP on first completion, no bonus XP and no mandatory
-combat or damage. Pause chapters award zero. A three-person party starting at one HP retains
-its health. Contextual assistance lowers an existing check from TN 12 to TN 8; no class is
-required and the best roller need not supply the enabling ability.
-
-The five-node pacing report includes the new shortest paths: about 34 and 34 minutes in the
-uncalibrated default model, about 25 in a brisk-table sensitivity. Both have 14 decisions;
-the valley has seven checks and the room six. These are planning estimates, never family
-observations. The production pacing gate remains open.
+Both chapters award the agreed 140 XP on first completion, no bonus XP and no combat. A fall
+in the valley costs a nonlethal heart, and its rest heals; a party starting at one HP stays on
+its feet. The reading room's pacing figures were taken before its rewrite.
 
 The reading-room investigation now retains consequences beyond its immediate response.
 Splitting observers unlocks an easier comparison; successful ridge and rock methods retain
