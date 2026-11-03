@@ -89,7 +89,6 @@ import { XpMeter } from "./XpMeter";
 import { ClassToken, SpareTokens, TokenCard, TokenGlyph, tokenName } from "./ClassToken";
 import { Icon } from "./icons";
 import { aheadBadge } from "./choice-ahead-copy";
-import { ChapterGoalCard } from "./ChapterGoal";
 import { CheckMatchupBadges } from "./MatchupHints";
 import { useSideBySide } from "../layout/landscape";
 import { PrologueReplay } from "./StoryPlates";
@@ -1031,12 +1030,8 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
       {inLobby ? <EntryScene scene={lobbySceneFor(party)} /> : null}
       {backdrop ? <SceneBackdrop src={backdrop} /> : null}
       <IdentityStrip me={me} />
-      {/* The chapter's goal (#356), on every phone with nothing to tap. Not in a fight: a playtest
-          wanted the room for the cards, and the fight is the goal's step for now. */}
-      {/* Not while a point is waiting to be spent: the grow list needs the room, and on a short phone
-          the goal card above it left too little pane to scroll in. */}
-      {/* Nor during a story interaction (#493): the game is the whole pane, and its goal step is the game. */}
-      {inChapter && !focus && !inEncounter && !(atRest && banked > 0) && myPrompt?.kind !== "interaction" ? <ChapterGoalCard place="phone" /> : null}
+      {/* The chapter's goal (#356) is the World screen's, not this pane's: on a player's phone
+          it was a scroll a playtest family looked past every scene, in room the controls need. */}
 
       {/*
         What the world is asking, echoed here.
