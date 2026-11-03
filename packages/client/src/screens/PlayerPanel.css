@@ -2133,3 +2133,67 @@ html:not([data-contrast="high"]) .hp-bar .sheet__hp-track {
 @media (prefers-reduced-motion: reduce) {
   .hp-bar .sheet__hp-fill { transition: none; }
 }
+
+/* --- A tall pane (a tall phone, a landscape tablet's You drawer) ------------- */
+
+/*
+ * The extra height goes to your hero, not to the bag's empty slots or to tall,
+ * thin friend cards (playtest, November 2026: on a landscape iPad the friends'
+ * faces were bigger than your own hero, and three empty slots filled the foot).
+ * The picture can only grow with more width, so here the stats stack two to a
+ * row beside it and the picture takes about half the card: your hero is the
+ * biggest picture on the page. The numbers in the health bars are sized from
+ * the picture. The friends' row stops at a comfortable height, and the bag
+ * takes what is left.
+ */
+@container you-pane (min-height: 46em) {
+  .player--you > .sheet--card {
+    --card-art: min(52cqi, 36cqh, 22em);
+  }
+
+  .sheet--card .stat-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: minmax(0, 1fr);
+  }
+
+  .sheet--card .stat-row__value {
+    font-size: clamp(1.2em, calc(var(--card-art) * 0.09), 1.8em);
+  }
+
+  .hp-bar--card {
+    font-size: clamp(0.9em, calc(var(--card-art) * 0.065), 1.25em);
+  }
+
+  .hp-bar--friend {
+    font-size: 0.95em;
+  }
+
+  .player--you .you__row {
+    flex: 0 0 clamp(8.5em, 21cqh, 12.5em);
+  }
+}
+
+/* A very tall pane (a big iPad's drawer): the bag stops at two comfortable rows,
+   and the friends' faces take what is left rather than empty slots doing so. */
+@container you-pane (min-height: 58em) {
+  .player--you .you__row {
+    flex: 1 1 0;
+    min-block-size: 9em;
+  }
+
+  .player--you .you__bag {
+    flex: 0 0 20em;
+  }
+
+  .you__row .party-strip__list > li {
+    max-inline-size: 13em;
+  }
+
+  .hp-bar--friend {
+    font-size: 1.15em;
+  }
+
+  .you__row .party-strip__name {
+    font-size: 1.05em;
+  }
+}
