@@ -106,3 +106,42 @@ measurement after this change.
 See the [playtest plan](../../../../docs/campaigns/continental-rift/buried-bridge-playtest.md),
 [design audit](../../../../docs/reviews/riftlight-play-audit.md), and
 [engine route tests](../../../../tools/content/riftlight-bridge-play.test.ts).
+
+## Riftlight: risk converted away
+
+The owner played "The Borrowed Ruins" (`riftlight-bone-yard`) in November 2026 and found its
+story and flow far below Gemfall's. It validated, met its goal steps on every path, and its
+design note (`docs/campaigns/continental-rift/bone-yard-review.md`) still described a 43-scene
+spine with six checks. The file had moved on through two campaign-wide passes:
+
+| | Written (Oct 25) | "Meaningful challenges" (Oct 28) | "Shorter and plainer" (Oct 31) |
+|---|---:|---:|---:|
+| Scenes | 65 | 56 | 56 |
+| Dice checks | 6 | 0 | 0 |
+| Story interactions | 0 | 17 | 17 |
+| Words | 1,749 | 1,831 | 1,413 |
+
+All 17 games were inert: success, failure and assist went to the same scene with the same
+effects ("The spare mats come with you" three times). The pacing model gives games no time, so
+it predicted 20 minutes against the chapter's stated 30, and the trim pass read that as room to
+cut. Twelve Riftlight chapters came out the same way (`shape --chapter riftlight-`): bone-yard,
+buried-bridge, convergence, finale, reading-room, squall-temple, stone-counters,
+stuttering-flats, the-island-due-back, the-wrong-valley, whale-road and wyrm-nest. The opening
+and regional chapters kept their checks and their speakers.
+
+Findings from that review, as a model for the next one:
+
+| Check | Scene | Quote or finding | Kind |
+|---|---|---|---|
+| 5 | `riftlight-bone-yard/arrival` | "clear a safe way past those ruins ... take nothing": a task and a rule, no question; the ruins' origin is never this chapter's discovery | graph |
+| 5 | whole chapter | The only companion is "Skupper guide": no name, no want of her own, 11 scenes with a quoted line in 56 (Gemfall: 26 to 67) | wording |
+| 3 | `pack_mats` and 16 more | Inert games: a miss changes nothing | graph |
+| 3 | `limit`, `markers`, `support` | Every spine vote is gear-handling: mats, line or arches, plank or stone | graph |
+| 3 | `test`, `inventory`, `boundary`, `keep_account` | Echo votes through response scenes ending on one sentence | graph |
+| 3 | `inventory` to `handoff` | A bookkeeping tail of four scenes after the only fight | graph |
+| 3 | `fight` | The chapter's one risk is two crawlers and a stand-here objective | graph |
+
+The lesson for the skill: the principles were already written down (keep real risks, a
+consequence must outlast its result scene, packing belongs in narration). What was missing was
+a screen that shows when a whole campaign has drifted from them, and a rule that a pass over many
+chapters is played on one before it is applied to the rest.
