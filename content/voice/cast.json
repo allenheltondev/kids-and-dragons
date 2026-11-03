@@ -19,7 +19,7 @@
       ],
       "speaks": true,
       "status": "provisional",
-      "lineCount": 6206
+      "lineCount": 6244
     },
     "party": {
       "name": "The party",
@@ -38,7 +38,7 @@
       ],
       "speaks": true,
       "status": "provisional",
-      "lineCount": 60
+      "lineCount": 61
     },
     "pib": {
       "name": "Pib",
@@ -4739,20 +4739,19 @@
       },
       "lines": [
         {
+          "text": "A long pole and a small stone, and you can lift a mountain. Or at least a sled.",
+          "address": "riftlight-riftseekers-departure/sledge_pole/narration"
+        },
+        {
+          "text": "Ice nobody has tested? Let us mark a safe bank first, even if it takes till dark.",
+          "address": "riftlight-riftseekers-departure/olivia/narration"
+        },
+        {
           "text": "Why is the river on the wrong side of the mountain? It was never on that side.",
           "address": "riftlight-finale/figure/narration"
-        },
-        {
-          "text": "It does not take orders from whistles. Good. That would be a very bossy chime.",
-          "address": "riftlight-riftseekers-departure/chime_whistle/narration"
-        },
-        {
-          "text": "One more piece that doesn't match today's map. But matches something older.",
-          "address": "riftlight-buried-bridge/old_river/narration"
         }
       ],
-      "lineCount": 72,
-      "guessedLines": 1,
+      "lineCount": 73,
       "speaks": true,
       "status": "provisional"
     },
@@ -4839,15 +4838,15 @@
           "address": "riftlight-convergence/pip_choice/variants/1"
         },
         {
-          "text": "I have food in my pack. Carry it through an opening, and the herd eats today.",
-          "address": "riftlight-riftseekers-departure/olivia/narration"
+          "text": "A harbor, joined to a mountain? Just like that? Imagine what else could be joined!",
+          "address": "riftlight-riftseekers-departure/arrival_story/narration"
         },
         {
           "text": "There you are! You helped me at the whale road. You know I'm not reckless.",
           "address": "riftlight-convergence/olivia_plan/variants/0"
         }
       ],
-      "lineCount": 59,
+      "lineCount": 71,
       "speaks": true,
       "status": "provisional"
     },
@@ -4953,7 +4952,7 @@
           "address": "riftlight-riftseekers-departure/prep_seam/narration"
         }
       ],
-      "lineCount": 56,
+      "lineCount": 54,
       "speaks": true,
       "status": "provisional"
     },
@@ -4986,7 +4985,7 @@
           "address": "riftlight-exchange-rift/ship_cold/narration"
         },
         {
-          "text": "Never trust a map on a windy day. Look for me if you reach the islands. You'll know my washing.",
+          "text": "Never trust a map on a windy day. If you ever reach the islands, look for my washing.",
           "address": "riftlight-exchange-rift/ship_flap/narration"
         },
         {
@@ -4994,7 +4993,7 @@
           "address": "riftlight-sky-islands-arrival/ferry_in/narration"
         }
       ],
-      "lineCount": 11,
+      "lineCount": 12,
       "speaks": true,
       "status": "provisional"
     },
@@ -5034,7 +5033,7 @@
           "address": "riftlight-exchange-rift/gull_help/narration"
         }
       ],
-      "lineCount": 4,
+      "lineCount": 8,
       "speaks": true,
       "status": "provisional"
     },
@@ -5070,12 +5069,93 @@
           "address": "riftlight-exchange-rift/fish_slosh/narration"
         },
         {
-          "text": "I ordered ice. Ice stays where you put it.",
-          "address": "riftlight-exchange-rift/fish/narration"
+          "text": "Gently! They have had a very confusing morning.",
+          "address": "riftlight-exchange-rift/fish_buckets/narration"
         }
       ],
-      "lineCount": 4,
+      "lineCount": 5,
       "guessedLines": 1,
+      "speaks": true,
+      "status": "provisional"
+    },
+    "barge_pilot": {
+      "name": "Barge pilot",
+      "kind": "character",
+      "who": "Frogfolk barge pilot (he/him). Fussy, kind, talks to his barge. Lost his landing steps this morning and wants them back. Not Old Ossley.",
+      "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "entities/frogfolk",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-exchange-rift",
+          "key": "Barge pilot"
+        }
+      ],
+      "chapters": [
+        "riftlight-exchange-rift"
+      ],
+      "aliases": [],
+      "gemini": {
+        "voice": "Achird"
+      },
+      "lines": [
+        {
+          "text": "For the river. It keeps your feet sure on wet boards. Now, where did my landing go?",
+          "address": "riftlight-exchange-rift/delivery_moor/narration"
+        },
+        {
+          "text": "Pass the sacks friend to friend. And mind the puddles. Potatoes hate puddles.",
+          "address": "riftlight-exchange-rift/sack_chain/narration"
+        },
+        {
+          "text": "Six crews eating tonight. Mosslight. It glows when it's happy. Still need a way home.",
+          "address": "riftlight-exchange-rift/delivery_sacks/narration"
+        }
+      ],
+      "lineCount": 26,
+      "guessedLines": 6,
+      "speaks": true,
+      "status": "provisional"
+    },
+    "noodle_seller": {
+      "name": "Noodle seller",
+      "kind": "character",
+      "who": "She/her. Brisk, generous, talks to her soup pot as if it were a sulky pet.",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/soup_woman",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-exchange-rift",
+          "key": "Noodle seller"
+        }
+      ],
+      "chapters": [
+        "riftlight-exchange-rift"
+      ],
+      "aliases": [],
+      "gemini": {
+        "voice": "Callirrhoe"
+      },
+      "lines": [
+        {
+          "text": "For later. Don't tell the pot. The pot thinks everything is for the pot.",
+          "address": "riftlight-exchange-rift/awning_up/narration"
+        },
+        {
+          "text": "First, I need hands! This awning is heavy, and I pay in coins.",
+          "address": "riftlight-exchange-rift/market/narration"
+        },
+        {
+          "text": "Corners first. Any knot you like, as long as it holds.",
+          "address": "riftlight-exchange-rift/awning_tie/narration"
+        }
+      ],
+      "lineCount": 11,
       "speaks": true,
       "status": "provisional"
     },
@@ -5142,6 +5222,10 @@
           "key": "Yeti herder"
         },
         {
+          "chapter": "riftlight-riftseekers-departure",
+          "key": "Yeti herder"
+        },
+        {
           "chapter": "riftlight-stuttering-flats",
           "key": "Yeti herder"
         }
@@ -5159,20 +5243,20 @@
       },
       "lines": [
         {
+          "text": "Harbor slush? Then that is where my snow went. The glacier keeps surprising me.",
+          "address": "riftlight-glacier-survival/ask_help/narration"
+        },
+        {
           "text": "Three coins a pair. Quickest laces on the glacier. Or sit and be warm for free.",
           "address": "riftlight-glacier-survival/hall_table/narration"
         },
         {
           "text": "Not again. I'll fetch it and take it home. Or you can, and I'll stay with you.",
           "address": "riftlight-finale/kid_bridge/narration"
-        },
-        {
-          "text": "It wants you to say it back. Grandmother said the ice talks, if you're polite.",
-          "address": "riftlight-hidden-glacier-rift/seam_done/narration"
         }
       ],
-      "lineCount": 112,
-      "guessedLines": 1,
+      "lineCount": 133,
+      "guessedLines": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -5198,11 +5282,15 @@
       },
       "lines": [
         {
+          "text": "You hummed at the door! I heard you. You are halfway to the low song already.",
+          "address": "riftlight-glacier-survival/hall/variants/0"
+        },
+        {
           "text": "Stand here. Hum from your boots.",
           "address": "riftlight-glacier-survival/note_try/narration"
         }
       ],
-      "lineCount": 1,
+      "lineCount": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -6441,75 +6529,6 @@
       "speaks": true,
       "status": "provisional"
     },
-    "noodle_seller": {
-      "name": "Noodle seller",
-      "kind": "character",
-      "who": "Noodle seller.",
-      "pronouns": "she/her",
-      "pronounsFrom": "narration",
-      "gender": "female",
-      "genderFrom": "narration",
-      "figure": "cast/soup_woman",
-      "chapters": [
-        "riftlight-exchange-rift"
-      ],
-      "aliases": [],
-      "gemini": {
-        "voice": "Callirrhoe"
-      },
-      "lines": [
-        {
-          "text": "For later. Don't tell the pot. The pot thinks everything is for the pot.",
-          "address": "riftlight-exchange-rift/awning_up/narration"
-        },
-        {
-          "text": "First, I need hands! This awning is heavy, and I pay in coins.",
-          "address": "riftlight-exchange-rift/market/narration"
-        },
-        {
-          "text": "Eat it warm, or save it for somebody who needs it.",
-          "address": "riftlight-exchange-rift/noodle_buy/narration"
-        }
-      ],
-      "lineCount": 6,
-      "speaks": true,
-      "status": "provisional"
-    },
-    "barge_pilot": {
-      "name": "Barge pilot",
-      "kind": "character",
-      "who": "Barge pilot.",
-      "pronouns": "he/him",
-      "pronounsFrom": "narration",
-      "gender": "male",
-      "genderFrom": "narration",
-      "figure": "entities/frogfolk",
-      "chapters": [
-        "riftlight-exchange-rift"
-      ],
-      "aliases": [],
-      "gemini": {
-        "voice": "Achird"
-      },
-      "lines": [
-        {
-          "text": "For the river. It keeps your feet sure on wet boards. Now, where did my landing go?",
-          "address": "riftlight-exchange-rift/delivery_moor/narration"
-        },
-        {
-          "text": "Pass the sacks friend to friend. And mind the puddles. Potatoes hate puddles.",
-          "address": "riftlight-exchange-rift/sack_chain/narration"
-        },
-        {
-          "text": "Six crews eating tonight. Mosslight. It glows when it's happy. Still need a way home.",
-          "address": "riftlight-exchange-rift/delivery_sacks/narration"
-        }
-      ],
-      "lineCount": 12,
-      "guessedLines": 1,
-      "speaks": true,
-      "status": "provisional"
-    },
     "the_crows": {
       "name": "The crows",
       "kind": "character",
@@ -6591,8 +6610,8 @@
           "address": "riftlight-hidden-glacier-rift/search/narration"
         }
       ],
-      "lineCount": 2,
-      "guessedLines": 1,
+      "lineCount": 5,
+      "guessedLines": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -6600,8 +6619,10 @@
       "name": "Dock worker",
       "kind": "character",
       "who": "Dock worker.",
-      "gender": "unknown",
-      "genderFrom": "none",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
       "figure": "cast/dock_worker",
       "chapters": [
         "riftlight-exchange-rift"
@@ -6612,11 +6633,19 @@
       },
       "lines": [
         {
+          "text": "Under, then. Mind the puddles. They are very cold puddles.",
+          "address": "riftlight-exchange-rift/gap_crawl/narration"
+        },
+        {
+          "text": "Don't go near it. It's been pulling things since dawn.",
+          "address": "riftlight-exchange-rift/quay/narration"
+        },
+        {
           "text": "You saved my fish. Let us save that little one!",
           "address": "riftlight-exchange-rift/pull/variants/1"
         }
       ],
-      "lineCount": 2,
+      "lineCount": 16,
       "speaks": true,
       "status": "provisional"
     },
