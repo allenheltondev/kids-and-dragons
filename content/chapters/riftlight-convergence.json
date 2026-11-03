@@ -1968,5 +1968,14 @@
       ],
       "choices": []
     }
+  },
+  "presentation": {
+    "interactions": {
+      "grab_sled": {
+        "props": [
+          "rope-taut"
+        ]
+      }
+    }
   }
 }
