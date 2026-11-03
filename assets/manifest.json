@@ -1864,7 +1864,7 @@
     },
     {
       "id": "yeti_elder",
-      "name": "Reading-room elder",
+      "name": "Elder Murmur",
       "basis": "yeti",
       "scale": "large",
       "heightCm": 245,
@@ -2112,7 +2112,7 @@
     },
     {
       "id": "younger_keeper",
-      "name": "Younger keeper",
+      "name": "Flurry",
       "basis": "yeti",
       "scale": "large",
       "heightCm": 220,
