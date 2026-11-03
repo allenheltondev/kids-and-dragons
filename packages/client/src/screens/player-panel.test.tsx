@@ -1689,6 +1689,25 @@ describe("the party strip", () => {
     expect(screen.getByRole("button", { name: "Sparklehoof's character sheet" }).closest(".sheet")).not.toBeNull();
   });
 
+  it("draws each friend's health as a bar, and a friend who is down says so in words", () => {
+    mount({
+      party: [
+        member(),
+        member({ character: character({ id: "c_2", ownerPlayerId: "p_2", name: "Thistle", maxHp: 10 }), hp: 3 }),
+        member({ character: character({ id: "c_3", ownerPlayerId: "p_3", name: "Bramble", maxHp: 10 }), hp: 0, down: true }),
+      ],
+    });
+    const thistle = screen.getByRole("button", { name: "Thistle's character sheet" });
+    expect(thistle.querySelector<HTMLElement>(".sheet__hp-fill")?.style.inlineSize).toBe("30%");
+    expect(thistle.querySelector(".hp-bar")?.classList.contains("hp-bar--low")).toBe(true);
+    expect(thistle.textContent).toContain("3/10");
+    const bramble = screen.getByRole("button", { name: "Bramble's character sheet" });
+    expect(bramble.textContent).toContain("Down");
+    expect(bramble.querySelector<HTMLElement>(".sheet__hp-fill")?.style.inlineSize).toBe("0%");
+    // Your own health is the bar across your picture, on your card.
+    expect(document.querySelector(".sheet--card .hp-bar--card")).not.toBeNull();
+  });
+
   it("has no row at all for a hero playing alone", () => {
     mount({ party: [member()] });
     expect(screen.queryByRole("list", { name: "Your friends" })).toBeNull();

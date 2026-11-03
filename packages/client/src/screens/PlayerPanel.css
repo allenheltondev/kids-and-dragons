@@ -1663,17 +1663,16 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
   white-space: nowrap;
 }
 
-.party-strip__hp {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25em;
-  font-size: 0.8em;
-  font-weight: 700;
-  color: var(--color-text-muted, #b7b0d8);
+/* A friend's health, under their name: the bar a little narrower than the card. */
+.hp-bar--friend {
+  inline-size: 100%;
+  max-inline-size: 7.5em;
+  font-size: 0.75em;
 }
 
-.party-strip__hp--down {
-  color: var(--color-accent, #ffc95c);
+/* Knocked down: the face dims, and the bar says "Down" in words. */
+.party-strip__button--down .party-strip__portrait {
+  filter: grayscale(0.6) brightness(0.8);
 }
 
 .you__row .party-strip__mark {
@@ -1695,7 +1694,7 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
     flex: 0 0 auto;
   }
   .you__row .party-strip__name,
-  .you__row .party-strip__hp {
+  .you__row .hp-bar--friend {
     display: none;
   }
   .you__row .party-strip__portrait {
@@ -1927,10 +1926,9 @@ html:not([data-contrast="high"]) .player__you .inv__slot--empty {
   /* The name gets the whole width beside the picture (health sits under it), so a
      long name at the largest text keeps its words whole. */
   grid-template-columns: auto minmax(0, 1fr);
-  grid-template-rows: auto auto minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
   grid-template-areas:
     "art id"
-    "art hp"
     "art stats";
   align-items: start;
   column-gap: var(--space-3, 0.75em);
@@ -1968,7 +1966,40 @@ html:not([data-contrast="high"]) .player__you .inv__slot--empty {
 }
 
 .sheet--card .sheet__id { grid-area: id; }
-.sheet--card .sheet__hp { grid-area: hp; align-items: flex-start; }
+/* On the card, health is the bar across the foot of the picture; the strip's
+   words stay for a screen reader, out of sight. */
+.sheet--card {
+  position: relative;
+}
+
+.sheet--card .sheet__hp {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  align-items: flex-start;
+  min-inline-size: 0;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.sheet--card .sheet__portrait {
+  position: relative;
+}
+
+.hp-bar--card {
+  position: absolute;
+  inset-inline: 0.35em;
+  inset-block-end: 0.35em;
+  z-index: 1;
+  padding: 0.3em 0.5em;
+  border-radius: 999px;
+  background: rgb(13 11 26 / 72%);
+  color: var(--color-text, #f4f1ff);
+  font-size: 0.8em;
+}
 
 .sheet--card .stat-row {
   grid-area: stats;
@@ -1995,6 +2026,18 @@ html:not([data-contrast="high"]) .player__you .inv__slot--empty {
   .sheet--card .stat-row__name {
     display: none;
   }
+  .sheet--card .hp-bar--card {
+    display: none;
+  }
+  .sheet--card .sheet__hp {
+    position: static;
+    inline-size: auto;
+    block-size: auto;
+    overflow: visible;
+    clip-path: none;
+    grid-area: hp;
+    align-items: flex-start;
+  }
 }
 
 /* A tall pane: bigger numbers in taller tiles beside the bigger picture. */
@@ -2014,4 +2057,52 @@ html:not([data-contrast="high"]) .player__you .inv__slot--empty {
 }
 .sheet--card .sheet__meta > span[aria-hidden="true"] {
   display: none;
+}
+
+/* --- Health as a bar ------------------------------------------------------ */
+
+/* The heart, the bar, and the number. The brass frame over the track is chrome.css's
+   (`.sheet__hp-track`); with high contrast the track is a plain outlined groove. */
+.hp-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.hp-bar .sheet__hp-track {
+  flex: 1 1 auto;
+  display: block;
+  min-inline-size: 2.5em;
+  block-size: 0.7em;
+  border-radius: 999px;
+  background: var(--color-surface-sunken, #120f26);
+  box-shadow: inset 0 0 0 1px var(--color-border, #3a3468);
+  overflow: hidden;
+}
+
+.hp-bar .sheet__hp-fill {
+  display: block;
+  block-size: 100%;
+  border-radius: 999px;
+  background: linear-gradient(to bottom, #ff86a3, #e0446a);
+  transition: inline-size 320ms ease-out;
+}
+
+/* A third or less left: amber, so it reads as "careful" as well as by its length. */
+.hp-bar--low .sheet__hp-fill {
+  background: linear-gradient(to bottom, #ffd27a, #f0a03c);
+}
+
+.hp-bar__value {
+  white-space: nowrap;
+}
+
+.hp-bar--down {
+  color: var(--color-accent, #ffc95c);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hp-bar .sheet__hp-fill { transition: none; }
 }

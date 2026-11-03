@@ -269,6 +269,26 @@ function ConfirmBar({
 // Sheet
 // ---------------------------------------------------------------------------
 
+/**
+ * Health as a bar (playtest, November 2026): a kid reads a half-empty bar as "hurt" at a glance,
+ * where "6/10" is a fraction to work out. The number stays beside it for the grown-ups. The brass
+ * frame is the art drawn for it (chrome.css `.sheet__hp-track`); the fill is CSS so it can move.
+ * Knocked down says "Down" in words, never only by an empty bar or a colour. Drawn, not read: the
+ * hero's own health is still said by the strip's words, a friend's by their sheet.
+ */
+function HpBar({ hp, max, down, className = "" }: { hp: number; max: number; down: boolean; className?: string }): ReactElement {
+  const share = down || max <= 0 ? 0 : Math.max(0, Math.min(1, hp / max));
+  return (
+    <span className={`hp-bar${down ? " hp-bar--down" : share <= 0.34 ? " hp-bar--low" : ""} ${className}`.trim()} aria-hidden="true">
+      <Icon name={down ? "down" : "heart"} />
+      <span className="sheet__hp-track">
+        <span className="sheet__hp-fill" style={{ inlineSize: `${String(Math.round(share * 100))}%` }} />
+      </span>
+      <span className="hp-bar__value">{down ? "Down" : `${String(hp)}/${String(max)}`}</span>
+    </span>
+  );
+}
+
 function IdentityStrip({ me, onOpenSheet, stats }: { me: PartyMember; onOpenSheet?: (() => void) | undefined; stats?: ReactNode }): ReactElement {
   const { character } = me;
   /*
@@ -300,6 +320,7 @@ function IdentityStrip({ me, onOpenSheet, stats }: { me: PartyMember; onOpenShee
         <button type="button" className="sheet__portrait sheet__portrait--open kad-tap kad-focusable"
           aria-label={`${character.name}'s character sheet`} onClick={onOpenSheet}>
           {portrait}
+          {stats ? <HpBar hp={me.hp} max={character.maxHp} down={me.down} className="hp-bar--card" /> : null}
         </button>
       ) : (
         <span className="sheet__portrait" aria-hidden="true">{portrait}</span>
@@ -2133,7 +2154,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
               <li key={member.playerId}>
                 <button
                   type="button"
-                  className="party-strip__button kad-tap kad-focusable"
+                  className={`party-strip__button kad-tap kad-focusable${member.down ? " party-strip__button--down" : ""}`}
                   aria-label={`${member.character.name}'s character sheet`}
                   onClick={() => setSheetFor(member.character.id)}
                 >
@@ -2149,10 +2170,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                   </span>
                   <span className="party-strip__name">{member.character.name}</span>
                   {/* Their health, so who is hurt is seen at a glance (who needs a potion, who to help up). */}
-                  <span className={`party-strip__hp${member.down ? " party-strip__hp--down" : ""}`} aria-hidden="true">
-                    <Icon name={member.down ? "down" : "heart"} />
-                    <span>{member.down ? "Down" : `${String(member.hp)}/${String(member.character.maxHp)}`}</span>
-                  </span>
+                  <HpBar hp={member.hp} max={member.character.maxHp} down={member.down} className="hp-bar--friend" />
                   {/* A souvenir is permanent and worth advertising (spec §8.3);
                       the count is the hook that makes anybody open the sheet. */}
                   {member.character.souvenirs.length > 0 ? (
