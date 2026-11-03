@@ -1252,7 +1252,7 @@
     },
     "stone_arrow": {
       "type": "interaction",
-      "narration": "Pass the flat stones down the line to build a giant arrow pointing away from the water. \"Big as a sled,\" says Hummock.",
+      "narration": "Lay flat stones in a giant arrow pointing away from the water. \"Big as a sled,\" says Hummock. \"Tail by the water, point up the safe path.\"",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -1265,10 +1265,36 @@
       ],
       "art": "scenes/riftlight/wrong-valley",
       "interaction": {
-        "kind": "relay",
-        "objectLabel": "flat stone",
-        "cue": "Catch the stone, then pass it on.",
-        "actionLabel": "Pass it!"
+        "kind": "sequence",
+        "cue": "Lay the arrow so it points away from the water.",
+        "actionLabel": "Lay the stones!",
+        "options": [
+          {
+            "id": "point",
+            "label": "Point stones, up the safe path",
+            "icon": "arrow"
+          },
+          {
+            "id": "tail",
+            "label": "Tail stones, by the water",
+            "icon": "drop"
+          },
+          {
+            "id": "shaft",
+            "label": "Long shaft stones",
+            "icon": "hand"
+          }
+        ],
+        "answer": [
+          "tail",
+          "shaft",
+          "point"
+        ],
+        "clues": [
+          "Start at the water's edge with the tail.",
+          "The long shaft runs from the tail up the slope.",
+          "Finish with the point, aimed up the safe path."
+        ]
       },
       "onSuccess": {
         "goto": "warning_lit",

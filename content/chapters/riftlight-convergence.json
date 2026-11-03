@@ -1597,13 +1597,13 @@
           "when": {
             "flag": "pip_stayed_back"
           },
-          "text": "He stays behind the line, next to Bram. \"Lady Olivia says a real scout goes first,\" he says slowly. \"But you didn't go first. You stayed, and kept everyone safe.\" He crosses something out in his notebook and writes something new."
+          "text": "Pip stays behind the line, next to Bram. \"Lady Olivia says a real scout goes first,\" Pip says slowly. \"But you didn't go first. You stayed, and kept everyone safe.\" He crosses something out in his notebook and writes something new."
         },
         {
           "when": {
             "notFlag": "pip_stayed_back"
           },
-          "text": "He stays right at Olivia's side, chin up, copying the way she stands. \"Lady Olivia says a real scout goes first,\" he says. \"And you stood with her. So I will too.\""
+          "text": "Pip stays right at Olivia's side, chin up, copying the way she stands. \"Lady Olivia says a real scout goes first,\" Pip says. \"And you stood with her. So I will too.\""
         }
       ],
       "cast": [

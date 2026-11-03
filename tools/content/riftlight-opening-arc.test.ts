@@ -62,18 +62,11 @@ function walk(chapter: Chapter, plan: Plan, defaults: Record<string, string> = {
 }
 
 /**
- * Real controls where the helper can miss them; a relay, cooperation, balance or
- * play miss is put straight into its result, as the exhaustive walker does (their
- * misses are played for real in packages/shared/src/interactions.test.ts).
+ * Real controls only. A relay, cooperation, balance or play game cannot fail in the engine,
+ * so asking one for a miss throws instead of inventing a branch no party can take (PR #606 review).
  */
 function play(state: RunState, chapter: Chapter, outcome: Outcome) {
-  if (state.prompt?.kind !== "interaction") throw new Error("Expected interaction");
-  if (outcome !== "failure" || !["relay", "cooperate", "balance", "play"].includes(state.prompt.spec.kind)) return finishInteraction(state, chapter, outcome);
-  const resolved = structuredClone(state);
-  if (resolved.prompt?.kind !== "interaction") throw new Error("Expected interaction");
-  resolved.prompt.phase = "result";
-  resolved.prompt.outcome = outcome;
-  return send(resolved, { type: "INTERACT", action: "continue", openedSeq: resolved.prompt.openedSeq, attempt: resolved.prompt.attempt }, chapter);
+  return finishInteraction(state, chapter, outcome);
 }
 
 /** True when no ending can be reached from the entry without passing `scene`: every route walks through it. */
@@ -180,10 +173,22 @@ describe("the Exchange: where is the snow coming from?", () => {
     }
   });
 
-  it("a cold kid at the ridge costs the party warmth", () => {
-    const warm = walk(exchange, { hp: 5, plays: { ridge_lee: "success" } }, DEFAULTS).state;
-    const cold = walk(exchange, { hp: 5, plays: { ridge_lee: "failure" } }, DEFAULTS).state;
-    expect(hp(cold)[0]).toBe(hp(warm)[0]! - 1);
+  it("warming the kid at the ridge is free play that cannot fail, so it carries no hidden cost", () => {
+    // A play game only ever succeeds in the engine (PR #606 review): its onFailure used to
+    // promise a lost heart that no party could ever pay.
+    const lee = exchange.scenes.ridge_lee!;
+    if (lee.type !== "interaction") throw new Error("Expected interaction");
+    expect(lee.interaction.kind).toBe("play");
+    expect(lee.onFailure).toEqual(lee.onSuccess);
+    expect(lee.onSuccess.effects ?? []).toEqual([]);
+  });
+
+  it("carrying the kid through the gusts is a timing game whose miss really drifts the party", () => {
+    const walkScene = exchange.scenes.ridge_walk!;
+    if (walkScene.type !== "interaction") throw new Error("Expected interaction");
+    expect(walkScene.interaction.kind).toBe("timing");
+    expect(walkScene.onFailure.goto).toBe("ridge_drift");
+    expect(walkScene.onSuccess.goto).not.toBe("ridge_drift");
   });
 });
 

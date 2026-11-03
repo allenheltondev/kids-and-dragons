@@ -4651,19 +4651,19 @@
       },
       "lines": [
         {
+          "text": "Lady Olivia says a real scout goes first. And you stood with her. So I will too.",
+          "address": "riftlight-convergence/pip_choice/variants/1"
+        },
+        {
           "text": "Lady Olivia says a good scout saves the most important thing. Which one was it?",
           "address": "riftlight-the-island-due-back/gust_after/narration"
         },
         {
           "text": "Lady Olivia would bang some pots and shoo it out the far tunnel. Done by lunch!",
           "address": "riftlight-wyrm-nest/plan/narration"
-        },
-        {
-          "text": "Lady Olivia says a good scout learns everything. That has to include lanterns.",
-          "address": "riftlight-whale-road/pip_lanterns/narration"
         }
       ],
-      "lineCount": 170,
+      "lineCount": 175,
       "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
@@ -4845,19 +4845,19 @@
       },
       "lines": [
         {
-          "text": "Lady Olivia says a real scout goes first. And you stood with her. So I will too.",
-          "address": "riftlight-convergence/pip_choice/variants/1"
-        },
-        {
           "text": "A harbor, joined to a mountain? Just like that? Imagine what else could be joined!",
           "address": "riftlight-riftseekers-departure/arrival_story/narration"
         },
         {
           "text": "There you are! You helped me at the whale road. You know I'm not reckless.",
           "address": "riftlight-convergence/olivia_plan/variants/0"
+        },
+        {
+          "text": "You helped me at the whale road. And now you've told me no. I suppose friends do both.",
+          "address": "riftlight-convergence/stopped/variants/0"
         }
       ],
-      "lineCount": 72,
+      "lineCount": 71,
       "speaks": true,
       "status": "provisional"
     },
@@ -4890,19 +4890,19 @@
       },
       "lines": [
         {
-          "text": "Lady Olivia says a real scout goes first. But you didn't go first. You stayed, and kept everyone safe.",
-          "address": "riftlight-convergence/pip_choice/variants/0"
-        },
-        {
           "text": "Help me stop her. Before it pulls somebody in.",
           "address": "riftlight-convergence/decision/narration"
         },
         {
           "text": "Real scouts go first, when it's their turn!",
           "address": "riftlight-finale/recover_pip/narration"
+        },
+        {
+          "text": "If anything goes wrong tonight, I have a signal. Two claps and a stomp. It means stop. Everybody stops. Even unicorns.",
+          "address": "riftlight-convergence/rest_bram/narration"
         }
       ],
-      "lineCount": 16,
+      "lineCount": 15,
       "speaks": true,
       "status": "provisional"
     },
@@ -4955,15 +4955,15 @@
           "address": "riftlight-saltrot-arrival/lesson/narration"
         },
         {
-          "text": "Lady Olivia says moved places are the most important places. Help me listen?",
-          "address": "riftlight-sky-islands-arrival/lesson/variants/0"
-        },
-        {
           "text": "Listen for a tick. Listen for a hum. A hum that holds still can be learned.",
           "address": "riftlight-riftseekers-departure/prep_seam/narration"
+        },
+        {
+          "text": "Help me listen? A starweaver can learn to answer a rift's hum. That is called Attune.",
+          "address": "riftlight-sky-islands-arrival/lesson/narration"
         }
       ],
-      "lineCount": 54,
+      "lineCount": 53,
       "speaks": true,
       "status": "provisional"
     },
@@ -5843,8 +5843,8 @@
           "address": "riftlight-the-wrong-valley/sledge_stops/narration"
         },
         {
-          "text": "That never made sense. The river never went that way.",
-          "address": "riftlight-the-wrong-valley/old_road/narration"
+          "text": "Big as a sled. Tail by the water, point up the safe path.",
+          "address": "riftlight-the-wrong-valley/stone_arrow/narration"
         }
       ],
       "lineCount": 32,
@@ -6845,18 +6845,9 @@
       "gemini": {
         "voice": "Algenib"
       },
-      "lines": [
-        {
-          "text": "Lady Olivia says you find out if something's friendly by giving it a poke.",
-          "address": "riftlight-wyrm-nest/pip_poke/narration"
-        },
-        {
-          "text": "Lady Olivia, may have been wrong about lizards.",
-          "address": "riftlight-wyrm-nest/pip_pokes/narration"
-        }
-      ],
-      "lineCount": 2,
-      "speaks": true,
+      "lines": [],
+      "lineCount": 0,
+      "speaks": false,
       "status": "provisional"
     },
     "aunt_bellow": {
