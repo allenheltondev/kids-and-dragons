@@ -8042,364 +8042,205 @@
         "valley_change",
         "valley_record"
       ],
+      "entryByFlag": {
+        "fragment_coast_learned": [
+          "river_evidence"
+        ]
+      },
       "scenes": {
         "arrival": {
+          "requires": [],
+          "introduces": {
+            "murmur": "\"Elder Murmur,\"",
+            "reading_room": "I keep the reading room",
+            "memory_ice": "Our memory ice may know"
+          }
+        },
+        "pip_here": {
           "requires": [
-            "orin",
+            "murmur"
+          ],
+          "introduces": {
+            "pip": "Pip Thistledown, the young manticore scout"
+          }
+        },
+        "stair": {
+          "requires": [
+            "murmur",
+            "pip",
+            "olivia"
+          ],
+          "introduces": {
+            "tea_tray": "a tea tray on a string"
+          }
+        },
+        "check_tiptoe": {
+          "requires": [
+            "murmur"
+          ],
+          "introduces": {}
+        },
+        "check_sled": {
+          "requires": [
+            "tea_tray",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "glide": {
+          "requires": [
+            "pip",
+            "tea_tray"
+          ],
+          "introduces": {}
+        },
+        "room": {
+          "requires": [
+            "murmur",
+            "reading_room"
+          ],
+          "introduces": {
+            "readers": "Yeti readers in blankets"
+          }
+        },
+        "tuft": {
+          "requires": [
+            "murmur",
+            "readers"
+          ],
+          "introduces": {
+            "tuft": "\"This is Flurry,\"",
+            "slates": "a stack of slates",
+            "new_room": "our new reading room",
+            "builders": "when the builders finish carving it"
+          }
+        },
+        "check_icicle": {
+          "requires": [
+            "tuft",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "snap_icicle": {
+          "requires": [
+            "tuft",
+            "slates"
+          ],
+          "introduces": {}
+        },
+        "ask_wall": {
+          "requires": [
+            "murmur"
+          ],
+          "introduces": {
+            "old_wall": "The old wall is through there"
+          }
+        },
+        "drips": {
+          "requires": [
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "yelp": {
+          "requires": [
+            "pip",
+            "old_wall"
+          ],
+          "introduces": {}
+        },
+        "check_ledge": {
+          "requires": [
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "lamp_fall": {
+          "requires": [
+            "pip",
             "olivia",
-            "listening_chime",
-            "chime_rules",
-            "learned_note",
-            "hall",
-            "riftseekers",
-            "valley_change",
-            "valley_record"
-          ],
-          "introduces": {
-            "room_arrival": "An elder yeti welcomes you into a room cut from the glacier."
-          }
-        },
-        "quiet_rule": {
-          "requires": [
-            "room_arrival"
-          ],
-          "introduces": {
-            "quiet_rule": "The elder sets down the tea."
-          }
-        },
-        "witness_first": {
-          "requires": [
-            "quiet_rule"
-          ],
-          "introduces": {
-            "witness_first": "The route worker gives the elder a drawing of the two valleys."
-          }
-        },
-        "witness_first_1": {
-          "requires": [
-            "witness_first"
+            "old_wall"
           ],
           "introduces": {}
-        },
-        "witness_first_2": {
-          "requires": [
-            "witness_first"
-          ],
-          "introduces": {}
-        },
-        "catalog_cards": {
-          "requires": [
-            "witness_first"
-          ],
-          "introduces": {
-            "catalog_cards": "The elder joins a standing-place card"
-          }
         },
         "listening_floor": {
           "requires": [
-            "catalog_cards"
+            "hall",
+            "olivia",
+            "pip",
+            "old_wall"
+          ],
+          "introduces": {}
+        },
+        "pebble_drop": {
+          "requires": [
+            "pip",
+            "old_wall"
+          ],
+          "introduces": {}
+        },
+        "hall_song": {
+          "requires": [
+            "hall",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "old_wall": {
+          "requires": [
+            "listening_chime",
+            "olivia",
+            "murmur",
+            "old_wall"
           ],
           "introduces": {
-            "listening_floor": "A faint low song travels through the floor from a hall elsewhere in the ice."
+            "lamp": "one reading lamp hung beside it"
           }
         },
-        "support_ice": {
+        "ring_chime": {
           "requires": [
-            "listening_floor"
+            "listening_chime",
+            "murmur"
+          ],
+          "introduces": {}
+        },
+        "wait_slow": {
+          "requires": [
+            "lamp",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "wait_long": {
+          "requires": [
+            "lamp",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "wait_knack": {
+          "requires": [
+            "lamp",
+            "hall"
+          ],
+          "introduces": {}
+        },
+        "song_still": {
+          "requires": [
+            "learned_note",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "old_river": {
+          "requires": [
+            "valley_change",
+            "pip",
+            "murmur"
           ],
           "introduces": {
-            "support_ice": "The close reading place needs a settled cradle to catch flakes."
-          }
-        },
-        "support_ice_1": {
-          "requires": [
-            "support_ice"
-          ],
-          "introduces": {}
-        },
-        "support_ice_1_check": {
-          "requires": [
-            "support_ice"
-          ],
-          "introduces": {}
-        },
-        "support_ice_1_done": {
-          "requires": [
-            "support_ice"
-          ],
-          "introduces": {}
-        },
-        "support_ice_1_changed": {
-          "requires": [
-            "support_ice"
-          ],
-          "introduces": {}
-        },
-        "support_ice_2": {
-          "requires": [
-            "support_ice"
-          ],
-          "introduces": {}
-        },
-        "support_ice_2_check": {
-          "requires": [
-            "support_ice"
-          ],
-          "introduces": {}
-        },
-        "support_ice_2_done": {
-          "requires": [
-            "support_ice"
-          ],
-          "introduces": {}
-        },
-        "support_ice_2_changed": {
-          "requires": [
-            "support_ice"
-          ],
-          "introduces": {}
-        },
-        "first_memory": {
-          "requires": [
-            "support_ice"
-          ],
-          "introduces": {
-            "first_memory": "The pale ice clears."
-          }
-        },
-        "first_memory_1": {
-          "requires": [
-            "first_memory"
-          ],
-          "introduces": {}
-        },
-        "first_memory_2": {
-          "requires": [
-            "first_memory"
-          ],
-          "introduces": {}
-        },
-        "second_view": {
-          "requires": [
-            "first_memory"
-          ],
-          "introduces": {
-            "second_view": "The elder leads you to a second marked viewpoint, still on the safe floor."
-          }
-        },
-        "second_view_1": {
-          "requires": [
-            "second_view"
-          ],
-          "introduces": {}
-        },
-        "second_view_1_check": {
-          "requires": [
-            "second_view"
-          ],
-          "introduces": {}
-        },
-        "second_view_1_done": {
-          "requires": [
-            "second_view"
-          ],
-          "introduces": {
-            "memory_ridge_evidence": "two ridge profiles agree"
-          }
-        },
-        "second_view_1_changed": {
-          "requires": [
-            "second_view"
-          ],
-          "introduces": {
-            "memory_helped_view": "the elder's side view"
-          }
-        },
-        "second_view_2": {
-          "requires": [
-            "second_view"
-          ],
-          "introduces": {}
-        },
-        "second_view_2_check": {
-          "requires": [
-            "second_view"
-          ],
-          "introduces": {}
-        },
-        "second_view_2_done": {
-          "requires": [
-            "second_view"
-          ],
-          "introduces": {
-            "memory_rock_evidence": "three rocks in order"
-          }
-        },
-        "second_view_2_changed": {
-          "requires": [
-            "second_view"
-          ],
-          "introduces": {
-            "memory_helped_view": "the elder's side view"
-          }
-        },
-        "what_matches": {
-          "requires": [
-            "second_view"
-          ],
-          "introduces": {
-            "what_matches": "The outside drawing and memory account lie on the elder's table."
-          },
-          "conditional": [
-            {
-              "flag": "memory_independent_reading",
-              "notFlag": "memory_rock_sequence",
-              "requires": [
-                "memory_ridge_evidence"
-              ]
-            },
-            {
-              "flag": "memory_rock_sequence",
-              "requires": [
-                "memory_rock_evidence"
-              ]
-            },
-            {
-              "notFlag": "memory_independent_reading",
-              "requires": [
-                "memory_helped_view"
-              ]
-            }
-          ]
-        },
-        "what_matches_1": {
-          "requires": [
-            "what_matches"
-          ],
-          "introduces": {},
-          "conditional": [
-            {
-              "flag": "memory_rock_sequence",
-              "requires": [
-                "memory_rock_evidence"
-              ]
-            },
-            {
-              "notFlag": "memory_rock_sequence",
-              "requires": [
-                "memory_ridge_evidence"
-              ]
-            }
-          ]
-        },
-        "what_matches_2": {
-          "requires": [
-            "what_matches"
-          ],
-          "introduces": {}
-        },
-        "catalog_test": {
-          "requires": [
-            "what_matches"
-          ],
-          "introduces": {
-            "catalog_test": "A younger yeti keeper brings a fresh catalog slip."
-          }
-        },
-        "catalog_test_1": {
-          "requires": [
-            "catalog_test"
-          ],
-          "introduces": {}
-        },
-        "catalog_test_1_check": {
-          "requires": [
-            "catalog_test"
-          ],
-          "introduces": {}
-        },
-        "catalog_test_1_done": {
-          "requires": [
-            "catalog_test"
-          ],
-          "introduces": {
-            "catalog_independent_path": "without a keeper guiding her"
-          }
-        },
-        "catalog_test_1_changed": {
-          "requires": [
-            "catalog_test"
-          ],
-          "introduces": {
-            "catalog_staff_help": "sit with the next reader"
-          }
-        },
-        "catalog_test_2": {
-          "requires": [
-            "catalog_test"
-          ],
-          "introduces": {}
-        },
-        "catalog_test_2_check": {
-          "requires": [
-            "catalog_test"
-          ],
-          "introduces": {}
-        },
-        "catalog_test_2_done": {
-          "requires": [
-            "catalog_test"
-          ],
-          "introduces": {
-            "catalog_independent_path": "without a keeper guiding her"
-          }
-        },
-        "catalog_test_2_changed": {
-          "requires": [
-            "catalog_test"
-          ],
-          "introduces": {
-            "catalog_staff_help": "sit with the next reader"
-          }
-        },
-        "sliding_tray": {
-          "requires": [
-            "catalog_test"
-          ],
-          "introduces": {
-            "sliding_tray": "A shallow tray holds blank slips and chalk."
-          }
-        },
-        "sliding_tray_1": {
-          "requires": [
-            "sliding_tray"
-          ],
-          "introduces": {}
-        },
-        "sliding_tray_1_check": {
-          "requires": [
-            "sliding_tray"
-          ],
-          "introduces": {}
-        },
-        "sliding_tray_1_done": {
-          "requires": [
-            "sliding_tray"
-          ],
-          "introduces": {}
-        },
-        "sliding_tray_1_changed": {
-          "requires": [
-            "sliding_tray"
-          ],
-          "introduces": {}
-        },
-        "compare_accounts": {
-          "requires": [
-            "sliding_tray"
-          ],
-          "introduces": {
-            "compare_accounts": "The elder asks whether your party has another checked observation of a river where today's geography does not fit it."
+            "paths_fragment": "The memory ice shows the river leaving by a different valley."
           },
           "conditional": [
             {
@@ -8410,240 +8251,237 @@
             }
           ]
         },
-        "compare_accounts_1": {
+        "deep_sound": {
           "requires": [
-            "compare_accounts"
-          ],
-          "introduces": {}
-        },
-        "compare_accounts_2": {
-          "requires": [
-            "compare_accounts"
-          ],
-          "introduces": {}
-        },
-        "claim_limit": {
-          "requires": [
-            "compare_accounts"
+            "listening_chime",
+            "murmur",
+            "pip"
           ],
           "introduces": {
-            "claim_limit": "Pip reads the draft."
+            "deep_sound": "something sighs",
+            "old_ice_warning": "Do not shout near the old ice"
           }
         },
-        "record_choice": {
+        "hush_pip": {
           "requires": [
-            "claim_limit"
-          ],
-          "introduces": {
-            "record_choice": "The elder offers to keep a copy of your party's finished comparison."
-          },
-          "conditional": [
-            {
-              "flag": "memory_catalog_clear",
-              "requires": [
-                "catalog_independent_path"
-              ]
-            }
-          ]
-        },
-        "record_choice_1": {
-          "requires": [
-            "record_choice"
+            "olivia",
+            "pip",
+            "deep_sound"
           ],
           "introduces": {}
         },
-        "record_choice_2": {
+        "shaking": {
           "requires": [
-            "record_choice"
+            "tuft",
+            "slates",
+            "murmur",
+            "reading_room"
           ],
           "introduces": {}
         },
-        "teach_back": {
+        "copy_flash": {
           "requires": [
-            "record_choice"
+            "pip"
           ],
           "introduces": {
-            "teach_back": "An arriving yeti visitor waits at the warm cup."
-          },
-          "conditional": [
-            {
-              "flag": "memory_guide_published",
-              "requires": [
-                "catalog_independent_path"
-              ]
-            },
-            {
-              "flag": "memory_notes_shared",
-              "notFlag": "memory_catalog_clear",
-              "requires": [
-                "catalog_staff_help"
-              ]
-            }
-          ]
+            "copy": "then draw it in order"
+          }
+        },
+        "copy_steady": {
+          "requires": [
+            "pip"
+          ],
+          "introduces": {
+            "copy": "then draw it in order"
+          }
+        },
+        "copy_late": {
+          "requires": [
+            "pip"
+          ],
+          "introduces": {
+            "copy": "then draw it in order"
+          }
+        },
+        "slates_broken": {
+          "requires": [
+            "slates",
+            "tuft"
+          ],
+          "introduces": {}
+        },
+        "check_slates": {
+          "requires": [
+            "slates",
+            "tuft",
+            "readers"
+          ],
+          "introduces": {}
+        },
+        "fading": {
+          "requires": [
+            "pip",
+            "old_wall"
+          ],
+          "introduces": {}
+        },
+        "compare": {
+          "requires": [
+            "murmur",
+            "pip",
+            "copy",
+            "reading_room"
+          ],
+          "introduces": {
+            "pip_sketch": "Pip's sketch of the valley you crossed today"
+          }
+        },
+        "check_match": {
+          "requires": [
+            "copy",
+            "pip_sketch",
+            "murmur"
+          ],
+          "introduces": {}
+        },
+        "match_unsure": {
+          "requires": [
+            "pip_sketch",
+            "olivia",
+            "old_wall",
+            "murmur"
+          ],
+          "introduces": {}
+        },
+        "match_high": {
+          "requires": [
+            "copy",
+            "murmur"
+          ],
+          "introduces": {}
+        },
+        "match_low": {
+          "requires": [
+            "copy",
+            "murmur"
+          ],
+          "introduces": {}
+        },
+        "old_slates": {
+          "requires": [
+            "slates",
+            "tuft",
+            "murmur"
+          ],
+          "introduces": {}
+        },
+        "bridge_pattern": {
+          "requires": [
+            "river_evidence",
+            "murmur"
+          ],
+          "introduces": {}
+        },
+        "matched": {
+          "requires": [
+            "valley_change",
+            "tuft",
+            "murmur"
+          ],
+          "introduces": {}
+        },
+        "tuft_worry": {
+          "requires": [
+            "tuft",
+            "new_room"
+          ],
+          "introduces": {}
+        },
+        "check_tuft": {
+          "requires": [
+            "tuft",
+            "builders"
+          ],
+          "introduces": {}
+        },
+        "tuft_brave": {
+          "requires": [
+            "tuft",
+            "new_room"
+          ],
+          "introduces": {}
+        },
+        "pip_idea": {
+          "requires": [
+            "olivia",
+            "pip",
+            "tuft"
+          ],
+          "introduces": {}
+        },
+        "pip_wonders": {
+          "requires": [
+            "olivia",
+            "tuft"
+          ],
+          "introduces": {}
+        },
+        "pip_dreams": {
+          "requires": [
+            "tuft",
+            "murmur",
+            "old_wall"
+          ],
+          "introduces": {}
         },
         "rest": {
           "requires": [
-            "teach_back"
+            "murmur",
+            "readers"
           ],
           "introduces": {}
         },
-        "second_view_prepared": {
+        "murmur_tale": {
           "requires": [
-            "first_memory",
-            "second_view"
-          ],
-          "introduces": {},
-          "conditional": [
-            {
-              "flag": "memory_split_observers",
-              "requires": [
-                "first_memory"
-              ]
-            }
-          ]
-        },
-        "second_view_prepared_check": {
-          "requires": [
-            "first_memory",
-            "second_view"
+            "murmur",
+            "deep_sound"
           ],
           "introduces": {}
         },
-        "what_matches_keeper": {
+        "mend_slates": {
           "requires": [
-            "what_matches"
-          ],
-          "introduces": {},
-          "conditional": [
-            {
-              "notFlag": "memory_independent_reading",
-              "requires": [
-                "memory_helped_view"
-              ]
-            }
-          ]
-        },
-        "catalog_endorsed": {
-          "requires": [
-            "catalog_test"
-          ],
-          "introduces": {},
-          "conditional": [
-            {
-              "notFlag": "memory_independent_reading",
-              "requires": [
-                "memory_helped_view"
-              ]
-            }
-          ]
-        },
-        "catalog_endorsed_check": {
-          "requires": [
-            "catalog_test"
-          ],
-          "introduces": {},
-          "conditional": [
-            {
-              "notFlag": "memory_independent_reading",
-              "requires": [
-                "memory_helped_view"
-              ]
-            }
-          ]
-        },
-        "record_publish": {
-          "requires": [
-            "record_choice",
-            "catalog_independent_path"
-          ],
-          "introduces": {},
-          "conditional": [
-            {
-              "flag": "memory_catalog_clear",
-              "requires": [
-                "catalog_independent_path"
-              ]
-            }
-          ]
-        },
-        "record_staff_copy": {
-          "requires": [
-            "record_choice",
-            "catalog_staff_help"
+            "slates",
+            "tuft"
           ],
           "introduces": {}
         },
-        "memory_observation": {
+        "tuft_pack": {
           "requires": [
-            "first_memory"
+            "tuft",
+            "builders",
+            "new_room"
           ],
           "introduces": {}
         },
-        "close_view": {
+        "way_out": {
           "requires": [
-            "second_view",
-            "support_ice"
+            "deep_sound",
+            "copy",
+            "tuft"
           ],
           "introduces": {}
         },
-        "close_view_attuned": {
+        "ending": {
           "requires": [
-            "second_view",
-            "support_ice"
-          ],
-          "introduces": {}
-        },
-        "dry_slips": {
-          "requires": [
-            "sliding_tray",
-            "support_ice"
-          ],
-          "introduces": {}
-        },
-        "teach_live": {
-          "requires": [
-            "teach_back"
-          ],
-          "introduces": {}
-        },
-        "teach_posted": {
-          "requires": [
-            "teach_back"
-          ],
-          "introduces": {}
-        },
-        "teach_staff": {
-          "requires": [
-            "teach_back"
-          ],
-          "introduces": {}
-        },
-        "claim_limit_response_date": {
-          "requires": [
-            "compare_accounts",
-            "claim_limit"
-          ],
-          "introduces": {}
-        },
-        "claim_limit_response_cause": {
-          "requires": [
-            "compare_accounts",
-            "claim_limit"
-          ],
-          "introduces": {}
-        },
-        "claim_limit_response_compare": {
-          "requires": [
-            "compare_accounts",
-            "claim_limit"
+            "builders",
+            "new_room",
+            "tuft",
+            "listening_chime",
+            "valley_change",
+            "murmur"
           ],
           "introduces": {}
         }
-      },
-      "entryByFlag": {
-        "fragment_coast_learned": [
-          "river_evidence"
-        ]
       }
     },
     "riftlight-the-island-due-back": {
@@ -10296,358 +10134,474 @@
         "hall",
         "riftseekers",
         "valley_change",
-        "valley_record"
+        "valley_record",
+        "murmur"
       ],
       "scenes": {
         "arrival": {
           "requires": [],
           "introduces": {
-            "nest_wyrm": "A frost wyrm",
-            "nest_builders": "yeti builders",
-            "nest_bench": "using a bench as a pillow"
+            "tuft": "Flurry, the young yeti keeper",
+            "new_room": "My new reading room",
+            "wyrm": "a frost wyrm",
+            "nest_readers": "The readers need a room"
           }
         },
-        "listen": {
+        "builders": {
           "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "watch_check": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "boundary": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "supplies": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
+            "tuft"
           ],
           "introduces": {
-            "nest_kit": "A folded table"
+            "builders": "yeti builders",
+            "pip": "Pip Thistledown, the young manticore scout",
+            "horn": "a curly horn",
+            "cairnstep_griffins": "The griffins at the Cairnstep"
           }
         },
-        "table_kit": {
+        "frozen_tunnel": {
           "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "shelf_kit": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "cold_opening": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
+            "builders"
           ],
           "introduces": {
-            "nest_hollow": "a sheltered snow hollow",
-            "nest_bones": "Loose bones rattle",
-            "nest_chime": "The Listening Chime"
+            "frost_wall": "a wall of white ferns"
           }
         },
-        "hollow_view": {
+        "check_chip": {
           "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench",
-            "nest_hollow"
+            "builders",
+            "frost_wall"
           ],
           "introduces": {}
         },
-        "hollow_help": {
+        "check_squeeze": {
           "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench",
-            "nest_hollow"
+            "pip",
+            "frost_wall"
           ],
           "introduces": {}
         },
-        "hollow_check": {
+        "the_nest": {
           "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench",
-            "nest_hollow"
+            "wyrm",
+            "tuft",
+            "builders"
+          ],
+          "introduces": {
+            "stool": "Flurry's new reading stool",
+            "blankets": "every blanket the builders brought",
+            "far_tunnel": "a far tunnel leads out"
+          }
+        },
+        "check_tail": {
+          "requires": [
+            "tuft",
+            "stool"
           ],
           "introduces": {}
         },
-        "hollow_attuned": {
+        "wyrm_why": {
           "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench",
-            "nest_hollow"
+            "builders",
+            "listening_chime",
+            "wyrm"
+          ],
+          "introduces": {
+            "opening": "a shimmering opening",
+            "wisp": "a will-o'-wisp"
+          }
+        },
+        "pip_poke": {
+          "requires": [
+            "olivia",
+            "pip",
+            "wyrm"
           ],
           "introduces": {}
         },
-        "bed": {
+        "check_pip": {
           "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench",
-            "nest_hollow"
+            "pip"
           ],
           "introduces": {}
         },
-        "bed_snow": {
+        "check_grab": {
           "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench",
-            "nest_hollow"
+            "pip",
+            "tuft"
           ],
           "introduces": {}
         },
-        "bed_slab": {
+        "pip_pokes": {
           "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench",
-            "nest_hollow"
+            "olivia",
+            "wyrm"
           ],
           "introduces": {}
         },
-        "lanes": {
+        "opening": {
           "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench",
-            "nest_hollow"
+            "opening",
+            "builders"
+          ],
+          "introduces": {
+            "rope": "a long rope"
+          }
+        },
+        "check_rope": {
+          "requires": [
+            "builders",
+            "opening",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "check_through": {
+          "requires": [
+            "opening",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "flicker": {
+          "requires": [
+            "horn",
+            "opening"
+          ],
+          "introduces": {}
+        },
+        "slipped": {
+          "requires": [
+            "horn",
+            "opening",
+            "builders"
+          ],
+          "introduces": {}
+        },
+        "star_read": {
+          "requires": [
+            "opening"
+          ],
+          "introduces": {}
+        },
+        "hollow": {
+          "requires": [
+            "opening",
+            "tuft",
+            "blankets"
+          ],
+          "introduces": {
+            "hollow": "a snow hollow"
+          }
+        },
+        "sleepwalk": {
+          "requires": [
+            "wyrm",
+            "frost_wall",
+            "builders"
+          ],
+          "introduces": {}
+        },
+        "hide": {
+          "requires": [
+            "builders",
+            "wyrm"
+          ],
+          "introduces": {}
+        },
+        "check_blocks": {
+          "requires": [
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "check_snowman": {
+          "requires": [
+            "builders"
           ],
           "introduces": {}
         },
         "rest": {
           "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
+            "builders",
+            "pip",
+            "tuft"
           ],
           "introduces": {}
         },
-        "signal": {
+        "wyrm_lore": {
           "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
+            "builders"
           ],
           "introduces": {}
         },
-        "offer": {
+        "tuft_talk": {
           "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench",
-            "nest_hollow",
-            "nest_bones"
+            "new_room",
+            "opening"
           ],
           "introduces": {}
         },
-        "fight": {
+        "plan": {
           "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench",
-            "nest_hollow",
-            "nest_bones"
+            "olivia",
+            "far_tunnel",
+            "hollow",
+            "blankets",
+            "murmur"
           ],
           "introduces": {}
         },
-        "fight_soft": {
+        "drive_prep": {
           "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench",
-            "nest_hollow",
-            "nest_bones"
+            "builders",
+            "tuft"
           ],
           "introduces": {}
         },
-        "room_clear": {
+        "check_pots": {
           "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench",
-            "nest_hollow"
+            "builders",
+            "tuft"
           ],
           "introduces": {}
         },
-        "room_moved": {
+        "check_roar": {
           "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench",
-            "nest_hollow"
+            "builders",
+            "pip"
           ],
           "introduces": {}
         },
-        "shelves": {
+        "deep_groan": {
           "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
+            "murmur",
+            "new_room",
+            "tuft"
+          ],
+          "introduces": {
+            "crack": "A crack runs across the ceiling"
+          }
+        },
+        "fight_drive": {
+          "requires": [
+            "wisp",
+            "far_tunnel"
           ],
           "introduces": {}
         },
-        "shelf_build": {
+        "fight_drive_clang": {
           "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
+            "wisp",
+            "far_tunnel",
+            "builders"
           ],
           "introduces": {}
         },
-        "unpack_shelf": {
+        "move_prep": {
           "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
+            "blankets",
+            "hollow",
+            "tuft"
+          ],
+          "introduces": {
+            "sacks": "a pile of work sacks"
+          },
+          "conditional": [
+            {
+              "flag": "nest_stool_broken",
+              "requires": [
+                "stool"
+              ]
+            }
+          ]
+        },
+        "sneak_nest": {
+          "requires": [
+            "blankets",
+            "opening"
           ],
           "introduces": {}
         },
-        "shelves_check": {
+        "sacks": {
           "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
+            "sacks",
+            "opening",
+            "builders"
           ],
           "introduces": {}
         },
-        "slab_route": {
+        "nest_made": {
           "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench",
-            "nest_hollow"
+            "hollow",
+            "opening"
           ],
           "introduces": {}
         },
-        "reader_step": {
+        "fight_move": {
           "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
+            "wisp",
+            "opening",
+            "far_tunnel"
           ],
           "introduces": {}
         },
-        "readers": {
+        "fight_move_long": {
           "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
+            "wisp",
+            "opening",
+            "far_tunnel"
           ],
           "introduces": {}
         },
-        "readers_check": {
+        "room_won": {
           "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
+            "tuft",
+            "builders"
+          ],
+          "introduces": {},
+          "conditional": [
+            {
+              "flag": "wyrm_ally",
+              "requires": [
+                "opening",
+                "hollow",
+                "wisp"
+              ]
+            },
+            {
+              "notFlag": "wyrm_ally",
+              "requires": [
+                "far_tunnel",
+                "wisp"
+              ]
+            },
+            {
+              "flag": "nest_cracked",
+              "requires": [
+                "crack"
+              ]
+            }
+          ]
+        },
+        "neighbor": {
+          "requires": [
+            "opening",
+            "tuft"
           ],
           "introduces": {}
         },
-        "readers_markers": {
+        "empty_room": {
           "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
+            "new_room",
+            "tuft",
+            "builders"
+          ],
+          "introduces": {},
+          "conditional": [
+            {
+              "flag": "nest_cracked",
+              "requires": [
+                "crack"
+              ]
+            }
+          ]
+        },
+        "nest_kept": {
+          "requires": [
+            "horn",
+            "blankets",
+            "new_room",
+            "builders"
           ],
           "introduces": {}
         },
-        "readers_clear": {
+        "storeroom": {
           "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
+            "builders",
+            "tuft"
+          ],
+          "introduces": {
+            "storeroom": "the builders' old storeroom"
+          }
+        },
+        "readers_come": {
+          "requires": [
+            "murmur"
+          ],
+          "introduces": {
+            "slates": "a stack of slates"
+          },
+          "conditional": [
+            {
+              "flag": "wyrm_ally",
+              "requires": [
+                "opening"
+              ]
+            },
+            {
+              "flag": "nest_lost",
+              "requires": [
+                "storeroom"
+              ]
+            }
+          ]
+        },
+        "check_carry": {
+          "requires": [
+            "slates",
+            "murmur"
           ],
           "introduces": {}
         },
-        "quiet": {
+        "check_tray": {
           "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
+            "slates",
+            "pip",
+            "olivia"
+          ],
+          "introduces": {}
+        },
+        "tuft_room": {
+          "requires": [
+            "tuft",
+            "murmur",
+            "nest_readers"
+          ],
+          "introduces": {}
+        },
+        "new_wall": {
+          "requires": [
+            "murmur",
+            "tuft",
+            "opening"
+          ],
+          "introduces": {}
+        },
+        "walls_rest": {
+          "requires": [
+            "murmur",
+            "tuft",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "murmur_last": {
+          "requires": [
+            "murmur",
+            "valley_change",
+            "opening",
+            "wyrm"
           ],
           "introduces": {}
         },
         "ending": {
           "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench",
-            "nest_hollow"
-          ],
-          "introduces": {}
-        },
-        "boundary_response_pad": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "boundary_response_stool": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "boundary_response_sign": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "quiet_response_tools": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "quiet_response_space": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "quiet_response_notes": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
+            "horn",
+            "cairnstep_griffins",
+            "pip",
+            "olivia",
+            "listening_chime",
+            "valley_change"
           ],
           "introduces": {}
         }
