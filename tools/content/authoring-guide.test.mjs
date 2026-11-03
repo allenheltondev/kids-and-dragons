@@ -17,7 +17,7 @@ import { afterAll, describe, expect, it } from "vitest";
 
 const REPO = fileURLToPath(new URL("../..", import.meta.url));
 const VALIDATOR = join(REPO, "tools", "content", "validate.mjs");
-const GUIDE = readFileSync(join(REPO, "docs", "campaigns", "gemfall-authoring.md"), "utf8");
+const GUIDE = readFileSync(join(REPO, "docs", "campaigns", "gemfall-authoring.md"), "utf8").replace(/\r\n/g, "\n");
 const CHAPTER = ["content", "chapters", "bramblewood-01.json"];
 
 const temps = [];

@@ -6,7 +6,7 @@
 
 import { describe, expect, it } from "vitest";
 import { execFileSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadCanon } from "@kad/canon";
@@ -81,9 +81,14 @@ describe("bestiary projection", () => {
     expect(projected.frost_wyrm.dislikes).toEqual(["griffin"]);
   });
 
-  it("regenerates byte for byte", () => {
-    const before = readFileSync(path.join(REPO, "content/bestiary.json"), "utf8");
-    execFileSync("npx", ["tsx", "tools/canon/bestiary.ts"], { cwd: REPO, stdio: "pipe" });
-    expect(readFileSync(path.join(REPO, "content/bestiary.json"), "utf8")).toBe(before);
+  it("regenerates identical content regardless of checkout line endings", () => {
+    const target = path.join(REPO, "content/bestiary.json");
+    const original = readFileSync(target);
+    try {
+      execFileSync(process.execPath, ["--import", "tsx", "tools/canon/bestiary.ts"], { cwd: REPO, stdio: "pipe" });
+      expect(readFileSync(target, "utf8").replace(/\r\n/g, "\n")).toBe(original.toString("utf8").replace(/\r\n/g, "\n"));
+    } finally {
+      writeFileSync(target, original);
+    }
   });
 });

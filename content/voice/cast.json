@@ -1310,12 +1310,13 @@
       ],
       "aliases": [],
       "gemini": {
-        "voice": "Orus"
+        "voice": "Algenib"
       },
       "lines": [],
       "lineCount": 0,
       "speaks": false,
-      "status": "provisional"
+      "status": "provisional",
+      "notes": "Provisional voice changed from Orus to Algenib to avoid a chapter-level voice conflict."
     },
     "brassbuckles": {
       "name": "Brassbuckles",
@@ -2510,12 +2511,13 @@
       ],
       "aliases": [],
       "gemini": {
-        "voice": "Umbriel"
+        "voice": "Orus"
       },
       "lines": [],
       "lineCount": 0,
       "speaks": false,
-      "status": "provisional"
+      "status": "provisional",
+      "notes": "Provisional voice changed from Umbriel to Orus to avoid a chapter-level voice conflict."
     },
     "runner": {
       "name": "MossHome Runner",
@@ -3782,7 +3784,7 @@
       ],
       "aliases": [],
       "gemini": {
-        "voice": "Gacrux"
+        "voice": "Pulcherrima"
       },
       "lines": [
         {
@@ -3800,7 +3802,7 @@
       ],
       "lineCount": 3,
       "speaks": true,
-      "status": "approved",
+      "status": "provisional",
       "history": [
         {
           "decision": "approved",
@@ -3808,7 +3810,8 @@
           "model": "gemini-3.8-flash-tts",
           "at": "2026-10-30T18:44:56.247Z"
         }
-      ]
+      ],
+      "notes": "Re-audition required: Gacrux was approved previously, but overlaps another speaker in this character's chapters. Original approval retained in history; Pulcherrima is a provisional alternative."
     },
     "grandmother_tull": {
       "name": "Grandmother Tull",
@@ -4043,7 +4046,7 @@
       ],
       "aliases": [],
       "gemini": {
-        "voice": "Leda"
+        "voice": "Aoede"
       },
       "lines": [
         {
@@ -4061,7 +4064,7 @@
       ],
       "lineCount": 9,
       "speaks": true,
-      "status": "approved",
+      "status": "provisional",
       "history": [
         {
           "decision": "approved",
@@ -4069,7 +4072,8 @@
           "model": "gemini-3.8-flash-tts",
           "at": "2026-10-30T18:32:08.143Z"
         }
-      ]
+      ],
+      "notes": "Re-audition required: Leda was approved previously, but overlaps another speaker in this character's chapters. Original approval retained in history; Aoede is a provisional alternative."
     },
     "centaur_relay": {
       "name": "Centaur Relay",
@@ -4235,7 +4239,7 @@
       ],
       "aliases": [],
       "gemini": {
-        "voice": "Pulcherrima"
+        "voice": "Autonoe"
       },
       "lines": [
         {
@@ -4254,7 +4258,7 @@
       "lineCount": 6,
       "guessedLines": 1,
       "speaks": true,
-      "status": "approved",
+      "status": "provisional",
       "history": [
         {
           "decision": "approved",
@@ -4262,7 +4266,8 @@
           "model": "gemini-3.8-flash-tts",
           "at": "2026-10-30T19:25:25.807Z"
         }
-      ]
+      ],
+      "notes": "Re-audition required: Pulcherrima was approved previously, but overlaps another speaker in this character's chapters. Original approval retained in history; Autonoe is a provisional alternative."
     },
     "bryony": {
       "name": "Bryony",
@@ -4451,7 +4456,7 @@
       ],
       "aliases": [],
       "gemini": {
-        "voice": "Sadachbia"
+        "voice": "Puck"
       },
       "lines": [
         {
@@ -4461,7 +4466,8 @@
       ],
       "lineCount": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "notes": "Provisional voice changed from Sadachbia to Puck to avoid a chapter-level voice conflict."
     },
     "rook": {
       "name": "Rook",
@@ -4520,12 +4526,13 @@
       ],
       "aliases": [],
       "gemini": {
-        "voice": "Orus"
+        "voice": "Algieba"
       },
       "lines": [],
       "lineCount": 0,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "notes": "Provisional voice changed from Orus to Algieba to avoid a chapter-level voice conflict."
     },
     "odo": {
       "name": "Odo",
@@ -5174,7 +5181,7 @@
       ],
       "aliases": [],
       "gemini": {
-        "voice": "Erinome"
+        "voice": "Zephyr"
       },
       "lines": [
         {
@@ -5192,7 +5199,7 @@
       ],
       "lineCount": 71,
       "speaks": true,
-      "status": "approved",
+      "status": "provisional",
       "direction": "confident, almost villian-like power behind words",
       "history": [
         {
@@ -5201,7 +5208,8 @@
           "model": "gemini-3.8-flash-tts",
           "at": "2026-10-30T18:16:05.001Z"
         }
-      ]
+      ],
+      "notes": "Re-audition required: Erinome was approved previously, but overlaps another speaker in this character's chapters. Original approval retained in history; Zephyr is a provisional alternative."
     },
     "bram_lock": {
       "name": "Bram Lock",
@@ -5228,7 +5236,7 @@
       ],
       "aliases": [],
       "gemini": {
-        "voice": "Charon"
+        "voice": "Orus"
       },
       "lines": [
         {
@@ -5246,7 +5254,7 @@
       ],
       "lineCount": 15,
       "speaks": true,
-      "status": "approved",
+      "status": "provisional",
       "accent": "Strong American Midwestern",
       "direction": "old, calm",
       "history": [
@@ -5256,7 +5264,8 @@
           "model": "gemini-3.8-flash-tts",
           "at": "2026-10-30T19:24:42.440Z"
         }
-      ]
+      ],
+      "notes": "Re-audition required: Charon was approved previously, but overlaps another speaker in this character's chapters. Original approval retained in history; Orus is a provisional alternative."
     },
     "seren_wisp": {
       "name": "Seren Wisp",
@@ -5569,7 +5578,7 @@
       ],
       "aliases": [],
       "gemini": {
-        "voice": "Charon"
+        "voice": "Schedar"
       },
       "lines": [
         {
@@ -5587,7 +5596,8 @@
       ],
       "lineCount": 23,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "notes": "Provisional voice changed from Charon to Schedar to avoid a chapter-level voice conflict."
     },
     "yeti_herder": {
       "name": "Yeti herder",
@@ -6440,12 +6450,13 @@
       ],
       "aliases": [],
       "gemini": {
-        "voice": "Pulcherrima"
+        "voice": "Kore"
       },
       "lines": [],
       "lineCount": 0,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "notes": "Provisional voice changed from Pulcherrima to Kore to avoid a chapter-level voice conflict."
     },
     "littlest_bracken": {
       "name": "Littlest Bracken",
@@ -6648,7 +6659,7 @@
       ],
       "aliases": [],
       "gemini": {
-        "voice": "Achernar"
+        "voice": "Erinome"
       },
       "lines": [
         {
@@ -6667,7 +6678,7 @@
       "lineCount": 8,
       "guessedLines": 2,
       "speaks": true,
-      "status": "approved",
+      "status": "provisional",
       "direction": "Young raspy voice, childish, shy",
       "history": [
         {
@@ -6676,7 +6687,8 @@
           "model": "gemini-3.8-flash-tts",
           "at": "2026-10-30T19:17:55.418Z"
         }
-      ]
+      ],
+      "notes": "Re-audition required: Achernar was approved previously, but overlaps another speaker in this character's chapters. Original approval retained in history; Erinome is a provisional alternative."
     },
     "dumpling": {
       "name": "Dumpling",
@@ -6735,12 +6747,13 @@
       ],
       "aliases": [],
       "gemini": {
-        "voice": "Sadachbia"
+        "voice": "Zubenelgenubi"
       },
       "lines": [],
       "lineCount": 0,
       "speaks": false,
-      "status": "provisional"
+      "status": "provisional",
+      "notes": "Provisional voice changed from Sadachbia to Zubenelgenubi to avoid a chapter-level voice conflict."
     },
     "archivist": {
       "name": "Archivist",
@@ -7006,7 +7019,7 @@
       ],
       "aliases": [],
       "gemini": {
-        "voice": "Leda"
+        "voice": "Vindemiatrix"
       },
       "lines": [
         {
@@ -7016,7 +7029,7 @@
       ],
       "lineCount": 2,
       "speaks": true,
-      "status": "approved",
+      "status": "provisional",
       "direction": "Talks like a teddy bear",
       "history": [
         {
@@ -7025,7 +7038,8 @@
           "model": "gemini-3.8-flash-tts",
           "at": "2026-10-30T18:30:11.652Z"
         }
-      ]
+      ],
+      "notes": "Re-audition required: Leda was approved previously, but overlaps another speaker in this character's chapters. Original approval retained in history; Vindemiatrix is a provisional alternative."
     },
     "crying_gem_buyer": {
       "name": "Crying gem-buyer",

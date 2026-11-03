@@ -446,6 +446,18 @@ describe("relay flight gameplay", () => {
     const relaxed = step(state, ctx, { action: "start", relaxed: true });
     expect(prompt(step(relaxed, ctx, { ...flightCatch(relaxed), position: 1 } as InteractionAction)).relay).toMatchObject({ chances: 3, saves: 0 });
   });
+  it.each([false, true])("requires reaching a dropped object without charging the same drop again, relaxed=%s", (relaxed) => {
+    const { state, ctx } = setup(spec);
+    let next = step(state, ctx, { action: "start", relaxed });
+    next = step(next, ctx, { ...flightCatch(next), position: 0 } as InteractionAction);
+    const dropped = structuredClone(prompt(next).relay!.flight);
+    next = step(next, ctx, { ...flightCatch(next), reach: 0.99 } as InteractionAction);
+    expect(prompt(next).caughtBy).toBeUndefined();
+    expect(prompt(next).relay).toMatchObject({ chances: 2, saves: 0, flight: dropped });
+    // Pickups have a generous but finite radius, wider in relaxed mode.
+    next = step(next, ctx, { ...flightCatch(next), reach: dropped.landing + (relaxed ? 0.31 : 0.24) } as InteractionAction);
+    expect(prompt(next)).toMatchObject({ caughtBy: "p0", relay: { chances: 2, saves: 1, last: "save" } });
+  });
   it("does not allow bare catch/pass inputs or nonfinite measurements to bypass the skill loop", () => {
     const { state, ctx } = setup(spec);
     const active = step(state, ctx, { action: "start", relaxed: false });

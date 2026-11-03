@@ -14,7 +14,7 @@ import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { createServer } from "node:net";
 import os from "node:os";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 const SCRIPT = fileURLToPath(new URL("./dev-server.ts", import.meta.url));
@@ -35,9 +35,15 @@ async function freePort(): Promise<number> {
 }
 
 async function startServer(port: number): Promise<ChildProcess> {
-  const proc = spawn(process.execPath, ["--import", "tsx", SCRIPT], {
+  // Windows forcibly terminates a process for kill(SIGTERM), without running
+  // Node's signal handlers. Bridge a private IPC message to the same handler.
+  const args = process.platform === "win32"
+    ? ["--import", "tsx", "--input-type=module", "--eval", `process.on("message", m => { if (m === "kad-test-stop") process.emit("SIGTERM"); }); await import(${JSON.stringify(pathToFileURL(SCRIPT).href)});`]
+    : ["--import", "tsx", SCRIPT];
+  const proc = spawn(process.execPath, args, {
     env: { ...process.env, PORT: String(port), HOST: "127.0.0.1", KAD_DATA_DIR: dataDir },
-    stdio: ["ignore", "pipe", "pipe"],
+    stdio: ["ignore", "pipe", "pipe", "ipc"],
+    windowsHide: true,
   });
   let log = "";
   await new Promise<void>((resolve, reject) => {
@@ -59,6 +65,14 @@ async function startServer(port: number): Promise<ChildProcess> {
     });
   });
   return proc;
+}
+
+async function stopServer(): Promise<void> {
+  if (!child || child.exitCode !== null || child.signalCode !== null) return;
+  const exited = new Promise<void>(resolve => child.once("exit", () => resolve()));
+  if (process.platform === "win32") child.send("kad-test-stop");
+  else child.kill("SIGTERM");
+  await exited;
 }
 
 async function post(route: string, body: unknown, headers: Record<string, string> = {}) {
@@ -83,11 +97,7 @@ beforeAll(async () => {
 }, 60_000);
 
 afterAll(async () => {
-  if (child && child.exitCode === null) {
-    const exited = new Promise((resolve) => child.once("exit", resolve));
-    child.kill("SIGTERM");
-    await exited;
-  }
+  await stopServer();
   await rm(dataDir, { recursive: true, force: true });
 });
 
@@ -115,9 +125,7 @@ describe("POST /api/room on the dev server: the table's name", () => {
     expect(opened.status).toBe(200);
 
     // The dev table is flushed when the server is told to stop.
-    const exited = new Promise((resolve) => child.once("exit", resolve));
-    child.kill("SIGTERM");
-    await exited;
+    await stopServer();
     const table = await readFile(path.join(dataDir, "dev-table.json"), "utf8");
     // The run row and its state both carry it.
     expect(table.match(/"location":\s*"Grandma's house"/g)?.length ?? 0).toBeGreaterThanOrEqual(2);

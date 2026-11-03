@@ -16,6 +16,10 @@
  * `autoDetectRenderer` reaches the WebGPU and canvas renderers, and with WebGL the only preference it
  * never takes them.
  *
+ * The stage also uses ordinary canvas-backed Text, never BitmapText or .fnt/.xml font assets.
+ * Omit Assets' eagerly registered bitmap-font parser, which otherwise pulls the unused bitmap
+ * layout engine into the payload through its dynamic import. Images and regular Text stay real.
+ *
  * Build only. The dev server pre-bundles Pixi with esbuild, which this does not touch; the
  * production-build e2e shard and `perf:bundle` are what see it.
  */
@@ -26,6 +30,8 @@ import path from "node:path";
 import type { Plugin } from "vite";
 
 const STATIC_IMPORT = /(?:import|export)\s[^'"]*?from\s*['"](\.[^'"]+)['"]|import\s*['"](\.[^'"]+)['"]/g;
+const STUB_FACTORY_MODULE = "virtual:kad-webgl-only-stub";
+const STUB_FACTORY_ID = "\0" + STUB_FACTORY_MODULE;
 
 function isCandidate(rel: string): boolean {
   if (/^rendering\/renderers\/(gpu|canvas)\//.test(rel)) return true;
@@ -49,7 +55,7 @@ export function webglOnlyStubs(lib: string): Set<string> {
   }
   const rel = (file: string) => path.relative(lib, file).split(path.sep).join("/");
   const candidates = new Set(files.filter((file) => isCandidate(rel(file))));
-  const registersOnly = (file: string) => /\/(init|index)\.mjs$/.test(file);
+  const registersOnly = (file: string) => /(^|\/)(init|index)\.mjs$/.test(rel(file));
 
   // What the rest of Pixi reaches: start from every non-candidate that does real work, and keep
   // whatever it imports, through candidates too.
@@ -68,19 +74,23 @@ export function webglOnlyStubs(lib: string): Set<string> {
   return new Set([...candidates].filter((file) => !kept.has(file)));
 }
 
-/** A module exporting `names`, each a class that registers nothing and refuses to be built. */
-export function stubSource(names: readonly string[], file: string): string {
-  const where = JSON.stringify(file);
-  const lines = [
-    "const stub = (name) => {",
+/** One guard factory for all omitted modules, rather than a copy per Pixi module. */
+function stubFactory(): string {
+  return [
+    "function stub(name, file) {",
     "  const Stub = class {",
-    `    constructor() { throw new Error("pixi.js " + name + " (" + ${where} + ") is left out of this build: the stage draws with WebGL only (packages/client/pixi-webgl-only.ts)"); }`,
+    '    constructor() { throw new Error("pixi.js " + name + " (" + file + ") is left out of this build: the stage draws with WebGL only (packages/client/pixi-webgl-only.ts)"); }',
     "  };",
     '  Stub.extension = { type: [], name: "webgl-only:" + name };',
     "  return Stub;",
-    "};",
-  ];
-  for (const name of names) lines.push(`export const ${name} = stub(${JSON.stringify(name)});`);
+    "}",
+  ].join("\n");
+}
+
+/** Standalone for tests; the build imports the same factory once across every stub. */
+export function stubSource(names: readonly string[], file: string, sharedFactory = false): string {
+  const lines = [sharedFactory ? `import { stub } from ${JSON.stringify(STUB_FACTORY_MODULE)};` : stubFactory()];
+  for (const name of names) lines.push(`export const ${name} = stub(${JSON.stringify(name)}, ${JSON.stringify(file)});`);
   return lines.join("\n");
 }
 
@@ -100,19 +110,25 @@ export function exportNames(source: string): string[] {
 
 export function pixiWebglOnly(): Plugin {
   let stubs = new Set<string>();
+  let bitmapFontLoader = "";
   return {
     name: "kad:pixi-webgl-only",
     apply: "build",
     enforce: "pre",
+    resolveId(id) {
+      return id === STUB_FACTORY_MODULE ? STUB_FACTORY_ID : null;
+    },
     buildStart() {
       // `pixi.js` resolves to `lib/index.js`; its ES modules sit beside it as `.mjs`.
       const lib = path.dirname(createRequire(import.meta.url).resolve("pixi.js"));
       stubs = webglOnlyStubs(lib);
+      bitmapFontLoader = path.join(lib, "scene", "text-bitmap", "asset", "loadBitmapFont.mjs");
     },
     load(id) {
-      const file = id.split("?")[0]!;
-      if (!stubs.has(file)) return null;
-      return stubSource(exportNames(readFileSync(file, "utf8")), path.basename(file));
+      if (id === STUB_FACTORY_ID) return `export ${stubFactory()}`;
+      const file = path.normalize(id.split("?")[0]!);
+      if (!stubs.has(file) && file !== bitmapFontLoader) return null;
+      return stubSource(exportNames(readFileSync(file, "utf8")), path.basename(file), true);
     },
   };
 }

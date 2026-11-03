@@ -49,8 +49,12 @@ export function relayCatchWindow(flight: RelayFlight, relaxed: boolean): { start
   return { start: relaxed ? 0.4 : flight.quality === "wild" ? 0.76 : flight.quality === "wobbly" ? 0.68 : 0.58,
     end: 0.98, radius: relaxed ? 0.32 : flight.quality === "wild" ? 0.16 : 0.22 };
 }
+/** Picking up a fallen object is untimed, but still requires reaching its landing. */
+export function relayPickupRadius(relaxed: boolean): number {
+  return relaxed ? 0.32 : 0.25;
+}
 export function relayCatchScore(flight: RelayFlight, position: number, reach: number, relaxed: boolean): "clean" | "early" | "miss" | "recover" {
-  if (flight.dropped) return "recover";
+  if (flight.dropped) return Math.abs(reach - flight.landing) <= relayPickupRadius(relaxed) ? "recover" : "miss";
   const window = relayCatchWindow(flight, relaxed);
   if (position < window.start) return "early";
   if ((!relaxed && position > window.end) || Math.abs(reach - flight.landing) > window.radius) return "miss";

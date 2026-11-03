@@ -34,7 +34,7 @@
 import { INVENTORY_SLOTS, MAX_PARTY } from "./types/domain.js";
 import { cooperationProgress } from "./teamwork.js";
 import { balanceReady, interactionActor, playbackOver, playReady, precisionSuccess, relayHolder, supportsReady, trackedCover, SUPPORT_LEASE_MS } from "./interactions.js";
-import { relayStart, relayLaunch, relayCatchScore, relayThrowQuality } from "./relay.js";
+import { relayStart, relayLaunch, relayCatchScore, relayThrowQuality, relayPickupRadius } from "./relay.js";
 import type {
   Character,
   ClassDef,
@@ -1428,9 +1428,12 @@ function doInteract(draft: RunState, playerId: string, intent: Extract<ClientInt
           if (typeof intent.position !== "number" || !Number.isFinite(intent.position) || intent.position < 0 || intent.position > 1 || typeof intent.reach !== "number" || !Number.isFinite(intent.reach) || intent.reach < 0 || intent.reach > 1) throw new Illegal("ILLEGAL", "Invalid catch input.");
           // Like precision, score the moment displayed on the phone, never network arrival time.
           let score = relayCatchScore(relay.flight, intent.position, intent.reach, prompt.relaxed);
+          // A reach away from an already fallen object leaves it where it is.
+          // The original drop was charged once; repeated pickup attempts are untimed.
+          if (relay.flight.dropped && score === "miss") return undefined;
           // A fallen object can be scooped up in one touch. Charge this drop once,
           // then return it to the child's hands rather than asking for a second tap.
-          if (score === "miss" && intent.position === 1 && Math.abs(intent.reach - relay.flight.landing) <= 0.22) {
+          if (score === "miss" && intent.position === 1 && Math.abs(intent.reach - relay.flight.landing) <= relayPickupRadius(prompt.relaxed)) {
             relay.chances -= 1; relay.streak = 0;
             if (relay.chances === 0) { relay.last = "missed"; relay.flight.dropped = true; result("failure"); return undefined; }
             score = "recover";
