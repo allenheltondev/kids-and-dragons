@@ -161,6 +161,9 @@ it("keeps scene scenery on both screens and removes an unavailable painting", ()
     const image = region.querySelector(".game-scenery img")!;
     expect(image.getAttribute("src")).toBe("/assets/scenes/riftlight/ashspan-broken-deck.webp");
     fireEvent.error(image);
+    const fallback = region.querySelector(".game-scenery img")!;
+    expect(fallback.getAttribute("src")).toContain("/assets/biomes/");
+    fireEvent.error(fallback);
     expect(region.querySelector(".game-scenery")).toBeNull();
   }
   expect(within(phone).getByRole("button", { name: "Leaf" })).toBeTruthy();

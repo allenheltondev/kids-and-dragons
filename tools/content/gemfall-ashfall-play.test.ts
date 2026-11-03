@@ -13,7 +13,7 @@ const sizes = [1, 2, 4];
 // This scripted route profile misses precision/timing/sequence/memory/tracking.
 // Relay failures are exercised for every scene in gemfall-interactions.test.ts;
 // these routes keep their relay preparation so their authored choice scripts remain valid.
-// Cooperation, balance and play have no failing player action.
+// The evidence route keeps its doorstep friendship; separate tests exercise losing that support.
 const outcomes = ["success", "miss-supported", "assisted"] as const;
 type Outcome = typeof outcomes[number];
 const offered = (s: RunState, id: string) => s.prompt?.kind === "choice" && s.prompt.options.some(o => o.id === id);
@@ -93,7 +93,7 @@ function walk(chapter: Chapter, size: number, picks: Record<string, string>, out
 const picks={scene_arrival:"walk_up",scene_doorstep:"talk",scene_moths:"follow",scene_wolves:"wait",scene_claim_boulder:"share",scene_soup_tent:"just_soup",rest_warm_stones:"morning",scene_morning_bells:"learn",scene_crab:"dunmore",scene_crab_thanks:"straight_up",scene_citadel_gate:"follow",scene_citadel_gate_desk:"ask_why",scene_truth_table:"work_it_out",scene_whole_truth:"take_stone",scene_acceptable_losses:"hear_plan",scene_whole_truth_window:"bells",scene_ledger:"plainly",scene_who_to_tell:"wardens",scene_what_for:"restore",scene_gate_recovery:"ring",scene_shut_out:"restore"};
 it.each(sizes.flatMap(size=>outcomes.map(outcome=>({size,outcome}))))
  ("Ashfall: $size seats / $outcome compares evidence before the reveal and resolves a conversation without a game",({size,outcome})=>{
- const {state,trace,interactionOutcomes}=walk(ashfall,size,picks,outcome);
+ const {state,trace,interactionOutcomes}=walk(ashfall,size,picks,outcome,20,false,{},"manticore","duskrunner",false,{interaction_doorstep:"success"});
  expect(trace.has("interaction_truth_timeline")).toBe(true);
  expect(trace.has("interaction_purpose_council")).toBe(true);
  expect(trace.has("encounter_crab")).toBe(false);
@@ -150,9 +150,12 @@ it.each(sizes)("Ashfall: the old bell roll and the flyer job both earn the recov
 it.each(sizes)("Ashfall: unfinished support and discussion do not grant completion at %i seats",size=>{
  for(const id of ["interaction_doorstep"]){
  let state=enterScene(initial(ashfall,size),id,context(ashfall)).state;const actor=promptOf(state).actorId;
- expect(miss(ashfall,state)).toBeNull();state=act(ashfall,state,{action:"start",relaxed:false},actor);
+ const failed=miss(ashfall,state,true)!;expect(promptOf(failed).outcome).toBe("failure");
+ expect(landed(ashfall,failed,actor).flags.dunmore_friend).not.toBe(true);
+ state=act(ashfall,state,{action:"start",relaxed:false,rulesVersion:2},actor);
  const result=applyIntent(state,{playerId:actor,intent:{type:"INTERACT",openedSeq:promptOf(state).openedSeq,attempt:promptOf(state).attempt,action:"complete"}},context(ashfall));
- expect(result.error).toBeDefined();expect(result.state.sceneId).toBe(id);expect(promptOf(result.state).outcome).toBeUndefined();
+ expect(result.error).toBeUndefined();expect(result.state.sceneId).toBe(id);expect(promptOf(result.state).outcome).toBeUndefined();
+ expect(promptOf(result.state).compatibility).toBe("legacy-controls");
  expect(result.state.flags.dunmore_friend).not.toBe(true);
  }
 });

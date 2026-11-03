@@ -1,0 +1,100 @@
+.skill-game { position: relative; display: flex; flex-direction: column; gap: .65em; isolation: isolate; }
+.skill-game button, .skill-game input { touch-action: manipulation; }
+.skill-game p { margin: 0; }
+.skill-scene { position: relative; min-height: 11em; overflow: hidden; border-radius: 1em; background: linear-gradient(0deg, #10251ce0, #203d4055 30%, transparent 75%); border-bottom: .3em solid #b68a45; }
+.skill-scene__object, .skill-shot { position: absolute; width: clamp(4em, 26cqw, 8em); height: 7em; object-fit: contain; filter: drop-shadow(0 .3em .2em #0008); }
+.skill-scene__heroes { position: absolute; display: flex; justify-content: space-around; inset: auto 0 0; height: 5.2em; }
+.skill-scene__heroes img { width: 23%; max-width: 6em; object-fit: contain; object-position: bottom; filter: drop-shadow(0 .15em .15em #0009); }
+.skill-carry { position: absolute; left: calc(15% + var(--travel) * .5); bottom: 3.8em; width: 55%; height: 5em; transform: rotate(var(--tilt)); transform-origin: 50% 90%; transition: transform .3s, left .5s; }
+.skill-carry .skill-scene__object { bottom: 0; left: 50%; transform: translateX(-50%); }
+.skill-carry__beam { position: absolute; bottom: 0; left: 0; right: 0; height: .55em; border-radius: 1em; background: linear-gradient(#ead08e, #76502d); box-shadow: 0 .2em .2em #0008; }
+.skill-scene__path { position: absolute; bottom: 0; inset-inline: 0; height: 2.5em; background: repeating-linear-gradient(105deg, transparent 0 15%, #d2b78866 17% 24%, transparent 25% 33%); transform: skewY(-5deg); }
+.skill-route { list-style: none; display: flex; justify-content: center; gap: 1em; padding: 0; margin: 0; }
+.skill-route li { display: grid; place-items: center; width: 2em; height: 2em; border: 2px solid #c4ab72; border-radius: 50%; background: #211d35; font-weight: 900; color: #dfd4bd; }
+.skill-route li[data-current=true] { box-shadow: 0 0 0 .18em #edd07c44; border-color: #ffe2a1; }
+.skill-route li[data-done=true] { background: #bfe8c9; color: #173c2b; border-color: #dfffe8; }
+.skill-reading { text-align: center; font-weight: 800; color: #ffe3a6; text-wrap: balance; }
+.skill-caption { font-size: .85em; text-align: center; color: #f0e6d2; }
+.skill-gauge { position: relative; height: 1.8em; margin-inline: .55em; background: linear-gradient(90deg, #514c69, #62666c, #76505b); border: 2px solid #dbc58e; border-radius: .8em; box-shadow: inset 0 .2em .3em #0007; }
+.skill-gauge__gold { position: absolute; inset-block: 0; background: repeating-linear-gradient(115deg, #eeca6e 0 .3em, #ffe8ab .3em .6em); box-shadow: 0 0 .7em #ffd88388; }
+.skill-gauge__needle { position: absolute; top: -.2em; bottom: -.2em; width: .35em; border-radius: .2em; background: #fff; box-shadow: 0 0 0 2px #272137, 0 .1em .3em #000; transform: translateX(-50%); }
+.skill-gauge__pull { position: absolute; top: -.6em; color: #b6f5e7; text-shadow: 0 1px 3px #000; }
+.skill-lift-controls { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: .5em; }
+.skill-game .kad-button { min-height: 2.8em; white-space: normal; }
+.skill-team { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: .3em .9em; font-size: .8em; }
+.skill-ledge { position: absolute; inset: 0; }
+.skill-ledge span { position: absolute; right: 0; width: 34%; height: 1em; background: linear-gradient(#dac48b, #746849 35%, #424238); border-radius: 50% 0 0 25%; box-shadow: 0 .2em .3em #0008; }
+.skill-hoist { position: absolute; left: 45%; width: 5em; height: 5em; transition: bottom .6s; }
+.skill-hoist .skill-scene__object { bottom: 0; left: 50%; transform: translateX(-50%); }
+.skill-hoist__rope { position: absolute; bottom: 3em; height: 18em; width: .3em; background: repeating-linear-gradient(45deg, #e7ce8b 0 .2em, #806340 .2em .35em); }
+.skill-rope-drag { display: flex; align-items: center; justify-content: space-around; position: relative; height: 7em; padding: .5em; border-radius: .8em; background: linear-gradient(90deg, #2c293ccc, #71604488, #2c293ccc); touch-action: none; user-select: none; overflow: hidden; border: 1px solid #c6a969; }
+.skill-rope-drag > span { font-size: 2.7em; line-height: 1; color: #f4da9a; text-shadow: .04em .04em #6d4429; align-self: flex-start; }
+.skill-rope-drag > span img { display: block; width: 2.2em; height: 1.4em; object-fit: contain; pointer-events: none; }
+.skill-rope-drag > small { max-width: 13em; }
+.skill-rope-drag[data-ready=true] { opacity: .6; }
+.skill-slider { display: flex; flex-wrap: wrap; gap: .25em .5em; align-items: center; font-size: .85em; }
+.skill-slider input { flex: 1 0 100%; min-height: 2.4em; width: 100%; accent-color: #efc96b; }
+.skill-aim { padding: 0; border: 0; border-radius: 1em; background: #2b263e99; color: inherit; cursor: pointer; font: inherit; }
+.skill-aim > span { display: block; padding: .55em; background: linear-gradient(#ffe8a0, #cda34e); color: #211730; font-weight: 900; border-radius: 0 0 1em 1em; }
+.skill-shot { transform: translateX(-50%); max-width: 25%; pointer-events: none; }
+.skill-perch { position: absolute; bottom: 23%; height: 50%; background: linear-gradient(0deg, #deb66722, #ffdd7755); border-inline: 2px solid #ffe5a3; border-bottom: .7em solid #dbbf7a; border-radius: 45% 45% 20% 20%; box-shadow: 0 0 1em #f5d57644; }
+.skill-perch > span { display: block; color: #ffe7a1; font-size: 1.5em; }
+.skill-opening { position: absolute; bottom: .5em; inset-inline: .5em; font-size: .85em; text-shadow: 0 2px 3px #000; text-align: center; }
+.skill-scene[data-safe=true] .skill-perch { background: #ffdc7a66; box-shadow: 0 0 1.4em #ffd46b99; }
+.skill-mechanism { position: relative; padding-top: 1em; }
+.skill-mechanism__prop { display: block; height: 4em; max-width: 50%; margin: auto; object-fit: contain; filter: drop-shadow(0 .2em .3em #000a); }
+.skill-stones { list-style: none; display: flex; justify-content: center; flex-wrap: wrap; gap: .45em; padding: .7em 0; margin: 0; }
+.skill-stones li { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 3em; min-height: 4em; padding: .6em .35em .35em; border-radius: 45% 42% 30% 28%; background: linear-gradient(#777b8c, #393b52); border: 2px solid #a6a9bc; box-shadow: 0 .35em 0 #222035, 0 .6em .5em #0008; font-size: .85em; }
+.skill-stones li > .kad-icon { font-size: 1.8em; }
+.skill-stones li[data-held=true], .skill-stones li[data-lit=true] { background: linear-gradient(#f1d791, #ac8548); border-color: #fff0b6; color: #221a30; box-shadow: 0 .3em 0 #665134, 0 0 1.1em #ffdc7c77; }
+.skill-stones li small { font-size: .7em; }
+.skill-stones__edit { display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; background: transparent; color: inherit; font: inherit; padding: 0; width: 100%; min-height: 3.3em; touch-action: none !important; user-select: none; }
+.skill-stones__edit > .kad-icon { font-size: 1.8em; }
+.skill-stones__number { position: absolute; top: -.55em; left: 0; font-size: .75em; background: #2a233e; color: #f8dfaa; border-radius: 50%; width: 1.4em; text-align: center; }
+.skill-stones img, .skill-pads img { height: 1.8em; max-width: 3em; object-fit: contain; }
+.skill-pads { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .45em; }
+.skill-pads button { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .35em; min-height: 3.4em; padding: .5em; background: linear-gradient(#514765, #2d2840); border: 1px solid #bda783; border-radius: .7em; color: #fff4db; font: inherit; box-shadow: 0 .15em 0 #120f21; }
+.skill-pads button:disabled { opacity: .5; }
+.skill-pads .kad-icon { font-size: 1.4em; }
+.skill-edit-row { display: flex; gap: .5em; font-size: .85em; }
+.skill-feedback { padding: .65em .8em; border-radius: .7em; border: 1px solid #dec58b; background: #251f39ed; font-weight: 650; font-size: .9em; }
+.skill-strain { display: flex; align-items: center; gap: .5em; font-size: .8em; color: #ffcfb2; }
+.skill-strain meter { flex: 1; min-width: 3em; }
+.game--tv .skill-scene { min-height: clamp(9em, 18cqw, 15em); }
+.game--tv .skill-game { font-size: .85em; }
+.game--tv .skill-game--cooperate .skill-caption { display: none; }
+.game--tv .skill-game--balance, .game--tv .skill-game--cooperate { display: grid; grid-template-columns: minmax(0, 2fr) minmax(12em, 1fr); align-items: center; }
+.game--tv .skill-game--balance > *, .game--tv .skill-game--cooperate > * { grid-column: 2; }
+.game--tv .skill-game--balance > .skill-scene, .game--tv .skill-game--cooperate > .skill-scene { grid-column: 1; grid-row: 1 / 8; }
+.game--tv .skill-scene__heroes { height: 6em; }
+.game--tv .skill-scene__heroes img { max-width: 10em; }
+.game--tv .skill-carry { bottom: 4.5em; height: 5em; }
+.game--tv .skill-scene__object, .game--tv .skill-shot { width: 9em; height: 8em; }
+.game--tv .skill-mechanism__prop { height: 8em; }
+.game--tv .skill-stones li { min-width: 5em; min-height: 6em; }
+@media (max-height: 700px) { .game--phone .skill-scene { min-height: 8em; } .game--phone .skill-scene__heroes { height: 4em; } .game--phone .skill-carry { bottom: 2.8em; } .game--phone .skill-rope-drag { height: 5em; } }
+@media (prefers-reduced-motion: reduce) { .skill-game * { transition: none !important; animation: none !important; } }
+.skill-scene[data-still=true] * { transition: none; animation: none; }
+.game--phone:has(.skill-game) .game__job-detail { display: none; }
+.game--phone:has(.skill-game) .game__head { display: none; }
+.game--phone:has(.skill-game) .game__cue { font-size: 1.1em; }
+.game--phone .skill-game { gap: .45em; }
+.game--phone .skill-scene { min-height: 8em; }
+.game--phone .skill-reading { font-size: .85em; }
+.game--phone .skill-caption { font-size: .75em; }
+.game--phone .skill-game--balance .skill-caption { display: none; }
+.game--phone .skill-game--cooperate .skill-caption { display: none; }
+.game--phone .skill-game--balance .skill-reading { display: none; }
+.game--phone .skill-game--balance .skill-route, .game--phone .skill-game--cooperate .skill-route { position: absolute; inset: .3em .3em auto auto; gap: .3em; z-index: 1; font-size: .65em; }
+.game--phone .skill-game--balance .skill-scene { min-height: 6.5em; }
+.game--phone .skill-game--balance .skill-lift-controls .kad-button { min-height: 2.2em; padding: .3em .5em; font-size: .8em; }
+.game--phone .skill-game--balance .skill-slider { font-size: .7em; }
+.game--phone .skill-game--balance .skill-slider input { min-height: 1.8em; }
+.game--phone .skill-scene__object { height: 5.5em; }
+.game--phone .skill-team { font-size: .7em; }
+.game--phone .skill-rope-drag { height: 5em; }
+.skill-creation { display: flex; justify-content: center; flex-wrap: wrap; gap: .6em; padding: .8em .2em; }
+.skill-creation__part { display: flex; flex-direction: column; align-items: center; min-width: 4em; max-width: 30%; font-size: .8em; text-align: center; }
+.skill-creation__cluster { position: relative; display: block; width: 5em; height: 4.5em; border-bottom: .2em solid #d7ba72; border-radius: 50%; background: radial-gradient(ellipse at bottom, #f6d38655, transparent 70%); }
+.skill-creation__cluster > span { position: absolute; left: calc(10% + var(--seed) * 15%); bottom: calc(.2em + var(--seed) * .25em); font-size: 1.6em; color: #f3da9b; filter: drop-shadow(0 .1em .1em #000a); }
+.skill-creation__cluster img { max-height: 1.5em; max-width: 1.5em; object-fit: contain; }
