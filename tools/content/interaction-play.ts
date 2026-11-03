@@ -6,7 +6,7 @@
  */
 
 import { expect } from "vitest";
-import { TEAM_HOLD_MS, relayTarget, relayHolder, applyIntent, enterScene, playbackMs } from "@kad/shared";
+import { TEAM_HOLD_MS, balanceTarget, pullTarget, skillAim, relayTarget, relayHolder, applyIntent, enterScene, playbackMs } from "@kad/shared";
 import type { Chapter, InteractionAction, InteractionPrompt, InteractionScene, RunState } from "@kad/shared";
 import { context, start } from "./riftlight-test-support.ts";
 
@@ -49,8 +49,31 @@ export function solve(chapter: Chapter, opened: RunState): RunState {
   const first = promptOf(opened);
   const { spec } = first;
   const actor = first.actorId;
-  let state = act(chapter, opened, { action: "start", relaxed: true }, actor);
+  let state = act(chapter, opened, { action: "start", relaxed: true, rulesVersion: 2 }, actor);
   const wait = playbackMs(spec, true) + 1000;
+  if (promptOf(state).challenge) {
+    while (promptOf(state).phase === "active") {
+      const p = promptOf(state);
+      const round = p.challenge!.round;
+      if (spec.kind === "balance") {
+        const target = balanceTarget(p);
+        for (const id of first.playerIds) {
+          const delta = Math.round((target - (promptOf(state).levels?.[id] ?? 0)) * 4);
+          if (delta) state = act(chapter, state, { action: "adjust", round, direction: delta > 0 ? "up" : "down", steps: Math.abs(delta) }, id);
+        }
+        state = act(chapter, state, { action: "commit", round }, actor);
+      } else if (spec.kind === "cooperate") {
+        for (const id of first.playerIds) state = act(chapter, state, { action: "commit", round, position: pullTarget(p) }, id);
+      } else if (spec.kind === "precision" || spec.kind === "timing") {
+        state = act(chapter, state, { action: "commit", round, position: skillAim(p).target }, actor);
+      } else if (spec.kind === "memory" || spec.kind === "sequence") {
+        state = act(chapter, state, { action: "commit", round, answer: [...spec.answer] }, actor, wait);
+      } else if (spec.kind === "tracking") {
+        state = act(chapter, state, { action: "commit", round, answer: [String(finalCover(spec))] }, actor, wait);
+      }
+    }
+    return state;
+  }
   switch (spec.kind) {
     case "precision":
     case "timing":
@@ -90,35 +113,37 @@ export function solve(chapter: Chapter, opened: RunState): RunState {
 }
 
 /** A real way to get it wrong, or null where the mechanic has no wrong answer. */
-export function miss(chapter: Chapter, opened: RunState): RunState | null {
+export function miss(chapter: Chapter, opened: RunState, includeTeamwork = false): RunState | null {
   const first = promptOf(opened);
   const { spec } = first;
   const actor = first.actorId;
+  // Full-route scripts deliberately preserve teamwork prerequisites. The per-scene suite
+  // opts in to team failures too, so every newly reachable authored branch is exercised.
+  if (!includeTeamwork && (spec.kind === "balance" || spec.kind === "cooperate")) return null;
   const wait = playbackMs(spec, false) + 1000;
   // Not relaxed: the target is as narrow as authored.
-  const started = (): RunState => act(chapter, opened, { action: "start", relaxed: false }, actor);
+  const started = (): RunState => act(chapter, opened, { action: "start", relaxed: false, rulesVersion: 2 }, actor);
+  if (spec.kind !== "relay" && spec.kind !== "play") {
+    let state = started();
+    if (spec.kind === "balance") for (const id of first.playerIds) state = act(chapter, state, { action: "adjust", round: 0, direction: "up", steps: 4 }, id);
+    if ((spec.kind === "memory" || spec.kind === "sequence") && [...spec.answer].reverse().join() === spec.answer.join()) return null;
+    while (promptOf(state).phase === "active") {
+      const p = promptOf(state);
+      const round = p.challenge!.round;
+      if (spec.kind === "cooperate") for (const id of first.playerIds) state = act(chapter, state, { action: "commit", round, position: 1 }, id);
+      else if (spec.kind === "balance") state = act(chapter, state, { action: "commit", round }, actor);
+      else if (spec.kind === "precision" || spec.kind === "timing") {
+        const position = spec.target < 0.5 ? 1 : 0;
+        if (Math.abs(position - spec.target) <= spec.width / 2) return null;
+        state = act(chapter, state, { action: "commit", round, position }, actor);
+      } else if (spec.kind === "tracking") {
+        const wrong = spec.covers.findIndex((_, index) => index !== finalCover(spec) && !p.challenge!.excluded.includes(String(index)));
+        state = act(chapter, state, { action: "commit", round, answer: [String(wrong)] }, actor, wait);
+      } else state = act(chapter, state, { action: "commit", round, answer: [...spec.answer].reverse() }, actor, wait);
+    }
+    return state;
+  }
   switch (spec.kind) {
-    case "precision":
-    case "timing": {
-      const position = spec.target < 0.5 ? 1 : 0;
-      if (Math.abs(position - spec.target) <= spec.width / 2) return null;
-      return act(chapter, started(), { action: "stop", position }, actor);
-    }
-    case "sequence": {
-      const wrong = [...spec.answer].reverse();
-      if (wrong.join() === spec.answer.join()) return null;
-      return act(chapter, started(), { action: "answer", answer: wrong }, actor);
-    }
-    case "memory": {
-      const wrong = [...spec.answer].reverse();
-      if (wrong.join() === spec.answer.join()) return null;
-      return act(chapter, started(), { action: "answer", answer: wrong }, actor, wait);
-    }
-    case "tracking": {
-      const right = finalCover(spec);
-      const wrong = spec.covers.findIndex((_, index) => index !== right);
-      return act(chapter, started(), { action: "answer", answer: [String(wrong)] }, actor, wait);
-    }
     case "relay": {
       let state = started();
       while (promptOf(state).phase === "active") {

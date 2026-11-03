@@ -1488,7 +1488,13 @@
   },
   "presentation": {
     "interactions": {
-      "interaction_roots": { "props": ["rope-loop"] }
+      "interaction_roots": { "props": ["rope-loop"] },
+      "interaction_bell": { "props": ["oat-crumbs"] },
+      "interaction_balance": { "props": ["rope-basket"] },
+      "interaction_stones": { "props": ["prop_stepping_stones"] },
+      "interaction_echo": { "props": ["prop_hand_bell"] },
+      "interaction_sneak": { "props": ["prop_striped_gate"] },
+      "interaction_cups": { "coverIcons": ["prop_brass_cup", "prop_brass_cup", "prop_brass_cup"] }
     }
   }
 }

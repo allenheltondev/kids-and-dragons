@@ -50,7 +50,7 @@ describe("Gemfall's interaction scenes, played with real actions", () => {
 
     it("continues down the failure branch after a real miss, where a miss is possible", () => {
       for (const { chapter, sceneId, scene } of interactionScenes) {
-        const result = miss(chapter, open(chapter, sceneId, size));
+        const result = miss(chapter, open(chapter, sceneId, size), true);
         if (result === null) continue;
         expect(promptOf(result).outcome, `${chapter.id}/${sceneId}`).toBe("failure");
         const next = landed(chapter, result, promptOf(result).resolvedActorId ?? promptOf(result).actorId);

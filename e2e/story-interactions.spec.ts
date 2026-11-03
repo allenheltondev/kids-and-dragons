@@ -62,7 +62,11 @@ test("reusable interactions run through real phones, TV, refresh, and authored b
     const world = tv.getByRole("region", { name: "Story interaction" });
     await expect(world).toContainText("seed reaches the gold");
     await controls(one).getByRole("button", { name: "We’re ready" }).click();
-    await controls(one).getByRole("button", { name: "Toss the seed!" }).click();
+    for (let shot = 0; shot < 8; shot++) {
+      const prompt = (await roomState<RunState>(one, code)).prompt;
+      if (prompt?.kind !== "interaction" || prompt.phase === "result") break;
+      await controls(one).getByRole("button", { name: "Toss the seed!" }).click();
+    }
     await expect(controls(two).getByRole("button", { name: "See what happens next" })).toBeVisible();
     await two.reload();
     await two.getByRole("button", { name: "Got it", exact: true }).click();
@@ -83,13 +87,18 @@ test("reusable interactions run through real phones, TV, refresh, and authored b
     await controls(branchLead).getByRole("button", { name: "We’re ready" }).click();
     await expect(controls(branchOther).getByRole("button", { name: "Fetch the ribbon" })).toHaveCount(0);
     await one.setViewportSize({ width: 390, height: 640 });
-    await controls(one).getByRole("button", { name: "Hold the branch", exact: true }).scrollIntoViewIfNeeded();
-    const shortPhoneAction = await controls(one).getByRole("button", { name: "Hold the branch", exact: true }).boundingBox();
+    await controls(one).getByRole("button", { name: "Set my pull", exact: true }).scrollIntoViewIfNeeded();
+    const shortPhoneAction = await controls(one).getByRole("button", { name: "Set my pull", exact: true }).boundingBox();
     expect(shortPhoneAction).not.toBeNull();
     expect(shortPhoneAction!.y).toBeGreaterThanOrEqual(0);
     expect(shortPhoneAction!.y + shortPhoneAction!.height).toBeLessThanOrEqual(640);
-    await controls(one).getByRole("button", { name: "Hold the branch", exact: true }).click();
-    await controls(two).getByRole("button", { name: "Hold the branch", exact: true }).click();
+    for (const power of [0.4, 0.7, 0.5]) for (const phone of [one, two]) {
+      const slider = controls(phone).getByRole("slider", { name: /Pull strength/ });
+      await slider.scrollIntoViewIfNeeded();
+      const box = (await slider.boundingBox())!;
+      await slider.click({ position: { x: 8 + (box.width - 16) * power, y: box.height / 2 } });
+      await controls(phone).getByRole("button", { name: "Set my pull", exact: true }).click();
+    }
     await expect(world).toContainText("You did it together");
     await controls(two).getByRole("button", { name: "See what happens next" }).click();
     await controls(one).getByRole("button", { name: "We’re ready" }).click();
@@ -116,14 +125,21 @@ test("reusable interactions run through real phones, TV, refresh, and authored b
         for (const name of ["Star", "Leaf", "Star", "Bell"]) await controls(lead).getByRole("button", { name, exact: true }).click();
         await controls(lead).getByRole("button", { name: "Send our greeting", exact: true }).click();
       }
-      if (sceneId === "interaction_sneak") await controls(lead).getByRole("button", { name: "Tiptoe!", exact: true }).click();
+      if (sceneId === "interaction_sneak") for (let crossing = 0; crossing < 8; crossing++) {
+        const prompt = (await roomState<RunState>(lead, code)).prompt;
+        if (prompt?.kind !== "interaction" || prompt.phase === "result") break;
+        await controls(lead).getByRole("button", { name: "Tiptoe!", exact: true }).click();
+      }
       if (sceneId === "interaction_balance") {
-        for (const phone of [one, two]) {
-          for (let lift = 0; lift < 2; lift++) {
-            const prompt = (await roomState<RunState>(phone, code)).prompt;
-            if (prompt?.kind === "interaction" && prompt.phase === "result") break;
-            await controls(phone).getByRole("button", { name: "Lift my side", exact: true }).click();
+        for (const target of [0.5, 0.75, 0.25]) {
+          for (const phone of [one, two]) {
+            const state = await roomState<RunState>(phone, code);
+            const playerId = await phone.evaluate(room => JSON.parse(localStorage.getItem(`kad.session.${room}`)!).playerId as string, code);
+            if (state.prompt?.kind !== "interaction") throw Error("Expected balance");
+            const level = state.prompt.levels?.[playerId] ?? 0;
+            for (let step = 0; step < Math.abs(target - level) * 4; step++) await controls(phone).getByRole("button", { name: target > level ? "Lift my side" : "Lower my side", exact: true }).click();
           }
+          await controls(lead).getByRole("button", { name: "Take a careful step" }).click();
         }
       }
       if (sceneId === "interaction_spark") for (const [seat, phone] of [one, two].entries()) {

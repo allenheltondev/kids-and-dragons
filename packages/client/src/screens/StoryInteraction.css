@@ -886,8 +886,8 @@ button.game-pad:active:not(:disabled) { transform: translateY(0.2em) scale(0.97)
 /* The location carries through the transition from listening to playing. */
 .game__board { isolation: isolate; }
 .game-scenery { position: absolute; inset: 0; z-index: -1; overflow: hidden; border-radius: inherit; pointer-events: none; margin: 0 !important; }
-.game-scenery img { inline-size: 100%; block-size: 100%; object-fit: cover; opacity: 0.5; }
-.game-scenery::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, #100d2280, #100d22b8 55%, #100d22f5); }
+.game-scenery img { inline-size: 100%; block-size: 100%; object-fit: cover; opacity: 0.85; }
+.game-scenery::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, #100d2230, #100d2248 45%, #100d22dc); }
 .game-scenery__light { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 75%, #f5c86c30, transparent 65%); }
 .game__board > .game-scenery + * { margin-block-start: auto; }
 .game--result .game-scenery__light { background: radial-gradient(ellipse at 50% 75%, #f5c86c60, transparent 75%); }

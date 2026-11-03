@@ -85,6 +85,7 @@ describe("the whole chapter", () => {
         ...base.scenes,
         scene_visual: { type: "interaction", interaction: { kind: "tracking", cue: "Watch", actionLabel: "Choose", covers: ["Left", "Right"], start: 0, swaps: [[0, 1]], stepMs: 1000 } },
         scene_prop: { type: "interaction", interaction: { kind: "relay", cue: "Pass", actionLabel: "Pass", objectLabel: "Bundle" } },
+        scene_effort: { type: "interaction", interaction: { kind: "cooperate", cue: "Lift", actionLabel: "Lift", supportLabel: "Grip" } },
       } as never,
       presentation: { interactions: { scene_visual: { props: [], coverIcons: ["rope-loop", "carved-stone"] }, scene_prop: { props: ["relay-sack"] } } },
     } as Chapter;
@@ -94,6 +95,8 @@ describe("the whole chapter", () => {
     expect(urls).toContain("/assets/story-props/relay-sack.webp");
     expect(urls).toContain("/assets/ui/relay/catching-hands.webp");
     expect(urls).toContain("/assets/story-props/rope-basket.webp");
+    const effortOnly = { ...authored, scenes: { scene_effort: authored.scenes.scene_effort! } } as Chapter;
+    expect(chapterAssets(effortOnly, [])).toContain("/assets/ui/relay/catching-hands.webp");
   });
 
   it("reaches scenes beyond the prefetch depth, and visits each scene once", () => {

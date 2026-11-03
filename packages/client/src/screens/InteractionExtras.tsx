@@ -19,6 +19,7 @@ import { Icon } from "./icons";
 import { Button } from "../ui/Button";
 import { RelayCatcher, RelayWorld, relaySeats } from "./RelayGame";
 import { RelayFlightCatcher } from "./RelayFlightGame";
+import { SkillGame } from "./SkillGame";
 import { showing } from "./interaction-copy";
 import { buzz, litStep, padNote } from "./game-feel";
 
@@ -42,6 +43,7 @@ export interface BoardProps {
   settled?: boolean;
   busy?: boolean;
   onCover?: (index: number) => Promise<boolean>;
+  onSkillAction?: (action: InteractionAction) => Promise<boolean>;
 }
 
 /** The authored object a board can carry: the first prop that is not a musical note. */
@@ -215,7 +217,7 @@ function Slots({ answer, length, options, onRemove, onReorder, busy }: { answer:
 const STILL_NOTE = <p className="game-note"><Icon name="hand" /> Moving parts are switched off. Take a helping hand to get past this one.</p>;
 
 /** The same observation surface on TV and phone; it never sends an intent. */
-export function Board({ prompt, party, now, answer = [], playerId, stop = null, settled = true, busy, onCover }: BoardProps) {
+export function Board({ prompt, party, now, answer = [], playerId, stop = null, settled = true, busy, onCover, onSkillAction }: BoardProps) {
   const chapter = useChapter();
   const state = useRunState();
   const appearance = interactionAppearance(chapter?.id === state?.chapterId ? chapter : null, state?.sceneId);
@@ -235,6 +237,7 @@ export function Board({ prompt, party, now, answer = [], playerId, stop = null, 
   /** This screen builds the answer: the lead's phone. The TV and the other phones see the choices instead. */
   const building = playerId !== undefined && playerId === leadId;
   const object = appearance?.props?.find((id) => !id.startsWith("note-"));
+  if (prompt.challenge && spec.kind !== "tracking") return <SkillGame key={`${prompt.openedSeq}:${prompt.attempt}`} prompt={prompt} party={party} now={now} playerId={playerId} object={object} busy={busy} send={onSkillAction} />;
   switch (spec.kind) {
     case "precision":
       if (building && active && !still) return null;
@@ -256,16 +259,17 @@ export function Board({ prompt, party, now, answer = [], playerId, stop = null, 
       }
       const swap = spec.swaps[done];
       const moving = !still && !prompt.relaxed && swap !== undefined && progress > 0;
-      if ((building && !showing(view)) || prompt.phase === "result") {
+      if ((building && !showing(view)) || prompt.phase === "result" || (prompt.challenge?.excluded.length ?? 0) > 0) {
         const picked = Number((prompt.submittedAnswer ?? answer)[0] ?? -1);
-        return <div className="game-cover-choices" style={{ "--cover-count": labels.length } as CSSProperties}>{labels.map((label, slot) => {
+        return <div><div className="game-cover-choices" style={{ "--cover-count": labels.length } as CSSProperties}>{labels.map((label, slot) => {
           const source = positions.indexOf(slot);
           const correct = slot === trackedCover(spec);
           const reveal = (!active && correct) || ((still || prompt.relaxed) && correct);
-          const body = <><PaintedCover bells={bells} icon={appearance?.coverIcons?.[source] ?? (painted ? undefined : "prop_brass_cup")} target={appearance?.props?.[0]} reveal={reveal} raised={!active && (correct || picked === slot)} /><strong>{label}</strong>{!active && <small>{correct ? "Found it!" : picked === slot ? "Your pick" : ""}</small>}</>;
-          return active ? <button key={slot} type="button" className="game-cover-pick kad-focusable" aria-label={`${spec.actionLabel}: ${label}`} disabled={busy} data-picked={picked === slot} onClick={() => { buzz(15); void onCover?.(slot); }}>{body}</button>
+          const excluded = prompt.challenge?.excluded.includes(String(slot));
+          const body = <><PaintedCover bells={bells} icon={appearance?.coverIcons?.[source] ?? (painted ? undefined : "prop_brass_cup")} target={appearance?.props?.[0]} reveal={reveal} raised={excluded || !active && (correct || picked === slot)} /><strong>{label}</strong>{excluded ? <small>Empty — leave it up</small> : !active && <small>{correct ? "Found it!" : picked === slot ? "Your pick" : ""}</small>}</>;
+          return active && building ? <button key={slot} type="button" className="game-cover-pick kad-focusable" aria-label={`${spec.actionLabel}: ${label}`} disabled={busy || excluded} data-picked={picked === slot} onClick={() => { buzz(15); void onCover?.(slot); }}>{body}</button>
             : <div key={slot} className="game-cover-pick" data-picked={picked === slot} data-correct={correct}>{body}</div>;
-        })}</div>;
+        })}</div>{prompt.challenge?.feedback && <p className="skill-feedback" role="status">{prompt.challenge.feedback}</p>}</div>;
       }
       return <div className={"story-interaction__covers" + (painted ? " story-interaction__covers--painted" : "")} role="img" aria-label={elapsed < step && !still ? "Watch the glowing object before the covers move" : "Follow the moving covers"}>
         {spec.covers.map((label, index) => {
@@ -390,6 +394,13 @@ export function Board({ prompt, party, now, answer = [], playerId, stop = null, 
       const chosen = (id: string) => spec.options.find((o) => o.id === prompt.contributions?.[id]);
       const count = connected.filter((id) => prompt.contributions?.[id] !== undefined).length;
       return <div className="story-interaction__reactions game-play" aria-live="polite">
+        {(prompt.taps ?? 0) > 0 && <div className="skill-creation" aria-label="What we made together">{spec.options.map(option => {
+          const count = prompt.playCounts?.[option.id] ?? Object.values(prompt.contributions ?? {}).filter(id => id === option.id).length;
+          return count > 0 ? <div key={option.id} className="skill-creation__part" style={{ "--growth": Math.min(5, count) } as CSSProperties}>
+            <span className="skill-creation__cluster" aria-hidden="true">{Array.from({ length: Math.min(5, count) }, (_, i) => <span key={i} style={{ "--seed": i } as CSSProperties}><PaintedGlyph label={option.label} /><Icon name={option.icon} /></span>)}</span>
+            <strong>{option.label}</strong><small>×{count}</small>
+          </div> : null;
+        })}</div>}
         <ul className="game-bubbles">{(prompt.reactions ?? []).slice(-3).map((reaction, index, shown) => {
           const who = member(reaction.playerId);
           return <li key={(prompt.taps ?? 0) - shown.length + index} className="game-bubble">
@@ -478,6 +489,7 @@ export function KindControls({ prompt, playerId, connected, mine, now, busy, sen
   // server-aligned clock the board draws with, not this phone's own clock read a moment later.
   const positionNow = () => precisionPosition(now - Date.parse(prompt.startedAt ?? ""), spec.kind === "precision" || spec.kind === "timing" ? spec.periodMs : 1);
   const shot = useRef(false);
+  if (prompt.challenge) return null;
   switch (spec.kind) {
     case "precision":
     case "timing": {

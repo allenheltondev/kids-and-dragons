@@ -33,7 +33,11 @@ export interface InteractionPrompt {
   caughtBy?: string;
   /** Absent on saved relays that began before flight gameplay shipped. */
   relay?: import("./relay.js").RelayState;
+  /** Versioned rules preserve active saves and clients using the original controls. */
+  challenge?: import("./skill-games.js").SkillChallenge;
   contributions?: Record<string, string>;
+  /** Free play accumulates a room's choices rather than replacing the last pick. */
+  playCounts?: Record<string, number>;
   reactions?: { playerId: string; text: string }[];
   taps?: number;
   /** The actual tap/guess, retained for shared visual feedback and refresh. */
@@ -46,12 +50,14 @@ export interface InteractionPrompt {
 }
 
 export type InteractionAction =
-  | { action: "start"; relaxed: boolean }
+  | { action: "start"; relaxed: boolean; rulesVersion?: 2 }
+  | { action: "commit"; round: number; position?: number; answer?: string[]; testOnly?: boolean }
+  | { action: "arrange"; round: number; answer: string[] }
   | { action: "stop"; position: number }
   | { action: "support"; mode: "hold" | "prop" | "release" }
   | { action: "complete" }
   | { action: "answer"; answer: string[] }
-  | { action: "adjust"; direction: "up" | "down"; steps?: number }
+  | { action: "adjust"; direction: "up" | "down"; steps?: number; round?: number }
   | ({ action: "catch" } & Partial<import("./relay.js").RelayCatchInput>)
   | ({ action: "pass" } & Partial<import("./relay.js").RelayThrowInput>)
   | { action: "play"; optionId: string }

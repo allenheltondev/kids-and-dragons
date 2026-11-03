@@ -33,6 +33,7 @@
 
 import { INVENTORY_SLOTS, MAX_PARTY } from "./types/domain.js";
 import { cooperationProgress } from "./teamwork.js";
+import { applySkillAction, skillCanStart, skillStart } from "./skill-games.js";
 import { balanceReady, interactionActor, playbackOver, playReady, precisionSuccess, relayHolder, supportsReady, trackedCover, SUPPORT_LEASE_MS } from "./interactions.js";
 import { relayStart, relayLaunch, relayCatchScore, relayThrowQuality, relayPickupRadius } from "./relay.js";
 import type {
@@ -1338,7 +1339,9 @@ function doInteract(draft: RunState, playerId: string, intent: Extract<ClientInt
     delete prompt.outcome; delete prompt.resolvedActorId; delete prompt.startedAt;
     delete prompt.levels; delete prompt.passed; delete prompt.caughtBy;
     delete prompt.relay;
+    delete prompt.challenge;
     delete prompt.contributions; delete prompt.reactions; delete prompt.taps;
+    delete prompt.playCounts;
     delete prompt.steadySince; delete prompt.steadyPlayerIds;
     delete prompt.stopPosition; delete prompt.submittedAnswer;
     return undefined;
@@ -1348,6 +1351,7 @@ function doInteract(draft: RunState, playerId: string, intent: Extract<ClientInt
   if (intent.action === "start") {
     if (playerId !== actor || prompt.phase !== "ready" || typeof intent.relaxed !== "boolean") throw new Illegal("ILLEGAL", "Not ready to start.");
     prompt.relaxed = intent.relaxed; prompt.startedAt = ctx.now; prompt.phase = "active";
+    if (intent.rulesVersion === 2 && skillCanStart(prompt.spec.kind)) prompt.challenge = skillStart();
     if (prompt.spec.kind === "relay") {
       prompt.relay = relayStart(ctx.now);
       if (prompt.relaxed) prompt.relay.flight.durationMs *= 1.5;
@@ -1355,6 +1359,13 @@ function doInteract(draft: RunState, playerId: string, intent: Extract<ClientInt
     return undefined;
   }
   if (prompt.phase !== "active") throw new Illegal("ILLEGAL", "Start when everyone is ready.");
+  if (prompt.challenge) {
+    try {
+      const outcome = applySkillAction(prompt, connected, playerId, intent, ctx.now);
+      if (outcome) result(outcome);
+    } catch (error) { throw new Illegal("ILLEGAL", error instanceof Error ? error.message : "Invalid game input."); }
+    return undefined;
+  }
   switch (intent.action) {
     case "stop":
       if ((prompt.spec.kind !== "precision" && prompt.spec.kind !== "timing") || playerId !== actor || typeof intent.position !== "number" || !Number.isFinite(intent.position) || intent.position < 0 || intent.position > 1) throw new Illegal("ILLEGAL", "Invalid precision input.");
@@ -1480,6 +1491,8 @@ function doInteract(draft: RunState, playerId: string, intent: Extract<ClientInt
       if (!option) throw new Illegal("ILLEGAL", "Choose an offered action.");
       (prompt.contributions ??= {})[playerId] = option.id;
       prompt.taps = Math.min(1000, (prompt.taps ?? 0) + 1);
+      const counts = prompt.playCounts ??= {};
+      counts[option.id] = Math.min(1000, (counts[option.id] ?? 0) + 1);
       const stage = prompt.spec.stages?.[Math.min(prompt.taps - 1, prompt.spec.stages.length - 1)];
       prompt.reactions = [...(prompt.reactions ?? []), { playerId, text: stage ?? option.reaction }].slice(-12);
       return undefined;

@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { createRunState, resolveCharacter } from "@kad/shared";
+import { createRunState, resolveCharacter, skillStart } from "@kad/shared";
 import type { ClientIntent, InteractionPrompt, InteractionSpec } from "@kad/shared";
 import { makeCharacter, makeItems, makeRules } from "../../../shared/src/test-fixtures";
 import { useGameStore, useMyTurnKey } from "../store";
@@ -648,5 +648,67 @@ describe("timing fairness across clocks, frames and taps (#566)", () => {
     arrive({ kind: "memory", cue: "Echo", actionLabel: "Echo", options: [{ id: "a", label: "Shells", icon: "star" }, { id: "b", label: "Leaves", icon: "leaf" }], answer: ["a", "b", "a"], stepMs: 1000 }, 0, 5000);
     render(<StoryInteractionControls />);
     expect(screen.getByText("Watch the pads light up!")).toBeTruthy();
+  });
+});
+
+describe("skill-game phone and TV surfaces", () => {
+  it("starts current rules from the real ready control", async () => {
+    const send = seed(precision, { phase: "ready" });
+    render(<StoryInteractionControls />);
+    await act(async () => { fireEvent.click(screen.getByRole("button", { name: /ready/ })); });
+    expect(send).toHaveBeenCalledWith(expect.objectContaining({ action: "start", rulesVersion: 2 }));
+  });
+  it("offers stationary aiming under reduced motion instead of requiring a skip", async () => {
+    document.documentElement.setAttribute("data-motion", "reduced");
+    const send = seed(precision, { challenge: skillStart() });
+    render(<StoryInteractionControls />);
+    fireEvent.change(screen.getByRole("slider", { name: "Aim at the gold" }), { target: { value: "50" } });
+    await act(async () => { fireEvent.click(screen.getByRole("button", { name: "Toss!" })); });
+    expect(send).toHaveBeenCalledWith(expect.objectContaining({ action: "commit", round: 0, position: 0.5 }));
+    expect(screen.queryByText(/Moving parts are switched off/)).toBeNull();
+  });
+  it("sets a real pull strength, and makes an already committed pull wait", async () => {
+    const spec: InteractionSpec = { kind: "cooperate", cue: "Haul", actionLabel: "Lift", supportLabel: "Hold" };
+    const challenge = skillStart();
+    const send = seed(spec, { challenge });
+    const { unmount } = render(<StoryInteractionControls />);
+    fireEvent.change(screen.getByRole("slider", { name: /Pull strength/ }), { target: { value: "70" } });
+    await act(async () => { fireEvent.click(screen.getByRole("button", { name: "Set my pull" })); });
+    expect(send).toHaveBeenCalledWith(expect.objectContaining({ action: "commit", round: 0, position: 0.7 }));
+    unmount();
+    seed(spec, { challenge: { ...challenge, pulls: { p: 0.7 } } });
+    render(<StoryInteractionControls />);
+    expect((screen.getByRole("button", { name: "Waiting for the team" }) as HTMLButtonElement).disabled).toBe(true);
+  });
+  it("shows the shared sequence mechanism on a read-only TV and tests partial steps on the phone", async () => {
+    const spec: InteractionSpec = { kind: "sequence", cue: "Bridge", actionLabel: "Cross", options: [{ id: "a", label: "Frog", icon: "star" }, { id: "b", label: "Owl", icon: "eye" }], answer: ["a", "b"], clues: ["Frog first"] };
+    const challenge = { ...skillStart(), arrangement: ["a"], matched: 1, round: 2 };
+    const send = seed(spec, { challenge });
+    const { unmount } = render(<StoryInteractionWorld />);
+    expect(screen.getByText("holds ✓")).toBeTruthy();
+    expect(screen.queryAllByRole("button")).toHaveLength(0);
+    unmount();
+    render(<StoryInteractionControls />);
+    await act(async () => { fireEvent.click(screen.getByRole("button", { name: "Test these steps" })); });
+    expect(send).toHaveBeenCalledWith(expect.objectContaining({ action: "commit", round: 2, answer: ["a"], testOnly: true }));
+    expect((screen.getByRole("button", { name: "Cross" }) as HTMLButtonElement).disabled).toBe(true);
+  });
+  it("keeps an empty tracking cover raised and unavailable during recovery", () => {
+    seed({ kind: "tracking", cue: "Watch", actionLabel: "Look", covers: ["Left", "Middle", "Right"], start: 0, swaps: [[0, 2]], stepMs: 1000 },
+      { startedAt: new Date(Date.now() - 5000).toISOString(), challenge: { ...skillStart(), excluded: ["0"], feedback: "Empty!" } });
+    render(<StoryInteractionControls />);
+    const empty = screen.getByRole("button", { name: "Look: Left" }) as HTMLButtonElement;
+    expect(empty.disabled).toBe(true);
+    expect(empty.querySelector('[data-raised="true"]')).toBeTruthy();
+    expect(screen.getByText("Empty!")).toBeTruthy();
+  });
+  it("retains retry access when a skill input fails to arrive", async () => {
+    const send = seed(precision, { challenge: skillStart() });
+    send.mockResolvedValue(false);
+    render(<StoryInteractionControls />);
+    await act(async () => { fireEvent.click(screen.getByRole("button", { name: "Toss!" }), { detail: 0 }); });
+    expect(screen.getByRole("alert").textContent).toMatch(/did not arrive/);
+    await act(async () => { fireEvent.click(screen.getByRole("button", { name: "Toss!" }), { detail: 0 }); });
+    expect(send).toHaveBeenCalledTimes(2);
   });
 });
