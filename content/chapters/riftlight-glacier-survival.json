@@ -1,5 +1,5 @@
 {
-  "$comment": "Riftlight authored opening draft. Development preview only; see ../README.md. Production campaign id will be riftlight. No bonus XP: preserve the design bible campaign budget.",
+  "$comment": "Riftlight opening, chapter 2 (docs/campaigns/continental-rift/arc.md, glacier-survival). Revised in November 2026: question \"Can we get the kid home and find somewhere warm?\". The yetis take the party in, the kid gets home, the party learns the snow on the quay came from here, the melt has been strange since the mountain woke (true after every Gemfall ending), and loose snow drifts back uphill (the first \"moved things go home\" image). Keeps the Conservatory and the low song (learned_glacier_note, tested_singing_seam, one of marked_glacier_drift / sheltered_kid_on_detour / found_drift_hollow).",
   "id": "riftlight-glacier-survival",
   "campaignId": "riftlight",
   "index": 2,
@@ -14,7 +14,7 @@
     "narration": "A little snowhorn goat bleats across the meltwater. Its herd answers from a snowy ledge, bells clinking. Between them, the water runs cold and quick. Those small hooves need a way home."
   },
   "goal": {
-    "text": "Get the little goat home safe and find somewhere warm.",
+    "text": "Can we get the kid home and find somewhere warm?",
     "steps": [
       {
         "id": "through_drift",
@@ -41,7 +41,7 @@
   "scenes": {
     "arrival": {
       "type": "story",
-      "narration": "The bell rings again, and the kid answers with an enormous bleat. You brush snow off its knees, scraped in the scramble on the quay. Across the slope, a herd of snowhorn goats waits on a ledge. Between you, a melt channel cuts through the snow. Your job: get the little goat home to its herd, then find somewhere warm for everyone.",
+      "narration": "The bell rings again, and the kid answers with an enormous bleat. You brush snow off its knees, scraped in the scramble on the quay. So this is where the snow on the quay came from: a whole white mountainside. Across the slope, a herd of snowhorn goats waits on a ledge. Between you, a melt channel cuts through the snow. Far off, a deep voice calls, \"Hoo-up! Hoo-up!\" Can you get the little goat home to its herd, and find somewhere warm for everyone?",
       "choices": [
         {
           "id": "continue",
@@ -63,7 +63,7 @@
     },
     "shelter": {
       "type": "choice_point",
-      "narration": "Wind presses your wet clothes to your knees. The kid is shivering. A bank of packed snow would block the wind. Or you could follow a row of dark rocks nearer the bell. What do you do first?",
+      "narration": "Wind presses your wet clothes to your knees. The kid is shivering. A bank of packed snow would block the wind. Or you could follow a row of dark rocks nearer the bell. What do you do first? \"Meh,\" says the kid, which clearly means hurry up.",
       "choices": [
         {
           "id": "bank",
@@ -95,7 +95,7 @@
     },
     "windbreak": {
       "type": "story",
-      "narration": "You scrape a hollow behind the bank and huddle close. The kid noses under the warmest arm. From here you can see footprints between the dark rocks, each wider than your head.",
+      "narration": "You scrape a hollow behind the bank and huddle close. The kid noses under the warmest arm. From here you can see footprints between the dark rocks, each wider than your head. \"Hoo-up!\" calls the far voice. The kid's ears swivel toward it.",
       "choices": [
         {
           "id": "continue",
@@ -121,7 +121,7 @@
     },
     "rocks": {
       "type": "story",
-      "narration": "The rocks give your feet something firm under the snow. Beside them are deep footprints. A broad wooden sled has scraped a track toward the bell.",
+      "narration": "The rocks give your feet something firm under the snow. Beside them are deep footprints. A broad wooden sled has scraped a track toward the bell. \"Hoo-up!\" calls the far voice, somewhere ahead.",
       "choices": [
         {
           "id": "continue",
@@ -140,7 +140,7 @@
     },
     "mend": {
       "type": "story",
-      "narration": "Gentle light settles over the kid's scraped knees. It stops shaking long enough to chew your sleeve. Between the rocks, you spot broad footprints.",
+      "narration": "Gentle light settles over the kid's scraped knees. It stops shaking long enough to chew your sleeve. Between the rocks, you spot broad footprints. \"Meh-heh,\" says the kid, which sounds a lot like thank you.",
       "choices": [
         {
           "id": "continue",
@@ -158,7 +158,7 @@
       ]
     },
     "wind_warm": {
-      "narration": "The wind finds every wet seam, and your sleeves crackle with ice. You stamp and rub until the ice cracks off in crumbs. Damp now, not frozen. The kid sneezes a tiny cloud.",
+      "narration": "The wind finds every wet seam, and your sleeves crackle with ice. You stamp and rub until the ice cracks off in crumbs. Damp now, not frozen. The kid sneezes a tiny cloud. \"Hoo-up!\" calls the far voice again, closer.",
       "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
         {
@@ -211,7 +211,7 @@
       },
       "onFailure": {
         "goto": "prints",
-        "narration": "Empty! A snowy nose pokes out of the next mound and sneezes. Back into your coat it goes."
+        "narration": "Empty! And empty again! A snowy nose pokes out of the third mound and sneezes, very pleased with itself. Back into your coat it goes."
       },
       "onAssisted": {
         "goto": "prints",
@@ -227,7 +227,7 @@
     },
     "prints": {
       "type": "choice_point",
-      "narration": "Past the rocks, the snow is stamped with footprints wide as dinner plates. The wind is filling them in. Some lead toward the bell. Some wander off, as if the walker forgot where they were going. Which line do you trust?",
+      "narration": "Past the rocks, the snow is stamped with footprints wide as dinner plates. The wind is filling them in. Some lead toward the bell. Some wander off, as if the walker forgot where they were going. Which line do you trust? \"Hoo-up! Hoo-up!\" The voice is closer now, and very deep.",
       "choices": [
         {
           "id": "read",
@@ -265,7 +265,7 @@
       "stat": "clever",
       "tn": 8,
       "prompt": "Whoever has the sharpest eyes, find the freshest line of prints.",
-      "narration": "Fresh prints have sharp edges. Old ones are soft as pillows.",
+      "narration": "Fresh prints have sharp edges. Old ones are soft as pillows. \"Hoo-up!\" calls the far voice.",
       "roller": "best",
       "onSuccess": {
         "goto": "drift",
@@ -288,7 +288,7 @@
       "stat": "quick",
       "tn": 8,
       "prompt": "March along the prints before the wind fills them in!",
-      "narration": "The prints are far apart. It is like hopping across a giant's stepping stones.",
+      "narration": "The prints are far apart. It is like hopping across a giant's stepping stones. \"Hoo-up!\" calls the far voice.",
       "roller": "all",
       "onSuccess": {
         "goto": "drift",
@@ -311,7 +311,7 @@
       "stat": "quick",
       "tn": 8,
       "prompt": "Use skyward or glide to look down at the whole trail.",
-      "narration": "Wings lift you above the wind, where the whole trail shows at once.",
+      "narration": "Wings lift you above the wind, where the whole trail shows at once. Far below, someone calls, \"Hoo-up!\"",
       "onSuccess": {
         "goto": "drift",
         "narration": "From up high the line is plain, and you point everyone along it."
@@ -330,7 +330,7 @@
     },
     "tracks": {
       "type": "story",
-      "narration": "A yeti herder comes around the ridge, pulling an empty sled. She stops at the sight of the kid. \"There you are.\" The kid is from her herd. Then she sees the rest of you. \"Did you come with the weather?\"",
+      "narration": "A yeti herder comes around the ridge, pulling an empty sled. \"Hoo-up!\" she calls, and then she stops at the sight of the kid. \"There you are, you little snowball.\" The kid is from her herd. Then she sees the rest of you. \"Did you come with the weather?\"",
       "choices": [
         {
           "id": "truth",
@@ -382,7 +382,7 @@
     },
     "tell_rift": {
       "type": "story",
-      "narration": "The yeti looks at your wet boots and harbor rope. \"From the Exchange? That's a long way to come without a hat.\" She lays a folded blanket on the sled. \"Walk on the dark ice when I say. Never the white.\"",
+      "narration": "You tell her about the snow on the quay and the tear in the air. The yeti looks at your wet boots and harbor rope. \"Snow on a harbor, from a clear sky?\" She looks up at the high field, which is bare as a plate. \"So that is where my snow went.\" She digs a honeycake out of her apron. \"For the news. Now, walk on the dark ice when I say. Never the white.\" She lays a folded blanket on the sled.",
       "choices": [
         {
           "id": "continue",
@@ -400,12 +400,19 @@
         {
           "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "grantItem",
+          "itemId": "honeycake",
+          "to": "party"
         }
       ]
     },
     "ask_help": {
       "type": "story",
-      "narration": "\"First, we get you warm,\" says the yeti. She wraps a folded blanket around the kid and your arms together. \"I keep this herd. The glacier keeps surprising me.\" She turns the sled toward the melt channel.",
+      "narration": "\"First, we get you warm,\" says the yeti. She wraps a folded blanket around the kid and your arms together, and it is warm as toast. She sniffs your coats. \"Harbor slush? Then that is where my snow went. The glacier keeps surprising me.\" She turns the sled toward the melt channel.",
       "choices": [
         {
           "id": "continue",
@@ -424,11 +431,18 @@
           "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "heal",
+          "amount": 1,
+          "to": "party"
+        }
       ]
     },
     "herder_gift": {
       "type": "story",
-      "narration": "At the channel, the herder looks you over. \"I saw you leave my tin tidy. Good.\" She hands you a bundle wrapped in a cloth. \"Bread, cheese, and a sausage that has not made up its mind.\" She points across the water. \"The herd is over there. First, we read the ice.\"",
+      "narration": "At the channel, the herder looks you over. \"You kept that kid warm all the way here. Good.\" She hands you a bundle wrapped in a cloth. \"Bread, cheese, and a sausage that has not made up its mind.\" She points across the water. \"The herd is over there. First, we read the ice.\"",
       "choices": [
         {
           "id": "continue",
@@ -560,7 +574,8 @@
           "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
-      ]
+      ],
+      "narration": "\"One foot on the stone, one foot on me,\" says the herder, holding out a huge hand."
     },
     "sledge": {
       "type": "check",
@@ -593,7 +608,8 @@
           "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
-      ]
+      ],
+      "narration": "\"Hold her steady,\" says the herder, patting the sled. \"She is old, and she wobbles.\""
     },
     "wing_line": {
       "type": "check",
@@ -626,7 +642,8 @@
           "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
-      ]
+      ],
+      "narration": "\"Show-off,\" says the herder, grinning. \"Go on, then.\""
     },
     "song_step": {
       "type": "check",
@@ -659,7 +676,8 @@
           "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
-      ]
+      ],
+      "narration": "\"Sing it slow,\" says the herder. \"Goats like slow.\""
     },
     "dry_bank": {
       "type": "story",
@@ -777,7 +795,7 @@
       ]
     },
     "settle_count": {
-      "narration": "Every goat wears a different bell: a clank, a tink, a cowbell, a spoon on a pot. Counting moving goats is like counting raindrops, but every bell is here. The goats calm down. Someone finally knows who they are.",
+      "narration": "Every goat wears a different bell: a clank, a tink, a cowbell, a spoon on a pot. Counting moving goats is like counting raindrops, but every bell is here. The goats calm down. Someone finally knows who they are. \"Twenty-two,\" says the herder, pleased. \"And one small snowball makes twenty-three.\"",
       "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
         {
@@ -798,12 +816,12 @@
           "id": "continue",
           "label": "Stay with the herd",
           "icon": "forward",
-          "goto": "herd_play"
+          "goto": "herd"
         }
       ]
     },
     "settle_brush": {
-      "narration": "The goats' wool has frozen into ice beads that rattle as they walk. They hold still for brushing, if you find the itchy spot. Soon the herd sounds like a rattle full of calm.",
+      "narration": "The goats' wool has frozen into ice beads that rattle as they walk. They hold still for brushing, if you find the itchy spot. Soon the herd sounds like a rattle full of calm. \"Behind the ears,\" says the herder. \"That is where they keep their worries.\"",
       "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
         {
@@ -824,19 +842,19 @@
           "id": "continue",
           "label": "Stay with the herd",
           "icon": "forward",
-          "goto": "herd_play"
+          "goto": "herd"
         }
       ]
     },
     "settle_feed": {
       "type": "story",
-      "narration": "You unwrap the supper. The lead goat sniffs the cheese and sneezes. Then she eats the crust, gives you a forgiving look, and leads the herd to the herder.",
+      "narration": "You unwrap the supper. The lead goat sniffs the cheese and sneezes. Then she eats the crust, gives you a forgiving look, and leads the herd to the herder. \"Spoiled,\" says the herder fondly.",
       "choices": [
         {
           "id": "continue",
           "label": "Go with the herd",
           "icon": "hand",
-          "goto": "herd_play"
+          "goto": "herd"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters",
@@ -855,7 +873,7 @@
       ]
     },
     "settle_lull": {
-      "narration": "You hum a slow tune that sounds like a blanket. The lead goat's ears droop. The spoon bell goes quiet. One by one, the goats stop stamping and follow the tune.",
+      "narration": "You hum a slow tune that sounds like a blanket. The lead goat's ears droop. The spoon bell goes quiet. One by one, the goats stop stamping and follow the tune. \"Now you are showing off,\" says the herder, smiling.",
       "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
         {
@@ -876,87 +894,25 @@
           "id": "continue",
           "label": "Stay with the herd",
           "icon": "forward",
-          "goto": "herd_play"
-        }
-      ]
-    },
-    "herd_play": {
-      "type": "interaction",
-      "narration": "The goats are calmer now. Every goat wants a turn fussing over the kid. The lead goat watches to see what you will do.",
-      "interaction": {
-        "kind": "play",
-        "cue": "Give the herd something nice.",
-        "actionLabel": "Settle in with the herd",
-        "participation": "everyone",
-        "options": [
-          {
-            "id": "brush",
-            "label": "Brush a goat's wool",
-            "icon": "hand",
-            "reaction": "A goat leans into the brush until it nearly tips over."
-          },
-          {
-            "id": "scratch",
-            "label": "Scratch the kid behind the ears",
-            "icon": "heart",
-            "reaction": "The kid shuts its eyes and makes a happy, wobbly bleat."
-          },
-          {
-            "id": "hay",
-            "label": "Offer a handful of hay",
-            "icon": "leaf",
-            "reaction": "The lead goat takes the hay politely and chews with great dignity."
-          }
-        ]
-      },
-      "onSuccess": {
-        "goto": "herd",
-        "narration": "The herd settles around you with a clank of bells. The lead goat gives you one slow, approving blink."
-      },
-      "onFailure": {
-        "goto": "herd",
-        "narration": "The goats settle a little at a time, and the herder waits for the last ones."
-      },
-      "onAssisted": {
-        "goto": "herd",
-        "narration": "\"Behind the ears,\" says the herder, showing you the spot. The herd settles."
-      },
-      "art": "scenes/riftlight/glacier-herd-rest",
-      "cast": [
-        {
-          "figure": "cast/yeti_herder",
-          "name": "Yeti herder"
-        },
-        {
-          "figure": "cast/snowhorn_kid",
-          "name": "Goat kid"
-        },
-        {
-          "figure": "entities/snowhorn_goat"
+          "goto": "herd"
         }
       ]
     },
     "herd": {
       "type": "choice_point",
-      "narration": "\"In you go,\" calls the herder, waving the goats toward a low opening in the ice. The kid plants its feet. From inside comes a deep note that trembles through your boots. How do you coax it in?",
+      "narration": "\"In you go,\" calls the herder, waving the goats toward a low opening in the ice. The kid plants its feet. From inside comes a deep note that trembles through your boots, and the kid tilts its head to listen. Do you pick it up and carry it in? Or hum along with the note it is listening to?",
       "choices": [
         {
-          "id": "patient",
-          "label": "Sit and wait with it",
-          "icon": "hand",
-          "goto": "patient"
-        },
-        {
-          "id": "follow",
-          "label": "Let it chew a sleeve",
-          "icon": "hand",
-          "goto": "sleeve"
+          "id": "carry",
+          "label": "Pick it up and carry it",
+          "icon": "might",
+          "goto": "carry"
         },
         {
           "id": "hum",
-          "label": "Hum the low note back",
-          "icon": "hand",
-          "goto": "hum"
+          "label": "Hum along with the note",
+          "icon": "song",
+          "goto": "hum_door"
         }
       ],
       "art": "scenes/riftlight/glacier-herd-rest",
@@ -971,9 +927,28 @@
         }
       ]
     },
-    "patient": {
+    "carry": {
       "type": "story",
-      "narration": "You sit in the snow beside the kid. The herd walks on. At last the kid butts your elbow, gets up, and trots after them.",
+      "onEnter": [
+        {
+          "type": "damage",
+          "amount": 1,
+          "to": "party",
+          "nonlethal": true
+        }
+      ],
+      "art": "scenes/riftlight/glacier-herd-rest",
+      "cast": [
+        {
+          "figure": "cast/yeti_herder",
+          "name": "Yeti herder"
+        },
+        {
+          "figure": "cast/snowhorn_kid",
+          "name": "Goat kid"
+        }
+      ],
+      "narration": "You scoop the kid up. It kicks like a drum solo, and every hoof finds a shin. \"That works,\" says the herder, rubbing her own shin. \"Once.\" In you all go, bruised but quick.",
       "choices": [
         {
           "id": "continue",
@@ -981,53 +956,38 @@
           "icon": "hand",
           "goto": "hall"
         }
-      ],
-      "art": "scenes/riftlight/glacier-herd-rest",
-      "cast": [
-        {
-          "figure": "cast/yeti_herder",
-          "name": "Yeti herder"
-        },
-        {
-          "figure": "cast/snowhorn_kid",
-          "name": "Goat kid"
-        }
       ]
     },
-    "sleeve": {
-      "type": "story",
-      "narration": "You offer a loose cuff. The kid gives it an interested nibble, takes it in its mouth, and follows you through the door. \"That coat has earned its keep,\" says the herder.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go inside",
-          "icon": "hand",
-          "goto": "hall"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-herd-rest",
-      "cast": [
-        {
-          "figure": "cast/yeti_herder",
-          "name": "Yeti herder"
-        },
-        {
-          "figure": "cast/snowhorn_kid",
-          "name": "Goat kid"
-        }
-      ]
-    },
-    "hum": {
-      "type": "story",
-      "narration": "You hum the low note. The kid tilts its head. From inside the ice, another voice hums back. The kid follows the sound, and you follow the kid.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Meet whoever answered",
-          "icon": "hand",
-          "goto": "hall"
-        }
-      ],
+    "hum_door": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "roller": "best",
+      "prompt": "Hum low and steady with the note from inside, so the kid follows the sound.",
+      "narration": "\"Gently,\" whispers the herder. \"It is listening for its own.\"",
+      "onSuccess": {
+        "goto": "hall",
+        "narration": "You hum low, under the deep note. The kid tilts its head. From inside the ice, another voice hums back, right at you. The kid follows the sound, and you follow the kid. \"Huh,\" says the herder. \"The hall answered you.\"",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "hummed_at_door",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "hall",
+        "narration": "Your hum comes out as a squeak. The kid sits down in the snow, offended, and so do you. It takes a long, cold time. At last it butts your elbow and trots inside. \"Patience is cold work,\" says the herder. \"But it works.\"",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
+      },
       "art": "scenes/riftlight/glacier-herd-rest",
       "cast": [
         {
@@ -1043,19 +1003,33 @@
     "hall": {
       "type": "rest",
       "narration": "Inside is a singing hall carved from ice. Yetis sit on benches with warm cups, humming one low note together. The herder hangs your wet things by a row of warm stones. Damp blankets hang over a rail. \"Glacier of Origins,\" she says. \"You may stop arriving now.\" At the back, warm air drifts from a glass door.",
-      "heal": 2,
+      "heal": 4,
       "choices": [
         {
           "id": "continue",
           "label": "Sit by the warm stones",
           "icon": "hand",
-          "goto": "hall_table"
+          "goto": "hall_table",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "hummed_at_door",
+              "value": false
+            }
+          ]
         },
         {
           "id": "glass_door",
           "label": "Go through the glass door",
           "icon": "song",
-          "goto": "conservatory"
+          "goto": "conservatory",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "hummed_at_door",
+              "value": false
+            }
+          ]
         }
       ],
       "cast": [
@@ -1070,7 +1044,15 @@
           "flag": "came_in_from_the_cold"
         }
       ],
-      "art": "scenes/riftlight/singing-hall"
+      "art": "scenes/riftlight/singing-hall",
+      "variants": [
+        {
+          "when": {
+            "flag": "hummed_at_door"
+          },
+          "text": "A young yeti singer points at you. \"You hummed at the door! I heard you. You are halfway to the low song already.\""
+        }
+      ]
     },
     "hall_table": {
       "type": "choice_point",
@@ -1134,7 +1116,7 @@
     },
     "hall_dry": {
       "type": "story",
-      "narration": "You set your boots on the warm stones. Steam rises, and a small pond runs out of each one. The knitter hangs your socks on her scarf, which is what the scarf is for.",
+      "narration": "You set your boots on the warm stones. Steam rises, and a small pond runs out of each one. The knitter hangs your socks on her scarf, which is what the scarf is for. \"Socks on the scarf, boots on the stones,\" says the knitter. \"That is the rule.\"",
       "choices": [
         {
           "id": "continue",
@@ -1296,42 +1278,13 @@
       "art": "scenes/classes/conservatory"
     },
     "listen": {
-      "type": "choice_point",
-      "narration": "A young yeti stops singing to turn a page in an open songbook. The note thins, then another singer fills it. The herder pats the bench. \"Low and steady. Try it. Nobody here learned by already knowing.\"",
+      "type": "story",
+      "narration": "A young yeti stops singing to turn a page in an open songbook. The note thins, then another singer fills it. \"What is it for?\" you ask. \"For listening,\" says the herder. \"A crack makes one sound. Running water makes another. The song helps us hear the difference.\" She pats the bench. \"Low and steady. Try it. Nobody here learned by already knowing.\"",
       "choices": [
         {
           "id": "learn",
           "label": "Learn the note",
-          "icon": "hand",
-          "goto": "note_try"
-        },
-        {
-          "id": "ask",
-          "label": "Ask what it is for",
-          "icon": "hand",
-          "goto": "song_answer"
-        }
-      ],
-      "art": "scenes/riftlight/singing-hall",
-      "cast": [
-        {
-          "figure": "cast/yeti_herder",
-          "name": "Yeti herder"
-        },
-        {
-          "figure": "cast/young_yeti_singer",
-          "name": "Young yeti singer"
-        }
-      ]
-    },
-    "song_answer": {
-      "type": "story",
-      "narration": "\"For listening,\" says the herder. \"A crack makes one sound. Running water makes another. The song helps us hear the difference.\" She hums the note once and waits.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Hum it back",
-          "icon": "hand",
+          "icon": "song",
           "goto": "note_try"
         }
       ],
@@ -1385,7 +1338,14 @@
       },
       "onFailure": {
         "goto": "learn_note",
-        "narration": "Your note slides like a goat on ice. The second try wobbles into place."
+        "narration": "Your note slides like a goat on ice. Across the hall, the wall answers with a sharp crack, and frost showers the benches. Every yeti stops singing and looks at you. The second try, very quietly, wobbles into place.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "note_cracked",
+            "value": true
+          }
+        ]
       },
       "onAssisted": {
         "goto": "learn_note",
@@ -1436,11 +1396,19 @@
           "figure": "cast/young_yeti_singer",
           "name": "Young yeti singer"
         }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "note_cracked"
+          },
+          "text": "The herder brushes frost out of her fur. \"Low and steady. Not loud and wobbly. The ice listens to both.\""
+        }
       ]
     },
     "changing": {
       "type": "story",
-      "narration": "\"The melt came early,\" says the herder. \"A path we used last week is water now. It led to the herd's sheltered grazing ledge. Now we eat stored hay, and the pile shrinks every day.\" Outside, a bell rings twice. Three travelers in dark cloaks are packing up camp beside the hall.",
+      "narration": "\"The melt has been strange since the mountain woke,\" says the herder. \"A path we used last week is water now. It led to the herd's sheltered grazing ledge. Now we eat stored hay, and the pile shrinks every day.\" She frowns at the window. \"And some nights the snow blows uphill. Snow does not do that.\" Outside, a bell rings twice. Three travelers in dark cloaks are packing up camp beside the hall.",
       "choices": [
         {
           "id": "help",
@@ -1564,7 +1532,7 @@
       "stat": "quick",
       "tn": 8,
       "prompt": "Everyone grab a pole and plant a line along the safe edge.",
-      "narration": "Each pole must go in straight, or the goats will follow it into the stream.",
+      "narration": "Each pole must go in straight, or the goats will follow it into the stream. \"Straight as a yeti's whiskers,\" says the herder.",
       "roller": "all",
       "onSuccess": {
         "goto": "shelf_cross",
@@ -1598,7 +1566,7 @@
       "stat": "might",
       "tn": 8,
       "prompt": "The strongest hero takes the front of the sled. Everyone else pushes.",
-      "narration": "The hay sled is heavy as a sleeping bear and slides like a happy one.",
+      "narration": "The hay sled is heavy as a sleeping bear and slides like a happy one. \"Push from the back,\" says the herder, \"and do not ride it.\"",
       "roller": "best",
       "onSuccess": {
         "goto": "shelf_cross",
@@ -1624,7 +1592,7 @@
       "stat": "might",
       "tn": 8,
       "prompt": "Brace the snow shelf steady while the poles go in.",
-      "narration": "A thornguard plants both feet. The snow shelf creaks. The thornguard does not.",
+      "narration": "A thornguard plants both feet. The snow shelf creaks. The thornguard does not. \"Hold, hold,\" says the herder.",
       "onSuccess": {
         "goto": "shelf_cross",
         "narration": "The shelf stops creaking, and the poles go in, one by one, in a straight row."
@@ -1683,7 +1651,7 @@
       },
       "onFailure": {
         "goto": "ledge_done",
-        "narration": "The stream gulps early, but you skip aside. The herder plants the pole herself."
+        "narration": "The stream gulps early and splashes you to the knees. You skip back, dripping. \"My turn,\" says the herder, and plants the pole herself."
       },
       "onAssisted": {
         "goto": "ledge_done",
@@ -1702,7 +1670,7 @@
     },
     "ledge_done": {
       "type": "story",
-      "narration": "The herder looks over the herd, the hay and the line of safe ground. \"The glacier is changing,\" she says. \"But it won't catch us today. Thank you.\" Past the hall, the travelers wave from their camp.",
+      "narration": "The herder looks over the herd, the hay and the line of safe ground. \"The glacier is changing,\" she says. \"But it will not catch us today. Thank you.\" She looks at you a long moment. \"You brought my kid home through the weather. You are welcome in the hall, always.\" Past the hall, the travelers wave from their camp.",
       "choices": [
         {
           "id": "continue",
@@ -1724,7 +1692,7 @@
     },
     "departure": {
       "type": "rest",
-      "narration": "Warm and dry, you step outside. The kid stays with its herd. A griffin in a travel cloak is trying to fold a map while a unicorn stands on one corner. \"It will not fold,\" he mutters. Neither has noticed that the corner is under her hoof.",
+      "narration": "Warm and dry, you step outside. The kid stays with its herd, already asleep in a heap of goats. You know now where the snow on the quay came from: right here. But why is a glacier spilling onto a harbor, and why does its snow walk uphill? A griffin in a travel cloak is trying to fold a map while a unicorn stands on one corner. \"It will not fold,\" he mutters. Neither has noticed that the corner is under her hoof.",
       "heal": 0,
       "choices": [],
       "outcome": "success",
@@ -1750,7 +1718,7 @@
     },
     "drift": {
       "type": "choice_point",
-      "narration": "A gust wipes the footprints smooth. Ahead, a white drift fills the gap between two dark ridges. The bell rings beyond it. How deep is the snow?",
+      "narration": "A gust wipes the footprints smooth. Then something odd happens. The wind blows down the slope, but the loose snow drifts up it, back toward the ridge, like it is walking home. Even the harbor slush on your boots slides off and creeps uphill after it. The kid watches it go and bleats. Ahead, a white drift fills the gap between two dark ridges. The bell rings beyond it. How deep is the snow?",
       "choices": [
         {
           "id": "probe",
@@ -1781,7 +1749,7 @@
     },
     "drift_probe": {
       "type": "story",
-      "narration": "You tie the rope to a rock and inch forward. Under a thin crust, the drift is hollow! You back out and leave small stones marking the safe way along its edge.",
+      "narration": "You tie the rope to a rock and inch forward. Under a thin crust, the drift is hollow! You back out and leave small stones marking the safe way along its edge. \"Meh!\" says the kid from your arms, impressed.",
       "choices": [
         {
           "id": "continue",
@@ -1811,7 +1779,7 @@
     },
     "drift_detour": {
       "type": "story",
-      "narration": "You take turns sheltering the kid in your coats and follow the rocks around the drift. The walk is longer, but nobody falls in.",
+      "narration": "You take turns sheltering the kid in your coats and follow the rocks around the drift. The walk is longer, but nobody falls in. \"Meh,\" the kid grumbles, warm and sleepy in your coat.",
       "choices": [
         {
           "id": "continue",
@@ -1841,7 +1809,7 @@
     },
     "drift_slip": {
       "type": "story",
-      "narration": "The crust gives under your first step! You sink to your knees, holding the kid up high. Your party lays the rope across firm rock, and you pull yourself back. Now you can see the hollow, and you skirt its edge.",
+      "narration": "The crust gives under your first step! You sink to your knees, holding the kid up high. Your party lays the rope across firm rock, and you pull yourself back. Now you can see the hollow, and you skirt its edge. \"MEH!\" says the kid, outraged, from high above your head.",
       "choices": [
         {
           "id": "continue",
@@ -1884,7 +1852,15 @@
       },
       "onFailure": {
         "goto": "cairn",
-        "narration": "The lip sags and sheds a heap of snow. You dig a gap, and the kid squeezes through with a snort."
+        "narration": "The lip sags, then thumps down in a heap, right on top of you. Brrr! Snow down every collar. You dig yourselves out on the far side, and the kid trots out last, quite dry.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
       },
       "onAssisted": {
         "goto": "cairn",
@@ -1900,7 +1876,7 @@
     },
     "cairn": {
       "type": "choice_point",
-      "narration": "Past the drift, a tall pile of stones stands at the foot of the ridge. A flat tin lid peeks out of the snow beneath it, stamped with a little bell. Somebody left it here on purpose.",
+      "narration": "Past the drift, a tall pile of stones stands at the foot of the ridge. A flat tin lid peeks out of the snow beneath it, stamped with a little bell. Somebody left it here on purpose. It is frozen hard into the ground. \"Hoo-up!\" calls the far voice, just over the ridge now.",
       "choices": [
         {
           "id": "dig",
@@ -1931,26 +1907,53 @@
       ]
     },
     "cairn_dig": {
-      "narration": "The tin is frozen hard to the ground. The kid helps by digging, badly. At last the tin pops out like a cork.",
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "roller": "best",
+      "prompt": "Dig the frozen tin out of the snow with your hands.",
+      "narration": "The tin is frozen hard to the ground. The kid helps by digging, badly. \"Meh,\" it says, proud of its work.",
+      "onSuccess": {
+        "goto": "cairn_open",
+        "narration": "You dig and tug, and at last the tin pops out like a cork."
+      },
+      "onFailure": {
+        "goto": "cairn_stuck",
+        "narration": "You dig until your fingers ache. The tin does not move a hair."
+      },
       "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
         {
           "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
-        }
-      ],
-      "type": "story",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Open the tin",
-          "icon": "forward",
-          "goto": "cairn_open"
         }
       ]
     },
     "cairn_pry": {
-      "narration": "You slide a stick under the lid and loop the rope around it. Then you lean. The lid pops loose with a crack.",
+      "type": "check",
+      "stat": "clever",
+      "tn": 8,
+      "roller": "best",
+      "prompt": "Find the right stick and the right spot, and lever the lid loose.",
+      "narration": "You slide a stick under the lid and loop the rope around it. Where should you lean?",
+      "onSuccess": {
+        "goto": "cairn_open",
+        "narration": "You lean in just the right spot. The lid pops loose with a crack."
+      },
+      "onFailure": {
+        "goto": "cairn_stuck",
+        "narration": "Snap! The stick breaks, and the lid stays frozen shut."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/snowhorn_kid",
+          "name": "Goat kid"
+        }
+      ]
+    },
+    "cairn_smash": {
+      "narration": "One good bigfoot whack, and the ice falls off in plates. The lid rattles loose. \"Meh!\" says the kid, and hides behind your boots.",
       "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
         {
@@ -1968,8 +1971,8 @@
         }
       ]
     },
-    "cairn_smash": {
-      "narration": "One good bigfoot whack, and the ice falls off in plates. The lid rattles loose.",
+    "cairn_stuck": {
+      "type": "story",
       "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
         {
@@ -1977,13 +1980,13 @@
           "name": "Goat kid"
         }
       ],
-      "type": "story",
+      "narration": "Through the frost on the lid, you can read scratched words: \"For whoever is lost when the weather turns.\" Somebody kind left something inside, and it will have to wait for the next lost traveler. The kid licks the lid and gets its tongue stuck for one awful second. Beyond the ridge, something creaks.",
       "choices": [
         {
           "id": "continue",
-          "label": "Open the tin",
-          "icon": "forward",
-          "goto": "cairn_open"
+          "label": "See what is creaking",
+          "icon": "hand",
+          "goto": "tracks"
         }
       ]
     },
@@ -2020,7 +2023,10 @@
           "id": "hum",
           "label": "Hum the note again",
           "icon": "hand",
-          "goto": "seam_hum"
+          "goto": "seam_hum",
+          "when": {
+            "notFlag": "note_cracked"
+          }
         },
         {
           "id": "touch",
@@ -2045,6 +2051,14 @@
           "figure": "cast/young_yeti_singer",
           "name": "Young yeti singer"
         }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "note_cracked"
+          },
+          "text": "\"Not you, not yet,\" says the herder, kindly. \"Let the ice settle after that crack.\""
+        }
       ]
     },
     "seam_hum": {
@@ -2063,6 +2077,11 @@
           "type": "setFlag",
           "flag": "tested_singing_seam",
           "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "note_cracked",
+          "value": false
         }
       ],
       "art": "scenes/riftlight/singing-hall",
@@ -2079,7 +2098,7 @@
     },
     "seam_touch": {
       "type": "story",
-      "narration": "You lay your hand on the ice while the yetis hum. A faint tremble reaches your palm, then fades when they stop. You try twice more. Same answer. The seam stays shut.",
+      "narration": "You lay your hand on the ice while the yetis hum. A faint tremble reaches your palm, then fades when they stop. You try twice more. Same answer. The seam stays shut. \"Funny,\" says the young singer. \"It only does that when we sing.\"",
       "choices": [
         {
           "id": "continue",
@@ -2093,6 +2112,11 @@
           "type": "setFlag",
           "flag": "tested_singing_seam",
           "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "note_cracked",
+          "value": false
         }
       ],
       "art": "scenes/riftlight/singing-hall",
@@ -2109,7 +2133,7 @@
     },
     "seam_listen": {
       "type": "story",
-      "narration": "The herder kneels beside you. You take turns humming and listening. Each time the note sounds, a low ticking answers from the seam. The ice stays shut.",
+      "narration": "The herder kneels beside you. You take turns humming and listening. Each time the note sounds, a low ticking answers from the seam. The ice stays shut. \"Tick,\" whispers the young singer. \"Tick. Hear it?\"",
       "choices": [
         {
           "id": "continue",
@@ -2123,6 +2147,11 @@
           "type": "setFlag",
           "flag": "tested_singing_seam",
           "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "note_cracked",
+          "value": false
         }
       ],
       "art": "scenes/riftlight/singing-hall",
@@ -2151,7 +2180,7 @@
       "Legend Dragon"
     ],
     "npcVoices": {
-      "Yeti herder": "Chapter-scoped female yeti herder and singer. Patient, dry humor, practical cold-weather care. Gives no complete history, prison hints, or explanation of the rifts.",
+      "Yeti herder": "She/her. Female yeti herder and singer. Patient, dry humor, practical cold-weather care; calls her herd with a deep \"Hoo-up!\". Wants her kid back and her herd fed now the grazing path is water. Witnesses the strange melt and the uphill snow; never explains them, never gives a history or the rifts' cause.",
       "Young yeti singer": "Learns and listens; no lore lecture."
     }
   },
@@ -2167,12 +2196,6 @@
         "props": [
           "roof-slab",
           "rope-wedge"
-        ]
-      },
-      "herd_play": {
-        "props": [
-          "goat-brush",
-          "relay-hay"
         ]
       },
       "shelf_cross": {
@@ -2218,14 +2241,6 @@
       "/assets/story-props/water-surge.webp"
     ],
     "reactions": {
-      "herd_play": {
-        "defaultFigure": "lead_goat_bell",
-        "options": {
-          "brush": "goat_leaning",
-          "scratch": "lead_goat_bell",
-          "hay": "goat_chewing"
-        }
-      },
       "note_try": {
         "defaultFigure": "singer_low",
         "memory": {
@@ -2237,9 +2252,6 @@
     },
     "castPoses": {
       "crust_hold": {
-        "cast/yeti_herder": "herder_hay_water"
-      },
-      "herd_play": {
         "cast/yeti_herder": "herder_hay_water"
       },
       "shelf_cross": {
