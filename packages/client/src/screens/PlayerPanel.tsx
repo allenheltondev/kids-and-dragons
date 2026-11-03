@@ -350,6 +350,18 @@ function IdentityStrip({ me }: { me: PartyMember }): ReactElement {
   );
 }
 
+/** The Room settings tile's gear (the shared icon set has none; the corner's own lives in the lazy a11y chunk). */
+function RoomGear(): ReactElement {
+  return (
+    <svg className="you__gear" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <g fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="3" />
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+      </g>
+    </svg>
+  );
+}
+
 /** The six numbers, one small tile each: the glyph, the number, and the word under them. */
 function StatCells({ me }: { me: PartyMember }): ReactElement {
   const { character } = me;
@@ -2138,7 +2150,6 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
             onClick={() => setSheetFor(me.character.id)}
           >
             <ClassToken classId={me.character.class} rank={me.character.rank} size="sm" holdable={false} />
-            <span className="you__tile-name">{tokenName(me.character.class)}</span>
           </button>
           {roomControls || hasIntro ? (
             <button
@@ -2148,8 +2159,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
               aria-expanded={roomOpen}
               onClick={() => { setSelected(null); setRoomOpen((was) => !was); }}
             >
-              <Icon name="players" size="1.8em" />
-              <span className="you__tile-name">Settings</span>
+              <RoomGear />
             </button>
           ) : null}
         </div>

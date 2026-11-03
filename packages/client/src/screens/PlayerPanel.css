@@ -1612,55 +1612,45 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
   white-space: nowrap;
 }
 
-/* Everybody's face, your token and the room's settings: one row of equal tiles. */
+/* Everybody's face, your token and the room's settings: one row of tiles,
+   sharing the width. A tile is never narrower than its whole name, so on a
+   narrow phone at the largest text the row wraps rather than cutting
+   "Sparklehoof" short; the bag below gives up the height. */
 .you__row {
   flex: none;
   display: flex;
+  flex-wrap: wrap;
   gap: var(--space-1, 0.25em);
 }
 
 .you__row .party-strip__list {
-  /* Grows by the number of faces (PlayerPanel), so every tile in the row is one width. */
-  flex: var(--faces, 1) 1 0;
+  flex: var(--faces, 1) 1 auto;
   min-inline-size: 0;
   display: flex;
+  flex-wrap: wrap;
   gap: var(--space-1, 0.25em);
   padding: 0;
   overflow: visible;
 }
 
 .you__row .party-strip__list > li {
-  flex: 1 1 0;
-  min-inline-size: 0;
+  flex: 1 0 auto;
+  min-inline-size: var(--kad-touch-min, 2.75em);
 }
 
 .you__row .party-strip__button,
 .you__tile {
   inline-size: 100%;
-  block-size: 100%;
   min-block-size: var(--kad-touch-min, 2.75em);
-  padding: 0.25em 0.15em;
+  padding: 0.25em 0.2em;
   gap: 0.15em;
 }
 
-.you__row .party-strip__name,
-.you__tile-name {
-  max-inline-size: 100%;
+.you__row .party-strip__name {
   font-size: 0.75em;
   line-height: 1.1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* "thorn bracer", "star circlet": two short lines rather than a cut word. */
-.you__tile-name {
-  white-space: normal;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
   text-align: center;
+  white-space: nowrap;
 }
 
 .you__row .party-strip__mark {
@@ -1672,9 +1662,13 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
 
 .you__row .party-strip__button { position: relative; }
 
+/* The token and the settings are pictures, a finger square: the token's
+   notches are its words, and each says its name to a screen reader. */
 .you__tile {
-  flex: 1 1 0;
-  min-inline-size: 0;
+  flex: 0 0 auto;
+  align-self: stretch;
+  inline-size: auto;
+  min-inline-size: var(--kad-touch-min, 2.75em);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1689,6 +1683,12 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
   color: inherit;
   font: inherit;
   cursor: pointer;
+}
+
+.you__gear {
+  inline-size: 1.6em;
+  block-size: 1.6em;
+  color: var(--color-accent, #ffc95c);
 }
 
 .you__tile--on {
