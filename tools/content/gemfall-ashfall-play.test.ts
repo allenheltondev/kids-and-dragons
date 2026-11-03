@@ -154,7 +154,8 @@ it.each(sizes)("Ashfall: unfinished support and discussion do not grant completi
  expect(landed(ashfall,failed,actor).flags.dunmore_friend).not.toBe(true);
  state=act(ashfall,state,{action:"start",relaxed:false,rulesVersion:2},actor);
  const result=applyIntent(state,{playerId:actor,intent:{type:"INTERACT",openedSeq:promptOf(state).openedSeq,attempt:promptOf(state).attempt,action:"complete"}},context(ashfall));
- expect(result.error).toBeDefined();expect(result.state.sceneId).toBe(id);expect(promptOf(result.state).outcome).toBeUndefined();
+ expect(result.error).toBeUndefined();expect(result.state.sceneId).toBe(id);expect(promptOf(result.state).outcome).toBeUndefined();
+ expect(promptOf(result.state).compatibility).toBe("legacy-controls");
  expect(result.state.flags.dunmore_friend).not.toBe(true);
  }
 });

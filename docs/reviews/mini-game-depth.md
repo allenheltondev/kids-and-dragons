@@ -35,7 +35,7 @@ Browser review exercises real phones and a TV, a short 390 × 640 phone, rope dr
 
 [Balance phone](mini-game-depth/balance-phone.png) · [Balance TV](mini-game-depth/balance-tv.png) · [Cooperation phone](mini-game-depth/cooperate-phone.png) · [Cooperation TV](mini-game-depth/cooperate-tv.png)
 
-The full unit suite passed: 468 files and 9,622 tests, with 15 skipped. The final sequence-feedback regression passed, the final build and payload gate passed, and the live multi-phone/TV gesture and recovery test passed again after the screen review.
+The full unit run and affected-route-suite rerun cover 468 files and 9,628 passing tests, with 15 skipped. The route assertions verify that accepting a legacy completion signal switches controls without granting task completion or friendship rewards. The final sequence-feedback regression passed, the final build and payload gate passed, and the live multi-phone/TV gesture and recovery test passed again after the screen review.
 
 
 ## Review corrections
