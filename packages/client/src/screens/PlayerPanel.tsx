@@ -1037,7 +1037,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
         fight survives a look at the guide, like the bag. */}
     <section
       hidden={guideOpen}
-      className={`player${deciding ? " player--deciding" : ""}${inLobby ? " entry-scene-host" : ""}${backdrop ? " player--scene" : ""}${backdrop && inEncounter ? " player--fighting" : ""}`}
+      className={`player${deciding ? " player--deciding" : ""}${sheetUp && !tvRest ? " player--you" : ""}${inLobby ? " entry-scene-host" : ""}${backdrop ? " player--scene" : ""}${backdrop && inEncounter ? " player--fighting" : ""}`}
     >
       {inLobby ? <EntryScene scene={lobbySceneFor(party)} /> : null}
       {backdrop ? <SceneBackdrop src={backdrop} /> : null}
