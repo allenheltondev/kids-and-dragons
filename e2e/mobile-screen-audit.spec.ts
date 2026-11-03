@@ -25,7 +25,6 @@ for (const viewport of [{ width: 360, height: 640 }, { width: 390, height: 844 }
       await picker.press("Home");
       await expect(picker).toHaveValue("bag");
       await expect(page.getByRole("button", { name: /^Your things/ })).toBeVisible();
-
       for (const section of ["stats", "party", "token", "room", "bag"]) {
         await page.getByRole("combobox", { name: "Your page" }).selectOption(section);
         expect(await page.locator(".player__scroll").evaluate(el => el.scrollHeight <= el.clientHeight + 1), section).toBe(true);

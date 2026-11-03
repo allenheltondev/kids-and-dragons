@@ -2072,7 +2072,6 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
         <TvRest waiting={fightWaitingLine(state.encounter ?? null, party) ?? (globalPrompt !== null ? waitingLine(globalPrompt, party) : "Listen to the story…")} onPeek={() => setPeek(true)} />
       ) : null}
       <div className="player__scroll kad-scroll" hidden={!sheetUp}>
-
         <label className="player__page-picker">Show
           <select aria-label="Your page" value={sheetPage} onChange={event => { setSheetPage(event.target.value); setSelected(null); }}>
             <option value="bag">Bag</option><option value="stats">Stats</option>

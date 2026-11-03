@@ -6,7 +6,7 @@
  */
 
 import { expect } from "vitest";
-import { TEAM_HOLD_MS, relayTarget, applyIntent, enterScene, playbackMs } from "@kad/shared";
+import { TEAM_HOLD_MS, relayTarget, relayHolder, applyIntent, enterScene, playbackMs } from "@kad/shared";
 import type { Chapter, InteractionAction, InteractionPrompt, InteractionScene, RunState } from "@kad/shared";
 import { context, start } from "./riftlight-test-support.ts";
 
@@ -118,6 +118,17 @@ export function miss(chapter: Chapter, opened: RunState): RunState | null {
       const right = finalCover(spec);
       const wrong = spec.covers.findIndex((_, index) => index !== right);
       return act(chapter, started(), { action: "answer", answer: [String(wrong)] }, actor, wait);
+    }
+    case "relay": {
+      let state = started();
+      while (promptOf(state).phase === "active") {
+        const p = promptOf(state);
+        const holder = relayHolder(p, state.party.filter(m => m.connected).map(m => m.playerId))!;
+        state = p.caughtBy === holder
+          ? act(chapter, state, { action: "pass", flightId: p.relay!.flight.id, aim: 1, power: 0 }, holder)
+          : act(chapter, state, { action: "catch", flightId: p.relay!.flight.id, position: 0, reach: p.relay!.flight.landing }, holder);
+      }
+      return state;
     }
     default:
       return null;

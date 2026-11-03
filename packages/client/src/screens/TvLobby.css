@@ -1,7 +1,6 @@
 /* Shared display: identity reads across one header, with joining and
    tonight's lineup above the adventure choices. Phone surfaces retain their compact flow. */
 .lobby__header { display: contents; }
-
 .lobby__campaign-selected { display: none; }
 .lobby__place-label, .lobby-member__pending-short { display: none; }
 
@@ -285,4 +284,3 @@
 @media (min-width: 900px) and (orientation: landscape) and (max-height: 650px) {
   html[data-text="largest"] .kad-party--world .lobby__header > :is(.lobby__place, .lobby__crew) { block-size: 3.2em; }
 }
-

@@ -11,10 +11,10 @@ const read = <T>(file: string): T => JSON.parse(fs.readFileSync(path.join(root, 
 const city = read<Chapter>("content/chapters/gemfall-01.json");
 const fields = read<Chapter>("content/chapters/gemfall-02.json");
 const sizes = [1, 2, 4];
-// miss-supported misses only precision/timing/sequence/memory/tracking.
-// cooperate/balance/relay/play have no failing player action; they complete
-// successfully in this mixed profile. Their authored onFailure edges are not
-// claimed as executable failure coverage. Incomplete work is tested below.
+// This scripted route profile misses precision/timing/sequence/memory/tracking.
+// Relay failures are exercised for every scene in gemfall-interactions.test.ts;
+// these routes keep their relay preparation so their authored choice scripts remain valid.
+// Cooperation, balance and play have no failing player action.
 const outcomes = ["success", "miss-supported", "assisted"] as const;
 type Outcome = typeof outcomes[number];
 const offered = (s: RunState, id: string) => s.prompt?.kind === "choice" && s.prompt.options.some(o => o.id === id);
@@ -51,7 +51,7 @@ function walk(chapter: Chapter, size: number, picks: Record<string, string>, out
         result = act(chapter, state, { action: "assist" }, promptOf(state).playerIds.at(-1)!);
         expect(promptOf(result).outcome).toBe("assisted");
       } else if (outcome === "miss-supported") {
-        let missed = miss(chapter, state);
+        let missed = promptOf(state).spec.kind === "relay" ? null : miss(chapter, state);
         const spec = promptOf(state).spec;
         // Reversing a palindromic memory answer (wait/walk/wait) is still
         // correct. Make a genuinely wrong, valid-length answer in that case.
@@ -194,7 +194,8 @@ it.each(sizes)("unfinished opening jobs cannot award preparation at %i seats",si
   [fields,"interaction_hedge_brace","farm_help_used"],
  ] as const){
   let state=enterScene(initial(chapter,size),id,context(chapter)).state;
-  expect(miss(chapter,state)).toBeNull();
+  if (promptOf(state).spec.kind === "relay") expect(promptOf(miss(chapter, state)!).outcome).toBe("failure");
+  else expect(miss(chapter, state)).toBeNull();
   const actor=promptOf(state).actorId;
   state=act(chapter,state,{action:"start",relaxed:false},actor);
   const result=applyIntent(state,{playerId:actor,intent:{type:"INTERACT",openedSeq:promptOf(state).openedSeq,attempt:promptOf(state).attempt,action:"complete"}},context(chapter));

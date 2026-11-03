@@ -529,7 +529,6 @@
   font-size: 0.85em;
 }
 
-
 @media (max-width: 600px) {
   :is(.kad-travel, .kad-party--player) .lobby { gap: .2em; padding: .4em; }
   :is(.kad-travel, .kad-party--player) .lobby__campaigns { gap: .3em; }

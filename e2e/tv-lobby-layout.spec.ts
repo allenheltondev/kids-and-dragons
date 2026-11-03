@@ -4,7 +4,6 @@ import { seedTable, openTv, onAir } from "./seed";
 test("TV lobby uses one identity header and keeps joining beside four heroes", async ({ browser }, info) => {
   const table = await seedTable({ mode: "party", tv: true, ready: false, heroes: [
     { name: "Thistlewhisker", species: "unicorn" }, { name: "Sparklehoof", species: "griffin" },
-
     { name: "Fern", species: "dragonling" }, { name: "Moss", species: "bigfoot" },
   ] });
   const { page, context } = await openTv(browser, table);
@@ -44,7 +43,6 @@ test("TV lobby uses one identity header and keeps joining beside four heroes", a
         return range.getClientRects().length !== 1 || name.scrollWidth > name.clientWidth + 1;
       }).map(name => name.textContent));
       expect(brokenNames, "hero names must remain whole and contained").toEqual([]);
-
       await page.screenshot({ path: info.outputPath(`tv-${viewport.width}-${viewport.text}-${viewport.ready ? "ready" : "waiting"}${viewport.visitors ? "-visitors" : ""}.png`) });
       const layout = await page.evaluate(() => {
         const frames = [...document.querySelectorAll<HTMLElement>(".lobby__header > .lobby__heading, .lobby__header > .lobby__place, .lobby__header > .lobby__crew")].map(el => el.getBoundingClientRect());

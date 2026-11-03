@@ -1529,7 +1529,6 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
   block-size: 1.6em;
 }
 
-
 /* Decisions reserve room for the commit; decoration yields before controls. */
 .player--deciding .player__prompt { gap: .35em; }
 .player--deciding .prompt { flex: none; gap: .35em; }
@@ -1569,21 +1568,4 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
     vertical-align: middle;
   }
   .player--deciding .choice__ahead > .kad-icon { display: none; }
-
 }
-/* Keep the development handle out of the game's confirm area. */
-.kad-surface--player:has(.playtest--shut) .confirm { padding-block-end: 0; }
-.player--deciding .sheet { padding-block: .3em; }
-.player--deciding .sheet__portrait { inline-size: 2.5em; block-size: 3em; }
-.player--deciding .sheet__meta { display: none; }
-@container prompt (max-height: 30em) {
-  .player--deciding .prompt__title { font-size: 1em; }
-  .player--deciding .confirm__actions > .kad-button { min-block-size: 44px; padding-block: .3em; }
-}
-.player__page-picker { display: flex; align-items: center; gap: .5em; flex: none; }
-.player__page-picker select { flex: 1; min-inline-size: 0; min-block-size: 44px; padding: .4em; border: 1px solid var(--kad-border); border-radius: .5em; background: var(--kad-bg-raised); color: var(--kad-ink); font: inherit; }
-.player__scroll > [hidden] { display: none; }
-.player__scroll .inv__grid { grid-auto-rows: 48px; gap: .4em; }
-.player__scroll :is(.inv__button, .inv__slot--empty) { min-height: 48px; }
-.player__scroll .inv__slot-name { font-size: .7em; }
-.player__scroll .inv__empty-mark { inline-size: 1.5em; block-size: 1.5em; }

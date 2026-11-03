@@ -172,7 +172,6 @@ export function LobbyContent(): ReactElement {
           {host ? <span className="lobby__crew-hint kad-muted">Change crew in Room</span> : null}
         </div>
       ) : null}
-
       </header>
       {state?.crewSetup ? (
         <p className="lobby__place" role="status">
