@@ -1328,6 +1328,18 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
 
           if (response.error?.code === "STALE_DECISION") return movedOn();
 
+          if (response.error?.code === "STALE_SEQ") {
+            /*
+             * Behind a second time: another tap won the same seq between our
+             * catch-up and the retry. Nothing the player can act on, so no
+             * toast. Catch up again and let them tap from what is on screen;
+             * the server logs every one of these (`intent.stale_seq`) so
+             * operators can watch how often it happens.
+             */
+            await resync(runtime.sequencer?.seq ?? 0);
+            return false;
+          }
+
           if (response.ok) {
             /*
              * The response names the seq the server committed; the patch is
