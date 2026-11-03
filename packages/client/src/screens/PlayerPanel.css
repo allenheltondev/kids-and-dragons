@@ -1231,16 +1231,11 @@
 }
 
 .player__inventory-story { margin: 0 0 0.5em; flex: 0 0 auto; line-height: 1.4; color: var(--kad-ink); }
-.player__room-settings { margin-block-start: auto; border-block-start: 1px solid var(--kad-border); padding-block-start: 0.25em; }
-.player__room-settings > .kad-fold__head { color: var(--kad-ink-dim); font-size: 0.85em; font-weight: 400; }
-.player__room-settings > .kad-fold__body:not([hidden]) { display: flex; flex-direction: column; gap: 0.5em; padding-block-end: 0.5em; }
 .kad-room-mode { display: flex; align-items: center; gap: 0.75em; inline-size: 100%; padding: 0.5em; border: 1px solid var(--kad-border); border-radius: var(--kad-radius-md); background: var(--kad-bg-raised); color: var(--kad-ink); font: inherit; text-align: start; }
 .kad-room-mode .kad-tray__object { inline-size: 2em; block-size: 2em; }
 
-/* The lobby's "Ready to play" sits at the foot of the sheet (after Room
-   settings, which already pushes itself down with `margin-block-start: auto`,
-   or pushing itself down when there is none) and stays in reach there while
-   a long bag scrolls past above it. */
+/* The lobby's "Ready to play" sits at the foot of the sheet, pushing itself
+   down, and stays in reach there. */
 .player__task-entry--foot {
   position: sticky;
   inset-block-end: 0;
@@ -1248,10 +1243,6 @@
   flex: none;
   margin-block-start: auto;
   box-shadow: 0 -0.75em 1em rgb(13 11 26 / 70%);
-}
-
-.player__room-settings + .player__task-entry--foot {
-  margin-block-start: 0;
 }
 
 /*
@@ -1612,8 +1603,7 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
   white-space: nowrap;
 }
 
-/* Everybody's face, your token and the room's settings: one row of tiles,
-   sharing the width. A tile is never narrower than its whole name, so on a
+/* Everybody's face: one row of tiles, sharing the width. A tile is never narrower than its whole name, so on a
    narrow phone at the largest text the row wraps rather than cutting
    "Sparklehoof" short; the bag below gives up the height. */
 .you__row {
@@ -1624,7 +1614,7 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
 }
 
 .you__row .party-strip__list {
-  flex: var(--faces, 1) 1 auto;
+  flex: 1 1 auto;
   min-inline-size: 0;
   display: flex;
   flex-wrap: wrap;
@@ -1638,8 +1628,7 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
   min-inline-size: var(--kad-touch-min, 2.75em);
 }
 
-.you__row .party-strip__button,
-.you__tile {
+.you__row .party-strip__button {
   inline-size: 100%;
   min-block-size: var(--kad-touch-min, 2.75em);
   padding: 0.25em 0.2em;
@@ -1661,41 +1650,6 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
 }
 
 .you__row .party-strip__button { position: relative; }
-
-/* The token and the settings are pictures, a finger square: the token's
-   notches are its words, and each says its name to a screen reader. */
-.you__tile {
-  flex: 0 0 auto;
-  align-self: stretch;
-  inline-size: auto;
-  min-inline-size: var(--kad-touch-min, 2.75em);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border: 0;
-  border-radius: var(--radius-md, 0.75em);
-  background: linear-gradient(to bottom, var(--kad-raised-hi, #352c5c) 0%, var(--kad-raised-lo, #1b1631) 100%);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.14),
-    inset 0 0 0 1px var(--kad-raised-rim, rgba(190, 178, 255, 0.22)),
-    0 0.14em 0 var(--kad-raised-edge, #0a0814);
-  color: inherit;
-  font: inherit;
-  cursor: pointer;
-}
-
-.you__gear {
-  inline-size: 1.6em;
-  block-size: 1.6em;
-  color: var(--color-accent, #ffc95c);
-}
-
-.you__tile--on {
-  box-shadow:
-    inset 0 0 0 2px var(--color-accent, #ffc95c),
-    0 0.14em 0 var(--kad-raised-edge, #0a0814);
-}
 
 /* The bag takes the rest of the page; its six slots share it. */
 .you__bag {
@@ -1767,17 +1721,6 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
 .player__you .item-detail,
 .player__you .give--waiting {
   flex: none;
-}
-
-.player__you .player__room-settings {
-  flex: 1 1 auto;
-  min-block-size: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2, 0.5em);
-  margin: 0;
-  padding: 0;
-  border: 0;
 }
 
 /* A short pane gives up words before it gives up anything to tap: the names
@@ -1865,8 +1808,7 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
   .player__you .stat-row__value {
     font-size: 1.5em;
   }
-  .you__row .party-strip__button,
-  .you__tile {
+  .you__row .party-strip__button {
     padding: 0.4em 0.2em;
   }
 }

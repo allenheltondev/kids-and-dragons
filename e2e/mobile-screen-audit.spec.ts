@@ -16,21 +16,17 @@ for (const viewport of [{ width: 360, height: 640 }, { width: 390, height: 844 }
     }).map(el => `${el.className}: ${el.clientHeight}/${el.scrollHeight}`));
     expect(scrolling, `${name} should fit without scrolling`).toEqual([]);
     if (name === "You") {
-      // Everything at once (no picker, no folds): the stats, everyone, the token and the bag.
+      // Everything at once (no picker, no folds): the stats, everyone and the bag.
       await expect(page.getByRole("combobox")).toHaveCount(0);
       await expect(page.getByRole("list", { name: "Your stats" })).toBeVisible();
       await expect(page.getByRole("list", { name: "Everyone" })).toBeVisible();
-      await expect(page.locator(".you__token")).toBeVisible();
       await expect(page.getByRole("heading", { name: /^Your things/ })).toBeVisible();
       const fits = () => page.locator(".player__you").evaluate(el => el.scrollHeight <= el.clientHeight + 1);
       expect(await fits(), "You").toBe(true);
-      // Room settings stand in for the bag, and fit too.
-      const room = page.locator(".you__room");
-      await room.click();
-      await expect(page.locator(".player__room-settings")).toBeVisible();
-      expect(await fits(), "Room settings").toBe(true);
-      await room.click();
-      await expect(page.getByRole("heading", { name: /^Your things/ })).toBeVisible();
+      // The room's settings are in the corner gear's sheet, not a tile on this page.
+      await page.getByRole("button", { name: "Settings", exact: true }).first().click();
+      await expect(page.getByRole("dialog", { name: "Settings", exact: true }).getByRole("region", { name: "This game" })).toBeVisible();
+      await page.keyboard.press("Escape");
     }
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
    }

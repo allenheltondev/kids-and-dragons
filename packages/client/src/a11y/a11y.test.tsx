@@ -72,8 +72,8 @@ describe("the settings sheet", () => {
   it("changes a setting, applies it and remembers it", async () => {
     const user = userEvent.setup();
     render(<A11yControl />);
-    await user.click(screen.getByRole("button", { name: "Display settings" }));
-    const sheet = screen.getByRole("dialog", { name: "Display settings" });
+    await user.click(screen.getByRole("button", { name: "Settings" }));
+    const sheet = screen.getByRole("dialog", { name: "Settings" });
     expect(sheet).toBeTruthy();
 
     await user.click(screen.getByRole("button", { name: "Largest" }));
@@ -91,7 +91,7 @@ describe("the settings sheet", () => {
   it("closes on Escape and on Done, and gives focus back", async () => {
     const user = userEvent.setup();
     render(<A11yControl />);
-    const opener = screen.getByRole("button", { name: "Display settings" });
+    const opener = screen.getByRole("button", { name: "Settings" });
     await user.click(opener);
     await user.keyboard("{Escape}");
     expect(screen.queryByRole("dialog")).toBeNull();
@@ -105,7 +105,7 @@ describe("the settings sheet", () => {
   it("keeps focus where it was opened from, however many settings are changed", async () => {
     const user = userEvent.setup();
     render(<A11yControl />);
-    const opener = screen.getByRole("button", { name: "Display settings" });
+    const opener = screen.getByRole("button", { name: "Settings" });
     await user.click(opener);
     const largest = screen.getByRole("button", { name: "Largest" });
     largest.focus();
@@ -125,7 +125,7 @@ describe("the settings sheet", () => {
     document.body.append(root);
     const user = userEvent.setup();
     render(<A11yControl />, { container: root.appendChild(document.createElement("div")) });
-    await user.click(screen.getByRole("button", { name: "Display settings" }));
+    await user.click(screen.getByRole("button", { name: "Settings" }));
     expect(root.hasAttribute("inert")).toBe(true);
 
     const done = screen.getByRole("button", { name: "Done" });
@@ -144,7 +144,7 @@ describe("the settings sheet", () => {
     device(["prefers-reduced-motion"]);
     const user = userEvent.setup();
     render(<A11yControl />);
-    await user.click(screen.getByRole("button", { name: "Display settings" }));
+    await user.click(screen.getByRole("button", { name: "Settings" }));
     expect(screen.getByText(/already asks for less movement/i)).toBeTruthy();
   });
 });

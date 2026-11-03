@@ -1,8 +1,12 @@
-/** The display-settings button in the corner row, and the sheet it opens (#262). */
+/**
+ * The settings button in the corner row, and the sheet it opens (#262): this device's display
+ * settings, and on a phone in a room the room's own controls above them (ui/settings-room).
+ */
 
 import { useCallback, useEffect, useId, useRef } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "../ui/Button";
+import { useSettingsRoom } from "../ui/settings-room";
 import { deviceWantsContrast, deviceWantsLessMotion, type Hand, type TextSize } from "./prefs";
 import { useA11y } from "./store";
 
@@ -43,7 +47,7 @@ export function A11yControl(): React.JSX.Element {
       <button
         type="button"
         className="kad-a11y__button kad-focusable"
-        aria-label="Display settings"
+        aria-label="Settings"
         aria-haspopup="dialog"
         aria-expanded={open}
         onClick={() => setOpen(true)}
@@ -57,6 +61,7 @@ export function A11yControl(): React.JSX.Element {
 
 function A11ySheet({ onClose }: { onClose: () => void }): React.JSX.Element {
   const { prefs, set } = useA11y();
+  const room = useSettingsRoom((state) => state.room);
   const titleId = useId();
   const sheet = useRef<HTMLDivElement>(null);
 
@@ -106,8 +111,16 @@ function A11ySheet({ onClose }: { onClose: () => void }): React.JSX.Element {
   return createPortal(
     <div className="kad-a11y__scrim" onClick={(event) => { if (event.target === event.currentTarget) onClose(); }}>
       <div ref={sheet} className="kad-a11y__sheet" role="dialog" aria-modal="true" aria-labelledby={titleId}>
-        <h2 id={titleId} className="kad-a11y__title">Display settings</h2>
-        <p className="kad-a11y__note">Saved on this device.</p>
+        <h2 id={titleId} className="kad-a11y__title">Settings</h2>
+
+        {room === null ? null : (
+          <section className="kad-a11y__group kad-a11y__room" aria-label="This game">
+            <h3 className="kad-a11y__heading">This game</h3>
+            {room}
+          </section>
+        )}
+
+        <p className="kad-a11y__note">{room === null ? "Saved on this device." : "The rest are saved on this device."}</p>
 
         <section className="kad-a11y__group" aria-label="Text size">
           <h3 className="kad-a11y__heading">Text size</h3>

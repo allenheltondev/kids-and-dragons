@@ -831,7 +831,7 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
       room: tv.getByRole("button", { name: "Room" }),
       about: tv.getByRole("button", { name: "About this screen" }),
       readAloud: tv.getByRole("button", { name: /turn read-aloud (on|off)/i }),
-      settings: tv.getByRole("button", { name: "Display settings" }).first(),
+      settings: tv.getByRole("button", { name: "Settings", exact: true }).first(),
     };
     for (const control of Object.values(controls)) await expect(control).toBeVisible(TAP);
     const where = async (): Promise<Record<string, number | undefined>> => {

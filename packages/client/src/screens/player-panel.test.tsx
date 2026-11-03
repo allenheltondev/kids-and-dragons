@@ -2028,17 +2028,17 @@ describe("the token and the rank-up moment on your own phone (#314)", () => {
     line: "Sparklehoof is a Songkeeper Apprentice now! New move: Soothe.",
   };
 
-  it("shows your worn token in the bag, and your old gear outside the six slots", () => {
+  it("keeps your old gear outside the six slots, and your worn token on your sheet", () => {
     mount({ party: [member({ character: character({ spares: [{ class: "thornguard", rank: "apprentice" }] }) })] });
     act(() => setPlayerSection("bag"));
-    // On the page with everything else: a tile with its notches, and your sheet behind it.
-    const token = screen.getByRole("button", { name: "Your song bell" });
-    expect(token.closest("[hidden]")).toBeNull();
     expect(screen.getByText("Your old gear")).toBeTruthy();
     expect(screen.getByRole("img", { name: "thorn bracer, 1 notch" })).toBeTruthy();
     expect(document.querySelectorAll(".inv__slot")).toHaveLength(INVENTORY_SLOTS);
-    act(() => token.click());
+    // No token tile in the party row: your own face opens your sheet, and the token is on it.
+    expect(screen.queryByRole("button", { name: "Your song bell" })).toBeNull();
+    act(() => screen.getByRole("button", { name: "Sparklehoof's character sheet" }).click());
     expect(screen.getByRole("region", { name: "Sparklehoof's character sheet" })).toBeTruthy();
+    expect(screen.getByText("Your song bell")).toBeTruthy();
   });
 
   it("puts the card in the line's place, and the choice under it still answers the first tap", async () => {
@@ -2112,14 +2112,13 @@ describe("the You page shows everything at once", () => {
     member({ character: character({ inventory: [POTION], questItems: ["moonkey"] }) });
   const shown = (element: Element | null) => element !== null && element.closest("[hidden]") === null;
 
-  it("puts the stats, everyone, the token, the bag and the story things on one page, with no picker and no folds", () => {
+  it("puts the stats, everyone, the bag and the story things on one page, with no picker and no folds", () => {
     mount({ party: [bagMember()] });
     act(() => setPlayerSection("bag"));
     expect(screen.queryByRole("combobox")).toBeNull();
     expect(document.querySelector(".player__you .kad-fold")).toBeNull();
     expect(shown(screen.getByRole("list", { name: "Your stats" }))).toBe(true);
     expect(shown(screen.getByRole("list", { name: "Everyone" }))).toBe(true);
-    expect(shown(screen.getByRole("button", { name: "Your song bell" }))).toBe(true);
     expect(shown(screen.getByRole("button", { name: new RegExp(POTION_NAME) }))).toBe(true);
     expect(shown(screen.getByRole("list", { name: "Story things" }))).toBe(true);
     // The bag's heading carries what the hero carries (one potion, one story thing) and the purse.

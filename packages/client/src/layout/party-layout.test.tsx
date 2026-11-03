@@ -19,6 +19,7 @@ import { resetFieldGuideCache } from "../screens/content";
 import { dismissPlayerSheet, usePlayerNavigation } from "../store/player-navigation";
 import { PartyLayout } from "./PartyLayout";
 import { useHelpFocus } from "../help/focus";
+import { A11yControl } from "../a11y/A11yControl";
 
 function mount(prompt: Prompt | null = null, phone = true, strict = false) {
   // A phone that plays remembers her (a device token); a family tablet's pick holds only a seat (#299).
@@ -80,18 +81,19 @@ describe("Party Mode and the map", () => {
     mount();
     const nav = screen.getByRole("navigation", { name: "What to look at" });
     expect(nav.querySelectorAll("button")).toHaveLength(4);
-    // A tile on the You page; what it opens stands in for the bag until Close.
-    const settings = screen.getByRole("button", { name: "Room settings" });
-    expect(settings.getAttribute("aria-expanded")).toBe("false");
-    act(() => settings.click());
-    expect(settings.getAttribute("aria-expanded")).toBe("true");
-    act(() => screen.getByRole("button", { name: "No TV? Show the world on the phones" }).click());
+    // In the corner gear's Settings sheet, under "This game", and nowhere on the You page.
+    expect(screen.queryByRole("button", { name: "No TV? Show the world on the phones" })).toBeNull();
+    render(<A11yControl />);
+    act(() => screen.getByRole("button", { name: "Settings" }).click());
+    const sheet = screen.getByRole("dialog", { name: "Settings" });
+    expect(within(sheet).getByRole("region", { name: "This game" })).toBeTruthy();
+    act(() => within(sheet).getByRole("button", { name: "No TV? Show the world on the phones" }).click());
     expect(send).toHaveBeenCalledWith({ type: "SET_MODE", mode: "travel" });
     act(() => {
       const state = useGameStore.getState().state!;
       useGameStore.setState({ state: { ...state, mode: "travel" } });
     });
-    act(() => screen.getByRole("button", { name: "Use a TV for the world" }).click());
+    act(() => within(sheet).getByRole("button", { name: "Use a TV for the world" }).click());
     expect(send).toHaveBeenLastCalledWith({ type: "SET_MODE", mode: "party" });
   });
   it("dismisses a character sheet when the already-selected You destination is tapped", () => {

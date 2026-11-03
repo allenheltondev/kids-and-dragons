@@ -25,7 +25,7 @@ import { setPlayerSection, usePlayerNavigation } from "../store/player-navigatio
 
 import { Suspense, useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { ChunkBoundary, lazyChunk } from "../ui/ChunkBoundary";
-import type { CSSProperties, ReactElement, ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 import {
   DEFAULT_HELP_DIE,
   INVENTORY_SLOTS,
@@ -80,13 +80,14 @@ import {
 import { biomeBackdropUrl, sceneArtFor, sceneBackdropUrl } from "../world/art-paths";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
+import { useSettingsRoom } from "../ui/settings-room";
 import { hear, useReadAloudOn } from "../speech/read-aloud";
 import { speak } from "@kad/shared";
 import { CampaignArt } from "./CampaignArt";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { CharacterSheet } from "./CharacterSheet";
 import { XpMeter } from "./XpMeter";
-import { ClassToken, SpareTokens, TokenCard, TokenGlyph, tokenName } from "./ClassToken";
+import { ClassToken, SpareTokens } from "./ClassToken";
 import { Icon } from "./icons";
 import { aheadBadge } from "./choice-ahead-copy";
 import { CheckMatchupBadges } from "./MatchupHints";
@@ -349,18 +350,6 @@ function IdentityStrip({ me }: { me: PartyMember }): ReactElement {
   );
 }
 
-/** The Room settings tile's gear (the shared icon set has none; the corner's own lives in the lazy a11y chunk). */
-function RoomGear(): ReactElement {
-  return (
-    <svg className="you__gear" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <g fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="3" />
-        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-      </g>
-    </svg>
-  );
-}
-
 /** The six numbers, one small tile each: the glyph, the number, and the word under them. */
 function StatCells({ me }: { me: PartyMember }): ReactElement {
   const { character } = me;
@@ -587,13 +576,36 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   // In the practice a banked point waits for a real rest (the server refuses it).
   const practicing = isPracticeCampaign(state?.campaignId);
 
-  // "Watch the intro again" (Room settings): the campaign's prologue over the pane, nothing in the run touched.
+  // "Watch the intro again" (Settings): the campaign's prologue over the pane, nothing in the run touched.
   const runCampaign = useRunCampaign(state?.campaignId ?? null);
   const [replayingIntro, setReplayingIntro] = useState(false);
-  /** Room settings, standing in for the bag on the You page until Close. */
-  const [roomOpen, setRoomOpen] = useState(false);
   const closeIntro = useCallback(() => setReplayingIntro(false), []);
   const hasIntro = (runCampaign?.prologue?.plates.length ?? 0) > 0;
+  /*
+   * The room's own settings (play on phones instead, the intro again) go in the corner gear's
+   * Settings sheet, above this device's display settings: one gear for everything. Handed in
+   * while this pane is mounted, taken back when it goes.
+   */
+  const setSettingsRoom = useSettingsRoom((settings) => settings.setRoom);
+  useEffect(() => {
+    if (!roomControls && !hasIntro) {
+      setSettingsRoom(null);
+      return;
+    }
+    setSettingsRoom(
+      <>
+        {roomControls}
+        {/* The intro story again, from any point in the adventure: only the pictures and words. */}
+        {hasIntro ? (
+          <Button variant="secondary" size="md" block icon={<Icon name="story" />}
+            onClick={() => { void import("../a11y").then((module) => { module.useA11y.getState().setOpen(false); }); setReplayingIntro(true); }}>
+            Watch the intro again
+          </Button>
+        ) : null}
+      </>,
+    );
+  }, [roomControls, hasIntro, setSettingsRoom]);
+  useEffect(() => () => setSettingsRoom(null), [setSettingsRoom]);
 
   const [pendingChoice, setPendingChoice] = useState<string | null>(null);
   const [pendingDrop, setPendingDrop] = useState<string | null | undefined>(undefined);
@@ -2069,11 +2081,11 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
         The You page: everything at once, and nothing to scroll (playtest,
         November 2026: a "Show: Bag" picker hid four of the five things behind
         a menu, which is no way to show an eight-year-old their hero). One
-        screen, top to bottom: the task seat, the stats in a strip, everybody's
-        face with your token and the room's settings beside them, and the bag,
-        which takes whatever height is left. A tapped item, or the settings,
-        stand in for the bag's grid until Close; a face or the token opens that
-        hero's whole sheet.
+        screen, top to bottom: the way into your task when there is one, the
+        stats in a strip, everybody's face, and the bag, which takes whatever
+        height is left. A tapped item stands in for the bag's grid until Close;
+        a face opens that hero's whole sheet (your own has your token). The
+        room's settings are in the corner gear's Settings sheet.
       */}
       <div className="player__scroll player__you" hidden={!sheetUp}>
         {/* The way into your task, at the top, when there is one. What the
@@ -2099,7 +2111,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
           <StatCells me={me} />
         </ul>
         <div className="you__row">
-          <ul className="party-strip__list" aria-label="Everyone" style={{ "--faces": party.length } as CSSProperties}>
+          <ul className="party-strip__list" aria-label="Everyone">
             {party.map((member) => (
               <li key={member.playerId}>
                 <button
@@ -2133,216 +2145,174 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
               </li>
             ))}
           </ul>
-          {/* The worn token (#314): its notches here, its deeds on your sheet. */}
-          <button
-            type="button"
-            className="you__tile you__token kad-tap kad-focusable"
-            aria-label={`Your ${tokenName(me.character.class)}`}
-            onClick={() => setSheetFor(me.character.id)}
-          >
-            <ClassToken classId={me.character.class} rank={me.character.rank} size="sm" holdable={false} />
-          </button>
-          {roomControls || hasIntro ? (
-            <button
-              type="button"
-              className={`you__tile you__room kad-tap kad-focusable${roomOpen ? " you__tile--on" : ""}`}
-              aria-label="Room settings"
-              aria-expanded={roomOpen}
-              onClick={() => { setSelected(null); setRoomOpen((was) => !was); }}
-            >
-              <RoomGear />
-            </button>
-          ) : null}
         </div>
-        {roomOpen && (roomControls || hasIntro) ? (
-          <div className="player__room-settings" role="group" aria-label="Room settings">
-            {roomControls}
-            {/* The intro story again, from any point in the adventure: only the pictures and words. */}
-            {hasIntro ? (
-              <Button variant="secondary" size="md" block icon={<Icon name="story" />} onClick={() => setReplayingIntro(true)}>
-                Watch the intro again
+        <div className="you__bag" hidden={selectedEntry !== null}>
+          <InventoryGrid
+            entries={inventory}
+            questItems={me.character.questItems}
+            spares={me.character.spares}
+            coins={state.coins ?? 0}
+            items={items}
+            selectedIndex={selectedIndex}
+            onSelect={(index) => {
+              const entry = index === null ? null : inventory[index] ?? null;
+              setSelected(entry === null || index === null ? null : { itemId: entry.itemId, index });
+            }}
+          />
+        </div>
+        {/* Using an item is a decision like any other: select, then confirm. */}
+        {selectedEntry === null ? null : (
+          <div className="item-detail">
+            <p className="item-detail__title">
+              <Icon name={selectedDef?.icon ?? selectedEntry.kind} />
+              <span>{selectedDef?.name ?? selectedEntry.itemId}</span>
+            </p>
+            <p className="item-detail__text kad-muted">
+              {selectedDef?.text ?? "You are not sure what this does yet."}
+            </p>
+            <div className="confirm__actions">
+              <Button
+                variant="ghost"
+                size="md"
+                icon={<Icon name="close" />}
+                onClick={() => setSelected(null)}
+              >
+                Close
               </Button>
-            ) : null}
-            {/* Text size, contrast and one-handed play (#262), reachable from the bottom of the phone. */}
-            <Button variant="secondary" size="md" block
-              onClick={() => { void import("../a11y").then((module) => { module.openA11ySettings(); }); }}>
-              Display settings
-            </Button>
-            <Button variant="ghost" size="md" icon={<Icon name="close" />} onClick={() => setRoomOpen(false)}>
-              Close
-            </Button>
-          </div>
-        ) : (
-          <>
-            <div className="you__bag" hidden={selectedEntry !== null}>
-              <InventoryGrid
-              entries={inventory}
-              questItems={me.character.questItems}
-              spares={me.character.spares}
-              coins={state.coins ?? 0}
-              items={items}
-              selectedIndex={selectedIndex}
-              onSelect={(index) => {
-                const entry = index === null ? null : inventory[index] ?? null;
-                setSelected(entry === null || index === null ? null : { itemId: entry.itemId, index });
-              }}
-            />
+              {canUseInventoryItem(
+                selectedEntry,
+                inEncounter,
+                selectedDef,
+                me.hp >= me.character.maxHp,
+              ) ? (
+                <Button
+                  variant="primary"
+                  size="md"
+                  icon={<Icon name="consumable" />}
+                  disabled={held}
+                  onClick={() => {
+                    const itemId = selectedEntry.itemId;
+                    setSelected(null);
+                    void dispatch({ type: "USE_ITEM", itemId });
+                  }}
+                >
+                  Use it
+                </Button>
+              ) : selectedEntry.kind === "consumable" ? (
+                <p className="item-detail__passive kad-chip">
+                  <Icon name="waiting" />
+                  <span>
+                    {inEncounter
+                      ? "Use it from your turn in the fight"
+                      : selectedDef?.effect?.type === "heal"
+                        ? "You're at full health. Save it for later"
+                        : "Save it for a fight"}
+                  </span>
+                </p>
+              ) : (
+                <p className="item-detail__passive kad-chip">
+                  <Icon name="trinket" />
+                  <span>Always on</span>
+                </p>
+              )}
             </div>
-            {/* Using an item is a decision like any other: select, then confirm. */}
-            {selectedEntry === null ? null : (
-              <div className="item-detail">
-                <p className="item-detail__title">
-                  <Icon name={selectedDef?.icon ?? selectedEntry.kind} />
-                  <span>{selectedDef?.name ?? selectedEntry.itemId}</span>
-                </p>
-                <p className="item-detail__text kad-muted">
-                  {selectedDef?.text ?? "You are not sure what this does yet."}
-                </p>
-                <div className="confirm__actions">
+
+            {/*
+              Passing it on (spec §9.4). One tap per name, because on this side
+              nothing moves — the offer is the selection and their phone holds
+              the confirm. It is also the closest a tap gets to the "drag on
+              your phone" the spec asks for, and a drag is not something to ask
+              of an eight-year-old's thumb on a 40%-of-a-phone pane.
+
+              Only at a Rest scene, which is the rule the server enforces on
+              both trade intents.
+            */}
+            {atRest ? (
+              <div className="give">
+                <h4 className="give__heading">
+                  <Icon name="hand" />
+                  <span>Give it to a friend</span>
+                </h4>
+                {canReceive.length === 0 ? (
+                  <p className="give__none kad-muted">
+                    <Icon name="waiting" />
+                    <span>
+                      {party.length < 2
+                        ? "Nobody else is here to give it to."
+                        : homeFriends.length === 0
+                          ? "Visitors keep their own things, so nobody here can take it."
+                          : "Everyone is already being offered this one."}
+                    </span>
+                  </p>
+                ) : (
+                  <ul className="give__list">
+                    {canReceive.map((member) => (
+                      <li key={member.playerId}>
+                        <button
+                          type="button"
+                          className="choice kad-tap kad-focusable"
+                          disabled={held}
+                          onClick={() =>
+                            void dispatch({
+                              type: "OFFER_ITEM",
+                              itemId: selectedEntry.itemId,
+                              toPlayerId: member.playerId,
+                            })
+                          }
+                        >
+                          <span className="choice__icon">
+                            <Icon name={member.character.species} size="1.8em" />
+                          </span>
+                          {/* "Give to Thistle", not "Thistle": a bare name beside
+                              an item is not obviously a button that does
+                              something, and the party strip below has a button
+                              with that name already. */}
+                          <span className="choice__label">
+                            Give to {member.character.name}
+                          </span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ) : null}
+          </div>
+        )}
+
+        {/* Offers of yours still in the air, with the way out of each. An offer
+            nobody answers would otherwise sit on a friend's phone all evening
+            with no way to take it back. */}
+        {offersFromMe.length > 0 ? (
+          <div className="give give--waiting">
+            <h4 className="give__heading">
+              <Icon name="waiting" />
+              <span>Waiting for an answer</span>
+            </h4>
+            <ul className="give__list">
+              {offersFromMe.map((offer) => (
+                <li className="give__pending" key={offer.id}>
+                  <Icon name={items?.[offer.itemId]?.icon ?? "bag"} />
+                  <span className="give__pending-label">
+                    {items?.[offer.itemId]?.name ?? offer.itemId} →{" "}
+                    {nameOfPlayer(party, offer.toPlayerId)}
+                  </span>
                   <Button
                     variant="ghost"
                     size="md"
-                    icon={<Icon name="close" />}
-                    onClick={() => setSelected(null)}
+                    icon={<Icon name="back" />}
+                    disabled={held}
+                    onClick={() =>
+                      void dispatch({ type: "RESOLVE_TRADE", tradeId: offer.id, accept: false })
+                    }
                   >
-                    Close
+                    Take it back
                   </Button>
-                  {canUseInventoryItem(
-                    selectedEntry,
-                    inEncounter,
-                    selectedDef,
-                    me.hp >= me.character.maxHp,
-                  ) ? (
-                    <Button
-                      variant="primary"
-                      size="md"
-                      icon={<Icon name="consumable" />}
-                      disabled={held}
-                      onClick={() => {
-                        const itemId = selectedEntry.itemId;
-                        setSelected(null);
-                        void dispatch({ type: "USE_ITEM", itemId });
-                      }}
-                    >
-                      Use it
-                    </Button>
-                  ) : selectedEntry.kind === "consumable" ? (
-                    <p className="item-detail__passive kad-chip">
-                      <Icon name="waiting" />
-                      <span>
-                        {inEncounter
-                          ? "Use it from your turn in the fight"
-                          : selectedDef?.effect?.type === "heal"
-                            ? "You're at full health. Save it for later"
-                            : "Save it for a fight"}
-                      </span>
-                    </p>
-                  ) : (
-                    <p className="item-detail__passive kad-chip">
-                      <Icon name="trinket" />
-                      <span>Always on</span>
-                    </p>
-                  )}
-                </div>
-
-                {/*
-                  Passing it on (spec §9.4). One tap per name, because on this side
-                  nothing moves — the offer is the selection and their phone holds
-                  the confirm. It is also the closest a tap gets to the "drag on
-                  your phone" the spec asks for, and a drag is not something to ask
-                  of an eight-year-old's thumb on a 40%-of-a-phone pane.
-
-                  Only at a Rest scene, which is the rule the server enforces on
-                  both trade intents.
-                */}
-                {atRest ? (
-                  <div className="give">
-                    <h4 className="give__heading">
-                      <Icon name="hand" />
-                      <span>Give it to a friend</span>
-                    </h4>
-                    {canReceive.length === 0 ? (
-                      <p className="give__none kad-muted">
-                        <Icon name="waiting" />
-                        <span>
-                          {party.length < 2
-                            ? "Nobody else is here to give it to."
-                            : homeFriends.length === 0
-                              ? "Visitors keep their own things, so nobody here can take it."
-                              : "Everyone is already being offered this one."}
-                        </span>
-                      </p>
-                    ) : (
-                      <ul className="give__list">
-                        {canReceive.map((member) => (
-                          <li key={member.playerId}>
-                            <button
-                              type="button"
-                              className="choice kad-tap kad-focusable"
-                              disabled={held}
-                              onClick={() =>
-                                void dispatch({
-                                  type: "OFFER_ITEM",
-                                  itemId: selectedEntry.itemId,
-                                  toPlayerId: member.playerId,
-                                })
-                              }
-                            >
-                              <span className="choice__icon">
-                                <Icon name={member.character.species} size="1.8em" />
-                              </span>
-                              {/* "Give to Thistle", not "Thistle": a bare name beside
-                                  an item is not obviously a button that does
-                                  something, and the party strip below has a button
-                                  with that name already. */}
-                              <span className="choice__label">
-                                Give to {member.character.name}
-                              </span>
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                ) : null}
-              </div>
-            )}
-
-            {/* Offers of yours still in the air, with the way out of each. An offer
-                nobody answers would otherwise sit on a friend's phone all evening
-                with no way to take it back. */}
-            {offersFromMe.length > 0 ? (
-              <div className="give give--waiting">
-                <h4 className="give__heading">
-                  <Icon name="waiting" />
-                  <span>Waiting for an answer</span>
-                </h4>
-                <ul className="give__list">
-                  {offersFromMe.map((offer) => (
-                    <li className="give__pending" key={offer.id}>
-                      <Icon name={items?.[offer.itemId]?.icon ?? "bag"} />
-                      <span className="give__pending-label">
-                        {items?.[offer.itemId]?.name ?? offer.itemId} →{" "}
-                        {nameOfPlayer(party, offer.toPlayerId)}
-                      </span>
-                      <Button
-                        variant="ghost"
-                        size="md"
-                        icon={<Icon name="back" />}
-                        disabled={held}
-                        onClick={() =>
-                          void dispatch({ type: "RESOLVE_TRADE", tradeId: offer.id, accept: false })
-                        }
-                      >
-                        Take it back
-                      </Button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
-          </>
-        )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
         {/* In the lobby the one thing left to do comes last, at the foot of
             the page, after the sheet you have just been looking over — and
             it is the whole answer: the tap says you are ready. */}
