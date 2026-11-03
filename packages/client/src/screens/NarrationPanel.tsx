@@ -31,7 +31,7 @@ import { ClassPlaceRoll } from "./ClassPlace";
 import { checkPlan } from "./DiceOverlay";
 import { chapterHeading } from "./campaign-copy";
 import { ChapterGoalCard, useChapterGoal } from "./ChapterGoal";
-import { prefaceUtterances, useStartPreface } from "./ChapterPreface";
+import { useStartPreface } from "./ChapterPreface";
 import { steppedAwayLine } from "./presence-copy";
 import "./shared.css";
 import "./NarrationPanel.css";
@@ -186,21 +186,11 @@ export function NarrationPanel(): ReactElement | null {
    * One utterance per scene, not per render. The key covers a narration swap
    * inside the same scene.
    *
-   * A chapter's first scene is read after its "Last time…" (#357), in this order:
-   *
-   *   1. "Last time… <the lines>" (or the campaign's opener), interrupting whatever was being said;
-   *   2. "Your goal: <the goal>", the preface's last line;
-   *   3. the first scene's story, queued behind them;
-   *   4. then the hint, the fitting stall and any rank-ups, as on every scene.
-   *
-   * The story waits for the campaign and chapter files the preface is read from, never longer
-   * than PREFACE_WAIT_MS, and every line after it waits with it so nothing jumps the queue.
-   * When the preface was read, the goal (#356's after-the-story line, below) is not read again.
+   * A chapter's first scene waits only behind a prologue or chapter plate (useStartPreface),
+   * and every line after it waits with it so nothing jumps the queue. Its goal follows the story.
    */
   const preface = useStartPreface();
   const prefacePending = preface.status === "pending";
-  const prefaceSaid = useRef<string | null>(null);
-  const goalSaidIn = useRef<string | null>(null);
   const spokenNarration = useRef<string | null>(null);
   useEffect(() => {
     const key = `${sceneId ?? "-"}:${narration}`;
@@ -218,18 +208,6 @@ export function NarrationPanel(): ReactElement | null {
         : [[[...lead, narration].join(" "), { source: "narration" }]];
     const sayStory = (interrupt: boolean): void =>
       story.forEach(([line, opts], i) => speak(line, i === 0 && interrupt ? { ...opts, interrupt } : opts));
-    if (preface.status === "ready" && prefaceSaid.current !== preface.key) {
-      prefaceSaid.current = preface.key;
-      if (preface.goal !== null) goalSaidIn.current = state?.chapterId ?? null;
-      const said = prefaceUtterances(preface);
-      said.forEach((line, i) => {
-        // The goal is the preface's last line, and has a recording of its own.
-        const goalLine = preface.goal !== null && i === said.length - 1 ? goalParts(state?.chapterId ?? null, preface.goal) : undefined;
-        speak(line, { source: "narration", interrupt: i === 0, ...(goalLine ? { parts: goalLine } : {}) });
-      });
-      sayStory(false);
-      return;
-    }
     // A new scene's narration replaces the last one rather than queueing behind it.
     sayStory(true);
     // The ribbon follows the scene, so a new one always arrives with new words.
@@ -255,9 +233,6 @@ export function NarrationPanel(): ReactElement | null {
    * and never on a screen that loads mid-chapter. A step ticking is seen and heard (the chime)
    * but not read out: the owner found "Done: ..." after every tick too much.
    *
-   * Said here only when the chapter had no "Last time…" to end with it (#357): a campaign
-   * without one, or files too slow to wait for. Otherwise it was the preface's last line,
-   * ahead of the story, and is never said twice.
    */
   const goal = useChapterGoal();
   const goalChapter = goal?.chapterId ?? null;
@@ -266,7 +241,7 @@ export function NarrationPanel(): ReactElement | null {
   useEffect(() => {
     if (goal === null || goalChapter === null || sceneId === null || spokenGoal.current === goalChapter || prefacePending) return;
     spokenGoal.current = goalChapter;
-    if (atStart && goalSaidIn.current !== goalChapter) {
+    if (atStart) {
       const parts = goalParts(goalChapter, goal.goal.text);
       speak(`Your goal: ${goal.goal.text}`, { source: "narration", ...(parts ? { parts } : {}) });
     }
