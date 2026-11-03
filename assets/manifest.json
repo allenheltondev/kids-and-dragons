@@ -1888,7 +1888,7 @@
     },
     {
       "id": "saltrot_guide",
-      "name": "Saltrot guide",
+      "name": "Puddle",
       "basis": "skupper",
       "scale": "small_to_medium",
       "heightCm": 100,

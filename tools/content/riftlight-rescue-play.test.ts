@@ -95,40 +95,4 @@ it("checked signals and Mend change an actual near-edge crossing result", () => 
   }
   expect(outcomes).toEqual(["failure", "success", "success"]);
 });
-const bones = chapters.get("riftlight-bone-yard")!;
-const boneRoutes = [false, true].flatMap(mats => ["line", "arches"].flatMap(route => ["stone", "plank", "brace"].flatMap(support =>
-  ["clear", "seam"].flatMap(plan => (["victory", "retreat"] as const).flatMap(battle => [1, 2, 4].map(seats => ({ mats, route, support, plan, battle, seats })))))));
-it.each(boneRoutes)("bones: mats $mats / $route / $support / $plan / $battle / $seats seats", route => {
-  const result = walk(bones, start(bones, "manticore", route.support === "brace" ? "thornguard" : "duskrunner", {}, route.seats), s => {
-    if (s.sceneId === "unbrace") return offered(s, "mats") ? "mats" : offered(s, "plank") ? "plank" : "loose";
-    const picks: Record<string, string> = { limit: route.mats ? "carry" : "light", markers: route.route, support: route.support,
-      plan: route.mats ? "mats" : route.plan, mat_plan: route.plan,
-      exit_strip: route.battle === "victory" && route.route === "line" ? "line" : "guide",
-      handoff: route.battle === "victory" ? "relay" : "keep",
-    };
-    return picks[s.sceneId!];
-  }, "success", route.battle);
-  const won = route.battle === "victory";
-  expect(result.state.flags.bone_retreat === true).toBe(!won);
-  expect(result.trace.has(route.plan === "seam" ? route.mats ? "fight_seam_mats" : "fight_seam" : route.mats ? "fight_mats" : "fight")).toBe(true);
-  expect(result.trace.has("lay_board_mats")).toBe(route.mats);
-  expect(result.trace.has("recover_mats")).toBe(route.mats && won);
-  expect(result.state.flags.bone_mats_recovered === true).toBe(route.mats && won);
-  expect(result.state.narration.includes("spare mats stay inside")).toBe(route.mats && !won);
-  expect(result.trace.has("replace_plank")).toBe(route.support === "plank" && won);
-  expect(result.state.flags.bone_plank_recovered === true).toBe(route.support === "plank" && won);
-  expect(result.state.narration.includes("marked plank stays inside")).toBe(route.support === "plank" && !won);
-  expect(result.trace.has("braced_support")).toBe(route.support === "brace");
-  expect(result.trace.has("stone_support")).toBe(route.support === "stone");
-  expect(result.trace.has("return_line")).toBe(won && route.route === "line");
-  expect(result.trace.has("outer_rim")).toBe(!won || route.route === "arches");
-  expect(result.state.flags.bone_account_shared).toBe(won);
-  if (!won) {
-    expect(result.trace.get("rescued")!.flags.bones_passage_done).not.toBe(true);
-    const recovery = result.trace.get("unbrace")!;
-    expect(offered(recovery, "mats")).toBe(false); expect(offered(recovery, "plank")).toBe(false);
-    expect(offered(result.trace.get("exit_strip")!, "line")).toBe(false);
-    expect(result.state.narration).toContain("longer rim route");
-  }
-
-});
+// The Bone Yard's routes moved to riftlight-bone-yard.test.ts with its November 2026 rewrite.
