@@ -139,3 +139,29 @@ it.each(["precision", "timing"] as const)("records a %s touch when the finger la
   fireEvent.click(target, { detail: 1 });
   expect(useGameStore.getState().state!.seq).toBe(seq);
 });
+
+
+it("rearranges sequence steps with a keyboard without removing a tile", async () => {
+  const { phone } = game({ kind: "sequence", cue: "Order", actionLabel: "Try", options, answer: ["star", "leaf"], clues: ["Star first"] });
+  fireEvent.click(within(phone).getByRole("button", { name: "Leaf" }));
+  fireEvent.click(within(phone).getByRole("button", { name: "Star" }));
+  fireEvent.keyDown(within(phone).getByRole("button", { name: "Remove step 2: Star" }), { key: "ArrowLeft", altKey: true });
+  expect(within(phone).getByRole("button", { name: "Remove step 1: Star" })).toBeTruthy();
+  await act(async () => { fireEvent.click(within(phone).getByRole("button", { name: "Try" })); });
+  expect((useGameStore.getState().state!.prompt as InteractionPrompt).submittedAnswer).toEqual(["star", "leaf"]);
+});
+
+it("keeps scene scenery on both screens and removes an unavailable painting", () => {
+  const { phone, tv } = game({ kind: "sequence", cue: "Order", actionLabel: "Try", options, answer: ["star", "leaf"], clues: [] });
+  act(() => {
+    const chapter = useGameStore.getState().chapter!;
+    useGameStore.setState({ chapter: { ...chapter, scenes: { ...chapter.scenes, game: { ...chapter.scenes.game!, art: "scenes/riftlight/ashspan-broken-deck" } } } });
+  });
+  for (const region of [phone, tv]) {
+    const image = region.querySelector(".game-scenery img")!;
+    expect(image.getAttribute("src")).toBe("/assets/scenes/riftlight/ashspan-broken-deck.webp");
+    fireEvent.error(image);
+    expect(region.querySelector(".game-scenery")).toBeNull();
+  }
+  expect(within(phone).getByRole("button", { name: "Leaf" })).toBeTruthy();
+});

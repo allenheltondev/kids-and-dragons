@@ -153,3 +153,7 @@
 @keyframes fg-fly { from { translate: -2% 0; rotate: -2deg; } to { translate: 2% -5%; rotate: 2deg; } }
 @keyframes fg-swim { from { translate: 0 -1.2%; rotate: -1.2deg; } to { translate: 0 1.2%; rotate: 1.2deg; } }
 @media (prefers-reduced-motion: reduce) { .field-guide__art img, .fgd__art img { animation: none; } }
+.field-guide__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.field-guide__card { min-block-size: 6em; padding: .3em; }
+.field-guide__art, .field-guide__card--hidden .field-guide__art { inline-size: 2.5em; block-size: 2.5em; font-size: 1.1em; }
+.field-guide__progress { font-size: .8em; margin-block-end: .3em; }

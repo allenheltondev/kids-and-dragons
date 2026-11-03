@@ -11,6 +11,7 @@
  * The TV remains display-only. Phones send the interaction intents; the server owns the
  * shared lift, continuous cooperation progress, outcomes and story branches.
  */
+import { GameScenery } from "./GameScenery";
 import { PaintedInteraction } from "./InteractionArt";
 import { useEffect, useRef, useState } from "react";
 import { cooperationProgress, interactionActor, interactionStartLocal, playbackMs, speak, supportsReady } from "@kad/shared";
@@ -98,6 +99,7 @@ const SLOW_CLOCK_MS = 250;
 function clockFor(prompt: InteractionPrompt, now: number): number | undefined {
   const { kind } = prompt.spec;
   if (kind === "precision" || kind === "timing") return undefined;
+  if (kind === "relay" && prompt.relay && !prompt.caughtBy && !prompt.relay.flight.dropped && now - Date.parse(prompt.relay.flight.launchedAt) < prompt.relay.flight.durationMs) return undefined;
   if (kind === "tracking" && !prompt.relaxed && now - Date.parse(prompt.startedAt ?? "") < playbackMs(prompt.spec, false)) return undefined;
   return SLOW_CLOCK_MS;
 }
@@ -196,10 +198,10 @@ export function StoryInteractionWorld() {
   const state = useRunState();
   const prompt = state?.prompt?.kind === "interaction" ? state.prompt : null;
   const still = reducedMotion();
-  const aligned = (t: number) => serverNow(state?.runId, prompt, state?.updatedAt, t);
-  const localNow = aligned(useClock(prompt?.phase === "active", still ? SLOW_CLOCK_MS : prompt ? clockFor(prompt, aligned(Date.now())) : undefined));
-  const now = useCooperationClock(prompt, localNow, (state?.party ?? []).filter((member) => member.connected).map((member) => member.playerId).join(","));
   const settled = useRelayArrival(prompt);
+  const aligned = (t: number) => serverNow(state?.runId, prompt, state?.updatedAt, t);
+  const localNow = aligned(useClock(prompt?.phase === "active" || !settled, still ? SLOW_CLOCK_MS : prompt ? clockFor(prompt, aligned(Date.now())) : undefined));
+  const now = useCooperationClock(prompt, localNow, (state?.party ?? []).filter((member) => member.connected).map((member) => member.playerId).join(","));
   useResultSound(prompt, settled);
   const connected = (state?.party ?? []).filter((member) => member.connected).map((member) => member.playerId);
   useRoomSounds(prompt, now, connected);
@@ -209,11 +211,12 @@ export function StoryInteractionWorld() {
   return <section className={`story-interaction game game--tv game--${prompt.spec.kind} game--${prompt.phase}`} aria-label="Story interaction">
     <GameHead prompt={prompt} />
     <div className="game__board">
+      <GameScenery />
       {(prompt.spec.kind === "play" || (prompt.phase === "ready" && prompt.spec.kind !== "relay")) && <PaintedInteraction prompt={prompt} party={state.party} now={now} />}
       {prompt.phase === "ready" && <p className="game-how"><Icon name={GAME[prompt.spec.kind].icon} /> {GAME[prompt.spec.kind].how}</p>}
       <Board prompt={prompt} party={state.party} now={now} settled={settled} />
-      <Stamp prompt={prompt} now={now} settled={settled} />
-      {prompt.phase === "result" && settled && <p className={`game__outcome game__outcome--${prompt.outcome ?? "failure"}`}><Icon name={prompt.outcome === "failure" ? "shuffle" : "star"} /> {outcomeLine(prompt)}</p>}
+      {prompt.spec.kind !== "relay" && <Stamp prompt={prompt} now={now} settled={settled} />}
+      {prompt.spec.kind !== "relay" && prompt.phase === "result" && settled && <p className={`game__outcome game__outcome--${prompt.outcome ?? "failure"}`}><Icon name={prompt.outcome === "failure" ? "shuffle" : "star"} /> {outcomeLine(prompt)}</p>}
     </div>
     <p className="game__status" role="status" key={status}><Icon name="phone" /><span>{status}</span></p>
     <Burst prompt={prompt} settled={settled} />
@@ -250,7 +253,7 @@ function Controls({ prompt, party, runId, updatedAt, playerId, dispatch, busy }:
   const [holding, setHolding] = useState(false);
   const [stop, setStop] = useState<number | null>(null);
   const aligned = (t: number) => serverNow(runId, prompt, updatedAt, t);
-  const localNow = aligned(useClock(prompt.phase === "active", still ? SLOW_CLOCK_MS : clockFor(prompt, aligned(Date.now()))));
+  const localNow = aligned(useClock(prompt.phase === "active" || !settled, still ? SLOW_CLOCK_MS : clockFor(prompt, aligned(Date.now()))));
   const now = useCooperationClock(prompt, localNow, connected.join(","));
   const latest = useRef({ prompt, busy, dispatch });
   latest.current = { prompt, busy, dispatch };
@@ -303,6 +306,7 @@ function Controls({ prompt, party, runId, updatedAt, playerId, dispatch, busy }:
       <span className="game__job-text"><strong>{job.headline}</strong>{job.detail ? <span className="game__job-detail">{job.detail}</span> : null}</span>
     </p>
     <div className="game__board">
+      <GameScenery />
       {((prompt.spec.kind === "play" && prompt.spec.options.length > 1) || (prompt.phase === "ready" && prompt.spec.kind !== "relay")) && <PaintedInteraction prompt={prompt} party={party} now={now} />}
       {prompt.phase === "ready" && <p className="game-how"><Icon name={GAME[prompt.spec.kind].icon} /> {GAME[prompt.spec.kind].how}</p>}
       {prompt.phase !== "ready" && <Board prompt={prompt} party={party} now={now} answer={mine ? answer : []} playerId={playerId} stop={stop} settled={settled} busy={busy} onCover={async (index) => {

@@ -1457,9 +1457,31 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
   flex: 1 1 auto;
 }
 
-/* The dev-only playtest toggle (PlaytestPanel) floats over the foot of the phone's panel. The sticky
-   confirm bar sits at that same foot, so while the toggle is there the bar keeps clear of it: its
-   own height again, below the buttons. Absent in production, where the toggle is not built. */
-.kad-surface--player:has(.playtest--shut) .confirm {
-  padding-block-end: calc(var(--space-3, 0.75em) + 3.5em);
+/* Decisions reserve room for the commit; decoration yields before controls. */
+.player--deciding .player__prompt { gap: .35em; }
+.player--deciding .prompt { flex: none; gap: .35em; }
+.player--deciding .player__echo { font-size: 1em; line-height: 1.3; padding-block-end: .25em; }
+.player--deciding .player__hint { flex: none; margin: 0; padding: .25em .5em; font-size: .85em; line-height: 1.25; }
+.player--deciding .confirm { flex: none; position: static; margin: .35em 0 0; padding: .35em 0 0; }
+.player--deciding .confirm__what { display: none; }
+@container prompt (max-height: 40em) {
+  .player--deciding .prompt:not(.combat) .choice { min-block-size: 44px; padding-block: .35em; }
+  .player--deciding .prompt:not(.combat) .choice__label { font-size: 1em; }
+  .player--deciding .prompt:not(.combat) .choice__icon { inline-size: 2em; block-size: 2em; }
 }
+/* Keep the development handle out of the game's confirm area. */
+.kad-surface--player:has(.playtest--shut) .confirm { padding-block-end: 0; }
+.player--deciding .sheet { padding-block: .3em; }
+.player--deciding .sheet__portrait { inline-size: 2.5em; block-size: 3em; }
+.player--deciding .sheet__meta { display: none; }
+@container prompt (max-height: 30em) {
+  .player--deciding .prompt__title { font-size: 1em; }
+  .player--deciding .confirm__actions > .kad-button { min-block-size: 44px; padding-block: .3em; }
+}
+.player__page-picker { display: flex; align-items: center; gap: .5em; flex: none; }
+.player__page-picker select { flex: 1; min-inline-size: 0; min-block-size: 44px; padding: .4em; border: 1px solid var(--kad-border); border-radius: .5em; background: var(--kad-bg-raised); color: var(--kad-ink); font: inherit; }
+.player__scroll > [hidden] { display: none; }
+.player__scroll .inv__grid { grid-auto-rows: 48px; gap: .4em; }
+.player__scroll :is(.inv__button, .inv__slot--empty) { min-height: 48px; }
+.player__scroll .inv__slot-name { font-size: .7em; }
+.player__scroll .inv__empty-mark { inline-size: 1.5em; block-size: 1.5em; }

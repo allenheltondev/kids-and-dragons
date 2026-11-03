@@ -6,7 +6,7 @@
  */
 
 import { expect } from "vitest";
-import { TEAM_HOLD_MS, applyIntent, enterScene, playbackMs } from "@kad/shared";
+import { TEAM_HOLD_MS, relayTarget, applyIntent, enterScene, playbackMs } from "@kad/shared";
 import type { Chapter, InteractionAction, InteractionPrompt, InteractionScene, RunState } from "@kad/shared";
 import { context, start } from "./riftlight-test-support.ts";
 
@@ -72,8 +72,8 @@ export function solve(chapter: Chapter, opened: RunState): RunState {
     case "relay":
       // Each connected hero catches and passes in turn; a lone hero does both.
       for (const id of first.playerIds) {
-        state = act(chapter, state, { action: "catch" }, id);
-        state = act(chapter, state, { action: "pass" }, id);
+        state = act(chapter, state, { action: "catch", flightId: promptOf(state).relay!.flight.id, position: 0.82, reach: promptOf(state).relay!.flight.landing }, id);
+        state = act(chapter, state, { action: "pass", flightId: promptOf(state).relay!.flight.id, ...relayTarget(promptOf(state).passed?.length ?? 0) }, id);
       }
       return state;
     case "play": {

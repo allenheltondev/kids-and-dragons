@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { expect } from "vitest";
-import { TEAM_HOLD_MS, applyEffects, applyIntent, classPlaceWaitingOn, createRunState, enterScene, itemCatalog, keepClassIntent, newCharacter, resolveCharacter, switchClass } from "@kad/shared";
+import { TEAM_HOLD_MS, relayTarget, applyEffects, applyIntent, classPlaceWaitingOn, createRunState, enterScene, itemCatalog, keepClassIntent, newCharacter, resolveCharacter, switchClass } from "@kad/shared";
 import type { Campaign, Chapter, ClassId, ClientIntent, EngineContext, ItemCatalog, RulesContent, RunState, SpeciesId } from "@kad/shared";
 import { APPEARANCE } from "../../packages/shared/src/test-fixtures.ts";
 import { RIFTLIGHT_DESIGN } from "./riftlight-preview.ts";
@@ -254,8 +254,8 @@ export function finishInteraction(state: RunState, chapter: Chapter, outcome: "s
         break;
       case "relay":
         for (const m of current.party.filter(m => m.connected)) {
-          act({ action: "catch" }, m.playerId);
-          act({ action: "pass" }, m.playerId);
+          act({ action: "catch", flightId: (current.prompt as import("@kad/shared").InteractionPrompt).relay!.flight.id, position: 0.82, reach: (current.prompt as import("@kad/shared").InteractionPrompt).relay!.flight.landing }, m.playerId);
+          act({ action: "pass", flightId: (current.prompt as import("@kad/shared").InteractionPrompt).relay!.flight.id, ...relayTarget((current.prompt as import("@kad/shared").InteractionPrompt).passed?.length ?? 0) }, m.playerId);
         }
         break;
       case "play":

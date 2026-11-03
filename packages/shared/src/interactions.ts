@@ -31,6 +31,8 @@ export interface InteractionPrompt {
   levels?: Record<string, number>;
   passed?: string[];
   caughtBy?: string;
+  /** Absent on saved relays that began before flight gameplay shipped. */
+  relay?: import("./relay.js").RelayState;
   contributions?: Record<string, string>;
   reactions?: { playerId: string; text: string }[];
   taps?: number;
@@ -50,8 +52,8 @@ export type InteractionAction =
   | { action: "complete" }
   | { action: "answer"; answer: string[] }
   | { action: "adjust"; direction: "up" | "down"; steps?: number }
-  | { action: "catch" }
-  | { action: "pass" }
+  | ({ action: "catch" } & Partial<import("./relay.js").RelayCatchInput>)
+  | ({ action: "pass" } & Partial<import("./relay.js").RelayThrowInput>)
   | { action: "play"; optionId: string }
   | { action: "retry" }
   | { action: "assist" }

@@ -49,7 +49,10 @@ test("review combat decisions on phone and tablet", async ({ page }, testInfo) =
     const firstAction = page.locator(".combat__actions button").first();
     await expect(firstAction).toBeInViewport({ ratio: 0.9 });
     const board = await page.locator(".combat__grid").boundingBox();
-    expect(board!.width).toBeGreaterThanOrEqual(220);
+    // Compact maps yield to readable controls at the largest text size.
+    expect(board!.width).toBeGreaterThanOrEqual(viewport.text === "largest" ? 200 : 220);
+    expect(await page.locator(".player__prompt").evaluate(el => el.scrollHeight <= el.clientHeight + 1)).toBe(true);
+    expect(await page.locator(".combat__answers").evaluate(el => el.scrollHeight <= el.clientHeight + 1)).toBe(true);
     await page.screenshot({ path: testInfo.outputPath(`after-${viewport.width}-${viewport.text}.png`) });
     console.info(viewport, await page.locator(".combat").evaluate(el => ({
       hint: el.querySelector(".combat__hint")?.textContent,

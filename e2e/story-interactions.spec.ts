@@ -121,9 +121,14 @@ test("reusable interactions run through real phones, TV, refresh, and authored b
           }
         }
       }
-      if (sceneId === "interaction_spark") for (const phone of [one, two]) {
+      if (sceneId === "interaction_spark") for (const [seat, phone] of [one, two].entries()) {
+        // Relaxed play removes the late deadline, but direction and strength still shape the throw.
+        await expect(controls(phone).locator(".relay-skill")).toHaveAttribute("data-ready", "true");
         await controls(phone).getByRole("button", { name: "Catch the starlight", exact: true }).click();
-        await controls(phone).getByRole("button", { name: "Pass it on", exact: true }).click();
+        await controls(phone).getByText("Use aim controls and buttons", { exact: true }).click();
+        await controls(phone).getByRole("slider", { name: "Direction" }).fill(seat === 0 ? "0.44" : "-0.44");
+        await controls(phone).getByRole("slider", { name: "Strength" }).fill("0.64");
+        await controls(phone).getByRole("button", { name: /^Throw to / }).click();
       }
       if (sceneId === "interaction_feed") {
         await controls(one).getByRole("button", { name: "Offer an apple slice", exact: true }).click();

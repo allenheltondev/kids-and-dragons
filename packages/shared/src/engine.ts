@@ -34,6 +34,7 @@
 import { INVENTORY_SLOTS, MAX_PARTY } from "./types/domain.js";
 import { cooperationProgress } from "./teamwork.js";
 import { balanceReady, interactionActor, playbackOver, playReady, precisionSuccess, relayHolder, supportsReady, trackedCover, SUPPORT_LEASE_MS } from "./interactions.js";
+import { relayStart, relayLaunch, relayCatchScore, relayThrowQuality } from "./relay.js";
 import type {
   Character,
   ClassDef,
@@ -1306,6 +1307,7 @@ function doInteract(draft: RunState, playerId: string, intent: Extract<ClientInt
     prompt.attempt += 1; prompt.phase = "ready"; prompt.supports = {};
     delete prompt.outcome; delete prompt.resolvedActorId; delete prompt.startedAt;
     delete prompt.levels; delete prompt.passed; delete prompt.caughtBy;
+    delete prompt.relay;
     delete prompt.contributions; delete prompt.reactions; delete prompt.taps;
     delete prompt.steadySince; delete prompt.steadyPlayerIds;
     delete prompt.stopPosition; delete prompt.submittedAnswer;
@@ -1316,6 +1318,10 @@ function doInteract(draft: RunState, playerId: string, intent: Extract<ClientInt
   if (intent.action === "start") {
     if (playerId !== actor || prompt.phase !== "ready" || typeof intent.relaxed !== "boolean") throw new Illegal("ILLEGAL", "Not ready to start.");
     prompt.relaxed = intent.relaxed; prompt.startedAt = ctx.now; prompt.phase = "active";
+    if (prompt.spec.kind === "relay") {
+      prompt.relay = relayStart(ctx.now);
+      if (prompt.relaxed) prompt.relay.flight.durationMs *= 1.5;
+    }
     return undefined;
   }
   if (prompt.phase !== "active") throw new Illegal("ILLEGAL", "Start when everyone is ready.");
@@ -1384,11 +1390,52 @@ function doInteract(draft: RunState, playerId: string, intent: Extract<ClientInt
     case "catch":
     case "pass": {
       if (prompt.spec.kind !== "relay" || relayHolder(prompt, connected) !== playerId) throw new Illegal("ILLEGAL", "The spark belongs to another friend.");
+      const relay = prompt.relay;
+      if (relay && (!Number.isInteger(intent.flightId) || intent.flightId !== relay.flight.id)) throw new Illegal("ILLEGAL", "That flight has moved on.");
       if (intent.action === "catch") {
         if (prompt.caughtBy === playerId) throw new Illegal("ILLEGAL", "Already caught.");
+        if (relay) {
+          if (typeof intent.position !== "number" || !Number.isFinite(intent.position) || intent.position < 0 || intent.position > 1 || typeof intent.reach !== "number" || !Number.isFinite(intent.reach) || intent.reach < 0 || intent.reach > 1) throw new Illegal("ILLEGAL", "Invalid catch input.");
+          // Like precision, score the moment displayed on the phone, never network arrival time.
+          let score = relayCatchScore(relay.flight, intent.position, intent.reach, prompt.relaxed);
+          // A fallen object can be scooped up in one touch. Charge this drop once,
+          // then return it to the child's hands rather than asking for a second tap.
+          if (score === "miss" && intent.position === 1 && Math.abs(intent.reach - relay.flight.landing) <= 0.22) {
+            relay.chances -= 1; relay.streak = 0;
+            if (relay.chances === 0) { relay.last = "missed"; relay.flight.dropped = true; result("failure"); return undefined; }
+            score = "recover";
+          }
+          if (score === "early" || score === "miss") {
+            relay.chances -= 1; relay.streak = 0;
+            relay.last = score === "early" ? "too-early" : "missed";
+            relay.flight = { ...relay.flight, id: relay.flight.id + 1, dropped: true };
+            if (relay.chances === 0) result("failure");
+            return undefined;
+          }
+          const save = score === "recover" || relay.flight.quality !== "clean";
+          relay.last = save ? "save" : "clean-catch";
+          if (save) relay.saves += 1;
+          relay.streak += 1; relay.bestStreak = Math.max(relay.bestStreak, relay.streak);
+        }
         prompt.caughtBy = playerId;
       } else {
         if (prompt.caughtBy !== playerId) throw new Illegal("ILLEGAL", "Catch it first.");
+        if (relay) {
+          if (typeof intent.aim !== "number" || !Number.isFinite(intent.aim) || intent.aim < -1 || intent.aim > 1 || typeof intent.power !== "number" || !Number.isFinite(intent.power) || intent.power < 0 || intent.power > 1) throw new Illegal("ILLEGAL", "Invalid throw input.");
+          const pass = prompt.passed?.length ?? 0;
+          const quality = relayThrowQuality(intent.aim, intent.power, pass, prompt.relaxed);
+          const next = relayHolder({ ...prompt, passed: [...(prompt.passed ?? []), playerId] }, connected);
+          relay.flight = relayLaunch(relay.flight.id + 1, ctx.now, intent.aim, intent.power, pass, prompt.relaxed, playerId);
+          relay.last = quality === "clean" ? "clean-pass" : quality === "wobbly" ? "wobbly-pass" : "wild-pass";
+          if (quality === "clean") relay.cleanPasses += 1;
+          // The final target also matters. A wild throw rebounds to the sender for a recovery.
+          if (!next && quality === "wild") {
+            relay.chances -= 1; relay.streak = 0; relay.last = "rebound";
+            relay.flight.dropped = true; delete prompt.caughtBy;
+            if (relay.chances === 0) result("failure");
+            return undefined;
+          }
+        }
         (prompt.passed ??= []).push(playerId); delete prompt.caughtBy;
         if (!relayHolder(prompt, connected)) result("success");
       }

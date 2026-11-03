@@ -29,8 +29,10 @@ test("the home screen is usable before the sound engine arrives, and sound works
   await expect(page.getByRole("button", { name: /turn sound/i })).toHaveCount(0);
 
   release();
-  const sound = page.getByRole("button", { name: "Turn sound off" });
+  const sound = page.getByRole("button", { name: /^(Enable sound|Turn sound off)$/ });
   await expect(sound).toBeVisible(TAP);
+  await sound.click();
+  await expect(page.getByRole("button", { name: "Turn sound off" })).toBeVisible(TAP);
   await sound.click();
   await expect(page.getByRole("button", { name: "Turn sound on" })).toHaveAttribute("aria-pressed", "true");
 });
@@ -58,7 +60,7 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 390, height: 844 
     expect(before.readAloud).not.toBeNull();
 
     release();
-    const sound = page.getByRole("button", { name: "Turn sound off" });
+    const sound = page.getByRole("button", { name: /^(Enable sound|Turn sound off)$/ });
     await expect(sound).toBeVisible(TAP);
     expect(await readAloud.boundingBox(), "read-aloud stays where it was").toEqual(before.readAloud);
     expect(await settings.boundingBox(), "display settings stays where it was").toEqual(before.settings);

@@ -848,3 +848,18 @@ html[data-motion="reduced"] .combat__cell > .combat__cell-face, html[data-motion
    below it. Occupied squares keep a corner mark so the fighter stays readable. */
 .combat__cell:not(:has(> .combat__cell-face, > .combat__cell-art)) > .combat__feature { inset: 0; inline-size: 100%; block-size: 100%; }
 .combat__cell:has(> .combat__feature) > .combat__dot { position: absolute; inset-block-end: 6%; inset-inline-start: 6%; inline-size: 25%; block-size: 25%; }
+/* Three choices per page replace the scrolling action tray. The map yields
+   height to decisions, and can still be opened at full size for precise taps. */
+.player--deciding .combat__answers { overflow: visible; flex: none; mask-image: none; }
+.player--deciding .combat__dock { flex: none; }
+.combat__board { flex: 1 1 0; min-block-size: 80px; }
+.combat__more, .combat__legend { display: none; }
+.combat__hint { font-size: .8em; }
+.combat__seat { min-block-size: 44px; }
+.combat .combat__actions .choice { min-block-size: 48px; }
+@container prompt (max-height: 38em) {
+  .matchup-hints { display: none; }
+  .combat__overview { flex-wrap: nowrap; }
+  .combat__budget { font-size: .75em; }
+  .combat .combat__actions .choice__sub { font-size: .75em; line-height: 1.15; }
+}

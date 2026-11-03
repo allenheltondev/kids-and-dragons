@@ -882,3 +882,14 @@ button.game-pad:active:not(:disabled) { transform: translateY(0.2em) scale(0.97)
 
 /* Start feedback must leave the moving object and its target visible. */
 .game .game-stamp--go { inset-block-start: 0.4em; inset-inline-start: auto; inset-inline-end: 0.5em; translate: none; font-size: 1em; }
+
+/* The location carries through the transition from listening to playing. */
+.game__board { isolation: isolate; }
+.game-scenery { position: absolute; inset: 0; z-index: -1; overflow: hidden; border-radius: inherit; pointer-events: none; margin: 0 !important; }
+.game-scenery img { inline-size: 100%; block-size: 100%; object-fit: cover; opacity: 0.5; }
+.game-scenery::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, #100d2280, #100d22b8 55%, #100d22f5); }
+.game-scenery__light { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 75%, #f5c86c30, transparent 65%); }
+.game__board > .game-scenery + * { margin-block-start: auto; }
+.game--result .game-scenery__light { background: radial-gradient(ellipse at 50% 75%, #f5c86c60, transparent 75%); }
+.game--sequence .game-slot__edit { touch-action: none; user-select: none; -webkit-user-select: none; }
+.game-slot__edit[data-dragging="true"] { outline: 0.18em solid var(--kad-gold, #f5c86c); border-radius: 0.75em; filter: drop-shadow(0 0 0.5em #f5c86c80); }

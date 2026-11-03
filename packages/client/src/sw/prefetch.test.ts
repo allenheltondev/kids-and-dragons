@@ -92,6 +92,8 @@ describe("the whole chapter", () => {
     expect(urls).toContain("/assets/story-props/rope-loop.webp");
     expect(urls).toContain("/assets/story-props/carved-stone.webp");
     expect(urls).toContain("/assets/story-props/relay-sack.webp");
+    expect(urls).toContain("/assets/ui/relay/catching-hands.webp");
+    expect(urls).toContain("/assets/story-props/rope-basket.webp");
   });
 
   it("reaches scenes beyond the prefetch depth, and visits each scene once", () => {

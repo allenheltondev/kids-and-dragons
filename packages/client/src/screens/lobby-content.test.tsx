@@ -231,7 +231,8 @@ describe("a lobby card", () => {
     const ready = card({ ready: true });
     expect(shape(waiting)).toEqual(shape(ready));
     expect(waiting.querySelector(".lobby-member__chip--off")?.textContent).toBe("Ready");
-    expect(ready.querySelector(".lobby-member__chip--off")?.textContent).toBe("Tap Ready on your phone");
+    expect(ready.querySelector(".lobby-member__chip--off .lobby-member__pending-help")?.textContent).toBe("Tap Ready on your phone");
+    expect(ready.querySelector(".lobby-member__chip--off .lobby-member__pending-short")?.textContent).toBe("Not ready");
   });
 
   it("pins Away to the portrait instead of adding a row to the card", () => {

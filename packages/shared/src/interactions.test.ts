@@ -3,6 +3,7 @@ import { applyIntent, createRunState, enterScene, type EngineContext } from "./e
 import { resolveCharacter } from "./character.js";
 import { makeRng } from "./dice.js";
 import { makeChapter, makeCharacter, makeItems, makeRules } from "./test-fixtures.js";
+import { relayTarget } from "./relay.js";
 import { balanceReady, interactionClues, supportsReady, type InteractionAction, type InteractionPrompt, type InteractionSpec } from "./interactions.js";
 import { cooperationProgress, TEAM_HOLD_MS } from "./teamwork.js";
 import { sceneEdges, validateChapter } from "./chapter-graph.js";
@@ -40,6 +41,13 @@ function step(state: RunState, ctx: EngineContext, action: InteractionAction, pl
   const result = act(state, ctx, action, playerId);
   expect(result.error).toBeUndefined();
   return result.state;
+}
+
+function flightCatch(state: RunState): InteractionAction {
+  return { action: "catch", flightId: prompt(state).relay!.flight.id, position: 0.82, reach: prompt(state).relay!.flight.landing };
+}
+function flightPass(state: RunState): InteractionAction {
+  return { action: "pass", flightId: prompt(state).relay!.flight.id, ...relayTarget(prompt(state).passed?.length ?? 0) };
 }
 
 describe("authoritative story interactions", () => {
@@ -126,24 +134,24 @@ describe("authoritative story interactions", () => {
   it("makes relay turns authoritative and skips disconnected receivers", () => {
     const { state, ctx } = setup({ kind: "relay", cue: "Pass", actionLabel: "Pass", objectLabel: "spark" }, 3);
     let next = step(state, ctx, { action: "start", relaxed: false });
-    expect(act(next, ctx, { action: "catch" }, "p1").error).toBeDefined();
-    expect(act(next, ctx, { action: "pass" }).error).toBeDefined();
-    next = step(next, ctx, { action: "catch" });
-    expect(act(next, ctx, { action: "catch" }).error).toBeDefined();
-    next = step(next, ctx, { action: "pass" });
+    expect(act(next, ctx, flightCatch(next), "p1").error).toBeDefined();
+    expect(act(next, ctx, flightPass(next)).error).toBeDefined();
+    next = step(next, ctx, flightCatch(next));
+    expect(act(next, ctx, flightCatch(next)).error).toBeDefined();
+    next = step(next, ctx, flightPass(next));
     next.party[1]!.connected = false;
-    next = step(next, ctx, { action: "catch" }, "p2");
-    next = step(next, ctx, { action: "pass" }, "p2");
+    next = step(next, ctx, flightCatch(next), "p2");
+    next = step(next, ctx, flightPass(next), "p2");
     expect(prompt(next).outcome).toBe("success");
   });
   it("does not transfer a disconnected player’s catch to the next receiver", () => {
     const { state, ctx } = setup({ kind: "relay", cue: "Pass", actionLabel: "Pass", objectLabel: "spark" });
     let next = step(state, ctx, { action: "start", relaxed: false });
-    next = step(next, ctx, { action: "catch" });
+    next = step(next, ctx, flightCatch(next));
     next.party[0]!.connected = false;
-    expect(act(next, ctx, { action: "pass" }, "p1").error).toBeDefined();
-    next = step(next, ctx, { action: "catch" }, "p1");
-    expect(prompt(step(next, ctx, { action: "pass" }, "p1")).outcome).toBe("success");
+    expect(act(next, ctx, flightPass(next), "p1").error).toBeDefined();
+    next = step(next, ctx, flightCatch(next), "p1");
+    expect(prompt(step(next, ctx, flightPass(next), "p1")).outcome).toBe("success");
   });
   it("records each camp contribution and bounds repeated feedback", () => {
     const { state, ctx } = setup({ kind: "play", cue: "Camp", actionLabel: "Rest", participation: "everyone", options: [{ id: "lamp", label: "Hang a lamp", icon: "star", reaction: "A warm glow appears." }] });
@@ -354,5 +362,89 @@ describe("shared visual receipts", () => {
     answer.length = 0;
     expect(prompt(done).submittedAnswer!.length).toBeGreaterThan(0);
     expect(prompt(step(done, ctx, { action: "retry" })).submittedAnswer).toBeUndefined();
+  });
+});
+
+
+describe("relay flight gameplay", () => {
+  const spec: InteractionSpec = { kind: "relay", cue: "Deliver it", actionLabel: "Throw", objectLabel: "the spark" };
+  it("turns an early grab into a recoverable drop, rejects stale actions, and preserves the flight on refresh", () => {
+    const { state, ctx } = setup(spec);
+    let next = step(state, ctx, { action: "start", relaxed: false });
+    const early = { ...flightCatch(next), position: 0.1 } as InteractionAction;
+    next = step(next, ctx, early);
+    expect(prompt(next)).toMatchObject({ phase: "active", relay: { chances: 2, last: "too-early", flight: { id: 1, dropped: true } } });
+    expect(prompt(next).caughtBy).toBeUndefined();
+    expect(act(next, ctx, early).error).toBeDefined();
+    next = JSON.parse(JSON.stringify(next)) as RunState;
+    next = step(next, ctx, flightCatch(next));
+    expect(prompt(next)).toMatchObject({ caughtBy: "p0", relay: { chances: 2, saves: 1, last: "save" } });
+  });
+  it("makes a wild throw drift, rewards the next player's save, and makes a final miss rebound before failure", () => {
+    const { state, ctx } = setup(spec);
+    let next = step(state, ctx, { action: "start", relaxed: false });
+    next = step(next, ctx, flightCatch(next));
+    next = step(next, ctx, { action: "pass", flightId: prompt(next).relay!.flight.id, aim: -1, power: 0.1 });
+    expect(prompt(next).relay).toMatchObject({ chances: 3, cleanPasses: 0, last: "wild-pass", flight: { quality: "wild", landing: 0.16 } });
+    next = step(next, ctx, flightCatch(next), "p1");
+    expect(prompt(next).relay).toMatchObject({ saves: 1, last: "save", bestStreak: 2 });
+    for (let chances = 2; chances >= 0; chances--) {
+      next = step(next, ctx, { action: "pass", flightId: prompt(next).relay!.flight.id, aim: 1, power: 0 }, "p1");
+      expect(prompt(next).relay!.chances).toBe(chances);
+      expect(prompt(next).passed).toEqual(["p0"]);
+      if (chances) {
+        expect(prompt(next).phase).toBe("active");
+        next = step(next, ctx, flightCatch(next), "p1");
+      }
+    }
+    expect(prompt(next).outcome).toBe("failure");
+    expect(next.flags.interaction_missed).toBeUndefined();
+    expect(step(next, ctx, { action: "continue" }, "p1").flags.interaction_missed).toBe(true);
+  });
+  it("charges a late pickup once, whereas relaxed play leaves the object catchable without a deadline", () => {
+    const { state, ctx } = setup(spec);
+    const active = step(state, ctx, { action: "start", relaxed: false });
+    const pickup = step(active, ctx, { ...flightCatch(active), position: 1 } as InteractionAction);
+    expect(prompt(pickup)).toMatchObject({ caughtBy: "p0", relay: { chances: 2, saves: 1 } });
+    expect(act(pickup, ctx, flightCatch(pickup)).error).toBeDefined();
+    const relaxed = step(state, ctx, { action: "start", relaxed: true });
+    expect(prompt(step(relaxed, ctx, { ...flightCatch(relaxed), position: 1 } as InteractionAction)).relay).toMatchObject({ chances: 3, saves: 0 });
+  });
+  it("does not allow bare catch/pass inputs or nonfinite measurements to bypass the skill loop", () => {
+    const { state, ctx } = setup(spec);
+    const active = step(state, ctx, { action: "start", relaxed: false });
+    expect(act(active, ctx, { action: "catch" }).error).toBeDefined();
+    for (const value of [NaN, Infinity, -1, 2]) {
+      expect(act(active, ctx, { ...flightCatch(active), position: value } as InteractionAction).error).toBeDefined();
+      expect(act(active, ctx, { ...flightCatch(active), reach: value } as InteractionAction).error).toBeDefined();
+    }
+    const caught = step(active, ctx, flightCatch(active));
+    expect(act(caught, ctx, { action: "pass" }).error).toBeDefined();
+    for (const value of [NaN, Infinity, -2, 2]) expect(act(caught, ctx, { ...flightPass(caught), aim: value } as InteractionAction).error).toBeDefined();
+    for (const value of [NaN, Infinity, -1, 2]) expect(act(caught, ctx, { ...flightPass(caught), power: value } as InteractionAction).error).toBeDefined();
+  });
+  it.each([1, 2, 4])("allows a clean route with %s players and restores chances on retry", (size) => {
+    const { state, ctx } = setup(spec, size);
+    let next = step(state, ctx, { action: "start", relaxed: false });
+    for (let seat = 0; seat < size; seat++) {
+      next = step(next, ctx, flightCatch(next), `p${seat}`);
+      next = step(next, ctx, flightPass(next), `p${seat}`);
+    }
+    expect(prompt(next)).toMatchObject({ outcome: "success", relay: { chances: 3, cleanPasses: size, bestStreak: size } });
+    next = step(next, ctx, { action: "retry" });
+    expect(prompt(next).relay).toBeUndefined();
+    next = step(next, ctx, { action: "start", relaxed: false });
+    expect(prompt(next).relay).toMatchObject({ chances: 3, saves: 0, cleanPasses: 0, flight: { id: 0 } });
+  });
+  it("finishes an older saved relay with its original controls until the family retries", () => {
+    const { state, ctx } = setup(spec, 1);
+    let next = step(state, ctx, { action: "start", relaxed: false });
+    delete prompt(next).relay;
+    next = step(next, ctx, { action: "catch" });
+    next = step(next, ctx, { action: "pass" });
+    expect(prompt(next).outcome).toBe("success");
+    next = step(next, ctx, { action: "retry" });
+    next = step(next, ctx, { action: "start", relaxed: false });
+    expect(prompt(next).relay).toBeDefined();
   });
 });

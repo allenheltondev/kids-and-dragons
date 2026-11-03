@@ -1,3 +1,4 @@
+import { PagedOptions } from "../ui/PagedOptions";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { FieldGuide as FieldGuideData, FieldGuideCategory, FieldGuideEntry } from "@kad/shared";
 import {
@@ -112,7 +113,7 @@ export function FieldGuideIndex({ guide }: { guide: FieldGuideData | null }) {
           <>
             <p className="field-guide__progress">{foundHere} of {items.length} {section.label.toLowerCase()} found</p>
             {foundHere === 0 && <p className="field-guide__progress">Keep exploring! Your discoveries will appear here as you play.</p>}
-            <ul className="field-guide__grid">
+            <PagedOptions key={section.id} className="field-guide__grid">
               {items.map((entry) => (
                 <li key={entry.id}>
                   {discoveries[entry.id] ? (
@@ -125,7 +126,7 @@ export function FieldGuideIndex({ guide }: { guide: FieldGuideData | null }) {
                   )}
                 </li>
               ))}
-            </ul>
+            </PagedOptions>
           </>
         )}
       </div>

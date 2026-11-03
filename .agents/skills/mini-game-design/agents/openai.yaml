@@ -1,0 +1,4 @@
+interface:
+  display_name: "Mini-Game Design"
+  short_description: "Design playful mechanics with storybook visual polish"
+  default_prompt: "Use $mini-game-design to improve this mini-game with meaningful player skill, recoverable stakes, and finished visuals."

@@ -85,7 +85,15 @@
       "lineCount": 8,
       "guessedLines": 4,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Leda",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:54:05.063Z"
+        }
+      ]
     },
     "wisp": {
       "name": "Wisp",
@@ -121,7 +129,17 @@
       ],
       "lineCount": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "accent": "american child",
+      "direction": "high pitched, stuttering",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Achernar",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T19:10:09.410Z"
+        }
+      ]
     },
     "door_voice": {
       "name": "Door Voice",
@@ -154,7 +172,7 @@
       "pronouns": "she/her",
       "pronounsFrom": "narration",
       "gender": "female",
-      "genderFrom": "narration",
+      "genderFrom": "person",
       "figure": "entities/faun",
       "voiceNotes": [
         {
@@ -172,7 +190,7 @@
       ],
       "aliases": [],
       "gemini": {
-        "voice": "Zephyr"
+        "voice": "Autonoe"
       },
       "lines": [
         {
@@ -190,7 +208,15 @@
       ],
       "lineCount": 28,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Autonoe",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T19:05:31.403Z"
+        }
+      ]
     },
     "flick": {
       "name": "Flick",
@@ -303,7 +329,15 @@
       "lineCount": 22,
       "guessedLines": 16,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Zephyr",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:54:56.262Z"
+        }
+      ]
     },
     "coralie_fenn": {
       "name": "Madame Coralie Fenn",
@@ -343,7 +377,15 @@
       "lineCount": 3,
       "guessedLines": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Callirrhoe",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:16:39.825Z"
+        }
+      ]
     },
     "tobble": {
       "name": "Tobble Reedpipe",
@@ -927,7 +969,7 @@
         "Rush drover"
       ],
       "gemini": {
-        "voice": "Orus"
+        "voice": "Umbriel"
       },
       "lines": [
         {
@@ -946,7 +988,17 @@
       "lineCount": 14,
       "guessedLines": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "accent": "Thick Irish",
+      "direction": "Youthful, slightly faster than normal",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Umbriel",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:35:36.985Z"
+        }
+      ]
     },
     "sheeple": {
       "name": "Sheeple",
@@ -1137,7 +1189,7 @@
       ],
       "aliases": [],
       "gemini": {
-        "voice": "Autonoe"
+        "voice": "Pulcherrima"
       },
       "lines": [
         {
@@ -1156,7 +1208,15 @@
       "lineCount": 10,
       "guessedLines": 5,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Pulcherrima",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:13:46.503Z"
+        }
+      ]
     },
     "fennick": {
       "name": "Fennick Longstride",
@@ -1333,7 +1393,7 @@
       ],
       "aliases": [],
       "gemini": {
-        "voice": "Algenib"
+        "voice": "Orus"
       },
       "lines": [
         {
@@ -1352,7 +1412,16 @@
       "lineCount": 36,
       "guessedLines": 5,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "accent": "Deep, louisiana drawl",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Orus",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:04:00.969Z"
+        }
+      ]
     },
     "kettle_campers": {
       "name": "Kettle Campers",
@@ -1476,7 +1545,15 @@
       ],
       "lineCount": 2,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Alnilam",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:55:11.137Z"
+        }
+      ]
     },
     "parsnip_driver": {
       "name": "Parsnip Driver",
@@ -1737,7 +1814,16 @@
       "lineCount": 8,
       "guessedLines": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "accent": "So heavy Scottish that you can barely understand",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Sadachbia",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:41:50.186Z"
+        }
+      ]
     },
     "tamsin": {
       "name": "Tamsin Three-Cards",
@@ -1781,7 +1867,16 @@
       "lineCount": 34,
       "guessedLines": 4,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "direction": "prankster. fun loving, laughs a lot, always upbeat",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Laomedeia",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T19:04:21.811Z"
+        }
+      ]
     },
     "wend": {
       "name": "Wend",
@@ -1830,7 +1925,16 @@
       "lineCount": 11,
       "guessedLines": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "accent": "Heavy Southern",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Achernar",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:36:43.001Z"
+        }
+      ]
     },
     "mother_thrum": {
       "name": "Mother Thrum",
@@ -1894,7 +1998,15 @@
       "lines": [],
       "lineCount": 0,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Leda",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T19:22:39.002Z"
+        }
+      ]
     },
     "troupe_leader": {
       "name": "Troupe Leader",
@@ -2065,8 +2177,8 @@
       "who": "a relay-running centaur stuffed with letters; quick, cheerful, competitive; 'relay waits for nobody'",
       "pronouns": "she/her",
       "pronounsFrom": "narration",
-      "gender": "female",
-      "genderFrom": "narration",
+      "gender": "male",
+      "genderFrom": "person",
       "figure": "cast/bracken_swiftmile",
       "voiceNotes": [
         {
@@ -2086,7 +2198,7 @@
         "Bracken"
       ],
       "gemini": {
-        "voice": "Autonoe"
+        "voice": "Algenib"
       },
       "lines": [
         {
@@ -2105,7 +2217,17 @@
       "lineCount": 10,
       "guessedLines": 2,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "direction": "Brash, overly confident, alpha male",
+      "accent": "Northeast American",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Algenib",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:41:00.823Z"
+        }
+      ]
     },
     "manticore_cubs": {
       "name": "Manticore Cubs",
@@ -2229,7 +2351,15 @@
       "lines": [],
       "lineCount": 0,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Schedar",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T19:14:34.713Z"
+        }
+      ]
     },
     "elder_unicorn": {
       "name": "Elder Unicorn",
@@ -2318,7 +2448,16 @@
       "lineCount": 4,
       "guessedLines": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "direction": "Slower cadence, low timber, warm and friendly",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Aoede",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:49:18.653Z"
+        }
+      ]
     },
     "echo_hunter": {
       "name": "Echo Hunter",
@@ -2392,7 +2531,15 @@
       "lineCount": 14,
       "guessedLines": 3,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Zephyr",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:30:53.862Z"
+        }
+      ]
     },
     "hedge_prospectors": {
       "name": "Hedge Prospectors",
@@ -2454,7 +2601,11 @@
       ],
       "lineCount": 3,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "elevenlabs": {
+        "voiceId": "nPczCjzI2devNBz1zQrb",
+        "name": "Brian - Deep, Resonant and Comforting"
+      }
     },
     "tib": {
       "name": "Tib",
@@ -2506,7 +2657,7 @@
       ],
       "aliases": [],
       "gemini": {
-        "voice": "Umbriel"
+        "voice": "Fenrir"
       },
       "lines": [
         {
@@ -2525,7 +2676,16 @@
       "lineCount": 13,
       "guessedLines": 2,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "direction": "autistic, speaks slightly fast and hard stop at sentences",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Fenrir",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T19:00:52.959Z"
+        }
+      ]
     },
     "clerk_pennywhistle": {
       "name": "Clerk Pennywhistle",
@@ -2759,7 +2919,7 @@
       ],
       "aliases": [],
       "gemini": {
-        "voice": "Puck"
+        "voice": "Sadachbia"
       },
       "lines": [
         {
@@ -2777,7 +2937,16 @@
       ],
       "lineCount": 50,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "accent": "nervous, fast talker",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Sadachbia",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:19:32.299Z"
+        }
+      ]
     },
     "brask": {
       "name": "Engineer Brask",
@@ -2822,7 +2991,16 @@
       "lineCount": 51,
       "guessedLines": 4,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "accent": "Strong German",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Rasalgethi",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:47:54.032Z"
+        }
+      ]
     },
     "carter": {
       "name": "Tired carter",
@@ -3307,7 +3485,15 @@
       "lineCount": 37,
       "guessedLines": 18,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Gacrux",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:07:27.897Z"
+        }
+      ]
     },
     "small_dragonling": {
       "name": "Small Dragonling",
@@ -3453,7 +3639,7 @@
       ],
       "aliases": [],
       "gemini": {
-        "voice": "Aoede"
+        "voice": "Leda"
       },
       "lines": [
         {
@@ -3472,7 +3658,17 @@
       "lineCount": 23,
       "guessedLines": 4,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "accent": "childish pronunciations, has a obvious lisp",
+      "direction": "bright voice, high pitched almost like she's straining to talk",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Leda",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:11:40.232Z"
+        }
+      ]
     },
     "captain": {
       "name": "Captain",
@@ -3498,7 +3694,7 @@
       ],
       "aliases": [],
       "gemini": {
-        "voice": "Vindemiatrix"
+        "voice": "Gacrux"
       },
       "lines": [
         {
@@ -3516,7 +3712,15 @@
       ],
       "lineCount": 6,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Gacrux",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:44:56.247Z"
+        }
+      ]
     },
     "grandmother_tull": {
       "name": "Grandmother Tull",
@@ -3553,7 +3757,8 @@
       "lineCount": 5,
       "guessedLines": 3,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "old, slow talker, kind"
     },
     "dunmore": {
       "name": "Dunmore",
@@ -3585,7 +3790,11 @@
       ],
       "lineCount": 4,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "elevenlabs": {
+        "voiceId": "nPczCjzI2devNBz1zQrb",
+        "name": "Brian - Deep, Resonant and Comforting"
+      }
     },
     "claim_pair": {
       "name": "Claim Pair",
@@ -3693,7 +3902,15 @@
       "lineCount": 5,
       "guessedLines": 4,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Fenrir",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:17:23.200Z"
+        }
+      ]
     },
     "ford_witch": {
       "name": "Mother Thrum",
@@ -3744,7 +3961,15 @@
       "lineCount": 13,
       "guessedLines": 4,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Leda",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:32:08.143Z"
+        }
+      ]
     },
     "centaur_relay": {
       "name": "Centaur Relay",
@@ -3825,7 +4050,16 @@
       ],
       "lineCount": 6,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "accent": "Cruella DeVille",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Laomedeia",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:27:46.648Z"
+        }
+      ]
     },
     "caravan_master": {
       "name": "Caravan Master",
@@ -3876,7 +4110,15 @@
       "lineCount": 10,
       "guessedLines": 4,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Kore",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:24:57.353Z"
+        }
+      ]
     },
     "brisk": {
       "name": "Brisk",
@@ -3917,7 +4159,15 @@
       "lineCount": 6,
       "guessedLines": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Pulcherrima",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T19:25:25.807Z"
+        }
+      ]
     },
     "bryony": {
       "name": "Bryony",
@@ -3957,7 +4207,23 @@
       ],
       "lineCount": 5,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "elevenlabs": {
+        "voiceId": "cgSgspJ2msm6clMCkdW9",
+        "name": "Jessica - Playful, Bright, Warm",
+        "approved": true
+      },
+      "accent": "Appalachian American",
+      "history": [
+        {
+          "decision": "approved",
+          "provider": "elevenlabs",
+          "voice": "cgSgspJ2msm6clMCkdW9",
+          "voiceName": "Jessica - Playful, Bright, Warm",
+          "model": "eleven_v4",
+          "at": "2026-10-30T20:47:52.369Z"
+        }
+      ]
     },
     "lady_fleecewick": {
       "name": "Lady Fleecewick",
@@ -4142,7 +4408,11 @@
       ],
       "lineCount": 2,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "elevenlabs": {
+        "voiceId": "nPczCjzI2devNBz1zQrb",
+        "name": "Brian - Deep, Resonant and Comforting"
+      }
     },
     "warden_sergeant": {
       "name": "Warden Sergeant",
@@ -4252,7 +4522,23 @@
       "lineCount": 5,
       "guessedLines": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "elevenlabs": {
+        "voiceId": "nPczCjzI2devNBz1zQrb",
+        "name": "Brian - Deep, Resonant and Comforting",
+        "approved": true
+      },
+      "accent": "Midwestern American",
+      "history": [
+        {
+          "decision": "approved",
+          "provider": "elevenlabs",
+          "voice": "nPczCjzI2devNBz1zQrb",
+          "voiceName": "Brian - Deep, Resonant and Comforting",
+          "model": "eleven_v4",
+          "at": "2026-10-30T20:49:26.385Z"
+        }
+      ]
     },
     "seal_keeper": {
       "name": "Seal Keeper",
@@ -4317,7 +4603,16 @@
       "lines": [],
       "lineCount": 0,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "direction": "Ancient, panting, slow, hollow, stoic",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Enceladus",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T19:22:12.818Z"
+        }
+      ]
     },
     "titan": {
       "name": "Titan",
@@ -4376,7 +4671,7 @@
         "Master Orin Vale"
       ],
       "gemini": {
-        "voice": "Algieba"
+        "voice": "Charon"
       },
       "lines": [
         {
@@ -4394,7 +4689,16 @@
       ],
       "lineCount": 63,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "accent": "studious, british accent. very curious",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Charon",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:18:24.669Z"
+        }
+      ]
     },
     "olivia": {
       "name": "Lady Olivia",
@@ -4423,7 +4727,7 @@
       ],
       "aliases": [],
       "gemini": {
-        "voice": "Despina"
+        "voice": "Erinome"
       },
       "lines": [
         {
@@ -4441,7 +4745,16 @@
       ],
       "lineCount": 28,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "direction": "confident, almost villian-like power behind words",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Erinome",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:16:05.001Z"
+        }
+      ]
     },
     "bram_lock": {
       "name": "Bram Lock",
@@ -4463,7 +4776,7 @@
       ],
       "aliases": [],
       "gemini": {
-        "voice": "Fenrir"
+        "voice": "Charon"
       },
       "lines": [
         {
@@ -4481,7 +4794,17 @@
       ],
       "lineCount": 4,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "accent": "Strong American Midwestern",
+      "direction": "old, calm",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Charon",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T19:24:42.440Z"
+        }
+      ]
     },
     "seren_wisp": {
       "name": "Seren Wisp",
@@ -4534,7 +4857,15 @@
       ],
       "lineCount": 47,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Achernar",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:07:04.166Z"
+        }
+      ]
     },
     "pip_thistledown": {
       "name": "Pip Thistledown",
@@ -4592,7 +4923,16 @@
       ],
       "lineCount": 37,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "accent": "pubescent, voice cracking, some deep \\ some higher pitched words, but confident",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Alnilam",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:06:29.314Z"
+        }
+      ]
     },
     "thimble": {
       "name": "Captain Thimble",
@@ -4634,7 +4974,16 @@
       "lineCount": 14,
       "guessedLines": 6,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "accent": "Strong Cockney",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Vindemiatrix",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:45:46.114Z"
+        }
+      ]
     },
     "the_gull": {
       "name": "The gull",
@@ -4800,7 +5149,16 @@
       "lineCount": 52,
       "guessedLines": 4,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "accent": "raspy, low, slow and patient",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Erinome",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:21:20.560Z"
+        }
+      ]
     },
     "young_yeti_singer": {
       "name": "Young yeti singer",
@@ -4919,7 +5277,17 @@
       ],
       "lineCount": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "accent": "asian",
+      "direction": "quick, choppy words, short pause between sentences like she's thinking",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Schedar",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:53:31.124Z"
+        }
+      ]
     },
     "new_keeper": {
       "name": "New keeper",
@@ -5003,7 +5371,7 @@
       ],
       "aliases": [],
       "gemini": {
-        "voice": "Enceladus"
+        "voice": "Callirrhoe"
       },
       "lines": [
         {
@@ -5013,7 +5381,16 @@
       ],
       "lineCount": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "accent": "Jamaican",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Callirrhoe",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:23:40.190Z"
+        }
+      ]
     },
     "brassbuckle_recordkeeper": {
       "name": "Brassbuckle recordkeeper",
@@ -5035,7 +5412,19 @@
       "lineCount": 5,
       "guessedLines": 5,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Charon",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:22:21.038Z"
+        }
+      ],
+      "elevenlabs": {
+        "voiceId": "nPczCjzI2devNBz1zQrb",
+        "name": "Brian - Deep, Resonant and Comforting"
+      }
     },
     "mother_bracken": {
       "name": "Mother Bracken",
@@ -5175,7 +5564,17 @@
       ],
       "lineCount": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "direction": "Old, rickety, shaky voice",
+      "accent": "Southern American",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Sadaltager",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:43:16.583Z"
+        }
+      ]
     },
     "faun_prospector": {
       "name": "Faun prospector",
@@ -5208,7 +5607,7 @@
       ],
       "aliases": [],
       "gemini": {
-        "voice": "Algieba"
+        "voice": "Umbriel"
       },
       "lines": [
         {
@@ -5218,7 +5617,17 @@
       ],
       "lineCount": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "accent": "Transylvanian",
+      "direction": "Croaky and strained",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Umbriel",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T19:21:02.471Z"
+        }
+      ]
     },
     "tibs_pony": {
       "name": "Tib's pony",
@@ -5253,7 +5662,7 @@
       ],
       "aliases": [],
       "gemini": {
-        "voice": "Erinome"
+        "voice": "Achernar"
       },
       "lines": [
         {
@@ -5272,7 +5681,16 @@
       "lineCount": 12,
       "guessedLines": 2,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "direction": "Young raspy voice, childish, shy",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Achernar",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T19:17:55.418Z"
+        }
+      ]
     },
     "dumpling": {
       "name": "Dumpling",
@@ -5373,7 +5791,16 @@
       "lineCount": 6,
       "guessedLines": 2,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "accent": "african american from the bronx",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Autonoe",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T19:10:36.787Z"
+        }
+      ]
     },
     "bell_code_expert": {
       "name": "Bell-Code Expert",
@@ -5403,7 +5830,16 @@
       ],
       "lineCount": 2,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "accent": "Italian New York",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Despina",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T19:18:53.432Z"
+        }
+      ]
     },
     "engineers": {
       "name": "Warden Engineers",
@@ -5534,7 +5970,15 @@
       "lineCount": 28,
       "guessedLines": 28,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Zubenelgenubi",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T19:01:20.797Z"
+        }
+      ]
     },
     "dragonling_runner": {
       "name": "Dragonling Runner",
@@ -5571,7 +6015,7 @@
       ],
       "aliases": [],
       "gemini": {
-        "voice": "Pulcherrima"
+        "voice": "Leda"
       },
       "lines": [
         {
@@ -5581,7 +6025,16 @@
       ],
       "lineCount": 2,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "direction": "Talks like a teddy bear",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Leda",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:30:11.652Z"
+        }
+      ]
     },
     "crying_gem_buyer": {
       "name": "Crying gem-buyer",
@@ -5671,7 +6124,11 @@
       ],
       "lineCount": 2,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "elevenlabs": {
+        "voiceId": "nPczCjzI2devNBz1zQrb",
+        "name": "Brian - Deep, Resonant and Comforting"
+      }
     },
     "tilly": {
       "name": "Tilly",
@@ -5739,7 +6196,17 @@
       ],
       "lineCount": 13,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "accent": "California",
+      "direction": "Motherly",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Gacrux",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T19:28:20.360Z"
+        }
+      ]
     },
     "ducklings": {
       "name": "Ducklings",
@@ -5822,7 +6289,16 @@
       ],
       "lineCount": 17,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "accent": "slavic american",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Erinome",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T19:01:09.087Z"
+        }
+      ]
     },
     "stone_keeper": {
       "name": "Stone keeper",
@@ -5858,7 +6334,16 @@
       "lineCount": 55,
       "guessedLines": 12,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "accent": "heavy australian",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Kore",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T19:02:51.227Z"
+        }
+      ]
     },
     "pass_keeper": {
       "name": "Pass keeper",
@@ -5981,7 +6466,17 @@
       "lineCount": 16,
       "guessedLines": 3,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "accent": "Heavy Creole",
+      "direction": "Loud, obnoxious, doesn't care who is in the room",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Achird",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T19:14:26.729Z"
+        }
+      ]
     },
     "the_crows": {
       "name": "The crows",
@@ -6068,7 +6563,15 @@
       "lineCount": 2,
       "guessedLines": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Leda",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:25:36.649Z"
+        }
+      ]
     },
     "dock_worker": {
       "name": "Dock worker",
@@ -6137,7 +6640,15 @@
       "lines": [],
       "lineCount": 0,
       "speaks": false,
-      "status": "provisional"
+      "status": "approved",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Algenib",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:49:50.496Z"
+        }
+      ]
     },
     "aunt_bellow": {
       "name": "Aunt Bellow",
@@ -6171,7 +6682,17 @@
       ],
       "lineCount": 3,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "accent": "Heavy Southern",
+      "direction": "Condescending, short, only says the words she needs to say",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Callirrhoe",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T19:12:54.816Z"
+        }
+      ]
     },
     "frogfolk_student": {
       "name": "Frogfolk student",
@@ -6379,7 +6900,17 @@
       "lineCount": 50,
       "guessedLines": 8,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "accent": "slavic american",
+      "direction": "slow pace. pensive. abrupt.",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Callirrhoe",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:57:54.997Z"
+        }
+      ]
     },
     "traveler": {
       "name": "Traveler",
@@ -6409,7 +6940,11 @@
       ],
       "lineCount": 2,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "elevenlabs": {
+        "voiceId": "nPczCjzI2devNBz1zQrb",
+        "name": "Brian - Deep, Resonant and Comforting"
+      }
     },
     "skupper_cousin": {
       "name": "Skupper cousin",
@@ -6445,7 +6980,7 @@
       ],
       "aliases": [],
       "gemini": {
-        "voice": "Pulcherrima"
+        "voice": "Zephyr"
       },
       "lines": [
         {
@@ -6464,7 +6999,17 @@
       "lineCount": 38,
       "guessedLines": 6,
       "speaks": true,
-      "status": "provisional"
+      "status": "approved",
+      "accent": "mexican",
+      "direction": "boisterous and in charge of every room",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Zephyr",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T19:07:55.397Z"
+        }
+      ]
     },
     "dob": {
       "name": "Dob",

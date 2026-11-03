@@ -54,3 +54,77 @@
 [data-motion="reduced"] .relay-world *, [data-motion="reduced"] .relay-hands * { animation: none !important; transition: none !important; }
 
 .relay-world__flight[data-caught="true"], .relay-world__flight[data-delivered="true"] { translate: -50% -80%; }
+
+
+/* Painted playfield: story scenery, a clear gold target and foreground hands. */
+.relay-landscape { position: absolute; inset: 0; z-index: -1; overflow: hidden; border-radius: inherit; pointer-events: none; background: #233934; }
+.relay-landscape > img { inline-size: 100%; block-size: 100%; object-fit: cover; object-position: 62% 60%; }
+.relay-landscape__wash { position: absolute; inset: 0; background: linear-gradient(180deg, #10182550, transparent 35%, #13202230 65%, #101b29c9), radial-gradient(ellipse at 50% 45%, transparent 35%, #10152560); }
+.relay-landscape__motes { position: absolute; inset: 0; }
+.relay-landscape__motes > i { position: absolute; inline-size: 0.18em; block-size: 0.18em; border-radius: 50%; background: #fff0b1; box-shadow: 0 0 0.5em 0.12em #ffe4a66b; animation: relay-mote 5s ease-in-out infinite; }
+@keyframes relay-mote { 0%, 100% { opacity: 0.15; translate: 0 0; } 50% { opacity: 0.8; translate: 0 -1.2em; } }
+
+.relay-score { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 0.3em 0.8em; margin-block: 0.25em; padding: 0.45em 0.6em; border-radius: 0.65em; background: linear-gradient(110deg, #343148b3, #171826aa); box-shadow: inset 0 1px 0 #ffe7a329, inset 0 0 0 1px #eacb7938; text-align: center; }
+.relay-score__chances { display: flex; align-items: center; gap: 0.25em; color: var(--kad-gold, #f5c86c); font-size: 0.85em; }
+.relay-score__chances > span { display: grid; place-items: center; inline-size: 1.15em; block-size: 1.15em; opacity: 0.24; filter: grayscale(1); }
+.relay-score__chances > [data-full="true"] { opacity: 1; filter: drop-shadow(0 0 0.35em #f5c86c75); }
+.relay-score__feedback { font-weight: 800; font-size: 0.85em; }
+.relay-score > small { flex-basis: 100%; color: var(--kad-ink-dim, #b9b0d8); }
+
+.relay-skill { display: flex; flex-direction: column; gap: 0.55em; inline-size: 100%; }
+.relay-skill__stage { position: relative; inline-size: 100%; block-size: clamp(18em, 88cqw, 24em); padding: 0; overflow: hidden; isolation: isolate; border: 1px solid #e0c9879c; border-radius: 1.15em; background: #233934; box-shadow: inset 0 0 0 0.16em #382f2480, 0 0.5em 1.2em #080a174d; color: inherit; font: inherit; touch-action: none; user-select: none; -webkit-user-select: none; cursor: crosshair; }
+.relay-skill[data-caught="true"] .relay-skill__stage { cursor: grab; }
+.relay-skill[data-dragging="true"] .relay-skill__stage { cursor: grabbing; }
+.relay-skill__target { position: absolute; z-index: 1; display: grid; place-items: center; translate: -50% -50%; inline-size: 5.2em; block-size: 5.2em; color: #fff0bd; filter: drop-shadow(0 0.2em 0.25em #14201ed9); }
+.relay-skill__target-ring { position: absolute; inset: 0; border: 0.12em solid #ffe6a4; border-radius: 50%; box-shadow: 0 0 0 0.25em #e9be532b, inset 0 0 0 0.25em #e9be532b, 0 0 1.2em #fff0a84d; background: radial-gradient(circle, #f5cb6030, #f5cb6008 60%, #f5cb6050); }
+.relay-skill__target-ring::before, .relay-skill__target-ring::after { content: ""; position: absolute; inset: -0.4em; border: 0.2em solid transparent; border-block-color: #ffe6a4; border-radius: 50%; rotate: 35deg; }
+.relay-skill__target-ring::after { rotate: 125deg; }
+.relay-skill__recipient { position: relative; inline-size: 95%; block-size: 125%; object-fit: contain; object-position: center; filter: drop-shadow(0 0.15em 0.1em #111a28a8); }
+.relay-skill__target-label { position: absolute; inset-block-start: 110%; padding: 0.2em 0.65em; border: 1px solid #e7c27399; border-radius: 1em; background: #152528dd; color: #fff1ca; font-size: 0.75em; font-weight: 800; white-space: nowrap; }
+.relay-skill[data-ready="true"] .relay-skill__target-ring { border-color: #fff9dc; box-shadow: 0 0 0 0.35em #e9be5340, inset 0 0 0.7em #ffe8a488, 0 0 1.6em #fff0a8a8; animation: relay-catch-light 0.8s ease-in-out infinite alternate; }
+.relay-skill[data-ground="true"] .relay-skill__target { opacity: 0.35; }
+@keyframes relay-catch-light { to { scale: 1.06; } }
+.relay-skill__object { position: absolute; z-index: 3; inline-size: clamp(3.5em, 22cqw, 5.5em); block-size: clamp(3.5em, 22cqw, 5.5em); translate: calc(-50% + var(--dx, 0px)) calc(-50% + var(--dy, 0px)); rotate: var(--spin, 0deg); pointer-events: none; filter: drop-shadow(0 0.5em 0.4em #0006); }
+.relay-skill__object::before { content: ""; position: absolute; z-index: -1; inset: -25%; border-radius: 50%; background: radial-gradient(circle, #ffe6a473, #f1cf6330 30%, transparent 70%); }
+.relay-skill__object[data-thrown="true"] { opacity: 0; }
+.relay-skill__trajectory { position: absolute; z-index: 2; inset: 0; inline-size: 100%; block-size: 100%; pointer-events: none; filter: drop-shadow(0 0 0.2em #fff3bb); }
+.relay-skill__trajectory path { fill: none; stroke: #fff2d9bb; stroke-width: 0.6; stroke-linecap: round; stroke-dasharray: 0.4 2.5; }
+.relay-skill__trajectory path[data-quality="clean"] { stroke: #ffe69d; stroke-width: 0.8; }
+.relay-skill__trajectory circle { fill: #fff4ce; stroke: #b58c35; stroke-width: 0.5; }
+.relay-skill__grip { position: absolute; z-index: 2; left: 50%; top: 75%; translate: -50% -50%; inline-size: 11em; block-size: 8.5em; pointer-events: none; opacity: 0.8; }
+.relay-skill__grip[data-holding="true"] { opacity: 1; }
+.relay-skill__grip > img { inline-size: 100%; block-size: 100%; object-fit: contain; filter: drop-shadow(0 0.5em 0.35em #162119a8); }
+.relay-skill__status { position: absolute; z-index: 4; inset-inline-start: 50%; inset-block-start: 0.65em; translate: -50% 0; inline-size: max-content; max-inline-size: calc(100% - 1.5em); padding: 0.35em 0.8em; border-radius: 1em; background: #12202ad9; color: #fff7e3; box-shadow: inset 0 1px 0 #ffe7b54d, 0 0.2em 0.4em #0003; text-align: center; font-size: 0.8em; font-weight: 800; pointer-events: none; }
+.relay-skill__slider { display: flex; align-items: center; justify-content: space-between; gap: 0.8em; margin-block: 0.8em; }
+.relay-skill__slider input { min-inline-size: 0; flex: 1; min-block-size: 2.75em; accent-color: var(--kad-gold, #f5c86c); }
+.relay-skill .relay-object--fallback, .relay-world__flight[data-skilled="true"] .relay-object--fallback { background: none; border-radius: 0; filter: drop-shadow(0 0 0.35em #ffe9a3a8); }
+.relay-skill .relay-object--fallback > .kad-icon, .relay-world__flight[data-skilled="true"] .relay-object--fallback > .kad-icon { inline-size: 100%; block-size: 100%; font-size: inherit; }
+.relay-skill .relay-object--fallback > span, .relay-world__flight[data-skilled="true"] .relay-object--fallback > span { display: none; }
+
+/* The television is a landscape with the party standing in it. */
+.game--tv .relay-world { display: flex; flex-direction: column; flex: 1 1 0; min-block-size: 0; gap: 0.3em; }
+.game--tv .relay-world__stage { flex: 1 1 0; block-size: auto; min-block-size: 8em; }
+.relay-world__stage { overflow: hidden; border: 1px solid #e7ca8570; border-radius: 0.85em; box-shadow: inset 0 0 0 0.15em #423e3540; }
+.relay-world__stage .relay-landscape > img { object-position: 50% 68%; }
+.relay-world__stage .relay-landscape__wash { background: linear-gradient(transparent 30%, #0f243028 60%, #101a2ab8), radial-gradient(ellipse, transparent 40%, #151a2840); }
+.game--tv .relay-world__caption { font-size: 0.95em; }
+.game--tv .relay-score { flex: 0 0 auto; margin: 0; padding: 0.3em 0.5em; font-size: 0.85em; gap: 0.15em 0.6em; }
+.game--tv .relay-world > .game-note { display: none; }
+.game--tv .relay-world__hero { inset-block-start: 57%; block-size: 4.6em; max-inline-size: 7em; }
+.relay-world__hero > img { position: relative; z-index: 1; filter: drop-shadow(0 0.2em 0.15em #13282780); }
+.relay-world__footlight { position: absolute; inset-inline: 15%; inset-block-end: -0.05em; block-size: 0.7em; border-radius: 50%; background: #12211755; box-shadow: 0 0 0.35em #12211755; }
+.relay-world__hero[data-active="true"] .relay-world__footlight { background: #ffe09b7a; box-shadow: 0 0 0.8em 0.3em #ffe09b77, 0 0 0 0.12em #ffe09ba1; }
+.game--tv .relay-world__hero > strong { inset-block-start: 100%; margin-block-start: 0.2em; padding: 0.15em 0.35em; border-radius: 1em; background: #15252be6; color: #fff6e3; font-size: 0.65em; white-space: nowrap; }
+.game--tv .relay-world__hero > small { display: none; }
+.relay-world__path { inset-block-start: 65%; border-block-end: 0.12em dotted #fff0bb77; }
+.relay-world__home { gap: 0; padding: 0; border: 0; color: #fff1ca; }
+.relay-world__home > img { inline-size: 4.2em; block-size: 3.2em; object-fit: contain; filter: drop-shadow(0 0.3em 0.2em #142727a8); }
+.relay-world__home > strong { padding: 0.15em 0.7em; border-radius: 1em; background: #15252be6; font-size: 0.8em; }
+.relay-world__home[data-delivered="true"] > img { filter: drop-shadow(0 0 0.5em #ffdf8e); }
+.game--tv .relay-world__home { inset-block-start: 45%; font-size: 0.8em; }
+.game--tv .relay-world__flight { inline-size: 2.3em; block-size: 2.3em; }
+.relay-world__flight[data-skilled="true"] { animation: none; transition: none; }
+.relay-world__flight[data-skilled="true"][data-caught="false"]::before { content: ""; position: absolute; z-index: -1; inset: 25% 30% 25% -100%; border-radius: 50%; background: radial-gradient(ellipse at 90% 50%, #fff2bba8, #f3c25540 40%, transparent 70%); filter: blur(0.15em); }
+@media (max-width: 600px) { .game--phone.game--relay .game__cue { font-size: 1.15em; } .game--phone.game--relay .game__board { padding: 0.55em; } }
+@media (prefers-reduced-motion: reduce) { .relay-landscape *, .relay-skill * { animation: none !important; transition: none !important; } }
+[data-motion="reduced"] .relay-landscape *, [data-motion="reduced"] .relay-skill * { animation: none !important; transition: none !important; }

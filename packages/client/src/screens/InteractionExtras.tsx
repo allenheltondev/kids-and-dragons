@@ -18,6 +18,7 @@ import { reducedMotion } from "../a11y/prefs";
 import { Icon } from "./icons";
 import { Button } from "../ui/Button";
 import { RelayCatcher, RelayWorld, relaySeats } from "./RelayGame";
+import { RelayFlightCatcher } from "./RelayFlightGame";
 import { showing } from "./interaction-copy";
 import { buzz, litStep, padNote } from "./game-feel";
 
@@ -168,10 +169,46 @@ function Lamp({ prompt, now, hit, object }: { prompt: InteractionPrompt; now: nu
 }
 
 /** The numbered boxes the lead's answer fills, one tile popping in at a time. */
-function Slots({ answer, length, options, onRemove, busy }: { answer: string[]; length: number; options: InteractionOption[]; onRemove?: (index: number) => void; busy?: boolean }) {
+function Slots({ answer, length, options, onRemove, onReorder, busy }: { answer: string[]; length: number; options: InteractionOption[]; onRemove?: (index: number) => void; onReorder?: (from: number, to: number) => void; busy?: boolean }) {
+  const gesture = useRef<{ id: number; from: number; x: number; y: number } | null>(null);
+  const suppressClick = useRef(false);
+  const [dragging, setDragging] = useState<number | null>(null);
   return <ol className="game-row game-row--slots" aria-label="The order so far">{Array.from({ length }, (_, i) => {
     const o = answer[i] ? options.find((option) => option.id === answer[i]) : undefined;
-    return <li key={i} className={o ? "game-slot game-slot--full" : "game-slot"}>{o ? onRemove ? <button type="button" className="game-slot__edit kad-focusable" disabled={busy} aria-label={`Remove step ${i + 1}: ${o.label}`} onClick={() => onRemove(i)}><Tile option={o} index={i + 1} tone={toneOf(options, o.id)} /><Icon name="close" /></button> : <Tile key={o.id} option={o} index={i + 1} tone={toneOf(options, o.id)} /> : <span className="game-slot__number">{i + 1}</span>}</li>;
+    return <li key={i} className={o ? "game-slot game-slot--full" : "game-slot"}>{o ? onRemove ? <button type="button" className="game-slot__edit kad-focusable" disabled={busy} aria-label={`Remove step ${i + 1}: ${o.label}`} data-dragging={dragging === i}
+      onPointerDown={(event) => {
+        suppressClick.current = false;
+        if (!onReorder || event.button !== 0) return;
+        gesture.current = { id: event.pointerId, from: i, x: event.clientX, y: event.clientY };
+        event.currentTarget.setPointerCapture?.(event.pointerId);
+      }}
+      onPointerMove={(event) => {
+        const g = gesture.current;
+        if (g?.id === event.pointerId && Math.hypot(event.clientX - g.x, event.clientY - g.y) > 10) {
+          suppressClick.current = true; setDragging(g.from);
+        }
+      }}
+      onPointerUp={(event) => {
+        const g = gesture.current;
+        if (!g || g.id !== event.pointerId) return;
+        if (suppressClick.current && !busy) {
+          const slots = event.currentTarget.closest("ol")?.querySelectorAll(".game-slot__edit");
+          slots?.forEach((slot, to) => {
+            const box = slot.getBoundingClientRect();
+            if (event.clientX >= box.left && event.clientX <= box.right && event.clientY >= box.top && event.clientY <= box.bottom && to !== g.from) { onReorder?.(g.from, to); buzz(12); }
+          });
+        }
+        gesture.current = null; setDragging(null);
+      }}
+      onPointerCancel={() => { gesture.current = null; setDragging(null); suppressClick.current = true; }}
+      onLostPointerCapture={() => { gesture.current = null; setDragging(null); }}
+      onKeyDown={(event) => {
+        if (!onReorder || !event.altKey || !["ArrowLeft", "ArrowRight"].includes(event.key)) return;
+        event.preventDefault();
+        const to = i + (event.key === "ArrowLeft" ? -1 : 1);
+        if (to >= 0 && to < answer.length) onReorder(i, to);
+      }}
+      onClick={() => { if (suppressClick.current) { suppressClick.current = false; return; } onRemove(i); }}><Tile option={o} index={i + 1} tone={toneOf(options, o.id)} /><Icon name="close" /></button> : <Tile key={o.id} option={o} index={i + 1} tone={toneOf(options, o.id)} /> : <span className="game-slot__number">{i + 1}</span>}</li>;
   })}</ol>;
 }
 
@@ -321,7 +358,7 @@ export function Board({ prompt, party, now, answer = [], playerId, stop = null, 
     }
     case "relay": {
       if (playerId && relayHolder(prompt, connected) === playerId && active) return null;
-      return <RelayWorld prompt={prompt} party={party} object={object} settled={settled} />;
+      return <RelayWorld prompt={prompt} party={party} now={now} object={object} settled={settled} />;
     }
     case "cooperate": {
       if (!active && prompt.phase !== "result") return null;
@@ -472,8 +509,10 @@ export function KindControls({ prompt, playerId, connected, mine, now, busy, sen
       return <>
         <p className="game-answer-progress" role="status">{locked ? "Watch the pads light up!" : full ? "Ready! Check your order, then send it." : `${answer.length} of ${spec.answer.length} chosen`}</p>
         <Pads options={spec.options} lit={locked && !still && spec.kind === "memory" ? spec.answer[litStep(Math.max(0, now - Date.parse(prompt.startedAt ?? "")), spec.stepMs, spec.answer.length) ?? -1] ?? null : null} disabled={busy || full || locked} onTap={(option) => setAnswer((current) => current.length >= spec.answer.length ? current : [...current, option.id])} />
-        {!locked && <><Slots answer={answer} length={spec.answer.length} options={spec.options} busy={busy} onRemove={(index) => setAnswer((current) => current.filter((_, i) => i !== index))} />
-          {answer.length > 0 && <small className="game-note">Tap a chosen step to take it out.</small>}
+        {!locked && <><Slots answer={answer} length={spec.answer.length} options={spec.options} busy={busy} onReorder={spec.kind === "sequence" ? (from, to) => setAnswer((current) => {
+            const next = [...current]; const [moved] = next.splice(from, 1); if (moved === undefined) return current; next.splice(to, 0, moved); return next;
+          }) : undefined} onRemove={(index) => setAnswer((current) => current.filter((_, i) => i !== index))} />
+          {answer.length > 0 && <small className="game-note">{spec.kind === "sequence" ? "Drag chosen steps to rearrange. Tap to remove. Keyboard: Alt + arrow keys." : "Tap a chosen step to take it out."}</small>}
           {primary(spec.actionLabel, { action: "answer", answer }, "check", !full, full ? " game-action--go" : "")}
         </>}
       </>;
@@ -498,7 +537,10 @@ export function KindControls({ prompt, playerId, connected, mine, now, busy, sen
       if (holder !== playerId) return null;
       const order = relaySeats(prompt, state?.party ?? []);
       const next = order.find((id) => id !== holder && !prompt.passed?.includes(id));
-      const nextName = state?.party.find((m) => m.playerId === next)?.character.name ?? "home";
+      const nextMember = state?.party.find((m) => m.playerId === next);
+      const nextName = nextMember?.character.name ?? "home";
+      if (prompt.relay) return <RelayFlightCatcher key={`${prompt.openedSeq}:${prompt.attempt}:${playerId}`} prompt={prompt} playerId={playerId} object={object} nextName={nextName} nextMember={nextMember} now={now} busy={busy}
+        onCatch={(input) => send({ action: "catch", ...input })} onPass={(input) => send({ action: "pass", ...input })} />;
       return <RelayCatcher object={object} caught={prompt.caughtBy === playerId} label={spec.actionLabel} catchLabel={`Catch ${spec.objectLabel}`} nextName={nextName} busy={busy}
         onCatch={() => send({ action: "catch" })} onPass={() => send({ action: "pass" })} />;
     }

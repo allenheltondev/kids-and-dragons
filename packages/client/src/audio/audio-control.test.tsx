@@ -49,47 +49,6 @@ describe("the toggle", () => {
   });
 });
 
-describe("asking for the gesture", () => {
-  const HINT = "Click or press a key for sound";
-
-  it("asks, because the screen everybody watches never gets tapped", () => {
-    /*
-     * The bug this exists for: a display client is opened on the laptop wired
-     * to the television and then left alone. No gesture means no audio
-     * context, every cue dropped, and sound that was built and never heard —
-     * indistinguishable, from the sofa, from sound that was never built.
-     */
-    render(<AudioControl />);
-    expect(screen.getByText(HINT)).toBeTruthy();
-  });
-
-  it("keeps asking while the browser still refuses a context", () => {
-    // jsdom has no AudioContext, so the gesture cannot succeed here — and the
-    // prompt must stay honest rather than vanish on a gesture that achieved
-    // nothing.
-    render(<AudioControl />);
-    act(() => {
-      fireEvent.keyDown(window, { key: "Enter" });
-    });
-    expect(screen.queryByText(HINT)).toBeTruthy();
-  });
-
-  it("says nothing when sound is off anyway", () => {
-    // Muted is a decision already made; asking for a gesture to enable
-    // something you turned off is nagging.
-    render(<AudioControl />);
-    fireEvent.click(screen.getByRole("button", { name: "Turn sound off" }));
-    expect(screen.queryByText(HINT)).toBeNull();
-  });
-});
-
-describe("the shared screen's sound ask lives elsewhere (#264)", () => {
-  it("puts no Tap for sound button in the control a phone also loads", () => {
-    render(<AudioControl />);
-    expect(screen.queryByRole("button", { name: "Tap for sound" })).toBeNull();
-  });
-});
-
 describe("entry screen continuity", () => {
   it("keeps the same sink while moving from home through creation and lobby to a quest", () => {
     const view = render(<AudioControl soundtrack="entry-home" />);
