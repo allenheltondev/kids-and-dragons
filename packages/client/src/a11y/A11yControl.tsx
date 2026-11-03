@@ -7,6 +7,7 @@ import { useCallback, useEffect, useId, useRef } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "../ui/Button";
 import { useSettingsRoom } from "../ui/settings-room";
+import { useLayoutMode, useSession } from "../store";
 import { deviceWantsContrast, deviceWantsLessMotion, type Hand, type TextSize } from "./prefs";
 import { useA11y } from "./store";
 
@@ -62,6 +63,11 @@ export function A11yControl(): React.JSX.Element {
 function A11ySheet({ onClose }: { onClose: () => void }): React.JSX.Element {
   const { prefs, set } = useA11y();
   const room = useSettingsRoom((state) => state.room);
+  // TV focus does nothing where there is no TV (a Travel Mode room), so the sheet leaves it off
+  // there and keeps its room for the game's own settings, whole on a small phone at large text.
+  const mode = useLayoutMode();
+  const seated = useSession() !== null;
+  const noTv = mode === "travel" && seated;
   const titleId = useId();
   const sheet = useRef<HTMLDivElement>(null);
 
@@ -120,7 +126,7 @@ function A11ySheet({ onClose }: { onClose: () => void }): React.JSX.Element {
           </section>
         )}
 
-        <p className="kad-a11y__note">{room === null ? "Saved on this device." : "The rest are saved on this device."}</p>
+        {room === null ? <p className="kad-a11y__note">Saved on this device.</p> : null}
 
         <section className="kad-a11y__group" aria-label="Text size">
           <h3 className="kad-a11y__heading">Text size</h3>
@@ -147,7 +153,7 @@ function A11ySheet({ onClose }: { onClose: () => void }): React.JSX.Element {
           </div>
         </section>
 
-        <section className="kad-a11y__group" aria-label="TV focus">
+        {noTv ? null : <section className="kad-a11y__group" aria-label="TV focus">
           <h3 className="kad-a11y__heading">TV focus</h3>
           <p className="kad-a11y__note">Watch the TV. The phone shows only what to tap, right when it is your turn.</p>
           <div className="kad-a11y__row">
@@ -160,7 +166,7 @@ function A11ySheet({ onClose }: { onClose: () => void }): React.JSX.Element {
               On
             </Button>
           </div>
-        </section>
+        </section>}
 
         <section className="kad-a11y__group" aria-label="Looks and motion">
           <div className="kad-a11y__row">
