@@ -163,7 +163,9 @@ describe("TV focus on a Party Mode phone", () => {
     focus(true);
     expect(tabs()).toEqual(["You"]);
     expect(screen.getByTestId("tv-rest").textContent).toContain("Look at the TV");
-    expect(screen.getByRole("list", { name: "Your stats", hidden: true }).closest("[hidden]")).not.toBeNull();
+    // The bag is put away, and the stats (on your hero's card, which is the You page's) are not up.
+    expect(screen.getByRole("heading", { name: /^Your things/, hidden: true }).closest("[hidden]")).not.toBeNull();
+    expect(screen.queryByRole("list", { name: "Your stats" })).toBeNull();
 
     act(() => screen.getByRole("button", { name: "Look in my bag" }).click());
     expect(screen.queryByTestId("tv-rest")).toBeNull();

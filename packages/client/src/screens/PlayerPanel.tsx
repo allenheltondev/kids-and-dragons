@@ -269,7 +269,7 @@ function ConfirmBar({
 // Sheet
 // ---------------------------------------------------------------------------
 
-function IdentityStrip({ me, onOpenSheet }: { me: PartyMember; onOpenSheet?: (() => void) | undefined }): ReactElement {
+function IdentityStrip({ me, onOpenSheet, stats }: { me: PartyMember; onOpenSheet?: (() => void) | undefined; stats?: ReactNode }): ReactElement {
   const { character } = me;
   /*
    * Whenever the game is waiting on you (a fight turn, a roll, a choice, a
@@ -290,7 +290,7 @@ function IdentityStrip({ me, onOpenSheet }: { me: PartyMember; onOpenSheet?: (()
     />
   );
   return (
-    <header className={`sheet${myTurn ? " sheet--turn" : ""}`}>
+    <header className={`sheet${myTurn ? " sheet--turn" : ""}${stats ? " sheet--card" : ""}`}>
       {/* Your own face on your own sheet, at whatever tier you have grown to —
           the identity strip is pinned, so this is the one picture that is on
           screen for the whole session. */}
@@ -356,6 +356,7 @@ function IdentityStrip({ me, onOpenSheet }: { me: PartyMember; onOpenSheet?: (()
           </span>
         </span>
       </span>
+      {stats}
     </header>
   );
 }
@@ -1052,7 +1053,13 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
     >
       {inLobby ? <EntryScene scene={lobbySceneFor(party)} /> : null}
       {backdrop ? <SceneBackdrop src={backdrop} /> : null}
-      <IdentityStrip me={me} onOpenSheet={sheetUp && !tvRest ? () => setSheetFor(me.character.id) : undefined} />
+      {/* On the You page the strip is your hero's card: the picture large beside your name, level,
+          health and the six stats (playtest: a bigger picture, but not a banner). */}
+      <IdentityStrip
+        me={me}
+        onOpenSheet={sheetUp && !tvRest ? () => setSheetFor(me.character.id) : undefined}
+        stats={sheetUp && !tvRest ? <ul className="stat-row" aria-label="Your stats"><StatCells me={me} /></ul> : null}
+      />
       {/* The chapter's goal (#356) is the World screen's, not this pane's: on a player's phone
           it was a scroll a playtest family looked past every scene, in room the controls need. */}
 
@@ -2118,9 +2125,6 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
             </Button>
           </div>
         ) : null}
-        <ul className="stat-row" aria-label="Your stats">
-          <StatCells me={me} />
-        </ul>
         {/* Friends only: you are the hero at the top, and tapping your own picture there opens
             your sheet. Alone at the table, there is no row at all. */}
         {friends.length === 0 ? null : <div className="you__row">

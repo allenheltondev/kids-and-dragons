@@ -1582,13 +1582,12 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
   display: none;
 }
 
-.player__you .stat-row {
+.sheet--card .stat-row {
   flex: none;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: var(--space-1, 0.25em);
 }
 
-.player__you .stat-row__item {
+.sheet--card .stat-row__item {
   display: grid;
   grid-template-columns: auto auto;
   grid-template-areas: "icon value" "name name";
@@ -1600,9 +1599,9 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
   text-align: center;
 }
 
-.player__you .stat-row__item > .kad-icon { grid-area: icon; }
-.player__you .stat-row__value { grid-area: value; font-size: 1.2em; line-height: 1; }
-.player__you .stat-row__name {
+.sheet--card .stat-row__item > .kad-icon { grid-area: icon; }
+.sheet--card .stat-row__value { grid-area: value; font-size: 1.2em; line-height: 1; }
+.sheet--card .stat-row__name {
   grid-area: name;
   font-size: 0.65em;
   line-height: 1.1;
@@ -1768,9 +1767,6 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
 /* A short pane gives up words before it gives up anything to tap: the names
    under the stats, then the big seat at the top shrinks to the touch floor. */
 @container sheet (max-height: 24em) {
-  .player__you .stat-row__name {
-    display: none;
-  }
   .player__you .player__task-slot {
     --player-seat: var(--kad-touch-min, 2.75em);
   }
@@ -1867,77 +1863,118 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
 
 /* Tall panes: bigger faces and bigger stats; the room is there. */
 @container sheet (min-height: 34em) {
-  .player__you .stat-row__item {
-    padding-block: 0.5em 0.35em;
-  }
-  .player__you .stat-row__value {
-    font-size: 1.5em;
-  }
   .you__row .party-strip__button {
     padding: 0.4em 0.2em;
   }
 }
 
-/* --- The You page: the hero first -------------------------------------- */
+/* --- The You page: your hero's card -------------------------------------- */
 
 /*
- * Between turns the You page is what a kid looks at, and the best thing on it
- * is their own hero. So on a phone with room to spare, the spare goes to the
- * hero, not to the bag: the identity strip grows into a card with the portrait
- * as big as it fits, and the name, level, XP and health under it. The bag keeps
- * comfortable slots of its own (an empty slot is still information, spec §9.1,
- * but a tall empty one is only nothing, drawn large).
+ * On the You page the identity strip is your hero's card, like a trading card:
+ * the picture large on the left, and beside it your name, level, XP, health and
+ * the six stats, three to a row (playtest, November 2026: a bigger picture, but
+ * not a banner across the top). The picture is a button into your whole sheet.
+ * Elsewhere (a question, a fight) the strip stays the slim pinned strip.
  *
  * The pane measures itself (it is 100% of its parent, so a size container is
- * safe here). A short pane keeps the ordinary strip and gives the bag the rest,
- * as before: the hero card is a bonus of room, never a cost to it.
+ * safe), and the picture grows with the pane's height, so a tall phone's spare
+ * room goes to your hero, not to the bag's empty slots.
  */
 .player--you {
   container: you-pane / size;
 }
 
-@container you-pane (min-height: 36em) {
-  /* The hero gets what the page leaves (basis 0), and never pushes the page down. */
-  .player--you > .sheet {
-    flex: 1 1 0;
-    min-block-size: 0;
-    overflow: hidden;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-rows: minmax(0, 1fr) auto;
-    grid-template-areas: "art art" "id hp";
-    align-items: end;
-    row-gap: var(--space-2, 0.5em);
-  }
+.sheet--card {
+  display: grid;
+  /* The name gets the whole width beside the picture (health sits under it), so a
+     long name at the largest text keeps its words whole. */
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(0, 1fr);
+  grid-template-areas:
+    "art id"
+    "art hp"
+    "art stats";
+  align-items: start;
+  column-gap: var(--space-3, 0.75em);
+  row-gap: var(--space-2, 0.5em);
+}
 
-  .player--you > .sheet .sheet__portrait {
-    grid-area: art;
-    align-self: stretch;
-    inline-size: 100%;
-    block-size: 100%;
-    min-block-size: 0;
-    border-radius: var(--radius-lg, 1.25em);
-  }
+/* The picture sets the card's height, and grows with the phone (its width and
+   its height both, so it stays a picture beside the stats, never a banner). The
+   page below takes the rest. */
+.sheet--card {
+  /* Never more than a third of a narrow phone's width, whatever the text size. */
+  --card-art: min(clamp(6.5em, min(48cqi, 32cqh), 20em), 34cqi);
+}
 
-  /* The figure as big as the card allows, whole, standing on the card's floor. */
-  .player--you > .sheet .sheet__art {
-    position: relative;
-  }
-  .player--you > .sheet .portrait__img {
-    position: absolute;
-    inset: 0;
-    inline-size: 100%;
-    block-size: 100%;
-    aspect-ratio: auto;
-    object-fit: contain;
-  }
+/* About as tall as wide, as the art is drawn, so the figure fills its well. */
+.sheet--card .sheet__portrait {
+  grid-area: art;
+  align-self: center;
+  inline-size: var(--card-art);
+  block-size: calc(var(--card-art) * 1.12);
+  border-radius: var(--radius-lg, 1.25em);
+}
 
-  .player--you > .sheet .sheet__id { grid-area: id; }
-  .player--you > .sheet .sheet__hp { grid-area: hp; }
-  .player--you > .sheet .sheet__name { font-size: 1.35em; }
+/* The figure whole, as big as the well allows, standing on its floor. */
+.sheet--card .sheet__art {
+  position: relative;
+}
+.sheet--card .portrait__img {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  aspect-ratio: auto;
+  object-fit: contain;
+}
 
-  /* The rest of the page keeps the height it needs, and a little more on a tall screen. */
-  .player--you > .player__you {
-    flex: 0 0 clamp(25em, 45cqh, 34em);
+.sheet--card .sheet__id { grid-area: id; }
+.sheet--card .sheet__hp { grid-area: hp; align-items: flex-start; }
+
+.sheet--card .stat-row {
+  grid-area: stats;
+  align-self: stretch;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+}
+
+/* A short pane (a small phone at large text): the card folds back to the slim
+   strip, a small picture beside the name, with the six stats in one row under
+   it and their words gone, so the bag keeps its room. */
+@container you-pane (max-height: 30em) {
+  .sheet--card {
+    --card-art: 3.6em;
+    grid-template-rows: auto auto auto;
+    grid-template-areas:
+      "art id"
+      "art hp"
+      "stats stats";
   }
+  .sheet--card .stat-row {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  .sheet--card .stat-row__name {
+    display: none;
+  }
+}
+
+/* A tall pane: bigger numbers in taller tiles beside the bigger picture. */
+@container you-pane (min-height: 40em) {
+  .sheet--card .stat-row__item {
+    padding-block: 0.5em 0.35em;
+  }
+  .sheet--card .stat-row__value {
+    font-size: 1.5em;
+  }
+}
+
+/* "Level 1 · Fledgling" in a narrow card: wrap between the two, never after a dangling dot. */
+.sheet--card .sheet__meta {
+  flex-wrap: wrap;
+  column-gap: 0.4em;
+}
+.sheet--card .sheet__meta > span[aria-hidden="true"] {
+  display: none;
 }
