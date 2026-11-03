@@ -404,7 +404,7 @@
     "pip_poke": {
       "type": "choice_point",
       "rift": "steady",
-      "narration": "Pip is creeping toward the wyrm with his spoon held out. \"Lady Olivia says you find out if something's friendly by giving it a poke,\" he whispers. Flurry covers her eyes. What will you do?",
+      "narration": "Pip is creeping toward the wyrm with his spoon held out. \"Lady Olivia says you find out if something's friendly by giving it a poke,\" Pip whispers. Flurry covers her eyes. What will you do?",
       "cast": [
         {
           "figure": "cast/younger_keeper",
@@ -500,7 +500,7 @@
     "pip_pokes": {
       "type": "story",
       "rift": "steady",
-      "narration": "Poke. The wyrm opens one eye and sneezes. A blast of frost covers Pip from ears to tail. He stands there like a little snowman, with frozen eyebrows. The wyrm watches you now, wary, and it will not stop watching. \"Lady Olivia,\" says the snowman, \"may have been wrong about lizards.\"",
+      "narration": "Poke. The wyrm opens one eye and sneezes. A blast of frost covers Pip from ears to tail. He stands there like a little snowman, with frozen eyebrows. The wyrm watches you now, wary, and it will not stop watching. \"Lady Olivia,\" says Pip the snowman, \"may have been wrong about lizards.\"",
       "onEnter": [
         {
           "type": "setFlag",

@@ -7,7 +7,7 @@
 
 import { describe, expect, it } from "vitest";
 
-import { conceptSweep, idioms, isEcho, isInert, loadChapters, main, mergePoints, opening, reachable, setbackRoutes, shape } from "./cohesion.mjs";
+import { FAILABLE_KINDS, conceptSweep, hasDeadFailure, idioms, isEcho, isInert, loadChapters, main, mergePoints, opening, reachable, setbackRoutes, shape } from "./cohesion.mjs";
 
 const go = (id, goto, label = "On") => ({ id, label, icon: "arrow", goto });
 const story = (narration, ...choices) => ({ type: "story", narration, choices });
@@ -214,7 +214,7 @@ describe("the opening", () => {
 });
 
 describe("the shape screen", () => {
-  const game = (onSuccess, onFailure) => ({ type: "interaction", narration: "Lift it.", interaction: { kind: "balance" }, onSuccess, onFailure });
+  const game = (onSuccess, onFailure) => ({ type: "interaction", narration: "Time it.", interaction: { kind: "timing" }, onSuccess, onFailure });
   const chores = {
     id: "fixture-chores",
     entry: "start",
@@ -243,6 +243,32 @@ describe("the shape screen", () => {
     const gated = story("Pick.", go("a", "pick_a"), { ...go("b", "pick_b"), when: { flag: "x" } });
     expect(isEcho(chores, gated)).toBe(false);
     expect(isEcho(chores, story("Pick.", go("a", "carry"), go("b", "risky")))).toBe(false);
+  });
+
+  it("judges a game by the results the engine can produce, not its unreachable onFailure", () => {
+    const kind = (k, onSuccess, onFailure, onAssisted) => ({ ...game(onSuccess, onFailure), interaction: { kind: k }, ...(onAssisted ? { onAssisted } : {}) });
+    // A balance game cannot fail, so a different onFailure is dead, and the game is still inert.
+    const balance = kind("balance", { goto: "a" }, { goto: "b", effects: [{ type: "damage", amount: 1 }] });
+    expect(isInert(balance)).toBe(true);
+    expect(hasDeadFailure(balance)).toBe(true);
+    // Its assisted result is producible, so a different one gives it a stake.
+    expect(isInert(kind("relay", { goto: "a" }, { goto: "a" }, { goto: "b" }))).toBe(false);
+    // A timing game can fail, so the same branches are a real stake and nothing is dead.
+    const timing = kind("timing", { goto: "a" }, { goto: "b" });
+    expect(isInert(timing)).toBe(false);
+    expect(hasDeadFailure(timing)).toBe(false);
+    expect([...FAILABLE_KINDS].sort()).toEqual(["memory", "precision", "sequence", "timing", "tracking"]);
+  });
+
+  it("reads the real chapters the same way (PR #606 review samples)", () => {
+    const [exchange] = loadChapters("riftlight-exchange-rift");
+    const r = shape(exchange);
+    // Warming the kid is free play: it cannot fail and is reported as such, never as a risk.
+    expect(r.neverFail).toContain("ridge_lee");
+    expect(r.inert).toContain("ridge_lee");
+    // The sling carry was made a timing game, so its drift scene is a real way a party can go.
+    expect(r.neverFail).not.toContain("ridge_walk");
+    for (const c of loadChapters("riftlight-")) expect(shape(c).deadFailure, c.id).toEqual([]);
   });
 
   it("counts reachable scenes only", () => {

@@ -47,7 +47,7 @@ node tools/content/cohesion.mjs opening  --chapter <id>   # goal.text beside sce
 node tools/content/cohesion.mjs merges   --chapter <id>   # every merge point and what leads in
 node tools/content/cohesion.mjs setbacks --chapter <id>   # the cheapest road to each setback
 node tools/content/cohesion.mjs idioms   --chapter <id>   # UK idioms spelling.test misses
-node tools/content/cohesion.mjs shape    --chapter <id>   # checks, fights, games, inert games, echo votes, quoted scenes
+node tools/content/cohesion.mjs shape    --chapter <id>   # checks, fights, games, never-fail games, inert games, dead branches, echo votes, quoted scenes
 node tools/content/cohesion.mjs shape    --chapter ""     # the same for every chapter: set the campaign beside Gemfall
 git log --format='%h %ad %s' --date=short -- content/chapters/<id>.json   # which passes have touched it
 node tools/content/cohesion.mjs concept '<regex>' [--introduced-by scene,scene] --chapter <id>
@@ -157,6 +157,14 @@ Scene 1 says, in the story's own words, what the party is here to do tonight and
   chapter whose play is mostly inert games and no dice has no uncertainty left, and children
   notice quickly that what they do does not count. Give a miss a real cost (a longer route, a
   lost tool, help that is owed, a harder fight), or narrate the job and spend the time elsewhere.
+- **Only some games can fail.** `timing`, `precision`, `tracking`, `memory` and `sequence` can
+  miss. `cooperate`, `balance`, `relay` and `play` only ever succeed or are assisted, so an
+  `onFailure` written for them is a branch no party can take, however good its words. `shape`
+  reports those games as *nofail*, counts them inert unless their assisted result differs, and
+  flags any authored failure on them as *dead*. Where a miss should cost something, use a kind
+  that can miss; keep the never-fail kinds for shared play with nothing at stake. Route tests
+  must only ask the engine for outcomes it can produce (`riftlight-failable-kinds.test.ts`
+  checks the list against the real engine).
 - **Echo votes** (`shape`): effect-free choices that all return to one scene, often through
   "response" scenes that end on the same sentence ("The yard keeps its own things. Your gear is
   yours to mind." three times). One is an expressive beat; several on the spine are the chapter

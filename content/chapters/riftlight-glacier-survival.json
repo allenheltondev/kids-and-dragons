@@ -1839,12 +1839,14 @@
     },
     "crust_hold": {
       "type": "interaction",
-      "narration": "At the next ridge, the path squeezes under a lip of snow, sagging like a heavy white eyebrow. The kid fits under. Nobody else does, unless somebody holds the snow up.",
+      "narration": "At the next ridge, the path squeezes under a lip of snow, sagging like a heavy white eyebrow. The kid fits under. Nobody else does, unless somebody holds the snow up. Listen for the creaks, and go in the quiet between them.",
       "interaction": {
-        "kind": "cooperate",
-        "cue": "Hold the snow up while your friend carries the kid under.",
-        "supportLabel": "Hold up the snow",
-        "actionLabel": "Carry the kid through"
+        "kind": "timing",
+        "cue": "Carry the kid through while the snow lip stops creaking.",
+        "actionLabel": "Carry the kid through",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 5000
       },
       "onSuccess": {
         "goto": "cairn",

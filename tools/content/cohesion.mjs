@@ -57,9 +57,12 @@
  * effects, so a miss changes nothing), *echo* votes (two or more ungated
  * choices with no effects that all come back to one scene, directly or
  * through one-button result scenes), scenes with a quoted line, and words a
- * scene. Run it with `--chapter ""` to set a campaign beside Gemfall. It is a
- * reading list: an inert interaction can be fine, a chapter made of them is
- * not.
+ * scene. Only results the engine can produce count: `cooperate`, `balance`,
+ * `relay` and `play` games never fail, so they are reported as *nofail*, are
+ * inert unless their assisted result differs, and any `onFailure` they carry is
+ * *dead* (a branch no party can take; PR #606 review). Run it with
+ * `--chapter ""` to set a campaign beside Gemfall. It is a reading list: an
+ * inert interaction can be fine, a chapter made of them is not.
  */
 
 import { readdirSync, readFileSync } from "node:fs";
@@ -339,11 +342,33 @@ function resultKey(result) {
   return JSON.stringify([result?.goto ?? null, result?.effects ?? []]);
 }
 
-/** True when a story interaction's every result leads to one scene with the same effects. */
+/**
+ * The story-interaction kinds the engine can resolve to failure (engine.ts): a miss is possible.
+ * `cooperate`, `balance`, `relay` and `play` only ever succeed or are assisted, so an `onFailure`
+ * written for them is a branch no party can take.
+ */
+export const FAILABLE_KINDS = new Set(["timing", "precision", "tracking", "memory", "sequence"]);
+
+/** The result keys a party can actually reach: never `onFailure` on a kind that cannot fail. */
+function producibleKeys(scene) {
+  return branchKeys(scene).filter((k) => k !== "onFailure" || FAILABLE_KINDS.has(scene.interaction?.kind));
+}
+
+/**
+ * True when a story interaction has nothing at stake: every result the engine can produce
+ * leads to one scene with the same effects. A kind that cannot fail is inert unless its
+ * assisted result differs, however different its unreachable onFailure is.
+ */
 export function isInert(scene) {
   if (scene.type !== "interaction") return false;
-  const keys = branchKeys(scene).map((k) => resultKey(scene[k]));
-  return keys.length > 1 && new Set(keys).size === 1;
+  const keys = producibleKeys(scene).map((k) => resultKey(scene[k]));
+  return new Set(keys).size === 1;
+}
+
+/** True when a kind that cannot fail carries an authored onFailure that differs from success: dead code. */
+export function hasDeadFailure(scene) {
+  if (scene.type !== "interaction" || FAILABLE_KINDS.has(scene.interaction?.kind) || !scene.onFailure) return false;
+  return resultKey(scene.onFailure) !== resultKey(scene.onSuccess);
 }
 
 /**
@@ -365,12 +390,14 @@ export function isEcho(chapter, scene) {
 /** A chapter's play shape over its reachable scenes (the `shape` mode). */
 export function shape(chapter) {
   const live = [...reachable(chapter)].map((id) => [id, chapter.scenes[id]]);
-  const out = { chapter: chapter.id, scenes: live.length, checks: 0, fights: 0, interactions: 0, inert: [], echoes: [], quoted: 0, words: 0 };
+  const out = { chapter: chapter.id, scenes: live.length, checks: 0, fights: 0, interactions: 0, neverFail: [], inert: [], deadFailure: [], echoes: [], quoted: 0, words: 0 };
   for (const [id, s] of live) {
     if (s.type === "check") out.checks++;
     if (s.type === "encounter") out.fights++;
     if (s.type === "interaction") out.interactions++;
+    if (s.type === "interaction" && !FAILABLE_KINDS.has(s.interaction?.kind)) out.neverFail.push(id);
     if (isInert(s)) out.inert.push(id);
+    if (hasDeadFailure(s)) out.deadFailure.push(id);
     if (isEcho(chapter, s)) out.echoes.push(id);
     const text = [s.narration, ...(s.variants ?? []).map((v) => v.text)].filter(Boolean).join(" ");
     if (/["\u201c][^"\u201d]{3,}["\u201d]/.test(text)) out.quoted++;
@@ -445,17 +472,18 @@ export function main(argv, print = console.log) {
     return 0;
   }
   if (mode === "shape") {
-    print("Reachable scenes. inert = interactions whose every result leads to one scene with the same effects; echo = effect-free votes whose choices all come back to one scene.");
-    print(`${"chapter".padEnd(32)} scenes checks fights games inert echo quoted words/scene`);
+    print("Reachable scenes. nofail = games of a kind that cannot fail (cooperate, balance, relay, play); inert = games whose every result the engine can produce leads to one scene with the same effects; dead = a nofail game's authored onFailure no party can reach; echo = effect-free votes whose choices all come back to one scene.");
+    print(`${"chapter".padEnd(32)} scenes checks fights games nofail inert dead echo quoted words/scene`);
     const rows = chapters.map(shape);
     for (const r of rows) {
-      const cells = [r.scenes, r.checks, r.fights, r.interactions, r.inert.length, r.echoes.length, r.quoted].map(String);
-      const widths = [6, 6, 6, 5, 5, 4, 6];
+      const cells = [r.scenes, r.checks, r.fights, r.interactions, r.neverFail.length, r.inert.length, r.deadFailure.length, r.echoes.length, r.quoted].map(String);
+      const widths = [6, 6, 6, 5, 6, 5, 4, 4, 6];
       print(`${r.chapter.padEnd(32)} ${cells.map((c, i) => c.padStart(widths[i])).join(" ")} ${(r.scenes ? r.words / r.scenes : 0).toFixed(0).padStart(11)}`);
     }
     if (rows.length === 1) {
       const [r] = rows;
       if (r.inert.length) print(`  inert: ${r.inert.join(", ")}`);
+      if (r.deadFailure.length) print(`  dead onFailure: ${r.deadFailure.join(", ")}`);
       if (r.echoes.length) print(`  echo: ${r.echoes.join(", ")}`);
     }
     return 0;

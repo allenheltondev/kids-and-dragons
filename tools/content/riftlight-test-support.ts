@@ -5,6 +5,7 @@ import { TEAM_HOLD_MS, applyEffects, applyIntent, classPlaceWaitingOn, createRun
 import type { Campaign, Chapter, ClassId, ClientIntent, EngineContext, ItemCatalog, RulesContent, RunState, SpeciesId } from "@kad/shared";
 import { APPEARANCE } from "../../packages/shared/src/test-fixtures.ts";
 import { RIFTLIGHT_DESIGN } from "./riftlight-preview.ts";
+import { FAILABLE_KINDS } from "./cohesion.mjs";
 const ROOT = path.resolve(import.meta.dirname, "../..");
 const read = <T>(file: string): T => JSON.parse(fs.readFileSync(file, "utf8")) as T;
 export const campaign = read<Campaign>(path.join(ROOT, "content/campaigns/riftlight.json"));
@@ -171,15 +172,18 @@ function walkAllPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, flags:
       }
     } else if (state.prompt?.kind === "interaction") {
       // Synthetic branch walking: the prompt is put straight into its result phase with
-      // each authored outcome and only the engine's own `continue` is sent. That proves the
+      // each producible authored outcome and only the engine's own `continue` is sent. That proves the
       // story continues from every branch, not that the scene can be completed. The mechanics
       // are exercised in packages/shared/src/interactions.test.ts, and the chapters' own
       // scenes are played with real start, stop, answer, support, assist and continue
       // actions in riftlight-interactions.test.ts.
       const scene = chapter.scenes[state.sceneId!]!;
       if (scene.type !== "interaction") throw new Error("Expected interaction");
+      // Only outcomes the engine can produce: cooperate, balance, relay and play games never
+      // resolve to failure (engine.ts), so their authored onFailure is not a way a party can go.
       for (const outcome of ["success", "failure", "assisted"] as const) {
         if (outcome === "assisted" && !scene.onAssisted) continue;
+        if (outcome === "failure" && !FAILABLE_KINDS.has(scene.interaction.kind)) continue;
         const resolved = structuredClone(state);
         if (resolved.prompt?.kind !== "interaction") throw new Error("Expected interaction");
         resolved.prompt.phase = "result";

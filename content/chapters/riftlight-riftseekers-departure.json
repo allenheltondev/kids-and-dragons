@@ -224,10 +224,43 @@
       "type": "interaction",
       "narration": "Four trunks, three sacks, a crate of notebooks and a barrel that sloshes. \"Heavy things low,\" says Olivia. \"Hand to hand,\" says Orin.",
       "interaction": {
-        "kind": "relay",
-        "cue": "Catch each trunk and pass it along to the sled.",
-        "actionLabel": "Pass the trunk",
-        "objectLabel": "a heavy trunk"
+        "kind": "sequence",
+        "cue": "Load the sled, heavy things low.",
+        "actionLabel": "Load it!",
+        "options": [
+          {
+            "id": "notebooks",
+            "label": "Crate of notebooks",
+            "icon": "scroll"
+          },
+          {
+            "id": "barrel",
+            "label": "Sloshing barrel",
+            "icon": "drop"
+          },
+          {
+            "id": "trunks",
+            "label": "Four trunks",
+            "icon": "shield"
+          },
+          {
+            "id": "sacks",
+            "label": "Three sacks",
+            "icon": "hand"
+          }
+        ],
+        "answer": [
+          "barrel",
+          "trunks",
+          "sacks",
+          "notebooks"
+        ],
+        "clues": [
+          "The heaviest thing goes in first, right at the bottom.",
+          "The trunks sit on the barrel's level, before anything soft.",
+          "The sacks go on top of the trunks.",
+          "Orin's notebooks ride on the very top, where they stay dry."
+        ]
       },
       "onSuccess": {
         "goto": "corner_hunt",

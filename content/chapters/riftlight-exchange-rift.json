@@ -2233,7 +2233,7 @@
     },
     "ridge_walk": {
       "type": "interaction",
-      "narration": "The wind pushes like a giant hand. You knot your coat into a sling for the kid, and everyone takes a corner. A low ridge is a few steps away. Keep the sling level!",
+      "narration": "The wind pushes like a giant hand. You knot your coat into a sling for the kid, and everyone takes a corner. A low ridge is a few steps away. Step when the gust drops!",
       "cast": [
         {
           "figure": "cast/snowhorn_kid",
@@ -2241,10 +2241,12 @@
         }
       ],
       "interaction": {
-        "kind": "balance",
-        "cue": "Raise or lower your corner until the sling is level.",
+        "kind": "timing",
+        "cue": "Step forward while the gust drops.",
         "actionLabel": "Carry the kid!",
-        "objectLabel": "the kid in the coat sling"
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 5000
       },
       "onSuccess": {
         "goto": "ridge_ok"
@@ -2333,15 +2335,7 @@
       },
       "onFailure": {
         "goto": "white",
-        "narration": "The kid wiggles free, sneezes, and burrows into the warmest coat it can find, which is not yours. It has taken everyone's warmth on the way. Your fingers are numb.",
-        "effects": [
-          {
-            "type": "damage",
-            "amount": 1,
-            "to": "party",
-            "nonlethal": true
-          }
-        ]
+        "narration": "The shaking stops. One small ear pokes out of your collar and listens to the wind."
       },
       "art": "scenes/riftlight/exchange-ridge-lee"
     },
@@ -2403,10 +2397,12 @@
         }
       ],
       "interaction": {
-        "kind": "relay",
-        "cue": "Catch the sack, then pass it to the next friend.",
+        "kind": "timing",
+        "cue": "Toss the sack while the path between puddles is clear.",
         "actionLabel": "Pass the sack!",
-        "objectLabel": "a sack of potatoes"
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 5000
       },
       "onSuccess": {
         "goto": "quay_rest",
