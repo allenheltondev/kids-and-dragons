@@ -19,7 +19,7 @@
       ],
       "speaks": true,
       "status": "provisional",
-      "lineCount": 6106
+      "lineCount": 6075
     },
     "party": {
       "name": "The party",
@@ -38,7 +38,7 @@
       ],
       "speaks": true,
       "status": "provisional",
-      "lineCount": 56
+      "lineCount": 59
     },
     "pib": {
       "name": "Pib",
@@ -4474,6 +4474,10 @@
           "key": "Pip Thistledown"
         },
         {
+          "chapter": "riftlight-finale",
+          "key": "Pip Thistledown"
+        },
+        {
           "chapter": "riftlight-reading-room",
           "key": "Pip Thistledown"
         },
@@ -4489,6 +4493,7 @@
       "chapters": [
         "riftlight-bone-yard",
         "riftlight-convergence",
+        "riftlight-finale",
         "riftlight-reading-room",
         "riftlight-saltrot-arrival",
         "riftlight-sky-islands-arrival",
@@ -4514,14 +4519,14 @@
           "address": "riftlight-reading-room/rest/narration"
         }
       ],
-      "lineCount": 68,
+      "lineCount": 75,
       "speaks": true,
       "status": "provisional"
     },
     "orin_vale": {
       "name": "Orin Vale",
       "kind": "character",
-      "who": "Methodical griffin scholar. Asks what a test actually showed.",
+      "who": "He/him, griffin scholar. Patient, plain speech, asks what a test really showed. Says 'whoever is moving the land' and never names anyone.",
       "pronouns": "he/him",
       "pronounsFrom": "narration",
       "gender": "male",
@@ -4559,15 +4564,15 @@
           "address": "riftlight-buried-bridge/restore_bank/narration"
         },
         {
-          "text": "It does not take orders from whistles. Good. That would be a very bossy chime.",
-          "address": "riftlight-riftseekers-departure/chime_whistle/narration"
+          "text": "Why is the river on the wrong side of the mountain? It was never on that side.",
+          "address": "riftlight-finale/figure/narration"
         },
         {
-          "text": "I packed two sandwiches. Apparently that is not the same thing as two boards.",
-          "address": "riftlight-buried-bridge/equipment/narration"
+          "text": "It does not take orders from whistles. Good. That would be a very bossy chime.",
+          "address": "riftlight-riftseekers-departure/chime_whistle/narration"
         }
       ],
-      "lineCount": 66,
+      "lineCount": 76,
       "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
@@ -4575,7 +4580,7 @@
     "olivia": {
       "name": "Lady Olivia",
       "kind": "character",
-      "who": "Ambitious unicorn. Certain at first, surprised by limits, never punished for disagreeing.",
+      "who": "She/her, unicorn. Bright, certain, kind underneath; wants to use the openings to help people. Surprised by limits, never punished for disagreeing.",
       "pronouns": "she/her",
       "pronounsFrom": "narration",
       "gender": "female",
@@ -4584,6 +4589,10 @@
       "voiceNotes": [
         {
           "chapter": "riftlight-convergence",
+          "key": "Lady Olivia"
+        },
+        {
+          "chapter": "riftlight-finale",
           "key": "Lady Olivia"
         },
         {
@@ -4603,26 +4612,26 @@
       },
       "lines": [
         {
-          "text": "If you meet the lookout keepers on your travels, tell them how the whales fared.",
-          "address": "riftlight-whale-road/sky_repair/narration"
+          "text": "Lady Olivia says a real scout goes first. And you stood with her. So I will too.",
+          "address": "riftlight-convergence/pip_choice/variants/1"
         },
         {
-          "text": "I can hold a condition too. If the ground starts moving, I will help hold it.",
-          "address": "riftlight-convergence/ending/variants/1"
+          "text": "If you meet the lookout keepers on your travels, tell them how the whales fared.",
+          "address": "riftlight-whale-road/sky_repair/narration"
         },
         {
           "text": "I have food in my pack. Carry it through an opening, and the herd eats today.",
           "address": "riftlight-riftseekers-departure/olivia/narration"
         }
       ],
-      "lineCount": 30,
+      "lineCount": 51,
       "speaks": true,
       "status": "provisional"
     },
     "bram_lock": {
       "name": "Bram Lock",
       "kind": "character",
-      "who": "Protective bigfoot. Short practical requests, never orders the party.",
+      "who": "He/him, bigfoot guard. Short practical requests, dry jokes, never orders the party. Protects Orin, mostly from his own ideas.",
       "pronouns": "he/him",
       "pronounsFrom": "narration",
       "gender": "male",
@@ -4632,10 +4641,15 @@
         {
           "chapter": "riftlight-convergence",
           "key": "Bram Lock"
+        },
+        {
+          "chapter": "riftlight-finale",
+          "key": "Bram Lock"
         }
       ],
       "chapters": [
-        "riftlight-convergence"
+        "riftlight-convergence",
+        "riftlight-finale"
       ],
       "aliases": [],
       "gemini": {
@@ -4643,26 +4657,26 @@
       },
       "lines": [
         {
-          "text": "Something is pulling. Can you steady my board while someone marks the grains?",
-          "address": "riftlight-convergence/pull/narration"
+          "text": "Lady Olivia says a real scout goes first. But you didn't go first. You stayed, and kept everyone safe.",
+          "address": "riftlight-convergence/pip_choice/variants/0"
         },
         {
-          "text": "If an opening comes, help me keep everyone behind the line.",
-          "address": "riftlight-convergence/arrival/narration"
-        },
-        {
-          "text": "Help me stop the experiment.",
+          "text": "Help me stop her. Before it pulls somebody in.",
           "address": "riftlight-convergence/decision/narration"
+        },
+        {
+          "text": "Real scouts go first, when it's their turn!",
+          "address": "riftlight-finale/recover_pip/narration"
         }
       ],
-      "lineCount": 4,
+      "lineCount": 16,
       "speaks": true,
       "status": "provisional"
     },
     "seren_wisp": {
       "name": "Seren Wisp",
       "kind": "character",
-      "who": "Patient kitsune specialist. Distinguishes holding a condition from changing a rule.",
+      "who": "She/her, kitsune. Gentle teacher. Holds a condition, never changes where an opening goes.",
       "pronouns": "she/her",
       "pronounsFrom": "narration",
       "gender": "female",
@@ -4696,19 +4710,19 @@
       },
       "lines": [
         {
-          "text": "You hold a condition that is already there. You never change an opening's rules.",
-          "address": "riftlight-convergence/lesson/narration"
-        },
-        {
           "text": "Listen for a tick. Listen for a hum. A hum that holds still can be learned.",
           "address": "riftlight-riftseekers-departure/prep_seam/narration"
         },
         {
           "text": "One loud note. Use it when you need to be heard, not when you want to be.",
           "address": "riftlight-riftseekers-departure/supplies_buy/narration"
+        },
+        {
+          "text": "Fast and bright, or slow and careful. Either works, if nobody sneezes.",
+          "address": "riftlight-sky-islands-arrival/light/narration"
         }
       ],
-      "lineCount": 46,
+      "lineCount": 54,
       "speaks": true,
       "status": "provisional"
     },
@@ -4837,7 +4851,7 @@
     "corvane": {
       "name": "Corvane",
       "kind": "character",
-      "who": "An old faun ruler, courtly, patient and confused. Certain about his remembered map, bewildered by today. Never threatens children. Short sentences. No conquer, punish, servants, destroy or hurt.",
+      "who": "He/him, an enormous old faun king, newly awake after a thousand years. Confused above all, courtly, patient and sad. Certain about how things should be, bewildered by how they are. Calls places 'my river', 'my bridge'. Never threatens; never says conquer, punish, servants, destroy or hurt.",
       "pronouns": "he/him",
       "pronounsFrom": "narration",
       "gender": "male",
@@ -4858,26 +4872,26 @@
       },
       "lines": [
         {
-          "text": "I am Corvane. Emperor of Pangea. Do you know how long I waited to see my rivers run the right way again?",
-          "address": "riftlight-finale/reveal/narration"
+          "text": "Thank you. It has been a very long time since anyone asked me anything.",
+          "address": "riftlight-finale/wrap/narration"
+        },
+        {
+          "text": "Reeds. A wooden bridge. My mother's boat. Someone else's mother.",
+          "address": "riftlight-finale/asked_home/narration"
         },
         {
           "text": "Wake me if the rivers ever forget their way.",
-          "address": "riftlight-finale/keepers/narration"
-        },
-        {
-          "text": "Then tell me what you call this valley now.",
-          "address": "riftlight-finale/listened/narration"
+          "address": "riftlight-finale/keepers_epilogue/narration"
         }
       ],
-      "lineCount": 7,
+      "lineCount": 23,
       "speaks": true,
       "status": "provisional"
     },
     "yeti_herder": {
       "name": "Yeti herder",
       "kind": "character",
-      "who": "Chapter-scoped female yeti herder and singer. Patient, dry humor, practical cold-weather care. Gives no complete history, prison hints, or explanation of the rifts.",
+      "who": "She/her, the yeti who took the party in on their first night. Patient, dry humor, practical cold-weather care.",
       "pronouns": "she/her",
       "pronounsFrom": "narration",
       "gender": "female",
@@ -4885,11 +4899,16 @@
       "figure": "cast/yeti_herder",
       "voiceNotes": [
         {
+          "chapter": "riftlight-finale",
+          "key": "Yeti herder"
+        },
+        {
           "chapter": "riftlight-glacier-survival",
           "key": "Yeti herder"
         }
       ],
       "chapters": [
+        "riftlight-finale",
         "riftlight-glacier-survival",
         "riftlight-hidden-glacier-rift",
         "riftlight-riftseekers-departure",
@@ -4909,11 +4928,11 @@
           "address": "riftlight-stuttering-flats/glimpse/narration"
         },
         {
-          "text": "My grandmother's. She never found out what ticked. Put an ear in and tell me.",
-          "address": "riftlight-hidden-glacier-rift/post/narration"
+          "text": "Not again. I'll fetch it and take it home. Or you can, and I'll stay with you.",
+          "address": "riftlight-finale/kid_bridge/narration"
         }
       ],
-      "lineCount": 54,
+      "lineCount": 62,
       "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
@@ -6189,6 +6208,7 @@
       "figure": "cast/snowhorn_kid",
       "chapters": [
         "riftlight-exchange-rift",
+        "riftlight-finale",
         "riftlight-glacier-survival",
         "riftlight-hidden-glacier-rift"
       ],
@@ -6227,36 +6247,6 @@
         {
           "text": "You saved my fish. Let us save that little one!",
           "address": "riftlight-exchange-rift/pull/variants/1"
-        }
-      ],
-      "lineCount": 2,
-      "speaks": true,
-      "status": "provisional"
-    },
-    "yeti_watcher": {
-      "name": "Yeti watcher",
-      "kind": "character",
-      "who": "Yeti watcher.",
-      "pronouns": "she/her",
-      "pronounsFrom": "narration",
-      "gender": "female",
-      "genderFrom": "narration",
-      "figure": "cast/yeti_watcher",
-      "chapters": [
-        "riftlight-finale"
-      ],
-      "aliases": [],
-      "gemini": {
-        "voice": "Orus"
-      },
-      "lines": [
-        {
-          "text": "I will keep the retreat open. But I will not go into the tear.",
-          "address": "riftlight-finale/shelter/narration"
-        },
-        {
-          "text": "Offer to help. Ask before you wrap or move him.",
-          "address": "riftlight-finale/help_him/narration"
         }
       ],
       "lineCount": 2,

@@ -3,7 +3,7 @@ import path from "node:path";
 import { expect, it } from "vitest";
 import { applyIntent, currentActorId, enterScene, legalMoves, positionOf, resolveEnemy, stepsBetween } from "@kad/shared";
 import type { Bestiary, ClientIntent, EncounterMap, EngineContext, RunState } from "@kad/shared";
-import { chapters, context, start, send, finishInteraction } from "./riftlight-test-support.ts";
+import { chapters, context, start, send } from "./riftlight-test-support.ts";
 const root = path.resolve(import.meta.dirname, "../..");
 const bestiary = JSON.parse(fs.readFileSync(path.join(root, "content/bestiary.json"), "utf8")) as Bestiary;
 const map = JSON.parse(fs.readFileSync(path.join(root, "content/maps/riftlight_finale.json"), "utf8")) as EncounterMap;
@@ -61,18 +61,16 @@ it.each(["fight_standard", "fight_weakened", "fight_standard_braced", "fight_wea
   expect(state.sceneId).toBe("loss_recover");
   expect(state.flags.final_fell_back).toBe(true);
   expect(state.flags.final_battle_lost).not.toBe(true);
+  // The recovery is a real roll at the ridge, never a replay of the board.
   for (const face of [1, 20]) {
-    let recovering = structuredClone(state);
-    let scenes = 0;
-    while (recovering.sceneId !== "loss_anchor_check") {
-      expect(++scenes).toBeLessThan(12);
-      recovering = recovering.prompt?.kind === "choice"
-        ? send(recovering, { type: "CHOOSE", choiceId: recovering.prompt.options[0]!.id }, ctx.chapter!)
-        : send(recovering, { type: "ADVANCE" }, ctx.chapter!);
-    }
-    const resumed = finishInteraction(recovering, ctx.chapter!, face === 20 ? "success" : "failure");
+    let recovering = send(structuredClone(state), { type: "CHOOSE", choiceId: "ready" }, ctx.chapter!);
+    expect(recovering.sceneId).toBe("loss_plan");
+    recovering = send(recovering, { type: "CHOOSE", choiceId: "brace" }, ctx.chapter!);
+    expect(recovering.prompt?.kind).toBe("roll");
+    const resumed = send(recovering, { type: "ROLL" }, ctx.chapter!, face);
     expect(resumed.sceneId).toBe(face === 20 ? "spent" : "loss_second_failed");
     expect(resumed.flags.final_battle_lost === true).toBe(face === 1);
+    expect(resumed.encounter ?? null).toBeNull();
   }
   expect(state.party.every(p => p.hp > 0 && !p.down)).toBe(true);
 });
