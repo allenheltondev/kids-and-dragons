@@ -19,7 +19,7 @@
       ],
       "speaks": true,
       "status": "provisional",
-      "lineCount": 6162
+      "lineCount": 6188
     },
     "party": {
       "name": "The party",
@@ -4583,6 +4583,10 @@
           "key": "Pip Thistledown"
         },
         {
+          "chapter": "riftlight-stone-counters",
+          "key": "Pip Thistledown"
+        },
+        {
           "chapter": "riftlight-the-island-due-back",
           "key": "Pip Thistledown"
         },
@@ -4621,11 +4625,11 @@
           "address": "riftlight-whale-road/pip_notebook/narration"
         },
         {
-          "text": "Lady Olivia will know what to do with it. Maybe she can move ruins too!",
-          "address": "riftlight-bone-yard/to_pip/narration"
+          "text": "It went to its old home. Then it came back to this one. Which home is home?",
+          "address": "riftlight-the-wrong-valley/river_back/narration"
         }
       ],
-      "lineCount": 85,
+      "lineCount": 102,
       "speaks": true,
       "status": "provisional"
     },
@@ -4885,6 +4889,10 @@
         {
           "chapter": "riftlight-riftseekers-departure",
           "key": "Seren Wisp"
+        },
+        {
+          "chapter": "riftlight-stone-counters",
+          "key": "Seren Wisp"
         }
       ],
       "chapters": [
@@ -4913,7 +4921,7 @@
           "address": "riftlight-sky-islands-arrival/lesson/narration"
         }
       ],
-      "lineCount": 52,
+      "lineCount": 61,
       "speaks": true,
       "status": "provisional"
     },
@@ -5218,15 +5226,10 @@
         {
           "chapter": "riftlight-reading-room",
           "key": "Yeti keepers"
-        },
-        {
-          "chapter": "riftlight-the-wrong-valley",
-          "key": "Yeti keepers"
         }
       ],
       "chapters": [
-        "riftlight-reading-room",
-        "riftlight-the-wrong-valley"
+        "riftlight-reading-room"
       ],
       "aliases": [],
       "gemini": {
@@ -5274,6 +5277,87 @@
         }
       ],
       "lineCount": 26,
+      "speaks": true,
+      "status": "provisional"
+    },
+    "dragonling_stone_keeper": {
+      "name": "Tally",
+      "kind": "character",
+      "who": "Tally, the dragonling stone keeper (she/her). Brisk and precise; counts everything out loud, faster when she is upset. Keeps the boundary stones by the river and the counting stones on the hill. Wants her count true: a counter's stones must never move, and one has.",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/dragonling_stone_keeper",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-stone-counters",
+          "key": "dragonling_stone_keeper"
+        }
+      ],
+      "chapters": [
+        "riftlight-stone-counters"
+      ],
+      "aliases": [],
+      "gemini": {
+        "voice": "Despina"
+      },
+      "lines": [
+        {
+          "text": "An eruption. Our oldest counts can't agree when it was. Nobody's count matches.",
+          "address": "riftlight-stone-counters/carving_copy/narration"
+        },
+        {
+          "text": "My cousins and I will roll it somewhere sensible. Tomorrow. With a lot of cousins.",
+          "address": "riftlight-stone-counters/goodbye/variants/1"
+        },
+        {
+          "text": "All right. You stood here first. I'll count you here. Twelve. Twelve, in a new shape.",
+          "address": "riftlight-stone-counters/leave_it/narration"
+        }
+      ],
+      "lineCount": 32,
+      "guessedLines": 1,
+      "speaks": true,
+      "status": "provisional"
+    },
+    "farmer_gourd": {
+      "name": "Farmer Gourd",
+      "kind": "character",
+      "who": "Round dragonling turnip farmer (he/him). Cheerful and in a hurry; wants his turnips over the hill before they go soft. His goat Mustard eats everything.",
+      "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "cast/adult_dragonling",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-stone-counters",
+          "key": "Farmer Gourd"
+        }
+      ],
+      "chapters": [
+        "riftlight-stone-counters"
+      ],
+      "aliases": [],
+      "gemini": {
+        "voice": "Enceladus"
+      },
+      "lines": [
+        {
+          "text": "Roll through between the tugs, or carry my turnips around by hand. Slow, but safe.",
+          "address": "riftlight-stone-counters/squeeze/narration"
+        },
+        {
+          "text": "Somebody downhill is getting turnips.",
+          "address": "riftlight-stone-counters/squeeze_time/onFailure/narration"
+        },
+        {
+          "text": "That is not helping.",
+          "address": "riftlight-stone-counters/turnip_relay/narration"
+        }
+      ],
+      "lineCount": 7,
       "speaks": true,
       "status": "provisional"
     },
@@ -5332,6 +5416,86 @@
       },
       "lines": [],
       "lineCount": 0,
+      "speaks": true,
+      "status": "provisional"
+    },
+    "route_worker_yeti": {
+      "name": "Hummock",
+      "kind": "character",
+      "who": "Hummock, the yeti route worker (he/him). Enormous, slow and kind; says \"Steady on\"; names every rock on his route and thaws his frozen eyebrows in his tea. Keeps the markers and the warning post on the valley road. Wants the evening sled warned and to know where his river has gone.",
+      "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "cast/route_worker_yeti",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-the-wrong-valley",
+          "key": "route_worker_yeti"
+        }
+      ],
+      "chapters": [
+        "riftlight-the-wrong-valley"
+      ],
+      "aliases": [],
+      "gemini": {
+        "voice": "Algenib"
+      },
+      "lines": [
+        {
+          "text": "I've never seen it, but my marker has. That wavy line was right all along.",
+          "address": "riftlight-the-wrong-valley/understood/narration"
+        },
+        {
+          "text": "with soup for the reading room. What is that river doing in my valley?",
+          "address": "riftlight-the-wrong-valley/sledge_stops/narration"
+        },
+        {
+          "text": "That never made sense. The river never went that way.",
+          "address": "riftlight-the-wrong-valley/old_road/narration"
+        }
+      ],
+      "lineCount": 32,
+      "speaks": true,
+      "status": "provisional"
+    },
+    "grandma_drift": {
+      "name": "Grandma Drift",
+      "kind": "character",
+      "who": "Yeti grandmother who drives the evening sled from the singing hall (she/her). Brisk and warm; wears a scarf three times her length; remembers old stories.",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/yeti_watcher",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-the-wrong-valley",
+          "key": "Grandma Drift"
+        }
+      ],
+      "chapters": [
+        "riftlight-the-wrong-valley"
+      ],
+      "aliases": [],
+      "gemini": {
+        "voice": "Gacrux"
+      },
+      "lines": [
+        {
+          "text": "My grandmother told a story about a river that got lost. I thought it was just a story.",
+          "address": "riftlight-the-wrong-valley/sledge_stops/narration"
+        },
+        {
+          "text": "This soup has to reach the reading room tonight. Hot.",
+          "address": "riftlight-the-wrong-valley/driver/narration"
+        },
+        {
+          "text": "Grandma Drift.",
+          "address": "riftlight-the-wrong-valley/sledge_stops/narration"
+        }
+      ],
+      "lineCount": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -6819,37 +6983,33 @@
       "speaks": true,
       "status": "provisional"
     },
-    "stone_keeper": {
-      "name": "Stone keeper",
+    "mustard": {
+      "name": "Mustard",
       "kind": "character",
-      "who": "Stone keeper.",
-      "pronouns": "she/her",
+      "who": "Mustard.",
+      "pronouns": "he/him",
       "pronounsFrom": "narration",
-      "gender": "female",
+      "gender": "male",
       "genderFrom": "narration",
-      "figure": "cast/dragonling_stone_keeper",
+      "figure": "cast/goat_chewing",
       "chapters": [
         "riftlight-stone-counters"
       ],
       "aliases": [],
       "gemini": {
-        "voice": "Kore"
+        "voice": "Zubenelgenubi"
       },
       "lines": [
         {
-          "text": "An eruption. Our oldest counts disagree about when.",
-          "address": "riftlight-stone-counters/marks/narration"
+          "text": "Thank you! I'll tell the whole market a stone went for a walk!",
+          "address": "riftlight-stone-counters/past/narration"
         },
         {
-          "text": "Better wheels. A simpler drawing. We chose both.",
-          "address": "riftlight-stone-counters/gravel/narration"
-        },
-        {
-          "text": "This is a waiting place. Not a jumping place.",
-          "address": "riftlight-stone-counters/motion_memory/narration"
+          "text": "Thank you! Every last turnip!",
+          "address": "riftlight-stone-counters/past_slow/narration"
         }
       ],
-      "lineCount": 6,
+      "lineCount": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -6910,57 +7070,6 @@
         }
       ],
       "lineCount": 2,
-      "speaks": true,
-      "status": "provisional"
-    },
-    "route_worker": {
-      "name": "Route worker",
-      "kind": "character",
-      "who": "Route worker.",
-      "gender": "unknown",
-      "genderFrom": "none",
-      "figure": "cast/route_worker_yeti",
-      "chapters": [
-        "riftlight-the-wrong-valley"
-      ],
-      "aliases": [],
-      "gemini": {
-        "voice": "Orus"
-      },
-      "lines": [
-        {
-          "text": "Stay up there! Help me warn the next traveler, then get us and our tools across.",
-          "address": "riftlight-the-wrong-valley/arrival/narration"
-        },
-        {
-          "text": "If your route shifts, we will help you use the other one.",
-          "address": "riftlight-the-wrong-valley/crossing_choice/narration"
-        },
-        {
-          "text": "Neither one promises the water will stay here.",
-          "address": "riftlight-the-wrong-valley/flow_result/narration"
-        }
-      ],
-      "lineCount": 4,
-      "speaks": true,
-      "status": "provisional"
-    },
-    "far_worker": {
-      "name": "Far worker",
-      "kind": "character",
-      "who": "Far worker.",
-      "gender": "unknown",
-      "genderFrom": "none",
-      "figure": "cast/route_worker_yeti",
-      "chapters": [
-        "riftlight-the-wrong-valley"
-      ],
-      "aliases": [],
-      "gemini": {
-        "voice": "Zubenelgenubi"
-      },
-      "lines": [],
-      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
