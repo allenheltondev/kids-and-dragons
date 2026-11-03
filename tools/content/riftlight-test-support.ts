@@ -113,7 +113,9 @@ function walkAllPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, flags:
   // A larger authored graph legitimately has more combinations of independent
   // evidence, equipment and message outcomes. Keep a finite exploration guard
   // proportional to graph size rather than treating every chapter as 50 scenes.
-  const stateLimit = Math.max(5000, Object.keys(chapter.scenes).length * 100);
+  // The key below also holds whose story turn it is, so a party of N seats
+  // legitimately walks up to N copies of each configuration.
+  const stateLimit = Math.max(5000, Object.keys(chapter.scenes).length * 100) * Math.max(1, partySize);
   const seen = new Set<string>();
   const visited = new Set<string>();
   const ends: RunState[] = [];

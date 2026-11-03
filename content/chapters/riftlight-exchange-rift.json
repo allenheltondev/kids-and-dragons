@@ -1,5 +1,5 @@
 {
-  "$comment": "Riftlight authored opening draft. Development preview only; see ../README.md. Production campaign id will be riftlight. No bonus XP: preserve the design bible campaign budget.",
+  "$comment": "Riftlight opening, chapter 1 (docs/campaigns/continental-rift/arc.md, exchange-rift; design note nodes/exchange-rift.md). Revised in November 2026: question \"Where is the snow coming from?\", p1 the tear itself (shimmer), and the sky clue (Captain Thimble docked a day early; noticed_the_sky_ship, read by sky-islands-arrival). Sets helped_fish_seller, saved_barge_supper / found_barge_mooring and starweaver_read_first_rift.",
   "id": "riftlight-exchange-rift",
   "campaignId": "riftlight",
   "index": 1,
@@ -10,7 +10,7 @@
   "xpAward": 140,
   "entry": "market",
   "goal": {
-    "text": "Find out where the snow on the quay is coming from.",
+    "text": "Where is the snow on the quay coming from?",
     "steps": [
       {
         "id": "help_noodle",
@@ -37,7 +37,7 @@
   "scenes": {
     "market": {
       "type": "story",
-      "narration": "The Exchange has put its stalls back along the quay. A noodle seller lifts her awning with a broom. Then a snowflake lands in your breakfast. The sky is clear! Snow should not be falling at all. Today's job: find out where this snow is coming from. \"First, I need hands!\" calls the noodle seller. \"This awning is heavy, and I pay in coins.\"",
+      "narration": "The Exchange has put its stalls back along the quay. A noodle seller lifts her awning with a broom. Then a snowflake lands in your breakfast. The sky is clear as a clean plate! So where is this snow coming from? That is the question this morning. \"First, I need hands!\" calls the noodle seller. \"This awning is heavy, and I pay in coins.\"",
       "choices": [
         {
           "id": "continue",
@@ -107,7 +107,8 @@
           "figure": "cast/soup_woman",
           "name": "Noodle seller"
         }
-      ]
+      ],
+      "narration": "\"Poles up, chins up!\" says the noodle seller. \"My soup is watching.\""
     },
     "awning_tie": {
       "type": "check",
@@ -127,7 +128,8 @@
           "figure": "cast/soup_woman",
           "name": "Noodle seller"
         }
-      ]
+      ],
+      "narration": "\"Corners first,\" says the noodle seller, holding out four ropes. \"Any knot you like, as long as it holds.\""
     },
     "awning_brace": {
       "type": "check",
@@ -147,7 +149,8 @@
           "figure": "cast/soup_woman",
           "name": "Noodle seller"
         }
-      ]
+      ],
+      "narration": "\"Hold that pole like it owes you money,\" says the noodle seller."
     },
     "awning_up": {
       "type": "story",
@@ -363,7 +366,8 @@
           "figure": "cast/soup_woman",
           "name": "Noodle seller"
         }
-      ]
+      ],
+      "narration": "\"Gently!\" cries the fish seller. \"They have had a very confusing morning.\""
     },
     "fish_help": {
       "type": "story",
@@ -522,7 +526,7 @@
     },
     "ship": {
       "type": "story",
-      "narration": "The captain spreads a chart over a barrel. \"Our island was here yesterday. This morning the dock was over there. Same island. Same laundry. Wrong patch of sky.\" The wind tugs the chart. \"Captain Thimble. If you find out why, tell me first.\"",
+      "narration": "The captain spreads a chart over a barrel. \"We were due tomorrow. We docked today. Our island was here yesterday, and this morning the dock was right there.\" She jabs the chart. \"Same island. Same washing on the line. Wrong patch of sky.\" The wind tugs the chart. \"Captain Thimble. If you find out why, tell me first. You'll know my ship by the socks.\"",
       "choices": [
         {
           "id": "help",
@@ -563,11 +567,12 @@
           "figure": "cast/captain_thimble",
           "name": "Captain Thimble"
         }
-      ]
+      ],
+      "narration": "\"Grab a corner!\" shouts Captain Thimble. \"Any corner! Not my hat!\""
     },
     "ship_help": {
       "type": "story",
-      "narration": "You hold the corners while Captain Thimble ties the chart down. She hands you a spare ship's whistle. \"A brave whistle. Loud enough to wake a whale. Blow it if you need help fast. And look for me if you reach the islands. You'll know my washing.\" A gust brings the smell of snow.",
+      "narration": "You hold the corners while Captain Thimble ties the chart down. She hands you a spare ship's whistle. \"A brave whistle. Loud enough to wake a whale. Blow it if you need help fast. And if you ever reach the islands, look for my washing.\" A gust brings the smell of snow.",
       "choices": [
         {
           "id": "continue",
@@ -593,7 +598,7 @@
     },
     "ship_flap": {
       "type": "story",
-      "narration": "The chart flaps away like a big pale bird. Captain Thimble dives and sits on it. \"Never trust a map on a windy day,\" she puffs. \"Look for me if you reach the islands. You'll know my washing.\" A gust brings the smell of snow.",
+      "narration": "The chart flaps away like a big pale bird. Captain Thimble dives and sits on it. \"Never trust a map on a windy day,\" she puffs. \"If you ever reach the islands, look for my washing.\" A gust brings the smell of snow.",
       "choices": [
         {
           "id": "continue",
@@ -644,11 +649,12 @@
       "onFailure": {
         "goto": "trail_lost"
       },
-      "art": "scenes/gemfall/exchange-quay"
+      "art": "scenes/gemfall/exchange-quay",
+      "narration": "Snow, frost and small hoofprints all lead along the quay. \"Hmph,\" says the gull, following you along the posts. \"Footprints. In my harbor.\""
     },
     "trail_found": {
       "type": "story",
-      "narration": "The newest prints are crisp, no bigger than a plum, with white fuzz stuck in one. They skid sideways, as if something had tugged their owner. Then a deep horn blows from the water.",
+      "narration": "The newest prints are crisp, no bigger than a plum, with white fuzz stuck in one. They skid sideways, as if something had tugged their owner. \"Little goat,\" says the gull from a post. \"Lost. Cold. Like me.\" Then a deep horn blows from the water.",
       "choices": [
         {
           "id": "continue",
@@ -661,7 +667,7 @@
     },
     "trail_lost": {
       "type": "story",
-      "narration": "Snow covers the marks before you can read them, and you end up with a boot full of slush. A barrel rolls a little way by itself, then stops. Then a deep horn blows from the water.",
+      "narration": "Snow covers the marks before you can read them, and you end up with a boot full of slush. A barrel rolls a little way by itself, then stops. \"Barrels do not do that,\" says the gull from a post. Then a deep horn blows from the water.",
       "choices": [
         {
           "id": "continue",
@@ -674,26 +680,63 @@
     },
     "delivery": {
       "type": "choice_point",
-      "narration": "The barge bumps the quay. The pilot points at stone landing steps hanging crooked above the water. \"That was my landing this morning! Now it's halfway up a wall.\" Sacks of potatoes slide across his deck. \"Supper for six boats. Help me!\"",
+      "narration": "The barge bumps the quay. The pilot points at stone landing steps hanging crooked above the water. \"That was my landing this morning! Now it's halfway up a wall.\" Sacks of potatoes slide across his deck. \"Supper for six boats, and nowhere to land it. Help me, please!\"",
       "choices": [
         {
           "id": "sacks",
           "label": "Pass the sacks ashore",
           "icon": "hand",
-          "goto": "sack_line"
+          "goto": "sack_line",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "barge_rope_caught",
+              "value": false
+            }
+          ]
         },
         {
           "id": "moor",
           "label": "Tie the barge up",
           "icon": "hand",
-          "goto": "moor_ring"
+          "goto": "moor_ring",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "barge_rope_caught",
+              "value": false
+            }
+          ]
+        },
+        {
+          "id": "snug",
+          "label": "Loop the line on the low ring",
+          "icon": "hand",
+          "goto": "delivery_moor",
+          "when": {
+            "flag": "barge_rope_caught"
+          },
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "barge_rope_caught",
+              "value": false
+            }
+          ]
         },
         {
           "id": "rally",
           "label": "Rally the sack line",
           "icon": "song",
           "goto": "sack_rally",
-          "requiresClass": "songkeeper"
+          "requiresClass": "songkeeper",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "barge_rope_caught",
+              "value": false
+            }
+          ]
         },
         {
           "id": "wings",
@@ -703,6 +746,13 @@
           "requiresSpecies": [
             "griffin",
             "dragonling"
+          ],
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "barge_rope_caught",
+              "value": false
+            }
           ]
         }
       ],
@@ -711,6 +761,14 @@
         {
           "figure": "entities/frogfolk",
           "name": "Barge pilot"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "barge_rope_caught"
+          },
+          "text": "Thanks to your throw, the barge sits snug against the wall, right under a low mooring ring."
         }
       ]
     },
@@ -732,7 +790,8 @@
           "figure": "entities/frogfolk",
           "name": "Barge pilot"
         }
-      ]
+      ],
+      "narration": "\"Hand to hand,\" says the pilot. \"Like passing a baby. A heavy, lumpy baby.\""
     },
     "sack_rally": {
       "type": "check",
@@ -752,7 +811,8 @@
           "figure": "entities/frogfolk",
           "name": "Barge pilot"
         }
-      ]
+      ],
+      "narration": "\"Give us a beat,\" says the pilot, tapping his foot. \"My potatoes like a tune.\""
     },
     "moor_ring": {
       "type": "check",
@@ -772,7 +832,8 @@
           "figure": "entities/frogfolk",
           "name": "Barge pilot"
         }
-      ]
+      ],
+      "narration": "\"Low ring, strong ring, and loop it twice,\" says the pilot. \"Or my barge goes visiting.\""
     },
     "moor_wings": {
       "type": "check",
@@ -792,7 +853,8 @@
           "figure": "entities/frogfolk",
           "name": "Barge pilot"
         }
-      ]
+      ],
+      "narration": "\"Up there?\" The pilot squints at the high ring. \"Show-off. Go on, then.\""
     },
     "delivery_sacks": {
       "type": "story",
@@ -981,7 +1043,8 @@
           "figure": "entities/frogfolk",
           "name": "Barge pilot"
         }
-      ]
+      ],
+      "narration": "\"Mind the slime,\" says the pilot. \"It is older than me, and grumpier.\""
     },
     "landing_prop": {
       "type": "check",
@@ -1001,7 +1064,8 @@
           "figure": "entities/frogfolk",
           "name": "Barge pilot"
         }
-      ]
+      ],
+      "narration": "\"Not the potato crate,\" says the pilot quickly. \"Anything but the potato crate.\""
     },
     "landing_smash": {
       "type": "check",
@@ -1024,7 +1088,8 @@
           "figure": "entities/frogfolk",
           "name": "Barge pilot"
         }
-      ]
+      ],
+      "narration": "\"Gently,\" says the pilot. \"Those steps were my grandmother's.\""
     },
     "landing_clue": {
       "type": "story",
@@ -1072,7 +1137,7 @@
     },
     "quay_rest": {
       "type": "rest",
-      "narration": "The pilot tosses up a bag of warm potato skins, salty and perfect. You eat them on a crate. Behind the stalls, a ladder climbs the harbor master's house to the rooftops. From up there comes a lot of cawing, all of it on purpose.",
+      "narration": "The pilot tosses up a bag of warm potato skins, salty and perfect. You eat them on a crate. Behind the stalls, a ladder climbs the harbor master's house to the rooftops. From up there comes a lot of cawing, all of it on purpose. \"Crows,\" says the pilot, rolling his eyes. \"They run a school up there. Do not mess with them.\"",
       "heal": 2,
       "choices": [
         {
@@ -1173,7 +1238,7 @@
     },
     "quay": {
       "type": "choice_point",
-      "narration": "At the end of the quay, two stacks of crates lean toward a thin fold in the air. A loose rope slides across the wet boards toward it. From the fold comes a deep, slow creak, and a hum like a note nobody is singing.",
+      "narration": "At the end of the quay, two stacks of crates lean toward a thin fold in the air. A loose rope slides across the wet boards toward it. From the fold comes a deep, slow creak, and a hum like a note nobody is singing. A dock worker grabs your sleeve. \"Don't go near it. It's been pulling things since dawn.\"",
       "choices": [
         {
           "id": "study",
@@ -1264,7 +1329,7 @@
     },
     "quay_lit": {
       "type": "story",
-      "narration": "The moss glows bright and curious. In its light, every shadow points the same way: toward the fold. You nudge a wedge under the nearest crate. One of the dock workers carries the jar off to light the rest of the quay. Beyond the crates, something small bleats.",
+      "narration": "The moss glows bright and curious. In its light, every shadow points the same way: toward the fold. You nudge a wedge under the nearest crate. One of the dock workers carries the jar off to light the rest of the quay. Beyond the crates, something small bleats. \"Ooh,\" says a dock worker. \"Pretty. Spooky. Pretty spooky.\"",
       "choices": [
         {
           "id": "continue",
@@ -1292,7 +1357,7 @@
     },
     "pattern_seen": {
       "type": "story",
-      "narration": "You kick a wedge under the nearest crate and shout a warning. The noodle seller grabs her awning before it tears free. Beyond the crates, something small bleats.",
+      "narration": "You kick a wedge under the nearest crate and shout a warning. The noodle seller grabs her awning before it tears free. Beyond the crates, something small bleats. \"Thank you!\" she calls, hugging the pole.",
       "choices": [
         {
           "id": "continue",
@@ -1312,7 +1377,7 @@
     },
     "pattern_missed": {
       "type": "story",
-      "narration": "The lid rolls in a circle, twice, and drops flat by the fold, very pleased with itself. You pull everyone back from its path. Beyond the crates, something small bleats.",
+      "narration": "The lid rolls in a circle, twice, and drops flat by the fold, very pleased with itself. You pull everyone back from its path. Beyond the crates, something small bleats. \"Show-off,\" the gull tells the lid.",
       "choices": [
         {
           "id": "continue",
@@ -1339,7 +1404,7 @@
         }
       ],
       "type": "story",
-      "narration": "You and the dock workers lead the market crowd behind the stall rail. The noodle seller points the way with her ladle. A cat on a barrel will not budge, so you carry the barrel.",
+      "narration": "You and the dock workers lead the market crowd behind the stall rail. The noodle seller points the way with her ladle. A cat on a barrel will not budge, so you carry the barrel. \"Everybody back!\" she shouts. \"Soup is free behind the rail!\" That works very fast.",
       "choices": [
         {
           "id": "continue",
@@ -1351,7 +1416,7 @@
     },
     "clear_quay": {
       "type": "story",
-      "narration": "You lift the noodle awning clear of a sliding crate. The dock workers pass buckets out of the way. Beyond the crates, something small bleats.",
+      "narration": "You lift the noodle awning clear of a sliding crate. The dock workers pass buckets out of the way. Beyond the crates, something small bleats. \"Mind your toes,\" says a dock worker. \"The boards are walking.\"",
       "choices": [
         {
           "id": "continue",
@@ -1372,18 +1437,18 @@
     },
     "crate_plan": {
       "type": "choice_point",
-      "narration": "The nearest stack groans and leans toward the fold. Two dock workers hang off its rope, boots skidding. \"We can't hold it!\" Behind the stack, the small bleat comes again. If the crates slide, they land on whatever is bleating. Overhead, the gull shrieks that it saw this coming.",
+      "narration": "The nearest stack groans and leans toward the fold. Two dock workers hang off its rope, boots skidding. \"We can't hold it!\" Behind the stack, the small bleat comes again. If the crates slide, they land on whatever is bleating. Haul it back by force, or work out where a plank would stop it? Overhead, the gull shrieks that it saw this coming.",
       "choices": [
         {
           "id": "haul",
-          "label": "Everyone hauls the rope",
-          "icon": "hand",
+          "label": "Haul it back by force",
+          "icon": "might",
           "goto": "crate_haul"
         },
         {
           "id": "wedge",
-          "label": "Wedge a plank under",
-          "icon": "hand",
+          "label": "Work out where to wedge",
+          "icon": "eye",
           "goto": "crate_wedge"
         },
         {
@@ -1424,7 +1489,15 @@
       "prompt": "Grab the rope behind the dock workers! Dig in your heels and haul on three!",
       "roller": "all",
       "onSuccess": {
-        "goto": "crates_back"
+        "goto": "crates_back",
+        "narration": "You haul together. The stack thumps back upright! But it lands crooked, leaning right over the lower stack. \"Nobody climb that,\" says a dock worker. \"It's one sneeze from falling.\"",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "crates_forced",
+            "value": true
+          }
+        ]
       },
       "onFailure": {
         "goto": "crates_slid"
@@ -1446,7 +1519,15 @@
       "prompt": "Which plank, and where? Wedge it under the stack before the next groan.",
       "roller": "best",
       "onSuccess": {
-        "goto": "crates_back"
+        "goto": "crates_back",
+        "narration": "You find the spot and slide the plank in. The stack stops with a sigh. But while you measured, both stacks leaned closer together, and the gap between them has nearly pinched shut.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "crates_wedged",
+            "value": true
+          }
+        ]
       },
       "onFailure": {
         "goto": "crates_slid"
@@ -1459,7 +1540,8 @@
           "name": "Dock workers",
           "count": 2
         }
-      ]
+      ],
+      "narration": "\"Where, though?\" pants a dock worker. \"Pick a spot. Quickly, please!\""
     },
     "whistle_call": {
       "type": "story",
@@ -1526,23 +1608,85 @@
     },
     "gap": {
       "type": "choice_point",
-      "narration": "Between the two stacks is a narrow gap. At the far end, the air looks thin and wrinkled, like a curtain in a draft. The bleat comes from just beyond. You can squeeze through sideways, or climb over the lower stack.",
+      "narration": "Between the two stacks is a narrow gap. At the far end, the air looks thin and wrinkled, like a curtain in a draft. \"Careful,\" whispers a dock worker. \"It breathes.\" The bleat comes from just beyond. You can squeeze through sideways, climb over the lower stack, or crawl along the wet bottom.",
       "choices": [
         {
           "id": "squeeze",
           "label": "Squeeze through sideways",
           "icon": "feather",
-          "goto": "gap_squeeze"
+          "goto": "gap_squeeze",
+          "when": {
+            "notFlag": "crates_wedged"
+          },
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "crates_forced",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "crates_wedged",
+              "value": false
+            }
+          ]
         },
         {
           "id": "climb",
           "label": "Climb over the stack",
           "icon": "hand",
-          "goto": "gap_climb"
+          "goto": "gap_climb",
+          "when": {
+            "notFlag": "crates_forced"
+          },
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "crates_forced",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "crates_wedged",
+              "value": false
+            }
+          ]
+        },
+        {
+          "id": "crawl",
+          "label": "Crawl along the bottom",
+          "icon": "hand",
+          "goto": "gap_crawl",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "crates_forced",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "crates_wedged",
+              "value": false
+            }
+          ]
         }
       ],
       "rift": "steady",
-      "art": "scenes/gemfall/exchange-docks"
+      "art": "scenes/gemfall/exchange-docks",
+      "variants": [
+        {
+          "when": {
+            "flag": "crates_wedged"
+          },
+          "text": "Your plank has pinched the stacks together. There is no room to squeeze now. You will have to climb."
+        },
+        {
+          "when": {
+            "flag": "crates_forced"
+          },
+          "text": "The stack you hauled leans over the lower one. Climbing it would bring it down. You will have to squeeze."
+        }
+      ]
     },
     "gap_squeeze": {
       "type": "check",
@@ -1560,7 +1704,8 @@
         "goto": "gap_scrape"
       },
       "rift": "steady",
-      "art": "scenes/gemfall/exchange-docks"
+      "art": "scenes/gemfall/exchange-docks",
+      "narration": "\"Breathe in,\" whispers a dock worker behind you. \"Then breathe in some more.\""
     },
     "gap_climb": {
       "type": "check",
@@ -1578,11 +1723,31 @@
         "goto": "gap_scrape"
       },
       "rift": "steady",
-      "art": "scenes/gemfall/exchange-docks"
+      "art": "scenes/gemfall/exchange-docks",
+      "narration": "\"Hands and boots,\" calls a dock worker. \"And don't look at the fold.\""
+    },
+    "gap_crawl": {
+      "type": "check",
+      "tags": [
+        "sneak"
+      ],
+      "stat": "quick",
+      "tn": 12,
+      "roller": "best",
+      "rift": "steady",
+      "art": "scenes/gemfall/exchange-docks",
+      "narration": "\"Under, then,\" whispers a dock worker. \"Mind the puddles. They are very cold puddles.\"",
+      "prompt": "Crawl along the bottom of the stacks, through the icy puddles, without bumping a crate.",
+      "onSuccess": {
+        "goto": "gap_through"
+      },
+      "onFailure": {
+        "goto": "gap_scrape"
+      }
     },
     "gap_through": {
       "type": "story",
-      "narration": "You come out the other side without knocking a crate. The boards here are wet with frost, not water. A tuft of white fuzz sits on a nail. The bleat comes again, right in front of you.",
+      "narration": "You come out the other side without knocking a crate. The boards here are wet with frost, not water. A tuft of white fuzz sits on a nail. \"Meh-eh-eh,\" says something small and cross, right in front of you.",
       "choices": [
         {
           "id": "continue",
@@ -1596,7 +1761,7 @@
     },
     "gap_scrape": {
       "type": "story",
-      "narration": "You scrape through with a squeak. You lose a button and gain a splinter. The boards here are wet with frost, not water. A tuft of white fuzz sits on a nail. The bleat comes again, right in front of you.",
+      "narration": "You scrape through with a squeak. You lose a button and gain a splinter. The boards here are wet with frost, not water. A tuft of white fuzz sits on a nail. \"Meh-eh-eh,\" says something small and cross, right in front of you.",
       "choices": [
         {
           "id": "continue",
@@ -1698,7 +1863,7 @@
     },
     "read_light": {
       "type": "story",
-      "narration": "With a Starweaver's eyes, you study the light around the fold. It has a name: Riftlight. The kid stamps twice, waiting to be picked up. Behind you, a mooring rope draws tight.",
+      "narration": "With a Starweaver's eyes, you study the light around the fold. It has a name: Riftlight. The kid stamps twice, waiting to be picked up. Behind you, a mooring rope draws tight. \"Riftlight,\" you whisper, and the light flickers, as if it heard its name.",
       "choices": [
         {
           "id": "continue",
@@ -1822,7 +1987,8 @@
         }
       ],
       "art": "scenes/riftlight/exchange-leaning-crates",
-      "rift": "steady"
+      "rift": "steady",
+      "narration": "\"Run!\" shouts the dock worker."
     },
     "anchor": {
       "type": "check",
@@ -1859,7 +2025,8 @@
         }
       ],
       "art": "scenes/riftlight/exchange-leaning-crates",
-      "rift": "steady"
+      "rift": "steady",
+      "narration": "\"Around the post!\" shouts the dock worker. \"Around and around!\""
     },
     "swoop": {
       "type": "check",
@@ -1893,7 +2060,8 @@
         }
       ],
       "art": "scenes/riftlight/exchange-leaning-crates",
-      "rift": "steady"
+      "rift": "steady",
+      "narration": "\"Go, go!\" shouts the dock worker."
     },
     "smash": {
       "type": "check",
@@ -1930,7 +2098,8 @@
         }
       ],
       "art": "scenes/riftlight/exchange-leaning-crates",
-      "rift": "steady"
+      "rift": "steady",
+      "narration": "\"Break it!\" shouts the dock worker. \"I'll explain to the crate later.\""
     },
     "brace": {
       "type": "check",
@@ -1964,11 +2133,12 @@
         }
       ],
       "art": "scenes/riftlight/exchange-leaning-crates",
-      "rift": "steady"
+      "rift": "steady",
+      "narration": "\"Hold it!\" shouts the dock worker. \"Hold it and don't let go!\""
     },
     "caught": {
       "type": "story",
-      "narration": "You tuck the kid against your chest. The dock worker lets go of her end of the line before it takes her too. You keep yours. The quay folds out of sight.",
+      "narration": "You tuck the kid against your chest. \"Let go!\" yells the dock worker, and lets go of her end before it takes her too. You keep yours. The quay folds out of sight.",
       "choices": [
         {
           "id": "continue",
@@ -1992,7 +2162,7 @@
     },
     "together": {
       "type": "story",
-      "narration": "The kid scrambles into the loop of rope between you. You pull it close. The line holds you together as the quay folds out of sight.",
+      "narration": "The kid scrambles into the loop of rope between you. You pull it close. \"Hold on!\" somebody shouts, far away. The line holds you together as the quay folds out of sight.",
       "choices": [
         {
           "id": "continue",
@@ -2016,7 +2186,7 @@
     },
     "tumbled": {
       "type": "story",
-      "narration": "The kid lands against your chest. You tumble through together, dragging the loose end of the rope.",
+      "narration": "The kid lands against your chest. You tumble through together, dragging the loose end of the rope. \"Got you,\" you gasp, and the kid says, \"Meh.\"",
       "choices": [
         {
           "id": "continue",
@@ -2086,7 +2256,7 @@
     },
     "ridge_ok": {
       "type": "story",
-      "narration": "Linked together, you lean into the wind and walk. The ridge grows bigger. Behind it, the snow is quiet. The kid peeks out of the sling, sneezes, and looks very proud of itself.",
+      "narration": "Linked together, you lean into the wind and walk. The ridge grows bigger. Behind it, the snow is quiet. The kid peeks out of the sling, sneezes, and looks very proud of itself. \"Nearly there,\" you tell the kid. \"Nearly warm.\"",
       "choices": [
         {
           "id": "continue",
@@ -2105,7 +2275,7 @@
     },
     "ridge_drift": {
       "type": "story",
-      "narration": "The wind shoves, and you all slide across the snow in a heap, like a sled with elbows. You stop against the low ridge, laughing a little. The kid peeks out and looks proud of you anyway.",
+      "narration": "The wind shoves, and you all slide across the snow in a heap, like a sled with elbows. You stop against the low ridge, laughing a little. The kid peeks out and looks proud of you anyway. \"Again?\" somebody groans, and everyone laughs.",
       "choices": [
         {
           "id": "continue",
@@ -2163,13 +2333,21 @@
       },
       "onFailure": {
         "goto": "white",
-        "narration": "The kid wiggles free, sneezes, and burrows back in on its own."
+        "narration": "The kid wiggles free, sneezes, and burrows into the warmest coat it can find, which is not yours. It has taken everyone's warmth on the way. Your fingers are numb.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
       },
       "art": "scenes/riftlight/exchange-ridge-lee"
     },
     "white": {
       "type": "rest",
-      "narration": "White slopes rise all around. Far below, water runs under a skin of ice. The kid peeks out at the empty snow and climbs straight back into your coat. Somewhere beyond the ridge, a bell rings.",
+      "narration": "White slopes rise all around. Far below, water runs under a skin of ice. So this is where the snow on the quay came from: a mountain, on the other side of a tear in the air. But how can a harbor and a mountain touch? The kid peeks out at the empty snow and climbs straight back into your coat. Somewhere beyond the ridge, a bell rings.",
       "heal": 0,
       "choices": [],
       "outcome": "success",
@@ -2200,11 +2378,18 @@
       },
       "onSuccess": {
         "goto": "delivery",
-        "narration": "The rope drops neatly over his hook. \"Lovely,\" says the pilot, and hauls the barge in."
+        "narration": "The rope drops neatly over his hook. \"Lovely throw!\" says the pilot, hauling the barge in close. \"With an arm like that, I can steer right up to the wall.\"",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "barge_rope_caught",
+            "value": true
+          }
+        ]
       },
       "onFailure": {
         "goto": "delivery",
-        "narration": "The rope plops into the harbor. The pilot fishes it out with his hook and hauls the barge in anyway."
+        "narration": "The rope plops into the harbor. The pilot fishes it out with his hook and hauls the barge in himself, muttering to it. \"There, there, old tub. Some folk throw like fish.\""
       },
       "art": "scenes/riftlight/exchange-barge-sacks"
     },
@@ -2225,11 +2410,18 @@
       },
       "onSuccess": {
         "goto": "quay_rest",
-        "narration": "The sack sails from hand to hand without touching a puddle. Six crews cheer."
+        "narration": "The sack sails from hand to hand without touching a puddle. Six crews cheer. \"Supper saved!\" shouts a sailor with potato on her chin. She presses a honeycake into your hands. \"For later. Or for somebody small and hungry.\"",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "honeycake",
+            "to": "party"
+          }
+        ]
       },
       "onFailure": {
         "goto": "quay_rest",
-        "narration": "A sack lands in a puddle. A crew fishes it out and cheers anyway."
+        "narration": "A sack lands in a puddle and splits. Potatoes roll everywhere. The crews are still chasing them down the quay when you walk on. \"Not now,\" a sailor calls. \"Potato emergency.\""
       },
       "art": "scenes/riftlight/exchange-six-boats"
     }
@@ -2249,7 +2441,9 @@
     "npcVoices": {
       "Captain Thimble": "Chapter-scoped kitsune Sky Island captain, practical and brisk. Frustrated with a displaced island, kind to helpers. No explanation for the displacement.",
       "The gull": "Indignant, literal, chilly. Brief complaints; never explains the magic.",
-      "Fish seller": "Practical, protective of fish and helpers. Short dockside speech."
+      "Fish seller": "Practical, protective of fish and helpers. Short dockside speech.",
+      "Barge pilot": "Frogfolk barge pilot (he/him). Fussy, kind, talks to his barge. Lost his landing steps this morning and wants them back. Not Old Ossley.",
+      "Noodle seller": "She/her. Brisk, generous, talks to her soup pot as if it were a sulky pet."
     }
   },
   "presentation": {

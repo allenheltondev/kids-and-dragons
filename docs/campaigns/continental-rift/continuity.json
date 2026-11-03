@@ -690,6 +690,15 @@
             "supper_sacks"
           ],
           "introduces": {}
+        },
+        "gap_crawl": {
+          "requires": [
+            "crates",
+            "bleat",
+            "fold",
+            "dock_workers"
+          ],
+          "introduces": {}
         }
       }
     },
@@ -835,7 +844,8 @@
             "sledge"
           ],
           "introduces": {
-            "blanket": "a folded blanket"
+            "blanket": "a folded blanket",
+            "snow_source": "So that is where my snow went"
           }
         },
         "ask_help": {
@@ -846,15 +856,16 @@
             "melt_channel"
           ],
           "introduces": {
-            "blanket": "a folded blanket"
+            "blanket": "a folded blanket",
+            "snow_source": "that is where my snow went"
           }
         },
         "herder_gift": {
           "requires": [
             "herder",
-            "tin_cache",
             "melt_channel",
-            "sledge"
+            "sledge",
+            "goat"
           ],
           "introduces": {
             "supper_gift": "a bundle wrapped in a cloth"
@@ -966,15 +977,6 @@
           ],
           "introduces": {}
         },
-        "herd_play": {
-          "requires": [
-            "herd",
-            "goat",
-            "herder",
-            "lead_goat"
-          ],
-          "introduces": {}
-        },
         "herd": {
           "requires": [
             "herder",
@@ -985,33 +987,6 @@
             "hall_entrance": "a low opening in the ice",
             "low_note": "a deep note"
           }
-        },
-        "patient": {
-          "requires": [
-            "goat",
-            "herd",
-            "herder",
-            "hall_entrance"
-          ],
-          "introduces": {}
-        },
-        "sleeve": {
-          "requires": [
-            "goat",
-            "herder",
-            "hall_entrance"
-          ],
-          "introduces": {
-            "nibbled_cuff": "The kid gives it an interested nibble"
-          }
-        },
-        "hum": {
-          "requires": [
-            "goat",
-            "low_note",
-            "hall_entrance"
-          ],
-          "introduces": {}
         },
         "hall": {
           "requires": [
@@ -1086,14 +1061,6 @@
             "songbook": "an open songbook"
           }
         },
-        "song_answer": {
-          "requires": [
-            "herder",
-            "hall",
-            "low_note"
-          ],
-          "introduces": {}
-        },
         "note_try": {
           "requires": [
             "hall",
@@ -1124,7 +1091,8 @@
           ],
           "introduces": {
             "travelers": "Three travelers in dark cloaks",
-            "grazing_route": "It led to the herd's sheltered grazing ledge"
+            "grazing_route": "It led to the herd's sheltered grazing ledge",
+            "strange_melt": "The melt has been strange since the mountain woke"
           },
           "conditional": [
             {
@@ -1232,7 +1200,8 @@
             "rope"
           ],
           "introduces": {
-            "drift": "a white drift"
+            "drift": "a white drift",
+            "snow_uphill": "the loose snow drifts up it"
           }
         },
         "drift_probe": {
@@ -1351,6 +1320,29 @@
           "introduces": {
             "seam_tested": "Each time the note sounds"
           }
+        },
+        "cairn_stuck": {
+          "requires": [
+            "tin_cache"
+          ],
+          "introduces": {}
+        },
+        "carry": {
+          "requires": [
+            "goat",
+            "herder",
+            "hall_entrance"
+          ],
+          "introduces": {}
+        },
+        "hum_door": {
+          "requires": [
+            "goat",
+            "herder",
+            "low_note",
+            "hall_entrance"
+          ],
+          "introduces": {}
         }
       }
     },
@@ -1379,21 +1371,22 @@
           "requires": [
             "griffin",
             "unicorn",
-            "map"
+            "map",
+            "travelers"
           ],
           "introduces": {
             "orin": "I'm Orin Vale",
             "olivia": "Lady Olivia",
             "seren": "Seren Wisp",
-            "instruments": "little brass instruments",
-            "ring_case": "a case of small rings"
+            "trav_sledge": "a sled piled with cases"
           }
         },
         "arrival_story": {
           "requires": [
             "orin",
             "olivia",
-            "goat"
+            "goat",
+            "exchange"
           ],
           "introduces": {}
         },
@@ -1403,22 +1396,47 @@
             "olivia",
             "seren"
           ],
-          "introduces": {}
+          "introduces": {
+            "rifts": "We call them rifts"
+          }
+        },
+        "seren": {
+          "requires": [
+            "seren",
+            "orin"
+          ],
+          "introduces": {},
+          "conditional": [
+            {
+              "flag": "starweaver_read_first_rift",
+              "requires": [
+                "riftlight"
+              ]
+            }
+          ]
         },
         "fellowship": {
           "requires": [
             "orin",
             "olivia",
             "seren",
-            "ring_case"
+            "trav_sledge",
+            "map"
           ],
           "introduces": {
             "riftseekers": "Riftseekers",
-            "rifts": "these openings rifts",
-            "trav_sledge": "travelers' sled"
+            "rifts": "We follow rifts"
           }
         },
         "sledge_lift": {
+          "requires": [
+            "trav_sledge",
+            "orin",
+            "olivia"
+          ],
+          "introduces": {}
+        },
+        "sledge_pole": {
           "requires": [
             "trav_sledge",
             "orin",
@@ -1442,43 +1460,6 @@
           ],
           "introduces": {}
         },
-        "ring_sort": {
-          "requires": [
-            "seren",
-            "ring_case"
-          ],
-          "introduces": {}
-        },
-        "seren": {
-          "requires": [
-            "seren",
-            "orin",
-            "map"
-          ],
-          "introduces": {},
-          "conditional": [
-            {
-              "flag": "starweaver_read_first_rift",
-              "requires": [
-                "riftlight"
-              ]
-            },
-            {
-              "notFlag": "starweaver_read_first_rift",
-              "requires": [
-                "instruments"
-              ]
-            }
-          ]
-        },
-        "instruments": {
-          "requires": [
-            "orin",
-            "olivia",
-            "instruments"
-          ],
-          "introduces": {}
-        },
         "corner_hunt": {
           "requires": [
             "orin",
@@ -1486,224 +1467,77 @@
           ],
           "introduces": {}
         },
-        "lead": {
+        "map_spread": {
           "requires": [
             "orin",
             "map",
-            "grazing_route",
+            "glacier",
             "herder",
-            "herd"
+            "grazing_route"
+          ],
+          "introduces": {
+            "great_river": "the Great River"
+          }
+        },
+        "map_spot": {
+          "requires": [
+            "orin",
+            "seren",
+            "olivia",
+            "map"
+          ],
+          "introduces": {}
+        },
+        "map_wrong": {
+          "requires": [
+            "orin",
+            "seren",
+            "map",
+            "exchange"
           ],
           "introduces": {
             "frostfang": "Frostfang",
-            "cairnstep": "They call it the Cairnstep"
-          }
+            "cairnstep": "call that pass the Cairnstep",
+            "campaign_question": "Something is moving the land"
+          },
+          "conditional": [
+            {
+              "flag": "departure_told_goat",
+              "requires": [
+                "goat"
+              ]
+            }
+          ]
         },
         "olivia": {
           "requires": [
             "olivia",
             "orin",
             "seren",
-            "map",
             "grazing_route",
+            "herd",
             "rifts"
           ],
-          "introduces": {}
-        },
-        "help_now": {
-          "requires": [
-            "olivia",
-            "orin",
-            "seren",
-            "herder",
-            "sledge"
-          ],
           "introduces": {
-            "supper_gift": "a supper bundle from her pack"
-          }
-        },
-        "safe_routes": {
-          "requires": [
-            "orin",
-            "olivia",
-            "seren",
-            "herder",
-            "cairnstep"
-          ],
-          "introduces": {
-            "supper_gift": "a supper bundle for the herder"
+            "hay_cakes": "hay-cakes"
           }
         },
         "haul_supper": {
           "requires": [
+            "olivia",
             "herder",
-            "trav_sledge",
-            "supper_gift",
-            "orin"
+            "hay_cakes",
+            "herd",
+            "sledge"
           ],
           "introduces": {}
         },
         "chalk_route": {
           "requires": [
+            "orin",
             "herder",
-            "orin",
-            "cairnstep"
-          ],
-          "introduces": {}
-        },
-        "route": {
-          "requires": [
-            "orin",
-            "seren",
-            "frostfang",
-            "hall",
-            "seam",
-            "learned_note"
-          ],
-          "introduces": {
-            "great_river": "The Great River starts here",
-            "ice_shelf": "the ice shelf",
-            "ashspan": "Ashspan Bridge"
-          }
-        },
-        "lookout": {
-          "requires": [
-            "orin",
-            "great_river",
-            "ice_shelf"
-          ],
-          "introduces": {
-            "spyglass": "spyglass"
-          }
-        },
-        "lookout_climb": {
-          "requires": [
-            "ice_shelf",
-            "spyglass"
-          ],
-          "introduces": {}
-        },
-        "lookout_sky": {
-          "requires": [
-            "ice_shelf"
-          ],
-          "introduces": {}
-        },
-        "lookout_fly": {
-          "requires": [
-            "ice_shelf",
-            "great_river"
-          ],
-          "introduces": {}
-        },
-        "sketch": {
-          "requires": [
-            "orin",
-            "seren",
-            "map",
-            "spyglass"
-          ],
-          "introduces": {}
-        },
-        "sketch_shelf": {
-          "requires": [
-            "orin",
-            "olivia",
-            "ice_shelf",
-            "map"
-          ],
-          "introduces": {}
-        },
-        "sketch_bend": {
-          "requires": [
-            "seren",
-            "olivia",
-            "great_river",
-            "map"
-          ],
-          "introduces": {}
-        },
-        "sketch_hall": {
-          "requires": [
-            "orin",
-            "olivia",
-            "seam",
-            "hall",
-            "map"
-          ],
-          "introduces": {}
-        },
-        "tarp": {
-          "requires": [
-            "trav_sledge",
-            "olivia"
-          ],
-          "introduces": {}
-        },
-        "tea": {
-          "requires": [
-            "seren",
-            "orin",
-            "trav_sledge"
-          ],
-          "introduces": {
-            "stove": "small stove"
-          }
-        },
-        "tea_seren": {
-          "requires": [
-            "seren",
-            "stove"
-          ],
-          "introduces": {}
-        },
-        "tea_olivia": {
-          "requires": [
-            "olivia",
-            "orin",
-            "stove",
-            "rifts"
-          ],
-          "introduces": {}
-        },
-        "supplies": {
-          "requires": [
-            "seren",
             "herd",
-            "trav_sledge",
-            "stove"
-          ],
-          "introduces": {
-            "spares_tin": "battered tin",
-            "whistle_offer": "brave whistle"
-          }
-        },
-        "supplies_buy": {
-          "requires": [
-            "seren",
-            "spares_tin",
-            "whistle_offer"
-          ],
-          "introduces": {}
-        },
-        "supplies_feed": {
-          "requires": [
-            "herder",
-            "herd"
-          ],
-          "introduces": {}
-        },
-        "supplies_tight": {
-          "requires": [
-            "seren",
-            "trav_sledge"
-          ],
-          "introduces": {}
-        },
-        "supplies_oil": {
-          "requires": [
-            "olivia",
-            "trav_sledge"
+            "olivia"
           ],
           "introduces": {}
         },
@@ -1720,52 +1554,57 @@
         "test_chime": {
           "requires": [
             "listening_chime",
-            "orin",
-            "chime_rules"
-          ],
-          "introduces": {}
-        },
-        "ring": {
-          "requires": [
-            "listening_chime",
-            "orin",
+            "olivia",
             "seren",
-            "rifts"
+            "orin",
+            "hall",
+            "seam"
           ],
           "introduces": {}
         },
-        "wrap": {
+        "ring_hard": {
           "requires": [
             "listening_chime",
-            "orin",
-            "chime_rules"
+            "olivia",
+            "herder",
+            "hall"
+          ],
+          "introduces": {}
+        },
+        "listen_chime": {
+          "requires": [
+            "listening_chime",
+            "seren",
+            "olivia",
+            "hall",
+            "learned_note"
           ],
           "introduces": {}
         },
         "chime_jar": {
           "requires": [
             "listening_chime",
-            "orin",
             "seren"
           ],
           "introduces": {}
         },
-        "chime_whistle": {
+        "chime_lean": {
           "requires": [
             "listening_chime",
             "orin",
-            "whistle_offer"
+            "olivia",
+            "seren",
+            "glacier"
           ],
-          "introduces": {}
+          "introduces": {
+            "chime_lean": "it points up at the high glacier"
+          }
         },
         "trial_intro": {
           "requires": [
             "seren",
             "olivia",
-            "orin",
-            "instruments",
-            "listening_chime",
-            "chime_rules"
+            "orin"
           ],
           "introduces": {
             "practice_rings": "three rings on a flat stone"
@@ -1774,15 +1613,14 @@
         "trial_read": {
           "requires": [
             "practice_rings",
-            "olivia"
+            "olivia",
+            "orin"
           ],
           "introduces": {}
         },
         "trial_ear": {
           "requires": [
-            "practice_rings",
-            "olivia",
-            "orin"
+            "practice_rings"
           ],
           "introduces": {}
         },
@@ -1809,19 +1647,125 @@
           ],
           "introduces": {}
         },
-        "trial_echo": {
+        "route": {
           "requires": [
-            "practice_rings",
-            "seren"
+            "orin",
+            "seren",
+            "great_river",
+            "frostfang",
+            "cairnstep",
+            "hall",
+            "seam",
+            "learned_note"
+          ],
+          "introduces": {
+            "ice_shelf": "the ice shelf",
+            "ashspan": "Ashspan Bridge"
+          }
+        },
+        "lookout": {
+          "requires": [
+            "orin",
+            "great_river",
+            "ice_shelf"
+          ],
+          "introduces": {
+            "spyglass": "spyglass"
+          }
+        },
+        "lookout_climb": {
+          "requires": [
+            "ice_shelf",
+            "orin"
           ],
           "introduces": {}
         },
-        "trial_all": {
+        "lookout_sky": {
           "requires": [
-            "practice_rings",
-            "seren",
-            "olivia",
+            "ice_shelf",
             "orin"
+          ],
+          "introduces": {}
+        },
+        "lookout_chalk": {
+          "requires": [
+            "ice_shelf",
+            "orin"
+          ],
+          "introduces": {}
+        },
+        "lookout_fly": {
+          "requires": [
+            "ice_shelf",
+            "great_river"
+          ],
+          "introduces": {}
+        },
+        "tarp": {
+          "requires": [
+            "trav_sledge",
+            "olivia",
+            "frostfang"
+          ],
+          "introduces": {}
+        },
+        "tea": {
+          "requires": [
+            "seren",
+            "orin",
+            "trav_sledge"
+          ],
+          "introduces": {
+            "stove": "small stove"
+          }
+        },
+        "tea_seren": {
+          "requires": [
+            "seren",
+            "stove"
+          ],
+          "introduces": {}
+        },
+        "tea_olivia": {
+          "requires": [
+            "olivia",
+            "orin",
+            "stove"
+          ],
+          "introduces": {}
+        },
+        "supplies": {
+          "requires": [
+            "seren",
+            "herder",
+            "herd",
+            "stove"
+          ],
+          "introduces": {
+            "spares_tin": "battered tin",
+            "whistle_offer": "brave whistle"
+          }
+        },
+        "supplies_buy": {
+          "requires": [
+            "seren",
+            "spares_tin",
+            "whistle_offer"
+          ],
+          "introduces": {}
+        },
+        "herder_thanks": {
+          "requires": [
+            "herder",
+            "herd",
+            "olivia"
+          ],
+          "introduces": {}
+        },
+        "supplies_feed": {
+          "requires": [
+            "herder",
+            "herd"
           ],
           "introduces": {}
         },
@@ -1834,7 +1778,8 @@
             "ice_shelf",
             "cairnstep",
             "ashspan",
-            "herd"
+            "listening_chime",
+            "glacier"
           ],
           "introduces": {}
         },
@@ -1879,14 +1824,11 @@
             "olivia",
             "seren",
             "orin",
-            "map",
-            "cairnstep",
-            "ring_case",
-            "instruments"
+            "map"
           ],
           "introduces": {}
         },
-        "camp_play": {
+        "send_off": {
           "requires": [
             "herder",
             "herd",
@@ -1900,12 +1842,11 @@
             "hall",
             "glacier",
             "ice_shelf",
-            "frostfang",
             "listening_chime",
             "cairnstep",
-            "herd",
             "seam",
-            "learned_note"
+            "learned_note",
+            "ashspan"
           ],
           "introduces": {}
         },
@@ -1924,7 +1865,11 @@
         },
         "set_out": {
           "requires": [
-            "hall"
+            "listening_chime",
+            "glacier",
+            "cairnstep",
+            "ashspan",
+            "ice_shelf"
           ],
           "introduces": {}
         }
