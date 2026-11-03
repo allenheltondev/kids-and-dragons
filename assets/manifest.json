@@ -1880,7 +1880,7 @@
     },
     {
       "id": "dragonling_stone_keeper",
-      "name": "Boundary-stone keeper",
+      "name": "Tally",
       "basis": "dragonling",
       "scale": "medium",
       "heightCm": 130,
@@ -2144,7 +2144,7 @@
     },
     {
       "id": "pass_keeper",
-      "name": "Pass keeper",
+      "name": "Brask",
       "basis": "griffin",
       "scale": "medium_to_large",
       "heightCm": 210,

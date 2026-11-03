@@ -19,7 +19,7 @@
       ],
       "speaks": true,
       "status": "provisional",
-      "lineCount": 6106
+      "lineCount": 6108
     },
     "party": {
       "name": "The party",
@@ -38,7 +38,7 @@
       ],
       "speaks": true,
       "status": "provisional",
-      "lineCount": 56
+      "lineCount": 57
     },
     "pib": {
       "name": "Pib",
@@ -1324,6 +1324,10 @@
           "key": "old_ossley"
         },
         {
+          "chapter": "riftlight-ashspan-bridge",
+          "key": "Old Ossley"
+        },
+        {
           "chapter": "riftlight-headwaters-washout",
           "key": "Old Ossley"
         }
@@ -1355,8 +1359,8 @@
           "address": "riftlight-saltrot-arrival/ossley_done/narration"
         }
       ],
-      "lineCount": 34,
-      "guessedLines": 1,
+      "lineCount": 38,
+      "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
     },
@@ -1765,6 +1769,10 @@
         {
           "chapter": "gemfall-03c",
           "key": "tamsin"
+        },
+        {
+          "chapter": "riftlight-frostfang-shore",
+          "key": "Tamsin"
         }
       ],
       "chapters": [
@@ -1779,20 +1787,20 @@
       },
       "lines": [
         {
-          "text": "Somebody will thank you in the dark. We give one to anyone who ties a rail.",
-          "address": "riftlight-frostfang-shore/safety_done/narration"
+          "text": "Fair enough. You've done plenty. I'll tie one here myself, first thing tomorrow.",
+          "address": "riftlight-frostfang-shore/safety_leave/narration"
         },
         {
-          "text": "It will do. Somebody hold it, and somebody climb three rungs.",
-          "address": "riftlight-frostfang-shore/foot_set/variants/0"
+          "text": "Somebody hold it, and somebody climb three rungs. Tell me what you see on the cliff.",
+          "address": "riftlight-frostfang-shore/foot_set/narration"
         },
         {
-          "text": "Even a little hay is worth keeping. Pass it up, hand to hand.",
-          "address": "riftlight-frostfang-shore/hay_relay/variants/0"
+          "text": "Hay for the snowhorn herd! That's their winter. If it floats off, it's gone.",
+          "address": "riftlight-frostfang-shore/driftline/narration"
         }
       ],
-      "lineCount": 33,
-      "guessedLines": 1,
+      "lineCount": 44,
+      "guessedLines": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -2383,6 +2391,10 @@
         {
           "chapter": "gemfall-05b",
           "key": "runner"
+        },
+        {
+          "chapter": "riftlight-boundary-stone-bank",
+          "key": "Runner"
         }
       ],
       "chapters": [
@@ -2411,7 +2423,7 @@
           "address": "gemfall-05b/scene_runners_post_rush/narration"
         }
       ],
-      "lineCount": 16,
+      "lineCount": 14,
       "guessedLines": 2,
       "speaks": true,
       "status": "provisional"
@@ -2825,6 +2837,10 @@
         {
           "chapter": "gemfall-05a",
           "key": "brask"
+        },
+        {
+          "chapter": "riftlight-cairnstep-pass",
+          "key": "Brask"
         }
       ],
       "chapters": [
@@ -2844,15 +2860,16 @@
           "address": "riftlight-cairnstep-pass/supplies/narration"
         },
         {
-          "text": "A goat could walk it. A goat should walk it on a rope. Now, what do we write?",
-          "address": "riftlight-cairnstep-pass/neck_done/narration"
+          "text": "Or roll a stone along it and listen. That takes longer. Listening always does.",
+          "address": "riftlight-cairnstep-pass/moved/narration"
         },
         {
-          "text": "The neck. The narrow bridge of rock at the top of the pass. It is hollow underneath.",
-          "address": "riftlight-cairnstep-pass/tested/narration"
+          "text": "A goat could walk it. A goat should walk it on a rope. Now. What do we write?",
+          "address": "riftlight-cairnstep-pass/neck_done/narration"
         }
       ],
-      "lineCount": 46,
+      "lineCount": 55,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -4410,6 +4427,86 @@
       "speaks": true,
       "status": "provisional"
     },
+    "bryn": {
+      "name": "Bryn",
+      "kind": "character",
+      "who": "Bryn, a dragonling bridge-mender (she/her). Gruff and proud, and puts the important word first: \"Planks, I have. Hands, I do not.\" Pats beams like ponies. Wants her bridge whole by market day.",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/bryn",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-ashspan-bridge",
+          "key": "Bryn"
+        }
+      ],
+      "chapters": [
+        "riftlight-ashspan-bridge"
+      ],
+      "aliases": [],
+      "gemini": {
+        "voice": "Gacrux"
+      },
+      "lines": [
+        {
+          "text": "That pile has been there since dawn. I think it is breathing.",
+          "address": "riftlight-ashspan-bridge/plank_pile/narration"
+        },
+        {
+          "text": "No rock like that for a hundred miles. My grandmother said the bridge was built on it. It was here first.",
+          "address": "riftlight-ashspan-bridge/span_stone/narration"
+        },
+        {
+          "text": "Kindling. For calling goats. They ignore it.",
+          "address": "riftlight-ashspan-bridge/cart_stuck/narration"
+        }
+      ],
+      "lineCount": 14,
+      "speaks": true,
+      "status": "provisional"
+    },
+    "tilly": {
+      "name": "Tilly",
+      "kind": "character",
+      "who": "Tilly, a griffin egg farmer taking duck eggs to market (she/her). Worried, kind and a little dramatic. Counts her eggs, loses count, counts again. Wants her eggs to wait until market. They do not.",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/tilly",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-ashspan-bridge",
+          "key": "Tilly"
+        }
+      ],
+      "chapters": [
+        "riftlight-ashspan-bridge"
+      ],
+      "aliases": [],
+      "gemini": {
+        "voice": "Aoede"
+      },
+      "lines": [
+        {
+          "text": "I'm Tilly. Duck eggs, for market across the river. They aren't due for days. They disagree.",
+          "address": "riftlight-ashspan-bridge/ferry_ask/narration"
+        },
+        {
+          "text": "That bump at the dock. It woke them up early.",
+          "address": "riftlight-ashspan-bridge/hatch/variants/0"
+        },
+        {
+          "text": "Eggs, are supposed to wait until market.",
+          "address": "riftlight-ashspan-bridge/duck_plan/narration"
+        }
+      ],
+      "lineCount": 10,
+      "speaks": true,
+      "status": "provisional"
+    },
     "saltrot_guide": {
       "name": "Puddle",
       "kind": "character",
@@ -4515,6 +4612,87 @@
         }
       ],
       "lineCount": 68,
+      "speaks": true,
+      "status": "provisional"
+    },
+    "tally": {
+      "name": "Tally",
+      "kind": "character",
+      "who": "Tally, the dragonling who keeps the boundary stones above the river and the counting stones up the road (she/her). Brisk, cheerful and exact. Counts everything out loud, under her breath: stones, cups, steps, ducks, visitors. Loses count only when she is worried, and then starts again from one. Thanks every stone by name. Wants the count kept true: a counter's stones must never move, and hers have. Pays her helpers in cake.",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/dragonling_stone_keeper",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-boundary-stone-bank",
+          "key": "Tally"
+        }
+      ],
+      "chapters": [
+        "riftlight-boundary-stone-bank"
+      ],
+      "aliases": [],
+      "gemini": {
+        "voice": "Autonoe"
+      },
+      "lines": [
+        {
+          "text": "Kettle saved. The river has no idea how to make tea. Mosslight. For work at dusk.",
+          "address": "riftlight-boundary-stone-bank/surge_safe/narration"
+        },
+        {
+          "text": "Higher than my grandmother's year! She complained about that one for a month.",
+          "address": "riftlight-boundary-stone-bank/marker_set/narration"
+        },
+        {
+          "text": "It came over the top. Over the bank, and back down. It pushed him from above.",
+          "address": "riftlight-boundary-stone-bank/dug_found/narration"
+        }
+      ],
+      "lineCount": 46,
+      "guessedLines": 4,
+      "speaks": true,
+      "status": "provisional"
+    },
+    "pebble": {
+      "name": "Pebble",
+      "kind": "character",
+      "who": "Pebble, Brask's young apprentice (she/her). Small, quick and nervous, with an inky beak. Drew this season's page and is afraid she drew it wrong. Counts in griffin, which has different numbers. Brave once she has a reason.",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/pebble",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-cairnstep-pass",
+          "key": "Pebble"
+        }
+      ],
+      "chapters": [
+        "riftlight-cairnstep-pass"
+      ],
+      "aliases": [],
+      "gemini": {
+        "voice": "Despina"
+      },
+      "lines": [
+        {
+          "text": "Griffins learn a page by heart, in case the book gets wet. Watch twice, then tap it back.",
+          "address": "riftlight-cairnstep-pass/drawing_memory/narration"
+        },
+        {
+          "text": "Herders, with their goats. They'll want to know if this path is real.",
+          "address": "riftlight-cairnstep-pass/tea_x/narration"
+        },
+        {
+          "text": "It was true when I drew it. Now it's true again. Nervous packing.",
+          "address": "riftlight-cairnstep-pass/pebble_done/narration"
+        }
+      ],
+      "lineCount": 19,
       "speaks": true,
       "status": "provisional"
     },
@@ -5807,74 +5985,6 @@
       "speaks": true,
       "status": "provisional"
     },
-    "tilly": {
-      "name": "Tilly",
-      "kind": "character",
-      "who": "Tilly.",
-      "pronouns": "she/her",
-      "pronounsFrom": "narration",
-      "gender": "female",
-      "genderFrom": "narration",
-      "figure": "cast/tilly",
-      "chapters": [
-        "riftlight-ashspan-bridge"
-      ],
-      "aliases": [],
-      "gemini": {
-        "voice": "Aoede"
-      },
-      "lines": [
-        {
-          "text": "I'm Tilly. Duck eggs, for market across the river. They are not due for days. They disagree.",
-          "address": "riftlight-ashspan-bridge/ferry_ask/narration"
-        },
-        {
-          "text": "Do not share them with ducks. They take advantage.",
-          "address": "riftlight-ashspan-bridge/cakes/narration"
-        },
-        {
-          "text": "I must give you something. I have oat cakes, and a story about a goose. The cakes are better. The story is longer.",
-          "address": "riftlight-ashspan-bridge/gift_plan/narration"
-        }
-      ],
-      "lineCount": 9,
-      "speaks": true,
-      "status": "provisional"
-    },
-    "bryn": {
-      "name": "Bryn",
-      "kind": "character",
-      "who": "Bryn.",
-      "pronouns": "she/her",
-      "pronounsFrom": "narration",
-      "gender": "female",
-      "genderFrom": "narration",
-      "figure": "cast/bryn",
-      "chapters": [
-        "riftlight-ashspan-bridge"
-      ],
-      "aliases": [],
-      "gemini": {
-        "voice": "Gacrux"
-      },
-      "lines": [
-        {
-          "text": "That pile must move before my cart can come down. It has been there since dawn. I think it is breathing.",
-          "address": "riftlight-ashspan-bridge/plank_pile/narration"
-        },
-        {
-          "text": "Kindling. For calling goats. They ignore it.",
-          "address": "riftlight-ashspan-bridge/cart_stuck/narration"
-        },
-        {
-          "text": "Fastenings first. Then I call the travelers.",
-          "address": "riftlight-ashspan-bridge/test_check/narration"
-        }
-      ],
-      "lineCount": 12,
-      "speaks": true,
-      "status": "provisional"
-    },
     "ducklings": {
       "name": "Ducklings",
       "kind": "group",
@@ -5891,8 +6001,8 @@
       },
       "lines": [
         {
-          "text": "I would have missed market.",
-          "address": "riftlight-ashspan-bridge/folk_cross/narration"
+          "text": "Peep.",
+          "address": "riftlight-ashspan-bridge/coax_check/narration"
         }
       ],
       "lineCount": 1,
@@ -5931,42 +6041,6 @@
       "speaks": true,
       "status": "provisional"
     },
-    "stone_keeper": {
-      "name": "Stone keeper",
-      "kind": "character",
-      "who": "Stone keeper.",
-      "pronouns": "she/her",
-      "pronounsFrom": "narration",
-      "gender": "female",
-      "genderFrom": "narration",
-      "figure": "cast/dragonling_stone_keeper",
-      "chapters": [
-        "riftlight-boundary-stone-bank",
-        "riftlight-stone-counters"
-      ],
-      "aliases": [],
-      "gemini": {
-        "voice": "Kore"
-      },
-      "lines": [
-        {
-          "text": "Kettle saved. The river has no idea how to make tea. Mosslight. For work at dusk.",
-          "address": "riftlight-boundary-stone-bank/surge_safe/narration"
-        },
-        {
-          "text": "Cut the notch right on that line. It will stay for a thousand years. No pressure.",
-          "address": "riftlight-boundary-stone-bank/notch_plan/narration"
-        },
-        {
-          "text": "Higher than my grandmother's year! She complained about that one for a month.",
-          "address": "riftlight-boundary-stone-bank/marker_set/narration"
-        }
-      ],
-      "lineCount": 47,
-      "guessedLines": 1,
-      "speaks": true,
-      "status": "provisional"
-    },
     "skupper_guide": {
       "name": "Skupper guide",
       "kind": "character",
@@ -5998,60 +6072,6 @@
         }
       ],
       "lineCount": 7,
-      "speaks": true,
-      "status": "provisional"
-    },
-    "pass_keeper": {
-      "name": "Pass keeper",
-      "kind": "character",
-      "who": "Pass keeper.",
-      "gender": "unknown",
-      "genderFrom": "none",
-      "figure": "cast/pass_keeper",
-      "chapters": [
-        "riftlight-cairnstep-pass"
-      ],
-      "aliases": [],
-      "gemini": {
-        "voice": "Zubenelgenubi"
-      },
-      "lines": [],
-      "lineCount": 1,
-      "guessedLines": 1,
-      "speaks": true,
-      "status": "provisional"
-    },
-    "pebble": {
-      "name": "Pebble",
-      "kind": "character",
-      "who": "Pebble.",
-      "pronouns": "she/her",
-      "pronounsFrom": "narration",
-      "gender": "female",
-      "genderFrom": "narration",
-      "figure": "cast/pebble",
-      "chapters": [
-        "riftlight-cairnstep-pass"
-      ],
-      "aliases": [],
-      "gemini": {
-        "voice": "Despina"
-      },
-      "lines": [
-        {
-          "text": "Herders, with their goats. They will want to know if this path is real.",
-          "address": "riftlight-cairnstep-pass/tea_x/narration"
-        },
-        {
-          "text": "This goes on top. You do it. For a moment that needs one loud note.",
-          "address": "riftlight-cairnstep-pass/capstone_done/narration"
-        },
-        {
-          "text": "It was true when I drew it. Now it is true again. Nervous packing.",
-          "address": "riftlight-cairnstep-pass/pebble_done/narration"
-        }
-      ],
-      "lineCount": 11,
       "speaks": true,
       "status": "provisional"
     },
@@ -6710,6 +6730,40 @@
       },
       "lines": [],
       "lineCount": 0,
+      "speaks": true,
+      "status": "provisional"
+    },
+    "stone_keeper": {
+      "name": "Stone keeper",
+      "kind": "character",
+      "who": "Stone keeper.",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/dragonling_stone_keeper",
+      "chapters": [
+        "riftlight-stone-counters"
+      ],
+      "aliases": [],
+      "gemini": {
+        "voice": "Kore"
+      },
+      "lines": [
+        {
+          "text": "An eruption. Our oldest counts disagree about when.",
+          "address": "riftlight-stone-counters/marks/narration"
+        },
+        {
+          "text": "Better wheels. A simpler drawing. We chose both.",
+          "address": "riftlight-stone-counters/gravel/narration"
+        },
+        {
+          "text": "This is a waiting place. Not a jumping place.",
+          "address": "riftlight-stone-counters/motion_memory/narration"
+        }
+      ],
+      "lineCount": 6,
       "speaks": true,
       "status": "provisional"
     },
