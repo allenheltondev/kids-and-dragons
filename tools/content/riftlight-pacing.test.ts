@@ -16,8 +16,7 @@ it.each(["reading-room", "the-island-due-back"])("%s varies the required play wi
 it("bridge investigation keeps its core discovery on every path", () => {
   const chapter = chapters.get("riftlight-buried-bridge")!;
   expect(chapter.estimatedMinutes).toBe(30);
-  expect(Object.values(chapter.scenes).some(s => s.type === "check")).toBe(false);
-  // Flag-dependent equipment routes are covered through the engine in bridge-play.
+  // The choices' consequences are walked through the engine in riftlight-buried-bridge.test.ts.
   for (const end of allPaths(chapter, "manticore", "duskrunner").ends) {
     for (const step of chapter.goal!.steps) expect(end.flags[step.flag as string]).toBe(true);
     expect(end.flags.fragment_coast_learned).toBe(true);
