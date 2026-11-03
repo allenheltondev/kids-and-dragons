@@ -19,7 +19,7 @@
       ],
       "speaks": true,
       "status": "provisional",
-      "lineCount": 6270
+      "lineCount": 6214
     },
     "party": {
       "name": "The party",
@@ -4606,6 +4606,10 @@
           "key": "Pip Thistledown"
         },
         {
+          "chapter": "riftlight-squall-temple",
+          "key": "Pip Thistledown"
+        },
+        {
           "chapter": "riftlight-stone-counters",
           "key": "Pip Thistledown"
         },
@@ -4634,6 +4638,7 @@
         "riftlight-reading-room",
         "riftlight-saltrot-arrival",
         "riftlight-sky-islands-arrival",
+        "riftlight-squall-temple",
         "riftlight-stone-counters",
         "riftlight-the-island-due-back",
         "riftlight-the-wrong-valley",
@@ -4646,19 +4651,19 @@
       },
       "lines": [
         {
+          "text": "Lady Olivia says a good scout saves the most important thing. Which one was it?",
+          "address": "riftlight-the-island-due-back/gust_after/narration"
+        },
+        {
           "text": "Lady Olivia would bang some pots and shoo it out the far tunnel. Done by lunch!",
           "address": "riftlight-wyrm-nest/plan/narration"
         },
         {
           "text": "Lady Olivia says a good scout learns everything. That has to include lanterns.",
           "address": "riftlight-whale-road/pip_lanterns/narration"
-        },
-        {
-          "text": "Lady Olivia says it's the wind. But the wind keeps changing its mind. This doesn't.",
-          "address": "riftlight-whale-road/pip_notebook/narration"
         }
       ],
-      "lineCount": 141,
+      "lineCount": 170,
       "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
@@ -5595,6 +5600,91 @@
       "speaks": true,
       "status": "provisional"
     },
+    "keeper_clove": {
+      "name": "Keeper Clove",
+      "kind": "character",
+      "who": "Keeper Clove, the Squall Temple's kitsune keeper (he/him). Fussy, kind and brave when it counts; glasses always fogged, teapot always in hand, keeps a weather book. Has never met an island. Wants the bell rung and every keeper dry.",
+      "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "cast/new_island_keeper",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-squall-temple",
+          "key": "Keeper Clove"
+        }
+      ],
+      "chapters": [
+        "riftlight-squall-temple"
+      ],
+      "aliases": [],
+      "gemini": {
+        "voice": "Fenrir"
+      },
+      "lines": [
+        {
+          "text": "The other islands won't hear our warning tonight. But my keepers are dry.",
+          "address": "riftlight-squall-temple/keepers_in/narration"
+        },
+        {
+          "text": "Every keeper who reads this book will watch the sky a little harder now.",
+          "address": "riftlight-squall-temple/clove_pulled/narration"
+        },
+        {
+          "text": "I write one line about every storm. What should tonight's line be?",
+          "address": "riftlight-squall-temple/farewell/narration"
+        }
+      ],
+      "lineCount": 23,
+      "speaks": true,
+      "status": "provisional"
+    },
+    "tumble": {
+      "name": "Tumble",
+      "kind": "character",
+      "who": "Tumble, a young griffin island courier (she/her). Fast, cheerful and terrible at landing; carries letters and messages between the islands.",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/courier_griffin",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-squall-temple",
+          "key": "Tumble"
+        },
+        {
+          "chapter": "riftlight-the-island-due-back",
+          "key": "Tumble"
+        }
+      ],
+      "chapters": [
+        "riftlight-squall-temple",
+        "riftlight-the-island-due-back"
+      ],
+      "aliases": [],
+      "gemini": {
+        "voice": "Autonoe"
+      },
+      "lines": [
+        {
+          "text": "No flying till they're dry. Wet letters stick to my feathers.",
+          "address": "riftlight-the-island-due-back/gust_after/variants/1"
+        },
+        {
+          "text": "I owe you. Need a message carried? Anything at all?",
+          "address": "riftlight-the-island-due-back/gust_after/variants/0"
+        },
+        {
+          "text": "Squall Temple. Easy. It's big and it rings.",
+          "address": "riftlight-the-island-due-back/by_tumble/narration"
+        }
+      ],
+      "lineCount": 9,
+      "speaks": true,
+      "status": "provisional"
+    },
     "dragonling_stone_keeper": {
       "name": "Tally",
       "kind": "character",
@@ -5615,7 +5705,7 @@
       ],
       "aliases": [],
       "gemini": {
-        "voice": "Despina"
+        "voice": "Autonoe"
       },
       "lines": [
         {
@@ -5676,29 +5766,48 @@
       "speaks": true,
       "status": "provisional"
     },
-    "kitsune_keeper": {
-      "name": "Kitsune keeper",
+    "keeper_juniper": {
+      "name": "Keeper Juniper",
       "kind": "character",
-      "who": "Practical, welcoming navigator. She uses songs alongside observations and never knows an unseen cause.",
+      "who": "Keeper Juniper, the kitsune island keeper (she/her). Brisk, warm and practical; sings instructions, keeps the island songs on a scroll tied to her tail, talks to islands as if they can hear. Wants Notchbrow home safe and to know why it came early.",
       "pronouns": "she/her",
       "pronounsFrom": "narration",
       "gender": "female",
       "genderFrom": "narration",
+      "figure": "cast/island_keeper",
       "voiceNotes": [
         {
           "chapter": "riftlight-the-island-due-back",
-          "key": "Kitsune keeper"
+          "key": "Keeper Juniper"
+        },
+        {
+          "chapter": "riftlight-whale-road",
+          "key": "Keeper Juniper"
         }
       ],
       "chapters": [
-        "riftlight-the-island-due-back"
+        "riftlight-the-island-due-back",
+        "riftlight-whale-road"
       ],
       "aliases": [],
       "gemini": {
         "voice": "Schedar"
       },
-      "lines": [],
-      "lineCount": 0,
+      "lines": [
+        {
+          "text": "If I do it right, she'll let me ring it! I could use a scout who can count, too.",
+          "address": "riftlight-whale-road/pip_bell/narration"
+        },
+        {
+          "text": "I need to know which side it will touch, so the landing board is waiting there.",
+          "address": "riftlight-the-island-due-back/spot/narration"
+        },
+        {
+          "text": "Something out there turns them. I can't leave my whales to go and look. Will you?",
+          "address": "riftlight-whale-road/turn_watch/narration"
+        }
+      ],
+      "lineCount": 72,
       "speaks": true,
       "status": "provisional"
     },
@@ -5779,46 +5888,6 @@
         }
       ],
       "lineCount": 4,
-      "speaks": true,
-      "status": "provisional"
-    },
-    "keeper_juniper": {
-      "name": "Keeper Juniper",
-      "kind": "character",
-      "who": "Keeper Juniper, the kitsune island keeper (she/her). Brisk, warm and a little bossy; talks to the whales like old aunties and calls each by name. Knits one row of a scarf for every circle they swim. Wants the whales home and the island due back safely in.",
-      "pronouns": "she/her",
-      "pronounsFrom": "narration",
-      "gender": "female",
-      "genderFrom": "narration",
-      "figure": "cast/island_keeper",
-      "voiceNotes": [
-        {
-          "chapter": "riftlight-whale-road",
-          "key": "Keeper Juniper"
-        }
-      ],
-      "chapters": [
-        "riftlight-whale-road"
-      ],
-      "aliases": [],
-      "gemini": {
-        "voice": "Gacrux"
-      },
-      "lines": [
-        {
-          "text": "If I do it right, she'll let me ring it! I could use a scout who can count, too.",
-          "address": "riftlight-whale-road/pip_bell/narration"
-        },
-        {
-          "text": "Something out there turns them. I can't leave my whales to go and look. Will you?",
-          "address": "riftlight-whale-road/turn_watch/narration"
-        },
-        {
-          "text": "Pulling frightens them. Wait for the quiet beat between pulses, and sing him out.",
-          "address": "riftlight-whale-road/calf_stuck/narration"
-        }
-      ],
-      "lineCount": 31,
       "speaks": true,
       "status": "provisional"
     },
@@ -7050,59 +7119,6 @@
       "speaks": true,
       "status": "provisional"
     },
-    "temple_keeper": {
-      "name": "Temple keeper",
-      "kind": "character",
-      "who": "Temple keeper.",
-      "pronouns": "she/her",
-      "pronounsFrom": "narration",
-      "gender": "female",
-      "genderFrom": "narration",
-      "figure": "cast/kitsune_temple_keeper",
-      "chapters": [
-        "riftlight-squall-temple"
-      ],
-      "aliases": [],
-      "gemini": {
-        "voice": "Pulcherrima"
-      },
-      "lines": [
-        {
-          "text": "Everyone needs a dry lane into the hall. Let's see what still blocks the door.",
-          "address": "riftlight-squall-temple/people/narration"
-        },
-        {
-          "text": "Help us keep the temple safe as that island drifts in! First, get everyone under cover.",
-          "address": "riftlight-squall-temple/arrival/narration"
-        },
-        {
-          "text": "Now we choose. Turn it away, or hold the landing and let it settle here.",
-          "address": "riftlight-squall-temple/plan/narration"
-        }
-      ],
-      "lineCount": 16,
-      "speaks": true,
-      "status": "provisional"
-    },
-    "griffin_messenger": {
-      "name": "Griffin messenger",
-      "kind": "character",
-      "who": "Griffin messenger.",
-      "gender": "unknown",
-      "genderFrom": "none",
-      "figure": "cast/courier_griffin",
-      "chapters": [
-        "riftlight-squall-temple"
-      ],
-      "aliases": [],
-      "gemini": {
-        "voice": "Orus"
-      },
-      "lines": [],
-      "lineCount": 0,
-      "speaks": true,
-      "status": "provisional"
-    },
     "mustard": {
       "name": "Mustard",
       "kind": "character",
@@ -7133,66 +7149,6 @@
       "speaks": true,
       "status": "provisional"
     },
-    "lookout_keeper": {
-      "name": "Lookout keeper",
-      "kind": "character",
-      "who": "Lookout keeper.",
-      "pronouns": "she/her",
-      "pronounsFrom": "narration",
-      "gender": "female",
-      "genderFrom": "narration",
-      "figure": "cast/island_keeper",
-      "chapters": [
-        "riftlight-the-island-due-back"
-      ],
-      "aliases": [],
-      "gemini": {
-        "voice": "Zubenelgenubi"
-      },
-      "lines": [
-        {
-          "text": "Help us meet that island. It is due back. I expected more time to get the board out.",
-          "address": "riftlight-the-island-due-back/arrival/narration"
-        },
-        {
-          "text": "The clouds move too. Check the notch against the roof corner, or follow it through the cloud banks.",
-          "address": "riftlight-the-island-due-back/sightings/narration"
-        },
-        {
-          "text": "A message can travel without taking every secret in the bag.",
-          "address": "riftlight-the-island-due-back/message_pack/narration"
-        }
-      ],
-      "lineCount": 8,
-      "speaks": true,
-      "status": "provisional"
-    },
-    "letter_messenger": {
-      "name": "Letter messenger",
-      "kind": "character",
-      "who": "Letter messenger.",
-      "pronouns": "she/her",
-      "pronounsFrom": "narration",
-      "gender": "female",
-      "genderFrom": "narration",
-      "figure": "cast/courier_griffin",
-      "chapters": [
-        "riftlight-the-island-due-back"
-      ],
-      "aliases": [],
-      "gemini": {
-        "voice": "Umbriel"
-      },
-      "lines": [
-        {
-          "text": "Not that bit. That bit is mostly wishes.",
-          "address": "riftlight-the-island-due-back/letters/narration"
-        }
-      ],
-      "lineCount": 2,
-      "speaks": true,
-      "status": "provisional"
-    },
     "cloud_whale": {
       "name": "Cloud whale",
       "kind": "creature",
@@ -7201,6 +7157,7 @@
       "genderFrom": "none",
       "figure": "entities/cloud_whale",
       "chapters": [
+        "riftlight-the-island-due-back",
         "riftlight-whale-road"
       ],
       "aliases": [],

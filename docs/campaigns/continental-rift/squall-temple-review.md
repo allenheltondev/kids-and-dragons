@@ -1,51 +1,46 @@
-# The Temple in the Squall
+# The Temple in the Squall: design note
 
-The returning island approaches a temple island in rain. The keeper immediately
-asks for shelter and offers two plans. The earlier warning changes whether heavy
-furniture is already under cover. The saved-letter messenger and a delayed relay
-have distinct callback lines. The keeper supplies signals in every case.
+**Rewritten November 2026** to the Borrowed Ruins pilot's bar ([arc.md](arc.md)). The Wandering
+Sky's strand end.
 
-After sheltering the people, the party prepares ropes, signals and cover. One
-board asks them to work the turning rope to divert the island; the other asks
-them to hold the sheltered corner and let it settle. Each supports an objective
-victory as well as clearing the crawlers so keepers can finish the chosen work.
-The squall lowers everyone's Guard by one and pushes figures that stop in its
-crosswind. A loss breaks the empty landing after everyone has reached shelter.
-The repair spine marks untested boards and never calls a failed inspection safe.
+- **Beat:** the temple is safe or closed for repairs, and the party has seen that creatures from far
+  away are being pulled along too.
+- **Question (scene 1):** "Can we keep the temple safe as the island drifts in?"
+- **Carried by** Keeper Clove, the temple's dragonling keeper (`cast/adult_dragonling`; it is not
+  Sorrel's kitsune figure). Pip Thistledown and Fig, a small kitsune keeper, are with him, and
+  Tumble appears when her letters were saved.
+- **The piece:** bone crawlers from the far-off coast swarm the fresh magic of a tear, and Clove's
+  weather book (p2) records three islands that came early. The pull reaches everywhere.
 
-The party establishes a continuing watch before leaving. `temple_island_settled`
-and `temple_damaged` persist for the finale; preparation and goal flags stay
-local. Return to the lookout or fly with the griffin messenger to the Cairnstep.
-The island's ancient origins remain unexplained. Cloud whales are not mounts.
+## Rhythm
 
-The chapter has a rest and 14 spine decisions, six physical checks and one fight.
-The roughly 30-minute prediction is uncalibrated; family timing is unmeasured.
-The story walker covers declared fight outcomes and the staged validator checks
-the actual board. The server class-room fixture now stages the draft boards too.
-Full-graph validation tests have time to finish the larger exhaustive search.
+The party jumps from the skiff to the landing and meets the crawlers. They choose the bell first
+(a fight) or the keepers first (a rescue). Then the hall, and Pip runs off to push Notchbrow on his
+own; the party fetches him back. After that come the weather book and the rest, where push or
+settle is chosen, then the landing fight. The crawlers go home through the shrinking tear, and the
+ending is Tumble's flight to the Cairnstep. The chapter has 13 checks and 5 fight scenes (two
+fights on any path) and no games.
 
-## Review follow-up
+## Consequences
 
-The keeper is explicitly different from the lookout keeper; crawlers are described
-for a first Sky-road meeting. The delayed island letter courier cannot also offer
-to relay signals. The temple's own rescue messenger shelters in the hall early.
-Gutter, board checks and rain-gap preparation now precede the encounter; afterward
-come the outcome, the party's record and its watch payoff. The opening visibly
-closes as the squall eases. A lost fight leaves the landing closed for morning
-repairs. The recorded log or map changes the relief watch's first instructions.
-Rest uses rescued cushions and temple rice buns. Spine tests retain all six checks,
-at least 30 scenes and 14 decisions, with the chores before the climax.
+| Input or choice | Later |
+|---|---|
+| `island_warning_sent` without `island_relay_delayed` | Keepers are inside, and the bell route can skip the landing. The push poles are already rigged, so push needs no check. |
+| `island_relay_delayed` | The warning came late: keepers are outside and nothing is ready. |
+| Welcome song (no warning) | Keepers are outside with lanterns. The landing is cleared, so settling is soft and needs no check. |
+| `island_messages_saved` | Tumble can lift Fig down and fly you to Pip. |
+| Bell first or keepers first | Ringing the bell leaves the crawlers dizzy and the landing fight has fewer of them. A silent bell (keepers first, or a lost bell fight that costs the clapper) brings the whole swarm. |
+| Push (force) or settle (understand) | Pushing is quicker, but the island drifts on, still pulled. Settling sets `temple_island_settled`; it takes longer, and without cushions the rail gets crushed. |
+| Lose the landing fight | `temple_damaged`: the landing breaks, it is closed for repairs, and the island swings away. |
 
-### Pacing before and after review fixes
+## Shape and pacing
 
-| Shortest success spine | Before | After |
+| | Before | After |
 |---|---:|---:|
-| Scenes | 45 | 45 |
-| Decisions | 14 | 14 |
-| Physical checks | 6 | 6 |
-| Encounters | 1 | 1 |
-| Longest reading run | 3 | 3 |
+| Scenes | 51 | 56 |
+| Dice checks | 0 | 13 |
+| Games (inert) | 17 (11) | 0 |
+| Quoted scenes | 14 | 33 |
+| Spine scenes / votes + checks / longest reading run | 45 / 14 / 3 | 31 / 14 / 3 |
 
-### Second review follow-up
-
-The finish uses the same griffin messenger and Cairnstep destination as the exit. A rocking board now looks firm rather than sounding sound. Wording only; the spine remains 45 scenes, 14 decisions, 6 doing checks, 1 fight and a reading run of 3.
+The model predicts about 30 minutes. This is uncalibrated, and no family has timed the chapter yet.

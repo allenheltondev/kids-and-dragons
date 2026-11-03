@@ -2,16 +2,8 @@ import { expect, it } from "vitest";
 import { pacingReport } from "../../packages/shared/src/chapter-pacing.ts";
 import { chapters, allPaths } from "./riftlight-test-support.ts";
 
-// Whale road, stone counters, the wrong valley and the reading room were rebuilt with real dice in November 2026 (arc.md); their own suites test consequences.
-it.each(["the-island-due-back"])("%s varies the required play without padding the chapter with rolls", { timeout: 20_000 }, id => {
-  const chapter = chapters.get(`riftlight-${id}`)!;
-
-  for (const { shortest } of pacingReport(chapter).scenarios) {
-    expect(shortest).not.toBeNull();
-    expect(shortest!.checks).toBeLessThanOrEqual(6);
-    expect(shortest!.longestReadingRun).toBeLessThanOrEqual(5);
-  }
-});
+// The old "without padding the chapter with rolls" cap (at most 6 checks) is gone: every Riftlight chapter
+// was rebuilt with real dice in November 2026 (arc.md), and each chapter's own suite tests its consequences.
 
 it("bridge investigation keeps its core discovery on every path", () => {
   const chapter = chapters.get("riftlight-buried-bridge")!;
