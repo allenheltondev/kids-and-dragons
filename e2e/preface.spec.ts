@@ -2,11 +2,9 @@
  * The words around a chapter (#357), against the real stack, at a TV's 1280x720 and a small
  * tablet's 1024x600.
  *
- * - **Chapter start.** Before the first scene the TV shows "Last time…" (the reference campaign
- *   carries no roads, so its opener) ending with the goal, and reads it aloud in this order: the
- *   preface, "Your goal: …", the first scene's story. The goal is said once. The chapter's file
- *   is slowed to 1.5s, inside the wait, and the order holds; slower than the wait, the story is
- *   read alone and the goal after it, once (#356's order).
+ * - **Chapter start.** There is no "Last time…" card: the TV shows the goal and reads the first
+ *   scene's story, then "Your goal: …", once. The chapter's file is slowed to 1.5s, inside the
+ *   wait, and the order holds; slower than the wait, the story is read alone and the goal after it.
  * - **Late join.** A kid who sits down partway gets the TV's "Where you left off" too.
  * - **Drop-in.** A kid's phone steps away partway through and comes back: the TV shows "Where you
  *   left off", the goal, the steps ticked so far and a line from each of the last scenes. It goes
@@ -136,7 +134,7 @@ test.describe("the words around a chapter (#357)", () => {
       const code = table.code;
       // Workers off, so every chapter file comes over the wire this test can slow down.
       const tv = await device(browser, { viewport: size, serviceWorkers: "block", storageState: tvStorage(table) });
-      // The chapter's file is slow, but inside PREFACE_WAIT_MS: the preface still comes first.
+      // The chapter's file is slow, but inside PREFACE_WAIT_MS: the story still waits for it.
       await tv.route("**/content/chapters/**", async (route) => {
         await new Promise((done) => setTimeout(done, 1500));
         await route.continue();
@@ -150,25 +148,19 @@ test.describe("the words around a chapter (#357)", () => {
       const token = await sessionOf(kid, code);
       await kid.getByRole("button", { name: /begin the adventure/i }).click(TAP);
 
-      // --- Chapter start: the opener, then the goal, on the TV before the story is read ---
+      // --- Chapter start: no recap card; the story is read, then the goal, once ---
       const card = tv.getByTestId("chapter-preface");
-      await expect(card).toBeVisible(TAP);
-      await expect(card).toHaveAttribute("data-kind", "start");
-      await expect(card).toContainText("Here we go!");
-      await expect(card).toContainText(OPENER);
-      await expect(card.locator(".preface__goal")).toHaveText(`Your goal: ${GOAL}`);
-      expect(await fitProblems(tv)).toEqual([]);
-      await shot(tv, `start-${at}`);
-
-      // Read in order: the preface, the goal, then the first scene's story; the goal once.
-      await expect.poll(async () => (await said(tv)).findIndex((line) => line.includes("wall of thorns")), TAP).toBeGreaterThan(1);
+      await expect(tv.getByTestId("chapter-goal")).toBeVisible(TAP);
+      await expect(card).toHaveCount(0);
+      await expect.poll(async () => (await said(tv)).findIndex((line) => line.startsWith("Your goal:")), TAP).toBeGreaterThanOrEqual(0);
       const lines = await said(tv);
-      const preface = lines.findIndex((line) => line.startsWith("Here we go!") && line.includes(OPENER));
       const goal = lines.indexOf(`Your goal: ${GOAL}`);
       const story = lines.findIndex((line) => line.includes("wall of thorns"));
-      expect(preface, lines.join("\n")).toBeGreaterThanOrEqual(0);
-      expect(goal).toBe(preface + 1);
-      expect(story).toBe(goal + 1);
+      expect(story, lines.join("\n")).toBeGreaterThanOrEqual(0);
+      expect(goal).toBe(story + 1);
+      expect(lines.some((line) => line.startsWith("Here we go!") || line.startsWith("Last time"))).toBe(false);
+      expect(await fitProblems(tv)).toEqual([]);
+      await shot(tv, `start-${at}`);
       await tv.waitForTimeout(500);
       expect((await said(tv)).filter((line) => line.startsWith("Your goal:"))).toHaveLength(1);
 

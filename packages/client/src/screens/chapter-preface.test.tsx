@@ -13,7 +13,7 @@ import { act, cleanup, render, screen } from "@testing-library/react";
 import { setSpeaker } from "@kad/shared";
 import type { Campaign, Chapter, PartyMember, ResolvedCharacter, RunState } from "@kad/shared";
 import { useGameStore } from "../store";
-import { ChapterPreface, prefaceShowMs, resetPrefaceCampaigns } from "./ChapterPreface";
+import { ChapterPreface, PREFACE_WAIT_MS, prefaceShowMs, resetPrefaceCampaigns } from "./ChapterPreface";
 import { NarrationPanel } from "./NarrationPanel";
 
 const CAMPAIGN = {
@@ -121,10 +121,25 @@ describe("a chapter's start", () => {
     expect(spoken).toEqual(["A cat is up a tree.", "Your goal: Get the cat down from the tree."]);
   });
 
-  it("does not hold the story for slow campaign files", () => {
+  it("holds the story for the campaign and chapter files, then reads it and the goal once", () => {
+    vi.useFakeTimers();
     seed(run(), { chapter: null });
     render(<NarrationPanel />);
+    expect(spoken).toEqual([]);
+    act(() => useGameStore.setState({ chapter: CHAPTER }));
+    expect(spoken).toEqual(["A cat is up a tree.", "Your goal: Get the cat down from the tree."]);
+    act(() => vi.advanceTimersByTime(PREFACE_WAIT_MS * 2));
+    expect(spoken).toHaveLength(2);
+  });
+
+  it("reads the story alone after PREFACE_WAIT_MS when the files never come, then the goal once they do", () => {
+    vi.useFakeTimers();
+    seed(run(), { chapter: null });
+    render(<NarrationPanel />);
+    act(() => vi.advanceTimersByTime(PREFACE_WAIT_MS));
     expect(spoken).toEqual(["A cat is up a tree."]);
+    act(() => useGameStore.setState({ chapter: CHAPTER }));
+    expect(spoken).toEqual(["A cat is up a tree.", "Your goal: Get the cat down from the tree."]);
   });
 
   it("says nothing of it mid-chapter", () => {

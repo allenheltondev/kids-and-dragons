@@ -33,7 +33,7 @@ import { useChapterGoal } from "./ChapterGoal";
 import { fitPlate } from "./fit-plate";
 import { Icon } from "./icons";
 import { midChapter, sceneKey } from "./presence-copy";
-import { atChapterStart, resetPrefaceCampaigns } from "./run-campaign";
+import { atChapterStart, resetPrefaceCampaigns, useRunCampaign } from "./run-campaign";
 import { useStartPlates } from "./start-plates";
 import "./ChapterGoal.css";
 import "./ChapterPreface.css";
@@ -48,14 +48,34 @@ const wordCount = (texts: readonly string[]): number => texts.join(" ").split(/\
 /** Test seam: forget fetched campaigns. */
 export { resetPrefaceCampaigns };
 
+/** How long a chapter's first scene waits on the campaign and chapter files, whose plates it may have to sit behind. */
+export const PREFACE_WAIT_MS = 2500;
+
 /**
- * Whether a chapter's first scene must wait: a prologue or chapter plate is up (StoryPlates), and
- * the story is said the moment it is done or skipped.
+ * Whether a chapter's first scene must wait. It waits while a prologue or chapter plate is up
+ * (StoryPlates), and, never longer than PREFACE_WAIT_MS, while the campaign and chapter files
+ * are still on the way: until they land there is no telling whether a painting is coming, and
+ * a story said first would be cut off by it and could not be said again. Past the wait the
+ * story is read without them.
  */
 export function useStartPreface(): { status: "none" | "pending" } {
   useEnsureChapter();
+  const state = useRunState();
+  const chapter = useChapter();
+  const campaign = useRunCampaign(state?.campaignId ?? null);
   const plates = useStartPlates();
-  return { status: plates !== null ? "pending" : "none" };
+  const start = state !== null && atChapterStart(state);
+  const key = start ? `${state.runId}:${state.chapterId ?? ""}` : "";
+  const loaded = start && chapter?.id === state.chapterId && campaign !== undefined;
+  const waiting = start && !loaded;
+  const [gaveUp, setGaveUp] = useState<string | null>(null);
+  useEffect(() => {
+    if (!waiting) return;
+    const timer = setTimeout(() => setGaveUp(key), PREFACE_WAIT_MS);
+    return () => clearTimeout(timer);
+  }, [waiting, key]);
+  if (plates !== null) return { status: "pending" };
+  return { status: waiting && gaveUp !== key ? "pending" : "none" };
 }
 
 /**

@@ -172,6 +172,35 @@ describe("the prologue", () => {
     expect(screen.queryByTestId("chapter-preface")).toBeNull();
   });
 
+  it("holds the story when the chapter file lands after the first look: plates, then the story, then the goal, once", async () => {
+    vi.useFakeTimers();
+    seed(run("ch_1"), OPENING);
+    useGameStore.setState({ chapter: null });
+    render(
+      <>
+        <StoryPlates />
+        <NarrationPanel />
+      </>,
+    );
+    await flush();
+    // Nothing is said while it is not known whether a painting is coming.
+    expect(spoken).toEqual([]);
+    act(() => useGameStore.setState({ chapter: OPENING }));
+    await flush();
+    expect(spoken).toEqual(["The Walk. Plate 1 is a painting."]);
+
+    await act(async () => void vi.advanceTimersByTime(plateHoldMs(6)));
+    await act(async () => void vi.advanceTimersByTime(plateHoldMs(5)));
+    await act(async () => void vi.advanceTimersByTime(plateHoldMs(5)));
+    expect(spoken).toEqual([
+      "The Walk. Plate 1 is a painting.",
+      "Plate 2 is a painting.",
+      "Plate 3 is a painting.",
+      "The story of ch_1 begins.",
+      "Your goal: Get there.",
+    ]);
+  });
+
   it("is shown once: skipped or watched, it does not come back", async () => {
     seed(run("ch_1"), OPENING);
     const first = render(<StoryPlates />);

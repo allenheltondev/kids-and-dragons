@@ -38,8 +38,7 @@ that plays them is `packages/client/src/screens/StoryPlates.tsx` (`StoryPlates` 
    and Escape skips the rest, on any screen. A phone's pane (Travel Mode) shows **Next** and
    **Skip** buttons.
 4. When the last plate is done or skipped, this device remembers it (`kad.plates.seen`), and the
-   chapter starts as it always did: "Last time…", the goal, then the first scene's story, read
-   aloud. Until then they all wait.
+   chapter starts as it always did: the first scene's story, read aloud, then the goal. Until then they all wait.
 5. **A painting that has not been delivered is left out.** Every painting is fetched up front; the
    ones that arrive play, in order. A reel with none is passed over for that page load, without
    being remembered, so the first load after the art ships plays it. Nothing breaks and nothing is
