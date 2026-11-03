@@ -1,16 +1,16 @@
 {
-  "$comment": "Riftlight authored opening draft. Development preview only; see ../README.md. Production campaign id will be riftlight. No bonus XP: preserve the design bible campaign budget.",
+  "$comment": "Riftlight, the road out (docs/campaigns/continental-rift/arc.md, cairnstep-pass; design note road-out-review.md). Revised in November 2026. Question: is this pass real, and does it belong on the map? Brask, the griffin who keeps the aerie's pass ledger, carries it, with his apprentice Pebble. Adds to the clue trail: the ledger's oldest page shows a path through this notch long ago, beside landmarks that are not here now (old_page, p2); the Listening Chime leans toward the glacier (notch). Force or understand: lean on the moved slab, or listen to it. The griffins owe the party a flight (message), which the graph's pass-to-sky edge pays.",
   "id": "riftlight-cairnstep-pass",
   "campaignId": "riftlight",
   "index": 4,
   "title": "A Pass Not in the Ledger",
   "biome": "frostfang_peaks",
   "music": "riftlight-paths",
-  "estimatedMinutes": 36,
+  "estimatedMinutes": 30,
   "xpAward": 140,
   "entry": "cairns",
   "goal": {
-    "text": "Climb the Cairnstep and see if it belongs on the map.",
+    "text": "Is this pass real, and does it belong on the map?",
     "steps": [
       {
         "id": "climb",
@@ -19,17 +19,17 @@
       },
       {
         "id": "compare",
-        "label": "Compare the old and new drawings",
+        "label": "Find what changed on the mountain",
         "flag": "compared_the_pass_drawings"
       },
       {
-        "id": "test",
-        "label": "Test the moved ridge",
-        "flag": "tested_the_moved_ridge"
+        "id": "old",
+        "label": "Read the ledger's oldest page",
+        "flag": "read_the_oldest_page"
       },
       {
         "id": "mark",
-        "label": "Mark down what you find",
+        "label": "Decide what the ledger should say",
         "flag": "marked_the_new_pass"
       }
     ]
@@ -41,68 +41,120 @@
   "scenes": {
     "cairns": {
       "type": "story",
-      "narration": "Stone cairns climb a slope toward a notch in the Frostfang Peaks. By the lowest one sits a griffin keeper called Brask, from the aerie on the cliffs. He has a heavy pass ledger open on a rock and a pencil behind his ear. \"This path was not in my ledger last season,\" he says. \"Real pass, or trick of the snow? Tonight, climb the Cairnstep with me, and help me decide if it belongs on the map.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Follow Brask up",
-          "icon": "hand",
-          "goto": "steps"
-        }
-      ],
+      "narration": "Stone cairns climb a slope toward a notch in the Frostfang Peaks. By the lowest one sits a griffin keeper called Brask, from the aerie on the cliffs. He licks his pencil and writes something down. \"Visitors. Good. I need witnesses.\" He pats a heavy pass ledger. \"This path was not in my book last season. Is this pass real? Does it belong on the map? A wrong page sends a herd off a cliff. Climb it with me, and help me decide.\"",
       "cast": [
         {
           "figure": "cast/pass_keeper",
           "name": "Brask"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Follow Brask up",
+          "icon": "steps",
+          "goto": "steps"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "page_by_heart",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "neck_cracked",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "neck_known",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "slow_test",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "wolves_took_hay",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "cairn_short",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "marked_open",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "marked_warned",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "marked_closed",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "asked_the_island",
+          "value": false
+        }
+      ]
     },
     "steps": {
       "type": "choice_point",
       "narration": "The cairns climb in steps of old snow over loose stone. Brask flaps ahead. \"Touch every cairn as you pass,\" he calls. \"It is polite, and it helps you balance.\" How will you climb?",
+      "cast": [
+        {
+          "figure": "cast/pass_keeper",
+          "name": "Brask"
+        }
+      ],
+      "art": "scenes/riftlight/cairnstep",
       "choices": [
         {
           "id": "line",
           "label": "Climb in a line",
-          "icon": "quick",
+          "icon": "steps",
           "goto": "climb_line"
         },
         {
           "id": "scout",
           "label": "Scout your own way",
-          "icon": "boot",
+          "icon": "map",
           "goto": "climb_scout"
         },
         {
           "id": "leap",
           "label": "Leap the loose stretch",
-          "icon": "arrow",
+          "icon": "boot",
           "goto": "climb_leap",
           "requiresSpecies": "manticore"
         },
         {
           "id": "rally",
           "label": "Rally tired legs",
-          "icon": "note",
+          "icon": "song",
           "goto": "climb_rally",
           "requiresClass": "songkeeper"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pass_keeper",
-          "name": "Brask"
-        }
-      ],
-      "art": "scenes/riftlight/cairnstep"
+      ]
     },
     "climb_line": {
       "type": "check",
       "stat": "quick",
       "tn": 8,
       "prompt": "Everyone climb the cairn stairs together, one hand on the stones.",
-      "narration": "One cairn is so neat you want to give it a medal.",
+      "narration": "One cairn is so neat you want to give it a medal. \"Don't,\" says Brask. \"It will get ideas.\"",
       "roller": "all",
       "onSuccess": {
         "goto": "notch",
@@ -221,7 +273,14 @@
     },
     "notch": {
       "type": "story",
-      "narration": "At the notch, the wind combs your ears. Far off, a distant island floats in the sky, small as a loaf in a pond. Brask waves a flag on a stick, and a tiny flag answers. \"Our neighbors,\" he says. \"They watch the weather. We watch the stones.\"",
+      "narration": "At the notch, the wind combs your ears. Then the Listening Chime on your pack begins to hum. It swings on its cord and leans, not down the pass, but back the way the river comes, toward the glacier far away. Then it is still. Brask licks his pencil and writes: \"Bell. Pointing.\" He frowns at the words. \"I will ask about that later.\"",
+      "cast": [
+        {
+          "figure": "cast/pass_keeper",
+          "name": "Brask"
+        }
+      ],
+      "art": "scenes/riftlight/cairnstep",
       "choices": [
         {
           "id": "continue",
@@ -230,23 +289,24 @@
           "goto": "ledger"
         }
       ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "reached_the_notch",
+          "value": true
+        }
+      ]
+    },
+    "ledger": {
+      "type": "choice_point",
+      "narration": "Brask opens his ledger on a flat rock. Last season's drawing shows a smooth ridge. This season's shows the notch you stand in. A pencil line marks the herders' grazing route, cut by floodwater in three places. \"One drawing is wrong,\" says Brask. \"My witnesses will tell me which.\"",
       "cast": [
         {
           "figure": "cast/pass_keeper",
           "name": "Brask"
         }
       ],
-      "art": "scenes/riftlight/cairnstep",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "reached_the_notch"
-        }
-      ]
-    },
-    "ledger": {
-      "type": "choice_point",
-      "narration": "Brask opens his ledger. Last season's drawing shows a smooth ridge. This season's shows the notch you stand in. A pencil line marks the herders' grazing route, cut by floodwater in three places. \"One drawing is wrong,\" says Brask. \"Which?\"",
+      "art": "scenes/riftlight/cairnstep-survey-slab",
       "choices": [
         {
           "id": "look",
@@ -270,35 +330,11 @@
             "dragonling"
           ]
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pass_keeper",
-          "name": "Brask"
-        }
-      ],
-      "art": "scenes/riftlight/cairnstep-survey-slab"
+      ]
     },
     "ridge": {
       "type": "story",
-      "narration": "You hold the old page up against the real mountain. The cairns line up. The ridge does not. A slab of stone has stepped sideways, like someone in a crowded room. \"Find me exactly where it moved,\" says Brask.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Find where it moved",
-          "icon": "eye",
-          "goto": "ridge_spot"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pass_keeper",
-          "name": "Brask"
-        }
-      ],
-      "art": "scenes/riftlight/cairnstep-survey-slab"
-    },
-    "ridge_spot": {
+      "narration": "You hold the old page up against the real mountain. The cairns line up. The ridge does not. A slab of stone has stepped sideways, like someone making room in a crowded room. \"Where, exactly?\" asks Brask, pencil ready.",
       "cast": [
         {
           "figure": "cast/pass_keeper",
@@ -306,37 +342,18 @@
         }
       ],
       "art": "scenes/riftlight/cairnstep-survey-slab",
-      "type": "story",
-      "narration": "There! A step in the rock, where the drawing says smooth. Brask makes a neat pencil mark.",
       "choices": [
         {
           "id": "continue",
-          "label": "Compare the pages",
-          "icon": "forward",
+          "label": "Point to the step",
+          "icon": "hand",
           "goto": "compared"
         }
       ]
     },
     "supplies": {
       "type": "story",
-      "narration": "You lay the herders' route over the new drawing. The new path runs above the three flooded spots, along a high, dry shelf. \"So the herd could use it,\" says Brask, \"if the shelf is real. Where does it meet the cairns?\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Trace where it meets",
-          "icon": "map",
-          "goto": "supplies_trace"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pass_keeper",
-          "name": "Brask"
-        }
-      ],
-      "art": "scenes/riftlight/cairnstep-survey-slab"
-    },
-    "supplies_trace": {
+      "narration": "You lay the herders' route over the new drawing. The new path runs above the three flooded spots, along a high, dry shelf. \"So the herd could use it,\" says Brask, \"if the shelf is real. Where does it meet the cairns?\" Your finger lands right where the ridge has a new step in it.",
       "cast": [
         {
           "figure": "cast/pass_keeper",
@@ -344,19 +361,18 @@
         }
       ],
       "art": "scenes/riftlight/cairnstep-survey-slab",
-      "type": "story",
-      "narration": "Your finger lands on the spot, right where the ridge has a new step in it. Brask taps it with a claw. \"Yes. There.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Compare the pages",
-          "icon": "forward",
+          "label": "Tap the step",
+          "icon": "hand",
           "goto": "compared"
         }
       ]
     },
     "ledger_sky": {
-      "narration": "Your flyer goes up for a look. From above, the two drawings fit together like halves of a cracker, and the step in the ridge is as plain as a nose.",
+      "type": "story",
+      "narration": "Your flyer goes up for a look. From above, the two drawings fit together like halves of a cracker, and the step in the ridge is as plain as a nose. \"Show-off,\" says Brask, fondly.",
       "cast": [
         {
           "figure": "cast/pass_keeper",
@@ -364,27 +380,18 @@
         }
       ],
       "art": "scenes/riftlight/cairnstep-survey-slab",
-      "type": "story",
       "choices": [
         {
           "id": "continue",
-          "label": "Compare the pages",
-          "icon": "forward",
+          "label": "Land and point",
+          "icon": "hand",
           "goto": "compared"
         }
       ]
     },
     "compared": {
       "type": "story",
-      "narration": "The pages agree on all but one thing: a step in the ridge, where stone slid sideways after the first snow. \"The drawing was right,\" says Brask. \"The mountain changed.\" He taps the page. \"Next, the cairns. Do mine stand in the order the new page shows?\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Check the three cairns",
-          "icon": "map",
-          "goto": "cairn_order"
-        }
-      ],
+      "narration": "The pages agree on all but one thing: a step in the ridge, where stone slid sideways after the first snow. \"So the drawing was right,\" says Brask, \"and the mountain changed.\" He writes it down, then stops. \"But my apprentice thinks she drew it wrong. She has been crying on the page.\"",
       "cast": [
         {
           "figure": "cast/pass_keeper",
@@ -392,79 +399,25 @@
         }
       ],
       "art": "scenes/riftlight/cairnstep-survey-slab",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look for the apprentice",
+          "icon": "eye",
+          "goto": "pebble"
+        }
+      ],
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "compared_the_pass_drawings"
+          "flag": "compared_the_pass_drawings",
+          "value": true
         }
       ]
-    },
-    "cairn_order": {
-      "type": "interaction",
-      "narration": "Brask points at three cairns. One leans. One has a flat top. One has two stones side by side, like shoes. He hands out paper scraps. \"Clues. Read them out loud.\"",
-      "interaction": {
-        "kind": "sequence",
-        "cue": "Share your clues, then put the cairns in the order of the drawing.",
-        "actionLabel": "Check the order",
-        "options": [
-          {
-            "id": "lean",
-            "label": "Leaning cairn",
-            "icon": "arrow"
-          },
-          {
-            "id": "flat",
-            "label": "Flat-topped cairn",
-            "icon": "map"
-          },
-          {
-            "id": "twin",
-            "label": "Twin-stone cairn",
-            "icon": "boot"
-          }
-        ],
-        "answer": [
-          "lean",
-          "flat",
-          "twin"
-        ],
-        "clues": [
-          "The leaning cairn is at the start of the line.",
-          "The twin-stone cairn is at the end.",
-          "The flat-topped cairn stands between the other two."
-        ]
-      },
-      "onSuccess": {
-        "goto": "pebble",
-        "narration": "Lean, flat, twin! \"They agree,\" says Brask."
-      },
-      "onFailure": {
-        "goto": "pebble",
-        "narration": "Brask swaps two back. \"Cairns are patient,\" he says."
-      },
-      "onAssisted": {
-        "goto": "pebble",
-        "narration": "You lay the scraps side by side, and the order falls out."
-      },
-      "cast": [
-        {
-          "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
-        }
-      ],
-      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "pebble": {
       "type": "story",
       "narration": "A young griffin skids up the slope, hugging a rolled page. Her beak is inky. \"This is Pebble,\" says Brask. \"My apprentice. She draws the new page each season.\" Pebble's feathers droop. \"I drew the ridge in the first snow, and it was whole! Did I draw it wrong? Will you help me fix the page?\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Help Pebble",
-          "icon": "heart",
-          "goto": "pebble_help"
-        }
-      ],
       "cast": [
         {
           "figure": "cast/pass_keeper",
@@ -476,11 +429,31 @@
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep-survey-slab"
+      "art": "scenes/riftlight/cairnstep-survey-slab",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Help Pebble",
+          "icon": "hand",
+          "goto": "pebble_help"
+        }
+      ]
     },
     "pebble_help": {
       "type": "choice_point",
-      "narration": "Pebble holds out her page. It has a smudge where a tear fell, and a flap that keeps blowing up. She scraped her wing on the climb, too. How will you help?",
+      "narration": "Pebble holds out her page. It has a smudge where a tear fell, and a flap that keeps blowing up. She scraped her wing on the climb, too. \"Brask says a page is a promise,\" she sniffs. How will you help?",
+      "cast": [
+        {
+          "figure": "cast/pass_keeper",
+          "name": "Brask"
+        },
+        {
+          "figure": "cast/pebble",
+          "name": "Pebble",
+          "size": "small"
+        }
+      ],
+      "art": "scenes/riftlight/cairnstep-survey-slab",
       "choices": [
         {
           "id": "walk",
@@ -497,61 +470,18 @@
         {
           "id": "mend",
           "label": "Mend her scraped wing",
-          "icon": "heart",
+          "icon": "unicorn",
           "goto": "pebble_mend",
           "requiresSpecies": "unicorn"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pass_keeper",
-          "name": "Brask"
-        },
-        {
-          "figure": "cast/pebble",
-          "name": "Pebble",
-          "size": "small"
-        }
-      ],
-      "art": "scenes/riftlight/cairnstep-survey-slab"
+      ]
     },
     "pebble_walk": {
       "type": "check",
       "stat": "quick",
       "tn": 12,
+      "narration": "Pebble keeps stopping to look at her feet. \"Griffins don't fall,\" she says. \"Mostly.\"",
       "prompt": "Lead Pebble along the narrow ledge to the step without a slip.",
-      "narration": "Pebble keeps stopping to look at her feet.",
-      "onSuccess": {
-        "goto": "pebble_done",
-        "narration": "She sees the step and gasps. \"It is not my mistake. It is the mountain's!\" She draws it in at once."
-      },
-      "onFailure": {
-        "goto": "pebble_done",
-        "narration": "Pebble wobbles, and you catch her. She sees the step from there and draws it in.",
-        "effects": [
-          {
-            "type": "damage",
-            "amount": 1,
-            "to": "party",
-            "nonlethal": true
-          }
-        ]
-      },
-      "cast": [
-        {
-          "figure": "cast/pass_keeper",
-          "name": "Brask"
-        },
-        {
-          "figure": "cast/pebble",
-          "name": "Pebble",
-          "size": "small"
-        }
-      ],
-      "art": "scenes/riftlight/cairnstep-survey-slab"
-    },
-    "pebble_page": {
-      "narration": "The wind keeps grabbing the page. You pin it down with a stone on each corner. The wind sulks and gives up. Pebble draws the step in three quick strokes.",
       "cast": [
         {
           "figure": "cast/pass_keeper",
@@ -564,17 +494,49 @@
         }
       ],
       "art": "scenes/riftlight/cairnstep-survey-slab",
+      "onSuccess": {
+        "goto": "pebble_done",
+        "narration": "She sees the step and gasps. \"It's not my mistake. It's the mountain's!\" She draws it in at once."
+      },
+      "onFailure": {
+        "goto": "pebble_done",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ],
+        "narration": "Pebble wobbles, and you catch her, and you both sit down hard. She sees the step from there and draws it in."
+      }
+    },
+    "pebble_page": {
       "type": "story",
+      "narration": "The wind keeps grabbing the page. You pin it down with a stone on each corner. The wind sulks and gives up. Pebble draws the step in three quick strokes. \"Oh,\" she says. \"Oh! It moved after I drew it.\"",
+      "cast": [
+        {
+          "figure": "cast/pass_keeper",
+          "name": "Brask"
+        },
+        {
+          "figure": "cast/pebble",
+          "name": "Pebble",
+          "size": "small"
+        }
+      ],
+      "art": "scenes/riftlight/cairnstep-survey-slab",
       "choices": [
         {
           "id": "continue",
           "label": "Look at the new page",
-          "icon": "forward",
+          "icon": "eye",
           "goto": "pebble_done"
         }
       ]
     },
     "pebble_mend": {
+      "type": "story",
       "narration": "Your unicorn strokes Pebble's wing once, softly. The scrape fades. \"It stopped hurting!\" she says, and draws the step in three quick strokes.",
       "cast": [
         {
@@ -588,27 +550,18 @@
         }
       ],
       "art": "scenes/riftlight/cairnstep-survey-slab",
-      "type": "story",
       "choices": [
         {
           "id": "continue",
           "label": "Look at the new page",
-          "icon": "forward",
+          "icon": "eye",
           "goto": "pebble_done"
         }
       ]
     },
     "pebble_done": {
       "type": "story",
-      "narration": "Pebble blows the ink dry. The new page shows the notch, the step, and a tiny signature: Pebble. \"It was true when I drew it,\" she says. \"Now it is true again.\" She hugs you and gives you a squashed supper bundle. \"Nervous packing.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Learn the page by heart",
-          "icon": "eye",
-          "goto": "drawing_memory"
-        }
-      ],
+      "narration": "Pebble blows the ink dry. The new page shows the notch, the step, and a tiny signature: Pebble. \"It was true when I drew it,\" she says. \"Now it's true again.\" She hands you a squashed supper bundle. \"Nervous packing.\" Brask clears his throat. \"Now, witnesses. Something older.\"",
       "cast": [
         {
           "figure": "cast/pass_keeper",
@@ -621,6 +574,14 @@
         }
       ],
       "art": "scenes/riftlight/cairnstep-survey-slab",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "See what Brask means",
+          "icon": "scroll",
+          "goto": "old_page"
+        }
+      ],
       "onEnter": [
         {
           "type": "grantItem",
@@ -629,54 +590,13 @@
         }
       ]
     },
-    "drawing_memory": {
-      "type": "interaction",
-      "narration": "Pebble taps the marks of her page on a rock. Griffins learn a drawing by heart this way. \"Watch twice, then tap it back.\"",
-      "interaction": {
-        "kind": "memory",
-        "cue": "Watch Pebble's pattern, then tap it back.",
-        "actionLabel": "Tap it back",
-        "options": [
-          {
-            "id": "cairn",
-            "label": "Cairn",
-            "icon": "map"
-          },
-          {
-            "id": "step",
-            "label": "Step",
-            "icon": "boot"
-          },
-          {
-            "id": "notch",
-            "label": "Notch",
-            "icon": "arrow"
-          }
-        ],
-        "answer": [
-          "cairn",
-          "step",
-          "cairn",
-          "notch"
-        ],
-        "stepMs": 1200
-      },
-      "onSuccess": {
-        "goto": "moved",
-        "narration": "Pebble beams. \"Now the page lives in all our heads.\""
-      },
-      "onFailure": {
-        "goto": "moved",
-        "narration": "One tap lands wrong. Pebble repeats it slowly until it sticks."
-      },
-      "onAssisted": {
-        "goto": "moved",
-        "narration": "Pebble taps slowly, and you tap along until you have it."
-      },
+    "old_page": {
+      "type": "story",
+      "narration": "Brask opens the ledger to its very first page. The paper is brown as toast and soft as cloth. \"My grandmother's grandmother's page,\" he says. \"Older than the aerie.\" It shows a path through this very notch, dotted in old ink. Beside it are things to steer by: a lake shaped like a boot, and a peak with two horns. You look out. There is no lake. There is no two-horned peak. \"A path here, long ago,\" Brask says slowly, \"and nothing around it that is here now.\"",
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
           "figure": "cast/pebble",
@@ -684,23 +604,127 @@
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep-survey-slab"
+      "art": "scenes/riftlight/cairnstep-survey-slab",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Learn the old page",
+          "icon": "eye",
+          "goto": "drawing_memory"
+        }
+      ],
+      "priority": 2,
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "read_the_oldest_page",
+          "value": true
+        }
+      ]
+    },
+    "drawing_memory": {
+      "type": "interaction",
+      "narration": "\"Griffins learn a page by heart,\" says Pebble, \"in case the book gets wet.\" She taps the old marks on a rock, one by one. \"Watch twice, then tap it back.\"",
+      "cast": [
+        {
+          "figure": "cast/pass_keeper",
+          "name": "Brask"
+        },
+        {
+          "figure": "cast/pebble",
+          "name": "Pebble",
+          "size": "small"
+        }
+      ],
+      "art": "scenes/riftlight/cairnstep-survey-slab",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch Pebble tap the old page, then tap it back.",
+        "actionLabel": "Tap it back",
+        "options": [
+          {
+            "id": "notch",
+            "label": "Notch",
+            "icon": "arrow"
+          },
+          {
+            "id": "path",
+            "label": "Path",
+            "icon": "boot"
+          },
+          {
+            "id": "lake",
+            "label": "Boot lake",
+            "icon": "drop"
+          },
+          {
+            "id": "horns",
+            "label": "Two horns",
+            "icon": "crown"
+          }
+        ],
+        "answer": [
+          "notch",
+          "path",
+          "lake",
+          "horns"
+        ],
+        "stepMs": 1200
+      },
+      "onSuccess": {
+        "goto": "moved",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "page_by_heart",
+            "value": true
+          }
+        ],
+        "narration": "Pebble beams. \"Now the old page lives in all our heads. Lake and horns and all.\""
+      },
+      "onFailure": {
+        "goto": "moved",
+        "narration": "The lake and the horns slip away from you. Only the dotted path stays. \"That's the important part,\" says Pebble, kindly. It is not the only important part."
+      },
+      "onAssisted": {
+        "goto": "moved",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "page_by_heart",
+            "value": true
+          }
+        ],
+        "narration": "Pebble taps slowly, and you tap along, lake and horns and all, until you have it."
+      }
     },
     "moved": {
       "type": "choice_point",
-      "narration": "Now the big question: will it hold? The slab that moved is as big as a barn. \"Test it,\" says Brask. \"Gently. It has been through enough.\" How will you test it?",
-      "choices": [
+      "narration": "Now the big question: is the new ridge settled, or will it move again? The slab that stepped sideways is as big as a barn. \"We could all lean on it and see,\" says Pebble. \"Or roll a stone along it and listen,\" says Brask. \"That takes longer. Listening always does.\" How will you test it?",
+      "cast": [
         {
-          "id": "roll",
-          "label": "Roll a stone along it",
-          "icon": "ear",
-          "goto": "test_roll"
+          "figure": "cast/pass_keeper",
+          "name": "Brask"
         },
         {
+          "figure": "cast/pebble",
+          "name": "Pebble",
+          "size": "small"
+        }
+      ],
+      "art": "scenes/riftlight/cairnstep-survey-slab",
+      "choices": [
+        {
           "id": "lean",
-          "label": "Lean on it together",
-          "icon": "might",
+          "label": "Lean on it, all together",
+          "icon": "hand",
           "goto": "test_lean"
+        },
+        {
+          "id": "listen",
+          "label": "Roll a stone and listen",
+          "icon": "ear",
+          "goto": "test_roll"
         },
         {
           "id": "brace",
@@ -716,7 +740,15 @@
           "goto": "test_smash",
           "requiresSpecies": "bigfoot"
         }
-      ],
+      ]
+    },
+    "test_lean": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "narration": "Everyone leans, as if pushing over a very patient cow.",
+      "prompt": "Everyone lean on the slab together, hard, and see if it shifts.",
+      "roller": "all",
       "cast": [
         {
           "figure": "cast/pass_keeper",
@@ -728,22 +760,42 @@
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep-survey-slab"
+      "art": "scenes/riftlight/cairnstep-survey-slab",
+      "onSuccess": {
+        "goto": "tested",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "neck_cracked",
+            "value": true
+          }
+        ],
+        "narration": "The slab does not budge a hair. Solid! Then, below it, something goes crack."
+      },
+      "onFailure": {
+        "goto": "tested",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "neck_cracked",
+            "value": true
+          },
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ],
+        "narration": "The slab grumbles and shivers, and everyone leaps back. Below it, something goes crack."
+      }
     },
     "test_roll": {
       "type": "check",
       "stat": "clever",
       "tn": 12,
+      "narration": "Solid rock sounds one way. Hollow rock sounds another. You roll, and listen, and roll again, while the light goes golden and the shadows grow long.",
       "prompt": "Roll a stone along the slab and listen for a hollow place.",
-      "narration": "Solid rock sounds one way. Hollow rock sounds another.",
-      "onSuccess": {
-        "goto": "tested",
-        "narration": "Rattle, rattle, rattle, steady all the way. Solid rock."
-      },
-      "onFailure": {
-        "goto": "tested",
-        "narration": "The stone rolls into the snow. You hear one hollow thump, somewhere."
-      },
       "cast": [
         {
           "figure": "cast/pass_keeper",
@@ -755,77 +807,76 @@
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep-survey-slab"
-    },
-    "test_lean": {
-      "type": "check",
-      "stat": "might",
-      "tn": 8,
-      "prompt": "Everyone lean on the slab together and see if it shifts.",
-      "narration": "Everyone leans, as if pushing over a very patient cow.",
-      "roller": "all",
+      "art": "scenes/riftlight/cairnstep-survey-slab",
       "onSuccess": {
         "goto": "tested",
-        "narration": "The slab does not budge a hair."
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "neck_known",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "slow_test",
+            "value": true
+          }
+        ],
+        "narration": "Rattle, rattle, rattle, steady all the way. Then, at the far edge, a hollow donk. You know exactly where it is."
       },
       "onFailure": {
         "goto": "tested",
-        "narration": "The slab grumbles and shivers. Everyone leaps back. Then it is quiet."
-      },
-      "cast": [
-        {
-          "figure": "cast/pass_keeper",
-          "name": "Brask"
-        },
-        {
-          "figure": "cast/pebble",
-          "name": "Pebble",
-          "size": "small"
-        }
-      ],
-      "art": "scenes/riftlight/cairnstep-survey-slab"
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "slow_test",
+            "value": true
+          }
+        ],
+        "narration": "The stone rolls off into the snow. You hear one hollow thump, somewhere, but not where."
+      }
     },
     "test_brace": {
       "type": "check",
       "stat": "might",
       "tn": 8,
+      "narration": "Your thornguard plants both feet and pushes, slow and steady.",
       "prompt": "Use brace to push on the slab while the others look for cracks.",
-      "narration": "Your thornguard plants both feet and pushes.",
+      "cast": [
+        {
+          "figure": "cast/pass_keeper",
+          "name": "Brask"
+        },
+        {
+          "figure": "cast/pebble",
+          "name": "Pebble",
+          "size": "small"
+        }
+      ],
+      "art": "scenes/riftlight/cairnstep-survey-slab",
       "onSuccess": {
         "goto": "tested",
         "narration": "The slab does not budge, and no crack opens."
       },
       "onFailure": {
         "goto": "tested",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ],
         "narration": "The slab shivers, then settles. Steady enough, but you hold your breath."
-      },
-      "cast": [
-        {
-          "figure": "cast/pass_keeper",
-          "name": "Brask"
-        },
-        {
-          "figure": "cast/pebble",
-          "name": "Pebble",
-          "size": "small"
-        }
-      ],
-      "art": "scenes/riftlight/cairnstep-survey-slab"
+      }
     },
     "test_smash": {
       "type": "check",
       "stat": "might",
       "tn": 8,
-      "prompt": "Use smash to shove the slab.",
       "narration": "Your bigfoot leans on the slab with both hands.",
-      "onSuccess": {
-        "goto": "tested",
-        "narration": "A mighty shove, and the slab shrugs it off."
-      },
-      "onFailure": {
-        "goto": "tested",
-        "narration": "The slab shivers. A little grit trickles, then it settles."
-      },
+      "prompt": "Use smash to shove the slab.",
       "cast": [
         {
           "figure": "cast/pass_keeper",
@@ -837,161 +888,84 @@
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep-survey-slab"
+      "art": "scenes/riftlight/cairnstep-survey-slab",
+      "onSuccess": {
+        "goto": "tested",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "neck_cracked",
+            "value": true
+          }
+        ],
+        "narration": "A mighty shove, and the slab shrugs it off. Below it, something goes crack."
+      },
+      "onFailure": {
+        "goto": "tested",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "neck_cracked",
+            "value": true
+          },
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ],
+        "narration": "The slab shivers. Grit trickles. Below it, something goes crack."
+      }
     },
     "tested": {
       "type": "story",
-      "narration": "The slab is steady, settled like a cat on a cushion. But at its edge, a little stone drops through a gap and falls a long way. \"The neck,\" says Brask quietly. \"The narrow bridge of rock at the top of the pass. It is hollow underneath.\"",
+      "narration": "The slab is steady, settled like a cat on a cushion. But at its far edge, a little stone drops through a gap and falls a long way. \"The neck,\" says Brask quietly. \"The narrow bridge of rock at the top of the pass. It is hollow underneath.\"",
+      "cast": [
+        {
+          "figure": "cast/pass_keeper",
+          "name": "Brask"
+        },
+        {
+          "figure": "cast/pebble",
+          "name": "Pebble",
+          "size": "small"
+        }
+      ],
+      "art": "scenes/riftlight/cairnstep-survey-slab",
       "choices": [
         {
           "id": "continue",
           "label": "Measure the pass",
           "icon": "map",
-          "goto": "survey"
+          "goto": "survey_done"
         }
       ],
-      "cast": [
-        {
-          "figure": "cast/pass_keeper",
-          "name": "Brask"
-        },
-        {
-          "figure": "cast/pebble",
-          "name": "Pebble",
-          "size": "small"
-        }
-      ],
-      "art": "scenes/riftlight/cairnstep-survey-slab",
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "tested_the_moved_ridge"
-        }
-      ]
-    },
-    "survey": {
-      "type": "choice_point",
-      "narration": "Brask pulls out a long knotted cord. \"Now we measure. Length, width, and any spot that would make a goat say no.\" A long shelf of snow runs along the cliff. Where will you start?",
-      "choices": [
-        {
-          "id": "shelf",
-          "label": "Stretch the cord out",
-          "icon": "might",
-          "goto": "survey_shelf"
-        },
-        {
-          "id": "pace",
-          "label": "Pace the width",
-          "icon": "boot",
-          "goto": "survey_pace"
-        },
-        {
-          "id": "sky",
-          "label": "Map it from above",
-          "icon": "wing",
-          "goto": "survey_sky",
-          "requiresSpecies": [
-            "griffin",
-            "dragonling"
-          ]
+          "flag": "tested_the_moved_ridge",
+          "value": true
         }
       ],
-      "cast": [
+      "variants": [
         {
-          "figure": "cast/pass_keeper",
-          "name": "Brask"
+          "when": {
+            "flag": "neck_cracked"
+          },
+          "text": "A fresh crack runs across the neck that was not there this morning. Your shove did that. Brask writes it down, very small, and does not look at you."
         },
         {
-          "figure": "cast/pebble",
-          "name": "Pebble",
-          "size": "small"
-        }
-      ],
-      "art": "scenes/riftlight/cairnstep-survey-slab"
-    },
-    "survey_shelf": {
-      "narration": "Everyone takes a stretch of cord and walks it out along the shelf. It hums in the wind like a harp. Brask counts the knots and nods.",
-      "cast": [
-        {
-          "figure": "cast/pass_keeper",
-          "name": "Brask"
-        },
-        {
-          "figure": "cast/pebble",
-          "name": "Pebble",
-          "size": "small"
-        }
-      ],
-      "art": "scenes/riftlight/cairnstep-survey-slab",
-      "type": "story",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Hear Brask's numbers",
-          "icon": "forward",
-          "goto": "survey_done"
-        }
-      ]
-    },
-    "survey_pace": {
-      "narration": "At each cairn, you pace from cliff to edge, counting out loud. Pebble counts in griffin, which has different numbers. Still, your counts agree.",
-      "cast": [
-        {
-          "figure": "cast/pass_keeper",
-          "name": "Brask"
-        },
-        {
-          "figure": "cast/pebble",
-          "name": "Pebble",
-          "size": "small"
-        }
-      ],
-      "art": "scenes/riftlight/cairnstep-survey-slab",
-      "type": "story",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Hear Brask's numbers",
-          "icon": "forward",
-          "goto": "survey_done"
-        }
-      ]
-    },
-    "survey_sky": {
-      "narration": "Your flyer swoops along the pass. From above, it is a long white ribbon with a pinch in it.",
-      "cast": [
-        {
-          "figure": "cast/pass_keeper",
-          "name": "Brask"
-        },
-        {
-          "figure": "cast/pebble",
-          "name": "Pebble",
-          "size": "small"
-        }
-      ],
-      "art": "scenes/riftlight/cairnstep-survey-slab",
-      "type": "story",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Hear Brask's numbers",
-          "icon": "forward",
-          "goto": "survey_done"
+          "when": {
+            "flag": "neck_known"
+          },
+          "text": "\"You heard where,\" says Pebble. \"I'll draw it in.\""
         }
       ]
     },
     "survey_done": {
       "type": "story",
-      "narration": "\"Four hundred steps long,\" Brask writes. \"Two goats wide. One hollow neck.\" Pebble adds a tiny goat for scale. Brask gives you six coins from the aerie's purse and an owlfeather clasp. \"Fee and badge,\" he says.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Take a tea break",
-          "icon": "rest",
-          "goto": "rest_tea"
-        }
-      ],
+      "narration": "Brask pulls out a long knotted cord, and everyone walks a stretch of it along the shelf. It hums in the wind like a harp. Pebble counts in griffin, which has different numbers. \"Four hundred steps long,\" Brask writes. \"Two goats wide. One hollow neck.\" He pays you six coins from the aerie's purse and an owlfeather clasp. \"Fee and badge.\"",
       "cast": [
         {
           "figure": "cast/pass_keeper",
@@ -1004,6 +978,14 @@
         }
       ],
       "art": "scenes/riftlight/cairnstep-survey-slab",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Take a tea break",
+          "icon": "supper",
+          "goto": "rest_tea"
+        }
+      ],
       "onEnter": [
         {
           "type": "grantCoins",
@@ -1018,25 +1000,37 @@
     },
     "rest_tea": {
       "type": "rest",
-      "narration": "Brask lights a tiny stove that hisses like a cat. His tea tastes of pine needles and warm stones. Everyone gets a mug. Pebble gets a thimble. The neck can wait a minute.",
+      "narration": "Brask lights a tiny stove that hisses like a cat. His tea tastes of pine needles and warm stones. Everyone gets a mug. Pebble gets a thimble. Brask writes: \"Tea. Good.\" The neck can wait a minute.",
       "heal": 3,
+      "cast": [
+        {
+          "figure": "cast/pass_keeper",
+          "name": "Brask"
+        },
+        {
+          "figure": "cast/pebble",
+          "name": "Pebble",
+          "size": "small"
+        }
+      ],
+      "art": "scenes/riftlight/cairnstep-survey-slab",
       "choices": [
         {
           "id": "tea",
           "label": "Watch the valley",
-          "icon": "rest",
+          "icon": "eye",
           "goto": "tea_x"
         },
         {
           "id": "pages",
-          "label": "Read the old pages",
+          "label": "Ask about the old pages",
           "icon": "scroll",
           "goto": "pages_x"
         },
         {
           "id": "share",
           "label": "Share your supper",
-          "icon": "cake",
+          "icon": "supper",
           "goto": "tea_share",
           "when": {
             "count": {
@@ -1057,31 +1051,11 @@
             }
           ]
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pass_keeper",
-          "name": "Brask"
-        },
-        {
-          "figure": "cast/pebble",
-          "name": "Pebble",
-          "size": "small"
-        }
-      ],
-      "art": "scenes/riftlight/cairnstep-survey-slab"
+      ]
     },
     "tea_share": {
       "type": "story",
       "narration": "Brask gets the cheese, Pebble the bread, and the wind the crumbs. Pebble gives you a lace from her satchel. \"It makes feet quick.\" Far below, tiny dots move along the valley. \"Herders,\" says Brask. \"They will want to know if this path is real.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Finish the job",
-          "icon": "forward",
-          "goto": "shelter"
-        }
-      ],
       "cast": [
         {
           "figure": "cast/pass_keeper",
@@ -1094,6 +1068,14 @@
         }
       ],
       "art": "scenes/riftlight/cairnstep-survey-slab",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Finish the job",
+          "icon": "steps",
+          "goto": "shelter"
+        }
+      ],
       "onEnter": [
         {
           "type": "grantItem",
@@ -1104,15 +1086,7 @@
     },
     "tea_x": {
       "type": "story",
-      "narration": "The tea is terrible and wonderful. Far below, tiny dots move along the valley. \"Herders, with their goats,\" says Pebble. \"They will want to know if this path is real.\" Brask nods. \"Then let us finish.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Finish the job",
-          "icon": "forward",
-          "goto": "shelter"
-        }
-      ],
+      "narration": "The tea is terrible and wonderful. Far below, tiny dots move along the valley. \"Herders, with their goats,\" says Pebble. \"They'll want to know if this path is real.\" Brask nods. \"Then let us finish.\"",
       "cast": [
         {
           "figure": "cast/pass_keeper",
@@ -1124,19 +1098,19 @@
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep-survey-slab"
+      "art": "scenes/riftlight/cairnstep-survey-slab",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Finish the job",
+          "icon": "steps",
+          "goto": "shelter"
+        }
+      ]
     },
     "pages_x": {
       "type": "story",
-      "narration": "The old pages smell of dust and pencil. Some passes are crossed out. A few have a tiny star. \"Every road in this book was new once,\" says Brask. He taps the blank page. \"Someone has to walk it first. Today, that is you.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Finish the job",
-          "icon": "forward",
-          "goto": "shelter"
-        }
-      ],
+      "narration": "The old pages smell of dust and pencil. Some passes are crossed out. A few have a tiny star. \"Every road in this book was new once,\" says Brask. He turns back to the first page and taps it. \"Except this one. This one was old when the book was new.\"",
       "cast": [
         {
           "figure": "cast/pass_keeper",
@@ -1148,11 +1122,31 @@
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep-survey-slab"
+      "art": "scenes/riftlight/cairnstep-survey-slab",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Finish the job",
+          "icon": "steps",
+          "goto": "shelter"
+        }
+      ]
     },
     "shelter": {
       "type": "choice_point",
       "narration": "Brask taps the ledger. \"If herders come this way, where can their grain sacks wait out the weather?\" Along the shelf, the cliff leans out in overhangs, and snow piles deep. Where will you look?",
+      "cast": [
+        {
+          "figure": "cast/pass_keeper",
+          "name": "Brask"
+        },
+        {
+          "figure": "cast/pebble",
+          "name": "Pebble",
+          "size": "small"
+        }
+      ],
+      "art": "scenes/riftlight/cairnstep-survey-slab",
       "choices": [
         {
           "id": "drip",
@@ -1163,20 +1157,20 @@
         {
           "id": "dig",
           "label": "Dig a snow hollow",
-          "icon": "might",
+          "icon": "hand",
           "goto": "shelter_dig"
         },
         {
           "id": "leap",
           "label": "Leap to the high ledge",
-          "icon": "arrow",
+          "icon": "boot",
           "goto": "shelter_leap",
           "requiresSpecies": "manticore"
         },
         {
           "id": "cover",
           "label": "Buy a cover (3 coins)",
-          "icon": "key",
+          "icon": "coins",
           "goto": "shelter_cover",
           "when": {
             "coins": {
@@ -1190,26 +1184,14 @@
             }
           ]
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pass_keeper",
-          "name": "Brask"
-        },
-        {
-          "figure": "cast/pebble",
-          "name": "Pebble",
-          "size": "small"
-        }
-      ],
-      "art": "scenes/riftlight/cairnstep-survey-slab"
+      ]
     },
     "shelter_drip": {
       "type": "check",
       "stat": "clever",
       "tn": 12,
       "prompt": "Read the overhangs and find the driest one.",
-      "narration": "Drips mean wet. Dust means dry.",
+      "narration": "Drips mean wet. Dust means dry. \"Write that down,\" Brask tells Pebble.",
       "onSuccess": {
         "goto": "shelter_found",
         "narration": "You find a deep, dry nook out of the wind."
@@ -1323,14 +1305,6 @@
     "shelter_found": {
       "type": "story",
       "narration": "Pebble draws a tiny roof on the map. Then a yip floats over the rocks. A cinder wolf, gray as ash and glowing at the edges, is nosing at the little cairn where the aerie keeps its hay and bread. A second wolf trots up. \"Hungry, not wicked,\" says Brask. \"But that is my winter hay.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Shoo the wolves away",
-          "icon": "shield",
-          "goto": "cache_fight"
-        }
-      ],
       "cast": [
         {
           "figure": "cast/pass_keeper",
@@ -1342,7 +1316,24 @@
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep-survey-slab"
+      "art": "scenes/riftlight/cairnstep-survey-slab",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Shoo the wolves away",
+          "icon": "shield",
+          "goto": "cache_fight"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "slow_test"
+          },
+          "text": "You took your time at the slab, and the wolves did not. One already has a loaf in its jaws. \"That loaf is gone,\" sighs Brask. \"Save the rest.\"",
+          "at": "start"
+        }
+      ]
     },
     "cache_fight": {
       "type": "encounter",
@@ -1385,21 +1376,7 @@
     },
     "neck": {
       "type": "choice_point",
-      "narration": "The neck is a narrow bridge of rock. Below it is a gap you could drop a house into. \"Travelers will cross here,\" says Brask. \"They need to know how.\" How will you check it?",
-      "choices": [
-        {
-          "id": "rope",
-          "label": "Cross on a rope",
-          "icon": "boot",
-          "goto": "neck_rope"
-        },
-        {
-          "id": "tap",
-          "label": "Tap it with a staff",
-          "icon": "ear",
-          "goto": "neck_tap"
-        }
-      ],
+      "narration": "The neck is a narrow bridge of rock. Below it is a gap you could drop a house into. \"Travelers will cross here,\" says Brask. \"They need to know how. So do we.\" How will you check it?",
       "cast": [
         {
           "figure": "cast/pass_keeper",
@@ -1411,21 +1388,61 @@
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep-survey-slab"
+      "art": "scenes/riftlight/cairnstep-survey-slab",
+      "choices": [
+        {
+          "id": "rope",
+          "label": "Cross on a rope",
+          "icon": "hand",
+          "goto": "neck_rope"
+        },
+        {
+          "id": "tap",
+          "label": "Tap it with a staff",
+          "icon": "hand",
+          "goto": "neck_tap"
+        },
+        {
+          "id": "heard",
+          "label": "Walk the line you heard",
+          "icon": "ear",
+          "goto": "neck_heard",
+          "requiresFlag": "neck_known"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "neck_cracked"
+          },
+          "text": "A fresh crack runs across it. \"Carefully,\" says Pebble. \"Very, very carefully.\""
+        }
+      ]
     },
     "neck_rope": {
       "type": "check",
       "stat": "quick",
       "tn": 12,
+      "narration": "You tie the rope to the last cairn. Below, the gap yawns. Pebble covers her eyes, then peeks.",
       "prompt": "Cross the neck on the rope, one at a time, keeping to the middle.",
-      "narration": "You tie the rope to the last cairn. Below, the gap yawns.",
+      "cast": [
+        {
+          "figure": "cast/pass_keeper",
+          "name": "Brask"
+        },
+        {
+          "figure": "cast/pebble",
+          "name": "Pebble",
+          "size": "small"
+        }
+      ],
+      "art": "scenes/riftlight/cairnstep-survey-slab",
       "onSuccess": {
         "goto": "neck_done",
         "narration": "You cross and come back safely. The neck holds, if you keep to the middle."
       },
       "onFailure": {
         "goto": "neck_done",
-        "narration": "A stone slips under a foot and falls for a very long time. The rope holds.",
         "effects": [
           {
             "type": "damage",
@@ -1433,8 +1450,16 @@
             "to": "party",
             "nonlethal": true
           }
-        ]
-      },
+        ],
+        "narration": "A stone slips under a foot and falls for a very long time. The rope holds, and so do you, barely."
+      }
+    },
+    "neck_tap": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "narration": "Solid rock says tock. Hollow rock says donk. \"Donk is bad,\" Pebble whispers.",
+      "prompt": "Tap along the neck with a staff and find the solid rock.",
       "cast": [
         {
           "figure": "cast/pass_keeper",
@@ -1446,22 +1471,27 @@
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep-survey-slab"
-    },
-    "neck_tap": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "prompt": "Tap along the neck with a staff and find the solid rock.",
-      "narration": "Solid rock says tock. Hollow rock says donk.",
+      "art": "scenes/riftlight/cairnstep-survey-slab",
       "onSuccess": {
         "goto": "neck_done",
         "narration": "You find a solid strip in the middle, exactly one goat wide."
       },
       "onFailure": {
         "goto": "neck_done",
-        "narration": "The taps all sound alike to you. Brask shows you the safe line."
-      },
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ],
+        "narration": "The taps all sound alike to you. Then one goes crunch, and your foot drops through to the ankle. Brask hauls you back by the collar and shows you the safe line."
+      }
+    },
+    "neck_heard": {
+      "type": "story",
+      "narration": "You remember the hollow donk from the slab, and where it was. You walk around it, and across the solid strip beside it, one goat wide. Pebble follows in your footprints. \"Listening,\" says Brask, \"is quicker in the end.\"",
       "cast": [
         {
           "figure": "cast/pass_keeper",
@@ -1473,11 +1503,31 @@
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep-survey-slab"
+      "art": "scenes/riftlight/cairnstep-survey-slab",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Mark the safe line",
+          "icon": "map",
+          "goto": "neck_done"
+        }
+      ]
     },
     "neck_done": {
       "type": "story",
-      "narration": "The safe way runs down the middle, one traveler wide. Brask draws it as a dotted line. \"A goat could walk it,\" he says. \"A goat should walk it on a rope. Now, what do we write?\"",
+      "narration": "The safe way runs down the middle, one traveler wide. Brask draws it as a dotted line. \"A goat could walk it,\" he says. \"A goat should walk it on a rope.\" He licks his pencil. \"Now. What do we write?\"",
+      "cast": [
+        {
+          "figure": "cast/pass_keeper",
+          "name": "Brask"
+        },
+        {
+          "figure": "cast/pebble",
+          "name": "Pebble",
+          "size": "small"
+        }
+      ],
+      "art": "scenes/riftlight/cairnstep-survey-slab",
       "choices": [
         {
           "id": "continue",
@@ -1486,6 +1536,17 @@
           "goto": "mark"
         }
       ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "neck_known",
+          "value": false
+        }
+      ]
+    },
+    "mark": {
+      "type": "choice_point",
+      "narration": "Brask holds his pencil over a clean page. \"A ledger is a promise to the next traveler. The herd's old route is under water, and they are hungry.\" Pebble holds her breath. What goes on the page?",
       "cast": [
         {
           "figure": "cast/pass_keeper",
@@ -1497,22 +1558,21 @@
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep-survey-slab"
-    },
-    "mark": {
-      "type": "choice_point",
-      "narration": "Brask holds his pencil over a clean page. \"There are three ways to write it, and each is true. A ledger is a promise to the next traveler.\" Pebble holds her breath. What goes on the page?",
+      "art": "scenes/riftlight/cairnstep-survey-slab",
       "choices": [
         {
           "id": "open",
           "label": "Write it as open",
-          "icon": "map",
-          "goto": "mark_open"
+          "icon": "forward",
+          "goto": "mark_open",
+          "when": {
+            "notFlag": "neck_cracked"
+          }
         },
         {
           "id": "warn",
           "label": "Open, with a warning",
-          "icon": "eye",
+          "icon": "bell",
           "goto": "mark_warn"
         },
         {
@@ -1522,30 +1582,18 @@
           "goto": "mark_closed"
         }
       ],
-      "cast": [
+      "variants": [
         {
-          "figure": "cast/pass_keeper",
-          "name": "Brask"
-        },
-        {
-          "figure": "cast/pebble",
-          "name": "Pebble",
-          "size": "small"
+          "when": {
+            "flag": "neck_cracked"
+          },
+          "text": "\"Not open,\" says Brask. \"Not with that crack. Not in my book.\""
         }
-      ],
-      "art": "scenes/riftlight/cairnstep-survey-slab"
+      ]
     },
     "mark_open": {
       "type": "story",
-      "narration": "Brask writes OPEN in big letters. \"The herd will be glad,\" he says, a little too quickly. Pebble clears her throat. \"And the neck?\" Brask looks at it a long moment. \"Let us at least put up a good cairn.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Raise the last cairn",
-          "icon": "might",
-          "goto": "capstone"
-        }
-      ],
+      "narration": "Brask writes OPEN in big letters. \"The herd will be glad,\" he says, a little too quickly. Pebble clears her throat. \"And the neck?\" Brask looks at it a long moment. \"Then a good cairn at least, so they can find the safe line.\"",
       "cast": [
         {
           "figure": "cast/pass_keeper",
@@ -1558,28 +1606,35 @@
         }
       ],
       "art": "scenes/riftlight/cairnstep-survey-slab",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Raise the last cairn",
+          "icon": "hand",
+          "goto": "capstone"
+        }
+      ],
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "marked_the_new_pass"
+          "flag": "marked_the_new_pass",
+          "value": true
         },
         {
           "type": "setFlag",
-          "flag": "marked_open"
+          "flag": "marked_open",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "neck_cracked",
+          "value": false
         }
       ]
     },
     "mark_warn": {
       "type": "story",
       "narration": "Brask writes OPEN, WITH CARE, and draws a tiny hat on the neck. That is how griffins mark a place that needs respect. \"Travelers read warnings,\" he says. \"Mostly.\" Pebble copies the hat. \"And a tall cairn to go with it.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Raise the last cairn",
-          "icon": "might",
-          "goto": "capstone"
-        }
-      ],
       "cast": [
         {
           "figure": "cast/pass_keeper",
@@ -1592,28 +1647,35 @@
         }
       ],
       "art": "scenes/riftlight/cairnstep-survey-slab",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Raise the last cairn",
+          "icon": "hand",
+          "goto": "capstone"
+        }
+      ],
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "marked_the_new_pass"
+          "flag": "marked_the_new_pass",
+          "value": true
         },
         {
           "type": "setFlag",
-          "flag": "marked_warned"
+          "flag": "marked_warned",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "neck_cracked",
+          "value": false
         }
       ]
     },
     "mark_closed": {
       "type": "story",
       "narration": "Brask writes UNSETTLED in small letters. \"The ridge moved once. I will not send a herd over a thing that might move twice.\" It is a careful answer, and a bit sad. \"We will still raise a cairn,\" he says. \"A closed road deserves a good marker.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Raise the last cairn",
-          "icon": "might",
-          "goto": "capstone"
-        }
-      ],
       "cast": [
         {
           "figure": "cast/pass_keeper",
@@ -1626,38 +1688,71 @@
         }
       ],
       "art": "scenes/riftlight/cairnstep-survey-slab",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Raise the last cairn",
+          "icon": "hand",
+          "goto": "capstone"
+        }
+      ],
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "marked_the_new_pass"
+          "flag": "marked_the_new_pass",
+          "value": true
         },
         {
           "type": "setFlag",
-          "flag": "marked_closed"
+          "flag": "marked_closed",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "neck_cracked",
+          "value": false
         }
       ]
     },
     "capstone": {
       "type": "interaction",
-      "narration": "The last cairn goes up at the neck. \"One set of hands holds, one set lifts,\" says Brask. He counts to three, then four, because he counted wrong.",
+      "narration": "The last cairn goes up at the neck, where travelers will see it. Brask scratches a mark in the middle of it. \"The capstone goes there,\" he says. \"Exactly there.\" The wind keeps nudging your hands.",
+      "cast": [
+        {
+          "figure": "cast/pass_keeper",
+          "name": "Brask"
+        },
+        {
+          "figure": "cast/pebble",
+          "name": "Pebble",
+          "size": "small"
+        }
+      ],
+      "art": "scenes/riftlight/cairnstep-capstone",
       "interaction": {
-        "kind": "cooperate",
-        "cue": "Hold the cairn steady while your friend lifts the capstone.",
-        "supportLabel": "Hold the cairn",
-        "actionLabel": "Lift the capstone"
+        "kind": "precision",
+        "cue": "Tap when the capstone is over the middle scratch.",
+        "actionLabel": "Set the capstone",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 3500
       },
       "onSuccess": {
         "goto": "capstone_done",
-        "narration": "The capstone settles with a click."
+        "narration": "Click! Right in the middle. Brask tips his head, deeply moved."
       },
       "onFailure": {
-        "goto": "capstone_done",
-        "narration": "It lands crooked. Brask taps it straight with his pencil."
+        "goto": "capstone_fall",
+        "narration": "The wind gusts. The capstone slides off the edge."
       },
       "onAssisted": {
         "goto": "capstone_done",
-        "narration": "You wedge the cairn, and the capstone slides on."
-      },
+        "narration": "Pebble steadies your hands. Click."
+      }
+    },
+    "capstone_fall": {
+      "type": "story",
+      "narration": "Down it goes, into the gap. You count to five before it lands. Pebble counts to seven, in griffin. The cairn stands, but it is short now, too short to see from the valley. \"I will stand here myself and wave at the herd,\" says Brask, \"until we find a new top.\"",
       "cast": [
         {
           "figure": "cast/pass_keeper",
@@ -1669,19 +1764,26 @@
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep-capstone"
-    },
-    "capstone_done": {
-      "type": "story",
-      "narration": "The wind whistles politely around the new cairn. Pebble holds up a small stone. \"This goes on top. You do it.\" She also gives you a brass whistle. \"For a moment that needs one loud note.\"",
+      "art": "scenes/riftlight/cairnstep-capstone",
       "choices": [
         {
           "id": "continue",
-          "label": "Place the little stone",
+          "label": "Finish the cairn",
           "icon": "hand",
-          "goto": "last_stone"
+          "goto": "capstone_done"
         }
       ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "cairn_short",
+          "value": true
+        }
+      ]
+    },
+    "capstone_done": {
+      "type": "story",
+      "narration": "The wind whistles politely around the new cairn. Pebble gives you a brass whistle from her satchel. \"For a moment that needs one loud note.\" Brask lifts his flag toward the sky. Far off, a little island floats in the air, small as a loaf in a pond, and a tiny flag waves from it. \"Our neighbors,\" he says. \"They watch the weather. We watch the stones.\"",
       "cast": [
         {
           "figure": "cast/pass_keeper",
@@ -1693,7 +1795,15 @@
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep",
+      "art": "scenes/riftlight/cairnstep-capstone",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Signal the island",
+          "icon": "map",
+          "goto": "signal"
+        }
+      ],
       "onEnter": [
         {
           "type": "grantItem",
@@ -1706,98 +1816,21 @@
           "when": {
             "flag": "marked_warned"
           },
-          "text": "Brask ties a tiny hat-shaped warning flag to it."
+          "text": "Brask ties a tiny hat-shaped warning flag to the cairn.",
+          "at": "start"
         },
         {
           "when": {
             "flag": "marked_closed"
           },
-          "text": "Brask ties a white ribbon to it, to say the road is resting."
+          "text": "Brask ties a white ribbon to the cairn, to say the road is resting.",
+          "at": "start"
         }
       ]
     },
-    "last_stone": {
-      "type": "interaction",
-      "narration": "Brask has scratched a mark in the middle of the capstone. The wind keeps nudging your hand.",
-      "interaction": {
-        "kind": "precision",
-        "cue": "Tap when the stone is over the middle scratch.",
-        "actionLabel": "Drop the stone",
-        "target": 0.5,
-        "width": 0.3,
-        "periodMs": 3500
-      },
-      "onSuccess": {
-        "goto": "signal",
-        "narration": "Click! Right in the middle. Brask tips his head, deeply moved."
-      },
-      "onFailure": {
-        "goto": "signal",
-        "narration": "The stone rolls off. Pebble sets it on top herself. \"Practice,\" she says kindly."
-      },
-      "onAssisted": {
-        "goto": "signal",
-        "narration": "Pebble steadies your hand. Click."
-      },
-      "cast": [
-        {
-          "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
-        },
-        {
-          "figure": "cast/pebble",
-          "name": "Pebble",
-          "size": "small"
-        }
-      ],
-      "art": "scenes/riftlight/cairnstep-capstone"
-    },
     "signal": {
       "type": "choice_point",
-      "narration": "Brask lifts his flag toward the distant island. \"Our neighbors will want to hear what we found,\" he says. \"What shall we tell them?\"",
-      "choices": [
-        {
-          "id": "real",
-          "label": "Say the ridge moved",
-          "icon": "map",
-          "goto": "signal_wave",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "told_the_island"
-            }
-          ]
-        },
-        {
-          "id": "ask",
-          "label": "Ask if theirs moved",
-          "icon": "ear",
-          "goto": "signal_wave",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "asked_the_island"
-            }
-          ]
-        },
-        {
-          "id": "whistle",
-          "label": "Blow the brave whistle",
-          "icon": "note",
-          "goto": "signal_whistle",
-          "requiresItem": "brave_whistle",
-          "effects": [
-            {
-              "type": "takeItem",
-              "itemId": "brave_whistle"
-            },
-            {
-              "type": "setFlag",
-              "flag": "told_the_island"
-            }
-          ]
-        }
-      ],
+      "narration": "\"Our neighbors will want to hear what we found,\" says Brask. \"What shall we tell them?\"",
       "cast": [
         {
           "figure": "cast/pass_keeper",
@@ -1809,9 +1842,44 @@
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep",
+      "choices": [
+        {
+          "id": "real",
+          "label": "Say the ridge moved",
+          "icon": "arrow",
+          "goto": "signal_wave"
+        },
+        {
+          "id": "ask",
+          "label": "Ask if theirs moved",
+          "icon": "ear",
+          "goto": "signal_wave",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "asked_the_island",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "whistle",
+          "label": "Blow the brave whistle",
+          "icon": "whistle",
+          "goto": "signal_whistle",
+          "requiresItem": "brave_whistle",
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": "brave_whistle"
+            }
+          ]
+        }
+      ]
     },
     "signal_wave": {
+      "type": "story",
       "narration": "Brask hands you a flag. Big wave, little wave, circle, pause. It is like a dance with a very strict teacher. Across the sky, a tiny figure waves back. \"Oh, nicely done,\" whispers Brask.",
       "cast": [
         {
@@ -1825,17 +1893,17 @@
         }
       ],
       "art": "scenes/riftlight/cairnstep",
-      "type": "story",
       "choices": [
         {
           "id": "continue",
           "label": "Read their answer",
-          "icon": "forward",
+          "icon": "eye",
           "goto": "signal_back"
         }
       ]
     },
     "signal_whistle": {
+      "type": "story",
       "narration": "You point Pebble's whistle at the island and blow. The note flies across the sky like a thrown spoon. A tiny figure on the island jumps, then waves.",
       "cast": [
         {
@@ -1849,27 +1917,18 @@
         }
       ],
       "art": "scenes/riftlight/cairnstep",
-      "type": "story",
       "choices": [
         {
           "id": "continue",
           "label": "Read their answer",
-          "icon": "forward",
+          "icon": "eye",
           "goto": "signal_back"
         }
       ]
     },
     "signal_back": {
       "type": "story",
-      "narration": "The island's flags answer. \"They say thank you,\" Brask reads. \"And the ridge is not the only thing that moved. Their old landing route now points into empty sky. I would like to know how.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Hear Brask's idea",
-          "icon": "wing",
-          "goto": "message"
-        }
-      ],
+      "narration": "The island's flags answer. \"They say thank you,\" Brask reads. \"And the ridge is not the only thing that moved. Their old landing route now points into empty sky.\" He licks his pencil and does not write. \"I would like to know how.\"",
       "cast": [
         {
           "figure": "cast/pass_keeper",
@@ -1882,22 +1941,28 @@
         }
       ],
       "art": "scenes/riftlight/cairnstep",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Hear Brask out",
+          "icon": "ear",
+          "goto": "message"
+        }
+      ],
       "variants": [
         {
           "when": {
             "flag": "asked_the_island"
           },
-          "replace": true,
-          "text": "The island's flags answer. \"They say yes,\" Brask reads. \"Their old landing route now points into empty sky. I would like to know how.\""
+          "text": "The island's flags answer. \"They say yes,\" Brask reads. \"Their old landing route now points into empty sky.\" He licks his pencil and does not write. \"I would like to know how.\"",
+          "replace": true
         }
       ]
     },
     "message": {
       "type": "rest",
-      "narration": "Brask ties the ledger shut. \"We know where the ridge moved, and what travelers should do,\" he says. He looks at the island flags. \"Our neighbors have route trouble too. We griffins can fly you over to them, if you like.\"",
+      "narration": "Brask ties the ledger shut. \"You walked it first, so the aerie owes you a flight. Griffins pay their debts.\" He looks at the island. \"Our neighbors have route trouble too. We can fly you over to them, whenever you say.\" So here is tonight's piece: the pass is real and new, yet the oldest page shows a path here long ago, among landmarks that are gone. Something is moving the land. What is it? And can you put things right?",
       "heal": 2,
-      "choices": [],
-      "outcome": "success",
       "cast": [
         {
           "figure": "cast/pass_keeper",
@@ -1915,21 +1980,59 @@
           "when": {
             "flag": "marked_open"
           },
-          "text": "Your open-pass notice sends the herders toward the new crossing, with Pebble's sketch of the neck beside it."
+          "text": "Your open-pass notice sends the herders toward the new crossing, with Pebble's sketch of the neck beside it.",
+          "at": "start"
         },
         {
           "when": {
             "flag": "marked_warned"
           },
-          "text": "Your warning stays with the notice. Brask will lead the herd across in small groups, with a watcher at the neck."
+          "text": "Your warning stays with the notice. Brask will lead the herd across in small groups, with a watcher at the neck.",
+          "at": "start"
         },
         {
           "when": {
             "flag": "marked_closed"
           },
-          "text": "Brask hangs your closed-pass notice. The herd will keep its longer route until the new ridge weathers a storm."
+          "text": "Brask hangs your closed-pass notice. The herd will keep its longer route until the new ridge weathers a storm.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "cairn_short"
+          },
+          "text": "Until the cairn has a new top, Brask will stand at the neck himself, waving.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "wolves_took_hay"
+          },
+          "text": "The aerie is short of hay this winter, and Brask has written it down.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "slow_test"
+          },
+          "text": "The aerie is a loaf short, because you stopped to listen. \"Worth a loaf,\" says Brask.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "page_by_heart"
+          },
+          "text": "You carry the old page in your heads, boot lake and two horns and all. Master Orin will want to hear about it."
+        },
+        {
+          "when": {
+            "notFlag": "page_by_heart"
+          },
+          "text": "You carry the old path in your heads, if not the landmarks around it. Master Orin will want to hear about it."
         }
-      ]
+      ],
+      "choices": [],
+      "outcome": "success"
     }
   },
   "voiceGuide": {
@@ -1944,7 +2047,10 @@
       "Hollow Gate",
       "Legend Dragon"
     ],
-    "npcVoices": {}
+    "npcVoices": {
+      "Brask": "Brask, the griffin who keeps the aerie's pass ledger (he/him). Slow, precise and secretly soft. Licks his pencil before every word and writes everything down, even \"Tea. Good.\" Calls the party his witnesses. Wants the ledger to be true, because a wrong page sends a herd off a cliff.",
+      "Pebble": "Pebble, Brask's young apprentice (she/her). Small, quick and nervous, with an inky beak. Drew this season's page and is afraid she drew it wrong. Counts in griffin, which has different numbers. Brave once she has a reason."
+    }
   },
   "presentation": {
     "fights": [
@@ -2002,14 +2108,6 @@
       }
     ],
     "interactions": {
-      "cairn_order": {
-        "props": [
-          "cairn-leaning",
-          "cairn-flat",
-          "cairn-twin",
-          "clue-scrap"
-        ]
-      },
       "drawing_memory": {
         "props": [
           "cairn-ledger"
@@ -2018,12 +2116,6 @@
       "capstone": {
         "props": [
           "cairn-flat",
-          "capstone-target"
-        ]
-      },
-      "last_stone": {
-        "props": [
-          "toss-pebble",
           "capstone-target"
         ]
       }

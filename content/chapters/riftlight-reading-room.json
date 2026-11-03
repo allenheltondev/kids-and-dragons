@@ -1,5 +1,5 @@
 {
-  "$comment": "Riftlight authored opening draft. Development preview only; see ../README.md. Production campaign id will be riftlight. No bonus XP: preserve the design bible campaign budget.",
+  "$comment": "Riftlight, Forgotten Paths key node (docs/campaigns/continental-rift/arc.md, reading-room; design note memory-paths-continuity-review.md). Rewritten in November 2026 to the pilot's bar. Question: has this river ever run here before? Elder Murmur carries it; Flurry (who will keep the next reading room) has the stake; Pip Thistledown voices Lady Olivia's ideas. The p1 (old_river) is the Paths fragment: the memory ice shows the river leaving by a different valley; Murmur's warning follows in deep_sound. Sets fragment_paths_learned on every path; reads valley_crossed_high and fragment_coast_learned.",
   "id": "riftlight-reading-room",
   "campaignId": "riftlight",
   "index": 6,
@@ -10,27 +10,27 @@
   "xpAward": 140,
   "entry": "arrival",
   "goal": {
-    "text": "Compare your crossing with the yetis' memory ice.",
+    "text": "Ask the yetis' memory ice: has this river ever run here before?",
     "steps": [
       {
-        "id": "look",
-        "label": "Look into the memory ice",
-        "flag": "looked_into_the_memory_ice"
+        "id": "down",
+        "label": "Go down into the reading room",
+        "flag": "rr_down"
       },
       {
-        "id": "match",
-        "label": "Check what matches your crossing",
-        "flag": "checked_the_match"
+        "id": "wall",
+        "label": "Reach the old wall",
+        "flag": "rr_reached_wall"
       },
       {
-        "id": "file",
-        "label": "Help file the new record",
-        "flag": "filed_the_new_record"
+        "id": "river",
+        "label": "See what the old ice remembers",
+        "flag": "rr_saw_river"
       },
       {
-        "id": "teach",
-        "label": "Show a newcomer how to look",
-        "flag": "showed_the_newcomer"
+        "id": "proof",
+        "label": "Prove it is the same river",
+        "flag": "rr_proved"
       }
     ]
   },
@@ -38,2664 +38,8 @@
     "art": "plates/riftlight/reading-room",
     "narration": "Deep in the glacier, yeti hands have carved a room from blue ice. Lantern light slides along the walls. Some of the ice shines with pictures too faint to read."
   },
-  "scenes": {
-    "arrival": {
-      "type": "story",
-      "narration": "An elder yeti welcomes you into a room cut from the glacier. The route worker from the valley has come too. Behind a low table, water moves inside a pale wall of ice. It is a remembered river. \"Help us compare that view with the river you crossed,\" says the elder. \"We have looked at it three times and filed it three different ways.\" Pip keeps his tail well away from the tea.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Ask how to help",
-          "icon": "hand",
-          "goto": "quiet_rule"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room",
-      "variants": [
-        {
-          "when": {
-            "flag": "valley_crossed_high"
-          },
-          "text": "Pip lays down your account. It says you crossed by the high rock reach."
-        },
-        {
-          "when": {
-            "notFlag": "valley_crossed_high"
-          },
-          "text": "Pip lays down your account of the supported low-shelf crossing."
-        }
-      ],
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "memory_split_observers",
-          "value": false
-        },
-        {
-          "type": "setFlag",
-          "flag": "memory_independent_reading",
-          "value": false
-        },
-        {
-          "type": "setFlag",
-          "flag": "memory_rock_sequence",
-          "value": false
-        },
-        {
-          "type": "setFlag",
-          "flag": "memory_keeper_endorsed",
-          "value": false
-        },
-        {
-          "type": "setFlag",
-          "flag": "memory_account_cited",
-          "value": false
-        },
-        {
-          "type": "setFlag",
-          "flag": "memory_catalog_clear",
-          "value": false
-        },
-        {
-          "type": "setFlag",
-          "flag": "memory_guide_published",
-          "value": false
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ]
-    },
-    "quiet_rule": {
-      "type": "story",
-      "narration": "The elder sets down the tea. \"Do not shout near the old ice; you do not know what you might wake.\" You agree to raise a hand when you need a pause. Pip whispers so quietly that nobody can hear him at all.",
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Share your crossing",
-          "icon": "forward",
-          "goto": "witness_first"
-        }
-      ]
-    },
-    "witness_first": {
-      "type": "choice_point",
-      "narration": "The route worker gives the elder a drawing of the two valleys. Pip lays your crossing sketch beside it. Where should the telling start?",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Each bank tells its side",
-          "icon": "hand",
-          "goto": "witness_first_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Start with shared landmarks",
-          "icon": "hand",
-          "goto": "witness_first_2"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "witness_first_1": {
-      "type": "story",
-      "narration": "The worker tells what she saw from her bank. You tell only the crossing you made. Pip points out where the two stories overlap. The elder keeps them as two stories, not one.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Watch the elder file",
-          "icon": "hand",
-          "goto": "catalog_cards"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "witness_first_2": {
-      "type": "story",
-      "narration": "You point out the chipped marker and two ridges on both pages. The worker agrees before anyone talks about the water. Pip marks the parts the spray hid.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Watch the elder file",
-          "icon": "hand",
-          "goto": "catalog_cards"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "catalog_cards": {
-      "type": "story",
-      "narration": "The elder joins a standing-place card, a ridge sketch and a water account. A younger keeper peeks over her shoulder. Pip lines the cards up like birthdays. \"Three visits,\" the elder corrects him. \"The river did not leave us a birthday.\" The cards say where to look, not how old the river is.",
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Rest by the warm cups",
-          "icon": "forward",
-          "goto": "listening_floor"
-        }
-      ]
-    },
-    "listening_floor": {
-      "type": "rest",
-      "narration": "A faint low song travels through the floor from a hall elsewhere in the ice. Pip feels it in his paws. \"My toes are humming.\" The elder shows you two marked places where readers can watch the memory.",
-      "heal": 0,
-      "choices": [
-        {
-          "id": "rest",
-          "label": "Rest, then get ready",
-          "icon": "hand",
-          "goto": "support_ice"
-        },
-        {
-          "id": "listen",
-          "label": "Rest and listen",
-          "icon": "hand",
-          "goto": "support_ice"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "support_ice": {
-      "type": "choice_point",
-      "narration": "The close reading place needs a settled cradle to catch flakes. Prop it up and the view will be clearer, but meltwater drips near the papers. Or set up the dry table farther back. The view is cloudier, but the papers stay safe. Which will you ready?",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Prop up the close view",
-          "icon": "hand",
-          "goto": "support_ice_1",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "memory_close_view",
-              "value": true
-            }
-          ]
-        },
-        {
-          "id": "option_2",
-          "label": "Set up the dry table",
-          "icon": "hand",
-          "goto": "support_ice_2",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "memory_close_view",
-              "value": false
-            }
-          ]
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "support_ice_1": {
-      "type": "story",
-      "narration": "You ask the elder where the wooden cradle can take a push. Then you slide a wedge under it from the marked floor. Nobody touches the memory ice.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Hold it steady",
-          "icon": "hand",
-          "goto": "support_ice_1_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "support_ice_1_check": {
-      "type": "interaction",
-      "onSuccess": {
-        "goto": "support_ice_1_done"
-      },
-      "onFailure": {
-        "goto": "support_ice_1_changed"
-      },
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room",
-      "narration": "A support shifts beside the ice. Hold it while the tie goes on. A tiny crack ticks above you. Everyone stops chatting.",
-      "interaction": {
-        "kind": "cooperate",
-        "cue": "Hold the support while the tie is secured.",
-        "supportLabel": "Hold the support",
-        "actionLabel": "Secure the tie"
-      },
-      "onAssisted": {
-        "goto": "support_ice_1_done"
-      }
-    },
-    "support_ice_1_done": {
-      "type": "story",
-      "narration": "The cradle stays steady when the elder gives it a gentle test. Now you can look without balancing on anything wobbly.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Look into the ice",
-          "icon": "hand",
-          "goto": "first_memory"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "support_ice_1_changed": {
-      "type": "story",
-      "narration": "The corner shifts! Everyone steps back while the elder props it with a board. You move the standing place farther away and mark the wobbly corner off limits.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Look into the ice",
-          "icon": "hand",
-          "goto": "first_memory"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "support_ice_2": {
-      "type": "story",
-      "narration": "You move only the loose standing mat, far from the ice. The elder checks that you can still see the memory from there.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Level the table",
-          "icon": "hand",
-          "goto": "support_ice_2_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "support_ice_2_check": {
-      "type": "interaction",
-      "narration": "Level the wide dry table at the far viewpoint. The keeper puts the blank slips well away from the meltwater.",
-      "interaction": {
-        "kind": "balance",
-        "cue": "Level the dry reading table.",
-        "actionLabel": "Set the dry table",
-        "objectLabel": "Dry reading table"
-      },
-      "onSuccess": {
-        "goto": "support_ice_2_done"
-      },
-      "onFailure": {
-        "goto": "support_ice_2_changed"
-      },
-      "onAssisted": {
-        "goto": "support_ice_2_done"
-      },
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "support_ice_2_done": {
-      "type": "story",
-      "narration": "The far table is level and dry. The papers are safe. The view is cloudy, so you will need to look carefully.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Look into the ice",
-          "icon": "hand",
-          "goto": "first_memory"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "support_ice_2_changed": {
-      "type": "story",
-      "narration": "The elder steadies the far table with a spare wedge. It is dry and ready. The view is still cloudy.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Look into the ice",
-          "icon": "hand",
-          "goto": "first_memory"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "first_memory": {
-      "type": "choice_point",
-      "narration": "The pale ice clears. A remembered river flows between familiar ridges, into the valley your sketch showed dry. Will you split up the watching, or all follow one landmark?",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Split the river and ridges",
-          "icon": "hand",
-          "goto": "first_memory_1"
-        },
-        {
-          "id": "option_2",
-          "label": "All follow one landmark",
-          "icon": "hand",
-          "goto": "first_memory_2"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room-memory",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "looked_into_the_memory_ice"
-        }
-      ]
-    },
-    "first_memory_1": {
-      "type": "story",
-      "narration": "Pip watches the ridges while your party follows the water. Pip writes down every word, and where everyone stood. Nobody changes an account just to make it match.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Watch the river",
-          "icon": "hand",
-          "goto": "memory_observation",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "memory_split_observers",
-              "value": true
-            }
-          ]
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room-memory"
-    },
-    "first_memory_2": {
-      "type": "story",
-      "narration": "Everyone picks the fork-shaped ridge and watches where the water leaves beside it. Nobody fills in the blanks with a made-up map.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Watch the river",
-          "icon": "hand",
-          "goto": "memory_observation",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "memory_split_observers",
-              "value": false
-            }
-          ]
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room-memory"
-    },
-    "second_view": {
-      "type": "choice_point",
-      "narration": "The elder leads you to a second marked viewpoint, still on the safe floor. A shiny reflection slides across the river. \"Look again,\" says the elder. \"Does it still look the same?\"",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Keep the ridges fixed",
-          "icon": "hand",
-          "goto": "second_view_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Track the three rocks",
-          "icon": "hand",
-          "goto": "second_view_2"
-        },
-        {
-          "id": "compare_notes",
-          "label": "Compare both watchers' notes",
-          "icon": "hand",
-          "goto": "second_view_prepared",
-          "when": {
-            "flag": "memory_split_observers"
-          }
-        },
-        {
-          "id": "close",
-          "label": "Use the close view",
-          "icon": "hand",
-          "goto": "close_view",
-          "when": {
-            "flag": "memory_close_view"
-          }
-        },
-        {
-          "id": "attune",
-          "label": "Our starweaver feels the pulse",
-          "icon": "hand",
-          "goto": "close_view_attuned",
-          "when": {
-            "flag": "memory_close_view"
-          },
-          "requiresClass": "starweaver"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room-memory"
-    },
-    "second_view_1": {
-      "type": "story",
-      "narration": "You hold Pip's sketch upright. You match its shapes to the ice, one bend at a time. Nobody turns the drawing just to make the river agree.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Follow the ridge",
-          "icon": "hand",
-          "goto": "second_view_1_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room-memory"
-    },
-    "second_view_1_check": {
-      "type": "interaction",
-      "narration": "A reflection slides across the remembered ridge. Keep your eye on the marked ridge as the cloudy layers swap places.",
-      "interaction": {
-        "kind": "tracking",
-        "cue": "Follow the marked ridge view through the moving cloudy layers.",
-        "actionLabel": "Point out the ridge",
-        "covers": [
-          "Near layer",
-          "Middle layer",
-          "Far layer"
-        ],
-        "start": 0,
-        "swaps": [
-          [
-            0,
-            2
-          ],
-          [
-            1,
-            2
-          ],
-          [
-            0,
-            1
-          ]
-        ],
-        "stepMs": 1400
-      },
-      "onSuccess": {
-        "goto": "second_view_1_done"
-      },
-      "onFailure": {
-        "goto": "second_view_1_changed"
-      },
-      "onAssisted": {
-        "goto": "second_view_1_changed"
-      },
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room-memory"
-    },
-    "second_view_1_done": {
-      "type": "story",
-      "narration": "The two ridge profiles agree from both safe viewpoints. The reflection slides away, but the ridges stay put. Your own eyes found the match. Pip marks where you stood.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Check what matches",
-          "icon": "hand",
-          "goto": "what_matches"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room-memory",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "memory_split_observers",
-          "value": false
-        },
-        {
-          "type": "setFlag",
-          "flag": "memory_independent_reading",
-          "value": true
-        },
-        {
-          "type": "setFlag",
-          "flag": "memory_rock_sequence",
-          "value": false
-        }
-      ]
-    },
-    "second_view_1_changed": {
-      "type": "story",
-      "narration": "The reflection hides the middle bend, so you leave it blank. From the elder's side view, you can see the river leave by the other valley. She offers to sign that part if you want to use it.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Check what matches",
-          "icon": "hand",
-          "goto": "what_matches"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room-memory",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "memory_split_observers",
-          "value": false
-        },
-        {
-          "type": "setFlag",
-          "flag": "memory_independent_reading",
-          "value": false
-        },
-        {
-          "type": "setFlag",
-          "flag": "memory_rock_sequence",
-          "value": false
-        }
-      ]
-    },
-    "second_view_2": {
-      "type": "story",
-      "narration": "You pick three rocks that stay in view. Pip writes down their order only after the water has passed.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Watch the rocks",
-          "icon": "hand",
-          "goto": "second_view_2_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room-memory"
-    },
-    "second_view_2_check": {
-      "type": "interaction",
-      "narration": "The river passes three rocks in the moving view. Watch their order, then show it.",
-      "interaction": {
-        "kind": "memory",
-        "cue": "Watch the rock passage, then echo it.",
-        "actionLabel": "Show what we saw",
-        "options": [
-          {
-            "id": "flat",
-            "label": "Flat rock",
-            "icon": "eye"
-          },
-          {
-            "id": "round",
-            "label": "Round rock",
-            "icon": "eye"
-          },
-          {
-            "id": "split",
-            "label": "Split rock",
-            "icon": "eye"
-          }
-        ],
-        "answer": [
-          "round",
-          "split",
-          "flat"
-        ],
-        "stepMs": 1300
-      },
-      "onSuccess": {
-        "goto": "second_view_2_done"
-      },
-      "onFailure": {
-        "goto": "second_view_2_changed"
-      },
-      "onAssisted": {
-        "goto": "second_view_2_changed"
-      },
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room-memory"
-    },
-    "second_view_2_done": {
-      "type": "story",
-      "narration": "You see the water pass the three rocks in order. The second viewpoint shows the same, even with a reflection sliding the other way. Pip numbers the rocks, not the years.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Check what matches",
-          "icon": "hand",
-          "goto": "what_matches"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room-memory",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "memory_split_observers",
-          "value": false
-        },
-        {
-          "type": "setFlag",
-          "flag": "memory_independent_reading",
-          "value": true
-        },
-        {
-          "type": "setFlag",
-          "flag": "memory_rock_sequence",
-          "value": true
-        }
-      ]
-    },
-    "second_view_2_changed": {
-      "type": "story",
-      "narration": "The reflection hides the middle bend, so you leave it blank. From the elder's side view, you can see the river leave by the other valley. She offers to sign that part if you want to use it.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Check what matches",
-          "icon": "hand",
-          "goto": "what_matches"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room-memory",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "memory_split_observers",
-          "value": false
-        },
-        {
-          "type": "setFlag",
-          "flag": "memory_independent_reading",
-          "value": false
-        },
-        {
-          "type": "setFlag",
-          "flag": "memory_rock_sequence",
-          "value": false
-        }
-      ]
-    },
-    "what_matches": {
-      "type": "choice_point",
-      "narration": "The outside drawing and memory account lie on the elder's table. Pip points from one to the other. \"Both show the river in that other valley!\" What will your account say?",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Show what we checked",
-          "icon": "hand",
-          "goto": "what_matches_1",
-          "when": {
-            "flag": "memory_independent_reading"
-          },
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "checked_the_match"
-            }
-          ]
-        },
-        {
-          "id": "option_2",
-          "label": "Say only what matches",
-          "icon": "hand",
-          "goto": "what_matches_2",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "checked_the_match"
-            }
-          ]
-        },
-        {
-          "id": "keeper",
-          "label": "Ask the elder to sign",
-          "icon": "hand",
-          "goto": "what_matches_keeper",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "checked_the_match"
-            }
-          ]
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "memory_keeper_endorsed",
-          "value": false
-        },
-        {
-          "type": "setFlag",
-          "flag": "memory_account_cited",
-          "value": false
-        }
-      ],
-      "variants": [
-        {
-          "when": {
-            "flag": "memory_independent_reading"
-          },
-          "text": "You checked the river's direction yourselves."
-        },
-        {
-          "when": {
-            "notFlag": "memory_independent_reading"
-          },
-          "text": "The middle bend is still blank."
-        }
-      ]
-    },
-    "what_matches_1": {
-      "type": "story",
-      "narration": "You write down the river's direction and leave its age and cause blank. The elder asks you to point to your proof before Pip copies it down.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "File the account",
-          "icon": "hand",
-          "goto": "catalog_test",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "memory_account_cited",
-              "value": true
-            }
-          ]
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room",
-      "variants": [
-        {
-          "when": {
-            "flag": "memory_rock_sequence"
-          },
-          "text": "Your proof is the three rocks, in order."
-        },
-        {
-          "when": {
-            "notFlag": "memory_rock_sequence"
-          },
-          "text": "Your proof is the two ridges and where you stood."
-        }
-      ]
-    },
-    "what_matches_2": {
-      "type": "story",
-      "narration": "You write that the ice shows one old river, and you only saw a short change outside. The shared landmarks still make the match useful. The elder adds the river's direction underneath.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "File the account",
-          "icon": "hand",
-          "goto": "catalog_test"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "catalog_test": {
-      "type": "choice_point",
-      "narration": "A younger yeti keeper brings a fresh catalog slip. \"I need a route from a visitor's question to the checked view,\" she explains. Can she find it on her own? Where should her search start?",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Start from the crossing",
-          "icon": "hand",
-          "goto": "catalog_test_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Start from the old river",
-          "icon": "hand",
-          "goto": "catalog_test_2"
-        },
-        {
-          "id": "endorsed",
-          "label": "Use the elder's signature",
-          "icon": "hand",
-          "goto": "catalog_endorsed",
-          "when": {
-            "flag": "memory_keeper_endorsed"
-          }
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room",
-      "variants": [
-        {
-          "when": {
-            "flag": "memory_account_cited",
-            "notFlag": "memory_rock_sequence"
-          },
-          "text": "She has to find both places where you stood."
-        },
-        {
-          "when": {
-            "flag": "memory_account_cited"
-          },
-          "text": "She has to find your proof with no hints."
-        },
-        {
-          "when": {
-            "flag": "memory_keeper_endorsed"
-          },
-          "text": "The elder's signature tells her who to ask, but not a date."
-        }
-      ]
-    },
-    "catalog_test_1": {
-      "type": "story",
-      "narration": "You hand the keeper your outside sketch. Can she find the matching memory? Pip zips his mouth shut so he cannot help.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Let her try",
-          "icon": "hand",
-          "goto": "catalog_test_1_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "catalog_test_1_check": {
-      "type": "interaction",
-      "narration": "The younger keeper follows your cards from a visitor's question. Link the clues so she reaches the right view. The date she looked is not the river's age.",
-      "interaction": {
-        "kind": "sequence",
-        "cue": "Link the visitor question to the evidence.",
-        "actionLabel": "Try our plan",
-        "options": [
-          {
-            "id": "view",
-            "label": "Checked viewpoint",
-            "icon": "eye"
-          },
-          {
-            "id": "question",
-            "label": "Visitor question",
-            "icon": "eye"
-          },
-          {
-            "id": "card",
-            "label": "Catalog cross-reference",
-            "icon": "eye"
-          }
-        ],
-        "answer": [
-          "question",
-          "card",
-          "view"
-        ],
-        "clues": [
-          "Start with what the visitor asks.",
-          "The catalog cross-reference connects the question to a viewpoint.",
-          "Finish at the checked viewpoint, not at a guessed date."
-        ]
-      },
-      "onSuccess": {
-        "goto": "catalog_test_1_done"
-      },
-      "onFailure": {
-        "goto": "catalog_test_1_changed"
-      },
-      "onAssisted": {
-        "goto": "catalog_test_1_changed"
-      },
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "catalog_test_1_done": {
-      "type": "story",
-      "narration": "The younger keeper follows the cards to both accounts without a keeper guiding her. She does not mix up the crossing and the old memory. \"I could post a visitor guide,\" she offers.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Catch the sliding tray",
-          "icon": "hand",
-          "goto": "sliding_tray"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "memory_catalog_clear",
-          "value": true
-        }
-      ]
-    },
-    "catalog_test_1_changed": {
-      "type": "story",
-      "narration": "The younger keeper mixes up the day she looked with the river's age. You fix the label together, but she still needs the elder's help. \"I will sit with the next reader,\" she says. Visitors will need a keeper beside them.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Catch the sliding tray",
-          "icon": "hand",
-          "goto": "sliding_tray"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "memory_catalog_clear",
-          "value": false
-        }
-      ]
-    },
-    "catalog_test_2": {
-      "type": "story",
-      "narration": "You hand the keeper the memory notes. Can they lead her to the worker's own story of today? The worker waits to see.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Let her try",
-          "icon": "hand",
-          "goto": "catalog_test_2_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "catalog_test_2_check": {
-      "type": "interaction",
-      "narration": "The younger keeper follows your cards from a visitor's question. Link the clues so she reaches the right view. The date she looked is not the river's age.",
-      "interaction": {
-        "kind": "sequence",
-        "cue": "Link the visitor question to the evidence.",
-        "actionLabel": "Try our plan",
-        "options": [
-          {
-            "id": "view",
-            "label": "Checked viewpoint",
-            "icon": "eye"
-          },
-          {
-            "id": "question",
-            "label": "Visitor question",
-            "icon": "eye"
-          },
-          {
-            "id": "card",
-            "label": "Catalog cross-reference",
-            "icon": "eye"
-          }
-        ],
-        "answer": [
-          "question",
-          "card",
-          "view"
-        ],
-        "clues": [
-          "Start with what the visitor asks.",
-          "The catalog cross-reference connects the question to a viewpoint.",
-          "Finish at the checked viewpoint, not at a guessed date."
-        ]
-      },
-      "onSuccess": {
-        "goto": "catalog_test_2_done"
-      },
-      "onFailure": {
-        "goto": "catalog_test_2_changed"
-      },
-      "onAssisted": {
-        "goto": "catalog_test_2_changed"
-      },
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "catalog_test_2_done": {
-      "type": "story",
-      "narration": "The younger keeper follows the cards to both accounts without a keeper guiding her. She does not mix up the crossing and the old memory. \"I could post a visitor guide,\" she offers.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Catch the sliding tray",
-          "icon": "hand",
-          "goto": "sliding_tray"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "memory_catalog_clear",
-          "value": true
-        }
-      ]
-    },
-    "catalog_test_2_changed": {
-      "type": "story",
-      "narration": "The younger keeper mixes up the day she looked with the river's age. You fix the label together, but she still needs the elder's help. \"I will sit with the next reader,\" she says. Visitors will need a keeper beside them.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Catch the sliding tray",
-          "icon": "hand",
-          "goto": "sliding_tray"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "memory_catalog_clear",
-          "value": false
-        }
-      ]
-    },
-    "sliding_tray": {
-      "type": "choice_point",
-      "narration": "A shallow tray holds blank slips and chalk. Near the close view, meltwater has it sliding toward the table edge. \"It's escaping!\" squeaks Pip. If you set up the dry table, the slips are already safe over there. What will you do?",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Catch the tray",
-          "icon": "hand",
-          "goto": "sliding_tray_1"
-        },
-        {
-          "id": "dry",
-          "label": "Hand over the dry slips",
-          "icon": "hand",
-          "goto": "dry_slips",
-          "when": {
-            "notFlag": "memory_close_view"
-          }
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "filed_the_new_record"
-        }
-      ]
-    },
-    "sliding_tray_1": {
-      "type": "story",
-      "narration": "Pip shoves a stool out of the way. You keep your feet on the marked floor and reach for the tray. The elder stands between you and the old ice.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Grab it together",
-          "icon": "hand",
-          "goto": "sliding_tray_1_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "sliding_tray_1_check": {
-      "type": "interaction",
-      "onSuccess": {
-        "goto": "sliding_tray_1_done"
-      },
-      "onFailure": {
-        "goto": "sliding_tray_1_changed"
-      },
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room",
-      "narration": "The tray tilts. Slips creep toward its edge. Level it together before the notes become a very small avalanche.",
-      "interaction": {
-        "kind": "balance",
-        "objectLabel": "reading tray",
-        "cue": "Raise or lower your side until the load is level.",
-        "actionLabel": "Carry it together"
-      },
-      "onAssisted": {
-        "goto": "sliding_tray_1_done"
-      }
-    },
-    "sliding_tray_1_done": {
-      "type": "story",
-      "narration": "The slips and chalk go back on the table. Nobody left the safe floor. Pip laughs at how carefully everyone saved the blank paper.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Talk with the elder",
-          "icon": "hand",
-          "goto": "compare_accounts"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "sliding_tray_1_changed": {
-      "type": "story",
-      "narration": "The tray bumps the table before you catch it. Two blank slips get wet, and the younger keeper hangs them up to dry. The written accounts are safe.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Talk with the elder",
-          "icon": "hand",
-          "goto": "compare_accounts"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "compare_accounts": {
-      "type": "choice_point",
-      "narration": "The elder asks whether your party has another checked observation of a river where today's geography does not fit it. Nobody has to invent one. This memory is already a clue: a river once left by a different valley. What will you do with clues from other places?",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Use only checked clues",
-          "icon": "hand",
-          "goto": "compare_accounts_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Keep this clue separate",
-          "icon": "hand",
-          "goto": "compare_accounts_2"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room",
-      "variants": [
-        {
-          "when": {
-            "flag": "fragment_coast_learned"
-          },
-          "text": "At the Saltrot's buried bridge, your party found a waterline and rounded river pebbles under dry arches. That is another checked clue. It does not prove both changes happened together."
-        }
-      ]
-    },
-    "compare_accounts_1": {
-      "type": "story",
-      "narration": "You name only what someone else could check. Clues from other places stay with their own names. The elder leaves a blank where nothing has been compared.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Read the draft",
-          "icon": "hand",
-          "goto": "claim_limit"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "compare_accounts_2": {
-      "type": "story",
-      "narration": "You keep this river on its own page. Pip marks a space where another clue could go later. The elder agrees. No guessing today.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Read the draft",
-          "icon": "hand",
-          "goto": "claim_limit"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "claim_limit": {
-      "type": "choice_point",
-      "narration": "Pip reads the draft. The matched river is there. Its age and cause are still blank. \"A blank is easier to fix than a confident mistake,\" says the elder. What question should you leave beside the clue?",
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room",
-      "choices": [
-        {
-          "id": "date",
-          "label": "How old is this view?",
-          "icon": "hand",
-          "goto": "claim_limit_response_date"
-        },
-        {
-          "id": "cause",
-          "label": "What moved the land?",
-          "icon": "hand",
-          "goto": "claim_limit_response_cause"
-        },
-        {
-          "id": "compare",
-          "label": "Where else is this river?",
-          "icon": "hand",
-          "goto": "claim_limit_response_compare"
-        }
-      ]
-    },
-    "record_choice": {
-      "type": "choice_point",
-      "narration": "The elder offers to keep a copy of your party's finished comparison. You can share it or keep it private. How the keeper's search went decides what kind of copy it can be.",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Leave a copy for visitors",
-          "icon": "hand",
-          "goto": "record_choice_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Keep our page private",
-          "icon": "hand",
-          "goto": "record_choice_2"
-        },
-        {
-          "id": "publish",
-          "label": "Post a visitor guide",
-          "icon": "hand",
-          "goto": "record_publish",
-          "when": {
-            "flag": "memory_catalog_clear"
-          }
-        },
-        {
-          "id": "staff_copy",
-          "label": "Leave a keeper's copy",
-          "icon": "hand",
-          "goto": "record_staff_copy",
-          "when": {
-            "notFlag": "memory_catalog_clear"
-          }
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "memory_guide_published",
-          "value": false
-        }
-      ],
-      "variants": [
-        {
-          "when": {
-            "flag": "memory_catalog_clear"
-          },
-          "text": "The keeper found her way alone, so it can be posted as a guide."
-        },
-        {
-          "when": {
-            "notFlag": "memory_catalog_clear"
-          },
-          "text": "The keeper needed help, so visitors will need a keeper too."
-        }
-      ]
-    },
-    "record_choice_1": {
-      "type": "story",
-      "narration": "You check the elder's copy against your page. Both show the river and the open questions. The younger keeper files it only after every hero has had a chance to fix it.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Greet the visitor",
-          "icon": "hand",
-          "goto": "teach_back",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "memory_notes_shared",
-              "value": true
-            }
-          ]
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "record_choice_2": {
-      "type": "story",
-      "narration": "You thank the elder and keep your page. She agrees the words are yours to share. The younger keeper files only the room's own notes.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Greet the visitor",
-          "icon": "hand",
-          "goto": "teach_back",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "memory_notes_shared",
-              "value": false
-            }
-          ]
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "teach_back": {
-      "type": "choice_point",
-      "narration": "An arriving yeti visitor waits at the warm cup. \"Where is a safe way to look?\" the newcomer asks. You can show the room's own landmarks, or use a copy you chose to share.",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Show the room's landmarks",
-          "icon": "hand",
-          "goto": "teach_live"
-        },
-        {
-          "id": "posted",
-          "label": "Try our posted guide",
-          "icon": "hand",
-          "goto": "teach_posted",
-          "when": {
-            "flag": "memory_guide_published"
-          }
-        },
-        {
-          "id": "staff",
-          "label": "Give the keeper our copy",
-          "icon": "hand",
-          "goto": "teach_staff",
-          "when": {
-            "flag": "memory_notes_shared",
-            "notFlag": "memory_guide_published"
-          }
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/newcomer_yeti",
-          "name": "Newcomer"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room",
-      "variants": [
-        {
-          "when": {
-            "flag": "memory_guide_published"
-          },
-          "text": "The newcomer grabs your posted guide while the keeper watches."
-        },
-        {
-          "when": {
-            "flag": "memory_notes_shared",
-            "notFlag": "memory_catalog_clear"
-          },
-          "text": "The keeper has your copy ready and will go along."
-        },
-        {
-          "when": {
-            "notFlag": "memory_notes_shared"
-          },
-          "text": "Your private page stays in your pack."
-        },
-        {
-          "when": {
-            "flag": "memory_account_cited"
-          },
-          "text": "Your proof has to be part of the lesson."
-        }
-      ]
-    },
-    "rest": {
-      "type": "rest",
-      "narration": "Your river crossing and the memory agree on another valley. The date and cause are still unknown. Pip checks twice. \"The drawing goes in the traveling pages, not my tea-stained scrap.\" You can rest, go back to the workers by the upper path, or head deeper into the glacier.",
-      "heal": 0,
-      "choices": [],
-      "outcome": "success",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "fragment_paths_learned",
-          "value": true
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room",
-      "variants": [
-        {
-          "when": {
-            "flag": "memory_guide_published"
-          },
-          "text": "Your posted guide stays up. The younger keeper helps any visitor who gets stuck."
-        },
-        {
-          "when": {
-            "flag": "memory_notes_shared",
-            "notFlag": "memory_guide_published"
-          },
-          "text": "The keeper keeps your shared copy for visitors who have help."
-        },
-        {
-          "when": {
-            "notFlag": "memory_notes_shared"
-          },
-          "text": "No copy of your private account is filed. The elder keeps her own notes."
-        },
-        {
-          "when": {
-            "flag": "memory_visitor_independent"
-          },
-          "text": "The visitor found the view with no keeper's help."
-        },
-        {
-          "when": {
-            "flag": "memory_close_view"
-          },
-          "text": "The close cradle stays ready for the next reader."
-        },
-        {
-          "when": {
-            "notFlag": "memory_close_view"
-          },
-          "text": "The dry table keeps the next slips safe from meltwater."
-        }
-      ]
-    },
-    "second_view_prepared": {
-      "type": "story",
-      "narration": "Your two watchers open their notes. One followed the water. The other kept the ridges fixed. The elder asks each watcher where they stood.",
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room-memory",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put the notes together",
-          "icon": "hand",
-          "goto": "second_view_prepared_check"
-        }
-      ]
-    },
-    "second_view_prepared_check": {
-      "type": "interaction",
-      "narration": "Put the ridge notes and water notes together to rebuild the river's path. Pip covers his own page so it cannot copy yours.",
-      "interaction": {
-        "kind": "sequence",
-        "cue": "Combine the separate observations.",
-        "actionLabel": "Try our plan",
-        "options": [
-          {
-            "id": "bend",
-            "label": "Round bend",
-            "icon": "eye"
-          },
-          {
-            "id": "fork",
-            "label": "Forked ridge",
-            "icon": "eye"
-          },
-          {
-            "id": "flat",
-            "label": "Flat rock",
-            "icon": "eye"
-          }
-        ],
-        "answer": [
-          "fork",
-          "bend",
-          "flat"
-        ],
-        "clues": [
-          "The ridge observer saw the fork before the bend.",
-          "The water observer saw the bend before the flat rock.",
-          "Both accounts place the flat rock last."
-        ]
-      },
-      "onSuccess": {
-        "goto": "second_view_1_done"
-      },
-      "onFailure": {
-        "goto": "second_view_1_changed"
-      },
-      "onAssisted": {
-        "goto": "second_view_1_changed"
-      },
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room-memory"
-    },
-    "what_matches_keeper": {
-      "type": "story",
-      "narration": "You ask the elder to read the river's direction with you and sign it. She watches from her side view, then signs just that part. Your own notes stay marked as yours.",
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "File the account",
-          "icon": "hand",
-          "goto": "catalog_test",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "memory_keeper_endorsed",
-              "value": true
-            }
-          ]
-        }
-      ],
-      "variants": [
-        {
-          "when": {
-            "notFlag": "memory_independent_reading"
-          },
-          "text": "Your middle bend stays blank. The elder's side view fills it in."
-        },
-        {
-          "when": {
-            "flag": "memory_independent_reading"
-          },
-          "text": "You checked it yourselves, too. Her signature sits beside your own proof."
-        }
-      ]
-    },
-    "catalog_endorsed": {
-      "type": "story",
-      "narration": "You give the younger keeper the elder's signed card. Can she follow it to the right view? The signature says who helped read it. It does not give a date.",
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Let her try",
-          "icon": "hand",
-          "goto": "catalog_endorsed_check"
-        }
-      ]
-    },
-    "catalog_endorsed_check": {
-      "type": "interaction",
-      "narration": "The signed card leads the younger keeper to her seat and the checked view. Watch her route, then show it.",
-      "interaction": {
-        "kind": "memory",
-        "cue": "Watch the signed reference route, then echo it.",
-        "actionLabel": "Show what we saw",
-        "options": [
-          {
-            "id": "view",
-            "label": "Checked view",
-            "icon": "eye"
-          },
-          {
-            "id": "seat",
-            "label": "Keeper seat",
-            "icon": "eye"
-          },
-          {
-            "id": "card",
-            "label": "Signed card",
-            "icon": "eye"
-          }
-        ],
-        "answer": [
-          "card",
-          "seat",
-          "view"
-        ],
-        "stepMs": 1300
-      },
-      "onSuccess": {
-        "goto": "catalog_test_1_done"
-      },
-      "onFailure": {
-        "goto": "catalog_test_1_changed"
-      },
-      "onAssisted": {
-        "goto": "catalog_test_1_changed"
-      },
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "record_publish": {
-      "type": "story",
-      "narration": "You let the keeper post your account and how to find it. Pip writes the open questions right beside the view, where nobody can miss them. The younger keeper pins the guide up for visitors.",
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Greet the visitor",
-          "icon": "hand",
-          "goto": "teach_back",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "memory_notes_shared",
-              "value": true
-            },
-            {
-              "type": "setFlag",
-              "flag": "memory_guide_published",
-              "value": true
-            }
-          ]
-        }
-      ]
-    },
-    "record_staff_copy": {
-      "type": "story",
-      "narration": "You leave a copy that marks where a keeper must help. The younger keeper keeps it by her seat. She will explain the fixed date label to the next visitor.",
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Greet the visitor",
-          "icon": "hand",
-          "goto": "teach_back",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "memory_notes_shared",
-              "value": true
-            },
-            {
-              "type": "setFlag",
-              "flag": "memory_guide_published",
-              "value": false
-            }
-          ]
-        }
-      ]
-    },
-    "memory_observation": {
-      "type": "interaction",
-      "narration": "Water moves inside the ice, past a forked ridge and two rocks. Watch the river's path. Your boots stay on the floor while the old water rushes by.",
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room-memory",
-      "interaction": {
-        "kind": "memory",
-        "cue": "Watch the river pass the landmarks, then echo its course.",
-        "actionLabel": "Show what we saw",
-        "options": [
-          {
-            "id": "flat",
-            "label": "Flat rock",
-            "icon": "eye"
-          },
-          {
-            "id": "fork",
-            "label": "Forked ridge",
-            "icon": "eye"
-          },
-          {
-            "id": "round",
-            "label": "Round rock",
-            "icon": "eye"
-          }
-        ],
-        "answer": [
-          "fork",
-          "round",
-          "flat"
-        ],
-        "stepMs": 1300
-      },
-      "onSuccess": {
-        "goto": "second_view",
-        "narration": "Pip writes it down beside your crossing sketch. \"Now let's check it from the other side.\""
-      },
-      "onFailure": {
-        "goto": "second_view",
-        "narration": "You mark the part you missed instead of guessing. The second viewpoint can check it."
-      },
-      "onAssisted": {
-        "goto": "second_view",
-        "narration": "Pip writes it down beside your crossing sketch. \"Now let's check it from the other side.\""
-      }
-    },
-    "close_view": {
-      "type": "interaction",
-      "narration": "Your steady cradle makes the close view usable. Wait for the reflection to slide clear of the ridge.",
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room-memory",
-      "interaction": {
-        "kind": "timing",
-        "cue": "Record the ridge during the clear interval.",
-        "actionLabel": "Record the clear view",
-        "target": 0.5,
-        "width": 0.3,
-        "periodMs": 6000
-      },
-      "onSuccess": {
-        "goto": "second_view_1_done"
-      },
-      "onFailure": {
-        "goto": "second_view_1_changed"
-      },
-      "onAssisted": {
-        "goto": "second_view_1_changed"
-      }
-    },
-    "close_view_attuned": {
-      "type": "interaction",
-      "narration": "Your steady cradle makes the close view usable. Wait for the reflection to slide clear of the ridge. Your starweaver uses a skill called Attune to feel the clear moment coming.",
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room-memory",
-      "interaction": {
-        "kind": "timing",
-        "cue": "Record the ridge during the clear interval.",
-        "actionLabel": "Record the clear view",
-        "target": 0.5,
-        "width": 0.6,
-        "periodMs": 6000
-      },
-      "onSuccess": {
-        "goto": "second_view_1_done"
-      },
-      "onFailure": {
-        "goto": "second_view_1_changed"
-      },
-      "onAssisted": {
-        "goto": "second_view_1_changed"
-      }
-    },
-    "dry_slips": {
-      "type": "story",
-      "narration": "Your dry table kept the slips safe. You hand the clean stack to the younger keeper. Pip looks very proud of the dry paper, as if he invented it.",
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Talk with the elder",
-          "icon": "forward",
-          "goto": "compare_accounts"
-        }
-      ]
-    },
-    "teach_live": {
-      "type": "story",
-      "narration": "The newcomer stands beside you while the elder points out the landmarks. You show where you looked and where you stopped. With your help, the newcomer finds the safe view.",
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/newcomer_yeti",
-          "name": "Newcomer"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Finish the visit",
-          "icon": "forward",
-          "goto": "rest",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "showed_the_newcomer",
-              "value": true
-            }
-          ]
-        }
-      ]
-    },
-    "teach_posted": {
-      "type": "interaction",
-      "narration": "The newcomer follows the posted guide alone. Watch the route markers, then show where to go.",
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/newcomer_yeti",
-          "name": "Newcomer"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room",
-      "interaction": {
-        "kind": "memory",
-        "cue": "Watch the guide route, then echo it.",
-        "actionLabel": "Show what we saw",
-        "options": [
-          {
-            "id": "view",
-            "label": "Marked viewpoint",
-            "icon": "eye"
-          },
-          {
-            "id": "cup",
-            "label": "Warm cup",
-            "icon": "eye"
-          },
-          {
-            "id": "card",
-            "label": "Guide card",
-            "icon": "eye"
-          }
-        ],
-        "answer": [
-          "cup",
-          "card",
-          "view"
-        ],
-        "stepMs": 1300
-      },
-      "onSuccess": {
-        "goto": "rest",
-        "narration": "The newcomer finds the view with the posted guide.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "showed_the_newcomer",
-            "value": true
-          },
-          {
-            "type": "setFlag",
-            "flag": "memory_visitor_independent",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "teach_staff",
-        "narration": "The newcomer misses a marker. The younger keeper steps in to help. A posted guide does not work for everyone."
-      },
-      "onAssisted": {
-        "goto": "teach_staff",
-        "narration": "The newcomer misses a marker. The younger keeper steps in to help. A posted guide does not work for everyone."
-      }
-    },
-    "teach_staff": {
-      "type": "story",
-      "narration": "You hand your copy to the younger keeper, with the tricky parts marked. She walks the newcomer to the safe view. Nobody pretends they did it alone.",
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/newcomer_yeti",
-          "name": "Newcomer"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Finish the visit",
-          "icon": "forward",
-          "goto": "rest",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "showed_the_newcomer",
-              "value": true
-            }
-          ]
-        }
-      ]
-    },
-    "claim_limit_response_date": {
-      "type": "story",
-      "narration": "The date stays open beside the checked observation. Now the question waits for the next reader.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Decide who gets a copy",
-          "icon": "forward",
-          "goto": "record_choice"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "claim_limit_response_cause": {
-      "type": "story",
-      "narration": "The cause stays unanswered; nobody invents one. Now the question waits for the next reader.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Decide who gets a copy",
-          "icon": "forward",
-          "goto": "record_choice"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "claim_limit_response_compare": {
-      "type": "story",
-      "narration": "The next comparison goes beside the clue, not in place of it. Now the question waits for the next reader.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Decide who gets a copy",
-          "icon": "forward",
-          "goto": "record_choice"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    }
-  },
   "voiceGuide": {
-    "tone": "Warm, funny, curious, with real consequences. Describe actions and sensory details directly. Short dialogue. Never use \"the kind of thing that\", \"the sort of thing that\", or \"it was X, the type of thing that makes you Y\" comparisons. Let a character act instead of explaining how the reader should feel.",
+    "tone": "Warm, funny and a little spooky, with real consequences. Short sentences. Everyone whispers in the reading room, so a loud noise is an event. The memory ice is witnessed, never explained. Let a character act instead of explaining how the reader should feel.",
     "vocabulary": "Read aloud to an eight-year-old. Concrete words, short sentences, distinct voices.",
     "forbidden": [
       "death",
@@ -2707,82 +51,2209 @@
       "Legend Dragon"
     ],
     "npcVoices": {
-      "Pip Thistledown": "Manticore scout. Eager but learns to separate observation from guess; never knows an unseen event.",
-      "Yeti keepers": "Slow, enormous and gentle. Deliberate before answering. Offer a safe method and leave unknown history unknown."
+      "Elder Murmur": "Elder Murmur, the very old yeti who keeps the reading room (she/her). Whispers everything, even her jokes. Slow as a snowdrift, never hurries and never guesses. Drinks her tea with ice in it and blows on it to make it colder. Wants to read the memory ice without waking it.",
+      "Flurry": "Flurry, a young yeti keeper (she/her). Quick, nervous and kind. Knits little striped hats for icicles. Will keep the new reading room the builders are carving, and worries a moving river might come into it.",
+      "Pip Thistledown": "Young manticore scout (he/him). Eager, notebook always out, quotes \"Lady Olivia says...\" and tries her ideas. Wants a copy of the memory ice to impress her. Kind underneath; changes his mind when the party gives him a reason."
     }
   },
   "presentation": {
     "interactions": {
-      "catalog_test_1_check": {
-        "props": [
-          "prop_word_scroll"
-        ]
-      },
-      "catalog_test_2_check": {
-        "props": [
-          "prop_word_scroll"
-        ]
-      },
-      "catalog_endorsed_check": {
-        "props": [
-          "prop_word_scroll"
-        ]
-      },
-      "teach_posted": {
-        "props": [
-          "prop_word_scroll"
-        ]
-      },
-      "support_ice_1_check": {
-        "props": [
-          "relay-plank"
-        ]
-      },
-      "support_ice_2_check": {
-        "props": [
-          "relay-plank"
-        ]
-      },
-      "sliding_tray_1_check": {
-        "props": [
-          "relay-plank"
-        ]
-      },
-      "second_view_prepared_check": {
-        "props": [
-          "clue-scrap"
-        ]
-      },
-      "memory_observation": {
-        "props": [
-          "clue-scrap"
-        ]
-      },
-      "second_view_2_check": {
-        "props": [
-          "clue-scrap"
-        ]
-      },
-      "close_view": {
-        "props": [
-          "clue-scrap"
-        ]
-      },
-      "close_view_attuned": {
-        "props": [
-          "clue-scrap"
-        ]
-      },
-      "second_view_1_check": {
+      "drips": {
         "props": [
           "ice-knob"
-        ],
-        "coverIcons": [
-          "prop_playing_card",
-          "prop_playing_card",
-          "prop_playing_card"
+        ]
+      },
+      "wait_slow": {
+        "props": [
+          "ice-knob"
+        ]
+      },
+      "wait_long": {
+        "props": [
+          "ice-knob"
+        ]
+      },
+      "wait_knack": {
+        "props": [
+          "ice-knob"
+        ]
+      },
+      "copy_flash": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "copy_steady": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "copy_late": {
+        "props": [
+          "clue-scrap"
         ]
       }
+    }
+  },
+  "scenes": {
+    "arrival": {
+      "type": "story",
+      "narration": "The upper path ends at a round door cut into the glacier, clear as a bottle. A very old yeti opens it before you knock. She wears three scarves and holds a cup of tea with ice in it. \"Elder Murmur,\" she whispers. \"I keep the reading room. Today you crossed a river in a valley that was dry. Has this river ever run here before? Our memory ice may know. Come and ask it with me.\"",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "rr_cloudy",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "rr_tuft_friend",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "rr_knack",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "rr_forced",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "rr_copy_clean",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "rr_slates_saved",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "rr_slates_cracked",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "rr_pip_gave_sketch",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "rr_bridge_pattern",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "rr_tuft_brave",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "rr_pip_dreams",
+          "value": false
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "in",
+          "label": "Step inside with Murmur",
+          "icon": "forward",
+          "goto": "pip_here"
+        }
+      ]
+    },
+    "pip_here": {
+      "type": "story",
+      "narration": "Inside, Pip Thistledown, the young manticore scout, is already waiting with his notebook open. \"Lady Olivia says memory ice is the oldest map in the world,\" he says, much too loudly. Murmur puts a finger to her lips. \"I'm going to copy it for her,\" Pip whispers.",
+      "variants": [
+        {
+          "when": {
+            "flag": "valley_crossed_high"
+          },
+          "text": "Murmur looks at your dry boots. \"You crossed high, over the rocks. Good. High eyes see the shape of a valley.\""
+        },
+        {
+          "when": {
+            "notFlag": "valley_crossed_high"
+          },
+          "text": "Murmur looks at your wet boots. \"You crossed low, by the water. Good. Wet knees remember how a river pulls.\""
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "down",
+          "label": "Follow them down",
+          "icon": "boot",
+          "goto": "stair"
+        }
+      ]
+    },
+    "stair": {
+      "type": "choice_point",
+      "narration": "A stair spirals down into the ice. Every step squeaks like a mouse if you stomp. \"Quiet feet,\" Murmur whispers. \"The old ice listens.\" Pip pats a tea tray on a string. \"Or we slide! Lady Olivia says the fastest way down is the best way.\" How will you go down?",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "tiptoe",
+          "label": "Tiptoe down the squeaky stair",
+          "icon": "boot",
+          "goto": "check_tiptoe"
+        },
+        {
+          "id": "sled",
+          "label": "Slide down on Pip's tea tray",
+          "icon": "quick",
+          "goto": "check_sled"
+        },
+        {
+          "id": "glide",
+          "label": "Glide down the middle of the spiral",
+          "icon": "wing",
+          "goto": "glide",
+          "requiresSpecies": "griffin"
+        }
+      ]
+    },
+    "check_tiptoe": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "roller": "party",
+      "narration": "Toes first. Heels never. \"Ninety-nine steps,\" Murmur whispers. \"I counted them once.\"",
+      "prompt": "Tiptoe all the way down without one squeak",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "onSuccess": {
+        "goto": "room",
+        "narration": "Not one squeak. At the bottom Murmur nods at you, which for a yeti is a very big compliment."
+      },
+      "onFailure": {
+        "goto": "room",
+        "narration": "Step ninety squeaks. So do ninety-one and ninety-two, because you slip and bump down the rest on your bottom. Murmur winces. Far below, the ice gives a long, low creak.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "rr_cloudy",
+            "value": true
+          }
+        ]
+      }
+    },
+    "check_sled": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "roller": "party",
+      "narration": "The tea tray is very fast. Pip is already going. \"Dig your heels in to stop!\" he calls back.",
+      "prompt": "Dig in your heels and stop the tray before the wall",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "onSuccess": {
+        "goto": "room",
+        "narration": "You scrape to a stop one whisker from the wall. Pip claps, very quietly, with his paws in his mittens."
+      },
+      "onFailure": {
+        "goto": "room",
+        "narration": "You do not stop. The tray hits the bottom wall with a BONG, like a giant spoon on a pot. The whole room hums. Murmur closes her eyes. Far below, the ice gives a long, low creak.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "rr_cloudy",
+            "value": true
+          }
+        ]
+      }
+    },
+    "glide": {
+      "type": "story",
+      "narration": "Your griffin spreads its wings and floats down the middle of the spiral, round and round, like a falling leaf. Not one squeak. Pip slides down after you on the tea tray and writes GRIFFINS: QUIET in his notebook.",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "land",
+          "label": "Land softly at the bottom",
+          "icon": "wing",
+          "goto": "room"
+        }
+      ]
+    },
+    "room": {
+      "type": "story",
+      "spotlight": "next",
+      "narration": "The reading room is round and glassy and very quiet. Yeti readers in blankets stare into the walls. Inside the ice, pictures move, faint as breath on a window: falling snow, a bird, a goat chewing. \"Memory ice,\" Murmur whispers. \"It keeps what it saw when it froze. We read it. We never make it show.\"",
+      "variants": [
+        {
+          "when": {
+            "flag": "rr_cloudy"
+          },
+          "text": "Tonight the pictures shiver and blur. The readers look up at you, and then down at the floor, where the creak came from."
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "rr_down",
+          "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/memory_reader",
+          "name": "Memory readers",
+          "count": 2
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "meet",
+          "label": "Meet the readers",
+          "icon": "heart",
+          "goto": "tuft"
+        }
+      ]
+    },
+    "tuft": {
+      "type": "choice_point",
+      "narration": "A young yeti hurries over with a little striped hat. \"This is Flurry,\" Murmur whispers. \"She will keep our new reading room, when the builders finish carving it.\" Flurry points at an icicle dripping onto a stack of slates, a hundred years of the readers' notes. \"The hat is for the icicle. Help me? And then ask the old ice if rivers can move. What if one moves into my new room?\"",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "hat",
+          "label": "Stack the stools and put the hat on",
+          "icon": "hand",
+          "goto": "check_icicle"
+        },
+        {
+          "id": "snap",
+          "label": "Snap the icicle off instead",
+          "icon": "fist",
+          "goto": "snap_icicle"
+        }
+      ]
+    },
+    "check_icicle": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "roller": "party",
+      "narration": "Three stools, one on top of another. Flurry holds the bottom one. Pip holds his breath.",
+      "prompt": "Stack the stools so they stay steady, then climb up and hat the icicle",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "onSuccess": {
+        "goto": "ask_wall",
+        "narration": "The little striped hat slides on. The icicle stops dripping at once. Flurry claps her mittens. \"It suits it!\" She looks at you as if you might be very good at things.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "rr_tuft_friend",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "ask_wall",
+        "narration": "The top stool wobbles, and you come down holding the hat and a lot of air. Flurry catches you, mostly. She hats the icicle herself, standing on her toes. \"Thank you for trying,\" she says, kindly.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "snap_icicle": {
+      "type": "story",
+      "narration": "SNAP. The icicle comes off clean, and no more drips fall on the slates. But the snap rings around the whole room. The readers jump. The pictures in the walls go cloudy, like a breath on glass. Flurry looks at the little hat in her paws. \"Well,\" Murmur whispers. \"It won't drip now.\"",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "rr_cloudy",
+          "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Say sorry to Flurry",
+          "icon": "heart",
+          "goto": "ask_wall"
+        }
+      ]
+    },
+    "ask_wall": {
+      "type": "choice_point",
+      "narration": "Murmur points to the back of the room. \"The old wall is through there, the oldest ice we can read. My knees cannot go anymore. Bring me what it shows.\" A low tunnel runs that way, dripping. Above it runs a narrow ledge hung with lamps. How will you get there?",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "tunnel",
+          "label": "Crawl through the dripping tunnel",
+          "icon": "boot",
+          "goto": "drips"
+        },
+        {
+          "id": "ledge",
+          "label": "Edge along the lamp ledge",
+          "icon": "hand",
+          "goto": "check_ledge"
+        }
+      ]
+    },
+    "drips": {
+      "type": "interaction",
+      "narration": "Cold drops fall from the tunnel roof: plip, plip, plip. Crawl on between them. A drop down the neck makes anybody yelp. Pip crawls behind you with his notebook in his teeth.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Crawl on between the drips.",
+        "actionLabel": "Crawl!",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 5000
+      },
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "onSuccess": {
+        "goto": "listening_floor",
+        "narration": "You come out the far end dry as toast. Pip gets one drop right on the nose, and is much too proud to yelp."
+      },
+      "onFailure": {
+        "goto": "yelp",
+        "narration": "A drop lands right down the back of your neck."
+      },
+      "onAssisted": {
+        "goto": "listening_floor",
+        "narration": "Pip counts the drips out loud, very softly, and you crawl on every \"now.\" You come out dry as toast."
+      }
+    },
+    "yelp": {
+      "type": "story",
+      "narration": "You yelp. The tunnel yelps back: yelp, yelp, yelp, all the way to the old wall. The ice ahead turns cloudy. \"Sorry,\" you whisper. \"Sorry, sorry,\" says the tunnel. Pip pats your back.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "rr_cloudy",
+          "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Crawl on, more carefully",
+          "icon": "boot",
+          "goto": "listening_floor"
+        }
+      ]
+    },
+    "check_ledge": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "roller": "party",
+      "narration": "The ledge is as wide as a loaf of bread. You hold on to the lamp hooks and pull yourself along. \"Tails up,\" Pip whispers, holding his high.",
+      "prompt": "Pull yourself along the ledge without bumping one lamp",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "onSuccess": {
+        "goto": "listening_floor",
+        "narration": "Hook, hook, hook. You swing past every lamp, and not one wobbles."
+      },
+      "onFailure": {
+        "goto": "lamp_fall",
+        "narration": "Your elbow taps a lamp. It swings, and swings, and drops."
+      }
+    },
+    "lamp_fall": {
+      "type": "story",
+      "narration": "You catch it, mostly. The glass cracks, and the glow-moss inside goes dim. Now there is one less light at the old wall, and the ice ahead looks cloudier. Pip pats your shoulder. \"Lady Olivia says every scientist breaks one thing a day.\"",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "rr_cloudy",
+          "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Carry the dim lamp along",
+          "icon": "lantern",
+          "goto": "listening_floor"
+        }
+      ]
+    },
+    "listening_floor": {
+      "type": "choice_point",
+      "narration": "Near the old wall is a hole in the floor, no wider than a bucket. Far, far down, somebody is singing the low song from the yetis' singing hall. Pip picks up a pebble. \"Lady Olivia says you find out how deep a hole is by dropping something in.\"",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "drop",
+          "label": "Drop the pebble and count",
+          "icon": "ear",
+          "goto": "pebble_drop"
+        },
+        {
+          "id": "listen",
+          "label": "Lie down and listen to the song",
+          "icon": "song",
+          "goto": "hall_song"
+        }
+      ]
+    },
+    "pebble_drop": {
+      "type": "story",
+      "narration": "Plink. Plink. Plonk. The pebble falls for a long, long time. Then, far below, the singing stops. The floor gives a little creak, and the old wall ahead goes cloudy. Pip counts on his claws. \"Very deep,\" he reports, in a very small voice.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "rr_cloudy",
+          "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Tiptoe to the old wall",
+          "icon": "boot",
+          "goto": "old_wall"
+        }
+      ]
+    },
+    "hall_song": {
+      "type": "story",
+      "narration": "You lie flat and listen. The song comes up slow: a long note, a rest, a long note. Your breathing slows to match it. \"I could sleep here,\" Pip mumbles, and nearly does. Now you know the old ice's rhythm.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "rr_knack",
+          "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Get up, slow and calm",
+          "icon": "boot",
+          "goto": "old_wall"
+        }
+      ]
+    },
+    "old_wall": {
+      "type": "choice_point",
+      "narration": "The old wall is pale and smooth, like a frozen pond standing on its edge, with one reading lamp hung beside it. Deep inside, something moves, too faint to see. Pip presses his nose to it. \"Lady Olivia says rift magic wakes things up! Ring the Listening Chime at it!\" Murmur's whisper floats through the ice from the room behind you. \"Or wait. Old ice clears if you are still and patient. It takes a long, cold while.\"",
+      "variants": [
+        {
+          "when": {
+            "flag": "rr_cloudy"
+          },
+          "text": "Tonight the old wall is cloudy from all the noise. Waiting will be long, and cold."
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "rr_reached_wall",
+          "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room-memory",
+      "choices": [
+        {
+          "id": "ring",
+          "label": "Ring the chime at the ice",
+          "icon": "bell",
+          "goto": "ring_chime"
+        },
+        {
+          "id": "wait",
+          "label": "Wait, still and patient",
+          "icon": "moon",
+          "goto": "wait_long"
+        },
+        {
+          "id": "clear",
+          "label": "The ice is calm tonight: wait for it",
+          "icon": "moon",
+          "goto": "wait_slow",
+          "when": {
+            "notFlag": "rr_cloudy"
+          }
+        },
+        {
+          "id": "rhythm",
+          "label": "Breathe with the hall's slow song",
+          "icon": "song",
+          "goto": "wait_knack",
+          "requiresFlag": "rr_knack"
+        },
+        {
+          "id": "sing",
+          "label": "Sing the low song until the ice clears",
+          "icon": "song",
+          "goto": "song_still",
+          "requiresClass": "songkeeper"
+        }
+      ]
+    },
+    "ring_chime": {
+      "type": "story",
+      "narration": "You lift the Listening Chime and ring it at the wall. TING. The note runs into the ice like a crack of light. All at once the wall flashes bright as noon, and pictures pour across it, fast, much too fast. \"Whoa,\" breathes Pip. Somewhere behind you, Murmur gasps.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "rr_forced",
+          "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room-memory",
+      "choices": [
+        {
+          "id": "look",
+          "label": "Look, quick!",
+          "icon": "eye",
+          "goto": "old_river"
+        }
+      ]
+    },
+    "wait_slow": {
+      "type": "interaction",
+      "narration": "Hold the lamp low and still, and breathe slow. Inside the ice, the cloud drifts and thins and thickens. Lift the lamp at the clearest moment.",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Lift the lamp when the ice is clearest.",
+        "actionLabel": "Lift the lamp",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 6000
+      },
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room-memory",
+      "onSuccess": {
+        "goto": "old_river",
+        "narration": "Slowly, slowly, the cloud thins away, like fog off a pond."
+      },
+      "onFailure": {
+        "goto": "old_river",
+        "narration": "You lift too soon, and the cloud swirls back. You wait again, and again. By the time the ice clears, your fingers are numb and your nose is a little frosty.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "party"
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "old_river",
+        "narration": "Pip whispers \"now\" at the clear moment, and you lift the lamp together. The cloud thins away, like fog off a pond."
+      }
+    },
+    "wait_long": {
+      "type": "interaction",
+      "narration": "The old ice takes a long, cold while. The cold creeps up through your boots and into your toes. Hold the lamp low and still, and lift it at the clearest moment. It comes and goes fast.",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Lift the lamp when the ice is clearest.",
+        "actionLabel": "Lift the lamp",
+        "target": 0.5,
+        "width": 0.2,
+        "periodMs": 6000
+      },
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room-memory",
+      "onSuccess": {
+        "goto": "old_river",
+        "narration": "At last the cloud thins away, like fog off a pond. Your teeth are chattering, but you can see."
+      },
+      "onFailure": {
+        "goto": "old_river",
+        "narration": "You miss the clear moment, and wait for the next, and miss that too. By the time the ice clears, everyone is shivering and Pip's whiskers have frost on them.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "party"
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "old_river",
+        "narration": "Pip whispers \"now\" at the clear moment, and you lift the lamp together. Your teeth are chattering, but the cloud thins away."
+      }
+    },
+    "wait_knack": {
+      "type": "interaction",
+      "narration": "You breathe the way the hall's song taught you: a long breath, a rest, a long breath. The cloud inside the ice drifts in time with you. Lift the lamp at the clearest moment.",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Lift the lamp when the ice is clearest.",
+        "actionLabel": "Lift the lamp",
+        "target": 0.5,
+        "width": 0.45,
+        "periodMs": 6000
+      },
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room-memory",
+      "onSuccess": {
+        "goto": "old_river",
+        "narration": "Breath by breath, the cloud thins away, like fog off a pond. You hardly feel the cold at all."
+      },
+      "onFailure": {
+        "goto": "old_river",
+        "narration": "You lose the rhythm and have to find it again. By the time the ice clears, your fingers are numb.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "party"
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "old_river",
+        "narration": "Pip hums the hall's song under his breath, and you lift the lamp on the rest. The cloud thins away."
+      }
+    },
+    "song_still": {
+      "type": "story",
+      "narration": "Your songkeeper sings the low song the yetis taught you, so low it is almost not a sound at all. The old wall hums back. The cloud inside it thins and clears, like fog lifting off a pond. Pip forgets to write anything down.",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room-memory",
+      "choices": [
+        {
+          "id": "look",
+          "label": "Look into the clear ice",
+          "icon": "eye",
+          "goto": "old_river"
+        }
+      ]
+    },
+    "old_river": {
+      "type": "story",
+      "priority": 1,
+      "narration": "Elder Murmur has come after all, one slow step at a time, and stands behind you. Inside the old wall, a river is running. You know those ridges. It is the river you crossed today. But in the ice, it turns and leaves by a different valley: the one that was dry, the one you crossed. The memory ice shows the river leaving by a different valley. Long, long ago, this river ran there before. \"It has been here before,\" Pip whispers.",
+      "variants": [
+        {
+          "when": {
+            "flag": "rr_forced"
+          },
+          "text": "In the chime's flash the river flickers, bright and fast, like a picture book with the pages flipping."
+        },
+        {
+          "when": {
+            "notFlag": "rr_forced"
+          },
+          "text": "The river moves slowly and clearly, like a dream you could almost touch."
+        },
+        {
+          "when": {
+            "flag": "fragment_coast_learned"
+          },
+          "text": "You have seen something like this before. On the Saltrot, the buried bridge stands over dry mud, where a river ran in an older shape."
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "rr_saw_river",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "fragment_paths_learned",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "rr_cloudy",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "rr_knack",
+          "value": false
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room-memory",
+      "choices": [
+        {
+          "id": "still",
+          "label": "Stand very still",
+          "icon": "ear",
+          "goto": "deep_sound"
+        }
+      ]
+    },
+    "deep_sound": {
+      "type": "story",
+      "narration": "Then, far below the floor, something sighs, long and slow, like a giant turning over in bed. The Listening Chime tugs in your pack, down toward the deepest ice, where the glacier is oldest. Pip takes a huge breath, the kind you take before you yell \"Hello!\" Murmur puts a paw on his shoulder. \"Do not shout near the old ice,\" she whispers. \"You don't know what you might wake.\"",
+      "variants": [
+        {
+          "when": {
+            "flag": "rr_forced"
+          },
+          "text": "The sigh is loud. The chime's ring is still running through the ice, down and down."
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room-memory",
+      "choices": [
+        {
+          "id": "hush",
+          "label": "Keep an eye on Pip",
+          "icon": "eye",
+          "goto": "hush_pip"
+        }
+      ]
+    },
+    "hush_pip": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "roller": "party",
+      "narration": "Pip nods. Pip understands. Then Pip whispers, \"But Lady Olivia says it's rude not to say hello,\" and fills his chest for the biggest hello of his life.",
+      "prompt": "Clap a paw over Pip's mouth before he shouts",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room-memory",
+      "onSuccess": {
+        "goto": "shaking",
+        "narration": "Mmmf. Pip's hello comes out as a tiny hum into your paw. Far below, the sigh fades away. Pip goes pink to the ears. \"Sorry. That was not scientific.\""
+      },
+      "onFailure": {
+        "goto": "shaking",
+        "narration": "Too slow. \"Hel...\" bounces off every wall before you catch the rest. Far below, the sigh turns into a groan. A crack runs up the old wall, thin as a hair, and icicles rain from the ceiling. One bonks you.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "shaking": {
+      "type": "choice_point",
+      "narration": "From the reading room comes a clatter, then Flurry's voice: \"The icicles! They're falling on the slates!\" Murmur shuffles back, as fast as a yeti her age can go, which is not fast. In front of you, the river in the ice is starting to fade. What first?",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room-memory",
+      "choices": [
+        {
+          "id": "copy",
+          "label": "Copy the river before it fades",
+          "icon": "scroll",
+          "goto": "copy_flash"
+        },
+        {
+          "id": "copy_slow",
+          "label": "Copy it slowly, while the ice stays clear",
+          "icon": "scroll",
+          "goto": "copy_steady",
+          "when": {
+            "notFlag": "rr_forced"
+          }
+        },
+        {
+          "id": "slates",
+          "label": "Run back and save the slates",
+          "icon": "shield",
+          "goto": "check_slates"
+        }
+      ]
+    },
+    "copy_flash": {
+      "type": "interaction",
+      "narration": "The picture is fading fast. Watch where the river goes, then draw it in order on Pip's page.",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the river's way, then draw it in order.",
+        "actionLabel": "Draw the river",
+        "options": [
+          {
+            "id": "ridge",
+            "label": "Forked ridge",
+            "icon": "map"
+          },
+          {
+            "id": "rocks",
+            "label": "Gray rocks",
+            "icon": "eye"
+          },
+          {
+            "id": "turn",
+            "label": "Sharp turn",
+            "icon": "arrow"
+          },
+          {
+            "id": "valley",
+            "label": "Other valley",
+            "icon": "travel"
+          }
+        ],
+        "answer": [
+          "ridge",
+          "rocks",
+          "turn",
+          "valley"
+        ],
+        "stepMs": 900
+      },
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room-memory",
+      "onSuccess": {
+        "goto": "slates_broken",
+        "narration": "You draw as fast as it fades: ridge, rocks, the turn, the other valley. Every line is there.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "rr_copy_clean",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "slates_broken",
+        "narration": "The picture goes out halfway. Your copy has the ridge and the valley, and a blank in the middle where the river turns."
+      },
+      "onAssisted": {
+        "goto": "slates_broken",
+        "narration": "Pip calls out each shape as it fades, and you draw. Every line is there.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "rr_copy_clean",
+            "value": true
+          }
+        ]
+      }
+    },
+    "copy_steady": {
+      "type": "interaction",
+      "narration": "The river runs slowly in the clear ice. Watch where it goes, then draw it in order on Pip's page.",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the river's way, then draw it in order.",
+        "actionLabel": "Draw the river",
+        "options": [
+          {
+            "id": "ridge",
+            "label": "Forked ridge",
+            "icon": "map"
+          },
+          {
+            "id": "rocks",
+            "label": "Gray rocks",
+            "icon": "eye"
+          },
+          {
+            "id": "turn",
+            "label": "Sharp turn",
+            "icon": "arrow"
+          },
+          {
+            "id": "valley",
+            "label": "Other valley",
+            "icon": "travel"
+          }
+        ],
+        "answer": [
+          "ridge",
+          "rocks",
+          "turn",
+          "valley"
+        ],
+        "stepMs": 1300
+      },
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room-memory",
+      "onSuccess": {
+        "goto": "slates_broken",
+        "narration": "Ridge, rocks, the turn, the other valley. Your copy is neat and true.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "rr_copy_clean",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "slates_broken",
+        "narration": "The picture fades before you finish. Your copy has the ridge and the valley, and a blank in the middle where the river turns."
+      },
+      "onAssisted": {
+        "goto": "slates_broken",
+        "narration": "Pip calls each shape out as it passes, and you draw. Your copy is neat and true.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "rr_copy_clean",
+            "value": true
+          }
+        ]
+      }
+    },
+    "slates_broken": {
+      "type": "story",
+      "narration": "By the time you hurry back, it is over. There are icicles everywhere, and three old slates are cracked right across. Flurry is gathering the pieces in her knitting basket. \"It's all right,\" she says, and sniffs. \"Mostly all right.\"",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "rr_slates_cracked",
+          "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "help",
+          "label": "Bring Murmur your copy",
+          "icon": "scroll",
+          "goto": "compare"
+        }
+      ]
+    },
+    "check_slates": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "roller": "party",
+      "narration": "You run back into the reading room. Icicles are shaking loose over the slates. The readers' big stone table has legs as thick as tree trunks. Flurry grabs one end.",
+      "prompt": "Lift the stone table over the slates like a roof",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "onSuccess": {
+        "goto": "fading",
+        "narration": "Up it goes. Icicles bounce off the table like hail on a tent. When the shaking stops, every slate is safe. Flurry hugs the stack. \"Thank you, thank you.\"",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "rr_slates_saved",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "fading",
+        "narration": "The table only lifts halfway. The icicles hit you instead of the slates. Ow. But when the shaking stops, every slate is safe, and so are you, mostly. Flurry hugs the stack.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          },
+          {
+            "type": "setFlag",
+            "flag": "rr_slates_saved",
+            "value": true
+          }
+        ]
+      }
+    },
+    "fading": {
+      "type": "story",
+      "narration": "Then you remember the river. You hurry back to the old wall. The picture is fading, like a drawing left out in the rain. Only a little is left, and it is going fast. Pip already has his pencil out. \"Quick! Draw what's left!\"",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room-memory",
+      "choices": [
+        {
+          "id": "draw",
+          "label": "Draw what's left",
+          "icon": "scroll",
+          "goto": "copy_late"
+        }
+      ]
+    },
+    "copy_late": {
+      "type": "interaction",
+      "narration": "The river is almost gone. Watch where it goes, then draw it in order before the picture fades away.",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the river's way, then draw it in order.",
+        "actionLabel": "Draw the river",
+        "options": [
+          {
+            "id": "ridge",
+            "label": "Forked ridge",
+            "icon": "map"
+          },
+          {
+            "id": "rocks",
+            "label": "Gray rocks",
+            "icon": "eye"
+          },
+          {
+            "id": "turn",
+            "label": "Sharp turn",
+            "icon": "arrow"
+          },
+          {
+            "id": "valley",
+            "label": "Other valley",
+            "icon": "travel"
+          }
+        ],
+        "answer": [
+          "ridge",
+          "rocks",
+          "turn",
+          "valley"
+        ],
+        "stepMs": 800
+      },
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room-memory",
+      "onSuccess": {
+        "goto": "compare",
+        "narration": "You catch it just in time: ridge, rocks, the turn, the other valley. Then the ice goes pale and quiet.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "rr_copy_clean",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "compare",
+        "narration": "It fades before you finish. Your copy has the ridge and the valley, and a blank in the middle where the river turns."
+      },
+      "onAssisted": {
+        "goto": "compare",
+        "narration": "Pip calls each shape out as it fades, and you draw like lightning. Ridge, rocks, the turn, the other valley.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "rr_copy_clean",
+            "value": true
+          }
+        ]
+      }
+    },
+    "compare": {
+      "type": "choice_point",
+      "narration": "Back in the reading room, Murmur lays your copy on the stone table, beside Pip's sketch of the valley you crossed today. She blows on her tea to make it colder. \"Now prove it,\" she whispers. \"Is it the same valley? A reader never guesses.\"",
+      "variants": [
+        {
+          "when": {
+            "flag": "rr_copy_clean"
+          },
+          "text": "Your copy is clear, every turn of the river in its place."
+        },
+        {
+          "when": {
+            "notFlag": "rr_copy_clean"
+          },
+          "text": "Your copy has a blank in the middle, right where the river turns."
+        },
+        {
+          "when": {
+            "flag": "rr_slates_cracked"
+          },
+          "text": "Behind her, Flurry is still sweeping up icicles and bits of cracked slate."
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "match",
+          "label": "Line up the copy with Pip's sketch",
+          "icon": "eye",
+          "goto": "check_match"
+        },
+        {
+          "id": "murmur",
+          "label": "Ask Murmur to read the old wall herself",
+          "icon": "ear",
+          "goto": "match_unsure"
+        },
+        {
+          "id": "high",
+          "label": "You saw those ridges from the high rocks",
+          "icon": "map",
+          "goto": "match_high",
+          "requiresFlag": "rr_copy_clean",
+          "when": {
+            "flag": "valley_crossed_high"
+          }
+        },
+        {
+          "id": "low",
+          "label": "That turn is where the water pulled you",
+          "icon": "drop",
+          "goto": "match_low",
+          "requiresFlag": "rr_copy_clean",
+          "when": {
+            "notFlag": "valley_crossed_high"
+          }
+        },
+        {
+          "id": "slates",
+          "label": "Read the slates you saved",
+          "icon": "scroll",
+          "goto": "old_slates",
+          "requiresFlag": "rr_slates_saved"
+        },
+        {
+          "id": "bridge",
+          "label": "Tell Murmur about the buried bridge",
+          "icon": "key",
+          "goto": "bridge_pattern",
+          "requiresFlag": "fragment_coast_learned"
+        }
+      ]
+    },
+    "check_match": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "roller": "party",
+      "narration": "Pip holds his sketch up to the lamp. You hold your copy behind it. \"If the lines meet,\" Murmur whispers, \"it is the same valley.\"",
+      "prompt": "Slide the copy and the sketch around until the ridges meet",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "onSuccess": {
+        "goto": "matched",
+        "narration": "The ridges slide together like two halves of a cookie. Same ridges. Same valley. Murmur checks it twice, and nods."
+      },
+      "onFailure": {
+        "goto": "match_unsure",
+        "narration": "The lines will not quite meet. You turn the pages this way and that, and Pip's sketch gets a thumbprint on it."
+      }
+    },
+    "match_unsure": {
+      "type": "story",
+      "narration": "Murmur takes your copy and Pip's sketch both. \"I will read the old wall again myself,\" she whispers, \"every night, until I am sure.\" Pip's sketch was his present for Lady Olivia. He swallows. \"Keep it,\" he says. \"Science first.\" A few nights later, Murmur is sure.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "rr_pip_gave_sketch",
+          "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Thank Pip",
+          "icon": "heart",
+          "goto": "matched"
+        }
+      ]
+    },
+    "match_high": {
+      "type": "story",
+      "narration": "You close your eyes and remember the high rocks, with the valley spread out below you like a map. Those ridges. That fork. That turn. \"Same valley,\" you whisper. Murmur checks it twice, and nods. \"High eyes see far.\"",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Show Flurry",
+          "icon": "eye",
+          "goto": "matched"
+        }
+      ]
+    },
+    "match_low": {
+      "type": "story",
+      "narration": "You put your finger on the turn in the copy. That is where the water grabbed your knees today and tried to pull you along. Same turn. Same pull. Murmur checks it twice, and nods. \"Wet knees remember.\"",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Show Flurry",
+          "icon": "eye",
+          "goto": "matched"
+        }
+      ]
+    },
+    "old_slates": {
+      "type": "story",
+      "narration": "Flurry brings the slates you saved. Murmur runs a claw down them, one by one. In every slate, for a hundred years, the river runs its usual way. Not once does it leave by the other valley. \"So the old wall is older than every slate here,\" she whispers. \"Older than my grandmother's grandmother.\"",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Look at the copy again",
+          "icon": "eye",
+          "goto": "matched"
+        }
+      ]
+    },
+    "bridge_pattern": {
+      "type": "story",
+      "narration": "You tell Murmur about the buried bridge on the Saltrot: arches over dry mud, with a waterline carved high up, where a river ran in an older shape. Murmur sets down her tea, which she never does. \"Two rivers,\" she whispers, \"both remembering an older shape of the land.\" Pip writes it down twice, to be safe.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "rr_bridge_pattern",
+          "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Look at the copy again",
+          "icon": "eye",
+          "goto": "matched"
+        }
+      ]
+    },
+    "matched": {
+      "type": "story",
+      "narration": "So it is true. Long ago, before any reader was born, this river ran down the valley that was dry. Today, for a little while, it tried to go that way again. \"Like it remembered,\" Flurry whispers. Murmur pours iced tea. Pip gulps his and gets brain freeze.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "rr_proved",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "rr_copy_clean",
+          "value": false
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Sit with Flurry",
+          "icon": "heart",
+          "goto": "tuft_worry"
+        }
+      ]
+    },
+    "tuft_worry": {
+      "type": "choice_point",
+      "narration": "Flurry twists her knitting into a knot. \"If a river remembers the way it used to go, could it come back? Into my new room?\" Murmur looks into her tea. She does not know. What do you tell Flurry?",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "help",
+          "label": "Nobody knows, but you'll help her find out",
+          "icon": "heart",
+          "goto": "check_tuft"
+        },
+        {
+          "id": "hat",
+          "label": "Remind her how brave the icicle hat was",
+          "icon": "star",
+          "goto": "tuft_brave",
+          "requiresFlag": "rr_tuft_friend"
+        }
+      ]
+    },
+    "check_tuft": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "roller": "party",
+      "narration": "Flurry's ears are flat. Her knitting is a knot. She looks at the door to the builders' tunnel, and then at the floor.",
+      "prompt": "Help Flurry feel brave enough to go and see her new room",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "onSuccess": {
+        "goto": "pip_idea",
+        "narration": "Flurry unknots her knitting, one loop at a time. \"Then I'll go and look,\" she says. \"Tomorrow. With my hats.\"",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "rr_tuft_brave",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "pip_idea",
+        "narration": "Flurry nods, but she does not look sure. She tucks her knitting under Murmur's stool, and stays very close to it."
+      }
+    },
+    "tuft_brave": {
+      "type": "story",
+      "narration": "Flurry looks up at the icicle in its little striped hat. It is not dripping. She laughs. \"If an icicle can wear a hat, I can go and look at my new room.\" She unknots her knitting, one loop at a time.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "rr_tuft_brave",
+          "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Turn to Pip",
+          "icon": "forward",
+          "goto": "pip_idea"
+        }
+      ]
+    },
+    "pip_idea": {
+      "type": "choice_point",
+      "narration": "Pip bounces in his seat. \"If rivers remember, Lady Olivia could remind them! She could send a river anywhere we like!\" Flurry goes pale under her fur. \"Anywhere?\" Murmur says nothing, and looks at the floor. What do you tell Pip?",
+      "variants": [
+        {
+          "when": {
+            "flag": "rr_pip_gave_sketch"
+          },
+          "text": "His own sketch sits on Murmur's shelf now. He keeps looking at it."
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "rr_tuft_friend",
+          "value": false
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "no",
+          "label": "Rivers aren't ours to send around",
+          "icon": "heart",
+          "goto": "pip_wonders",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "rr_pip_dreams",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "rr_pip_gave_sketch",
+              "value": false
+            }
+          ]
+        },
+        {
+          "id": "yes",
+          "label": "That would be amazing",
+          "icon": "star",
+          "goto": "pip_dreams",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "rr_pip_dreams",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "rr_pip_gave_sketch",
+              "value": false
+            }
+          ]
+        }
+      ]
+    },
+    "pip_wonders": {
+      "type": "story",
+      "narration": "Pip chews his pencil. \"Lady Olivia says everything can be used.\" He looks at Flurry's worried face. Then he writes, very small: \"Ask the river first?\" Flurry lets out a long breath.",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "rest",
+          "label": "Rest with the readers",
+          "icon": "rest",
+          "goto": "rest"
+        }
+      ]
+    },
+    "pip_dreams": {
+      "type": "story",
+      "narration": "Pip writes RIVERS!!! in his notebook and underlines it three times. Flurry pulls her knitting into her lap and holds it tight. Murmur whispers, to nobody in particular, \"The old ice was not asked either.\"",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "rest",
+          "label": "Rest with the readers",
+          "icon": "rest",
+          "goto": "rest"
+        }
+      ]
+    },
+    "rest": {
+      "type": "rest",
+      "heal": 2,
+      "narration": "The readers make room for you on the warm side of the room, which is the side with the most blankets. \"Guests first,\" Murmur whispers, handing out lichen cakes. They taste like a forest kept in the cold.",
+      "variants": [
+        {
+          "when": {
+            "flag": "rr_slates_cracked"
+          },
+          "text": "Flurry lays the cracked slates out on a blanket, piece by piece, like a puzzle she means to finish."
+        },
+        {
+          "when": {
+            "flag": "rr_slates_saved"
+          },
+          "text": "Flurry keeps one paw on the stack of slates you saved, the whole time."
+        },
+        {
+          "when": {
+            "flag": "rr_forced"
+          },
+          "text": "Through the tunnel, the old wall has frosted white from the chime's flash. Nobody can read it again until spring."
+        },
+        {
+          "when": {
+            "notFlag": "rr_forced"
+          },
+          "text": "Through the tunnel, the old wall is still clear. A reader is already at it, nose to the ice."
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "tale",
+          "label": "Ask Murmur what else the old ice has shown her",
+          "icon": "ear",
+          "goto": "murmur_tale",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "rr_forced",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "rr_slates_cracked",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "rr_slates_saved",
+              "value": false
+            }
+          ]
+        },
+        {
+          "id": "mend",
+          "label": "Help Flurry mend the cracked slates",
+          "icon": "hand",
+          "goto": "mend_slates",
+          "when": {
+            "flag": "rr_slates_cracked"
+          },
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "rr_forced",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "rr_slates_cracked",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "rr_slates_saved",
+              "value": false
+            }
+          ]
+        },
+        {
+          "id": "pack",
+          "label": "Help Flurry pack for her new room",
+          "icon": "hand",
+          "goto": "tuft_pack",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "rr_forced",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "rr_slates_cracked",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "rr_slates_saved",
+              "value": false
+            }
+          ]
+        }
+      ]
+    },
+    "murmur_tale": {
+      "type": "story",
+      "narration": "Murmur thinks for a long time. \"Once, I saw snow falling up,\" she whispers. \"Once, a bird that flew backward. I wrote them down. I did not write why. A reader writes what she sees.\" She looks at the floor, where the deep sound came from, and says nothing else.",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "up",
+          "label": "Start back up the stair",
+          "icon": "boot",
+          "goto": "way_out"
+        }
+      ]
+    },
+    "mend_slates": {
+      "type": "story",
+      "narration": "You fit the cracked slates together with Flurry, edge to edge. A few pieces are missing. Flurry writes the missing words back in from memory, very neatly, with her tongue between her teeth. \"Not the same,\" she says. \"But not gone.\"",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "up",
+          "label": "Start back up the stair",
+          "icon": "boot",
+          "goto": "way_out"
+        }
+      ]
+    },
+    "tuft_pack": {
+      "type": "story",
+      "narration": "Flurry packs for her new room: one blanket, one stool, eleven icicle hats. \"The builders say it's nearly finished,\" she says. \"Way down their tunnel, in the coldest, quietest ice.\" She wiggles. \"They want me to come and see it tomorrow.\"",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "up",
+          "label": "Start back up the stair",
+          "icon": "boot",
+          "goto": "way_out"
+        }
+      ]
+    },
+    "way_out": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "roller": "party",
+      "narration": "Halfway up the stair, the deep sound comes once more, softer, like a sleeper's sigh. The steps shiver. Your copy of the river slides in your pack. \"Hold on to it!\" Flurry squeaks.",
+      "prompt": "Climb the shivering stair without dropping your copy",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "onSuccess": {
+        "goto": "ending",
+        "narration": "You climb steady, one hand on your pack. The copy stays safe and dry."
+      },
+      "onFailure": {
+        "goto": "ending",
+        "narration": "The copy slides out and lands in a puddle of meltwater. You snatch it back. The lines run a little, like a picture in the rain, and you bang your knee on a step. But every turn is still there.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "ending": {
+      "type": "story",
+      "outcome": "success",
+      "narration": "At the round glass door, a yeti builder puffs up with frost on his eyebrows. \"Flurry! A frost wyrm has curled up in your new room, and it snores snow!\" Flurry's knitting drops. The builders' tunnel goes deeper into the glacier; the upper path goes back to the valley. \"Now you carry a piece,\" Murmur whispers. Long ago, this river ran down the valley that was dry, and today it tried to go that way again. The chime still leans down, toward the oldest ice. Something is moving the land. What is it? And can you put things right?",
+      "variants": [
+        {
+          "when": {
+            "flag": "rr_bridge_pattern"
+          },
+          "text": "Murmur's record has two rivers in it now: this one, and the buried bridge's.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "rr_pip_dreams"
+          },
+          "text": "Pip is already writing to Lady Olivia. The letter says RIVERS on the outside.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "notFlag": "rr_pip_dreams"
+          },
+          "text": "Pip has written \"Ask the river first?\" on the cover of his notebook.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "rr_tuft_brave"
+          },
+          "text": "Flurry picks up her knitting again. \"Then somebody has to go and ask that wyrm to move,\" she says, and looks at you."
+        },
+        {
+          "when": {
+            "notFlag": "rr_tuft_brave"
+          },
+          "text": "Flurry hides behind Murmur's scarves. \"Somebody has to go and look,\" she squeaks, and looks at you."
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "choices": []
     }
   }
 }

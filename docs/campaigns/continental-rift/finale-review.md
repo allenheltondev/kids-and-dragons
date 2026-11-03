@@ -1,121 +1,83 @@
 # The Glacier Remembers
 
-The ordinary passage from convergence reaches the deep glacier. The opening
-states the rescue goal before a voice questions the present river. Corvane's
-identity, Pangea and the prison's loosened ice appear together on the chapter's
-single priority-one reveal scene. Nothing before that scene names him. His
-voice stays courtly and confused; he wants his rivers home and never threatens
-the party. The eruption's tremors are independent of every Gemfall ending.
+The campaign's last chapter (`riftlight-finale`), rewritten in November 2026 against
+[arc.md](arc.md#endgame-every-party), [story.md](story.md#finale-and-endings--agreed) and
+Corvane's voice in [characters.md](characters.md#corvanes-voice--agreed). The earlier version had
+no dice, 12 inert games and three echo votes; its anchoring was a page held for Orin.
 
-The party first marks a retreat route and protects the old map. A missed map
-check blurs a corner rather than pretending the map stayed dry. Two learned
-places anchor today's land, without giving an item or moving the actual bridge,
-memory ice or carved stone into inventory. A third completed regional key, an
-allied wyrm or an allied Olivia can add one support, capped at three. The player
-chooses that support or keeps the reserve team on the rescue lane. More support
-weakens Corvane and removes one crawler; reserves improve rescue healing after
-a loss. Two allies never stack into a fourth anchor.
+**Beat.** The party has met the one moving the land, anchored the present with what it learned,
+and chosen what becomes of him. **Question** (the goal, said in scene 1): *Who is moving the land,
+and can we keep today's places where they are?* **Adds:** the p1 (`reveal`): Corvane, an old
+faun king of Pangea who slept a thousand years in this ice until the mountain woke, is putting
+every place back where it was in his day. Nothing before it names him; today's fauns are never
+mentioned.
 
-Both authored fights have pulling-seam hazards and a four-turn close objective
-at the ridge brace. Heroes can use the condition learned at convergence without
-changing a rift's behavior or needing a Starweaver. Real-engine board tests start
-each encounter, move heroes and end turns to objective victory. Separate runs
-let enemies knock the whole party down and verify the rescue branch heals them.
-These isolate mechanics with fixed dice; they are not balance measurements.
+**Full circle.** The chime that leaned toward the glacier all campaign points straight down into
+it, rings when it finds him, and hangs straight when it is over. The herder who took the party in
+on its first night, and the very same goat kid (chewing Orin's map case), come back. Snow drifts
+uphill; things frozen mid-slide include a FRESH NOODLES board from the Exchange quay; the joining
+lines Orin drew at the convergence match Corvane's old map. "Moved things go home" becomes
+Corvane's "I only want to go home".
 
-Corvane is a campaign character with two deliberately authored stat blocks,
-not a generic creature projected into the public bestiary. The draft validator
-therefore emits two expected missing-creature warnings, one per fight version.
+## Rhythm
 
-Victory closes the seam and spends Corvane's strength. The party can choose the
-quiet ice, The Glacier Keepers, or life with the yetis, The Ones Who Listened.
-A first whole-party loss leads to a shelter checkpoint, partial healing and a
-different brace attempt using the observed pull and practiced retreat signal.
-Extra support is spent, and some lands have already shifted. Success reaches either
-chosen future with that map scar. Only a second failure reaches Rivers Wander,
-a completing setback with the agreed half award and work for tomorrow. All endpoints complete the
-campaign. Olivia's three outcomes, Pip's decision, the wyrm and the temple work
-appear as specific epilogue callbacks. The loss epilogue never claims displaced
-lands returned home.
+| Movement | What the table does |
+| --- | --- |
+| The climb (≈8 min) | The quick ice stair (roll; from the bottom you see the ridge, so the brace is ready) or the crevasse rope (safer roll); a griffin glides; the goat kid on a snow bridge: fetch it (roll), sing it back (songkeeper) or let the herder take it home (then no broth at the rest); rest behind an ice rib: get warm (heal) or study the ridge (the brace) |
+| The reveal (≈7 min) | Cross the old ice without a crunch (roll); things frozen mid-slide; the figure and his question; **Corvane**; ask him why, or tell him no |
+| Force or understand (≈4 min) | Haul the tear shut (hard roll; or with Bram, if you told him no) and pin it, or show him the homes on today's map (roll; or ask what home looked like; or a redeemed Olivia tells him what happened to her). His tear flares colors he did not choose |
+| The anchors (≈6 min) | Two rolls, each a piece the party learned, in its own words ("Those stones are mine." "It listens to you?"); a third anchor from the third piece, the frost wyrm or an ally Olivia, capped at one; or keep Orin and Seren on the rescue lane, or bring them to the ridge |
+| The last seam (≈6 min) | The board fight ("I only want to go home"), standard or weakened, braced or not |
+| After (≈5 min) | "It was a very good map"; the blanket; wrap him or lay the maps side by side; the chime hangs straight; the ice keeps him, or he lives and learns |
 
-## Full route integration
+## Consequences
 
-All 24 story nodes are now authored. Development pauses and their chapter files
-are removed, so a normal preview reaches a real ending. Corvane remains a
-campaign character using the existing neutral-named figure; no field-guide
-entry exposes him early.
+| Choice | Immediate | Later |
+| --- | --- | --- |
+| Stair (pass) / ridge study / pin the tear / bring Orin and Seren to the ridge | You know where a brace holds | "Brace the ridge" opens the three-turn fights |
+| Show him the homes (pass) / ask what home looked like / Olivia's story | His hands lower | "Ask Corvane to let go" after a lost fight (an easy roll) |
+| Keep Orin and Seren on the rescue lane | No third anchor | "Let Orin and Seren hold the ridge with you" after a lost fight |
+| Third piece / wyrm / ally Olivia | Weakened fight: one crawler fewer, Corvane at 18 not 24 | Their own lines in the seam and the endings |
+| A failed anchor or a failed showing | The land settles a field's width off | "A few places settled a little crooked" in the ending |
+| Let the herder take the kid home | No broth at the rest | She comes back with the blankets |
+| Wrap him / lay the maps side by side | His thanks / "So many roofs" | His last line in the chosen ending |
+| The ice keeps him / he lives and learns | *The Glacier Keepers* / *The Ones Who Listened* | The epilogue plates |
 
-The final graph check found a real trap after late washout arrivals took the
-downriver ferry: the shelf was already closed and neither dormant rift supplied
-a new regional route. The Bone Yard guide now explicitly supplies the checked
-next-tide route for Old Ossley's upriver ferry. Its edge requires the completed
-Bone Yard, so the return is introduced before it is offered. It preserves the
-planned river route and does not change a rift condition. With this return and relevance-based state tracking, the
-exhaustive search completes at 114,507 states with no findings; the search cap
-is 250,000, raised from the base branch's 50,000 limit. Immutable chapter metadata and unchanged graph
-proofs are reused by content signature. Changed negative fixtures invalidate the
-cache; smaller art fixtures avoid unrelated campaign searches. This is a complete check, not a truncated search treated as success.
+Earlier strands read as real differences: an ally Olivia or wyrm is a third anchor; a redeemed
+Olivia can tell him her story; Pip, if he stayed back, can run Bram's rope to the ridge after a
+loss; a settled temple island is a fixed star to steer by; a damaged one lurches in the sky
+anchor; each status, the wyrm and the temple have their epilogue line.
 
-## Pacing and progression limits
+**A lost fight** sets `final_fell_back`, heals 3 and reroutes behind the ridge: one recovery roll
+(easier with whatever the party earned). Success closes the seam with a scar on today's map; only
+a second failure sets `final_battle_lost` and reaches *Rivers Wander* (the setback; Orin's "Then
+we learn the new map"). No setback comes from one ordinary roll. The three endings keep their ids,
+flags and epilogue plates; their own words now say "the Riftseekers", the blanket, the plain
+walking door, the broad table and the watcher that the plates show.
 
-The finale's shortest success spine is 48 scenes, 14 decisions, six physical
-checks and one encounter, about 34.1 uncalibrated minutes. The 40-minute metadata
-is a budget. Family timing and combat balance still need actual play.
+## Shape and pacing
 
-The agreed 140 ordinary / 650 convergence / 140 finale XP awards are preserved.
-The completed graph can visit more paying places than the original 11–16-node
-budget assumed. Therefore full-route progression acceptance is not passed and
-this remains an isolated preview. No claim is made that every optional route
-stays below level 8. Production integration must resolve that budget separately
-and retain Gemfall's prerequisite. Existing Gemfall files and saves are untouched.
-
-## Review follow-up
-
-All three clue pairs can reach both success endings without assuming the reading
-room was visited. The yeti readers introduce their work where they appear. Olivia,
-the builder and the wyrm arrive before their support is offered. Orin supplies the
-rest before the watcher appears. Failed map protection is read back after success.
-The Bone Yard ferry account names known Old Ossley and identifies the checked tidal
-channel to his landing. All five preceding chapter fixes are carried into this PR.
-
-Five new checkpoint scenes extend the existing rescue branch. Its ordinary path has
-six loss-only scenes before recovery, or seven before the second failure. The
-brace check is physical (`checkKind: doing`) and never repeats the lost battle.
-`final_battle_lost` is set only by that second failure. Real board-loss tests now
-continue through both outcomes of the second attempt, and route tests exercise
-both success futures on each of the three clue pairs.
-
-
-### Pacing before and after review fixes
-
-| Shortest success spine | Before | After |
-|---|---:|---:|
-| Scenes | 48 | 48 |
-| Decisions | 14 | 14 |
-| Physical checks | 6 | 6 |
-| Encounters | 1 | 1 |
+| | Before (Nov 1) | After |
+| --- | ---: | ---: |
+| Reachable scenes | 71 | 59 |
+| Dice checks | 0 | 17 |
+| Fights | 4 | 4 (same boards and objectives) |
+| Games / inert | 21 / 12 | 0 / 0 |
+| Echo votes | 3 | 0 |
+| Scenes with a quoted line | 15 | 43 |
+| Spine scenes / votes / checks / fights | 28 / 7 / 0 / 1 | 30 / 8 / 6 / 1 |
+| Spine words | 1,039–1,200 | 1,891–2,304 |
 | Longest reading run | 3 | 3 |
+| Predicted minutes (uncalibrated) | 19.8 | 32.1 |
 
-## Final verification after review
+Corvane keeps two authored stat blocks (24 and 18 HP) rather than a bestiary entry, so the
+validator's four missing-creature warnings are expected. The cast figure `cast/deep-ice-figure`
+is now labeled "Corvane"; the scene before the reveal draws it with no nameplate.
 
-Typecheck, production content validation and continuity pass. The complete local
-coverage run passed 4,940 tests with 11 skipped, and every coverage threshold passed
-(77.77% statements, 75.30% branches, 79.31% functions, 79.61% lines overall). One of
-those skips excludes the Unix Ctrl-C process test on this Windows host; GitHub CI
-runs the complete suite on Linux. The original Windows LF-only fixture readers were
-run with local LF line endings; no fixture or Gemfall change is included in this PR.
-
-The staged draft gate, real board outcomes, checkpoint continuations, all clue pairs
-and exhaustive route replay pass. The setback audit requires two failures and reaches
-Rivers Wander in at least 49 scenes. Focused coverage runs also pass independently
-at every earlier chapter head; the final full run includes all their fixes.
-
-The fresh Linux CI run passed 5,072 tests but exposed one remaining timeout in the
-finale spine assertion. That assertion now requests zero typical-path samples:
-it still computes and checks the exact shortest success path in all six party
-scenarios, without also generating 3,000 unrelated sampled walks. The normal
-pacing report retains its complete sampling behavior and the test timeout is unchanged.
-
-### Second review follow-up
-
-Corvane follows the watcher on the second-failure exit, so no lamp choice is assumed. Regenerated the regional pacing estimates after the review fixes and corrected the search-cap comparison against this PR's base. Wording only; the success spine remains 48 scenes, 14 decisions, 6 doing checks, 1 fight and a reading run of 3.
+Tests: [riftlight-final-play.test.ts](../../../tools/content/riftlight-final-play.test.ts) (route
+matrices: pieces, allies, temple, every way to the brace and the recovery, every ending),
+[riftlight-finale.test.ts](../../../tools/content/riftlight-finale.test.ts) (the reveal, his lines,
+the capped anchors, the strands' differences, the endings and the journey) and
+[riftlight-finale-combat.test.ts](../../../tools/content/riftlight-finale-combat.test.ts) (the four
+boards turn by turn, the loss and both recovery rolls). Family timing and combat balance remain
+unmeasured.

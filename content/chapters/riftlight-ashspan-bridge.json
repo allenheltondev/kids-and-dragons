@@ -1,12 +1,12 @@
 {
-  "$comment": "Riftlight authored opening draft. Development preview only; see ../README.md. Production campaign id will be riftlight. No bonus XP: preserve the design bible campaign budget.",
+  "$comment": "Riftlight, the road out (docs/campaigns/continental-rift/arc.md, ashspan-bridge; design note road-out-review.md). Revised in November 2026. Question: can we get everyone across, and the bridge mended? Old Ossley, the frogfolk boatman, carries it, with Bryn the bridge-mender and Tilly the egg farmer. Adds to the clue trail: the span stone under the middle beam matches no rock for a hundred miles and was there before the bridge (span_stone, p2), and the Listening Chime leans toward the glacier there. Force or understand: haul the log jam loose at once, or find the one log holding it. Reads ossley_rescued for a greeting true whichever way the rope went. Keeps the Academy class room off the rest (rest_hut -> marsh_path -> village_rest -> academy), the reed mat and Ossley's ferry. Sets no journey flag.",
   "id": "riftlight-ashspan-bridge",
   "campaignId": "riftlight",
   "index": 4,
   "title": "When the Ferry Goes Your Way",
   "biome": "eastern_plains",
   "music": "riftlight-paths",
-  "estimatedMinutes": 36,
+  "estimatedMinutes": 30,
   "xpAward": 140,
   "entry": "bridge",
   "plate": {
@@ -14,11 +14,11 @@
     "narration": "At Ashspan Bridge, river water taps the ferry landing. A flat boat waits beside its long pole. The road crosses overhead, while the current carries on toward the coast."
   },
   "goal": {
-    "text": "Get the travelers across the river, then help mend Ashspan Bridge.",
+    "text": "Can we get everyone across, and the bridge mended?",
     "steps": [
       {
         "id": "help_board",
-        "label": "Help the travelers board",
+        "label": "Ferry the travelers across with Ossley",
         "flag": "helped_travelers_board"
       },
       {
@@ -33,7 +33,7 @@
       },
       {
         "id": "deck",
-        "label": "Lay and lash the deck",
+        "label": "Lay the deck and open the bridge",
         "flag": "mended_the_bridge_deck"
       }
     ]
@@ -41,12 +41,19 @@
   "scenes": {
     "bridge": {
       "type": "story",
-      "narration": "Ashspan Bridge crosses the Great River here, but the melt has torn the planks out of its middle. Old Ossley, the frogfolk boatman, leans on the pole of his flat boat. \"Folk cannot walk over, so they ride with me,\" he says. \"Help me ferry them across. Then help me mend the bridge.\"",
+      "narration": "Ashspan Bridge crosses the Great River here, but the melt has torn the planks out of its middle. Old Ossley, the frogfolk boatman, leans on the pole of his flat boat. A long pause. \"Folk cannot walk over,\" he says at last. \"So they ride with me.\" A line of travelers waits on the bank with baskets. \"Can we get everyone across? And the bridge mended?\" He looks at you a long time. \"That is the question.\"",
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        }
+      ],
+      "art": "scenes/riftlight/ashspan-broken-deck",
       "choices": [
         {
           "id": "continue",
           "label": "Go down to the landing",
-          "icon": "hand",
+          "icon": "boot",
           "goto": "landing"
         }
       ],
@@ -55,20 +62,42 @@
           "when": {
             "flag": "ossley_rescued"
           },
-          "text": "He checks the blanket around your shoulders before he takes up his pole."
+          "text": "Then, more quietly: \"The river. You, me, and a rope.\" He nods once. That is all, and it is a lot."
         }
       ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "eggs_jostled",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "lost_a_plank",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "pier_chipped",
+          "value": false
+        }
+      ]
+    },
+    "landing": {
+      "type": "choice_point",
+      "narration": "A mooring rope has dragged the landing plank loose. It wobbles like a loose tooth. Ossley holds the boat steady while two travelers wait with their bags. One bag quacks. Ossley says nothing. How will you get them aboard?",
       "cast": [
         {
           "figure": "cast/old_ossley",
           "name": "Old Ossley"
+        },
+        {
+          "figure": "cast/boarding_traveler",
+          "name": "Travelers",
+          "count": 2
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
-    },
-    "landing": {
-      "type": "choice_point",
-      "narration": "A mooring rope has dragged the landing plank loose. It wobbles like a loose tooth. Ossley holds the boat steady while two travelers wait with their bags. One bag quacks. How will you get them aboard?",
+      "art": "scenes/riftlight/ashspan-broken-deck",
       "choices": [
         {
           "id": "plank",
@@ -79,7 +108,7 @@
         {
           "id": "rope",
           "label": "Lift the rope off",
-          "icon": "hand",
+          "icon": "quick",
           "goto": "rope_check"
         },
         {
@@ -93,34 +122,18 @@
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "reached_the_ferry_landing"
+          "flag": "reached_the_ferry_landing",
+          "value": true
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "cast/boarding_traveler",
-          "name": "Travelers",
-          "count": 2
-        }
-      ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      ]
     },
     "plank_check": {
       "type": "check",
       "stat": "might",
       "tn": 12,
+      "narration": "The plank bucks like a pony. \"Flat,\" says Ossley. Just that.",
       "prompt": "Hold the plank flat and still while the travelers step aboard.",
       "roller": "party",
-      "onSuccess": {
-        "goto": "plank"
-      },
-      "onFailure": {
-        "goto": "board_wet"
-      },
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -132,7 +145,13 @@
           "count": 2
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      "art": "scenes/riftlight/ashspan-broken-deck",
+      "onSuccess": {
+        "goto": "plank"
+      },
+      "onFailure": {
+        "goto": "board_wet"
+      }
     },
     "rope_check": {
       "type": "check",
@@ -140,12 +159,6 @@
       "tn": 8,
       "prompt": "Flip the mooring rope off the plank before the boat drifts away.",
       "roller": "party",
-      "onSuccess": {
-        "goto": "rope"
-      },
-      "onFailure": {
-        "goto": "board_wet"
-      },
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -157,7 +170,13 @@
           "count": 2
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      "art": "scenes/riftlight/ashspan-broken-deck",
+      "onSuccess": {
+        "goto": "rope"
+      },
+      "onFailure": {
+        "goto": "board_wet"
+      }
     },
     "brace_check": {
       "type": "check",
@@ -165,42 +184,28 @@
       "tn": 8,
       "prompt": "Brace the plank end like a post while the heavy bags cross.",
       "roller": "best",
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "cast/boarding_traveler",
+          "name": "Travelers",
+          "count": 2
+        }
+      ],
+      "art": "scenes/riftlight/ashspan-broken-deck",
       "onSuccess": {
         "goto": "brace_done"
       },
       "onFailure": {
         "goto": "board_wet"
-      },
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "cast/boarding_traveler",
-          "name": "Travelers",
-          "count": 2
-        }
-      ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      }
     },
     "plank": {
       "type": "story",
       "narration": "You hold the plank flat until both travelers are aboard. Ossley tests it with his pole. \"That will do.\" One traveler pats the plank, the way you pat a good horse.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Step aboard",
-          "icon": "hand",
-          "goto": "ferry_ask"
-        }
-      ],
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "helped_travelers_board"
-        }
-      ],
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -212,25 +217,26 @@
           "count": 2
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      "art": "scenes/riftlight/ashspan-broken-deck",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Step aboard",
+          "icon": "boot",
+          "goto": "ferry_ask"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "helped_travelers_board",
+          "value": true
+        }
+      ]
     },
     "rope": {
       "type": "story",
       "narration": "You lift the rope clear, and the plank settles. The travelers board with dry bags. Ossley gives you a tiny nod. From a frogfolk boatman, that is a parade.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Step aboard",
-          "icon": "hand",
-          "goto": "ferry_ask"
-        }
-      ],
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "helped_travelers_board"
-        }
-      ],
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -242,25 +248,26 @@
           "count": 2
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      "art": "scenes/riftlight/ashspan-broken-deck",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Step aboard",
+          "icon": "boot",
+          "goto": "ferry_ask"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "helped_travelers_board",
+          "value": true
+        }
+      ]
     },
     "brace_done": {
       "type": "story",
-      "narration": "The plank end does not budge, even when the heaviest bag thumps across. Ossley taps it. \"Like a post,\" he says. \"A post that gets out of the way after. Hard to find.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Step aboard",
-          "icon": "hand",
-          "goto": "ferry_ask"
-        }
-      ],
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "helped_travelers_board"
-        }
-      ],
+      "narration": "The plank end does not budge, even when the heaviest bag thumps across. Ossley taps it. \"Like a post,\" he says. Long pause. \"A post that gets out of the way after. Hard to find.\"",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -272,23 +279,51 @@
           "count": 2
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
-    },
-    "board_wet": {
-      "type": "story",
-      "narration": "The plank tips, and one bag drops into the shallows, quacking. Everyone fishes it out. \"It floats,\" says its owner. \"It is a very good bag.\" Ossley wrings out his hat and says nothing. That is how frogfolk laugh.",
+      "art": "scenes/riftlight/ashspan-broken-deck",
       "choices": [
         {
           "id": "continue",
           "label": "Step aboard",
-          "icon": "hand",
+          "icon": "boot",
           "goto": "ferry_ask"
         }
       ],
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "helped_travelers_board"
+          "flag": "helped_travelers_board",
+          "value": true
+        }
+      ]
+    },
+    "board_wet": {
+      "type": "story",
+      "narration": "The plank tips, and one bag drops into the shallows, quacking. Everyone fishes it out. \"It floats,\" says its owner. \"It's a very good bag.\" Ossley wrings out his hat and says nothing. That is how frogfolk laugh.",
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "cast/boarding_traveler",
+          "name": "Travelers",
+          "count": 2
+        }
+      ],
+      "art": "scenes/riftlight/ashspan-broken-deck",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Step aboard",
+          "icon": "boot",
+          "goto": "ferry_ask"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "helped_travelers_board",
+          "value": true
         },
         {
           "type": "damage",
@@ -296,46 +331,45 @@
           "to": "party",
           "nonlethal": true
         }
-      ],
+      ]
+    },
+    "ferry_ask": {
+      "type": "story",
+      "narration": "The nearer traveler hugs her bag. She is a griffin with a shawl. \"I'm Tilly. Duck eggs, for market across the river. They aren't due for days.\" The bag quacks. \"They disagree.\" Ossley pushes off. \"Strong river,\" he says. \"Flat boat spins, if the weight sits wrong.\"",
       "cast": [
         {
           "figure": "cast/old_ossley",
           "name": "Old Ossley"
         },
         {
-          "figure": "cast/boarding_traveler",
-          "name": "Travelers",
-          "count": 2
+          "figure": "cast/tilly",
+          "name": "Tilly"
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
-    },
-    "ferry_ask": {
-      "type": "story",
-      "narration": "The nearer traveler hugs her bag. \"I'm Tilly. Duck eggs, for market across the river. They are not due for days.\" The bag quacks. \"They disagree.\" Ossley pushes off. \"Strong river this year,\" he says. \"A flat boat spins if the weight sits wrong.\"",
+      "art": "scenes/riftlight/ashspan-broken-deck",
       "choices": [
         {
           "id": "continue",
           "label": "Hear Ossley's plan",
-          "icon": "hand",
+          "icon": "ear",
           "goto": "ferry_plan"
         }
-      ],
+      ]
+    },
+    "ferry_plan": {
+      "type": "choice_point",
+      "narration": "Ossley hands out jobs without words: a finger at the pole, a finger at the water, a finger at you. Then, because you look puzzled: \"Steady the boat. Watch the river.\" How will you help him across?",
       "cast": [
         {
           "figure": "cast/old_ossley",
           "name": "Old Ossley"
         },
         {
-          "figure": "cast/tilly_eggs",
+          "figure": "cast/tilly",
           "name": "Tilly"
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
-    },
-    "ferry_plan": {
-      "type": "choice_point",
-      "narration": "Ossley hands out jobs. \"The boat needs steadying, and the river needs watching. I only have two eyes, and one is on my hat.\" How will you help him across?",
+      "art": "scenes/riftlight/ashspan-broken-deck",
       "choices": [
         {
           "id": "lean",
@@ -346,7 +380,7 @@
         {
           "id": "pole",
           "label": "Push with the pole",
-          "icon": "hand",
+          "icon": "might",
           "goto": "pole_check"
         },
         {
@@ -359,18 +393,7 @@
             "dragonling"
           ]
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "cast/tilly",
-          "name": "Tilly"
-        }
-      ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      ]
     },
     "pole_check": {
       "type": "check",
@@ -378,12 +401,6 @@
       "tn": 12,
       "prompt": "Push the pole against the current beside Ossley, stroke after stroke.",
       "roller": "party",
-      "onSuccess": {
-        "goto": "crossing"
-      },
-      "onFailure": {
-        "goto": "ferry_spin"
-      },
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -394,7 +411,13 @@
           "name": "Tilly"
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      "art": "scenes/riftlight/ashspan-broken-deck",
+      "onSuccess": {
+        "goto": "crossing"
+      },
+      "onFailure": {
+        "goto": "ferry_spin"
+      }
     },
     "watch_check": {
       "type": "check",
@@ -402,12 +425,6 @@
       "tn": 8,
       "prompt": "Fly above the water, spot the snags and call a safe line back to Ossley.",
       "roller": "best",
-      "onSuccess": {
-        "goto": "crossing"
-      },
-      "onFailure": {
-        "goto": "ferry_spin"
-      },
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -418,20 +435,21 @@
           "name": "Tilly"
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      "art": "scenes/riftlight/ashspan-broken-deck",
+      "onSuccess": {
+        "goto": "crossing"
+      },
+      "onFailure": {
+        "goto": "ferry_spin"
+      }
     },
     "ferry_hold": {
       "type": "check",
       "stat": "quick",
       "tn": 12,
+      "narration": "\"Left,\" says Ossley. Pause. \"Right.\" Pause. \"Left.\" Tilly leans the wrong way every time.",
       "prompt": "Ossley calls the lean! Shift your weight together, then back, so the boat cannot spin.",
       "roller": "all",
-      "onSuccess": {
-        "goto": "crossing"
-      },
-      "onFailure": {
-        "goto": "ferry_spin"
-      },
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -442,39 +460,56 @@
           "name": "Tilly"
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      "art": "scenes/riftlight/ashspan-broken-deck",
+      "onSuccess": {
+        "goto": "crossing"
+      },
+      "onFailure": {
+        "goto": "ferry_spin"
+      }
     },
     "crossing": {
       "type": "story",
       "narration": "The flat boat wobbles like a duck, then slides across as straight as a plank. \"Good,\" says Ossley. \"Frogfolk dislike spinning.\" Tilly counts her eggs. It takes no time, since they are all in one bag.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Steer for the landing",
-          "icon": "hand",
-          "goto": "ferry_dock"
-        }
-      ],
       "cast": [
         {
           "figure": "cast/old_ossley",
           "name": "Old Ossley"
         },
         {
-          "figure": "cast/tilly_eggs",
+          "figure": "cast/tilly",
           "name": "Tilly"
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
-    },
-    "ferry_spin": {
-      "type": "story",
-      "narration": "The boat turns one slow circle. The bridge goes by twice. Ossley's throat puffs out like a drum. He jams his pole into the mud, and the boat stops, a little dizzy. Tilly checks her bag. \"Still quacking.\"",
+      "art": "scenes/riftlight/ashspan-broken-deck",
       "choices": [
         {
           "id": "continue",
           "label": "Steer for the landing",
-          "icon": "hand",
+          "icon": "boot",
+          "goto": "ferry_dock"
+        }
+      ]
+    },
+    "ferry_spin": {
+      "type": "story",
+      "narration": "The boat turns one slow circle. The bridge goes by twice. Ossley's throat puffs out like a drum. He jams his pole into the mud, and the boat stops, a little dizzy. Tilly checks her bag. \"Still quacking.\"",
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "cast/tilly",
+          "name": "Tilly"
+        }
+      ],
+      "art": "scenes/riftlight/ashspan-broken-deck",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Steer for the landing",
+          "icon": "boot",
           "goto": "ferry_dock"
         }
       ],
@@ -485,22 +520,11 @@
           "to": "party",
           "nonlethal": true
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "cast/tilly_eggs",
-          "name": "Tilly"
-        }
-      ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      ]
     },
     "ferry_dock": {
       "type": "interaction",
-      "narration": "The far landing comes up fast. \"Bump, do not crash,\" says Ossley. \"Tell me when.\" Tilly covers her bag with both hands.",
+      "narration": "The far landing comes up fast. \"Bump,\" says Ossley. \"Do not crash. Tell me when.\" Tilly covers her bag with both hands.",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -511,6 +535,7 @@
           "name": "Tilly"
         }
       ],
+      "art": "scenes/riftlight/ashspan-ferry-landing",
       "interaction": {
         "kind": "timing",
         "cue": "Tap when the boat swings level with the landing.",
@@ -519,64 +544,85 @@
         "width": 0.3,
         "periodMs": 4000
       },
-      "art": "scenes/riftlight/ashspan-ferry-landing",
       "onSuccess": {
         "goto": "far_bank",
         "narration": "A gentle bump. The boat stops, and the eggs do not even quack."
       },
       "onFailure": {
-        "goto": "far_bank",
-        "narration": "The boat hits the dock a little hard. The eggs quack. \"Landed,\" says Ossley. \"Mostly.\""
+        "goto": "dock_bump",
+        "narration": "The boat hits the dock hard."
       },
       "onAssisted": {
         "goto": "far_bank",
         "narration": "Ossley eases the pole, and the boat slides in. He pretends it was you."
       }
     },
+    "dock_bump": {
+      "type": "story",
+      "narration": "Bonk! Tilly's bag flies out of her arms and into the shallows. You jump in after it, up to your middle, and hold it high, dripping. Something inside goes tap, tap. \"Oh no,\" says Tilly. \"They felt that.\"",
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "cast/tilly",
+          "name": "Tilly"
+        }
+      ],
+      "art": "scenes/riftlight/ashspan-ferry-landing",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Climb onto the far bank",
+          "icon": "boot",
+          "goto": "far_bank"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "damage",
+          "amount": 1,
+          "to": "party",
+          "nonlethal": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "eggs_jostled",
+          "value": true
+        }
+      ]
+    },
     "far_bank": {
       "type": "story",
-      "narration": "A dragonling bridge-mender named Bryn glares at the broken deck. \"Planks, I have, in my cart up the bank. Hands, I do not. Help me fix this, and the market folk can cross.\" \"And my eggs can get to market,\" says Tilly. A heap of old planks blocks the ramp.",
+      "narration": "A dragonling bridge-mender stomps down to meet you. \"Bryn,\" she says, and glares at the broken deck. \"Planks, I have, in my cart up the bank. Hands, I do not. Help me mend this, and the market folk can cross.\" \"And my eggs can get to market,\" says Tilly.",
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "cast/tilly",
+          "name": "Tilly"
+        },
+        {
+          "figure": "cast/bryn",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/riftlight/ashspan-broken-deck",
       "choices": [
         {
           "id": "continue",
-          "label": "Look at the plank pile",
-          "icon": "hand",
+          "label": "Look at the ramp",
+          "icon": "eye",
           "goto": "plank_pile"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "cast/tilly_eggs",
-          "name": "Tilly"
-        },
-        {
-          "figure": "cast/bryn",
-          "name": "Bryn"
-        }
-      ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      ]
     },
     "plank_pile": {
-      "type": "choice_point",
-      "narration": "Bryn frowns at the heap. \"That pile must move before my cart can come down. It has been there since dawn. I think it is breathing.\" The pile gives a small, damp sigh.",
-      "choices": [
-        {
-          "id": "poke",
-          "label": "Poke it with the pole",
-          "icon": "hand",
-          "goto": "poke_reveal"
-        },
-        {
-          "id": "stamp",
-          "label": "Stamp on the ramp",
-          "icon": "hand",
-          "goto": "stamp_reveal"
-        }
-      ],
+      "type": "story",
+      "narration": "A heap of old planks blocks the ramp. \"That pile has been there since dawn,\" says Bryn. \"I think it is breathing.\" You stamp on the ramp. Thump! The whole pile jumps. A wide wet mouth opens under the top plank, then another, smaller. Two mire mimics, a big one and a little one. Mimics dress up as whatever lies about and wait for a snack. Tilly's bag smells like duck.",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -591,61 +637,15 @@
           "name": "Bryn"
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
-    },
-    "poke_reveal": {
-      "type": "story",
-      "narration": "You poke the pile. It blinks. Eyes open under the top plank, then a wide wet mouth. They are two mire mimics, a big one and a little one. Mimics dress up as whatever lies on the ground and wait for a snack. Tilly's bag smells like duck.",
+      "art": "scenes/gemfall/northern-bridge-foot",
       "choices": [
         {
           "id": "continue",
           "label": "Shoo the mimics",
-          "icon": "hand",
+          "icon": "shield",
           "goto": "mimic_fight"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "cast/tilly",
-          "name": "Tilly"
-        },
-        {
-          "figure": "cast/bryn",
-          "name": "Bryn"
-        }
-      ],
-      "art": "scenes/gemfall/northern-bridge-foot"
-    },
-    "stamp_reveal": {
-      "type": "story",
-      "narration": "Thump, thump, thump! The whole pile jumps. A mouth opens under the top plank, and stubby legs unfold. They are two mire mimics, a big one and a little one. Mimics dress up as whatever lies on the ground and wait for a snack. Tilly's bag smells like duck.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Shoo the mimics",
-          "icon": "hand",
-          "goto": "mimic_fight"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "cast/tilly",
-          "name": "Tilly"
-        },
-        {
-          "figure": "cast/bryn",
-          "name": "Bryn"
-        }
-      ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      ]
     },
     "mimic_fight": {
       "type": "encounter",
@@ -682,15 +682,7 @@
     },
     "mimic_won": {
       "type": "story",
-      "narration": "The mimics hiccup, drop their planks and waddle off to the reeds. They leave behind a springy bootlace one of them once swallowed. \"Not mine,\" says Bryn. \"Yours.\" Ossley nods. \"Hard to unload a pile that argues.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go up to the cart",
-          "icon": "hand",
-          "goto": "cart_plan"
-        }
-      ],
+      "narration": "The mimics hiccup, drop their planks and waddle off to the reeds. They leave behind a springy bootlace one of them once swallowed. \"Not mine,\" says Bryn. \"Yours.\" Ossley nods. Long pause. \"Hard to unload a pile that argues.\"",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -705,19 +697,19 @@
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/gemfall/northern-bridge-foot",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go up to the cart",
+          "icon": "boot",
+          "goto": "cart_plan"
+        }
+      ]
     },
     "mimic_shooed": {
       "type": "story",
-      "narration": "The mimics are faster than they look. You end up in the mud with a plank on your head. Ossley tips both mimics into the reeds with his pole, then pours you warm tea from a flask.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go up to the cart",
-          "icon": "hand",
-          "goto": "cart_plan"
-        }
-      ],
+      "narration": "The mimics are faster than they look. You end up in the mud with a plank on your head. Ossley tips both mimics into the reeds with his pole, then pours you warm tea from a flask. \"Mimics,\" he says. That is the whole lesson.",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -732,11 +724,34 @@
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/gemfall/northern-bridge-foot",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go up to the cart",
+          "icon": "boot",
+          "goto": "cart_plan"
+        }
+      ]
     },
     "cart_plan": {
       "type": "choice_point",
-      "narration": "Bryn's cart of new planks sits in mud up to its axle. Her two pack goats pull and slip. One sits down, as if to say, call me when it is over. How will you free the cart?",
+      "narration": "Bryn's cart of new planks sits in mud up to its axle. Her two pack goats pull and slip. One sits down, as if to say, call me when it's over. \"Stuck, the cart is,\" says Bryn. \"Unstuck, it must be.\" How will you free it?",
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "cast/tilly",
+          "name": "Tilly"
+        },
+        {
+          "figure": "cast/bryn",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/riftlight/ashspan-broken-deck",
       "choices": [
         {
           "id": "dig",
@@ -747,32 +762,17 @@
         {
           "id": "track",
           "label": "Lay a plank track",
-          "icon": "hand",
+          "icon": "clever",
           "goto": "track_check"
         },
         {
           "id": "roar",
           "label": "Roar the goats on",
-          "icon": "spark",
+          "icon": "manticore",
           "goto": "roar_check",
           "requiresSpecies": "manticore"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "cast/tilly",
-          "name": "Tilly"
-        },
-        {
-          "figure": "cast/bryn",
-          "name": "Bryn"
-        }
-      ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      ]
     },
     "dig_check": {
       "type": "check",
@@ -780,12 +780,6 @@
       "tn": 12,
       "prompt": "Dig the mud away from the wheel and push the cart free.",
       "roller": "party",
-      "onSuccess": {
-        "goto": "cart_free"
-      },
-      "onFailure": {
-        "goto": "cart_stuck"
-      },
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -800,7 +794,13 @@
           "name": "Bryn"
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      "art": "scenes/riftlight/ashspan-broken-deck",
+      "onSuccess": {
+        "goto": "cart_free"
+      },
+      "onFailure": {
+        "goto": "cart_stuck"
+      }
     },
     "track_check": {
       "type": "check",
@@ -808,12 +808,6 @@
       "tn": 12,
       "prompt": "Work out where the old planks go so the wheel can climb out.",
       "roller": "party",
-      "onSuccess": {
-        "goto": "cart_free"
-      },
-      "onFailure": {
-        "goto": "cart_stuck"
-      },
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -828,7 +822,13 @@
           "name": "Bryn"
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      "art": "scenes/riftlight/ashspan-broken-deck",
+      "onSuccess": {
+        "goto": "cart_free"
+      },
+      "onFailure": {
+        "goto": "cart_stuck"
+      }
     },
     "roar_check": {
       "type": "check",
@@ -836,12 +836,6 @@
       "tn": 8,
       "prompt": "Roar so the goats pull together, then steer the cart out straight.",
       "roller": "best",
-      "onSuccess": {
-        "goto": "cart_free"
-      },
-      "onFailure": {
-        "goto": "cart_stuck"
-      },
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -856,30 +850,56 @@
           "name": "Bryn"
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      "art": "scenes/riftlight/ashspan-broken-deck",
+      "onSuccess": {
+        "goto": "cart_free"
+      },
+      "onFailure": {
+        "goto": "cart_stuck"
+      }
     },
     "cart_free": {
       "type": "story",
       "narration": "The wheel pops free with a slurp. The goats trot up the bank as if it were their idea. Bryn kisses one on the nose, and it eats her sleeve. She hands you a brave whistle. \"For calling goats. They ignore it, but it is very loud.\"",
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "cast/tilly",
+          "name": "Tilly"
+        },
+        {
+          "figure": "cast/bryn",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/riftlight/ashspan-broken-deck",
       "choices": [
         {
           "id": "continue",
-          "label": "Carry planks to the bridge",
+          "label": "Carry the planks down",
           "icon": "hand",
-          "goto": "unload_relay"
+          "goto": "bridge_head"
         }
       ],
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "got_the_planks_to_the_bridge"
+          "flag": "got_the_planks_to_the_bridge",
+          "value": true
         },
         {
           "type": "grantItem",
           "itemId": "brave_whistle",
           "to": "party"
         }
-      ],
+      ]
+    },
+    "cart_stuck": {
+      "type": "story",
+      "narration": "The mud wins, until Ossley's rope and everyone's backs haul the cart out. One plank snaps. \"Kindling,\" sighs Bryn. She hands you a brave whistle. \"For calling goats. They ignore it.\" The goats pretend to be someone else's goats.",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -894,27 +914,25 @@
           "name": "Bryn"
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
-    },
-    "cart_stuck": {
-      "type": "story",
-      "narration": "The mud wins, until Ossley's rope and everyone's backs haul the cart out. One plank snaps. \"Kindling,\" sighs Bryn. She hands you a brave whistle. \"For calling goats. They ignore it.\" The goats pretend to be someone else's goats.",
+      "art": "scenes/riftlight/ashspan-broken-deck",
       "choices": [
         {
           "id": "continue",
-          "label": "Carry planks to the bridge",
+          "label": "Carry the planks down",
           "icon": "hand",
-          "goto": "unload_relay"
+          "goto": "bridge_head"
         }
       ],
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "got_the_planks_to_the_bridge"
+          "flag": "got_the_planks_to_the_bridge",
+          "value": true
         },
         {
           "type": "setFlag",
-          "flag": "lost_a_plank"
+          "flag": "lost_a_plank",
+          "value": true
         },
         {
           "type": "damage",
@@ -927,77 +945,38 @@
           "itemId": "brave_whistle",
           "to": "party"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "cast/tilly",
-          "name": "Tilly"
-        },
-        {
-          "figure": "cast/bryn",
-          "name": "Bryn"
-        }
-      ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
-    },
-    "unload_relay": {
-      "type": "interaction",
-      "narration": "The cart cannot cross the broken end, so the planks go by hand. Everyone makes a line down to Bryn. One goat watches, no help at all.",
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "cast/tilly",
-          "name": "Tilly"
-        },
-        {
-          "figure": "cast/bryn",
-          "name": "Bryn"
-        }
-      ],
-      "interaction": {
-        "kind": "relay",
-        "cue": "Catch a plank, then pass it down the line.",
-        "actionLabel": "Pass it on",
-        "objectLabel": "Bryn's planks"
-      },
-      "art": "scenes/riftlight/ashspan-ferry-landing",
-      "onSuccess": {
-        "goto": "bridge_head",
-        "narration": "Plank after plank goes hand to hand, tap, tap, tap, all the way to the bridge."
-      },
-      "onFailure": {
-        "goto": "bridge_head",
-        "narration": "A plank slips into the mud with a splat. Bryn scrapes it clean, but it is cracked.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "lost_a_plank"
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "bridge_head",
-        "narration": "Bryn takes the middle, and the planks fly down the line like loaves at a bakery."
-      }
+      ]
     },
     "bridge_head": {
       "type": "story",
-      "narration": "The planks are stacked at the bridge end. Below, logs and branches have jammed against the first stone pier. \"The river threw its furniture at us,\" says Bryn. If the heap shifts, it will shove the bridge crooked.",
+      "narration": "The cart cannot cross the broken end, so the planks go down hand to hand while one goat watches, no help at all. Soon they are stacked at the bridge end. Below, logs and branches have jammed against the middle stone pier. \"The river threw its furniture at us,\" says Bryn. If the heap shifts, it will shove the bridge crooked.",
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "cast/tilly",
+          "name": "Tilly"
+        },
+        {
+          "figure": "cast/bryn",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/riftlight/ashspan-broken-deck",
       "choices": [
         {
           "id": "continue",
           "label": "Look at the jam",
-          "icon": "hand",
+          "icon": "eye",
           "goto": "jam_plan"
         }
-      ],
+      ]
+    },
+    "jam_plan": {
+      "type": "choice_point",
+      "narration": "The jam is logs, roots and one whole fence. \"Rope it all and pull,\" says Bryn. \"Quick, quick.\" Ossley squints at it for a long time. \"One log holds the rest,\" he says. \"Find that one. Slower.\" Behind you, the river nudges the stack of new planks. What will you do?",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -1012,88 +991,36 @@
           "name": "Bryn"
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
-    },
-    "jam_plan": {
-      "type": "choice_point",
-      "narration": "The jam is logs, roots and one whole fence. Ossley squints at it. \"Pull the wrong log, and the rest may roll.\" What will you do?",
+      "art": "scenes/riftlight/ashspan-broken-deck",
       "choices": [
         {
-          "id": "hook",
-          "label": "Hook logs one by one",
-          "icon": "hand",
-          "goto": "hook_check"
+          "id": "haul",
+          "label": "Rope the heap and pull at once",
+          "icon": "might",
+          "goto": "haul_check"
         },
         {
-          "id": "haul",
-          "label": "Rope it, everyone pulls",
-          "icon": "hand",
-          "goto": "haul_check"
+          "id": "study",
+          "label": "Find the log that holds the rest",
+          "icon": "eye",
+          "goto": "study_check"
         },
         {
           "id": "slip",
           "label": "Slip out the key log",
-          "icon": "spark",
+          "icon": "quick",
           "goto": "slip_check",
           "requiresClass": "duskrunner"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "cast/tilly",
-          "name": "Tilly"
-        },
-        {
-          "figure": "cast/bryn",
-          "name": "Bryn"
-        }
-      ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
-    },
-    "hook_check": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 12,
-      "prompt": "Hook each log with the long pole and pull it clear of the pier.",
-      "roller": "party",
-      "onSuccess": {
-        "goto": "jam_clear"
-      },
-      "onFailure": {
-        "goto": "jam_shift"
-      },
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "cast/tilly",
-          "name": "Tilly"
-        },
-        {
-          "figure": "cast/bryn",
-          "name": "Bryn"
-        }
-      ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      ]
     },
     "haul_check": {
       "type": "check",
       "stat": "might",
       "tn": 12,
-      "prompt": "Grab the rope. Pull the whole heap loose on Ossley's call!",
+      "narration": "\"Pull!\" shouts Bryn. Ossley sighs and takes the end of the rope.",
+      "prompt": "Grab the rope. Pull the whole heap loose on Bryn's call!",
       "roller": "all",
-      "onSuccess": {
-        "goto": "jam_clear"
-      },
-      "onFailure": {
-        "goto": "jam_shift"
-      },
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -1108,7 +1035,75 @@
           "name": "Bryn"
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      "art": "scenes/riftlight/ashspan-broken-deck",
+      "onSuccess": {
+        "goto": "jam_clear",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "pier_chipped",
+            "value": true
+          }
+        ],
+        "narration": "The whole heap rips free at once and slams the pier on its way past. Crack! A chunk of old stone splashes into the river."
+      },
+      "onFailure": {
+        "goto": "jam_shift",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "pier_chipped",
+            "value": true
+          }
+        ],
+        "narration": "The heap lurches, and the pier shudders. Crack! A chunk of old stone splashes into the river."
+      }
+    },
+    "study_check": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "narration": "You watch the jam with Ossley. Nobody speaks. The water gurgles. A plank from the stack slides into the river and floats away while you think.",
+      "prompt": "Watch how the logs sit, and find the one log holding all the others.",
+      "roller": "party",
+      "checkKind": "doing",
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "cast/tilly",
+          "name": "Tilly"
+        },
+        {
+          "figure": "cast/bryn",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/riftlight/ashspan-broken-deck",
+      "onSuccess": {
+        "goto": "jam_clear",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "lost_a_plank",
+            "value": true
+          }
+        ],
+        "narration": "There! One crooked root, wedged under the fence. You ease it out, and the whole jam sighs and slides away gently. The pier never even feels it."
+      },
+      "onFailure": {
+        "goto": "jam_shift",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "lost_a_plank",
+            "value": true
+          }
+        ],
+        "narration": "You pick a log. It is the wrong log."
+      }
     },
     "slip_check": {
       "type": "check",
@@ -1116,12 +1111,6 @@
       "tn": 8,
       "prompt": "Slip along the pier, find the key log and pull it out clean.",
       "roller": "best",
-      "onSuccess": {
-        "goto": "jam_clear"
-      },
-      "onFailure": {
-        "goto": "jam_shift"
-      },
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -1136,16 +1125,37 @@
           "name": "Bryn"
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      "art": "scenes/riftlight/ashspan-broken-deck",
+      "onSuccess": {
+        "goto": "jam_clear"
+      },
+      "onFailure": {
+        "goto": "jam_shift"
+      }
     },
     "jam_shift": {
       "type": "story",
-      "narration": "The heap lurches, and the pier shudders. A plank slides off the stack and splashes in. Ossley hooks it back with his pole. \"Rude,\" he tells the river. The river does not say sorry.",
+      "narration": "The heap lurches, and the pier shudders. Everyone grabs a rope and hauls until the last log slides free. Ossley hooks a branch off his hat. \"Rude,\" he tells the river. The river does not say sorry.",
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "cast/tilly",
+          "name": "Tilly"
+        },
+        {
+          "figure": "cast/bryn",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/riftlight/ashspan-broken-deck",
       "choices": [
         {
           "id": "continue",
           "label": "Watch the logs go",
-          "icon": "hand",
+          "icon": "eye",
           "goto": "jam_clear"
         }
       ],
@@ -1156,7 +1166,11 @@
           "to": "party",
           "nonlethal": true
         }
-      ],
+      ]
+    },
+    "jam_clear": {
+      "type": "story",
+      "narration": "The logs bob away downstream. Then one log turns and floats back upriver, against the current, before it gives up and follows the rest. Ossley watches it go. \"Hm,\" he says. The pier stands straight. Above it sits the cracked middle beam, and under that, the stone that holds the middle of the bridge up.",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -1171,11 +1185,34 @@
           "name": "Bryn"
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      "art": "scenes/riftlight/ashspan-broken-deck",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look at the stone",
+          "icon": "eye",
+          "goto": "span_stone"
+        }
+      ]
     },
-    "jam_clear": {
+    "span_stone": {
       "type": "story",
-      "narration": "The last log slides free and bobs away. Then one log floats back upriver, against the current, before it turns and follows the rest. \"Changed melt,\" Ossley says quietly. The pier stands straight. Above it waits the cracked middle beam.",
+      "narration": "Every stone in Ashspan is yellow and crumbly, like old cake, cut from this very bank. But the span stone under the middle beam is dark and heavy, with pale rings inside like a sliced onion. \"No rock like that for a hundred miles,\" says Bryn. \"My grandmother said the bridge was built on it. It was here first.\" Then your Listening Chime hums and leans upriver, toward the glacier far away. Ossley watches it a long time. \"Huh,\" he says.",
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "cast/tilly",
+          "name": "Tilly"
+        },
+        {
+          "figure": "cast/bryn",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/riftlight/ashspan-broken-deck",
       "choices": [
         {
           "id": "continue",
@@ -1185,21 +1222,15 @@
         }
       ],
       "priority": 2,
-      "cast": [
+      "variants": [
         {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "cast/tilly",
-          "name": "Tilly"
-        },
-        {
-          "figure": "cast/bryn",
-          "name": "Bryn"
+          "when": {
+            "flag": "pier_chipped"
+          },
+          "text": "Where the jam knocked a chunk off, you can see right inside it. The rings go all the way through.",
+          "at": "start"
         }
-      ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      ]
     },
     "carry_beam": {
       "type": "interaction",
@@ -1218,20 +1249,20 @@
           "name": "Bryn"
         }
       ],
+      "art": "scenes/riftlight/ashspan-broken-deck",
       "interaction": {
         "kind": "balance",
         "cue": "Lift or lower your end until the beam rides level in the middle.",
         "actionLabel": "Carry it to the pier",
         "objectLabel": "The new beam"
       },
-      "art": "scenes/riftlight/ashspan-broken-deck",
       "onSuccess": {
         "goto": "beam_plan",
         "narration": "The beam rides level all the way, like a very long, very serious tray."
       },
       "onFailure": {
         "goto": "beam_plan",
-        "narration": "The beam tips and bonks a goat on the rump. The goat is more surprised than hurt. You go again, slower."
+        "narration": "The beam tips and bonks a goat on the rump. The goat is more surprised than hurt."
       },
       "onAssisted": {
         "goto": "beam_plan",
@@ -1241,17 +1272,32 @@
     "beam_plan": {
       "type": "choice_point",
       "narration": "The new beam must go up into its notches, level, with nobody underneath. How will you raise it?",
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "cast/tilly",
+          "name": "Tilly"
+        },
+        {
+          "figure": "cast/bryn",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/riftlight/ashspan-broken-deck",
       "choices": [
         {
           "id": "lift",
           "label": "Lift on Ossley's count",
-          "icon": "hand",
+          "icon": "might",
           "goto": "lift_check"
         },
         {
           "id": "roll",
           "label": "Roll it up on logs",
-          "icon": "hand",
+          "icon": "clever",
           "goto": "roll_check"
         },
         {
@@ -1269,34 +1315,23 @@
           "requiresClass": "songkeeper"
         }
       ],
-      "cast": [
+      "variants": [
         {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "cast/tilly",
-          "name": "Tilly"
-        },
-        {
-          "figure": "cast/bryn",
-          "name": "Bryn"
+          "when": {
+            "flag": "pier_chipped"
+          },
+          "text": "First Bryn patches the chipped span stone with mortar, grumbling. \"Old stone, this. Not mine to break.\" Then she looks at you.",
+          "at": "start"
         }
-      ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      ]
     },
     "lift_check": {
       "type": "check",
       "stat": "might",
       "tn": 12,
+      "narration": "\"One,\" says Ossley. A long pause. Everyone wobbles. \"Two.\" Another pause. \"Three.\"",
       "prompt": "Grab the beam. Lift together when Ossley counts three!",
       "roller": "all",
-      "onSuccess": {
-        "goto": "beam_up"
-      },
-      "onFailure": {
-        "goto": "beam_slip"
-      },
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -1311,7 +1346,13 @@
           "name": "Bryn"
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      "art": "scenes/riftlight/ashspan-broken-deck",
+      "onSuccess": {
+        "goto": "beam_up"
+      },
+      "onFailure": {
+        "goto": "beam_slip"
+      }
     },
     "roll_check": {
       "type": "check",
@@ -1319,12 +1360,6 @@
       "tn": 12,
       "prompt": "Set the log rollers and the slope so the beam rolls up, not sideways.",
       "roller": "party",
-      "onSuccess": {
-        "goto": "beam_up"
-      },
-      "onFailure": {
-        "goto": "beam_slip"
-      },
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -1339,7 +1374,13 @@
           "name": "Bryn"
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      "art": "scenes/riftlight/ashspan-broken-deck",
+      "onSuccess": {
+        "goto": "beam_up"
+      },
+      "onFailure": {
+        "goto": "beam_slip"
+      }
     },
     "smash_check": {
       "type": "check",
@@ -1347,12 +1388,6 @@
       "tn": 8,
       "prompt": "Smash the cracked beam loose, then slide the new one into the notches.",
       "roller": "best",
-      "onSuccess": {
-        "goto": "beam_up"
-      },
-      "onFailure": {
-        "goto": "beam_slip"
-      },
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -1367,7 +1402,13 @@
           "name": "Bryn"
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      "art": "scenes/riftlight/ashspan-broken-deck",
+      "onSuccess": {
+        "goto": "beam_up"
+      },
+      "onFailure": {
+        "goto": "beam_slip"
+      }
     },
     "hum_check": {
       "type": "check",
@@ -1376,12 +1417,6 @@
       "prompt": "Hum a steady count so everyone lifts at once, and keep the beam level.",
       "roller": "best",
       "checkKind": "doing",
-      "onSuccess": {
-        "goto": "beam_up"
-      },
-      "onFailure": {
-        "goto": "beam_slip"
-      },
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -1396,30 +1431,56 @@
           "name": "Bryn"
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      "art": "scenes/riftlight/ashspan-broken-deck",
+      "onSuccess": {
+        "goto": "beam_up"
+      },
+      "onFailure": {
+        "goto": "beam_slip"
+      }
     },
     "beam_up": {
       "type": "story",
       "narration": "The beam drops into its notches with a deep thunk. Bryn pats it like a pony. \"Do not tell the old one.\" Ossley taps it, and it rings clear. Bryn hands around her lunch pail: a supper bundle, still warm.",
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "cast/tilly",
+          "name": "Tilly"
+        },
+        {
+          "figure": "cast/bryn",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/riftlight/ashspan-broken-deck",
       "choices": [
         {
           "id": "continue",
           "label": "Hear a tiny crack",
-          "icon": "hand",
+          "icon": "ear",
           "goto": "hatch"
         }
       ],
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "raised_the_middle_beam"
+          "flag": "raised_the_middle_beam",
+          "value": true
         },
         {
           "type": "grantItem",
           "itemId": "supper_bundle",
           "to": "party"
         }
-      ],
+      ]
+    },
+    "beam_slip": {
+      "type": "story",
+      "narration": "The beam thumps in a finger crooked and scrapes everyone's hands. Bryn taps it straight with a mallet. \"Shy, it was. Brave, it is now.\" It rings a bit flat, but it rings. Bryn hands around her lunch pail: a supper bundle, still warm.",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -1434,23 +1495,20 @@
           "name": "Bryn"
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
-    },
-    "beam_slip": {
-      "type": "story",
-      "narration": "The beam thumps in a finger crooked and scrapes everyone's hands. Bryn taps it straight with a mallet. \"It was shy. Now it is brave.\" It rings a bit flat, but it rings. Bryn hands around her lunch pail: a supper bundle, still warm.",
+      "art": "scenes/riftlight/ashspan-broken-deck",
       "choices": [
         {
           "id": "continue",
           "label": "Hear a tiny crack",
-          "icon": "hand",
+          "icon": "ear",
           "goto": "hatch"
         }
       ],
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "raised_the_middle_beam"
+          "flag": "raised_the_middle_beam",
+          "value": true
         },
         {
           "type": "damage",
@@ -1463,34 +1521,11 @@
           "itemId": "supper_bundle",
           "to": "party"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "cast/tilly",
-          "name": "Tilly"
-        },
-        {
-          "figure": "cast/bryn",
-          "name": "Bryn"
-        }
-      ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      ]
     },
     "hatch": {
       "type": "story",
       "narration": "Tilly's bag cracks. A tiny beak pokes out. \"Oh no,\" says Tilly. \"Oh yes,\" says Ossley. A duckling the size of a teacup tumbles out, then a whole fluffy handful. They waddle toward the gap in the deck, peeping.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Kneel by the ducklings",
-          "icon": "hand",
-          "goto": "duck_play"
-        }
-      ],
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -1506,7 +1541,23 @@
           "count": 3
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      "art": "scenes/riftlight/ashspan-broken-deck",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Kneel by the ducklings",
+          "icon": "hand",
+          "goto": "duck_play"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "eggs_jostled"
+          },
+          "text": "\"That bump at the dock,\" says Tilly faintly. \"It woke them up early.\""
+        }
+      ]
     },
     "duck_play": {
       "type": "interaction",
@@ -1568,6 +1619,22 @@
     "duck_plan": {
       "type": "choice_point",
       "narration": "One duckling wanders to the edge and peers down at the water with great interest. \"Eggs,\" says Tilly faintly, \"are supposed to wait until market.\" She holds out an empty basket. How will you get them to safety?",
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "cast/tilly",
+          "name": "Tilly"
+        },
+        {
+          "figure": "entities/duckling",
+          "name": "Ducklings",
+          "count": 3
+        }
+      ],
+      "art": "scenes/riftlight/ashspan-broken-deck",
       "choices": [
         {
           "id": "scoop",
@@ -1578,33 +1645,24 @@
         {
           "id": "coax",
           "label": "Coax them softly",
-          "icon": "hand",
+          "icon": "heart",
           "goto": "coax_check"
         },
         {
           "id": "trail",
           "label": "Draw a bright trail",
-          "icon": "spark",
+          "icon": "kitsune",
           "goto": "trail_check",
           "requiresSpecies": "kitsune"
         }
       ],
-      "cast": [
+      "onEnter": [
         {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "cast/tilly",
-          "name": "Tilly"
-        },
-        {
-          "figure": "entities/duckling",
-          "name": "Ducklings",
-          "count": 3
+          "type": "setFlag",
+          "flag": "eggs_jostled",
+          "value": false
         }
-      ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      ]
     },
     "scoop_check": {
       "type": "check",
@@ -1612,12 +1670,6 @@
       "tn": 12,
       "prompt": "Sweep the ducklings into Tilly's basket before they reach the gap.",
       "roller": "party",
-      "onSuccess": {
-        "goto": "ducks_safe"
-      },
-      "onFailure": {
-        "goto": "ducks_loose"
-      },
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -1633,20 +1685,21 @@
           "count": 3
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      "art": "scenes/riftlight/ashspan-broken-deck",
+      "onSuccess": {
+        "goto": "ducks_safe"
+      },
+      "onFailure": {
+        "goto": "ducks_loose"
+      }
     },
     "coax_check": {
       "type": "check",
       "stat": "heart",
       "tn": 8,
+      "narration": "\"Peep,\" you say. \"Peep,\" say the ducklings. It is going well.",
       "prompt": "Crouch low and call softly until the ducklings follow you.",
       "roller": "party",
-      "onSuccess": {
-        "goto": "ducks_safe"
-      },
-      "onFailure": {
-        "goto": "ducks_loose"
-      },
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -1662,7 +1715,13 @@
           "count": 3
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      "art": "scenes/riftlight/ashspan-broken-deck",
+      "onSuccess": {
+        "goto": "ducks_safe"
+      },
+      "onFailure": {
+        "goto": "ducks_loose"
+      }
     },
     "trail_check": {
       "type": "check",
@@ -1670,12 +1729,6 @@
       "tn": 8,
       "prompt": "Draw a bright trail through the air and lead the ducklings into the basket.",
       "roller": "best",
-      "onSuccess": {
-        "goto": "ducks_safe"
-      },
-      "onFailure": {
-        "goto": "ducks_loose"
-      },
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -1691,11 +1744,33 @@
           "count": 3
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      "art": "scenes/riftlight/ashspan-broken-deck",
+      "onSuccess": {
+        "goto": "ducks_safe"
+      },
+      "onFailure": {
+        "goto": "ducks_loose"
+      }
     },
     "ducks_safe": {
       "type": "story",
       "narration": "The ducklings tumble into the basket and go quiet. Tilly counts, loses count and counts again. \"All of them!\" One falls asleep on Ossley's hat, and he does not dare move. Tilly ties a songbird ribbon around your wrist. \"For my heroes.\"",
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "cast/tilly",
+          "name": "Tilly"
+        },
+        {
+          "figure": "entities/duckling",
+          "name": "Ducklings",
+          "count": 3
+        }
+      ],
+      "art": "scenes/riftlight/ashspan-broken-deck",
       "choices": [
         {
           "id": "continue",
@@ -1707,14 +1782,19 @@
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "helped_the_egg_farmer"
+          "flag": "helped_the_egg_farmer",
+          "value": true
         },
         {
           "type": "grantItem",
           "itemId": "songbird_ribbon",
           "to": "party"
         }
-      ],
+      ]
+    },
+    "ducks_loose": {
+      "type": "story",
+      "narration": "Three ducklings dash for the gap and cling to a plank end, peeping. Ossley fishes them out with his net. One pecks your ankle. Tilly tucks them all in the basket. \"They'll learn. In about a year.\" She ties a songbird ribbon around your wrist.",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -1730,11 +1810,7 @@
           "count": 3
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
-    },
-    "ducks_loose": {
-      "type": "story",
-      "narration": "Three ducklings dash for the gap and cling to a plank end, peeping. Ossley fishes them out with his net. One pecks your ankle. Tilly tucks them all in the basket. \"They will learn. In about a year.\" She ties a songbird ribbon around your wrist.",
+      "art": "scenes/riftlight/ashspan-broken-deck",
       "choices": [
         {
           "id": "continue",
@@ -1746,7 +1822,8 @@
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "helped_the_egg_farmer"
+          "flag": "helped_the_egg_farmer",
+          "value": true
         },
         {
           "type": "damage",
@@ -1759,7 +1836,11 @@
           "itemId": "songbird_ribbon",
           "to": "party"
         }
-      ],
+      ]
+    },
+    "planks_plan": {
+      "type": "choice_point",
+      "narration": "Now the deck. Bryn's planks wait at the bridge end, and the gap yawns between the two halves. \"Across, they go,\" says Bryn. How will you get the planks across?",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -1770,21 +1851,16 @@
           "name": "Tilly"
         },
         {
-          "figure": "entities/duckling",
-          "name": "Ducklings",
-          "count": 3
+          "figure": "cast/bryn",
+          "name": "Bryn"
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
-    },
-    "planks_plan": {
-      "type": "choice_point",
-      "narration": "Now the deck. Bryn's planks wait at the bridge end, and the gap yawns between the two halves. How will you get the planks across?",
+      "art": "scenes/riftlight/ashspan-broken-deck",
       "choices": [
         {
           "id": "rope2",
           "label": "Slide them on a rope",
-          "icon": "hand",
+          "icon": "quick",
           "goto": "rope2_check"
         },
         {
@@ -1804,21 +1880,14 @@
           ]
         }
       ],
-      "cast": [
+      "variants": [
         {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "cast/tilly",
-          "name": "Tilly"
-        },
-        {
-          "figure": "cast/bryn",
-          "name": "Bryn"
+          "when": {
+            "flag": "lost_a_plank"
+          },
+          "text": "Bryn counts her stack and frowns. \"One short.\""
         }
-      ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      ]
     },
     "rope2_check": {
       "type": "check",
@@ -1826,12 +1895,6 @@
       "tn": 12,
       "prompt": "Slide each plank along the rope line, tap it in, and send the next.",
       "roller": "party",
-      "onSuccess": {
-        "goto": "planks_laid"
-      },
-      "onFailure": {
-        "goto": "planks_dropped"
-      },
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -1846,7 +1909,13 @@
           "name": "Bryn"
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      "art": "scenes/riftlight/ashspan-broken-deck",
+      "onSuccess": {
+        "goto": "planks_laid"
+      },
+      "onFailure": {
+        "goto": "planks_dropped"
+      }
     },
     "pass_check": {
       "type": "check",
@@ -1855,12 +1924,6 @@
       "prompt": "Pass each plank hand to hand, and keep a steady rhythm going.",
       "roller": "party",
       "checkKind": "doing",
-      "onSuccess": {
-        "goto": "planks_laid"
-      },
-      "onFailure": {
-        "goto": "planks_dropped"
-      },
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -1875,7 +1938,13 @@
           "name": "Bryn"
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      "art": "scenes/riftlight/ashspan-broken-deck",
+      "onSuccess": {
+        "goto": "planks_laid"
+      },
+      "onFailure": {
+        "goto": "planks_dropped"
+      }
     },
     "pwing_check": {
       "type": "check",
@@ -1883,12 +1952,6 @@
       "tn": 8,
       "prompt": "Fly the line across the gap and land every plank square.",
       "roller": "best",
-      "onSuccess": {
-        "goto": "planks_laid"
-      },
-      "onFailure": {
-        "goto": "planks_dropped"
-      },
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -1903,16 +1966,37 @@
           "name": "Bryn"
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      "art": "scenes/riftlight/ashspan-broken-deck",
+      "onSuccess": {
+        "goto": "planks_laid"
+      },
+      "onFailure": {
+        "goto": "planks_dropped"
+      }
     },
     "planks_dropped": {
       "type": "story",
       "narration": "A plank slips off and slaps into the river. Ossley drags it back with his pole, grumbling about wet wood. Bryn wrings it out like laundry, and the deck gets laid anyway.",
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "cast/tilly",
+          "name": "Tilly"
+        },
+        {
+          "figure": "cast/bryn",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/riftlight/ashspan-broken-deck",
       "choices": [
         {
           "id": "continue",
           "label": "Look at the deck",
-          "icon": "hand",
+          "icon": "eye",
           "goto": "planks_laid"
         }
       ],
@@ -1923,7 +2007,11 @@
           "to": "party",
           "nonlethal": true
         }
-      ],
+      ]
+    },
+    "planks_laid": {
+      "type": "story",
+      "narration": "The planks go down, tap, tap, tap, and you lash each one to the beams while Bryn tugs every knot twice. One hole is left, about the size of a goat. Bryn fits the last plank. A goat eyes the deck and slowly walks away.",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -1938,17 +2026,13 @@
           "name": "Bryn"
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
-    },
-    "planks_laid": {
-      "type": "story",
-      "narration": "The planks go down, tap, tap, tap, until one hole is left, about the size of a goat. Bryn fits the last plank. \"Now we tie it down.\" A goat eyes the hole and slowly walks away.",
+      "art": "scenes/riftlight/ashspan-mended-deck",
       "choices": [
         {
           "id": "continue",
-          "label": "Plan the lashings",
-          "icon": "hand",
-          "goto": "lash_plan"
+          "label": "Call the travelers",
+          "icon": "party",
+          "goto": "bridge_open"
         }
       ],
       "variants": [
@@ -1956,208 +2040,14 @@
           "when": {
             "flag": "lost_a_plank"
           },
-          "text": "One plank was lost in the mud, so Ossley gives up a spare board from his boat, sniffing."
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "cast/tilly",
-          "name": "Tilly"
-        },
-        {
-          "figure": "cast/bryn",
-          "name": "Bryn"
-        }
-      ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
-    },
-    "lash_plan": {
-      "type": "choice_point",
-      "narration": "Bryn taps a loose plank. \"A deck only stays if it is tied down.\" The ropes wait in a coil, the pegs in a bucket. How will you fasten the deck?",
-      "choices": [
-        {
-          "id": "knots",
-          "label": "Tie careful knots",
-          "icon": "hand",
-          "goto": "knots_check"
-        },
-        {
-          "id": "pegs",
-          "label": "Hammer in pegs",
-          "icon": "hand",
-          "goto": "pegs_check"
-        },
-        {
-          "id": "straps",
-          "label": "Strap down loose ends",
-          "icon": "spark",
-          "goto": "straps_check",
-          "requiresClass": "duskrunner"
-        },
-        {
-          "id": "whistle",
-          "label": "Whistle for the goats",
-          "icon": "hand",
-          "goto": "whistle_check",
-          "requiresItem": "brave_whistle"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "cast/tilly",
-          "name": "Tilly"
-        },
-        {
-          "figure": "cast/bryn",
-          "name": "Bryn"
-        }
-      ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
-    },
-    "knots_check": {
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "cast/tilly",
-          "name": "Tilly"
-        },
-        {
-          "figure": "cast/bryn",
-          "name": "Bryn"
-        }
-      ],
-      "art": "scenes/riftlight/ashspan-broken-deck",
-      "type": "story",
-      "narration": "You tie each plank end to the beams. Bryn checks every knot and tugs it twice.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Finish the lashing",
-          "icon": "forward",
-          "goto": "lashed"
+          "text": "One hole is left, and no plank to fill it. Ossley looks at his boat a long time. Then he pries up a board from his own deck and hands it over. \"Bridge first,\" he says.",
+          "replace": false
         }
       ]
     },
-    "pegs_check": {
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "cast/tilly",
-          "name": "Tilly"
-        },
-        {
-          "figure": "cast/bryn",
-          "name": "Bryn"
-        }
-      ],
-      "art": "scenes/riftlight/ashspan-broken-deck",
+    "bridge_open": {
       "type": "story",
-      "narration": "You drive in the pegs while Bryn holds the planks square. Bonk, bonk, bonk.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Finish the lashing",
-          "icon": "forward",
-          "goto": "lashed"
-        }
-      ]
-    },
-    "whistle_check": {
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "cast/tilly",
-          "name": "Tilly"
-        },
-        {
-          "figure": "cast/bryn",
-          "name": "Bryn"
-        }
-      ],
-      "art": "scenes/riftlight/ashspan-broken-deck",
-      "type": "story",
-      "narration": "The whistle brings the goats, for once. Ossley hitches them to the line, and together you walk it tight.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Finish the lashing",
-          "icon": "forward",
-          "goto": "lashed"
-        }
-      ]
-    },
-    "straps_check": {
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "cast/tilly",
-          "name": "Tilly"
-        },
-        {
-          "figure": "cast/bryn",
-          "name": "Bryn"
-        }
-      ],
-      "art": "scenes/riftlight/ashspan-broken-deck",
-      "type": "story",
-      "narration": "Your duskrunner darts along the deck, cinching straps while friends hold the loose ends.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Finish the lashing",
-          "icon": "forward",
-          "goto": "lashed"
-        }
-      ]
-    },
-    "lashed": {
-      "type": "story",
-      "narration": "The last knot snaps tight, and the deck stops creaking. Bryn struts along it like a cat that owns the place. \"A bridge must carry everyone at once,\" she says. \"Everyone on the deck. Ossley too.\" Ossley sighs and hops up.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Step onto the deck",
-          "icon": "hand",
-          "goto": "test_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "cast/tilly",
-          "name": "Tilly"
-        },
-        {
-          "figure": "cast/bryn",
-          "name": "Bryn"
-        }
-      ],
-      "art": "scenes/riftlight/ashspan-mended-deck"
-    },
-    "test_check": {
+      "narration": "Every plank holds. Bryn does a small dance, then pretends she did not. At the far end, the market folk start across in a long, chattering line, baskets on their heads. Bryn pays you six coins from the toll box. \"A bridge pays its menders.\"",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -2173,176 +2063,29 @@
         }
       ],
       "art": "scenes/riftlight/ashspan-mended-deck",
-      "type": "story",
-      "narration": "You walk the deck with Bryn, plank by plank. Nothing wobbles. \"Fastenings first,\" she says. \"Then I call the travelers.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Call the travelers",
-          "icon": "forward",
-          "goto": "bridge_open"
-        }
-      ]
-    },
-    "bridge_open": {
-      "type": "story",
-      "narration": "Every plank holds. Bryn does a small dance, then pretends she did not. At the far end, the market folk start across in a long, chattering line, baskets on their heads.",
       "choices": [
         {
           "id": "continue",
           "label": "Watch them cross",
-          "icon": "hand",
+          "icon": "eye",
           "goto": "folk_cross"
         }
       ],
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "mended_the_bridge_deck"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
+          "flag": "mended_the_bridge_deck",
+          "value": true
         },
-        {
-          "figure": "cast/tilly",
-          "name": "Tilly"
-        },
-        {
-          "figure": "cast/bryn",
-          "name": "Bryn"
-        }
-      ],
-      "art": "scenes/riftlight/ashspan-mended-deck"
-    },
-    "folk_cross": {
-      "type": "story",
-      "narration": "Tilly crosses last with her peeping ducklings. \"I would have missed market,\" she tells Ossley. \"Thank you.\" He tips his hat, then checks it for ducks. Bryn pays you six coins from the toll box. \"A bridge pays its menders.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See Tilly's gift",
-          "icon": "hand",
-          "goto": "gift_plan"
-        }
-      ],
-      "onEnter": [
         {
           "type": "grantCoins",
           "amount": 6
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "cast/tilly",
-          "name": "Tilly"
-        },
-        {
-          "figure": "cast/bryn",
-          "name": "Bryn"
-        }
-      ],
-      "art": "scenes/riftlight/ashspan-mended-deck"
+      ]
     },
-    "gift_plan": {
-      "type": "choice_point",
-      "narration": "Tilly rummages in her feathery bag. \"I must give you something. I have oat cakes, and a story about a goose. The cakes are better. The story is longer.\"",
-      "choices": [
-        {
-          "id": "cakes",
-          "label": "Take the oat cakes",
-          "icon": "hand",
-          "goto": "cakes"
-        },
-        {
-          "id": "story",
-          "label": "Hear the goose story",
-          "icon": "hand",
-          "goto": "goose"
-        },
-        {
-          "id": "buy",
-          "label": "Buy more cakes (3 coins)",
-          "icon": "hand",
-          "goto": "buy_cakes",
-          "when": {
-            "coins": {
-              "min": 3
-            }
-          }
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "cast/tilly",
-          "name": "Tilly"
-        },
-        {
-          "figure": "cast/bryn",
-          "name": "Bryn"
-        }
-      ],
-      "art": "scenes/riftlight/ashspan-mended-deck"
-    },
-    "buy_cakes": {
+    "folk_cross": {
       "type": "story",
-      "narration": "Tilly takes your three coins very seriously. She gives one back for luck, then takes it back. \"Business is business.\" The cakes are warm, and smell faintly of duckling.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Rest in the bridge-house",
-          "icon": "hand",
-          "goto": "rest_hut"
-        }
-      ],
-      "onEnter": [
-        {
-          "type": "spendCoins",
-          "amount": 3
-        },
-        {
-          "type": "grantItem",
-          "itemId": "honeycake",
-          "to": "party"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "cast/tilly",
-          "name": "Tilly"
-        },
-        {
-          "figure": "cast/bryn",
-          "name": "Bryn"
-        }
-      ],
-      "art": "scenes/riftlight/ashspan-mended-deck"
-    },
-    "cakes": {
-      "type": "story",
-      "narration": "Tilly presses warm oat cakes into your hands. \"Do not share them with ducks,\" she says. \"They take advantage.\" A duckling peeps, as if accused.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Rest in the bridge-house",
-          "icon": "hand",
-          "goto": "rest_hut"
-        }
-      ],
+      "narration": "Tilly crosses last with her peeping basket. \"I'd have missed market,\" she tells Ossley. \"Thank you.\" He tips his hat, then checks it for ducks. She presses warm oat cakes into your hands. \"Don't share them with ducks. They take advantage.\"",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -2358,6 +2101,14 @@
         }
       ],
       "art": "scenes/riftlight/ashspan-mended-deck",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Rest in the bridge-house",
+          "icon": "rest",
+          "goto": "rest_hut"
+        }
+      ],
       "onEnter": [
         {
           "type": "grantItem",
@@ -2366,17 +2117,10 @@
         }
       ]
     },
-    "goose": {
-      "type": "story",
-      "narration": "Tilly tells the story of a goose who tried to marry a weathervane. It has three endings. Ossley falls asleep standing up. You like the goose very much, and the weathervane a little less.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Rest in the bridge-house",
-          "icon": "hand",
-          "goto": "rest_hut"
-        }
-      ],
+    "rest_hut": {
+      "type": "rest",
+      "narration": "Bryn lights a stove in the bridge-house. It smells of oats, and a little of goat. Ossley points to a raised footpath into the Whispering Marsh. \"A school called the Academy is up there,\" he says. Long pause. \"They made me a reed mat. Nobody has fetched it. Follow the posts. The ducks take shortcuts. You should not.\"",
+      "heal": 3,
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -2391,17 +2135,20 @@
           "name": "Bryn"
         }
       ],
-      "art": "scenes/riftlight/ashspan-mended-deck"
-    },
-    "rest_hut": {
-      "type": "rest",
-      "narration": "Bryn lights a stove in the bridge-house. It smells of oats, and a little of goat. Ossley points to a raised footpath into the Whispering Marsh. \"A school called the Academy is up there. They made me a reed mat, and nobody has fetched it. Follow the posts. The ducks take shortcuts. You should not.\"",
-      "heal": 3,
+      "art": "scenes/riftlight/ashspan-mended-deck",
+      "variants": [
+        {
+          "when": {
+            "flag": "lost_a_plank"
+          },
+          "text": "He looks at the hole in his boat where the board was. \"A dry mat would cover that.\""
+        }
+      ],
       "choices": [
         {
           "id": "dangle",
           "label": "Dangle your feet",
-          "icon": "hand",
+          "icon": "boot",
           "goto": "dangle"
         },
         {
@@ -2413,7 +2160,7 @@
         {
           "id": "share",
           "label": "Share your supper",
-          "icon": "hand",
+          "icon": "supper",
           "goto": "share_bryn",
           "when": {
             "count": {
@@ -2423,15 +2170,28 @@
               ],
               "min": 1
             }
-          }
+          },
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": [
+                "supper_bundle",
+                "honeycake"
+              ]
+            }
+          ]
         },
         {
           "id": "marsh",
           "label": "Visit the marsh Academy",
-          "icon": "star",
+          "icon": "map",
           "goto": "marsh_path"
         }
-      ],
+      ]
+    },
+    "share_bryn": {
+      "type": "story",
+      "narration": "You set out your supper. Bryn adds oats, and Ossley adds a fish nobody asked about. It is an odd meal and a very good one. Bryn hangs a river charm around your neck. \"Wet out of your boots, it keeps. Mostly.\"",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -2446,115 +2206,71 @@
           "name": "Bryn"
         }
       ],
-      "art": "scenes/riftlight/ashspan-mended-deck"
-    },
-    "share_bryn": {
-      "type": "story",
-      "narration": "You set out your supper. Bryn adds oats, and Ossley adds a fish nobody asked about. It is an odd meal and a very good one. Bryn hangs a river charm around your neck. \"It keeps the wet out of your boots. Mostly.\"",
+      "art": "scenes/riftlight/ashspan-mended-deck",
       "choices": [
         {
           "id": "continue",
           "label": "Listen to Ossley",
-          "icon": "hand",
+          "icon": "ear",
           "goto": "ossley_routes"
         }
       ],
       "onEnter": [
         {
-          "type": "takeItem",
-          "itemId": [
-            "supper_bundle",
-            "honeycake"
-          ]
-        },
-        {
           "type": "grantItem",
           "itemId": "river_charm",
           "to": "party"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "cast/tilly",
-          "name": "Tilly"
-        },
-        {
-          "figure": "cast/bryn",
-          "name": "Bryn"
-        }
-      ],
-      "art": "scenes/riftlight/ashspan-mended-deck"
+      ]
     },
     "dangle": {
       "type": "story",
       "narration": "The deck is warm from the sun. Ossley sits beside you and names seven fish he has argued with. The worst is called Gerald. Gerald always wins.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Listen to Ossley",
-          "icon": "hand",
-          "goto": "ossley_routes"
-        }
-      ],
       "cast": [
         {
           "figure": "cast/old_ossley",
           "name": "Old Ossley"
         }
       ],
-      "art": "scenes/riftlight/ashspan-mended-deck"
+      "art": "scenes/riftlight/ashspan-mended-deck",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Listen to Ossley",
+          "icon": "ear",
+          "goto": "ossley_routes"
+        }
+      ]
     },
     "tie_boat": {
       "type": "story",
-      "narration": "Ossley shows you his favorite knot, the one that comes undone when he whistles. You practice until it comes undone when you whistle. \"A natural,\" he says, \"or a menace.\"",
+      "narration": "Ossley shows you his favorite knot, the one that comes undone when he whistles. You practice until it comes undone when you whistle. \"A natural,\" he says. Long pause. \"Or a menace.\"",
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        }
+      ],
+      "art": "scenes/riftlight/ashspan-mended-deck",
       "choices": [
         {
           "id": "continue",
           "label": "Listen to Ossley",
-          "icon": "hand",
+          "icon": "ear",
           "goto": "ossley_routes"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        }
-      ],
-      "art": "scenes/riftlight/ashspan-mended-deck"
+      ]
     },
     "ossley_routes": {
-      "type": "choice_point",
-      "narration": "Ossley coils his rope. \"Tomorrow's tide takes me downriver, to the coast called the Saltrot.\" He points up the road. \"Or there are the old boundary stones, where the keepers count things. Ask me about one.\"",
-      "choices": [
-        {
-          "id": "coast",
-          "label": "Ask about the coast",
-          "icon": "hand",
-          "goto": "coast_talk"
-        },
-        {
-          "id": "inland",
-          "label": "Ask about the stones",
-          "icon": "hand",
-          "goto": "inland_talk"
-        }
-      ],
+      "type": "story",
+      "narration": "Ossley coils his rope. \"Tomorrow's tide takes me downriver,\" he says, \"to the coast called the Saltrot. This year the silt there came from somewhere I do not know.\" He looks at the dark span stone under the bridge. \"Like that.\" Up the road, he says, are the old boundary stones, where the keepers count things. \"Ask nicely. Bring a cheese.\" He blinks both eyelids at once. That means a joke.",
       "cast": [
         {
           "figure": "cast/old_ossley",
           "name": "Old Ossley"
         }
       ],
-      "art": "scenes/riftlight/ashspan-mended-deck"
-    },
-    "coast_talk": {
-      "type": "story",
-      "narration": "\"Salt flats and silt,\" says Ossley. \"This year the silt came from somewhere I do not know. I will take whoever wants to come. I am generally going your way.\" He looks at his hat. \"Sometimes the river agrees.\"",
+      "art": "scenes/riftlight/ashspan-mended-deck",
       "choices": [
         {
           "id": "continue",
@@ -2562,97 +2278,58 @@
           "icon": "hand",
           "goto": "routes"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        }
-      ],
-      "art": "scenes/riftlight/ashspan-mended-deck"
-    },
-    "inland_talk": {
-      "type": "story",
-      "narration": "\"The keepers count old stones,\" says Ossley. \"They ask the river questions, and it never answers in the same order. Ask nicely. Bring a cheese.\" He blinks both eyelids at once. That means a joke.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Thank him",
-          "icon": "hand",
-          "goto": "routes"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        }
-      ],
-      "art": "scenes/riftlight/ashspan-mended-deck"
+      ]
     },
     "routes": {
       "type": "rest",
-      "narration": "The bridge is whole, and the landing is safe. Ossley points downriver to the Saltrot and up the road to the boundary stones. Then he marks the upper bank road north to Frostfang Shore. \"Long walk. Griffin country at the end.\" Whichever way you go, he is generally going it too.",
+      "narration": "The bridge is whole, and the landing is safe. So here is tonight's piece: the stone that holds up the middle of Ashspan is not from here. It was here before the bridge, and nobody knows where it came from. Something is moving the land. What is it? And can you put things right? Ossley points downriver to the Saltrot, up the road to the boundary stones, and north along the upper bank road to Frostfang Shore. \"Long walk. Griffin country at the end.\" Whichever way you go, he is generally going it too.",
       "heal": 0,
-      "choices": [],
-      "outcome": "success",
       "cast": [
         {
           "figure": "cast/old_ossley",
           "name": "Old Ossley"
         }
       ],
-      "art": "scenes/riftlight/ashspan-mended-deck"
-    },
-    "marsh_path": {
-      "type": "choice_point",
-      "narration": "The raised path carries you into the Whispering Marsh. Ahead stands a village on wooden legs. A rolled reed mat waits by a sign: \"For the ferry. Please keep dry.\" A puddle covers the last stretch. How will you carry the mat?",
-      "choices": [
+      "art": "scenes/riftlight/ashspan-mended-deck",
+      "variants": [
         {
-          "id": "high",
-          "label": "Hold it up high",
-          "icon": "hand",
-          "goto": "mat_high"
+          "when": {
+            "flag": "pier_chipped"
+          },
+          "text": "The old span stone wears a fresh patch of Bryn's mortar where the jam chipped it.",
+          "at": "start"
         },
         {
-          "id": "wrap",
-          "label": "Wrap it in a cloak",
-          "icon": "hand",
-          "goto": "mat_wrap"
+          "when": {
+            "flag": "lost_a_plank"
+          },
+          "text": "Ossley's boat is a board short, and the bridge is a board long.",
+          "at": "start"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "choices": [],
+      "outcome": "success"
     },
-    "mat_high": {
+    "marsh_path": {
       "type": "story",
-      "narration": "You carry the mat overhead to a dry bench in the village. A duck walks under it. For a moment, the duck has a roof.",
+      "narration": "The raised path carries you into the Whispering Marsh, post by post. Ahead stands a village on wooden legs. A rolled reed mat waits by a sign: \"For the ferry. Please keep dry.\" You carry it overhead to a dry bench. A duck walks under it. For a moment, the duck has a roof.",
+      "cast": [],
+      "art": "scenes/gemfall/northern-bridge-foot",
       "choices": [
         {
           "id": "continue",
           "label": "Rest by the bench",
-          "icon": "hand",
+          "icon": "rest",
           "goto": "village_rest"
         }
-      ],
-      "art": "scenes/gemfall/northern-bridge-foot"
-    },
-    "mat_wrap": {
-      "type": "story",
-      "narration": "You wrap the mat in a dry cloak and carry it to a bench in the village. The mat stays dry. Your socks do not.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Rest by the bench",
-          "icon": "hand",
-          "goto": "village_rest"
-        }
-      ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      ]
     },
     "village_rest": {
       "type": "rest",
-      "heal": 0,
       "narration": "You rest by the dry mat. A round tower rises above the reeds. It has no roof. A page of homework floats down and lands on a duck. The duck looks proud of its marks.",
+      "heal": 0,
+      "cast": [],
+      "art": "scenes/gemfall/northern-bridge-foot",
       "choices": [
         {
           "id": "tower",
@@ -2663,11 +2340,10 @@
         {
           "id": "return",
           "label": "Take the mat back",
-          "icon": "travel",
+          "icon": "back",
           "goto": "mat_return"
         }
-      ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      ]
     },
     "mat_return": {
       "type": "story",
@@ -2678,15 +2354,23 @@
           "name": "Old Ossley"
         }
       ],
+      "art": "scenes/riftlight/ashspan-mended-deck",
       "choices": [
         {
           "id": "continue",
           "label": "Talk about the roads",
-          "icon": "hand",
+          "icon": "map",
           "goto": "ossley_routes"
         }
       ],
-      "art": "scenes/riftlight/ashspan-mended-deck"
+      "variants": [
+        {
+          "when": {
+            "flag": "lost_a_plank"
+          },
+          "text": "It covers the hole where his board was, too. Ossley pats it. A long pause. \"Much better.\""
+        }
+      ]
     },
     "academy": {
       "type": "story",
@@ -2776,7 +2460,11 @@
       "Hollow Gate",
       "Legend Dragon"
     ],
-    "npcVoices": {}
+    "npcVoices": {
+      "Old Ossley": "Old Ossley, the frogfolk boatman (he/him). Very few words, with long pauses that are not hesitation. Answers the question you meant. Blinks both eyelids at once when he makes a joke. Wants to get folk across while the bridge is broken, and is generally going your way.",
+      "Bryn": "Bryn, a dragonling bridge-mender (she/her). Gruff and proud, and puts the important word first: \"Planks, I have. Hands, I do not.\" Pats beams like ponies. Wants her bridge whole by market day.",
+      "Tilly": "Tilly, a griffin egg farmer taking duck eggs to market (she/her). Worried, kind and a little dramatic. Counts her eggs, loses count, counts again. Wants her eggs to wait until market. They do not."
+    }
   },
   "presentation": {
     "fights": [
@@ -2847,12 +2535,6 @@
         "props": [
           "ferry-boat",
           "fight-mooring-post"
-        ]
-      },
-      "unload_relay": {
-        "props": [
-          "relay-plank",
-          "relay-plank-cracked"
         ]
       },
       "carry_beam": {

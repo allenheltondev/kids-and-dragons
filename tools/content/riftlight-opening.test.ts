@@ -63,7 +63,7 @@ describe("Riftlight's authored opening", () => {
     expect(coverage.nodes.every((node) => node.entered)).toBe(true);
     expect(coverage.edges.every((edge) => edge.traversable)).toBe(true);
     expect(playtest(graph, campaign, { ...options, random: { seed: 16, runs: 10 }, replay: { search, coverage } }).violations).toEqual([]);
-  }, 60_000); // Full route graph, including strand-end return loops, also runs under V8 coverage.
+  }, 120_000); // Full route graph, including strand-end return loops and the rewritten strands' dice, also runs under V8 coverage.
 
   it.each([
     ["kitsune", "starweaver"], ["bigfoot", "thornguard"],

@@ -1,12 +1,12 @@
 {
-  "$comment": "Riftlight authored opening draft. Development preview only; see ../README.md. Production campaign id will be riftlight. No bonus XP: preserve the design bible campaign budget.",
+  "$comment": "Riftlight, the road out (docs/campaigns/continental-rift/arc.md, frostfang-shore; design note road-out-review.md). Revised in November 2026. Question: can we find a dry way uphill to the pass? Tamsin, the griffin who keeps the aerie's river line, carries it. Adds to the clue trail: the river has climbed above every line in a hundred years of paint (river_line, p2), and the Listening Chime leans toward the glacier (chime). Force or understand: push the goats across, or watch what the boss goat wants. Sets no journey flag.",
   "id": "riftlight-frostfang-shore",
   "campaignId": "riftlight",
   "index": 4,
   "title": "A Way Back Uphill",
   "biome": "frostfang_peaks",
   "music": "riftlight-paths",
-  "estimatedMinutes": 34,
+  "estimatedMinutes": 30,
   "xpAward": 140,
   "entry": "bank",
   "plate": {
@@ -14,17 +14,17 @@
     "narration": "A griffin leans over the ridge and lowers a rope ladder. Its bottom rung swings above the rising water. Up on the rocks, a dry path winds toward the pass. Time to climb."
   },
   "goal": {
-    "text": "Find a dry way back uphill toward the mountain pass.",
+    "text": "Can we find a dry way uphill to the pass?",
     "steps": [
       {
-        "id": "get_help",
-        "label": "Get help from the griffin",
-        "flag": "got_the_griffins_ladder"
+        "id": "firm_ladder",
+        "label": "Set Tamsin's ladder on firm ground",
+        "flag": "anchored_the_ladder"
       },
       {
-        "id": "firm_ladder",
-        "label": "Set the ladder on firm ground",
-        "flag": "anchored_the_ladder"
+        "id": "line",
+        "label": "See how high the river has come",
+        "flag": "read_the_river_line"
       },
       {
         "id": "goats",
@@ -33,7 +33,7 @@
       },
       {
         "id": "climb_up",
-        "label": "Climb up toward the pass",
+        "label": "Climb above the water",
         "flag": "climbed_the_griffins_ladder"
       }
     ]
@@ -41,59 +41,7 @@
   "scenes": {
     "bank": {
       "type": "story",
-      "narration": "You come out on the stony shore under the Frostfang Peaks. Behind you, the river is climbing the stones. A griffin calls down from a low ridge. \"I am Tamsin! I keep the river line for the griffin aerie up here. The water is rising. Is everyone here?\" She waves a wing and nearly falls off. Tonight your job is to find a dry way back uphill, to the mountain pass called the Cairnstep.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Wave that everyone's safe",
-          "icon": "hand",
-          "goto": "count"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/tamsin_river_keeper",
-          "name": "Tamsin"
-        }
-      ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
-    },
-    "count": {
-      "type": "choice_point",
-      "narration": "\"Good!\" calls Tamsin. \"Stay put. My ladder is stuck under a rock.\" The water licks your boots. Your rope is tangled, and your packs sit right where the river wants them. What comes first?",
-      "choices": [
-        {
-          "id": "rope",
-          "label": "Coil the wet rope",
-          "icon": "hand",
-          "goto": "count_rope"
-        },
-        {
-          "id": "packs",
-          "label": "Carry the packs up",
-          "icon": "hand",
-          "goto": "count_packs"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/tamsin_river_keeper",
-          "name": "Tamsin"
-        }
-      ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
-    },
-    "count_rope": {
-      "type": "story",
-      "narration": "You pick the knots loose. A tiny silver fish flips out of a loop and back into the river. It looks offended. Soon the rope sits in a neat coil.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Look up at Tamsin",
-          "icon": "hand",
-          "goto": "help"
-        }
-      ],
+      "narration": "You come out on the stony shore under the Frostfang Peaks. Behind you, the river is climbing the stones, one pebble at a time. A griffin lands on a ledge above you. \"Down, river! Sit!\" she shouts. The river does not sit. \"I'm Tamsin. I keep the river line for the aerie up here. Is everyone here? Good.\" She waves a wing and nearly falls off. \"The only dry ground is up. Can we find a dry way uphill, to the pass called the Cairnstep? Let's find out.\"",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
@@ -101,63 +49,74 @@
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "rope_coiled"
-        }
-      ]
-    },
-    "count_packs": {
-      "type": "story",
-      "narration": "You carry the packs up to a flat rock. One pack goes glug. You pour out a cupful of river and one very confused pebble.",
       "choices": [
         {
           "id": "continue",
-          "label": "Look up at Tamsin",
+          "label": "Shout that everyone is here",
           "icon": "hand",
           "goto": "help"
         }
       ],
-      "cast": [
+      "variants": [
         {
-          "figure": "cast/tamsin_river_keeper",
-          "name": "Tamsin"
+          "when": {
+            "flag": "river_escaped_early"
+          },
+          "text": "You are still dripping from the river, and so is your rope.",
+          "at": "start"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "foot_firm",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "hay_saved",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "crab_won_the_bar",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "tamsin_strained",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "goats_forced",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "watched_goats",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "goat_track_known",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "rail_rope",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "rail_peg",
+          "value": false
+        }
+      ]
     },
     "help": {
       "type": "choice_point",
-      "narration": "Tamsin's ladder pops free. She lowers a rope ladder down the cliff, and its bottom rung swings above the water. \"I can hold the top,\" she calls. \"But if the bottom swings, the first climber rings like a bell. Can you set it on firm ground?\"",
-      "choices": [
-        {
-          "id": "help",
-          "label": "Move it to firm ground",
-          "icon": "hand",
-          "goto": "ladder"
-        },
-        {
-          "id": "lash",
-          "label": "Tie it to a boulder",
-          "icon": "hand",
-          "goto": "lash_foot"
-        },
-        {
-          "id": "brace",
-          "label": "Use brace to steady it",
-          "icon": "hand",
-          "goto": "brace_foot",
-          "requiresClass": "thornguard"
-        },
-        {
-          "id": "smash",
-          "label": "Use smash to lift it",
-          "icon": "hand",
-          "goto": "smash_foot",
-          "requiresSpecies": "bigfoot"
-        }
-      ],
+      "narration": "Tamsin tugs a rope ladder free from under a rock and lowers it down the cliff. Its bottom rung swings above the water. \"I can hold the top,\" she calls. \"But if the bottom swings, the first climber rings like a bell. Set its foot on firm ground, please. Quickly. The river is listening.\"",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
@@ -165,51 +124,69 @@
         }
       ],
       "art": "scenes/riftlight/frostfang-ladder",
+      "choices": [
+        {
+          "id": "help",
+          "label": "Heave it onto a flat rock",
+          "icon": "hand",
+          "goto": "haul_foot"
+        },
+        {
+          "id": "lash",
+          "label": "Tie it to a boulder",
+          "icon": "boulder",
+          "goto": "lash_foot"
+        },
+        {
+          "id": "brace",
+          "label": "Use brace to steady it",
+          "icon": "shield",
+          "goto": "brace_foot",
+          "requiresClass": "thornguard"
+        },
+        {
+          "id": "smash",
+          "label": "Use smash to lift it",
+          "icon": "fist",
+          "goto": "smash_foot",
+          "requiresSpecies": "bigfoot"
+        }
+      ],
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "got_the_griffins_ladder"
+          "flag": "got_the_griffins_ladder",
+          "value": true
         }
       ]
     },
-    "ladder": {
-      "type": "story",
-      "narration": "Everyone grabs the foot of the ladder. The wet rope is as slippery as a fish. A flat dry rock sits a few steps up. \"On three!\" calls Tamsin. \"One, two, heave!\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Heave together",
-          "icon": "might",
-          "goto": "haul_foot"
-        }
-      ],
+    "haul_foot": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "narration": "Everyone grabs the foot of the ladder. The wet rope is as slippery as a fish. \"On three!\" calls Tamsin. \"One, two, heave!\"",
+      "prompt": "Everyone heave the ladder's foot onto the flat rock.",
+      "roller": "all",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
           "name": "Tamsin"
         }
       ],
-      "art": "scenes/riftlight/frostfang-ladder"
-    },
-    "haul_foot": {
-      "type": "check",
-      "stat": "might",
-      "tn": 8,
-      "prompt": "Everyone heave the ladder's foot onto the flat rock.",
-      "roller": "all",
+      "art": "scenes/riftlight/frostfang-ladder",
       "onSuccess": {
         "goto": "foot_set",
-        "narration": "The foot slides onto the rock with a crunch.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "foot_firm"
+            "flag": "foot_firm",
+            "value": true
           }
-        ]
+        ],
+        "narration": "The foot slides onto the rock with a crunch."
       },
       "onFailure": {
         "goto": "foot_set",
-        "narration": "The foot slips back and bumps your shins. You settle for a rock that is mostly dry.",
         "effects": [
           {
             "type": "damage",
@@ -217,111 +194,16 @@
             "to": "party",
             "nonlethal": true
           }
-        ]
-      },
-      "cast": [
-        {
-          "figure": "cast/tamsin_river_keeper",
-          "name": "Tamsin"
-        }
-      ],
-      "art": "scenes/riftlight/frostfang-ladder"
+        ],
+        "narration": "The foot slips back and bumps your shins. You settle for a rock that is mostly dry."
+      }
     },
     "lash_foot": {
       "type": "check",
       "stat": "clever",
       "tn": 12,
+      "narration": "You loop your rope around a boulder. \"Do you know a good knot?\" asks Tamsin. \"I only know a bad one.\"",
       "prompt": "Tie the ladder's foot to the boulder with a knot that holds.",
-      "narration": "You loop your rope around a boulder. You know a few knots.",
-      "onSuccess": {
-        "goto": "foot_set",
-        "narration": "The knot pulls tight. The ladder stops swinging.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "foot_firm"
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "foot_set",
-        "narration": "The knot is a clumsy lump, but it holds. The ladder will wobble a bit."
-      },
-      "cast": [
-        {
-          "figure": "cast/tamsin_river_keeper",
-          "name": "Tamsin"
-        }
-      ],
-      "art": "scenes/riftlight/frostfang-ladder"
-    },
-    "brace_foot": {
-      "type": "check",
-      "stat": "might",
-      "tn": 8,
-      "prompt": "Use brace to hold the ladder still while the others set its foot.",
-      "narration": "Your thornguard plants both feet and holds the ladder still.",
-      "onSuccess": {
-        "goto": "foot_set",
-        "narration": "The foot settles on the rock like a hen on an egg.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "foot_firm"
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "foot_set",
-        "narration": "The foot settles with a wobble. It will have to do."
-      },
-      "cast": [
-        {
-          "figure": "cast/tamsin_river_keeper",
-          "name": "Tamsin"
-        }
-      ],
-      "art": "scenes/riftlight/frostfang-ladder"
-    },
-    "smash_foot": {
-      "type": "check",
-      "stat": "might",
-      "tn": 8,
-      "prompt": "Use smash to lift the ladder's foot onto the rock.",
-      "narration": "Your bigfoot scoops up the ladder's foot like a loaf of bread.",
-      "onSuccess": {
-        "goto": "foot_set",
-        "narration": "It lands on the rock with a thump that shakes the pebbles.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "foot_firm"
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "foot_set",
-        "narration": "It lands a bit crooked. It will have to do."
-      },
-      "cast": [
-        {
-          "figure": "cast/tamsin_river_keeper",
-          "name": "Tamsin"
-        }
-      ],
-      "art": "scenes/riftlight/frostfang-ladder"
-    },
-    "foot_set": {
-      "type": "story",
-      "narration": "The ladder's foot sits on the rock, steady. Tamsin tests it and squawks happily. \"Somebody hold it, and somebody climb three rungs.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Test the ladder",
-          "icon": "hand",
-          "goto": "ladder_hold"
-        }
-      ],
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
@@ -329,10 +211,103 @@
         }
       ],
       "art": "scenes/riftlight/frostfang-ladder",
+      "onSuccess": {
+        "goto": "foot_set",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "foot_firm",
+            "value": true
+          }
+        ],
+        "narration": "The knot pulls tight. The ladder stops swinging."
+      },
+      "onFailure": {
+        "goto": "foot_set",
+        "narration": "The knot is a clumsy lump. It holds, but the ladder will wobble."
+      }
+    },
+    "brace_foot": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "narration": "Your thornguard plants both feet and holds the ladder still. \"Oh, that's handy,\" says Tamsin.",
+      "prompt": "Use brace to hold the ladder still while the others set its foot.",
+      "cast": [
+        {
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
+        }
+      ],
+      "art": "scenes/riftlight/frostfang-ladder",
+      "onSuccess": {
+        "goto": "foot_set",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "foot_firm",
+            "value": true
+          }
+        ],
+        "narration": "The foot settles on the rock like a hen on an egg."
+      },
+      "onFailure": {
+        "goto": "foot_set",
+        "narration": "The foot settles with a wobble. It will have to do."
+      }
+    },
+    "smash_foot": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "narration": "Your bigfoot scoops up the ladder's foot like a loaf of bread.",
+      "prompt": "Use smash to lift the ladder's foot onto the rock.",
+      "cast": [
+        {
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
+        }
+      ],
+      "art": "scenes/riftlight/frostfang-ladder",
+      "onSuccess": {
+        "goto": "foot_set",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "foot_firm",
+            "value": true
+          }
+        ],
+        "narration": "It lands on the rock with a thump that shakes the pebbles."
+      },
+      "onFailure": {
+        "goto": "foot_set",
+        "narration": "It lands a bit crooked. It will have to do."
+      }
+    },
+    "foot_set": {
+      "type": "story",
+      "narration": "The ladder's foot sits on the rock, steady. Tamsin tests it and squawks happily. \"Somebody hold it, and somebody climb three rungs. Tell me what you see on the cliff.\"",
+      "cast": [
+        {
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
+        }
+      ],
+      "art": "scenes/riftlight/frostfang-ladder",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Test the ladder",
+          "icon": "boot",
+          "goto": "ladder_hold"
+        }
+      ],
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "anchored_the_ladder"
+          "flag": "anchored_the_ladder",
+          "value": true
         }
       ],
       "variants": [
@@ -340,14 +315,21 @@
           "when": {
             "notFlag": "foot_firm"
           },
-          "replace": true,
-          "text": "The ladder's foot sits on the rock, but it wobbles. \"It will do,\" says Tamsin. \"Somebody hold it, and somebody climb three rungs.\""
+          "text": "The ladder's foot sits on the rock, but it wobbles. \"It will do,\" says Tamsin. \"Somebody hold it, and somebody climb three rungs. Tell me what you see on the cliff.\"",
+          "replace": true
         }
       ]
     },
     "ladder_hold": {
       "type": "interaction",
-      "narration": "Looking fine and being fine are different things. One hero climbs. The others hold the ladder still.",
+      "narration": "One hero climbs. The others hold the ladder still. Looking fine and being fine are different things.",
+      "cast": [
+        {
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
+        }
+      ],
+      "art": "scenes/riftlight/frostfang-ladder",
       "interaction": {
         "kind": "cooperate",
         "cue": "Hold the ladder steady while your friend climbs three rungs.",
@@ -355,28 +337,55 @@
         "actionLabel": "Climb three rungs"
       },
       "onSuccess": {
-        "goto": "driftline",
-        "narration": "Not a wobble. \"Now look along the shore,\" says Tamsin."
+        "goto": "river_line",
+        "narration": "Not a wobble. Your climber looks along the cliff, and goes quiet."
       },
       "onFailure": {
-        "goto": "driftline",
-        "narration": "The ladder wiggles, but it holds. \"Now look along the shore,\" says Tamsin."
+        "goto": "river_line",
+        "narration": "The ladder wiggles, but it holds. Your climber looks along the cliff, and goes quiet."
       },
       "onAssisted": {
-        "goto": "driftline",
-        "narration": "You wedge a stone under it. No wobble. \"Now look along the shore,\" says Tamsin."
-      },
+        "goto": "river_line",
+        "narration": "You wedge a stone under the foot. No wobble. Your climber looks along the cliff, and goes quiet."
+      }
+    },
+    "river_line": {
+      "type": "story",
+      "narration": "The cliff is striped with paint: old white lines, one above another, each with a year scratched beside it. \"The river line,\" says Tamsin. \"Every spring, the keeper paints where the highest water reached. My grandmother painted that top one, the year the whole shore flooded.\" She looks down. The river is above it. Above every line. \"It has never come this high,\" she says quietly. \"Not once, in all the paint.\"",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
           "name": "Tamsin"
         }
       ],
-      "art": "scenes/riftlight/frostfang-ladder"
+      "art": "scenes/riftlight/frostfang-ladder",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look along the shore",
+          "icon": "eye",
+          "goto": "driftline"
+        }
+      ],
+      "priority": 2,
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "read_the_river_line",
+          "value": true
+        }
+      ]
     },
     "driftline": {
       "type": "choice_point",
-      "narration": "The flood has dumped driftwood, one lonely boot, and a big net of hay tied in yeti knots. The net bobs at the water's edge. \"Hay for the snowhorn herd!\" says Tamsin. \"If it floats off now, it is gone.\"",
+      "narration": "Along the shore, the flood has dumped driftwood, one lonely boot, and a big net of hay tied in yeti knots. The net bobs at the water's edge. \"Hay for the snowhorn herd!\" says Tamsin. \"That's their winter. If it floats off, it's gone.\"",
+      "cast": [
+        {
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
+        }
+      ],
+      "art": "scenes/riftlight/frostfang-ladder",
       "choices": [
         {
           "id": "hook",
@@ -387,112 +396,83 @@
         {
           "id": "drag",
           "label": "Wade in and drag it",
-          "icon": "might",
+          "icon": "boot",
           "goto": "net_drag"
-        },
-        {
-          "id": "lasso",
-          "label": "Lasso it with rope",
-          "icon": "hand",
-          "goto": "net_lasso",
-          "requiresFlag": "rope_coiled"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/tamsin_river_keeper",
-          "name": "Tamsin"
-        }
-      ],
-      "art": "scenes/riftlight/frostfang-ladder"
+      ]
     },
     "net_hook": {
       "type": "check",
       "stat": "quick",
       "tn": 12,
-      "prompt": "Hook the net with the pole and draw it in.",
       "narration": "You pick a driftwood pole with a fork at the end, like a giant finger.",
-      "onSuccess": {
-        "goto": "net_saved",
-        "narration": "The fork catches a knot, and the net glides in like a sleepy seal.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "hay_saved"
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "net_saved",
-        "narration": "The net spins away. You snatch a few bundles of hay."
-      },
+      "prompt": "Hook the net with the pole and draw it in.",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
           "name": "Tamsin"
         }
       ],
-      "art": "scenes/riftlight/frostfang-ladder"
+      "art": "scenes/riftlight/frostfang-ladder",
+      "onSuccess": {
+        "goto": "net_saved",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "hay_saved",
+            "value": true
+          }
+        ],
+        "narration": "The fork catches a knot, and the net glides in like a sleepy seal."
+      },
+      "onFailure": {
+        "goto": "net_saved",
+        "narration": "The net spins away. You snatch a few bundles of hay before it goes."
+      }
     },
     "net_drag": {
       "type": "check",
       "stat": "might",
       "tn": 12,
-      "prompt": "Drag the heavy net out of the river together.",
       "narration": "You wade in to your knees. The net is full of water and does not want to leave.",
+      "prompt": "Drag the heavy net out of the river together.",
+      "roller": "all",
+      "cast": [
+        {
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
+        }
+      ],
+      "art": "scenes/riftlight/frostfang-ladder",
       "onSuccess": {
         "goto": "net_saved",
-        "narration": "Out it comes with a great slurp. The hay is safe.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "hay_saved"
+            "flag": "hay_saved",
+            "value": true
           }
-        ]
+        ],
+        "narration": "Out it comes with a great slurp. The hay is safe."
       },
       "onFailure": {
         "goto": "net_saved",
         "narration": "The river wins the tug of war. You save one end, with a few bundles inside."
-      },
-      "cast": [
-        {
-          "figure": "cast/tamsin_river_keeper",
-          "name": "Tamsin"
-        }
-      ],
-      "art": "scenes/riftlight/frostfang-ladder"
-    },
-    "net_lasso": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 8,
-      "prompt": "Lasso the net with your rope and pull it in.",
-      "narration": "You tie a loop, twirl it once, twice, and let it fly.",
-      "onSuccess": {
-        "goto": "net_saved",
-        "narration": "The loop drops over the net like a hat. The hay is safe.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "hay_saved"
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "net_saved",
-        "narration": "The loop lands short. You reel in one end, with a few bundles inside."
-      },
-      "cast": [
-        {
-          "figure": "cast/tamsin_river_keeper",
-          "name": "Tamsin"
-        }
-      ],
-      "art": "scenes/riftlight/frostfang-ladder"
+      }
     },
     "net_saved": {
       "type": "story",
-      "narration": "Then you hear a tiny bell. Out on a gravel bar in the river stand three snowhorn goats, huddled tight. \"Goats from the herd!\" says Tamsin. \"The water cut off their grazing route. They will not swim, and I cannot carry a goat.\" Tucked in the wet hay, you find a pouch of five coins. Tamsin drops you a supper bundle. \"For the goats, or for you.\"",
+      "narration": "Then you hear a tiny bell. Out on a gravel bar in the river stand three snowhorn goats, huddled tight. \"Goats from the herd!\" says Tamsin. \"The water cut off their grazing route. They won't swim, and I can't carry a goat. I tried once. The goat won.\" Tucked in the wet hay you find five coins, and Tamsin drops you a supper bundle. \"For the goats, or for you.\"",
+      "cast": [
+        {
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/frostfang-ladder",
       "choices": [
         {
           "id": "continue",
@@ -501,13 +481,6 @@
           "goto": "bar"
         }
       ],
-      "cast": [
-        {
-          "figure": "cast/tamsin_river_keeper",
-          "name": "Tamsin"
-        }
-      ],
-      "art": "scenes/riftlight/frostfang-ladder",
       "onEnter": [
         {
           "type": "grantCoins",
@@ -522,7 +495,17 @@
     },
     "bar": {
       "type": "choice_point",
-      "narration": "The bar sits in a brown stream that was not there this morning. \"Knee deep and quick,\" Tamsin warns. The smallest goat sneezes. How will you reach them?",
+      "narration": "The bar sits in a brown stream that was not there this morning. \"Knee deep and quick,\" Tamsin warns. \"Down, river.\" The smallest goat sneezes. How will you reach them?",
+      "cast": [
+        {
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/frostfang-gravel-bar",
       "choices": [
         {
           "id": "wade",
@@ -533,7 +516,7 @@
         {
           "id": "stones",
           "label": "Lay stepping stones",
-          "icon": "hand",
+          "icon": "map",
           "goto": "bar_stones"
         },
         {
@@ -549,21 +532,11 @@
         {
           "id": "leap",
           "label": "Leap across with rope",
-          "icon": "arrow",
+          "icon": "boot",
           "goto": "bar_leap",
           "requiresSpecies": "manticore"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/tamsin_river_keeper",
-          "name": "Tamsin"
-        },
-        {
-          "figure": "entities/snowhorn_goat"
-        }
-      ],
-      "art": "scenes/riftlight/frostfang-gravel-bar"
+      ]
     },
     "bar_wade": {
       "type": "check",
@@ -701,15 +674,7 @@
     },
     "bar_reached": {
       "type": "story",
-      "narration": "On the bar, the goats lean away from you. The biggest has a cracked horn and a very cross face. The smallest wears a bell that jingles when it shivers. But one of the glassback crabs that live by this river blocks the way. The flood washed out its burrow, so this bar is its house now.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Face the crab",
-          "icon": "shield",
-          "goto": "bar_crab"
-        }
-      ],
+      "narration": "On the bar, the goats lean away from you. The biggest has a cracked horn and a very cross face. The smallest wears a bell that jingles when it shivers. Between you and them sits one of the glassback crabs that live by this river. \"Its burrow washed out,\" says Tamsin. \"So now this bar is its house.\"",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
@@ -720,6 +685,14 @@
         }
       ],
       "art": "scenes/riftlight/frostfang-gravel-bar",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Face the crab",
+          "icon": "shield",
+          "goto": "bar_crab"
+        }
+      ],
       "discovers": [
         "creature.snowhorn_goat"
       ]
@@ -764,25 +737,7 @@
     },
     "bar_carry": {
       "type": "interaction",
-      "narration": "The smallest goat cannot wade water that deep. You lift it together in a rope sling. It jingles in protest.",
-      "interaction": {
-        "kind": "balance",
-        "cue": "Raise or lower your side until the goat rides level.",
-        "objectLabel": "the smallest goat",
-        "actionLabel": "Carry the goat"
-      },
-      "onSuccess": {
-        "goto": "goats",
-        "narration": "The sling stays level. The goat jingles like a happy doorbell."
-      },
-      "onFailure": {
-        "goto": "goats",
-        "narration": "The sling tips. The goat paddles the rest, wet and offended."
-      },
-      "onAssisted": {
-        "goto": "goats",
-        "narration": "You steady the sling bit by bit until the goat rides level."
-      },
+      "narration": "The smallest goat cannot wade water that deep. You lift it in a rope sling. It jingles in protest. The stream surges and slackens, surges and slackens. \"Go when it drops,\" says Tamsin.",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
@@ -792,56 +747,113 @@
           "figure": "cast/snowhorn_kid"
         }
       ],
-      "art": "scenes/riftlight/frostfang-gravel-bar"
+      "art": "scenes/riftlight/frostfang-gravel-bar",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Carry the kid across when the water drops.",
+        "actionLabel": "Carry the kid!",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 4500
+      },
+      "onSuccess": {
+        "goto": "goats",
+        "narration": "You splash across in the lull. The goat jingles like a happy doorbell."
+      },
+      "onFailure": {
+        "goto": "kid_swept",
+        "narration": "You go into a surge. The sling tips, and the goat paddles off downstream, jingling."
+      },
+      "onAssisted": {
+        "goto": "goats",
+        "narration": "Tamsin calls the lull, and you carry the kid across together."
+      }
+    },
+    "kid_swept": {
+      "type": "story",
+      "narration": "Tamsin dives. She grabs the kid by its scruff and flaps it back to the shore. Then she lands hard, holding one wing out at a funny angle. \"I'm fine,\" she says. \"Mostly. Wings are mostly fine.\" The kid shakes itself dry all over her.",
+      "cast": [
+        {
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
+        },
+        {
+          "figure": "cast/snowhorn_kid"
+        }
+      ],
+      "art": "scenes/riftlight/frostfang-gravel-bar",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go back for the big goats",
+          "icon": "boot",
+          "goto": "goats"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "tamsin_strained",
+          "value": true
+        }
+      ]
     },
     "goats": {
       "type": "choice_point",
-      "narration": "The little goat is safe. The two big goats are not so sure about the water. The biggest one stamps. How will you bring them over?",
+      "narration": "The two big goats will not wade. The boss goat, the one with the cracked horn, stamps and stares past you, up at the cliff. \"Push them across now,\" says Tamsin, \"before the water climbs any higher.\" She squints. \"Or watch it. That goat is looking at something. Goats always know something.\"",
+      "cast": [
+        {
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/frostfang-gravel-bar",
       "choices": [
         {
-          "id": "line",
-          "label": "Walk them over slowly",
+          "id": "push",
+          "label": "Push them across now",
           "icon": "hand",
-          "goto": "goat_line"
+          "goto": "goat_push"
         },
         {
-          "id": "lead",
-          "label": "Lead the boss goat first",
-          "icon": "heart",
-          "goto": "goat_lead"
-        },
-        {
-          "id": "mend",
-          "label": "Mend the big goat's knee",
-          "icon": "heart",
-          "goto": "goat_mend",
-          "requiresSpecies": "unicorn"
-        },
-        {
-          "id": "song",
-          "label": "Sing them a lullaby",
-          "icon": "note",
-          "goto": "goat_song",
-          "requiresClass": "songkeeper"
+          "id": "watch",
+          "label": "Watch what the boss goat wants",
+          "icon": "eye",
+          "goto": "goat_watch"
         },
         {
           "id": "bait",
           "label": "Tempt them with supper",
-          "icon": "cake",
+          "icon": "leaf",
           "goto": "goat_bait",
           "requiresItem": "supper_bundle",
           "effects": [
             {
               "type": "takeItem",
               "itemId": "supper_bundle"
-            },
-            {
-              "type": "setFlag",
-              "flag": "fed_the_goats"
             }
           ]
+        },
+        {
+          "id": "song",
+          "label": "Sing them a lullaby",
+          "icon": "song",
+          "goto": "goat_song",
+          "requiresClass": "songkeeper"
         }
-      ],
+      ]
+    },
+    "goat_push": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "narration": "You put your shoulders to two hairy rumps. The goats plant their hooves like small, hairy anchors.",
+      "prompt": "Lean on the big goats' rumps and push them through the stream.",
+      "roller": "all",
+      "checkKind": "doing",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
@@ -851,23 +863,53 @@
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/frostfang-gravel-bar"
-    },
-    "goat_line": {
-      "type": "check",
-      "stat": "heart",
-      "tn": 8,
-      "prompt": "Take the goats by the ruff and walk them across slowly.",
-      "narration": "The goats plant their hooves like small, hairy anchors.",
-      "roller": "all",
-      "checkKind": "doing",
+      "art": "scenes/riftlight/frostfang-gravel-bar",
       "onSuccess": {
         "goto": "goat_back",
-        "narration": "Hoof by hoof, the goats come across. The biggest even looks pleased."
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "goats_forced",
+            "value": true
+          }
+        ],
+        "narration": "Hoof by hoof, the goats skid across. They are wet, and they are furious."
+      },
+      "onFailure": {
+        "goto": "boss_sulk",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "goats_forced",
+            "value": true
+          }
+        ],
+        "narration": "The boss goat bucks, splashes everybody, and sits down in the stream."
+      }
+    },
+    "boss_sulk": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "narration": "The boss goat sits in the stream like a hairy boulder. The water is up to its beard. \"Out!\" says Tamsin. \"Out, you great lump!\" It does not move. It is waiting for an apology.",
+      "prompt": "Haul the sulking boss goat out of the stream before the water rises.",
+      "roller": "all",
+      "cast": [
+        {
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/frostfang-gravel-bar",
+      "onSuccess": {
+        "goto": "goat_back",
+        "narration": "You heave together, and the boss goat squelches out, dripping and offended."
       },
       "onFailure": {
         "goto": "goat_back",
-        "narration": "The goats balk and splash everybody. They get across by pushing past you.",
         "effects": [
           {
             "type": "damage",
@@ -875,42 +917,17 @@
             "to": "party",
             "nonlethal": true
           }
-        ]
-      },
-      "cast": [
-        {
-          "figure": "cast/tamsin_river_keeper",
-          "name": "Tamsin"
-        },
-        {
-          "figure": "entities/snowhorn_goat"
-        }
-      ],
-      "art": "scenes/riftlight/frostfang-gravel-bar"
+        ],
+        "narration": "It comes out when it wants to, which is after it has kicked everyone once."
+      }
     },
-    "goat_lead": {
+    "goat_watch": {
       "type": "check",
       "stat": "heart",
       "tn": 12,
-      "prompt": "Coax the biggest goat in, and let the other follow its boss.",
-      "narration": "Goats follow their boss. You walk beside the biggest, murmuring.",
+      "narration": "You crouch on the gravel, still as stones. The water creeps up the shore behind you. The boss goat looks at the cliff, then at you, then at the cliff.",
+      "prompt": "Crouch low, stay still and quiet, and follow the boss goat's eyes.",
       "checkKind": "doing",
-      "onSuccess": {
-        "goto": "goat_back",
-        "narration": "It huffs and wades in like a king. The other trots after it."
-      },
-      "onFailure": {
-        "goto": "goat_back",
-        "narration": "It refuses twice, then charges in and takes everybody with it.",
-        "effects": [
-          {
-            "type": "damage",
-            "amount": 1,
-            "to": "party",
-            "nonlethal": true
-          }
-        ]
-      },
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
@@ -920,30 +937,43 @@
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-gravel-bar",
+      "onSuccess": {
+        "goto": "goat_track_seen",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "watched_goats",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "hay_saved",
+            "value": false
+          }
+        ],
+        "narration": "Then you see it too."
+      },
+      "onFailure": {
+        "goto": "goat_back",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "watched_goats",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "hay_saved",
+            "value": false
+          }
+        ],
+        "narration": "The boss goat loses patience first. It charges through the stream and knocks you into it on the way. The other goat trots after its boss."
+      }
     },
-    "goat_mend": {
-      "type": "check",
-      "stat": "heart",
-      "tn": 8,
-      "prompt": "Use mend on the biggest goat's sore knee.",
-      "narration": "Your unicorn lays a gentle hoof on the big goat's sore knee.",
-      "onSuccess": {
-        "goto": "goat_back",
-        "narration": "The big goat trots into the water. The other follows, ears forward."
-      },
-      "onFailure": {
-        "goto": "goat_back",
-        "narration": "The knee feels better, but the goats still hate water. They cross, complaining.",
-        "effects": [
-          {
-            "type": "damage",
-            "amount": 1,
-            "to": "party",
-            "nonlethal": true
-          }
-        ]
-      },
+    "goat_track_seen": {
+      "type": "story",
+      "narration": "Up the cliff, too faint to see unless you are a goat, runs a zigzag of tiny ledges: an old goat track, dry all the way up. The boss goat huffs, as if to say \"finally,\" and wades for the shore. The other trots after its boss. \"Well,\" says Tamsin. \"I've lived here my whole life.\"",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
@@ -953,55 +983,46 @@
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/frostfang-gravel-bar"
-    },
-    "goat_song": {
-      "type": "check",
-      "stat": "heart",
-      "tn": 8,
-      "prompt": "Use a songkeeper's lullaby to calm the goats.",
-      "narration": "Your songkeeper hums a tune that sounds like a blanket.",
-      "onSuccess": {
-        "goto": "goat_back",
-        "narration": "The goats stop stamping and follow the song across."
-      },
-      "onFailure": {
-        "goto": "goat_back",
-        "narration": "The stream is loud, but the goats cross anyway, slowly, with their eyes shut.",
-        "effects": [
-          {
-            "type": "damage",
-            "amount": 1,
-            "to": "party",
-            "nonlethal": true
-          }
-        ]
-      },
-      "cast": [
+      "art": "scenes/riftlight/frostfang-gravel-bar",
+      "choices": [
         {
-          "figure": "cast/tamsin_river_keeper",
-          "name": "Tamsin"
-        },
-        {
-          "figure": "entities/snowhorn_goat"
+          "id": "continue",
+          "label": "Bring them ashore",
+          "icon": "boot",
+          "goto": "goat_back"
         }
       ],
-      "art": "scenes/riftlight/frostfang-gravel-bar"
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "goat_track_known",
+          "value": true
+        }
+      ]
     },
     "goat_bait": {
       "type": "check",
       "stat": "heart",
       "tn": 8,
-      "prompt": "Hold out the supper and lead the goats across, one sniff at a time.",
       "narration": "You unwrap the supper bundle. Every goat nose twitches.",
+      "prompt": "Hold out the supper and lead the goats across, one sniff at a time.",
       "checkKind": "doing",
+      "cast": [
+        {
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/frostfang-gravel-bar",
       "onSuccess": {
         "goto": "goat_back",
         "narration": "The goats follow the smell across like a hairy parade."
       },
       "onFailure": {
         "goto": "goat_back",
-        "narration": "The goats lunge and eat the supper on the shore. They got across, which was the point.",
         "effects": [
           {
             "type": "damage",
@@ -1009,8 +1030,16 @@
             "to": "party",
             "nonlethal": true
           }
-        ]
-      },
+        ],
+        "narration": "The goats lunge and eat the supper on the gravel. Then they cross anyway, chewing."
+      }
+    },
+    "goat_song": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "narration": "Your songkeeper hums a tune that sounds like a blanket.",
+      "prompt": "Use a songkeeper's lullaby to calm the goats.",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
@@ -1020,19 +1049,77 @@
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/frostfang-gravel-bar"
+      "art": "scenes/riftlight/frostfang-gravel-bar",
+      "onSuccess": {
+        "goto": "goat_back",
+        "narration": "The goats stop stamping and follow the song across."
+      },
+      "onFailure": {
+        "goto": "goat_back",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ],
+        "narration": "The stream is loud, but the goats cross anyway, slowly, with their eyes shut."
+      }
     },
     "goat_back": {
       "type": "story",
-      "narration": "The goats scramble ashore and shake like dogs, spraying everybody. The biggest stamps twice, which seems to mean thank you. \"There,\" says Tamsin. \"The herd has all its horns again.\"",
+      "narration": "The goats scramble ashore and shake like dogs, spraying everybody. \"There,\" says Tamsin. \"The herd has all its horns again.\" She counts them twice, then counts you.",
+      "cast": [
+        {
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/frostfang-gravel-bar",
       "choices": [
         {
           "id": "continue",
-          "label": "Warm your cold hands",
+          "label": "Warm up by the cliff",
           "icon": "flame",
-          "goto": "fire"
+          "goto": "rest_fire"
         }
       ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "brought_goats_ashore",
+          "value": true
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "goats_forced"
+          },
+          "text": "The boss goat turns its back on you. It is not speaking to you."
+        },
+        {
+          "when": {
+            "flag": "hay_saved"
+          },
+          "text": "Then the boss goat spots the hay net and goes straight for it."
+        },
+        {
+          "when": {
+            "flag": "watched_goats"
+          },
+          "text": "Behind you, while you watched, the river crept up the shore and carried the hay away. Tamsin sighs. \"Hay floats. Goats don't. Fair trade.\""
+        }
+      ]
+    },
+    "rest_fire": {
+      "type": "rest",
+      "narration": "Tamsin breaks open a driftwood log. Its heart is dry, and it catches at the first spark. For a few minutes, the shore is cozy. Steam rises from the goats, and from your socks. One sock smells like river pudding. \"We climb next,\" says Tamsin. \"But nobody climbs my ladder with stiff fingers.\"",
+      "heal": 3,
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
@@ -1046,128 +1133,23 @@
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "brought_goats_ashore"
+          "flag": "hay_saved",
+          "value": false
         }
       ],
       "variants": [
         {
           "when": {
-            "flag": "hay_saved"
+            "flag": "tamsin_strained"
           },
-          "text": "Then the biggest goat spots the hay and goes straight for it."
-        }
-      ]
-    },
-    "fire": {
-      "type": "choice_point",
-      "narration": "The goats are shivering, and so are you. \"Nobody climbs my ladder with stiff fingers,\" says Tamsin. The driftwood is as wet as everything else. How will you warm up?",
-      "choices": [
-        {
-          "id": "build",
-          "label": "Build a fire",
-          "icon": "flame",
-          "goto": "fire_build"
-        },
-        {
-          "id": "huddle",
-          "label": "Huddle with the goats",
-          "icon": "heart",
-          "goto": "fire_huddle"
-        },
-        {
-          "id": "smash",
-          "label": "Smash a log open",
-          "icon": "fist",
-          "goto": "fire_smash",
-          "requiresSpecies": "bigfoot"
+          "text": "She keeps her sore wing tucked under her, like a hen with one cold foot."
         }
       ],
-      "cast": [
-        {
-          "figure": "cast/tamsin_river_keeper",
-          "name": "Tamsin"
-        },
-        {
-          "figure": "entities/snowhorn_goat"
-        }
-      ],
-      "art": "scenes/riftlight/frostfang-gravel-bar"
-    },
-    "fire_build": {
-      "narration": "The inside of a log is often dry. You break the thick pieces open. A tiny flame catches and crackles.",
-      "cast": [
-        {
-          "figure": "cast/tamsin_river_keeper",
-          "name": "Tamsin"
-        },
-        {
-          "figure": "entities/snowhorn_goat"
-        }
-      ],
-      "art": "scenes/riftlight/frostfang-gravel-bar",
-      "type": "story",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Sit by the fire",
-          "icon": "forward",
-          "goto": "rest_fire"
-        }
-      ]
-    },
-    "fire_huddle": {
-      "narration": "You press in close and rub everyone dry with hay. Goats are surprisingly hot. The smallest falls asleep on a boot.",
-      "cast": [
-        {
-          "figure": "cast/tamsin_river_keeper",
-          "name": "Tamsin"
-        },
-        {
-          "figure": "entities/snowhorn_goat"
-        }
-      ],
-      "art": "scenes/riftlight/frostfang-gravel-bar",
-      "type": "story",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Rest with the goats",
-          "icon": "forward",
-          "goto": "rest_fire"
-        }
-      ]
-    },
-    "fire_smash": {
-      "narration": "One bigfoot whack, and the log cracks open like a nut. Its dry heart lights at the first spark.",
-      "cast": [
-        {
-          "figure": "cast/tamsin_river_keeper",
-          "name": "Tamsin"
-        },
-        {
-          "figure": "entities/snowhorn_goat"
-        }
-      ],
-      "art": "scenes/riftlight/frostfang-gravel-bar",
-      "type": "story",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Sit by the fire",
-          "icon": "forward",
-          "goto": "rest_fire"
-        }
-      ]
-    },
-    "rest_fire": {
-      "type": "rest",
-      "narration": "For a few minutes, the shore is cozy. Steam rises from the goats, and from your socks. One sock smells like river pudding. \"We climb next,\" says Tamsin. \"But nobody has to hurry yet.\"",
-      "heal": 3,
       "choices": [
         {
           "id": "socks",
           "label": "Dry your socks",
-          "icon": "rest",
+          "icon": "flame",
           "goto": "rest_socks"
         },
         {
@@ -1179,7 +1161,7 @@
         {
           "id": "share",
           "label": "Share supper with everyone",
-          "icon": "cake",
+          "icon": "leaf",
           "goto": "rest_share",
           "when": {
             "count": {
@@ -1200,51 +1182,11 @@
             }
           ]
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/tamsin_river_keeper",
-          "name": "Tamsin"
-        },
-        {
-          "figure": "entities/snowhorn_goat"
-        }
-      ],
-      "art": "scenes/riftlight/frostfang-gravel-bar"
+      ]
     },
     "rest_socks": {
       "type": "story",
-      "narration": "Your socks steam on a stick like little flags. The smallest goat nibbles one, thinks about it, and spits it out.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Get ready to climb",
-          "icon": "boot",
-          "goto": "surge"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/tamsin_river_keeper",
-          "name": "Tamsin"
-        },
-        {
-          "figure": "entities/snowhorn_goat"
-        }
-      ],
-      "art": "scenes/riftlight/frostfang-gravel-bar"
-    },
-    "rest_share": {
-      "type": "story",
-      "narration": "You share the supper, a bit for everyone, goats included. Tamsin gets cheese in her feathers. She hands you a bright ribbon from her bag. \"We wear these on feast days. Wear it for luck.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Get ready to climb",
-          "icon": "boot",
-          "goto": "surge"
-        }
-      ],
+      "narration": "Your socks steam on a stick like little flags. The smallest goat nibbles one, thinks about it, and spits it out. \"Good taste,\" says Tamsin.",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
@@ -1255,6 +1197,36 @@
         }
       ],
       "art": "scenes/riftlight/frostfang-gravel-bar",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Get ready to climb",
+          "icon": "boot",
+          "goto": "surge"
+        }
+      ]
+    },
+    "rest_share": {
+      "type": "story",
+      "narration": "You share the supper, a bit for everyone, goats included. Tamsin gets cheese in her feathers and leaves it there. She hands you a bright ribbon from her bag. \"We wear these on feast days. Wear it for luck.\"",
+      "cast": [
+        {
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/frostfang-gravel-bar",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Get ready to climb",
+          "icon": "boot",
+          "goto": "surge"
+        }
+      ],
       "onEnter": [
         {
           "type": "grantItem",
@@ -1265,15 +1237,7 @@
     },
     "rest_story": {
       "type": "story",
-      "narration": "\"Our aerie is above the ridge,\" says Tamsin. \"Our keeper keeps a pass ledger, a book of every road through the peaks. This season it shows a new path he cannot quite believe. He needs someone to walk it.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Get ready to climb",
-          "icon": "boot",
-          "goto": "surge"
-        }
-      ],
+      "narration": "\"Our aerie is above the ridge,\" says Tamsin. \"Our keeper keeps a pass ledger, a book of every road through the peaks. This season it shows a new path he can't quite believe. He needs someone to walk it.\" She looks at the river. \"I'll tell him about my paint too. He'll want it in the book.\"",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
@@ -1283,28 +1247,46 @@
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/frostfang-gravel-bar"
+      "art": "scenes/riftlight/frostfang-gravel-bar",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Get ready to climb",
+          "icon": "boot",
+          "goto": "surge"
+        }
+      ]
     },
     "surge": {
       "type": "choice_point",
-      "narration": "Crack! Upriver, a slab of ice breaks off the cliffs. A brown wave rolls down the shore with foam on top, like a bad hat. \"Ladder! Now!\" shouts Tamsin. The goats are already running for a narrow goat track up the cliff.",
+      "narration": "Crack! Upriver, a slab of ice breaks off the cliffs. A brown wave rolls down the shore with foam on top, like a bad hat. \"Ladder! Now!\" shouts Tamsin. The goats are already running for the cliff.",
+      "cast": [
+        {
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/frostfang-ladder",
       "choices": [
         {
           "id": "run",
           "label": "Run for the ladder",
-          "icon": "quick",
+          "icon": "boot",
           "goto": "surge_run"
         },
         {
           "id": "chain",
-          "label": "Boost the goats up",
-          "icon": "might",
+          "label": "Boost the goats up first",
+          "icon": "hand",
           "goto": "surge_chain"
         },
         {
           "id": "roar",
           "label": "Roar to keep moving",
-          "icon": "arrow",
+          "icon": "fist",
           "goto": "surge_roar",
           "requiresSpecies": "manticore"
         },
@@ -1316,6 +1298,22 @@
           "requiresClass": "thornguard"
         }
       ],
+      "variants": [
+        {
+          "when": {
+            "flag": "goats_forced"
+          },
+          "text": "They run without waiting for you. The boss goat is still cross with you."
+        }
+      ]
+    },
+    "surge_run": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "narration": "The wet stones slide under your boots like marbles.",
+      "prompt": "Everyone run for the ladder before the wave hits.",
+      "roller": "all",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
@@ -1325,23 +1323,31 @@
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/frostfang-ladder"
-    },
-    "surge_run": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 8,
-      "prompt": "Everyone run for the ladder before the wave hits.",
-      "narration": "The wet stones slide under your boots like marbles.",
-      "roller": "all",
+      "art": "scenes/riftlight/frostfang-ladder",
       "onSuccess": {
         "goto": "surge_after",
         "narration": "You reach the ladder as the wave slaps the rocks behind you."
       },
       "onFailure": {
         "goto": "surge_after",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ],
         "narration": "The wave sloshes you against the cliff. You grab the rungs and hold on."
-      },
+      }
+    },
+    "surge_chain": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "narration": "You boost the goats up one rump at a time. The boss goat is the heaviest, and it kicks.",
+      "prompt": "Lift the goats onto the cliff one rump at a time, then scramble after them.",
+      "roller": "all",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
@@ -1351,48 +1357,30 @@
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/frostfang-ladder"
-    },
-    "surge_chain": {
-      "type": "check",
-      "stat": "might",
-      "tn": 8,
-      "prompt": "Lift the goats onto their track, then scramble after them.",
-      "narration": "You boost the goats up one rump at a time.",
-      "roller": "all",
+      "art": "scenes/riftlight/frostfang-ladder",
       "onSuccess": {
         "goto": "surge_after",
         "narration": "The last hoof leaves the shore just as the wave arrives."
       },
       "onFailure": {
         "goto": "surge_after",
-        "narration": "The wave soaks your boots as you shove the last goat up. It looks deeply offended."
-      },
-      "cast": [
-        {
-          "figure": "cast/tamsin_river_keeper",
-          "name": "Tamsin"
-        },
-        {
-          "figure": "entities/snowhorn_goat"
-        }
-      ],
-      "art": "scenes/riftlight/frostfang-ladder"
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ],
+        "narration": "The wave soaks you as you shove the boss goat up. It looks down at you, deeply offended."
+      }
     },
     "surge_roar": {
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "prompt": "Use roar to get everyone moving.",
       "narration": "Your manticore takes a very big breath.",
-      "onSuccess": {
-        "goto": "surge_after",
-        "narration": "Nobody argues with that roar. You reach the ladder before the wave does."
-      },
-      "onFailure": {
-        "goto": "surge_after",
-        "narration": "The roar is loud, but the wave is louder. You get wet to the knees."
-      },
+      "prompt": "Use roar to get everyone moving, goats included.",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
@@ -1402,36 +1390,67 @@
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/frostfang-ladder"
+      "art": "scenes/riftlight/frostfang-ladder",
+      "onSuccess": {
+        "goto": "surge_after",
+        "narration": "Nobody argues with that roar, not even the boss goat. You reach the ladder before the wave does."
+      },
+      "onFailure": {
+        "goto": "surge_after",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ],
+        "narration": "The roar is loud, but the wave is louder. You get wet to the knees."
+      }
     },
     "surge_brace": {
       "type": "check",
       "stat": "might",
       "tn": 8,
-      "prompt": "Use brace to take the wave while the others run.",
       "narration": "Your thornguard digs in at the foot of the ladder.",
+      "prompt": "Use brace to take the wave while the others run.",
+      "cast": [
+        {
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/frostfang-ladder",
       "onSuccess": {
         "goto": "surge_after",
         "narration": "The wave splits around the brace. Everyone reaches the ladder with dry elbows."
       },
       "onFailure": {
         "goto": "surge_after",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ],
         "narration": "The brace holds, but everyone gets a shove and a splash."
-      },
+      }
+    },
+    "surge_after": {
+      "type": "story",
+      "narration": "The wave breaks around the ladder, which does not budge. \"Still standing,\" says Tamsin. The river settles higher, right where you stood a minute ago. \"Down, river,\" she says, more quietly.",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
           "name": "Tamsin"
-        },
-        {
-          "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/frostfang-ladder"
-    },
-    "surge_after": {
-      "type": "story",
-      "narration": "The wave breaks around the ladder, which does not budge. \"Still standing,\" says Tamsin. The river settles higher, right where you stood a minute ago.",
+      "art": "scenes/riftlight/frostfang-ladder",
       "choices": [
         {
           "id": "continue",
@@ -1440,26 +1459,26 @@
           "goto": "wave_gap"
         }
       ],
-      "cast": [
-        {
-          "figure": "cast/tamsin_river_keeper",
-          "name": "Tamsin"
-        }
-      ],
-      "art": "scenes/riftlight/frostfang-ladder",
       "variants": [
         {
           "when": {
             "notFlag": "foot_firm"
           },
-          "replace": true,
-          "text": "The wave swings the ladder hard. Tamsin hangs on with both claws until it settles. The river settles higher, right where you stood a minute ago."
+          "text": "The wave swings the wobbly ladder hard. Tamsin hangs on with both claws until it settles. The river settles higher, right where you stood a minute ago. \"Down, river,\" she says, more quietly.",
+          "replace": true
         }
       ]
     },
     "wave_gap": {
       "type": "interaction",
       "narration": "A smaller wave pulls back with a long hiss. For a moment, the stones by the ladder are bare. \"Wait for it,\" calls Tamsin.",
+      "cast": [
+        {
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
+        }
+      ],
+      "art": "scenes/riftlight/frostfang-gravel-bar",
       "interaction": {
         "kind": "timing",
         "cue": "Wait for the water to pull back, then tap to run to the ladder.",
@@ -1473,36 +1492,70 @@
         "narration": "You splash across and grab the bottom rung with dry feet."
       },
       "onFailure": {
-        "goto": "ascend",
-        "narration": "You go early and get wet to the knees. Tamsin hauls you in."
+        "goto": "wave_catch",
+        "narration": "You go too early."
       },
       "onAssisted": {
         "goto": "ascend",
         "narration": "Tamsin calls the moment, and everyone runs together."
-      },
+      }
+    },
+    "wave_catch": {
+      "type": "story",
+      "narration": "The wave catches your ankles and sits you down in it. Tamsin hauls you up by the collar, one at a time. \"Up. Up. Everyone up.\" Your boots are full of river, and it sloshes with every step.",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
           "name": "Tamsin"
         }
       ],
-      "art": "scenes/riftlight/frostfang-gravel-bar"
+      "art": "scenes/riftlight/frostfang-ladder",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Grab the ladder",
+          "icon": "hand",
+          "goto": "ascend"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "damage",
+          "amount": 1,
+          "to": "party",
+          "nonlethal": true
+        }
+      ]
     },
     "ascend": {
       "type": "choice_point",
       "narration": "The ladder is long, and the rungs are wet. The goats are already up top, looking down, as goats do. How will you climb?",
+      "cast": [
+        {
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
+        }
+      ],
+      "art": "scenes/riftlight/frostfang-ladder",
       "choices": [
         {
           "id": "line",
           "label": "Climb in a line",
-          "icon": "quick",
+          "icon": "boot",
           "goto": "climb_line"
         },
         {
           "id": "sling",
-          "label": "Haul the packs first",
-          "icon": "might",
+          "label": "Let Tamsin haul the packs",
+          "icon": "hand",
           "goto": "climb_sling"
+        },
+        {
+          "id": "track",
+          "label": "Follow the boss goat's track",
+          "icon": "map",
+          "goto": "climb_track",
+          "requiresFlag": "goat_track_known"
         },
         {
           "id": "wings",
@@ -1517,118 +1570,192 @@
         {
           "id": "rally",
           "label": "Rally tired climbers",
-          "icon": "note",
+          "icon": "song",
           "goto": "climb_rally",
           "requiresClass": "songkeeper"
         }
       ],
+      "variants": [
+        {
+          "when": {
+            "flag": "tamsin_strained"
+          },
+          "text": "Tamsin holds the top with her good wing. The other one she keeps tucked away."
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "foot_firm",
+          "value": false
+        }
+      ]
+    },
+    "climb_line": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "The lightest climber goes first. \"Don't look down,\" says Tamsin. \"Look at me. I'm lovely.\"",
+      "prompt": "Climb the swaying ladder in a line, steadying the climber ahead.",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
           "name": "Tamsin"
         }
       ],
-      "art": "scenes/riftlight/frostfang-ladder"
-    },
-    "climb_line": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 12,
-      "prompt": "Climb the swaying ladder in a line, steadying the climber ahead.",
-      "narration": "The lightest climber goes first.",
+      "art": "scenes/riftlight/frostfang-ladder",
       "onSuccess": {
         "goto": "top",
         "narration": "The ladder sways, and so do your stomachs, but nobody lets go."
       },
       "onFailure": {
         "goto": "top",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ],
         "narration": "A rung slips, and the line swings like a conga line. You climb the rest on shaky knees."
-      },
+      }
+    },
+    "climb_sling": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "narration": "You tie the wet packs in a bundle. Tamsin hauls with her beak and both claws.",
+      "prompt": "Tie the packs for Tamsin to haul, then climb with free hands.",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
           "name": "Tamsin"
         }
       ],
-      "art": "scenes/riftlight/frostfang-ladder"
-    },
-    "climb_sling": {
-      "type": "check",
-      "stat": "might",
-      "tn": 12,
-      "prompt": "Haul the packs up on the rope, then climb with free hands.",
-      "narration": "You tie the wet packs in a bundle for Tamsin to haul.",
+      "art": "scenes/riftlight/frostfang-ladder",
       "onSuccess": {
         "goto": "top",
         "narration": "Tamsin catches the bundle. Then you climb with free hands."
       },
       "onFailure": {
         "goto": "top",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ],
         "narration": "The bundle bonks the cliff, and a pack pops open. You catch your things on the way up."
       },
+      "variants": [
+        {
+          "when": {
+            "flag": "tamsin_strained"
+          },
+          "text": "She hauls with her one good wing, wincing, so the bundle comes up slowly."
+        }
+      ]
+    },
+    "climb_track": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "narration": "The boss goat goes first, without looking back. Its ledges are small, but they are dry, every one.",
+      "prompt": "Follow the boss goat up its zigzag of ledges, hoof print by hoof print.",
+      "roller": "all",
+      "cast": [
+        {
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/frostfang-ladder",
+      "onSuccess": {
+        "goto": "top",
+        "narration": "Hop, step, hop. You arrive at the top before Tamsin does, and she is a griffin."
+      },
+      "onFailure": {
+        "goto": "top",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ],
+        "narration": "One ledge crumbles. You hang on while the boss goat waits, chewing, until you catch up."
+      }
+    },
+    "climb_wings": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "narration": "Your winged hero carries the packs up in short hops.",
+      "prompt": "Use skyward or glide to carry the packs up.",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
           "name": "Tamsin"
         }
       ],
-      "art": "scenes/riftlight/frostfang-ladder"
-    },
-    "climb_wings": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 8,
-      "prompt": "Use skyward or glide to carry the packs up.",
-      "narration": "Your winged hero carries the packs up in short hops.",
+      "art": "scenes/riftlight/frostfang-ladder",
       "onSuccess": {
         "goto": "top",
         "narration": "The packs float up. Then you climb with free hands."
       },
       "onFailure": {
         "goto": "top",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ],
         "narration": "A pack splashes into the river. You fish it out, a bit wetter than before."
-      },
+      }
+    },
+    "climb_rally": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "narration": "Your songkeeper starts a quick climbing song. Tamsin joins in, off the beat.",
+      "prompt": "Use rally to cheer on tired climbers.",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
           "name": "Tamsin"
         }
       ],
-      "art": "scenes/riftlight/frostfang-ladder"
-    },
-    "climb_rally": {
-      "type": "check",
-      "stat": "heart",
-      "tn": 8,
-      "prompt": "Use rally to cheer on tired climbers.",
-      "narration": "Your songkeeper starts a quick climbing song.",
+      "art": "scenes/riftlight/frostfang-ladder",
       "onSuccess": {
         "goto": "top",
         "narration": "Every climber finds an extra rung of energy."
       },
       "onFailure": {
         "goto": "top",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ],
         "narration": "The song is cheerful, but the rungs are wet. You reach the top with sore arms."
-      },
-      "cast": [
-        {
-          "figure": "cast/tamsin_river_keeper",
-          "name": "Tamsin"
-        }
-      ],
-      "art": "scenes/riftlight/frostfang-ladder"
+      }
     },
     "top": {
       "type": "story",
       "narration": "You flop onto the rock at the top. It is dry. Really dry! A path lined with stacked stones winds along the ridge toward a notch. \"The Cairnstep,\" says Tamsin. \"Its keeper is a griffin called Brask. He keeps the pass ledger, our book of roads. He has more ink on his feathers than on the page.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Look back at the ladder",
-          "icon": "hand",
-          "goto": "safety"
-        }
-      ],
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
@@ -1636,33 +1763,67 @@
         }
       ],
       "art": "scenes/riftlight/cairnstep",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Catch your breath",
+          "icon": "leaf",
+          "goto": "chime"
+        }
+      ],
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "climbed_the_griffins_ladder"
+          "flag": "climbed_the_griffins_ladder",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "goat_track_known",
+          "value": false
+        }
+      ]
+    },
+    "chime": {
+      "type": "story",
+      "narration": "Up here, out of the wind, the Listening Chime on your pack begins to hum. It swings on its cord, not down toward the river, but up the valley, toward the glacier far away. It hangs there, leaning, then goes still. Tamsin's feathers prickle. \"Your bell is pointing,\" she says. \"Bells don't point.\"",
+      "cast": [
+        {
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
+        }
+      ],
+      "art": "scenes/riftlight/cairnstep",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look back down the cliff",
+          "icon": "eye",
+          "goto": "safety"
         }
       ]
     },
     "safety": {
       "type": "choice_point",
-      "narration": "\"The river will rise again tomorrow,\" says Tamsin. \"The next travelers will be wetter and more tired than you. A handrail would help them.\" She drops you a long rope. \"Where should we tie it?\"",
+      "narration": "Below, the river laps above the top line of paint. \"It will rise again tomorrow,\" says Tamsin. \"The next travelers out of that river will be wetter and more tired than you. A handrail would help them.\" She looks at your rope, then at you. \"Only if you can spare it.\"",
+      "cast": [
+        {
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
+        }
+      ],
+      "art": "scenes/riftlight/cairnstep",
       "choices": [
         {
-          "id": "boulder",
-          "label": "Tie it to the boulder",
+          "id": "rope",
+          "label": "Tie your own rope as a rail",
           "icon": "hand",
-          "goto": "safety_boulder"
-        },
-        {
-          "id": "peg",
-          "label": "Peg it in a crack",
-          "icon": "might",
-          "goto": "safety_peg"
+          "goto": "safety_rope"
         },
         {
           "id": "buy",
-          "label": "Buy a peg (3 coins)",
-          "icon": "key",
+          "label": "Buy Tamsin's best peg (3 coins)",
+          "icon": "coins",
           "goto": "safety_buy",
           "when": {
             "coins": {
@@ -1675,37 +1836,18 @@
               "amount": 3
             }
           ]
-        }
-      ],
-      "cast": [
+        },
         {
-          "figure": "cast/tamsin_river_keeper",
-          "name": "Tamsin"
-        }
-      ],
-      "art": "scenes/riftlight/cairnstep"
-    },
-    "safety_boulder": {
-      "narration": "The old boulder at the top is as steady as a hill. You tie a fat, neat knot. Tamsin tugs it with all her weight. It does not budge.",
-      "cast": [
-        {
-          "figure": "cast/tamsin_river_keeper",
-          "name": "Tamsin"
-        }
-      ],
-      "art": "scenes/riftlight/cairnstep",
-      "type": "story",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Check the new rail",
-          "icon": "forward",
-          "goto": "safety_done"
+          "id": "leave",
+          "label": "Leave the rail to Tamsin",
+          "icon": "boot",
+          "goto": "safety_leave"
         }
       ]
     },
-    "safety_peg": {
-      "narration": "You hammer a driftwood peg into a crack. Thunk, thunk, thunk. You tie the rope on. The peg holds, even when everyone hangs off it.",
+    "safety_rope": {
+      "type": "story",
+      "narration": "You tie your rope from the old boulder at the top down to the first ledge, with a fat, neat knot. Tamsin leans her whole chest on it, which is a lot of griffin. It holds. \"Somebody will thank you in the dark,\" she says, and hangs a smooth river charm aaround your neck. \"We give one to anyone who ties a rail.\"",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
@@ -1713,54 +1855,20 @@
         }
       ],
       "art": "scenes/riftlight/cairnstep",
-      "type": "story",
       "choices": [
         {
           "id": "continue",
-          "label": "Check the new rail",
-          "icon": "forward",
-          "goto": "safety_done"
-        }
-      ]
-    },
-    "safety_buy": {
-      "type": "story",
-      "narration": "Tamsin sells pegs to buy the aerie's ink. She hands you her best one. It rings like a bell. You hammer it deep, and tie the rope on.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Check the new rail",
-          "icon": "hand",
-          "goto": "safety_done"
+          "label": "Take the dry path",
+          "icon": "boot",
+          "goto": "climb"
         }
       ],
-      "cast": [
-        {
-          "figure": "cast/tamsin_river_keeper",
-          "name": "Tamsin"
-        }
-      ],
-      "art": "scenes/riftlight/cairnstep"
-    },
-    "safety_done": {
-      "type": "story",
-      "narration": "Tamsin leans her whole chest on the new rail, which is a lot of griffin. It holds. \"Somebody will thank you in the dark,\" she says. She hands you a smooth river charm on a cord. \"We give one to anyone who ties a rail.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Help with the hay",
-          "icon": "hand",
-          "goto": "hay_relay"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/tamsin_river_keeper",
-          "name": "Tamsin"
-        }
-      ],
-      "art": "scenes/riftlight/cairnstep",
       "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "rail_rope",
+          "value": true
+        },
         {
           "type": "grantItem",
           "itemId": "river_charm",
@@ -1768,132 +1876,128 @@
         }
       ]
     },
-    "hay_relay": {
-      "type": "interaction",
-      "narration": "Tamsin lowers a basket on a rope. \"Pass the herd's hay up, hand to hand,\" she says.",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Catch the hay bundle and pass it to the next friend.",
-        "objectLabel": "a bundle of hay",
-        "actionLabel": "Pass the hay"
-      },
-      "onSuccess": {
-        "goto": "word",
-        "narration": "The last bundle thumps into the basket. Tamsin cheers."
-      },
-      "onFailure": {
-        "goto": "word",
-        "narration": "One bundle splashes away, but the rest make it. \"Hay is hay,\" says Tamsin."
-      },
-      "onAssisted": {
-        "goto": "word",
-        "narration": "You pass the bundles slowly until the basket is full."
-      },
+    "safety_buy": {
+      "type": "story",
+      "narration": "Tamsin sells pegs to buy ink for the aerie. Her best one rings like a bell. You hammer it deep into a crack, thunk, thunk, thunk, and she ties her own spare line to it. \"Somebody will thank you in the dark,\" she says, and hangs a smooth river charm aaround your neck. \"We give one to anyone who ties a rail.\"",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
           "name": "Tamsin"
         }
       ],
-      "art": "scenes/riftlight/frostfang-ladder",
+      "art": "scenes/riftlight/cairnstep",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Take the dry path",
+          "icon": "boot",
+          "goto": "climb"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "rail_peg",
+          "value": true
+        },
+        {
+          "type": "grantItem",
+          "itemId": "river_charm",
+          "to": "party"
+        }
+      ]
+    },
+    "safety_leave": {
+      "type": "story",
+      "narration": "\"Fair enough,\" says Tamsin. \"You've done plenty.\" She pats the boulder. \"I'll tie one here myself, first thing tomorrow.\"",
+      "cast": [
+        {
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
+        }
+      ],
+      "art": "scenes/riftlight/cairnstep",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Take the dry path",
+          "icon": "boot",
+          "goto": "climb"
+        }
+      ],
       "variants": [
         {
           "when": {
-            "notFlag": "hay_saved"
+            "flag": "tamsin_strained"
           },
-          "replace": true,
-          "text": "Tamsin lowers a basket on a rope. \"Even a little hay is worth keeping,\" she says. \"Pass it up, hand to hand.\""
-        }
-      ]
-    },
-    "word": {
-      "type": "choice_point",
-      "narration": "Tamsin shakes the water off her wings. \"I must stay by the ladder in case more people come out of that river. But Brask should hear the news. What should he hear first?\"",
-      "choices": [
-        {
-          "id": "river",
-          "label": "The river is still rising",
-          "icon": "drop",
-          "goto": "word_river"
-        },
-        {
-          "id": "goats",
-          "label": "The goats' route is cut",
-          "icon": "map",
-          "goto": "word_goats"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/tamsin_river_keeper",
-          "name": "Tamsin"
-        }
-      ],
-      "art": "scenes/riftlight/cairnstep"
-    },
-    "word_river": {
-      "type": "story",
-      "narration": "\"Yes,\" says Tamsin. \"If it climbs again tonight, the east bank goes under, and the old path with it. I will send word on the wind. Brask will know before you get there.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Take the dry path",
-          "icon": "forward",
-          "goto": "climb"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/tamsin_river_keeper",
-          "name": "Tamsin"
-        }
-      ],
-      "art": "scenes/riftlight/cairnstep",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "told_the_river"
-        }
-      ]
-    },
-    "word_goats": {
-      "type": "story",
-      "narration": "\"Yes,\" says Tamsin. \"The ledger has a line for the herd's route. A short line, but it matters. I will send word on the wind. Brask will know before you get there.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Take the dry path",
-          "icon": "forward",
-          "goto": "climb"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/tamsin_river_keeper",
-          "name": "Tamsin"
-        }
-      ],
-      "art": "scenes/riftlight/cairnstep",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "told_the_herd"
+          "text": "She looks at her sore wing. \"When this works again. Soon.\""
         }
       ]
     },
     "climb": {
       "type": "rest",
-      "narration": "The dry path runs along the ridge toward a notch, up a line of stacked stones. Behind you, the river mutters. You are dry, you are together, and the goats are headed home. \"The Cairnstep is next,\" says Tamsin.",
+      "narration": "The dry path runs along the ridge toward the notch, up a line of stacked stones. Far below, the river mutters above every line of Tamsin's paint. So here is tonight's piece: the river has climbed higher than it ever has, and your chime leaned toward the glacier. Something is moving the land. What is it? And can you put things right? The Cairnstep is next, where Brask keeps the pass ledger.",
       "heal": 2,
-      "choices": [],
-      "outcome": "success",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
           "name": "Tamsin"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep",
+      "variants": [
+        {
+          "when": {
+            "notFlag": "tamsin_strained"
+          },
+          "text": "\"I'll fly ahead and tell Brask you're coming,\" says Tamsin. \"And about my paint.\"",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "tamsin_strained"
+          },
+          "text": "Tamsin can't fly far with that wing tonight. \"Tell Brask about my paint,\" she says. \"Tell him exactly.\"",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "goats_forced"
+          },
+          "text": "The boss goat leads the herd home along the ridge, still not speaking to you.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "watched_goats"
+          },
+          "text": "Tamsin will have to find the herd new hay before the snow.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "rail_rope"
+          },
+          "text": "Your rope hangs down the cliff as a rail for whoever comes next.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "rail_peg"
+          },
+          "text": "Tamsin's bell peg holds a rail for whoever comes next.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "crab_won_the_bar"
+          },
+          "text": "Out in the river, the glassback crab sits on its gravel bar, keeping it.",
+          "at": "start"
+        }
+      ],
+      "choices": [],
+      "outcome": "success"
     }
   },
   "voiceGuide": {
@@ -1908,7 +2012,9 @@
       "Hollow Gate",
       "Legend Dragon"
     ],
-    "npcVoices": {}
+    "npcVoices": {
+      "Tamsin": "Tamsin, a griffin who keeps the river line for the aerie above the shore (she/her). Brisk, bossy and kind; counts heads and asks \"Is everyone here?\" Talks to the river like a naughty dog (\"Down, river! Sit!\"), and it never listens. Nearly falls off ledges when she waves. Wants the herd's goats and hay safe, and wants to know why the water is above every line her family ever painted."
+    }
   },
   "presentation": {
     "fights": [
@@ -1979,12 +2085,6 @@
         "props": [
           "water-surge",
           "fight-wet-gravel"
-        ]
-      },
-      "hay_relay": {
-        "props": [
-          "relay-hay",
-          "rope-basket"
         ]
       }
     },
