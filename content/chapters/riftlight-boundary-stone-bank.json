@@ -1,12 +1,12 @@
 {
-  "$comment": "Riftlight authored opening draft. Development preview only; see ../README.md. Production campaign id will be riftlight. No bonus XP: preserve the design bible campaign budget.",
+  "$comment": "Riftlight, the road out (docs/campaigns/continental-rift/arc.md, boundary-stone-bank; design note road-out-review.md). Revised in November 2026. Question: why did the river shove the stones? Tally, the dragonling who keeps the boundary stones (and, in stone-counters, the counting stones), carries it; she is greeted in words true whether or not a party met her there first. Adds to the clue trail: the flood came above every notch in the count (notch_plan), and the oldest stone carves an eruption that no one's count matches, under a mountain shaped differently from today's (clue, p2). The Listening Chime leans toward the glacier (lean). Force or understand: heave Splash up now, or dig aaround him first. Sets no journey flag.",
   "id": "riftlight-boundary-stone-bank",
   "campaignId": "riftlight",
   "index": 4,
   "title": "The Stones Above the Water",
   "biome": "red_sky_foothills",
   "music": "riftlight-paths",
-  "estimatedMinutes": 32,
+  "estimatedMinutes": 30,
   "xpAward": 140,
   "entry": "stones",
   "plate": {
@@ -14,34 +14,41 @@
     "narration": "Old boundary stones stand above the Great River. Wind bends the grass around their feet. Beyond the wet gravel, a quiet road follows the bank into the foothills."
   },
   "goal": {
-    "text": "Help the keeper set the river stones right.",
+    "text": "Why did the river shove the stones?",
     "steps": [
       {
         "id": "right_stone",
-        "label": "Stand the lowest river stone up",
+        "label": "Stand the lowest stone up again",
         "flag": "righted_the_lowest_stone"
       },
       {
+        "id": "high_water",
+        "label": "Find how high the water came",
+        "flag": "marked_the_high_water"
+      },
+      {
         "id": "pull_cord",
-        "label": "Pull the new count cord tight",
+        "label": "Pull the count cord tight",
         "flag": "pulled_the_count_cord"
       },
       {
         "id": "see_carving",
         "label": "Read the oldest carved stone",
         "flag": "saw_the_carved_stone"
-      },
-      {
-        "id": "help_keeper",
-        "label": "Help the keeper before you leave",
-        "flag": "helped_the_stone_keeper"
       }
     ]
   },
   "scenes": {
     "stones": {
       "type": "story",
-      "narration": "You reach the east bank of the Great River. Old boundary stones march up the slope in a crooked row. A dragonling keeper hurries down with a dry cloth. \"These hills are called the Red Sky Foothills,\" she says. \"Everyone in one piece? Good. The river shoved my lowest stone out of line last night. Help me set the river stones right, and there will be tea.\"",
+      "narration": "You reach the east bank of the Great River. Old boundary stones march up the slope in a crooked row. A dragonling hurries down with a dry cloth, counting under her breath. \"Seven, eight, nine stones. One, two... visitors.\" She counts you too. \"Tally. I keep these stones. If we've met, I've counted you twice now, which is fine.\" She points at the bottom stone, leaning toward the water. \"The river shoved my stones last night. Stones don't get shoved. Not mine. Why did the river shove the stones? Help me find out, and there will be tea.\"",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-river-row",
       "choices": [
         {
           "id": "continue",
@@ -50,17 +57,72 @@
           "goto": "markings"
         }
       ],
-      "cast": [
+      "variants": [
         {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
+          "when": {
+            "flag": "river_escaped_middle"
+          },
+          "text": "She hands you the dry cloth twice, because you are still dripping from the river."
         }
       ],
-      "art": "scenes/riftlight/boundary-river-row"
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "rubbed_the_carving",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "torn_the_rubbing",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "set_the_river_marker",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "splash_forced",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "splash_dug",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "kettle_lost",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "cord_slack",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "wrote_plain",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "drew_both",
+          "value": false
+        }
+      ]
     },
     "markings": {
       "type": "choice_point",
-      "narration": "She waves one hand, because the other holds a ball of cord. \"Two small jobs first. The oldest stone at the top is carved with a mountain and a plume of smoke, and my record board needs a rubbing of it. And my wet river marker slid into the shallows.\" Her board is full of crossed-out dates. \"The numbers never agree. Which job first?\"",
+      "narration": "Tally waves one hand, because the other holds a ball of cord. \"Two small jobs first. The oldest stone at the top is carved with a mountain, and my record board needs a rubbing of it. And my river marker slid into the shallows.\" Her board is full of crossed-out numbers. \"The numbers never agree. Which job first?\"",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-river-row",
       "choices": [
         {
           "id": "look",
@@ -71,21 +133,21 @@
         {
           "id": "help",
           "label": "Haul out the marker",
-          "icon": "hand",
+          "icon": "might",
           "goto": "marker"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row"
+      ]
     },
     "carving": {
       "type": "story",
-      "narration": "The oldest stone is taller than the keeper, and grumpier. She tapes damp paper over the carving and hands you charcoal in a rag. \"Rub it like you are polishing a pot,\" she says. \"Before the wind wakes up.\" The grass is already leaning.",
+      "narration": "The oldest stone is taller than Tally, and grumpier. She tapes damp paper over the carving and hands you charcoal in a rag. \"Rub it like you're polishing a pot,\" she says. \"Before the wind wakes up.\" The grass is already leaning.",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-mountain-carving",
       "choices": [
         {
           "id": "continue",
@@ -93,14 +155,7 @@
           "icon": "hand",
           "goto": "rub_check"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-mountain-carving"
+      ]
     },
     "rub_check": {
       "type": "check",
@@ -108,73 +163,82 @@
       "tn": 8,
       "prompt": "Everyone take a corner. Hold the paper flat and rub before the wind lifts it!",
       "roller": "all",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-mountain-carving",
       "onSuccess": {
         "goto": "rubbed"
       },
       "onFailure": {
         "goto": "rub_torn"
-      },
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-mountain-carving"
+      }
     },
     "rubbed": {
       "type": "story",
-      "narration": "The rubbing comes off whole: the mountain, the plume, even the tiny chips. \"Nobody gets a clean one!\" says the keeper. She pegs it on a rock to dry, then squints at the sky in case it is up to something.",
+      "narration": "The rubbing comes off whole: the mountain, the smoke rising from its top, even the tiny chips. \"Nobody gets a clean one!\" says Tally. She pegs it on a rock to dry, then squints at the sky in case it is up to something.",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-mountain-carving",
       "choices": [
         {
           "id": "continue",
           "label": "Go to the lowest stone",
-          "icon": "hand",
+          "icon": "boot",
           "goto": "row"
         }
       ],
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "rubbed_the_carving"
+          "flag": "rubbed_the_carving",
+          "value": true
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-mountain-carving"
+      ]
     },
     "rub_torn": {
       "type": "story",
-      "narration": "The wind snatches the paper and flaps it away like a startled hen. The keeper chases it, then sits on it. What is left has most of a mountain. \"Half a mountain is still a mountain,\" she says.",
+      "narration": "The wind snatches the paper and flaps it away like a startled hen. Tally chases it, then sits on it. What is left has most of a mountain. \"Half a mountain is still a mountain,\" she says.",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-mountain-carving",
       "choices": [
         {
           "id": "continue",
           "label": "Go to the lowest stone",
-          "icon": "hand",
+          "icon": "boot",
           "goto": "row"
         }
       ],
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "torn_the_rubbing"
+          "flag": "torn_the_rubbing",
+          "value": true
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-mountain-carving"
+      ]
     },
     "marker": {
       "type": "story",
-      "narration": "The river marker is a short stone post with a rope ring on top. It stands in the shallows like a grumpy heron. \"Set it where the water reached,\" says the keeper, \"so travelers can see how high it came.\" She lends you mittens that smell of fish.",
+      "narration": "The river marker is a short stone post with a rope ring on top. It stands in the shallows like a grumpy heron. \"Set it where the water reached,\" says Tally, \"so travelers can see how high it came.\" She lends you mittens that smell of fish.",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-river-row",
       "choices": [
         {
           "id": "continue",
@@ -182,14 +246,7 @@
           "icon": "hand",
           "goto": "marker_haul"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row"
+      ]
     },
     "marker_haul": {
       "type": "check",
@@ -197,60 +254,69 @@
       "tn": 12,
       "prompt": "The post is heavy and slick. The strongest hero heaves it up the gravel while everyone else steers and shouts.",
       "roller": "best",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-river-row",
       "onSuccess": {
         "goto": "marker_set"
       },
       "onFailure": {
         "goto": "marker_slid"
-      },
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row"
+      }
     },
     "marker_set": {
       "type": "story",
-      "narration": "The post thumps into its hole, high above the wet gravel. The keeper scratches the height on her record board and whistles. \"Higher than my grandmother's year! She complained about that one for a month.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go to the lowest stone",
-          "icon": "hand",
-          "goto": "row"
-        }
-      ],
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "set_the_river_marker"
-        }
-      ],
+      "narration": "The post thumps into its hole, high above the wet gravel. Tally scratches the height on her record board and whistles. \"Higher than my grandmother's year! She complained about that one for a month.\"",
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
+          "name": "Tally"
         }
       ],
-      "art": "scenes/riftlight/boundary-river-row"
-    },
-    "marker_slid": {
-      "type": "story",
-      "narration": "The post slides back into the shallows with a rude splash. So you loop its ring over a pole and walk it up the bank together, fish mittens squelching. The keeper hands around her dry cloth again. The post stands. It looks insulted.",
+      "art": "scenes/riftlight/boundary-river-row",
       "choices": [
         {
           "id": "continue",
           "label": "Go to the lowest stone",
-          "icon": "hand",
+          "icon": "boot",
           "goto": "row"
         }
       ],
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "set_the_river_marker"
+          "flag": "set_the_river_marker",
+          "value": true
+        }
+      ]
+    },
+    "marker_slid": {
+      "type": "story",
+      "narration": "The post slides back into the shallows with a rude splash. So you loop its ring over a pole and walk it up the bank together, fish mittens squelching. Tally hands around her dry cloth again. The post stands. It looks insulted.",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-river-row",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go to the lowest stone",
+          "icon": "boot",
+          "goto": "row"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "set_the_river_marker",
+          "value": true
         },
         {
           "type": "damage",
@@ -258,23 +324,23 @@
           "to": "party",
           "nonlethal": true
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row"
+      ]
     },
     "row": {
       "type": "story",
-      "narration": "Nine stones climb the bank like steps for a giant. Each has a notch for one year's highest water, and a ring for the count cord that ties them together. The lowest stone leans toward the river like a sleepy goat. The keeper calls him Splash, which he does not enjoy.",
+      "narration": "Nine stones climb the bank like steps for a giant. Each has notches, one for every year's highest water, and a ring for the count cord that ties them together. The lowest stone leans toward the river like a sleepy goat. \"That's Splash,\" says Tally. \"He doesn't enjoy the name.\"",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-river-row",
       "choices": [
         {
           "id": "continue",
           "label": "Look at Splash",
-          "icon": "hand",
+          "icon": "eye",
           "goto": "plan"
         }
       ],
@@ -297,29 +363,29 @@
           },
           "text": "Your torn rubbing dries on a rock under a pebble."
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row"
+      ]
     },
     "plan": {
       "type": "choice_point",
-      "narration": "Splash is stuck in the clay, leaning as if he might still run off to the sea. The old cord has snapped, and the river is rising again. \"He is very heavy and a little proud,\" says the keeper. How will you stand him up?",
+      "narration": "Splash is stuck in the clay, leaning as if he might still run off to the sea. The old count cord has snapped. \"We could heave him up now, before the river comes back,\" says Tally. \"Or dig aaround him first, and see how the river did it. That's slower.\" She counts the ripples on the water. \"The river might not wait.\"",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-river-row",
       "choices": [
         {
           "id": "lever",
-          "label": "Lever him with a pole",
-          "icon": "hand",
+          "label": "Heave him up with a pole, now",
+          "icon": "might",
           "goto": "lever_check"
         },
         {
-          "id": "trench",
-          "label": "Dig a trench",
-          "icon": "hand",
+          "id": "dig",
+          "label": "Dig aaround him first",
+          "icon": "clever",
           "goto": "trench_check"
         },
         {
@@ -329,78 +395,177 @@
           "goto": "smash_check",
           "requiresSpecies": "bigfoot"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row"
+      ]
     },
     "lever_check": {
       "type": "check",
       "stat": "might",
       "tn": 12,
+      "narration": "You jam the pole under Splash. \"On three,\" says Tally. \"One, two...\" She loses count. \"Just heave!\"",
       "prompt": "Set the pole under Splash and heave until he stands.",
       "roller": "party",
-      "onSuccess": {
-        "goto": "splash_up"
-      },
-      "onFailure": {
-        "goto": "splash_slip"
-      },
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
+          "name": "Tally"
         }
       ],
-      "art": "scenes/riftlight/boundary-river-row"
+      "art": "scenes/riftlight/boundary-river-row",
+      "onSuccess": {
+        "goto": "splash_up",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "splash_forced",
+            "value": true
+          }
+        ],
+        "narration": "Up he comes with a sucking pop. Crack!"
+      },
+      "onFailure": {
+        "goto": "splash_slip",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "splash_forced",
+            "value": true
+          }
+        ],
+        "narration": "The pole slips, and so does Splash."
+      }
     },
     "trench_check": {
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Work out which way the trench should run, then dig so Splash slides upright.",
+      "narration": "You dig aaround Splash with Tally's little spade, one careful scoop at a time. Tally counts the scoops.",
+      "prompt": "Work out which way the river pushed him, then dig so Splash slides upright by himself.",
       "roller": "party",
-      "onSuccess": {
-        "goto": "splash_up"
-      },
-      "onFailure": {
-        "goto": "splash_slip"
-      },
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
+          "name": "Tally"
         }
       ],
-      "art": "scenes/riftlight/boundary-river-row"
+      "art": "scenes/riftlight/boundary-river-row",
+      "onSuccess": {
+        "goto": "dug_found",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "splash_dug",
+            "value": true
+          }
+        ],
+        "narration": "Twenty-nine scoops in, you see it."
+      },
+      "onFailure": {
+        "goto": "splash_slip",
+        "narration": "You dig on the wrong side, and Splash tips toward you."
+      }
     },
     "smash_check": {
       "type": "check",
       "stat": "might",
       "tn": 8,
-      "prompt": "Your bigfoot smashes the clay around Splash. Can you steer him upright as he tips?",
+      "narration": "Your bigfoot cracks the clay like a pie crust.",
+      "prompt": "Your bigfoot smashes the clay aaround Splash. Can you steer him upright as he tips?",
       "roller": "best",
-      "onSuccess": {
-        "goto": "splash_up"
-      },
-      "onFailure": {
-        "goto": "splash_slip"
-      },
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
+          "name": "Tally"
         }
       ],
-      "art": "scenes/riftlight/boundary-river-row"
+      "art": "scenes/riftlight/boundary-river-row",
+      "onSuccess": {
+        "goto": "splash_up",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "splash_forced",
+            "value": true
+          }
+        ],
+        "narration": "Splash rocks, and you steer him straight. Crack!"
+      },
+      "onFailure": {
+        "goto": "splash_slip",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "splash_forced",
+            "value": true
+          }
+        ],
+        "narration": "Splash rocks the wrong way."
+      }
+    },
+    "dug_found": {
+      "type": "story",
+      "narration": "The river packed gravel on Splash's uphill side, not his river side. \"It came over the top,\" Tally whispers. \"Over the bank, and back down. It pushed him from above.\" Splash slides upright by himself, without a scratch. Then a roar comes down the river. You are still in the trench.",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-river-row",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Climb out!",
+          "icon": "boot",
+          "goto": "trench_out"
+        }
+      ]
+    },
+    "trench_out": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "Brown water pours over the lip of your trench. Tally reaches down with both hands, counting heads.",
+      "prompt": "Scramble out of the trench before the surge fills it!",
+      "roller": "all",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-river-row",
+      "onSuccess": {
+        "goto": "splash_up",
+        "narration": "Out you pop, one by one, as the trench fills behind you like a bathtub."
+      },
+      "onFailure": {
+        "goto": "splash_up",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "kettle_lost",
+            "value": true
+          }
+        ],
+        "narration": "The surge fills the trench to your chins before Tally hauls you out, coughing river. It takes her kettle too, off the edge of the trench, bobbing all the way to the sea."
+      }
     },
     "splash_slip": {
       "type": "story",
-      "narration": "Splash tips the wrong way and sits down in the shallows. Sploosh! The keeper does not scold. She loops a rope around him, and everyone hauls from the bank. It takes twice as long and half the dignity.",
+      "narration": "Splash sits down in the shallows. Sploosh! Tally does not scold. She loops a rope aaround him, and everyone hauls from the bank. It takes twice as long and half the dignity.",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-river-row",
       "choices": [
         {
           "id": "continue",
@@ -416,18 +581,18 @@
           "to": "party",
           "nonlethal": true
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row"
+      ]
     },
     "splash_up": {
       "type": "story",
-      "narration": "Splash stands straight at last. The keeper thanks him. She thanks every stone. Then she freezes. A brown ripple races down the river, carrying branches, a boot and one very surprised duck. \"Melt surge!\" she says. \"Grab everything the river might like!\"",
+      "narration": "Splash stands straight at last. Tally thanks him. She thanks every stone, by name. Then she freezes. A brown ripple races down the river, carrying branches, a boot and one very surprised duck. \"Melt surge!\" she says. \"Grab everything the river might like!\"",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-river-row",
       "choices": [
         {
           "id": "continue",
@@ -439,54 +604,71 @@
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "righted_the_lowest_stone"
+          "flag": "righted_the_lowest_stone",
+          "value": true
         }
       ],
-      "cast": [
+      "variants": [
         {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
+          "when": {
+            "flag": "splash_forced"
+          },
+          "text": "His top notch is chipped now, the one for the biggest flood. Tally winces. \"That one was eleven years old.\"",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "splash_dug"
+          },
+          "text": "Splash stands straight at last, without a scratch. Tally thanks him. She thanks every stone, by name. The surge is still rolling past, carrying branches, a boot and one very surprised duck. \"The gear!\" she says. \"Grab everything the river might like!\"",
+          "replace": true
         }
-      ],
-      "art": "scenes/riftlight/boundary-river-row"
+      ]
     },
     "surge_check": {
       "type": "interaction",
-      "narration": "Up the bank it all goes, fast, hand to hand: the cord, the board, the kettle and the tea things.",
+      "narration": "Up the bank it all goes, fast, hand to hand: the cord, the board, the kettle and the tea things. Tally counts them as they go.",
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
+          "name": "Tally"
         }
       ],
+      "art": "scenes/riftlight/boundary-river-row",
       "interaction": {
         "kind": "relay",
         "cue": "Catch the load, then pass it up the bank to your friend.",
         "actionLabel": "Pass it up!",
         "objectLabel": "the kettle and the cord"
       },
-      "art": "scenes/riftlight/boundary-river-row",
       "onSuccess": {
         "goto": "surge_safe",
         "narration": "Hand to hand to hand, the whole pile climbs the bank."
       },
       "onFailure": {
         "goto": "surge_safe",
-        "narration": "A sock goes one way, a teacup the other, and the surge takes both."
+        "narration": "A sock goes one way, and a teacup goes the other, but most of the pile climbs the bank."
       },
       "onAssisted": {
         "goto": "surge_safe",
-        "narration": "The keeper lends a pair of arms, and the pile climbs the bank."
+        "narration": "Tally lends a pair of arms, and the pile climbs the bank."
       }
     },
     "surge_safe": {
       "type": "story",
-      "narration": "The surge slaps the gravel and swirls around Splash's feet. Splash stands firm. The duck sails past, quacking its opinion. \"Kettle saved,\" says the keeper. \"The river has no idea how to make tea.\" She gives you a jar of glowing moss. \"Mosslight. For work at dusk.\"",
+      "narration": "The surge slaps the gravel and swirls aaround Splash's feet. Splash stands firm. The duck sails past, quacking its opinion. \"Kettle saved,\" says Tally. \"The river has no idea how to make tea.\" She gives you a jar of glowing moss. \"Mosslight. For work at dusk.\"",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-river-row",
       "choices": [
         {
           "id": "continue",
-          "label": "Catch your breath",
-          "icon": "hand",
+          "label": "Look at Splash",
+          "icon": "eye",
           "goto": "notch_plan"
         }
       ],
@@ -497,17 +679,26 @@
           "to": "party"
         }
       ],
-      "cast": [
+      "variants": [
         {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
+          "when": {
+            "flag": "kettle_lost"
+          },
+          "text": "The surge slaps the gravel and swirls aaround Splash's feet. Splash stands firm. Tally looks downriver after her kettle. \"Nine years that kettle and I counted together,\" she says. Then she sniffs and gives you a jar of glowing moss. \"Mosslight. For work at dusk.\"",
+          "replace": true
         }
-      ],
-      "art": "scenes/riftlight/boundary-river-row"
+      ]
     },
     "notch_plan": {
       "type": "choice_point",
-      "narration": "The water left a dark, damp line on Splash: this year's highest. The keeper hands you a chisel the size of a spoon. \"Cut the notch right on that line. It will stay for a thousand years. No pressure.\" How will you cut it?",
+      "narration": "The water left a dark, damp line on Splash. It is above every notch on him. It is above every notch on the next stone too. Tally counts them twice. \"Never this high,\" she says. \"Not in all the count. That's why it shoved him.\" She hands you a chisel the size of a spoon. \"Cut this year's notch on that line. It will stay for a thousand years. No pressure.\"",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-river-row",
       "choices": [
         {
           "id": "chisel",
@@ -518,7 +709,7 @@
         {
           "id": "chalk",
           "label": "Chalk it, then cut",
-          "icon": "hand",
+          "icon": "clever",
           "goto": "chalk_check"
         },
         {
@@ -531,38 +722,39 @@
         {
           "id": "moss",
           "label": "Light it with mosslight",
-          "icon": "spark",
+          "icon": "lantern",
           "goto": "moss_check",
           "requiresItem": "mosslight_jar"
         }
       ],
-      "cast": [
+      "onEnter": [
         {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
+          "type": "setFlag",
+          "flag": "marked_the_high_water",
+          "value": true
         }
-      ],
-      "art": "scenes/riftlight/boundary-river-row"
+      ]
     },
     "chisel_check": {
       "type": "check",
       "stat": "quick",
       "tn": 12,
+      "narration": "Tap. Tap. Tap. \"One, two, three,\" says Tally, very quietly.",
       "prompt": "The steadiest hands tap the chisel along the damp line while everyone keeps Splash still.",
       "roller": "best",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-river-row",
       "onSuccess": {
         "goto": "notch_cut"
       },
       "onFailure": {
         "goto": "notch_crooked"
-      },
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row"
+      }
     },
     "chalk_check": {
       "type": "check",
@@ -570,19 +762,19 @@
       "tn": 12,
       "prompt": "Chalk the line, check it against the cord, and cut the notch in small, careful steps.",
       "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-river-row",
       "onSuccess": {
         "goto": "notch_cut"
       },
       "onFailure": {
         "goto": "notch_crooked"
-      },
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row"
+      }
     },
     "moss_check": {
       "type": "check",
@@ -590,19 +782,19 @@
       "tn": 8,
       "prompt": "The mosslight shows every grain of the stone. Can you tap the notch along the glowing line?",
       "roller": "best",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-river-row",
       "onSuccess": {
         "goto": "notch_cut"
       },
       "onFailure": {
         "goto": "notch_crooked"
-      },
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row"
+      }
     },
     "beat_check": {
       "type": "check",
@@ -611,29 +803,36 @@
       "prompt": "A humming beat keeps every tap even. Can you swing the mallet to the beat?",
       "roller": "best",
       "checkKind": "doing",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-river-row",
       "onSuccess": {
         "goto": "notch_cut"
       },
       "onFailure": {
         "goto": "notch_crooked"
-      },
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row"
+      }
     },
     "notch_cut": {
       "type": "story",
-      "narration": "The notch comes out clean, with a curl of stone like a ribbon. \"That is this year,\" the keeper says softly. She gives you four coins and a honeycake. \"The stone counters up the road pay me in coins. I pay my helpers in cake. Now, a chalk line to check it.\"",
+      "narration": "The notch comes out clean, with a curl of stone like a ribbon. \"That's this year,\" Tally says softly. She gives you four coins and a honeycake. \"The stone counters up the road pay me in coins. I pay my helpers in cake.\"",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-river-row",
       "choices": [
         {
           "id": "continue",
-          "label": "Snap a chalk line",
-          "icon": "hand",
-          "goto": "chalk_snap"
+          "label": "Look at the count cord",
+          "icon": "eye",
+          "goto": "cord_plan"
         }
       ],
       "onEnter": [
@@ -646,24 +845,24 @@
           "itemId": "honeycake",
           "to": "party"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row"
+      ]
     },
     "notch_crooked": {
       "type": "story",
-      "narration": "The notch wobbles like a worm. \"Honest,\" says the keeper at last. \"An honest notch.\" She gives you a leaf for your blistered thumb, then four coins and a honeycake. \"The stone counters up the road pay me in coins. I pay my helpers in cake. Now, a chalk line to check it.\"",
+      "narration": "The notch wobbles like a worm. \"Honest,\" says Tally at last. \"An honest notch.\" She gives you a leaf for your blistered thumb, then four coins and a honeycake. \"The stone counters up the road pay me in coins. I pay my helpers in cake.\"",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-river-row",
       "choices": [
         {
           "id": "continue",
-          "label": "Snap a chalk line",
-          "icon": "hand",
-          "goto": "chalk_snap"
+          "label": "Look at the count cord",
+          "icon": "eye",
+          "goto": "cord_plan"
         }
       ],
       "onEnter": [
@@ -682,60 +881,29 @@
           "itemId": "honeycake",
           "to": "party"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row"
-    },
-    "chalk_snap": {
-      "type": "interaction",
-      "narration": "The keeper holds a chalky cord tight from the new notch to the top stone. \"One snap shows if the notch sits true. You do it. My arms are tired from being right all day.\"",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "interaction": {
-        "kind": "precision",
-        "cue": "Tap when the chalk cord reaches the gold.",
-        "actionLabel": "Snap the line!",
-        "target": 0.5,
-        "width": 0.3,
-        "periodMs": 4000
-      },
-      "art": "scenes/riftlight/boundary-river-row",
-      "onSuccess": {
-        "goto": "cord_plan",
-        "narration": "Snap! A chalk line runs straight up the row, right through the notch."
-      },
-      "onFailure": {
-        "goto": "cord_plan",
-        "narration": "The cord snaps her finger instead. \"Ow,\" she says, happily. \"True enough.\""
-      },
-      "onAssisted": {
-        "goto": "cord_plan",
-        "narration": "She holds the cord steady and nods. Snap! The line runs straight through the notch."
-      }
+      ]
     },
     "cord_plan": {
       "type": "choice_point",
-      "narration": "The old count cord hangs like a sad noodle, snapped in three places. A new one must run from Splash up through every stone's ring. The keeper hands you a ball of cord as big as a cabbage. \"Miss one ring, and the row will whisper about it.\" How will you thread it?",
+      "narration": "The old count cord hangs like a sad noodle, snapped in three places. A new one must run from Splash up through every stone's ring, so Tally can sight along it and see if any stone still leans. She hands you a ball of cord as big as a cabbage. \"Miss one ring, and the row will whisper about it.\" How will you thread it?",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-river-row",
       "choices": [
         {
           "id": "climb",
           "label": "Climb and thread by hand",
-          "icon": "hand",
+          "icon": "steps",
           "goto": "climb_check"
         },
         {
           "id": "throw",
           "label": "Toss it ring to ring",
-          "icon": "hand",
+          "icon": "clever",
           "goto": "throw_check"
         },
         {
@@ -748,14 +916,7 @@
             "dragonling"
           ]
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row"
+      ]
     },
     "climb_check": {
       "type": "check",
@@ -763,19 +924,19 @@
       "tn": 12,
       "prompt": "Scramble up the row and thread the cord through every ring.",
       "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-river-row",
       "onSuccess": {
         "goto": "cord_run"
       },
       "onFailure": {
         "goto": "cord_tangle"
-      },
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row"
+      }
     },
     "throw_check": {
       "type": "check",
@@ -783,19 +944,19 @@
       "tn": 12,
       "prompt": "Work out the angle, then toss the weighted end through each ring in turn.",
       "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-river-row",
       "onSuccess": {
         "goto": "cord_run"
       },
       "onFailure": {
         "goto": "cord_tangle"
-      },
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row"
+      }
     },
     "wing_check": {
       "type": "check",
@@ -803,28 +964,35 @@
       "tn": 8,
       "prompt": "Wings lift the cord's end up the row. Can you keep it out of the grass?",
       "roller": "best",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-river-row",
       "onSuccess": {
         "goto": "cord_run"
       },
       "onFailure": {
         "goto": "cord_tangle"
-      },
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row"
+      }
     },
     "cord_tangle": {
       "type": "story",
-      "narration": "The cord ties itself into a knot as big as a pillow. You pick it apart, loop by loop, while the keeper hands out crackers. By the end, the cord is threaded, and nobody can say who ate the last cracker.",
+      "narration": "The cord ties itself into a knot as big as a pillow. You pick it apart, loop by loop, while Tally hands out crackers and counts them. By the end, the cord is threaded, and nobody can say who ate cracker number twelve.",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-river-row",
       "choices": [
         {
           "id": "continue",
           "label": "Look up the row",
-          "icon": "hand",
+          "icon": "eye",
           "goto": "cord_run"
         }
       ],
@@ -835,18 +1003,18 @@
           "to": "party",
           "nonlethal": true
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row"
+      ]
     },
     "cord_run": {
       "type": "story",
-      "narration": "The new cord runs through all nine rings, from Splash to the oldest stone. It sags like an empty washing line. \"Now pull it tight,\" says the keeper. \"A slack cord tells fibs. Lean uphill, slowly, like you are persuading a cow.\"",
+      "narration": "The new cord runs through all nine rings, from Splash to the oldest stone. It sags like an empty washing line. \"Now pull it tight,\" says Tally. \"A slack cord tells fibs. Lean uphill, slowly, like you're persuading a cow.\"",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-river-row",
       "choices": [
         {
           "id": "continue",
@@ -854,269 +1022,56 @@
           "icon": "hand",
           "goto": "tighten"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row"
+      ]
     },
     "tighten": {
       "type": "interaction",
-      "narration": "Everyone takes hold. Lean too hard, and it snaps back. Lean too little, and it sags.",
+      "narration": "Everyone takes hold. Tally chalks a mark on the middle stone. \"When the cord rises to my mark, tie it. Not before. Not after.\" Lean too hard, and it snaps back. Lean too little, and it sags.",
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
+          "name": "Tally"
         }
       ],
-      "interaction": {
-        "kind": "balance",
-        "cue": "Lift or lower your end until the cord is steady in the middle.",
-        "actionLabel": "Pull it tight",
-        "objectLabel": "The count cord"
-      },
       "art": "scenes/riftlight/boundary-river-row",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Tie it off when the cord rises to Tally's chalk mark.",
+        "actionLabel": "Tie it off!",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 4000
+      },
       "onSuccess": {
         "goto": "tight",
         "narration": "The cord rises out of the grass, steady as a held breath."
       },
       "onFailure": {
         "goto": "tight",
-        "narration": "The cord wobbles and flops, then slowly comes up as the keeper helps."
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "cord_slack",
+            "value": true
+          }
+        ],
+        "narration": "The cord wobbles and flops. You tie it off with a sag in the middle, like a hammock."
       },
       "onAssisted": {
         "goto": "tight",
-        "narration": "The keeper steadies the cord with a claw, and it comes tight."
+        "narration": "Tally steadies the cord with a claw, and it comes tight."
       }
     },
     "tight": {
       "type": "story",
-      "narration": "The cord hums one low note. A beetle rides it all the way to the top, very pleased with itself. \"A tight cord is an honest line,\" says the keeper. \"Now the ends, or it will un-hum the moment you let go.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Tie off the ends",
-          "icon": "hand",
-          "goto": "tie_plan"
-        }
-      ],
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "pulled_the_count_cord"
-        }
-      ],
+      "narration": "The cord hums one low note. A beetle rides it all the way to the top, very pleased with itself. Tally squints along it. \"There! The fourth stone from the bottom.\" It leans off the line like a sleepy duck. She chalks a big X on it.",
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row"
-    },
-    "tie_plan": {
-      "type": "choice_point",
-      "narration": "A tight cord is only as good as its knots. If one slips, the line goes slack and the river laughs. The keeper holds out both loose ends. Which knot will you tie?",
-      "choices": [
-        {
-          "id": "loop",
-          "label": "Tie her loop knot",
-          "icon": "hand",
-          "goto": "loop_check"
-        },
-        {
-          "id": "hitch",
-          "label": "Hitch it twice around",
-          "icon": "hand",
-          "goto": "hitch_check"
-        },
-        {
-          "id": "quickhitch",
-          "label": "Flick a fast hitch",
-          "icon": "spark",
-          "goto": "flick_check",
-          "requiresClass": "duskrunner"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row"
-    },
-    "loop_check": {
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
+          "name": "Tally"
         }
       ],
       "art": "scenes/riftlight/boundary-river-row",
-      "type": "story",
-      "narration": "The keeper shows you her loop knot, slowly. You tie both ends, and she checks them.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Test the knots",
-          "icon": "forward",
-          "goto": "tie_good"
-        }
-      ]
-    },
-    "hitch_check": {
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row",
-      "type": "story",
-      "narration": "You wrap each ring twice and pull the hitches snug.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Test the knots",
-          "icon": "forward",
-          "goto": "tie_good"
-        }
-      ]
-    },
-    "flick_check": {
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row",
-      "type": "story",
-      "narration": "Your duskrunner flicks a fast hitch onto the high ring while everyone holds the cord.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Test the knots",
-          "icon": "forward",
-          "goto": "tie_good"
-        }
-      ]
-    },
-    "tie_good": {
-      "type": "story",
-      "narration": "The keeper tugs the cord. It answers with a tidy twang, like a polite banjo. \"That will hold till the river grows up,\" she says. \"Now let us see which stone has been telling fibs.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Look along the cord",
-          "icon": "hand",
-          "goto": "sight_plan"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row"
-    },
-    "sight_plan": {
-      "type": "choice_point",
-      "narration": "If any stone leans off the straight cord, someone will see it. The keeper squints along the row and counts nine stones, then ten, then a moth. \"Your eyes are fresher than mine,\" she says. \"How will you look?\"",
-      "choices": [
-        {
-          "id": "eyes",
-          "label": "Squint along the cord",
-          "icon": "eye",
-          "goto": "sight_check"
-        },
-        {
-          "id": "pebbles",
-          "label": "Balance pebbles on top",
-          "icon": "hand",
-          "goto": "pebble_check"
-        },
-        {
-          "id": "star",
-          "label": "Draw a star-line",
-          "icon": "star",
-          "goto": "star_check",
-          "requiresClass": "starweaver"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row"
-    },
-    "sight_check": {
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row",
-      "type": "story",
-      "narration": "You crouch beside the keeper and follow the cord with your eyes.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Find the leaning stone",
-          "icon": "forward",
-          "goto": "sight_found"
-        }
-      ]
-    },
-    "pebble_check": {
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row",
-      "type": "story",
-      "narration": "You set a pebble on every stone. One pebble rolls right off.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Find the leaning stone",
-          "icon": "forward",
-          "goto": "sight_found"
-        }
-      ]
-    },
-    "star_check": {
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row",
-      "type": "story",
-      "narration": "Your starweaver draws a line of starlight along the cord. Anything crooked shows at once.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Find the leaning stone",
-          "icon": "forward",
-          "goto": "sight_found"
-        }
-      ]
-    },
-    "sight_found": {
-      "type": "story",
-      "narration": "There! The fourth stone from the bottom leans out like a sleepy duck. The keeper chalks a big X on it. \"Thank you, Splash,\" she calls, \"for being such a good example.\" Splash says nothing. But he looks smug.",
       "choices": [
         {
           "id": "continue",
@@ -1125,28 +1080,44 @@
           "goto": "nudge_plan"
         }
       ],
-      "cast": [
+      "onEnter": [
         {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
+          "type": "setFlag",
+          "flag": "pulled_the_count_cord",
+          "value": true
         }
       ],
-      "art": "scenes/riftlight/boundary-river-row"
+      "variants": [
+        {
+          "when": {
+            "flag": "cord_slack"
+          },
+          "text": "The cord sags in the middle, so Tally squints along it a long time, counting under her breath. \"There. I think. The fourth stone from the bottom.\" It leans off the line like a sleepy duck. She chalks a big X on it, then a small question mark.",
+          "replace": true
+        }
+      ]
     },
     "nudge_plan": {
       "type": "choice_point",
-      "narration": "The fourth stone leans only a little, but it is as big as a bathtub and twice as stubborn. The keeper walks around it like a cat deciding about a box. How will you straighten it?",
+      "narration": "The fourth stone leans only a little, but it is as big as a bathtub and twice as stubborn. Tally walks around it like a cat deciding about a box. How will you straighten it?",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-river-row",
       "choices": [
         {
           "id": "push",
           "label": "Push it on three",
-          "icon": "hand",
+          "icon": "might",
           "goto": "push_check"
         },
         {
           "id": "wedge",
           "label": "Wedge its low side",
-          "icon": "hand",
+          "icon": "clever",
           "goto": "wedge_check"
         },
         {
@@ -1156,34 +1127,28 @@
           "goto": "brace_check",
           "requiresClass": "thornguard"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row"
+      ]
     },
     "push_check": {
       "type": "check",
       "stat": "might",
       "tn": 12,
+      "narration": "\"One,\" says Tally. \"Two. Two and a half...\"",
       "prompt": "Everyone lean on the fourth stone together. One, two, three, push!",
       "roller": "all",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-river-row",
       "onSuccess": {
         "goto": "fourth_ok"
       },
       "onFailure": {
         "goto": "fourth_shift"
-      },
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row"
+      }
     },
     "wedge_check": {
       "type": "check",
@@ -1191,19 +1156,19 @@
       "tn": 12,
       "prompt": "Find the low side and pack the right stones under it so the fourth stone settles.",
       "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-river-row",
       "onSuccess": {
         "goto": "fourth_ok"
       },
       "onFailure": {
         "goto": "fourth_shift"
-      },
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row"
+      }
     },
     "brace_check": {
       "type": "check",
@@ -1211,47 +1176,54 @@
       "tn": 8,
       "prompt": "Your thornguard braces the fourth stone. Can you pack wedges under it before it creeps back?",
       "roller": "best",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-river-row",
       "onSuccess": {
         "goto": "fourth_ok"
       },
       "onFailure": {
         "goto": "fourth_shift"
-      },
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row"
+      }
     },
     "fourth_ok": {
       "type": "story",
-      "narration": "The fourth stone settles with a deep thud. A line of ants marches out from under it, carrying their furniture. All nine stones stand straight along the cord. \"Straight!\" says the keeper.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Climb to the top",
-          "icon": "hand",
-          "goto": "top_stone"
-        }
-      ],
+      "narration": "The fourth stone settles with a deep thud. A line of ants marches out from under it, carrying their furniture. All nine stones stand straight. \"Straight!\" says Tally. \"Straight, straight, straight.\" She counts them to be sure.",
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
+          "name": "Tally"
         }
       ],
-      "art": "scenes/riftlight/boundary-river-row-aligned"
-    },
-    "fourth_shift": {
-      "type": "story",
-      "narration": "The stone shifts, then settles crooked the other way. \"Good enough for today,\" sighs the keeper. You add one more wedge and pinch a finger. The ants underneath come out to complain, then go back in to complain indoors.",
+      "art": "scenes/riftlight/boundary-river-row-aligned",
       "choices": [
         {
           "id": "continue",
           "label": "Climb to the top",
-          "icon": "hand",
+          "icon": "steps",
+          "goto": "top_stone"
+        }
+      ]
+    },
+    "fourth_shift": {
+      "type": "story",
+      "narration": "The stone shifts, then settles crooked the other way. \"Good enough for today,\" sighs Tally. You add one more wedge and pinch a finger. The ants underneath come out to complain, then go back in to complain indoors.",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-river-row",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Climb to the top",
+          "icon": "steps",
           "goto": "top_stone"
         }
       ],
@@ -1262,24 +1234,31 @@
           "to": "party",
           "nonlethal": true
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row"
+      ]
     },
     "top_stone": {
       "type": "story",
-      "narration": "You climb to the oldest stone at the top. Its carved mountain looks out over the hills. The keeper lays her record board in the grass. \"The notches count the years. The carving shows the old eruption. They should tell one story,\" she says. \"In nine years, I have never caught them agreeing.\"",
+      "narration": "You climb to the oldest stone at the top. Its carving shows a mountain with smoke pouring out of it, and ash falling like snow. An eruption. Tally lays her record board in the grass. \"The notches count the years since that day,\" she says. \"So the count should tell us when the mountain burned. In nine years, I have never got it to agree.\"",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-mountain-carving",
       "choices": [
         {
           "id": "continue",
-          "label": "Sort the old stones",
-          "icon": "hand",
-          "goto": "stone_order"
+          "label": "Look closer",
+          "icon": "eye",
+          "goto": "lean"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "saw_the_carved_stone",
+          "value": true
         }
       ],
       "variants": [
@@ -1295,120 +1274,97 @@
           },
           "text": "She holds your torn rubbing against the stone to fill the gaps."
         }
+      ]
+    },
+    "lean": {
+      "type": "story",
+      "narration": "Tally hums while she counts, and your Listening Chime hums back. It swings on its cord and leans, not toward the carving, but up the river, toward the glacier far away. Then it is still. Tally stops counting. \"Does it always do that?\" Nobody knows what to tell her. She starts again from one.",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-mountain-carving",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Check the count",
+          "icon": "clever",
+          "goto": "compare"
+        }
       ],
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "saw_the_carved_stone"
-        }
-      ],
-      "cast": [
+          "flag": "rubbed_the_carving",
+          "value": false
+        },
         {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-mountain-carving"
-    },
-    "stone_order": {
-      "type": "interaction",
-      "narration": "Near the top, the river has shoved three old stones out of order. The keeper hands out scraps of her notes. \"Oldest first,\" she says. \"Read them out. They are mostly tea.\"",
-      "cast": [
+          "type": "setFlag",
+          "flag": "torn_the_rubbing",
+          "value": false
+        },
         {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
+          "type": "setFlag",
+          "flag": "set_the_river_marker",
+          "value": false
         }
-      ],
-      "interaction": {
-        "kind": "sequence",
-        "cue": "Share your clues, then put the stones in order, oldest first.",
-        "actionLabel": "Try our order",
-        "options": [
-          {
-            "id": "mossy",
-            "label": "Mossy stone",
-            "icon": "leaf"
-          },
-          {
-            "id": "notched",
-            "label": "Notched stone",
-            "icon": "hand"
-          },
-          {
-            "id": "carved",
-            "label": "Carved stone",
-            "icon": "star"
-          }
-        ],
-        "answer": [
-          "mossy",
-          "notched",
-          "carved"
-        ],
-        "clues": [
-          "The mossy stone is the oldest of the three.",
-          "The carved stone is younger than the notched stone.",
-          "Use each stone once."
-        ]
-      },
-      "art": "scenes/riftlight/boundary-mountain-carving",
-      "onSuccess": {
-        "goto": "compare",
-        "narration": "Mossy, notched, carved. The three stones sit in their old places."
-      },
-      "onFailure": {
-        "goto": "compare",
-        "narration": "The keeper tuts and fixes the order herself. \"The tea got to my notes.\""
-      },
-      "onAssisted": {
-        "goto": "compare",
-        "narration": "You spread the clues side by side. Mossy, notched, carved."
-      }
+      ]
     },
     "compare": {
       "type": "choice_point",
-      "narration": "Two things can be checked before dark. You can count the notches against her record board. Or you can hold the carved mountain up to the real peak on the skyline, which has a flat shoulder like a sleeping cat. Which first?",
+      "narration": "Two things can be checked before dark. You can count the notches against Tally's record board. Or you can hold the carved mountain up to the real peak on the skyline, which has a round top like a sleeping cat. Which first?",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-mountain-carving",
       "choices": [
         {
           "id": "notches",
           "label": "Count the notches",
-          "icon": "hand",
+          "icon": "clever",
           "goto": "notch_count_check"
         },
         {
           "id": "peak",
           "label": "Compare the peaks",
-          "icon": "hand",
+          "icon": "eye",
           "goto": "peak_check"
         }
       ],
-      "cast": [
+      "variants": [
         {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
+          "when": {
+            "flag": "splash_forced"
+          },
+          "text": "\"Mind Splash's chipped notch,\" says Tally. \"Count it from memory.\""
         }
-      ],
-      "art": "scenes/riftlight/boundary-mountain-carving"
+      ]
     },
     "notch_count_check": {
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Count the notches from Splash to the top and match each to a date on the board.",
+      "narration": "\"Out loud, please,\" says Tally. \"I like to hear numbers.\"",
+      "prompt": "Count the notches from Splash to the top and match each to a number on the board.",
       "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-mountain-carving",
       "onSuccess": {
         "goto": "clue"
       },
       "onFailure": {
         "goto": "muddle"
-      },
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-mountain-carving"
+      }
     },
     "peak_check": {
       "type": "check",
@@ -1416,163 +1372,151 @@
       "tn": 12,
       "prompt": "Look from the carving to the real peak and back. Where do the shapes agree, and where not?",
       "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-mountain-carving",
       "onSuccess": {
         "goto": "clue"
       },
       "onFailure": {
         "goto": "muddle"
-      },
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-mountain-carving"
+      }
     },
     "muddle": {
       "type": "story",
-      "narration": "The numbers swim, and you lose count three times. \"That is how my board got this way,\" says the keeper cheerfully. She counts with you, notch by notch, until you land on her answer.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what she found",
-          "icon": "hand",
-          "goto": "clue"
-        }
-      ],
+      "narration": "The numbers swim, and you lose count three times. \"That's how my board got this way,\" says Tally cheerfully. She counts with you, notch by notch, starting again from one each time, until you land somewhere.",
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
+          "name": "Tally"
         }
       ],
-      "art": "scenes/riftlight/boundary-mountain-carving"
-    },
-    "clue": {
-      "type": "story",
-      "narration": "Whichever you checked, the answer is the same. The notches add up to one number of years. The board says another. And the carved mountain's shoulder is in the wrong place. On the real peak, it sits farther left. The keeper does not guess why. \"One question at a time,\" she says.",
+      "art": "scenes/riftlight/boundary-mountain-carving",
       "choices": [
         {
           "id": "continue",
-          "label": "Watch her write",
-          "icon": "hand",
+          "label": "See where you landed",
+          "icon": "eye",
+          "goto": "clue"
+        }
+      ]
+    },
+    "clue": {
+      "type": "story",
+      "narration": "Your count says one number. Tally's board says another. Her grandmother's count, scratched on the back of the stone, says a third. Nobody's count matches the eruption. And the carved mountain has a sharp top, like a tooth, where the real peak is round as a sleeping cat. \"It's as if it was carved from somewhere else,\" says Tally. Then she shakes her head. \"One question at a time.\"",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-mountain-carving",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Watch her pick up the chalk",
+          "icon": "scroll",
           "goto": "record_plan"
         }
       ],
       "priority": 2,
-      "cast": [
+      "variants": [
         {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
+          "when": {
+            "flag": "splash_forced"
+          },
+          "text": "And with Splash's top notch chipped, even your count is a guess now."
         }
-      ],
-      "art": "scenes/riftlight/boundary-mountain-carving"
+      ]
     },
     "record_plan": {
       "type": "choice_point",
-      "narration": "The keeper holds her chalk over a clean corner of the board. For once, she does not hurry. \"What should I write about the shoulder? I want it true, and I want it small.\"",
+      "narration": "Tally holds her chalk over a clean corner of the board. For once, she does not hurry. \"What should I write? I want it true, and I want it small. The counters will read it.\"",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-mountain-carving",
       "choices": [
         {
           "id": "plain",
-          "label": "Write only what you saw",
-          "icon": "hand",
+          "label": "Write only what you counted",
+          "icon": "scroll",
           "goto": "wrote_plain"
         },
         {
           "id": "both",
-          "label": "Draw both shoulders",
-          "icon": "hand",
+          "label": "Draw both mountains",
+          "icon": "map",
           "goto": "drew_both"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-mountain-carving"
+      ]
     },
     "wrote_plain": {
       "type": "story",
-      "narration": "She writes one line: \"The carved shoulder and the real one do not match.\" She does not write why. Then she adds a tiny mountain wearing a hat. \"For luck,\" she says. \"The hat is not evidence.\"",
+      "narration": "She writes one line: \"Three counts. None match the eruption.\" She does not write why. Then she adds a tiny mountain wearing a hat. \"For luck,\" she says. \"The hat is not evidence.\"",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-mountain-carving",
       "choices": [
         {
           "id": "continue",
           "label": "Look down the slope",
-          "icon": "hand",
+          "icon": "eye",
           "goto": "runner"
         }
       ],
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "recorded_the_mismatch"
+          "flag": "wrote_plain",
+          "value": true
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-mountain-carving"
+      ]
     },
     "drew_both": {
       "type": "story",
-      "narration": "She draws the carved mountain and the real peak side by side, with a dotted line between their shoulders. They look like cousins who have never met. \"Let the counters decide for themselves,\" she says.",
+      "narration": "She draws the carved mountain and the real peak side by side, the tooth and the sleeping cat. They look like cousins who have never met. \"Let the counters decide for themselves,\" she says.",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-mountain-carving",
       "choices": [
         {
           "id": "continue",
           "label": "Look down the slope",
-          "icon": "hand",
+          "icon": "eye",
           "goto": "runner"
         }
       ],
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "recorded_the_mismatch"
+          "flag": "drew_both",
+          "value": true
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-mountain-carving"
+      ]
     },
     "runner": {
       "type": "story",
-      "narration": "Boots thump up the slope. A young dragonling runner skids to a stop, red-faced and puffing. \"Keeper! The big stone at the counting circle moved in the night! The counters need everyone who can measure!\" The keeper looks at her row, then at you. \"You have good hands and good eyes. Will you walk with me?\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Help the runner",
-          "icon": "hand",
-          "goto": "runner_check"
-        }
-      ],
+      "narration": "Boots thump up the slope. A young dragonling runner skids to a stop, red-faced and puffing. \"Keeper! Keeper! The counters need you! A counting stone moved, no drag marks, no nothing, and they've run out of string measuring it!\" She sits down on her own feet. Tally looks at her row, then at you. \"First light,\" she says. \"First, tea.\"",
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/boundary_runner",
-          "name": "Runner"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-mountain-carving"
-    },
-    "runner_check": {
-      "type": "choice_point",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
+          "name": "Tally"
         },
         {
           "figure": "cast/boundary_runner",
@@ -1580,219 +1524,73 @@
         }
       ],
       "art": "scenes/riftlight/boundary-mountain-carving",
-      "narration": "The keeper hands the runner a cup. \"She needs a breath before another question.\" Will you hear the whole story, or just the urgent news so she can rest?",
       "choices": [
         {
-          "id": "listen",
-          "label": "Hear the whole story",
-          "icon": "ear",
-          "goto": "runner_told"
-        },
-        {
-          "id": "rest",
-          "label": "Just the urgent news",
-          "icon": "rest",
-          "goto": "runner_short"
+          "id": "continue",
+          "label": "Sit with them",
+          "icon": "supper",
+          "goto": "rest_row"
         }
       ]
     },
-    "runner_told": {
-      "type": "story",
-      "narration": "The runner catches her breath and tells it in order. The big stone now sits beside a pale, empty hollow, the spot where it used to be. There are no drag marks between them. \"It just moved,\" she says, and sits down on her own feet. \"The counters have run out of string.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Get ready to go",
-          "icon": "hand",
-          "goto": "go_plan"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/boundary_runner",
-          "name": "Runner"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-mountain-carving"
-    },
-    "runner_short": {
-      "type": "story",
-      "narration": "\"It moved! No marks!\" says the runner, and that is all you ask. You let her rest. \"Run, run, run,\" says the keeper, \"then sit, sit, sit. That is the proper order.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Get ready to go",
-          "icon": "hand",
-          "goto": "go_plan"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/boundary_runner",
-          "name": "Runner"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-mountain-carving"
-    },
-    "go_plan": {
-      "type": "choice_point",
-      "narration": "The keeper hops from foot to foot, which is how she thinks. \"The row will keep till morning if it is tied,\" she says. \"But my board must come with me, and I have only two arms.\" What helps most before you go?",
-      "choices": [
-        {
-          "id": "carry",
-          "label": "Carry her record board",
-          "icon": "hand",
-          "goto": "carry_board"
-        },
-        {
-          "id": "tie",
-          "label": "Pack up the tools",
-          "icon": "hand",
-          "goto": "tie_off"
-        },
-        {
-          "id": "cake",
-          "label": "Give the runner honeycake",
-          "icon": "hand",
-          "goto": "runner_cake",
-          "requiresItem": "honeycake"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/boundary_runner",
-          "name": "Runner"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-mountain-carving"
-    },
-    "runner_cake": {
-      "type": "story",
-      "narration": "The runner eats the honeycake in three bites, eyes shut. Color comes back to her cheeks. \"Best thing,\" she mumbles, \"all day.\" The keeper beams at you over her head.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Sit a moment",
-          "icon": "hand",
-          "goto": "rest_row"
-        }
-      ],
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "helped_the_stone_keeper"
-        },
-        {
-          "type": "takeItem",
-          "itemId": "honeycake"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/boundary_runner",
-          "name": "Runner"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-mountain-carving"
-    },
-    "carry_board": {
-      "type": "story",
-      "narration": "You tuck the record board under your arm. It is heavier than it looks, full of years that disagree. The keeper locks her toolshed with a key she wears as a necklace. The board hums faintly. Probably the wind. Probably.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Sit a moment",
-          "icon": "hand",
-          "goto": "rest_row"
-        }
-      ],
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "helped_the_stone_keeper"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-mountain-carving"
-    },
-    "tie_off": {
-      "type": "story",
-      "narration": "You pack the chisel and chalk and check Splash's feet one last time. \"Back by breakfast,\" the keeper tells the row. \"Behave.\" Nine stones stand perfectly still.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Sit a moment",
-          "icon": "hand",
-          "goto": "rest_row"
-        }
-      ],
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "helped_the_stone_keeper"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-mountain-carving"
-    },
     "rest_row": {
       "type": "rest",
-      "narration": "The sun slides toward the hills. \"Nobody walks anywhere hungry,\" says the keeper. She pours tea into cups that do not match. The river hurries by, a little lower than before.",
+      "narration": "The sun slides toward the hills. \"Nobody walks anywhere hungry,\" says Tally. She pours tea into cups that do not match, and counts the cups, and the runner. The river hurries by, a little lower than before.",
       "heal": 3,
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/boundary_runner",
+          "name": "Runner"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-mountain-carving",
+      "variants": [
+        {
+          "when": {
+            "flag": "kettle_lost"
+          },
+          "text": "The sun slides toward the hills. \"Nobody walks anywhere hungry,\" says Tally. With no kettle, she warms the tea in her hat over the fire. It tastes a little of hat. The river hurries by, a little lower than before.",
+          "replace": true
+        }
+      ],
       "choices": [
         {
           "id": "supper",
           "label": "Have tea and stories",
-          "icon": "hand",
+          "icon": "supper",
           "goto": "supper"
         },
         {
           "id": "watch",
           "label": "Watch the river",
-          "icon": "hand",
+          "icon": "eye",
           "goto": "watch"
         },
         {
           "id": "honey",
           "label": "Buy honeycake (2 coins)",
-          "icon": "hand",
+          "icon": "coins",
           "goto": "honey_buy",
           "when": {
             "coins": {
               "min": 2
             }
-          }
+          },
+          "effects": [
+            {
+              "type": "spendCoins",
+              "amount": 2
+            }
+          ]
         },
         {
           "id": "share",
           "label": "Share your own supper",
-          "icon": "hand",
+          "icon": "cake",
           "goto": "share_supper",
           "when": {
             "count": {
@@ -1802,131 +1600,171 @@
               ],
               "min": 1
             }
-          }
+          },
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": [
+                "supper_bundle",
+                "honeycake"
+              ]
+            }
+          ]
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-mountain-carving"
+      ]
     },
     "honey_buy": {
       "type": "story",
-      "narration": "The keeper sells you a honeycake wrapped in a leaf. She drops your coins in a tin like rare beetles. \"Honey is the river's opposite,\" she says. \"It stays where you put it.\"",
+      "narration": "Tally sells you a honeycake wrapped in a leaf. She drops your coins in a tin like rare beetles, and counts them. \"Honey is the river's opposite,\" she says. \"It stays where you put it.\"",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-mountain-carving",
       "choices": [
         {
           "id": "continue",
           "label": "Settle in for the night",
-          "icon": "hand",
+          "icon": "rest",
           "goto": "bank_rest"
         }
       ],
       "onEnter": [
-        {
-          "type": "spendCoins",
-          "amount": 2
-        },
         {
           "type": "grantItem",
           "itemId": "honeycake",
           "to": "party"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-mountain-carving"
+      ]
     },
     "share_supper": {
       "type": "story",
-      "narration": "You split your supper with the keeper. She shares hers with Splash by setting a crumb on his head. \"Fair is fair,\" she says, and hangs a river charm around your neck. It smells faintly of fish, like all her gifts.",
+      "narration": "You split your supper with Tally and the runner. Tally shares hers with Splash by setting a crumb on his head. \"Fair is fair,\" she says, and hangs a river charm around your neck. It smells faintly of fish, like all her gifts.",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/boundary_runner",
+          "name": "Runner"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-mountain-carving",
       "choices": [
         {
           "id": "continue",
           "label": "Settle in for the night",
-          "icon": "hand",
+          "icon": "rest",
           "goto": "bank_rest"
         }
       ],
       "onEnter": [
         {
-          "type": "takeItem",
-          "itemId": [
-            "supper_bundle",
-            "honeycake"
-          ]
-        },
-        {
           "type": "grantItem",
           "itemId": "river_charm",
           "to": "party"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-mountain-carving"
+      ]
     },
     "supper": {
       "type": "story",
-      "narration": "The keeper tells you the names of all nine stones, and what each did wrong when it was little. The fourth stone once tried to run off to the sea. The tea tastes faintly of river. Nobody minds.",
+      "narration": "Tally tells you the names of all nine stones, and what each did wrong when it was little. The fourth stone once tried to run off to the sea. The runner falls asleep halfway through, on her own feet.",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/boundary_runner",
+          "name": "Runner"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-mountain-carving",
       "choices": [
         {
           "id": "continue",
           "label": "Settle in for the night",
-          "icon": "hand",
+          "icon": "rest",
           "goto": "bank_rest"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-mountain-carving"
+      ]
     },
     "watch": {
       "type": "story",
-      "narration": "You sit by Splash with your feet near the water. Ants cross his new notch like a bridge. Far upriver, something flashes once in the dusk, then is gone. \"Rivers do that,\" says the keeper. She is wrong, but kindly.",
+      "narration": "You sit by Splash with your feet near the water. Ants cross his new notch like a bridge. Far upriver, something flashes once in the dusk, then is gone. \"Rivers do that,\" says Tally. She is wrong, but kindly.",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/boundary-mountain-carving",
       "choices": [
         {
           "id": "continue",
           "label": "Settle in for the night",
-          "icon": "hand",
+          "icon": "rest",
           "goto": "bank_rest"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-mountain-carving"
+      ]
     },
     "bank_rest": {
       "type": "rest",
-      "narration": "\"I walk to the counting circle at first light,\" says the keeper. \"You are welcome to come.\" A road also follows the east bank to a crossing called Ashspan Bridge. For tonight, there is a warm cup and nine stones in a row.",
+      "narration": "\"I walk to the counting circle at first light,\" says Tally. \"You're welcome to come.\" A road also follows the east bank to a crossing called Ashspan Bridge. So here is tonight's piece: the river came higher than any notch in the count, and that is why it shoved the stones. But the oldest stone shows a mountain that burned when no count says it could, and a peak that is not shaped like ours. Something is moving the land. What is it? And can you put things right?",
       "heal": 0,
-      "choices": [],
-      "outcome": "success",
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/boundary_runner",
+          "name": "Runner"
         }
       ],
-      "art": "scenes/riftlight/boundary-mountain-carving"
+      "art": "scenes/riftlight/boundary-mountain-carving",
+      "variants": [
+        {
+          "when": {
+            "flag": "splash_dug"
+          },
+          "text": "Splash stands unscratched by the water, and Tally knows now the river came over the top.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "splash_forced"
+          },
+          "text": "Splash stands by the water with his top notch chipped. Tally will count that one from memory.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "cord_slack"
+          },
+          "text": "The count cord still sags a little. Tally will tighten it before she goes.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "wrote_plain"
+          },
+          "text": "Her board will go to the counters saying only what you counted.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "drew_both"
+          },
+          "text": "Her board will go to the counters with both mountains on it.",
+          "at": "start"
+        }
+      ],
+      "choices": [],
+      "outcome": "success"
     }
   },
   "voiceGuide": {
@@ -1941,7 +1779,10 @@
       "Hollow Gate",
       "Legend Dragon"
     ],
-    "npcVoices": {}
+    "npcVoices": {
+      "Tally": "Tally, the dragonling who keeps the boundary stones above the river and the counting stones up the road (she/her). Brisk, cheerful and exact. Counts everything out loud, under her breath: stones, cups, steps, ducks, visitors. Loses count only when she is worried, and then starts again from one. Thanks every stone by name. Wants the count kept true: a counter's stones must never move, and hers have. Pays her helpers in cake.",
+      "Runner": "A young dragonling runner from the counting circle (she/her). Out of breath, says everything twice, then sits down on her own feet."
+    }
   },
   "presentation": {
     "fights": [],
@@ -1955,18 +1796,6 @@
       "tighten": {
         "props": [
           "count-cord"
-        ]
-      },
-      "chalk_snap": {
-        "props": [
-          "chalk-cord"
-        ]
-      },
-      "stone_order": {
-        "props": [
-          "fight-wet-gravel",
-          "notched-stone",
-          "carved-stone"
         ]
       }
     },
