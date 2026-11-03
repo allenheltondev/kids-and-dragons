@@ -7,7 +7,7 @@
 
 import { describe, expect, it } from "vitest";
 
-import { conceptSweep, idioms, loadChapters, main, mergePoints, opening, reachable, setbackRoutes } from "./cohesion.mjs";
+import { conceptSweep, idioms, isEcho, isInert, loadChapters, main, mergePoints, opening, reachable, setbackRoutes, shape } from "./cohesion.mjs";
 
 const go = (id, goto, label = "On") => ({ id, label, icon: "arrow", goto });
 const story = (narration, ...choices) => ({ type: "story", narration, choices });
@@ -213,6 +213,44 @@ describe("the opening", () => {
   });
 });
 
+describe("the shape screen", () => {
+  const game = (onSuccess, onFailure) => ({ type: "interaction", narration: "Lift it.", interaction: { kind: "balance" }, onSuccess, onFailure });
+  const chores = {
+    id: "fixture-chores",
+    entry: "start",
+    scenes: {
+      start: story('"Take nothing," she says.', go("a", "pick_a"), go("b", "pick_b")),
+      pick_a: story("You brush your boots.", go("on", "carry")),
+      pick_b: story("You shake your packs.", go("on", "carry")),
+      carry: game({ goto: "risky", narration: "It comes with you." }, { goto: "risky", narration: "It comes with you anyway." }),
+      risky: game({ goto: "done", effects: [{ type: "setFlag", flag: "kept" }] }, { goto: "done" }),
+      done: end("success"),
+      orphan: check("Unreachable.", "done", "done"),
+    },
+  };
+
+  it("calls a game inert only when every result leads to one scene with the same effects", () => {
+    expect(isInert(chores.scenes.carry)).toBe(true);
+    expect(isInert(chores.scenes.risky)).toBe(false);
+    expect(isInert(game({ goto: "x" }, { goto: "y" }))).toBe(false);
+    expect(isInert(chores.scenes.start)).toBe(false);
+  });
+
+  it("calls a vote an echo when effect-free choices come back to one scene, and not when one sets a flag or is gated", () => {
+    expect(isEcho(chores, chores.scenes.start)).toBe(true);
+    const flagged = story("Pick.", go("a", "pick_a"), { ...go("b", "pick_b"), effects: [{ type: "setFlag", flag: "b" }] });
+    expect(isEcho(chores, flagged)).toBe(false);
+    const gated = story("Pick.", go("a", "pick_a"), { ...go("b", "pick_b"), when: { flag: "x" } });
+    expect(isEcho(chores, gated)).toBe(false);
+    expect(isEcho(chores, story("Pick.", go("a", "carry"), go("b", "risky")))).toBe(false);
+  });
+
+  it("counts reachable scenes only", () => {
+    const r = shape(chores);
+    expect(r).toMatchObject({ scenes: 6, checks: 0, fights: 0, interactions: 2, inert: ["carry"], echoes: ["start"], quoted: 1 });
+  });
+});
+
 describe("every shipped chapter", () => {
   it("runs each mode without throwing", () => {
     const chapters = loadChapters("");
@@ -223,6 +261,7 @@ describe("every shipped chapter", () => {
       opening(c);
       idioms(c);
       mergePoints(c);
+      shape(c);
     }
     const lines = [];
     expect(main(["setbacks", "--chapter", ""], (l) => lines.push(l))).toBe(0);
@@ -230,6 +269,7 @@ describe("every shipped chapter", () => {
     expect(main(["opening", "--chapter", ""], (l) => lines.push(l))).toBe(0);
     expect(main(["idioms", "--chapter", ""], (l) => lines.push(l))).toBe(0);
     expect(main(["merges", "--chapter", ""], (l) => lines.push(l))).toBe(0);
+    expect(main(["shape", "--chapter", ""], (l) => lines.push(l))).toBe(0);
     expect(main([], (l) => lines.push(l))).toBe(1);
   });
 });

@@ -9,6 +9,7 @@
  *   node tools/content/cohesion.mjs opening [--chapter <prefix>]
  *   node tools/content/cohesion.mjs idioms [--chapter <prefix>]
  *   node tools/content/cohesion.mjs merges [--chapter <prefix>]
+ *   node tools/content/cohesion.mjs shape [--chapter <prefix>]
  *
  * `--chapter` is a file-name prefix, `gemfall-` by default; `--chapter ""`
  * reads every chapter.
@@ -47,6 +48,18 @@
  *
  * **opening** prints the chapter's `goal.text` (when it has one) beside the
  * entry scene's narration, for the "goal in scene 1" read.
+ *
+ * **shape** is the screen for a chapter that validates but has nothing at
+ * stake, the pattern twelve Riftlight chapters reached in late 2026 (see the
+ * skill's references/examples.md, "Riftlight: risk converted away"). Over the
+ * reachable scenes it counts dice checks, fights, story interactions and the
+ * *inert* ones among them (every result goes to the same scene with the same
+ * effects, so a miss changes nothing), *echo* votes (two or more ungated
+ * choices with no effects that all come back to one scene, directly or
+ * through one-button result scenes), scenes with a quoted line, and words a
+ * scene. Run it with `--chapter ""` to set a campaign beside Gemfall. It is a
+ * reading list: an inert interaction can be fine, a chapter made of them is
+ * not.
  */
 
 import { readdirSync, readFileSync } from "node:fs";
@@ -317,6 +330,55 @@ export function opening(chapter) {
   return { goal: chapter.goal?.text ?? null, entry: chapter.entry, narration: entry.narration ?? "" };
 }
 
+/**
+ * Where a story interaction's results lead and what they do, as one string per
+ * result. Narration is left out on purpose: three different sentences in
+ * front of the same scene and effects are still one outcome.
+ */
+function resultKey(result) {
+  return JSON.stringify([result?.goto ?? null, result?.effects ?? []]);
+}
+
+/** True when a story interaction's every result leads to one scene with the same effects. */
+export function isInert(scene) {
+  if (scene.type !== "interaction") return false;
+  const keys = branchKeys(scene).map((k) => resultKey(scene[k]));
+  return keys.length > 1 && new Set(keys).size === 1;
+}
+
+/**
+ * True when a vote is an echo: two or more choices, none gated or carrying
+ * effects, that all arrive at one scene, either directly or through a story
+ * scene with a single way on.
+ */
+export function isEcho(chapter, scene) {
+  const choices = scene.choices ?? [];
+  if (choices.length < 2 || choices.some((c) => isGated(c) || c.effects?.length || c.setFlag)) return false;
+  const land = choices.map((c) => {
+    const to = chapter.scenes?.[c.goto];
+    const one = to && to.type === "story" && (to.choices ?? []).length === 1 && !(to.onEnter ?? []).length;
+    return one ? to.choices[0].goto : c.goto;
+  });
+  return new Set(land).size === 1;
+}
+
+/** A chapter's play shape over its reachable scenes (the `shape` mode). */
+export function shape(chapter) {
+  const live = [...reachable(chapter)].map((id) => [id, chapter.scenes[id]]);
+  const out = { chapter: chapter.id, scenes: live.length, checks: 0, fights: 0, interactions: 0, inert: [], echoes: [], quoted: 0, words: 0 };
+  for (const [id, s] of live) {
+    if (s.type === "check") out.checks++;
+    if (s.type === "encounter") out.fights++;
+    if (s.type === "interaction") out.interactions++;
+    if (isInert(s)) out.inert.push(id);
+    if (isEcho(chapter, s)) out.echoes.push(id);
+    const text = [s.narration, ...(s.variants ?? []).map((v) => v.text)].filter(Boolean).join(" ");
+    if (/["\u201c][^"\u201d]{3,}["\u201d]/.test(text)) out.quoted++;
+    out.words += (s.narration ?? "").split(/\s+/).filter(Boolean).length;
+  }
+  return out;
+}
+
 // ---------------------------------------------------------------------------
 
 export function loadChapters(prefix = "gemfall-", dir = CHAPTERS) {
@@ -382,6 +444,22 @@ export function main(argv, print = console.log) {
     for (const c of chapters) for (const h of idioms(c)) print(`${c.id} ${h.scene} [${h.field}] "${h.word}" -> ${h.fix}`);
     return 0;
   }
+  if (mode === "shape") {
+    print("Reachable scenes. inert = interactions whose every result leads to one scene with the same effects; echo = effect-free votes whose choices all come back to one scene.");
+    print(`${"chapter".padEnd(32)} scenes checks fights games inert echo quoted words/scene`);
+    const rows = chapters.map(shape);
+    for (const r of rows) {
+      const cells = [r.scenes, r.checks, r.fights, r.interactions, r.inert.length, r.echoes.length, r.quoted].map(String);
+      const widths = [6, 6, 6, 5, 5, 4, 6];
+      print(`${r.chapter.padEnd(32)} ${cells.map((c, i) => c.padStart(widths[i])).join(" ")} ${(r.scenes ? r.words / r.scenes : 0).toFixed(0).padStart(11)}`);
+    }
+    if (rows.length === 1) {
+      const [r] = rows;
+      if (r.inert.length) print(`  inert: ${r.inert.join(", ")}`);
+      if (r.echoes.length) print(`  echo: ${r.echoes.join(", ")}`);
+    }
+    return 0;
+  }
   if (mode === "opening") {
     for (const c of chapters) {
       const o = opening(c);
@@ -391,7 +469,7 @@ export function main(argv, print = console.log) {
     }
     return 0;
   }
-  print("usage: cohesion.mjs concept <regex> [--introduced-by a,b] | setbacks | merges | idioms | opening   [--chapter <prefix>]");
+  print("usage: cohesion.mjs concept <regex> [--introduced-by a,b] | setbacks | merges | idioms | opening | shape   [--chapter <prefix>]");
   return 1;
 }
 
