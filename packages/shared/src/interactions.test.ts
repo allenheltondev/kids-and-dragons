@@ -629,7 +629,7 @@ describe("skill-game rules used by the current phones", () => {
     const aim = start(precision);
     for (const position of [NaN, Infinity, -0.1, 1.1]) expect(act(aim.state, aim.ctx, { action: "commit", round: 0, position }).error).toBeDefined();
     expect(act(aim.state, aim.ctx, { action: "complete" }).error).toBeDefined();
-    expect(act(aim.state, aim.ctx, { action: "stop", position: 0.5 }).error).toBeDefined();
+    expect(act(aim.state, aim.ctx, { action: "stop", position: 0.5 }, "p1").error).toBeDefined();
     const puzzle = start(memory);
     expect(act(puzzle.state, puzzle.ctx, { action: "commit", round: 0, answer: ["a", "b", "a"] }).error).toBeDefined();
     const path = start(sequence);
@@ -649,5 +649,49 @@ describe("skill-game rules used by the current phones", () => {
     expect(prompt(state).challenge).toBeUndefined();
     state = step(state, ctx, { action: "start", relaxed: true, rulesVersion: 2 });
     expect(prompt(state).challenge).toMatchObject({ round: 0, progress: 0, strain: 0 });
+  });
+  it("lets a v1 phone join a v2 balance by switching the whole attempt to shared legacy controls", () => {
+    let { state, ctx } = start({ kind: "balance", cue: "Carry", actionLabel: "Carry", objectLabel: "Basket" });
+    state = step(state, ctx, { action: "adjust", direction: "up", steps: 2 }); // v2 lead
+    const joined = act(state, ctx, { action: "adjust", direction: "up" }, "p1"); // cached v1 phone has no round
+    expect(joined.error).toBeUndefined(); state = joined.state;
+    expect(prompt(state).challenge).toBeUndefined();
+    expect(prompt(state).compatibility).toBe("legacy-controls");
+    expect(prompt(state).levels).toEqual({ p0: 0.5, p1: 0.25 });
+    state = step(state, ctx, { action: "adjust", direction: "up" }, "p1");
+    expect(prompt(state).outcome).toBe("success");
+    state = step(state, ctx, { action: "retry" });
+    expect(prompt(state).compatibility).toBeUndefined();
+  });
+  it("lets a v1 support join v2 cooperation without awarding unearned completion", () => {
+    let { state, ctx } = start({ kind: "cooperate", cue: "Lift", actionLabel: "Lift", supportLabel: "Grip" });
+    state = commit(state, ctx, { position: 0.4 }); // current phone has pulled
+    state = step(state, ctx, { action: "support", mode: "prop" }, "p1"); // older phone
+    expect(prompt(state).challenge).toBeUndefined();
+    expect(prompt(state).compatibility).toBe("legacy-controls");
+    expect(prompt(state).outcome).toBeUndefined();
+    expect(act(state, ctx, { action: "complete" }).error).toBeDefined();
+    state = step(state, ctx, { action: "support", mode: "prop" }); // current phone now renders v1
+    expect(prompt(state).phase).toBe("active");
+    const later = { ...ctx, now: new Date(Date.parse(ctx.now) + TEAM_HOLD_MS).toISOString() };
+    expect(prompt(step(state, later, { action: "complete" })).outcome).toBe("success");
+  });
+  it("persists a legacy complete fallback, but rejects invalid legacy input and explicit stale rounds", () => {
+    const lift = start({ kind: "cooperate", cue: "Lift", actionLabel: "Lift", supportLabel: "Grip" });
+    const fallback = step(lift.state, lift.ctx, { action: "complete" });
+    expect(prompt(fallback).challenge).toBeUndefined();
+    expect(prompt(fallback).outcome).toBeUndefined();
+    expect(act(lift.state, lift.ctx, { action: "complete" }, "p1").error).toBeDefined();
+    const balance = start({ kind: "balance", cue: "Carry", actionLabel: "Carry", objectLabel: "Basket" });
+    expect(act(balance.state, balance.ctx, { action: "adjust", direction: "up", steps: 99 }, "p1").error).toBeDefined();
+    expect(act(balance.state, balance.ctx, { action: "adjust", direction: "up", round: 99 }, "p1").error).toBeDefined();
+    expect(prompt(balance.state).challenge).toBeDefined();
+  });
+  it("supports a legacy actor taking over an aiming game after the v2 lead disconnects", () => {
+    const { state, ctx } = start(precision);
+    state.party[0]!.connected = false;
+    const next = step(state, ctx, { action: "stop", position: 0.5 }, "p1");
+    expect(prompt(next).compatibility).toBe("legacy-controls");
+    expect(prompt(next).outcome).toBe("success");
   });
 });

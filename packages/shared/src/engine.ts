@@ -1340,6 +1340,7 @@ function doInteract(draft: RunState, playerId: string, intent: Extract<ClientInt
     delete prompt.levels; delete prompt.passed; delete prompt.caughtBy;
     delete prompt.relay;
     delete prompt.challenge;
+    delete prompt.compatibility;
     delete prompt.contributions; delete prompt.reactions; delete prompt.taps;
     delete prompt.playCounts;
     delete prompt.steadySince; delete prompt.steadyPlayerIds;
@@ -1359,6 +1360,21 @@ function doInteract(draft: RunState, playerId: string, intent: Extract<ClientInt
     return undefined;
   }
   if (prompt.phase !== "active") throw new Illegal("ILLEGAL", "Start when everyone is ready.");
+  // Cached phones cannot advertise capabilities the old protocol never had. A legacy
+  // input is an explicit compatibility signal: move the *whole* attempt to v1 so every
+  // phone renders the same rules. Normal v1 validation below still rejects invalid input
+  // atomically. Never reinterpret a stale v2 round as a legacy action.
+  const legacyInput = prompt.spec.kind === "balance" && intent.action === "adjust" && intent.round === undefined ||
+    prompt.spec.kind === "cooperate" && (intent.action === "support" || intent.action === "complete" && playerId === actor) ||
+    (prompt.spec.kind === "precision" || prompt.spec.kind === "timing") && intent.action === "stop" && playerId === actor ||
+    (prompt.spec.kind === "memory" || prompt.spec.kind === "sequence" || prompt.spec.kind === "tracking") && intent.action === "answer" && playerId === actor;
+  if (prompt.challenge && legacyInput) {
+    delete prompt.challenge;
+    prompt.compatibility = "legacy-controls";
+    // A v1 "complete" arriving before holds have begun must still persist the fallback.
+    // It does not grant success; everyone now sees the original support controls.
+    if (intent.action === "complete") return undefined;
+  }
   if (prompt.challenge) {
     try {
       const outcome = applySkillAction(prompt, connected, playerId, intent, ctx.now);

@@ -87,3 +87,45 @@ test("shifting loads and shared effort survive mistakes, refresh, and short phon
     await expect(controls(one.page).getByRole("button", { name: "See what happens next" })).toBeVisible();
   } finally { await Promise.all([one.context, two.context, tv.context].map(context => context.close())); }
 });
+
+for (const kind of ["balance", "cooperate"] as const) test(`v1 wire inputs unblock a mixed-version ${kind} room`, async ({ browser }) => {
+  const table = await seedTable({ mode: "party", tv: true, chapterId: "first-steps-01", sceneId: kind === "balance" ? "interaction_balance" : "interaction_roots",
+    heroes: [{ name: "Aster", species: "unicorn" }, { name: "Fern", species: "griffin" }] });
+  const one = await openPhone(browser, table.phones[0]!);
+  const two = await openPhone(browser, table.phones[1]!);
+  const tv = await openTv(browser, table);
+  try {
+    await Promise.all([one.page, two.page, tv.page].map(page => onAir(page)));
+    for (const phone of [one.page, two.page]) {
+      await phone.getByRole("button", { name: "You", exact: true }).click();
+      const turn = phone.getByRole("button", { name: "Your turn", exact: true });
+      if (await turn.isVisible()) await turn.click();
+    }
+    const ready = (page: Page) => controls(page).getByRole("button", { name: /ready/ });
+    await expect.poll(async () => await ready(one.page).count() + await ready(two.page).count()).toBe(1);
+    const lead = await ready(one.page).count() ? one.page : two.page;
+    const older = lead === one.page ? two.page : one.page;
+    await ready(lead).click();
+    await expect(controls(lead).locator(".skill-game")).toBeVisible();
+    if (kind === "balance") for (let i = 0; i < 2; i++) await controls(lead).getByRole("button", { name: "Lift my side", exact: true }).click();
+    else await controls(lead).getByRole("button", { name: "Set my pull" }).click();
+    // Send the actual pre-v2 wire shape; an old cached bundle has no round field or commit action.
+    const accepted = await older.evaluate(async game => {
+      const path = "/src/store/index.ts";
+      const { useGameStore } = await import(/* @vite-ignore */ path);
+      const store = useGameStore.getState();
+      const p = store.state.prompt;
+      return store.send({ type: "INTERACT", openedSeq: p.openedSeq, attempt: p.attempt,
+        ...(game === "balance" ? { action: "adjust", direction: "up" } : { action: "support", mode: "prop" }) });
+    }, kind);
+    expect(accepted).toBe(true);
+    for (const phone of [one.page, two.page]) {
+      await expect(controls(phone)).toContainText("Using earlier controls");
+      await expect(controls(phone).locator(".skill-game")).toHaveCount(0);
+    }
+    await expect(tv.page.getByRole("region", { name: "Story interaction" })).toContainText("Using earlier controls");
+    if (kind === "balance") await controls(older).getByRole("button", { name: "Lift my side", exact: true }).click();
+    else await controls(lead).getByRole("button", { name: "Use a prop instead" }).click();
+    await expect(controls(lead).getByRole("button", { name: "See what happens next" })).toBeVisible();
+  } finally { await Promise.all([one.context, two.context, tv.context].map(context => context.close())); }
+});

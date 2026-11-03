@@ -21,9 +21,9 @@ Stationary aiming replaces moving timing under reduced motion. Strength sliders 
 
 ## Compatibility and cost
 
-Current phones request rules version 2 when starting an attempt. Already active saves and older clients retain their original controls. Retry clears the challenge state, and a current phone's next start uses the new rules. Result continuation still applies the scene's original success, failure, or assisted branch; assistance remains available.
+Current phones request rules version 2 when starting an attempt. Already active saves retain their original controls. When an older phone sends a valid legacy control input during a v2 attempt, the server switches the entire attempt to v1 and announces the fallback on current phones and the TV. This also supports an older actor taking over after a disconnect. An explicit stale v2 round is still rejected. Fallback never grants completion; the original support and timing requirements still apply. Retry clears the challenge state, and a current phone's next start uses the new rules. Result continuation still applies the scene's original success, failure, or assisted branch; assistance remains available.
 
-These seven views add approximately 15 KB of JavaScript across lazy game code. The total uncompressed payload budget moves from 1,462 to 1,470 KB for this feature; first paint remains capped at 328 KB. The final build measures 1,469 KB total. No new runtime dependency or raster asset is required. Existing chapter warming already includes the reused biome and presentation props.
+These seven views add approximately 16 KB of JavaScript across lazy game code. The total uncompressed payload budget moves from 1,462 to 1,470 KB for this feature; first paint remains capped at 328 KB. The reviewed build measures 1,470 KB total. No new runtime dependency or raster asset is required. Existing chapter warming already includes the reused biome and presentation props.
 
 ## Evaluation
 
@@ -36,3 +36,8 @@ Browser review exercises real phones and a TV, a short 390 × 640 phone, rope dr
 [Balance phone](mini-game-depth/balance-phone.png) · [Balance TV](mini-game-depth/balance-tv.png) · [Cooperation phone](mini-game-depth/cooperate-phone.png) · [Cooperation TV](mini-game-depth/cooperate-tv.png)
 
 The full unit suite passed: 468 files and 9,622 tests, with 15 skipped. The final sequence-feedback regression passed, the final build and payload gate passed, and the live multi-phone/TV gesture and recovery test passed again after the screen review.
+
+
+## Review corrections
+
+Mixed-version balance and cooperation now have an explicit shared fallback, exercised with a current lead and pre-v2 wire inputs on a second live phone. The engine also covers actor handoff, invalid inputs, and the old completion control without awarding an unearned result. Reduced-motion memory retains its static pattern but observes the same study/unlock timer as ordinary non-relaxed playback; it never exposes inputs the server would reject as premature.

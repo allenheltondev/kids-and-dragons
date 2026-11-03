@@ -652,6 +652,31 @@ describe("timing fairness across clocks, frames and taps (#566)", () => {
 });
 
 describe("skill-game phone and TV surfaces", () => {
+  it("keeps non-relaxed reduced-motion memory locked until its static study time ends", async () => {
+    vi.useFakeTimers(); vi.setSystemTime(new Date("2026-11-03T18:00:00Z"));
+    document.documentElement.setAttribute("data-motion", "reduced");
+    const spec: InteractionSpec = { kind: "memory", cue: "Remember", actionLabel: "Play the tune", stepMs: 1000,
+      options: [{ id: "a", label: "Star", icon: "star" }, { id: "b", label: "Leaf", icon: "leaf" }], answer: ["a", "b"] };
+    const send = seed(spec, { challenge: skillStart(), relaxed: false });
+    const { container } = render(<StoryInteractionControls />);
+    expect(container.querySelectorAll('.skill-stones [data-lit="true"]')).toHaveLength(0);
+    expect(container.querySelectorAll(".skill-stones li")).toHaveLength(2);
+    expect(screen.queryByRole("button", { name: "Star" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Play the tune" })).toBeNull();
+    await act(async () => { vi.advanceTimersByTime(2000); });
+    expect(screen.queryByRole("button", { name: "Star" })).toBeNull();
+    await act(async () => { vi.advanceTimersByTime(500); });
+    await act(async () => { fireEvent.click(screen.getByRole("button", { name: "Star" })); });
+    expect(send).toHaveBeenCalledWith(expect.objectContaining({ action: "arrange", answer: ["a"], round: 0 }));
+    expect(screen.queryByRole("alert")).toBeNull();
+  });
+  it("renders the shared legacy fallback notice and usable support controls", async () => {
+    const send = seed({ kind: "cooperate", cue: "Lift", actionLabel: "Lift", supportLabel: "Grip" }, { compatibility: "legacy-controls" });
+    render(<StoryInteractionControls />);
+    expect(screen.getByText(/Using earlier controls/)).toBeTruthy();
+    await act(async () => { fireEvent.click(screen.getByRole("button", { name: "Grip" })); });
+    expect(send).toHaveBeenCalledWith(expect.objectContaining({ action: "support", mode: "prop" }));
+  });
   it("starts current rules from the real ready control", async () => {
     const send = seed(precision, { phase: "ready" });
     render(<StoryInteractionControls />);

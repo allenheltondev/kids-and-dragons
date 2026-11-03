@@ -35,6 +35,8 @@ export interface InteractionPrompt {
   relay?: import("./relay.js").RelayState;
   /** Versioned rules preserve active saves and clients using the original controls. */
   challenge?: import("./skill-games.js").SkillChallenge;
+  /** The whole attempt switched to controls understood by an older connected phone. */
+  compatibility?: "legacy-controls";
   contributions?: Record<string, string>;
   /** Free play accumulates a room's choices rather than replacing the last pick. */
   playCounts?: Record<string, number>;

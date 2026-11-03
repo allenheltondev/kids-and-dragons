@@ -210,6 +210,7 @@ export function StoryInteractionWorld() {
   const status = settled ? tvStatus(view) : "Watch it land. Nearly home!";
   return <section className={`story-interaction game game--tv game--${prompt.spec.kind} game--${prompt.phase}`} aria-label="Story interaction">
     <GameHead prompt={prompt} />
+    {prompt.compatibility && <p className="game-note" role="status">Using earlier controls so every phone can join this attempt.</p>}
     <div className="game__board">
       <GameScenery />
       {(prompt.spec.kind === "play" || (prompt.phase === "ready" && prompt.spec.kind !== "relay")) && <PaintedInteraction prompt={prompt} party={state.party} now={now} />}
@@ -301,6 +302,7 @@ function Controls({ prompt, party, runId, updatedAt, playerId, dispatch, busy }:
   const controls = prompt.phase === "active" ? <KindControls prompt={prompt} playerId={playerId} connected={connected} mine={mine} now={now} busy={busy} send={send} answer={answer} setAnswer={setAnswer} holding={holding} setHolding={setHolding} setStop={setStop} /> : null;
   return <section className={`story-interaction game game--phone game--${prompt.spec.kind} game--${prompt.phase}${mine ? " game--lead" : ""}`} aria-label="Interaction controls">
     <GameHead prompt={prompt} />
+    {prompt.compatibility && <p className="game-note" role="status">Using earlier controls so every phone can join this attempt.</p>}
     <p className={`game__job game__job--${job.lookAt}`}>
       <span className="game__job-eye" aria-hidden="true"><Icon name={job.lookAt === "tv" ? "tv" : "phone"} /></span>
       <span className="game__job-text"><strong>{job.headline}</strong>{job.detail ? <span className="game__job-detail">{job.detail}</span> : null}</span>

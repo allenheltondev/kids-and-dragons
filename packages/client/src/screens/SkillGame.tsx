@@ -137,8 +137,8 @@ export function SkillGame({ prompt, party, now, playerId, object, busy = false, 
   } else if (spec.kind === "sequence" || spec.kind === "memory") {
     const pattern = spec.kind === "memory";
     const elapsed = now - Date.parse(prompt.startedAt ?? "");
-    const watching = active && pattern && !prompt.relaxed && !still && elapsed < playbackMs(spec, false) + 250;
-    const lit = pattern && watching ? litStep(elapsed, spec.stepMs, spec.answer.length) : null;
+    const watching = active && pattern && !prompt.relaxed && elapsed < playbackMs(spec, false) + 250;
+    const lit = pattern && watching && !still ? litStep(elapsed, spec.stepMs, spec.answer.length) : null;
     const option = (id: string) => spec.options.find(o => o.id === id);
     const clues = playerId ? interactionClues(prompt, playerId, ids) : [];
     const answers = active ? game.arrangement : prompt.submittedAnswer ?? game.arrangement;
