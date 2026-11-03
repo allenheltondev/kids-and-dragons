@@ -1649,7 +1649,7 @@
     },
     "account": {
       "type": "story",
-      "narration": "In the morning, Pip opens his notebook. \"What do I write for Lady Olivia?\" \"Write it for the reading room first,\" says Hummock. \"Elder Murmur keeps the yetis' memory ice. It remembers rivers. Show her the river you crossed, and ask her: has it ever run there before?\"",
+      "narration": "In the morning, Pip opens his notebook. \"What do I write for Lady Olivia?\" \"Write it for the reading room first,\" says Hummock. \"The yetis' memory ice is kept by an old yeti called Elder Murmur. The ice remembers rivers. Show her the river you crossed, and ask her: has it ever run there before?\"",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
