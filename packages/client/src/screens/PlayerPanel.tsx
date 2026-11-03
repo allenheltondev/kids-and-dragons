@@ -280,11 +280,14 @@ function HpBar({ hp, max, down, className = "" }: { hp: number; max: number; dow
   const share = down || max <= 0 ? 0 : Math.max(0, Math.min(1, hp / max));
   return (
     <span className={`hp-bar${down ? " hp-bar--down" : share <= 0.34 ? " hp-bar--low" : ""} ${className}`.trim()} aria-hidden="true">
-      <Icon name={down ? "down" : "heart"} />
       <span className="sheet__hp-track">
         <span className="sheet__hp-fill" style={{ inlineSize: `${String(Math.round(share * 100))}%` }} />
+        {/* The number in the bar itself, so the bar can take the whole width. */}
+        <span className="hp-bar__value">
+          <Icon name={down ? "down" : "heart"} />
+          <span>{down ? "Down" : `${String(hp)}/${String(max)}`}</span>
+        </span>
       </span>
-      <span className="hp-bar__value">{down ? "Down" : `${String(hp)}/${String(max)}`}</span>
     </span>
   );
 }
