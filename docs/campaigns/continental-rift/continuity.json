@@ -9810,386 +9810,479 @@
       }
     },
     "riftlight-bone-yard": {
-      "entryFacts": [],
+      "entryFacts": [
+        "listening_chime",
+        "buried_bridge",
+        "olivia",
+        "orin"
+      ],
       "scenes": {
         "arrival": {
           "requires": [],
           "introduces": {
-            "bones_place": "At the edge of the Bone Yard"
+            "puddle": "\"Puddle!\"",
+            "bone_yard": "This is the Bone Yard.",
+            "bones_ruins": "stone ruins that were not here yesterday"
           }
         },
-        "limit": {
+        "rule": {
           "requires": [
-            "bones_place"
+            "puddle",
+            "bone_yard"
           ],
           "introduces": {
-            "bones_kit": "She lends a marked plank and a return line."
+            "bones_rule": "Take nothing, hum something"
           }
         },
-        "pack_mats": {
+        "check_rib": {
           "requires": [
-            "bones_place"
+            "puddle"
           ],
           "introduces": {}
         },
-        "leave_mats": {
+        "check_wade": {
           "requires": [
-            "bones_place"
+            "puddle"
           ],
           "introduces": {}
         },
-        "survey": {
+        "fly_over": {
           "requires": [
-            "bones_place"
+            "puddle"
+          ],
+          "introduces": {}
+        },
+        "skull": {
+          "requires": [
+            "puddle"
+          ],
+          "introduces": {}
+        },
+        "ruins_edge": {
+          "requires": [
+            "listening_chime",
+            "bones_ruins"
           ],
           "introduces": {
-            "bones_routes": "The short passage runs behind a leaning wall."
+            "bones_crawlers": "Bone crawlers.",
+            "bones_flicker": "a flicker of light"
           }
         },
-        "survey_window": {
+        "check_hum": {
           "requires": [
-            "bones_kit",
-            "bones_routes"
-          ],
-          "introduces": {}
-        },
-        "survey_result": {
-          "requires": [
-            "bones_kit",
-            "bones_routes"
-          ],
-          "introduces": {}
-        },
-        "markers": {
-          "requires": [
-            "bones_kit",
-            "bones_routes"
-          ],
-          "introduces": {
-            "bones_return": "Lay your own return line"
-          }
-        },
-        "lay_line": {
-          "requires": [
-            "bones_return"
-          ],
-          "introduces": {}
-        },
-        "learn_arches": {
-          "requires": [
-            "bones_return"
-          ],
-          "introduces": {}
-        },
-        "test": {
-          "requires": [
-            "bones_return"
-          ],
-          "introduces": {
-            "bones_rule": "A yard pebble rolls back uphill over the boundary."
-          }
-        },
-        "returning_pebble": {
-          "requires": [
+            "bones_crawlers",
             "bones_rule"
           ],
           "introduces": {}
         },
-        "vibration": {
+        "sneak": {
           "requires": [
+            "bones_crawlers",
+            "listening_chime"
+          ],
+          "introduces": {}
+        },
+        "lullaby": {
+          "requires": [
+            "bones_crawlers"
+          ],
+          "introduces": {}
+        },
+        "crawler_tail": {
+          "requires": [
+            "bones_crawlers"
+          ],
+          "introduces": {}
+        },
+        "ruins_gate": {
+          "requires": [
+            "puddle",
+            "olivia"
+          ],
+          "introduces": {
+            "pip": "Pip Thistledown, the young manticore scout"
+          }
+        },
+        "pip_chip": {
+          "requires": [
+            "pip",
             "bones_rule"
           ],
           "introduces": {
-            "bones_magic": "Fresh magic pulses from the tear."
+            "bones_chip": "The carved chip"
           }
         },
-        "support": {
+        "check_pip": {
           "requires": [
-            "bones_magic",
-            "bones_kit"
+            "pip",
+            "bones_chip"
+          ],
+          "introduces": {}
+        },
+        "manticore_talk": {
+          "requires": [
+            "pip",
+            "bones_chip"
+          ],
+          "introduces": {}
+        },
+        "pip_draws": {
+          "requires": [
+            "pip",
+            "bones_chip",
+            "olivia",
+            "orin"
+          ],
+          "introduces": {}
+        },
+        "pip_keeps": {
+          "requires": [
+            "pip",
+            "bones_chip"
+          ],
+          "introduces": {}
+        },
+        "explore": {
+          "requires": [
+            "pip",
+            "puddle"
+          ],
+          "introduces": {}
+        },
+        "check_stair": {
+          "requires": [
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "check_doors": {
+          "requires": [
+            "pip",
+            "bones_crawlers"
+          ],
+          "introduces": {}
+        },
+        "stair_top": {
+          "requires": [
+            "pip",
+            "bones_flicker",
+            "bones_crawlers"
+          ],
+          "introduces": {}
+        },
+        "doorway_step": {
+          "requires": [
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "doorway_nest": {
+          "requires": [
+            "pip",
+            "bones_crawlers"
+          ],
+          "introduces": {}
+        },
+        "carvings": {
+          "requires": [
+            "puddle"
           ],
           "introduces": {
-            "bones_support": "A low brace will keep the leaning wall settled"
+            "bones_drawing": "draw them in order"
           }
         },
-        "stone_support": {
+        "same_stone": {
           "requires": [
-            "bones_magic",
-            "bones_kit"
+            "bones_drawing",
+            "buried_bridge"
           ],
           "introduces": {}
         },
-        "plank_support": {
+        "lean": {
           "requires": [
-            "bones_magic",
-            "bones_kit"
+            "listening_chime",
+            "pip",
+            "puddle"
           ],
           "introduces": {}
         },
-        "braced_support": {
+        "catch_pip": {
           "requires": [
-            "bones_magic",
-            "bones_kit"
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "pip_idea": {
+          "requires": [
+            "pip",
+            "olivia"
+          ],
+          "introduces": {}
+        },
+        "pip_amazing": {
+          "requires": [
+            "pip"
+          ],
+          "introduces": {
+            "bones_notebook": "his notebook"
+          }
+        },
+        "pip_home": {
+          "requires": [
+            "pip"
+          ],
+          "introduces": {
+            "bones_notebook": "in his notebook"
+          }
+        },
+        "dam": {
+          "requires": [
+            "puddle"
+          ],
+          "introduces": {
+            "bones_arch": "A fallen arch",
+            "bones_square": "an open square",
+            "bones_tear": "a tear in the air"
+          }
+        },
+        "check_shove": {
+          "requires": [
+            "bones_arch"
+          ],
+          "introduces": {}
+        },
+        "shoved": {
+          "requires": [
+            "bones_arch",
+            "bones_drawing"
+          ],
+          "introduces": {}
+        },
+        "cracked": {
+          "requires": [
+            "bones_arch",
+            "bones_tear",
+            "bones_drawing"
+          ],
+          "introduces": {}
+        },
+        "bigfoot_lift": {
+          "requires": [
+            "bones_arch",
+            "bones_drawing"
+          ],
+          "introduces": {}
+        },
+        "watch_lean": {
+          "requires": [
+            "bones_arch"
+          ],
+          "introduces": {}
+        },
+        "nudged": {
+          "requires": [
+            "bones_arch",
+            "bones_tear"
+          ],
+          "introduces": {}
+        },
+        "nudged_slow": {
+          "requires": [
+            "bones_tear"
+          ],
+          "introduces": {}
+        },
+        "court_quick": {
+          "requires": [
+            "bones_square",
+            "bones_tear",
+            "listening_chime"
+          ],
+          "introduces": {},
+          "conditional": [
+            {
+              "flag": "bones_pip_chip",
+              "requires": [
+                "bones_chip"
+              ]
+            }
+          ]
+        },
+        "court_grown": {
+          "requires": [
+            "bones_square",
+            "bones_tear",
+            "listening_chime"
+          ],
+          "introduces": {},
+          "conditional": [
+            {
+              "flag": "bones_pip_chip",
+              "requires": [
+                "bones_chip"
+              ]
+            }
+          ]
+        },
+        "fight_quick": {
+          "requires": [
+            "bones_tear"
+          ],
+          "introduces": {}
+        },
+        "fight_quick_pip": {
+          "requires": [
+            "bones_tear",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "fight_grown": {
+          "requires": [
+            "bones_tear"
+          ],
+          "introduces": {}
+        },
+        "fight_grown_pip": {
+          "requires": [
+            "bones_tear",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "court_after": {
+          "requires": [
+            "bones_crawlers",
+            "bones_square"
+          ],
+          "introduces": {},
+          "conditional": [
+            {
+              "flag": "bones_pip_chip",
+              "requires": [
+                "bones_chip",
+                "bones_notebook",
+                "olivia"
+              ]
+            }
+          ]
+        },
+        "puddle_court": {
+          "requires": [
+            "bones_square",
+            "buried_bridge"
+          ],
+          "introduces": {}
+        },
+        "swarmed": {
+          "requires": [
+            "bones_square",
+            "bones_drawing",
+            "listening_chime"
+          ],
+          "introduces": {},
+          "conditional": [
+            {
+              "flag": "bones_pip_chip",
+              "requires": [
+                "bones_notebook",
+                "bones_chip"
+              ]
+            }
+          ]
+        },
+        "float_out": {
+          "requires": [
+            "bones_square"
+          ],
+          "introduces": {}
+        },
+        "check_rim": {
+          "requires": [
+            "bones_square",
+            "bones_tear"
           ],
           "introduces": {}
         },
         "rest": {
           "requires": [
-            "bones_magic",
-            "bones_kit"
+            "pip",
+            "bones_rule"
           ],
           "introduces": {}
         },
-        "plan": {
+        "hurry_out": {
           "requires": [
-            "bones_support"
-          ],
-          "introduces": {
-            "bones_plan": "The tear keeps drawing fresh magic and crawlers."
-          }
-        },
-        "plan_1": {
-          "requires": [
-            "bones_support"
+            "puddle"
           ],
           "introduces": {}
         },
-        "seam_marks": {
+        "cut_off": {
           "requires": [
-            "bones_support"
+            "puddle"
           ],
           "introduces": {}
         },
-        "seam_marks_mats": {
+        "watch_tide": {
           "requires": [
-            "bones_support"
+            "buried_bridge"
           ],
           "introduces": {}
         },
-        "lay_board_mats": {
+        "check_tide": {
           "requires": [
-            "bones_support"
+            "pip",
+            "puddle"
           ],
           "introduces": {}
         },
-        "mat_plan": {
+        "tide_turns": {
           "requires": [
-            "bones_support"
+            "bones_rule",
+            "bone_yard"
+          ],
+          "introduces": {},
+          "conditional": [
+            {
+              "flag": "bones_pip_chip",
+              "requires": [
+                "bones_chip",
+                "olivia"
+              ]
+            }
+          ]
+        },
+        "drawing": {
+          "requires": [
+            "bones_drawing",
+            "orin",
+            "olivia",
+            "pip"
           ],
           "introduces": {}
         },
-        "fight": {
+        "to_puddle": {
           "requires": [
-            "bones_support"
+            "bones_drawing",
+            "orin"
           ],
           "introduces": {}
         },
-        "fight_seam": {
+        "to_pip": {
           "requires": [
-            "bones_support"
-          ],
-          "introduces": {}
-        },
-        "fight_mats": {
-          "requires": [
-            "bones_support"
-          ],
-          "introduces": {}
-        },
-        "fight_seam_mats": {
-          "requires": [
-            "bones_support"
-          ],
-          "introduces": {}
-        },
-        "cleared": {
-          "requires": [
-            "bones_support"
-          ],
-          "introduces": {}
-        },
-        "rescued": {
-          "requires": [
-            "bones_support"
-          ],
-          "introduces": {}
-        },
-        "inventory": {
-          "requires": [
-            "bones_plan"
-          ],
-          "introduces": {
-            "bones_owned_gear": "A carved chip lies beside the path."
-          }
-        },
-        "unbrace": {
-          "requires": [
-            "bones_owned_gear"
-          ],
-          "introduces": {
-            "bones_reclaim": "Loose gear can come back now."
-          }
-        },
-        "replace_plank": {
-          "requires": [
-            "bones_owned_gear"
-          ],
-          "introduces": {}
-        },
-        "recover_mats": {
-          "requires": [
-            "bones_owned_gear"
-          ],
-          "introduces": {}
-        },
-        "gather_loose": {
-          "requires": [
-            "bones_owned_gear"
-          ],
-          "introduces": {}
-        },
-        "exit_strip": {
-          "requires": [
-            "bones_owned_gear"
-          ],
-          "introduces": {
-            "bones_exit": "The boundary pool shines beyond the arches."
-          }
-        },
-        "outer_rim": {
-          "requires": [
-            "bones_exit"
-          ],
-          "introduces": {}
-        },
-        "return_line": {
-          "requires": [
-            "bones_exit"
-          ],
-          "introduces": {}
-        },
-        "boundary": {
-          "requires": [
-            "bones_exit"
-          ],
-          "introduces": {
-            "bones_boundary": "A crumb falls from a muddy sole"
-          }
-        },
-        "report": {
-          "requires": [
-            "bones_boundary"
-          ],
-          "introduces": {
-            "bones_warning": "The guide opens her warning board."
-          }
-        },
-        "handoff": {
-          "requires": [
-            "bones_warning"
-          ],
-          "introduces": {
-            "bones_handoff": "An earlier note from Orin asks the Riftseekers"
-          }
-        },
-        "relay_account": {
-          "requires": [
-            "bones_warning"
-          ],
-          "introduces": {}
-        },
-        "keep_account": {
-          "requires": [
-            "bones_warning"
+            "olivia",
+            "puddle"
           ],
           "introduces": {}
         },
         "ending": {
           "requires": [
-            "bones_warning"
+            "buried_bridge",
+            "bones_ruins"
           ],
-          "introduces": {}
-        },
-        "test_response_pebble": {
-          "requires": [
-            "bones_return",
-            "bones_rule"
-          ],
-          "introduces": {}
-        },
-        "test_response_plank": {
-          "requires": [
-            "bones_return",
-            "bones_rule"
-          ],
-          "introduces": {}
-        },
-        "test_response_draw": {
-          "requires": [
-            "bones_return",
-            "bones_rule"
-          ],
-          "introduces": {}
-        },
-        "inventory_response_draw": {
-          "requires": [
-            "bones_plan",
-            "bones_owned_gear"
-          ],
-          "introduces": {}
-        },
-        "inventory_response_loop": {
-          "requires": [
-            "bones_plan",
-            "bones_owned_gear"
-          ],
-          "introduces": {}
-        },
-        "inventory_response_sole": {
-          "requires": [
-            "bones_plan",
-            "bones_owned_gear"
-          ],
-          "introduces": {}
-        },
-        "boundary_response_boots": {
-          "requires": [
-            "bones_exit",
-            "bones_boundary"
-          ],
-          "introduces": {}
-        },
-        "boundary_response_mats": {
-          "requires": [
-            "bones_exit",
-            "bones_boundary"
-          ],
-          "introduces": {}
-        },
-        "boundary_response_packs": {
-          "requires": [
-            "bones_exit",
-            "bones_boundary"
-          ],
-          "introduces": {}
-        },
-        "keep_account_response_route": {
-          "requires": [
-            "bones_warning"
-          ],
-          "introduces": {}
-        },
-        "keep_account_response_rule": {
-          "requires": [
-            "bones_warning"
-          ],
-          "introduces": {}
-        },
-        "keep_account_response_gear": {
-          "requires": [
-            "bones_warning"
-          ],
-          "introduces": {}
+          "introduces": {
+            "ossley": "Old Ossley, the frog boatman"
+          }
         }
       }
     },

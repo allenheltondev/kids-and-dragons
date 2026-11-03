@@ -19,7 +19,7 @@
       ],
       "speaks": true,
       "status": "provisional",
-      "lineCount": 6098
+      "lineCount": 6106
     },
     "party": {
       "name": "The party",
@@ -4410,6 +4410,114 @@
       "speaks": true,
       "status": "provisional"
     },
+    "saltrot_guide": {
+      "name": "Puddle",
+      "kind": "character",
+      "who": "Puddle, the Skupper guide (she/her). Quick, chatty and cheerfully blunt. Guides from brackish pools and channels and signals with her tall crest; puffs up round when startled. Fits exactly in a puddle, hence the name. Keeps her lunch in a floating box. Wants her channel back and to know whose ruins have landed on it.",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/saltrot_guide",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-bone-yard",
+          "key": "saltrot_guide"
+        }
+      ],
+      "chapters": [
+        "riftlight-bone-yard",
+        "riftlight-saltrot-arrival",
+        "riftlight-stuttering-flats"
+      ],
+      "aliases": [
+        "Saltrot guide"
+      ],
+      "gemini": {
+        "voice": "Callirrhoe"
+      },
+      "lines": [
+        {
+          "text": "Rule says leave before the tide turns. But I've always wanted to see them move.",
+          "address": "riftlight-bone-yard/rest/variants/0"
+        },
+        {
+          "text": "The buried bridge. My folk have a rule. We show the bank. We do not walk on it.",
+          "address": "riftlight-saltrot-arrival/lead/narration"
+        },
+        {
+          "text": "Guides keep an account of everything that comes and goes here. This belongs in it.",
+          "address": "riftlight-bone-yard/drawing/narration"
+        }
+      ],
+      "lineCount": 101,
+      "guessedLines": 6,
+      "speaks": true,
+      "status": "provisional"
+    },
+    "pip_thistledown": {
+      "name": "Pip Thistledown",
+      "kind": "character",
+      "who": "Young manticore scout (he/him). Eager, notebook always out, quotes \"Lady Olivia says...\" and tries her ideas. Wants a sample to impress her. Kind underneath; changes his mind when the party gives him a reason.",
+      "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "cast/pip_thistledown",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-bone-yard",
+          "key": "Pip Thistledown"
+        },
+        {
+          "chapter": "riftlight-convergence",
+          "key": "Pip Thistledown"
+        },
+        {
+          "chapter": "riftlight-reading-room",
+          "key": "Pip Thistledown"
+        },
+        {
+          "chapter": "riftlight-the-island-due-back",
+          "key": "Pip Thistledown"
+        },
+        {
+          "chapter": "riftlight-the-wrong-valley",
+          "key": "Pip Thistledown"
+        }
+      ],
+      "chapters": [
+        "riftlight-bone-yard",
+        "riftlight-convergence",
+        "riftlight-reading-room",
+        "riftlight-saltrot-arrival",
+        "riftlight-sky-islands-arrival",
+        "riftlight-stone-counters",
+        "riftlight-the-island-due-back",
+        "riftlight-the-wrong-valley"
+      ],
+      "aliases": [],
+      "gemini": {
+        "voice": "Alnilam"
+      },
+      "lines": [
+        {
+          "text": "Lady Olivia will know what to do with it. Maybe she can move ruins too!",
+          "address": "riftlight-bone-yard/to_pip/narration"
+        },
+        {
+          "text": "I'll show Master Orin too. He'll want to ask the ruins things first.",
+          "address": "riftlight-bone-yard/to_pip/variants/1"
+        },
+        {
+          "text": "The drawing goes in the traveling pages, not my tea-stained scrap.",
+          "address": "riftlight-reading-room/rest/narration"
+        }
+      ],
+      "lineCount": 68,
+      "speaks": true,
+      "status": "provisional"
+    },
     "orin_vale": {
       "name": "Orin Vale",
       "kind": "character",
@@ -4459,7 +4567,7 @@
           "address": "riftlight-buried-bridge/equipment/narration"
         }
       ],
-      "lineCount": 67,
+      "lineCount": 66,
       "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
@@ -4601,64 +4709,6 @@
         }
       ],
       "lineCount": 46,
-      "speaks": true,
-      "status": "provisional"
-    },
-    "pip_thistledown": {
-      "name": "Pip Thistledown",
-      "kind": "character",
-      "who": "Eager manticore scout. His choice mirrors the party.",
-      "pronouns": "he/him",
-      "pronounsFrom": "narration",
-      "gender": "male",
-      "genderFrom": "narration",
-      "figure": "cast/pip_thistledown",
-      "voiceNotes": [
-        {
-          "chapter": "riftlight-convergence",
-          "key": "Pip Thistledown"
-        },
-        {
-          "chapter": "riftlight-reading-room",
-          "key": "Pip Thistledown"
-        },
-        {
-          "chapter": "riftlight-the-island-due-back",
-          "key": "Pip Thistledown"
-        },
-        {
-          "chapter": "riftlight-the-wrong-valley",
-          "key": "Pip Thistledown"
-        }
-      ],
-      "chapters": [
-        "riftlight-convergence",
-        "riftlight-reading-room",
-        "riftlight-saltrot-arrival",
-        "riftlight-sky-islands-arrival",
-        "riftlight-stone-counters",
-        "riftlight-the-island-due-back",
-        "riftlight-the-wrong-valley"
-      ],
-      "aliases": [],
-      "gemini": {
-        "voice": "Alnilam"
-      },
-      "lines": [
-        {
-          "text": "The drawing goes in the traveling pages, not my tea-stained scrap.",
-          "address": "riftlight-reading-room/rest/narration"
-        },
-        {
-          "text": "That is a rift. Its hum stays put while the wind runs around. A hum is steady. Wind is a liar.",
-          "address": "riftlight-sky-islands-arrival/hum_heard/narration"
-        },
-        {
-          "text": "Next time the road argues with the map, we have a starting point.",
-          "address": "riftlight-stone-counters/route_copy/narration"
-        }
-      ],
-      "lineCount": 41,
       "speaks": true,
       "status": "provisional"
     },
@@ -5881,41 +5931,6 @@
       "speaks": true,
       "status": "provisional"
     },
-    "skupper_guide": {
-      "name": "Skupper guide",
-      "kind": "character",
-      "who": "Skupper guide.",
-      "pronouns": "she/her",
-      "pronounsFrom": "narration",
-      "gender": "female",
-      "genderFrom": "narration",
-      "figure": "cast/saltrot_guide",
-      "chapters": [
-        "riftlight-bone-yard",
-        "riftlight-buried-bridge"
-      ],
-      "aliases": [],
-      "gemini": {
-        "voice": "Erinome"
-      },
-      "lines": [
-        {
-          "text": "The tide reaches this pocket later. We have time to look, then we pack up. No crossing.",
-          "address": "riftlight-buried-bridge/guide_limits/narration"
-        },
-        {
-          "text": "Tonight, clear a safe way past those ruins. And take nothing. Here, anything taken comes back.",
-          "address": "riftlight-bone-yard/arrival/narration"
-        },
-        {
-          "text": "A good warning tells the whole story. Even the annoying bits.",
-          "address": "riftlight-bone-yard/report/narration"
-        }
-      ],
-      "lineCount": 17,
-      "speaks": true,
-      "status": "provisional"
-    },
     "stone_keeper": {
       "name": "Stone keeper",
       "kind": "character",
@@ -5949,6 +5964,40 @@
       ],
       "lineCount": 47,
       "guessedLines": 1,
+      "speaks": true,
+      "status": "provisional"
+    },
+    "skupper_guide": {
+      "name": "Skupper guide",
+      "kind": "character",
+      "who": "Skupper guide.",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/saltrot_guide",
+      "chapters": [
+        "riftlight-buried-bridge"
+      ],
+      "aliases": [],
+      "gemini": {
+        "voice": "Erinome"
+      },
+      "lines": [
+        {
+          "text": "The tide reaches this pocket later. We have time to look, then we pack up. No crossing.",
+          "address": "riftlight-buried-bridge/guide_limits/narration"
+        },
+        {
+          "text": "Buried bridge. No river. Still not walking on it.",
+          "address": "riftlight-buried-bridge/bank/narration"
+        },
+        {
+          "text": "An old river. Still no bridge tours.",
+          "address": "riftlight-buried-bridge/guide_handover/narration"
+        }
+      ],
+      "lineCount": 7,
       "speaks": true,
       "status": "provisional"
     },
@@ -6455,42 +6504,6 @@
         }
       ],
       "lineCount": 1,
-      "speaks": true,
-      "status": "provisional"
-    },
-    "saltrot_guide": {
-      "name": "Saltrot guide",
-      "kind": "character",
-      "who": "Saltrot guide.",
-      "pronouns": "she/her",
-      "pronounsFrom": "narration",
-      "gender": "female",
-      "genderFrom": "narration",
-      "figure": "cast/saltrot_guide",
-      "chapters": [
-        "riftlight-saltrot-arrival",
-        "riftlight-stuttering-flats"
-      ],
-      "aliases": [],
-      "gemini": {
-        "voice": "Callirrhoe"
-      },
-      "lines": [
-        {
-          "text": "The buried bridge. My folk have a rule. We show the bank. We do not walk on it.",
-          "address": "riftlight-saltrot-arrival/lead/narration"
-        },
-        {
-          "text": "Wrong order, and they roll. Put it together. I am a guide, not a parrot.",
-          "address": "riftlight-saltrot-arrival/shell_path/narration"
-        },
-        {
-          "text": "Sorry. This morning I saw old posts upriver, where the pale silt starts, standing in dry mud.",
-          "address": "riftlight-saltrot-arrival/puff_off/narration"
-        }
-      ],
-      "lineCount": 53,
-      "guessedLines": 6,
       "speaks": true,
       "status": "provisional"
     },

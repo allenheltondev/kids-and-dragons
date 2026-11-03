@@ -1,48 +1,67 @@
 # The Borrowed Ruins
 
-The Stuttering Flats continue into displaced ruins at the Bone Yard. A Skupper
-guide waits in brackish water at the boundary and signals the party across dry
-ground. She never follows them into habitat that would dry her out.
+The Restless Coast's strand end (`riftlight-bone-yard`), rewritten in November 2026 from
+scratch as the pilot for the campaign rewrite ([arc.md](arc.md#restless-coast-teaches-unstable)).
+The owner had played the earlier version and found it far below Gemfall: a task-and-rule goal,
+an unnamed guide, 17 inert games, no dice, gear-handling votes and a bookkeeping tail
+([the review](../../../.claude/skills/chapter-cohesion/references/examples.md#riftlight-risk-converted-away)).
 
-The party marks a route, separates its gear from found objects, braces a leaning
-wall and reaches a crawler encounter. Closing the fresh tear is an environmental
-objective victory; defeating the crawlers clears the same passage. Losing the
-fight costs the short route and sends the party around the broad rim. It does
-not award a campaign setback. The guide helps the party recover safely.
+**Beat.** The party has cleared a way past ruins that were carried here, and left everything
+where it belongs. **Question** (the goal, said in scene 1): *Whose ruins are these, and why did
+they land here?* **Adds** to the clue trail: the ruins' stone, curve and carved waterline match
+the buried bridge, so both came from the same old place (`same_stone`, the chapter's one p1).
+Moved things try to go home: the ruins lean north with every wave, the Listening Chime leans
+toward the glacier, and whatever is taken comes back. The colossal bones stay unidentified.
 
-No Bone Yard object is granted. Carvings can be drawn or described; caught grit
-returns before departure. The colossal remains stay unidentified. The ruins'
-origin is not explained. Every path finishes the same goal through a different
-practical outcome, then returns to the Saltrot hub or pauses the development
-preview. First-completion XP is 140, with no bonus objectives.
+**Who carries it.** Puddle, the Skupper guide from the Saltrot, greeted in words true whether or
+not a party remembers her name. The ruins landed across her channel; she wants it back, and wants
+to know whose ruins they are. She guides from pools and puddles, signals with her crest and puffs
+up when startled. Pip Thistledown voices Lady Olivia's ideas ("a real scout brings back samples").
+The cast figure's label is now "Puddle", and her voice-sheet entry keeps the guide's one voice.
 
-The story walker enumerates declared encounter branches; it does not claim to
-play combat. The staged content validator checks the actual board, hazard and
-close objective. The interactive spine has 43 scenes, 14 decisions, six checks
-and one encounter (28.5 uncalibrated minutes). Family timing remains unmeasured.
+## Rhythm
 
-## Review follow-up
+| Movement | What the table does |
+| --- | --- |
+| The bone field (≈7 min) | Hear the rule (take nothing, hum something, leave before the tide); choose rib or channel and roll; walk under the skull; get a sniffing crawler off the chime (hum, sneak game, or a songkeeper's lullaby) |
+| The ruins (≈9 min) | Meet Pip prying a carved chip loose and decide what he does with it; explore (stair or doorways, rolled); copy the carving (memory game); **the match with the bridge**; catch Pip as the ruin leans; tell him what you think of Olivia's idea |
+| The arch and the tear (≈9 min) | Force or understand: shove the arch out of Puddle's channel (roll; a bigfoot can lift it) or help it go the way it leans (Puddle's shared-clue sequence); then the fight at the fresh tear |
+| Before the tide (≈5 min) | Puddle sees the square; rest; leave before the tide or stay to watch the ruins move; the boot chip (and Pip's chip) go home; who keeps the carving; the campaign question again, and the exits |
 
-The known guide lends the plank; loops, line and one retained mat are established
-before either packing choice. Her floating lunch box supplies the poolside rest.
-Orin authored the handoff message. Preparing the seam gives a two-turn closing
-objective on its own encounter scene; the open-ground plan keeps three turns.
-Retreat leaves the supporting plank behind and forces the longer rim, read back
-at recovery and exit. The closing flag stays local. The loader fixture now copies
-draft maps here, at the first chapter that needs them.
-The successful spine retains at least 30 scenes, 14 decisions and one encounter.
-Typecheck, staged content gate, class-room loader and exhaustive outcome tests pass.
+## Consequences
 
-### Pacing before and after review fixes
+| Choice | Immediate result | Later |
+| --- | --- | --- |
+| Shove the arch / help it lean | Channel open now (or cracked), carving scraped / carving whole but the tear grew | Quick fight (2 crawlers, 2-turn tear) or grown fight (3, 3); the ending: arch creeping back, cracked half, channel open for good, or open by morning |
+| Let Pip keep the chip (or fail to talk him out) | Pip pockets it; crawlers notice | The swarm mobs Pip; "Pull Pip out first" adds a rescue to the fight; going for the tear costs Pip his notebook; the chip climbs home by itself at the end |
+| Tell Pip Olivia's idea is amazing / ask what the ruins want | His notebook line | His words at the arch, and whether he takes the carving to Orin as well as Olivia |
+| Fight: close the tear / beat the crawlers / lose | Tear shut / still flickering / swarmed | Ending says Puddle guides around an open tear; a loss costs the drawing (crawlers sit on it) and the short way: float out on Puddle (if her channel is open) or the wall-tops roll |
+| Leave before the tide / stay and watch | A roll home (a miss: Puddle ferries you) / the gate points at the bridge, then a harder wade | |
+| Give the carving to Puddle or Pip | Guides' account or the Riftseekers | The ending names Pip's errand |
 
-| Shortest success spine | Before | After |
-|---|---:|---:|
-| Scenes | 43 | 43 |
-| Decisions | 14 | 14 |
-| Physical checks | 6 | 6 |
-| Encounters | 1 | 1 |
+Failed rolls cost a heart (rib, channel, catch, wall-tops, wade), a reroute (doorway nest, cut
+off by the tide) or something a later scene reads (Puddle's lunch, Pip's chip). No setback
+ending. Nothing crosses the chapter but the graph's own edges: back to the Saltrot for Old
+Ossley's next-tide ferry, or, with two keys, the convergence (the ending reads
+`fragment_paths_learned` / `fragment_sky_learned` to say so). Local flags are cleared once their
+last reader is behind every party, which keeps the route walkers' state space finite.
+
+## Shape and pacing
+
+| | Before (Oct 31) | After (Nov 2026) |
+| --- | ---: | ---: |
+| Reachable scenes | 56 | 59 |
+| Dice checks | 0 | 11 |
+| Fights | 4 (inert variants) | 4 (quick, grown, each with a Pip rescue) |
+| Games / inert | 17 / 17 | 3 / 0 |
+| Echo votes | 5 | 0 |
+| Scenes with a quoted line | 11 | 45 |
+| Spine scenes / votes / checks | 31 / 9 / 0 | 31 / 8 / 6 |
+| Spine words | 946–1,042 | 1,549–1,785 |
 | Longest reading run | 2 | 2 |
+| Predicted minutes (uncalibrated) | 20.1 | 28.1 |
 
-### Second review follow-up
-
-Recovery now names trapped gear without assuming the plank was used. A lost fight forces both return choices around the long rim; the marked-route result says so. Simplified the report and packing language for young listeners, including the spare-mat choice. Wording only; the spine remains 43 scenes, 14 decisions, 6 doing checks, 1 fight and a reading run of 2.
+Tests: [riftlight-bone-yard.test.ts](../../../tools/content/riftlight-bone-yard.test.ts) (route
+matrices through the engine, every species and class shortcut, the contract) and
+[riftlight-rescue-combat.test.ts](../../../tools/content/riftlight-rescue-combat.test.ts) (the four
+boards turn by turn: closing, rescuing Pip, losing). Family timing remains unmeasured.
