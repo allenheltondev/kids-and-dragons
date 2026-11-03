@@ -81,7 +81,7 @@ function serverNow(runId: string | undefined, prompt: InteractionPrompt | null, 
  */
 function useCooperationClock(prompt: InteractionPrompt | null, localNow: number, team: string): number {
   const anchor = useRef({ key: "", server: 0, received: 0 });
-  if (prompt?.spec.kind !== "cooperate" || prompt.phase !== "active") return localNow;
+  if (prompt?.spec.kind !== "cooperate" || prompt.challenge || prompt.phase !== "active") return localNow;
   const key = `${prompt.openedSeq}:${prompt.attempt}:${prompt.steadySince ?? ""}:${team}`;
   if (anchor.current.key !== key) {
     anchor.current = { key, server: Date.parse(prompt.steadySince ?? prompt.startedAt ?? ""), received: performance.now() };
@@ -210,6 +210,7 @@ export function StoryInteractionWorld() {
   const status = settled ? tvStatus(view) : "Watch it land. Nearly home!";
   return <section className={`story-interaction game game--tv game--${prompt.spec.kind} game--${prompt.phase}`} aria-label="Story interaction">
     <GameHead prompt={prompt} />
+    {prompt.compatibility && <p className="game-note" role="status">Using earlier controls so every phone can join this attempt.</p>}
     <div className="game__board">
       <GameScenery />
       {(prompt.spec.kind === "play" || (prompt.phase === "ready" && prompt.spec.kind !== "relay")) && <PaintedInteraction prompt={prompt} party={state.party} now={now} />}
@@ -282,7 +283,7 @@ function Controls({ prompt, party, runId, updatedAt, playerId, dispatch, busy }:
   }, [holding, prompt.phase]);
   const autoFinish = useRef({ key: "", at: 0 });
   useEffect(() => {
-    if (!mine || busy || prompt.phase !== "active" || prompt.spec.kind !== "cooperate") return;
+    if (!mine || busy || prompt.challenge || prompt.phase !== "active" || prompt.spec.kind !== "cooperate") return;
     const sameTeam = prompt.steadyPlayerIds?.length === connected.length && connected.every((id) => prompt.steadyPlayerIds?.includes(id));
     const rejoin = supportsReady(prompt, connected, new Date(now).toISOString()) &&
       (!prompt.steadySince || !sameTeam) && prompt.supports[playerId] === null;
@@ -297,10 +298,11 @@ function Controls({ prompt, party, runId, updatedAt, playerId, dispatch, busy }:
   const view = { prompt, party, connected, now };
   const job = settled ? phoneJob(view, playerId) : { headline: "You sent it home!", detail: "Watch it land on the TV.", lookAt: "tv" as const };
   // A phone that cannot aim (reduced motion) needs the help open, not folded away.
-  const needsHand = still && mine && prompt.phase === "active" && (prompt.spec.kind === "precision" || prompt.spec.kind === "timing");
+  const needsHand = !prompt.challenge && still && mine && prompt.phase === "active" && (prompt.spec.kind === "precision" || prompt.spec.kind === "timing");
   const controls = prompt.phase === "active" ? <KindControls prompt={prompt} playerId={playerId} connected={connected} mine={mine} now={now} busy={busy} send={send} answer={answer} setAnswer={setAnswer} holding={holding} setHolding={setHolding} setStop={setStop} /> : null;
   return <section className={`story-interaction game game--phone game--${prompt.spec.kind} game--${prompt.phase}${mine ? " game--lead" : ""}`} aria-label="Interaction controls">
     <GameHead prompt={prompt} />
+    {prompt.compatibility && <p className="game-note" role="status">Using earlier controls so every phone can join this attempt.</p>}
     <p className={`game__job game__job--${job.lookAt}`}>
       <span className="game__job-eye" aria-hidden="true"><Icon name={job.lookAt === "tv" ? "tv" : "phone"} /></span>
       <span className="game__job-text"><strong>{job.headline}</strong>{job.detail ? <span className="game__job-detail">{job.detail}</span> : null}</span>
@@ -309,9 +311,9 @@ function Controls({ prompt, party, runId, updatedAt, playerId, dispatch, busy }:
       <GameScenery />
       {((prompt.spec.kind === "play" && prompt.spec.options.length > 1) || (prompt.phase === "ready" && prompt.spec.kind !== "relay")) && <PaintedInteraction prompt={prompt} party={party} now={now} />}
       {prompt.phase === "ready" && <p className="game-how"><Icon name={GAME[prompt.spec.kind].icon} /> {GAME[prompt.spec.kind].how}</p>}
-      {prompt.phase !== "ready" && <Board prompt={prompt} party={party} now={now} answer={mine ? answer : []} playerId={playerId} stop={stop} settled={settled} busy={busy} onCover={async (index) => {
+      {prompt.phase !== "ready" && <Board prompt={prompt} party={party} now={now} answer={mine ? answer : []} playerId={playerId} stop={stop} settled={settled} busy={busy} onSkillAction={send} onCover={async (index) => {
         setAnswer([String(index)]);
-        const accepted = await send({ action: "answer", answer: [String(index)] });
+        const accepted = await send(prompt.challenge ? { action: "commit", round: prompt.challenge.round, answer: [String(index)] } : { action: "answer", answer: [String(index)] });
         if (!accepted) setAnswer([]);
         return accepted;
       }} />}
@@ -324,7 +326,7 @@ function Controls({ prompt, party, runId, updatedAt, playerId, dispatch, busy }:
         <Button variant="primary" size="lg" block icon={<Icon name="forward" />} className="story-interaction__button game-action" disabled={busy} onClick={() => send({ action: "continue" })}>See what happens next</Button>
         {mine && <Button variant="secondary" size="lg" block icon={<Icon name="shuffle" />} className="story-interaction__button game-action" disabled={busy} onClick={() => send({ action: "retry" })}>Try again</Button>}
       </>}
-      {prompt.phase === "ready" && mine && <Button variant="primary" size="lg" block icon={<Icon name="ready" />} className="story-interaction__button game-action" disabled={busy} onClick={() => send({ action: "start", relaxed })}>We’re ready</Button>}
+      {prompt.phase === "ready" && mine && <Button variant="primary" size="lg" block icon={<Icon name="ready" />} className="story-interaction__button game-action" disabled={busy} onClick={() => send({ action: "start", relaxed, rulesVersion: 2 })}>We’re ready</Button>}
       {prompt.phase === "active" && <>
         {mine && <div className="game-actions-row">
           <Button variant="ghost" icon={<Icon name="shuffle" />} className="story-interaction__button" disabled={busy} onClick={() => send({ action: "retry" })}>Start this attempt again</Button>

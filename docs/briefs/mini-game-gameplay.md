@@ -14,15 +14,20 @@ The storytelling provides a situation, anticipation and consequences. Mini-games
 
 Catch timing uses the position displayed by the phone, like existing precision games, rather than penalizing network delivery latency. Measurements are validated by the engine; this cooperative game does not attempt to prevent a modified client from forging timing.
 
-## Next mechanics to develop against this benchmark
+## Remaining mechanics: implemented pass
 
-| Game | Current source of flatness | Gameplay to explore |
-| --- | --- | --- |
-| Balance | Find a static total; everyone can converge on one setting | A moving load changes each side's leverage. Read the tilt, coordinate corrections, and recover a slip. |
-| Cooperative lift | Holding or adding props only fills elapsed time | Choose when to pull and ease off as tension changes. Too much and too little should have different visible effects. |
-| Precision and timing | A repeating abstract window ends in a binary result | Read an obstacle or opening in the scene. Let near misses alter the situation and offer a recovery. |
-| Sequence | Submit an ordered answer | Let partial arrangements operate a visible mechanism, revealing useful feedback before the final commitment. |
-| Memory and tracking | Observe and return an answer | Tie the pattern to a changing subject and make a mistaken response do something legible in the scene. |
-| Free play | Repeated choices can produce equivalent reactions | Make choices accumulate into a visible scene the children helped author. Keep genuinely playful scenes free of failure. |
+The same design gates now apply to the other interaction kinds. See [the design and compatibility notes](../reviews/mini-game-depth.md) for the complete read / act / consequence / recovery audit.
 
-These are design directions, not implemented mechanics. Review relay with a family before copying its difficulty or three-chance structure elsewhere. Watch for understanding, anticipation, deliberate corrections, cheering for saves, and wanting another turn; completion rate alone will not show whether it is fun.
+| Game | Gameplay now implemented |
+| --- | --- |
+| Balance | Carry a changing load across safe steps. Adjust shared lift before committing; slips scale with error, and steady carrying restores footing. |
+| Cooperative effort | Choose a force with a physical grip or explicit strength control. A friend's committed effort changes what the remaining hands need to supply. Gentle compensation can save a weak pull; a jerk strains the support. |
+| Precision and timing | Read a painted prop's landing or opening. Near misses offer easier recovery than rough actions. A clean action completes the authored task immediately. |
+| Sequence | Operate a visible path with partial tests before committing to the crossing. Verified steps light up on every screen; changed steps lose their confirmation. Drag and keyboard rearrangement remain available. |
+| Memory | Rebuild the pattern with a correctly remembered opening retained after one mistake. A second broken tune exposes the authored failure branch. |
+| Tracking | An empty cover stays raised and unavailable. The remaining covers still allow a recovery. |
+| Free play | Choices accumulate into a shared visible arrangement without adding a failure state. |
+
+Current phones request the new rules when starting. Already active saves and older clients retain their original controls. The existing helping hand and authored result branches remain available.
+
+Browser evidence verifies rendering, gestures, state changes, and access. Review these games with a family before treating them as tuned: look for anticipation, deliberate corrections, helping a friend recover, and wanting another turn. Completion rate alone will not show whether they are fun.

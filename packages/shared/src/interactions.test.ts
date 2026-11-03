@@ -4,6 +4,7 @@ import { resolveCharacter } from "./character.js";
 import { makeRng } from "./dice.js";
 import { makeChapter, makeCharacter, makeItems, makeRules } from "./test-fixtures.js";
 import { relayTarget } from "./relay.js";
+import { balanceTarget, pullNeeded, pullTarget, skillAim } from "./skill-games.js";
 import { balanceReady, interactionClues, supportsReady, type InteractionAction, type InteractionPrompt, type InteractionSpec } from "./interactions.js";
 import { cooperationProgress, TEAM_HOLD_MS } from "./teamwork.js";
 import { sceneEdges, validateChapter } from "./chapter-graph.js";
@@ -38,6 +39,7 @@ function act(state: RunState, ctx: EngineContext, action: InteractionAction, pla
   return applyIntent(state, { playerId, intent: { type: "INTERACT", openedSeq: current.openedSeq, attempt: current.attempt, ...action } }, ctx);
 }
 function step(state: RunState, ctx: EngineContext, action: InteractionAction, playerId = "p0") {
+  if (action.action === "adjust" && prompt(state).challenge && action.round === undefined) action = { ...action, round: prompt(state).challenge!.round };
   const result = act(state, ctx, action, playerId);
   expect(result.error).toBeUndefined();
   return result.state;
@@ -494,5 +496,202 @@ describe("relay flight gameplay", () => {
     next = step(next, ctx, { action: "retry" });
     next = step(next, ctx, { action: "start", relaxed: false });
     expect(prompt(next).relay).toBeDefined();
+  });
+});
+
+describe("skill-game rules used by the current phones", () => {
+  const start = (spec: InteractionSpec, players = 2, relaxed = false) => {
+    const { state, ctx } = setup(spec, players);
+    return { state: step(state, ctx, { action: "start", relaxed, rulesVersion: 2 }), ctx };
+  };
+  const commit = (state: RunState, ctx: EngineContext, extra: { position?: number; answer?: string[]; testOnly?: boolean } = {}, id = "p0") =>
+    step(state, ctx, { action: "commit", round: prompt(state).challenge!.round, ...extra }, id);
+
+  it.each([1, 2, 4])("carries a changing load through three distinct settings with %i heroes", players => {
+    let { state, ctx } = start({ kind: "balance", cue: "Carry", actionLabel: "Carry", objectLabel: "Basket" }, players);
+    for (const target of [0.5, 0.75, 0.25]) {
+      expect(balanceTarget(prompt(state))).toBe(target);
+      for (let seat = 0; seat < players; seat++) {
+        const current = prompt(state).levels?.[`p${seat}`] ?? 0;
+        state = step(state, ctx, { action: "adjust", direction: target > current ? "up" : "down", steps: Math.abs(target - current) * 4 }, `p${seat}`);
+      }
+      expect(prompt(state).phase).toBe("active"); // finding a setting alone no longer wins
+      state = commit(state, ctx);
+    }
+    expect(prompt(state).outcome).toBe("success");
+    expect(prompt(state).challenge!.progress).toBe(3);
+    const next = step(state, ctx, { action: "continue" });
+    expect(next.flags.interaction_won).toBe(true);
+  });
+  it("makes a bad step slip, preserves safe footing, and permits a deliberate recovery", () => {
+    let { state, ctx } = start({ kind: "balance", cue: "Carry", actionLabel: "Carry", objectLabel: "Basket" }, 1);
+    state = step(state, ctx, { action: "adjust", direction: "up", steps: 2 });
+    state = commit(state, ctx);
+    state = commit(state, ctx); // .5 is too little for the second step's .75 load
+    expect(prompt(state).challenge).toMatchObject({ progress: 1, strain: 0.3 });
+    expect(prompt(state).outcome).toBeUndefined();
+    state = step(state, ctx, { action: "adjust", direction: "up" });
+    state = commit(state, ctx);
+    expect(prompt(state).challenge!.progress).toBe(2);
+    expect(prompt(state).challenge!.strain).toBeCloseTo(0.2);
+    state = commit(state, ctx); // .75 vs .25
+    state = commit(state, ctx);
+    expect(prompt(state).outcome).toBe("failure");
+    expect(step(state, ctx, { action: "continue" }).flags.interaction_missed).toBe(true);
+  });
+  it("distinguishes slack from a damaging jerk, keeps ledges, and rejects duplicate or stale pulls", () => {
+    let { state, ctx } = start({ kind: "cooperate", cue: "Haul", actionLabel: "Lift", supportLabel: "Grip" });
+    state = commit(state, ctx, { position: 0 });
+    expect(act(state, ctx, { action: "commit", round: 0, position: 0.4 }).error).toBeDefined();
+    state = commit(state, ctx, { position: 0 }, "p1");
+    expect(prompt(state).challenge).toMatchObject({ progress: 0, strain: 0, round: 1 });
+    state = commit(state, ctx, { position: 1 });
+    state = commit(state, ctx, { position: 0 }, "p1");
+    expect(prompt(state).challenge!.strain).toBeCloseTo(0.6); // a weak pull cannot cancel a jerk
+    expect(act(state, ctx, { action: "commit", round: 0, position: 0.4 }).error).toBeDefined();
+    for (let ledge = 0; ledge < 3; ledge++) {
+      const target = pullTarget(prompt(state));
+      state = commit(state, ctx, { position: target });
+      state = commit(state, ctx, { position: target }, "p1");
+    }
+    expect(prompt(state).outcome).toBe("success");
+  });
+  it("reconciles a disconnected hauling partner without replaying an old pull", () => {
+    let { state, ctx } = start({ kind: "cooperate", cue: "Haul", actionLabel: "Lift", supportLabel: "Grip" });
+    state = commit(state, ctx, { position: 0.4 }, "p1");
+    state.party[1]!.connected = false;
+    state = commit(state, ctx, { position: 0.4 });
+    expect(prompt(state).challenge).toMatchObject({ progress: 1, pulls: {} });
+    state.party[1]!.connected = true;
+    state = commit(state, ctx, { position: 0.7 });
+    expect(prompt(state).challenge!.progress).toBe(1);
+    state = commit(state, ctx, { position: 0.7 }, "p1");
+    expect(prompt(state).challenge!.progress).toBe(2);
+  });
+  it("lets a friend make up a gentle under-pull while rejecting stale balance corrections", () => {
+    let { state, ctx } = start({ kind: "cooperate", cue: "Haul", actionLabel: "Lift", supportLabel: "Grip" });
+    state = commit(state, ctx, { position: 0.2 });
+    expect(pullNeeded(prompt(state), ["p0", "p1"])).toBeCloseTo(0.6);
+    state = commit(state, ctx, { position: 0.6 }, "p1");
+    expect(prompt(state).challenge!.progress).toBe(1);
+    const balance = start({ kind: "balance", cue: "Carry", actionLabel: "Carry", objectLabel: "Basket" }, 1);
+    let next = step(balance.state, balance.ctx, { action: "adjust", direction: "up", steps: 2 });
+    next = commit(next, balance.ctx);
+    expect(act(next, balance.ctx, { action: "adjust", round: 0, direction: "down" }).error).toBeDefined();
+    expect(prompt(next).levels?.p0).toBe(0.5);
+  });
+  it.each(["precision", "timing"] as const)("grades %s recovery by the miss without making a clean action repeat chores", kind => {
+    const spec = { ...precision, kind };
+    let { state, ctx } = start(spec);
+    const near = commit(state, ctx, { position: 0.68 }); // .03 outside the gold
+    const rough = commit(state, ctx, { position: 0 });
+    expect(prompt(near).challenge!.strain).toBeLessThan(prompt(rough).challenge!.strain);
+    state = commit(near, ctx, { position: skillAim(prompt(near)).target });
+    expect(prompt(state).outcome).toBe("success");
+    state = commit(rough, ctx, { position: 0 });
+    expect(prompt(state).outcome).toBe("failure");
+  });
+  it("runs partial sequence arrangements through a visible test without committing the branch", () => {
+    let { state, ctx } = start(sequence);
+    state = step(state, ctx, { action: "arrange", round: 0, answer: ["a", "a"] });
+    expect(prompt(state).challenge!.arrangement).toEqual(["a", "a"]);
+    state = commit(state, ctx, { answer: ["a", "a"], testOnly: true });
+    expect(prompt(state).challenge!.matched).toBe(1);
+    expect(prompt(state).phase).toBe("active");
+    const edited = step(state, ctx, { action: "arrange", round: prompt(state).challenge!.round, answer: ["b", "a"] });
+    expect(prompt(edited).challenge!.matched).toBe(0);
+    const tested = commit(state, ctx, { answer: ["a", "b"], testOnly: true });
+    expect(prompt(tested).phase).toBe("active");
+    expect(prompt(tested).challenge!.feedback).toContain("whole path holds");
+    const failure = commit(state, ctx, { answer: ["b", "a"] });
+    expect(prompt(failure).outcome).toBe("failure");
+    state = commit(state, ctx, { answer: ["a", "b"] });
+    expect(prompt(state).outcome).toBe("success");
+  });
+  it("retains the remembered opening after one broken tune, then branches on a repeated mistake", () => {
+    let { state, ctx } = start(memory, 1, true);
+    state = commit(state, ctx, { answer: ["a", "a", "b"] });
+    expect(prompt(state).challenge).toMatchObject({ arrangement: ["a"], matched: 1, strain: 0.5 });
+    const recovered = commit(state, ctx, { answer: ["a", "b", "a"] });
+    expect(prompt(recovered).outcome).toBe("success");
+    state = commit(state, ctx, { answer: ["a", "a", "b"] });
+    expect(prompt(state).outcome).toBe("failure");
+  });
+  it("leaves an empty tracking cover open while the remaining choice can still be recovered", () => {
+    let { state, ctx } = start(tracking, 1, true);
+    state = commit(state, ctx, { answer: ["0"] });
+    expect(prompt(state).challenge!.excluded).toEqual(["0"]);
+    expect(act(state, ctx, { action: "commit", round: 1, answer: ["0"] }).error).toBeDefined();
+    expect(prompt(commit(state, ctx, { answer: ["2"] })).outcome).toBe("success");
+    expect(prompt(commit(state, ctx, { answer: ["1"] })).outcome).toBe("failure");
+  });
+  it("rejects forged positions, bypass actions, premature answers, and out-of-turn arrangements", () => {
+    const aim = start(precision);
+    for (const position of [NaN, Infinity, -0.1, 1.1]) expect(act(aim.state, aim.ctx, { action: "commit", round: 0, position }).error).toBeDefined();
+    expect(act(aim.state, aim.ctx, { action: "complete" }).error).toBeDefined();
+    expect(act(aim.state, aim.ctx, { action: "stop", position: 0.5 }, "p1").error).toBeDefined();
+    const puzzle = start(memory);
+    expect(act(puzzle.state, puzzle.ctx, { action: "commit", round: 0, answer: ["a", "b", "a"] }).error).toBeDefined();
+    const path = start(sequence);
+    expect(act(path.state, path.ctx, { action: "arrange", round: 0, answer: ["a"] }, "p1").error).toBeDefined();
+    expect(act(path.state, path.ctx, { action: "arrange", round: 0, answer: ["unknown"] }).error).toBeDefined();
+  });
+  it("preserves in-progress saves and upgrades after retry, clearing all round state", () => {
+    const { state: original, ctx } = setup(precision);
+    let state = step(original, ctx, { action: "start", relaxed: false });
+    expect(prompt(state).challenge).toBeUndefined();
+    state = step(state, ctx, { action: "retry" });
+    state = step(state, ctx, { action: "start", relaxed: false, rulesVersion: 2 });
+    state = commit(state, ctx, { position: 0 });
+    const restored = JSON.parse(JSON.stringify(state)) as RunState;
+    expect(prompt(restored).challenge!.strain).toBeGreaterThan(0);
+    state = step(restored, ctx, { action: "retry" });
+    expect(prompt(state).challenge).toBeUndefined();
+    state = step(state, ctx, { action: "start", relaxed: true, rulesVersion: 2 });
+    expect(prompt(state).challenge).toMatchObject({ round: 0, progress: 0, strain: 0 });
+  });
+  it("lets a v1 phone join a v2 balance by switching the whole attempt to shared legacy controls", () => {
+    let { state, ctx } = start({ kind: "balance", cue: "Carry", actionLabel: "Carry", objectLabel: "Basket" });
+    state = step(state, ctx, { action: "adjust", direction: "up", steps: 2 }); // v2 lead
+    const joined = act(state, ctx, { action: "adjust", direction: "up" }, "p1"); // cached v1 phone has no round
+    expect(joined.error).toBeUndefined(); state = joined.state;
+    expect(prompt(state).challenge).toBeUndefined();
+    expect(prompt(state).compatibility).toBe("legacy-controls");
+    expect(prompt(state).levels).toEqual({ p0: 0.5, p1: 0.25 });
+    state = step(state, ctx, { action: "adjust", direction: "up" }, "p1");
+    expect(prompt(state).outcome).toBe("success");
+    state = step(state, ctx, { action: "retry" });
+    expect(prompt(state).compatibility).toBeUndefined();
+  });
+  it("lets a v1 support join v2 cooperation without awarding unearned completion", () => {
+    let { state, ctx } = start({ kind: "cooperate", cue: "Lift", actionLabel: "Lift", supportLabel: "Grip" });
+    state = commit(state, ctx, { position: 0.4 }); // current phone has pulled
+    state = step(state, ctx, { action: "support", mode: "prop" }, "p1"); // older phone
+    expect(prompt(state).challenge).toBeUndefined();
+    expect(prompt(state).compatibility).toBe("legacy-controls");
+    expect(prompt(state).outcome).toBeUndefined();
+    expect(act(state, ctx, { action: "complete" }).error).toBeDefined();
+    state = step(state, ctx, { action: "support", mode: "prop" }); // current phone now renders v1
+    expect(prompt(state).phase).toBe("active");
+    const later = { ...ctx, now: new Date(Date.parse(ctx.now) + TEAM_HOLD_MS).toISOString() };
+    expect(prompt(step(state, later, { action: "complete" })).outcome).toBe("success");
+  });
+  it("persists a legacy complete fallback, but rejects invalid legacy input and explicit stale rounds", () => {
+    const lift = start({ kind: "cooperate", cue: "Lift", actionLabel: "Lift", supportLabel: "Grip" });
+    const fallback = step(lift.state, lift.ctx, { action: "complete" });
+    expect(prompt(fallback).challenge).toBeUndefined();
+    expect(prompt(fallback).outcome).toBeUndefined();
+    expect(act(lift.state, lift.ctx, { action: "complete" }, "p1").error).toBeDefined();
+    const balance = start({ kind: "balance", cue: "Carry", actionLabel: "Carry", objectLabel: "Basket" });
+    expect(act(balance.state, balance.ctx, { action: "adjust", direction: "up", steps: 99 }, "p1").error).toBeDefined();
+    expect(act(balance.state, balance.ctx, { action: "adjust", direction: "up", round: 99 }, "p1").error).toBeDefined();
+    expect(prompt(balance.state).challenge).toBeDefined();
+  });
+  it("supports a legacy actor taking over an aiming game after the v2 lead disconnects", () => {
+    const { state, ctx } = start(precision);
+    state.party[0]!.connected = false;
+    const next = step(state, ctx, { action: "stop", position: 0.5 }, "p1");
+    expect(prompt(next).compatibility).toBe("legacy-controls");
+    expect(prompt(next).outcome).toBe("success");
   });
 });

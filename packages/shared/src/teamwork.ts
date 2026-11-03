@@ -10,6 +10,7 @@ export const TEAM_HOLD_MS = 1800;
 /** Progress is derived from server state, so TV, refresh and every phone agree. */
 export function cooperationProgress(prompt: InteractionPrompt, connected: readonly string[], now: string): number {
   if (prompt.spec.kind !== "cooperate") return 0;
+  if (prompt.challenge) return prompt.challenge.progress / 3;
   if (prompt.phase === "result" && prompt.outcome === "success") return 1;
   if (!supportsReady(prompt, connected, now) || !prompt.steadySince ||
       prompt.steadyPlayerIds?.length !== connected.length || !connected.every((id) => prompt.steadyPlayerIds?.includes(id))) return 0;

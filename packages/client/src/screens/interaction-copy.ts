@@ -17,14 +17,14 @@ export type InteractionKind = InteractionSpec["kind"];
 
 /** A kid-readable name and icon for each kind of game, and how it is played, in one breath. */
 export const GAME: Record<InteractionKind, { name: string; icon: string; how: string }> = {
-  precision: { name: "Hit the gold", icon: "star", how: "A marker slides back and forth. One of you taps when it is in the gold." },
-  timing: { name: "Wait for NOW", icon: "boot", how: "A lamp says Wait… then NOW! One of you taps on NOW." },
+  precision: { name: "Hit the gold", icon: "star", how: "Watch the arc and tap over the gold target. Near misses let you adjust. Rough misses make recovery harder." },
+  timing: { name: "Wait for NOW", icon: "boot", how: "Read the opening. Tap while it is clear. Near misses give you time to recover; rough ones cost your footing." },
   memory: { name: "Copy the pattern", icon: "eye", how: "The TV shows a pattern. Then one of you taps it back in the same order." },
   sequence: { name: "Share the clues", icon: "map", how: "Every phone gets a clue. Read them out loud and put the steps in order." },
   tracking: { name: "Follow the glow", icon: "eye", how: "Watch where the glow starts. Follow it while the covers shuffle, then pick its cover." },
-  balance: { name: "Hold it level", icon: "hand", how: "Everyone lifts a little. Lift more or ease down to bring the shared marker into the gold." },
+  balance: { name: "Hold it level", icon: "hand", how: "Carry the load across three steps. It shifts as you go. Everyone adjusts their lift; take a step when it is steady." },
   relay: { name: "Pass it along", icon: "forward", how: "Catch in the gold circle, then aim your swipe at your friend's hands. Wild throws are harder to catch. Three drops end the attempt." },
-  cooperate: { name: "All together", icon: "party", how: "Everyone presses and holds together. Keep holding while the object rises to the star." },
+  cooperate: { name: "All together", icon: "party", how: "Choose your effort together. Too little stays put; too much strains the support. Adjust as the weight changes." },
   play: { name: "Everyone joins in", icon: "heart", how: "Pick something to do. What you pick shows up on the TV. No wrong answers." },
 };
 
@@ -71,6 +71,14 @@ export function tvStatus(view: TableView): string {
   }
   if (prompt.phase === "ready") {
     return `${lead}: tap "We're ready" on your phone when everyone is set.`;
+  }
+  if (prompt.challenge) {
+    if (spec.kind === "balance") return `Everyone: adjust your lift. ${lead}: take a careful step when the load is steady in the gold.`;
+    if (spec.kind === "cooperate") return "Everyone: release your pull in the gold on your phone. Watch the gold move after a friend pulls.";
+    if (spec.kind === "precision" || spec.kind === "timing") return `${lead}: watch the ${spec.kind === "timing" ? "opening" : "landing"} and tap on your phone. Near misses let you adjust.`;
+    if (spec.kind === "sequence") return `Share your clues. ${lead}: test the steps, then commit to your crossing.`;
+    if (spec.kind === "tracking" && prompt.challenge.feedback) return prompt.challenge.feedback;
+    if (spec.kind === "memory" && prompt.challenge.feedback) return prompt.challenge.feedback;
   }
   switch (spec.kind) {
     case "precision":
@@ -153,6 +161,12 @@ export function phoneJob(view: TableView, playerId: string): Job {
     return mine
       ? { headline: "You start this one.", detail: "Tap \"We're ready\" when everyone is looking at the TV.", lookAt: "phone" }
       : { headline: `${lead} starts this one.`, detail: "Look at the TV and get ready.", lookAt: "tv" };
+  }
+  if (prompt.challenge) {
+    if (spec.kind === "balance") return { headline: "Steady the shifting load.", detail: mine ? "Adjust your lift, then take a careful step in the gold." : `Adjust your lift. ${lead} takes the next step.`, lookAt: "both" };
+    if (spec.kind === "cooperate") return { headline: prompt.challenge.pulls[playerId] === undefined ? "Read the rope. Choose your pull." : "Your pull is ready.", detail: "Pull down and release in the gold, or set the strength below. Wait for everyone's pull.", lookAt: "both" };
+    if (spec.kind === "precision" || spec.kind === "timing") return { headline: mine ? (spec.kind === "timing" ? "Cross when the opening clears!" : "Land on the gold target!") : `Help ${lead} read the opening.`, detail: "Near misses let you adjust. Rough misses make recovery harder.", lookAt: mine ? "phone" : "tv" };
+    if (spec.kind === "sequence") return { headline: "Share clues. Test before crossing.", detail: mine ? "Test a few steps to see where the path holds. Commit when you agree." : `${lead} arranges the path. Read your clues aloud.`, lookAt: "phone" };
   }
   switch (spec.kind) {
     case "precision":

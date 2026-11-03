@@ -41,7 +41,7 @@ function walk(chapter: Chapter, size: number, picks: Record<string, string>, out
       expect(next.error).toBeUndefined(); state = next.state;
     } else if (state.prompt?.kind === "interaction") {
       const result = outcome === "assisted" ? act(chapter, state, { action: "assist" }, promptOf(state).playerIds.at(-1)!)
-        : outcome === "failure" ? miss(chapter, state) ?? solve(chapter, state) : solve(chapter, state);
+        : outcome === "failure" ? miss(chapter, state, true) ?? solve(chapter, state) : solve(chapter, state);
       state = landed(chapter, result, promptOf(result).resolvedActorId ?? promptOf(result).actorId);
     } else if (state.prompt?.kind === "choice") {
       const id = picks[state.sceneId!] ?? state.prompt.options[0]!.id;
@@ -67,20 +67,20 @@ const fordPicks = {
 it.each(sizes.flatMap(size => outcomes.flatMap(outcome => ["wagon", "markers", "family"].map(job => ({ size, outcome, job })))))
   ("ford: $size seats / $outcome / $job changes the crossing or surge recovery", ({ size, outcome, job }) => {
     const { state, trace } = walk(ford, size, {
-      ...fordPicks, choice_tolls: job, choice_ford: job === "family" ? "fennick_cart" : job === "markers" ? "follow_markers" : "drovers_pace",
-      scene_surge: job === "wagon" ? "wagon_crew" : "let_go",
+      ...fordPicks, choice_tolls: job, choice_ford: job === "family" ? "fennick_cart" : job === "markers" && outcome !== "failure" ? "follow_markers" : "drovers_pace",
+      scene_surge: job === "wagon" && outcome !== "failure" ? "wagon_crew" : "let_go",
     }, outcome, 1);
-    const swept = job === "markers";
+    const swept = job === "markers" || outcome === "failure";
     expect(state.flags.forded_clean === true).toBe(!swept);
     expect(state.flags.marsh_kept_us === true).toBe(swept);
     expect(state.flags.route_wild === true).toBe(swept);
-    expect(state.flags.unmired_wagon === true).toBe(job === "wagon");
-    expect(state.flags.restored_markers === true).toBe(job === "markers");
+    expect(state.flags.unmired_wagon === true).toBe(job === "wagon" && outcome !== "failure");
+    expect(state.flags.restored_markers === true).toBe(job === "markers" && outcome !== "failure");
     expect(state.flags.helped_family === true).toBe(job === "family");
-    expect(trace.has("interaction_surge_brace")).toBe(job === "wagon");
+    expect(trace.has("interaction_surge_brace")).toBe(job === "wagon" && outcome !== "failure");
     expect(trace.has("interaction_bracken_crossing")).toBe(job === "family");
-    if (job !== "family") expect(offered(trace.get("scene_surge")!, "wagon_crew")).toBe(job === "wagon");
-    if (job === "wagon") expect(state.narration).toContain("crew repaid");
+    if (job !== "family") expect(offered(trace.get("scene_surge")!, "wagon_crew")).toBe(job === "wagon" && outcome !== "failure");
+    if (job === "wagon" && outcome !== "failure") expect(state.narration).toContain("crew repaid");
     if (job === "family" && outcome === "assisted") expect(state.narration).toContain("Brackens helped balance");
     expect(state.chapterOutcome).toBe("success");
   });

@@ -81,3 +81,4 @@ export * from "./figure-size.js";
 export * from "./error-report.js";
 
 export * from "./teamwork.js";
+export * from "./skill-games.js";
