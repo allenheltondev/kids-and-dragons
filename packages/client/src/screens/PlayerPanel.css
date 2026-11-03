@@ -1610,62 +1610,97 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
   white-space: nowrap;
 }
 
-/* Your friends: a row of pills, each a face and a name side by side and only as
-   wide as they need, under your hero's card. Wide boxes with a small face in
-   each read as empty buttons. A long name is never cut; the row wraps first. */
+/* Your friends: a card each, side by side under your hero's card: a big face,
+   the name, and their health, so who is hurt is seen at a glance. They share
+   the page's height with the bag (about 2 to 3), so the people at the table
+   count for as much as the slots in your bag. The row measures itself and the
+   faces grow with it. A long name is never cut. */
 .you__row {
-  flex: none;
+  flex: 2 1 0;
+  min-block-size: 5em;
   display: flex;
-  align-items: center;
-  gap: var(--space-2, 0.5em);
+  container: friends / size;
 }
 
 .you__row .party-strip__list {
   flex: 1 1 auto;
   min-inline-size: 0;
   display: flex;
-  flex-wrap: wrap;
+  justify-content: center;
   gap: var(--space-2, 0.5em);
   padding: 0;
   overflow: visible;
 }
 
 .you__row .party-strip__list > li {
-  flex: 0 0 auto;
+  flex: 1 1 0;
+  min-inline-size: 0;
+  max-inline-size: 11em;
+  display: flex;
 }
 
 .you__row .party-strip__button {
   position: relative;
-  flex-direction: row;
-  align-items: center;
+  flex: 1 1 auto;
   inline-size: auto;
-  min-block-size: var(--kad-touch-min, 2.75em);
-  padding: 0.25em 0.9em 0.25em 0.3em;
-  gap: 0.5em;
-  border-radius: 999px;
+  min-inline-size: 0;
+  justify-content: center;
+  gap: 0.2em;
+  padding: 0.35em 0.3em;
 }
 
+/* The face takes the card's height, less the name and health lines under it. */
 .you__row .party-strip__portrait {
-  inline-size: 2.2em;
-  block-size: 2.2em;
-  border-radius: 50%;
+  inline-size: clamp(2.2em, calc(100cqh - 3.6em), 7em);
+  block-size: clamp(2.2em, calc(100cqh - 3.6em), 7em);
+  border-radius: var(--radius-md, 0.75em);
 }
 
 .you__row .party-strip__name {
+  max-inline-size: 100%;
   font-size: 0.9em;
   line-height: 1.1;
   white-space: nowrap;
 }
 
+.party-strip__hp {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+  font-size: 0.8em;
+  font-weight: 700;
+  color: var(--color-text-muted, #b7b0d8);
+}
+
+.party-strip__hp--down {
+  color: var(--color-accent, #ffc95c);
+}
+
 .you__row .party-strip__mark {
+  position: absolute;
+  inset-block-start: 0.25em;
+  inset-inline-end: 0.25em;
   font-size: 0.7em;
 }
 
 /* A short pane (a small phone at large text): faces only, one row, so the bag
    keeps its room. Each still says its friend's name (the button's label). */
-@container sheet (max-height: 24em) {
-  .you__row .party-strip__name {
+@container sheet (max-height: 16em) {
+  .you__row {
+    flex: none;
+    min-block-size: 0;
+    container-type: normal;
+  }
+  .you__row .party-strip__list > li {
+    flex: 0 0 auto;
+  }
+  .you__row .party-strip__name,
+  .you__row .party-strip__hp {
     display: none;
+  }
+  .you__row .party-strip__portrait {
+    inline-size: 2.4em;
+    block-size: 2.4em;
   }
   .you__row .party-strip__button {
     padding: 0.25em;
@@ -1674,7 +1709,8 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
 
 /* The bag takes the rest of the page; its six slots share it. */
 .you__bag {
-  flex: 1 1 auto;
+  /* Three parts of the spare height to the friends' two (.you__row). */
+  flex: 3 1 0;
   min-block-size: 0;
   display: flex;
   flex-direction: column;

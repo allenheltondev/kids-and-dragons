@@ -2148,6 +2148,11 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                     />
                   </span>
                   <span className="party-strip__name">{member.character.name}</span>
+                  {/* Their health, so who is hurt is seen at a glance (who needs a potion, who to help up). */}
+                  <span className={`party-strip__hp${member.down ? " party-strip__hp--down" : ""}`} aria-hidden="true">
+                    <Icon name={member.down ? "down" : "heart"} />
+                    <span>{member.down ? "Down" : `${String(member.hp)}/${String(member.character.maxHp)}`}</span>
+                  </span>
                   {/* A souvenir is permanent and worth advertising (spec §8.3);
                       the count is the hook that makes anybody open the sheet. */}
                   {member.character.souvenirs.length > 0 ? (
