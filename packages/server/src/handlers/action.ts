@@ -117,6 +117,28 @@ export interface ActionInput extends ActionRequest {
   principal?: ActingPrincipal | undefined;
 }
 
+/**
+ * One line per refused-as-stale intent, for operators. The client absorbs these
+ * without telling the player (it resyncs and retries once, store `send`), so
+ * this log is the only place their rate shows. `event` is a stable key to build
+ * a CloudWatch metric filter on (`{ $.event = "intent.stale_seq" }`); `reason`
+ * splits the two ways it happens: `seq-gate` (the phone was a beat behind) and
+ * `commit-race` (two phones won the same seq and the conditional write lost).
+ */
+function logStaleSeq(reason: "seq-gate" | "commit-race", input: ActionInput, serverSeq: number): void {
+  console.warn(
+    JSON.stringify({
+      event: "intent.stale_seq",
+      reason,
+      runId: input.runId,
+      playerId: input.playerId,
+      intent: input.intent.type,
+      clientSeq: input.seq,
+      serverSeq,
+    }),
+  );
+}
+
 export async function applyAction(
   received: ActionInput,
   deps: HandlerDeps,
@@ -146,6 +168,7 @@ export async function applyAction(
   // case, which is a client that replayed a patch twice. Both answers are the
   // same: here is the real seq, resync.
   if (input.seq !== state.seq) {
+    logStaleSeq("seq-gate", input, state.seq);
     return {
       ok: false,
       seq: state.seq,
@@ -699,6 +722,7 @@ export async function applyAction(
     // Two phones tapped inside the same millisecond. One of them wins; the
     // other is, by definition, now stale.
     const current = await deps.repo.getState(input.runId);
+    logStaleSeq("commit-race", input, current?.seq ?? state.seq);
     return {
       ok: false,
       seq: current?.seq ?? state.seq,
