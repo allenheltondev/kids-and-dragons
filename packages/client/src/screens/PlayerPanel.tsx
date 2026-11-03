@@ -320,11 +320,12 @@ function IdentityStrip({ me, onOpenSheet, stats }: { me: PartyMember; onOpenShee
         <button type="button" className="sheet__portrait sheet__portrait--open kad-tap kad-focusable"
           aria-label={`${character.name}'s character sheet`} onClick={onOpenSheet}>
           {portrait}
-          {stats ? <HpBar hp={me.hp} max={character.maxHp} down={me.down} className="hp-bar--card" /> : null}
         </button>
       ) : (
         <span className="sheet__portrait" aria-hidden="true">{portrait}</span>
       )}
+      {/* On the card, your health is a bar under your picture, never over your hero. */}
+      {stats ? <HpBar hp={me.hp} max={character.maxHp} down={me.down} className="hp-bar--card" /> : null}
       <span className="sheet__id">
         <span className="sheet__name">
           {character.name}

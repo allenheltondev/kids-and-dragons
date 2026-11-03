@@ -1632,11 +1632,13 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
   overflow: visible;
 }
 
+/* Each card shares the row's width, and measures itself so the face fills it. */
 .you__row .party-strip__list > li {
   flex: 1 1 0;
   min-inline-size: 0;
-  max-inline-size: 9.5em;
+  max-inline-size: 15em;
   display: flex;
+  container: friend / size;
 }
 
 .you__row .party-strip__button {
@@ -1649,11 +1651,16 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
   padding: 0.35em 0.3em;
 }
 
-/* The face takes the card's height, less the name and health lines under it. */
+/* The face as big as the card allows: its width, or its height less the name
+   and health lines under it, whichever is smaller. */
 .you__row .party-strip__portrait {
-  inline-size: clamp(2.2em, calc(100cqh - 3.6em), 5.5em);
-  block-size: clamp(2.2em, calc(100cqh - 3.6em), 5.5em);
+  inline-size: max(2.2em, min(calc(100cqi - 0.8em), calc(100cqh - 3.4em)));
+  block-size: max(2.2em, min(calc(100cqi - 0.8em), calc(100cqh - 3.4em)));
   border-radius: var(--radius-md, 0.75em);
+}
+
+.you__row .party-strip__button {
+  block-size: 100%;
 }
 
 .you__row .party-strip__name {
@@ -1666,7 +1673,6 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
 /* A friend's health, under their name: the bar a little narrower than the card. */
 .hp-bar--friend {
   inline-size: 100%;
-  max-inline-size: 7.5em;
   font-size: 0.75em;
 }
 
@@ -1692,6 +1698,7 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
   }
   .you__row .party-strip__list > li {
     flex: 0 0 auto;
+    container-type: normal;
   }
   .you__row .party-strip__name,
   .you__row .hp-bar--friend {
@@ -1926,10 +1933,11 @@ html:not([data-contrast="high"]) .player__you .inv__slot--empty {
   /* The name gets the whole width beside the picture (health sits under it), so a
      long name at the largest text keeps its words whole. */
   grid-template-columns: auto minmax(0, 1fr);
-  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
   grid-template-areas:
     "art id"
-    "art stats";
+    "art stats"
+    "bar stats";
   align-items: start;
   column-gap: var(--space-3, 0.75em);
   row-gap: var(--space-2, 0.5em);
@@ -1990,15 +1998,9 @@ html:not([data-contrast="high"]) .player__you .inv__slot--empty {
 }
 
 .hp-bar--card {
-  position: absolute;
-  inset-inline: 0.35em;
-  inset-block-end: 0.35em;
-  z-index: 1;
-  padding: 0.3em 0.5em;
-  border-radius: 999px;
-  background: rgb(13 11 26 / 72%);
-  color: var(--color-text, #f4f1ff);
-  font-size: 0.8em;
+  grid-area: bar;
+  inline-size: var(--card-art);
+  font-size: 0.85em;
 }
 
 .sheet--card .stat-row {
