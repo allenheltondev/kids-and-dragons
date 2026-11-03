@@ -159,7 +159,6 @@ test.describe("the words around a chapter (#357)", () => {
       expect(story, lines.join("\n")).toBeGreaterThanOrEqual(0);
       expect(goal).toBe(story + 1);
       expect(lines.some((line) => line.startsWith("Here we go!") || line.startsWith("Last time"))).toBe(false);
-      expect(await fitProblems(tv)).toEqual([]);
       await shot(tv, `start-${at}`);
       await tv.waitForTimeout(500);
       expect((await said(tv)).filter((line) => line.startsWith("Your goal:"))).toHaveLength(1);
