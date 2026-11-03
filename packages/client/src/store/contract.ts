@@ -8,6 +8,7 @@
  */
 
 import type {
+  HeroHold,
   ResolvedCharacter,
   FlairChoice,
   JournalResponse,
@@ -25,6 +26,7 @@ import type {
   RoomMode,
   RulesContent,
   RunState,
+  ScreenCode,
   SharedDevicePlayer,
   SharedSeatRequest,
   WorldMap,
@@ -45,6 +47,12 @@ export interface ClientSession {
   playerId: string;
   mode: RoomMode;
   sessionToken: string;
+  /**
+   * Another TV in another place, showing this game from a screen code
+   * (screens/OtherScreen.tsx): a screen that seats nobody, and says it is
+   * still here so the host can see how many other TVs there are.
+   */
+  follower?: true;
   /**
    * This device opened the room, so it sees who arrives and may take them out
    * (#267). The server decides; this only says which buttons to draw.
@@ -291,6 +299,20 @@ export interface GameStore {
    */
   lockRoom(locked: boolean): Promise<boolean>;
   /**
+   * The host asks for a one-time code that lets one more TV, in another place,
+   * show this game (handlers/screens.ts). `null` when it could not; the reason
+   * lands in `error`, as a host control's does.
+   */
+  addScreen(): Promise<ScreenCode | null>;
+  /**
+   * This screen shows a game being played somewhere else: spend the code its
+   * host made and land on `/tv/:code`, a TV like any other that seats nobody.
+   * The session is kept, so a refresh comes straight back to the game. Throws
+   * for the caller to say why, and, unlike `joinRoom`, sets no `error`: the
+   * code card says it in place.
+   */
+  showFromCode(code: string): Promise<void>;
+  /**
    * The host turns quiet mode on for every device in the room, or off again
    * (#260). Resolves like `removePlayer`.
    */
@@ -301,6 +323,16 @@ export interface GameStore {
    * group of players at the same TV. Resolves like `removePlayer`.
    */
   switchCrew(crew: string | null | "new"): Promise<boolean>;
+  /**
+   * The host gives a crew (`crew`'s id, or null for the first) one of the
+   * offered names (`CREW_NAMES`). Resolves like `removePlayer`.
+   */
+  renameCrew(crew: string | null, name: string): Promise<boolean>;
+  /**
+   * The host answers `RunState.crewCheck`: the heroes seated join the crew's
+   * adventure where it stands. Resolves like `removePlayer`.
+   */
+  keepCrew(campaignId: string): Promise<boolean>;
   /** The host closes the room for everybody (#263). Resolves like `removePlayer`. */
   closeRoom(): Promise<boolean>;
   /**
@@ -319,6 +351,12 @@ export interface GameStore {
    * by hero id, as the last `listHeroes` found it. `at` names another table.
    */
   savedHeroes: Record<string, { at?: string }>;
+  /**
+   * What holds each of this player's heroes, by hero id, as the last
+   * `listHeroes` found it: the adventure she is partway through and what this
+   * room would do with her (`HeroHold`). Absent for a free hero.
+   */
+  heldHeroes: Record<string, HeroHold>;
   /**
    * The host of a stopped game lets a hero go from it (#259). Resolves like
    * `removePlayer`.

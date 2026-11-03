@@ -38,6 +38,8 @@ import {
   riftPartyOf,
   sameHome,
   swapOwnerAway,
+  combatTurnAway,
+  currentActor,
   voteWaitsOnlyOnAway,
   type RankUp,
 } from "@kad/shared";
@@ -45,6 +47,7 @@ import { checkTarget } from "./DiceOverlay";
 import { checkBuffLine } from "./buff-copy";
 import type {
   ClientIntent,
+  EncounterState,
   InventoryEntry,
   JourneyExitView,
   ItemCatalog,
@@ -86,6 +89,7 @@ import { CharacterSheet } from "./CharacterSheet";
 import { XpMeter } from "./XpMeter";
 import { ClassToken, SpareTokens, TokenCard, TokenGlyph, tokenName } from "./ClassToken";
 import { Icon } from "./icons";
+import { aheadBadge } from "./choice-ahead-copy";
 import { ChapterGoalCard } from "./ChapterGoal";
 import { CheckMatchupBadges } from "./MatchupHints";
 import { useSideBySide } from "../layout/landscape";
@@ -114,6 +118,7 @@ import { FieldGuide } from "./FieldGuide";
 import { JourneyPanel } from "./JourneyPanel";
 import { HelpClaim } from "../help/focus";
 import { helpAttrs } from "../help/longpress";
+import { useTvFocus } from "../layout/tv-focus";
 
 /** The rank-up card (#314), fetched the first time a rank lands; the plain line stands in until then. */
 const RankUpCard = lazyChunk(() => import("./RankUpMoment"), (module) => module.RankUpCard);
@@ -509,6 +514,42 @@ function SceneBackdrop({ src }: { src: string }): ReactElement | null {
 
 // ---------------------------------------------------------------------------
 
+/** Whose go it is in a fight, for the TV focus card: a friend by name, or the other side. */
+function fightWaitingLine(encounter: EncounterState | null, party: PartyMember[]): string | null {
+  if (!encounter) return null;
+  const actor = currentActor(encounter);
+  if (actor?.side === "party") return `It's ${nameOfCharacter(party, actor.id)}'s turn to fight.`;
+  return "The other side is moving. Watch the TV!";
+}
+
+/* A television, drawn here: the icon set has none, and only TV focus asks for one. */
+function TvGlyph(): ReactElement {
+  return (
+    <svg className="kad-icon player__tv-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <g fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2.5" y="5" width="19" height="12.5" rx="2" />
+        <path d="M8 21h8M12 17.5V21M8.5 1.8 12 5l3.5-3.2" />
+      </g>
+    </svg>
+  );
+}
+
+/**
+ * TV focus with nothing to do (layout/tv-focus.ts): one calm card that points at the TV, in place of
+ * the bag. The bag is a tap away, and the card comes back the moment there is a turn to take.
+ */
+function TvRest({ waiting, onPeek }: { waiting: string; onPeek: () => void }): ReactElement {
+  return (
+    <div className="player__tv-rest" data-testid="tv-rest">
+      <TvGlyph />
+      <h3 className="player__tv-rest-title">Look at the TV</h3>
+      <p className="player__tv-rest-line" role="status">{waiting}</p>
+      <p className="player__tv-rest-note kad-muted">Your phone will show you what to tap when it is your turn.</p>
+      <Button variant="ghost" size="md" icon={<Icon name="bag" />} onClick={onPeek}>Look in my bag</Button>
+    </div>
+  );
+}
+
 export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {}): ReactElement {
   useEnsureContent();
   const state = useRunState();
@@ -629,13 +670,31 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   const atClassPlace = state?.phase === "scene" && state.classPlace !== undefined;
   // Until everyone there has answered, the way on waits, so its choices do too.
   const classPlaceWaiting = state ? classPlaceWaitingOn(state).length > 0 : false;
-  const hasTask = myPrompt !== null || canHelp || awaySwap !== null || state?.encounter != null || inLobby || state?.phase === "chapter_complete" ||
+  // Everything this phone is asked to do, less watching a fight, which every phone gets while one
+  // is on (the board to look at) whoever's turn it is.
+  const ownTask = myPrompt !== null || canHelp || awaySwap !== null || inLobby || state?.phase === "chapter_complete" ||
     atClassPlace ||
     (state?.phase === "scene" && state.sceneType === "rest" && !practicing && (me?.character.unspentPoints ?? 0) > 0) ||
     (state?.trades ?? []).some((offer) => offer.toPlayerId === me?.playerId);
+  const hasTask = ownTask || state?.encounter != null;
+  /*
+   * What TV focus counts as something to do: a fight only on this hero's turn, or on a turn whose
+   * phone is gone and anybody here may pass (#258). Any other turn of a fight is watched on the TV.
+   */
+  const focusTask = ownTask || isMyCombatTurn || (state !== null && combatTurnAway(state));
   useEffect(() => {
     if (!hasTask && section === "turn") setPlayerSection("bag");
   }, [hasTask, section]);
+  /*
+   * TV focus (layout/tv-focus.ts): the shell says there is a TV, and this device asked to keep its
+   * eyes on it. `peek` is "Look in my bag" on the card that stands in for the bag while there is
+   * nothing to do; any task puts the card back for next time.
+   */
+  const focus = useTvFocus();
+  const [peek, setPeek] = useState(false);
+  useEffect(() => {
+    if (focusTask || !focus) setPeek(false);
+  }, [focusTask, focus]);
 
   /*
    * A new question opens the turn page by itself. The layout shells already
@@ -645,14 +704,14 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
    * each land here, and a vote ticking over on the current one does not drag
    * her off the bag she went back to on purpose. "creation" is no question.
    */
+  // No "last key" to compare against: the effect only runs again when the key changes, and a
+  // remembered key made the development double run (StrictMode) skip the turn a reload landed on.
   const turnKey = useMyTurnKey();
-  const previousTurnKey = useRef<string | null>(null);
   useEffect(() => {
-    if (turnKey !== null && turnKey !== "creation" && turnKey !== previousTurnKey.current) {
+    if (turnKey !== null && turnKey !== "creation") {
       setPlayerSection("turn");
       setSheetFor(null);
     }
-    previousTurnKey.current = turnKey;
   }, [turnKey]);
 
   const globalPrompt = state?.prompt ?? null;
@@ -812,6 +871,10 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
       inLobby ||
       state.phase === "chapter_complete");
   const showSheet = section === "bag" || !hasTask;
+  // Nothing to do and nothing asked of this phone: under TV focus, the card that says look up.
+  const tvRest = focus && !focusTask && !inLobby && !peek;
+  // "Look in my bag" from that card opens the bag, in a fight too, where the turn page is the board.
+  const sheetUp = (showSheet || (focus && peek && !focusTask)) && !tvRest;
   /*
    * Which picture to stand the controls in: the scene's own illustration when
    * it has one, else the chapter's biome — the same choice the stage makes.
@@ -821,8 +884,9 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
    * black otherwise.
    */
   const sceneArt = sceneArtFor(chapter, state);
+  // Under TV focus the picture is the TV's: the phone is plain, so the buttons are all there is.
   const backdrop =
-    inLobby || chapter === null || chapter.id !== state.chapterId
+    focus || inLobby || chapter === null || chapter.id !== state.chapterId
       ? null
       : (sceneArt ? sceneBackdropUrl(sceneArt) : null) ?? biomeBackdropUrl(chapter.biome);
   const banked = practicing ? 0 : me.character.unspentPoints;
@@ -973,7 +1037,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
       {/* Not while a point is waiting to be spent: the grow list needs the room, and on a short phone
           the goal card above it left too little pane to scroll in. */}
       {/* Nor during a story interaction (#493): the game is the whole pane, and its goal step is the game. */}
-      {inChapter && !inEncounter && !(atRest && banked > 0) && myPrompt?.kind !== "interaction" ? <ChapterGoalCard place="phone" /> : null}
+      {inChapter && !focus && !inEncounter && !(atRest && banked > 0) && myPrompt?.kind !== "interaction" ? <ChapterGoalCard place="phone" /> : null}
 
       {/*
         What the world is asking, echoed here.
@@ -990,7 +1054,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
       */}
       {/* `hidden`, not unmounted: an aim half-made in a fight survives a look
           at the bag. */}
-      <div className={`player__prompt${myPrompt?.kind === "interaction" ? " player__prompt--game" : ""}`} ref={promptBox} hidden={showSheet}>
+      <div className={`player__prompt${myPrompt?.kind === "interaction" ? " player__prompt--game" : ""}`} ref={promptBox} hidden={sheetUp || tvRest}>
         {/* Inside the prompt's scroll box rather than above it, so that while
             deciding the words sit at the top and the answers sink to the
             bottom — read down, tap at the thumb — with the scene showing
@@ -998,7 +1062,15 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
         {/* A check scene with no narration of its own is narrated by its
             prompt, and the roll card below already says it; twice is noise. */}
         {/* A story interaction's board carries its own cue; the scene's paragraph stays on the TV. */}
-        {state.narration &&
+        {/* Nor under TV focus: the TV is reading it out, and the phone is for answering. */}
+        {focus && (myPrompt?.kind === "choice" || myPrompt?.kind === "roll") ? (
+          <p className="player__tv-cue" data-testid="tv-cue">
+            <TvGlyph />
+            <span>{myPrompt.kind === "roll" ? "Listen to the TV. Then roll here." : "Listen to the TV. Then pick here."}</span>
+          </p>
+        ) : null}
+        {!focus &&
+        state.narration &&
         myPrompt !== null &&
         myPrompt.kind !== "interaction" &&
         !(myPrompt.kind === "roll" && myPrompt.prompt === state.narration) ? (
@@ -1163,6 +1235,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                   .filter(([, choiceId]) => choiceId === option.id)
                   .map(([playerId]) => playerId);
                 const selected = pendingChoice === option.id || myVote === option.id;
+                const ahead = aheadBadge(option.ahead);
                 return (
                   <li key={option.id} className={readAloud ? "prompt__option--hear" : undefined}>
                     <button
@@ -1175,7 +1248,16 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                       <span className="choice__icon">
                         <Icon name={option.icon} size="1.8em" />
                       </span>
-                      <span className="choice__label">{option.label}</span>
+                      <span className="choice__label">
+                        {option.label}
+                        {/* What picking it leads to: a roll, a game or a fight. */}
+                        {ahead === null ? null : (
+                          <span className="choice__ahead" data-testid="choice-ahead">
+                            <Icon name={ahead.icon} />
+                            <span>{ahead.text}</span>
+                          </span>
+                        )}
+                      </span>
                       <span className="choice__trail">
                         {/* The seats are always here; only the check and the
                             ticks come and go, so somebody else voting cannot
@@ -1850,51 +1932,73 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
              * It sits *above* "Back to the lobby" but is not in the way of it —
              * the lobby button is still the primary action and still one tap.
              */}
-            <KeepsakeOffer />
             {/*
-             * A vote, like the ready-up before a fight: one phone's tap used
-             * to take every phone off this screen, mid-read. The table goes
-             * back together once everyone has said they're done (engine.ts
-             * doReady), and anyone who tapped early can take it back.
+             * The shared screen is on the ending's own words (RunState.endingRead).
+             * One tap from anyone turns every screen to the rewards: the table
+             * hears the story out together, then sees what it earned.
              */}
-            {me.ready ? (
-              <Button
-                variant="secondary"
-                size="lg"
-                icon={<Icon name="back" />}
-                disabled={held}
-                onClick={() => void dispatch({ type: "READY", ready: false })}
-              >
-                Wait, I'm still looking
-              </Button>
-            ) : (
-              <Button
-                variant="primary"
-                size="lg"
-                icon={<Icon name="forward" />}
-                disabled={held}
-                onClick={() => void dispatch({ type: "READY", ready: true })}
-              >
-                Back to the lobby
-              </Button>
-            )}
-            {party.length > 1 ? (
+            {state.endingRead === false ? (
               <>
-                <p className="prompt__sub kad-muted">
-                  {me.ready
-                    ? "Everyone goes back when everyone's done."
-                    : "Take your time. Everyone goes back together."}
-                </p>
-                <ul className="prompt__party">
-                  {party.map((member) => (
-                    <li className={`kad-chip${member.ready ? " kad-chip--ok" : ""}`} key={member.playerId}>
-                      <Icon name={member.ready ? "check" : "waiting"} />
-                      <span>{member.character.name}</span>
-                    </li>
-                  ))}
-                </ul>
+                <p className="prompt__sub kad-muted">Listen to how the chapter ended.</p>
+                <Button
+                  variant="primary"
+                  size="lg"
+                  icon={<Icon name="star" />}
+                  disabled={held}
+                  onClick={() => void dispatch({ type: "ENDING_READ" })}
+                >
+                  See our rewards
+                </Button>
               </>
-            ) : null}
+            ) : (
+              <>
+                <KeepsakeOffer />
+                {/*
+                 * A vote, like the ready-up before a fight: one phone's tap used
+                 * to take every phone off this screen, mid-read. The table goes
+                 * back together once everyone has said they're done (engine.ts
+                 * doReady), and anyone who tapped early can take it back.
+                 */}
+                {me.ready ? (
+                  <Button
+                    variant="secondary"
+                    size="lg"
+                    icon={<Icon name="back" />}
+                    disabled={held}
+                    onClick={() => void dispatch({ type: "READY", ready: false })}
+                  >
+                    Wait, I'm still looking
+                  </Button>
+                ) : (
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    icon={<Icon name="forward" />}
+                    disabled={held}
+                    onClick={() => void dispatch({ type: "READY", ready: true })}
+                  >
+                    Back to the lobby
+                  </Button>
+                )}
+                {party.length > 1 ? (
+                  <>
+                    <p className="prompt__sub kad-muted">
+                      {me.ready
+                        ? "Everyone goes back when everyone's done."
+                        : "Take your time. Everyone goes back together."}
+                    </p>
+                    <ul className="prompt__party">
+                      {party.map((member) => (
+                        <li className={`kad-chip${member.ready ? " kad-chip--ok" : ""}`} key={member.playerId}>
+                          <Icon name={member.ready ? "check" : "waiting"} />
+                          <span>{member.character.name}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                ) : null}
+              </>
+            )}
           </div>
         ) : null}
 
@@ -1964,7 +2068,11 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
         ) : null}
       </div>
 
-      <div className="player__scroll kad-scroll" hidden={!showSheet}>
+      {tvRest ? (
+        <TvRest waiting={fightWaitingLine(state.encounter ?? null, party) ?? (globalPrompt !== null ? waitingLine(globalPrompt, party) : "Listen to the story…")} onPeek={() => setPeek(true)} />
+      ) : null}
+      <div className="player__scroll kad-scroll" hidden={!sheetUp}>
+
         <label className="player__page-picker">Show
           <select aria-label="Your page" value={sheetPage} onChange={event => { setSheetPage(event.target.value); setSelected(null); }}>
             <option value="bag">Bag</option><option value="stats">Stats</option>
@@ -1977,10 +2085,15 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
             moves the bag under a finger that is in the middle of it. */}
         {inLobby ? null : (
           <div className="player__task-slot">
-            {hasTask ? (
+            {hasTask && !(focus && !focusTask) ? (
               <Button variant="primary" size="lg" block className="player__task-entry"
                 icon={<Icon name="hand" />} onClick={() => setPlayerSection("turn")}>
-                {offersToMe.length > 0 ? "A gift for you" : state.phase === "chapter_complete" ? "Chapter rewards" : atRest && banked > 0 ? banked === 1 ? "Spend your stat point" : "Spend your stat points" : myPrompt !== null || isMyCombatTurn ? "Your turn" : helping !== null ? `Help ${helping}` : awaySwap !== null ? `Help ${awaySwap}'s bag` : "View the fight"}
+                {offersToMe.length > 0 ? "A gift for you" : state.phase === "chapter_complete" ? state.endingRead === false ? "How the chapter ended" : "Chapter rewards" : atRest && banked > 0 ? banked === 1 ? "Spend your stat point" : "Spend your stat points" : myPrompt !== null || isMyCombatTurn ? "Your turn" : helping !== null ? `Help ${helping}` : awaySwap !== null ? `Help ${awaySwap}'s bag` : "View the fight"}
+              </Button>
+            ) : focus ? (
+              <Button variant="primary" size="lg" block className="player__task-entry"
+                icon={<TvGlyph />} onClick={() => setPeek(false)}>
+                Back to the TV
               </Button>
             ) : (
               <p className="player__waiting" role="status"><Icon name="waiting" />

@@ -55,12 +55,11 @@
       "id": "north-gate",
       "tier": "2-tokens",
       "title": "Names, and a merfolk's goodbye",
-      "tests": "Made-up names (Tobble, Madame Fenn, the Outfitters' Steps) and one cheerful shout.",
+      "tests": "Made-up names (Tobble, Madame Fenn) and one cheerful shout.",
       "address": "gemfall-01/scene_north_gate_wave/narration",
       "script": [
-        { "by": "narrator", "text": "You wave, and the Exchange waves back. Tobble sings a goodbye verse from the Outfitters' Steps, three keys too high. Madame Fenn's barrel rolls along the quay to keep up." },
-        { "by": "madame_fenn", "text": "\"Bring me back something shiny, darlings!\"", "delivery": "excited" },
-        { "by": "narrator", "text": "High on the lighthouse, the great lamp winks twice, as if it knows something." }
+        { "by": "narrator", "text": "You wave, and the Exchange waves back. Tobble sings goodbye, three keys too high. Madame Fenn's barrel rolls along beside you." },
+        { "by": "madame_fenn", "text": "\"Bring me something shiny, darlings!\"", "delivery": "excited" }
       ]
     },
     {
@@ -85,8 +84,8 @@
       "address": "gemfall-02/choice_pib_gift/narration",
       "group": "pib",
       "script": [
-        { "by": "narrator", "text": "Inside the hedges, Pib trots up the lane beside you, narrating every leaf on the way. At the door of an inn with very tall doors they stop and dig in the big satchel. Out come three things you did not ask for." },
-        { "by": "pib", "text": "<sigh> \"I can only spare one,\"" },
+        { "by": "narrator", "text": "Inside, Pib walks you up the lane to an inn with very tall doors, then digs in the satchel." },
+        { "by": "pib", "text": "<sigh> \"I can only spare one gift for you,\"" },
         { "by": "narrator", "text": "says Pib." },
         { "by": "pib", "text": "\"The hedge says you should choose it together.\"" },
         { "by": "narrator", "text": "Which one? Everybody vote." }
@@ -114,7 +113,7 @@
       "tests": "A gasp, then a shout that is funny, not startling, at TV volume.",
       "address": "gemfall-01/scene_griffin_post/narration",
       "script": [
-        { "by": "narrator", "text": "On the way back you pass the Griffin Post, a tall tower full of round windows. Courier griffins line up on the roof while clerks stuff claim letters into their sacks, and then a few more, and then a few more after that. The postmaster, a griffin called Quill with glasses on a chain, is losing count." },
+        { "by": "narrator", "text": "In the market stands the Griffin Post, a tower full of round windows. Clerks stuff more and more letters into the couriers' sacks. The postmaster, a griffin called Quill, has lost count." },
         { "by": "quill", "text": "<gasp> \"Hands!\"", "delivery": "shout" },
         { "by": "narrator", "text": "she squawks." },
         { "by": "quill", "text": "\"Anybody with hands!\"", "delivery": "shout" }
@@ -124,16 +123,14 @@
       "id": "pib-hedge-mob",
       "tier": "4-ensemble",
       "title": "A shouting mob, and Pib not letting them in",
-      "tests": "A crowd shouting together, then Pib, then a question handed to the party.",
+      "tests": "A crowd shouting together, then Pib asking the party a question.",
       "address": "gemfall-02/scene_hedge_mob/narration",
       "group": "pib",
       "script": [
-        { "by": "narrator", "text": "Outside Bramblewood's tall hedges, a mob of treasure hunters is camped and shouting," },
-        { "by": "mob", "text": "\"Open up! Let us through!\"", "delivery": "chorus" },
-        { "by": "narrator", "text": "The hedges are not listening. Along the wall, a small thorny sprite with a satchel too big for them is trimming one leaf at a time and narrating it." },
-        { "by": "pib", "text": "\"I'm Pib,\"" },
-        { "by": "narrator", "text": "they say." },
-        { "by": "pib", "text": "\"I can't let them in. The hedges don't listen to people who haven't asked properly. What about you?\"" }
+        { "by": "narrator", "text": "Outside Bramblewood's tall hedges, a mob of treasure hunters shouts," },
+        { "by": "mob", "text": "\"Open up!\"", "delivery": "chorus" },
+        { "by": "narrator", "text": "The hedges ignore them. A small thorny sprite with a huge satchel trims one leaf at a time." },
+        { "by": "pib", "text": "\"I'm Pib. I keep the hedges. They only open for people who ask properly. Will you?\"" }
       ]
     },
     {
@@ -163,11 +160,11 @@
       "tests": "A flock answering together, slightly out of step, then single sheeple finishing each other's thoughts.",
       "address": "gemfall-02/scene_flock_ridge/narration",
       "script": [
-        { "by": "narrator", "text": "On the low ridge above the road, about thirty sheeple are standing in one tight woolly knot. Every one of them is wearing the same felted hat with seven brims. When you walk up, nobody says anything for a whole minute, because each sheeple is waiting for another one to say hello first. Then twenty of them say hello at once." },
+        { "by": "narrator", "text": "About thirty sheeple stand in one woolly knot, all in the same seven-brimmed hat." },
         { "by": "sheeple_middle", "text": "\"What do we think?\"" },
-        { "by": "narrator", "text": "asks the one in the middle." },
+        { "by": "narrator", "text": "asks the middle one." },
         { "by": "sheeple", "text": "\"We think wolves,\"", "delivery": "chorus" },
-        { "by": "narrator", "text": "they all answer, slightly out of step." },
+        { "by": "narrator", "text": "they answer, out of step." },
         { "by": "sheeple_a", "text": "\"In the grass.\"" },
         { "by": "sheeple_b", "text": "\"We all saw them.\"" },
         { "by": "sheeple_middle", "text": "<pause> \"Because one of us did.\"" }
@@ -199,14 +196,10 @@
       "address": "gemfall-06/scene_soup_tent/narration",
       "tokens": { "party": 2 },
       "script": [
-        { "by": "narrator", "text": "At the top of the road is a soup tent with a sign: FREE, NO QUESTIONS. A woman called Hessa Wren ladles a bowl for {party}, asks for names, and remembers them. Behind her, helpers in painted bark masks stir the pots and hum one low note, all together." },
+        { "by": "narrator", "text": "At the top of the road, a soup tent says FREE, NO QUESTIONS. A woman called Hessa Wren ladles soup for {party} and remembers every name. Helpers in painted bark masks stir the pots, humming one low note." },
         { "by": "hessa", "text": "\"My friends from the Deep Hollow,\"" },
-        { "by": "narrator", "text": "says Hessa." },
-        { "by": "hessa", "text": "\"The masks are for singing to the mountain.\"" },
-        { "by": "narrator", "text": "Then she leans in." },
-        { "by": "hessa", "text": "<breath> \"The world's laws are broken,\"", "delivery": "kindly" },
-        { "by": "narrator", "text": "she says kindly, as if she were telling you it might rain." },
-        { "by": "hessa", "text": "\"There's a seal on the mountain, like a lid on a pot. It isn't protecting anyone. It's a cage on the cure.\"", "delivery": "kindly" }
+        { "by": "narrator", "text": "she says. Then, kindly:" },
+        { "by": "hessa", "text": "<breath> \"There's a seal on the mountain, like a lid on a pot. It's a cage on the cure. Will you help us open it?\"", "delivery": "kindly" }
       ]
     },
     {
@@ -217,11 +210,11 @@
       "address": "riftlight-riftseekers-departure/route/narration",
       "script": [
         { "by": "narrator", "text": "Orin points below the ice shelf, where melt channels join into a broad river." },
-        { "by": "orin", "text": "\"The Great River starts here. Stay on this bank. The shelf above the headwaters leads toward Frostfang. Test the ice. If it gives, let the river carry you to a place you can get out. Do not fight it under the shelf.\"" },
-        { "by": "narrator", "text": "Seren points toward the hall." },
-        { "by": "seren", "text": "\"Or study the seam that answered your song. Look for signs of openings around the glacier. Learning what they need might help you find a way home.\"" },
-        { "by": "narrator", "text": "Orin traces a longer road above the bank." },
-        { "by": "orin", "text": "\"Or follow these markers to a ferry at a place called Ashspan Bridge. It takes longer, but it stays off the ice. From the bridge, an upper bank road goes back north to Frostfang Shore.\"" }
+        { "by": "orin", "text": "\"The Great River starts here. Three roads leave this hall. The shelf above the headwaters goes east to Frostfang and the Cairnstep. Test the ice. If it gives, let the river carry you somewhere you can climb out.\"" },
+        { "by": "narrator", "text": "Seren points back at the glacier." },
+        { "by": "seren", "text": "\"Or look for the hidden openings in the ice. That seam answered your song. Learning what they need might help you find a way home.\"" },
+        { "by": "narrator", "text": "Orin traces a longer line." },
+        { "by": "orin", "text": "\"Or take the marked bank road to a ferry at a place called Ashspan Bridge. Slower, but it stays off the ice. From the bridge, an upper bank road goes back north to Frostfang Shore.\"" }
       ]
     }
   ]

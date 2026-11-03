@@ -1,5 +1,5 @@
 {
-  "$comment": "Riftlight authored opening draft. Development preview only; see ../README.md. Production campaign id will be riftlight. No bonus XP: preserve the design bible campaign budget.",
+  "$comment": "Riftlight, Wandering Sky strand middle (docs/campaigns/continental-rift/arc.md, whale-road; design note nodes/whale-road.md). Rewritten in November 2026. Question: why are the whales circling, and how do we let them go? Keeper Juniper carries it into the-island-due-back; Lady Olivia appears with Pip and offers her shortcut, which the party takes or refuses on the campaign map (rift action olivia/guide on whales-to-coast). Sets whales_guided only on the gentle ending, and sky_followup_promised true or false on every path.",
   "id": "riftlight-whale-road",
   "campaignId": "riftlight",
   "index": 5,
@@ -8,1425 +8,38 @@
   "music": "riftlight-paths",
   "estimatedMinutes": 30,
   "xpAward": 140,
-  "entry": "whales",
+  "entry": "arrive",
   "plate": {
     "art": "plates/riftlight/whale-road",
     "narration": "Above a grassy island, cloud whales turn through the mist. Their long fins move slowly in the open sky. Below them, a broad green landing waits between the clouds."
   },
   "goal": {
-    "text": "Help the keeper get the whales' island ready before the folds open.",
+    "text": "Why are the whales circling, and how do we let them go?",
     "steps": [
       {
-        "id": "learn_signal",
-        "label": "Learn the keeper's quiet signal",
-        "flag": "practiced_the_whale_signal"
+        "id": "turn",
+        "label": "Find what turns the whales back",
+        "flag": "whale_found_pair"
       },
       {
-        "id": "make_room",
-        "label": "Give the little whale room",
-        "flag": "made_room_for_the_whale"
+        "id": "why",
+        "label": "Learn why they keep circling",
+        "flag": "whale_learned_why"
       },
       {
-        "id": "teach_keeper",
-        "label": "Teach the new keeper the signals",
-        "flag": "taught_the_new_keeper"
+        "id": "offer",
+        "label": "Hear Lady Olivia's shortcut",
+        "flag": "whale_heard_offer"
+      },
+      {
+        "id": "lead",
+        "label": "Lead one whale out the slow way",
+        "flag": "whale_led_one"
       }
     ]
   },
-  "scenes": {
-    "whales": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "entities/cloud_whale",
-          "name": "Cloud whale"
-        }
-      ],
-      "rift": "steady",
-      "narration": "Cloud whales sweep their long fins through the mist above a grassy island. Two folds pulse together. Each pulse sends the whales circling back. A kitsune keeper lifts a rope to stop the waiting travelers. \"Help me ready the island before those folds open. We need a clear lane and a signal everyone understands.\" A whale's enormous eye passes overhead. The keeper smooths her whiskers. \"They have been watching us make a mess of this all morning.\"",
-      "choices": [
-        {
-          "id": "watch",
-          "label": "Watch one full circle",
-          "icon": "hand",
-          "goto": "olivia"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road"
-    },
-    "olivia": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "Lady Olivia, the unicorn Riftseeker you met on the glacier, waits with a notebook. \"Those openings answer each other. I want to open them now.\" The keeper shakes her head. \"The whales are using this space.\" Olivia points to the rope. \"Help me hold the note and I can wake the pair early. It will scatter them. Or guide them clear first. Your choice.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Prepare a safe approach before deciding",
-          "icon": "hand",
-          "goto": "sky_map"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road"
-    },
-    "sky_map": {
-      "type": "story",
-      "narration": "The keeper unfolds a cloth map. Yesterday's lane runs straight into today's sky. She has a rock marker, a waiting rope and a broad grass lane to arrange before anyone approaches the folds. Share the keeper's clues to lay out the approach. Olivia holds a corner before the wind can improve the map again.",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "hand",
-          "goto": "route_layout"
-        }
-      ]
-    },
-    "route_layout": {
-      "type": "story",
-      "narration": "The keeper spreads yesterday's map on the grass. Its whale lane points straight into empty sky. Together you put the waiting rope inland and leave the broad grass lane clear. Olivia erases yesterday's route. The smallest whale rolls overhead, watching the eraser.",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "whale_listen"
-        }
-      ]
-    },
-    "whale_listen": {
-      "type": "story",
-      "narration": "A smaller whale with a notched fin vanishes into moving banks of mist. The keeper points out where it went. \"Follow that one. We need to know whether it comes around to our lane.\" Watch the marked mist bank as the banks trade places.",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "hand",
-          "goto": "follow_whale"
-        }
-      ]
-    },
-    "follow_whale": {
-      "type": "interaction",
-      "narration": "Keep track of the notched-fin whale behind the moving mist banks. You are watching from behind the rope.",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road",
-      "interaction": {
-        "kind": "tracking",
-        "cue": "Follow the marked mist bank, then choose where the whale is hidden.",
-        "actionLabel": "Point out the whale",
-        "covers": [
-          "Thin mist",
-          "Round mist",
-          "Tall mist"
-        ],
-        "start": 1,
-        "swaps": [
-          [
-            0,
-            1
-          ],
-          [
-            1,
-            2
-          ],
-          [
-            0,
-            2
-          ]
-        ],
-        "stepMs": 1400
-      },
-      "onSuccess": {
-        "goto": "song_watch",
-        "narration": "The notched fin comes out where you pointed. Now you can watch that whale through a whole turn."
-      },
-      "onFailure": {
-        "goto": "keeper_points",
-        "narration": "The whale comes out on the other side. You keep your place behind the rope instead of following a guess."
-      },
-      "onAssisted": {
-        "goto": "song_watch",
-        "narration": "The notched fin comes out where you pointed. Now you can watch that whale through a whole turn."
-      }
-    },
-    "keeper_points": {
-      "type": "story",
-      "narration": "The keeper points to the notch as the fin clears the mist. \"There. Same whale, new view.\" You watch it together until it faces the lane. Its eye is almost as large as Olivia's notebook.",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "hand",
-          "goto": "song_watch"
-        }
-      ]
-    },
-    "song_watch": {
-      "type": "story",
-      "narration": "The whale folds one fin, faces the lane, then leaves a quiet pause. The keeper raises her paw in that pause. \"That is when it listens.\" Its next note rumbles through the grass beneath your feet. Olivia stops writing until the sound has passed.",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "keeper_lesson"
-        }
-      ]
-    },
-    "keeper_lesson": {
-      "type": "choice_point",
-      "narration": "The keeper can teach a quiet note or a slow arm signal. The note lets you time an invitation when a whale faces the lane. The arm signal lets your friends hold a visible greeting while another keeper watches its response. The keeper smiles. \"Both leave the whale free to turn away.\" Which greeting will you practice?",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "note",
-          "label": "Learn the quiet answering note",
-          "icon": "hand",
-          "goto": "note_practice",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "whale_signal_sung",
-              "value": true
-            }
-          ]
-        },
-        {
-          "id": "arms",
-          "label": "Learn the slow arm signal",
-          "icon": "hand",
-          "goto": "arm_practice",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "whale_signal_sung",
-              "value": false
-            }
-          ]
-        },
-        {
-          "id": "songkeeper",
-          "label": "Let our songkeeper lead the note",
-          "icon": "hand",
-          "goto": "songkeeper_practice",
-          "requiresClass": "songkeeper",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "whale_signal_sung",
-              "value": true
-            }
-          ]
-        }
-      ]
-    },
-    "note_practice": {
-      "type": "interaction",
-      "narration": "The keeper raises a paw for the whale's listening pause. Offer one soft note in that pause, then let the answer come. \"Hello,\" she says. \"Not a request for breakfast.\"",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road",
-      "interaction": {
-        "kind": "timing",
-        "cue": "Offer the note while the marker is in the listening pause.",
-        "actionLabel": "Offer one note",
-        "target": 0.5,
-        "width": 0.3,
-        "periodMs": 6000
-      },
-      "onSuccess": {
-        "goto": "lesson_result",
-        "narration": "A soft answering breath rolls back from the mist.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "practiced_the_whale_signal",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "slow_greeting",
-        "narration": "Your note overlaps the whale's. You stop and let the keeper show a slower greeting."
-      },
-      "onAssisted": {
-        "goto": "lesson_result",
-        "narration": "A soft answering breath rolls back from the mist.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "practiced_the_whale_signal",
-            "value": true
-          }
-        ]
-      }
-    },
-    "songkeeper_practice": {
-      "type": "interaction",
-      "narration": "The keeper raises a paw for the whale's listening pause. Offer one soft note in that pause, then let the answer come. \"Hello,\" she says. \"Not a request for breakfast.\" Your songkeeper can carry the note across a wider part of the pause.",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road",
-      "interaction": {
-        "kind": "timing",
-        "cue": "Offer the note while the marker is in the listening pause.",
-        "actionLabel": "Offer one note",
-        "target": 0.5,
-        "width": 0.6,
-        "periodMs": 6000
-      },
-      "onSuccess": {
-        "goto": "lesson_result",
-        "narration": "A soft answering breath rolls back from the mist.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "practiced_the_whale_signal",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "slow_greeting",
-        "narration": "Your note overlaps the whale's. You stop and let the keeper show a slower greeting."
-      },
-      "onAssisted": {
-        "goto": "lesson_result",
-        "narration": "A soft answering breath rolls back from the mist.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "practiced_the_whale_signal",
-            "value": true
-          }
-        ]
-      }
-    },
-    "arm_practice": {
-      "type": "interaction",
-      "narration": "Hold the keeper's low, open-arm greeting while your acting friend watches the whale. Solo heroes can rest the signal arm on the padded post.",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road",
-      "interaction": {
-        "kind": "cooperate",
-        "cue": "Keep the greeting steady while the keeper watches.",
-        "actionLabel": "Watch for the answer",
-        "supportLabel": "Support the signal arm"
-      },
-      "onSuccess": {
-        "goto": "lesson_result",
-        "narration": "The whale turns one eye toward the steady greeting.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "practiced_the_whale_signal",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "lesson_result",
-        "narration": "The whale turns one eye toward the steady greeting.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "practiced_the_whale_signal",
-            "value": true
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "lesson_result",
-        "narration": "The whale turns one eye toward the steady greeting.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "practiced_the_whale_signal",
-            "value": true
-          }
-        ]
-      }
-    },
-    "slow_greeting": {
-      "type": "story",
-      "narration": "The keeper offers the greeting herself, leaving a long quiet pause. The whale answers. You listen beside her. Olivia lowers her pencil. \"I was about to fill that silence.\" The keeper smiles. \"It was already being used.\"",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "lesson_result",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "practiced_the_whale_signal",
-              "value": true
-            }
-          ]
-        }
-      ]
-    },
-    "lesson_result": {
-      "type": "story",
-      "narration": "The whale resumes its circle. \"You have a greeting, not a leash,\" says the keeper. Olivia sketches its fin, then has to move her notebook when a rolled shelter cloth starts sliding past her hoof.",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "hand",
-          "goto": "loose_kit"
-        }
-      ]
-    },
-    "loose_kit": {
-      "type": "story",
-      "narration": "Olivia catches the rolling shelter cloth against her notebook. For a moment she is a unicorn wearing a very practical curtain. The keeper helps peel it away. \"One cloth, and two places that need it.\"",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "waiting_place"
-        }
-      ]
-    },
-    "waiting_place": {
-      "type": "choice_point",
-      "narration": "There is one shelter cloth. Put it behind the rock and the waiting travelers stay out of the wind, but a watcher must pass signals around the blind turn. Put it at the open viewpoint and the watchers see both folds, but the cloth will need bracing in the gusts. Which work will your party prepare for?",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "shelter",
-          "label": "Keep visitors sheltered; relay signals around the rock",
-          "icon": "hand",
-          "goto": "shelter_setup",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "whale_open_view",
-              "value": false
-            }
-          ]
-        },
-        {
-          "id": "view",
-          "label": "Keep both folds in view; brace the exposed cloth",
-          "icon": "hand",
-          "goto": "view_setup",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "whale_open_view",
-              "value": true
-            }
-          ]
-        }
-      ]
-    },
-    "shelter_setup": {
-      "type": "interaction",
-      "narration": "Stretch the cloth behind the rock while the keeper checks the waiting rope. Leave the signal path clear around the blind turn.",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road",
-      "interaction": {
-        "kind": "cooperate",
-        "cue": "Support the cloth while the keeper fastens it.",
-        "actionLabel": "Fasten the shelter",
-        "supportLabel": "Hold the cloth edge"
-      },
-      "onSuccess": {
-        "goto": "site_ready",
-        "narration": "The visitors have a dry lee. A watcher will need to carry each signal around the rock."
-      },
-      "onFailure": {
-        "goto": "site_ready",
-        "narration": "The visitors have a dry lee. A watcher will need to carry each signal around the rock."
-      },
-      "onAssisted": {
-        "goto": "site_ready",
-        "narration": "The visitors have a dry lee. A watcher will need to carry each signal around the rock."
-      }
-    },
-    "view_setup": {
-      "type": "interaction",
-      "narration": "The wind pushes at the cloth. Set its two weighted poles evenly before opening the waiting place. Olivia's mane is attempting to join the flags.",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road",
-      "interaction": {
-        "kind": "balance",
-        "cue": "Level the two cloth poles against the wind.",
-        "actionLabel": "Set the poles",
-        "objectLabel": "Shelter cloth poles"
-      },
-      "onSuccess": {
-        "goto": "site_ready",
-        "narration": "Both folds are visible from the waiting place. The braced poles hold the cloth."
-      },
-      "onFailure": {
-        "goto": "site_ready",
-        "narration": "Both folds are visible from the waiting place. The braced poles hold the cloth."
-      },
-      "onAssisted": {
-        "goto": "site_ready",
-        "narration": "Both folds are visible from the waiting place. The braced poles hold the cloth."
-      }
-    },
-    "site_ready": {
-      "type": "story",
-      "narration": "The keeper checks your waiting place and takes the first watch. A little whale turns toward the open lane, then hesitates as the folds pulse. Its fin stirs the empty grass. \"Give it room to finish that turn,\" the keeper whispers.",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road",
-      "variants": [
-        {
-          "when": {
-            "flag": "whale_open_view"
-          },
-          "text": "From the viewpoint, Olivia can see the whole turn."
-        },
-        {
-          "when": {
-            "notFlag": "whale_open_view"
-          },
-          "text": "Behind the rock, the keeper carries the first sighting back to the sheltered travelers."
-        }
-      ],
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "hand",
-          "goto": "little_turn"
-        }
-      ]
-    },
-    "little_turn": {
-      "type": "interaction",
-      "narration": "Wait for the fin to point across the clear grass, then offer the keeper's invitation. The whale decides whether to use the space.",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road",
-      "interaction": {
-        "kind": "timing",
-        "cue": "Wait for the fin-facing interval before inviting the turn.",
-        "actionLabel": "Offer the lane",
-        "target": 0.5,
-        "width": 0.3,
-        "periodMs": 6000
-      },
-      "onSuccess": {
-        "goto": "small_whale_result",
-        "narration": "The small whale turns into the space and swings back toward its family.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "made_room_for_the_whale",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "quiet_wait",
-        "narration": "The whale turns away from the overlapping signals. You lower them and leave the lane open."
-      },
-      "onAssisted": {
-        "goto": "small_whale_result",
-        "narration": "The small whale turns into the space and swings back toward its family.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "made_room_for_the_whale",
-            "value": true
-          }
-        ]
-      }
-    },
-    "quiet_wait": {
-      "type": "interaction",
-      "narration": "The keeper asks for one quiet circle. Choose how you will help the waiting place stay calm while the whale looks again.",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road",
-      "interaction": {
-        "kind": "play",
-        "cue": "Make room for a quiet circle.",
-        "actionLabel": "Finish together",
-        "participation": "everyone",
-        "options": [
-          {
-            "id": "hands",
-            "label": "Rest your hands",
-            "icon": "hand",
-            "reaction": "Hands settle. The signals stop overlapping."
-          },
-          {
-            "id": "gear",
-            "label": "Tuck loose gear behind the rope",
-            "icon": "hand",
-            "reaction": "The lane stays empty for the whale."
-          },
-          {
-            "id": "watch",
-            "label": "Watch without calling",
-            "icon": "hand",
-            "reaction": "The keeper points out the small fin as it returns."
-          }
-        ]
-      },
-      "onSuccess": {
-        "goto": "small_whale_result",
-        "narration": "With the calls quiet, the small whale finds the open turning space.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "made_room_for_the_whale",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "small_whale_result",
-        "narration": "With the calls quiet, the small whale finds the open turning space.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "made_room_for_the_whale",
-            "value": true
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "small_whale_result",
-        "narration": "With the calls quiet, the small whale finds the open turning space.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "made_room_for_the_whale",
-            "value": true
-          }
-        ]
-      }
-    },
-    "small_whale_result": {
-      "type": "rest",
-      "narration": "The small whale has room, but the whole group is still circling. The keeper brings warm barley cakes to your chosen waiting place. Olivia watches a crumb take flight, then eats the next one quickly. A new kitsune keeper arrives to take over, a little out of breath. \"Show me your signals before anyone decides about the folds.\"",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "cast/new_island_keeper",
-          "name": "New keeper"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road",
-      "heal": 0,
-      "choices": [
-        {
-          "id": "rest",
-          "label": "Rest, then show the new keeper",
-          "icon": "hand",
-          "goto": "handoff_sky"
-        },
-        {
-          "id": "watch",
-          "label": "Rest while watching one more circle",
-          "icon": "hand",
-          "goto": "handoff_sky"
-        }
-      ]
-    },
-    "handoff_sky": {
-      "type": "choice_point",
-      "narration": "The new keeper has not seen your work. The first keeper shows the two cloths: white means watch this approach; striped means stop and wait. The newcomer needs to pass a stop signal from the watcher to the waiting travelers. Anyone can rehearse the relay around the rock. With an open viewpoint, you can instead teach her to watch the cloth signals directly. Which handover will you demonstrate?",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "cast/new_island_keeper",
-          "name": "New keeper"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "relay",
-          "label": "Rehearse the watcher-to-waiting-place relay",
-          "icon": "hand",
-          "goto": "signal_relay"
-        },
-        {
-          "id": "direct",
-          "label": "Use our open view to recognize signals directly",
-          "icon": "hand",
-          "goto": "signal_memory",
-          "when": {
-            "flag": "whale_open_view"
-          }
-        }
-      ]
-    },
-    "signal_relay": {
-      "type": "interaction",
-      "narration": "Pass the watcher's stop message along the waiting line. The new keeper receives it at the rock and echoes it toward the travelers.",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "cast/new_island_keeper",
-          "name": "New keeper"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Catch the stop message and pass it to the next watcher.",
-        "actionLabel": "Pass the stop message",
-        "objectLabel": "Watcher's stop message"
-      },
-      "onSuccess": {
-        "goto": "keeper_echo",
-        "narration": "The stop message reaches the waiting place without anyone entering the lane."
-      },
-      "onFailure": {
-        "goto": "keeper_echo",
-        "narration": "The stop message reaches the waiting place without anyone entering the lane."
-      },
-      "onAssisted": {
-        "goto": "keeper_echo",
-        "narration": "The stop message reaches the waiting place without anyone entering the lane."
-      }
-    },
-    "signal_memory": {
-      "type": "interaction",
-      "narration": "From your exposed viewpoint, show the new keeper the cloth changes. She must remember the stop and waiting signs when the watcher turns away.",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "cast/new_island_keeper",
-          "name": "New keeper"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road",
-      "interaction": {
-        "kind": "memory",
-        "cue": "Watch the cloth pattern, then echo it.",
-        "actionLabel": "Show what we saw",
-        "options": [
-          {
-            "id": "wait",
-            "label": "Hold at the rope",
-            "icon": "eye"
-          },
-          {
-            "id": "stop",
-            "label": "Striped stop cloth",
-            "icon": "eye"
-          },
-          {
-            "id": "watch",
-            "label": "White watching cloth",
-            "icon": "eye"
-          }
-        ],
-        "answer": [
-          "watch",
-          "stop",
-          "wait"
-        ],
-        "stepMs": 1300
-      },
-      "onSuccess": {
-        "goto": "keeper_echo",
-        "narration": "The new keeper recognizes the changing cloths from the open viewpoint."
-      },
-      "onFailure": {
-        "goto": "signal_relay",
-        "narration": "The new keeper mixes up two cloths. You switch to the watcher relay so every stop gets passed aloud."
-      },
-      "onAssisted": {
-        "goto": "keeper_echo",
-        "narration": "The new keeper recognizes the changing cloths from the open viewpoint."
-      }
-    },
-    "keeper_echo": {
-      "type": "story",
-      "narration": "The new keeper repeats the stop signal, then points out the waiting place on your copied route. The first keeper checks it with her. A whale's turn is an invitation to watch; it is never permission for travelers to cross the rope. The keepers take the watch together.",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "cast/new_island_keeper",
-          "name": "New keeper"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "sky_repair",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "taught_the_new_keeper",
-              "value": true
-            }
-          ]
-        }
-      ]
-    },
-    "sky_repair": {
-      "type": "choice_point",
-      "narration": "The keepers have their route copy. Olivia keeps the song observations. If your party meets the lookout keepers farther along this route, you can carry a report of what happens to the whales. It is a promise to bring news, not to make the whales return. Will you take that follow-up job?",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "cast/new_island_keeper",
-          "name": "New keeper"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "report",
-          "label": "Promise to bring a whale-route report",
-          "icon": "hand",
-          "goto": "sky_repair_1"
-        },
-        {
-          "id": "local",
-          "label": "Leave today's copies here without promising a report",
-          "icon": "hand",
-          "goto": "sky_repair_2"
-        }
-      ]
-    },
-    "sky_repair_1": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/new_island_keeper",
-          "name": "New keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You agree to show the copied map when you meet neighbors who use the island routes. You will say whether the whales were guided or scattered once that choice is made. The keeper asks for honest news, not a promise to make the whales return.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "opening_decision",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "sky_followup_promised",
-              "value": true
-            }
-          ]
-        }
-      ]
-    },
-    "sky_repair_2": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/new_island_keeper",
-          "name": "New keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You explain that your party does not know where its next crossing will lead. The keeper accepts the limit and keeps the route copies here. Olivia keeps her observations. You have helped make today's choice clear without speaking for a future party you cannot know.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "opening_decision",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "sky_followup_promised",
-              "value": false
-            }
-          ]
-        }
-      ]
-    },
-    "opening_decision": {
-      "type": "choice_point",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "The waiting rope is set. The lane is clear. Olivia looks from her notebook to the circling whales. \"Waiting is so slow,\" she sighs. You can finish the gentle invitation and wait for them to move, or hear her offer to wake the folds early. That shortcut would scatter the whales and disrupt the island neighbors' familiar route. Nobody else will choose for your party. What do you decide?",
-      "choices": [
-        {
-          "id": "guide",
-          "label": "Guide the whales clear first",
-          "icon": "hand",
-          "goto": "guide"
-        },
-        {
-          "id": "consider",
-          "label": "Hear the shortcut before deciding at the rift",
-          "icon": "hand",
-          "goto": "offer"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road"
-    },
-    "gentle": {
-      "type": "rest",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "open",
-      "narration": "The last tail slips beyond the folds. Both openings spread at once and hold steady. The keeper lowers the rope. \"Now they can travel without circling us.\" Olivia closes her notebook. The pair is ready to cross, or you can pause on the island.",
-      "heal": 0,
-      "choices": [],
-      "outcome": "success",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "whales_guided",
-          "value": true
-        }
-      ],
-      "art": "scenes/riftlight/whale-road-cleared"
-    },
-    "offer": {
-      "type": "rest",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "Olivia waits beside the rope. Nothing has opened yet. At the rift, Lady Olivia's way will wake the pair early and scatter the whales. You can still choose to guide them clear instead. The keeper leaves the broad lane open.",
-      "heal": 0,
-      "choices": [],
-      "outcome": "success",
-      "art": "scenes/riftlight/whale-road"
-    },
-    "guide": {
-      "type": "choice_point",
-      "narration": "The keeper waits beside the open lane. Your party can relay her invitation from watcher to watcher. Your practiced greeting also offers another way: time the quiet note yourself, or hold the slow arm signal while she watches the whales. The whales must choose their own turn. How will you help them clear the folds?",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "cast/new_island_keeper",
-          "name": "New keeper"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "keeper",
-          "label": "Relay the keeper's invitation",
-          "icon": "hand",
-          "goto": "guide_relay"
-        },
-        {
-          "id": "note",
-          "label": "Time our practiced quiet note",
-          "icon": "hand",
-          "goto": "guide_note",
-          "when": {
-            "flag": "whale_signal_sung"
-          }
-        },
-        {
-          "id": "arms",
-          "label": "Hold our practiced arm greeting",
-          "icon": "hand",
-          "goto": "guide_arms",
-          "when": {
-            "notFlag": "whale_signal_sung"
-          }
-        }
-      ]
-    },
-    "guide_relay": {
-      "type": "interaction",
-      "narration": "The keeper waits for the leading fin to face the lane. Carry her quiet invitation along the watcher line without adding another call.",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "cast/new_island_keeper",
-          "name": "New keeper"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Pass the keeper's invitation toward the clear lane.",
-        "actionLabel": "Pass the invitation",
-        "objectLabel": "Quiet whale invitation"
-      },
-      "onSuccess": {
-        "goto": "last_tail",
-        "narration": "The leading whale turns. The others follow its sweep into clear sky."
-      },
-      "onFailure": {
-        "goto": "last_tail",
-        "narration": "The leading whale turns. The others follow its sweep into clear sky."
-      },
-      "onAssisted": {
-        "goto": "last_tail",
-        "narration": "The leading whale turns. The others follow its sweep into clear sky."
-      }
-    },
-    "guide_note": {
-      "type": "interaction",
-      "narration": "Wait for the leading fin to face the open lane. Offer the note in that listening interval, then leave the whale space to answer.",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "cast/new_island_keeper",
-          "name": "New keeper"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road",
-      "interaction": {
-        "kind": "timing",
-        "cue": "Offer the note in the fin-facing interval.",
-        "actionLabel": "Invite the turn",
-        "target": 0.5,
-        "width": 0.3,
-        "periodMs": 6000
-      },
-      "onSuccess": {
-        "goto": "last_tail",
-        "narration": "The leading whale answers your note and turns. The others follow."
-      },
-      "onFailure": {
-        "goto": "guide_wait",
-        "narration": "The whale turns away from the mistimed note. You stop calling; the keeper will lead the next invitation."
-      },
-      "onAssisted": {
-        "goto": "last_tail",
-        "narration": "The leading whale answers your note and turns. The others follow."
-      }
-    },
-    "guide_arms": {
-      "type": "interaction",
-      "narration": "Hold the low arm greeting where the leading whale can see it. The keeper watches its fin while your friends steady the signal.",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "cast/new_island_keeper",
-          "name": "New keeper"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road",
-      "interaction": {
-        "kind": "cooperate",
-        "cue": "Keep the arm greeting steady until the keeper sees a turn.",
-        "actionLabel": "Watch the leading fin",
-        "supportLabel": "Support the greeting arm"
-      },
-      "onSuccess": {
-        "goto": "last_tail",
-        "narration": "The leading fin tilts toward the greeting. The group follows the new curve."
-      },
-      "onFailure": {
-        "goto": "last_tail",
-        "narration": "The leading fin tilts toward the greeting. The group follows the new curve."
-      },
-      "onAssisted": {
-        "goto": "last_tail",
-        "narration": "The leading fin tilts toward the greeting. The group follows the new curve."
-      }
-    },
-    "guide_wait": {
-      "type": "interaction",
-      "narration": "The keeper leads one last quiet invitation. Help the waiting travelers leave the lane clear while she watches for an answer.",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "cast/new_island_keeper",
-          "name": "New keeper"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road",
-      "interaction": {
-        "kind": "play",
-        "cue": "Give the whales room to answer.",
-        "actionLabel": "Finish together",
-        "participation": "everyone",
-        "options": [
-          {
-            "id": "quiet",
-            "label": "Keep the waiting line quiet",
-            "icon": "hand",
-            "reaction": "Only the keeper's low note carries."
-          },
-          {
-            "id": "space",
-            "label": "Clear a loose bag from the rope",
-            "icon": "hand",
-            "reaction": "The turning lane stays wide."
-          },
-          {
-            "id": "watch",
-            "label": "Point out the leading fin",
-            "icon": "hand",
-            "reaction": "The keeper waits until it faces the lane."
-          }
-        ]
-      },
-      "onSuccess": {
-        "goto": "last_tail",
-        "narration": "The keeper's invitation reaches the listening whale. It turns, and its family follows."
-      },
-      "onFailure": {
-        "goto": "last_tail",
-        "narration": "The keeper's invitation reaches the listening whale. It turns, and its family follows."
-      },
-      "onAssisted": {
-        "goto": "last_tail",
-        "narration": "The keeper's invitation reaches the listening whale. It turns, and its family follows."
-      }
-    },
-    "last_tail": {
-      "type": "story",
-      "narration": "The smallest whale takes its own enormous time. At last its tail clears the folds. The keeper lowers her whistle. Olivia has stopped drawing long enough to watch the sky.",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "cast/new_island_keeper",
-          "name": "New keeper"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "hand",
-          "goto": "gentle"
-        }
-      ]
-    }
-  },
   "voiceGuide": {
-    "tone": "Warm, funny, curious, with real consequences. Describe actions and sensory details directly. Short dialogue. Never use \"the kind of thing that\", \"the sort of thing that\", or \"it was X, the type of thing that makes you Y\" comparisons. Let a character act instead of explaining how the reader should feel.",
+    "tone": "Warm, funny and a little spooky, with real consequences. Short sentences. Let a character act instead of explaining how the reader should feel. The whales are gentle, immense and tired, never enemies or mounts. Nobody is lectured about which way is right.",
     "vocabulary": "Read aloud to an eight-year-old. Concrete words, short sentences, distinct voices.",
     "forbidden": [
       "death",
@@ -1438,91 +51,2432 @@
       "Legend Dragon"
     ],
     "npcVoices": {
-      "Kitsune keeper": "Calm signal keeper of the whale road. She smooths her whiskers, counts the cloths twice, and never guesses what she cannot see.",
-      "New keeper": "A kitsune keeper who has just arrived to take over the watch. She is a little out of breath and wants to learn your signals properly."
+      "Keeper Juniper": "Keeper Juniper, the kitsune island keeper (she/her). Brisk, warm and a little bossy; talks to the whales like old aunties and calls each by name. Knits one row of a scarf for every circle they swim. Wants the whales home and the island due back safely in.",
+      "Lady Olivia": "Lady Olivia, unicorn Riftseeker (she/her). Bright, kind about the whales, a little too sure. Right that the openings are linked and that the pull will get worse; wants to prove the openings can be used. Hates waiting.",
+      "Pip Thistledown": "Young manticore scout (he/him). Eager, notebook always out, spoon behind his ear, quotes \"Lady Olivia says...\" and wants to impress her. Counts pulses out loud. Kind underneath; notices when the whales are sad."
     }
   },
   "presentation": {
     "interactions": {
-      "follow_whale": {
+      "toss": {
         "props": [
-          "cloud-whale"
-        ],
-        "coverIcons": [
-          "prop_playing_card",
-          "prop_playing_card",
-          "prop_playing_card"
+          "toss-pebble"
         ]
       },
-      "little_turn": {
+      "quiet_beat": {
         "props": [
-          "cloud-whale"
-        ]
-      },
-      "guide_wait": {
-        "props": [
-          "cloud-whale"
-        ]
-      },
-      "note_practice": {
-        "props": [
+          "cloud-whale",
           "note-low"
         ]
       },
-      "songkeeper_practice": {
+      "sing_road": {
         "props": [
-          "note-low"
+          "cloud-whale",
+          "note-low",
+          "note-middle",
+          "note-high"
         ]
       },
-      "guide_note": {
+      "sing_road_wary": {
         "props": [
-          "note-low"
-        ]
-      },
-      "arm_practice": {
-        "props": [
-          "wind-blanket",
-          "rope-loop"
-        ]
-      },
-      "shelter_setup": {
-        "props": [
-          "wind-blanket",
-          "rope-loop"
-        ]
-      },
-      "view_setup": {
-        "props": [
-          "wind-blanket",
-          "rope-loop"
-        ]
-      },
-      "guide_arms": {
-        "props": [
-          "wind-blanket",
-          "rope-loop"
-        ]
-      },
-      "signal_relay": {
-        "props": [
-          "wind-banner"
-        ]
-      },
-      "signal_memory": {
-        "props": [
-          "wind-banner"
-        ]
-      },
-      "guide_relay": {
-        "props": [
-          "wind-banner"
-        ]
-      },
-      "quiet_wait": {
-        "props": [
-          "kite-shade"
+          "cloud-whale",
+          "note-low",
+          "note-middle",
+          "note-high"
         ]
       }
+    }
+  },
+  "scenes": {
+    "arrive": {
+      "type": "story",
+      "art": "scenes/riftlight/whale-road",
+      "narration": "Past the last stepping island, the sky opens into a wide bowl of mist. Cloud whales swim in it, each one longer than a street, singing low. Round and round they go. On a grassy island, a kitsune sits knitting a scarf longer than she is. \"Keeper Juniper,\" she says. \"One row for every circle the whales swim. Forty-one rows. That is far too much scarf.\" She points a needle at the whales. \"Why are they circling? And how do we let them go? Help me find out.\"",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "entities/cloud_whale",
+          "name": "Cloud whale"
+        }
+      ],
+      "choices": [
+        {
+          "id": "wave",
+          "label": "Wave to the whales",
+          "icon": "hand",
+          "goto": "low_pass"
+        }
+      ],
+      "discovers": [
+        "creature.cloud_whale"
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "whale_herd_spooked",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "whale_lost_count",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "whale_forced",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "whale_waited",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "whale_calf_trusts",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "whale_hiccup_scraped",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "whale_cakes_lost",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "whale_bell_hung",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "whale_pip_lanterns",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "whale_saw_drift",
+          "value": false
+        }
+      ]
+    },
+    "low_pass": {
+      "type": "choice_point",
+      "art": "scenes/riftlight/whale-road",
+      "narration": "A whale swings low to look at you. Its belly brushes the grass, and the whole island tips like a plate of peas. Juniper hugs her knitting. \"That's Hiccup, the little one. He's nosy. Hold on to something!\" Her ball of yarn starts to roll.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "entities/cloud_whale",
+          "name": "Cloud whale"
+        }
+      ],
+      "choices": [
+        {
+          "id": "posts",
+          "label": "Hug a tether post",
+          "icon": "might",
+          "goto": "check_posts"
+        },
+        {
+          "id": "yarn",
+          "label": "Chase Juniper's yarn",
+          "icon": "quick",
+          "goto": "check_yarn"
+        },
+        {
+          "id": "fly",
+          "label": "Fly up beside Hiccup",
+          "icon": "wing",
+          "goto": "check_fly",
+          "requiresSpecies": [
+            "griffin",
+            "dragonling"
+          ]
+        }
+      ]
+    },
+    "check_posts": {
+      "type": "check",
+      "art": "scenes/riftlight/whale-road",
+      "stat": "might",
+      "tn": 12,
+      "narration": "The tether posts are old and thick and furry with moss. The grass under your boots starts to slide.",
+      "prompt": "Hug a tether post and hang on while the island tips",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "entities/cloud_whale",
+          "name": "Cloud whale"
+        }
+      ],
+      "onSuccess": {
+        "goto": "whale_eye",
+        "narration": "You hang on like a burr on a sock. The island rocks back level, and you never let go."
+      },
+      "onFailure": {
+        "goto": "whale_eye",
+        "narration": "Your arms slip. You roll down the grass and land with a splash in Juniper's duck pond. The ducks leave, offended.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "check_yarn": {
+      "type": "check",
+      "art": "scenes/riftlight/whale-road",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "The yarn bounces down the tilting grass toward the edge, trailing forty-one rows of scarf behind it.",
+      "prompt": "Chase the rolling yarn before it bounces off the edge",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "entities/cloud_whale",
+          "name": "Cloud whale"
+        }
+      ],
+      "onSuccess": {
+        "goto": "whale_eye",
+        "narration": "You snatch it one hop from the edge. Juniper kisses the yarn. Then she kisses the top of your head, which is worse."
+      },
+      "onFailure": {
+        "goto": "whale_eye",
+        "narration": "You dive and miss, and slide on your tummy across the grass. The yarn bounces off into the sky. Juniper reels it back, row by row. \"Forty-one. Or forty. Oh, I've lost count.\"",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          },
+          {
+            "type": "setFlag",
+            "flag": "whale_lost_count",
+            "value": true
+          }
+        ]
+      }
+    },
+    "check_fly": {
+      "type": "check",
+      "art": "scenes/riftlight/whale-road",
+      "stat": "quick",
+      "tn": 8,
+      "narration": "Up close, Hiccup is as big as a barn and as soft as a pillow. He keeps turning to look at you, which makes a lot of wind.",
+      "prompt": "Fly level with Hiccup without getting bumped",
+      "roller": "best",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "entities/cloud_whale",
+          "name": "Cloud whale"
+        }
+      ],
+      "onSuccess": {
+        "goto": "whale_eye",
+        "narration": "You flap along beside him. Hiccup hiccups a tiny cloud right in your face, then rolls back up, and the island rocks level. \"He likes you,\" says Juniper. \"He never likes anyone.\""
+      },
+      "onFailure": {
+        "goto": "whale_eye",
+        "narration": "Hiccup turns to say hello and bumps you with his nose. You tumble back down onto the grass, dizzy and damp. \"He likes you,\" says Juniper. \"Too much.\"",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "whale_eye": {
+      "type": "story",
+      "art": "scenes/riftlight/whale-road",
+      "narration": "Behind Hiccup comes a whale so big she blocks the sun. Her eye slides past, kind and very tired. \"Auntie Billow,\" says Juniper. \"She leads. Whales find their way by singing. And they always swim ahead of the island due back, an old island my people have waited on for a hundred years. When it comes, the whales show us where.\" She sighs. \"Lost whales, lost island.\"",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "entities/cloud_whale",
+          "name": "Cloud whale"
+        }
+      ],
+      "choices": [
+        {
+          "id": "watch",
+          "label": "Watch where they turn",
+          "icon": "eye",
+          "goto": "turn_watch"
+        }
+      ]
+    },
+    "turn_watch": {
+      "type": "choice_point",
+      "art": "scenes/riftlight/whale-road",
+      "narration": "Every circle, the whales swim to the far end of the bowl. There they slow, listen, and turn back. \"Something out there turns them,\" says Juniper. \"I can't leave my whales to go and look. Will you?\" How will you find out what turns them?",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "entities/cloud_whale",
+          "name": "Cloud whale"
+        }
+      ],
+      "choices": [
+        {
+          "id": "listen",
+          "label": "Lie in the grass and listen",
+          "icon": "ear",
+          "goto": "check_listen"
+        },
+        {
+          "id": "rope",
+          "label": "Cross the rope walk to the far rock",
+          "icon": "boot",
+          "goto": "check_ropewalk"
+        },
+        {
+          "id": "leap",
+          "label": "Leap the drifting rocks",
+          "icon": "arrow",
+          "goto": "check_leap",
+          "requiresClass": "duskrunner"
+        },
+        {
+          "id": "read",
+          "label": "Read the far sky",
+          "icon": "star",
+          "goto": "check_read",
+          "requiresClass": "starweaver"
+        }
+      ]
+    },
+    "check_listen": {
+      "type": "check",
+      "art": "scenes/riftlight/whale-road",
+      "stat": "clever",
+      "tn": 12,
+      "narration": "You lie flat in the cool grass. Auntie Billow sings as she swims away from you, a note so low it buzzes in your teeth.",
+      "prompt": "Listen hard and follow where her song goes",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "entities/cloud_whale",
+          "name": "Cloud whale"
+        }
+      ],
+      "onSuccess": {
+        "goto": "pair_seen",
+        "narration": "Her song goes out, far and low. Then it comes back from the wrong side, from behind you, as if another whale were singing back there. There is no whale back there. You sit up and look."
+      },
+      "onFailure": {
+        "goto": "check_ropewalk",
+        "narration": "The song booms through the grass until your ears tickle and you giggle. You can't tell where it went. \"Then go and look,\" says Juniper, and points her needle at the rope walk."
+      }
+    },
+    "check_ropewalk": {
+      "type": "check",
+      "art": "scenes/riftlight/whale-road",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "A rope walk sways out to a bare rock at the far end of the bowl. Every plank is a different size, like a mouth full of wobbly teeth.",
+      "prompt": "Cross the swaying rope walk to the far rock",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "entities/cloud_whale",
+          "name": "Cloud whale"
+        }
+      ],
+      "onSuccess": {
+        "goto": "pair_seen",
+        "narration": "You hop across, plank by plank, and land on the far rock. From there, you see it."
+      },
+      "onFailure": {
+        "goto": "pair_seen",
+        "narration": "A plank flips. You dangle by your hands over a great deal of sky, then haul yourself onto the far rock, scraped and puffing. From there, you see it.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "check_leap": {
+      "type": "check",
+      "art": "scenes/riftlight/whale-road",
+      "stat": "quick",
+      "tn": 8,
+      "narration": "Little rocks drift between the islands like stepping stones that will not sit still.",
+      "prompt": "Leap from drifting rock to drifting rock to the far end",
+      "roller": "best",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "entities/cloud_whale",
+          "name": "Cloud whale"
+        }
+      ],
+      "onSuccess": {
+        "goto": "pair_seen",
+        "narration": "Hop, hop, hop. You land on the last rock, light as a cat, and see it."
+      },
+      "onFailure": {
+        "goto": "pair_seen",
+        "narration": "A rock drifts off in the middle of your jump. You land in a bush that grows sideways out of the cliff, and climb out with leaves in your ears. From there, you see it.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "check_read": {
+      "type": "check",
+      "art": "scenes/riftlight/whale-road",
+      "stat": "clever",
+      "tn": 8,
+      "narration": "You look at the far end of the bowl the way only a starweaver can, past the mist, at the shape of the air itself.",
+      "prompt": "Read the far sky for whatever turns the whales",
+      "roller": "best",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "entities/cloud_whale",
+          "name": "Cloud whale"
+        }
+      ],
+      "onSuccess": {
+        "goto": "pair_seen",
+        "narration": "Something hangs out there. It beats like a heart, and a second heartbeat answers it from somewhere behind you, at the very same moment."
+      },
+      "onFailure": {
+        "goto": "pair_seen",
+        "narration": "The mist swims in front of your eyes. But something out there is beating like a heart, and you point straight at it.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "pair_seen": {
+      "type": "story",
+      "art": "scenes/riftlight/whale-road",
+      "narration": "Out where the whales turn, a ring of shimmer hangs in the empty sky, like heat over a summer road. It pulses: bright, dim, bright. Then Juniper gasps and points behind her own island. A second ring hangs there, close enough to throw a cake through. It pulses at the very same moment. Bright, dim, bright. Two openings, beating together like one heart. \"Those weren't there in the spring,\" Juniper whispers.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "entities/cloud_whale",
+          "name": "Cloud whale"
+        }
+      ],
+      "choices": [
+        {
+          "id": "look",
+          "label": "Someone is already there",
+          "icon": "eye",
+          "goto": "olivia_here"
+        }
+      ],
+      "rift": "steady",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "whale_found_pair",
+          "value": true
+        }
+      ]
+    },
+    "olivia_here": {
+      "type": "story",
+      "art": "scenes/riftlight/whale-road",
+      "narration": "Beside the near opening stands Lady Olivia, the unicorn Riftseeker, mane blowing like a flag. Pip Thistledown, the young manticore scout, is at her heels, counting pulses out loud. \"Ninety-one, ninety-two!\" Olivia drops a feather into the near opening. A breath later, it floats out of the far one. \"Linked,\" she says. \"Two ends of one tunnel. Imagine what we could do with that.\" Juniper sniffs. \"Feathers are not whales.\"",
+      "cast": [
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        }
+      ],
+      "choices": [
+        {
+          "id": "try",
+          "label": "Try it yourselves",
+          "icon": "hand",
+          "goto": "echo_test"
+        }
+      ],
+      "rift": "steady",
+      "spotlight": "next"
+    },
+    "echo_test": {
+      "type": "choice_point",
+      "art": "scenes/riftlight/whale-road",
+      "narration": "Pip holds out his spoon to you, very grandly. \"Lady Olivia says a real scout tests things. Your turn!\" Juniper grumbles, but she leans in to watch. How will you test the openings?",
+      "cast": [
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        }
+      ],
+      "choices": [
+        {
+          "id": "hum",
+          "label": "Hum into the near opening",
+          "icon": "song",
+          "goto": "check_hum"
+        },
+        {
+          "id": "toss",
+          "label": "Toss a pebble through",
+          "icon": "hand",
+          "goto": "toss"
+        }
+      ],
+      "rift": "steady"
+    },
+    "check_hum": {
+      "type": "check",
+      "art": "scenes/riftlight/whale-road",
+      "stat": "heart",
+      "tn": 8,
+      "narration": "You lean close to the shimmer. It smells like rain on a hot stone, and it tickles your nose.",
+      "prompt": "Hum one long, steady note into the near opening",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        }
+      ],
+      "onSuccess": {
+        "goto": "why_circle",
+        "narration": "Your hum goes in. A breath later it comes out of the far opening, all the way across the bowl, just as steady. Pip writes it down so fast his pencil squeaks."
+      },
+      "onFailure": {
+        "goto": "why_circle",
+        "narration": "Your hum cracks into a squeak. The squeak shoots out of the far opening, loud as a goose, and every whale turns to stare at you. Juniper adds a row to her scarf with a groan.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "whale_herd_spooked",
+            "value": true
+          }
+        ]
+      },
+      "rift": "steady",
+      "checkKind": "doing"
+    },
+    "toss": {
+      "type": "interaction",
+      "art": "scenes/riftlight/whale-road",
+      "rift": "steady",
+      "cast": [
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        }
+      ],
+      "narration": "Pip says a pebble only goes through when the opening glows bright. Juniper says please do not hit a whale. Aim for the middle of the shimmer.",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Toss when the marker is in the bright middle.",
+        "actionLabel": "Toss the pebble",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 5000
+      },
+      "onSuccess": {
+        "goto": "why_circle",
+        "narration": "The pebble plops into the near opening and drops out of the far one, plink, into the clouds. Pip cheers."
+      },
+      "onFailure": {
+        "goto": "why_circle",
+        "narration": "The pebble zips through and plinks Auntie Billow on the nose. She snorts a cloud and swims wide, eyeing you all the way round.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "whale_herd_spooked",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "why_circle",
+        "narration": "Pip counts the beats out loud, and the pebble goes through right on bright. Plink, out the far side."
+      }
+    },
+    "why_circle": {
+      "type": "story",
+      "art": "scenes/riftlight/whale-road",
+      "narration": "Then Auntie Billow sings. Her song slips into the near opening and comes straight back out of the far one, ahead of her. She hears a whale singing up ahead, so she turns toward it. Now it is behind her, so she turns again. Juniper drops her needles. \"She's following her own song. Round and round. Oh, poor old girl.\" Pip writes WHALES ARE CONFUSED, then adds AND SAD.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/cloud_whale",
+          "name": "Cloud whale"
+        }
+      ],
+      "choices": [
+        {
+          "id": "hiccup",
+          "label": "Hiccup is too close!",
+          "icon": "hand",
+          "goto": "calf_stuck"
+        }
+      ],
+      "rift": "steady",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "whale_learned_why",
+          "value": true
+        }
+      ]
+    },
+    "calf_stuck": {
+      "type": "choice_point",
+      "art": "scenes/riftlight/whale-road",
+      "narration": "Little Hiccup has swum too close to the near opening. Each pulse tugs him in. He squeaks a worried cloud. \"Quick!\" says Olivia. \"Lasso him with the kite lines and pull!\" \"Pulling frightens them,\" says Juniper. \"Wait for the quiet beat between pulses, and sing him out.\" What will you do?",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "entities/cloud_whale",
+          "name": "Cloud whale"
+        }
+      ],
+      "choices": [
+        {
+          "id": "haul",
+          "label": "Pull him free with the kite lines",
+          "icon": "might",
+          "goto": "check_haul"
+        },
+        {
+          "id": "sing",
+          "label": "Wait for the quiet beat and sing",
+          "icon": "song",
+          "goto": "quiet_beat"
+        },
+        {
+          "id": "lullaby",
+          "label": "Sing him a songkeeper's lullaby",
+          "icon": "song",
+          "goto": "check_lullaby",
+          "requiresClass": "songkeeper"
+        }
+      ],
+      "rift": "steady",
+      "variants": [
+        {
+          "when": {
+            "flag": "whale_herd_spooked"
+          },
+          "text": "The other whales hang back. They still remember you."
+        }
+      ]
+    },
+    "check_haul": {
+      "type": "check",
+      "art": "scenes/riftlight/whale-road",
+      "stat": "might",
+      "tn": 12,
+      "narration": "Everyone grabs a kite line. Olivia takes the end in her teeth, which is not very ladylike. \"On three!\"",
+      "prompt": "Haul Hiccup out of the pull, all together",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "entities/cloud_whale",
+          "name": "Cloud whale"
+        }
+      ],
+      "onSuccess": {
+        "goto": "hauled",
+        "narration": "You heave, and Hiccup pops free like a cork from a bottle.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "whale_forced",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "whale_herd_spooked",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "hauled",
+        "narration": "A kite line snaps and stings your hands. Hiccup lurches, scrapes his fin on the edge of the opening, and tears free.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          },
+          {
+            "type": "setFlag",
+            "flag": "whale_forced",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "whale_herd_spooked",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "whale_hiccup_scraped",
+            "value": true
+          }
+        ]
+      },
+      "rift": "steady"
+    },
+    "hauled": {
+      "type": "story",
+      "art": "scenes/riftlight/whale-road",
+      "narration": "Hiccup squeals and bolts, and the whole herd scatters after him across the sky. It takes Juniper until sunset to call them back, and they keep far away from you now. Olivia shakes out her mane. \"See? Quick works.\" Pip writes QUICK WORKS in his notebook. Then, smaller, he writes MOSTLY.",
+      "cast": [
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/cloud_whale",
+          "name": "Cloud whale"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Watch the herd come back",
+          "icon": "eye",
+          "goto": "olivia_offer"
+        }
+      ],
+      "rift": "steady",
+      "variants": [
+        {
+          "when": {
+            "flag": "whale_hiccup_scraped"
+          },
+          "text": "Hiccup has a new notch in his fin. Juniper goes very quiet. Even Olivia says, softly, \"It worked. It wasn't pretty.\""
+        }
+      ]
+    },
+    "quiet_beat": {
+      "type": "interaction",
+      "art": "scenes/riftlight/whale-road",
+      "rift": "steady",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "entities/cloud_whale",
+          "name": "Cloud whale"
+        }
+      ],
+      "narration": "Juniper hums the whales' road song, very low. Watch the opening. In the quiet beat between pulses, the pull lets go. Sing Hiccup one long note to follow, right then and not before.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Sing when the opening goes quiet.",
+        "actionLabel": "Sing to Hiccup",
+        "target": 0.5,
+        "width": 0.25,
+        "periodMs": 6000
+      },
+      "onSuccess": {
+        "goto": "sung_out",
+        "narration": "Your note lands in the quiet beat. Hiccup's ears lift. He turns toward you.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "whale_calf_trusts",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "whale_waited",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "sung_slow",
+        "narration": "Your note bumps into a pulse and gets swallowed. You try again, and again.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "whale_waited",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "sung_out",
+        "narration": "Juniper squeezes your hand on the quiet beat, and you sing together. Hiccup turns toward you.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "whale_calf_trusts",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "whale_waited",
+            "value": true
+          }
+        ]
+      }
+    },
+    "check_lullaby": {
+      "type": "check",
+      "art": "scenes/riftlight/whale-road",
+      "stat": "heart",
+      "tn": 8,
+      "narration": "You wait for the quiet beat, then sing low and slow, the way you would sing to a baby that is very, very large.",
+      "prompt": "Sing Hiccup a lullaby in the quiet beat",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "entities/cloud_whale",
+          "name": "Cloud whale"
+        }
+      ],
+      "onSuccess": {
+        "goto": "sung_out",
+        "narration": "Hiccup's worried squeaks slow down. He turns toward your song.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "whale_calf_trusts",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "whale_waited",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "sung_slow",
+        "narration": "A pulse booms over your lullaby. You have to start again from the first line.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "whale_waited",
+            "value": true
+          }
+        ]
+      },
+      "rift": "steady",
+      "checkKind": "doing"
+    },
+    "sung_out": {
+      "type": "story",
+      "art": "scenes/riftlight/whale-road",
+      "narration": "Hiccup drifts out of the pull, slow and sleepy, and rests his huge soft chin on the edge of Juniper's island. \"He'll follow you now,\" she says. But it took ages. The sun is low, and Olivia and Pip have gone. \"Off to the far opening,\" says Juniper. \"Something about a big note. She doesn't like waiting.\"",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "entities/cloud_whale",
+          "name": "Cloud whale"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Scratch Hiccup's chin",
+          "icon": "heart",
+          "goto": "olivia_offer"
+        }
+      ]
+    },
+    "sung_slow": {
+      "type": "story",
+      "art": "scenes/riftlight/whale-road",
+      "narration": "In the end Hiccup drifts free on his own, many slow pulses later. He is fine. He just doesn't know you any better than before. The sun is low, and Olivia and Pip have gone. \"Off to the far opening,\" says Juniper. \"Something about a big note. She doesn't like waiting.\"",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "entities/cloud_whale",
+          "name": "Cloud whale"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Wave Hiccup back to his auntie",
+          "icon": "hand",
+          "goto": "olivia_offer"
+        }
+      ]
+    },
+    "olivia_offer": {
+      "type": "story",
+      "art": "scenes/riftlight/whale-road",
+      "narration": "\"Here's the thing,\" says Lady Olivia, eyes shining. \"Those openings are only half awake. That's why they pulse. Wake them all the way with one big note, and the pulsing stops. No echo, no circling. Every whale free by breakfast, and the pair wide open to the salt flats on the other side.\" She looks up at Billow. \"She's been circling for days, Juniper. Look how tired she is.\"",
+      "cast": [
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Feel the island lurch",
+          "icon": "hand",
+          "goto": "island_tug"
+        }
+      ],
+      "rift": "steady",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "whale_heard_offer",
+          "value": true
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "whale_waited"
+          },
+          "at": "start",
+          "text": "At sunset, Lady Olivia trots back from the far opening, Pip puffing behind her."
+        },
+        {
+          "when": {
+            "flag": "whale_forced"
+          },
+          "at": "start",
+          "text": "Pip is still staring after Hiccup, pencil in his mouth."
+        }
+      ]
+    },
+    "island_tug": {
+      "type": "choice_point",
+      "art": "scenes/riftlight/whale-road",
+      "narration": "Then a pulse comes, bigger than all the rest. The whole island jerks toward the near opening, like a dog on a leash. The tether ropes groan. Juniper's teapot slides off its rock. \"See?\" says Olivia. \"Half awake, and tugging. It will only get worse.\" How will you hold the island?",
+      "cast": [
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        }
+      ],
+      "choices": [
+        {
+          "id": "ropes",
+          "label": "Haul the tether ropes tight",
+          "icon": "might",
+          "goto": "check_tether"
+        },
+        {
+          "id": "stones",
+          "label": "Drop the anchor stones",
+          "icon": "clever",
+          "goto": "check_anchor"
+        },
+        {
+          "id": "brace",
+          "label": "Brace the tether post",
+          "icon": "shield",
+          "goto": "check_brace",
+          "requiresClass": "thornguard"
+        }
+      ],
+      "rift": "steady",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "whale_forced",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "whale_waited",
+          "value": false
+        }
+      ]
+    },
+    "check_tether": {
+      "type": "check",
+      "art": "scenes/riftlight/whale-road",
+      "stat": "might",
+      "tn": 12,
+      "narration": "The tether ropes are as thick as your arm and wet with mist. Pip grabs the end of the line and hangs on like a sock on a washing line.",
+      "prompt": "Haul the tether ropes tight before the next pulse",
+      "roller": "all",
+      "cast": [
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        }
+      ],
+      "onSuccess": {
+        "goto": "juniper_answer",
+        "narration": "The island steadies and swings back to its place. Juniper catches her teapot in midair."
+      },
+      "onFailure": {
+        "goto": "juniper_answer",
+        "narration": "The island lurches a boat length closer before it holds. Juniper's basket of barley cakes slides over the edge and falls into the clouds. \"That,\" she says, \"was supper.\"",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "whale_cakes_lost",
+            "value": true
+          }
+        ]
+      },
+      "rift": "steady"
+    },
+    "check_anchor": {
+      "type": "check",
+      "art": "scenes/riftlight/whale-road",
+      "stat": "clever",
+      "tn": 12,
+      "narration": "A row of anchor stones sits by the edge, each painted with a whale. Some are heavy. Some are only heavy looking.",
+      "prompt": "Pick the heaviest anchor stones and drop them in the right holes",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        }
+      ],
+      "onSuccess": {
+        "goto": "juniper_answer",
+        "narration": "The island steadies and swings back to its place. Juniper catches her teapot in midair."
+      },
+      "onFailure": {
+        "goto": "juniper_answer",
+        "narration": "The island lurches a boat length closer before it holds. Juniper's basket of barley cakes slides over the edge and falls into the clouds. \"That,\" she says, \"was supper.\"",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "whale_cakes_lost",
+            "value": true
+          }
+        ]
+      },
+      "rift": "steady"
+    },
+    "check_brace": {
+      "type": "check",
+      "art": "scenes/riftlight/whale-road",
+      "stat": "might",
+      "tn": 8,
+      "narration": "The tether post creaks and leans toward the opening. Somebody has to stand behind it and not move.",
+      "prompt": "Brace the tether post with your whole body",
+      "roller": "best",
+      "cast": [
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        }
+      ],
+      "onSuccess": {
+        "goto": "juniper_answer",
+        "narration": "The island steadies and swings back to its place. Juniper catches her teapot in midair."
+      },
+      "onFailure": {
+        "goto": "juniper_answer",
+        "narration": "The island lurches a boat length closer before it holds. Juniper's basket of barley cakes slides over the edge and falls into the clouds. \"That,\" she says, \"was supper.\"",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "whale_cakes_lost",
+            "value": true
+          }
+        ]
+      },
+      "rift": "steady"
+    },
+    "juniper_answer": {
+      "type": "story",
+      "art": "scenes/riftlight/whale-road",
+      "narration": "Juniper wipes her hands on her scarf. \"She's right that they're tired. And she's right that it tugs. But wake those openings that loud and the whales bolt every which way. Scattered whales stay lost for weeks, and I won't know where the island due back comes in. My way is one whale at a time, in the quiet beat.\" \"How slow?\" asks Olivia. Juniper doesn't answer.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Pip tugs your sleeve",
+          "icon": "hand",
+          "goto": "pip_bell"
+        }
+      ],
+      "rift": "steady"
+    },
+    "pip_bell": {
+      "type": "choice_point",
+      "art": "scenes/riftlight/whale-road",
+      "narration": "Pip drags a brass bell out of Olivia's pack. It is bigger than his head. \"Lady Olivia needs this hung at the far opening, for the big note,\" he whispers. \"If I do it right, she'll let me ring it!\" Juniper calls from her lantern pile. \"I could use a scout who can count, too.\" What do you tell Pip?",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        }
+      ],
+      "choices": [
+        {
+          "id": "bell",
+          "label": "Help Pip hang the bell",
+          "icon": "bell",
+          "goto": "check_bell"
+        },
+        {
+          "id": "lanterns",
+          "label": "Ask Pip to help Juniper",
+          "icon": "lantern",
+          "goto": "pip_lanterns"
+        }
+      ]
+    },
+    "check_bell": {
+      "type": "check",
+      "art": "scenes/riftlight/whale-road",
+      "stat": "might",
+      "tn": 12,
+      "narration": "The bell is heavy, and the rocks out to the far opening drift. Pip steers. You carry.",
+      "prompt": "Carry the big bell across the drifting rocks and hang it",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        }
+      ],
+      "onSuccess": {
+        "goto": "bell_hung",
+        "narration": "You hang it on a crooked post beside the far opening. It hums quietly in every pulse.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "whale_bell_hung",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "bell_hung",
+        "narration": "A rock lurches. The bell clangs against your knee, every whale in the sky jumps, and you hang it with a bruise to show for it.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          },
+          {
+            "type": "setFlag",
+            "flag": "whale_bell_hung",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "whale_herd_spooked",
+            "value": true
+          }
+        ]
+      }
+    },
+    "bell_hung": {
+      "type": "story",
+      "art": "scenes/riftlight/whale-road",
+      "narration": "Pip polishes the bell with his scarf until he can see his own nose in it. \"Lady Olivia says one big note and they're all free,\" he says. \"She says I can ring it.\" Then he looks over at Hiccup, and stops polishing. \"Do whales mind loud?\"",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk back for supper",
+          "icon": "rest",
+          "goto": "rest"
+        }
+      ]
+    },
+    "pip_lanterns": {
+      "type": "story",
+      "art": "scenes/riftlight/whale-road",
+      "narration": "Pip looks at the bell, then at Juniper, then at the bell. Then he sets it down very gently. \"Lady Olivia says a good scout learns everything,\" he says. \"That has to include lanterns.\" Juniper hands him one, and he holds it like a baby bird. Olivia raises one eyebrow, and hangs the bell herself.",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Sit down for supper",
+          "icon": "rest",
+          "goto": "rest"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "whale_pip_lanterns",
+          "value": true
+        }
+      ]
+    },
+    "rest": {
+      "type": "rest",
+      "art": "scenes/riftlight/sky-night-windbreak",
+      "heal": 2,
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "narration": "Night falls. Juniper lights a fire in a ring of stones and hands out barley cakes, warm and sticky. Olivia eats hers in two bites and reads her notes by firelight. Overhead, the whales circle, singing to their own echo.",
+      "variants": [
+        {
+          "when": {
+            "flag": "whale_cakes_lost"
+          },
+          "replace": true,
+          "text": "Night falls. Juniper lights a fire in a ring of stones. The barley cakes are somewhere in the clouds, so Olivia shares her emergency oat bars. They taste a little like saddle. Overhead, the whales circle, singing to their own echo."
+        },
+        {
+          "when": {
+            "flag": "whale_calf_trusts"
+          },
+          "text": "Hiccup sleeps with his chin on the grass beside you, snoring little clouds."
+        },
+        {
+          "when": {
+            "flag": "whale_herd_spooked"
+          },
+          "text": "The whales circle wide, as far from your fire as they can."
+        },
+        {
+          "when": {
+            "flag": "whale_lost_count"
+          },
+          "text": "Juniper casts off her scarf and starts a fresh one. \"Row one,\" she says firmly. \"I've lost count of the old one.\""
+        }
+      ],
+      "choices": [
+        {
+          "id": "rest",
+          "label": "Rest by the fire",
+          "icon": "rest",
+          "goto": "chime_lean"
+        },
+        {
+          "id": "notebook",
+          "label": "Look through Pip's notebook",
+          "icon": "scroll",
+          "goto": "pip_notebook"
+        },
+        {
+          "id": "share",
+          "label": "Share your supper with Juniper",
+          "icon": "cake",
+          "goto": "chime_lean",
+          "when": {
+            "flag": "whale_cakes_lost",
+            "count": {
+              "of": [
+                "supper_bundle",
+                "honeycake"
+              ],
+              "min": 1
+            }
+          },
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": [
+                "supper_bundle",
+                "honeycake"
+              ]
+            },
+            {
+              "type": "heal",
+              "amount": 1,
+              "to": "party"
+            }
+          ]
+        },
+        {
+          "id": "mend",
+          "label": "Mend the day's scrapes",
+          "icon": "unicorn",
+          "goto": "chime_lean",
+          "requiresSpecies": "unicorn",
+          "effects": [
+            {
+              "type": "heal",
+              "amount": 1,
+              "to": "party"
+            }
+          ]
+        }
+      ]
+    },
+    "pip_notebook": {
+      "type": "story",
+      "art": "scenes/riftlight/sky-night-windbreak",
+      "narration": "Pip's notebook has a drawing of the two openings for every night he has been here. Each night they sit a whisker further along, always the same way. \"Lady Olivia says it's the wind,\" says Pip, chewing his pencil. \"But the wind keeps changing its mind. This doesn't.\"",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Look up at the openings",
+          "icon": "eye",
+          "goto": "chime_lean"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "whale_saw_drift",
+          "value": true
+        }
+      ]
+    },
+    "chime_lean": {
+      "type": "story",
+      "art": "scenes/riftlight/sky-mist-song",
+      "narration": "Your Listening Chime hums in your pack. You hold it up between the two openings. It does not lean toward either one. It leans past them both, far away, back toward the glacier where all of this began. Juniper stares at it. \"Something is pulling them,\" she whispers. \"The openings. The whales. Maybe my island too.\" Hiccup snores a cloud, and nobody laughs.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Sleep until dawn",
+          "icon": "moon",
+          "goto": "lead_test"
+        }
+      ],
+      "rift": "steady",
+      "priority": 2,
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "whale_cakes_lost",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "whale_lost_count",
+          "value": false
+        }
+      ]
+    },
+    "lead_test": {
+      "type": "choice_point",
+      "art": "scenes/riftlight/whale-road",
+      "narration": "Juniper shakes you awake before dawn. \"Let's try my way once,\" she whispers. \"Auntie Billow first. Show her the true road in the quiet beat, and she might hear it over the echo.\" Olivia watches from the far rock with her bell. How will you lead Auntie Billow?",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "entities/cloud_whale",
+          "name": "Cloud whale"
+        }
+      ],
+      "choices": [
+        {
+          "id": "sing",
+          "label": "Sing her the true road",
+          "icon": "note",
+          "goto": "sing_road",
+          "when": {
+            "notFlag": "whale_herd_spooked"
+          }
+        },
+        {
+          "id": "sing_wary",
+          "label": "Sing her the true road",
+          "icon": "note",
+          "goto": "sing_road_wary",
+          "when": {
+            "flag": "whale_herd_spooked"
+          }
+        },
+        {
+          "id": "lanterns",
+          "label": "Swing lanterns in the quiet beat",
+          "icon": "lantern",
+          "goto": "check_lantern"
+        },
+        {
+          "id": "pip",
+          "label": "Let Pip count the beats for you",
+          "icon": "scroll",
+          "goto": "check_lantern_pip",
+          "when": {
+            "flag": "whale_pip_lanterns"
+          }
+        },
+        {
+          "id": "hiccup",
+          "label": "Let Hiccup show her the way",
+          "icon": "heart",
+          "goto": "hiccup_leads",
+          "when": {
+            "flag": "whale_calf_trusts"
+          }
+        }
+      ],
+      "rift": "steady",
+      "variants": [
+        {
+          "when": {
+            "flag": "whale_herd_spooked"
+          },
+          "text": "Billow keeps far off. She still remembers yesterday."
+        },
+        {
+          "when": {
+            "flag": "whale_hiccup_scraped"
+          },
+          "text": "Hiccup hangs back too, his notched fin tucked in tight."
+        }
+      ]
+    },
+    "sing_road": {
+      "type": "interaction",
+      "art": "scenes/riftlight/whale-road",
+      "rift": "steady",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "entities/cloud_whale",
+          "name": "Cloud whale"
+        }
+      ],
+      "narration": "Juniper hums the whales' road song: the way her grandmother sang it. Watch the notes, then sing them back in the quiet beat.",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the road song, then sing it back.",
+        "actionLabel": "Sing the road",
+        "options": [
+          {
+            "id": "low",
+            "label": "Low note",
+            "icon": "glyph_note_low"
+          },
+          {
+            "id": "mid",
+            "label": "Middle note",
+            "icon": "glyph_note_middle"
+          },
+          {
+            "id": "high",
+            "label": "High note",
+            "icon": "glyph_note_high"
+          }
+        ],
+        "answer": [
+          "low",
+          "low",
+          "high",
+          "mid"
+        ],
+        "stepMs": 1100
+      },
+      "onSuccess": {
+        "goto": "billow_out",
+        "narration": "Auntie Billow hears it, in the quiet beat."
+      },
+      "onFailure": {
+        "goto": "billow_balks",
+        "narration": "Billow turns toward your song. Then the echo booms, and she turns away."
+      },
+      "onAssisted": {
+        "goto": "billow_out",
+        "narration": "Juniper sings each note first, and you sing it after her. Auntie Billow hears it, in the quiet beat."
+      }
+    },
+    "sing_road_wary": {
+      "type": "interaction",
+      "art": "scenes/riftlight/whale-road",
+      "rift": "steady",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "entities/cloud_whale",
+          "name": "Cloud whale"
+        }
+      ],
+      "narration": "Billow is wary and far away, so the song has to be longer to reach her. Juniper hums every note of it. Watch, then sing them back in the quiet beat.",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the long road song, then sing it back.",
+        "actionLabel": "Sing the road",
+        "options": [
+          {
+            "id": "low",
+            "label": "Low note",
+            "icon": "glyph_note_low"
+          },
+          {
+            "id": "mid",
+            "label": "Middle note",
+            "icon": "glyph_note_middle"
+          },
+          {
+            "id": "high",
+            "label": "High note",
+            "icon": "glyph_note_high"
+          }
+        ],
+        "answer": [
+          "low",
+          "low",
+          "high",
+          "mid",
+          "high",
+          "low"
+        ],
+        "stepMs": 1100
+      },
+      "onSuccess": {
+        "goto": "billow_out",
+        "narration": "Auntie Billow hears it, in the quiet beat."
+      },
+      "onFailure": {
+        "goto": "billow_balks",
+        "narration": "Billow turns toward your song. Then the echo booms, and she turns away."
+      },
+      "onAssisted": {
+        "goto": "billow_out",
+        "narration": "Juniper sings each note first, and you sing it after her. Auntie Billow hears it, in the quiet beat."
+      }
+    },
+    "check_lantern": {
+      "type": "check",
+      "art": "scenes/riftlight/whale-road",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "Juniper's lanterns hang on long poles. Swing them only in the quiet beat, so Billow sees a light where the echo isn't.",
+      "prompt": "Swing the lanterns in the quiet beat, and only then",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/cloud_whale",
+          "name": "Cloud whale"
+        }
+      ],
+      "onSuccess": {
+        "goto": "billow_out",
+        "narration": "Auntie Billow sees the light, in the quiet beat."
+      },
+      "onFailure": {
+        "goto": "billow_balks",
+        "narration": "Billow turns toward the light. Then the echo booms, and she turns away."
+      },
+      "rift": "steady"
+    },
+    "check_lantern_pip": {
+      "type": "check",
+      "art": "scenes/riftlight/whale-road",
+      "stat": "quick",
+      "tn": 8,
+      "narration": "Pip holds up his notebook and counts the pulses out loud, the way he has all week. \"Bright, dim, now!\"",
+      "prompt": "Swing the lanterns on Pip's count",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/cloud_whale",
+          "name": "Cloud whale"
+        }
+      ],
+      "onSuccess": {
+        "goto": "billow_out",
+        "narration": "Auntie Billow sees the light, in the quiet beat."
+      },
+      "onFailure": {
+        "goto": "billow_balks",
+        "narration": "Billow turns toward the light. Then the echo booms, and she turns away."
+      },
+      "rift": "steady"
+    },
+    "hiccup_leads": {
+      "type": "story",
+      "art": "scenes/riftlight/whale-road",
+      "narration": "Hiccup wakes, yawns a cloud, and swims up to his auntie. He bumps her gently with his nose. Then he swims out between the openings, past the echo, and waits for her in the open sky. She follows him. \"He trusts you,\" says Juniper, \"so she trusts him.\"",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "entities/cloud_whale",
+          "name": "Cloud whale"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Watch her go",
+          "icon": "eye",
+          "goto": "billow_out"
+        }
+      ],
+      "rift": "steady"
+    },
+    "billow_out": {
+      "type": "story",
+      "art": "scenes/riftlight/whale-road",
+      "narration": "Auntie Billow stops. She listens. Then she swims straight between the two openings, past her own echo, and out into the open sky, singing. One whale. Only one. Juniper wipes her eyes on a great deal of scarf. \"One,\" she whispers. \"Eleven to go.\" On the far rock, Olivia says, \"Lovely,\" and she means it.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "entities/cloud_whale",
+          "name": "Cloud whale"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hear what Olivia says next",
+          "icon": "ear",
+          "goto": "two_ways"
+        }
+      ],
+      "rift": "steady",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "whale_led_one",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "whale_herd_spooked",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "whale_hiccup_scraped",
+          "value": false
+        }
+      ]
+    },
+    "billow_balks": {
+      "type": "story",
+      "art": "scenes/riftlight/whale-road",
+      "narration": "She tries again, and turns again. On the third try, with Juniper humming beside you, Billow slips out between the openings at last, slow and unsure. The sun is high by then. \"One,\" says Juniper, worn out. \"It works. It's just slow.\" On the far rock, Olivia taps her bell, not loud.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "entities/cloud_whale",
+          "name": "Cloud whale"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Hear what Olivia says next",
+          "icon": "ear",
+          "goto": "two_ways"
+        }
+      ],
+      "rift": "steady",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "whale_led_one",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "whale_herd_spooked",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "whale_hiccup_scraped",
+          "value": false
+        }
+      ]
+    },
+    "two_ways": {
+      "type": "story",
+      "art": "scenes/riftlight/whale-road",
+      "narration": "\"Eleven more, at one a night,\" says Olivia. \"Or I ring my bell, and they're all free by lunch. Scattered, yes. But free.\" She looks at her hooves. \"When I was small, our river went the wrong way for a whole summer. Everyone waited for it to come back. It didn't. I don't like waiting.\" Juniper holds her scarf tight. \"And I don't like losing whales.\"",
+      "cast": [
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Juniper has a favor to ask",
+          "icon": "hand",
+          "goto": "promise"
+        }
+      ],
+      "rift": "steady",
+      "variants": [
+        {
+          "when": {
+            "flag": "whale_bell_hung"
+          },
+          "text": "Pip stands by the bell, beaming. \"I hung it. Well, mostly.\""
+        },
+        {
+          "when": {
+            "flag": "whale_pip_lanterns"
+          },
+          "text": "Pip is still holding his lantern. He looks at it, then at Olivia, and says nothing at all."
+        },
+        {
+          "when": {
+            "flag": "whale_saw_drift"
+          },
+          "text": "Pip taps his notebook. \"And the openings moved again last night. A whisker. Same way.\""
+        }
+      ]
+    },
+    "promise": {
+      "type": "choice_point",
+      "art": "scenes/riftlight/whale-road",
+      "narration": "Juniper rolls up her scarf. \"Whatever happens here, I'm going up to the lookout next, to wait for the island due back. The lookout keepers will want to know how the whales fared. Will you bring them the news yourselves? Guided or scattered, the honest way?\"",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "choices": [
+        {
+          "id": "report",
+          "label": "Promise to bring the news",
+          "icon": "heart",
+          "goto": "promised",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "sky_followup_promised",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "local",
+          "label": "Say you can't promise",
+          "icon": "hand",
+          "goto": "not_promised",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "sky_followup_promised",
+              "value": false
+            }
+          ]
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "whale_saw_drift",
+          "value": false
+        }
+      ]
+    },
+    "promised": {
+      "type": "story",
+      "art": "scenes/riftlight/whale-road",
+      "narration": "\"Honest news,\" says Juniper, and ties a short end of yarn around your wrist. \"Show them that, and they'll know you came from me.\" Pip ties one around his own wrist too, though nobody asked him to.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Look back at the openings",
+          "icon": "eye",
+          "goto": "decide"
+        }
+      ]
+    },
+    "not_promised": {
+      "type": "story",
+      "art": "scenes/riftlight/whale-road",
+      "narration": "Juniper nods. \"You don't know where the next opening takes you. That's fair. I'll send a kite instead.\" She starts knitting the message. It is going to be a very long message.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Look back at the openings",
+          "icon": "eye",
+          "goto": "decide"
+        }
+      ]
+    },
+    "decide": {
+      "type": "choice_point",
+      "art": "scenes/riftlight/whale-road",
+      "narration": "The whales circle. Olivia's bell hangs ready at the far rock. Juniper's lanterns hang ready at the near one. \"With all of you on the lanterns,\" says Juniper, \"we could lead every whale out tonight. It will be a long, cold night.\" Olivia shrugs, not unkindly. \"Or sleep on it, and choose at the openings in the morning. Mine, or hers.\" What will you do?",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "entities/cloud_whale",
+          "name": "Cloud whale"
+        }
+      ],
+      "choices": [
+        {
+          "id": "stay",
+          "label": "Stay and lead the whales out",
+          "icon": "lantern",
+          "goto": "lead_night",
+          "when": {
+            "notFlag": "whale_calf_trusts"
+          },
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "whale_bell_hung",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "whale_pip_lanterns",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "whale_calf_trusts",
+              "value": false
+            }
+          ]
+        },
+        {
+          "id": "stay_hiccup",
+          "label": "Stay and lead the whales out",
+          "icon": "lantern",
+          "goto": "hiccup_night",
+          "when": {
+            "flag": "whale_calf_trusts"
+          },
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "whale_bell_hung",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "whale_pip_lanterns",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "whale_calf_trusts",
+              "value": false
+            }
+          ]
+        },
+        {
+          "id": "sleep",
+          "label": "Sleep on it, and choose at the openings",
+          "icon": "moon",
+          "goto": "sleep_on_it",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "whale_bell_hung",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "whale_pip_lanterns",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "whale_calf_trusts",
+              "value": false
+            }
+          ]
+        }
+      ],
+      "rift": "steady",
+      "variants": [
+        {
+          "when": {
+            "flag": "whale_bell_hung"
+          },
+          "text": "Pip stands by the bell with his hand on the rope, looking at you."
+        },
+        {
+          "when": {
+            "flag": "whale_pip_lanterns"
+          },
+          "text": "Pip stands by Juniper's lanterns, his own lantern still in his paws, looking at you."
+        }
+      ]
+    },
+    "lead_night": {
+      "type": "check",
+      "art": "scenes/riftlight/whale-road",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "All night, you swing Juniper's lanterns in the quiet beats. One whale at a time, they hear the true road and slip out past the echo. Olivia sits on her rock and watches, chin on her hooves.",
+      "prompt": "Swing the lanterns in every quiet beat, all night long",
+      "roller": "all",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "entities/cloud_whale",
+          "name": "Cloud whale"
+        }
+      ],
+      "onSuccess": {
+        "goto": "guided",
+        "narration": "By the first gray light, the last tail slips out between the openings. Pip carries the brass bell back to Olivia. He never rang it."
+      },
+      "onFailure": {
+        "goto": "guided",
+        "narration": "Around midnight the lanterns dip, and three whales turn back into the echo. You start them over. The last tail slips out at noon, and you are all yawning so hard your jaws click.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "party"
+          },
+          {
+            "type": "setFlag",
+            "flag": "whale_long_night",
+            "value": true
+          }
+        ]
+      },
+      "rift": "steady"
+    },
+    "hiccup_night": {
+      "type": "story",
+      "art": "scenes/riftlight/whale-road",
+      "narration": "All night, you swing Juniper's lanterns in the quiet beats, and Hiccup does the rest. He swims out past the echo, swims back, and bumps each whale with his nose until it follows him. Olivia sits on her rock and watches, chin on her hooves. \"Showing off,\" she murmurs. By the first gray light, the last tail slips out.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "entities/cloud_whale",
+          "name": "Cloud whale"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Watch the openings",
+          "icon": "eye",
+          "goto": "guided"
+        }
+      ],
+      "rift": "steady"
+    },
+    "guided": {
+      "type": "story",
+      "art": "scenes/riftlight/whale-road-cleared",
+      "narration": "The whales swim off into open sky, singing. Both openings stop pulsing, spread wide and hold steady, and through the far one you smell salt and mud. Olivia sighs and unhooks her bell. \"Another day.\" Juniper sets off for the lookout, to wait for the island due back. So here is your piece: the openings come in pairs, and something keeps pulling them, the way your chime leans, back toward the glacier. Something is moving the land. What is it? And can you put things right?",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "choices": [],
+      "rift": "open",
+      "outcome": "success",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "whales_guided",
+          "value": true
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "whale_long_night"
+          },
+          "at": "start",
+          "text": "It is past noon, and every one of you is yawning."
+        }
+      ]
+    },
+    "sleep_on_it": {
+      "type": "choice_point",
+      "art": "scenes/riftlight/sky-night-windbreak",
+      "narration": "You sleep on it. Before you do, two of them come to sit by your fire, one after the other. You only have the yawns for one long talk. Who will you listen to?",
+      "cast": [
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        }
+      ],
+      "choices": [
+        {
+          "id": "olivia",
+          "label": "Lady Olivia",
+          "icon": "unicorn",
+          "goto": "olivia_night"
+        },
+        {
+          "id": "juniper",
+          "label": "Keeper Juniper",
+          "icon": "kitsune",
+          "goto": "juniper_night"
+        }
+      ]
+    },
+    "olivia_night": {
+      "type": "story",
+      "art": "scenes/riftlight/sky-night-windbreak",
+      "narration": "Olivia lies down by the fire, mane full of sparks. \"I know you think I'm in a hurry,\" she says. \"I am. Every night those openings move a little, and nobody knows why. If we learn to open them ourselves, then we decide where they go, not whatever is pulling them.\" She looks at the bell. \"One note. I'm almost sure.\" Pip, half asleep, mumbles, \"Lady Olivia is always sure.\"",
+      "cast": [
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Sleep",
+          "icon": "moon",
+          "goto": "wait_ending"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "whale_heard_olivia",
+          "value": true
+        }
+      ]
+    },
+    "juniper_night": {
+      "type": "story",
+      "art": "scenes/riftlight/sky-night-windbreak",
+      "narration": "Juniper knits by the fire. \"My grandmother's grandmother waved the island due back goodbye,\" she says. \"We've kept a lantern lit for it ever since. When it comes home, the whales will swim ahead of it, singing, and we'll know where to stand.\" She pats Hiccup's chin. \"If they're scattered, we'll be guessing. I'm not good at guessing.\"",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "entities/cloud_whale",
+          "name": "Cloud whale"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Sleep",
+          "icon": "moon",
+          "goto": "wait_ending"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "whale_heard_juniper",
+          "value": true
+        }
+      ]
+    },
+    "wait_ending": {
+      "type": "story",
+      "art": "scenes/riftlight/whale-road",
+      "narration": "In the morning the whales still circle and the openings still beat together. The choice waits for you at the openings: Lady Olivia's way, quick and loud, or the whales' way, slow and quiet. Juniper sets off for the lookout, to wait for the island due back. So here is your piece: the openings come in pairs, and something keeps pulling them, the way your chime leans, back toward the glacier. Something is moving the land. What is it? And can you put things right?",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Keeper Juniper"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "choices": [],
+      "rift": "steady",
+      "outcome": "success",
+      "variants": [
+        {
+          "when": {
+            "flag": "whale_heard_olivia"
+          },
+          "at": "start",
+          "text": "Olivia's words are still in your ears: we decide where they go."
+        },
+        {
+          "when": {
+            "flag": "whale_heard_juniper"
+          },
+          "at": "start",
+          "text": "Juniper's lantern is still in your mind, lit for an island that has not come home."
+        }
+      ]
     }
   }
 }

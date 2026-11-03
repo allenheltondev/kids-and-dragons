@@ -344,6 +344,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         realtimeDomain: realtime.realtimeDomain,
         namespace: realtime.namespace,
         roomCode: session.roomCode,
+        runId: session.runId,
         token: session.sessionToken,
       });
     }
@@ -809,6 +810,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       arrivalsDropped: 0,
       cheers: [],
       savedHeroes: {},
+      heldHeroes: {},
       error: null,
       rules: null,
       items: null,
@@ -1001,11 +1003,38 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         }
       },
 
+      async showFromCode(code) {
+        set({ connection: "connecting", error: null });
+        try {
+          const response = await deps.api.redeemScreenCode(code);
+          const roomCode = response.state.roomCode;
+          // A screen, not a seat: no player, and never the host. Kept like a
+          // phone's session (`establish`), because this TV cannot ask `/watch`
+          // again (only the room's own screen may), and a refresh in the
+          // middle of the evening must come straight back to the game.
+          const display: ClientSession = {
+            runId: response.runId,
+            roomCode,
+            playerId: "",
+            mode: response.mode,
+            sessionToken: response.viewerToken,
+            follower: true,
+          };
+          await establish(display, response.state);
+          deps.navigate({ name: "tv", code: roomCode }, { replace: true });
+        } catch (error) {
+          // The code card says why, beside the code; a toast as well would say
+          // it twice, over the card's own Back.
+          set({ connection: "idle" });
+          throw error;
+        }
+      },
+
       async listHeroes() {
         const session = get().session;
         if (!session?.playerId) return [];
-        const { heroes, saved } = await deps.api.listHeroes(session.sessionToken);
-        set({ savedHeroes: saved ?? {} });
+        const { heroes, saved, held } = await deps.api.listHeroes(session.sessionToken);
+        set({ savedHeroes: saved ?? {}, heldHeroes: held ?? {} });
         return heroes;
       },
 
@@ -1299,6 +1328,18 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
 
           if (response.error?.code === "STALE_DECISION") return movedOn();
 
+          if (response.error?.code === "STALE_SEQ") {
+            /*
+             * Behind a second time: another tap won the same seq between our
+             * catch-up and the retry. Nothing the player can act on, so no
+             * toast. Catch up again and let them tap from what is on screen;
+             * the server logs every one of these (`intent.stale_seq`) so
+             * operators can watch how often it happens.
+             */
+            await resync(runtime.sequencer?.seq ?? 0);
+            return false;
+          }
+
           if (response.ok) {
             /*
              * The response names the seq the server committed; the patch is
@@ -1361,7 +1402,8 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
 
       beat(leaving = false) {
         const session = get().session;
-        if (!session?.playerId || !session.sessionToken) return;
+        // A seated phone, or another TV in another place (its viewer token names it).
+        if (!session?.sessionToken || (!session.playerId && session.follower !== true)) return;
         void deps.api.postPresence(leaving, session.sessionToken).catch((error: unknown) => {
           // Fire-and-forget, but a beat that cannot get out says the stream
           // probably cannot either (#469). Not when leaving: the page is going.
@@ -1469,6 +1511,19 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         return hostControl("keeper", { playerId }, "Could not hand over the game.");
       },
 
+      async addScreen() {
+        const session = get().session;
+        if (!session?.host) return null;
+        const auth = hostAuth(session);
+        if (!auth) return null;
+        try {
+          return await deps.api.addScreen(session.roomCode, auth);
+        } catch (error) {
+          set({ error: error instanceof Error ? error.message : "We could not make a code for another TV." });
+          return null;
+        }
+      },
+
       lockRoom(locked: boolean) {
         return hostControl("lock", { locked }, locked ? "Could not lock the room." : "Could not unlock the room.");
       },
@@ -1482,6 +1537,14 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         // Each tap names itself, so the server can tell a retry of this one
         // from a second tap that wants a second crew.
         return hostControl("crew", { crew, request: tapId() }, "Could not start a new crew.");
+      },
+
+      renameCrew(crew: string | null, name: string) {
+        return hostControl("crewname", { crew, name }, "Could not rename the crew.");
+      },
+
+      keepCrew(campaignId: string) {
+        return hostControl("crewkeep", { campaignId }, "Could not keep going.");
       },
 
       closeRoom() {

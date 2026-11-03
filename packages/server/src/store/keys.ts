@@ -26,6 +26,7 @@
  * | Transfer code    | TRANSFER#<code> | META               |
  * | Moved device     | HH#<hhId>       | MOVED#<deviceId>   |
  * | Pairing code     | PAIR#<code>     | META               |
+ * | Screen code      | SCREEN#<code>   | META               |
  * | Visit            | VISIT#<playerId>| HH#<tableHhId>     |
  * | Forget job       | FORGET#<playerId>| META              |
  * | Push subscription| PUSH#<playerId> | DEVICE#<deviceId>  |
@@ -88,6 +89,12 @@ export const MOVED_SK = (deviceId: string) => `MOVED#${deviceId}`;
 export const PAIR = (code: string) => `PAIR#${code.toUpperCase()}`;
 
 /**
+ * A single-use code that lets one more screen show a room (`handlers/screens.ts`).
+ * Carries a `ttl`, like a pairing code: one row, and nothing else points at it.
+ */
+export const SCREEN = (code: string) => `SCREEN#${code.toUpperCase()}`;
+
+/**
  * Wrong room codes from one client, one row per window (`handlers/code-guard.ts`).
  * Carries a `ttl`, like a room: it is one row, and nothing else points at it.
  */
@@ -108,6 +115,19 @@ export const CREWSAVE_PREFIX = (crew: string) => `CREWSAVE#${crew}#`;
 
 /** A household's crew (`CrewRecord`). */
 export const CREW_SK = (crew: string) => `CREW#${crew}`;
+
+/**
+ * The name a household gave its first crew, which has no `CrewRecord`. Not under
+ * `CREW#`, so `listCrews` still lists only the crews beyond the first.
+ */
+export const FIRSTCREW = "FIRSTCREW";
+
+/**
+ * The household's crew-names gate: a version, bumped by every commit that names
+ * a crew (a rename, a new crew), and conditioned on by the next, so two rooms
+ * naming crews at once cannot both win and no two crews end up sharing a name.
+ */
+export const CREWNAMES = "CREWNAMES";
 
 /**
  * A table a kid has played at as a visitor (#249, #252): one row per kid and

@@ -91,8 +91,25 @@ function tidy(state: RiftState): RiftState {
   };
 }
 
+/** `tidy` drops a zero or missing counter, so those compare equal. */
+const count = (n: number | undefined): number => ((n ?? 0) > 0 ? (n as number) : 0);
+
+/**
+ * Whether two records would be stored identically, i.e. `tidy(a)` and `tidy(b)`
+ * serialize the same. Compared field by field: the lint search calls this
+ * hundreds of thousands of times, and stringifying two fresh objects each time
+ * was its largest single cost.
+ */
 const same = (a: RiftState | undefined, b: RiftState): boolean =>
-  a !== undefined && JSON.stringify(tidy(a)) === JSON.stringify(tidy(b));
+  a !== undefined &&
+  a.status === b.status &&
+  count(a.crossings) === count(b.crossings) &&
+  count(a.age) === count(b.age) &&
+  (a.revealed === true) === (b.revealed === true) &&
+  (a.latched === true) === (b.latched === true) &&
+  (a.stable === true) === (b.stable === true) &&
+  (a.discovered === true) === (b.discovered === true) &&
+  a.to === b.to;
 
 /** The ids a rift's record is kept under: the edge, and a linked partner. */
 function mouths(graph: ParsedCampaignGraph, edgeId: EdgeId): EdgeId[] {

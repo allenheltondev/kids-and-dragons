@@ -56,7 +56,7 @@ import {
 import type { DeviceIdentity } from "../identity.ts";
 import type { ApplyIntentResult, EngineContext } from "../engine/port.ts";
 import type { CampaignProgressRecord, CharacterWrite, EventRecord, RunRecord } from "../store/repository.ts";
-import { followCrew } from "./crew.ts";
+import { followCrew, newcomersTo, rethinkNewcomers } from "./crew.ts";
 import { diff } from "../json-patch.ts";
 import { keepGuestHousehold } from "./account.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
@@ -117,6 +117,28 @@ export interface ActionInput extends ActionRequest {
   principal?: ActingPrincipal | undefined;
 }
 
+/**
+ * One line per refused-as-stale intent, for operators. The client absorbs these
+ * without telling the player (it resyncs and retries once, store `send`), so
+ * this log is the only place their rate shows. `event` is a stable key to build
+ * a CloudWatch metric filter on (`{ $.event = "intent.stale_seq" }`); `reason`
+ * splits the two ways it happens: `seq-gate` (the phone was a beat behind) and
+ * `commit-race` (two phones won the same seq and the conditional write lost).
+ */
+function logStaleSeq(reason: "seq-gate" | "commit-race", input: ActionInput, serverSeq: number): void {
+  console.warn(
+    JSON.stringify({
+      event: "intent.stale_seq",
+      reason,
+      runId: input.runId,
+      playerId: input.playerId,
+      intent: input.intent.type,
+      clientSeq: input.seq,
+      serverSeq,
+    }),
+  );
+}
+
 export async function applyAction(
   received: ActionInput,
   deps: HandlerDeps,
@@ -146,6 +168,7 @@ export async function applyAction(
   // case, which is a client that replayed a patch twice. Both answers are the
   // same: here is the real seq, resync.
   if (input.seq !== state.seq) {
+    logStaleSeq("seq-gate", input, state.seq);
     return {
       ok: false,
       seq: state.seq,
@@ -245,6 +268,27 @@ export async function applyAction(
   // The household had already played this chapter (session timing, #511).
   let revisit = false;
   if (input.intent.type === "START_CHAPTER" && chapter) {
+    // A crew partway through this adventure, and nobody seated has been on it:
+    // the host chooses first (crew.ts, `checkNewcomers`), rather than these
+    // heroes being dropped into the middle of somebody else's story. Here, on
+    // every start, so a START_CHAPTER sent straight is asked the same as
+    // CONTINUE_CAMPAIGN; the practice and a playtest start have no attempt.
+    const forced = deps.playtest && deps.playtestStart?.chapterId === chapter.id;
+    if (
+      !forced &&
+      !isPracticeCampaign(chapter.campaignId) &&
+      (await newcomersTo(state, auth.run.householdId, chapter.campaignId, deps))
+    ) {
+      const title = deps.content.campaign(chapter.campaignId)?.title ?? chapter.campaignId;
+      return {
+        ok: false,
+        seq: state.seq,
+        error: {
+          code: "ILLEGAL",
+          message: `This crew is partway through ${title}, and none of these heroes have been on it yet. The grown-up running the game picks: keep going, or start a new crew.`,
+        },
+      };
+    }
     const road = await roadTo(chapter, auth.run.householdId, seatedParty(state), deps, state.crew);
     if ("refusal" in road) {
       return { ok: false, seq: state.seq, error: { code: "ILLEGAL", message: road.refusal } };
@@ -427,9 +471,11 @@ export async function applyAction(
   if (auth.home !== auth.run.householdId) {
     result = { ...result, state: withHome(result.state, input.playerId, auth.home) };
   }
-  if (result.state.chapterId !== null && result.state.crewSetup) {
+  if (result.state.chapterId !== null && (result.state.crewSetup || result.state.crewCheck || result.state.crewConfirmed)) {
     result = { ...result, state: { ...result.state } };
     delete result.state.crewSetup;
+    delete result.state.crewCheck;
+    delete result.state.crewConfirmed;
   }
   // A hero sat down or got up in the lobby: her own finished campaigns can
   // unlock one the household has not finished (#283), so the lobby's locks
@@ -443,6 +489,10 @@ export async function applyAction(
     // their own saves with them (crew.ts). A no-op for a household with none.
     result = { ...result, state: await followCrew(result.state, auth.run.householdId, auth.run.campaignId, deps) };
   }
+  // Whether the heroes now seated are new to the adventure the lobby rests on
+  // (crew.ts): asked again, and any keep-going dropped, when who is seated or
+  // the crew changes; asked again when the adventure that leads changes.
+  result = { ...result, state: await rethinkNewcomers(state, result.state, auth.run.householdId, deps) };
 
   /*
    * Progression, computed here and committed below.
@@ -672,6 +722,7 @@ export async function applyAction(
     // Two phones tapped inside the same millisecond. One of them wins; the
     // other is, by definition, now stale.
     const current = await deps.repo.getState(input.runId);
+    logStaleSeq("commit-race", input, current?.seq ?? state.seq);
     return {
       ok: false,
       seq: current?.seq ?? state.seq,

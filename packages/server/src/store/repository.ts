@@ -411,8 +411,8 @@ export interface CommitInput {
    * the room, which the run records as `keeperPlayerId`. One write, so the
    * household and the screens can never disagree about who may keep it, with
    * nothing to roll back when two hand-overs overlap or the run loses its
-   * seq race. Whoever it was or was not until now (dropped, awaiting, from
-   * before founders). Conditional on a guest household nobody has kept and the
+   * seq race. Whoever it was or was not until now (dropped, awaiting, or
+   * none recorded). Conditional on a guest household nobody has kept and the
    * sweeper has not begun on, as the claim is: when it does not hold the whole
    * commit is refused, exactly as a lost seq race is.
    */
@@ -420,8 +420,8 @@ export interface CommitInput {
   /**
    * Take `deviceId` off the household as its founder, in the same transaction
    * as the state and the event (#272): a host's Remove of the phone that kept
-   * the game. Leaves nobody (`founderDeviceId: ""`, never absent, which would
-   * read as a household from before founders), as `dropFounder` does.
+   * the game. Leaves nobody (`founderDeviceId: ""`, which reads the same as
+   * absent), as `dropFounder` does.
    * Conditional on `deviceId` still being the founder: when it is not, the
    * whole commit is refused as a lost seq race is, and the caller reads the
    * household again. Never together with `founder`, which writes the same row.
@@ -434,6 +434,15 @@ export interface CommitInput {
    * taking the same slot at once cannot both have it (handlers/crew.ts).
    */
   crew?: CrewRecord;
+  /**
+   * Crew names this commit sets, gated on the household's crew-names version
+   * (`CREWNAMES`): the commit is refused, as a lost seq race is, unless that
+   * version is still `expectedVersion`, and it lands version + 1. `crew` null is
+   * the first crew (`FIRSTCREW`); otherwise the crew's row, which must exist.
+   * A new crew's commit carries it with no `names`, so its pick of a free name
+   * cannot race a rename (handlers/crew.ts).
+   */
+  crewNames?: { householdId: string; expectedVersion: number; names: { crew: string | null; name: string }[] };
 }
 
 /** `HH#<hhId>` / `OWNER#<sub>`: one grown-up who may manage the household (#248). */
@@ -471,6 +480,28 @@ export interface TransferCodeRecord {
   householdId: string;
   playerId: string;
   /** The owner of that home who asked for it. */
+  createdBy: string;
+  createdAt: string;
+  expiresAt: string;
+  /** Epoch seconds. DynamoDB deletes it some time after; reads check `expiresAt`. */
+  ttl: number;
+}
+
+/**
+ * `SCREEN#<code>` / `META`: a single-use code that lets one more screen show a
+ * room, a follower TV at another address. It names the room and nothing else,
+ * so redeeming it earns a viewer token and never a player.
+ */
+export interface ScreenCodeRecord {
+  code: string;
+  /** The room's four letters. */
+  roomCode: string;
+  /**
+   * The run it was made for. Four letters are reused once a room closes, so
+   * redeeming checks that the room behind them is still this run.
+   */
+  runId: string;
+  /** The host device that made it. */
   createdBy: string;
   createdAt: string;
   expiresAt: string;
@@ -631,6 +662,10 @@ export interface GameRepository {
    * was never issued, is spent, or has expired (`nowIso` past `expiresAt`).
    */
   redeemPairingCode(code: string, nowIso: string): Promise<PairingCodeRecord | null>;
+  /** A new screen code. `false`, and nothing written, if the code is taken. */
+  putScreenCodeIfAbsent(record: ScreenCodeRecord): Promise<boolean>;
+  /** Spend a screen code, as `redeemPairingCode` spends a pairing one: once, and not past its expiry. */
+  redeemScreenCode(code: string, nowIso: string): Promise<ScreenCodeRecord | null>;
 
   /**
    * Claim a guest household for a signed-in account (§4.5). Writes the
@@ -646,8 +681,8 @@ export interface GameRepository {
    * account — one family's guest session cannot be stolen by the next person to
    * sign in on that phone — if the sweeper has already begun deleting it, or if
    * `deviceId` is not the household's founder (`Household.founderDeviceId`,
-   * #265). A household from before founders (neither field) is claimable from
-   * any device until it expires. The founder is checked in the same write as the claim, so a founder
+   * #265). A household with no founder (absent, awaiting or `""`) is claimable
+   * by nobody (#272). The founder is checked in the same write as the claim, so a founder
    * dropped a moment ago (`dropFounder`) cannot claim on a stale read.
    */
   claimHousehold(householdId: string, cognitoSub: string, deviceId: string): Promise<boolean>;
@@ -660,8 +695,8 @@ export interface GameRepository {
   takeFounding(householdId: string, deviceId: string): Promise<boolean>;
   /**
    * Take `deviceId` off the household as its founder, and leave nobody in its
-   * place (`founderDeviceId: ""`, never absent, which would read as a
-   * household from before founders): the household can no longer be claimed by signing in. For a host
+   * place (`founderDeviceId: ""`, which reads the same as absent): the
+   * household can no longer be claimed by signing in. For a host
    * taking out a phone that founded a TV's household (#267). A no-op when
    * `deviceId` is not the founder.
    */
@@ -877,6 +912,10 @@ export interface GameRepository {
    * first. Written only by a lobby's commit (`CommitInput.crew`).
    */
   listCrews(householdId: string): Promise<CrewRecord[]>;
+  /** The household's crew-names version (`CREWNAMES`), 0 before any crew was named. Strongly consistent. */
+  getCrewNamesVersion(householdId: string): Promise<number>;
+  /** The name the household gave its first crew, or null while it has none. */
+  getFirstCrewName(householdId: string): Promise<string | null>;
 
   // --- field guide (household-scoped, permanent) -----------------------------
   /** `HH#<id>` / `FIELDGUIDE`. An empty book (never `null`) when nothing is found yet. */

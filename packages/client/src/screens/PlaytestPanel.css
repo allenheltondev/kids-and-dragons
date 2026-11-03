@@ -104,4 +104,13 @@
   margin-inline-start: var(--space-2, 0.5em);
   font-size: var(--font-size-xs, 0.75em);
 }
+
 .playtest--shut { inset-block-end: auto; inset-block-start: 0; }
+/* The returning-player notice occupies the top edge. Reserve a separate row
+   while it is present so the handle cannot cover its dismissal button. */
+.kad-surface--player:has(.catch-up) .playtest--shut {
+  position: static;
+  flex: 0 0 auto;
+  align-self: flex-end;
+}
+

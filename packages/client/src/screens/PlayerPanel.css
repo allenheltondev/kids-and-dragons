@@ -1457,6 +1457,79 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
   flex: 1 1 auto;
 }
 
+/* What a choice leads to (shared `choiceAhead`), under its label: "Quick roll", "Game", "Fight". */
+.choice__ahead {
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
+  inline-size: fit-content;
+  margin-block-start: 0.2em;
+  padding: 0.05em 0.5em;
+  border-radius: var(--radius-pill, 999em);
+  background: rgb(245 200 108 / 16%);
+  color: var(--color-accent, #f5c86c);
+  font-size: 0.8em;
+  font-weight: 700;
+}
+
+/* --- TV focus (layout/tv-focus.ts) --------------------------------------
+ * The shell has a TV and this device asked to look at it. With nothing to do,
+ * one card fills the pane and points up; with a turn, a single line says where
+ * the story is. No viewport units: the pane is the size (PlayerView's rule 2).
+ */
+
+.player__tv-rest {
+  flex: 1 1 auto;
+  min-block-size: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3, 0.75em);
+  padding: var(--space-4, 1em) var(--space-3, 0.75em);
+  text-align: center;
+}
+
+.player__tv-rest > .player__tv-glyph {
+  inline-size: 5em;
+  block-size: 5em;
+  color: var(--color-accent, #ffd66b);
+}
+
+.player__tv-rest-title {
+  margin: 0;
+  font-size: var(--font-size-xl, 1.6em);
+}
+
+.player__tv-rest-line {
+  margin: 0;
+  max-inline-size: 22em;
+  font-size: var(--font-size-lg, 1.2em);
+  line-height: 1.35;
+}
+
+.player__tv-rest-note {
+  margin: 0;
+  max-inline-size: 22em;
+}
+
+.player__tv-cue {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0 0 var(--space-3, 0.75em);
+  color: var(--color-text-muted, #b9b0d8);
+  font-size: var(--font-size-md, 1em);
+}
+
+.player__tv-cue > .player__tv-glyph {
+  flex: 0 0 auto;
+  inline-size: 1.6em;
+  block-size: 1.6em;
+}
+
+
 /* Decisions reserve room for the commit; decoration yields before controls. */
 .player--deciding .player__prompt { gap: .35em; }
 .player--deciding .prompt { flex: none; gap: .35em; }
@@ -1468,6 +1541,35 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
   .player--deciding .prompt:not(.combat) .choice { min-block-size: 44px; padding-block: .35em; }
   .player--deciding .prompt:not(.combat) .choice__label { font-size: 1em; }
   .player--deciding .prompt:not(.combat) .choice__icon { inline-size: 2em; block-size: 2em; }
+}
+/* Keep the development handle out of the game's confirm area. */
+.kad-surface--player:has(.playtest--shut) .confirm { padding-block-end: 0; }
+.player--deciding .sheet { padding-block: .3em; }
+.player--deciding .sheet__portrait { inline-size: 2.5em; block-size: 3em; }
+.player--deciding .sheet__meta { display: none; }
+@container prompt (max-height: 30em) {
+  .player--deciding .prompt__title { font-size: 1em; }
+  .player--deciding .confirm__actions > .kad-button { min-block-size: 44px; padding-block: .3em; }
+}
+.player__page-picker { display: flex; align-items: center; gap: .5em; flex: none; }
+.player__page-picker select { flex: 1; min-inline-size: 0; min-block-size: 44px; padding: .4em; border: 1px solid var(--kad-border); border-radius: .5em; background: var(--kad-bg-raised); color: var(--kad-ink); font: inherit; }
+.player__scroll > [hidden] { display: none; }
+.player__scroll .inv__grid { grid-auto-rows: 48px; gap: .4em; }
+.player__scroll :is(.inv__button, .inv__slot--empty) { min-height: 48px; }
+.player__scroll .inv__slot-name { font-size: .7em; }
+.player__scroll .inv__empty-mark { inline-size: 1.5em; block-size: 1.5em; }
+/* Consequence previews stay readable without adding a full row to every
+   answer on a short phone. Their words already name the roll or activity. */
+@container prompt (max-height: 30em) {
+  .player--deciding .choice__ahead {
+    display: inline-flex;
+    margin: 0 0 0 .4em;
+    font-size: max(12px, .75em);
+    line-height: 1.1;
+    vertical-align: middle;
+  }
+  .player--deciding .choice__ahead > .kad-icon { display: none; }
+
 }
 /* Keep the development handle out of the game's confirm area. */
 .kad-surface--player:has(.playtest--shut) .confirm { padding-block-end: 0; }

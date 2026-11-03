@@ -9,8 +9,9 @@
  * looking at. A question that sat behind the map would be a turn nobody took.
  */
 
+import { StrictMode } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { act, cleanup, render, screen, within } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import type { Prompt } from "@kad/shared";
 import { makeMember, makeState } from "../testing/fixtures";
 import { useGameStore } from "../store";
@@ -19,7 +20,7 @@ import { dismissPlayerSheet, usePlayerNavigation } from "../store/player-navigat
 import { PartyLayout } from "./PartyLayout";
 import { useHelpFocus } from "../help/focus";
 
-function mount(prompt: Prompt | null = null, phone = true) {
+function mount(prompt: Prompt | null = null, phone = true, strict = false) {
   // A phone that plays remembers her (a device token); a family tablet's pick holds only a seat (#299).
   if (phone) localStorage.setItem("kad.device", JSON.stringify({ deviceToken: "dev_1" }));
   useGameStore.setState({
@@ -38,7 +39,8 @@ function mount(prompt: Prompt | null = null, phone = true) {
     loadContent: async () => undefined,
     loadChapter: async () => undefined,
   });
-  return render(<PartyLayout surface="player" />);
+  // StrictMode as main.tsx mounts it in development: every effect runs, is torn down, and runs again.
+  return render(strict ? <StrictMode><PartyLayout surface="player" /></StrictMode> : <PartyLayout surface="player" />);
 }
 
 function showing(container: HTMLElement): string[] {
@@ -79,6 +81,7 @@ describe("Party Mode and the map", () => {
     const nav = screen.getByRole("navigation", { name: "What to look at" });
     expect(nav.querySelectorAll("button")).toHaveLength(4);
     // Folded at the foot of the You page until it is opened.
+    act(() => fireEvent.change(screen.getByRole("combobox", { name: "Your page" }), { target: { value: "room" } }));
     const settings = screen.getByRole("button", { name: "Room settings" });
     expect(settings.getAttribute("aria-expanded")).toBe("false");
     act(() => settings.click());
@@ -94,6 +97,7 @@ describe("Party Mode and the map", () => {
   });
   it("dismisses a character sheet when the already-selected You destination is tapped", () => {
     mount();
+    act(() => fireEvent.change(screen.getByRole("combobox", { name: "Your page" }), { target: { value: "party" } }));
     act(() => screen.getByRole("button", { name: /Sparklehoof's character sheet/ }).click());
     expect(screen.getByRole("region", { name: "Sparklehoof's character sheet" })).toBeTruthy();
     expect(screen.queryByRole("button", { name: /^close$/i })).toBeNull();
@@ -138,6 +142,31 @@ describe("Party Mode and the map", () => {
       screen.getByRole("button", { name: /^you$/i }).click();
     });
     expect(showing(container)).toEqual(["player"]);
+  });
+
+  it("opens on the turn, not the bag, for a phone that reloads or rejoins mid-turn", () => {
+    mount({
+      kind: "choice",
+      sceneId: "scene_hedge_wall",
+      options: [{ id: "squeeze", label: "Look for a gap", icon: "eye" }],
+      forPlayerIds: ["p_1"],
+      vote: false,
+    });
+    // Visible: a role query skips anything under `hidden`.
+    expect(screen.getByRole("button", { name: /Look for a gap/ })).not.toBeNull();
+    expect(screen.queryByRole("button", { name: "Your turn" })).toBeNull();
+  });
+
+  it("opens on the turn under StrictMode too, whose second effect run once let the reset win", () => {
+    mount({
+      kind: "choice",
+      sceneId: "scene_hedge_wall",
+      options: [{ id: "squeeze", label: "Look for a gap", icon: "eye" }],
+      forPlayerIds: ["p_1"],
+      vote: false,
+    }, true, true);
+    expect(screen.getByRole("button", { name: /Look for a gap/ })).not.toBeNull();
+    expect(screen.queryByRole("button", { name: "Your turn" })).toBeNull();
   });
 
   it("takes the map away the moment the game asks you something", () => {

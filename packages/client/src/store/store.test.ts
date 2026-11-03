@@ -203,6 +203,15 @@ function harness(state: RunState = makeState()): Harness {
     createPairingCode: vi.fn(),
     pairProfile: vi.fn(),
     redeemPairingCode: vi.fn(),
+    // Another TV in another place (handlers/screens.ts).
+    addScreen: vi.fn(async () => ({ code: "ABCDEFGH", expiresAt: "2026-07-05T00:10:00.000Z" })),
+    redeemScreenCode: vi.fn(async () => ({
+      runId: state.runId,
+      mode: "party" as const,
+      expiresAt: "2026-07-05T00:00:00.000Z",
+      viewerToken: "tok_follow",
+      state,
+    })),
     listSharedDevices: vi.fn(),
     forgetDeviceById: vi.fn(),
   };
@@ -347,6 +356,14 @@ describe("joining", () => {
     await h.store.getState().joinRoom("ABCD", "Allen");
     await h.store.getState().listHeroes();
     expect(h.api.listHeroes).toHaveBeenCalledWith("tok_1");
+
+    // What holds each hero rides along, and a later list with none clears it.
+    const held = { c_1: { campaign: "Gemfall", crew: "The Otter Crew" } };
+    h.api.listHeroes.mockResolvedValueOnce({ heroes: [], held });
+    await h.store.getState().listHeroes();
+    expect(h.store.getState().heldHeroes).toEqual(held);
+    await h.store.getState().listHeroes();
+    expect(h.store.getState().heldHeroes).toEqual({});
   });
 
   it("opens the journal with the device binding, and not on a phone that has never played", async () => {
@@ -932,6 +949,89 @@ describe("arrivals and removal (#267)", () => {
   });
 });
 
+describe("another TV in another place", () => {
+  it("lets the host ask for a code for another TV, with its own proof", async () => {
+    const h = harness();
+    await h.store.getState().openOnThisScreen();
+    await h.store.getState().attach("ABCD", "display");
+    // Not the host yet: nothing is asked of the server.
+    expect(await h.store.getState().addScreen()).toBeNull();
+    expect(h.api.addScreen).not.toHaveBeenCalled();
+
+    h.store.setState({ session: { ...h.store.getState().session!, host: true } });
+    expect(await h.store.getState().addScreen()).toEqual({ code: "ABCDEFGH", expiresAt: "2026-07-05T00:10:00.000Z" });
+    expect(h.api.addScreen).toHaveBeenCalledWith("ABCD", { deviceToken: "dev_tv" });
+  });
+
+  it("says why when the server will not make one, and resolves null", async () => {
+    const h = harness();
+    await h.store.getState().openOnThisScreen();
+    await h.store.getState().attach("ABCD", "display");
+    h.store.setState({ session: { ...h.store.getState().session!, host: true } });
+    h.api.addScreen.mockRejectedValueOnce(new ApiError(404, "no open room ABCD"));
+    expect(await h.store.getState().addScreen()).toBeNull();
+    expect(h.store.getState().error).toMatch(/no open room/);
+  });
+
+  it("shows the game on this screen from a code: a TV that seats nobody, kept for a refresh", async () => {
+    const h = harness();
+    await h.store.getState().showFromCode("ABCDEFGH");
+
+    expect(h.api.redeemScreenCode).toHaveBeenCalledWith("ABCDEFGH");
+    // Never the room's own screen's way in: that one is the host's alone.
+    expect(h.api.watchRoom).not.toHaveBeenCalled();
+    const session = h.store.getState().session;
+    expect(session).toMatchObject({ roomCode: "ABCD", runId: "r_1", playerId: "", sessionToken: "tok_follow" });
+    expect(session?.host).toBeUndefined();
+    expect(h.navigate).toHaveBeenCalledWith({ name: "tv", code: "ABCD" }, { replace: true });
+    expect(loadSession("ABCD", h.storage)).toMatchObject({ playerId: "", sessionToken: "tok_follow" });
+    expect(h.store.getState().state?.runId).toBe("r_1");
+  });
+
+  it("comes back to the game after a refresh with the token it kept, not by watching", async () => {
+    const first = harness();
+    await first.store.getState().showFromCode("ABCDEFGH");
+
+    // A fresh page on the same TV: the same storage, a new store.
+    const again = harness();
+    for (let i = 0; i < first.storage.length; i++) {
+      const key = first.storage.key(i);
+      if (key !== null) again.storage.setItem(key, first.storage.getItem(key)!);
+    }
+    await again.store.getState().attach("ABCD", "display");
+    expect(again.api.watchRoom).not.toHaveBeenCalled();
+    expect(again.api.fetchState).toHaveBeenCalledWith({ runId: "r_1", code: "ABCD" }, "tok_follow", expect.any(Number));
+    expect(again.store.getState().session).toMatchObject({ playerId: "", sessionToken: "tok_follow" });
+  });
+
+  it("says it is here, so the host can count it; the room's own TV never does", async () => {
+    const follower = harness();
+    await follower.store.getState().showFromCode("ABCDEFGH");
+    expect(follower.store.getState().session?.follower).toBe(true);
+    follower.store.getState().beat();
+    follower.store.getState().beat(true);
+    expect(follower.api.postPresence.mock.calls).toEqual([[false, "tok_follow"], [true, "tok_follow"]]);
+
+    const own = harness();
+    await own.store.getState().openOnThisScreen();
+    await own.store.getState().attach("ABCD", "display");
+    own.store.getState().beat();
+    expect(own.api.postPresence).not.toHaveBeenCalled();
+  });
+
+  it("refuses a code that did not work, leaving nothing behind", async () => {
+    const h = harness();
+    h.api.redeemScreenCode.mockRejectedValueOnce(new ApiError(404, "That code didn't work."));
+    await expect(h.store.getState().showFromCode("ZZZZZZZZ")).rejects.toThrow(/didn't work/);
+    expect(h.store.getState().session).toBeNull();
+    expect(h.navigate).not.toHaveBeenCalled();
+    expect(loadSession("ABCD", h.storage)).toBeNull();
+    // Said once, on the code card: no toast over it, and no spinner left behind.
+    expect(h.store.getState().error).toBeNull();
+    expect(h.store.getState().connection).toBe("idle");
+  });
+});
+
 describe("send", () => {
   it("posts the intent with the last-seen server seq and changes nothing locally", async () => {
     const h = harness(makeState({ seq: 7 }));
@@ -995,10 +1095,12 @@ describe("send", () => {
       error: { code: "STALE_SEQ", message: "behind" },
     });
 
-    await h.store.getState().send({ type: "ROLL" });
+    const sent = await h.store.getState().send({ type: "ROLL" });
 
     expect(h.api.postAction).toHaveBeenCalledTimes(2); // one retry, never a loop
-    expect(h.store.getState().error).toBe("behind");
+    expect(sent).toBe(false);
+    // A seq race is not the player's to act on: no toast (the server logs it).
+    expect(h.store.getState().error).toBeNull();
   });
 
   it("resyncs when the broadcast an ok response promised never arrives", async () => {

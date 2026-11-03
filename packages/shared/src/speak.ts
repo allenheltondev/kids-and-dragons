@@ -21,6 +21,7 @@
  * speaker hears it, so a name never reaches the device voice or a provider.
  */
 
+import type { NarrationPart } from "./narration.js";
 import { withoutNames } from "./spoken-names.js";
 
 export interface SpeakOptions {
@@ -32,6 +33,13 @@ export interface SpeakOptions {
   voice?: string;
   /** 1 is normal. */
   rate?: number;
+  /**
+   * The authored pieces `text` was composed from (`RunState.narrationParts`), when it is
+   * exactly a scene's narration. A recorded-voice speaker plays their clips instead of reading
+   * the text (docs/voice-narration-plan.md §7); every other speaker ignores them. Absent on
+   * live lines (turns, decisions, the fight log), which only ever reach the device voice.
+   */
+  parts?: readonly NarrationPart[];
 }
 
 export type Speaker = ((text: string, opts?: SpeakOptions) => void) & {

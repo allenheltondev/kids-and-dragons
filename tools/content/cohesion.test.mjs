@@ -7,7 +7,7 @@
 
 import { describe, expect, it } from "vitest";
 
-import { conceptSweep, idioms, loadChapters, main, mergePoints, opening, reachable, setbackRoutes } from "./cohesion.mjs";
+import { FAILABLE_KINDS, conceptSweep, hasDeadFailure, idioms, isEcho, isInert, loadChapters, main, mergePoints, opening, reachable, setbackRoutes, shape } from "./cohesion.mjs";
 
 const go = (id, goto, label = "On") => ({ id, label, icon: "arrow", goto });
 const story = (narration, ...choices) => ({ type: "story", narration, choices });
@@ -213,6 +213,70 @@ describe("the opening", () => {
   });
 });
 
+describe("the shape screen", () => {
+  const game = (onSuccess, onFailure) => ({ type: "interaction", narration: "Time it.", interaction: { kind: "timing" }, onSuccess, onFailure });
+  const chores = {
+    id: "fixture-chores",
+    entry: "start",
+    scenes: {
+      start: story('"Take nothing," she says.', go("a", "pick_a"), go("b", "pick_b")),
+      pick_a: story("You brush your boots.", go("on", "carry")),
+      pick_b: story("You shake your packs.", go("on", "carry")),
+      carry: game({ goto: "risky", narration: "It comes with you." }, { goto: "risky", narration: "It comes with you anyway." }),
+      risky: game({ goto: "done", effects: [{ type: "setFlag", flag: "kept" }] }, { goto: "done" }),
+      done: end("success"),
+      orphan: check("Unreachable.", "done", "done"),
+    },
+  };
+
+  it("calls a game inert only when every result leads to one scene with the same effects", () => {
+    expect(isInert(chores.scenes.carry)).toBe(true);
+    expect(isInert(chores.scenes.risky)).toBe(false);
+    expect(isInert(game({ goto: "x" }, { goto: "y" }))).toBe(false);
+    expect(isInert(chores.scenes.start)).toBe(false);
+  });
+
+  it("calls a vote an echo when effect-free choices come back to one scene, and not when one sets a flag or is gated", () => {
+    expect(isEcho(chores, chores.scenes.start)).toBe(true);
+    const flagged = story("Pick.", go("a", "pick_a"), { ...go("b", "pick_b"), effects: [{ type: "setFlag", flag: "b" }] });
+    expect(isEcho(chores, flagged)).toBe(false);
+    const gated = story("Pick.", go("a", "pick_a"), { ...go("b", "pick_b"), when: { flag: "x" } });
+    expect(isEcho(chores, gated)).toBe(false);
+    expect(isEcho(chores, story("Pick.", go("a", "carry"), go("b", "risky")))).toBe(false);
+  });
+
+  it("judges a game by the results the engine can produce, not its unreachable onFailure", () => {
+    const kind = (k, onSuccess, onFailure, onAssisted) => ({ ...game(onSuccess, onFailure), interaction: { kind: k }, ...(onAssisted ? { onAssisted } : {}) });
+    // A balance game cannot fail, so a different onFailure is dead, and the game is still inert.
+    const balance = kind("balance", { goto: "a" }, { goto: "b", effects: [{ type: "damage", amount: 1 }] });
+    expect(isInert(balance)).toBe(true);
+    expect(hasDeadFailure(balance)).toBe(true);
+    // Its assisted result is producible, so a different one gives it a stake.
+    expect(isInert(kind("relay", { goto: "a" }, { goto: "a" }, { goto: "b" }))).toBe(false);
+    // A timing game can fail, so the same branches are a real stake and nothing is dead.
+    const timing = kind("timing", { goto: "a" }, { goto: "b" });
+    expect(isInert(timing)).toBe(false);
+    expect(hasDeadFailure(timing)).toBe(false);
+    expect([...FAILABLE_KINDS].sort()).toEqual(["memory", "precision", "sequence", "timing", "tracking"]);
+  });
+
+  it("reads the real chapters the same way (PR #606 review samples)", () => {
+    const [exchange] = loadChapters("riftlight-exchange-rift");
+    const r = shape(exchange);
+    // Warming the kid is free play: it cannot fail and is reported as such, never as a risk.
+    expect(r.neverFail).toContain("ridge_lee");
+    expect(r.inert).toContain("ridge_lee");
+    // The sling carry was made a timing game, so its drift scene is a real way a party can go.
+    expect(r.neverFail).not.toContain("ridge_walk");
+    for (const c of loadChapters("riftlight-")) expect(shape(c).deadFailure, c.id).toEqual([]);
+  });
+
+  it("counts reachable scenes only", () => {
+    const r = shape(chores);
+    expect(r).toMatchObject({ scenes: 6, checks: 0, fights: 0, interactions: 2, inert: ["carry"], echoes: ["start"], quoted: 1 });
+  });
+});
+
 describe("every shipped chapter", () => {
   it("runs each mode without throwing", () => {
     const chapters = loadChapters("");
@@ -223,6 +287,7 @@ describe("every shipped chapter", () => {
       opening(c);
       idioms(c);
       mergePoints(c);
+      shape(c);
     }
     const lines = [];
     expect(main(["setbacks", "--chapter", ""], (l) => lines.push(l))).toBe(0);
@@ -230,6 +295,7 @@ describe("every shipped chapter", () => {
     expect(main(["opening", "--chapter", ""], (l) => lines.push(l))).toBe(0);
     expect(main(["idioms", "--chapter", ""], (l) => lines.push(l))).toBe(0);
     expect(main(["merges", "--chapter", ""], (l) => lines.push(l))).toBe(0);
+    expect(main(["shape", "--chapter", ""], (l) => lines.push(l))).toBe(0);
     expect(main([], (l) => lines.push(l))).toBe(1);
   });
 });

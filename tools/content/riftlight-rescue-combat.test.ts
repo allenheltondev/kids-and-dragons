@@ -1,56 +1,97 @@
+/**
+ * The Borrowed Ruins' fights at the fresh tear, played turn by turn on the real
+ * board (riftlight-bone-yard.test.ts walks the story around them). Shoving the
+ * arch leads to the quick fight (two crawlers, a two-turn tear); helping it
+ * along leads to the grown one (three crawlers, a three-turn tear). Letting
+ * Pip keep the chip adds him to the swarm as someone to pull out.
+ */
 import fs from "node:fs";
 import path from "node:path";
 import { expect, it } from "vitest";
-import { applyIntent, combatantById, currentActorId, enterScene, legalMoves, positionOf, resolveEnemy, stepsBetween } from "@kad/shared";
+import { applyIntent, currentActorId, enterScene, legalMoves, positionOf, resolveEnemy, stepsBetween } from "@kad/shared";
 import type { Bestiary, ClientIntent, EncounterMap, EngineContext, RunState } from "@kad/shared";
 import { chapters, context, start } from "./riftlight-test-support.ts";
 const root = path.resolve(import.meta.dirname, "../..");
 const bestiary = JSON.parse(fs.readFileSync(path.join(root, "content/bestiary.json"), "utf8")) as Bestiary;
 const map = JSON.parse(fs.readFileSync(path.join(root, "content/maps/riftlight_bone_yard.json"), "utf8")) as EncounterMap;
+const TEAR = { x: 6, y: 3 };
+const PIP = { x: 3, y: 7 };
+const HAZARDS = [{ x: 5, y: 2 }, { x: 4, y: 5 }];
+const FIGHTS = { fight_quick: { crawlers: 2, turns: 2 }, fight_quick_pip: { crawlers: 2, turns: 2 }, fight_grown: { crawlers: 3, turns: 3 }, fight_grown_pip: { crawlers: 3, turns: 3 } } as const;
+
 function must(state: RunState, playerId: string, intent: ClientIntent, ctx: EngineContext) {
   const result = applyIntent(state, { playerId, intent }, ctx);
   expect(result.error, `${state.sceneId}/${intent.type}`).toBeUndefined();
   return result.state;
 }
-function setup(sceneId: string, face: number, size = 3, atNorthernPatch = false) {
+function setup(sceneId: string, face: number, size = 3) {
   const chapter = structuredClone(chapters.get("riftlight-bone-yard")!);
   for (const scene of Object.values(chapter.scenes)) if (scene.type === "encounter") scene.enemies = scene.enemies.map(e => {
     const loaded = resolveEnemy(e, bestiary); expect(loaded.problems).toEqual([]); return loaded.spec!;
   });
-  const board = structuredClone(map);
-  // Isolate end-of-turn terrain damage at the same legal tile on both variants.
-  // Objective routes below use the unchanged authored map and spawns.
-  if (atNorthernPatch) board.partySpawns = [{ x: 5, y: 2 }];
-  const ctx: EngineContext = { ...context(chapter, face), map: id => id === board.id ? board : null };
-  let state = start(chapter, "manticore", "duskrunner", {}, size);
+  const ctx: EngineContext = { ...context(chapter, face), map: id => id === map.id ? map : null };
+  let state = start(chapter, "manticore", "duskrunner", { bones_pip_chip: sceneId.endsWith("_pip") }, size);
   const entered = enterScene(state, sceneId, ctx); expect(entered.error).toBeUndefined(); state = entered.state;
   for (const p of state.party) state = must(state, p.playerId, { type: "READY", ready: true }, ctx);
   expect(state.encounter).not.toBeNull();
   return { state, ctx };
 }
-it.each(["fight", "fight_seam", "fight_mats", "fight_seam_mats"])("%s can close its objective through real board turns", sceneId => {
+/** Walk the actor toward `target`, keeping off the loose stones; true when it ends beside it. */
+function approach(state: RunState, ctx: EngineContext, target: { x: number; y: number }) {
+  const actor = currentActorId(state.encounter!)!;
+  const member = state.party.find(p => p.character.id === actor)!;
+  const distance = (p: { x: number; y: number }) => stepsBetween(p, target);
+  if (distance(positionOf(state.encounter!, actor)!) > 1) {
+    const move = [...legalMoves(state.encounter!)].filter(p => !HAZARDS.some(h => h.x === p.x && h.y === p.y)).sort((a, b) => distance(a) - distance(b))[0];
+    if (move && distance(move) < distance(positionOf(state.encounter!, actor)!)) state = must(state, member.playerId, { type: "MOVE", to: { x: move.x, y: move.y } }, ctx);
+  }
+  const beside = distance(positionOf(state.encounter!, actor)!) <= 1;
+  return { state: must(state, member.playerId, { type: "END_TURN" }, ctx), beside };
+}
+
+it.each(Object.entries(FIGHTS))("%s brings the crawlers the shove or the wait called for, and closes in its turns", (sceneId, spec) => {
+  const scene = chapters.get("riftlight-bone-yard")!.scenes[sceneId]!;
+  if (scene.type !== "encounter") throw new Error("Expected a fight");
+  const { state } = setup(sceneId, 1);
+  expect(state.encounter!.combatants.filter(c => c.side === "enemy")).toHaveLength(spec.crawlers);
+  expect(scene.environment!.objectives![0]).toMatchObject({ kind: "close", turns: spec.turns, endsFight: true });
+});
+
+it.each(Object.keys(FIGHTS))("%s can close the tear through real board turns", sceneId => {
   let { state, ctx } = setup(sceneId, 1);
-  let turns = 0, workingTurns = 0;
+  let turns = 0, working = 0;
   while (state.encounter) {
     expect(++turns).toBeLessThan(100);
-    const actor = currentActorId(state.encounter)!;
-    const member = state.party.find(p => p.character.id === actor)!;
-    expect(member).toBeDefined();
-    const target = { x: 6, y: 3 };
-    const distance = (p: { x: number; y: number }) => stepsBetween(p, target);
-    if (distance(positionOf(state.encounter, actor)!) > 1) {
-      const move = [...legalMoves(state.encounter)].filter(p => !(p.x === 5 && p.y === 2) && !(p.x === 4 && p.y === 5)).sort((a, b) => distance(a) - distance(b))[0];
-      if (move && distance(move) < distance(positionOf(state.encounter, actor)!)) state = must(state, member.playerId, { type: "MOVE", to: { x: move.x, y: move.y } }, ctx);
-    }
-    if (distance(positionOf(state.encounter!, actor)!) <= 1) workingTurns++;
-    state = must(state, member.playerId, { type: "END_TURN" }, ctx);
+    const moved = approach(state, ctx, TEAR);
+    state = moved.state;
+    if (moved.beside) working++;
   }
-  expect(state.sceneId).toBe("cleared");
-  expect(state.flags.bone_rift_closed).toBe(true);
-  expect(workingTurns).toBe(sceneId.includes("seam") ? 2 : 3);
+  expect(state.sceneId).toBe("court_after");
+  expect(state.flags.bones_tear_closed).toBe(true);
+  expect(working).toBe(FIGHTS[sceneId as keyof typeof FIGHTS].turns);
   expect(state.fightEndings?.[0]?.byObjective).toBe("Close the fresh tear");
+  expect(state.flags.bones_pip_freed).not.toBe(true);
+  expect(state.narration).toContain("folds shut");
 });
-it.each(["fight", "fight_seam", "fight_mats", "fight_seam_mats"])("%s retains a real defeat and outer-route recovery", sceneId => {
+
+it.each(["fight_quick_pip", "fight_grown_pip"])("%s: a hero who pulls Pip out first still closes the tear, and Pip is freed", sceneId => {
+  let { state, ctx } = setup(sceneId, 1);
+  const first = state.party[0]!.character.id;
+  let freedTurn = false, turns = 0;
+  while (state.encounter) {
+    expect(++turns).toBeLessThan(150);
+    const actor = currentActorId(state.encounter)!;
+    const moved = approach(state, ctx, actor === first && !freedTurn ? PIP : TEAR);
+    if (actor === first && !freedTurn && moved.beside) freedTurn = true;
+    state = moved.state;
+  }
+  expect(freedTurn).toBe(true);
+  expect(state.sceneId).toBe("court_after");
+  expect(state.flags.bones_pip_freed).toBe(true);
+  expect(state.narration).toContain("Pip tumbles out of the pile");
+});
+
+it.each(Object.keys(FIGHTS))("%s: a lost fight costs the drawing and the short way, and the story goes on", sceneId => {
   let { state, ctx } = setup(sceneId, 20);
   let turns = 0;
   while (state.encounter) {
@@ -59,21 +100,10 @@ it.each(["fight", "fight_seam", "fight_mats", "fight_seam_mats"])("%s retains a 
     const member = state.party.find(p => p.character.id === actor)!;
     state = must(state, member.playerId, { type: "END_TURN" }, ctx);
   }
-  expect(state.sceneId).toBe("rescued");
-  expect(state.flags.bone_retreat).toBe(true);
-  expect(state.flags.bones_passage_done).not.toBe(true);
-  expect(state.flags.bone_mats_recoverable).toBe(false);
-  expect(state.flags.bone_plank_recoverable).toBe(false);
+  expect(state.sceneId).toBe("swarmed");
+  expect(state.flags).toMatchObject({ bones_retreat: true, bones_drawing_lost: true });
+  expect(state.flags.bones_got_past).not.toBe(true);
+  expect(state.flags.bones_tear_closed).not.toBe(true);
   expect(state.party.every(p => p.hp > 0 && !p.down)).toBe(true);
-});
-it("carried mats remove damage on the covered tile without changing the other hazard", () => {
-  const damage = [];
-  for (const sceneId of ["fight", "fight_mats"]) {
-    let { state, ctx } = setup(sceneId, 1, 1, true);
-    const actorId = state.party[0]!.character.id;
-    const before = combatantById(state.encounter!, actorId)!.hp;
-    state = must(state, state.party[0]!.playerId, { type: "END_TURN" }, ctx);
-    damage.push(before - combatantById(state.encounter!, actorId)!.hp);
-  }
-  expect(damage).toEqual([1, 0]);
+  expect(state.prompt?.kind === "choice" && state.prompt.options.map(o => o.id)).toEqual(["rim"]);
 });

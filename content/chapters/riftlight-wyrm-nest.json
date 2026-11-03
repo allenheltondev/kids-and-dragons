@@ -1,4 +1,5 @@
 {
+  "$comment": "Riftlight, Forgotten Paths strand end (docs/campaigns/continental-rift/arc.md, wyrm-nest; design note wyrm-nest-review.md). Rewritten in November 2026 to the pilot's bar. Question: where can a frost wyrm and the readers both live? Flurry (the young keeper of the new reading room) carries it; Pip Thistledown voices Lady Olivia's ideas; Elder Murmur closes it. Force (drive the wyrm out) or understand (move it through the shimmering opening to the hollow). Sets wyrm_ally only when the wyrm is shown the way home; reads fragment_coast_learned / fragment_sky_learned only to point at the convergence.",
   "id": "riftlight-wyrm-nest",
   "campaignId": "riftlight",
   "index": 7,
@@ -13,28 +14,33 @@
     "narration": "A frost wyrm has claimed the new reading room. Its head rests on a bench, and every sleepy breath paints frost ferns on the wall. The yeti builders wait beside their tools. Somehow, everyone needs room."
   },
   "goal": {
-    "text": "Make room for the readers and the frost wyrm without waking the old ice.",
+    "text": "Where can a frost wyrm and the readers both live?",
     "steps": [
       {
-        "id": "nest_watch",
-        "label": "Study the nest",
-        "flag": "nest_watch_done"
+        "id": "nest",
+        "label": "See who has moved in",
+        "flag": "nest_seen"
       },
       {
-        "id": "nest_space",
-        "label": "Find a safe space",
-        "flag": "nest_space_done"
+        "id": "opening",
+        "label": "Find out where the opening goes",
+        "flag": "nest_opening"
       },
       {
-        "id": "nest_people",
-        "label": "Bring the readers through",
-        "flag": "nest_people_done"
+        "id": "wyrm",
+        "label": "Settle the wyrm, one way or another",
+        "flag": "nest_settled"
+      },
+      {
+        "id": "readers",
+        "label": "Bring the readers to a room",
+        "flag": "nest_readers"
       }
     ]
   },
   "voiceGuide": {
-    "tone": "Warm, curious and practical. Short sentences. Show the consequence of each plan. Nobody dies.",
-    "vocabulary": "Read aloud to an eight-year-old.",
+    "tone": "Warm, funny and a little spooky, with real consequences. Short sentences. The wyrm is lost and sleepy, not wicked; nobody is hurt worse than a frosty nose. Let a character act instead of explaining how the reader should feel.",
+    "vocabulary": "Read aloud to an eight-year-old. Concrete words, short sentences, distinct voices.",
     "forbidden": [
       "gore",
       "Hollow Gate",
@@ -43,265 +49,273 @@
       "emperor",
       "Pangea"
     ],
-    "npcVoices": {}
+    "npcVoices": {
+      "Flurry": "Flurry, a young yeti keeper (she/her). Quick, nervous and kind. Knits little striped hats for icicles and chisels. The wyrm is sleeping in her first room; she wants it back, and she feels sorry for the wyrm.",
+      "Pip Thistledown": "Young manticore scout (he/him). Eager, notebook always out, quotes \"Lady Olivia says...\" and tries her ideas. Thinks a wyrm is only a big lizard. Kind underneath; changes his mind when the party gives him a reason.",
+      "Yeti builders": "The glacier builders, a big gentle crew of yetis. Speak slowly, mostly about ice. Proud of their carving, fond of oat cakes, secretly scared of the wyrm.",
+      "Elder Murmur": "Elder Murmur, the very old yeti who keeps the reading room (she/her). Whispers everything. Slow as a snowdrift; never hurries and never guesses. Drinks iced tea."
+    }
+  },
+  "presentation": {
+    "interactions": {
+      "sneak_nest": {
+        "props": [
+          "snow-mound"
+        ]
+      }
+    }
   },
   "scenes": {
     "arrival": {
       "type": "story",
-      "narration": "Beyond the memory reading room, yeti builders have stopped carving a new chamber for the memory readers. A frost wyrm has curled across their doorway, using a bench as a pillow. Its breath covers the wall in tiny ice ferns. \"Make room for us and the wyrm without waking the old ice,\" says a builder. \"We can move the room. We cannot ask the mountain for a second mountain.\" The wyrm opens one eye. Pip stays in the old reading room to help the elder sort the notes while you work below.",
-      "cast": [
+      "narration": "Flurry, the young yeti keeper from the reading room, leads you down the builders' brand-new tunnel, her knitting bag bouncing. \"My new reading room is at the very end,\" she puffs. \"The builders carved it all year. And now a frost wyrm has curled up in it and gone to sleep!\" She wrings her mittens. \"The readers need a room. The wyrm needs a home. Where can a frost wyrm and the readers both live?\"",
+      "onEnter": [
         {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
+          "type": "setFlag",
+          "flag": "nest_stool_broken",
+          "value": false
         },
         {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
+          "type": "setFlag",
+          "flag": "nest_hard",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "nest_pip_frosted",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "nest_flicker",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "nest_lore",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "nest_force",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "nest_move",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "nest_clang",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "nest_cracked",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "nest_gave_blankets",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "nest_lost",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "nest_won",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "nest_read_wall",
+          "value": false
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
         }
       ],
       "art": "scenes/riftlight/wyrm-nest",
       "choices": [
         {
-          "id": "continue",
-          "label": "Watch before moving",
-          "goto": "listen",
-          "icon": "hand"
+          "id": "on",
+          "label": "Hurry after Flurry",
+          "icon": "boot",
+          "goto": "builders"
         }
       ]
     },
-    "listen": {
+    "builders": {
       "type": "story",
-      "narration": "A chisel scrapes. The wyrm tightens around its bench, then loosens when the builder steps back. Watch the tail and breathing pattern from the far wall. \"The bench has become a very expensive pillow,\" whispers the builder.",
+      "spotlight": "next",
+      "narration": "At the tunnel's end, yeti builders stand in a worried huddle. Every chisel wears one of Flurry's knitted hats, so it won't scrape. Pip Thistledown, the young manticore scout, pops out from behind a builder's leg. \"Lady Olivia says a wyrm is only a very big lizard.\" A builder taps a curly horn on a hook. \"If anything goes wrong, two toots on that. The griffins at the Cairnstep always come. Yetis and griffins answer each other.\"",
       "cast": [
         {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
         },
         {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builders",
+          "count": 2
         }
       ],
       "art": "scenes/riftlight/wyrm-nest",
       "choices": [
         {
-          "id": "continue",
-          "label": "Continue",
-          "goto": "watch_check",
-          "icon": "hand"
+          "id": "on",
+          "label": "Go and look",
+          "icon": "eye",
+          "goto": "frozen_tunnel"
         }
       ]
     },
-    "watch_check": {
-      "type": "interaction",
-      "narration": "Watch the wyrm curl, breathe and relax. Echo the observed pattern before anyone marks a lane. A builder nods at the wyrm. \"The marks show its reach today. Not a command it must obey.\"",
+    "frozen_tunnel": {
+      "type": "choice_point",
+      "narration": "The last bit of tunnel is frozen shut. Every snore from the far side blows frost through the cracks, and the frost has grown into a wall of white ferns, thick as a hedge. \"We stopped carving when it started snoring,\" a builder whispers. How will you get through?",
       "cast": [
         {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
         },
         {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builders",
+          "count": 2
         }
       ],
       "art": "scenes/riftlight/wyrm-nest",
-      "interaction": {
-        "kind": "memory",
-        "cue": "Watch the nest pattern, then echo it.",
-        "actionLabel": "Show what we saw",
-        "options": [
-          {
-            "id": "curl",
-            "label": "Tail curls",
-            "icon": "eye"
-          },
-          {
-            "id": "frost",
-            "label": "Frost breath",
-            "icon": "eye"
-          },
-          {
-            "id": "rest",
-            "label": "Tail rests",
-            "icon": "eye"
-          }
-        ],
-        "answer": [
-          "curl",
-          "frost",
-          "rest",
-          "rest"
-        ],
-        "stepMs": 1300
-      },
+      "choices": [
+        {
+          "id": "chip",
+          "label": "Chip a small door through the frost",
+          "icon": "hand",
+          "goto": "check_chip"
+        },
+        {
+          "id": "squeeze",
+          "label": "Squeeze through the gap at the top",
+          "icon": "quick",
+          "goto": "check_squeeze"
+        }
+      ]
+    },
+    "check_chip": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "roller": "party",
+      "narration": "Some of the frost is thick, and some is thin as paper. A builder lends you a chisel in a striped hat. \"Gently,\" he whispers. \"Like icing a cake.\"",
+      "prompt": "Find the thin spot and chip a door without one clang",
+      "cast": [
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builders",
+          "count": 2
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
       "onSuccess": {
-        "goto": "boundary",
-        "narration": "You mark the observed reach, with a clear margin.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "nest_watch_done",
-            "value": true
-          },
-          {
-            "type": "setFlag",
-            "flag": "nest_pattern_read",
-            "value": true
-          }
-        ]
+        "goto": "the_nest",
+        "narration": "Tap, tap, crumble. A little round door opens in the frost, just big enough. Not one clang."
       },
       "onFailure": {
-        "goto": "boundary",
-        "narration": "The builder checks the shifting tail and adds a wider margin. Your record names this as a helped observation.",
+        "goto": "the_nest",
+        "narration": "CLINK. You hit the thick part, and the chisel's hat flies off. On the far side, the snoring stops. The air gets so cold your nose stings. You squeeze through the dent you made, very carefully.",
         "effects": [
           {
-            "type": "setFlag",
-            "flag": "nest_watch_done",
-            "value": true
-          },
-          {
-            "type": "setFlag",
-            "flag": "nest_pattern_read",
-            "value": false
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "boundary",
-        "narration": "The builder checks the shifting tail and adds a wider margin. Your record names this as a helped observation.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "nest_watch_done",
-            "value": true
-          },
-          {
-            "type": "setFlag",
-            "flag": "nest_pattern_read",
-            "value": false
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
           }
         ]
       }
     },
-    "boundary": {
-      "type": "choice_point",
-      "narration": "Help the builders move everything outside that margin. \"Nothing is taken from under the wyrm,\" says a builder. Choose a quiet job. One builder knits a hat for a chisel that does not yet have a hat.",
+    "check_squeeze": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "roller": "party",
+      "narration": "At the top of the frost wall there is a gap the size of a cat flap. Pip is already wriggling into it. \"Tails last,\" he whispers.",
+      "prompt": "Wriggle through the gap without knocking the frost down",
       "cast": [
         {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
         },
         {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builders",
+          "count": 2
         }
       ],
       "art": "scenes/riftlight/wyrm-nest",
-      "choices": [
-        {
-          "id": "pad",
-          "label": "Pad loose tools",
-          "icon": "hand",
-          "goto": "boundary_response_pad"
-        },
-        {
-          "id": "stool",
-          "label": "Move the empty stool",
-          "icon": "hand",
-          "goto": "boundary_response_stool"
-        },
-        {
-          "id": "sign",
-          "label": "Show the no-scrape edge",
-          "icon": "hand",
-          "goto": "boundary_response_sign"
-        }
-      ]
-    },
-    "supplies": {
-      "type": "choice_point",
-      "narration": "The readers will need furniture after the encounter. A folded table travels easily if the room must move, but takes more setting up if you win this doorway. Shelf parts make a sturdy low shelf here; after a retreat they must be unpacked into a temporary tabletop. Which kit will you carry?",
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest",
-      "choices": [
-        {
-          "id": "portable",
-          "label": "Carry the folding table kit",
-          "goto": "table_kit",
-          "icon": "hand",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "nest_portable_kit",
-              "value": true
-            }
-          ]
-        },
-        {
-          "id": "fixed",
-          "label": "Carry the low-shelf parts",
-          "goto": "shelf_kit",
-          "icon": "hand",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "nest_portable_kit",
-              "value": false
-            }
-          ]
-        }
-      ]
-    },
-    "table_kit": {
-      "type": "interaction",
-      "narration": "Level the folded table before carrying it to the safe alcove. It folds very small. The builder briefly folds the instruction sheet into something much larger.",
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest",
-      "interaction": {
-        "kind": "balance",
-        "cue": "Level the folded table for carrying.",
-        "actionLabel": "Carry the folded table",
-        "objectLabel": "folded table"
-      },
       "onSuccess": {
-        "goto": "cold_opening",
-        "narration": "The portable kit waits outside the nest."
+        "goto": "the_nest",
+        "narration": "You slither through like an otter and land on your toes. Pip lands on his nose, but quietly."
       },
       "onFailure": {
-        "goto": "cold_opening",
-        "narration": "The portable kit waits outside the nest."
-      },
-      "onAssisted": {
-        "goto": "cold_opening",
-        "narration": "The portable kit waits outside the nest."
+        "goto": "the_nest",
+        "narration": "You stick halfway, wriggle, and pop through in a shower of frost. It goes down your collar and up your sleeves. On the far side, the snoring stops for one long moment.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
       }
     },
-    "shelf_kit": {
-      "type": "interaction",
-      "narration": "Pass the wide shelf blocks and bundled top to the alcove. Each bright mark belongs to the builders; none is a piece of old ice.",
+    "the_nest": {
+      "type": "story",
+      "narration": "There it is. A frost wyrm: long and white and shiny as a snowbank in the sun, with frosty feathers down its back. It is curled around the room three whole times. Its head rests on Flurry's new reading stool, and it has dragged every blanket the builders brought into one big nest. Across the room, a far tunnel leads out to the snowy mountains. \"That's my stool,\" Flurry whispers. \"That's a very big lizard,\" Pip whispers back.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "nest_seen",
+          "value": true
+        }
+      ],
+      "discovers": [
+        "creature.frost_wyrm"
+      ],
       "cast": [
         {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         },
         {
           "figure": "entities/frost_wyrm",
@@ -309,53 +323,68 @@
         }
       ],
       "art": "scenes/riftlight/wyrm-nest",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Pass the shelf parts along the safe wall.",
-        "actionLabel": "Pass the parts",
-        "objectLabel": "shelf parts"
-      },
+      "choices": [
+        {
+          "id": "on",
+          "label": "Watch it sleep",
+          "icon": "eye",
+          "goto": "check_tail"
+        }
+      ]
+    },
+    "check_tail": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "roller": "party",
+      "narration": "Flurry tiptoes toward her stool. The wyrm rolls over in its sleep, and its long tail sweeps across the floor, straight at her.",
+      "prompt": "Pull Flurry out of the way of the sweeping tail",
+      "cast": [
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
       "onSuccess": {
-        "goto": "cold_opening",
-        "narration": "The shelf kit waits outside the nest.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "nest_fixed_kit",
-            "value": true
-          }
-        ]
+        "goto": "wyrm_why",
+        "narration": "You grab Flurry's scarf and pull. The tail swishes past, so close it combs her fur. Flurry sits down hard. \"Thank you,\" she breathes."
       },
       "onFailure": {
-        "goto": "cold_opening",
-        "narration": "The shelf kit waits outside the nest.",
+        "goto": "wyrm_why",
+        "narration": "Too late. The tail knocks you and Flurry into a snowdrift, and her stool goes flying. It lands in two pieces. Flurry holds one in each mitten.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "nest_fixed_kit",
-            "value": true
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "cold_opening",
-        "narration": "The shelf kit waits outside the nest.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "nest_fixed_kit",
+            "flag": "nest_stool_broken",
             "value": true
           }
         ]
       }
     },
-    "cold_opening": {
-      "type": "choice_point",
-      "narration": "An opening in the far wall shows a sheltered snow hollow. The Listening Chime is the travelers' chime: its echo checks an open way back; it cannot command a rift. Loose bones rattle on this side, and the builders leave them alone. Check the hollow before inviting any creature into it.",
+    "wyrm_why": {
+      "type": "story",
+      "rift": "steady",
+      "narration": "Behind the wyrm's tail, in the back wall, a shimmering opening hangs in the air, like a window that should not be there. \"That wasn't there when we carved,\" a builder whispers. \"It opened the night the river ran the wrong way. The wyrm came through it.\" A little cold light drifts out of it and buzzes around the wyrm's nose like a moth: a will-o'-wisp. The wyrm twitches, and whimpers in its sleep, like a lost dog at the wrong door. Your Listening Chime hums, leaning past the opening, toward the old heart of the glacier.",
+      "discovers": [
+        "creature.will_o_wisp"
+      ],
       "cast": [
         {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         },
         {
           "figure": "entities/frost_wyrm",
@@ -365,220 +394,452 @@
       "art": "scenes/riftlight/wyrm-nest",
       "choices": [
         {
-          "id": "view",
-          "label": "Observe the full floor from here",
-          "goto": "hollow_view",
-          "icon": "hand"
+          "id": "on",
+          "label": "Look at Pip",
+          "icon": "eye",
+          "goto": "pip_poke"
+        }
+      ]
+    },
+    "pip_poke": {
+      "type": "choice_point",
+      "rift": "steady",
+      "narration": "Pip is creeping toward the wyrm with his spoon held out. \"Lady Olivia says you find out if something's friendly by giving it a poke,\" Pip whispers. Flurry covers her eyes. What will you do?",
+      "cast": [
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
         },
         {
-          "id": "builder",
-          "label": "Support a builder checking both sides",
-          "goto": "hollow_check",
-          "icon": "hand"
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         },
         {
-          "id": "starweaver",
-          "label": "Let our starweaver study the opening",
-          "goto": "hollow_attuned",
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
+      "choices": [
+        {
+          "id": "talk",
+          "label": "Talk Pip out of it",
+          "icon": "heart",
+          "goto": "check_pip"
+        },
+        {
+          "id": "grab",
+          "label": "Grab his tail before he gets there",
           "icon": "hand",
+          "goto": "check_grab"
+        }
+      ]
+    },
+    "check_pip": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "roller": "party",
+      "narration": "Pip stops with his spoon in the air. \"Give me one good reason,\" he whispers. He is listening, a little.",
+      "prompt": "Whisper Pip a good reason not to poke a sleeping wyrm",
+      "cast": [
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
+      "onSuccess": {
+        "goto": "opening",
+        "narration": "Pip lowers the spoon. \"I suppose I wouldn't like being poked,\" he admits, and puts it behind his ear."
+      },
+      "onFailure": {
+        "goto": "pip_pokes",
+        "narration": "\"Just a little one,\" says Pip."
+      }
+    },
+    "check_grab": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "roller": "party",
+      "narration": "Pip's tail is swishing behind him, just out of reach. \"Quick!\" Flurry squeaks.",
+      "prompt": "Grab Pip's tail and tug him back before he pokes",
+      "cast": [
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
+      "onSuccess": {
+        "goto": "opening",
+        "narration": "You catch his tail and tug. Pip slides back on his bottom with a squeak. \"Fine,\" he whispers. \"Science can wait.\""
+      },
+      "onFailure": {
+        "goto": "pip_pokes",
+        "narration": "Your paw closes on air."
+      }
+    },
+    "pip_pokes": {
+      "type": "story",
+      "rift": "steady",
+      "narration": "Poke. The wyrm opens one eye and sneezes. A blast of frost covers Pip from ears to tail. He stands there like a little snowman, with frozen eyebrows. The wyrm watches you now, wary, and it will not stop watching. \"Lady Olivia,\" says Pip the snowman, \"may have been wrong about lizards.\"",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "nest_hard",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "nest_pip_frosted",
+          "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Brush Pip off",
+          "icon": "hand",
+          "goto": "opening"
+        }
+      ]
+    },
+    "opening": {
+      "type": "choice_point",
+      "rift": "steady",
+      "narration": "\"Maybe the wyrm wants to go back through,\" Flurry whispers. \"But what's on the other side?\" Somebody has to look through the shimmering opening without falling in. The builders uncoil a long rope.",
+      "cast": [
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
+      "choices": [
+        {
+          "id": "rope",
+          "label": "Hold the rope while a builder leans through",
+          "icon": "hand",
+          "goto": "check_rope"
+        },
+        {
+          "id": "through",
+          "label": "Lean through yourself, on the rope",
+          "icon": "eye",
+          "goto": "check_through"
+        },
+        {
+          "id": "read",
+          "label": "Let your starweaver read the opening",
+          "icon": "star",
+          "goto": "star_read",
           "requiresClass": "starweaver"
         }
       ]
     },
-    "hollow_view": {
-      "type": "interaction",
-      "narration": "Wait for the drifting snow to reveal the whole hollow. Check tracks, floor and the return opening; a boot-shaped lump is only snow.",
+    "check_rope": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "roller": "party",
+      "narration": "A builder ties the rope around his middle and leans into the shimmer. \"Don't let go,\" he says. \"I mean it.\" You dig in your heels.",
+      "prompt": "Hold the rope steady while the builder leans through",
       "cast": [
         {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
         },
         {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builders",
+          "count": 2
         }
       ],
       "art": "scenes/riftlight/wyrm-nest",
-      "interaction": {
-        "kind": "timing",
-        "cue": "Check the hollow during the full clear view.",
-        "actionLabel": "Check the sheltered floor",
-        "target": 0.5,
-        "width": 0.3,
-        "periodMs": 6000
-      },
+      "rift": "steady",
       "onSuccess": {
-        "goto": "bed",
-        "narration": "The floor is unoccupied and the way back remains visible.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "nest_space_done",
-            "value": true
-          }
-        ]
+        "goto": "hollow",
+        "narration": "The builder leans in, and back out, with snow on his nose and a grin."
       },
       "onFailure": {
-        "goto": "hollow_help",
-        "narration": "The far edge was hidden. A builder will check it from the open side before anyone offers the space."
-      },
-      "onAssisted": {
-        "goto": "bed",
-        "narration": "The floor is unoccupied and the way back remains visible.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "nest_space_done",
-            "value": true
-          }
-        ]
+        "goto": "flicker",
+        "narration": "The rope slides through your mittens. The builder tumbles in head first."
       }
     },
-    "hollow_help": {
-      "type": "interaction",
-      "narration": "Support the marker line while the builder clears the hidden drift, checks for tracks and returns. The party stays at the tunnel marker.",
+    "check_through": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "roller": "party",
+      "narration": "The builders hold the rope. You lean into the shimmer, and it feels like putting your face into a cold, fizzy drink.",
+      "prompt": "Lean through, look quickly, and pull back before you slip",
       "cast": [
         {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
         },
         {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builders",
+          "count": 2
         }
       ],
       "art": "scenes/riftlight/wyrm-nest",
-      "interaction": {
-        "kind": "cooperate",
-        "cue": "Support the marker line for the builder.",
-        "actionLabel": "Recover the marker",
-        "supportLabel": "Hold the line"
-      },
+      "rift": "steady",
       "onSuccess": {
-        "goto": "bed",
-        "narration": "The checked hollow is empty and sheltered.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "nest_space_done",
-            "value": true
-          }
-        ]
+        "goto": "hollow",
+        "narration": "You look, and pop back out with frost on your eyebrows."
       },
       "onFailure": {
-        "goto": "bed",
-        "narration": "The checked hollow is empty and sheltered.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "nest_space_done",
-            "value": true
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "bed",
-        "narration": "The checked hollow is empty and sheltered.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "nest_space_done",
-            "value": true
-          }
-        ]
+        "goto": "slipped",
+        "narration": "Your boots slide, and in you go, all the way through."
       }
     },
-    "hollow_check": {
-      "type": "interaction",
-      "narration": "Hold the marker line while the builder crosses the visible opening, checks the ground and returns. Nobody tests unknown old ice.",
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest",
-      "interaction": {
-        "kind": "cooperate",
-        "cue": "Support the marker while the builder checks the hollow.",
-        "actionLabel": "Gather the returned marker",
-        "supportLabel": "Hold the marker line"
-      },
-      "onSuccess": {
-        "goto": "bed",
-        "narration": "The builder has checked both sides and returned.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "nest_space_done",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "bed",
-        "narration": "The builder has checked both sides and returned.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "nest_space_done",
-            "value": true
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "bed",
-        "narration": "The builder has checked both sides and returned.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "nest_space_done",
-            "value": true
-          }
-        ]
-      }
-    },
-    "hollow_attuned": {
+    "flicker": {
       "type": "story",
-      "narration": "Your starweaver studies the opening's light while the builders check its echo and empty floor. This replaces the separate viewing task, not the ordinary ground checks. A clear way back is still required.",
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest",
+      "rift": "steady",
+      "narration": "Two toots on the curly horn, a lot of pulling, and out comes the builder, snowy and blinking. \"Lovely hollow on the other side,\" he gasps. \"But the opening flickered while I was in it, on and off, like a candle.\" The builders frown. A wyrm will not like a flickering door.",
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "nest_space_done",
+          "flag": "nest_hard",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "nest_flicker",
           "value": true
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builders",
+          "count": 2
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
       "choices": [
         {
-          "id": "continue",
-          "label": "Continue",
-          "goto": "bed",
-          "icon": "hand"
+          "id": "on",
+          "label": "Look through together, carefully",
+          "icon": "eye",
+          "goto": "hollow"
         }
       ]
     },
-    "bed": {
+    "slipped": {
+      "type": "story",
+      "rift": "steady",
+      "narration": "Two toots on the curly horn, and the builders haul you back out by the rope, snowy and blinking. You saw a lovely snow hollow on the other side. But while you were in it, the opening flickered on and off, like a candle. The builders frown. \"A wyrm won't like a flickering door,\" says one.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "nest_hard",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "nest_flicker",
+          "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builders",
+          "count": 2
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Look through together, carefully",
+          "icon": "eye",
+          "goto": "hollow"
+        }
+      ]
+    },
+    "star_read": {
+      "type": "story",
+      "rift": "steady",
+      "narration": "Your starweaver looks into the shimmering opening and reads its light: slow, steady and the same on both sides. It goes somewhere close, deep in the glacier, and it will stay open. \"How can you tell?\" Pip asks. Your starweaver shrugs. It just looks steady, the way a good chair looks steady.",
+      "cast": [
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builders",
+          "count": 2
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Look through together",
+          "icon": "eye",
+          "goto": "hollow"
+        }
+      ]
+    },
+    "hollow": {
+      "type": "story",
+      "rift": "steady",
+      "narration": "On the other side of the shimmering opening is a snow hollow: high and cold and quiet, with a roof like a bowl of glass. Nobody lives there. Nobody uses it. \"It's perfect,\" Flurry breathes. \"For a wyrm, I mean.\" She looks back at her room, and at her blankets, and goes quiet.",
+      "variants": [
+        {
+          "when": {
+            "flag": "nest_flicker"
+          },
+          "text": "Behind you, the opening flickers, on and off."
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "nest_opening",
+          "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
+      "choices": [
+        {
+          "id": "back",
+          "label": "Step back into the room",
+          "icon": "back",
+          "goto": "sleepwalk"
+        }
+      ]
+    },
+    "sleepwalk": {
+      "type": "story",
+      "rift": "steady",
+      "narration": "You step back through the opening, and stop. The wyrm is sleepwalking! Eyes shut, snoring, it uncurls from its nest and slides across the room, straight toward you all. \"Hide!\" squeaks Flurry.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "nest_flicker",
+          "value": false
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
+      "choices": [
+        {
+          "id": "hide",
+          "label": "Hide!",
+          "icon": "shield",
+          "goto": "hide"
+        }
+      ]
+    },
+    "hide": {
       "type": "choice_point",
-      "narration": "The hollow is safe. Soft new snow will make a welcoming bowl: on the board, holding its approach for one clear round can invite the wyrm in. A broad slab takes two clear rounds to invite it, but can later be recovered as a low reader step if the hollow stays empty. A builder shrugs. \"Neither plan promises the wyrm will cooperate.\"",
+      "narration": "There is nowhere much to hide. A pile of ice blocks stands by the wall. The builders have already frozen in place, pretending to be snowmen. The wyrm's nose is coming closer, sniffing.",
       "cast": [
         {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         },
         {
           "figure": "entities/frost_wyrm",
@@ -588,50 +849,34 @@
       "art": "scenes/riftlight/wyrm-nest",
       "choices": [
         {
-          "id": "snow",
-          "label": "Shape a soft snow bed",
-          "goto": "bed_snow",
-          "icon": "hand",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "nest_soft_bed",
-              "value": true
-            },
-            {
-              "type": "setFlag",
-              "flag": "nest_slab_unused",
-              "value": false
-            }
-          ]
+          "id": "blocks",
+          "label": "Duck behind the ice blocks",
+          "icon": "boot",
+          "goto": "check_blocks"
         },
         {
-          "id": "slab",
-          "label": "Set a broad slab we can recover if unused",
-          "goto": "bed_slab",
-          "icon": "hand",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "nest_soft_bed",
-              "value": false
-            },
-            {
-              "type": "setFlag",
-              "flag": "nest_slab_unused",
-              "value": true
-            }
-          ]
+          "id": "snowman",
+          "label": "Stand still like a snowman",
+          "icon": "moon",
+          "goto": "check_snowman"
         }
       ]
     },
-    "bed_snow": {
-      "type": "interaction",
-      "narration": "Shape loose new snow into a broad shallow bowl without taking anything from the nest. Level the base so the hollow still has a clear exit.",
+    "check_blocks": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "roller": "party",
+      "narration": "The blocks are slippery and the gap behind them is small. Pip is already in it. \"Breathe in,\" he whispers. \"Smaller!\"",
+      "prompt": "Dive behind the ice blocks before the wyrm's nose gets there",
       "cast": [
         {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         },
         {
           "figure": "entities/frost_wyrm",
@@ -639,32 +884,39 @@
         }
       ],
       "art": "scenes/riftlight/wyrm-nest",
-      "interaction": {
-        "kind": "balance",
-        "cue": "Level the new-snow bed.",
-        "actionLabel": "Settle the soft bed",
-        "objectLabel": "new snow bed"
-      },
       "onSuccess": {
-        "goto": "lanes",
-        "narration": "The softer bed needs one clear held round to invite the wyrm on the board."
+        "goto": "rest",
+        "narration": "You squeeze in beside Pip. The wyrm slides past, sniffing, snoring, and turns around, and slides all the way back to bed."
       },
       "onFailure": {
-        "goto": "lanes",
-        "narration": "The softer bed needs one clear held round to invite the wyrm on the board."
-      },
-      "onAssisted": {
-        "goto": "lanes",
-        "narration": "The softer bed needs one clear held round to invite the wyrm on the board."
+        "goto": "rest",
+        "narration": "You slip, and the wyrm's nose finds you. It sniffs you all over, very cold, and sneezes. Then it slides back to bed, still asleep. Your ears are frosted.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
       }
     },
-    "bed_slab": {
-      "type": "interaction",
-      "narration": "Support a loose slab while the builder slides it below the wind lip. No one chips old ice to make a pillow.",
+    "check_snowman": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "roller": "party",
+      "checkKind": "doing",
+      "narration": "You hold your arms out stiff and stop breathing. Beside you, a builder has put a chisel on his head like a carrot.",
+      "prompt": "Stand perfectly still while the wyrm sniffs you",
       "cast": [
         {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         },
         {
           "figure": "entities/frost_wyrm",
@@ -672,91 +924,182 @@
         }
       ],
       "art": "scenes/riftlight/wyrm-nest",
-      "interaction": {
-        "kind": "cooperate",
-        "cue": "Support the loose slab at the hollow.",
-        "actionLabel": "Set the slab",
-        "supportLabel": "Support the slab"
-      },
-      "onSuccess": {
-        "goto": "lanes",
-        "narration": "The resting slab is ready. An invitation still needs two clear held rounds."
-      },
-      "onFailure": {
-        "goto": "lanes",
-        "narration": "The resting slab is ready. An invitation still needs two clear held rounds."
-      },
-      "onAssisted": {
-        "goto": "lanes",
-        "narration": "The resting slab is ready. An invitation still needs two clear held rounds."
-      }
-    },
-    "lanes": {
-      "type": "interaction",
-      "narration": "Move the empty benches so the people's withdrawal lane never crosses the broad route to the hollow. Solo heroes use the builders' fixed supports. One lunch bag is removed from duty as a barrier.",
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest",
-      "interaction": {
-        "kind": "cooperate",
-        "cue": "Support the bench while the withdrawal lane is cleared.",
-        "actionLabel": "Set down the bench",
-        "supportLabel": "Support the bench"
-      },
       "onSuccess": {
         "goto": "rest",
-        "narration": "Both routes are clear; nobody stands between the wyrm and shelter."
+        "narration": "The wyrm sniffs you, and sniffs the builder, and decides you are all snowmen, builder included. It slides all the way back to bed."
       },
       "onFailure": {
         "goto": "rest",
-        "narration": "Both routes are clear; nobody stands between the wyrm and shelter."
-      },
-      "onAssisted": {
-        "goto": "rest",
-        "narration": "Both routes are clear; nobody stands between the wyrm and shelter."
+        "narration": "Your nose itches. You sneeze. The wyrm sneezes back, much bigger, and you are frosted from top to toe. Then it slides back to bed, still asleep.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
       }
     },
     "rest": {
       "type": "rest",
-      "narration": "The builders lead you into a side alcove, away from the nest. They share oat cakes from a tool tin scrubbed clean for lunches. You rest on folded work blankets. One cake has the shape of a very blunt chisel. A builder beams at it. \"My best work.\"",
       "heal": 2,
-      "choices": [
+      "narration": "When your hearts stop thumping, the builders lead you into their side cave and share oat cakes from a tool tin. One cake is shaped like a chisel. \"My best work,\" says the builder who baked it. Flurry knits very fast, the way she does when she's thinking. Pip draws the wyrm, and gives it a little hat.",
+      "variants": [
         {
-          "id": "rest",
-          "label": "Rest before the encounter",
-          "goto": "signal",
-          "icon": "hand"
+          "when": {
+            "flag": "nest_pip_frosted"
+          },
+          "text": "Pip's eyebrows are still thawing. They drip on his drawing."
         },
         {
-          "id": "watch",
-          "label": "Eat while a builder keeps watch",
-          "goto": "signal",
-          "icon": "hand"
+          "when": {
+            "flag": "nest_stool_broken"
+          },
+          "text": "Flurry glues her broken stool back together. It wobbles. She sits on it anyway."
         }
       ],
       "cast": [
         {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
           "figure": "entities/yeti",
-          "name": "Yeti builder"
+          "name": "Yeti builders",
+          "count": 2
         }
       ],
-      "art": "scenes/riftlight/wyrm-nest"
+      "art": "scenes/riftlight/wyrm-nest",
+      "choices": [
+        {
+          "id": "lore",
+          "label": "Ask the builders about frost wyrms",
+          "icon": "ear",
+          "goto": "wyrm_lore",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "nest_lore",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "nest_pip_frosted",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "nest_stool_broken",
+              "value": false
+            }
+          ]
+        },
+        {
+          "id": "tuft",
+          "label": "Ask Flurry what the room means to her",
+          "icon": "heart",
+          "goto": "tuft_talk",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "nest_pip_frosted",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "nest_stool_broken",
+              "value": false
+            }
+          ]
+        }
+      ]
     },
-    "signal": {
-      "type": "interaction",
-      "narration": "A builder raises a mitten for wait, spreads both palms for clear and lowers them to finish. Remember the observed signal round. The builder wiggles the mitten. \"These are for us. They do not control the wyrm.\"",
+    "wyrm_lore": {
+      "type": "story",
+      "narration": "The oldest builder chews his cake slowly. \"Frost wyrms go where it is cold and quiet,\" he says. \"Never where they're pushed. Push a wyrm, and it pushes back. But a wyrm that's shown the way will sometimes follow.\" He brushes off his crumbs. \"Sometimes.\"",
       "cast": [
         {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
           "figure": "entities/yeti",
-          "name": "Yeti builder"
+          "name": "Yeti builders",
+          "count": 2
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Decide what to do",
+          "icon": "forward",
+          "goto": "plan"
+        }
+      ]
+    },
+    "tuft_talk": {
+      "type": "story",
+      "narration": "Flurry stops knitting. \"It's my first room,\" she says. \"I made forty icicle hats for it.\" She looks toward the nest. \"But the wyrm didn't ask to come here either. It came through that opening, and now it can't find its way. I know how that feels. It was my first day once.\"",
+      "cast": [
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builders",
+          "count": 2
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Decide what to do",
+          "icon": "forward",
+          "goto": "plan"
+        }
+      ]
+    },
+    "plan": {
+      "type": "choice_point",
+      "narration": "Back at the frost door, everyone looks at the sleeping wyrm. Pip bounces. \"Lady Olivia would bang some pots and shoo it out the far tunnel. Done by lunch!\" Flurry shakes her head. \"Or we help it through the opening to the hollow. It would need its nest, though. My blankets.\" A builder rubs his chin. \"Shooing is loud, and the old ice is close. Moving it is slow.\" What will you do?",
+      "variants": [
+        {
+          "when": {
+            "flag": "nest_lore"
+          },
+          "text": "You remember what the old builder said: push a wyrm, and it pushes back."
+        },
+        {
+          "when": {
+            "flag": "nest_hard"
+          },
+          "text": "The wyrm is wary now. Moving it will be harder."
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         },
         {
           "figure": "entities/frost_wyrm",
@@ -764,76 +1107,174 @@
         }
       ],
       "art": "scenes/riftlight/wyrm-nest",
-      "interaction": {
-        "kind": "memory",
-        "cue": "Watch the builder signals, then echo them.",
-        "actionLabel": "Show what we saw",
-        "options": [
-          {
-            "id": "clear",
-            "label": "Both palms open",
-            "icon": "eye"
-          },
-          {
-            "id": "finish",
-            "label": "Hands lowered",
-            "icon": "eye"
-          },
-          {
-            "id": "wait",
-            "label": "Mitten raised",
-            "icon": "eye"
-          }
-        ],
-        "answer": [
-          "wait",
-          "clear",
-          "wait",
-          "finish"
-        ],
-        "stepMs": 1300
-      },
+      "rift": "steady",
+      "choices": [
+        {
+          "id": "drive",
+          "label": "Drive the wyrm out",
+          "icon": "fist",
+          "goto": "drive_prep",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "nest_force",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "nest_lore",
+              "value": false
+            }
+          ]
+        },
+        {
+          "id": "move",
+          "label": "Move it through the opening",
+          "icon": "heart",
+          "goto": "move_prep",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "nest_move",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "nest_lore",
+              "value": false
+            }
+          ]
+        }
+      ]
+    },
+    "drive_prep": {
+      "type": "choice_point",
+      "narration": "The builders hand out pots, pans and one very old kettle. Pip takes a ladle and grins. \"Everybody be scary,\" he whispers. Flurry holds her knitting needles over the kettle and looks sad about it. How will you scare the wyrm out?",
+      "cast": [
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
+      "choices": [
+        {
+          "id": "pots",
+          "label": "Bang the pots, all together",
+          "icon": "bell",
+          "goto": "check_pots"
+        },
+        {
+          "id": "roar",
+          "label": "Stomp and roar like a bigger wyrm",
+          "icon": "might",
+          "goto": "check_roar"
+        }
+      ]
+    },
+    "check_pots": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "roller": "party",
+      "narration": "\"One, two, three!\" On three, everyone bangs: builders, Pip, even Flurry, with her needles on the kettle.",
+      "prompt": "Bang the pots in time, all together, as loud as you can",
+      "cast": [
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
       "onSuccess": {
-        "goto": "offer",
-        "narration": "You can later show readers the checked signal round.",
+        "goto": "deep_groan",
+        "narration": "BANG. BANG. BANG. All in time, like one giant drum. The wyrm's eyes fly open in alarm.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "nest_signal_read",
+            "flag": "nest_clang",
             "value": true
           }
         ]
       },
       "onFailure": {
-        "goto": "offer",
-        "narration": "A builder will lead the readers by visible markers instead of crediting a guessed signal round.",
+        "goto": "deep_groan",
+        "narration": "BANG, bong, clatter, ting. Nobody is in time. The wyrm opens one eye and looks annoyed, not scared."
+      }
+    },
+    "check_roar": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "roller": "party",
+      "checkKind": "doing",
+      "narration": "You puff yourself up as big as you can. Pip climbs onto a builder's shoulders. \"Now I'm a big wyrm,\" he whispers.",
+      "prompt": "Stomp and roar like a wyrm twice as big",
+      "cast": [
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
+      "onSuccess": {
+        "goto": "deep_groan",
+        "narration": "ROAR. STOMP. STOMP. The floor shakes, and the wyrm's eyes fly open in alarm.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "nest_signal_read",
-            "value": false
+            "flag": "nest_clang",
+            "value": true
           }
         ]
       },
-      "onAssisted": {
-        "goto": "offer",
-        "narration": "A builder will lead the readers by visible markers instead of crediting a guessed signal round.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "nest_signal_read",
-            "value": false
-          }
-        ]
+      "onFailure": {
+        "goto": "deep_groan",
+        "narration": "Your roar comes out as a squeak. Pip's comes out as a hiccup. The wyrm opens one eye and looks amused."
       }
     },
-    "offer": {
+    "deep_groan": {
       "type": "story",
-      "narration": "The hollow is ready and the people are behind the benches. On the board you may drive the creatures from the doorway, or hold the quiet approach to invite the wyrm into the hollow. Only the held approach makes it your ally. Defeat means moving the reading work to the old room, not fighting again. You may use the ordinary two-round invitation without relying on the bedding, or choose the soft-bed advantage if you prepared it.",
+      "narration": "Then, from far below, something answers all that noise: a long, slow groan, like someone turning over in bed. The tunnel shivers. A crack runs across the ceiling of Flurry's new room. Flurry whispers what Elder Murmur always says. \"Do not shout near the old ice.\" Too late now. The wyrm uncurls, and uncurls, and rises.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "nest_cracked",
+          "value": true
+        }
+      ],
       "cast": [
         {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         },
         {
           "figure": "entities/frost_wyrm",
@@ -843,34 +1284,344 @@
       "art": "scenes/riftlight/wyrm-nest",
       "choices": [
         {
-          "id": "continue",
-          "label": "Use the ordinary two-round invitation, or drive them clear",
-          "goto": "fight",
-          "icon": "hand"
+          "id": "fight",
+          "label": "Drive it out!",
+          "icon": "fist",
+          "goto": "fight_drive"
         },
         {
-          "id": "continue_soft",
-          "label": "Use our soft bed for a one-round invitation",
-          "goto": "fight_soft",
-          "icon": "hand",
+          "id": "clang",
+          "label": "Drive it out with the pots still clanging",
+          "icon": "bell",
+          "goto": "fight_drive_clang",
           "when": {
-            "flag": "nest_soft_bed"
+            "flag": "nest_clang"
           }
         }
       ]
     },
-    "fight": {
+    "fight_drive": {
       "type": "encounter",
       "map": "riftlight_wyrm_nest",
-      "narration": "The frost wyrm rises and the loose bones rattle upright. Drive the creatures from the doorway, or hold the hollow approach for 2 clear rounds to invite the wyrm into shelter. The slick new-ice strip still slows anyone stopping there.",
+      "art": "scenes/riftlight/wyrm-nest",
+      "narration": "The frost wyrm rises, puffing snow, and the wisp buzzes around its head. Drive them both out down the far tunnel! The slick new ice slows anyone who stops on it.",
       "enemies": [
         {
           "id": "wyrm",
           "creature": "frost_wyrm"
         },
         {
-          "id": "rattle",
-          "creature": "restless_remains"
+          "id": "wisp",
+          "creature": "will_o_wisp",
+          "count": 1
+        }
+      ],
+      "environment": {
+        "hazards": [
+          {
+            "id": "slick_strip",
+            "kind": "rift",
+            "label": "Slick new ice",
+            "tiles": [
+              {
+                "x": 5,
+                "y": 2
+              },
+              {
+                "x": 4,
+                "y": 5
+              }
+            ],
+            "slow": {
+              "steps": 1,
+              "turns": 1
+            }
+          }
+        ]
+      },
+      "onVictory": {
+        "goto": "room_won",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "nest_won",
+            "value": true
+          }
+        ]
+      },
+      "onDefeat": {
+        "goto": "nest_kept",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          },
+          {
+            "type": "setFlag",
+            "flag": "nest_lost",
+            "value": true
+          }
+        ]
+      }
+    },
+    "fight_drive_clang": {
+      "type": "encounter",
+      "map": "riftlight_wyrm_nest",
+      "art": "scenes/riftlight/wyrm-nest",
+      "narration": "The frost wyrm rises, puffing snow, the wisp buzzes, and the builders keep banging. Drive them out down the far tunnel! The clanging rattles them, and the slick new ice slows anyone who stops on it.",
+      "enemies": [
+        {
+          "id": "wyrm",
+          "creature": "frost_wyrm"
+        },
+        {
+          "id": "wisp",
+          "creature": "will_o_wisp",
+          "count": 1
+        }
+      ],
+      "environment": {
+        "hazards": [
+          {
+            "id": "slick_strip",
+            "kind": "rift",
+            "label": "Slick new ice",
+            "tiles": [
+              {
+                "x": 5,
+                "y": 2
+              },
+              {
+                "x": 4,
+                "y": 5
+              }
+            ],
+            "slow": {
+              "steps": 1,
+              "turns": 1
+            }
+          }
+        ],
+        "modifiers": [
+          {
+            "id": "clanging",
+            "label": "Clanging pots",
+            "kind": "guard",
+            "amount": -1,
+            "on": "monsters"
+          }
+        ]
+      },
+      "onVictory": {
+        "goto": "room_won",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "nest_won",
+            "value": true
+          }
+        ]
+      },
+      "onDefeat": {
+        "goto": "nest_kept",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          },
+          {
+            "type": "setFlag",
+            "flag": "nest_lost",
+            "value": true
+          }
+        ]
+      }
+    },
+    "move_prep": {
+      "type": "choice_point",
+      "narration": "To feel at home in the hollow, the wyrm needs its nest: Flurry's blankets. Flurry hugs her knitting bag. \"I can knit new ones,\" she says, very bravely. \"It will take all winter.\" A builder holds up a pile of work sacks. \"Or these. They're scratchy, and they smell of us. It might not like them.\" What will the nest be made of?",
+      "cast": [
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
+      "rift": "steady",
+      "choices": [
+        {
+          "id": "blankets",
+          "label": "Flurry's blankets",
+          "icon": "heart",
+          "goto": "sneak_nest",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "nest_gave_blankets",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "sacks",
+          "label": "The builders' sacks",
+          "icon": "hand",
+          "goto": "sacks",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "nest_hard",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "sneak_nest": {
+      "type": "interaction",
+      "rift": "steady",
+      "narration": "Ease the blankets out from around the wyrm, one at a time, and carry them through the opening. Move while it breathes out. Freeze when it breathes in.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Move while the wyrm breathes out.",
+        "actionLabel": "Ease a blanket out",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 5000
+      },
+      "cast": [
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
+      "onSuccess": {
+        "goto": "nest_made",
+        "narration": "Blanket by blanket, the nest moves into the hollow. The wyrm sleeps on, sniffing at the smell of its own blankets on the far side."
+      },
+      "onFailure": {
+        "goto": "nest_made",
+        "narration": "The wyrm breathes in early, and its tail flicks. WHUMP. You land in a snowbank with a blanket on your head. The nest is in the hollow, but the wyrm is awake now, and cross.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "nest_hard",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "nest_made",
+        "narration": "Flurry whispers \"out\" each time the wyrm breathes out, and you move together. Blanket by blanket, the nest moves into the hollow."
+      }
+    },
+    "sacks": {
+      "type": "story",
+      "rift": "steady",
+      "narration": "You stuff the builders' scratchy sacks through the opening and pile them into a nest. They smell of yeti and porridge. The builders will sleep cold tonight. Flurry keeps her blankets, and looks a little guilty about how glad she is.",
+      "cast": [
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builders",
+          "count": 2
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Get ready",
+          "icon": "forward",
+          "goto": "nest_made"
+        }
+      ]
+    },
+    "nest_made": {
+      "type": "story",
+      "rift": "steady",
+      "narration": "Now there is a nest in the hollow, and the wyrm is between you and the opening, lifting its long head. Somebody has to stand in the quiet path to the opening and show it the way, while it decides whether you are friends.",
+      "variants": [
+        {
+          "when": {
+            "flag": "nest_hard"
+          },
+          "text": "It will take some showing. The wyrm is not sure about any of this."
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
+      "choices": [
+        {
+          "id": "show",
+          "label": "Show the wyrm the way",
+          "icon": "heart",
+          "goto": "fight_move_long"
+        },
+        {
+          "id": "calm",
+          "label": "Show it the way while it is still calm",
+          "icon": "moon",
+          "goto": "fight_move",
+          "when": {
+            "notFlag": "nest_hard"
+          }
+        }
+      ]
+    },
+    "fight_move": {
+      "type": "encounter",
+      "map": "riftlight_wyrm_nest",
+      "art": "scenes/riftlight/wyrm-nest",
+      "narration": "The frost wyrm rises, puffing snow, and the wisp buzzes around its head. Stand in the quiet path to the opening for two rounds to show the wyrm the way home, or drive them both out. The slick new ice slows anyone who stops on it.",
+      "enemies": [
+        {
+          "id": "wyrm",
+          "creature": "frost_wyrm"
+        },
+        {
+          "id": "wisp",
+          "creature": "will_o_wisp",
+          "count": 1
         }
       ],
       "environment": {
@@ -897,9 +1648,9 @@
         ],
         "objectives": [
           {
-            "id": "quiet_hollow",
+            "id": "quiet_path",
             "kind": "hold",
-            "label": "Hold the quiet approach",
+            "label": "Show the wyrm the quiet path",
             "tiles": [
               {
                 "x": 6,
@@ -915,22 +1666,25 @@
             "effects": [
               {
                 "type": "setFlag",
-                "flag": "wyrm_ally"
-              },
-              {
-                "type": "setFlag",
-                "flag": "nest_slab_unused",
-                "value": false
+                "flag": "wyrm_ally",
+                "value": true
               }
             ]
           }
         ]
       },
       "onVictory": {
-        "goto": "room_clear"
+        "goto": "room_won",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "nest_won",
+            "value": true
+          }
+        ]
       },
       "onDefeat": {
-        "goto": "room_moved",
+        "goto": "nest_kept",
         "effects": [
           {
             "type": "heal",
@@ -939,24 +1693,26 @@
           },
           {
             "type": "setFlag",
-            "flag": "wyrm_nest_kept"
+            "flag": "nest_lost",
+            "value": true
           }
         ]
-      },
-      "art": "scenes/riftlight/wyrm-nest"
+      }
     },
-    "fight_soft": {
+    "fight_move_long": {
       "type": "encounter",
       "map": "riftlight_wyrm_nest",
-      "narration": "The frost wyrm rises and the loose bones rattle upright. Drive the creatures from the doorway, or hold the hollow approach for 1 clear round to invite the wyrm into shelter. The slick new-ice strip still slows anyone stopping there.",
+      "art": "scenes/riftlight/wyrm-nest",
+      "narration": "The frost wyrm rises, puffing snow, and it is not sure about you. The wisp buzzes around its head. Stand in the quiet path to the opening for three rounds to show the wyrm the way home, or drive them both out. The slick new ice slows anyone who stops on it.",
       "enemies": [
         {
           "id": "wyrm",
           "creature": "frost_wyrm"
         },
         {
-          "id": "rattle",
-          "creature": "restless_remains"
+          "id": "wisp",
+          "creature": "will_o_wisp",
+          "count": 1
         }
       ],
       "environment": {
@@ -983,9 +1739,9 @@
         ],
         "objectives": [
           {
-            "id": "quiet_hollow",
+            "id": "quiet_path",
             "kind": "hold",
-            "label": "Hold the quiet approach",
+            "label": "Show the wyrm the quiet path",
             "tiles": [
               {
                 "x": 6,
@@ -996,27 +1752,30 @@
                 "y": 4
               }
             ],
-            "rounds": 1,
+            "rounds": 3,
             "endsFight": true,
             "effects": [
               {
                 "type": "setFlag",
-                "flag": "wyrm_ally"
-              },
-              {
-                "type": "setFlag",
-                "flag": "nest_slab_unused",
-                "value": false
+                "flag": "wyrm_ally",
+                "value": true
               }
             ]
           }
         ]
       },
       "onVictory": {
-        "goto": "room_clear"
+        "goto": "room_won",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "nest_won",
+            "value": true
+          }
+        ]
       },
       "onDefeat": {
-        "goto": "room_moved",
+        "goto": "nest_kept",
         "effects": [
           {
             "type": "heal",
@@ -1025,667 +1784,282 @@
           },
           {
             "type": "setFlag",
-            "flag": "wyrm_nest_kept"
+            "flag": "nest_lost",
+            "value": true
           }
         ]
-      },
-      "art": "scenes/riftlight/wyrm-nest"
+      }
     },
-    "room_clear": {
+    "room_won": {
       "type": "story",
-      "narration": "The doorway is clear and the builders lower their mittens. The new room can be used without squeezing past a turning tail. The bench has a frost-wyrm-shaped dent; the builders decide it is now a special chair.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Prepare the actual reading place",
-          "goto": "shelves",
-          "icon": "hand"
-        }
-      ],
+      "narration": "The tunnel goes quiet. Flurry peeks out from behind a builder. \"Is it over?\" she whispers.",
       "variants": [
         {
           "when": {
             "flag": "wyrm_ally"
           },
-          "text": "The wyrm settles in the sheltered hollow through the opening. When a builder hums from the tunnel, it answers softly. You have a neighbor who will remember being given room."
+          "text": "The wyrm looks at you for a long moment. Then it slides through the shimmering opening into the hollow, the wisp bobbing after it, and curls up on its nest with a sigh like a kettle going off. When a builder hums, it hums back. You have a new neighbor."
         },
         {
           "when": {
             "notFlag": "wyrm_ally"
           },
-          "text": "The wyrm backs into the broad outer tunnel, leaving the readers' doorway. The builders leave the sheltered hollow available. It has not chosen the hollow."
-        }
-      ],
-      "cast": [
+          "text": "The wyrm gives up. It slides away down the far tunnel, out of the glacier and into the snowy mountains, sneezing and grumbling, with the wisp buzzing after it. It is gone, and it will not be back."
+        },
         {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
+          "when": {
+            "flag": "nest_cracked"
+          },
+          "text": "Above you, the crack in the ceiling ticks and drips."
         }
       ],
-      "art": "scenes/riftlight/wyrm-nest",
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "nest_room_won",
+          "flag": "nest_settled",
           "value": true
-        }
-      ]
-    },
-    "room_moved": {
-      "type": "story",
-      "narration": "The wyrm holds its doorway and your party withdraws behind the benches. The builders help you rest, then unroll the wall plan. \"The room can go here,\" one says, pointing down the clear tunnel. The new reading room will open later, away from the nest. Nobody is sent back into the fight.",
-      "choices": [
+        },
         {
-          "id": "continue",
-          "label": "Prepare the actual reading place",
-          "goto": "shelves",
-          "icon": "hand"
+          "type": "setFlag",
+          "flag": "nest_hard",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "nest_clang",
+          "value": false
         }
       ],
       "cast": [
         {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
-    },
-    "shelves": {
-      "type": "choice_point",
-      "narration": "Choose furniture for the room you actually have. The shelf kit can become a low shelf on sound floor here, or a temporary tabletop after unpacking. The folding kit can open in either room; after victory it also needs a separate low stand assembled.",
-      "cast": [
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
         {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
         }
       ],
       "art": "scenes/riftlight/wyrm-nest",
+      "choices": [
+        {
+          "id": "room",
+          "label": "Put the room back together",
+          "icon": "hand",
+          "goto": "empty_room"
+        },
+        {
+          "id": "goodbye",
+          "label": "Say goodnight at the opening first",
+          "icon": "heart",
+          "goto": "neighbor",
+          "when": {
+            "flag": "wyrm_ally"
+          }
+        }
+      ]
+    },
+    "neighbor": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "roller": "party",
+      "checkKind": "doing",
+      "narration": "The wyrm pokes its long nose back through the opening and sniffs at you, very close. Its breath is as cold as the inside of a freezer.",
+      "prompt": "Hold out a paw and stay still while the wyrm sniffs it",
+      "cast": [
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/allied_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
+      "rift": "steady",
+      "onSuccess": {
+        "goto": "empty_room",
+        "narration": "It sniffs, and sniffs, and then breathes one tiny puff of frost onto your paw, like a snowflake kiss. Flurry squeaks with joy."
+      },
+      "onFailure": {
+        "goto": "empty_room",
+        "narration": "It sneezes. You are covered in snow from ears to toes, and your teeth chatter for an hour. The wyrm looks very pleased with itself.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "empty_room": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "roller": "party",
+      "narration": "Flurry's room is free. It is also scraped, frosty and a mess. The wyrm's tail knocked the ice benches loose, and the readers are on their way.",
       "variants": [
         {
           "when": {
-            "flag": "wyrm_nest_kept"
+            "flag": "nest_cracked"
           },
-          "text": "The new site needs more carving, and its floor cannot hold shelf blocks yet. For now only the broad table fits in the old room. The builders must finish the new chamber after you leave."
+          "text": "Worst of all is the crack in the ceiling, dripping on the floor."
         }
       ],
-      "choices": [
+      "prompt": "Heave the ice benches back into place before the readers come",
+      "cast": [
         {
-          "id": "plan_2",
-          "label": "Prepare our kit piece by piece as a table",
-          "goto": "unpack_shelf",
-          "icon": "hand"
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
         },
         {
-          "id": "portable_old",
-          "label": "Open the folded table in the old room",
-          "goto": "shelves_check",
-          "icon": "hand",
-          "when": {
-            "flag": "nest_portable_kit",
-            "notFlag": "nest_room_won"
-          }
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         },
         {
-          "id": "plan_1",
-          "label": "Build the low shelf on the won floor",
-          "goto": "shelf_build",
-          "icon": "hand",
-          "when": {
-            "flag": "nest_fixed_kit",
-            "notFlag": "wyrm_nest_kept"
-          }
-        }
-      ]
-    },
-    "shelf_build": {
-      "type": "interaction",
-      "narration": "Support the low top while the builders secure its wide blocks. No shelf is fixed to the old ice.",
-      "cast": [
-        {
           "figure": "entities/yeti",
-          "name": "Yeti builder"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest",
-      "interaction": {
-        "kind": "cooperate",
-        "cue": "Support the low shelf.",
-        "actionLabel": "Secure the blocks",
-        "supportLabel": "Hold the shelf top"
-      },
-      "onSuccess": {
-        "goto": "slab_route",
-        "narration": "The low shelf is ready.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "nest_shelf_built",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "slab_route",
-        "narration": "The low shelf is ready.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "nest_shelf_built",
-            "value": true
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "slab_route",
-        "narration": "The low shelf is ready.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "nest_shelf_built",
-            "value": true
-          }
-        ]
-      }
-    },
-    "unpack_shelf": {
-      "type": "interaction",
-      "narration": "Pass the shelf pieces into position for a temporary tabletop. The broad top will hold the notes; the blocks stay loose until the replacement room is ready.",
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Pass our kit pieces for the working table.",
-        "actionLabel": "Pass the tabletop parts",
-        "objectLabel": "furniture kit pieces"
-      },
-      "onSuccess": {
-        "goto": "shelves_check",
-        "narration": "The parts are ready to level as a tabletop."
-      },
-      "onFailure": {
-        "goto": "shelves_check",
-        "narration": "The parts are ready to level as a tabletop."
-      },
-      "onAssisted": {
-        "goto": "shelves_check",
-        "narration": "The parts are ready to level as a tabletop."
-      },
-      "variants": [
-        {
-          "when": {
-            "flag": "nest_portable_kit"
-          },
-          "replace": true,
-          "text": "Pass the folding kit's stand pieces to the builder. On this uneven threshold, the table needs its low stand. The builder consults the instruction sheet, which has unfolded into a small tent."
-        }
-      ]
-    },
-    "shelves_check": {
-      "type": "interaction",
-      "narration": "Level the working table on checked floor. A sliding book is becoming a very short story. Nobody enters the unfinished replacement chamber after retreat.",
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest",
-      "interaction": {
-        "kind": "balance",
-        "cue": "Level the reading table.",
-        "actionLabel": "Set the table down",
-        "objectLabel": "reading table"
-      },
-      "onSuccess": {
-        "goto": "slab_route",
-        "narration": "The notes have a steady working place."
-      },
-      "onFailure": {
-        "goto": "slab_route",
-        "narration": "The notes have a steady working place."
-      },
-      "onAssisted": {
-        "goto": "slab_route",
-        "narration": "The notes have a steady working place."
-      }
-    },
-    "slab_route": {
-      "type": "story",
-      "narration": "A resting slab used by the wyrm stays with the wyrm. If your prepared slab is unused, it can become a low step for readers; loose new snow is left where it was shaped.",
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest",
-      "choices": [
-        {
-          "id": "recover",
-          "label": "Recover the unused slab for a reader step",
-          "goto": "reader_step",
-          "icon": "hand",
-          "when": {
-            "flag": "nest_slab_unused"
-          }
-        },
-        {
-          "id": "leave",
-          "label": "Leave the hollow undisturbed",
-          "goto": "readers",
-          "icon": "hand"
-        }
-      ]
-    },
-    "reader_step": {
-      "type": "interaction",
-      "narration": "Support the unused slab while the builder brings it back along the checked lane and sets a low step beside the notes. It is loose new ice, not a piece carved from the old wall.",
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest",
-      "interaction": {
-        "kind": "cooperate",
-        "cue": "Support the unused slab for the low step.",
-        "actionLabel": "Set the reader step",
-        "supportLabel": "Support the step"
-      },
-      "onSuccess": {
-        "goto": "readers",
-        "narration": "A low step now helps readers reach their notes.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "nest_reader_step",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "readers",
-        "narration": "A low step now helps readers reach their notes.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "nest_reader_step",
-            "value": true
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "readers",
-        "narration": "A low step now helps readers reach their notes.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "nest_reader_step",
-            "value": true
-          }
-        ]
-      }
-    },
-    "readers": {
-      "type": "choice_point",
-      "narration": "The readers wait with their notes in the old room. You can show the signal round you remembered, or place builders at visible corners and pass the bundles. Bring every reader to the furniture you actually prepared.",
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "cast/memory_reader",
-          "name": "Memory readers",
+          "name": "Yeti builders",
           "count": 2
         }
       ],
       "art": "scenes/riftlight/wyrm-nest",
-      "variants": [
-        {
-          "when": {
-            "notFlag": "nest_signal_read"
-          },
-          "replace": true,
-          "text": "The readers wait with their notes in the old room. Your builder will lead the visible-marker route. Pass the bundles from mitten to mitten until the readers reach their working place."
-        },
-        {
-          "when": {
-            "flag": "wyrm_nest_kept"
-          },
-          "text": "Today the lane stays inside the old room. You must get the notes past the crowded benches to the extra table."
-        }
-      ],
-      "choices": [
-        {
-          "id": "signals",
-          "label": "Show the remembered builder signals",
-          "goto": "readers_check",
-          "icon": "hand",
-          "when": {
-            "flag": "nest_signal_read"
-          }
-        },
-        {
-          "id": "markers",
-          "label": "Pass notes along the visible builder markers",
-          "goto": "readers_markers",
-          "icon": "hand"
-        }
-      ]
-    },
-    "readers_check": {
-      "type": "interaction",
-      "narration": "Echo the builder signals while the readers watch from the safe lane. The round you saw was wait, clear, wait, finish; you may ask for help rather than guess.",
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "cast/memory_reader",
-          "name": "Memory readers",
-          "count": 2
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest",
-      "interaction": {
-        "kind": "memory",
-        "cue": "Show the checked signal round to the readers.",
-        "actionLabel": "Show what we saw",
-        "options": [
-          {
-            "id": "clear",
-            "label": "Both palms open",
-            "icon": "eye"
-          },
-          {
-            "id": "wait",
-            "label": "Mitten raised",
-            "icon": "eye"
-          },
-          {
-            "id": "finish",
-            "label": "Hands lowered",
-            "icon": "eye"
-          }
-        ],
-        "answer": [
-          "wait",
-          "clear",
-          "wait",
-          "finish"
-        ],
-        "stepMs": 1300
-      },
       "onSuccess": {
-        "goto": "readers_clear",
-        "narration": "The readers follow the checked round to their working place."
+        "goto": "readers_come",
+        "narration": "Heave, and heave, and the benches thump back into place. The builders prop the ceiling with a beam. \"Good as new,\" says one. \"Nearly.\""
       },
       "onFailure": {
-        "goto": "readers_markers",
-        "narration": "Use the visible builder markers and shared bundles instead of repeating a missed round."
-      },
-      "onAssisted": {
-        "goto": "readers_markers",
-        "narration": "Use the visible builder markers and shared bundles instead of repeating a missed round."
+        "goto": "readers_come",
+        "narration": "A bench slips and lands on your toe. Ow. The builders get the rest into place, but one bench will always lean. They will be mending this room for weeks."
       }
     },
-    "readers_markers": {
-      "type": "interaction",
-      "narration": "Pass the heavy bundles along builders who can see the next mitten. The route remains inside the old room if the doorway stayed occupied.",
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "cast/memory_reader",
-          "name": "Memory readers",
-          "count": 2
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Pass the note bundles along the visible markers.",
-        "actionLabel": "Pass the notes",
-        "objectLabel": "memory notes"
-      },
-      "onSuccess": {
-        "goto": "readers_clear",
-        "narration": "The readers and every bundle reach their working place."
-      },
-      "onFailure": {
-        "goto": "readers_clear",
-        "narration": "The readers and every bundle reach their working place."
-      },
-      "onAssisted": {
-        "goto": "readers_clear",
-        "narration": "The readers and every bundle reach their working place."
-      }
-    },
-    "readers_clear": {
+    "nest_kept": {
       "type": "story",
-      "narration": "The readers reach their safe working place with their notes. One reader pats the stack. \"Every page is here.\"",
+      "narration": "The wyrm sweeps its tail, and all of you slide out of the room like peas off a plate. Two toots on the curly horn! The builders haul you up the tunnel by your belts and scarves. Behind you, the wyrm curls back up in Flurry's room and goes back to sleep. It is keeping its nest. The builders' tools are still under it.",
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "nest_people_done"
-        }
-      ],
-      "choices": [
+          "flag": "nest_settled",
+          "value": true
+        },
         {
-          "id": "continue",
-          "label": "Agree on quiet neighbor rules",
-          "goto": "quiet",
-          "icon": "hand"
+          "type": "setFlag",
+          "flag": "nest_hard",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "nest_clang",
+          "value": false
         }
       ],
       "cast": [
         {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
         },
         {
-          "figure": "cast/memory_reader",
-          "name": "Memory readers",
-          "count": 2
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest",
-      "variants": [
-        {
-          "when": {
-            "flag": "wyrm_nest_kept"
-          },
-          "text": "Their working place is a crowded corner of the old room. The new chamber is still a building job, with tools and blankets needed for another day."
-        }
-      ]
-    },
-    "quiet": {
-      "type": "choice_point",
-      "narration": "Choose one useful agreement for readers and builders. Nobody promises that a wild wyrm will obey a sign. \"The new rule is for us,\" says a builder, \"the people holding the chisels.\"",
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         },
         {
-          "figure": "cast/memory_reader",
-          "name": "Memory readers",
+          "figure": "entities/yeti",
+          "name": "Yeti builders",
           "count": 2
         }
       ],
       "art": "scenes/riftlight/wyrm-nest",
       "choices": [
         {
-          "id": "tools",
-          "label": "Keep the tools padded",
-          "icon": "hand",
-          "goto": "quiet_response_tools"
-        },
-        {
-          "id": "space",
-          "label": "Keep the nest margin visible",
-          "icon": "hand",
-          "goto": "quiet_response_space"
-        },
-        {
-          "id": "notes",
-          "label": "Keep notes off the walking lane",
-          "icon": "hand",
-          "goto": "quiet_response_notes"
+          "id": "on",
+          "label": "Find somewhere else for the readers",
+          "icon": "map",
+          "goto": "storeroom"
         }
       ]
     },
-    "ending": {
+    "storeroom": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "roller": "party",
+      "narration": "The readers still need a room. \"There's the builders' old storeroom,\" says Flurry, in a small voice. It is small and dark and full of broken barrels and one very old boot.",
+      "prompt": "Clear out the old storeroom before the readers come",
+      "cast": [
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builders",
+          "count": 2
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
+      "onSuccess": {
+        "goto": "readers_come",
+        "narration": "Out go the barrels, and out goes the boot. The storeroom is small, but it is clean and dry. Flurry hangs one icicle hat by the door."
+      },
+      "onFailure": {
+        "goto": "readers_come",
+        "narration": "A barrel rolls onto your foot. Ow. You get most of it cleared, but the old boot will not budge. It stays in the corner. Flurry hangs an icicle hat on it."
+      }
+    },
+    "readers_come": {
       "type": "story",
-      "narration": "The readers have room for their notes. The wyrm has room to rest. The old ice stays quiet. A builder hangs the chisel hats beside the doorway with one last reminder: \"No scraping near the neighbor.\" You leave a glacier where people and wyrm have more room because your party made it.",
-      "choices": [],
-      "outcome": "success",
+      "spotlight": "next",
+      "narration": "Elder Murmur comes down the tunnel at last, slow as a snowdrift, with the readers behind her, each one hugging a stack of slates.",
       "variants": [
         {
           "when": {
             "flag": "wyrm_ally"
           },
-          "text": "From the sheltered hollow comes a soft answering rumble. The builders will keep that approach open if your party needs help here again."
+          "text": "She peeks through the shimmering opening at the wyrm on its nest. \"It looks comfortable,\" she whispers. \"Good. A neighbor who sleeps all winter is a quiet neighbor.\""
         },
         {
           "when": {
-            "flag": "wyrm_nest_kept"
+            "flag": "nest_lost"
           },
-          "text": "The new chamber must wait. Today the readers share their old room with the extra table, and the builders give up their free morning to finish the move."
+          "text": "She looks at the wyrm snoring in Flurry's room, and then at the little storeroom. \"Smaller,\" she whispers. \"But dry.\""
         },
         {
           "when": {
-            "flag": "nest_reader_step"
+            "flag": "nest_cracked"
           },
-          "text": "The unused resting slab has become a low reader step. Nothing was taken from beneath the wyrm."
-        },
+          "text": "She looks up at the crack in the ceiling, then down at the floor, and says nothing at all."
+        }
+      ],
+      "onEnter": [
         {
-          "when": {
-            "flag": "nest_portable_kit"
-          },
-          "text": "The folding kit is now a working table, in the room the readers can actually use."
-        },
-        {
-          "when": {
-            "flag": "nest_shelf_built"
-          },
-          "text": "The shelf kit stands as a low shelf on the checked floor; the readers can reach it without climbing."
-        },
-        {
-          "when": {
-            "flag": "nest_pattern_read"
-          },
-          "text": "Your nest diagram records the tail pattern your party observed."
-        },
-        {
-          "when": {
-            "notFlag": "nest_pattern_read"
-          },
-          "text": "The builder-checked nest margin stays labeled as a helped observation."
+          "type": "setFlag",
+          "flag": "nest_readers",
+          "value": true
         }
       ],
       "cast": [
         {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
-    },
-    "boundary_response_pad": {
-      "type": "story",
-      "narration": "The chisels travel without scraping. The builders can prepare a reading place without testing the nest with a foot.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "supplies"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
         },
         {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
-    },
-    "boundary_response_stool": {
-      "type": "story",
-      "narration": "The stool is beyond the tail mark. The builders can prepare a reading place without testing the nest with a foot.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "supplies"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
-    },
-    "boundary_response_sign": {
-      "type": "story",
-      "narration": "A builder marks only the new surface. The builders can prepare a reading place without testing the nest with a foot.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "supplies"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
-    },
-    "quiet_response_tools": {
-      "type": "story",
-      "narration": "The builder re-hats the largest chisel. The readers can work without anyone testing the old ice.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "ending"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
         },
         {
           "figure": "cast/memory_reader",
@@ -1693,23 +2067,51 @@
           "count": 2
         }
       ],
-      "art": "scenes/riftlight/wyrm-nest"
-    },
-    "quiet_response_space": {
-      "type": "story",
-      "narration": "Readers can see where not to stand. The readers can work without anyone testing the old ice.",
+      "art": "scenes/riftlight/wyrm-nest",
       "choices": [
         {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "ending"
+          "id": "carry",
+          "label": "Carry the slates down by hand",
+          "icon": "hand",
+          "goto": "check_carry",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "nest_cracked",
+              "value": false
+            }
+          ]
+        },
+        {
+          "id": "tray",
+          "label": "Slide them down on Pip's tea tray",
+          "icon": "quick",
+          "goto": "check_tray",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "nest_cracked",
+              "value": false
+            }
+          ]
         }
-      ],
+      ]
+    },
+    "check_carry": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "roller": "party",
+      "narration": "The slates are heavy, and the tunnel floor is slick with the wyrm's frost. One reader carries her stack on her head. \"Slow feet,\" Murmur whispers.",
+      "prompt": "Carry the heavy slates down the slippery tunnel without dropping one",
       "cast": [
         {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
         },
         {
           "figure": "cast/memory_reader",
@@ -1717,116 +2119,277 @@
           "count": 2
         }
       ],
-      "art": "scenes/riftlight/wyrm-nest"
-    },
-    "quiet_response_notes": {
-      "type": "story",
-      "narration": "The smallest reader carries the last loose page. The readers can work without anyone testing the old ice.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "ending"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "cast/memory_reader",
-          "name": "Memory readers",
-          "count": 2
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
-    }
-  },
-  "presentation": {
-    "interactions": {
-      "watch_check": {
-        "props": [
-          "snow-mound"
-        ]
+      "art": "scenes/riftlight/wyrm-nest",
+      "onSuccess": {
+        "goto": "tuft_room",
+        "narration": "Step, step, step. Every slate arrives whole. Murmur counts them twice."
       },
-      "table_kit": {
-        "props": [
-          "relay-plank"
-        ]
-      },
-      "shelf_kit": {
-        "props": [
-          "relay-plank"
-        ]
-      },
-      "hollow_view": {
-        "props": [
-          "snow-mound"
-        ]
-      },
-      "hollow_help": {
-        "props": [
-          "rope-loop"
-        ]
-      },
-      "hollow_check": {
-        "props": [
-          "rope-loop"
-        ]
-      },
-      "bed_snow": {
-        "props": [
-          "snow-mound"
-        ]
-      },
-      "bed_slab": {
-        "props": [
-          "ice-knob"
-        ]
-      },
-      "lanes": {
-        "props": [
-          "relay-plank",
-          "rope-loop"
-        ]
-      },
-      "signal": {
-        "props": [
-          "wind-banner"
-        ]
-      },
-      "shelf_build": {
-        "props": [
-          "relay-plank"
-        ]
-      },
-      "unpack_shelf": {
-        "props": [
-          "relay-plank"
-        ]
-      },
-      "shelves_check": {
-        "props": [
-          "relay-plank"
-        ]
-      },
-      "reader_step": {
-        "props": [
-          "ice-knob"
-        ]
-      },
-      "readers_check": {
-        "props": [
-          "wind-banner"
-        ]
-      },
-      "readers_markers": {
-        "props": [
-          "clue-scrap"
-        ]
+      "onFailure": {
+        "goto": "tuft_room",
+        "narration": "Your feet go out from under you, and you sit down hard on the ice. The slates land on you, which is better than on the floor. Only one cracks, right across the middle."
       }
+    },
+    "check_tray": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "roller": "party",
+      "narration": "Pip ties his tea tray to a string. The slates go on top, very carefully. \"Lady Olivia says a sled is just a lazy cart,\" he says proudly.",
+      "prompt": "Steer the loaded tray down the slope without tipping it",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/memory_reader",
+          "name": "Memory readers",
+          "count": 2
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
+      "onSuccess": {
+        "goto": "tuft_room",
+        "narration": "The tray glides down like a little sled, and stops right at the door. Pip bows. Murmur whispers, \"Clever.\""
+      },
+      "onFailure": {
+        "goto": "tuft_room",
+        "narration": "The tray picks up speed, hits a bump and flips. You dive and catch most of the slates. One cracks on the floor."
+      }
+    },
+    "tuft_room": {
+      "type": "choice_point",
+      "narration": "The readers sit down, open their slates and look at the walls. Flurry hangs her icicle hats along the ceiling, one by one. \"There,\" she says. \"Now it's a room.\" Murmur looks toward the shimmering opening. \"The ice beside it saw everything last night,\" she whispers. \"Shall we read it? Or let it rest first?\"",
+      "variants": [
+        {
+          "when": {
+            "flag": "nest_lost"
+          },
+          "text": "The storeroom is very small. The readers sit knee to knee. \"Cozy,\" Murmur whispers, and means it."
+        },
+        {
+          "when": {
+            "flag": "nest_gave_blankets"
+          },
+          "text": "There are no blankets. \"I'll knit,\" says Flurry. \"All winter.\" She has already started."
+        },
+        {
+          "when": {
+            "flag": "nest_move",
+            "notFlag": "nest_gave_blankets"
+          },
+          "text": "The builders look at the hollow, where their work sacks are, and shiver."
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/memory_reader",
+          "name": "Memory readers",
+          "count": 2
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
+      "choices": [
+        {
+          "id": "read",
+          "label": "Read the ice by the opening",
+          "icon": "eye",
+          "goto": "new_wall",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "nest_read_wall",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "rest",
+          "label": "Let the ice rest",
+          "icon": "moon",
+          "goto": "walls_rest"
+        }
+      ]
+    },
+    "new_wall": {
+      "type": "story",
+      "variants": [
+        {
+          "when": {
+            "flag": "nest_lost"
+          },
+          "text": "Murmur tiptoes into Flurry's room, right past the snoring wyrm.",
+          "at": "start"
+        }
+      ],
+      "narration": "Murmur breathes on the ice beside the shimmering opening, and a faint picture swims up: last night, in Flurry's room. The opening blinks open in the air. A frost wyrm tumbles out of it, all legs and surprise, and looks around as if somebody moved its house. Flurry puts a paw over her mouth. \"It didn't come on purpose,\" she whispers. \"Something brought it.\"",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/memory_reader",
+          "name": "Memory readers",
+          "count": 2
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Sit with Murmur",
+          "icon": "heart",
+          "goto": "murmur_last"
+        }
+      ]
+    },
+    "walls_rest": {
+      "type": "story",
+      "narration": "Murmur nods slowly. \"Ice that has seen a lot is like a puppy after a party,\" she whispers. \"Let it settle before you ask it anything.\" The readers get out their knitting instead. Flurry teaches Pip to knit. He makes something long and lumpy, and says it is a scarf for the wyrm.",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Sit with Murmur",
+          "icon": "heart",
+          "goto": "murmur_last"
+        }
+      ]
+    },
+    "murmur_last": {
+      "type": "story",
+      "variants": [
+        {
+          "when": {
+            "flag": "nest_read_wall"
+          },
+          "text": "She has already drawn the picture from the ice on a fresh slate: the opening, and the wyrm tumbling through.",
+          "at": "start"
+        }
+      ],
+      "narration": "Murmur sits beside you and blows on her iced tea. \"A river that remembers another valley,\" she whispers. \"An opening where there was none. A wyrm that came through it, and wanted to go home.\" She looks down at the floor, toward the oldest ice. \"Things are moving that have not moved in a very long time.\"",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Elder Murmur"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Say goodbye",
+          "icon": "forward",
+          "goto": "ending"
+        }
+      ]
+    },
+    "ending": {
+      "type": "story",
+      "outcome": "success",
+      "narration": "At the top of the tunnel, the curly horn hangs on its hook. Two toots, and the griffins at the Cairnstep will come. Back up the stair, the reading room waits. Pip shuts his notebook. \"Lady Olivia will want to hear all of this.\" Here is the piece you carry: long ago, the river ran down the valley that was dry, and now the land is moving again, and moved things try to go home. The Listening Chime leans toward the heart of the glacier. Something is moving the land. What is it? And can you put things right?",
+      "variants": [
+        {
+          "when": {
+            "flag": "wyrm_ally"
+          },
+          "text": "Behind you, the wyrm snores in its hollow. The builders will keep the way to it open for you.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "nest_won",
+            "notFlag": "wyrm_ally"
+          },
+          "text": "The wyrm is gone from the glacier.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "nest_lost"
+          },
+          "text": "The wyrm keeps its nest in Flurry's room, and the builders' tools stay under it until spring.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "nest_force"
+          },
+          "text": "Pip writes LOUD WORKS in his notebook. Then he looks back at the crack in the ceiling, and adds a question mark.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "nest_move"
+          },
+          "text": "Pip writes SHOW, DON'T PUSH in his notebook, and draws a wyrm in a hat.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "fragment_coast_learned"
+          },
+          "text": "You carry another piece too. Master Orin Vale will want to lay them side by side."
+        },
+        {
+          "when": {
+            "flag": "fragment_sky_learned",
+            "notFlag": "fragment_coast_learned"
+          },
+          "text": "You carry another piece too. Master Orin Vale will want to lay them side by side."
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Flurry"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
+      "choices": []
     }
   }
 }

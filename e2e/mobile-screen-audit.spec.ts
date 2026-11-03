@@ -16,6 +16,16 @@ for (const viewport of [{ width: 360, height: 640 }, { width: 390, height: 844 }
     }).map(el => `${el.className}: ${el.clientHeight}/${el.scrollHeight}`));
     expect(scrolling, `${name} should fit without scrolling`).toEqual([]);
     if (name === "You") {
+      const picker = page.getByRole("combobox", { name: "Your page" });
+      await picker.focus();
+      await picker.press("Home");
+      await picker.press("ArrowDown");
+      await expect(picker).toHaveValue("stats");
+      await expect(page.getByRole("button", { name: "Your stats", exact: true })).toBeVisible();
+      await picker.press("Home");
+      await expect(picker).toHaveValue("bag");
+      await expect(page.getByRole("button", { name: /^Your things/ })).toBeVisible();
+
       for (const section of ["stats", "party", "token", "room", "bag"]) {
         await page.getByRole("combobox", { name: "Your page" }).selectOption(section);
         expect(await page.locator(".player__scroll").evaluate(el => el.scrollHeight <= el.clientHeight + 1), section).toBe(true);

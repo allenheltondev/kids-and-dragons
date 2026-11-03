@@ -46,6 +46,9 @@ describe("reusable story controls", () => {
     ["rocks", rocks.scenes.interaction_moth_trail.interaction, rocks.presentation.interactions.interaction_moth_trail, [[0, 1, 2], [1, 0, 2], [1, 2, 0], [2, 1, 0]], "Middle", "1"],
   ] as const)("keeps distinct tracking art and positional answers consistent: %s", async (_name, rawSpec, appearance, positions, answerLabel, answerIndex) => {
     vi.spyOn(Date, "now").mockReturnValue(2_000_000);
+    // serverNow() anchors on Date.now() but advances on performance.now(); pin both, or the
+    // real milliseconds a loaded CI runner spends rendering shift the animated covers.
+    vi.spyOn(performance, "now").mockReturnValue(1_000);
     const spec = rawSpec as Extract<InteractionSpec, { kind: "tracking" }>;
     for (const mode of ["normal", "relaxed", "reduced"] as const) {
       for (const [step, expected] of positions.entries()) {

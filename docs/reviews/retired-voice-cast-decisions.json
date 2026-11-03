@@ -1,0 +1,97 @@
+{
+  "note": "Local casting decisions for speaker IDs retired by newer named-cast revisions on main. Preserved for review; not automatically assigned to new characters. Active speaker decisions are in content/voice/cast.json.",
+  "speakers": {
+    "kitsune_keeper": {
+      "name": "Kitsune keeper",
+      "figure": "cast/island_keeper",
+      "gender": "female",
+      "genderFrom": "notes",
+      "gemini": {
+        "voice": "Schedar"
+      },
+      "status": "approved",
+      "accent": "asian",
+      "direction": "quick, choppy words, short pause between sentences like she's thinking",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Schedar",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T18:53:31.124Z"
+        }
+      ]
+    },
+    "skupper_guide": {
+      "name": "Skupper guide",
+      "figure": "cast/saltrot_guide",
+      "gender": "female",
+      "genderFrom": "narration",
+      "gemini": {
+        "voice": "Erinome"
+      },
+      "status": "approved",
+      "accent": "slavic american",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Erinome",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T19:01:09.087Z"
+        }
+      ]
+    },
+    "stone_keeper": {
+      "name": "Stone keeper",
+      "figure": "cast/dragonling_stone_keeper",
+      "gender": "female",
+      "genderFrom": "narration",
+      "gemini": {
+        "voice": "Kore"
+      },
+      "status": "approved",
+      "accent": "heavy australian",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Kore",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T19:02:51.227Z"
+        }
+      ]
+    },
+    "traveler": {
+      "name": "Traveler",
+      "figure": "cast/boarding_traveler",
+      "gender": "female",
+      "genderFrom": "narration",
+      "gemini": {
+        "voice": "Autonoe"
+      },
+      "elevenlabs": {
+        "voiceId": "nPczCjzI2devNBz1zQrb",
+        "name": "Brian - Deep, Resonant and Comforting"
+      },
+      "status": "provisional"
+    },
+    "temple_keeper": {
+      "name": "Temple keeper",
+      "figure": "cast/kitsune_temple_keeper",
+      "gender": "female",
+      "genderFrom": "narration",
+      "gemini": {
+        "voice": "Zephyr"
+      },
+      "status": "approved",
+      "accent": "mexican",
+      "direction": "boisterous and in charge of every room",
+      "history": [
+        {
+          "decision": "approved",
+          "voice": "Zephyr",
+          "model": "gemini-3.8-flash-tts",
+          "at": "2026-10-30T19:07:55.397Z"
+        }
+      ]
+    }
+  }
+}

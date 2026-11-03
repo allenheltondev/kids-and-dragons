@@ -52,7 +52,7 @@ cross-origin request, which is why the stack configures no CORS policy at all.
                     │                         │
             ┌───────▼────────┐      ┌─────────▼─────────┐
             │  HTTP API      │      │  AppSync Events   │
-            │                │      │  room/<code>      │
+            │                │      │ room/<code>/<run> │
             └───────┬────────┘      └────▲────────▲─────┘
                     │              IAM   │        │  AWS_LAMBDA
                     │            publish │        │  connect + subscribe
@@ -112,6 +112,7 @@ Single DynamoDB table, `kad`. Composite key `PK` / `SK`, one GSI (`GSI1PK` / `GS
 | Transfer code | `TRANSFER#<code>` | `META` | A single-use code that moves one kid to another home (§4.5, "Moving a kid"): → source household, playerId. Spent in the move's own transaction. **TTL 1 day.** |
 | Moved device | `HH#<hhId>` | `MOVED#<deviceId>` | Left in the household a kid moved out of, naming the one her phone's binding moved into, so a token minted before the move still finds it by primary key. Not under `DEVICE#`, so no device list sees it. **TTL 31 days**, past any token it could forward. |
 | Pairing code | `PAIR#<code>` | `META` | A single-use code that makes whoever redeems it a device bound to one kid (§4.5, "Pairing a new device"). Spent by a conditional delete. **TTL 10 minutes.** |
+| Screen code | `SCREEN#<code>` | `META` | A single-use code that lets one more TV show a room: → room code, the host device that made it. Spent by a conditional delete. **TTL 10 minutes.** See §4.5, "More than one screen". |
 | Visit | `VISIT#<playerId>` | `HH#<tableHhId>` | A table that is not her home that a kid sat down at (#249), written by the join. Keyed by the kid, so a move (#251) never carries it. Only so that deleting her can find the saves that name her (§4.5, "Deleting and keeping"). Deleted with her or her home. |
 | Forget job | `FORGET#<playerId>` | `META` | A kid being deleted (#252): her nicknames, her heroes' names, the tables still to clean, and how to finish the delete that wrote it. Written before any of her rows go, rewritten with the tables a scrub could not clean, removed when none are left. In GSI1's `FORGET` partition, so the sweeper finishes what is owed. |
 | Push subscription | `PUSH#<playerId>` | `DEVICE#<deviceId>` | One of a kid's own phones that takes "It's your turn" pushes (#466, §4.6 "Push"): the push service's endpoint for that browser and the two keys that encrypt for it. One per phone, keyed by the kid like a visit, so a move carries nothing. Forgotten when the push service says it is gone, when the phone is no longer hers, when the switch goes off, and with her or her home. |
@@ -378,7 +379,7 @@ phone that fell behind the couch to desync.
 }
 ```
 
-**Server → clients** (published to AppSync Events channel `room/<code>`):
+**Server → clients** (published to AppSync Events channel `room/<code>/<run>`, one channel per game; AppSync allows only letters, digits and hyphens in a segment, so the run's id is written with hyphens there, `r_4b2e…` as `r-4b2e…`, by `roomChannelPath` in `@kad/shared`, which the publisher, the browser and the authorizer all use. The run keeps its id everywhere else):
 
 ```jsonc
 {
@@ -681,12 +682,12 @@ table's save (see "Who owns what", below), a kid's hero is hers and is not lost
 with it, and a family tablet exists only in a household an account already
 keeps, so none can found a guest game for every kid who uses it.
 
-Guest households from before founders were recorded keep the old rule (any
-device playing in one may claim it). #265 shipped it on 2026-10-17 and a guest
-household expires a week after it was last played, but a game still being
-played keeps renewing, so the rule goes only once none is left to find: delete
-the `legacy` branches in `mayClaim`, the memory store's `claimHousehold` and
-the DynamoDB claim condition then (#272).
+A household with no founder recorded (`founderDeviceId` absent, as on one
+awaiting its founder or one made before #265, or `""` after a Remove) is
+claimable by nobody. Guest households made before founders were recorded kept
+the old rule (any device playing in one may claim it) for a week after #265
+shipped on 2026-10-17; #272 removed it. Such a household still plays, but it
+can no longer be kept by signing in.
 
 The device that opened a room may take a
 player out of that room, a low-stakes control that a TV or a kid's phone may
@@ -1581,6 +1582,17 @@ any character — characters belong to the household.
 
 #### Visitors: a room open to more than one household
 
+> **Changed:** a phone already bound to another household now joins any room on
+> the room's own four letters, as a visitor (`joinRoom`), with no switch to turn
+> on first; the host's view no longer shows the switch. The owner chose that over
+> the guard below, accepting that a guessed code admits a stranger's phone; the
+> host's Lock is what closes a room once everyone is in. A never-seen phone is a
+> visitor too, with a guest household of its own (`admitNewPhone`), except the
+> phone that founds a TV's unsettled room (`RoomRecord.claimable`): the four
+> letters no longer prove anybody is family. A family's own new phone pairs from
+> home or is moved home later (#251). The switch and its longer code remain on
+> the server for rooms already open; what follows is how they work.
+
 A kid who brings their own phone to a friend's game, or two families sharing an
 adventure (#249). **One room-level switch**, not an approval for each visitor,
 and only a signed-in owner of the room's household may turn it on
@@ -1640,6 +1652,80 @@ leaves nobody signed in afterwards. A TV's room must be settled by a phone first
   heroes from different households (`sameHome`), and the give list leaves them
   out. Trades within a household, visitors' included, work as before.
 
+#### More than one screen: a leader and its followers
+
+A family on the sofa and a child in a hospital bed with a parent beside her are
+**one game on two TVs**. It stays one room, one run and one channel; nothing in
+the engine learns about places. Phones already reach a room from anywhere, as
+visitors (above). What a second location lacked was a second *screen*, because
+only the screen that opened a room may show it (#267, "The TV, which is
+nobody").
+
+- **The leader is the host**: the screen or phone that opened the room
+  (`RoomRecord.hostDeviceId`), which already holds Lock, Remove, Close and the
+  keeper's hand. There is no second kind of host and no hand-over of the room.
+- **Adding a screen** (`POST /api/room/:code/screens`, host only, the same
+  proof as Lock, `handlers/screens.ts`) answers `{ code, expiresAt }`: eight
+  letters from the room-code alphabet, single use, ten minutes, stored as
+  `SCREEN#<code>`. It names the room's *run* as well as its four letters, because a closed
+  room's letters are free to be reused: redeeming refuses a code whose room is no
+  longer that run, so a follower can never be shown a stranger's game.
+- **A follower TV spends it** (`POST /api/screens/redeem`, `{ code }`, no
+  sign-in: the code is the credential) and gets what the leader's TV got from
+  `/watch`: a viewer token for that room and the current state. It then
+  attaches to the channel as any TV does. The code is spent by a conditional
+  delete, so of two screens holding one exactly one gets in. Wrong codes are
+  counted per client like wrong room codes (`code-guard.ts`, key `screen:`).
+- **A follower screen is a viewer, never a player.** It is not in `party`, is not
+  counted for presence and cannot act (`ViewerIdentity`). Its people play from
+  their own phones, which join as visitors; a hospital tablet that is both
+  screen and controller joins in Travel Mode. So votes, rolls, turns and saves
+  are unchanged, and the table is the same table.
+- **Ending it.** A viewer token lives as long as the room's original expiry, and
+  Close frees the room's four letters, so the token's own claims cannot say the
+  game is over. Two things end a follower:
+  - *New reads and subscriptions* ask the room (`viewerStillShows`,
+    `handlers/viewer.ts`): it must still exist, still map to the token's *run*,
+    and the run must not be closed. The channel authorizer asks it of a viewer at
+    connect and subscribe, and `GET /api/state` whether the request names a run or
+    a code. A closed run cannot be read by its run id, and an old token cannot
+    be pointed at the family that later takes the same letters.
+  - *A subscription already open* cannot be asked again: AppSync keeps it until
+    the socket closes, and a cached authorization decision does not change that.
+    So the channel's name carries the run, `room/<code>/<run>` (see above for how the id is spelled there). The server
+    publishes each message to its own run's channel, the client subscribes to its
+    own, and the authorizer admits a subscribe only to exactly the channel of the
+    token's room and run (no wildcard, no bare `room/<code>`, no other run). A
+    socket left open on a closed game hears nothing of the next game on those
+    letters, even from a modified client.
+  So Close, "Stop for today" and the idle close end every follower. Individual
+  followers are not revocable: a viewer token names the room, not a screen, so
+  the way to drop a screen the leader did not mean to admit is to close the room.
+- **The client** (`screens/OtherScreen.tsx`). The leader's half is a folded
+  "Another TV" section in the Room panel, which mints nothing until asked; it
+  shows the code big enough to read across a room, says the other place's
+  players join with the room's own code, and on the host's own phone offers
+  "Send it as a link" (`/?screen=CODE`). The other TV's half is a quiet link in
+  the start screen's Host card, "Join a game lobby", on Party Mode's table-name
+  line (where it changes no geometry a remote steps through), and the same
+  card opened by that link with the code typed, never spent until tapped. The
+  follower's session is kept like a phone's (`establish`), because it cannot ask
+  `/watch` again, so a refresh resumes on its viewer token. A bad code is said
+  once, on the card.
+- **Counting followers.** Redeeming a code mints the follower a screen id,
+  carried in its viewer token (`ViewerIdentity.screenId`; the room's own TV's
+  token has none). The follower beats on `POST /api/presence` like a phone
+  (`beatScreen`): its beats share the run's presence row under a
+  `screen:<id>` key no player id can have, and its id is listed in
+  `RunState.screens` while it beats, dropped on its goodbye or once it has
+  been quiet past `AWAY_AFTER_MS`, found by the next beat from any phone or
+  screen. A viewer whose game is over is refused (`viewerStillShows`). The
+  Room panel's Another TV line reads the count ("1 other TV is showing this
+  game"). `screens` is the room's, so a resumed save never brings back
+  another room's followers (`save.ts`, `ROOM_KEYS`).
+- **Narration** plays on every TV whose own read-aloud setting is on, as it
+  does on any screen; there is no per-room choice of which TV speaks.
+
 #### Crews: new players at the same household
 
 A household holds one save per campaign (`HH#…/CAMPAIGN#<campaignId>`), which
@@ -1654,6 +1740,24 @@ and every device stay the household's, so anyone may sit down with any crew.
   as they were: `RunState.crew` absent, progress at `CAMPAIGN#<campaignId>`,
   claims the bare campaign id. No run, save or claim from before crews moves,
   and Gemfall's pinned digests do not.
+  Its name, when the household picks one, is the one `FIRSTCREW` row
+  (`entity: "crew"`), outside `CREW#` so `listCrews` still lists only the others.
+  A host renames any crew, from the same fixed list, at `POST /api/room/:code/crewname`.
+- **Heroes new to a crew's adventure are asked about first.** When the lobby's
+  adventure is partway for the crew, other heroes of the household are on it
+  (they hold its claim), and none of the seated heroes are, the lobby carries
+  `RunState.crewCheck` and Begin is refused until the host picks: keep going
+  (`POST /api/room/:code/crewkeep`, `crewConfirmed`) or start a new crew. An
+  attempt no hero is on asks nothing. Every chapter start is asked, so a
+  `START_CHAPTER` sent straight cannot step round it. A keep-going is for the
+  lineup it was given for: when the heroes seated or the crew change (a hero
+  sits down, gets up, or is taken out), it is dropped and the lobby asks again
+  (`rethinkNewcomers`).
+- **Crew names are one per crew.** A new crew takes the first listed name no
+  crew holds (the first crew's chosen name included), and a rename only a free
+  one. Both land in the run's commit, gated on the household's crew-names
+  version (`HH#…/CREWNAMES`, `CommitInput.crewNames`), so a lost race names
+  nothing and two rooms cannot take one name.
 - **Every other crew** is `HH#…/CREW#<id>` (`CrewRecord`: id, a name from a
   fixed list so a TV remote never types, created). Its attempts live at
   `CREWSAVE#<id>#<campaignId>` and carry `crew`; that prefix is not a prefix
@@ -1684,6 +1788,14 @@ and every device stay the household's, so anyone may sit down with any crew.
   id (`request`), kept on the crew it makes: the same request again, a retry
   of a lost answer, gets that crew, and a fresh tap always makes another. `RunState.crews` lists the others for the Room
   panel, and is absent while the household has only its first.
+
+**The hero picker says so first** (`GET /api/heroes`, `held`). For each hero a
+live adventure holds, the list names the campaign and, when it is another
+crew's or another table's, which; given the asking room's run, it also says
+whether this room would refuse her (`blocked`, `seatHero`'s own words) or move
+its lobby to her crew (`switches`, `followCrew`'s rule with her seated). The
+phone dims a hero it cannot seat with the reason on her card, and says what
+choosing a hero of another crew will do before "Play as".
 
 **The lobby follows the kids** (`followCrew`, run beside `relockLobby`
 whenever the lobby's party changes). A new room opens on the first crew, and

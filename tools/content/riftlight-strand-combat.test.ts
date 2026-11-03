@@ -7,9 +7,13 @@ import type { Bestiary, ClientIntent, EncounterMap, EngineContext, RunState } fr
 import { chapters, context, start } from "./riftlight-test-support.ts";
 const root = path.resolve(import.meta.dirname, "../..");
 const bestiary = JSON.parse(fs.readFileSync(path.join(root, "content/bestiary.json"), "utf8")) as Bestiary;
+// The wyrm nest (riftlight-wyrm-nest.test.ts has the story around these boards):
+// fight_move / fight_move_long hold the quiet path to show the wyrm home (wyrm_ally),
+// fight_drive / fight_drive_clang only drive it out. Every one can be lost.
+const nestHolds = ["fight_move", "fight_move_long"];
+const nestFights = [...nestHolds, "fight_drive", "fight_drive_clang"];
 const configs = [
-  ...["fight", "fight_soft"].map(sceneId => ({ chapterId: "riftlight-wyrm-nest", sceneId })),
-  ...["push", "shelter"].flatMap(plan => ["", "_rope", "_cover"].map(prep => ({ chapterId: "riftlight-squall-temple", sceneId: `fight_${plan}${prep}` }))),
+  ...nestHolds.map(sceneId => ({ chapterId: "riftlight-wyrm-nest", sceneId })),
 ];
 function must(state: RunState, playerId: string, intent: ClientIntent, ctx: EngineContext) {
   const next = applyIntent(state, { playerId, intent }, ctx);
@@ -30,7 +34,7 @@ function setup(chapterId: string, sceneId: string, face: number, flags: Record<s
   return { state, ctx };
 }
 it.each(configs)("$chapterId/$sceneId wins by its actual objective through board turns", ({ chapterId, sceneId }) => {
-  let { state, ctx } = setup(chapterId, sceneId, 1, { nest_slab_unused: true });
+  let { state, ctx } = setup(chapterId, sceneId, 1);
   let turns = 0, work = 0;
   const close = sceneId.startsWith("fight_push");
   while (state.encounter) {
@@ -49,15 +53,16 @@ it.each(configs)("$chapterId/$sceneId wins by its actual objective through board
   }
   expect(state.fightEndings?.[0]?.byObjective).toBeTruthy();
   if (chapterId.endsWith("wyrm-nest")) {
-    expect(state.sceneId).toBe("room_clear");
+    expect(state.sceneId).toBe("room_won");
     expect(state.flags.wyrm_ally).toBe(true);
-    expect(state.flags.nest_slab_unused).toBe(false);
+    expect(state.narration).toContain("You have a new neighbor.");
   } else {
     expect(state.sceneId).toBe(close ? "pushed" : "settled");
     if (close) expect(work).toBe(sceneId.endsWith("_rope") ? 2 : 3);
   }
 });
-it.each(configs)("$chapterId/$sceneId retains an actual defeat recovery", ({ chapterId, sceneId }) => {
+const defeats = [...nestFights.map(sceneId => ({ chapterId: "riftlight-wyrm-nest", sceneId })), ...configs.filter(c => c.chapterId !== "riftlight-wyrm-nest")];
+it.each(defeats)("$chapterId/$sceneId retains an actual defeat recovery", ({ chapterId, sceneId }) => {
   let { state, ctx } = setup(chapterId, sceneId, 20);
   let turns = 0;
   while (state.encounter) {
@@ -66,24 +71,19 @@ it.each(configs)("$chapterId/$sceneId retains an actual defeat recovery", ({ cha
     const member = state.party.find(p => p.character.id === actor)!;
     state = must(state, member.playerId, { type: "END_TURN" }, ctx);
   }
-  expect(state.sceneId).toBe(chapterId.endsWith("wyrm-nest") ? "room_moved" : "damaged");
-  expect(state.flags[chapterId.endsWith("wyrm-nest") ? "wyrm_nest_kept" : "temple_damaged"]).toBe(true);
+  expect(state.sceneId).toBe(chapterId.endsWith("wyrm-nest") ? "nest_kept" : "damaged");
+  expect(state.flags[chapterId.endsWith("wyrm-nest") ? "nest_lost" : "temple_damaged"]).toBe(true);
   expect(state.flags.wyrm_ally).not.toBe(true);
   expect(state.party.every(p => !p.down && p.hp > 0)).toBe(true);
 });
-it.each(["push", "shelter"])("%s wind cover removes only the party's actual Guard penalty", plan => {
-  for (const prep of ["", "_rope", "_cover"]) {
-    const { state } = setup("riftlight-squall-temple", `fight_${plan}${prep}`, 1);
-    const fight = state.encounter!;
-    expect(buffBonus(fight.buffs, state.party[0]!.character.id, "guard")).toBe(prep === "_cover" ? 0 : -1);
-    const enemy = fight.combatants.find(c => c.side === "enemy")!;
-    expect(buffBonus(fight.buffs, enemy.id, "guard")).toBe(-1);
-    expect(fight.environment!.spec.hazards![0]!.push).toEqual({ direction: "west", tiles: 1 });
-  }
-});
-it("soft bedding changes actual held rounds without changing the enemies or slick ice", () => {
+it("a calm wyrm is shown home in two held rounds and a wary one in three, with the same enemies and slick ice", () => {
   const rounds: number[] = [];
-  for (const sceneId of ["fight", "fight_soft"]) {
+  const nest = chapters.get("riftlight-wyrm-nest")!;
+  const [calm, wary] = nestHolds.map(id => nest.scenes[id]!);
+  if (calm?.type !== "encounter" || wary?.type !== "encounter") throw Error("Expected encounters");
+  expect(calm.enemies).toEqual(wary.enemies);
+  expect(calm.environment!.hazards).toEqual(wary.environment!.hazards);
+  for (const sceneId of nestHolds) {
     let { state, ctx } = setup("riftlight-wyrm-nest", sceneId, 1);
     let turns = 0, firstHoldingRound: number | undefined, finalRound = 0;
     while (state.encounter) {
@@ -101,10 +101,19 @@ it("soft bedding changes actual held rounds without changing the enemies or slic
     expect(state.flags.wyrm_ally).toBe(true);
     rounds.push(finalRound - firstHoldingRound! + 1);
   }
-  expect(rounds).toEqual([2, 1]);
+  expect(rounds).toEqual([2, 3]);
 });
-it.each(["fight", "fight_soft"])("driving creatures off in %s does not grant the hollow ally or take its unused slab", sceneId => {
-  let { state, ctx } = setup("riftlight-wyrm-nest", sceneId, 1, { nest_slab_unused: true });
+it("banging the pots in time rattles the wyrm and the wisp, and only them", () => {
+  for (const [sceneId, monsters] of [["fight_drive", 0], ["fight_drive_clang", -1]] as const) {
+    const { state } = setup("riftlight-wyrm-nest", sceneId, 1);
+    const fight = state.encounter!;
+    for (const enemy of fight.combatants.filter(c => c.side === "enemy")) expect(buffBonus(fight.buffs, enemy.id, "guard")).toBe(monsters);
+    expect(buffBonus(fight.buffs, state.party[0]!.character.id, "guard")).toBe(0);
+    expect(fight.environment!.spec.objectives ?? []).toEqual([]);
+  }
+});
+it.each(nestFights)("driving the wyrm and the wisp off in %s wins the room but never makes the wyrm a neighbor", sceneId => {
+  let { state, ctx } = setup("riftlight-wyrm-nest", sceneId, 1);
   let turns = 0;
   while (state.encounter) {
     expect(++turns).toBeLessThan(180);
@@ -123,8 +132,9 @@ it.each(["fight", "fight_soft"])("driving creatures off in %s does not grant the
     }
     if (state.encounter && currentActorId(state.encounter) === actor) state = must(state, member.playerId, { type: "END_TURN" }, ctx);
   }
-  expect(state.sceneId).toBe("room_clear");
+  expect(state.sceneId).toBe("room_won");
   expect(state.fightEndings?.[0]?.byObjective).toBeUndefined();
   expect(state.flags.wyrm_ally).not.toBe(true);
-  expect(state.flags.nest_slab_unused).toBe(true);
+  expect(state.flags.nest_won).toBe(true);
+  expect(state.narration).toContain("It is gone, and it will not be back.");
 });

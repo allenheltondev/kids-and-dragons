@@ -79,7 +79,8 @@ Tap **Players** to open the list of everyone in the room, as the picture shows i
 - **Quiet mode**: "Softer sound, less motion and dimmer screens for everyone." It turns on for every phone in the room at once. **Turn quiet mode off** ends it.
 - **Make keeper**: Picks which phone is offered to keep the heroes. See the accounts and devices guide.
 - **Stop for today**: Saves the game for next time.
-- **Crews**: Open it, then tap **New players? Start a new crew** to start separate saves. Phones stay connected for new heroes. Existing heroes and adventures stay saved.
+- **Crews**: Open it, then tap **New players? Start a new crew** to start separate saves. Phones stay connected for new heroes. Existing heroes and adventures stay saved. Tap **Change crew** on the lobby screen to go straight there. To go back to another crew, tap **Play as** and its name: each crew keeps its place in its own adventure. Tap **Rename this crew** to pick a different name from the list.
+- **Another TV**: Lets a TV in another place show this game. See Playing from two places, below.
 - **Close the room**: Ends it for everyone, after one more tap on **Close it**. "Heroes and what they earned are kept."
 
 ## When a kid leaves or arrives partway
@@ -99,6 +100,16 @@ To come back, the kid opens the game on the same phone. They are straight back i
 A kid who arrives late joins the same way as everyone else and makes a hero. Their phone says "Welcome, Pip!" (with their own name) and what the party is up to, and they play from there.
 
 ![A kid coming back to the game](../../public/guide-pictures/catch-up.jpg)
+
+## Playing from two places
+
+Some of the family at home, and someone else at a grandparent's house or in a hospital bed? You can all play one game, each place with its own TV.
+
+1. On the TV that opened the room, tap **Room**, then **Another TV**, then **Get a code for the other TV**. "It works one time, for 10 minutes." On a phone, **Send it as a link** sends it in a message.
+2. On the other TV, tap **Host a game**, then **Join a game lobby**. Type the code and tap **Show the game here**.
+3. Kids at the other place join on their phones with the room code that TV shows, the same as everyone else.
+
+Both TVs show the same game, and the kids vote and take turns together. Only the first TV runs the room, and under **Another TV** it says how many other TVs are showing the game. Each TV reads the story aloud if read-aloud is turned on for that TV. **Close the room** ends the game on both TVs. For a third place, make another code.
 
 ## Stopping and coming back
 
@@ -122,7 +133,8 @@ A hero in a saved game is held by that game. If a kid will not be back, the grow
 Each screen has a row of small buttons in its corner. They change only that screen.
 
 - **?** is help, on a kid's phone in a game. It says what this screen is for, out loud too. **Hear it again** repeats it, and **How to play** opens a few short cards a kid can tap to hear. Press and hold anything on the screen, like a card, to hear what it is.
-- **Aa** is **Display settings**: **Text size**, **One-handed play** (buttons move to the thumb), **High contrast** and **Less movement**. "Saved on this device."
+- **Aa** is **Display settings**: **Text size**, **One-handed play** (buttons move to the thumb), **TV focus**, **High contrast** and **Less movement**. "Saved on this device."
+- **TV focus** is for a kid who gets lost in the phone. With a TV in the room, the phone stops repeating the story and shows only what to tap, right when it is that kid's turn. While someone else is choosing, it shows one card that says **Look at the TV**, with **Look in my bag** a tap away. The tray keeps only **You** (a Starweaver keeps **World** too, for the Riftlight). It does nothing in Travel Mode, where the phone is the only screen.
 - The speech bubble turns read-aloud on. On the big screen, it reads the story out loud. On a kid's phone, each choice gets a speaker button to hear it first. Hearing a choice never picks it.
 - The speaker turns the sound on or off.
 

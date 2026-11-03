@@ -1,5 +1,5 @@
 {
-  "$comment": "Riftlight authored opening draft. Development preview only; see ../README.md. Production campaign id will be riftlight. No bonus XP: preserve the design bible campaign budget.",
+  "$comment": "Riftlight, Forgotten Paths middle (docs/campaigns/continental-rift/arc.md, the-wrong-valley; design note memory-paths-continuity-review.md). Rewritten in November 2026 to the pilot's bar. Question: where is this river going, and why? Hummock, the yeti route worker, carries it with Pip. The p2 (old_road) is the oldest marker's wavy line: the river runs an old course. Force (wall it off) or understand (watch it run). Thornguard holds the ice. Sets valley_crossed_high (how the party crossed, read by reading-room) and wrong_valley_witnessed on every path; reads stone_route_priority.",
   "id": "riftlight-the-wrong-valley",
   "campaignId": "riftlight",
   "index": 6,
@@ -14,2028 +14,27 @@
     "narration": "Two valleys run between the glacier ridges. An old path follows one; fresh water fills the other. High on the slope, a chipped stone marker still points along the ridge."
   },
   "goal": {
-    "text": "Follow the changed river and find a safe way across.",
+    "text": "Where is this river going, and why?",
     "steps": [
       {
-        "id": "test_water",
-        "label": "Test the rushing water",
-        "flag": "tested_the_rushing_water"
+        "id": "turn",
+        "label": "Find where the river turns",
+        "flag": "valley_found_turn"
       },
       {
         "id": "cross",
-        "label": "Get across to the far path",
-        "flag": "reached_the_far_path"
+        "label": "Get across the new river",
+        "flag": "valley_crossed"
       },
       {
-        "id": "check_warning",
-        "label": "Check the warning for travelers",
-        "flag": "tested_the_upper_warning"
+        "id": "warn",
+        "label": "Warn the evening sled",
+        "flag": "valley_warned"
       }
     ]
   },
-  "scenes": {
-    "arrival": {
-      "type": "story",
-      "narration": "Pip Thistledown, a young manticore scout, stops so suddenly that his notebook bumps his nose. Water is roaring through a valley his sketch shows dry. The road toward the glacier ends at the new stream. A yeti worker raises a staff from the high bank. \"Stay up there! Help me warn the next traveler, then get us and our tools across.\" Pip shuts the notebook. \"The road has made changes without telling the map.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Find out what needs doing",
-          "icon": "hand",
-          "goto": "look_again"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "variants": [
-        {
-          "when": {
-            "flag": "stone_route_priority"
-          },
-          "text": "Your party chose to lead Pip's traveling page with the road plan. He keeps it open to compare with this changed route."
-        },
-        {
-          "when": {
-            "notFlag": "stone_route_priority"
-          },
-          "text": "Pip keeps the uncertain stone count on his traveling page and opens a fresh space for what the valley shows now."
-        }
-      ]
-    },
-    "look_again": {
-      "type": "choice_point",
-      "narration": "An old route marker has a fork-shaped chip. That has not changed. Below it, the old melt channel lies dry while water pours between two ridges farther west. A yeti route worker waits above the new flow; a tool bundle sits on the opposite bank. Pip turns his sketch the right way up, then checks it once more. \"What should we compare to find out what moved?\" he asks.",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Compare the marker with both ridges",
-          "icon": "hand",
-          "goto": "look_again_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Trace the dry channel from firm ground",
-          "icon": "hand",
-          "goto": "look_again_2"
-        },
-        {
-          "id": "road_plan",
-          "label": "Use the traveling road plan to check the changed landmarks",
-          "icon": "eye",
-          "goto": "road_plan",
-          "when": {
-            "flag": "stone_route_priority"
-          }
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "look_again_1": {
-      "type": "story",
-      "narration": "You keep your feet on the upper path while Pip holds his drawing against the horizon. One friend checks the chipped marker; another points out the ridges. You look for the same shapes in the same order before putting a name on the water below.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put the plan into action",
-          "icon": "hand",
-          "goto": "look_again_1_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "look_again_2": {
-      "type": "story",
-      "narration": "You follow the visible bed only along its firm upper edge. Pip watches where it joins the valley ahead. Your party marks the last place water has recently passed without stepping into the new stream or assuming the dry stones will stay dry.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put the plan into action",
-          "icon": "hand",
-          "goto": "look_again_2_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "look_again_1_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Compare the marker with both ridges. Choose who leads while the others help.",
-      "onSuccess": {
-        "goto": "look_again_1_done"
-      },
-      "onFailure": {
-        "goto": "look_again_1_changed"
-      },
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "look_again_2_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Trace the dry channel from firm ground. Choose who leads while the others help.",
-      "onSuccess": {
-        "goto": "look_again_2_done"
-      },
-      "onFailure": {
-        "goto": "look_again_2_changed"
-      },
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "look_again_1_done": {
-      "type": "story",
-      "narration": "The marker and ridges still agree with the drawing. The water has taken another valley between them. Pip puts his finger on the blank space west of the old channel. You have a changed route to investigate, rather than a reason to throw away every familiar landmark.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "worksite"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "look_again_1_changed": {
-      "type": "story",
-      "narration": "A curl of snow hides one ridge and your first comparison points the wrong way. You wait for the gust to pass and compare the chipped marker again. The correction leaves the same conclusion: the landmarks agree, but the water between them has changed its course.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "worksite"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "look_again_2_done": {
-      "type": "story",
-      "narration": "The marker and ridges still agree with the drawing. The water has taken another valley between them. Pip puts his finger on the blank space west of the old channel. You have a changed route to investigate, rather than a reason to throw away every familiar landmark.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "worksite"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "look_again_2_changed": {
-      "type": "story",
-      "narration": "A curl of snow hides one ridge and your first comparison points the wrong way. You wait for the gust to pass and compare the chipped marker again. The correction leaves the same conclusion: the landmarks agree, but the water between them has changed its course.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "worksite"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "road_plan": {
-      "type": "story",
-      "narration": "Your party chose to carry the road plan from the stone keepers. Pip opens its measured landmarks beside the changed valley. You already have a way to distinguish a moved route from a missing marker; the worker only needs you to test the new view against it.",
-      "choices": [
-        {
-          "id": "compare",
-          "label": "Compare the new view with our road plan",
-          "icon": "eye",
-          "goto": "road_plan_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "road_plan_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 8,
-      "roller": "party",
-      "prompt": "Use your checked road-plan landmarks to compare the new route.",
-      "onSuccess": {
-        "goto": "look_again_1_done"
-      },
-      "onFailure": {
-        "goto": "look_again_1_changed"
-      },
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "worksite": {
-      "type": "story",
-      "narration": "A yeti route worker meets you on the near bank. Across the changed stream, a second worker waits on a low shelf beside tools and an unlit lantern. A high path leads from that shelf toward the reading rooms. The near worker has two ropes and a carrying board. \"One job before you cross: lift the tools high, or prepare her upper handline. We will need the other if the water changes.\" Pip studies both valleys.",
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "hand",
-          "goto": "test_flow"
-        }
-      ]
-    },
-    "test_flow": {
-      "type": "interaction",
-      "narration": "The worker drops a small twig into the new stream. From the dry bank, judge where it passes the central rock. The slow pocket can carry a line; no hero will stand in it.",
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "interaction": {
-        "kind": "precision",
-        "cue": "Mark the twig's passage through the calm pocket.",
-        "actionLabel": "Mark the calm pocket",
-        "target": 0.5,
-        "width": 0.3,
-        "periodMs": 6000
-      },
-      "onSuccess": {
-        "goto": "flow_result",
-        "narration": "You mark a calm pocket behind the central rock.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "tested_the_rushing_water",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "flow_result",
-        "narration": "Spray hides the twig. The worker tests again with her marked pole from the bank and shows the calm pocket.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "tested_the_rushing_water",
-            "value": true
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "flow_result",
-        "narration": "You mark a calm pocket behind the central rock.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "tested_the_rushing_water",
-            "value": true
-          }
-        ]
-      }
-    },
-    "flow_result": {
-      "type": "story",
-      "narration": "The calm pocket leads to a low shelf crossing. A longer high rock reach avoids it. The worker squints at the stream. \"Neither one promises the water will stay here.\" The workers pass a guide rope across the calm pocket and test it from both banks. The far worker lights her lantern and lifts it to show she can see you, then waits for your plan.",
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "hand",
-          "goto": "bundle_plan"
-        }
-      ]
-    },
-    "bundle_plan": {
-      "type": "choice_point",
-      "narration": "There is time for one preparation before your party crosses. Lift the tools to a high rack and they will stay dry, but the far worker will still need help finding the upper handline if the water changes. Rig that handline first and she can withdraw herself; her tools will stay low until you can recover them. Which job comes first?",
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "choices": [
-        {
-          "id": "tools",
-          "label": "Lift the tools high; help the worker later",
-          "icon": "hand",
-          "goto": "tools_hoist",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "valley_prepared_tools",
-              "value": true
-            },
-            {
-              "type": "setFlag",
-              "flag": "valley_tools_dry",
-              "value": true
-            }
-          ]
-        },
-        {
-          "id": "people",
-          "label": "Rig the worker's upper handline; recover tools later",
-          "icon": "hand",
-          "goto": "people_line",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "valley_prepared_tools",
-              "value": false
-            },
-            {
-              "type": "setFlag",
-              "flag": "valley_tools_dry",
-              "value": false
-            }
-          ]
-        },
-        {
-          "id": "duskrunner",
-          "label": "Have our duskrunner guide the tools onto the high rack",
-          "icon": "hand",
-          "goto": "tools_hoist_assisted",
-          "requiresClass": "duskrunner",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "valley_prepared_tools",
-              "value": true
-            },
-            {
-              "type": "setFlag",
-              "flag": "valley_tools_dry",
-              "value": true
-            }
-          ]
-        },
-        {
-          "id": "thornguard",
-          "label": "Have our thornguard brace the upper handline",
-          "icon": "hand",
-          "goto": "people_braced",
-          "requiresClass": "thornguard",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "valley_prepared_tools",
-              "value": false
-            },
-            {
-              "type": "setFlag",
-              "flag": "valley_tools_dry",
-              "value": false
-            }
-          ]
-        }
-      ]
-    },
-    "tools_hoist": {
-      "type": "interaction",
-      "narration": "The far worker puts the tool bundle on the board. Guide her hauling line toward the rack above the wet seam. The rack is broad; its approach is awkward.",
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "interaction": {
-        "kind": "precision",
-        "cue": "Guide the board toward the high rack.",
-        "actionLabel": "Set down the tools",
-        "target": 0.5,
-        "width": 0.3,
-        "periodMs": 6000
-      },
-      "onSuccess": {
-        "goto": "tools_tie",
-        "narration": "The board lands on the rack. The tools are above the waterline."
-      },
-      "onFailure": {
-        "goto": "tools_steps",
-        "narration": "A strap catches below the rack. The far worker holds it on the shelf while you prepare the slower lift."
-      },
-      "onAssisted": {
-        "goto": "tools_tie",
-        "narration": "The board lands on the rack. The tools are above the waterline."
-      }
-    },
-    "tools_hoist_assisted": {
-      "type": "interaction",
-      "narration": "The far worker puts the tool bundle on the board. Guide her hauling line toward the rack above the wet seam. The rack is broad; its approach is awkward. Your duskrunner keeps the straps clear, giving the board a wider landing.",
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "interaction": {
-        "kind": "precision",
-        "cue": "Guide the board toward the high rack.",
-        "actionLabel": "Set down the tools",
-        "target": 0.5,
-        "width": 0.6,
-        "periodMs": 6000
-      },
-      "onSuccess": {
-        "goto": "tools_tie",
-        "narration": "The board lands on the rack. The tools are above the waterline."
-      },
-      "onFailure": {
-        "goto": "tools_steps",
-        "narration": "A strap catches below the rack. The far worker holds it on the shelf while you prepare the slower lift."
-      },
-      "onAssisted": {
-        "goto": "tools_tie",
-        "narration": "The board lands on the rack. The tools are above the waterline."
-      }
-    },
-    "tools_steps": {
-      "type": "interaction",
-      "narration": "The far worker takes the board up the checked stone steps. Keep its load level from your line while she raises each end onto the rack.",
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "interaction": {
-        "kind": "balance",
-        "cue": "Level the tool board before the worker lifts it.",
-        "actionLabel": "Lift to the rack",
-        "objectLabel": "Tool carrying board"
-      },
-      "onSuccess": {
-        "goto": "tools_tie",
-        "narration": "The slow lift puts every tool on the high rack."
-      },
-      "onFailure": {
-        "goto": "tools_tie",
-        "narration": "The slow lift puts every tool on the high rack."
-      },
-      "onAssisted": {
-        "goto": "tools_tie",
-        "narration": "The slow lift puts every tool on the high rack."
-      }
-    },
-    "tools_tie": {
-      "type": "interaction",
-      "narration": "Pass the loose end of the retaining line along the near bank. The far worker uses the returned length to secure the rack. Her upper handline still needs preparing later.",
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Pass the retaining line along the bank.",
-        "actionLabel": "Pass the line",
-        "objectLabel": "Rack retaining line"
-      },
-      "onSuccess": {
-        "goto": "signals",
-        "narration": "The tools are secured high. The far worker still has the low shelf as her working place."
-      },
-      "onFailure": {
-        "goto": "signals",
-        "narration": "The tools are secured high. The far worker still has the low shelf as her working place."
-      },
-      "onAssisted": {
-        "goto": "signals",
-        "narration": "The tools are secured high. The far worker still has the low shelf as her working place."
-      }
-    },
-    "people_line": {
-      "type": "interaction",
-      "narration": "From the near bank, support the guide board while the far worker fixes a handline between her low shelf and the high path. The tool bundle waits beside her lantern.",
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "interaction": {
-        "kind": "cooperate",
-        "cue": "Steady the board while the worker fixes the upper handline.",
-        "actionLabel": "Fix the upper line",
-        "supportLabel": "Support the guide board"
-      },
-      "onSuccess": {
-        "goto": "people_signal",
-        "narration": "The upper handline is fixed. The tools are still on the low shelf."
-      },
-      "onFailure": {
-        "goto": "people_signal",
-        "narration": "The upper handline is fixed. The tools are still on the low shelf."
-      },
-      "onAssisted": {
-        "goto": "people_signal",
-        "narration": "The upper handline is fixed. The tools are still on the low shelf."
-      }
-    },
-    "people_braced": {
-      "type": "story",
-      "narration": "Your thornguard uses a skill called Brace to hold the guide board in place. The far worker can fix her upper handline without the party doing the board-support task. Her tool bundle remains on the low shelf.",
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "hand",
-          "goto": "people_signal"
-        }
-      ]
-    },
-    "people_signal": {
-      "type": "interaction",
-      "narration": "Wait for the worker to reach the top of her new handline, then raise the lantern to confirm the route. Her return path is ready; the tools will need collecting later.",
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "interaction": {
-        "kind": "timing",
-        "cue": "Confirm when the worker reaches the high-path interval.",
-        "actionLabel": "Confirm the upper path",
-        "target": 0.5,
-        "width": 0.3,
-        "periodMs": 6000
-      },
-      "onSuccess": {
-        "goto": "signals",
-        "narration": "The worker reaches the high path and returns to her watch, with the handline ready behind her."
-      },
-      "onFailure": {
-        "goto": "signals",
-        "narration": "The lantern signal comes early. The worker waits, then points out the checked upper path herself before returning to watch."
-      },
-      "onAssisted": {
-        "goto": "signals",
-        "narration": "The worker reaches the high path and returns to her watch, with the handline ready behind her."
-      }
-    },
-    "signals": {
-      "type": "story",
-      "narration": "The workers demonstrate lantern up for wait, staff sideways for stop and a hand toward the checked path for clear. You practice together until everyone can see the next signal. Pip holds his notebook under one arm. It is having a very quiet adventure.",
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "camp"
-        }
-      ]
-    },
-    "camp": {
-      "type": "rest",
-      "narration": "The near worker shares warm tea from a flask while everyone rests on the upper bank. Pip draws two river lines and puts his eraser away. The far worker watches from the low shelf. Your preparation is ready, and the party still needs to reach the far path together.",
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "heal": 0,
-      "choices": [
-        {
-          "id": "rest",
-          "label": "Rest, then choose the crossing",
-          "icon": "hand",
-          "goto": "crossing_choice"
-        },
-        {
-          "id": "watch",
-          "label": "Rest while checking both routes",
-          "icon": "hand",
-          "goto": "crossing_choice"
-        }
-      ]
-    },
-    "crossing_choice": {
-      "type": "choice_point",
-      "narration": "The low shelf has a guide rope and a calm pocket. The high rock reach takes longer but stays above the low ice. The worker nods at both routes. \"If your route shifts, we will help you use the other one.\" You will play that changed crossing, not repeat the same attempt. Which route will your party try?",
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Cross by the supported low shelf",
-          "icon": "hand",
-          "goto": "crossing_choice_1_check"
-        },
-        {
-          "id": "option_2",
-          "label": "Cross by the high rock reach",
-          "icon": "hand",
-          "goto": "crossing_choice_2_check"
-        }
-      ]
-    },
-    "crossing_choice_1_check": {
-      "type": "interaction",
-      "narration": "Wait for the worker's clear interval before moving along the supported low shelf. Everyone follows the same checked route.",
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "interaction": {
-        "kind": "timing",
-        "cue": "Take the low-shelf step in the clear interval.",
-        "actionLabel": "Take the supported step",
-        "target": 0.5,
-        "width": 0.3,
-        "periodMs": 6000
-      },
-      "onSuccess": {
-        "goto": "crossing_choice_1_done",
-        "narration": "Your party reaches the far path along the supported low shelf.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "valley_crossed_high",
-            "value": false
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "high_recovery",
-        "narration": "The low shelf shifts. You return to the near bank before taking the high rock reach together."
-      },
-      "onAssisted": {
-        "goto": "crossing_choice_1_done",
-        "narration": "Your party reaches the far path along the supported low shelf.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "valley_crossed_high",
-            "value": false
-          }
-        ]
-      }
-    },
-    "crossing_choice_2_check": {
-      "type": "interaction",
-      "narration": "The worker points out the next checked foothold on the high rock reach. Wait for her clear interval before taking it. The low guide line stays available if this approach shifts.",
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "interaction": {
-        "kind": "timing",
-        "cue": "Move across the high reach during the worker's clear interval.",
-        "actionLabel": "Take the high step",
-        "target": 0.5,
-        "width": 0.35,
-        "periodMs": 6000
-      },
-      "onSuccess": {
-        "goto": "crossing_choice_2_done",
-        "narration": "Your party reaches the far path by the high rock reach.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "valley_crossed_high",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "low_recovery",
-        "narration": "A foothold shifts before you commit. The worker redirects you to the supported low shelf."
-      },
-      "onAssisted": {
-        "goto": "crossing_choice_2_done",
-        "narration": "Your party reaches the far path by the high rock reach.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "valley_crossed_high",
-            "value": true
-          }
-        ]
-      }
-    },
-    "high_recovery": {
-      "type": "interaction",
-      "narration": "Keep the high guide line steady while your party follows the worker's longer rock route. This is the way the party actually finishes.",
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "interaction": {
-        "kind": "cooperate",
-        "cue": "Steady the guide line for the high rock reach.",
-        "actionLabel": "Finish on the high reach",
-        "supportLabel": "Support the high line"
-      },
-      "onSuccess": {
-        "goto": "crossing_choice_2_done",
-        "narration": "Your changed plan gets everyone across by the high rock reach.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "valley_crossed_high",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "crossing_choice_2_done",
-        "narration": "Your changed plan gets everyone across by the high rock reach.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "valley_crossed_high",
-            "value": true
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "crossing_choice_2_done",
-        "narration": "Your changed plan gets everyone across by the high rock reach.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "valley_crossed_high",
-            "value": true
-          }
-        ]
-      }
-    },
-    "low_recovery": {
-      "type": "interaction",
-      "narration": "The workers hold the low crossing steady while your party follows the supported shelf. The checked backup replaces the shifted high foothold.",
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "interaction": {
-        "kind": "balance",
-        "cue": "Keep the guide board level for the low-shelf crossing.",
-        "actionLabel": "Finish on the low shelf",
-        "objectLabel": "Low-shelf guide board"
-      },
-      "onSuccess": {
-        "goto": "crossing_choice_1_done",
-        "narration": "Your changed plan gets everyone across along the supported low shelf.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "valley_crossed_high",
-            "value": false
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "crossing_choice_1_done",
-        "narration": "Your changed plan gets everyone across along the supported low shelf.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "valley_crossed_high",
-            "value": false
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "crossing_choice_1_done",
-        "narration": "Your changed plan gets everyone across along the supported low shelf.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "valley_crossed_high",
-            "value": false
-          }
-        ]
-      }
-    },
-    "crossing_choice_1_done": {
-      "type": "story",
-      "narration": "The chosen route holds and the party reaches the far path together. The workers wait until the last friend is on firm ground before lifting the stop signal. Pip checks every face, then gives the all-clear. Your crossing plan has worked without leaving anyone behind. You finish along the supported low shelf.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "river_turn"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "valley_crossed_high",
-          "value": false
-        }
-      ]
-    },
-    "crossing_choice_2_done": {
-      "type": "story",
-      "narration": "The chosen route holds and the party reaches the far path together. The workers wait until the last friend is on firm ground before lifting the stop signal. Pip checks every face, then gives the all-clear. Your crossing plan has worked without leaving anyone behind. You finish by the high rock reach.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "river_turn"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "valley_crossed_high",
-          "value": true
-        }
-      ]
-    },
-    "river_turn": {
-      "type": "story",
-      "narration": "From the far path, you can see both valleys. Water noses into the old bed while the western stream grows quieter. Pip puts down his eraser. \"It is changing back.\" Watch the order of the visible changes before the workers need your help.",
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "reached_the_far_path",
-          "value": true
-        }
-      ],
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "hand",
-          "goto": "return_observation"
-        }
-      ]
-    },
-    "return_observation": {
-      "type": "check",
-      "narration": "The worker points to the changing water. Watch the observation pattern for the western stream, old bed and quiet western channel. Remember which changed first.",
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "onSuccess": {
-        "goto": "return_water",
-        "narration": "You keep the whole visible sequence in order.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "valley_return_observed",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "return_water",
-        "narration": "Spray hides the middle change. You keep the before-and-after landmarks and leave that moment blank.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "valley_return_observed",
-            "value": false
-          }
-        ]
-      },
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Read the river's changing course through the spray. A clear view gives you the whole sequence; a missed view leaves only the before-and-after landmarks. Choose who watches; everyone can help."
-    },
-    "return_water": {
-      "type": "choice_point",
-      "narration": "The old bed is filling. Your party is on the far high path; the workers are ready to withdraw. The job you prepared determines what still needs help below. You can take that job, or let the workers finish it while your party helps move their repair gear afterward.",
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "choices": [
-        {
-          "id": "workers",
-          "label": "Let the workers finish; help with repair gear",
-          "icon": "hand",
-          "goto": "workers_takeover"
-        },
-        {
-          "id": "worker",
-          "label": "Our tools are high: guide the worker to the upper path",
-          "icon": "hand",
-          "goto": "worker_beacon",
-          "when": {
-            "flag": "valley_prepared_tools"
-          }
-        },
-        {
-          "id": "tools",
-          "label": "Her handline is ready: recover the low tool bundle",
-          "icon": "hand",
-          "goto": "tool_recover",
-          "when": {
-            "notFlag": "valley_prepared_tools"
-          }
-        },
-        {
-          "id": "quick_tools",
-          "label": "Use our duskrunner to free the low bundle's straps",
-          "icon": "hand",
-          "goto": "tool_recover_assisted",
-          "requiresClass": "duskrunner",
-          "when": {
-            "notFlag": "valley_prepared_tools"
-          }
-        }
-      ]
-    },
-    "worker_beacon": {
-      "type": "interaction",
-      "narration": "The tools are high, but the far worker still needs a clear route off her low watch. Pass the lantern directions along the high path while the other worker readies a line. She follows the lit landmarks to you.",
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Pass the upper-path directions to the worker.",
-        "actionLabel": "Pass the lantern directions",
-        "objectLabel": "Upper-path lantern directions"
-      },
-      "onSuccess": {
-        "goto": "tell_together",
-        "narration": "The worker follows the lights onto the high path. The tools remain dry on their rack.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "valley_worker_guided",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "tell_together",
-        "narration": "The worker follows the lights onto the high path. The tools remain dry on their rack.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "valley_worker_guided",
-            "value": true
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "tell_together",
-        "narration": "The worker follows the lights onto the high path. The tools remain dry on their rack.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "valley_worker_guided",
-            "value": true
-          }
-        ]
-      }
-    },
-    "tool_recover": {
-      "type": "interaction",
-      "narration": "The far worker uses the upper handline you prepared and joins you. From the high path, guide a hook toward her low bundle's hauling loop.",
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "interaction": {
-        "kind": "precision",
-        "cue": "Catch the bundle loop from the high path.",
-        "actionLabel": "Catch the tool loop",
-        "target": 0.5,
-        "width": 0.3,
-        "periodMs": 6000
-      },
-      "onSuccess": {
-        "goto": "tell_together",
-        "narration": "The bundle clears the returning water. Its tools are dry.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "valley_tools_dry",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "wet_tools",
-        "narration": "The water reaches the bundle before the hook catches. The worker draws it onto the high step with her spare line. Everyone stays above the channel.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "valley_tools_dry",
-            "value": false
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "tell_together",
-        "narration": "The bundle clears the returning water. Its tools are dry.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "valley_tools_dry",
-            "value": true
-          }
-        ]
-      }
-    },
-    "tool_recover_assisted": {
-      "type": "interaction",
-      "narration": "The far worker uses the upper handline you prepared and joins you. From the high path, guide a hook toward her low bundle's hauling loop. Your duskrunner keeps the loose straps clear, widening the catch.",
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "interaction": {
-        "kind": "precision",
-        "cue": "Catch the bundle loop from the high path.",
-        "actionLabel": "Catch the tool loop",
-        "target": 0.5,
-        "width": 0.6,
-        "periodMs": 6000
-      },
-      "onSuccess": {
-        "goto": "tell_together",
-        "narration": "The bundle clears the returning water. Its tools are dry.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "valley_tools_dry",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "wet_tools",
-        "narration": "The water reaches the bundle before the hook catches. The worker draws it onto the high step with her spare line. Everyone stays above the channel.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "valley_tools_dry",
-            "value": false
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "tell_together",
-        "narration": "The bundle clears the returning water. Its tools are dry.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "valley_tools_dry",
-            "value": true
-          }
-        ]
-      }
-    },
-    "wet_tools": {
-      "type": "interaction",
-      "narration": "The recovered tools are wet. Keep the carrying board level while the workers lay the blades out to dry. The repair will take their afternoon; do not report a dry recovery.",
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "interaction": {
-        "kind": "balance",
-        "cue": "Level the board for the wet tools.",
-        "actionLabel": "Set out the tools",
-        "objectLabel": "Wet-tool drying board"
-      },
-      "onSuccess": {
-        "goto": "tell_together",
-        "narration": "The workers set aside the wet kit for cleaning. It will need care before another shift."
-      },
-      "onFailure": {
-        "goto": "tell_together",
-        "narration": "The workers set aside the wet kit for cleaning. It will need care before another shift."
-      },
-      "onAssisted": {
-        "goto": "tell_together",
-        "narration": "The workers set aside the wet kit for cleaning. It will need care before another shift."
-      }
-    },
-    "workers_takeover": {
-      "type": "story",
-      "narration": "Your party stays on the upper path while the workers finish the low recovery together. Their spare line and a second trip get everyone and the bundle out. They ask you to move the repair gear to the reading-room path.",
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "variants": [
-        {
-          "when": {
-            "flag": "valley_prepared_tools"
-          },
-          "text": "The tools stay dry on the rack while the workers guide the last low watch out."
-        },
-        {
-          "when": {
-            "notFlag": "valley_prepared_tools"
-          },
-          "text": "The low bundle gets wet before the workers draw it in. The kit needs cleaning."
-        }
-      ],
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "hand",
-          "goto": "repair_gear"
-        }
-      ]
-    },
-    "repair_gear": {
-      "type": "story",
-      "narration": "The workers have used their spare line to finish the recovery. You replace its cord and help spread drying cloths beside their kit. The wet tools will cost them an afternoon. Your help makes that work possible; it does not make the cost disappear.",
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "tell_together",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "valley_workers_finished",
-              "value": true
-            }
-          ]
-        }
-      ]
-    },
-    "tell_together": {
-      "type": "choice_point",
-      "narration": "The river runs in its older bed again. The western course still glistens. Pip opens the page. \"Time to record the crossing and the return.\" You can use the landmarks everyone saw. If you caught the whole return sequence, you can also lead a moving-water reconstruction. Which account will you prepare?",
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "choices": [
-        {
-          "id": "landmarks",
-          "label": "Rebuild the known events around fixed landmarks",
-          "icon": "hand",
-          "goto": "record_landmarks"
-        },
-        {
-          "id": "sequence",
-          "label": "Use the complete return sequence we watched",
-          "icon": "hand",
-          "goto": "record_return",
-          "when": {
-            "flag": "valley_return_observed"
-          }
-        }
-      ]
-    },
-    "record_landmarks": {
-      "type": "story",
-      "narration": "Pip records the landmarks you all checked. The changed stream was there when you arrived; you crossed before it returned to its older bed. Spray-hidden moments stay blank. The workers add their own view beside yours. Together the pages tell what happened without guessing why.",
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "last_check",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "valley_record_detailed",
-              "value": false
-            }
-          ]
-        }
-      ]
-    },
-    "record_return": {
-      "type": "choice_point",
-      "narration": "Your party watched the complete return. Give the workers the sequence while each of you points out a checked part of the view. Nobody needs to invent why it happened.",
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "choices": [
-        {
-          "id": "west",
-          "label": "Show where the western stream fell",
-          "icon": "hand",
-          "goto": "record_return_response_west"
-        },
-        {
-          "id": "old",
-          "label": "Show where the old bed filled",
-          "icon": "hand",
-          "goto": "record_return_response_old"
-        },
-        {
-          "id": "quiet",
-          "label": "Show the quiet western course",
-          "icon": "hand",
-          "goto": "record_return_response_quiet"
-        }
-      ]
-    },
-    "last_check": {
-      "type": "choice_point",
-      "narration": "Pip pretends to be the next traveler. \"Hi, I am new,\" he says, and stops when your party points out the upper warning. Choose a useful instruction to leave with the lantern. The workers are checking whether the instructions are clear.",
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "choices": [
-        {
-          "id": "stop",
-          "label": "Show the upper stopping place",
-          "icon": "hand",
-          "goto": "last_check_response_stop"
-        },
-        {
-          "id": "look",
-          "label": "Point out both river channels",
-          "icon": "hand",
-          "goto": "last_check_response_look"
-        },
-        {
-          "id": "ask",
-          "label": "Show where to find the route worker",
-          "icon": "hand",
-          "goto": "last_check_response_ask"
-        }
-      ]
-    },
-    "rest": {
-      "type": "rest",
-      "narration": "The river runs in its older bed again. A wet ribbon in the western valley shows where it briefly went instead. Everyone is across, and the workers keep their lantern on the upper path. Pip closes the sketch with both river lines and the order of the change recorded. \"An elder at the reading room has seen something like this in memory ice,\" says the worker. \"Bring your account. She will want to compare it.\" You can follow the upper path to her or return by the upper road.",
-      "heal": 0,
-      "choices": [],
-      "outcome": "success",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "wrong_valley_witnessed",
-          "value": true
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "variants": [
-        {
-          "when": {
-            "flag": "valley_prepared_tools"
-          },
-          "text": "The high-rack preparation kept the tools dry. The worker's late withdrawal was the job left to finish."
-        },
-        {
-          "when": {
-            "notFlag": "valley_prepared_tools"
-          },
-          "text": "The early upper handline let the worker withdraw herself. The low tool bundle was the job left to finish."
-        },
-        {
-          "when": {
-            "flag": "valley_tools_dry"
-          },
-          "text": "The kit is dry and ready for its next shift."
-        },
-        {
-          "when": {
-            "notFlag": "valley_tools_dry"
-          },
-          "text": "The workers must clean and dry the wet kit before their next shift."
-        },
-        {
-          "when": {
-            "flag": "valley_record_detailed"
-          },
-          "text": "The complete watched return sequence goes with the two river outlines."
-        },
-        {
-          "when": {
-            "notFlag": "valley_record_detailed"
-          },
-          "text": "The page preserves the checked landmarks and known order, without inventing the missing detail."
-        }
-      ]
-    },
-    "record_return_response_west": {
-      "type": "story",
-      "narration": "The worker marks the falling western stream. The account includes the complete observed return as well as the two course outlines.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "last_check",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "valley_record_detailed",
-              "value": true
-            }
-          ]
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "record_return_response_old": {
-      "type": "story",
-      "narration": "Pip marks the returning water beside the old channel. The account includes the complete observed return as well as the two course outlines.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "last_check",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "valley_record_detailed",
-              "value": true
-            }
-          ]
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "record_return_response_quiet": {
-      "type": "story",
-      "narration": "The wet western line stays on the page for comparison. The account includes the complete observed return as well as the two course outlines.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "last_check",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "valley_record_detailed",
-              "value": true
-            }
-          ]
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "last_check_response_stop": {
-      "type": "story",
-      "narration": "Pip stops at the lantern, well above the old bed. The workers can maintain the upper warning after your party leaves.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "rest",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "tested_the_upper_warning",
-              "value": true
-            }
-          ]
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "last_check_response_look": {
-      "type": "story",
-      "narration": "The worker checks both channels before offering a route. The workers can maintain the upper warning after your party leaves.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "rest",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "tested_the_upper_warning",
-              "value": true
-            }
-          ]
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "last_check_response_ask": {
-      "type": "story",
-      "narration": "The next traveler has someone to ask when the view changes. The workers can maintain the upper warning after your party leaves.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "rest",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "tested_the_upper_warning",
-              "value": true
-            }
-          ]
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    }
-  },
   "voiceGuide": {
-    "tone": "Warm, funny, curious, with real consequences. Describe actions and sensory details directly. Short dialogue. Never use \"the kind of thing that\", \"the sort of thing that\", or \"it was X, the type of thing that makes you Y\" comparisons. Let a character act instead of explaining how the reader should feel.",
+    "tone": "Warm, funny and a little spooky, with real consequences. Short sentences. Let a character act instead of explaining how the reader should feel. The river is not angry; it is going somewhere it used to go.",
     "vocabulary": "Read aloud to an eight-year-old. Concrete words, short sentences, distinct voices.",
     "forbidden": [
       "death",
@@ -2047,97 +46,1748 @@
       "Legend Dragon"
     ],
     "npcVoices": {
-      "Pip Thistledown": "Manticore scout. Eager but learns to separate observation from guess; never knows an unseen event.",
-      "Yeti keepers": "Slow, enormous and gentle. Deliberate before answering. Offer a safe method and leave unknown history unknown."
+      "route_worker_yeti": "Hummock, the yeti route worker (he/him). Enormous, slow and kind; says \"Steady on\"; names every rock on his route and thaws his frozen eyebrows in his tea. Keeps the markers and the warning post on the valley road. Wants the evening sled warned and to know where his river has gone.",
+      "Pip Thistledown": "Young manticore scout (he/him). Eager, notebook always out, quotes \"Lady Olivia says...\" and tries her ideas. Wants to impress her. Kind underneath; changes his mind when the party gives him a reason.",
+      "Grandma Drift": "Yeti grandmother who drives the evening sled from the singing hall (she/her). Brisk and warm; wears a scarf three times her length; remembers old stories."
     }
   },
   "presentation": {
     "interactions": {
-      "test_flow": {
+      "follow_water": {
         "props": [
           "water-surge"
         ]
       },
-      "tools_hoist": {
+      "hummock_jump": {
         "props": [
-          "relay-plank",
-          "rope-loop"
+          "water-surge"
         ]
       },
-      "tools_hoist_assisted": {
+      "light_lantern": {
         "props": [
-          "relay-plank",
-          "rope-loop"
+          "prop_lantern"
         ]
       },
-      "tools_steps": {
+      "stone_arrow": {
         "props": [
-          "relay-plank",
-          "rope-loop"
-        ]
-      },
-      "tools_tie": {
-        "props": [
-          "relay-plank",
-          "rope-loop"
-        ]
-      },
-      "people_line": {
-        "props": [
-          "relay-plank",
-          "rope-loop"
-        ]
-      },
-      "high_recovery": {
-        "props": [
-          "relay-plank",
-          "rope-loop"
-        ]
-      },
-      "low_recovery": {
-        "props": [
-          "relay-plank",
-          "rope-loop"
-        ]
-      },
-      "tool_recover": {
-        "props": [
-          "relay-plank",
-          "rope-loop"
-        ]
-      },
-      "tool_recover_assisted": {
-        "props": [
-          "relay-plank",
-          "rope-loop"
-        ]
-      },
-      "wet_tools": {
-        "props": [
-          "relay-plank",
-          "rope-loop"
-        ]
-      },
-      "people_signal": {
-        "props": [
-          "wind-banner"
-        ]
-      },
-      "crossing_choice_1_check": {
-        "props": [
-          "wind-banner"
-        ]
-      },
-      "crossing_choice_2_check": {
-        "props": [
-          "wind-banner"
-        ]
-      },
-      "worker_beacon": {
-        "props": [
-          "wind-banner"
+          "cairn-flat"
         ]
       }
+    }
+  },
+  "scenes": {
+    "arrival": {
+      "type": "story",
+      "narration": "North of the counting stones, the road climbs toward the glacier. Pip Thistledown, the young manticore scout, unrolls his map. \"Dry valley ahead.\" A river roars down it. Pip turns the map upside down. The river is still there. Below, an enormous yeti waves a lantern on a pole. \"Stay up there! I'm Hummock. I keep the markers on this road. The river came down the wrong valley this morning. Where is it going? And why? Help me find out, and warn the evening sled before it drives into it!\"",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "choices": [
+        {
+          "id": "down",
+          "label": "Slide down to Hummock",
+          "icon": "boot",
+          "goto": "snowbank"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "valley_late",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "valley_found_turn",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "valley_forced",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "valley_ice_flooded",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "valley_watched",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "valley_crossed",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "valley_lantern_lost",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "valley_warned",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "valley_soup_spilt",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "valley_notes_smudged",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "valley_moon",
+          "value": false
+        }
+      ]
+    },
+    "snowbank": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "The bank is steep, snowy and very slidey. Hummock plants his pole at the bottom like a goalpost. \"Feet first!\"",
+      "prompt": "Slide down the snowbank without shooting into the river",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "onSuccess": {
+        "goto": "meet_hummock",
+        "narration": "You whoosh down and stop neatly against Hummock's pole. Pip lands on his notebook."
+      },
+      "onFailure": {
+        "goto": "meet_hummock",
+        "narration": "You spin, bump and land headfirst in a drift. Hummock pulls you out by the boots, and it takes a while to find Pip's map. \"Steady on.\"",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_late",
+            "value": true
+          }
+        ]
+      }
+    },
+    "meet_hummock": {
+      "type": "story",
+      "narration": "Hummock's eyebrows have frozen into two icicles. He thaws them in his tea, one at a time. \"My warning post is over there, on the far bank,\" he says. \"Every evening a sled comes down from the singing hall, along this valley, because it's always been dry. Tonight it isn't.\" He pats a boulder. \"That's Gertrude. I name all my rocks. They stay where I put them.\"",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "choices": [
+        {
+          "id": "look",
+          "label": "Look at the valley",
+          "icon": "eye",
+          "goto": "look"
+        }
+      ],
+      "spotlight": "next"
+    },
+    "look": {
+      "type": "choice_point",
+      "narration": "Pip holds up his map. \"Lady Olivia says a good map is never wrong. Only the land can be.\" Ridges, markers, the river, the dry valley. Something here has moved. How can you tell what?",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "choices": [
+        {
+          "id": "map",
+          "label": "Hold Pip's map up to the valley",
+          "icon": "map",
+          "goto": "check_map"
+        },
+        {
+          "id": "climb",
+          "label": "Climb Gertrude for a better look",
+          "icon": "boot",
+          "goto": "check_climb"
+        },
+        {
+          "id": "plan",
+          "label": "Lay Tally's road plan over the valley",
+          "icon": "scroll",
+          "goto": "check_plan",
+          "requiresFlag": "stone_route_priority"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "stone_route_priority"
+          },
+          "text": "Pip pats his notebook. \"And we have Tally's road plan. Every landmark counted!\""
+        },
+        {
+          "when": {
+            "notFlag": "stone_route_priority"
+          },
+          "text": "Pip pats his rubbing of the old carved mountain. \"No help here,\" he admits. \"But it's very nice.\""
+        }
+      ]
+    },
+    "check_map": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "narration": "The wind keeps folding the map in half. Pip holds one corner in his teeth. \"Mmf,\" he says helpfully.",
+      "prompt": "Match the map's ridges and markers to the valley",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "onSuccess": {
+        "goto": "read_valley",
+        "narration": "Ridge, ridge, marker, marker. Everything matches."
+      },
+      "onFailure": {
+        "goto": "read_valley",
+        "narration": "You match the wrong ridge, and for a while you think the mountains moved. Hummock gently turns you around. That took a while.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_late",
+            "value": true
+          }
+        ]
+      }
+    },
+    "check_climb": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "Gertrude is tall, round and slippery. \"She doesn't mind feet,\" says Hummock.",
+      "prompt": "Scramble up Gertrude's icy side",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "onSuccess": {
+        "goto": "read_valley",
+        "narration": "From the top you can see the whole valley, every ridge and marker in its place."
+      },
+      "onFailure": {
+        "goto": "read_valley",
+        "narration": "You slide off twice. The third time, Hummock lifts you up like a kitten. It all takes ages.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_late",
+            "value": true
+          }
+        ]
+      }
+    },
+    "check_plan": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 8,
+      "narration": "Tally counted every landmark on her road plan, and numbered them. Some you can see from here.",
+      "prompt": "Find Tally's counted landmarks in the valley",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "onSuccess": {
+        "goto": "read_valley",
+        "narration": "Tally's landmarks line up, one, two, three. Quick work. \"She'd be proud,\" says Pip."
+      },
+      "onFailure": {
+        "goto": "read_valley",
+        "narration": "The plan's landmarks are far away and small. It takes a while to line them up, but they do.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_late",
+            "value": true
+          }
+        ]
+      }
+    },
+    "read_valley": {
+      "type": "story",
+      "narration": "The ridges are where they should be. Hummock's markers stand in their rows. Only the river has moved, right out of its own valley and into this dry one. \"So the map's right,\" says Pip slowly, \"and the river is the one being wrong.\" \"Let's see where it turns,\" says Hummock.",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "choices": [
+        {
+          "id": "up",
+          "label": "Head up the valley",
+          "icon": "forward",
+          "goto": "bank_path"
+        }
+      ]
+    },
+    "bank_path": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "Stepping stones run up the edge of the rushing water. They were dry this morning. Now each one wears a little hat of foam. \"Hop lively,\" says Hummock.",
+      "prompt": "Hop the wet stepping stones up to where the river turns",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "onSuccess": {
+        "goto": "fork",
+        "narration": "Hop, hop, hop. Dry boots. Hummock just walks, because his legs are as long as you are."
+      },
+      "onFailure": {
+        "goto": "fork",
+        "narration": "A stone wobbles, and you sit down in the shallows. Hummock fishes you out and wrings out your sleeves. That cost time.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_late",
+            "value": true
+          }
+        ]
+      }
+    },
+    "fork": {
+      "type": "story",
+      "narration": "At the top of the valley, the river splits. It always went left, down its own valley. Today it goes right. You look for what pushed it. No ice. No fallen rocks. No beaver with big plans. The river just turns, smooth as a ribbon, with nothing in its way. \"Like it remembers the road,\" says Hummock.",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "choices": [
+        {
+          "id": "marker",
+          "label": "Look at Hummock's oldest marker",
+          "icon": "eye",
+          "goto": "old_road"
+        }
+      ]
+    },
+    "old_road": {
+      "type": "story",
+      "narration": "By the fork stands Hummock's oldest marker, a stone post older than anyone's grandmother. He rubs off the frost. Carved on it is a wavy line, pointing right, down the valley that was dry. \"That never made sense,\" he whispers. \"The river never went that way.\" High on the old valley's walls lie round river stones, dry for ages. This river is running down a road it ran long, long ago. Your Listening Chime swings north on its string, toward the glacier, and hums.",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "choices": [
+        {
+          "id": "follow",
+          "label": "Follow the water down the old valley",
+          "icon": "drop",
+          "goto": "down_valley"
+        }
+      ],
+      "priority": 2,
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "valley_found_turn",
+          "value": true
+        }
+      ]
+    },
+    "down_valley": {
+      "type": "choice_point",
+      "narration": "The water rushes on down the old valley, filling pools that have been empty forever. \"Where's it going?\" cries Pip, already running. How will you keep up?",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "choices": [
+        {
+          "id": "board",
+          "label": "Ride a board down the snow beside it",
+          "icon": "quick",
+          "goto": "check_board"
+        },
+        {
+          "id": "trail",
+          "label": "Stamp a trail along the rim with Hummock",
+          "icon": "might",
+          "goto": "check_trail"
+        }
+      ]
+    },
+    "check_board": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "Hummock lends you a flat board he uses for carrying signs. \"It's not a sled,\" he warns. The board does not care.",
+      "prompt": "Steer the board down the snowy slope beside the river",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "onSuccess": {
+        "goto": "old_falls",
+        "narration": "Whoosh! You zip down beside the water and skid to a stop at the top of a cliff."
+      },
+      "onFailure": {
+        "goto": "old_falls",
+        "narration": "The board goes left. You go right, into a snowbank, and roll the rest of the way, very fast and very round. Digging out takes ages.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_late",
+            "value": true
+          }
+        ]
+      }
+    },
+    "check_trail": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "narration": "The snow is waist deep on you and knee deep on Hummock. \"Lift your knees,\" he says, as if that helps.",
+      "prompt": "Stamp a trail through the deep snow along the rim",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "onSuccess": {
+        "goto": "old_falls",
+        "narration": "You stamp a good trail. Pip follows in it, singing marching songs."
+      },
+      "onFailure": {
+        "goto": "old_falls",
+        "narration": "The snow wins for a while. By the time you reach the cliff, everyone is puffing and the sun is lower.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_late",
+            "value": true
+          }
+        ]
+      }
+    },
+    "old_falls": {
+      "type": "story",
+      "narration": "At the cliff, an old waterfall has woken up. Its stone lip is worn smooth from long ago, and the water pours over it as if it never stopped. Below, a dry lake bed is filling. Two ducks sit in the middle, very surprised. \"It's going home,\" says Pip. \"To an old home.\"",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-meltwater-step",
+      "choices": [
+        {
+          "id": "talk",
+          "label": "Listen to Pip's idea",
+          "icon": "ear",
+          "goto": "pip_dam"
+        }
+      ]
+    },
+    "pip_dam": {
+      "type": "choice_point",
+      "narration": "Pip's eyes shine. \"Lady Olivia says if the land goes wrong, you put it right! We could wall off the old valley at the fork and push the river home!\" Hummock scratches his ear. \"A wall is quick. But the water would pile up over the low ice where we cross, right by my oldest marker. Or we let it run and watch where it goes. That takes longer, and the sled comes at dusk.\" What will you do?",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-meltwater-step",
+      "choices": [
+        {
+          "id": "wall",
+          "label": "Wall off the old valley at the fork",
+          "icon": "might",
+          "goto": "check_wall"
+        },
+        {
+          "id": "watch",
+          "label": "Let it run, and watch",
+          "icon": "eye",
+          "goto": "follow_water"
+        }
+      ]
+    },
+    "check_wall": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "narration": "Back at the fork, everyone heaves rocks. Hummock carries three at once. Pip carries one, with great ceremony. \"Faster!\" he shouts.",
+      "prompt": "Pile rocks across the fork fast enough to turn the river",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "onSuccess": {
+        "goto": "walled",
+        "narration": "The wall holds. The river slews left, back toward its own valley. Pip cheers.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_forced",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "valley_ice_flooded",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "wall_burst",
+        "narration": "The water shoves the wall over like a pile of toys. Spray soaks everyone, and the river doesn't even slow down.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_forced",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "valley_late",
+            "value": true
+          }
+        ]
+      }
+    },
+    "walled": {
+      "type": "story",
+      "narration": "But the water piles up behind your wall. It spills over the low ice shelf at the river's edge and swallows Hummock's oldest marker, wavy line and all. Already, a thin stream is sneaking around the end of the wall, back down the old valley. \"Well,\" says Hummock. \"Now only the fish can read it.\"",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "choices": [
+        {
+          "id": "cross",
+          "label": "Find a way across",
+          "icon": "forward",
+          "goto": "crossing_flooded"
+        }
+      ]
+    },
+    "wall_burst": {
+      "type": "story",
+      "narration": "Your rocks tumble away down the old valley. Hummock wrings out his eyebrows. \"Rivers,\" he says, \"are not very good at being told.\" Pip looks at the water for a long time, and writes something small in his notebook.",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "choices": [
+        {
+          "id": "cross",
+          "label": "Find a way across",
+          "icon": "forward",
+          "goto": "crossing"
+        }
+      ]
+    },
+    "follow_water": {
+      "type": "interaction",
+      "narration": "You sit on the cliff edge and watch. The water fills the old pools one by one, in an order it seems to know by heart. \"Remember it,\" says Hummock. \"Somebody will want to know.\" Watch the order, then tell him.",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-meltwater-step",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the pools fill, then tap them in order.",
+        "actionLabel": "Tell Hummock",
+        "options": [
+          {
+            "id": "round",
+            "label": "Round pool",
+            "icon": "drop"
+          },
+          {
+            "id": "long",
+            "label": "Long pool",
+            "icon": "arrow"
+          },
+          {
+            "id": "falls",
+            "label": "Little falls",
+            "icon": "moon"
+          }
+        ],
+        "answer": [
+          "round",
+          "long",
+          "long",
+          "falls"
+        ],
+        "stepMs": 1300
+      },
+      "onSuccess": {
+        "goto": "understood",
+        "narration": "\"Round, long, long, falls,\" you tell Hummock. He writes it on his sleeve.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_watched",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "understood",
+        "narration": "You mix up two pools. Hummock waits while you watch it all again, and the sun slides lower.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_late",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "understood",
+        "narration": "Pip points at each pool as it fills, and you say them together. Hummock writes it on his sleeve.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_watched",
+            "value": true
+          }
+        ]
+      }
+    },
+    "understood": {
+      "type": "story",
+      "narration": "The water knows its way. It fills every old pool and takes every old bend, like feet finding old slippers in the dark. \"I've never seen it,\" Hummock rumbles, \"but my marker has. That wavy line was right all along.\"",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-meltwater-step",
+      "choices": [
+        {
+          "id": "cross",
+          "label": "Find a way across",
+          "icon": "forward",
+          "goto": "crossing"
+        }
+      ]
+    },
+    "crossing": {
+      "type": "choice_point",
+      "narration": "Back at the fork, the new river runs between you and Hummock's warning post. Low down, a shelf of old ice runs along the water's edge, flat but creaky. High up, wet rocks with Hummock's rope strung between them, slow but solid. \"Pick one,\" says Hummock. \"I'll come last. I have to jump.\"",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "choices": [
+        {
+          "id": "low",
+          "label": "Cross the low ice shelf",
+          "icon": "boot",
+          "goto": "check_ice"
+        },
+        {
+          "id": "high",
+          "label": "Climb the high rocks on the rope",
+          "icon": "hand",
+          "goto": "check_high"
+        },
+        {
+          "id": "hold",
+          "label": "Our thornguard holds the ice",
+          "icon": "shield",
+          "goto": "hold_ice",
+          "requiresClass": "thornguard"
+        }
+      ]
+    },
+    "crossing_flooded": {
+      "type": "choice_point",
+      "narration": "Back at the fork, the new river runs between you and Hummock's warning post. Your wall's water covers the low ice shelf now, knee deep and very cold. High up, wet rocks with Hummock's rope strung between them, slow but solid. \"Pick one,\" says Hummock. \"I'll come last. I have to jump.\"",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "choices": [
+        {
+          "id": "wade",
+          "label": "Wade the flooded ice shelf",
+          "icon": "drop",
+          "goto": "check_wade"
+        },
+        {
+          "id": "high",
+          "label": "Climb the high rocks on the rope",
+          "icon": "hand",
+          "goto": "check_high"
+        }
+      ]
+    },
+    "check_wade": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "narration": "The water is cold enough to make your teeth sing. Under it, the ice is slick. Hummock holds his breath on the bank, which is a lot of breath.",
+      "prompt": "Wade across the flooded shelf, leaning into the current",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "onSuccess": {
+        "goto": "across_low",
+        "narration": "Step, slide, step. You come out on the far bank, teeth chattering, very proud."
+      },
+      "onFailure": {
+        "goto": "across_high",
+        "narration": "The current knocks your feet away. You grab Hummock's rope and haul yourself up onto the high rocks, dripping.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "check_ice": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "The ice groans with every step. Hummock holds his breath on the bank, which is a lot of breath.",
+      "prompt": "Tiptoe across the creaking ice before it cracks",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "onSuccess": {
+        "goto": "across_low",
+        "narration": "Creak, creak, safe. You step onto the far bank."
+      },
+      "onFailure": {
+        "goto": "across_high",
+        "narration": "Crack! The shelf splits under you. You scramble up onto the high rocks and finish that way, wet to the knees.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "check_high": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "narration": "The rocks are slick with spray. The rope hums in the wind. \"Hand over hand,\" calls Hummock.",
+      "prompt": "Pull yourself along the rope over the slippery rocks",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "onSuccess": {
+        "goto": "across_high",
+        "narration": "Hand over hand, rock to rock. The far bank, at last."
+      },
+      "onFailure": {
+        "goto": "across_low",
+        "narration": "Your hands slip, and you slide down the rocks onto the low ice. It creaks, but it holds, and you shuffle the rest of the way, shaking.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "hold_ice": {
+      "type": "story",
+      "narration": "Your thornguard steps out onto the ice and braces, shield down, feet wide. The cracks stop spreading. \"Steady on,\" says Hummock, impressed. One by one, everyone crosses behind the thornguard, and the ice holds like a held breath.",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "choices": [
+        {
+          "id": "over",
+          "label": "Step onto the far bank",
+          "icon": "forward",
+          "goto": "across_low"
+        }
+      ]
+    },
+    "across_low": {
+      "type": "story",
+      "narration": "You came over by the low ice shelf. Pip counts everyone's toes, twice, to be sure. \"All there!\"",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "choices": [
+        {
+          "id": "turn",
+          "label": "Turn around for Hummock",
+          "icon": "back",
+          "goto": "far_bank"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "valley_crossed_high",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "valley_crossed",
+          "value": true
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "valley_ice_flooded"
+          },
+          "at": "start",
+          "text": "The low ice is under water now, so you splash across it, knee deep and gasping."
+        }
+      ]
+    },
+    "across_high": {
+      "type": "story",
+      "narration": "You came over by the high rocks. Pip's paws are scraped, and he is very proud of them. \"Explorer paws,\" he says.",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "choices": [
+        {
+          "id": "turn",
+          "label": "Turn around for Hummock",
+          "icon": "back",
+          "goto": "far_bank"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "valley_crossed_high",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "valley_crossed",
+          "value": true
+        }
+      ]
+    },
+    "far_bank": {
+      "type": "story",
+      "narration": "On the far bank, you turn around. Hummock is still on the other side, holding his lantern high. \"Too heavy for that ice, too big for those rocks,\" he calls. \"There's a narrow spot I can jump. But the water surges every few breaths. Call me when it drops!\"",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "choices": [
+        {
+          "id": "call",
+          "label": "Watch the water for Hummock",
+          "icon": "eye",
+          "goto": "hummock_jump"
+        }
+      ]
+    },
+    "hummock_jump": {
+      "type": "interaction",
+      "narration": "The water surges, then drops, then surges. Hummock crouches at the narrow spot, lantern held high. Call out the moment the water drops.",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Call when the water drops.",
+        "actionLabel": "Jump now!",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 4500
+      },
+      "onSuccess": {
+        "goto": "lantern_post",
+        "narration": "\"NOW!\" Hummock leaps and lands with a thump that shakes snow off the trees. He doesn't spill a drop of lantern oil."
+      },
+      "onFailure": {
+        "goto": "lantern_post",
+        "narration": "You call a breath too soon. Hummock lands in the surge, up to his middle. He wades out, but his lantern is gone, bobbing away down the old valley.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_lantern_lost",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "lantern_post",
+        "narration": "Pip waves both paws when the water drops, and you all shout together. Hummock leaps and lands with a thump."
+      }
+    },
+    "lantern_post": {
+      "type": "choice_point",
+      "narration": "Hummock's warning post leans by the old path. The sun is getting low. Somewhere up the valley, the evening sled is on its way. How will you warn it?",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "choices": [
+        {
+          "id": "light",
+          "label": "Light Hummock's lantern on the post",
+          "icon": "lantern",
+          "goto": "light_lantern",
+          "when": {
+            "notFlag": "valley_lantern_lost"
+          }
+        },
+        {
+          "id": "arrow",
+          "label": "Build a big stone arrow on the path",
+          "icon": "arrow",
+          "goto": "stone_arrow",
+          "when": {
+            "notFlag": "valley_late"
+          }
+        },
+        {
+          "id": "run",
+          "label": "Run up the path and stop the sled",
+          "icon": "boot",
+          "goto": "check_sledge"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "valley_late"
+          },
+          "text": "Far up the valley, bells jingle already. \"No time to build,\" says Hummock."
+        },
+        {
+          "when": {
+            "flag": "valley_lantern_lost"
+          },
+          "text": "Hummock pats the empty hook on his post. \"No lantern,\" he sighs."
+        }
+      ]
+    },
+    "light_lantern": {
+      "type": "interaction",
+      "narration": "The wind keeps puffing at the wick. \"Strike when it dips,\" says Hummock, shielding it with both enormous hands.",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Strike the flint when the wind dips.",
+        "actionLabel": "Strike!",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 4000
+      },
+      "onSuccess": {
+        "goto": "warning_lit",
+        "narration": "The lantern flares and swings bright on its post."
+      },
+      "onFailure": {
+        "goto": "check_sledge",
+        "narration": "The wind blows out every spark. And there go the bells, coming closer! \"Run!\" says Hummock."
+      },
+      "onAssisted": {
+        "goto": "warning_lit",
+        "narration": "Pip cups his paws around the wick too. The lantern flares and swings bright on its post."
+      }
+    },
+    "stone_arrow": {
+      "type": "interaction",
+      "narration": "Lay flat stones in a giant arrow pointing away from the water. \"Big as a sled,\" says Hummock. \"Tail by the water, point up the safe path.\"",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Lay the arrow so it points away from the water.",
+        "actionLabel": "Lay the stones!",
+        "options": [
+          {
+            "id": "point",
+            "label": "Point stones, up the safe path",
+            "icon": "arrow"
+          },
+          {
+            "id": "tail",
+            "label": "Tail stones, by the water",
+            "icon": "drop"
+          },
+          {
+            "id": "shaft",
+            "label": "Long shaft stones",
+            "icon": "hand"
+          }
+        ],
+        "answer": [
+          "tail",
+          "shaft",
+          "point"
+        ],
+        "clues": [
+          "Start at the water's edge with the tail.",
+          "The long shaft runs from the tail up the slope.",
+          "Finish with the point, aimed up the safe path."
+        ]
+      },
+      "onSuccess": {
+        "goto": "warning_lit",
+        "narration": "A big stone arrow points up the safe path."
+      },
+      "onFailure": {
+        "goto": "check_sledge",
+        "narration": "A stone slips, and the arrow comes out as a squiggle. Nobody would follow that. Bells! \"Run!\" says Hummock."
+      },
+      "onAssisted": {
+        "goto": "warning_lit",
+        "narration": "Hummock carries the biggest stones, and the arrow is done in no time."
+      }
+    },
+    "warning_lit": {
+      "type": "story",
+      "narration": "Jingle, jingle. A sled comes around the bend, sees your warning and swishes to a stop. \"Well, I never,\" says a voice.",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "choices": [
+        {
+          "id": "meet",
+          "label": "Meet the sled driver",
+          "icon": "forward",
+          "goto": "sledge_stops"
+        }
+      ]
+    },
+    "check_sledge": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "Bells jingle around the bend. A sled, a big one, coming fast. \"Wave!\" cries Pip.",
+      "prompt": "Run up the path, waving, before the sled reaches the water",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "onSuccess": {
+        "goto": "sledge_stops",
+        "narration": "You wave so hard your arms nearly come off. The sled swishes to a stop, just in time."
+      },
+      "onFailure": {
+        "goto": "sledge_stops",
+        "narration": "The sled can't stop in time, so it swerves, straight into a snowbank, and you with it. Everyone is fine. Everyone is snowy.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "sledge_stops": {
+      "type": "story",
+      "narration": "Out of the sled climbs a yeti grandmother in a scarf three times her length. \"Grandma Drift,\" she says, \"with soup for the reading room. What is that river doing in my valley?\" Hummock tells her. She stares at the water. \"My grandmother told a story about a river that got lost,\" she says. \"I thought it was just a story.\"",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        },
+        {
+          "figure": "cast/yeti_watcher",
+          "name": "Grandma Drift"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "choices": [
+        {
+          "id": "help",
+          "label": "Ask how to help her",
+          "icon": "ear",
+          "goto": "driver"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "valley_warned",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "valley_late",
+          "value": false
+        }
+      ],
+      "spotlight": "next"
+    },
+    "driver": {
+      "type": "choice_point",
+      "narration": "\"This soup has to reach the reading room tonight,\" says Grandma Drift. \"Hot.\" The safe way is the high path: steep, and her sled is heavy. Or the edge of the old valley, firm in some places and mud in others, and the light is going. How will you get her around?",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        },
+        {
+          "figure": "cast/yeti_watcher",
+          "name": "Grandma Drift"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "choices": [
+        {
+          "id": "haul",
+          "label": "Haul her sled up the high path",
+          "icon": "might",
+          "goto": "check_haul"
+        },
+        {
+          "id": "guide",
+          "label": "Guide her along the edge",
+          "icon": "eye",
+          "goto": "check_guide"
+        }
+      ]
+    },
+    "check_haul": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "narration": "Everyone grabs a rope. Grandma Drift pushes from behind and gives orders from in front, somehow.",
+      "prompt": "Haul the heavy sled up the steep high path",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        },
+        {
+          "figure": "cast/yeti_watcher",
+          "name": "Grandma Drift"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "onSuccess": {
+        "goto": "dusk",
+        "narration": "Up and over she goes, soup and all."
+      },
+      "onFailure": {
+        "goto": "dusk",
+        "narration": "The sled tips on the last bump. Half the soup slops out, mostly onto Hummock. He licks his elbow. \"Not bad.\"",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_soup_spilt",
+            "value": true
+          }
+        ]
+      }
+    },
+    "check_guide": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "narration": "Some stones are firm. Some are mud pretending to be stones. \"Choose well,\" says Grandma Drift.",
+      "prompt": "Pick out the firm ground, step by step, in the fading light",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        },
+        {
+          "figure": "cast/yeti_watcher",
+          "name": "Grandma Drift"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "onSuccess": {
+        "goto": "dusk",
+        "narration": "You find the firm ground step by step, and she glides along behind you."
+      },
+      "onFailure": {
+        "goto": "dusk",
+        "narration": "One runner slides into the mud. You heave it out, but half the soup slops away. Some fish are having a very good evening.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_soup_spilt",
+            "value": true
+          }
+        ]
+      }
+    },
+    "dusk": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "As the sun touches the ridge, the river shivers. Then, all at once, it turns. Water rushes back past the fork, into its own valley, so fast it splashes up the bank and snatches Pip's notebook right off a rock! \"My notes!\"",
+      "prompt": "Grab Pip's notebook before the water carries it off",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "onSuccess": {
+        "goto": "river_back",
+        "narration": "You snatch it out of the foam, dripping but whole."
+      },
+      "onFailure": {
+        "goto": "river_back",
+        "narration": "It whirls away. You chase it along the bank and catch it at last, but the pages have run like soup.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_notes_smudged",
+            "value": true
+          }
+        ]
+      }
+    },
+    "river_back": {
+      "type": "story",
+      "narration": "Then it's quiet. The river runs in its own valley again, as if nothing happened. The old valley lies empty and shining, its pools full, its waterfall dripping. Pip sits down. \"It went to its old home,\" he says. \"Then it came back to this one. Which home is home?\"",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "choices": [
+        {
+          "id": "hut",
+          "label": "Go to Hummock's hut",
+          "icon": "rest",
+          "goto": "rest"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "wrong_valley_witnessed",
+          "value": true
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "valley_forced"
+          },
+          "text": "\"It didn't need our wall,\" says Hummock gently. \"It came back by itself.\""
+        },
+        {
+          "when": {
+            "flag": "valley_lantern_lost"
+          },
+          "text": "Hummock looks down the old valley, where his lantern went. \"I'll hang a new one tomorrow.\""
+        }
+      ]
+    },
+    "rest": {
+      "type": "rest",
+      "narration": "Hummock's hut is small for a yeti and huge for everyone else. Grandma Drift has gone on up to the reading room, but she left a pot of soup on his stove. Hummock's eyebrows drip as they thaw. \"Sleep by the stove,\" he says, \"or go and see the old valley by moonlight. It won't look like that again for a long time.\"",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-herd-rest",
+      "choices": [
+        {
+          "id": "sleep",
+          "label": "Sleep by the stove",
+          "icon": "rest",
+          "goto": "account"
+        },
+        {
+          "id": "moon",
+          "label": "Watch the old valley by moonlight",
+          "icon": "moon",
+          "goto": "check_moon"
+        }
+      ],
+      "heal": 2,
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "valley_lantern_lost",
+          "value": false
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "valley_soup_spilt"
+          },
+          "text": "With half her soup spilled, she could only leave a little. Everyone gets a careful half cup. Hummock's elbow is not offered."
+        }
+      ]
+    },
+    "check_moon": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "narration": "Moonlight on wet stones. Pools, puddles, a sleepy owl. \"Look for the pattern,\" says Hummock.",
+      "prompt": "Pick out the pattern the old pools make in the moonlight",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-herd-rest",
+      "onSuccess": {
+        "goto": "account",
+        "narration": "In the moonlight, the old pools shine in one long line, pointing north, back toward the glacier. Pip draws it fast.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_moon",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "account",
+        "narration": "Clouds slide over the moon. You see wet stones and one owl, who sees you back. You trudge in, cold to the toes."
+      }
+    },
+    "account": {
+      "type": "story",
+      "narration": "In the morning, Pip opens his notebook. \"What do I write for Lady Olivia?\" \"Write it for the reading room first,\" says Hummock. \"The yetis' memory ice is kept by an old yeti called Elder Murmur. The ice remembers rivers. Show her the river you crossed, and ask her: has it ever run there before?\"",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-herd-rest",
+      "choices": [
+        {
+          "id": "go",
+          "label": "Help Pip write it",
+          "icon": "scroll",
+          "goto": "ending"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "valley_soup_spilt",
+          "value": false
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "valley_crossed_high"
+          },
+          "text": "Pip writes that you crossed by the high rocks, scraped paws and all."
+        },
+        {
+          "when": {
+            "notFlag": "valley_crossed_high"
+          },
+          "text": "Pip writes that you crossed by the low ice shelf."
+        },
+        {
+          "when": {
+            "flag": "valley_watched"
+          },
+          "text": "He copies the order the old pools filled: round, long, long, falls."
+        },
+        {
+          "when": {
+            "flag": "valley_forced"
+          },
+          "text": "He writes about the wall too, and how the river came back without it."
+        },
+        {
+          "when": {
+            "flag": "valley_moon"
+          },
+          "text": "He adds the moonlit pools, all pointing north."
+        },
+        {
+          "when": {
+            "flag": "valley_notes_smudged"
+          },
+          "text": "His wet pages have run, so he draws both rivers again from memory, the best he can."
+        }
+      ]
+    },
+    "ending": {
+      "type": "story",
+      "narration": "So here is your piece. For one day, the river went back down a valley it ran long ago, filled its old pools and woke its old falls, and then came home again. Your Listening Chime still leans north, toward the glacier, and hums a little louder than before. \"Up to the reading room?\" says Pip. Behind you, the road runs back to the counting stones. Something is moving the land. What is it? And can you put things right?",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Hummock"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "choices": [],
+      "outcome": "success",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "valley_forced",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "valley_watched",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "valley_moon",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "valley_notes_smudged",
+          "value": false
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "valley_ice_flooded"
+          },
+          "at": "start",
+          "text": "Hummock's oldest marker is still under your wall's water. You'll have to tell the elder about the wavy line from memory."
+        }
+      ]
     }
   }
 }

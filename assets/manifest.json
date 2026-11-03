@@ -1864,7 +1864,7 @@
     },
     {
       "id": "yeti_elder",
-      "name": "Reading-room elder",
+      "name": "Elder Murmur",
       "basis": "yeti",
       "scale": "large",
       "heightCm": 245,
@@ -1872,7 +1872,7 @@
     },
     {
       "id": "kitsune_temple_keeper",
-      "name": "Temple keeper",
+      "name": "Keeper Sorrel",
       "basis": "kitsune",
       "scale": "medium",
       "heightCm": 115,
@@ -1880,7 +1880,7 @@
     },
     {
       "id": "dragonling_stone_keeper",
-      "name": "Boundary-stone keeper",
+      "name": "Tally",
       "basis": "dragonling",
       "scale": "medium",
       "heightCm": 130,
@@ -1888,7 +1888,7 @@
     },
     {
       "id": "saltrot_guide",
-      "name": "Saltrot guide",
+      "name": "Puddle",
       "basis": "skupper",
       "scale": "small_to_medium",
       "heightCm": 100,
@@ -1896,7 +1896,7 @@
     },
     {
       "id": "deep-ice-figure",
-      "name": "Deep-ice figure",
+      "name": "Corvane",
       "basis": "faun",
       "scale": "very_large",
       "heightCm": 280,
@@ -2088,7 +2088,7 @@
     },
     {
       "id": "adult_dragonling",
-      "name": "Adult dragonling",
+      "name": "Farmer Gourd",
       "basis": "dragonling",
       "scale": "medium",
       "heightCm": 150,
@@ -2096,7 +2096,7 @@
     },
     {
       "id": "island_keeper",
-      "name": "Island keeper",
+      "name": "Keeper Juniper",
       "basis": "kitsune",
       "scale": "medium",
       "heightCm": 145,
@@ -2104,7 +2104,7 @@
     },
     {
       "id": "new_island_keeper",
-      "name": "New island keeper",
+      "name": "Keeper Clove",
       "basis": "kitsune",
       "scale": "medium",
       "heightCm": 130,
@@ -2112,7 +2112,7 @@
     },
     {
       "id": "younger_keeper",
-      "name": "Younger keeper",
+      "name": "Flurry",
       "basis": "yeti",
       "scale": "large",
       "heightCm": 220,
@@ -2128,7 +2128,7 @@
     },
     {
       "id": "route_worker_yeti",
-      "name": "Route worker",
+      "name": "Hummock",
       "basis": "yeti",
       "scale": "large",
       "heightCm": 250,
@@ -2144,7 +2144,7 @@
     },
     {
       "id": "pass_keeper",
-      "name": "Pass keeper",
+      "name": "Brask",
       "basis": "griffin",
       "scale": "medium_to_large",
       "heightCm": 210,
@@ -2152,7 +2152,7 @@
     },
     {
       "id": "ridge_griffin",
-      "name": "Ridge griffin",
+      "name": "Skerry",
       "basis": "griffin",
       "scale": "medium_to_large",
       "heightCm": 205,
@@ -2200,7 +2200,7 @@
     },
     {
       "id": "passing_fisher",
-      "name": "Passing fisher",
+      "name": "Fen",
       "basis": "frogfolk",
       "scale": "small_to_medium",
       "heightCm": 110,
@@ -2488,7 +2488,7 @@
     },
     {
       "id": "skupper_child",
-      "name": "Skupper Child",
+      "name": "Dab",
       "basis": "skupper",
       "scale": "small_to_medium",
       "heightCm": 60,
@@ -2496,7 +2496,7 @@
     },
     {
       "id": "skupper_grandmother",
-      "name": "Skupper Grandmother",
+      "name": "Grandmother Winkle",
       "basis": "skupper",
       "scale": "small_to_medium",
       "heightCm": 90,

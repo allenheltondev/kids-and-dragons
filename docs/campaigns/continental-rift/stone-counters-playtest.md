@@ -1,63 +1,53 @@
-# Stone Counters: thirty-minute model chapter
+# The Stone That Moved (`riftlight-stone-counters`)
 
-This is the first regional redesign following the Riftlight chapter audit.
-The intended session is about thirty minutes; actual family timing is still
-unmeasured. The earlier 86-scene sequence is replaced by 35 scenes across its
-branches, with ten or more required interaction scenes even when a thornguard
-skips the ramp support job. Scene and activity counts describe this design;
-they are not targets for every chapter.
+Rewritten in November 2026 to the pilot's bar ([arc.md](arc.md), *The Borrowed Ruins*). The
+earlier version had no dice, twelve inert games out of thirteen and a water-cart chore at its
+centre; it is replaced.
 
-| Movement | What the family does | Planned minutes |
-| --- | --- | --- |
-| A village mystery | Share landmark clues, examine grass in a lull, compare the keepers' viewpoints | 7 |
-| Bring the water | Choose a ramp or high-path passing line, build/use it, deliver the jars and take a drink | 7 |
-| One sign, two approaches | Choose the large sign's position; meet the traveler its smaller counterpart cannot guide | 8 |
-| Leave useful evidence | Protect the hollow or strengthen the road; record the surviving evidence, study the narrowing fold, choose the traveling page | 8 |
+**Beat.** The party has proven a counting stone moved itself, and got the neighbors past it.
+**Question (the goal, scene 1).** How can a stone that never moves have moved?
+**Who carries it.** Tally, the dragonling stone keeper, who counts everything aloud and wants her
+count true: a counter's stones must never move, and one has. She introduces herself in words true
+whether the party met her at the boundary-stone bank or came from Ashspan. Pip Thistledown is
+caught prying the stone with his spoon ("Lady Olivia says a moved stone is the best sample in the
+world!") and needs his name cleared. Seren teaches Attune when no strand has yet (`lesson`,
+"taught you before" otherwise). Farmer Gourd and his goat Mustard are the neighbors who must get
+past.
 
-## Decisions with later effects
+## Rhythm
 
-- **Ramp or passing line:** the ramp needs cooperative support then cart balance;
-  a thornguard can replace the support job with Brace. The passing line uses jar
-  relay then empty-cart aiming. The conclusion acknowledges which arrangement
-  tomorrow's delivery will actually need.
-- **Lower or upper sign:** the lower large sign protects walkers, so the team
-  guides the upper cart with a timing action. The upper sign stops carts, so the
-  team walks the neighbor along shared landmarks below. Both travelers are named
-  before the decision. The final account leaves the unserved sign job outstanding.
-- **Preserve the fine edge or improve the wet surface:** aiming a drain can save
-  the hollow's exact outline. A miss, or choosing a gravel surface, leaves a
-  simpler landmark record. The precise-copy option depends on the surviving
-  edge, and the conclusion does not restore missing measurements.
-- **Traveling road plan or old-mark page:** the chosen finish is a checked-page
-  relay or an uncertainty-preserving memory activity. Both remain with the local
-  keepers; the traveling page preserves the existing `stone_route_priority` flag.
-  Choosing the road page also unlocks a lower-TN landmark comparison in the next
-  changed valley. The old eruption date remains unresolved on every route.
+| Movement | What the table does |
+| --- | --- |
+| The missing stone | Tally's ring is one short; the Eldest stands in the road beside a fold, with Pip under it. Grab the spoon or calm Tally (checks). Seren, Attune, and the fold that shrinks. |
+| Prove it moved itself | No drag marks (check or a timing game), the dent's edge saved from a trickle (check), a look under the stone (check): the **p2** `old_socket`, a socket older than the ring. The chime points to the glacier. A pebble hops while you watch (tracking game). |
+| Clear Pip, then force or understand | Tally's verdict. **Push the Eldest home** (Pip's, and Olivia's, way) or **leave it in its old socket** and count it there. Get the turnip cart past. |
+| The shrinking fold, and the way on | Peek through (Pip, held by the tail) or count how fast it closes; rest; choose Pip's page; Tally's goodbye; the campaign question with this piece. |
 
-A starweaver uses the already taught Attune skill in a wider pulse-matching
-activity. It improves an action without changing the rift's rules. All parties
-retain a memory-based observation route, solo props, relaxed play and helping
-hands. There are no dice checks that can negate completed chapter interactions.
-The optional paperweight joke is a short shared play beat and is not required to
-fill the session budget.
+The fold is the strand's **timed** signal: a door at the road, a pony at the stone, a cartwheel
+at the cart, a window (or a dinner plate) at the end, and the ending says to take it now or lose
+it. It is the graph's `counters-shrinking-fold`, which lasts one visit.
 
-The chapter preserves its three goal flags, 140 XP, changed-geography discovery,
-uncertain eruption records, Attune introduction, and campaign exits. Painted
-boards, rope, jars and notes reuse registered presentation assets. No new art or
-runtime mechanics are required.
+## Consequences
 
-## Verification and family playtest
+| Choice or roll | Later |
+| --- | --- |
+| Any slip gathering the proof (spoon, grass, trickle, dig, pebble) | Tally is unsure: no "show the proof", only a heart check to vouch; a failed one costs Pip his spoon until the goodbye. |
+| Push home (or a bigfoot's carry) | Easy cart, but Mustard lunges at the fold (check: her hat); the Eldest creaks back; Tally will push it every morning. |
+| Push fails / leave it with a bad bend | The tight squeeze: a narrower timing window. |
+| Roll the cart between tugs, or carry the turnips | Rolling risks a sack of turnips through the fold; carrying is safe and slow, and the fold is then too small to peek. |
+| Peek or count | The ending can say where the fold opens or how long it lasts, or neither. |
+| Road plan or carving rubbing | `stone_route_priority`; the road plan gives an easier reading (TN 8) in the wrong valley. |
 
-`riftlight-stone-counters.test.ts` plays 72 cart/sign/runoff/page/party-size
-combinations with real engine controls, including actual mistakes and efficient
-class routes. It checks subsequent tasks, resource/evidence descriptions,
-completed goals and the reachable later road-plan advantage. The normal Riftlight
-interaction tests cover every activity's success, assistance and possible misses
-at one, two and four seats. Continuity walkers enumerate the other authored
-outcomes, and the full campaign graph proof is regenerated.
+Contract: sets `attune_taught` (gate-and-set) and `stone_route_priority`; nothing else crosses.
 
-For family playtesting, record time per movement, where adults must explain a
-cue twice, which choice the kids can explain in their own words, and whether they
-ask for another turn. Try opposite sign and cart plans. Adjust depth at the
-interesting discovery or consequence; do not add more record/rehearsal rolls or
-mandatory waiting to achieve thirty minutes.
+## Shape and pacing
+
+| | scenes | checks | games | inert | echo | quoted | spine scenes | votes + checks | read | spine words |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Before | 38 | 0 | 13 | 12 | 1 | 22 | 25 | 5 + 0 | 4 | 1,058 |
+| After | 55 | 12 | 5 | 1 | 0 | 48 | 32 | 6 + 8 | 3 | 1,653 |
+
+The one inert game is the turnip relay: a relay cannot be missed in the engine, and its cost
+(the slow carry shrinks the fold past peeking) comes from choosing it. Planned about 30 minutes;
+family timing is unmeasured. Tests:
+`tools/content/riftlight-stone-counters.test.ts` (route matrix through the real engine).

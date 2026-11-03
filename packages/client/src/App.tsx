@@ -18,6 +18,7 @@
  */
 
 import { Suspense, useEffect } from "react";
+import { usePresenceBeat } from "./sync/presence-beat";
 // Directly, not through the `screens` barrel: the barrel re-exports every
 // panel in the room, and each one imports its stylesheet, so a static import of
 // the barrel is a static import of all of them — the lazy room below would
@@ -352,7 +353,10 @@ export function App(): React.JSX.Element {
       <ChunkBoundary message="The game couldn’t load.">
         <Suspense fallback={<RoomLoading />}>
           {route.name === "tv" ? (
-            <PartyLayout surface="world" />
+            <>
+              {session.follower ? <FollowerBeat /> : null}
+              <PartyLayout surface="world" />
+            </>
           ) : mode === "travel" ? (
             <TravelLayout />
           ) : (
@@ -362,6 +366,15 @@ export function App(): React.JSX.Element {
       </ChunkBoundary>
     );
   }
+}
+
+/**
+ * Another TV in another place says it is still here (sync/presence-beat.ts),
+ * so the host's Room panel can count it. The room's own TV never beats.
+ */
+function FollowerBeat(): null {
+  usePresenceBeat();
+  return null;
 }
 
 /** What every screen shows once the host closes the room (#263). */

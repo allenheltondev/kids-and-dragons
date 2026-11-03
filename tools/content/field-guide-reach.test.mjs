@@ -65,6 +65,7 @@ const EXPECTED_REACHABLE = [
   "character.unicorn",
   "creature.bone_crawler",
   "creature.cinder_wolf",
+  "creature.cloud_whale",
   "creature.echo_hunter",
   "creature.embermoth",
   "creature.glassback_crab",
@@ -124,7 +125,6 @@ const EXPECTED_UNREACHABLE = [
   "biome.expanse",
   "biome.mermaid_cove",
   "biome.open_sea",
-  "creature.cloud_whale",
   "creature.kavari", // Canon-only species; no chapter reveals it yet.
   "creature.loftmire",
   "creature.reefglider",

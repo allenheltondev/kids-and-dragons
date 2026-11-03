@@ -21,7 +21,11 @@
  * Flags: --chapter ID (a chapter, `_<campaign>` or `_help`), --speaker ID,
  * --max-dollars N (default 75, stops before the request that would cross it),
  * --max-chars N, --concurrency N, --model ID, --prune (drop manifest entries
- * nothing asks for any more), --with-choices, --region R.
+ * nothing asks for any more), --with-choices, --region R, --fake (tones in place of a provider:
+ * free, offline; with --dir its manifest goes beside the clips, never into content/).
+ *
+ *   npm run voice:generate -- --chapter bramblewood-01 --fake --dir /tmp/kad-voice --render
+ *   KAD_VOICE_DIR=/tmp/kad-voice npm run dev     # the dev server plays them (voice plan §7)
  *
  * AWS uploads use your own credentials (the CLI profile or environment), like
  * `timing:export`. Clips are written once and never replaced (S3 conditional
@@ -38,7 +42,7 @@ import { dollars, quote, type PricedModel, type Pricing } from "./cost-model";
 import { GEMINI } from "./desired";
 import { encodeVoice } from "./encode";
 import { readJson } from "./load";
-import { mergeManifest } from "./manifest";
+import { mergeManifest, type Manifest } from "./manifest";
 import { candidates, renderOwed } from "./render";
 import { DirClipStore, MemoryClipStore, S3ClipStore, StoreSet, type ClipStore } from "./store";
 import { makeSynthesizer } from "./synth";
@@ -145,17 +149,20 @@ const report = await renderOwed(
 
 // The manifest: every line whose clips are all known to exist at the destination, with their
 // lengths from the store. Lengths from an old manifest are not proof of anything and are not used.
-// A dry run, or a trial with fake tones, writes no manifest: it would describe clips nobody can play.
+// A dry run writes no manifest. A trial with fake tones never writes into content/ (the clips it
+// describes are in no bucket), only beside its clips in --dir, laid out as the site is
+// (<dir>/content/voice/manifest/), so the dev server can serve the pair (KAD_VOICE_DIR, voice plan §7).
+const manifestDir = !values.fake ? MANIFEST_DIR : values.dir === undefined ? null : path.join(path.resolve(values.dir), "content", "voice", "manifest");
 let written = 0;
-if (values.render && !values.fake) {
+if (values.render && manifestDir !== null) {
   for (const [name, desired] of perGroup) {
-    const existing = world.manifests.get(name) ?? {};
+    const file = path.join(manifestDir, `${name}.json`);
+    const before = fs.existsSync(file) ? fs.readFileSync(file, "utf8") : null;
+    const existing = values.fake ? (before === null ? {} : (JSON.parse(before) as Manifest)) : (world.manifests.get(name) ?? {});
     const merged = mergeManifest(existing, desired, report.lengths, values.prune);
     const text = `${JSON.stringify(merged, null, 2)}\n`;
-    const file = path.join(MANIFEST_DIR, `${name}.json`);
-    const before = fs.existsSync(file) ? fs.readFileSync(file, "utf8") : null;
     if (before === text || (before === null && Object.keys(merged).length === 0)) continue;
-    fs.mkdirSync(MANIFEST_DIR, { recursive: true });
+    fs.mkdirSync(manifestDir, { recursive: true });
     fs.writeFileSync(file, text);
     written += 1;
   }
@@ -177,6 +184,7 @@ if (report.failed.length > 0) {
   for (const f of report.failed.slice(0, 5)) console.log(`    ${f.key.slice(0, 10)}: ${f.error}`);
 }
 if (report.stoppedBy !== null) console.log(`  STOPPED         at the ${report.stoppedBy === "dollars" ? `${dollars(maxDollars)} spend` : `${num(maxChars ?? 0)}-character`} cap; ${num(report.deferred.length)} clips left for the next run`);
-if (written > 0) console.log(`  manifests       ${num(written)} written under content/voice/manifest/ (commit them: they deploy with content/)`);
+if (written > 0 && values.fake) console.log(`  manifests       ${num(written)} written under ${manifestDir!}/ (fake tones, never commit; play them with KAD_VOICE_DIR=${path.resolve(values.dir ?? ".")} npm run dev)`);
+else if (written > 0) console.log(`  manifests       ${num(written)} written under content/voice/manifest/ (commit them: they deploy with content/)`);
 if (!values.render) console.log("\nNothing was rendered or uploaded. Add --render to do it.");
 else if (report.failed.length > 0) process.exitCode = 1;

@@ -5,6 +5,7 @@ import { TEAM_HOLD_MS, relayTarget, applyEffects, applyIntent, classPlaceWaiting
 import type { Campaign, Chapter, ClassId, ClientIntent, EngineContext, ItemCatalog, RulesContent, RunState, SpeciesId } from "@kad/shared";
 import { APPEARANCE } from "../../packages/shared/src/test-fixtures.ts";
 import { RIFTLIGHT_DESIGN } from "./riftlight-preview.ts";
+import { FAILABLE_KINDS } from "./cohesion.mjs";
 const ROOT = path.resolve(import.meta.dirname, "../..");
 const read = <T>(file: string): T => JSON.parse(fs.readFileSync(file, "utf8")) as T;
 export const campaign = read<Campaign>(path.join(ROOT, "content/campaigns/riftlight.json"));
@@ -113,7 +114,9 @@ function walkAllPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, flags:
   // A larger authored graph legitimately has more combinations of independent
   // evidence, equipment and message outcomes. Keep a finite exploration guard
   // proportional to graph size rather than treating every chapter as 50 scenes.
-  const stateLimit = Math.max(5000, Object.keys(chapter.scenes).length * 100);
+  // The key below also holds whose story turn it is, so a party of N seats
+  // legitimately walks up to N copies of each configuration.
+  const stateLimit = Math.max(5000, Object.keys(chapter.scenes).length * 100) * Math.max(1, partySize);
   const seen = new Set<string>();
   const visited = new Set<string>();
   const ends: RunState[] = [];
@@ -129,7 +132,7 @@ function walkAllPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, flags:
     const promptKey = state.prompt?.kind === "interaction"
       ? { ...state.prompt, openedSeq: 0, attempt: 0 }
       : state.prompt;
-    const key = JSON.stringify([state.sceneId, state.flags, promptKey, (state.storyTurn ?? 0) % state.party.length, state.party.map((p) => [p.hp, p.character.class, p.character.questItems]), state.phase, [...before].sort(), [...priorIntroductions].sort()]);
+    const key = JSON.stringify([state.sceneId, Object.entries(state.flags).filter(([, on]) => on).sort(([a], [b]) => a.localeCompare(b)), promptKey, (state.storyTurn ?? 0) % state.party.length, state.party.map((p) => [p.hp, p.character.class, p.character.questItems]), state.phase, [...before].sort(), [...priorIntroductions].sort()]);
     if (seen.has(key)) continue;
     seen.add(key);
     expect(seen.size, "Unexpected loop or path explosion").toBeLessThan(stateLimit);
@@ -169,15 +172,18 @@ function walkAllPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, flags:
       }
     } else if (state.prompt?.kind === "interaction") {
       // Synthetic branch walking: the prompt is put straight into its result phase with
-      // each authored outcome and only the engine's own `continue` is sent. That proves the
+      // each producible authored outcome and only the engine's own `continue` is sent. That proves the
       // story continues from every branch, not that the scene can be completed. The mechanics
       // are exercised in packages/shared/src/interactions.test.ts, and the chapters' own
       // scenes are played with real start, stop, answer, support, assist and continue
       // actions in riftlight-interactions.test.ts.
       const scene = chapter.scenes[state.sceneId!]!;
       if (scene.type !== "interaction") throw new Error("Expected interaction");
+      // Only outcomes the engine can produce: cooperate, balance, relay and play games never
+      // resolve to failure (engine.ts), so their authored onFailure is not a way a party can go.
       for (const outcome of ["success", "failure", "assisted"] as const) {
         if (outcome === "assisted" && !scene.onAssisted) continue;
+        if (outcome === "failure" && !FAILABLE_KINDS.has(scene.interaction.kind)) continue;
         const resolved = structuredClone(state);
         if (resolved.prompt?.kind !== "interaction") throw new Error("Expected interaction");
         resolved.prompt.phase = "result";

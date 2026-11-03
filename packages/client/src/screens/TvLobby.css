@@ -1,6 +1,7 @@
 /* Shared display: identity reads across one header, with joining and
    tonight's lineup above the adventure choices. Phone surfaces retain their compact flow. */
-.lobby__header, .lobby__crew { display: contents; }
+.lobby__header { display: contents; }
+
 .lobby__campaign-selected { display: none; }
 .lobby__place-label, .lobby-member__pending-short { display: none; }
 
@@ -253,3 +254,35 @@
   .kad-party--world .lobby__lineup { gap: .2em; }
   .kad-party--world .lobby__party { gap: .2em; }
 }
+
+@media (min-width: 900px) and (orientation: landscape) {
+  .kad-party--world .lobby__crew-hint { display: none; }
+}
+
+/* Keep whole names readable with the wider fallback fonts used on TVs. The
+   portrait yields horizontal space before a name is forced to break. */
+@media (min-width: 900px) and (orientation: landscape) and (max-height: 650px) {
+  .kad-party--world .lobby-member { grid-template-columns: 1.5em minmax(0, 1fr); column-gap: .35em; }
+  .kad-party--world .lobby-member .lobby-member__portrait { inline-size: 1.5em; block-size: 1.9em; }
+  .kad-party--world .lobby-member__name { font-size: .8em; overflow-wrap: normal; word-break: normal; }
+  .kad-party--world .lobby { gap: .3em; padding-block-end: .25em; }
+}
+/* At the largest text size a short display uses one readable roster column.
+   Portrait, whole name and readiness share a row instead of squeezing names. */
+@media (min-width: 900px) and (orientation: landscape) and (max-height: 650px) {
+  html[data-text="largest"] .kad-party--world .lobby__lineup { grid-template-columns: minmax(0, 1fr); }
+  html[data-text="largest"] .kad-party--world .lobby-member {
+    grid-template-columns: 1.3em minmax(0, 1fr) auto;
+    grid-template-rows: auto;
+    row-gap: 0;
+    padding-block: .15em;
+  }
+  html[data-text="largest"] .kad-party--world .lobby-member > .lobby-member__seat,
+  html[data-text="largest"] .kad-party--world .lobby-member > .lobby-member__portrait { grid-row: 1; }
+  html[data-text="largest"] .kad-party--world .lobby-member .lobby-member__portrait { inline-size: 1.3em; block-size: 1.5em; }
+  html[data-text="largest"] .kad-party--world .lobby-member .lobby-member__status { grid-column: 3; grid-row: 1; }
+}
+@media (min-width: 900px) and (orientation: landscape) and (max-height: 650px) {
+  html[data-text="largest"] .kad-party--world .lobby__header > :is(.lobby__place, .lobby__crew) { block-size: 3.2em; }
+}
+

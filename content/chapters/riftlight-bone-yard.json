@@ -1,4 +1,5 @@
 {
+  "$comment": "Riftlight, Restless Coast strand end (docs/campaigns/continental-rift/arc.md, bone-yard; design note bone-yard-review.md). Rewritten in November 2026 as the pilot for the whole-campaign rewrite. Question: whose ruins are these, and why did they land here? Puddle, the Skupper guide, carries it; Pip Thistledown voices Lady Olivia's ideas. The p1 (same_stone) is that the ruins' carvings match the buried bridge. Sets no journey flag; reads fragment_paths_learned / fragment_sky_learned only to point at the convergence.",
   "id": "riftlight-bone-yard",
   "campaignId": "riftlight",
   "index": 7,
@@ -13,2140 +14,2476 @@
     "narration": "At the edge of the Bone Yard, broken stone walls stand among enormous pale arches. Salt wind moves through the gaps. A narrow path curves between the quiet ruins."
   },
   "goal": {
-    "text": "Clear a safe way past the displaced ruins without taking anything from the Bone Yard.",
+    "text": "Whose ruins are these, and why did they land here?",
     "steps": [
       {
-        "id": "bones_route",
-        "label": "Mark the safe route",
-        "flag": "bones_route_done"
+        "id": "ruins",
+        "label": "Cross the bone field to the ruins",
+        "flag": "bones_reached_ruins"
       },
       {
-        "id": "bones_passage",
-        "label": "Get past the blocked passage",
-        "flag": "bones_passage_done"
+        "id": "carvings",
+        "label": "Read the carvings on the ruins",
+        "flag": "bones_read_carvings"
       },
       {
-        "id": "bones_leave",
-        "label": "Leave everything where it belongs",
-        "flag": "bones_leave_done"
+        "id": "tear",
+        "label": "Get past the crawlers at the tear",
+        "flag": "bones_got_past"
+      },
+      {
+        "id": "nothing",
+        "label": "Leave with nothing taken",
+        "flag": "bones_took_nothing"
       }
     ]
   },
   "voiceGuide": {
-    "tone": "Warm, curious and practical. Short sentences. Show the consequence of each plan. Nobody dies.",
-    "vocabulary": "Read aloud to an eight-year-old.",
+    "tone": "Warm, funny and a little spooky, with real consequences. Short sentences. Let a character act instead of explaining how the reader should feel. The bones are tired, not angry; nobody dies.",
+    "vocabulary": "Read aloud to an eight-year-old. Concrete words, short sentences, distinct voices.",
     "forbidden": [
+      "death",
       "gore",
-      "Hollow Gate",
-      "Legend Dragon",
       "Corvane",
       "emperor",
-      "Pangea"
+      "Pangea",
+      "Hollow Gate",
+      "Legend Dragon"
     ],
-    "npcVoices": {}
+    "npcVoices": {
+      "saltrot_guide": "Puddle, the Skupper guide (she/her). Quick, chatty and cheerfully blunt. Guides from brackish pools and channels and signals with her tall crest; puffs up round when startled. Fits exactly in a puddle, hence the name. Keeps her lunch in a floating box. Wants her channel back and to know whose ruins have landed on it.",
+      "Pip Thistledown": "Young manticore scout (he/him). Eager, notebook always out, quotes \"Lady Olivia says...\" and tries her ideas. Wants a sample to impress her. Kind underneath; changes his mind when the party gives him a reason."
+    }
+  },
+  "presentation": {
+    "interactions": {
+      "sneak": {
+        "props": [
+          "toss-pebble"
+        ]
+      },
+      "carvings": {
+        "props": [
+          "carved-stone"
+        ]
+      },
+      "watch_lean": {
+        "props": [
+          "prop_rock"
+        ]
+      }
+    }
   },
   "scenes": {
     "arrival": {
       "type": "story",
-      "narration": "At the edge of the Bone Yard, your Skupper guide from the flats stops in a brackish pool. Beyond her, broken stone walls have appeared among enormous old bones. Small bone crawlers crowd the fresh shimmer around the walls. \"Clear a safe way past those ruins,\" she says. \"Take nothing. Here, anything taken comes back. I will watch from water that suits my fins.\" One crawler is trying to fit its whole body under a pebble.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "limit"
-        }
-      ],
+      "narration": "Past the Saltrot flats, the mud turns pale with bones. This is the Bone Yard. Giant ribs rise from the channels, taller than houses, and between them sit stone ruins that were not here yesterday. A Skupper pops up in a pool. \"Puddle!\" she says. \"Your guide, in case the mud ate your memory. It eats boots.\" She points a fin. \"Those ruins landed on my channel last night. Whose ruins are these? Why did they land here? Help me find out before my pool dries up.\"",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        },
-        {
-          "figure": "entities/bone_crawler",
-          "count": 4
+          "name": "Puddle",
+          "stance": "swimming"
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
-      "rift": "steady"
+      "choices": [
+        {
+          "id": "ask",
+          "label": "Ask Puddle about the Bone Yard",
+          "icon": "ear",
+          "goto": "rule"
+        }
+      ]
     },
-    "limit": {
+    "rule": {
       "type": "choice_point",
-      "narration": "The guide points out the boundary. \"My pool is outside it. The ruins are inside.\" She lends a marked plank and a return line. Carry her spare mats as well and you can cover one loose-stone patch during the encounter, but you must carry and recover them. Leave them here for a lighter approach with no covered board patch. Which kit will you take?",
+      "narration": "Puddle flicks a pebble onto a bone. It wobbles, rolls back uphill, and drops into her pool. Plop. \"Bone Yard rule,\" she says. \"Take nothing, hum something, and leave before the tide turns. Whatever you take comes back. Usually in your boot.\" The ruins stand across a field of bones and channels. \"I only go where it's wet. How do you want to cross?\"",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "choices": [
-        {
-          "id": "carry",
-          "label": "Carry the spare mats for board protection",
-          "icon": "hand",
-          "goto": "pack_mats",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "bone_spares_carried",
-              "value": true
-            }
-          ]
-        },
-        {
-          "id": "light",
-          "label": "Leave spare mats with the guide",
-          "icon": "hand",
-          "goto": "leave_mats",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "bone_spares_carried",
-              "value": false
-            }
-          ]
-        }
-      ]
-    },
-    "pack_mats": {
-      "type": "interaction",
-      "narration": "Level the spare-mat bundle before bringing it along the narrow marked approach. A bright loop shows which gear belongs to the guide, not the yard.",
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "interaction": {
-        "kind": "balance",
-        "cue": "Level the spare-mat bundle for carrying.",
-        "actionLabel": "Carry the spare mats",
-        "objectLabel": "Spare-mat bundle"
-      },
-      "onSuccess": {
-        "goto": "survey",
-        "narration": "The spare mats come with you. The guide keeps their empty tie at her pool."
-      },
-      "onFailure": {
-        "goto": "survey",
-        "narration": "The spare mats come with you. The guide keeps their empty tie at her pool."
-      },
-      "onAssisted": {
-        "goto": "survey",
-        "narration": "The spare mats come with you. The guide keeps their empty tie at her pool."
-      }
-    },
-    "leave_mats": {
-      "type": "interaction",
-      "narration": "Pass the spare mats back to the guide's pool. You keep the marked plank and line; your lighter kit will need to work around both loose-stone patches.",
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Pass the spare mats back to the guide.",
-        "actionLabel": "Pass the spare mats",
-        "objectLabel": "Spare mats for the guide"
-      },
-      "onSuccess": {
-        "goto": "survey",
-        "narration": "The spare mats stay dry outside the boundary."
-      },
-      "onFailure": {
-        "goto": "survey",
-        "narration": "The spare mats stay dry outside the boundary."
-      },
-      "onAssisted": {
-        "goto": "survey",
-        "narration": "The spare mats stay dry outside the boundary."
-      }
-    },
-    "survey": {
-      "type": "story",
-      "narration": "The short passage runs behind a leaning wall. The wide rim bends around a hollow. Fresh magic draws crawlers to a tear near the wall. Check the moving shadow from this safe marker before choosing your working ground.",
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "hand",
-          "goto": "survey_window"
-        }
-      ]
-    },
-    "survey_window": {
-      "type": "interaction",
-      "narration": "Wait until the leaning wall's shadow clears the firm strip. The guide watches from her pool and calls the wider rim if your first view is hidden.",
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "interaction": {
-        "kind": "timing",
-        "cue": "Mark the firm strip during the clear view.",
-        "actionLabel": "Mark the safe strip",
-        "target": 0.5,
-        "width": 0.3,
-        "periodMs": 6000
-      },
-      "onSuccess": {
-        "goto": "survey_result",
-        "narration": "Your marks show the short passage and a wider rim backup.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "bones_route_done",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "survey_result",
-        "narration": "The shadow hides the short strip. The guide points out the wide rim first; you mark both from the outer bank.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "bones_route_done",
-            "value": true
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "survey_result",
-        "narration": "Your marks show the short passage and a wider rim backup.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "bones_route_done",
-            "value": true
-          }
-        ]
-      }
-    },
-    "survey_result": {
-      "type": "story",
-      "narration": "Both routes are on the page. The guide frowns at the short one. \"The wall may block it again. Keep the rim easy to spot.\" One crawler tries to look enormous on a very small pebble.",
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "hand",
-          "goto": "markers"
-        }
-      ]
-    },
-    "markers": {
-      "type": "choice_point",
-      "narration": "Lay your own return line for a quick way back through a cleared passage, or memorize the arches with the guide. A retreat would leave the short line behind. The guide taps an arch. \"My rim signs work even then.\" Which return aid will you prepare?",
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "choices": [
-        {
-          "id": "line",
-          "label": "Lay a marked line along the short passage",
-          "icon": "hand",
-          "goto": "lay_line",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "bone_line_laid",
-              "value": true
-            }
-          ]
-        },
-        {
-          "id": "arches",
-          "label": "Learn the outer arches with the guide",
-          "icon": "hand",
-          "goto": "learn_arches",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "bone_line_laid",
-              "value": false
-            }
-          ]
-        }
-      ]
-    },
-    "lay_line": {
-      "type": "interaction",
-      "narration": "Pass your marked line along the safe strip. Keep it outside the crawling shimmer and leave a loose end near the pool.",
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Pass the marked return line along the strip.",
-        "actionLabel": "Pass the route line",
-        "objectLabel": "Marked return line"
-      },
-      "onSuccess": {
-        "goto": "test",
-        "narration": "Your line marks the short return. The guide still watches the wider rim."
-      },
-      "onFailure": {
-        "goto": "test",
-        "narration": "Your line marks the short return. The guide still watches the wider rim."
-      },
-      "onAssisted": {
-        "goto": "test",
-        "narration": "Your line marks the short return. The guide still watches the wider rim."
-      }
-    },
-    "learn_arches": {
-      "type": "interaction",
-      "narration": "The guide points out three arches on the outer route. Watch her landmark pattern before her raised crest disappears behind the reeds.",
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "interaction": {
-        "kind": "memory",
-        "cue": "Watch the outer-arch route, then echo it.",
-        "actionLabel": "Show what we saw",
-        "options": [
-          {
-            "id": "flat",
-            "label": "Flat-topped arch",
-            "icon": "eye"
-          },
-          {
-            "id": "split",
-            "label": "Split arch",
-            "icon": "eye"
-          },
-          {
-            "id": "low",
-            "label": "Low arch",
-            "icon": "eye"
-          }
-        ],
-        "answer": [
-          "split",
-          "low",
-          "flat"
-        ],
-        "stepMs": 1300
-      },
-      "onSuccess": {
-        "goto": "test",
-        "narration": "You can point out the outer rim's three landmarks."
-      },
-      "onFailure": {
-        "goto": "test",
-        "narration": "The guide repeats the outer landmarks with her crest signals. She will guide the rim if you need it."
-      },
-      "onAssisted": {
-        "goto": "test",
-        "narration": "You can point out the outer rim's three landmarks."
-      }
-    },
-    "test": {
-      "type": "choice_point",
-      "narration": "A yard pebble rolls back uphill over the boundary. Your marked plank stays where you set it. The guide raises a fin. \"The yard is very particular about whose things are whose.\" Choose a small test without pocketing anything.",
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
+          "name": "Puddle",
+          "stance": "swimming"
         }
       ],
       "art": "scenes/riftlight/bone-yard-returning-pebble",
       "choices": [
         {
-          "id": "pebble",
-          "label": "Nudge the loose yard pebble toward the line",
-          "icon": "hand",
-          "goto": "test_response_pebble"
+          "id": "rib",
+          "label": "Run along a giant rib",
+          "icon": "boot",
+          "goto": "check_rib"
         },
         {
-          "id": "plank",
-          "label": "Set your marked plank across the boundary",
-          "icon": "hand",
-          "goto": "test_response_plank"
+          "id": "wade",
+          "label": "Wade the channel with Puddle",
+          "icon": "drop",
+          "goto": "check_wade"
         },
         {
-          "id": "draw",
-          "label": "Draw where the pebble returned",
-          "icon": "hand",
-          "goto": "test_response_draw"
+          "id": "fly",
+          "label": "Fly over the bones",
+          "icon": "wing",
+          "goto": "fly_over",
+          "requiresSpecies": "griffin"
         }
       ]
     },
-    "returning_pebble": {
-      "type": "interaction",
-      "narration": "The returning pebble disappears behind three loose stones. Follow its marked hiding place as the stones shift, then point out where it settled without picking it up.",
+    "check_rib": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "The rib is as wide as a bench and as long as a street. It is also slimy. Puddle swims along underneath. \"Arms out,\" she calls. \"Like a heron.\"",
+      "prompt": "Run the whole slippery rib without falling off",
+      "roller": "party",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
+          "name": "Puddle",
+          "stance": "swimming"
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
-      "interaction": {
-        "kind": "tracking",
-        "cue": "Follow the marked pebble hiding place through the shifting stones.",
-        "actionLabel": "Point out the returned pebble",
-        "covers": [
-          "Left stone",
-          "Middle stone",
-          "Right stone"
-        ],
-        "start": 0,
-        "swaps": [
-          [
-            0,
-            1
-          ],
-          [
-            1,
-            2
-          ],
-          [
-            0,
-            2
-          ]
-        ],
-        "stepMs": 1400
-      },
       "onSuccess": {
-        "goto": "vibration",
-        "narration": "You locate the pebble in its old hollow. No specimen goes into a pack."
+        "goto": "skull",
+        "narration": "You run it like a balance beam and hop down at the far end. From up there you spotted a flicker of light deep in the ruins, like a candle in a window."
       },
       "onFailure": {
-        "goto": "vibration",
-        "narration": "The guide points out the pebble after it settles. You correct the drawing instead of collecting it."
-      },
-      "onAssisted": {
-        "goto": "vibration",
-        "narration": "You locate the pebble in its old hollow. No specimen goes into a pack."
+        "goto": "skull",
+        "narration": "Halfway along, your feet go one way and the rest of you goes the other. You slide down into a heap of old bone shells. Crunch. Only your pride breaks, and a little skin.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
       }
     },
-    "vibration": {
-      "type": "interaction",
-      "narration": "Fresh magic pulses from the tear. The crawlers all turn toward it; one bumps the next and tangles its legs. Tap your own plank between pulses to compare their response from the marked path.",
+    "check_wade": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "narration": "The channel is low and getting lower. Puddle swims ahead, then turns. \"Mud's thick here. Lean in and push. If you stop, it keeps you.\"",
+      "prompt": "Push through the sticky channel beside Puddle",
+      "roller": "party",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
+          "name": "Puddle",
+          "stance": "swimming"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "onSuccess": {
+        "goto": "skull",
+        "narration": "You push through, one squelch at a time. Puddle cheers every step like a race. Near the ruins the water is only ankle deep. \"They're drinking my channel,\" she mutters."
+      },
+      "onFailure": {
+        "goto": "skull",
+        "narration": "The mud grabs both legs and holds on. Puddle puffs up round as a ball, and you grab her like a float. She tows you out. \"Ow. Spines. Sorry.\" You are free, and one arm tingles where she poked.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "fly_over": {
+      "type": "story",
+      "narration": "Your griffin flaps up over the bones. From the sky, the ruins make a broken ring with a flicker of light in the middle, like a candle in a window. You glide back down. Puddle swims up, out of breath. \"Show-off,\" she says, delighted.",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "choices": [
+        {
+          "id": "land",
+          "label": "Land on the path",
+          "icon": "wing",
+          "goto": "skull"
+        }
+      ]
+    },
+    "skull": {
+      "type": "story",
+      "narration": "The path runs under a skull as big as a barn. Nobody knows what it belonged to, and Puddle says nobody should dig to find out. Inside it is cool and smells of salt. A crab lives in its nose and glares at you. \"Speak low,\" Puddle whispers from a channel. \"The bones aren't angry. They're tired.\"",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "choices": [
+        {
+          "id": "through",
+          "label": "Tiptoe through the skull",
+          "icon": "boot",
+          "goto": "ruins_edge"
+        }
+      ]
+    },
+    "ruins_edge": {
+      "type": "choice_point",
+      "narration": "Little pale creatures clatter along the foot of the ruins, in shells made of old bone chips, like coats covered in buttons. Bone crawlers. They all hurry toward a flicker of light deep inside. Then one stops and sniffs your pack, where the Listening Chime hums. \"Uh oh,\" says Puddle. \"Crawlers love fresh magic. Your chime hums like a kettle.\"",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "bones_reached_ruins",
+          "value": true
+        }
+      ],
+      "discovers": [
+        "creature.bone_crawler"
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "entities/bone_crawler",
+          "count": 3
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "choices": [
+        {
+          "id": "hum",
+          "label": "Hum, like the rule says",
+          "icon": "song",
+          "goto": "check_hum"
+        },
+        {
+          "id": "sneak",
+          "label": "Hold the chime still and sneak",
+          "icon": "boot",
+          "goto": "sneak"
+        },
+        {
+          "id": "lullaby",
+          "label": "Sing the crawler a lullaby",
+          "icon": "song",
+          "goto": "lullaby",
+          "requiresClass": "songkeeper"
+        }
+      ]
+    },
+    "check_hum": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "narration": "You hum low and steady. Puddle hums along from her channel, very loudly and a little flat.",
+      "prompt": "Hum so the chime's buzz hides inside your tune",
+      "roller": "party",
+      "checkKind": "doing",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "entities/bone_crawler",
+          "count": 1
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "onSuccess": {
+        "goto": "ruins_gate",
+        "narration": "The chime's buzz melts into your tune. The crawler waves a leg, puzzled, and clatters off after the others."
+      },
+      "onFailure": {
+        "goto": "crawler_tail",
+        "narration": "Your hum wobbles into a squeak. The crawler loves it. It falls in behind you, clicking happily.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bones_crawler_tail",
+            "value": true
+          }
+        ]
+      }
+    },
+    "sneak": {
+      "type": "interaction",
+      "narration": "Hold the chime still in both hands. The crawlers look up, then down, then up again. Move only while they look down. Puddle flicks her crest to help you count.",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "entities/bone_crawler",
+          "count": 3
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
       "interaction": {
-        "kind": "precision",
-        "cue": "Tap the plank in the quiet interval between pulses.",
-        "actionLabel": "Tap your own plank",
+        "kind": "timing",
+        "cue": "Step while the crawlers look down.",
+        "actionLabel": "Sneak past",
         "target": 0.5,
         "width": 0.3,
-        "periodMs": 6000
+        "periodMs": 5000
       },
       "onSuccess": {
-        "goto": "support",
-        "narration": "The crawlers turn at the fresh magic, then pause at your plank tap. You can plan around their path."
+        "goto": "ruins_gate",
+        "narration": "Not one rattle. The crawler sniffs the air, gives up, and hurries after the others."
       },
       "onFailure": {
-        "goto": "support",
-        "narration": "Your tap overlaps the pulse. The guide calls the next quiet interval so you can distinguish the two reactions."
+        "goto": "crawler_tail",
+        "narration": "A loose chip skitters under your foot. The crawler spins around and falls in behind you, clicking happily.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bones_crawler_tail",
+            "value": true
+          }
+        ]
       },
       "onAssisted": {
-        "goto": "support",
-        "narration": "The crawlers turn at the fresh magic, then pause at your plank tap. You can plan around their path."
+        "goto": "ruins_gate",
+        "narration": "Puddle flicks her crest each time they look down, and you all step together. Not one rattle."
       }
     },
-    "support": {
-      "type": "choice_point",
-      "narration": "A low brace will keep the leaning wall settled while you work. Roll a fallen yard stone into place and leave your plank free, or wedge the marked plank under the edge and recover it afterward. Caught gear must stay if you retreat. What will support the wall?",
+    "lullaby": {
+      "type": "story",
+      "narration": "Your songkeeper sings, soft and slow. The crawler sways. Then it tucks in its legs and falls asleep right there in the path, snoring like a tiny rattle. \"I'm telling my grandmother about that,\" says Puddle.",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "entities/bone_crawler",
+          "count": 1
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
       "choices": [
         {
-          "id": "stone",
-          "label": "Set a fallen stone and keep our plank free",
-          "icon": "hand",
-          "goto": "stone_support",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "bone_plank_used",
-              "value": false
-            },
-            {
-              "type": "setFlag",
-              "flag": "bone_plank_recoverable",
-              "value": false
-            }
-          ]
+          "id": "on",
+          "label": "Step around the sleeper",
+          "icon": "boot",
+          "goto": "ruins_gate"
+        }
+      ]
+    },
+    "crawler_tail": {
+      "type": "story",
+      "narration": "The crawler follows you to the ruins, trying to climb into your pack after the chime. At last Puddle opens her floating lunch box and gives it her kelp roll. The crawler wears it as a hat and wanders off, proud. \"That,\" says Puddle, \"was my lunch.\"",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
         },
         {
-          "id": "plank",
-          "label": "Use the marked plank; recover it after the encounter",
+          "figure": "entities/bone_crawler",
+          "count": 1
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk into the ruins",
+          "icon": "boot",
+          "goto": "ruins_gate"
+        }
+      ]
+    },
+    "ruins_gate": {
+      "type": "story",
+      "narration": "Inside, everything is gray stone with white specks, like salt on bread. A stair climbs into the sky and stops. Puddle hops into a salty puddle the tide left by the gate. It fits her exactly. \"Named for it,\" she says. On a wall sits Pip Thistledown, the young manticore scout, prying at a carved stone with a spoon. \"Lady Olivia says a real scout brings back samples!\"",
+      "spotlight": "next",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "choices": [
+        {
+          "id": "climb",
+          "label": "Climb up to Pip",
           "icon": "hand",
-          "goto": "plank_support",
+          "goto": "pip_chip"
+        }
+      ]
+    },
+    "pip_chip": {
+      "type": "choice_point",
+      "narration": "The carved chip pops halfway out with a click. Under it, the wall hums, the same buzz as your chime. Puddle's crest folds flat. \"Pip. Take nothing. It comes back.\" \"Then I'll only borrow it!\" says Pip. \"Lady Olivia says you can't learn anything if you're scared of a pebble.\" What will you do?",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "choices": [
+        {
+          "id": "talk",
+          "label": "Talk Pip out of it",
+          "icon": "heart",
+          "goto": "check_pip"
+        },
+        {
+          "id": "let",
+          "label": "Let Pip borrow it",
+          "icon": "hand",
+          "goto": "pip_keeps",
           "effects": [
             {
               "type": "setFlag",
-              "flag": "bone_plank_used",
+              "flag": "bones_pip_chip",
               "value": true
-            },
-            {
-              "type": "setFlag",
-              "flag": "bone_plank_recoverable",
-              "value": true
             }
           ]
         },
         {
-          "id": "brace",
-          "label": "Have our thornguard brace while a stone is settled",
-          "icon": "hand",
-          "goto": "braced_support",
-          "requiresClass": "thornguard",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "bone_plank_used",
-              "value": false
-            },
-            {
-              "type": "setFlag",
-              "flag": "bone_plank_recoverable",
-              "value": false
-            }
-          ]
+          "id": "manticore",
+          "label": "Talk to him, manticore to manticore",
+          "icon": "manticore",
+          "goto": "manticore_talk",
+          "requiresSpecies": "manticore"
         }
       ]
     },
-    "stone_support": {
-      "type": "interaction",
-      "narration": "Roll a fallen stone against the wall's foot from the open side. Balance it low and leave it inside the yard; the marked plank stays with your gear.",
+    "check_pip": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "narration": "Pip hugs the chip like a prize. But he keeps glancing at Puddle.",
+      "prompt": "Convince Pip that a drawing is a better sample than a stone",
+      "roller": "party",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "interaction": {
-        "kind": "balance",
-        "cue": "Settle the low stone brace evenly.",
-        "actionLabel": "Set the stone brace",
-        "objectLabel": "Low yard-stone brace"
-      },
-      "onSuccess": {
-        "goto": "rest",
-        "narration": "The wall rests on its own fallen stone. Your plank is free."
-      },
-      "onFailure": {
-        "goto": "rest",
-        "narration": "The wall rests on its own fallen stone. Your plank is free."
-      },
-      "onAssisted": {
-        "goto": "rest",
-        "narration": "The wall rests on its own fallen stone. Your plank is free."
-      }
-    },
-    "plank_support": {
-      "type": "interaction",
-      "narration": "Hold the marked plank while the guide calls its position from the pool. Wedge it low, leaving its bright recovery loop visible.",
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "interaction": {
-        "kind": "cooperate",
-        "cue": "Support the marked plank while the wedge settles.",
-        "actionLabel": "Set the plank brace",
-        "supportLabel": "Hold the marked plank"
-      },
-      "onSuccess": {
-        "goto": "rest",
-        "narration": "The plank holds the edge. Its later recovery will need a replacement support."
-      },
-      "onFailure": {
-        "goto": "rest",
-        "narration": "The plank holds the edge. Its later recovery will need a replacement support."
-      },
-      "onAssisted": {
-        "goto": "rest",
-        "narration": "The plank holds the edge. Its later recovery will need a replacement support."
-      }
-    },
-    "braced_support": {
-      "type": "story",
-      "narration": "Your thornguard uses a skill called Brace to hold the wall while a fallen stone is settled low. That saves the balancing job. The yard stone stays inside; your marked plank stays free.",
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "hand",
-          "goto": "rest"
-        }
-      ]
-    },
-    "rest": {
-      "type": "rest",
-      "narration": "Back at the boundary pool, the guide opens a floating lunch box tied to a reed. \"Soft seaweed rolls,\" she says proudly. You sit on your own mat outside the yard and rest. The box bumps her fin whenever she reaches for lunch.",
-      "heal": 2,
-      "choices": [
-        {
-          "id": "rest",
-          "label": "Rest at the pool, then choose the encounter plan",
-          "icon": "hand",
-          "goto": "plan"
+          "name": "Puddle",
+          "stance": "swimming"
         },
         {
-          "id": "watch",
-          "label": "Rest while watching the crawler path",
-          "icon": "hand",
-          "goto": "plan"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
-      "rift": "steady"
+      "onSuccess": {
+        "goto": "pip_draws",
+        "narration": "Pip sighs and pushes the chip back. It clicks into place by itself, like a puzzle piece going home. Pip jumps. \"Did it just pull?\""
+      },
+      "onFailure": {
+        "goto": "pip_keeps",
+        "narration": "\"A drawing can't hum,\" says Pip, and he keeps the chip.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bones_pip_chip",
+            "value": true
+          }
+        ]
+      }
     },
-    "plan": {
+    "manticore_talk": {
+      "type": "story",
+      "narration": "You flick your tail the polite manticore way, low and slow. Pip's ears go pink. \"Okay, okay,\" he mutters, and pushes the chip back. It clicks into place by itself, like a puzzle piece going home.",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "choices": [
+        {
+          "id": "draw",
+          "label": "Hand Pip a pencil",
+          "icon": "scroll",
+          "goto": "pip_draws"
+        }
+      ]
+    },
+    "pip_draws": {
+      "type": "story",
+      "narration": "Pip draws the chip instead, tongue out, with a lot of shading. \"For Lady Olivia,\" he says. \"And maybe Master Orin. He likes drawings.\" Puddle's crest pops back up.",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "choices": [
+        {
+          "id": "look",
+          "label": "Look around the ruins",
+          "icon": "eye",
+          "goto": "explore"
+        }
+      ]
+    },
+    "pip_keeps": {
+      "type": "story",
+      "narration": "Pip tucks the chip into his pocket and pats it. The pocket hums. Puddle says nothing, very loudly. Deep in the ruins, a crawler stops, and turns its head toward Pip.",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/bone_crawler",
+          "count": 1
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "choices": [
+        {
+          "id": "look",
+          "label": "Look around the ruins",
+          "icon": "eye",
+          "goto": "explore"
+        }
+      ]
+    },
+    "explore": {
       "type": "choice_point",
-      "narration": "The tear keeps drawing fresh magic and crawlers. Clear the passage on open ground, or prepare the closing stones so the seam takes two working turns instead of three. If you carried spare mats, take an extra placement job to cover the northern loose-stone patch. The southern patch and crawlers will remain.",
+      "narration": "The ruins are a maze of walls with no roofs. \"I can't see over them from down here,\" says Puddle. \"Somebody tell me what this place is.\" Pip points his spoon two ways at once. Where will you look?",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
       "choices": [
         {
-          "id": "clear",
-          "label": "Clear the passage on open ground",
-          "icon": "hand",
-          "goto": "plan_1"
+          "id": "stair",
+          "label": "Climb the stair to nowhere",
+          "icon": "boot",
+          "goto": "check_stair"
         },
         {
-          "id": "seam",
-          "label": "Prepare the closing points before the encounter",
-          "icon": "hand",
-          "goto": "seam_marks"
-        },
-        {
-          "id": "mats",
-          "label": "Place our carried mats over one board hazard",
-          "icon": "hand",
-          "goto": "lay_board_mats",
-          "when": {
-            "flag": "bone_spares_carried"
-          }
+          "id": "doors",
+          "label": "Search the empty doorways",
+          "icon": "eye",
+          "goto": "check_doors"
         }
       ]
     },
-    "plan_1": {
-      "type": "story",
-      "narration": "You leave the return line behind you and choose open ground for the fight. Nothing you strike will be carried away as a prize.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "fight"
-        }
-      ],
+    "check_stair": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "The stair has no rail and no top. Each step is worn in the middle, smooth as soap.",
+      "prompt": "Climb the wobbly stair to the very top step",
+      "roller": "party",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "rift": "steady"
-    },
-    "seam_marks": {
-      "type": "interaction",
-      "narration": "Share the positions beside the seam before the crawlers spread. The nearest closing stone comes first; finish at the point where your chime's echo can be checked. Your Listening Chime is the glacier travelers' chime: it tests readiness and a way back, not permission to change a rift's rules.",
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "interaction": {
-        "kind": "sequence",
-        "cue": "Plan the closing-point approach from the marked strip.",
-        "actionLabel": "Try our plan",
-        "options": [
-          {
-            "id": "echo",
-            "label": "Echo-checking point",
-            "icon": "eye"
-          },
-          {
-            "id": "near",
-            "label": "Nearest closing stone",
-            "icon": "eye"
-          },
-          {
-            "id": "ledge",
-            "label": "Firm side ledge",
-            "icon": "eye"
-          }
-        ],
-        "answer": [
-          "near",
-          "ledge",
-          "echo"
-        ],
-        "clues": [
-          "Begin at the nearest closing stone.",
-          "The firm side ledge comes between that stone and the echo check.",
-          "Finish by checking the echo point."
-        ]
-      },
-      "onSuccess": {
-        "goto": "fight_seam",
-        "narration": "The marked approach shortens the seam work to two turns; the encounter still has to be played."
-      },
-      "onFailure": {
-        "goto": "fight_seam",
-        "narration": "The guide corrects the point order from the pool. The approach is marked before you enter; enemies and remaining hazards are still there."
-      },
-      "onAssisted": {
-        "goto": "fight_seam",
-        "narration": "The marked approach shortens the seam work to two turns; the encounter still has to be played."
-      }
-    },
-    "seam_marks_mats": {
-      "type": "interaction",
-      "narration": "Share the positions beside the seam before the crawlers spread. The nearest closing stone comes first; finish at the point where your chime's echo can be checked. Your Listening Chime is the glacier travelers' chime: it tests readiness and a way back, not permission to change a rift's rules.",
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "interaction": {
-        "kind": "sequence",
-        "cue": "Plan the closing-point approach from the marked strip.",
-        "actionLabel": "Try our plan",
-        "options": [
-          {
-            "id": "echo",
-            "label": "Echo-checking point",
-            "icon": "eye"
-          },
-          {
-            "id": "near",
-            "label": "Nearest closing stone",
-            "icon": "eye"
-          },
-          {
-            "id": "ledge",
-            "label": "Firm side ledge",
-            "icon": "eye"
-          }
-        ],
-        "answer": [
-          "near",
-          "ledge",
-          "echo"
-        ],
-        "clues": [
-          "Begin at the nearest closing stone.",
-          "The firm side ledge comes between that stone and the echo check.",
-          "Finish by checking the echo point."
-        ]
-      },
-      "onSuccess": {
-        "goto": "fight_seam_mats",
-        "narration": "The marked approach shortens the seam work to two turns; the encounter still has to be played."
-      },
-      "onFailure": {
-        "goto": "fight_seam_mats",
-        "narration": "The guide corrects the point order from the pool. The approach is marked before you enter; enemies and remaining hazards are still there."
-      },
-      "onAssisted": {
-        "goto": "fight_seam_mats",
-        "narration": "The marked approach shortens the seam work to two turns; the encounter still has to be played."
-      }
-    },
-    "lay_board_mats": {
-      "type": "interaction",
-      "narration": "Set the carried mats over the northern loose-stone patch while your friends support the outer edge. This covers that one hazard tile, not the southern patch or the crawlers.",
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "interaction": {
-        "kind": "cooperate",
-        "cue": "Support the mats while the northern patch is covered.",
-        "actionLabel": "Cover the northern patch",
-        "supportLabel": "Hold the carried mats"
-      },
-      "onSuccess": {
-        "goto": "mat_plan",
-        "narration": "The northern loose-stone patch is covered. Those mats will need retrieving afterward.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "bone_mats_used",
-            "value": true
-          },
-          {
-            "type": "setFlag",
-            "flag": "bone_mats_recoverable",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "mat_plan",
-        "narration": "The northern loose-stone patch is covered. Those mats will need retrieving afterward.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "bone_mats_used",
-            "value": true
-          },
-          {
-            "type": "setFlag",
-            "flag": "bone_mats_recoverable",
-            "value": true
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "mat_plan",
-        "narration": "The northern loose-stone patch is covered. Those mats will need retrieving afterward.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "bone_mats_used",
-            "value": true
-          },
-          {
-            "type": "setFlag",
-            "flag": "bone_mats_recoverable",
-            "value": true
-          }
-        ]
-      }
-    },
-    "mat_plan": {
-      "type": "choice_point",
-      "narration": "Your mats cover the northern patch. The southern loose stones can still bite. Clear the passage now, or also mark the seam approach to shorten its objective. Which encounter plan will you use?",
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "choices": [
-        {
-          "id": "clear",
-          "label": "Clear the passage with one patch covered",
-          "icon": "hand",
-          "goto": "fight_mats"
+          "name": "Puddle",
+          "stance": "swimming"
         },
         {
-          "id": "seam",
-          "label": "Mark the seam approach as well",
-          "icon": "hand",
-          "goto": "seam_marks_mats"
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "onSuccess": {
+        "goto": "stair_top",
+        "narration": "You reach the top step and hold on to the sky. Pip cheers from below."
+      },
+      "onFailure": {
+        "goto": "doorway_nest",
+        "narration": "The stair wobbles. You come down a lot faster than you went up, straight through a doorway."
+      }
+    },
+    "check_doors": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "narration": "Every doorway looks the same. Some have dust. Some have crawler tracks. One smells very old, like a cupboard nobody has opened.",
+      "prompt": "Pick the doorway that holds something, and not somebody",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "onSuccess": {
+        "goto": "doorway_step",
+        "narration": "You pick the dusty one with no tracks. Good choice."
+      },
+      "onFailure": {
+        "goto": "doorway_nest",
+        "narration": "You pick the one with the most tracks. Bad choice."
+      }
+    },
+    "stair_top": {
+      "type": "story",
+      "narration": "From the top, the ruins make a ring of walls around an open square, like a town square that lost its town. Its gate faces north, upriver. In the middle, the flicker of light shivers, and crawlers circle it. \"What do you see?\" Pip calls up. \"Is it treasure?\"",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "choices": [
+        {
+          "id": "down",
+          "label": "Climb down to Puddle",
+          "icon": "back",
+          "goto": "carvings"
         }
       ]
     },
-    "fight": {
-      "type": "encounter",
-      "map": "riftlight_bone_yard",
-      "narration": "Bone crawlers clatter across the open passage. Close the tear by ending three turns beside it, or drive the crawlers away. The loose stones near the shimmer bite at anyone who stops there.",
-      "enemies": [
-        {
-          "id": "crawler",
-          "creature": "bone_crawler",
-          "count": 2
-        }
-      ],
-      "environment": {
-        "hazards": [
-          {
-            "id": "loose_stones",
-            "kind": "rift",
-            "label": "Shifting loose stones",
-            "tiles": [
-              {
-                "x": 5,
-                "y": 2
-              },
-              {
-                "x": 4,
-                "y": 5
-              }
-            ],
-            "damage": 1
-          }
-        ],
-        "objectives": [
-          {
-            "id": "close_seam",
-            "kind": "close",
-            "label": "Close the fresh tear",
-            "at": {
-              "x": 6,
-              "y": 3
-            },
-            "turns": 3,
-            "endsFight": true,
-            "effects": [
-              {
-                "type": "setFlag",
-                "flag": "bone_rift_closed"
-              }
-            ]
-          }
-        ]
-      },
-      "onVictory": {
-        "goto": "cleared"
-      },
-      "onDefeat": {
-        "goto": "rescued",
-        "effects": [
-          {
-            "type": "heal",
-            "amount": 3,
-            "to": "party"
-          },
-          {
-            "type": "setFlag",
-            "flag": "bone_retreat"
-          }
-        ]
-      },
-      "art": "scenes/riftlight/bone-yard-ruins"
-    },
-    "fight_seam": {
-      "type": "encounter",
-      "map": "riftlight_bone_yard",
-      "narration": "Your marks show where to fold the tear shut. End two turns beside it to close it, or drive the crawlers away. Shifting stones still bite at anyone who stops on them.",
-      "enemies": [
-        {
-          "id": "crawler",
-          "creature": "bone_crawler",
-          "count": 2
-        }
-      ],
-      "environment": {
-        "hazards": [
-          {
-            "id": "loose_stones",
-            "kind": "rift",
-            "label": "Shifting loose stones",
-            "tiles": [
-              {
-                "x": 5,
-                "y": 2
-              },
-              {
-                "x": 4,
-                "y": 5
-              }
-            ],
-            "damage": 1
-          }
-        ],
-        "objectives": [
-          {
-            "id": "close_seam",
-            "kind": "close",
-            "label": "Close the fresh tear",
-            "at": {
-              "x": 6,
-              "y": 3
-            },
-            "turns": 2,
-            "endsFight": true,
-            "effects": [
-              {
-                "type": "setFlag",
-                "flag": "bone_rift_closed"
-              }
-            ]
-          }
-        ]
-      },
-      "onVictory": {
-        "goto": "cleared"
-      },
-      "onDefeat": {
-        "goto": "rescued",
-        "effects": [
-          {
-            "type": "heal",
-            "amount": 3,
-            "to": "party"
-          },
-          {
-            "type": "setFlag",
-            "flag": "bone_retreat"
-          }
-        ]
-      },
-      "art": "scenes/riftlight/bone-yard-ruins"
-    },
-    "fight_mats": {
-      "type": "encounter",
-      "map": "riftlight_bone_yard",
-      "narration": "Your carried mats cover the northern loose-stone patch. The southern patch still shifts, and the crawlers crowd the passage. Close the seam by ending three turns beside it, or drive the crawlers clear.",
-      "enemies": [
-        {
-          "id": "crawler",
-          "creature": "bone_crawler",
-          "count": 2
-        }
-      ],
-      "environment": {
-        "hazards": [
-          {
-            "id": "loose_stones",
-            "kind": "rift",
-            "label": "Shifting loose stones",
-            "tiles": [
-              {
-                "x": 4,
-                "y": 5
-              }
-            ],
-            "damage": 1
-          }
-        ],
-        "objectives": [
-          {
-            "id": "close_seam",
-            "kind": "close",
-            "label": "Close the fresh tear",
-            "at": {
-              "x": 6,
-              "y": 3
-            },
-            "turns": 3,
-            "endsFight": true,
-            "effects": [
-              {
-                "type": "setFlag",
-                "flag": "bone_rift_closed"
-              }
-            ]
-          }
-        ]
-      },
-      "onVictory": {
-        "goto": "cleared"
-      },
-      "onDefeat": {
-        "goto": "rescued",
-        "effects": [
-          {
-            "type": "heal",
-            "amount": 3,
-            "to": "party"
-          },
-          {
-            "type": "setFlag",
-            "flag": "bone_retreat"
-          }
-        ]
-      },
-      "art": "scenes/riftlight/bone-yard-ruins"
-    },
-    "fight_seam_mats": {
-      "type": "encounter",
-      "map": "riftlight_bone_yard",
-      "narration": "Your carried mats cover the northern loose-stone patch. The southern patch still shifts, and the crawlers crowd the passage. Close the seam by ending two turns beside it, or drive the crawlers clear.",
-      "enemies": [
-        {
-          "id": "crawler",
-          "creature": "bone_crawler",
-          "count": 2
-        }
-      ],
-      "environment": {
-        "hazards": [
-          {
-            "id": "loose_stones",
-            "kind": "rift",
-            "label": "Shifting loose stones",
-            "tiles": [
-              {
-                "x": 4,
-                "y": 5
-              }
-            ],
-            "damage": 1
-          }
-        ],
-        "objectives": [
-          {
-            "id": "close_seam",
-            "kind": "close",
-            "label": "Close the fresh tear",
-            "at": {
-              "x": 6,
-              "y": 3
-            },
-            "turns": 2,
-            "endsFight": true,
-            "effects": [
-              {
-                "type": "setFlag",
-                "flag": "bone_rift_closed"
-              }
-            ]
-          }
-        ]
-      },
-      "onVictory": {
-        "goto": "cleared"
-      },
-      "onDefeat": {
-        "goto": "rescued",
-        "effects": [
-          {
-            "type": "heal",
-            "amount": 3,
-            "to": "party"
-          },
-          {
-            "type": "setFlag",
-            "flag": "bone_retreat"
-          }
-        ]
-      },
-      "art": "scenes/riftlight/bone-yard-ruins"
-    },
-    "cleared": {
+    "doorway_step": {
       "type": "story",
-      "narration": "The crawlers leave the passage and the leaning wall stops rocking. You have room to pass without climbing into the swarm. One crawler remains on a safe rock, determined to look enormous.",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "bones_passage_done"
-        }
-      ],
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "inventory"
-        }
-      ],
-      "variants": [
-        {
-          "when": {
-            "flag": "bone_rift_closed"
-          },
-          "text": "You closed the tear rather than driving every crawler away. With the fresh magic gone, they turn toward the stones deeper in the yard."
-        }
-      ],
+      "narration": "Inside the oldest doorway, the front step is worn into a dip by feet, a long, long time ago. Somebody went in and out of this door every day. Pip takes off his hat. \"Somebody lived here,\" he whispers.",
       "cast": [
         {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        },
-        {
-          "figure": "entities/bone_crawler"
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
-    },
-    "rescued": {
-      "type": "story",
-      "narration": "The crawlers press you back to the route line. Your party pulls clear while the guide signals from the pool. You rest outside their reach. The narrow passage stays blocked, so the guide points out the longer rim path you can use instead. You lose the short route, not anyone from the party.",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "bone_plank_recoverable",
-          "value": false
-        },
-        {
-          "type": "setFlag",
-          "flag": "bone_mats_recoverable",
-          "value": false
-        }
-      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
       "choices": [
         {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "inventory"
+          "id": "back",
+          "label": "Go back to Puddle",
+          "icon": "back",
+          "goto": "carvings"
         }
-      ],
+      ]
+    },
+    "doorway_nest": {
+      "type": "story",
+      "narration": "Wrong doorway. It is full of sleeping crawlers, packed like spoons in a drawer. They wake up grumpy and pour out past your ankles, clattering off toward the middle of the ruins. One nips Pip's tail on the way. \"Rude,\" says Pip.",
       "cast": [
         {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         },
         {
           "figure": "entities/bone_crawler",
           "count": 4
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
-    },
-    "inventory": {
-      "type": "choice_point",
-      "narration": "A carved chip lies beside the path. It would fit a pocket. The guide points to the returning pebble. \"Your pocket is merely a delay.\" Check the difference between your bright-marked gear and the yard's things before leaving.",
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
       "art": "scenes/riftlight/bone-yard-ruins",
       "choices": [
         {
-          "id": "draw",
-          "label": "Draw the chip without taking it",
-          "icon": "hand",
-          "goto": "inventory_response_draw"
-        },
-        {
-          "id": "loop",
-          "label": "Point out the bright loops on your own gear",
-          "icon": "hand",
-          "goto": "inventory_response_loop"
-        },
-        {
-          "id": "sole",
-          "label": "Brush a stone crumb from your sole toward the yard",
-          "icon": "hand",
-          "goto": "inventory_response_sole"
+          "id": "back",
+          "label": "Hurry back to Puddle",
+          "icon": "back",
+          "goto": "carvings"
         }
       ]
     },
-    "unbrace": {
-      "type": "choice_point",
-      "narration": "Loose gear can come back now. A caught plank needs a replacement stone before removal; used mats need unfastening. You may recover accessible supports, or leave caught gear in place and gather only what is loose. A retreat blocks those inner recoveries.",
+    "carvings": {
+      "type": "interaction",
+      "narration": "Puddle calls you back to her puddle. \"Low down by the gate. Old carving. Copy it for me, I can't reach.\" Under the moss is a row of shapes cut into the stone. Watch them, then draw them in order.",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "variants": [
-        {
-          "when": {
-            "flag": "bone_retreat"
-          },
-          "text": "The crawlers block the wall and covered patch. Caught gear stays inside; the guide directs you onto the longer rim."
-        }
-      ],
-      "choices": [
-        {
-          "id": "loose",
-          "label": "Gather loose gear and leave caught supports",
-          "icon": "hand",
-          "goto": "gather_loose"
+          "name": "Puddle",
+          "stance": "swimming"
         },
         {
-          "id": "plank",
-          "label": "Replace the support and recover our marked plank",
-          "icon": "hand",
-          "goto": "replace_plank",
-          "when": {
-            "flag": "bone_plank_recoverable",
-            "notFlag": "bone_plank_recovered"
-          }
-        },
-        {
-          "id": "mats",
-          "label": "Unfasten and recover our used mats",
-          "icon": "hand",
-          "goto": "recover_mats",
-          "when": {
-            "flag": "bone_mats_recoverable",
-            "notFlag": "bone_mats_recovered"
-          }
-        }
-      ]
-    },
-    "replace_plank": {
-      "type": "interaction",
-      "narration": "Balance a fallen yard stone beneath the supported edge before sliding your marked plank free. Leave the replacement stone inside the boundary.",
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
       "interaction": {
-        "kind": "balance",
-        "cue": "Settle the replacement stone before freeing the plank.",
-        "actionLabel": "Recover the marked plank",
-        "objectLabel": "Replacement support stone"
-      },
-      "onSuccess": {
-        "goto": "unbrace",
-        "narration": "The wall stays supported on its own stone. Your marked plank is free.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "bone_plank_recovered",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "unbrace",
-        "narration": "The wall stays supported on its own stone. Your marked plank is free.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "bone_plank_recovered",
-            "value": true
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "unbrace",
-        "narration": "The wall stays supported on its own stone. Your marked plank is free.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "bone_plank_recovered",
-            "value": true
-          }
-        ]
-      }
-    },
-    "recover_mats": {
-      "type": "interaction",
-      "narration": "Keep the mat edge supported while another helper releases its bright ties. The passage is clear enough to reach them; leave every yard stone on the ground.",
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "interaction": {
-        "kind": "cooperate",
-        "cue": "Support the used mat while its ties are released.",
-        "actionLabel": "Free the used mats",
-        "supportLabel": "Hold the mat edge"
-      },
-      "onSuccess": {
-        "goto": "unbrace",
-        "narration": "The mats are untied and ready to bring outside.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "bone_mats_recovered",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "unbrace",
-        "narration": "The mats are untied and ready to bring outside.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "bone_mats_recovered",
-            "value": true
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "unbrace",
-        "narration": "The mats are untied and ready to bring outside.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "bone_mats_recovered",
-            "value": true
-          }
-        ]
-      }
-    },
-    "gather_loose": {
-      "type": "interaction",
-      "narration": "Pass your loose line, free plank and any recovered mats along the outer strip. Nothing caught under a blocked support is pulled after you.",
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Pass the loose marked gear along the strip.",
-        "actionLabel": "Pass the loose gear",
-        "objectLabel": "Loose bright-marked gear"
-      },
-      "onSuccess": {
-        "goto": "exit_strip",
-        "narration": "Your loose kit is together. Choose the route that is actually open."
-      },
-      "onFailure": {
-        "goto": "exit_strip",
-        "narration": "Your loose kit is together. Choose the route that is actually open."
-      },
-      "onAssisted": {
-        "goto": "exit_strip",
-        "narration": "Your loose kit is together. Choose the route that is actually open."
-      }
-    },
-    "exit_strip": {
-      "type": "choice_point",
-      "narration": "The boundary pool shines beyond the arches. The guide raises her crest. \"Listen for my calls.\" Follow her outer-rim instructions, or collect your short return line if the passage stayed clear.",
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "variants": [
-        {
-          "when": {
-            "flag": "bone_retreat"
-          },
-          "text": "The crawlers still hold the short passage. The longer route is the way past it; a line behind them does not make it open."
-        }
-      ],
-      "choices": [
-        {
-          "id": "guide",
-          "label": "Follow the guide's outer-rim landmarks",
-          "icon": "hand",
-          "goto": "outer_rim"
-        },
-        {
-          "id": "line",
-          "label": "Follow and gather our short return line",
-          "icon": "hand",
-          "goto": "return_line",
-          "when": {
-            "flag": "bone_line_laid",
-            "notFlag": "bone_retreat"
-          }
-        }
-      ]
-    },
-    "outer_rim": {
-      "type": "interaction",
-      "narration": "Share the guide's calls to follow the arches around the hollow. Keep the boundary pool as the final landmark; you are taking the actual wide route, not reporting an inner victory.",
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "interaction": {
-        "kind": "sequence",
-        "cue": "Follow the outer landmarks toward the pool.",
-        "actionLabel": "Try our plan",
+        "kind": "memory",
+        "cue": "Watch the carved shapes, then draw them in order.",
+        "actionLabel": "Draw the carving",
         "options": [
           {
-            "id": "pool",
-            "label": "Boundary pool",
-            "icon": "eye"
+            "id": "line",
+            "label": "Long line",
+            "icon": "scroll"
           },
           {
-            "id": "low",
-            "label": "Low arch",
-            "icon": "eye"
+            "id": "wave",
+            "label": "Little wave",
+            "icon": "drop"
           },
           {
-            "id": "split",
-            "label": "Split arch",
-            "icon": "eye"
+            "id": "ring",
+            "label": "Ring",
+            "icon": "moon"
           }
         ],
         "answer": [
-          "split",
-          "low",
-          "pool"
+          "line",
+          "wave",
+          "wave",
+          "ring"
         ],
-        "clues": [
-          "Start at the split arch nearest the inner approach.",
-          "The low arch lies between the split arch and the pool.",
-          "Finish outside at the boundary pool."
-        ]
+        "stepMs": 1300
       },
       "onSuccess": {
-        "goto": "boundary",
-        "narration": "Your party reaches the pool by the outer rim.",
+        "goto": "same_stone",
+        "narration": "Your copy is neat and exact. \"Good,\" says Puddle. \"I could read that in the dark.\"",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "bones_passage_done",
+            "flag": "bones_drawing_exact",
             "value": true
           }
         ]
       },
       "onFailure": {
-        "goto": "boundary",
-        "narration": "The guide repeats the crest calls until the outer rim is clear to follow. Your party reaches her pool.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "bones_passage_done",
-            "value": true
-          }
-        ]
+        "goto": "same_stone",
+        "narration": "Your copy wobbles. One wave looks like a sausage. But every shape is there."
       },
       "onAssisted": {
-        "goto": "boundary",
-        "narration": "Your party reaches the pool by the outer rim.",
+        "goto": "same_stone",
+        "narration": "Puddle calls out each shape from her puddle, and you draw as she talks. The copy comes out neat.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "bones_passage_done",
+            "flag": "bones_drawing_exact",
             "value": true
           }
         ]
       }
     },
-    "return_line": {
-      "type": "interaction",
-      "narration": "Hold the marked line while your friends gather its loose length from the cleared passage. It ends at the guide's pool outside the yard.",
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "interaction": {
-        "kind": "cooperate",
-        "cue": "Support the line as the party gathers it outside.",
-        "actionLabel": "Gather the short return line",
-        "supportLabel": "Hold the return line"
-      },
-      "onSuccess": {
-        "goto": "boundary",
-        "narration": "The clear short passage brings the party and its line back to the pool.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "bones_passage_done",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "boundary",
-        "narration": "The clear short passage brings the party and its line back to the pool.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "bones_passage_done",
-            "value": true
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "boundary",
-        "narration": "The clear short passage brings the party and its line back to the pool.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "bones_passage_done",
-            "value": true
-          }
-        ]
-      }
-    },
-    "boundary": {
-      "type": "choice_point",
-      "narration": "A crumb falls from a muddy sole and rolls uphill toward the ruins. \"Other foot too,\" says the guide. Leave the yard's tiny hitchhikers behind before closing the packs.",
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "choices": [
-        {
-          "id": "boots",
-          "label": "Brush boot soles toward the yard",
-          "icon": "hand",
-          "goto": "boundary_response_boots"
-        },
-        {
-          "id": "mats",
-          "label": "Unfold the returned mats above the line",
-          "icon": "hand",
-          "goto": "boundary_response_mats"
-        },
-        {
-          "id": "packs",
-          "label": "Check that the packs hold only your own kit",
-          "icon": "hand",
-          "goto": "boundary_response_packs"
-        }
-      ]
-    },
-    "report": {
+    "same_stone": {
       "type": "story",
-      "narration": "The guide opens her warning board. You describe the changing inner path, the firm outside route and the yard stones that stayed inside. She adds the gear you actually recovered or left behind. \"A useful warning needs the whole account,\" the guide says. \"Inconvenient bits too.\"",
+      "narration": "You hold your drawing beside the stone and remember the buried bridge. Its old arches were this same gray stone, with these same white specks, curved this same way. They had this same waterline, carved high up. These ruins and that bridge came from the same old place. Something carried them both away and set them down far apart. \"The bridge has family,\" Puddle whispers.",
+      "priority": 1,
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "bones_read_carvings",
+          "value": true
+        }
+      ],
       "cast": [
         {
           "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
       "choices": [
         {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "handoff"
+          "id": "listen",
+          "label": "Listen to the stones creak",
+          "icon": "ear",
+          "goto": "lean"
         }
       ]
     },
-    "handoff": {
-      "type": "choice_point",
-      "narration": "The guide waves her own route warning. \"I have one too.\" An earlier note from Orin asks the Riftseekers to compare sightings at the glacier. You can authorize her to relay your written account too, or keep your copy for the next meeting. Which will you do?",
+    "lean": {
+      "type": "story",
+      "narration": "A wave touches the walls. Every stone creaks, and the whole ruin leans a finger's width north, upriver. Your chime swings the same way, toward the glacier far away, and hums. Pip, who has climbed a wall for a better look, wobbles. \"They're trying to walk home!\" \"Moved things do that,\" says Puddle. \"Goats. Ruins. Everything wants home.\"",
+      "priority": 2,
       "cast": [
         {
           "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
       "choices": [
         {
-          "id": "relay",
-          "label": "Authorize the guide to relay our account",
+          "id": "catch",
+          "label": "Catch Pip!",
           "icon": "hand",
-          "goto": "relay_account",
+          "goto": "catch_pip"
+        }
+      ]
+    },
+    "catch_pip": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "The wall tips under Pip's feet. His spoon goes one way and Pip goes the other.",
+      "prompt": "Catch Pip before he lands in Puddle's puddle",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "onSuccess": {
+        "goto": "pip_idea",
+        "narration": "You catch him by the scruff, like a kitten. Pip dangles and blinks. \"Thank you. That was very scientific of you.\""
+      },
+      "onFailure": {
+        "goto": "pip_idea",
+        "narration": "He lands on you, and then you both land in Puddle's puddle. Puddle puffs up in surprise, and you get stung a little. \"Sorry, sorry,\" says Puddle, shrinking.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "pip_idea": {
+      "type": "choice_point",
+      "narration": "Pip's eyes shine. \"If ruins can walk, Lady Olivia could make them walk anywhere! Bridges where we need them. A tower by the sea!\" Puddle looks at the leaning stones and says nothing. What do you tell Pip?",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "choices": [
+        {
+          "id": "amazing",
+          "label": "That would be amazing",
+          "icon": "star",
+          "goto": "pip_amazing",
           "effects": [
             {
               "type": "setFlag",
-              "flag": "bone_account_shared",
+              "flag": "bones_pip_dreams",
               "value": true
             }
           ]
         },
         {
-          "id": "keep",
-          "label": "Keep our written copy for a later meeting",
-          "icon": "hand",
-          "goto": "keep_account",
+          "id": "home",
+          "label": "Maybe they just want to go home",
+          "icon": "heart",
+          "goto": "pip_home",
           "effects": [
             {
               "type": "setFlag",
-              "flag": "bone_account_shared",
-              "value": false
+              "flag": "bones_pip_wonders",
+              "value": true
             }
           ]
         }
       ]
     },
-    "relay_account": {
+    "pip_amazing": {
       "type": "story",
-      "narration": "You give the guide your checked account at her pool. It names your route and any gear left behind. She keeps it beside her warning board. Your record can travel, but it cannot bring a yard pebble along for proof.",
+      "narration": "Pip writes AMAZING in his notebook and underlines it three times. Puddle's crest droops a little. \"Things you push,\" she says, \"push back.\"",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
       "choices": [
         {
-          "id": "continue",
-          "label": "Continue",
+          "id": "on",
+          "label": "Follow the lean to the middle",
+          "icon": "arrow",
+          "goto": "dam"
+        }
+      ]
+    },
+    "pip_home": {
+      "type": "story",
+      "narration": "Pip chews his pencil. Then he writes \"Ask the ruins?\" in his notebook and draws a very small question mark. Puddle's crest stands up tall.",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Follow the lean to the middle",
+          "icon": "arrow",
+          "goto": "dam"
+        }
+      ]
+    },
+    "dam": {
+      "type": "choice_point",
+      "narration": "A fallen arch lies across Puddle's channel like a lid on a pot. Water piles up behind it. Past it, in an open square, a tear in the air flickers: bigger, smaller, bigger. Crawlers crowd around it. \"Shoving is quick,\" says Puddle. \"But stones scrape, and shoved things creep back. Or we help it go the way it leans. That's slow, and the tear keeps growing.\"",
+      "rift": "steady",
+      "variants": [
+        {
+          "when": {
+            "flag": "bones_pip_dreams"
+          },
+          "text": "Pip is already rolling up his sleeves. \"Lady Olivia would shove it.\""
+        },
+        {
+          "when": {
+            "flag": "bones_pip_wonders"
+          },
+          "text": "Pip scratches his ear. \"Or we could ask it. Can you ask an arch?\""
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/bone_crawler",
+          "count": 3
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "choices": [
+        {
+          "id": "shove",
+          "label": "Shove the arch out of the way",
+          "icon": "might",
+          "goto": "check_shove"
+        },
+        {
+          "id": "help",
+          "label": "Help it go the way it leans",
+          "icon": "eye",
+          "goto": "watch_lean"
+        },
+        {
+          "id": "bigfoot",
+          "label": "Let your bigfoot lift it out",
+          "icon": "bigfoot",
+          "goto": "bigfoot_lift",
+          "requiresSpecies": "bigfoot"
+        }
+      ]
+    },
+    "check_shove": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "narration": "Everyone grabs an edge. Pip grabs Puddle's tail by mistake. \"Not that,\" says Puddle. \"On three!\"",
+      "prompt": "Shove the fallen arch out of the channel together",
+      "roller": "party",
+      "rift": "steady",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "onSuccess": {
+        "goto": "shoved",
+        "narration": "The arch grinds over the rocks and flops out of the channel.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bones_forced",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "bones_channel_open",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "cracked",
+        "narration": "The arch tips, cracks in two, and half of it thumps right back into the channel.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bones_forced",
+            "value": true
+          }
+        ]
+      }
+    },
+    "shoved": {
+      "type": "story",
+      "narration": "Water rushes through with a happy gurgle, and Puddle shoots past you like a cork. \"Water!\" Then she sees the arch. Its carved face scraped along the rocks. The waterline is gone, ground into gray dust. And already, with every wave, the arch creaks back toward the channel.",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "choices": [
+        {
+          "id": "in",
+          "label": "Into the square",
           "icon": "forward",
+          "goto": "court_quick"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "bones_drawing_exact"
+          },
+          "text": "Good thing you drew it first, and neatly."
+        },
+        {
+          "when": {
+            "notFlag": "bones_drawing_exact"
+          },
+          "text": "Good thing you drew it first, sausage wave and all."
+        }
+      ]
+    },
+    "cracked": {
+      "type": "story",
+      "narration": "Only a trickle gets past the broken half. Puddle's crest droops. \"Well. That was loud.\" The carving is in crumbly pieces now. Pip pats the arch. \"Sorry,\" he tells it. In the square, at least, the tear is still small.",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "choices": [
+        {
+          "id": "in",
+          "label": "Into the square",
+          "icon": "forward",
+          "goto": "court_quick"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "bones_drawing_exact"
+          },
+          "text": "Good thing you drew it first, and neatly."
+        },
+        {
+          "when": {
+            "notFlag": "bones_drawing_exact"
+          },
+          "text": "Good thing you drew it first, sausage wave and all."
+        }
+      ]
+    },
+    "bigfoot_lift": {
+      "type": "story",
+      "narration": "Your bigfoot hugs the arch and stands up. It comes away with a groan and a lot of dripping. \"Water!\" cries Puddle, and shoots past like a cork. But the carved face scraped as it came up, and the waterline is gone. Already the arch creaks back toward the channel.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "bones_forced",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "bones_channel_open",
+          "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "choices": [
+        {
+          "id": "in",
+          "label": "Into the square",
+          "icon": "forward",
+          "goto": "court_quick"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "bones_drawing_exact"
+          },
+          "text": "Good thing you drew it first, and neatly."
+        },
+        {
+          "when": {
+            "notFlag": "bones_drawing_exact"
+          },
+          "text": "Good thing you drew it first, sausage wave and all."
+        }
+      ]
+    },
+    "watch_lean": {
+      "type": "interaction",
+      "narration": "Puddle lies flat in the trickle and watches the waves. \"It leans the same way every time,\" she says. \"Scoop the mud from the right places, in the right order, and the water will push it for us.\" She whispers a different part of the plan to each of you.",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "rift": "steady",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Put Puddle's scooping plan in order.",
+        "actionLabel": "Scoop!",
+        "options": [
+          {
+            "id": "north",
+            "label": "North side",
+            "icon": "arrow"
+          },
+          {
+            "id": "keystone",
+            "label": "Under the keystone",
+            "icon": "key"
+          },
+          {
+            "id": "corner",
+            "label": "Far corner",
+            "icon": "drop"
+          }
+        ],
+        "answer": [
+          "north",
+          "keystone",
+          "corner"
+        ],
+        "clues": [
+          "Start on the side it leans toward.",
+          "The keystone comes right after the north side.",
+          "Finish at the far corner, where the water wants out."
+        ]
+      },
+      "onSuccess": {
+        "goto": "nudged",
+        "narration": "Wave by wave, you scoop. Wave by wave, the arch slides.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bones_channel_open",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "bones_channel_lasting",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "nudged_slow",
+        "narration": "You scoop the keystone first. The arch leans back, sulking, and Puddle has to start again.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bones_channel_lasting",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "nudged",
+        "narration": "Pip reads the clues out loud, and you scoop together, in order.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bones_channel_open",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "bones_channel_lasting",
+            "value": true
+          }
+        ]
+      }
+    },
+    "nudged": {
+      "type": "story",
+      "narration": "The arch slides north, a little at a time, the way it wanted to go. The water curls around it and runs free, and the carving is still whole. \"It went where it wanted,\" says Puddle, swimming a loop. Then she stops. While you worked, the tear grew wide and bright, and more crawlers came.",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "choices": [
+        {
+          "id": "in",
+          "label": "Into the square",
+          "icon": "forward",
+          "goto": "court_grown"
+        }
+      ]
+    },
+    "nudged_slow": {
+      "type": "story",
+      "narration": "At last the arch slides, but only a trickle gets past. \"The tide will finish it,\" says Puddle. \"By morning, it runs.\" The carving is still whole. But while you worked, the tear grew wide and bright, and more crawlers came.",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "choices": [
+        {
+          "id": "in",
+          "label": "Into the square",
+          "icon": "forward",
+          "goto": "court_grown"
+        }
+      ]
+    },
+    "court_quick": {
+      "type": "choice_point",
+      "narration": "You step into the square. The tear hangs in the air like a crack in a window, small and flickering. The crawlers circle it, clattering. Then they all turn at once, toward your humming chime.",
+      "rift": "steady",
+      "variants": [
+        {
+          "when": {
+            "flag": "bones_pip_chip"
+          },
+          "text": "And toward Pip's humming pocket. They pile around him against the far wall. \"I would like to give this back now!\" squeaks Pip."
+        },
+        {
+          "when": {
+            "flag": "bones_channel_open"
+          },
+          "text": "Puddle bobs in the channel at the edge of the square. \"Watch my crest. Up means duck!\""
+        },
+        {
+          "when": {
+            "notFlag": "bones_channel_open"
+          },
+          "text": "Puddle calls from the trickle outside. \"Watch my crest over the wall. Up means duck!\""
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/bone_crawler",
+          "count": 2
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "choices": [
+        {
+          "id": "tear",
+          "label": "Go for the tear",
+          "icon": "spark",
+          "goto": "fight_quick"
+        },
+        {
+          "id": "pip",
+          "label": "Pull Pip out first",
+          "icon": "hand",
+          "goto": "fight_quick_pip",
+          "requiresFlag": "bones_pip_chip"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "bones_drawing_exact",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "bones_pip_dreams",
+          "value": false
+        }
+      ]
+    },
+    "court_grown": {
+      "type": "choice_point",
+      "narration": "You step into the square. The tear is wide now, bright as a window at night, and it flickers bigger and smaller. More crawlers circle it, clattering. Then they all turn at once, toward your humming chime.",
+      "rift": "steady",
+      "variants": [
+        {
+          "when": {
+            "flag": "bones_pip_chip"
+          },
+          "text": "And toward Pip's humming pocket. They pile around him against the far wall. \"I would like to give this back now!\" squeaks Pip."
+        },
+        {
+          "when": {
+            "flag": "bones_channel_open"
+          },
+          "text": "Puddle bobs in the channel at the edge of the square. \"Watch my crest. Up means duck!\""
+        },
+        {
+          "when": {
+            "notFlag": "bones_channel_open"
+          },
+          "text": "Puddle calls from the trickle outside. \"Watch my crest over the wall. Up means duck!\""
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/bone_crawler",
+          "count": 3
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "choices": [
+        {
+          "id": "tear",
+          "label": "Go for the tear",
+          "icon": "spark",
+          "goto": "fight_grown"
+        },
+        {
+          "id": "pip",
+          "label": "Pull Pip out first",
+          "icon": "hand",
+          "goto": "fight_grown_pip",
+          "requiresFlag": "bones_pip_chip"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "bones_drawing_exact",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "bones_pip_dreams",
+          "value": false
+        }
+      ]
+    },
+    "fight_quick": {
+      "type": "encounter",
+      "map": "riftlight_bone_yard",
+      "narration": "Close the tear by ending two turns beside it, or drive the crawlers off. Loose stones by the tear bite anyone who stops on them.",
+      "enemies": [
+        {
+          "id": "crawler",
+          "creature": "bone_crawler",
+          "count": 2
+        }
+      ],
+      "environment": {
+        "hazards": [
+          {
+            "id": "loose_stones",
+            "kind": "rift",
+            "label": "Shifting loose stones",
+            "tiles": [
+              {
+                "x": 5,
+                "y": 2
+              },
+              {
+                "x": 4,
+                "y": 5
+              }
+            ],
+            "damage": 1
+          }
+        ],
+        "objectives": [
+          {
+            "id": "close_tear",
+            "kind": "close",
+            "label": "Close the fresh tear",
+            "at": {
+              "x": 6,
+              "y": 3
+            },
+            "turns": 2,
+            "endsFight": true,
+            "effects": [
+              {
+                "type": "setFlag",
+                "flag": "bones_tear_closed",
+                "value": true
+              }
+            ]
+          }
+        ]
+      },
+      "onVictory": {
+        "goto": "court_after"
+      },
+      "onDefeat": {
+        "goto": "swarmed",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          },
+          {
+            "type": "setFlag",
+            "flag": "bones_retreat",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "bones_drawing_lost",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/riftlight/bone-yard-ruins"
+    },
+    "fight_quick_pip": {
+      "type": "encounter",
+      "map": "riftlight_bone_yard",
+      "narration": "Close the tear by ending two turns beside it, or drive the crawlers off. Loose stones by the tear bite anyone who stops on them. Pip is stuck in the pile by the far wall. End a turn next to him to pull him out.",
+      "enemies": [
+        {
+          "id": "crawler",
+          "creature": "bone_crawler",
+          "count": 2
+        }
+      ],
+      "environment": {
+        "hazards": [
+          {
+            "id": "loose_stones",
+            "kind": "rift",
+            "label": "Shifting loose stones",
+            "tiles": [
+              {
+                "x": 5,
+                "y": 2
+              },
+              {
+                "x": 4,
+                "y": 5
+              }
+            ],
+            "damage": 1
+          }
+        ],
+        "objectives": [
+          {
+            "id": "close_tear",
+            "kind": "close",
+            "label": "Close the fresh tear",
+            "at": {
+              "x": 6,
+              "y": 3
+            },
+            "turns": 2,
+            "endsFight": true,
+            "effects": [
+              {
+                "type": "setFlag",
+                "flag": "bones_tear_closed",
+                "value": true
+              }
+            ]
+          }
+        ],
+        "rescue": {
+          "name": "Pip",
+          "at": {
+            "x": 3,
+            "y": 7
+          },
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "bones_pip_freed",
+              "value": true
+            }
+          ]
+        }
+      },
+      "onVictory": {
+        "goto": "court_after"
+      },
+      "onDefeat": {
+        "goto": "swarmed",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          },
+          {
+            "type": "setFlag",
+            "flag": "bones_retreat",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "bones_drawing_lost",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/riftlight/bone-yard-ruins"
+    },
+    "fight_grown": {
+      "type": "encounter",
+      "map": "riftlight_bone_yard",
+      "narration": "Close the tear by ending three turns beside it, or drive the crawlers off. Loose stones by the tear bite anyone who stops on them.",
+      "enemies": [
+        {
+          "id": "crawler",
+          "creature": "bone_crawler"
+        }
+      ],
+      "environment": {
+        "hazards": [
+          {
+            "id": "loose_stones",
+            "kind": "rift",
+            "label": "Shifting loose stones",
+            "tiles": [
+              {
+                "x": 5,
+                "y": 2
+              },
+              {
+                "x": 4,
+                "y": 5
+              }
+            ],
+            "damage": 1
+          }
+        ],
+        "objectives": [
+          {
+            "id": "close_tear",
+            "kind": "close",
+            "label": "Close the fresh tear",
+            "at": {
+              "x": 6,
+              "y": 3
+            },
+            "turns": 3,
+            "endsFight": true,
+            "effects": [
+              {
+                "type": "setFlag",
+                "flag": "bones_tear_closed",
+                "value": true
+              }
+            ]
+          }
+        ]
+      },
+      "onVictory": {
+        "goto": "court_after"
+      },
+      "onDefeat": {
+        "goto": "swarmed",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          },
+          {
+            "type": "setFlag",
+            "flag": "bones_retreat",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "bones_drawing_lost",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/riftlight/bone-yard-ruins"
+    },
+    "fight_grown_pip": {
+      "type": "encounter",
+      "map": "riftlight_bone_yard",
+      "narration": "Close the tear by ending three turns beside it, or drive the crawlers off. Loose stones by the tear bite anyone who stops on them. Pip is stuck in the pile by the far wall. End a turn next to him to pull him out.",
+      "enemies": [
+        {
+          "id": "crawler",
+          "creature": "bone_crawler"
+        }
+      ],
+      "environment": {
+        "hazards": [
+          {
+            "id": "loose_stones",
+            "kind": "rift",
+            "label": "Shifting loose stones",
+            "tiles": [
+              {
+                "x": 5,
+                "y": 2
+              },
+              {
+                "x": 4,
+                "y": 5
+              }
+            ],
+            "damage": 1
+          }
+        ],
+        "objectives": [
+          {
+            "id": "close_tear",
+            "kind": "close",
+            "label": "Close the fresh tear",
+            "at": {
+              "x": 6,
+              "y": 3
+            },
+            "turns": 3,
+            "endsFight": true,
+            "effects": [
+              {
+                "type": "setFlag",
+                "flag": "bones_tear_closed",
+                "value": true
+              }
+            ]
+          }
+        ],
+        "rescue": {
+          "name": "Pip",
+          "at": {
+            "x": 3,
+            "y": 7
+          },
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "bones_pip_freed",
+              "value": true
+            }
+          ]
+        }
+      },
+      "onVictory": {
+        "goto": "court_after"
+      },
+      "onDefeat": {
+        "goto": "swarmed",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          },
+          {
+            "type": "setFlag",
+            "flag": "bones_retreat",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "bones_drawing_lost",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/riftlight/bone-yard-ruins"
+    },
+    "court_after": {
+      "type": "story",
+      "narration": "The last crawler clatters off into the ruins. The square is yours.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "bones_got_past",
+          "value": true
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "bones_tear_closed"
+          },
+          "text": "The tear folds shut like a sleepy eye. With the fresh magic gone, the crawlers lose interest. Soon they are back to fitting their shells, one bone chip at a time."
+        },
+        {
+          "when": {
+            "notFlag": "bones_tear_closed"
+          },
+          "text": "Behind them, the tear still flickers, bigger, smaller, bigger. \"We'll mark it,\" says Puddle. \"Travelers go around it from now on.\""
+        },
+        {
+          "when": {
+            "flag": "bones_pip_freed"
+          },
+          "text": "Pip tumbles out of the pile, hugging the chip. \"Thank you,\" he gasps. \"This chip is much more popular than me.\""
+        },
+        {
+          "when": {
+            "flag": "bones_pip_chip",
+            "notFlag": "bones_pip_freed"
+          },
+          "text": "Pip squeezes out on his own, scratched and grumpy. The crawlers kept his notebook. \"My drawings for Lady Olivia,\" he moans."
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/bone_crawler",
+          "count": 1
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "choices": [
+        {
+          "id": "find",
+          "label": "Find Puddle",
+          "icon": "drop",
+          "goto": "puddle_court"
+        }
+      ]
+    },
+    "puddle_court": {
+      "type": "story",
+      "narration": "Puddle swims right into the square, the first Skupper ever to see it from inside. She touches a carved waterline with one fin. \"Same as the bridge,\" she says softly. \"I had to see it myself.\"",
+      "variants": [
+        {
+          "when": {
+            "notFlag": "bones_channel_open"
+          },
+          "text": "Puddle can't reach the square over dry stone. So Pip lifts her up to the wall, very carefully, because of the spines. She peeks over at a carved waterline. \"Same as the bridge,\" she says softly. \"I had to see it myself.\"",
+          "replace": true
+        },
+        {
+          "when": {
+            "flag": "bones_forced"
+          },
+          "text": "Then she looks back at the scraped arch, and sighs."
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "choices": [
+        {
+          "id": "rest",
+          "label": "Rest a while",
+          "icon": "rest",
+          "goto": "rest"
+        }
+      ]
+    },
+    "swarmed": {
+      "type": "choice_point",
+      "narration": "The crawlers pile on, all reaching for your humming chime. \"Out! Out!\" cries Puddle, crest straight up. You hold the chime tight and back out of the square. Your drawing slips from your pack, and three crawlers sit on it at once. The short way through the square is theirs now.",
+      "rift": "steady",
+      "variants": [
+        {
+          "when": {
+            "flag": "bones_pip_chip",
+            "notFlag": "bones_pip_freed"
+          },
+          "text": "Pip wriggles out behind you. The crawlers kept his notebook."
+        },
+        {
+          "when": {
+            "flag": "bones_pip_freed"
+          },
+          "text": "Pip stumbles out beside you, hugging the chip."
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/bone_crawler",
+          "count": 4
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "choices": [
+        {
+          "id": "float",
+          "label": "Grab Puddle's puffed fin",
+          "icon": "drop",
+          "goto": "float_out",
+          "requiresFlag": "bones_channel_open"
+        },
+        {
+          "id": "rim",
+          "label": "Climb out along the wall-tops",
+          "icon": "boot",
+          "goto": "check_rim"
+        }
+      ]
+    },
+    "float_out": {
+      "type": "story",
+      "narration": "Puddle puffs up round as a ball. Everyone grabs a spine, carefully. She floats you down her channel, out of the square and around the swarm. \"Ow,\" she says, the whole way. \"Ow. Ow. You're welcome.\"",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "bones_got_past",
+          "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "choices": [
+        {
+          "id": "rest",
+          "label": "Rest by her pool",
+          "icon": "rest",
+          "goto": "rest"
+        }
+      ]
+    },
+    "check_rim": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "The wall-tops are narrow and crumbly, high above the square. Below, the crawlers clatter and watch your chime.",
+      "prompt": "Hurry along the crumbly wall-tops without dropping into the square",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/bone_crawler",
+          "count": 3
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "onSuccess": {
+        "goto": "rest",
+        "narration": "Step, step, hop. You reach the far side, the long way around. The crawlers lose sight of the chime and go back to their tear.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bones_got_past",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "rest",
+        "narration": "A stone gives way. You drop into a dry ditch one hop from the swarm, then scramble out the far side, scraped and puffing. It is the long way around, and it was longer than you hoped.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bones_got_past",
+            "value": true
+          },
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "rest": {
+      "type": "rest",
+      "narration": "Puddle opens her floating lunch box: kelp rolls in leaves. \"Guides eat first,\" she says, and eats one, then shares the rest. Pip eats his in one bite. The ruins creak north with every wave. \"Rule says leave before the tide turns,\" says Puddle. \"But I've always wanted to see them move.\"",
+      "heal": 2,
+      "variants": [
+        {
+          "when": {
+            "flag": "bones_crawler_tail"
+          },
+          "text": "Puddle's lunch box is empty, because a crawler is wearing her lunch. So Pip shares his emergency crackers. They taste a bit like map. The ruins creak north with every wave. \"Rule says leave before the tide turns,\" says Puddle. \"But I've always wanted to see them move.\"",
+          "replace": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "choices": [
+        {
+          "id": "leave",
+          "label": "Leave before the tide turns",
+          "icon": "boot",
+          "goto": "hurry_out"
+        },
+        {
+          "id": "watch",
+          "label": "Stay and watch the stones",
+          "icon": "eye",
+          "goto": "watch_tide"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "bones_pip_freed",
+          "value": false
+        }
+      ]
+    },
+    "hurry_out": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "narration": "Puddle leads the way back, pool to pool, crest high. Behind you, water is already sliding into the channels.",
+      "prompt": "Hop the bones back to the flats before the water rises",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "onSuccess": {
+        "goto": "tide_turns",
+        "narration": "Dry boots, all of you. Puddle is very impressed, and says so twice."
+      },
+      "onFailure": {
+        "goto": "cut_off",
+        "narration": "The last channel fills before you reach it. Water slides in on both sides, and the flats are on the other side of it."
+      },
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "bones_crawler_tail",
+          "value": false
+        }
+      ]
+    },
+    "cut_off": {
+      "type": "story",
+      "narration": "\"Stand still,\" says Puddle. She swims out to the deepest part and puffs up round as a ball. One at a time, you hold her spines, carefully, and she ferries you across. \"Ow. Next. Ow. Next.\" By the last trip her crest is drooping, and you are wet to the knees.",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Squelch onto the flats",
+          "icon": "boot",
+          "goto": "tide_turns"
+        }
+      ]
+    },
+    "watch_tide": {
+      "type": "story",
+      "narration": "You stay. The tide slides in, and every stone creaks. The whole ruin leans north, and for one breath its gate points straight upriver, toward the buried bridge far away. \"Look,\" Puddle breathes. Then cold water swirls around your knees.",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "choices": [
+        {
+          "id": "wade",
+          "label": "Wade out!",
+          "icon": "drop",
+          "goto": "check_tide"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "bones_crawler_tail",
+          "value": false
+        }
+      ]
+    },
+    "check_tide": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "narration": "The water is rising fast and pulling hard. Pip climbs onto Puddle's head, which she does not enjoy.",
+      "prompt": "Wade out through the rising tide, holding on to each other",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "onSuccess": {
+        "goto": "tide_turns",
+        "narration": "You wade out, slow and steady, arm in arm. Nobody lets go."
+      },
+      "onFailure": {
+        "goto": "tide_turns",
+        "narration": "The water knocks your feet away. Puddle puffs up, and you ride out on her like a spiky raft.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "tide_turns": {
+      "type": "story",
+      "narration": "At the edge of the Bone Yard, something rattles in your boot. You tip it out: a tiny bone chip. It rolls away by itself, uphill, back toward the ruins. Puddle grins. \"Told you. Boot.\"",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "bones_took_nothing",
+          "value": true
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "bones_pip_chip"
+          },
+          "text": "Then Pip yelps. His pocket is wriggling. The carved chip climbs out, hops down the path, and rolls all the way back to its wall. Pip stares at his empty pocket. \"Lady Olivia never said they come back by themselves.\""
+        },
+        {
+          "when": {
+            "notFlag": "bones_pip_chip"
+          },
+          "text": "Pip checks his pockets, just in case. Only his drawing. \"Drawings don't climb,\" he says, relieved."
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-returning-pebble",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Sit with Puddle one last time",
+          "icon": "drop",
+          "goto": "drawing"
+        }
+      ]
+    },
+    "drawing": {
+      "type": "choice_point",
+      "narration": "Puddle and Pip both look at your drawing of the carving. \"Guides keep an account of everything that comes and goes here,\" says Puddle. \"This belongs in it.\" \"Master Orin and Lady Olivia need to see it!\" says Pip. Who should keep it?",
+      "variants": [
+        {
+          "when": {
+            "flag": "bones_drawing_lost"
+          },
+          "text": "Your drawing is still under three crawlers, but you remember every shape: a long line, two little waves, a ring. \"Guides keep an account of everything that comes and goes here,\" says Puddle. \"Tell it to me, for the account.\" \"Tell it to me, for Master Orin and Lady Olivia!\" says Pip. Who should hear it first?",
+          "replace": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "choices": [
+        {
+          "id": "puddle",
+          "label": "Puddle, for the guides' account",
+          "icon": "drop",
+          "goto": "to_puddle"
+        },
+        {
+          "id": "pip",
+          "label": "Pip, for the Riftseekers",
+          "icon": "map",
+          "goto": "to_pip",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "bones_sent_with_pip",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "bones_pip_chip",
+          "value": false
+        }
+      ]
+    },
+    "to_puddle": {
+      "type": "story",
+      "narration": "Puddle tucks the drawing into her floating lunch box, where it stays dry. \"Every guide on the Saltrot will know this mark by next tide,\" she says. \"If Master Orin wants it, he can come and ask nicely.\" Pip looks at his feet, then nods. \"That's fair.\"",
+      "variants": [
+        {
+          "when": {
+            "flag": "bones_drawing_lost"
+          },
+          "text": "Puddle scratches the shapes into the mud with one fin, then copies them onto a flat shell for the guides' account. \"Every guide on the Saltrot will know this mark by next tide,\" she says. Pip looks at his feet, then nods. \"That's fair.\"",
+          "replace": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "choices": [
+        {
+          "id": "go",
+          "label": "Say goodbye at the water",
+          "icon": "drop",
           "goto": "ending"
         }
       ]
     },
-    "keep_account": {
-      "type": "choice_point",
-      "narration": "Choose a true detail to add to your own copy while the guide keeps her separate warning. You do not have to hand over your page to help travelers.",
+    "to_pip": {
+      "type": "story",
+      "narration": "Pip tucks the drawing inside his scarf and hugs it. \"Lady Olivia will know what to do with it,\" he says. \"Maybe she can move ruins too!\" Puddle's crest folds flat. \"Tell her,\" she says slowly, \"that these ones want to go home.\"",
+      "variants": [
+        {
+          "when": {
+            "flag": "bones_drawing_lost"
+          },
+          "text": "Pip says the shapes over and over, so he won't forget: line, wave, wave, ring. \"Lady Olivia will know what to do with it,\" he says. \"Maybe she can move ruins too!\" Puddle's crest folds flat. \"Tell her,\" she says slowly, \"that these ones want to go home.\"",
+          "replace": true
+        },
+        {
+          "when": {
+            "flag": "bones_pip_wonders"
+          },
+          "text": "Pip stops. \"I'll show Master Orin too,\" he decides. \"He'll want to ask the ruins things first.\""
+        }
+      ],
       "cast": [
         {
           "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
       "choices": [
         {
-          "id": "route",
-          "label": "Mark the route actually used",
-          "icon": "hand",
-          "goto": "keep_account_response_route"
-        },
-        {
-          "id": "rule",
-          "label": "Record the returning-object rule",
-          "icon": "hand",
-          "goto": "keep_account_response_rule"
-        },
-        {
-          "id": "gear",
-          "label": "List any supports left inside",
-          "icon": "hand",
-          "goto": "keep_account_response_gear"
+          "id": "go",
+          "label": "Say goodbye at the water",
+          "icon": "drop",
+          "goto": "ending"
         }
       ]
     },
     "ending": {
       "type": "story",
-      "narration": "Your party leaves the Bone Yard with no stone, bone or hidden prize. The guide keeps a checked warning. Old Ossley, the river boatman, will return upriver on the next tide; the guide has checked the tidal channel to his landing. More than one road lies ahead.",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "bones_leave_done"
-        }
-      ],
-      "choices": [],
+      "narration": "Puddle swims beside you as far as the water goes. \"Old Ossley, the frog boatman, takes his ferry upriver on the next tide,\" she says. \"I checked his channel myself.\" So here is your piece: the buried bridge and these ruins came from the same old place, and something carried them apart. Something is moving the land. What is it? And can you put things right?",
       "outcome": "success",
       "variants": [
         {
           "when": {
-            "flag": "bone_retreat"
+            "flag": "bones_channel_open",
+            "notFlag": "bones_forced"
           },
-          "text": "The short passage stays blocked. Your account records the longer rim route you actually used."
+          "text": "Behind you, Puddle's channel runs clear around the arch, and it will stay that way.",
+          "at": "start"
         },
         {
           "when": {
-            "flag": "bone_plank_recovered"
+            "flag": "bones_channel_lasting",
+            "notFlag": "bones_channel_open"
           },
-          "text": "The marked plank came back after a yard stone replaced its support."
+          "text": "Behind you, Puddle's channel trickles around the arch. By morning it will run.",
+          "at": "start"
         },
         {
           "when": {
-            "flag": "bone_plank_used",
-            "notFlag": "bone_plank_recovered"
+            "flag": "bones_channel_open",
+            "notFlag": "bones_channel_lasting"
           },
-          "text": "The marked plank stays inside as a caught support. The guide cannot count it among her returned gear."
+          "text": "Behind you, the shoved arch is creeping back toward Puddle's channel. \"Then I'll shove it again,\" she sighs. \"Every tide. Forever. Fine.\"",
+          "at": "start"
         },
         {
           "when": {
-            "flag": "bone_mats_recovered"
+            "flag": "bones_forced",
+            "notFlag": "bones_channel_open"
           },
-          "text": "The used mats are back outside after the unfastening work."
+          "text": "Behind you, half of the cracked arch still sits in Puddle's channel. She will be wading around it for a long time.",
+          "at": "start"
         },
         {
           "when": {
-            "flag": "bone_mats_used",
-            "notFlag": "bone_mats_recovered"
+            "flag": "bones_retreat"
           },
-          "text": "The used spare mats stay inside. They are not silently returned to the guide's kit."
+          "text": "The short way through the square belongs to the crawlers, for now.",
+          "at": "start"
         },
         {
           "when": {
-            "flag": "bone_account_shared"
+            "flag": "bones_sent_with_pip"
           },
-          "text": "Your authorized account goes into the guide's relay."
+          "text": "Somewhere upriver, Pip is running to find the Riftseekers with the carving.",
+          "at": "start"
         },
         {
           "when": {
-            "notFlag": "bone_account_shared"
+            "notFlag": "bones_tear_closed"
           },
-          "text": "Your written copy stays private; the guide relays only her own warning."
+          "text": "The tear still flickers in the square, so Puddle will guide travelers around it.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "fragment_paths_learned"
+          },
+          "text": "You carry another piece too. Master Orin Vale will want to lay them side by side."
+        },
+        {
+          "when": {
+            "flag": "fragment_sky_learned",
+            "notFlag": "fragment_paths_learned"
+          },
+          "text": "You carry another piece too. Master Orin Vale will want to lay them side by side."
         }
       ],
       "cast": [
         {
           "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
+          "name": "Puddle",
+          "stance": "swimming"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
-    },
-    "test_response_pebble": {
-      "type": "story",
-      "narration": "The pebble rolls back uphill to its hollow. The yard's pebble returns to its own place. Your gear is a different responsibility.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "returning_pebble"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-returning-pebble"
-    },
-    "test_response_plank": {
-      "type": "story",
-      "narration": "Your own plank stays put. The yard does not claim it. The yard's pebble returns to its own place. Your gear is a different responsibility.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "returning_pebble"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-returning-pebble"
-    },
-    "test_response_draw": {
-      "type": "story",
-      "narration": "The guide checks your drawing from her pool. The yard's pebble returns to its own place. Your gear is a different responsibility.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "returning_pebble"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-returning-pebble"
-    },
-    "inventory_response_draw": {
-      "type": "story",
-      "narration": "The chip stays in the yard. Your drawing records its shape. Your hands and packs hold your own gear, not a hidden stone prize.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "unbrace"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins"
-    },
-    "inventory_response_loop": {
-      "type": "story",
-      "narration": "The guide can distinguish her kit from the yard stones. Your hands and packs hold your own gear, not a hidden stone prize.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "unbrace"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins"
-    },
-    "inventory_response_sole": {
-      "type": "story",
-      "narration": "The crumb rolls home. Your boot feels less interesting. Your hands and packs hold your own gear, not a hidden stone prize.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "unbrace"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins"
-    },
-    "boundary_response_boots": {
-      "type": "story",
-      "narration": "The last stone crumbs roll back inside. No stone, bone or hidden prize goes out with your party.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "report"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins"
-    },
-    "boundary_response_mats": {
-      "type": "story",
-      "narration": "Loose grit drops on the yard side. No stone, bone or hidden prize goes out with your party.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "report"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins"
-    },
-    "boundary_response_packs": {
-      "type": "story",
-      "narration": "Bright loops and empty pockets agree with your account. No stone, bone or hidden prize goes out with your party.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "report"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins"
-    },
-    "keep_account_response_route": {
-      "type": "story",
-      "narration": "The page keeps the actual route, not a borrowed victory. Your written page stays with the party. The guide keeps her own checked warning.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "ending"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins"
-    },
-    "keep_account_response_rule": {
-      "type": "story",
-      "narration": "The note records the observation without pretending to explain its cause. Your written page stays with the party. The guide keeps her own checked warning.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "ending"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins"
-    },
-    "keep_account_response_gear": {
-      "type": "story",
-      "narration": "The kit list keeps any real loss visible. Your written page stays with the party. The guide keeps her own checked warning.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "ending"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins"
-    }
-  },
-  "presentation": {
-    "interactions": {
-      "pack_mats": {
-        "props": [
-          "relay-plank"
-        ]
-      },
-      "leave_mats": {
-        "props": [
-          "relay-plank"
-        ]
-      },
-      "lay_board_mats": {
-        "props": [
-          "relay-plank"
-        ]
-      },
-      "recover_mats": {
-        "props": [
-          "relay-plank"
-        ]
-      },
-      "vibration": {
-        "props": [
-          "relay-plank"
-        ]
-      },
-      "plank_support": {
-        "props": [
-          "relay-plank"
-        ]
-      },
-      "gather_loose": {
-        "props": [
-          "relay-plank"
-        ]
-      },
-      "survey_window": {
-        "props": [
-          "notched-stone"
-        ]
-      },
-      "learn_arches": {
-        "props": [
-          "notched-stone"
-        ]
-      },
-      "outer_rim": {
-        "props": [
-          "notched-stone"
-        ]
-      },
-      "lay_line": {
-        "props": [
-          "rope-loop"
-        ]
-      },
-      "return_line": {
-        "props": [
-          "rope-loop"
-        ]
-      },
-      "returning_pebble": {
-        "props": [
-          "toss-pebble"
-        ],
-        "coverIcons": [
-          "notched-stone",
-          "carved-stone",
-          "prop_rock"
-        ]
-      },
-      "stone_support": {
-        "props": [
-          "prop_rock"
-        ]
-      },
-      "replace_plank": {
-        "props": [
-          "prop_rock"
-        ]
-      },
-      "seam_marks": {
-        "props": [
-          "count-cord"
-        ]
-      },
-      "seam_marks_mats": {
-        "props": [
-          "count-cord"
-        ]
-      }
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "choices": []
     }
   }
 }

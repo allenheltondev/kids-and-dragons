@@ -1,4 +1,5 @@
 {
+  "$comment": "Riftlight, Wandering Sky strand end (docs/campaigns/continental-rift/arc.md, squall-temple; design note squall-temple-review.md). Rewritten in November 2026 to the Borrowed Ruins pilot's bar. Question: can we keep the temple safe as the island drifts in? Keeper Clove, the temple's kitsune keeper, carries it with Pip Thistledown. Bone crawlers from the far-off coast show the pull reaches everywhere. Reads island_warning_sent / island_relay_delayed / island_messages_saved; sets temple_island_settled (the island let settle) and temple_damaged (the landing fight lost).",
   "id": "riftlight-squall-temple",
   "campaignId": "riftlight",
   "index": 7,
@@ -13,991 +14,1644 @@
     "narration": "Rain sweeps across a temple island high above the realm. Wind banners stream over the wet landing. Through the clouds, another island appears for a moment, then fades behind the rain."
   },
   "goal": {
-    "text": "Keep the temple safe as the returning island drifts toward it.",
+    "text": "Can we keep the temple safe as the island drifts in?",
     "steps": [
       {
-        "id": "temple_people",
+        "id": "people",
         "label": "Get the keepers under cover",
         "flag": "temple_people_done"
       },
       {
-        "id": "temple_plan",
-        "label": "Prepare the island approach",
-        "flag": "temple_plan_done"
+        "id": "pip",
+        "label": "Bring Pip back from the island",
+        "flag": "temple_pip_back"
       },
       {
-        "id": "temple_safe",
-        "label": "Make the temple safe",
-        "flag": "temple_safe_done"
+        "id": "island",
+        "label": "Meet the island at the landing",
+        "flag": "temple_island_met"
+      },
+      {
+        "id": "storm",
+        "label": "See the squall through",
+        "flag": "temple_storm_done"
       }
     ]
   },
   "voiceGuide": {
-    "tone": "Warm, curious and practical. Short sentences. Show the consequence of each plan. Nobody dies.",
-    "vocabulary": "Read aloud to an eight-year-old.",
+    "tone": "Warm, funny and a little spooky, with real consequences. Short sentences. Let a character act instead of explaining how the reader should feel. The storm is loud, not cruel; the crawlers are homesick, not wicked; nobody dies.",
+    "vocabulary": "Read aloud to an eight-year-old. Concrete words, short sentences, distinct voices.",
     "forbidden": [
+      "death",
       "gore",
-      "Hollow Gate",
-      "Legend Dragon",
       "Corvane",
       "emperor",
-      "Pangea"
+      "Pangea",
+      "Hollow Gate",
+      "Legend Dragon"
     ],
-    "npcVoices": {}
+    "npcVoices": {
+      "Keeper Clove": "Keeper Clove, the Squall Temple's kitsune keeper (he/him). Fussy, kind and brave when it counts; glasses always fogged, teapot always in hand, keeps a weather book. Has never met an island. Wants the bell rung and every keeper dry.",
+      "Pip Thistledown": "Young manticore scout (he/him). Eager, notebook always out, quotes \"Lady Olivia says...\" and tries her ideas. Wants to impress her. Kind underneath; changes his mind when the party gives him a reason.",
+      "Tumble": "Tumble, a young griffin island courier (she/her). Fast, cheerful and terrible at landing; carries letters and messages between the islands."
+    }
   },
   "scenes": {
     "arrival": {
       "type": "story",
-      "narration": "The island you helped welcome home is drifting toward a temple island through heavy rain. A different kitsune keeper from the one at the lookout rings a lookout bell; its rope wears a tiny raincoat. Beside the temple, a fresh opening spills bone crawlers onto the wet landing: little scuttling creatures with jointed legs and rattling backs. \"Keep the temple safe as that island drifts toward us,\" the keeper calls. \"We can push its approach clear, or shelter this landing and let it settle.\" She points to people still carrying cushions across the yard.",
+      "narration": "A cloud skiff from Juniper's lookout bucks toward a temple island in the rain, all red roofs and ringing bells. Pip Thistledown clings to the mast. On the landing, a kitsune in a brown apron waves a teapot like a lantern. \"Keeper Clove, of the Squall Temple!\" he shouts. \"Notchbrow is drifting straight at us, with a storm behind it. Can we keep the temple safe as the island drifts in? Jump, quick!\"",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall",
-      "variants": [
-        {
-          "when": {
-            "flag": "island_warning_sent"
-          },
-          "text": "Your earlier course warning reached this bell tower. The keepers have already moved the heavy furniture inside."
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
         },
         {
-          "when": {
-            "notFlag": "island_warning_sent"
-          },
-          "text": "Your first message asked for another reader. The keepers were checking the old carving when the storm bell rang; furniture still waits in the yard."
-        }
-      ],
-      "rift": "steady",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Find a clear view",
-          "goto": "look",
-          "icon": "hand"
-        }
-      ]
-    },
-    "look": {
-      "type": "interaction",
-      "narration": "From behind the low fence, watch the drifting island edge against the fixed bell tower. Mark the clear sighting interval. The bell rope has a tiny raincoat and is taking the weather very seriously.",
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall",
-      "interaction": {
-        "kind": "timing",
-        "cue": "Mark the island edge during the clear sighting.",
-        "actionLabel": "Mark the approach",
-        "target": 0.5,
-        "width": 0.3,
-        "periodMs": 6000
-      },
-      "onSuccess": {
-        "goto": "people",
-        "narration": "The keeper confirms the approaching edge from another window."
-      },
-      "onFailure": {
-        "goto": "people",
-        "narration": "Rain hid your sighting. The keeper checks the nearer fence and tower before opening any lane."
-      },
-      "onAssisted": {
-        "goto": "people",
-        "narration": "The keeper confirms the approaching edge from another window."
-      }
-    },
-    "people": {
-      "type": "story",
-      "narration": "The keeper points across the yard. \"Everyone needs a dry lane into the hall.\" Your earlier warning, if sent, has already moved the heavy furniture; otherwise the folded screen still blocks the doorway. Check the actual yard before doing another carrying job.",
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/temple-island-squall",
       "choices": [
         {
-          "id": "move",
-          "label": "Inspect and clear the remaining doorway load",
-          "goto": "screen",
-          "icon": "hand"
-        },
-        {
-          "id": "warned",
-          "label": "Use the lane our warning already cleared",
-          "goto": "ready_lane",
-          "icon": "hand",
-          "when": {
-            "flag": "island_warning_sent"
-          }
-        }
-      ]
-    },
-    "screen": {
-      "type": "choice_point",
-      "narration": "The screen balloons across the doorway. \"It would like to come in first,\" says a keeper. Carry it flat, or tie and pass the bundle along the fence.",
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall",
-      "choices": [
-        {
-          "id": "flat",
-          "label": "Level the screen and carry it flat",
-          "goto": "people_check",
-          "icon": "hand"
-        },
-        {
-          "id": "tie",
-          "label": "Tie the screen and pass it inward",
-          "goto": "screen_relay",
-          "icon": "hand"
+          "id": "jump",
+          "label": "Jump for the landing",
+          "icon": "boot",
+          "goto": "check_skiff"
         }
       ],
       "variants": [
         {
           "when": {
-            "flag": "island_warning_sent"
-          },
-          "replace": true,
-          "text": "Your warning already brought the heavy screen inside. Only a small cushion bundle remains at the doorway. Carry it flat, or tie and pass it along the fence. The top cushion is determined to be a hat."
-        }
-      ]
-    },
-    "people_check": {
-      "type": "interaction",
-      "narration": "Level the screen while keepers guide the far edge through the doorway. The painted birds arrive beak-first.",
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall",
-      "interaction": {
-        "kind": "balance",
-        "cue": "Level the doorway load before carrying it in.",
-        "actionLabel": "Carry the screen inside",
-        "objectLabel": "doorway load"
-      },
-      "onSuccess": {
-        "goto": "ready_lane",
-        "narration": "The remaining load reaches the hall and the doorway is clear."
-      },
-      "onFailure": {
-        "goto": "ready_lane",
-        "narration": "The remaining load reaches the hall and the doorway is clear."
-      },
-      "onAssisted": {
-        "goto": "ready_lane",
-        "narration": "The remaining load reaches the hall and the doorway is clear."
-      },
-      "variants": [
-        {
-          "when": {
-            "flag": "island_warning_sent"
-          },
-          "replace": true,
-          "text": "Level the last cushion bundle while the keeper guides its far end through the doorway. The heavy screen is already inside, thanks to your warning."
-        }
-      ]
-    },
-    "screen_relay": {
-      "type": "interaction",
-      "narration": "Pass the tied screen along the sheltered fence, keeping the people's lane clear.",
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Pass the tied doorway bundle into the hall.",
-        "actionLabel": "Pass the screen",
-        "objectLabel": "doorway bundle"
-      },
-      "onSuccess": {
-        "goto": "ready_lane",
-        "narration": "The remaining load reaches the hall and the doorway is clear."
-      },
-      "onFailure": {
-        "goto": "ready_lane",
-        "narration": "The remaining load reaches the hall and the doorway is clear."
-      },
-      "onAssisted": {
-        "goto": "ready_lane",
-        "narration": "The remaining load reaches the hall and the doorway is clear."
-      },
-      "variants": [
-        {
-          "when": {
-            "flag": "island_warning_sent"
-          },
-          "replace": true,
-          "text": "Pass the last small cushion bundle along the fence. The heavy screen is already inside; you are finishing the remaining light work."
-        }
-      ]
-    },
-    "ready_lane": {
-      "type": "choice_point",
-      "narration": "Check the yard together and help the last cushion carrier into the hall. \"Nobody stays outside to rescue a cushion,\" says the keeper. Her very soft helmet comes inside too.",
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall",
-      "choices": [
-        {
-          "id": "door",
-          "label": "Hold the lane clear",
-          "icon": "hand",
-          "goto": "ready_lane_response_door"
-        },
-        {
-          "id": "count",
-          "label": "Count back the keepers together",
-          "icon": "hand",
-          "goto": "ready_lane_response_count"
-        },
-        {
-          "id": "cushion",
-          "label": "Take the bulky cushions",
-          "icon": "hand",
-          "goto": "ready_lane_response_cushion"
-        }
-      ]
-    },
-    "messages": {
-      "type": "story",
-      "narration": "The last keeper reaches the covered hall. \"There is shelter for everyone,\" the temple keeper says, \"even the bell rope's spare raincoat.\" Your party can now work on the landing while the keepers signal from inside. The temple's own griffin messenger shelters at the back of the hall, ready to carry travelers down to the Cairnstep once the wind clears.",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "temple_people_done"
-        }
-      ],
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Choose our working preparation",
-          "goto": "gear",
-          "icon": "hand"
-        }
-      ],
-      "variants": [
-        {
-          "when": {
-            "flag": "island_messages_saved",
+            "flag": "island_warning_sent",
             "notFlag": "island_relay_delayed"
           },
-          "text": "The island letter courier whose sealed letters you saved offers to relay your signals from the hall."
+          "text": "\"Your warning came in time. My keepers are safe inside!\""
         },
         {
           "when": {
             "flag": "island_relay_delayed"
           },
-          "text": "The island letter courier is still finishing the delayed letter relay. A keeper takes the signal station until that courier arrives."
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "text": "\"Your warning only just got here. Half my keepers are still outside!\""
         },
         {
-          "figure": "cast/courier_griffin",
-          "name": "Griffin messenger"
+          "when": {
+            "notFlag": "island_warning_sent"
+          },
+          "text": "\"We heard the welcome song! My keepers are all out on the landing with lanterns, to greet it!\""
         }
-      ],
-      "art": "scenes/riftlight/temple-island-squall"
+      ]
     },
-    "gear": {
-      "type": "choice_point",
-      "narration": "One team can prepare the long turning rope, shortening the push objective from three working turns to two, or fasten wind cover that removes the storm's Guard penalty from your party. The other job stays ordinary. Neither removes the crawlers or the crosswind tiles. Which advantage fits your plan?",
+    "check_skiff": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "The skiff rises and falls beside the landing like a rocking horse. The gap opens and closes.",
+      "prompt": "Jump from the bucking skiff onto the wet landing",
+      "roller": "party",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall",
+      "onSuccess": {
+        "goto": "tear",
+        "narration": "You land neatly. Pip lands on you. The skiff bobs away home."
+      },
+      "onFailure": {
+        "goto": "tear",
+        "narration": "You land in a rain barrel. Splash! Clove fishes you out by the collar, and your snacks float away. \"Welcome,\" he says. \"You are wet.\""
+      }
+    },
+    "tear": {
+      "type": "story",
+      "narration": "Something is wrong by the bell tower. A tear in the air flickers at its door, and little pale creatures clatter out of it, in shells made of old bone chips. Bone crawlers! They live far away on the coast, in a mudflat full of giant old bones. Clove has never seen one. \"What are they doing in the sky?\" They swarm toward the bells' hum, and toward your humming chime. The chime leans hard toward the glacier. Whatever is pulling Notchbrow is pulling these too.",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/bone_crawler",
+          "count": 3
         }
       ],
       "art": "scenes/riftlight/temple-island-squall",
       "choices": [
         {
-          "id": "rope",
-          "label": "Prepare the long turning rope",
-          "goto": "gear_rope",
-          "icon": "hand",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "temple_rope_ready",
-              "value": false
-            },
-            {
-              "type": "setFlag",
-              "flag": "temple_cover_ready",
-              "value": false
-            }
-          ]
+          "id": "go",
+          "label": "Hurry after Clove",
+          "icon": "forward",
+          "goto": "first"
+        }
+      ],
+      "rift": "steady",
+      "discovers": [
+        "creature.bone_crawler"
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "island_messages_saved"
+          },
+          "text": "Up on the temple roof, Tumble the courier waves a wing. \"Flew ahead!\" she calls. \"Landed on a goose.\""
+        }
+      ]
+    },
+    "first": {
+      "type": "choice_point",
+      "narration": "Clove wrings his paws. \"The weather bell must ring before the squall hits, so every island ties down its washing and its little ones. But the crawlers are climbing the tower to nibble its hum!\" Down on the landing, the littlest keeper, a kitsune called Fig, has climbed the tallest lantern post to watch for the island. The rain is getting heavier. What first?",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
         },
         {
-          "id": "cover",
-          "label": "Prepare wind cover for the party",
-          "goto": "shelter_check",
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall",
+      "choices": [
+        {
+          "id": "bell",
+          "label": "Save the bell first",
+          "icon": "bell",
+          "goto": "tower_stairs"
+        },
+        {
+          "id": "keepers",
+          "label": "Bring everyone in first",
           "icon": "hand",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "temple_rope_ready",
-              "value": false
+          "goto": "landing"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "island_warning_sent",
+            "notFlag": "island_relay_delayed"
+          },
+          "text": "\"Everyone else is inside, thanks to your warning. Fig sneaked out.\""
+        },
+        {
+          "when": {
+            "flag": "island_relay_delayed"
+          },
+          "text": "\"And half my keepers are still out there with her!\""
+        },
+        {
+          "when": {
+            "notFlag": "island_warning_sent"
+          },
+          "text": "\"And all my keepers are out there with her, holding welcome lanterns!\""
+        }
+      ]
+    },
+    "tower_stairs": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "The tower stairs are wet and steep, and they go around and around. Crawlers clatter somewhere above. Pip counts the steps out loud and loses count at nine.",
+      "prompt": "Race up the slippery tower stairs before the crawlers reach the bell",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/bone_crawler",
+          "count": 2
+        }
+      ],
+      "art": "scenes/riftlight/sky-mist-song",
+      "onSuccess": {
+        "goto": "fight_bell",
+        "narration": "You burst out at the top just as the first crawler does."
+      },
+      "onFailure": {
+        "goto": "fight_bell",
+        "narration": "You slip and bang a knee. At the top, a crawler is already nibbling the bell rope.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "fight_bell": {
+      "type": "encounter",
+      "map": "riftlight_squall_temple",
+      "art": "scenes/riftlight/sky-mist-song",
+      "narration": "Ring the weather bell by ending two turns beside it, or drive the crawlers off the tower.",
+      "enemies": [
+        {
+          "id": "crawler",
+          "creature": "bone_crawler",
+          "count": 2
+        }
+      ],
+      "environment": {
+        "objectives": [
+          {
+            "id": "ring_bell",
+            "kind": "close",
+            "label": "Ring the weather bell",
+            "at": {
+              "x": 6,
+              "y": 3
             },
-            {
-              "type": "setFlag",
-              "flag": "temple_cover_ready",
-              "value": false
-            }
-          ]
+            "turns": 2,
+            "endsFight": true,
+            "effects": [
+              {
+                "type": "setFlag",
+                "flag": "temple_rang_in_fight",
+                "value": true
+              }
+            ]
+          }
+        ]
+      },
+      "onVictory": {
+        "goto": "bell_rung"
+      },
+      "onDefeat": {
+        "goto": "clapper_gone",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      }
+    },
+    "bell_rung": {
+      "type": "story",
+      "narration": "Bong! The weather bell rolls out across the sky. Far away, another island's bell answers, and another, and another, until the whole sky is ringing. Everywhere, keepers are tying down their washing. Clove wipes his foggy glasses. \"Every island heard that,\" he says.",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/sky-mist-song",
+      "choices": [
+        {
+          "id": "landing",
+          "label": "Down to the landing",
+          "icon": "boot",
+          "goto": "keepers_soaked"
+        },
+        {
+          "id": "hall",
+          "label": "Straight into the hall",
+          "icon": "forward",
+          "goto": "hall",
+          "when": {
+            "flag": "island_warning_sent",
+            "notFlag": "island_relay_delayed"
+          }
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "temple_bell_rung",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "temple_bell_heard",
+          "value": true
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "temple_rang_in_fight"
+          },
+          "text": "The clang sends the crawlers tumbling down the tower, holding their heads.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "notFlag": "temple_rang_in_fight"
+          },
+          "text": "You chase the last crawler off the tower, and they scatter across the wet roofs. Then you ring the bell yourselves.",
+          "at": "start"
+        },
+        {
+          "when": {
+            "flag": "island_warning_sent",
+            "notFlag": "island_relay_delayed"
+          },
+          "text": "Down on the landing, Fig hears it and climbs down by herself."
+        }
+      ]
+    },
+    "clapper_gone": {
+      "type": "story",
+      "narration": "The crawlers pile on and push you back down the stairs. When you climb up again, the bell is still there, but its clapper is gone. Three crawlers are carrying it off across the roof like a prize. Pip bangs the bell with his spoon. Tink. \"Well,\" he says. \"I heard it.\" No other island will.",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/bone_crawler",
+          "count": 3
+        }
+      ],
+      "art": "scenes/riftlight/sky-mist-song",
+      "choices": [
+        {
+          "id": "landing",
+          "label": "Down to the landing",
+          "icon": "boot",
+          "goto": "keepers_soaked"
+        },
+        {
+          "id": "hall",
+          "label": "Straight into the hall",
+          "icon": "forward",
+          "goto": "hall",
+          "when": {
+            "flag": "island_warning_sent",
+            "notFlag": "island_relay_delayed"
+          }
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "island_warning_sent",
+            "notFlag": "island_relay_delayed"
+          },
+          "text": "Down on the landing, Fig gives up waiting and climbs down by herself."
+        }
+      ]
+    },
+    "keepers_soaked": {
+      "type": "story",
+      "narration": "Down on the landing, the squall got there first. The keepers stagger in, soaked to the fur, their lanterns blown out. Clove climbs the lantern post himself to fetch Fig down, and he loses his teapot on the way. Fig sneezes. \"Never mind,\" Clove says bravely. \"Teapots can be found. Bells can't be late.\"",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall",
+      "choices": [
+        {
+          "id": "in",
+          "label": "Into the hall",
+          "icon": "forward",
+          "goto": "hall"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "island_warning_sent",
+            "notFlag": "island_relay_delayed"
+          },
+          "text": "Down on the landing, there is nobody to fetch. Your warning got everyone inside, and Fig came down by herself. Clove pats your arm. \"You thought of everything,\" he says.",
+          "replace": true
+        }
+      ]
+    },
+    "landing": {
+      "type": "choice_point",
+      "narration": "Out on the landing, the rain comes sideways. Fig clings to the top of the swaying lantern post, and she won't let go. \"Fig!\" Clove calls. \"Down, please!\" Behind you, up on the tower, the crawlers are nibbling the bell rope.",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall",
+      "choices": [
+        {
+          "id": "chain",
+          "label": "Make a chain and lead everyone in",
+          "icon": "hand",
+          "goto": "check_chain"
+        },
+        {
+          "id": "climb",
+          "label": "Climb up and fetch Fig",
+          "icon": "boot",
+          "goto": "check_climb"
+        },
+        {
+          "id": "tumble",
+          "label": "Ask Tumble to lift Fig down",
+          "icon": "feather",
+          "goto": "tumble_lift",
+          "requiresFlag": "island_messages_saved"
+        },
+        {
+          "id": "foxfire",
+          "label": "Call Fig down, kitsune to kitsune",
+          "icon": "heart",
+          "goto": "foxfire",
+          "requiresSpecies": "kitsune"
         },
         {
           "id": "brace",
-          "label": "Have our thornguard brace the wind cover",
-          "goto": "shelter_braced",
+          "label": "Brace the hall door against the wind",
+          "icon": "shield",
+          "goto": "brace",
+          "requiresClass": "thornguard"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "island_warning_sent",
+            "notFlag": "island_relay_delayed"
+          },
+          "text": "Everyone else is safe inside. It's just Fig."
+        },
+        {
+          "when": {
+            "flag": "island_relay_delayed"
+          },
+          "text": "Half the keepers huddle under the stairs, soaked."
+        },
+        {
+          "when": {
+            "notFlag": "island_warning_sent"
+          },
+          "text": "All the other keepers are out here too, holding welcome lanterns that keep blowing out."
+        }
+      ]
+    },
+    "check_chain": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "narration": "Everyone grabs a paw, a hand or a tail. The wind tugs at the chain like a kite string.",
+      "prompt": "Hold the chain together in the wind and lead everyone in",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall",
+      "onSuccess": {
+        "goto": "keepers_in",
+        "narration": "Step by step, the chain reaches the hall door. Fig climbs down at last and joins the end."
+      },
+      "onFailure": {
+        "goto": "keepers_in",
+        "narration": "A gust knocks the chain over like dominoes. Everyone gets in, soaked and bruised, and a lantern blows away into the clouds.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "check_climb": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "The lantern post is slick with rain and sways in the gusts. Fig peeks down at you with huge eyes.",
+      "prompt": "Climb the swaying post and carry Fig down",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall",
+      "onSuccess": {
+        "goto": "keepers_in",
+        "narration": "You reach Fig, and she wraps around your neck like a scarf. Down you come. Clove herds the others inside."
+      },
+      "onFailure": {
+        "goto": "keepers_in",
+        "narration": "You slide down the post with Fig on your head. Bump. Bruised, but down. Clove herds everyone inside.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "tumble_lift": {
+      "type": "story",
+      "narration": "Tumble swoops low, scoops Fig off the post and drops her, very gently, into Clove's arms. Then Tumble lands in a rain barrel. \"Meant to,\" she says, from inside it. Everyone hurries in.",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Tumble"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall",
+      "choices": [
+        {
+          "id": "in",
+          "label": "Follow them in",
+          "icon": "forward",
+          "goto": "keepers_in"
+        }
+      ]
+    },
+    "foxfire": {
+      "type": "story",
+      "narration": "You flick your tail the kitsune way, low and slow. Fig flicks hers back and slides down the post like a raindrop. The others follow you in, giggling.",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall",
+      "choices": [
+        {
+          "id": "in",
+          "label": "Follow them in",
+          "icon": "forward",
+          "goto": "keepers_in"
+        }
+      ]
+    },
+    "brace": {
+      "type": "story",
+      "narration": "Your thornguard braces the hall door with a skill called Brace, so the wind can't slam it. Clove plucks Fig off the post, and everyone runs in through the steady door. Nobody gets blown anywhere.",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall",
+      "choices": [
+        {
+          "id": "in",
+          "label": "Follow them in",
+          "icon": "forward",
+          "goto": "keepers_in"
+        }
+      ]
+    },
+    "keepers_in": {
+      "type": "story",
+      "narration": "The last keeper is in. Clove counts tails, wings and dripping hats, twice. Then, up on the tower, the bell rope snaps. The crawlers have chewed it through, and the weather bell falls silent. Clove looks up at it. \"The other islands won't hear our warning tonight,\" he says quietly. \"But my keepers are dry.\"",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/sky-mist-song",
+      "choices": [
+        {
+          "id": "knot",
+          "label": "Climb up and knot the rope",
+          "icon": "boot",
+          "goto": "check_knot"
+        },
+        {
+          "id": "stay",
+          "label": "Stay with the keepers",
+          "icon": "heart",
+          "goto": "stay_together"
+        }
+      ]
+    },
+    "check_knot": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "The tower stairs are slick, and the crawlers are still up there, nibbling. The two ends of the bell rope dangle out of reach.",
+      "prompt": "Climb past the crawlers and knot the bell rope back together",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/bone_crawler",
+          "count": 2
+        }
+      ],
+      "art": "scenes/riftlight/sky-mist-song",
+      "onSuccess": {
+        "goto": "hall",
+        "narration": "You knot the rope and give it one big pull. Bong! The crawlers tumble off the tower, holding their heads. It's late, but far away the other islands' bells answer.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "temple_bell_heard",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "hall",
+        "narration": "A crawler nips your fingers and the knot slips loose. You slide back down the stairs. The bell stays silent."
+      }
+    },
+    "stay_together": {
+      "type": "story",
+      "narration": "You stay. Fig climbs into Clove's apron pocket, which is a very big pocket. Clove pats it. \"A bell is a bell,\" he says. \"These are my keepers.\" Up on the tower, the crawlers click and nibble the silent bell.",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall",
+      "choices": [
+        {
+          "id": "in",
+          "label": "Into the hall",
+          "icon": "forward",
+          "goto": "hall"
+        }
+      ]
+    },
+    "hall": {
+      "type": "story",
+      "narration": "Inside, the hall smells of wet fur and ginger. Clove hands out towels as big as flags. Through the round window, Notchbrow is a dark shape in the rain, coming closer. Pip wrings out his tail into a teacup, by accident.",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall",
+      "choices": [
+        {
+          "id": "dry",
+          "label": "Dry off by the window",
           "icon": "hand",
-          "requiresClass": "thornguard",
+          "goto": "pip_gone"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "temple_people_done",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "temple_rang_in_fight",
+          "value": false
+        }
+      ]
+    },
+    "pip_gone": {
+      "type": "choice_point",
+      "narration": "Then Clove looks around. \"Where's your manticore?\" Pip's teacup is empty, and a long push pole is missing from the rack. Out in the rain, Notchbrow has drifted close to the landing. A small figure stands on its edge, shoving at it with the pole. \"Lady Olivia says one good shove!\" Pip yells. The island does not notice.",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall",
+      "choices": [
+        {
+          "id": "jump",
+          "label": "Jump across to Pip",
+          "icon": "boot",
+          "goto": "check_jump"
+        },
+        {
+          "id": "plank",
+          "label": "Push a plank across and crawl",
+          "icon": "might",
+          "goto": "check_plank"
+        },
+        {
+          "id": "tumble",
+          "label": "Ask Tumble to fly you over",
+          "icon": "feather",
+          "goto": "tumble_fly",
+          "requiresFlag": "island_messages_saved"
+        },
+        {
+          "id": "fly",
+          "label": "Fly across",
+          "icon": "wing",
+          "goto": "fly_pip",
+          "requiresSpecies": "griffin"
+        }
+      ],
+      "spotlight": "next"
+    },
+    "check_jump": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "The gap between the landing and Notchbrow opens and closes like a yawn.",
+      "prompt": "Jump the yawning gap onto the island's edge",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        }
+      ],
+      "art": "scenes/riftlight/sky-landing",
+      "onSuccess": {
+        "goto": "on_notchbrow",
+        "narration": "You land in soft wet grass, right beside Pip's footprints."
+      },
+      "onFailure": {
+        "goto": "on_notchbrow",
+        "narration": "You land short and scramble up the grass on your elbows, muddy to the ears.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "check_plank": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "narration": "The plank is long and heavy, and the gap keeps changing its mind.",
+      "prompt": "Shove the long plank across the gap and hold it while everyone crawls over",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        }
+      ],
+      "art": "scenes/riftlight/sky-landing",
+      "onSuccess": {
+        "goto": "on_notchbrow",
+        "narration": "The plank lands on the grass, and you crawl across one by one."
+      },
+      "onFailure": {
+        "goto": "on_notchbrow",
+        "narration": "The plank slips and slaps the grass. You crawl over the wobbly end, and somebody gets a splinter the size of a pencil.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "tumble_fly": {
+      "type": "story",
+      "narration": "Tumble flaps you over the gap a few at a time, and lands, for once, perfectly. \"Did you see that?\" she shouts. \"Somebody tell Juniper!\"",
+      "cast": [
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Tumble"
+        }
+      ],
+      "art": "scenes/riftlight/sky-landing",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Find Pip",
+          "icon": "forward",
+          "goto": "on_notchbrow"
+        }
+      ]
+    },
+    "fly_pip": {
+      "type": "story",
+      "narration": "Your griffin swoops over the gap and back, over and back, until everyone is across. The rain doesn't even have time to aim.",
+      "cast": [],
+      "art": "scenes/riftlight/sky-landing",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Find Pip",
+          "icon": "forward",
+          "goto": "on_notchbrow"
+        }
+      ]
+    },
+    "on_notchbrow": {
+      "type": "story",
+      "narration": "Notchbrow again! The crooked orchard, the old scarecrow, and the hen, sitting in Pip's dropped hat as if it were a nest. She glares at you. You have met before. Pip is beside the old mooring stone, shoving his pole against the ground with all his might.",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/island-due-back",
+      "choices": [
+        {
+          "id": "go",
+          "label": "Go to Pip",
+          "icon": "forward",
+          "goto": "pip_found"
+        }
+      ]
+    },
+    "pip_found": {
+      "type": "choice_point",
+      "narration": "Notchbrow does not move one inch. Rain drips off Pip's ears. \"Lady Olivia would push it,\" he puffs. \"I wanted to show her I could do it by myself.\" Beside him, the mooring stone hums along with your chime. What do you do?",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/island-due-back",
+      "choices": [
+        {
+          "id": "shove",
+          "label": "Push with him, all together",
+          "icon": "might",
+          "goto": "pip_shove"
+        },
+        {
+          "id": "watch",
+          "label": "Sit with him and watch where it's going",
+          "icon": "ear",
+          "goto": "pip_watch",
           "effects": [
             {
               "type": "setFlag",
-              "flag": "temple_rope_ready",
-              "value": false
-            },
-            {
-              "type": "setFlag",
-              "flag": "temple_cover_ready",
+              "flag": "temple_pip_watched",
               "value": true
             }
           ]
         }
       ]
     },
-    "gear_rope": {
-      "type": "interaction",
-      "narration": "Guide the long rope loop through the working post from behind the fence. A missed alignment needs a shorter line, not another identical attempt. The keeper moves the marker to match its reach.",
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall",
-      "interaction": {
-        "kind": "precision",
-        "cue": "Guide the rope loop through the post.",
-        "actionLabel": "Set the turning loop",
-        "target": 0.5,
-        "width": 0.3,
-        "periodMs": 6000
-      },
-      "onSuccess": {
-        "goto": "signals",
-        "narration": "The long turning line is ready: pushing can use two working turns.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "temple_rope_ready",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "short_line",
-        "narration": "The loop caught on the sock line. Set it aside and rig the shorter store rope; pushing will need three working turns.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "temple_rope_ready",
-            "value": false
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "signals",
-        "narration": "The keeper helps align the long loop. It is ready for the two-turn push job.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "temple_rope_ready",
-            "value": true
-          }
-        ]
-      }
-    },
-    "short_line": {
-      "type": "interaction",
-      "narration": "Pass the shorter store rope to the nearer post while the keeper checks its reach. The socks stay completely outside the rescue plan.",
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Pass the shorter line to the nearer post.",
-        "actionLabel": "Pass the store rope",
-        "objectLabel": "short store rope"
-      },
-      "onSuccess": {
-        "goto": "signals",
-        "narration": "The short line is checked. The ordinary three-turn push remains available."
-      },
-      "onFailure": {
-        "goto": "signals",
-        "narration": "The short line is checked. The ordinary three-turn push remains available."
-      },
-      "onAssisted": {
-        "goto": "signals",
-        "narration": "The short line is checked. The ordinary three-turn push remains available."
-      }
-    },
-    "shelter_check": {
-      "type": "interaction",
-      "narration": "Hold wind cover low along the landing while a keeper secures its ties. It protects party figures from the Guard penalty, not from crawlers or crosswind pushes. Solo heroes can use the fixed posts as supports.",
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall",
-      "interaction": {
-        "kind": "cooperate",
-        "cue": "Support the wind cover while its edges are tied.",
-        "actionLabel": "Fasten the cover",
-        "supportLabel": "Hold the cover"
-      },
-      "onSuccess": {
-        "goto": "signals",
-        "narration": "The party's working lane has wind cover.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "temple_cover_ready",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "signals",
-        "narration": "The party's working lane has wind cover.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "temple_cover_ready",
-            "value": true
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "signals",
-        "narration": "The party's working lane has wind cover.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "temple_cover_ready",
-            "value": true
-          }
-        ]
-      }
-    },
-    "shelter_braced": {
+    "pip_shove": {
       "type": "story",
-      "narration": "Your thornguard uses a skill called Brace to keep the wind cover steady while the keepers secure it. That replaces the separate holding task. The other party members check the sight line; the turning rope remains ordinary.",
+      "narration": "Everyone grabs the pole. Pip counts to three, and then to three again, louder. You heave. The pole bends like a noodle, and everyone sits down hard in the wet grass. Notchbrow does not notice at all. Pip stares at the pole. \"Oh,\" he says. \"An island is bigger than a shove.\" Then he laughs until he hiccups.",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/temple-island-squall",
+      "art": "scenes/riftlight/island-due-back",
       "choices": [
         {
-          "id": "continue",
-          "label": "Continue",
-          "goto": "signals",
-          "icon": "hand"
+          "id": "back",
+          "label": "Get back before it bumps",
+          "icon": "boot",
+          "goto": "check_hop"
         }
       ]
     },
-    "signals": {
-      "type": "interaction",
-      "narration": "The keeper raises a cloth for hold and lowers it for release. \"Watch me once before anyone takes the load.\" Shouted guesses would vanish into the squall.",
+    "pip_watch": {
+      "type": "story",
+      "narration": "You sit beside Pip in the rain. Notchbrow creaks toward the glacier, and your chime leans with it. Pip watches for a long time. \"It isn't wandering,\" he says slowly. \"It's being pulled. Pushing can't fix being pulled.\" He lays the pole down in the grass.",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/temple-island-squall",
-      "interaction": {
-        "kind": "memory",
-        "cue": "Watch the cloth round, then echo it.",
-        "actionLabel": "Show what we saw",
-        "options": [
-          {
-            "id": "release",
-            "label": "Cloth lowered",
-            "icon": "eye"
-          },
-          {
-            "id": "hold",
-            "label": "Cloth raised",
-            "icon": "eye"
-          }
-        ],
-        "answer": [
-          "hold",
-          "hold",
-          "release",
-          "hold"
-        ],
-        "stepMs": 1300
-      },
+      "art": "scenes/riftlight/island-due-back",
+      "choices": [
+        {
+          "id": "back",
+          "label": "Get back before it bumps",
+          "icon": "boot",
+          "goto": "check_hop"
+        }
+      ]
+    },
+    "check_hop": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "Notchbrow's edge swings toward the landing and away. The gap is a hop, then a leap, then a hop again.",
+      "prompt": "Hop back to the landing with Pip before the gap opens wide",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/sky-landing",
       "onSuccess": {
-        "goto": "rest",
-        "narration": "Your checked cloth round can be taught to the relief watch.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "temple_signals_read",
-            "value": true
-          }
-        ]
+        "goto": "towels",
+        "narration": "You hop back with Pip between you. Clove catches him by the scarf."
       },
       "onFailure": {
-        "goto": "rest",
-        "narration": "The keeper will lead the cloth calls. Your account names this as helped signal work.",
+        "goto": "towels",
+        "narration": "You jump on a leap instead of a hop. You make it, just, and land in a heap with Pip on top.",
         "effects": [
           {
-            "type": "setFlag",
-            "flag": "temple_signals_read",
-            "value": false
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "rest",
-        "narration": "The keeper will lead the cloth calls. Your account names this as helped signal work.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "temple_signals_read",
-            "value": false
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
           }
         ]
       }
     },
-    "rest": {
-      "type": "rest",
-      "narration": "\"Rice buns for everyone!\" the keeper calls, passing a basket around the covered hall. You rest on cushions rescued from the rain. One cushion has a solemn embroidered bird with a bun crumb on its beak.",
-      "heal": 2,
-      "choices": [
+    "towels": {
+      "type": "story",
+      "narration": "Clove throws towels over everyone. \"Never do that again,\" he tells Pip, \"or I'll tie a bell to your tail.\" Pip peeks out from under his towel. \"Sorry,\" he mumbles. \"I just wanted Lady Olivia to say I did something big.\" What do you tell him?",
+      "cast": [
         {
-          "id": "rest",
-          "label": "Rest before the landing work",
-          "goto": "plan",
-          "icon": "hand"
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
         },
         {
-          "id": "watch",
-          "label": "Eat while the keeper holds watch",
-          "goto": "plan",
-          "icon": "hand"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall"
-    },
-    "plan": {
-      "type": "choice_point",
-      "narration": "The island's low edge comes alongside the posts. Choose the job your party will play on the board: turn it away, or hold the sheltered landing until it settles. Your preparation changes that encounter; it does not settle the island by itself.",
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/temple-island-squall",
       "choices": [
         {
-          "id": "push",
-          "label": "Turn the island away",
-          "goto": "push_plan",
-          "icon": "hand"
+          "id": "brave",
+          "label": "That was brave, and a bit silly",
+          "icon": "star",
+          "goto": "pip_brave"
         },
         {
-          "id": "shelter",
-          "label": "Hold shelter and let the island settle",
-          "goto": "shelter_plan",
-          "icon": "hand"
+          "id": "ask",
+          "label": "Next time, tell us first",
+          "icon": "heart",
+          "goto": "pip_asks",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "temple_pip_asks",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "temple_pip_back",
+          "value": true
+        }
+      ]
+    },
+    "pip_brave": {
+      "type": "story",
+      "narration": "Pip grins under his towel. \"Brave and silly,\" he repeats. \"Lady Olivia says those go together.\" He writes it on his paw so he won't forget, and the ink runs down his wrist.",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall",
+      "choices": [
+        {
+          "id": "fire",
+          "label": "Sit by the fire",
+          "icon": "eye",
+          "goto": "weather_book"
+        }
+      ]
+    },
+    "pip_asks": {
+      "type": "story",
+      "narration": "Pip thinks about it. Then he holds out his paw to shake on it, very seriously, like a grown-up. \"Next time I'll tell you first,\" he says. \"Then we can all be silly together.\"",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall",
+      "choices": [
+        {
+          "id": "fire",
+          "label": "Sit by the fire",
+          "icon": "eye",
+          "goto": "weather_book"
+        }
+      ]
+    },
+    "weather_book": {
+      "type": "story",
+      "narration": "By the fire, Clove opens a huge book of weather and islands. \"Every year we write down who drifts past,\" he says. \"This year, three islands came early, all leaning the same way. And now crawlers, from a field of old bones on the coast, so far away I've never seen it.\" He taps the page. Your chime leans the same way, toward the glacier. Whatever is pulling Notchbrow reaches everywhere.",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall",
+      "choices": [
+        {
+          "id": "eat",
+          "label": "Eat with the keepers",
+          "icon": "cake",
+          "goto": "rest"
+        }
+      ],
+      "priority": 2
+    },
+    "rest": {
+      "type": "rest",
+      "heal": 2,
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall",
+      "narration": "Clove's keepers bring rice buns, hot and sticky. Through the window, Notchbrow fills the sky. \"Now we choose,\" says Clove. \"Push it clear with the long poles, and the temple is safe, but Notchbrow drifts on into the storm, still pulled. Or clear the landing and let it settle against us. It can rest at last, but it will bring the crawlers right to our door and squash my landing rail.\"",
+      "variants": [
+        {
+          "when": {
+            "flag": "temple_pip_watched"
+          },
+          "text": "\"Let it settle,\" says Pip quietly. \"It's tired.\""
+        },
+        {
+          "when": {
+            "notFlag": "temple_pip_watched"
+          },
+          "text": "\"Push it,\" says Pip. \"All together this time.\""
+        }
+      ],
+      "choices": [
+        {
+          "id": "push",
+          "label": "Push it clear",
+          "icon": "might",
+          "goto": "push_plan"
+        },
+        {
+          "id": "settle",
+          "label": "Let it settle",
+          "icon": "heart",
+          "goto": "shelter_plan"
         }
       ]
     },
     "push_plan": {
       "type": "story",
-      "narration": "You run the strong ropes through the mooring posts and leave room for them to slip free afterward. The keeper holds the release cloth ready. The plan is a small turn at the edge, not a tug across the sky.",
+      "narration": "You'll push. Clove's keepers fetch the long push poles from the rack. \"A small turn,\" Clove says. \"Not a shove across the sky.\" Pip spits on his paws, then wipes them on Clove's apron.",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/temple-island-squall",
+      "choices": [
+        {
+          "id": "haul",
+          "label": "Haul the poles out to the landing",
+          "icon": "might",
+          "goto": "check_poles"
+        },
+        {
+          "id": "ready",
+          "label": "Use the poles your warning got ready",
+          "icon": "spark",
+          "goto": "approach_push",
+          "when": {
+            "flag": "island_warning_sent",
+            "notFlag": "island_relay_delayed"
+          }
+        }
+      ],
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "temple_plan_done",
-          "value": true
+          "flag": "temple_pip_watched",
+          "value": false
         }
       ],
-      "choices": [
+      "variants": [
         {
-          "id": "ordinary",
-          "label": "Work the ordinary exposed lane",
-          "goto": "fight_push",
-          "icon": "hand"
-        },
-        {
-          "id": "rope",
-          "label": "Use our prepared turning line",
-          "goto": "fight_push_rope",
-          "icon": "hand",
           "when": {
-            "flag": "temple_rope_ready"
-          }
-        },
-        {
-          "id": "cover",
-          "label": "Work inside our prepared wind cover",
-          "goto": "fight_push_cover",
-          "icon": "hand",
-          "when": {
-            "flag": "temple_cover_ready"
-          }
+            "flag": "island_warning_sent",
+            "notFlag": "island_relay_delayed"
+          },
+          "text": "Out on the landing, your warning's poles are already braced and waiting."
         }
       ]
     },
-    "fight_push": {
-      "type": "encounter",
-      "map": "riftlight_squall_temple",
-      "narration": "End 3 turns beside the working post to turn the island clear, or clear the crawlers so the keepers can finish. The squall lowers everyone's Guard by one. Crosswind tiles still push figures west.",
-      "enemies": [
+    "check_poles": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "narration": "The push poles are long, heavy and as slippery as eels.",
+      "prompt": "Haul the heavy push poles out and brace them on the landing",
+      "roller": "party",
+      "cast": [
         {
-          "id": "crawler",
-          "creature": "bone_crawler",
-          "count": 2
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
-      "environment": {
-        "modifiers": [
-          {
-            "id": "storm",
-            "label": "Squall gusts",
-            "kind": "guard",
-            "amount": -1,
-            "on": "everyone"
-          }
-        ],
-        "hazards": [
-          {
-            "id": "gust_lane",
-            "kind": "rift",
-            "label": "Crosswind on the landing",
-            "tiles": [
-              {
-                "x": 5,
-                "y": 2
-              },
-              {
-                "x": 4,
-                "y": 5
-              }
-            ],
-            "push": {
-              "direction": "west",
-              "tiles": 1
-            }
-          }
-        ],
-        "objectives": [
-          {
-            "id": "turn_island",
-            "kind": "close",
-            "label": "Work the turning rope",
-            "at": {
-              "x": 6,
-              "y": 3
-            },
-            "turns": 3,
-            "endsFight": true
-          }
-        ]
+      "art": "scenes/riftlight/temple-island-squall",
+      "onSuccess": {
+        "goto": "approach_push",
+        "narration": "The poles are braced against the posts, ready."
       },
-      "onVictory": {
-        "goto": "pushed",
+      "onFailure": {
+        "goto": "approach_push",
+        "narration": "A pole slips and lands on a foot. Ouch. But the poles are braced, ready.",
         "effects": [
           {
-            "type": "setFlag",
-            "flag": "temple_island_diverted"
-          }
-        ]
-      },
-      "onDefeat": {
-        "goto": "damaged",
-        "effects": [
-          {
-            "type": "heal",
-            "amount": 3,
-            "to": "party"
-          },
-          {
-            "type": "setFlag",
-            "flag": "temple_damaged"
-          }
-        ]
-      }
-    },
-    "fight_push_rope": {
-      "type": "encounter",
-      "map": "riftlight_squall_temple",
-      "narration": "End 2 turns beside the working post to turn the island clear, or clear the crawlers so the keepers can finish. The squall lowers everyone's Guard by one. Crosswind tiles still push figures west.",
-      "enemies": [
-        {
-          "id": "crawler",
-          "creature": "bone_crawler",
-          "count": 2
-        }
-      ],
-      "environment": {
-        "modifiers": [
-          {
-            "id": "storm",
-            "label": "Squall gusts",
-            "kind": "guard",
-            "amount": -1,
-            "on": "everyone"
-          }
-        ],
-        "hazards": [
-          {
-            "id": "gust_lane",
-            "kind": "rift",
-            "label": "Crosswind on the landing",
-            "tiles": [
-              {
-                "x": 5,
-                "y": 2
-              },
-              {
-                "x": 4,
-                "y": 5
-              }
-            ],
-            "push": {
-              "direction": "west",
-              "tiles": 1
-            }
-          }
-        ],
-        "objectives": [
-          {
-            "id": "turn_island",
-            "kind": "close",
-            "label": "Work the turning rope",
-            "at": {
-              "x": 6,
-              "y": 3
-            },
-            "turns": 2,
-            "endsFight": true
-          }
-        ]
-      },
-      "onVictory": {
-        "goto": "pushed",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "temple_island_diverted"
-          }
-        ]
-      },
-      "onDefeat": {
-        "goto": "damaged",
-        "effects": [
-          {
-            "type": "heal",
-            "amount": 3,
-            "to": "party"
-          },
-          {
-            "type": "setFlag",
-            "flag": "temple_damaged"
-          }
-        ]
-      }
-    },
-    "fight_push_cover": {
-      "type": "encounter",
-      "map": "riftlight_squall_temple",
-      "narration": "End 3 turns beside the working post to turn the island clear, or clear the crawlers so the keepers can finish. Your wind cover removes the party Guard penalty; enemies still lose one Guard. Crosswind tiles still push figures west.",
-      "enemies": [
-        {
-          "id": "crawler",
-          "creature": "bone_crawler",
-          "count": 2
-        }
-      ],
-      "environment": {
-        "modifiers": [
-          {
-            "id": "storm",
-            "label": "Squall beyond party wind cover",
-            "kind": "guard",
-            "amount": -1,
-            "on": "monsters"
-          }
-        ],
-        "hazards": [
-          {
-            "id": "gust_lane",
-            "kind": "rift",
-            "label": "Crosswind on the landing",
-            "tiles": [
-              {
-                "x": 5,
-                "y": 2
-              },
-              {
-                "x": 4,
-                "y": 5
-              }
-            ],
-            "push": {
-              "direction": "west",
-              "tiles": 1
-            }
-          }
-        ],
-        "objectives": [
-          {
-            "id": "turn_island",
-            "kind": "close",
-            "label": "Work the turning rope",
-            "at": {
-              "x": 6,
-              "y": 3
-            },
-            "turns": 3,
-            "endsFight": true
-          }
-        ]
-      },
-      "onVictory": {
-        "goto": "pushed",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "temple_island_diverted"
-          }
-        ]
-      },
-      "onDefeat": {
-        "goto": "damaged",
-        "effects": [
-          {
-            "type": "heal",
-            "amount": 3,
-            "to": "party"
-          },
-          {
-            "type": "setFlag",
-            "flag": "temple_damaged"
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
           }
         ]
       }
     },
     "shelter_plan": {
       "type": "story",
-      "narration": "You draw the sheltered corner tight and leave a clear place for the island's low edge to rest. The keeper marks a boundary the temple cushions must never cross, even after the storm.",
+      "narration": "You'll let it settle. Clove's keepers drag out every cushion in the temple to pad the landing. \"Gently,\" Clove tells the island, as if it can hear. Pip carries a cushion bigger than he is.",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/temple-island-squall",
+      "choices": [
+        {
+          "id": "pad",
+          "label": "Pad the landing with cushions",
+          "icon": "hand",
+          "goto": "check_cushions"
+        },
+        {
+          "id": "cleared",
+          "label": "Use the landing your welcome cleared",
+          "icon": "song",
+          "goto": "approach_shelter",
+          "when": {
+            "notFlag": "island_warning_sent"
+          },
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "temple_soft_landing",
+              "value": true
+            }
+          ]
+        }
+      ],
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "temple_plan_done",
-          "value": true
+          "flag": "temple_pip_watched",
+          "value": false
         }
       ],
-      "choices": [
+      "variants": [
         {
-          "id": "ordinary",
-          "label": "Work the ordinary exposed lane",
-          "goto": "fight_shelter",
-          "icon": "hand"
-        },
-        {
-          "id": "rope",
-          "label": "Use our prepared turning line",
-          "goto": "fight_shelter_rope",
-          "icon": "hand",
           "when": {
-            "flag": "temple_rope_ready"
-          }
-        },
-        {
-          "id": "cover",
-          "label": "Work inside our prepared wind cover",
-          "goto": "fight_shelter_cover",
-          "icon": "hand",
-          "when": {
-            "flag": "temple_cover_ready"
-          }
+            "notFlag": "island_warning_sent"
+          },
+          "text": "Out on the landing, the keepers who came to greet the island have already swept it clear and lined it with cushions."
         }
       ]
+    },
+    "check_cushions": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "The rain soaks the cushions almost as fast as you can carry them.",
+      "prompt": "Stack the cushions into a soft wall before they get soggy",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall",
+      "onSuccess": {
+        "goto": "approach_shelter",
+        "narration": "A fat, soft wall of cushions lines the landing.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "temple_soft_landing",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "approach_shelter",
+        "narration": "Half the cushions are soggy and flat by the time you stack them. It will have to do."
+      }
+    },
+    "approach_push": {
+      "type": "story",
+      "narration": "Notchbrow's edge looms out of the rain, right at the landing. Out of the tear by the tower pour the bone crawlers, rushing toward the island's fresh magic and your humming chime. \"Poles!\" shouts Clove.",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/bone_crawler",
+          "count": 3
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall",
+      "choices": [
+        {
+          "id": "go",
+          "label": "To the poles!",
+          "icon": "might",
+          "goto": "fight_push_swarm"
+        },
+        {
+          "id": "dizzy",
+          "label": "To the poles, while the crawlers are dizzy",
+          "icon": "bell",
+          "goto": "fight_push",
+          "when": {
+            "flag": "temple_bell_rung"
+          }
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "temple_bell_rung"
+          },
+          "text": "The weather bell's ring still hums in the air, and some of the crawlers wobble, dizzy."
+        },
+        {
+          "when": {
+            "notFlag": "temple_bell_rung"
+          },
+          "text": "With no bell ringing, nothing slows them down. There are a lot of crawlers."
+        }
+      ]
+    },
+    "approach_shelter": {
+      "type": "story",
+      "narration": "Notchbrow's edge looms out of the rain, right at the landing. Out of the tear by the tower pour the bone crawlers, rushing toward the island's fresh magic and your humming chime. \"Hold the landing!\" shouts Clove.",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/bone_crawler",
+          "count": 3
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall",
+      "choices": [
+        {
+          "id": "go",
+          "label": "Hold the landing!",
+          "icon": "shield",
+          "goto": "fight_shelter_swarm"
+        },
+        {
+          "id": "dizzy",
+          "label": "Hold it while the crawlers are dizzy",
+          "icon": "bell",
+          "goto": "fight_shelter",
+          "when": {
+            "flag": "temple_bell_rung"
+          }
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "temple_bell_rung"
+          },
+          "text": "The weather bell's ring still hums in the air, and some of the crawlers wobble, dizzy."
+        },
+        {
+          "when": {
+            "notFlag": "temple_bell_rung"
+          },
+          "text": "With no bell ringing, nothing slows them down. There are a lot of crawlers."
+        }
+      ]
+    },
+    "fight_push": {
+      "type": "encounter",
+      "map": "riftlight_squall_temple",
+      "art": "scenes/riftlight/temple-island-squall",
+      "narration": "Swing Notchbrow clear by ending three turns beside the push poles, or drive the crawlers off. Gusts knock everyone about, and the crosswind shoves anyone who stops in it. The bell has some of the crawlers dizzy.",
+      "enemies": [
+        {
+          "id": "crawler",
+          "creature": "bone_crawler",
+          "count": 2
+        }
+      ],
+      "environment": {
+        "modifiers": [
+          {
+            "id": "storm",
+            "label": "Squall gusts",
+            "kind": "guard",
+            "amount": -1,
+            "on": "everyone"
+          }
+        ],
+        "hazards": [
+          {
+            "id": "gust_lane",
+            "kind": "rift",
+            "label": "Crosswind on the landing",
+            "tiles": [
+              {
+                "x": 5,
+                "y": 2
+              },
+              {
+                "x": 4,
+                "y": 5
+              }
+            ],
+            "push": {
+              "direction": "west",
+              "tiles": 1
+            }
+          }
+        ],
+        "objectives": [
+          {
+            "id": "turn_island",
+            "kind": "close",
+            "label": "Work the push poles",
+            "at": {
+              "x": 6,
+              "y": 3
+            },
+            "turns": 3,
+            "endsFight": true,
+            "effects": [
+              {
+                "type": "setFlag",
+                "flag": "temple_plan_won",
+                "value": true
+              }
+            ]
+          }
+        ]
+      },
+      "onVictory": {
+        "goto": "pushed"
+      },
+      "onDefeat": {
+        "goto": "damaged",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          },
+          {
+            "type": "setFlag",
+            "flag": "temple_damaged",
+            "value": true
+          }
+        ]
+      }
+    },
+    "fight_push_swarm": {
+      "type": "encounter",
+      "map": "riftlight_squall_temple",
+      "art": "scenes/riftlight/temple-island-squall",
+      "narration": "Swing Notchbrow clear by ending three turns beside the push poles, or drive the crawlers off. Gusts knock everyone about, and the crosswind shoves anyone who stops in it. With no bell ringing, the whole swarm comes.",
+      "enemies": [
+        {
+          "id": "crawler",
+          "creature": "bone_crawler"
+        }
+      ],
+      "environment": {
+        "modifiers": [
+          {
+            "id": "storm",
+            "label": "Squall gusts",
+            "kind": "guard",
+            "amount": -1,
+            "on": "everyone"
+          }
+        ],
+        "hazards": [
+          {
+            "id": "gust_lane",
+            "kind": "rift",
+            "label": "Crosswind on the landing",
+            "tiles": [
+              {
+                "x": 5,
+                "y": 2
+              },
+              {
+                "x": 4,
+                "y": 5
+              }
+            ],
+            "push": {
+              "direction": "west",
+              "tiles": 1
+            }
+          }
+        ],
+        "objectives": [
+          {
+            "id": "turn_island",
+            "kind": "close",
+            "label": "Work the push poles",
+            "at": {
+              "x": 6,
+              "y": 3
+            },
+            "turns": 3,
+            "endsFight": true,
+            "effects": [
+              {
+                "type": "setFlag",
+                "flag": "temple_plan_won",
+                "value": true
+              }
+            ]
+          }
+        ]
+      },
+      "onVictory": {
+        "goto": "pushed"
+      },
+      "onDefeat": {
+        "goto": "damaged",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          },
+          {
+            "type": "setFlag",
+            "flag": "temple_damaged",
+            "value": true
+          }
+        ]
+      }
     },
     "fight_shelter": {
       "type": "encounter",
       "map": "riftlight_squall_temple",
-      "narration": "Hold the sheltered landing for two clear rounds, or clear the crawlers so the keepers can finish holding it. The squall lowers everyone's Guard by one. Crosswind tiles still push figures west.",
+      "art": "scenes/riftlight/temple-island-squall",
+      "narration": "Hold the cushioned landing for two rounds while Notchbrow settles, or drive the crawlers off. Gusts knock everyone about, and the crosswind shoves anyone who stops in it. The bell has the crawlers dizzy, so it settles quickly.",
       "enemies": [
         {
           "id": "crawler",
-          "creature": "bone_crawler",
-          "count": 2
+          "creature": "bone_crawler"
         }
       ],
       "environment": {
@@ -1033,9 +1687,9 @@
         ],
         "objectives": [
           {
-            "id": "hold_shelter",
+            "id": "settle_island",
             "kind": "hold",
-            "label": "Hold the sheltered landing",
+            "label": "Hold the cushioned landing",
             "tiles": [
               {
                 "x": 6,
@@ -1047,7 +1701,14 @@
               }
             ],
             "rounds": 2,
-            "endsFight": true
+            "endsFight": true,
+            "effects": [
+              {
+                "type": "setFlag",
+                "flag": "temple_plan_won",
+                "value": true
+              }
+            ]
           }
         ]
       },
@@ -1056,7 +1717,8 @@
         "effects": [
           {
             "type": "setFlag",
-            "flag": "temple_island_settled"
+            "flag": "temple_island_settled",
+            "value": true
           }
         ]
       },
@@ -1070,20 +1732,21 @@
           },
           {
             "type": "setFlag",
-            "flag": "temple_damaged"
+            "flag": "temple_damaged",
+            "value": true
           }
         ]
       }
     },
-    "fight_shelter_rope": {
+    "fight_shelter_swarm": {
       "type": "encounter",
       "map": "riftlight_squall_temple",
-      "narration": "Hold the sheltered landing for two clear rounds, or clear the crawlers so the keepers can finish holding it. The squall lowers everyone's Guard by one. Crosswind tiles still push figures west.",
+      "art": "scenes/riftlight/temple-island-squall",
+      "narration": "Hold the cushioned landing for three rounds while Notchbrow settles, or drive the crawlers off. Gusts knock everyone about, and the crosswind shoves anyone who stops in it. With no bell ringing, the crawlers keep coming, so it takes longer.",
       "enemies": [
         {
           "id": "crawler",
-          "creature": "bone_crawler",
-          "count": 2
+          "creature": "bone_crawler"
         }
       ],
       "environment": {
@@ -1119,9 +1782,9 @@
         ],
         "objectives": [
           {
-            "id": "hold_shelter",
+            "id": "settle_island",
             "kind": "hold",
-            "label": "Hold the sheltered landing",
+            "label": "Hold the cushioned landing",
             "tiles": [
               {
                 "x": 6,
@@ -1132,8 +1795,15 @@
                 "y": 4
               }
             ],
-            "rounds": 2,
-            "endsFight": true
+            "rounds": 3,
+            "endsFight": true,
+            "effects": [
+              {
+                "type": "setFlag",
+                "flag": "temple_plan_won",
+                "value": true
+              }
+            ]
           }
         ]
       },
@@ -1142,7 +1812,8 @@
         "effects": [
           {
             "type": "setFlag",
-            "flag": "temple_island_settled"
+            "flag": "temple_island_settled",
+            "value": true
           }
         ]
       },
@@ -1156,748 +1827,205 @@
           },
           {
             "type": "setFlag",
-            "flag": "temple_damaged"
-          }
-        ]
-      }
-    },
-    "fight_shelter_cover": {
-      "type": "encounter",
-      "map": "riftlight_squall_temple",
-      "narration": "Hold the sheltered landing for two clear rounds, or clear the crawlers so the keepers can finish holding it. Your wind cover removes the party Guard penalty; enemies still lose one Guard. Crosswind tiles still push figures west.",
-      "enemies": [
-        {
-          "id": "crawler",
-          "creature": "bone_crawler",
-          "count": 2
-        }
-      ],
-      "environment": {
-        "modifiers": [
-          {
-            "id": "storm",
-            "label": "Squall beyond party wind cover",
-            "kind": "guard",
-            "amount": -1,
-            "on": "monsters"
-          }
-        ],
-        "hazards": [
-          {
-            "id": "gust_lane",
-            "kind": "rift",
-            "label": "Crosswind on the landing",
-            "tiles": [
-              {
-                "x": 5,
-                "y": 2
-              },
-              {
-                "x": 4,
-                "y": 5
-              }
-            ],
-            "push": {
-              "direction": "west",
-              "tiles": 1
-            }
-          }
-        ],
-        "objectives": [
-          {
-            "id": "hold_shelter",
-            "kind": "hold",
-            "label": "Hold the sheltered landing",
-            "tiles": [
-              {
-                "x": 6,
-                "y": 3
-              },
-              {
-                "x": 6,
-                "y": 4
-              }
-            ],
-            "rounds": 2,
-            "endsFight": true
-          }
-        ]
-      },
-      "onVictory": {
-        "goto": "settled",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "temple_island_settled"
-          }
-        ]
-      },
-      "onDefeat": {
-        "goto": "damaged",
-        "effects": [
-          {
-            "type": "heal",
-            "amount": 3,
-            "to": "party"
-          },
-          {
-            "type": "setFlag",
-            "flag": "temple_damaged"
+            "flag": "temple_damaged",
+            "value": true
           }
         ]
       }
     },
     "pushed": {
       "type": "story",
-      "narration": "The island's low edge turns past the posts. The keepers finish the pull from their sheltered side and release the line. The island drifts clear of the temple, leaving only a trail of rain from its grass. The keeper lowers the cloth and sits on a cushion immediately.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Check the actual landing",
-          "goto": "boards_check",
-          "icon": "hand"
-        }
-      ],
+      "narration": "The poles bite. Slowly, slowly, Notchbrow's edge turns past the landing, and the island drifts away into the rain, still leaning toward the glacier. The temple is safe. Clove sits down on a wet cushion. \"Goodbye, old thing,\" he says. \"I hope you find wherever you're going.\" Pip waves his towel at it.",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall"
-    },
-    "settled": {
-      "type": "story",
-      "narration": "The low island edge settles beside the sheltered landing. Your cover holds. The keepers close the outer gate to mark where temple ends and new ground begins. Someone hangs a polite notice on the gate: PLEASE KNOCK, EVEN IF YOU ARE AN ISLAND.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Check the actual landing",
-          "goto": "boards_check",
-          "icon": "hand"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall"
-    },
-    "damaged": {
-      "type": "story",
-      "narration": "The crawlers force your party back behind the gate. The keepers pull the shelter shut and help you recover inside. The island bumps the empty landing. Boards crack and the outer awning folds; everyone is already under the stone roof. The outer landing must stay closed tonight. The morning crew will need your spare gear to repair it.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Check the actual landing",
-          "goto": "boards_check",
-          "icon": "hand"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall"
-    },
-    "boards_check": {
-      "type": "interaction",
-      "narration": "Sight the near boards from the stone threshold. \"Rain can hide a shifted edge,\" the keeper warns. A damaged outer landing remains closed even if you make a clear observation now.",
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall",
-      "interaction": {
-        "kind": "timing",
-        "cue": "Mark the near board edge during a clear view.",
-        "actionLabel": "Mark the checked edge",
-        "target": 0.5,
-        "width": 0.3,
-        "periodMs": 6000
-      },
-      "onSuccess": {
-        "goto": "roof",
-        "narration": "The keeper marks only checked ground. Damage stays marked for repair.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "temple_edge_read",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "roof",
-        "narration": "The keeper closes the outer boards and keeps work at the stone threshold.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "temple_edge_read",
-            "value": false
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "roof",
-        "narration": "The keeper checks the near board edge with you. The record names the helped inspection.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "temple_edge_read",
-            "value": false
-          }
-        ]
-      }
-    },
-    "roof": {
-      "type": "choice_point",
-      "narration": "\"Drips are finding every dry cushion,\" the keeper sighs. Clear the leaf wad with the long pole from inside the fence, or level a basin under the loose gutter end. Both jobs stay below the roof and behind the checked edge.",
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall",
-      "choices": [
-        {
-          "id": "pole",
-          "label": "Guide the pole to the leaf wad",
-          "goto": "roof_pole",
-          "icon": "hand"
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
         },
         {
-          "id": "basin",
-          "label": "Level the runoff basin",
-          "goto": "roof_basin",
-          "icon": "hand"
-        }
-      ]
-    },
-    "roof_pole": {
-      "type": "interaction",
-      "narration": "Guide the pole tip to the leaf wad from the sheltered side. The keeper braces the pole's rest. A good plop is the only applause required.",
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall",
-      "interaction": {
-        "kind": "precision",
-        "cue": "Guide the pole tip inside the leaf-wad interval.",
-        "actionLabel": "Clear the gutter",
-        "target": 0.5,
-        "width": 0.3,
-        "periodMs": 6000
-      },
-      "onSuccess": {
-        "goto": "repair",
-        "narration": "The leaf wad plops into a bucket and runoff clears the doorway."
-      },
-      "onFailure": {
-        "goto": "runoff_help",
-        "narration": "The first splash reaches the threshold. Use a mat and broom to redirect it instead of repeating the poke."
-      },
-      "onAssisted": {
-        "goto": "repair",
-        "narration": "The leaf wad plops into a bucket and runoff clears the doorway."
-      }
-    },
-    "roof_basin": {
-      "type": "interaction",
-      "narration": "Level the basin under the lowered gutter end. The keeper holds the gutter from inside the window. No one climbs onto the wet roof.",
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall",
-      "interaction": {
-        "kind": "balance",
-        "cue": "Level the runoff basin.",
-        "actionLabel": "Set the basin down",
-        "objectLabel": "runoff basin"
-      },
-      "onSuccess": {
-        "goto": "repair",
-        "narration": "The basin sends runoff away from the doorway."
-      },
-      "onFailure": {
-        "goto": "repair",
-        "narration": "The basin sends runoff away from the doorway."
-      },
-      "onAssisted": {
-        "goto": "repair",
-        "narration": "The basin sends runoff away from the doorway."
-      }
-    },
-    "runoff_help": {
-      "type": "interaction",
-      "narration": "Pass the dry-side broom and rolled threshold mat to the keeper. Sweep the first puddle out while the gutter drains into the basin.",
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Pass the threshold kit from the dry side.",
-        "actionLabel": "Pass the broom",
-        "objectLabel": "threshold kit"
-      },
-      "onSuccess": {
-        "goto": "repair",
-        "narration": "The small puddle is cleared. The outer boards keep their actual repair marks."
-      },
-      "onFailure": {
-        "goto": "repair",
-        "narration": "The small puddle is cleared. The outer boards keep their actual repair marks."
-      },
-      "onAssisted": {
-        "goto": "repair",
-        "narration": "The small puddle is cleared. The outer boards keep their actual repair marks."
-      }
-    },
-    "repair": {
-      "type": "choice_point",
-      "narration": "The keeper taps the log. \"The next crew needs a real handover.\" You may leave your spare boards and line with her, or recover the unused kit from checked ground. Your boundary marks stay in place either way.",
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/temple-island-squall",
       "choices": [
         {
-          "id": "leave",
-          "label": "Leave the spare kit for the morning crew",
-          "goto": "repair_1",
-          "icon": "hand"
-        },
-        {
-          "id": "pack",
-          "label": "Recover unused kit from checked ground",
-          "goto": "repair_2",
-          "icon": "hand",
-          "when": {
-            "notFlag": "temple_damaged"
-          }
+          "id": "find",
+          "label": "Find the crawlers",
+          "icon": "eye",
+          "goto": "crawlers_home"
         }
       ],
-      "variants": [
-        {
-          "when": {
-            "flag": "temple_damaged"
-          },
-          "replace": true,
-          "text": "The outer landing is broken and stays closed tonight. The morning crew needs your spare boards and line for repairs. Pass that kit into the temple store from behind the safe boundary; it must stay here when your party leaves."
-        }
-      ]
-    },
-    "repair_1": {
-      "type": "interaction",
-      "narration": "Pass the spare boards and line to the keeper from behind the safe boundary. This is a kit left with the temple; it will not quietly reappear in the ending.",
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Pass the repair kit to the morning crew's store.",
-        "actionLabel": "Pass the spare boards",
-        "objectLabel": "repair kit"
-      },
-      "onSuccess": {
-        "goto": "record",
-        "narration": "The spare kit stays with the temple crew.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "temple_repair_gear_left",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "record",
-        "narration": "The spare kit stays with the temple crew.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "temple_repair_gear_left",
-            "value": true
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "record",
-        "narration": "The spare kit stays with the temple crew.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "temple_repair_gear_left",
-            "value": true
-          }
-        ]
-      }
-    },
-    "repair_2": {
-      "type": "interaction",
-      "narration": "Support the spare kit while the keeper releases its storage ties from checked ground. Your party can take this unused kit; any damaged boards remain the temple's repair job.",
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall",
-      "interaction": {
-        "kind": "cooperate",
-        "cue": "Support the unused spare kit.",
-        "actionLabel": "Pack the kit",
-        "supportLabel": "Support the spare boards"
-      },
-      "onSuccess": {
-        "goto": "record",
-        "narration": "The unused spare kit returns to your party.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "temple_repair_gear_left",
-            "value": false
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "record",
-        "narration": "The unused spare kit returns to your party.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "temple_repair_gear_left",
-            "value": false
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "record",
-        "narration": "The unused spare kit returns to your party.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "temple_repair_gear_left",
-            "value": false
-          }
-        ]
-      }
-    },
-    "record": {
-      "type": "choice_point",
-      "narration": "The keeper opens the log beside the old island songs. \"Tomorrow needs the real landing,\" she says, moving the book away from a determined raindrop. Make a signal account for a cloth drill, or a boundary map for a sight-line drill.",
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Record the signal work for the next watch",
-          "goto": "record_signals",
-          "icon": "hand",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "temple_signal_log",
-              "value": true
-            }
-          ]
-        },
-        {
-          "id": "plan_2",
-          "label": "Map the actual landing boundary",
-          "goto": "record_map",
-          "icon": "hand",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "temple_signal_log",
-              "value": false
-            }
-          ]
-        }
-      ]
-    },
-    "record_signals": {
-      "type": "story",
-      "narration": "You and the keeper record the preparation, board work and actual result. She adds the island's present position and any damaged outer landing. Checked cloth calls go on the page; places where a keeper led remain marked as helped work. Rain ticks against the hall window.",
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall",
-      "variants": [
-        {
-          "when": {
-            "flag": "temple_signals_read"
-          },
-          "text": "The first cloth round was recalled by your party; the log can say so."
-        },
-        {
-          "when": {
-            "notFlag": "temple_signals_read"
-          },
-          "text": "The first cloth round was keeper-led. The log credits that help even if your later drill goes well."
-        }
-      ],
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "watch"
-        }
-      ]
-    },
-    "record_map": {
-      "type": "interaction",
-      "narration": "Trace the checked boundary, leaving unchecked boards blank. The keeper labels the island's actual position and any broken landing.",
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall",
-      "interaction": {
-        "kind": "precision",
-        "cue": "Mark only the checked boundary interval.",
-        "actionLabel": "Mark the boundary map",
-        "target": 0.5,
-        "width": 0.3,
-        "periodMs": 6000
-      },
-      "onSuccess": {
-        "goto": "watch",
-        "narration": "The map distinguishes checked ground from the unchecked edge."
-      },
-      "onFailure": {
-        "goto": "watch",
-        "narration": "The keeper marks the broad safe threshold and leaves fine board detail unclaimed."
-      },
-      "onAssisted": {
-        "goto": "watch",
-        "narration": "The map distinguishes checked ground from the unchecked edge."
-      }
-    },
-    "watch": {
-      "type": "story",
-      "narration": "A boundary observation station is always useful. If you chose a signal account, you can instead use it to lead the cloth drill. Choose the job you will actually show the next watch.",
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall",
-      "choices": [
-        {
-          "id": "map",
-          "label": "Show a fixed boundary observation station",
-          "goto": "watch_map",
-          "icon": "hand"
-        },
-        {
-          "id": "signals",
-          "label": "Teach the cloth drill from our signal account",
-          "goto": "watch_signals",
-          "icon": "hand",
-          "when": {
-            "flag": "temple_signal_log"
-          }
-        }
-      ]
-    },
-    "watch_signals": {
-      "type": "interaction",
-      "narration": "Watch the keeper demonstrate hold, hold, release, hold. Echo it for the relief watch. If you need help, the keeper leads; nobody hands a guessed signal round to the next crew.",
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall",
-      "interaction": {
-        "kind": "memory",
-        "cue": "Echo the keeper's relief-watch cloth round.",
-        "actionLabel": "Show what we saw",
-        "options": [
-          {
-            "id": "release",
-            "label": "Cloth lowered",
-            "icon": "eye"
-          },
-          {
-            "id": "hold",
-            "label": "Cloth raised",
-            "icon": "eye"
-          }
-        ],
-        "answer": [
-          "hold",
-          "hold",
-          "release",
-          "hold"
-        ],
-        "stepMs": 1300
-      },
-      "onSuccess": {
-        "goto": "ending",
-        "narration": "The relief watch has practiced the checked round."
-      },
-      "onFailure": {
-        "goto": "watch_help",
-        "narration": "The keeper will lead a visible demonstration rather than pass along a guessed round."
-      },
-      "onAssisted": {
-        "goto": "watch_help",
-        "narration": "The keeper will lead a visible demonstration rather than pass along a guessed round."
-      }
-    },
-    "watch_help": {
-      "type": "choice_point",
-      "narration": "Help the keeper demonstrate the actual hold and release calls. The relief watch can see her cloth and practice without a loaded rope.",
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall",
-      "choices": [
-        {
-          "id": "hold",
-          "label": "Keep the practice rope slack",
-          "icon": "hand",
-          "goto": "watch_help_response_hold"
-        },
-        {
-          "id": "cloth",
-          "label": "Keep the cloth in view",
-          "icon": "hand",
-          "goto": "watch_help_response_cloth"
-        },
-        {
-          "id": "account",
-          "label": "Name the helped signal round",
-          "icon": "hand",
-          "goto": "watch_help_response_account"
-        }
-      ]
-    },
-    "watch_map": {
-      "type": "interaction",
-      "narration": "Use the fixed fence post and tower edge to mark a change from shelter. Only the view is checked; the party does not step onto the outer boards.",
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall",
-      "interaction": {
-        "kind": "timing",
-        "cue": "Compare the edge during the clear sight-line interval.",
-        "actionLabel": "Show the watch station",
-        "target": 0.5,
-        "width": 0.3,
-        "periodMs": 6000
-      },
-      "onSuccess": {
-        "goto": "ending",
-        "narration": "The relief watch can observe from checked ground."
-      },
-      "onFailure": {
-        "goto": "watch_map_help",
-        "narration": "Rain hid the edge. Set a nearer watch station at the stone threshold."
-      },
-      "onAssisted": {
-        "goto": "ending",
-        "narration": "The relief watch can observe from checked ground."
-      }
-    },
-    "watch_map_help": {
-      "type": "interaction",
-      "narration": "Pass a bright marker to the keeper at the stone threshold. The relief watch will use her nearer fixed view, not a guessed distant line.",
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Pass the near-station marker to the keeper.",
-        "actionLabel": "Pass the watch marker",
-        "objectLabel": "watch marker"
-      },
-      "onSuccess": {
-        "goto": "ending",
-        "narration": "A nearer watch station is ready behind the closed edge."
-      },
-      "onFailure": {
-        "goto": "ending",
-        "narration": "A nearer watch station is ready behind the closed edge."
-      },
-      "onAssisted": {
-        "goto": "ending",
-        "narration": "A nearer watch station is ready behind the closed edge."
-      }
-    },
-    "ending": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "rift": "collapse",
-      "narration": "The temple is safe to shelter in, and every keeper has a dry place. The bell rope sheds its tiny raincoat into a bucket. A griffin messenger can carry you down to the Cairnstep when the wind clears; the path behind returns to the island's lookout. You have changed what the next watch will find. As the squall eases, the fresh opening shrinks shut. The keepers watch from behind a striped wait sign until its last shimmer is gone; no new crawlers can enter the hall.",
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "temple_safe_done"
+          "flag": "temple_island_met",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "temple_pushed",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "temple_bell_rung",
+          "value": false
         }
       ],
+      "variants": [
+        {
+          "when": {
+            "flag": "temple_plan_won"
+          },
+          "text": "Without the island's fresh magic to chase, the crawlers lose interest and clatter back toward their tear."
+        },
+        {
+          "when": {
+            "notFlag": "temple_plan_won"
+          },
+          "text": "You chased the crawlers off, and now they are scattered over the temple roofs, clicking."
+        }
+      ]
+    },
+    "settled": {
+      "type": "story",
+      "narration": "Notchbrow's edge nudges the landing and stops. It rests there at last, grass dripping, its old stone just across the rail. Clove hangs a sign on the gate: PLEASE KNOCK, EVEN IF YOU ARE AN ISLAND.",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall",
       "choices": [
         {
-          "id": "continue",
-          "label": "Go on",
+          "id": "find",
+          "label": "Find the crawlers",
+          "icon": "eye",
+          "goto": "crawlers_home"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "temple_island_met",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "temple_bell_rung",
+          "value": false
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "temple_soft_landing"
+          },
+          "text": "The cushions squash, and not one board cracks."
+        },
+        {
+          "when": {
+            "notFlag": "temple_soft_landing"
+          },
+          "text": "Crunch. The landing rail bends flat. Clove sighs, then grins. \"Rails can be mended. Islands can't be hurried.\""
+        },
+        {
+          "when": {
+            "flag": "temple_plan_won"
+          },
+          "text": "Without the island's fresh magic to chase, the crawlers lose interest and clatter back toward their tear."
+        },
+        {
+          "when": {
+            "notFlag": "temple_plan_won"
+          },
+          "text": "You chased the crawlers off, and now they are scattered over the temple roofs, clicking."
+        }
+      ]
+    },
+    "damaged": {
+      "type": "story",
+      "narration": "The crawlers drive everyone back inside the hall. Outside, Notchbrow bumps the empty landing, hard. Boards crack, a lantern post topples, and the landing breaks in two. Then the island swings away into the rain. Everyone is safe and dry, but the landing is gone. \"Closed for repairs,\" Clove says bravely, and hangs the sign upside down. The crawlers have the yard to themselves.",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall",
+      "choices": [
+        {
+          "id": "wait",
+          "label": "Wait for the storm to ease",
+          "icon": "eye",
+          "goto": "crawlers_home"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "temple_island_met",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "temple_bell_rung",
+          "value": false
+        }
+      ]
+    },
+    "crawlers_home": {
+      "type": "choice_point",
+      "narration": "The squall begins to ease. By the tower, the tear in the air is shrinking. But crawlers still cling to the warm bells, clicking sadly. They are a very long way from home. Pip holds out his spoon to one. \"They want to go home,\" he says. \"Everything does.\" How will you get them through before the tear closes?",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/bone_crawler",
+          "count": 2
+        }
+      ],
+      "art": "scenes/riftlight/sky-mist-song",
+      "choices": [
+        {
+          "id": "hum",
+          "label": "Hum them home",
+          "icon": "song",
+          "goto": "check_hum"
+        },
+        {
+          "id": "sweep",
+          "label": "Sweep them through with brooms",
           "icon": "hand",
-          "goto": "finish"
+          "goto": "check_sweep"
+        }
+      ],
+      "rift": "steady",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "temple_plan_won",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "temple_soft_landing",
+          "value": false
         }
       ],
       "variants": [
@@ -1905,255 +2033,315 @@
           "when": {
             "flag": "temple_damaged"
           },
-          "text": "The landing stays closed for repairs. Your account records the lost boards and the shelter that kept everyone safe."
+          "text": "After the fight they won, there are a lot of them."
+        }
+      ]
+    },
+    "check_hum": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "narration": "You hum low and steady, like the bells. Clove hums along, a little off key.",
+      "prompt": "Hum the crawlers down from the bells and through the shrinking tear",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
         },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/bone_crawler",
+          "count": 2
+        }
+      ],
+      "art": "scenes/riftlight/sky-mist-song",
+      "onSuccess": {
+        "goto": "tear_shut",
+        "narration": "The crawlers sway to your tune, then trot through the tear one by one, back toward their faraway bones."
+      },
+      "onFailure": {
+        "goto": "tear_shut",
+        "narration": "Your hum wobbles. The crawlers go, all but one. It tucks itself inside the weather bell and will not budge.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "temple_crawler_stays",
+            "value": true
+          }
+        ]
+      },
+      "checkKind": "doing"
+    },
+    "check_sweep": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "narration": "Clove hands out brooms. The crawlers cling to the bells with all their legs.",
+      "prompt": "Sweep the clinging crawlers down and through the tear",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/bone_crawler",
+          "count": 2
+        }
+      ],
+      "art": "scenes/riftlight/sky-mist-song",
+      "onSuccess": {
+        "goto": "tear_shut",
+        "narration": "Swish, swish. The crawlers skitter through the tear, offended but home."
+      },
+      "onFailure": {
+        "goto": "tear_shut",
+        "narration": "Swish! One crawler dodges the broom and hides inside the weather bell. It will not come out.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "temple_crawler_stays",
+            "value": true
+          }
+        ]
+      }
+    },
+    "tear_shut": {
+      "type": "story",
+      "narration": "The tear folds shut like a sleepy eye. The rain stops. Through a gap in the clouds, the sun comes out over a hundred islands, and the wet roofs shine. Clove takes off his foggy glasses and cleans them on his apron, at last.",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/sky-ferry",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Look around",
+          "icon": "eye",
+          "goto": "fig_thanks"
+        }
+      ],
+      "rift": "collapse",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "temple_storm_done",
+          "value": true
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "temple_crawler_stays"
+          },
+          "text": "From inside the bell comes a small click. Clove sighs. \"Fine. You can be the temple's bell crawler. No chewing.\""
+        }
+      ]
+    },
+    "fig_thanks": {
+      "type": "story",
+      "narration": "Fig pads up with something behind her back: a drawing of Notchbrow, with all of you standing in front of it, very small and very brave. \"For you,\" she whispers, and runs away before anyone can say thank you. Pip looks at it for a long time.",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/sky-ferry",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Find Clove",
+          "icon": "forward",
+          "goto": "farewell"
+        }
+      ]
+    },
+    "farewell": {
+      "type": "choice_point",
+      "narration": "Clove opens his weather book to a fresh page and dips his pen. \"I write one line about every storm,\" he says. \"What should tonight's line be?\"",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/sky-ferry",
+      "choices": [
+        {
+          "id": "pulled",
+          "label": "Something is pulling the land",
+          "icon": "ear",
+          "goto": "clove_pulled"
+        },
+        {
+          "id": "home",
+          "label": "Even crawlers want to go home",
+          "icon": "heart",
+          "goto": "clove_home"
+        }
+      ]
+    },
+    "clove_pulled": {
+      "type": "story",
+      "narration": "Clove writes it slowly: Something is pulling the land. Then he underlines it twice. \"Every keeper who reads this book will watch the sky a little harder now,\" he says.",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/sky-ferry",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go down to the landing",
+          "icon": "forward",
+          "goto": "ending"
+        }
+      ]
+    },
+    "clove_home": {
+      "type": "story",
+      "narration": "Clove writes it, smiling: Even crawlers want to go home. \"That's the truest line in this whole book,\" he says. Pip copies it onto the back of his paw.",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/sky-ferry",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go down to the landing",
+          "icon": "forward",
+          "goto": "ending"
+        }
+      ]
+    },
+    "ending": {
+      "type": "story",
+      "narration": "Tumble lands on the shining landing, almost gracefully. \"Griffin flight down to a mountain pass called the Cairnstep?\" she offers. \"Or back to Juniper's lookout. I'll try very hard to land.\" So here is your piece: the pull reaches everywhere. It drags islands across the sky, and crawlers all the way from the far-off coast. Something is moving the land. What is it? And can you put things right?",
+      "cast": [
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "Keeper Clove"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Tumble"
+        }
+      ],
+      "art": "scenes/riftlight/sky-ferry",
+      "choices": [],
+      "outcome": "success",
+      "variants": [
         {
           "when": {
             "flag": "temple_island_settled"
           },
-          "text": "The returned island now rests beside the temple. The keepers will watch the new boundary instead of pretending the two islands always lay together."
+          "text": "Notchbrow rests beside the temple now, a neighbor that knocks.",
+          "at": "start"
         },
         {
           "when": {
-            "flag": "temple_repair_gear_left"
+            "flag": "temple_pushed"
           },
-          "text": "Your spare boards and line stay with the morning crew. Your party leaves without that local repair kit."
+          "text": "Somewhere out in the clearing sky, Notchbrow drifts on, still pulled.",
+          "at": "start"
         },
         {
           "when": {
-            "notFlag": "temple_repair_gear_left"
+            "flag": "temple_damaged"
           },
-          "text": "Your unused spare kit is packed with your party; the temple keeps its checked boundary marked."
+          "text": "The landing is closed for repairs, but every keeper is safe, and Notchbrow has drifted on.",
+          "at": "start"
         },
         {
           "when": {
-            "notFlag": "temple_edge_read"
+            "notFlag": "temple_bell_heard"
           },
-          "text": "Your inspection did not establish a fine outer-board route. The next watch uses the stone threshold until the keepers finish checking it."
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall"
-    },
-    "finish": {
-      "type": "story",
-      "narration": "The keeper closes the log fast. \"Before the pages drink any more rain!\" Your party can rest, return to the lookout, or follow the griffin messenger down to the Cairnstep.",
-      "choices": [],
-      "outcome": "success",
-      "cast": [
+          "text": "The weather bell was silent tonight, so the other islands will have a soggy morning.",
+          "at": "start"
+        },
         {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall"
-    },
-    "ready_lane_response_door": {
-      "type": "story",
-      "narration": "The last keeper reaches the hall. Everyone is under the stone roof.",
-      "choices": [
+          "when": {
+            "flag": "temple_crawler_stays"
+          },
+          "text": "Inside the bell, the bell crawler clicks goodbye.",
+          "at": "start"
+        },
         {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "messages"
-        }
-      ],
-      "cast": [
+          "when": {
+            "flag": "temple_pip_asks"
+          },
+          "text": "Pip stays right beside you, just as he promised.",
+          "at": "start"
+        },
         {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall"
-    },
-    "ready_lane_response_count": {
-      "type": "story",
-      "narration": "The keeper confirms nobody is left outside. Everyone is under the stone roof.",
-      "choices": [
+          "when": {
+            "flag": "island_messages_saved"
+          },
+          "text": "Tumble has waited all evening on the roof for you.",
+          "at": "start"
+        },
         {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "messages"
-        }
-      ],
-      "cast": [
+          "when": {
+            "notFlag": "island_messages_saved"
+          },
+          "text": "Tumble has flown in at last, her letters finally dry.",
+          "at": "start"
+        },
         {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall"
-    },
-    "ready_lane_response_cushion": {
-      "type": "story",
-      "narration": "A cushion retires from duty as a very soft helmet. Everyone is under the stone roof.",
-      "choices": [
+          "when": {
+            "flag": "fragment_paths_learned"
+          },
+          "text": "You carry another piece too. Master Orin Vale will want to lay them side by side."
+        },
         {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "messages"
+          "when": {
+            "flag": "fragment_coast_learned",
+            "notFlag": "fragment_paths_learned"
+          },
+          "text": "You carry another piece too. Master Orin Vale will want to lay them side by side."
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall"
-    },
-    "watch_help_response_hold": {
-      "type": "story",
-      "narration": "Nobody loads the line during the drill. The relief watch finishes its keeper-led practice.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "ending"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall"
-    },
-    "watch_help_response_cloth": {
-      "type": "story",
-      "narration": "The relief watch follows the keeper. The relief watch finishes its keeper-led practice.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "ending"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall"
-    },
-    "watch_help_response_account": {
-      "type": "story",
-      "narration": "The log credits the keeper-led demonstration. The relief watch finishes its keeper-led practice.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "ending"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ],
-      "art": "scenes/riftlight/temple-island-squall"
-    }
-  },
-  "presentation": {
-    "interactions": {
-      "look": {
-        "props": [
-          "wind-banner"
-        ]
-      },
-      "people_check": {
-        "props": [
-          "wind-blanket"
-        ]
-      },
-      "screen_relay": {
-        "props": [
-          "wind-blanket",
-          "rope-loop"
-        ]
-      },
-      "gear_rope": {
-        "props": [
-          "rope-loop",
-          "iron-anchor-ring"
-        ]
-      },
-      "short_line": {
-        "props": [
-          "rope-loop"
-        ]
-      },
-      "shelter_check": {
-        "props": [
-          "wind-blanket",
-          "rope-loop"
-        ]
-      },
-      "signals": {
-        "props": [
-          "wind-banner"
-        ]
-      },
-      "boards_check": {
-        "props": [
-          "relay-plank"
-        ]
-      },
-      "roof_pole": {
-        "props": [
-          "prop_rope_pole"
-        ]
-      },
-      "roof_basin": {
-        "props": [
-          "prop_brass_cup"
-        ]
-      },
-      "runoff_help": {
-        "props": [
-          "tidepocket-broom"
-        ]
-      },
-      "repair_1": {
-        "props": [
-          "relay-plank",
-          "rope-loop"
-        ]
-      },
-      "repair_2": {
-        "props": [
-          "relay-plank",
-          "rope-loop"
-        ]
-      },
-      "record_map": {
-        "props": [
-          "clue-scrap"
-        ]
-      },
-      "watch_signals": {
-        "props": [
-          "wind-banner"
-        ]
-      },
-      "watch_map": {
-        "props": [
-          "wind-banner"
-        ]
-      },
-      "watch_map_help": {
-        "props": [
-          "wind-banner"
-        ]
-      }
+      ]
     }
   }
 }

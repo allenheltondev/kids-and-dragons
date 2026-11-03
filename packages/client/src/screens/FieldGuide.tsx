@@ -87,7 +87,13 @@ export function FieldGuideIndex({ guide }: { guide: FieldGuideData | null }) {
   const sections = SECTIONS.filter((s) => all.some((e) => e.category === s.id));
   const section = sections.find((s) => s.id === picked) ?? sections[0];
   const found = Object.keys(guide.entries).filter((id) => discoveries[id]).length;
-  const items = section ? all.filter((e) => e.category === section.id) : [];
+  // Discovered pages come first, newest finds first. Unfound silhouettes
+  // should never stand between a kid and something they just met.
+  const items = section ? all.filter((e) => e.category === section.id).sort((a, b) => {
+    const left = discoveries[a.id];
+    const right = discoveries[b.id];
+    return Number(!!right) - Number(!!left) || (left && right ? right.foundAt.localeCompare(left.foundAt) : 0);
+  }) : [];
   const foundHere = items.filter((e) => discoveries[e.id]).length;
 
   return (

@@ -156,6 +156,26 @@ describe("applyAction — the seq gate (architecture §4.2)", () => {
     expect(response).toMatchObject({ ok: false, error: { code: "STALE_SEQ" } });
     expect(room.received).toHaveLength(0);
   });
+
+  it("logs every stale seq for operators, with which way it happened", async () => {
+    const harness = makeHarness();
+    const room = await setup(harness);
+    const playerId = room.player.principal.playerId;
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    try {
+      await applyAction({ runId: room.runId, playerId, seq: 7, intent: choose("east") }, harness.deps);
+      harness.repo.commit = async () => false;
+      await applyAction({ runId: room.runId, playerId, seq: 0, intent: choose("east") }, harness.deps);
+
+      const lines = warn.mock.calls.map(([line]) => JSON.parse(String(line)) as Record<string, unknown>);
+      expect(lines).toEqual([
+        { event: "intent.stale_seq", reason: "seq-gate", runId: room.runId, playerId, intent: "CHOOSE", clientSeq: 7, serverSeq: 0 },
+        { event: "intent.stale_seq", reason: "commit-race", runId: room.runId, playerId, intent: "CHOOSE", clientSeq: 0, serverSeq: 0 },
+      ]);
+    } finally {
+      warn.mockRestore();
+    }
+  });
 });
 
 describe("applyAction — the question a decision answers (#413)", () => {

@@ -6,6 +6,7 @@ contract; where a schema disagrees with them, the schema is wrong.
 
 ## Commands
 
+- `KAD_FULL_MATRIX=1 npm test` — the riftlight final-play and strand-play suites normally run an all-pairs subset of their route matrices (tools/content/pairwise.ts); this runs every combination. Use it after adding an axis to a matrix
 - `npm run typecheck` — tsc across shared, server, client and tools
 - `npm test` — vitest (includes the `tools/**/*.test.mjs` content suites)
 - `npm run content:validate` — schemas and scene graphs; a malformed chapter must fail here, never at the table

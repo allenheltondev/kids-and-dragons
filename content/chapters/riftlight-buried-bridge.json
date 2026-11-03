@@ -1,5 +1,5 @@
 {
-  "$comment": "Riftlight authored opening draft. Development preview only; see ../README.md. Production campaign id will be riftlight. No bonus XP: preserve the design bible campaign budget.",
+  "$comment": "Riftlight, Restless Coast key node (docs/campaigns/continental-rift/arc.md, buried-bridge; design note buried-bridge-playtest.md). Rewritten in November 2026 for the campaign rewrite after the pilot (riftlight-bone-yard). Question: where did this bridge's river go? Puddle carries it, Orin is on stage and Pip voices Lady Olivia's ideas. The p1 (old_river) is that the bridge stands where a river ran when the land had an older shape: the Coast fragment, fragment_coast_learned, set on every path. orin_chime_shared is a real choice: sharing gives Orin the readings and costs the chime's help at the tide; keeping it means Orin climbs to measure by hand. The arches are gray stone with white specks, like salt on bread, with a waterline carved high up, which The Borrowed Ruins recognizes. The sealed door stays sealed.",
   "id": "riftlight-buried-bridge",
   "campaignId": "riftlight",
   "index": 5,
@@ -8,1580 +8,38 @@
   "music": "riftlight-paths",
   "estimatedMinutes": 30,
   "xpAward": 140,
-  "entry": "bank",
+  "entry": "walk_out",
   "plate": {
     "art": "plates/riftlight/buried-bridge",
     "narration": "Stone arches rise from the silt beside a dry channel. No river passes under them now. From the firm bank, the old bridge stretches away into a haze of salt and pale mud."
   },
   "goal": {
-    "text": "Solve the missing-river mystery from the bank.",
+    "text": "Where did this bridge's river go?",
     "steps": [
       {
-        "id": "find_shelf",
-        "label": "Find firm ground to work from",
-        "flag": "found_a_firm_work_shelf"
+        "id": "bank",
+        "label": "Reach the old bank",
+        "flag": "bridge_at_bank"
       },
       {
-        "id": "look_under",
-        "label": "Get a look under the arches",
-        "flag": "looked_under_the_arches"
+        "id": "under",
+        "label": "Look under the arches",
+        "flag": "bridge_looked_under"
       },
       {
-        "id": "tidy_bank",
-        "label": "Tidy up the bank",
-        "flag": "tidied_the_work_site"
+        "id": "tide",
+        "label": "Save what you can from the tide",
+        "flag": "bridge_tide_met"
       },
       {
-        "id": "tell_guide",
-        "label": "Show the guide what you found",
-        "flag": "showed_the_guide_the_bridge"
+        "id": "remember",
+        "label": "Work out what the bridge remembers",
+        "flag": "bridge_remembered"
       }
     ]
   },
-  "scenes": {
-    "bank": {
-      "type": "story",
-      "narration": "A Skupper guide stops above a dry riverbed. \"Buried bridge,\" says the guide. \"No river. Still not walking on it.\" Master Orin Vale, the griffin Riftseeker you met on the glacier, brushes grit from an arch. His next brushful lands on his own foot. \"A very dusty discovery.\"",
-      "choices": [
-        {
-          "id": "ask",
-          "label": "Ask Orin what he has found",
-          "icon": "hand",
-          "goto": "orin"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel"
-    },
-    "orin": {
-      "type": "choice_point",
-      "narration": "\"This grit matches the glacier,\" says Orin. \"Perhaps water came through a rift.\" Across the bridge stands a sealed door. \"That stays shut. Today we have one question: where did the river go?\" He opens his notebook. Will you share your listening chime readings, or keep them private?",
-      "choices": [
-        {
-          "id": "share",
-          "label": "Share the listening chime's readings with Orin",
-          "icon": "hand",
-          "goto": "share"
-        },
-        {
-          "id": "keep",
-          "label": "Keep your readings and compare the stonework",
-          "icon": "hand",
-          "goto": "keep"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel"
-    },
-    "share": {
-      "type": "story",
-      "narration": "You sound the listening chime. Orin copies its rhythm beside his glacier notes. \"Thank you. A sound we can compare.\" He draws an ear. It looks rather like a cabbage.",
-      "choices": [
-        {
-          "id": "work",
-          "label": "Inspect the bridge from the bank",
-          "icon": "hand",
-          "goto": "guide_limits",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "orin_chime_shared",
-              "value": true
-            }
-          ]
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel"
-    },
-    "keep": {
-      "type": "story",
-      "narration": "You keep your chime readings private. Orin puts his pencil away. \"Fair enough. The stones have plenty to tell us.\" A sprinkle of grit lands on his foot again. \"Rather persistently.\"",
-      "choices": [
-        {
-          "id": "work",
-          "label": "Inspect the bridge from the bank",
-          "icon": "hand",
-          "goto": "guide_limits"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel"
-    },
-    "guide_limits": {
-      "type": "story",
-      "narration": "Your guide plants both front fins in the wet mud at the edge of the bank. \"This far. No farther.\" You mark a stopping line on dry ground. Orin sets his tools behind it. \"Even my brush stays on this side.\" A trickle runs through a little groove below the shelf. \"The tide reaches this pocket later,\" the guide says. \"We have time to look, then we pack up. No crossing.\" Orin turns to you. \"Then let us make a proper little expedition.\"",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Find our work spot",
-          "icon": "eye",
-          "goto": "ground_test"
-        }
-      ]
-    },
-    "ground_test": {
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "type": "story",
-      "narration": "The guide tests the bank with Orin's measuring stick. Dark mud swallows its tip. Shells wobble. The rock shelf holds. You gather there with the tools. \"A floor,\" says Orin. \"My favorite discovery so far.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "equipment",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "found_a_firm_work_shelf"
-            }
-          ]
-        }
-      ]
-    },
-    "work": {
-      "type": "choice_point",
-      "narration": "Loose silt covers the nearest arch. You can brush it away from the bank, or hold a viewing plank steady while a friend looks down. Both keep you behind the stopping line. Which job sounds better?",
-      "choices": [
-        {
-          "id": "clear",
-          "label": "Brush out a buried clue",
-          "icon": "eye",
-          "goto": "brush_clue"
-        },
-        {
-          "id": "brace",
-          "label": "Hold a viewing plank together",
-          "icon": "hand",
-          "goto": "hold_plank"
-        },
-        {
-          "id": "class_brace",
-          "label": "Let our thornguard brace the plank",
-          "icon": "hand",
-          "requiresClass": "thornguard",
-          "goto": "braced_plank"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "variants": [
-        {
-          "when": {
-            "flag": "bridge_rail_ready"
-          },
-          "text": "Your fixed rail gives you a ready viewing support. The kit still has to be carried by hand."
-        },
-        {
-          "when": {
-            "flag": "bridge_sled_ready"
-          },
-          "text": "Your sled keeps the kit together. For a mirror view, you will need to hold a temporary plank support."
-        }
-      ]
-    },
-    "clear": {
-      "type": "story",
-      "narration": "Under the dust: a waterline carved into the arch, and smooth river pebbles below it. But the riverbed is dry. Orin draws all three. \"A bridge. A riverbed. A missing river.\" The guide leans closer from the bank.",
-      "choices": [
-        {
-          "id": "record",
-          "label": "Draw the waterline and dry channel",
-          "icon": "hand",
-          "goto": "water_question"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-evidence",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "looked_under_the_arches"
-        }
-      ]
-    },
-    "brace": {
-      "type": "story",
-      "narration": "In the mirror you spot smooth river pebbles beneath the arches. A waterline marks the stone above them. Today the riverbed is dry. Orin sketches the view. \"A bridge. A riverbed. A missing river.\"",
-      "choices": [
-        {
-          "id": "record",
-          "label": "Draw the waterline and dry channel",
-          "icon": "hand",
-          "goto": "water_question"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-evidence",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "looked_under_the_arches"
-        }
-      ]
-    },
-    "river_explain": {
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "type": "story",
-      "narration": "Orin lays the drawing beside the stones. A high waterline. Smooth river pebbles. A dry channel. Water once flowed beneath these arches, and now it is gone from here. \"A bridge remembers a river,\" he says. Beyond it, the sealed door stays silent. Where the river went is still a mystery.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "record_decision"
-        }
-      ]
-    },
-    "restore_bank": {
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "type": "choice_point",
-      "narration": "Time to pack up. Bring the board and cord back from whichever job they did. Loose silt stays on the dry side. Everyone choose a last job. The guide checks the upper return path while Orin counts his kit aloud. \"One notebook. One brush. Two sandwiches. A remarkable improvement on last Tuesday.\"",
-      "choices": [
-        {
-          "id": "play0",
-          "label": "Pack the brush",
-          "icon": "hand",
-          "goto": "restore_bank_response_play0"
-        },
-        {
-          "id": "play1",
-          "label": "Roll up the cord",
-          "icon": "hand",
-          "goto": "restore_bank_response_play1"
-        },
-        {
-          "id": "play2",
-          "label": "Mark the stopping line",
-          "icon": "hand",
-          "goto": "restore_bank_response_play2"
-        }
-      ]
-    },
-    "guide_handover": {
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "type": "story",
-      "narration": "You show the guide the waterline, the river pebbles, and your stopping line. \"An old river,\" the guide repeats. \"Still no bridge tours.\" Orin hands over a copy of the sketch. Nobody has to cross to see what you found.",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "showed_the_guide_the_bridge"
-        }
-      ],
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Take our missing-river clue onward",
-          "icon": "travel",
-          "goto": "rest"
-        }
-      ],
-      "variants": [
-        {
-          "when": {
-            "flag": "bridge_public_view"
-          },
-          "text": "Your tested signs leave a public viewing point on the high bank. The guide has the useful copy; Orin has his own field notes."
-        },
-        {
-          "when": {
-            "flag": "bridge_research_copy"
-          },
-          "text": "Orin carries the careful copy to the Riftseekers. Your closed-work-area sign asks visitors to wait for a later visit."
-        },
-        {
-          "when": {
-            "flag": "bridge_notes_rebuilt"
-          },
-          "text": "You label the drawing as rebuilt after the tide and leave out the lost fine measurements."
-        }
-      ]
-    },
-    "rest": {
-      "type": "rest",
-      "narration": "You draw the arches, the waterline, and the dry riverbed on one page. The river this bridge served is gone from here. Orin copies only what the stones show. The sealed door remains shut. Your guide leads you back along the firm bank.",
-      "heal": 0,
-      "choices": [],
-      "outcome": "success",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "fragment_coast_learned",
-          "value": true
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "variants": [
-        {
-          "when": {
-            "flag": "bridge_local_copy_tested"
-          },
-          "text": "Behind you, the guide lays your local sketch beside the stopping sign. People can learn from the high bank without setting foot on the bridge."
-        },
-        {
-          "when": {
-            "flag": "bridge_research_copy_sent"
-          },
-          "text": "The work area is closed behind you. Orin tucks the research copy inside his cloak, ready to compare this missing river with other finds."
-        },
-        {
-          "when": {
-            "flag": "bridge_records_first"
-          },
-          "text": "You saved the original measurements and rebuilt the washed-out markers before leaving."
-        },
-        {
-          "when": {
-            "flag": "bridge_path_first"
-          },
-          "text": "You kept the return route clear and rebuilt a simpler drawing after the tide soaked the original."
-        }
-      ]
-    },
-    "brush_clue": {
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "type": "interaction",
-      "narration": "You reach with a long brush from the rock shelf. A pale mark peeks through the dust. Orin holds a cloth under it. \"Brush the stone, please. My feet are quite clean enough.\"",
-      "interaction": {
-        "kind": "precision",
-        "cue": "Tap when the marker reaches the gold.",
-        "actionLabel": "Brush the mark",
-        "target": 0.5,
-        "width": 0.35,
-        "periodMs": 4500
-      },
-      "onSuccess": {
-        "goto": "clear"
-      },
-      "onFailure": {
-        "goto": "clear",
-        "narration": "Pffft! Your brush catches a dust pocket. Orin sneezes, then helps clear the last handful. The mark is visible."
-      },
-      "onAssisted": {
-        "goto": "clear"
-      }
-    },
-    "hold_plank": {
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "type": "interaction",
-      "narration": "The viewing plank rests between two firm rocks behind the stopping line. Hold it steady while a friend uses a little mirror to look beneath the arch. \"My tail is not a spare support,\" Orin says, moving it.",
-      "interaction": {
-        "kind": "cooperate",
-        "cue": "Hold the plank while your friend lifts the mirror.",
-        "supportLabel": "Steady the plank",
-        "actionLabel": "Lift the mirror"
-      },
-      "onSuccess": {
-        "goto": "brace"
-      },
-      "onFailure": {
-        "goto": "brace"
-      },
-      "onAssisted": {
-        "goto": "brace"
-      }
-    },
-    "braced_plank": {
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "type": "story",
-      "narration": "Your thornguard braces the plank against the firm rocks. The mirror gives everyone a clear view beneath the arch. Orin folds his tail safely away. \"Excellent. All supports accounted for.\"",
-      "choices": [
-        {
-          "id": "look",
-          "label": "Look under the arch",
-          "icon": "eye",
-          "goto": "brace"
-        }
-      ]
-    },
-    "equipment": {
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "type": "choice_point",
-      "narration": "Orin has one broad board and enough cord for one job. Fix the board as a viewing rail, and everyone can study the arch together. Make it a carrying sled, and you can move the drawings and tools quickly if the tide creeps up. You cannot build both. \"I packed two sandwiches,\" says Orin. \"Apparently that is not the same thing as two boards.\" Which will you prepare?",
-      "choices": [
-        {
-          "id": "rail",
-          "label": "Build a fixed viewing rail",
-          "icon": "hand",
-          "goto": "build_rail",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "bridge_rail_ready",
-              "value": true
-            },
-            {
-              "type": "setFlag",
-              "flag": "bridge_sled_ready",
-              "value": false
-            }
-          ]
-        },
-        {
-          "id": "sled",
-          "label": "Build a portable kit sled",
-          "icon": "hand",
-          "goto": "build_sled",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "bridge_sled_ready",
-              "value": true
-            },
-            {
-              "type": "setFlag",
-              "flag": "bridge_rail_ready",
-              "value": false
-            }
-          ]
-        }
-      ]
-    },
-    "build_rail": {
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "type": "interaction",
-      "narration": "The guide points out three sound posts on the dry shelf. Pass the cord along them, one hero at a time, while Orin sets the board on the supports. The rail will stay here until you leave. You give it a gentle test from the dry side. Orin leans on it, nods, and carefully retrieves the sandwich he left underneath.",
-      "interaction": {
-        "kind": "relay",
-        "objectLabel": "rail cord",
-        "cue": "Catch and pass the cord along the dry-side posts.",
-        "actionLabel": "Pass the cord"
-      },
-      "onSuccess": {
-        "goto": "work",
-        "narration": "The rail stays solid. Your viewing spot will be ready when the tide reaches the lower groove."
-      },
-      "onFailure": {
-        "goto": "work",
-        "narration": "The rail stays solid. Your viewing spot will be ready when the tide reaches the lower groove."
-      },
-      "onAssisted": {
-        "goto": "work",
-        "narration": "The rail stays solid. Your viewing spot will be ready when the tide reaches the lower groove."
-      }
-    },
-    "build_sled": {
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "type": "interaction",
-      "narration": "The board rests on two short runners from Orin's kit. Put the bag in the middle and level your sides before sliding it. The guide shows a dry parking place behind a rock. Orin adds his notebook, then removes his sandwich. \"Important equipment. Separate pocket.\" The sled can move, but it cannot serve as a fixed rail.",
-      "interaction": {
-        "kind": "balance",
-        "objectLabel": "kit sled",
-        "cue": "Raise or lower your side until the kit sled is level.",
-        "actionLabel": "Park the sled"
-      },
-      "onSuccess": {
-        "goto": "work",
-        "narration": "The loaded sled slides neatly into its dry parking place. It will be useful if you must move things in a hurry."
-      },
-      "onFailure": {
-        "goto": "work",
-        "narration": "The loaded sled slides neatly into its dry parking place. It will be useful if you must move things in a hurry."
-      },
-      "onAssisted": {
-        "goto": "work",
-        "narration": "The loaded sled slides neatly into its dry parking place. It will be useful if you must move things in a hurry."
-      }
-    },
-    "water_question": {
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "type": "story",
-      "narration": "Orin turns the drawing so everyone can see. \"The waterline is up here. The round pebbles are down there. But that new trickle smells salty.\" The guide dips a fin into the low groove. \"Tide water. This old riverbed is much bigger.\" You have two different stories in one place: an old river, and a little tide arriving today. Test the little groove before mixing them up.",
-      "choices": [
-        {
-          "id": "test",
-          "label": "Watch the groove through a whole pulse",
-          "icon": "hand",
-          "goto": "watch_pulse"
-        }
-      ]
-    },
-    "watch_pulse": {
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "type": "interaction",
-      "narration": "A scrap of reed turns in the groove. Water pushes it forward, pauses, then pulls it back. The guide marks one edge with a shell. Wait for the reed to return to that mark, then call it. Orin watches a different reed. It remains perfectly still. \"That one is my pencil,\" he admits.",
-      "interaction": {
-        "kind": "timing",
-        "cue": "Tap in the gold when the reed returns to the shell mark.",
-        "actionLabel": "Call the returning reed",
-        "target": 0.5,
-        "width": 0.35,
-        "periodMs": 5000
-      },
-      "onSuccess": {
-        "goto": "compare_pulse",
-        "narration": "The reed comes back to the same shell. The guide watches a second pulse and confirms it: today's little tide moves both ways."
-      },
-      "onFailure": {
-        "goto": "compare_pulse",
-        "narration": "You call a little early. The guide keeps the shell in place and helps you watch the next complete pulse. The reed comes back; this tide moves both ways."
-      },
-      "onAssisted": {
-        "goto": "compare_pulse",
-        "narration": "The reed comes back to the same shell. The guide watches a second pulse and confirms it: today's little tide moves both ways."
-      }
-    },
-    "compare_pulse": {
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "type": "story",
-      "narration": "Orin catches a sample label against his beak. You help him stick it back on the pot. The glacier grit and arch dust are pale; today's tide mud is dark. The little salty tide moves both ways. It cannot explain that high waterline. Orin looks up at the arch. \"Something much bigger used to come through here.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "tide_turn"
-        }
-      ]
-    },
-    "tide_turn": {
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "type": "choice_point",
-      "narration": "Plip. Water reaches the lower tool shelf sooner than expected. Everyone is already on the high rock shelf, but a tray of drawings sits low beside the return path. There is time to do one job first. Save the drawings, and the path markers will need rebuilding. Secure the return path, and the drawings will get wet; you will have to piece their marks together. Orin holds both sandwiches above his head. \"I have secured lunch. What first?\"",
-      "choices": [
-        {
-          "id": "records",
-          "label": "Save the drawings; rebuild the path afterward",
-          "icon": "hand",
-          "goto": "save_records",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "bridge_records_first",
-              "value": true
-            },
-            {
-              "type": "setFlag",
-              "flag": "bridge_path_first",
-              "value": false
-            }
-          ]
-        },
-        {
-          "id": "path",
-          "label": "Secure the path; reconstruct the wet drawings",
-          "icon": "hand",
-          "goto": "save_path",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "bridge_path_first",
-              "value": true
-            },
-            {
-              "type": "setFlag",
-              "flag": "bridge_records_first",
-              "value": false
-            }
-          ]
-        }
-      ]
-    },
-    "save_records": {
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "type": "choice_point",
-      "narration": "You choose the drawings. The little tide runs under the low tray while you stay on the high shelf. Use the equipment you prepared. The guide watches the water and calls a stop if it reaches the next shell. The far bank and the sealed door stay well beyond your work.",
-      "choices": [
-        {
-          "id": "rail",
-          "label": "Use our fixed rail to lift the tray",
-          "icon": "hand",
-          "goto": "rail_lift",
-          "when": {
-            "flag": "bridge_rail_ready"
-          }
-        },
-        {
-          "id": "sled",
-          "label": "Bring the tray back on a carrying board",
-          "icon": "hand",
-          "goto": "sled_lift",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "bridge_sled_ready"
-            }
-          ]
-        }
-      ]
-    },
-    "rail_lift": {
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "type": "interaction",
-      "narration": "Your fixed rail holds firm. One friend supports the long lifting cord while another tips the tray toward the high shelf. Orin is ready with a dry cloth. A page starts to curl. \"No flying lessons today,\" he tells it. Keep the cord steady until the whole tray reaches the cloth.",
-      "interaction": {
-        "kind": "cooperate",
-        "cue": "Hold the lifting cord while your friend brings the tray in.",
-        "supportLabel": "Hold the cord",
-        "actionLabel": "Lift the tray"
-      },
-      "onSuccess": {
-        "goto": "path_repair",
-        "narration": "The drawings arrive dry. The low path markers have washed loose, so you must rebuild the return route.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "bridge_drawings_dry",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "path_repair",
-        "narration": "The drawings arrive dry. The low path markers have washed loose, so you must rebuild the return route.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "bridge_drawings_dry",
-            "value": true
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "path_repair",
-        "narration": "The drawings arrive dry. The low path markers have washed loose, so you must rebuild the return route.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "bridge_drawings_dry",
-            "value": true
-          }
-        ]
-      }
-    },
-    "sled_lift": {
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "type": "interaction",
-      "narration": "Your carrying board slides beneath the tray from the high side. Level the board so the drawings do not slip as you bring them back. Orin reaches for the notebook, then checks with you before lifting it. The guide stays at the marked shell, watching the water rather than asking anyone to hurry.",
-      "interaction": {
-        "kind": "balance",
-        "objectLabel": "drawing sled",
-        "cue": "Level the drawing sled before bringing it back.",
-        "actionLabel": "Bring the drawings back"
-      },
-      "onSuccess": {
-        "goto": "path_repair",
-        "narration": "The drawings arrive dry. Your sled helped save them, but the low path markers have washed loose.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "bridge_drawings_dry",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "path_repair",
-        "narration": "The drawings arrive dry. Your sled helped save them, but the low path markers have washed loose.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "bridge_drawings_dry",
-            "value": true
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "path_repair",
-        "narration": "The drawings arrive dry. Your sled helped save them, but the low path markers have washed loose.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "bridge_drawings_dry",
-            "value": true
-          }
-        ]
-      },
-      "variants": [
-        {
-          "when": {
-            "flag": "bridge_rail_ready"
-          },
-          "at": "start",
-          "text": "You choose to change your plan: take the board off its fixed posts and lash it to the spare runners. The viewing rail is gone; you now have a carrying sled."
-        }
-      ]
-    },
-    "path_repair": {
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "type": "story",
-      "narration": "Saving the drawings cost you the low return markers. The guide leads you behind the tall rock, past the split post, and up the dry steps. You mark that upper route together. Orin carries the dry pages against his chest. He has finally stopped offering suggestions about tea stalls.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "records_review",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "bridge_return_ready",
-              "value": true
-            }
-          ]
-        }
-      ]
-    },
-    "save_path": {
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "type": "choice_point",
-      "narration": "You choose the return path. The lowest marker wobbles in the water. Keep everyone on the high shelf and move the warning back before it falls. Your drawings will get wet while you do this. Orin looks at the tray, then at the path. \"People first. We can draw again.\" How will your prepared equipment help?",
-      "choices": [
-        {
-          "id": "rail",
-          "label": "Secure the upper warning to our fixed rail",
-          "icon": "hand",
-          "goto": "rail_warning",
-          "when": {
-            "flag": "bridge_rail_ready"
-          }
-        },
-        {
-          "id": "sled",
-          "label": "Move the warning on a carrying board",
-          "icon": "hand",
-          "goto": "sled_warning",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "bridge_sled_ready"
-            }
-          ]
-        }
-      ]
-    },
-    "rail_warning": {
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "type": "interaction",
-      "narration": "The rail makes a sturdy anchor for the new warning. Hold the cord while a friend secures the marker on the high side. The guide checks that it points toward the dry steps. Below you, the tray gives a soft splash. Orin winces. \"That was the notebook. I do hope the cabbage ear can swim.\"",
-      "interaction": {
-        "kind": "cooperate",
-        "cue": "Hold the warning cord while your friend ties the marker.",
-        "supportLabel": "Hold the warning cord",
-        "actionLabel": "Secure the marker"
-      },
-      "onSuccess": {
-        "goto": "wet_notes",
-        "narration": "The upper return path stays clearly marked. The drawings are wet, and you will need to reconstruct their details.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "bridge_return_ready",
-            "value": true
-          },
-          {
-            "type": "setFlag",
-            "flag": "bridge_drawings_dry",
-            "value": false
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "wet_notes",
-        "narration": "The upper return path stays clearly marked. The drawings are wet, and you will need to reconstruct their details.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "bridge_return_ready",
-            "value": true
-          },
-          {
-            "type": "setFlag",
-            "flag": "bridge_drawings_dry",
-            "value": false
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "wet_notes",
-        "narration": "The upper return path stays clearly marked. The drawings are wet, and you will need to reconstruct their details.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "bridge_return_ready",
-            "value": true
-          },
-          {
-            "type": "setFlag",
-            "flag": "bridge_drawings_dry",
-            "value": false
-          }
-        ]
-      }
-    },
-    "sled_warning": {
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "type": "interaction",
-      "narration": "Load the warning board onto your sled. Pass its guide cord from friend to friend along the upper shelf so it never swings into the wet groove. At the dry steps, Orin wedges the marker between two sound rocks. Down below, the notebook takes a small, undignified bath.",
-      "interaction": {
-        "kind": "relay",
-        "objectLabel": "warning sled cord",
-        "cue": "Catch and pass the guide cord along the high shelf.",
-        "actionLabel": "Pass the guide cord"
-      },
-      "onSuccess": {
-        "goto": "wet_notes",
-        "narration": "The upper return path stays clearly marked. The wet drawings will need to be pieced together.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "bridge_return_ready",
-            "value": true
-          },
-          {
-            "type": "setFlag",
-            "flag": "bridge_drawings_dry",
-            "value": false
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "wet_notes",
-        "narration": "The upper return path stays clearly marked. The wet drawings will need to be pieced together.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "bridge_return_ready",
-            "value": true
-          },
-          {
-            "type": "setFlag",
-            "flag": "bridge_drawings_dry",
-            "value": false
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "wet_notes",
-        "narration": "The upper return path stays clearly marked. The wet drawings will need to be pieced together.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "bridge_return_ready",
-            "value": true
-          },
-          {
-            "type": "setFlag",
-            "flag": "bridge_drawings_dry",
-            "value": false
-          }
-        ]
-      },
-      "variants": [
-        {
-          "when": {
-            "flag": "bridge_rail_ready"
-          },
-          "at": "start",
-          "text": "You choose to change your plan: take the board off the rail posts and lash it to the spare runners. The fixed rail becomes a carrying sled."
-        }
-      ]
-    },
-    "wet_notes": {
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "type": "story",
-      "narration": "The return path is marked, but water has blurred the drawings. You and Orin redraw the arch, waterline and pebbles from the stonework still in view. The fine measurements are gone. He writes \"reconstructed\" across the top. \"Useful,\" he says, looking at the wet original. \"Just less smug.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "records_review",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "bridge_notes_rebuilt",
-              "value": true
-            }
-          ]
-        }
-      ]
-    },
-    "records_review": {
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "type": "story",
-      "narration": "You spread the pages on dry stone and check every hero, every tool, and the return markers. The guide shakes water off one fin. Orin shakes water off his brush. Only one of them splashes the notebook. \"Sorry,\" says Orin. The guide says nothing at all, which is somehow worse. You have enough evidence to explain the old river, even if today changed your plans.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Make our river explanation",
-          "icon": "hand",
-          "goto": "river_explain"
-        }
-      ],
-      "variants": [
-        {
-          "when": {
-            "flag": "bridge_drawings_dry"
-          },
-          "text": "Your original drawings and measurements are dry. You can give Orin a precise copy, but had to spend time rebuilding the return path."
-        },
-        {
-          "when": {
-            "flag": "bridge_notes_rebuilt"
-          },
-          "text": "The return path stayed marked throughout. Your rebuilt sketch shows the main clues, but the fine measurements must wait for a later visit."
-        }
-      ]
-    },
-    "record_decision": {
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "type": "choice_point",
-      "narration": "\"I can make one careful extra copy before you leave,\" says Orin. Give it to the guide, and your group can help mark a public viewing point on the high bank. Send it with Orin, and other Riftseekers can compare the missing river with their own finds; the work area here will stay closed until someone returns. Your private chime readings stay private either way. Who needs this copy first?",
-      "choices": [
-        {
-          "id": "local",
-          "label": "Open a marked bank viewpoint for local visitors",
-          "icon": "hand",
-          "goto": "visitor_plan",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "bridge_public_view",
-              "value": true
-            },
-            {
-              "type": "setFlag",
-              "flag": "bridge_research_copy",
-              "value": false
-            }
-          ]
-        },
-        {
-          "id": "research",
-          "label": "Send the careful copy with Orin; close this work area",
-          "icon": "hand",
-          "goto": "research_plan",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "bridge_research_copy",
-              "value": true
-            },
-            {
-              "type": "setFlag",
-              "flag": "bridge_public_view",
-              "value": false
-            }
-          ]
-        }
-      ]
-    },
-    "visitor_plan": {
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "type": "story",
-      "narration": "You and the guide set a stopping sign, a waterline sketch and a return arrow on the high bank. Visitors can see the mystery from here without crossing the bridge. \"Could add a tea stall,\" Orin suggests. The guide looks at the mud. \"No.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "visitor_trial"
-        }
-      ]
-    },
-    "visitor_trial": {
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "type": "choice_point",
-      "narration": "Orin pretends he has never been here. He walks to the stopping sign and peers at your sketch. \"Where do I put my feet?\" Everyone chooses a useful part of the welcome. The guide listens. If your words offer a bridge crossing, she stops the pretend tour and helps you correct it.",
-      "choices": [
-        {
-          "id": "stop",
-          "label": "Show him the waiting line",
-          "icon": "hand",
-          "goto": "visitor_trial_response_stop"
-        },
-        {
-          "id": "clue",
-          "label": "Point out the waterline and pebbles",
-          "icon": "eye",
-          "goto": "visitor_trial_response_clue"
-        },
-        {
-          "id": "return",
-          "label": "Show him the dry return steps",
-          "icon": "travel",
-          "goto": "visitor_trial_response_return"
-        }
-      ]
-    },
-    "research_plan": {
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "type": "story",
-      "narration": "Orin copies the old waterline, rounded pebbles and dry channel onto one page. The far door goes in a box marked \"not visited.\" His box for questions is larger than his box for answers. \"Room to grow,\" he says. The guide closes the low work area while he folds the page.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "copy_relay"
-        }
-      ]
-    },
-    "copy_relay": {
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "type": "story",
-      "narration": "You tuck the research copy inside its cover and hand it to Orin. The guide rolls the closed-work-area sign into place. \"Visitors wait for a later trip.\" Orin puts the packet in his bag and checks it twice. His sandwich has finally found its proper pocket.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "restore_bank",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "bridge_research_copy_sent",
-              "value": true
-            }
-          ]
-        }
-      ]
-    },
-    "restore_bank_response_play0": {
-      "type": "story",
-      "narration": "Orin checks his bag. \"Brush: one. Dust: several million.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "guide_handover",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "tidied_the_work_site"
-            }
-          ]
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel"
-    },
-    "restore_bank_response_play1": {
-      "type": "story",
-      "narration": "You coil the cord. It finally stops trying to tie itself to Orin.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "guide_handover",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "tidied_the_work_site"
-            }
-          ]
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel"
-    },
-    "restore_bank_response_play2": {
-      "type": "story",
-      "narration": "The guide checks your stones. \"Good. A warning I can use.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "guide_handover",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "tidied_the_work_site"
-            }
-          ]
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel"
-    },
-    "visitor_trial_response_stop": {
-      "type": "story",
-      "narration": "Orin plants both feet behind it. \"Even the dusty foot?\" Yes, that one too. The viewpoint stays open on the high bank. Your guide keeps the local copy; Orin will compare his own notes later.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "restore_bank",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "bridge_local_copy_tested",
-              "value": true
-            }
-          ]
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel"
-    },
-    "visitor_trial_response_clue": {
-      "type": "story",
-      "narration": "Orin follows your pointing hand from the arch to the old riverbed. \"I can see it from here.\" The viewpoint stays open on the high bank. Your guide keeps the local copy; Orin will compare his own notes later.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "restore_bank",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "bridge_local_copy_tested",
-              "value": true
-            }
-          ]
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel"
-    },
-    "visitor_trial_response_return": {
-      "type": "story",
-      "narration": "Orin follows the arrow back to the steps. The guide nods: a visit with a way home. The viewpoint stays open on the high bank. Your guide keeps the local copy; Orin will compare his own notes later.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "restore_bank",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "bridge_local_copy_tested",
-              "value": true
-            }
-          ]
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel"
-    }
-  },
   "voiceGuide": {
-    "tone": "Warm, funny, curious, with real consequences. Describe actions and sensory details directly. Short dialogue. Never use \"the kind of thing that\", \"the sort of thing that\", or \"it was X, the type of thing that makes you Y\" comparisons. Let a character act instead of explaining how the reader should feel.",
+    "tone": "Warm, funny and a little spooky, with real consequences. Short sentences. Let a character act instead of explaining how the reader should feel. The bridge is a mystery to witness, not to explain; the sealed door stays sealed. Nobody dies.",
     "vocabulary": "Read aloud to an eight-year-old. Concrete words, short sentences, distinct voices.",
     "forbidden": [
       "death",
@@ -1592,60 +50,2072 @@
       "Hollow Gate",
       "Legend Dragon"
     ],
-    "npcVoices": {}
+    "npcVoices": {
+      "saltrot_guide": "Puddle, the Skupper guide (she/her). Quick, chatty and cheerfully blunt. Guides from pools and channels, signals with her crest, puffs up round when startled and stings a little. Keeps her lunch in a floating box. Wants to find out why her flats keep moving, and to keep her grandmother's rule: show the bank, never the stone.",
+      "Master Orin Vale": "Griffin scholar and Riftseeker (he/him). Kind, dusty, delighted by evidence and a little sad about sandwiches. Wants to understand before anyone forces anything.",
+      "Pip Thistledown": "Young manticore scout (he/him). Eager, notebook always out, quotes \"Lady Olivia says...\" and tries her ideas. Wants to bring Lady Olivia something amazing."
+    }
   },
   "presentation": {
     "interactions": {
-      "watch_pulse": {
+      "wash_out": {
         "props": [
           "water-surge",
           "shell-cockle"
         ]
+      }
+    }
+  },
+  "scenes": {
+    "walk_out": {
+      "type": "choice_point",
+      "narration": "Puddle leads you upriver from Tidepocket, pool to pool. \"Grandmother says there's a bridge out here with no river under it,\" she says. \"A bridge needs a river. So where did this one's river go?\" She stops where the brown mud ends. Ahead lies cold gray silt, soft as porridge, and past it, the old bank. \"I swim. You don't. Pick your way.\"",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "choices": [
+        {
+          "id": "hop",
+          "label": "Hop the stones Puddle points at",
+          "icon": "boot",
+          "goto": "check_hop"
+        },
+        {
+          "id": "posts",
+          "label": "Follow the old stone posts",
+          "icon": "eye",
+          "goto": "check_posts"
+        },
+        {
+          "id": "fly",
+          "label": "Fly a rope across",
+          "icon": "wing",
+          "goto": "fly_rope",
+          "requiresSpecies": [
+            "griffin",
+            "dragonling"
+          ]
+        }
+      ]
+    },
+    "check_hop": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "\"That one. That one. Not that one!\" Puddle points with a fin from the channel. The stones are small and far apart.",
+      "prompt": "Hop from stone to stone across the soft silt",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "onSuccess": {
+        "goto": "bank",
+        "narration": "Stone, stone, wobble, stone. Puddle counts you across like a race."
       },
-      "brush_clue": {
-        "props": [
-          "clue-scrap"
-        ]
-      },
-      "hold_plank": {
-        "props": [
-          "relay-plank",
-          "rope-loop"
-        ]
-      },
-      "build_sled": {
-        "props": [
-          "relay-plank",
-          "rope-loop"
-        ]
-      },
-      "rail_lift": {
-        "props": [
-          "relay-plank",
-          "rope-loop"
-        ]
-      },
-      "sled_lift": {
-        "props": [
-          "relay-plank",
-          "rope-loop"
-        ]
-      },
-      "build_rail": {
-        "props": [
-          "chalk-cord"
-        ]
-      },
-      "rail_warning": {
-        "props": [
-          "chalk-cord"
-        ]
-      },
-      "sled_warning": {
-        "props": [
-          "chalk-cord"
+      "onFailure": {
+        "goto": "walk_stuck",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
         ]
       }
+    },
+    "check_posts": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "narration": "Old stone posts stick up out of the silt in a crooked line, the ones Dab saw. Someone set them here long ago, beside something.",
+      "prompt": "Work out which posts stand on firm ground, and follow them",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "onSuccess": {
+        "goto": "bank",
+        "narration": "Post to post, firm all the way. \"They used to mark a riverbank,\" says Puddle, surprised."
+      },
+      "onFailure": {
+        "goto": "walk_stuck",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "fly_rope": {
+      "type": "story",
+      "narration": "Your flier hops the silt in two flaps and ties a rope to a post on the far side. Everyone else crosses hand over hand. Puddle swims underneath, cheering. \"Do it again!\"",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb up the old bank",
+          "icon": "boot",
+          "goto": "bank"
+        }
+      ]
+    },
+    "walk_stuck": {
+      "type": "story",
+      "narration": "The silt swallows you to the knees and holds on. Puddle puffs up like a ball and floats beside you. You grab her, carefully, and she tows you out. \"Ow. Spines. You're welcome.\" You reach the bank wet to the waist.",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb up the old bank",
+          "icon": "boot",
+          "goto": "bank"
+        }
+      ]
+    },
+    "bank": {
+      "type": "story",
+      "narration": "From the bank, you finally see it. A bridge stands over a dry riverbed. Its arches are gray stone with white specks, like salt on bread, with a waterline carved high up. Not a drop of water under them. A little snow falls on the far end, from a clear sky. Master Orin Vale is here already, brushing an arch. Most of the dust lands on him. \"Ah! You've come about the river too,\" he says.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "bridge_at_bank",
+          "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "choices": [
+        {
+          "id": "ask",
+          "label": "Ask Orin what he has found",
+          "icon": "ear",
+          "goto": "orin"
+        }
+      ]
+    },
+    "orin": {
+      "type": "choice_point",
+      "narration": "Orin holds up a jar of pale grit. \"Glacier silt, under a bridge with no river. And my map has no river here at all.\" He looks at your pack, where the Listening Chime hums. \"Lend me your chime while we work, and I can measure which way it leans all day. But it will be on my pole, not with you.\" Puddle flicks her crest. \"Or keep it, and he measures that waterline by hand. Up there.\"",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "choices": [
+        {
+          "id": "share",
+          "label": "Share the chime's readings with Orin",
+          "icon": "bell",
+          "goto": "share",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "orin_chime_shared",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "keep",
+          "label": "Keep the chime with you",
+          "icon": "hand",
+          "goto": "keep"
+        }
+      ]
+    },
+    "share": {
+      "type": "story",
+      "narration": "You hand Orin the Listening Chime. He hangs it from his measuring pole, and at once it leans north, up the dry riverbed, toward the glacier. It stays leaning. Orin writes very fast. \"Thank you. You'll have it back before supper. Probably.\" \"He means definitely,\" Puddle tells you. \"Right, Orin?\"",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Turn back to the bridge",
+          "icon": "eye",
+          "goto": "pip_runs"
+        }
+      ]
+    },
+    "keep": {
+      "type": "story",
+      "narration": "You keep the chime in your pack, where it hums to itself. Orin nods, only a little sad. \"Then I'll measure the old waterline by hand.\" He looks up at it. It is very high. \"Hm,\" he says. \"Hm,\" agrees Puddle.",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Turn back to the bridge",
+          "icon": "eye",
+          "goto": "pip_runs"
+        }
+      ]
+    },
+    "pip_runs": {
+      "type": "choice_point",
+      "spotlight": "next",
+      "narration": "Feet thump along the bank. It's Pip Thistledown, the young manticore scout, notebook flapping. He doesn't stop. He runs onto the first arch, toward a round stone door sealed shut at the far end. \"Lady Olivia says rules are for people who haven't looked yet!\" The old stone creaks. Puddle's crest shoots up. \"Off the stone! Show the bank, never the stone!\"",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "choices": [
+        {
+          "id": "call",
+          "label": "Call Pip back",
+          "icon": "heart",
+          "goto": "check_call"
+        },
+        {
+          "id": "grab",
+          "label": "Grab Pip off the arch",
+          "icon": "hand",
+          "goto": "check_grab"
+        },
+        {
+          "id": "manticore",
+          "label": "Talk to him, manticore to manticore",
+          "icon": "manticore",
+          "goto": "manticore_call",
+          "requiresSpecies": "manticore"
+        }
+      ]
+    },
+    "check_call": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "narration": "Pip wobbles on the arch with one foot up, like a heron who has made a mistake.",
+      "prompt": "Call Pip back to the bank before the stone shifts",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "onSuccess": {
+        "goto": "pip_back",
+        "narration": "\"Okay. Okay! Bank.\" Pip tiptoes back the way he came."
+      },
+      "onFailure": {
+        "goto": "pip_falls",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          },
+          {
+            "type": "setFlag",
+            "flag": "bridge_rule_broken",
+            "value": true
+          }
+        ]
+      }
+    },
+    "check_grab": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "Pip is three steps out. His tail swishes back and forth, right in front of you.",
+      "prompt": "Grab Pip by the tail and pull him back to the bank",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "onSuccess": {
+        "goto": "pip_back",
+        "narration": "You catch his tail and reel him in like a kite."
+      },
+      "onFailure": {
+        "goto": "pip_falls",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          },
+          {
+            "type": "setFlag",
+            "flag": "bridge_rule_broken",
+            "value": true
+          }
+        ]
+      }
+    },
+    "manticore_call": {
+      "type": "story",
+      "narration": "You flick your tail the polite manticore way, low and slow. Pip's ears go pink. He tiptoes back to the bank without a word.",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Help him down",
+          "icon": "hand",
+          "goto": "pip_back"
+        }
+      ]
+    },
+    "pip_back": {
+      "type": "story",
+      "narration": "Behind Pip, a loose stone slides off the arch and plops into the riverbed. Puddle lets her crest down, slowly. \"Thank you,\" she tells you. \"Grandmother would have puffed so hard she floated away.\" Pip draws the sealed door instead. \"Lady Olivia would want to know what's behind it.\" \"Nobody knows,\" says Orin. \"And today, nobody will.\"",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Look under the arches",
+          "icon": "eye",
+          "goto": "silt_choice"
+        }
+      ]
+    },
+    "pip_falls": {
+      "type": "story",
+      "narration": "The arch shrugs. Pip slides off it, and you slide after him, down into the dry riverbed in a shower of silt. Pip sits up with a pebble in each ear. \"River pebbles!\" he says. Up on the bank, Puddle's crest lies flat. \"You walked on the stone,\" she says quietly. \"I'll have to tell Grandmother.\"",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb out and look under the arches",
+          "icon": "eye",
+          "goto": "silt_choice"
+        }
+      ]
+    },
+    "silt_choice": {
+      "type": "choice_point",
+      "narration": "Under the lowest arch, silt is packed to the top like stuffing in a pillow. \"Dig it out!\" says Pip. \"Lady Olivia says a good shove saves a whole day.\" Puddle shakes her head. \"The tide scours that groove twice a day. Open the little dam and let the water wash it. Slower, and wetter.\" Orin looks from one to the other. \"Shovels scrape old stone. Waves soak old scholars.\"",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "choices": [
+        {
+          "id": "dig",
+          "label": "Dig it out now",
+          "icon": "might",
+          "goto": "check_dig"
+        },
+        {
+          "id": "wash",
+          "label": "Let the tide wash it out",
+          "icon": "drop",
+          "goto": "wash_out"
+        },
+        {
+          "id": "smash",
+          "label": "Let your bigfoot scoop it out",
+          "icon": "bigfoot",
+          "goto": "bigfoot_smash",
+          "requiresSpecies": "bigfoot"
+        },
+        {
+          "id": "brace",
+          "label": "Let your thornguard shore up the arch",
+          "icon": "shield",
+          "goto": "thornguard_brace",
+          "requiresClass": "thornguard"
+        }
+      ]
+    },
+    "check_dig": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "roller": "all",
+      "narration": "Everyone grabs a shovel from Orin's kit. Pip grabs a spoon.",
+      "prompt": "Dig the silt out from under the arch, fast",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "onSuccess": {
+        "goto": "dug_out"
+      },
+      "onFailure": {
+        "goto": "dug_slow",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "dug_out": {
+      "type": "story",
+      "narration": "The silt flies. In no time the arch is clear. But a shovel scraped the stone, and a row of old carvings under the arch is scratched to gray dust. Orin winces. \"Fast,\" he says. \"And sad.\"",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "bridge_scraped",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "bridge_dug",
+          "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-evidence",
+      "choices": [
+        {
+          "id": "look",
+          "label": "Crawl under the arch",
+          "icon": "eye",
+          "goto": "under_arch"
+        }
+      ]
+    },
+    "dug_slow": {
+      "type": "story",
+      "narration": "The silt slumps back twice. You dig with your hands in the end, and your arms ache. When the arch is finally clear, a row of old carvings under it is scratched to gray dust where the shovels hit. Orin winces. \"Slow, and sad,\" he says.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "bridge_scraped",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "bridge_dug",
+          "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-evidence",
+      "choices": [
+        {
+          "id": "look",
+          "label": "Crawl under the arch",
+          "icon": "eye",
+          "goto": "under_arch"
+        }
+      ]
+    },
+    "bigfoot_smash": {
+      "type": "story",
+      "narration": "Your bigfoot scoops silt out in huge armfuls, like a bear at a honey pot. The arch is clear in no time. But one big paw scraped the stone, and a row of old carvings is rubbed to gray dust. \"Strong,\" says Orin. \"And sad.\"",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "bridge_scraped",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "bridge_dug",
+          "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-evidence",
+      "choices": [
+        {
+          "id": "look",
+          "label": "Crawl under the arch",
+          "icon": "eye",
+          "goto": "under_arch"
+        }
+      ]
+    },
+    "thornguard_brace": {
+      "type": "story",
+      "narration": "Your thornguard braces the arch with a shield while everyone digs around it, gently. Not one shovel touches the stone. \"Now that,\" says Orin, \"is how you dig.\" Pip digs with his spoon, very carefully, to prove he can.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "bridge_dug",
+          "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-evidence",
+      "choices": [
+        {
+          "id": "look",
+          "label": "Crawl under the arch",
+          "icon": "eye",
+          "goto": "under_arch"
+        }
+      ]
+    },
+    "wash_out": {
+      "type": "interaction",
+      "narration": "Puddle sits on the little dam of shells across the groove. \"When the wave reaches me, shout NOW and I pull. Too soon, and it only splashes.\"",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Shout now when the wave reaches the dam.",
+        "actionLabel": "NOW!",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 5000
+      },
+      "onSuccess": {
+        "goto": "washed",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "washed_twice",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "party"
+          },
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "washed",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "party"
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel"
+    },
+    "washed": {
+      "type": "story",
+      "narration": "WHOOSH. The wave races under the arch, and the silt slides out like porridge from a pot. The old carvings underneath come out clean. So do you. Everyone is soaked to the ears. \"Told you,\" says Puddle. \"Wetter.\"",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-evidence",
+      "choices": [
+        {
+          "id": "look",
+          "label": "Crawl under the arch",
+          "icon": "eye",
+          "goto": "under_arch"
+        }
+      ]
+    },
+    "washed_twice": {
+      "type": "story",
+      "narration": "Too soon. Splash, and only half the silt goes. You wait for the next wave, standing in it, while Pip hums to keep warm. The carvings come out clean. You come out cold and very wet.",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-evidence",
+      "choices": [
+        {
+          "id": "look",
+          "label": "Crawl under the arch",
+          "icon": "eye",
+          "goto": "under_arch"
+        }
+      ]
+    },
+    "under_arch": {
+      "type": "story",
+      "narration": "Under the arch, smooth river pebbles cover the bottom, round as eggs. Dry water weed hangs from the stone like an old wet beard. And high up, higher than Orin's head, the waterline is carved deep. \"That's no tide mark,\" says Puddle. \"Tides don't reach that high. Not even angry ones.\"",
+      "variants": [
+        {
+          "when": {
+            "flag": "bridge_scraped"
+          },
+          "text": "Below it, the row of carvings is scratched to dust. Nobody will ever know what they showed."
+        },
+        {
+          "when": {
+            "notFlag": "bridge_scraped"
+          },
+          "text": "Below it runs a row of carved fish, all swimming the same way: north, up the dry riverbed."
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "bridge_looked_under",
+          "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-evidence",
+      "choices": [
+        {
+          "id": "measure",
+          "label": "Measure the waterline",
+          "icon": "eye",
+          "goto": "measure"
+        }
+      ]
+    },
+    "measure": {
+      "type": "choice_point",
+      "narration": "Orin wants to know exactly how high that waterline is, to set beside his map. \"How deep was the river?\" he asks the arch. The arch does not answer.",
+      "variants": [
+        {
+          "when": {
+            "flag": "orin_chime_shared"
+          },
+          "text": "Your chime still dangles from his measuring pole, leaning north."
+        },
+        {
+          "when": {
+            "notFlag": "orin_chime_shared"
+          },
+          "text": "Without the chime on his pole, he will have to climb up and measure it himself."
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-evidence",
+      "choices": [
+        {
+          "id": "pole",
+          "label": "Hold Orin's pole up to the line",
+          "icon": "hand",
+          "goto": "check_pole",
+          "when": {
+            "flag": "orin_chime_shared"
+          }
+        },
+        {
+          "id": "spot",
+          "label": "Spot Orin while he climbs",
+          "icon": "shield",
+          "goto": "check_spot",
+          "when": {
+            "notFlag": "orin_chime_shared"
+          }
+        },
+        {
+          "id": "count",
+          "label": "Count the stone rows instead",
+          "icon": "eye",
+          "goto": "check_count"
+        }
+      ]
+    },
+    "check_pole": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "The pole is very long, and the chime on top swings north every time you move it.",
+      "prompt": "Hold the long pole steady against the waterline while Orin reads it",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-evidence",
+      "onSuccess": {
+        "goto": "measured",
+        "narration": "\"Two griffins and a beak high,\" Orin reads, and writes it down."
+      },
+      "onFailure": {
+        "goto": "measured_rough",
+        "narration": "The pole wobbles, and its end bonks Orin on the beak. The number he reads is mostly a guess."
+      }
+    },
+    "check_spot": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "narration": "Orin climbs the arch one talon at a time, tongue out. The old stone is slippery with silt.",
+      "prompt": "Stand under Orin and catch him if he slips",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-evidence",
+      "onSuccess": {
+        "goto": "measured",
+        "narration": "He reads the mark, slips on the way down, and lands in your arms. \"Thank you. Two griffins and a beak high.\""
+      },
+      "onFailure": {
+        "goto": "measured_rough",
+        "narration": "He slips halfway. You catch most of him, and the rest lands on you. The number he shouts on the way down is only a guess.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "check_count": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "narration": "The arch is built in neat rows of stone, each as tall as a loaf of bread.",
+      "prompt": "Count the stone rows from the riverbed up to the waterline",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-evidence",
+      "onSuccess": {
+        "goto": "measured",
+        "narration": "Twenty-two rows. Orin does the sum in his head, then on his fingers, then in his notebook."
+      },
+      "onFailure": {
+        "goto": "measured_rough",
+        "narration": "You lose count at seventeen, and again at nine. Pip helps, which makes it worse."
+      }
+    },
+    "measured": {
+      "type": "story",
+      "narration": "Orin writes the number in big letters. \"A river ran this deep, under this bridge. Deeper than the tallest yeti.\" Pip writes it down too, then draws a yeti for scale.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "bridge_exact",
+          "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-evidence",
+      "choices": [
+        {
+          "id": "samples",
+          "label": "Look at Orin's jars",
+          "icon": "eye",
+          "goto": "samples"
+        }
+      ]
+    },
+    "measured_rough": {
+      "type": "story",
+      "narration": "Orin writes the number with a question mark. \"Near enough,\" he says, though his face says it isn't. \"A deep river ran here, deeper than a yeti is tall.\" Pip draws a yeti, then a question mark.",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-evidence",
+      "choices": [
+        {
+          "id": "samples",
+          "label": "Look at Orin's jars",
+          "icon": "eye",
+          "goto": "samples"
+        }
+      ]
+    },
+    "samples": {
+      "type": "story",
+      "narration": "Orin lines up three jars: brown Saltrot mud, pale glacier silt, and dust from the arch, gray with white specks. Puddle licks the arch dust. \"Not Saltrot stone,\" she says. \"Not glacier, either. I've licked most things, and I've never tasted this.\" Orin writes: stone from nowhere near here.",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "choices": [
+        {
+          "id": "follow",
+          "label": "Ask where the river went",
+          "icon": "map",
+          "goto": "follow"
+        }
+      ]
+    },
+    "follow": {
+      "type": "choice_point",
+      "narration": "\"Where did it go, though?\" says Puddle, and points a fin up the dry riverbed. \"Follow it and see. From the bank.\" The bank upstream is crumbly and steep. Pip has already started, of course.",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "choices": [
+        {
+          "id": "hurry",
+          "label": "Hurry along the crumbly bank",
+          "icon": "boot",
+          "goto": "check_follow"
+        },
+        {
+          "id": "crest",
+          "label": "Follow Puddle's crest from the groove",
+          "icon": "drop",
+          "goto": "check_crest"
+        }
+      ]
+    },
+    "check_follow": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "Every third step, a lump of bank breaks off and rolls into the riverbed.",
+      "prompt": "Hurry along the crumbly bank without sliding down it",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "onSuccess": {
+        "goto": "riverbed_end",
+        "narration": "You skip along the top, light as a gull."
+      },
+      "onFailure": {
+        "goto": "riverbed_end",
+        "narration": "The bank crumbles under you, and you slide halfway down on your bottom before Pip grabs your sleeve.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "check_crest": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "narration": "Puddle swims the trickle in the groove below. Crest up means stop. Crest flat means go. Crest wiggling means \"I saw a snail.\"",
+      "prompt": "Read Puddle's crest signals and step only where she says",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "onSuccess": {
+        "goto": "riverbed_end",
+        "narration": "Stop, go, go, snail, go. You never put a foot wrong."
+      },
+      "onFailure": {
+        "goto": "riverbed_end",
+        "narration": "You mix up stop and snail and step onto nothing. Down you slide, in a shower of silt.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "riverbed_end": {
+      "type": "story",
+      "priority": 2,
+      "narration": "A little way upstream, the dry riverbed runs straight into a grassy hill and stops. No pond. No waterfall. Just a hill, sitting where the river ran, as if it sat down there after. \"Rivers don't do that,\" says Puddle. \"Neither do hills,\" says Orin, frowning. Pip writes HILL? and underlines it.",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "choices": [
+        {
+          "id": "back",
+          "label": "Head back to the bridge",
+          "icon": "back",
+          "goto": "tide"
+        }
+      ]
+    },
+    "tide": {
+      "type": "choice_point",
+      "narration": "Back at the bridge, the groove gurgles. The tide is coming in down the dry riverbed. Orin's drawings lie drying on the low shelf. Pip's notebook, full of drawings for Lady Olivia, sits open on a rock below. \"There's time to reach one,\" says Puddle. \"I can't carry paper. I'm a fish. Mostly.\" Orin looks at his drawings. Pip looks at his notebook.",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "choices": [
+        {
+          "id": "drawings",
+          "label": "Save Orin's drawings",
+          "icon": "scroll",
+          "goto": "save_drawings"
+        },
+        {
+          "id": "notebook",
+          "label": "Save Pip's notebook",
+          "icon": "heart",
+          "goto": "save_notebook"
+        },
+        {
+          "id": "footing",
+          "label": "Follow the chime along the old stone",
+          "icon": "bell",
+          "goto": "check_footing",
+          "when": {
+            "notFlag": "orin_chime_shared"
+          },
+          "requiresItem": "listening_chime"
+        }
+      ]
+    },
+    "save_drawings": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "The water slides toward the low shelf, quiet as a cat. The top drawing lifts at one corner.",
+      "prompt": "Snatch Orin's drawings off the low shelf before the water does",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "onSuccess": {
+        "goto": "drawings_saved"
+      },
+      "onFailure": {
+        "goto": "drawings_soaked",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bridge_exact",
+            "value": false
+          }
+        ]
+      }
+    },
+    "save_notebook": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "The water is already around the rock. Pip's notebook flaps its pages like it wants to swim.",
+      "prompt": "Splash out and snatch Pip's notebook off the rock",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "onSuccess": {
+        "goto": "notebook_saved",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bridge_exact",
+            "value": false
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "notebook_soggy",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bridge_exact",
+            "value": false
+          },
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "check_footing": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "narration": "In your pack, the chime hums louder over old stone. Under the silt, the bridge's footing runs along the riverbed like a hidden path.",
+      "prompt": "Follow the chime's hum along the buried footing and reach both",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "onSuccess": {
+        "goto": "both_saved"
+      },
+      "onFailure": {
+        "goto": "notebook_soggy",
+        "narration": "The hum fades halfway, and so does the footing. You reach Pip's notebook and fall in. Orin's drawings float away.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bridge_exact",
+            "value": false
+          },
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "drawings_saved": {
+      "type": "story",
+      "narration": "Every page, dry. Orin hugs them like a baby bird. Below, the water lifts Pip's notebook off its rock and carries it away, pages flapping. Pip watches it go. \"My drawings for Lady Olivia,\" he says, very small.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "bridge_tide_met",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "bridge_notebook_lost",
+          "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "choices": [
+        {
+          "id": "watch",
+          "label": "Watch the water come",
+          "icon": "drop",
+          "goto": "flood"
+        }
+      ]
+    },
+    "drawings_soaked": {
+      "type": "story",
+      "narration": "You grab the pages, but a wave grabs half of them back. Orin wrings out what's left. \"Useful,\" he says. \"Just less exact.\" Below, Pip's notebook floats away too. Pip doesn't say anything at all.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "bridge_tide_met",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "bridge_notebook_lost",
+          "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "choices": [
+        {
+          "id": "watch",
+          "label": "Watch the water come",
+          "icon": "drop",
+          "goto": "flood"
+        }
+      ]
+    },
+    "notebook_saved": {
+      "type": "story",
+      "narration": "You hold the notebook over your head, dry as toast. Pip hugs it, and then you. Up on the shelf, Orin's drawings float off one by one. He fishes out a soggy page. \"Redrawn from memory, then,\" he sighs. \"Useful. Just less exact.\"",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "bridge_tide_met",
+          "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "choices": [
+        {
+          "id": "watch",
+          "label": "Watch the water come",
+          "icon": "drop",
+          "goto": "flood"
+        }
+      ]
+    },
+    "notebook_soggy": {
+      "type": "story",
+      "narration": "You come up dripping, with Pip's notebook in your teeth. Half his drawings have run into inky smudges. \"Lady Olivia likes smudges,\" Pip says bravely. Orin's drawings are gone downstream. \"From memory, then,\" he sighs. \"Less exact.\"",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "bridge_tide_met",
+          "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "choices": [
+        {
+          "id": "watch",
+          "label": "Watch the water come",
+          "icon": "drop",
+          "goto": "flood"
+        }
+      ]
+    },
+    "both_saved": {
+      "type": "story",
+      "narration": "Hum, step, hum, step. You run the hidden footing, scoop up Orin's pages and Pip's notebook, and run back with water at your heels. \"The chime knew the old stone,\" says Orin, amazed. \"It knew where the bridge stood.\"",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "bridge_tide_met",
+          "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "choices": [
+        {
+          "id": "watch",
+          "label": "Watch the water come",
+          "icon": "drop",
+          "goto": "flood"
+        }
+      ]
+    },
+    "flood": {
+      "type": "story",
+      "narration": "The tide fills the old riverbed, just for a while. For the first time in who knows how long, water runs under the arches. The bridge stands in it, gray and speckled, looking exactly right. Puddle swims under the middle arch and back, grinning. \"It fits,\" she says. \"Like a puddle.\"",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "choices": [
+        {
+          "id": "pip",
+          "label": "Look for Pip",
+          "icon": "eye",
+          "goto": "pip_after"
+        }
+      ]
+    },
+    "pip_after": {
+      "type": "story",
+      "narration": "Pip flips through his notebook, page after page of pebbles and arches. \"Lady Olivia will see what this place used to be!\" he says. Orin raises an eyebrow, and lets it go.",
+      "variants": [
+        {
+          "when": {
+            "flag": "bridge_notebook_lost"
+          },
+          "replace": true,
+          "text": "Pip sits on the bank with his chin in his paws. \"Lady Olivia will think I found nothing.\" Puddle pokes him with one fin, gently. \"You found a bridge. Draw it again.\" He sniffs, and starts."
+        },
+        {
+          "when": {
+            "flag": "bridge_rule_broken"
+          },
+          "text": "Puddle still isn't quite looking at Pip, or at you."
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "choices": [
+        {
+          "id": "rest",
+          "label": "Climb to the high bank and rest",
+          "icon": "rest",
+          "goto": "rest"
+        }
+      ]
+    },
+    "rest": {
+      "type": "rest",
+      "heal": 2,
+      "narration": "On the high bank, Puddle opens her floating lunch box: kelp rolls wrapped in leaves. \"Guides eat first,\" she says, and does. Orin shares his sandwiches, slightly squashed. Across the water, the round stone door at the far end of the bridge sits sealed with silt and shells. \"Well,\" says Orin, wiping his beak. \"Shall I tell you what I think?\"",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "choices": [
+        {
+          "id": "think",
+          "label": "Ask Orin what he thinks",
+          "icon": "ear",
+          "goto": "old_river"
+        },
+        {
+          "id": "door",
+          "label": "Listen to the sealed door first",
+          "icon": "ear",
+          "goto": "door",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "bridge_door_heard",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "door": {
+      "type": "story",
+      "narration": "You sit very still and listen. When the wind blows across the water, the sealed door hums, low and soft. It is the same note as your chime. Pip stops chewing. Nobody knows what is behind that door, and Puddle says nobody should try. Orin writes it down and draws a very small question mark.",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "choices": [
+        {
+          "id": "think",
+          "label": "Ask Orin what he thinks",
+          "icon": "ear",
+          "goto": "old_river"
+        }
+      ]
+    },
+    "old_river": {
+      "type": "story",
+      "priority": 1,
+      "narration": "Orin unrolls his map, the one with places that don't fit. He lays your findings beside it: the waterline, the river pebbles, the gray stone with white specks from nowhere near here, the riverbed that runs into a hill. \"My map has no river here,\" he says. \"But this bridge stood over one. A river ran right here, long ago, when the land was a different shape.\" Puddle stares. \"The land had a different shape?\" \"One more piece that doesn't match today's map,\" says Orin softly. \"But matches something older.\"",
+      "variants": [
+        {
+          "when": {
+            "flag": "bridge_exact"
+          },
+          "text": "Your exact measurement sits right beside it, two griffins and a beak high."
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "fragment_coast_learned",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "bridge_remembered",
+          "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "choices": [
+        {
+          "id": "north",
+          "label": "Look where the chime points",
+          "icon": "bell",
+          "goto": "north"
+        }
+      ]
+    },
+    "north": {
+      "type": "story",
+      "narration": "Orin follows the lean with his eyes. \"Glacier silt. Snow from a clear sky. Something up north is draining this way, through an opening somewhere. Something is moving things, and the land remembers where it used to be.\" Pip's eyes shine. \"Imagine if we could use...\" Puddle puffs up a little, and he stops.",
+      "variants": [
+        {
+          "when": {
+            "flag": "orin_chime_shared"
+          },
+          "at": "start",
+          "text": "Orin gives your chime back. On its string it leans north, toward the glacier, harder than it has all day."
+        },
+        {
+          "when": {
+            "notFlag": "orin_chime_shared"
+          },
+          "at": "start",
+          "text": "In your pack, the chime leans north, toward the glacier, harder than it has all day."
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "choices": [
+        {
+          "id": "home",
+          "label": "Head home along the bank",
+          "icon": "boot",
+          "goto": "home"
+        }
+      ]
+    },
+    "home": {
+      "type": "choice_point",
+      "narration": "The tide slides back out and leaves the riverbed shining. Puddle hops into the groove. \"Home. Bank all the way. Nobody touch the stone.\"",
+      "variants": [
+        {
+          "when": {
+            "flag": "bridge_dug"
+          },
+          "text": "Your big heap of dug silt has slumped right across the high path, so it's the low way or nothing."
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "choices": [
+        {
+          "id": "high",
+          "label": "Hop along the high path",
+          "icon": "boot",
+          "goto": "check_high",
+          "when": {
+            "notFlag": "bridge_dug"
+          }
+        },
+        {
+          "id": "low",
+          "label": "Wade the low way with Puddle",
+          "icon": "drop",
+          "goto": "check_low"
+        }
+      ]
+    },
+    "check_high": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "The high path is narrow, and the evening wind wants it more than you do.",
+      "prompt": "Hop along the narrow high path without slipping",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "onSuccess": {
+        "goto": "ending",
+        "narration": "You hop it like a hopscotch board. Puddle claps her fins."
+      },
+      "onFailure": {
+        "goto": "ending",
+        "narration": "A gust pushes you off the path and into a pool. It is a very small pool. You fit it exactly, like Puddle.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "check_low": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "roller": "all",
+      "narration": "The low way is knee-deep in fresh tide and cold, sticky silt.",
+      "prompt": "Wade the low way, holding on to each other",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "onSuccess": {
+        "goto": "ending",
+        "narration": "Squelch, squelch, step. Nobody lets go. Puddle swims beside you, humming."
+      },
+      "onFailure": {
+        "goto": "ending",
+        "narration": "The silt grabs your boots. Puddle puffs up round, and you ride the last bit on her. \"Ow. Every time,\" she says.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
+      }
+    },
+    "ending": {
+      "type": "story",
+      "outcome": "success",
+      "narration": "At the edge of the flats, Puddle scratches the bridge into the mud for the guides' account: one bridge, one waterline, no river. Then she stops. Far out on the flats, something blinks: snow, nothing, snow. \"That,\" says Puddle, \"is new.\" So here is your piece: this bridge stands where a river ran when the land was a different shape. Something is moving the land. What is it? And can you put things right?",
+      "variants": [
+        {
+          "when": {
+            "flag": "orin_chime_shared"
+          },
+          "at": "start",
+          "text": "Orin tucks your chime readings under his wing, to lay beside his map."
+        },
+        {
+          "when": {
+            "notFlag": "orin_chime_shared"
+          },
+          "at": "start",
+          "text": "Orin has his notes, and a lot of questions. \"I'll take your word for the lean,\" he says."
+        },
+        {
+          "when": {
+            "flag": "bridge_exact"
+          },
+          "at": "start",
+          "text": "His copy is exact."
+        },
+        {
+          "when": {
+            "notFlag": "bridge_exact"
+          },
+          "at": "start",
+          "text": "His copy says \"near enough\" at the top."
+        },
+        {
+          "when": {
+            "notFlag": "bridge_notebook_lost"
+          },
+          "at": "start",
+          "text": "Pip runs ahead with his notebook, to show Lady Olivia."
+        },
+        {
+          "when": {
+            "flag": "bridge_notebook_lost"
+          },
+          "at": "start",
+          "text": "Pip is drawing it all again from memory, for Lady Olivia."
+        },
+        {
+          "when": {
+            "flag": "bridge_rule_broken"
+          },
+          "at": "start",
+          "text": "Puddle has to tell Grandmother somebody walked on the stone. She's dreading it."
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Puddle",
+          "stance": "swimming"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "choices": []
     }
   }
 }

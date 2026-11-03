@@ -213,6 +213,12 @@ export type ClientIntent =
     }
   | { type: "END_TURN" }
   /**
+   * The table has heard how the chapter ended (`RunState.endingRead`): the
+   * shared screen turns from the ending's own words to the XP. Any seated
+   * player may say so, once; legal only on a chapter's summary.
+   */
+  | { type: "ENDING_READ" }
+  /**
    * Playtest mode (roadmap chapter 6). Both are refused with FORBIDDEN unless
    * `EngineContext.playtest` is true, which only `dev-server.ts` ever sets —
    * `lambda/runtime.ts` passes a literal `false`, so a deployed build has no
@@ -753,6 +759,16 @@ export interface PairingCode {
 }
 
 /**
+ * `POST /api/room/:code/screens`: a one-time code that lets one more TV show
+ * this room, a follower at another address. Single use, about ten minutes.
+ * Redeemed at `POST /api/screens/redeem`, which answers like `/watch` does.
+ */
+export interface ScreenCode {
+  code: string;
+  expiresAt: string;
+}
+
+/**
  * `POST /api/pair/redeem` (#281): the new device's binding, as `adoptDevice`
  * gives one, and who it now is.
  */
@@ -771,6 +787,35 @@ export interface PairingResult {
 export interface SharedSeatRequest {
   playerId?: string;
   newPlayer?: string;
+}
+
+/**
+ * What holds one of a player's heroes, as the hero picker shows it
+ * (handlers/heroes.ts, `held`): the adventure she is partway through, and
+ * what this room would do with her now. Absent for a free hero. A stopped game
+ * that holds her is also in `saved`.
+ */
+export interface HeroHold {
+  /** The campaign she is partway through: "Gemfall". */
+  campaign: string;
+  /** Another crew of this room's household holds her: its name. */
+  crew?: string;
+  /** Another household's table holds her: its name. */
+  at?: string;
+  /** This room cannot seat her now, in the words the seat is refused with. */
+  blocked?: string;
+  /** Seating her moves this room's lobby to `crew` (crew.ts, `followCrew`). */
+  switches?: true;
+}
+
+/** `GET /api/heroes` — the heroes this player can bring back, and what holds each. */
+export interface HeroesResponse {
+  /** This player's own heroes, furthest-taken first. */
+  heroes: ResolvedCharacter[];
+  /** Hero id → where a stopped game holds her (#259); `at` names another table. */
+  saved?: Record<string, { at?: string }>;
+  /** Hero id → the adventure holding her, when one is under way. */
+  held?: Record<string, HeroHold>;
 }
 
 /**

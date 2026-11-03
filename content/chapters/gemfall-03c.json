@@ -80,17 +80,17 @@
       "discovers": [
         "npc.centaur"
       ],
-      "narration": "Marda's rumor board said the rush road was jammed but moving. Tonight, wait your turn at the river ford, then try to get across. Wagons fill the ruts. Centaur relay-runners weave between them. The parade stops. Ahead, somebody shouts, \"NUMBERS! GET YOUR NUMBERS!\"",
+      "narration": "Marda's rumor board said the rush road was jammed but moving. Your job tonight: wait your turn at the river ford, then get across. Wagons fill the ruts. Centaur relay-runners weave between them. Ahead, somebody shouts, \"NUMBERS! GET YOUR NUMBERS!\"",
       "choices": [
         {
           "id": "walk_front",
-          "label": "Walk up to the front and see why",
+          "label": "Walk up to the front",
           "icon": "arrow",
           "goto": "scene_spilled_pannier"
         },
         {
           "id": "read_crowd",
-          "label": "Read the crowd like a book",
+          "label": "Read the crowd",
           "icon": "eye",
           "requiresSpecies": "kitsune",
           "goto": "scene_parade_read_crowd",
@@ -121,11 +121,11 @@
     },
     "scene_parade_sniff_wagons": {
       "type": "story",
-      "narration": "Your dragonling sniffs the nearest gem wagon and goes very still. It smells of home: warm rock, ash, the inside of a cave. And underneath that, a hum you can feel in your teeth. Every wagon in the parade smells the same, all the way to the front.",
+      "narration": "Your dragonling sniffs a gem wagon and goes very still. It smells like home: warm rock, ash, a cave. Underneath is a hum you can feel in your teeth. Every wagon smells the same.",
       "choices": [
         {
           "id": "on",
-          "label": "Walk on up the column",
+          "label": "Walk on up the line",
           "icon": "flame",
           "goto": "scene_spilled_pannier"
         }
@@ -134,11 +134,11 @@
     },
     "scene_parade_read_crowd": {
       "type": "story",
-      "narration": "Your kitsune reads the line the way other people read a menu. That wagon is two places ahead of where it should be. That man is selling the same pebble twice. Those three are a family and that one only says she is. By the time you are halfway up the column, you know the whole line's business, and the line does not know you know.",
+      "narration": "Your kitsune reads the line like a menu. That wagon has jumped two places. That man is selling the same pebble twice. Soon you know the whole line's business, and the line does not know you know.",
       "choices": [
         {
           "id": "on",
-          "label": "Walk on up the column",
+          "label": "Walk on up the line",
           "icon": "eye",
           "goto": "scene_spilled_pannier"
         }
@@ -147,23 +147,23 @@
     },
     "scene_spilled_pannier": {
       "type": "story",
-      "narration": "A wagon wheel drops into a rut. Its pannier splits, spilling gem chips. The lead drover, who runs the river crossing, booms \"WATCH YOUR BOOTS!\" Catch and pass the pannier to earn his help, or stand back and watch what the chips do.",
+      "narration": "A wagon wheel drops into a rut, and gem chips spill everywhere. \"WATCH YOUR BOOTS!\" booms the lead drover, who runs the river crossing. Help him catch the chips, or stand back and watch.",
       "choices": [
         {
           "id": "catch",
-          "label": "Make a catch-and-pass line for the spilled chips",
+          "label": "Make a catch-and-pass line",
           "icon": "quick",
           "goto": "interaction_chip_line"
         },
         {
           "id": "hold_back",
-          "label": "Hold back and watch the scramble",
+          "label": "Stand back and watch",
           "icon": "eye",
           "goto": "scene_spilled_pannier_hold_back"
         },
         {
           "id": "spot_all",
-          "label": "Spot every last chip, even the ones in the mud",
+          "label": "Spot every last chip",
           "icon": "eye",
           "goto": "scene_spilled_pannier_spot_all",
           "requiresSpecies": "bigfoot",
@@ -177,7 +177,7 @@
         },
         {
           "id": "dash_chips",
-          "label": "Risk a quick scoop before the crowd moves",
+          "label": "Quick scoop (risky)",
           "icon": "quick",
           "goto": "check_catch_chips"
         }
@@ -209,7 +209,7 @@
     },
     "scene_spilled_pannier_hold_back": {
       "type": "story",
-      "narration": "You stand back. The crowd scrambles, squabbles and stuffs its pockets. Nobody notices what you notice: every chip in the dust is trembling, very faintly, like a kettle a long way off. When the last chip is gone, the road goes quiet.",
+      "narration": "You stand back. The crowd scrambles and stuffs its pockets. Nobody notices what you notice: every chip in the dust is trembling, like a kettle far away.",
       "choices": [
         {
           "id": "on",
@@ -222,7 +222,7 @@
     },
     "scene_spilled_pannier_spot_all": {
       "type": "story",
-      "narration": "Your bigfoot stops, looks once, and points. Under the wheel. In a hoofprint. Inside somebody's boot. Every chip goes back in the pannier, even the one the dog was guarding. The drover stares. \"Never seen eyes like that,\" he booms. \"I'll remember you folks.\"",
+      "narration": "Your bigfoot looks once, and points. Under the wheel. In a hoofprint. Inside somebody's boot. Every chip goes back. \"Never seen eyes like that,\" the drover booms. \"I'll remember you folks.\"",
       "choices": [
         {
           "id": "on",
@@ -238,7 +238,7 @@
       "discovers": [
         "npc.faun"
       ],
-      "narration": "At the west branch, the ford line is two days long. A faun provisioner named Burdock sells numbered pebbles and very expensive honeycakes. Your pebble says 412. \"My lucky number!\" says Burdock. The ford is on number 9.",
+      "narration": "At the west branch, the ford line is two days long. A faun named Burdock sells numbered pebbles and very expensive honeycakes. Your pebble says 412. \"My lucky number!\" he says. The ford is on number 9.",
       "cast": [
         {
           "figure": "cast/burdock",
@@ -248,7 +248,7 @@
       "choices": [
         {
           "id": "buy_cake",
-          "label": "Buy a very expensive honeycake",
+          "label": "Buy a pricey honeycake",
           "icon": "cake",
           "goto": "scene_number_pebble_buy_cake",
           "effects": [
@@ -270,7 +270,7 @@
         },
         {
           "id": "pocket_pebble",
-          "label": "Pocket your pebble and look around",
+          "label": "Pocket your pebble",
           "icon": "travel",
           "goto": "scene_number_pebble_pocket_pebble"
         }
@@ -304,7 +304,7 @@
           "name": "Burdock"
         }
       ],
-      "narration": "You keep your coins and pebble 412. \"Plenty of time to get hungry,\" says Burdock. His goat, Pudding, stares into the pebble bucket. Nothing good begins with a goat staring into a bucket.",
+      "narration": "You keep your coins and pebble 412. Burdock's goat, Pudding, stares into the pebble bucket. Nothing good starts with a goat staring into a bucket.",
       "choices": [
         {
           "id": "on",
@@ -323,17 +323,17 @@
           "name": "Burdock"
         }
       ],
-      "narration": "Burdock's goat, Pudding, gallops down the line with the pebble bucket on her head. Numbers fly everywhere. \"My bucket! My GOAT!\" wails Burdock. Chase her, sort the spilled numbers for a honeycake, or use a crumb to tempt her back.",
+      "narration": "Burdock's goat, Pudding, gallops down the line with the pebble bucket on her head. Numbers fly everywhere. \"My bucket! My GOAT!\" wails Burdock. Chase her, or sort the spilled numbers for a honeycake.",
       "choices": [
         {
           "id": "chase",
-          "label": "Chase Pudding down the line",
+          "label": "Chase Pudding",
           "icon": "quick",
           "goto": "check_goat_chase"
         },
         {
           "id": "sort",
-          "label": "Help sort the numbers back into the bucket",
+          "label": "Sort the numbers",
           "icon": "scroll",
           "goto": "choice_runaway_goat_sort",
           "effects": [
@@ -346,7 +346,7 @@
         },
         {
           "id": "crumb",
-          "label": "Tempt Pudding with a crumb of honeycake",
+          "label": "Tempt her with honeycake",
           "icon": "cake",
           "goto": "choice_runaway_goat_crumb",
           "requiresItem": "honeycake",
@@ -363,7 +363,7 @@
     },
     "check_goat_chase": {
       "type": "interaction",
-      "narration": "Pudding gallops down the line with the bucket on her head. Then she skids to a stop at a cabbage stall and starts to chew, because a goat cannot walk past a cabbage. She does it every few steps. \"Wait for the chew!\" wails Burdock. \"Then grab!\"",
+      "narration": "Pudding gallops off with the bucket on her head. Every few steps she stops at a cabbage stall to chew. \"Wait for the chew!\" wails Burdock. \"Then grab!\"",
       "interaction": {
         "kind": "timing",
         "cue": "Tap when Pudding stops to chew.",
@@ -389,11 +389,11 @@
             "amount": 3
           }
         ],
-        "narration": "You zig when Pudding zigs and zag when she zags, and grab the bucket by its handle just as she leaps a cooking pot. Pudding thinks this was a wonderful game. For the rest of the day, wherever you go, a goat goes too. Burdock pays you three coins for the rescued bucket, and kisses Pudding on the nose."
+        "narration": "You grab the bucket just as Pudding leaps a cooking pot. She loved that game, and follows you all day. Burdock pays you three coins."
       },
       "onFailure": {
         "goto": "scene_three_cards",
-        "narration": "Pudding leaps a cooking pot, a sleeping drover and a small tent. You leap the cooking pot, mostly. In the end she trots back to Burdock all by herself, very pleased, with the bucket still on her head.",
+        "narration": "Pudding leaps a cooking pot and a sleeping drover. You leap the pot, mostly. In the end she trots back to Burdock by herself.",
         "effects": [
           {
             "type": "setFlag",
@@ -411,7 +411,7 @@
           "name": "Burdock"
         }
       ],
-      "narration": "You ask people for their numbers and sort the pebbles fairly. Burdock rewards you with a honeycake. \"This has never happened,\" he says. \"Tell nobody.\" Pudding returns while he counts.",
+      "narration": "You ask people their numbers and sort the pebbles fairly. Burdock gives you a honeycake. \"This has never happened,\" he says. \"Tell nobody.\" Pudding wanders back.",
       "choices": [
         {
           "id": "on",
@@ -436,7 +436,7 @@
           "name": "Burdock"
         }
       ],
-      "narration": "Pudding eats the crumb and drops the bucket. Then she follows you. Burdock approves of this arrangement for approximately one day.",
+      "narration": "Pudding eats the crumb and drops the bucket. Then she follows you. Burdock approves of this for about one day.",
       "choices": [
         {
           "id": "on",
@@ -458,7 +458,7 @@
       "discovers": [
         "character.kitsune"
       ],
-      "narration": "A kitsune named Tamsin Three-Cards shuffles on a barrel. \"Find the Sun Card! Win a front-of-the-line pebble!\" Her third tail twitches. You can watch the trick, walk away, or help her con the crowd for an unfair Number 1.",
+      "narration": "A kitsune named Tamsin Three-Cards shuffles cards on a barrel. \"Find the Sun Card! Win a front-of-the-line pebble!\" Her third tail twitches. Catch her trick, walk away, or help her fool the crowd.",
       "cast": [
         {
           "figure": "cast/tamsin",
@@ -468,26 +468,26 @@
       "choices": [
         {
           "id": "expose",
-          "label": "Watch her tails and catch the trick",
+          "label": "Catch the trick",
           "icon": "eye",
           "goto": "check_expose"
         },
         {
           "id": "fox_to_fox",
-          "label": "Wink at her, one fox to another",
+          "label": "Wink, fox to fox",
           "icon": "spark",
           "requiresSpecies": "kitsune",
           "goto": "scene_exposed"
         },
         {
           "id": "join",
-          "label": "Offer to help her draw a crowd",
+          "label": "Help her draw a crowd",
           "icon": "hand",
           "goto": "scene_join_con"
         },
         {
           "id": "walk_by",
-          "label": "Keep your coins and walk on by",
+          "label": "Walk on by",
           "icon": "arrow",
           "goto": "scene_three_cards_walk_by"
         }
@@ -496,7 +496,7 @@
     },
     "check_expose": {
       "type": "interaction",
-      "narration": "Tamsin's hands blur and the three cards fly, left, middle, right. The Sun Card starts under the left card. Her third tail twitches every time it moves. Watch where it goes.",
+      "narration": "Tamsin's hands blur and the cards fly. The Sun Card starts on the left. Her third tail twitches every time it moves. Watch where it goes.",
       "interaction": {
         "kind": "tracking",
         "cue": "Watch the Sun Card, then pick its card.",
@@ -535,17 +535,17 @@
       ],
       "onSuccess": {
         "goto": "scene_exposed",
-        "narration": "Every time she shuffles, the third tail flicks the Sun Card up her sleeve. You say so, loudly and politely."
+        "narration": "Every shuffle, her tail flicks the Sun Card up her sleeve. You say so, loudly and politely."
       },
       "onFailure": {
         "goto": "interaction_soup_bowls",
-        "narration": "You pick the middle card with total confidence. It is a picture of a very smug fox. The crowd laughs, and so, to be fair, does she."
+        "narration": "You pick a picture of a very smug fox. The crowd laughs, and so does she."
       },
       "art": "scenes/gemfall/ford-queue-market"
     },
     "scene_exposed": {
       "type": "story",
-      "narration": "Tamsin shakes the Sun Card from her sleeve. The crowd gets its pebbles back. The drovers notice who caught the trick. They will wave you beside the lead wagon at the ford.",
+      "narration": "Tamsin shakes the Sun Card out of her sleeve, and the crowd gets its pebbles back. The drovers saw who caught the trick. They will wave you in beside the lead wagon at the ford.",
       "cast": [
         {
           "figure": "cast/tamsin",
@@ -562,7 +562,7 @@
       "choices": [
         {
           "id": "onward",
-          "label": "Head for the smell of soup",
+          "label": "Follow the smell of soup",
           "icon": "arrow",
           "goto": "interaction_soup_bowls"
         }
@@ -571,7 +571,7 @@
     },
     "scene_join_con": {
       "type": "story",
-      "narration": "You stand in the crowd and gasp very loudly every time somebody almost wins. Tamsin pays you with a front-of-the-line pebble and a wink. It is shiny and it says number 1, and it is absolutely not fair.",
+      "narration": "You gasp loudly in the crowd every time somebody almost wins. Tamsin pays you with a wink and a shiny pebble. It says Number 1. It is not fair at all.",
       "cast": [
         {
           "figure": "cast/tamsin",
@@ -588,7 +588,7 @@
       "choices": [
         {
           "id": "onward",
-          "label": "Head for the smell of soup",
+          "label": "Follow the smell of soup",
           "icon": "arrow",
           "goto": "interaction_soup_bowls"
         }
@@ -607,7 +607,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Head for the smell of soup",
+          "label": "Follow the smell of soup",
           "icon": "arrow",
           "goto": "interaction_soup_bowls"
         }
@@ -616,11 +616,11 @@
     },
     "scene_soup_line": {
       "type": "story",
-      "narration": "A cheerful ladler named Wend gives away soup under the dark-robed helpers' tent. \"Kindness first,\" Wend says. A little crystal on the ladle cord shivers whenever a gem wagon passes.",
+      "narration": "A cheerful ladler named Wend gives away free soup under the dark-robed helpers' tent. \"Kindness first,\" says Wend. A little crystal on the ladle cord shivers whenever a gem wagon passes.",
       "choices": [
         {
           "id": "thank_wend",
-          "label": "Say thank you and eat up",
+          "label": "Say thank you",
           "icon": "heart",
           "goto": "scene_soup_line_thank_wend",
           "effects": [
@@ -632,7 +632,7 @@
         },
         {
           "id": "ask_crystal",
-          "label": "Ask why the crystal shivers",
+          "label": "Ask about the crystal",
           "icon": "ear",
           "goto": "scene_soup_line_ask_crystal"
         }
@@ -669,7 +669,7 @@
     },
     "scene_soup_line_thank_wend": {
       "type": "story",
-      "narration": "Wend beams at your thanks and fills your bowls again. No questions asked. \"Kindness first.\" The crystal shivers at another wagon.",
+      "narration": "Wend beams and fills your bowls again. \"Kindness first.\" The crystal shivers at another wagon.",
       "choices": [
         {
           "id": "on",
@@ -688,17 +688,17 @@
     },
     "scene_queue_jumpers": {
       "type": "story",
-      "narration": "Red scarves push up the line. \"Ford closes tomorrow!\" their leader shouts. An old faun doubts this. Block them, fetch the drovers, or use someone who knows their tricks. If you hold the line, the scarves will owe you fair treatment.",
+      "narration": "A gang in red scarves pushes up the line. \"Ford closes tomorrow!\" their leader shouts. An old faun doubts it. Hold the line, and the scarves may treat you fairly later. Or fetch the drovers.",
       "choices": [
         {
           "id": "block",
-          "label": "Stand shoulder to shoulder and hold the line",
+          "label": "Hold the line together",
           "icon": "might",
           "goto": "check_block_jumpers"
         },
         {
           "id": "call_drovers",
-          "label": "Run and fetch the drovers",
+          "label": "Fetch the drovers",
           "icon": "ear",
           "goto": "scene_queue_jumpers_call_drovers",
           "effects": [
@@ -711,7 +711,7 @@
         },
         {
           "id": "send_back",
-          "label": "Tell them, sweetly, that the back is the new front",
+          "label": "Send them to the back",
           "icon": "spark",
           "goto": "scene_queue_jumpers_send_back",
           "requiresSpecies": "kitsune",
@@ -725,7 +725,7 @@
         },
         {
           "id": "tamsin_help",
-          "label": "Ask Tamsin to keep them busy",
+          "label": "Ask Tamsin for help",
           "icon": "bead",
           "goto": "scene_queue_jumpers_tamsin_help",
           "requiresFlag": "joined_the_con",
@@ -742,7 +742,7 @@
     },
     "check_block_jumpers": {
       "type": "interaction",
-      "narration": "The red scarves charge up the line, elbows first. The old faun grabs your sleeve. \"Link arms!\" he says. Somebody takes the front of the line, and everybody braces behind.",
+      "narration": "The red scarves charge up the line, elbows first. The old faun grabs your sleeve. \"Link arms!\" he says. Everybody braces.",
       "interaction": {
         "kind": "cooperate",
         "cue": "Friends brace the line while someone holds the front.",
@@ -762,21 +762,21 @@
             "amount": 2
           }
         ],
-        "narration": "You link arms with the old faun and two very surprised strangers, and the red scarves bounce off you like a ball off a wall. They grumble all the way back to the end of the line. The whole line cheers, and the red scarves will remember you. The old faun fishes his hat out of the soup and, dripping, gives you two coins for the trouble."
+        "narration": "You link arms with the old faun and two surprised strangers. The red scarves bounce off like a ball off a wall. The line cheers, and the old faun gives you two coins."
       },
       "onFailure": {
         "goto": "interaction_clear_lane",
-        "narration": "The red scarves squeeze past, all elbows. Then the last one trips over Pudding's bucket, and the whole gang goes down in a red-scarfed heap. The line laughs so hard that they slink off to the back anyway."
+        "narration": "The red scarves squeeze past. Then the last one trips over Pudding's bucket, and the whole gang goes down in a heap. Laughed at, they slink to the back."
       },
       "art": "scenes/gemfall/ford-queue-market"
     },
     "scene_queue_jumpers_call_drovers": {
       "type": "story",
-      "narration": "You run down to the ford and fetch the lead drover. He walks back up the line without hurrying, stands in front of the red scarves, and says one word. \"BACK.\" His voice rattles the wagon wheels. They go back. The drover gives you a slow nod, and fishes the old faun's hat out of the soup.",
+      "narration": "You fetch the lead drover. He strolls up the line, stands in front of the red scarves, and says one word. \"BACK.\" It rattles the wagon wheels. They go back.",
       "choices": [
         {
           "id": "on",
-          "label": "Back to your place in line",
+          "label": "Back to your place",
           "icon": "ear",
           "goto": "interaction_clear_lane"
         }
@@ -785,11 +785,11 @@
     },
     "scene_queue_jumpers_send_back": {
       "type": "story",
-      "narration": "Your kitsune smiles the sweetest smile in the line. \"Oh, haven't you heard? The ford moved. The back is the front now.\" The red scarves look at each other and then sprint, very fast, all the way to the back. It takes them an hour to work it out. By then they are too embarrassed to come back.",
+      "narration": "Your kitsune smiles the sweetest smile in the line. \"Haven't you heard? The back is the front now.\" The red scarves sprint to the back. It takes them an hour to work it out.",
       "choices": [
         {
           "id": "on",
-          "label": "Back to your place in line",
+          "label": "Back to your place",
           "icon": "spark",
           "goto": "interaction_clear_lane"
         }
@@ -804,11 +804,11 @@
           "name": "Tamsin Three-Cards"
         }
       ],
-      "narration": "Tamsin strolls up shuffling her cards. \"Find the Sun Card, win a place at the front!\" The red scarves crowd around to play. They play for an hour. They never find the Sun Card. By the time they give up, the line has rolled on without them, and Tamsin gives you a wink.",
+      "narration": "Tamsin strolls up, shuffling. \"Find the Sun Card, win a place at the front!\" The red scarves play for an hour and never find it. By then the line has rolled on without them.",
       "choices": [
         {
           "id": "on",
-          "label": "Back to your place in line",
+          "label": "Back to your place",
           "icon": "bead",
           "goto": "interaction_clear_lane"
         }
@@ -826,30 +826,30 @@
           "name": "Relay Runner"
         }
       ],
-      "narration": "A centaur relay-runner skids beside you. \"Message for the drovers. Hill road next. Can't stop!\" The note says RIVER RISING. CROSS SLOW. Run it, sing it down the line, or fly it to the ford.",
+      "narration": "A centaur relay-runner skids up. \"Message for the drovers! Can't stop!\" The note says RIVER RISING. CROSS SLOW. Run it, sing it down the line, or fly it to the ford.",
       "choices": [
         {
           "id": "run",
-          "label": "Run the note down to the ford",
+          "label": "Run the note down",
           "icon": "quick",
           "goto": "check_run_message"
         },
         {
           "id": "duskrunner_dash",
-          "label": "Have a duskrunner sprint the note down the line",
+          "label": "Duskrunner sprints it",
           "icon": "boot",
           "requiresClass": "duskrunner",
           "goto": "check_run_message"
         },
         {
           "id": "sing",
-          "label": "Sing it down the line, the relay way",
+          "label": "Sing it down the line",
           "icon": "note",
           "goto": "scene_relay_message_sing"
         },
         {
           "id": "fly",
-          "label": "Fly the note straight to the ford",
+          "label": "Fly it to the ford",
           "icon": "wing",
           "goto": "scene_relay_message_fly",
           "requiresSpecies": "griffin"
@@ -894,7 +894,7 @@
           "name": "Relay Runner"
         }
       ],
-      "narration": "You sing RIVER RISING, CROSS SLOW. The next fire sings it to the next. Soon the drovers sing back. The runner grins and gallops away.",
+      "narration": "You sing RIVER RISING, CROSS SLOW. The next fire sings it to the next. Soon the drovers sing it back. The runner grins and gallops away.",
       "choices": [
         {
           "id": "on",
@@ -913,11 +913,11 @@
           "name": "Relay Runner"
         }
       ],
-      "narration": "Your griffin takes the note in a beak and is over the whole line in four wingbeats. The lead drover reads it, looks up at the river, and nods. When you land back beside the runner, she whistles. \"The relay could use a friend with wings,\" she says, and gallops off before you can answer.",
+      "narration": "Your griffin crosses the whole line in four wingbeats. The lead drover reads the note and nods. Back in line, the runner whistles. \"The relay could use a friend with wings.\"",
       "choices": [
         {
           "id": "on",
-          "label": "Land back in the line",
+          "label": "Land back in line",
           "icon": "wing",
           "goto": "choice_tolls"
         }
@@ -926,7 +926,7 @@
     },
     "choice_tolls": {
       "type": "choice_point",
-      "narration": "Choose one job in the line before dusk. Free the wagon to earn its crew's help if a load tips in the ford. Restore the marker line for an easier ford approach. Or help the Brackens, a faun family beside a cracked wheel, and earn a ride on their cart. \"We are being very brave,\" says Littlest Bracken. You cannot do every job tonight.",
+      "narration": "Pick one job before dusk. Free a stuck wagon, and its crew will help you in the ford. Fix the marker line for an easier ford. Or help the Brackens, a faun family with a cracked wheel, and ride their cart. \"We are being very brave,\" says Littlest Bracken.",
       "cast": [
         {
           "figure": "cast/mother_bracken",
@@ -941,26 +941,26 @@
       "choices": [
         {
           "id": "wagon",
-          "label": "Level the wagon load and roll it out",
+          "label": "Level the wagon load",
           "icon": "might",
           "goto": "interaction_wagon_level"
         },
         {
           "id": "thornguard_heave",
-          "label": "Have a thornguard take the weight while everyone heaves",
+          "label": "Thornguard takes the weight",
           "icon": "shield",
           "requiresClass": "thornguard",
           "goto": "check_unmire"
         },
         {
           "id": "markers",
-          "label": "Brace and raise the fallen marker posts",
+          "label": "Raise the marker posts",
           "icon": "map",
           "goto": "interaction_ford_posts"
         },
         {
           "id": "markers_air",
-          "label": "Fly the marker line and spot every post",
+          "label": "Fly the marker line",
           "icon": "wing",
           "requiresSpecies": "griffin",
           "goto": "scene_markers_restored",
@@ -973,7 +973,7 @@
         },
         {
           "id": "family",
-          "label": "Sit down with the Brackens",
+          "label": "Sit with the Brackens",
           "icon": "heart",
           "goto": "scene_family",
           "effects": [
@@ -985,7 +985,7 @@
         },
         {
           "id": "guess_posts",
-          "label": "Risk putting the posts back by their worn numbers",
+          "label": "Guess the post order (risky)",
           "icon": "clever",
           "goto": "check_markers"
         }
@@ -1064,7 +1064,7 @@
     },
     "scene_markers_restored": {
       "type": "story",
-      "narration": "The marker line stands straight again, every post pointing the safe way to the ford. A centaur relay-runner slows down just long enough to say \"The relay remembers,\" and then she is gone, already singing it to the next runner up the road.",
+      "narration": "The marker line stands straight again, every post pointing the safe way to the ford. A relay-runner slows just long enough to say, \"The relay remembers.\"",
       "cast": [
         {
           "figure": "cast/relay_runner",
@@ -1081,7 +1081,7 @@
       "choices": [
         {
           "id": "onward",
-          "label": "Back to camp before dusk",
+          "label": "Back to camp",
           "icon": "arrow",
           "goto": "scene_dusk_wolves"
         }
@@ -1090,7 +1090,7 @@
     },
     "scene_family": {
       "type": "story",
-      "narration": "The Brackens' cart wheel is cracked, their season is over, and they need to get home before the river rises. The littlest Bracken is holding a line pebble with a big number on it and trying very hard not to cry about it.",
+      "narration": "The Brackens' cart wheel is cracked, and they need to get home before the river rises. The littlest Bracken holds a pebble with a huge number and is trying very hard not to cry.",
       "cast": [
         {
           "figure": "cast/mother_bracken",
@@ -1105,7 +1105,7 @@
       "choices": [
         {
           "id": "give_pebble",
-          "label": "Swap pebbles, so they cross before you",
+          "label": "Swap pebbles with them",
           "icon": "hand",
           "goto": "scene_family_give_pebble",
           "effects": [
@@ -1136,7 +1136,7 @@
         },
         {
           "id": "fix_wheel",
-          "label": "Lash the wheel together with rope",
+          "label": "Rope the wheel together",
           "icon": "might",
           "goto": "scene_family_fix_wheel",
           "effects": [
@@ -1152,7 +1152,7 @@
     },
     "scene_family_fix_wheel": {
       "type": "story",
-      "narration": "You lash the cracked wheel together with rope, around and around, until it looks like a wheel wearing a sweater. It turns. It wobbles, but it turns. The littlest Bracken rides on top of the cart to test it and declares it the best wheel ever made, which is not true, but it will get them home.",
+      "narration": "You lash the cracked wheel with rope until it looks like a wheel in a sweater. It wobbles, but it turns. The littlest Bracken calls it the best wheel ever made.",
       "cast": [
         {
           "figure": "cast/mother_bracken",
@@ -1167,7 +1167,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Back to camp before dark",
+          "label": "Back to camp",
           "icon": "might",
           "goto": "scene_dusk_wolves"
         }
@@ -1176,7 +1176,7 @@
     },
     "scene_family_share_cake": {
       "type": "story",
-      "narration": "You break the honeycake into pieces, then more pieces, so the littlest Bracken gets a bit from everyone. For a while nobody says anything, because honeycake. Then the mother says their season was not all bad, really, and the littlest one falls asleep against a cart wheel with crumbs on both cheeks.",
+      "narration": "You break the honeycake so the littlest Bracken gets a bit from everyone. For a while nobody talks, because honeycake. The littlest one falls asleep with crumbs on both cheeks.",
       "cast": [
         {
           "figure": "cast/mother_bracken",
@@ -1191,7 +1191,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Back to camp before dark",
+          "label": "Back to camp",
           "icon": "cake",
           "goto": "scene_dusk_wolves"
         }
@@ -1200,7 +1200,7 @@
     },
     "scene_family_give_pebble": {
       "type": "story",
-      "narration": "You hand the littlest Bracken your pebble, and take theirs. Their number is enormous. Yours was not. The littlest Bracken looks at the small number for a long time and then stops trying not to cry and just cries, happily, all over it. The Brackens will cross at dawn, and they do not stop thanking you until dusk.",
+      "narration": "You trade pebbles with the littlest Bracken. Their number was enormous. Yours was not. The littlest Bracken cries happily all over the small one. The Brackens will cross at dawn.",
       "cast": [
         {
           "figure": "cast/mother_bracken",
@@ -1215,7 +1215,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Back to camp before dark",
+          "label": "Back to camp",
           "icon": "hand",
           "goto": "scene_dusk_wolves"
         }
@@ -1227,7 +1227,7 @@
       "discovers": [
         "creature.cinder_wolf"
       ],
-      "narration": "Cinder wolves sit beyond the firelight, cold and thin. They keep away from the humming gem wagons. Share real supper, let them be, or try driving them off. Their ears turn toward every clink of a bowl.",
+      "narration": "Cinder wolves sit beyond the firelight, cold and thin. They keep away from the humming gem wagons, but their ears turn at every clink of a bowl. Share your supper, let them be, or drive them off.",
       "cast": [
         {
           "figure": "entities/cinder_wolf",
@@ -1237,7 +1237,7 @@
       "choices": [
         {
           "id": "feed",
-          "label": "Share your supper with them",
+          "label": "Share your supper",
           "icon": "heart",
           "goto": "scene_wolves_fed",
           "when": {
@@ -1261,13 +1261,13 @@
         },
         {
           "id": "leave_be",
-          "label": "Leave them be and keep your fire small",
+          "label": "Let them be",
           "icon": "moon",
           "goto": "scene_dusk_wolves_leave_be"
         },
         {
           "id": "shoo",
-          "label": "Shoo them away from the camp",
+          "label": "Shoo them away",
           "icon": "swords",
           "goto": "encounter_wolves"
         }
@@ -1276,7 +1276,7 @@
     },
     "scene_wolves_fed": {
       "type": "story",
-      "narration": "You put your supper down on a flat stone and step back. The wolves eat politely, and then the whole pack lies down in a heap by your fire, glowing like a pile of coals. It is the warmest night anybody in the line has had all week. The road will remember this.",
+      "narration": "You set your supper on a flat stone and step back. The wolves eat politely. Then the whole pack curls up by your fire, glowing like coals. It is the warmest night all week.",
       "cast": [
         {
           "figure": "entities/cinder_wolf",
@@ -1293,7 +1293,7 @@
       "choices": [
         {
           "id": "onward",
-          "label": "Follow the laughter to the big campfire",
+          "label": "Follow the laughter",
           "icon": "lantern",
           "goto": "scene_campfire_play"
         }
@@ -1308,11 +1308,11 @@
           "count": 3
         }
       ],
-      "narration": "You keep the fire small. The wolves stay beyond its light. At midnight one howls a long, low note. Gem wagons creak in their sleep.",
+      "narration": "You keep the fire small. The wolves stay beyond its light. At midnight one howls a long, low note. The gem wagons creak in their sleep.",
       "choices": [
         {
           "id": "on",
-          "label": "Follow the laughter to the big campfire",
+          "label": "Follow the laughter",
           "icon": "moon",
           "goto": "scene_campfire_play"
         }
@@ -1332,7 +1332,7 @@
       ],
       "onVictory": {
         "goto": "scene_campfire_play",
-        "narration": "The pack slinks off down the line to the next fire, where somebody feeds them. The whole campsite hears about who shooed and who shared."
+        "narration": "The pack slinks off to the next fire, where somebody feeds them."
       },
       "onDefeat": {
         "goto": "scene_campfire_play",
@@ -1342,35 +1342,35 @@
             "amount": 1
           }
         ],
-        "narration": "The wolves win the argument, eat everybody's supper, and curl up on your bedrolls. There will be no sleeping there tonight, so you wander off, cold and hungry, toward the laughter at the big campfire."
+        "narration": "The wolves eat everybody's supper and curl up on your bedrolls. Cold and hungry, you wander toward the big campfire."
       }
     },
     "scene_campfire_play": {
       "type": "story",
-      "narration": "A camp troupe acts out the red night with blankets and saucepans. Their mountain gets the hiccups. \"New mountain, darlings!\" cries the leader. Play it yourselves, offer what you really heard, or nominate Pudding if she followed you.",
+      "narration": "At the big campfire, a troupe acts out the red night with blankets and saucepans. Their mountain gets the hiccups. \"New mountain, darlings!\" cries the leader. Play it, or tell them what you really heard.",
       "choices": [
         {
           "id": "be_mountain",
-          "label": "Volunteer to play the mountain",
+          "label": "Play the mountain",
           "icon": "heart",
           "goto": "check_play_mountain"
         },
         {
           "id": "tell_true",
-          "label": "Tell them what you really heard: the humming",
+          "label": "Tell them about the hum",
           "icon": "ear",
           "goto": "scene_campfire_play_tell_true"
         },
         {
           "id": "goat_mountain",
-          "label": "Let Pudding play the mountain",
+          "label": "Let Pudding play it",
           "icon": "acorn",
           "goto": "scene_campfire_play_goat_mountain",
           "requiresFlag": "goat_follows"
         },
         {
           "id": "rewrite",
-          "label": "Take over the play and give it a better ending",
+          "label": "Give it a better ending",
           "icon": "spark",
           "goto": "scene_campfire_play_rewrite",
           "requiresSpecies": "kitsune"
@@ -1380,7 +1380,7 @@
     },
     "check_play_mountain": {
       "type": "interaction",
-      "narration": "The troupe leader hands you a red blanket and points at a barrel. \"Climb up, darling, and be a MOUNTAIN!\" The children in the front row hold their breath.",
+      "narration": "The troupe leader hands you a red blanket and points at a barrel. \"Climb up, darling, and be a MOUNTAIN!\"",
       "interaction": {
         "kind": "play",
         "participation": "any",
@@ -1421,7 +1421,7 @@
             "to": "party"
           }
         ],
-        "narration": "You stand on a barrel under a red blanket and RUMBLE. You erupt with a sack of pinecones. Three small children shriek with joy. The troupe leader says you are the best mountain they have ever had, and pays you a honeycake in wages."
+        "narration": "You RUMBLE under the red blanket and erupt with a sack of pinecones. The children shriek with joy. The leader pays you a honeycake."
       },
       "onFailure": {
         "goto": "interaction_evening_echo",
@@ -1432,13 +1432,13 @@
             "to": "party"
           }
         ],
-        "narration": "You stand on a barrel under a red blanket and RUMBLE. You erupt with a sack of pinecones. Three small children shriek with joy. The troupe leader says you are the best mountain they have ever had, and pays you a honeycake in wages."
+        "narration": "You RUMBLE under the red blanket and erupt with a sack of pinecones. The children shriek with joy. The leader pays you a honeycake."
       },
       "art": "scenes/gemfall/queue-dusk-camp"
     },
     "scene_campfire_play_tell_true": {
       "type": "story",
-      "narration": "You describe the hum in every gem. The leader changes the play. Now the mountain is quiet and the falling stones sing. \"Much spookier,\" she whispers. The audience leans closer.",
+      "narration": "You describe the hum in every gem. The leader changes the play. Now the mountain is quiet, and the falling stones sing. \"Much spookier,\" she whispers.",
       "choices": [
         {
           "id": "on",
@@ -1451,7 +1451,7 @@
     },
     "scene_campfire_play_goat_mountain": {
       "type": "story",
-      "narration": "Pudding climbs the barrel, wears the red blanket, and eats the script. Her single bleat earns the loudest applause of the night. She bows by mistake.",
+      "narration": "Pudding climbs the barrel, wears the red blanket, and eats the script. Her one bleat gets the loudest cheer of the night. She bows by mistake.",
       "choices": [
         {
           "id": "on",
@@ -1464,7 +1464,7 @@
     },
     "scene_campfire_play_rewrite": {
       "type": "story",
-      "narration": "Your kitsune reads the audience and changes the play on the spot. In the new ending, the stones are not treasure at all. They are a puzzle, and everyone in the play sets off to find out what the puzzle is. The crowd likes it better. The troupe leader writes it down, muttering, \"Better. Annoyingly better.\"",
+      "narration": "Your kitsune changes the play on the spot. In the new ending, the stones are not treasure. They are a puzzle. The crowd likes it better. \"Annoyingly better,\" mutters the leader.",
       "choices": [
         {
           "id": "on",
@@ -1480,7 +1480,7 @@
       "discovers": [
         "npc.witch_order"
       ],
-      "narration": "At a remedy stall, bell charms ring whenever a gem wagon passes. The witch, Mother Thrum, winces over her glasses. \"What do you actually want?\" she asks. Her pointed hat has a headache remedy tucked in its brim.",
+      "narration": "At a remedy stall, bell charms ring whenever a gem wagon passes. The witch, Mother Thrum, winces over her glasses. \"What do you actually want?\" she asks.",
       "cast": [
         {
           "figure": "cast/mother_thrum",
@@ -1490,13 +1490,13 @@
       "choices": [
         {
           "id": "real_question",
-          "label": "Ask her a real question: why are the charms ringing?",
+          "label": "Ask why the charms ring",
           "icon": "ear",
           "goto": "scene_tuned_charm"
         },
         {
           "id": "sore_feet",
-          "label": "Ask for something for sore feet",
+          "label": "Ask about sore feet",
           "icon": "potion",
           "goto": "scene_witch_stall_sore_feet",
           "effects": [
@@ -1532,7 +1532,7 @@
     "scene_tuned_charm": {
       "type": "story",
       "priority": 1,
-      "narration": "Mother Thrum gives you a tuned bell charm. Near any gem, it sings the same ancient note. \"Older than the road,\" she says. On her shelf, a stone rings inside a wool sock. Answer her question, or leave that stone with her.",
+      "narration": "Mother Thrum gives you a tuned bell charm. Near any gem, it sings the same ancient note. \"Older than the road,\" she says. On her shelf, a stone rings inside a wool sock.",
       "cast": [
         {
           "figure": "cast/mother_thrum",
@@ -1548,13 +1548,13 @@
       "choices": [
         {
           "id": "answer",
-          "label": "Answer her question, truly",
+          "label": "Answer her truly",
           "icon": "heart",
           "goto": "check_answer"
         },
         {
           "id": "take_it_home",
-          "label": "Tell her where it fell from, and promise to take it home",
+          "label": "Promise to take it home",
           "icon": "flame",
           "requiresSpecies": "dragonling",
           "goto": "scene_tuned_charm_take_it_home",
@@ -1572,7 +1572,7 @@
         },
         {
           "id": "leave_it",
-          "label": "Leave the stone in its sock",
+          "label": "Leave the stone there",
           "icon": "moon",
           "goto": "scene_tuned_charm_leave_it"
         }
@@ -1581,7 +1581,7 @@
     },
     "scene_tuned_charm_leave_it": {
       "type": "story",
-      "narration": "You leave the ringing stone in its sock. Mother Thrum tucks it behind the counter. \"Some questions take longer.\" You keep the tuned charm and head back to camp.",
+      "narration": "You leave the ringing stone in its sock. Mother Thrum tucks it behind the counter. \"Some questions take longer.\" You head back to camp with the tuned charm.",
       "cast": [
         {
           "figure": "cast/mother_thrum",
@@ -1600,7 +1600,7 @@
     },
     "scene_tuned_charm_take_it_home": {
       "type": "story",
-      "narration": "You tell her where it fell from, and that you mean to take it back. Mother Thrum unwraps the sock. The ringing stops the moment the stone touches your dragonling's hands, as if it has recognized the smell of home. \"There,\" she says softly. \"It knows.\" She gives you the sock as well. \"Keep it warm.\"",
+      "narration": "You tell her where it fell from, and that you will take it back. The ringing stops the moment the stone touches your dragonling's hands. \"There,\" says Mother Thrum softly. \"It knows. Keep it warm.\"",
       "cast": [
         {
           "figure": "cast/mother_thrum",
@@ -1652,23 +1652,23 @@
     },
     "scene_charm_walk": {
       "type": "story",
-      "narration": "Your tuned charm sings at passing wagons. Nearby, the wolves lie well away from the gems. Compare the wagon notes, test the wolves' reaction, or compare the sock-wrapped stone if you took it.",
+      "narration": "Your tuned charm sings at every passing wagon. Nearby, the wolves lie well away from the gems. Compare the wagons' notes, or test the charm on the wolves.",
       "choices": [
         {
           "id": "wagons",
-          "label": "Hold it to the gem wagons, one after another",
+          "label": "Try wagon after wagon",
           "icon": "ear",
           "goto": "check_listen_charm"
         },
         {
           "id": "wolves",
-          "label": "Hold it out toward the cinder wolves",
+          "label": "Hold it toward the wolves",
           "icon": "moon",
           "goto": "scene_charm_walk_wolves"
         },
         {
           "id": "ford_stone",
-          "label": "Hold it right up against the Ford Stone",
+          "label": "Touch the Ford Stone",
           "icon": "gem",
           "goto": "scene_charm_walk_ford_stone",
           "requiresItem": "facet_ford"
@@ -1700,7 +1700,7 @@
           "count": 3
         }
       ],
-      "narration": "You hold the charm out into the dark where the wolves are lying. It sings. Every wolf flattens its ears, gets up, and moves ten steps farther off, politely, like guests leaving a party early. They are not afraid of you. They are keeping away from the note.",
+      "narration": "You hold the charm out into the dark. It sings. Every wolf flattens its ears and moves ten steps farther off. They are not afraid of you. They are keeping away from the note.",
       "choices": [
         {
           "id": "on",
@@ -1713,7 +1713,7 @@
     },
     "scene_charm_walk_ford_stone": {
       "type": "story",
-      "narration": "You hold the charm against the wool sock. The charm and the stone ring together, exactly together, so loudly that every bell in the line answers. Sleepy people sit up and say \"WHAT?\" Then both go quiet at the very same moment, as if they had finished saying something to each other.",
+      "narration": "You hold the charm against the wool sock. Charm and stone ring together, so loud that every bell in the line answers. Sleepy people sit up and say \"WHAT?\" Then both go quiet at once.",
       "choices": [
         {
           "id": "on",
@@ -1726,12 +1726,12 @@
     },
     "rest_witch_fire": {
       "type": "rest",
-      "narration": "Rest in the line. The charm chimes at passing wagons, and Pudding visits every supper pot. At dawn, Burdock takes her home. A drover calls numbers from much closer to the water. Your turn is nearly here.",
+      "narration": "Rest in the line. The charm chimes at passing wagons, and Pudding visits every supper pot. At dawn, Burdock takes her home, and a drover calls numbers from much closer to the water. Your turn is nearly here.",
       "heal": 2,
       "choices": [
         {
           "id": "to_ford",
-          "label": "Go down to the water at dawn",
+          "label": "Go down at dawn",
           "icon": "drop",
           "goto": "interaction_dawn_warmup"
         }
@@ -1746,23 +1746,23 @@
     },
     "scene_crossing_verse": {
       "type": "story",
-      "narration": "At dawn the lead drover sings the crossing verse: slow, slow, wait, slow. \"My ford, my pace,\" he booms. The river is higher. Learn the verse, study the water, or ask for a lesson if he knows you.",
+      "narration": "At dawn the lead drover sings the crossing verse: slow, slow, wait, slow. \"My ford, my pace,\" he booms. The river is higher. Learn the verse, or study the water.",
       "choices": [
         {
           "id": "learn",
-          "label": "Learn the crossing verse, line by line",
+          "label": "Learn the verse",
           "icon": "note",
           "goto": "check_learn_verse"
         },
         {
           "id": "watch",
-          "label": "Watch the water instead of the singer",
+          "label": "Watch the water",
           "icon": "eye",
           "goto": "scene_crossing_verse_watch"
         },
         {
           "id": "drover_teaches",
-          "label": "Let the drover who knows you teach you",
+          "label": "Ask for a lesson",
           "icon": "party",
           "goto": "scene_crossing_verse_drover_teaches",
           "requiresFlag": "drover_knows_us",
@@ -1779,7 +1779,7 @@
     },
     "check_learn_verse": {
       "type": "interaction",
-      "narration": "The lead drover sings the crossing verse again and thumps one step on the ground for each line: slow, and slow, and wait, and slow. \"Listen first,\" he booms. \"Then sing it back to me, in order.\"",
+      "narration": "The lead drover sings it again, thumping one step for each line: slow, and slow, and wait, and slow. \"Now sing it back,\" he booms. \"In order.\"",
       "interaction": {
         "kind": "memory",
         "cue": "Listen to the verse, then sing it back in order.",
@@ -1813,11 +1813,11 @@
             "value": true
           }
         ],
-        "narration": "You hum along under your breath, then a little louder, and by the third time through you are singing it with him. The drover's eyebrows go up. \"Huh,\" he booms. \"You've got it.\" The verse sits in your chest like a steady drum."
+        "narration": "By the third time through, you are singing with him. \"Huh,\" he booms. \"You've got it.\" The verse sits in your chest like a drum."
       },
       "onFailure": {
         "goto": "choice_ford",
-        "narration": "You learn a verse beautifully, with feeling. It turns out to be the one about turnips that the drovers sing at supper. The drover is far too pleased to tell you until much later."
+        "narration": "You learn a verse beautifully. It is the one about turnips that the drovers sing at supper."
       },
       "art": "scenes/gemfall/west-branch-ford",
       "cast": [
@@ -1829,7 +1829,7 @@
     },
     "scene_crossing_verse_watch": {
       "type": "story",
-      "narration": "The middle current is slower. At the west edge it pulls toward the marsh. You mark the difference: a slip on that edge means a different road. The river has not asked which road you wanted.",
+      "narration": "The middle current is slower. At the west edge it pulls toward the marsh. A slip there means a different road.",
       "choices": [
         {
           "id": "on",
@@ -1842,7 +1842,7 @@
     },
     "scene_crossing_verse_drover_teaches": {
       "type": "story",
-      "narration": "\"Mudlarks! Here!\" The lead drover teaches you each line until you can echo it. His eyebrows conduct the whole lesson. Now you know the easier crossing verse.",
+      "narration": "\"Mudlarks! Over here!\" The lead drover teaches you each line until you can echo it. His eyebrows conduct the whole lesson. Now you know the crossing verse.",
       "choices": [
         {
           "id": "on",
@@ -1855,11 +1855,11 @@
     },
     "choice_ford": {
       "type": "choice_point",
-      "narration": "The river is wide and fast. \"One wagon at a time,\" booms the lead drover. Your job in the line matters now: restored markers or a known verse ease the ford roll; the Brackens offer a cart to balance instead. The wagon crew can help if a load tips. Tamsin's unfair Number 1 sends you into the unready crossing.",
+      "narration": "The river is wide and fast. \"One wagon at a time,\" booms the lead drover. The jobs you did in the line can help now. How will you cross?",
       "choices": [
         {
           "id": "drovers_pace",
-          "label": "Cross with the caravans, at the drovers' pace",
+          "label": "Cross at the drovers' pace",
           "icon": "drop",
           "goto": "check_ford",
           "effects": [
@@ -1871,7 +1871,7 @@
         },
         {
           "id": "sing_verse",
-          "label": "Sing the crossing verse with every step",
+          "label": "Sing the crossing verse",
           "icon": "note",
           "goto": "check_ford_easy",
           "requiresFlag": "knows_the_verse",
@@ -1884,7 +1884,7 @@
         },
         {
           "id": "drovers_wave",
-          "label": "The drovers you helped wave you in beside the lead wagon",
+          "label": "Join the lead wagon",
           "icon": "party",
           "requiresFlag": "exposed_the_con",
           "goto": "check_ford_easy",
@@ -1897,7 +1897,7 @@
         },
         {
           "id": "follow_markers",
-          "label": "Follow the marker line you put back up",
+          "label": "Follow your marker line",
           "icon": "map",
           "requiresFlag": "restored_markers",
           "goto": "check_ford_easy",
@@ -1910,7 +1910,7 @@
         },
         {
           "id": "fennick_cart",
-          "label": "Ride with the Brackens and level their cart load",
+          "label": "Ride with the Brackens",
           "icon": "heart",
           "requiresFlag": "helped_family",
           "goto": "interaction_bracken_crossing",
@@ -1923,7 +1923,7 @@
         },
         {
           "id": "tamsin_pebble",
-          "label": "Use Tamsin's front-of-the-line pebble",
+          "label": "Use Tamsin's pebble",
           "icon": "bead",
           "requiresFlag": "joined_the_con",
           "goto": "scene_surge",
@@ -1981,14 +1981,14 @@
       "discovers": [
         "creature.river_drake"
       ],
-      "narration": "Halfway across, the red-scarf line-cutters charge into the water behind you, and a wagon full of bread tips over with a SPLASH. Two river drakes surface at once, very interested in the bread. The current is shoving at your knees.",
+      "narration": "Halfway across, the red scarves charge into the water behind you, and a bread wagon tips over with a SPLASH. Two river drakes pop up, very interested in the bread. The current shoves at your knees.",
       "variants": [
         {
           "when": {
             "flag": "joined_the_con"
           },
           "at": "start",
-          "text": "Tamsin's shiny pebble is still in your pocket, still saying Number 1. Nobody down here is checking numbers anymore. The river certainly isn't."
+          "text": "Tamsin's pebble still says Number 1. Nobody down here is checking numbers."
         }
       ],
       "cast": [
@@ -2000,32 +2000,32 @@
       "choices": [
         {
           "id": "toss_bread",
-          "label": "Toss the drakes their toll: the floating bread",
+          "label": "Toss the drakes the bread",
           "icon": "hand",
           "goto": "check_drake_toll"
         },
         {
           "id": "hold_wagon",
-          "label": "Hold the wagon up, whatever the drakes think",
+          "label": "Hold the wagon up",
           "icon": "swords",
           "goto": "encounter_drakes"
         },
         {
           "id": "scarves_help",
-          "label": "Shout at the red scarves to grab the wagon",
+          "label": "Shout for the red scarves",
           "icon": "party",
           "goto": "scene_surge_scarves_help",
           "requiresFlag": "held_the_line"
         },
         {
           "id": "let_go",
-          "label": "Let go and ride the current",
+          "label": "Let go and ride it",
           "icon": "drop",
           "goto": "end_marsh_west"
         },
         {
           "id": "wagon_crew",
-          "label": "Call the wagon crew you freed to brace the tipped load",
+          "label": "Call your wagon crew",
           "icon": "party",
           "goto": "interaction_surge_brace",
           "requiresFlag": "unmired_wagon"
@@ -2070,20 +2070,20 @@
       ],
       "onVictory": {
         "goto": "end_forded",
-        "narration": "The drakes sulk off downstream with one loaf each, and the drovers cheer as you shove the wagon up onto the north bank."
+        "narration": "The drakes sulk off with one loaf each. The drovers cheer as you shove the wagon up the bank."
       },
       "onDefeat": {
         "goto": "end_swept_setback",
-        "narration": "A drake flicks its tail, the wagon goes over, and you go with it, bread and bags and all, off into the current."
+        "narration": "A drake flicks its tail. Over goes the wagon, and you go with it, into the current."
       }
     },
     "scene_surge_scarves_help": {
       "type": "story",
-      "narration": "\"HEY, RED SCARVES!\" you shout. The red scarves stare. Then their leader shrugs. \"Fair's fair,\" she says, and the whole gang wades in and grabs the wagon. Together you heave it upright while the drakes squabble over the bread. Everybody staggers up the north bank, soaked to the ears, and the red scarves even say sorry.",
+      "narration": "\"HEY, RED SCARVES!\" you shout. Their leader shrugs. \"Fair's fair.\" The whole gang wades in, and together you heave the wagon upright while the drakes squabble over bread.",
       "choices": [
         {
           "id": "on",
-          "label": "Climb out on the north bank",
+          "label": "Climb out on the bank",
           "icon": "party",
           "goto": "end_forded"
         }
@@ -2092,7 +2092,7 @@
     },
     "end_forded": {
       "type": "rest",
-      "narration": "You stand dripping on the north bank of the west branch, with the whole rush pouring past you toward the mountain. The tuned charm in your pocket is still chiming at every wagon. Behind you, the crossing verse starts again for the next wagon in line. Tonight you camp on the north side, warm and loud and very much in the thick of it.",
+      "narration": "You stand dripping on the north bank, with the whole rush pouring past toward the mountain. The tuned charm chimes at every wagon. Behind you, the crossing verse starts again. Tonight you camp on the north side, right in the thick of it.",
       "heal": 4,
       "onEnter": [
         {
@@ -2107,25 +2107,25 @@
           "when": {
             "flag": "ford_chip_helped"
           },
-          "text": "The drover helped with the spilled chips. You remember the catch-and-pass line, and his part in it."
+          "text": "The drover helped with your chip line."
         },
         {
           "when": {
             "flag": "ford_markers_helped"
           },
-          "text": "The runner helped check your restored marker line."
+          "text": "The runner helped check your marker line."
         },
         {
           "when": {
             "flag": "ford_crew_used"
           },
-          "text": "The wagon crew repaid your line work at the tipped load."
+          "text": "The wagon crew repaid your line work."
         },
         {
           "when": {
             "flag": "ford_cart_helped"
           },
-          "text": "The Brackens helped balance your ride across. You did not make that crossing alone."
+          "text": "The Brackens helped balance your ride across."
         }
       ]
     },
@@ -2134,7 +2134,7 @@
       "discovers": [
         "biome.enchanted_woods"
       ],
-      "narration": "The west branch does what rivers do: it whooshes you west into the green tangles of the Whispering Marsh, past a boggart in a reed hat who applauds. At last the channels let you go on a muddy bank near MossHome, the bigfoot town, at the flooded edge of the Enchanted Woods. You never planned this road, but here you are, and the tuned charm is still humming. The road people will hear about it. The road people hear about everything.",
+      "narration": "The west branch whooshes you into the Whispering Marsh, past a boggart in a reed hat who claps. You wash up near MossHome, the bigfoot town, at the edge of the Enchanted Woods. Not the road you planned, but the charm still hums.",
       "heal": 3,
       "onEnter": [
         {
@@ -2154,25 +2154,25 @@
           "when": {
             "flag": "ford_chip_helped"
           },
-          "text": "The drover helped with the spilled chips. You remember the catch-and-pass line, and his part in it."
+          "text": "The drover helped with your chip line."
         },
         {
           "when": {
             "flag": "ford_markers_helped"
           },
-          "text": "The runner helped check your restored marker line."
+          "text": "The runner helped check your marker line."
         },
         {
           "when": {
             "flag": "ford_crew_used"
           },
-          "text": "The wagon crew repaid your line work at the tipped load."
+          "text": "The wagon crew repaid your line work."
         },
         {
           "when": {
             "flag": "ford_cart_helped"
           },
-          "text": "The Brackens helped balance your ride across. You did not make that crossing alone."
+          "text": "The Brackens helped balance your ride across."
         }
       ]
     },
@@ -2181,7 +2181,7 @@
       "discovers": [
         "biome.enchanted_woods"
       ],
-      "narration": "The current takes you a long, long way west, through the marsh's tangles and out the far side, three days later than you meant to arrive anywhere. You wash up on the flooded paths of the Enchanted Woods with wet bags, a cold supper, and a drake-shaped grudge. It is not the road you chose, and it cost you time, but you made it out and the charm is still humming.",
+      "narration": "The current takes you a long way west, through the marsh, three days late. You wash up at the flooded edge of the Enchanted Woods with wet bags and a grudge against drakes. It cost you time, but the charm still hums.",
       "heal": 3,
       "onEnter": [
         {
@@ -2202,25 +2202,25 @@
           "when": {
             "flag": "ford_chip_helped"
           },
-          "text": "The drover helped with the spilled chips. You remember the catch-and-pass line, and his part in it."
+          "text": "The drover helped with your chip line."
         },
         {
           "when": {
             "flag": "ford_markers_helped"
           },
-          "text": "The runner helped check your restored marker line."
+          "text": "The runner helped check your marker line."
         },
         {
           "when": {
             "flag": "ford_crew_used"
           },
-          "text": "The wagon crew repaid your line work at the tipped load."
+          "text": "The wagon crew repaid your line work."
         },
         {
           "when": {
             "flag": "ford_cart_helped"
           },
-          "text": "The Brackens helped balance your ride across. You did not make that crossing alone."
+          "text": "The Brackens helped balance your ride across."
         }
       ]
     },
@@ -2229,7 +2229,7 @@
       "discovers": [
         "creature.glassback_crab"
       ],
-      "narration": "Two young glassback crabs have parked on the first crossing stones. Wheels approach; claws click; wheels retreat. The lead drover cannot start his verse. \"Back to the reeds, please,\" he booms. The crabs pretend not to hear.",
+      "narration": "Two young glassback crabs have parked on the first crossing stones. Wheels come close. Claws click. Wheels back away. \"Back to the reeds, please,\" booms the lead drover. The crabs ignore him.",
       "cast": [
         {
           "figure": "entities/glassback_crab",
@@ -2243,7 +2243,7 @@
       "choices": [
         {
           "id": "nudge",
-          "label": "Nudge the crabs back to the reeds",
+          "label": "Nudge the crabs back",
           "icon": "swords",
           "goto": "encounter_crabs"
         }
@@ -2253,7 +2253,7 @@
     "encounter_crabs": {
       "type": "encounter",
       "map": "reedbank",
-      "narration": "The crabs clack and shuffle sideways, in no hurry at all. Nudge them off the stones before the whole line loses patience.",
+      "narration": "The crabs clack and shuffle sideways, in no hurry at all. Nudge them off the stones before the line loses patience.",
       "enemies": [
         {
           "id": "crab",
@@ -2304,7 +2304,7 @@
     },
     "scene_crabs_coaxed": {
       "type": "story",
-      "narration": "The crabs will not move until the drover tips bread crusts down the bank. Off they scuttle. He wraps you in blankets and serves tea. No river charm, but the first step is clear.",
+      "narration": "The crabs won't move until the drover tips bread crusts down the bank. Off they scuttle. No river charm, but the first step is clear.",
       "cast": [
         {
           "figure": "entities/centaur",
@@ -2323,7 +2323,7 @@
     },
     "interaction_soup_bowls": {
       "type": "interaction",
-      "narration": "The soup tent is just ahead, but empty bowls are rolling out of a basket into the mud. Catch each bowl at the basket rim and stack it safely before the next hungry traveler arrives.",
+      "narration": "Near the soup tent, empty bowls are rolling out of a basket into the mud. Catch each bowl and stack it before the next hungry traveler arrives.",
       "interaction": {
         "kind": "timing",
         "cue": "Tap when a bowl reaches the basket rim.",
@@ -2342,7 +2342,7 @@
     },
     "interaction_clear_lane": {
       "type": "interaction",
-      "narration": "Hoofbeats come racing down the line. A relay-runner needs a clear lane, and a loose awning has sagged across the road. Hold its pole up while the people underneath duck out of the way.",
+      "narration": "Hoofbeats race down the line. A relay-runner needs a clear lane, but a loose awning sags across the road. Hold its pole up while people duck clear.",
       "interaction": {
         "kind": "cooperate",
         "cue": "Friends brace the pole while someone lifts the awning.",
@@ -2360,11 +2360,11 @@
     "interaction_evening_echo": {
       "art": "scenes/gemfall/ford-witch-stall",
       "type": "story",
-      "narration": "As camp settles, travelers tap a welcome on their bowls: tap, tap, rest, tap. You listen, or join in aloud. Around the last fire, the road finally stops asking everyone to hurry.",
+      "narration": "As camp settles, travelers tap a welcome on their bowls: tap, tap, rest, tap. Listen, or join in. At last the road stops telling everyone to hurry.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Walk on down the line",
           "icon": "forward",
           "goto": "scene_witch_stall"
         }
@@ -2373,7 +2373,7 @@
     "interaction_dawn_warmup": {
       "art": "scenes/gemfall/west-branch-ford",
       "type": "story",
-      "narration": "Morning is cold enough to make every boot creak. Before anyone heads down to the ford, the waiting travelers turn warming up into a game. Stamp, stretch and shake the sleep out of your fingers.",
+      "narration": "Morning is cold enough to make boots creak. The waiting travelers turn warming up into a game. Stamp, stretch, and shake the sleep out of your fingers.",
       "choices": [
         {
           "id": "stamp",
@@ -2404,11 +2404,11 @@
       ],
       "art": "scenes/gemfall/caravan-road-ruts",
       "type": "story",
-      "narration": "You catch the pannier while the drover gathers his scattered chips. The crowd makes room for your hands. He counts the last handful himself before anyone moves on, then booms a thank you so loud the horses jump. He will remember your faces.",
+      "narration": "You hold the pannier while the drover gathers his chips. He counts the last handful, then booms a thank you so loud the horses jump. He will remember your faces.",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Walk on to the front",
           "icon": "forward",
           "goto": "scene_number_pebble",
           "effects": [
@@ -2428,7 +2428,7 @@
     },
     "interaction_wagon_level": {
       "type": "interaction",
-      "narration": "The stuck wagon leans hard into its rut. Raise or lower your side of the load until the marker is in the middle, then roll the wagon out. The drover has named the rut. \"Do not encourage it,\" he says.",
+      "narration": "The stuck wagon leans hard into its rut. Raise or lower your side of the load until it sits level, then roll it out. The drover has named the rut. \"Do not encourage it.\"",
       "interaction": {
         "kind": "balance",
         "cue": "Raise or lower your side until the wagon load is level.",
@@ -2437,7 +2437,7 @@
       },
       "onSuccess": {
         "goto": "scene_dusk_wolves",
-        "narration": "Level at last. The wagon rolls out with one enormous squelch. The drover gives you a brave whistle and offers his crew's help if a wagon tips in the ford.",
+        "narration": "Level at last! The wagon rolls out with an enormous squelch. The drover's crew will help you if a wagon tips in the ford.",
         "effects": [
           {
             "type": "setFlag",
@@ -2467,11 +2467,11 @@
             "flag": "helped_in_the_queue"
           }
         ],
-        "narration": "The wagon comes out in the end, but only after everyone has sat down in the mud at least once. You will be finding mud in your ears until next week."
+        "narration": "The wagon comes out, but only after everyone sits down in the mud at least once."
       },
       "onAssisted": {
         "goto": "scene_dusk_wolves",
-        "narration": "The drover props the leaning wheel while you level the load. The wagon rolls free. He gives you a brave whistle and promises his crew's help in the ford.",
+        "narration": "The drover props the wheel while you level the load. The wagon rolls free, and he promises his crew's help in the ford.",
         "effects": [
           {
             "type": "setFlag",
@@ -2499,7 +2499,7 @@
     },
     "interaction_ford_posts": {
       "type": "interaction",
-      "narration": "The marker arrows still face the safe ford approach. Their posts have fallen flat. Brace the ropes while a friend raises them; alone, use the support prop. One arrow points into a cabbage stall. The runner moves that one herself.",
+      "narration": "The marker posts have fallen flat. Brace the ropes while a friend raises them, or use the support prop. One arrow points into a cabbage stall. A relay-runner fixes that one herself.",
       "interaction": {
         "kind": "cooperate",
         "cue": "Brace the ropes while the acting hero raises the marker line.",
@@ -2508,7 +2508,7 @@
       },
       "onSuccess": {
         "goto": "scene_markers_restored",
-        "narration": "The arrows stand along the checked approach. The runner gives the line one last look before the line moves.",
+        "narration": "The arrows stand along the safe approach. The runner gives them one last look and nods.",
         "effects": [
           {
             "type": "setFlag",
@@ -2519,7 +2519,7 @@
       },
       "onFailure": {
         "goto": "scene_dusk_wolves",
-        "narration": "The post leans over again. The runner fixes the line while you help clear the lane. You have helped the line, but have not checked the approach yourselves.",
+        "narration": "The post leans over again. The runner fixes the line, but you did not check the approach yourselves.",
         "effects": [
           {
             "type": "setFlag",
@@ -2554,7 +2554,7 @@
     },
     "interaction_bracken_crossing": {
       "type": "interaction",
-      "narration": "The Brackens saved a place for you. Their cart rocks as it enters the ford. Keep its load level while the lead drover calls the slow steps. The littlest Bracken holds the bread. This is an important job.",
+      "narration": "The Brackens saved you a place. Their cart rocks into the ford. Keep its load level while the lead drover calls the slow steps. The littlest Bracken holds the bread. It is an important job.",
       "interaction": {
         "kind": "balance",
         "cue": "Raise or lower your side to level the Brackens' cart.",
@@ -2563,15 +2563,15 @@
       },
       "onSuccess": {
         "goto": "end_forded",
-        "narration": "The cart reaches the north bank level. The littlest Bracken lifts the bread in triumph. Helping the family brought you across together."
+        "narration": "The cart reaches the north bank level. The littlest Bracken lifts the bread in triumph."
       },
       "onFailure": {
         "goto": "scene_surge",
-        "narration": "The cart rocks sideways as another wagon tips behind it. The drovers grab the reins while you deal with the surge."
+        "narration": "Another wagon tips behind you, and the cart rocks sideways. The drovers grab the reins. Now you face the surge."
       },
       "onAssisted": {
         "goto": "end_forded",
-        "narration": "Mother Bracken shifts the sacks while you balance the cart. The drover guides it to the north bank. You crossed with the family's help.",
+        "narration": "Mother Bracken shifts the sacks while you balance the cart. You cross with the family's help.",
         "effects": [
           {
             "type": "setFlag",
@@ -2595,7 +2595,7 @@
     },
     "interaction_surge_brace": {
       "type": "interaction",
-      "narration": "The crew you freed in the line wades alongside the tipped wagon. They bring the long brace. Hold it in place while the acting hero guides the wheel upright. The drakes argue over the floating bread instead of the instructions.",
+      "narration": "The wagon crew you freed wades up with a long brace. Hold it steady while one of you guides the wheel upright. The drakes argue over the bread.",
       "interaction": {
         "kind": "cooperate",
         "cue": "Hold the brace while the acting hero rights the wagon.",
@@ -2604,7 +2604,7 @@
       },
       "onSuccess": {
         "goto": "end_forded",
-        "narration": "The brace holds. Your freed wagon crew gets the wheel upright, and everyone reaches the north bank. This is the help you earned in the mud.",
+        "narration": "The brace holds. Your crew rights the wheel, and everyone reaches the north bank.",
         "effects": [
           {
             "type": "setFlag",
@@ -2615,11 +2615,11 @@
       },
       "onFailure": {
         "goto": "end_marsh_west",
-        "narration": "The wheel turns past the brace. The crew frees you from the tipped load, but the current takes you west."
+        "narration": "The wheel slips past the brace. The crew pulls you free, but the current takes you west."
       },
       "onAssisted": {
         "goto": "end_forded",
-        "narration": "The lead drover anchors the brace beside the wagon crew. With their help, you right the load and reach the north bank.",
+        "narration": "The lead drover anchors the brace beside the crew. Together you right the load and reach the bank.",
         "effects": [
           {
             "type": "setFlag",
@@ -2646,7 +2646,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Go down to the ford",
           "icon": "forward",
           "goto": "scene_reed_crabs"
         }
@@ -2659,7 +2659,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Go down to the ford",
           "icon": "forward",
           "goto": "scene_reed_crabs"
         }
@@ -2672,7 +2672,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Continue together",
+          "label": "Go down to the ford",
           "icon": "forward",
           "goto": "scene_reed_crabs"
         }

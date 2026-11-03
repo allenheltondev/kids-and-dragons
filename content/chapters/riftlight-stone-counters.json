@@ -1,5 +1,5 @@
 {
-  "$comment": "Riftlight authored opening draft. Development preview only; see ../README.md. Production campaign id will be riftlight. No bonus XP: preserve the design bible campaign budget.",
+  "$comment": "Riftlight, Forgotten Paths strand arrival (docs/campaigns/continental-rift/arc.md, stone-counters; design note stone-counters-playtest.md). Rewritten in November 2026 to the pilot's bar. Question: how can a stone that never moves have moved? Tally, the dragonling stone keeper, carries it; Pip Thistledown voices Lady Olivia's ideas; Seren teaches Attune when no strand has yet. The p2 (old_socket) is that the stone went back to a socket older than the ring. The fold shrinks scene by scene: the timed signal, and the graph's counters-shrinking-fold. Sets attune_taught and stone_route_priority (the road plan, read by the-wrong-valley).",
   "id": "riftlight-stone-counters",
   "campaignId": "riftlight",
   "index": 5,
@@ -8,1340 +8,38 @@
   "music": "riftlight-paths",
   "estimatedMinutes": 30,
   "xpAward": 140,
-  "entry": "stone",
+  "entry": "arrival",
   "plate": {
     "art": "plates/riftlight/stone-counters",
     "narration": "In the Red Sky Foothills, a broad stone stands beside a pale hollow in the grass. The stone is still. The hollow is empty. There is plenty here to look at carefully."
   },
   "goal": {
-    "text": "Find what moved and get the neighbors safely past the stone.",
+    "text": "How can a stone that never moves have moved?",
     "steps": [
       {
-        "id": "check_hollow",
-        "label": "Check where the stone stood",
-        "flag": "measured_the_empty_hollow"
+        "id": "drag",
+        "label": "Search the grass for drag marks",
+        "flag": "counters_no_drag"
       },
       {
-        "id": "bring_water",
-        "label": "Get the water jars to the keepers",
-        "flag": "brought_water_to_the_circle"
+        "id": "socket",
+        "label": "Look under the moved stone",
+        "flag": "counters_found_socket"
       },
       {
-        "id": "teach_road",
-        "label": "Teach a neighbor the safe road",
-        "flag": "walked_the_neighbor_through"
+        "id": "pip",
+        "label": "Settle who moved the stone",
+        "flag": "counters_settled"
+      },
+      {
+        "id": "neighbors",
+        "label": "Get the neighbors past the stone",
+        "flag": "counters_neighbors_past"
       }
     ]
   },
-  "scenes": {
-    "stone": {
-      "art": "scenes/riftlight/stone-counters",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "type": "story",
-      "narration": "Three dragonling keepers stare at a stone beside an empty hollow. \"Our counting stone moved overnight,\" says one. \"Now the water cart cannot make its turn. Help us find what moved and get the neighbors safely past it.\" Pip Thistledown, a young manticore Riftseeker, measures the hollow with his tail. A keeper hands him a cord. \"Try something that does not twitch.\"",
-      "choices": [
-        {
-          "id": "look",
-          "label": "Start with the empty hollow",
-          "icon": "hand",
-          "goto": "marks"
-        }
-      ]
-    },
-    "marks": {
-      "art": "scenes/riftlight/stone-counters",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "type": "story",
-      "narration": "The stone carries a carved mountain throwing sparks. \"An eruption,\" says a keeper. \"Our oldest counts disagree about when it happened.\" One stroke is chipped. Nobody fills it in. The empty hollow fits the stone, but there are no drag marks between them. Pip writes that down before his tail can add any.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Compare the ground and the old drawings",
-          "icon": "hand",
-          "goto": "lesson"
-        }
-      ]
-    },
-    "lesson": {
-      "type": "story",
-      "narration": "A kitsune named Seren Wisp is comparing notes with a young manticore named Pip Thistledown. They wear the Riftseekers' clasps. \"I am finding what has moved,\" says Pip. Seren asks you to hum the hall note, then listen for an answering sound. \"A starweaver can learn to answer a rift's hum. That is called Attune. No one here chooses a rift's rules.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Listen together",
-          "icon": "hand",
-          "goto": "footprint",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "attune_taught",
-              "value": true
-            }
-          ]
-        }
-      ],
-      "variants": [
-        {
-          "when": {
-            "flag": "attune_taught"
-          },
-          "replace": true,
-          "text": "A kitsune named Seren Wisp and a manticore named Pip Thistledown are checking another displaced route. Seren asks you to compare the sounds with what she taught you before. Pip adds the new place to his notes."
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters"
-    },
-    "footprint": {
-      "art": "scenes/riftlight/stone-counters",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "type": "story",
-      "narration": "One keeper points from the forked rock. Another checks from the ridge. Their sight lines meet at yesterday's empty hollow. Pip draws a line through the map. \"That stone is definitely not where we left it.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "grass_test",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "measured_the_empty_hollow",
-              "value": true
-            }
-          ]
-        }
-      ]
-    },
-    "grass_test": {
-      "art": "scenes/riftlight/stone-counters",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "type": "interaction",
-      "narration": "A gust combs the grass between stone and hollow. When it drops, you can see the pressed blades underneath. Call the quiet moment so a friend can trace the undisturbed strip. A dragged stone should have scraped it. There is no scrape. Pip opens his mouth, then writes \"no scrape\" instead of guessing what did it.",
-      "interaction": {
-        "kind": "timing",
-        "cue": "Tap in the gold when the grass lies still.",
-        "actionLabel": "Mark the still grass",
-        "target": 0.5,
-        "width": 0.35,
-        "periodMs": 5000
-      },
-      "onSuccess": {
-        "goto": "views",
-        "narration": "The grass between the two places is untouched. Something changed without dragging the stone along that strip."
-      },
-      "onFailure": {
-        "goto": "views",
-        "narration": "The gust hides your first look. A keeper holds a windbreak while you check again. The grass is untouched; there is no dragged track."
-      },
-      "onAssisted": {
-        "goto": "views",
-        "narration": "The grass between the two places is untouched. Something changed without dragging the stone along that strip."
-      }
-    },
-    "views": {
-      "art": "scenes/riftlight/stone-counters",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "type": "story",
-      "narration": "You lay the road drawing beside the ridge drawing. A rock hidden from the road stands in plain view from the ridge. Both keepers lean in. \"Two honest drawings,\" one says. \"One very inconvenient stone.\" Neither record needs erasing.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "witness_result"
-        }
-      ]
-    },
-    "witness_result": {
-      "art": "scenes/riftlight/stone-counters-routes",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "type": "story",
-      "narration": "Together you mark the old hollow and today's stone. The drawings disagree about the view, not about whose work to trust. The eruption date is still uncertain. Wheels squeak on the road: the water cart has arrived. Its owner studies the new turn, then the jars. \"Please tell me one of those is the thing you can move back.\"",
-      "choices": [
-        {
-          "id": "cart",
-          "label": "Help the water cart",
-          "icon": "hand",
-          "goto": "cart_plan"
-        }
-      ]
-    },
-    "cart_plan": {
-      "art": "scenes/riftlight/stone-counters-routes",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "type": "choice_point",
-      "narration": "The moved stone blocks the cart's old turn. Keep the jars aboard and build a short ramp around it: you will balance a heavy load, but the cart can use the ramp again. Or leave the cart above the turn and carry the jars along the high path: more passing, less weight near the hollow. The empty cart will still need guiding. Which plan suits your team?",
-      "choices": [
-        {
-          "id": "ramp",
-          "label": "Build a reusable ramp for the loaded cart",
-          "icon": "hand",
-          "goto": "ramp_setup",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "stone_ramp_used",
-              "value": true
-            },
-            {
-              "type": "setFlag",
-              "flag": "stone_jars_carried",
-              "value": false
-            }
-          ]
-        },
-        {
-          "id": "carry",
-          "label": "Pass the jars along the high path",
-          "icon": "hand",
-          "goto": "jar_relay",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "stone_jars_carried",
-              "value": true
-            },
-            {
-              "type": "setFlag",
-              "flag": "stone_ramp_used",
-              "value": false
-            }
-          ]
-        },
-        {
-          "id": "brace",
-          "label": "Have our thornguard brace the ramp",
-          "icon": "hand",
-          "goto": "braced_ramp",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "stone_ramp_used",
-              "value": true
-            },
-            {
-              "type": "setFlag",
-              "flag": "stone_jars_carried",
-              "value": false
-            }
-          ],
-          "requiresClass": "thornguard"
-        }
-      ]
-    },
-    "ramp_setup": {
-      "art": "scenes/riftlight/stone-counters",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "type": "interaction",
-      "narration": "The keeper lays two short boards on sound ground around the turn. Hold them while a friend threads cord beneath the ends. Pip checks the wheel tracks. He starts to draw a proud little flag on the ramp. The cart owner clears her throat. He adds the other wheel track first.",
-      "interaction": {
-        "kind": "cooperate",
-        "cue": "Hold the ramp while your friend secures the cord.",
-        "supportLabel": "Hold the boards",
-        "actionLabel": "Tie the ramp"
-      },
-      "onSuccess": {
-        "goto": "cart_balance",
-        "narration": "The ramp stays solid. Now bring the loaded cart across it."
-      },
-      "onFailure": {
-        "goto": "cart_balance",
-        "narration": "The ramp stays solid. Now bring the loaded cart across it."
-      },
-      "onAssisted": {
-        "goto": "cart_balance",
-        "narration": "The ramp stays solid. Now bring the loaded cart across it."
-      }
-    },
-    "braced_ramp": {
-      "art": "scenes/riftlight/stone-counters",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "type": "story",
-      "narration": "Your thornguard braces the boards against the sound stones. The cord can be secured without everyone holding a board, so your team skips the extra support job. The cart owner pats a jar. \"Your turn to be steady.\"",
-      "choices": [
-        {
-          "id": "cart",
-          "label": "Balance the loaded cart",
-          "icon": "hand",
-          "goto": "cart_balance"
-        }
-      ]
-    },
-    "cart_balance": {
-      "art": "scenes/riftlight/stone-counters",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "type": "interaction",
-      "narration": "Each side of the cart rises or dips as the jars shift. Level it before moving across your ramp. One lid rattles like a tiny bell. The owner walks beside the wheel while Pip keeps his tail firmly out of the spokes. The water belongs in the jars until it reaches the keepers.",
-      "interaction": {
-        "kind": "balance",
-        "objectLabel": "water cart",
-        "cue": "Raise or lower your side until the loaded cart is level.",
-        "actionLabel": "Bring the cart across"
-      },
-      "onSuccess": {
-        "goto": "water_delivered",
-        "narration": "The loaded cart rolls over the new ramp. The owner can use this turn again tomorrow."
-      },
-      "onFailure": {
-        "goto": "water_delivered",
-        "narration": "The loaded cart rolls over the new ramp. The owner can use this turn again tomorrow."
-      },
-      "onAssisted": {
-        "goto": "water_delivered",
-        "narration": "The loaded cart rolls over the new ramp. The owner can use this turn again tomorrow."
-      }
-    },
-    "jar_relay": {
-      "art": "scenes/riftlight/stone-counters",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "type": "interaction",
-      "narration": "Pass the sealed water jars along the high path. Each friend catches before passing on; the owner waits at the counting circle to receive them. One keeper calls the order. Pip volunteers to carry two jars at once, looks at his tail, and decides that one is already a full conversation.",
-      "interaction": {
-        "kind": "relay",
-        "objectLabel": "sealed water jar",
-        "cue": "Catch the water jar, then pass it to the next friend.",
-        "actionLabel": "Pass the jar"
-      },
-      "onSuccess": {
-        "goto": "empty_cart",
-        "narration": "The jars reach the counting circle without using the fragile turn. You still have an empty cart to bring down."
-      },
-      "onFailure": {
-        "goto": "empty_cart",
-        "narration": "The jars reach the counting circle without using the fragile turn. You still have an empty cart to bring down."
-      },
-      "onAssisted": {
-        "goto": "empty_cart",
-        "narration": "The jars reach the counting circle without using the fragile turn. You still have an empty cart to bring down."
-      }
-    },
-    "empty_cart": {
-      "art": "scenes/riftlight/stone-counters",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "type": "interaction",
-      "narration": "With the jars off, the cart is light enough to turn around the hollow. Guide its front wheel between two sound stones. The owner holds the handles and waits for your call. An empty jar would make an excellent wheel chock, Pip suggests. \"It would make an empty jar in pieces,\" she replies.",
-      "interaction": {
-        "kind": "precision",
-        "cue": "Tap in the gold to guide the wheel through the clear gap.",
-        "actionLabel": "Guide the wheel",
-        "target": 0.5,
-        "width": 0.35,
-        "periodMs": 5000
-      },
-      "onSuccess": {
-        "goto": "water_delivered",
-        "narration": "The empty cart reaches the circle. For the next delivery, the jars will need this passing line again."
-      },
-      "onFailure": {
-        "goto": "water_delivered",
-        "narration": "The wheel catches a loose pebble. You stop, move the pebble and guide it through together. The jar-passing route will be needed again."
-      },
-      "onAssisted": {
-        "goto": "water_delivered",
-        "narration": "The empty cart reaches the circle. For the next delivery, the jars will need this passing line again."
-      }
-    },
-    "water_delivered": {
-      "art": "scenes/riftlight/stone-counters",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "type": "story",
-      "narration": "Water reaches the counting circle. The keepers fill their cups before returning to the mystery. Pip drinks, counts the cups, and carefully does not count the party. The owner asks for one more useful thing: a warning that will stop the next traveler trusting the old turn.",
-      "choices": [
-        {
-          "id": "rest",
-          "label": "Take a drink and plan the warning",
-          "icon": "hand",
-          "goto": "camp"
-        }
-      ],
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "brought_water_to_the_circle",
-          "value": true
-        }
-      ]
-    },
-    "camp": {
-      "art": "scenes/riftlight/stone-counters",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "type": "rest",
-      "heal": 0,
-      "narration": "You rest on a low stone while the owner parks the cart. A keeper shares apple slices. Pip uses one to hold his drawing flat, takes a bite, then wonders where his paperweight went. Two neighbors are due: a walker from below the blind rise, and a cart from the upper road. Both will need the new turn explained.",
-      "choices": [
-        {
-          "id": "plan",
-          "label": "Plan the warning together",
-          "icon": "hand",
-          "goto": "warning"
-        },
-        {
-          "id": "joke",
-          "label": "Help Pip find a better paperweight",
-          "icon": "hand",
-          "goto": "paperweight"
-        }
-      ]
-    },
-    "paperweight": {
-      "art": "scenes/riftlight/stone-counters",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "type": "choice_point",
-      "narration": "Pip holds the flapping page with one paw and the remains of his apple with the other. The keepers have seen this before. Each friend can help solve the extremely local problem of keeping a drawing on a rock.",
-      "choices": [
-        {
-          "id": "rock",
-          "label": "Offer a small clean pebble",
-          "icon": "hand",
-          "goto": "paperweight_response_rock"
-        },
-        {
-          "id": "fold",
-          "label": "Fold the empty edge under the slate",
-          "icon": "hand",
-          "goto": "paperweight_response_fold"
-        },
-        {
-          "id": "hold",
-          "label": "Hold the corner while he finishes",
-          "icon": "hand",
-          "goto": "paperweight_response_hold"
-        }
-      ]
-    },
-    "warning": {
-      "art": "scenes/riftlight/stone-counters",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "type": "choice_point",
-      "narration": "There is one large board for a warning and loose stones for a smaller marker. Put the big sign below the blind rise and walkers will stop in time; your team will need to guide the upper cart. Put it above the turn and carts will have room to brake; your team must meet the walker below. \"Both neighbors are coming,\" Pip reminds you. Which approach should the large sign protect?",
-      "choices": [
-        {
-          "id": "lower",
-          "label": "Warn the walkers below; we will guide the cart",
-          "icon": "hand",
-          "goto": "lower_sign",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "stone_sign_lower",
-              "value": true
-            }
-          ]
-        },
-        {
-          "id": "upper",
-          "label": "Warn the carts above; we will meet the walker",
-          "icon": "hand",
-          "goto": "upper_sign",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "stone_sign_lower",
-              "value": false
-            }
-          ]
-        }
-      ]
-    },
-    "lower_sign": {
-      "art": "scenes/riftlight/stone-counters",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "type": "interaction",
-      "narration": "Carry the large warning down the dry path and pass its cord around the lower posts. From below, the board appears before the hollow. The keeper checks it at a walker's height. Above you, wheels begin to rattle. The smaller marker cannot stop that driver by itself; that is your team's next job.",
-      "interaction": {
-        "kind": "relay",
-        "objectLabel": "warning cord",
-        "cue": "Catch and pass the cord around the lower warning posts.",
-        "actionLabel": "Pass the warning cord"
-      },
-      "onSuccess": {
-        "goto": "upper_cart",
-        "narration": "The walker sees the large warning and waits safely below. Your team heads up to guide the approaching cart."
-      },
-      "onFailure": {
-        "goto": "upper_cart",
-        "narration": "The walker sees the large warning and waits safely below. Your team heads up to guide the approaching cart."
-      },
-      "onAssisted": {
-        "goto": "upper_cart",
-        "narration": "The walker sees the large warning and waits safely below. Your team heads up to guide the approaching cart."
-      }
-    },
-    "upper_sign": {
-      "art": "scenes/riftlight/stone-counters",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "type": "interaction",
-      "narration": "Set the board well before the upper turn, leaving room for a cart to stop. Hold it while a friend ties the second corner. The cart driver spots it and brakes. Below the blind rise, a walking neighbor waves at the little stone arrow. She cannot see the hollow from there; you will need to show her.",
-      "interaction": {
-        "kind": "cooperate",
-        "cue": "Hold the upper sign while your friend ties it.",
-        "supportLabel": "Hold the sign",
-        "actionLabel": "Tie the corner"
-      },
-      "onSuccess": {
-        "goto": "lower_neighbor",
-        "narration": "The cart driver waits above the turn. Your team goes down to meet the walker."
-      },
-      "onFailure": {
-        "goto": "lower_neighbor",
-        "narration": "The cart driver waits above the turn. Your team goes down to meet the walker."
-      },
-      "onAssisted": {
-        "goto": "lower_neighbor",
-        "narration": "The cart driver waits above the turn. Your team goes down to meet the walker."
-      }
-    },
-    "upper_cart": {
-      "art": "scenes/riftlight/stone-counters",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "type": "interaction",
-      "narration": "Your big sign is protecting the walker below. Here, the cart driver needs your signal to take the new turn. Wait until the front wheel reaches the keeper's white marker, then call it. Pip holds his tail out as an arrow. It points three different ways. You use your hand instead.",
-      "interaction": {
-        "kind": "timing",
-        "cue": "Tap in the gold when the wheel reaches the turning marker.",
-        "actionLabel": "Signal the turn",
-        "target": 0.5,
-        "width": 0.35,
-        "periodMs": 5000
-      },
-      "onSuccess": {
-        "goto": "neighbor_result",
-        "narration": "The driver follows your turn and stops at the circle. The unguarded approach needed your help, just as you planned."
-      },
-      "onFailure": {
-        "goto": "neighbor_result",
-        "narration": "You call early. The driver stops while the keeper resets the marker, then follows your clearer signal. Your team has shown where an extra upper warning is needed."
-      },
-      "onAssisted": {
-        "goto": "neighbor_result",
-        "narration": "The driver follows your turn and stops at the circle. The unguarded approach needed your help, just as you planned."
-      }
-    },
-    "lower_neighbor": {
-      "art": "scenes/riftlight/stone-counters",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "type": "interaction",
-      "narration": "The cart is safely stopped by your upper sign. Walk the neighbor past the blind rise using the route you actually checked: wait by the forked rock, go around the high side of the hollow, then join the counting circle. Share your landmarks so she can follow without guessing what is behind the rise.",
-      "interaction": {
-        "kind": "sequence",
-        "cue": "Give the walker the route from below.",
-        "actionLabel": "Try our plan",
-        "options": [
-          {
-            "id": "circle",
-            "label": "Counting circle",
-            "icon": "eye"
-          },
-          {
-            "id": "hollow",
-            "label": "High side of the hollow",
-            "icon": "eye"
-          },
-          {
-            "id": "fork",
-            "label": "Wait at the forked rock",
-            "icon": "eye"
-          }
-        ],
-        "answer": [
-          "fork",
-          "hollow",
-          "circle"
-        ],
-        "clues": [
-          "The forked rock is the waiting place before the blind rise.",
-          "Go around the hollow after waiting, before joining the keepers.",
-          "Finish at the counting circle."
-        ]
-      },
-      "onSuccess": {
-        "goto": "neighbor_result",
-        "narration": "The neighbor reaches the circle and can repeat the new route. The small lower marker needed your help, as you planned."
-      },
-      "onFailure": {
-        "goto": "neighbor_result",
-        "narration": "The neighbor points out a confusing instruction. You walk the checked route with her and correct it. The smaller lower marker still needs an extra warning."
-      },
-      "onAssisted": {
-        "goto": "neighbor_result",
-        "narration": "The neighbor reaches the circle and can repeat the new route. The small lower marker needed your help, as you planned."
-      }
-    },
-    "neighbor_result": {
-      "art": "scenes/riftlight/stone-counters",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "type": "story",
-      "narration": "Both neighbors are at the counting circle. Your one large sign helped one approach; your team helped the other. The owner marks where another board is needed tomorrow. \"Explain the turn back to me,\" Pip asks the neighbors. They can. Then a thin trickle begins running down the ridge toward the empty hollow.",
-      "choices": [
-        {
-          "id": "water",
-          "label": "See where the new water is going",
-          "icon": "hand",
-          "goto": "runoff"
-        }
-      ],
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "walked_the_neighbor_through",
-          "value": true
-        }
-      ],
-      "variants": [
-        {
-          "when": {
-            "flag": "stone_sign_lower"
-          },
-          "text": "The lower approach has the big warning. The upper approach still needs a larger sign for carts arriving without your team."
-        },
-        {
-          "when": {
-            "notFlag": "stone_sign_lower"
-          },
-          "text": "The upper approach has the big warning. Walkers below the blind rise will still need a larger sign of their own."
-        }
-      ]
-    },
-    "runoff": {
-      "art": "scenes/riftlight/stone-counters",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "type": "choice_point",
-      "narration": "The trickle will wash away the sharp edge that helped you measure the hollow. You can aim a small drain into the empty gravel and try to preserve that edge. Or spread loose gravel across the wet patch: a steadier road surface, but the fine footprint will be covered and your drawing must rely on the landmarks you already checked. Which work should last after you leave?",
-      "choices": [
-        {
-          "id": "drain",
-          "label": "Protect the footprint with a small drain",
-          "icon": "hand",
-          "goto": "drain"
-        },
-        {
-          "id": "gravel",
-          "label": "Strengthen the wet road; preserve a simpler drawing",
-          "icon": "hand",
-          "goto": "gravel",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "stone_hollow_clear",
-              "value": false
-            }
-          ]
-        }
-      ]
-    },
-    "drain": {
-      "art": "scenes/riftlight/stone-counters",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "type": "interaction",
-      "narration": "From the dry side, use a narrow board to guide the trickle into the empty gravel. Aim past the hollow's sharp edge. Pip follows the water with his pencil, then remembers pencils are not boats. He catches it just before a tiny voyage begins.",
-      "interaction": {
-        "kind": "precision",
-        "cue": "Tap in the gold to guide the trickle past the hollow.",
-        "actionLabel": "Set the small drain",
-        "target": 0.5,
-        "width": 0.35,
-        "periodMs": 5000
-      },
-      "onSuccess": {
-        "goto": "evidence_decision",
-        "narration": "The fine edge stays visible. Your page can include its exact outline.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "stone_hollow_clear",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "evidence_decision",
-        "narration": "The first trickle washes a corner before you settle the drain. The road stays clear, but your page must leave that fine edge uncertain.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "stone_hollow_clear",
-            "value": false
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "evidence_decision",
-        "narration": "The fine edge stays visible. Your page can include its exact outline.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "stone_hollow_clear",
-            "value": true
-          }
-        ]
-      }
-    },
-    "gravel": {
-      "art": "scenes/riftlight/stone-counters",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "type": "interaction",
-      "narration": "Level the shallow gravel tray before spreading its load over the wet patch. The owner tests the new road surface from the dry side. It holds. The fragile outline is now underneath it. \"Better wheels,\" says the keeper. \"A simpler drawing. We chose both parts of that.\"",
-      "interaction": {
-        "kind": "balance",
-        "objectLabel": "gravel tray",
-        "cue": "Level the gravel tray before spreading the load.",
-        "actionLabel": "Spread the gravel"
-      },
-      "onSuccess": {
-        "goto": "evidence_decision",
-        "narration": "The road surface is steadier. Your record will use the checked landmarks rather than an uncovered fine edge."
-      },
-      "onFailure": {
-        "goto": "evidence_decision",
-        "narration": "The road surface is steadier. Your record will use the checked landmarks rather than an uncovered fine edge."
-      },
-      "onAssisted": {
-        "goto": "evidence_decision",
-        "narration": "The road surface is steadier. Your record will use the checked landmarks rather than an uncovered fine edge."
-      }
-    },
-    "evidence_decision": {
-      "art": "scenes/riftlight/stone-counters",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "type": "choice_point",
-      "narration": "You have the old drawings, today's measurements and whatever the water left visible. Make the traveling page match that evidence. The stone fits its old hollow. The grass has no dragged track. None of this supplies a date for the eruption. Pip leaves the uncertain stroke dotted and offers you the pencil. \"Only what we saw.\"",
-      "choices": [
-        {
-          "id": "exact",
-          "label": "Copy the sharp edge we preserved",
-          "icon": "hand",
-          "goto": "exact_copy",
-          "when": {
-            "flag": "stone_hollow_clear"
-          }
-        },
-        {
-          "id": "landmarks",
-          "label": "Build a careful landmark sketch",
-          "icon": "hand",
-          "goto": "landmark_copy"
-        }
-      ]
-    },
-    "exact_copy": {
-      "art": "scenes/riftlight/stone-counters",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "type": "story",
-      "narration": "You copy the visible outline with the keeper. Even on the precise page, the chipped corner stays dotted. Pip adds a tiny question mark. \"Does it need a hat?\" The keeper gives him a look that answers a different question.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "motion"
-        }
-      ]
-    },
-    "landmark_copy": {
-      "art": "scenes/riftlight/stone-counters",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "type": "story",
-      "narration": "The keeper records the forked rock, old hollow and today's stone. The washed or covered fine edge stays blank. She writes \"from the road\" above the drawing. The next keeper will know where you stood, even where you could not measure.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "motion"
-        }
-      ]
-    },
-    "motion": {
-      "art": "scenes/riftlight/stone-counters",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "type": "choice_point",
-      "narration": "Beside the stone, a fold in the air is narrowing. Seren holds two fingers apart, then brings them closer. \"We should show late travelers what that means.\" You can copy its changing width, or a starweaver can use a skill called Attune to compare its hum. Nobody needs to cross it to learn that its remaining time is shrinking.",
-      "choices": [
-        {
-          "id": "measure",
-          "label": "Remember how its width changes",
-          "icon": "hand",
-          "goto": "motion_memory"
-        },
-        {
-          "id": "attune",
-          "label": "Have our starweaver compare its changing hum",
-          "icon": "hand",
-          "goto": "motion_attuned",
-          "requiresClass": "starweaver"
-        }
-      ]
-    },
-    "motion_memory": {
-      "art": "scenes/riftlight/stone-counters",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "type": "interaction",
-      "narration": "Pip marks the fold's width each time Seren taps the slate. For two taps it stays wide; then it narrows, then narrows again. Watch and copy that pattern. A keeper lays a little cord circle beside the marks. \"This is the waiting place. It is not an invitation to jump.\"",
-      "interaction": {
-        "kind": "memory",
-        "cue": "Watch the width marks, then copy the change.",
-        "actionLabel": "Copy the marks",
-        "options": [
-          {
-            "id": "narrow",
-            "label": "Narrow",
-            "icon": "eye"
-          },
-          {
-            "id": "wide",
-            "label": "Wide",
-            "icon": "eye"
-          },
-          {
-            "id": "middle",
-            "label": "Middle",
-            "icon": "eye"
-          }
-        ],
-        "answer": [
-          "wide",
-          "wide",
-          "middle",
-          "narrow"
-        ],
-        "stepMs": 1200
-      },
-      "onSuccess": {
-        "goto": "stone_priority",
-        "narration": "Your marks show time running out, not where the opening goes."
-      },
-      "onFailure": {
-        "goto": "stone_priority",
-        "narration": "Seren repeats the observations slowly and you correct the marks. The opening is shrinking; the destination remains unknown."
-      },
-      "onAssisted": {
-        "goto": "stone_priority",
-        "narration": "Your marks show time running out, not where the opening goes."
-      }
-    },
-    "motion_attuned": {
-      "art": "scenes/riftlight/stone-counters",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "type": "interaction",
-      "narration": "Your starweaver answers the fold's hum with Attune while the party watches its edges. The steady answering note gives you a wider target for matching the next pulse. A friend can make the call. The sound helps with timing; it does not change the opening's rules.",
-      "interaction": {
-        "kind": "timing",
-        "cue": "Use the answering note to match the pulse in the wider gold band.",
-        "actionLabel": "Match the narrowing pulse",
-        "target": 0.5,
-        "width": 0.6,
-        "periodMs": 5000
-      },
-      "onSuccess": {
-        "goto": "stone_priority",
-        "narration": "The answered pulse and the visible narrowing agree. The opening is running out of time."
-      },
-      "onFailure": {
-        "goto": "stone_priority",
-        "narration": "You miss one pulse. Seren helps you compare the next with its edges. It is still narrowing; the answer does not change its rules."
-      },
-      "onAssisted": {
-        "goto": "stone_priority",
-        "narration": "The answered pulse and the visible narrowing agree. The opening is running out of time."
-      }
-    },
-    "stone_priority": {
-      "art": "scenes/riftlight/stone-counters",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "type": "choice_point",
-      "narration": "Pip holds up his traveling page. \"I can give one drawing the biggest space.\" A road plan will be useful at the next changed crossing; an old-mark drawing preserves the uncertain count for comparison with another stone. The keepers retain both full records here. Choose which work your party will finish and carry forward first.",
-      "choices": [
-        {
-          "id": "route",
-          "label": "Finish the traveling road plan",
-          "icon": "hand",
-          "goto": "route_copy",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "stone_route_priority",
-              "value": true
-            }
-          ]
-        },
-        {
-          "id": "carving",
-          "label": "Finish the old-mark comparison page",
-          "icon": "hand",
-          "goto": "carving_copy",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "stone_route_priority",
-              "value": false
-            }
-          ]
-        }
-      ]
-    },
-    "route_copy": {
-      "art": "scenes/riftlight/stone-counters",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "type": "story",
-      "narration": "The cart owner keeps the local road plan for tomorrow's delivery. Pip checks the traveling copy with you and slides it into his notebook. \"Next time the road argues with the map, we have a starting point.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "rest"
-        }
-      ]
-    },
-    "carving_copy": {
-      "art": "scenes/riftlight/stone-counters",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "type": "story",
-      "narration": "The keeper copies the long stroke, short strokes and uncertain chip. The chip stays a question. The eruption still has no agreed date. Pip draws a dotted box beside the marks. \"For the bit we do not know. Might need a bigger notebook.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "rest"
-        }
-      ]
-    },
-    "rest": {
-      "art": "scenes/riftlight/stone-counters",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "type": "rest",
-      "heal": 0,
-      "narration": "The water jars stand beside full cups. The old hollow and today's stone are recorded, with no invented eruption date. Both neighbors can explain the new turn. Pip packs the traveling page. \"Thank you, team.\" The road to Ashspan Bridge is open. The narrowing fold is another possible way onward; if you take the road instead, its remaining chance will pass.",
-      "choices": [],
-      "outcome": "success",
-      "variants": [
-        {
-          "when": {
-            "flag": "stone_sign_lower"
-          },
-          "text": "Your large sign warns walkers below the rise. The keepers will add a larger upper sign for the next carts."
-        },
-        {
-          "when": {
-            "notFlag": "stone_sign_lower"
-          },
-          "text": "Your large sign stops carts above the turn. The keepers will add a larger lower warning for walkers."
-        },
-        {
-          "when": {
-            "flag": "stone_ramp_used"
-          },
-          "text": "The reusable ramp remains for tomorrow's water delivery."
-        },
-        {
-          "when": {
-            "flag": "stone_jars_carried"
-          },
-          "text": "Tomorrow's jars will need the high-path passing line again; the cart route has not become a loaded ramp."
-        },
-        {
-          "when": {
-            "flag": "stone_hollow_clear"
-          },
-          "text": "The original fine edge remains available for another measurement."
-        },
-        {
-          "when": {
-            "notFlag": "stone_hollow_clear"
-          },
-          "text": "The fine edge is no longer clear. The checked landmarks remain on the page; the missing detail stays missing."
-        }
-      ]
-    },
-    "paperweight_response_rock": {
-      "type": "story",
-      "narration": "Pip puts the pebble on the corner. \"A paperweight that does not become lunch. Excellent.\" With the drawing safely weighted, you can deal with the actual road.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "warning"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters"
-    },
-    "paperweight_response_fold": {
-      "type": "story",
-      "narration": "The page stays flat. Pip gives the folded corner a suspicious look, then nods. With the drawing safely weighted, you can deal with the actual road.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "warning"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters"
-    },
-    "paperweight_response_hold": {
-      "type": "story",
-      "narration": "Pip finishes the line and thanks you. His tail tries to help. You move it off the ink. With the drawing safely weighted, you can deal with the actual road.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue",
-          "icon": "forward",
-          "goto": "warning"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters"
-    }
-  },
   "voiceGuide": {
-    "tone": "Warm, funny, curious, with real consequences. Describe actions and sensory details directly. Short dialogue. Never use \"the kind of thing that\", \"the sort of thing that\", or \"it was X, the type of thing that makes you Y\" comparisons. Let a character act instead of explaining how the reader should feel.",
+    "tone": "Warm, funny and a little spooky, with real consequences. Short sentences. Let a character act instead of explaining how the reader should feel. The stone is not angry; it went somewhere it used to be.",
     "vocabulary": "Read aloud to an eight-year-old. Concrete words, short sentences, distinct voices.",
     "forbidden": [
       "death",
@@ -1352,81 +50,2081 @@
       "Hollow Gate",
       "Legend Dragon"
     ],
-    "npcVoices": {}
+    "npcVoices": {
+      "dragonling_stone_keeper": "Tally, the dragonling stone keeper (she/her). Brisk and precise; counts everything out loud, faster when she is upset. Keeps the boundary stones by the river and the counting stones on the hill. Wants her count true: a counter's stones must never move, and one has.",
+      "Pip Thistledown": "Young manticore scout (he/him). Eager, notebook always out, prying things with a spoon, quotes \"Lady Olivia says...\" and tries her ideas. Wants to impress her. Kind underneath; changes his mind when the party gives him a reason.",
+      "Seren Wisp": "Kitsune Riftseeker (she/her). Calm, curious, a little dry. Teaches listening; never says what an opening means, only what it does.",
+      "Farmer Gourd": "Round dragonling turnip farmer (he/him). Cheerful and in a hurry; wants his turnips over the hill before they go soft. His goat Mustard eats everything."
+    }
   },
   "presentation": {
     "interactions": {
-      "ramp_setup": {
-        "props": [
-          "relay-plank",
-          "rope-loop"
-        ]
-      },
-      "cart_balance": {
-        "props": [
-          "relay-oil-jar",
-          "relay-plank"
-        ]
-      },
-      "jar_relay": {
-        "props": [
-          "relay-oil-jar"
-        ]
-      },
-      "empty_cart": {
-        "props": [
-          "relay-plank"
-        ]
-      },
-      "lower_sign": {
-        "props": [
-          "relay-plank",
-          "rope-loop"
-        ]
-      },
-      "upper_sign": {
-        "props": [
-          "relay-plank"
-        ]
-      },
-      "drain": {
-        "props": [
-          "water-surge",
-          "relay-plank"
-        ]
-      },
-      "gravel": {
-        "props": [
-          "relay-plank"
-        ]
-      },
-      "motion_attuned": {
-        "props": [
-          "note-low"
-        ]
-      },
-      "lower_neighbor": {
-        "props": [
-          "carved-stone",
-          "prop_stepping_stones"
-        ]
-      },
-      "grass_test": {
+      "grass_wind": {
         "props": [
           "prop_tall_grass"
         ]
       },
-      "upper_cart": {
+      "pebble": {
+        "props": [
+          "toss-pebble"
+        ],
+        "coverIcons": [
+          "cairn-flat",
+          "notched-stone",
+          "prop_rock"
+        ]
+      },
+      "squeeze_time": {
         "props": [
           "prop_wagon_wheels"
         ]
       },
-      "motion_memory": {
+      "squeeze_close": {
         "props": [
-          "clue-scrap",
-          "carved-stone"
+          "prop_wagon_wheels"
+        ]
+      },
+      "turnip_relay": {
+        "props": [
+          "relay-sack"
         ]
       }
+    }
+  },
+  "scenes": {
+    "arrival": {
+      "type": "story",
+      "narration": "On a hilltop in the foothills, under a reddish sky, stands a ring of old stones. A dragonling taps each one with her tail. \"Ten, eleven. Eleven?\" She starts again from one. She sees you. \"I'm Tally. I keep the boundary stones by the river, and these counting stones. If we've met, hello again. If not, hello.\" She points at an empty dent in the grass. \"Twelve stones have stood here since my grandmother's grandmother. Today, eleven. A counter's stones never move. So how can a stone that never moves have moved?\"",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "help",
+          "label": "Help Tally find her stone",
+          "icon": "eye",
+          "goto": "the_road"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "counters_doubt",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "counters_no_drag",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "counters_found_socket",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "counters_spoon_kept",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "counters_settled",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "counters_forced",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "counters_understood",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "counters_hat_lost",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "counters_turnips_lost",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "counters_neighbors_past",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "counters_peeked",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "counters_counted",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "counters_stuck",
+          "value": false
+        }
+      ]
+    },
+    "the_road": {
+      "type": "choice_point",
+      "narration": "Up the hill, where the road squeezes between two rocks, the missing stone stands right in the way. It is the Eldest, the biggest of the twelve, carved with a mountain throwing sparks. Beside it, a fold hangs in the air, as tall as a door. And under the Eldest, prying with a spoon, is Pip Thistledown, the young manticore scout. \"Lady Olivia says a moved stone is the best sample in the world!\" \"Stone thief!\" cries Tally. What do you do?",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "choices": [
+        {
+          "id": "spoon",
+          "label": "Grab Pip's spoon",
+          "icon": "hand",
+          "goto": "check_spoon"
+        },
+        {
+          "id": "calm",
+          "label": "Calm Tally down",
+          "icon": "heart",
+          "goto": "check_calm"
+        }
+      ],
+      "rift": "steady",
+      "spotlight": "next"
+    },
+    "check_spoon": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "Pip's tongue is sticking out. The spoon wiggles deeper under the carving.",
+      "prompt": "Snatch the spoon before Pip pries again",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "onSuccess": {
+        "goto": "pip_says",
+        "narration": "You pluck the spoon right out of his paw. Pip blinks. \"Oh. Hello.\" You hand it back once he promises to keep it in his pocket."
+      },
+      "onFailure": {
+        "goto": "pip_says",
+        "narration": "Too slow. The spoon pops, and a chip flies off one of the carved sparks. Tally makes a noise like a kettle. Pip pockets the spoon, ears flat.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "counters_doubt",
+            "value": true
+          }
+        ]
+      },
+      "rift": "steady"
+    },
+    "check_calm": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "narration": "Tally's tail lashes. She is counting under her breath, very fast. \"One two three four. One. One two three.\" Every time she loses it, she starts again from one.",
+      "prompt": "Count slowly with Tally until she calms down",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "onSuccess": {
+        "goto": "pip_says",
+        "narration": "You count with her, slow and steady, until her tail slows too. \"Fine,\" she says. \"Fine. Let him talk.\""
+      },
+      "onFailure": {
+        "goto": "pip_says",
+        "narration": "Tally grabs Pip by the tail and lifts him off the stone. \"Caught in the act,\" she says. Pip dangles, very politely.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "counters_doubt",
+            "value": true
+          }
+        ]
+      },
+      "rift": "steady"
+    },
+    "pip_says": {
+      "type": "story",
+      "narration": "\"I didn't move it!\" says Pip. \"I came up at dawn to scout for the Riftseekers, and it was already here. It's twice my size!\" Tally narrows her eyes. \"Stones don't move by themselves. Somebody pushed it.\" She looks at the spoon. Pip looks at the spoon. Prove the stone moved itself, and Pip is off the hook.",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "choices": [
+        {
+          "id": "fold",
+          "label": "Look at the fold by the stone",
+          "icon": "eye",
+          "goto": "lesson"
+        }
+      ],
+      "rift": "steady"
+    },
+    "lesson": {
+      "type": "story",
+      "narration": "Seren Wisp, the kitsune from the Riftseekers, comes puffing up the road. \"There you are, Pip. You were meant to be back for breakfast.\" Then she sees the fold, and her ears go up. \"Hum the low note from the singing hall.\" You hum. The fold hums back, faint as a bee in a jar. \"Answering an opening's hum is called Attune,\" says Seren. \"It never changes an opening's rules. It lets you hear them.\"",
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "choices": [
+        {
+          "id": "listen",
+          "label": "Listen to the fold",
+          "icon": "ear",
+          "goto": "fold",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "attune_taught",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "rift": "steady",
+      "variants": [
+        {
+          "when": {
+            "flag": "attune_taught"
+          },
+          "replace": true,
+          "text": "Seren Wisp, the kitsune from the Riftseekers, comes puffing up the road. \"There you are, Pip. You were meant to be back for breakfast.\" Then she sees the fold. \"Another one. Hum the way I taught you before.\" You hum the low note from the singing hall. The fold hums back, faint as a bee in a jar."
+        }
+      ]
+    },
+    "fold": {
+      "type": "story",
+      "narration": "\"Now watch its edges,\" says Seren. You watch. The fold is a little smaller than it was. Pip opens his notebook. \"At dawn it was taller than a house. Now it's a door.\" \"Some openings stay,\" says Seren. \"This one is in a hurry. It shrinks, and when it is gone, it is gone.\" Tally tries to count its edges.",
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "choices": [
+        {
+          "id": "grass",
+          "label": "Look for drag marks",
+          "icon": "eye",
+          "goto": "grass"
+        }
+      ],
+      "rift": "steady"
+    },
+    "grass": {
+      "type": "choice_point",
+      "narration": "Tally stamps her foot. \"If somebody pushed the Eldest up here, they dragged it. A stone that big leaves a scrape.\" Long grass lies between the dent and the road. Pip is already on his belly, which does not help. How will you look?",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-evidence",
+      "choices": [
+        {
+          "id": "search",
+          "label": "Search the grass blade by blade",
+          "icon": "eye",
+          "goto": "check_grass"
+        },
+        {
+          "id": "wait",
+          "label": "Wait for the wind to drop, then look",
+          "icon": "leaf",
+          "goto": "grass_wind"
+        },
+        {
+          "id": "sniff",
+          "label": "Sniff the grass with Pip",
+          "icon": "manticore",
+          "goto": "sniff",
+          "requiresSpecies": "manticore"
+        }
+      ]
+    },
+    "check_grass": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "narration": "You part the grass, slow and careful. A beetle glares at you for opening its front door. \"Gently,\" whispers Tally.",
+      "prompt": "Find any scrape a dragged stone would leave",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-evidence",
+      "onSuccess": {
+        "goto": "no_drag",
+        "narration": "Not one bent stem between the dent and the road. Not one scrape."
+      },
+      "onFailure": {
+        "goto": "no_drag",
+        "narration": "You crawl a little too fast. Behind you, your own knees leave two long scrapes in the grass. Tally looks at them for a long time.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "counters_doubt",
+            "value": true
+          }
+        ]
+      }
+    },
+    "grass_wind": {
+      "type": "interaction",
+      "narration": "The wind combs the grass one way, then the other. Every few breaths it drops, and the grass lies still. Look then.",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-evidence",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Tap when the grass lies still.",
+        "actionLabel": "Look now!",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 5000
+      },
+      "onSuccess": {
+        "goto": "wind_drops",
+        "narration": "The wind drops. You look."
+      },
+      "onFailure": {
+        "goto": "wind_drops",
+        "narration": "You look just as a gust flips the grass. By the time it settles, Tally has tramped all over it, looking too.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "counters_doubt",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "wind_drops",
+        "narration": "Pip whispers \"now\" every time the wind drops. You look together."
+      }
+    },
+    "wind_drops": {
+      "type": "story",
+      "narration": "In the stillness, the grass between the dent and the road lies smooth and whole, like a combed beard. \"Nobody dragged anything through that,\" breathes Pip.",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-evidence",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Tell Tally",
+          "icon": "forward",
+          "goto": "no_drag"
+        }
+      ]
+    },
+    "sniff": {
+      "type": "story",
+      "narration": "You and Pip sniff along the grass, noses down, tails up. It smells of grass, beetle and nothing else at all. No stone has been dragged through here. Pip sneezes on Tally. \"Bless you,\" she says, not kindly.",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-evidence",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Tell Tally",
+          "icon": "forward",
+          "goto": "no_drag"
+        }
+      ]
+    },
+    "no_drag": {
+      "type": "story",
+      "narration": "No scrape. No track. Nothing between the dent and the road but grass and one cross beetle. Tally sits down hard. \"So it didn't slide. Did it fly?\" \"Lady Olivia says nothing flies without wings,\" says Pip, \"except rumors.\"",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-evidence",
+      "choices": [
+        {
+          "id": "dent",
+          "label": "Look at the empty dent",
+          "icon": "eye",
+          "goto": "hollow"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "counters_no_drag",
+          "value": true
+        }
+      ]
+    },
+    "hollow": {
+      "type": "story",
+      "narration": "Back at the ring, Tally lays her counting cord around the empty dent. It fits the Eldest's shape exactly, edge for edge. The grass inside is pressed flat and pale, and three worms are very confused about the sunshine. Then the hill gurgles. A trickle of meltwater starts toward the dent. \"No!\" cries Tally. \"It'll wash the edge away!\"",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-evidence",
+      "choices": [
+        {
+          "id": "stop",
+          "label": "Stop the trickle!",
+          "icon": "drop",
+          "goto": "check_trickle"
+        }
+      ]
+    },
+    "check_trickle": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "Tally hands you a flat stone. \"Shovel. Go.\" Pip digs with both paws, very fast and mostly sideways.",
+      "prompt": "Scrape a ditch to steer the trickle past the dent",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-evidence",
+      "onSuccess": {
+        "goto": "under",
+        "narration": "Your ditch turns the water aside. The dent's edge stays sharp as a cookie cutter."
+      },
+      "onFailure": {
+        "goto": "under",
+        "narration": "The water gets there first and smears one edge into mud. Tally groans. The dent still fits the Eldest, mostly.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "counters_doubt",
+            "value": true
+          }
+        ]
+      }
+    },
+    "under": {
+      "type": "choice_point",
+      "narration": "So the dent is where the Eldest stood. But why is it up on the road now? \"Look underneath it,\" says Tally. \"Stones keep secrets underneath. Usually woodlice.\" The fold beside the Eldest has shrunk again, to the height of a pony. How will you look under a stone that big?",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "choices": [
+        {
+          "id": "rock",
+          "label": "Rock it and peek underneath",
+          "icon": "might",
+          "goto": "check_rock"
+        },
+        {
+          "id": "dig",
+          "label": "Dig a peek-hole beside it",
+          "icon": "hand",
+          "goto": "check_dig"
+        }
+      ],
+      "rift": "steady"
+    },
+    "check_rock": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "narration": "Everyone leans on the Eldest. Pip leans on you. \"That counts,\" he says.",
+      "prompt": "Rock the Eldest up on one edge, just long enough to peek",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "onSuccess": {
+        "goto": "old_socket",
+        "narration": "It tips up a hand's width, and light slides underneath."
+      },
+      "onFailure": {
+        "goto": "old_socket",
+        "narration": "It tips, then thumps back down on somebody's toes. Ow. It tips again, and this time it stays up long enough to look.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
+      },
+      "rift": "steady"
+    },
+    "check_dig": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "narration": "The road is packed hard under loose gravel. \"Dig in the wrong spot,\" says Tally, \"and the hole falls in.\"",
+      "prompt": "Pick the firm spot and dig under the Eldest's edge",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "onSuccess": {
+        "goto": "old_socket",
+        "narration": "You pick the firm spot and dig a neat little tunnel, right under the edge."
+      },
+      "onFailure": {
+        "goto": "old_socket",
+        "narration": "The first hole caves in on Pip's paw. The second one holds, just. You only get a quick look.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "counters_doubt",
+            "value": true
+          }
+        ]
+      },
+      "rift": "steady"
+    },
+    "old_socket": {
+      "type": "story",
+      "narration": "Under the Eldest is a socket, worn deep into the rock of the road. It is the Eldest's exact shape, smooth as an old bowl and packed with ancient dark grit. It is far older than the counting ring. \"It didn't wander off,\" Tally whispers. \"It went back. Back to where it stood long, long ago, before there was a ring at all.\" Your Listening Chime swings on its string and points north, toward the far white glacier.",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-evidence",
+      "choices": [
+        {
+          "id": "watch",
+          "label": "Watch the fold",
+          "icon": "eye",
+          "goto": "pebble"
+        }
+      ],
+      "priority": 2,
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "counters_found_socket",
+          "value": true
+        }
+      ]
+    },
+    "pebble": {
+      "type": "interaction",
+      "narration": "By the fold, a little counting pebble twitches. Then it is gone, and back again a step away. Hop. Hop. \"If it moves again, I want to SEE it,\" says Tally. Keep your eyes on the pebble, and show Tally where it lands.",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "interaction": {
+        "kind": "tracking",
+        "cue": "Watch the pebble hop, then point to where it lands.",
+        "actionLabel": "There!",
+        "covers": [
+          "By the fold",
+          "By the road",
+          "By the rock"
+        ],
+        "start": 0,
+        "swaps": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "stepMs": 1300
+      },
+      "onSuccess": {
+        "goto": "seen",
+        "narration": "You point. Tally looks. The pebble lands in a tiny worn dimple, right where you said."
+      },
+      "onFailure": {
+        "goto": "seen",
+        "narration": "You point at the wrong spot. By the time Tally turns, the pebble is sitting still, looking innocent. She only has your word for it.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "counters_doubt",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "seen",
+        "narration": "Pip calls out every hop. Tally sees it land."
+      },
+      "rift": "steady"
+    },
+    "seen": {
+      "type": "story",
+      "narration": "The pebble did not roll. It did not bounce. It was here, and then it was there, sitting in a little dimple worn smooth long ago. \"It went where it used to be,\" says Seren softly. Pip drops his notebook. Then he picks it up and writes very fast.",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "choices": [
+        {
+          "id": "ask",
+          "label": "Ask Tally what she thinks",
+          "icon": "ear",
+          "goto": "verdict"
+        }
+      ],
+      "rift": "steady"
+    },
+    "verdict": {
+      "type": "choice_point",
+      "narration": "Tally looks at the smooth grass, the empty dent, the old socket and the hopping pebble. Then she looks at Pip. Pip holds his breath until his cheeks puff out.",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "choices": [
+        {
+          "id": "show",
+          "label": "Show Tally everything you found",
+          "icon": "eye",
+          "goto": "pip_cleared",
+          "when": {
+            "notFlag": "counters_doubt"
+          }
+        },
+        {
+          "id": "vouch",
+          "label": "Speak up for Pip",
+          "icon": "heart",
+          "goto": "check_vouch"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "counters_doubt"
+          },
+          "text": "\"But things got trampled, and I missed things,\" she says slowly. \"I'm not sure.\""
+        }
+      ]
+    },
+    "check_vouch": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "narration": "Pip shuffles. His tail droops. You step up beside him.",
+      "prompt": "Tell Tally why you believe Pip",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "onSuccess": {
+        "goto": "pip_cleared",
+        "narration": "Tally's tail stops lashing. \"All right,\" she says. \"I believe you both.\""
+      },
+      "onFailure": {
+        "goto": "pip_cleared",
+        "narration": "\"Maybe,\" says Tally. \"Maybe not. I'll keep this spoon while I decide.\" She takes it from Pip's pocket and tucks it in her belt. Pip watches it go like a lost puppy.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "counters_spoon_kept",
+            "value": true
+          }
+        ]
+      }
+    },
+    "pip_cleared": {
+      "type": "story",
+      "narration": "\"A stone that never moves has moved,\" says Tally. \"By itself. Back to an older place.\" She says it twice, like a count she has to get used to. Pip does a small, careful dance. Then wheels creak on the road below. A cart is coming, and the Eldest is standing right in its way.",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "choices": [
+        {
+          "id": "cart",
+          "label": "Look down the road",
+          "icon": "eye",
+          "goto": "what_now"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "counters_settled",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "counters_doubt",
+          "value": false
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "notFlag": "counters_spoon_kept"
+          },
+          "at": "start",
+          "text": "\"Pip,\" says Tally, \"I'm sorry I called you a thief.\""
+        }
+      ]
+    },
+    "what_now": {
+      "type": "choice_point",
+      "narration": "A turnip cart is coming up the hill, and it will never get past the Eldest. Pip bounces. \"Lady Olivia says if the land moves wrong, you move it back! Push it home!\" Tally's claws twitch. \"Pushed things push back,\" says Seren. \"Or leave it where it wants to be, and the road stays blocked by that fold.\" The fold is the size of a cartwheel now. What will you do with the Eldest?",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "choices": [
+        {
+          "id": "push",
+          "label": "Push the Eldest home to the ring",
+          "icon": "might",
+          "goto": "check_push"
+        },
+        {
+          "id": "leave",
+          "label": "Leave it, and help Tally count it here",
+          "icon": "heart",
+          "goto": "leave_it"
+        },
+        {
+          "id": "carry",
+          "label": "Let your bigfoot carry it home",
+          "icon": "bigfoot",
+          "goto": "bigfoot_carry",
+          "requiresSpecies": "bigfoot"
+        }
+      ],
+      "rift": "steady"
+    },
+    "check_push": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "narration": "Everyone gets a shoulder on the Eldest. Pip gets his tail on it. \"One, two, THREE,\" counts Tally.",
+      "prompt": "Push the Eldest all the way back down to its dent",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "onSuccess": {
+        "goto": "pushed_home",
+        "narration": "Grind, thump, grind. The Eldest slides down the hill and drops into its dent with a happy clunk.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "counters_forced",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "stuck",
+        "narration": "The Eldest tips, rolls half a turn and sticks, sideways across the road. The gap is even narrower now, right beside the fold.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "counters_forced",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "counters_stuck",
+            "value": true
+          }
+        ]
+      },
+      "rift": "steady"
+    },
+    "bigfoot_carry": {
+      "type": "story",
+      "narration": "Your bigfoot hugs the Eldest and stands up with it, grunting. Tally counts every step down the hill. \"Forty-one, forty-two, put it DOWN.\" Clunk. The Eldest sits in its dent.",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "choices": [
+        {
+          "id": "count",
+          "label": "Let Tally count the ring",
+          "icon": "eye",
+          "goto": "pushed_home"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "counters_forced",
+          "value": true
+        }
+      ]
+    },
+    "pushed_home": {
+      "type": "story",
+      "narration": "Tally counts the ring. \"Ten, eleven, twelve!\" She counts it again, just to hear it. The road is clear. Pip writes PUSHED IT HOME in big letters. \"Lady Olivia will be so pleased.\"",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Listen",
+          "icon": "ear",
+          "goto": "creak"
+        }
+      ]
+    },
+    "creak": {
+      "type": "story",
+      "narration": "Then the Eldest creaks. Very slowly, it leans in its dent, uphill, toward the road and its old socket, like a dog leaning on its lead. Tally's smile wobbles. \"It wants to go back,\" says Seren quietly.",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "cart",
+          "label": "Meet the turnip cart",
+          "icon": "forward",
+          "goto": "gourd_clear"
+        }
+      ]
+    },
+    "gourd_clear": {
+      "type": "story",
+      "narration": "The cart rattles up the hill. Farmer Gourd, a round dragonling, waves from the seat. His goat, Mustard, pulls the cart and wears a straw hat. \"Morning, Tally! These turnips must get over the hill before they go soft. Can you get me past that shimmery thing?\" The empty road runs right past the fold. Mustard sniffs at it, and decides it smells like lunch.",
+      "cast": [
+        {
+          "figure": "cast/adult_dragonling",
+          "name": "Farmer Gourd"
+        },
+        {
+          "figure": "cast/goat_chewing",
+          "name": "Mustard"
+        },
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "choices": [
+        {
+          "id": "hold",
+          "label": "Hold on to Mustard!",
+          "icon": "hand",
+          "goto": "check_goat"
+        }
+      ],
+      "rift": "steady",
+      "spotlight": "next"
+    },
+    "check_goat": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "The cart rolls up the open road. Mustard leans toward the shimmer, harder and harder. \"Mustard, no,\" says Farmer Gourd.",
+      "prompt": "Grab Mustard's harness before she bolts toward the fold",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/adult_dragonling",
+          "name": "Farmer Gourd"
+        },
+        {
+          "figure": "cast/goat_chewing",
+          "name": "Mustard"
+        },
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "onSuccess": {
+        "goto": "past",
+        "narration": "You grab the harness. Mustard sulks the rest of the way."
+      },
+      "onFailure": {
+        "goto": "past",
+        "narration": "Mustard lunges. Her straw hat flies off, sails straight into the fold, and is gone. Mustard stares. Farmer Gourd stares. You hold the harness very tight.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "counters_hat_lost",
+            "value": true
+          }
+        ]
+      },
+      "rift": "steady"
+    },
+    "leave_it": {
+      "type": "story",
+      "narration": "Tally walks once around the Eldest. Then she sits down beside it and pats it. \"All right,\" she says, very small. \"You stood here first. I'll count you here.\" She ties a new knot in her counting cord. \"Twelve. Twelve, in a new shape.\" Her tail droops, then lifts. But the road is still blocked, with only a thin gap beside the fold.",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "choices": [
+        {
+          "id": "bend",
+          "label": "Plan a new bend in the road",
+          "icon": "map",
+          "goto": "check_bend"
+        }
+      ],
+      "rift": "steady",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "counters_understood",
+          "value": true
+        }
+      ]
+    },
+    "check_bend": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "narration": "Seren holds the cord. Tally counts paces. Pip counts them differently. \"There are no halves in paces, Pip.\"",
+      "prompt": "Pace out a new bend in the road, as far from the fold as it will go",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "onSuccess": {
+        "goto": "gourd_gap",
+        "narration": "You find a bend that swings wide around the Eldest, well away from the fold."
+      },
+      "onFailure": {
+        "goto": "gourd_tight",
+        "narration": "Your bend wanders, then hugs the fold after all. The cart will have to pass close."
+      },
+      "rift": "steady"
+    },
+    "stuck": {
+      "type": "story",
+      "narration": "Tally sits down in the road. \"Well. Now it's stuck in a new wrong place.\" Pip pats the stone. \"Sorry,\" he tells it. The only way past is the thin gap right beside the fold.",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "choices": [
+        {
+          "id": "cart",
+          "label": "Meet the turnip cart",
+          "icon": "forward",
+          "goto": "gourd_tight"
+        }
+      ],
+      "rift": "steady"
+    },
+    "gourd_gap": {
+      "type": "story",
+      "narration": "The cart rattles up the hill. Farmer Gourd, a round dragonling, waves from the seat. His goat, Mustard, pulls the cart and wears a straw hat. \"Morning, Tally! These turnips must get over the hill before they go soft. Can you get me past that shimmery thing?\" Mustard eyes the fold as if it might be lunch.",
+      "cast": [
+        {
+          "figure": "cast/adult_dragonling",
+          "name": "Farmer Gourd"
+        },
+        {
+          "figure": "cast/goat_chewing",
+          "name": "Mustard"
+        },
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "choices": [
+        {
+          "id": "guide",
+          "label": "Get the cart past",
+          "icon": "forward",
+          "goto": "squeeze"
+        }
+      ],
+      "rift": "steady",
+      "spotlight": "next"
+    },
+    "gourd_tight": {
+      "type": "story",
+      "narration": "The cart rattles up the hill. Farmer Gourd, a round dragonling, waves from the seat. His goat, Mustard, pulls the cart and wears a straw hat. \"Morning, Tally! These turnips must get over the hill before they go soft. Can you get me past that shimmery thing?\" Mustard eyes the fold as if it might be lunch.",
+      "cast": [
+        {
+          "figure": "cast/adult_dragonling",
+          "name": "Farmer Gourd"
+        },
+        {
+          "figure": "cast/goat_chewing",
+          "name": "Mustard"
+        },
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "choices": [
+        {
+          "id": "guide",
+          "label": "Get the cart past",
+          "icon": "forward",
+          "goto": "squeeze_tight"
+        }
+      ],
+      "rift": "steady",
+      "spotlight": "next"
+    },
+    "squeeze": {
+      "type": "choice_point",
+      "narration": "The gap runs right past the fold. Every few breaths the fold tugs at loose things: a leaf, a feather, Pip's whiskers. Then it lets go. \"Roll through between the tugs,\" says Farmer Gourd, \"or carry my turnips around by hand. Slow, but safe.\"",
+      "cast": [
+        {
+          "figure": "cast/adult_dragonling",
+          "name": "Farmer Gourd"
+        },
+        {
+          "figure": "cast/goat_chewing",
+          "name": "Mustard"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "choices": [
+        {
+          "id": "time",
+          "label": "Roll the cart between the tugs",
+          "icon": "boot",
+          "goto": "squeeze_time"
+        },
+        {
+          "id": "carry",
+          "label": "Pass the turnips around by hand",
+          "icon": "hand",
+          "goto": "turnip_relay"
+        },
+        {
+          "id": "dash",
+          "label": "Our duskrunner runs it through",
+          "icon": "quick",
+          "goto": "dusk_run",
+          "requiresClass": "duskrunner"
+        }
+      ],
+      "rift": "steady"
+    },
+    "squeeze_tight": {
+      "type": "choice_point",
+      "narration": "The way past hugs the fold. Every few breaths it tugs at loose things, close enough to lift your hair: a leaf, a feather, Pip's whiskers. Then it lets go. \"Roll through between the tugs,\" says Farmer Gourd, \"or carry my turnips around by hand. Slow, but safe.\"",
+      "cast": [
+        {
+          "figure": "cast/adult_dragonling",
+          "name": "Farmer Gourd"
+        },
+        {
+          "figure": "cast/goat_chewing",
+          "name": "Mustard"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "choices": [
+        {
+          "id": "time",
+          "label": "Roll the cart between the tugs",
+          "icon": "boot",
+          "goto": "squeeze_close"
+        },
+        {
+          "id": "carry",
+          "label": "Pass the turnips around by hand",
+          "icon": "hand",
+          "goto": "turnip_relay"
+        },
+        {
+          "id": "dash",
+          "label": "Our duskrunner runs it through",
+          "icon": "quick",
+          "goto": "dusk_run",
+          "requiresClass": "duskrunner"
+        }
+      ],
+      "rift": "steady"
+    },
+    "squeeze_time": {
+      "type": "interaction",
+      "narration": "Farmer Gourd holds the reins. Mustard holds her breath. Watch the fold, and send the cart the moment it lets go.",
+      "cast": [
+        {
+          "figure": "cast/adult_dragonling",
+          "name": "Farmer Gourd"
+        },
+        {
+          "figure": "cast/goat_chewing",
+          "name": "Mustard"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Tap when the fold lets go.",
+        "actionLabel": "Go now!",
+        "target": 0.5,
+        "periodMs": 4000,
+        "width": 0.3
+      },
+      "onSuccess": {
+        "goto": "past",
+        "narration": "The cart rolls through between two tugs. Not one turnip lost."
+      },
+      "onFailure": {
+        "goto": "past",
+        "narration": "You go a moment early. The fold tugs, and a sack of turnips slides off the back and into the shimmer. Gone. Farmer Gourd takes off his cap. \"Somebody downhill is getting turnips.\"",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "counters_turnips_lost",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "past",
+        "narration": "Pip shouts \"NOW\" at exactly the right moment. The cart rolls through, every turnip aboard."
+      },
+      "rift": "steady"
+    },
+    "squeeze_close": {
+      "type": "interaction",
+      "narration": "The bend runs so close that the fold's tugs ruffle Mustard's beard. Watch it, and send the cart the moment it lets go. There is very little room for being early.",
+      "cast": [
+        {
+          "figure": "cast/adult_dragonling",
+          "name": "Farmer Gourd"
+        },
+        {
+          "figure": "cast/goat_chewing",
+          "name": "Mustard"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Tap when the fold lets go.",
+        "actionLabel": "Go now!",
+        "target": 0.5,
+        "periodMs": 4000,
+        "width": 0.18
+      },
+      "onSuccess": {
+        "goto": "past",
+        "narration": "The cart scrapes through between two tugs, so close that Mustard's hat brim flutters. Not one turnip lost."
+      },
+      "onFailure": {
+        "goto": "past",
+        "narration": "You go a moment early. The fold tugs, and a sack of turnips slides off the back and into the shimmer. Gone. Farmer Gourd takes off his cap. \"Somebody downhill is getting turnips.\"",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "counters_turnips_lost",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "past",
+        "narration": "Pip shouts \"NOW\" at exactly the right moment. The cart scrapes through, every turnip aboard."
+      },
+      "rift": "steady"
+    },
+    "turnip_relay": {
+      "type": "interaction",
+      "narration": "Turnip by turnip, pass the load around the far side of the Eldest, away from the fold. Mustard helps by eating the small ones. \"That is not helping,\" says Farmer Gourd.",
+      "cast": [
+        {
+          "figure": "cast/adult_dragonling",
+          "name": "Farmer Gourd"
+        },
+        {
+          "figure": "cast/goat_chewing",
+          "name": "Mustard"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "interaction": {
+        "kind": "relay",
+        "objectLabel": "turnip",
+        "cue": "Catch the turnip, then pass it on.",
+        "actionLabel": "Pass it!"
+      },
+      "onSuccess": {
+        "goto": "past_slow",
+        "narration": "The whole load goes around. The empty cart squeaks past the fold with nothing to lose."
+      },
+      "onFailure": {
+        "goto": "past_slow",
+        "narration": "One turnip bounces off a paw and rolls toward the fold. Pip dives and catches it. Mustard eats it."
+      },
+      "onAssisted": {
+        "goto": "past_slow",
+        "narration": "Farmer Gourd joins the line, and the whole load goes around."
+      },
+      "rift": "steady"
+    },
+    "dusk_run": {
+      "type": "story",
+      "narration": "Your duskrunner grabs Mustard's harness and counts the tugs. One, two, NOW. Cart, goat and farmer shoot through the gap like a cork from a bottle. \"Wheee!\" says Farmer Gourd, cap on backward. Not one turnip lost.",
+      "cast": [
+        {
+          "figure": "cast/adult_dragonling",
+          "name": "Farmer Gourd"
+        },
+        {
+          "figure": "cast/goat_chewing",
+          "name": "Mustard"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Wave them off",
+          "icon": "forward",
+          "goto": "past"
+        }
+      ],
+      "rift": "steady"
+    },
+    "past": {
+      "type": "story",
+      "narration": "Farmer Gourd's cart rolls on over the hill, Mustard trotting proudly in front. \"Thank you!\" he calls back. \"I'll tell the whole market a stone went for a walk!\" Tally counts the turnips going by, out of habit.",
+      "cast": [
+        {
+          "figure": "cast/adult_dragonling",
+          "name": "Farmer Gourd"
+        },
+        {
+          "figure": "cast/goat_chewing",
+          "name": "Mustard"
+        },
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "choices": [
+        {
+          "id": "fold",
+          "label": "Go back to the fold",
+          "icon": "eye",
+          "goto": "fold_window"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "counters_neighbors_past",
+          "value": true
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "counters_turnips_lost"
+          },
+          "text": "\"Minus a few,\" she adds."
+        },
+        {
+          "when": {
+            "flag": "counters_hat_lost"
+          },
+          "text": "Mustard keeps looking back for her hat."
+        }
+      ]
+    },
+    "past_slow": {
+      "type": "story",
+      "narration": "Farmer Gourd loads up again and rolls on over the hill, Mustard trotting proudly in front. \"Thank you!\" he calls back. \"Every last turnip!\" Tally counted every one, twice. It all took a long, long time.",
+      "cast": [
+        {
+          "figure": "cast/adult_dragonling",
+          "name": "Farmer Gourd"
+        },
+        {
+          "figure": "cast/goat_chewing",
+          "name": "Mustard"
+        },
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "choices": [
+        {
+          "id": "fold",
+          "label": "Go back to the fold",
+          "icon": "eye",
+          "goto": "fold_small"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "counters_neighbors_past",
+          "value": true
+        }
+      ]
+    },
+    "fold_window": {
+      "type": "choice_point",
+      "narration": "The fold is the size of a window now, and still shrinking. Wet wind blows out of it, and the sound of a big river, far away. Pip's nose is nearly touching it. \"Lady Olivia says openings are doors. I could just peek!\" Seren frowns. \"Or we count how fast it is closing, so we know how long it has left.\"",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "choices": [
+        {
+          "id": "peek",
+          "label": "Hold Pip's tail while he peeks",
+          "icon": "hand",
+          "goto": "check_peek"
+        },
+        {
+          "id": "count",
+          "label": "Count the shrinking with Seren",
+          "icon": "eye",
+          "goto": "check_count"
+        },
+        {
+          "id": "hum",
+          "label": "Our starweaver hums to it",
+          "icon": "song",
+          "goto": "attuned",
+          "requiresClass": "starweaver"
+        }
+      ],
+      "rift": "steady",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "counters_hat_lost",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "counters_turnips_lost",
+          "value": false
+        }
+      ]
+    },
+    "fold_small": {
+      "type": "choice_point",
+      "narration": "All that carrying took time. The fold is no bigger than a dinner plate now, and still shrinking. Wet wind blows out of it, and the sound of a big river, far away. Pip sighs. \"Too small to peek.\" Seren holds up two fingers. \"We can still count how fast it is closing.\"",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "choices": [
+        {
+          "id": "count",
+          "label": "Count the shrinking with Seren",
+          "icon": "eye",
+          "goto": "check_count"
+        },
+        {
+          "id": "chime",
+          "label": "Hold the chime up to it",
+          "icon": "bell",
+          "goto": "chime_listen"
+        },
+        {
+          "id": "hum",
+          "label": "Our starweaver hums to it",
+          "icon": "song",
+          "goto": "attuned",
+          "requiresClass": "starweaver"
+        }
+      ],
+      "rift": "steady",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "counters_hat_lost",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "counters_turnips_lost",
+          "value": false
+        }
+      ]
+    },
+    "chime_listen": {
+      "type": "story",
+      "narration": "You hold the Listening Chime up to the little fold. It hums, then leans, past the fold and on, north, toward the glacier, like a dog pointing at a squirrel. \"Huh,\" says Pip, writing fast. \"Everything today points that way.\"",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "choices": [
+        {
+          "id": "rest",
+          "label": "Sit down with Tally",
+          "icon": "rest",
+          "goto": "rest"
+        }
+      ],
+      "rift": "steady"
+    },
+    "check_peek": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "narration": "Pip leans into the fold up to his shoulders. The fold tugs. You hold on.",
+      "prompt": "Hold on to Pip's tail while the fold tugs",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "onSuccess": {
+        "goto": "rest",
+        "narration": "You haul Pip back out with his fur standing straight up. \"A big river, way downhill!\" he gasps. \"And wet wood, and frogs!\"",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "counters_peeked",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "rest",
+        "narration": "The fold tugs harder. You hold on to Pip, but Pip does not hold on to his hat. It sails through and is gone. \"That was my best hat,\" he says, from inside his collar."
+      },
+      "rift": "steady"
+    },
+    "check_count": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "narration": "Seren holds two fingers at the fold's edges. Every ten breaths, she pinches them a little closer.",
+      "prompt": "Count how much the fold shrinks between each pinch",
+      "roller": "party",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "onSuccess": {
+        "goto": "rest",
+        "narration": "You count it together. \"It will last until we have packed,\" says Seren, \"and not a minute more.\"",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "counters_counted",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "rest",
+        "narration": "You lose count at fourteen, because Pip sneezed. Seren laughs. \"Soon, then. That is all we know.\""
+      },
+      "rift": "steady"
+    },
+    "attuned": {
+      "type": "story",
+      "narration": "Your starweaver hums, the way Seren taught. The fold hums back, quick and thin, like a kettle nearly done. \"It's in a hurry,\" says Seren. \"It will last until you have packed, and not a minute more.\"",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "choices": [
+        {
+          "id": "rest",
+          "label": "Sit down with Tally",
+          "icon": "rest",
+          "goto": "rest"
+        }
+      ],
+      "rift": "steady",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "counters_counted",
+          "value": true
+        }
+      ]
+    },
+    "rest": {
+      "type": "rest",
+      "narration": "Tally shares ember toffee, warm in the middle, counted out one each. Pip's piece glues his teeth together. \"Room for one big drawing to carry,\" he says, muffled, opening his notebook. Tally's road plan would help wherever the land moves next. A rubbing of the Eldest's carving keeps its old mountain, to compare with other stones. Which will Pip carry?",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "plan",
+          "label": "Carry Tally's road plan",
+          "icon": "map",
+          "goto": "route_copy",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "stone_route_priority",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "rubbing",
+          "label": "Carry a rubbing of the carving",
+          "icon": "scroll",
+          "goto": "carving_copy",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "stone_route_priority",
+              "value": false
+            }
+          ]
+        }
+      ],
+      "heal": 2
+    },
+    "route_copy": {
+      "type": "story",
+      "narration": "Tally draws the road as it is today, every landmark counted. Pip folds it into his notebook. \"Next time the land argues with a map, we'll have somewhere to start.\"",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "choices": [
+        {
+          "id": "go",
+          "label": "Walk to the edge of the hill",
+          "icon": "boot",
+          "goto": "goodbye"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "counters_understood"
+          },
+          "at": "start",
+          "text": "She draws the Eldest standing in its old socket, with the new bend curving around it."
+        },
+        {
+          "when": {
+            "flag": "counters_forced",
+            "notFlag": "counters_stuck"
+          },
+          "at": "start",
+          "text": "She draws the Eldest back in the ring, with a little arrow pointing uphill and a worried face."
+        },
+        {
+          "when": {
+            "flag": "counters_stuck"
+          },
+          "at": "start",
+          "text": "She draws the Eldest stuck sideways across the road, and the thin gap beside it."
+        }
+      ]
+    },
+    "carving_copy": {
+      "type": "story",
+      "narration": "Pip lays the page over the Eldest's carving and rubs it with charcoal: a mountain, throwing sparks. \"An eruption,\" says Tally. \"Our oldest counts can't agree when it was. Nobody's count matches.\" Pip draws a box beside it for the part nobody knows.",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-evidence",
+      "choices": [
+        {
+          "id": "go",
+          "label": "Walk to the edge of the hill",
+          "icon": "boot",
+          "goto": "goodbye"
+        }
+      ]
+    },
+    "goodbye": {
+      "type": "story",
+      "narration": "Tally walks you to the edge of the hill, counting your steps. \"A counter's stones must never move,\" she says. \"Mine did. So now I'll count the moving too.\" She looks north. \"My cousin up the valley says the river has gone the wrong way as well. Strange days for counting.\"",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Tally"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Say goodbye to Tally",
+          "icon": "forward",
+          "goto": "ending"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "counters_forced",
+            "notFlag": "counters_stuck"
+          },
+          "text": "Behind her, the Eldest creaks in its dent, leaning toward the road. \"I'll push it back every morning,\" she sighs. \"Every single morning.\""
+        },
+        {
+          "when": {
+            "flag": "counters_stuck"
+          },
+          "text": "Behind her, the Eldest lies stuck sideways across the road. \"My cousins and I will roll it somewhere sensible,\" she sighs. \"Tomorrow. With a lot of cousins.\""
+        },
+        {
+          "when": {
+            "flag": "counters_understood"
+          },
+          "text": "Behind her, the Eldest stands in its old socket, with the new bend curving around it. \"Twelve, in a new shape,\" she says, and almost smiles."
+        },
+        {
+          "when": {
+            "flag": "counters_spoon_kept"
+          },
+          "text": "Then she hands Pip his spoon at last. \"Don't pry anything else.\" Pip hugs it."
+        }
+      ]
+    },
+    "ending": {
+      "type": "story",
+      "narration": "So here is your piece. A stone that never moves went back to where it stood long ago, all at once, without touching the ground between. The road runs downhill to Ashspan Bridge. North, up toward the glacier, a river has gone the wrong way. And the fold is still shrinking. \"Take it now, or it's gone,\" says Pip. Something is moving the land. What is it? And can you put things right?",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters-routes",
+      "choices": [],
+      "outcome": "success",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "counters_forced",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "counters_understood",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "counters_spoon_kept",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "counters_stuck",
+          "value": false
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "counters_counted"
+          },
+          "at": "start",
+          "text": "The fold will last until you have packed, and not a minute more."
+        },
+        {
+          "when": {
+            "flag": "counters_peeked"
+          },
+          "at": "start",
+          "text": "Pip says it opens somewhere far downhill, by a big river."
+        }
+      ]
     }
   }
 }

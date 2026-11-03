@@ -1,51 +1,55 @@
-# A Bridge Without a River: thirty-minute playtest
+# A Bridge Without a River
 
-Target: about 30 minutes with a family, allowing roughly 25–35 minutes for
-reading speed, discussion and helping one another. This is an authored planning
-budget, not a measured result. Keep all story choices untimed. Do not delay
-transitions or require retries to fill time.
+The Restless Coast's key node (`riftlight-buried-bridge`), rewritten in November 2026 after the
+pilot ([bone-yard-review.md](bone-yard-review.md)) against [arc.md](arc.md#restless-coast-teaches-unstable).
+The version before it had no dice, nine inert games, three echo votes, an unnamed guide and a
+goal that was a rule ("solve the missing-river mystery from the bank"); its earlier history is in
+the chapter skill's [examples](../../../.claude/skills/chapter-cohesion/references/examples.md#riftlight-a-full-session-with-varied-play).
 
-| Act | What occupies the time | Planning budget |
+**Beat.** The party has studied a bridge with no river under it, and decided whether to share the
+chime's readings with Orin. **Question** (scene 1): *Where did this bridge's river go?*
+**Adds:** the Coast fragment, in its own p1 scene (`old_river`): the bridge stands where a river
+ran when the land had an older shape. `fragment_coast_learned` is set there, on every path. The
+arches are "gray stone with white specks, like salt on bread, with a waterline carved high up",
+which *The Borrowed Ruins* recognizes. A p2 shows the riverbed running into a hill. The chime
+leans toward the glacier; Orin says something up north is draining this way. The sealed door
+stays sealed: it only hums the chime's note.
+
+**Who carries it.** Puddle, who has never been allowed past the bank (her grandmother's rule:
+show the bank, never the stone). Orin wants the chime's readings and to understand before
+anyone forces anything. Pip quotes Lady Olivia, runs onto the stone, and keeps a notebook of
+drawings for her.
+
+## Rhythm
+
+| Movement | What the table does |
+| --- | --- |
+| Out to the bank (≈7 min) | Cross the soft silt (hop or follow Dab's posts, rolled); see the bridge; **share the chime with Orin or keep it** |
+| Pip and the arch (≈8 min) | Call or grab Pip off the stone (rolled; a miss breaks the rule); **dig the arch out or let the tide wash it** (roll or timing game; thornguard and bigfoot ways); look under it; measure the waterline (Orin's pole, spotting Orin's climb, or counting rows) |
+| The tide (≈8 min) | Samples; follow the riverbed to the hill (rolled); **save Orin's drawings or Pip's notebook** (rolled; keeping the chime adds a footing roll that can save both); the bridge stands in water |
+| What it remembers (≈7 min) | Rest (optionally listen to the sealed door); the p1; the chime leans north; the way home (rolled); the campaign question with this piece, pointing at the blinking opening |
+
+## Consequences
+
+| Choice | Immediate result | Later |
 | --- | --- | --- |
-| Set up the expedition | Meet the guide and Orin, decide about chime sharing, find the firm shelf, choose and build a rail or sled | 7 minutes |
-| Investigate | Brush or mirror the arch, watch a tide pulse, compare the samples, compare current tide with the old river evidence | 7 minutes |
-| The tide arrives | Debate drawings versus path, use the chosen equipment, rebuild the route or reconstruct wet notes, review the cost | 8 minutes |
-| Leave something useful | Explain the old river; choose locals versus research; discuss and complete the chosen handoff; pack up and hear the outcome | 8 minutes |
+| Share the chime / keep it (`orin_chime_shared`) | Orin's pole leans north / Orin must climb | Measure by pole or by spotting Orin; only a keeping party can follow the chime along the buried footing at the tide; the ending says who carries the readings; the convergence reads the flag |
+| Dig (force) / wash (understand) | Fast, but the carvings are scraped / soaked to the ears, carvings whole | The carved fish under the arch are seen or lost; dug silt blocks the high path home |
+| Drawings / notebook | Orin's copy kept / Pip's notebook kept | An exact measurement stays exact only with the drawings; Pip's mood and the ending (notebook to Olivia, or redrawn from memory) |
+| Pip on the stone (a missed roll) | He and you slide into the riverbed | Puddle has to tell Grandmother; the ending says so |
 
-The revision removes the ten-activity requirement. Construction, investigation
-and the equipment rescue retain direct play. Ground testing, sample comparison,
-reconstruction and the research handoff unfold as story; cleanup and the trial
-visit offer ordinary choices with replies. Watch whether these moments provide
-room for conversation instead of becoming a run of Continue taps. Do not add
-replacement games to fill the old budget. The budgets above remain proposals
-and need fresh measurement after this pacing change.
+No fight: a mystery that needs none. Failed rolls cost a heart or something the ending reads.
 
-## Consequences to verify at the table
+## Shape and pacing
 
-- Rail versus sled changes both construction and later rescue controls. The
-  party can deliberately change plans by turning the rail into a carrying board.
-- Saving drawings keeps the original measurements but costs the path markers;
-  the next task is rebuilding the high return route.
-- Protecting the path costs the detailed drawings; the next task is rebuilding
-  their main features by checking the stones. Fine measurements
-  stay lost, including in the concluding narration.
-- A local copy opens a marked bank viewpoint, tested with Orin as a visitor.
-  A research copy goes with Orin; the work area is closed until a later visit.
-- Keeping chime readings private remains respected on either handoff route.
-- The tide is a complication in the story, not a countdown on the controls.
-  A wrong answer leads to checking/help, never a missing discovery or forced roll.
+| | Before | After |
+| --- | ---: | ---: |
+| Reachable scenes | 43 | 55 |
+| Dice checks / games / inert / echo | 0 / 9 / 9 / 3 | 15 / 1 / 0 / 0 |
+| Scenes with a quoted line | 34 | 39 |
+| Spine scenes / checks / read | 26 / 0 / 3 | 30 / 7 / 3 (7 votes) |
+| Spine words | 1,048–1,215 | 1,534–1,615 |
+| Predicted minutes (uncalibrated) | 15.1 | 22.6 |
 
-## Family session record
-
-Record elapsed time per act, party size, age range, chosen route, assistance,
-and which cues need explanation. Watch whether kids can explain why they chose
-the drawings or path and what that choice changed. Ask which activity they
-would like another turn at. Note any adult explaining a second time, repeated
-button pressing without discussion, or jokes that obscure the next action.
-
-If sessions run short, deepen a discovery or a branch consequence where the
-children show interest. If they run long, cut repeated setup and recap. Keep
-around thirty minutes of worthwhile play as the goal; do not restore procedural
-roll chains or increase paragraph length to meet a numerical gate.
-
-No family timing observations have been recorded for this revision yet.
+The minute model gives the votes and the game no discussion time; family timing is unmeasured.
+Tests: [riftlight-buried-bridge.test.ts](../../../tools/content/riftlight-buried-bridge.test.ts).
