@@ -56,26 +56,37 @@ arrow off the table; a missed jump takes the lantern; with both, the party must 
 Planned about 30 minutes; family timing is unmeasured. Tests:
 `tools/content/riftlight-wrong-valley.test.ts` (route matrix through the real engine).
 
-## Reading-room scenes
+## Reading room (rewritten November 2026)
 
-| Scene family | Dependency and consequence checked |
-| --- | --- |
-| `arrival` | Introduces elder, catalog shelves, marked floor and newly exposed memory face. High/low crossing callbacks use actual recorded history. |
-| `quiet_rule` | Establishes the cup, safe waiting place and the elder's warning. The unknown thing that might wake stays unnamed and unseen. |
-| `witness_first` | Compares the worker and party's crossing accounts; no one inherits a viewpoint they did not have. |
-| `catalog_cards` | Introduces three inspection cards. Inspection order never becomes the memory's historical date. |
-| `listening_floor` | Introduces a distant hall song and offers respectful silence or a soft answer; neither commands memory ice. |
-| `support_ice` | Introduces a settled cradle and loose wedges before work. Failure moves the standing place; ice is never broken for a clue. |
-| `first_memory` | Reveals only a local river view, familiar ridges and no date/person. Readers may divide observations or follow one fixed landmark. |
-| `second_view` | Introduces glare/overlap before testing direction from a second safe viewpoint. Failure leaves a blank until the elder offers a clearer angle. |
-| `what_matches` | Compares outside change and remembered view without claiming the same event, date or cause. |
-| `catalog_test` | Introduces a younger keeper before a filing test. Misunderstood chronology is corrected, never accepted as fact. |
-| `sliding_tray` | Introduces blank slips, chalk and a sliding tray. It contains no memory fragment; wet blanks are a small local consequence. Wing assistance stays within the marked floor. |
-| `compare_accounts` | The local clue stands alone. Optional Coast callback cites only checked waterline/pebbles and explicitly does not date the changes together. |
-| `claim_limit` | Preserves the unknown cause and age, regardless of which limit leads the note. |
-| `record_choice` | Permission to file the party's account is voluntary. Private notes are respected; no inventory fragment is granted. |
-| `teach_back` | Introduces a new visitor and lets them observe instead of merely repeating a supplied theory. A failed introduction is corrected through a quieter look. |
-| `rest` | Grants the Paths knowledge flag on every path while keeping age/cause open. No protected secret or full map is supplied. |
+The reading-room rows that stood here described the old design. The chapter was rebuilt to the
+pilot's bar ([arc.md](arc.md)). Question: *has this river ever run here before?* Elder Murmur
+(`cast/yeti_elder`) carries it; Flurry (`cast/younger_keeper`), who will keep the next reading
+room, has the stake; Pip voices Lady Olivia.
+
+Rhythm: the squeaky stair (check, or a griffin glides), Flurry's dripping icicle (hat it, a
+check, or snap it), the tunnel or the lamp ledge (timing game or check), the listening hole
+(drop a pebble or listen to the hall's song), then the old wall. Any noise clouds it and takes
+away the easy wait. **Force:** ring the chime at it (Pip's idea): quick, but the copy must be
+rushed and the wall frosts white until spring. **Understand:** wait (a precision game, wider
+for a quiet party, widest for one that listened to the song; a miss costs the cold).
+**p1 `old_river`:** the memory ice shows the river leaving by a different valley. Murmur's "Do
+not shout near the old ice. You don't know what you might wake." follows in `deep_sound`, and
+the chime tugs toward the oldest ice. Hush Pip (check), then copy the river or save the slates
+first (cracked slates, or a rushed copy plus a hundred years of proof). Proving the match: a
+clean copy lets a high crosser or a low crosser prove it from what they saw; the buried bridge
+gives its own proof; otherwise a check, or Murmur rereads it at the cost of Pip's sketch.
+Flurry's courage (check, or the icicle hat), Pip's "send rivers anywhere", rest, the stair out
+(check), and the builder's news of a wyrm in Flurry's room. `fragment_paths_learned` is set on
+every path; the eight `memory_*` flags are no longer written.
+
+| | Before | After |
+|---|---:|---:|
+| Shortest spine (scenes) | 36 | 30 |
+| Votes + checks on it | 10 + 0 | 9 + 6 |
+| Dice checks / games / inert / echo | 0 / 13 / 1 / 5 | 9 / 7 / 0 / 0 |
+| Quoted scenes | 15 | 42 of 54 |
+
+Tests: `tools/content/riftlight-reading-room.test.ts`.
 
 ## Scope and validation
 

@@ -19,7 +19,7 @@
       ],
       "speaks": true,
       "status": "provisional",
-      "lineCount": 6244
+      "lineCount": 6270
     },
     "party": {
       "name": "The party",
@@ -38,7 +38,7 @@
       ],
       "speaks": true,
       "status": "provisional",
-      "lineCount": 61
+      "lineCount": 63
     },
     "pib": {
       "name": "Pib",
@@ -4620,6 +4620,10 @@
         {
           "chapter": "riftlight-whale-road",
           "key": "Pip Thistledown"
+        },
+        {
+          "chapter": "riftlight-wyrm-nest",
+          "key": "Pip Thistledown"
         }
       ],
       "chapters": [
@@ -4633,7 +4637,8 @@
         "riftlight-stone-counters",
         "riftlight-the-island-due-back",
         "riftlight-the-wrong-valley",
-        "riftlight-whale-road"
+        "riftlight-whale-road",
+        "riftlight-wyrm-nest"
       ],
       "aliases": [],
       "gemini": {
@@ -4641,19 +4646,20 @@
       },
       "lines": [
         {
+          "text": "Lady Olivia would bang some pots and shoo it out the far tunnel. Done by lunch!",
+          "address": "riftlight-wyrm-nest/plan/narration"
+        },
+        {
           "text": "Lady Olivia says a good scout learns everything. That has to include lanterns.",
           "address": "riftlight-whale-road/pip_lanterns/narration"
         },
         {
           "text": "Lady Olivia says it's the wind. But the wind keeps changing its mind. This doesn't.",
           "address": "riftlight-whale-road/pip_notebook/narration"
-        },
-        {
-          "text": "It went to its old home. Then it came back to this one. Which home is home?",
-          "address": "riftlight-the-wrong-valley/river_back/narration"
         }
       ],
-      "lineCount": 114,
+      "lineCount": 141,
+      "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
     },
@@ -4846,7 +4852,7 @@
           "address": "riftlight-convergence/olivia_plan/variants/0"
         }
       ],
-      "lineCount": 71,
+      "lineCount": 72,
       "speaks": true,
       "status": "provisional"
     },
@@ -5340,27 +5346,93 @@
       "speaks": true,
       "status": "provisional"
     },
-    "yeti_keepers": {
-      "name": "Yeti keepers",
+    "elder_murmur": {
+      "name": "Elder Murmur",
       "kind": "character",
-      "who": "Slow, enormous and gentle. Deliberate before answering. Offer a safe method and leave unknown history unknown.",
-      "gender": "unknown",
-      "genderFrom": "none",
+      "who": "Elder Murmur, the very old yeti who keeps the reading room (she/her). Whispers everything, even her jokes. Slow as a snowdrift, never hurries and never guesses. Drinks her tea with ice in it and blows on it to make it colder. Wants to read the memory ice without waking it.",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/yeti_elder",
       "voiceNotes": [
         {
           "chapter": "riftlight-reading-room",
-          "key": "Yeti keepers"
+          "key": "Elder Murmur"
+        },
+        {
+          "chapter": "riftlight-wyrm-nest",
+          "key": "Elder Murmur"
         }
       ],
       "chapters": [
-        "riftlight-reading-room"
+        "riftlight-reading-room",
+        "riftlight-wyrm-nest"
       ],
       "aliases": [],
       "gemini": {
-        "voice": "Charon"
+        "voice": "Gacrux"
       },
-      "lines": [],
-      "lineCount": 0,
+      "lines": [
+        {
+          "text": "Memory ice. It keeps what it saw when it froze. We read it. We never make it show.",
+          "address": "riftlight-reading-room/room/narration"
+        },
+        {
+          "text": "Or wait. Old ice clears if you are still and patient. It takes a long, cold while.",
+          "address": "riftlight-reading-room/old_wall/narration"
+        },
+        {
+          "text": "You crossed high, over the rocks. Good. High eyes see the shape of a valley.",
+          "address": "riftlight-reading-room/pip_here/variants/0"
+        }
+      ],
+      "lineCount": 27,
+      "speaks": true,
+      "status": "provisional"
+    },
+    "flurry": {
+      "name": "Flurry",
+      "kind": "character",
+      "who": "Flurry, a young yeti keeper (she/her). Quick, nervous and kind. Knits little striped hats for icicles. Will keep the new reading room the builders are carving, and worries a moving river might come into it.",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/younger_keeper",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-reading-room",
+          "key": "Flurry"
+        },
+        {
+          "chapter": "riftlight-wyrm-nest",
+          "key": "Flurry"
+        }
+      ],
+      "chapters": [
+        "riftlight-reading-room",
+        "riftlight-wyrm-nest"
+      ],
+      "aliases": [],
+      "gemini": {
+        "voice": "Autonoe"
+      },
+      "lines": [
+        {
+          "text": "If a river remembers the way it used to go, could it come back? Into my new room?",
+          "address": "riftlight-reading-room/tuft_worry/narration"
+        },
+        {
+          "text": "Maybe the wyrm wants to go back through. But what's on the other side?",
+          "address": "riftlight-wyrm-nest/opening/narration"
+        },
+        {
+          "text": "Or we help it through the opening to the hollow. It would need its nest, though. My blankets.",
+          "address": "riftlight-wyrm-nest/plan/narration"
+        }
+      ],
+      "lineCount": 28,
       "speaks": true,
       "status": "provisional"
     },
@@ -5747,6 +5819,44 @@
         }
       ],
       "lineCount": 31,
+      "speaks": true,
+      "status": "provisional"
+    },
+    "yeti_builders": {
+      "name": "Yeti builders",
+      "kind": "character",
+      "who": "The glacier builders, a big gentle crew of yetis. Speak slowly, mostly about ice. Proud of their carving, fond of oat cakes, secretly scared of the wyrm.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "entities/yeti",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-wyrm-nest",
+          "key": "Yeti builders"
+        }
+      ],
+      "chapters": [
+        "riftlight-wyrm-nest"
+      ],
+      "aliases": [],
+      "gemini": {
+        "voice": "Vindemiatrix"
+      },
+      "lines": [
+        {
+          "text": "Or these. They're scratchy, and they smell of us. It might not like them.",
+          "address": "riftlight-wyrm-nest/move_prep/narration"
+        },
+        {
+          "text": "Shooing is loud, and the old ice is close. Moving it is slow.",
+          "address": "riftlight-wyrm-nest/plan/narration"
+        },
+        {
+          "text": "Lovely hollow on the other side. But the opening flickered while I was in it, on and off, like a candle.",
+          "address": "riftlight-wyrm-nest/flicker/narration"
+        }
+      ],
+      "lineCount": 14,
       "speaks": true,
       "status": "provisional"
     },
@@ -6653,8 +6763,10 @@
       "name": "Frost wyrm",
       "kind": "creature",
       "who": "Frost wyrm.",
-      "gender": "unknown",
-      "genderFrom": "none",
+      "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
       "figure": "entities/frost_wyrm",
       "chapters": [
         "riftlight-finale",
@@ -6664,9 +6776,18 @@
       "gemini": {
         "voice": "Algenib"
       },
-      "lines": [],
-      "lineCount": 0,
-      "speaks": false,
+      "lines": [
+        {
+          "text": "Lady Olivia says you find out if something's friendly by giving it a poke.",
+          "address": "riftlight-wyrm-nest/pip_poke/narration"
+        },
+        {
+          "text": "Lady Olivia, may have been wrong about lizards.",
+          "address": "riftlight-wyrm-nest/pip_pokes/narration"
+        }
+      ],
+      "lineCount": 2,
+      "speaks": true,
       "status": "provisional"
     },
     "aunt_bellow": {
@@ -6805,88 +6926,25 @@
       "speaks": true,
       "status": "provisional"
     },
-    "reading_room_elder": {
-      "name": "Reading-room elder",
-      "kind": "character",
-      "who": "Reading-room elder.",
-      "pronouns": "she/her",
-      "pronounsFrom": "narration",
-      "gender": "female",
-      "genderFrom": "narration",
-      "figure": "cast/yeti_elder",
-      "chapters": [
-        "riftlight-reading-room"
-      ],
-      "aliases": [],
-      "gemini": {
-        "voice": "Gacrux"
-      },
-      "lines": [
-        {
-          "text": "Do not shout near the old ice; you do not know what you might wake.",
-          "address": "riftlight-reading-room/quiet_rule/narration"
-        },
-        {
-          "text": "Three visits. The river did not leave us a birthday.",
-          "address": "riftlight-reading-room/catalog_cards/narration"
-        },
-        {
-          "text": "A blank is easier to fix than a confident mistake.",
-          "address": "riftlight-reading-room/claim_limit/narration"
-        }
-      ],
-      "lineCount": 7,
-      "speaks": true,
-      "status": "provisional"
-    },
-    "younger_keeper": {
-      "name": "Younger keeper",
-      "kind": "character",
-      "who": "Younger keeper.",
-      "pronouns": "she/her",
-      "pronounsFrom": "narration",
-      "gender": "female",
-      "genderFrom": "narration",
-      "figure": "cast/younger_keeper",
-      "chapters": [
-        "riftlight-reading-room"
-      ],
-      "aliases": [],
-      "gemini": {
-        "voice": "Kore"
-      },
-      "lines": [
-        {
-          "text": "I need a route from a visitor's question to the checked view.",
-          "address": "riftlight-reading-room/catalog_test/narration"
-        },
-        {
-          "text": "I could post a visitor guide.",
-          "address": "riftlight-reading-room/catalog_test_1_done/narration"
-        }
-      ],
-      "lineCount": 3,
-      "speaks": true,
-      "status": "provisional"
-    },
-    "newcomer": {
-      "name": "Newcomer",
-      "kind": "character",
-      "who": "Newcomer.",
+    "memory_readers": {
+      "name": "Memory readers",
+      "kind": "group",
+      "who": "Memory readers.",
       "gender": "unknown",
       "genderFrom": "none",
-      "figure": "cast/newcomer_yeti",
+      "figure": "cast/memory_reader",
       "chapters": [
-        "riftlight-reading-room"
+        "riftlight-reading-room",
+        "riftlight-wyrm-nest"
       ],
       "aliases": [],
       "gemini": {
-        "voice": "Rasalgethi"
+        "voice": "Algieba"
       },
       "lines": [
         {
-          "text": "Where is a safe way to look?",
-          "address": "riftlight-reading-room/teach_back/narration"
+          "text": "It looks comfortable. Good. A neighbor who sleeps all winter is a quiet neighbor.",
+          "address": "riftlight-wyrm-nest/readers_come/variants/0"
         }
       ],
       "lineCount": 1,
@@ -7152,63 +7210,6 @@
       "lines": [],
       "lineCount": 0,
       "speaks": false,
-      "status": "provisional"
-    },
-    "yeti_builder": {
-      "name": "Yeti builder",
-      "kind": "character",
-      "who": "Yeti builder.",
-      "gender": "unknown",
-      "genderFrom": "none",
-      "figure": "entities/yeti",
-      "chapters": [
-        "riftlight-wyrm-nest"
-      ],
-      "aliases": [],
-      "gemini": {
-        "voice": "Alnilam"
-      },
-      "lines": [
-        {
-          "text": "Help us make room for the readers and the wyrm, without waking the old ice.",
-          "address": "riftlight-wyrm-nest/arrival/narration"
-        },
-        {
-          "text": "The new rule is for us, the people holding the chisels.",
-          "address": "riftlight-wyrm-nest/quiet/narration"
-        },
-        {
-          "text": "This shows its reach today. Not a rule it must obey.",
-          "address": "riftlight-wyrm-nest/watch_check/narration"
-        }
-      ],
-      "lineCount": 8,
-      "guessedLines": 1,
-      "speaks": true,
-      "status": "provisional"
-    },
-    "memory_readers": {
-      "name": "Memory readers",
-      "kind": "group",
-      "who": "Memory readers.",
-      "gender": "unknown",
-      "genderFrom": "none",
-      "figure": "cast/memory_reader",
-      "chapters": [
-        "riftlight-wyrm-nest"
-      ],
-      "aliases": [],
-      "gemini": {
-        "voice": "Algieba"
-      },
-      "lines": [
-        {
-          "text": "Every page is here.",
-          "address": "riftlight-wyrm-nest/readers_clear/narration"
-        }
-      ],
-      "lineCount": 1,
-      "speaks": true,
       "status": "provisional"
     }
   }
