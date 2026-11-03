@@ -1872,7 +1872,7 @@
     },
     {
       "id": "kitsune_temple_keeper",
-      "name": "Temple keeper",
+      "name": "Keeper Sorrel",
       "basis": "kitsune",
       "scale": "medium",
       "heightCm": 115,
@@ -2096,7 +2096,7 @@
     },
     {
       "id": "island_keeper",
-      "name": "Island keeper",
+      "name": "Keeper Juniper",
       "basis": "kitsune",
       "scale": "medium",
       "heightCm": 145,

@@ -29,30 +29,7 @@ function walk(chapter: Chapter, initial: RunState, choose: (s: RunState) => stri
   expect(chapter.estimatedMinutes).toBe(30);
   return { state, visited, kinds, activities, scenes };
 }
-const whale = chapters.get("riftlight-whale-road")!;
-const whaleRoutes = ["shelter", "view"].flatMap(site => ["note", "arms"].flatMap(greeting =>
-  ["guide", "consider"].flatMap(ending => [1, 2, 4].flatMap(seats => [false, true].map(misses => ({ site, greeting, ending, seats, misses }))))));
-it.each(whaleRoutes)("whales: $site / $greeting / $ending / $seats seats / misses $misses changes the jobs", route => {
-  const result = walk(whale, start(whale, "manticore", "duskrunner", {}, route.seats), s => preferred(s, {
-    keeper_lesson: route.greeting, waiting_place: route.site,
-    handoff_sky: route.site === "view" ? "direct" : "relay", sky_repair: "report",
-    opening_decision: route.ending, guide: route.greeting,
-  }), s => route.misses && (s.prompt?.kind === "roll" || s.prompt?.kind === "interaction" && scored.has(s.prompt.spec.kind)) ? "failure" : "success");
-  expect(result.state.flags.whale_open_view).toBe(route.site === "view");
-  expect(result.state.flags.whale_signal_sung).toBe(route.greeting === "note");
-  expect(result.visited.has("view_setup")).toBe(route.site === "view");
-  expect(result.visited.has("shelter_setup")).toBe(route.site === "shelter");
-  expect(result.visited.has("signal_memory")).toBe(route.site === "view");
-  expect(result.visited.has("signal_relay")).toBe(route.site === "shelter" || route.misses);
-  expect(result.visited.has("keeper_points")).toBe(route.misses);
-  expect(result.visited.has("quiet_wait")).toBe(route.misses);
-  expect(result.state.flags.whales_guided === true).toBe(route.ending === "guide");
-  expect(result.visited.has("guide_note")).toBe(route.ending === "guide" && route.greeting === "note");
-  expect(result.visited.has("guide_arms")).toBe(route.ending === "guide" && route.greeting === "arms");
-  expect(result.visited.has("guide_wait")).toBe(route.ending === "guide" && route.greeting === "note" && route.misses);
-  expect(result.state.flags.sky_followup_promised).toBe(true);
-
-});
+// The Whales' Turning Place is protected by riftlight-whale-road.test.ts.
 const valley = chapters.get("riftlight-the-wrong-valley")!;
 const valleyRoutes = ["tools", "people"].flatMap(priority => [1, 2].flatMap(crossing =>
   [1, 2, 4].flatMap(seats => [false, true].flatMap(misses => [false, true].map(workerHelp => ({ priority, crossing, seats, misses, workerHelp }))))));
@@ -86,9 +63,8 @@ it.each(valleyRoutes)("valley: $priority / crossing $crossing / $seats seats / m
   expect(account.prompt.options.some(o => o.id === "sequence")).toBe(!route.misses);
 
 });
-it("songkeeper and duskrunner widening change the result of an actual near-edge action", () => {
+it("duskrunner widening changes the result of an actual near-edge action", () => {
   for (const [chapter, ordinary, helped, species, cls] of [
-    [whale, "note_practice", "songkeeper_practice", "unicorn", "songkeeper"],
     [valley, "tools_hoist", "tools_hoist_assisted", "manticore", "duskrunner"],
     [valley, "tool_recover", "tool_recover_assisted", "manticore", "duskrunner"],
   ] as const) {

@@ -2,7 +2,7 @@ import { expect, it } from "vitest";
 import { pacingReport } from "../../packages/shared/src/chapter-pacing.ts";
 import { chapters, allPaths } from "./riftlight-test-support.ts";
 
-it.each(["stone-counters", "whale-road", "the-wrong-valley", "reading-room", "the-island-due-back"])("%s varies the required play without padding the chapter with rolls", { timeout: 20_000 }, id => {
+it.each(["stone-counters", "the-wrong-valley", "reading-room", "the-island-due-back"])("%s varies the required play without padding the chapter with rolls", { timeout: 20_000 }, id => {
   const chapter = chapters.get(`riftlight-${id}`)!;
 
   for (const { shortest } of pacingReport(chapter).scenarios) {

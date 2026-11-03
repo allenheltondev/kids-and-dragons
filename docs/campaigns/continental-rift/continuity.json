@@ -5622,7 +5622,8 @@
     },
     "riftlight-sky-islands-arrival": {
       "entryFacts": [
-        "learned_note"
+        "learned_note",
+        "listening_chime"
       ],
       "scenes": {
         "island": {
@@ -5694,6 +5695,16 @@
             "pip"
           ],
           "introduces": {}
+        },
+        "mooring": {
+          "requires": [
+            "temple_keeper",
+            "pip",
+            "listening_chime"
+          ],
+          "introduces": {
+            "mooring": "a mooring rope as thick as a tree trunk"
+          }
         },
         "local": {
           "requires": [
@@ -6170,10 +6181,11 @@
         },
         "island_done": {
           "requires": [
-            "temple_keeper",
             "cloud_whales",
+            "distant_song",
+            "mooring",
             "signal_basket",
-            "distant_song"
+            "temple_keeper"
           ],
           "introduces": {}
         },
@@ -6196,14 +6208,6 @@
             "temple_keeper",
             "pip",
             "hens"
-          ],
-          "introduces": {}
-        },
-        "song_track": {
-          "requires": [
-            "temple_keeper",
-            "seren",
-            "distant_song"
           ],
           "introduces": {}
         },
@@ -7050,266 +7054,455 @@
         "riftseekers"
       ],
       "scenes": {
-        "whales": {
+        "arrive": {
+          "requires": [],
+          "introduces": {
+            "juniper": "\"Keeper Juniper,\"",
+            "whales": "Cloud whales swim in it"
+          }
+        },
+        "low_pass": {
           "requires": [
-            "orin",
+            "juniper",
+            "whales"
+          ],
+          "introduces": {
+            "hiccup": "That's Hiccup"
+          }
+        },
+        "check_posts": {
+          "requires": [
+            "juniper"
+          ],
+          "introduces": {}
+        },
+        "check_yarn": {
+          "requires": [
+            "juniper"
+          ],
+          "introduces": {}
+        },
+        "check_fly": {
+          "requires": [
+            "hiccup"
+          ],
+          "introduces": {}
+        },
+        "whale_eye": {
+          "requires": [
+            "juniper",
+            "hiccup"
+          ],
+          "introduces": {
+            "billow": "\"Auntie Billow,\"",
+            "island_due_back": "the island due back"
+          }
+        },
+        "turn_watch": {
+          "requires": [
+            "juniper",
+            "whales"
+          ],
+          "introduces": {}
+        },
+        "check_listen": {
+          "requires": [
+            "billow"
+          ],
+          "introduces": {}
+        },
+        "check_ropewalk": {
+          "requires": [
+            "juniper"
+          ],
+          "introduces": {}
+        },
+        "check_leap": {
+          "requires": [
+            "juniper"
+          ],
+          "introduces": {}
+        },
+        "check_read": {
+          "requires": [
+            "juniper"
+          ],
+          "introduces": {}
+        },
+        "pair_seen": {
+          "requires": [
+            "juniper",
+            "whales"
+          ],
+          "introduces": {
+            "openings": "Two openings, beating together"
+          }
+        },
+        "olivia_here": {
+          "requires": [
             "olivia",
+            "openings"
+          ],
+          "introduces": {
+            "pip": "Pip Thistledown, the young manticore scout",
+            "linked": "\"Linked,\""
+          }
+        },
+        "echo_test": {
+          "requires": [
+            "pip",
+            "olivia",
+            "openings"
+          ],
+          "introduces": {}
+        },
+        "check_hum": {
+          "requires": [
+            "openings"
+          ],
+          "introduces": {}
+        },
+        "toss": {
+          "requires": [
+            "pip",
+            "openings"
+          ],
+          "introduces": {}
+        },
+        "why_circle": {
+          "requires": [
+            "billow",
+            "openings",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "calf_stuck": {
+          "requires": [
+            "hiccup",
+            "openings",
+            "olivia",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "check_haul": {
+          "requires": [
+            "hiccup",
+            "olivia"
+          ],
+          "introduces": {}
+        },
+        "hauled": {
+          "requires": [
+            "hiccup",
+            "olivia",
+            "pip",
+            "juniper"
+          ],
+          "introduces": {}
+        },
+        "quiet_beat": {
+          "requires": [
+            "hiccup",
+            "juniper",
+            "openings"
+          ],
+          "introduces": {}
+        },
+        "check_lullaby": {
+          "requires": [
+            "hiccup"
+          ],
+          "introduces": {}
+        },
+        "sung_out": {
+          "requires": [
+            "hiccup",
+            "olivia",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "sung_slow": {
+          "requires": [
+            "hiccup",
+            "olivia",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "olivia_offer": {
+          "requires": [
+            "openings",
+            "billow",
+            "juniper",
+            "olivia"
+          ],
+          "introduces": {
+            "salt_flats": "the salt flats"
+          }
+        },
+        "island_tug": {
+          "requires": [
+            "openings",
+            "olivia",
+            "juniper"
+          ],
+          "introduces": {}
+        },
+        "check_tether": {
+          "requires": [
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "check_anchor": {
+          "requires": [
+            "openings"
+          ],
+          "introduces": {}
+        },
+        "check_brace": {
+          "requires": [
+            "openings"
+          ],
+          "introduces": {}
+        },
+        "juniper_answer": {
+          "requires": [
+            "island_due_back",
+            "billow",
+            "olivia"
+          ],
+          "introduces": {}
+        },
+        "pip_bell": {
+          "requires": [
+            "pip",
+            "olivia",
+            "juniper"
+          ],
+          "introduces": {
+            "bell": "a brass bell"
+          }
+        },
+        "check_bell": {
+          "requires": [
+            "bell",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "bell_hung": {
+          "requires": [
+            "bell",
+            "hiccup",
+            "olivia"
+          ],
+          "introduces": {}
+        },
+        "pip_lanterns": {
+          "requires": [
+            "bell",
+            "juniper",
+            "olivia"
+          ],
+          "introduces": {}
+        },
+        "rest": {
+          "requires": [
+            "juniper",
+            "olivia"
+          ],
+          "introduces": {},
+          "conditional": [
+            {
+              "flag": "whale_calf_trusts",
+              "requires": [
+                "hiccup"
+              ]
+            }
+          ]
+        },
+        "pip_notebook": {
+          "requires": [
+            "pip",
+            "openings",
+            "olivia"
+          ],
+          "introduces": {}
+        },
+        "chime_lean": {
+          "requires": [
             "listening_chime",
-            "chime_rules",
-            "learned_note",
-            "hall",
-            "riftseekers"
-          ],
-          "introduces": {
-            "whales": "Cloud whales sweep their long fins through the mist above a grassy island."
-          }
-        },
-        "olivia": {
-          "requires": [
-            "whales"
-          ],
-          "introduces": {
-            "olivia": "Lady Olivia, the unicorn Riftseeker you met on the glacier, waits with a notebook."
-          }
-        },
-        "sky_map": {
-          "requires": [
-            "whales"
-          ],
-          "introduces": {
-            "whale_approach": "The keeper unfolds a cloth map."
-          }
-        },
-        "route_layout": {
-          "requires": [
-            "whale_approach"
+            "openings",
+            "juniper"
           ],
           "introduces": {}
         },
-        "whale_listen": {
+        "lead_test": {
           "requires": [
-            "whales"
-          ],
-          "introduces": {
-            "whale_notch": "A smaller whale with a notched fin vanishes into moving banks of mist."
-          }
-        },
-        "follow_whale": {
-          "requires": [
-            "whale_notch"
+            "billow",
+            "bell",
+            "openings",
+            "olivia"
           ],
           "introduces": {}
         },
-        "keeper_points": {
+        "sing_road": {
           "requires": [
-            "whale_notch"
+            "billow",
+            "juniper"
           ],
           "introduces": {}
         },
-        "song_watch": {
+        "sing_road_wary": {
           "requires": [
-            "whale_notch"
+            "billow",
+            "juniper"
           ],
           "introduces": {}
         },
-        "keeper_lesson": {
+        "check_lantern": {
           "requires": [
-            "whales"
-          ],
-          "introduces": {
-            "whale_greeting": "The keeper can teach a quiet note or a slow arm signal."
-          }
-        },
-        "note_practice": {
-          "requires": [
-            "whale_greeting"
+            "billow",
+            "juniper"
           ],
           "introduces": {}
         },
-        "songkeeper_practice": {
+        "check_lantern_pip": {
           "requires": [
-            "whale_greeting"
+            "pip"
           ],
           "introduces": {}
         },
-        "arm_practice": {
+        "hiccup_leads": {
           "requires": [
-            "whale_greeting"
+            "hiccup",
+            "billow"
           ],
           "introduces": {}
         },
-        "slow_greeting": {
+        "billow_out": {
           "requires": [
-            "whale_greeting"
+            "billow",
+            "openings",
+            "olivia"
           ],
           "introduces": {}
         },
-        "lesson_result": {
+        "billow_balks": {
           "requires": [
-            "whale_greeting"
-          ],
-          "introduces": {
-            "whale_cloth": "a rolled shelter cloth starts sliding past her hoof"
-          }
-        },
-        "loose_kit": {
-          "requires": [
-            "whale_cloth"
+            "billow",
+            "openings",
+            "olivia",
+            "bell"
           ],
           "introduces": {}
         },
-        "waiting_place": {
+        "two_ways": {
           "requires": [
-            "whales"
+            "olivia",
+            "juniper",
+            "bell"
           ],
-          "introduces": {
-            "whale_waiting": "There is one shelter cloth."
-          }
+          "introduces": {},
+          "conditional": [
+            {
+              "flag": "whale_bell_hung",
+              "requires": [
+                "pip"
+              ]
+            }
+          ]
         },
-        "shelter_setup": {
+        "promise": {
           "requires": [
-            "whale_waiting"
-          ],
-          "introduces": {}
-        },
-        "view_setup": {
-          "requires": [
-            "whale_waiting"
-          ],
-          "introduces": {}
-        },
-        "site_ready": {
-          "requires": [
-            "whale_waiting"
-          ],
-          "introduces": {
-            "whale_small_turn": "A little whale turns toward the open lane"
-          }
-        },
-        "little_turn": {
-          "requires": [
-            "whale_small_turn"
+            "island_due_back",
+            "juniper"
           ],
           "introduces": {}
         },
-        "quiet_wait": {
+        "promised": {
           "requires": [
-            "whale_small_turn"
+            "juniper",
+            "pip"
           ],
           "introduces": {}
         },
-        "small_whale_result": {
+        "not_promised": {
           "requires": [
-            "whale_small_turn"
-          ],
-          "introduces": {
-            "whale_new_keeper": "A new kitsune keeper arrives to take over"
-          }
-        },
-        "handoff_sky": {
-          "requires": [
-            "whale_new_keeper"
+            "juniper"
           ],
           "introduces": {}
         },
-        "signal_relay": {
+        "decide": {
           "requires": [
-            "whale_new_keeper"
+            "bell",
+            "olivia",
+            "juniper",
+            "openings"
           ],
           "introduces": {}
         },
-        "signal_memory": {
+        "lead_night": {
           "requires": [
-            "whale_new_keeper"
+            "juniper",
+            "olivia",
+            "openings"
           ],
           "introduces": {}
         },
-        "keeper_echo": {
+        "hiccup_night": {
           "requires": [
-            "whale_new_keeper"
+            "hiccup",
+            "olivia",
+            "openings"
           ],
           "introduces": {}
         },
-        "sky_repair": {
+        "guided": {
           "requires": [
-            "whale_new_keeper"
-          ],
-          "introduces": {
-            "whale_report": "It is a promise to bring news, not to make the whales return."
-          }
-        },
-        "sky_repair_1": {
-          "requires": [
-            "whale_report"
+            "openings",
+            "salt_flats",
+            "island_due_back",
+            "listening_chime",
+            "olivia",
+            "juniper"
           ],
           "introduces": {}
         },
-        "sky_repair_2": {
+        "sleep_on_it": {
           "requires": [
-            "whale_report"
+            "olivia",
+            "juniper"
           ],
           "introduces": {}
         },
-        "opening_decision": {
+        "olivia_night": {
           "requires": [
-            "whale_greeting",
-            "whale_new_keeper"
+            "openings",
+            "bell",
+            "pip"
           ],
           "introduces": {}
         },
-        "gentle": {
+        "juniper_night": {
           "requires": [
-            "whale_greeting",
-            "whale_new_keeper"
+            "island_due_back",
+            "hiccup"
           ],
           "introduces": {}
         },
-        "offer": {
+        "wait_ending": {
           "requires": [
-            "whale_greeting",
-            "whale_new_keeper"
-          ],
-          "introduces": {}
-        },
-        "guide": {
-          "requires": [
-            "whale_greeting",
-            "whale_new_keeper"
-          ],
-          "introduces": {}
-        },
-        "guide_relay": {
-          "requires": [
-            "whale_greeting",
-            "whale_new_keeper"
-          ],
-          "introduces": {}
-        },
-        "guide_note": {
-          "requires": [
-            "whale_greeting",
-            "whale_new_keeper"
-          ],
-          "introduces": {}
-        },
-        "guide_arms": {
-          "requires": [
-            "whale_greeting",
-            "whale_new_keeper"
-          ],
-          "introduces": {}
-        },
-        "guide_wait": {
-          "requires": [
-            "whale_greeting",
-            "whale_new_keeper"
-          ],
-          "introduces": {}
-        },
-        "last_tail": {
-          "requires": [
-            "whale_greeting",
-            "whale_new_keeper"
+            "openings",
+            "bell",
+            "island_due_back",
+            "listening_chime",
+            "olivia",
+            "juniper"
           ],
           "introduces": {}
         }

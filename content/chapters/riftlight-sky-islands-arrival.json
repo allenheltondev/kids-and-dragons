@@ -1,5 +1,5 @@
 {
-  "$comment": "Riftlight authored opening draft. Development preview only; see ../README.md. Production campaign id will be riftlight. No bonus XP: preserve the design bible campaign budget.",
+  "$comment": "Riftlight, Wandering Sky strand arrival (docs/campaigns/continental-rift/arc.md, sky-islands-arrival). Revised in November 2026: question, Keeper Sorrel named, Pip introduced in words true either way, the snapped mooring and the chime's lean as this chapter's clue, and game misses that cost something. Keeps its dice, the wisp fight, the Dojo off the rest, the Attune lesson (taught when attune_taught is unset, acknowledged when set) and the sky_arrival_flight / noticed_the_sky_ship variants.",
   "id": "riftlight-sky-islands-arrival",
   "campaignId": "riftlight",
   "index": 4,
@@ -10,7 +10,7 @@
   "xpAward": 140,
   "entry": "island",
   "goal": {
-    "text": "Find your feet on an island high in the sky.",
+    "text": "Why is this island where it should not be?",
     "steps": [
       {
         "id": "listen_hum",
@@ -18,8 +18,13 @@
         "flag": "listened_for_the_rift_hum"
       },
       {
+        "id": "mooring",
+        "label": "Find what pulled the island loose",
+        "flag": "sky_saw_the_mooring"
+      },
+      {
         "id": "guard_edge",
-        "label": "Help the keeper guard the edge",
+        "label": "Light the signal basket",
         "flag": "guarded_the_island_edge"
       },
       {
@@ -39,11 +44,11 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         }
       ],
       "rift": "collapse",
-      "narration": "The fold opens onto cold stone high above the realm, then shuts behind you with a pop. A kitsune temple keeper hooks an arm through a rope ring. \"Hold on! These are called the Sky Islands, and this one is not where it belongs.\" Your job: find your feet up here. Learn to hear the rift, help guard the edge, and find where the singing leads.",
+      "narration": "The fold opens onto cold stone high above the realm, then shuts behind you with a pop. A kitsune temple keeper hooks an arm through a rope ring. \"Keeper Sorrel. Hold on!\" she shouts. \"These are called the Sky Islands, and this one is not where it belongs. Last night it sat beside its neighbors. This morning it hangs out here, all alone.\" She squints at you. \"Why is this island where it should not be? Help me find out, and help me keep my travelers off the edge.\"",
       "choices": [
         {
           "id": "continue",
@@ -58,7 +63,7 @@
             "flag": "sky_arrival_flight"
           },
           "replace": true,
-          "text": "The Cairnstep griffins set your party down on a stone pad high above the realm, then are gone in three flaps. A kitsune temple keeper hooks an arm through a rope ring. \"Hold on! These are called the Sky Islands. Our old landing route points into empty sky now.\" Your job: find your feet up here. Learn to hear the rift, help guard the edge, and find where the singing leads."
+          "text": "The Cairnstep griffins set your party down on a stone pad high above the realm, then are gone in three flaps. A kitsune temple keeper hooks an arm through a rope ring. \"Keeper Sorrel. Hold on!\" she shouts. \"These are called the Sky Islands, and the griffins found us by luck. Last night this island sat beside its neighbors. This morning it hangs out here, all alone.\" She squints at you. \"Why is this island where it should not be? Help me find out, and help me keep my travelers off the edge.\""
         }
       ],
       "art": "scenes/riftlight/sky-landing"
@@ -68,13 +73,13 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         }
       ],
       "stat": "might",
       "tn": 8,
       "roller": "all",
-      "prompt": "The wind slams the landing pad like a door. \"Grab a rope ring and hold on!\" shouts the keeper.",
+      "prompt": "The wind slams the landing pad like a door. \"Grab a rope ring and hold on!\" shouts Sorrel.",
       "onSuccess": {
         "goto": "landing_held"
       },
@@ -88,14 +93,14 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         }
       ],
-      "narration": "Every hand finds a ring, and the gust howls past. \"Good grips,\" says the keeper. \"Most visitors arrive sitting down.\" She leads you past a gold-roofed shrine with a bronze bell as big as a barrel, and hands you a wrapped supper bundle. \"Eat when the wind lets you.\"",
+      "narration": "Every hand finds a ring, and the gust howls past. \"Good grips,\" says Sorrel. \"Most visitors arrive sitting down.\" She leads you past a gold-roofed shrine with a bronze bell as big as a barrel, and hands you a wrapped supper bundle. \"Eat when the wind lets you.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Follow the keeper",
+          "label": "Follow Sorrel",
           "icon": "hand",
           "goto": "lesson"
         }
@@ -114,14 +119,14 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         }
       ],
-      "narration": "The wind scoops you off your feet, and you slide across the boards like soap. The keeper's rope hooks the last boot near the edge. Your hats keep going. One lands on a gull, which now looks very official. She leads you past a gold-roofed shrine with a bronze bell and gives you a supper bundle for the scrapes.",
+      "narration": "The wind scoops you off your feet, and you slide across the boards like soap. Sorrel's rope hooks the last boot near the edge. Your hats keep going. One lands on a gull, which now looks very official. She leads you past a gold-roofed shrine with a bronze bell and gives you a supper bundle for the scrapes.",
       "choices": [
         {
           "id": "continue",
-          "label": "Follow the keeper",
+          "label": "Follow Sorrel",
           "icon": "hand",
           "goto": "lesson"
         }
@@ -154,10 +159,10 @@
         },
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         }
       ],
-      "narration": "Seren Wisp, the kitsune from the glacier, is comparing notes with a young manticore named Pip Thistledown. \"I count what has moved,\" says Pip, tapping his notebook. \"The count keeps changing. Help me listen.\" Seren asks you to hum the hall note and listen for an answer. \"A starweaver can learn to answer a rift's hum. That is called Attune.\"",
+      "narration": "Seren Wisp, the kitsune from the glacier, is here on the shrine steps, comparing notes with Pip Thistledown, the young manticore scout who runs errands for Lady Olivia. He has a notebook in one paw and a spoon behind his ear, for prying things. \"Lady Olivia says moved places are the most important places,\" says Pip. \"Help me listen?\" Seren asks you to hum the hall note and listen for an answer. \"A starweaver can learn to answer a rift's hum. That is called Attune.\"",
       "choices": [
         {
           "id": "continue",
@@ -206,7 +211,7 @@
             "flag": "attune_taught"
           },
           "replace": true,
-          "text": "Seren Wisp and Pip Thistledown are here too, checking another moved route. \"The count keeps changing here too,\" says Pip. \"Help me listen.\" Seren asks you to compare the sounds with what she taught you before."
+          "text": "Seren Wisp and Pip Thistledown, the young manticore scout, are here too, checking another moved place. Pip waves his spoon. \"Lady Olivia says moved places are the most important places. Help me listen?\" Seren asks you to compare the sounds with what she taught you before."
         }
       ],
       "art": "scenes/riftlight/sky-landing"
@@ -223,7 +228,7 @@
           "name": "Seren Wisp"
         }
       ],
-      "narration": "Pip's notebook is full of tiny islands and crossed-out arrows. \"This one was east of here at breakfast. Now it is south. Rude.\" He taps a smudge. \"When a sound out there moves, the islands near it move too. I think. Will you help me listen?\"",
+      "narration": "Pip's notebook is full of tiny islands and crossed-out arrows. \"This one was beside its neighbors at supper. Now look. Rude.\" He taps a smudge. \"Lady Olivia says when a sound out there moves, the islands near it move too. If I can prove it, she'll put my name in her book. Will you help me listen?\"",
       "choices": [
         {
           "id": "continue",
@@ -296,9 +301,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Look around the island",
+          "label": "Follow Sorrel to the edge",
           "icon": "hand",
-          "goto": "local"
+          "goto": "mooring"
         }
       ],
       "onEnter": [
@@ -325,9 +330,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Look around the island",
+          "label": "Follow Sorrel to the edge",
           "icon": "hand",
-          "goto": "local"
+          "goto": "mooring"
         }
       ],
       "onEnter": [
@@ -343,10 +348,10 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         }
       ],
-      "narration": "The keeper shows you a rope between two marker posts. Yesterday it pointed to the next island. Now it points at empty sky. \"And travelers keep following it,\" she sighs. A low song drifts in from beyond the mist. How will you keep travelers back from the edge?",
+      "narration": "Sorrel shows you a rope between two marker posts. Yesterday it pointed to the next island. Now it points at empty sky. \"And travelers keep following it,\" she sighs. A low song drifts in from beyond the mist. How will you keep travelers back from the edge?",
       "choices": [
         {
           "id": "markers",
@@ -378,10 +383,10 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         }
       ],
-      "narration": "The keeper has three cairn stones on wooden sleds, each stone as heavy as a sleeping goat. They belong on the path, where travelers will see them. The boards are slick with mist, and the wind keeps trying to help.",
+      "narration": "Sorrel has three cairn stones on wooden sleds, each stone as heavy as a sleeping goat. They belong on the path, where travelers will see them. The boards are slick with mist, and the wind keeps trying to help.",
       "choices": [
         {
           "id": "continue",
@@ -397,7 +402,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         }
       ],
       "stat": "might",
@@ -417,10 +422,10 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         }
       ],
-      "narration": "Three cairns stand in a line, tall enough to see in fog. The keeper strings a warning cord between them. It hums. \"One less traveler walking toward an old view.\" Pip salutes the nearest cairn, in case it is somebody important.",
+      "narration": "Three cairns stand in a line, tall enough to see in fog. Sorrel strings a warning cord between them. It hums. \"One less traveler walking toward an old view.\" Pip salutes the nearest cairn, in case it is somebody important.",
       "choices": [
         {
           "id": "continue",
@@ -436,10 +441,10 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         }
       ],
-      "narration": "The last stone slides off its sled and drops over the edge. You wait for a crash. None comes. \"It will land somewhere,\" says the keeper. She ties her washing line between the two cairns you saved and clips a spoon to it. The spoon clatters a fine warning.",
+      "narration": "The last stone slides off its sled and drops over the edge. You wait for a crash. None comes. \"It will land somewhere,\" says Sorrel. She ties her washing line between the two cairns you saved and clips a spoon to it. The spoon clatters a fine warning.",
       "choices": [
         {
           "id": "continue",
@@ -455,10 +460,10 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         }
       ],
-      "narration": "You wait for the low song again. It comes from somewhere the keeper did not expect. She hands you her slate and chalk. \"Point at it every time it sounds. If most of you agree, we have a true bearing.\"",
+      "narration": "You wait for the low song again. It comes from somewhere Sorrel did not expect. She hands you her slate and chalk. \"Point at it every time it sounds. If most of you agree, we have a true bearing.\"",
       "choices": [
         {
           "id": "continue",
@@ -474,13 +479,13 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         }
       ],
       "stat": "clever",
       "tn": 12,
       "roller": "all",
-      "prompt": "Point at the song each time it sounds, so the keeper can chalk a true bearing.",
+      "prompt": "Point at the song each time it sounds, so Sorrel can chalk a true bearing.",
       "onSuccess": {
         "goto": "song_bearing"
       },
@@ -494,10 +499,10 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         }
       ],
-      "narration": "Most fingers point the same way: east, and a little down. The keeper chalks a bold line, then the old route beside it. They do not match at all. \"The song has moved,\" she says. \"So have we.\" She moves the marker posts to your line. Her scarf, tied on top, flaps east.",
+      "narration": "Most fingers point the same way: east, and a little down. Sorrel chalks a bold line, then the old route beside it. They do not match at all. \"The song has moved,\" she says. \"So have we.\" She moves the marker posts to your line. Her scarf, tied on top, flaps east.",
       "choices": [
         {
           "id": "continue",
@@ -513,10 +518,10 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         }
       ],
-      "narration": "Fingers point east, south, and one straight up at a gull. The slate looks like a spider fell in the chalk. \"The song bounces off the mist,\" says the keeper kindly. She picks east and moves the marker posts. The gull looks insulted.",
+      "narration": "Fingers point east, south, and one straight up at a gull. The slate looks like a spider fell in the chalk. \"The song bounces off the mist,\" says Sorrel kindly. She picks east and moves the marker posts. The gull looks insulted.",
       "choices": [
         {
           "id": "continue",
@@ -532,7 +537,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         }
       ],
       "stat": "quick",
@@ -552,10 +557,10 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         }
       ],
-      "narration": "From up here the island looks like a dropped cookie: a shrine, a landing pad, a pole with an iron basket, and a rope road to nowhere. Far off, a long shape slides through the mist, singing. You land and draw the keeper a map. She nods so hard her ears flap.",
+      "narration": "From up here the island looks like a dropped cookie: a shrine, a landing pad, a pole with an iron basket, and a rope road to nowhere. Far off, a long shape slides through the mist, singing. You land and draw Sorrel a map. She nods so hard her ears flap.",
       "choices": [
         {
           "id": "continue",
@@ -571,10 +576,10 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         }
       ],
-      "narration": "A gust spins you like a leaf and drops you back on the pad. But you saw enough: the edge is longer than the rope. You help the keeper drag three cairns to the spots you remember. They lean a little, like friends telling a secret.",
+      "narration": "A gust spins you like a leaf and drops you back on the pad. But you saw enough: the edge is longer than the rope. You help Sorrel drag three cairns to the spots you remember. They lean a little, like friends telling a secret.",
       "choices": [
         {
           "id": "continue",
@@ -590,14 +595,14 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/dob",
           "name": "Dob"
         }
       ],
-      "narration": "A rattle comes down the old rope road. A kite seller is pulling a cart toward the edge, nose in a map. The map is upside down. The road ends in empty air twenty steps ahead. \"Dob! Stop!\" shouts the keeper. He waves and keeps walking. How will you stop him?",
+      "narration": "A rattle comes down the old rope road. A kite seller is pulling a cart toward the edge, nose in a map. The map is upside down. The road ends in empty air twenty steps ahead. \"Dob! Stop!\" shouts Sorrel. He waves and keeps walking. How will you stop him?",
       "choices": [
         {
           "id": "catch",
@@ -626,7 +631,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/dob",
@@ -649,7 +654,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/dob",
@@ -672,7 +677,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/dob",
@@ -696,7 +701,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/dob",
@@ -707,7 +712,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Talk to the keeper",
+          "label": "Talk to Sorrel",
           "icon": "hand",
           "goto": "edge_merge"
         }
@@ -734,7 +739,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/dob",
@@ -745,7 +750,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Talk to the keeper",
+          "label": "Talk to Sorrel",
           "icon": "hand",
           "goto": "edge_merge"
         }
@@ -767,14 +772,14 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/dob",
           "name": "Dob"
         }
       ],
-      "narration": "The keeper points to a tall pole with an iron basket on top. \"The signal basket. At dusk we light it, so islands and ferries can find us. The pole is crooked from the move, and our fuel is a mess. A ferry captain named Thimble is due tonight. Without a light, she will never find us.\"",
+      "narration": "Sorrel points to a tall pole with an iron basket on top. \"The signal basket. At dusk we light it, so islands and ferries can find us. The pole is crooked from the move, and our fuel is a mess. A ferry captain named Thimble is due tonight. Without a light, she will never find us.\"",
       "choices": [
         {
           "id": "continue",
@@ -790,14 +795,14 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/pip_thistledown",
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "The pole leans like a sleepy giraffe, its stone foot cracked loose. \"If that tips at dusk,\" says Pip, chewing his pencil, \"the fire goes over the edge.\" The keeper hands you rope and a pile of wedge stones. How will you set it straight before dark?",
+      "narration": "The pole leans like a sleepy giraffe, its stone foot cracked loose. \"If that tips at dusk,\" says Pip, chewing his pencil, \"the fire goes over the edge.\" Sorrel hands you rope and a pile of wedge stones. How will you set it straight before dark?",
       "choices": [
         {
           "id": "ropes",
@@ -833,7 +838,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/pip_thistledown",
@@ -843,7 +848,7 @@
       "stat": "might",
       "tn": 12,
       "roller": "all",
-      "prompt": "Loop the ropes around the pole and heave together on the keeper's count!",
+      "prompt": "Loop the ropes around the pole and heave together on Sorrel's count!",
       "onSuccess": {
         "goto": "pole_up"
       },
@@ -857,7 +862,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/pip_thistledown",
@@ -880,7 +885,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/pip_thistledown",
@@ -904,7 +909,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/pip_thistledown",
@@ -927,14 +932,14 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/pip_thistledown",
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "The pole stands as straight as a spoon in porridge. The keeper taps the basket, and it rings, proud and tinny. Pip held one rope a moment too long and got lifted off the ground. Nobody mentions it, loudly.",
+      "narration": "The pole stands as straight as a spoon in porridge. Sorrel taps the basket, and it rings, proud and tinny. Pip held one rope a moment too long and got lifted off the ground. Nobody mentions it, loudly.",
       "choices": [
         {
           "id": "continue",
@@ -950,14 +955,14 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/pip_thistledown",
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "The pole stands, mostly. It leans a thumb's width east and creaks at every gust. The keeper ties on two more ropes and gives it a stern look. \"It will hold. It just has opinions.\"",
+      "narration": "The pole stands, mostly. It leans a thumb's width east and creaks at every gust. Sorrel ties on two more ropes and gives it a stern look. \"It will hold. It just has opinions.\"",
       "choices": [
         {
           "id": "continue",
@@ -973,10 +978,10 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         }
       ],
-      "narration": "\"No fire without fuel,\" sighs the keeper. Her oil jars cracked in the move. The woodshed under the shrine holds dry logs, if you can carry them across the windy yard. The orchard has windfall twigs, if you can catch them first. What will you fetch?",
+      "narration": "\"No fire without fuel,\" sighs Sorrel. Her oil jars cracked in the move. The woodshed under the shrine holds dry logs, if you can carry them across the windy yard. The orchard has windfall twigs, if you can catch them first. What will you fetch?",
       "choices": [
         {
           "id": "logs",
@@ -1012,7 +1017,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         }
       ],
       "stat": "might",
@@ -1031,7 +1036,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         }
       ],
       "stat": "quick",
@@ -1050,7 +1055,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         }
       ],
       "stat": "quick",
@@ -1069,7 +1074,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         }
       ],
       "stat": "quick",
@@ -1088,7 +1093,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/pip_thistledown",
@@ -1111,14 +1116,14 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/pip_thistledown",
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "Half the wood is wet, and the other half is wetter. \"This will burn,\" says the keeper. \"It will not like it.\" She slips you a bundle of shrine incense to help. \"Do not tell the shrine,\" she whispers.",
+      "narration": "Half the wood is wet, and the other half is wetter. \"This will burn,\" says Sorrel. \"It will not like it.\" She slips you a bundle of shrine incense to help. \"Do not tell the shrine,\" she whispers.",
       "choices": [
         {
           "id": "continue",
@@ -1134,14 +1139,14 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/seren_wisp",
           "name": "Seren Wisp"
         }
       ],
-      "narration": "The sun sinks behind the mist. The basket is full, and someone must light it in a gale. The keeper holds out a flint striker and a clay pot of shrine coals. Seren licks a finger and checks the wind. \"Fast and bright, or slow and careful. Either works, if nobody sneezes.\"",
+      "narration": "The sun sinks behind the mist. The basket is full, and someone must light it in a gale. Sorrel holds out a flint striker and a clay pot of shrine coals. Seren licks a finger and checks the wind. \"Fast and bright, or slow and careful. Either works, if nobody sneezes.\"",
       "choices": [
         {
           "id": "flint",
@@ -1170,7 +1175,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/seren_wisp",
@@ -1194,7 +1199,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/seren_wisp",
@@ -1219,7 +1224,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/seren_wisp",
@@ -1242,14 +1247,14 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/pip_thistledown",
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "The flame catches and stands up tall and gold. Far off in the mist, a tiny light blinks back. \"There,\" says the keeper. \"Now the sky can find us.\" Pip bows to the basket. The keeper hands you a brass whistle from the shrine. \"One loud note, for when the sky must hear you.\"",
+      "narration": "The flame catches and stands up tall and gold. Far off in the mist, a tiny light blinks back. \"There,\" says Sorrel. \"Now the sky can find us.\" Pip bows to the basket. Sorrel hands you a brass whistle from the shrine. \"One loud note, for when the sky must hear you.\"",
       "choices": [
         {
           "id": "continue",
@@ -1280,14 +1285,14 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/pip_thistledown",
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "The wood sulks, smokes, and gives a small flame that coughs at every gust. The keeper feeds it shrine incense, and it brightens to a wobbly glow that smells like lemon cake. It will be seen. Just not smoothly.",
+      "narration": "The wood sulks, smokes, and gives a small flame that coughs at every gust. Sorrel feeds it shrine incense, and it brightens to a wobbly glow that smells like lemon cake. It will be seen. Just not smoothly.",
       "choices": [
         {
           "id": "continue",
@@ -1309,7 +1314,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/courier_griffin",
@@ -1376,7 +1381,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/courier_griffin",
@@ -1399,7 +1404,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/courier_griffin",
@@ -1423,7 +1428,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/courier_griffin",
@@ -1447,7 +1452,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/courier_griffin",
@@ -1470,7 +1475,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/courier_griffin",
@@ -1607,7 +1612,7 @@
         }
       ],
       "art": "scenes/riftlight/sky-ferry",
-      "narration": "The ferry is tied up, but the passengers still cling to the rail. The keeper brings a ladder and a blanket. How will you help them down?",
+      "narration": "The ferry is tied up, but the passengers still cling to the rail. Sorrel brings a ladder and a blanket. How will you help them down?",
       "choices": [
         {
           "id": "hand",
@@ -1632,10 +1637,10 @@
         },
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         }
       ],
-      "narration": "You pass the supper around. One by one, the passengers let go of the rail to hold some bread. The keeper sends them to the shrine for barley tea, and the hens follow in a line. Thimble flops onto a barrel.",
+      "narration": "You pass the supper around. One by one, the passengers let go of the rail to hold some bread. Sorrel sends them to the shrine for barley tea, and the hens follow in a line. Thimble flops onto a barrel.",
       "choices": [
         {
           "id": "continue",
@@ -1655,10 +1660,10 @@
         },
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         }
       ],
-      "narration": "You speak softly and offer a steady hand. One by one, the passengers step onto firm stone. The keeper sends them off for barley tea. The hens follow in a line, as if they planned it. Thimble flops onto a barrel.",
+      "narration": "You speak softly and offer a steady hand. One by one, the passengers step onto firm stone. Sorrel sends them off for barley tea. The hens follow in a line, as if they planned it. Thimble flops onto a barrel.",
       "choices": [
         {
           "id": "continue",
@@ -1678,10 +1683,10 @@
         },
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         }
       ],
-      "narration": "The keeper brings rice crackers, and nobody hurries. The passengers climb down one crunch at a time. Thimble sits on a barrel and watches the hens follow them. \"Next time,\" she says, \"I bring only hens.\"",
+      "narration": "Sorrel brings rice crackers, and nobody hurries. The passengers climb down one crunch at a time. Thimble sits on a barrel and watches the hens follow them. \"Next time,\" she says, \"I bring only hens.\"",
       "choices": [
         {
           "id": "continue",
@@ -1720,7 +1725,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/pip_thistledown",
@@ -1731,7 +1736,7 @@
           "name": "Dob"
         }
       ],
-      "narration": "The keeper builds a wind wall of baskets and blankets. Hot barley tea goes around in chipped cups. The hens roost on Pip, who bears it nobly. Dob hangs his kites along the wall and opens his ribbon cart. Far off, the low song comes again.",
+      "narration": "Sorrel builds a wind wall of baskets and blankets. Hot barley tea goes around in chipped cups. The hens roost on Pip, who bears it nobly. Dob hangs his kites along the wall and opens his ribbon cart. Far off, the low song comes again.",
       "choices": [
         {
           "id": "rest",
@@ -1794,10 +1799,10 @@
         },
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         }
       ],
-      "narration": "Pip's notebook is soaked at one corner. You dry the pages by the fire while he reads his list aloud: islands that moved, three socks, a hen named Gravy. \"I don't know why it all moves,\" he says quietly. \"Counting is easier with friends.\" Gravy agrees, from his head.",
+      "narration": "Pip's notebook is soaked at one corner. You dry the pages by the fire while he reads his list aloud: islands that moved, three socks, a hen named Gravy. \"Lady Olivia says counting is how you catch the truth,\" he says quietly. \"But I still don't know why it all moves. Counting is easier with friends.\" Gravy agrees, from his head.",
       "choices": [
         {
           "id": "continue",
@@ -1813,20 +1818,20 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/seren_wisp",
           "name": "Seren Wisp"
         }
       ],
-      "narration": "Night. The sky is huge and full of stars. The shrine bell shivers all by itself. Then the low song comes, close and slow, rolling over the island like a wave. \"That is the nearest it has been,\" says the keeper. \"Tonight we find which way it leads.\"",
+      "narration": "Night. The sky is huge and full of stars. The shrine bell shivers all by itself. Then the low song comes, close and slow, rolling over the island like a wave. \"That is the nearest it has been,\" says Sorrel. \"Tonight we find which way it leads.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Follow the song",
+          "label": "Gather everyone's clues",
           "icon": "hand",
-          "goto": "song_track"
+          "goto": "bearing_vote"
         }
       ],
       "art": "scenes/riftlight/windbreak-camp"
@@ -1836,7 +1841,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/seren_wisp",
@@ -1847,7 +1852,7 @@
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "Everyone has a clue: the hum you heard this morning, the keeper's chalk slate, Thimble's humming rail, Fenwick's feather, and Pip's crossed-out arrows. \"Lay them together,\" says Seren, \"and they will show where the song leads.\" Where will you start?",
+      "narration": "Everyone has a clue: the hum you heard this morning, Sorrel's chalk slate, Thimble's humming rail, Fenwick's feather, and Pip's crossed-out arrows. \"Lay them together,\" says Seren, \"and they will show where the song leads.\" Where will you start?",
       "choices": [
         {
           "id": "notes",
@@ -1882,7 +1887,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/pip_thistledown",
@@ -1891,7 +1896,7 @@
       ],
       "art": "scenes/riftlight/windbreak-camp",
       "type": "story",
-      "narration": "You lay Pip's notebook over the chalk slate. The keeper checks each crossed-out arrow against her chalk lines. They all lean one way.",
+      "narration": "You lay Pip's notebook over the chalk slate. Sorrel checks each crossed-out arrow against her chalk lines. They all lean one way.",
       "choices": [
         {
           "id": "continue",
@@ -1905,7 +1910,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/courier_griffin",
@@ -1918,7 +1923,7 @@
       ],
       "art": "scenes/riftlight/windbreak-camp",
       "type": "story",
-      "narration": "You ring the edge with feathers and lanterns and call out. The keeper calls each direction back, so everyone can check it.",
+      "narration": "You ring the edge with feathers and lanterns and call out. Sorrel calls each direction back, so everyone can check it.",
       "choices": [
         {
           "id": "continue",
@@ -1932,7 +1937,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/seren_wisp",
@@ -1955,7 +1960,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/seren_wisp",
@@ -1979,7 +1984,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/captain_thimble",
@@ -1990,7 +1995,7 @@
           "name": "Fenwick"
         }
       ],
-      "narration": "Every clue points one way: east, past the dark edge, where the sky is singing. The keeper smiles for the first time since you landed. \"The old keepers said cloud whales sing where the sky is safe to cross. If their song has moved, they may need help. Someone must go and see.\"",
+      "narration": "Every clue points one way: east, past the dark edge, where the sky is singing. Sorrel smiles for the first time since you landed. \"The old keepers said cloud whales sing where the sky is safe to cross. If their song has moved, they may need help. Someone must go and see.\"",
       "choices": [
         {
           "id": "continue",
@@ -2012,7 +2017,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/captain_thimble",
@@ -2023,7 +2028,7 @@
           "name": "Fenwick"
         }
       ],
-      "narration": "Dawn is a pale stripe. The keeper presses a flag-cloth with her island's mark into your hands. \"Someone must see what is wrong with the singing. Thimble's ferry can take you part of the way. Fenwick can lead you along the stepping islands.\" How will you go?",
+      "narration": "Dawn is a pale stripe. Sorrel presses a flag-cloth with her island's mark into your hands. \"Someone must see what is wrong with the singing. Past the stepping islands, a keeper named Juniper looks after the whales' turning place. Tell her Sorrel sent you. Thimble's ferry can take you part of the way. Fenwick can lead you along the stepping islands.\" How will you go?",
       "choices": [
         {
           "id": "ferry",
@@ -2035,17 +2040,28 @@
           "id": "flags",
           "label": "Follow Fenwick's flags",
           "icon": "hand",
-          "goto": "route_flags"
+          "goto": "route_flags",
+          "when": {
+            "notFlag": "sky_whales_silent"
+          }
         }
       ],
-      "art": "scenes/riftlight/sky-landing"
+      "art": "scenes/riftlight/sky-landing",
+      "variants": [
+        {
+          "when": {
+            "flag": "sky_whales_silent"
+          },
+          "text": "Fenwick shakes his head. \"Not without the whales' answer. The ferry, then.\""
+        }
+      ]
     },
     "route_ferry": {
       "type": "story",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/captain_thimble",
@@ -2056,7 +2072,7 @@
           "name": "Dob"
         }
       ],
-      "narration": "Thimble hands out boarding ropes. \"Hold the rail, and no singing back until I say.\" Her passengers vote to stay with the keeper, hens and all, in case there is more tea. Dob loads his kite cart aboard and sits on top, map the right way up.",
+      "narration": "Thimble hands out boarding ropes. \"Hold the rail, and no singing back until I say.\" Her passengers vote to stay with Sorrel, hens and all, in case there is more tea. Dob loads his kite cart aboard and sits on top, map the right way up.",
       "choices": [
         {
           "id": "continue",
@@ -2068,7 +2084,13 @@
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "sky_route_ferry"
+          "flag": "sky_route_ferry",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "sky_whales_silent",
+          "value": false
         }
       ],
       "art": "scenes/riftlight/sky-ferry"
@@ -2078,7 +2100,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/courier_griffin",
@@ -2097,7 +2119,8 @@
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "sky_route_flags"
+          "flag": "sky_route_flags",
+          "value": true
         }
       ],
       "art": "scenes/riftlight/sky-landing"
@@ -2107,10 +2130,10 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         }
       ],
-      "narration": "Dawn. The island falls away behind you, small and gold-roofed, its signal basket still glowing. Far off, a huge shape moves through the mist, singing. You have neighbors who trust you, a bearing, and a road to follow.",
+      "narration": "Dawn. The island falls away behind you, small and gold-roofed, its signal basket still glowing. Far off, a huge shape moves through the mist, singing. So here is your piece: this island did not drift. Something pulled it loose, hard enough to snap a rope as thick as a tree, and the whales' song has moved too. Something is moving the land. What is it? And can you put things right?",
       "choices": [],
       "variants": [
         {
@@ -2141,14 +2164,14 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/pip_thistledown",
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "The open pad lies between you and the pole, and the wind comes in gusts. When a gust ends, every wind banner droops. \"Wait for the lull,\" says the keeper, \"then cross.\"",
+      "narration": "The open pad lies between you and the pole, and the wind comes in gusts. When a gust ends, every wind banner droops. \"Wait for the lull,\" says Sorrel, \"then cross.\"",
       "interaction": {
         "kind": "timing",
         "cue": "Wait until the banners droop, then run to the pole.",
@@ -2163,11 +2186,19 @@
       },
       "onFailure": {
         "goto": "basket_plan",
-        "narration": "A gust spins you twice and sits you down. The keeper reels you in on her rope."
+        "narration": "A gust spins you twice and sits you down hard. Sorrel reels you in on her rope, scraped and dizzy.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "nonlethal": true,
+            "to": "roller"
+          }
+        ]
       },
       "onAssisted": {
         "goto": "basket_plan",
-        "narration": "The keeper calls the lull. \"Now!\" You cross together without a stumble."
+        "narration": "Sorrel calls the lull. \"Now!\" You cross together without a stumble."
       },
       "art": "scenes/riftlight/sky-landing"
     },
@@ -2176,31 +2207,39 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/pip_thistledown",
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "The fuel must go up the ladder to the basket. The keeper stands at the bottom, and Pip waits at the top, arms out like a very small harbor. \"Hand to hand,\" calls the keeper, \"and do not drop one on me.\"",
+      "narration": "The fuel must go up to the basket. Sorrel steadies the ladder, and Pip waits at the top, arms out like a very small harbor. \"Toss them up to me,\" he calls. \"Lady Olivia says I have excellent hands.\" Sorrel says, \"Do not drop one on me.\"",
       "interaction": {
-        "kind": "relay",
-        "cue": "Catch the logs and pass them up the line.",
-        "actionLabel": "Pass the logs",
-        "objectLabel": "the logs"
+        "kind": "precision",
+        "cue": "Toss when the marker reaches Pip's arms.",
+        "actionLabel": "Toss the log",
+        "target": 0.5,
+        "width": 0.35,
+        "periodMs": 4500
       },
       "onSuccess": {
         "goto": "light",
-        "narration": "Pip drops the last log in with a clunk and a cheer. Nobody is hit. A miracle."
+        "narration": "Pip catches the last log with a clunk and a cheer, and drops it in the basket. Nobody is hit. A miracle."
       },
       "onFailure": {
         "goto": "light",
-        "narration": "One log escapes and rolls under the shrine. The keeper fetches it, grumbling, and the basket fills anyway."
+        "narration": "One log escapes, bounces down the shrine steps and knocks your supper bundle clean over the edge. The basket fills anyway. Your tummy will notice later.",
+        "effects": [
+          {
+            "type": "takeItem",
+            "itemId": "supper_bundle"
+          }
+        ]
       },
       "onAssisted": {
         "goto": "light",
-        "narration": "The keeper hauls the last logs up on a rope. \"A little help is still help,\" she says."
+        "narration": "Sorrel hauls the last logs up on a rope. \"A little help is still help,\" she says."
       },
       "art": "scenes/riftlight/signal-pole"
     },
@@ -2209,14 +2248,14 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/pip_thistledown",
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "\"What would make a good camp tonight?\" asks the keeper. Pip suggests more hens. The hens suggest more barley.",
+      "narration": "\"What would make a good camp tonight?\" asks Sorrel. Pip suggests more hens. The hens suggest more barley.",
       "interaction": {
         "kind": "play",
         "cue": "Add something to your cozy camp.",
@@ -2259,69 +2298,16 @@
       },
       "onAssisted": {
         "goto": "night_song",
-        "narration": "The keeper adds the last touches, humming. The camp is cozy before you know it."
+        "narration": "Sorrel adds the last touches, humming. The camp is cozy before you know it."
       },
       "art": "scenes/riftlight/sky-night-windbreak"
-    },
-    "song_track": {
-      "type": "interaction",
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "narration": "The song lights a glow in one of three wind-bells on the shrine. The glow hops from bell to bell like a flea. \"Where it stops,\" says Seren, \"is the way the song leads.\"",
-      "interaction": {
-        "kind": "tracking",
-        "cue": "Watch the glow hop between the bells, then pick where it ends.",
-        "actionLabel": "Listen there",
-        "covers": [
-          "North bell",
-          "South bell",
-          "East bell"
-        ],
-        "start": 0,
-        "swaps": [
-          [
-            0,
-            1
-          ],
-          [
-            1,
-            2
-          ],
-          [
-            0,
-            1
-          ]
-        ],
-        "stepMs": 1200
-      },
-      "onSuccess": {
-        "goto": "bearing_vote",
-        "narration": "The glow settles in the east bell, humming. East."
-      },
-      "onFailure": {
-        "goto": "bearing_vote",
-        "narration": "You pick the wrong bell, and the east bell rings out cheerfully by itself. East, then."
-      },
-      "onAssisted": {
-        "goto": "bearing_vote",
-        "narration": "Seren points at the east bell. \"There. Now you know what to prove.\""
-      },
-      "art": "scenes/riftlight/sky-mist-song"
     },
     "song_echo": {
       "type": "interaction",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/seren_wisp",
@@ -2364,7 +2350,14 @@
       },
       "onFailure": {
         "goto": "route_vote",
-        "narration": "Your pattern wobbles, but the song answers anyway, patient as a grown-up."
+        "narration": "Your pattern wobbles, and the song stops. No answer comes. Fenwick ruffles his feathers. \"Then I can't tell where to fly.\"",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "sky_whales_silent",
+            "value": true
+          }
+        ]
       },
       "onAssisted": {
         "goto": "route_vote",
@@ -2377,7 +2370,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "entities/will_o_wisp",
@@ -2389,7 +2382,7 @@
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "The bright basket draws little floating lights out of the dusk. Two wisps tumble in on the gale and circle the flame, giggling. They think it is a very large, very rude candle, and they want it. \"They will pull it apart!\" cries the keeper. \"Shoo them off, gently!\"",
+      "narration": "The bright basket draws little floating lights out of the dusk. Two wisps tumble in on the gale and circle the flame, giggling. They think it is a very large, very rude candle, and they want it. \"They will pull it apart!\" cries Sorrel. \"Shoo them off, gently!\"",
       "choices": [
         {
           "id": "continue",
@@ -2438,14 +2431,14 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/pip_thistledown",
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "The wisps squeak and bob away over the edge, still giggling. Pip scoops a spoonful of their leftover glow into a jar and screws on the lid. \"For emergencies,\" he says, and hands it to you. \"Or snacks.\" The keeper laughs so hard her ears flap.",
+      "narration": "The wisps squeak and bob away over the edge, still giggling. Pip scoops a spoonful of their leftover glow into a jar and screws on the lid. \"For emergencies,\" he says, and hands it to you. \"Or snacks.\" Sorrel laughs so hard her ears flap.",
       "choices": [
         {
           "id": "continue",
@@ -2460,14 +2453,14 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/pip_thistledown",
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "The wisps swirl until the world is all dizzy sparkles. The keeper rings the shrine bell with both paws. Wisps hate an honest bell, and they scatter with a rude little pop. The basket still burns, a little singed and very proud.",
+      "narration": "The wisps swirl until the world is all dizzy sparkles. Sorrel rings the shrine bell with both paws. Wisps hate an honest bell, and they scatter with a rude little pop. The basket still burns, a little singed and very proud.",
       "choices": [
         {
           "id": "continue",
@@ -2482,7 +2475,7 @@
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "name": "Keeper Sorrel"
         },
         {
           "figure": "cast/captain_thimble",
@@ -2581,6 +2574,41 @@
         }
       ],
       "art": "scenes/classes/dojo"
+    },
+    "mooring": {
+      "type": "story",
+      "art": "scenes/riftlight/sky-landing",
+      "priority": 2,
+      "narration": "Sorrel leads you to the edge, where a mooring rope as thick as a tree trunk ends in a ragged tuft. \"This held us beside our neighbors for three hundred years,\" she says. \"Last night it snapped.\" The broken end does not hang down. It points east, toward the hum, stiff as a finger. Your Listening Chime hums too, and leans the other way, far off, back toward the glacier. Pip writes PULLED, NOT FELL, and underlines it twice.",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Keeper Sorrel"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "sky_saw_the_mooring",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look around the island",
+          "icon": "eye",
+          "goto": "local"
+        }
+      ]
     }
   },
   "voiceGuide": {
@@ -2595,7 +2623,10 @@
       "Hollow Gate",
       "Legend Dragon"
     ],
-    "npcVoices": {}
+    "npcVoices": {
+      "Keeper Sorrel": "Keeper Sorrel, the kitsune temple keeper (she/her). Brisk, kind and unflappable; hooks an arm through a rope ring whenever the wind blows, which is always. Ties her scarf on top of things to read the wind. Wants her island back where it belongs and her travelers off the edge.",
+      "Pip Thistledown": "Young manticore scout (he/him). Eager, notebook always out, a spoon behind his ear for prying things, quotes \"Lady Olivia says...\" and wants to impress her. Counts everything that has moved."
+    }
   },
   "presentation": {
     "fights": [
@@ -2630,7 +2661,7 @@
           "victory": [
             {
               "figure": "cast/kitsune_temple_keeper",
-              "name": "Temple keeper"
+              "name": "Keeper Sorrel"
             },
             {
               "figure": "cast/pip_catching_glow",
@@ -2640,7 +2671,7 @@
           "defeat": [
             {
               "figure": "cast/kitsune_temple_keeper",
-              "name": "Temple keeper"
+              "name": "Keeper Sorrel"
             },
             {
               "figure": "cast/pip_thistledown",
@@ -2670,11 +2701,6 @@
           "barley-tea",
           "wind-blanket",
           "camp-firepit"
-        ]
-      },
-      "song_track": {
-        "props": [
-          "wind-bells"
         ]
       },
       "song_echo": {
@@ -2718,11 +2744,6 @@
       "/assets/story-props/wind-bells.webp",
       "/assets/story-props/wind-blanket.webp"
     ],
-    "reactions": {},
-    "castPoses": {
-      "song_track": {
-        "cast/seren_wisp": "seren_listening"
-      }
-    }
+    "reactions": {}
   }
 }

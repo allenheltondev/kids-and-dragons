@@ -19,7 +19,7 @@
       ],
       "speaks": true,
       "status": "provisional",
-      "lineCount": 6106
+      "lineCount": 6149
     },
     "party": {
       "name": "The party",
@@ -4478,11 +4478,19 @@
           "key": "Pip Thistledown"
         },
         {
+          "chapter": "riftlight-sky-islands-arrival",
+          "key": "Pip Thistledown"
+        },
+        {
           "chapter": "riftlight-the-island-due-back",
           "key": "Pip Thistledown"
         },
         {
           "chapter": "riftlight-the-wrong-valley",
+          "key": "Pip Thistledown"
+        },
+        {
+          "chapter": "riftlight-whale-road",
           "key": "Pip Thistledown"
         }
       ],
@@ -4494,7 +4502,8 @@
         "riftlight-sky-islands-arrival",
         "riftlight-stone-counters",
         "riftlight-the-island-due-back",
-        "riftlight-the-wrong-valley"
+        "riftlight-the-wrong-valley",
+        "riftlight-whale-road"
       ],
       "aliases": [],
       "gemini": {
@@ -4502,19 +4511,19 @@
       },
       "lines": [
         {
+          "text": "Lady Olivia says a good scout learns everything. That has to include lanterns.",
+          "address": "riftlight-whale-road/pip_lanterns/narration"
+        },
+        {
+          "text": "Lady Olivia says it's the wind. But the wind keeps changing its mind. This doesn't.",
+          "address": "riftlight-whale-road/pip_notebook/narration"
+        },
+        {
           "text": "Lady Olivia will know what to do with it. Maybe she can move ruins too!",
           "address": "riftlight-bone-yard/to_pip/narration"
-        },
-        {
-          "text": "I'll show Master Orin too. He'll want to ask the ruins things first.",
-          "address": "riftlight-bone-yard/to_pip/variants/1"
-        },
-        {
-          "text": "The drawing goes in the traveling pages, not my tea-stained scrap.",
-          "address": "riftlight-reading-room/rest/narration"
         }
       ],
-      "lineCount": 68,
+      "lineCount": 78,
       "speaks": true,
       "status": "provisional"
     },
@@ -4589,6 +4598,10 @@
         {
           "chapter": "riftlight-riftseekers-departure",
           "key": "Lady Olivia"
+        },
+        {
+          "chapter": "riftlight-whale-road",
+          "key": "Lady Olivia"
         }
       ],
       "chapters": [
@@ -4603,19 +4616,19 @@
       },
       "lines": [
         {
-          "text": "If you meet the lookout keepers on your travels, tell them how the whales fared.",
-          "address": "riftlight-whale-road/sky_repair/narration"
-        },
-        {
           "text": "I can hold a condition too. If the ground starts moving, I will help hold it.",
           "address": "riftlight-convergence/ending/variants/1"
         },
         {
           "text": "I have food in my pack. Carry it through an opening, and the herd eats today.",
           "address": "riftlight-riftseekers-departure/olivia/narration"
+        },
+        {
+          "text": "Or sleep on it, and choose at the openings in the morning. Mine, or hers.",
+          "address": "riftlight-whale-road/decide/narration"
         }
       ],
-      "lineCount": 30,
+      "lineCount": 38,
       "speaks": true,
       "status": "provisional"
     },
@@ -4700,15 +4713,15 @@
           "address": "riftlight-convergence/lesson/narration"
         },
         {
-          "text": "Listen for a tick. Listen for a hum. A hum that holds still can be learned.",
-          "address": "riftlight-riftseekers-departure/prep_seam/narration"
+          "text": "Lady Olivia says moved places are the most important places. Help me listen?",
+          "address": "riftlight-sky-islands-arrival/lesson/variants/0"
         },
         {
-          "text": "One loud note. Use it when you need to be heard, not when you want to be.",
-          "address": "riftlight-riftseekers-departure/supplies_buy/narration"
+          "text": "Listen for a tick. Listen for a hum. A hum that holds still can be learned.",
+          "address": "riftlight-riftseekers-departure/prep_seam/narration"
         }
       ],
-      "lineCount": 46,
+      "lineCount": 44,
       "speaks": true,
       "status": "provisional"
     },
@@ -4977,6 +4990,46 @@
       "speaks": true,
       "status": "provisional"
     },
+    "keeper_sorrel": {
+      "name": "Keeper Sorrel",
+      "kind": "character",
+      "who": "Keeper Sorrel, the kitsune temple keeper (she/her). Brisk, kind and unflappable; hooks an arm through a rope ring whenever the wind blows, which is always. Ties her scarf on top of things to read the wind. Wants her island back where it belongs and her travelers off the edge.",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/kitsune_temple_keeper",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-sky-islands-arrival",
+          "key": "Keeper Sorrel"
+        }
+      ],
+      "chapters": [
+        "riftlight-sky-islands-arrival"
+      ],
+      "aliases": [],
+      "gemini": {
+        "voice": "Despina"
+      },
+      "lines": [
+        {
+          "text": "Point at it every time it sounds. If most of you agree, we have a true bearing.",
+          "address": "riftlight-sky-islands-arrival/song/narration"
+        },
+        {
+          "text": "This held us beside our neighbors for three hundred years. Last night it snapped.",
+          "address": "riftlight-sky-islands-arrival/mooring/narration"
+        },
+        {
+          "text": "There. Now the sky can find us. One loud note, for when the sky must hear you.",
+          "address": "riftlight-sky-islands-arrival/basket_lit/narration"
+        }
+      ],
+      "lineCount": 26,
+      "speaks": true,
+      "status": "provisional"
+    },
     "passing_fisher": {
       "name": "Passing fisher",
       "kind": "character",
@@ -5017,54 +5070,37 @@
       "pronounsFrom": "narration",
       "gender": "female",
       "genderFrom": "narration",
-      "figure": "cast/island_keeper",
       "voiceNotes": [
         {
           "chapter": "riftlight-the-island-due-back",
           "key": "Kitsune keeper"
-        },
-        {
-          "chapter": "riftlight-whale-road",
-          "key": "Kitsune keeper"
         }
       ],
       "chapters": [
-        "riftlight-the-island-due-back",
-        "riftlight-whale-road"
+        "riftlight-the-island-due-back"
       ],
       "aliases": [],
       "gemini": {
         "voice": "Schedar"
       },
-      "lines": [
-        {
-          "text": "Follow that one. We need to know whether it comes around to our lane.",
-          "address": "riftlight-whale-road/whale_listen/narration"
-        },
-        {
-          "text": "Help me ready the island before those folds open. We need a clear lane and a signal everyone understands.",
-          "address": "riftlight-whale-road/whales/narration"
-        },
-        {
-          "text": "Now they can travel without circling us.",
-          "address": "riftlight-whale-road/gentle/narration"
-        }
-      ],
-      "lineCount": 12,
+      "lines": [],
+      "lineCount": 0,
       "speaks": true,
       "status": "provisional"
     },
-    "new_keeper": {
-      "name": "New keeper",
+    "keeper_juniper": {
+      "name": "Keeper Juniper",
       "kind": "character",
-      "who": "A kitsune keeper who has just arrived to take over the watch. She is a little out of breath and wants to learn your signals properly.",
+      "who": "Keeper Juniper, the kitsune island keeper (she/her). Brisk, warm and a little bossy; talks to the whales like old aunties and calls each by name. Knits one row of a scarf for every circle they swim. Wants the whales home and the island due back safely in.",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
       "gender": "female",
-      "genderFrom": "notes",
-      "figure": "cast/new_island_keeper",
+      "genderFrom": "narration",
+      "figure": "cast/island_keeper",
       "voiceNotes": [
         {
           "chapter": "riftlight-whale-road",
-          "key": "New keeper"
+          "key": "Keeper Juniper"
         }
       ],
       "chapters": [
@@ -5072,15 +5108,23 @@
       ],
       "aliases": [],
       "gemini": {
-        "voice": "Iapetus"
+        "voice": "Gacrux"
       },
       "lines": [
         {
-          "text": "A whale's turn means watch. It never means cross the rope.",
-          "address": "riftlight-whale-road/keeper_echo/narration"
+          "text": "If I do it right, she'll let me ring it! I could use a scout who can count, too.",
+          "address": "riftlight-whale-road/pip_bell/narration"
+        },
+        {
+          "text": "Something out there turns them. I can't leave my whales to go and look. Will you?",
+          "address": "riftlight-whale-road/turn_watch/narration"
+        },
+        {
+          "text": "Pulling frightens them. Wait for the quiet beat between pulses, and sing him out.",
+          "address": "riftlight-whale-road/calf_stuck/narration"
         }
       ],
-      "lineCount": 1,
+      "lineCount": 31,
       "speaks": true,
       "status": "provisional"
     },
@@ -6563,42 +6607,6 @@
       "speaks": true,
       "status": "provisional"
     },
-    "temple_keeper": {
-      "name": "Temple keeper",
-      "kind": "character",
-      "who": "Temple keeper.",
-      "pronouns": "she/her",
-      "pronounsFrom": "narration",
-      "gender": "female",
-      "genderFrom": "narration",
-      "figure": "cast/kitsune_temple_keeper",
-      "chapters": [
-        "riftlight-sky-islands-arrival",
-        "riftlight-squall-temple"
-      ],
-      "aliases": [],
-      "gemini": {
-        "voice": "Pulcherrima"
-      },
-      "lines": [
-        {
-          "text": "Point at it every time it sounds. If most of you agree, we have a true bearing.",
-          "address": "riftlight-sky-islands-arrival/song/narration"
-        },
-        {
-          "text": "There. Now the sky can find us. One loud note, for when the sky must hear you.",
-          "address": "riftlight-sky-islands-arrival/basket_lit/narration"
-        },
-        {
-          "text": "Everyone needs a dry lane into the hall. Let's see what still blocks the door.",
-          "address": "riftlight-squall-temple/people/narration"
-        }
-      ],
-      "lineCount": 41,
-      "guessedLines": 2,
-      "speaks": true,
-      "status": "provisional"
-    },
     "dob": {
       "name": "Dob",
       "kind": "character",
@@ -6653,9 +6661,13 @@
         {
           "text": "I fly ahead and wave. If I wave two, hold on to something.",
           "address": "riftlight-sky-islands-arrival/route_flags/narration"
+        },
+        {
+          "text": "Not without the whales' answer. The ferry, then.",
+          "address": "riftlight-sky-islands-arrival/route_vote/variants/0"
         }
       ],
-      "lineCount": 2,
+      "lineCount": 4,
       "speaks": true,
       "status": "provisional"
     },
@@ -6691,6 +6703,40 @@
       ],
       "lineCount": 4,
       "guessedLines": 1,
+      "speaks": true,
+      "status": "provisional"
+    },
+    "temple_keeper": {
+      "name": "Temple keeper",
+      "kind": "character",
+      "who": "Temple keeper.",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/kitsune_temple_keeper",
+      "chapters": [
+        "riftlight-squall-temple"
+      ],
+      "aliases": [],
+      "gemini": {
+        "voice": "Pulcherrima"
+      },
+      "lines": [
+        {
+          "text": "Everyone needs a dry lane into the hall. Let's see what still blocks the door.",
+          "address": "riftlight-squall-temple/people/narration"
+        },
+        {
+          "text": "Help us keep the temple safe as that island drifts in! First, get everyone under cover.",
+          "address": "riftlight-squall-temple/arrival/narration"
+        },
+        {
+          "text": "Now we choose. Turn it away, or hold the landing and let it settle here.",
+          "address": "riftlight-squall-temple/plan/narration"
+        }
+      ],
+      "lineCount": 16,
       "speaks": true,
       "status": "provisional"
     },
