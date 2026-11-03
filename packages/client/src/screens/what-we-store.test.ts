@@ -38,7 +38,7 @@ function storeEntities(): string[] {
 
 /** The field names of an interface in the shared domain types. */
 function fieldsOf(typeName: string): string[] {
-  const source = readFileSync(path.join(ROOT, "packages", "shared", "src", "types", "domain.ts"), "utf8");
+  const source = readFileSync(path.join(ROOT, "packages", "shared", "src", "types", "domain.ts"), "utf8").replace(/\r\n/g, "\n");
   const start = source.indexOf(`export interface ${typeName} {`);
   if (start < 0) throw new Error(`no interface ${typeName}`);
   const body = source.slice(start, source.indexOf("\n}\n", start));

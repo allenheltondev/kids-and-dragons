@@ -12,7 +12,7 @@ import { describe, expect, it } from "vitest";
 const ROOT = path.resolve(import.meta.dirname, "..", "..");
 
 describe("deploy.sh and the voice/ prefix", () => {
-  const script = fs.readFileSync(path.join(ROOT, "scripts", "deploy.sh"), "utf8");
+  const script = fs.readFileSync(path.join(ROOT, "scripts", "deploy.sh"), "utf8").replace(/\r\n/g, "\n");
   // A shell command with its continuation lines joined.
   const commands = script.replace(/\\\n\s*/g, " ").split("\n");
   const syncs = commands.filter((line) => /aws s3 sync/.test(line));
@@ -49,7 +49,7 @@ describe("the CloudFront distribution", () => {
 });
 
 describe("deploy.sh and the voice manifests (#545)", () => {
-  const script = fs.readFileSync(path.join(ROOT, "scripts", "deploy.sh"), "utf8");
+  const script = fs.readFileSync(path.join(ROOT, "scripts", "deploy.sh"), "utf8").replace(/\r\n/g, "\n");
 
   it("runs the git-side voice gate with the other checks, which only a CI-verified ship skips", () => {
     const checks = script.slice(script.indexOf('if [ "${KAD_SKIP_CHECKS:-}" = "1" ]'), script.indexOf("\nfi\n", script.indexOf("KAD_SKIP_CHECKS")));

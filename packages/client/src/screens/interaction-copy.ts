@@ -23,7 +23,7 @@ export const GAME: Record<InteractionKind, { name: string; icon: string; how: st
   sequence: { name: "Share the clues", icon: "map", how: "Every phone gets a clue. Read them out loud and put the steps in order." },
   tracking: { name: "Follow the glow", icon: "eye", how: "Watch where the glow starts. Follow it while the covers shuffle, then pick its cover." },
   balance: { name: "Hold it level", icon: "hand", how: "Everyone lifts a little. Lift more or ease down to bring the shared marker into the gold." },
-  relay: { name: "Pass it along", icon: "forward", how: "Touch the arriving object to catch it. Slide it up to send it to your friend." },
+  relay: { name: "Pass it along", icon: "forward", how: "Catch in the gold circle, then aim your swipe at your friend's hands. Wild throws are harder to catch. Three drops end the attempt." },
   cooperate: { name: "All together", icon: "party", how: "Everyone presses and holds together. Keep holding while the object rises to the star." },
   play: { name: "Everyone joins in", icon: "heart", how: "Pick something to do. What you pick shows up on the TV. No wrong answers." },
 };
@@ -106,6 +106,9 @@ export function tvStatus(view: TableView): string {
       const name = nameOf(party, holder);
       const next = relayHolder({ ...prompt, passed: [...(prompt.passed ?? []), holder] }, connected);
       const destination = next ? nameOf(party, next) : "home";
+      if (prompt.relay) return prompt.caughtBy === holder
+        ? `${name}: aim your swipe at ${destination}'s gold hands. Direction and strength matter!`
+        : `${name}: catch in the gold circle on your phone. Watch for a drifting throw!`;
       return prompt.caughtBy === holder
         ? `${name}: slide ${spec.objectLabel} up to send it to ${destination}.`
         : `${name}: touch ${spec.objectLabel} on your phone to catch it!`;
@@ -187,6 +190,9 @@ export function phoneJob(view: TableView, playerId: string): Job {
       if (!holder) return { headline: "It made it all the way!", detail: "Delivered together.", lookAt: "tv" };
       const next = relayHolder({ ...prompt, passed: [...(prompt.passed ?? []), holder] }, connected);
       const destination = next ? nameOf(party, next) : "home";
+      if (prompt.relay && holder === playerId) return prompt.caughtBy === playerId
+        ? { headline: `Aim your throw to ${destination}!`, detail: "Swipe toward the gold hands. A wild throw makes the next catch harder.", lookAt: "phone" }
+        : { headline: "Catch when it reaches the gold!", detail: "Watch where it lands. Drops cost a team chance; you can scoop it up and carry on.", lookAt: "phone" };
       if (holder === playerId) return prompt.caughtBy === playerId
         ? { headline: `Slide it up to ${destination}!`, detail: "The object follows your finger. Release to send it, or tap the object.", lookAt: "phone" }
         : { headline: "Catch it in your hands!", detail: "Touch the arriving object on your phone.", lookAt: "phone" };

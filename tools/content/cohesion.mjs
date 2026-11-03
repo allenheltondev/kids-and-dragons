@@ -58,7 +58,7 @@
  * choices with no effects that all come back to one scene, directly or
  * through one-button result scenes), scenes with a quoted line, and words a
  * scene. Only results the engine can produce count: `cooperate`, `balance`,
- * `relay` and `play` games never fail, so they are reported as *nofail*, are
+ * and `play` games never fail, so they are reported as *nofail*, are
  * inert unless their assisted result differs, and any `onFailure` they carry is
  * *dead* (a branch no party can take; PR #606 review). Run it with
  * `--chapter ""` to set a campaign beside Gemfall. It is a reading list: an
@@ -344,10 +344,10 @@ function resultKey(result) {
 
 /**
  * The story-interaction kinds the engine can resolve to failure (engine.ts): a miss is possible.
- * `cooperate`, `balance`, `relay` and `play` only ever succeed or are assisted, so an `onFailure`
+ * `cooperate`, `balance` and `play` only ever succeed or are assisted, so an `onFailure`
  * written for them is a branch no party can take.
  */
-export const FAILABLE_KINDS = new Set(["timing", "precision", "tracking", "memory", "sequence"]);
+export const FAILABLE_KINDS = new Set(["timing", "precision", "tracking", "memory", "sequence", "relay"]);
 
 /** The result keys a party can actually reach: never `onFailure` on a kind that cannot fail. */
 function producibleKeys(scene) {
@@ -472,7 +472,7 @@ export function main(argv, print = console.log) {
     return 0;
   }
   if (mode === "shape") {
-    print("Reachable scenes. nofail = games of a kind that cannot fail (cooperate, balance, relay, play); inert = games whose every result the engine can produce leads to one scene with the same effects; dead = a nofail game's authored onFailure no party can reach; echo = effect-free votes whose choices all come back to one scene.");
+    print("Reachable scenes. nofail = games of a kind that cannot fail (cooperate, balance, play); inert = games whose every result the engine can produce leads to one scene with the same effects; dead = a nofail game's authored onFailure no party can reach; echo = effect-free votes whose choices all come back to one scene.");
     print(`${"chapter".padEnd(32)} scenes checks fights games nofail inert dead echo quoted words/scene`);
     const rows = chapters.map(shape);
     for (const r of rows) {
