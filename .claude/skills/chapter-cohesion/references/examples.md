@@ -103,9 +103,11 @@ size. They check the changed tasks and conclusions, including missed timing,
 not a number of widgets. The thirty-minute target still needs fresh family
 measurement after this change.
 
-See the [playtest plan](../../../../docs/campaigns/continental-rift/buried-bridge-playtest.md),
-[design audit](../../../../docs/reviews/riftlight-play-audit.md), and
-[engine route tests](../../../../tools/content/riftlight-bridge-play.test.ts).
+See the [design audit](../../../../docs/reviews/riftlight-play-audit.md). In November 2026 the
+bridge was rewritten again for the campaign arc, with Puddle, Orin and Pip on stage, real dice,
+one game and the Coast fragment in its own p1 scene; its
+[design note](../../../../docs/campaigns/continental-rift/buried-bridge-playtest.md) and
+[engine route tests](../../../../tools/content/riftlight-buried-bridge.test.ts) describe that version.
 
 ## Riftlight: risk converted away
 
