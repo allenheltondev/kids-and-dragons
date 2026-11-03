@@ -1685,8 +1685,11 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
 .player__you .inv__grid {
   flex: 1 1 auto;
   min-block-size: 0;
-  max-block-size: 16em;
-  /* The queries below shrink what is in a slot before the slot itself gets small. */
+  /* Three across at every width: on a tablet, six across were tall thin strips. */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  /* No cap: the six slots always fill the page down to the tray, however tall
+     the phone. The queries below shrink what is in a slot before the slot
+     itself gets small, and grow it on a tall one. */
   grid-auto-rows: minmax(2.5em, 1fr);
   gap: var(--space-2, 0.5em);
   padding-block: var(--space-1, 0.25em);
@@ -1718,7 +1721,38 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
   font-size: var(--font-size-sm, 0.875em);
 }
 
-.player__you .item-detail,
+/* An opened item stands in for the bag, so it takes the bag's height too:
+   nothing left blank under it. */
+.player__you .item-detail {
+  flex: 1 1 auto;
+  min-block-size: 0;
+  container: item / size;
+}
+
+/* Name, words and buttons sit under the picture, at the foot of the card. */
+.player__you .item-detail__title {
+  margin-block-start: auto;
+}
+
+/* The item itself, as big as the card has room for, above its name and words. */
+.item-detail__art {
+  flex: 1 1 auto;
+  min-block-size: 0;
+  display: grid;
+  place-items: center;
+}
+
+/* cqh: a hundredth of the card's height (the card is the size container). */
+.player__you .item-detail__art {
+  --item-art: clamp(3em, 40cqh, 10em);
+}
+
+@container item (max-height: 16em) {
+  .item-detail__art {
+    display: none;
+  }
+}
+
 .player__you .give--waiting {
   flex: none;
 }
@@ -1765,7 +1799,9 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
     padding: 0.1em;
     gap: 0;
   }
-  .player__you .inv__button > .kad-icon,
+  .player__you .inv__grid {
+    --inv-icon: 1.6em;
+  }
   .player__you .inv__empty-mark {
     inline-size: 1.6em;
     block-size: 1.6em;
@@ -1787,6 +1823,27 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
   }
   html:not([data-contrast="high"]) .player__you .inv__slot--empty {
     border: 0.08em dashed var(--kad-raised-rim, rgba(190, 178, 255, 0.3));
+  }
+}
+
+/* A tall bag (a big phone, a tablet): bigger pictures and names, so the
+   slots that fill the height are not mostly empty. */
+@container bag (min-height: 17em) {
+  /* cqh: a hundredth of the bag's height, so a slot's picture grows with the slot. */
+  .player__you .inv__grid {
+    --inv-icon: clamp(3em, 16cqh, 7em);
+  }
+  .player__you .inv__empty-mark {
+    inline-size: clamp(2.5em, 12cqh, 5em);
+    block-size: clamp(2.5em, 12cqh, 5em);
+  }
+  /* Room to wrap, so a long name takes two lines rather than an ellipsis. */
+  .player__you .inv__slot-name {
+    font-size: 1em;
+    white-space: normal;
+    overflow: visible;
+    overflow-wrap: normal;
+    text-align: center;
   }
 }
 

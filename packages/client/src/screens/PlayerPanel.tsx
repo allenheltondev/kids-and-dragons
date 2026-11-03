@@ -437,7 +437,7 @@ function InventoryGrid({
                 onClick={() => onSelect(selected ? null : index)}
                 {...helpAttrs({ kind: "item", name: def?.name ?? entry.itemId, ...(def?.icon ? { icon: def.icon } : {}), ...(def?.text ? { text: def.text } : {}) })}
               >
-                <Icon name={def?.icon ?? entry.kind} size="2.2em" />
+                <Icon name={def?.icon ?? entry.kind} size="var(--inv-icon, 2.2em)" />
                 <span className="inv__slot-name">{def?.name ?? entry.itemId}</span>
                 {/* Kind is a glyph as well as a word — never colour (spec §11). */}
                 <span className="inv__kind kad-label">
@@ -2163,6 +2163,9 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
         {/* Using an item is a decision like any other: select, then confirm. */}
         {selectedEntry === null ? null : (
           <div className="item-detail">
+            <div className="item-detail__art" aria-hidden="true">
+              <Icon name={selectedDef?.icon ?? selectedEntry.kind} size="var(--item-art, 5em)" />
+            </div>
             <p className="item-detail__title">
               <Icon name={selectedDef?.icon ?? selectedEntry.kind} />
               <span>{selectedDef?.name ?? selectedEntry.itemId}</span>

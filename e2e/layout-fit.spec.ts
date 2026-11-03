@@ -576,8 +576,12 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
 
     // --- Class tokens (#314): her own view, a friend's sheet, and a rank landing ---
     await showYou(guest);
-    await expect(guest.getByRole("button", { name: /^Your (thorn bracer|dusk hood|star circlet|song bell)$/ })).toBeVisible(TAP);
-    await expectFits(guest, "guest's own view, with her worn token");
+    await expectFits(guest, "guest's own view");
+    // Her worn token is on her own sheet, which her face in the party row opens.
+    await guest.getByRole("button", { name: "Rosie's character sheet" }).click(TAP);
+    await expect(guest.getByText(/^Your (thorn bracer|dusk hood|star circlet|song bell)$/)).toBeVisible(TAP);
+    await expectFits(guest, "her own sheet, with her worn token");
+    await showYou(guest);
     await guest.getByRole("button", { name: "Sparklehoof's character sheet" }).click(TAP);
     await expect(guest.getByText(/^Sparklehoof's (thorn bracer|dusk hood|star circlet|song bell)$/)).toBeVisible(TAP);
     await expectFits(guest, "a friend's sheet, with their token");
