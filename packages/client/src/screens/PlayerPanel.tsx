@@ -2081,29 +2081,25 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
         hero's whole sheet.
       */}
       <div className="player__scroll player__you" hidden={!sheetUp}>
-        {/* One seat at the top of the bag, the big button's height, for
-            either the way into your task or what the table is waiting on.
-            Both change as other people act; sharing a fixed seat, neither
-            moves the bag under a finger that is in the middle of it. */}
-        {inLobby ? null : (
+        {/* The way into your task, at the top, when there is one. What the
+            table is waiting on ("It's Pip's turn to choose") is not said here:
+            the World screen names whose turn it is, and this page's room is
+            for what is yours. */}
+        {!inLobby && hasTask && !(focus && !focusTask) ? (
           <div className="player__task-slot">
-            {hasTask && !(focus && !focusTask) ? (
-              <Button variant="primary" size="lg" block className="player__task-entry"
-                icon={<Icon name="hand" />} onClick={() => setPlayerSection("turn")}>
-                {offersToMe.length > 0 ? "A gift for you" : state.phase === "chapter_complete" ? state.endingRead === false ? "How the chapter ended" : "Chapter rewards" : atRest && banked > 0 ? banked === 1 ? "Spend your stat point" : "Spend your stat points" : myPrompt !== null || isMyCombatTurn ? "Your turn" : helping !== null ? `Help ${helping}` : awaySwap !== null ? `Help ${awaySwap}'s bag` : "View the fight"}
-              </Button>
-            ) : focus ? (
-              <Button variant="primary" size="lg" block className="player__task-entry"
-                icon={<TvGlyph />} onClick={() => setPeek(false)}>
-                Back to the TV
-              </Button>
-            ) : (
-              <p className="player__waiting" role="status"><Icon name="waiting" />
-                <span>{globalPrompt !== null ? waitingLine(globalPrompt, party) : "Listen to the story…"}</span>
-              </p>
-            )}
+            <Button variant="primary" size="lg" block className="player__task-entry"
+              icon={<Icon name="hand" />} onClick={() => setPlayerSection("turn")}>
+              {offersToMe.length > 0 ? "A gift for you" : state.phase === "chapter_complete" ? state.endingRead === false ? "How the chapter ended" : "Chapter rewards" : atRest && banked > 0 ? banked === 1 ? "Spend your stat point" : "Spend your stat points" : myPrompt !== null || isMyCombatTurn ? "Your turn" : helping !== null ? `Help ${helping}` : awaySwap !== null ? `Help ${awaySwap}'s bag` : "View the fight"}
+            </Button>
           </div>
-        )}
+        ) : !inLobby && focus ? (
+          <div className="player__task-slot">
+            <Button variant="primary" size="lg" block className="player__task-entry"
+              icon={<TvGlyph />} onClick={() => setPeek(false)}>
+              Back to the TV
+            </Button>
+          </div>
+        ) : null}
         <ul className="stat-row" aria-label="Your stats">
           <StatCells me={me} />
         </ul>

@@ -95,11 +95,9 @@ When a phone goes quiet, the big screen says "Rosie stepped away." (with the kid
 
 ![The big screen when a kid steps away](../../public/guide-pictures/stepped-away.jpg)
 
-To come back, the kid opens the game on the same phone. They are straight back in, with a note like "Welcome back, Sam!" and "The party is voting on what to do next." They tap **Got it**.
+To come back, the kid opens the game on the same phone. They are straight back in, in the same seat with the same hero.
 
-A kid who arrives late joins the same way as everyone else and makes a hero. Their phone says "Welcome, Pip!" (with their own name) and what the party is up to, and they play from there.
-
-![A kid coming back to the game](../../public/guide-pictures/catch-up.jpg)
+A kid who arrives late joins the same way as everyone else and makes a hero, and they play from there.
 
 ## Playing from two places
 

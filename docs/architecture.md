@@ -480,9 +480,8 @@ the sleeping-phone reason too.
 
 What the screens draw from it: the TV names who stepped away in the narration
 header and fades their figure on the board and in the lineup (never the
-knocked-down pose), and a phone that opens on a chapter in progress, or whose
-channel came back after the story moved, shows a one-line catch-up
-(`screens/CatchUp.tsx`).
+knocked-down pose). A phone that comes back opens straight on the game; it
+shows no catch-up line of its own.
 
 **How a screen learns its own stream has died: silence and failed requests (#469).** The
 browser socket (`sync/appsync-socket.ts`) arms a silence watchdog at the lesser of the

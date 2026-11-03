@@ -1808,16 +1808,10 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
   container: bag / size;
 }
 
-/* The kind's word under an item only where a slot has the height for it; the
-   item's own picture and name are what a kid reads at a glance. */
+/* No kind's word under an item here: the item's own picture and name are what
+   a kid reads at a glance, and the word was cut off in a phone-sized slot. */
 .player__you .inv__kind {
   display: none;
-}
-
-@container bag (min-height: 17em) {
-  .player__you .inv__kind {
-    display: inline-flex;
-  }
 }
 
 @container bag (max-height: 10em) {
@@ -1832,6 +1826,24 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
   .player__you .inv__empty-mark {
     inline-size: 1.6em;
     block-size: 1.6em;
+  }
+}
+
+/* The brass frame and its sunken well (styles/chrome.css) are drawn 10 to 20
+   pixels thick: in a short or narrow slot they were most of it, and long
+   names ran under the brass. A compact bag draws plain rounded wells instead,
+   so the item gets the room. A roomy one keeps its frames. */
+@container bag (max-height: 12em) or (max-width: 23em) {
+  html:not([data-contrast="high"]) .player__you :is(.inv__button, .inv__slot--empty)::before,
+  html:not([data-contrast="high"]) .player__you :is(.inv__button, .inv__slot--empty)::after {
+    display: none;
+  }
+  html:not([data-contrast="high"]) .player__you .inv__button {
+    border: 0.08em solid var(--kad-raised-rim, rgba(190, 178, 255, 0.3));
+    background: var(--color-surface-sunken, #120f26);
+  }
+  html:not([data-contrast="high"]) .player__you .inv__slot--empty {
+    border: 0.08em dashed var(--kad-raised-rim, rgba(190, 178, 255, 0.3));
   }
 }
 

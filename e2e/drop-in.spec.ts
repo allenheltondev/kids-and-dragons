@@ -161,13 +161,10 @@ test.describe("drop in, drop out", () => {
       await page.goto("about:blank");
       await expect.poll(async () => (await memberNamed(name)).connected, TAP).toBe(false);
     }
-    /** Back to the room: same seat, same hero, and a line saying what is going on. */
-    async function comeBack(page: Page, name: string, expectCatchUp = true): Promise<void> {
+    /** Back to the room: same seat, same hero. */
+    async function comeBack(page: Page, name: string): Promise<void> {
       await page.goto(`/p/${code}`);
       await expect.poll(async () => (await memberNamed(name)).connected, TAP).toBe(true);
-      if (expectCatchUp) {
-        await expect(page.getByTestId("catch-up")).toContainText(`Welcome back, ${name}!`, TAP);
-      }
       // The TV stops saying they are away.
       await expect(tv.getByTestId("stepped-away").filter({ hasText: name })).toHaveCount(0, TAP);
     }
@@ -190,7 +187,6 @@ test.describe("drop in, drop out", () => {
     await rosie.getByRole("button", { name: /do it!/i }).click(TAP);
     await expect.poll(async () => (await state()).sceneId, TAP).not.toBe(firstScene);
     await comeBack(sam, "Sam");
-    await guidePicture(sam, "catch-up", { mark: sam.getByRole("button", { name: /got it/i }) });
     // And the TV says where the party has got to (#357), with nothing tapped.
     await expect(tv.getByTestId("chapter-preface")).toHaveAttribute("data-kind", "back", TAP);
     await expect(tv.getByTestId("chapter-preface")).toContainText("Where you left off");
@@ -205,7 +201,7 @@ test.describe("drop in, drop out", () => {
     await expect.poll(async () => (await memberNamed("Rosie")).connected, { timeout: 60_000 }).toBe(true);
     await expect(tv.getByTestId("stepped-away").filter({ hasText: "Rosie" })).toHaveCount(0, TAP);
 
-    // --- A late joiner: Pip sits down partway, and is told what is going on ---
+    // --- A late joiner: Pip sits down partway and plays from where the party is ---
     const pip = await device(browser);
     await join(pip);
     // Mid-chapter, the dev playtest toggle sits over the creation flow's Next.
@@ -223,7 +219,7 @@ test.describe("drop in, drop out", () => {
     await pip.getByRole("button", { name: /^next$/i }).click(TAP);
     await pip.getByPlaceholder("Tap to type").fill("Pip", TAP);
     await pip.getByRole("button", { name: /that's me/i }).click(TAP);
-    await expect(pip.getByTestId("catch-up")).toContainText("Welcome, Pip!", TAP);
+    await expect.poll(async () => (await memberNamed("Pip"))?.connected, TAP).toBe(true);
     // Pip is somebody the rest of this spec does not wait on: off they go.
     // Closing says goodbye when the browser gets it out in time; when it does
     // not, Pip simply goes quiet and the table's next beat after the timeout
@@ -319,9 +315,7 @@ test.describe("drop in, drop out", () => {
     await sam.getByRole("button", { name: "Back to the lobby" }).click(TAP);
     await stepAway(rosie, "Rosie");
     await expect.poll(async () => (await state()).phase, TAP).toBe("lobby");
-    // Back in the lobby there is nothing to catch up on.
-    await comeBack(rosie, "Rosie", false);
-    await expect(rosie.getByTestId("catch-up")).toHaveCount(0);
+    await comeBack(rosie, "Rosie");
     expect((await memberNamed("Rosie")).character.id).toBe(rosieHero);
 
     expect(tvErrors).toEqual([]);

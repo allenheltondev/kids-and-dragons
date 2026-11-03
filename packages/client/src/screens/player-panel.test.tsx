@@ -960,7 +960,13 @@ describe("the bag", () => {
 // ---------------------------------------------------------------------------
 
 describe("waiting", () => {
-  it("names who the party is waiting for", () => {
+  /** What the phone shows, leaving out everything under a `hidden` pane. */
+  const visibleText = () =>
+    [...document.querySelectorAll<HTMLElement>(".player__waiting")]
+      .filter((el) => el.closest("[hidden]") === null)
+      .map((el) => el.textContent ?? "")
+      .join(" ");
+  it("leaves whose turn it is to the World screen, so the You page keeps its room", () => {
     mount({
       party: [
         member(),
@@ -969,25 +975,14 @@ describe("waiting", () => {
       prompt: choicePrompt({ forPlayerIds: ["p_2"] }),
       playerId: "p_1",
     });
-    expect(someStatusSays("It's Thistle's turn to choose")).toBe(true);
+    expect(visibleText()).not.toContain("It's Thistle's turn to choose");
+    expect(document.querySelector(".player__you .player__task-slot")).toBeNull();
+    expect(screen.getByRole("list", { name: "Your stats" })).toBeTruthy();
   });
 
-  it("names everyone a vote is still waiting on", () => {
-    mount({
-      party: [
-        member(),
-        member({ character: character({ id: "c_2", ownerPlayerId: "p_2", name: "Thistle" }) }),
-        member({ character: character({ id: "c_3", ownerPlayerId: "p_3", name: "Bramble" }) }),
-      ],
-      prompt: choicePrompt({ forPlayerIds: ["p_2", "p_3"], vote: true }),
-      playerId: "p_1",
-    });
-    expect(someStatusSays("Waiting for Thistle and Bramble")).toBe(true);
-  });
-
-  it("falls back to listening when there is no question at all", () => {
+  it("says nothing while there is no question at all", () => {
     mount({ prompt: null });
-    expect(someStatusSays("Listen to the story")).toBe(true);
+    expect(visibleText()).not.toContain("Listen to the story");
   });
 
   it("says when a player is knocked down, and that it is recoverable", () => {
