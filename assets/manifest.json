@@ -2200,7 +2200,7 @@
     },
     {
       "id": "passing_fisher",
-      "name": "Passing fisher",
+      "name": "Fen",
       "basis": "frogfolk",
       "scale": "small_to_medium",
       "heightCm": 110,
@@ -2488,7 +2488,7 @@
     },
     {
       "id": "skupper_child",
-      "name": "Skupper Child",
+      "name": "Dab",
       "basis": "skupper",
       "scale": "small_to_medium",
       "heightCm": 60,
@@ -2496,7 +2496,7 @@
     },
     {
       "id": "skupper_grandmother",
-      "name": "Skupper Grandmother",
+      "name": "Grandmother Winkle",
       "basis": "skupper",
       "scale": "small_to_medium",
       "heightCm": 90,

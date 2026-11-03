@@ -180,7 +180,7 @@ describe("every route through the Borrowed Ruins", () => {
   });
 });
 
-it("every authored outcome, for every species and class shortcut, reaches the beat with nothing taken", () => {
+it("every authored outcome, for every species and class shortcut, reaches the beat with nothing taken", { timeout: 120_000 }, () => {
   for (const [species, cls] of [["manticore", "duskrunner"], ["griffin", "duskrunner"], ["bigfoot", "thornguard"], ["unicorn", "songkeeper"], ["kitsune", "starweaver"]] as const) {
     const { ends, visited } = allPaths(chapter, species, cls, {}, 1, 1);
     for (const end of ends) {

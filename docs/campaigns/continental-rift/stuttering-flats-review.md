@@ -1,61 +1,52 @@
-# Stuttering Flats
+# The Stuttering Flats
 
-The buried bridge continues to an unstable opening on the Saltrot flats. The
-party reads its stutter, marks firm mud, frees a stranded snowhorn goat and
-coordinates with a herder on the snowy side to send it home. The party stays
-on the flats; this encounter neither consumes nor changes the persistent
-glacier route. The goat is a new stranded animal, not the prologue's kid.
+The Restless Coast's middle (`riftlight-stuttering-flats`), rewritten in November 2026 after the
+pilot ([bone-yard-review.md](bone-yard-review.md)) against [arc.md](arc.md#restless-coast-teaches-unstable).
+The version before it had no dice, twelve inert games among eighteen, three echo votes and an
+unnamed guide.
 
-Every failed check changes the method without repeating the roll. Missing the
-crossing check leaves the sling with the herder, recorded in `flats_sling_left`;
-the guide will replace it. Every path records `goat_returned_home`. The chime
-only answers readiness and return access. Nobody announces diagnostic colors.
-Songkeeper, bigfoot and unicorn options have ungated alternatives.
+**Beat.** The goat is home through an opening that will not hold still. **Question** (scene 1):
+*How do we get a lost goat home through an opening that keeps blinking?* **Adds:** unstable
+openings (it never blinks the same way twice; Puddle says Master Orin would call it unstable),
+and the pull runs both ways: snow falls through onto the mud, the goat keeps leaning home, a snow
+hare tumbles out the other way, and the herder says things keep going missing from the glacier.
+The chime keeps leaning north after the opening shuts. The goat is the mother of the kid every
+party brought home on the glacier, and the yeti herder from the glacier waits on the far side.
 
-The opening states the goal. Each plan has a result before merging; the goat,
-guide, sling, signals and firm route are introduced before use. The Spine has
-14 decisions, six physical checks and a rest. Check results recover safely,
-including for a solo hero at one heart. The continuity contract and exhaustive
-engine walker cover all species and classes represented by the lesson options.
+**Who carries it.** Puddle, who wants travelers kept safe on flats that will not stay put (the
+warning sign is hers). Fen, the fisher from the Saltrot, wades in after snow fish. The close sets
+up *The Borrowed Ruins*: the Bone Yard is introduced in words, and the last blink drops something
+big near it, on Puddle's home channel.
 
-The 35-minute metadata is a planning budget, not measured family play. A
-development pause remains available, plus a return to the buried bridge. The
-next chapter will continue toward the Bone Yard; no endgame secret is revealed.
+## Rhythm
 
-## Review follow-up
+| Movement | What the table does |
+| --- | --- |
+| The blink (≈7 min) | Meet the goat and, through a blink, the herder; learn the blink (memory game, a tossed shell rolled, or a starweaver's read); **ring the chime at the opening or keep it quiet** |
+| The goat (≈8 min) | Reach her (rolled); calm her (rolled, or a songkeeper's song); **haul her out or let the tide float her** (roll or precision game; a bigfoot lifts); catch her when she bolts for a short blink (rolled) |
+| Fen (≈5 min) | Rest; shout Fen back or run for her net (rolled) |
+| The crossing (≈10 min) | Lead the goat up the slush (rolled); cross on the long blink, Puddle's crest, a carry, Puddle as a raft, the rung chime, Mend or a duskrunner's dash; a miss brings the herder onto the mud (rolled); the snow hare (rolled); the last blink; the warning sign; the campaign question with this piece |
 
-The Saltrot guide and glacier herder greet returning friends. The rescued goat is
-an adult from the known herd. The final preparation vote works for either map exit.
-The chosen warning drawing now changes a fisher's behavior, and the guide supplies
-her own lunch on the shell bank. Spoiler exclusions match the earlier chapters.
-The spine remains 43 scenes, 15 votes and six checks before and after these fixes.
+## Consequences
 
-The graph explorer now merges inert pass visits only when chapter effects, guards,
-completion rules, variants and chapter clocks cannot distinguish them. Unknown
-chapters remain conservative. Regression tests preserve relevant completion bits;
-route coverage and runtime replay remain exhaustive. Identical chapter walks are
-memoized by their full scenario and chapter content, with defensive result copies.
-Focused V8 coverage: 62 tests passed in 10.18 seconds (whole-repository thresholds
-are intentionally not evaluated as evidence from this focused run).
+| Choice | Immediate result | Later |
+| --- | --- | --- |
+| Read the blink right | The pattern is known | "Wait for the long blink" (a wider timing game) at the crossing |
+| Ring the chime / keep it quiet | The door holds for three heartbeats, and the goat sinks to her chest / the chime leans north | Ringing removes the haul and adds "ring the chime to hold the door" at the crossing |
+| Haul (force) / float (understand) | Out fast but limping / unhurt, but the tide is high | Limping: Mend can answer it, and the ending says she limps home; high tide: Puddle can raft her over |
+| Missed grab, shout or crossing | The goat eats Puddle's lunch; Fen's net goes through; the herder steps onto the mud | The rest has no lunch; the ending's net and (after a second miss) the herder's boot |
+| Warning sign: the opening or the waiting spot | | Fen's reaction in the ending |
 
-Searches and chapter metadata are reused only while their content signatures match;
-edited graph and chapter-metadata fixtures invalidate the cache. Continuity analysis
-reuses each chapter's shown vocabulary. The asset-copy fallback compares every copied
-file byte for byte, while the following test runs the full content gate once.
-The background-art negative fixture retains the opening's class rooms on a small
-valid route, proves that baseline passes, then removes the art and requires rejection.
-This removes unrelated full-campaign searches from a five-second art assertion.
+## Shape and pacing
 
-### Pacing before and after review fixes
+| | Before | After |
+| --- | ---: | ---: |
+| Reachable scenes | 47 | 64 |
+| Dice checks / games / inert / echo | 0 / 18 / 12 / 3 | 16 / 5 / 0 / 0 |
+| Scenes with a quoted line | 16 | 49 |
+| Spine scenes / checks / read | 29 / 0 / 3 | 32 / 6 / 2 (8 votes) |
+| Spine words | 901–916 | 1,316–1,412 |
+| Predicted minutes (uncalibrated) | 13.0 | 21.3 |
 
-| Shortest success spine | Before | After |
-|---|---:|---:|
-| Scenes | 43 | 43 |
-| Decisions | 15 | 15 |
-| Physical checks | 6 | 6 |
-| Encounters | 0 | 0 |
-| Longest reading run | 2 | 2 |
-
-### Second review follow-up
-
-Resolved the README conflict by keeping both the goal and interactivity sections. Restored the Bone Yard introduction before the either-road preparations, so leaving loose stones has a clear reason. Wording only; the spine remains 43 scenes, 15 decisions, 6 doing checks and a reading run of 2.
+The minute model gives the five games no time; family timing is unmeasured. Tests:
+[riftlight-stuttering-flats.test.ts](../../../tools/content/riftlight-stuttering-flats.test.ts).

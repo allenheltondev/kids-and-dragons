@@ -19,7 +19,7 @@
       ],
       "speaks": true,
       "status": "provisional",
-      "lineCount": 6106
+      "lineCount": 6124
     },
     "party": {
       "name": "The party",
@@ -1326,6 +1326,10 @@
         {
           "chapter": "riftlight-headwaters-washout",
           "key": "Old Ossley"
+        },
+        {
+          "chapter": "riftlight-saltrot-arrival",
+          "key": "Old Ossley"
         }
       ],
       "chapters": [
@@ -1351,11 +1355,11 @@
           "address": "gemfall-07r/scene_ossley/narration"
         },
         {
-          "text": "When you want to go upriver, I am your frog. Honest work, honest pay.",
+          "text": "Honest work, honest pay. When you want to go upriver, I'm your frog.",
           "address": "riftlight-saltrot-arrival/ossley_done/narration"
         }
       ],
-      "lineCount": 34,
+      "lineCount": 36,
       "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
@@ -4423,16 +4427,27 @@
         {
           "chapter": "riftlight-bone-yard",
           "key": "saltrot_guide"
+        },
+        {
+          "chapter": "riftlight-buried-bridge",
+          "key": "saltrot_guide"
+        },
+        {
+          "chapter": "riftlight-saltrot-arrival",
+          "key": "saltrot_guide"
+        },
+        {
+          "chapter": "riftlight-stuttering-flats",
+          "key": "saltrot_guide"
         }
       ],
       "chapters": [
         "riftlight-bone-yard",
+        "riftlight-buried-bridge",
         "riftlight-saltrot-arrival",
         "riftlight-stuttering-flats"
       ],
-      "aliases": [
-        "Saltrot guide"
-      ],
+      "aliases": [],
       "gemini": {
         "voice": "Callirrhoe"
       },
@@ -4442,16 +4457,16 @@
           "address": "riftlight-bone-yard/rest/variants/0"
         },
         {
-          "text": "The buried bridge. My folk have a rule. We show the bank. We do not walk on it.",
-          "address": "riftlight-saltrot-arrival/lead/narration"
+          "text": "When the wave reaches me, shout NOW and I pull. Too soon, and it only splashes.",
+          "address": "riftlight-buried-bridge/wash_out/narration"
         },
         {
           "text": "Guides keep an account of everything that comes and goes here. This belongs in it.",
           "address": "riftlight-bone-yard/drawing/narration"
         }
       ],
-      "lineCount": 101,
-      "guessedLines": 6,
+      "lineCount": 152,
+      "guessedLines": 3,
       "speaks": true,
       "status": "provisional"
     },
@@ -4470,11 +4485,19 @@
           "key": "Pip Thistledown"
         },
         {
+          "chapter": "riftlight-buried-bridge",
+          "key": "Pip Thistledown"
+        },
+        {
           "chapter": "riftlight-convergence",
           "key": "Pip Thistledown"
         },
         {
           "chapter": "riftlight-reading-room",
+          "key": "Pip Thistledown"
+        },
+        {
+          "chapter": "riftlight-saltrot-arrival",
           "key": "Pip Thistledown"
         },
         {
@@ -4488,6 +4511,7 @@
       ],
       "chapters": [
         "riftlight-bone-yard",
+        "riftlight-buried-bridge",
         "riftlight-convergence",
         "riftlight-reading-room",
         "riftlight-saltrot-arrival",
@@ -4506,28 +4530,32 @@
           "address": "riftlight-bone-yard/to_pip/narration"
         },
         {
-          "text": "I'll show Master Orin too. He'll want to ask the ruins things first.",
-          "address": "riftlight-bone-yard/to_pip/variants/1"
+          "text": "A river ran this deep, under this bridge. Deeper than the tallest yeti.",
+          "address": "riftlight-buried-bridge/measured/narration"
         },
         {
-          "text": "The drawing goes in the traveling pages, not my tea-stained scrap.",
-          "address": "riftlight-reading-room/rest/narration"
+          "text": "I'll show Master Orin too. He'll want to ask the ruins things first.",
+          "address": "riftlight-bone-yard/to_pip/variants/1"
         }
       ],
-      "lineCount": 68,
+      "lineCount": 80,
       "speaks": true,
       "status": "provisional"
     },
     "orin_vale": {
-      "name": "Orin Vale",
+      "name": "Master Orin Vale",
       "kind": "character",
-      "who": "Methodical griffin scholar. Asks what a test actually showed.",
+      "who": "Griffin scholar and Riftseeker (he/him). Kind, dusty, delighted by evidence and a little sad about sandwiches. Wants to understand before anyone forces anything.",
       "pronouns": "he/him",
       "pronounsFrom": "narration",
       "gender": "male",
       "genderFrom": "narration",
       "figure": "cast/orin_vale",
       "voiceNotes": [
+        {
+          "chapter": "riftlight-buried-bridge",
+          "key": "Master Orin Vale"
+        },
         {
           "chapter": "riftlight-convergence",
           "key": "Orin Vale"
@@ -4548,26 +4576,26 @@
         "riftlight-riftseekers-departure"
       ],
       "aliases": [
-        "Master Orin Vale"
+        "Orin Vale"
       ],
       "gemini": {
         "voice": "Algieba"
       },
       "lines": [
         {
-          "text": "One notebook. One brush. Two sandwiches. A remarkable improvement on last Tuesday.",
-          "address": "riftlight-buried-bridge/restore_bank/narration"
-        },
-        {
           "text": "It does not take orders from whistles. Good. That would be a very bossy chime.",
           "address": "riftlight-riftseekers-departure/chime_whistle/narration"
         },
         {
-          "text": "I packed two sandwiches. Apparently that is not the same thing as two boards.",
-          "address": "riftlight-buried-bridge/equipment/narration"
+          "text": "One more piece that doesn't match today's map. But matches something older.",
+          "address": "riftlight-buried-bridge/old_river/narration"
+        },
+        {
+          "text": "Riftseekers. We call these openings rifts. We follow them and write down what they do.",
+          "address": "riftlight-riftseekers-departure/fellowship/narration"
         }
       ],
-      "lineCount": 66,
+      "lineCount": 62,
       "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
@@ -4680,6 +4708,10 @@
         {
           "chapter": "riftlight-riftseekers-departure",
           "key": "Seren Wisp"
+        },
+        {
+          "chapter": "riftlight-saltrot-arrival",
+          "key": "Seren Wisp"
         }
       ],
       "chapters": [
@@ -4700,15 +4732,15 @@
           "address": "riftlight-convergence/lesson/narration"
         },
         {
-          "text": "Listen for a tick. Listen for a hum. A hum that holds still can be learned.",
-          "address": "riftlight-riftseekers-departure/prep_seam/narration"
+          "text": "Every rift hums. A starweaver can learn to answer one. That is called Attune.",
+          "address": "riftlight-saltrot-arrival/lesson/narration"
         },
         {
-          "text": "One loud note. Use it when you need to be heard, not when you want to be.",
-          "address": "riftlight-riftseekers-departure/supplies_buy/narration"
+          "text": "Listen for a tick. Listen for a hum. A hum that holds still can be learned.",
+          "address": "riftlight-riftseekers-departure/prep_seam/narration"
         }
       ],
-      "lineCount": 46,
+      "lineCount": 41,
       "speaks": true,
       "status": "provisional"
     },
@@ -4887,6 +4919,10 @@
         {
           "chapter": "riftlight-glacier-survival",
           "key": "Yeti herder"
+        },
+        {
+          "chapter": "riftlight-stuttering-flats",
+          "key": "Yeti herder"
         }
       ],
       "chapters": [
@@ -4905,15 +4941,15 @@
           "address": "riftlight-glacier-survival/hall_table/narration"
         },
         {
-          "text": "I will take it from here. You stay on the flats. That gap is no place for people.",
-          "address": "riftlight-stuttering-flats/glimpse/narration"
-        },
-        {
           "text": "My grandmother's. She never found out what ticked. Put an ear in and tell me.",
           "address": "riftlight-hidden-glacier-rift/post/narration"
+        },
+        {
+          "text": "My herd must never wander in there. Goats go through anything. How do we keep them out?",
+          "address": "riftlight-hidden-glacier-rift/cairn/narration"
         }
       ],
-      "lineCount": 54,
+      "lineCount": 62,
       "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
@@ -4977,10 +5013,84 @@
       "speaks": true,
       "status": "provisional"
     },
-    "passing_fisher": {
-      "name": "Passing fisher",
+    "grandmother_winkle": {
+      "name": "Grandmother Winkle",
       "kind": "character",
-      "who": "A fisher passing along the flats. She stops to study your warning, then makes up her own mind.",
+      "who": "Puddle's grandmother (she/her), a strict old Skupper guide. Short words, big frown, kind underneath. Keeps the guides' rule: show the bank, never the stone.",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/skupper_grandmother",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-saltrot-arrival",
+          "key": "Grandmother Winkle"
+        }
+      ],
+      "chapters": [
+        "riftlight-saltrot-arrival"
+      ],
+      "aliases": [],
+      "gemini": {
+        "voice": "Gacrux"
+      },
+      "lines": [
+        {
+          "text": "Good manners. Upriver is a bridge with no river. Guides have one rule for it: show the bank, never the stone.",
+          "address": "riftlight-saltrot-arrival/camp_gift/narration"
+        },
+        {
+          "text": "And a guide, finishes digging her own door.",
+          "address": "riftlight-saltrot-arrival/camp_story/variants/0"
+        },
+        {
+          "text": "Silt comes from where water comes from. Upriver is a bridge with no river. Guides have one rule for it: show the bank, never the stone.",
+          "address": "riftlight-saltrot-arrival/camp_story/narration"
+        }
+      ],
+      "lineCount": 5,
+      "speaks": true,
+      "status": "provisional"
+    },
+    "dab": {
+      "name": "Dab",
+      "kind": "character",
+      "who": "A small Skupper child (she/her). Licks things to learn about them. Puffs up when startled.",
+      "gender": "female",
+      "genderFrom": "notes",
+      "figure": "cast/skupper_child",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-saltrot-arrival",
+          "key": "Dab"
+        }
+      ],
+      "chapters": [
+        "riftlight-saltrot-arrival"
+      ],
+      "aliases": [],
+      "gemini": {
+        "voice": "Laomedeia"
+      },
+      "lines": [
+        {
+          "text": "Sorry. This morning I saw old stone posts upriver, where the pale silt starts. And it was snowing on them. Just on them.",
+          "address": "riftlight-saltrot-arrival/puff_off/narration"
+        },
+        {
+          "text": "Thanks. This morning I saw old stone posts upriver, where the pale silt starts. And it was snowing on them. Just on them.",
+          "address": "riftlight-saltrot-arrival/puff_done/narration"
+        }
+      ],
+      "lineCount": 2,
+      "speaks": true,
+      "status": "provisional"
+    },
+    "fen": {
+      "name": "Fen",
+      "kind": "character",
+      "who": "A frogfolk fisher (she/her). Brisk, practical, always carrying a fish bag the gulls follow.",
       "pronouns": "she/her",
       "pronounsFrom": "narration",
       "gender": "female",
@@ -4988,24 +5098,37 @@
       "figure": "cast/passing_fisher",
       "voiceNotes": [
         {
+          "chapter": "riftlight-saltrot-arrival",
+          "key": "Fen"
+        },
+        {
           "chapter": "riftlight-stuttering-flats",
-          "key": "Passing fisher"
+          "key": "Fen"
         }
       ],
       "chapters": [
+        "riftlight-saltrot-arrival",
         "riftlight-stuttering-flats"
       ],
       "aliases": [],
       "gemini": {
-        "voice": "Achird"
+        "voice": "Autonoe"
       },
       "lines": [
         {
-          "text": "I will wait at the marked spot, then.",
-          "address": "riftlight-stuttering-flats/next/variants/0"
+          "text": "For luck on soft ground. It warms up over firm mud.",
+          "address": "riftlight-saltrot-arrival/traveler_done/narration"
+        },
+        {
+          "text": "Snow fish! I've never caught a snow fish!",
+          "address": "riftlight-stuttering-flats/rest/narration"
+        },
+        {
+          "text": "Snow fish don't exist anyway. Probably.",
+          "address": "riftlight-stuttering-flats/fen_back/narration"
         }
       ],
-      "lineCount": 1,
+      "lineCount": 8,
       "speaks": true,
       "status": "provisional"
     },
@@ -5967,40 +6090,6 @@
       "speaks": true,
       "status": "provisional"
     },
-    "skupper_guide": {
-      "name": "Skupper guide",
-      "kind": "character",
-      "who": "Skupper guide.",
-      "pronouns": "she/her",
-      "pronounsFrom": "narration",
-      "gender": "female",
-      "genderFrom": "narration",
-      "figure": "cast/saltrot_guide",
-      "chapters": [
-        "riftlight-buried-bridge"
-      ],
-      "aliases": [],
-      "gemini": {
-        "voice": "Erinome"
-      },
-      "lines": [
-        {
-          "text": "The tide reaches this pocket later. We have time to look, then we pack up. No crossing.",
-          "address": "riftlight-buried-bridge/guide_limits/narration"
-        },
-        {
-          "text": "Buried bridge. No river. Still not walking on it.",
-          "address": "riftlight-buried-bridge/bank/narration"
-        },
-        {
-          "text": "An old river. Still no bridge tours.",
-          "address": "riftlight-buried-bridge/guide_handover/narration"
-        }
-      ],
-      "lineCount": 7,
-      "speaks": true,
-      "status": "provisional"
-    },
     "pass_keeper": {
       "name": "Pass keeper",
       "kind": "character",
@@ -6501,62 +6590,6 @@
         {
           "text": "Where is a safe way to look?",
           "address": "riftlight-reading-room/teach_back/narration"
-        }
-      ],
-      "lineCount": 1,
-      "speaks": true,
-      "status": "provisional"
-    },
-    "traveler": {
-      "name": "Traveler",
-      "kind": "character",
-      "who": "Traveler.",
-      "pronouns": "she/her",
-      "pronounsFrom": "narration",
-      "gender": "female",
-      "genderFrom": "narration",
-      "figure": "cast/boarding_traveler",
-      "chapters": [
-        "riftlight-saltrot-arrival"
-      ],
-      "aliases": [],
-      "gemini": {
-        "voice": "Autonoe"
-      },
-      "lines": [
-        {
-          "text": "Still mostly dry. Mostly.",
-          "address": "riftlight-saltrot-arrival/traveler_off/narration"
-        },
-        {
-          "text": "For luck on soft ground.",
-          "address": "riftlight-saltrot-arrival/traveler_done/narration"
-        }
-      ],
-      "lineCount": 2,
-      "speaks": true,
-      "status": "provisional"
-    },
-    "skupper_cousin": {
-      "name": "Skupper cousin",
-      "kind": "character",
-      "who": "Skupper cousin.",
-      "pronouns": "she/her",
-      "pronounsFrom": "narration",
-      "gender": "female",
-      "genderFrom": "narration",
-      "figure": "entities/skupper",
-      "chapters": [
-        "riftlight-saltrot-arrival"
-      ],
-      "aliases": [],
-      "gemini": {
-        "voice": "Schedar"
-      },
-      "lines": [
-        {
-          "text": "Thank you. This morning I saw old posts upriver, where the pale silt starts, standing in dry mud.",
-          "address": "riftlight-saltrot-arrival/puff_done/narration"
         }
       ],
       "lineCount": 1,
