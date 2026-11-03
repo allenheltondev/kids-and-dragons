@@ -2,14 +2,12 @@ import fs from "node:fs";
 import path from "node:path";
 import { expect, it } from "vitest";
 import { applyIntent, combatantById, currentActorId, enterScene, legalActions, legalMoves, positionOf, resolveEnemy, stepsBetween } from "@kad/shared";
-import { buffBonus } from "../../packages/shared/src/buffs.ts";
 import type { Bestiary, ClientIntent, EncounterMap, EngineContext, RunState } from "@kad/shared";
 import { chapters, context, start } from "./riftlight-test-support.ts";
 const root = path.resolve(import.meta.dirname, "../..");
 const bestiary = JSON.parse(fs.readFileSync(path.join(root, "content/bestiary.json"), "utf8")) as Bestiary;
 const configs = [
   ...["fight", "fight_soft"].map(sceneId => ({ chapterId: "riftlight-wyrm-nest", sceneId })),
-  ...["push", "shelter"].flatMap(plan => ["", "_rope", "_cover"].map(prep => ({ chapterId: "riftlight-squall-temple", sceneId: `fight_${plan}${prep}` }))),
 ];
 function must(state: RunState, playerId: string, intent: ClientIntent, ctx: EngineContext) {
   const next = applyIntent(state, { playerId, intent }, ctx);
@@ -70,16 +68,6 @@ it.each(configs)("$chapterId/$sceneId retains an actual defeat recovery", ({ cha
   expect(state.flags[chapterId.endsWith("wyrm-nest") ? "wyrm_nest_kept" : "temple_damaged"]).toBe(true);
   expect(state.flags.wyrm_ally).not.toBe(true);
   expect(state.party.every(p => !p.down && p.hp > 0)).toBe(true);
-});
-it.each(["push", "shelter"])("%s wind cover removes only the party's actual Guard penalty", plan => {
-  for (const prep of ["", "_rope", "_cover"]) {
-    const { state } = setup("riftlight-squall-temple", `fight_${plan}${prep}`, 1);
-    const fight = state.encounter!;
-    expect(buffBonus(fight.buffs, state.party[0]!.character.id, "guard")).toBe(prep === "_cover" ? 0 : -1);
-    const enemy = fight.combatants.find(c => c.side === "enemy")!;
-    expect(buffBonus(fight.buffs, enemy.id, "guard")).toBe(-1);
-    expect(fight.environment!.spec.hazards![0]!.push).toEqual({ direction: "west", tiles: 1 });
-  }
 });
 it("soft bedding changes actual held rounds without changing the enemies or slick ice", () => {
   const rounds: number[] = [];

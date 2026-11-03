@@ -1,81 +1,48 @@
-# The Island Due Back — implementation and review
+# The Island Due Back: design note
 
-This draft continues `whale-road` with the agreed Sky key node. It is an ordinary
-regional chapter, followed by an explicit development pause. The returning island's
-mooring stone shows a small old arrangement of the land below. The carving has no
-readable date, maker or cause. It does not reveal the islands' origin or a full map.
+**Rewritten November 2026** to the Borrowed Ruins pilot's bar ([arc.md](arc.md)). The Wandering
+Sky's key node.
 
-## Entry and exit
+- **Beat:** the party has met the island due back and copied its mooring stone.
+- **Question (goal, said in scene 1):** "Why has the island come back early?"
+- **Carried by** Keeper Juniper (`cast/island_keeper`), with Pip Thistledown and Tumble, a griffin
+  island courier who is bad at landing. A hen who lives on the island all alone is the running joke,
+  and she shows the theme that moved things try to go home.
+- **p1 (`mooring_stone`, its own scene):** the carving is a map of the land below in an older
+  shape. That is the Sky fragment, and `fragment_sky_learned` is set on every path. The chime leans
+  hard toward the glacier in `pull` (p2), where Juniper answers the chapter's question: the island
+  is being pulled.
 
-`whales-to-island` is available whether the party guided the whales, forced Olivia's
-opening, or left her offer undecided. The chapter reintroduces Pip and its unnamed
-kitsune keeper. Earlier fellowship and Chime introductions are proved across every
-incoming graph route, including the Coast return. `whales` is introduced on every
-whale-road ending; the optional whale-assisted method also checks the actual outcome.
+## Rhythm
 
-The return edge goes to the whale-road hub. Both nodes use pass revisits after
-completion. The chapter pays 140 XP once, has no bonus XP, item fragment, combat or
-mandatory damage. The new pause pays zero. The preview now has 18 story nodes,
-11 pauses and 44 edges; convergence and the finale remain unwritten.
+The lookout (spot the island, Tumble's gust) leads to the crossing, the island and the hen, then
+the stone (copy it, p1, the pull) and the force-or-understand choice. After that come the return,
+the rest and the word sent ahead, and Pip's farewell. The close asks the campaign question again
+with the island's piece added. There are no fights. The risk is in 14 dice checks and two games,
+and each miss costs something.
 
-## Scene sweep
+## Consequences
 
-| Scene family | Introduction and resulting behavior |
-| --- | --- |
-| `arrival`, `return_song` | Establish keeper, Pip, bell, board, cloths, song slips and three identification signs before their use. The song predicts a return without providing an exact date. |
-| `sightings` | Establish fixed observation marks before comparing movement. Guided whales offer a TN 8 method; scattered whales do not appear or supply a navigation cue. Unresolved whale choices use the ordinary ground methods. |
-| `priority`, `letters`, `station` | Introduce the messenger, sealed letters, fence and station before choosing a job. Only one rescue job is played. Success preserves either a ready messenger or a working signal frame; failure leaves wet letters or a station needing repair. A duskrunner can assist the existing bag check. |
-| `signal_plan`, `bearings` | Teach both cloth meanings before practicing a relay. The repeated-signal plan unlocks TN 8 for the same gap check. Failure leaves the party's estimate unfinished and requires a keeper's separate observations. |
-| `landing` | The keeper lays the board, another keeper crosses first, and the party follows. Verified estimates support Pip's return watch; incomplete estimates need a second lookout. Failed landing checks lead to a party decision: carry equipment in batches and delay the message relay, or leave bulky gear and borrow a small kit. Thornguard Brace assists a normal check. No rope or hero arrests an island's drift. |
-| `stone_care`, `carving` | Introduce the mooring eye, grooves, brush, blank sheet and later crack. Failed recording leaves a dotted meeting point; a clear record unlocks an easier later comparison. Nobody removes stone or claims missing marks were recovered. |
-| `orientation`, `comparison` | Present raised marks, uncertain grooves and today's separate ridges without the joined-land conclusion. The chosen successful test reveals that pattern. Failure opens a different hands-on comparison: measure two clear marks with the keeper holding a scale, or trace them with Pip pointing from the viewing mark. The party notices the difference and shows its helper. Every path introduces the discovery before `alternative`; none supplies history beyond it. |
-| `alternative`, `record` | Challenge decoration versus local view and explicitly retain unknown age/cause. Permission to copy is voluntary; shared records retain credit and gaps, private sketches stay with the party. |
-| `departure`, `return`, `rest` | Establish the temple in the moving island's course before the warning choice. The first message is either a course warning or an invitation for another reader. A sent warning is never claimed received without an answer. The return refers to the actual rescued resource, evidence credit and sharing permission. All paths learn the clue. |
+| Choice | Later |
+|---|---|
+| `whales_guided` (from the map) | The whales' curve gives a free sighting and their note gives a safe crossing. Scattered or still-circling whales leave both to the dice, and a lost calf drifts past. |
+| Catch Tumble's letters or the signal frame | `island_messages_saved`: Tumble can fly you a line and carry the warning, and she is at the temple. A saved frame can flash the warning. |
+| Tie the island to the lookout (force) or let it go (understand) | Tying makes the return safe, but it cracks the stone's eye and flattens the frame. Letting it go means a risky run back. |
+| Warning or welcome song (rest) | `island_warning_sent`. A warning with no quick carrier goes by hand, which sets `island_relay_delayed`. The welcome song travels from bell to bell and is never late. |
+| Pip's hen and Pip's question | The hen flies home on her own. Pip's answer is paid off in the ending. |
 
-The per-scene continuity ledger checks literal introductions on every actual engine
-branch, including conditional references to the exclusively visited rescue scene.
-The proper-name audit and cross-chapter prerequisite proof run alongside it. No
-continuity allow-list was added.
+The old `island_*` bookkeeping flags are no longer set. The integration pass should drop them from
+`graph.flags` when it regenerates the proofs.
 
-## Persistent consequences
+## Shape and pacing
 
-| Flags | Meaning and later use |
-| --- | --- |
-| `whales_guided`, `whales_scattered` | Existing journey history; changes arrival and availability of the whale-assisted sighting. Never overwritten here. Olivia's trust is preserved. |
-| `island_messages_saved`, `island_station_ready` | Mutually exclusive successful work priorities; changes warning resources and final messenger/station reactions. Both may be false after failure. |
-| `island_signal_repeated` | Temporary practiced relay; unlocks the easier bearings check, then clears after the check. |
-| `island_approach_verified` | Party's own completed gap test; changes who supplies the return observations. |
-| `island_carving_clear` | Clear join versus dotted uncertainty; changes the comparison and opens an easier evidence test. |
-| `island_land_match` | The initial independent comparison succeeded. False preserves the unfinished initial test even after the party discovers the pattern in its chosen assisted follow-up. Later credit reflects that distinction. |
-| `island_relay_delayed` | A failed landing led the party to carry the full kit in batches. Keepers help carry, leaving even a prepared frame without a sender until the return. The departure and return acknowledge the later dispatch. Borrowing a light kit preserves the relay's place. Dry letters remain dry in either case. |
-| `island_record_shared` | Permission to retain a copy. It never authorizes private correspondence or transfers the stone. |
-| `island_warning_sent` | Course warning chosen as the first message, not confirmation of receipt. False means inspection invitation first and routine warning next. Available for the future temple continuation. |
-| `fragment_sky_learned` | Guaranteed knowledge from the key node, not an inventory object. Only this chapter sets it. |
+| | Before | After |
+|---|---:|---:|
+| Scenes | 110 | 55 |
+| Dice checks | 3 | 14 |
+| Games (inert) | 23 (8) | 2 (0) |
+| Quoted scenes | 13 | 41 |
+| Spine scenes / votes + checks / longest reading run | 43+ / 14–16 / 3 | 31 / 14 / 2 |
 
-Arrival clears only the nine local investigation flags. Graph pass revisits preserve
-the completed result and do not re-enter arrival. Cross-strand fragments, Chime,
-whale history and trust flags are retained.
-
-## Pacing and validation
-
-There are 106 authored scenes across alternative methods/outcomes, with 43–47 read
-depending on failures: 14–16 decisions and six checks. Recovery choices add no
-rerolls. The uncalibrated planning model is about 36 minutes on the shortest
-lower-bound route and 39 minutes typical; the brisk-table sensitivity is about
-26.9 minutes. Counts are structural checks, not
-proof of engagement or observed duration.
-
-`riftlight-island.test.ts` plays complete routes for dry letters, working station,
-wet letters and an unfinished station, retaining sharing and warning choices. It
-also follows both real rift-opening actions into the island, checks gated methods,
-keeps a three-person party at one HP, and tests pass revisits. Mixed-outcome routes
-exercise both landing recovery costs and both assisted discoveries. Tests verify
-that neither setup nor a failed initial test states the inference before the
-party's comparison or chosen follow-up. Simulated routes have six checks and
-fourteen to sixteen decisions. These are engine simulations, not family
-sessions. Real elapsed timing and the production pacing gate remain open.
-
-The chapter uses the existing Sky Islands biome painting. The mooring face and its
-changing views are narrated; the painting is not presented as a clue diagram. A
-literal stone illustration is optional future asset work, not a dependency of a
-choice or evidence test.
+The model predicts about 26 minutes on the shortest path and 27 on a typical one. These figures
+are uncalibrated, and no family has timed the chapter yet.

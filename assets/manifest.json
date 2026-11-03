@@ -2088,7 +2088,7 @@
     },
     {
       "id": "adult_dragonling",
-      "name": "Adult dragonling",
+      "name": "Keeper Clove",
       "basis": "dragonling",
       "scale": "medium",
       "heightCm": 150,
@@ -2096,7 +2096,7 @@
     },
     {
       "id": "island_keeper",
-      "name": "Island keeper",
+      "name": "Keeper Juniper",
       "basis": "kitsune",
       "scale": "medium",
       "heightCm": 145,
