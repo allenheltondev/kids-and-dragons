@@ -49,6 +49,10 @@ export function chapterAssets(chapter: Chapter | null, party: readonly FigureOf[
     // Presentation props and tracking coverIcons are registered story-prop
     // assets, so their declared kind determines the URL without name guessing.
     const appearance = chapter.presentation?.interactions?.[id];
+    if (scene.type === "interaction" && scene.interaction.kind === "relay" || chapter.resumeInteractions?.[id]?.interaction.kind === "relay") {
+      urls.add("/assets/ui/relay/catching-hands.webp");
+      urls.add("/assets/story-props/rope-basket.webp");
+    }
     for (const prop of appearance?.props ?? []) urls.add(`/assets/story-props/${prop}.webp`);
     for (const icon of appearance?.coverIcons ?? []) urls.add(`/assets/story-props/${icon}.webp`);
   }

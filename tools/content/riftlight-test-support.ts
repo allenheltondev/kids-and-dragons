@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { expect } from "vitest";
-import { TEAM_HOLD_MS, applyEffects, applyIntent, classPlaceWaitingOn, createRunState, enterScene, itemCatalog, keepClassIntent, newCharacter, resolveCharacter, switchClass } from "@kad/shared";
+import { TEAM_HOLD_MS, relayTarget, relayHolder, applyEffects, applyIntent, classPlaceWaitingOn, createRunState, enterScene, itemCatalog, keepClassIntent, newCharacter, resolveCharacter, switchClass } from "@kad/shared";
 import type { Campaign, Chapter, ClassId, ClientIntent, EngineContext, ItemCatalog, RulesContent, RunState, SpeciesId } from "@kad/shared";
 import { APPEARANCE } from "../../packages/shared/src/test-fixtures.ts";
 import { RIFTLIGHT_DESIGN } from "./riftlight-preview.ts";
@@ -179,7 +179,7 @@ function walkAllPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, flags:
       // actions in riftlight-interactions.test.ts.
       const scene = chapter.scenes[state.sceneId!]!;
       if (scene.type !== "interaction") throw new Error("Expected interaction");
-      // Only outcomes the engine can produce: cooperate, balance, relay and play games never
+      // Only outcomes the engine can produce: cooperate, balance and play games never
       // resolve to failure (engine.ts), so their authored onFailure is not a way a party can go.
       for (const outcome of ["success", "failure", "assisted"] as const) {
         if (outcome === "assisted" && !scene.onAssisted) continue;
@@ -259,9 +259,18 @@ export function finishInteraction(state: RunState, chapter: Chapter, outcome: "s
         }
         break;
       case "relay":
+        if (outcome === "failure") {
+          while (current.prompt?.kind === "interaction" && current.prompt.phase === "active") {
+            const p = current.prompt;
+            const holder = relayHolder(p, current.party.filter(m => m.connected).map(m => m.playerId))!;
+            if (p.caughtBy === holder) act({ action: "pass", flightId: p.relay!.flight.id, aim: 1, power: 0 }, holder);
+            else act({ action: "catch", flightId: p.relay!.flight.id, position: 0, reach: p.relay!.flight.landing }, holder);
+          }
+          break;
+        }
         for (const m of current.party.filter(m => m.connected)) {
-          act({ action: "catch" }, m.playerId);
-          act({ action: "pass" }, m.playerId);
+          act({ action: "catch", flightId: (current.prompt as import("@kad/shared").InteractionPrompt).relay!.flight.id, position: 0.82, reach: (current.prompt as import("@kad/shared").InteractionPrompt).relay!.flight.landing }, m.playerId);
+          act({ action: "pass", flightId: (current.prompt as import("@kad/shared").InteractionPrompt).relay!.flight.id, ...relayTarget((current.prompt as import("@kad/shared").InteractionPrompt).passed?.length ?? 0) }, m.playerId);
         }
         break;
       case "play":

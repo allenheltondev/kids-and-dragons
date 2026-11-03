@@ -62,7 +62,7 @@ function walk(chapter: Chapter, plan: Plan, defaults: Record<string, string> = {
 }
 
 /**
- * Real controls only. A relay, cooperation, balance or play game cannot fail in the engine,
+ * Real controls only. A cooperation, balance or play game cannot fail in the engine,
  * so asking one for a miss throws instead of inventing a branch no party can take (PR #606 review).
  */
 function play(state: RunState, chapter: Chapter, outcome: Outcome) {

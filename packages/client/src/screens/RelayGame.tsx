@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from "react";
-import { relayHolder, type InteractionPrompt, type PartyMember } from "@kad/shared";
+import { relayHolder, relayPosition, type InteractionPrompt, type PartyMember } from "@kad/shared";
 import { characterWorldArtUrl } from "../world/art-paths";
 import { reducedMotion } from "../a11y/prefs";
 import { Icon } from "./icons";
@@ -7,21 +7,23 @@ import { propUrl } from "./InteractionArt";
 import { Button } from "../ui/Button";
 import { buzz } from "./game-feel";
 import "./RelayGame.css";
+import { RelayLandscape } from "./RelayArt";
 
 /** Give the final flight time to land before showing the reward or Continue. */
 export function useRelayArrival(prompt: InteractionPrompt | null): boolean {
-  const key = prompt?.spec.kind === "relay" && prompt.phase === "result" ? `${prompt.openedSeq}:${prompt.attempt}` : null;
+  const key = prompt?.spec.kind === "relay" && prompt.phase === "result" && prompt.outcome !== "failure" ? `${prompt.openedSeq}:${prompt.attempt}` : null;
+  const duration = prompt?.relay?.flight.durationMs ?? 650;
   const [arrived, setArrived] = useState<string | null>(null);
   useEffect(() => {
     if (key === null || key === arrived || reducedMotion()) return;
-    const timer = window.setTimeout(() => setArrived(key), 650);
+    const timer = window.setTimeout(() => setArrived(key), duration);
     return () => window.clearTimeout(timer);
-  }, [key, arrived]);
+  }, [key, arrived, duration]);
   return key === null || reducedMotion() || key === arrived;
 }
 
 /** One representation everywhere, including a useful fallback if a painting fails. */
-function RelayObject({ object, label }: { object?: string; label: string }) {
+export function RelayObject({ object, label }: { object?: string; label: string }) {
   const [failed, setFailed] = useState(false);
   useEffect(() => setFailed(false), [object]);
   return object && !failed
@@ -35,7 +37,7 @@ export function relaySeats(prompt: InteractionPrompt, party: PartyMember[]): str
 }
 
 /** A single object follows a continuous route between the heroes' actual hand positions. */
-export function RelayWorld({ prompt, party, object, settled = true }: { prompt: InteractionPrompt; party: PartyMember[]; object?: string; settled?: boolean }) {
+export function RelayWorld({ prompt, party, object, settled = true, now = Date.now() }: { prompt: InteractionPrompt; party: PartyMember[]; object?: string; settled?: boolean; now?: number }) {
   if (prompt.spec.kind !== "relay") return null;
   const order = relaySeats(prompt, party);
   const delivered = prompt.phase === "result" && prompt.outcome !== "failure";
@@ -51,26 +53,52 @@ export function RelayWorld({ prompt, party, object, settled = true }: { prompt: 
   const name = party.find((m) => m.playerId === holder)?.character.name;
   const from = last ? x(last) : -12;
   const pose = { "--from-x": `${from}%`, "--to-x": `${target}%`, "--from-y": last ? "64%" : "20%", "--to-y": caught || delivered || ready ? "64%" : "32%" } as CSSProperties;
+  const flight = prompt.relay?.flight;
+  if (flight && !caught && (!delivered || !settled) && !ready) {
+    const progress = reducedMotion() ? 1 : relayPosition(flight, now);
+    const origin = flight.fromId ? x(flight.fromId) : -8;
+    pose.left = `${origin + (target - origin) * progress + Math.sin(progress * Math.PI) * (flight.landing - 0.5) * 20}%`;
+    pose.top = `${flight.dropped || progress >= 1 ? 80 : 64 - Math.sin(progress * Math.PI) * (flight.quality === "wild" ? 50 : 36)}%`;
+    pose.rotate = reducedMotion() ? undefined : `${Math.sin(progress * Math.PI) * (flight.quality === "wild" ? 150 : 25)}deg`;
+  }
   return <div className="relay-world" data-caught={caught} data-delivered={delivered} data-phase={parked ? "ready" : prompt.phase}>
-    <p className="relay-world__caption" role="status">{parked ? "Waiting for a friend to reconnect" : ready ? "From hand to hand, all the way home" : delivered ? settled ? "Delivered together!" : "On its way home!" : caught ? `${name} has ${label}!` : `${name}, catch ${label}!`}</p>
+    {prompt.relay && <RelayScore prompt={prompt} />}
+    <p className="relay-world__caption" role="status">{parked ? "Waiting for a friend to reconnect" : ready ? "From hand to hand, all the way home" : prompt.phase === "result" && prompt.outcome === "failure" ? "The delivery took a tumble!" : delivered ? settled ? "Delivered together!" : "On its way home!" : caught ? `${name} has ${label}!` : `${name}, catch ${label}!`}</p>
     <div className="relay-world__stage" aria-label={`The journey of ${label}`}>
+      <RelayLandscape />
       <span className="relay-world__path" aria-hidden="true" />
       <ol className="relay-world__heroes">{order.map((id) => {
         const m = party.find((member) => member.playerId === id)!;
         const done = passed.includes(id);
         return <li key={id} className="relay-world__hero" data-active={id === holder} data-done={done} style={{ left: `${x(id)}%` }}>
           <img src={characterWorldArtUrl(m.character.species, m.character.tier, m.character.class)} alt="" draggable={false} onError={(event) => { event.currentTarget.style.visibility = "hidden"; }} />
-          <span className="relay-world__hands" aria-hidden="true"><Icon name="hand" /></span>
+          <span className="relay-world__footlight" aria-hidden="true" />
           <strong>{m.character.name}</strong><small>{done ? "Passed!" : id === holder ? caught ? "Got it!" : "Your turn!" : "Next"}</small>
         </li>;
       })}</ol>
-      <div className="relay-world__home" data-delivered={delivered && settled}><Icon name={delivered && settled ? "check" : "quest"} /><strong>Home</strong></div>
-      <span key={`${passed.join(":")}:${holder ?? "home"}`} className="relay-world__flight" data-caught={caught} data-delivered={delivered} style={pose}>
+      <div className="relay-world__home" data-delivered={delivered && settled}><img src={propUrl("rope-basket")} alt="" draggable={false} onError={event => { event.currentTarget.style.visibility = "hidden"; }} /><strong>Home</strong></div>
+      <span key={`${passed.join(":")}:${holder ?? "home"}`} className="relay-world__flight" data-skilled={!!flight} data-caught={caught} data-delivered={delivered} style={pose}>
         <span className="relay-world__shadow" aria-hidden="true" />
         <RelayObject object={object} label={label} />
       </span>
     </div>
-    <p className="game-note">{parked ? "The object is safe here. Reconnect a phone to carry on." : ready ? "Catch the object on your phone, then slide it up to send it on." : delivered ? prompt.outcome === "assisted" ? "A helping hand brings it home." : "Every hand helped it get here." : caught ? "Send it on to the next pair of hands." : "Tap the arriving object on your phone."}</p>
+    <p className="game-note">{parked ? "The object is safe here. Reconnect a phone to carry on." : ready ? "Catch in the gold circle. Aim your swipe at the next pair of hands. Three drops end this attempt." : prompt.phase === "result" && prompt.outcome === "failure" ? "Three drops! Try the route again, or see how the story changes." : delivered ? prompt.outcome === "assisted" ? "A helping hand brings it home." : "Every hand helped it get here." : caught ? prompt.relay ? "Aim for the gold hands. A wild throw gives your friend a harder catch!" : "Send it on to the next pair of hands." : prompt.relay ? "Watch the flight. Catch in the gold circle on your phone!" : "Tap the arriving object on your phone."}</p>
+  </div>;
+}
+
+export function RelayScore({ prompt }: { prompt: InteractionPrompt }) {
+  const relay = prompt.relay;
+  if (!relay) return null;
+  const feedback = {
+    incoming: "Keep it safe, all the way home!", "clean-catch": "Clean catch!", save: "Saved it!",
+    "too-early": "Too soon! It slipped. Scoop it up!", missed: "Dropped! Scoop it up and keep going.",
+    "clean-pass": "Right to their hands!", "wobbly-pass": "Wobbly throw — watch the landing!", "wild-pass": "Wild throw! Can you save it?",
+    rebound: "Missed home! Pick it up and aim again.",
+  }[relay.last];
+  return <div className="relay-score">
+    <span className="relay-score__chances" aria-label={`${relay.chances} of 3 chances left`}>Chances {[0, 1, 2].map(i => <span key={i} data-full={i < relay.chances} aria-hidden="true"><Icon name="star" /></span>)}</span>
+    <span className="relay-score__feedback" role="status">{relay.chances === 0 ? "Out of chances. A new twist in the story!" : feedback}</span>
+    {prompt.phase === "result" && <small>{relay.cleanPasses} clean {relay.cleanPasses === 1 ? "throw" : "throws"} · {relay.saves} {relay.saves === 1 ? "save" : "saves"} · best catch streak {relay.bestStreak}</small>}
   </div>;
 }
 

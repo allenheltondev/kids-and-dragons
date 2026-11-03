@@ -15,6 +15,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { test, expect } from "@playwright/test";
+import { seedTable, tvStorage } from "./seed";
 
 const BUNDLE = path.resolve(import.meta.dirname, "..", "packages", "client", "dist");
 
@@ -28,6 +29,26 @@ function scripts(dir: string): string[] {
 }
 
 test.describe("production locks", () => {
+  test("the lean WebGL build still draws a fight with ordinary text and image assets", async ({ browser, baseURL }, info) => {
+    const table = await seedTable({ mode: "party", tv: true, chapterId: "first-steps-01", sceneId: "encounter_stones", heroes: [{ name: "Aster", species: "unicorn" }] });
+    const storage = tvStorage(table);
+    for (const origin of storage.origins) origin.origin = new URL(baseURL!).origin;
+    const context = await browser.newContext({ baseURL, storageState: storage, viewport: { width: 1280, height: 720 } });
+    try {
+      const page = await context.newPage();
+      const errors: string[] = [];
+      page.on("pageerror", error => errors.push(error.message));
+      await page.goto(`/tv/${table.code}`);
+      const canvas = page.locator(".kad-stage canvas");
+      await expect(canvas).toBeVisible({ timeout: 30_000 });
+      await expect(page.getByTestId("chapter-preface")).toHaveCount(0, { timeout: 30_000 });
+      expect(await canvas.evaluate(node => !!(node as HTMLCanvasElement).getContext("webgl2") || !!(node as HTMLCanvasElement).getContext("webgl"))).toBe(true);
+      await expect(page.locator(".kad-stage-warning")).toHaveCount(0);
+      await page.screenshot({ path: info.outputPath("production-webgl-board.png") });
+      expect(errors).toEqual([]);
+    } finally { await context.close(); }
+  });
+
   test("the playtest drawer is not in the build", () => {
     const files = scripts(BUNDLE);
     expect(files.length).toBeGreaterThan(0);

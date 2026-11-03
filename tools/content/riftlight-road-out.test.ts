@@ -28,8 +28,8 @@ interface Script {
   seats?: number;
 }
 
-/** Only these story interactions can be missed; the rest (cooperate, balance, relay, play) always succeed. */
-const FAILABLE = new Set(["timing", "precision", "memory", "sequence", "tracking"]);
+/** Only these story interactions can be missed; the rest (cooperate, balance, play) always succeed. */
+const FAILABLE = new Set(["timing", "precision", "memory", "sequence", "tracking", "relay"]);
 
 /** Plays a chapter start to finish through the engine, recording each scene's words and offered choices. */
 function play(chapter: Chapter, script: Script = {}) {

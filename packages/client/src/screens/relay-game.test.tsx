@@ -9,7 +9,7 @@ import { RelayCatcher } from "./RelayGame";
 
 const initial = useGameStore.getState();
 beforeEach(() => { vi.useFakeTimers(); vi.setSystemTime(2_000_000); });
-afterEach(() => { cleanup(); useGameStore.setState(initial, true); document.documentElement.removeAttribute("data-motion"); vi.useRealTimers(); });
+afterEach(() => { cleanup(); useGameStore.setState(initial, true); document.documentElement.removeAttribute("data-motion"); vi.restoreAllMocks(); vi.useRealTimers(); });
 const catcher = { object: "relay-plank", caught: true, label: "Pass the mat", catchLabel: "Catch the mat", nextName: "Fern", busy: false };
 
 describe("an object in a child's hands", () => {
@@ -105,30 +105,32 @@ it.each([false, true])("moves one prop through two phones and the TV, reduced mo
   expect(tv.querySelectorAll(painted)).toHaveLength(1);
   expect(tv.querySelector(".interaction-art")).toBeNull();
   expect(phone.querySelector(".relay-world")).toBeNull();
-  expect(within(phone).getByText("To Fern")).toBeTruthy();
+  if (!still) await act(async () => { vi.advanceTimersByTime(1500); });
   await act(async () => { fireEvent.click(within(phone).getByRole("button", { name: "Catch the mat" })); });
   expect(tv.querySelector(".relay-world")?.getAttribute("data-caught")).toBe("true");
-  const object = within(phone).getByRole("button", { name: "Pass the mat" });
-  fireEvent.pointerDown(object, { pointerId: 1, clientY: 250 });
-  fireEvent.pointerMove(object, { pointerId: 1, clientY: 150 });
-  fireEvent.pointerUp(object, { pointerId: 1, clientY: 150 });
-  await act(async () => { vi.advanceTimersByTime(300); });
+  expect(within(phone).getByText("To Fern")).toBeTruthy();
+  const throwTo = async (name: string, aim: number) => {
+    fireEvent.change(within(phone).getByRole("slider", { name: "Direction" }), { target: { value: aim } });
+    fireEvent.change(within(phone).getByRole("slider", { name: "Strength" }), { target: { value: 0.64 } });
+    await act(async () => { fireEvent.click(within(phone).getByRole("button", { name: `Throw to ${name}` })); });
+  };
+  await throwTo("Fern", 0.44);
   const flight = tv.querySelector(".relay-world__flight") as HTMLElement;
   expect(flight.style.getPropertyValue("--from-x")).toBe("10%");
   expect(flight.style.getPropertyValue("--to-x")).toBe("50%");
   expect(tv.querySelectorAll(painted)).toHaveLength(1);
   await act(async () => { useGameStore.setState({ session: { ...useGameStore.getState().session!, playerId: "p1" } }); });
-  expect(within(phone).getByText("To home")).toBeTruthy();
+  if (!still) await act(async () => { vi.advanceTimersByTime(1500); });
   await act(async () => { fireEvent.click(within(phone).getByRole("button", { name: "Catch the mat" })); });
-  fireEvent.click(within(phone).getByRole("button", { name: "Pass the mat" }));
-  await act(async () => { vi.advanceTimersByTime(300); });
+  expect(within(phone).getByText("To home")).toBeTruthy();
+  await throwTo("home", -0.44);
   expect((useGameStore.getState().state!.prompt as InteractionPrompt).outcome).toBe("success");
   expect(tv.querySelector(".relay-world")?.getAttribute("data-delivered")).toBe("true");
   expect(tv.querySelectorAll(painted)).toHaveLength(1);
   expect(useGameStore.getState().state!.flags.delivered).toBeUndefined();
   if (!still) {
     expect(within(phone).queryByRole("button", { name: "See what happens next" })).toBeNull();
-    await act(async () => { vi.advanceTimersByTime(650); });
+    await act(async () => { vi.advanceTimersByTime(2000); });
   }
   expect(within(tv).getByText("Delivered together!")).toBeTruthy();
   await act(async () => { fireEvent.click(within(phone).getByRole("button", { name: "See what happens next" })); });

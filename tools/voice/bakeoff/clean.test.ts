@@ -232,8 +232,7 @@ describe("npm run voice:clean", () => {
     const report = (name: string, meta?: object): string => {
       fs.writeFileSync(path.join(dir, `${name}.raw.wav`), sighing);
       if (meta) fs.writeFileSync(path.join(dir, `${name}.json`), JSON.stringify(meta));
-      const tsx = path.join(import.meta.dirname, "..", "..", "..", "node_modules", ".bin", "tsx");
-      return execFileSync(tsx, [path.join(import.meta.dirname, "clean-report.ts"), path.join(dir, `${name}.raw.wav`)], { encoding: "utf8" }).split("\n")[0]!;
+      return execFileSync(process.execPath, ["--import", "tsx", path.join(import.meta.dirname, "clean-report.ts"), path.join(dir, `${name}.raw.wav`)], { encoding: "utf8" }).split(/\r?\n/)[0]!;
     };
     expect(report("laughs", { ext: "wav", cleaned: 2, endsOnSound: true })).toMatch(/the line ends on a sound, which is kept\): .*cuts nothing$/);
     expect(report("words", { ext: "wav", cleaned: 2 })).toMatch(/^words: .*cuts 600-1600ms$/);

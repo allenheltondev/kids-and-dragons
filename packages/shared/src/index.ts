@@ -76,6 +76,7 @@ export * from "./visitors.js";
 export * from "./room-channel-path.js";
 export * from "./names.js";
 export * from "./interactions.js";
+export * from "./relay.js";
 export * from "./figure-size.js";
 export * from "./error-report.js";
 

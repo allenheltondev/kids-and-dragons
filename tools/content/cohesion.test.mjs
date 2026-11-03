@@ -257,7 +257,7 @@ describe("the shape screen", () => {
     const timing = kind("timing", { goto: "a" }, { goto: "b" });
     expect(isInert(timing)).toBe(false);
     expect(hasDeadFailure(timing)).toBe(false);
-    expect([...FAILABLE_KINDS].sort()).toEqual(["memory", "precision", "sequence", "timing", "tracking"]);
+    expect([...FAILABLE_KINDS].sort()).toEqual(["memory", "precision", "relay", "sequence", "timing", "tracking"]);
   });
 
   it("reads the real chapters the same way (PR #606 review samples)", () => {

@@ -124,19 +124,20 @@ const roadPicks = {
 };
 it.each(sizes.flatMap(size => outcomes.flatMap(outcome => ["haul", "ask_why"].map(job => ({ size, outcome, job })))))
   ("road: $size seats / $outcome / $job changes the sign or wind task", ({ size, outcome, job }) => {
+    const hauled = job === "haul";
+    const crew = hauled && outcome !== "failure";
     const { state, trace } = walk(road, size, {
       ...roadPicks, scene_road_crew: job, scene_signposts: job === "ask_why" ? "checked_detour" : "read_signs",
-      scene_ash_wind: job === "haul" ? "crew_screen" : "push_on",
+      scene_ash_wind: crew ? "crew_screen" : "push_on",
     }, outcome, 20, false, { walked_over: true });
-    const crew = job === "haul";
     expect(state.flags.helped_road_crew === true).toBe(crew);
-    expect(state.flags.road_detour_checked === true).toBe(!crew);
-    expect(trace.has("interaction_relay_signs")).toBe(crew);
-    expect(trace.has("scene_signposts_checked")).toBe(!crew);
-    expect(trace.has("scene_signposts_pigs")).toBe(crew && outcome === "failure");
+    expect(state.flags.road_detour_checked === true).toBe(!hauled);
+    expect(trace.has("interaction_relay_signs")).toBe(hauled);
+    expect(trace.has("scene_signposts_checked")).toBe(!hauled);
+    expect(trace.has("scene_signposts_pigs")).toBe(hauled && outcome === "failure");
     expect(trace.has("interaction_crew_screen")).toBe(crew);
     expect(trace.has("interaction_ash_load")).toBe(!crew);
-    expect(offered(trace.get("scene_signposts")!, "checked_detour")).toBe(!crew);
+    expect(offered(trace.get("scene_signposts")!, "checked_detour")).toBe(!hauled);
     expect(offered(trace.get("scene_ash_wind")!, "crew_screen")).toBe(crew);
     const before = trace.get("scene_warden_patrol")!.coins;
     expect(trace.get("interaction_gate")!.coins).toBe(before);

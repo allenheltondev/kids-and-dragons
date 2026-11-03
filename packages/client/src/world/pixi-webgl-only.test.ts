@@ -9,7 +9,7 @@ import { createRequire } from "node:module";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { extensions } from "pixi.js";
-import { exportNames, stubSource, webglOnlyStubs } from "../../pixi-webgl-only";
+import { exportNames, pixiWebglOnly, stubSource, webglOnlyStubs } from "../../pixi-webgl-only";
 
 const lib = path.dirname(createRequire(import.meta.url).resolve("pixi.js"));
 const stubs = new Set([...webglOnlyStubs(lib)].map((file) => path.relative(lib, file).split(path.sep).join("/")));
@@ -55,5 +55,19 @@ describe("a stub", () => {
     const { GpuThing } = (await import(/* @vite-ignore */ url)) as { GpuThing: new () => unknown };
     expect(() => extensions.add(GpuThing as never)).not.toThrow();
     expect(() => new GpuThing()).toThrow(/GpuThing.*left out of this build.*WebGL only/);
+  });
+});
+
+describe("the production plugin", () => {
+  it("matches both bundler and native filesystem paths while keeping ordinary Text real", () => {
+    const plugin = pixiWebglOnly();
+    (plugin.buildStart as () => void)();
+    const load = plugin.load as (id: string) => string | null;
+    const gpu = path.join(lib, "rendering/renderers/gpu/WebGPURenderer.mjs");
+    expect(load(gpu)).toContain("WebGPURenderer");
+    expect(load(gpu.split(path.sep).join("/"))).toContain("WebGPURenderer");
+    expect(load(path.join(lib, "scene/text/canvas/CanvasTextGenerator.mjs"))).toBeNull();
+    // This app loads image textures and normal Text, not bitmap-font assets.
+    expect(load(path.join(lib, "scene/text-bitmap/asset/loadBitmapFont.mjs"))).toContain("loadBitmapFont");
   });
 });

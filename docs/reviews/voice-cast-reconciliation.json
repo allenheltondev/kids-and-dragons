@@ -1,0 +1,130 @@
+{
+  "note": "Owner authorized preserving prior approvals in history and assigning alternatives for re-audition. Keep the maximum number of existing approved assignments; break ties by chapter coverage, then stable speaker order. Reassign conflicting provisional entries using the existing gender/traits-aware cast allocator. Retired IDs remain in retired-voice-cast-decisions.json.",
+  "originalClashCount": 17,
+  "remainingClashCount": 0,
+  "retainedApprovedSelections": [
+    "boggart_prospector",
+    "grandmother",
+    "hessa",
+    "old_ossley",
+    "orin_vale",
+    "pellam",
+    "relay_runner",
+    "wend",
+    "yeti_herder"
+  ],
+  "replacements": [
+    {
+      "id": "bell_courier",
+      "name": "Bell Courier",
+      "previousVoice": "Achernar",
+      "previousStatus": "approved",
+      "provisionalVoice": "Erinome",
+      "reauditionRequired": true
+    },
+    {
+      "id": "bram_lock",
+      "name": "Bram Lock",
+      "previousVoice": "Charon",
+      "previousStatus": "approved",
+      "provisionalVoice": "Orus",
+      "reauditionRequired": true
+    },
+    {
+      "id": "brisk",
+      "name": "Brisk",
+      "previousVoice": "Pulcherrima",
+      "previousStatus": "approved",
+      "provisionalVoice": "Autonoe",
+      "reauditionRequired": true
+    },
+    {
+      "id": "captain",
+      "name": "Captain",
+      "previousVoice": "Gacrux",
+      "previousStatus": "approved",
+      "provisionalVoice": "Pulcherrima",
+      "reauditionRequired": true
+    },
+    {
+      "id": "carters_mule",
+      "name": "Carter's mule",
+      "previousVoice": "Sadachbia",
+      "previousStatus": "provisional",
+      "provisionalVoice": "Zubenelgenubi",
+      "reauditionRequired": false
+    },
+    {
+      "id": "corvane",
+      "name": "Corvane",
+      "previousVoice": "Charon",
+      "previousStatus": "provisional",
+      "provisionalVoice": "Schedar",
+      "reauditionRequired": false
+    },
+    {
+      "id": "drake",
+      "name": "Drake",
+      "previousVoice": "Orus",
+      "previousStatus": "provisional",
+      "provisionalVoice": "Algenib",
+      "reauditionRequired": false
+    },
+    {
+      "id": "echo_hunter",
+      "name": "Echo Hunter",
+      "previousVoice": "Umbriel",
+      "previousStatus": "provisional",
+      "provisionalVoice": "Orus",
+      "reauditionRequired": false
+    },
+    {
+      "id": "ford_witch",
+      "name": "Mother Thrum",
+      "previousVoice": "Leda",
+      "previousStatus": "approved",
+      "provisionalVoice": "Aoede",
+      "reauditionRequired": true
+    },
+    {
+      "id": "linnet",
+      "name": "Cadet Linnet",
+      "previousVoice": "Sadachbia",
+      "previousStatus": "provisional",
+      "provisionalVoice": "Puck",
+      "reauditionRequired": false
+    },
+    {
+      "id": "masked_choir_singer",
+      "name": "Masked choir singer",
+      "previousVoice": "Leda",
+      "previousStatus": "approved",
+      "provisionalVoice": "Vindemiatrix",
+      "reauditionRequired": true
+    },
+    {
+      "id": "mother_bracken",
+      "name": "Mother Bracken",
+      "previousVoice": "Pulcherrima",
+      "previousStatus": "provisional",
+      "provisionalVoice": "Kore",
+      "reauditionRequired": false
+    },
+    {
+      "id": "olivia",
+      "name": "Lady Olivia",
+      "previousVoice": "Erinome",
+      "previousStatus": "approved",
+      "provisionalVoice": "Zephyr",
+      "reauditionRequired": true
+    },
+    {
+      "id": "warden_sergeant",
+      "name": "Warden Sergeant",
+      "previousVoice": "Orus",
+      "previousStatus": "provisional",
+      "provisionalVoice": "Algieba",
+      "reauditionRequired": false
+    }
+  ]
+}

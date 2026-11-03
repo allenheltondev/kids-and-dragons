@@ -34,7 +34,7 @@ describe("figure sizes (#362)", () => {
   });
 
   it("is regenerated: npm run art:figures after a height or stance changes", () => {
-    expect(readFileSync(OUTPUT, "utf8")).toBe(renderFigureSizes(sizes));
+    expect(readFileSync(OUTPUT, "utf8").replace(/\r\n/g, "\n")).toBe(renderFigureSizes(sizes));
   });
 
   it("restates canon's bands exactly, less the one a chapter cannot ask for", () => {
