@@ -6796,246 +6796,467 @@
         "riftseekers"
       ],
       "scenes": {
-        "stone": {
-          "requires": [
-            "riftseekers"
-          ],
+        "arrival": {
+          "requires": [],
           "introduces": {
-            "stone": "counting stone",
-            "pip": "Pip Thistledown"
+            "tally": "I'm Tally",
+            "counting_ring": "a ring of old stones",
+            "counters_question": "how can a stone that never moves have moved"
           }
         },
-        "marks": {
+        "the_road": {
           "requires": [
-            "stone"
+            "tally",
+            "counting_ring",
+            "olivia"
           ],
           "introduces": {
-            "old_marks": "An eruption"
+            "eldest": "It is the Eldest",
+            "pip": "Pip Thistledown, the young manticore scout",
+            "fold": "a fold hangs in the air",
+            "eruption_carving": "carved with a mountain throwing sparks"
           }
+        },
+        "check_spoon": {
+          "requires": [
+            "pip",
+            "eldest"
+          ],
+          "introduces": {}
+        },
+        "check_calm": {
+          "requires": [
+            "tally",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "pip_says": {
+          "requires": [
+            "pip",
+            "riftseekers",
+            "eldest"
+          ],
+          "introduces": {}
         },
         "lesson": {
           "requires": [
-            "stone"
+            "fold",
+            "pip",
+            "riftseekers",
+            "hall",
+            "learned_note"
           ],
           "introduces": {
             "seren": "Seren Wisp"
           }
         },
-        "footprint": {
+        "fold": {
           "requires": [
-            "stone",
-            "old_marks"
+            "fold",
+            "seren",
+            "pip"
           ],
           "introduces": {}
         },
-        "grass_test": {
+        "grass": {
           "requires": [
-            "stone"
+            "eldest",
+            "tally",
+            "pip"
           ],
           "introduces": {}
         },
-        "views": {
+        "check_grass": {
           "requires": [
-            "stone",
-            "old_marks"
+            "tally"
           ],
           "introduces": {}
         },
-        "witness_result": {
+        "grass_wind": {
           "requires": [
-            "stone",
-            "old_marks"
+            "tally"
           ],
           "introduces": {}
         },
-        "cart_plan": {
+        "wind_drops": {
           "requires": [
-            "stone"
+            "pip"
           ],
           "introduces": {}
         },
-        "ramp_setup": {
+        "sniff": {
           "requires": [
-            "stone"
+            "pip",
+            "tally"
           ],
           "introduces": {}
         },
-        "braced_ramp": {
+        "no_drag": {
           "requires": [
-            "stone"
+            "olivia",
+            "pip",
+            "eldest"
           ],
           "introduces": {}
         },
-        "cart_balance": {
+        "hollow": {
           "requires": [
-            "stone"
+            "counting_ring",
+            "eldest",
+            "tally"
           ],
           "introduces": {}
         },
-        "jar_relay": {
+        "check_trickle": {
           "requires": [
-            "stone"
+            "tally",
+            "pip"
           ],
           "introduces": {}
         },
-        "empty_cart": {
+        "under": {
           "requires": [
-            "stone"
+            "eldest",
+            "fold",
+            "tally"
           ],
           "introduces": {}
         },
-        "water_delivered": {
+        "check_rock": {
           "requires": [
-            "stone"
+            "eldest",
+            "pip"
           ],
           "introduces": {}
         },
-        "camp": {
+        "check_dig": {
           "requires": [
-            "stone"
+            "eldest",
+            "tally"
           ],
           "introduces": {}
         },
-        "paperweight": {
+        "old_socket": {
           "requires": [
-            "stone"
+            "eldest",
+            "counting_ring",
+            "listening_chime"
+          ],
+          "introduces": {
+            "old_socket": "a socket"
+          }
+        },
+        "pebble": {
+          "requires": [
+            "fold",
+            "tally"
           ],
           "introduces": {}
         },
-        "warning": {
+        "seen": {
           "requires": [
-            "stone"
+            "seren",
+            "pip"
           ],
           "introduces": {}
         },
-        "lower_sign": {
+        "verdict": {
           "requires": [
-            "stone"
+            "old_socket",
+            "pip",
+            "tally"
           ],
           "introduces": {}
         },
-        "upper_sign": {
+        "check_vouch": {
           "requires": [
-            "stone"
+            "pip",
+            "tally"
           ],
           "introduces": {}
         },
-        "upper_cart": {
+        "pip_cleared": {
           "requires": [
-            "stone"
+            "eldest",
+            "tally"
+          ],
+          "introduces": {
+            "cart": "A cart is coming"
+          }
+        },
+        "what_now": {
+          "requires": [
+            "olivia",
+            "fold",
+            "cart",
+            "seren",
+            "counting_ring"
+          ],
+          "introduces": {
+            "turnip_cart": "A turnip cart"
+          }
+        },
+        "check_push": {
+          "requires": [
+            "eldest",
+            "tally"
           ],
           "introduces": {}
         },
-        "lower_neighbor": {
+        "bigfoot_carry": {
           "requires": [
-            "stone"
+            "eldest",
+            "tally"
           ],
           "introduces": {}
         },
-        "neighbor_result": {
+        "pushed_home": {
           "requires": [
-            "stone"
+            "olivia",
+            "counting_ring",
+            "tally"
           ],
           "introduces": {}
         },
-        "runoff": {
+        "creak": {
           "requires": [
-            "stone"
-          ],
-          "introduces": {}
-        },
-        "drain": {
-          "requires": [
-            "stone"
-          ],
-          "introduces": {}
-        },
-        "gravel": {
-          "requires": [
-            "stone"
-          ],
-          "introduces": {}
-        },
-        "evidence_decision": {
-          "requires": [
-            "stone",
-            "old_marks"
-          ],
-          "introduces": {}
-        },
-        "exact_copy": {
-          "requires": [
-            "stone"
-          ],
-          "introduces": {}
-        },
-        "landmark_copy": {
-          "requires": [
-            "stone"
-          ],
-          "introduces": {}
-        },
-        "motion": {
-          "requires": [
-            "stone",
+            "old_socket",
             "seren"
           ],
           "introduces": {}
         },
-        "motion_memory": {
+        "gourd_clear": {
           "requires": [
-            "stone"
+            "fold",
+            "turnip_cart",
+            "tally"
+          ],
+          "introduces": {
+            "gourd": "Farmer Gourd",
+            "mustard": "Mustard"
+          }
+        },
+        "check_goat": {
+          "requires": [
+            "mustard",
+            "gourd",
+            "fold"
           ],
           "introduces": {}
         },
-        "motion_attuned": {
+        "leave_it": {
           "requires": [
-            "stone"
+            "eldest",
+            "fold",
+            "tally"
           ],
           "introduces": {}
         },
-        "stone_priority": {
+        "check_bend": {
           "requires": [
-            "stone"
+            "seren",
+            "tally",
+            "pip"
           ],
           "introduces": {}
         },
-        "route_copy": {
+        "stuck": {
           "requires": [
-            "stone"
+            "fold",
+            "tally"
           ],
           "introduces": {}
         },
-        "carving_copy": {
+        "gourd_gap": {
           "requires": [
-            "stone",
-            "old_marks"
+            "fold",
+            "turnip_cart",
+            "tally"
+          ],
+          "introduces": {
+            "gourd": "Farmer Gourd",
+            "mustard": "Mustard"
+          }
+        },
+        "squeeze": {
+          "requires": [
+            "gourd",
+            "fold",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "gourd_tight": {
+          "requires": [
+            "fold",
+            "turnip_cart",
+            "tally"
+          ],
+          "introduces": {
+            "gourd": "Farmer Gourd",
+            "mustard": "Mustard"
+          }
+        },
+        "squeeze_tight": {
+          "requires": [
+            "gourd",
+            "fold",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "past_slow": {
+          "requires": [
+            "gourd",
+            "tally"
+          ],
+          "introduces": {}
+        },
+        "fold_small": {
+          "requires": [
+            "fold",
+            "seren",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "chime_listen": {
+          "requires": [
+            "fold",
+            "listening_chime",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "squeeze_time": {
+          "requires": [
+            "gourd",
+            "mustard",
+            "fold"
+          ],
+          "introduces": {}
+        },
+        "squeeze_close": {
+          "requires": [
+            "gourd",
+            "mustard",
+            "fold"
+          ],
+          "introduces": {}
+        },
+        "turnip_relay": {
+          "requires": [
+            "gourd",
+            "mustard",
+            "eldest"
+          ],
+          "introduces": {}
+        },
+        "dusk_run": {
+          "requires": [
+            "gourd",
+            "mustard"
+          ],
+          "introduces": {}
+        },
+        "past": {
+          "requires": [
+            "gourd",
+            "tally"
+          ],
+          "introduces": {},
+          "conditional": [
+            {
+              "flag": "counters_hat_lost",
+              "requires": [
+                "mustard"
+              ]
+            }
+          ]
+        },
+        "fold_window": {
+          "requires": [
+            "fold",
+            "olivia",
+            "seren",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "check_peek": {
+          "requires": [
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "check_count": {
+          "requires": [
+            "seren"
+          ],
+          "introduces": {}
+        },
+        "attuned": {
+          "requires": [
+            "seren"
           ],
           "introduces": {}
         },
         "rest": {
           "requires": [
-            "stone"
+            "tally",
+            "eldest",
+            "eruption_carving",
+            "pip"
           ],
           "introduces": {}
         },
-        "paperweight_response_rock": {
+        "route_copy": {
           "requires": [
-            "stone"
+            "tally",
+            "pip"
+          ],
+          "introduces": {},
+          "conditional": [
+            {
+              "flag": "counters_understood",
+              "requires": [
+                "old_socket"
+              ]
+            }
+          ]
+        },
+        "carving_copy": {
+          "requires": [
+            "eruption_carving",
+            "eldest",
+            "pip"
           ],
           "introduces": {}
         },
-        "paperweight_response_fold": {
+        "goodbye": {
           "requires": [
-            "stone"
+            "tally",
+            "counting_ring"
           ],
-          "introduces": {}
+          "introduces": {},
+          "conditional": [
+            {
+              "flag": "counters_spoon_kept",
+              "requires": [
+                "pip"
+              ]
+            }
+          ]
         },
-        "paperweight_response_hold": {
+        "ending": {
           "requires": [
-            "stone"
+            "fold",
+            "old_socket"
           ],
-          "introduces": {}
+          "introduces": {
+            "ashspan": "Ashspan Bridge"
+          }
         }
       }
     },
@@ -7659,374 +7880,347 @@
       ],
       "scenes": {
         "arrival": {
+          "requires": [],
+          "introduces": {
+            "pip": "Pip Thistledown, the young manticore scout",
+            "counting_stones": "the counting stones",
+            "hummock": "I'm Hummock",
+            "sledge": "the evening sled",
+            "valley_question": "Where is it going?"
+          }
+        },
+        "snowbank": {
           "requires": [
-            "orin",
+            "hummock"
+          ],
+          "introduces": {}
+        },
+        "meet_hummock": {
+          "requires": [
+            "hummock",
+            "hall"
+          ],
+          "introduces": {
+            "warning_post": "My warning post",
+            "gertrude": "That's Gertrude"
+          }
+        },
+        "look": {
+          "requires": [
+            "pip",
+            "olivia"
+          ],
+          "introduces": {}
+        },
+        "check_map": {
+          "requires": [
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "check_climb": {
+          "requires": [
+            "gertrude",
+            "hummock"
+          ],
+          "introduces": {}
+        },
+        "check_plan": {
+          "requires": [],
+          "introduces": {}
+        },
+        "read_valley": {
+          "requires": [
+            "hummock",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "bank_path": {
+          "requires": [
+            "hummock"
+          ],
+          "introduces": {}
+        },
+        "fork": {
+          "requires": [
+            "hummock"
+          ],
+          "introduces": {}
+        },
+        "old_road": {
+          "requires": [
+            "hummock",
+            "listening_chime"
+          ],
+          "introduces": {
+            "old_marker": "oldest marker"
+          }
+        },
+        "down_valley": {
+          "requires": [
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "check_board": {
+          "requires": [
+            "hummock"
+          ],
+          "introduces": {}
+        },
+        "check_trail": {
+          "requires": [
+            "hummock",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "old_falls": {
+          "requires": [
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "pip_dam": {
+          "requires": [
             "olivia",
-            "listening_chime",
-            "chime_rules",
-            "learned_note",
-            "hall",
-            "riftseekers"
+            "sledge",
+            "old_marker",
+            "hummock"
           ],
           "introduces": {
-            "valley_arrival": "Pip Thistledown, a young manticore scout, stops so suddenly that his notebook bumps his nose."
+            "low_ice": "the low ice"
           }
         },
-        "look_again": {
+        "check_wall": {
           "requires": [
-            "valley_arrival"
+            "hummock",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "walled": {
+          "requires": [
+            "old_marker",
+            "low_ice"
+          ],
+          "introduces": {}
+        },
+        "wall_burst": {
+          "requires": [
+            "hummock",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "follow_water": {
+          "requires": [
+            "hummock"
+          ],
+          "introduces": {}
+        },
+        "understood": {
+          "requires": [
+            "old_marker",
+            "hummock"
+          ],
+          "introduces": {}
+        },
+        "crossing": {
+          "requires": [
+            "warning_post",
+            "hummock",
+            "low_ice"
+          ],
+          "introduces": {}
+        },
+        "check_ice": {
+          "requires": [
+            "hummock",
+            "low_ice"
+          ],
+          "introduces": {}
+        },
+        "crossing_flooded": {
+          "requires": [
+            "warning_post",
+            "hummock",
+            "low_ice"
+          ],
+          "introduces": {}
+        },
+        "check_wade": {
+          "requires": [
+            "hummock",
+            "low_ice"
+          ],
+          "introduces": {}
+        },
+        "check_high": {
+          "requires": [
+            "hummock"
+          ],
+          "introduces": {}
+        },
+        "hold_ice": {
+          "requires": [
+            "hummock"
+          ],
+          "introduces": {}
+        },
+        "across_low": {
+          "requires": [
+            "pip",
+            "low_ice"
+          ],
+          "introduces": {}
+        },
+        "across_high": {
+          "requires": [
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "far_bank": {
+          "requires": [
+            "hummock"
+          ],
+          "introduces": {}
+        },
+        "hummock_jump": {
+          "requires": [
+            "hummock"
+          ],
+          "introduces": {}
+        },
+        "lantern_post": {
+          "requires": [
+            "warning_post",
+            "sledge",
+            "hummock"
+          ],
+          "introduces": {}
+        },
+        "light_lantern": {
+          "requires": [
+            "hummock"
+          ],
+          "introduces": {}
+        },
+        "stone_arrow": {
+          "requires": [
+            "hummock",
+            "sledge"
+          ],
+          "introduces": {}
+        },
+        "warning_lit": {
+          "requires": [
+            "sledge"
+          ],
+          "introduces": {}
+        },
+        "check_sledge": {
+          "requires": [
+            "sledge",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "sledge_stops": {
+          "requires": [
+            "sledge",
+            "hummock"
           ],
           "introduces": {
-            "look_again": "An old route marker has a fork-shaped chip."
+            "drift": "Grandma Drift",
+            "reading_room": "the reading room"
           }
         },
-        "look_again_1": {
+        "driver": {
           "requires": [
-            "look_again"
+            "drift",
+            "reading_room"
           ],
           "introduces": {}
         },
-        "look_again_2": {
+        "check_haul": {
           "requires": [
-            "look_again"
+            "drift",
+            "hummock"
           ],
           "introduces": {}
         },
-        "look_again_1_check": {
+        "check_guide": {
           "requires": [
-            "look_again"
+            "drift"
           ],
           "introduces": {}
         },
-        "look_again_2_check": {
+        "dusk": {
           "requires": [
-            "look_again"
+            "pip"
           ],
           "introduces": {}
         },
-        "look_again_1_done": {
+        "river_back": {
           "requires": [
-            "look_again"
-          ],
-          "introduces": {}
-        },
-        "look_again_1_changed": {
-          "requires": [
-            "look_again"
-          ],
-          "introduces": {}
-        },
-        "look_again_2_done": {
-          "requires": [
-            "look_again"
-          ],
-          "introduces": {}
-        },
-        "look_again_2_changed": {
-          "requires": [
-            "look_again"
-          ],
-          "introduces": {}
-        },
-        "road_plan": {
-          "requires": [
-            "look_again"
-          ],
-          "introduces": {}
-        },
-        "road_plan_check": {
-          "requires": [
-            "look_again"
-          ],
-          "introduces": {}
-        },
-        "worksite": {
-          "requires": [
-            "look_again"
+            "pip"
           ],
           "introduces": {
-            "valley_worksite": "A yeti route worker meets you on the near bank."
-          }
-        },
-        "test_flow": {
-          "requires": [
-            "valley_worksite"
-          ],
-          "introduces": {}
-        },
-        "flow_result": {
-          "requires": [
-            "valley_worksite"
-          ],
-          "introduces": {
-            "valley_routes": "The calm pocket leads to a low shelf crossing."
-          }
-        },
-        "bundle_plan": {
-          "requires": [
-            "valley_worksite",
-            "valley_routes"
-          ],
-          "introduces": {
-            "valley_priority": "There is time for one preparation before your party crosses."
-          }
-        },
-        "tools_hoist": {
-          "requires": [
-            "valley_worksite",
-            "valley_routes"
-          ],
-          "introduces": {}
-        },
-        "tools_hoist_assisted": {
-          "requires": [
-            "valley_worksite",
-            "valley_routes"
-          ],
-          "introduces": {}
-        },
-        "tools_steps": {
-          "requires": [
-            "valley_worksite",
-            "valley_routes"
-          ],
-          "introduces": {}
-        },
-        "tools_tie": {
-          "requires": [
-            "valley_worksite",
-            "valley_routes"
-          ],
-          "introduces": {}
-        },
-        "people_line": {
-          "requires": [
-            "valley_worksite",
-            "valley_routes"
-          ],
-          "introduces": {}
-        },
-        "people_braced": {
-          "requires": [
-            "valley_worksite",
-            "valley_routes"
-          ],
-          "introduces": {}
-        },
-        "people_signal": {
-          "requires": [
-            "valley_worksite",
-            "valley_routes"
-          ],
-          "introduces": {}
-        },
-        "signals": {
-          "requires": [
-            "valley_priority"
-          ],
-          "introduces": {
-            "valley_signals": "The workers demonstrate lantern up for wait"
-          }
-        },
-        "camp": {
-          "requires": [
-            "valley_priority"
-          ],
-          "introduces": {}
-        },
-        "crossing_choice": {
-          "requires": [
-            "valley_priority"
-          ],
-          "introduces": {
-            "valley_crossing": "The low shelf has a guide rope and a calm pocket."
-          }
-        },
-        "crossing_choice_1_check": {
-          "requires": [
-            "valley_crossing",
-            "valley_signals"
-          ],
-          "introduces": {}
-        },
-        "crossing_choice_2_check": {
-          "requires": [
-            "valley_crossing",
-            "valley_signals"
-          ],
-          "introduces": {}
-        },
-        "high_recovery": {
-          "requires": [
-            "valley_crossing",
-            "valley_signals"
-          ],
-          "introduces": {}
-        },
-        "low_recovery": {
-          "requires": [
-            "valley_crossing",
-            "valley_signals"
-          ],
-          "introduces": {}
-        },
-        "crossing_choice_1_done": {
-          "requires": [
-            "valley_crossing",
-            "valley_signals"
-          ],
-          "introduces": {}
-        },
-        "crossing_choice_2_done": {
-          "requires": [
-            "valley_crossing",
-            "valley_signals"
-          ],
-          "introduces": {}
-        },
-        "river_turn": {
-          "requires": [
-            "valley_crossing",
-            "valley_signals"
-          ],
-          "introduces": {
-            "valley_return": "Water noses into the old bed while the western stream grows quieter."
-          }
-        },
-        "return_observation": {
-          "requires": [
-            "valley_return"
-          ],
-          "introduces": {}
-        },
-        "return_water": {
-          "requires": [
-            "valley_return"
-          ],
-          "introduces": {
-            "valley_recovery": "The old bed is filling."
-          }
-        },
-        "worker_beacon": {
-          "requires": [
-            "valley_recovery",
-            "valley_priority"
-          ],
-          "introduces": {}
-        },
-        "tool_recover": {
-          "requires": [
-            "valley_recovery",
-            "valley_priority"
-          ],
-          "introduces": {}
-        },
-        "tool_recover_assisted": {
-          "requires": [
-            "valley_recovery",
-            "valley_priority"
-          ],
-          "introduces": {}
-        },
-        "wet_tools": {
-          "requires": [
-            "valley_recovery",
-            "valley_priority"
-          ],
-          "introduces": {}
-        },
-        "workers_takeover": {
-          "requires": [
-            "valley_recovery",
-            "valley_priority"
-          ],
-          "introduces": {}
-        },
-        "repair_gear": {
-          "requires": [
-            "valley_recovery",
-            "valley_priority"
-          ],
-          "introduces": {}
-        },
-        "tell_together": {
-          "requires": [
-            "valley_recovery",
-            "valley_priority"
-          ],
-          "introduces": {
-            "valley_change": "The river runs in its older bed again."
-          }
-        },
-        "record_landmarks": {
-          "requires": [
-            "valley_change"
-          ],
-          "introduces": {}
-        },
-        "record_return": {
-          "requires": [
-            "valley_change"
-          ],
-          "introduces": {}
-        },
-        "last_check": {
-          "requires": [
-            "valley_change"
-          ],
-          "introduces": {}
-        },
-        "rest": {
-          "requires": [
-            "valley_change"
-          ],
-          "introduces": {
-            "valley_record": "both river lines and the order of the change recorded"
+            "valley_change": "The river runs in its own valley again"
           },
           "conditional": [
             {
-              "flag": "valley_record_detailed",
+              "flag": "valley_forced",
               "requires": [
-                "valley_return"
+                "hummock"
               ]
             }
           ]
         },
-        "record_return_response_west": {
+        "rest": {
           "requires": [
-            "valley_change"
+            "hummock",
+            "drift",
+            "reading_room"
           ],
           "introduces": {}
         },
-        "record_return_response_old": {
+        "check_moon": {
           "requires": [
-            "valley_change"
+            "hummock"
           ],
           "introduces": {}
         },
-        "record_return_response_quiet": {
+        "account": {
           "requires": [
+            "reading_room",
+            "olivia",
+            "hummock",
             "valley_change"
           ],
-          "introduces": {}
+          "introduces": {
+            "murmur": "Elder Murmur",
+            "valley_record": "Show her the river you crossed"
+          }
         },
-        "last_check_response_stop": {
+        "ending": {
           "requires": [
-            "valley_change"
+            "listening_chime",
+            "counting_stones",
+            "reading_room"
           ],
-          "introduces": {}
-        },
-        "last_check_response_look": {
-          "requires": [
-            "valley_change"
-          ],
-          "introduces": {}
-        },
-        "last_check_response_ask": {
-          "requires": [
-            "valley_change"
-          ],
-          "introduces": {}
+          "introduces": {},
+          "conditional": [
+            {
+              "flag": "valley_ice_flooded",
+              "requires": [
+                "old_marker"
+              ]
+            }
+          ]
         }
       }
     },
