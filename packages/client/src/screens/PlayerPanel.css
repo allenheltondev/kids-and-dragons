@@ -1610,14 +1610,14 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
   white-space: nowrap;
 }
 
-/* Everybody's face: one row of tiles, sharing the width. A tile is never narrower than its whole name, so on a
-   narrow phone at the largest text the row wraps rather than cutting
-   "Sparklehoof" short; the bag below gives up the height. */
+/* Your friends: a row of pills, each a face and a name side by side and only as
+   wide as they need, under your hero's card. Wide boxes with a small face in
+   each read as empty buttons. A long name is never cut; the row wraps first. */
 .you__row {
   flex: none;
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-1, 0.25em);
+  align-items: center;
+  gap: var(--space-2, 0.5em);
 }
 
 .you__row .party-strip__list {
@@ -1625,38 +1625,52 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
   min-inline-size: 0;
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-1, 0.25em);
+  gap: var(--space-2, 0.5em);
   padding: 0;
   overflow: visible;
 }
 
 .you__row .party-strip__list > li {
-  flex: 1 0 auto;
-  min-inline-size: var(--kad-touch-min, 2.75em);
+  flex: 0 0 auto;
 }
 
 .you__row .party-strip__button {
-  inline-size: 100%;
+  position: relative;
+  flex-direction: row;
+  align-items: center;
+  inline-size: auto;
   min-block-size: var(--kad-touch-min, 2.75em);
-  padding: 0.25em 0.2em;
-  gap: 0.15em;
+  padding: 0.25em 0.9em 0.25em 0.3em;
+  gap: 0.5em;
+  border-radius: 999px;
+}
+
+.you__row .party-strip__portrait {
+  inline-size: 2.2em;
+  block-size: 2.2em;
+  border-radius: 50%;
 }
 
 .you__row .party-strip__name {
-  font-size: 0.75em;
+  font-size: 0.9em;
   line-height: 1.1;
-  text-align: center;
   white-space: nowrap;
 }
 
 .you__row .party-strip__mark {
-  position: absolute;
-  inset-block-start: 0.1em;
-  inset-inline-end: 0.1em;
-  font-size: 0.65em;
+  font-size: 0.7em;
 }
 
-.you__row .party-strip__button { position: relative; }
+/* A short pane (a small phone at large text): faces only, one row, so the bag
+   keeps its room. Each still says its friend's name (the button's label). */
+@container sheet (max-height: 24em) {
+  .you__row .party-strip__name {
+    display: none;
+  }
+  .you__row .party-strip__button {
+    padding: 0.25em;
+  }
+}
 
 /* The bag takes the rest of the page; its six slots share it. */
 .you__bag {
@@ -1774,10 +1788,6 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
     min-block-size: var(--kad-touch-min, 2.75em);
     padding-block: 0.2em;
   }
-  .player__you .party-strip__portrait {
-    inline-size: 1.8em;
-    block-size: 2.1em;
-  }
 }
 
 /*
@@ -1858,13 +1868,6 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
   }
   .player__you .inv__button .inv__slot-name {
     display: none;
-  }
-}
-
-/* Tall panes: bigger faces and bigger stats; the room is there. */
-@container sheet (min-height: 34em) {
-  .you__row .party-strip__button {
-    padding: 0.4em 0.2em;
   }
 }
 
