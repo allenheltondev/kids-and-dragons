@@ -80,8 +80,7 @@ describe("Party Mode and the map", () => {
     mount();
     const nav = screen.getByRole("navigation", { name: "What to look at" });
     expect(nav.querySelectorAll("button")).toHaveLength(4);
-    // Folded at the foot of the You page until it is opened.
-    act(() => fireEvent.change(screen.getByRole("combobox", { name: "Your page" }), { target: { value: "room" } }));
+    // A tile on the You page; what it opens stands in for the bag until Close.
     const settings = screen.getByRole("button", { name: "Room settings" });
     expect(settings.getAttribute("aria-expanded")).toBe("false");
     act(() => settings.click());
@@ -97,7 +96,6 @@ describe("Party Mode and the map", () => {
   });
   it("dismisses a character sheet when the already-selected You destination is tapped", () => {
     mount();
-    act(() => fireEvent.change(screen.getByRole("combobox", { name: "Your page" }), { target: { value: "party" } }));
     act(() => screen.getByRole("button", { name: /Sparklehoof's character sheet/ }).click());
     expect(screen.getByRole("region", { name: "Sparklehoof's character sheet" })).toBeTruthy();
     expect(screen.queryByRole("button", { name: /^close$/i })).toBeNull();

@@ -158,7 +158,7 @@ test.describe("a phone joining, at the playtest's widths", () => {
     });
   }
 
-  test("the You page folds, and the phone remembers how it was left", async ({ browser }) => {
+  test("the You page shows everything at once, before and after a reload", async ({ browser }) => {
     const phone = await context(browser, 360, "normal");
     const kid = await join(phone, await lobby(browser));
     await kid.getByRole("button", { name: /unicorn/i }).first().click(TAP);
@@ -174,17 +174,12 @@ test.describe("a phone joining, at the playtest's widths", () => {
     await kid.getByPlaceholder("Tap to type").fill("Sparklehoof", TAP);
     await kid.getByRole("button", { name: /that's me/i }).click(TAP);
 
-    await kid.getByRole("combobox", { name: "Your page" }).selectOption("stats");
-    const stats = kid.getByRole("button", { name: "Your stats" });
-    await expect(stats).toHaveAttribute("aria-expanded", "true", TAP);
-    await expect(kid.locator(".stat-row")).toBeVisible();
-    await stats.click();
-    await expect(stats).toHaveAttribute("aria-expanded", "false");
-    await expect(kid.locator(".stat-row")).toBeHidden();
+    // The You page shows everything at once: nothing folded, nothing behind a menu, here or after a reload.
+    await expect(kid.locator(".stat-row")).toBeVisible(TAP);
+    await expect(kid.getByRole("heading", { name: /^Your things/ })).toBeVisible();
     await kid.reload();
-    await kid.getByRole("combobox", { name: "Your page" }).selectOption("stats");
-    await expect(kid.getByRole("button", { name: "Your stats" })).toHaveAttribute("aria-expanded", "false", TAP);
-    await expect(kid.locator(".stat-row")).toBeHidden();
+    await expect(kid.locator(".stat-row")).toBeVisible(TAP);
+    await expect(kid.getByRole("heading", { name: /^Your things/ })).toBeVisible();
     expect(await offScreen(kid)).toEqual([]);
   });
 });

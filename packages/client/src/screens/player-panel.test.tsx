@@ -213,10 +213,6 @@ afterEach(() => {
 // Before there is anything to show
 // ---------------------------------------------------------------------------
 
-function selectSheetPage(value: string) {
-  act(() => fireEvent.change(screen.getByRole("combobox", { name: "Your page" }), { target: { value } }));
-}
-
 describe("before the character arrives", () => {
   it("says it is looking rather than rendering an empty sheet", () => {
     useGameStore.setState({
@@ -1519,7 +1515,6 @@ describe("the party strip", () => {
     const user = userEvent.setup();
     twoPlayers();
 
-    selectSheetPage("party");
     await user.click(screen.getByRole("button", { name: /Sparklehoof's character sheet/ }));
     expect(screen.getByText(/Hero tiers/)).toBeTruthy();
   });
@@ -1528,7 +1523,6 @@ describe("the party strip", () => {
     const user = userEvent.setup();
     twoPlayers();
 
-    selectSheetPage("party");
     await user.click(screen.getByRole("button", { name: /Thistle's character sheet/ }));
     expect(screen.getByText(/Hero tiers/)).toBeTruthy();
   });
@@ -1537,7 +1531,6 @@ describe("the party strip", () => {
     const user = userEvent.setup();
     mount({ party: [member(), member({ character: THISTLE })] });
     act(() => dismissPlayerSheet());
-    selectSheetPage("party");
     expect(screen.getByRole("button", { name: /Thistle's character sheet/ })).toBeTruthy();
     serverSends({ prompt: choicePrompt() });
     expect(screen.getByRole("button", { name: /Take the east path/ })).toBeTruthy();
@@ -1546,7 +1539,6 @@ describe("the party strip", () => {
     // Going back to the bag on purpose sticks while the question stays the same…
     act(() => dismissPlayerSheet()); // the tray's You tab
     serverSends({ prompt: choicePrompt({ votes: { p_2: "east" } }) });
-    selectSheetPage("party");
     expect(screen.getByRole("button", { name: /Thistle's character sheet/ })).toBeTruthy();
 
     // …and the next question brings the controls straight back.
@@ -1668,7 +1660,6 @@ describe("the party strip", () => {
     expect(screen.queryByRole("button", { name: /Thistle's character sheet/ })).toBeNull();
 
     act(() => dismissPlayerSheet());
-    selectSheetPage("party");
     await user.click(screen.getByRole("button", { name: /Thistle's character sheet/ }));
     expect(screen.queryByRole("button", { name: /Take the east path/ })).toBeNull();
 
@@ -1687,7 +1678,6 @@ describe("the party strip", () => {
         }),
       ],
     });
-    selectSheetPage("party");
     expect(screen.getByRole("button", { name: /Sparklehoof's character sheet/ }).textContent).toContain(
       "1",
     );
@@ -1696,7 +1686,6 @@ describe("the party strip", () => {
   it("is available outside a Rest scene too", async () => {
     const user = userEvent.setup();
     mount({ party: [member(), member({ character: THISTLE })], sceneType: "story" });
-    selectSheetPage("party");
     await user.click(screen.getByRole("button", { name: /Thistle's character sheet/ }));
     expect(screen.getByText(/Hero tiers/)).toBeTruthy();
   });
@@ -2047,17 +2036,14 @@ describe("the token and the rank-up moment on your own phone (#314)", () => {
   it("shows your worn token in the bag, and your old gear outside the six slots", () => {
     mount({ party: [member({ character: character({ spares: [{ class: "thornguard", rank: "apprentice" }] }) })] });
     act(() => setPlayerSection("bag"));
-    // Folded to its name at first (the You page's folds); the name is the heading's switch.
-    selectSheetPage("token");
+    // On the page with everything else: a tile with its notches, and your sheet behind it.
     const token = screen.getByRole("button", { name: "Your song bell" });
-    expect(token.getAttribute("aria-expanded")).toBe("false");
-    act(() => token.click());
-    expect(token.getAttribute("aria-expanded")).toBe("true");
-    expect(screen.getAllByText("Your song bell")).toHaveLength(1);
+    expect(token.closest("[hidden]")).toBeNull();
     expect(screen.getByText("Your old gear")).toBeTruthy();
-    selectSheetPage("bag");
     expect(screen.getByRole("img", { name: "thorn bracer, 1 notch" })).toBeTruthy();
     expect(document.querySelectorAll(".inv__slot")).toHaveLength(INVENTORY_SLOTS);
+    act(() => token.click());
+    expect(screen.getByRole("region", { name: "Sparklehoof's character sheet" })).toBeTruthy();
   });
 
   it("puts the card in the line's place, and the choice under it still answers the first tap", async () => {
@@ -2123,35 +2109,25 @@ describe("while the phone is catching up", () => {
 });
 
 // ---------------------------------------------------------------------------
-// The You page folds (playtest: "a lot of scrolling")
+// The You page shows everything at once (playtest: no scrolling, no menu)
 // ---------------------------------------------------------------------------
 
-describe("the You page's sections fold under their headings", () => {
-  const heading = (name: RegExp | string) => {
-    selectSheetPage(name === "Your stats" ? "stats" : name === "Everyone" ? "party" : name === "Your song bell" ? "token" : "bag");
-    return screen.getByRole("button", { name });
-  };
+describe("the You page shows everything at once", () => {
   const bagMember = () =>
     member({ character: character({ inventory: [POTION], questItems: ["moonkey"] }) });
+  const shown = (element: Element | null) => element !== null && element.closest("[hidden]") === null;
 
-  it("opens the stats, the party and the bag, and folds the token card and the story things", () => {
+  it("puts the stats, everyone, the token, the bag and the story things on one page, with no picker and no folds", () => {
     mount({ party: [bagMember()] });
     act(() => setPlayerSection("bag"));
-    const open = (name: RegExp | string) => heading(name).getAttribute("aria-expanded");
-    expect(open("Your stats")).toBe("true");
-    expect(open("Everyone")).toBe("true");
-    expect(open(/^Your things/)).toBe("true");
-    expect(open("Your song bell")).toBe("false");
-    expect(open(/^Story things/)).toBe("false");
-    // Each switch names what it folds, for a screen reader.
-    for (const name of ["Your stats", "Everyone", /^Your things/, "Your song bell"]) {
-      const body = document.getElementById(heading(name).getAttribute("aria-controls") ?? "");
-      expect(body).not.toBeNull();
-      expect(body!.hidden).toBe(open(name) !== "true");
-    }
-    // The headings are still headings: the bag's carries its purse, folded or not.
-    // The count is what the hero carries (one potion and one story thing), not the purse, which is 0 here.
-    selectSheetPage("bag");
+    expect(screen.queryByRole("combobox")).toBeNull();
+    expect(document.querySelector(".player__you .kad-fold")).toBeNull();
+    expect(shown(screen.getByRole("list", { name: "Your stats" }))).toBe(true);
+    expect(shown(screen.getByRole("list", { name: "Everyone" }))).toBe(true);
+    expect(shown(screen.getByRole("button", { name: "Your song bell" }))).toBe(true);
+    expect(shown(screen.getByRole("button", { name: new RegExp(POTION_NAME) }))).toBe(true);
+    expect(shown(screen.getByRole("list", { name: "Story things" }))).toBe(true);
+    // The bag's heading carries what the hero carries (one potion, one story thing) and the purse.
     const bagHeading = screen.getByRole("heading", { name: /Your things/ });
     expect(bagHeading.querySelector("[data-testid=bag-count]")?.textContent).toBe("2");
     expect(bagHeading.querySelector(".inv__purse")?.textContent).toBe("0");
@@ -2162,39 +2138,10 @@ describe("the You page's sections fold under their headings", () => {
     act(() => setPlayerSection("bag"));
     act(() => screen.getByRole("button", { name: new RegExp(POTION_NAME) }).click());
     expect(screen.getByText(POTION_NAME, { selector: ".item-detail__title span" })).toBeTruthy();
-    expect(screen.queryByRole("button", { name: new RegExp(POTION_NAME) })).toBeNull();
+    expect(shown(screen.getByRole("button", { name: new RegExp(POTION_NAME), hidden: true }))).toBe(false);
+    // Everything else stays on the page while the item is open.
+    expect(shown(screen.getByRole("list", { name: "Your stats" }))).toBe(true);
     act(() => screen.getByRole("button", { name: "Close" }).click());
     expect(screen.getByRole("button", { name: new RegExp(POTION_NAME) }).getAttribute("aria-pressed")).toBe("false");
-  });
-
-  it("remembers on this device how each section was left", () => {
-    const { unmount } = mount({ party: [bagMember()] });
-    act(() => setPlayerSection("bag"));
-    act(() => heading("Your stats").click());
-    act(() => heading(/^Story things/).click());
-    unmount();
-    mount({ party: [bagMember()] });
-    act(() => setPlayerSection("bag"));
-    expect(heading("Your stats").getAttribute("aria-expanded")).toBe("false");
-    expect(heading(/^Story things/).getAttribute("aria-expanded")).toBe("true");
-    expect(heading("Everyone").getAttribute("aria-expanded")).toBe("true");
-  });
-
-  it("still folds and opens where the device cannot remember", () => {
-    const getItem = vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
-      throw new Error("private mode");
-    });
-    const setItem = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
-      throw new Error("private mode");
-    });
-    try {
-      mount({ party: [bagMember()] });
-      act(() => setPlayerSection("bag"));
-      act(() => heading("Everyone").click());
-      expect(heading("Everyone").getAttribute("aria-expanded")).toBe("false");
-    } finally {
-      getItem.mockRestore();
-      setItem.mockRestore();
-    }
   });
 });

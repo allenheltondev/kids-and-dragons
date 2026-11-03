@@ -8,7 +8,7 @@ The phone should present one decision at a time. Long lists use explicit pages; 
 | Lobby | Compact adventure summaries and party cards; omit QR instructions on the phone displaying its own code. Give letters a square coin large enough to contain them. |
 | Combat | Page action, item, and target lists. Let the board use remaining height. Stop retaining a tray height measured before a viewport change. Keep action descriptions and the full map control. |
 | Story decisions / tutorial | Keep hints, choices, and confirmation together. On short panes, open narration separately with reading pages. Move the development handle away from confirmation. |
-| You | Show Bag, Stats, Friends, Class token, or Settings separately. Item details replace the inventory grid until Close. |
+| You | Everything at once, no picker and no folds: stats in one strip, everyone's face beside your token and a Settings tile, then the bag, whose slots share the height left and say less (kind words, then names, then one row of pictures) as it shrinks. Item details or Room settings stand in for the bag grid until Close. |
 | Guide index | Page cards instead of rendering every undiscovered slot in a scrolling grid. |
 | Map | No vertical overflow observed in the main map view. |
 | Character creation | Keep its existing step-by-step flow; test the way forward remains visible. |
@@ -16,7 +16,7 @@ The phone should present one decision at a time. Long lists use explicit pages; 
 
 ## Verification
 
-- Browser checks cover 360×640 and 390×844 for the main lobby, You sections, map, and Guide index.
+- Browser checks cover 360×640 and 390×844 for the main lobby, the You page (and its Room settings), map, and Guide index.
 - Tutorial checks use real taps at 360×640, 375×667, and 390×844 and assert the decision pane does not scroll.
 - Combat checks include 320×720, 390×844, a tablet, and the largest text setting. They assert the decision pane and action tray fit.
 - Joining and creation checks cover 320–390px widths and larger text.

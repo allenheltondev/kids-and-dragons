@@ -154,7 +154,7 @@ describe("TV focus on a Party Mode phone", () => {
     render(<PartyLayout surface="player" />);
     expect(tabs()).toEqual(["World", "You", "Map", "Guide"]);
     expect(screen.queryByTestId("tv-rest")).toBeNull();
-    expect(screen.getByText("Your stats")).not.toBeNull();
+    expect(screen.getByRole("list", { name: "Your stats" })).not.toBeNull();
   });
 
   it("with nothing to do, shows one card that points at the TV, the bag a tap away and back", () => {
@@ -163,15 +163,12 @@ describe("TV focus on a Party Mode phone", () => {
     focus(true);
     expect(tabs()).toEqual(["You"]);
     expect(screen.getByTestId("tv-rest").textContent).toContain("Look at the TV");
-    expect(screen.getByLabelText("Your page").closest("[hidden]")).not.toBeNull();
+    expect(screen.getByRole("list", { name: "Your stats", hidden: true }).closest("[hidden]")).not.toBeNull();
 
     act(() => screen.getByRole("button", { name: "Look in my bag" }).click());
     expect(screen.queryByTestId("tv-rest")).toBeNull();
-    expect(screen.getByLabelText("Your page").closest("[hidden]")).toBeNull();
-    act(() => fireEvent.change(screen.getByLabelText("Your page"), { target: { value: "stats" } }));
-    expect(screen.getByRole("button", { name: "Your stats" })).toBeTruthy();
-    act(() => fireEvent.change(screen.getByLabelText("Your page"), { target: { value: "bag" } }));
-    expect(screen.getByRole("button", { name: /^Your things/ })).toBeTruthy();
+    expect(screen.getByRole("list", { name: "Your stats" }).closest("[hidden]")).toBeNull();
+    expect(screen.getByRole("heading", { name: /^Your things/ }).closest("[hidden]")).toBeNull();
     act(() => screen.getByRole("button", { name: "Back to the TV" }).click());
     expect(screen.getByTestId("tv-rest")).not.toBeNull();
   });
@@ -267,7 +264,7 @@ describe("TV focus in a fight", () => {
     applyPrefs({ ...DEFAULT_PREFS, focus: true });
     const { container } = render(<PartyLayout surface="player" />);
     act(() => screen.getByRole("button", { name: "Look in my bag" }).click());
-    expect(screen.getByLabelText("Your page").closest("[hidden]")).toBeNull();
+    expect(screen.getByRole("list", { name: "Your stats" }).closest("[hidden]")).toBeNull();
     expect(container.querySelector(".player__prompt")?.hasAttribute("hidden")).toBe(true);
     expect(screen.getByRole("button", { name: "Back to the TV" })).not.toBeNull();
   });

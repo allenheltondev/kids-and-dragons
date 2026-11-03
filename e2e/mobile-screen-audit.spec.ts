@@ -16,19 +16,21 @@ for (const viewport of [{ width: 360, height: 640 }, { width: 390, height: 844 }
     }).map(el => `${el.className}: ${el.clientHeight}/${el.scrollHeight}`));
     expect(scrolling, `${name} should fit without scrolling`).toEqual([]);
     if (name === "You") {
-      const picker = page.getByRole("combobox", { name: "Your page" });
-      await picker.focus();
-      await picker.press("Home");
-      await picker.press("ArrowDown");
-      await expect(picker).toHaveValue("stats");
-      await expect(page.getByRole("button", { name: "Your stats", exact: true })).toBeVisible();
-      await picker.press("Home");
-      await expect(picker).toHaveValue("bag");
-      await expect(page.getByRole("button", { name: /^Your things/ })).toBeVisible();
-      for (const section of ["stats", "party", "token", "room", "bag"]) {
-        await page.getByRole("combobox", { name: "Your page" }).selectOption(section);
-        expect(await page.locator(".player__scroll").evaluate(el => el.scrollHeight <= el.clientHeight + 1), section).toBe(true);
-      }
+      // Everything at once (no picker, no folds): the stats, everyone, the token and the bag.
+      await expect(page.getByRole("combobox")).toHaveCount(0);
+      await expect(page.getByRole("list", { name: "Your stats" })).toBeVisible();
+      await expect(page.getByRole("list", { name: "Everyone" })).toBeVisible();
+      await expect(page.locator(".you__token")).toBeVisible();
+      await expect(page.getByRole("heading", { name: /^Your things/ })).toBeVisible();
+      const fits = () => page.locator(".player__you").evaluate(el => el.scrollHeight <= el.clientHeight + 1);
+      expect(await fits(), "You").toBe(true);
+      // Room settings stand in for the bag, and fit too.
+      const room = page.locator(".you__room");
+      await room.click();
+      await expect(page.locator(".player__room-settings")).toBeVisible();
+      expect(await fits(), "Room settings").toBe(true);
+      await room.click();
+      await expect(page.getByRole("heading", { name: /^Your things/ })).toBeVisible();
     }
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
    }

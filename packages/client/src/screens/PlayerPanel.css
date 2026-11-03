@@ -1550,13 +1550,6 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
   .player--deciding .prompt__title { font-size: 1em; }
   .player--deciding .confirm__actions > .kad-button { min-block-size: 44px; padding-block: .3em; }
 }
-.player__page-picker { display: flex; align-items: center; gap: .5em; flex: none; }
-.player__page-picker select { flex: 1; min-inline-size: 0; min-block-size: 44px; padding: .4em; border: 1px solid var(--kad-border); border-radius: .5em; background: var(--kad-bg-raised); color: var(--kad-ink); font: inherit; }
-.player__scroll > [hidden] { display: none; }
-.player__scroll .inv__grid { grid-auto-rows: 48px; gap: .4em; }
-.player__scroll :is(.inv__button, .inv__slot--empty) { min-height: 48px; }
-.player__scroll .inv__slot-name { font-size: .7em; }
-.player__scroll .inv__empty-mark { inline-size: 1.5em; block-size: 1.5em; }
 /* Consequence previews stay readable without adding a full row to every
    answer on a short phone. Their words already name the roll or activity. */
 @container prompt (max-height: 30em) {
@@ -1568,4 +1561,300 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
     vertical-align: middle;
   }
   .player--deciding .choice__ahead > .kad-icon { display: none; }
+}
+
+/* --- The You page: everything at once, nothing to scroll ------------------ */
+
+/*
+ * Stats, faces, token, settings and bag on one screen (PlayerPanel). The bag
+ * is the only part that gives: its slots share whatever height the rest
+ * leaves, so a short phone gets shorter slots rather than a scroll, a menu or
+ * a fold. Every tap target keeps the touch floor.
+ */
+.player__you {
+  /* Only a pane smaller than any phone ever scrolls; everywhere else the bag gives. */
+  overflow-y: auto;
+  gap: 0.35em;
+  padding-block: 0.35em;
+}
+
+.player__you > [hidden],
+.player__you [hidden] {
+  display: none;
+}
+
+.player__you .stat-row {
+  flex: none;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: var(--space-1, 0.25em);
+}
+
+.player__you .stat-row__item {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-areas: "icon value" "name name";
+  justify-content: center;
+  align-items: center;
+  column-gap: 0.2em;
+  min-block-size: 0;
+  padding: 0.3em 0.1em 0.2em;
+  text-align: center;
+}
+
+.player__you .stat-row__item > .kad-icon { grid-area: icon; }
+.player__you .stat-row__value { grid-area: value; font-size: 1.2em; line-height: 1; }
+.player__you .stat-row__name {
+  grid-area: name;
+  font-size: 0.65em;
+  line-height: 1.1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Everybody's face, your token and the room's settings: one row of equal tiles. */
+.you__row {
+  flex: none;
+  display: flex;
+  gap: var(--space-1, 0.25em);
+}
+
+.you__row .party-strip__list {
+  /* Grows by the number of faces (PlayerPanel), so every tile in the row is one width. */
+  flex: var(--faces, 1) 1 0;
+  min-inline-size: 0;
+  display: flex;
+  gap: var(--space-1, 0.25em);
+  padding: 0;
+  overflow: visible;
+}
+
+.you__row .party-strip__list > li {
+  flex: 1 1 0;
+  min-inline-size: 0;
+}
+
+.you__row .party-strip__button,
+.you__tile {
+  inline-size: 100%;
+  block-size: 100%;
+  min-block-size: var(--kad-touch-min, 2.75em);
+  padding: 0.25em 0.15em;
+  gap: 0.15em;
+}
+
+.you__row .party-strip__name,
+.you__tile-name {
+  max-inline-size: 100%;
+  font-size: 0.75em;
+  line-height: 1.1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* "thorn bracer", "star circlet": two short lines rather than a cut word. */
+.you__tile-name {
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  text-align: center;
+}
+
+.you__row .party-strip__mark {
+  position: absolute;
+  inset-block-start: 0.1em;
+  inset-inline-end: 0.1em;
+  font-size: 0.65em;
+}
+
+.you__row .party-strip__button { position: relative; }
+
+.you__tile {
+  flex: 1 1 0;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: var(--radius-md, 0.75em);
+  background: linear-gradient(to bottom, var(--kad-raised-hi, #352c5c) 0%, var(--kad-raised-lo, #1b1631) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 0 0 1px var(--kad-raised-rim, rgba(190, 178, 255, 0.22)),
+    0 0.14em 0 var(--kad-raised-edge, #0a0814);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.you__tile--on {
+  box-shadow:
+    inset 0 0 0 2px var(--color-accent, #ffc95c),
+    0 0.14em 0 var(--kad-raised-edge, #0a0814);
+}
+
+/* The bag takes the rest of the page; its six slots share it. */
+.you__bag {
+  flex: 1 1 auto;
+  min-block-size: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.player__you .inv {
+  flex: 1 1 auto;
+  min-block-size: 0;
+}
+
+.inv__head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  font-size: var(--font-size-md, 1em);
+  font-weight: 700;
+}
+
+.inv__title,
+.inv__trail {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+}
+
+.player__you .inv__grid {
+  flex: 1 1 auto;
+  min-block-size: 0;
+  max-block-size: 16em;
+  /* The queries below shrink what is in a slot before the slot itself gets small. */
+  grid-auto-rows: minmax(2.5em, 1fr);
+  gap: var(--space-2, 0.5em);
+  padding-block: var(--space-1, 0.25em);
+}
+
+.player__you :is(.inv__button, .inv__slot--empty) {
+  min-height: 0;
+  block-size: 100%;
+  padding: 0.2em;
+  overflow: hidden;
+}
+
+.player__you .inv__slot-name {
+  max-inline-size: 100%;
+  font-size: 0.75em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.inv__quest-list {
+  flex: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1, 0.25em);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--font-size-sm, 0.875em);
+}
+
+.player__you .item-detail,
+.player__you .give--waiting {
+  flex: none;
+}
+
+.player__you .player__room-settings {
+  flex: 1 1 auto;
+  min-block-size: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* A short pane gives up words before it gives up anything to tap: the names
+   under the stats, then the big seat at the top shrinks to the touch floor. */
+@container sheet (max-height: 24em) {
+  .player__you .stat-row__name {
+    display: none;
+  }
+  .player__you .player__task-slot {
+    --player-seat: var(--kad-touch-min, 2.75em);
+  }
+  .player__you .player__task-slot .kad-button--lg {
+    min-block-size: var(--kad-touch-min, 2.75em);
+    padding-block: 0.2em;
+  }
+  .player__you .party-strip__portrait {
+    inline-size: 1.8em;
+    block-size: 2.1em;
+  }
+}
+
+/*
+ * The bag measures itself: the slots say less as they get shorter, and on
+ * the shortest pane all six stand in one row as pictures, each still a
+ * finger wide and a finger high.
+ */
+.player__you .inv {
+  container: bag / size;
+}
+
+/* The kind's word under an item only where a slot has the height for it; the
+   item's own picture and name are what a kid reads at a glance. */
+.player__you .inv__kind {
+  display: none;
+}
+
+@container bag (min-height: 17em) {
+  .player__you .inv__kind {
+    display: inline-flex;
+  }
+}
+
+@container bag (max-height: 10em) {
+  .player__you .inv__slot--empty .inv__slot-name {
+    display: none;
+  }
+  .player__you :is(.inv__button, .inv__slot--empty) {
+    padding: 0.1em;
+    gap: 0;
+  }
+  .player__you .inv__button > .kad-icon,
+  .player__you .inv__empty-mark {
+    inline-size: 1.6em;
+    block-size: 1.6em;
+  }
+}
+
+@container bag (max-height: 7.5em) {
+  .player__you .inv__grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: var(--space-1, 0.25em);
+  }
+  .player__you .inv__button .inv__slot-name {
+    display: none;
+  }
+}
+
+/* Tall panes: bigger faces and bigger stats; the room is there. */
+@container sheet (min-height: 34em) {
+  .player__you .stat-row__item {
+    padding-block: 0.5em 0.35em;
+  }
+  .player__you .stat-row__value {
+    font-size: 1.5em;
+  }
+  .you__row .party-strip__button,
+  .you__tile {
+    padding: 0.4em 0.2em;
+  }
 }
