@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { expect, it } from "vitest";
 import { applyIntent, combatantById, currentActorId, enterScene, legalActions, legalMoves, positionOf, resolveEnemy, stepsBetween } from "@kad/shared";
+import { buffBonus } from "../../packages/shared/src/buffs.ts";
 import type { Bestiary, ClientIntent, EncounterMap, EngineContext, RunState } from "@kad/shared";
 import { chapters, context, start } from "./riftlight-test-support.ts";
 const root = path.resolve(import.meta.dirname, "../..");
