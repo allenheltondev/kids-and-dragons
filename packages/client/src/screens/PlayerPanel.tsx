@@ -269,7 +269,7 @@ function ConfirmBar({
 // Sheet
 // ---------------------------------------------------------------------------
 
-function IdentityStrip({ me }: { me: PartyMember }): ReactElement {
+function IdentityStrip({ me, onOpenSheet }: { me: PartyMember; onOpenSheet?: (() => void) | undefined }): ReactElement {
   const { character } = me;
   /*
    * Whenever the game is waiting on you (a fight turn, a roll, a choice, a
@@ -279,21 +279,31 @@ function IdentityStrip({ me }: { me: PartyMember }): ReactElement {
    * and already says who you are.
    */
   const myTurn = useWaitingOnMe();
+  const portrait = (
+    <CharacterPortrait
+      backdrop
+      species={character.species}
+      accent={character.appearance.accent}
+      tier={character.tier}
+      characterClass={character.class}
+      className="sheet__art"
+    />
+  );
   return (
     <header className={`sheet${myTurn ? " sheet--turn" : ""}`}>
       {/* Your own face on your own sheet, at whatever tier you have grown to —
           the identity strip is pinned, so this is the one picture that is on
           screen for the whole session. */}
-      <span className="sheet__portrait" aria-hidden="true">
-        <CharacterPortrait
-          backdrop
-          species={character.species}
-          accent={character.appearance.accent}
-          tier={character.tier}
-          characterClass={character.class}
-          className="sheet__art"
-        />
-      </span>
+      {/* On the You page your own picture is the way into your whole sheet (your token, your
+          keepsakes): the party row below holds only your friends. */}
+      {onOpenSheet ? (
+        <button type="button" className="sheet__portrait sheet__portrait--open kad-tap kad-focusable"
+          aria-label={`${character.name}'s character sheet`} onClick={onOpenSheet}>
+          {portrait}
+        </button>
+      ) : (
+        <span className="sheet__portrait" aria-hidden="true">{portrait}</span>
+      )}
       <span className="sheet__id">
         <span className="sheet__name">
           {character.name}
@@ -884,6 +894,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   // Nothing to do and nothing asked of this phone: under TV focus, the card that says look up.
   const tvRest = focus && !focusTask && !inLobby && !peek;
   // "Look in my bag" from that card opens the bag, in a fight too, where the turn page is the board.
+  const friends = party.filter((member) => member.playerId !== me.playerId);
   const sheetUp = (showSheet || (focus && peek && !focusTask)) && !tvRest;
   /*
    * Which picture to stand the controls in: the scene's own illustration when
@@ -1041,7 +1052,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
     >
       {inLobby ? <EntryScene scene={lobbySceneFor(party)} /> : null}
       {backdrop ? <SceneBackdrop src={backdrop} /> : null}
-      <IdentityStrip me={me} />
+      <IdentityStrip me={me} onOpenSheet={sheetUp && !tvRest ? () => setSheetFor(me.character.id) : undefined} />
       {/* The chapter's goal (#356) is the World screen's, not this pane's: on a player's phone
           it was a scroll a playtest family looked past every scene, in room the controls need. */}
 
@@ -2110,9 +2121,11 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
         <ul className="stat-row" aria-label="Your stats">
           <StatCells me={me} />
         </ul>
-        <div className="you__row">
-          <ul className="party-strip__list" aria-label="Everyone">
-            {party.map((member) => (
+        {/* Friends only: you are the hero at the top, and tapping your own picture there opens
+            your sheet. Alone at the table, there is no row at all. */}
+        {friends.length === 0 ? null : <div className="you__row">
+          <ul className="party-strip__list" aria-label="Your friends">
+            {friends.map((member) => (
               <li key={member.playerId}>
                 <button
                   type="button"
@@ -2130,9 +2143,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                       className="party-strip__art"
                     />
                   </span>
-                  <span className="party-strip__name">
-                    {member.playerId === me.playerId ? "You" : member.character.name}
-                  </span>
+                  <span className="party-strip__name">{member.character.name}</span>
                   {/* A souvenir is permanent and worth advertising (spec §8.3);
                       the count is the hook that makes anybody open the sheet. */}
                   {member.character.souvenirs.length > 0 ? (
@@ -2145,7 +2156,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
               </li>
             ))}
           </ul>
-        </div>
+        </div>}
         <div className="you__bag" hidden={selectedEntry !== null}>
           <InventoryGrid
             entries={inventory}

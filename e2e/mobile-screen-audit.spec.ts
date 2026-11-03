@@ -16,10 +16,11 @@ for (const viewport of [{ width: 360, height: 640 }, { width: 390, height: 844 }
     }).map(el => `${el.className}: ${el.clientHeight}/${el.scrollHeight}`));
     expect(scrolling, `${name} should fit without scrolling`).toEqual([]);
     if (name === "You") {
-      // Everything at once (no picker, no folds): the stats, everyone and the bag.
+      // Everything at once (no picker, no folds): the stats and the bag.
       await expect(page.getByRole("combobox")).toHaveCount(0);
       await expect(page.getByRole("list", { name: "Your stats" })).toBeVisible();
-      await expect(page.getByRole("list", { name: "Everyone" })).toBeVisible();
+      // Alone at this table: no party row (it lists friends only); the hero opens their own sheet.
+      await expect(page.getByRole("list", { name: "Your friends" })).toHaveCount(0);
       await expect(page.getByRole("heading", { name: /^Your things/ })).toBeVisible();
       const fits = () => page.locator(".player__you").evaluate(el => el.scrollHeight <= el.clientHeight + 1);
       expect(await fits(), "You").toBe(true);

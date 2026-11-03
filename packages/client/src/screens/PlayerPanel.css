@@ -56,6 +56,14 @@
   overflow: hidden;
 }
 
+/* Your picture as a button (the You page): the same well, tappable, no button chrome. */
+.sheet__portrait--open {
+  padding: 0;
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
 .sheet__art {
   inline-size: 100%;
   block-size: 100%;

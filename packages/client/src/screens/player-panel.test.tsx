@@ -1663,19 +1663,35 @@ describe("the party strip", () => {
     expect(screen.getByRole("button", { name: /^Your turn$/ })).toBeTruthy();
   });
 
-  it("advertises a souvenir, which is the hook that gets a sheet opened at all", () => {
+  it("advertises a friend's souvenir, which is the hook that gets a sheet opened at all", () => {
     mount({
       party: [
+        member(),
         member({
           character: character({
+            id: "c_2",
+            ownerPlayerId: "p_2",
+            name: "Thistle",
             souvenirs: [{ id: "the-hollow-crown#sworn", fromRun: "r_1", earnedAt: "2026-07-01" }],
           }),
         }),
       ],
     });
-    expect(screen.getByRole("button", { name: /Sparklehoof's character sheet/ }).textContent).toContain(
-      "1",
-    );
+    expect(screen.getByRole("button", { name: /Thistle's character sheet/ }).textContent).toContain("1");
+  });
+
+  it("lists only friends, not you: your own sheet opens from your picture at the top", () => {
+    twoPlayers();
+    const row = screen.getByRole("list", { name: "Your friends" });
+    expect(within(row).queryByText("You")).toBeNull();
+    expect(within(row).queryByText("Sparklehoof")).toBeNull();
+    expect(within(row).getByText("Thistle")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Sparklehoof's character sheet" }).closest(".sheet")).not.toBeNull();
+  });
+
+  it("has no row at all for a hero playing alone", () => {
+    mount({ party: [member()] });
+    expect(screen.queryByRole("list", { name: "Your friends" })).toBeNull();
   });
 
   it("is available outside a Rest scene too", async () => {
@@ -2112,13 +2128,12 @@ describe("the You page shows everything at once", () => {
     member({ character: character({ inventory: [POTION], questItems: ["moonkey"] }) });
   const shown = (element: Element | null) => element !== null && element.closest("[hidden]") === null;
 
-  it("puts the stats, everyone, the bag and the story things on one page, with no picker and no folds", () => {
+  it("puts the stats, the bag and the story things on one page, with no picker and no folds", () => {
     mount({ party: [bagMember()] });
     act(() => setPlayerSection("bag"));
     expect(screen.queryByRole("combobox")).toBeNull();
     expect(document.querySelector(".player__you .kad-fold")).toBeNull();
     expect(shown(screen.getByRole("list", { name: "Your stats" }))).toBe(true);
-    expect(shown(screen.getByRole("list", { name: "Everyone" }))).toBe(true);
     expect(shown(screen.getByRole("button", { name: new RegExp(POTION_NAME) }))).toBe(true);
     expect(shown(screen.getByRole("list", { name: "Story things" }))).toBe(true);
     // The bag's heading carries what the hero carries (one potion, one story thing) and the purse.
