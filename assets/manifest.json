@@ -1880,7 +1880,7 @@
     },
     {
       "id": "dragonling_stone_keeper",
-      "name": "Boundary-stone keeper",
+      "name": "Tally",
       "basis": "dragonling",
       "scale": "medium",
       "heightCm": 130,
@@ -2088,7 +2088,7 @@
     },
     {
       "id": "adult_dragonling",
-      "name": "Adult dragonling",
+      "name": "Farmer Gourd",
       "basis": "dragonling",
       "scale": "medium",
       "heightCm": 150,
@@ -2128,7 +2128,7 @@
     },
     {
       "id": "route_worker_yeti",
-      "name": "Route worker",
+      "name": "Hummock",
       "basis": "yeti",
       "scale": "large",
       "heightCm": 250,
