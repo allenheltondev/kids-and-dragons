@@ -600,6 +600,9 @@ describe("skill-game rules used by the current phones", () => {
     expect(prompt(state).phase).toBe("active");
     const edited = step(state, ctx, { action: "arrange", round: prompt(state).challenge!.round, answer: ["b", "a"] });
     expect(prompt(edited).challenge!.matched).toBe(0);
+    const tested = commit(state, ctx, { answer: ["a", "b"], testOnly: true });
+    expect(prompt(tested).phase).toBe("active");
+    expect(prompt(tested).challenge!.feedback).toContain("whole path holds");
     const failure = commit(state, ctx, { answer: ["b", "a"] });
     expect(prompt(failure).outcome).toBe("failure");
     state = commit(state, ctx, { answer: ["a", "b"] });

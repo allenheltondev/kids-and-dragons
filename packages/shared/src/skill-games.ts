@@ -125,7 +125,8 @@ export function applySkillAction(prompt: InteractionPrompt, connected: readonly 
         return "failure";
       }
       // Testing runs a visible mechanism, but does not commit the story outcome.
-      game.feedback = matched === answer.length ? "These steps hold! Add the next part of the path." : `The path stops at step ${matched + 1}. Share your clues and rearrange it.`;
+      game.feedback = matched === spec.answer.length ? "The whole path holds. Agree together, then make the crossing."
+        : matched === answer.length ? "These steps hold! Add the next part of the path." : `The path stops at step ${matched + 1}. Share your clues and rearrange it.`;
       finishRound(); return;
     }
     if (matched === spec.answer.length) return "success";

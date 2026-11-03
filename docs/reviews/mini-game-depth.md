@@ -30,3 +30,9 @@ These seven views add approximately 15 KB of JavaScript across lazy game code. T
 Engine regressions cover clean actions, graded misses, recovery, team compensation, stale or duplicate inputs, disconnection, refresh, retries, relaxed rules, and branch application. Per-scene content drivers run the current rules at one, two, and four seats, including newly reachable balance and cooperation failure branches. Scripted full-route profiles explicitly retain preparation where their selected later choices require it.
 
 Browser review exercises real phones and a TV, a short 390 × 640 phone, rope dragging, explicit strength controls, a recoverable slip, and refresh. Screenshots are evidence of layout and rendering, not proof that the games are fun. Family observation should still check whether children anticipate a change, deliberately adjust, help another player recover, and want another turn. The discrete balance steps are an intentional first pass; they do not simulate continuous physics.
+
+## Review evidence
+
+[Balance phone](mini-game-depth/balance-phone.png) · [Balance TV](mini-game-depth/balance-tv.png) · [Cooperation phone](mini-game-depth/cooperate-phone.png) · [Cooperation TV](mini-game-depth/cooperate-tv.png)
+
+The full unit suite passed: 468 files and 9,622 tests, with 15 skipped. The final sequence-feedback regression passed, the final build and payload gate passed, and the live multi-phone/TV gesture and recovery test passed again after the screen review.
