@@ -129,7 +129,7 @@ function walkAllPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, flags:
     const promptKey = state.prompt?.kind === "interaction"
       ? { ...state.prompt, openedSeq: 0, attempt: 0 }
       : state.prompt;
-    const key = JSON.stringify([state.sceneId, state.flags, promptKey, (state.storyTurn ?? 0) % state.party.length, state.party.map((p) => [p.hp, p.character.class, p.character.questItems]), state.phase, [...before].sort(), [...priorIntroductions].sort()]);
+    const key = JSON.stringify([state.sceneId, Object.entries(state.flags).filter(([, on]) => on).sort(([a], [b]) => a.localeCompare(b)), promptKey, (state.storyTurn ?? 0) % state.party.length, state.party.map((p) => [p.hp, p.character.class, p.character.questItems]), state.phase, [...before].sort(), [...priorIntroductions].sort()]);
     if (seen.has(key)) continue;
     seen.add(key);
     expect(seen.size, "Unexpected loop or path explosion").toBeLessThan(stateLimit);

@@ -36,7 +36,8 @@ it.each([...chapters.values()].filter((chapter) => chapter.index >= 4))("$id: ev
   if (chapter.id === "riftlight-finale") {
     for (const scene of allPaths(chapter, "manticore", "duskrunner", {
       fragment_paths_learned: true, fragment_coast_learned: true, fragment_sky_learned: true,
-      three_fragments_ready: true, wyrm_ally: true, olivia_ally: true,
+      three_fragments_ready: true, wyrm_ally: true, olivia_ally: true, olivia_redeemed: true,
+      pip_stayed_back: true, temple_island_settled: true,
     }).visited) visited.add(scene);
   }
   expect([...visited].sort(), chapter.id).toEqual(Object.keys(chapter.scenes).sort());

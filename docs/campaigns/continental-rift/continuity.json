@@ -11345,1097 +11345,950 @@
       }
     },
     "riftlight-convergence": {
-      "entryFacts": [],
+      "entryFacts": [
+        "listening_chime",
+        "orin",
+        "olivia",
+        "seren",
+        "goat",
+        "exchange"
+      ],
+      "entryByFlag": {
+        "fragment_paths_learned": [
+          "memory_ice"
+        ],
+        "fragment_coast_learned": [
+          "buried_bridge"
+        ],
+        "fragment_sky_learned": [
+          "mooring_stone"
+        ],
+        "orin_chime_shared": [
+          "buried_bridge"
+        ]
+      },
       "scenes": {
         "arrival": {
-          "requires": [],
-          "introduces": {
-            "converge_bram": "A bigfoot named Bram Lock",
-            "converge_travelers": "Your Riftseeker friends",
-            "converge_map": "a map on an upturned sled"
-          }
-        },
-        "accounts": {
           "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
+            "orin"
           ],
           "introduces": {
-            "converge_seren": "Seren Wisp, the kitsune teacher",
-            "converge_pip": "Pip catches a page"
+            "conv_sliding_snow": "slides uphill",
+            "orin_map": "his big map"
           }
         },
-        "accounts_guided": {
+        "bram": {
           "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
-          ],
-          "introduces": {}
-        },
-        "compare_paths_coast": {
-          "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
-          ],
-          "introduces": {}
-        },
-        "compare_paths_sky": {
-          "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
-          ],
-          "introduces": {}
-        },
-        "compare_coast_sky": {
-          "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
-          ],
-          "introduces": {}
-        },
-        "measure": {
-          "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
+            "olivia"
           ],
           "introduces": {
-            "converge_prop": "the felt-wrapped prop",
-            "converge_measure": "A string measure"
+            "bram": "\"Bram Lock,\"",
+            "conv_line": "painting a line"
           }
         },
-        "measure_sheets": {
+        "check_line": {
           "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
+            "bram",
+            "conv_line"
           ],
           "introduces": {}
         },
-        "measure_line": {
+        "bigfoot_stakes": {
           "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
-          ],
-          "introduces": {}
-        },
-        "evidence": {
-          "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
-          ],
-          "introduces": {}
-        },
-        "pull": {
-          "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
-          ],
-          "introduces": {}
-        },
-        "clear_path": {
-          "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
-          ],
-          "introduces": {}
-        },
-        "signals": {
-          "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
-          ],
-          "introduces": {}
-        },
-        "rest": {
-          "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
-          ],
-          "introduces": {}
-        },
-        "proposal": {
-          "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
-          ],
-          "introduces": {}
-        },
-        "summoning": {
-          "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
-          ],
-          "introduces": {}
-        },
-        "decision": {
-          "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
-          ],
-          "introduces": {}
-        },
-        "bram_plan": {
-          "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
+            "bram"
           ],
           "introduces": {}
         },
         "olivia_plan": {
           "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
+            "olivia",
+            "bram"
           ],
           "introduces": {}
         },
-        "orin_plan": {
+        "line_held": {
           "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
-          ],
-          "introduces": {}
-        },
-        "bram_clear": {
-          "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
-          ],
-          "introduces": {}
-        },
-        "olivia_watch": {
-          "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
-          ],
-          "introduces": {}
-        },
-        "steady_check": {
-          "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
-          ],
-          "introduces": {}
-        },
-        "orin_account": {
-          "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
-          ],
-          "introduces": {}
-        },
-        "count": {
-          "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
+            "bram",
+            "conv_line",
+            "orin_map"
           ],
           "introduces": {
-            "converge_cord": "A screen cord",
-            "converge_chime_test": "listen to the separate chime"
+            "pip": "Pip Thistledown, the young manticore scout"
           }
         },
-        "count_check": {
+        "tell_rivers": {
           "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map",
-            "converge_cord",
-            "converge_chime_test"
+            "orin_map"
+          ],
+          "introduces": {},
+          "conditional": [
+            {
+              "flag": "fragment_paths_learned",
+              "requires": [
+                "memory_ice"
+              ]
+            },
+            {
+              "flag": "fragment_coast_learned",
+              "requires": [
+                "buried_bridge"
+              ]
+            }
+          ]
+        },
+        "tell_sky": {
+          "requires": [
+            "orin_map",
+            "pip"
+          ],
+          "introduces": {},
+          "conditional": [
+            {
+              "flag": "fragment_sky_learned",
+              "requires": [
+                "mooring_stone"
+              ]
+            }
+          ]
+        },
+        "check_trace": {
+          "requires": [
+            "pip",
+            "orin_map"
           ],
           "introduces": {}
         },
-        "cord_release": {
+        "fit": {
           "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map",
-            "converge_cord",
-            "converge_chime_test"
+            "pip",
+            "orin_map"
+          ],
+          "introduces": {
+            "conv_old_map": "one old map"
+          }
+        },
+        "olivia_sees": {
+          "requires": [
+            "olivia",
+            "conv_old_map",
+            "bram"
           ],
           "introduces": {}
         },
-        "cord_help": {
+        "chime_pull": {
           "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map",
-            "converge_cord"
+            "listening_chime",
+            "goat"
+          ],
+          "introduces": {}
+        },
+        "pip_runs": {
+          "requires": [
+            "pip",
+            "bram"
+          ],
+          "introduces": {
+            "conv_gap": "a dark gap in the ice"
+          }
+        },
+        "check_chase": {
+          "requires": [
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "check_call": {
+          "requires": [
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "swoop": {
+          "requires": [
+            "pip",
+            "conv_gap"
+          ],
+          "introduces": {}
+        },
+        "passage": {
+          "requires": [
+            "conv_gap"
+          ],
+          "introduces": {
+            "conv_passage": "a passage opens into the glacier"
+          }
+        },
+        "rest": {
+          "requires": [
+            "pip",
+            "olivia",
+            "bram",
+            "conv_line",
+            "conv_passage"
+          ],
+          "introduces": {}
+        },
+        "rest_olivia": {
+          "requires": [
+            "olivia",
+            "exchange"
+          ],
+          "introduces": {}
+        },
+        "rest_bram": {
+          "requires": [
+            "bram",
+            "orin"
+          ],
+          "introduces": {}
+        },
+        "olivia_asks": {
+          "requires": [
+            "olivia",
+            "orin",
+            "bram"
+          ],
+          "introduces": {}
+        },
+        "wait_seren": {
+          "requires": [
+            "seren",
+            "olivia"
+          ],
+          "introduces": {}
+        },
+        "go_ahead": {
+          "requires": [
+            "seren",
+            "olivia"
+          ],
+          "introduces": {}
+        },
+        "summoning": {
+          "requires": [
+            "olivia"
+          ],
+          "introduces": {
+            "conv_opening": "An opening unfolds"
+          }
+        },
+        "pull": {
+          "requires": [
+            "conv_opening",
+            "orin_map",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "grab_sled": {
+          "requires": [
+            "conv_opening",
+            "orin_map",
+            "bram"
+          ],
+          "introduces": {}
+        },
+        "run_to_olivia": {
+          "requires": [
+            "conv_opening",
+            "orin_map",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "rope_holds": {
+          "requires": [
+            "bram",
+            "conv_line",
+            "orin_map"
+          ],
+          "introduces": {}
+        },
+        "seren_holds": {
+          "requires": [
+            "seren",
+            "conv_opening"
+          ],
+          "introduces": {}
+        },
+        "decision": {
+          "requires": [
+            "bram",
+            "olivia",
+            "pip",
+            "conv_opening"
+          ],
+          "introduces": {}
+        },
+        "check_bram": {
+          "requires": [
+            "bram",
+            "olivia",
+            "conv_line"
+          ],
+          "introduces": {}
+        },
+        "check_olivia": {
+          "requires": [
+            "olivia",
+            "pip",
+            "conv_opening"
+          ],
+          "introduces": {}
+        },
+        "orin_talks": {
+          "requires": [
+            "orin",
+            "olivia",
+            "buried_bridge"
+          ],
+          "introduces": {}
+        },
+        "signal_stop": {
+          "requires": [
+            "bram",
+            "olivia"
+          ],
+          "introduces": {}
+        },
+        "remind": {
+          "requires": [
+            "olivia"
+          ],
+          "introduces": {}
+        },
+        "beside_her": {
+          "requires": [
+            "olivia"
+          ],
+          "introduces": {}
+        },
+        "stopped": {
+          "requires": [
+            "olivia",
+            "conv_opening",
+            "conv_line"
+          ],
+          "introduces": {}
+        },
+        "stood": {
+          "requires": [
+            "olivia",
+            "conv_opening"
+          ],
+          "introduces": {}
+        },
+        "pip_choice": {
+          "requires": [
+            "pip",
+            "olivia",
+            "bram"
+          ],
+          "introduces": {}
+        },
+        "fish": {
+          "requires": [
+            "bram",
+            "conv_opening",
+            "exchange"
           ],
           "introduces": {}
         },
         "lesson": {
           "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map",
-            "converge_cord",
-            "converge_prop"
+            "seren",
+            "conv_opening",
+            "listening_chime"
           ],
           "introduces": {
-            "converge_manipulate": "Seren calls the lesson Manipulate"
+            "manipulate": "That's called Manipulate"
           }
         },
-        "lesson_team": {
+        "check_hold": {
           "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map",
-            "converge_cord",
-            "converge_manipulate"
+            "manipulate",
+            "listening_chime"
           ],
           "introduces": {}
         },
-        "retrieve_prop": {
+        "check_pip_hold": {
           "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map",
-            "converge_prop"
+            "manipulate",
+            "pip"
           ],
           "introduces": {}
         },
-        "lesson_prop": {
+        "hold_traced": {
           "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map",
-            "converge_prop",
-            "converge_cord",
-            "converge_manipulate"
+            "manipulate",
+            "conv_opening"
           ],
           "introduces": {}
         },
-        "lesson_attuned": {
+        "hold_starweaver": {
           "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map",
-            "converge_cord",
-            "converge_manipulate"
+            "manipulate",
+            "conv_opening"
           ],
           "introduces": {}
         },
-        "lesson_clear": {
+        "lesson_done": {
           "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map",
-            "converge_cord",
-            "converge_manipulate"
+            "manipulate",
+            "olivia"
           ],
           "introduces": {}
         },
-        "account": {
+        "joining": {
           "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
+            "orin_map",
+            "conv_old_map"
           ],
-          "introduces": {}
+          "introduces": {
+            "joining_lines": "draws joining lines"
+          }
         },
         "ending": {
           "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
-          ],
-          "introduces": {}
-        },
-        "finish": {
-          "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
-          ],
-          "introduces": {}
-        },
-        "proposal_response_wait": {
-          "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
-          ],
-          "introduces": {}
-        },
-        "proposal_response_stop": {
-          "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
-          ],
-          "introduces": {}
-        },
-        "proposal_response_watch": {
-          "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
-          ],
-          "introduces": {}
-        },
-        "orin_account_response_wait": {
-          "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
-          ],
-          "introduces": {}
-        },
-        "orin_account_response_back": {
-          "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
-          ],
-          "introduces": {}
-        },
-        "orin_account_response_rules": {
-          "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
-          ],
-          "introduces": {}
-        },
-        "account_response_cord": {
-          "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
-          ],
-          "introduces": {}
-        },
-        "account_response_lane": {
-          "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
-          ],
-          "introduces": {}
-        },
-        "account_response_limit": {
-          "requires": [
-            "converge_bram",
-            "converge_travelers",
-            "converge_map"
+            "conv_passage",
+            "listening_chime"
           ],
           "introduces": {}
         }
       }
     },
     "riftlight-finale": {
-      "entryFacts": [],
+      "entryFacts": [
+        "listening_chime",
+        "orin",
+        "olivia",
+        "seren",
+        "bram",
+        "pip",
+        "orin_map",
+        "joining_lines",
+        "exchange"
+      ],
+      "entryByFlag": {
+        "fragment_paths_learned": [
+          "memory_ice"
+        ],
+        "fragment_coast_learned": [
+          "buried_bridge"
+        ],
+        "fragment_sky_learned": [
+          "mooring_stone"
+        ],
+        "orin_chime_shared": [
+          "buried_bridge"
+        ],
+        "wyrm_ally": [
+          "frost_wyrm"
+        ],
+        "temple_island_settled": [
+          "mooring_stone"
+        ],
+        "temple_damaged": [
+          "mooring_stone"
+        ],
+        "three_fragments_ready": [
+          "mooring_stone"
+        ]
+      },
       "scenes": {
         "arrival": {
-          "requires": [],
-          "introduces": {
-            "final_map": "an old map",
-            "final_tear": "A great tear",
-            "final_companions": "Orin Vale, the griffin scholar, and Seren Wisp, the kitsune teacher"
-          }
-        },
-        "retreat": {
           "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions"
+            "listening_chime",
+            "joining_lines"
           ],
           "introduces": {
-            "final_retreat_route": "a broad way back"
+            "fin_chime_points": "points straight down"
           }
         },
-        "retreat_line": {
+        "herder": {
           "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions"
-          ],
-          "introduces": {}
-        },
-        "retreat_marks": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions"
-          ],
-          "introduces": {}
-        },
-        "retreat_help": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions"
-          ],
-          "introduces": {}
-        },
-        "voices": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions"
-          ],
-          "introduces": {}
-        },
-        "reveal": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions"
+            "orin"
           ],
           "introduces": {
-            "corvane": "I am Corvane",
-            "pangea": "Emperor of Pangea"
+            "herder": "the herder who took you in",
+            "goat_kid": "the goat kid",
+            "map_case": "Orin's map case",
+            "crevasse": "The crevasse"
           }
         },
-        "map_shelter": {
+        "check_stair": {
           "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane"
+            "listening_chime"
           ],
           "introduces": {}
         },
-        "map_case": {
+        "check_rope": {
           "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane"
+            "herder",
+            "goat_kid",
+            "crevasse"
           ],
           "introduces": {}
         },
-        "map_shelter_check": {
+        "glide": {
           "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane"
+            "crevasse",
+            "herder"
           ],
           "introduces": {}
         },
-        "map_shelter_changed": {
+        "kid_bridge": {
           "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane"
+            "goat_kid",
+            "herder",
+            "exchange"
+          ],
+          "introduces": {
+            "snow_bridge": "a thin snow bridge"
+          }
+        },
+        "check_kid": {
+          "requires": [
+            "goat_kid",
+            "snow_bridge"
           ],
           "introduces": {}
         },
-        "remember": {
+        "sing_kid": {
           "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane"
+            "goat_kid",
+            "snow_bridge"
           ],
           "introduces": {}
         },
-        "remember_guided": {
+        "herder_goes": {
           "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane"
-          ],
-          "introduces": {}
-        },
-        "remember_paths": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions"
-          ],
-          "introduces": {}
-        },
-        "remember_coast": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions"
-          ],
-          "introduces": {}
-        },
-        "remember_sky": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions"
-          ],
-          "introduces": {}
-        },
-        "anchor_help": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane"
-          ],
-          "introduces": {}
-        },
-        "first_anchor": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane"
-          ],
-          "introduces": {}
-        },
-        "first_anchor_clear": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane"
+            "goat_kid",
+            "snow_bridge",
+            "herder"
           ],
           "introduces": {}
         },
         "rest": {
           "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
+            "bram"
+          ],
+          "introduces": {
+            "lantern": "Bram hangs his lantern"
+          }
+        },
+        "warm_up": {
+          "requires": [
+            "bram",
+            "seren"
+          ],
+          "introduces": {}
+        },
+        "ridge_look": {
+          "requires": [
+            "seren"
+          ],
+          "introduces": {}
+        },
+        "broth": {
+          "requires": [
+            "herder"
+          ],
+          "introduces": {}
+        },
+        "old_ice": {
+          "requires": [
+            "seren"
+          ],
+          "introduces": {
+            "old_ice": "a chamber of old ice"
+          },
+          "conditional": [
+            {
+              "flag": "fragment_paths_learned",
+              "requires": [
+                "memory_ice"
+              ]
+            }
+          ]
+        },
+        "check_quiet": {
+          "requires": [
+            "old_ice"
+          ],
+          "introduces": {
+            "shimmer": "something shimmers"
+          }
+        },
+        "frozen": {
+          "requires": [
+            "old_ice",
+            "shimmer",
+            "exchange"
+          ],
+          "introduces": {}
+        },
+        "figure": {
+          "requires": [
+            "listening_chime"
+          ],
+          "introduces": {
+            "tear": "a great tear",
+            "old_map": "an old map"
+          }
+        },
+        "reveal": {
+          "requires": [
+            "tear"
+          ],
+          "introduces": {
+            "corvane": "I am Corvane",
+            "pangea": "Pangea"
+          }
+        },
+        "his_story": {
+          "requires": [
+            "corvane",
+            "old_map",
+            "joining_lines"
+          ],
+          "introduces": {}
+        },
+        "why_home": {
+          "requires": [
             "corvane"
           ],
           "introduces": {}
         },
-        "shelter": {
+        "told_no": {
           "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
+            "corvane",
+            "bram"
+          ],
+          "introduces": {}
+        },
+        "his_map": {
+          "requires": [
+            "corvane",
+            "tear"
+          ],
+          "introduces": {}
+        },
+        "check_force": {
+          "requires": [
+            "tear",
+            "bram"
+          ],
+          "introduces": {}
+        },
+        "check_force_bram": {
+          "requires": [
+            "tear",
+            "bram"
+          ],
+          "introduces": {}
+        },
+        "check_show": {
+          "requires": [
+            "orin_map",
+            "corvane"
+          ],
+          "introduces": {}
+        },
+        "asked_home": {
+          "requires": [
+            "corvane",
+            "tear"
+          ],
+          "introduces": {}
+        },
+        "olivia_tells": {
+          "requires": [
+            "corvane",
+            "olivia"
+          ],
+          "introduces": {}
+        },
+        "wrong_colors": {
+          "requires": [
+            "corvane",
+            "tear"
+          ],
+          "introduces": {}
+        },
+        "anchor_one": {
+          "requires": [
+            "corvane"
+          ],
+          "introduces": {},
+          "conditional": [
+            {
+              "flag": "fragment_paths_learned",
+              "requires": [
+                "memory_ice"
+              ]
+            },
+            {
+              "flag": "fragment_coast_learned",
+              "notFlag": "fragment_paths_learned",
+              "requires": [
+                "buried_bridge"
+              ]
+            }
+          ]
+        },
+        "corvane_one": {
+          "requires": [
+            "corvane",
+            "tear"
+          ],
+          "introduces": {}
+        },
+        "anchor_two": {
+          "requires": [
+            "corvane"
+          ],
+          "introduces": {},
+          "conditional": [
+            {
+              "flag": "fragment_sky_learned",
+              "notFlag": "fragment_coast_learned",
+              "requires": [
+                "mooring_stone"
+              ]
+            }
+          ]
+        },
+        "corvane_two": {
+          "requires": [
+            "corvane",
+            "tear"
+          ],
+          "introduces": {
+            "last_seam": "the last seam"
+          },
+          "conditional": [
+            {
+              "flag": "wyrm_ally",
+              "requires": [
+                "frost_wyrm"
+              ]
+            }
+          ]
+        },
+        "anchor_three": {
+          "requires": [
+            "corvane",
+            "mooring_stone"
+          ],
+          "introduces": {}
+        },
+        "wyrm_anchor": {
+          "requires": [
+            "frost_wyrm",
+            "corvane"
+          ],
+          "introduces": {}
+        },
+        "olivia_anchor": {
+          "requires": [
+            "olivia",
+            "corvane"
+          ],
+          "introduces": {}
+        },
+        "seam": {
+          "requires": [
+            "last_seam",
             "corvane"
           ],
           "introduces": {
-            "final_watcher": "a yeti watcher",
-            "final_brace": "the ridge brace",
-            "final_retreat_signal": "keep the retreat open"
+            "crawlers": "bone crawlers"
           }
         },
-        "hold_condition": {
+        "seam_weak": {
           "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane",
-            "final_watcher",
-            "final_brace"
+            "last_seam",
+            "corvane"
           ],
-          "introduces": {}
-        },
-        "hold_condition_check": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane",
-            "final_brace"
-          ],
-          "introduces": {}
-        },
-        "hold_condition_3": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane",
-            "final_brace"
-          ],
-          "introduces": {}
-        },
-        "rescue_station": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane",
-            "final_watcher"
-          ],
-          "introduces": {}
-        },
-        "anchors": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane",
-            "final_watcher",
-            "final_brace"
-          ],
-          "introduces": {}
-        },
-        "standard_plan": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane",
-            "final_watcher",
-            "final_brace"
-          ],
-          "introduces": {}
-        },
-        "third_plan": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane",
-            "final_brace"
-          ],
-          "introduces": {}
-        },
-        "wyrm_plan": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane",
-            "final_brace"
-          ],
-          "introduces": {}
-        },
-        "olivia_plan": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane",
-            "final_brace"
-          ],
-          "introduces": {}
-        },
-        "third_account": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane",
-            "final_brace"
-          ],
-          "introduces": {}
-        },
-        "wyrm_support": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane",
-            "final_brace"
-          ],
-          "introduces": {}
-        },
-        "olivia_support": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions"
-          ],
-          "introduces": {}
-        },
-        "olivia_help": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane",
-            "final_brace"
-          ],
-          "introduces": {}
-        },
-        "support_ready": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane",
-            "final_brace"
-          ],
-          "introduces": {}
+          "introduces": {
+            "crawlers": "bone crawler"
+          },
+          "conditional": [
+            {
+              "flag": "fin_wyrm",
+              "requires": [
+                "frost_wyrm"
+              ]
+            }
+          ]
         },
         "fight_standard": {
           "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
+            "last_seam",
             "corvane",
-            "final_brace",
-            "final_watcher"
+            "crawlers"
           ],
           "introduces": {}
         },
         "fight_standard_braced": {
           "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
+            "last_seam",
             "corvane",
-            "final_brace",
-            "final_watcher"
+            "crawlers"
           ],
           "introduces": {}
         },
         "fight_weakened": {
           "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
+            "last_seam",
             "corvane",
-            "final_brace",
-            "final_watcher"
+            "crawlers"
           ],
           "introduces": {}
         },
         "fight_weakened_braced": {
           "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
+            "last_seam",
             "corvane",
-            "final_brace",
-            "final_watcher"
+            "crawlers"
           ],
           "introduces": {}
         },
         "spent": {
           "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
+            "last_seam",
             "corvane",
-            "final_watcher"
+            "old_map"
           ],
           "introduces": {}
+        },
+        "blanket": {
+          "requires": [
+            "herder",
+            "goat_kid",
+            "corvane"
+          ],
+          "introduces": {
+            "blanket": "the biggest blanket"
+          }
         },
         "help_him": {
           "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
+            "blanket",
             "corvane",
-            "final_watcher"
+            "old_map",
+            "goat_kid"
           ],
           "introduces": {}
         },
-        "home_now": {
+        "wrap": {
           "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane",
-            "final_watcher"
-          ],
-          "introduces": {}
-        },
-        "unpack_map": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
+            "blanket",
             "corvane"
           ],
           "introduces": {}
         },
-        "home_maps": {
+        "maps_side": {
           "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane"
+            "old_map",
+            "orin_map",
+            "goat_kid"
           ],
           "introduces": {}
         },
-        "home_watcher": {
+        "chime_straight": {
           "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane",
-            "final_watcher"
+            "listening_chime",
+            "corvane"
           ],
           "introduces": {}
         },
         "fate": {
           "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane",
-            "final_watcher"
+            "herder",
+            "corvane"
           ],
-          "introduces": {}
-        },
-        "keepers": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane",
-            "final_watcher"
-          ],
-          "introduces": {}
-        },
-        "listened": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane",
-            "final_watcher"
-          ],
-          "introduces": {}
+          "introduces": {
+            "walking_door": "plain walking door"
+          }
         },
         "keepers_epilogue": {
           "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
             "corvane",
-            "final_watcher"
+            "blanket",
+            "old_map"
           ],
           "introduces": {}
         },
         "listened_epilogue": {
           "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
             "corvane",
-            "final_watcher"
-          ],
-          "introduces": {}
-        },
-        "rivers_wander": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane",
-            "final_watcher"
-          ],
-          "introduces": {}
-        },
-        "loss_epilogue": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane",
-            "final_watcher"
-          ],
-          "introduces": {}
-        },
-        "loss_second_failed": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane",
-            "final_watcher"
+            "walking_door",
+            "herder",
+            "orin_map"
           ],
           "introduces": {}
         },
         "loss_recover": {
           "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
+            "last_seam",
+            "bram",
+            "corvane"
+          ],
+          "introduces": {}
+        },
+        "loss_plan": {
+          "requires": [
+            "last_seam"
+          ],
+          "introduces": {}
+        },
+        "recover_check": {
+          "requires": [
+            "last_seam"
+          ],
+          "introduces": {}
+        },
+        "recover_ask": {
+          "requires": [
+            "corvane"
+          ],
+          "introduces": {}
+        },
+        "recover_reserve": {
+          "requires": [
+            "orin",
+            "seren"
+          ],
+          "introduces": {}
+        },
+        "recover_pip": {
+          "requires": [
+            "pip",
+            "bram"
+          ],
+          "introduces": {}
+        },
+        "recover_island": {
+          "requires": [
+            "tear",
+            "mooring_stone"
+          ],
+          "introduces": {}
+        },
+        "loss_second_failed": {
+          "requires": [
             "corvane",
-            "final_watcher",
-            "final_brace"
+            "last_seam"
           ],
           "introduces": {}
         },
-        "loss_watch": {
+        "loss_epilogue": {
           "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
             "corvane",
-            "final_watcher",
-            "final_retreat_route"
-          ],
-          "introduces": {}
-        },
-        "loss_lamp": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane",
-            "final_watcher"
-          ],
-          "introduces": {}
-        },
-        "loss_line": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane",
-            "final_retreat_route"
-          ],
-          "introduces": {}
-        },
-        "loss_marks": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane",
-            "final_retreat_route"
-          ],
-          "introduces": {}
-        },
-        "loss_anchor_plan": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane",
-            "final_watcher",
-            "final_brace"
-          ],
-          "introduces": {}
-        },
-        "loss_anchor_check": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane",
-            "final_brace",
-            "final_watcher"
-          ],
-          "introduces": {}
-        },
-        "loss_anchor_supported": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane",
-            "final_brace",
-            "final_watcher"
-          ],
-          "introduces": {}
-        },
-        "loss_anchor_reserved": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane",
-            "final_brace",
-            "final_watcher"
-          ],
-          "introduces": {}
-        },
-        "voices_response_homes": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions"
-          ],
-          "introduces": {}
-        },
-        "voices_response_map": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions"
-          ],
-          "introduces": {}
-        },
-        "voices_response_people": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions"
-          ],
-          "introduces": {}
-        },
-        "help_him_response_blanket": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane",
-            "final_watcher"
-          ],
-          "introduces": {}
-        },
-        "help_him_response_path": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane",
-            "final_watcher"
-          ],
-          "introduces": {}
-        },
-        "help_him_response_ribbon": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane",
-            "final_watcher"
-          ],
-          "introduces": {}
-        },
-        "home_watcher_response_path": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane",
-            "final_watcher"
-          ],
-          "introduces": {}
-        },
-        "home_watcher_response_room": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane",
-            "final_watcher"
-          ],
-          "introduces": {}
-        },
-        "home_watcher_response_home": {
-          "requires": [
-            "final_map",
-            "final_tear",
-            "final_companions",
-            "corvane",
-            "final_watcher"
+            "herder",
+            "joining_lines"
           ],
           "introduces": {}
         }
