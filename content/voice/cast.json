@@ -19,7 +19,7 @@
       ],
       "speaks": true,
       "status": "provisional",
-      "lineCount": 6120
+      "lineCount": 6162
     },
     "party": {
       "name": "The party",
@@ -1351,12 +1351,12 @@
           "address": "gemfall-07r/scene_ossley_debt/narration"
         },
         {
-          "text": "Stones want to go home. We only kept them until someone was going that way.",
-          "address": "gemfall-07r/scene_ossley/narration"
+          "text": "Old Ossley. Bridge is broken. Folk need ferrying. You could help, if you're staying.",
+          "address": "riftlight-headwaters-washout/late/narration"
         },
         {
-          "text": "When you want to go upriver, I am your frog. Honest work, honest pay.",
-          "address": "riftlight-saltrot-arrival/ossley_done/narration"
+          "text": "Stones want to go home. We only kept them until someone was going that way.",
+          "address": "gemfall-07r/scene_ossley/narration"
         }
       ],
       "lineCount": 38,
@@ -5096,6 +5096,10 @@
         {
           "chapter": "riftlight-glacier-survival",
           "key": "Yeti herder"
+        },
+        {
+          "chapter": "riftlight-hidden-glacier-rift",
+          "key": "Yeti herder"
         }
       ],
       "chapters": [
@@ -5123,7 +5127,7 @@
           "address": "riftlight-finale/kid_bridge/narration"
         }
       ],
-      "lineCount": 62,
+      "lineCount": 104,
       "guessedLines": 1,
       "speaks": true,
       "status": "provisional"
@@ -5155,6 +5159,52 @@
         }
       ],
       "lineCount": 1,
+      "speaks": true,
+      "status": "provisional"
+    },
+    "skerry": {
+      "name": "Skerry",
+      "kind": "character",
+      "who": "She/her, the griffin who keeps the iron rings on the ice shelf. Flies above the river the whole way, calling down. Brisk, warm, a little dramatic; cannot lift the party and hates that.",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/ridge_griffin",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-headwaters-washout",
+          "key": "Skerry"
+        },
+        {
+          "chapter": "riftlight-ice-shelf-traverse",
+          "key": "Skerry"
+        }
+      ],
+      "chapters": [
+        "riftlight-headwaters-washout",
+        "riftlight-ice-shelf-traverse"
+      ],
+      "aliases": [],
+      "gemini": {
+        "voice": "Autonoe"
+      },
+      "lines": [
+        {
+          "text": "My mother's! She lost it the year I hatched. Keep it. It wants a brave moment.",
+          "address": "riftlight-ice-shelf-traverse/high_lower/narration"
+        },
+        {
+          "text": "It's breathing. Let's watch a while. If we know its breath, we know when to cross.",
+          "address": "riftlight-ice-shelf-traverse/watch/narration"
+        },
+        {
+          "text": "Good morning, Grumble. I name them all. Grumble has held this wall for fifty winters.",
+          "address": "riftlight-ice-shelf-traverse/boot_marks/narration"
+        }
+      ],
+      "lineCount": 170,
+      "guessedLines": 8,
       "speaks": true,
       "status": "provisional"
     },
@@ -6284,7 +6334,7 @@
       },
       "lines": [
         {
-          "text": "My herd keeps stopping at the east ridge. Ears up, all one way. Something up there ticks. Find it before a goat does.",
+          "text": "My herd keeps stopping on the east ridge. Ears up, all pointing one way. Something under the ice is ticking. I want to know what, before a goat finds it first. Will you help me look?",
           "address": "riftlight-hidden-glacier-rift/search/narration"
         }
       ],
