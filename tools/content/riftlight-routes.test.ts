@@ -27,8 +27,14 @@ it.each([...chapters.values()].filter((chapter) => chapter.index >= 4))("$id: ev
     for (const scene of allPaths(chapter, "manticore", "duskrunner", { valley_crossed_high: true, fragment_coast_learned: true }).visited) visited.add(scene);
   }
   if (chapter.id === "riftlight-the-island-due-back") {
-    for (const scene of allPaths(chapter, "manticore", "duskrunner", { sky_followup_promised: true, whales_guided: true }).visited) visited.add(scene);
+    // The whales' sign is only there for a party that guided them clear.
     for (const scene of allPaths(chapter, "manticore", "duskrunner", { whales_guided: true }).visited) visited.add(scene);
+  }
+  if (chapter.id === "riftlight-squall-temple") {
+    // What the island sent ahead decides who is outside and what is ready.
+    for (const flags of [{ island_warning_sent: true }, { island_messages_saved: true }] as Record<string, boolean>[]) {
+      for (const scene of allPaths(chapter, "manticore", "duskrunner", flags).visited) visited.add(scene);
+    }
   }
   if (chapter.id === "riftlight-hidden-glacier-rift") {
     // A returning party, with the opening already awake, may walk straight back to the fold.
