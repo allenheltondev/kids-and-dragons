@@ -1944,583 +1944,379 @@
         "rope",
         "orin",
         "herder",
-        "herd"
+        "herd",
+        "listening_chime"
       ],
       "scenes": {
         "shelf": {
           "requires": [
             "hall",
-            "great_river",
-            "frostfang",
-            "orin",
             "herder",
             "herd"
           ],
           "introduces": {
-            "shelf": "a narrow shelf of ice",
-            "gap": "part of the shelf has fallen away",
-            "boot_marks": "Old boot marks"
+            "skerry": "Skerry",
+            "shelf": "the ice shelf",
+            "rings": "iron rings"
           }
         },
         "lineup": {
-          "requires": [
-            "shelf",
-            "rope"
-          ],
+          "requires": [],
           "introduces": {}
         },
         "knots": {
-          "requires": [
-            "rope"
-          ],
+          "requires": [],
           "introduces": {}
         },
         "coil": {
-          "requires": [
-            "rope"
-          ],
+          "requires": [],
           "introduces": {}
         },
         "beat": {
-          "requires": [
-            "shelf"
-          ],
+          "requires": [],
           "introduces": {}
         },
         "ring_thud": {
           "requires": [
-            "shelf",
-            "orin",
-            "boot_marks"
+            "skerry",
+            "shelf"
           ],
           "introduces": {
-            "ringing": "Thick ice rings",
+            "boot_marks": "Old boot marks",
             "rock_wall": "dark rock wall"
           }
         },
         "tap": {
-          "requires": [
-            "ringing"
-          ],
+          "requires": [],
           "introduces": {}
         },
         "slide": {
-          "requires": [
-            "ringing"
-          ],
+          "requires": [],
           "introduces": {}
         },
         "scout": {
-          "requires": [
-            "ringing"
-          ],
+          "requires": [],
           "introduces": {}
         },
         "starlight": {
-          "requires": [
-            "ringing"
-          ],
+          "requires": [],
           "introduces": {}
         },
         "boot_marks": {
           "requires": [
             "boot_marks",
-            "shelf"
+            "rock_wall",
+            "rings"
           ],
           "introduces": {
-            "ring": "a rusty iron ring"
+            "grumble": "Grumble"
           }
         },
         "ring_pull": {
           "requires": [
-            "ring",
-            "rope"
+            "grumble"
           ],
           "introduces": {}
         },
         "ring_look": {
           "requires": [
-            "ring",
-            "rope"
+            "grumble"
           ],
           "introduces": {}
         },
+        "ring_throw": {
+          "requires": [
+            "grumble"
+          ],
+          "introduces": {
+            "old_clank": "one called Old Clank"
+          }
+        },
         "squeeze": {
           "requires": [
-            "rock_wall",
-            "rope"
+            "grumble",
+            "skerry"
           ],
           "introduces": {}
         },
         "inch": {
-          "requires": [
-            "rock_wall"
-          ],
+          "requires": [],
           "introduces": {}
         },
         "packs": {
-          "requires": [
-            "rock_wall"
-          ],
+          "requires": [],
           "introduces": {}
         },
         "chop": {
           "requires": [
-            "rock_wall"
+            "grumble"
           ],
           "introduces": {}
         },
         "wide_spot": {
-          "requires": [
-            "shelf"
-          ],
+          "requires": [],
           "introduces": {}
         },
         "wide_snack": {
-          "requires": [
-            "shelf"
-          ],
+          "requires": [],
           "introduces": {}
         },
         "wide_eat": {
-          "requires": [
-            "shelf"
-          ],
+          "requires": [],
           "introduces": {}
         },
         "wide_look": {
-          "requires": [
-            "shelf"
-          ],
+          "requires": [],
           "introduces": {}
         },
         "crack": {
           "requires": [
-            "shelf",
-            "boot_marks"
+            "shelf"
           ],
           "introduces": {
             "crack": "A stream of meltwater cuts across the shelf"
           }
         },
         "hop": {
-          "requires": [
-            "crack"
-          ],
+          "requires": [],
           "introduces": {}
         },
         "slab": {
-          "requires": [
-            "crack",
-            "rope"
-          ],
+          "requires": [],
+          "introduces": {}
+        },
+        "coil_throw": {
+          "requires": [],
           "introduces": {}
         },
         "leap": {
-          "requires": [
-            "crack",
-            "rope"
-          ],
+          "requires": [],
           "introduces": {}
         },
         "icicles": {
           "requires": [
-            "rock_wall"
+            "crack"
           ],
           "introduces": {
             "icicles": "a curtain of icicles"
           }
         },
-        "dash": {
-          "requires": [
-            "icicles"
-          ],
+        "knock": {
+          "requires": [],
           "introduces": {}
         },
-        "knock": {
-          "requires": [
-            "icicles"
-          ],
+        "dash": {
+          "requires": [],
+          "introduces": {}
+        },
+        "drip_run": {
+          "requires": [],
           "introduces": {}
         },
         "gust": {
-          "requires": [
-            "shelf"
-          ],
+          "requires": [],
           "introduces": {}
         },
         "huddle": {
-          "requires": [
-            "shelf"
-          ],
+          "requires": [],
           "introduces": {}
         },
         "lull": {
-          "requires": [
-            "shelf"
-          ],
+          "requires": [],
           "introduces": {}
         },
         "sing": {
-          "requires": [
-            "shelf"
-          ],
+          "requires": [],
           "introduces": {}
         },
         "slope": {
-          "requires": [
-            "shelf",
-            "rock_wall"
-          ],
+          "requires": [],
           "introduces": {
             "slope": "a sheet of ice pours down"
           }
         },
         "slope_steps": {
-          "requires": [
-            "slope"
-          ],
+          "requires": [],
           "introduces": {}
         },
         "slope_rope": {
-          "requires": [
-            "slope",
-            "rope"
-          ],
+          "requires": [],
           "introduces": {}
         },
         "slope_slide": {
-          "requires": [
-            "slope"
-          ],
+          "requires": [],
           "introduces": {}
         },
         "gap": {
           "requires": [
-            "shelf",
-            "gap",
-            "rope",
-            "boot_marks"
+            "boot_marks",
+            "skerry",
+            "listening_chime"
           ],
           "introduces": {
-            "rocks": "dark rocks",
-            "low_lip": "a lip of ice",
             "goat": "snowhorn goat"
-          },
-          "conditional": [
-            {
-              "flag": "found_ring",
-              "requires": [
-                "ring"
-              ]
-            }
-          ]
+          }
         },
         "inspect": {
           "requires": [
-            "gap",
-            "rocks",
-            "low_lip",
-            "goat",
-            "rope"
+            "old_clank",
+            "goat"
           ],
           "introduces": {
-            "goat_track": "goat track"
+            "goat_track": "a goat track"
           }
         },
         "high": {
           "requires": [
-            "rocks",
-            "goat",
-            "goat_track",
-            "rope"
+            "goat"
           ],
           "introduces": {}
         },
         "high_climb": {
           "requires": [
-            "goat_track",
-            "rope"
+            "goat"
           ],
           "introduces": {}
         },
         "high_own": {
           "requires": [
-            "rocks",
-            "rope"
+            "goat"
           ],
           "introduces": {}
         },
         "high_charm": {
           "requires": [
-            "goat_track",
-            "rope"
+            "goat"
           ],
           "introduces": {}
         },
         "high_lower": {
           "requires": [
-            "rope",
-            "goat"
+            "old_clank"
           ],
           "introduces": {}
         },
         "low": {
-          "requires": [
-            "low_lip",
-            "rope"
-          ],
+          "requires": [],
           "introduces": {}
         },
         "low_probe": {
-          "requires": [
-            "low_lip",
-            "rope"
-          ],
+          "requires": [],
           "introduces": {}
         },
         "low_chip": {
+          "requires": [],
+          "introduces": {}
+        },
+        "low_listen": {
           "requires": [
-            "low_lip"
+            "grumble"
           ],
           "introduces": {}
         },
         "low_mark": {
           "requires": [
-            "low_lip",
-            "rocks",
+            "old_clank",
             "goat"
           ],
           "introduces": {}
         },
         "brace": {
-          "requires": [
-            "rocks",
-            "rope"
-          ],
+          "requires": [],
           "introduces": {}
         },
         "brace_post": {
-          "requires": [
-            "rocks",
-            "rope"
-          ],
+          "requires": [],
           "introduces": {}
         },
         "brace_rail": {
           "requires": [
-            "rope",
+            "old_clank",
             "goat"
           ],
           "introduces": {}
         },
         "wing": {
           "requires": [
-            "gap",
-            "rope"
+            "old_clank"
           ],
           "introduces": {}
         },
         "wing_tie": {
-          "requires": [
-            "gap",
-            "rope"
-          ],
+          "requires": [],
           "introduces": {}
         },
         "wing_rail": {
           "requires": [
-            "rope",
             "goat"
           ],
           "introduces": {}
         },
-        "who_first": {
-          "requires": [
-            "rope",
-            "gap"
-          ],
+        "watch": {
+          "requires": [],
           "introduces": {}
         },
-        "first_light": {
-          "requires": [
-            "rope"
-          ],
+        "watch_river": {
+          "requires": [],
           "introduces": {}
         },
-        "first_strong": {
+        "hold_line": {
           "requires": [
-            "rope"
-          ],
-          "introduces": {}
-        },
-        "first_dart": {
-          "requires": [
-            "rope"
-          ],
-          "introduces": {}
-        },
-        "gear": {
-          "requires": [
-            "rope"
-          ],
-          "introduces": {}
-        },
-        "gear_slide": {
-          "requires": [
-            "rope"
-          ],
-          "introduces": {}
-        },
-        "gear_carry": {
-          "requires": [
-            "rope"
+            "old_clank"
           ],
           "introduces": {}
         },
         "ready": {
           "requires": [
-            "rope",
-            "gap"
+            "skerry"
           ],
           "introduces": {}
         },
         "cross": {
-          "requires": [
-            "rope",
-            "gap"
-          ],
+          "requires": [],
           "introduces": {}
         },
         "cross_turns": {
-          "requires": [
-            "rope",
-            "gap"
-          ],
+          "requires": [],
+          "introduces": {}
+        },
+        "cross_breath": {
+          "requires": [],
           "introduces": {}
         },
         "assisted": {
-          "requires": [
-            "rope",
-            "gap"
-          ],
+          "requires": [],
           "introduces": {}
         },
         "cross_whistle": {
-          "requires": [
-            "rope",
-            "gap"
-          ],
+          "requires": [],
           "introduces": {}
         },
         "across": {
           "requires": [
-            "rope"
+            "herder",
+            "boot_marks"
           ],
           "introduces": {
-            "cairns": "cairns climb",
-            "pass_box": "HONEYCAKE, 2 COINS"
+            "cairns": "cairns climb"
           }
-        },
-        "tally": {
-          "requires": [
-            "rope",
-            "cairns"
-          ],
-          "introduces": {}
-        },
-        "tally_warm": {
-          "requires": [
-            "cairns"
-          ],
-          "introduces": {}
-        },
-        "tally_buy": {
-          "requires": [
-            "cairns",
-            "pass_box"
-          ],
-          "introduces": {}
-        },
-        "tally_rope": {
-          "requires": [
-            "rope",
-            "cairns"
-          ],
-          "introduces": {}
-        },
-        "tally_mend": {
-          "requires": [
-            "cairns"
-          ],
-          "introduces": {}
         },
         "rest_safe": {
           "requires": [
-            "great_river",
             "cairnstep",
-            "cairns"
+            "listening_chime"
           ],
           "introduces": {}
         },
         "fall": {
           "requires": [
-            "shelf",
-            "rope",
-            "great_river"
-          ],
-          "introduces": {}
-        },
-        "fall_vote": {
-          "requires": [
-            "rope",
-            "great_river"
-          ],
-          "introduces": {}
-        },
-        "fall_hold": {
-          "requires": [
-            "rope"
-          ],
-          "introduces": {}
-        },
-        "fall_look": {
-          "requires": [
-            "great_river"
+            "skerry"
           ],
           "introduces": {}
         },
         "rest_river": {
           "requires": [
-            "rope",
-            "orin"
-          ],
-          "introduces": {}
-        },
-        "ring_throw": {
-          "requires": [
-            "ring",
-            "rope"
-          ],
-          "introduces": {}
-        },
-        "drip_run": {
-          "requires": [
-            "icicles"
-          ],
-          "introduces": {}
-        },
-        "hold_line": {
-          "requires": [
-            "rope",
-            "gap"
-          ],
-          "introduces": {}
-        },
-        "level_line": {
-          "requires": [
-            "rope",
-            "gap"
+            "skerry"
           ],
           "introduces": {}
         }
@@ -2832,17 +2628,8 @@
         },
         "seam_back": {
           "requires": [
-            "seam",
-            "learned_note"
+            "herder"
           ],
-          "introduces": {}
-        },
-        "seam_a": {
-          "requires": [],
-          "introduces": {}
-        },
-        "seam_b": {
-          "requires": [],
           "introduces": {}
         },
         "seam_done": {
@@ -3029,6 +2816,30 @@
             "hall"
           ],
           "introduces": {}
+        },
+        "kid_scoop": {
+          "requires": [
+            "herder",
+            "goat"
+          ],
+          "introduces": {}
+        },
+        "post_off": {
+          "requires": [
+            "post",
+            "herder"
+          ],
+          "introduces": {}
+        },
+        "seam_pry": {
+          "requires": [],
+          "introduces": {}
+        },
+        "hold_hard": {
+          "requires": [
+            "glacier_opening"
+          ],
+          "introduces": {}
         }
       },
       "entryByFlag": {
@@ -3045,7 +2856,11 @@
         "frostfang",
         "rope",
         "listening_chime",
-        "orin"
+        "orin",
+        "skerry",
+        "grumble",
+        "old_clank",
+        "shelf"
       ],
       "scenes": {
         "current": {
@@ -3102,8 +2917,7 @@
         },
         "floes": {
           "requires": [
-            "great_river",
-            "rope"
+            "skerry"
           ],
           "introduces": {
             "floes": "Pieces of the broken shelf"
@@ -3388,28 +3202,11 @@
           ],
           "introduces": {}
         },
-        "tend": {
-          "requires": [
-            "rope"
-          ],
-          "introduces": {}
-        },
-        "tend_warm": {
-          "requires": [
-            "rope"
-          ],
-          "introduces": {}
-        },
-        "tend_dry": {
-          "requires": [
-            "rope"
-          ],
-          "introduces": {}
-        },
         "early": {
           "requires": [
             "frostfang",
-            "rope"
+            "skerry",
+            "orin"
           ],
           "introduces": {}
         },
@@ -3590,17 +3387,11 @@
           ],
           "introduces": {}
         },
-        "scarf_pass": {
-          "requires": [
-            "rope"
-          ],
-          "introduces": {}
-        },
         "knob_toss": {
           "requires": [
-            "river_ledge",
             "knob",
-            "rope"
+            "grumble",
+            "old_clank"
           ],
           "introduces": {}
         },
@@ -3631,6 +3422,10 @@
             "drake",
             "rope"
           ],
+          "introduces": {}
+        },
+        "grab_near": {
+          "requires": [],
           "introduces": {}
         }
       }

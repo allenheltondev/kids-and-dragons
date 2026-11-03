@@ -14,16 +14,21 @@
     "narration": "The Great River runs beneath a narrow shelf of blue ice. Dark rock rises on one side; cold water slides along the other. Ahead, the path bends out of sight."
   },
   "goal": {
-    "text": "Get everyone along the icy shelf to the cairns.",
+    "text": "Get everyone along the shelf to the cairns, and see what the river did.",
     "steps": [
       {
-        "id": "wide_spot",
-        "label": "Reach the wide spot",
-        "flag": "reached_the_wide_spot"
+        "id": "first_ring",
+        "label": "Find Skerry's first iron ring",
+        "flag": "found_the_first_ring"
+      },
+      {
+        "id": "path_end",
+        "label": "See where the old path goes",
+        "flag": "found_where_the_path_went"
       },
       {
         "id": "find_way",
-        "label": "Find a way past the broken ice",
+        "label": "Find a way past the water",
         "flag": "found_a_way_past_the_gap"
       },
       {
@@ -36,20 +41,106 @@
   "scenes": {
     "shelf": {
       "type": "story",
-      "narration": "The singing hall falls behind you. Ahead, a narrow shelf of ice runs beside the Great River toward Frostfang. Your job is to get everyone along this shelf, together, to the cairns. The herder's goats need that road. Orin said to test the ice. Old boot marks lead out, then stop where part of the shelf has fallen away.",
+      "art": "scenes/riftlight/shelf-icicles",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "spotlight": "next",
+      "narration": "The singing hall falls behind you. Where the ice shelf begins, a griffin in a teal cape is waiting, with a rope ladder rolled on her back. \"Skerry,\" she says. \"I keep the iron rings on this shelf. My mother kept them before me.\" She frowns at the river. \"The herder brings her goats this way tomorrow, and the river did something in the night. Walk it with me? Get everyone to the cairns, and see what the river did.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Step onto the shelf",
-          "icon": "hand",
+          "label": "Walk out with Skerry",
+          "icon": "boot",
           "goto": "lineup"
         }
       ],
-      "art": "scenes/riftlight/shelf-icicles"
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "tied_on",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "rope_coiled",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "read_the_ice",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "found_the_first_ring",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "ring_hitched",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "saw_ahead",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "found_where_the_path_went",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "found_a_way_past_the_gap",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "set_rail",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "knows_the_breath",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "line_tight",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "kept_everyone_on_the_rope",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "told_shelf_roped",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "told_long_way",
+          "value": false
+        }
+      ]
     },
     "lineup": {
       "type": "choice_point",
-      "narration": "The shelf is only a few steps wide. The river hisses past its edge. You have a long rope. It smells a little like fish. How will you carry it? Orin would say carefully. Orin would also draw a diagram.",
+      "art": "scenes/riftlight/shelf-icicles",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "The shelf is only a few steps wide. The river hisses past its edge. Skerry hands you a long rope that smells a little of fish. \"Tie on, or keep it coiled to throw?\" she asks. \"Tied, nobody wanders off. Coiled, you can fling it where feet cannot go. I have opinions. I will keep them to myself. Mostly.\"",
       "choices": [
         {
           "id": "knots",
@@ -70,13 +161,18 @@
           "goto": "beat",
           "requiresClass": "songkeeper"
         }
-      ],
-      "art": "scenes/riftlight/shelf-icicles"
+      ]
     },
     "knots": {
-      "narration": "Everyone ties onto the rope. On ice, a knot that is almost right is a wrong knot. Every knot holds. The rope hums between you like a guitar string.",
-      "art": "scenes/riftlight/shelf-icicles",
       "type": "story",
+      "art": "scenes/riftlight/shelf-icicles",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "Everyone ties on. Skerry checks each knot with her beak. Tug, tug. \"On ice, a knot that is almost right is a wrong knot,\" she says. \"These are right.\" The rope hums between you like a guitar string.",
       "choices": [
         {
           "id": "continue",
@@ -86,16 +182,22 @@
           "effects": [
             {
               "type": "setFlag",
-              "flag": "line_ready"
+              "flag": "tied_on"
             }
           ]
         }
       ]
     },
     "coil": {
-      "narration": "You shake the rope out and coil it again, loose and free. The loops sit in your hand like a sleeping snake. Anyone could throw them in a blink.",
-      "art": "scenes/riftlight/shelf-icicles",
       "type": "story",
+      "art": "scenes/riftlight/shelf-icicles",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "You coil the rope loose and free. The loops sit in your hand like a sleeping snake. \"Good,\" says Skerry. \"A coil reaches where feet cannot. Just do not throw it at me.\"",
       "choices": [
         {
           "id": "continue",
@@ -105,16 +207,22 @@
           "effects": [
             {
               "type": "setFlag",
-              "flag": "line_ready"
+              "flag": "rope_coiled"
             }
           ]
         }
       ]
     },
     "beat": {
-      "narration": "Rally is for nervous feet, too. You hum a low, slow tune. Step, step, hum. Soon even the Listening Chime swings in time, and the line stays loose and easy.",
-      "art": "scenes/riftlight/shelf-icicles",
       "type": "story",
+      "art": "scenes/riftlight/shelf-icicles",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "Rally is for nervous feet, too. You hum a slow tune, and everyone ties on to its beat. Step, step, hum. Skerry's tail swishes in time. \"My mother hummed on this shelf,\" she says. \"I had forgotten.\"",
       "choices": [
         {
           "id": "continue",
@@ -124,7 +232,7 @@
           "effects": [
             {
               "type": "setFlag",
-              "flag": "line_ready"
+              "flag": "tied_on"
             }
           ]
         }
@@ -132,7 +240,14 @@
     },
     "ring_thud": {
       "type": "choice_point",
-      "narration": "Old boot marks follow the dark rock wall. The ice looks the same everywhere, white as a plate. Thick ice rings when you tap it. Thin ice thuds, like an empty drum. Somebody taps once. Ping! Now everybody has to try. How will you test it?",
+      "art": "scenes/riftlight/shelf-icicles",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "Old boot marks follow the dark rock wall. The ice looks the same everywhere, white as a plate. \"Thick ice rings when you tap it,\" says Skerry. \"Thin ice thuds, like an empty drum.\" Somebody taps once. Ping! Now everybody has to try. How will you test the way?",
       "choices": [
         {
           "id": "tap",
@@ -160,19 +275,25 @@
           "goto": "starlight",
           "requiresClass": "starweaver"
         }
-      ],
-      "art": "scenes/riftlight/shelf-icicles"
+      ]
     },
     "tap": {
       "type": "check",
       "stat": "clever",
       "tn": 8,
-      "narration": "Tap, tap, tap. You walk bent over, like someone hunting for a lost button.",
-      "prompt": "Tell the ringing ice from the thudding ice.",
       "roller": "party",
+      "art": "scenes/riftlight/shelf-icicles",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "Tap, tap, tap. You walk bent over, like someone hunting for a lost button. Skerry bends over too, to be polite. \"Listen with your feet,\" she says.",
+      "prompt": "Tell the ringing ice from the thudding ice.",
       "onSuccess": {
         "goto": "boot_marks",
-        "narration": "Ring, ring, thud. You keep to the ringing parts and give each thud a polite nod.",
+        "narration": "Ring, ring, thud. You keep to the ringing parts. \"Nicely heard,\" says Skerry. \"You will want those ears later.\"",
         "effects": [
           {
             "type": "setFlag",
@@ -182,20 +303,26 @@
       },
       "onFailure": {
         "goto": "boot_marks",
-        "narration": "It all sounds half ring, half thud. You follow the old boot marks."
-      },
-      "art": "scenes/riftlight/shelf-icicles"
+        "narration": "It all sounds half ring, half thud. Skerry sighs. \"Follow the boot marks, then. They walked it before us.\""
+      }
     },
     "slide": {
       "type": "check",
       "stat": "quick",
       "tn": 12,
-      "narration": "You find a flat stone the size of a cookie.",
-      "prompt": "Slide it ahead. Watch where it skids, sticks or sinks.",
       "roller": "party",
+      "art": "scenes/riftlight/shelf-icicles",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "You find a flat stone the size of a cookie. Skerry eyes it. \"That is a very good stone,\" she says. \"Do not lose it.\"",
+      "prompt": "Slide it ahead. Watch where it skids, sticks or sinks.",
       "onSuccess": {
         "goto": "boot_marks",
-        "narration": "The stone skates, stops and skates again. Now you can see the sound ice.",
+        "narration": "The stone skates, stops and skates again. Now you can see the sound ice, and hear it too.",
         "effects": [
           {
             "type": "setFlag",
@@ -205,20 +332,27 @@
       },
       "onFailure": {
         "goto": "boot_marks",
-        "narration": "The stone skids off the edge. Plop. You test the rest with your boots."
-      },
-      "art": "scenes/riftlight/shelf-icicles"
+        "narration": "The stone skids off the edge. Plop. \"I said do not lose it,\" says Skerry. You test the rest with your boots."
+      }
     },
     "scout": {
       "type": "check",
       "stat": "clever",
       "tn": 8,
-      "narration": "Your wings catch the cold air. The shelf below is a long white ribbon.",
-      "prompt": "Find the pale, thin patches from above.",
       "roller": "party",
+      "art": "scenes/riftlight/shelf-icicles",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ],
+      "narration": "Your wings catch the cold air, and Skerry rises beside you. \"Look for the pale bits,\" she calls. The shelf below is a long white ribbon.",
+      "prompt": "Find the pale, thin patches from above.",
       "onSuccess": {
         "goto": "boot_marks",
-        "narration": "Thin ice shows pale as old milk. You land on a safe line.",
+        "narration": "Thin ice shows pale as old milk. You land on a safe line, and you know its sound now.",
         "effects": [
           {
             "type": "setFlag",
@@ -228,20 +362,26 @@
       },
       "onFailure": {
         "goto": "boot_marks",
-        "narration": "Up here, everything is white. You land and follow the boot marks."
-      },
-      "art": "scenes/riftlight/shelf-icicles"
+        "narration": "Up here, everything is white. \"It always is,\" says Skerry. You land and follow the boot marks."
+      }
     },
     "starlight": {
       "type": "check",
       "stat": "clever",
       "tn": 8,
-      "narration": "Starlight gathers in your hand. Thin ice drinks it. Thick ice bounces it back.",
-      "prompt": "Find where the glow goes dim.",
       "roller": "party",
+      "art": "scenes/riftlight/shelf-icicles",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "Starlight gathers in your hand. Thin ice drinks it. Thick ice bounces it back. \"Ooh,\" says Skerry, and leans so close her beak nearly touches it.",
+      "prompt": "Find where the glow goes dim.",
       "onSuccess": {
         "goto": "boot_marks",
-        "narration": "The glow dims over three pale patches. You lead everyone around them.",
+        "narration": "The glow dims over three pale patches. You lead everyone around them, and Skerry says \"Ooh\" at each one.",
         "effects": [
           {
             "type": "setFlag",
@@ -252,12 +392,18 @@
       "onFailure": {
         "goto": "boot_marks",
         "narration": "The light flickers in the wind. You settle for the old boot marks."
-      },
-      "art": "scenes/riftlight/shelf-icicles"
+      }
     },
     "boot_marks": {
       "type": "choice_point",
-      "narration": "The boot marks bend toward the wall. There, a rusty iron ring is hammered into the rock, with a scrap of old rope still on it. Someone tied a line here long ago. Can you trust it?",
+      "art": "scenes/riftlight/shelf-iron-ring",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "The boot marks bend toward the wall. There, a rusty iron ring is hammered into the rock, with a scrap of old rope on it. Skerry pats it. \"Good morning, Grumble,\" she tells the ring. \"I name them all. Grumble has held this wall for fifty winters.\" Fresh rust flakes off under her claw. Can you trust Grumble?",
       "choices": [
         {
           "id": "pull",
@@ -267,28 +413,25 @@
         },
         {
           "id": "look",
-          "label": "Look for who left it",
-          "icon": "hand",
+          "label": "Look closer at the rust",
+          "icon": "eye",
           "goto": "ring_look"
         }
-      ],
-      "art": "scenes/riftlight/shelf-icicles"
+      ]
     },
     "ring_pull": {
       "type": "story",
-      "narration": "You take turns hanging on the ring. It does not budge. As the last hero lets go, a frozen glove drops out of a crack. Inside is a good bootlace. You pocket it and shake out a loop of rope. The ring needs to catch it.",
-      "choices": [
+      "art": "scenes/riftlight/shelf-iron-ring",
+      "cast": [
         {
-          "id": "continue",
-          "label": "Throw the rope loop",
-          "icon": "hand",
-          "goto": "ring_throw"
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
         }
       ],
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "found_ring"
+          "flag": "found_the_first_ring"
         },
         {
           "type": "grantItem",
@@ -296,11 +439,7 @@
           "to": "party"
         }
       ],
-      "art": "scenes/riftlight/shelf-icicles"
-    },
-    "ring_look": {
-      "type": "story",
-      "narration": "Scratched into the rust is a tiny feather. Griffin keepers hung their lines here long ago. Tied to the ring is a little tin. The note inside says: For the next traveler. Under it lie three coins. You take them, then shake out a loop of rope for the ring.",
+      "narration": "You take turns hanging on Grumble. It does not budge. As the last hero lets go, a frozen glove drops out of a crack, with a good bootlace inside. \"Finders keepers,\" says Skerry. \"Now drop a loop over Grumble, and the wall has a handrail.\"",
       "choices": [
         {
           "id": "continue",
@@ -308,22 +447,90 @@
           "icon": "hand",
           "goto": "ring_throw"
         }
+      ]
+    },
+    "ring_look": {
+      "type": "story",
+      "art": "scenes/riftlight/shelf-iron-ring",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
       ],
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "found_ring"
+          "flag": "found_the_first_ring"
         },
         {
           "type": "grantCoins",
           "amount": 3
         }
       ],
-      "art": "scenes/riftlight/shelf-icicles"
+      "narration": "Scratched into the rust is a tiny feather. \"My mother's mark,\" says Skerry softly. Tied to the ring is a little tin, with a note: For the next traveler. Under it lie three coins. \"She always did that. Take them. Then drop a loop over Grumble for a handrail.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Throw the rope loop",
+          "icon": "hand",
+          "goto": "ring_throw"
+        }
+      ]
+    },
+    "ring_throw": {
+      "type": "interaction",
+      "art": "scenes/riftlight/shelf-iron-ring",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "Swing the loop in a slow circle and drop it over Grumble. \"There is another ring past the broken part, one called Old Clank,\" says Skerry. \"If you can catch Grumble, you can catch Clank.\"",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Tap when the loop is over the ring.",
+        "actionLabel": "Throw the loop!",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 4000
+      },
+      "onSuccess": {
+        "goto": "squeeze",
+        "narration": "Flup! The loop snugs over Grumble. Skerry claps her forefeet. \"You can throw. I will remember that at Old Clank.\"",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "ring_hitched"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "squeeze",
+        "narration": "The loop flops off the rock and into the river. Skerry fishes it out and comes back soaked to the cape. \"Fine,\" she drips. \"We will not count on throwing at Old Clank.\""
+      },
+      "onAssisted": {
+        "goto": "squeeze",
+        "narration": "Together you guide the loop over the ring. Flup. \"That counts,\" says Skerry. \"Clank will be easy now.\"",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "ring_hitched"
+          }
+        ]
+      }
     },
     "squeeze": {
       "type": "choice_point",
-      "narration": "Past the ring, the shelf pinches to one boot wide. Spray flicks your ankles. The packs are heavy, and the ice is slick as soap. Somebody says they are not scared. Their knees disagree. How will you get through?",
+      "art": "scenes/riftlight/shelf-icicles",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "Past Grumble, the shelf pinches to one boot wide. Spray flicks your ankles. Skerry walks with her wings folded tight, like an umbrella in a cupboard. \"I could fly this bit,\" she says. \"But I said I would walk it with you.\" How will you get through?",
       "choices": [
         {
           "id": "inch",
@@ -344,8 +551,7 @@
           "goto": "chop",
           "requiresSpecies": "bigfoot"
         }
-      ],
-      "art": "scenes/riftlight/shelf-icicles"
+      ]
     },
     "inch": {
       "type": "check",
@@ -354,12 +560,19 @@
       "tags": [
         "climb"
       ],
-      "narration": "You shuffle sideways along the cold wall. The river mutters by your ear.",
-      "prompt": "Shuffle along, one careful foot at a time.",
       "roller": "party",
+      "art": "scenes/riftlight/shelf-icicles",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "You shuffle sideways along the cold wall. The river mutters by your ear. \"Mutter all you like,\" Skerry tells it.",
+      "prompt": "Shuffle along, one careful foot at a time.",
       "onSuccess": {
         "goto": "wide_spot",
-        "narration": "Slide, slide, rest. Nobody looks down."
+        "narration": "Slide, slide, rest. Nobody looks down. \"Lovely,\" says Skerry, who looked down for everyone."
       },
       "onFailure": {
         "goto": "wide_spot",
@@ -372,8 +585,7 @@
             "nonlethal": true
           }
         ]
-      },
-      "art": "scenes/riftlight/shelf-icicles"
+      }
     },
     "packs": {
       "type": "check",
@@ -382,12 +594,19 @@
       "tags": [
         "force"
       ],
-      "narration": "You make a line and pass the heavy packs hand to hand.",
-      "prompt": "Pass every pack without dropping one.",
       "roller": "all",
+      "art": "scenes/riftlight/shelf-icicles",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "You make a line and pass the heavy packs hand to hand. Skerry takes one in her beak. \"Mmf,\" she says, which means heavy.",
+      "prompt": "Pass every pack without dropping one.",
       "onSuccess": {
         "goto": "wide_spot",
-        "narration": "The packs travel like buckets at a well. In the last one is a supper bundle you forgot.",
+        "narration": "The packs travel like buckets at a well. In the last one is a supper bundle you forgot you had.",
         "effects": [
           {
             "type": "grantItem",
@@ -398,9 +617,16 @@
       },
       "onFailure": {
         "goto": "wide_spot",
-        "narration": "A pack drops and slides toward the edge. A boot stops it just in time."
-      },
-      "art": "scenes/riftlight/shelf-icicles"
+        "narration": "A pack drops and slides toward the edge. Skerry pins it with one claw. \"Mine now,\" she jokes, and hands it back.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "roller",
+            "nonlethal": true
+          }
+        ]
+      }
     },
     "chop": {
       "type": "check",
@@ -409,23 +635,44 @@
       "tags": [
         "force"
       ],
-      "narration": "Smash is good for more than doors. You crouch at the narrowest spot and swing.",
-      "prompt": "Chop a wide step for everyone.",
       "roller": "party",
+      "art": "scenes/riftlight/shelf-icicles",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "Smash is good for more than doors. You crouch at the narrowest spot and swing. \"Not Grumble,\" Skerry begs. \"Anything but Grumble.\"",
+      "prompt": "Chop a wide step for everyone.",
       "onSuccess": {
         "goto": "wide_spot",
-        "narration": "Crunch, crunch, crunch. Chunky steps appear, and everyone walks them."
+        "narration": "Crunch, crunch, crunch. Chunky steps appear, and everyone walks them like a staircase."
       },
       "onFailure": {
         "goto": "wide_spot",
-        "narration": "Chips fly, and the step comes out crooked. You shuffle along it anyway."
-      },
-      "art": "scenes/riftlight/shelf-icicles"
+        "narration": "Chips fly, and the step comes out crooked. You shuffle along it anyway, and a knee meets the rock.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "roller",
+            "nonlethal": true
+          }
+        ]
+      }
     },
     "wide_spot": {
       "type": "rest",
-      "narration": "The shelf widens into a flat spot. You sit and shake out your wet cuffs. An icicle drips on somebody's hat, again and again, as if it has a message. Ahead, water chatters across the ice. How will you rest?",
       "heal": 2,
+      "art": "scenes/riftlight/shelf-icicles",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "The shelf widens into a flat spot. You sit and shake out your wet cuffs. An icicle drips on somebody's hat, again and again, as if it has a message. Skerry unrolls her ladder to sit on. \"Halfway,\" she says. \"Hear that, ahead? Water talking across the ice. That is new.\" How will you rest?",
       "choices": [
         {
           "id": "snack",
@@ -436,7 +683,7 @@
         {
           "id": "look",
           "label": "Study the way ahead",
-          "icon": "hand",
+          "icon": "eye",
           "goto": "wide_look"
         },
         {
@@ -463,24 +710,15 @@
             }
           ]
         }
-      ],
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "reached_the_wide_spot"
-        }
-      ],
-      "art": "scenes/riftlight/shelf-icicles"
+      ]
     },
     "wide_snack": {
       "type": "story",
-      "narration": "You share half a flatbread, a cube of cheese and a tired apple, cut into extremely fair pieces. Your legs stop shaking. The chattering water sounds almost friendly.",
-      "choices": [
+      "art": "scenes/riftlight/shelf-icicles",
+      "cast": [
         {
-          "id": "continue",
-          "label": "Find the chattering water",
-          "icon": "hand",
-          "goto": "crack"
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
         }
       ],
       "onEnter": [
@@ -490,17 +728,23 @@
           "to": "party"
         }
       ],
-      "art": "scenes/riftlight/shelf-icicles"
-    },
-    "wide_eat": {
-      "type": "story",
-      "narration": "You unwrap a proper supper: bread, cheese and a sausage somebody swears is still warm. It is not. Everyone eats slowly. Your legs stop shaking, and your cheeks come back.",
+      "narration": "You share half a flatbread, a cube of cheese and a tired apple, cut into extremely fair pieces. \"The core is the best bit,\" says Skerry, who gets the core. Your legs stop shaking.",
       "choices": [
         {
           "id": "continue",
-          "label": "Find the chattering water",
+          "label": "Find the talking water",
           "icon": "hand",
           "goto": "crack"
+        }
+      ]
+    },
+    "wide_eat": {
+      "type": "story",
+      "art": "scenes/riftlight/shelf-icicles",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
         }
       ],
       "onEnter": [
@@ -510,17 +754,23 @@
           "to": "party"
         }
       ],
-      "art": "scenes/riftlight/shelf-icicles"
-    },
-    "wide_look": {
-      "type": "story",
-      "narration": "From here you can see far along the shelf. Water sparkles across the ice. Then comes a dark wall of icicles. Past that, the shelf seems to end in thin air. Now you know where the trouble is.",
+      "narration": "You unwrap a proper supper: bread, cheese and a sausage somebody swears is still warm. It is not. \"My mother lost a sausage off this shelf once,\" says Skerry. \"We still talk about it.\" Your cheeks come back.",
       "choices": [
         {
           "id": "continue",
-          "label": "Walk to the sparkle",
+          "label": "Find the talking water",
           "icon": "hand",
           "goto": "crack"
+        }
+      ]
+    },
+    "wide_look": {
+      "type": "story",
+      "art": "scenes/riftlight/shelf-icicles",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
         }
       ],
       "onEnter": [
@@ -529,33 +779,82 @@
           "flag": "saw_ahead"
         }
       ],
-      "art": "scenes/riftlight/shelf-icicles"
+      "narration": "From here you can see far along the shelf. Water sparkles across it. Then a curtain of icicles, a steep slope, and past those the shelf just stops at the river. \"That is where my road was,\" Skerry says quietly. \"Yesterday.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Walk to the sparkle",
+          "icon": "hand",
+          "goto": "crack"
+        }
+      ]
     },
     "crack": {
       "type": "choice_point",
-      "narration": "A stream of meltwater cuts across the shelf, in a crack as wide as a long stride. The water below is black and loud. The old boot marks jump it. Somebody peeks in. \"Deep,\" they report. \"Also wet.\"",
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "A stream of meltwater cuts across the shelf, in a crack as wide as a long stride. The water below is black and loud. Somebody peeks in. \"Deep,\" they report. \"Also wet.\" Skerry stares. \"This crack was not here last week. The ice is moving under us.\"",
       "choices": [
         {
           "id": "hop",
           "label": "Jump on one count",
-          "icon": "hand",
-          "goto": "hop"
+          "icon": "boot",
+          "goto": "hop",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "rope_coiled",
+              "value": false
+            }
+          ]
         },
         {
           "id": "slab",
           "label": "Drag a slab bridge",
           "icon": "hand",
-          "goto": "slab"
+          "goto": "slab",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "rope_coiled",
+              "value": false
+            }
+          ]
+        },
+        {
+          "id": "throw",
+          "label": "Throw the coil across",
+          "icon": "hand",
+          "goto": "coil_throw",
+          "requiresFlag": "rope_coiled",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "rope_coiled",
+              "value": false
+            }
+          ]
         },
         {
           "id": "leap",
           "label": "Leap over with rope",
           "icon": "arrow",
           "goto": "leap",
-          "requiresSpecies": "manticore"
+          "requiresSpecies": "manticore",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "rope_coiled",
+              "value": false
+            }
+          ]
         }
-      ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      ]
     },
     "hop": {
       "type": "check",
@@ -564,18 +863,32 @@
       "tags": [
         "climb"
       ],
-      "narration": "You line up with your toes at the crack. Your knees agree to the plan, mostly.",
-      "prompt": "Jump together: one, two, jump!",
       "roller": "all",
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "You line up with your toes at the crack. Your knees agree to the plan, mostly. \"On three,\" says Skerry. \"Or two. Two is quicker.\"",
+      "prompt": "Jump together: one, two, jump!",
       "onSuccess": {
         "goto": "icicles",
-        "narration": "One, two, jump! Boots land in a row. The crack gurgles behind you."
+        "narration": "One, two, jump! Boots land in a row. The crack gurgles behind you, disappointed."
       },
       "onFailure": {
         "goto": "icicles",
-        "narration": "Somebody lands short, elbows on the edge. Everyone grabs a sleeve and hauls them up, soggy."
-      },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+        "narration": "Somebody lands short, elbows on the edge. Everyone grabs a sleeve and hauls them up, soggy to the knees.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "roller",
+            "nonlethal": true
+          }
+        ]
+      }
     },
     "slab": {
       "type": "check",
@@ -584,18 +897,63 @@
       "tags": [
         "force"
       ],
-      "narration": "A loose slab of ice, big as a door, lies by the wall. A fine bridge, if it moves.",
-      "prompt": "Drag the slab over the crack.",
       "roller": "best",
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "A loose slab of ice, big as a door, lies by the wall. A fine bridge, if it moves. \"I'll push too,\" says Skerry, and pushes with her head.",
+      "prompt": "Drag the slab over the crack.",
       "onSuccess": {
         "goto": "icicles",
-        "narration": "The slab slides across with a grinding sigh. A wobbly, wonderful bridge."
+        "narration": "The slab slides across with a grinding sigh. A wobbly, wonderful bridge. Skerry crosses it twice, for fun."
       },
       "onFailure": {
         "goto": "icicles",
-        "narration": "The slab cracks and sinks. The bigger half stays up for two quick hops."
+        "narration": "The slab cracks and sinks. The bigger half stays up for two quick hops, and somebody's hop is wet.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "roller",
+            "nonlethal": true
+          }
+        ]
+      }
+    },
+    "coil_throw": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 8,
+      "roller": "best",
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "You swing the coil, and Skerry hops over the crack to catch the far end. \"Aim for my feet,\" she says. \"Not my face. Feet.\"",
+      "prompt": "Throw the coil so it lands at Skerry's feet.",
+      "onSuccess": {
+        "goto": "icicles",
+        "narration": "It lands right at her feet. She pins it, and everyone crosses hand over hand. \"Feet,\" she says proudly."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "onFailure": {
+        "goto": "icicles",
+        "narration": "It lands on her face. She pins it anyway, with dignity. Everyone crosses hand over hand, and one hand slips into the cold.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "roller",
+            "nonlethal": true
+          }
+        ]
+      }
     },
     "leap": {
       "type": "check",
@@ -604,67 +962,157 @@
       "tags": [
         "climb"
       ],
-      "narration": "To you, the crack looks like a puddle with big plans.",
-      "prompt": "Leap over and tie the rope to the far rock.",
       "roller": "party",
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "To you, the crack looks like a puddle with big plans. \"You're not going to jump that,\" says Skerry. You are.",
+      "prompt": "Leap over and tie the rope to the far rock.",
       "onSuccess": {
         "goto": "icicles",
-        "narration": "Thump! You tie off the rope, and the others follow it."
+        "narration": "Thump! You tie off the rope, and the others follow it. \"Show-off,\" says Skerry, delighted."
       },
       "onFailure": {
         "goto": "icicles",
-        "narration": "You land long and bonk the wall. The knot is wobbly, but it holds."
-      },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+        "narration": "You land long and bonk the wall. The knot is wobbly, but it holds.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "roller",
+            "nonlethal": true
+          }
+        ]
+      }
     },
     "icicles": {
       "type": "choice_point",
-      "narration": "Past the crack, a curtain of icicles hangs from the rock like upside-down candles. Some are longer than your arm. Now and then, one lets go. You all agree not to sneeze.",
-      "choices": [
+      "art": "scenes/riftlight/shelf-icicles",
+      "cast": [
         {
-          "id": "dash",
-          "label": "Dash between the drips",
-          "icon": "hand",
-          "goto": "dash"
-        },
-        {
-          "id": "knock",
-          "label": "Snowball the long ones",
-          "icon": "hand",
-          "goto": "knock"
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
         }
       ],
-      "art": "scenes/riftlight/shelf-icicles"
-    },
-    "dash": {
-      "narration": "Plink. Plink. Plink-plink. Listen, and the drips have a rhythm. Plink, plink, gap!",
-      "art": "scenes/riftlight/shelf-icicles",
-      "type": "story",
+      "narration": "Past the crack, a curtain of icicles hangs from the rock like upside-down candles. Some are longer than your arm. Now and then, one lets go. \"Ring, ring, CRASH,\" says Skerry. \"Do not ask me how I know.\" Knock the big ones down, or listen for a gap and slip through?",
       "choices": [
         {
-          "id": "continue",
-          "label": "Wait for a gap",
-          "icon": "forward",
-          "goto": "drip_run"
+          "id": "knock",
+          "label": "Snowball the long ones down",
+          "icon": "fist",
+          "goto": "knock"
+        },
+        {
+          "id": "dash",
+          "label": "Listen for a gap",
+          "icon": "ear",
+          "goto": "dash"
         }
       ]
     },
     "knock": {
-      "narration": "A snowball is a small, round plan. Thwack. Crash. Tinkle. The long icicles fall in a glittering heap. Only small drips are left.",
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "roller": "party",
       "art": "scenes/riftlight/shelf-icicles",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "A snowball is a small, round plan. You pack one hard. \"Tell me when it's over,\" says Skerry, wings over her head.",
+      "prompt": "Hit the long icicles before you walk under them.",
+      "onSuccess": {
+        "goto": "gust",
+        "narration": "Thwack. Crash. Tinkle! The long ones fall in a glittering heap, and you walk through the little drips. \"Very loud,\" says Skerry. \"Very good.\""
+      },
+      "onFailure": {
+        "goto": "gust",
+        "narration": "Your snowball misses. A long icicle drops anyway, right on a hat. Bonk! \"That,\" says Skerry, \"is how I know.\"",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
+      }
+    },
+    "dash": {
       "type": "story",
+      "art": "scenes/riftlight/shelf-icicles",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "You stand very still. Plink. Plink. Plink-plink. The drips have a rhythm. \"Plink, plink, gap,\" Skerry whispers. \"Go on the gap. Not before. Not after. On it.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Go through the drips",
+          "label": "Wait for the gap",
           "icon": "forward",
           "goto": "drip_run"
         }
       ]
     },
+    "drip_run": {
+      "type": "interaction",
+      "art": "scenes/riftlight/shelf-icicles",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "The drips plink in a steady rhythm. \"Plink, plink, gap,\" Skerry whispers again. Wait for the gap, then go.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Wait for the gold gap, then tap to go.",
+        "actionLabel": "Go through!",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 3000
+      },
+      "onSuccess": {
+        "goto": "gust",
+        "narration": "Plink, plink, dart! Not one drip touches you. One icicle gives a long, sad plink. \"It wanted a hat,\" says Skerry."
+      },
+      "onFailure": {
+        "goto": "gust",
+        "narration": "Too soon! A big drip lands down a collar with a cold plop, and a little icicle with it. Everyone scrambles through, shivering.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "gust",
+        "narration": "Together you count the drips out loud, and everyone slips through on the gap."
+      }
+    },
     "gust": {
       "type": "choice_point",
-      "narration": "The shelf bends around a corner, and the wind finds you. It shoves. It whistles. It moves the snow off the rocks and onto your hat. How will you get through?",
+      "art": "scenes/riftlight/shelf-icicles",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "The shelf bends around a corner, and the wind finds you. It shoves. It whistles. It blows Skerry's cape over her head, and she walks into the wall. \"I meant to do that,\" she says from inside the cape. How will you get through?",
       "choices": [
         {
           "id": "huddle",
@@ -684,8 +1132,7 @@
           "icon": "song",
           "goto": "sing"
         }
-      ],
-      "art": "scenes/riftlight/shelf-icicles"
+      ]
     },
     "huddle": {
       "type": "check",
@@ -694,61 +1141,111 @@
       "tags": [
         "force"
       ],
-      "narration": "Linked arms make a good wall, even a wall of slightly nervous people.",
-      "prompt": "Lean in together and shuffle forward.",
       "roller": "all",
+      "art": "scenes/riftlight/shelf-icicles",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "Linked arms make a good wall, even a wall of slightly nervous people. \"Bookend!\" says Skerry, and tucks in at the end.",
+      "prompt": "Lean in together and shuffle forward.",
       "onSuccess": {
         "goto": "slope",
         "narration": "The wind pushes. You push back. Nobody blows away, though one hat has to be chased."
       },
       "onFailure": {
         "goto": "slope",
-        "narration": "A big gust makes you stagger. You wobble through in a laughing clump."
-      },
-      "art": "scenes/riftlight/shelf-icicles"
+        "narration": "A big gust makes you stagger into a laughing clump, and a shin finds a rock.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "roller",
+            "nonlethal": true
+          }
+        ]
+      }
     },
     "lull": {
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "narration": "The wind comes in waves. Find the beat, and walk between them.",
-      "prompt": "Count the gusts and call when to move.",
       "roller": "party",
+      "art": "scenes/riftlight/shelf-icicles",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "The wind comes in waves. \"Count it,\" says Skerry. \"The wind always counts to three. It is not clever.\"",
+      "prompt": "Count the gusts and call when to move.",
       "onSuccess": {
         "goto": "slope",
-        "narration": "One, two, three, gust. One, two, three, go!"
+        "narration": "One, two, three, gust. One, two, three, go! You walk between the gusts like stepping between raindrops."
       },
       "onFailure": {
         "goto": "slope",
-        "narration": "You lose count. The wind steals a hat and a bit of pride."
-      },
-      "art": "scenes/riftlight/shelf-icicles"
+        "narration": "You lose count. The wind steals a hat and a bit of pride, and shoves a shoulder into the wall.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "roller",
+            "nonlethal": true
+          }
+        ]
+      }
     },
     "sing": {
       "type": "check",
       "stat": "heart",
       "tn": 8,
-      "narration": "The wind is loud, so you sing louder. It just has to be a long song.",
-      "prompt": "Lead a song that keeps everyone walking.",
       "roller": "party",
+      "checkKind": "doing",
+      "art": "scenes/riftlight/shelf-icicles",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "The wind is loud, so you sing louder. It just has to be a long song. \"I know one with forty verses,\" says Skerry. \"All about rope.\"",
+      "prompt": "Lead a song that keeps everyone walking into the wind.",
       "onSuccess": {
         "goto": "slope",
-        "narration": "Everyone joins in, and the wind loses interest."
+        "narration": "Everyone joins in, verse after verse, and the wind loses interest."
       },
       "onFailure": {
         "goto": "slope",
-        "narration": "The wind steals the tune. You hum the rest, teeth chattering."
-      },
-      "art": "scenes/riftlight/shelf-icicles"
+        "narration": "The wind steals the tune and slaps a cheek with sleet. You hum the rest, teeth chattering.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "roller",
+            "nonlethal": true
+          }
+        ]
+      }
     },
     "slope": {
       "type": "choice_point",
-      "narration": "Past the corner, a sheet of ice pours down from the rocks and across the shelf. It is steep as a playground slide, and it ends in the river. The old boot marks cross it in big, brave steps. How will you cross?",
+      "art": "scenes/riftlight/shelf-steep-slope",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "Past the corner, a sheet of ice pours down from the rocks and across the shelf. It is steep as a playground slide, and it ends in the river. \"That was dry rock last spring,\" says Skerry. \"The glacier is spilling over.\" How will you cross?",
       "choices": [
         {
           "id": "steps",
           "label": "Kick steps across",
-          "icon": "hand",
+          "icon": "boot",
           "goto": "slope_steps"
         },
         {
@@ -763,8 +1260,7 @@
           "icon": "hand",
           "goto": "slope_slide"
         }
-      ],
-      "art": "scenes/riftlight/shelf-steep-slope"
+      ]
     },
     "slope_steps": {
       "type": "check",
@@ -773,35 +1269,63 @@
       "tags": [
         "force"
       ],
-      "narration": "A boot heel is a very small hammer. It cuts a very small stair.",
-      "prompt": "Kick a step for every boot.",
       "roller": "party",
+      "art": "scenes/riftlight/shelf-steep-slope",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "A boot heel is a very small hammer. It cuts a very small stair. \"Deeper,\" says Skerry. \"My claws thank you.\"",
+      "prompt": "Kick a step for every boot.",
       "onSuccess": {
         "goto": "gap",
-        "narration": "Chop, chop, chop. Neat little steps, and everyone crosses."
+        "narration": "Chop, chop, chop. Neat little steps, and everyone crosses. Skerry walks them with a little bow at each one."
       },
       "onFailure": {
         "goto": "gap",
-        "narration": "The steps come out shallow. You cross on hands and toes, like nervous crabs."
-      },
-      "art": "scenes/riftlight/shelf-steep-slope"
+        "narration": "The steps come out shallow. You cross on hands and toes, like nervous crabs, and one crab slides.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "roller",
+            "nonlethal": true
+          }
+        ]
+      }
     },
     "slope_rope": {
       "type": "check",
       "stat": "clever",
       "tn": 8,
-      "narration": "Rope loves holding on. You look for a lump of rock at each end.",
-      "prompt": "Hitch the rope at both ends for a handrail.",
       "roller": "party",
+      "art": "scenes/riftlight/shelf-steep-slope",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "Rope loves holding on. You look for a lump of rock at each end. \"That one,\" says Skerry. \"No. That one. No...\"",
+      "prompt": "Hitch the rope at both ends for a handrail.",
       "onSuccess": {
         "goto": "gap",
         "narration": "Loop, loop, tight. Everyone crosses hand over hand."
       },
       "onFailure": {
         "goto": "gap",
-        "narration": "The first rock wobbles loose. You find a better one, and the handrail goes up crooked."
-      },
-      "art": "scenes/riftlight/shelf-steep-slope"
+        "narration": "The first rock wobbles loose and bounces into the river. The handrail goes up crooked, and a wrist twists on it.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "roller",
+            "nonlethal": true
+          }
+        ]
+      }
     },
     "slope_slide": {
       "type": "check",
@@ -810,12 +1334,19 @@
       "tags": [
         "climb"
       ],
-      "narration": "Sliding is what ice does best. You decide to let it.",
-      "prompt": "Slide across feet first, and steer for the snowdrift.",
       "roller": "party",
+      "art": "scenes/riftlight/shelf-steep-slope",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "Sliding is what ice does best. You decide to let it. Skerry waits at the bottom with her wings spread wide. \"Aim for the soft snow, not for me!\"",
+      "prompt": "Slide across feet first, and steer for the snowdrift.",
       "onSuccess": {
         "goto": "gap",
-        "narration": "Whoosh! You land one by one in a soft drift. Everyone wants another go."
+        "narration": "Whoosh! You land one by one in a soft drift. Everyone wants another go. Skerry says no."
       },
       "onFailure": {
         "goto": "gap",
@@ -828,27 +1359,28 @@
             "nonlethal": true
           }
         ]
-      },
-      "art": "scenes/riftlight/shelf-steep-slope"
+      }
     },
     "gap": {
       "type": "story",
-      "narration": "At last the boot marks stop. Part of the shelf has fallen away, too wide to step. Above, dark rocks climb in steps. Below, a lip of ice still touches both sides. A snowhorn goat on a ledge chews and watches you, unimpressed.",
-      "choices": [
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
         {
-          "id": "continue",
-          "label": "Make a plan",
-          "icon": "hand",
-          "goto": "inspect"
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "priority": 2,
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "found_where_the_path_went"
         }
       ],
       "variants": [
-        {
-          "when": {
-            "flag": "found_ring"
-          },
-          "text": "On the far rock glints another rusty iron ring, like the one you trusted."
-        },
         {
           "when": {
             "flag": "saw_ahead"
@@ -856,16 +1388,36 @@
           "text": "You saw this from the wide spot. It looks no better up close."
         }
       ],
+      "narration": "At last the old boot marks walk straight into the river. Not off a cliff. Into calm water, as if it were a road. Skerry points far out. \"Yesterday the river ran over there. This was dry shelf. I walked it.\" The river's edge moved in one night. A snowhorn goat on a ledge chews and watches. On your pack, the Listening Chime hums by itself and leans back up the valley, toward the glacier.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look for a way past",
+          "icon": "hand",
+          "goto": "inspect"
+        }
+      ]
+    },
+    "inspect": {
+      "type": "choice_point",
+      "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        },
         {
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
-    },
-    "inspect": {
-      "type": "choice_point",
-      "narration": "High on the rocks, a goat track zigzags to the far side. Down low, the lip of ice touches both sides, but its outer edge is thin. Your rope can reach sound rock over there, if someone takes it. How will you make a way across?",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "saw_ahead",
+          "value": false
+        }
+      ],
+      "narration": "Past the water, the shelf goes on toward the cairns, with another rusty ring on the far rock. \"Old Clank,\" says Skerry. High above, a goat track zigzags across the rocks. Down low, a lip of ice hugs the wall, thin at its edge. \"This close to the rock, the wind slaps me into it,\" Skerry says. \"So we climb, or we creep.\"",
       "choices": [
         {
           "id": "high",
@@ -875,8 +1427,8 @@
         },
         {
           "id": "low",
-          "label": "Test the low ice",
-          "icon": "hand",
+          "label": "Creep along the low ice",
+          "icon": "boot",
           "goto": "low"
         },
         {
@@ -896,17 +1448,31 @@
             "dragonling"
           ]
         }
-      ],
+      ]
+    },
+    "high": {
+      "type": "choice_point",
+      "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        },
         {
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
-    },
-    "high": {
-      "type": "choice_point",
-      "narration": "You climb onto the dark rocks. A loose stone rattles into the water. The goat watches, jaw going around like a slow millstone. Then it picks its way along a narrow track toward the far side. Will you follow it?",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "shelf_high_route"
+        },
+        {
+          "type": "setFlag",
+          "flag": "found_a_way_past_the_gap"
+        }
+      ],
+      "narration": "You climb onto the dark rocks. A loose stone rattles into the water. The goat watches, jaw going around like a slow millstone. Then it picks its way along a narrow track. \"Goats know rock,\" says Skerry. \"And they know they know it. Insufferable.\" Will you follow it?",
       "choices": [
         {
           "id": "climb",
@@ -927,23 +1493,7 @@
           "goto": "high_charm",
           "requiresSpecies": "kitsune"
         }
-      ],
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "shelf_high_route"
-        },
-        {
-          "type": "setFlag",
-          "flag": "found_a_way_past_the_gap"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/snowhorn_goat"
-        }
-      ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      ]
     },
     "high_climb": {
       "type": "check",
@@ -952,18 +1502,35 @@
       "tags": [
         "climb"
       ],
-      "narration": "The goat does not hurry. It keeps looking back, as if to say: easy, really.",
-      "prompt": "Follow the goat's track with the rope.",
       "roller": "best",
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "narration": "The goat does not hurry. It keeps looking back at you. \"It thinks we're slow,\" says Skerry. \"Prove it wrong.\"",
+      "prompt": "Follow the goat's track with the rope.",
       "onSuccess": {
         "goto": "high_lower",
         "narration": "Up goes your climber, light as a cat. The loop drops over the far rock."
       },
       "onFailure": {
         "goto": "high_lower",
-        "narration": "The track crumbles, and your climber slides down. The loop catches a stubby rock instead. It holds."
-      },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+        "narration": "The track crumbles, and your climber slides down a rock face. The loop catches a stubby rock instead. It holds.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "roller",
+            "nonlethal": true
+          }
+        ]
+      }
     },
     "high_own": {
       "type": "check",
@@ -972,18 +1539,35 @@
       "tags": [
         "climb"
       ],
-      "narration": "The goat sniffs at your plan. The handholds are small, but they are there.",
-      "prompt": "Pick your own way and carry the rope over.",
       "roller": "party",
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "narration": "The goat sniffs at your plan. The handholds are small, but they are there. \"Your way, then,\" says Skerry. \"Show that goat.\"",
+      "prompt": "Pick your own way and carry the rope over.",
       "onSuccess": {
         "goto": "high_lower",
-        "narration": "You find a staircase of handholds nobody else saw."
+        "narration": "You find a staircase of handholds nobody else saw. Even the goat looks surprised."
       },
       "onFailure": {
         "goto": "high_lower",
-        "narration": "Dead end. You borrow the goat's route. The goat says nothing, loudly."
-      },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+        "narration": "Dead end, and a scraped palm. You borrow the goat's route. The goat says nothing, loudly.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "roller",
+            "nonlethal": true
+          }
+        ]
+      }
     },
     "high_charm": {
       "type": "check",
@@ -992,32 +1576,37 @@
       "tags": [
         "charm"
       ],
-      "narration": "Beguile is a polite magic. You hold out a hand to the goat.",
-      "prompt": "Charm the goat into leading the way.",
       "roller": "party",
       "checkKind": "doing",
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "narration": "Beguile is a polite magic. You hold out a hand to the goat. \"Please,\" Skerry whispers to it. \"Just this once.\"",
+      "prompt": "Charm the goat into leading the way.",
       "onSuccess": {
         "goto": "high_lower",
         "narration": "The goat sighs and leads. It stops at the right rock and stares until you understand."
       },
       "onFailure": {
         "goto": "high_lower",
-        "narration": "The goat wanders off to chew something. Luckily, it wanders the right way."
-      },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+        "narration": "The goat wanders off to chew something. Luckily, it wanders the right way, slowly."
+      }
     },
     "high_lower": {
       "type": "story",
-      "narration": "The line hangs from the high rock down to the far shelf. You check the knot twice. Wedged in a crack beside it hangs a little tin whistle on a cord, the kind keepers carry. You pocket it for a brave moment.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Pick who tests it",
-          "icon": "hand",
-          "goto": "who_first"
-        }
-      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        },
         {
           "figure": "entities/snowhorn_goat"
         }
@@ -1029,11 +1618,32 @@
           "to": "party"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "narration": "The line hangs from the high rock down to the far shelf, beside Old Clank. Wedged in a crack by the knot hangs a little tin whistle on a cord. \"My mother's!\" says Skerry. \"She lost it the year I hatched. Keep it. It wants a brave moment.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look down at the water",
+          "icon": "hand",
+          "goto": "watch"
+        }
+      ]
     },
     "low": {
       "type": "choice_point",
-      "narration": "You kneel at the gap. The outer lip creaks like a door that wants oil. The ice by the rock looks narrow but steady. How will you find the safe strip?",
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "found_a_way_past_the_gap"
+        }
+      ],
+      "narration": "You kneel at the edge. The outer lip of ice creaks like a door that wants oil. The ice by the rock looks narrow but steady. \"Somewhere in there is a strip that will hold,\" says Skerry. \"Somewhere.\" How will you find it?",
       "choices": [
         {
           "id": "probe",
@@ -1046,62 +1656,105 @@
           "label": "Chip and test each step",
           "icon": "hand",
           "goto": "low_chip"
-        }
-      ],
-      "onEnter": [
+        },
         {
-          "type": "setFlag",
-          "flag": "found_a_way_past_the_gap"
+          "id": "listen",
+          "label": "Listen for the ringing ice",
+          "icon": "ear",
+          "goto": "low_listen",
+          "requiresFlag": "read_the_ice"
         }
-      ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      ]
     },
     "low_probe": {
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "narration": "A stone is lighter than a friend, so the stone goes first.",
-      "prompt": "Test the ice with the rope loop and a stone.",
       "roller": "party",
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "A stone is lighter than a friend, so the stone goes first. \"Good plan,\" says Skerry. \"Stones never complain.\"",
+      "prompt": "Test the ice with the rope loop and a stone.",
       "onSuccess": {
         "goto": "low_mark",
         "narration": "The thin outer edge breaks away. Plop. The ice by the rock holds."
       },
       "onFailure": {
         "goto": "low_mark",
-        "narration": "The stone skates off. You find the strip with your boot, very slowly."
-      },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+        "narration": "The stone skates off. You find the strip with your boot, very slowly, and one boot finds the water first.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "roller",
+            "nonlethal": true
+          }
+        ]
+      }
     },
     "low_chip": {
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "narration": "You tap a chip into the ice at every step and listen.",
-      "prompt": "Trust only the chips that ring.",
       "roller": "party",
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "You tap a chip into the ice at every step and listen. Skerry tilts her head. \"Ring means yes. Thud means no.\"",
+      "prompt": "Trust only the chips that ring.",
       "onSuccess": {
         "goto": "low_mark",
         "narration": "Ring, ring, ring. A trail of chips runs along the rock, all ringing true."
       },
       "onFailure": {
         "goto": "low_mark",
-        "narration": "Two chips thud. You skip them and follow the ones that ring."
-      },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+        "narration": "Two chips thud, and a foot goes through to the ankle. Cold! You follow the ones that ring after that.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "roller",
+            "nonlethal": true
+          }
+        ]
+      }
     },
-    "low_mark": {
+    "low_listen": {
       "type": "story",
-      "narration": "You mark the strip with chips of dark stone, like a trail of crumbs through the white. It is one boot wide, but it is there. Halfway along, two old coins peek out of the ice. You pocket them. The goat seems to approve.",
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "You tap once and you know. Ring, ring, thud, ring. You heard this back by Grumble, and your ears remember. \"Told you you would want those ears,\" says Skerry.",
       "choices": [
         {
           "id": "continue",
-          "label": "Pick who tests it",
+          "label": "Mark the ringing strip",
           "icon": "hand",
-          "goto": "who_first"
+          "goto": "low_mark"
         }
-      ],
+      ]
+    },
+    "low_mark": {
+      "type": "story",
+      "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        },
         {
           "figure": "entities/snowhorn_goat"
         }
@@ -1112,17 +1765,23 @@
           "amount": 2
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
-    },
-    "brace": {
-      "type": "story",
-      "narration": "The thornguard plants both feet and grips the rope. Now the thornguard is a post, and the rope is a handrail. Everyone else keeps the loose end out of the water.",
+      "narration": "You mark the strip with chips of dark stone, like a trail of crumbs through the white. It is one boot wide, and it reaches Old Clank. Halfway along, two old coins peek out of the ice. \"Finders keepers again,\" says Skerry. The goat seems to approve.",
       "choices": [
         {
           "id": "continue",
-          "label": "Set the handrail",
+          "label": "Look down at the water",
           "icon": "hand",
-          "goto": "brace_post"
+          "goto": "watch"
+        }
+      ]
+    },
+    "brace": {
+      "type": "story",
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
         }
       ],
       "onEnter": [
@@ -1131,7 +1790,15 @@
           "flag": "found_a_way_past_the_gap"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "narration": "The thornguard plants both feet and grips the rope. Now the thornguard is a post, and the rope is a handrail. \"Oh, I like you,\" says Skerry. \"Can I keep you? For the shelf?\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Set the handrail",
+          "icon": "hand",
+          "goto": "brace_post"
+        }
+      ]
     },
     "brace_post": {
       "type": "check",
@@ -1140,9 +1807,16 @@
       "tags": [
         "force"
       ],
-      "narration": "The thornguard leans back to test the post.",
-      "prompt": "Haul the rope tight while the thornguard holds.",
       "roller": "party",
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "The thornguard leans back to test the post. \"Pull,\" says Skerry. \"I'll stand here and look encouraging.\"",
+      "prompt": "Haul the rope tight while the thornguard holds.",
       "onSuccess": {
         "goto": "brace_rail",
         "narration": "The rope sings like a harp string. The post does not budge.",
@@ -1155,43 +1829,50 @@
       },
       "onFailure": {
         "goto": "brace_rail",
-        "narration": "The rope sags. You retie it shorter: low, but steady.",
+        "narration": "The rope sags and bites into gloved hands. You retie it shorter: low, but steady.",
         "effects": [
           {
             "type": "setFlag",
             "flag": "set_rail"
+          },
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "roller",
+            "nonlethal": true
           }
         ]
-      },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      }
     },
     "brace_rail": {
       "type": "story",
-      "narration": "The handrail runs along the rock, taut and low. It cannot stop the ice from shifting, but every hand has something to hold. The goat gives it a long look, then looks away.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Pick who tests it",
-          "icon": "hand",
-          "goto": "who_first"
-        }
-      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        },
         {
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
-    },
-    "wing": {
-      "type": "story",
-      "narration": "Wings carry one end of the rope over the gap. Tie it to a sound rock, and everyone has a line to follow. It cannot stop the ice from shifting, though.",
+      "narration": "The handrail runs along the rock to Old Clank, taut and low. It cannot stop the ice from shifting, but every hand has something to hold. \"Better than Grumble,\" Skerry whispers. \"Don't tell him.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Tie off the line",
+          "label": "Look down at the water",
           "icon": "hand",
-          "goto": "wing_tie"
+          "goto": "watch"
+        }
+      ]
+    },
+    "wing": {
+      "type": "story",
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
         }
       ],
       "onEnter": [
@@ -1200,15 +1881,31 @@
           "flag": "found_a_way_past_the_gap"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "narration": "Wings carry one end of the rope over the water. \"Mind the rock,\" calls Skerry. \"It slaps.\" Tie it to Old Clank, and everyone has a line to follow.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Tie off the line",
+          "icon": "hand",
+          "goto": "wing_tie"
+        }
+      ]
     },
     "wing_tie": {
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "narration": "Flying is half the job. The other half is a knot.",
-      "prompt": "Fly the rope over and tie it to the far rock.",
       "roller": "party",
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ],
+      "narration": "Flying is half the job. The other half is a knot. \"Double knot,\" calls Skerry. \"Always double.\"",
+      "prompt": "Fly the rope over and tie it to the far ring.",
       "onSuccess": {
         "goto": "wing_rail",
         "narration": "Two wingbeats, and the knot is tied before the goat can blink.",
@@ -1221,147 +1918,181 @@
       },
       "onFailure": {
         "goto": "wing_rail",
-        "narration": "A gust shoves you sideways. You land short and tie the knot with cold fingers.",
+        "narration": "A gust slaps you into the rock, just as Skerry said. You tie the knot with cold, bruised fingers.",
         "effects": [
           {
             "type": "setFlag",
             "flag": "set_rail"
+          },
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "roller",
+            "nonlethal": true
           }
         ]
-      },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      }
     },
     "wing_rail": {
       "type": "story",
-      "narration": "The line hums across the gap in the wind. The goat watches it politely, as if it were a new kind of weather.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Pick who tests it",
-          "icon": "hand",
-          "goto": "who_first"
-        }
-      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        },
         {
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
-    },
-    "who_first": {
-      "type": "choice_point",
-      "narration": "Your way across is ready. Someone has to try it first and tie the rope on the far side. Everyone looks at everyone else. Nobody looks at the river. Who goes?",
+      "narration": "The line hums across the water in the wind. The goat watches it politely, as if it were a new kind of weather. \"Good line,\" says Skerry.",
       "choices": [
         {
-          "id": "light",
-          "label": "The quickest goes first",
+          "id": "continue",
+          "label": "Look down at the water",
           "icon": "hand",
-          "goto": "first_light"
-        },
+          "goto": "watch"
+        }
+      ]
+    },
+    "watch": {
+      "type": "choice_point",
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
         {
-          "id": "strong",
-          "label": "The strongest goes first",
-          "icon": "hand",
-          "goto": "first_strong"
-        },
-        {
-          "id": "dart",
-          "label": "First strike, dart across",
-          "icon": "arrow",
-          "goto": "first_dart",
-          "requiresClass": "duskrunner"
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
-    },
-    "first_light": {
-      "narration": "Your quickest hero takes the rope end and goes. Tip, tap, tip. They reach the far rock, tie on and wave both arms.",
-      "art": "scenes/riftlight/ice-shelf-headwaters",
-      "type": "story",
-      "choices": [
+      "onEnter": [
         {
-          "id": "continue",
-          "label": "Pull the line tight",
-          "icon": "forward",
-          "goto": "hold_line"
-        }
-      ]
-    },
-    "first_strong": {
-      "narration": "Your strongest hero takes the rope end and goes. It is not far. It only feels far. On the far rock, the rope gets a knot like a fist.",
-      "art": "scenes/riftlight/ice-shelf-headwaters",
-      "type": "story",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Pull the line tight",
-          "icon": "forward",
-          "goto": "hold_line"
-        }
-      ]
-    },
-    "first_dart": {
-      "narration": "You are always gone before trouble arrives. One breath, and whoosh! You are over before the ice notices. The far end is tied, and the others cheer.",
-      "art": "scenes/riftlight/ice-shelf-headwaters",
-      "type": "story",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Pull the line tight",
-          "icon": "forward",
-          "goto": "hold_line"
-        }
-      ]
-    },
-    "gear": {
-      "type": "choice_point",
-      "narration": "Your first crosser waits on the far rock. The packs are still on this side, heavy with wet-weather things. How will you get them over?",
-      "choices": [
-        {
-          "id": "slide",
-          "label": "Slide packs along the line",
-          "icon": "hand",
-          "goto": "gear_slide"
-        },
-        {
-          "id": "carry",
-          "label": "Carry the packs over",
-          "icon": "hand",
-          "goto": "gear_carry"
+          "type": "setFlag",
+          "flag": "read_the_ice",
+          "value": false
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
-    },
-    "gear_slide": {
-      "narration": "You clip the packs to the line. They zoom across like little sleds. The last one lands with a soggy clank.",
-      "art": "scenes/riftlight/ice-shelf-headwaters",
-      "type": "story",
+      "narration": "Your way across is ready. Then the river does something strange. It swells up over the broken edge, slow as a breath, and slides back. And again. \"It's breathing,\" whispers Skerry. \"Let's watch a while. If we know its breath, we know when to cross.\" Somebody's toes are already numb. Go now, while you are warm? Or wait in the cold and learn the river?",
       "choices": [
         {
-          "id": "continue",
-          "label": "Level the line",
-          "icon": "forward",
-          "goto": "level_line"
+          "id": "now",
+          "label": "Go now, while you're warm",
+          "icon": "boot",
+          "goto": "hold_line"
+        },
+        {
+          "id": "wait",
+          "label": "Wait and watch the river",
+          "icon": "eye",
+          "goto": "watch_river"
         }
       ]
     },
-    "gear_carry": {
-      "narration": "Every pack has its own weight, and its own opinion about it. Step by wobbly step, they all go over. Somebody sings to one pack to keep it calm. It works.",
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+    "watch_river": {
       "type": "story",
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "damage",
+          "amount": 1,
+          "to": "party",
+          "nonlethal": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "knows_the_breath"
+        }
+      ],
+      "narration": "You sit very still and count. Swell, slide. Swell, slide. Every breath, the water creeps a finger closer to the wall, and never goes all the way back. Your toes turn to ice cubes. \"It's still moving,\" says Skerry. \"Right now, while we watch.\" Now you know the safest moment: just after it slides back.",
       "choices": [
         {
           "id": "continue",
-          "label": "Level the line",
-          "icon": "forward",
-          "goto": "level_line"
+          "label": "Carry the rope over",
+          "icon": "hand",
+          "goto": "hold_line"
         }
       ]
+    },
+    "hold_line": {
+      "type": "interaction",
+      "art": "scenes/riftlight/ice-shelf-roped-gap",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
+      "narration": "Your rope reaches Old Clank now, but the quick knot there lets the line sag in the middle. \"Retie it with my mother's knot,\" says Skerry. \"It pulls tight and never slips. Watch my claws: over, under, through.\" She shows it once, slowly. Tie it the same way.",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch Skerry's knot, then tie it the same way.",
+        "actionLabel": "Tie it",
+        "stepMs": 1000,
+        "options": [
+          {
+            "id": "over",
+            "label": "Over",
+            "icon": "hand"
+          },
+          {
+            "id": "under",
+            "label": "Under",
+            "icon": "boot"
+          },
+          {
+            "id": "through",
+            "label": "Through",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "over",
+          "under",
+          "through",
+          "over"
+        ]
+      },
+      "onSuccess": {
+        "goto": "ready",
+        "narration": "The knot snugs tight, and the line goes tight as a harp string. Pluck it, and it hums. \"That's the one,\" says Skerry.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "line_tight"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "ready",
+        "narration": "The knot comes out lumpy. It holds, but the line hangs low, dipping toward the water. \"We won't trust that one with our weight,\" says Skerry."
+      },
+      "onAssisted": {
+        "goto": "ready",
+        "narration": "Skerry guides your hands through it, over, under, through. The line goes tight.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "line_tight"
+          }
+        ]
+      }
     },
     "ready": {
       "type": "choice_point",
-      "narration": "Your packs are over, and your first crosser waits on the far rock. The line is tight. The river chuckles underneath. This is the crossing. How will you do it?",
+      "art": "scenes/riftlight/ice-shelf-roped-gap",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ],
+      "narration": "The line runs over the drowned path. The river chuckles underneath, as if it knows a joke. Skerry lifts into the air above the water. \"I can't carry you,\" she says. \"But I can shout very helpfully.\" This is the crossing. How will you do it?",
       "choices": [
         {
           "id": "together",
@@ -1376,32 +2107,39 @@
           "goto": "cross_turns"
         },
         {
+          "id": "breath",
+          "label": "Cross after a breath",
+          "icon": "eye",
+          "goto": "cross_breath",
+          "requiresFlag": "knows_the_breath"
+        },
+        {
+          "id": "tight",
+          "label": "Cross on the tight line",
+          "icon": "hand",
+          "goto": "assisted",
+          "requiresFlag": "line_tight"
+        },
+        {
+          "id": "clipped",
+          "label": "Stay tied, cross together",
+          "icon": "hand",
+          "goto": "assisted",
+          "requiresFlag": "tied_on"
+        },
+        {
+          "id": "ring",
+          "label": "Clip on to Old Clank",
+          "icon": "hand",
+          "goto": "assisted",
+          "requiresFlag": "ring_hitched"
+        },
+        {
           "id": "rail",
           "label": "Cross on your rail",
           "icon": "hand",
           "goto": "assisted",
           "requiresFlag": "set_rail"
-        },
-        {
-          "id": "clipped",
-          "label": "Clip on, cross together",
-          "icon": "hand",
-          "goto": "assisted",
-          "requiresFlag": "line_ready"
-        },
-        {
-          "id": "ring",
-          "label": "Tie to the ring, cross",
-          "icon": "hand",
-          "goto": "assisted",
-          "requiresFlag": "found_ring"
-        },
-        {
-          "id": "level",
-          "label": "Cross the level line",
-          "icon": "hand",
-          "goto": "assisted",
-          "requiresFlag": "line_level"
         },
         {
           "id": "whistle",
@@ -1416,19 +2154,26 @@
             }
           ]
         }
-      ],
-      "art": "scenes/riftlight/ice-shelf-roped-gap"
+      ]
     },
     "cross": {
       "type": "check",
       "stat": "quick",
       "tn": 12,
-      "narration": "Under the line, the river chuckles, as if it knows a joke.",
-      "prompt": "Cross together on the same count, one hand on the line.",
       "roller": "all",
+      "art": "scenes/riftlight/ice-shelf-roped-gap",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ],
+      "narration": "Under the line, the river chuckles. \"On my count,\" calls Skerry. \"One, two...\"",
+      "prompt": "Cross together on the same count, one hand on the line.",
       "onSuccess": {
         "goto": "across",
-        "narration": "You reach the far rock and hold the line for the last friend.",
+        "narration": "Three! You reach the far rock and hold the line for the last friend.",
         "effects": [
           {
             "type": "setFlag",
@@ -1438,23 +2183,30 @@
       },
       "onFailure": {
         "goto": "fall",
-        "narration": "A crack runs beneath the shelf. You keep hold of the rope as the ice tips.",
+        "narration": "A crack runs under the shelf. You keep hold of the rope as the ice tips.",
         "effects": [
           {
             "type": "setFlag",
             "flag": "traverse_failed"
           }
         ]
-      },
-      "art": "scenes/riftlight/ice-shelf-roped-gap"
+      }
     },
     "cross_turns": {
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "narration": "One at a time is slower, but everyone gets a breath.",
-      "prompt": "Cross one at a time, each holding the line for the next.",
       "roller": "party",
+      "art": "scenes/riftlight/ice-shelf-roped-gap",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ],
+      "narration": "One at a time is slower, but everyone gets a breath. \"Next!\" Skerry calls, after each one.",
+      "prompt": "Cross one at a time, each holding the line for the next.",
       "onSuccess": {
         "goto": "across",
         "narration": "One by one you cross. The last friend lands on dry rock, grinning.",
@@ -1467,23 +2219,66 @@
       },
       "onFailure": {
         "goto": "fall",
-        "narration": "A crack runs beneath the shelf. You keep hold of the rope as the ice tips.",
+        "narration": "A crack runs under the shelf. You keep hold of the rope as the ice tips.",
         "effects": [
           {
             "type": "setFlag",
             "flag": "traverse_failed"
           }
         ]
+      }
+    },
+    "cross_breath": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 8,
+      "roller": "party",
+      "art": "scenes/riftlight/ice-shelf-roped-gap",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ],
+      "narration": "Swell, slide. You wait for the water to slide back, the way you watched it. \"Now,\" whispers Skerry.",
+      "prompt": "Call the moment just after the water slides back.",
+      "onSuccess": {
+        "goto": "across",
+        "narration": "Every boot crosses on dry ice, just after the breath. Behind you, the water swells over your footprints.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "traverse_made"
+          }
+        ]
       },
-      "art": "scenes/riftlight/ice-shelf-roped-gap"
+      "onFailure": {
+        "goto": "fall",
+        "narration": "You call it a breath too late. The river swells under the shelf, and the ice tips. You keep hold of the rope.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "traverse_failed"
+          }
+        ]
+      }
     },
     "assisted": {
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "narration": "The rope will help. Just keep it clear of the broken edge.",
-      "prompt": "Keep the loose rope clear while the party crosses.",
       "roller": "all",
+      "art": "scenes/riftlight/ice-shelf-roped-gap",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ],
+      "narration": "The rope will help. Just keep it clear of the broken edge. \"Hands on the line,\" calls Skerry. \"Eyes on the rope.\"",
+      "prompt": "Keep the loose rope clear while everyone crosses.",
       "onSuccess": {
         "goto": "across",
         "narration": "You guide the rope past the broken edge. Every friend reaches the far rock.",
@@ -1496,26 +2291,33 @@
       },
       "onFailure": {
         "goto": "fall",
-        "narration": "The line holds, but the shelf beneath you breaks away.",
+        "narration": "The line holds, but the shelf under you breaks away.",
         "effects": [
           {
             "type": "setFlag",
             "flag": "traverse_failed"
           }
         ]
-      },
-      "art": "scenes/riftlight/ice-shelf-roped-gap"
+      }
     },
     "cross_whistle": {
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "narration": "One loud note, and everyone knows when to step. The goat leaps up and stares.",
-      "prompt": "Everyone steps out on the whistle's note, one hand on the line.",
       "roller": "all",
+      "art": "scenes/riftlight/ice-shelf-roped-gap",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ],
+      "narration": "One loud note, and everyone knows when to step. \"Mother's whistle,\" says Skerry, eyes shiny. \"Blow it.\"",
+      "prompt": "Everyone steps out on the whistle's note, one hand on the line.",
       "onSuccess": {
         "goto": "across",
-        "narration": "Toot! Every boot lands on the note.",
+        "narration": "Toot! Every boot lands on the note. \"That's how she did it,\" says Skerry.",
         "effects": [
           {
             "type": "setFlag",
@@ -1525,25 +2327,22 @@
       },
       "onFailure": {
         "goto": "fall",
-        "narration": "The note startles the ice. A crack runs beneath the shelf. You keep hold of the rope as it tips.",
+        "narration": "The note startles the ice. A crack runs under the shelf. You keep hold of the rope as it tips.",
         "effects": [
           {
             "type": "setFlag",
             "flag": "traverse_failed"
           }
         ]
-      },
-      "art": "scenes/riftlight/ice-shelf-roped-gap"
+      }
     },
     "across": {
-      "type": "story",
-      "narration": "You haul the rope onto dry stone. Ahead, cairns climb toward a notch in the peaks. A griffin on the ridge lifts a wing hello. On the first cairn, a chalked sign hangs over an iron box: HONEYCAKE, 2 COINS. PAY IN THE TIN. Behind you, the gap looks much smaller.",
-      "choices": [
+      "type": "choice_point",
+      "art": "scenes/riftlight/cairnstep",
+      "cast": [
         {
-          "id": "continue",
-          "label": "Check on everyone",
-          "icon": "hand",
-          "goto": "tally"
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
         }
       ],
       "onEnter": [
@@ -1552,145 +2351,86 @@
           "flag": "kept_everyone_on_the_rope"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
-    },
-    "tally": {
-      "type": "choice_point",
-      "narration": "Everybody is here. Everybody is also wet, cold and wobbly in the knees. What do you need before the climb?",
-      "choices": [
+      "variants": [
         {
-          "id": "warm",
-          "label": "Warm up with a snack",
-          "icon": "hand",
-          "goto": "tally_warm"
-        },
-        {
-          "id": "coil",
-          "label": "Coil the rope",
-          "icon": "hand",
-          "goto": "tally_rope"
-        },
-        {
-          "id": "mend",
-          "label": "Mend cold fingers",
-          "icon": "hand",
-          "goto": "tally_mend",
-          "requiresSpecies": "unicorn"
-        },
-        {
-          "id": "buy",
-          "label": "Buy a honeycake (2 coins)",
-          "icon": "hand",
-          "goto": "tally_buy",
           "when": {
-            "coins": {
-              "min": 2
+            "flag": "knows_the_breath"
+          },
+          "text": "\"We crossed on its breath,\" Skerry says. \"The river told us when.\""
+        }
+      ],
+      "narration": "You haul the rope onto dry stone. Ahead, cairns climb toward a notch in the peaks. Skerry lands and counts you with one claw. \"Everyone. Everyone. Everyone. Good.\" Then she looks back at the drowned boot marks. \"The herder comes tomorrow with her goats. What do I tell her?\"",
+      "choices": [
+        {
+          "id": "open",
+          "label": "The shelf works, with ropes",
+          "icon": "hand",
+          "goto": "rest_safe",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "told_shelf_roped"
             }
-          }
-        }
-      ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
-    },
-    "tally_warm": {
-      "type": "story",
-      "narration": "You rub each other's hands until they tingle. Someone finds a squashed sticky bun and splits it into very small, very fair pieces.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Climb toward the cairns",
-          "icon": "hand",
-          "goto": "rest_safe"
-        }
-      ],
-      "onEnter": [
-        {
-          "type": "heal",
-          "amount": 1,
-          "to": "party"
-        }
-      ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
-    },
-    "tally_buy": {
-      "type": "story",
-      "narration": "Two coins clink into the tin. The ridge griffin reaches down, lifts out a honeycake wrapped in a leaf and hands it over. It is still warm. Nobody knows how. Nobody asks.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Climb toward the cairns",
-          "icon": "hand",
-          "goto": "rest_safe"
-        }
-      ],
-      "onEnter": [
-        {
-          "type": "spendCoins",
-          "amount": 2
+          ]
         },
         {
-          "type": "grantItem",
-          "itemId": "honeycake",
-          "to": "party"
+          "id": "long",
+          "label": "Take the goats the long way",
+          "icon": "boot",
+          "goto": "rest_safe",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "told_long_way"
+            }
+          ]
         }
-      ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
-    },
-    "tally_rope": {
-      "type": "story",
-      "narration": "You coil the rope in neat loops. It still smells of fish, which makes it feel like an old friend. You check every knot twice.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Climb toward the cairns",
-          "icon": "hand",
-          "goto": "rest_safe"
-        }
-      ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
-    },
-    "tally_mend": {
-      "type": "story",
-      "narration": "Mend hums warm through your hands. Scrapes close, and the cold leaves your shoulders like water from a sponge. The others stare at their knuckles, then at you.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Climb toward the cairns",
-          "icon": "hand",
-          "goto": "rest_safe"
-        }
-      ],
-      "onEnter": [
-        {
-          "type": "heal",
-          "amount": 2,
-          "to": "party"
-        }
-      ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      ]
     },
     "rest_safe": {
       "type": "rest",
-      "narration": "You sit above the water and retie your packs. The path rises toward the cairns of the Cairnstep. Back on the rocks, the goat gives up on you and goes back to chewing.",
       "heal": 0,
-      "choices": [],
       "outcome": "success",
+      "choices": [],
+      "art": "scenes/riftlight/cairnstep",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry"
+        }
+      ],
       "onEnter": [
         {
           "type": "setFlag",
           "flag": "traverse_made"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "variants": [
+        {
+          "when": {
+            "flag": "told_shelf_roped"
+          },
+          "at": "start",
+          "text": "\"Ropes, then,\" says Skerry. \"New rings by morning. I'll name them after you.\""
+        },
+        {
+          "when": {
+            "flag": "told_long_way"
+          },
+          "at": "start",
+          "text": "\"The long way, then,\" says Skerry. \"The goats will sulk. Goats love a sulk.\""
+        }
+      ],
+      "narration": "You sit above the water and retie your packs. The path rises toward the cairns of the Cairnstep. Skerry gazes up the valley, where your chime still leans. \"A river doesn't move its edge in one night,\" she says. \"Not by itself. Something is moving it. What? And can it be moved back?\""
     },
     "fall": {
       "type": "story",
-      "narration": "The shelf slides into the river, with all of you still on the line. Nobody lets go. Cold water lifts you off the ice and carries you around the bend, rope and all.",
-      "choices": [
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
         {
-          "id": "continue",
-          "label": "Hold on",
-          "icon": "hand",
-          "goto": "fall_vote"
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
         }
       ],
       "onEnter": [
@@ -1699,182 +2439,44 @@
           "flag": "kept_everyone_on_the_rope"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
-    },
-    "fall_vote": {
-      "type": "choice_point",
-      "narration": "You are in the Great River, and it is very cold. The rope is still in your hands, with everyone on it. What matters most right now?",
-      "choices": [
+      "variants": [
         {
-          "id": "hold",
-          "label": "Hold everyone together",
-          "icon": "hand",
-          "goto": "fall_hold"
-        },
-        {
-          "id": "breath",
-          "label": "Breathe and find the bank",
-          "icon": "hand",
-          "goto": "fall_look"
+          "when": {
+            "flag": "knows_the_breath"
+          },
+          "text": "The breath came early, and bigger than any you counted. You were holding the line anyway."
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
-    },
-    "fall_hold": {
-      "type": "story",
-      "narration": "You hold the line, and the line holds you. Hands squeeze along it, one after another. Everyone is here.",
+      "narration": "The shelf tips into the river, with all of you on the line. Skerry dives and grabs the rope in her beak, but the river pulls harder than any griffin. \"Hold on to each other!\" she cries, and lets go before it drags her under. \"Don't fight it under the shelf! Let it carry you! I'll be right above!\" Nobody lets go of anybody.",
       "choices": [
         {
           "id": "continue",
-          "label": "Let the river carry you",
+          "label": "Hold on",
           "icon": "hand",
           "goto": "rest_river"
         }
-      ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
-    },
-    "fall_look": {
-      "type": "story",
-      "narration": "You gulp air and lift your head. The east bank slides past, too far to reach yet. Dark rock rises above it. Somewhere ahead, the river might let you out.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Let the river carry you",
-          "icon": "hand",
-          "goto": "rest_river"
-        }
-      ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      ]
     },
     "rest_river": {
       "type": "rest",
-      "narration": "You keep your heads up and hold the line between you. Orin's words come back: do not fight the river under the shelf. Let it carry you, and watch for a way out. You have lost nothing but your footing.",
       "heal": 0,
-      "choices": [],
       "outcome": "success",
+      "choices": [],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ],
       "onEnter": [
         {
           "type": "setFlag",
           "flag": "traverse_failed"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
-    },
-    "ring_throw": {
-      "type": "interaction",
-      "narration": "You swing the loop in a slow circle. Drop it over the ring, and the wall gets a handrail. The ring is small. The loop is floppy.",
-      "interaction": {
-        "kind": "precision",
-        "cue": "Tap when the loop is over the ring.",
-        "actionLabel": "Throw the loop!",
-        "target": 0.5,
-        "width": 0.3,
-        "periodMs": 4000
-      },
-      "onSuccess": {
-        "goto": "squeeze",
-        "narration": "Flup! The loop snugs tight over the ring."
-      },
-      "onFailure": {
-        "goto": "squeeze",
-        "narration": "The loop flops against the rock. You tie it on by hand. The clumsy knot holds."
-      },
-      "onAssisted": {
-        "goto": "squeeze",
-        "narration": "Together you guide the loop over the ring. Flup. It holds."
-      },
-      "art": "scenes/riftlight/shelf-iron-ring"
-    },
-    "drip_run": {
-      "type": "interaction",
-      "narration": "The drips plink in a steady rhythm. Wait for the gap, then go.",
-      "interaction": {
-        "kind": "timing",
-        "cue": "Wait for the gold gap, then tap to go.",
-        "actionLabel": "Go through!",
-        "target": 0.5,
-        "width": 0.3,
-        "periodMs": 3000
-      },
-      "onSuccess": {
-        "goto": "gust",
-        "narration": "Plink, plink, dart! One icicle gives a long, sad plink."
-      },
-      "onFailure": {
-        "goto": "gust",
-        "narration": "A drip lands on a hat with a cold plop. Everyone scrambles through.",
-        "effects": [
-          {
-            "type": "damage",
-            "amount": 1,
-            "to": "party",
-            "nonlethal": true
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "gust",
-        "narration": "Together you count the drips out loud, and everyone slips through on the gap."
-      },
-      "art": "scenes/riftlight/shelf-icicles"
-    },
-    "hold_line": {
-      "type": "interaction",
-      "narration": "The line sags in the middle. Hold the near end while a friend hauls in the slack.",
-      "interaction": {
-        "kind": "cooperate",
-        "cue": "Hold the line firm while your friend hauls in the slack.",
-        "supportLabel": "Hold the line",
-        "actionLabel": "Haul it tight"
-      },
-      "onSuccess": {
-        "goto": "gear",
-        "narration": "Tight as a harp string. Pluck it, and it hums."
-      },
-      "onFailure": {
-        "goto": "gear",
-        "narration": "The slack wins at first. A bigger knot holds, but the line hangs low."
-      },
-      "onAssisted": {
-        "goto": "gear",
-        "narration": "Together you wedge the end behind a rock. The line goes tight."
-      },
-      "art": "scenes/riftlight/ice-shelf-roped-gap"
-    },
-    "level_line": {
-      "type": "interaction",
-      "narration": "Before anyone steps out, the line must hang level. Raise or lower your end until it runs straight.",
-      "interaction": {
-        "kind": "balance",
-        "cue": "Raise or lower your end until the line is level.",
-        "actionLabel": "Tie it off",
-        "objectLabel": "the rope line"
-      },
-      "onSuccess": {
-        "goto": "ready",
-        "narration": "Straight and level as a ruler.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "line_level"
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "ready",
-        "narration": "Still a little crooked. You tie it off. It will do."
-      },
-      "onAssisted": {
-        "goto": "ready",
-        "narration": "Together you rest the middle on a lump of rock, and the line hangs level.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "line_level"
-          }
-        ]
-      },
-      "art": "scenes/riftlight/ice-shelf-roped-gap"
+      "narration": "Cold water lifts you off the ice and carries you around the bend, rope and all. You keep your heads up and hold the line between you. Above, a teal cape flaps along the river, keeping pace. \"Still here!\" Skerry calls down. \"Watch for a way out!\" The river ate her road last night. Now it has you."
     }
   },
   "voiceGuide": {
@@ -1889,7 +2491,9 @@
       "Hollow Gate",
       "Legend Dragon"
     ],
-    "npcVoices": {}
+    "npcVoices": {
+      "Skerry": "She/her, a grown griffin who keeps the iron rings on the shelf, as her mother did. Brisk, warm and a little dramatic. Names every ring (Grumble, Old Clank) and greets them. Cannot carry the party; can carry a rope end and a lot of opinions."
+    }
   },
   "presentation": {
     "fights": [],
@@ -1909,12 +2513,6 @@
         "props": [
           "rope-taut",
           "rope-sag"
-        ]
-      },
-      "level_line": {
-        "props": [
-          "rope-sag",
-          "rope-taut"
         ]
       }
     },

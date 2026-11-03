@@ -70,73 +70,9 @@ full-campaign XP/revisit acceptance. Never copy the five pause endings into prod
 Prerequisites below are carried observations or introductions made in the current scene.
 Conditional entry variants are also checked by the proper-name graph sweep.
 
-### riftlight-ice-shelf-traverse
+### riftlight-ice-shelf-traverse, riftlight-hidden-glacier-rift, riftlight-headwaters-washout
 
-Entry facts: hall, great_river, frostfang, cairnstep, rope.
-
-| Scene | Requires | Introduces |
-| --- | --- | --- |
-| `shelf` | hall, great_river, frostfang | shelf, gap |
-| `inspect` | shelf, gap, rope | rocks, low_lip |
-| `high` | rocks, rope | — |
-| `low` | low_lip, rocks, rope | — |
-| `brace` | rocks, rope | — |
-| `wing` | gap, rope | — |
-| `cross` | shelf | — |
-| `assisted` | rope, shelf | — |
-| `across` | rope | cairns |
-| `rest_safe` | great_river, cairnstep, cairns | — |
-| `fall` | shelf, rope, great_river | river_ledge |
-| `rest_river` | rope, river_ledge | — |
-
-### riftlight-hidden-glacier-rift
-
-Entry facts: hall, seam, learned_note, listening_chime.
-
-| Scene | Requires | Introduces |
-| --- | --- | --- |
-| `search` | hall, seam | passage |
-| `passage` | passage | glacier_opening, coast_glimpse |
-| `chime` | glacier_opening, listening_chime | — |
-| `read` | glacier_opening | — |
-| `listen` | glacier_opening, learned_note | — |
-| `decide` | hall, seam, learned_note, glacier_opening | — |
-| `sing` | learned_note, glacier_opening | — |
-| `test_open` | glacier_opening, listening_chime | — |
-| `ready` | glacier_opening, hall, coast_glimpse | — |
-| `leave` | passage, hall | — |
-
-### riftlight-headwaters-washout
-
-Entry facts: great_river, frostfang, rope, listening_chime.
-
-| Scene | Requires | Introduces |
-| --- | --- | --- |
-| `current` | rope, frostfang | river_ledge |
-| `ledge` | river_ledge, rope | — |
-| `grab` | river_ledge, rope | — |
-| `smash` | river_ledge, rope | — |
-| `lift` | river_ledge, rope | — |
-| `early` | frostfang, rope | — |
-| `tree` | rope | tree, boundary_stones |
-| `tree_choice` | tree, rope | — |
-| `climb` | tree, rope | — |
-| `guide` | tree, rope | — |
-| `call` | tree, rope | — |
-| `middle` | boundary_stones | — |
-| `rift` | rope | river_rift, sky_glimpse, rapids |
-| `rift_choice` | river_rift, listening_chime | — |
-| `river_chime` | river_rift, listening_chime | — |
-| `river_read` | river_rift, sky_glimpse | — |
-| `rift_decision` | river_rift, rope | — |
-| `rift_end` | river_rift, rope, sky_glimpse | — |
-| `rapids` | rope | bridge, gravel, boat |
-| `swim` | gravel, rope | — |
-| `signal` | boat | — |
-| `mend_signal` | boat | — |
-| `late` | boat, bridge | ossley, ashspan |
-| `rescue` | boat, rope | ossley, blanket |
-| `rescued` | ossley, boat, bridge | ashspan, supper_bundle |
+Revised in November 2026: see [road-out-review.md](road-out-review.md); the reviewed ledger is in `continuity.json`.
 
 ### riftlight-frostfang-shore
 

@@ -14,7 +14,7 @@
     "narration": "The Great River sweeps past the Frostfang ice. A rope pulls tight across the current. Just ahead, a dark ledge juts over the water. One good hold could bring everyone ashore."
   },
   "goal": {
-    "text": "Hold on to each other and find a way out of the river.",
+    "text": "Hold on to each other, and find where the river will let you out.",
     "steps": [
       {
         "id": "stay_roped",
@@ -36,7 +36,7 @@
   "scenes": {
     "current": {
       "type": "story",
-      "narration": "The shelf is gone, and the Great River has you. It sweeps you along the east bank, below Frostfang. The cold squeezes like a big wet hug. The rope is still in your hands, with everyone on it. Your new job: hold on to each other, and find a way out of the river.",
+      "narration": "The shelf is gone, and the Great River has you. It sweeps you along the east bank, below Frostfang. The cold squeezes like a big wet hug. The rope is still in your hands, with everyone on it. Overhead, a teal cape flaps. \"I can't lift you all!\" Skerry calls. \"So don't let go of each other! Find a way out, and I'll find you!\"",
       "choices": [
         {
           "id": "continue",
@@ -45,11 +45,55 @@
           "goto": "stock"
         }
       ],
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "read_current",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "steered_east",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "loop_tied",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "knob_hooked",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "stayed_on_the_rope",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "reached_for_the_ledge",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "found_a_way_out",
+          "value": false
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "stock": {
       "type": "choice_point",
-      "narration": "Everything happens at once. The river tugs you this way and that, like a dog with a favorite sock. You need to find each other, breathe and keep your things. What comes first?",
+      "narration": "Everything happens at once. The river tugs you this way and that, like a dog with a favorite sock. \"Count heads!\" Skerry shouts. \"Grab your packs! Breathe! Not in that order!\" What comes first?",
       "choices": [
         {
           "id": "count",
@@ -71,10 +115,17 @@
           "requiresClass": "songkeeper"
         }
       ],
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "count": {
-      "narration": "Squeeze the rope twice, and the next hand squeezes back. Squeeze, squeeze. Every hand answers. The rope feels like one long, wet handshake.",
+      "narration": "Squeeze the rope twice, and the next hand squeezes back. Squeeze, squeeze. Every hand answers. \"I count everyone!\" Skerry calls down. \"I counted twice. I'm very good at counting.\"",
       "art": "scenes/riftlight/headwaters-floes",
       "type": "story",
       "choices": [
@@ -84,13 +135,20 @@
           "icon": "forward",
           "goto": "ride"
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
       ]
     },
     "pack_grab": {
       "type": "check",
       "stat": "quick",
       "tn": 12,
-      "narration": "The packs bob along like fat, soggy ducks.",
+      "narration": "The packs bob along like fat, soggy ducks. \"Left one!\" Skerry yells. \"Your other left!\"",
       "prompt": "Hook the straps with the rope end and haul them in.",
       "roller": "party",
       "onSuccess": {
@@ -108,10 +166,17 @@
         "goto": "ride",
         "narration": "One pack spins away, then snags on the rope. You reel it in, soggy."
       },
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "rally_breath": {
-      "narration": "Rally lifts friends up, and everyone needs lifting. In, two, three, out. Panting turns into breathing, and breathing turns almost calm.",
+      "narration": "Rally lifts friends up, and everyone needs lifting. In, two, three, out. Panting turns into breathing. \"Oh, that's nice,\" Skerry says, and breathes along up in the air.",
       "art": "scenes/riftlight/headwaters-floes",
       "type": "story",
       "choices": [
@@ -121,26 +186,40 @@
           "icon": "forward",
           "goto": "ride"
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
       ]
     },
     "ride": {
       "type": "choice_point",
-      "narration": "Orin's words float back: let the river carry you to a place you can get out. The east bank slides past, gray and steep, too far to reach. How will you ride the river?",
+      "narration": "The east bank slides past, gray and steep. It looks close enough to kick for. \"Don't fight it under the shelf!\" Skerry calls. \"My mother always said: let it carry you, and watch where it curls!\" Fight your way toward the bank, or float and learn the river?",
       "choices": [
         {
           "id": "feet",
-          "label": "Float feet first",
-          "icon": "hand",
+          "label": "Float and read the river",
+          "icon": "eye",
           "goto": "feet_first"
         },
         {
           "id": "kick",
-          "label": "Kick for the bank",
-          "icon": "hand",
+          "label": "Kick hard for the bank",
+          "icon": "boot",
           "goto": "kick_bank"
         }
       ],
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "feet_first": {
       "type": "check",
@@ -149,18 +228,31 @@
       "tags": [
         "swim"
       ],
-      "narration": "Feet first means you meet rocks with your boots, not your face.",
-      "prompt": "Float on your back, boots downstream, rope tight.",
+      "narration": "Feet first means you meet rocks with your boots, not your face. \"Watch the ripples,\" says Skerry. \"Where they curl, the water slows.\"",
+      "prompt": "Float on your back, boots downstream, and watch where the water curls.",
       "roller": "party",
       "onSuccess": {
         "goto": "floes",
-        "narration": "Boots up, noses up, like a very cold parade."
+        "narration": "Boots up, noses up, like a very cold parade. You watch the ripples curl in by the bank and out again. Now you know how this river bends.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "read_current"
+          }
+        ]
       },
       "onFailure": {
         "goto": "floes",
-        "narration": "A wave slaps a face. Splutter, roll, and everyone makes room."
+        "narration": "A wave slaps a face. Splutter, roll, and everyone makes room. Whatever the ripples were saying, you missed it."
       },
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "kick_bank": {
       "type": "check",
@@ -169,12 +261,12 @@
       "tags": [
         "swim"
       ],
-      "narration": "The bank looks so near. You kick hard.",
+      "narration": "The bank looks so near. You kick hard. \"Or that,\" sighs Skerry. \"That works too. Sometimes.\"",
       "prompt": "Kick for the east bank, pulling the others along.",
       "roller": "party",
       "onSuccess": {
         "goto": "floes",
-        "narration": "Kick, kick, kick. You edge close enough to find a slow lane by the shore.",
+        "narration": "Kick, kick, kick. You edge close enough to find a slow lane by the shore, and you stay in it.",
         "effects": [
           {
             "type": "setFlag",
@@ -184,7 +276,7 @@
       },
       "onFailure": {
         "goto": "floes",
-        "narration": "The river is bigger than your legs. It tosses you back to the middle.",
+        "narration": "The river is bigger than your legs. It tosses you back to the middle, and everyone swallows some.",
         "effects": [
           {
             "type": "damage",
@@ -194,11 +286,18 @@
           }
         ]
       },
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "floes": {
       "type": "choice_point",
-      "narration": "Pieces of the broken shelf bob all around you, flat as tables, with corners sharp as rulers. Some are big enough to climb on. How will you deal with them?",
+      "narration": "Pieces of the broken shelf bob all around you, flat as tables, with corners sharp as rulers. \"That one has my boot marks on it!\" Skerry cries. \"That was my road!\" Some are big enough to climb on. How will you deal with them?",
       "choices": [
         {
           "id": "push",
@@ -220,13 +319,20 @@
           "requiresSpecies": "bigfoot"
         }
       ],
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "push_floes": {
       "type": "check",
       "stat": "quick",
       "tn": 12,
-      "narration": "A floe the size of a door slides toward your head.",
+      "narration": "A floe the size of a door slides toward your head. \"Floe!\" yells Skerry, very usefully.",
       "prompt": "Kick each floe away from the line.",
       "roller": "party",
       "onSuccess": {
@@ -245,7 +351,14 @@
           }
         ]
       },
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "climb_floe": {
       "type": "check",
@@ -254,7 +367,7 @@
       "tags": [
         "climb"
       ],
-      "narration": "A wide, flat floe floats beside you, like a raft that wants to help.",
+      "narration": "A wide, flat floe floats beside you, like a raft that wants to help. \"Up you go,\" says Skerry. \"All together, or it tips.\"",
       "prompt": "Everyone heaves onto the floe at once.",
       "roller": "all",
       "onSuccess": {
@@ -265,7 +378,14 @@
         "goto": "floe_hop",
         "narration": "The floe tips you off. You climb back on."
       },
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "smash_floe": {
       "type": "check",
@@ -274,7 +394,7 @@
       "tags": [
         "force"
       ],
-      "narration": "A floe as big as a barn door heads for the line.",
+      "narration": "A floe as big as a barn door heads for the line. \"Hit it!\" Skerry shouts. \"Politely!\"",
       "prompt": "Shove the big floe aside.",
       "roller": "party",
       "onSuccess": {
@@ -285,11 +405,18 @@
         "goto": "floe_hop",
         "narration": "It scrapes past, close enough to touch. Nobody is hurt, only startled."
       },
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "floe_rest": {
       "type": "rest",
-      "narration": "The big floe holds still long enough for everyone to climb on. You lie flat, breathing. In a coat pocket, a honeycake wrapped in oilcloth has stayed dry. For one minute, the river is only a bumpy road. How will you use it?",
+      "narration": "The big floe holds still long enough to lie flat and breathe. On your pack, the Listening Chime swings on its cord. The whole river runs downhill, but the chime leans the other way: upstream, back toward the glacier. \"Is it meant to do that?\" Skerry calls. For one minute, the river is only a bumpy road. How will you use it?",
       "heal": 1,
       "choices": [
         {
@@ -306,17 +433,18 @@
         }
       ],
       "art": "scenes/riftlight/headwaters-floes",
-      "onEnter": [
+      "onEnter": [],
+      "cast": [
         {
-          "type": "grantItem",
-          "itemId": "honeycake",
-          "to": "party"
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
         }
       ]
     },
     "floe_warm": {
       "type": "story",
-      "narration": "You huddle in a wet, shivering heap. Slowly, the heap gets less shivery. Somebody's teeth are playing a tune.",
+      "narration": "You huddle in a wet, shivering heap. Slowly, the heap gets less shivery. \"Very cozy,\" Skerry says from above. \"I'm a little jealous.\"",
       "choices": [
         {
           "id": "continue",
@@ -332,11 +460,18 @@
           "to": "party"
         }
       ],
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "floe_look": {
       "type": "story",
-      "narration": "Past a bend, a dark, thumb-shaped ledge sticks into the river, with a round knob on its tip. Now you know to look for it.",
+      "narration": "Past a bend, a dark, thumb-shaped ledge sticks into the river, with a round knob on its tip. \"See it?\" Skerry calls. \"There's a goat path up from there!\" Now you know to look for it.",
       "choices": [
         {
           "id": "continue",
@@ -345,11 +480,18 @@
           "goto": "snag"
         }
       ],
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "snag": {
       "type": "choice_point",
-      "narration": "The rope jerks short. Under the water, it has hooked on a stump of ice. The floe swings in a slow circle, and the free end trails behind. What now?",
+      "narration": "The rope jerks short. Under the water, it has hooked on a stump of ice. The floe swings in a slow circle. \"Don't untie!\" Skerry shrieks. \"Whatever you do, nobody untie!\" What now?",
       "choices": [
         {
           "id": "unhook",
@@ -364,7 +506,14 @@
           "goto": "loop_tie"
         }
       ],
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "unhook": {
       "type": "check",
@@ -373,7 +522,7 @@
       "tags": [
         "force"
       ],
-      "narration": "The line is stuck fast on the stump.",
+      "narration": "The line is stuck fast on the stump. \"Pull!\" says Skerry, who cannot reach it, very firmly.",
       "prompt": "Haul the line in and free it.",
       "roller": "party",
       "onSuccess": {
@@ -396,13 +545,20 @@
           }
         ]
       },
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "loop_tie": {
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "narration": "A big loop is a clever tool. You can throw it, hook it or hang from it.",
+      "narration": "A big loop is a clever tool. You can throw it, hook it or hang from it. \"Ooh,\" says Skerry. \"Make it a ring-sized one.\"",
       "prompt": "Tie a big, firm loop, then work the line free.",
       "roller": "party",
       "onSuccess": {
@@ -429,11 +585,18 @@
           }
         ]
       },
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "arch": {
       "type": "choice_point",
-      "narration": "The river dives under an arch of white ice, like a tunnel for giants. Drips fall from the roof, and the water sounds hollow and loud. The roof is low in the middle. How will you get under?",
+      "narration": "The river dives under an arch of white ice, like a tunnel for giants. \"I'll meet you on the other side!\" Skerry calls, and flaps up over the top. Inside, the water sounds hollow and loud. Somebody says, \"Wow.\" \"Wow, wow, wow,\" says the arch. The roof is low in the middle. How will you get under?",
       "choices": [
         {
           "id": "flat",
@@ -461,13 +624,14 @@
           ]
         }
       ],
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": []
     },
     "arch_flat": {
       "type": "check",
       "stat": "quick",
       "tn": 12,
-      "narration": "The roof comes down to a hand's width above the water.",
+      "narration": "The roof comes down to a hand's width above the water. \"Noses up,\" somebody whispers. \"Up, up, up,\" whispers the arch.",
       "prompt": "Noses up, elbows in. Slide under.",
       "roller": "party",
       "onSuccess": {
@@ -492,7 +656,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "narration": "Water always finds the tallest door.",
+      "narration": "Water always finds the tallest door. \"Which way?\" someone asks. \"Way, way, way,\" says the arch, not helping.",
       "prompt": "Read the ripples and steer where the roof is highest.",
       "roller": "party",
       "onSuccess": {
@@ -509,7 +673,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 8,
-      "narration": "You hold the mosslight jar high, and its glow shows the roof's shape.",
+      "narration": "You hold the mosslight jar high, and its glow shows the roof's shape. \"Pretty,\" someone says. \"Pretty, pretty,\" the arch agrees.",
       "prompt": "Steer where the glowing roof lifts.",
       "roller": "party",
       "onSuccess": {
@@ -524,7 +688,7 @@
     },
     "jam": {
       "type": "choice_point",
-      "narration": "Ahead, a jam of tree trunks and ice is piled across the river, a spiky wall with water pouring through the gaps. The current sweeps you straight at it. How will you get past?",
+      "narration": "Ahead, a jam of tree trunks and ice is piled across the river, a spiky wall with water pouring through the gaps. Some trees still have their birds' nests. \"That was a forest on the bank yesterday,\" says Skerry, landing on top. \"The river ate it in the night.\" How will you get past?",
       "choices": [
         {
           "id": "gap",
@@ -539,13 +703,20 @@
           "goto": "jam_push"
         }
       ],
-      "art": "scenes/riftlight/headwaters-log-chute"
+      "art": "scenes/riftlight/headwaters-log-chute",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "standing"
+        }
+      ]
     },
     "jam_gap": {
       "type": "check",
       "stat": "quick",
       "tn": 12,
-      "narration": "Gaps are the easy way. You decide to be as sensible as water.",
+      "narration": "Gaps are the easy way. You decide to be as sensible as water. \"That gap!\" says Skerry, pointing with her whole wing.",
       "prompt": "Steer into the widest gap, rope clear of the branches.",
       "roller": "party",
       "onSuccess": {
@@ -564,7 +735,14 @@
           }
         ]
       },
-      "art": "scenes/riftlight/headwaters-log-chute"
+      "art": "scenes/riftlight/headwaters-log-chute",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "jam_push": {
       "type": "check",
@@ -573,7 +751,7 @@
       "tags": [
         "force"
       ],
-      "narration": "The trunks are big, but a stiff rope can still push off a wall.",
+      "narration": "The trunks are big, but a stiff rope can still push off a wall. Skerry hops along the top. \"Push here! No, here!\"",
       "prompt": "Brace the rope and push off the jam.",
       "roller": "party",
       "onSuccess": {
@@ -590,11 +768,18 @@
         "goto": "jam_hold",
         "narration": "The line scrapes along the jam. You come loose with twigs for souvenirs."
       },
-      "art": "scenes/riftlight/headwaters-log-chute"
+      "art": "scenes/riftlight/headwaters-log-chute",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "chute": {
       "type": "choice_point",
-      "narration": "The river squeezes between two walls of ice and runs fast. It roars like a crowd of cheerful giants. The water slaps the walls, and the walls slap back. How will you go through?",
+      "narration": "The river squeezes between two walls of ice and runs fast. It roars like a crowd of cheerful giants. \"Too narrow for wings!\" Skerry calls from far above. \"I'll be at the bottom! Probably!\" How will you go through?",
       "choices": [
         {
           "id": "ride",
@@ -616,7 +801,8 @@
           "requiresClass": "thornguard"
         }
       ],
-      "art": "scenes/riftlight/headwaters-log-chute"
+      "art": "scenes/riftlight/headwaters-log-chute",
+      "cast": []
     },
     "chute_ride": {
       "type": "check",
@@ -625,7 +811,7 @@
       "tags": [
         "force"
       ],
-      "narration": "Hold the rope high, and nobody gets pulled away.",
+      "narration": "Hold the rope high, and nobody gets pulled away. \"Higher!\" someone shouts, and the walls shout it back.",
       "prompt": "Hold the rope high until the water spits you out.",
       "roller": "party",
       "onSuccess": {
@@ -642,7 +828,7 @@
       "type": "check",
       "stat": "quick",
       "tn": 12,
-      "narration": "Walls are good for pushing off.",
+      "narration": "Walls are good for pushing off. \"Boots out!\" someone yells. \"Boots out!\"",
       "prompt": "Kick off the walls to keep the line straight.",
       "roller": "party",
       "onSuccess": {
@@ -662,7 +848,7 @@
       "tags": [
         "force"
       ],
-      "narration": "A thornguard stands in front. Even on a river, that is the job.",
+      "narration": "A thornguard stands in front. Even on a river, that is the job. \"Behind me,\" they say. \"Everybody.\"",
       "prompt": "Take the bumps, so the others glide by.",
       "roller": "party",
       "onSuccess": {
@@ -685,7 +871,7 @@
     },
     "slip": {
       "type": "choice_point",
-      "narration": "Out of the chute, the rope jerks. A hand has slipped. Somebody slides away down the line, eyes wide, still tied on. Everyone knows what to do.",
+      "narration": "Out of the chute, the rope jerks. A hand has slipped. Somebody slides away down the line, eyes wide, still tied on. \"Hold on!\" Skerry shrieks, swooping low. \"I see you! Hold on!\" Everyone knows what to do.",
       "choices": [
         {
           "id": "haul",
@@ -700,7 +886,14 @@
           "goto": "slip_swing"
         }
       ],
-      "art": "scenes/riftlight/headwaters-log-chute"
+      "art": "scenes/riftlight/headwaters-log-chute",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "slip_haul": {
       "type": "check",
@@ -709,15 +902,15 @@
       "tags": [
         "force"
       ],
-      "narration": "Every hand on the rope can pull.",
+      "narration": "Every hand on the rope can pull. \"Pull!\" yells Skerry. \"Pull pull pull!\"",
       "prompt": "Haul your friend back, hand over hand.",
       "roller": "all",
       "onSuccess": {
-        "goto": "scarf_pass",
+        "goto": "shiver",
         "narration": "Haul, haul, haul. Your friend bumps in with a gasp and a grin."
       },
       "onFailure": {
-        "goto": "scarf_pass",
+        "goto": "shiver",
         "narration": "The wet rope burns cold gloves. Slowly, your friend gets back, shivering.",
         "effects": [
           {
@@ -728,38 +921,52 @@
           }
         ]
       },
-      "art": "scenes/riftlight/headwaters-log-chute"
+      "art": "scenes/riftlight/headwaters-log-chute",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "slip_swing": {
       "type": "check",
       "stat": "quick",
       "tn": 12,
-      "narration": "A rope can be a hand that reaches.",
+      "narration": "A rope can be a hand that reaches. \"Swing it!\" Skerry calls. \"I'll point!\"",
       "prompt": "Swing the rope end over your friend's arm.",
       "roller": "best",
       "onSuccess": {
-        "goto": "scarf_pass",
+        "goto": "shiver",
         "narration": "Whoop! It drops over their arm, and the others reel them in."
       },
       "onFailure": {
-        "goto": "scarf_pass",
+        "goto": "shiver",
         "narration": "The swing falls short. Then the current brings your friend close enough to catch."
       },
-      "art": "scenes/riftlight/headwaters-log-chute"
+      "art": "scenes/riftlight/headwaters-log-chute",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "shiver": {
       "type": "choice_point",
-      "narration": "Everyone is still shaking. The cold has crept into your arms and legs, and your teeth rattle. A long bend lies ahead. How will you keep going?",
+      "narration": "Everyone is still shaking. Your teeth rattle like dice in a cup. A long bend lies ahead. \"Sing!\" Skerry calls. \"Or paddle! Paddling gets you near the bank. Singing gets you warm. I can't do either for you!\" How will you keep going?",
       "choices": [
         {
           "id": "sing",
-          "label": "Sing a silly song",
+          "label": "Sing a silly song to warm up",
           "icon": "song",
           "goto": "shiver_sing"
         },
         {
           "id": "paddle",
-          "label": "Paddle hard to warm up",
+          "label": "Paddle toward the bank",
           "icon": "hand",
           "goto": "shiver_paddle"
         },
@@ -788,11 +995,18 @@
           ]
         }
       ],
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "shiver_eat": {
       "type": "story",
-      "narration": "You pass the food around, one small piece each. It tastes like being looked after. Warmth spreads to your toes, and the shivering gives up and goes home.",
+      "narration": "You pass the food around, one small piece each. It tastes like being looked after. \"Save me a crumb!\" calls Skerry. Warmth spreads to your toes, and the shivering gives up and goes home.",
       "choices": [
         {
           "id": "continue",
@@ -808,10 +1022,17 @@
           "to": "party"
         }
       ],
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "shiver_sing": {
-      "narration": "It does not have to be a good song. It has to be a long one, with a chorus to yell. By the second chorus, everyone is yelling, and the cold listens from far away.",
+      "narration": "It does not have to be a good song. It has to be a long one, with a chorus to yell. Skerry yells it too. \"Oh, the river is wet, and the river is wide!\" By the second chorus, the cold listens from far away.",
       "art": "scenes/riftlight/headwaters-floes",
       "type": "story",
       "choices": [
@@ -821,10 +1042,24 @@
           "icon": "forward",
           "goto": "goats"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "heal",
+          "amount": 1,
+          "to": "party"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
       ]
     },
     "shiver_paddle": {
-      "narration": "Hard work makes heat. You take turns on the outside of the line. Paddle, swap, paddle, swap. By the end of the bend, everyone is puffing and warm.",
+      "narration": "Paddle, swap, paddle, swap. You take turns on the outside of the line, and the bank creeps closer. \"Nearly in the slow lane!\" Skerry calls. Teeth still rattle, but the bank is right there now.",
       "art": "scenes/riftlight/headwaters-floes",
       "type": "story",
       "choices": [
@@ -833,12 +1068,25 @@
           "label": "Drift around the bend",
           "icon": "forward",
           "goto": "goats"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "steered_east"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
         }
       ]
     },
     "goats": {
       "type": "choice_point",
-      "narration": "On the bank above, snowhorn goats trot along, keeping pace with you. One bleats, loud for its size, and you think of the kid. Goats know where the ground is firm. How will you use them?",
+      "narration": "On the bank above, snowhorn goats trot along, keeping pace with you. One bleats, loud for its size. \"Wild ones,\" says Skerry. \"Not the herder's. Goats know where the ground is firm, though.\" How will you use them?",
       "choices": [
         {
           "id": "watch",
@@ -856,6 +1104,11 @@
       "cast": [
         {
           "figure": "entities/snowhorn_goat"
+        },
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
         }
       ],
       "art": "scenes/riftlight/headwaters-floes"
@@ -864,12 +1117,17 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "narration": "A goat never puts a hoof down by accident.",
+      "narration": "A goat never puts a hoof down by accident. \"Watch the big one,\" says Skerry. \"She's smug. Smug goats are always right.\"",
       "prompt": "Watch the hooves, and call where the bank looks firm.",
       "roller": "party",
       "cast": [
         {
           "figure": "entities/snowhorn_goat"
+        },
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
         }
       ],
       "onSuccess": {
@@ -886,12 +1144,17 @@
       "type": "check",
       "stat": "quick",
       "tn": 12,
-      "narration": "Following goats from a river is silly. It might just work.",
+      "narration": "Following goats from a river is silly. It might just work. \"Follow that goat!\" says Skerry, delighted.",
       "prompt": "Steer along the bank beside the goats.",
       "roller": "party",
       "cast": [
         {
           "figure": "entities/snowhorn_goat"
+        },
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
         }
       ],
       "onSuccess": {
@@ -906,7 +1169,7 @@
     },
     "ledge_ahead": {
       "type": "story",
-      "narration": "At the next bend, the east bank swells into a ledge of dark ice, like a thumb. A round knob of ice sticks up from its tip. The current carries you right at it, then right past. This may be your best chance out.",
+      "narration": "At the next bend, the east bank swells into a ledge of dark ice, like a thumb. A round knob of ice sticks up from its tip. \"There!\" Skerry shouts. \"A goat path runs up from it to Frostfang!\" The current carries you right at it, then right past. This may be your best chance out.",
       "choices": [
         {
           "id": "continue",
@@ -915,11 +1178,18 @@
           "goto": "aim"
         }
       ],
-      "art": "scenes/riftlight/headwaters-bank-tree"
+      "art": "scenes/riftlight/headwaters-bank-tree",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "aim": {
       "type": "choice_point",
-      "narration": "The ledge is coming fast. Aim well, and you drift right beside it. Aim badly, and it passes you by like a bus that does not stop. How will you steer?",
+      "narration": "The ledge is coming fast. Aim well, and you drift right beside it. Aim badly, and it passes you by like a bus that does not stop. \"Steer!\" Skerry calls. \"Steer, steer, steer!\" How will you steer?",
       "choices": [
         {
           "id": "kick",
@@ -941,13 +1211,20 @@
           "requiresSpecies": "griffin"
         }
       ],
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "aim_kick": {
       "type": "check",
       "stat": "quick",
       "tn": 12,
-      "narration": "Every boot can push. You steer like a very slow, very wet boat.",
+      "narration": "Every boot can push. You steer like a very slow, very wet boat. \"Left boots!\" someone calls.",
       "prompt": "Angle your boots together toward the ledge.",
       "roller": "party",
       "onSuccess": {
@@ -958,13 +1235,20 @@
         "goto": "knob_toss",
         "narration": "You turn too early. The ledge is farther, but a strong reach can still get there."
       },
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "aim_swing": {
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "narration": "A rope end in the water follows the current. Let the current steer.",
+      "narration": "A rope end in the water follows the current. Let the current steer. \"Clever,\" says Skerry.",
       "prompt": "Swing the rope ahead and let the current curl you in.",
       "roller": "party",
       "onSuccess": {
@@ -975,13 +1259,20 @@
         "goto": "knob_toss",
         "narration": "The rope tangles in a floe. You drift a little wide."
       },
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "aim_sky": {
       "type": "check",
       "stat": "clever",
       "tn": 8,
-      "narration": "Skyward lifts you above the water for a heartbeat.",
+      "narration": "Skyward lifts you above the water for a heartbeat. \"Look!\" Skerry calls beside you. \"Look fast!\"",
       "prompt": "Spot the best handhold, and call the steer.",
       "roller": "party",
       "onSuccess": {
@@ -992,30 +1283,112 @@
         "goto": "knob_toss",
         "narration": "Wet wings drop you back in. What you saw was mostly splashing."
       },
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "ledge": {
       "type": "choice_point",
-      "narration": "The ledge is almost beside you. Its top is smooth, but a lip of ice sticks out above the water, and the knob stands on its tip. Who makes a handhold while the others pull?",
+      "narration": "The ledge is almost beside you. Its top is smooth, but a lip of ice sticks out above the water, and the knob stands on its tip. Skerry lands on the ledge and plants her feet. \"I can't pull you,\" she says. \"But I can cheer.\" Who makes a handhold while the others pull?",
       "choices": [
         {
           "id": "grab",
           "label": "Grab the lip together",
           "icon": "hand",
-          "goto": "grab"
+          "goto": "grab",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "knob_hooked",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "loop_tied",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "steered_east",
+              "value": false
+            }
+          ]
+        },
+        {
+          "id": "near",
+          "label": "Grab the near lip",
+          "icon": "hand",
+          "goto": "grab_near",
+          "requiresFlag": "steered_east",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "knob_hooked",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "loop_tied",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "steered_east",
+              "value": false
+            }
+          ]
         },
         {
           "id": "hook",
           "label": "Rope the knob",
           "icon": "hand",
-          "goto": "hook"
+          "goto": "hook",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "knob_hooked",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "loop_tied",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "steered_east",
+              "value": false
+            }
+          ]
         },
         {
           "id": "smash",
           "label": "Smash out a handhold",
           "icon": "hand",
           "goto": "smash",
-          "requiresSpecies": "bigfoot"
+          "requiresSpecies": "bigfoot",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "knob_hooked",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "loop_tied",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "steered_east",
+              "value": false
+            }
+          ]
         },
         {
           "id": "wings",
@@ -1025,6 +1398,23 @@
           "requiresSpecies": [
             "griffin",
             "dragonling"
+          ],
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "knob_hooked",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "loop_tied",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "steered_east",
+              "value": false
+            }
           ]
         },
         {
@@ -1032,17 +1422,66 @@
           "label": "Haul in on the knob",
           "icon": "hand",
           "goto": "haul_loop",
-          "requiresFlag": "knob_hooked"
+          "requiresFlag": "knob_hooked",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "knob_hooked",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "loop_tied",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "steered_east",
+              "value": false
+            }
+          ]
         },
         {
           "id": "loop",
           "label": "Throw your big loop",
           "icon": "hand",
           "goto": "throw_loop",
-          "requiresFlag": "loop_tied"
+          "requiresFlag": "loop_tied",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "knob_hooked",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "loop_tied",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "steered_east",
+              "value": false
+            }
+          ]
         }
       ],
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "standing"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "steered_east"
+          },
+          "text": "You fought your way close to the bank, so the near lip is right beside you."
+        }
+      ]
     },
     "grab": {
       "type": "check",
@@ -1051,7 +1490,7 @@
       "tags": [
         "force"
       ],
-      "narration": "The lip is smooth, cold and very close.",
+      "narration": "The lip is smooth, cold and very close. \"Reach!\" Skerry yells. \"All the way!\"",
       "prompt": "Catch the ledge and pull the rope toward shore.",
       "roller": "party",
       "onSuccess": {
@@ -1089,13 +1528,20 @@
           }
         ]
       },
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "hook": {
       "type": "check",
       "stat": "quick",
       "tn": 16,
-      "narration": "A knob on a ledge is like a handle on a door.",
+      "narration": "A knob on a ledge is like a handle on a door. \"Ring it!\" calls Skerry. \"Like a ring!\"",
       "prompt": "Loop the rope around the knob as the current sweeps you past.",
       "roller": "party",
       "onSuccess": {
@@ -1133,7 +1579,14 @@
           }
         ]
       },
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "smash": {
       "type": "check",
@@ -1142,7 +1595,7 @@
       "tags": [
         "force"
       ],
-      "narration": "A lip of ice is just a barrier pretending to be a handle.",
+      "narration": "A lip of ice is just a barrier pretending to be a handle. \"Smash it nicely,\" says Skerry.",
       "prompt": "Smash a handhold, and pull the rope to it.",
       "roller": "party",
       "onSuccess": {
@@ -1180,7 +1633,14 @@
           }
         ]
       },
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "lift": {
       "type": "check",
@@ -1189,7 +1649,7 @@
       "tags": [
         "force"
       ],
-      "narration": "Wet wings are heavy, but they can still lift a rope.",
+      "narration": "Wet wings are heavy, but they can still lift a rope. \"Up, up!\" Skerry calls, flapping beside you.",
       "prompt": "Lift the rope to the ledge, and pull it into a firm hold.",
       "roller": "party",
       "onSuccess": {
@@ -1227,13 +1687,20 @@
           }
         ]
       },
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "throw_loop": {
       "type": "check",
       "stat": "quick",
       "tn": 12,
-      "narration": "You tied this loop for a day like today. It is exactly knob-sized.",
+      "narration": "You tied this loop for a day like today. It is exactly knob-sized. \"Now!\" says Skerry.",
       "prompt": "Throw your loop over the knob and pull tight.",
       "roller": "party",
       "onSuccess": {
@@ -1271,69 +1738,38 @@
           }
         ]
       },
-      "art": "scenes/riftlight/headwaters-floes"
-    },
-    "ashore": {
-      "type": "story",
-      "narration": "You scramble into the shallows under the ledge. Cold water pours out of your boots. You are on the east bank under Frostfang, with the broken shelf far above. Everyone is here, and everyone is dripping.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what everyone needs",
-          "icon": "hand",
-          "goto": "tend"
-        }
-      ],
-      "art": "scenes/riftlight/headwaters-floes"
-    },
-    "tend": {
-      "type": "choice_point",
-      "narration": "Dripping is not the same as safe. Fingers are stiff, teeth chatter, and the rope is as heavy as a wet carpet. What do you need most?",
-      "choices": [
-        {
-          "id": "warm",
-          "label": "Jog and shake warm",
-          "icon": "hand",
-          "goto": "tend_warm"
-        },
-        {
-          "id": "dry",
-          "label": "Wring out the rope",
-          "icon": "hand",
-          "goto": "tend_dry"
-        }
-      ],
-      "art": "scenes/riftlight/headwaters-floes"
-    },
-    "tend_warm": {
-      "narration": "Jogging on the spot is silly, and silly things are warm. Hop, shake, wiggle! Soon steam comes off your coats, and everyone is laughing too hard to shiver.",
       "art": "scenes/riftlight/headwaters-floes",
-      "type": "story",
-      "choices": [
+      "cast": [
         {
-          "id": "continue",
-          "label": "Sit and gather up",
-          "icon": "forward",
-          "goto": "early"
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
         }
       ]
     },
-    "tend_dry": {
-      "narration": "A wet rope is a cranky rope. Twist, squeeze, drip. The rope is a friend again, and the packs sit in the sun like sleepy cats.",
-      "art": "scenes/riftlight/headwaters-floes",
+    "ashore": {
       "type": "story",
+      "narration": "You scramble into the shallows under the ledge. Cold water pours out of your boots. Skerry lands and wraps her wings around as many of you as fit. \"Everyone,\" she says. \"Everyone, everyone.\" You are on the east bank under Frostfang, far below the broken shelf.",
       "choices": [
         {
           "id": "continue",
-          "label": "Sit and gather up",
-          "icon": "forward",
+          "label": "Sit and catch your breath",
+          "icon": "hand",
           "goto": "early"
+        }
+      ],
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "standing"
         }
       ]
     },
     "early": {
       "type": "rest",
-      "narration": "You sit on the east bank under Frostfang and coil your rope. The river carried you below the shelf, but the cairned pass is still uphill. Wet, tired and together, you are ready to climb.",
+      "narration": "You sit on a new bank, wet and together. The cairned pass is still uphill. \"I'll fly back and tell Orin where you came out,\" says Skerry. She looks at the river. \"Yesterday it took my road. Today it gave you a new one. Something is moving this river. What? And can it be put back?\" Your chime still leans upstream, toward the glacier.",
       "heal": 0,
       "choices": [],
       "outcome": "success",
@@ -1344,11 +1780,18 @@
           "value": true
         }
       ],
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "standing"
+        }
+      ]
     },
     "tree": {
       "type": "story",
-      "narration": "The ice thins as the river bends. An old tree leans from the east bank, its lowest branch dragging in the current. Beyond it, dark boundary stones stand in the grass. You have to reach the branch together.",
+      "narration": "The ice thins as the river bends. An old tree leans from the east bank, its lowest branch dragging in the current. Skerry lands on the branch to hold it down. It dips. Then it bounces her off. \"Not heavy enough!\" she says. Beyond it, dark boundary stones stand in the grass. You have to reach the branch together.",
       "choices": [
         {
           "id": "continue",
@@ -1357,47 +1800,104 @@
           "goto": "tree_choice"
         }
       ],
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "tree_choice": {
       "type": "choice_point",
-      "narration": "The branch dips within reach, then lifts. One missed grip could leave a friend behind. Keep the line between you, and pick your moment.",
+      "narration": "The branch dips within reach, then lifts. One missed grip could leave a friend behind. \"Together,\" says Skerry. \"Or not at all.\" Keep the line between you, and pick your moment.",
       "choices": [
         {
           "id": "climb",
           "label": "Climb on the dip",
           "icon": "hand",
-          "goto": "climb"
+          "goto": "climb",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "read_current",
+              "value": false
+            }
+          ]
         },
         {
           "id": "lasso",
           "label": "Lasso the branch",
           "icon": "hand",
-          "goto": "lasso"
+          "goto": "lasso",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "read_current",
+              "value": false
+            }
+          ]
         },
         {
           "id": "lane",
-          "label": "Ride the slow lane",
+          "label": "Ride the curl to the branch",
           "icon": "hand",
           "goto": "lane",
-          "requiresFlag": "steered_east"
+          "requiresFlag": "read_current",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "read_current",
+              "value": false
+            }
+          ]
         },
         {
           "id": "beguile",
           "label": "Beguile a bright guide",
           "icon": "spark",
           "goto": "guide",
-          "requiresSpecies": "kitsune"
+          "requiresSpecies": "kitsune",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "read_current",
+              "value": false
+            }
+          ]
         },
         {
           "id": "roar",
           "label": "Roar the moment",
           "icon": "hand",
           "goto": "call",
-          "requiresSpecies": "manticore"
+          "requiresSpecies": "manticore",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "read_current",
+              "value": false
+            }
+          ]
         }
       ],
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "variants": [
+        {
+          "when": {
+            "flag": "read_current"
+          },
+          "text": "You know this river now. Right under the branch, the water curls in toward the bank."
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "climb": {
       "type": "check",
@@ -1436,7 +1936,14 @@
         ]
       },
       "art": "scenes/riftlight/headwaters-floes",
-      "narration": "The branch swings down and up, like a slow gate."
+      "narration": "The branch swings down and up, like a slow gate. \"On the dip!\" Skerry calls. \"Wait for it...\"",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "lasso": {
       "type": "check",
@@ -1445,7 +1952,7 @@
       "tags": [
         "force"
       ],
-      "narration": "A rope is for pulling. A branch is for being pulled to.",
+      "narration": "A rope is for pulling. A branch is for being pulled to. \"Throw it like you mean it!\" says Skerry.",
       "prompt": "Throw the rope loop over the branch and pull everyone in.",
       "roller": "party",
       "onSuccess": {
@@ -1475,14 +1982,21 @@
           }
         ]
       },
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "lane": {
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "narration": "The slow lane you found earlier runs right under the branch.",
-      "prompt": "Hold the slow lane and reach on the same dip.",
+      "narration": "You read this river up by the shelf, and it bends here the same way. The curl runs right under the branch. \"You learned it!\" says Skerry. \"Ride the curl!\"",
+      "prompt": "Ride the curl under the branch and reach on the same dip.",
       "roller": "all",
       "onSuccess": {
         "goto": "middle",
@@ -1511,7 +2025,14 @@
           }
         ]
       },
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "guide": {
       "type": "check",
@@ -1546,7 +2067,15 @@
           }
         ]
       },
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "narration": "A kitsune can make a bright guide for every hand. \"Ooh, sparkly,\" says Skerry. \"Do mine next.\"",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "call": {
       "type": "check",
@@ -1581,11 +2110,19 @@
           }
         ]
       },
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "narration": "A manticore's roar carries over any water. \"Roar the moment!\" Skerry calls. \"I'll cover my ears!\"",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "middle": {
       "type": "rest",
-      "narration": "You sit among boundary stones in low hills called the Red Sky Foothills. The carvings show a mountain with a strange shape. First you check on each other. Then you can study the stones.",
+      "narration": "You sit among boundary stones in low hills called the Red Sky Foothills. The carvings show a mountain with a strange shape. \"Never been this far down the river,\" says Skerry. \"The river brought you somewhere new.\" She shakes out her wings. \"I'll tell Orin. Something is moving this river. What? Can it be put back?\" First you check on each other. Then you can study the stones.",
       "heal": 0,
       "choices": [],
       "outcome": "success",
@@ -1596,11 +2133,18 @@
           "value": true
         }
       ],
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "standing"
+        }
+      ]
     },
     "rift": {
       "type": "story",
-      "narration": "A fold opens beside the current. Through it come thin cold air and a low, distant song. Dry ground seems to hang beyond the shimmer. Downriver, water breaks over pale rocks. The light around the fold is called Riftlight.",
+      "narration": "A fold opens beside the current. Through it come thin cold air and a low, distant song. Dry ground seems to hang beyond the shimmer. Downriver, water breaks over pale rocks. The light around the fold is called Riftlight. \"What is that?\" Skerry cries. \"I don't like it! I like it a little!\"",
       "choices": [
         {
           "id": "continue",
@@ -1610,11 +2154,18 @@
         }
       ],
       "rift": "open",
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "rift_choice": {
       "type": "choice_point",
-      "narration": "The opening is close enough to reach without dropping the line. Will you test it, or keep looking for a shore?",
+      "narration": "The opening is close enough to reach without dropping the line. \"I can't follow you through that,\" Skerry calls, circling. \"I don't fit, and I don't want to.\" Will you test it, or keep looking for a shore?",
       "choices": [
         {
           "id": "test",
@@ -1638,11 +2189,18 @@
         }
       ],
       "rift": "steady",
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "river_chime": {
       "type": "story",
-      "narration": "One clear note sounds, with no echo. The way is ready, but you cannot count on coming back through it. Nobody can name the land beyond. You will cross together, or not at all.",
+      "narration": "One clear note sounds, with no echo. The way is ready, but you cannot count on coming back through it. \"No echo means no way back,\" someone says. Nobody can name the land beyond. You will cross together, or not at all.",
       "choices": [
         {
           "id": "continue",
@@ -1652,11 +2210,18 @@
         }
       ],
       "rift": "steady",
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "river_read": {
       "type": "story",
-      "narration": "Your starweaver studies the light around the fold and tells everyone what they see. To the rest of you, it is only a shimmer. Thin air and a distant song are all anyone can learn.",
+      "narration": "Your starweaver studies the light around the fold and tells everyone what they see. To the rest of you, it is only a shimmer. \"Well?\" says Skerry. Thin air and a distant song are all anyone can learn.",
       "choices": [
         {
           "id": "continue",
@@ -1666,11 +2231,18 @@
         }
       ],
       "rift": "steady",
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "rift_decision": {
       "type": "choice_point",
-      "narration": "The fold is within reach. Beyond it lie dry ground and that low song. Downstream, the river still has a bank. Which unknown will you take?",
+      "narration": "The fold is within reach. Beyond it lie dry ground and that low song. Downstream, the river still has a bank. \"Your choice,\" Skerry calls. \"I'll tell Orin either way.\" Which unknown will you take?",
       "choices": [
         {
           "id": "cross",
@@ -1697,11 +2269,18 @@
         }
       ],
       "rift": "steady",
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "rift_end": {
       "type": "rest",
-      "narration": "You angle the rope toward the fold and gather at its edge. Thin air brushes your faces. Nobody has let go. You will go through all at once, together.",
+      "narration": "You angle the rope toward the fold and gather at its edge. Thin air brushes your faces. \"Go together!\" Skerry calls. \"I'll tell Orin you went into the light!\" Nobody has let go. You will go through all at once, together, somewhere none of you has ever been.",
       "heal": 0,
       "choices": [],
       "outcome": "success",
@@ -1713,11 +2292,18 @@
         }
       ],
       "rift": "steady",
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "rapids": {
       "type": "choice_point",
-      "narration": "The river quickens around pale rocks. Downstream, a bridge spans the water, and a gravel bar runs along its east bank. A flat boat waits near the bridge. You can aim for the gravel or call for help.",
+      "narration": "The river quickens around pale rocks. Downstream, a bridge spans the water, and a gravel bar runs along its east bank. A flat boat waits near the bridge, with a small frog in a big hat. \"A boat!\" Skerry shouts. \"With a frog in it!\" Aim for the gravel, or call for help?",
       "choices": [
         {
           "id": "swim",
@@ -1739,7 +2325,14 @@
           "requiresSpecies": "unicorn"
         }
       ],
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "swim": {
       "type": "check",
@@ -1787,7 +2380,15 @@
           }
         ]
       },
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "narration": "Gravel is the nearest dry thing. \"Swim!\" Skerry calls. \"Swim like a fish that's late!\"",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "signal": {
       "type": "check",
@@ -1832,7 +2433,15 @@
           }
         ]
       },
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "narration": "You wave and shout so the boatman sees you through the spray. Skerry shrieks too, very loud. \"Over here! Frog! Frog with a hat!\"",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "mend_signal": {
       "type": "check",
@@ -1877,11 +2486,19 @@
           }
         ]
       },
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "narration": "Mend warms the signaler's hands, so the wave is a big one. \"Wave!\" says Skerry. \"Bigger!\"",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "late": {
       "type": "rest",
-      "narration": "You climb onto the east bank beside a bridge called Ashspan Bridge. A boatman nods from his flat boat. \"Old Ossley,\" he says. \"Dry ground at last.\" He points to a dry patch where you can rest.",
+      "narration": "You climb onto the east bank beside a bridge called Ashspan Bridge. One of its spans is cracked. A frogfolk boatman nods from his flat boat. \"Old Ossley,\" he says. Long pause. \"Bridge is broken. Folk need ferrying. You could help, if you're staying.\" Skerry lands beside you. \"I'll tell Orin. The river let you out somewhere new. Something is moving it. What? Can it be put back?\"",
       "heal": 0,
       "choices": [],
       "outcome": "success",
@@ -1896,13 +2513,18 @@
         {
           "figure": "cast/old_ossley",
           "name": "Old Ossley"
+        },
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "standing"
         }
       ],
       "art": "scenes/gemfall/northern-bridge-foot"
     },
     "rescue": {
       "type": "story",
-      "narration": "The man on the flat boat hooks your line with his pole. He helps every friend aboard and passes around a dry blanket. \"Old Ossley,\" he says. \"I turn up when I am going your way.\"",
+      "narration": "The frog on the flat boat hooks your line with his pole. He helps every friend aboard and passes around a dry blanket. \"Old Ossley,\" he says. Long pause. \"I turn up when I am going your way.\" Skerry lands on the boat's edge and it tips. \"Sorry,\" she says. \"Sorry.\"",
       "choices": [
         {
           "id": "continue",
@@ -1931,13 +2553,18 @@
         {
           "figure": "cast/old_ossley",
           "name": "Old Ossley"
+        },
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
         }
       ],
       "art": "scenes/gemfall/northern-bridge-foot"
     },
     "rescued": {
       "type": "rest",
-      "narration": "Ossley brings the boat to the east bank beside a bridge called Ashspan Bridge. \"Dry ground at last,\" he says. You share a supper bundle, warmer and together. The river changed your road. It did not end it.",
+      "narration": "Ossley brings the boat to the east bank beside a bridge called Ashspan Bridge. One span is cracked. \"Folk need ferrying,\" he says. \"Bridge is broken.\" You share a supper bundle, warmer and together. Skerry shakes out her wings. \"I'll tell Orin. Something is moving this river. What? Can it be put back?\" The river changed your road. It did not end it.",
       "heal": 0,
       "choices": [],
       "outcome": "success",
@@ -1952,13 +2579,18 @@
         {
           "figure": "cast/old_ossley",
           "name": "Old Ossley"
+        },
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "standing"
         }
       ],
       "art": "scenes/gemfall/northern-bridge-foot"
     },
     "floe_hop": {
       "type": "interaction",
-      "narration": "Flat floes drift apart and together, toward a big, calm one. Wait until they touch, then hop.",
+      "narration": "Flat floes drift apart and together, toward a big, calm one. \"Wait till they touch!\" Skerry calls. \"Then hop!\"",
       "interaction": {
         "kind": "timing",
         "cue": "Wait for the floes to touch, then tap to hop.",
@@ -1969,67 +2601,99 @@
       },
       "onSuccess": {
         "goto": "floe_rest",
-        "narration": "Hop, hop, hop! The rope pulls everyone after you."
+        "narration": "Hop, hop, hop! The rope pulls everyone after you, and not one pocket gets wet.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "honeycake",
+            "to": "party"
+          }
+        ]
       },
       "onFailure": {
         "goto": "floe_rest",
-        "narration": "Too soon! Wet boots, but the rope pulls you onto the big floe."
+        "narration": "Too soon! You splash in to the chest, and the rope drags you onto the big floe. In a coat pocket, a honeycake has turned to mush."
       },
       "onAssisted": {
         "goto": "floe_rest",
-        "narration": "Together you nudge the floes closer with your boots, and everyone steps across."
+        "narration": "Together you nudge the floes closer with your boots, and everyone steps across, pockets dry.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "honeycake",
+            "to": "party"
+          }
+        ]
       },
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "jam_hold": {
       "type": "interaction",
-      "narration": "Past the jam, one branch still holds your rope. Hold the line up while a friend lifts the branch off.",
+      "narration": "Past the jam, your rope's loop is snagged on a branch, and the branches shift and roll in the current. \"Keep your eye on the loop!\" Skerry calls. \"Which branch has it?\"",
       "interaction": {
-        "kind": "cooperate",
-        "cue": "Hold the rope up while your friend lifts the branch off.",
-        "supportLabel": "Hold the rope",
-        "actionLabel": "Lift it free"
+        "kind": "tracking",
+        "cue": "Watch the loop as the branches roll, then pick the branch that has it.",
+        "actionLabel": "Pull here",
+        "covers": [
+          "Left branch",
+          "Middle branch",
+          "Right branch"
+        ],
+        "start": 1,
+        "swaps": [
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            2
+          ]
+        ],
+        "stepMs": 1300
       },
       "onSuccess": {
         "goto": "chute",
-        "narration": "Twang! The rope is free. Just ahead, something roars."
+        "narration": "That one! You pull, and the loop slides free. Twang! Just ahead, something roars."
       },
       "onFailure": {
         "goto": "chute",
-        "narration": "The branch will not budge. You tie a new, shorter loop. Just ahead, something roars."
+        "narration": "The branch will not budge, so you cut the rope short to get free. Your big loop stays behind on the jam, and the river keeps it.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "loop_tied",
+            "value": false
+          }
+        ]
       },
       "onAssisted": {
         "goto": "chute",
-        "narration": "Together you tip the branch off. Something roars ahead."
+        "narration": "Skerry lands on the snagged branch and points. You pull the loop free. Something roars ahead."
       },
-      "art": "scenes/riftlight/headwaters-log-chute"
-    },
-    "scarf_pass": {
-      "type": "interaction",
-      "narration": "Your friend is back, but shaking. Pass the warm scarf from the driest pack, hand to hand.",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Catch the scarf, then pass it on.",
-        "actionLabel": "Pass it on",
-        "objectLabel": "the warm scarf"
-      },
-      "onSuccess": {
-        "goto": "shiver",
-        "narration": "Around and around goes the scarf. A tiny smile peeks over the top."
-      },
-      "onFailure": {
-        "goto": "shiver",
-        "narration": "The scarf dips in the river. It arrives wet, but the thought is warm."
-      },
-      "onAssisted": {
-        "goto": "shiver",
-        "narration": "Together you wrap the scarf around your friend, one loop each."
-      },
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-log-chute",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "knob_toss": {
       "type": "interaction",
-      "narration": "The knob on the ledge's tip is just out of reach. Toss a loop of rope as it comes by.",
+      "narration": "The knob on the ledge's tip is just out of reach. \"Toss a loop over it!\" Skerry calls. \"Like Grumble! Like Old Clank!\" Throw it as it comes by.",
       "interaction": {
         "kind": "precision",
         "cue": "Tap when the loop is over the knob.",
@@ -2062,10 +2726,17 @@
           }
         ]
       },
-      "art": "scenes/riftlight/headwaters-floes"
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
     },
     "haul_loop": {
-      "narration": "The loop you hooked over the knob is holding. Everyone takes the line and pulls together. The river swings you all toward the shallows.",
+      "narration": "The loop you hooked over the knob is holding. Everyone takes the line and pulls together. \"Pull!\" Skerry cries. The river swings you all toward the shallows.",
       "art": "scenes/riftlight/ice-shelf-headwaters",
       "type": "story",
       "choices": [
@@ -2090,11 +2761,18 @@
             }
           ]
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
       ]
     },
     "drake_shallows": {
       "type": "story",
-      "narration": "Your boots scrape onto a gravel ford. In the shallows sits a young river drake, gray and bumpy as a wet stone. River drakes like to be paid in dropped food. This one has decided you are the toll. It puffs up and splashes.",
+      "narration": "Your boots scrape onto a gravel ford. In the shallows sits a young river drake, gray and bumpy as a wet stone. \"Don't feed it!\" Skerry calls. \"River drakes like to be paid in dropped food. This one thinks you're the toll.\" It puffs up and splashes.",
       "choices": [
         {
           "id": "continue",
@@ -2107,6 +2785,11 @@
         {
           "figure": "entities/river_drake",
           "name": "Young river drake"
+        },
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
         }
       ],
       "art": "scenes/riftlight/fight-headwaters-ford"
@@ -2147,7 +2830,7 @@
     },
     "drake_rescued": {
       "type": "story",
-      "narration": "The drake wins the ford, loudly. A tail flick sweeps you back into the stream. Behind you, the drake looks very pleased. Nobody is hurt, only humbled.",
+      "narration": "The drake wins the ford, loudly. A tail flick sweeps you back into the stream, and it keeps your rope's spare loop to chew. \"Rude!\" Skerry shouts at it. \"Very rude!\" Only your shins and your pride are bruised.",
       "choices": [
         {
           "id": "continue",
@@ -2158,12 +2841,78 @@
       ],
       "onEnter": [
         {
-          "type": "heal",
+          "type": "setFlag",
+          "flag": "loop_tied",
+          "value": false
+        },
+        {
+          "type": "damage",
           "amount": 1,
-          "to": "party"
+          "to": "party",
+          "nonlethal": true
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ]
+    },
+    "grab_near": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "tags": [
+        "force"
+      ],
+      "roller": "party",
+      "art": "scenes/riftlight/headwaters-floes",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Skerry",
+          "stance": "flying"
+        }
+      ],
+      "narration": "All that kicking put you right against the bank. The near lip is close enough to touch. \"Grab it!\" Skerry shouts. \"You earned that one!\"",
+      "prompt": "Grab the near lip and pull the rope to shore.",
+      "onSuccess": {
+        "goto": "ashore",
+        "narration": "Your hands close on the lip. The rope draws everyone into shallow water.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "river_escaped_early"
+          },
+          {
+            "type": "setFlag",
+            "flag": "reached_for_the_ledge"
+          },
+          {
+            "type": "setFlag",
+            "flag": "found_a_way_out"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "tree",
+        "narration": "Your fingers slide off the wet lip. The river pulls you onward, together.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "reached_for_the_ledge"
+          }
+        ]
+      }
     }
   },
   "voiceGuide": {
@@ -2179,6 +2928,7 @@
       "Legend Dragon"
     ],
     "npcVoices": {
+      "Skerry": "She/her, the griffin who keeps the iron rings on the ice shelf. Flies above the river the whole way, calling down. Brisk, warm, a little dramatic; cannot lift the party and hates that.",
       "Old Ossley": "He/him, frogfolk ferryman, few words and long pauses. Never cruel, never charges coins. No claim that the party met him in Gemfall."
     }
   },
@@ -2237,11 +2987,6 @@
           "rope-taut"
         ]
       },
-      "scarf_pass": {
-        "props": [
-          "relay-scarf"
-        ]
-      },
       "knob_toss": {
         "props": [
           "rope-loop",
@@ -2267,7 +3012,6 @@
       "/assets/story-props/moving-floe.webp",
       "/assets/story-props/pickup-river-charm.webp",
       "/assets/story-props/relay-log.webp",
-      "/assets/story-props/relay-scarf.webp",
       "/assets/story-props/rope-loop.webp",
       "/assets/story-props/rope-taut.webp",
       "/assets/story-props/water-surge.webp"

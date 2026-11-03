@@ -1,6 +1,6 @@
 # Node design — Headwaters Washout
 
-**Status:** Implemented as an authored development-preview chapter. See [route review](../routes-continuity-review.md) for validation and boundaries.
+**Status:** Implemented; revised November 2026 (Skerry overhead, Ossley at the late exit, see [road-out review](../road-out-review.md)). See [route review](../routes-continuity-review.md) for validation and boundaries.
 **Provisional node ID:** `headwaters-washout`
 **Narrative role:** First vivid fail-forward multi-stage skill challenge.
 **Spoiler level:** Early-campaign player-facing; **no emperor reveal**.
