@@ -1612,11 +1612,11 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
 
 /* Your friends: a card each, side by side under your hero's card: a big face,
    the name, and their health, so who is hurt is seen at a glance. They share
-   the page's height with the bag (about 2 to 3), so the people at the table
+   the page's height with the bag (about 3 to 5), so the people at the table
    count for as much as the slots in your bag. The row measures itself and the
    faces grow with it. A long name is never cut. */
 .you__row {
-  flex: 2 1 0;
+  flex: 3 1 0;
   min-block-size: 5em;
   display: flex;
   container: friends / size;
@@ -1635,7 +1635,7 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
 .you__row .party-strip__list > li {
   flex: 1 1 0;
   min-inline-size: 0;
-  max-inline-size: 11em;
+  max-inline-size: 9.5em;
   display: flex;
 }
 
@@ -1651,8 +1651,8 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
 
 /* The face takes the card's height, less the name and health lines under it. */
 .you__row .party-strip__portrait {
-  inline-size: clamp(2.2em, calc(100cqh - 3.6em), 7em);
-  block-size: clamp(2.2em, calc(100cqh - 3.6em), 7em);
+  inline-size: clamp(2.2em, calc(100cqh - 3.6em), 5.5em);
+  block-size: clamp(2.2em, calc(100cqh - 3.6em), 5.5em);
   border-radius: var(--radius-md, 0.75em);
 }
 
@@ -1709,8 +1709,8 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
 
 /* The bag takes the rest of the page; its six slots share it. */
 .you__bag {
-  /* Three parts of the spare height to the friends' two (.you__row). */
-  flex: 3 1 0;
+  /* Five parts of the spare height to the friends' three (.you__row). */
+  flex: 5 1 0;
   min-block-size: 0;
   display: flex;
   flex-direction: column;
@@ -1859,21 +1859,19 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
 }
 
 /* The brass frame and its sunken well (styles/chrome.css) are drawn 10 to 20
-   pixels thick: in a short or narrow slot they were most of it, and long
-   names ran under the brass. A compact bag draws plain rounded wells instead,
-   so the item gets the room. A roomy one keeps its frames. */
-@container bag (max-height: 12em) or (max-width: 23em) {
-  html:not([data-contrast="high"]) .player__you :is(.inv__button, .inv__slot--empty)::before,
-  html:not([data-contrast="high"]) .player__you :is(.inv__button, .inv__slot--empty)::after {
-    display: none;
-  }
-  html:not([data-contrast="high"]) .player__you .inv__button {
-    border: 0.08em solid var(--kad-raised-rim, rgba(190, 178, 255, 0.3));
-    background: var(--color-surface-sunken, #120f26);
-  }
-  html:not([data-contrast="high"]) .player__you .inv__slot--empty {
-    border: 0.08em dashed var(--kad-raised-rim, rgba(190, 178, 255, 0.3));
-  }
+   pixels thick, which was most of a slot on a phone and ran long names under
+   the brass. The You page's bag draws plain rounded wells at every size, so the
+   items get the room. High contrast keeps its own outlines (chrome.css skips it). */
+html:not([data-contrast="high"]) .player__you :is(.inv__button, .inv__slot--empty)::before,
+html:not([data-contrast="high"]) .player__you :is(.inv__button, .inv__slot--empty)::after {
+  display: none;
+}
+html:not([data-contrast="high"]) .player__you .inv__button {
+  border: 0.08em solid var(--kad-raised-rim, rgba(190, 178, 255, 0.3));
+  background: var(--color-surface-sunken, #120f26);
+}
+html:not([data-contrast="high"]) .player__you .inv__slot--empty {
+  border: 0.08em dashed var(--kad-raised-rim, rgba(190, 178, 255, 0.3));
 }
 
 /* A tall bag (a big phone, a tablet): bigger pictures and names, so the
