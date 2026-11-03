@@ -1095,10 +1095,12 @@ describe("send", () => {
       error: { code: "STALE_SEQ", message: "behind" },
     });
 
-    await h.store.getState().send({ type: "ROLL" });
+    const sent = await h.store.getState().send({ type: "ROLL" });
 
     expect(h.api.postAction).toHaveBeenCalledTimes(2); // one retry, never a loop
-    expect(h.store.getState().error).toBe("behind");
+    expect(sent).toBe(false);
+    // A seq race is not the player's to act on: no toast (the server logs it).
+    expect(h.store.getState().error).toBeNull();
   });
 
   it("resyncs when the broadcast an ok response promised never arrives", async () => {
