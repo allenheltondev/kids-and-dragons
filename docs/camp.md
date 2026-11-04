@@ -1,9 +1,9 @@
 # The camp: the crew's campsite
 
 **Status: design approved, nothing built.** Every decision below marked *decided* was made by the
-product owner, and the implementation requirements in §12 are approved as a whole. Anything still
-marked *proposed* is not. The decisions and the questions still open are in §11; acceptance
-criteria and playtest questions are in §13.
+product owner, and the implementation requirements in §12 are approved as a whole. Nothing is
+still only proposed. Every decision is listed in §11; acceptance criteria and playtest questions
+are in §13. Prices and payouts remain starting points for playtest (§5.2).
 
 **Review status:** repository references are implementation context. File names, type names and
 interfaces below are the intended shape, and may be refined during implementation as long as the
@@ -386,10 +386,14 @@ A hero's kit (§4.5) fills from three places, none of them Dash Cash, which stay
   nothing more; Dash Cash is the crew's and is never paid for a kit duplicate. The same authoring
   rules as crew finds apply (§5.1): a bonus, never a gate, and the narration names the thing, not
   the kit.
-- *Proposed:* **the hero's own milestones.** Reaching a new appearance tier unlocks a tent style in
-  that tier's look, and a class distinction unlocks a small decoration in that class's colors.
-  These are the hero's own deeds, so they belong in the hero's kit. Like souvenirs, they are
-  cosmetic and kept even if a failed campaign later puts the tier back (spec §8.3).
+- **The hero's own milestones** (*decided*). Reaching a new appearance tier unlocks a tent style in
+  that tier's look, and earning a class distinction unlocks a small decoration in that class's
+  colors. These are the hero's own deeds, so they belong in the hero's kit, recorded in
+  `HeroKit.unlocked` with `from: "milestone"`. Like souvenirs, they are cosmetic and kept even if a
+  failed campaign later puts the tier or distinction back (spec §8.3): the hero earned them once.
+  The unlock lands when the tier or distinction does, and the phone says so after the
+  transformation, never during it. A tier whose art isn't painted yet (spec §8.1 draws Ascendant
+  and above as Mythic until it is) unlocks its tent style when that art ships.
 
 ## 6. Who changes what
 
@@ -462,12 +466,25 @@ Everything shared stays at the table: shared hotspots, purchases and votes. The 
 narrows rather than breaks: nothing in it can change anything **anybody else** owns, so nothing a
 kid does there can upset another kid's game.
 
-These edits need a signal: they go to the server through a small write path authorized by the
-phone's device binding, like the book's read (§12.6). Offline, the book still opens and shows
-everything, and the edit buttons say they need a connection. *Proposed for later:* queue offline
-kit edits on the phone and send them when the signal returns. Only the hero's owner ever writes a
-kit, so a queued edit can only clash with that same kid's own edit elsewhere, and the later one
-wins.
+**They work offline too** (*decided*). With a signal, an edit goes straight to the server through a
+small write path authorized by the phone's device binding, like the book's read (§12.6). Without
+one, the book makes the change on screen at once, keeps it in a queue on the phone, says "Saved
+on this phone, will share when you're back online", and sends it when the signal returns:
+
+- **What can queue:** only the kid's own kit and buddy changes. Nothing shared is editable in the
+  book, so nothing shared can queue.
+- **Each change says what it replaced.** A queued edit records, field by field (style, color, each
+  slot, the buddy for each crew), the value it was made over.
+- **Merging, field by field.** When the queue is sent, each field applies only if the server
+  still has the value the edit was made over. If that same field was changed elsewhere in the
+  meantime (at a table, or on the kid's other phone), the newer server value stays, and the book
+  shows the kit as it now is with a short note. Fields nobody else touched always apply, so a long
+  car ride's worth of changes is never thrown away because of one clash.
+- **Only real pieces.** The server rechecks every queued change: a piece the hero doesn't have, or
+  a buddy the crew doesn't have, is skipped, as it would be online.
+- **The queue is the phone's.** It lives in the phone's own storage and is sent with the phone's
+  binding. If the binding is revoked or the kid is moved off the phone, the queue is dropped
+  unsent.
 
 ## 8. Movement: a camp that is alive
 
@@ -737,12 +754,15 @@ crossfade and the packed-down indoor camp; the first-wave backdrops (`red_sky_vo
 `frozen_north`); frame stages 3 and 4; Travel Mode's Camp button.
 
 **Phase 4: the camp between games.** The adventure book's Camp tray (§7): the crew's camp to look
-at, each kid's kit to change and buddy to pick while online, and offline caching of the camp and
-its art. The test: do kids open the book on their own to change their kit, and do they notice the
-change at the next game?
+at, each kid's kit to change and buddy to pick, online and queued offline, and offline caching of
+the camp and its art. The test: do kids open the book on their own to change their kit, and do
+they notice the change at the next game?
 
-**Later:** the remaining backdrops in the order of §3.1, queued offline kit edits (§7), milestone
-kit pieces if approved (§5.4), more friends and finds as chapters are written.
+**Later:** the remaining backdrops in the order of §3.1, more friends and finds as chapters are
+written, and milestone tent styles for each tier as its art is painted.
+
+Milestone kit pieces (§5.4) arrive with the kit in Phase 2, for the tiers and distinctions whose art
+exists.
 
 **Gemfall is pinned.** `gemfall-compat.test.ts` hashes every Gemfall file, so adding a find, a
 befriend choice or a rest scene's `setting` to a Gemfall chapter is a deliberate re-hash with its
@@ -760,7 +780,7 @@ Settled by the product owner:
 | What it is | A **camp**, not a caravan: carried on the heroes' backs, and clear of Gemfall's story caravan (intro) |
 | The currency's name | **Dash Cash** (§5.2) |
 | Rest scenes | Every rest scene is marked indoor or outdoor. Outdoor crossfades to the camp, with its narration on the camp screen; indoor keeps its picture with bedrolls and packs (§3, §3.2) |
-| Editing from the adventure book | Each kid can change their own hero's kit and buddy from the book, online; the crew's camp stays look-only there (§7) |
+| Editing from the adventure book | Each kid can change their own hero's kit and buddy from the book, online or queued offline and merged field by field (§7); the crew's camp stays look-only there (§7) |
 | Who owns what | The crew owns the camp's shared parts and friends; each hero owns their kit (tent, bedroll, pack, decorations, souvenirs), which goes wherever the hero goes (§4, §4.5) |
 | A crew with no finished campaign | The shop is enough; the frame still grows only on a finished full campaign (§4.1) |
 | The tutorial and The Hollow Crown | Neither grows the frame; only `growsCamp` campaigns do (§4.1) |
@@ -775,16 +795,15 @@ Settled by the product owner:
 | The shop | Opens once the crew has been paid for two chapters; its first pieces cost 5 Dash Cash (§5.3) |
 | Lucky drops | A 1 in 8 chance of 1 Dash Cash after each won mini-game or fight, rolled by the server. Never from `play` interactions, at most 2 a chapter, none in a chapter already paid for (§5.2) |
 | What a chapter pays | 2 for finishing, any ending, plus 1 per optional objective met (§5.2) |
+| Milestone kit pieces | A tent style for each new appearance tier and a decoration for each class distinction, kept even if a failed campaign puts the tier back (§5.4) |
+| Offline kit edits | Queued on the phone and merged field by field when the signal returns (§7) |
 | Goal steps | Pay no Dash Cash: every success path ticks them all, so they would be free money. Finishing and optional objectives pay (§5.2) |
 | Kit finds | Every seated hero gets their own copy; a duplicate gives nothing, since Dash Cash is the crew's (§5.4) |
 | The shared-edit limit | Tested in playtest, with an Undo that does not use up a change (§6.1) |
 | Implementation requirements | All of §12 approved, including its defaults: lower-stage pieces staying in later shops, and the migration policy for existing crews (§12) |
 
-Still open:
-
-1. **Milestone kit pieces** (§5.4): a tent style per appearance tier and a decoration per class
-   distinction. Proposed, not yet approved.
-2. **Queued offline kit edits** (§7). Proposed for later.
+Nothing is open. The two parked questions from earlier (editing from the book, choosing friends)
+are settled above as kit and buddy editing in the book and buddies.
 
 ## 12. Implementation requirements
 
@@ -800,7 +819,7 @@ inventory can never authorize anything in a hero's kit, at that crew or another.
 
 Kit pieces and crew pieces are separate catalogs with separate ids, so one can never be placed as
 the other. Every hero starts with the same free catalog. Earned kit pieces (kit finds, and
-milestones if approved, §5.4) are recorded on the character in `HeroKit.unlocked`, with where they
+milestones, §5.4) are recorded on the character in `HeroKit.unlocked`, with where they
 came from; that record moves with the hero when they move home (#251) and is deleted with them.
 Never infer kit ownership from any crew's catalog. A buddy (§4.4) is the exception that proves the
 rule: it names a crew-owned friend, so it is stored on the crew's camp record, keyed by the hero.
@@ -839,7 +858,9 @@ add cosmetic trophies after stage 4.
 
 Existing crews need a migration policy: derive the starting stage and kept trophies from their
 recorded successful `growsCamp` campaigns, initialize Dash Cash to zero, and do not back-pay
-historical chapter rewards. Keep that migration idempotent.
+historical chapter rewards. Existing heroes do get the milestone kit pieces (§5.4) for the tiers
+and distinctions they already hold: those are the hero's own record, not a payout. Keep that
+migration idempotent.
 
 Every frame must support the full seated party and the four visible friends. Frame growth can add
 decorative hotspots, but cannot be required to display a hero's personal space. Early phases must
@@ -932,12 +953,15 @@ lives under.
 - No purchase can overspend, buy a piece twice or charge after the chapter's end has been left.
   Placements the sender may not make are refused (§6).
 - A hero's kit, souvenirs included, goes with the hero to every crew and when moving home (§4.5).
+  Household and character deletion follow existing lifecycle rules.
 - A kit find gives every seated hero their own copy, and a hero who already has it gets nothing
   more (§5.4).
 - A buddy is always out while its hero is seated; the other seats rotate (§4.4).
-- From the book, a kid can change only their own hero's kit and buddy, and only with a signal;
-  nothing shared can change there (§7, §12.6). Household and
-  character deletion follow existing lifecycle rules.
+- From the book, a kid can change only their own hero's kit and buddy; nothing shared can change
+  there (§7, §12.6). Offline changes queue, survive closing the book, and merge field by field when
+  sent; a field changed elsewhere in the meantime keeps the newer value (§7).
+- A new tier or class distinction unlocks its kit piece once, and a failed campaign that puts the
+  tier back leaves the piece unlocked (§5.4).
 - Begin, Go on and return to lobby remain available with panels open and during every animation
   (§3, §8).
 - At most four friends are out, and four heroes and four friends fit each frame, and the indoor
