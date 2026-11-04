@@ -179,7 +179,12 @@ const FIRST_PAINT_BUDGET_KB = 330;
 // 1470 -> 1485 for combat planning: the deterministic enemy planner is now
 // visible on phone/TV, with fighter inspection, suggestions and mission rules.
 // 1481KB measured; existing biome and character art is reused, no dependency added.
-const TOTAL_BUDGET_KB = 1485;
+// 1485 -> 1525 for the crew's camp (#613, #614, #615): 1523KB measured in CI
+// and locally. Lane walking, moments, framing, the still fallback and registered
+// kit tinting live in the lazy room/renderer graph. This is the explicit cost
+// of the new camp feature, with no dependency added; first paint remains 329KB
+// under its unchanged 330KB cap. Painted PNG/WebP assets are fetched separately.
+const TOTAL_BUDGET_KB = 1525;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

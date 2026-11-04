@@ -309,11 +309,36 @@
   .kad-party--world .lobby__gather:has(.lobby__join--compact) { align-items: end; }
   .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby__party { align-self: end; gap: .4em; }
   .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby__lineup {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 9em), 1fr));
+    /* Keep room for a whole name beside its portrait. A third narrow card
+       used to break even Sparklehoof; use another row before squeezing it. */
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14em), 1fr));
     gap: .5em;
   }
   .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member { grid-template-columns: 2.4em minmax(0, 1fr); padding: .45em .5em; }
   .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member .lobby-member__portrait { inline-size: 2.4em; block-size: 2.9em; }
   .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member__name { font-size: .95em; }
   .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member__meta { font-size: .8em; white-space: nowrap; }
+}
+
+/* The compact camp band must retain the short-screen rules above. Its later,
+   more specific selectors otherwise restore tall portraits and a wide QR row. */
+@media (min-width: 900px) and (orientation: landscape) and (max-height: 650px) {
+  .kad-party--world .lobby__gather .lobby__join--compact .lobby__code-letter { font-size: 1em; }
+  .kad-party--world .lobby__gather .lobby__join--compact .lobby__qr { inline-size: 3.3em; block-size: 3.3em; }
+  .kad-party--world .lobby__gather .lobby__join--compact .lobby__join-step { font-size: .65em; }
+  html[data-text="largest"] .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member {
+    grid-template-columns: 1.3em minmax(0, 1fr) auto;
+    grid-template-rows: auto;
+    row-gap: 0;
+    padding-block: .15em;
+  }
+  html[data-text="largest"] .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member .lobby-member__portrait {
+    inline-size: 1.3em;
+    block-size: 1.5em;
+  }
+  html[data-text="largest"] .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member__name { font-size: .8em; }
+  html[data-text="largest"] .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby__lineup { gap: .2em; }
+  html[data-text="largest"] .kad-party--world .lobby__gather .lobby__join--compact { grid-template-columns: max-content max-content; }
+  html[data-text="largest"] .kad-party--world .lobby__gather .lobby__join--compact .lobby__code-letter { font-size: .65em; }
+  html[data-text="largest"] .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby__party { gap: .15em; }
 }
