@@ -68,6 +68,9 @@ The `open_plains` backdrop and the stage-1 frame: a small campfire, a neutral be
 ## Hero-colored bedrolls: the implemented format
 
 Three styles are declared in `manifest.camp.kitStyles`: `rolled`, `quilted`, and `patched`.
+Their packs have distinct silhouettes: the rolled blanket has a structured two-pocket
+rucksack, the quilted bedroll has a round rope-drawstring pack, and the patched trail kit has
+a low, wide flap satchel. Packs retain their natural material colors; only bedding is tinted.
 Each is one 1024 × 1024 RGBA painting under `assets/camp/kits/`, with neutral light cloth,
 natural leather and metal, and the same y 900 ground contact as the neutral bedroll.
 Prompts are in [camp-kit-art-prompts.json](../camp-kit-art-prompts.json).
