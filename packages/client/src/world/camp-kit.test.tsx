@@ -4,8 +4,17 @@ import { afterEach, expect, it } from "vitest";
 import manifest from "../../../../assets/manifest.json";
 import { CAMP_KIT_STYLES, campClothMatrix, campKitStyle } from "./camp-kit-art";
 import { CampBedroll } from "./CampBedroll";
+import { execFileSync } from "node:child_process";
 
 afterEach(cleanup);
+it("measures kit height from painted pixels, so transparent padding cannot change ownership scale", () => {
+  const styles = Object.values(CAMP_KIT_STYLES);
+  const output = execFileSync(process.platform === "win32" ? "python" : "python3", ["-c",
+    "import sys,json; from PIL import Image; print(json.dumps([(lambda box:(box[3]-box[1])/1024)(Image.open(p).getchannel('A').point(lambda a:255 if a>8 else 0).getbbox()) for p in sys.argv[1:]]))",
+    ...styles.map(art => art.path.slice(1)),
+  ], { encoding: "utf8" });
+  expect(styles.map(art => art.paintHeight)).toEqual(JSON.parse(output));
+});
 it("keeps runtime styles aligned with the art inventory", () => {
   expect(manifest.camp.kitStyles.map(art => [art.id, `/assets/${art.path}`]))
     .toEqual(Object.entries(CAMP_KIT_STYLES).map(([id, art]) => [id, art.path]));

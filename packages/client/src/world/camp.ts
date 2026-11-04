@@ -29,6 +29,7 @@
 import { Assets, Container, Graphics, Rectangle, Sprite, Texture, type Application } from "pixi.js";
 import { CAMP_KIT_STYLES, campKitStyle } from "./camp-kit-art";
 import { campKitCanvas } from "./camp-kit-canvas";
+import { campOwnedScale, campPieceOwner } from "./camp-ownership";
 import type { CastStance } from "@kad/shared";
 import {
   ANCHOR_X,
@@ -256,6 +257,7 @@ interface Actor {
 }
 
 interface PieceView {
+  ownerScale: number;
   shadow: Container;
   groundCount: number;
   mirrored: boolean;
@@ -397,6 +399,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     ground.addChild(container);
     const entry: PieceView = {
       id: piece.id,
+      ownerScale: 1,
       shadow,
       groundCount,
       mirrored: piece.id.startsWith("bedroll") && piece.x > .5,
@@ -863,7 +866,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
 
     const active = activeHotspots(layout.frame.standPoints, usingPoints());
     for (const piece of pieces.values()) {
-      piece.container.scale.set(piece.laneScale * figureScale);
+      piece.container.scale.set(piece.laneScale * figureScale * piece.ownerScale);
       if (!piece.part || !piece.motion) continue;
       piece.strength = approach(piece.strength, !still && active.has(piece.id) ? 1 : 0, PART_RATE, dt);
       if (piece.strength < 0.001) piece.strength = 0;
@@ -882,6 +885,11 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
 
   function setFigures(figures: readonly CampFigure[]): void {
     if (destroyed) return;
+    for (const definition of layout.frame.pieces) {
+      const piece = pieces.get(definition.id)!;
+      piece.ownerScale = campOwnedScale(campPieceOwner(layout, definition, figures), measure);
+      piece.container.scale.set(piece.laneScale * figureScale * piece.ownerScale);
+    }
     for (const def of figures) {
       if (def.seat === undefined || !def.accent) continue;
       const point = layout.frame.standPoints.find(p => p.seat === def.seat && p.action === "rest");

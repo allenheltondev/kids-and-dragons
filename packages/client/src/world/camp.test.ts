@@ -19,8 +19,43 @@ import { MIN_FIGURE_SCALE, campFit, campWindow } from "./camp-framing";
 import { fitCanvas } from "./figure-scale";
 import { MAX_WALKERS } from "./camp-wander";
 import { CAMP_KIT_STYLES, campKitStyle } from "./camp-kit-art";
+import { campOwnedScale } from "./camp-ownership";
 
 beforeAll(installFakeCanvas2D);
+
+it("resizes any owned piece with its hero without moving its ground contact or reloading art", async () => {
+  const layout = campLayoutFixture();
+  const owned = layout.frame.pieces.find(piece => piece.id === "pack")!;
+  owned.ownerSeat = 0;
+  const app = fakeApp();
+  const urls: string[] = [];
+  const stage = createCamp(app as unknown as Application, layout, { still: true, loadTexture: url => {
+    urls.push(url);
+    return Promise.resolve(Texture.WHITE);
+  } });
+  stage.resize(1280, 720);
+  const hero: CampFigure = { id: "owner", url: null, heightCm: 85, stance: "standing", seat: 0 };
+  const ground = stage.view.children[1] as Container;
+  const pack = ground.children.find(child => child.label === "piece:pack")!;
+  const fire = ground.children.find(child => child.label === "piece:campfire")!;
+  const ratio = () => pack.scale.y / layout.lanes.get(owned.lane)!.scale
+    / (fire.scale.y / layout.lanes.get("middle")!.scale);
+  stage.setFigures([hero]);
+  app.ticker.frame(16);
+  await Promise.resolve();
+  const at = { x: pack.x, y: pack.y };
+  const count = urls.length;
+  expect(ratio()).toBeCloseTo(campOwnedScale(hero, campMeasure(1080)));
+  stage.setFigures([{ ...hero, heightCm: 215 }]);
+  app.ticker.frame(16);
+  expect(ratio()).toBeCloseTo(campOwnedScale({ heightCm: 215 }, campMeasure(1080)));
+  expect({ x: pack.x, y: pack.y }).toEqual(at);
+  expect(urls).toHaveLength(count);
+  stage.setFigures([]);
+  app.ticker.frame(16);
+  expect(ratio()).toBeCloseTo(1);
+  stage.destroy();
+});
 
 it.each([false, true])("loads a seated hero's kit and retains a bedroll if the variant fails (%s)", async failed => {
   const ownLayout = campLayoutFixture();

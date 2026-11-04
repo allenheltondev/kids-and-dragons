@@ -23,6 +23,13 @@ function parsed(change: (m: any) => void) {
 }
 
 describe("parseCampManifest", () => {
+  it("accepts explicit ownership and rejects an invalid hero seat", () => {
+    const read = parsed(m => { m.frames[0].pieces[0].ownerSeat = 0; })();
+    expect(read.frames[0]!.pieces[0]!.ownerSeat).toBe(0);
+    for (const seat of [-1, 4, 1.5, "0", true]) {
+      expect(parsed(m => { m.frames[0].pieces[0].ownerSeat = seat; })).toThrow(/ownerSeat/);
+    }
+  });
   it("reads the contract's shape", () => {
     const manifest = parseCampManifest(campManifestFixture());
     expect(manifest.backdropCanvas).toEqual({ width: 1920, height: 1080 });

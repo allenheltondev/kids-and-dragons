@@ -12,6 +12,8 @@ import { makeCharacter, makeMember, makeState } from "../testing/fixtures";
 import { useGameStore } from "../store";
 import { StaticStage } from "./StaticStage";
 import { setLobbyInsetBottom } from "./stage-inset";
+import { CAMP_KIT_STYLES, type CampKitStyle } from "./camp-kit-art";
+import { figureSize } from "./figure-scale";
 
 function member(n: number, overrides: Partial<PartyMember> = {}): PartyMember {
   return makeMember({
@@ -32,6 +34,18 @@ afterEach(() => {
 });
 
 describe("the still camp", () => {
+  it("fits the painted pack to its owner's size rather than the PNG canvas", () => {
+    mount(makeState({ party: [
+      member(1, { character: makeCharacter({ id: "tiny", species: "dragonling" }) }),
+      member(2, { character: makeCharacter({ id: "large", species: "bigfoot" }) }),
+    ] }));
+    const heights = [0, 1].map(seat => {
+      const el = document.querySelector<HTMLElement>(`[data-piece="bedroll_${seat}"]`)!;
+      const style = el.querySelector("[data-camp-kit]")!.getAttribute("data-camp-kit") as CampKitStyle;
+      return parseFloat(el.style.height) * CAMP_KIT_STYLES[style].paintHeight;
+    });
+    expect(heights[1]! / heights[0]!).toBeCloseTo(figureSize("characters/bigfoot").heightCm / figureSize("characters/dragonling").heightCm);
+  });
   it("draws owned kit styles and the fire without motion", () => {
     mount(makeState({ party: [member(1), member(2)] }));
     expect(document.querySelectorAll("[data-camp-kit]")).toHaveLength(2);

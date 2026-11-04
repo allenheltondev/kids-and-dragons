@@ -118,6 +118,18 @@ counts the five Phase 1 paintings and three kits once each. Runtime tests tie st
 the manifest, check tint math and fallback, and guard against filter collisions between seats.
 The tent and tent-flap formats remain future work.
 
+## Hero-sized owned pieces
+
+`ownerSeat` on a camp piece declares which hero it belongs to. Existing seat-linked rest
+hotspots also infer that ownership. An owned piece's `heightCm` is its reference size for a
+160 cm hero; both renderers scale it in proportion to its owner's displayed height. A 40 cm
+kit therefore shrinks for a dragonling and grows for a bigfoot. The factor is applied after
+the base piece's legibility floor, and includes shadows and moving parts without changing
+ground contact. Shared pieces such as the fire and trailhead retain their authored size.
+Empty seats use the reference size. Reassigning a seat or changing the hero's size updates
+the piece without rerasterizing its art. The still renderer also accounts for the kit's
+actual painted height, rather than treating its transparent canvas as the object.
+
 ## Grounding and light
 
 The camp shares one upper-left daylight direction. Heroes and pieces have soft contact
