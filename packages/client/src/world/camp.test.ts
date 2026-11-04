@@ -1,0 +1,419 @@
+// @vitest-environment jsdom
+/**
+ * The camp stage, frame by frame against the fake stage
+ * (testing/fake-stage.ts), the same discipline as scene-motion.test.ts: what
+ * the containers do over hand-driven frames, not pixels. The rules are
+ * docs/camp.md §8.6; the pure modules hold them as curves, and this holds the
+ * wiring to them.
+ */
+
+import { beforeAll, describe, expect, it } from "vitest";
+import { Sprite, Texture, type Application, type Container } from "pixi.js";
+import { campLayoutFixture } from "../testing/camp-fixture";
+import { fakeApp, installFakeCanvas2D, type FakeApp } from "../testing/fake-stage";
+import { createCamp, type CampFigure, type CampFigureView, type CampStage } from "./camp";
+import { ANCHOR_X, ANCHOR_Y } from "./actor-art";
+import { laneAt, pieceHeightCm, standPoint } from "./camp-layout";
+import { MAX_FRAME_S, campHeightPx, campMeasure } from "./camp-motion";
+import { fitCanvas } from "./figure-scale";
+import { MAX_WALKERS } from "./camp-wander";
+
+beforeAll(installFakeCanvas2D);
+
+const layout = campLayoutFixture();
+const W = layout.canvas.width;
+const H = layout.canvas.height;
+
+const CREW: CampFigure[] = [
+  { id: "hero-0", url: null, heightCm: 165, stance: "standing", seat: 0 },
+  { id: "hero-1", url: null, heightCm: 95, stance: "standing", seat: 1 },
+  { id: "hero-2", url: null, heightCm: 215, stance: "standing", seat: 2 },
+  { id: "hero-3", url: null, heightCm: 85, stance: "standing", seat: 3 },
+  { id: "goat", url: null, heightCm: 45, stance: "standing" },
+  { id: "wisp", url: null, heightCm: 20, stance: "hovering" },
+];
+
+const noArt = (): Promise<Texture> => Promise.reject(new Error("no art in tests"));
+
+function camp(options: { seed?: number; still?: boolean; figures?: CampFigure[] } = {}): { camp: CampStage; app: FakeApp } {
+  const app = fakeApp();
+  const stage = createCamp(app as unknown as Application, layout, {
+    seed: options.seed ?? 7,
+    still: options.still ?? false,
+    loadTexture: noArt,
+  });
+  stage.resize(1600, 900);
+  stage.setFigures(options.figures ?? CREW);
+  return { camp: stage, app };
+}
+
+const byId = (views: CampFigureView[]) => new Map(views.map((v) => [v.id, v]));
+
+/** Run `seconds` of frames, `check(prev, next)` after each. */
+function frames(app: FakeApp, stage: CampStage, seconds: number, ms = 16, check?: (prev: Map<string, CampFigureView>, next: Map<string, CampFigureView>) => void): void {
+  let prev = byId(stage.figures());
+  for (let i = 0; i < Math.round((seconds * 1000) / ms); i++) {
+    app.ticker.frame(ms);
+    const next = byId(stage.figures());
+    check?.(prev, next);
+    prev = next;
+  }
+}
+
+/** Nothing slides (§8.6, rule 1): a standing figure's travel is all in hops, moments included. */
+function noSlide(prev: Map<string, CampFigureView>, next: Map<string, CampFigureView>): void {
+  for (const [id, now] of next) {
+    const was = prev.get(id);
+    if (!was || CREW.find((f) => f.id === id)?.stance !== "standing") continue;
+    const moved = Math.hypot(now.x - was.x, now.y - was.y);
+    if (moved > 1e-6) expect(was.airborne || now.airborne, `${id} slid ${moved}px`).toBe(true);
+  }
+}
+
+describe("the camp stage", () => {
+  it("seats every hero on their own bedroll and fades them in", () => {
+    const { camp: c, app } = camp();
+    const start = byId(c.figures());
+    for (const seat of [0, 1, 2, 3]) {
+      const hero = start.get(`hero-${seat}`)!;
+      const bed = layout.frame.standPoints.find((p) => p.seat === seat)!;
+      expect(hero.point).toBe(bed.id);
+      expect(hero.x).toBeCloseTo(bed.x * W);
+      expect(hero.y).toBeCloseTo(layout.lanes.get(bed.lane)!.y * H);
+      expect(hero.alpha).toBe(0);
+    }
+    frames(app, c, 1);
+    for (const view of c.figures()) expect(view.alpha).toBeGreaterThan(0.95);
+    c.destroy();
+  });
+
+  it("holds the rules of clean motion for two minutes of a full camp", () => {
+    const { camp: c, app } = camp({ seed: 2026 });
+    const crossings = layout.backdrop.crossings.map((x) => x.x * W);
+    let walked = 0;
+    let peak = 0;
+    frames(app, c, 120, 16, (prev, next) => {
+      let walkers = 0;
+      const points: string[] = [];
+      for (const [id, now] of next) {
+        const was = prev.get(id)!;
+        const moved = Math.hypot(now.x - was.x, now.y - was.y);
+        const standing = CREW.find((f) => f.id === id)!.stance === "standing";
+        // Nothing slides: every pixel of a standing figure's travel is in a hop.
+        if (standing && moved > 1e-6) expect(was.airborne || now.airborne, `${id} slid ${moved}px`).toBe(true);
+        if (moved > 0) walked += moved;
+        // Feet on the ground line: on a lane, or on a crossing between two.
+        const onLane = laneAt(layout, now.y / H) !== null;
+        expect(onLane || crossings.some((x) => Math.abs(x - now.x) < 1e-6), `${id} off the ground`).toBe(true);
+        if (now.walking) walkers += 1;
+        if (now.point) points.push(now.point);
+      }
+      peak = Math.max(peak, walkers);
+      expect(walkers).toBeLessThanOrEqual(MAX_WALKERS);
+      expect(new Set(points).size, `two on one stand point: ${points.join(", ")}`).toBe(points.length);
+    });
+    expect(walked).toBeGreaterThan(W);
+    expect(peak).toBeGreaterThan(0);
+    c.destroy();
+  });
+
+  it("draws nearer figures in front and slightly bigger", () => {
+    const { camp: c, app } = camp();
+    frames(app, c, 0.5);
+    const view = c.view.children[1] as Container;
+    const back = view.children.find((child) => child.label === "figure:hero-0")!;
+    const goat = view.children.find((child) => child.label === "figure:goat")!;
+    const goatAt = c.figures().find((f) => f.id === "goat")!;
+    expect(goatAt.y).toBeGreaterThan(c.figures().find((f) => f.id === "hero-0")!.y);
+    expect(goat.zIndex).toBeGreaterThan(back.zIndex);
+    expect(goat.scale.x).toBeGreaterThan(back.scale.x);
+    c.destroy();
+  });
+
+  it("steps by elapsed time: a dropped frame lands where two frames would", () => {
+    const a = camp({ seed: 99 });
+    const b = camp({ seed: 99 });
+    for (let i = 0; i < 1500; i++) {
+      a.app.ticker.frame(16);
+      a.app.ticker.frame(16);
+      b.app.ticker.frame(32);
+    }
+    const left = byId(a.camp.figures());
+    for (const right of b.camp.figures()) {
+      const twin = left.get(right.id)!;
+      expect(right.x).toBeCloseTo(twin.x, 3);
+      expect(right.y).toBeCloseTo(twin.y, 3);
+      expect(right.lift).toBeCloseTo(twin.lift, 1);
+    }
+    a.camp.destroy();
+    b.camp.destroy();
+  });
+
+  it("does not replay a long pause: a hidden screen picks up where it was", () => {
+    const a = camp({ seed: 3 });
+    const b = camp({ seed: 3 });
+    frames(a.app, a.camp, 20);
+    frames(b.app, b.camp, 20);
+    a.app.ticker.frame(60_000);
+    b.app.ticker.frame(MAX_FRAME_S * 1000);
+    const left = byId(a.camp.figures());
+    for (const right of b.camp.figures()) {
+      expect(right.x).toBeCloseTo(left.get(right.id)!.x, 6);
+      expect(right.y).toBeCloseTo(left.get(right.id)!.y, 6);
+    }
+    a.camp.destroy();
+    b.camp.destroy();
+  });
+
+  it("animates a piece only while somebody uses it", () => {
+    // Nobody but a hero on a bedroll: the campfire is a painting.
+    const { camp: c, app } = camp({ figures: [CREW[0]!] });
+    const fire = (c.view.children[1] as Container).children.find((child) => child.label === "piece:campfire") as Container;
+    const flame = fire.children.find((child) => child.label === "part:campfire")!;
+    frames(app, c, 1);
+    expect(c.activePieces()).toEqual([]);
+    expect(flame.scale.y).toBe(1);
+    expect(flame.rotation).toBe(0);
+    // A friend, who has no bedroll, is given the first free spot: the campfire.
+    c.setFigures([CREW[0]!, CREW[4]!]);
+    frames(app, c, 2);
+    const goat = c.figures().find((f) => f.id === "goat")!;
+    expect(standPoint(layout, goat.point!)?.hotspot).toBe("campfire");
+    expect(c.activePieces()).toEqual(["campfire"]);
+    let changed = false;
+    frames(app, c, 1, 16, () => {
+      if (flame.scale.y !== 1) changed = true;
+    });
+    expect(changed).toBe(true);
+    c.destroy();
+  });
+
+  it("walks a hero who taps Ready to the trailhead, and faces the trail", () => {
+    const { camp: c, app } = camp();
+    frames(app, c, 1);
+    c.moment("ready", "hero-1");
+    frames(app, c, 0.1);
+    expect(c.figures().find((f) => f.id === "hero-1")!.point).toBeNull();
+    frames(app, c, 40, 16, noSlide);
+    const hero = c.figures().find((f) => f.id === "hero-1")!;
+    const t = layout.frame.trailhead;
+    expect(hero.x).toBeCloseTo(t.x * W);
+    expect(hero.lane).toBe(t.lane);
+    // Facing right, down the trail: art drawn facing left is flipped.
+    expect(hero.artScaleX).toBe(-1);
+    // And waits there: a moment's figure does not wander off again.
+    frames(app, c, 60);
+    expect(c.figures().find((f) => f.id === "hero-1")!.x).toBeCloseTo(t.x * W);
+    c.destroy();
+  });
+
+  it("queues Ready heroes behind the trailhead in the order they tapped, and sets them off in that order", () => {
+    const { camp: c, app } = camp();
+    frames(app, c, 1);
+    const order = ["hero-2", "hero-0", "hero-3", "hero-1"];
+    for (const id of order) {
+      c.moment("ready", id);
+      frames(app, c, 0.5);
+    }
+    frames(app, c, 60, 16, noSlide);
+    const t = layout.frame.trailhead;
+    const xs = order.map((id) => c.figures().find((f) => f.id === id)!.x);
+    expect(xs[0]).toBeCloseTo(t.x * W);
+    for (let i = 1; i < xs.length; i++) {
+      // Behind the one before (away from the edge it leaves by), with room between them.
+      expect(xs[i]!).toBeLessThan(xs[i - 1]! - 0.03 * W);
+    }
+    for (const id of order) expect(c.figures().find((f) => f.id === id)!.lane).toBe(t.lane);
+    // One steps away: the line closes up behind the front.
+    c.moment("away", "hero-0");
+    frames(app, c, 30);
+    const closed = ["hero-2", "hero-3"].map((id) => c.figures().find((f) => f.id === id)!.x);
+    expect(closed[1]!).toBeGreaterThan(xs[2]!);
+    // Begin: the queue leaves front first.
+    c.moment("ready", "hero-0");
+    frames(app, c, 30);
+    c.moment("setOff");
+    const gone: string[] = [];
+    const edge = layout.lanes.get(t.lane)!.x1 * W;
+    frames(app, c, 30, 16, (_, next) => {
+      for (const [id, view] of next) if (view.x > edge && !gone.includes(id)) gone.push(id);
+    });
+    expect(gone.slice(0, 4)).toEqual(["hero-2", "hero-3", "hero-1", "hero-0"]);
+    c.destroy();
+  });
+
+  it("walks a stepped-away hero home and fades them half out", () => {
+    const { camp: c, app } = camp();
+    frames(app, c, 1);
+    c.moment("ready", "hero-2");
+    frames(app, c, 30);
+    c.moment("away", "hero-2");
+    frames(app, c, 40, 16, noSlide);
+    const hero = c.figures().find((f) => f.id === "hero-2")!;
+    expect(hero.point).toBe("bedroll-2");
+    expect(hero.alpha).toBeCloseTo(0.5, 2);
+    c.destroy();
+  });
+
+  it("sets everyone off down the trail at once on Begin, and lets anything cut it short", () => {
+    const { camp: c, app } = camp();
+    frames(app, c, 2);
+    c.moment("setOff");
+    // Nothing waits: within the stagger, everybody is under way.
+    frames(app, c, 3, 16, noSlide);
+    for (const view of c.figures()) expect(view.point).toBeNull();
+    frames(app, c, 60, 16, noSlide);
+    for (const view of c.figures()) {
+      expect(view.alpha).toBeLessThan(0.02);
+      expect(view.x).toBeGreaterThan(layout.lanes.get("near")!.x1 * W);
+    }
+    // A sitting-down kid brings their hero straight back: home, and waving.
+    c.moment("arrive", "hero-0");
+    frames(app, c, 1);
+    const hero = c.figures().find((f) => f.id === "hero-0")!;
+    expect(hero.point).toBe("bedroll-0");
+    expect(hero.alpha).toBeGreaterThan(0.9);
+  });
+
+  it("can be torn down mid-departure", () => {
+    const { camp: c, app } = camp();
+    frames(app, c, 1);
+    c.moment("setOff");
+    app.ticker.frame(16);
+    c.destroy();
+    expect(app.ticker.count).toBe(0);
+    expect(() => {
+      c.moment("arrive", "hero-0");
+      c.setFigures(CREW);
+      c.setSeed(5);
+      c.setStill(true);
+      app.ticker.frame(16);
+    }).not.toThrow();
+  });
+
+  it("waves a hero who sits down: a hop and a look round, at home", () => {
+    const { camp: c, app } = camp({ figures: [CREW[0]!] });
+    frames(app, c, 1);
+    c.moment("arrive", "hero-0");
+    let hopped = 0;
+    let turned = false;
+    frames(app, c, 2, 16, (_, next) => {
+      const hero = next.get("hero-0")!;
+      hopped = Math.max(hopped, hero.lift);
+      if (hero.artScaleX === 1) turned = true;
+    });
+    // Bedroll 0 faces right (artScaleX -1); the look round turns it left.
+    expect(turned).toBe(true);
+    expect(hopped).toBeGreaterThan(0);
+    expect(c.figures()[0]!.point).toBe("bedroll-0");
+    c.destroy();
+  });
+
+  it("re-plans from a new seed without moving anybody", () => {
+    const { camp: c, app } = camp({ seed: 1 });
+    frames(app, c, 30);
+    const before = byId(c.figures());
+    c.setSeed(2);
+    app.ticker.frame(16);
+    for (const view of c.figures()) {
+      const was = before.get(view.id)!;
+      expect(Math.abs(view.x - was.x)).toBeLessThan(10);
+    }
+    frames(app, c, 60);
+    c.destroy();
+  });
+
+  it("lets a figure leave by fading out, and removes it", () => {
+    const { camp: c, app } = camp();
+    frames(app, c, 1);
+    c.setFigures(CREW.filter((f) => f.id !== "goat"));
+    frames(app, c, 0.1);
+    expect(c.figures().find((f) => f.id === "goat")!.alpha).toBeGreaterThan(0.1);
+    frames(app, c, 2);
+    expect(c.figures().find((f) => f.id === "goat")).toBeUndefined();
+    c.destroy();
+  });
+});
+
+describe("the camp's pieces", () => {
+  it("draws a piece at its true size on the figures' canvas contract, its moving part registered over it", async () => {
+    const app = fakeApp();
+    const stage = createCamp(app as unknown as Application, layout, {
+      seed: 1,
+      still: false,
+      // Every file loads: a square canvas, as the art contract paints them.
+      loadTexture: () => Promise.resolve(Texture.WHITE),
+    });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    const ground = stage.view.children[1] as Container;
+    const fire = ground.children.find((child) => child.label === "piece:campfire") as Container;
+    const sprite = fire.children.find((child) => child instanceof Sprite) as Sprite;
+    const part = (fire.children.find((child) => child.label === "part:campfire") as Container).children[0] as Sprite;
+    const { canvas } = fitCanvas(campHeightPx(pieceHeightCm({ id: "campfire" }), campMeasure(H)), null);
+    expect(sprite.height).toBeCloseTo(canvas);
+    expect(sprite.anchor.x).toBeCloseTo(ANCHOR_X);
+    expect(sprite.anchor.y).toBeCloseTo(ANCHOR_Y);
+    expect(part.height).toBeCloseTo(sprite.height);
+    expect(part.anchor.y).toBeCloseTo(sprite.anchor.y);
+    expect(part.y).toBeCloseTo(sprite.y);
+    // And the lane's scale on top: the campfire's lane is the middle one.
+    expect(fire.scale.x).toBeCloseTo(layout.lanes.get("middle")!.scale);
+    stage.destroy();
+  });
+});
+
+describe("the camp in reduced motion (§8.7)", () => {
+  it("stands everybody at their stand points: nobody wanders, nothing hops, nothing burns", () => {
+    const { camp: c, app } = camp({ still: true, figures: [...CREW.slice(0, 4), CREW[4]!] });
+    frames(app, c, 1);
+    const start = byId(c.figures());
+    frames(app, c, 90, 16, (_, next) => {
+      for (const view of next.values()) {
+        expect(view.walking).toBe(false);
+        expect(view.lift).toBeCloseTo(0, 9);
+      }
+    });
+    for (const view of c.figures()) expect(view.x).toBe(start.get(view.id)!.x);
+    expect(c.activePieces()).toEqual([]);
+    c.destroy();
+  });
+
+  it("makes a moment a soft fade at the new spot, never a walk", () => {
+    const { camp: c, app } = camp({ still: true });
+    frames(app, c, 1);
+    c.moment("ready", "hero-1");
+    const bed = c.figures().find((f) => f.id === "hero-1")!;
+    let lowest = 1;
+    frames(app, c, 3, 16, (prev, next) => {
+      const was = prev.get("hero-1")!;
+      const now = next.get("hero-1")!;
+      lowest = Math.min(lowest, now.alpha);
+      expect(now.walking).toBe(false);
+      // It moves only while nobody can see it.
+      if (now.x !== was.x) expect(was.alpha).toBeLessThan(0.02);
+    });
+    const hero = c.figures().find((f) => f.id === "hero-1")!;
+    expect(lowest).toBeLessThan(0.02);
+    expect(hero.x).not.toBe(bed.x);
+    expect(hero.x).toBeCloseTo(layout.frame.trailhead.x * W);
+    expect(hero.alpha).toBeGreaterThan(0.95);
+    c.destroy();
+  });
+
+  it("brings walkers to where they were going by a fade when reduced motion turns on", () => {
+    const { camp: c, app } = camp({ seed: 2026 });
+    let walking: string | null = null;
+    for (let i = 0; i < 4000 && !walking; i++) {
+      app.ticker.frame(16);
+      walking = c.figures().find((f) => f.walking)?.id ?? null;
+    }
+    expect(walking).not.toBeNull();
+    c.setStill(true);
+    frames(app, c, 3);
+    const view = c.figures().find((f) => f.id === walking)!;
+    expect(view.walking).toBe(false);
+    expect(view.point).not.toBeNull();
+    expect(view.alpha).toBeGreaterThan(0.95);
+    c.destroy();
+  });
+});
