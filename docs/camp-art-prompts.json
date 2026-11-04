@@ -1,0 +1,84 @@
+{
+  "$comment": "Prompts for the Phase 1 camp art (#615; docs/camp.md §3.1, §4.1, §8.3 and §8.4; conventions in docs/briefs/camp.md): the open_plains camp backdrop and the stage-1 frame (a small campfire, a neutral bedroll and pack used at all four seats, the trailhead post, and the campfire's flame as a moving part). The layout these are painted for is assets/manifest.json -> camp, and every pixel figure below is derived from it on the 1920x1080 backdrop: lanes at y 648 (back), 734 (middle) and 821 (near), the camp's pieces in the middle third (x 640 to 1280), wander spots and the two lane crossings (x 346 and 1574) outside it, the trailhead at the right edge (x 1824 on the near lane), and the lobby panels over everything below y 842. No heroes are painted: the existing hero figures stand on the lanes. Cutouts share the figure canvas (manifest canvas: 1024x1024, ground contact at 512,900), so they are composed the way figures are: the whole object inside the canvas with a clear margin, its lowest point at y 900. art:verify checks the formats; art:inventory lists what is still owed.",
+  "issue": 615,
+  "mode": "Built-in image_gen",
+  "useCase": "illustration-story",
+  "paintings": [
+    {
+      "id": "camp/backdrops/open_plains",
+      "path": "assets/camp/backdrops/open_plains.webp",
+      "plays": "The camp backdrop for the open_plains terrain family, and the fallback for every family not painted yet. Seen behind the lobby, outdoor rest scenes and the chapter's end.",
+      "reference": "assets/biomes/plains/bg.webp",
+      "output": {
+        "width": 1920,
+        "height": 1080,
+        "format": "WebP",
+        "opaque": true,
+        "encoding": "RGB, Lanczos resize, WebP quality 90 method 6",
+        "maxKB": 500
+      },
+      "prompt": "Use case: illustration-story. Create one full-bleed landscape 16:9 game background painting for Kids & Dragons, target 1920 x 1080, fully opaque. Match the attached open plains reference exactly in palette, light and brushwork: a crafted children's storybook painting with visible brush texture, softly drawn edges and broad gouache-like color masses, friendly age-eight calm. A quiet campsite on open plains in warm late-afternoon light: a wide, flat, gently mown clearing of short green grass ringed by rolling meadow, a far line of soft blue hills on the horizon, a big friendly sky with a few slow cumulus clouds, two or three small round trees and a standing stone or two only at the far left and far right edges. The clearing is empty: no tents, no fire, no bedrolls, no packs, no people and no creatures, because the game stands its own camp pieces and heroes on it. Composition for the game layout: keep the horizon at about 42 to 46 percent of the height. From 52 to 78 percent of the height the ground is one clear, readable, nearly level band of open grass with no rocks, bushes, paths or strong texture across it, because figures walk along three horizontal ground lines at 60, 68 and 76 percent of the height; it brightens very slightly toward the viewer so depth reads. The middle third of the width at that depth is the plainest, openest part of the clearing, a natural spot for a small campfire, with a faint worn patch of bare earth at the center around 68 percent of the height. At the far right edge, around 76 percent of the height, a narrow foot trail leaves the clearing and winds off toward the hills, where the party will set out. The lower 22 percent of the height is quiet, low-detail, slightly darker grass with no focal point, because the lobby panels cover it. Nothing important at the extreme left or right edges. Strong simple value structure, legible at 480px wide, calm and welcoming, never scary. No text, letters, numbers, signs with words, titles, logos, watermark or borders. No humans, no hero figures, no animals, no violence, no weapons. No purple/cyan neon palette, airbrushed 3D, photorealism or excessive fine detail. Deliver this single painting and save generated file."
+    },
+    {
+      "id": "camp/frames/stage1/campfire",
+      "path": "assets/camp/frames/stage1/campfire.png",
+      "plays": "Stage-1 piece campfire, on the middle lane at the center of the camp. Heroes warm up at it from three stand points; it is a still painting until one does.",
+      "reference": "assets/story-props/camp-firepit.webp",
+      "output": {
+        "width": 1024,
+        "height": 1024,
+        "format": "PNG",
+        "alpha": true,
+        "groundContact": { "x": 512, "y": 900 },
+        "encoding": "RGBA PNG, true transparency, corners fully transparent, at least 8px clear margin, lowest opaque row at y 900 (+/-12)"
+      },
+      "prompt": "Use case: illustration-story. Production game piece, a transparent cutout for Kids & Dragons. Warm crafted children's storybook illustration with tapered dark-brown outlines, textured soft gouache shading and upper-left light, matching the attached firepit's style; readable at 120px. One small, cozy campfire seen from a low three-quarter view: a ring of eight or nine rounded grey stones around a little stack of split logs with a friendly, modest orange and gold flame, a few sparks above it, one tin kettle resting on a stone at the back for the one funny detail. Small and homely, about knee height to a traveler, not a bonfire. Center it on a square 1024 x 1024 canvas: the whole fire, stones and flame inside the canvas with at least 8 percent transparent margin on every side, the bottom of the front stones exactly at y 900 and nothing painted below y 912. Keep the flames as one clean shape rising from the logs, with a clear edge where flame meets wood, because the flames are also cut out as a separate moving layer. Truly transparent background: no ground, no grass, no cast shadow, no glow halo baked around it, no scenery, no text."
+    },
+    {
+      "id": "camp/frames/stage1/campfire-flame",
+      "path": "assets/camp/frames/stage1/campfire-flame.png",
+      "plays": "The campfire's moving part (motion: flicker). Laid exactly over campfire.png and animated only while a hero stands at a warmUp stand point.",
+      "reference": "assets/camp/frames/stage1/campfire.png",
+      "output": {
+        "width": 1024,
+        "height": 1024,
+        "format": "PNG",
+        "alpha": true,
+        "groundContact": { "x": 512, "y": 900 },
+        "registration": "the same canvas and position as campfire.png, so the two stack pixel for pixel; nothing below y 912",
+        "encoding": "RGBA PNG, true transparency, corners fully transparent, at least 8px clear margin"
+      },
+      "prompt": "Use case: illustration-story. Moving-part cutout for the attached campfire, a layer the game flickers over it. Make it from the finished campfire painting itself, not a new generation: on the same 1024 x 1024 canvas, at exactly the same position and scale, keep only the flames and the few sparks above them; remove the stones, logs and kettle. Extend the flame's base a little way down into where the logs were, with a soft feathered lower edge, so a gentle sway or stretch never opens a gap between flame and wood. Same warm orange and gold gouache, same outlines and brush texture as the campfire. Truly transparent background, no glow halo, no smoke cloud, no text. Nothing painted below y 912."
+    },
+    {
+      "id": "camp/frames/stage1/bedroll",
+      "path": "assets/camp/frames/stage1/bedroll.png",
+      "plays": "Stage-1 piece bedroll_0 to bedroll_3, the same painting at all four seats around the campfire (two on the back lane, two on the near lane). A seated hero rests on their own. Neutral: Phase 2 adds per-hero styles and colors.",
+      "reference": "assets/story-props/camp-firepit.webp",
+      "output": {
+        "width": 1024,
+        "height": 1024,
+        "format": "PNG",
+        "alpha": true,
+        "groundContact": { "x": 512, "y": 900 },
+        "encoding": "RGBA PNG, true transparency, corners fully transparent, at least 8px clear margin, lowest opaque row at y 900 (+/-12)"
+      },
+      "prompt": "Use case: illustration-story. Production game piece, a transparent cutout for Kids & Dragons. Warm crafted children's storybook illustration with tapered dark-brown outlines, textured soft gouache shading and upper-left light, matching the attached firepit's style; readable at 120px. One traveler's bedroll and pack, neutral and unowned: a thick quilted sleeping roll in undyed oatmeal canvas with a soft folded blanket edge and a small round pillow, laid flat on the ground in a low three-quarter view and seen lengthwise, with a sturdy, slightly lumpy brown leather backpack propped at the pillow end, its flap buckled and a tin cup hanging from one strap for the one funny detail. Plain warm browns, creams and muted sage only: no bright colors, no patterns, no emblems, nothing that says whose it is. Low and wide, the bedroll about twice as long as it is tall in the picture, the pack the tallest part. Center it on a square 1024 x 1024 canvas, the whole bedroll and pack inside the canvas with at least 8 percent transparent margin on every side, the underside of the roll resting exactly at y 900 and nothing painted below y 912. Truly transparent background: no ground, no grass, no cast shadow, no scenery, no character, no text."
+    },
+    {
+      "id": "camp/frames/stage1/trailhead-post",
+      "path": "assets/camp/frames/stage1/trailhead-post.png",
+      "plays": "Stage-1 piece trailhead_post, on the middle lane at the right edge of the camp. A ready hero walks past it to the trailhead and waits there for Begin.",
+      "reference": "assets/story-props/camp-firepit.webp",
+      "output": {
+        "width": 1024,
+        "height": 1024,
+        "format": "PNG",
+        "alpha": true,
+        "groundContact": { "x": 512, "y": 900 },
+        "encoding": "RGBA PNG, true transparency, corners fully transparent, at least 8px clear margin, lowest opaque row at y 900 (+/-12)"
+      },
+      "prompt": "Use case: illustration-story. Production game piece, a transparent cutout for Kids & Dragons. Warm crafted children's storybook illustration with tapered dark-brown outlines, textured soft gouache shading and upper-left light, matching the attached firepit's style; readable at 120px. One trailhead marker where a foot trail leaves camp: a weathered wooden post a little taller than a traveler, set in a small cairn of stacked round stones, with one blank arrow-shaped wooden board nailed near the top pointing right, a coil of rope and a small brass bell hanging from a peg, and a single wildflower growing out of the cairn for the one funny detail. The arrow board is blank wood grain: no letters, no symbols, no numbers. Friendly and inviting, slightly leaning. Center it on a square 1024 x 1024 canvas, the whole post, board and cairn inside the canvas with at least 8 percent transparent margin on every side, the bottom of the cairn exactly at y 900 and nothing painted below y 912. Truly transparent background: no ground, no grass, no cast shadow, no scenery, no text."
+    }
+  ]
+}

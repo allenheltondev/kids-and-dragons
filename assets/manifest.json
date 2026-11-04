@@ -1268,6 +1268,57 @@
       "plates/riftlight/epilogue-rivers-wander-3"
     ]
   },
+  "camp": {
+    "$comment": "The crew's camp (docs/camp.md §3.1, §4.1, §8.3 and §8.4; brief docs/briefs/camp.md; prompts docs/camp-art-prompts.json). Every coordinate is a fraction of backdropCanvas: x from the left edge, y from the top. A lane's y is the ground line its figures' and pieces' ground contact (the canvas origin, 512,900) stands on. backdrops: one opaque 1920x1080 WebP per terrain family (biomeFamilies) at assets/<path>; open_plains is the fallback for every family not painted yet. A backdrop's lanes are its walkable floor, back to near; a nearer lane draws in front and at its larger scale, and x0..x1 is how far along it a figure may walk. A figure changes lanes only at a crossing, between the lanes the crossing lists. frames: one per frame stage (§4.1). pieces are 1024x1024 RGBA cutouts on the figure canvas, standing on a lane at x; movingParts are cutouts on the same canvas, laid exactly over their piece and animated only while a figure uses it (§8.4). standPoints are where one figure at a time may stand, the way it faces (face), and optionally what it does there (action: warmUp, lookUp, peek, rest, greet or pet), the piece it does it at (hotspot, a piece id) and, for a bedroll or tent, whose seat it is (seat, 0-3). trailhead is where a ready hero walks to before Begin. Stand points stay out of the bottom 22 percent, where the lobby panels sit; the camp's pieces keep to the middle third and free wander spots stay outside it. verify.py checks this layout and the format of any camp art present; missing art is owed in art:inventory, not a failure, and the client draws a stand-in until it lands.",
+    "backdropCanvas": { "width": 1920, "height": 1080 },
+    "backdrops": [
+      {
+        "family": "open_plains",
+        "path": "camp/backdrops/open_plains.webp",
+        "lanes": [
+          { "id": "back", "y": 0.60, "x0": 0.12, "x1": 0.88, "scale": 0.84 },
+          { "id": "middle", "y": 0.68, "x0": 0.08, "x1": 0.92, "scale": 0.92 },
+          { "id": "near", "y": 0.76, "x0": 0.04, "x1": 0.97, "scale": 1.0 }
+        ],
+        "crossings": [
+          { "x": 0.18, "lanes": ["back", "middle", "near"] },
+          { "x": 0.82, "lanes": ["back", "middle", "near"] }
+        ]
+      }
+    ],
+    "frames": [
+      {
+        "stage": 1,
+        "pieces": [
+          { "id": "campfire", "path": "camp/frames/stage1/campfire.png", "lane": "middle", "x": 0.50 },
+          { "id": "bedroll_0", "path": "camp/frames/stage1/bedroll.png", "lane": "back", "x": 0.40 },
+          { "id": "bedroll_1", "path": "camp/frames/stage1/bedroll.png", "lane": "back", "x": 0.60 },
+          { "id": "bedroll_2", "path": "camp/frames/stage1/bedroll.png", "lane": "near", "x": 0.38 },
+          { "id": "bedroll_3", "path": "camp/frames/stage1/bedroll.png", "lane": "near", "x": 0.62 },
+          { "id": "trailhead_post", "path": "camp/frames/stage1/trailhead-post.png", "lane": "middle", "x": 0.91 }
+        ],
+        "movingParts": [
+          { "piece": "campfire", "path": "camp/frames/stage1/campfire-flame.png", "motion": "flicker" }
+        ],
+        "standPoints": [
+          { "id": "bedroll_0", "lane": "back", "x": 0.40, "face": "right", "action": "rest", "hotspot": "bedroll_0", "seat": 0 },
+          { "id": "bedroll_1", "lane": "back", "x": 0.60, "face": "left", "action": "rest", "hotspot": "bedroll_1", "seat": 1 },
+          { "id": "bedroll_2", "lane": "near", "x": 0.38, "face": "right", "action": "rest", "hotspot": "bedroll_2", "seat": 2 },
+          { "id": "bedroll_3", "lane": "near", "x": 0.62, "face": "left", "action": "rest", "hotspot": "bedroll_3", "seat": 3 },
+          { "id": "campfire_left", "lane": "middle", "x": 0.43, "face": "right", "action": "warmUp", "hotspot": "campfire" },
+          { "id": "campfire_right", "lane": "middle", "x": 0.57, "face": "left", "action": "warmUp", "hotspot": "campfire" },
+          { "id": "campfire_back", "lane": "back", "x": 0.50, "face": "left", "action": "warmUp", "hotspot": "campfire" },
+          { "id": "wander_back_left", "lane": "back", "x": 0.24, "face": "right" },
+          { "id": "wander_back_right", "lane": "back", "x": 0.76, "face": "left" },
+          { "id": "wander_middle_left", "lane": "middle", "x": 0.13, "face": "right" },
+          { "id": "wander_middle_right", "lane": "middle", "x": 0.86, "face": "left" },
+          { "id": "wander_near_left", "lane": "near", "x": 0.24, "face": "right" },
+          { "id": "wander_near_right", "lane": "near", "x": 0.77, "face": "left" }
+        ],
+        "trailhead": { "lane": "near", "x": 0.95 }
+      }
+    ]
+  },
   "$castFiguresComment": "Named story characters' own figures, drawn on the story stage opposite the party (content `cast`, docs/briefs/story-cast-art.md). Same contract as entities: assets/cast/<id>/assembled.png, 1024x1024 RGBA, one complete cutout standing on the canvas origin (feet at y=900), facing left toward the party. `basis` is the entity or species the character is one of; `scale` is how big they stand, in the entities' scale words; `heightCm` is their height in centimeters, in their own pose and inside that band (canon/creatures.yaml `scale`, packages/canon SCALE_CM), and `stance` how they occupy a scene (standing, hovering, flying or swimming). Both are data, never shown to a player (#362). verify.py checks each entry.",
   "castFigures": [
     {
