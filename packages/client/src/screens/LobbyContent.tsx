@@ -209,7 +209,7 @@ export function LobbyContent(): ReactElement {
       <header className="lobby__header">
       {/* The household's table, when the family named it: where the game is
           kept, not the phones. */}
-      {state?.location ? <p className="lobby__place kad-muted"><span className="lobby__place-label">Your table</span><span>{state.location}</span></p> : null}
+      {state?.location?.trim() ? <p className="lobby__place kad-muted"><span>{state.location.trim()}</span></p> : null}
       {state ? (
         <div className="lobby__crew">
           <CrewIdentity name={crewChoices(state).current} compact />
