@@ -1291,10 +1291,10 @@
         "stage": 1,
         "pieces": [
           { "id": "campfire", "path": "camp/frames/stage1/campfire.png", "lane": "middle", "x": 0.50, "heightCm": 60 },
-          { "id": "bedroll_0", "path": "camp/frames/stage1/bedroll.png", "lane": "back", "x": 0.40, "heightCm": 25 },
-          { "id": "bedroll_1", "path": "camp/frames/stage1/bedroll.png", "lane": "back", "x": 0.60, "heightCm": 25 },
-          { "id": "bedroll_2", "path": "camp/frames/stage1/bedroll.png", "lane": "near", "x": 0.38, "heightCm": 25 },
-          { "id": "bedroll_3", "path": "camp/frames/stage1/bedroll.png", "lane": "near", "x": 0.62, "heightCm": 25 },
+          { "id": "bedroll_0", "path": "camp/frames/stage1/bedroll.png", "lane": "back", "x": 0.40, "heightCm": 40 },
+          { "id": "bedroll_1", "path": "camp/frames/stage1/bedroll.png", "lane": "back", "x": 0.60, "heightCm": 40 },
+          { "id": "bedroll_2", "path": "camp/frames/stage1/bedroll.png", "lane": "near", "x": 0.38, "heightCm": 40 },
+          { "id": "bedroll_3", "path": "camp/frames/stage1/bedroll.png", "lane": "near", "x": 0.62, "heightCm": 40 },
           { "id": "trailhead_post", "path": "camp/frames/stage1/trailhead-post.png", "lane": "middle", "x": 0.91, "heightCm": 120 }
         ],
         "movingParts": [

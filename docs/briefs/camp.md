@@ -43,7 +43,8 @@ prompt's pixel figures change with it.
 - **Pieces fill their canvas the way figures do**: whole object inside the margin, resting on
   y 900. The client sizes them on the stage from the piece's `heightCm` in the manifest (its
   true painted height, scaled like a figure's and by its lane), so a campfire stands at its real
-  size beside a hero. Stage 1: campfire 60, bedroll 25, trailhead post 120.
+  size beside a hero. Stage 1: campfire 60, bedroll 40 (its pack is the tallest part), trailhead
+  post 120.
 - **A moving part only where a stand point animates the piece** (§8.4), and made from the
   finished piece itself (cut from the same painting, its base feathered into the piece) so the
   two always stack. A piece nobody uses needs none.
