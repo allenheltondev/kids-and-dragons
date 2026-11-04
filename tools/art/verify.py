@@ -759,6 +759,9 @@ def check_camp_layout(rep: Report, mf: dict) -> None:
         for piece in frame.get("pieces", []):
             if not on_lane(piece["lane"], piece["x"]):
                 problems.append(f"piece {piece['id']} on its lane")
+            height = piece.get("heightCm")
+            if height is not None and (isinstance(height, bool) or not isinstance(height, (int, float)) or height <= 0):
+                problems.append(f"piece {piece['id']} heightCm a positive number")
         for part in frame.get("movingParts", []):
             if part.get("piece") not in pieces or part.get("motion") not in CAMP_MOTIONS:
                 problems.append(f"moving part {part.get('path')} on a piece, with a motion in {sorted(CAMP_MOTIONS)}")
