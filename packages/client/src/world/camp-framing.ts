@@ -16,8 +16,13 @@
  * edge rows are drawn on past it, flipped so the seam meets itself
  * (`campBleed`): the same painting at the same scale, never a dimmed copy.
  *
+ * When the band is taller than the window at that scale (a tall hero seated,
+ * a short window on a 16:9 TV), the figures and pieces shrink, not the
+ * painting (`campFigureScale`), so every hero stands whole between the header
+ * and the panels.
+ *
  * The moving camp (camp.ts) and the still one (StillCamp.tsx) both frame
- * through `campFraming`, so the two never disagree. Pure and Pixi-free, like
+ * through `campFit`, so the two never disagree. Pure and Pixi-free, like
  * camp-layout.ts, so every rule here is a test (camp-framing.test.ts).
  */
 
@@ -60,14 +65,92 @@ export interface CampFraming {
  * nobody taller, is measured as a standing person (figure-scale.ts
  * `DEFAULT_SIZE`), so the frame is set for a hero before the first one sits
  * down and a small one arriving does not move it.
+ *
+ * `figureScale` is the factor every figure and piece is drawn at
+ * (`campFigureScale`): the heads and the feet's margin shrink with it, the
+ * lanes do not.
  */
-export function campFocusBand(layout: CampLayout, heightsCm: readonly number[] = []): CampBand {
+export function campFocusBand(layout: CampLayout, heightsCm: readonly number[] = [], figureScale = 1): CampBand {
+  const reach = campReach(layout, heightsCm);
+  const top = Math.min(...reach.map((lane) => lane.y - lane.head * figureScale));
+  const bottom = Math.max(...reach.map((lane) => lane.y)) + GROUND_MARGIN * figureScale;
+  return { top: Math.max(0, top), bottom: Math.min(1, bottom) };
+}
+
+/** Each lane's ground and how far the tallest seated head stands above it at full size, as fractions of the canvas. */
+function campReach(layout: CampLayout, heightsCm: readonly number[]): { y: number; head: number }[] {
   const tallest = Math.max(DEFAULT_SIZE.heightCm, ...heightsCm.filter((cm) => Number.isFinite(cm)));
   const drawn = campHeightPx(tallest, campMeasure(layout.canvas.height)) / layout.canvas.height;
-  const lanes = layout.backdrop.lanes;
-  const top = Math.min(...lanes.map((lane) => lane.y - drawn * lane.scale));
-  const bottom = Math.max(...lanes.map((lane) => lane.y)) + GROUND_MARGIN;
-  return { top: Math.max(0, top), bottom: Math.min(1, bottom) };
+  return layout.backdrop.lanes.map((lane) => ({ y: lane.y, head: drawn * lane.scale }));
+}
+
+/**
+ * The smallest factor the camp's figures and pieces are ever drawn at: past
+ * this a hero stops reading as a hero, so a window still too short for the
+ * band keeps the feet in and lets the tallest head reach under the header
+ * (`campFraming`).
+ */
+export const MIN_FIGURE_SCALE = 0.6;
+
+/**
+ * The factor the camp draws every figure and piece at in this window
+ * (docs/camp.md §8.3): 1 whenever the focus band fits the window at the
+ * painting's cover scale, and otherwise the largest factor that makes it fit,
+ * never below `MIN_FIGURE_SCALE`. Only the figures shrink: the painting stays
+ * cover-fit, edge to edge, and the lanes stay where it painted them.
+ *
+ * The band's height grows linearly with the factor on every lane (the head
+ * above it, and the feet's margin below the nearest), so the largest factor
+ * that fits is the least of one bound per lane, and also keeps every head on
+ * the painting (a head above its top edge could never be in the window, which
+ * the painting always covers). Continuous in every input, like the framing,
+ * so the camp eases from one factor to the next rather than jumping.
+ */
+export function campFigureScale(
+  paneWidth: number,
+  window: CampWindow,
+  layout: CampLayout,
+  heightsCm: readonly number[] = [],
+): number {
+  const { canvas } = layout;
+  const windowHeight = Math.max(0, window.bottom - window.top);
+  const scale = Math.max(paneWidth / canvas.width, windowHeight / canvas.height);
+  if (!(scale > 0)) return MIN_FIGURE_SCALE;
+  // The window's height as a share of the painting's.
+  const room = windowHeight / (canvas.height * scale);
+  const reach = campReach(layout, heightsCm);
+  const ground = Math.max(...reach.map((lane) => lane.y));
+  let k = 1;
+  for (const lane of reach) {
+    if (lane.head <= 0) continue;
+    k = Math.min(k, (room - (ground - lane.y)) / (lane.head + GROUND_MARGIN), lane.y / lane.head);
+  }
+  return Math.min(1, Math.max(MIN_FIGURE_SCALE, k));
+}
+
+/** How the camp stands in a pane: the figures' factor, the band it gives, and where the painting goes. */
+export interface CampFit {
+  figureScale: number;
+  band: CampBand;
+  framing: CampFraming;
+}
+
+/**
+ * The one rule the moving camp (camp.ts), the still camp (StillCamp.tsx) and
+ * Travel Mode's phone pane (the same camp.ts) all frame by: the figures'
+ * factor for this window and these heroes, the focus band at that factor, and
+ * the painting slid to put the band in the window.
+ */
+export function campFit(
+  paneWidth: number,
+  window: CampWindow,
+  layout: CampLayout,
+  heightsCm: readonly number[] = [],
+  focusX = 0.5,
+): CampFit {
+  const figureScale = campFigureScale(paneWidth, window, layout, heightsCm);
+  const band = campFocusBand(layout, heightsCm, figureScale);
+  return { figureScale, band, framing: campFraming(paneWidth, window, layout.canvas, band, focusX) };
 }
 
 /**
@@ -92,7 +175,10 @@ export function campWindow(paneHeight: number, insetTop: number, insetBottom: nu
  *   of the painting shows.
  * - **Up and down.** Slid so the focus band's middle is the window's middle,
  *   then clamped so the painting still covers the window from top to bottom.
- *   A band taller than the window overflows it evenly at both ends.
+ *   A band taller than the window (figures already at `MIN_FIGURE_SCALE`)
+ *   keeps the feet in: its bottom sits on the window's bottom and only the
+ *   tallest head reaches past the top, since a kid misses a hero's feet
+ *   behind a panel more than the tip of an ear under the header.
  *
  * Continuous in every input, so a panel growing a line eases the camp a
  * little rather than jumping it (camp.ts eases between two framings).
@@ -110,7 +196,11 @@ export function campFraming(
   const height = canvas.height * scale;
   const x = Math.min(0, Math.max(paneWidth - width, paneWidth / 2 - focusX * width));
   const centered = (window.top + window.bottom) / 2 - ((band.top + band.bottom) / 2) * height;
-  const y = Math.min(window.top, Math.max(window.bottom - height, centered));
+  // Past fitting, the feet's edge of the band holds the window's bottom. The
+  // two agree exactly when the band just fits, so the switch is seamless.
+  const feetFirst = window.bottom - band.bottom * height;
+  const target = (band.bottom - band.top) * height > windowHeight ? feetFirst : centered;
+  const y = Math.min(window.top, Math.max(window.bottom - height, target));
   return { scale, x, y };
 }
 

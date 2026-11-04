@@ -4,7 +4,8 @@
  * for it until it is painted, and every seated hero at their bedroll. Framed
  * the same way the moving camp is (camp-framing.ts `campFraming`): covering
  * the pane's width, slid so the camp stands in the lobby's window, its plain
- * edges drawn on where it stops short of the pane. No renderer: plain images,
+ * edges drawn on where it stops short of the pane, and its heroes drawn
+ * smaller when the window is too short for them at full size. No renderer: plain images,
  * positioned in percent of the backdrop's box, which is placed in px off the
  * pane's measured size.
  */
@@ -12,7 +13,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import type { RunState } from "@kad/shared";
 import type { CampLayout } from "./camp-layout";
-import { BLEED_SOURCE, campBleed, campFocusBand, campFraming, campWindow } from "./camp-framing";
+import { BLEED_SOURCE, campBleed, campFit, campWindow } from "./camp-framing";
 import { LOBBY_CAMP_STAND_IN, campHeroes, stillCampFigures } from "./lobby-camp";
 import { lobbyInsetBottom, lobbyInsetTop, onLobbyInset, onLobbyInsetTop } from "./stage-inset";
 
@@ -35,11 +36,13 @@ export function StillCamp({ layout, state }: { layout: CampLayout; state: RunSta
   }, []);
 
   const heroes = campHeroes(state);
-  const figures = stillCampFigures(layout, heroes);
-  const band = campFocusBand(layout, heroes.map((hero) => hero.figure.heightCm));
-  const at = pane.width > 0 && pane.height > 0
-    ? campFraming(pane.width, campWindow(pane.height, insetTop, inset), layout.canvas, band)
+  // The moving camp's one rule (camp-framing.ts `campFit`): heroes shrink,
+  // never the painting, when the band would not fit the window at full size.
+  const fit = pane.width > 0 && pane.height > 0
+    ? campFit(pane.width, campWindow(pane.height, insetTop, inset), layout, heroes.map((hero) => hero.figure.heightCm))
     : null;
+  const at = fit?.framing ?? null;
+  const figures = stillCampFigures(layout, heroes, fit?.figureScale ?? 1);
   const box = at
     ? { left: at.x, top: at.y, width: layout.canvas.width * at.scale, height: layout.canvas.height * at.scale }
     : { left: 0, top: 0, width: 0, height: 0 };

@@ -25,6 +25,7 @@ import {
   MAX_SHARE,
   campGait,
   campHeightPx,
+  campStride,
   campMeasure,
   frameSeconds,
   partMotion,
@@ -209,6 +210,44 @@ describe("the step curve (§8.2)", () => {
     expect(walk.startHeading).toBe(-1);
     expect(walk.endHeading).toBe(1);
   });
+});
+
+describe("the walk at a smaller figure factor (camp-framing.ts campFigureScale)", () => {
+  const route = campRoute(layout, { lane: "near", x: 0.1 }, { lane: "near", x: 0.9 })!;
+  const full = campGait(160, "standing", PX_PER_CM, campHeightPx(160, campMeasure(canvas.height)));
+
+  it("is the same gait at full size", () => {
+    expect(campStride(full, 1)).toBe(full);
+    expect(campStride(full, Number.NaN)).toBe(full);
+  });
+
+  for (const k of [0.8, 0.6]) {
+    const small = planWalk(route, canvas, campStride(full, k), 1);
+    const big = planWalk(route, canvas, full, 1);
+
+    it(`strides in steps its drawn size at ${k}: about 1/${k} as many, at the same pace`, () => {
+      expect(small.gait.stepPx).toBeCloseTo(full.stepPx * k);
+      expect(small.gait.stepS).toBe(full.stepS);
+      expect(small.steps.length / big.steps.length).toBeCloseTo(1 / k, 0);
+      // Hop and squash are fractions of heightPx, which the camp draws at the factor itself.
+      expect(small.gait.heightPx).toBe(full.heightPx);
+    });
+
+    it(`nothing slides and feet stay on the ground at ${k}`, () => {
+      const poses = samples(small);
+      for (let i = 1; i < poses.length; i++) {
+        const a = poses[i - 1]!;
+        const b = poses[i]!;
+        const moved = Math.hypot(b.x - a.x, b.y - a.y);
+        if (moved > 1e-9) expect(a.airborne || b.airborne).toBe(true);
+        if (!b.airborne) {
+          expect(b.lift).toBe(0);
+          expect(laneAt(layout, b.y / canvas.height)).toBe("near");
+        }
+      }
+      expect(poses[poses.length - 1]!.done).toBe(true);
+    });
+  }
 });
 
 describe("frame time (§8.6, rule 7)", () => {

@@ -132,6 +132,18 @@ export function campGait(heightCm: number, stance: CastStance, pxPerCm: number, 
   };
 }
 
+/**
+ * A gait for a figure drawn at `figureScale` of its size (camp-framing.ts
+ * `campFigureScale`): the stride shrinks with the drawing, so a smaller hero
+ * still covers the ground in steps its own size, and its pace is kept. The
+ * hop, lean and squash need nothing: they are fractions of `heightPx`, read in
+ * the figure's own units, which the camp draws at the same factor.
+ */
+export function campStride(gait: CampGait, figureScale: number): CampGait {
+  const k = Number.isFinite(figureScale) && figureScale > 0 ? figureScale : 1;
+  return k === 1 ? gait : { ...gait, stepPx: gait.stepPx * k };
+}
+
 /** Canvas pixels per second at a steady walk. */
 export function walkSpeed(gait: CampGait): number {
   return gait.stepPx / gait.stepS;

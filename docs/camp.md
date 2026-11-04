@@ -562,7 +562,14 @@ camp's spots on that ground.
   band, from a standing hero's head on the back lane to just below the near lane, sits centered
   in the open window between the header and the panels. Its plain sky is trimmed off the top and
   its plain grass runs on under the panels (`camp-framing.ts`); the backdrop is painted for that
-  (docs/briefs/camp.md).
+  (docs/briefs/camp.md). **Every hero is seen whole.** When the band is taller than the window
+  at that scale (a tall hero seated, a short window on a 16:9 TV), the figures and pieces are
+  drawn smaller, never the painting: the camp draws them at the largest factor up to 1 that fits
+  the band in the window (`campFigureScale`), and their steps shrink with them. It never goes
+  below 0.6; past that the near lane's feet stay in the window and only the tallest heads may
+  reach under the header. The factor eases with the framing as heroes sit down and panels change
+  height, and the moving camp, the still one and Travel Mode's phone pane all take it from the
+  same `campFit`.
 - **Indoors, one lane.** A packed-down camp (§3.2) uses a single generic layout laid over the
   scene's own picture: one near lane along the bottom, a bedroll stand point for each hero and a
   spot for each friend. No per-scene authoring.
