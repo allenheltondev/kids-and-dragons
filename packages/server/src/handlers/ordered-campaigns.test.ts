@@ -319,7 +319,9 @@ describe("Gemfall's numbers, with temporary buffs in the build (#200)", () => {
   /** One fight, both sides played by the monsters' own planner, every event kept. */
   function playFight(party: readonly ResolvedCharacter[], chapterId: string, sceneId: string, seed: string) {
     const scene = content.chapter(chapterId)!.scenes[sceneId] as EncounterScene;
-    const map = content.map(scene.map)!;
+    // This compatibility probe deliberately plays the shipped ordinary wolf
+    // arena, before the opt-in roadside mission. Keep its arithmetic golden.
+    const map = content.map(chapterId === "gemfall-02" && sceneId === "encounter_wolves" ? "roadside" : scene.map)!;
     const ctx = { rules, abilities, rng: makeRng(seed) };
     const enemies: EnemyPlacement[] = [];
     for (const spec of scene.enemies) {
@@ -412,7 +414,7 @@ describe("Gemfall's numbers, with temporary buffs in the build (#200)", () => {
    * fight never grows an environment, an escaped hero, or an environmental
    * beat.
    */
-  it("keeps ordinary encounters unchanged while allowing the explicit quay benchmark", () => {
+  it("keeps ordinary encounters unchanged while allowing the explicit combat benchmarks", () => {
     for (const campaignId of ["gemfall", "the-hollow-crown"]) {
       const campaign = content.campaign(campaignId)!;
       for (const chapterId of campaign.chapters) {
@@ -420,6 +422,14 @@ describe("Gemfall's numbers, with temporary buffs in the build (#200)", () => {
           if (scene.type !== "encounter") continue;
           if (chapterId === "gemfall-01" && sceneId === "encounter_quay_wisps") {
             expect(scene.environment?.objectives?.[0]?.id).toBe("ferry-rope");
+            continue;
+          }
+          if (chapterId === "gemfall-02" && sceneId === "encounter_wolves") {
+            expect(scene.environment?.objectives?.[0]?.id).toBe("wagon-lane");
+            continue;
+          }
+          if (chapterId === "gemfall-02" && sceneId === "encounter_mimic_plank") {
+            expect(scene.environment?.exits?.[0]?.id).toBe("far-bank");
             continue;
           }
           expect(scene).not.toHaveProperty("environment");

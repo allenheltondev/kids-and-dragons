@@ -33,8 +33,13 @@ describe("the scenes ahead", () => {
     const fight = content.scenes.encounter_wisps as Extract<Chapter["scenes"][string], { type: "encounter" }>;
     const quay: Chapter = { ...content, scenes: { ...content.scenes, encounter_wisps: { ...fight, environment: { objectives: [
       { id: "rope", kind: "close", label: "Tie the rope", at: { x: 2, y: 2 }, turns: 2, art: "fight-mooring-post" },
-    ] } } } };
+    ], exits: [{ id: "bank", label: "Far bank", tiles: [{ x: 3, y: 2 }], art: "fight-plank-edge" }] } } } };
     expect(chapterAssets(quay, [])).toContain("/assets/story-props/fight-mooring-post.webp");
+    expect(chapterAssets(quay, [])).toContain("/assets/story-props/fight-plank-edge.webp");
+    const wagon: Chapter = { ...content, scenes: { ...content.scenes, encounter_wisps: { ...fight, environment: { objectives: [
+      { id: "wagon-lane", kind: "hold", label: "Lane", tiles: [{ x: 2, y: 2 }], rounds: 2 },
+    ] } } } };
+    expect(chapterAssets(wagon, [])).toContain("/assets/story-props/sausage-wagon.webp");
   });
   it("starts with the party's own figures — every scene needs them", () => {
     const urls = upcomingAssets(null, null, PARTY);

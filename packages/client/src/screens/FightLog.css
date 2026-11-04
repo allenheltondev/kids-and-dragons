@@ -365,6 +365,7 @@
 }
 .fight-log .fight-log__lines { color: var(--color-text-muted, #b7b0d8); }
 .fight-log .fight-log__line > span:only-child { color: inherit; }
+.fight-log .rift-status__lines .rift-status__line--open { outline: none; }
 
 /* Large text on a TV remains a side column, with room for full sentences. */
 @container world (min-width: 641px) and (max-height: 26em) {

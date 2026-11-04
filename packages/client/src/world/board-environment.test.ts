@@ -46,12 +46,11 @@ function members(chars: readonly ResolvedCharacter[]): PartyMember[] {
 }
 
 /**
- * Gemfall's second chapter's wolf fight, on its own map, exactly as authored:
- * the fixture for "a fight without an environment draws what it always drew".
+ * The shipped ordinary wolf fight, before the opt-in roadside mission:
+ * the fixture for "a saved fight without an environment draws what it always drew".
  */
 function gemfallFight(): EncounterState {
   const scene = (gemfall02 as unknown as { scenes: Record<string, EncounterScene> }).scenes["encounter_wolves"]!;
-  expect(scene.environment).toBeUndefined();
   const enemies: EnemyPlacement[] = [];
   for (const authored of scene.enemies) {
     const { spec } = resolveEnemy(authored as AuthoredEnemySpec, bestiary as unknown as Bestiary);

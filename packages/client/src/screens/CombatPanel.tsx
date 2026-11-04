@@ -136,6 +136,7 @@ import { combatMarkerArt, markerFromIcon } from "../world/combat-art";
 import { EFFECT_FRAMES } from "./combat-feedback";
 import { useCombatFeedback, type ActiveFeedback } from "./use-combat-feedback";
 import "./CombatPanel.css";
+import { WagonDefense } from "./WagonDefense";
 
 /**
  * What has been tapped so far this turn. One machine rather than scattered
@@ -300,7 +301,7 @@ export function CombatControls(): ReactElement | null {
 
 
   if (!encounter || !me) return null;
-  const windupEncounter = encounter.combatants.some(c => c.windupAttack);
+  const missionEncounter = Boolean(encounter.environment) || encounter.combatants.some(c => c.windupAttack);
 
   const active = currentActor(encounter);
   const myTurn = active !== null && active.side === "party" && active.id === me.character.id;
@@ -318,7 +319,7 @@ export function CombatControls(): ReactElement | null {
   const offeredActions =
     myTurn && rules && abilities ? legalActions(encounter, combatContext(rules, abilities)) : [];
   const priority = (id: string) => id === "ready" ? 2 : id === "attack" ? 1 : 0;
-  const actions = windupEncounter ? [...offeredActions].sort((a, b) => priority(a.abilityId) - priority(b.abilityId)) : offeredActions;
+  const actions = missionEncounter ? [...offeredActions].sort((a, b) => priority(a.abilityId) - priority(b.abilityId)) : offeredActions;
   const moves = myTurn ? legalMoves(encounter) : [];
   // The gold squares, though, go the moment a tap is on its way.
   const walkTiles = deciding && selection.step === "idle" ? moves : [];
@@ -629,7 +630,7 @@ export function CombatControls(): ReactElement | null {
   );
 
   return (
-    <div className="prompt combat" data-windup={windupEncounter || undefined} data-quiet-hint={windupEncounter && selection.step === "idle" && !pending && synced && !encounter.actionTaken || undefined}>
+    <div className="prompt combat" data-mission={missionEncounter || undefined} data-quiet-hint={missionEncounter && selection.step === "idle" && !pending && synced && !encounter.actionTaken || undefined}>
       <div className="combat__overview">
         <FighterRoster encounter={encounter} myId={me.character.id} />
         <button type="button" className="combat__enlarge kad-focusable" onClick={() => setMapOpen(true)} aria-label="Enlarge battle map">＋</button>
@@ -668,7 +669,7 @@ export function CombatControls(): ReactElement | null {
           needs saving, what burns. Absent in every fight without an
           environment, so nothing here moves an ordinary board. */}
       {encounter.environment?.spec.victory === "rescue" && <p className="combat__mission" role="status">{combatMission(encounter)}</p>}
-      <EnvironmentStatus encounter={encounter} />
+      {encounter.environment?.spec.objectives?.some(o => o.id === "wagon-lane") ? <WagonDefense encounter={encounter} /> : <EnvironmentStatus encounter={encounter} />}
 
       {/* What the last beat did, in one line: the newest swing, its sum and
           the Guard it needed, or whatever else just happened. The running
@@ -779,7 +780,7 @@ export function CombatControls(): ReactElement | null {
                     : undefined
                 }
               >
-                {aimingWho.name}: {windupEncounter ? "choose someone." : "tap a glowing figure or choose below."}
+                {aimingWho.name}: {missionEncounter ? "choose someone." : "tap a glowing figure or choose below."}
                 {selection.step === "target" && (selection.action.maxTargets ?? 1) > 1
                   ? ` (${selection.picked.length + 1} of ${Math.min(
                       selection.action.maxTargets ?? 1,
@@ -809,7 +810,7 @@ export function CombatControls(): ReactElement | null {
             onClickCapture={held ? swallowTap : undefined}
           >
             {selection.step === "idle" && cardCount > 0 ? (
-              <PagedOptions pageSize={windupEncounter ? 2 : 3} className="prompt__options combat__actions" data-dense={dense || undefined}>
+              <PagedOptions pageSize={missionEncounter ? 2 : 3} className="prompt__options combat__actions" data-dense={dense || undefined}>
                 {actions.map((action) => (
                   <li key={action.abilityId}>
                     <button
@@ -1005,7 +1006,7 @@ function FighterRoster({ encounter, myId }: { encounter: EncounterState; myId: s
   const dangerIds = new Set(committedAttacks(encounter).flatMap(attack => encounter.board.actors
     .filter(actor => attack.tiles.some(tile => tile.x === actor.x && tile.y === actor.y)).map(actor => actor.id)));
   const selected = fighters.find(f => f.id === inspected) ?? fighters.find(f => f.windup && !f.down) ?? fighters.find(f => f.id === nextEnemyId(encounter)) ?? fighters.find(f => f.id === myId) ?? fighters[0];
-  return <section className="combat__roster" aria-label={`Round ${encounter.round}: fighters and plans`}>
+  return <section className="combat__roster" data-inspected={inspected !== null || undefined} aria-label={`Round ${encounter.round}: fighters and plans`}>
     <ul className="combat__fighter-strip" aria-label="Fighter details">
       {fighters.map(fighter => <li key={fighter.id} data-active={fighter.id === activeId || undefined}>
         <button type="button" className="kad-focusable" aria-pressed={selected?.id === fighter.id} onClick={() => setInspected(fighter.id)}

@@ -114,7 +114,7 @@ export function environmentOverlay(encounter: EncounterState): EnvironmentOverla
     const state: OverlayState = exit.open ? "active" : exit.gone ? "gone" : "pending";
     const count = exit.open ? exit.closesIn : exit.gone ? undefined : exit.opensIn;
     for (const at of exit.tiles) {
-      mark(at, { kind: "exit", glyph: "exit", state, label: exit.label, ...(count !== undefined ? { count } : {}) });
+      mark(at, { kind: "exit", glyph: "exit", state, label: exit.label, ...(exit.art ? { art: exit.art } : {}), ...(count !== undefined ? { count } : {}) });
     }
   }
 

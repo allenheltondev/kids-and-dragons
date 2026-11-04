@@ -182,7 +182,7 @@ function featuresOf(encounter: EncounterState): Map<string, GridFeature> {
   for (const exit of view.exits) {
     if (exit.gone) continue;
     for (const t of exit.tiles) {
-      out.set(`${t.x},${t.y}`, { kind: "exit", label: exit.label, icon: EXIT_ICON, active: exit.open });
+      out.set(`${t.x},${t.y}`, { kind: "exit", label: exit.label, icon: EXIT_ICON, active: exit.open, ...(exit.art ? { art: exit.art } : {}) });
     }
   }
   // Ground to hold and tears to close (#220), quiet once done.
