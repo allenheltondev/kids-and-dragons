@@ -193,7 +193,11 @@ const FIRST_PAINT_BUDGET_KB = 330;
 // 1531KB in Linux CI (run 41923372911), first paint still 329KB. The extra code
 // stays in the lazy room/renderer graph; no dependency or first-paint allowance
 // changed. Retain 2KB of slack and verify this cap against the next CI build.
-const TOTAL_BUDGET_KB = 1533;
+// 1533 -> 1538 for the parent camp branch's queue/visibility pass (1d5e052a):
+// 1536KB measured in Linux CI run 41934647049 after its automatic merge.
+// Heroes leave the trailhead line cleanly and framing keeps every figure on
+// screen. This adds lazy camp code; first paint remains 329KB. Keep 2KB slack.
+const TOTAL_BUDGET_KB = 1538;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);
