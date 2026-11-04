@@ -13,7 +13,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import type { RunState } from "@kad/shared";
 import type { CampLayout } from "./camp-layout";
-import { BLEED_SOURCE, campBleed, campFit, campWindow } from "./camp-framing";
+import { BLEED_SOURCE, campBleed, campFit, campVisibleSpan, campWindow } from "./camp-framing";
 import { LOBBY_CAMP_STAND_IN, campHeroes, stillCampFigures } from "./lobby-camp";
 import { lobbyInsetBottom, lobbyInsetTop, onLobbyInset, onLobbyInsetTop } from "./stage-inset";
 import { campHeightPx, campMeasure } from "./camp-motion";
@@ -50,7 +50,7 @@ export function StillCamp({ layout, state }: { layout: CampLayout; state: RunSta
     ? campFit(pane.width, campWindow(pane.height, insetTop, inset), layout, heroes.map((hero) => hero.figure.heightCm))
     : null;
   const at = fit?.framing ?? null;
-  const figures = stillCampFigures(layout, heroes, fit?.figureScale ?? 1);
+  const figures = stillCampFigures(layout, heroes, fit?.figureScale ?? 1, at ? campVisibleSpan(pane.width, at, layout.canvas.width) : undefined);
   const box = at
     ? { left: at.x, top: at.y, width: layout.canvas.width * at.scale, height: layout.canvas.height * at.scale }
     : { left: 0, top: 0, width: 0, height: 0 };

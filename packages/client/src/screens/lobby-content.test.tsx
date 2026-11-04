@@ -53,6 +53,23 @@ describe("the adventure's crew", () => {
   });
 });
 
+describe("the table's name", () => {
+  it("shows the name alone, with no label", () => {
+    mount({ location: "The kitchen table" });
+    const place = document.querySelector(".lobby__place");
+    expect(place?.textContent).toBe("The kitchen table");
+    expect(screen.queryByText("Your table")).toBeNull();
+  });
+
+  it("draws nothing at all for a table with no name", () => {
+    for (const location of [undefined, "", "   "]) {
+      mount({ location });
+      expect(document.querySelector(".lobby__place")).toBeNull();
+      cleanup();
+    }
+  });
+});
+
 describe("what the room should do next", () => {
   it("shows a player making a hero and withholds the start instruction", () => {
     mount({

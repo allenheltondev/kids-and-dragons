@@ -37,9 +37,11 @@ import {
   routeSweeps,
   type CampLayout,
   type CampSpot,
+  type CampStandPoint,
   type LaneSweep,
   type RoutePoint,
 } from "./camp-layout";
+import { EDGE_MARGIN, campStandRange, type CampSpan } from "./camp-framing";
 
 /** How long a figure stays put before it wanders, in seconds (§8.5). */
 export const HOLD_MIN_S = 8;
@@ -73,6 +75,14 @@ export function seededRandom(seed: number): () => number {
   };
 }
 
+/**
+ * A figure stepping out of the trailhead's line (Ready taken back) holds this
+ * long, and waits this long between tries while its way is blocked: a beat,
+ * not a wanderer's 8 to 20 seconds, so it leaves the line promptly.
+ */
+export const SOON_MIN_S = 0.2;
+export const SOON_MAX_S = 0.6;
+
 /** The gap left between two heroes queued at the trailhead, as a fraction of the canvas width. */
 export const QUEUE_GAP = 0.008;
 
@@ -80,23 +90,89 @@ export const QUEUE_GAP = 0.008;
  * Where heroes who tapped Ready wait (§8.5): in the order they tapped, the
  * first at the trailhead and each one after it behind the one before, away
  * from the edge they will leave by (`side`: 1 leaves right, -1 left), spaced
- * by their widths (canvas fractions) so nobody stands inside anybody. A queue
- * longer than the lane leaves the rest at its end rather than off the ground.
+ * by their widths (canvas fractions) so nobody stands inside anybody.
+ *
+ * Every figure stands on the lane (`lane`, x0..x1, where feet may go) and,
+ * when `visible` is given (camp-framing.ts `campVisibleSpan`, the part of the
+ * painting the pane shows), with all of its width on screen: a trailhead the
+ * pane crops, or one too near the edge for a wide hero, moves the front of
+ * the line in, and the rest of the line runs on behind it. Only a line wider
+ * than the whole span is left bunched at its far end, never off the ground or
+ * the screen.
+ *
+ * `obstacles` are figures standing on the lane who are not in the line (a
+ * hero resting at a bedroll the line reaches, one stepping out of it): the
+ * line steps round them, the next place in it just behind, so nobody is put
+ * inside anybody, and closes up once they have gone.
  */
 export function queueSpots(
   front: number,
   side: 1 | -1,
   widths: readonly number[],
-  span: { x0: number; x1: number },
+  lane: CampSpan,
   gap = QUEUE_GAP,
+  visible?: CampSpan,
+  obstacles: readonly { x: number; width: number }[] = [],
 ): number[] {
   const spots: number[] = [];
-  let x = front;
+  const range = (width: number): CampSpan =>
+    visible ? campStandRange(lane, visible, width, EDGE_MARGIN) : { x0: lane.x0, x1: lane.x1 };
   widths.forEach((width, i) => {
-    if (i > 0) x -= side * ((widths[i - 1]! + width) / 2 + gap);
-    spots.push(Math.min(span.x1, Math.max(span.x0, x)));
+    const r = range(width);
+    const clamp = (v: number) => Math.min(r.x1, Math.max(r.x0, v));
+    let x = clamp(i === 0 ? front : spots[i - 1]! - side * ((widths[i - 1]! + width) / 2 + gap));
+    for (let guard = 0; guard <= obstacles.length; guard++) {
+      const hit = obstacles.find((o) => Math.abs(o.x - x) < (o.width + width) / 2 + gap - 1e-9);
+      if (!hit) break;
+      x = clamp(hit.x - side * ((hit.width + width) / 2 + gap));
+    }
+    spots.push(x);
   });
   return spots;
+}
+
+/** A lane the trailhead's line may stand on: its walkable span, and the heroes' widths and who is in the way there. */
+export interface QueueRow extends CampSpan {
+  lane: string;
+  /** Every hero in the line, in tap order, as wide as they are drawn on this lane. */
+  widths: readonly number[];
+  obstacles?: readonly { x: number; width: number }[];
+}
+
+/**
+ * The line's places when one lane may not hold it all (`queueSpots`): a pane
+ * that crops the painting hard (a phone's World pane under short panels)
+ * leaves too little of the trailhead's lane on screen for a whole party.
+ * Then the line fills the trailhead's lane from the front, as far as it fits
+ * with nobody inside anybody, and goes on in a second row on the next lane
+ * (`rows`, nearest first), again from the front: a crowd waiting at the
+ * trail, every one of them seen whole. The last row takes whoever is left.
+ */
+export function queuePlaces(
+  front: number,
+  side: 1 | -1,
+  rows: readonly QueueRow[],
+  gap = QUEUE_GAP,
+  visible?: CampSpan,
+): { lane: string; x: number }[] {
+  const places: { lane: string; x: number }[] = [];
+  const count = rows[0]?.widths.length ?? 0;
+  for (const [r, row] of rows.entries()) {
+    if (places.length >= count) break;
+    const rest = row.widths.slice(places.length);
+    const obstacles = row.obstacles ?? [];
+    const spots = queueSpots(front, side, rest, row, gap, visible, obstacles);
+    let fit = spots.length;
+    if (r < rows.length - 1) {
+      const clear = (i: number): boolean =>
+        obstacles.every((o) => Math.abs(o.x - spots[i]!) >= (o.width + rest[i]!) / 2 + gap - 1e-9) &&
+        (i === 0 || side * (spots[i - 1]! - spots[i]!) >= (rest[i - 1]! + rest[i]!) / 2 + gap - 1e-9);
+      fit = spots.findIndex((_, i) => !clear(i));
+      if (fit < 0) fit = spots.length;
+    }
+    for (const x of spots.slice(0, fit)) places.push({ lane: row.lane, x });
+  }
+  return places;
 }
 
 /** A spot, and the stand point it is (null at the trailhead or off the edge). */
@@ -145,6 +221,8 @@ interface State extends WanderSnapshot {
   sweeps: LaneSweep[];
   /** The stand points it stood at last, newest first (at most RECENT). */
   recent: string[];
+  /** Released to step out of a line: it tries again quickly until it walks. */
+  soon: boolean;
 }
 
 export interface WanderPlanner {
@@ -159,8 +237,19 @@ export interface WanderPlanner {
    * released. Overrides anything it was doing.
    */
   direct(id: string, to: WanderPlace, route: RoutePoint[] | null, seconds: number): void;
-  /** Back to wandering from wherever the moment left it, with a fresh hold. */
-  release(id: string): void;
+  /**
+   * Back to wandering from wherever the moment left it, with a fresh hold.
+   * `soon`: a beat's hold, and short retries until it next walks (a hero
+   * stepping out of the trailhead's line), rather than 8 to 20 seconds.
+   */
+  release(id: string, opts?: { soon?: boolean }): void;
+  /**
+   * Who stands or walks in the way of `id` walking `route` (§8.3): the
+   * figures it would pass through. Empty when the way is clear.
+   */
+  blockers(id: string, route: RoutePoint[]): string[];
+  /** Cut a holding figure's hold short: somebody needs it out of the way. */
+  nudge(id: string): void;
   /** Advance the clock; returns the walks that started, in order. */
   advance(seconds: number): WanderWalk[];
   snapshot(id: string): WanderSnapshot | undefined;
@@ -174,6 +263,24 @@ export interface WanderPlanner {
 export interface WanderOptions {
   /** How long the caller's walk along `route` takes (camp-motion.ts `planWalk`). */
   walkSeconds: (id: string, route: RoutePoint[]) => number;
+  /**
+   * Where a stand point is now: its authored x, or (camp.ts) that x moved in
+   * so a figure standing there is wholly on screen. Default: as authored.
+   */
+  pointX?: (point: CampStandPoint) => number;
+  /**
+   * Half a figure's drawn width on a lane, as a fraction of the canvas width. Two
+   * figures in one lane keep the sum of their halves apart; without it,
+   * `CLEARANCE`.
+   */
+  halfWidth?: (id: string, lane: string) => number;
+  /**
+   * Stretches of lane nobody wanders to (the trailhead's line, camp.ts): a
+   * stand point that would put a figure in one is not free.
+   */
+  reserved?: () => readonly LaneSweep[];
+  /** A route as the figure will walk it (camp.ts moves its crossings in from a cropped edge). */
+  fitRoute?: (id: string, route: RoutePoint[]) => RoutePoint[];
 }
 
 export function createWanderPlanner(layout: CampLayout, seed: number, options: WanderOptions): WanderPlanner {
@@ -201,33 +308,58 @@ export function createWanderPlanner(layout: CampLayout, seed: number, options: W
     return points;
   }
 
-  /** Whether `me` walking `route` keeps clear of everybody else (§8.3). */
-  function clear(me: State, route: RoutePoint[]): boolean {
+  /** How far apart two figures in one lane keep: their half-widths, or `CLEARANCE`. */
+  function clearance(a: string, b: string, lane: string): number {
+    return options.halfWidth ? options.halfWidth(a, lane) + options.halfWidth(b, lane) : CLEARANCE;
+  }
+
+  /** Everybody `me` would pass through walking `route` (§8.3). */
+  function inTheWay(me: State, route: RoutePoint[]): State[] {
     const sweeps = routeSweeps(layout, route);
     const start = route[0]!;
     const next = route[1] ?? start;
     const outward = Math.sign(next.x - start.x);
+    const found: State[] = [];
     for (const other of figures.values()) {
-      if (other === me) continue;
+      if (other.id === me.id) continue;
       if (isWalking(other)) {
-        for (const a of sweeps) {
-          for (const b of other.sweeps) {
-            if (a.lane === b.lane && a.lo - CLEARANCE <= b.hi && b.lo - CLEARANCE <= a.hi) return false;
-          }
-        }
+        const meets = (a: LaneSweep, b: LaneSweep): boolean => {
+          if (a.lane !== b.lane) return false;
+          const gap = clearance(me.id, other.id, a.lane);
+          return a.lo - gap <= b.hi && b.lo - gap <= a.hi;
+        };
+        if (sweeps.some((a) => other.sweeps.some((b) => meets(a, b)))) found.push(other);
         continue;
       }
       const spot = other.route !== null && other.to ? other.to.spot : other.at.spot;
+      const gap = clearance(me.id, other.id, spot.lane);
       for (const [i, sweep] of sweeps.entries()) {
         if (sweep.lane !== spot.lane) continue;
-        if (spot.x < sweep.lo - CLEARANCE || spot.x > sweep.hi + CLEARANCE) continue;
+        if (spot.x < sweep.lo - gap || spot.x > sweep.hi + gap) continue;
         // Somebody just behind where `me` sets off is not in the way: it walks away from them.
         const behind = i === 0 && spot.lane === me.at.spot.lane && (outward === 0 || (spot.x - start.x) * outward <= 0);
-        if (behind && Math.abs(spot.x - start.x) <= CLEARANCE) continue;
-        return false;
+        if (behind && Math.abs(spot.x - start.x) <= gap) continue;
+        found.push(other);
+        break;
       }
     }
-    return true;
+    return found;
+  }
+
+  /** Whether `me` walking `route` keeps clear of everybody else (§8.3). */
+  function clear(me: State, route: RoutePoint[]): boolean {
+    return inTheWay(me, route).length === 0;
+  }
+
+  /** Whether standing at `spot` would put `me` in a reserved stretch (the trailhead's line). */
+  function reservedAt(me: State, spot: CampSpot): boolean {
+    const half = options.halfWidth ? options.halfWidth(me.id, spot.lane) : CLEARANCE / 2;
+    return (options.reserved?.() ?? []).some((r) => r.lane === spot.lane && spot.x + half >= r.lo && spot.x - half <= r.hi);
+  }
+
+  /** The beat a figure waits before it tries again. */
+  function retry(f: State, now: number): void {
+    f.until = now + (f.soon ? between(SOON_MIN_S, SOON_MAX_S) : between(RETRY_MIN_S, RETRY_MAX_S));
   }
 
   function hold(f: State, from: number, lo = HOLD_MIN_S, hi = HOLD_MAX_S): void {
@@ -241,7 +373,7 @@ export function createWanderPlanner(layout: CampLayout, seed: number, options: W
   /** A hold has run out at time `now`: go somewhere, or wait a beat. */
   function tryWalk(f: State, now: number, started: WanderWalk[]): void {
     if (walkers() >= MAX_WALKERS) {
-      f.until = now + between(RETRY_MIN_S, RETRY_MAX_S);
+      retry(f, now);
       return;
     }
     const busy = taken(f);
@@ -249,13 +381,15 @@ export function createWanderPlanner(layout: CampLayout, seed: number, options: W
     for (const point of layout.frame.standPoints) {
       if (point.id === f.at.point || busy.has(point.id)) continue;
       if (point.seat !== undefined && point.seat !== f.seat) continue;
-      const spot = { lane: point.lane, x: point.x };
-      const route = campRoute(layout, f.at.spot, spot);
+      const spot = { lane: point.lane, x: options.pointX ? options.pointX(point) : point.x };
+      if (reservedAt(f, spot)) continue;
+      const found = campRoute(layout, f.at.spot, spot);
+      const route = found && options.fitRoute ? options.fitRoute(f.id, found) : found;
       if (!route || !clear(f, route)) continue;
       choices.push({ point: point.id, spot, route, length: routeLength(route, layout.canvas) });
     }
     if (choices.length === 0) {
-      f.until = now + between(RETRY_MIN_S, RETRY_MAX_S);
+      retry(f, now);
       return;
     }
     // Somewhere it has not just been, if there is anywhere.
@@ -265,6 +399,7 @@ export function createWanderPlanner(layout: CampLayout, seed: number, options: W
     const pick = pool[Math.floor(random() * Math.min(NEARBY, pool.length))]!;
     const seconds = Math.max(0.01, options.walkSeconds(f.id, pick.route));
     f.mode = "walk";
+    f.soon = false;
     f.to = { spot: pick.spot, point: pick.point };
     f.route = pick.route;
     f.sweeps = routeSweeps(layout, pick.route);
@@ -356,6 +491,7 @@ export function createWanderPlanner(layout: CampLayout, seed: number, options: W
         walking: false,
         sweeps: [],
         recent: [],
+        soon: false,
       };
       remember(f, at.point);
       hold(f, clock);
@@ -376,6 +512,7 @@ export function createWanderPlanner(layout: CampLayout, seed: number, options: W
         if (now?.lane) f.at = { spot: { lane: now.lane, x: now.x }, point: null };
       }
       f.mode = "directed";
+      f.soon = false;
       f.startedAt = clock;
       if (route === null) {
         f.at = to;
@@ -391,11 +528,26 @@ export function createWanderPlanner(layout: CampLayout, seed: number, options: W
       f.sweeps = routeSweeps(layout, route);
       f.until = clock + Math.max(0, seconds);
     },
-    release(id) {
+    release(id, opts) {
       const f = figures.get(id);
       if (!f) return;
       if (f.route !== null) arrive(f);
-      hold(f, clock);
+      f.soon = opts?.soon === true;
+      if (f.soon) hold(f, clock, SOON_MIN_S, SOON_MAX_S);
+      else hold(f, clock);
+    },
+    blockers(id, route) {
+      const f = figures.get(id);
+      if (!f || route.length === 0) return [];
+      // Judged from where the route sets off, as a walk the planner starts is.
+      const first = route[0]!;
+      const me: State = { ...f, at: { spot: { lane: first.lane ?? f.at.spot.lane, x: first.x }, point: null } };
+      return inTheWay(me, route).map((other) => other.id);
+    },
+    nudge(id) {
+      const f = figures.get(id);
+      if (!f || f.mode !== "hold") return;
+      f.until = Math.min(f.until, clock + between(SOON_MIN_S, SOON_MAX_S));
     },
     advance(seconds) {
       const started: WanderWalk[] = [];

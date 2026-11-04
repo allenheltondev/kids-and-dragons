@@ -2,7 +2,7 @@
    tonight's lineup above the adventure choices. Phone surfaces retain their compact flow. */
 .lobby__header { display: contents; }
 .lobby__campaign-selected { display: none; }
-.lobby__place-label, .lobby-member__pending-short { display: none; }
+.lobby-member__pending-short { display: none; }
 
 @media (min-width: 900px) and (orientation: landscape) {
   .kad-party--world .lobby {
@@ -432,7 +432,7 @@
     font-size: 1em;
   }
   .kad-party--world .lobby__header .crew-identity__art { display: none; }
-  .kad-party--world .lobby__header :is(.lobby__place-label, .crew-identity__label) {
+  .kad-party--world .lobby__header .crew-identity__label {
     display: inline;
     flex: none;
     font-size: .8em;
