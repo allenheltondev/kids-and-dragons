@@ -303,6 +303,7 @@ measures:
 | Finishing a chapter, any ending | 3 (*proposed*; see below) |
 | Each optional objective met (spec §8.2) | 1 each |
 | A find the crew already owns (§5.1) | 1 |
+| A lucky drop: a 1 in 8 chance after each won mini-game or fight (below) | 1 |
 
 **Goal steps pay nothing** (*decided*). Every path to a success ending ticks every goal step by
 design (content/README.md, "The chapter's goal"), so a party cannot miss one, and paying for them
@@ -316,6 +317,29 @@ chapters have no optional objectives (3 Dash Cash), 5 have two and 12 have three
 after two chapters, then a 10-to-15 piece every three or four chapters. Every purchase goes
 through the same vote (§6.2); there is no separate flow for cheaper pieces. The numbers are a
 starting point for playtest.
+
+**Lucky drops** (*decided*): after each mini-game the party succeeds at and each fight it wins,
+there is a 1 in 8 chance the crew finds 1 Dash Cash. It is a small surprise on top of the
+chapter's pay, not something to grind for:
+
+- **Shown at once, saved at once.** The TV shows a little "Dash Cash!" sparkle as the result
+  lands, the phones echo it, and the server writes it to the crew's camp then, the way a find is
+  saved when found (§12.2). It is counted again in the chapter's end tally so nobody misses it.
+- **The server rolls.** The roll is part of the server's own resolution of the mini-game or fight,
+  from the engine's per-action seeded `rng` (`engine/port.ts`), so replaying the event log rolls it
+  the same way. A refresh, a reconnect or a retried message cannot roll it again.
+- **No near misses.** A drop that doesn't happen shows nothing. There is no "so close!", no meter
+  and no odds on screen.
+- *Proposed:* **only games a party can fail count.** `play` interactions (feeding, petting,
+  celebrating, content/README.md) always succeed, so, by the same reasoning as goal steps, they
+  never drop. Relaxed play still counts: it is easier, not automatic.
+- *Proposed:* **at most 2 lucky drops a chapter**, and **none in a chapter already paid for**
+  (§12.2), so replaying a chapter is never a way to farm them.
+
+Across today's 42 chapters there are 184 mini-games a party can fail and 61 fights, about 5 per
+chapter in all; a single road through a chapter meets fewer. That makes a lucky drop worth roughly
+half a Dash Cash per chapter on average: about one drop every two chapters, which is a treat
+rather than a salary, and leaves the economy above unchanged in practice.
 
 Rules, borrowed from what already works for XP:
 
@@ -748,6 +772,7 @@ Settled by the product owner:
 | Phase 1 | Small: the animated lobby only, expanding once children notice their camp (§10) |
 | The first reward | Arrives in the first session: a kit choice and a first-chapter find (§5.3) |
 | The shop | Opens once the crew has been paid for two chapters; its first pieces cost 5 Dash Cash (§5.3) |
+| Lucky drops | A 1 in 8 chance of 1 Dash Cash after each won mini-game or fight, rolled by the server (§5.2) |
 | Goal steps | Pay no Dash Cash: every success path ticks them all, so they would be free money. Finishing and optional objectives pay (§5.2) |
 | Kit finds | Every seated hero gets their own copy; a duplicate gives nothing, since Dash Cash is the crew's (§5.4) |
 | The shared-edit limit | Tested in playtest, with an Undo that does not use up a change (§6.1) |
@@ -757,9 +782,11 @@ Still open:
 
 1. **What finishing a chapter pays.** Proposed: 3, so two chapters always afford a starter piece
    (§5.2).
-2. **Milestone kit pieces** (§5.4): a tent style per appearance tier and a decoration per class
+2. **Lucky drop limits** (§5.2). Proposed: `play` interactions never drop, at most 2 drops a
+   chapter, none in a chapter already paid for.
+3. **Milestone kit pieces** (§5.4): a tent style per appearance tier and a decoration per class
    distinction. Proposed, not yet approved.
-3. **Queued offline kit edits** (§7). Proposed for later.
+4. **Queued offline kit edits** (§7). Proposed for later.
 
 ## 12. Implementation requirements
 
@@ -796,6 +823,8 @@ The once-per-place rule and duplicate conversion need separate identities:
   chapter's end. Showing a find at the chapter's end celebrates an owned piece; it is never the
   act that saves it. Declining a friend writes no receipt; that friend may be offered on a later
   visit.
+- A lucky drop (§5.2) writes a receipt keyed by the run and the scene that dropped it, together
+  with the Dash Cash, so a retried, replayed or reconnected result never pays it twice.
 - Snapshot met optional objectives for payment. An objective backed by an item must still count if
   the party met it and later handed over the item.
 
@@ -900,6 +929,8 @@ lives under.
 - The first session offers each kid a choice for their own kit, and the first chapter of the
   Practice Meadow and of every `growsCamp` campaign hands over a find on every path (§5.3).
 - The shop does not open until the crew has been paid for two chapters (§5.3).
+- Lucky drops come only from the server's roll, after a won mini-game or fight, at about 1 in 8
+  over many trials; each pays once, whatever is retried or reconnected (§5.2, §12.2).
 - No purchase can overspend, buy a piece twice or charge after the chapter's end has been left.
   Placements the sender may not make are refused (§6).
 - A hero's kit, souvenirs included, goes with the hero to every crew and when moving home (§4.5).
