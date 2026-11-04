@@ -1701,11 +1701,29 @@ describe("the party strip", () => {
     expect(thistle.querySelector<HTMLElement>(".sheet__hp-fill")?.style.inlineSize).toBe("30%");
     expect(thistle.querySelector(".hp-bar")?.classList.contains("hp-bar--low")).toBe(true);
     expect(thistle.textContent).toContain("3/10");
+    // The bar is drawn, not read: a screen reader hears the health, or that they are down, after the name.
+    const description = (el: Element) => document.getElementById(el.getAttribute("aria-describedby") ?? "")?.textContent;
+    expect(description(thistle)).toBe("3 of 10 health");
     const bramble = screen.getByRole("button", { name: "Bramble's character sheet" });
+    expect(description(bramble)).toBe("Knocked down");
     expect(bramble.textContent).toContain("Down");
     expect(bramble.querySelector<HTMLElement>(".sheet__hp-fill")?.style.inlineSize).toBe("0%");
     // Your own health is the bar across your picture, on your card.
     expect(document.querySelector(".sheet--card .hp-bar--card")).not.toBeNull();
+  });
+
+  it("sizes a friend's name to its longest word, so a long one shrinks rather than spilling or breaking", () => {
+    mount({
+      party: [
+        member(),
+        member({ character: character({ id: "c_2", ownerPlayerId: "p_2", name: "Marshmallow Moon" }) }),
+        member({ character: character({ id: "c_3", ownerPlayerId: "p_3", name: "Wigglewhiskerton" }) }),
+      ],
+    });
+    const word = (name: string) =>
+      screen.getByRole("button", { name: `${name}'s character sheet` }).querySelector<HTMLElement>(".party-strip__name")?.style.getPropertyValue("--name-word");
+    expect(word("Marshmallow Moon")).toBe("11");
+    expect(word("Wigglewhiskerton")).toBe("16");
   });
 
   it("has no row at all for a hero playing alone", () => {

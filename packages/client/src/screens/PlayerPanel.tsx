@@ -25,7 +25,7 @@ import { setPlayerSection, usePlayerNavigation } from "../store/player-navigatio
 
 import { Suspense, useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { ChunkBoundary, lazyChunk } from "../ui/ChunkBoundary";
-import type { ReactElement, ReactNode } from "react";
+import type { CSSProperties, ReactElement, ReactNode } from "react";
 import {
   DEFAULT_HELP_DIE,
   INVENTORY_SLOTS,
@@ -268,6 +268,11 @@ function ConfirmBar({
 // ---------------------------------------------------------------------------
 // Sheet
 // ---------------------------------------------------------------------------
+
+/** The length of a name's longest word, which is what has to fit on one line. */
+function longestWord(name: string): number {
+  return Math.max(1, ...name.split(/\s+/).map((word) => word.length));
+}
 
 /**
  * Health as a bar (playtest, November 2026): a kid reads a half-empty bar as "hurt" at a glance,
@@ -2160,6 +2165,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                   type="button"
                   className={`party-strip__button kad-tap kad-focusable${member.down ? " party-strip__button--down" : ""}`}
                   aria-label={`${member.character.name}'s character sheet`}
+                  aria-describedby={`friend-hp-${member.playerId}`}
                   onClick={() => setSheetFor(member.character.id)}
                 >
                   <span className="party-strip__portrait" aria-hidden="true">
@@ -2172,9 +2178,17 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                       className="party-strip__art"
                     />
                   </span>
-                  <span className="party-strip__name">{member.character.name}</span>
+                  {/* Sized to fit its longest word in the card: a long name shrinks rather
+                      than spilling into the next card or breaking mid-word. */}
+                  <span className="party-strip__name" style={{ "--name-word": longestWord(member.character.name) } as CSSProperties}>
+                    {member.character.name}
+                  </span>
                   {/* Their health, so who is hurt is seen at a glance (who needs a potion, who to help up). */}
                   <HpBar hp={member.hp} max={member.character.maxHp} down={member.down} className="hp-bar--friend" />
+                  {/* The bar is drawn, not read: this is what a screen reader hears after the name. */}
+                  <span className="kad-sr-only" id={`friend-hp-${member.playerId}`}>
+                    {member.down ? "Knocked down" : `${String(member.hp)} of ${String(member.character.maxHp)} health`}
+                  </span>
                   {/* A souvenir is permanent and worth advertising (spec §8.3);
                       the count is the hook that makes anybody open the sheet. */}
                   {member.character.souvenirs.length > 0 ? (

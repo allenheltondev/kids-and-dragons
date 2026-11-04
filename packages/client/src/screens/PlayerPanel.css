@@ -1663,11 +1663,32 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
   block-size: 100%;
 }
 
+/* A name on two lines takes its height from the face, never from its own
+   second line: the face shrinks (staying square), the name and bar do not. */
+.you__row .party-strip__portrait {
+  flex: 0 1 auto;
+  min-block-size: 1.8em;
+  aspect-ratio: 1;
+  inline-size: auto;
+}
+
+.you__row .party-strip__name,
+.you__row .hp-bar--friend {
+  flex: none;
+}
+
+/* A friend's name fits its card: it wraps between words, and its size comes
+   down until its longest word (--name-word, in letters) fits the card's width,
+   so a long name never spills into the next card or breaks mid-word. The
+   ellipsis is a last resort; the button's label always says the whole name. */
 .you__row .party-strip__name {
   max-inline-size: 100%;
-  font-size: 0.9em;
+  font-size: min(0.9em, max(0.72em, calc((100cqi - 0.8em) / (var(--name-word, 8) * 0.58))));
   line-height: 1.1;
-  white-space: nowrap;
+  text-align: center;
+  overflow-wrap: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* A friend's health, under their name: the bar a little narrower than the card. */
@@ -2194,6 +2215,6 @@ html:not([data-contrast="high"]) .hp-bar .sheet__hp-track {
   }
 
   .you__row .party-strip__name {
-    font-size: 1.05em;
+    font-size: min(1.05em, max(0.72em, calc((100cqi - 0.8em) / (var(--name-word, 8) * 0.58))));
   }
 }
