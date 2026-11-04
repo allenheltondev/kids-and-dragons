@@ -60,7 +60,18 @@ export function tablePreviews(
     const active = currentActor(encounter);
     if (active === null || active.side !== "party") return NONE;
     const member = state.party.find((m) => m.character.id === active.id);
-    const preview = member ? previews[member.playerId] : undefined;
+    let preview = member ? previews[member.playerId] : undefined;
+    // A player's own aim wins. Otherwise a friend may point out a spot without
+    // taking over the turn. A marker is scoped to this exact board and turn.
+    if (!preview || preview.kind === "choice") {
+      const helper = state.party.find(m => {
+        const p = previews[m.playerId];
+        return m.connected && m.playerId !== member?.playerId && p?.kind === "suggest" &&
+          p.to.x < encounter.board.width && p.to.y < encounter.board.height;
+      });
+      const suggestion = helper ? previews[helper.playerId] : undefined;
+      if (helper && suggestion?.kind === "suggest") return { combat: { playerId: helper.playerId, name: helper.character.name, preview: suggestion }, choices: {} };
+    }
     if (!member || !preview || preview.kind === "choice") return NONE;
     return { combat: { playerId: member.playerId, name: member.character.name, preview }, choices: {} };
   }
@@ -90,6 +101,8 @@ export function boardAim(encounter: EncounterState, preview: CombatPreview | nul
   switch (preview.kind) {
     case "move":
       return { tiles: [preview.to], targets: [] };
+    case "suggest":
+      return { tiles: [preview.to], targets: [] };
     case "action":
       return { tiles: preview.tiles ?? [], targets: at(preview.targetIds) };
     case "item":
@@ -115,6 +128,8 @@ export function describeCombatPreview(
   switch (preview.kind) {
     case "move":
       return "Walking here";
+    case "suggest":
+      return "Suggests this spot";
     case "end_turn":
       return "Ending the turn";
     case "item": {

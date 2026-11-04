@@ -34,7 +34,6 @@ import {
   TurnBanner,
 } from "../screens";
 import { FieldGuideBanner } from "../screens/FieldGuideNews";
-import { RiftStatus } from "../screens/RiftStatus";
 import { ChapterGoalCard } from "../screens/ChapterGoal";
 import { ChapterPreface } from "../screens/ChapterPreface";
 import { RoomCheers } from "../screens/RoomCheers";
@@ -164,9 +163,6 @@ export function WorldView({
       {!creating && (phase === "lobby" || phase === "creation") && <LobbyContent />}
       {isSceneLike(phase) && <NarrationPanel />}
       {isSceneLike(phase) && <TurnBanner />}
-      {/* The rift clock and what the place just did (#201) — only in a fight
-          that has an environment, so an ordinary fight's screen is untouched. */}
-      {isSceneLike(phase) && state?.encounter?.environment ? <RiftStatus /> : null}
       {/* The chapter's goal through a fight (#356), folded to a line in the top corner. Outside
           a fight it is in the narration's head; in a place that fights back it heads RiftStatus. */}
       {isSceneLike(phase) && state?.encounter != null && !state.encounter.environment ? (

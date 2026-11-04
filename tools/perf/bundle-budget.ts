@@ -118,7 +118,9 @@ const DIST = path.join(ROOT, "packages", "client", "dist");
 // The first paint carries the start screen's one quiet link and the code it reads from a
 // `?screen=` link, and the store the two host/follower calls beside the controls it already
 // holds. The code card and the Room panel's section are their own lazy chunk (about 6KB).
-const FIRST_PAINT_BUDGET_KB = 328;
+// 328 -> 330 for combat planning: the shared preview protocol and mission state
+// add 1KB to the entry graph (329KB measured). Combat surfaces remain lazy.
+const FIRST_PAINT_BUDGET_KB = 330;
 
 /**
  * Everything, including what is lazily fetched.
@@ -174,7 +176,10 @@ const FIRST_PAINT_BUDGET_KB = 328;
 // 1462 -> 1470 for the mini-game depth pass: seven versioned game loops and their phone/TV
 // surfaces measure 1469KB total, versus 1454KB before this feature. First paint stays 328KB.
 // This is an explicit feature cost, not a dependency bump; assets reuse the painted inventory.
-const TOTAL_BUDGET_KB = 1470;
+// 1470 -> 1485 for combat planning: the deterministic enemy planner is now
+// visible on phone/TV, with fighter inspection, suggestions and mission rules.
+// 1481KB measured; existing biome and character art is reused, no dependency added.
+const TOTAL_BUDGET_KB = 1485;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

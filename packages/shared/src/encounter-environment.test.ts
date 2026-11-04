@@ -30,6 +30,7 @@ import {
   type EncounterState,
 } from "./encounter.js";
 import { checkEncounterEnvironment, environmentView } from "./environment.js";
+import { enemyPlanFor } from "./combat-intent.js";
 import { applyIntent, createRunState, type EngineContext } from "./engine.js";
 import { validateChapter } from "./chapter-graph.js";
 import { parseCampaignGraph } from "./campaign-graph.js";
@@ -95,6 +96,18 @@ function until(state: EncounterState, id: string, events: EncounterEvent[] = [])
 }
 
 const types = (events: readonly EncounterEvent[]) => events.map((e) => e.type);
+
+describe("present-board enemy forecasts", () => {
+  it("uses the enemy's future movement budget rather than the active hero's remaining steps", () => {
+    const state = { ...begin(), stepsLeft: 0 };
+    expect(enemyPlanFor(state, "wisp#1").moveTo).not.toBeNull();
+    expect(enemyPlanFor(state, "c_a")).toEqual({ moveTo: null, attack: null });
+    const rooted = { ...state, combatants: state.combatants.map(c => c.side === "enemy" ? { ...c, rooted: true } : c) };
+    expect(enemyPlanFor(rooted, "wisp#1")).toEqual({ moveTo: null, attack: null });
+    const skipped = { ...state, combatants: state.combatants.map(c => c.side === "enemy" ? { ...c, skipNextTurn: true } : c) };
+    expect(enemyPlanFor(skipped, "wisp#1")).toEqual({ moveTo: null, attack: null });
+  });
+});
 
 // ---------------------------------------------------------------------------
 // No environment: nothing changes
@@ -255,6 +268,32 @@ describe("the rift clock", () => {
 });
 
 describe("a rescue", () => {
+  it("shares helping turns, saves progress, and requires the rescue even after enemies fall", () => {
+    let state = begin({ victory: "rescue", rescue: { name: "Pip", at: { x: 1, y: 4 }, turns: 2 } });
+    const first = endTurnWithEvents(state);
+    expect(first.events).toContainEqual({ type: "rescueProgress", byId: "c_a", progress: 1, target: 2 });
+    expect(first.state.environment!.rescueProgress).toEqual([1]);
+    expect(terrainAt(first.state.board, { x: 1, y: 4 })).toBe("blocked");
+    state = JSON.parse(JSON.stringify(first.state));
+    state = { ...state, combatants: state.combatants.map(c => c.side === "enemy" ? { ...c, hp: 0, down: true } : c) };
+    expect(encounterOutcome(state)).toBe("ongoing");
+    state = until(state, "c_b");
+    const second = endTurnWithEvents(state);
+    expect(second.events).toContainEqual({ type: "freed", byId: "c_b" });
+    expect(second.state.environment!.rescueProgress).toEqual([2]);
+    expect(terrainAt(second.state.board, { x: 1, y: 4 })).toBe("open");
+    expect(encounterOutcome(second.state)).toBe("victory");
+  });
+
+  it("lets a solo helper finish on their next turn", () => {
+    const fixture = setup({ victory: "rescue", rescue: { name: "Pip", at: { x: 1, y: 3 }, turns: 2 } });
+    let state = beginEncounter({ ...fixture, party: fixture.party.slice(0, 1) }, ctxOf());
+    state = endTurnWithEvents(state).state;
+    state = until(state, "c_a");
+    expect(state.environment!.rescueProgress).toEqual([1]);
+    expect(encounterOutcome(endTurnWithEvents(state).state)).toBe("victory");
+  });
+
   const PIP: EncounterEnvironment = { rescue: { name: "Pip", at: { x: 2, y: 6 }, byRound: 2 } };
 
   it("walls the captive's tile until a hero ends a turn beside them", () => {

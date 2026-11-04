@@ -224,7 +224,7 @@ Tactical, but deliberately shallow. The goal is that she learns positioning matt
 
 ### 7.1 The board
 
-- **10 × 8 grid.** Fits a TV comfortably; auto-framed on a phone (§2.2).
+- **Authored arenas: 6–10 columns × 6–8 rows.** The default is 10 × 8; compact encounters can reduce empty walking. Auto-framed on a phone (§2.2).
 - **3 players vs. 2–4 enemies.** Never more.
 - **Target: 4 rounds.** Encounters are tuned to resolve in about six minutes.
 - **Movement is in "steps," not feet.** Base 4 steps; Duskrunner gets 6. Diagonals cost 1, same as orthogonal — no math.

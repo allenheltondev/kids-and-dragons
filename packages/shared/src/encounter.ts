@@ -699,6 +699,7 @@ export type EncounterEvent =
    * index into a list of captives (#220), absent for the one captive.
    */
   | { readonly type: "freed"; readonly byId: ActorId; readonly captive?: number }
+  | { readonly type: "rescueProgress"; readonly byId: ActorId; readonly progress: number; readonly target: number; readonly captive?: number }
   /** The captive's time ran out, or the monsters dragged them off (#220). */
   | { readonly type: "captiveLost"; readonly captive?: number }
   /** A monster spent its turn dragging at a captive (#220): `hp` is what they have left. */
@@ -1031,6 +1032,7 @@ export function beginEncounter(setup: EncounterSetup, ctx: EncounterContext): En
             ...(environment.rescue
               ? { rescue: Array.isArray(environment.rescue) ? captives.map(() => "waiting" as const) : ("waiting" as const) }
               : {}),
+            ...(captives.some(c => (c.turns ?? 1) > 1) ? { rescueProgress: captives.map(() => 0) } : {}),
             ...(captives.some((c) => c.hp !== undefined) ? { captiveHp: captives.map((c) => c.hp ?? 0) } : {}),
             ...(environment.objectives ? { objectives: environment.objectives.map(() => 0) } : {}),
           },
@@ -1133,9 +1135,13 @@ export function isPartyWiped(state: EncounterState): boolean {
  * that matches what everybody just watched happen.
  */
 export function encounterOutcome(state: EncounterState): EncounterOutcome {
-  if (enemies(state).every((c) => c.down)) return "victory";
+  if (state.environment?.spec.victory === "rescue") {
+    const statuses = captiveStatuses(state.environment);
+    if (statuses.length > 0 && statuses.every(s => s === "freed")) return "victory";
+    if (statuses.some(s => s === "lost")) return "defeat";
+  } else if (enemies(state).every((c) => c.down)) return "victory";
   // An objective that ends the fight (#220), done, is a victory too.
-  if (state.environment?.spec.objectives) {
+  if (state.environment?.spec.victory !== "rescue" && state.environment?.spec.objectives) {
     const done = objectivesDone(state.environment);
     if (state.environment.spec.objectives.some((objective, i) => objective.endsFight && done[i])) return "victory";
   }
@@ -2343,10 +2349,20 @@ function turnEndInEnvironment(
     const now = working.environment as EnvironmentState;
     if (captiveStatuses(now)[i] !== "waiting" || !areAdjacent(at, captive.at)) return;
     if (actor.side === "party") {
+      const target = captive.turns ?? 1;
+      if (target > 1) {
+        const progress = [...(now.rescueProgress ?? captives.map(() => 0))];
+        progress[i] = Math.min(target, (progress[i] ?? 0) + 1);
+        working = { ...working, environment: { ...now, rescueProgress: progress } };
+        if (progress[i]! < target) {
+          events.push({ type: "rescueProgress", byId: actorId, progress: progress[i]!, target, ...captiveIndexField(spec, i) });
+          return;
+        }
+      }
       working = {
         ...working,
         board: setTerrain(working.board, captive.at, "open"),
-        environment: withCaptiveStatus(now, i, "freed"),
+        environment: withCaptiveStatus(working.environment!, i, "freed"),
       };
       events.push({ type: "freed", byId: actorId, ...captiveIndexField(spec, i) });
     } else if (captive.hp !== undefined && !state.actionTaken && !dragged && now.captiveHp) {
