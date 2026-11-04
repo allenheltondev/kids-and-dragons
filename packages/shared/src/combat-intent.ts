@@ -9,7 +9,7 @@ import type { RiftBehavior } from "./types/chapter.js";
 export function enemyPlanFor(state: EncounterState, id: string): EnemyPlan {
   const enemy = combatantById(state, id);
   const at = positionOf(state, id);
-  if (!enemy || enemy.side !== "enemy" || enemy.down || !at || enemy.skipNextTurn) return { moveTo: null, attack: null };
+  if (!enemy || enemy.side !== "enemy" || enemy.down || !at || enemy.skipNextTurn || enemy.windupAttack) return { moveTo: null, attack: null };
   const steps = currentActorId(state) === id ? state.stepsLeft
     : enemy.rooted ? 0 : buffed(enemy.steps, buffBonus(state.buffs, id, "move"), 1);
   const behaviors: Record<string, RiftBehavior> = {};

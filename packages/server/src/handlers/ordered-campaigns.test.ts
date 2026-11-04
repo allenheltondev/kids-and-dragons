@@ -412,12 +412,16 @@ describe("Gemfall's numbers, with temporary buffs in the build (#200)", () => {
    * fight never grows an environment, an escaped hero, or an environmental
    * beat.
    */
-  it("has no environmental combat anywhere: no shipped ordered encounter declares one, and a fight never grows one (#201)", () => {
+  it("keeps ordinary encounters unchanged while allowing the explicit quay benchmark", () => {
     for (const campaignId of ["gemfall", "the-hollow-crown"]) {
       const campaign = content.campaign(campaignId)!;
       for (const chapterId of campaign.chapters) {
-        for (const scene of Object.values(content.chapter(chapterId)!.scenes)) {
+        for (const [sceneId, scene] of Object.entries(content.chapter(chapterId)!.scenes)) {
           if (scene.type !== "encounter") continue;
+          if (chapterId === "gemfall-01" && sceneId === "encounter_quay_wisps") {
+            expect(scene.environment?.objectives?.[0]?.id).toBe("ferry-rope");
+            continue;
+          }
           expect(scene).not.toHaveProperty("environment");
           expect(scene).not.toHaveProperty("onEscape");
           expect(scene).not.toHaveProperty("onTimeout");

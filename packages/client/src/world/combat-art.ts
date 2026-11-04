@@ -4,7 +4,8 @@ export const COMBAT_MARKER_ART: Readonly<Record<Exclude<CombatMarker, "captive">
   fire: "hazard-fire", thorns: "hazard-thorns", rift: "hazard-rift", exit: "exit-gate",
   hold: "objective-hold", seal: "objective-seal",
 };
-export function combatMarkerArt(kind: CombatMarker, name?: string, freed = false): string | null {
+export function combatMarkerArt(kind: CombatMarker, name?: string, freed = false, art?: string): string | null {
+  if (art && /^[a-z0-9_-]+$/.test(art)) return `/assets/story-props/${art}.webp`;
   // Bun is the only authored combat captive. Unknown future captives keep their
   // honest rescue glyph rather than borrowing another character's identity.
   if (kind === "captive") return name === "Bun"

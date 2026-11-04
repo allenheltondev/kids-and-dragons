@@ -22,12 +22,11 @@ const read = (...parts) => JSON.parse(readFileSync(join(REPO, ...parts), "utf8")
 const campaign = read("content", "campaigns", "gemfall.json");
 const chapter = (id) => read("content", "chapters", `${id}.json`);
 
-it("every authored Gemfall illustration exists and encounters keep biome art", () => {
+it("every authored Gemfall backdrop exists, including encounter locations", () => {
   const illustrations = new Set();
   for (const id of campaign.chapters) {
     for (const scene of Object.values(chapter(id).scenes)) {
       if (!scene.art) continue;
-      expect(scene.type).not.toBe("encounter");
       expect(scene.art).toMatch(/^scenes\/gemfall\/[a-z-]+$/);
       expect(existsSync(join(REPO, "assets", `${scene.art}.webp`))).toBe(true);
       illustrations.add(scene.art);
