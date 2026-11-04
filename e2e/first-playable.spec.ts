@@ -784,10 +784,17 @@ test.describe("first playable", () => {
     // "Ready to play" at the end of creation already said ready.
     await expect(controller.getByRole("button", { name: /wait, not yet/i })).toBeVisible();
     await controller.getByRole("button", { name: /begin the adventure/i }).click(TAP);
+    // Begin is asynchronous: the lobby's campaign cards also use .prompt and
+    // .choice. Wait for the story turn before reading a label or tapping it.
+    await waitForAdventurePrompt(controller);
     await openPlayerTask(controller);
 
     // Tap an option and stop there: no "Do it!".
-    const option = controller.locator(".prompt .choice").first();
+    const prompt = controller.locator(".player__prompt:visible .prompt").filter({
+      has: controller.getByRole("heading", { name: "What do you do?", exact: true }),
+    });
+    const option = prompt.locator(".choice").first();
+    await expect(option).toBeVisible();
     const label = (await option.locator(".choice__label").textContent())!.trim();
     await option.click(TAP);
     const picked = tv.locator(".narration__choice--picked");
