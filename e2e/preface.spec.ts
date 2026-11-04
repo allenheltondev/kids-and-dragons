@@ -157,7 +157,12 @@ test.describe("the words around a chapter (#357)", () => {
       const goal = lines.indexOf(`Your goal: ${GOAL}`);
       const story = lines.findIndex((line) => line.includes("wall of thorns"));
       expect(story, lines.join("\n")).toBeGreaterThanOrEqual(0);
-      expect(goal).toBe(story + 1);
+      // The bounded preface wait may expire on a busy runner before the slowed
+      // chapter arrives. In that supported fallback, "Hero's turn" can follow
+      // the story before the late goal. The story must precede the goal once,
+      // rather than relying on the 1500ms route delay landing within 2500ms.
+      expect(goal).toBeGreaterThan(story);
+      expect(lines.filter((line) => line.includes("wall of thorns"))).toHaveLength(1);
       expect(lines.some((line) => line.startsWith("Here we go!") || line.startsWith("Last time"))).toBe(false);
       await shot(tv, `start-${at}`);
       await tv.waitForTimeout(500);
