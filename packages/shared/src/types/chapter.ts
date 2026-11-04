@@ -787,6 +787,8 @@ export interface HazardPush {
  * and the story takes `onEscape` (which is then required).
  */
 export interface RiftExit {
+  /** Existing story prop used instead of the default magical gate. */
+  art?: string;
   id: string;
   label: string;
   tiles: MapTile[];

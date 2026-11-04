@@ -790,8 +790,8 @@
     },
     "encounter_wolves": {
       "type": "encounter",
-      "map": "roadside",
-      "narration": "Two cold cinder wolves slink onto the road, glowing faintly. They are more hungry than angry.",
+      "map": "sausage_lane",
+      "narration": "Two cold cinder wolves nose toward the sausage wagon. Hold the lane while the drover gets her wheels turning, or shoo the wolves back into the grass.",
       "enemies": [
         {
           "id": "wolf",
@@ -802,11 +802,39 @@
       ],
       "onVictory": {
         "goto": "scene_plank_bridge",
-        "narration": "The wolves slink back into the grass, ears down, looking embarrassed. They are a long way from home."
+        "narration": "The drover rolls her wagon out of reach. The wolves slink back into the grass, ears down. They are a long way from home."
       },
       "onDefeat": {
         "goto": "scene_plank_bridge",
         "narration": "The wolves knock you flat and trot off with every sausage in the wagon. Supper is very short on sausages."
+      },
+      "art": "scenes/gemfall/stuck-wagon-lane",
+      "environment": {
+        "clock": {
+          "rounds": 5,
+          "label": "The wolves reach supper",
+          "onExpire": "collapse"
+        },
+        "objectives": [
+          {
+            "id": "wagon-lane",
+            "art": "prop_hay_wagon",
+            "kind": "hold",
+            "label": "Keep the wagon lane clear",
+            "tiles": [
+              {
+                "x": 3,
+                "y": 2
+              }
+            ],
+            "rounds": 2,
+            "endsFight": true
+          }
+        ]
+      },
+      "onTimeout": {
+        "goto": "scene_plank_bridge",
+        "narration": "The drover tosses a string of sausages into the grass. The wolves chase supper, and the wagon rolls on. There will be less to share tonight."
       }
     },
     "scene_plank_bridge": {
@@ -2432,13 +2460,18 @@
     },
     "encounter_mimic_plank": {
       "type": "encounter",
-      "map": "ford",
-      "narration": "The planks sit up on a hundred muddy toes and flop about, trying to look like planks again. Get them off the hay lane.",
+      "map": "hay_ditch",
+      "narration": "The muddy planks rear up before each slap. Lead them away from the hay lane, then get everyone to the far bank. Or shoo the mimic off the crossing.",
       "enemies": [
         {
           "id": "mimic",
           "name": "Mire Mimic (as a Plank)",
-          "creature": "mire_mimic"
+          "creature": "mire_mimic",
+          "windupAttack": {
+            "label": "Plank slap",
+            "radius": 1,
+            "damage": 3
+          }
         }
       ],
       "onVictory": {
@@ -2457,6 +2490,46 @@
       },
       "onDefeat": {
         "goto": "scene_mimic_squelched",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      },
+      "art": "scenes/gemfall/ditch-plank-mimics",
+      "environment": {
+        "exits": [
+          {
+            "id": "far-bank",
+            "label": "Far bank",
+            "tiles": [
+              {
+                "x": 6,
+                "y": 2
+              },
+              {
+                "x": 6,
+                "y": 3
+              }
+            ],
+            "art": "fight-plank-edge"
+          }
+        ],
+        "clock": {
+          "rounds": 6,
+          "label": "The hay cart tips",
+          "onExpire": "collapse"
+        }
+      },
+      "onEscape": {
+        "goto": "scene_mimic_passed",
+        "narration": "The last friend hops onto the far bank. Behind you, the mimic slaps an empty patch of mud. Burdock wheels the hay across while it untangles its toes."
+      },
+      "onTimeout": {
+        "goto": "scene_mimic_squelched",
+        "narration": "The hay cart leans too far. You catch it, but the planks splash everyone into the ditch. Burdock calls for his goats.",
         "effects": [
           {
             "type": "heal",
@@ -2953,6 +3026,25 @@
         }
       ],
       "art": "scenes/gemfall/hedge-knit-gate"
+    },
+    "scene_mimic_passed": {
+      "type": "story",
+      "narration": "Burdock parks his hay cart across the ditch. The planks sniff at it, decide it is too much trouble, and slide away. You leave their pile of muddy treasures behind. Warm honeycakes are waiting on the far bank.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Burdock"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Follow the hay cart",
+          "icon": "travel",
+          "goto": "scene_ditch_hay_home"
+        }
+      ],
+      "art": "scenes/gemfall/ditch-plank-mimics"
     }
   },
   "voiceGuide": {

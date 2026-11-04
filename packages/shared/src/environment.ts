@@ -269,6 +269,7 @@ export interface EnvironmentClockView {
 }
 
 export interface EnvironmentExitView {
+  readonly art?: string;
   readonly id: string;
   readonly label: string;
   readonly tiles: readonly MapTile[];
@@ -376,6 +377,7 @@ export function environmentView(state: EncounterState): EnvironmentView | null {
       const opens = exit.opensRound ?? 1;
       return {
         id: exit.id,
+        ...(exit.art ? { art: exit.art } : {}),
         label: exit.label,
         tiles: exit.tiles,
         open,

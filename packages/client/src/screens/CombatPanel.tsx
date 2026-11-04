@@ -300,7 +300,7 @@ export function CombatControls(): ReactElement | null {
 
 
   if (!encounter || !me) return null;
-  const windupEncounter = encounter.combatants.some(c => c.windupAttack);
+  const missionEncounter = Boolean(encounter.environment) || encounter.combatants.some(c => c.windupAttack);
 
   const active = currentActor(encounter);
   const myTurn = active !== null && active.side === "party" && active.id === me.character.id;
@@ -318,7 +318,7 @@ export function CombatControls(): ReactElement | null {
   const offeredActions =
     myTurn && rules && abilities ? legalActions(encounter, combatContext(rules, abilities)) : [];
   const priority = (id: string) => id === "ready" ? 2 : id === "attack" ? 1 : 0;
-  const actions = windupEncounter ? [...offeredActions].sort((a, b) => priority(a.abilityId) - priority(b.abilityId)) : offeredActions;
+  const actions = missionEncounter ? [...offeredActions].sort((a, b) => priority(a.abilityId) - priority(b.abilityId)) : offeredActions;
   const moves = myTurn ? legalMoves(encounter) : [];
   // The gold squares, though, go the moment a tap is on its way.
   const walkTiles = deciding && selection.step === "idle" ? moves : [];
@@ -629,7 +629,7 @@ export function CombatControls(): ReactElement | null {
   );
 
   return (
-    <div className="prompt combat" data-windup={windupEncounter || undefined} data-quiet-hint={windupEncounter && selection.step === "idle" && !pending && synced && !encounter.actionTaken || undefined}>
+    <div className="prompt combat" data-mission={missionEncounter || undefined} data-quiet-hint={missionEncounter && selection.step === "idle" && !pending && synced && !encounter.actionTaken || undefined}>
       <div className="combat__overview">
         <FighterRoster encounter={encounter} myId={me.character.id} />
         <button type="button" className="combat__enlarge kad-focusable" onClick={() => setMapOpen(true)} aria-label="Enlarge battle map">＋</button>
@@ -779,7 +779,7 @@ export function CombatControls(): ReactElement | null {
                     : undefined
                 }
               >
-                {aimingWho.name}: {windupEncounter ? "choose someone." : "tap a glowing figure or choose below."}
+                {aimingWho.name}: {missionEncounter ? "choose someone." : "tap a glowing figure or choose below."}
                 {selection.step === "target" && (selection.action.maxTargets ?? 1) > 1
                   ? ` (${selection.picked.length + 1} of ${Math.min(
                       selection.action.maxTargets ?? 1,
@@ -809,7 +809,7 @@ export function CombatControls(): ReactElement | null {
             onClickCapture={held ? swallowTap : undefined}
           >
             {selection.step === "idle" && cardCount > 0 ? (
-              <PagedOptions pageSize={windupEncounter ? 2 : 3} className="prompt__options combat__actions" data-dense={dense || undefined}>
+              <PagedOptions pageSize={missionEncounter ? 2 : 3} className="prompt__options combat__actions" data-dense={dense || undefined}>
                 {actions.map((action) => (
                   <li key={action.abilityId}>
                     <button
