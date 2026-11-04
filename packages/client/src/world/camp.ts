@@ -59,6 +59,7 @@ import {
   campGait,
   campHeightPx,
   campMeasure,
+  campStride,
   frameSeconds,
   partMotion,
   planWalk,
@@ -72,7 +73,7 @@ import { createWanderPlanner, queueSpots, type WanderPlace, type WanderPlanner }
 import { stanceIdle } from "./idle-motion";
 import { fitCanvas, NOMINAL_PAINT, paintAspect, STANCE_LIFT, STANCE_LIFT_CM } from "./figure-scale";
 import { reducedMotion } from "../a11y/prefs";
-import { BLEED_SOURCE, campBleed, campFocusBand, campFraming, campWindow, type CampFraming } from "./camp-framing";
+import { BLEED_SOURCE, campBleed, campFit, campWindow, type CampFraming } from "./camp-framing";
 
 /** Somebody in camp: a hero or a friend. */
 export interface CampFigure {
@@ -127,6 +128,10 @@ export interface CampFigureView {
   airborne: boolean;
   /** The stand point it is at (null while walking or away from one). */
   point: string | null;
+  /** The factor it is drawn at (camp-framing.ts `campFigureScale`), on top of its lane's scale. */
+  figureScale: number;
+  /** Its drawn height (nominal paint) on screen this frame, in canvas pixels: lane and figure factor applied. */
+  heightPx: number;
 }
 
 export interface CampStage {
@@ -226,6 +231,8 @@ interface PieceView {
   strength: number;
   /** Its painted height, canvas pixels, before the lane's scale. */
   heightPx: number;
+  /** Its lane's scale; the camp's figure factor goes on top. */
+  laneScale: number;
   fit: { canvas: number; offsetY: number };
 }
 
@@ -242,6 +249,13 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   let seed = options.seed ?? 0;
   let destroyed = false;
   let elapsed = 0;
+  /**
+   * The factor every figure and piece is drawn at (camp-framing.ts
+   * `campFigureScale`), and where it is headed: below 1 when the band would
+   * not fit the lobby's window at full size. It eases with the framing.
+   */
+  let figureScale = 1;
+  let figureScaleTarget = 1;
 
   const view = new Container();
   view.label = "camp";
@@ -328,6 +342,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
       motion: null,
       strength: 0,
       heightPx,
+      laneScale: lane.scale,
       fit: fitCanvas(heightPx, null),
     };
     pieces.set(piece.id, entry);
@@ -372,7 +387,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     return createWanderPlanner(layout, withSeed, {
       walkSeconds: (id, route) => {
         const actor = actors.get(id);
-        return actor ? planWalk(route, layout.canvas, actor.gait, actor.facing).duration : 1;
+        return actor ? planWalk(route, layout.canvas, strideOf(actor), actor.facing).duration : 1;
       },
     });
   }
@@ -422,7 +437,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   /** How wide a figure stands on the trailhead's lane, as a fraction of the canvas width. */
   function widthOnTrail(actor: Actor): number {
     const lane = laneOf(layout, layout.frame.trailhead.lane);
-    return (actor.heightPx * paintAspect(NOMINAL_PAINT) * lane.scale) / W;
+    return (actor.heightPx * figureScale * paintAspect(NOMINAL_PAINT) * lane.scale) / W;
   }
 
   /** Walk everyone in the queue to their place in it: the first at the trailhead, the rest behind. */
@@ -460,6 +475,11 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   // ---------------------------------------------------------------------------
   // Figures
   // ---------------------------------------------------------------------------
+
+  /** The actor's gait at the size it is drawn now: its stride shrinks with it. */
+  function strideOf(actor: Actor): CampGait {
+    return campStride(actor.gait, figureScale);
+  }
 
   function sizeOf(def: CampFigure): { heightPx: number; gait: CampGait } {
     const heightPx = campHeightPx(def.heightCm, measure);
@@ -579,7 +599,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     // Whatever hop or lean was under way eases out rather than snapping.
     actor.carryLift = actor.lastLift;
     actor.carryRotation = actor.lastRotation;
-    actor.walk = planWalk(route, layout.canvas, actor.gait, actor.facing);
+    actor.walk = planWalk(route, layout.canvas, strideOf(actor), actor.facing);
     actor.walkStart = startedAt;
     actor.walkTo = to;
     actor.point = null;
@@ -729,7 +749,9 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     actor.container.x = actor.x;
     actor.container.y = actor.y;
     actor.container.zIndex = actor.y;
-    actor.container.scale.set(laneScale);
+    // The figure's whole drawing, hop and shadow included, at the camp's
+    // factor; its feet stay on the ground point, which the factor never moves.
+    actor.container.scale.set(laneScale * figureScale);
     actor.container.alpha = actor.alpha;
     actor.body.y = -(lift + actor.carryLift + stanceLiftPx);
     actor.body.rotation = rotation + actor.carryRotation;
@@ -770,6 +792,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
 
     const active = activeHotspots(layout.frame.standPoints, usingPoints());
     for (const piece of pieces.values()) {
+      piece.container.scale.set(piece.laneScale * figureScale);
       if (!piece.part || !piece.motion) continue;
       piece.strength = approach(piece.strength, !still && active.has(piece.id) ? 1 : 0, PART_RATE, dt);
       if (piece.strength < 0.001) piece.strength = 0;
@@ -1004,12 +1027,22 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   function frame(cut = false): void {
     if (destroyed || pane.width <= 0 || pane.height <= 0) return;
     const heights = [...actors.values()].filter((a) => !a.removing).map((a) => a.def.heightCm);
-    const window = campWindow(pane.height, insetTop, insetBottom);
-    framing = campFraming(pane.width, window, layout.canvas, campFocusBand(layout, heights));
-    if (cut || still || !framed) place(framing);
+    const fit = campFit(pane.width, campWindow(pane.height, insetTop, insetBottom), layout, heights);
+    framing = fit.framing;
+    figureScaleTarget = fit.figureScale;
+    if (cut || still || !framed) {
+      figureScale = figureScaleTarget;
+      place(framing);
+    }
   }
 
   function easeFrame(dt: number): void {
+    // The figures grow or shrink at the framing's pace, so the band and the
+    // heads in it move together.
+    if (figureScale !== figureScaleTarget) {
+      figureScale = approach(figureScale, figureScaleTarget, FRAME_RATE, dt);
+      if (Math.abs(figureScale - figureScaleTarget) < 1e-4) figureScale = figureScaleTarget;
+    }
     if (!framing || !framed || framed === framing) return;
     const to = framing;
     const next = {
@@ -1066,6 +1099,8 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
       walking: a.moving,
       airborne: a.airborne,
       point: a.walk ? null : a.point,
+      figureScale,
+      heightPx: a.heightPx * a.container.scale.y,
     }));
   }
 

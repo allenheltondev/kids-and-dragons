@@ -147,6 +147,16 @@ describe("the still camp", () => {
     ]);
     for (const figure of figures) expect(figure.size).toBeGreaterThan(0.2);
   });
+
+  it("draws every hero at the camp's figure factor, in the same place", () => {
+    const crew = heroes(member(1), member(2));
+    const full = stillCampFigures(layout, crew);
+    const small = stillCampFigures(layout, crew, 0.6);
+    small.forEach((figure, i) => {
+      expect(figure.size).toBeCloseTo(full[i]!.size * 0.6);
+      expect([figure.x, figure.y]).toEqual([full[i]!.x, full[i]!.y]);
+    });
+  });
 });
 
 describe("the lobby's layout", () => {
