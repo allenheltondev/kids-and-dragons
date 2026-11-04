@@ -404,48 +404,6 @@ export function laneScaleAt(layout: CampLayout, y: number): number {
   return lanes[lanes.length - 1]!.scale;
 }
 
-// ---------------------------------------------------------------------------
-// Framing: the camp in a pane, clear of the words over its bottom
-// ---------------------------------------------------------------------------
-
-/** How far below the nearest lane a figure's feet and contact shadow still reach, as a fraction of the canvas. */
-export const GROUND_MARGIN = 0.04;
-
-/** The lowest the camp's ground reaches on the canvas: the nearest lane, plus the feet's margin. */
-export function campGround(layout: CampLayout): number {
-  return Math.min(1, Math.max(...layout.backdrop.lanes.map((lane) => lane.y)) + GROUND_MARGIN);
-}
-
-/**
- * Where the camp's canvas goes in a pane `paneWidth` by `paneHeight` whose
- * bottom `insetBottom` px are covered by panels (the lobby's, #614): the scale
- * and the canvas's top-left corner, in pane px.
- *
- * The whole width is kept (the trailhead is at the edge), and the ground,
- * down to `ground` of the canvas, stands above the panels, so no stand point
- * is ever under the words. The space above the panels is `free`, which is
- * stage-inset.ts's rule for the story: everything above the panels, but never
- * less than the stage needs, so a lobby that somehow grew over the whole pane
- * cannot shrink the camp to a stamp. A canvas taller than that space starts at
- * the top (the sky goes on as far as it can and the ground is still clear); a
- * shorter one sits on the panels, with sky above it.
- */
-export function campFrame(
-  paneWidth: number,
-  paneHeight: number,
-  insetBottom: number,
-  canvas: { width: number; height: number },
-  ground: number,
-  free: number = paneHeight - Math.max(0, insetBottom),
-): { scale: number; x: number; y: number } {
-  const scale = Math.min(paneWidth / canvas.width, free / (ground * canvas.height));
-  return {
-    scale,
-    x: (paneWidth - canvas.width * scale) / 2,
-    y: Math.max(0, free - canvas.height * scale),
-  };
-}
-
 /** The lane whose ground line is at `y`, or null between lanes on a crossing. */
 export function laneAt(layout: CampLayout, y: number): string | null {
   for (const lane of layout.lanes.values()) if (Math.abs(lane.y - y) < 1e-9) return lane.id;

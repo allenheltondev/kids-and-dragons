@@ -2,9 +2,6 @@ import { describe, expect, it } from "vitest";
 import { campLayoutFixture, campManifestFixture } from "../testing/camp-fixture";
 import {
   CampLayoutError,
-  GROUND_MARGIN,
-  campFrame,
-  campGround,
   campLayout,
   campRoute,
   laneAt,
@@ -190,34 +187,3 @@ describe("campRoute", () => {
   });
 });
 
-describe("framing the camp clear of the panels (#614)", () => {
-  const layout = campLayoutFixture();
-  const canvas = layout.canvas;
-  const ground = campGround(layout);
-
-  it("reaches down to the nearest lane and the feet's margin", () => {
-    expect(ground).toBeCloseTo(0.87 + GROUND_MARGIN);
-  });
-
-  for (const [name, w, h, inset] of [
-    ["a TV with nothing over it", 1920, 1080, 0],
-    ["a TV with the lobby's band", 1280, 720, 200],
-    ["a phone's World pane", 390, 520, 260],
-    ["a pane the panels nearly fill", 800, 600, 560],
-  ] as const) {
-    it(`keeps the ground above the panels and the whole width on ${name}`, () => {
-      const free = h - inset;
-      const at = campFrame(w, h, inset, canvas, ground);
-      expect(at.y + ground * canvas.height * at.scale).toBeLessThanOrEqual(free + 1e-6);
-      expect(at.x).toBeGreaterThanOrEqual(-1e-6);
-      expect(at.x * 2 + canvas.width * at.scale).toBeCloseTo(w);
-      // No sky gap above a canvas taller than the room it has, and none between a shorter one and the panels.
-      if (canvas.height * at.scale >= free) expect(at.y).toBe(0);
-      else expect(at.y + canvas.height * at.scale).toBeCloseTo(free);
-    });
-  }
-
-  it("fills a 16:9 pane exactly when nothing covers it", () => {
-    expect(campFrame(1920, 1080, 0, canvas, ground)).toEqual({ scale: 1, x: 0, y: 0 });
-  });
-});

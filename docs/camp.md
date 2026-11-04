@@ -556,8 +556,13 @@ camp's spots on that ground.
   rather than walking through another.
 - **Clear of the words.** Stand points never sit under the parts of the screen the lobby, the vote
   and the narration plate cover. `stage-inset.ts` already reports how much of the pane the
-  narration plate covers, so the story stage stands figures above it; the lobby and vote panels
-  would report the same way.
+  narration plate covers, so the story stage stands figures above it; the lobby reports its
+  header and panels the same way. The camp is one painting, edge to edge: it is scaled to cover
+  the pane's width (or the window's height, if that needs more) and slid up or down so its focus
+  band, from a standing hero's head on the back lane to just below the near lane, sits centered
+  in the open window between the header and the panels. Its plain sky is trimmed off the top and
+  its plain grass runs on under the panels (`camp-framing.ts`); the backdrop is painted for that
+  (docs/briefs/camp.md).
 - **Indoors, one lane.** A packed-down camp (§3.2) uses a single generic layout laid over the
   scene's own picture: one near lane along the bottom, a bedroll stand point for each hero and a
   spot for each friend. No per-scene authoring.

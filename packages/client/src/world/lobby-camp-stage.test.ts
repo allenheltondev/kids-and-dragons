@@ -165,12 +165,13 @@ describe("the lobby's camp on the stage", () => {
     const { lobby, app } = table();
     lobby.sync(lobbyWith([member(1)]));
     const camp = lobby.camp()!;
-    const full = camp.view.scale.x;
-    lobby.setInset(300);
+    const full = camp.view.y;
+    lobby.setInset(300, 80);
     run(app, 3);
     const before = { x: camp.view.x, y: camp.view.y, k: camp.view.scale.x };
-    expect(before.k).toBeLessThan(full);
-    lobby.setInset(0);
+    // Slid up to stand the camp in the window above the panels.
+    expect(before.y).toBeLessThan(full);
+    lobby.setInset(0, 0);
     run(app, 3);
     expect({ x: camp.view.x, y: camp.view.y, k: camp.view.scale.x }).toEqual(before);
     lobby.destroy();

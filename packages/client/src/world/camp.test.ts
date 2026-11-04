@@ -15,6 +15,7 @@ import { createCamp, type CampFigure, type CampFigureView, type CampStage } from
 import { ANCHOR_X, ANCHOR_Y } from "./actor-art";
 import { laneAt, pieceHeightCm, standPoint } from "./camp-layout";
 import { MAX_FRAME_S, campHeightPx, campMeasure } from "./camp-motion";
+import { campFocusBand, campFraming, campWindow } from "./camp-framing";
 import { fitCanvas } from "./figure-scale";
 import { MAX_WALKERS } from "./camp-wander";
 
@@ -357,24 +358,24 @@ describe("the camp in the lobby (#614)", () => {
     c.destroy();
   });
 
-  it("frames the ground above the panels over the pane's bottom, easing there as they grow", () => {
+  it("covers the pane and slides the camp into the lobby's window, easing there as the panels grow", () => {
     const { camp: c, app } = camp();
-    const ground = Math.max(...layout.backdrop.lanes.map((lane) => lane.y));
-    const groundOnScreen = () => c.view.y + ground * H * c.view.scale.y;
-    expect(groundOnScreen()).toBeLessThanOrEqual(900);
-    c.setInset(300);
+    const window = campWindow(900, 100, 300);
+    const target = campFraming(1600, window, layout.canvas, campFocusBand(layout, CREW.map((f) => f.heightCm)));
+    const start = c.view.y;
+    c.setInset(300, 100);
     // No jump: the frame eases toward the new one.
     app.ticker.frame(16);
-    expect(groundOnScreen()).toBeGreaterThan(900 - 300);
+    expect(c.view.y).not.toBeCloseTo(target.y);
+    expect(Math.abs(c.view.y - start)).toBeLessThan(Math.abs(target.y - start));
     frames(app, c, 3);
-    expect(groundOnScreen()).toBeLessThanOrEqual(900 - 300);
-    // Every stand point, and so everybody standing at one, is above the panels.
-    for (const point of layout.frame.standPoints) {
-      expect(c.view.y + layout.lanes.get(point.lane)!.y * H * c.view.scale.y).toBeLessThan(900 - 300);
-    }
-    // And the whole width is still there: the trailhead is at its edge.
-    expect(c.view.x).toBeGreaterThanOrEqual(0);
-    expect(c.view.x + W * c.view.scale.x).toBeLessThanOrEqual(1600 + 1e-6);
+    expect(c.view.y).toBeCloseTo(target.y, 0);
+    expect(c.view.scale.x).toBeCloseTo(target.scale);
+    // One painting across the whole width, and over the whole window.
+    expect(c.view.x).toBeLessThanOrEqual(1e-6);
+    expect(c.view.x + W * c.view.scale.x).toBeGreaterThanOrEqual(1600 - 1e-6);
+    expect(c.view.y).toBeLessThanOrEqual(window.top + 0.5);
+    expect(c.view.y + H * c.view.scale.y).toBeGreaterThanOrEqual(window.bottom - 0.5);
     c.destroy();
   });
 
@@ -395,10 +396,25 @@ describe("the camp in the lobby (#614)", () => {
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(asked).toContain("/assets/biomes/plains/bg.webp");
     const backdrop = stage.view.children[0] as Container;
-    // The painting at canvas size, and its dimmed copy covering the pane around it.
+    // The painting at canvas size, undimmed, and its two edge strips: no copy at another scale.
     const sprites = backdrop.children.filter((child): child is Sprite => child instanceof Sprite);
-    expect(sprites).toHaveLength(2);
-    expect(sprites[1]!.width).toBeCloseTo(W);
+    expect(sprites.map((sprite) => sprite.label)).toEqual(["camp-bleed-top", "camp-bleed-bottom", "camp-backdrop"]);
+    const painting = sprites[2]!;
+    expect(painting.width).toBeCloseTo(W);
+    expect(painting.height).toBeCloseTo(H);
+    expect(painting.tint).toBe(0xffffff);
+    // Slid up into a window, the painting stops short of the pane's bottom, and its own
+    // bottom edge, flipped, carries on to it.
+    stage.setInset(600, 0);
+    const bottom = sprites[1]!;
+    const view = stage.view;
+    expect(view.y + H * view.scale.y).toBeLessThan(900);
+    expect(bottom.visible).toBe(true);
+    expect(bottom.scale.y).toBeLessThan(0);
+    expect(bottom.y).toBeGreaterThan(H);
+    expect(view.y + bottom.y * view.scale.y).toBeCloseTo(900);
+    expect(bottom.scale.x * bottom.texture.frame.width).toBeCloseTo(W);
+    expect(sprites[0]!.visible).toBe(false);
     stage.destroy();
   });
 });

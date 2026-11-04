@@ -44,8 +44,8 @@ export interface LobbyCamp {
   /** The run state, every time it changes. */
   sync(state: RunState | null): void;
   resize(width: number, height: number): void;
-  /** The lobby panels' covered height (stage-inset.ts `onLobbyInset`). */
-  setInset(bottomPx: number): void;
+  /** The lobby panels' covered height and the header's reach (stage-inset.ts `onLobbyInset`). */
+  setInset(bottomPx: number, topPx?: number): void;
   setStill(still: boolean): void;
   /** The camp the lobby is showing, or null outside the lobby. */
   camp(): CampStage | null;
@@ -59,6 +59,7 @@ export function createLobbyCamp(app: Application, layout: CampLayout, options: L
   let still = options.still ?? false;
   let size = { width: 0, height: 0 };
   let inset = 0;
+  let insetTop = 0;
   let shown: CampStage | null = null;
   let fading: CampStage | null = null;
   let heroes: CampHero[] | null = null;
@@ -81,7 +82,7 @@ export function createLobbyCamp(app: Application, layout: CampLayout, options: L
       ...(options.loadTexture ? { loadTexture: options.loadTexture } : {}),
     });
     if (size.width > 0) camp.resize(size.width, size.height);
-    camp.setInset(inset);
+    camp.setInset(inset, insetTop);
     options.cover?.(true);
     return camp;
   }
@@ -135,12 +136,14 @@ export function createLobbyCamp(app: Application, layout: CampLayout, options: L
       shown?.resize(width, height);
       fading?.resize(width, height);
     },
-    setInset(bottomPx) {
-      inset = bottomPx;
+    setInset(bottomPx, topPx = 0) {
       // A 0 is the lobby's panels unmounting, which on Begin lands a moment
       // before the phase does: the camp keeps its frame to walk off in, rather
-      // than jumping to the whole pane as it goes.
-      if (bottomPx > 0) shown?.setInset(bottomPx);
+      // than sliding to the whole pane as it goes.
+      if (bottomPx <= 0) return;
+      inset = bottomPx;
+      insetTop = topPx;
+      shown?.setInset(bottomPx, topPx);
     },
     setStill(next) {
       still = next;

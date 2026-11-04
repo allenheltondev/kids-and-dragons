@@ -14,7 +14,7 @@
  * uses a viewport unit. The lobby (world/lobby-camp-stage.ts) owns this stage and calls
  * its small imperative API: who is in camp (`setFigures`), the downtime
  * moment's seed (`setSeed`), the moments the game already has (`moment`),
- * reduced motion (`setStill`), and the panels over it (`setInset`). Moments take priority over wandering, and
+ * reduced motion (`setStill`), and the header and panels over it (`setInset`). Moments take priority over wandering, and
  * nothing waits on an animation (§12.6): every call takes effect on the next
  * frame, and Begin's `setOff` is cut short by whatever comes next.
  *
@@ -26,7 +26,7 @@
  * screen picks up where it was instead of replaying what it missed (§8.7).
  */
 
-import { Assets, Container, Graphics, Sprite, type Application, type Texture } from "pixi.js";
+import { Assets, Container, Graphics, Rectangle, Sprite, Texture, type Application } from "pixi.js";
 import type { CastStance } from "@kad/shared";
 import {
   ANCHOR_X,
@@ -39,8 +39,6 @@ import {
   measurePaint,
 } from "./actor-art";
 import {
-  campFrame,
-  campGround,
   campRoute,
   laneAt,
   laneOf,
@@ -74,7 +72,7 @@ import { createWanderPlanner, queueSpots, type WanderPlace, type WanderPlanner }
 import { stanceIdle } from "./idle-motion";
 import { fitCanvas, NOMINAL_PAINT, paintAspect, STANCE_LIFT, STANCE_LIFT_CM } from "./figure-scale";
 import { reducedMotion } from "../a11y/prefs";
-import { storyStageHeight } from "./stage-inset";
+import { BLEED_SOURCE, campBleed, campFocusBand, campFraming, campWindow, type CampFraming } from "./camp-framing";
 
 /** Somebody in camp: a hero or a friend. */
 export interface CampFigure {
@@ -140,11 +138,12 @@ export interface CampStage {
   setStill(still: boolean): void;
   resize(width: number, height: number): void;
   /**
-   * How many px along the bottom of the pane panels cover (the lobby's,
-   * stage-inset.ts). The camp is framed into the rest, so its ground, and
-   * every stand point on it, is above them (camp-layout.ts `campFrame`).
+   * How many px along the bottom of the pane panels cover, and how far down
+   * from its top the header reaches (the lobby's, stage-inset.ts). The camp's
+   * painting covers the pane and is slid so its focus band stands in the
+   * window between them (camp-framing.ts `campFraming`).
    */
-  setInset(bottomPx: number): void;
+  setInset(bottomPx: number, topPx?: number): void;
   /** Every figure, this frame. */
   figures(): CampFigureView[];
   /** The pieces somebody is using, whose moving parts animate. */
@@ -168,10 +167,6 @@ const SHADOW_SQUASH = 0.28;
 /** How fast the camp eases to a new frame when the panels over it change height. */
 const FRAME_RATE = 4;
 
-type CampFraming = { scale: number; x: number; y: number };
-
-/** The dimmed copy of the backdrop around the canvas: the painting at about 45%. */
-const SURROUND_TINT = 0x6f6f80;
 
 type Place = WanderPlace;
 
@@ -255,24 +250,33 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   // The backdrop: painted art when it loads, a plain dusk until then, so a
   // missing file never leaves the stage blank.
   //
-  // Framed clear of the panels, the canvas may not fill the pane, so the
-  // dusk reaches well past it, and once the painting is in, a dimmed copy of
-  // it covers the whole pane behind the real one: the same evening goes on
-  // past the edges rather than stopping at a hard band.
+  // The painting covers the pane's width and is slid to put the camp in the
+  // window (camp-framing.ts), so it may stop short of the pane's top or
+  // bottom. There its own plain edge rows (sky above, grass below) are drawn
+  // on, flipped so the seam meets itself: one painting, edge to edge.
   const backdrop = new Container();
-  const dusk = new Graphics().rect(-W, -H, 3 * W, 3 * H).fill({ color: 0x2a2f4a });
+  // Far past the canvas: a phone's pane is several painting-heights tall at its scale.
+  const dusk = new Graphics().rect(-W, -8 * H, 3 * W, 17 * H).fill({ color: 0x2a2f4a });
   backdrop.addChild(dusk);
   view.addChild(backdrop);
-  let surround: Sprite | null = null;
+  let bleedTop: Sprite | null = null;
+  let bleedBottom: Sprite | null = null;
   const showBackdrop = (texture: Texture): void => {
     if (destroyed) return;
-    surround = new Sprite(texture);
-    surround.tint = SURROUND_TINT;
-    surround.label = "camp-surround";
     const sprite = new Sprite(texture);
+    sprite.label = "camp-backdrop";
     sprite.width = W;
     sprite.height = H;
-    backdrop.addChild(surround, sprite);
+    // The edge strips, cut from the painting's own texture.
+    const tw = texture.frame.width;
+    const th = texture.frame.height;
+    const strip = (y: number) =>
+      new Texture({ source: texture.source, frame: new Rectangle(texture.frame.x, texture.frame.y + y, tw, th * BLEED_SOURCE) });
+    bleedTop = new Sprite(strip(0));
+    bleedTop.label = "camp-bleed-top";
+    bleedBottom = new Sprite(strip(th * (1 - BLEED_SOURCE)));
+    bleedBottom.label = "camp-bleed-bottom";
+    backdrop.addChild(bleedTop, bleedBottom, sprite);
     if (framed) place(framed);
   };
   const fallback = options.fallbackBackdrop;
@@ -819,6 +823,8 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
         loadArt(actor);
       }
     }
+    // A taller hero sitting down raises the band the frame keeps in the window.
+    frame();
   }
 
   function setSeed(next: number): void {
@@ -982,22 +988,24 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
 
   let pane = { width: 0, height: 0 };
   let insetBottom = 0;
-  const groundLine = campGround(layout);
+  let insetTop = 0;
 
   /** Where the camp is framed this frame, and where it is headed. */
   let framed: CampFraming | null = null;
   let framing: CampFraming | null = null;
 
   /**
-   * Frame the camp in the pane. A new pane size is a cut (the whole canvas is
-   * changing anyway); a new inset, which is the lobby's panels growing or
-   * shrinking as somebody readies up, eases there, because a camp that jumped
-   * in size whenever a line of text appeared would break §8.6's rule 3.
+   * Frame the camp in the pane (camp-framing.ts `campFraming`). A new pane
+   * size is a cut (the whole canvas is changing anyway); a new inset, which is
+   * the lobby's panels growing or shrinking as somebody readies up, or a
+   * taller hero sitting down, eases there, because a camp that jumped
+   * whenever a line of text appeared would break §8.6's rule 3.
    */
   function frame(cut = false): void {
     if (destroyed || pane.width <= 0 || pane.height <= 0) return;
-    const free = storyStageHeight(pane.width, pane.height, insetBottom);
-    framing = campFrame(pane.width, pane.height, insetBottom, layout.canvas, groundLine, free);
+    const heights = [...actors.values()].filter((a) => !a.removing).map((a) => a.def.heightCm);
+    const window = campWindow(pane.height, insetTop, insetBottom);
+    framing = campFraming(pane.width, window, layout.canvas, campFocusBand(layout, heights));
     if (cut || still || !framed) place(framing);
   }
 
@@ -1018,17 +1026,19 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     view.scale.set(at.scale);
     view.x = at.x;
     view.y = at.y;
-    if (surround) {
-      // The whole pane, in canvas units, covered at the painting's own aspect.
-      const left = -at.x / at.scale;
-      const top = -at.y / at.scale;
-      const width = pane.width / at.scale;
-      const height = pane.height / at.scale;
-      const k = Math.max(width / W, height / H);
-      surround.width = W * k;
-      surround.height = H * k;
-      surround.x = left + (width - W * k) / 2;
-      surround.y = top + (height - H * k) / 2;
+    if (bleedTop && bleedBottom) {
+      // In canvas units: flipped about the painting's top and bottom edges,
+      // stretched over whatever of the pane the painting leaves.
+      const bleed = campBleed(pane.height, at, layout.canvas);
+      const above = bleed.top / at.scale;
+      const below = bleed.bottom / at.scale;
+      const strip = (sprite: Sprite, px: number, y: number) => {
+        sprite.visible = px > 0;
+        sprite.scale.set(W / sprite.texture.frame.width, -px / sprite.texture.frame.height);
+        sprite.y = y;
+      };
+      strip(bleedTop, above, 0);
+      strip(bleedBottom, below, H + below);
     }
   }
 
@@ -1038,8 +1048,9 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     frame(true);
   }
 
-  function setInset(bottomPx: number): void {
+  function setInset(bottomPx: number, topPx = 0): void {
     insetBottom = Number.isFinite(bottomPx) && bottomPx > 0 ? bottomPx : 0;
+    insetTop = Number.isFinite(topPx) && topPx > 0 ? topPx : 0;
     frame();
   }
 

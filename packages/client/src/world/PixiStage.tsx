@@ -20,7 +20,7 @@ import { RendererFallback } from "./RendererFallback";
 import { sceneArtFor } from "./art-paths";
 import { sceneRiftFor } from "./scene-rift";
 import { castFor } from "./cast";
-import { boardInsetEnd, lobbyInsetBottom, onBoardInsetEnd, onLobbyInset, onStageInset, onStageInsetTop, stageInsetBottom, stageInsetTop } from "./stage-inset";
+import { boardInsetEnd, lobbyInsetBottom, lobbyInsetTop, onBoardInsetEnd, onLobbyInset, onLobbyInsetTop, onStageInset, onStageInsetTop, stageInsetBottom, stageInsetTop } from "./stage-inset";
 import { createLobbyCamp, lobbyCampLayout, type LobbyCamp } from "./lobby-camp-stage";
 import { PREFS_EVENT, reducedMotion } from "../a11y/prefs";
 
@@ -243,7 +243,7 @@ export function PixiStage(): React.JSX.Element {
           still: reducedMotion(),
         });
         campRef.current = lobbyCamp;
-        lobbyCamp.setInset(lobbyInsetBottom());
+        lobbyCamp.setInset(lobbyInsetBottom(), lobbyInsetTop());
         lobbyCamp.sync(live.state);
       }
       if (import.meta.env.DEV) {
@@ -328,8 +328,9 @@ export function PixiStage(): React.JSX.Element {
   useEffect(() => onStageInsetTop((px) => sceneRef.current?.setStageInsetTop(px)), []);
   // The fight log's width, so the board stands clear of it.
   useEffect(() => onBoardInsetEnd((px) => sceneRef.current?.setBoardInset(px)), []);
-  // The lobby panels' height, so the camp stands above them.
-  useEffect(() => onLobbyInset((px) => campRef.current?.setInset(px)), []);
+  // The lobby's panels and header, so the camp stands in the window between them.
+  useEffect(() => onLobbyInset((px) => campRef.current?.setInset(px, lobbyInsetTop())), []);
+  useEffect(() => onLobbyInsetTop((px) => campRef.current?.setInset(lobbyInsetBottom(), px)), []);
   // Reduced motion, the device's or the in-game setting, as it changes (§8.7).
   useEffect(() => {
     if (typeof document === "undefined") return;

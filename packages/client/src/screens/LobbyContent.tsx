@@ -12,7 +12,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { ReactElement, RefObject } from "react";
-import { setLobbyInsetBottom } from "../world/stage-inset";
+import { setLobbyInsetBottom, setLobbyInsetTop } from "../world/stage-inset";
 import { lobbyCampaign, type PartyMember } from "@kad/shared";
 import { useGameStore, useParty, useRunState } from "../store";
 import { CampaignArt } from "./CampaignArt";
@@ -72,11 +72,13 @@ function useJoinQr(code: string | null): string | null {
 }
 
 /**
- * How much of the bottom of the pane the lobby's panels cover: from the
- * bottom of the camp's window to the bottom of the lobby, told to the stage
- * (stage-inset.ts `setLobbyInsetBottom`) the way the narration plate tells it
- * its height. The window is a flex spacer, so anything below it growing or
- * shrinking resizes it, and one observer on it and the lobby sees every change.
+ * Where the camp's window is: how much of the bottom of the pane the lobby's
+ * panels cover (from the bottom of the window to the bottom of the lobby) and
+ * how far down its header reaches (from the top of the lobby to the top of the
+ * window), told to the stage (stage-inset.ts `setLobbyInsetBottom`,
+ * `setLobbyInsetTop`) the way the narration plate tells it its height. The
+ * window is a flex spacer, so anything around it growing or shrinking resizes
+ * it, and one observer on it and the lobby sees every change.
  */
 export function useLobbyInset(
   section: RefObject<HTMLElement | null>,
@@ -87,16 +89,23 @@ export function useLobbyInset(
     const gap = gapRef.current;
     if (!lobby || !gap) return;
     const report = (): void => {
-      setLobbyInsetBottom(lobby.getBoundingClientRect().bottom - gap.getBoundingClientRect().bottom);
+      const outer = lobby.getBoundingClientRect();
+      const inner = gap.getBoundingClientRect();
+      setLobbyInsetTop(inner.top - outer.top);
+      setLobbyInsetBottom(outer.bottom - inner.bottom);
+    };
+    const clear = (): void => {
+      setLobbyInsetBottom(0);
+      setLobbyInsetTop(0);
     };
     report();
-    if (typeof ResizeObserver === "undefined") return () => setLobbyInsetBottom(0);
+    if (typeof ResizeObserver === "undefined") return clear;
     const observer = new ResizeObserver(report);
     observer.observe(lobby);
     observer.observe(gap);
     return () => {
       observer.disconnect();
-      setLobbyInsetBottom(0);
+      clear();
     };
   }, [section, gapRef]);
 }
