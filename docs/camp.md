@@ -53,7 +53,7 @@ family game for children aged 8 to 12. A camp left alone for a month looks exact
   the upgrade *we* voted for, the trophy that proves we beat the volcano. Customizing and showing
   off are this kid's camp.
 - **The grown-up** wants none of it to cost table time or start arguments. That is what the
-  downtime-only rule (§3) and the own-space-plus-vote rule (§6) are for.
+  downtime-only rule (§3) and the own-kit-plus-vote rule (§6) are for.
 
 ## 3. Where it appears
 
@@ -62,9 +62,9 @@ to tell, it shows the camp, pitched in the terrain the crew is in:
 
 | Moment | Shared screen (TV, or a phone's World pane) | Phones |
 | --- | --- | --- |
-| **Lobby**, while seating and getting ready | The full camp, pitched where the crew last stopped. It replaces the lobby's current backdrop; the room code, ready ticks and adventure vote stay on top. | A **Camp** button beside Ready: tap a friend, change your own space (§6.1). |
+| **Lobby**, while seating and getting ready | The full camp, pitched where the crew last stopped. It replaces the lobby's current backdrop; the room code, ready ticks and adventure vote stay on top. | A **Camp** button beside Ready: tap a friend, change your own kit or buddy (§4.4, §4.5). |
 | **Outdoor rest scene** (§3.2) | The picture crossfades to the full camp, pitched in this chapter's terrain, as the rest scene opens. The scene's narration, when it has any, is shown on the camp screen's plate and read as usual (*decided*). | Trading and stat points as now, plus the Camp button. |
-| **Indoor rest scene** (§3.2) | The scene keeps its own picture. The camp is packed down into it: each hero's bedroll and pack, and the friends. Narration as usual. | As outdoors, but only your own space can change. |
+| **Indoor rest scene** (§3.2) | The scene keeps its own picture. The camp is packed down into it: each hero's bedroll and pack, and the friends. Narration as usual. | As outdoors, but only your own kit and buddy can change. |
 | **Chapter's end** (`chapter_complete`) | After the recap and XP, a short camp beat in the full camp: the chapter's Dash Cash counted in (§5.2), anything found this chapter shown beside the campfire (§12.5), and a purchase vote if the crew can afford something (§6.2). | The vote, and the Camp button. |
 | **Adventure book** (`/journal`, spec §2.3) | n/a | A fifth tray object, **Camp**: the crew's camp to look at and tap, online or offline, from the last copy this phone read. |
 | **In a scene, a check or a fight** | Never. The story owns the screen. | Never. |
@@ -130,6 +130,17 @@ a Gemfall chapter re-takes its hashes (§10, "Gemfall is pinned").
 
 ## 4. What is in it
 
+*Decided:* everything in the camp belongs either to the **crew** or to **one hero**, and the two
+never mix:
+
+| | **The crew's camp** | **Each hero's kit** (§4.5) |
+| --- | --- | --- |
+| What | The frame, the shared hotspots (banner, cookfire, awning, lanterns, friends' corner), the friends, trophies, the crew's banner and name | The hero's tent, bedroll and pack, their personal decorations, and their souvenirs |
+| Stored | On the crew's camp record (§9) | On the character (§9) |
+| Goes where | Stays with the crew. A hero seated with another crew sees that crew's camp | Goes everywhere the hero goes: any crew, any table, a move to another home |
+| Earned by | The crew: shared finds, Dash Cash purchases, finished campaigns, befriending | The hero: the free catalog, kit finds every hero gets a copy of, and the hero's own milestones (§5.4) |
+| Changed | At the table, during downtime (§6) | At the table, and from the adventure book between games (§7) |
+
 ### 4.1 The frame: it grows with the crew
 
 The camp's size is its **frame**, and the frame grows a stage each time the crew finishes a full
@@ -177,7 +188,10 @@ from one of three places:
 | --- | --- | --- |
 | **Found** (§5.1) | A chapter hands it over as part of normal play | A striped awning from the Saltrot market, a cracked bell from the Ashspan Bridge, a pinecone wreath |
 | **Bought** (§5.2) | Dash Cash, by vote at the chapter's end (§6.2) | A cookfire with a kettle, a lookout ladder, a second lantern string |
-| **Kept** | Something the game already gives that has nowhere to show | Souvenirs from a failed campaign (spec §8.3), the crew's banner and name (`CrewIdentity`), trophies for each finished campaign |
+| **Kept** | Something the game already gives the crew that has nowhere to show | The crew's banner and name (`CrewIdentity`), trophies for each finished campaign |
+
+These are the crew's pieces. A hero's souvenirs from a failed campaign belong to that hero (spec
+§8.3 gives them to the character), so they are part of the hero's kit (§4.5), shown at their tent.
 
 ### 4.4 Friends
 
@@ -202,28 +216,51 @@ is Nim's pony, Nim needs her to carry news north (Gemfall 5A), and she appears a
 *Decided:* more friends will be new characters written for the purpose: a creature met in a
 chapter, with a befriending moment, and no claim on it anywhere else in the story.
 
-**At most four friends are out at once** (*decided*). For a crew with more than four, the display
-rotates them automatically: each downtime moment (a lobby, a rest stop, a chapter's end) brings
-out a different four, favoring whoever has been out least, and a friend just befriended is always
-out at its first chance (§12.5). Letting the kids choose who is out is left open (§11) in case
-families ask for it.
+**At most four friends are out at once** (*decided*), and **each kid can pick a buddy**
+(*decided*):
+
+- **A buddy is one friend a hero picks** from the crew's friends. While that hero is seated, their
+  buddy is always out. With up to four heroes and up to four friends out, every kid gets exactly
+  one say, and nobody can bench another kid's choice.
+- **Seats without a buddy rotate automatically**: each downtime moment (a lobby, a rest stop, a
+  chapter's end) fills them with the friends who have been out least, and a friend just
+  befriended is always out at its first chance (§12.5). A solo player with a buddy sees the buddy
+  plus three rotating friends.
+- **Two heroes can pick the same buddy.** The friend is shared, and the spare seat rotates.
+- **A buddy is picked from the phone**, at the table or in the adventure book (§7), since it only
+  decides that kid's own seat. Friends belong to the crew, so a hero's buddy applies in that
+  crew's camp only (§12.1).
+- Until a hero picks one, they have no buddy and every seat rotates, exactly as before. Rotation
+  stays the default; buddies are an option, never a chore.
 
 Following the continuity rules, a friend joins because a **choice** says so ("Ask the kid goat to
 come along" beside "Say goodbye"), never because of a variant. Saying goodbye costs the story
 nothing and is never sad: the friend waves off, and the chapter goes on.
 
-### 4.5 Each hero's space
+### 4.5 Each hero's kit
 
-Every hero seated with the crew has **one space of their own**: a tent outdoors, and a bedroll
-and pack indoors (§3.2), in their own color (the palette rule heroes already use), with two or
-three small slots for things they choose. Only that hero's player changes it. It shows whenever
-the hero is seated, and a hero sitting with another crew brings their space along, because it
-belongs to the hero, not the crew (§9, §12.1). At frame stage 1, before tents, it is the bedroll
-and pack everywhere.
+*Decided:* the personal parts of the camp belong to the hero, not the crew, so a kid can look after
+them even when nobody else is playing.
+
+A hero's **kit** is their tent, their bedroll and pack, and two or three small slots for personal
+decorations, all in their own color (the palette rule heroes already use). Outdoors the tent
+stands in its spot in the camp; indoors (§3.2) the bedroll and pack are laid out along the front
+of the scene. At frame stage 1, before tents, it is the bedroll and pack everywhere. The hero's
+souvenirs (spec §8.3) hang at their tent.
+
+- **Only that hero's player changes it**, at the table during any downtime moment (no limit, §6.1)
+  and from the adventure book between games (§7).
+- **It goes everywhere the hero goes.** A hero seated with another crew brings their kit along,
+  and a hero who moves home (#251) takes it with them, because it is stored on the character (§9).
+- **It never borrows from the crew.** Nothing the crew owns can be put in a kit, and nothing in a
+  kit can be put on a shared hotspot (§12.1).
+
+Where kit pieces come from is in §5.4.
 
 ## 5. How the crew earns things
 
-There are two ways in, and both happen during normal play.
+The crew earns its camp through finds and Dash Cash (§5.1, §5.2). Each hero earns their kit
+separately (§5.4). All of it happens during normal play.
 
 ### 5.1 Finds: pieces handed over in a chapter
 
@@ -264,15 +301,16 @@ measures:
 | Earned for | Dash Cash |
 | --- | --- |
 | Finishing a chapter, any ending | 2 |
-| Each completed goal step (content/README.md, "The chapter's goal") | 1 each; chapters define 2 to 4 steps |
+| Each completed goal step (content/README.md, "The chapter's goal") | 1 each; today's chapters all have 3 or 4 steps |
 | Each optional objective met (spec §8.2) | 1 each |
 | A find the crew already owns (§5.1) | 1 |
 
-A chapter with all its 2 to 4 goal steps complete earns 4 to 6 Dash Cash before optional
-objectives and duplicate finds; a setback may earn less. For planning, target roughly 5 to 8 a
-chapter, with a purchase costing around 10 to 15: one purchase every couple of chapters, with the
-cadence to be checked in playtests. Every purchase goes through the same vote (§6.2); there is no
-separate flow for cheaper pieces. The numbers are a starting point for playtest.
+A chapter with all its goal steps complete earns 5 or 6 Dash Cash before optional objectives and
+duplicate finds (the content README allows 2 to 4 steps; every chapter today has 3 or 4); a setback
+may earn less. For planning, target roughly 5 to 8 a chapter, with a purchase costing around 10 to
+15: one purchase every couple of chapters, with the cadence to be checked in playtests. Every
+purchase goes through the same vote (§6.2); there is no separate flow for cheaper pieces. The
+numbers are a starting point for playtest.
 
 Rules, borrowed from what already works for XP:
 
@@ -291,24 +329,43 @@ Rules, borrowed from what already works for XP:
 ### 5.3 The first reward comes in the first session
 
 *Decided:* children see something that is theirs in their very first session, so the camp's
-purpose is clear before anyone has to wait. Frame growth takes a whole campaign, and Dash Cash
-takes a couple of chapters to buy anything, so neither can be the first reward.
+purpose is clear before anyone has to wait. Frame growth takes a whole campaign, and the shop
+opens only after two chapters, so neither can be the first reward.
 
 - **A personal choice at the first downtime moment.** The first time a hero is seated with a crew
-  that has a camp, their kid picks their own space's style and color (§4.5) from the free catalog
-  (§12.1). It takes one tap, can be skipped, and is the first thing the camp asks of anyone.
+  that has a camp, their kid picks their kit's style and color (§4.5) from the free catalog
+  (§5.4). It takes one tap, can be skipped, and is the first thing the camp asks of anyone.
 - **A recognizable find in the first chapter.** The Practice Meadow and the first chapter of every
   `growsCamp` campaign each hand over one find on their spine, so every path to every ending gets
   it. It is something the kids will remember from that chapter (a pinecone wreath from the meadow,
   say), and the chapter's end shows it beside the campfire and highlights where it can go.
-- *Proposed:* **a starter piece the first chapter can almost buy.** Each shop list has one cheap
-  piece (around 5 Dash Cash), so a crew can make its first purchase at the end of its first or
-  second chapter.
+- **The shop opens after two chapters** (*decided*). A crew needs a little skin in the game before
+  it can buy anything: the chapter-end shop appears only once the crew has been paid for at least
+  two chapters, in any campaign. Before that, the chapter's end shows the balance and says the
+  shop opens after the next chapter. The first pieces in each shop cost **5 Dash Cash**
+  (*decided*), so the shop's first visit always has something the crew can afford.
+
+### 5.4 Each hero's kit pieces
+
+A hero's kit (§4.5) fills from three places, none of them Dash Cash, which stays the crew's:
+
+- **The free catalog** (*decided*, §12.1): a starting set of tent styles, colors and simple
+  decorations every hero has from the start, so there is always something to choose.
+- **Kit finds** (*decided*): a chapter effect, `findForKit: { pieceId }`, that gives **every
+  seated hero their own copy** of a personal piece ("everybody gets a feather for their tent").
+  Like every reward, it is party-wide, so no kid misses out. A hero who already has it gets
+  nothing more; Dash Cash is the crew's and is never paid for a kit duplicate. The same authoring
+  rules as crew finds apply (§5.1): a bonus, never a gate, and the narration names the thing, not
+  the kit.
+- *Proposed:* **the hero's own milestones.** Reaching a new appearance tier unlocks a tent style in
+  that tier's look, and a class distinction unlocks a small decoration in that class's colors.
+  These are the hero's own deeds, so they belong in the hero's kit. Like souvenirs, they are
+  cosmetic and kept even if a failed campaign later puts the tier back (spec §8.3).
 
 ## 6. Who changes what
 
-*Decided:* anyone in the crew can update the camp; each hero has their own space; purchases go to
-a vote.
+*Decided:* anyone in the crew can update the camp; each hero has their own kit; purchases go to a
+vote.
 
 ### 6.1 Free changes: any time it is on screen
 
@@ -317,10 +374,10 @@ another owned piece (subject to the shared-change limit below):
 
 - **Shared hotspots** (banner, awning, lanterns, cookfire, friends' corner): any seated player, in
   the full camp only. An indoor rest has none (§3.2).
-- **A hero's space:** only that hero's player, indoors or out.
+- **A hero's kit:** only that hero's player, indoors or out, and from the adventure book (§7).
 
 If two phones pick for one hotspot at once, the later pick wins and the TV shows it; there is
-nothing to lose, because the crew still owns both pieces. Their own space is unlimited.
+nothing to lose, because the crew still owns both pieces. A kid's own kit is unlimited.
 
 **The shared-edit limit is a playtest question, not a settled rule** (*decided*). The starting
 proposal is that each seated player may change **one shared hotspot per downtime moment** (per
@@ -341,8 +398,8 @@ Playtests decide whether the limit stays, loosens or goes (§13).
 Buying a piece costs Dash Cash and adds something new to the crew's collection. Spending is a crew
 decision:
 
-1. At the **chapter's end**, if the crew can afford something, the phones show up to three pieces
-   it can buy, plus "Save our Dash Cash."
+1. At the **chapter's end**, once the shop is open (two chapters played, §5.3) and the crew can
+   afford something, the phones show up to three pieces it can buy, plus "Save our Dash Cash."
 2. Every seated player votes, the way a choice point works: most votes wins, and a tie goes to
    the turn marker (spec §6.1). "Save our Dash Cash" is always an option and always free.
 3. The winner joins the collection and is shown beside the campfire on the TV, and the crew can
@@ -363,10 +420,25 @@ tap and every piece's name and where it came from ("Found at the Ashspan Bridge"
 record rides in the same `GET /api/journal` read and is saved with the book, so it opens without a
 signal like the rest of it.
 
-**The book is look-only** (*decided*), keeping its rule that nothing in it can change anything. A
-phone between games belongs to one kid, not a crew, so if families ask, the natural exception is
-letting that kid change **their own hero's space** from the book while online. That is parked in
-§11. Votes and shared hotspots stay at the table.
+**The crew's camp is look-only in the book; each kid's own things are not** (*decided*). A phone
+between games belongs to one kid, not a crew, so the book lets that kid do what is theirs alone:
+
+- **Change their hero's kit** (§4.5): tent style, colors and decorations. Kids want to play even
+  when they're by themselves, and this is something they can do on their own that still shows up
+  at the next game.
+- **Pick their hero's buddy** (§4.4) for each crew the hero plays with.
+- **Tap the friends**, as before.
+
+Everything shared stays at the table: shared hotspots, purchases and votes. The book's old promise
+narrows rather than breaks: nothing in it can change anything **anybody else** owns, so nothing a
+kid does there can upset another kid's game.
+
+These edits need a signal: they go to the server through a small write path authorized by the
+phone's device binding, like the book's read (§12.6). Offline, the book still opens and shows
+everything, and the edit buttons say they need a connection. *Proposed for later:* queue offline
+kit edits on the phone and send them when the signal returns. Only the hero's owner ever writes a
+kit, so a queued edit can only clash with that same kid's own edit elsewhere, and the later one
+wins.
 
 ## 8. Movement: a camp that is alive
 
@@ -567,20 +639,27 @@ interface CampRecord {
   owned: Record<PieceId, { from: "found" | "bought" | "kept"; rewardId?: string; at: string }>;
   placed: Record<HotspotId, PieceId>;            // shared hotspots only
   friends: Record<FriendId, { rewardId: string; at: string }>;
+  buddies: Record<CharId, FriendId>;             // one per hero, this crew's friends only (§4.4)
+  paidChapterCount: number;                      // the shop opens at 2 (§5.3)
   // Receipts (§12.2): paid chapters and claimed reward ids. Storage shape to be chosen
   // after checking transaction and record-size limits.
 }
 
-// on Character (domain.ts, stored at CHAR#<charId>), because the space follows the hero (§4.5)
-interface CampSpace {
-  style: SpaceStyleId;                           // tent and matching bedroll
-  slots: (PersonalDecorationId | null)[];        // two or three, from the free catalog (§12.1)
+// on Character (domain.ts, stored at CHAR#<charId>), because the kit follows the hero (§4.5)
+interface HeroKit {
+  version: number;
+  revision: number;                              // book and table edits (§7, §12.4)
+  style: KitStyleId;                             // tent, bedroll and pack together
+  color: KitColorId;
+  slots: (KitPieceId | null)[];                  // two or three
+  unlocked: Record<KitPieceId, { from: "catalog" | "found" | "milestone"; rewardId?: string; at: string }>;
 }
 ```
 
 - **Written only by the server**, as every authoritative change is: phones send intents
-  (`campPlace`, `campVote`, `spacePlace`), and the server checks the piece is owned, the hotspot
-  fits it, the sender may change it and the intent is not stale.
+  (`campPlace`, `campVote`, `kitPlace`, `buddyPick`), and the server checks the piece is owned,
+  the hotspot fits it, the sender may change it and the intent is not stale. `kitPlace` and
+  `buddyPick` are also accepted from the adventure book, outside any room (§7).
 - **Outside the commitment rule.** Dash Cash, finds and friends go straight onto the record, not
   into provisional gains, so `failCampaign()` never touches them (§1). A find or friend is written
   when its effect is applied, even if the room closes before the chapter's end; Dash Cash is
@@ -588,16 +667,17 @@ interface CampSpace {
 - **On the run state**, a slim `camp` view for the screens in the lobby, at rest and at the
   chapter's end, and nothing during scenes.
 - **Content**:
-  - `content/camp.json` (pieces, personal decorations, hotspots, frame stages, shop lists, friends
-    and their reactions) with a schema in `schemas/`, checked by `npm run content:validate`: every
-    `findForCamp` names a real piece, every friend a real cast figure, every shop list prices
-    pieces of its own stage.
+  - `content/camp.json` (crew pieces, kit pieces, hotspots, frame stages, shop lists, friends and
+    their reactions) with a schema in `schemas/`, checked by `npm run content:validate`: every
+    `findForCamp` names a real crew piece and every `findForKit` a real kit piece, every friend a
+    real cast figure, every shop list prices pieces of its own stage.
   - On every rest scene, a required `setting: "indoor" | "outdoor"` (§3.2).
   - On a campaign, `growsCamp: true` for the full campaigns (§4.1).
 - **Art**: a `camp` section in `assets/manifest.json` (backdrops per terrain family, frames per
   stage, pieces, tent and bedroll styles), owed in `npm run art:inventory` like story plates.
-- **Deleting**: the camp goes with its crew and its household, and a hero's space goes with the
-  hero. It names no kid, so a kid's own delete (#252) leaves the crew's camp alone.
+- **Deleting**: the camp goes with its crew and its household, and a hero's kit goes with the hero,
+  as do their entries in any crew's `buddies`. It names no kid, so a kid's own delete (#252) leaves
+  the crew's camp alone.
 
 ## 10. Building it in phases
 
@@ -613,30 +693,33 @@ no catalog and no new intents. Not in Phase 1: the adventure book, offline cachi
 stages, Dash Cash, finds and friends. The test: do children look at the TV during the lobby, point
 at their hero and talk about the camp?
 
-**Phase 2: the camp is yours.** The camp record (§9); each hero's own space and the first-session
-choice (§5.3); the first-chapter finds (§5.3); Dash Cash at the chapter's end, the shop and the
-vote; shared hotspot changes, with the edit limit and Undo under test (§6.1); the chapter-end camp
-beat; frame stage 2; souvenirs and the crew banner as kept pieces. Finds go into Riftlight and the
-Practice Meadow first. The test: can children find their own space, place a piece without help, and
-recognize where their finds came from?
+**Phase 2: the camp is yours.** The camp record and each hero's kit (§9); the free kit catalog and
+the first-session choice (§5.3, §5.4); the first-chapter finds (§5.3) and the first kit finds;
+Dash Cash at the chapter's end, and the shop and the vote once two chapters are played; shared
+hotspot changes, with the edit limit and Undo under test (§6.1); the chapter-end camp beat; frame
+stage 2; the crew banner as a kept piece and souvenirs at each hero's tent. Finds go into
+Riftlight and the Practice Meadow first. The test: can children find their own tent, change their
+kit and place a piece without help, and recognize where their finds came from?
 
 **Phase 3: friends and places.** The four friends in §4.4 and the first new ones, each with a
 befriend choice in its chapter; tapping friends on a phone and seeing them react and walk over on
-the TV (§8.5); tagging every rest scene indoor or outdoor (§3.2), then the outdoor crossfade and
-the packed-down indoor camp; the first-wave backdrops (`red_sky_volcanic`, `frozen_north`); frame
-stages 3 and 4; Travel Mode's Camp button.
+the TV (§8.5); buddies (§4.4); tagging every rest scene indoor or outdoor (§3.2), then the outdoor
+crossfade and the packed-down indoor camp; the first-wave backdrops (`red_sky_volcanic`,
+`frozen_north`); frame stages 3 and 4; Travel Mode's Camp button.
 
-**Phase 4: the camp between games.** The adventure book's look-only Camp tray (§7) and offline
-caching of the camp and its art.
+**Phase 4: the camp between games.** The adventure book's Camp tray (§7): the crew's camp to look
+at, each kid's kit to change and buddy to pick while online, and offline caching of the camp and
+its art. The test: do kids open the book on their own to change their kit, and do they notice the
+change at the next game?
 
-**Later:** the remaining backdrops in the order of §3.1, editing your own space from the adventure
-book, more friends and finds as chapters are written.
+**Later:** the remaining backdrops in the order of §3.1, queued offline kit edits (§7), milestone
+kit pieces if approved (§5.4), more friends and finds as chapters are written.
 
 **Gemfall is pinned.** `gemfall-compat.test.ts` hashes every Gemfall file, so adding a find, a
 befriend choice or a rest scene's `setting` to a Gemfall chapter is a deliberate re-hash with its
-reason in the commit. Re-taking those hashes for the camp is approved (*decided*). Nothing here
-may move the gameplay digests below the hashes: `findForCamp` and `setting` change nothing the
-digests measure (no flag, XP, item or route), and that should be checked when the mosshorn is
+reason in the commit. Re-taking those hashes for the camp is approved (*decided*). Nothing here may
+move the gameplay digests below the hashes: `findForCamp`, `findForKit` and `setting` change nothing
+the digests measure (no flag, XP, item or route), and that should be checked when the mosshorn is
 added and the rest scenes are tagged.
 
 ## 11. Decisions and open questions
@@ -648,27 +731,35 @@ Settled by the product owner:
 | What it is | A **camp**, not a caravan: carried on the heroes' backs, and clear of Gemfall's story caravan (intro) |
 | The currency's name | **Dash Cash** (§5.2) |
 | Rest scenes | Every rest scene is marked indoor or outdoor. Outdoor crossfades to the camp, with its narration on the camp screen; indoor keeps its picture with bedrolls and packs (§3, §3.2) |
-| Editing from the adventure book | Not now: the book stays look-only (§7). Left open below |
+| Editing from the adventure book | Each kid can change their own hero's kit and buddy from the book, online; the crew's camp stays look-only there (§7) |
+| Who owns what | The crew owns the camp's shared parts and friends; each hero owns their kit (tent, bedroll, pack, decorations, souvenirs), which goes wherever the hero goes (§4, §4.5) |
 | A crew with no finished campaign | The shop is enough; the frame still grows only on a finished full campaign (§4.1) |
 | The tutorial and The Hollow Crown | Neither grows the frame; only `growsCamp` campaigns do (§4.1) |
 | Gemfall's pinned hashes | Re-taking them for the camp's content changes is approved; the gameplay digests must still not move (§10) |
 | Friends | Only creatures that belong to nobody in the story; Pepper is out, and new characters will be written (§4.4) |
-| How many friends at once | Four at most, rotating on their own (§4.4). Choosing is left open below |
+| How many friends at once | Four at most. Each kid may pick one buddy who is always out while their hero is seated; the other seats rotate on their own (§4.4) |
 | Finds in a graph campaign | Offered on every way in, given once (§5.1) |
 | How much the pieces move | Only a piece a figure is using moves; everything else is static (§8.4) |
 | Setting off on Begin | At the start of every chapter (§8.5) |
 | Phase 1 | Small: the animated lobby only, expanding once children notice their camp (§10) |
-| The first reward | Arrives in the first session: a personal choice and a first-chapter find (§5.3) |
+| The first reward | Arrives in the first session: a kit choice and a first-chapter find (§5.3) |
+| The shop | Opens once the crew has been paid for two chapters; its first pieces cost 5 Dash Cash (§5.3) |
+| Kit finds | Every seated hero gets their own copy; a duplicate gives nothing, since Dash Cash is the crew's (§5.4) |
 | The shared-edit limit | Tested in playtest, with an Undo that does not use up a change (§6.1) |
 | Implementation requirements | All of §12 approved, including its defaults: one bonus when a goal step and an objective are the same deed, lower-stage pieces staying in later shops, and the migration policy for existing crews (§12) |
 
-Still open, parked until families ask:
+Still open:
 
-1. **Editing your own space from the adventure book.** It would break the book's look-only rule
-   and needs a write path from a device binding with no room (§7).
-2. **Choosing which friends are out.** Friends rotate automatically (§4.4). If
-   kids want to pick, it is a shared-hotspot change at the friends' corner, under §6.1's
-   one-change-per-moment rule.
+1. **How fast Dash Cash builds up.** The shop opens after two chapters with 5-Dash-Cash pieces, but
+   at today's rates a crew has 10 to 12 by then (more with objectives) and earns 5 to 9 a chapter
+   after, while it can buy only one piece per chapter's end. The balance will keep climbing unless
+   earnings come down or later prices go up. *Proposed:* pay 2 for finishing a chapter, 1 more for
+   completing every goal step (not 1 per step) and 1 per optional objective up to 2: about 3 a
+   chapter, 2 to 5 at the extremes. That is about 6 after two chapters, one starter piece, then a
+   10-to-15 piece every three or four chapters.
+2. **Milestone kit pieces** (§5.4): a tent style per appearance tier and a decoration per class
+   distinction. Proposed, not yet approved.
+3. **Queued offline kit edits** (§7). Proposed for later.
 
 ## 12. Implementation requirements
 
@@ -677,17 +768,17 @@ them. Where one says something is under test (the shared-edit limit and Undo, §
 decides the number, not whether the mechanism is built. The two parked features in §11 do not
 block the initial release.
 
-### 12.1 Personal pieces follow the hero
+### 12.1 Kit pieces belong to the hero, camp pieces to the crew
 
-Crew inventory and hero-owned spaces need separate ownership rules. A reference to a piece in one
-crew's inventory cannot by itself authorize that piece in a hero's space at another crew.
+Crew inventory and hero-owned kits have separate ownership rules (§4). A piece in one crew's
+inventory can never authorize anything in a hero's kit, at that crew or another.
 
-Initially give every hero the same free catalog of personal decorations and
-tent styles. Store their selected style and slots on the character. Reserve earned and purchased
-pieces for shared hotspots. Personal decorations then travel with the character without copying
-crew property. If earned personal decorations are added later, give them an explicit
-character-owned unlock record and transfer and delete rules. Never infer ownership from the
-current crew's catalog.
+Kit pieces and crew pieces are separate catalogs with separate ids, so one can never be placed as
+the other. Every hero starts with the same free catalog. Earned kit pieces (kit finds, and
+milestones if approved, §5.4) are recorded on the character in `HeroKit.unlocked`, with where they
+came from; that record moves with the hero when they move home (#251) and is deleted with them.
+Never infer kit ownership from any crew's catalog. A buddy (§4.4) is the exception that proves the
+rule: it names a crew-owned friend, so it is stored on the crew's camp record, keyed by the hero.
 
 ### 12.2 Rewards are permanent, once, and independent of presentation
 
@@ -759,11 +850,11 @@ collection, is shown beside the campfire, its matching hotspot is highlighted, a
 place it during downtime. If its hotspot is not available yet (a later frame stage), it stays in
 the collection with a note saying when it can be displayed.
 
-Choose the visible friends once per downtime moment, with a stable tie break and newly acquired
-friends first. Persist enough rotation history for "least seen" to survive reconnects; do not
-write positions or animation frames. More than four new friends at once queue their first
-appearance for later downtime moments. Friends not currently out remain visible in the
-collection; rotation never suggests that they left or were lost.
+Choose the visible friends once per downtime moment: first each seated hero's buddy (§4.4), then the
+rotating seats, with a stable tie break and newly acquired friends first. Persist enough rotation
+history for "least seen" to survive reconnects; do not write positions or animation frames. More
+than four new friends at once queue their first appearance for later downtime moments. Friends not
+currently out remain visible in the collection; rotation never suggests that they left or were lost.
 
 ### 12.6 Story independence and presentation take precedence
 
@@ -785,8 +876,14 @@ Every phone action also needs a named, keyboard-accessible control outside the c
 have text reactions; pieces have labels, source and selected state. Follow
 [accessibility settings](accessibility.md) for touch targets, largest text, contrast and reduced
 motion. Still rendering keeps every interaction. Cache the camp snapshot and its required art for
-the look-only book, label its last-sync time, and provide a useful first-visit empty state. If the
-device can reach more than one crew, name the selected crew explicitly in the book.
+the book, label its last-sync time, and provide a useful first-visit empty state. If the device can
+reach more than one crew, name the selected crew explicitly in the book.
+
+The book's kit and buddy edits (§7) use a write path authorized by the phone's device binding, as
+its read is: the server accepts `kitPlace` and `buddyPick` only for heroes that belong to the kid
+the phone is bound to, refuses everything else, and applies the same `revision` check as the
+table, so an edit in the book and one at a live table resolve cleanly. A live room picks up a kit
+change at its next downtime moment.
 
 ## 13. Acceptance criteria and playtest questions
 
@@ -801,11 +898,17 @@ lives under.
 - A find or friend in a graph campaign is offered on every way in and given once (§5.1).
 - Every rest scene has a `setting`, and validation fails without one. An indoor rest never shows
   the campsite backdrop or tents (§3.2).
-- The first session offers each kid a choice for their own space, and the first chapter of the
+- The first session offers each kid a choice for their own kit, and the first chapter of the
   Practice Meadow and of every `growsCamp` campaign hands over a find on every path (§5.3).
+- The shop does not open until the crew has been paid for two chapters (§5.3).
 - No purchase can overspend, buy a piece twice or charge after the chapter's end has been left.
   Placements the sender may not make are refused (§6).
-- A hero's own space survives changing crews and moving the hero home (§4.5). Household and
+- A hero's kit, souvenirs included, goes with the hero to every crew and when moving home (§4.5).
+- A kit find gives every seated hero their own copy, and a hero who already has it gets nothing
+  more (§5.4).
+- A buddy is always out while its hero is seated; the other seats rotate (§4.4).
+- From the book, a kid can change only their own hero's kit and buddy, and only with a signal;
+  nothing shared can change there (§7, §12.6). Household and
   character deletion follow existing lifecycle rules.
 - Begin, Go on and return to lobby remain available with panels open and during every animation
   (§3, §8).
@@ -820,8 +923,8 @@ lives under.
   skipping a celebration does not lose its reward, because finds are saved when found (§12.2).
 - Each `growsCamp` campaign grows the frame at most once per crew, however often it is replayed,
   and the frame stops at stage 4; existing crews migrate idempotently (§12.3).
-- Personal decorations come from the free catalog, and crew-owned pieces never appear in a hero's
-  space at another crew (§12.1).
+- Kit pieces and crew pieces never cross: no crew piece ever appears in a kit, and no kit piece on a
+  shared hotspot (§12.1).
 - At most one purchase per chapter-end visit; a losing concurrent purchase refreshes the offer
   without spending; a stale intent is refused (§12.4).
 - Shared edits are counted per seated player, not per device; Undo gives the change back; placing
@@ -832,9 +935,10 @@ lives under.
 ### 13.2 Playtest questions
 
 Playtest each phase with children in both target age groups and a grown-up. Observe whether children
-recognize a past adventure, can find their own space and can place a piece without help. Record
+recognize a past adventure, can find their own tent and can place a piece without help. Record
 whether the shared-edit limit causes arguments or frustration, how often children use Undo, and
-whether automatic friend rotation feels fair. Note whether children understand what the camp is for
+whether buddies and the rotating seats feel fair. Watch whether kids open the book alone to change
+their kit. Note whether children understand what the camp is for
 after their first session (§5.3). Measure added time before Begin and Go on: the technical target is
 no forced delay; voluntary time spent decorating should be reported separately.
 
