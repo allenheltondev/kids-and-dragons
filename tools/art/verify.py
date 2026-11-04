@@ -699,6 +699,11 @@ CAMP_FACES = {"left", "right"}
 CAMP_GROUND_TOP = 0.45
 CAMP_GROUND_BOTTOM = 0.75
 CAMP_SEATS = {0, 1, 2, 3}
+# The backdrop fills the screen's width (cover-fit, camp-framing.ts), so the camp spreads across
+# the clearing; a portrait phone crops the outer edges a little, so pieces and stand points keep
+# within this much of the width. The trailhead, where the party leaves camp, is the one exception.
+CAMP_X_MIN = 0.08
+CAMP_X_MAX = 0.92
 
 
 def check_camp_layout(rep: Report, mf: dict) -> None:
@@ -764,6 +769,8 @@ def check_camp_layout(rep: Report, mf: dict) -> None:
         for piece in frame.get("pieces", []):
             if not on_lane(piece["lane"], piece["x"]):
                 problems.append(f"piece {piece['id']} on its lane")
+            if not CAMP_X_MIN <= piece["x"] <= CAMP_X_MAX:
+                problems.append(f"piece {piece['id']} within x {CAMP_X_MIN} to {CAMP_X_MAX}")
             height = piece.get("heightCm")
             if height is not None and (isinstance(height, bool) or not isinstance(height, (int, float)) or height <= 0):
                 problems.append(f"piece {piece['id']} heightCm a positive number")
@@ -778,6 +785,8 @@ def check_camp_layout(rep: Report, mf: dict) -> None:
             pid = point["id"]
             if not on_lane(point["lane"], point["x"]):
                 problems.append(f"stand point {pid} on its lane")
+            if not CAMP_X_MIN <= point["x"] <= CAMP_X_MAX:
+                problems.append(f"stand point {pid} within x {CAMP_X_MIN} to {CAMP_X_MAX}")
             if point.get("face") not in CAMP_FACES:
                 problems.append(f"stand point {pid} faces left or right")
             action = point.get("action")
@@ -789,8 +798,6 @@ def check_camp_layout(rep: Report, mf: dict) -> None:
                 if point["seat"] not in CAMP_SEATS or action != "rest":
                     problems.append(f"stand point {pid} seat 0-3, on a rest spot")
                 seats.append(point["seat"])
-            if action is None and "hotspot" not in point and 1 / 3 < point["x"] < 2 / 3:
-                problems.append(f"wander spot {pid} outside the middle third")
         # Every frame seats the full party (docs/camp.md §12): one rest spot per seat.
         if sorted(seats) != sorted(CAMP_SEATS):
             problems.append(f"one rest spot per seat 0-3, found {sorted(seats)}")

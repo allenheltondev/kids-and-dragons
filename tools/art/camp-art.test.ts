@@ -64,7 +64,8 @@ describe('camp layout (manifest.camp)', () => {
     ['a hotspot that names no piece', `point('campfire_left')['hotspot'] = 'cookfire'`, 'camp/stage1 layout'],
     ['an unknown action', `point('campfire_left')['action'] = 'dance'`, 'camp/stage1 layout'],
     ['a missing seat', `frame['standPoints'] = [p for p in frame['standPoints'] if p.get('seat') != 3]`, 'camp/stage1 layout'],
-    ['a wander spot in the middle third', `point('wander_back_left')['x'] = 0.5`, 'camp/stage1 layout'],
+    ['a stand point out at the edge, where a phone crops', `point('wander_near_left')['x'] = 0.06`, 'camp/stage1 layout'],
+    ['a piece out at the edge, where a phone crops', `frame['pieces'][0]['x'] = 0.95`, 'camp/stage1 layout'],
     ['a moving part on no piece', `frame['movingParts'][0]['piece'] = 'cookfire'`, 'camp/stage1 layout'],
     ['no open_plains fallback', `camp['backdrops'][0]['family'] = 'frozen_north'`, 'camp backdrops'],
   ])('rejects %s', (_, edit, label) => expect(verify(edit).failures).toEqual([label]));

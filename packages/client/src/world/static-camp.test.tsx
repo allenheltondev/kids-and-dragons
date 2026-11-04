@@ -40,8 +40,8 @@ describe("the still camp", () => {
     expect(heroes[1]!.classList.contains("is-away")).toBe(true);
     expect(heroes[0]!.querySelector("img")!.getAttribute("src")).toMatch(/griffin/);
     // At their bedrolls: the manifest's seat 0 and 1 stand points.
-    expect(heroes[0]!.style.left).toBe("40%");
-    expect(heroes[1]!.style.left).toBe("60%");
+    expect(heroes[0]!.style.left).toBe("36%");
+    expect(heroes[1]!.style.left).toBe("64%");
   });
 
   it("falls back to the plains background while the camp's painting is owed", () => {
