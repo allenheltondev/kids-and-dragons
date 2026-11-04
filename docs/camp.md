@@ -594,9 +594,10 @@ book, more friends and finds as chapters are written.
 
 **Gemfall is pinned.** `gemfall-compat.test.ts` hashes every Gemfall file, so adding a find, a
 befriend choice or a rest scene's `setting` to a Gemfall chapter is a deliberate re-hash with its
-reason in the commit. Re-taking those hashes for the camp is approved (*decided*). Nothing here may move the gameplay digests below the hashes: `findForCamp`
-and `setting` change nothing the digests measure (no flag, XP, item or route), and that should be
-checked when the mosshorn is added and the rest scenes are tagged.
+reason in the commit. Re-taking those hashes for the camp is approved (*decided*). Nothing here
+may move the gameplay digests below the hashes: `findForCamp` and `setting` change nothing the
+digests measure (no flag, XP, item or route), and that should be checked when the mosshorn is
+added and the rest scenes are tagged.
 
 ## 11. Decisions and open questions
 
@@ -745,8 +746,8 @@ Implementation checks:
 
 - A reward reached through two routes, replayed, retried or reconnected grants once. A duplicate
   owned piece converts once per distinct reward offer. Failed campaigns keep all camp gains.
-- The tutorial, The Hollow Crown and any other campaign without `growsCamp` never grow the frame; replaying a full
-  campaign grows it at most once.
+- The tutorial, The Hollow Crown and any other campaign without `growsCamp` never grow the frame;
+  replaying a full campaign grows it at most once.
 - Every rest scene has a `setting`, and validation fails without one. An indoor rest never shows
   the campsite backdrop or tents.
 - Two simultaneous purchase resolutions cannot overspend, buy the same piece twice or charge after
