@@ -21,7 +21,11 @@ describe("phone combat feedback", () => {
       { type: "windupReleased", actorId: "wisp#1", label: "Plank slap", tiles: [{ x: 1, y: 1 }], targets: ["c_1"] },
       { type: "windupInterrupted", actorId: "wisp#1" },
     ];
-    expect(combatFeedback(events, physical)[1]).toMatchObject({ effect: "impact_strike", label: "Whap!", reaction: "slam" });
+    expect(combatFeedback([events[0]!], physical)).toEqual([]);
+    expect(combatFeedback(events, physical).find(feedback => feedback.eventIndex === 1)).toMatchObject({ effect: "impact_strike", label: "Whap!", reaction: "slam" });
+    expect(combatFeedback([events[0]!], encounter)).toEqual([
+      { actorId: "wisp#1", effect: "guard_ward", label: "Plank slap", reaction: "ready", eventIndex: 0 },
+    ]);
     const words = describeBeats(events, physical, null, 1).map(beat => beat.text).join(" ");
     expect(words).toContain("rears up for Plank slap");
     expect(words).toContain("slaps on the marked ground");

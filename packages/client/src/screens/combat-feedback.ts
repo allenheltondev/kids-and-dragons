@@ -29,7 +29,11 @@ export function combatFeedback(events: readonly EncounterEvent[], encounter: Enc
     const add = (actorId: string, effect: CombatFeedback["effect"], label: string, reaction?: CombatReaction) =>
       out.push({ actorId, effect, label, eventIndex, ...(reaction ? { reaction } : {}) });
     switch (event.type) {
-      case "windupStarted": add(event.actorId, "guard_ward", event.label, "ready"); break;
+      case "windupStarted":
+        // Physical preparation is the saved raised pose and marked ground;
+        // adding a ward here would turn it back into a magical attack.
+        if (combatantById(encounter, event.actorId)?.windupAttack?.presentation !== "slam") add(event.actorId, "guard_ward", event.label, "ready");
+        break;
       case "windupReleased": {
         const style = combatantById(encounter, event.actorId)?.windupAttack?.presentation;
         add(event.actorId, style === "slam" ? "impact_strike" : "burst_star", windupCopy(style).release, style === "slam" ? "slam" : undefined);

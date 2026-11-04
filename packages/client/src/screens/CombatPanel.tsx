@@ -489,7 +489,10 @@ export function CombatControls(): ReactElement | null {
   const fight = encounter.startedAt ?? null;
   if (lastFacing.current.fight !== fight) lastFacing.current = { fight, facing: {} };
   const cells = gridCells(encounter, party, tappable, selectedTiles, lastFacing.current.facing);
-  const danger = new Map<string, string>(committedAttacks(encounter).flatMap(attack => attack.tiles.map(tile => [`${tile.x},${tile.y}`, attack.label] as const)));
+  const danger = new Map<string, string>(committedAttacks(encounter).flatMap(attack => {
+    const verb = combatantById(encounter, attack.actorId)?.windupAttack?.presentation === "slam" ? "strikes" : "bursts";
+    return attack.tiles.map(tile => [`${tile.x},${tile.y}`, `${attack.label} ${verb} here next turn`] as const);
+  }));
   const shownPreview = state ? tablePreviews(state, previews).combat : null;
   const suggestedAt = shownPreview?.preview.kind === "suggest" ? shownPreview.preview.to : null;
   const threatened = new Set(encounter.combatants.filter(f => f.side === "enemy" && !f.down).map(f => enemyPlanFor(encounter, f.id).attack).filter(Boolean));
@@ -600,7 +603,7 @@ export function CombatControls(): ReactElement | null {
                 className={`combat__cell combat__cell--tap${aiming ? " combat__cell--aim" : " combat__cell--walk"} kad-focusable${marks}`}
                 aria-label={target ? `Choose ${target.name}, ${target.hp} hearts` : `${planning && canSuggest ? "Suggest" : aiming ? "Aim at" : "Move to"} column ${cell.x + 1}, row ${cell.y + 1}${
                   cell.feature ? `: ${tileWords(cell.feature)}` : ""
-                }${danger.has(cellKey) ? ` — ${danger.get(cellKey)} strikes here next turn` : ""}`}
+                }${danger.has(cellKey) ? ` — ${danger.get(cellKey)}` : ""}`}
                 onClick={() => target ? tapTarget(target.id) : tapTile({ x: cell.x, y: cell.y })}
               >
                 {mark}
@@ -717,7 +720,7 @@ export function CombatControls(): ReactElement | null {
             {c.id === me.character.id ? `You (${c.name})` : combatantLabel(c)}
             {c.side === "enemy" ? ", enemy" : ""}
             {c.down ? ": knocked down" : `: ${c.hp} of ${c.maxHp} hearts`}
-            {cells.some(cell => cell.occupant?.id === c.id && danger.has(`${cell.x},${cell.y}`)) ? ", standing in marked danger: move clear before the burst" : ""}
+            {cells.some(cell => cell.occupant?.id === c.id && danger.has(`${cell.x},${cell.y}`)) ? ", standing in marked danger: move clear before impact" : ""}
             {c.puffed !== undefined ? `, ${PUFFED_WORDS.toLowerCase()} up: ${PUFFED_HINT.toLowerCase()}` : ""}
             {isNumbedHero(encounter, me.character.id, c.id) ? ", numbed: fewer steps for a while, then it wears off" : ""}
             {c.id === active?.id ? ", taking a turn" : ""}
