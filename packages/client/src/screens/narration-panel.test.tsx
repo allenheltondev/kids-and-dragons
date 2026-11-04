@@ -113,6 +113,21 @@ afterEach(() => {
 });
 
 describe("announcing a hand-off (spec §9.4)", () => {
+  it("renders the required interaction board with its narration on the first commit", () => {
+    mount({
+      narration: "Send the seed into the bell.",
+      sceneId: "interaction_bell",
+      sceneType: "story",
+      prompt: {
+        kind: "interaction", sceneId: "interaction_bell", openedSeq: 3, attempt: 0,
+        phase: "ready", relaxed: false, playerIds: ["p_1", "p_2"], actorId: "p_1", supports: {},
+        spec: { kind: "precision", cue: "Watch the gold target", actionLabel: "Toss!", target: .5, width: .3, periodMs: 4000 },
+      },
+    });
+    expect(screen.getByText("Send the seed into the bell.")).toBeTruthy();
+    expect(screen.getByRole("region", { name: "Story interaction" }).textContent).toContain("Watch the gold target");
+  });
+
   it("heads World with only the current chapter", () => {
     mount({ chapterInfo: { index: 1, title: "The City That Smelled Opportunity" }, sceneType: "story" });
     expect(screen.getByRole("heading", { name: "Chapter 1 · The City That Smelled Opportunity" })).toBeTruthy();

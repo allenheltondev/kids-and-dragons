@@ -80,6 +80,51 @@ it.each([false, true])("loads a seated hero's kit and retains a bedroll if the v
   stage.destroy();
 });
 
+it("restores an empty bedroll and ignores kit loads from removed or replaced owners", async () => {
+  const layout = campLayoutFixture();
+  layout.frame.pieces.push({ id: "bedroll_0", path: "camp/frames/stage1/bedroll.png", lane: "back", x: .24, ownerSeat: 0 });
+  const neutral = new Texture();
+  const requests: ((texture: Texture) => void)[] = [];
+  const stage = createCamp(fakeApp() as unknown as Application, layout, { loadTexture: url =>
+    url.includes("/kits/") ? new Promise(resolve => requests.push(resolve)) : Promise.resolve(neutral),
+  });
+  const bed = stage.view.children.flatMap(c => (c as Container).children ?? []).find(c => c.label === "piece:bedroll_0") as Container;
+  const art = () => (bed.children.find(child => child instanceof Sprite) as Sprite).texture;
+  const hero: CampFigure = { id: "first", url: null, heightCm: 85, stance: "standing", seat: 0, accent: "#55aaff" };
+  await Promise.resolve();
+  stage.setFigures([hero]);
+  const firstKit = new Texture();
+  requests[0]!(firstKit);
+  await Promise.resolve();
+  expect(art()).toBe(firstKit);
+  stage.setFigures([]);
+  expect(art()).toBe(neutral);
+  stage.setFigures([hero]);
+  stage.setFigures([{ ...hero, id: "replacement", accent: "#ff9955" }]);
+  const replacementKit = new Texture();
+  requests[2]!(replacementKit);
+  await Promise.resolve();
+  requests[1]!(firstKit);
+  await Promise.resolve();
+  expect(art()).toBe(replacementKit);
+  stage.setFigures([hero]);
+  stage.setFigures([]);
+  requests[3]!(firstKit);
+  await Promise.resolve();
+  expect(art()).toBe(neutral);
+  // Even the same hero returning must not accept an earlier pending request.
+  stage.setFigures([hero]);
+  stage.setFigures([]);
+  stage.setFigures([hero]);
+  requests[4]!(firstKit);
+  await Promise.resolve();
+  expect(art()).toBe(neutral);
+  requests[5]!(replacementKit);
+  await Promise.resolve();
+  expect(art()).toBe(replacementKit);
+  stage.destroy();
+});
+
 const layout = campLayoutFixture();
 const W = layout.canvas.width;
 const H = layout.canvas.height;

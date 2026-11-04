@@ -188,7 +188,12 @@ const FIRST_PAINT_BUDGET_KB = 330;
 // Soft contact/cast shadows reuse existing textures, with no new dependency or
 // art downloads. The shared light direction and kit placement stay in the lazy
 // renderer. First paint is unchanged at 329KB under its existing 330KB ceiling.
-const TOTAL_BUDGET_KB = 1528;
+// 1528 -> 1533 after merging main's combat presentation and the updated lobby,
+// plus owner-relative camp kit sizing (#615). The integrated head measured
+// 1531KB in Linux CI (run 41923372911), first paint still 329KB. The extra code
+// stays in the lazy room/renderer graph; no dependency or first-paint allowance
+// changed. Retain 2KB of slack and verify this cap against the next CI build.
+const TOTAL_BUDGET_KB = 1533;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

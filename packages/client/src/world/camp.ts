@@ -262,6 +262,8 @@ interface PieceView {
   groundCount: number;
   mirrored: boolean;
   kitKey?: string;
+  kitRevision: number;
+  neutralTexture: Texture | null;
   id: string;
   container: Container;
   /** The piece's own cutout and its moving part's, sharing one canvas registration. */
@@ -370,6 +372,19 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     piece.shadow.destroy({ children: true });
     piece.shadow = shadow;
   };
+  const showPieceArt = (piece: PieceView, texture: Texture): void => {
+    const sprite = new Sprite(texture);
+    piece.fit = fitCanvas(piece.heightPx, measurePaint(texture));
+    fitPieceShadow(piece, texture);
+    fitSprite(sprite, piece.fit, piece.mirrored);
+    if (piece.partSprite) fitSprite(piece.partSprite, piece.fit);
+    piece.sprite?.destroy();
+    piece.sprite = sprite;
+    for (const child of [...piece.container.children]) {
+      if (child instanceof Graphics && !child.label.startsWith("camp-ground-")) child.destroy();
+    }
+    piece.container.addChildAt(sprite, piece.groundCount);
+  };
   for (const piece of layout.frame.pieces) {
     const lane = laneOf(layout, piece.lane);
     const container = new Container();
@@ -400,6 +415,8 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     const entry: PieceView = {
       id: piece.id,
       ownerScale: 1,
+      kitRevision: 0,
+      neutralTexture: null,
       shadow,
       groundCount,
       mirrored: piece.id.startsWith("bedroll") && piece.x > .5,
@@ -416,17 +433,11 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     pieces.set(piece.id, entry);
     void load(assetUrl(piece.path))
       .then((texture) => {
+        entry.neutralTexture = texture;
         if (destroyed || entry.kitKey && entry.sprite) return;
-        const sprite = new Sprite(texture);
         // Measured like a figure, so a campfire painted small in its canvas
         // is still its true height; the part follows the same fit.
-        entry.fit = fitCanvas(heightPx, measurePaint(texture));
-        fitPieceShadow(entry, texture);
-        fitSprite(sprite, entry.fit, entry.mirrored);
-        if (entry.partSprite) fitSprite(entry.partSprite, entry.fit);
-        pending.destroy();
-        entry.sprite = sprite;
-        container.addChildAt(sprite, entry.groundCount);
+        showPieceArt(entry, texture);
       })
       .catch(() => undefined);
   }
@@ -887,32 +898,25 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     if (destroyed) return;
     for (const definition of layout.frame.pieces) {
       const piece = pieces.get(definition.id)!;
-      piece.ownerScale = campOwnedScale(campPieceOwner(layout, definition, figures), measure);
+      const owner = campPieceOwner(layout, definition, figures);
+      piece.ownerScale = campOwnedScale(owner, measure);
       piece.container.scale.set(piece.laneScale * figureScale * piece.ownerScale);
-    }
-    for (const def of figures) {
-      if (def.seat === undefined || !def.accent) continue;
-      const point = layout.frame.standPoints.find(p => p.seat === def.seat && p.action === "rest");
-      const piece = point?.hotspot ? pieces.get(point.hotspot) : undefined;
-      if (!piece) continue;
-      const key = `${def.id}:${def.accent}`;
+      if (!definition.id.startsWith("bedroll")) continue;
+      const key = owner?.accent ? `${owner.id}:${owner.accent}` : undefined;
       if (piece.kitKey === key) continue;
       piece.kitKey = key;
-      const style = campKitStyle(def.id);
+      const revision = ++piece.kitRevision;
+      // Restore the neutral painting immediately, including while a replacement
+      // owner's kit loads. A departed owner's request must never repaint it.
+      if (piece.neutralTexture) showPieceArt(piece, piece.neutralTexture);
+      if (!key || !owner?.accent) continue;
+      const accent = owner.accent;
+      const style = campKitStyle(owner.id);
       void load(assetUrl(CAMP_KIT_STYLES[style].path.replace(/^\/assets\//, ""))).then(texture => {
-        if (destroyed || piece.kitKey !== key) return;
+        if (destroyed || piece.kitRevision !== revision) return;
         const source = texture.source?.resource as CanvasImageSource | undefined;
-        const canvas = source ? campKitCanvas(source, style, def.accent!) : null;
-        const sprite = new Sprite(canvas ? Texture.from(canvas) : texture);
-        piece.fit = fitCanvas(piece.heightPx, measurePaint(canvas ? sprite.texture : texture));
-        fitPieceShadow(piece, sprite.texture);
-        fitSprite(sprite, piece.fit, piece.mirrored);
-        piece.sprite?.destroy();
-        piece.sprite = sprite;
-        for (const child of [...piece.container.children]) {
-          if (child instanceof Graphics && !child.label.startsWith("camp-ground-")) child.destroy();
-        }
-        piece.container.addChildAt(sprite, piece.groundCount);
+        const canvas = source ? campKitCanvas(source, style, accent) : null;
+        showPieceArt(piece, canvas ? Texture.from(canvas) : texture);
       }).catch(() => undefined);
     }
     const wanted = new Set(figures.map((f) => f.id));
