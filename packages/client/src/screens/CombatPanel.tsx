@@ -71,6 +71,7 @@ import {
   currentActor,
   currentActorId,
   environmentView,
+  enemyPlanFor,
   legalActions,
   legalItemTargets,
   legalMoves,
@@ -87,6 +88,7 @@ import {
   useRunState,
   useSend,
   useSharePreview,
+  useGameStore,
   useSynced,
 } from "../store";
 import { combatContext } from "../store/combat";
@@ -95,6 +97,9 @@ import { Button } from "../ui/Button";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
 import { BuffList, combatBuffRows } from "./BuffList";
+import { combatMission, enemyIntentLine, nextEnemyId } from "./combat-plan";
+import { biomeTilesUrl } from "../world/art-paths";
+import { tablePreviews } from "../world/previews";
 import { PUFFED_HINT, PUFFED_WORDS } from "./buff-copy";
 import { describeBeats, type Beat } from "./fight-log";
 import { HeroFightHints } from "./MatchupHints";
@@ -186,6 +191,7 @@ function turnOf(encounter: EncounterState | null): string {
 }
 
 export function CombatControls(): ReactElement | null {
+  const chapter = useChapter();
   const state = useRunState();
   const me = useMe();
   const party = useParty();
@@ -197,6 +203,9 @@ export function CombatControls(): ReactElement | null {
   const hasEncounter = encounter !== null;
 
   const [selection, setSelection] = useState<Selection>(IDLE);
+  const [planning, setPlanning] = useState(false);
+  const [suggestion, setSuggestion] = useState<Position | null>(null);
+  const previews = useGameStore(store => store.previews);
   const [mapOpen, setMapOpen] = useState(false);
   const mapDialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
@@ -254,6 +263,7 @@ export function CombatControls(): ReactElement | null {
   const key = turnKey(encounter);
   useEffect(() => {
     setSelection(IDLE);
+    setPlanning(false); setSuggestion(null);
     setPending(false);
     sending.current = false;
   }, [key]);
@@ -276,7 +286,13 @@ export function CombatControls(): ReactElement | null {
 
   // What the TV lights up while this phone is still aiming (§11's "what are
   // you about to do", shown to the table). Read off the same selection.
-  useSharePreview(previewOf(selection));
+  const canSuggest = !!encounter && !!me && currentActor(encounter)?.side === "party" && currentActorId(encounter) !== me.character.id && party.some(m => m.character.id === currentActorId(encounter) && m.connected);
+  useSharePreview(canSuggest && suggestion ? { kind: "suggest", to: suggestion } : previewOf(selection));
+  useEffect(() => {
+    if (!suggestion) return;
+    const timeout = setTimeout(() => setSuggestion(null), 5000);
+    return () => clearTimeout(timeout);
+  }, [suggestion]);
 
   const beats = useBeats(encounter, me?.character.id ?? null);
 
@@ -362,6 +378,7 @@ export function CombatControls(): ReactElement | null {
   }
 
   function tapTile(at: Position): void {
+    if (planning && canSuggest) { setSuggestion(at); return; }
     if (selection.step === "tile") {
       const action = selection.action;
       // Pounce pairs the tile with a follow-up figure; the pairing is the
@@ -447,7 +464,7 @@ export function CombatControls(): ReactElement | null {
   // tiles of the ability being aimed. Never both — one question at a time.
   const tappable: readonly (Position & { readonly cost?: number })[] =
     !deciding
-      ? []
+      ? planning && canSuggest ? Array.from({ length: encounter.board.width * encounter.board.height }, (_, i) => ({ x: i % encounter.board.width, y: Math.floor(i / encounter.board.width) })) : []
       : selection.step === "tile"
       ? selection.action.tiles.filter(
           (tile) => !selection.picked.some((p) => samePosition(p, tile)),
@@ -467,6 +484,9 @@ export function CombatControls(): ReactElement | null {
   const fight = encounter.startedAt ?? null;
   if (lastFacing.current.fight !== fight) lastFacing.current = { fight, facing: {} };
   const cells = gridCells(encounter, party, tappable, selectedTiles, lastFacing.current.facing);
+  const shownPreview = state ? tablePreviews(state, previews).combat : null;
+  const suggestedAt = shownPreview?.preview.kind === "suggest" ? shownPreview.preview.to : null;
+  const threatened = new Set(encounter.combatants.filter(f => f.side === "enemy" && !f.down).map(f => enemyPlanFor(encounter, f.id).attack).filter(Boolean));
   for (const cell of cells) if (cell.occupant) lastFacing.current.facing[cell.occupant.id] = cell.occupant.facing;
 
 
@@ -528,6 +548,7 @@ export function CombatControls(): ReactElement | null {
             gridTemplateColumns: `repeat(${encounter.board.width}, 1fr)`,
             "--cols": encounter.board.width,
             "--rows": encounter.board.height,
+            ...(chapter?.biome ? { "--battle-floor": `url(${biomeTilesUrl(chapter.biome)})` } : {}),
           } as CSSProperties
         }
       >
@@ -538,6 +559,8 @@ export function CombatControls(): ReactElement | null {
             cell.selected ? " combat__cell--selected" : "",
             cell.occupant?.active ? " combat__cell--active" : "",
             cell.occupant ? ` combat__cell--${cell.occupant.side}` : "",
+            suggestedAt?.x === cell.x && suggestedAt.y === cell.y ? " combat__cell--suggested" : "",
+            cell.occupant && threatened.has(cell.occupant.id) ? " combat__cell--threatened" : "",
             cell.occupant?.down ? " combat__cell--down" : "",
             cell.occupant?.facing === "right" ? " combat__cell--faces-right" : "",
             cell.feature ? ` combat__cell--${cell.feature.kind}` : "",
@@ -558,14 +581,15 @@ export function CombatControls(): ReactElement | null {
               <button
                 key={cellKey}
                 type="button"
-                data-move-tile={aiming ? undefined : true}
+                data-move-tile={aiming || planning && canSuggest ? undefined : true}
+                data-suggest-tile={planning && canSuggest ? true : undefined}
                 data-aim-tile={selection.step === "tile" ? true : undefined}
                 data-aim-target={target?.id}
                 data-reaction={reaction?.reaction}
                 data-x={cell.x}
                 data-y={cell.y}
                 className={`combat__cell combat__cell--tap${aiming ? " combat__cell--aim" : " combat__cell--walk"} kad-focusable${marks}`}
-                aria-label={target ? `Choose ${target.name}, ${target.hp} hearts` : `${aiming ? "Aim at" : "Move to"} column ${cell.x + 1}, row ${cell.y + 1}${
+                aria-label={target ? `Choose ${target.name}, ${target.hp} hearts` : `${planning && canSuggest ? "Suggest" : aiming ? "Aim at" : "Move to"} column ${cell.x + 1}, row ${cell.y + 1}${
                   cell.feature ? `: ${tileWords(cell.feature)}` : ""
                 }`}
                 onClick={() => target ? tapTarget(target.id) : tapTile({ x: cell.x, y: cell.y })}
@@ -624,6 +648,8 @@ export function CombatControls(): ReactElement | null {
           </span>
         </p>
       )}
+      {canSuggest && <button type="button" className="combat__suggest-toggle kad-focusable" aria-pressed={planning} onClick={() => { setPlanning(!planning); setSuggestion(null); }}>{planning ? "Stop suggesting" : "Suggest a spot"}</button>}
+      {shownPreview?.preview.kind === "suggest" && <p className="combat__suggestion" role="status">{shownPreview.name} suggests the marked spot. No move or action is spent.</p>}
 
       {/* Rift powers on this phone's hero (#200), graph campaigns only: what
           each adds and how long it lasts. A numbing sting (#227) shows here
@@ -634,6 +660,7 @@ export function CombatControls(): ReactElement | null {
       {/* The place fighting back (#201): the rift clock, the way out, who
           needs saving, what burns. Absent in every fight without an
           environment, so nothing here moves an ordinary board. */}
+      {encounter.environment?.spec.victory === "rescue" && <p className="combat__mission" role="status">{combatMission(encounter)}</p>}
       <EnvironmentStatus encounter={encounter} />
 
       {/* What the last beat did, in one line: the newest swing, its sum and
@@ -960,32 +987,28 @@ function EnvironmentStatus({ encounter }: { encounter: EncounterState }): ReactE
 
 /** Readable health and turn order without a permanent row for every fighter. */
 function FighterRoster({ encounter, myId }: { encounter: EncounterState; myId: string }): ReactElement {
+  const [inspected, setInspected] = useState<string | null>(null);
   const activeId = currentActorId(encounter);
   const order = encounter.round === 1 ? encounter.openingOrder : encounter.order;
   const fighters = [...encounter.combatants].sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
-  return <details className="combat__roster" onKeyDown={(event) => {
-    if (event.key !== "Escape") return;
-    event.currentTarget.open = false;
-    event.currentTarget.querySelector("summary")?.focus();
-    event.stopPropagation();
-  }}>
-    <summary aria-label={`Round ${encounter.round}: Fighters and hearts`}><span>Fighters</span></summary>
-    <div className="combat__roster-panel">
-      <p className="combat__roster-help">Round {encounter.round}. Turn order. Guard is the number an attack roll must reach.</p>
-      <ul aria-label="Fighter details">
-        {fighters.map(fighter => <li key={fighter.id} data-active={fighter.id === activeId || undefined}>
-          <FighterFace combatant={fighter} />
-          <div>
-            <strong>{fighter.id === myId ? `${combatantLabel(fighter)} (you)` : combatantLabel(fighter)}</strong>
-            <span>{fighter.down ? "Knocked down" : `${fighter.hp}/${fighter.maxHp} hearts · Guard ${fighter.guard}`}</span>
-            {fighter.id === activeId && <span className="combat__roster-turn">Taking a turn</span>}
-            {fighter.puffed !== undefined && !fighter.down && <span>{PUFFED_WORDS}: {PUFFED_HINT}</span>}
-            {isNumbedHero(encounter, myId, fighter.id) && <span>Numbed: fewer steps until it wears off.</span>}
-          </div>
-        </li>)}
-      </ul>
-    </div>
-  </details>;
+  const selected = fighters.find(f => f.id === inspected) ?? fighters.find(f => f.id === nextEnemyId(encounter)) ?? fighters.find(f => f.id === myId) ?? fighters[0];
+  return <section className="combat__roster" aria-label={`Round ${encounter.round}: fighters and plans`}>
+    <ul className="combat__fighter-strip" aria-label="Fighter details">
+      {fighters.map(fighter => <li key={fighter.id} data-active={fighter.id === activeId || undefined}>
+        <button type="button" className="kad-focusable" aria-pressed={selected?.id === fighter.id} onClick={() => setInspected(fighter.id)}
+          aria-label={`Inspect ${combatantLabel(fighter)}${fighter.id === myId ? " — your hero" : ""}, ${fighter.hp}/${fighter.maxHp} hearts, Guard ${fighter.guard}${fighter.down ? ", knocked down" : ""}`}>
+          <FighterFace combatant={fighter} /><span><strong>{combatantLabel(fighter)}</strong><small>{fighter.down ? "Down" : `${fighter.hp}/${fighter.maxHp} ♥`}</small></span>
+        </button>
+      </li>)}
+    </ul>
+    <p className="combat__plan" aria-live="polite" title="Forecast from the current board. Intervening moves or help can change it.">{selected && <>
+      <strong>{combatantLabel(selected)} · Guard {selected.guard}:</strong> {selected.down ? "Knocked down." : selected.escaped ? "Safe off the board." : selected.side === "enemy"
+        ? enemyIntentLine(encounter, selected.id)
+        : `Guard ${selected.guard}. ${selected.protectedBy ? "A friend is protecting them." : "Stand together to protect, heal, or help up."}`}
+      {selected.puffed !== undefined && !selected.down && <> {PUFFED_WORDS}: {PUFFED_HINT}</>}
+      {isNumbedHero(encounter, myId, selected.id) && <> Numbed: fewer steps.</>}
+    </>}</p>
+  </section>;
 }
 
 function FighterFace({ combatant }: { combatant: Combatant }): ReactElement {

@@ -63,7 +63,8 @@ describe("the schema", () => {
       // and every campaign chapter still fights exactly as before.
       if (chapter.campaignId === "first-steps") {
         for (const scene of Object.values(chapter.scenes)) {
-          expect(Object.keys(scene.environment ?? {}).every((k) => k === "exits" || k === "rescue")).toBe(true);
+          expect(Object.keys(scene.environment ?? {}).every((k) => ["exits", "rescue", "victory"].includes(k))).toBe(true);
+          if (scene.environment?.victory) expect(scene.environment.victory).toBe("rescue");
           expect(scene).not.toHaveProperty("onTimeout");
         }
         continue;

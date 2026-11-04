@@ -10,11 +10,11 @@
     "$comment": { "type": "string" },
     "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
     "rows": {
-      "$comment": "10x8, the board in spec 7.1. Fixed because the camera, the reachable-tile highlight and the four-round pacing are all tuned to it.",
+      "$comment": "Authored arenas: 6-10 columns and 6-8 rows. All rows must have equal width; checked with spawn reachability.",
       "type": "array",
-      "minItems": 8,
+      "minItems": 6,
       "maxItems": 8,
-      "items": { "type": "string", "pattern": "^[.#]{10}$" }
+      "items": { "type": "string", "pattern": "^[.#]{6,10}$" }
     },
     "partySpawns": {
       "$comment": "Three players (spec 7.1). A fourth chair is allowed for, so four is the cap.",

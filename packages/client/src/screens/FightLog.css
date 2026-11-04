@@ -257,3 +257,8 @@
 :root[data-motion="reduced"] .fight-log__chip {
   animation: none;
 }
+.fight-log__plan { padding: .65em .8em; border: 1px solid #d7bb7a; border-radius: .7em; background: #252139ed; color: #fff0ca; font-size: .85em; line-height: 1.35; } .fight-log__plan p { margin: .4em 0 0; }
+
+/* One measured side column keeps mission rules off the battlefield. */
+.fight-log .rift-status { position: static; max-inline-size: none; inline-size: 100%; font-size: .7em; }
+.fight-log .rift-status__lines li { background: transparent; padding: .15em 0; }

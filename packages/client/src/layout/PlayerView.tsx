@@ -25,7 +25,6 @@ import type { ReactNode } from "react";
 import { PlayerPanel, SignInFlow, WelcomeBack } from "../screens";
 import { FieldGuideToast } from "../screens/FieldGuideNews";
 import { ArrivalNotices } from "../screens/ArrivalNotices";
-import { CatchUp } from "../screens/CatchUp";
 import { HostControls } from "../screens/HostControls";
 // Imported by path rather than through the `screens` barrel on purpose: the
 // barrel is what every surface pulls in, and the playtest drawer should reach
@@ -121,10 +120,6 @@ export function PlayerView({ roomControls }: { roomControls?: ReactNode }): Reac
       {/* Running the room (#263): the roster, Remove, lock and close. Only on
           the device that opened it, folded away until the host opens it. */}
       <HostControls placement="inline" />
-      {/* Back mid-chapter, or joining partway (#258): what the party is doing
-          and where your hero is, in one line. Nothing until it has something
-          to say. */}
-      <CatchUp />
       {guideOverCreation ? <FieldGuide /> : null}
       {watching ? <Spectating hidden={guideOverCreation} /> : null}
       {creating && !full ? (

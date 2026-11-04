@@ -2,13 +2,13 @@
  * Nothing sits under the controls pinned over the screen, or is cut off (#257).
  * The screens: the start screen, the guide, a host's lobby and Rest scene,
  * the lobby on a phone's world pane, the room controls, a returning kid's
- * catch-up line, the adventure book, and
+ * phone, the adventure book, and
  * what a screen that could not load says instead (#329).
  *
  * The corner row (help, display settings, read-aloud, sound) is fixed over
  * every screen. A phone in a room leaves it a strip of its own (at the top, or
  * at the bottom one-handed), so the identity strip, a host's arrival notices,
- * the Rest stop offer, the room controls and the catch-up line all keep their
+ * the Rest stop offer and the room controls all keep their
  * whole width; the start screen and the guide leave it the same strip. On the
  * shared screen, Room, About this screen and Enable sound sit in the corner
  * row, and what Room opens drops below it with who just joined, so none of them
@@ -556,7 +556,7 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     await expectFits(host, "host's room controls");
   });
 
-  test("a guest's catch-up line, the class tokens, the rank-up card and the adventure book", async ({ browser }) => {
+  test("a guest coming back, the class tokens, the rank-up card and the adventure book", async ({ browser }) => {
     // Six screens at seven sizes each: past three minutes on a CI runner.
     test.setTimeout(360_000);
     const { host, guest, code } = await hostAndGuest(browser);
@@ -564,21 +564,24 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     await expect.poll(async () => (await roomState<{ phase: string }>(host, code)).phase, TAP).toBe("scene");
     await jumpTo(host, code, "rest_mossbank");
 
-    // --- The guest steps away and comes back to the catch-up line ---
+    // --- The guest steps away and comes back, straight to the game ---
     const member = async (): Promise<Member | undefined> =>
       (await roomState<{ party: Member[] }>(host, code)).party.find((m) => m.character.name === "Rosie");
     await guest.goto("about:blank");
     await expect.poll(async () => (await member())?.connected, TAP).toBe(false);
     await guest.goto(`/p/${code}`);
-    await expect(guest.getByTestId("catch-up")).toContainText("Welcome back, Rosie!", TAP);
-    await expectFits(guest, "guest's catch-up line");
+    await expect.poll(async () => (await member())?.connected, TAP).toBe(true);
+    await expect(guest.getByTestId("catch-up")).toHaveCount(0);
+    await expectFits(guest, "guest come back");
 
     // --- Class tokens (#314): her own view, a friend's sheet, and a rank landing ---
     await showYou(guest);
-    await guest.getByRole("combobox", { name: "Your page" }).selectOption("token");
+    await expectFits(guest, "guest's own view");
+    // Her worn token is on her own sheet, which her face in the party row opens.
+    await guest.getByRole("button", { name: "Rosie's character sheet" }).click(TAP);
     await expect(guest.getByText(/^Your (thorn bracer|dusk hood|star circlet|song bell)$/)).toBeVisible(TAP);
-    await expectFits(guest, "guest's own view, with her worn token");
-    await guest.getByRole("combobox", { name: "Your page" }).selectOption("party");
+    await expectFits(guest, "her own sheet, with her worn token");
+    await showYou(guest);
     await guest.getByRole("button", { name: "Sparklehoof's character sheet" }).click(TAP);
     await expect(guest.getByText(/^Sparklehoof's (thorn bracer|dusk hood|star circlet|song bell)$/)).toBeVisible(TAP);
     await expectFits(guest, "a friend's sheet, with their token");
@@ -832,7 +835,7 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
       room: tv.getByRole("button", { name: "Room" }),
       about: tv.getByRole("button", { name: "About this screen" }),
       readAloud: tv.getByRole("button", { name: /turn read-aloud (on|off)/i }),
-      settings: tv.getByRole("button", { name: "Display settings" }).first(),
+      settings: tv.getByRole("button", { name: "Settings", exact: true }).first(),
     };
     for (const control of Object.values(controls)) await expect(control).toBeVisible(TAP);
     const where = async (): Promise<Record<string, number | undefined>> => {

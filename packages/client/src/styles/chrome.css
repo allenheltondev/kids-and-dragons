@@ -20,7 +20,7 @@
  * ----------------------------------------------------------------------- */
 
 html:not([data-contrast="high"]) :is(
-  .kad-host--inline, .catch-up, .lobby-member, .lobby__join, .lobby__campaign, .creation-species, .creation-card,
+  .kad-host--inline, .lobby-member, .lobby__join, .lobby__campaign, .creation-species, .creation-card,
   .preface__card, .rankup__card,
   .narration__plate, .sheet:not(.sheet--turn), .goal,
   .lobby__heading, .lobby__party-heading, .party-strip__heading,
@@ -36,7 +36,7 @@ html:not([data-contrast="high"]) :is(
 
 /* The ones that are not already positioned. */
 html:not([data-contrast="high"]) :is(
-  .kad-host--inline, .catch-up, .lobby-member, .lobby__join, .lobby__campaign, .creation-species, .creation-card,
+  .kad-host--inline, .lobby-member, .lobby__join, .lobby__campaign, .creation-species, .creation-card,
   .preface__card, .rankup__card, .narration__plate, .atlas__label, .goal:not(.goal--phone),
   .sheet:not(.sheet--turn), .lobby__heading, .lobby__party-heading, .party-strip__heading,
   .kad-map__flip-tab, .choice, .stat-row__item, .inv__button, .inv__slot--empty, .sheet__hp-track
@@ -45,7 +45,7 @@ html:not([data-contrast="high"]) :is(
 }
 
 html:not([data-contrast="high"]) :is(
-  .kad-host--inline, .catch-up, .lobby-member, .lobby__join, .lobby__campaign, .creation-species, .creation-card,
+  .kad-host--inline, .lobby-member, .lobby__join, .lobby__campaign, .creation-species, .creation-card,
   .preface__card, .rankup__card,
   .narration__plate, .sheet:not(.sheet--turn), .goal,
   .lobby__heading, .lobby__party-heading, .party-strip__heading,
@@ -80,7 +80,6 @@ html:not([data-contrast="high"]) :is(.inv__button, .inv__slot--empty, .sheet__hp
 /* --- Panels ------------------------------------------------------------ */
 
 .kad-host--inline,
-.catch-up,
 .lobby-member,
 .lobby__join,
 .lobby__campaign,
@@ -543,7 +542,6 @@ html:not([data-contrast="high"]) .kad-surface--player {
  * ------------------------------------------------------------------------ */
 @media (orientation: landscape) and (min-width: 600px) and (max-height: 559px) {
   .kad-host--inline,
-  .catch-up,
   .lobby-member,
   .lobby__join,
   .lobby__campaign,

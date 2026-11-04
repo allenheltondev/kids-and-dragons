@@ -192,8 +192,14 @@
   text-overflow: ellipsis;
 }
 
+/* The name and "'s turn to choose" are one line in one colour (playtest: a white
+   name beside a gold tail read as two things); the name keeps its weight. */
+.narration__turn > span,
 .narration__turn b {
   color: var(--color-text, #f4f0ff);
+}
+
+.narration__turn b {
   font-weight: 800;
 }
 
@@ -685,3 +691,6 @@
   font-weight: 700;
   white-space: nowrap;
 }
+
+/* The story remains spoken and available on phones; active fights foreground the board. */
+.narration--fight .narration__body, .narration--fight .narration__hint { display: none; }

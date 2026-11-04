@@ -213,7 +213,7 @@ test.describe("a kid's own page", () => {
     const boxes = [
       { name: "Book", locator: book },
       ...(await tray.getByRole("button").all()).map((locator, i) => ({ name: `tray tab ${i}`, locator })),
-      { name: "Display settings", locator: tablet.getByRole("button", { name: "Display settings" }).first() },
+      { name: "Settings", locator: tablet.getByRole("button", { name: "Settings", exact: true }).first() },
       { name: "Read-aloud", locator: tablet.getByRole("button", { name: /turn read-aloud/i }) },
     ];
     const rects = [];

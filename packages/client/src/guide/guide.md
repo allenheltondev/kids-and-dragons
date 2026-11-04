@@ -34,7 +34,7 @@ There are two ways to play. You pick one when you start a game.
 - **Party Mode**: "This screen becomes the TV. Everyone joins from their phones." The big screen shows the story, the map and the fights. Each phone shows only that kid's own choices.
 - **Phone Mode**: "Phones only. Everyone sees the world and their own controls." The phone that starts the game is a player too, so it asks for **Your adventurer name**. Use a nickname, never a real name. At the bottom of each phone, **World** shows the story and **You** shows that kid's turn. A phone jumps to **You** by itself when it is that kid's turn.
 
-> You can switch partway. On a phone, open **Room settings** and tap **Play on phones instead** or **Use a TV for the world**.
+> You can switch partway. On a phone, tap the gear in the corner (**Settings**) and, under **This game**, tap **Play on phones instead** or **Use a TV for the world**.
 
 ## Starting a room and seating the kids
 
@@ -95,11 +95,9 @@ When a phone goes quiet, the big screen says "Rosie stepped away." (with the kid
 
 ![The big screen when a kid steps away](../../public/guide-pictures/stepped-away.jpg)
 
-To come back, the kid opens the game on the same phone. They are straight back in, with a note like "Welcome back, Sam!" and "The party is voting on what to do next." They tap **Got it**.
+To come back, the kid opens the game on the same phone. They are straight back in, in the same seat with the same hero.
 
-A kid who arrives late joins the same way as everyone else and makes a hero. Their phone says "Welcome, Pip!" (with their own name) and what the party is up to, and they play from there.
-
-![A kid coming back to the game](../../public/guide-pictures/catch-up.jpg)
+A kid who arrives late joins the same way as everyone else and makes a hero, and they play from there.
 
 ## Playing from two places
 
@@ -133,9 +131,9 @@ A hero in a saved game is held by that game. If a kid will not be back, the grow
 Each screen has a row of small buttons in its corner. They change only that screen.
 
 - **?** is help, on a kid's phone in a game. It says what this screen is for, out loud too. **Hear it again** repeats it, and **How to play** opens a few short cards a kid can tap to hear. Press and hold anything on the screen, like a card, to hear what it is.
-- **Aa** is **Display settings**: **Text size**, **One-handed play** (buttons move to the thumb), **TV focus**, **High contrast** and **Less movement**. "Saved on this device."
-- **TV focus** is for a kid who gets lost in the phone. With a TV in the room, the phone stops repeating the story and shows only what to tap, right when it is that kid's turn. While someone else is choosing, it shows one card that says **Look at the TV**, with **Look in my bag** a tap away. The tray keeps only **You** (a Starweaver keeps **World** too, for the Riftlight). It does nothing in Travel Mode, where the phone is the only screen.
+- The gear is **Settings**. On a phone in a game it starts with **This game**: **Play on phones instead** (or **Use a TV for the world**) and **Watch the intro again**. Then this screen's own: **Text size**, **One-handed play** (buttons move to the thumb), **TV focus**, **High contrast** and **Less movement**, saved on this device.
+- **TV focus** is for a kid who gets lost in the phone. With a TV in the room, the phone stops repeating the story and shows only what to tap, right when it is that kid's turn. While someone else is choosing, it shows one card that says **Look at the TV**, with **Look in my bag** a tap away. The tray keeps only **You** (a Starweaver keeps **World** too, for the Riftlight). In Travel Mode, where the phone is the only screen, it isn't offered.
 - The speech bubble turns read-aloud on. On the big screen, it reads the story out loud. On a kid's phone, each choice gets a speaker button to hear it first. Hearing a choice never picks it.
 - The speaker turns the sound on or off.
 
-![Display settings on a phone](../../public/guide-pictures/display-settings.jpg)
+![Settings on a phone](../../public/guide-pictures/display-settings.jpg)

@@ -27,7 +27,7 @@ recap (#378) dismisses on its own. A rendering error stays hidden behind a small
 
 | # | Element | File:line | What it does | Verdict |
 |---|---|---|---|---|
-| 1 | Display settings (Aa) | `a11y/A11yControl.tsx:31` | Opens the text size, contrast and motion sheet for this screen. | **keep**: settings are per device, and a phone's settings never reach the TV. The sheet already moves focus in, traps Tab, and closes on Escape. |
+| 1 | Settings (the gear) | `a11y/A11yControl.tsx:31` | Opens the text size, contrast and motion sheet for this screen. | **keep**: settings are per device, and a phone's settings never reach the TV. The sheet already moves focus in, traps Tab, and closes on Escape. |
 | 1a | The sheet's options and Done | `a11y/A11yControl.tsx:104`, `:117`, `:127`, `:131`, `:141` | Pick a setting; close the sheet. | **keep**, as 1. |
 | 2 | Read-aloud | `speech/ReadAloudControl.tsx:30` | Turns read-aloud on or off on this screen. | **keep**: the TV is the device that reads aloud. |
 | 3 | Sound | `audio/AudioControl.tsx:104` | Turns this screen's sound on or off. | **keep**: the TV's speakers. The host's quiet mode is a separate, room-wide switch. |

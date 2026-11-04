@@ -1,5 +1,5 @@
 /**
- * The chapter's goal (#356), end to end: always on the TV and the phones, ticking by itself.
+ * The chapter's goal (#356), end to end: always on the TV (a player's phone leaves it there), ticking by itself.
  *
  * The owner's requirement is the whole test: nobody taps or clicks to see the goal or to see
  * it change. So nothing here clicks on the TV at all (read-aloud is on there by default), and the phone is
@@ -107,7 +107,7 @@ test.describe("the chapter's goal (#356)", () => {
     return made.newPage();
   }
 
-  test("is on the TV and the phone with nothing tapped, ticks by itself, and celebrates the tick", async ({ browser }) => {
+  test("is on the TV with nothing tapped, ticks by itself, and celebrates the tick; a player's phone leaves it to the TV", async ({ browser }) => {
     test.setTimeout(240_000);
     const tv = await context(browser, { viewport: { width: 1280, height: 720 } });
     await tv.goto("/");
@@ -119,8 +119,7 @@ test.describe("the chapter's goal (#356)", () => {
     // Read-aloud is on by default on the TV.
     await expect(tv.getByRole("button", { name: "Turn read-aloud off" })).toBeVisible(TAP);
 
-    // The phone's settings ask for reduced motion: its tick keeps the gold and drops the pop.
-    const kid = await context(browser, { viewport: { width: 390, height: 800 }, hasTouch: true, isMobile: true, reducedMotion: "reduce" });
+    const kid = await context(browser, { viewport: { width: 390, height: 800 }, hasTouch: true, isMobile: true });
     await kid.goto("/");
     await kid.getByLabel(/room code/i).fill(code);
     await kid.getByRole("button", { name: /join a game/i }).click();
@@ -129,15 +128,14 @@ test.describe("the chapter's goal (#356)", () => {
     await kid.getByRole("button", { name: /begin the adventure/i }).click(TAP);
     await expect.poll(async () => (await roomState<{ phase: string }>(kid, code)).phase, TAP).toBe("scene");
 
-    // Scene 1: the goal is up on both screens, all of it, and nothing is ticked.
+    // Scene 1: the goal is up on the TV, all of it, and nothing is ticked. A player's phone
+    // leaves it to the shared screen: the room is for the kid's own controls.
     const tvGoal = tv.getByTestId("chapter-goal");
-    const kidGoal = kid.locator(".goal--phone");
-    for (const goal of [tvGoal, kidGoal]) {
-      await expect(goal).toBeVisible(TAP);
-      await expect(goal).toContainText(GOAL);
-      for (const step of STEPS) await expect(goal).toContainText(step);
-      expect(await ticks(goal)).toEqual([false, false, false]);
-    }
+    await expect(tvGoal).toBeVisible(TAP);
+    await expect(tvGoal).toContainText(GOAL);
+    for (const step of STEPS) await expect(tvGoal).toContainText(step);
+    expect(await ticks(tvGoal)).toEqual([false, false, false]);
+    await expect(kid.locator(".goal--phone")).toHaveCount(0);
     // Said once, right after the first scene's story, never again.
     await expect.poll(async () => (await said(tv)).filter((line) => line === `Your goal: ${GOAL}`).length, TAP).toBe(1);
     await expect.poll(async () => (await said(tv)).findIndex((line) => line.includes("wall of thorns")), TAP).toBeGreaterThanOrEqual(0);
@@ -148,18 +146,14 @@ test.describe("the chapter's goal (#356)", () => {
     await shot(tv, "tv-scene-1");
     await shot(kid, "phone-scene-1");
 
-    // Past the hedge: the step ticks on both screens on its own, with its moment. The moment is
+    // Past the hedge: the step ticks on its own, with its moment. The moment is
     // recorded as it happens (it lasts a couple of seconds), so the test cannot miss it.
-    for (const page of [tv, kid]) await page.evaluate(watchMoments);
+    await tv.evaluate(watchMoments);
     await jumpTo(kid, code, "scene_first_clearing");
     await expect.poll(() => ticks(tvGoal), TAP).toEqual([true, false, false]);
-    await expect.poll(() => ticks(kidGoal), TAP).toEqual([true, false, false]);
     await shot(tv, "tv-tick");
     // The TV pops the box, throws the sparks and washes the words gold.
     await expect.poll(() => moments(tv, "goal--world"), TAP).toEqual(expect.arrayContaining(["goal-pop", "goal-spark", "goal-glow"]));
-    // The phone's card is folded to its line (nothing tapped), so the moment is the pip's, and
-    // with reduced motion it is the gold glow without the pop.
-    await expect.poll(() => moments(kid, "goal--phone"), TAP).toEqual(["goal-pip-glow"]);
     // Seen and chimed, never read out: once the new scene's story has been said, nothing follows it.
     await expect.poll(async () => (await said(tv)).some((line) => line.includes("lantern moths")), TAP).toBe(true);
     await tv.waitForTimeout(500);
@@ -174,8 +168,7 @@ test.describe("the chapter's goal (#356)", () => {
     expect(await ticks(tvGoal)).toEqual([true, false, false]);
     await expect(tvGoal.locator(".goal__step--fresh")).toHaveCount(0);
 
-    // In a fight it folds to the goal and its pips in the TV's top corner; the phone gives
-    // its room to the fight's cards and shows no goal at all.
+    // In a fight it folds to the goal and its pips in the TV's top corner; the phone still shows none.
     await jumpTo(kid, code, "encounter_bramblewisps");
     // The kid readies up on the phone, as before any fight; the TV is still only watched.
     await openPlayerTask(kid);

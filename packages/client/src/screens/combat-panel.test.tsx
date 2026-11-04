@@ -251,7 +251,7 @@ function mount(options: MountOptions = {}) {
 function cardNames(): string[] {
   return screen
     .queryAllByRole("button")
-    .filter(button => button.getAttribute("aria-label") !== "Enlarge battle map")
+    .filter(button => button.getAttribute("aria-label") !== "Enlarge battle map" && !button.closest(".combat__roster") && !button.classList.contains("combat__suggest-toggle"))
     .map((b) => b.textContent?.trim() ?? "")
     .filter((t) => t.length > 0);
 }
@@ -296,7 +296,7 @@ describe("whose turn it is", () => {
     // The board stays — it is the map to plan the next turn on — but not one
     // of its squares is a button, and there are no cards: absent, not disabled.
     expect(screen.getByRole("grid")).toBeTruthy();
-    expect(screen.queryAllByRole("button").filter(button => button.getAttribute("aria-label") !== "Enlarge battle map")).toEqual([]);
+    expect(screen.queryAllByRole("button").filter(button => button.getAttribute("aria-label") !== "Enlarge battle map" && !button.closest(".combat__roster") && !button.classList.contains("combat__suggest-toggle"))).toEqual([]);
   });
 
   it("renders nothing at all once the fight is over", () => {
@@ -460,7 +460,21 @@ describe("a friend who stepped away (#258)", () => {
   it("offers nothing while they are still here", () => {
     onAwayFriendsTurn(true);
     expect(screen.getByText("It's Sparklehoof's turn.")).toBeTruthy();
-    expect(screen.queryAllByRole("button").filter(button => button.getAttribute("aria-label") !== "Enlarge battle map")).toEqual([]);
+    expect(screen.queryAllByRole("button").filter(button => button.getAttribute("aria-label") !== "Enlarge battle map" && !button.closest(".combat__roster") && !button.classList.contains("combat__suggest-toggle"))).toEqual([]);
+  });
+
+  it("lets a waiting friend point at a spot without spending a move or action", async () => {
+    const user = userEvent.setup();
+    const { sent } = onAwayFriendsTurn(true);
+    const preview = vi.fn();
+    act(() => useGameStore.setState({ preview }));
+    await user.click(screen.getByRole("button", { name: "Suggest a spot" }));
+    await user.click(screen.getByRole("button", { name: "Suggest column 3, row 4" }));
+    expect(preview).toHaveBeenCalledWith({ kind: "suggest", to: { x: 2, y: 3 } }, expect.any(String));
+    expect(sent).toEqual([]);
+    await user.click(screen.getByRole("button", { name: "Stop suggesting" }));
+    expect(preview).toHaveBeenLastCalledWith(null, expect.any(String));
+    expect(screen.queryByRole("button", { name: "Suggest column 3, row 4" })).toBeNull();
   });
 });
 
@@ -1464,13 +1478,10 @@ describe("combat review improvements", () => {
 
   it("offers readable health, Guard and turn order without spending an action", async () => {
     const { sent } = mount();
-    const summary = document.querySelector(".combat__roster summary")!;
-    fireEvent.click(summary);
-    // jsdom does not implement the native details toggle.
-    document.querySelector("details")!.open = true;
+    fireEvent.click(screen.getByRole("button", { name: /Inspect Sparklehoof.*hearts, Guard/ }));
     const roster = screen.getByRole("list", { name: "Fighter details" });
-    expect(roster.textContent).toContain("10/10 hearts");
-    expect(roster.textContent).toContain("Guard 12");
+    expect(roster.textContent).toContain("10/10");
+    expect(document.querySelector(".combat__plan")!.textContent).toContain("Guard 12");
     expect(roster.textContent).toContain("Bramblewisp 1");
     expect(screen.getByLabelText("Your turn budget").textContent).toContain("4 steps");
     expect(screen.getByLabelText("Your turn budget").textContent).toContain("1 action");

@@ -49,7 +49,10 @@ import { Icon } from "./icons";
 import { setBoardInsetEnd } from "../world/stage-inset";
 import { describeBeats, hurtWords, needsLine, statName, verdictWord, type Beat, type Swing } from "./fight-log";
 import { calloutsOf, fightChips, spokenCallouts } from "./matchup-copy";
+import { combatMission, enemyIntentLine, nextEnemyId } from "./combat-plan";
+import { combatantById } from "@kad/shared";
 import "./FightLog.css";
+import { RiftStatus } from "./RiftStatus";
 
 /** How many lines the TV shows: the last few beats, never a wall of text. */
 export const FIGHT_LOG_LINES = 4;
@@ -170,6 +173,7 @@ export function FightLog(): ReactElement | null {
 
   return (
     <aside className="fight-log" aria-label="The fight so far" ref={box}>
+      {encounter.environment && <RiftStatus />}
       {chips.length > 0 ? (
         <ul className="fight-log__chips" aria-label="Worth knowing in this fight">
           {chips.map((chip) => (
@@ -180,6 +184,10 @@ export function FightLog(): ReactElement | null {
           ))}
         </ul>
       ) : null}
+      <section className="fight-log__plan" aria-label="Battle plan">
+        <strong>{combatMission(encounter)}</strong>
+        {nextEnemyId(encounter) && <p><b>{combatantById(encounter, nextEnemyId(encounter)!)?.name}:</b> {enemyIntentLine(encounter, nextEnemyId(encounter)!)}</p>}
+      </section>
       <ol className="fight-log__lines" aria-live="polite">
         {lines.length === 0 ? <li className="fight-log__line fight-log__line--quiet">The fight is on!</li> : null}
         {lines.map((line) => (

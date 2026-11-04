@@ -54,7 +54,6 @@ import type {
   EncounterMap,
   EndingScene,
   NarrationVariant,
-  RiftBehavior,
   Scene,
   SceneId,
 } from "./types/chapter.js";
@@ -80,7 +79,7 @@ import {
 import { captiveStatuses, captivesOf, objectivesDone, outcomeBranch, resolveEnvironment } from "./environment.js";
 import { parseBoard, type Position } from "./grid.js";
 import { choiceAhead, type ChoiceAhead } from "./choice-ahead.js";
-import { planEnemyTurn } from "./enemy-ai.js";
+import { enemyPlanFor } from "./combat-intent.js";
 import type {
   CampaignView,
   DiceRoll,
@@ -2948,44 +2947,7 @@ function runEnemyTurns(draft: RunState, ctx: EngineContext): readonly EncounterE
     const actor = currentActor(encounter);
     if (!actor || actor.side !== "enemy") break;
 
-    const plan = planEnemyTurn({
-      board: encounter.board,
-      // `stepsLeft`, not the spec's allowance: a Tanglelit monster starts its
-      // turn with zero steps, and a plan drawn against the full budget would
-      // walk to a tile `moveTo` then refuses — and swing at a hero it never
-      // actually reached.
-      enemy: {
-        id: actor.id,
-        at: positionOfActor(encounter, actor.id),
-        steps: encounter.stepsLeft,
-        // Its own way with the place (#220), only where it has one.
-        ...(actor.rift ? { rift: actor.rift } : {}),
-      },
-      // A hero through a rift exit (#201) is off the board, and no target.
-      party: encounter.combatants
-        .filter((c) => c.side === "party" && !c.escaped)
-        .map((c) => ({
-          id: c.id,
-          at: positionOfActor(encounter!, c.id),
-          hp: c.hp,
-          maxHp: c.maxHp,
-          down: c.down,
-        })),
-      // The place, only when the fight has one (#201): the round this turn is
-      // played in and whether the captive still waits. A fight without an
-      // environment hands nothing over, and its monsters plan exactly as
-      // they always did.
-      ...(encounter.environment
-        ? {
-            environment: {
-              spec: encounter.environment.spec,
-              round: encounter.round,
-              ...(encounter.environment.rescue ? { rescue: encounter.environment.rescue } : {}),
-              ...riftBehaviors(encounter),
-            },
-          }
-        : {}),
-    });
+    const plan = enemyPlanFor(encounter, actor.id);
 
     if (plan.moveTo) {
       const moved = moveTo(encounter, plan.moveTo);
@@ -3013,13 +2975,6 @@ function runEnemyTurns(draft: RunState, ctx: EngineContext): readonly EncounterE
 
   draft.encounter = encounter;
   return events;
-}
-
-/** Every monster's `rift` behaviour (#220), by id — or nothing, when none has one. */
-function riftBehaviors(encounter: EncounterState): { behaviors?: Record<string, RiftBehavior> } {
-  const behaviors: Record<string, RiftBehavior> = {};
-  for (const c of encounter.combatants) if (c.side === "enemy" && c.rift) behaviors[c.id] = c.rift;
-  return Object.keys(behaviors).length > 0 ? { behaviors } : {};
 }
 
 /** The map the scene in play names. Only called where the scene is an encounter. */
