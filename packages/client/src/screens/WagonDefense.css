@@ -1,0 +1,19 @@
+.wagon-defense { font: inherit; line-height: 1.4; }
+.wagon-defense p { margin: .3em 0 0; font: inherit; }
+.wagon-defense__route { position: relative; height: 3.2em; border-block-end: .2em solid #a48454; margin-block-end: .5em; }
+.wagon-defense__cart { position: absolute; bottom: -.3em; width: 4em; height: 3.5em; transform: translateX(-25%); transition: left 900ms ease-in-out; }
+.wagon-defense__cart img { width: 100%; height: 100%; object-fit: contain; }
+.wagon-defense__stop { position: absolute; bottom: -.65em; color: #f6d484; background: #25202a; border-radius: 50%; padding-inline: .15em; }
+.wagon-defense__stop[data-done="true"] { color: #a8e6bb; }
+.wagon-defense__finish { position: absolute; right: 0; bottom: 0; color: #a8e6bb; }
+.combat .wagon-defense { font-size: max(12px, .7em); }
+.combat .wagon-defense__route { height: 2.2em; margin-inline: .5em; }
+.combat .wagon-defense__cart { height: 2.8em; }
+.combat:has(.wagon-defense) .combat__board { min-block-size: clamp(80px, 20cqh, 150px); }
+.combat:has(.wagon-defense) .combat__actions .choice__label { font-size: max(16px, .875em); line-height: 1.2; }
+.combat:has(.wagon-defense) .combat__actions .choice__sub { font-size: max(12px, .75em); line-height: 1.25; }
+.combat:has(.wagon-defense) .combat__roster:not([data-inspected]) .combat__plan { display: none; }
+.fight-log .wagon-defense__route { display: none; }
+.fight-log .wagon-defense__deadline { display: none; }
+@media (prefers-reduced-motion: reduce) { .wagon-defense__cart { transition: none; } }
+[data-motion="reduced"] .wagon-defense__cart { transition: none; }

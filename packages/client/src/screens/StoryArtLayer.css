@@ -1,5 +1,8 @@
 .story-art-layer{position:absolute;pointer-events:none;right:4%;top:10%;inline-size:clamp(5em,23cqw,16em);block-size:clamp(5em,30cqh,17em);z-index:2;overflow:hidden}
 .story-art-layer img{object-fit:contain}
+.story-art-layer--wagon { top: 32%; inline-size: 23cqw; block-size: 18cqh; }
+.story-art-layer__wagon { inline-size: 100%; block-size: 100%; animation: wagon-clear 2.4s ease-in-out both; }
+@keyframes wagon-clear { from { transform: translateX(-65%) rotate(-3deg); } 40% { transform: translateX(-25%) rotate(2deg); } to { transform: translateX(55%) rotate(0); } }
 .story-art-layer__prop{position:absolute;right:5%;bottom:0;inline-size:55%;block-size:62%;filter:drop-shadow(0 2px 3px #15202a55)}
 .story-art-layer__retreat{position:absolute;inline-size:100%;block-size:100%;animation:story-retreat 1.25s ease-out .2s both}
 .story-art-layer__retreat[data-direction="-1"]{animation-name:story-retreat-left}

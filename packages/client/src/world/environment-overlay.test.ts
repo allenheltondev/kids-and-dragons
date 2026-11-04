@@ -52,6 +52,10 @@ describe("a fight without an environment", () => {
 });
 
 describe("the overlay, round by round", () => {
+  it("uses an authored physical exit prop on the shared board", () => {
+    const state = fight({ exits: [{ id: "bank", label: "Far bank", art: "fight-plank-edge", tiles: [{ x: 4, y: 0 }] }] });
+    expect(at(environmentOverlay(state)!.tiles, 4, 0)).toMatchObject({ glyph: "exit", art: "fight-plank-edge", state: "active" });
+  });
   it("marks every hazard square by kind, burning or not yet", () => {
     const { tiles } = environmentOverlay(fight(FERRY))!;
     expect(at(tiles, 2, 2)).toEqual({ x: 2, y: 2, kind: "hazard", glyph: "fire", state: "active", label: "Rift fire" });

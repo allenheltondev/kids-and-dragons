@@ -51,6 +51,7 @@
  */
 
 import { reducedMotion } from "../a11y/prefs";
+import { createWagonStage } from "./wagon-stage";
 import { committedAttacks } from "@kad/shared";
 import { stanceIdle } from "./idle-motion";
 import {
@@ -403,6 +404,8 @@ export function createBoardLayer(): BoardLayer {
   // Footprints on the floor, under every figure and over the reach glow.
   const trailLayer = new Graphics();
   let windupLayer: Graphics | null = null;
+  let wagonStage: ReturnType<typeof createWagonStage> | null = null;
+  let wagonFight: number | undefined;
   container.addChild(tilesLayer, highlightLayer, trailLayer, actorsLayer, nameLayer, floatLayer);
   const trail: TrailMark[] = [];
 
@@ -1142,6 +1145,14 @@ export function createBoardLayer(): BoardLayer {
         buildTiles(encounter, biome, next.tileUrl, next.terrainProps);
       }
       syncActors(next);
+      const wagon = encounter.environment?.spec.objectives?.some(o => o.id === "wagon-lane");
+      if (wagonStage && (!wagon || wagonFight !== encounter.startedAt)) { wagonStage.destroy(); wagonStage = null; }
+      if (wagon && !wagonStage) {
+        wagonStage = createWagonStage(BOARD_TILE_PX);
+        wagonFight = encounter.startedAt;
+        container.addChildAt(wagonStage.container, container.getChildIndex(actorsLayer));
+      }
+      wagonStage?.update(encounter);
       drawEnvironment(encounter);
       drawHighlights(encounter, next.aim ?? null);
     },
@@ -1159,6 +1170,7 @@ export function createBoardLayer(): BoardLayer {
     tick(dtSeconds: number) {
       if (destroyed) return;
       const still = reducedMotion();
+      wagonStage?.tick(dtSeconds, still);
       clock += dtSeconds;
       pulse += dtSeconds;
       const charging = [...actors.values()].filter(actor => actor.charging && !actor.down);
@@ -1332,6 +1344,7 @@ export function createBoardLayer(): BoardLayer {
 
     destroy() {
       destroyed = true;
+      wagonStage?.destroy(); wagonStage = null;
       pending.length = 0;
       trail.length = 0;
       for (const floater of floaters) floater.text.destroy();

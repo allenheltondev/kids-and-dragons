@@ -113,7 +113,7 @@ describe("the environment's marks (#201)", () => {
         enemies: [{ spec: WISP, at: { x: 3, y: 3 } }],
         environment: {
           hazards: [{ id: "fire", kind: "fire", label: "Rift fire", tiles: [{ x: 1, y: 1 }], damage: 1 }],
-          exits: [{ id: "tear", label: "The tear", tiles: [{ x: 3, y: 0 }], opensRound: 2 }],
+            exits: [{ id: "tear", label: "The tear", art: "fight-plank-edge", tiles: [{ x: 3, y: 0 }], opensRound: 2 }],
           rescue: { name: "Pip", at: { x: 0, y: 3 } },
         },
       },
@@ -122,7 +122,7 @@ describe("the environment's marks (#201)", () => {
     const cells = gridCells(encounter, [makeMember()], legalMoves(encounter), []);
     const at = (x: number, y: number) => cells.find((c) => c.x === x && c.y === y)!;
     expect(at(1, 1).feature).toEqual({ kind: "hazard", label: "Rift fire", icon: "flame", active: true });
-    expect(at(3, 0).feature).toMatchObject({ kind: "exit", active: false });
+      expect(at(3, 0).feature).toMatchObject({ kind: "exit", active: false, art: "fight-plank-edge" });
     expect(at(0, 3)).toMatchObject({ blocked: true, feature: { kind: "captive", label: "Pip" } });
     expect(cells.filter((c) => c.feature)).toHaveLength(3);
     expect(gridCells(fight(), [makeMember()], [], []).some((c) => "feature" in c)).toBe(false);

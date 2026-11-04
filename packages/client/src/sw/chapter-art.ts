@@ -39,6 +39,8 @@ export function chapterAssets(chapter: Chapter | null, party: readonly FigureOf[
     if (!scene) continue;
     if (scene.type === "encounter") {
       for (const environment of [scene.environment, ...(scene.environment?.variants ?? [])]) {
+        if (environment?.objectives?.some(o => o.id === "wagon-lane")) urls.add("/assets/story-props/sausage-wagon.webp");
+        for (const exit of environment?.exits ?? []) if (exit.art) urls.add(`/assets/story-props/${exit.art}.webp`);
         for (const objective of environment?.objectives ?? []) if (objective.art) urls.add(`/assets/story-props/${objective.art}.webp`);
       }
     }
