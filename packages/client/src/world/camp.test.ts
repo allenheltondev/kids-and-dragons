@@ -335,6 +335,74 @@ describe("the camp stage", () => {
   });
 });
 
+describe("the camp in the lobby (#614)", () => {
+  it("hands a hero who takes back Ready out of the line and back to wandering", () => {
+    const { camp: c, app } = camp();
+    frames(app, c, 1);
+    c.moment("ready", "hero-1");
+    c.moment("ready", "hero-2");
+    frames(app, c, 40, 16, noSlide);
+    const t = layout.frame.trailhead;
+    expect(c.figures().find((f) => f.id === "hero-1")!.x).toBeCloseTo(t.x * W);
+    c.moment("unready", "hero-1");
+    // The line closes up: the second hero takes the front.
+    frames(app, c, 40, 16, noSlide);
+    expect(c.figures().find((f) => f.id === "hero-2")!.x).toBeCloseTo(t.x * W);
+    // And the first wanders off again in time, where a lined-up hero would stand forever.
+    let left = false;
+    frames(app, c, 90, 16, (_, next) => {
+      if (Math.abs(next.get("hero-1")!.x - t.x * W) > 1) left = true;
+    });
+    expect(left).toBe(true);
+    c.destroy();
+  });
+
+  it("frames the ground above the panels over the pane's bottom, easing there as they grow", () => {
+    const { camp: c, app } = camp();
+    const ground = Math.max(...layout.backdrop.lanes.map((lane) => lane.y));
+    const groundOnScreen = () => c.view.y + ground * H * c.view.scale.y;
+    expect(groundOnScreen()).toBeLessThanOrEqual(900);
+    c.setInset(300);
+    // No jump: the frame eases toward the new one.
+    app.ticker.frame(16);
+    expect(groundOnScreen()).toBeGreaterThan(900 - 300);
+    frames(app, c, 3);
+    expect(groundOnScreen()).toBeLessThanOrEqual(900 - 300);
+    // Every stand point, and so everybody standing at one, is above the panels.
+    for (const point of layout.frame.standPoints) {
+      expect(c.view.y + layout.lanes.get(point.lane)!.y * H * c.view.scale.y).toBeLessThan(900 - 300);
+    }
+    // And the whole width is still there: the trailhead is at its edge.
+    expect(c.view.x).toBeGreaterThanOrEqual(0);
+    expect(c.view.x + W * c.view.scale.x).toBeLessThanOrEqual(1600 + 1e-6);
+    c.destroy();
+  });
+
+  it("draws the stand-in backdrop when the camp's own painting does not load", async () => {
+    const app = fakeApp();
+    const asked: string[] = [];
+    const stage = createCamp(app as unknown as Application, layout, {
+      still: true,
+      assetUrl: (path) => `/assets/${path}`,
+      fallbackBackdrop: "/assets/biomes/plains/bg.webp",
+      loadTexture: (url) => {
+        asked.push(url);
+        return url.endsWith("plains/bg.webp") ? Promise.resolve(Texture.WHITE) : Promise.reject(new Error("not painted yet"));
+      },
+    });
+    stage.resize(1600, 900);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(asked).toContain("/assets/biomes/plains/bg.webp");
+    const backdrop = stage.view.children[0] as Container;
+    // The painting at canvas size, and its dimmed copy covering the pane around it.
+    const sprites = backdrop.children.filter((child): child is Sprite => child instanceof Sprite);
+    expect(sprites).toHaveLength(2);
+    expect(sprites[1]!.width).toBeCloseTo(W);
+    stage.destroy();
+  });
+});
+
 describe("the camp's pieces", () => {
   it("draws a piece at its true size on the figures' canvas contract, its moving part registered over it", async () => {
     const app = fakeApp();

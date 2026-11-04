@@ -11,10 +11,10 @@
  * modules' tests and checked here frame by frame (camp.test.ts).
  *
  * It follows WorldView's rules: nothing here reads the room mode and nothing
- * uses a viewport unit. The lobby (a later change) owns this stage and calls
+ * uses a viewport unit. The lobby (world/lobby-camp-stage.ts) owns this stage and calls
  * its small imperative API: who is in camp (`setFigures`), the downtime
  * moment's seed (`setSeed`), the moments the game already has (`moment`),
- * and reduced motion (`setStill`). Moments take priority over wandering, and
+ * reduced motion (`setStill`), and the panels over it (`setInset`). Moments take priority over wandering, and
  * nothing waits on an animation (§12.6): every call takes effect on the next
  * frame, and Begin's `setOff` is cut short by whatever comes next.
  *
@@ -39,6 +39,8 @@ import {
   measurePaint,
 } from "./actor-art";
 import {
+  campFrame,
+  campGround,
   campRoute,
   laneAt,
   laneOf,
@@ -72,6 +74,7 @@ import { createWanderPlanner, queueSpots, type WanderPlace, type WanderPlanner }
 import { stanceIdle } from "./idle-motion";
 import { fitCanvas, NOMINAL_PAINT, paintAspect, STANCE_LIFT, STANCE_LIFT_CM } from "./figure-scale";
 import { reducedMotion } from "../a11y/prefs";
+import { storyStageHeight } from "./stage-inset";
 
 /** Somebody in camp: a hero or a friend. */
 export interface CampFigure {
@@ -85,8 +88,11 @@ export interface CampFigure {
   seat?: number;
 }
 
-/** The moments the game already has (§8.5) that the camp acts out. */
-export type CampMoment = "arrive" | "ready" | "away" | "setOff";
+/**
+ * The moments the game already has (§8.5) that the camp acts out. `unready`
+ * is a Ready taken back: out of the trailhead's line and back to wandering.
+ */
+export type CampMoment = "arrive" | "ready" | "unready" | "away" | "setOff";
 
 export interface CampOptions {
   /** The downtime moment's seed (§12.6). Never the wall clock. */
@@ -95,6 +101,11 @@ export interface CampOptions {
   still?: boolean;
   /** Where a path relative to `assets/` is served. */
   assetUrl?: (path: string) => string;
+  /**
+   * A full URL drawn in the backdrop's place while its painting does not
+   * load (a stand-in until the camp art lands, #615). Absent: a plain dusk.
+   */
+  fallbackBackdrop?: string;
   /** How a texture is loaded; Pixi's `Assets.load` unless a test says otherwise. */
   loadTexture?: (url: string) => Promise<Texture>;
 }
@@ -124,10 +135,16 @@ export interface CampStage {
   readonly view: Container;
   setFigures(figures: readonly CampFigure[]): void;
   setSeed(seed: number): void;
-  moment(kind: "arrive" | "ready" | "away", figureId: string): void;
+  moment(kind: "arrive" | "ready" | "unready" | "away", figureId: string): void;
   moment(kind: "setOff"): void;
   setStill(still: boolean): void;
   resize(width: number, height: number): void;
+  /**
+   * How many px along the bottom of the pane panels cover (the lobby's,
+   * stage-inset.ts). The camp is framed into the rest, so its ground, and
+   * every stand point on it, is above them (camp-layout.ts `campFrame`).
+   */
+  setInset(bottomPx: number): void;
   /** Every figure, this frame. */
   figures(): CampFigureView[];
   /** The pieces somebody is using, whose moving parts animate. */
@@ -148,6 +165,13 @@ const SET_OFF_STAGGER_S = 0.3;
 /** How far past the edge the trail takes them. */
 const OFF_EDGE = 0.1;
 const SHADOW_SQUASH = 0.28;
+/** How fast the camp eases to a new frame when the panels over it change height. */
+const FRAME_RATE = 4;
+
+type CampFraming = { scale: number; x: number; y: number };
+
+/** The dimmed copy of the backdrop around the canvas: the painting at about 45%. */
+const SURROUND_TINT = 0x6f6f80;
 
 type Place = WanderPlace;
 
@@ -230,18 +254,30 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
 
   // The backdrop: painted art when it loads, a plain dusk until then, so a
   // missing file never leaves the stage blank.
+  //
+  // Framed clear of the panels, the canvas may not fill the pane, so the
+  // dusk reaches well past it, and once the painting is in, a dimmed copy of
+  // it covers the whole pane behind the real one: the same evening goes on
+  // past the edges rather than stopping at a hard band.
   const backdrop = new Container();
-  const dusk = new Graphics().rect(0, 0, W, H).fill({ color: 0x2a2f4a });
+  const dusk = new Graphics().rect(-W, -H, 3 * W, 3 * H).fill({ color: 0x2a2f4a });
   backdrop.addChild(dusk);
   view.addChild(backdrop);
+  let surround: Sprite | null = null;
+  const showBackdrop = (texture: Texture): void => {
+    if (destroyed) return;
+    surround = new Sprite(texture);
+    surround.tint = SURROUND_TINT;
+    surround.label = "camp-surround";
+    const sprite = new Sprite(texture);
+    sprite.width = W;
+    sprite.height = H;
+    backdrop.addChild(surround, sprite);
+    if (framed) place(framed);
+  };
+  const fallback = options.fallbackBackdrop;
   void load(assetUrl(layout.backdrop.path))
-    .then((texture) => {
-      if (destroyed) return;
-      const sprite = new Sprite(texture);
-      sprite.width = W;
-      sprite.height = H;
-      backdrop.addChild(sprite);
-    })
+    .then(showBackdrop, () => (fallback ? load(fallback).then(showBackdrop) : undefined))
     .catch(() => undefined);
 
   // Pieces and figures share one depth-sorted layer: the nearer the feet,
@@ -709,6 +745,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     if (destroyed) return;
     const dt = frameSeconds(app.ticker.deltaMS);
     elapsed += dt;
+    easeFrame(dt);
 
     if (!still) {
       for (const walk of planner.advance(dt)) {
@@ -861,6 +898,24 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
         queue.push(actor.def.id);
         requeue();
         return;
+      case "unready": {
+        // Out of the line, and back to wandering from where they are headed.
+        if (!queue.includes(actor.def.id)) return;
+        leaveQueue(actor);
+        const here: Place = actor.walkTo ?? { spot: { lane: actor.lane ?? layout.frame.trailhead.lane, x: actor.x / W }, point: actor.point };
+        if (actor.walk) {
+          planner.direct(actor.def.id, here, null, Math.max(0, actor.walkStart + actor.walk.duration - elapsed));
+          const chained = actor.onArrive;
+          actor.onArrive = () => {
+            chained?.();
+            planner.release(actor.def.id);
+          };
+        } else {
+          planner.direct(actor.def.id, here, null, 0);
+          planner.release(actor.def.id);
+        }
+        return;
+      }
       case "away":
         leaveQueue(actor);
         direct(actor, homeOf(actor), { alpha: AWAY_ALPHA });
@@ -925,12 +980,67 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     }
   }
 
+  let pane = { width: 0, height: 0 };
+  let insetBottom = 0;
+  const groundLine = campGround(layout);
+
+  /** Where the camp is framed this frame, and where it is headed. */
+  let framed: CampFraming | null = null;
+  let framing: CampFraming | null = null;
+
+  /**
+   * Frame the camp in the pane. A new pane size is a cut (the whole canvas is
+   * changing anyway); a new inset, which is the lobby's panels growing or
+   * shrinking as somebody readies up, eases there, because a camp that jumped
+   * in size whenever a line of text appeared would break §8.6's rule 3.
+   */
+  function frame(cut = false): void {
+    if (destroyed || pane.width <= 0 || pane.height <= 0) return;
+    const free = storyStageHeight(pane.width, pane.height, insetBottom);
+    framing = campFrame(pane.width, pane.height, insetBottom, layout.canvas, groundLine, free);
+    if (cut || still || !framed) place(framing);
+  }
+
+  function easeFrame(dt: number): void {
+    if (!framing || !framed || framed === framing) return;
+    const to = framing;
+    const next = {
+      scale: approach(framed.scale, to.scale, FRAME_RATE, dt),
+      x: approach(framed.x, to.x, FRAME_RATE, dt),
+      y: approach(framed.y, to.y, FRAME_RATE, dt),
+    };
+    const done = Math.abs(next.scale - to.scale) < 1e-4 && Math.abs(next.x - to.x) < 0.5 && Math.abs(next.y - to.y) < 0.5;
+    place(done ? to : next);
+  }
+
+  function place(at: CampFraming): void {
+    framed = at;
+    view.scale.set(at.scale);
+    view.x = at.x;
+    view.y = at.y;
+    if (surround) {
+      // The whole pane, in canvas units, covered at the painting's own aspect.
+      const left = -at.x / at.scale;
+      const top = -at.y / at.scale;
+      const width = pane.width / at.scale;
+      const height = pane.height / at.scale;
+      const k = Math.max(width / W, height / H);
+      surround.width = W * k;
+      surround.height = H * k;
+      surround.x = left + (width - W * k) / 2;
+      surround.y = top + (height - H * k) / 2;
+    }
+  }
+
   function resize(width: number, height: number): void {
-    if (destroyed || width <= 0 || height <= 0) return;
-    const k = Math.min(width / W, height / H);
-    view.scale.set(k);
-    view.x = (width - W * k) / 2;
-    view.y = (height - H * k) / 2;
+    if (width <= 0 || height <= 0) return;
+    pane = { width, height };
+    frame(true);
+  }
+
+  function setInset(bottomPx: number): void {
+    insetBottom = Number.isFinite(bottomPx) && bottomPx > 0 ? bottomPx : 0;
+    frame();
   }
 
   function figures(): CampFigureView[] {
@@ -967,6 +1077,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     moment: moment as CampStage["moment"],
     setStill,
     resize,
+    setInset,
     figures,
     activePieces,
     destroy,

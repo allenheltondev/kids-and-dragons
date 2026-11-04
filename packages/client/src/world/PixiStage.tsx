@@ -20,7 +20,9 @@ import { RendererFallback } from "./RendererFallback";
 import { sceneArtFor } from "./art-paths";
 import { sceneRiftFor } from "./scene-rift";
 import { castFor } from "./cast";
-import { boardInsetEnd, onBoardInsetEnd, onStageInset, onStageInsetTop, stageInsetBottom, stageInsetTop } from "./stage-inset";
+import { boardInsetEnd, lobbyInsetBottom, onBoardInsetEnd, onLobbyInset, onStageInset, onStageInsetTop, stageInsetBottom, stageInsetTop } from "./stage-inset";
+import { createLobbyCamp, lobbyCampLayout, type LobbyCamp } from "./lobby-camp-stage";
+import { PREFS_EVENT, reducedMotion } from "../a11y/prefs";
 
 /**
  * Enemy spec id → art id, read off the chapter's encounter scene. The
@@ -115,6 +117,8 @@ export function PixiStage(): React.JSX.Element {
   const [failed, setFailed] = useState(false);
   const hostRef = useRef<HTMLDivElement | null>(null);
   const sceneRef = useRef<PartyScene | null>(null);
+  // The lobby's camp (#614), over the scene while the lobby is up.
+  const campRef = useRef<LobbyCamp | null>(null);
   const party = useParty();
   const state = useRunState();
   const session = useSession();
@@ -145,6 +149,7 @@ export function PixiStage(): React.JSX.Element {
     // effect instances, and a cleanup that reads `sceneRef.current` tears down
     // whichever scene happens to be there — usually the *new* one.
     let scene: PartyScene | null = null;
+    let lobbyCamp: LobbyCamp | null = null;
     let removeVisibilityListener: (() => void) | null = null;
 
     const dispose = () => {
@@ -152,6 +157,11 @@ export function PixiStage(): React.JSX.Element {
       removeVisibilityListener = null;
       observer?.disconnect();
       observer = null;
+      if (lobbyCamp) {
+        if (campRef.current === lobbyCamp) campRef.current = null;
+        lobbyCamp.destroy();
+        lobbyCamp = null;
+      }
       if (scene) {
         // Strict Mode may already have installed a newer scene.
         if (getActiveScene() === scene) setActiveScene(null);
@@ -223,6 +233,23 @@ export function PixiStage(): React.JSX.Element {
       scene.setBoardInset(boardInsetEnd());
       scene.setEncounter(boardView(live.state, live.state?.party ?? [], live.chapter, live.previews));
 
+      // The camp is drawn over the scene, so it is made after it; it mounts
+      // itself while the phase is the lobby's (world/lobby-camp-stage.ts).
+      const layout = lobbyCampLayout();
+      if (layout) {
+        const covered = scene;
+        lobbyCamp = createLobbyCamp(instance, layout, {
+          cover: (on) => covered.setCovered(on),
+          still: reducedMotion(),
+        });
+        campRef.current = lobbyCamp;
+        lobbyCamp.setInset(lobbyInsetBottom());
+        lobbyCamp.sync(live.state);
+      }
+      if (import.meta.env.DEV) {
+        (globalThis as Record<string, unknown>).__kadCamp = () => campRef.current;
+      }
+
       /** Run the ticker only when a frame could actually be seen. */
       const syncTicker = () => {
         const hidden = typeof document !== "undefined" && document.hidden;
@@ -249,6 +276,7 @@ export function PixiStage(): React.JSX.Element {
         setPaneWidth(width);
         instance.renderer.resize(width, height);
         scene?.resize(width, height);
+        lobbyCamp?.resize(width, height);
         syncTicker();
       };
       size();
@@ -300,6 +328,25 @@ export function PixiStage(): React.JSX.Element {
   useEffect(() => onStageInsetTop((px) => sceneRef.current?.setStageInsetTop(px)), []);
   // The fight log's width, so the board stands clear of it.
   useEffect(() => onBoardInsetEnd((px) => sceneRef.current?.setBoardInset(px)), []);
+  // The lobby panels' height, so the camp stands above them.
+  useEffect(() => onLobbyInset((px) => campRef.current?.setInset(px)), []);
+  // Reduced motion, the device's or the in-game setting, as it changes (§8.7).
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const follow = () => campRef.current?.setStill(reducedMotion());
+    document.addEventListener(PREFS_EVENT, follow);
+    return () => document.removeEventListener(PREFS_EVENT, follow);
+  }, []);
+
+  /*
+   * The lobby's camp (#614): who is seated, and the moments between one state
+   * and the next (world/lobby-camp.ts reads them off the pair, as victory.ts
+   * reads a won fight). Begin is a phase change like any other here: the camp
+   * is told to set off and fades, and the scene is already drawn under it.
+   */
+  useEffect(() => {
+    campRef.current?.sync(state);
+  }, [state]);
 
   // The board is a reader of the mirrored state (brief, trap 2): every patch
   // that touches the encounter flows through here and nowhere else.

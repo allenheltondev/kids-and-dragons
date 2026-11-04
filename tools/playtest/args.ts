@@ -8,6 +8,7 @@ export interface Args {
   flags: Record<string, boolean>;
   facts: Record<string, string | number | boolean>;
   start: boolean;
+  lobby: boolean;
   record: number;
   every: number;
   reducedMotion: boolean;
@@ -17,7 +18,7 @@ export interface Args {
 }
 
 export function parse(argv: string[]): Args {
-  const args: Args = { positional: [], list: false, players: 2, travel: false, flags: {}, facts: {}, start: false, record: 0, every: 250, reducedMotion: false, open: false, help: false };
+  const args: Args = { positional: [], list: false, players: 2, travel: false, flags: {}, facts: {}, start: false, lobby: false, record: 0, every: 250, reducedMotion: false, open: false, help: false };
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]!;
     const value = () => {
@@ -34,6 +35,7 @@ export function parse(argv: string[]): Args {
       args.facts[name!] = raw === "true" ? true : raw === "false" ? false : raw !== "" && Number.isFinite(Number(raw)) ? Number(raw) : raw;
     }
     else if (arg === "--start") args.start = true;
+    else if (arg === "--lobby") args.lobby = true;
     else if (arg === "--record") args.record = Number(value());
     else if (arg === "--every") args.every = Number(value());
     else if (arg === "--reduced-motion") args.reducedMotion = true;
@@ -42,6 +44,9 @@ export function parse(argv: string[]): Args {
     else if (arg === "--help" || arg === "-h") args.help = true;
     else if (arg.startsWith("--")) throw new Error(`unknown option ${arg} (see --help)`);
     else args.positional.push(arg);
+  }
+  if (args.lobby && (args.positional.length > 0 || Object.keys(args.flags).length > 0 || Object.keys(args.facts).length > 0 || args.start)) {
+    throw new Error("--lobby seats the heroes before any chapter: no chapter, scene, --flag, --fact or --start");
   }
   if (!Number.isInteger(args.players) || args.players < 1 || args.players > 4) throw new Error("--players is 1 to 4");
   // A zero or nonsense interval would never step the recorder forward (#555 review).

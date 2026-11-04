@@ -59,3 +59,28 @@
   background-repeat: no-repeat;
   pointer-events: none;
 }
+
+/* The lobby's camp, still (#614, docs/camp.md §8.7). The frame is placed in px off the measured
+   pane by StillCamp (camp-layout.ts campFrame); everything in it is percent of the frame. */
+.kad-static-camp {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #2a2f4a;
+}
+.kad-static-camp__frame { position: absolute; }
+.kad-static-camp__backdrop {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+/* A hero's art is a square canvas with the feet at (512, 900) of 1024 (art-paths.ts CANVAS). */
+.kad-static-camp__hero {
+  position: absolute;
+  aspect-ratio: 1;
+  transform: translate(-50%, -87.89%);
+}
+.kad-static-camp__hero > img { display: block; inline-size: 100%; block-size: 100%; }
+.kad-static-camp__hero.is-away { opacity: 0.5; }

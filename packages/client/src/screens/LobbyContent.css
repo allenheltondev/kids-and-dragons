@@ -36,7 +36,16 @@
   flex-direction: column;
   gap: var(--space-4, 1em);
   min-block-size: 0;
-  flex: 1 1 auto;
+  flex: 0 1 auto;
+}
+
+/* The camp shows through here (#614): the space the lobby leaves between its
+   header and its panels, which stand along the bottom. LobbyContent reports
+   what lies below this to the stage, which frames the camp above it. */
+.lobby__camp-window {
+  flex: 1 1 0;
+  min-block-size: 0;
+  pointer-events: none;
 }
 
 /* Join on the left, the people already here on the right. Scoped to the

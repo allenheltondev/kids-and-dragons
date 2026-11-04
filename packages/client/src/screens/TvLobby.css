@@ -284,3 +284,36 @@
 @media (min-width: 900px) and (orientation: landscape) and (max-height: 650px) {
   html[data-text="largest"] .kad-party--world .lobby__header > :is(.lobby__place, .lobby__crew) { block-size: 3.2em; }
 }
+
+/* The crew's camp is the lobby's picture (#614, docs/camp.md §3), shown in the window between
+   the header and the panels, so once anybody has sat down the panels keep to a low band along
+   the bottom: the code beside its QR with the how-to-join line under them, and the heroes in
+   one row where the screen is wide enough. Nothing is dropped; the same words, smaller. */
+@media (min-width: 900px) and (orientation: landscape) {
+  .kad-party--world .lobby__gather .lobby__join--compact {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-areas: "code qr" "step step";
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    justify-items: center;
+    gap: .35em .9em;
+    padding: .55em .7em;
+  }
+  .kad-party--world .lobby__gather .lobby__join--compact .lobby__code-block { grid-area: code; }
+  .kad-party--world .lobby__gather .lobby__join--compact .lobby__qr-block { grid-area: qr; }
+  .kad-party--world .lobby__gather .lobby__join--compact .lobby__join-step { grid-area: step; font-size: .7em; max-inline-size: 30em; }
+  .kad-party--world .lobby__gather .lobby__join--compact .lobby__code-letter { font-size: 1.5em; }
+  .kad-party--world .lobby__gather .lobby__join--compact .lobby__qr { inline-size: 5em; block-size: 5em; }
+  .kad-party--world .lobby__gather:has(.lobby__join--compact) { align-items: end; }
+  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby__party { align-self: end; gap: .4em; }
+  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby__lineup {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 9em), 1fr));
+    gap: .5em;
+  }
+  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member { grid-template-columns: 2.4em minmax(0, 1fr); padding: .45em .5em; }
+  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member .lobby-member__portrait { inline-size: 2.4em; block-size: 2.9em; }
+  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member__name { font-size: .95em; }
+  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member__meta { font-size: .8em; white-space: nowrap; }
+}

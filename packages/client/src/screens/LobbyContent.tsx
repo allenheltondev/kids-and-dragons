@@ -11,7 +11,8 @@
  */
 
 import { useEffect, useRef, useState } from "react";
-import type { ReactElement } from "react";
+import type { ReactElement, RefObject } from "react";
+import { setLobbyInsetBottom } from "../world/stage-inset";
 import { lobbyCampaign, type PartyMember } from "@kad/shared";
 import { useGameStore, useParty, useRunState } from "../store";
 import { CampaignArt } from "./CampaignArt";
@@ -30,7 +31,6 @@ import { joinUrl } from "../ui/share-invite";
 import "./shared.css";
 import "./LobbyContent.css";
 import "./TvLobby.css";
-import { EntryScene } from "./EntryScene";
 import { RiftSightings } from "./RiftSight";
 import { lobbyReadiness } from "./lobby-readiness";
 
@@ -69,6 +69,36 @@ function useJoinQr(code: string | null): string | null {
     };
   }, [code]);
   return dataUrl;
+}
+
+/**
+ * How much of the bottom of the pane the lobby's panels cover: from the
+ * bottom of the camp's window to the bottom of the lobby, told to the stage
+ * (stage-inset.ts `setLobbyInsetBottom`) the way the narration plate tells it
+ * its height. The window is a flex spacer, so anything below it growing or
+ * shrinking resizes it, and one observer on it and the lobby sees every change.
+ */
+export function useLobbyInset(
+  section: RefObject<HTMLElement | null>,
+  gapRef: RefObject<HTMLElement | null>,
+): void {
+  useEffect(() => {
+    const lobby = section.current;
+    const gap = gapRef.current;
+    if (!lobby || !gap) return;
+    const report = (): void => {
+      setLobbyInsetBottom(lobby.getBoundingClientRect().bottom - gap.getBoundingClientRect().bottom);
+    };
+    report();
+    if (typeof ResizeObserver === "undefined") return () => setLobbyInsetBottom(0);
+    const observer = new ResizeObserver(report);
+    observer.observe(lobby);
+    observer.observe(gap);
+    return () => {
+      observer.disconnect();
+      setLobbyInsetBottom(0);
+    };
+  }, [section, gapRef]);
 }
 
 function MemberCard({ member, arriving = false }: { member: PartyMember; arriving?: boolean }): ReactElement {
@@ -142,6 +172,10 @@ export function LobbyContent(): ReactElement {
   const qr = useJoinQr(code);
   const help = useHelp();
 
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const windowRef = useRef<HTMLDivElement | null>(null);
+  useLobbyInset(sectionRef, windowRef);
+
   const readiness = lobbyReadiness(state ?? { party, seats: undefined, removed: undefined });
   const previousMembers = useRef<Set<string> | null>(null);
   useEffect(() => {
@@ -158,8 +192,10 @@ export function LobbyContent(): ReactElement {
   const cards = (state?.campaignOptions?.length ?? 0) > 1;
 
   return (
-    <section className="lobby entry-scene-host" aria-label="Lobby">
-      <EntryScene scene={readiness.allReady ? "lobby-ready" : "lobby-waiting"} />
+    <section className="lobby entry-scene-host" aria-label="Lobby" ref={sectionRef}>
+      {/* No painted backdrop of its own: the crew's camp is drawn behind the
+          lobby (world/lobby-camp-stage.ts, docs/camp.md §3), and on a screen
+          with no WebGL the still board draws it instead (StaticStage). */}
       <header className="lobby__header">
       {/* The household's table, when the family named it: where the game is
           kept, not the phones. */}
@@ -173,6 +209,11 @@ export function LobbyContent(): ReactElement {
         </div>
       ) : null}
       </header>
+      {/* The camp's window (#614): the space between the header and the
+          panels, which this takes up so they stand along the bottom of the
+          pane. What lies below it is what the lobby covers, reported to the
+          stage so every hero stands above the words. */}
+      <div className="lobby__camp-window" ref={windowRef} aria-hidden="true" />
       {state?.crewSetup ? (
         <p className="lobby__place" role="status">
           Make new heroes on your phones. Your other crew&rsquo;s adventure is saved.

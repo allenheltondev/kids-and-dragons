@@ -167,3 +167,39 @@ export function onBoardInsetEnd(listener: (endPx: number) => void): () => void {
 export function boardStageWidth(paneWidth: number, insetEnd: number): number {
   return Math.max(paneWidth * MIN_STAGE_FRACTION, paneWidth - Math.max(0, insetEnd));
 }
+
+/*
+ * ---------------------------------------------------------------------------
+ * The lobby's side (#614)
+ *
+ * In the lobby the shared screen shows the crew's camp (world/camp.ts), and
+ * the lobby's panels (screens/LobbyContent.tsx: the room code, the party and
+ * its ready ticks, the adventure vote) stand along the bottom of the pane. The
+ * lobby reports how much of the bottom they cover, the way the narration
+ * plate reports its own height, and the camp is framed into the rest
+ * (camp-layout.ts `campFrame`), so no hero stands under the words. Its own
+ * value, not the plate's: on Begin the lobby goes and the plate comes in the
+ * same commit, and neither may clear the other's report.
+ */
+
+let lobby = 0;
+const lobbyListeners = new Set<(bottomPx: number) => void>();
+
+/** Report the CSS px the lobby's panels cover along the pane's bottom. 0 when there is no lobby. */
+export function setLobbyInsetBottom(px: number): void {
+  const next = Number.isFinite(px) && px > 0 ? Math.round(px) : 0;
+  if (next === lobby) return;
+  lobby = next;
+  for (const listener of lobbyListeners) listener(lobby);
+}
+
+export function lobbyInsetBottom(): number {
+  return lobby;
+}
+
+export function onLobbyInset(listener: (bottomPx: number) => void): () => void {
+  lobbyListeners.add(listener);
+  return () => {
+    lobbyListeners.delete(listener);
+  };
+}
