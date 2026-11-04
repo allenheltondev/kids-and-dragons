@@ -22,7 +22,8 @@ import { characterWorldArtUrl } from "./art-paths";
 import { camp as campManifest } from "../../../../assets/manifest.json";
 import type { CampFigure } from "./camp";
 import { CAMP_SEATS, campLayout, parseCampManifest, type CampLayout } from "./camp-layout";
-import { NOMINAL_PAINT, figureSize } from "./figure-scale";
+import { NOMINAL_PAINT, figureSize, paintAspect } from "./figure-scale";
+import { campStandRange, campStandX, type CampSpan } from "./camp-framing";
 import { ANCHOR_Y } from "./art-paths";
 import { campHeightPx, campMeasure } from "./camp-motion";
 
@@ -139,9 +140,16 @@ export interface StillCampFigure {
  * The camp as a still picture, for a screen with no WebGL (§8.7): every hero
  * at their own bedroll, at the size the moving camp draws them (times the
  * camp's `figureScale`, camp-framing.ts `campFigureScale`), faded if they
- * stepped away. Nobody walks and nobody queues: nothing is lost but movement.
+ * stepped away, and moved in from an edge the pane crops (`visible`,
+ * camp-framing.ts `campVisibleSpan`) as the moving camp is. Nobody walks and
+ * nobody queues: nothing is lost but movement.
  */
-export function stillCampFigures(layout: CampLayout, heroes: readonly CampHero[], figureScale = 1): StillCampFigure[] {
+export function stillCampFigures(
+  layout: CampLayout,
+  heroes: readonly CampHero[],
+  figureScale = 1,
+  visible: CampSpan = { x0: 0, x1: 1 },
+): StillCampFigure[] {
   const measure = campMeasure(layout.canvas.height);
   const out: StillCampFigure[] = [];
   for (const hero of heroes) {
@@ -153,7 +161,8 @@ export function stillCampFigures(layout: CampLayout, heroes: readonly CampHero[]
     out.push({
       id: hero.figure.id,
       url: hero.figure.url,
-      x: bed.x,
+      // Moved in from an edge the pane crops, as the moving camp stands them (camp.ts `pointX`).
+      x: campStandX(bed.x, campStandRange(lane, visible, (heightPx * paintAspect(NOMINAL_PAINT)) / layout.canvas.width)),
       y: lane.y,
       size: heightPx / (ANCHOR_Y - NOMINAL_PAINT.top) / layout.canvas.height,
       away: hero.away,

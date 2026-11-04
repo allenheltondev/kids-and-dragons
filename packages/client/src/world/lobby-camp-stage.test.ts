@@ -12,6 +12,8 @@ import { makeCharacter, makeMember, makeState } from "../testing/fixtures";
 import { campLayoutFixture } from "../testing/camp-fixture";
 import { fakeApp, installFakeCanvas2D, type FakeApp } from "../testing/fake-stage";
 import { LEAVE_FADE_S, createLobbyCamp, type LobbyCamp } from "./lobby-camp-stage";
+import { EDGE_MARGIN } from "./camp-framing";
+import { NOMINAL_PAINT, paintAspect } from "./figure-scale";
 
 beforeAll(installFakeCanvas2D);
 
@@ -81,7 +83,10 @@ describe("the lobby's camp on the stage", () => {
     lobby.sync(lobbyWith([member(1, { ready: true }), member(2)]));
     run(app, 40);
     const t = layout.frame.trailhead;
-    expect(camp.figures().find((f) => f.id === "c_1")!.x).toBeCloseTo(t.x * layout.canvas.width);
+    // At the trailhead, moved in from the screen's edge far enough to be seen whole.
+    const hero = camp.figures().find((f) => f.id === "c_1")!;
+    const half = (hero.heightPx * paintAspect(NOMINAL_PAINT)) / 2 / layout.canvas.width;
+    expect(hero.x).toBeCloseTo(Math.min(t.x, 1 - half - EDGE_MARGIN) * layout.canvas.width);
     lobby.sync(lobbyWith([member(1, { ready: true }), member(2, { connected: false })]));
     run(app, 20);
     expect(camp.figures().find((f) => f.id === "c_2")!.alpha).toBeCloseTo(0.5, 1);

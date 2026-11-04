@@ -475,8 +475,12 @@ export function campRoute(layout: CampLayout, from: CampSpot, to: CampSpot): Rou
     }
   }
   if (!best) return null;
+  return buildRoute(first, start, best.via, last);
+}
 
-  const route: RoutePoint[] = [first];
+/** A route through `via`'s crossings, from `first` on `start` to `last`. */
+function buildRoute(first: RoutePoint, start: CampLane, via: readonly { x: number; lane: CampLane }[], last: RoutePoint): RoutePoint[] {
+  const route: RoutePoint[] = [{ ...first }];
   let lane = start;
   const push = (point: RoutePoint): void => {
     const prev = route[route.length - 1]!;
@@ -486,13 +490,47 @@ export function campRoute(layout: CampLayout, from: CampSpot, to: CampSpot): Rou
     }
     route.push(point);
   };
-  for (const hop of best.via) {
+  for (const hop of via) {
     push({ x: hop.x, y: lane.y, lane: null });
     push({ x: hop.x, y: hop.lane.y, lane: hop.lane.id });
     lane = hop.lane;
   }
-  push(last);
+  push({ ...last });
   return route;
+}
+
+/**
+ * Every way from one spot to another by at most two crossings, shortest
+ * first: along the lane, across at any crossing that joins the two lanes,
+ * or round by another lane and back. `campRoute` is the shortest; the rest
+ * let a figure walk round a lane-mate who is in the way rather than through
+ * them, or wait (camp.ts, the trailhead's line).
+ */
+export function campRoutes(layout: CampLayout, from: CampSpot, to: CampSpot): RoutePoint[][] {
+  const start = laneOf(layout, from.lane);
+  const end = laneOf(layout, to.lane);
+  const first: RoutePoint = { x: from.x, y: start.y, lane: start.id };
+  const last: RoutePoint = { x: to.x, y: end.y, lane: end.id };
+  const crossings = layout.backdrop.crossings;
+  const ways: { cost: number; via: { x: number; lane: CampLane }[] }[] = [];
+  if (start.id === end.id) ways.push({ cost: Math.abs(from.x - to.x), via: [] });
+  for (const c of crossings) {
+    if (start.id === end.id || !c.lanes.includes(start.id) || !c.lanes.includes(end.id)) continue;
+    ways.push({ cost: Math.abs(from.x - c.x) + Math.abs(c.x - to.x), via: [{ x: c.x, lane: end }] });
+  }
+  for (const a of crossings) {
+    if (!a.lanes.includes(start.id)) continue;
+    for (const middleId of a.lanes) {
+      if (middleId === start.id || middleId === end.id) continue;
+      for (const b of crossings) {
+        if (b === a || !b.lanes.includes(middleId) || !b.lanes.includes(end.id)) continue;
+        const cost = Math.abs(from.x - a.x) + Math.abs(a.x - b.x) + Math.abs(b.x - to.x);
+        ways.push({ cost, via: [{ x: a.x, lane: laneOf(layout, middleId) }, { x: b.x, lane: end }] });
+      }
+    }
+  }
+  ways.sort((p, q) => p.cost - q.cost);
+  return ways.map((way) => (way.via.length === 0 && from.x === to.x ? [first] : buildRoute(first, start, way.via, last)));
 }
 
 /**

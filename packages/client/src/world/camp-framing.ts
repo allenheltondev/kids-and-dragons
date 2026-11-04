@@ -28,7 +28,7 @@
 
 import type { CampLayout } from "./camp-layout";
 import { campHeightPx, campMeasure } from "./camp-motion";
-import { DEFAULT_SIZE } from "./figure-scale";
+import { DEFAULT_SIZE, NOMINAL_PAINT, paintAspect } from "./figure-scale";
 
 /** How far below the nearest lane a figure's feet and contact shadow still reach, as a fraction of the canvas. */
 export const GROUND_MARGIN = 0.04;
@@ -219,4 +219,59 @@ export function campBleed(
     top: Math.max(0, at.y),
     bottom: Math.max(0, paneHeight - (at.y + canvas.height * at.scale)),
   };
+}
+
+/** A stretch across the canvas, as fractions of its width. */
+export interface CampSpan {
+  x0: number;
+  x1: number;
+}
+
+/**
+ * The part of the painting a pane `paneWidth` wide shows across at `at`, as
+ * fractions of the canvas width. The painting covers the pane, so on a pane
+ * narrower than 16:9 or one whose window asks for a bigger scale (a phone's
+ * World pane) its sides are cropped, and a figure standing out there would be
+ * cut off by the screen's edge (docs/camp.md §8.6).
+ */
+export function campVisibleSpan(paneWidth: number, at: CampFraming, canvasWidth: number): CampSpan {
+  const width = canvasWidth * at.scale;
+  if (!(width > 0) || !(paneWidth > 0)) return { x0: 0, x1: 1 };
+  return { x0: Math.max(0, -at.x / width), x1: Math.min(1, (paneWidth - at.x) / width) };
+}
+
+/** What is left between a figure and the screen's edge, as a fraction of the canvas width. */
+export const EDGE_MARGIN = 0.006;
+
+/**
+ * A figure's drawn width (its nominal paint, figure-scale.ts), as a fraction
+ * of the canvas width: its true height, on a lane of `laneScale`, at the
+ * camp's figure factor. The measure the trailhead's line is spaced by, and
+ * how far in from the screen's edge a figure must stand to be seen whole.
+ */
+export function campFigureWidth(
+  heightCm: number,
+  laneScale: number,
+  figureScale: number,
+  canvas: { width: number; height: number },
+): number {
+  return (campHeightPx(heightCm, campMeasure(canvas.height)) * laneScale * figureScale * paintAspect(NOMINAL_PAINT)) / canvas.width;
+}
+
+/**
+ * Where on a lane (`lane`, x0..x1, where feet may go) a figure `width` wide
+ * may stand with all of it inside `visible`, `margin` clear of its edges. A
+ * span too narrow for the figure leaves only its middle.
+ */
+export function campStandRange(lane: CampSpan, visible: CampSpan, width: number, margin = EDGE_MARGIN): CampSpan {
+  const lo = Math.max(lane.x0, visible.x0 + width / 2 + margin);
+  const hi = Math.min(lane.x1, visible.x1 - width / 2 - margin);
+  if (lo <= hi) return { x0: lo, x1: hi };
+  const mid = (Math.max(lane.x0, visible.x0) + Math.min(lane.x1, visible.x1)) / 2;
+  return { x0: mid, x1: mid };
+}
+
+/** `x` moved into `range`: a stand point where a figure there is seen whole. */
+export function campStandX(x: number, range: CampSpan): number {
+  return Math.min(range.x1, Math.max(range.x0, x));
 }

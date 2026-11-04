@@ -21,6 +21,12 @@
  * Heroes who tap Ready queue along the trailhead's lane in tap order, behind
  * the trailhead and spaced by their widths (camp-wander.ts `queueSpots`); the
  * line closes up when one steps away, and Begin sends it off front first.
+ * Nobody walks through anybody to get in or out of it (a hero whose way is
+ * blocked waits a beat, or fades), a hero who takes Ready back steps out of
+ * it promptly, and every place in it, like every stand point, is moved in
+ * from an edge the pane crops so the whole hero is on screen (`pointX`,
+ * camp-framing.ts `campVisibleSpan`). A pane showing too little of the lane
+ * for the whole party gets a second row (camp-wander.ts `queuePlaces`).
  *
  * Motion runs on frame time (`frameSeconds`), capped per frame, so a hidden
  * screen picks up where it was instead of replaying what it missed (§8.7).
@@ -40,6 +46,7 @@ import {
 } from "./actor-art";
 import {
   campRoute,
+  campRoutes,
   laneAt,
   laneOf,
   laneScaleAt,
@@ -47,10 +54,12 @@ import {
   standPoint,
   type CampAction,
   type CampFace,
+  type CampLane,
   type CampLayout,
   type CampPartMotion,
   type CampSpot,
   type CampStandPoint,
+  type LaneSweep,
   type RoutePoint,
 } from "./camp-layout";
 import {
@@ -69,11 +78,21 @@ import {
   type CampGait,
   type CampWalk,
 } from "./camp-motion";
-import { createWanderPlanner, queueSpots, type WanderPlace, type WanderPlanner } from "./camp-wander";
+import { CLEARANCE, QUEUE_GAP, createWanderPlanner, queuePlaces, type QueueRow, type WanderPlace, type WanderPlanner } from "./camp-wander";
 import { stanceIdle } from "./idle-motion";
-import { fitCanvas, NOMINAL_PAINT, paintAspect, STANCE_LIFT, STANCE_LIFT_CM } from "./figure-scale";
+import { DEFAULT_SIZE, fitCanvas, NOMINAL_PAINT, paintAspect, STANCE_LIFT, STANCE_LIFT_CM } from "./figure-scale";
 import { reducedMotion } from "../a11y/prefs";
-import { BLEED_SOURCE, campBleed, campFit, campWindow, type CampFraming } from "./camp-framing";
+import {
+  BLEED_SOURCE,
+  campBleed,
+  campFit,
+  campStandRange,
+  campStandX,
+  campVisibleSpan,
+  campWindow,
+  type CampFraming,
+  type CampSpan,
+} from "./camp-framing";
 
 /** Somebody in camp: a hero or a friend. */
 export interface CampFigure {
@@ -171,7 +190,28 @@ const OFF_EDGE = 0.1;
 const SHADOW_SQUASH = 0.28;
 /** How fast the camp eases to a new frame when the panels over it change height. */
 const FRAME_RATE = 4;
-
+/**
+ * A hero who takes back Ready walks out of the line when a lane-mate lets it
+ * (camp-wander.ts `release` soon); one still boxed in after this long, by
+ * heroes who are still lined up, fades out and back in at home (§8.6, rule 3).
+ */
+export const STEP_OUT_S = 2.5;
+/**
+ * A hero walking to its place in the line waits for lane-mates in its way;
+ * one still waiting after this long (a line that must form past somebody who
+ * cannot step aside) fades out, and back in at its place once nobody stands there.
+ */
+export const QUEUE_WAIT_S = 3;
+/** A line place that moved less than this (canvas fractions) is not walked to again. */
+const QUEUE_SETTLE = 0.01;
+/** The longest a fade into the line stays out of sight waiting for its place to clear. */
+const CLEAR_WAIT_S = 20;
+/**
+ * How much of its nominal box a figure's paint fills across: a walker passing
+ * a lane-mate keeps this share of their two widths apart, so their boxes may
+ * brush where the art seldom reaches (a tail, a hoof), never their bodies.
+ */
+export const BOX_FILL = 0.75;
 
 type Place = WanderPlace;
 
@@ -205,9 +245,20 @@ interface Actor {
   action: CampAction | null;
   alpha: number;
   alphaTarget: number;
-  teleport: { place: Place; alpha: number; facing: 1 | -1 | null; then: (() => void) | null } | null;
+  teleport: {
+    place: Place;
+    alpha: number;
+    facing: 1 | -1 | null;
+    then: (() => void) | null;
+    /** Stay out of sight until nobody stands where it reappears, or until this time. */
+    clearBy: number | null;
+  } | null;
   waveStart: number | null;
   releaseAt: number | null;
+  /** Out of the line and waiting to walk off: fades home if still here at this time. */
+  stepOutBy: number | null;
+  /** In the line, but waiting for lane-mates to clear its way there since this time. */
+  queueWaitSince: number | null;
   /** What was left of a hop and lean when a walk was cut short. */
   carryLift: number;
   carryRotation: number;
@@ -389,6 +440,17 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
         const actor = actors.get(id);
         return actor ? planWalk(route, layout.canvas, strideOf(actor), actor.facing).duration : 1;
       },
+      pointX,
+      // Lane-mates keep their drawn widths apart, less the empty corners of a cutout's box.
+      halfWidth: (id, lane) => {
+        const actor = actors.get(id);
+        return actor ? (widthOf(actor, laneOf(layout, lane).scale) / 2) * BOX_FILL : CLEARANCE / 2;
+      },
+      reserved: () => lineStretches,
+      fitRoute: (id, route) => {
+        const actor = actors.get(id);
+        return actor ? fitRoute(actor, route) : route;
+      },
     });
   }
 
@@ -396,7 +458,34 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   // Places
   // ---------------------------------------------------------------------------
 
-  const pointPlace = (point: CampStandPoint): Place => ({ spot: { lane: point.lane, x: point.x }, point: point.id });
+  /**
+   * How wide `actor` is drawn on a lane of `laneScale`, as a fraction of the
+   * canvas width, at the figure factor the camp is easing to (so a place
+   * worked out from it holds still while the factor eases).
+   */
+  function widthOf(actor: Actor, laneScale: number): number {
+    return (actor.heightPx * figureScaleTarget * paintAspect(NOMINAL_PAINT) * laneScale) / W;
+  }
+
+  /** The part of the painting the pane shows across (camp-framing.ts `campVisibleSpan`), where the framing is headed. */
+  function visible(): CampSpan {
+    return framing && pane.width > 0 ? campVisibleSpan(pane.width, framing, W) : { x0: 0, x1: 1 };
+  }
+
+  /**
+   * Where a stand point is on this screen: as authored, or moved in from a
+   * cropped edge far enough that the widest figure in camp stands there whole
+   * (§8.6). On a TV only the trailhead's end is ever near an edge; a phone's
+   * World pane crops both sides.
+   */
+  function pointX(point: CampStandPoint): number {
+    const lane = laneOf(layout, point.lane);
+    let widest = (campHeightPx(DEFAULT_SIZE.heightCm, measure) * figureScaleTarget * paintAspect(NOMINAL_PAINT) * lane.scale) / W;
+    for (const a of actors.values()) if (!a.removing) widest = Math.max(widest, widthOf(a, lane.scale));
+    return campStandX(point.x, campStandRange(lane, visible(), widest));
+  }
+
+  const pointPlace = (point: CampStandPoint): Place => ({ spot: { lane: point.lane, x: pointX(point) }, point: point.id });
 
   /** Stand points somebody stands at or is headed to, other than `except`. */
   function heldPoints(except?: Actor): Set<string> {
@@ -415,14 +504,43 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     return held;
   }
 
-  /** A hero's own bedroll, or for a friend (or a hero with no bedroll free) the first free point. */
+  /** Whether a figure standing at `place` would stand in the trailhead's line. */
+  function inLine(actor: Actor, place: Place): boolean {
+    const half = widthOf(actor, laneOf(layout, place.spot.lane).scale) / 2;
+    return lineStretches.some((s) => s.lane === place.spot.lane && place.spot.x + half >= s.lo && place.spot.x - half <= s.hi);
+  }
+
+  /**
+   * A hero's own bedroll, or for a friend (or a hero with no bedroll free) the
+   * first free point. A bedroll the trailhead's line has grown over is not
+   * free either: its hero goes to a free spot until the line moves off.
+   */
   function homeOf(actor: Actor): Place {
     const points = layout.frame.standPoints;
     const own = actor.def.seat === undefined ? undefined : points.find((p) => p.seat === actor.def.seat);
-    if (own) return pointPlace(own);
+    if (own && !inLine(actor, pointPlace(own))) return pointPlace(own);
     const held = heldPoints(actor);
-    const free = points.find((p) => p.seat === undefined && !held.has(p.id)) ?? points.find((p) => !held.has(p.id));
+    const open = (p: CampStandPoint) => !held.has(p.id) && p.seat === undefined && !inLine(actor, pointPlace(p));
+    const free = points.find(open) ?? own ?? points.find((p) => !held.has(p.id));
     return free ? pointPlace(free) : { spot: { ...layout.frame.trailhead }, point: null };
+  }
+
+  /**
+   * Where a hero leaving the line by a fade reappears: home (`homeOf`) if
+   * nobody stands or is walking there, otherwise the nearest free stand point
+   * that is clear, so it is not kept out of sight while a lane-mate passes.
+   */
+  function fadeHome(actor: Actor): Place {
+    const home = homeOf(actor);
+    if (bodiesClear(actor, home, true)) return home;
+    const held = heldPoints(actor);
+    const here = actor.x / W;
+    const other = layout.frame.standPoints
+      .filter((p) => p.seat === undefined && !held.has(p.id))
+      .map(pointPlace)
+      .filter((place) => !inLine(actor, place) && bodiesClear(actor, place, true))
+      .sort((a, b) => Math.abs(a.spot.x - here) - Math.abs(b.spot.x - here));
+    return other[0] ?? home;
   }
 
   /** Where the trail leaves camp, and which way. */
@@ -434,42 +552,246 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   /** Heroes who tapped Ready, in the order they tapped (§8.5). */
   const queue: string[] = [];
 
-  /** How wide a figure stands on the trailhead's lane, as a fraction of the canvas width. */
-  function widthOnTrail(actor: Actor): number {
-    const lane = laneOf(layout, layout.frame.trailhead.lane);
-    return (actor.heightPx * figureScale * paintAspect(NOMINAL_PAINT) * lane.scale) / W;
+  /** The stretches of lane the line stands in, a row to a lane: nobody wanders into them. */
+  let lineStretches: LaneSweep[] = [];
+
+  /**
+   * The lanes the line may stand on: the trailhead's, then (when the pane
+   * shows too little of it for the whole party) the next lane back, and on.
+   */
+  const lineLanes = (() => {
+    const trail = laneOf(layout, layout.frame.trailhead.lane);
+    const rest = [...layout.lanes.values()].filter((lane) => lane.id !== trail.id);
+    rest.sort((a, b) => Number(a.y > trail.y) - Number(b.y > trail.y) || Math.abs(a.y - trail.y) - Math.abs(b.y - trail.y));
+    return [trail, ...rest];
+  })();
+
+  /** Where an actor is, or is headed: the end of its walk or its fade. */
+  function headedOf(actor: Actor): CampSpot | null {
+    if (actor.teleport) return actor.teleport.place.spot;
+    if (actor.walk) return actor.walkTo?.spot ?? null;
+    return actor.lane ? { lane: actor.lane, x: actor.x / W } : null;
   }
 
-  /** Walk everyone in the queue to their place in it: the first at the trailhead, the rest behind. */
-  function requeue(): void {
+  /**
+   * Everybody standing on `lane` who is not in the line, or walking to a
+   * place on it: the line steps round them (camp-wander.ts `queueSpots`),
+   * never into them.
+   */
+  function lineObstacles(line: readonly Actor[], lane: CampLane): { x: number; width: number }[] {
+    const out: { x: number; width: number }[] = [];
+    for (const a of actors.values()) {
+      if (a.removing || a.leaving || line.includes(a)) continue;
+      const at = headedOf(a);
+      if (at?.lane === lane.id) out.push({ x: at.x, width: widthOf(a, lane.scale) });
+    }
+    return out;
+  }
+
+  /** What is left of an actor's walk, from where it is now (canvas px, as `CampWalk.points`). */
+  function walkAhead(actor: Actor): { x: number; y: number; lane: string | null }[] {
+    const points = actor.walk?.points ?? [];
+    for (let i = 1; i < points.length; i++) {
+      const p = points[i - 1]!;
+      const q = points[i]!;
+      const onX = actor.x >= Math.min(p.x, q.x) - 0.5 && actor.x <= Math.max(p.x, q.x) + 0.5;
+      const onY = actor.y >= Math.min(p.y, q.y) - 0.5 && actor.y <= Math.max(p.y, q.y) + 0.5;
+      if (onX && onY) return [{ x: actor.x, y: actor.y, lane: null }, ...points.slice(i)];
+    }
+    return points;
+  }
+
+  /**
+   * Whether nobody else can be seen standing on `place`'s lane where `actor`
+   * would stand at it, nor will walk through it: where a fade may put it back
+   * in view. `ahead`: judge a figure that is fading somewhere else by where it
+   * will be, not where it is (choosing a place, rather than appearing in it).
+   */
+  function bodiesClear(actor: Actor, place: Place, ahead = false): boolean {
+    const lane = laneOf(layout, place.spot.lane);
+    const mine = widthOf(actor, lane.scale);
+    const x = place.spot.x;
+    for (const a of actors.values()) {
+      if (a === actor || a.removing) continue;
+      const gap = (mine + widthOf(a, lane.scale)) / 2;
+      const body = ahead && a.teleport ? a.teleport.place.spot : a.alpha < 0.02 ? null : a.lane ? { lane: a.lane, x: a.x / W } : null;
+      if (body?.lane === lane.id && Math.abs(body.x - x) < gap) return false;
+      // Nor where somebody walking has still to pass: it would walk through the new arrival.
+      const points = walkAhead(a);
+      for (let i = 1; i < points.length; i++) {
+        const p = points[i - 1]!;
+        const q = points[i]!;
+        if (Math.abs(p.y - lane.y * H) > 0.5 || Math.abs(q.y - lane.y * H) > 0.5) continue;
+        if (x > Math.min(p.x, q.x) / W - gap && x < Math.max(p.x, q.x) / W + gap) return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Walk everyone in the queue to their place in it: the first at the
+   * trailhead, the rest behind, all of them on screen. Run every frame, so
+   * every Ready of a frame is lined up at once in tap order, and the line
+   * closes up once whoever stood in it has gone. Nobody walks through a
+   * lane-mate to get there (§8.6, rule 4): a hero whose every way is blocked
+   * waits, nudging whoever is idling in it, and one still waiting after
+   * `QUEUE_WAIT_S` (two heroes who must swap places, say) fades out, and back
+   * in at its place once nobody stands there.
+   *
+   * A pane that shows too little of the trailhead's lane for the whole party
+   * gets a second row on the next lane back (camp-wander.ts `queuePlaces`).
+   *
+   * `move` false only works out where the line stands (`lineStretches`), as a
+   * moment does before the next frame sends anybody anywhere.
+   */
+  function requeue(move = true): void {
     const t = layout.frame.trailhead;
-    const lane = laneOf(layout, t.lane);
+    const side = trailOut().side;
     const line = queue.map((id) => actors.get(id)).filter((a): a is Actor => a !== undefined && !a.removing);
-    const spots = queueSpots(t.x, trailOut().side, line.map(widthOnTrail), lane);
-    line.forEach((actor, i) => {
-      const x = spots[i]!;
-      const headed = actor.teleport?.place.spot ?? actor.walkTo?.spot ?? { lane: actor.lane, x: actor.x / W };
-      if (headed.lane === t.lane && Math.abs(headed.x - x) < 1e-6) return;
-      direct(actor, { spot: { lane: t.lane, x }, point: null }, { face: trailOut().side });
+    const rows: QueueRow[] = lineLanes.map((lane) => ({
+      lane: lane.id,
+      x0: lane.x0,
+      x1: lane.x1,
+      widths: line.map((a) => widthOf(a, lane.scale)),
+      obstacles: lineObstacles(line, lane),
+    }));
+    const places = queuePlaces(t.x, side, rows, QUEUE_GAP, visible());
+    lineStretches = [];
+    places.forEach((place, i) => {
+      const half = widthOf(line[i]!, laneOf(layout, place.lane).scale) / 2;
+      const row = lineStretches.find((s) => s.lane === place.lane);
+      if (row) {
+        row.lo = Math.min(row.lo, place.x - half);
+        row.hi = Math.max(row.hi, place.x + half);
+      } else lineStretches.push({ lane: place.lane, lo: place.x - half, hi: place.x + half });
     });
+    if (!move) return;
+    line.forEach((actor, i) => {
+      const { lane, x } = places[i]!;
+      const headed = headedOf(actor);
+      if (headed?.lane === lane && Math.abs(headed.x - x) < QUEUE_SETTLE) {
+        actor.queueWaitSince = null;
+        if (actor.point && !actor.walk && !actor.teleport) {
+          // Already standing about where its place is: it stops resting there and turns to the trail.
+          actor.point = null;
+          actor.action = null;
+          actor.facing = side;
+          planner.direct(actor.def.id, { spot: headed, point: null }, null, 0);
+        }
+        return;
+      }
+      const to: Place = { spot: { lane, x }, point: null };
+      if (still || actor.alpha < 0.05 || actor.teleport) {
+        actor.queueWaitSince = null;
+        direct(actor, to, { face: side, fade: true, waitClear: true });
+        return;
+      }
+      const way = clearWay(actor, to.spot);
+      if (way.route) {
+        actor.queueWaitSince = null;
+        direct(actor, to, { face: side, route: way.route });
+        return;
+      }
+      for (const id of way.blockers) planner.nudge(id);
+      actor.queueWaitSince ??= elapsed;
+      if (elapsed - actor.queueWaitSince < QUEUE_WAIT_S) return;
+      // Waited long enough for a lane that will not clear: out, and back in at its place.
+      actor.queueWaitSince = null;
+      direct(actor, to, { face: side, fade: true, waitClear: true });
+    });
+  }
+
+  /**
+   * The shortest way from where `actor` is to `to` that passes through nobody
+   * (camp-layout.ts `campRoutes`, camp-wander.ts `blockers`), round by another
+   * lane if need be; or, with every way blocked, who blocks the shortest.
+   */
+  function clearWay(actor: Actor, to: CampSpot): { route: RoutePoint[] | null; blockers: string[] } {
+    let blockers: string[] | null = null;
+    for (const route of routesFrom(actor, to)) {
+      const inWay = planner.blockers(actor.def.id, route);
+      if (inWay.length === 0) return { route, blockers: [] };
+      blockers ??= inWay;
+    }
+    return { route: null, blockers: blockers ?? [] };
+  }
+
+  /**
+   * A figure standing where the screen now cuts it off (the pane was resized,
+   * or a wider hero sat down) fades out and back in where it is seen whole
+   * (§8.6, rule 3): at its stand point as this screen places it, or along its
+   * lane. The line is `requeue`'s.
+   */
+  function keepOnScreen(actor: Actor): void {
+    if (actor.walk || actor.teleport || !actor.lane || queue.includes(actor.def.id)) return;
+    const lane = laneOf(layout, actor.lane);
+    const range = campStandRange(lane, visible(), widthOf(actor, lane.scale));
+    const x = actor.x / W;
+    if (x >= range.x0 - 1e-3 && x <= range.x1 + 1e-3) return;
+    const point = actor.point ? standPoint(layout, actor.point) : undefined;
+    const to: Place = point ? pointPlace(point) : { spot: { lane: lane.id, x: campStandX(x, range) }, point: null };
+    const wasDirected = planner.snapshot(actor.def.id)?.mode === "directed";
+    const alpha = actor.alphaTarget > 0 ? actor.alphaTarget : 1;
+    const face = actor.facing;
+    const stepping = actor.stepOutBy;
+    direct(actor, to, { fade: true, waitClear: true, alpha, face, ...(wasDirected ? {} : { then: () => planner.release(actor.def.id) }) });
+    actor.stepOutBy = stepping;
+  }
+
+  /**
+   * Take an actor out of wandering where it is: standing, or on the walk it
+   * is on (the planner keeps that walk's stretch of lane reserved).
+   */
+  function holdForMoment(actor: Actor): void {
+    const id = actor.def.id;
+    if (actor.walk && actor.walkTo) {
+      const remaining = Math.max(0, actor.walkStart + actor.walk.duration - elapsed);
+      const route = actor.walk.points.map((p) => ({ x: p.x / W, y: p.y / H, lane: p.lane }));
+      planner.direct(id, actor.walkTo, route, remaining);
+      return;
+    }
+    const at = actor.teleport?.place ?? { spot: { lane: actor.lane ?? layout.frame.trailhead.lane, x: actor.x / W }, point: actor.point };
+    planner.direct(id, at, null, 0);
+  }
+
+  /**
+   * Out of the line: back to wandering after a beat, to the nearest free spot
+   * whose way is clear (camp-wander.ts `release` soon). Still boxed in by the
+   * heroes lined up after `STEP_OUT_S`, it fades home instead (`tick`).
+   */
+  function stepOut(actor: Actor): void {
+    if (actor.removing || queue.includes(actor.def.id)) return;
+    planner.release(actor.def.id, { soon: true });
+    actor.stepOutBy = elapsed + STEP_OUT_S;
   }
 
   function leaveQueue(actor: Actor): void {
     const at = queue.indexOf(actor.def.id);
     if (at < 0) return;
     queue.splice(at, 1);
-    requeue();
+    requeue(false);
   }
 
   /** A route from where the actor stands now, even mid-crossing. */
   function routeFrom(actor: Actor, to: CampSpot): RoutePoint[] | null {
     const here = actor.x / W;
-    if (actor.lane) return campRoute(layout, { lane: actor.lane, x: here }, to);
+    if (actor.lane) {
+      const route = campRoute(layout, { lane: actor.lane, x: here }, to);
+      return route ? fitRoute(actor, route) : null;
+    }
     // Between lanes on a crossing: carry on to the nearest lane, then go.
     const lanes = [...layout.lanes.values()];
     const nearest = lanes.reduce((a, b) => (Math.abs(b.y * H - actor.y) < Math.abs(a.y * H - actor.y) ? b : a));
     const rest = campRoute(layout, { lane: nearest.id, x: here }, to);
-    return rest ? [{ x: here, y: actor.y / H, lane: null }, ...rest] : null;
+    return rest ? fitRoute(actor, [{ x: here, y: actor.y / H, lane: null }, ...rest]) : null;
+  }
+
+  /** Every way from where the actor stands now, shortest first (`routeFrom`'s, and the ways round). */
+  function routesFrom(actor: Actor, to: CampSpot): RoutePoint[][] {
+    const here = actor.x / W;
+    if (actor.lane) return campRoutes(layout, { lane: actor.lane, x: here }, to).map((route) => fitRoute(actor, route));
+    const only = routeFrom(actor, to);
+    return only ? [only] : [];
   }
 
   // ---------------------------------------------------------------------------
@@ -574,6 +896,8 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
       teleport: null,
       waveStart: null,
       releaseAt: null,
+      stepOutBy: null,
+      queueWaitSince: null,
       carryLift: 0,
       carryRotation: 0,
       lastLift: 0,
@@ -595,6 +919,19 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   }
 
   /** Walk an actor along `route` to `to`, starting `delay` seconds from now. */
+  /**
+   * A route's corners (its crossings) moved in from an edge the pane crops,
+   * so a figure changing lanes there is still seen whole. Its two ends stay:
+   * where the figure is, and where it is going (already placed on screen).
+   */
+  function fitRoute(actor: Actor, route: RoutePoint[]): RoutePoint[] {
+    if (route.length < 3) return route;
+    const span = visible();
+    const scale = Math.max(...[...layout.lanes.values()].map((lane) => lane.scale));
+    const range = campStandRange({ x0: 0, x1: 1 }, span, widthOf(actor, scale));
+    return route.map((p, i) => (i === 0 || i === route.length - 1 ? p : { ...p, x: campStandX(p.x, range) }));
+  }
+
   function startWalk(actor: Actor, route: RoutePoint[], to: Place, startedAt = elapsed): void {
     // Whatever hop or lean was under way eases out rather than snapping.
     actor.carryLift = actor.lastLift;
@@ -608,11 +945,18 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   }
 
   /** Be somewhere else at once: fade out, move, fade back in (§8.6, rule 3). */
-  function teleport(actor: Actor, place: Place, alpha: number, face: 1 | -1 | null, then: (() => void) | null = null): void {
+  function teleport(
+    actor: Actor,
+    place: Place,
+    alpha: number,
+    face: 1 | -1 | null,
+    then: (() => void) | null = null,
+    waitClear = false,
+  ): void {
     actor.walk = null;
     actor.walkTo = null;
     actor.onArrive = null;
-    actor.teleport = { place, alpha, facing: face, then };
+    actor.teleport = { place, alpha, facing: face, then, clearBy: waitClear ? elapsed + CLEAR_WAIT_S : null };
     actor.alphaTarget = 0;
     actor.waveStart = null;
   }
@@ -621,16 +965,28 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   function direct(
     actor: Actor,
     to: Place,
-    opts: { alpha?: number; face?: 1 | -1 | null; delay?: number; then?: () => void } = {},
+    opts: {
+      alpha?: number;
+      face?: 1 | -1 | null;
+      delay?: number;
+      then?: () => void;
+      /** By a fade, never a walk. */
+      fade?: boolean;
+      /** A fade that reappears only once nobody stands there (`bodiesClear`). */
+      waitClear?: boolean;
+      /** The way to walk, when the caller has chosen one (`clearWay`). */
+      route?: RoutePoint[];
+    } = {},
   ): void {
     actor.releaseAt = null;
+    actor.stepOutBy = null;
     actor.leaving = false;
     actor.arriveFacing = opts.face ?? null;
     const alpha = opts.alpha ?? 1;
-    const route = still ? null : routeFrom(actor, to.spot);
+    const route = still || opts.fade ? null : opts.route ?? routeFrom(actor, to.spot);
     if (!route || actor.alpha < 0.05) {
       planner.direct(actor.def.id, to, null, 0);
-      teleport(actor, to, alpha, opts.face ?? null, opts.then ?? null);
+      teleport(actor, to, alpha, opts.face ?? null, opts.then ?? null, opts.waitClear ?? false);
       return;
     }
     actor.teleport = null;
@@ -664,7 +1020,8 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
 
   function tickActor(actor: Actor, dt: number): void {
     // Fading somewhere else: move only once nobody can see it go.
-    if (actor.teleport && actor.alpha < 0.02) {
+    const clearing = actor.teleport?.clearBy ?? null;
+    if (actor.teleport && actor.alpha < 0.02 && (clearing === null || elapsed >= clearing || bodiesClear(actor, actor.teleport.place))) {
       const { place, alpha, facing, then } = actor.teleport;
       actor.teleport = null;
       placeAt(actor, place, facing);
@@ -781,6 +1138,20 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
       }
     }
 
+    requeue();
+    for (const actor of actors.values()) {
+      if (actor.removing || actor.leaving) continue;
+      if (actor.stepOutBy !== null) {
+        if (actor.walk || actor.teleport) actor.stepOutBy = null;
+        else if (elapsed >= actor.stepOutBy) {
+          // Still boxed in by heroes who are lined up: out of the line by a fade, home.
+          actor.stepOutBy = null;
+          direct(actor, fadeHome(actor), { fade: true, waitClear: true, then: () => planner.release(actor.def.id) });
+        }
+      }
+      keepOnScreen(actor);
+    }
+
     for (const actor of [...actors.values()]) {
       tickActor(actor, dt);
       if (actor.removing && actor.alpha < 0.02) {
@@ -821,7 +1192,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
         actor.teleport = null;
       }
     }
-    requeue();
+    requeue(false);
     for (const def of figures) {
       const actor = actors.get(def.id);
       if (!actor) {
@@ -924,25 +1295,41 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
       }
       case "ready":
         if (queue.includes(actor.def.id)) return;
+        actor.stepOutBy = null;
         queue.push(actor.def.id);
-        requeue();
+        // Out of wandering from now, even while it waits its turn to walk to the line.
+        holdForMoment(actor);
+        requeue(false);
         return;
       case "unready": {
-        // Out of the line, and back to wandering from where they are headed.
+        // Out of the line, and back to wandering: promptly, and through nobody.
         if (!queue.includes(actor.def.id)) return;
         leaveQueue(actor);
-        const here: Place = actor.walkTo ?? { spot: { lane: actor.lane ?? layout.frame.trailhead.lane, x: actor.x / W }, point: actor.point };
+        actor.queueWaitSince = null;
+        const id = actor.def.id;
+        if (still || actor.alpha < 0.05 || actor.teleport) {
+          direct(actor, fadeHome(actor), { fade: true, waitClear: true, then: () => planner.release(id) });
+          return;
+        }
         if (actor.walk) {
-          planner.direct(actor.def.id, here, null, Math.max(0, actor.walkStart + actor.walk.duration - elapsed));
+          // On the way to the line: home from here if the way is clear, else on to
+          // where it was going and out of the line from there.
+          const home = homeOf(actor);
+          const way = clearWay(actor, home.spot);
+          if (way.route) {
+            direct(actor, home, { route: way.route, then: () => planner.release(id) });
+            return;
+          }
+          holdForMoment(actor);
           const chained = actor.onArrive;
           actor.onArrive = () => {
             chained?.();
-            planner.release(actor.def.id);
+            stepOut(actor);
           };
-        } else {
-          planner.direct(actor.def.id, here, null, 0);
-          planner.release(actor.def.id);
+          return;
         }
+        holdForMoment(actor);
+        stepOut(actor);
         return;
       }
       case "away":

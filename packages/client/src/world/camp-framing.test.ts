@@ -10,19 +10,25 @@ import { describe, expect, it } from "vitest";
 import manifest from "../../../../assets/manifest.json";
 import { campLayout, parseCampManifest } from "./camp-layout";
 import {
+  EDGE_MARGIN,
   GROUND_MARGIN,
   MIN_FIGURE_SCALE,
   campBleed,
   campFigureScale,
   campFit,
   campFocusBand,
+  campFigureWidth,
   campFraming,
+  campStandRange,
+  campStandX,
+  campVisibleSpan,
   campWindow,
   type CampBand,
   type CampFraming,
   type CampWindow,
 } from "./camp-framing";
 import { HERO_SHARE, campHeightPx, campMeasure } from "./camp-motion";
+import { QUEUE_GAP, queuePlaces, queueSpots } from "./camp-wander";
 import { FIGURE_SIZES } from "./figure-sizes";
 
 const layout = campLayout(parseCampManifest((manifest as { camp: unknown }).camp), "open_plains", 1);
@@ -320,5 +326,100 @@ describe("the figures' factor", () => {
     expect(k(1280, 720, 65, 352, THREE)).toBeCloseTo(0.983, 3);
     expect(k(1280, 720, 65, 446, FOUR)).toBe(MIN_FIGURE_SCALE);
     expect(k(390, 668, 35, 348, FOUR)).toBe(1);
+  });
+});
+
+/**
+ * Every place a figure can stand, seen whole (docs/camp.md §8.6): the
+ * painting covers the pane, so a pane narrower than 16:9 (a 1024 × 600 TV)
+ * or one whose window asks for a bigger scale (a phone's World pane) crops its
+ * sides, and the trailhead at x 0.95 put a bigfoot at the front of the line
+ * half off a 16:9 TV's edge. Stand points and the line's places are moved in
+ * from a cropped edge by the figure's width (camp.ts `pointX`, camp-wander.ts
+ * `queueSpots`), so at every size, for every lobby and every order the party
+ * readies in, each one lies inside the visible span, figure width included.
+ */
+describe("the places a figure stands, on screen", () => {
+  const cm = (species: string) => FIGURE_SIZES[`characters/${species}`]![0];
+  const PARTY = [cm("unicorn"), cm("griffin"), cm("dragonling"), cm("bigfoot")];
+  const MARGIN = 1e-9;
+  const SIZES = [
+    ["a 1024 × 600 TV", 1024, 600, 55, 372],
+    ["a 1280 × 720 TV", 1280, 720, 65, 446],
+    ["a 1920 × 1080 TV", 1920, 1080, 98, 669],
+    ["a 390 × 844 phone's World pane", 390, 668, 35, 348],
+  ] as const;
+
+  /** All orders of a list. */
+  const orders = <T>(items: readonly T[]): T[][] =>
+    items.length <= 1 ? [items.slice()] : items.flatMap((item, i) => orders([...items.slice(0, i), ...items.slice(i + 1)]).map((rest) => [item, ...rest]));
+
+  for (const [name, w, h, top, measuredBottom] of SIZES) {
+    it(`keeps every stand point and every place in the line inside ${name}'s visible span`, () => {
+      // The lobby as measured, and every other height its panels could take.
+      for (const bottom of [measuredBottom, ...Array.from({ length: Math.floor((h * 0.75) / 8) }, (_, i) => i * 8)]) {
+        const fit = campFit(w, campWindow(h, top, bottom), layout, PARTY);
+        const span = campVisibleSpan(w, fit.framing, canvas.width);
+        const inside = (x: number, width: number, what: string) => {
+          expect(x - width / 2, `${name}, panels ${bottom}px: ${what} cut off on the left`).toBeGreaterThanOrEqual(span.x0 - MARGIN);
+          expect(x + width / 2, `${name}, panels ${bottom}px: ${what} cut off on the right`).toBeLessThanOrEqual(span.x1 + MARGIN);
+        };
+
+        for (const point of layout.frame.standPoints) {
+          const lane = layout.lanes.get(point.lane)!;
+          const widest = Math.max(...PARTY.map((heightCm) => campFigureWidth(heightCm, lane.scale, fit.figureScale, canvas)));
+          const x = campStandX(point.x, campStandRange(lane, span, widest));
+          inside(x, widest, point.id);
+          // Never off the ground either, and only moved when the edge made it.
+          expect(x).toBeGreaterThanOrEqual(lane.x0);
+          expect(x).toBeLessThanOrEqual(lane.x1);
+          if (point.x - widest / 2 - EDGE_MARGIN >= span.x0 && point.x + widest / 2 + EDGE_MARGIN <= span.x1) expect(x).toBe(point.x);
+        }
+
+        // The line: the trailhead's lane first, then the lanes behind it (camp.ts `lineLanes`).
+        const trail = layout.frame.trailhead;
+        const front = layout.lanes.get(trail.lane)!;
+        const lanes = [front, ...[...layout.lanes.values()].filter((l) => l.y < front.y).sort((a, b) => b.y - a.y)];
+        for (const order of orders(PARTY)) {
+          const width = (heightCm: number, laneId: string) =>
+            campFigureWidth(heightCm, layout.lanes.get(laneId)!.scale, fit.figureScale, canvas);
+          const rows = lanes.map((lane) => ({ lane: lane.id, x0: lane.x0, x1: lane.x1, widths: order.map((heightCm) => width(heightCm, lane.id)) }));
+          const places = queuePlaces(trail.x, 1, rows, QUEUE_GAP, span);
+          expect(places).toHaveLength(order.length);
+          places.forEach((place, i) => {
+            inside(place.x, width(order[i]!, place.lane), `place ${i} in the line`);
+            // Behind the one before it in its row, nobody inside anybody.
+            const before = places.slice(0, i).filter((p) => p.lane === place.lane).at(-1);
+            if (before) {
+              const j = places.indexOf(before);
+              const room = (width(order[j]!, place.lane) + width(order[i]!, place.lane)) / 2 + QUEUE_GAP;
+              expect(before.x - place.x, `${name}, panels ${bottom}px: place ${i} inside place ${j}`).toBeGreaterThanOrEqual(room - 1e-9);
+            }
+          });
+          // The front stands at the trailhead whenever the whole of the hero fits there.
+          if (trail.x + rows[0]!.widths[0]! / 2 + EDGE_MARGIN <= span.x1) expect(places[0]).toEqual({ lane: trail.lane, x: trail.x });
+          // The measured lobbies hold the whole party in one row.
+          if (bottom === measuredBottom) expect(places.every((p) => p.lane === trail.lane), `${name}: one row`).toBe(true);
+        }
+      }
+    });
+  }
+
+  it("runs the line on behind a trailhead the pane crops, and steps round whoever is in its way", () => {
+    const span = { x0: 0.2, x1: 0.8 };
+    const lane = { x0: 0.04, x1: 0.97 };
+    const widths = [0.1, 0.08, 0.12];
+    const spots = queueSpots(0.95, 1, widths, lane, QUEUE_GAP, span);
+    expect(spots[0]).toBeCloseTo(0.8 - 0.05 - EDGE_MARGIN, 9);
+    expect(spots[0]! - spots[1]!).toBeCloseTo(0.09 + QUEUE_GAP, 9);
+    // A hero resting at a bedroll in the line's way: the line steps round them.
+    const resting = { x: spots[1]!, width: 0.08 };
+    const round = queueSpots(0.95, 1, widths, lane, QUEUE_GAP, span, [resting]);
+    expect(round[0]).toBe(spots[0]);
+    expect(Math.abs(round[1]! - resting.x)).toBeGreaterThanOrEqual((widths[1]! + resting.width) / 2 + QUEUE_GAP - 1e-9);
+    expect(round[1]!).toBeLessThan(resting.x);
+    // A line wider than the whole span bunches at its far end, never off the screen.
+    const long = queueSpots(0.95, 1, [0.3, 0.3, 0.3], lane, QUEUE_GAP, span);
+    for (const x of long) expect(x - 0.15).toBeGreaterThanOrEqual(span.x0 + EDGE_MARGIN - 1e-9);
   });
 });

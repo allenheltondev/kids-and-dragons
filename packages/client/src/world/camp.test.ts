@@ -15,7 +15,7 @@ import { createCamp, type CampFigure, type CampFigureView, type CampStage } from
 import { ANCHOR_X, ANCHOR_Y } from "./actor-art";
 import { laneAt, pieceHeightCm, standPoint } from "./camp-layout";
 import { MAX_FRAME_S, campHeightPx, campMeasure } from "./camp-motion";
-import { MIN_FIGURE_SCALE, campFit, campWindow } from "./camp-framing";
+import { EDGE_MARGIN, MIN_FIGURE_SCALE, campFigureWidth, campFit, campWindow } from "./camp-framing";
 import { fitCanvas } from "./figure-scale";
 import { MAX_WALKERS } from "./camp-wander";
 
@@ -61,14 +61,29 @@ function frames(app: FakeApp, stage: CampStage, seconds: number, ms = 16, check?
   }
 }
 
-/** Nothing slides (§8.6, rule 1): a standing figure's travel is all in hops, moments included. */
+/**
+ * Nothing slides (§8.6, rule 1): a standing figure's travel is all in hops,
+ * moments included. A figure that has to be somewhere else at once fades out
+ * and back in (rule 3), so it may move only while nobody can see it.
+ */
 function noSlide(prev: Map<string, CampFigureView>, next: Map<string, CampFigureView>): void {
   for (const [id, now] of next) {
     const was = prev.get(id);
     if (!was || CREW.find((f) => f.id === id)?.stance !== "standing") continue;
     const moved = Math.hypot(now.x - was.x, now.y - was.y);
-    if (moved > 1e-6) expect(was.airborne || now.airborne, `${id} slid ${moved}px`).toBe(true);
+    if (moved > 1e-6 && was.alpha >= 0.02) expect(was.airborne || now.airborne, `${id} slid ${moved}px`).toBe(true);
   }
+}
+
+/**
+ * Where a hero at the front of the line stands, in canvas px: at the
+ * trailhead, or moved in from the screen's edge so all of them is on it.
+ */
+function frontX(id: string, figureScale = 1): number {
+  const hero = CREW.find((f) => f.id === id)!;
+  const lane = layout.lanes.get(layout.frame.trailhead.lane)!;
+  const width = campFigureWidth(hero.heightCm, lane.scale, figureScale, layout.canvas);
+  return Math.min(layout.frame.trailhead.x, lane.x1, 1 - width / 2 - EDGE_MARGIN) * W;
 }
 
 describe("the camp stage", () => {
@@ -198,13 +213,13 @@ describe("the camp stage", () => {
     frames(app, c, 40, 16, noSlide);
     const hero = c.figures().find((f) => f.id === "hero-1")!;
     const t = layout.frame.trailhead;
-    expect(hero.x).toBeCloseTo(t.x * W);
+    expect(hero.x).toBeCloseTo(frontX("hero-1"));
     expect(hero.lane).toBe(t.lane);
     // Facing right, down the trail: art drawn facing left is flipped.
     expect(hero.artScaleX).toBe(-1);
     // And waits there: a moment's figure does not wander off again.
     frames(app, c, 60);
-    expect(c.figures().find((f) => f.id === "hero-1")!.x).toBeCloseTo(t.x * W);
+    expect(c.figures().find((f) => f.id === "hero-1")!.x).toBeCloseTo(frontX("hero-1"));
     c.destroy();
   });
 
@@ -219,7 +234,7 @@ describe("the camp stage", () => {
     frames(app, c, 60, 16, noSlide);
     const t = layout.frame.trailhead;
     const xs = order.map((id) => c.figures().find((f) => f.id === id)!.x);
-    expect(xs[0]).toBeCloseTo(t.x * W);
+    expect(xs[0]).toBeCloseTo(frontX("hero-2"));
     for (let i = 1; i < xs.length; i++) {
       // Behind the one before (away from the edge it leaves by), with room between them.
       expect(xs[i]!).toBeLessThan(xs[i - 1]! - 0.03 * W);
@@ -344,15 +359,15 @@ describe("the camp in the lobby (#614)", () => {
     c.moment("ready", "hero-2");
     frames(app, c, 40, 16, noSlide);
     const t = layout.frame.trailhead;
-    expect(c.figures().find((f) => f.id === "hero-1")!.x).toBeCloseTo(t.x * W);
+    expect(c.figures().find((f) => f.id === "hero-1")!.x).toBeCloseTo(frontX("hero-1"));
     c.moment("unready", "hero-1");
     // The line closes up: the second hero takes the front.
     frames(app, c, 40, 16, noSlide);
-    expect(c.figures().find((f) => f.id === "hero-2")!.x).toBeCloseTo(t.x * W);
+    expect(c.figures().find((f) => f.id === "hero-2")!.x).toBeCloseTo(frontX("hero-2"));
     // And the first wanders off again in time, where a lined-up hero would stand forever.
     let left = false;
     frames(app, c, 90, 16, (_, next) => {
-      if (Math.abs(next.get("hero-1")!.x - t.x * W) > 1) left = true;
+      if (Math.abs(next.get("hero-1")!.x - frontX("hero-1")) > 1) left = true;
     });
     expect(left).toBe(true);
     c.destroy();
@@ -541,7 +556,7 @@ describe("the camp in reduced motion (§8.7)", () => {
     const hero = c.figures().find((f) => f.id === "hero-1")!;
     expect(lowest).toBeLessThan(0.02);
     expect(hero.x).not.toBe(bed.x);
-    expect(hero.x).toBeCloseTo(layout.frame.trailhead.x * W);
+    expect(hero.x).toBeCloseTo(frontX("hero-1"));
     expect(hero.alpha).toBeGreaterThan(0.95);
     c.destroy();
   });
