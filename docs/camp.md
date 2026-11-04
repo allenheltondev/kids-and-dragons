@@ -287,6 +287,23 @@ Rules, borrowed from what already works for XP:
   for an awning. The TV and phones never show the two side by side.
 - **Kept on a failed campaign**, with the rest of the camp (§1).
 
+### 5.3 The first reward comes in the first session
+
+*Decided:* children see something that is theirs in their very first session, so the camp's
+purpose is clear before anyone has to wait. Frame growth takes a whole campaign, and Dash Cash
+takes a couple of chapters to buy anything, so neither can be the first reward.
+
+- **A personal choice at the first downtime moment.** The first time a hero is seated with a crew
+  that has a camp, their kid picks their own space's style and color (§4.5) from the free catalog
+  (§12.1). It takes one tap, can be skipped, and is the first thing the camp asks of anyone.
+- **A recognizable find in the first chapter.** The Practice Meadow and the first chapter of every
+  `growsCamp` campaign each hand over one find on their spine, so every path to every ending gets
+  it. It is something the kids will remember from that chapter (a pinecone wreath from the meadow,
+  say), and the chapter's end shows it beside the campfire and highlights where it can go.
+- *Proposed:* **a starter piece the first chapter can almost buy.** Each shop list has one cheap
+  piece (around 5 Dash Cash), so a crew can make its first purchase at the end of its first or
+  second chapter.
+
 ## 6. Who changes what
 
 *Decided:* anyone in the crew can update the camp; each hero has their own space; purchases go to
@@ -302,9 +319,21 @@ another owned piece (subject to the shared-change limit below):
 - **A hero's space:** only that hero's player, indoors or out.
 
 If two phones pick for one hotspot at once, the later pick wins and the TV shows it; there is
-nothing to lose, because the crew still owns both pieces. To keep one kid from redecorating
-everything while another watches, each seated player may change **one shared hotspot per downtime
-moment** (per lobby, per rest stop, per chapter end; §12.5). Their own space is unlimited.
+nothing to lose, because the crew still owns both pieces. Their own space is unlimited.
+
+**The shared-edit limit is a playtest question, not a settled rule** (*decided*). The starting
+proposal is that each seated player may change **one shared hotspot per downtime moment** (per
+lobby, per rest stop, per chapter end), to keep one kid from redecorating everything while another
+watches. It may also frustrate a child who picks the wrong thing, so it ships with two softeners
+to test (§12.5):
+
+- **Undo is free.** Undo puts back what the hotspot showed before that player's change, during the
+  same downtime moment, and does not use up their change, so a wrong pick can be fixed and
+  re-made.
+- **Placing something new is free.** Putting a piece found or bought this chapter on its hotspot
+  at the chapter's end does not count against the limit.
+
+Playtests decide whether the limit stays, loosens or goes (§13).
 
 ### 6.2 Buying: spend Dash Cash, by vote
 
@@ -447,7 +476,7 @@ The camp should feel calm, like watching a campsite, not a busy screen:
 
 | Moment | What happens |
 | --- | --- |
-| A kid sits down in the lobby | Their hero crawls out of their tent, looks around and waves (a hop and a turn toward the screen) |
+| A kid sits down in the lobby | Their hero crawls out of their tent (or sits up on their bedroll, at stage 1), looks around and waves (a hop and a turn toward the screen) |
 | A kid taps Ready | Their hero shoulders their pack and walks to the trailhead at the edge of camp |
 | A player steps away (#258) | Their hero walks back to their own tent and fades the way the lineup already fades a stepped-away hero |
 | Begin | Everyone sets off together down the trail as the chapter's first scene fades in, at the start of every chapter (*decided*) |
@@ -517,7 +546,9 @@ A movement that breaks one of these is a bug, not a matter of taste:
 
 ## 9. The data
 
-New records (architecture §3), each versioned like every stored shape:
+New records (architecture §3), each versioned like every stored shape. The sketch below includes
+fields that exist only to serve §12's proposals (`revision`, `grownBy`, `rewardId`, receipts);
+they stand or fall with those proposals. Phase 1 writes none of it (§10).
 
 | Record | PK | SK | What it holds |
 | --- | --- | --- | --- |
@@ -569,25 +600,33 @@ interface CampSpace {
 
 ## 10. Building it in phases
 
-Each phase is playable on its own, and the first one tests the whole idea cheaply.
+*Decided:* Phase 1 stays small. It proves the animated lobby is appealing before anything else is
+built, and each later phase expands only once children notice and recognize their camp.
 
-**Phase 1: the camp exists, and it is alive.** The record and its view; the `open_plains` backdrop
-for everywhere; frame stages 1 and 2; souvenirs and the crew banner as kept pieces; the lobby
-showing it on the TV; the adventure book's look-only tray. Movement ships here, not later, because
-it is most of the appeal: the walk and its rules (§8.2, §8.6), lanes and stand points, wandering,
-and the lobby moments (a hero crawling out on sitting down, heading to the trailhead on Ready,
-setting off on Begin). No Dash Cash, finds or friends yet. The test: do kids point at the TV during
-the lobby?
+**Phase 1: an animated lobby.** One backdrop (`open_plains`) at frame stage 1, the seated heroes,
+and movement: the walk and its rules (§8.2, §8.6), lanes and stand points, wandering, and the lobby
+moments (a hero getting up when their kid sits down, heading to the trailhead on Ready, setting off
+on Begin). Reduced motion and the still fallback come with it (§8.7), since they are how some
+children will see it. Nothing is stored: a stage-1 camp with the seated heroes needs no camp record,
+no catalog and no new intents. Not in Phase 1: the adventure book, offline caching, souvenirs, other
+stages, Dash Cash, finds and friends. The test: do children look at the TV during the lobby, point
+at their hero and talk about the camp?
 
-**Phase 2: earning and changing it.** Dash Cash at the chapter's end; the shop and the vote; free
-hotspot changes; each hero's space; the camp beat on the chapter's end; the first `findForCamp`
-finds, in Riftlight and the Practice Meadow first (Gemfall is pinned, below).
+**Phase 2: the camp is yours.** The camp record (§9); each hero's own space and the first-session
+choice (§5.3); the first-chapter finds (§5.3); Dash Cash at the chapter's end, the shop and the
+vote; shared hotspot changes, with the edit limit and Undo under test (§6.1); the chapter-end camp
+beat; frame stage 2; souvenirs and the crew banner as kept pieces. Finds go into Riftlight and the
+Practice Meadow first. The test: can children find their own space, place a piece without help, and
+recognize where their finds came from?
 
-**Phase 3: friends and places.** The four friends above and the first new ones, each with a
+**Phase 3: friends and places.** The four friends in §4.4 and the first new ones, each with a
 befriend choice in its chapter; tapping friends on a phone and seeing them react and walk over on
 the TV (§8.5); tagging every rest scene indoor or outdoor (§3.2), then the outdoor crossfade and
 the packed-down indoor camp; the first-wave backdrops (`red_sky_volcanic`, `frozen_north`); frame
 stages 3 and 4; Travel Mode's Camp button.
+
+**Phase 4: the camp between games.** The adventure book's look-only Camp tray (§7) and offline
+caching of the camp and its art.
 
 **Later:** the remaining backdrops in the order of §3.1, editing your own space from the adventure
 book, more friends and finds as chapters are written.
@@ -617,6 +656,10 @@ Settled by the product owner:
 | Finds in a graph campaign | Offered on every way in, given once (§5.1) |
 | How much the pieces move | Only a piece a figure is using moves; everything else is static (§8.4) |
 | Setting off on Begin | At the start of every chapter (§8.5) |
+| Phase 1 | Small: the animated lobby only, expanding once children notice their camp (§10) |
+| The first reward | Arrives in the first session: a personal choice and a first-chapter find (§5.3) |
+| The shared-edit limit | Tested in playtest, with an Undo that does not use up a change (§6.1) |
+| Proposals and requirements | Kept apart: §12 stays proposed until approved, and §13 marks the checks that depend on it |
 
 Still open, parked until families ask:
 
@@ -703,8 +746,10 @@ without spending. A stale intent from a closed vote or a previous downtime momen
 **Recommendation:** identify each downtime moment on the server, and count shared edits by seated
 player rather than device. Reconnecting or using a second phone does not reset the limit. Invalid
 changes do not count. Explain the limit before the first edit and disable further shared edits
-with a short message; personal edits remain available. Whether an explicit Undo should be allowed
-after that first edit remains a playtest question; the initial design has no undo action.
+with a short message; personal edits remain available. Undo (§6.1) restores the hotspot's previous
+piece, only for that player's own latest change in the same downtime moment, and gives the change
+back; it never undoes another child's pick. Placing a piece first owned this chapter is not
+counted. All of this is under test (§6.1), so keep the limit one server-side constant.
 
 Awarding a piece never silently replaces a decoration another child chose. It joins the
 collection, is shown beside the campfire, its matching hotspot is highlighted, and a player may
@@ -742,32 +787,60 @@ device can reach more than one crew, name the selected crew explicitly in the bo
 
 ## 13. Acceptance criteria and playtest questions
 
-Implementation checks:
+### 13.1 Required: checks of decided design
 
-- A reward reached through two routes, replayed, retried or reconnected grants once. A duplicate
-  owned piece converts once per distinct reward offer. Failed campaigns keep all camp gains.
-- The tutorial, The Hollow Crown and any other campaign without `growsCamp` never grow the frame;
-  replaying a full campaign grows it at most once.
+These follow from decisions in §11 and the existing rules the camp lives under, and hold whatever
+happens to §12.
+
+- Failed campaigns keep every camp gain (§1).
+- The tutorial, The Hollow Crown and any other campaign without `growsCamp` never grow the frame
+  (§4.1).
+- A find or friend in a graph campaign is offered on every way in and given once (§5.1).
 - Every rest scene has a `setting`, and validation fails without one. An indoor rest never shows
-  the campsite backdrop or tents.
-- Two simultaneous purchase resolutions cannot overspend, buy the same piece twice or charge after
-  leaving the chapter's end. Unauthorized, stale and incompatible placements are refused.
-- Personal spaces survive changing crews and moving the hero home; crew-owned pieces stay with the
-  crew. Household and character deletion follow existing lifecycle rules.
-- Begin, Go on and return to lobby remain available with panels open and during every animation.
-  Skipping a celebration does not lose its reward. Late joins see the authoritative collection.
-- Four heroes and four friends fit each frame, and the indoor layout, without covering required
-  controls or narration. Review recordings for walking, crossings, occlusion and layout at phone
-  and TV sizes. Verify largest text, reduced motion, keyboard access and the static-renderer
-  fallback.
-- The book opens offline after an online read with its saved pieces and friend reactions; it
-  clearly names the crew and how fresh the saved copy is. First use without a cache is clear.
+  the campsite backdrop or tents (§3.2).
+- The first session offers each kid a choice for their own space, and the first chapter of the
+  Practice Meadow and of every `growsCamp` campaign hands over a find on every path (§5.3).
+- No purchase can overspend, buy a piece twice or charge after the chapter's end has been left.
+  Placements the sender may not make are refused (§6).
+- A hero's own space survives changing crews and moving the hero home (§4.5). Household and
+  character deletion follow existing lifecycle rules.
+- Begin, Go on and return to lobby remain available with panels open and during every animation
+  (§3, §8).
+- At most four friends are out, and four heroes and four friends fit each frame, and the indoor
+  layout, without covering required controls or narration (§4.4). Review recordings for walking,
+  crossings, occlusion and layout at phone and TV sizes (§8.6). Verify largest text, reduced
+  motion and the still fallback (§8.7), and keyboard access as docs/accessibility.md already
+  requires.
+- The book opens offline after an online read with its saved pieces and friend reactions (§7).
 
-Playtest each phase with children in both target age groups and a grown-up. Observe whether
-children recognize a past adventure, can find their own space and can place a piece without help.
-Record whether the shared-edit limit causes arguments and whether automatic friend rotation feels
-fair. Measure added time before Begin and Go on: the technical target is no forced delay;
-voluntary time spent decorating should be reported separately.
+### 13.2 Conditional: checks that apply only if §12 is approved
+
+Each of these tests a proposal. If its proposal is rejected or changed, the check goes or changes
+with it.
+
+- *If §12.2 is approved:* a reward reached through two routes, replayed, retried or reconnected
+  grants once, by its `rewardId` receipt; a duplicate owned piece converts to Dash Cash once per
+  distinct reward offer; skipping a celebration does not lose its reward, because finds are saved
+  when found.
+- *If §12.3 is approved:* each `growsCamp` campaign grows the frame at most once per crew, however
+  often it is replayed, and the frame stops at stage 4; existing crews migrate idempotently.
+- *If §12.1 is approved:* personal decorations come from the free catalog, and crew-owned pieces
+  never appear in a hero's space at another crew.
+- *If §12.4 is approved:* at most one purchase per chapter-end visit; a losing concurrent purchase
+  refreshes the offer without spending; a stale intent is refused.
+- *If §12.5 is approved:* shared edits are counted per seated player, not per device; Undo gives
+  the change back; placing a piece first owned this chapter is not counted.
+- *If §12.6 is approved:* the book names the crew and how fresh its saved copy is, and its first
+  use without a cache is clear.
+
+### 13.3 Playtest questions
+
+Playtest each phase with children in both target age groups and a grown-up. Observe whether children
+recognize a past adventure, can find their own space and can place a piece without help. Record
+whether the shared-edit limit causes arguments or frustration, how often children use Undo, and
+whether automatic friend rotation feels fair. Note whether children understand what the camp is for
+after their first session (§5.3). Measure added time before Begin and Go on: the technical target is
+no forced delay; voluntary time spent decorating should be reported separately.
 
 Before expanding art production, verify the first phase's central question: do children notice
 and care about their crew's camp? Before tuning shop prices, measure actual first-play rewards,
