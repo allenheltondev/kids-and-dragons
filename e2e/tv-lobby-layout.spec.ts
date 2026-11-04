@@ -1,12 +1,15 @@
 import { test, expect } from "@playwright/test";
 import { seedTable, openTv, onAir } from "./seed";
 
-test("TV lobby keeps its crew in the corner row and joining beside four heroes", async ({ browser }, info) => {
+// Each screen size gets its own WebGL context. Reusing one across the whole
+// matrix made Chromium's software GPU hang after the 1080p -> 600p resize.
+for (const size of [{ width: 1280, height: 720 }, { width: 1366, height: 768 }, { width: 1920, height: 1080 }, { width: 1024, height: 600 }]) {
+test(`TV lobby keeps its crew in the corner row and joining beside four heroes at ${size.width}x${size.height}`, async ({ browser }, info) => {
   const table = await seedTable({ mode: "party", tv: true, ready: false, heroes: [
     { name: "Thistlewhisker", species: "unicorn" }, { name: "Sparklehoof", species: "griffin" },
     { name: "Fern", species: "dragonling" }, { name: "Moss", species: "bigfoot" },
   ] });
-  const { page, context } = await openTv(browser, table);
+  const { page, context } = await openTv(browser, table, { viewport: size });
   try {
     await onAir(page);
     await expect(page.getByRole("button", { name: /^(Enable sound|Turn sound (on|off))$/ })).toHaveCount(1);
@@ -21,9 +24,8 @@ test("TV lobby keeps its crew in the corner row and joining beside four heroes",
        everyone is), and a room open to visitors (a longer code). The normal text of a size comes
        before its largest, so the names' and portraits' size there can be held to it, and waiting
        comes before all ready, so nothing in the band can move between the two. */
-    const sizes = [{ width: 1280, height: 720 }, { width: 1366, height: 768 }, { width: 1920, height: 1080 }, { width: 1024, height: 600 }];
-    const viewports = sizes.flatMap(size => (["normal", "largest"] as const).flatMap(text => [false, true].map(ready => ({ ...size, text, ready, visitors: false }))));
-    viewports.push({ width: 1280, height: 720, text: "normal", ready: true, visitors: true }, { width: 1280, height: 720, text: "largest", ready: false, visitors: true });
+    const viewports = (["normal", "largest"] as const).flatMap(text => [false, true].map(ready => ({ ...size, text, ready, visitors: false })));
+    if (size.width === 1280) viewports.push({ ...size, text: "normal", ready: true, visitors: true }, { ...size, text: "largest", ready: false, visitors: true });
     const normalName = new Map<string, number>();
     const normalPortrait = new Map<string, number>();
     const waitingBoxes = new Map<string, Record<string, number[]>>();
@@ -48,7 +50,9 @@ test("TV lobby keeps its crew in the corner row and joining beside four heroes",
         return range.getClientRects().length !== 1 || name.scrollWidth > name.clientWidth + 1;
       }).map(name => name.textContent));
       expect.soft(brokenNames, `${viewport.width}x${viewport.height} ${viewport.text}: hero names must remain whole and contained`).toEqual([]);
-      await page.screenshot({ path: info.outputPath(`tv-${viewport.width}x${viewport.height}-${viewport.text}-${viewport.ready ? "ready" : "waiting"}${viewport.visitors ? "-visitors" : ""}.png`) });
+      // Review captures are opt-in; geometry assertions and failure traces run
+      // in CI without repeatedly reading the software-rendered canvas back.
+      if (process.env.KAD_LOBBY_SHOTS) await page.screenshot({ path: info.outputPath(`tv-${viewport.width}x${viewport.height}-${viewport.text}-${viewport.ready ? "ready" : "waiting"}${viewport.visitors ? "-visitors" : ""}.png`) });
       const layout = await page.evaluate(() => {
         const fonts = [...document.querySelectorAll<HTMLElement>(".lobby__heading > span:last-child, .lobby__header > .lobby__place > span:last-child, .lobby__header .crew-identity__name")].map(el => { const style = getComputedStyle(el); return [style.fontSize, style.fontFamily, style.fontWeight].join("|"); });
         const headerStyle = getComputedStyle(document.querySelector(".lobby__header")!);
@@ -200,3 +204,4 @@ test("TV lobby keeps its crew in the corner row and joining beside four heroes",
     console.log(report.join("\n"));
   } finally { await context.close(); }
 });
+}
