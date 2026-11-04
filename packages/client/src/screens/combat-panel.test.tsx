@@ -288,7 +288,7 @@ describe("whose turn it is", () => {
     const marked = { ...base, combatants: base.combatants.map(c => c.side === "enemy" ? { ...c, windup: { tiles: [{ x: 1, y: 2 }, { x: 1, y: 3 }] } } : c) };
     mount({ encounter: marked });
     expect(screen.getByRole("button", { name: /Inspect Sparklehoof.*standing in marked danger/ })).toBeTruthy();
-    expect(screen.getByRole("button", { name: /Move to column 2, row 4 — Sparks bursts here next turn/ })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Move to column 2, row 4 — Sparks strikes here next turn/ })).toBeTruthy();
   });
   it("offers nothing on somebody else's turn, and says whose", () => {
     /*

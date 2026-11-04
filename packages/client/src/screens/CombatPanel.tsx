@@ -98,7 +98,7 @@ import { Button } from "../ui/Button";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
 import { BuffList, combatBuffRows } from "./BuffList";
-import { combatMission, enemyIntentLine, nextEnemyId } from "./combat-plan";
+import { combatMission, crossingProgress, enemyIntentLine, nextEnemyId } from "./combat-plan";
 import { biomeTilesUrl } from "../world/art-paths";
 import { tablePreviews } from "../world/previews";
 import { PUFFED_HINT, PUFFED_WORDS } from "./buff-copy";
@@ -562,6 +562,7 @@ export function CombatControls(): ReactElement | null {
           const cellKey = `${cell.x},${cell.y}`;
           const marks = [
             cell.occupant && encounter.combatants.find(c => c.id === cell.occupant?.id)?.windup ? " combat__cell--charging" : "",
+            cell.occupant && encounter.combatants.find(c => c.id === cell.occupant?.id)?.windupAttack?.presentation === "slam" ? " combat__cell--slam" : "",
             danger.has(cellKey) ? " combat__cell--danger" : "",
             cell.blocked ? " combat__cell--blocked" : "",
             cell.selected ? " combat__cell--selected" : "",
@@ -599,7 +600,7 @@ export function CombatControls(): ReactElement | null {
                 className={`combat__cell combat__cell--tap${aiming ? " combat__cell--aim" : " combat__cell--walk"} kad-focusable${marks}`}
                 aria-label={target ? `Choose ${target.name}, ${target.hp} hearts` : `${planning && canSuggest ? "Suggest" : aiming ? "Aim at" : "Move to"} column ${cell.x + 1}, row ${cell.y + 1}${
                   cell.feature ? `: ${tileWords(cell.feature)}` : ""
-                }${danger.has(cellKey) ? ` — ${danger.get(cellKey)} bursts here next turn` : ""}`}
+                }${danger.has(cellKey) ? ` — ${danger.get(cellKey)} strikes here next turn` : ""}`}
                 onClick={() => target ? tapTarget(target.id) : tapTile({ x: cell.x, y: cell.y })}
               >
                 {mark}
@@ -972,6 +973,8 @@ function EnvironmentStatus({ encounter }: { encounter: EncounterState }): ReactE
     });
   }
   for (const exit of view.exits) lines.push({ key: `exit:${exit.id}`, icon: EXIT_ICON, text: exitLine(exit) });
+  const crossed = crossingProgress(encounter);
+  if (crossed && view.escaped.length) lines.push({ key: "crossed", icon: EXIT_ICON, text: crossed });
   for (const modifier of view.modifiers) {
     lines.push({ key: `modifier:${modifier.id}`, icon: modifierIcon(modifier), text: modifierLine(modifier) });
   }
@@ -1057,7 +1060,7 @@ function CellFeedback({ feedback }: { feedback: ActiveFeedback }): ReactElement 
       "--effect-frames": frames, "--effect-steps": frames - 1, "--effect-ms": `${frames / 12}s`,
       "--effect-still": `${Math.floor((frames - 1) / 2) / (frames - 1) * 100}%`,
     } as CSSProperties} />
-    {feedback.reaction && <img className="combat__reaction-art" src={`/assets/combat-ux/reaction-${feedback.reaction}.webp`} alt="" draggable={false} onError={event => { event.currentTarget.hidden = true; }} />}
+    {feedback.reaction && feedback.reaction !== "slam" && <img className="combat__reaction-art" src={`/assets/combat-ux/reaction-${feedback.reaction}.webp`} alt="" draggable={false} onError={event => { event.currentTarget.hidden = true; }} />}
     <span className="combat__feedback-number">{feedback.label}</span>
   </span>;
 }

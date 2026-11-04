@@ -1,6 +1,6 @@
 ---
 name: mini-game-design
-description: "Design, critique, or implement mini-games with meaningful player skill, recoverable consequences, and finished visual presentation. Use when a mini-game feels flat, consists of routine button presses, lacks stakes, or falls below its surrounding story's visual quality. Covers cooperative and narrative mini-games; not general UI styling or incidental gamification."
+description: "Design, critique, or implement mini-games and narrative combat encounters with meaningful player skill, recoverable consequences, and finished visual presentation. Use when gameplay feels flat, consists of routine button presses, lacks stakes, or falls below its surrounding story's quality. Covers cooperative mini-games and tactical encounter design; not general UI styling or incidental gamification."
 ---
 
 # Mini-Game Design
@@ -8,6 +8,8 @@ description: "Design, critique, or implement mini-games with meaningful player s
 Make the player do something worth learning, in a world worth looking at. Treat gameplay depth and visual quality as separate acceptance gates: neither compensates for the other's absence.
 
 This skill grew from a cooperative relay that initially guaranteed every catch and pass. The user approved its redesign only after both the gameplay and the visuals improved. Read [the worked relay example](references/relay-benchmark.md) when designing a similar interaction or calibrating presentation. Inspect the linked screenshots when doing visual work.
+
+For narrative combat, read [the combat encounter reference](references/combat-encounters.md). It covers tactical judgment, battlefield communication, visible consequences and the wagon benchmark; a functioning objective counter alone does not establish a finished encounter.
 
 ## Establish the playable situation
 

@@ -189,6 +189,8 @@ export interface BeatWords {
   captive(index?: number): string;
   /** An objective's label, by id (#220). */
   objective(id: string): string;
+  /** Named physical route; absent keeps the legacy rift wording. */
+  exit?(id: string): string | undefined;
 }
 
 /**
@@ -218,6 +220,8 @@ export function environmentBeatLine(
     }
     case "escaped": {
       const who = words.name(event.actorId);
+      const route = words.exit?.(event.exitId);
+      if (route) return { text: `${who} ${who === "You" ? "are" : "is"} across: ${route}.`, tone: "good" };
       return { text: `${who} ${who === "You" ? "step" : "steps"} through the rift!`, tone: "good" };
     }
     case "freed":

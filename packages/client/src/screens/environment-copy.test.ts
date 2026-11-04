@@ -100,6 +100,12 @@ describe("the clock on the shared screen", () => {
 });
 
 describe("the place's beats, in words", () => {
+  it("names an authored physical crossing while retaining the old rift wording", () => {
+    const words = { name: () => "Aster", isParty: () => true, captive: () => "Pip", objective: () => "Post" };
+    const event = { type: "escaped" as const, actorId: "hero", exitId: "far-bank" };
+    expect(environmentBeatLine(event, words)?.text).toContain("through the rift");
+    expect(environmentBeatLine(event, { ...words, exit: () => "Far bank" })?.text).toBe("Aster is across: Far bank.");
+  });
   const names: Record<string, string> = { c_1: "Sparklehoof", "wisp#1": "Bramblewisp 1" };
   const words = { name: (id: string) => names[id] ?? id, isParty: (id: string) => id === "c_1", captive: (i?: number) => (i === 1 ? "Moss" : "Pip"), objective: () => "Hold the stones" };
   const you = { ...words, name: (id: string) => (id === "c_1" ? "You" : words.name(id)) };

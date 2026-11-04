@@ -11,6 +11,9 @@ export function enemyIntentLine(state: EncounterState, id: string): string {
   const enemy = combatantById(state, id);
   if (!enemy || enemy.down) return "Out of the fight.";
   if (enemy.skipNextTurn) return "Their next turn is skipped.";
+  if (enemy.windupAttack?.presentation === "slam") return enemy.windup
+    ? "Raised planks slap marked ground next turn. Move clear or daze."
+    : "Raises its planks before slapping the nearest hero's ground.";
   if (enemy.windupAttack) return enemy.windup
     ? "Marked ground bursts next turn. Move clear or daze."
     : "Marks the nearest hero's ground; bursts next turn.";
@@ -24,4 +27,11 @@ export function combatMission(state: EncounterState): string {
   if (env?.spec.victory === "rescue") return "Rescue the friend. You win when they are free.";
   if (env?.spec.objectives?.some(o => o.endsFight)) return "Complete the objective or clear the enemies.";
   return "Make a way through together.";
+}
+
+export function crossingProgress(state: EncounterState): string | null {
+  if (!state.environment?.spec.exits?.some(exit => exit.id === "far-bank")) return null;
+  const heroes = state.combatants.filter(c => c.side === "party");
+  const across = heroes.filter(c => c.escaped);
+  return `${across.length}/${heroes.length} across${across.length ? `: ${across.map(c => c.name).join(", ")}` : ""}.`;
 }

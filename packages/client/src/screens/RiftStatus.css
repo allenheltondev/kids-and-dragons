@@ -98,6 +98,7 @@
 .rift-status__lines:empty {
   display: none;
 }
+.rift-status__crossing { margin: 0; font: inherit; line-height: 1.4; color: var(--color-text-muted, #b7b0d8); }
 
 .rift-status__caption li {
   padding: 0.2em 0.7em;
