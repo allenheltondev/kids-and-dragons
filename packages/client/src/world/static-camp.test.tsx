@@ -45,6 +45,7 @@ describe("the still camp", () => {
     expect(heroes.map((h) => h.dataset.hero)).toEqual(["c_1", "c_2"]);
     expect(heroes[1]!.classList.contains("is-away")).toBe(true);
     expect(heroes[0]!.querySelector("img")!.getAttribute("src")).toMatch(/griffin/);
+    expect(heroes[0]!.querySelector(".kad-static-camp__name")!.textContent).toBe("Sparklehoof");
     // At their bedrolls: the manifest's seat 0 and 1 stand points.
     expect(heroes[0]!.style.left).toBe("40%");
     expect(heroes[1]!.style.left).toBe("60%");

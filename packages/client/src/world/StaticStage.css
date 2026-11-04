@@ -98,3 +98,15 @@
 .kad-static-camp__hero > img { display: block; inline-size: 100%; block-size: 100%; }
 .kad-static-camp__piece > :is(img, svg) { display: block; inline-size: 100%; block-size: 100%; }
 .kad-static-camp__hero.is-away { opacity: 0.5; }
+.kad-static-camp__name {
+  position: absolute;
+  inset-block-start: 87.89%;
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  padding: .1em .4em;
+  border-radius: .25em;
+  background: rgb(13 11 26 / 85%);
+  color: #fff;
+  font-size: .75em;
+  white-space: nowrap;
+}

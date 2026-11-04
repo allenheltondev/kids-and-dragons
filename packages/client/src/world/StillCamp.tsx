@@ -87,6 +87,7 @@ export function StillCamp({ layout, state }: { layout: CampLayout; state: RunSta
             }}
           >
             {figure.url ? <img src={figure.url} alt="" /> : null}
+            <span className="kad-static-camp__name">{state.party.find(member => member.character.id === figure.id)?.character.name}</span>
           </span>
         ))}
         {layout.frame.pieces.map(piece => {
