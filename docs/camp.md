@@ -300,17 +300,22 @@ measures:
 
 | Earned for | Dash Cash |
 | --- | --- |
-| Finishing a chapter, any ending | 2 |
-| Each completed goal step (content/README.md, "The chapter's goal") | 1 each; today's chapters all have 3 or 4 steps |
+| Finishing a chapter, any ending | 3 (*proposed*; see below) |
 | Each optional objective met (spec §8.2) | 1 each |
 | A find the crew already owns (§5.1) | 1 |
 
-A chapter with all its goal steps complete earns 5 or 6 Dash Cash before optional objectives and
-duplicate finds (the content README allows 2 to 4 steps; every chapter today has 3 or 4); a setback
-may earn less. For planning, target roughly 5 to 8 a chapter, with a purchase costing around 10 to
-15: one purchase every couple of chapters, with the cadence to be checked in playtests. Every
-purchase goes through the same vote (§6.2); there is no separate flow for cheaper pieces. The
-numbers are a starting point for playtest.
+**Goal steps pay nothing** (*decided*). Every path to a success ending ticks every goal step by
+design (content/README.md, "The chapter's goal"), so a party cannot miss one, and paying for them
+would be free money. Optional objectives are different: a party can miss them, so they are the
+part of the payout that rewards how the chapter was played.
+
+*Proposed:* finishing pays **3**, not 2, so that two chapters always reach the shop's first
+5-Dash-Cash pieces (§5.3). At 2, a crew whose first two chapters have no objectives would arrive
+at the shop with 4 and nothing it could buy. With 3, a chapter pays 3 to 6: 25 of today's 42
+chapters have no optional objectives (3 Dash Cash), 5 have two and 12 have three. That is 6 to 12
+after two chapters, then a 10-to-15 piece every three or four chapters. Every purchase goes
+through the same vote (§6.2); there is no separate flow for cheaper pieces. The numbers are a
+starting point for playtest.
 
 Rules, borrowed from what already works for XP:
 
@@ -319,8 +324,7 @@ Rules, borrowed from what already works for XP:
 - **Paid once per crew per chapter.** A chapter the crew has been paid for pays no Dash Cash again,
   the way a chapter pays each hero once (spec §8.2, #408). A crew replaying for the story can still
   find pieces it does not own.
-- **A setback ending still pays its finishing and goal Dash Cash.** Failure reroutes; it doesn't
-  zero out.
+- **A setback ending still pays for finishing.** Failure reroutes; it doesn't zero out.
 - **Dash Cash is not coins.** The story's purse (`grantCoins` / `spendCoins`) stays separate, so
   "costs cost" in the story stays a real choice and nobody refuses to pay the ferryman to save up
   for an awning. The TV and phones never show the two side by side.
@@ -744,19 +748,15 @@ Settled by the product owner:
 | Phase 1 | Small: the animated lobby only, expanding once children notice their camp (§10) |
 | The first reward | Arrives in the first session: a kit choice and a first-chapter find (§5.3) |
 | The shop | Opens once the crew has been paid for two chapters; its first pieces cost 5 Dash Cash (§5.3) |
+| Goal steps | Pay no Dash Cash: every success path ticks them all, so they would be free money. Finishing and optional objectives pay (§5.2) |
 | Kit finds | Every seated hero gets their own copy; a duplicate gives nothing, since Dash Cash is the crew's (§5.4) |
 | The shared-edit limit | Tested in playtest, with an Undo that does not use up a change (§6.1) |
-| Implementation requirements | All of §12 approved, including its defaults: one bonus when a goal step and an objective are the same deed, lower-stage pieces staying in later shops, and the migration policy for existing crews (§12) |
+| Implementation requirements | All of §12 approved, including its defaults: lower-stage pieces staying in later shops, and the migration policy for existing crews (§12) |
 
 Still open:
 
-1. **How fast Dash Cash builds up.** The shop opens after two chapters with 5-Dash-Cash pieces, but
-   at today's rates a crew has 10 to 12 by then (more with objectives) and earns 5 to 9 a chapter
-   after, while it can buy only one piece per chapter's end. The balance will keep climbing unless
-   earnings come down or later prices go up. *Proposed:* pay 2 for finishing a chapter, 1 more for
-   completing every goal step (not 1 per step) and 1 per optional objective up to 2: about 3 a
-   chapter, 2 to 5 at the extremes. That is about 6 after two chapters, one starter piece, then a
-   10-to-15 piece every three or four chapters.
+1. **What finishing a chapter pays.** Proposed: 3, so two chapters always afford a starter piece
+   (§5.2).
 2. **Milestone kit pieces** (§5.4): a tent style per appearance tier and a decoration per class
    distinction. Proposed, not yet approved.
 3. **Queued offline kit edits** (§7). Proposed for later.
@@ -790,15 +790,14 @@ The once-per-place rule and duplicate conversion need separate identities:
   existing receipt grants neither a second piece nor more Dash Cash. Different routes and replays
   cannot farm the same offer.
 - Pay chapter-completion Dash Cash and write its paid-chapter receipt together. Replaying an
-  already-paid chapter grants no completion, goal or optional-objective payment, including
-  objectives missed the first time. Unclaimed finds remain available.
+  already-paid chapter grants no completion or optional-objective payment, including objectives
+  missed the first time. Unclaimed finds remain available.
 - Persist finds when their authored effect is applied, even if the room closes before the
   chapter's end. Showing a find at the chapter's end celebrates an owned piece; it is never the
   act that saves it. Declining a friend writes no receipt; that friend may be offered on a later
   visit.
-- Snapshot completed goal steps for payment. Steps backed by an item must still count if the party
-  completed them and later handed over the item. A goal step and an optional objective that
-  describe the same deed pay one bonus, not two.
+- Snapshot met optional objectives for payment. An objective backed by an item must still count if
+  the party met it and later handed over the item.
 
 Use stable award identities rather than scene ids that can change during editorial revisions. The
 record sketch in §9 needs these receipts; choose their storage shape after checking transaction
