@@ -110,7 +110,8 @@ export interface CampStandPoint {
   lane: string;
   x: number;
   face: CampFace;
-  action: CampAction;
+  /** What a figure does here. Absent on a free wander spot: it just stands and breathes. */
+  action?: CampAction;
   /** The piece the action uses, which animates only while somebody is here. */
   hotspot?: string;
   /** A hero's own bedroll (0 to 3): only that hero stands here. */
@@ -299,8 +300,8 @@ function parseFrame(raw: unknown, at: string, backdrops: readonly CampBackdrop[]
       lane: text(s["lane"], `${where}.lane`),
       x: fraction(s["x"], `${where}.x`),
       face: oneOf(s["face"], ["left", "right"] as const, `${where}.face`),
-      action: oneOf(s["action"], CAMP_ACTIONS, `${where}.action`),
     };
+    if (s["action"] !== undefined) point.action = oneOf(s["action"], CAMP_ACTIONS, `${where}.action`);
     if (s["hotspot"] !== undefined) {
       const hotspot = text(s["hotspot"], `${where}.hotspot`);
       if (!pieceIds.has(hotspot)) fail(`${where}.hotspot`, `names no piece "${hotspot}"`);
