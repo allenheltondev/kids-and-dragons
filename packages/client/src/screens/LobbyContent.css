@@ -599,7 +599,9 @@
   :is(.kad-travel, .kad-party--player) .lobby__join { padding: .4em; gap: .4em; }
   :is(.kad-travel, .kad-party--player) .lobby__qr-block { display: none; }
   :is(.kad-travel, .kad-party--player) .lobby__lineup { flex: none; max-block-size: none; overflow: visible; gap: .3em; }
-  :is(.kad-travel, .kad-party--player) .lobby-member { padding: .3em; min-block-size: 44px; }
+  /* The portrait's column is the small portrait's own width, so the name and chip sit beside it
+     (the shared 4.5em column left an empty gap between them). */
+  :is(.kad-travel, .kad-party--player) .lobby-member { padding: .3em; min-block-size: 44px; grid-template-columns: 2em minmax(0, 1fr); column-gap: .5em; }
   :is(.kad-travel, .kad-party--player) .lobby-member__portrait { inline-size: 2em; block-size: 2.5em; }
   :is(.kad-travel, .kad-party--player) .lobby-member__meta { display: none; }
 }
