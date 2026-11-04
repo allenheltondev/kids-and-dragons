@@ -357,16 +357,13 @@
 
 .lobby-member__status .kad-chip { font-size: 0.8em; }
 
-.lobby__next-step {
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
-  margin: 0;
-  padding: 0.5em 0.65em;
-  border-radius: 0.65em;
-  background: var(--color-surface, #1a1730);
-  font-size: 0.85em;
+/* Everyone is ready: the party's heading says so in place of its count (LobbyContent.tsx), in
+   gold, so the room sees the change from across it. The words carry it, never the colour alone. */
+.lobby__party-heading--ready {
+  color: var(--kad-gold-hi, #ffe6a8);
+  text-shadow: 0 0 0.5em rgb(245 200 108 / 55%);
 }
+html[data-contrast="high"] .lobby__party-heading--ready { text-shadow: none; }
 
 /* Both chips in the same cell; see MemberCard. */
 .lobby-member__status > * {
@@ -599,7 +596,9 @@
   :is(.kad-travel, .kad-party--player) .lobby__join { padding: .4em; gap: .4em; }
   :is(.kad-travel, .kad-party--player) .lobby__qr-block { display: none; }
   :is(.kad-travel, .kad-party--player) .lobby__lineup { flex: none; max-block-size: none; overflow: visible; gap: .3em; }
-  :is(.kad-travel, .kad-party--player) .lobby-member { padding: .3em; min-block-size: 44px; }
+  /* The portrait's column is the small portrait's own width, so the name and chip sit beside it
+     (the shared 4.5em column left an empty gap between them). */
+  :is(.kad-travel, .kad-party--player) .lobby-member { padding: .3em; min-block-size: 44px; grid-template-columns: 2em minmax(0, 1fr); column-gap: .5em; }
   :is(.kad-travel, .kad-party--player) .lobby-member__portrait { inline-size: 2em; block-size: 2.5em; }
   :is(.kad-travel, .kad-party--player) .lobby-member__meta { display: none; }
 }

@@ -32,7 +32,7 @@ import "./shared.css";
 import "./LobbyContent.css";
 import "./TvLobby.css";
 import { RiftSightings } from "./RiftSight";
-import { lobbyReadiness } from "./lobby-readiness";
+import { lobbyReadiness, readyLine } from "./lobby-readiness";
 
 /**
  * The QR is a convenience, never a requirement — the code is always readable
@@ -199,6 +199,7 @@ export function LobbyContent(): ReactElement {
   const locked = lockedLine(state?.campaign);
   const choice = state ? lobbyCampaign(state) : null;
   const cards = (state?.campaignOptions?.length ?? 0) > 1;
+  const startReady = readiness.allReady && locked === null;
 
   return (
     <section className="lobby entry-scene-host" aria-label="Lobby" ref={sectionRef}>
@@ -369,18 +370,17 @@ export function LobbyContent(): ReactElement {
         </div>
 
         <div className="lobby__party">
-          <h3 className="lobby__party-heading">
-            <Icon name="party" />
+          {/* When everyone is ready the heading says so, in its own place: a line of its own
+              under it moved the cards, and shrank the camp's window, when the last hero tapped
+              Ready. The words are said in a status region that is always here (empty while
+              anyone is getting ready), so a screen reader hears them the moment they appear. */}
+          <h3 className={`lobby__party-heading${startReady ? " lobby__party-heading--ready" : ""}`}>
+            <Icon name={startReady ? "ready" : "party"} />
             <span>
-              The party ({readyCount}/{readiness.total} ready)
+              {startReady ? null : <span>The party ({readyCount}/{readiness.total} ready)</span>}
+              <span role="status">{startReady ? readyLine(state?.saved !== undefined) : null}</span>
             </span>
           </h3>
-          {readiness.allReady && locked === null ? (
-            <p className="lobby__next-step" role="status">
-              <Icon name="ready" />
-              <span>{state?.saved ? "Everyone is ready! Tap Keep going on a phone." : "Everyone is ready! Start the adventure on a phone."}</span>
-            </p>
-          ) : null}
           {readiness.members.length === 0 && readiness.making.length === 0 ? (
             /* A div, not a p — Spinner renders a block, which is invalid inside
                a <p> and warns at runtime. */

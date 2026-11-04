@@ -62,12 +62,16 @@ describe("what the room should do next", () => {
     expect(screen.getByText("Sam")).toBeTruthy();
     expect(screen.getByText("Making a hero")).toBeTruthy();
     expect(screen.getByText("The party (1/2 ready)")).toBeTruthy();
-    expect(screen.queryByText(/Start the adventure on a phone/)).toBeNull();
+    expect(screen.queryByText(/Everyone is ready!/)).toBeNull();
   });
 
   it("says where to start after everyone playing is ready", () => {
     mount({ party: [makeMember({ ready: true })] });
-    expect(screen.getByText("Everyone is ready! Start the adventure on a phone.")).toBeTruthy();
+    // Said in the party's heading, in place of its count, through a status region that was there
+    // all along so a screen reader announces it.
+    const heading = screen.getByRole("heading", { name: "Everyone is ready! Start on a phone." });
+    expect(heading.querySelector('[role="status"]')?.textContent).toBe("Everyone is ready! Start on a phone.");
+    expect(screen.queryByText(/The party \(/)).toBeNull();
     // The camp is the lobby's picture now (#614), drawn by the stage behind it.
     expect(document.querySelector("[data-entry-scene]")).toBeNull();
   });
@@ -77,6 +81,9 @@ describe("what the room should do next", () => {
     expect(screen.getByText("Tap Ready on your phone")).toBeTruthy();
     expect(screen.queryByText("Making a hero")).toBeNull();
     expect(screen.queryByText(/Everyone is ready!/)).toBeNull();
+    // The heading's status region is already there, empty, waiting for the words.
+    const status = screen.getByRole("heading", { name: "The party (0/1 ready)" }).querySelector('[role="status"]');
+    expect(status?.textContent).toBe("");
   });
 });
 
