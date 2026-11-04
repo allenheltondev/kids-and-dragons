@@ -17,13 +17,16 @@ test("TV lobby keeps its crew in the corner row and joining beside four heroes",
       const state = useGameStore.getState().state;
       useGameStore.setState({ state: { ...state, location: "The kitchen table", crew: "otters", crews: [{ id: "otters", name: "The Moonlit Otter Crew" }] } });
     });
-    /* Every TV size, at normal and the largest text, waiting and all ready (the ready line is one
-       more row in the party's panel), and a room open to visitors (a longer code). The normal text
-       of a size comes before its largest, so the names' size there can be held to it. */
+    /* Every TV size, at normal and the largest text, waiting and all ready (the heading says when
+       everyone is), and a room open to visitors (a longer code). The normal text of a size comes
+       before its largest, so the names' and portraits' size there can be held to it, and waiting
+       comes before all ready, so nothing in the band can move between the two. */
     const sizes = [{ width: 1280, height: 720 }, { width: 1366, height: 768 }, { width: 1920, height: 1080 }, { width: 1024, height: 600 }];
     const viewports = sizes.flatMap(size => (["normal", "largest"] as const).flatMap(text => [false, true].map(ready => ({ ...size, text, ready, visitors: false }))));
     viewports.push({ width: 1280, height: 720, text: "normal", ready: true, visitors: true }, { width: 1280, height: 720, text: "largest", ready: false, visitors: true });
     const normalName = new Map<string, number>();
+    const normalPortrait = new Map<string, number>();
+    const waitingBoxes = new Map<string, Record<string, number[]>>();
     const report: string[] = [];
     for (const viewport of viewports) {
       await page.setViewportSize(viewport);
@@ -99,7 +102,6 @@ test("TV lobby keeps its crew in the corner row and joining beside four heroes",
         hold(".lobby__join", ".lobby");
         hold(".lobby__party", ".lobby");
         hold(".lobby__party-heading", ".lobby__party");
-        hold(".lobby__next-step", ".lobby__party");
         hold(".lobby-member", ".lobby__party");
         hold(".lobby-member__name", ".lobby-member");
         hold(".lobby-member__portrait", ".lobby-member");
@@ -132,6 +134,30 @@ test("TV lobby keeps its crew in the corner row and joining beside four heroes",
           !row || near(row.left, join.left) ? null : `adventures left ${row.left} vs Room panel ${join.left}`,
           !row || near(row.right, party.right) ? null : `adventures right ${row.right} vs party ${party.right}`,
         ].filter(Boolean);
+        // The cards sit straight under the heading, with no empty band between them, and stretch
+        // to the Room panel's foot (checked above with the panels' alignment).
+        const heading = document.querySelector(".lobby__party-heading")!;
+        const headingBox = heading.getBoundingClientRect();
+        const cardTop = Math.min(...[...document.querySelectorAll<HTMLElement>(".lobby-member")].map(el => el.getBoundingClientRect().top));
+        const band = Math.round(cardTop - headingBox.bottom);
+        // Where things stand, to hold still between waiting and all ready.
+        const box = (el: Element | null) => { const r = el!.getBoundingClientRect(); return [r.left, r.top, r.right, r.bottom].map(n => Math.round(n)); };
+        const boxes: Record<string, number[]> = { room: box(document.querySelector(".lobby__join")), heading: [box(heading)[1], box(heading)[3]], lineup: box(document.querySelector(".lobby__lineup")) };
+        document.querySelectorAll(".lobby-member").forEach((el, i) => { boxes[`card ${i}`] = box(el); });
+        document.querySelectorAll(".lobby-member__portrait").forEach((el, i) => { boxes[`portrait ${i}`] = box(el); });
+        const portrait = Math.min(...[...document.querySelectorAll<HTMLElement>(".lobby-member__portrait")].map(el => el.getBoundingClientRect().height));
+        // The picked adventure's "Selected" tag: inside its card, and beside its title or directly
+        // under it, never stranded in a corner of the card.
+        const picked = document.querySelector(".lobby__campaign--picked")!;
+        const pickedBox = picked.getBoundingClientRect();
+        const titleRow = picked.querySelector(".lobby__campaign-title")!.getBoundingClientRect();
+        const titleText = picked.querySelector(".lobby__campaign-title > span:not(.lobby__campaign-selected)")!.getBoundingClientRect();
+        const tag = picked.querySelector(".lobby__campaign-selected")!.getBoundingClientRect();
+        const tagMiddle = (tag.top + tag.bottom) / 2;
+        const tagPlace = !within(tag, pickedBox) ? "outside its card" :
+          tagMiddle >= titleText.top && tagMiddle <= titleText.bottom && tag.left >= titleText.right - 1 && tag.left - titleText.right <= 24 ? "beside" :
+          tag.top >= titleText.bottom - 2 && tag.top - titleText.bottom <= 8 && Math.abs(tag.left - titleRow.left) <= 2 ? "under" :
+          `stranded at ${Math.round(tag.left - pickedBox.left)},${Math.round(tag.top - pickedBox.top)} of its card (title ends at ${Math.round(titleText.right - pickedBox.left)},${Math.round(titleText.bottom - pickedBox.top)})`;
         const name = Math.min(...[...document.querySelectorAll<HTMLElement>(".lobby-member__name")].map(el => parseFloat(getComputedStyle(el).fontSize)));
         // The camp's window and the factor its figures are drawn at there (world/camp-framing.ts).
         const [insetsPath, campPath, framingPath] = ["/src/world/stage-inset.ts", "/src/world/lobby-camp.ts", "/src/world/camp-framing.ts"];
@@ -142,12 +168,23 @@ test("TV lobby keeps its crew in the corner row and joining beside four heroes",
         const heights = camp.campHeroes(useGameStore.getState().state).map((hero: { figure: { heightCm: number } }) => hero.figure.heightCm);
         const window = framing.campWindow(pane.height, insets.lobbyInsetTop(), insets.lobbyInsetBottom());
         const k = framing.campFigureScale(pane.width, window, layout, heights);
-        return { options: options.length, campaigns: campaigns.length, seen, spills, misaligned, name, windowHeight: Math.round(window.bottom - window.top), k: Math.round(k * 100) / 100 };
+        return { options: options.length, campaigns: campaigns.length, seen, spills, misaligned, name, portrait, band, boxes, tagPlace, headingText: heading.textContent?.trim() ?? "", windowHeight: Math.round(window.bottom - window.top), k: Math.round(k * 100) / 100 };
       });
       const label = `${viewport.width}x${viewport.height} ${viewport.text}${viewport.ready ? " ready" : ""}${viewport.visitors ? " visitors" : ""}`;
-      report.push(`${label}: window ${fit.windowHeight}px, k ${fit.k}, names ${fit.name}px`);
+      report.push(`${label}: window ${fit.windowHeight}px, k ${fit.k}, names ${fit.name}px, portraits ${Math.round(fit.portrait)}px, Selected ${fit.tagPlace}`);
       const key = `${viewport.width}x${viewport.height}`;
-      if (viewport.text === "normal" && !viewport.visitors) normalName.set(key, Math.min(normalName.get(key) ?? Infinity, fit.name));
+      if (viewport.text === "normal" && !viewport.visitors) {
+        normalName.set(key, Math.min(normalName.get(key) ?? Infinity, fit.name));
+        normalPortrait.set(key, Math.min(normalPortrait.get(key) ?? Infinity, fit.portrait));
+      }
+      // The heading says when everyone is ready, in place of its count, and nothing else moves.
+      expect.soft(fit.headingText, `${label}: the party's heading`).toBe(viewport.ready ? "Everyone is ready! Start on a phone." : "The party (0/4 ready)");
+      const stateKey = `${key} ${viewport.text}${viewport.visitors ? " visitors" : ""}`;
+      if (!viewport.ready) waitingBoxes.set(stateKey, fit.boxes);
+      else if (waitingBoxes.has(stateKey)) expect.soft(fit.boxes, `${label}: the Room panel, the heading's row and the cards stay put when everyone is ready`).toEqual(waitingBoxes.get(stateKey));
+      expect.soft(fit.band, `${label}: the cards sit straight under the heading`).toBeLessThanOrEqual(12);
+      expect.soft(fit.tagPlace, `${label}: Selected sits by the adventure's title`).toMatch(/^(beside|under)$/);
+      if (viewport.text === "largest") expect.soft(fit.portrait, `${label}: portraits at the largest text are no smaller than at normal`).toBeGreaterThanOrEqual((normalPortrait.get(key) ?? 0) - 0.5);
       expect.soft(fit.options, `${label}: the room offers two adventures`).toBeGreaterThan(1);
       expect.soft({ campaigns: fit.campaigns, seen: fit.seen }, `${label}: every adventure is on screen`).toEqual({ campaigns: fit.options, seen: fit.options });
       expect.soft(fit.spills, `${label}: nothing spills out of its panel or the pane`).toEqual([]);

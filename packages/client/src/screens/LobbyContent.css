@@ -357,16 +357,13 @@
 
 .lobby-member__status .kad-chip { font-size: 0.8em; }
 
-.lobby__next-step {
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
-  margin: 0;
-  padding: 0.5em 0.65em;
-  border-radius: 0.65em;
-  background: var(--color-surface, #1a1730);
-  font-size: 0.85em;
+/* Everyone is ready: the party's heading says so in place of its count (LobbyContent.tsx), in
+   gold, so the room sees the change from across it. The words carry it, never the colour alone. */
+.lobby__party-heading--ready {
+  color: var(--kad-gold-hi, #ffe6a8);
+  text-shadow: 0 0 0.5em rgb(245 200 108 / 55%);
 }
+html[data-contrast="high"] .lobby__party-heading--ready { text-shadow: none; }
 
 /* Both chips in the same cell; see MemberCard. */
 .lobby-member__status > * {

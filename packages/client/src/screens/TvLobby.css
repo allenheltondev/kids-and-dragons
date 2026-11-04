@@ -93,7 +93,6 @@
   .kad-party--world .lobby__gather .lobby__join-step { grid-column: 1 / -1; font-size: .65em; }
   .kad-party--world .lobby__party { gap: .4em; }
   .kad-party--world .lobby__party-heading { font-size: 1em; }
-  .kad-party--world .lobby__next-step { font-size: .65em; padding: .25em .5em; }
   .kad-party--world .lobby__lineup { gap: .5em; }
   .kad-party--world .lobby-member { grid-template-columns: 2em minmax(0, 1fr); padding: .45em; }
   .kad-party--world .lobby-member .lobby-member__portrait { inline-size: 2em; block-size: 2.5em; }
@@ -123,13 +122,6 @@
   }
   .kad-party--world .lobby__campaign[data-locked="true"] { opacity: .7; }
 }
-@media (min-width: 900px) and (orientation: landscape) and (max-height: 650px) {
-  .kad-party--world .lobby__campaign-selected {
-    position: absolute;
-    inset-block-end: .35em;
-    inset-inline-end: .7em;
-  }
-}
 
 @media (min-width: 900px) and (orientation: landscape) and (max-height: 650px) {
   .kad-party--world .lobby__party { gap: .25em; }
@@ -153,8 +145,8 @@
 /* The crew's camp is the lobby's picture (#614, docs/camp.md §3), shown in the window between
    the header and the panels, so once anybody has sat down the panels keep to a low band along
    the bottom: the Room panel (the code beside its QR, the how-to-join line under them) beside the
-   party (its heading, the ready line, and the heroes in one row), with the adventures across the
-   foot of both. Nothing is dropped; the same words, smaller.
+   party (its heading, which says when everyone is ready, and the heroes in one row), with the
+   adventures across the foot of both. Nothing is dropped; the same words, smaller.
 
    The band is one grid: the Room panel and the party share a top and a bottom (the cards' last
    row), and the adventures span the two of them edge to edge, because both are the same width,
@@ -214,43 +206,81 @@
     flex: none;
   }
 
-  /* The party: its heading at the Room panel's top, its cards at its bottom. */
+  /* The party: its heading at the Room panel's top, and the cards straight under it, down to the
+     panel's foot. There is no row between them for the ready line: when everyone is ready, the
+     heading says so (LobbyContent.tsx), so nothing moves when the last hero taps Ready and the
+     camp's window is the same height either way. */
   .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby__party {
     align-self: stretch;
-    gap: .4em;
+    gap: min(.4em, 8px);
     /* The party measures its width for the card layouts below (a grid cannot query itself). */
     container: lobby-lineup / inline-size;
   }
-  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby__lineup { margin-block-start: auto; }
+  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby__party-heading { flex: none; white-space: nowrap; }
 
   /* The heroes share one row: a second row makes the panels taller and the camp's window above
      them shorter, and the camp's figures shrink to fit it (world/camp-framing.ts). The cards
-     shrink evenly instead, one column each. A hero's name has the card's whole width across its
-     top, with the portrait under it and the level and readiness beside that, so a name is never
-     squeezed into the column beside a portrait (where "Thistlewhisker" broke in two) and a chip
-     never sits over it. */
+     shrink evenly instead, one column each, and stretch to the foot of the row the Room panel
+     gives them. A card is the hero's name across its top, the portrait under it, and the
+     readiness under that: the name is never squeezed into a column beside a portrait (where
+     "Thistlewhisker" broke in two) and a chip never sits over it. Whatever height the row has
+     beyond the card's own goes to the portrait, so where the Room panel is the taller of the two
+     (the largest text) the heroes are drawn larger, not left small at the foot of an empty band.
+     The level line, under the name, is left to the phones once four heroes share the row. */
   .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby__lineup {
+    flex: 1 1 auto;
+    min-block-size: 0;
     grid-template-columns: none;
     grid-auto-flow: column;
     grid-auto-columns: minmax(0, 1fr);
+    grid-auto-rows: minmax(min-content, 1fr);
     gap: .5em;
   }
   .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member {
-    grid-template-columns: 2.4em minmax(0, 1fr);
-    grid-template-rows: auto auto auto;
-    grid-template-areas: "name name" "portrait meta" "portrait status";
-    justify-items: normal;
-    align-items: center;
-    gap: .25em .5em;
+    /* The portrait's least height: the card's own height is the name, this and the chip. */
+    --lobby-portrait-min: 2.9em;
+    /* How far the portrait reaches down behind the readiness chip under it (the largest text,
+       below). */
+    --lobby-chip-overlap: 0px;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(var(--lobby-portrait-min), 1fr) auto;
+    grid-template-areas: "name" "portrait" "status";
+    justify-items: center;
+    align-items: stretch;
+    gap: .25em;
     padding: .45em .6em;
   }
-  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member .lobby-member__text { display: contents; }
+  /* The name, with the level line under it when there is room for one. */
+  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member .lobby-member__text { grid-area: name; justify-self: stretch; display: flex; flex-direction: column; align-items: stretch; gap: .1em; min-inline-size: 0; }
   .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member > :is(.lobby-member__seat, .lobby-member__portrait) { grid-area: portrait; }
-  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member .lobby-member__name { grid-area: name; }
-  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member .lobby-member__meta { grid-area: meta; font-size: .8em; white-space: nowrap; }
-  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member .lobby-member__status { grid-area: status; justify-self: start; justify-items: start; font-size: .75em; }
+  /* The name is sized to the card's width (below), so it asks the card's columns for none: across
+     both of them, its width would otherwise all go to the readiness's column, not the portrait's. */
+  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member .lobby-member__name { contain: inline-size; text-align: center; }
+  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member .lobby-member__meta { justify-content: center; font-size: .8em; white-space: nowrap; }
+  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby__lineup:has(> :nth-child(4)) .lobby-member__meta { display: none; }
+  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member .lobby-member__status { grid-area: status; justify-self: center; justify-items: center; max-inline-size: 100%; font-size: .75em; position: relative; }
   .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member .lobby-member__status .kad-chip { white-space: nowrap; }
-  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member .lobby-member__portrait { inline-size: 2.4em; block-size: 2.9em; }
+  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member--making .kad-chip { align-self: center; font-size: .75em; }
+  /* The seat takes the whole of its row and measures it, and the portrait is the largest well of
+     its shape (a little taller than wide, as everywhere) that fits; the seat itself asks for no
+     room, so the portrait never makes the row taller than the Room panel beside it needs. */
+  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member > .lobby-member__seat {
+    container-type: size;
+    justify-self: stretch;
+    align-self: stretch;
+    place-items: center;
+    min-block-size: var(--lobby-portrait-min);
+    margin-block-end: calc(-1 * var(--lobby-chip-overlap));
+  }
+  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member__seat > .lobby-member__portrait {
+    inline-size: min(100cqi, 100cqb / 1.2);
+    block-size: min(100cqb, 100cqi * 1.2);
+  }
+  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member > .lobby-member__portrait {
+    inline-size: calc(var(--lobby-portrait-min) / 1.2);
+    block-size: var(--lobby-portrait-min);
+    align-self: center;
+  }
   /* Each card measures itself, so a name steps down with a narrow card rather than spill out of
      it: 12% of the card's width is a size at which a sixteen-letter name, creation's longest, fits.
      The readiness chip likewise, so "Not ready" fits across a narrow card. */
@@ -282,73 +312,56 @@
      camp's window down from under the corner row and take the band's height. */
   html[data-text="largest"] .kad-party--world .lobby { gap: .4em; }
 }
-/* A short TV (1024 x 600) leaves the level to the phones, so a card is the name over the portrait
-   and readiness, and the adventures' cards are lower still. */
+/* A short TV (1024 x 600): the adventures' cards are lower still. */
 @media (min-width: 900px) and (orientation: landscape) and (max-height: 650px) {
-  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member {
-    grid-template-rows: auto auto;
-    grid-template-areas: "name name" "portrait status";
-  }
+  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member { padding: .35em .5em; }
   .kad-party--world .lobby:has(.lobby__join--compact) .lobby__campaign { grid-template-columns: 2.8em minmax(0, 1fr); min-block-size: max(3em, 64px); padding: .35em .6em; }
   .kad-party--world .lobby:has(.lobby__join--compact) .lobby__campaign > .campaign-art { inline-size: 2.8em; }
   html[data-text="largest"] .kad-party--world .lobby { gap: .3em; }
 }
-/* How a card in that one row gives way as the row narrows, by the width each card gets (the
-   party's width, less the gaps, over the number of cards; ems of the party's own type, so a larger
-   text size gives way sooner):
-   - under about 10.2em, no room for the level line beside the portrait: it drops, the way a short
-     TV drops it (above), and the card is the name over the portrait and readiness;
-   - under about 9.3em, no room for the readiness chip beside the portrait either: the card stacks
-     the name over the portrait over the chip, so the chip never runs past the card's edge (and
-     the name and chip step down with the card, above, where even that is narrow).
-   The 2, 3 and 4 below are the cards in the row. The largest text has its own card (above), which
-   is never stacked: a taller card is a shorter camp. Instead, where four of its cards would leave
-   each name smaller than a TV's normal text gives it (a party under 540px), they go two by two. */
+/* Where four cards at the largest text would leave each name smaller than a TV's normal text
+   gives it (a party under 540px), they go two by two. */
 @media (min-width: 900px) and (orientation: landscape) {
-  @container lobby-lineup (max-width: 42.5em) {
-    .kad-party--world .lobby__lineup:has(> :nth-child(4)) > .lobby-member { grid-template-rows: auto auto; grid-template-areas: "name name" "portrait status"; }
-    .kad-party--world .lobby__lineup:has(> :nth-child(4)) > .lobby-member .lobby-member__meta { display: none; }
+  /* The largest text: the band's height is the Room panel's, and the portrait takes what the name
+     and readiness leave of the card, so its least height can be small (a card's em is the band's
+     type, larger than the name it holds). The readiness chip is a step down, as the name is. */
+  html[data-text="largest"] .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby__lineup > .lobby-member {
+    --lobby-portrait-min: 1.6em;
+    /* The chip sits on the foot of the well, as the Away badge does, and the figure gets that much
+       more height. */
+    --lobby-chip-overlap: .55em;
+    gap: .1em;
+    padding: .3em .4em;
   }
-  @container lobby-lineup (max-width: 31em) {
-    .kad-party--world .lobby__lineup:has(> :nth-child(3):last-child) > .lobby-member { grid-template-rows: auto auto; grid-template-areas: "name name" "portrait status"; }
-    .kad-party--world .lobby__lineup:has(> :nth-child(3):last-child) > .lobby-member .lobby-member__meta { display: none; }
+  html[data-text="largest"] .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby__lineup > .lobby-member .lobby-member__status .kad-chip { font-size: min(.8em, 9cqi); }
+  /* Where a card is wide for its height (a 1080p TV, or fewer heroes), the readiness stands beside
+     the portrait instead of under it, so the card is no taller than its name over its portrait. */
+  html:not([data-text="largest"]) .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby__lineup:not(:has(> :nth-child(3))) > .lobby-member {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto minmax(var(--lobby-portrait-min), 1fr);
+    grid-template-areas: "name name" "portrait status";
+    column-gap: .4em;
+    --lobby-chip-overlap: 0px;
   }
-  @container lobby-lineup (max-width: 21em) {
-    .kad-party--world .lobby__lineup:has(> :nth-child(2):last-child) > .lobby-member { grid-template-rows: auto auto; grid-template-areas: "name name" "portrait status"; }
-    .kad-party--world .lobby__lineup:has(> :nth-child(2):last-child) > .lobby-member .lobby-member__meta { display: none; }
-  }
-  @container lobby-lineup (max-width: 38.7em) {
-    html:not([data-text="largest"]) .kad-party--world .lobby__lineup:has(> :nth-child(4)) > .lobby-member {
-      grid-template-columns: minmax(0, 1fr);
-      grid-template-rows: auto auto auto;
-      grid-template-areas: "name" "portrait" "status";
-      justify-items: center;
-    }
-    html:not([data-text="largest"]) .kad-party--world .lobby__lineup:has(> :nth-child(4)) > .lobby-member .lobby-member__status { justify-self: center; justify-items: center; }
-  }
-  @container lobby-lineup (max-width: 28.9em) {
-    html:not([data-text="largest"]) .kad-party--world .lobby__lineup:has(> :nth-child(3):last-child) > .lobby-member {
-      grid-template-columns: minmax(0, 1fr);
-      grid-template-rows: auto auto auto;
-      grid-template-areas: "name" "portrait" "status";
-      justify-items: center;
-    }
-    html:not([data-text="largest"]) .kad-party--world .lobby__lineup:has(> :nth-child(3):last-child) > .lobby-member .lobby-member__status { justify-self: center; justify-items: center; }
-  }
-  /* The largest text in a party under 34em of its type (a 720p or 768p TV, or a short one): a
-     card is the name across its top over a small portrait beside the readiness. The portrait
-     steps down first, rather than the name, and the level is left to the phones. */
-  @container lobby-lineup (max-width: 34em) {
-    html[data-text="largest"] .kad-party--world .lobby__lineup > .lobby-member {
-      grid-template-columns: 1.6em minmax(0, 1fr);
-      grid-template-rows: auto auto;
+  @container lobby-lineup (min-width: 38.7em) {
+    .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby__lineup:has(> :nth-child(4)) > .lobby-member {
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-rows: auto minmax(var(--lobby-portrait-min), 1fr);
       grid-template-areas: "name name" "portrait status";
-      justify-items: normal;
+      column-gap: .4em;
+      --lobby-chip-overlap: 0px;
     }
-    html[data-text="largest"] .kad-party--world .lobby__lineup > .lobby-member .lobby-member__portrait { inline-size: min(1.6em, 16cqi); block-size: calc(min(1.6em, 16cqi) * 1.2); }
-    html[data-text="largest"] .kad-party--world .lobby__lineup > .lobby-member .lobby-member__meta { display: none; }
-    html[data-text="largest"] .kad-party--world .lobby__lineup > .lobby-member .lobby-member__status .kad-chip { font-size: min(.8em, 9cqi); }
   }
+  @container lobby-lineup (min-width: 28.9em) {
+    .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby__lineup:has(> :nth-child(3):last-child) > .lobby-member {
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-rows: auto minmax(var(--lobby-portrait-min), 1fr);
+      grid-template-areas: "name name" "portrait status";
+      column-gap: .4em;
+    --lobby-chip-overlap: 0px;
+    }
+  }
+  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby__lineup > .lobby-member .lobby-member__status { align-self: center; }
   @container lobby-lineup (max-width: 540px) {
     html[data-text="largest"] .kad-party--world .lobby__lineup:has(> :nth-child(4)) { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-flow: row; }
   }

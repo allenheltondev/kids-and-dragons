@@ -48,7 +48,7 @@ A new kid makes a hero in four short steps, starting with "Who are you?" and end
 
 ![Making a hero on a phone](../../public/guide-pictures/creation.jpg)
 
-Then they tap **Ready to play**, and **I'm ready!** The big screen shows who is ready. Once everyone here is ready, the big screen says "Everyone is ready! Start the adventure on a phone." and every phone shows **Begin the adventure**. Any kid can tap it. Later chapters say **Play chapter** and its number instead.
+Then they tap **Ready to play**, and **I'm ready!** The big screen shows who is ready. Once everyone here is ready, the big screen says "Everyone is ready! Start on a phone." and every phone shows **Begin the adventure**. Any kid can tap it. Later chapters say **Play chapter** and its number instead.
 
 ### The practice, for new heroes
 
