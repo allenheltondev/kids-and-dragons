@@ -12,6 +12,9 @@
  */
 
 .fight-log {
+  font-size: .9em;
+  font-weight: 400;
+  line-height: 1.4;
   /* A column beside the board: FightLog reports its width, and the fight
      camera frames the board to its left (world/stage-inset.ts). */
   --fight-log-beside: 1;
@@ -263,7 +266,7 @@
   padding: .65em 0 0;
   border-block-start: 1px solid #d7bb7a55;
   color: #fff0ca;
-  font-size: .9em;
+  font-size: inherit;
   line-height: 1.4;
 }
 .fight-log__plan p { margin: 0; }
@@ -271,7 +274,7 @@
 .fight-log__lines {
   border-block-start: 1px solid #d7bb7a55;
   padding-block-start: .65em;
-  font-size: .9em;
+  font-size: inherit;
   line-height: 1.4;
 }
 :root .fight-log .rift-status {
@@ -280,7 +283,7 @@
   inline-size: 100%;
   align-items: stretch;
   gap: .6em;
-  font-size: .9em;
+  font-size: inherit;
 }
 .fight-log .rift-status > * { flex: none; }
 /* The goal's painted paper has a minimum trim larger than its text row. Remove
@@ -298,11 +301,11 @@
   background: none;
   box-shadow: none;
   color: var(--color-text-muted, #b7b0d8);
-  font-size: .8em;
+  font-size: inherit;
 }
 :root .fight-log .goal::before, :root .fight-log .goal::after { display: none; }
 :root .fight-log .goal :is(.goal__text, .goal__sentence, .goal__label) { color: inherit; }
-:root .fight-log .goal__text { font-size: inherit; line-height: 1.4; align-items: center; flex-wrap: wrap; }
+:root .fight-log .goal__text { font-size: inherit; font-weight: inherit; line-height: 1.4; align-items: center; flex-wrap: wrap; }
 .fight-log .goal__sentence { flex: 1 1 12em; min-inline-size: 0; white-space: normal; }
 .fight-log .goal__pips { flex: none; margin-inline-start: 0; }
 .fight-log .rift-status__clock {
@@ -314,6 +317,7 @@
   box-shadow: none;
   animation: none;
   font-size: inherit;
+  font-weight: inherit;
   line-height: 1.4;
   gap: .45em;
   align-items: flex-start;
@@ -327,6 +331,7 @@
   border-radius: 0;
   background: none;
   font-size: inherit;
+  font-weight: inherit;
   line-height: 1.4;
   align-items: flex-start;
 }
@@ -343,12 +348,25 @@
   background: none;
   box-shadow: none;
   padding: 0 0 .5em;
-  font-size: 1em;
+  font-size: 1.15em;
+  font-weight: 600;
   max-inline-size: 100%;
 }
 .fight-log:has(.rift-status) .fight-log__guard { display: none; }
 
+/* One headline and one body style. Names, numbers and supporting messages do
+   not create additional type levels inside the panel. */
+.fight-log :is(b, strong) { font-weight: inherit; }
+.fight-log :is(.fight-log__swing, .fight-log__who, .fight-log__die,
+  .fight-log__stat, .fight-log__vs, .fight-log__verdict, .fight-log__why,
+  .fight-log__guard, .fight-log__chip, .fight-log__matchup) {
+  font-size: inherit;
+  font-weight: inherit;
+}
+.fight-log .fight-log__lines { color: var(--color-text-muted, #b7b0d8); }
+.fight-log .fight-log__line > span:only-child { color: inherit; }
+
 /* Large text on a TV remains a side column, with room for full sentences. */
 @container world (min-width: 641px) and (max-height: 26em) {
-  .fight-log { inline-size: 40%; font-size: .9em; }
+  .fight-log { inline-size: 40%; font-size: .8em; }
 }

@@ -70,7 +70,15 @@ test("the quay's committed burst survives refresh, can be interrupted, and frien
         const goal = panel.querySelector(".goal")!;
         const box = panel.getBoundingClientRect();
         const corner = document.querySelector(".kad-corner")!.getBoundingClientRect();
+        const type = (el: Element) => {
+          const css = getComputedStyle(el);
+          return { size: parseFloat(css.fontSize), weight: css.fontWeight };
+        };
+        const bodyType = type(panel);
+        const bodyText = [...panel.querySelectorAll(".rift-status__clock > span:last-child, .rift-status__lines li, .goal__text, .goal__sentence, .fight-log__plan p, .fight-log__plan b, .fight-log__line span")]
+          .filter(el => el.getBoundingClientRect().height > 0).map(type);
         return { rows, left: box.left, right: box.right, top: box.top, cornerBottom: corner.bottom,
+          bodyType, bodyText, headingType: type(panel.querySelector(".turn-banner")!),
           boardBeside: getComputedStyle(panel).getPropertyValue("--fight-log-beside").trim(), fits: panel.scrollHeight <= panel.clientHeight + 1,
           goalTrim: getComputedStyle(goal, "::before").display,
           frames: [".turn-banner", ".rift-status__clock", ".fight-log__plan"].map(selector => {
@@ -79,6 +87,10 @@ test("the quay's committed burst survives refresh, can be interrupted, and frien
           }) };
       });
       expect(layout.fits, JSON.stringify({ surface, layout })).toBe(true);
+      expect(layout.bodyText.length).toBeGreaterThan(4);
+      expect(layout.bodyText.every(type => type.size === layout.bodyType.size && type.weight === "400"), JSON.stringify(layout.bodyText)).toBe(true);
+      expect(layout.headingType.size).toBeGreaterThan(layout.bodyType.size);
+      expect(layout.headingType.weight).toBe("600");
       expect(layout.goalTrim).toBe("none");
       expect(layout.top).toBeGreaterThanOrEqual(layout.cornerBottom);
       expect(layout.boardBeside).toBe("1");

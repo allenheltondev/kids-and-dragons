@@ -33,6 +33,8 @@ The live browser test uses two phones and a TV, checks 320px/390px and largest t
 
 The right-hand panel is checked at 720p, 1080p, largest text and high contrast: no row overlaps, clipped results, nested message frames or overlap with the corner controls. The test also verifies that the board still reserves the column's width and that the chapter goal's parchment pseudo-element stays off.
 
+Typography uses two levels: a semibold turn heading and one regular-weight body size shared by the clock, objective, chapter goal, threat and result. Supporting information recedes through color rather than extra sizes or boldness. Browser checks verify the computed sizes and weights across all four TV surfaces; the complete cooperative encounter passes with this treatment.
+
 Family observation is still required: do children anticipate the burst, deliberately make room, notice a saved friend, choose different contributions, and want another turn? Automated completion is evidence that the loop works, not that its difficulty and pacing are right.
 
 ## Captured surfaces
