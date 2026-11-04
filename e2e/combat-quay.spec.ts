@@ -45,6 +45,54 @@ test("the quay's committed burst survives refresh, can be interrupted, and frien
     const phone = phones[owner(state)].page;
     await expect(phone.locator(".combat__cell--danger").first()).toBeVisible();
     await expect(display.page.getByLabel("Battle plan")).toContainText("Marked ground bursts next turn");
+    await display.page.emulateMedia({ reducedMotion: "reduce" });
+    for (const surface of [
+      { width: 1280, height: 720, text: "normal", contrast: "normal" },
+      { width: 1920, height: 1080, text: "normal", contrast: "normal" },
+      { width: 1280, height: 720, text: "largest", contrast: "normal" },
+      { width: 1280, height: 720, text: "normal", contrast: "high" },
+    ]) {
+      await display.page.setViewportSize(surface);
+      await display.page.evaluate(({ text, contrast }) => {
+        if (text === "normal") delete document.documentElement.dataset.text; else document.documentElement.dataset.text = text;
+        if (contrast === "normal") delete document.documentElement.dataset.contrast; else document.documentElement.dataset.contrast = contrast;
+      }, surface);
+      await display.page.screenshot({ path: info.outputPath(`panel-${surface.width}-${surface.text}-${surface.contrast}.png`) });
+      if (surface.width === 1280 && surface.text === "normal" && surface.contrast === "normal") {
+        await display.page.locator(".fight-log").screenshot({ path: info.outputPath("panel-detail.png") });
+      }
+      const layout = await display.page.locator(".fight-log").evaluate(panel => {
+        const selectors = [".turn-banner", ".rift-status__clock", ".rift-status__lines", ".rift-status .goal", ".fight-log__plan", ".fight-log__lines"];
+        const rows = selectors.map(selector => panel.querySelector<HTMLElement>(selector)!).filter(Boolean).map(el => {
+          const box = el.getBoundingClientRect();
+          return { top: box.top, bottom: box.bottom, left: box.left, right: box.right, fits: el.scrollHeight <= el.clientHeight + 1 };
+        }).filter(row => row.bottom > row.top);
+        const goal = panel.querySelector(".goal")!;
+        const box = panel.getBoundingClientRect();
+        const corner = document.querySelector(".kad-corner")!.getBoundingClientRect();
+        return { rows, left: box.left, right: box.right, top: box.top, cornerBottom: corner.bottom,
+          boardBeside: getComputedStyle(panel).getPropertyValue("--fight-log-beside").trim(), fits: panel.scrollHeight <= panel.clientHeight + 1,
+          goalTrim: getComputedStyle(goal, "::before").display,
+          frames: [".turn-banner", ".rift-status__clock", ".fight-log__plan"].map(selector => {
+            const css = getComputedStyle(panel.querySelector(selector)!);
+            return { left: css.borderLeftWidth, right: css.borderRightWidth, radius: css.borderRadius };
+          }) };
+      });
+      expect(layout.fits, JSON.stringify({ surface, layout })).toBe(true);
+      expect(layout.goalTrim).toBe("none");
+      expect(layout.top).toBeGreaterThanOrEqual(layout.cornerBottom);
+      expect(layout.boardBeside).toBe("1");
+      expect(layout.frames.every(frame => frame.left === "0px" && frame.right === "0px" && frame.radius === "0px")).toBe(true);
+      for (let i = 0; i < layout.rows.length; i++) {
+        const row = layout.rows[i];
+        expect(row.fits, JSON.stringify({ surface, row })).toBe(true);
+        expect(row.left).toBeGreaterThanOrEqual(layout.left);
+        expect(row.right).toBeLessThanOrEqual(layout.right);
+        if (i) expect(row.top).toBeGreaterThanOrEqual(layout.rows[i - 1].bottom);
+      }
+    }
+    await display.page.setViewportSize({ width: 1280, height: 720 });
+    await display.page.evaluate(() => { delete document.documentElement.dataset.text; delete document.documentElement.dataset.contrast; });
     for (const viewport of [{ width: 390, height: 844, text: "normal" }, { width: 320, height: 720, text: "normal" }, { width: 390, height: 844, text: "largest" }]) {
       await phone.setViewportSize(viewport);
       await phone.evaluate(text => { if (text === "normal") delete document.documentElement.dataset.text; else document.documentElement.dataset.text = text; }, viewport.text);
@@ -73,6 +121,7 @@ test("the quay's committed burst survives refresh, can be interrupted, and frien
     await expect.poll(() => phones[0].page.locator(".player__prompt").evaluate(el => el.scrollHeight <= el.clientHeight + 1)).toBe(true);
     await phones[0].page.screenshot({ path: info.outputPath("quay-interrupt-largest.png") });
     await phones[0].page.getByRole("button", { name: /^Fox Fire/ }).click();
+    await phones[0].page.screenshot({ path: info.outputPath("quay-target-largest.png") });
     await expect.poll(() => phones[0].page.locator(".player__prompt").evaluate(el => el.scrollHeight <= el.clientHeight + 1)).toBe(true);
     await phones[0].page.locator(".combat__targets button").filter({ hasText: "Spark Lantern 1" }).click();
     await phones[0].page.evaluate(() => { delete document.documentElement.dataset.text; });

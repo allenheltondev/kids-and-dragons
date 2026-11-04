@@ -188,10 +188,10 @@ export function FightLog(): ReactElement | null {
           ))}
         </ul>
       ) : null}
-      <section className="fight-log__plan" aria-label="Battle plan">
-        <strong>{combatMission(encounter)}</strong>
+      {(!encounter.environment || forecastId) && <section className="fight-log__plan" aria-label="Battle plan">
+        {!encounter.environment && <strong>{combatMission(encounter)}</strong>}
         {forecastId && <p><b>{combatantById(encounter, forecastId)?.name}:</b> {enemyIntentLine(encounter, forecastId)}</p>}
-      </section>
+      </section>}
       <ol className="fight-log__lines" aria-live="polite">
         {lines.length === 0 ? <li className="fight-log__line fight-log__line--quiet">The fight is on!</li> : null}
         {lines.map((line) => (
