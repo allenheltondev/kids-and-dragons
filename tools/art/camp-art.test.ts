@@ -60,8 +60,9 @@ describe('camp layout (manifest.camp)', () => {
   });
 
   it.each([
-    ['a lane under the lobby panels', `camp['backdrops'][0]['lanes'][2]['y'] = 0.85`, 'camp/backdrop/open_plains lanes'],
-    ['lanes out of depth order', `camp['backdrops'][0]['lanes'][1]['y'] = 0.55`, 'camp/backdrop/open_plains lanes'],
+    ['a lane below the open ground', `camp['backdrops'][0]['lanes'][2]['y'] = 0.8`, 'camp/backdrop/open_plains lanes'],
+    ['a lane above the open ground, in the sky', `camp['backdrops'][0]['lanes'][0]['y'] = 0.4`, 'camp/backdrop/open_plains lanes'],
+    ['lanes out of depth order', `camp['backdrops'][0]['lanes'][1]['y'] = 0.5`, 'camp/backdrop/open_plains lanes'],
     ['a crossing off a lane', `camp['backdrops'][0]['crossings'][0]['x'] = 0.02`, 'camp/backdrop/open_plains lanes'],
     ['a stand point past its lane end', `point('wander_near_right')['x'] = 0.99`, 'camp/stage1 layout'],
     ['a hotspot that names no piece', `point('campfire_left')['hotspot'] = 'cookfire'`, 'camp/stage1 layout'],

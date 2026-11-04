@@ -278,6 +278,13 @@ export interface PartyScene {
    * so nobody stands behind a paragraph. The fight board ignores it.
    */
   setStageInset(bottomPx: number): void;
+  /**
+   * Whether another stage wholly covers this one (the lobby's camp, #614), so
+   * nothing here is drawn: a TV pays for one painted picture, not two. The
+   * scene keeps its state and keeps up with the party underneath, ready to be
+   * uncovered the moment the camp starts to go.
+   */
+  setCovered(covered: boolean): void;
   /** How far down the pane the narration's head reaches (#356): see stage-inset.ts `storyStageFrame`. */
   setStageInsetTop(topPx: number): void;
   /**
@@ -1537,6 +1544,12 @@ export function createScene(app: Application): PartyScene {
         layoutActors();
         applyCamera(0);
       }
+    },
+
+    setCovered(covered) {
+      if (destroyed) return;
+      // `renderable`, not `visible`: the board's own visibility is its business.
+      for (const layer of [backdrop, storyLayer, boardWrap]) layer.renderable = !covered;
     },
 
     setStageInsetTop(topPx) {

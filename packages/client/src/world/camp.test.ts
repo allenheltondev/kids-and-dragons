@@ -15,10 +15,34 @@ import { createCamp, type CampFigure, type CampFigureView, type CampStage } from
 import { ANCHOR_X, ANCHOR_Y } from "./actor-art";
 import { laneAt, pieceHeightCm, standPoint } from "./camp-layout";
 import { MAX_FRAME_S, campHeightPx, campMeasure } from "./camp-motion";
+import { campFocusBand, campFraming, campWindow } from "./camp-framing";
 import { fitCanvas } from "./figure-scale";
 import { MAX_WALKERS } from "./camp-wander";
+import { CAMP_KIT_STYLES, campKitStyle } from "./camp-kit-art";
 
 beforeAll(installFakeCanvas2D);
+
+it.each([false, true])("loads a seated hero's kit and retains a bedroll if the variant fails (%s)", async failed => {
+  const ownLayout = campLayoutFixture();
+  ownLayout.frame.pieces.push({ id: "bedroll_0", path: "camp/frames/stage1/bedroll.png", lane: "back", x: .24 });
+  ownLayout.frame.standPoints.find(p => p.seat === 0)!.hotspot = "bedroll_0";
+  const urls: string[] = [];
+  const stage = createCamp(fakeApp() as unknown as Application, ownLayout, { loadTexture: url => {
+    urls.push(url);
+    return failed && url.includes("/kits/") ? Promise.reject(new Error("missing")) : Promise.resolve(Texture.WHITE);
+  } });
+  const hero: CampFigure = { id: "hero-0", url: null, heightCm: 165, stance: "standing", seat: 0, accent: "#55aaff" };
+  stage.setFigures([hero]);
+  await Promise.resolve();
+  await Promise.resolve();
+  expect(urls).toContain(CAMP_KIT_STYLES[campKitStyle(hero.id)].path);
+  const bed = stage.view.children.flatMap(c => (c as Container).children ?? []).find(c => c.label === "piece:bedroll_0") as Container;
+  expect(bed.children.filter(c => c instanceof Sprite)).toHaveLength(1);
+  const count = urls.length;
+  stage.setFigures([hero]);
+  expect(urls).toHaveLength(count);
+  stage.destroy();
+});
 
 const layout = campLayoutFixture();
 const W = layout.canvas.width;
@@ -332,6 +356,89 @@ describe("the camp stage", () => {
     frames(app, c, 2);
     expect(c.figures().find((f) => f.id === "goat")).toBeUndefined();
     c.destroy();
+  });
+});
+
+describe("the camp in the lobby (#614)", () => {
+  it("hands a hero who takes back Ready out of the line and back to wandering", () => {
+    const { camp: c, app } = camp();
+    frames(app, c, 1);
+    c.moment("ready", "hero-1");
+    c.moment("ready", "hero-2");
+    frames(app, c, 40, 16, noSlide);
+    const t = layout.frame.trailhead;
+    expect(c.figures().find((f) => f.id === "hero-1")!.x).toBeCloseTo(t.x * W);
+    c.moment("unready", "hero-1");
+    // The line closes up: the second hero takes the front.
+    frames(app, c, 40, 16, noSlide);
+    expect(c.figures().find((f) => f.id === "hero-2")!.x).toBeCloseTo(t.x * W);
+    // And the first wanders off again in time, where a lined-up hero would stand forever.
+    let left = false;
+    frames(app, c, 90, 16, (_, next) => {
+      if (Math.abs(next.get("hero-1")!.x - t.x * W) > 1) left = true;
+    });
+    expect(left).toBe(true);
+    c.destroy();
+  });
+
+  it("covers the pane and slides the camp into the lobby's window, easing there as the panels grow", () => {
+    const { camp: c, app } = camp();
+    const window = campWindow(900, 100, 300);
+    const target = campFraming(1600, window, layout.canvas, campFocusBand(layout, CREW.map((f) => f.heightCm)));
+    const start = c.view.y;
+    c.setInset(300, 100);
+    // No jump: the frame eases toward the new one.
+    app.ticker.frame(16);
+    expect(c.view.y).not.toBeCloseTo(target.y);
+    expect(Math.abs(c.view.y - start)).toBeLessThan(Math.abs(target.y - start));
+    frames(app, c, 3);
+    expect(c.view.y).toBeCloseTo(target.y, 0);
+    expect(c.view.scale.x).toBeCloseTo(target.scale);
+    // One painting across the whole width, and over the whole window.
+    expect(c.view.x).toBeLessThanOrEqual(1e-6);
+    expect(c.view.x + W * c.view.scale.x).toBeGreaterThanOrEqual(1600 - 1e-6);
+    expect(c.view.y).toBeLessThanOrEqual(window.top + 0.5);
+    expect(c.view.y + H * c.view.scale.y).toBeGreaterThanOrEqual(window.bottom - 0.5);
+    c.destroy();
+  });
+
+  it("draws the stand-in backdrop when the camp's own painting does not load", async () => {
+    const app = fakeApp();
+    const asked: string[] = [];
+    const stage = createCamp(app as unknown as Application, layout, {
+      still: true,
+      assetUrl: (path) => `/assets/${path}`,
+      fallbackBackdrop: "/assets/biomes/plains/bg.webp",
+      loadTexture: (url) => {
+        asked.push(url);
+        return url.endsWith("plains/bg.webp") ? Promise.resolve(Texture.WHITE) : Promise.reject(new Error("not painted yet"));
+      },
+    });
+    stage.resize(1600, 900);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(asked).toContain("/assets/biomes/plains/bg.webp");
+    const backdrop = stage.view.children[0] as Container;
+    // The painting at canvas size, undimmed, and its two edge strips: no copy at another scale.
+    const sprites = backdrop.children.filter((child): child is Sprite => child instanceof Sprite);
+    expect(sprites.map((sprite) => sprite.label)).toEqual(["camp-bleed-top", "camp-bleed-bottom", "camp-backdrop"]);
+    const painting = sprites[2]!;
+    expect(painting.width).toBeCloseTo(W);
+    expect(painting.height).toBeCloseTo(H);
+    expect(painting.tint).toBe(0xffffff);
+    // Slid up into a window, the painting stops short of the pane's bottom, and its own
+    // bottom edge, flipped, carries on to it.
+    stage.setInset(600, 0);
+    const bottom = sprites[1]!;
+    const view = stage.view;
+    expect(view.y + H * view.scale.y).toBeLessThan(900);
+    expect(bottom.visible).toBe(true);
+    expect(bottom.scale.y).toBeLessThan(0);
+    expect(bottom.y).toBeGreaterThan(H);
+    expect(view.y + bottom.y * view.scale.y).toBeCloseTo(900);
+    expect(bottom.scale.x * bottom.texture.frame.width).toBeCloseTo(W);
+    expect(sprites[0]!.visible).toBe(false);
+    stage.destroy();
   });
 });
 

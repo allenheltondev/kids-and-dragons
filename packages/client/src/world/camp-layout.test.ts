@@ -186,3 +186,4 @@ describe("campRoute", () => {
     expect(route[route.length - 1]).toEqual({ x: 1.1, y: 0.87, lane: "near" });
   });
 });
+

@@ -21,9 +21,16 @@ prompt's pixel figures change with it.
 - **Frames** (`frames[]`, one per frame stage) carry the camp: `pieces` standing on a lane,
   `movingParts` laid over a piece, `standPoints`, and the `trailhead`. Frames are shared by every
   backdrop, so a frame's lanes and x positions must fit every backdrop's lanes.
-- **Clear of the words.** No lane, and so no stand point, is below 78 percent of the height: the
-  lobby panels cover the bottom 22 percent. The camp's pieces keep to the middle third; free
-  wander spots (no action) stay outside it.
+- **On the open ground.** Every lane, and so every stand point, lies in the open, nearly level
+  grass band the backdrop promises, from 45 to 75 percent of the height (open_plains: lanes at
+  52, 60 and 68 percent). The camp's pieces keep to the middle third; free wander spots (no
+  action) stay outside it.
+- **Cover-fit and slid.** The client draws a backdrop across the whole width of the screen and
+  slides it up or down so the lanes stand in the open window between the lobby's header and its
+  panels (`packages/client/src/world/camp-framing.ts`). So a backdrop's top quarter is plain sky
+  that may be trimmed, its bottom quarter plain, low-detail grass that may sit under the panels,
+  the horizon about 35 to 40 percent of the height, and everything important inside the middle
+  80 percent of the width, because portrait phones crop the sides.
 - **Every frame seats the full party**: one `rest` stand point for each seat 0 to 3.
 
 ## Formats
@@ -38,8 +45,9 @@ prompt's pixel figures change with it.
   matches `assets/biomes/plains/bg.webp`; the pieces match `assets/story-props/camp-firepit.webp`).
   No text, no heroes drawn (the existing hero figures stand in the camp), never scary.
 - **Backdrops are empty campsites**: a calm clearing with a plain, readable ground band where the
-  lanes fall, the middle third the openest part of it, a quiet lower band, and the trail leaving
-  at the trailhead's edge. Nothing a figure could seem to stand inside.
+  lanes fall, the middle third the openest part of it, plain sky above and a quiet lower band
+  (both may be trimmed), and the trail leaving at the trailhead's edge. Nothing a figure could
+  seem to stand inside.
 - **Pieces fill their canvas the way figures do**: whole object inside the margin, resting on
   y 900. The client sizes them on the stage from the piece's `heightCm` in the manifest (its
   true painted height, scaled like a figure's and by its lane), so a campfire stands at its real
@@ -85,9 +93,12 @@ Filter and clip IDs are unique per seat. Invalid accents use meadow teal, and a 
 image falls back to the original neutral Phase 1 painting.
 
 The hero's character ID determines a stable style, independent of party order or reconnects.
-No new server state or kit picker is introduced. The lobby draws occupied seats only, back
-bedrolls before the fire and near bedrolls after it. The future interactive camp renderer can
-reuse `CampBedroll` and `Campfire`; walking and warming-up actions remain part of #614.
+No new server state or kit picker is introduced. The moving camp assigns a variant to each
+occupied bedroll and uses `camp-kit-canvas.ts` to apply the same registered cloth mask as the
+SVG component, caching the result per source painting, style and accent. Backpacks stay natural.
+The still fallback draws the same kits with `CampBedroll` and a motionless `Campfire`.
+The camp renderer's existing warm-up action flickers the delivered flame layer; reduced
+motion keeps it still. Pieces and heroes share the renderer's existing lane depth ordering.
 
 Art verification checks the variants' format, alpha, margin and ground contact; inventory
 counts the five Phase 1 paintings and three kits once each. Runtime tests tie style paths to

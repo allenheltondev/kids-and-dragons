@@ -9,6 +9,9 @@
  *   npm run play:jump -- riftlight-stuttering-flats sling --players 4 --flag flats_rhythm_read
  *   npm run play:jump -- gemfall-03a --record 4000           every frame for 4s, then stop
  *   npm run play:jump -- riftlight-finale --open             visible browsers, kept open (Ctrl-C)
+ *   npm run play:jump -- --lobby --players 3                 the lobby, heroes seated, nobody ready
+ *   npm run play:jump -- --lobby --players 3 --record 12000  the lobby's camp moments, filmed:
+ *                                                            ready, step away, back, unready, Begin
  *
  * Options:
  *   --players N        1 to 4 phones (default 2)
@@ -16,6 +19,7 @@
  *   --flag NAME        a route flag the chapter starts holding; NAME=false to hold it false
  *   --fact NAME=VALUE  a graph campaign's world fact (numbers and true/false are parsed)
  *   --start            also tap "We're ready" for a story interaction, and shoot it running
+ *   --lobby            no chapter: seat the heroes in the lobby, with the camp behind it
  *   --record MS        capture composites for MS milliseconds (after --start, if given)
  *   --every MS         time between recorded frames (default 250)
  *   --reduced-motion   every device asks for reduced motion
@@ -29,7 +33,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { openTable } from "./table.ts";
-import { near, parse } from "./args.ts";
+import { near, parse, type Args } from "./args.ts";
 import type { Chapter } from "../../packages/shared/src/index.ts";
 
 const ROOT = path.resolve(import.meta.dirname, "..", "..");
@@ -82,6 +86,7 @@ async function main(): Promise<void> {
   if (args.help) { printHelp(); return; }
   const all = chapters();
   if (args.list) return list(args.positional[0], all);
+  if (args.lobby) return lobby(args);
   const [chapterId, sceneId] = args.positional;
   if (!chapterId) { printHelp(); process.exit(1); }
   const chapter = all.get(chapterId);
@@ -118,6 +123,66 @@ async function main(): Promise<void> {
     }
     if (args.record > 0) {
       const frames = await table.record(`${chapterId} ${at}`, () => table.tv.waitForTimeout(args.record), { ...(args.out ? { dir: args.out } : {}), everyMs: args.every });
+      console.log(`  ${frames.length} frames: ${path.dirname(frames[0] ?? "")}/${path.basename(frames[0] ?? "").replace(/-\d+\.png$/, "-NNN.png")}`);
+    }
+    if (args.open) {
+      console.log(`\nroom ${table.code} is open in the browsers. Ctrl-C closes it.`);
+      await new Promise(() => undefined);
+    }
+  } finally {
+    if (!args.open) await table.close();
+  }
+}
+
+/**
+ * The lobby, with the camp behind it (docs/camp.md §8.5, #614). Recorded, it acts the lobby's
+ * moments out through the same intents the phones send, spaced so each can be watched: a hero
+ * readies up, a second does, one steps away and comes back, the first changes their mind, then
+ * everyone is ready and the first taps Begin, and the recording runs on into the first scene.
+ */
+async function lobby(args: Args): Promise<void> {
+  const table = await openTable({
+    // The app's launch campaign (client store LAUNCH_CAMPAIGN), so Begin has a chapter to start.
+    campaignId: "gemfall",
+    players: args.players, mode: args.travel ? "travel" : "party",
+    headed: args.open, reducedMotion: args.reducedMotion,
+    log: (line) => console.log(line),
+  });
+  const stop = async () => { await table.close(); process.exit(0); };
+  process.on("SIGINT", () => void stop());
+  try {
+    // No settle: its taps are "Ready to play", which is one of the moments to watch.
+    await table.tv.waitForTimeout(2500);
+    console.log(`  ${await table.snap("lobby camp", args.out)}`);
+    if (args.record > 0) {
+      const last = table.phones.length - 1;
+      const stepper = Math.min(1, last);
+      const moments: [string, () => Promise<void>][] = [
+        ["ready", () => table.act({ type: "READY", ready: true }, 0)],
+        ["ready", () => table.act({ type: "READY", ready: true }, last)],
+        ["away", () => table.away(stepper)],
+        ["back", () => table.away(stepper, false)],
+        ["unready", () => table.act({ type: "READY", ready: false }, 0)],
+        ["all ready", async () => { for (let n = 0; n <= last; n++) await table.act({ type: "READY", ready: true }, n); }],
+        ["begin", async () => {
+          const campaignId = (await table.state()).campaign?.id;
+          await table.act({ type: "CONTINUE_CAMPAIGN", ...(campaignId ? { campaignId } : {}) }, 0);
+        }],
+      ];
+      const during = async () => {
+        const started = Date.now();
+        // Spread over the recording, keeping a third of it for Begin's walk off and the first scene.
+        const gap = Math.max(600, (args.record * 2) / 3 / moments.length);
+        for (const [name, run] of moments) {
+          await table.tv.waitForTimeout(gap);
+          if (Date.now() - started > args.record) break;
+          await run().catch((error: unknown) => console.log(`  ${name}: ${error instanceof Error ? error.message : String(error)}`));
+          console.log(`  +${Date.now() - started}ms ${name}`);
+        }
+        const left = args.record - (Date.now() - started);
+        if (left > 0) await table.tv.waitForTimeout(left);
+      };
+      const frames = await table.record("lobby camp", during, { ...(args.out ? { dir: args.out } : {}), everyMs: args.every });
       console.log(`  ${frames.length} frames: ${path.dirname(frames[0] ?? "")}/${path.basename(frames[0] ?? "").replace(/-\d+\.png$/, "-NNN.png")}`);
     }
     if (args.open) {

@@ -692,9 +692,12 @@ def check_story_plates(rep: Report, mf: dict) -> None:
 CAMP_ACTIONS = {"warmUp", "lookUp", "peek", "rest", "greet", "pet"}
 CAMP_MOTIONS = {"flicker", "sway", "ripple", "lift"}
 CAMP_FACES = {"left", "right"}
-# The lobby panels cover the bottom 22 percent of the TV (docs/camp.md §8.3,
-# "Clear of the words"), so no lane's ground line, and so no stand point, is below it.
-CAMP_PANEL_TOP = 0.78
+# The backdrop prompt (docs/camp-art-prompts.json, docs/briefs/camp.md) promises open, nearly
+# level grass from 45 to 75 percent of the height; every lane's ground line, and so every stand
+# point, lies in it. The client slides the cover-fitted painting so this band stands in the
+# lobby's window (docs/camp.md §8.3, packages/client/src/world/camp-framing.ts).
+CAMP_GROUND_TOP = 0.45
+CAMP_GROUND_BOTTOM = 0.75
 CAMP_SEATS = {0, 1, 2, 3}
 
 
@@ -724,8 +727,10 @@ def check_camp_layout(rep: Report, mf: dict) -> None:
         if not 2 <= len(lanes) <= 3 or len(by_id) != len(lanes):
             problems.append("two or three lanes with unique ids")
         for lane in lanes:
-            if not (0 < lane["y"] <= CAMP_PANEL_TOP and 0 <= lane["x0"] < lane["x1"] <= 1 and lane["scale"] > 0):
-                problems.append(f"lane {lane['id']} inside the canvas, above y={CAMP_PANEL_TOP}, with x0 < x1")
+            if not (CAMP_GROUND_TOP <= lane["y"] <= CAMP_GROUND_BOTTOM and 0 <= lane["x0"] < lane["x1"] <= 1 and lane["scale"] > 0):
+                problems.append(
+                    f"lane {lane['id']} on the open ground, y {CAMP_GROUND_TOP} to {CAMP_GROUND_BOTTOM}, with x0 < x1"
+                )
         for back, near in zip(lanes, lanes[1:]):
             if not (back["y"] < near["y"] and back["scale"] <= near["scale"]):
                 problems.append(f"lanes back to near: {near['id']} lower and no smaller than {back['id']}")

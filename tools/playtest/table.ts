@@ -11,6 +11,10 @@
  *   await table.goto("loosen_mud");        // another scene of the same chapter
  *   await table.close();
  *
+ * Without a `chapterId` the heroes sit down in the lobby instead, nobody ready, so the lobby
+ * (and the camp behind it, docs/camp.md) can be looked at and its moments filmed: `act` a
+ * `READY`, `away` a phone, `act` a `CONTINUE_CAMPAIGN` for Begin.
+ *
  * How it gets there is the dev server's own seed route (`POST /api/dev/seed`,
  * packages/server/src/dev-seed.ts): real handlers, real engine, a TV that opened the room and
  * phones seated in it. `chapterId` is a playtest start, so any chapter of any campaign starts,
@@ -41,7 +45,10 @@ export const DEFAULT_HEROES: TableHero[] = [
 ];
 
 export interface TableOptions {
-  chapterId: string;
+  /** The chapter to start. Absent: the heroes are seated in the lobby, nobody ready. */
+  chapterId?: string;
+  /** The campaign the room is opened for, as the app opens one for its launch campaign. Default none. */
+  campaignId?: string;
   /** A scene of that chapter; its entry when absent. */
   sceneId?: string;
   /** One to four phones. Default 2. */
@@ -81,6 +88,8 @@ export interface Table {
   goto(sceneId: string): Promise<void>;
   /** Load the next d20 the run rolls, or null to roll normally again. */
   die(value: number | null): Promise<void>;
+  /** Phone n steps away (#258), as its page closing says it; `false` is back. Its own heartbeat also brings it back. */
+  away(n: number, leaving?: boolean): Promise<void>;
   /** Tap each phone's way into its turn ("Your turn", "Got it"), as a player would. */
   settle(): Promise<void>;
   /** TV and every phone, side by side in one labelled PNG. Returns its path. */
@@ -148,9 +157,10 @@ export async function openTable(options: TableOptions): Promise<Table> {
     headers: { "content-type": "application/json" },
     body: JSON.stringify({
       mode: options.mode ?? "party",
+      ...(options.campaignId ? { campaignId: options.campaignId } : {}),
       tv: (options.mode ?? "party") === "party",
       heroes: heroes.map((hero) => ({ name: hero.name, species: hero.species, class: hero.class, stats: { might: 1, quick: 1, clever: 1, heart: 0 } })),
-      chapterId: options.chapterId,
+      ...(options.chapterId ? { chapterId: options.chapterId } : { ready: false }),
       ...(options.sceneId ? { sceneId: options.sceneId } : {}),
       ...(options.flags ? { flags: options.flags } : {}),
       ...(options.facts ? { facts: options.facts } : {}),
@@ -161,7 +171,7 @@ export async function openTable(options: TableOptions): Promise<Table> {
     if (server) try { process.kill(-server.pid!, "SIGTERM"); } catch { /* Already gone. */ }
     throw new Error(`the dev server refused the table: ${seeded.error?.message ?? seed.status}`);
   }
-  log(`room ${seeded.code}: ${options.chapterId}${options.sceneId ? ` at ${options.sceneId}` : ""}, ${players} player${players === 1 ? "" : "s"}`);
+  log(`room ${seeded.code}: ${options.chapterId ?? "the lobby"}${options.sceneId ? ` at ${options.sceneId}` : ""}, ${players} player${players === 1 ? "" : "s"}`);
 
   const executablePath = chromiumPath();
   const browser: Browser = await chromium.launch({ headless: !options.headed, ...(executablePath ? { executablePath } : {}) });
@@ -256,6 +266,14 @@ export async function openTable(options: TableOptions): Promise<Table> {
     },
     state,
     act,
+    async away(n, leaving = true) {
+      const response = await fetch(new URL("/api/presence", api), {
+        method: "POST",
+        headers: { authorization: `Bearer ${sessionOf(n).session.sessionToken}`, "content-type": "application/json" },
+        body: JSON.stringify({ leaving }),
+      });
+      if (!response.ok) throw new Error(`presence for phone ${n}: ${response.status}`);
+    },
     async goto(sceneId) { await act({ type: "PLAYTEST_GOTO", sceneId }); await settle(); },
     async die(value) { await act({ type: "PLAYTEST_SET_DIE", die: value }); },
     settle,

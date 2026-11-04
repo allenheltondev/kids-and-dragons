@@ -59,3 +59,42 @@
   background-repeat: no-repeat;
   pointer-events: none;
 }
+
+/* The lobby's camp, still (#614, docs/camp.md §8.7). The frame is placed in px off the measured
+   pane by StillCamp (camp-framing.ts campFraming); everything in it is percent of the frame. */
+.kad-static-camp {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #2a2f4a;
+}
+.kad-static-camp__frame { position: absolute; }
+/* The painting's plain edges drawn on past it (camp-framing.ts campBleed): flipped, so the
+   painting's top row meets itself above it and its bottom row below it. */
+.kad-static-camp__bleed {
+  position: absolute;
+  inset-inline: 0;
+  overflow: hidden;
+  transform: scaleY(-1);
+}
+.kad-static-camp__bleed > img { position: absolute; inset-inline-start: 0; inline-size: 100%; max-inline-size: none; }
+.kad-static-camp__bleed--top { inset-block-end: 100%; }
+.kad-static-camp__bleed--top > img { inset-block-start: 0; }
+.kad-static-camp__bleed--bottom { inset-block-start: 100%; }
+.kad-static-camp__bleed--bottom > img { inset-block-end: 0; }
+.kad-static-camp__backdrop {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+/* A hero's art is a square canvas with the feet at (512, 900) of 1024 (art-paths.ts CANVAS). */
+.kad-static-camp__hero, .kad-static-camp__piece {
+  position: absolute;
+  aspect-ratio: 1;
+  transform: translate(-50%, -87.89%);
+}
+.kad-static-camp__hero > img { display: block; inline-size: 100%; block-size: 100%; }
+.kad-static-camp__piece > :is(img, svg) { display: block; inline-size: 100%; block-size: 100%; }
+.kad-static-camp__hero.is-away { opacity: 0.5; }
