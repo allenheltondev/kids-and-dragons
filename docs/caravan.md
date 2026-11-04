@@ -432,7 +432,8 @@ A movement that breaks one of these is a bug, not a matter of taste:
 - **Frame-by-frame tests** run against the fake stage (`testing/fake-stage.ts`) with hand-driven
   frames, as `scene-motion.test.ts` already does.
 - **Looking at it** uses `npm run play:jump` with `--record MS` (extended to open the lobby with
-  a caravan in it) to film the caravan on a TV and phones side by side. "Clean" is judged on those recordings at real speed, not on stills.
+  a caravan in it) to film the caravan on a TV and phones side by side. "Clean" is judged on
+  those recordings at real speed, not on stills.
 
 ## 9. The data
 
@@ -495,8 +496,8 @@ free hotspot changes; each hero's space; the caravan beat on the chapter's end; 
 `findForCaravan` finds, in Riftlight and the Practice Meadow first (Gemfall is pinned, below).
 
 **Phase 3: friends and places.** The five friends above, each with a befriend choice in its
-chapter; tapping friends on a phone and seeing them react and walk over on the TV (§8.5); the rest-scene crossfade; the first-wave backdrops
-(`red_sky_volcanic`, `frozen_north`); frame stages 3 and 4; Travel Mode's Caravan button.
+chapter; tapping friends on a phone and seeing them react and walk over on the TV (§8.5); the
+rest-scene crossfade; the first-wave backdrops (`red_sky_volcanic`, `frozen_north`); frame stages 3 and 4; Travel Mode's Caravan button.
 
 **Later:** the remaining backdrops in the order of §3.1, editing your own space from the
 adventure book, more friends and finds as chapters are written.
@@ -517,14 +518,15 @@ mosshorn are added.
    magical; the second never takes the picture away from a family still talking about the scene.
 3. **Editing from the adventure book.** Is changing your own hero's space between games worth
    breaking the book's look-only rule? It needs a write path from a device binding with no room.
-4. **The frame and a crew's first campaign.** A crew's first finished campaign might be its first
-   chapter of a second campaign rather than its first ever. Does the frame track campaigns
-   *finished* or campaigns *started*?
+4. **A crew that hasn't finished a campaign yet.** The frame only grows when a campaign is
+   finished (§4.1), so a family that fails a campaign may see no growth for weeks. Should a
+   failed campaign that reached its last chapter count, or is the shop enough to keep the caravan
+   changing?
 5. **How many friends at once.** The pen has room for a few. When a crew has more friends than
    spots, do the kids pick who is out today, or do friends take turns on their own?
-6. **Riftlight's graph campaign.** A graph campaign can reach a place in more than one order, so
-   a find or friend there must be offered on every way into that place, or tied to a scene every
-   way passes through.
+6. **Finds in Riftlight's graph campaign.** A graph campaign reaches a place in more than one
+   order. Should a find or friend there be offered on every way in, or only in a scene every way
+   passes through?
 7. **How much the pieces move.** §8.4 gives moving pieces (flames, flags, lids) their own small
    cutouts. That is cheap per piece but adds up across every piece in the shop. Should every
    piece move a little, or only the ones a figure uses?
