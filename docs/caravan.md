@@ -1,7 +1,8 @@
 # The caravan
 
 **Status: design, nothing built.** Every decision below marked *decided* was made by the
-product owner; everything else is a proposal, and the open questions are at the end.
+product owner; everything else is a proposal. The decisions so far and the questions still open
+are at the end (§11).
 
 The caravan is the crew's traveling camp. It follows the heroes from chapter to chapter and
 campaign to campaign, it grows as they do, and the kids fill it with things they found, things
@@ -46,8 +47,8 @@ scene to tell, it shows the caravan, parked in the terrain the crew is in. Propo
 | Moment | Shared screen (TV, or a phone's World pane) | Phones |
 | --- | --- | --- |
 | **Lobby**, while seating and getting ready | The caravan, parked where the crew last stopped. It replaces the lobby's current backdrop; the room code, ready ticks and adventure vote stay on top. | A **Caravan** button beside Ready: tap a friend, change your own space (§6.1). |
-| **Rest scene** | The rest scene's narration is read first, as now. Once read, the picture crossfades to the caravan parked in this chapter's terrain, with the scene's words on the plate. | Trading and stat points as now, plus the Caravan button. |
-| **Chapter's end** (`chapter_complete`) | After the recap and XP, a short caravan beat: tokens counted in (§5.2), anything found this chapter unpacked onto the caravan, and a big-upgrade vote if the crew can afford one (§6.2). | The vote, and the Caravan button. |
+| **Rest scene** | The picture crossfades to the caravan, parked in this chapter's terrain, as the rest scene opens. The rest scene's narration, when it has any, is shown on the caravan screen's plate, read as usual (*decided*). | Trading and stat points as now, plus the Caravan button. |
+| **Chapter's end** (`chapter_complete`) | After the recap and XP, a short caravan beat: the chapter's Dash Cash counted in (§5.2), anything found this chapter unpacked onto the caravan, and a big-upgrade vote if the crew can afford one (§6.2). | The vote, and the Caravan button. |
 | **Adventure book** (`/journal`, spec §2.3) | n/a | A fifth tray object, **Caravan**: the crew's caravan to look at and tap, online or offline, from the last copy this phone read. |
 | **In a scene, a check or a fight** | Never. The story owns the screen. | Never. |
 
@@ -104,7 +105,8 @@ arrives at the chapter's end it gets its own short moment: the old frame is whee
 new one rolls in. That's a small cousin of the transformation cutscene, never longer than it.
 
 Only a *finished* campaign moves the frame. A failed campaign keeps everything already in the
-caravan (§1) but does not grow it.
+caravan (§1) but does not grow it. A crew still working toward its first finished campaign keeps
+the caravan changing through the shop, and that is enough (*decided*).
 
 ### 4.2 Hotspots, not free placement
 
@@ -124,7 +126,7 @@ comes from one of three places:
 | Source | How the crew gets it | Examples |
 | --- | --- | --- |
 | **Found** (§5.1) | A chapter hands it over as part of normal play | A striped awning from the Saltrot market, a cracked bell from the Ashspan Bridge, a pinecone wreath |
-| **Bought** (§5.2) | Trail tokens, at the chapter's end, by vote if it is a big upgrade | A cookfire with a kettle, a lookout ladder, a second lantern string |
+| **Bought** (§5.2) | Dash Cash, at the chapter's end, by vote if it is a big upgrade | A cookfire with a kettle, a lookout ladder, a second lantern string |
 | **Kept** | Something the game already gives that has nowhere to show | Souvenirs from a failed campaign (spec §8.3), the crew's banner and name (`CrewIdentity`), trophies for each finished campaign |
 
 ### 4.4 Friends
@@ -144,6 +146,11 @@ The first friends almost write themselves, because the story already makes kids 
 | The mosshorn | Gemfall 4B | Being gentle until it lowers its antlers |
 | A duckling | Riftlight, Ashspan Bridge | Settling the ducklings |
 | The kid goat | Riftlight, Exchange Rift | Warming it up together |
+
+**At most four friends are out at once** (*decided*). A crew with more than four rotates them on
+its own: each downtime moment (a lobby, a rest stop, a chapter's end) brings out a different four,
+favoring whoever has been out least, and a friend just befriended is always out at its first
+chance. Letting the kids choose who is out is left open (§11) in case families ask for it.
 
 Following the continuity rules, a friend joins because a **choice** says so ("Ask Pepper to come
 along" beside "Say goodbye"), never because of a variant. Saying goodbye costs the story nothing
@@ -179,7 +186,10 @@ Authoring rules, so finds keep to the house rules:
 - **The scene names the thing, not the caravan.** "Grandmother Winkle presses a striped awning
   into your hands" reads true for every party. "For your caravan" in narration does not, so that
   line belongs to the phone's notice, outside the narration.
-- **A find the crew already owns** turns into trail tokens instead (§5.2), and the notice says so.
+- **A find the crew already owns** turns into Dash Cash instead (§5.2), and the notice says so.
+- **In a graph campaign, offered on every way in, given once** (*decided*). Riftlight can reach
+  a place in more than one order, so a find or friend there is offered on every way into it. The
+  crew gets it the first time and never again from that place, whichever way it came.
 - **Finds are a few per campaign, not per chapter.** Roughly one every two chapters keeps each
   one an event.
 
@@ -187,34 +197,34 @@ The pieces live in a catalog of their own, `content/caravan.json` (§9), validat
 of `content/`. They are not world canon in `canon/items.yaml`: a caravan piece is a game object
 the crew owns, not an object in the realm's lore.
 
-### 5.2 Trail tokens: points for the crew to spend
+### 5.2 Dash Cash: points for the crew to spend
 
-*Decided:* chapter points the crew collects and spends on upgrading the caravan. **Trail tokens**
-is the working name (open question 1).
+*Decided:* chapter points the crew collects and spends on upgrading the caravan, called **Dash
+Cash**.
 
-Tokens are paid to the **crew**, once, at the chapter's end, from things the chapter already
+Dash Cash is paid to the **crew**, once, at the chapter's end, from things the chapter already
 measures:
 
-| Earned for | Tokens |
+| Earned for | Dash Cash |
 | --- | --- |
 | Finishing a chapter, any ending | 2 |
 | Each step of the chapter's goal ticked (content/README.md, "The chapter's goal") | 1 each, so 2 to 4 |
 | Each optional objective met (spec §8.2) | 1 each |
 | A find the crew already owns (§5.1) | 1 |
 
-That is about 5 to 8 tokens a chapter, and a big upgrade costs around 10 to 15: one big upgrade
+That is about 5 to 8 Dash Cash a chapter, and a big upgrade costs around 10 to 15: one big upgrade
 every couple of chapters, and plenty of small ones. The numbers are a starting point for playtest.
 
 Rules, borrowed from what already works for XP:
 
-- **Party-wide, never individual.** Like story XP and objective bonuses, tokens go to the crew,
+- **Party-wide, never individual.** Like story XP and objective bonuses, Dash Cash goes to the crew,
   so no kid is behind on the caravan.
-- **Paid once per crew per chapter.** A chapter the crew has been paid for pays no tokens again,
+- **Paid once per crew per chapter.** A chapter the crew has been paid for pays no Dash Cash again,
   the way a chapter pays each hero once (spec §8.2, #408). A crew replaying for the story can
   still find pieces it does not own.
-- **A setback ending still pays its finishing and goal tokens.** Failure reroutes; it doesn't
+- **A setback ending still pays its finishing and goal Dash Cash.** Failure reroutes; it doesn't
   zero out.
-- **Tokens are not coins.** The story's purse (`grantCoins` / `spendCoins`) stays separate, so
+- **Dash Cash is not coins.** The story's purse (`grantCoins` / `spendCoins`) stays separate, so
   "costs cost" in the story stays a real choice and nobody refuses to pay the ferryman to save up
   for an awning.
 - **Kept on a failed campaign**, with the rest of the caravan (§1).
@@ -236,20 +246,20 @@ nothing to lose, because the crew still owns both pieces. To keep one kid from r
 everything while another watches, a phone may change **one shared hotspot per downtime moment**
 (per lobby, per rest stop, per chapter end). Their own space is unlimited.
 
-### 6.2 Big upgrades: spend tokens, by vote
+### 6.2 Big upgrades: spend Dash Cash, by vote
 
-A **big upgrade** is a bought piece: it costs trail tokens and adds something new to the crew's
+A **big upgrade** is a bought piece: it costs Dash Cash and adds something new to the crew's
 collection. Spending is a crew decision:
 
 1. At the **chapter's end**, if the crew can afford something, the phones show two or three
-   upgrades it can buy, plus "Save our tokens."
+   upgrades it can buy, plus "Save our Dash Cash."
 2. Every seated player votes, the way a choice point works: most votes wins, and a tie goes to
-   the turn marker (spec §6.1). "Save our tokens" is always an option and always free.
+   the turn marker (spec §6.1). "Save our Dash Cash" is always an option and always free.
 3. The winner is unpacked onto the caravan on the TV, and the crew can place it right away.
 
 The vote lives only at the chapter's end, never in the lobby (which already has the adventure
 vote and should not hold up Begin) and never at a rest stop (which is for trading and stat
-points). If the chapter ends before the vote finishes, nothing is bought and the tokens wait.
+points). If the chapter ends before the vote finishes, nothing is bought and the Dash Cash waits.
 
 The shop is a short, fixed list for each frame stage, so a crew is choosing between a few things
 it can picture, never browsing.
@@ -261,10 +271,10 @@ to tap and every piece's name and where it came from ("Found at the Ashspan Brid
 caravan's record rides in the same `GET /api/journal` read and is saved with the book, so it
 opens without a signal like the rest of it.
 
-**In the first version the book is look-only**, keeping its rule that nothing in it can change
-anything. A phone between games belongs to one kid, not a crew, so the natural exception later
-is letting that kid change **their own hero's space** from the book while online (open question
-3). Votes and shared hotspots stay at the table.
+**The book is look-only** (*decided*), keeping its rule that nothing in it can change anything.
+A phone between games belongs to one kid, not a crew, so if families ask, the natural exception
+is letting that kid change **their own hero's space** from the book while online. That is parked
+in §11. Votes and shared hotspots stay at the table.
 
 ## 8. Movement: a caravan that is alive
 
@@ -346,16 +356,19 @@ the hotspot's piece doing its half:
 
 | Action | The figure | The piece |
 | --- | --- | --- |
-| **Warm up** (cookfire) | Faces the fire, settles a little lower, slow breath | Flames flicker; a spark rises now and then |
+| **Warm up** (cookfire) | Faces the fire, settles a little lower, slow breath | Flames flicker while they stand there; a spark rises now and then |
 | **Look up** (banner, lookout) | Leans back a few degrees and holds | The banner ripples |
 | **Peek** (wagon, chest) | Leans in, hops once, leans back | The lid lifts and drops |
 | **Rest** (own space) | Turns to the door, dips and holds still | The tent flap sways |
 | **Greet** (another figure) | Turns to face them, one hop | n/a |
 | **Pet** (a friend) | Steps close, leans in | The friend hops, turns toward them and its reaction shows (§4.4) |
 
-Pieces that move are their own small cutouts (a flag, a lantern, a flame, a lid) on top of the
-painted piece, with simple motion: sway, ripple, flicker, lift. The backdrop stays still, apart
-from very slow ambient touches already common in the scenes (drifting smoke or snow).
+**A piece moves only while a figure is using it** (*decided*). Everything else is static: a
+cookfire nobody is warming up at is a painting, and its flames flicker only while someone stands
+at it. A piece that a stand point uses gets its moving part as a small cutout of its own (a flag,
+a flame, a lid, a tent flap) on top of the painted piece, with simple motion: sway, ripple,
+flicker, lift. Pieces no stand point uses need no moving part at all, which keeps the shop cheap
+to paint. The backdrop is static too.
 
 ### 8.5 When things move
 
@@ -371,8 +384,8 @@ The caravan should feel calm, like watching a campsite, not a busy screen:
 | A kid sits down in the lobby | Their hero steps out of their own space, looks around and waves (a hop and a turn toward the screen) |
 | A kid taps Ready | Their hero walks to the wagon and waits there |
 | A player steps away (#258) | Their hero walks back to their own space and fades the way the lineup already fades a stepped-away hero |
-| Begin | Everyone gathers at the wagon, and the caravan rolls off as the chapter's first scene fades in |
-| A rest scene's caravan appears (§3) | The heroes walk in from the edge, and each settles at a spot |
+| Begin | Everyone gathers at the wagon, and the caravan rolls off as the chapter's first scene fades in, at the start of every chapter (*decided*) |
+| A rest scene opens (§3) | The heroes walk in from the edge, and each settles at a spot |
 | A find is unpacked (§5.1) | A hero carries it to its hotspot, and it pops into place |
 | A big upgrade is bought (§6.2) | The crew gathers round as it's put up |
 | A kid taps a friend on their phone | The friend reacts on the TV, then walks over to that kid's hero |
@@ -407,7 +420,7 @@ A movement that breaks one of these is a bug, not a matter of taste:
 7. **Smooth on the slowest screen.** Movement runs on frame time, not frame count, so a
    dropped frame shortens a step rather than stopping it. It runs at 60 fps on a living room
    mini-PC and stays readable at 30 on an older phone, checked with the frame meter (`?perf`,
-   docs/hardware.md) with a full caravan: four heroes, five friends and moving pieces.
+   docs/hardware.md) with a full caravan: four heroes, four friends and the pieces they are using.
 
 ### 8.7 Reduced motion and no WebGL
 
@@ -449,11 +462,11 @@ New records (architecture §3), each versioned like every stored shape:
 interface CaravanRecord {
   version: number;
   frameStage: 1 | 2 | 3 | 4;
-  tokens: number;
+  dashCash: number;
   owned: Record<PieceId, { from: "found" | "bought" | "kept"; chapterId?: string; at: string }>;
   placed: Record<HotspotId, PieceId>;           // shared hotspots only
   friends: Record<FriendId, { chapterId: string; at: string }>;
-  paidChapters: string[];                        // tokens paid once per chapter (§5.2)
+  paidChapters: string[];                        // Dash Cash paid once per chapter (§5.2)
 }
 
 // on Character (domain.ts, stored at CHAR#<charId>), because the space follows the hero (§4.5)
@@ -466,7 +479,7 @@ interface CaravanSpace {
 - **Written only by the server**, as every authoritative change is: phones send intents
   (`caravanPlace`, `caravanVote`, `spacePlace`), and the server checks the piece is owned, the
   hotspot fits it and the sender may change it.
-- **Outside the commitment rule.** Tokens, finds and friends go straight onto the record in the
+- **Outside the commitment rule.** Dash Cash, finds and friends go straight onto the record in the
   chapter's commit, not into provisional gains, so `failCampaign()` never touches them (§1).
 - **On the run state**, a slim `caravan` view for the screens in the lobby, at rest and at the
   chapter's end, and nothing during scenes.
@@ -488,10 +501,10 @@ backdrop for everywhere; frame stage 1 and 2; souvenirs and the crew banner as k
 lobby showing it on the TV; the adventure book's look-only tray. Movement ships here, not later,
 because it is most of the appeal: the walk and its rules (§8.2, §8.6), lanes and stand points,
 wandering, and the lobby moments (a hero stepping out on sitting down, walking to the wagon on
-Ready, the roll-off on Begin). No tokens, finds or friends yet. The test: do kids point at the
+Ready, the roll-off on Begin). No Dash Cash, finds or friends yet. The test: do kids point at the
 TV during the lobby?
 
-**Phase 2: earning and changing it.** Trail tokens at the chapter's end; the shop and the vote;
+**Phase 2: earning and changing it.** Dash Cash at the chapter's end; the shop and the vote;
 free hotspot changes; each hero's space; the caravan beat on the chapter's end; the first
 `findForCaravan` finds, in Riftlight and the Practice Meadow first (Gemfall is pinned, below).
 
@@ -508,28 +521,24 @@ effect must not move the gameplay digests below the hashes: `findForCaravan` cha
 digests measure (no flag, XP, item or route), and that should be checked when Pepper and the
 mosshorn are added.
 
-## 11. Open questions
+## 11. Decisions and open questions
 
-1. **The token's name.** "Trail tokens" is a placeholder. It should be one short word or two an
-   eight-year-old says out loud, and it must not collide with coins or with star words
-   (Starweaver, Starborn).
-2. **Rest-scene timing.** Should the TV crossfade to the caravan as soon as the rest scene's
-   narration has been read, or only when a phone opens the Caravan panel? The first is more
-   magical; the second never takes the picture away from a family still talking about the scene.
-3. **Editing from the adventure book.** Is changing your own hero's space between games worth
-   breaking the book's look-only rule? It needs a write path from a device binding with no room.
-4. **A crew that hasn't finished a campaign yet.** The frame only grows when a campaign is
-   finished (§4.1), so a family that fails a campaign may see no growth for weeks. Should a
-   failed campaign that reached its last chapter count, or is the shop enough to keep the caravan
-   changing?
-5. **How many friends at once.** The pen has room for a few. When a crew has more friends than
-   spots, do the kids pick who is out today, or do friends take turns on their own?
-6. **Finds in Riftlight's graph campaign.** A graph campaign reaches a place in more than one
-   order. Should a find or friend there be offered on every way in, or only in a scene every way
-   passes through?
-7. **How much the pieces move.** §8.4 gives moving pieces (flames, flags, lids) their own small
-   cutouts. That is cheap per piece but adds up across every piece in the shop. Should every
-   piece move a little, or only the ones a figure uses?
-8. **The roll-off on Begin.** Rolling the caravan off as the chapter fades in is the best moment
-   in §8.5, and it adds a second or two before the first scene. Is that worth it every chapter, or
-   only the first of an evening?
+Settled by the product owner:
+
+| Question | Decision |
+| --- | --- |
+| The currency's name | **Dash Cash** (§5.2) |
+| Rest-scene timing | Crossfade to the caravan as the rest scene opens; its narration shows on the caravan screen (§3) |
+| Editing from the adventure book | Not now: the book stays look-only (§7). Left open below |
+| A crew with no finished campaign | The shop is enough; the frame still grows only on a finished campaign (§4.1) |
+| How many friends at once | Four at most, rotating on their own (§4.4). Choosing is left open below |
+| Finds in a graph campaign | Offered on every way in, given once (§5.1) |
+| How much the pieces move | Only a piece a figure is using moves; everything else is static (§8.4) |
+| The roll-off on Begin | At the start of every chapter (§8.5) |
+
+Still open, parked until families ask:
+
+1. **Editing your own space from the adventure book.** It would break the book's look-only rule
+   and needs a write path from a device binding with no room (§7).
+2. **Choosing which friends are out.** Friends rotate on their own today (§4.4). If kids want to
+   pick, it is a shared-hotspot change at the pen, under §6.1's one-change-per-moment rule.
