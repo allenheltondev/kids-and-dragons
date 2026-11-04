@@ -36,6 +36,10 @@ describe("the scenes ahead", () => {
     ], exits: [{ id: "bank", label: "Far bank", tiles: [{ x: 3, y: 2 }], art: "fight-plank-edge" }] } } } };
     expect(chapterAssets(quay, [])).toContain("/assets/story-props/fight-mooring-post.webp");
     expect(chapterAssets(quay, [])).toContain("/assets/story-props/fight-plank-edge.webp");
+    const wagon: Chapter = { ...content, scenes: { ...content.scenes, encounter_wisps: { ...fight, environment: { objectives: [
+      { id: "wagon-lane", kind: "hold", label: "Lane", tiles: [{ x: 2, y: 2 }], rounds: 2 },
+    ] } } } };
+    expect(chapterAssets(wagon, [])).toContain("/assets/story-props/sausage-wagon.webp");
   });
   it("starts with the party's own figures — every scene needs them", () => {
     const urls = upcomingAssets(null, null, PARTY);

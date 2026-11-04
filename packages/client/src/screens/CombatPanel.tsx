@@ -136,6 +136,7 @@ import { combatMarkerArt, markerFromIcon } from "../world/combat-art";
 import { EFFECT_FRAMES } from "./combat-feedback";
 import { useCombatFeedback, type ActiveFeedback } from "./use-combat-feedback";
 import "./CombatPanel.css";
+import { WagonDefense } from "./WagonDefense";
 
 /**
  * What has been tapped so far this turn. One machine rather than scattered
@@ -668,7 +669,7 @@ export function CombatControls(): ReactElement | null {
           needs saving, what burns. Absent in every fight without an
           environment, so nothing here moves an ordinary board. */}
       {encounter.environment?.spec.victory === "rescue" && <p className="combat__mission" role="status">{combatMission(encounter)}</p>}
-      <EnvironmentStatus encounter={encounter} />
+      {encounter.environment?.spec.objectives?.some(o => o.id === "wagon-lane") ? <WagonDefense encounter={encounter} /> : <EnvironmentStatus encounter={encounter} />}
 
       {/* What the last beat did, in one line: the newest swing, its sum and
           the Guard it needed, or whatever else just happened. The running
@@ -1005,7 +1006,7 @@ function FighterRoster({ encounter, myId }: { encounter: EncounterState; myId: s
   const dangerIds = new Set(committedAttacks(encounter).flatMap(attack => encounter.board.actors
     .filter(actor => attack.tiles.some(tile => tile.x === actor.x && tile.y === actor.y)).map(actor => actor.id)));
   const selected = fighters.find(f => f.id === inspected) ?? fighters.find(f => f.windup && !f.down) ?? fighters.find(f => f.id === nextEnemyId(encounter)) ?? fighters.find(f => f.id === myId) ?? fighters[0];
-  return <section className="combat__roster" aria-label={`Round ${encounter.round}: fighters and plans`}>
+  return <section className="combat__roster" data-inspected={inspected !== null || undefined} aria-label={`Round ${encounter.round}: fighters and plans`}>
     <ul className="combat__fighter-strip" aria-label="Fighter details">
       {fighters.map(fighter => <li key={fighter.id} data-active={fighter.id === activeId || undefined}>
         <button type="button" className="kad-focusable" aria-pressed={selected?.id === fighter.id} onClick={() => setInspected(fighter.id)}

@@ -818,7 +818,6 @@
         "objectives": [
           {
             "id": "wagon-lane",
-            "art": "prop_hay_wagon",
             "kind": "hold",
             "label": "Keep the wagon lane clear",
             "tiles": [

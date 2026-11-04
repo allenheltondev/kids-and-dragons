@@ -353,7 +353,7 @@ const DIGESTS: PreEpicSave["digests"] = {
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "43d406c6e7d81ee2586a4041b2cbe3677762c30b389e1dcd666ea7a75a374463",
   "chapters/gemfall-01.json": "b0b420dcda3053cbbd0b44b176f160885e902a1143d065ec082ecd0c4a61602e",
-  "chapters/gemfall-02.json": "3a70928fe3f2d0fd8934ea1985123eae24c5dc4c116c80a6bd6d7ce36832c7ad",
+  "chapters/gemfall-02.json": "79499ebbd6c9c27d5aea46d5f2bb1f068a321846b076c533955dc23ab8c930f7",
   "chapters/gemfall-03a.json": "7812a6ee4d1dc8056946a0f4f8608f83cef73758e9775a34f214cb70bc4cfec6",
   "chapters/gemfall-03b.json": "8d82081327befaf263ee5542b1ad29f7f1ff2e61cc48de495d811277bf4e7167",
   "chapters/gemfall-03c.json": "57269a151bdfd11371b74a12f04bbc39408b71b7d7907394b0f78a348c88660f",

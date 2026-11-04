@@ -179,7 +179,10 @@ const FIRST_PAINT_BUDGET_KB = 330;
 // 1470 -> 1485 for combat planning: the deterministic enemy planner is now
 // visible on phone/TV, with fighter inspection, suggestions and mission rules.
 // 1481KB measured; existing biome and character art is reused, no dependency added.
-const TOTAL_BUDGET_KB = 1485;
+// 1485 -> 1490 for the wagon defense benchmark: native wagon travel, shared
+// state-derived progress/defender views and the departure payoff add ~5KB.
+// First paint stays 329KB; no dependency is added. Wagon art warms with the chapter.
+const TOTAL_BUDGET_KB = 1490;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

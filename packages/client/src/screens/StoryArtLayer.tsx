@@ -1,11 +1,18 @@
 import { useChapter, useRunState } from "../store";
+import { useSyncExternalStore } from "react";
+import { onStageInset, stageInsetBottom, onStageInsetTop, stageInsetTop } from "../world/stage-inset";
 import { fightResult, introAppearance } from "../world/riftlight-art";
 import "./StoryArtLayer.css";
 
 /** Decorative payoff only; the persisted engine receipt owns the outcome and loot. */
 export function StoryArtLayer() {
  const chapter=useChapter(),state=useRunState();
+ const bottom=useSyncExternalStore(onStageInset,stageInsetBottom);
+ const top=useSyncExternalStore(onStageInsetTop,stageInsetTop);
  if(!chapter || !state || chapter.id!==state.chapterId || state.encounter)return null;
+ const receipt=state.lastEncounter;
+ if(receipt?.chapterId==="gemfall-02" && receipt.sceneId==="encounter_wolves" && receipt.destination===state.sceneId && receipt.outcome==="victory")
+  return <div className="story-art-layer story-art-layer--wagon" style={{ top: "auto", bottom: bottom + 8, maxHeight: `max(0px, calc(100cqh - ${bottom + top + 16}px))` }} aria-hidden="true" data-wagon-clear><img className="story-art-layer__wagon" src="/assets/story-props/sausage-wagon.webp" alt="" /></div>;
  const result=fightResult(chapter,state),intro=introAppearance(chapter,state);
  if(!result && !intro)return null;
  const art=result?.art??intro!;
