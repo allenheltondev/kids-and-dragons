@@ -102,7 +102,7 @@ export function StillCamp({ layout, state }: { layout: CampLayout; state: RunSta
             / (ANCHOR_Y - NOMINAL_PAINT.top) / layout.canvas.height;
           return <span key={piece.id} className="kad-static-camp__piece" data-piece={piece.id} style={{
             left: `${piece.x * 100}%`, top: `${lane.y * 100}%`, height: `${size * 100}%`, zIndex: Math.round(lane.y * 1000) - 1,
-          }}>
+          }} data-mirrored={piece.id.startsWith("bedroll") && piece.x > .5 ? "true" : undefined}>
             {hero ? <CampBedroll style={campKitStyle(hero.figure.id)} accent={hero.figure.accent ?? "#7FD4C1"} />
               : piece.id === "campfire" ? <Campfire active={false} />
               : <img src={`/assets/${piece.path}`} alt="" />}

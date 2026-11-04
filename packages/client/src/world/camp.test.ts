@@ -38,6 +38,7 @@ it.each([false, true])("loads a seated hero's kit and retains a bedroll if the v
   expect(urls).toContain(CAMP_KIT_STYLES[campKitStyle(hero.id)].path);
   const bed = stage.view.children.flatMap(c => (c as Container).children ?? []).find(c => c.label === "piece:bedroll_0") as Container;
   expect(bed.children.filter(c => c instanceof Sprite)).toHaveLength(1);
+  expect(bed.children[0]!.label).toBe("camp-ground-shadow");
   const count = urls.length;
   stage.setFigures([hero]);
   expect(urls).toHaveLength(count);

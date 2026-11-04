@@ -54,6 +54,17 @@ describe("the camp layout in the manifest", () => {
     expect(layout.frame.standPoints.filter((p) => p.seat !== undefined)).toHaveLength(4);
   });
 
+  it("sets every bedroll beside its owner, toward the fire, instead of hiding it under their feet", () => {
+    const layout = campLayout(parsed, "open_plains", 1);
+    const fire = layout.frame.pieces.find(piece => piece.id === "campfire")!;
+    for (const rest of layout.frame.standPoints.filter(point => point.seat !== undefined)) {
+      const kit = layout.frame.pieces.find(piece => piece.id === rest.hotspot)!;
+      expect(kit.lane).toBe(rest.lane);
+      expect(Math.abs(kit.x - rest.x) * layout.canvas.width).toBeGreaterThan(80);
+      expect((kit.x - rest.x) * (fire.x - rest.x)).toBeGreaterThan(0);
+    }
+  });
+
   for (const seed of [1, 7, 42, 2026]) {
     it(`lets every hero leave their bedroll, seed ${seed}`, () => {
       const layout = campLayout(parsed, "open_plains", 1);

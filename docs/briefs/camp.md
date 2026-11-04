@@ -118,4 +118,18 @@ counts the five Phase 1 paintings and three kits once each. Runtime tests tie st
 the manifest, check tint math and fallback, and guard against filter collisions between seats.
 The tent and tent-flap formats remain future work.
 
+## Grounding and light
+
+The camp shares one upper-left daylight direction. Heroes and pieces have soft contact
+shadows and a faint lower-right cast, drawn beneath their cutouts and scaled with their lane.
+The fire adds a restrained warm pool on the ground. A light warm ambient tint ties the
+cutouts to the late-afternoon background; these effects belong to the renderer, so the PNG
+cutouts stay free of baked ground or cast shadows.
+
+Bedrolls sit just inside their owners' rest positions instead of underneath the heroes.
+The right-hand kits face inward, forming two pairs around the fire. Rest stand points and
+walking routes stay unchanged. The still fallback uses the same grouping and soft shadows.
+
+![The camp as one composition, with visible kits and shared ground light](camp-composition-preview.webp)
+
 ![Natural and blue cloth on all three bedroll styles](camp-kits-preview.png)

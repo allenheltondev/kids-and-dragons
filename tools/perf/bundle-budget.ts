@@ -184,7 +184,11 @@ const FIRST_PAINT_BUDGET_KB = 330;
 // kit tinting live in the lazy room/renderer graph. This is the explicit cost
 // of the new camp feature, with no dependency added; first paint remains 329KB
 // under its unchanged 330KB cap. Painted PNG/WebP assets are fetched separately.
-const TOTAL_BUDGET_KB = 1525;
+// 1525 -> 1528 for the requested camp composition pass: 1526KB measured.
+// Soft contact/cast shadows reuse existing textures, with no new dependency or
+// art downloads. The shared light direction and kit placement stay in the lazy
+// renderer. First paint is unchanged at 329KB under its existing 330KB ceiling.
+const TOTAL_BUDGET_KB = 1528;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);
