@@ -69,7 +69,6 @@ test("reusable interactions run through real phones, TV, refresh, and authored b
     }
     await expect(controls(two).getByRole("button", { name: "See what happens next" })).toBeVisible();
     await two.reload();
-    await two.getByRole("button", { name: "Got it", exact: true }).click();
     // A reloaded phone opens on its turn, not on the bag with a "Your turn" button to find (#588).
     await expect(two.getByRole("button", { name: "Your turn", exact: true })).toBeHidden();
     await expect(controls(two).getByRole("button", { name: "See what happens next" })).toBeVisible();

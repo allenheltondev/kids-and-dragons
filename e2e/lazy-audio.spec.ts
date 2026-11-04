@@ -53,7 +53,7 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 390, height: 844 
 
     await page.goto("/");
     const readAloud = page.getByRole("button", { name: /turn read-aloud on/i });
-    const settings = page.getByRole("button", { name: "Display settings" }).first();
+    const settings = page.getByRole("button", { name: "Settings", exact: true }).first();
     await expect(readAloud).toBeVisible(TAP);
     await expect(settings).toBeVisible(TAP);
     const before = { readAloud: await readAloud.boundingBox(), settings: await settings.boundingBox() };

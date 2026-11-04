@@ -362,7 +362,7 @@ The tier floor is the right number because it makes a joined character **arithme
 
 Starting XP is the **threshold for that level**, not zero, or the next chapter's award drops the character straight back to level 1.
 
-A kid who sits down mid-chapter plays from the scene the party is in (mid-fight, they join in after it), and their phone opens on a one-line catch-up: what the party is doing right now. See §8.5.
+A kid who sits down mid-chapter plays from the scene the party is in (mid-fight, they join in after it). See §8.5.
 
 ### 8.5 Stepping away and coming back
 
@@ -381,7 +381,7 @@ Dinner, a bath, a phone call: a kid leaving partway through is a normal part of 
 
 Their hero **follows the party**: it stays in the party, in the fight's turn order and on the board, with everything it had. The shared screen says "Rosie stepped away" in words and fades her figure, standing up, so nobody mistakes it for knocked down (§7.3). When the fight is waiting on her turn, it says that any phone can pass it.
 
-**Coming back is opening the room again.** Same seat, same hero, back in the turn order, and the phone opens with one line saying what is going on ("Welcome back, Rosie! The party is in a fight, and your hero is right where you left them."). A late joiner (§8.4) hears "Welcome" instead. Nothing on either line counts the party.
+**Coming back is opening the room again.** Same seat, same hero, back in the turn order. The phone opens straight on the game, with no welcome line to dismiss: the shared screen says where the party has got to, and the phone's own pages show what is theirs.
 
 ---
 

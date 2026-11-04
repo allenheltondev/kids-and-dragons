@@ -37,7 +37,7 @@ const SIZES = [
  * about what a remote has to drive, so a new entry belongs in that table too — and the row is
  * proven at these six: `layout-fit.spec.ts` fails on a seventh, and on any that comes and goes.
  */
-const KEEP = [/^Display settings$/, /^Turn read-aloud (on|off)$/, /^Turn sound (on|off)$/, /^About this screen$/, /^Enable sound$/, /^Room( \(locked\))?$/];
+const KEEP = [/^Settings$/, /^Turn read-aloud (on|off)$/, /^Turn sound (on|off)$/, /^About this screen$/, /^Enable sound$/, /^Room( \(locked\))?$/];
 
 /** What on screen takes a click or focus, with its name and whether it is in the corner row. */
 async function clickables(page: Page): Promise<{ name: string; inCorner: boolean }[]> {

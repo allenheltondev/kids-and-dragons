@@ -34,7 +34,7 @@ The inventory-only conclusion below was incomplete. The follow-up [runtime art a
 | Area | Evidence |
 | --- | --- |
 | Joining, character creation, returning heroes | Real rooms at 320/360/390px, larger text, stat controls, name fields and forward buttons. |
-| Lobby, room controls, notices, catch-up, rest | Existing layout checks measure clipping, corner-control overlap and broken words. |
+| Lobby, room controls, notices, rest | Existing layout checks measure clipping, corner-control overlap and broken words. |
 | World/story, class fitting and confirmation | Existing layout suite exercises the Exchange, shared display and sound controls. |
 | Map and exploration | Real map navigation in Party and Phone modes, landmarks, details, zoom and restored position. |
 | Field Guide | New rendered touch-target regression at small-phone and portrait/landscape tablet sizes; existing component behavior coverage. |

@@ -500,8 +500,7 @@ export function openChannel(options: ChannelOptions): Channel {
   /**
    * `again`: a stream replacing one this page had, which is a reconnect even
    * on its first attempt. Said as one, so a wake that is slow to find the
-   * network shows the banner, and the catch-up line (screens/CatchUp) knows
-   * the story may have moved while the screen was away.
+   * network shows the banner.
    */
   function connect(again = false): void {
     if (closed) return;

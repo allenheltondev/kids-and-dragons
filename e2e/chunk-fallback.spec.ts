@@ -51,7 +51,7 @@ test("an optional control that cannot load is absent, and the page keeps working
   await page.goto("/");
   await expect(page.getByRole("button", { name: /grown-ups: sign in/i })).toBeVisible(TAP);
   // The rest of the row still landed; only read-aloud is missing, and quietly.
-  await expect(page.getByRole("button", { name: "Display settings" }).first()).toBeVisible(TAP);
+  await expect(page.getByRole("button", { name: "Settings", exact: true }).first()).toBeVisible(TAP);
   await expect(page.getByRole("button", { name: /^(Enable sound|Turn sound off)$/ })).toBeVisible(TAP);
   await expect(page.getByRole("button", { name: /turn read-aloud/i })).toHaveCount(0);
   await expect(page.getByRole("alert")).toHaveCount(0);
@@ -71,7 +71,7 @@ test("a required screen that cannot load says so, and Try again opens it", async
   await expect(alert).toContainText("Your adventure book couldn’t open.", TAP);
   await reported;
   // The app around it is still up.
-  await expect(page.getByRole("button", { name: "Display settings" }).first()).toBeVisible(TAP);
+  await expect(page.getByRole("button", { name: "Settings", exact: true }).first()).toBeVisible(TAP);
 
   await page.unroute(JOURNAL);
   await alert.getByRole("button", TRY).click();

@@ -63,3 +63,4 @@ html[data-contrast="high"] .kad-a11y__button { opacity: 1; }
 .kad-a11y__option--large { font-size: 1.15em; }
 .kad-a11y__option--largest { font-size: 1.3em; }
 html[data-hand="left"] .kad-a11y__done { order: -1; }
+.kad-a11y__room { gap: var(--kad-space-2); padding-block-end: var(--kad-space-2); border-block-end: 1px solid var(--kad-border); }
