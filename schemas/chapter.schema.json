@@ -2528,9 +2528,21 @@
                     }
                   }
                 }
+              },
+              "victory": {
+                "enum": [
+                  "rescue"
+                ],
+                "description": "Win by rescuing all captives, not by clearing enemies."
               }
             }
           }
+        },
+        "victory": {
+          "enum": [
+            "rescue"
+          ],
+          "description": "Win by rescuing all captives, not by clearing enemies."
         }
       }
     },
@@ -2583,6 +2595,12 @@
           "type": "integer",
           "minimum": 1,
           "maximum": 6
+        },
+        "turns": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4,
+          "description": "Shared helping turns needed beside the captive; defaults to one."
         }
       }
     },

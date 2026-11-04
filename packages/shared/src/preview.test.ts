@@ -4,6 +4,7 @@ import type { RunState } from "./types/state.js";
 
 describe("readIntentPreview", () => {
   it("reads every kind", () => {
+    expect(readIntentPreview({ kind: "suggest", to: { x: 2, y: 3 } })).toEqual({ kind: "suggest", to: { x: 2, y: 3 } });
     expect(readIntentPreview({ kind: "choice", choiceId: "east" })).toEqual({ kind: "choice", choiceId: "east" });
     expect(readIntentPreview({ kind: "move", to: { x: 2, y: 3 } })).toEqual({ kind: "move", to: { x: 2, y: 3 } });
     expect(readIntentPreview({ kind: "action", abilityId: "attack", targetIds: ["wisp#1"] })).toEqual({
@@ -36,6 +37,9 @@ describe("readIntentPreview", () => {
       { kind: "choice", choiceId: "x".repeat(65) },
       { kind: "move", to: { x: 1.5, y: 0 } },
       { kind: "move", to: { x: -1, y: 0 } },
+      { kind: "suggest", to: { x: -1, y: 0 } },
+      { kind: "suggest", to: { x: 1.5, y: 0 } },
+      { kind: "suggest", to: { x: 100, y: 0 } },
       { kind: "action", abilityId: "attack", targetIds: "wisp" },
       { kind: "action", abilityId: "attack", targetIds: Array.from({ length: 9 }, (_, i) => `t${i}`) },
       { kind: "item", itemId: "acorn", targetId: 7 },

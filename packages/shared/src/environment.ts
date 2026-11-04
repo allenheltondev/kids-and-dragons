@@ -62,6 +62,7 @@ export interface EnvironmentState {
    * Read it through `captiveStatuses`.
    */
   readonly rescue?: RescueStatus | readonly RescueStatus[];
+  readonly rescueProgress?: readonly number[];
   /**
    * What each captive has left before the monsters drag them off (#220), in
    * authored order — present only when some captive has `hp`. A captive
@@ -309,6 +310,8 @@ export interface EnvironmentRescueView {
   /** A captive the monsters can drag off (#220): what they have left, and started with. */
   readonly hp?: number;
   readonly maxHp?: number;
+  readonly progress?: number;
+  readonly target?: number;
 }
 
 export interface EnvironmentModifierView {
@@ -400,6 +403,7 @@ export function environmentView(state: EncounterState): EnvironmentView | null {
         name: captive.name,
         at: captive.at,
         status,
+        ...((captive.turns ?? 1) > 1 ? { progress: status === "freed" ? captive.turns! : env.rescueProgress?.[i] ?? 0, target: captive.turns! } : {}),
         ...(status === "waiting" && deadline !== null ? { roundsLeft: Math.max(0, deadline - round + 1) } : {}),
         ...(captive.hp !== undefined ? { hp: hp ?? captive.hp, maxHp: captive.hp } : {}),
       };
@@ -676,12 +680,14 @@ function checkResolved(
 
   // --- rescue: one captive, or a list of them (#220)
   const captives = captivesOf(env);
+  if (env.victory === "rescue" && captives.length === 0) fail("/environment/victory", "rescue victory needs somebody to rescue");
   if (Array.isArray(env.rescue) && (env.rescue.length < 1 || env.rescue.length > ENVIRONMENT_LIMITS.captives)) {
     fail("/environment/rescue", `a list of 1 to ${ENVIRONMENT_LIMITS.captives} captives`);
   }
   captives.forEach((rescue, i) => {
     const at = Array.isArray(env.rescue) ? `/environment/rescue/${i}` : "/environment/rescue";
     roundOk(rescue.byRound, `${at}/byRound`);
+    if (rescue.turns !== undefined && (!isInt(rescue.turns) || rescue.turns < 1 || rescue.turns > 4)) fail(`${at}/turns`, "must be a whole number from 1 to 4");
     if (rescue.hp !== undefined && (!isInt(rescue.hp) || rescue.hp < 1 || rescue.hp > ENVIRONMENT_LIMITS.captiveHp)) {
       fail(`${at}/hp`, `must be a whole number from 1 to ${ENVIRONMENT_LIMITS.captiveHp}`);
     }

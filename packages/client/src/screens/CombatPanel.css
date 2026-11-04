@@ -157,6 +157,15 @@
   border-radius: var(--radius-md, 0.75em);
   background: var(--color-surface-sunken, #120f26);
 }
+.combat__grid .combat__cell:not(.combat__cell--blocked):not(.combat__cell--enemy):not(.combat__cell--party) {
+  background-image: linear-gradient(#14271e5c, #14271e5c), var(--battle-floor, none);
+  background-size: auto, 400% 400%;
+  background-position: center, 0 0;
+}
+.combat__grid .combat__cell--walk { border-color: #e8cf8d66; }
+.combat__grid .combat__cell--walk .combat__dot { inline-size: 18%; block-size: 18%; opacity: .8; animation: none; }
+.combat__grid .combat__cell--threatened { outline: 2px dashed #ffbd9c; outline-offset: -3px; }
+.combat__mission { margin: 0; padding: .45em .6em; border-inline-start: .25em solid #f2d28b; background: #25372de0; color: #fff2ce; font-size: .8em; font-weight: 800; }
 
 .combat__cell {
   position: relative;
@@ -755,16 +764,15 @@
 
 /* Keep decision information readable without permanently expanding every fighter. */
 .combat__overview { display: flex; flex: none; align-items: center; flex-wrap: wrap; gap: 0.25em 0.6em; }
-.combat__roster { position: relative; flex: 1 1 7em; min-inline-size: 0; }
-.combat__roster summary { display: flex; align-items: center; gap: 0.4em; min-block-size: 44px; padding: 0.35em 0.5em; border: 1px solid var(--kad-border); border-radius: 0.6em; background: var(--kad-bg-raised); cursor: pointer; font-weight: 700; font-size: 0.9em; }
-.combat__roster summary::after { content: "▾"; margin-inline-start: auto; }
-.combat__roster[open] summary::after { content: "▴"; }
-.combat__roster-panel { position: absolute; inset-block-start: 100%; inset-inline-start: 0; inline-size: min(26em, 100cqw - 1.5em); max-block-size: min(25em, 55cqh); overflow-y: auto; z-index: 4; padding: 0.75em; background: var(--kad-bg-raised); border: 1px solid var(--kad-gold); border-radius: 0.6em; box-shadow: var(--kad-shadow-lg); }
-.combat__roster-help { margin: 0 0 0.5em; color: var(--kad-ink-dim); line-height: 1.4; }
-.combat__roster-panel li { display: flex; align-items: center; gap: 0.6em; padding: 0.5em; border-block-start: 1px solid var(--kad-border); }
-.combat__roster-panel li > div { display: flex; flex-direction: column; min-inline-size: 0; overflow-wrap: anywhere; }
-.combat__roster-panel li[data-active] { background: var(--kad-accent-soft); }
-.combat__roster-turn { color: var(--kad-gold); font-weight: 700; }
+.combat__roster { flex: 1 0 100%; min-inline-size: 0; }
+.combat__fighter-strip { display: flex; gap: .4em; margin: 0; padding: .15em; list-style: none; overflow-x: auto; scrollbar-width: thin; }
+.combat__fighter-strip li { flex: 0 0 auto; }
+.combat__fighter-strip button { display: flex; align-items: center; gap: .35em; min-height: 44px; max-width: 10em; padding: .25em .5em; background: #28243ce8; border: 1px solid #9682a8; border-radius: .7em; color: #f8edda; font: inherit; font-size: .75em; }
+.combat__fighter-strip button[aria-pressed=true] { border-color: #ffe1a0; background: #514336; }
+.combat__fighter-strip li[data-active] button { box-shadow: inset 0 0 0 2px #c4e7d5; }
+.combat__fighter-strip button > span { display: flex; flex-direction: column; text-align: start; min-width: 0; }
+.combat__fighter-strip strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.combat__plan { min-height: 2em; margin: .25em 0 0; color: #f6dfac; font-size: .75em; line-height: 1.25; }
 .combat__budget { display: flex; flex-wrap: wrap; gap: 0.25em 0.7em; margin: 0; font-size: 0.85em; }
 .combat__budget span { display: inline-flex; align-items: center; gap: 0.25em; }
 .combat__friend-art { flex: none; }
@@ -811,7 +819,7 @@ html[data-text] .player--fighting .sheet__meta { display: none; }
 .combat__map-scroll { overflow: auto; max-block-size: 65dvh; overscroll-behavior: contain; }
 .combat .combat__map-scroll .combat__grid { inline-size: max(100%, calc(var(--cols) * 48px)); block-size: auto; max-inline-size: none; max-block-size: none; font-size: 16px; }
 
-.combat__roster { flex-basis: 3em; }
+
 .combat__enlarge { min-inline-size: 44px; font-size: 1em; }
 
 .combat__enlarge { flex: none; inline-size: 44px; padding: 0; border: 1px solid var(--kad-gold); border-radius: 0.5em; background: var(--kad-bg-raised); color: var(--kad-ink); cursor: pointer; }
@@ -852,7 +860,7 @@ html[data-motion="reduced"] .combat__cell > .combat__cell-face, html[data-motion
    height to decisions, and can still be opened at full size for precise taps. */
 .player--deciding .combat__answers { overflow: visible; flex: none; mask-image: none; }
 .player--deciding .combat__dock { flex: none; }
-.combat__board { flex: 1 1 0; min-block-size: 80px; }
+.combat__board { flex: 1 1 0; min-block-size: clamp(80px, 30cqh, 180px); }
 .combat__more, .combat__legend { display: none; }
 .combat__hint { font-size: .8em; }
 .combat__seat { min-block-size: 44px; }
@@ -863,3 +871,22 @@ html[data-motion="reduced"] .combat__cell > .combat__cell-face, html[data-motion
   .combat__budget { font-size: .75em; }
   .combat .combat__actions .choice__sub { font-size: .75em; line-height: 1.15; }
 }
+.combat__suggest-toggle { align-self: flex-start; min-height: 44px; border: 1px solid #c7e6d8; border-radius: .6em; padding: .3em .7em; background: #223d38; color: #eefaf3; font: inherit; font-size: .8em; } .combat__suggestion { margin: 0; font-size: .75em; color: #c9f7e5; } .combat__cell--suggested::after { content: "✦"; position: absolute; inset: 0; display: grid; place-items: center; font-size: 1.5em; color: #9ff4d6; text-shadow: 0 1px 2px #000; pointer-events: none; }
+
+/* Keep the combat identity in one row while large text gives the board room. */
+html[data-text] .player--fighting .sheet { flex-wrap: nowrap; gap: .35em; }
+html[data-text] .player--fighting .sheet__id { flex: 1 1 0; min-width: 0; }
+html[data-text] .player--fighting .sheet__hp { flex: 0 0 auto; }
+html[data-text] .player--fighting .sheet__portrait { inline-size: 1.8em; block-size: 1.8em; }
+html[data-text] .player--fighting .sheet__name { font-size: 1em; }
+/* XP is available on the You card; the active fight prioritizes identity and health. */
+html[data-text] .player--fighting .sheet .xp-meter { display: none; }
+html[data-text] .combat .combat__actions .choice { font-size: .85em; }
+
+.player--fighting [data-testid="player-hint"] { display: none; }
+
+/* Fighter inspection and map enlargement share a row rather than a second toolbar. */
+.combat__overview { display: grid; grid-template-columns: minmax(0, 1fr) 44px; align-items: start; gap: .25em; }
+.combat__roster { grid-column: 1; grid-row: 1 / 3; }
+.combat__enlarge { grid-column: 2; grid-row: 1; }
+.combat__budget { grid-column: 1 / -1; }

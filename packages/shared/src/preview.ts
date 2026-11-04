@@ -57,6 +57,10 @@ export function readIntentPreview(raw: unknown): IntentPreview | null | undefine
       const to = position(value.to);
       return to ? { kind: "move", to } : undefined;
     }
+    case "suggest": {
+      const to = position(value.to);
+      return to ? { kind: "suggest", to } : undefined;
+    }
     case "action": {
       if (!id(value.abilityId)) return undefined;
       const targetIds = list(value.targetIds, (item) => (id(item) ? item : null));

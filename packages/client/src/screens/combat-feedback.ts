@@ -40,6 +40,7 @@ export function combatFeedback(events: readonly EncounterEvent[], encounter: Enc
           add(event.targetId, "miss_veer", "Miss!");
         break;
       case "freed": add(event.byId, "burst_star", "Safe!", "celebrate"); break;
+      case "rescueProgress": add(event.byId, "burst_star", "Helping!", "celebrate"); break;
       case "objective": if (event.progress >= event.target && event.byId) add(event.byId, "burst_star", "Done!", "celebrate"); break;
       case "down": {
         if (eventIndex !== lastEnemyDown || !enemiesDownAfterBatch) break;

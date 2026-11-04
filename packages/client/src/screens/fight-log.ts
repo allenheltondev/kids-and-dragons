@@ -250,6 +250,7 @@ export function describeBeats(
       case "slowed":
       case "escaped":
       case "freed":
+      case "rescueProgress":
       case "captiveLost":
       case "captiveDragged":
       case "objective":
