@@ -62,6 +62,11 @@ test("TV lobby uses one identity header and keeps joining beside four heroes", a
           crewInHeader: crew.top >= header.top && crew.bottom <= header.bottom,
           crewBesideTable: crew.left >= table.right,
           joinBesideParty: join.right < party.left,
+          joinContainsCodeAndQr: [...document.querySelectorAll(".lobby__code-block, .lobby__qr-block")].every(el => {
+            const box = el.getBoundingClientRect();
+            return box.left >= join.left && box.right <= join.right && box.top >= join.top && box.bottom <= join.bottom;
+          }),
+          qrSquare: Math.abs(document.querySelector(".lobby__qr")!.getBoundingClientRect().width - document.querySelector(".lobby__qr")!.getBoundingClientRect().height) < 1,
           campaignsBelowParty: campaigns.top >= Math.max(join.bottom, ...[...document.querySelectorAll(".lobby-member")].map(el => el.getBoundingClientRect().bottom)),
           overflow: lobby.scrollHeight > lobby.clientHeight + 1,
           outside: [...document.querySelectorAll<HTMLElement>(".lobby__header, .lobby__campaign, .lobby__join, .lobby-member")].filter(el => {
@@ -70,7 +75,7 @@ test("TV lobby uses one identity header and keeps joining beside four heroes", a
           }).map(el => el.className),
         };
       });
-      expect(layout).toEqual({ equalFrames: true, equalType: true, noHeaderBackground: true, crewInHeader: true, crewBesideTable: true, joinBesideParty: true, campaignsBelowParty: true, overflow: false, outside: [] });
+      expect(layout).toEqual({ equalFrames: true, equalType: true, noHeaderBackground: true, crewInHeader: true, crewBesideTable: true, joinBesideParty: true, joinContainsCodeAndQr: true, qrSquare: true, campaignsBelowParty: true, overflow: false, outside: [] });
     }
   } finally { await context.close(); }
 });
