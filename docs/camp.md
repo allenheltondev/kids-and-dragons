@@ -300,7 +300,7 @@ measures:
 
 | Earned for | Dash Cash |
 | --- | --- |
-| Finishing a chapter, any ending | 3 (*proposed*; see below) |
+| Finishing a chapter, any ending | 2 (*decided*) |
 | Each optional objective met (spec §8.2) | 1 each |
 | A find the crew already owns (§5.1) | 1 |
 | A lucky drop: a 1 in 8 chance after each won mini-game or fight (below) | 1 |
@@ -310,13 +310,13 @@ design (content/README.md, "The chapter's goal"), so a party cannot miss one, an
 would be free money. Optional objectives are different: a party can miss them, so they are the
 part of the payout that rewards how the chapter was played.
 
-*Proposed:* finishing pays **3**, not 2, so that two chapters always reach the shop's first
-5-Dash-Cash pieces (§5.3). At 2, a crew whose first two chapters have no objectives would arrive
-at the shop with 4 and nothing it could buy. With 3, a chapter pays 3 to 6: 25 of today's 42
-chapters have no optional objectives (3 Dash Cash), 5 have two and 12 have three. That is 6 to 12
-after two chapters, then a 10-to-15 piece every three or four chapters. Every purchase goes
-through the same vote (§6.2); there is no separate flow for cheaper pieces. The numbers are a
-starting point for playtest.
+So a chapter pays 2 to 5: 25 of today's 42 chapters have no optional objectives (2 Dash Cash), 5
+have two and 12 have three. That is 4 to 10 after two chapters, plus any lucky drops (below). A
+crew whose first chapters had objectives or a lucky drop can buy a 5-Dash-Cash starter piece the
+moment the shop opens; one whose first two chapters had none arrives with 4 and makes its first
+purchase a chapter later. Either way the money is earned, and a 10-to-15 piece follows every four
+or five chapters. Every purchase goes through the same vote (§6.2); there is no separate flow for
+cheaper pieces. The numbers are a starting point for playtest.
 
 **Lucky drops** (*decided*): after each mini-game the party succeeds at and each fight it wins,
 there is a 1 in 8 chance the crew finds 1 Dash Cash. It is a small surprise on top of the
@@ -330,10 +330,10 @@ chapter's pay, not something to grind for:
   the same way. A refresh, a reconnect or a retried message cannot roll it again.
 - **No near misses.** A drop that doesn't happen shows nothing. There is no "so close!", no meter
   and no odds on screen.
-- *Proposed:* **only games a party can fail count.** `play` interactions (feeding, petting,
+- **Only games a party can fail count** (*decided*). `play` interactions (feeding, petting,
   celebrating, content/README.md) always succeed, so, by the same reasoning as goal steps, they
   never drop. Relaxed play still counts: it is easier, not automatic.
-- *Proposed:* **at most 2 lucky drops a chapter**, and **none in a chapter already paid for**
+- **At most 2 lucky drops a chapter**, and **none in a chapter already paid for** (*decided*)
   (§12.2), so replaying a chapter is never a way to farm them.
 
 Across today's 42 chapters there are 184 mini-games a party can fail and 61 fights, about 5 per
@@ -371,7 +371,8 @@ opens only after two chapters, so neither can be the first reward.
   it can buy anything: the chapter-end shop appears only once the crew has been paid for at least
   two chapters, in any campaign. Before that, the chapter's end shows the balance and says the
   shop opens after the next chapter. The first pieces in each shop cost **5 Dash Cash**
-  (*decided*), so the shop's first visit always has something the crew can afford.
+  (*decided*). Most crews can afford one when the shop opens; a crew that earned only the 4 for
+  finishing two chapters buys a chapter later (§5.2).
 
 ### 5.4 Each hero's kit pieces
 
@@ -772,7 +773,8 @@ Settled by the product owner:
 | Phase 1 | Small: the animated lobby only, expanding once children notice their camp (§10) |
 | The first reward | Arrives in the first session: a kit choice and a first-chapter find (§5.3) |
 | The shop | Opens once the crew has been paid for two chapters; its first pieces cost 5 Dash Cash (§5.3) |
-| Lucky drops | A 1 in 8 chance of 1 Dash Cash after each won mini-game or fight, rolled by the server (§5.2) |
+| Lucky drops | A 1 in 8 chance of 1 Dash Cash after each won mini-game or fight, rolled by the server. Never from `play` interactions, at most 2 a chapter, none in a chapter already paid for (§5.2) |
+| What a chapter pays | 2 for finishing, any ending, plus 1 per optional objective met (§5.2) |
 | Goal steps | Pay no Dash Cash: every success path ticks them all, so they would be free money. Finishing and optional objectives pay (§5.2) |
 | Kit finds | Every seated hero gets their own copy; a duplicate gives nothing, since Dash Cash is the crew's (§5.4) |
 | The shared-edit limit | Tested in playtest, with an Undo that does not use up a change (§6.1) |
@@ -780,13 +782,9 @@ Settled by the product owner:
 
 Still open:
 
-1. **What finishing a chapter pays.** Proposed: 3, so two chapters always afford a starter piece
-   (§5.2).
-2. **Lucky drop limits** (§5.2). Proposed: `play` interactions never drop, at most 2 drops a
-   chapter, none in a chapter already paid for.
-3. **Milestone kit pieces** (§5.4): a tent style per appearance tier and a decoration per class
+1. **Milestone kit pieces** (§5.4): a tent style per appearance tier and a decoration per class
    distinction. Proposed, not yet approved.
-4. **Queued offline kit edits** (§7). Proposed for later.
+2. **Queued offline kit edits** (§7). Proposed for later.
 
 ## 12. Implementation requirements
 
