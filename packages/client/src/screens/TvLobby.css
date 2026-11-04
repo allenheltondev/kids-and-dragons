@@ -8,38 +8,8 @@
   .kad-party--world .lobby {
     gap: .75em;
     padding: .8em 1.2em;
-    /* Utility controls keep a strip of their own above the shared header. */
-    padding-block-start: calc(var(--kad-safe-top, 0px) + var(--kad-corner-bottom, 44px) + .3em);
   }
 
-  .kad-party--world .lobby__header {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    align-items: center;
-    gap: 1em;
-    flex: none;
-    inline-size: min(100%, 64em);
-    align-self: center;
-    padding: .35em .7em .7em;
-    box-sizing: border-box;
-    border-radius: .7em;
-    background: linear-gradient(90deg, rgb(13 11 26 / 88%), rgb(13 11 26 / 72%));
-    border-block-end: 1px solid rgb(245 200 108 / 45%);
-  }
-  .kad-party--world .lobby__header:has(.lobby__place) {
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1.2fr);
-  }
-  .kad-party--world .lobby__header .lobby__heading { font-size: 1.5em; align-self: stretch; justify-content: center; }
-  .kad-party--world .lobby__header .crew-identity {
-    font-size: 1em;
-    padding: 0;
-    border: 0;
-    border-radius: 0;
-  }
-  .kad-party--world .lobby__header .crew-identity__name { font-size: 1.15em; overflow-wrap: break-word; }
-  .kad-party--world .lobby__header .crew-identity__label { font-size: .75em; }
-  .kad-party--world .lobby__header .lobby__place { display: grid; gap: .2em; font-weight: 700; overflow-wrap: break-word; }
-  .kad-party--world .lobby__place-label { display: block; font-size: .75em; font-weight: 400; color: var(--kad-ink-dim); }
 
   .kad-party--world .lobby :is(.lobby__campaigns, .lobby__premise, .lobby__next-chapter) { inline-size: min(100%, 64em); }
   .kad-party--world .lobby__campaigns { order: 2; flex: none; flex-wrap: nowrap; gap: .8em; }
@@ -105,12 +75,6 @@
    the joining card and the secondary level/token details left to the phones. */
 @media (min-width: 900px) and (orientation: landscape) and (max-height: 650px) {
   .kad-party--world .lobby { gap: .5em; padding-block-end: .4em; }
-  .kad-party--world .lobby__header { padding-block: .15em .4em; }
-  .kad-party--world .lobby__header .lobby__heading { font-size: 1em; white-space: nowrap; }
-  .kad-party--world .lobby__header .lobby__place { font-size: .85em; }
-  .kad-party--world .lobby__header .crew-identity__art { display: none; }
-  .kad-party--world .lobby__header .crew-identity__name { font-size: .75em; }
-  .kad-party--world .lobby__header .crew-identity__label { font-size: .65em; }
   .kad-party--world .lobby__campaign { grid-template-columns: 2.8em minmax(0, 1fr); min-block-size: 3em; padding: .35em .6em; }
   .kad-party--world .lobby__campaign > .campaign-art { inline-size: 2.8em; }
   .kad-party--world .lobby__campaign-title { font-size: .85em; }
@@ -139,27 +103,6 @@
 }
 
 @media (min-width: 900px) and (orientation: landscape) {
-  .kad-party--world .lobby__header :is(.lobby__place, .lobby__crew) {
-    position: relative;
-    isolation: isolate;
-    align-self: stretch;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: .3em 34px;
-    margin: 0;
-  }
-  .kad-party--world .lobby__header .crew-identity__art { display: none; }
-  html:not([data-contrast="high"]) .kad-party--world .lobby__header :is(.lobby__place, .lobby__crew)::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    border: solid transparent;
-    border-width: 0 32px;
-    border-image: url("../assets/chrome/heading-ribbon.webp") 0 64 fill / 0 32px stretch;
-    pointer-events: none;
-  }
   .kad-party--world .lobby__campaign-title { flex-wrap: wrap; gap: .25em .5em; }
   .kad-party--world .lobby__campaign-selected {
     display: inline-flex;
@@ -181,11 +124,6 @@
   .kad-party--world .lobby__campaign[data-locked="true"] { opacity: .7; }
 }
 @media (min-width: 900px) and (orientation: landscape) and (max-height: 650px) {
-  .kad-party--world .lobby__header .lobby__place { font-size: .7em; }
-  .kad-party--world .lobby__header .crew-identity__name { font-size: .7em; }
-}
-
-@media (min-width: 900px) and (orientation: landscape) and (max-height: 650px) {
   .kad-party--world .lobby__campaign-selected {
     position: absolute;
     inset-block-end: .35em;
@@ -194,68 +132,14 @@
 }
 
 @media (min-width: 900px) and (orientation: landscape) and (max-height: 650px) {
-  .kad-party--world .lobby__header { padding-block: .1em; }
-  .kad-party--world .lobby__header :is(.lobby__place, .lobby__crew) { padding-block: .15em; }
   .kad-party--world .lobby__party { gap: .25em; }
   .kad-party--world .lobby__lineup { gap: .3em; }
 }
 
-/* The identity ribbons share one size and one type scale. The scenery shows
-   between them; only the ribbons themselves provide a text background. */
-@media (min-width: 900px) and (orientation: landscape) {
-  .kad-party--world .lobby__header,
-  .kad-party--world .lobby__header:has(.lobby__place) {
-    grid-template-columns: minmax(0, 1fr);
-    align-items: stretch;
-    gap: .75em;
-    padding: 0;
-    background: none;
-    border: 0;
-    border-radius: 0;
-    font-size: 1em;
-  }
-  .kad-party--world .lobby__header:has(.lobby__place) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .kad-party--world .lobby__header > :is(.lobby__heading, .lobby__place, .lobby__crew) {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: .15em;
-    inline-size: 100%;
-    min-inline-size: 0;
-    block-size: 4em;
-    font-family: var(--kad-font-ui);
-    color: var(--kad-ink);
-    box-sizing: border-box;
-    margin: 0;
-    padding: .2em 34px;
-    font-size: 1em;
-    font-weight: 700;
-    line-height: 1.15;
-    text-align: center;
-    white-space: normal;
-  }
-  .kad-party--world .lobby__header .lobby__heading > .kad-icon { display: none; }
-  .kad-party--world .lobby__header .crew-identity { font-size: 1em; justify-content: center; }
-  .kad-party--world .lobby__header .crew-identity__copy { gap: .15em; }
-  .kad-party--world .lobby__header .crew-identity__name { font-size: 1em; font-weight: 700; line-height: 1.15; }
-  .kad-party--world .lobby__header :is(.lobby__welcome-label, .lobby__place-label, .crew-identity__label) {
-    display: block;
-    font-size: .75em;
-    line-height: 1.15;
-    font-weight: 400;
-    color: var(--kad-ink-dim);
-  }
-}
 @media (min-width: 900px) and (orientation: landscape) and (max-height: 650px) {
-  .kad-party--world .lobby__header, .kad-party--world .lobby__header:has(.lobby__place) { font-size: .75em; }
   .kad-party--world .lobby { gap: .4em; }
   .kad-party--world .lobby__lineup { gap: .2em; }
   .kad-party--world .lobby__party { gap: .2em; }
-}
-
-@media (min-width: 900px) and (orientation: landscape) {
-  .kad-party--world .lobby__crew-hint { display: none; }
 }
 
 /* Keep whole names readable with the wider fallback fonts used on TVs. The
@@ -280,9 +164,6 @@
   html[data-text="largest"] .kad-party--world .lobby-member > .lobby-member__portrait { grid-row: 1; }
   html[data-text="largest"] .kad-party--world .lobby-member .lobby-member__portrait { inline-size: 1.3em; block-size: 1.5em; }
   html[data-text="largest"] .kad-party--world .lobby-member .lobby-member__status { grid-column: 3; grid-row: 1; }
-}
-@media (min-width: 900px) and (orientation: landscape) and (max-height: 650px) {
-  html[data-text="largest"] .kad-party--world .lobby__header > :is(.lobby__place, .lobby__crew) { block-size: 3.2em; }
 }
 
 /* The crew's camp is the lobby's picture (#614, docs/camp.md §3), shown in the window between
@@ -344,4 +225,98 @@
   html[data-text="largest"] .kad-party--world .lobby__gather .lobby__join--compact .lobby__qr-block { min-inline-size: 3.3em; }
   html[data-text="largest"] .kad-party--world .lobby__gather .lobby__join--compact .lobby__code-letter { font-size: .65em; }
   html[data-text="largest"] .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby__party { gap: .15em; }
+}
+
+/* The crew (and the table's name, when the family gave one) share the corner row's strip
+   (App.tsx .kad-corner, theme.css): at its top, at its height, from the left edge, so the camp's
+   window starts right under the controls. The row is fixed in px whatever the surface's size, so
+   its strip is matched in px too, as everything that clears it is (--kad-corner-bottom); its
+   width, Room and the four round controls, is kept clear the same way, and a long name gives way
+   to an ellipsis before it reaches them. The table's name gives way first. */
+@media (min-width: 900px) and (orientation: landscape) {
+  .kad-party--world .lobby {
+    --lobby-corner-clear: 320px;
+    /* The row's own top (theme.css .kad-corner), in rem as it is: the row follows the document, not this surface. */
+    padding-block-start: calc(var(--kad-safe-top, 0px) + .25rem);
+  }
+  html[data-text="largest"] .kad-party--world .lobby { --lobby-corner-clear: 350px; }
+  .kad-party--world .lobby__header {
+    display: flex;
+    align-items: stretch;
+    gap: .5em;
+    flex: none;
+    align-self: flex-start;
+    box-sizing: border-box;
+    max-inline-size: calc(100% - var(--lobby-corner-clear));
+    block-size: calc(var(--kad-corner-bottom, 44px) - 8px);
+    margin: 0;
+    padding: 0;
+    font-size: .8em;
+  }
+  .kad-party--world .lobby__header > :is(.lobby__place, .lobby__crew) {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: center;
+    gap: .4em;
+    flex: 0 1 auto;
+    min-inline-size: 0;
+    block-size: auto;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0 28px;
+    overflow: visible;
+    color: var(--kad-ink);
+    font-family: var(--kad-font-ui);
+    font-weight: 700;
+    line-height: 1.15;
+    white-space: nowrap;
+  }
+  /* The table's name gives way; the crew's keeps its width (even a sliver of shrink lights its
+     ellipsis), and is capped at the row's, so only a crew name too long for the whole row is cut. */
+  .kad-party--world .lobby__header > .lobby__crew { flex-shrink: 0; max-inline-size: 100%; }
+  /* The two names in one type: the table's <p> has the body size, and the crew's <strong> would go bolder. */
+  .kad-party--world .lobby__header > .lobby__place { font-size: 1em; }
+  .kad-party--world .lobby__header .crew-identity__name { font-weight: 700; }
+  .kad-party--world .lobby__header > .lobby__place > span:last-child {
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .kad-party--world .lobby__header .crew-identity {
+    block-size: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    font-size: 1em;
+  }
+  .kad-party--world .lobby__header .crew-identity__art { display: none; }
+  .kad-party--world .lobby__header :is(.lobby__place-label, .crew-identity__label) {
+    display: inline;
+    flex: none;
+    font-size: .8em;
+    font-weight: 400;
+    color: var(--kad-ink-dim);
+  }
+  .kad-party--world .lobby__crew-hint { display: none; }
+  html:not([data-contrast="high"]) .kad-party--world .lobby__header > :is(.lobby__place, .lobby__crew)::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border: solid transparent;
+    border-width: 0 24px;
+    border-image: url("../assets/chrome/heading-ribbon.webp") 0 64 fill / 0 24px stretch;
+    pointer-events: none;
+  }
+  html[data-contrast="high"] .kad-party--world .lobby__header > :is(.lobby__place, .lobby__crew) {
+    border: 1px solid var(--kad-border-strong);
+    border-radius: .4em;
+    background: var(--kad-bg);
+    padding-inline: .7em;
+  }
+}
+@media (min-width: 900px) and (orientation: landscape) and (max-height: 650px) {
+  .kad-party--world .lobby__header { font-size: .7em; }
 }

@@ -526,16 +526,33 @@
   font-size: 0.8em;
 }
 
-/* The crew this lobby plays, and the host's way to change it. */
+/* The crew this lobby plays, and the host's way to change it: one line along the top of the
+   pane, each on its own chip over the painting. The hint is the host's alone and the Room panel
+   says the same, so where the pane is too narrow for both it wraps onto a second line that the
+   row's fixed height clips away, rather than running over the crew's name. Heights in em: the
+   chip is 2em at 0.85em (CrewIdentity.css), so 1.7em here. */
 .lobby__crew {
   display: flex;
-  align-items: center;
+  flex: none;
   flex-wrap: wrap;
-  gap: var(--space-3, 0.75em);
+  align-items: center;
+  gap: 1.7em 0.5em;
+  block-size: 1.7em;
+  min-inline-size: 0;
+  overflow: hidden;
 }
 
 .lobby__crew-hint {
-  font-size: 0.85em;
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  block-size: 2.125em;
+  padding: 0 0.8em;
+  border: 0.08em solid var(--color-border, #3a3468);
+  border-radius: var(--radius-pill, 999em);
+  background: var(--color-surface-sunken, #120f26);
+  font-size: 0.8em;
+  white-space: nowrap;
 }
 
 @media (max-width: 600px) {

@@ -17,7 +17,7 @@ import { makeMember, makeState } from "../testing/fixtures";
 import { useGameStore } from "../store";
 import { resetHelpCache } from "../help/content";
 import { LobbyContent } from "./LobbyContent";
-import { lobbyInsetBottom } from "../world/stage-inset";
+import { lobbyInsetBottom, lobbyInsetTop } from "../world/stage-inset";
 
 const PREMISE = "Mount Red Sky has erupted, and gemstones are raining across the realm.";
 const FIRST: CampaignView = {
@@ -297,17 +297,20 @@ describe("heroes new to the crew's adventure", () => {
 });
 
 describe("the camp behind the lobby (#614)", () => {
-  it("tells the stage how much of the pane's bottom its panels cover, and nothing once it goes", () => {
+  it("tells the stage where its window is, top and bottom, and nothing once it goes", () => {
     const rect = (top: number, bottom: number) => ({ top, bottom, height: bottom - top, left: 0, right: 1280, width: 1280, x: 0, y: top, toJSON: () => ({}) });
     const spy = vi.spyOn(Element.prototype, "getBoundingClientRect").mockImplementation(function (this: Element) {
-      if (this.classList.contains("lobby__camp-window")) return rect(80, 470) as DOMRect;
+      // A 720p TV: the crew shares the corner row's strip, so the window opens just under it.
+      if (this.classList.contains("lobby__camp-window")) return rect(65, 470) as DOMRect;
       if (this.classList.contains("lobby")) return rect(0, 720) as DOMRect;
       return rect(0, 0) as DOMRect;
     });
     mount({ party: [makeMember()] });
     expect(lobbyInsetBottom()).toBe(250);
+    expect(lobbyInsetTop()).toBe(65);
     cleanup();
     expect(lobbyInsetBottom()).toBe(0);
+    expect(lobbyInsetTop()).toBe(0);
     spy.mockRestore();
   });
 

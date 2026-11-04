@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { seedTable, openTv, onAir } from "./seed";
 
-test("TV lobby uses one identity header and keeps joining beside four heroes", async ({ browser }, info) => {
+test("TV lobby keeps its crew in the corner row and joining beside four heroes", async ({ browser }, info) => {
   const table = await seedTable({ mode: "party", tv: true, ready: false, heroes: [
     { name: "Thistlewhisker", species: "unicorn" }, { name: "Sparklehoof", species: "griffin" },
     { name: "Fern", species: "dragonling" }, { name: "Moss", species: "bigfoot" },
@@ -45,10 +45,11 @@ test("TV lobby uses one identity header and keeps joining beside four heroes", a
       expect(brokenNames, "hero names must remain whole and contained").toEqual([]);
       await page.screenshot({ path: info.outputPath(`tv-${viewport.width}-${viewport.text}-${viewport.ready ? "ready" : "waiting"}${viewport.visitors ? "-visitors" : ""}.png`) });
       const layout = await page.evaluate(() => {
-        const frames = [...document.querySelectorAll<HTMLElement>(".lobby__header > .lobby__heading, .lobby__header > .lobby__place, .lobby__header > .lobby__crew")].map(el => el.getBoundingClientRect());
         const fonts = [...document.querySelectorAll<HTMLElement>(".lobby__heading > span:last-child, .lobby__header > .lobby__place > span:last-child, .lobby__header .crew-identity__name")].map(el => { const style = getComputedStyle(el); return [style.fontSize, style.fontFamily, style.fontWeight].join("|"); });
         const headerStyle = getComputedStyle(document.querySelector(".lobby__header")!);
         const header = document.querySelector(".lobby__header")!.getBoundingClientRect();
+        const corner = document.querySelector(".kad-corner")!.getBoundingClientRect();
+        const campWindow = document.querySelector(".lobby__camp-window")!.getBoundingClientRect();
         const crew = document.querySelector(".lobby__header .crew-identity")!.getBoundingClientRect();
         const table = document.querySelector(".lobby__header > .lobby__place")!.getBoundingClientRect();
         const join = document.querySelector(".lobby__join")!.getBoundingClientRect();
@@ -56,7 +57,10 @@ test("TV lobby uses one identity header and keeps joining beside four heroes", a
         const campaigns = document.querySelector(".lobby__campaigns")!.getBoundingClientRect();
         const lobby = document.querySelector<HTMLElement>(".lobby")!;
         return {
-          equalFrames: Math.max(...frames.map(box => box.width)) - Math.min(...frames.map(box => box.width)) < 1 && Math.max(...frames.map(box => box.height)) - Math.min(...frames.map(box => box.height)) < 1,
+          // The crew shares the corner row's strip, clear of its controls, and the camp's window starts under it.
+          inCornerRow: header.top >= corner.top - 1 && header.bottom <= corner.bottom + 1,
+          clearOfCorner: header.right < corner.left,
+          windowUnderRow: campWindow.top < corner.bottom + 24,
           equalType: new Set(fonts).size === 1,
           noHeaderBackground: headerStyle.backgroundImage === "none" && headerStyle.backgroundColor === "rgba(0, 0, 0, 0)",
           crewInHeader: crew.top >= header.top && crew.bottom <= header.bottom,
@@ -75,7 +79,7 @@ test("TV lobby uses one identity header and keeps joining beside four heroes", a
           }).map(el => el.className),
         };
       });
-      expect(layout).toEqual({ equalFrames: true, equalType: true, noHeaderBackground: true, crewInHeader: true, crewBesideTable: true, joinBesideParty: true, joinContainsCodeAndQr: true, qrSquare: true, campaignsBelowParty: true, overflow: false, outside: [] });
+      expect(layout).toEqual({ inCornerRow: true, clearOfCorner: true, windowUnderRow: true, equalType: true, noHeaderBackground: true, crewInHeader: true, crewBesideTable: true, joinBesideParty: true, joinContainsCodeAndQr: true, qrSquare: true, campaignsBelowParty: true, overflow: false, outside: [] });
     }
   } finally { await context.close(); }
 });
