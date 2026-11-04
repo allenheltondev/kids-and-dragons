@@ -1387,9 +1387,12 @@
     padding: var(--space-3, 0.75em) var(--space-4, 1em);
   }
 
+  /* 3em, so the icon and the padding come to the 4.5em above and no more: at
+     3.2em an answer grew past it (tablet-fit), once a phone without the goal
+     card had the room for this rule at all. */
   .player--deciding .prompt:not(.combat) .choice__icon {
-    width: 3.2em;
-    height: 3.2em;
+    width: 3em;
+    height: 3em;
   }
 }
 
