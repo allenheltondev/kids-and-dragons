@@ -18,6 +18,7 @@ import { CAPTIVE_ICON, EXIT_ICON, hazardIcon, objectiveIcon } from "./environmen
  * never lets two share one. Carried as a glyph and words, never a colour.
  */
 export interface GridFeature {
+  readonly art?: string;
   readonly kind: "hazard" | "exit" | "captive" | "objective";
   readonly label: string;
   /** icons.tsx name — the shape that marks the square. */
@@ -187,7 +188,7 @@ function featuresOf(encounter: EncounterState): Map<string, GridFeature> {
   // Ground to hold and tears to close (#220), quiet once done.
   for (const objective of view.objectives) {
     for (const t of objective.tiles) {
-      out.set(`${t.x},${t.y}`, { kind: "objective", label: objective.label, icon: objectiveIcon(objective.kind), active: !objective.done });
+      out.set(`${t.x},${t.y}`, { kind: "objective", label: objective.label, icon: objectiveIcon(objective.kind), active: !objective.done, ...(objective.art ? { art: objective.art } : {}) });
     }
   }
   for (const captive of view.captives) {

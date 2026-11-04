@@ -155,6 +155,15 @@ export function describeBeats(
   events.forEach((event, i) => {
     const key = `${seq}:${i}`;
     switch (event.type) {
+      case "windupStarted":
+        out.push({ key, text: `${name(event.actorId)} gathers ${event.label}. Leave the marked ground before their next turn!`, tone: "bad" });
+        return;
+      case "windupReleased":
+        out.push({ key, text: event.targets.length ? `${event.label} bursts on the marked ground!` : `${event.label} bursts into empty ground. You made room!`, tone: event.targets.length ? "bad" : "good" });
+        return;
+      case "windupInterrupted":
+        out.push({ key, text: `${name(event.actorId)} loses the gathered sparks. Interrupted!`, tone: "good" });
+        return;
       case "roll": {
         const hit = event.roll.result === "hit" || event.roll.result === "success";
         const matchups = event.roll.matchup ? calloutsOfRoll(event.roll) : pending;

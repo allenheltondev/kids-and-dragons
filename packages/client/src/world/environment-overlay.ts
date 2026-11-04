@@ -55,6 +55,7 @@ export type OverlayGlyph = "fire" | "thorns" | "rift" | "exit" | "captive" | "ob
 export type OverlayState = "active" | "pending" | "gone" | "waiting" | "freed" | "lost" | "done";
 
 export interface OverlayTile {
+  readonly art?: string;
   readonly x: number;
   readonly y: number;
   readonly kind: "hazard" | "exit" | "captive" | "objective";
@@ -125,6 +126,7 @@ export function environmentOverlay(encounter: EncounterState): EnvironmentOverla
         kind: "objective",
         glyph: "objective",
         objectiveKind: objective.kind,
+        ...(objective.art ? { art: objective.art } : {}),
         state: objective.done ? "done" : "active",
         label: objective.label,
         ...(objective.done ? {} : { count: left }),

@@ -506,6 +506,8 @@ export interface RestScene {
 }
 
 export interface EnemySpec {
+  /** A visible, fixed-area attack: prepare one turn, release on the next. */
+  windupAttack?: { label: string; radius: 0 | 1; damage: number };
   id: string;
   name?: string;
   count: number;
@@ -834,6 +836,8 @@ export interface RescueObjective {
 export type EnvironmentObjective = HoldObjective | CloseObjective;
 
 interface ObjectiveBase {
+  /** Existing story prop used on the objective tile (asset id, without extension). */
+  art?: string;
   /** Unique within the environment (shared with hazards and exits). */
   id: string;
   /** What the phones call it: "Hold the beacon stones". */

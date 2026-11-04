@@ -262,3 +262,8 @@
 /* One measured side column keeps mission rules off the battlefield. */
 .fight-log .rift-status { position: static; max-inline-size: none; inline-size: 100%; font-size: .7em; }
 .fight-log .rift-status__lines li { background: transparent; padding: .15em 0; }
+
+/* Turn ownership belongs beside the board, never over a threatened tile. */
+.fight-log > :not(.fight-log__lines) { flex-shrink: 0; }
+.fight-log .turn-banner { position: static; inset: auto; transform: none; animation: none; opacity: 1; visibility: visible; font-size: 1em; padding: .25em .45em; max-inline-size: 100%; }
+.fight-log:has(.rift-status) .fight-log__guard { display: none; }

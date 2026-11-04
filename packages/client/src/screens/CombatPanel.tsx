@@ -72,6 +72,7 @@ import {
   currentActorId,
   environmentView,
   enemyPlanFor,
+  committedAttacks,
   legalActions,
   legalItemTargets,
   legalMoves,
@@ -299,6 +300,7 @@ export function CombatControls(): ReactElement | null {
 
 
   if (!encounter || !me) return null;
+  const windupEncounter = encounter.combatants.some(c => c.windupAttack);
 
   const active = currentActor(encounter);
   const myTurn = active !== null && active.side === "party" && active.id === me.character.id;
@@ -313,8 +315,10 @@ export function CombatControls(): ReactElement | null {
   // content fetch as the rules; until both land the cards simply wait. Read on
   // the whole turn, pending or not: while a tap is on its way the cards are
   // the ones it was made from, still on screen and inert (see `pending`).
-  const actions =
+  const offeredActions =
     myTurn && rules && abilities ? legalActions(encounter, combatContext(rules, abilities)) : [];
+  const priority = (id: string) => id === "ready" ? 2 : id === "attack" ? 1 : 0;
+  const actions = windupEncounter ? [...offeredActions].sort((a, b) => priority(a.abilityId) - priority(b.abilityId)) : offeredActions;
   const moves = myTurn ? legalMoves(encounter) : [];
   // The gold squares, though, go the moment a tap is on its way.
   const walkTiles = deciding && selection.step === "idle" ? moves : [];
@@ -484,6 +488,7 @@ export function CombatControls(): ReactElement | null {
   const fight = encounter.startedAt ?? null;
   if (lastFacing.current.fight !== fight) lastFacing.current = { fight, facing: {} };
   const cells = gridCells(encounter, party, tappable, selectedTiles, lastFacing.current.facing);
+  const danger = new Map<string, string>(committedAttacks(encounter).flatMap(attack => attack.tiles.map(tile => [`${tile.x},${tile.y}`, attack.label] as const)));
   const shownPreview = state ? tablePreviews(state, previews).combat : null;
   const suggestedAt = shownPreview?.preview.kind === "suggest" ? shownPreview.preview.to : null;
   const threatened = new Set(encounter.combatants.filter(f => f.side === "enemy" && !f.down).map(f => enemyPlanFor(encounter, f.id).attack).filter(Boolean));
@@ -555,6 +560,8 @@ export function CombatControls(): ReactElement | null {
         {cells.map((cell) => {
           const cellKey = `${cell.x},${cell.y}`;
           const marks = [
+            cell.occupant && encounter.combatants.find(c => c.id === cell.occupant?.id)?.windup ? " combat__cell--charging" : "",
+            danger.has(cellKey) ? " combat__cell--danger" : "",
             cell.blocked ? " combat__cell--blocked" : "",
             cell.selected ? " combat__cell--selected" : "",
             cell.occupant?.active ? " combat__cell--active" : "",
@@ -591,7 +598,7 @@ export function CombatControls(): ReactElement | null {
                 className={`combat__cell combat__cell--tap${aiming ? " combat__cell--aim" : " combat__cell--walk"} kad-focusable${marks}`}
                 aria-label={target ? `Choose ${target.name}, ${target.hp} hearts` : `${planning && canSuggest ? "Suggest" : aiming ? "Aim at" : "Move to"} column ${cell.x + 1}, row ${cell.y + 1}${
                   cell.feature ? `: ${tileWords(cell.feature)}` : ""
-                }`}
+                }${danger.has(cellKey) ? ` — ${danger.get(cellKey)} bursts here next turn` : ""}`}
                 onClick={() => target ? tapTarget(target.id) : tapTile({ x: cell.x, y: cell.y })}
               >
                 {mark}
@@ -622,7 +629,7 @@ export function CombatControls(): ReactElement | null {
   );
 
   return (
-    <div className="prompt combat">
+    <div className="prompt combat" data-windup={windupEncounter || undefined} data-quiet-hint={windupEncounter && selection.step === "idle" && !pending && synced && !encounter.actionTaken || undefined}>
       <div className="combat__overview">
         <FighterRoster encounter={encounter} myId={me.character.id} />
         <button type="button" className="combat__enlarge kad-focusable" onClick={() => setMapOpen(true)} aria-label="Enlarge battle map">＋</button>
@@ -708,6 +715,7 @@ export function CombatControls(): ReactElement | null {
             {c.id === me.character.id ? `You (${c.name})` : combatantLabel(c)}
             {c.side === "enemy" ? ", enemy" : ""}
             {c.down ? ": knocked down" : `: ${c.hp} of ${c.maxHp} hearts`}
+            {cells.some(cell => cell.occupant?.id === c.id && danger.has(`${cell.x},${cell.y}`)) ? ", standing in marked danger: move clear before the burst" : ""}
             {c.puffed !== undefined ? `, ${PUFFED_WORDS.toLowerCase()} up: ${PUFFED_HINT.toLowerCase()}` : ""}
             {isNumbedHero(encounter, me.character.id, c.id) ? ", numbed: fewer steps for a while, then it wears off" : ""}
             {c.id === active?.id ? ", taking a turn" : ""}
@@ -771,7 +779,7 @@ export function CombatControls(): ReactElement | null {
                     : undefined
                 }
               >
-                {aimingWho.name}: tap a glowing figure or choose below.
+                {aimingWho.name}: {windupEncounter ? "choose someone." : "tap a glowing figure or choose below."}
                 {selection.step === "target" && (selection.action.maxTargets ?? 1) > 1
                   ? ` (${selection.picked.length + 1} of ${Math.min(
                       selection.action.maxTargets ?? 1,
@@ -801,7 +809,7 @@ export function CombatControls(): ReactElement | null {
             onClickCapture={held ? swallowTap : undefined}
           >
             {selection.step === "idle" && cardCount > 0 ? (
-              <PagedOptions className="prompt__options combat__actions" data-dense={dense || undefined}>
+              <PagedOptions pageSize={windupEncounter ? 2 : 3} className="prompt__options combat__actions" data-dense={dense || undefined}>
                 {actions.map((action) => (
                   <li key={action.abilityId}>
                     <button
@@ -968,7 +976,10 @@ function EnvironmentStatus({ encounter }: { encounter: EncounterState }): ReactE
   }
   view.captives.forEach((captive, i) => lines.push({ key: `rescue:${i}`, icon: CAPTIVE_ICON, text: rescueLine(captive) }));
   for (const objective of view.objectives) {
-    lines.push({ key: `objective:${objective.id}`, icon: objectiveIcon(objective.kind), text: objectiveLine(objective) });
+    const text = encounter.combatants.some(c => c.windupAttack) && objective.kind === "close"
+      ? `${objective.label}: ${objective.progress}/${objective.target}. End beside it to help.${objective.endsFight ? " Finish to win." : ""}`
+      : objectiveLine(objective);
+    lines.push({ key: `objective:${objective.id}`, icon: objectiveIcon(objective.kind), text });
   }
   for (const hazard of view.hazards) {
     lines.push({ key: `hazard:${hazard.id}`, icon: hazardIcon(hazard.kind), text: hazardLine(hazard) });
@@ -991,18 +1002,20 @@ function FighterRoster({ encounter, myId }: { encounter: EncounterState; myId: s
   const activeId = currentActorId(encounter);
   const order = encounter.round === 1 ? encounter.openingOrder : encounter.order;
   const fighters = [...encounter.combatants].sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
-  const selected = fighters.find(f => f.id === inspected) ?? fighters.find(f => f.id === nextEnemyId(encounter)) ?? fighters.find(f => f.id === myId) ?? fighters[0];
+  const dangerIds = new Set(committedAttacks(encounter).flatMap(attack => encounter.board.actors
+    .filter(actor => attack.tiles.some(tile => tile.x === actor.x && tile.y === actor.y)).map(actor => actor.id)));
+  const selected = fighters.find(f => f.id === inspected) ?? fighters.find(f => f.windup && !f.down) ?? fighters.find(f => f.id === nextEnemyId(encounter)) ?? fighters.find(f => f.id === myId) ?? fighters[0];
   return <section className="combat__roster" aria-label={`Round ${encounter.round}: fighters and plans`}>
     <ul className="combat__fighter-strip" aria-label="Fighter details">
       {fighters.map(fighter => <li key={fighter.id} data-active={fighter.id === activeId || undefined}>
         <button type="button" className="kad-focusable" aria-pressed={selected?.id === fighter.id} onClick={() => setInspected(fighter.id)}
-          aria-label={`Inspect ${combatantLabel(fighter)}${fighter.id === myId ? " — your hero" : ""}, ${fighter.hp}/${fighter.maxHp} hearts, Guard ${fighter.guard}${fighter.down ? ", knocked down" : ""}`}>
-          <FighterFace combatant={fighter} /><span><strong>{combatantLabel(fighter)}</strong><small>{fighter.down ? "Down" : `${fighter.hp}/${fighter.maxHp} ♥`}</small></span>
+          aria-label={`Inspect ${combatantLabel(fighter)}${fighter.id === myId ? " — your hero" : ""}, ${fighter.hp}/${fighter.maxHp} hearts, Guard ${fighter.guard}${fighter.down ? ", knocked down" : ""}${dangerIds.has(fighter.id) ? ", standing in marked danger" : ""}`}>
+          <FighterFace combatant={fighter} /><span><strong>{dangerIds.has(fighter.id) ? "! " : ""}{combatantLabel(fighter)}</strong><small>{fighter.down ? "Down" : `${fighter.hp}/${fighter.maxHp} ♥`}</small></span>
         </button>
       </li>)}
     </ul>
     <p className="combat__plan" aria-live="polite" title="Forecast from the current board. Intervening moves or help can change it.">{selected && <>
-      <strong>{combatantLabel(selected)} · Guard {selected.guard}:</strong> {selected.down ? "Knocked down." : selected.escaped ? "Safe off the board." : selected.side === "enemy"
+      <strong>{combatantLabel(selected)}{selected.windup && inspected !== selected.id ? ":" : ` · Guard ${selected.guard}:`}</strong> {selected.down ? "Knocked down." : selected.escaped ? "Safe off the board." : selected.side === "enemy"
         ? enemyIntentLine(encounter, selected.id)
         : `Guard ${selected.guard}. ${selected.protectedBy ? "A friend is protecting them." : "Stand together to protect, heal, or help up."}`}
       {selected.puffed !== undefined && !selected.down && <> {PUFFED_WORDS}: {PUFFED_HINT}</>}
@@ -1023,7 +1036,7 @@ function FighterFace({ combatant }: { combatant: Combatant }): ReactElement {
 function FeatureMark({ feature }: { feature: GridFeature }): ReactElement {
   return (
     <span className={`combat__feature combat__feature--${feature.kind}`} aria-hidden="true">
-      <CombatPaint src={combatMarkerArt(markerFromIcon(feature.kind, feature.icon), feature.label)} icon={feature.icon} />
+      <CombatPaint src={combatMarkerArt(markerFromIcon(feature.kind, feature.icon), feature.label, false, feature.art)} icon={feature.icon} />
     </span>
   );
 }

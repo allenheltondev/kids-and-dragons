@@ -346,9 +346,12 @@ const DIGESTS: PreEpicSave["digests"] = {
 // labels, branch and variant text only, shorter and plainer with continuity fixed at merge points.
 // The legacy checks and resumeInteractions keep their shipped words; no scene, edge, flag, effect,
 // stat or TN moved, and the gameplay digests are unchanged.
+// Re-pinned for the authored quay combat redesign (chapter 01), and the solo-safe
+// bell-rope instruction exposed by its new dice sequence (chapter 05c).
+// Ending, road, setback, resumed-save, and ordinary-fight goldens are unchanged.
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "43d406c6e7d81ee2586a4041b2cbe3677762c30b389e1dcd666ea7a75a374463",
-  "chapters/gemfall-01.json": "7e8b9cb36ec0e205591b9067162b71b97af8063d383649c70eb9cd50afec9bf1",
+  "chapters/gemfall-01.json": "b0b420dcda3053cbbd0b44b176f160885e902a1143d065ec082ecd0c4a61602e",
   "chapters/gemfall-02.json": "4467c8c6e1d7837a9812cec7670c3bfab4081d7948ba6533bf1c99a8543b0510",
   "chapters/gemfall-03a.json": "7812a6ee4d1dc8056946a0f4f8608f83cef73758e9775a34f214cb70bc4cfec6",
   "chapters/gemfall-03b.json": "8d82081327befaf263ee5542b1ad29f7f1ff2e61cc48de495d811277bf4e7167",
@@ -358,7 +361,7 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-04c.json": "881c3771593f311b91cb73cab951929abfd112fc1795c9cb36b4c851860bb388",
   "chapters/gemfall-05a.json": "c8b738894c1b12f1e80d2492a5fd276aa5fd8585d9f4df5ce6abf8965581d018",
   "chapters/gemfall-05b.json": "cb0ae1115e782279406cdad9916bf23c84042b8e79aa0d0cf703b28784feefd7",
-  "chapters/gemfall-05c.json": "2da7049ddcf9c4569ecd8ea1353602ec84b7ed4881207889422dd119eb5ba538",
+  "chapters/gemfall-05c.json": "eb1fb0bace7271f5392afda19912533bd83f605e0f57beab414a8ce703e0ff38",
   "chapters/gemfall-06.json": "4b7f0681e41319f1056507d87b6eb454881eab90751ce33799b636b24a226c81",
   "chapters/gemfall-07h.json": "dbcf17577035bbfa12f82bc8aba85ceb36f81f773d1b725df0d50ab2a388baed",
   "chapters/gemfall-07l.json": "de14b6283a49fb31c475a72eebeee60dda66f6356d95159fca0b86e3ed6fe259",
@@ -366,8 +369,8 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-08.json": "727944de75a75c1f8adf01d15b765301bab7dd647f655fa5f1ec751c8575be27",
 };
 
-describe("Gemfall's files are the files that shipped before the epic", () => {
-  it("every one hashes to its pre-epic digest", () => {
+describe("Gemfall's reviewed files and legacy contracts", () => {
+  it("every file matches its reviewed content digest", () => {
     const actual = Object.fromEntries(
       Object.keys(GEMFALL_FILES).map((file) => {
         const text = readFileSync(path.join(ROOT, "content", file), "utf8").replace(/\r\n/g, "\n");

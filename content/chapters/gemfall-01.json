@@ -2775,14 +2775,28 @@
     },
     "encounter_quay_wisps": {
       "type": "encounter",
-      "map": "reedbank",
-      "narration": "The wisps zip around the lamp strings, giggling and tugging. Shoo them off before the ferry drifts away.",
+      "map": "quay_lamps",
+      "art": "scenes/gemfall/exchange-quay-wisps",
+      "narration": "A lantern wisp swells with warm sparks while its little friend tugs the ferry rope. The ferry starts to drift. Tie it fast, or shoo both wisps away.",
       "enemies": [
         {
           "id": "wisp",
-          "name": "Lantern Wisp",
+          "name": "Spark Lantern",
           "creature": "will_o_wisp",
-          "count": 2
+          "count": 1,
+          "hp": 8,
+          "windupAttack": {
+            "label": "Lantern sparks",
+            "radius": 1,
+            "damage": 3
+          }
+        },
+        {
+          "id": "tugger",
+          "name": "Rope Tugger",
+          "creature": "will_o_wisp",
+          "count": 1,
+          "hp": 4
         }
       ],
       "onVictory": {
@@ -2792,6 +2806,15 @@
             "type": "grantItem",
             "itemId": "songbird_ribbon",
             "to": "party"
+          }
+        ],
+        "narration": "The wisps bob away over the water, giggling. The ferryman steadies his ferry and gives you a bright ribbon from his lamp string.",
+        "variants": [
+          {
+            "when": {
+              "flag": "secured_ferry"
+            },
+            "text": "Your knot holds the ferry snug against the quay. The wisps stop tugging and bob away, giggling. The ferryman gives you a bright ribbon. \"For the fine knot, and the finer teamwork.\""
           }
         ]
       },
@@ -2804,6 +2827,45 @@
             "to": "party"
           }
         ]
+      },
+      "environment": {
+        "clock": {
+          "rounds": 5,
+          "label": "The ferry drifts",
+          "onExpire": "collapse"
+        },
+        "objectives": [
+          {
+            "id": "ferry-rope",
+            "art": "fight-mooring-post",
+            "kind": "close",
+            "label": "Tie the ferry rope",
+            "at": {
+              "x": 5,
+              "y": 3
+            },
+            "turns": 2,
+            "endsFight": true,
+            "effects": [
+              {
+                "type": "setFlag",
+                "flag": "secured_ferry",
+                "value": true
+              }
+            ]
+          }
+        ]
+      },
+      "onTimeout": {
+        "goto": "scene_quay_wisps_scattered",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ],
+        "narration": "The rope slips free and the ferry drifts a little way down the quay. The ferryman poles back, laughing. \"Sparks first, knots second. We can try that again another day.\" He brings you aboard."
       }
     },
     "scene_quay_wisps_shooed": {

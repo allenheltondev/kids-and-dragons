@@ -28,6 +28,9 @@ export function combatFeedback(events: readonly EncounterEvent[], encounter: Enc
     const add = (actorId: string, effect: CombatFeedback["effect"], label: string, reaction?: CombatReaction) =>
       out.push({ actorId, effect, label, eventIndex, ...(reaction ? { reaction } : {}) });
     switch (event.type) {
+      case "windupStarted": add(event.actorId, "guard_ward", event.label, "ready"); break;
+      case "windupReleased": add(event.actorId, "burst_star", "Burst!"); break;
+      case "windupInterrupted": add(event.actorId, "miss_veer", "Interrupted!", "hurt"); break;
       case "damage": if (event.amount > 0) add(event.actorId, "impact_strike", `−${event.amount}`, "hurt"); break;
       case "heal": if (event.amount > 0) add(event.actorId, "heal_bloom", `+${event.amount}`); break;
       case "revived": add(event.actorId, "heal_bloom", "Up again!", "celebrate"); break;

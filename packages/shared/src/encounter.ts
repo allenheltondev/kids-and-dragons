@@ -75,6 +75,8 @@ import {
   samePosition,
   setTerrain,
   stepsBetween,
+  inBounds,
+  terrainAt,
 } from "./grid.js";
 import type { Rng } from "./dice.js";
 import { resolveAttack, rollD20 } from "./dice.js";
@@ -477,6 +479,9 @@ function abilityFor(ctx: EncounterContext, id: string): CombatAbility | null {
  * a shove.
  */
 export interface Combatant {
+  readonly windupAttack?: EnemySpec["windupAttack"];
+  /** Locked ground, not a tracking target. Survives saves and turn handoffs. */
+  readonly windup?: { readonly tiles: readonly Position[] };
   readonly id: ActorId;
   readonly side: ActorSide;
   readonly name: string;
@@ -650,6 +655,9 @@ export interface EncounterState {
 
 /** Something worth animating or narrating. Returned, never stored in state. */
 export type EncounterEvent =
+  | { readonly type: "windupStarted"; readonly actorId: ActorId; readonly label: string; readonly tiles: readonly Position[] }
+  | { readonly type: "windupReleased"; readonly actorId: ActorId; readonly label: string; readonly tiles: readonly Position[]; readonly targets: readonly ActorId[] }
+  | { readonly type: "windupInterrupted"; readonly actorId: ActorId }
   /**
    * A swing. `targetId` is the figure it was aimed at, whose Guard `roll.tn`
    * is; `tier` is how hard a hit landed (`damageTier`), on hits only. Both
@@ -946,6 +954,7 @@ export function beginEncounter(setup: EncounterSetup, ctx: EncounterContext): En
       guard: spec.guard,
       steps: spec.steps,
       attackMod: spec.attack,
+      ...(spec.windupAttack ? { windupAttack: { ...spec.windupAttack } } : {}),
       down: false,
       // Monsters swing and nothing else. Help Up is a party rule (§7.3) and
       // Ready is a tactic; enemy AI (roadmap chapter 4) owns the rest.
@@ -1955,8 +1964,9 @@ function applyEffect(
     case "skipTurn": {
       if (recipient.skipNextTurn) return { state, rolled: false };
       events.push({ type: "dazed", actorId: recipientId });
+      if (recipient.windup) events.push({ type: "windupInterrupted", actorId: recipientId });
       return {
-        state: updateCombatant(state, recipientId, (c) => ({ ...c, skipNextTurn: true })),
+        state: updateCombatant(state, recipientId, (c) => { const { windup, ...rest } = c; return { ...rest, skipNextTurn: true }; }),
         rolled: false,
       };
     }
@@ -2091,6 +2101,45 @@ function swingMatchup(
     return { roll: -total.roll, damage: 0, notes };
   }
   return undefined;
+}
+
+/** Play a creature's committed area attack. Target selection never reads HP.
+ * The preparation spends its entire turn; the next release checks the locked
+ * ground, allowing every hero a response. Ordinary enemies never enter here.
+ */
+export function performEnemyWindup(state: EncounterState, ctx: EncounterContext): { state: EncounterState; events: readonly EncounterEvent[] } {
+  const actor = currentActor(state);
+  if (!actor || actor.side !== "enemy" || actor.down || actor.skipNextTurn || !actor.windupAttack || state.actionTaken) return { state, events: [] };
+  const events: EncounterEvent[] = [];
+  const spec = actor.windupAttack;
+  const standing = state.combatants.filter(c => c.side === "party" && !c.down && !c.escaped && positionOf(state, c.id));
+  if (!actor.windup) {
+    const from = positionOf(state, actor.id)!;
+    const target = [...standing].sort((a, b) => stepsBetween(from, positionOf(state, a.id)!) - stepsBetween(from, positionOf(state, b.id)!) || a.id.localeCompare(b.id))[0];
+    if (!target) return { state, events };
+    const at = positionOf(state, target.id)!;
+    const tiles: Position[] = [];
+    for (let y = at.y - spec.radius; y <= at.y + spec.radius; y++) {
+      for (let x = at.x - spec.radius; x <= at.x + spec.radius; x++) {
+        const tile = { x, y };
+        if (inBounds(state.board, tile) && terrainAt(state.board, tile) !== "blocked") tiles.push(tile);
+      }
+    }
+    events.push({ type: "windupStarted", actorId: actor.id, label: spec.label, tiles });
+    return { state: { ...updateCombatant(state, actor.id, c => ({ ...c, windup: { tiles } })), actionTaken: true, stepsLeft: 0 }, events };
+  }
+  const tiles = actor.windup.tiles;
+  const targets = standing.filter(c => tiles.some(tile => samePosition(tile, positionOf(state, c.id)!))).map(c => c.id);
+  let working = updateCombatant(state, actor.id, c => { const { windup, ...rest } = c; return rest; });
+  events.push({ type: "windupReleased", actorId: actor.id, label: spec.label, tiles, targets });
+  for (const recipientId of targets) {
+    const recipient = combatantById(working, recipientId);
+    if (!recipient || recipient.down || recipient.escaped) continue;
+    working = applyEffect(working, ctx, { actorId: actor.id, recipientId, effect: { type: "attack", damage: spec.damage },
+      abilityId: ATTACK_ID, point: null, points: [], bonus: actor.rollBonus, events }).state;
+  }
+  working = updateCombatant(working, actor.id, c => ({ ...c, rollBonus: 0 }));
+  return { state: { ...working, actionTaken: true, stepsLeft: 0 }, events };
 }
 
 /**
@@ -2683,7 +2732,7 @@ function settleCursor(state: EncounterState): EncounterState {
       continue;
     }
     if (combatant.skipNextTurn) {
-      working = updateCombatant(working, combatant.id, (c) => ({ ...c, skipNextTurn: false }));
+      working = updateCombatant(working, combatant.id, (c) => { const { windup, ...rest } = c; return { ...rest, skipNextTurn: false }; });
       working = advanceCursor(working);
       continue;
     }
