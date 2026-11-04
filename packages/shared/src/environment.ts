@@ -337,6 +337,7 @@ export interface EnvironmentView {
 }
 
 export interface EnvironmentObjectiveView {
+  readonly art?: string;
   readonly id: string;
   readonly kind: EnvironmentObjective["kind"];
   readonly label: string;
@@ -420,6 +421,7 @@ export function environmentView(state: EncounterState): EnvironmentView | null {
         progress,
         target,
         done: progress >= target,
+        ...(objective.art ? { art: objective.art } : {}),
         ...(objective.endsFight ? { endsFight: true as const } : {}),
       };
     }),

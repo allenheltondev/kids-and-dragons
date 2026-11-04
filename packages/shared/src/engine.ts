@@ -63,6 +63,7 @@ import {
   endTurnWithEvents,
   moveTo,
   performAction,
+  performEnemyWindup,
   currentActor,
   currentActorId,
   legalActions,
@@ -2947,6 +2948,13 @@ function runEnemyTurns(draft: RunState, ctx: EngineContext): readonly EncounterE
     const actor = currentActor(encounter);
     if (!actor || actor.side !== "enemy") break;
 
+    if (actor.windupAttack) {
+      const beat = performEnemyWindup(encounter, combatCtx(ctx));
+      const ended = endTurnWithEvents(beat.state);
+      encounter = ended.state;
+      events.push(...beat.events, ...ended.events);
+      continue;
+    }
     const plan = enemyPlanFor(encounter, actor.id);
 
     if (plan.moveTo) {

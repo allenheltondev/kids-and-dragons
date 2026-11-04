@@ -283,6 +283,13 @@ function pagedCard(name: RegExp) {
 }
 
 describe("whose turn it is", () => {
+  it("names a hero's committed danger and warns before moving into a marked tile", () => {
+    const base = encounterWith({ enemies: [{ spec: { ...wisp(), windupAttack: { label: "Sparks", radius: 1, damage: 3 } }, at: { x: 4, y: 2 } }] });
+    const marked = { ...base, combatants: base.combatants.map(c => c.side === "enemy" ? { ...c, windup: { tiles: [{ x: 1, y: 2 }, { x: 1, y: 3 }] } } : c) };
+    mount({ encounter: marked });
+    expect(screen.getByRole("button", { name: /Inspect Sparklehoof.*standing in marked danger/ })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Move to column 2, row 4 — Sparks bursts here next turn/ })).toBeTruthy();
+  });
   it("offers nothing on somebody else's turn, and says whose", () => {
     /*
      * A second hero with a *lower* Quick would still lead sometimes on a tied

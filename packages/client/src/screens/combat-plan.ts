@@ -11,6 +11,9 @@ export function enemyIntentLine(state: EncounterState, id: string): string {
   const enemy = combatantById(state, id);
   if (!enemy || enemy.down) return "Out of the fight.";
   if (enemy.skipNextTurn) return "Their next turn is skipped.";
+  if (enemy.windupAttack) return enemy.windup
+    ? "Marked ground bursts next turn. Move clear or daze."
+    : "Marks the nearest hero's ground; bursts next turn.";
   const plan = enemyPlanFor(state, id);
   const target = plan.attack ? combatantById(state, plan.attack) : null;
   return target ? `From here: attack ${combatantLabel(target)}.`

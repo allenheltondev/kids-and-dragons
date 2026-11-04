@@ -2251,7 +2251,7 @@
     },
     "interaction_dawn_rope": {
       "type": "interaction",
-      "narration": "Brace the big bell's rope while one of you guides the pull. Alone, use the cleat. The expert teaches the crew's hand-to-hand passing line. Her clipboard is nearly as tall as she is.",
+      "narration": "Brace the big bell's rope and guide the pull. Alone, use the cleat. The expert teaches the crew's hand-to-hand passing line. Her clipboard is nearly as tall as she is.",
       "interaction": {
         "kind": "cooperate",
         "cue": "Hold the rope supports while the acting hero guides the dawn pull.",
