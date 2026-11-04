@@ -163,14 +163,14 @@ describe("TV focus on a Party Mode phone", () => {
     focus(true);
     expect(tabs()).toEqual(["You"]);
     expect(screen.getByTestId("tv-rest").textContent).toContain("Look at the TV");
-    expect(screen.getByLabelText("Your page").closest("[hidden]")).not.toBeNull();
+    expect(screen.getByRole("navigation", { name: "Your pages", hidden: true }).closest("[hidden]")).not.toBeNull();
 
     act(() => screen.getByRole("button", { name: "Look in my bag" }).click());
     expect(screen.queryByTestId("tv-rest")).toBeNull();
-    expect(screen.getByLabelText("Your page").closest("[hidden]")).toBeNull();
-    act(() => fireEvent.change(screen.getByLabelText("Your page"), { target: { value: "stats" } }));
+    expect(screen.getByRole("navigation", { name: "Your pages", hidden: true }).closest("[hidden]")).toBeNull();
+    act(() => fireEvent.click(screen.getByRole("button", { name: "Stats" })));
     expect(screen.getByRole("button", { name: "Your stats" })).toBeTruthy();
-    act(() => fireEvent.change(screen.getByLabelText("Your page"), { target: { value: "bag" } }));
+    act(() => fireEvent.click(screen.getByRole("button", { name: "Bag" })));
     expect(screen.getByRole("button", { name: /^Your things/ })).toBeTruthy();
     act(() => screen.getByRole("button", { name: "Back to the TV" }).click());
     expect(screen.getByTestId("tv-rest")).not.toBeNull();
@@ -267,7 +267,7 @@ describe("TV focus in a fight", () => {
     applyPrefs({ ...DEFAULT_PREFS, focus: true });
     const { container } = render(<PartyLayout surface="player" />);
     act(() => screen.getByRole("button", { name: "Look in my bag" }).click());
-    expect(screen.getByLabelText("Your page").closest("[hidden]")).toBeNull();
+    expect(screen.getByRole("navigation", { name: "Your pages", hidden: true }).closest("[hidden]")).toBeNull();
     expect(container.querySelector(".player__prompt")?.hasAttribute("hidden")).toBe(true);
     expect(screen.getByRole("button", { name: "Back to the TV" })).not.toBeNull();
   });

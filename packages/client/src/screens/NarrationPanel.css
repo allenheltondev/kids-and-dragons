@@ -685,3 +685,6 @@
   font-weight: 700;
   white-space: nowrap;
 }
+
+/* The story remains spoken and available on phones; active fights foreground the board. */
+.narration--fight .narration__body, .narration--fight .narration__hint { display: none; }

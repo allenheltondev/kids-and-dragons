@@ -134,7 +134,7 @@ export function rescueLine(rescue: EnvironmentRescueView): string {
     case "lost":
       return `${rescue.name} is lost to the rift.`;
     default: {
-      const free = `Free ${rescue.name}: end your turn next to them.`;
+      const free = rescue.target ? `Free ${rescue.name}: ${rescue.progress ?? 0}/${rescue.target} helping turns. End a turn beside them to help.` : `Free ${rescue.name}: end your turn next to them.`;
       // A captive the monsters can get at (#220) says how many tugs are left.
       const how = rescue.hp === undefined ? free : `${free} A monster next to them drags them away: ${rescue.hp} more and they are gone.`;
       if (rescue.roundsLeft === undefined) return how;
@@ -222,6 +222,8 @@ export function environmentBeatLine(
     }
     case "freed":
       return { text: `${words.name(event.byId)} freed ${words.captive(event.captive)}!`, tone: "good" };
+    case "rescueProgress":
+      return { text: `${words.name(event.byId)} helped ${words.captive(event.captive)}! ${event.progress} of ${event.target} helping turns.`, tone: "good" };
     case "captiveLost":
       return { text: `${words.captive(event.captive)} is lost to the rift.`, tone: "bad" };
     case "captiveDragged":

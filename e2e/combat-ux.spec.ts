@@ -77,11 +77,11 @@ test("review combat decisions on phone and tablet", async ({ page }, testInfo) =
       await enlarged.locator("[data-move-tile]").first().click();
       await expect(enlarged).not.toBeVisible();
 
-      await page.locator(".combat__roster summary").click();
-      await expect(page.getByRole("list", { name: "Fighter details" })).toContainText("Guard 11");
-      await expect(page.getByRole("list", { name: "Fighter details" })).toContainText("6/6 hearts");
+      await page.getByRole("button", { name: /Inspect Bramblewisp 1.*hearts, Guard/ }).click();
+      await expect(page.locator(".combat__plan")).toContainText("Guard 11");
+      await expect(page.getByRole("list", { name: "Fighter details" })).toContainText("6/6");
       await page.screenshot({ path: testInfo.outputPath("after-roster.png") });
-      await page.locator(".combat__roster summary").click();
+      await page.getByRole("button", { name: /Inspect Bramblewisp 1.*hearts, Guard/ }).click();
       await page.locator(".combat__actions button").filter({ hasText: /^Attack/ }).click();
       await expect(page.locator(".combat__targets")).toBeVisible();
       await expect(page.locator("[data-aim-target]")).toHaveCount(3);

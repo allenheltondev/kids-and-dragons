@@ -265,13 +265,13 @@ for (const hand of ["right", "left"] as const) {
     // reaching for the top of the phone.
     const dock = page.locator(".player__dock");
     if (await dock.isVisible().catch(() => false)) await dock.click(TAP);
-    await page.getByRole("combobox", { name: "Your page" }).selectOption("room");
+    await page.getByRole("navigation", { name: "Your pages" }).getByRole("button", { name: "Settings", exact: true }).click();
     await page.locator(".player__room-settings").getByRole("button", { name: "Room settings" }).click(TAP);
     await page.locator(".player__room-settings").getByRole("button", { name: "Display settings" }).click(TAP);
     await expect(page.getByRole("dialog", { name: "Display settings" })).toBeVisible(TAP);
     await page.keyboard.press("Escape");
 
-    await page.getByRole("combobox", { name: "Your page" }).selectOption("bag");
+    await page.getByRole("navigation", { name: "Your pages" }).getByRole("button", { name: "Bag", exact: true }).click();
 
     // The roll: the prompt, then the dice card, on this one small screen.
     await openPlayerTask(page);

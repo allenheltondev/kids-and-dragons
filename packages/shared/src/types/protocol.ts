@@ -389,6 +389,8 @@ export interface SnapshotMessage {
 export type IntentPreview =
   | { kind: "choice"; choiceId: string }
   | { kind: "move"; to: { x: number; y: number } }
+  /** A teammate's planning marker. Never an instruction to move or spend an action. */
+  | { kind: "suggest"; to: { x: number; y: number } }
   /** An ability, with whatever has been aimed so far — maybe nothing yet. */
   | {
       kind: "action";

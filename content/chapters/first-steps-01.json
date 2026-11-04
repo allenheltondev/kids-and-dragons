@@ -476,9 +476,9 @@
     },
     "encounter_bun": {
       "type": "encounter",
-      "map": "glade",
+      "map": "pond_rescue",
       "narration": "Bun lies in the mud by the pond. Flick and Dot zip back and forth, getting in everybody's way.",
-      "hint": "When a friend is knocked down, stand next to them on your turn and tap Help Up. Bun is stuck in the mud: end your turn next to her to help her up too.",
+      "hint": "Help a knocked-down friend by standing next to them and choosing Help Up. Free Bun with two helping turns beside her. Friends can share the work; you win when she is free.",
       "enemies": [
         {
           "id": "flick",
@@ -506,8 +506,8 @@
         "rescue": {
           "name": "Bun",
           "at": {
-            "x": 3,
-            "y": 6
+            "x": 4,
+            "y": 4
           },
           "effects": [
             {
@@ -515,7 +515,8 @@
               "flag": "helped_bun",
               "value": true
             }
-          ]
+          ],
+          "turns": 2
         },
         "exits": [
           {
@@ -524,15 +525,16 @@
             "tiles": [
               {
                 "x": 5,
-                "y": 7
+                "y": 5
               },
               {
                 "x": 6,
-                "y": 7
+                "y": 5
               }
             ]
           }
-        ]
+        ],
+        "victory": "rescue"
       },
       "onEscape": {
         "goto": "scene_bun_safe",
@@ -576,7 +578,7 @@
             "flag": "stopped_the_pond_wisps"
           }
         ],
-        "narration": "Tag, and tag! The wisps finally stop zipping around and sit on a reed to catch their breath.",
+        "narration": "Together you lift Bun out of the sticky mud. She shakes her legs, and the wisps pause their game to watch.",
         "variants": [
           {
             "when": {

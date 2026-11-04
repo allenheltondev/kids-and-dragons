@@ -94,6 +94,18 @@ describe("tablePreviews — a fight", () => {
     expect(tablePreviews(state, held(state, { [otherPlayer]: { kind: "end_turn" } })).combat).toBeNull();
   });
 
+  it("shows a teammate's suggestion without taking priority over the active player's aim", () => {
+    const suggestion: IntentPreview = { kind: "suggest", to: { x: 2, y: 3 } };
+    expect(tablePreviews(state, held(state, { [otherPlayer]: suggestion })).combat?.playerId).toBe(otherPlayer);
+    const aim: IntentPreview = { kind: "move", to: { x: 1, y: 0 } };
+    expect(tablePreviews(state, held(state, { [otherPlayer]: suggestion, [activePlayer]: aim })).combat?.preview).toEqual(aim);
+    expect(tablePreviews(state, held(state, { [otherPlayer]: { kind: "suggest", to: { x: 99, y: 3 } } })).combat).toBeNull();
+    const disconnected = { ...state, party: state.party.map(m => m.playerId === otherPlayer ? { ...m, connected: false } : m) };
+    expect(tablePreviews(disconnected, held(state, { [otherPlayer]: suggestion })).combat).toBeNull();
+    const later = { ...state, encounter: { ...encounter, stepsLeft: encounter.stepsLeft - 1 } };
+    expect(tablePreviews(later, held(state, { [otherPlayer]: suggestion })).combat).toBeNull();
+  });
+
   it("ignores a pick left over from an earlier fight with identical turn fields", () => {
     // Its clear was lost with a dropped phone; the next fight opens on the
     // same hero, same round, same slot, same steps.

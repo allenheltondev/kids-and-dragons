@@ -1,3 +1,4 @@
+import { flushSync } from "react-dom";
 import { runBackStep } from "../store/back-steps";
 import { dismissPlayerSheet, openGuide, setPlayerSection, usePlayerNavigation } from "../store/player-navigation";
 import { resetFieldGuideCache } from "./content";
@@ -214,7 +215,7 @@ afterEach(() => {
 // ---------------------------------------------------------------------------
 
 function selectSheetPage(value: string) {
-  act(() => fireEvent.change(screen.getByRole("combobox", { name: "Your page" }), { target: { value } }));
+  flushSync(() => fireEvent.click(screen.getByRole("button", { name: ({ bag: "Bag", stats: "Stats", party: "Friends", token: "Class token", room: "Settings" } as Record<string, string>)[value] })));
 }
 
 describe("before the character arrives", () => {

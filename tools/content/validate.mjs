@@ -764,13 +764,14 @@ function effectsOf(scene, sceneId) {
 /**
  * A map's playability, which the schema cannot see.
  *
- * The schema fixes the board at 10×8 and the alphabet at `.`/`#`. What it cannot
+ * The schema bounds arena sizes and the alphabet at `.`/`#`. What it cannot
  * check is whether the figures can actually stand where the map says: a spawn on
  * a bramble tile throws out of `placeActor` at the instant the fight begins,
  * which is a crash at the table for a mistake plainly visible in the file.
  */
 function checkMap(rep, file, map) {
   const at = rel(file);
+  if (map.rows?.some(row => row.length !== map.rows[0].length)) rep.fail(at, "/rows", "all rows must have the same width", "A battle map must be rectangular.");
   const seen = new Map();
   for (const kind of ["partySpawns", "enemySpawns"]) {
     (map[kind] ?? []).forEach((spawn, i) => {
@@ -1944,7 +1945,7 @@ function main() {
     mapIds.add(map.id);
     mapsById.set(map.id, map);
   }
-  if (mapFiles.length) rep.ok(`content/maps  ${mapFiles.length} map(s)  (10×8 board, spawns open and reachable)`);
+  if (mapFiles.length) rep.ok(`content/maps  ${mapFiles.length} map(s)  (bounded arenas, spawns open and reachable)`);
 
   // --- the bestiary: canon's creatures, projected. Generated, never edited.
   const bestiaryPath = join(CONTENT, "bestiary.json");

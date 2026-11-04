@@ -2072,12 +2072,11 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
         <TvRest waiting={fightWaitingLine(state.encounter ?? null, party) ?? (globalPrompt !== null ? waitingLine(globalPrompt, party) : "Listen to the story…")} onPeek={() => setPeek(true)} />
       ) : null}
       <div className="player__scroll kad-scroll" hidden={!sheetUp}>
-        <label className="player__page-picker">Show
-          <select aria-label="Your page" value={sheetPage} onChange={event => { setSheetPage(event.target.value); setSelected(null); }}>
-            <option value="bag">Bag</option><option value="stats">Stats</option>
-            <option value="party">Friends</option><option value="token">Class token</option><option value="room">Settings</option>
-          </select>
-        </label>
+        <nav className="player__page-picker" aria-label="Your pages">
+          {([["bag", "Bag"], ["stats", "Stats"], ["party", "Friends"], ["token", "Class token"], ["room", "Settings"]] as const).map(([id, label]) =>
+            <button key={id} type="button" className="kad-focusable" aria-current={sheetPage === id ? "page" : undefined}
+              onClick={() => { setSheetPage(id); setSelected(null); }}>{label}</button>)}
+        </nav>
         {/* One seat at the top of the bag, the big button's height, for
             either the way into your task or what the table is waiting on.
             Both change as other people act; sharing a fixed seat, neither

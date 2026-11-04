@@ -1550,8 +1550,9 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
   .player--deciding .prompt__title { font-size: 1em; }
   .player--deciding .confirm__actions > .kad-button { min-block-size: 44px; padding-block: .3em; }
 }
-.player__page-picker { display: flex; align-items: center; gap: .5em; flex: none; }
-.player__page-picker select { flex: 1; min-inline-size: 0; min-block-size: 44px; padding: .4em; border: 1px solid var(--kad-border); border-radius: .5em; background: var(--kad-bg-raised); color: var(--kad-ink); font: inherit; }
+.player__page-picker { display: flex; flex-wrap: wrap; align-items: center; gap: .35em; flex: none; }
+.player__page-picker button { flex: 1 0 auto; min-block-size: 44px; padding: .4em .65em; border: 1px solid var(--kad-border); border-radius: .65em; background: var(--kad-bg-raised); color: var(--kad-ink); font: inherit; font-size: .8em; }
+.player__page-picker button[aria-current] { background: var(--kad-gold, #f1cd80); color: #21162d; border-color: #ffe8ab; font-weight: 800; }
 .player__scroll > [hidden] { display: none; }
 .player__scroll .inv__grid { grid-auto-rows: 48px; gap: .4em; }
 .player__scroll :is(.inv__button, .inv__slot--empty) { min-height: 48px; }

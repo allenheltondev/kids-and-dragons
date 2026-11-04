@@ -66,6 +66,7 @@ export * from "./prompt-for.js";
 export * from "./push.js";
 export * from "./spectators.js";
 export * from "./enemy-ai.js";
+export * from "./combat-intent.js";
 export * from "./balance.js";
 export * from "./playtest.js";
 export * from "./speak.js";

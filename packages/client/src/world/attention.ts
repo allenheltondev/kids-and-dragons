@@ -84,6 +84,7 @@ export function beatSubjects(event: EncounterEvent): string[] {
     // The hero who freed the captive, the monster dragging at one (#220).
     // The captive is a square, not a figure.
     case "freed":
+    case "rescueProgress":
     case "captiveDragged":
       return [event.byId];
     // The hero closing a tear (#220); a held round names nobody.

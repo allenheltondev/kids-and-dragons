@@ -1079,12 +1079,14 @@ export function createBoardLayer(): BoardLayer {
         return;
       }
       case "freed":
+      case "rescueProgress":
       case "captiveLost":
       case "captiveDragged": {
         const spec = view?.encounter.environment?.spec;
         const at = spec ? captivesOf(spec)[event.captive ?? 0]?.at : undefined;
         if (at) {
           if (event.type === "freed") spawnTileFloater(at, "Free!", 0x4ad991);
+          else if (event.type === "rescueProgress") spawnTileFloater(at, `${event.progress}/${event.target} helped!`, 0xffd479);
           else if (event.type === "captiveLost") spawnTileFloater(at, "Lost", 0xb7b0d8);
           else spawnTileFloater(at, `${event.hp} left`, 0xff6b6b);
         }

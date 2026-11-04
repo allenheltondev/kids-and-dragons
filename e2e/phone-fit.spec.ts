@@ -174,7 +174,7 @@ test.describe("a phone joining, at the playtest's widths", () => {
     await kid.getByPlaceholder("Tap to type").fill("Sparklehoof", TAP);
     await kid.getByRole("button", { name: /that's me/i }).click(TAP);
 
-    await kid.getByRole("combobox", { name: "Your page" }).selectOption("stats");
+    await kid.getByRole("navigation", { name: "Your pages" }).getByRole("button", { name: "Stats", exact: true }).click();
     const stats = kid.getByRole("button", { name: "Your stats" });
     await expect(stats).toHaveAttribute("aria-expanded", "true", TAP);
     await expect(kid.locator(".stat-row")).toBeVisible();
@@ -182,7 +182,7 @@ test.describe("a phone joining, at the playtest's widths", () => {
     await expect(stats).toHaveAttribute("aria-expanded", "false");
     await expect(kid.locator(".stat-row")).toBeHidden();
     await kid.reload();
-    await kid.getByRole("combobox", { name: "Your page" }).selectOption("stats");
+    await kid.getByRole("navigation", { name: "Your pages" }).getByRole("button", { name: "Stats", exact: true }).click();
     await expect(kid.getByRole("button", { name: "Your stats" })).toHaveAttribute("aria-expanded", "false", TAP);
     await expect(kid.locator(".stat-row")).toBeHidden();
     expect(await offScreen(kid)).toEqual([]);

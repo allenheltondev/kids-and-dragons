@@ -630,7 +630,7 @@ export interface RiftBehavior {
  */
 export interface EncounterMap {
   id: string;
-  /** 8 rows of 10 characters — the board in spec §7.1. */
+    /** Rectangular arenas: 6–10 columns, 6–8 rows. Adventure maps default to 10×8. */
   rows: string[];
   /** Where the party stands. At least three; §7.1 seats three players. */
   partySpawns: { x: number; y: number }[];
@@ -658,6 +658,8 @@ export interface MapTile {
  * exactly what it was.
  */
 export interface EncounterEnvironment {
+  /** Opt-in mission victory: all captives must be freed; defeating enemies alone does not finish it. */
+  victory?: "rescue";
   clock?: RiftClock;
   hazards?: EnvironmentHazard[];
   exits?: RiftExit[];
@@ -805,6 +807,8 @@ export interface RescueObjective {
   name: string;
   at: MapTile;
   byRound?: number;
+  /** Helping turns spent beside them, shared by the party. Defaults to one for existing fights. */
+  turns?: number;
   effects?: Effect[];
   /**
    * A captive the monsters can get at (#220), 1 to 6. A monster that ends
