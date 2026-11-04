@@ -43,18 +43,18 @@ function pressBack(): KeyboardEvent {
 it("closes the display settings sheet and gives the remote its button back", () => {
   render(<A11yControl />);
   const stop = installRemoteFocus(document, { armed: true });
-  const opener = screen.getByRole("button", { name: "Display settings" });
+  const opener = screen.getByRole("button", { name: "Settings" });
   opener.focus();
   fireEvent.click(opener);
 
-  const sheet = screen.getByRole("dialog", { name: "Display settings" });
+  const sheet = screen.getByRole("dialog", { name: "Settings" });
   expect(sheet).toBeTruthy();
   // Focus is inside the sheet, so this is also the case where the relay starts from a control.
   expect(sheet.contains(document.activeElement)).toBe(true);
 
   expect(pressBack().defaultPrevented).toBe(true);
-  expect(screen.queryByRole("dialog", { name: "Display settings" })).toBeNull();
-  expect(document.activeElement).toBe(screen.getByRole("button", { name: "Display settings" }));
+  expect(screen.queryByRole("dialog", { name: "Settings" })).toBeNull();
+  expect(document.activeElement).toBe(screen.getByRole("button", { name: "Settings" }));
   stop();
 });
 

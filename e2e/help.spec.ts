@@ -62,7 +62,7 @@ test("the ? and press-and-hold, on the smallest phone at the largest text", asyn
     // The "?" is there, big enough, and not on top of its neighbours.
     const help = page.getByRole("button", { name: "Help", exact: true });
     await expect(help).toBeVisible(TAP);
-    const neighbours = [page.getByRole("button", { name: "Display settings" }).first(), page.getByRole("button", { name: /turn read-aloud/i }), page.getByRole("button", { name: /turn sound/i })];
+    const neighbours = [page.getByRole("button", { name: "Settings", exact: true }).first(), page.getByRole("button", { name: /turn read-aloud/i }), page.getByRole("button", { name: /turn sound/i })];
     const helpBox = (await help.boundingBox())!;
     expect(helpBox.width).toBeGreaterThanOrEqual(43);
     expect(helpBox.height).toBeGreaterThanOrEqual(43);

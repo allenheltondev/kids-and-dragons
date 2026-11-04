@@ -16,16 +16,18 @@ for (const viewport of [{ width: 360, height: 640 }, { width: 390, height: 844 }
     }).map(el => `${el.className}: ${el.clientHeight}/${el.scrollHeight}`));
     expect(scrolling, `${name} should fit without scrolling`).toEqual([]);
     if (name === "You") {
-      const pages = page.getByRole("navigation", { name: "Your pages" });
-      await pages.getByRole("button", { name: "Stats", exact: true }).focus();
-      await page.keyboard.press("Enter");
-      await expect(page.getByRole("button", { name: "Your stats", exact: true })).toBeVisible();
-      await pages.getByRole("button", { name: "Bag", exact: true }).click();
-      await expect(page.getByRole("button", { name: /^Your things/ })).toBeVisible();
-      for (const section of ["stats", "party", "token", "room", "bag"]) {
-        await pages.getByRole("button", { name: ({ bag: "Bag", stats: "Stats", party: "Friends", token: "Class token", room: "Settings" } as Record<string, string>)[section], exact: true }).click();
-        expect(await page.locator(".player__scroll").evaluate(el => el.scrollHeight <= el.clientHeight + 1), section).toBe(true);
-      }
+      // Everything at once (no picker, no folds): the stats and the bag.
+      await expect(page.getByRole("combobox")).toHaveCount(0);
+      await expect(page.getByRole("list", { name: "Your stats" })).toBeVisible();
+      // Alone at this table: no party row (it lists friends only); the hero opens their own sheet.
+      await expect(page.getByRole("list", { name: "Your friends" })).toHaveCount(0);
+      await expect(page.getByRole("heading", { name: /^Your things/ })).toBeVisible();
+      const fits = () => page.locator(".player__you").evaluate(el => el.scrollHeight <= el.clientHeight + 1);
+      expect(await fits(), "You").toBe(true);
+      // The room's settings are in the corner gear's sheet, not a tile on this page.
+      await page.getByRole("button", { name: "Settings", exact: true }).first().click();
+      await expect(page.getByRole("dialog", { name: "Settings", exact: true }).getByRole("region", { name: "This game" })).toBeVisible();
+      await page.keyboard.press("Escape");
     }
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
    }

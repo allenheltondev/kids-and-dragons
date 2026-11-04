@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { EncounterState, PartyMember, ResolvedCharacter, RunState } from "@kad/shared";
-import { catchUpLine, midChapter, sceneKey, situationKey, steppedAwayLine } from "./presence-copy";
+import { midChapter, sceneKey, steppedAwayLine, watchingLine } from "./presence-copy";
 
 const me = {
   character: { id: "c_1", name: "Pip" } as ResolvedCharacter,
@@ -35,45 +35,20 @@ describe("the shared screen's line", () => {
   });
 });
 
-describe("the catch-up", () => {
-  it("says welcome back to a returning kid and welcome to a late one", () => {
-    expect(catchUpLine(state(), me, true)).toBe("Welcome back, Pip! The party is on the move.");
-    expect(catchUpLine(state(), me, false)).toBe("Welcome, Pip! The party is on the move.");
-  });
-
-  it("says what the party is doing", () => {
+describe("what a watching phone says", () => {
+  it("says what the party is doing, and nothing before the story starts", () => {
     const choice: RunState["prompt"] = { kind: "choice", sceneId: "s1", options: [], forPlayerIds: [], vote: true };
-    expect(catchUpLine(state({ prompt: choice }), me, true)).toContain("voting on what to do next");
-    expect(catchUpLine(state({ phase: "check", prompt: { kind: "roll" } as RunState["prompt"] }), me, true)).toContain(
-      "trying something tricky",
-    );
-    expect(catchUpLine(state({ sceneType: "rest" }), me, true)).toContain("taking a rest");
-    expect(catchUpLine(state({ phase: "encounter" }), me, true)).toContain("A fight is about to start!");
-  });
-
-  it("tells a kid in a fight where their hero is", () => {
-    const standing = fight([{ id: "c_1", down: false } as EncounterState["combatants"][number]]);
-    const fallen = fight([{ id: "c_1", down: true } as EncounterState["combatants"][number]]);
-    expect(catchUpLine(state({ phase: "encounter", encounter: standing }), me, true)).toContain(
-      "your hero is right where you left them",
-    );
-    expect(catchUpLine(state({ phase: "encounter", encounter: fallen }), me, true)).toContain("help your hero up");
-    // Seated mid-fight: not on the board, so they wait for the next one.
-    expect(catchUpLine(state({ phase: "encounter", encounter: fight([]) }), me, false)).toContain(
-      "You join in after it.",
-    );
-  });
-
-  it("never counts the party or uses an em dash", () => {
-    const lines = [true, false].map((back) => catchUpLine(state(), me, back));
-    for (const line of lines) {
-      expect(line).not.toMatch(/—/);
-      expect(line).not.toMatch(/\b(two|three|four) of you\b/);
-    }
+    expect(watchingLine(state({ phase: "lobby" }))).toBeNull();
+    expect(watchingLine(state())).toBe("The party is on the move.");
+    expect(watchingLine(state({ prompt: choice }))).toContain("voting on what to do next");
+    expect(watchingLine(state({ phase: "check", prompt: { kind: "roll" } as RunState["prompt"] }))).toContain("trying something tricky");
+    expect(watchingLine(state({ sceneType: "rest" }))).toContain("taking a rest");
+    expect(watchingLine(state({ phase: "encounter" }))).toContain("A fight is about to start!");
+    expect(watchingLine(state({ phase: "encounter", encounter: fight([]) }))).toBe("The party is in a fight!");
   });
 });
 
-describe("what counts as having missed something", () => {
+describe("where the story is", () => {
   it("is mid-chapter only between a chapter's start and its end", () => {
     expect(midChapter({ phase: "lobby" })).toBe(false);
     expect(midChapter({ phase: "creation" })).toBe(false);
@@ -82,15 +57,7 @@ describe("what counts as having missed something", () => {
     expect(midChapter({ phase: "chapter_complete" })).toBe(false);
   });
 
-  it("moves with the scene, the fight's turn and the open question", () => {
-    const before = state();
-    expect(situationKey(state())).toBe(situationKey(before));
-    expect(situationKey(state({ sceneId: "s2", visited: ["s0", "s1", "s2"] }))).not.toBe(situationKey(before));
-    expect(situationKey(state({ prompt: { kind: "roll" } as RunState["prompt"] }))).not.toBe(situationKey(before));
-    expect(situationKey(state({ encounter: fight([]) }))).not.toBe(situationKey(before));
-  });
-
-  it("puts an old catch-up away only when the scene changes, not every turn", () => {
+  it("changes with the scene, not every turn of a fight", () => {
     expect(sceneKey(state({ encounter: fight([]) }))).toBe(sceneKey(state()));
     expect(sceneKey(state({ sceneId: "s2" }))).not.toBe(sceneKey(state()));
   });

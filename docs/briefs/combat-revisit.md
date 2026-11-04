@@ -7,7 +7,7 @@ Status: implemented first benchmark and shared combat presentation pass. Automat
 - Bun's rescue uses a compact 7 × 6 arena and two shared helping turns. Rescue progress survives saves; clearing enemies alone cannot finish this mission. Existing encounters retain their default victory rules.
 - Enemy forecasts use the server's deterministic planner and describe the present board. Moving, protection, and intervening turns can change the eventual result.
 - Waiting friends can suggest a board location without spending a move or action. Suggestions use the existing ephemeral preview channel, expire locally, and yield to the active player's aim.
-- Visible fighter portraits replace the fighter dropdown. Bag, Stats, Friends, Class token, and Settings use direct page buttons.
+- Visible fighter portraits replace the fighter dropdown. The You screen preserves PR #610's all-at-once hero, friends, and inventory layout, with room controls in the corner Settings sheet; there is no page picker.
 - Phone terrain reuses existing biome tiles. On the shared screen, mission information occupies the measured fight-log column; repeated scene prose gives way to the battlefield while narration remains spoken and available on phones.
 - Bundle measurements: 329KB first paint and 1481KB total before the final layout adjustment. Budgets explicitly allow 330KB and 1485KB. No runtime dependency or new raster asset was added.
 

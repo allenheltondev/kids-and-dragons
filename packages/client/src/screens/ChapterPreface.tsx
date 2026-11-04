@@ -108,7 +108,7 @@ function fitCard(card: HTMLElement): void {
   // Still clipped with nothing left to trim: a phone held sideways, where the
   // story plate leaves the world pane a strip too short for even the heading
   // and the goal. A sliver of a card cut off mid-word says nothing a kid can
-  // read, so the card stays away and the catch-up line, which fits, speaks.
+  // read, so the card stays away.
   if (card.hasAttribute("data-clipped")) card.hidden = true;
 }
 

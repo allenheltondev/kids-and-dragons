@@ -56,6 +56,14 @@
   overflow: hidden;
 }
 
+/* Your picture as a button (the You page): the same well, tappable, no button chrome. */
+.sheet__portrait--open {
+  padding: 0;
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
 .sheet__art {
   inline-size: 100%;
   block-size: 100%;
@@ -1231,16 +1239,11 @@
 }
 
 .player__inventory-story { margin: 0 0 0.5em; flex: 0 0 auto; line-height: 1.4; color: var(--kad-ink); }
-.player__room-settings { margin-block-start: auto; border-block-start: 1px solid var(--kad-border); padding-block-start: 0.25em; }
-.player__room-settings > .kad-fold__head { color: var(--kad-ink-dim); font-size: 0.85em; font-weight: 400; }
-.player__room-settings > .kad-fold__body:not([hidden]) { display: flex; flex-direction: column; gap: 0.5em; padding-block-end: 0.5em; }
 .kad-room-mode { display: flex; align-items: center; gap: 0.75em; inline-size: 100%; padding: 0.5em; border: 1px solid var(--kad-border); border-radius: var(--kad-radius-md); background: var(--kad-bg-raised); color: var(--kad-ink); font: inherit; text-align: start; }
 .kad-room-mode .kad-tray__object { inline-size: 2em; block-size: 2em; }
 
-/* The lobby's "Ready to play" sits at the foot of the sheet (after Room
-   settings, which already pushes itself down with `margin-block-start: auto`,
-   or pushing itself down when there is none) and stays in reach there while
-   a long bag scrolls past above it. */
+/* The lobby's "Ready to play" sits at the foot of the sheet, pushing itself
+   down, and stays in reach there. */
 .player__task-entry--foot {
   position: sticky;
   inset-block-end: 0;
@@ -1248,10 +1251,6 @@
   flex: none;
   margin-block-start: auto;
   box-shadow: 0 -0.75em 1em rgb(13 11 26 / 70%);
-}
-
-.player__room-settings + .player__task-entry--foot {
-  margin-block-start: 0;
 }
 
 /*
@@ -1388,9 +1387,12 @@
     padding: var(--space-3, 0.75em) var(--space-4, 1em);
   }
 
+  /* 3em, so the icon and the padding come to the 4.5em above and no more: at
+     3.2em an answer grew past it (tablet-fit), once a phone without the goal
+     card had the room for this rule at all. */
   .player--deciding .prompt:not(.combat) .choice__icon {
-    width: 3.2em;
-    height: 3.2em;
+    width: 3em;
+    height: 3em;
   }
 }
 
@@ -1550,14 +1552,6 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
   .player--deciding .prompt__title { font-size: 1em; }
   .player--deciding .confirm__actions > .kad-button { min-block-size: 44px; padding-block: .3em; }
 }
-.player__page-picker { display: flex; flex-wrap: wrap; align-items: center; gap: .35em; flex: none; }
-.player__page-picker button { flex: 1 0 auto; min-block-size: 44px; padding: .4em .65em; border: 1px solid var(--kad-border); border-radius: .65em; background: var(--kad-bg-raised); color: var(--kad-ink); font: inherit; font-size: .8em; }
-.player__page-picker button[aria-current] { background: var(--kad-gold, #f1cd80); color: #21162d; border-color: #ffe8ab; font-weight: 800; }
-.player__scroll > [hidden] { display: none; }
-.player__scroll .inv__grid { grid-auto-rows: 48px; gap: .4em; }
-.player__scroll :is(.inv__button, .inv__slot--empty) { min-height: 48px; }
-.player__scroll .inv__slot-name { font-size: .7em; }
-.player__scroll .inv__empty-mark { inline-size: 1.5em; block-size: 1.5em; }
 /* Consequence previews stay readable without adding a full row to every
    answer on a short phone. Their words already name the roll or activity. */
 @container prompt (max-height: 30em) {
@@ -1569,4 +1563,661 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
     vertical-align: middle;
   }
   .player--deciding .choice__ahead > .kad-icon { display: none; }
+}
+
+/* --- The You page: everything at once, nothing to scroll ------------------ */
+
+/*
+ * Stats, faces, token, settings and bag on one screen (PlayerPanel). The bag
+ * is the only part that gives: its slots share whatever height the rest
+ * leaves, so a short phone gets shorter slots rather than a scroll, a menu or
+ * a fold. Every tap target keeps the touch floor.
+ */
+.player__you {
+  /* Only a pane smaller than any phone ever scrolls; everywhere else the bag gives. */
+  overflow-y: auto;
+  gap: 0.35em;
+  padding-block: 0.35em;
+}
+
+.player__you > [hidden],
+.player__you [hidden] {
+  display: none;
+}
+
+.sheet--card .stat-row {
+  flex: none;
+  gap: var(--space-1, 0.25em);
+}
+
+.sheet--card .stat-row__item {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-areas: "icon value" "name name";
+  justify-content: center;
+  align-items: center;
+  column-gap: 0.2em;
+  min-block-size: 0;
+  padding: 0.3em 0.1em 0.2em;
+  text-align: center;
+}
+
+.sheet--card .stat-row__item > .kad-icon { grid-area: icon; }
+.sheet--card .stat-row__value { grid-area: value; font-size: 1.2em; line-height: 1; }
+.sheet--card .stat-row__name {
+  grid-area: name;
+  font-size: 0.65em;
+  line-height: 1.1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Your friends: a card each, side by side under your hero's card: a big face,
+   the name, and their health, so who is hurt is seen at a glance. They share
+   the page's height with the bag (about 3 to 5), so the people at the table
+   count for as much as the slots in your bag. The row measures itself and the
+   faces grow with it. A long name is never cut. */
+.you__row {
+  flex: 3 1 0;
+  min-block-size: 5em;
+  display: flex;
+  container: friends / size;
+}
+
+.you__row .party-strip__list {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  display: flex;
+  justify-content: center;
+  gap: var(--space-2, 0.5em);
+  padding: 0;
+  overflow: visible;
+}
+
+/* Each card shares the row's width, and measures itself so the face fills it. */
+.you__row .party-strip__list > li {
+  flex: 1 1 0;
+  min-inline-size: 0;
+  max-inline-size: 15em;
+  display: flex;
+  container: friend / size;
+}
+
+.you__row .party-strip__button {
+  position: relative;
+  flex: 1 1 auto;
+  inline-size: auto;
+  min-inline-size: 0;
+  justify-content: center;
+  gap: 0.2em;
+  padding: 0.35em 0.3em;
+}
+
+/* The face as big as the card allows: its width, or its height less the name
+   and health lines under it, whichever is smaller. */
+.you__row .party-strip__portrait {
+  inline-size: max(2.2em, min(calc(100cqi - 0.8em), calc(100cqh - 3.4em)));
+  block-size: max(2.2em, min(calc(100cqi - 0.8em), calc(100cqh - 3.4em)));
+  border-radius: var(--radius-md, 0.75em);
+}
+
+.you__row .party-strip__button {
+  block-size: 100%;
+}
+
+/* A name on two lines takes its height from the face, never from its own
+   second line: the face shrinks (staying square), the name and bar do not. */
+.you__row .party-strip__portrait {
+  flex: 0 1 auto;
+  min-block-size: 1.8em;
+  aspect-ratio: 1;
+  inline-size: auto;
+}
+
+.you__row .party-strip__name,
+.you__row .hp-bar--friend {
+  flex: none;
+}
+
+/* A friend's name fits its card: it wraps between words, and its size comes
+   down until its longest word (--name-word, in letters) fits the card's width,
+   so a long name never spills into the next card or breaks mid-word. The
+   ellipsis is a last resort; the button's label always says the whole name. */
+.you__row .party-strip__name {
+  max-inline-size: 100%;
+  font-size: min(0.9em, max(0.72em, calc((100cqi - 0.8em) / (var(--name-word, 8) * 0.58))));
+  line-height: 1.1;
+  text-align: center;
+  overflow-wrap: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* A friend's health, under their name: the bar a little narrower than the card. */
+.hp-bar--friend {
+  inline-size: 100%;
+  font-size: 0.8em;
+}
+
+/* Knocked down: the face dims, and the bar says "Down" in words. */
+.party-strip__button--down .party-strip__portrait {
+  filter: grayscale(0.6) brightness(0.8);
+}
+
+.you__row .party-strip__mark {
+  position: absolute;
+  inset-block-start: 0.25em;
+  inset-inline-end: 0.25em;
+  font-size: 0.7em;
+}
+
+/* A short pane (a small phone at large text): faces only, one row, so the bag
+   keeps its room. Each still says its friend's name (the button's label). */
+@container sheet (max-height: 16em) {
+  .you__row {
+    flex: none;
+    min-block-size: 0;
+    container-type: normal;
+  }
+  .you__row .party-strip__list > li {
+    flex: 0 0 auto;
+    container-type: normal;
+  }
+  .you__row .party-strip__name,
+  .you__row .hp-bar--friend {
+    display: none;
+  }
+  .you__row .party-strip__portrait {
+    inline-size: 2.4em;
+    block-size: 2.4em;
+  }
+  .you__row .party-strip__button {
+    padding: 0.25em;
+  }
+}
+
+/* The bag takes the rest of the page; its six slots share it. */
+.you__bag {
+  /* Five parts of the spare height to the friends' three (.you__row). */
+  flex: 5 1 0;
+  min-block-size: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.player__you .inv {
+  flex: 1 1 auto;
+  min-block-size: 0;
+}
+
+.inv__head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  font-size: var(--font-size-md, 1em);
+  font-weight: 700;
+}
+
+.inv__title,
+.inv__trail {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+}
+
+.player__you .inv__grid {
+  flex: 1 1 auto;
+  min-block-size: 0;
+  /* Three across at every width: on a tablet, six across were tall thin strips. */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  /* No cap: the six slots always fill the page down to the tray, however tall
+     the phone. The queries below shrink what is in a slot before the slot
+     itself gets small, and grow it on a tall one. */
+  grid-auto-rows: minmax(2.5em, 1fr);
+  gap: var(--space-2, 0.5em);
+  padding-block: var(--space-1, 0.25em);
+}
+
+.player__you :is(.inv__button, .inv__slot--empty) {
+  min-height: 0;
+  block-size: 100%;
+  padding: 0.2em;
+  overflow: hidden;
+}
+
+.player__you .inv__slot-name {
+  max-inline-size: 100%;
+  font-size: 0.75em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.inv__quest-list {
+  flex: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1, 0.25em);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--font-size-sm, 0.875em);
+}
+
+/* An opened item stands in for the bag, so it takes the bag's height too:
+   nothing left blank under it. */
+.player__you .item-detail {
+  flex: 1 1 auto;
+  min-block-size: 0;
+  container: item / size;
+}
+
+/* Name, words and buttons sit under the picture, at the foot of the card. */
+.player__you .item-detail__title {
+  margin-block-start: auto;
+}
+
+/* The item itself, as big as the card has room for, above its name and words. */
+.item-detail__art {
+  flex: 1 1 auto;
+  min-block-size: 0;
+  display: grid;
+  place-items: center;
+}
+
+/* cqh: a hundredth of the card's height (the card is the size container). */
+.player__you .item-detail__art {
+  --item-art: clamp(3em, 40cqh, 10em);
+}
+
+@container item (max-height: 16em) {
+  .item-detail__art {
+    display: none;
+  }
+}
+
+.player__you .give--waiting {
+  flex: none;
+}
+
+/* A short pane gives up words before it gives up anything to tap: the names
+   under the stats, then the big seat at the top shrinks to the touch floor. */
+@container sheet (max-height: 24em) {
+  .player__you .player__task-slot {
+    --player-seat: var(--kad-touch-min, 2.75em);
+  }
+  .player__you .player__task-slot .kad-button--lg {
+    min-block-size: var(--kad-touch-min, 2.75em);
+    padding-block: 0.2em;
+  }
+}
+
+/*
+ * The bag measures itself: the slots say less as they get shorter, and on
+ * the shortest pane all six stand in one row as pictures, each still a
+ * finger wide and a finger high.
+ */
+.player__you .inv {
+  container: bag / size;
+}
+
+/* No kind's word under an item here: the item's own picture and name are what
+   a kid reads at a glance, and the word was cut off in a phone-sized slot. */
+.player__you .inv__kind {
+  display: none;
+}
+
+@container bag (max-height: 10em) {
+  .player__you .inv__slot--empty .inv__slot-name {
+    display: none;
+  }
+  .player__you :is(.inv__button, .inv__slot--empty) {
+    padding: 0.1em;
+    gap: 0;
+  }
+  .player__you .inv__grid {
+    --inv-icon: 1.6em;
+  }
+  .player__you .inv__empty-mark {
+    inline-size: 1.6em;
+    block-size: 1.6em;
+  }
+}
+
+/* The brass frame and its sunken well (styles/chrome.css) are drawn 10 to 20
+   pixels thick, which was most of a slot on a phone and ran long names under
+   the brass. The You page's bag draws plain rounded wells at every size, so the
+   items get the room. High contrast keeps its own outlines (chrome.css skips it). */
+html:not([data-contrast="high"]) .player__you :is(.inv__button, .inv__slot--empty)::before,
+html:not([data-contrast="high"]) .player__you :is(.inv__button, .inv__slot--empty)::after {
+  display: none;
+}
+html:not([data-contrast="high"]) .player__you .inv__button {
+  border: 0.08em solid var(--kad-raised-rim, rgba(190, 178, 255, 0.3));
+  background: var(--color-surface-sunken, #120f26);
+}
+html:not([data-contrast="high"]) .player__you .inv__slot--empty {
+  border: 0.08em dashed var(--kad-raised-rim, rgba(190, 178, 255, 0.3));
+}
+
+/* A tall bag (a big phone, a tablet): bigger pictures and names, so the
+   slots that fill the height are not mostly empty. */
+@container bag (min-height: 17em) {
+  /* cqh: a hundredth of the bag's height, so a slot's picture grows with the slot. */
+  .player__you .inv__grid {
+    --inv-icon: clamp(3em, 16cqh, 7em);
+  }
+  .player__you .inv__empty-mark {
+    inline-size: clamp(2.5em, 12cqh, 5em);
+    block-size: clamp(2.5em, 12cqh, 5em);
+  }
+  /* Room to wrap, so a long name takes two lines rather than an ellipsis. */
+  .player__you .inv__slot-name {
+    font-size: 1em;
+    white-space: normal;
+    overflow: visible;
+    overflow-wrap: normal;
+    text-align: center;
+  }
+}
+
+@container bag (max-height: 7.5em) {
+  .player__you .inv__grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: var(--space-1, 0.25em);
+  }
+  .player__you .inv__button .inv__slot-name {
+    display: none;
+  }
+}
+
+/* --- The You page: your hero's card -------------------------------------- */
+
+/*
+ * On the You page the identity strip is your hero's card, like a trading card:
+ * the picture large on the left, and beside it your name, level, XP, health and
+ * the six stats, three to a row (playtest, November 2026: a bigger picture, but
+ * not a banner across the top). The picture is a button into your whole sheet.
+ * Elsewhere (a question, a fight) the strip stays the slim pinned strip.
+ *
+ * The pane measures itself (it is 100% of its parent, so a size container is
+ * safe), and the picture grows with the pane's height, so a tall phone's spare
+ * room goes to your hero, not to the bag's empty slots.
+ */
+.player--you {
+  container: you-pane / size;
+}
+
+.sheet--card {
+  display: grid;
+  /* The name gets the whole width beside the picture (health sits under it), so a
+     long name at the largest text keeps its words whole. */
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    "art id"
+    "art stats"
+    "bar stats";
+  align-items: start;
+  column-gap: var(--space-3, 0.75em);
+  row-gap: var(--space-2, 0.5em);
+}
+
+/* The picture sets the card's height, and grows with the phone (its width and
+   its height both, so it stays a picture beside the stats, never a banner). The
+   page below takes the rest. */
+.sheet--card {
+  /* Never more than a third of a narrow phone's width, whatever the text size. */
+  --card-art: min(clamp(6.5em, min(48cqi, 32cqh), 20em), 34cqi);
+}
+
+/* About as tall as wide, as the art is drawn, so the figure fills its well. */
+.sheet--card .sheet__portrait {
+  grid-area: art;
+  align-self: center;
+  inline-size: var(--card-art);
+  block-size: calc(var(--card-art) * 1.12);
+  border-radius: var(--radius-lg, 1.25em);
+}
+
+/* The figure whole, as big as the well allows, standing on its floor. */
+.sheet--card .sheet__art {
+  position: relative;
+}
+.sheet--card .portrait__img {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  aspect-ratio: auto;
+  object-fit: contain;
+}
+
+.sheet--card .sheet__id { grid-area: id; }
+/* On the card, health is the bar across the foot of the picture; the strip's
+   words stay for a screen reader, out of sight. */
+.sheet--card {
+  position: relative;
+}
+
+.sheet--card .sheet__hp {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  align-items: flex-start;
+  min-inline-size: 0;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.sheet--card .sheet__portrait {
+  position: relative;
+}
+
+.hp-bar--card {
+  grid-area: bar;
+  inline-size: var(--card-art);
+  margin-block-start: 0.2em;
+}
+
+.sheet--card .stat-row {
+  grid-area: stats;
+  align-self: stretch;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+}
+
+/* A short pane (a small phone at large text): the card folds back to the slim
+   strip, a small picture beside the name, with the six stats in one row under
+   it and their words gone, so the bag keeps its room. */
+@container you-pane (max-height: 30em) {
+  .sheet--card {
+    --card-art: 3.6em;
+    grid-template-rows: auto auto auto;
+    grid-template-areas:
+      "art id"
+      "art hp"
+      "stats stats";
+  }
+  .sheet--card .stat-row {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  .sheet--card .stat-row__name {
+    display: none;
+  }
+  .sheet--card .hp-bar--card {
+    display: none;
+  }
+  .sheet--card .sheet__hp {
+    position: static;
+    inline-size: auto;
+    block-size: auto;
+    overflow: visible;
+    clip-path: none;
+    grid-area: hp;
+    align-items: flex-start;
+  }
+}
+
+/* A tall pane: bigger numbers in taller tiles beside the bigger picture. */
+@container you-pane (min-height: 40em) {
+  .sheet--card .stat-row__item {
+    padding-block: 0.5em 0.35em;
+  }
+  .sheet--card .stat-row__value {
+    font-size: 1.5em;
+  }
+}
+
+/* "Level 1 · Fledgling" in a narrow card: wrap between the two, never after a dangling dot. */
+.sheet--card .sheet__meta {
+  flex-wrap: wrap;
+  column-gap: 0.4em;
+}
+.sheet--card .sheet__meta > span[aria-hidden="true"] {
+  display: none;
+}
+
+/* --- Health as a bar ------------------------------------------------------ */
+
+/* The bar with its number inside it: the heart and "6/10" (or "Down") centred on
+   the track, over the fill. The brass frame over the track is chrome.css's
+   (`.sheet__hp-track`); with high contrast it is a plain outlined groove. */
+.hp-bar {
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* Tall enough to hold the number; beats chrome.css's 14px track, which held only a fill. */
+html .hp-bar .sheet__hp-track {
+  position: relative;
+  flex: 1 1 auto;
+  display: block;
+  min-inline-size: 4em;
+  block-size: 1.45em;
+  padding: 3px 5px;
+  border-radius: 999px;
+  background: var(--color-surface-sunken, #120f26);
+  box-shadow: inset 0 0 0 1px var(--color-border, #3a3468);
+  overflow: hidden;
+}
+
+html:not([data-contrast="high"]) .hp-bar .sheet__hp-track {
+  background: none;
+  box-shadow: none;
+  overflow: visible;
+}
+
+.hp-bar .sheet__hp-fill {
+  display: block;
+  block-size: 100%;
+  border-radius: 999px;
+  background: linear-gradient(to bottom, #ff86a3, #e0446a);
+  transition: inline-size 320ms ease-out;
+}
+
+/* A third or less left: amber, so it reads as "careful" as well as by its length. */
+.hp-bar--low .sheet__hp-fill {
+  background: linear-gradient(to bottom, #ffd27a, #f0a03c);
+}
+
+.hp-bar__value {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3em;
+  font-size: 0.85em;
+  color: #fff;
+  text-shadow: 0 0.06em 0.2em rgb(13 11 26 / 95%), 0 0 0.12em rgb(13 11 26 / 95%);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* An outline, so the pink heart still shows on the pink fill. */
+.hp-bar__value > .kad-icon {
+  filter: drop-shadow(0 0 1px rgb(13 11 26)) drop-shadow(0 0 1px rgb(13 11 26));
+}
+
+.hp-bar--down .hp-bar__value {
+  color: var(--color-accent, #ffc95c);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hp-bar .sheet__hp-fill { transition: none; }
+}
+
+/* --- A tall pane (a tall phone, a landscape tablet's You drawer) ------------- */
+
+/*
+ * The extra height goes to your hero, not to the bag's empty slots or to tall,
+ * thin friend cards (playtest, November 2026: on a landscape iPad the friends'
+ * faces were bigger than your own hero, and three empty slots filled the foot).
+ * The picture can only grow with more width, so here the stats stack two to a
+ * row beside it and the picture takes about half the card: your hero is the
+ * biggest picture on the page. The numbers in the health bars are sized from
+ * the picture. The friends' row stops at a comfortable height, and the bag
+ * takes what is left.
+ */
+@container you-pane (min-height: 46em) {
+  .player--you > .sheet--card {
+    --card-art: min(52cqi, 36cqh, 22em);
+  }
+
+  .sheet--card .stat-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: minmax(0, 1fr);
+  }
+
+  .sheet--card .stat-row__value {
+    font-size: clamp(1.2em, calc(var(--card-art) * 0.09), 1.8em);
+  }
+
+  .hp-bar--card {
+    font-size: clamp(0.9em, calc(var(--card-art) * 0.065), 1.25em);
+  }
+
+  .hp-bar--friend {
+    font-size: 0.95em;
+  }
+
+  .player--you .you__row {
+    flex: 0 0 clamp(8.5em, 21cqh, 12.5em);
+  }
+}
+
+/* A very tall pane (a big iPad's drawer): the bag stops at two comfortable rows,
+   and the friends' faces take what is left rather than empty slots doing so. */
+@container you-pane (min-height: 58em) {
+  .player--you .you__row {
+    flex: 1 1 0;
+    min-block-size: 9em;
+  }
+
+  .player--you .you__bag {
+    flex: 0 0 20em;
+  }
+
+  .you__row .party-strip__list > li {
+    max-inline-size: 13em;
+  }
+
+  .hp-bar--friend {
+    font-size: 1.15em;
+  }
+
+  .you__row .party-strip__name {
+    font-size: min(1.05em, max(0.72em, calc((100cqi - 0.8em) / (var(--name-word, 8) * 0.58))));
+  }
 }

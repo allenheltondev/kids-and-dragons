@@ -13,8 +13,8 @@ export function enemyIntentLine(state: EncounterState, id: string): string {
   if (enemy.skipNextTurn) return "Their next turn is skipped.";
   const plan = enemyPlanFor(state, id);
   const target = plan.attack ? combatantById(state, plan.attack) : null;
-  return target ? `May attack ${combatantLabel(target)}. Moving can change this.`
-    : plan.moveTo ? "From here, would move closer. Watch their approach." : "From here, would hold position.";
+  return target ? `From here: attack ${combatantLabel(target)}.`
+    : plan.moveTo ? "From here: move closer." : "From here: hold position.";
 }
 export function combatMission(state: EncounterState): string {
   const env = state.environment;

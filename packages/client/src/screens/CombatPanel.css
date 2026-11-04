@@ -772,7 +772,7 @@
 .combat__fighter-strip li[data-active] button { box-shadow: inset 0 0 0 2px #c4e7d5; }
 .combat__fighter-strip button > span { display: flex; flex-direction: column; text-align: start; min-width: 0; }
 .combat__fighter-strip strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.combat__plan { min-height: 2.5em; margin: .35em 0 0; color: #f6dfac; font-size: .75em; line-height: 1.25; }
+.combat__plan { min-height: 2em; margin: .25em 0 0; color: #f6dfac; font-size: .75em; line-height: 1.25; }
 .combat__budget { display: flex; flex-wrap: wrap; gap: 0.25em 0.7em; margin: 0; font-size: 0.85em; }
 .combat__budget span { display: inline-flex; align-items: center; gap: 0.25em; }
 .combat__friend-art { flex: none; }
@@ -860,7 +860,7 @@ html[data-motion="reduced"] .combat__cell > .combat__cell-face, html[data-motion
    height to decisions, and can still be opened at full size for precise taps. */
 .player--deciding .combat__answers { overflow: visible; flex: none; mask-image: none; }
 .player--deciding .combat__dock { flex: none; }
-.combat__board { flex: 1 1 0; min-block-size: 180px; }
+.combat__board { flex: 1 1 0; min-block-size: clamp(80px, 30cqh, 180px); }
 .combat__more, .combat__legend { display: none; }
 .combat__hint { font-size: .8em; }
 .combat__seat { min-block-size: 44px; }
@@ -877,8 +877,10 @@ html[data-motion="reduced"] .combat__cell > .combat__cell-face, html[data-motion
 html[data-text] .player--fighting .sheet { flex-wrap: nowrap; gap: .35em; }
 html[data-text] .player--fighting .sheet__id { flex: 1 1 0; min-width: 0; }
 html[data-text] .player--fighting .sheet__hp { flex: 0 0 auto; }
-html[data-text] .player--fighting .sheet__portrait { inline-size: 1.8em; block-size: 2.2em; }
+html[data-text] .player--fighting .sheet__portrait { inline-size: 1.8em; block-size: 1.8em; }
 html[data-text] .player--fighting .sheet__name { font-size: 1em; }
+/* XP is available on the You card; the active fight prioritizes identity and health. */
+html[data-text] .player--fighting .sheet .xp-meter { display: none; }
 html[data-text] .combat .combat__actions .choice { font-size: .85em; }
 
 .player--fighting [data-testid="player-hint"] { display: none; }

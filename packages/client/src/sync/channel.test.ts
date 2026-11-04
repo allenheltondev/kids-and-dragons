@@ -825,7 +825,7 @@ describe("openChannel.reconnect (a screen that woke up, #264)", () => {
     expect(status).toHaveBeenLastCalledWith("connecting");
     sources[0]!.onopen?.({});
     channel.reconnect?.();
-    // The banner and the catch-up line both read this: a wake that is slow to
+    // The banner reads this: a wake that is slow to
     // find the network is a drop, and the story may have moved meanwhile.
     expect(status).toHaveBeenLastCalledWith("reconnecting");
     sources[1]!.onopen?.({});

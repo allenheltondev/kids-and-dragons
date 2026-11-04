@@ -452,7 +452,7 @@ html[data-motion="reduced"] *::after {
   /* The player pane is text and buttons, so it scales off the smaller axis to
      avoid enormous type on a landscape tablet. */
   font-size: calc(clamp(15px, min(2.2cqw, 4.6cqh), 21px) * var(--kad-text-scale));
-  /* A column, so a host's Room bar, the notices and the catch-up line above the controls take
+  /* A column, so a host's Room bar and the notices above the controls take
      their own height and the controls the rest. As a block, the controls were the whole pane
      under them, so either the Room bar or the foot of the controls was out of sight. */
   display: flex;
@@ -577,7 +577,7 @@ html[data-text="largest"] { --kad-corner-bottom: 52px; --kad-corner-column: 52px
 
 /* On a phone the row has a strip of its own at the top, the way one-handed play gives it one at
    the bottom (below), so nothing on the phone ever sits under it: not the identity strip, not a
-   host's arrival notices, not the catch-up line, at any width or text size. Reserving the row's
+   host's arrival notices, at any width or text size. Reserving the row's
    width beside each of those instead squeezed them into a column on a 390px phone (#257). The TV
    and the join screen keep the top corner, where nothing of theirs is under it. */
 html:not([data-hand]) .kad-party--player,

@@ -23,9 +23,9 @@ import { setPlayerSection, usePlayerNavigation } from "../store/player-navigatio
  * and the inventory scroll under the strip.
  */
 
-import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { ChunkBoundary, lazyChunk } from "../ui/ChunkBoundary";
-import type { ReactElement, ReactNode } from "react";
+import type { CSSProperties, ReactElement, ReactNode } from "react";
 import {
   DEFAULT_HELP_DIE,
   INVENTORY_SLOTS,
@@ -80,17 +80,16 @@ import {
 import { biomeBackdropUrl, sceneArtFor, sceneBackdropUrl } from "../world/art-paths";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
-import { Collapsible } from "../ui/Collapsible";
+import { useSettingsRoom } from "../ui/settings-room";
 import { hear, useReadAloudOn } from "../speech/read-aloud";
 import { speak } from "@kad/shared";
 import { CampaignArt } from "./CampaignArt";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { CharacterSheet } from "./CharacterSheet";
 import { XpMeter } from "./XpMeter";
-import { ClassToken, SpareTokens, TokenCard, TokenGlyph, tokenName } from "./ClassToken";
+import { ClassToken, SpareTokens } from "./ClassToken";
 import { Icon } from "./icons";
 import { aheadBadge } from "./choice-ahead-copy";
-import { ChapterGoalCard } from "./ChapterGoal";
 import { CheckMatchupBadges } from "./MatchupHints";
 import { useSideBySide } from "../layout/landscape";
 import { PrologueReplay } from "./StoryPlates";
@@ -270,7 +269,35 @@ function ConfirmBar({
 // Sheet
 // ---------------------------------------------------------------------------
 
-function IdentityStrip({ me }: { me: PartyMember }): ReactElement {
+/** The length of a name's longest word, which is what has to fit on one line. */
+function longestWord(name: string): number {
+  return Math.max(1, ...name.split(/\s+/).map((word) => word.length));
+}
+
+/**
+ * Health as a bar (playtest, November 2026): a kid reads a half-empty bar as "hurt" at a glance,
+ * where "6/10" is a fraction to work out. The number stays beside it for the grown-ups. The brass
+ * frame is the art drawn for it (chrome.css `.sheet__hp-track`); the fill is CSS so it can move.
+ * Knocked down says "Down" in words, never only by an empty bar or a colour. Drawn, not read: the
+ * hero's own health is still said by the strip's words, a friend's by their sheet.
+ */
+function HpBar({ hp, max, down, className = "" }: { hp: number; max: number; down: boolean; className?: string }): ReactElement {
+  const share = down || max <= 0 ? 0 : Math.max(0, Math.min(1, hp / max));
+  return (
+    <span className={`hp-bar${down ? " hp-bar--down" : share <= 0.34 ? " hp-bar--low" : ""} ${className}`.trim()} aria-hidden="true">
+      <span className="sheet__hp-track">
+        <span className="sheet__hp-fill" style={{ inlineSize: `${String(Math.round(share * 100))}%` }} />
+        {/* The number in the bar itself, so the bar can take the whole width. */}
+        <span className="hp-bar__value">
+          <Icon name={down ? "down" : "heart"} />
+          <span>{down ? "Down" : `${String(hp)}/${String(max)}`}</span>
+        </span>
+      </span>
+    </span>
+  );
+}
+
+function IdentityStrip({ me, onOpenSheet, stats }: { me: PartyMember; onOpenSheet?: (() => void) | undefined; stats?: ReactNode }): ReactElement {
   const { character } = me;
   /*
    * Whenever the game is waiting on you (a fight turn, a roll, a choice, a
@@ -280,21 +307,33 @@ function IdentityStrip({ me }: { me: PartyMember }): ReactElement {
    * and already says who you are.
    */
   const myTurn = useWaitingOnMe();
+  const portrait = (
+    <CharacterPortrait
+      backdrop
+      species={character.species}
+      accent={character.appearance.accent}
+      tier={character.tier}
+      characterClass={character.class}
+      className="sheet__art"
+    />
+  );
   return (
-    <header className={`sheet${myTurn ? " sheet--turn" : ""}`}>
+    <header className={`sheet${myTurn ? " sheet--turn" : ""}${stats ? " sheet--card" : ""}`}>
       {/* Your own face on your own sheet, at whatever tier you have grown to —
           the identity strip is pinned, so this is the one picture that is on
           screen for the whole session. */}
-      <span className="sheet__portrait" aria-hidden="true">
-        <CharacterPortrait
-          backdrop
-          species={character.species}
-          accent={character.appearance.accent}
-          tier={character.tier}
-          characterClass={character.class}
-          className="sheet__art"
-        />
-      </span>
+      {/* On the You page your own picture is the way into your whole sheet (your token, your
+          keepsakes): the party row below holds only your friends. */}
+      {onOpenSheet ? (
+        <button type="button" className="sheet__portrait sheet__portrait--open kad-tap kad-focusable"
+          aria-label={`${character.name}'s character sheet`} onClick={onOpenSheet}>
+          {portrait}
+        </button>
+      ) : (
+        <span className="sheet__portrait" aria-hidden="true">{portrait}</span>
+      )}
+      {/* On the card, your health is a bar under your picture, never over your hero. */}
+      {stats ? <HpBar hp={me.hp} max={character.maxHp} down={me.down} className="hp-bar--card" /> : null}
       <span className="sheet__id">
         <span className="sheet__name">
           {character.name}
@@ -347,32 +386,29 @@ function IdentityStrip({ me }: { me: PartyMember }): ReactElement {
           </span>
         </span>
       </span>
+      {stats}
     </header>
   );
 }
 
-function StatRow({ me }: { me: PartyMember }): ReactElement {
+/** The six numbers, one small tile each: the glyph, the number, and the word under them. */
+function StatCells({ me }: { me: PartyMember }): ReactElement {
   const { character } = me;
+  const cells: Array<[string, number]> = [
+    ...STAT_IDS.map((stat): [string, number] => [stat, character.stats[stat]]),
+    ["guard", character.guard],
+    ["steps", character.steps],
+  ];
   return (
-    <ul className="stat-row">
-      {STAT_IDS.map((stat) => (
-        <li className="stat-row__item" key={stat}>
-          <Icon name={stat} size="2em" />
-          <span className="stat-row__name">{stat}</span>
-          <b className="stat-row__value">{character.stats[stat]}</b>
+    <>
+      {cells.map(([name, value]) => (
+        <li className="stat-row__item" key={name} aria-label={`${name} ${String(value)}`}>
+          <Icon name={name} size="1.5em" />
+          <b className="stat-row__value" aria-hidden="true">{value}</b>
+          <span className="stat-row__name" aria-hidden="true">{name}</span>
         </li>
       ))}
-      <li className="stat-row__item">
-        <Icon name="guard" size="2em" />
-        <span className="stat-row__name">guard</span>
-        <b className="stat-row__value">{character.guard}</b>
-      </li>
-      <li className="stat-row__item">
-        <Icon name="steps" size="2em" />
-        <span className="stat-row__name">steps</span>
-        <b className="stat-row__value">{character.steps}</b>
-      </li>
-    </ul>
+    </>
   );
 }
 
@@ -401,13 +437,12 @@ function InventoryGrid({
 }): ReactElement {
   const slots = Array.from({ length: INVENTORY_SLOTS }, (_, i) => entries[i] ?? null);
   const carried = entries.length + questItems.length;
+  const headingId = useId();
   return (
-    <Collapsible
-      id="bag"
-      className="inv"
-      title={<><Icon name="bag" /><span>Your things</span></>}
-      trail={
-        <>
+    <section className="inv" aria-labelledby={headingId}>
+      <h4 className="inv__head" id={headingId}>
+        <span className="inv__title"><Icon name="bag" /><span>Your things</span></span>
+        <span className="inv__trail">
           {/* What you carry (the six slots and the story things), counted from the
               hero's own bag. The number beside the coin is the party's purse, a
               different thing that used to be the only number here and read 0
@@ -420,9 +455,8 @@ function InventoryGrid({
             <Icon name="coin" />
             <span aria-hidden="true">{coins}</span>
           </span>
-        </>
-      }
-    >
+        </span>
+      </h4>
       <ul className="inv__grid">
         {slots.map((entry, index) => {
           const def = entry === null ? undefined : items?.[entry.itemId];
@@ -444,7 +478,7 @@ function InventoryGrid({
                 onClick={() => onSelect(selected ? null : index)}
                 {...helpAttrs({ kind: "item", name: def?.name ?? entry.itemId, ...(def?.icon ? { icon: def.icon } : {}), ...(def?.text ? { text: def.text } : {}) })}
               >
-                <Icon name={def?.icon ?? entry.kind} size="2.2em" />
+                <Icon name={def?.icon ?? entry.kind} size="var(--inv-icon, 2.2em)" />
                 <span className="inv__slot-name">{def?.name ?? entry.itemId}</span>
                 {/* Kind is a glyph as well as a word — never colour (spec §11). */}
                 <span className="inv__kind kad-label">
@@ -457,28 +491,21 @@ function InventoryGrid({
         })}
       </ul>
 
-      {/* Folded at first: the list only grows, and its count on the heading says it is there. */}
+      {/* The story things, one small chip each beside the six: on the page with
+          everything else, never folded away (no scrolling, no hiding). */}
       {questItems.length === 0 ? null : (
-        <Collapsible
-          id="story-things"
-          level={4}
-          defaultOpen={false}
-          className="inv__quest"
-          title={<><Icon name="quest" /><span>Story things</span></>}
-          trail={<span className="kad-chip">{questItems.length}</span>}
-        >
-          <ul className="inv__quest-list">
-            {questItems.map((itemId) => (
-              <li className="kad-chip" key={itemId}>
-                <Icon name={items?.[itemId]?.icon ?? "quest"} />
-                <span>{items?.[itemId]?.name ?? itemId}</span>
-              </li>
-            ))}
-          </ul>
-        </Collapsible>
+        <ul className="inv__quest-list" aria-label="Story things">
+          {questItems.map((itemId) => (
+            <li className="kad-chip" key={itemId}
+              {...helpAttrs({ kind: "item", name: items?.[itemId]?.name ?? itemId, icon: items?.[itemId]?.icon ?? "quest", ...(items?.[itemId]?.text ? { text: items[itemId]!.text } : {}) })}>
+              <Icon name={items?.[itemId]?.icon ?? "quest"} />
+              <span>{items?.[itemId]?.name ?? itemId}</span>
+            </li>
+          ))}
+        </ul>
       )}
       <SpareTokens spares={spares} isMe />
-    </Collapsible>
+    </section>
   );
 }
 
@@ -590,12 +617,36 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   // In the practice a banked point waits for a real rest (the server refuses it).
   const practicing = isPracticeCampaign(state?.campaignId);
 
-  // "Watch the intro again" (Room settings): the campaign's prologue over the pane, nothing in the run touched.
+  // "Watch the intro again" (Settings): the campaign's prologue over the pane, nothing in the run touched.
   const runCampaign = useRunCampaign(state?.campaignId ?? null);
   const [replayingIntro, setReplayingIntro] = useState(false);
-  const [sheetPage, setSheetPage] = useState("bag");
   const closeIntro = useCallback(() => setReplayingIntro(false), []);
   const hasIntro = (runCampaign?.prologue?.plates.length ?? 0) > 0;
+  /*
+   * The room's own settings (play on phones instead, the intro again) go in the corner gear's
+   * Settings sheet, above this device's display settings: one gear for everything. Handed in
+   * while this pane is mounted, taken back when it goes.
+   */
+  const setSettingsRoom = useSettingsRoom((settings) => settings.setRoom);
+  useEffect(() => {
+    if (!roomControls && !hasIntro) {
+      setSettingsRoom(null);
+      return;
+    }
+    setSettingsRoom(
+      <>
+        {roomControls}
+        {/* The intro story again, from any point in the adventure: only the pictures and words. */}
+        {hasIntro ? (
+          <Button variant="secondary" size="md" block icon={<Icon name="story" />}
+            onClick={() => { void import("../a11y").then((module) => { module.useA11y.getState().setOpen(false); }); setReplayingIntro(true); }}>
+            Watch the intro again
+          </Button>
+        ) : null}
+      </>,
+    );
+  }, [roomControls, hasIntro, setSettingsRoom]);
+  useEffect(() => () => setSettingsRoom(null), [setSettingsRoom]);
 
   const [pendingChoice, setPendingChoice] = useState<string | null>(null);
   const [pendingDrop, setPendingDrop] = useState<string | null | undefined>(undefined);
@@ -874,6 +925,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   // Nothing to do and nothing asked of this phone: under TV focus, the card that says look up.
   const tvRest = focus && !focusTask && !inLobby && !peek;
   // "Look in my bag" from that card opens the bag, in a fight too, where the turn page is the board.
+  const friends = party.filter((member) => member.playerId !== me.playerId);
   const sheetUp = (showSheet || (focus && peek && !focusTask)) && !tvRest;
   /*
    * Which picture to stand the controls in: the scene's own illustration when
@@ -1027,17 +1079,19 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
         fight survives a look at the guide, like the bag. */}
     <section
       hidden={guideOpen}
-      className={`player${deciding ? " player--deciding" : ""}${inLobby ? " entry-scene-host" : ""}${backdrop ? " player--scene" : ""}${backdrop && inEncounter ? " player--fighting" : ""}`}
+      className={`player${deciding ? " player--deciding" : ""}${sheetUp && !tvRest ? " player--you" : ""}${inLobby ? " entry-scene-host" : ""}${backdrop ? " player--scene" : ""}${backdrop && inEncounter ? " player--fighting" : ""}`}
     >
       {inLobby ? <EntryScene scene={lobbySceneFor(party)} /> : null}
       {backdrop ? <SceneBackdrop src={backdrop} /> : null}
-      <IdentityStrip me={me} />
-      {/* The chapter's goal (#356), on every phone with nothing to tap. Not in a fight: a playtest
-          wanted the room for the cards, and the fight is the goal's step for now. */}
-      {/* Not while a point is waiting to be spent: the grow list needs the room, and on a short phone
-          the goal card above it left too little pane to scroll in. */}
-      {/* Nor during a story interaction (#493): the game is the whole pane, and its goal step is the game. */}
-      {inChapter && !focus && !inEncounter && !(atRest && banked > 0) && myPrompt?.kind !== "interaction" ? <ChapterGoalCard place="phone" /> : null}
+      {/* On the You page the strip is your hero's card: the picture large beside your name, level,
+          health and the six stats (playtest: a bigger picture, but not a banner). */}
+      <IdentityStrip
+        me={me}
+        onOpenSheet={sheetUp && !tvRest ? () => setSheetFor(me.character.id) : undefined}
+        stats={sheetUp && !tvRest ? <ul className="stat-row" aria-label="Your stats"><StatCells me={me} /></ul> : null}
+      />
+      {/* The chapter's goal (#356) is the World screen's, not this pane's: on a player's phone
+          it was a scroll a playtest family looked past every scene, in room the controls need. */}
 
       {/*
         What the world is asking, echoed here.
@@ -2071,76 +2125,47 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
       {tvRest ? (
         <TvRest waiting={fightWaitingLine(state.encounter ?? null, party) ?? (globalPrompt !== null ? waitingLine(globalPrompt, party) : "Listen to the story…")} onPeek={() => setPeek(true)} />
       ) : null}
-      <div className="player__scroll kad-scroll" hidden={!sheetUp}>
-        <nav className="player__page-picker" aria-label="Your pages">
-          {([["bag", "Bag"], ["stats", "Stats"], ["party", "Friends"], ["token", "Class token"], ["room", "Settings"]] as const).map(([id, label]) =>
-            <button key={id} type="button" className="kad-focusable" aria-current={sheetPage === id ? "page" : undefined}
-              onClick={() => { setSheetPage(id); setSelected(null); }}>{label}</button>)}
-        </nav>
-        {/* One seat at the top of the bag, the big button's height, for
-            either the way into your task or what the table is waiting on.
-            Both change as other people act; sharing a fixed seat, neither
-            moves the bag under a finger that is in the middle of it. */}
-        {inLobby ? null : (
+      {/*
+        The You page: everything at once, and nothing to scroll (playtest,
+        November 2026: a "Show: Bag" picker hid four of the five things behind
+        a menu, which is no way to show an eight-year-old their hero). One
+        screen, top to bottom: the way into your task when there is one, the
+        stats in a strip, everybody's face, and the bag, which takes whatever
+        height is left. A tapped item stands in for the bag's grid until Close;
+        a face opens that hero's whole sheet (your own has your token). The
+        room's settings are in the corner gear's Settings sheet.
+      */}
+      <div className="player__scroll player__you" hidden={!sheetUp}>
+        {/* The way into your task, at the top, when there is one. What the
+            table is waiting on ("It's Pip's turn to choose") is not said here:
+            the World screen names whose turn it is, and this page's room is
+            for what is yours. */}
+        {!inLobby && hasTask && !(focus && !focusTask) ? (
           <div className="player__task-slot">
-            {hasTask && !(focus && !focusTask) ? (
-              <Button variant="primary" size="lg" block className="player__task-entry"
-                icon={<Icon name="hand" />} onClick={() => setPlayerSection("turn")}>
-                {offersToMe.length > 0 ? "A gift for you" : state.phase === "chapter_complete" ? state.endingRead === false ? "How the chapter ended" : "Chapter rewards" : atRest && banked > 0 ? banked === 1 ? "Spend your stat point" : "Spend your stat points" : myPrompt !== null || isMyCombatTurn ? "Your turn" : helping !== null ? `Help ${helping}` : awaySwap !== null ? `Help ${awaySwap}'s bag` : "View the fight"}
-              </Button>
-            ) : focus ? (
-              <Button variant="primary" size="lg" block className="player__task-entry"
-                icon={<TvGlyph />} onClick={() => setPeek(false)}>
-                Back to the TV
-              </Button>
-            ) : (
-              <p className="player__waiting" role="status"><Icon name="waiting" />
-                <span>{globalPrompt !== null ? waitingLine(globalPrompt, party) : "Listen to the story…"}</span>
-              </p>
-            )}
+            <Button variant="primary" size="lg" block className="player__task-entry"
+              icon={<Icon name="hand" />} onClick={() => setPlayerSection("turn")}>
+              {offersToMe.length > 0 ? "A gift for you" : state.phase === "chapter_complete" ? state.endingRead === false ? "How the chapter ended" : "Chapter rewards" : atRest && banked > 0 ? banked === 1 ? "Spend your stat point" : "Spend your stat points" : myPrompt !== null || isMyCombatTurn ? "Your turn" : helping !== null ? `Help ${helping}` : awaySwap !== null ? `Help ${awaySwap}'s bag` : "View the fight"}
+            </Button>
           </div>
-        )}
-        {/*
-          Every section below folds under its heading (ui/Collapsible), and
-          each phone remembers how its kid left them: the page had grown long
-          enough that the bag was a scroll away (playtest). The stats, the
-          party and the bag start open; the token card, the longest thing a kid
-          rarely needs mid-scene, starts folded to its name.
-        */}
-        <div hidden={sheetPage !== "stats"}>
-        <Collapsible id="stats" className="player__stats" title={<><Icon name="stats" /><span>Your stats</span></>}>
-          <StatRow me={me} />
-        </Collapsible>
-        </div>
-        <div hidden={sheetPage !== "token"}>
-        {/* The worn token, its notches and the deed toward the next (#314). */}
-        <Collapsible
-          id="token"
-          defaultOpen={false}
-          className="player__token"
-          title={<><TokenGlyph classId={me.character.class} /><span>Your {tokenName(me.character.class)}</span></>}
-        >
-          <TokenCard character={me.character} isMe rules={rules} partySize={party.length} named={false} />
-        </Collapsible>
-
-        {/*
-          spec §6.1 lists "look at each other's characters" as one of the four
-          things a Rest scene is for, beside healing, spending a level-up and
-          trading. Not gated to a Rest scene though: reading a sheet sends
-          nothing and decides nothing, so there is no rule to enforce, and
-          "what is her Guard?" is a question a fight raises more often than a
-          camp does.
-        */}
-        </div>
-        <div hidden={sheetPage !== "party"}>
-        <Collapsible id="party" className="party-strip" title={<><Icon name="party" /><span>Everyone</span></>}>
-          <ul className="party-strip__list">
-            {party.map((member) => (
+        ) : !inLobby && focus ? (
+          <div className="player__task-slot">
+            <Button variant="primary" size="lg" block className="player__task-entry"
+              icon={<TvGlyph />} onClick={() => setPeek(false)}>
+              Back to the TV
+            </Button>
+          </div>
+        ) : null}
+        {/* Friends only: you are the hero at the top, and tapping your own picture there opens
+            your sheet. Alone at the table, there is no row at all. */}
+        {friends.length === 0 ? null : <div className="you__row">
+          <ul className="party-strip__list" aria-label="Your friends">
+            {friends.map((member) => (
               <li key={member.playerId}>
                 <button
                   type="button"
-                  className="party-strip__button kad-tap kad-focusable"
+                  className={`party-strip__button kad-tap kad-focusable${member.down ? " party-strip__button--down" : ""}`}
                   aria-label={`${member.character.name}'s character sheet`}
+                  aria-describedby={`friend-hp-${member.playerId}`}
                   onClick={() => setSheetFor(member.character.id)}
                 >
                   <span className="party-strip__portrait" aria-hidden="true">
@@ -2153,8 +2178,16 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                       className="party-strip__art"
                     />
                   </span>
-                  <span className="party-strip__name">
-                    {member.playerId === me.playerId ? "You" : member.character.name}
+                  {/* Sized to fit its longest word in the card: a long name shrinks rather
+                      than spilling into the next card or breaking mid-word. */}
+                  <span className="party-strip__name" style={{ "--name-word": longestWord(member.character.name) } as CSSProperties}>
+                    {member.character.name}
+                  </span>
+                  {/* Their health, so who is hurt is seen at a glance (who needs a potion, who to help up). */}
+                  <HpBar hp={member.hp} max={member.character.maxHp} down={member.down} className="hp-bar--friend" />
+                  {/* The bar is drawn, not read: this is what a screen reader hears after the name. */}
+                  <span className="kad-sr-only" id={`friend-hp-${member.playerId}`}>
+                    {member.down ? "Knocked down" : `${String(member.hp)} of ${String(member.character.maxHp)} health`}
                   </span>
                   {/* A souvenir is permanent and worth advertising (spec §8.3);
                       the count is the hook that makes anybody open the sheet. */}
@@ -2168,28 +2201,27 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
               </li>
             ))}
           </ul>
-        </Collapsible>
-
+        </div>}
+        <div className="you__bag" hidden={selectedEntry !== null}>
+          <InventoryGrid
+            entries={inventory}
+            questItems={me.character.questItems}
+            spares={me.character.spares}
+            coins={state.coins ?? 0}
+            items={items}
+            selectedIndex={selectedIndex}
+            onSelect={(index) => {
+              const entry = index === null ? null : inventory[index] ?? null;
+              setSelected(entry === null || index === null ? null : { itemId: entry.itemId, index });
+            }}
+          />
         </div>
-        <div hidden={sheetPage !== "bag" || selectedEntry !== null}>
-        <InventoryGrid
-          entries={inventory}
-          questItems={me.character.questItems}
-          spares={me.character.spares}
-          coins={state.coins ?? 0}
-          items={items}
-          selectedIndex={selectedIndex}
-          onSelect={(index) => {
-            const entry = index === null ? null : inventory[index] ?? null;
-            setSelected(entry === null || index === null ? null : { itemId: entry.itemId, index });
-          }}
-        />
-
-        </div>
-        <div hidden={sheetPage !== "bag"}>
         {/* Using an item is a decision like any other: select, then confirm. */}
         {selectedEntry === null ? null : (
           <div className="item-detail">
+            <div className="item-detail__art" aria-hidden="true">
+              <Icon name={selectedDef?.icon ?? selectedEntry.kind} size="var(--item-art, 5em)" />
+            </div>
             <p className="item-detail__title">
               <Icon name={selectedDef?.icon ?? selectedEntry.kind} />
               <span>{selectedDef?.name ?? selectedEntry.itemId}</span>
@@ -2340,27 +2372,6 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
             </ul>
           </div>
         ) : null}
-
-        </div>
-        <div hidden={sheetPage !== "room"}>
-        {roomControls || hasIntro ? (
-          <Collapsible id="room" level={4} defaultOpen={false} className="player__room-settings" title={<span>Room settings</span>}>
-            {roomControls}
-            {/* The intro story again, from any point in the adventure: only the pictures and words. */}
-            {hasIntro ? (
-              <Button variant="secondary" size="md" block icon={<Icon name="story" />} onClick={() => setReplayingIntro(true)}>
-                Watch the intro again
-              </Button>
-            ) : null}
-            {/* Text size, contrast and one-handed play (#262), reachable from the bottom of the phone. */}
-            <Button variant="secondary" size="md" block
-              onClick={() => { void import("../a11y").then((module) => { module.openA11ySettings(); }); }}>
-              Display settings
-            </Button>
-          </Collapsible>
-        ) : null}
-
-        </div>
         {/* In the lobby the one thing left to do comes last, at the foot of
             the page, after the sheet you have just been looking over — and
             it is the whole answer: the tap says you are ready. */}

@@ -1001,7 +1001,7 @@ function FighterRoster({ encounter, myId }: { encounter: EncounterState; myId: s
         </button>
       </li>)}
     </ul>
-    <p className="combat__plan" aria-live="polite">{selected && <>
+    <p className="combat__plan" aria-live="polite" title="Forecast from the current board. Intervening moves or help can change it.">{selected && <>
       <strong>{combatantLabel(selected)} · Guard {selected.guard}:</strong> {selected.down ? "Knocked down." : selected.escaped ? "Safe off the board." : selected.side === "enemy"
         ? enemyIntentLine(encounter, selected.id)
         : `Guard ${selected.guard}. ${selected.protectedBy ? "A friend is protecting them." : "Stand together to protect, heal, or help up."}`}

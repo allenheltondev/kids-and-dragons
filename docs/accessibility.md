@@ -22,8 +22,9 @@ is never given more of it.
 
 `a11y/prefs.ts` (a few hundred bytes) runs in the entry chunk before the first paint so a saved
 setting never flashes. The panel, its button and its store are the lazy `a11y/` chunk, loaded
-like read-aloud. The sheet opens from the corner row (settings, read-aloud, sound) or from
-"Room settings" at the bottom of the You tab.
+like read-aloud. The sheet opens from the corner row's gear (settings, read-aloud, sound). On a
+phone in a room it also holds the room's own settings ("This game": phones or TV, the intro
+again), which the player pane hands it through `ui/settings-room.ts`.
 
 ## Rules for new UI
 
@@ -55,7 +56,7 @@ Every player surface, on a phone held in either hand:
 | Roll | One button | Tap |
 | Combat panel | Grid and action bar in the pane | Taps only |
 | Map / atlas | Zoom is Closer / Further away buttons; pan is native one-finger scrolling | No pinch required |
-| Display settings | Bottom sheet; also in Room settings on the You tab | Taps only |
+| Settings | Bottom sheet from the corner gear; on a phone in a room it also holds This game | Taps only |
 | Corner row (help, settings, read-aloud, sound) | Top corner by default; under the tray with one-handed play | Taps only |
 | Help "?" (#256) | One button in the corner row, so it can never sit on a surface's own controls at any text size; a bottom sheet with Hear it again and Got it | Taps only |
 | Press and hold a card, buff or item (#256) | Never calls preventDefault on a pointer or touch event, so taps and scrolling are untouched; a drift of more than 8px, or the browser taking the gesture, cancels the hold | Every one of these also has its words in the "?" for the screen |
