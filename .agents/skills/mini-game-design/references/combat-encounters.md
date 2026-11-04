@@ -34,7 +34,7 @@ Play an ordinary success, a poor position, a recovery or handoff, interruption/p
 
 In this repository, inspect shared combat rules, authored chapter/map contracts, phone controls, the Pixi stage, art warming and persisted encounter receipts together. When authored environments are added, update narrow exceptions in **both** `packages/server/src/handlers/ordered-campaigns.test.ts` and `tools/content/encounter-environment.test.mjs`. Preserve default restrictions for other encounters, plus legacy save/arithmetic/rendering goldens. Repin only intentionally changed content-file hashes. Run the complete unit suite before declaring the encounter ready for review; focused tests missed this compatibility gate in the roadside pass.
 
-Keep first-paint and total-payload costs explicit. Include final captures, the actual checks run and any remaining player-observation questions in the PR.
+Keep first-paint and total-payload costs explicit. In this repository, measure with a production-length `KAD_BUILD` (for example, the current commit SHA; the build takes its first 12 characters). The shorter local `dev` label can conceal a CI overage near the limit. Include final captures, the actual checks run and any remaining player-observation questions in the PR.
 
 ## Calibrate against the wagon
 
