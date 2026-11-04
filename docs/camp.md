@@ -1,12 +1,13 @@
 # The camp: the crew's campsite
 
-**Status: design, nothing built.** Every decision below marked *decided* was made by the
-product owner; everything else is a proposal. The decisions so far and the questions still open
-are in §11. Implementation recommendations and acceptance criteria are in §§12 and 13.
+**Status: design approved, nothing built.** Every decision below marked *decided* was made by the
+product owner, and the implementation requirements in §12 are approved as a whole. Anything still
+marked *proposed* is not. The decisions and the questions still open are in §11; acceptance
+criteria and playtest questions are in §13.
 
-**Review status:** this revision preserves the product owner's decisions. Recommendations added
-during review are proposals, not newly approved decisions. Repository references are
-implementation context; names and interfaces below remain proposed.
+**Review status:** repository references are implementation context. File names, type names and
+interfaces below are the intended shape, and may be refined during implementation as long as the
+behavior they describe holds.
 
 **Purpose:** make the crew's shared history visible during existing downtime. A successful camp
 gives children something to recognize, show and personalize without adding a new obligation or
@@ -57,7 +58,7 @@ family game for children aged 8 to 12. A camp left alone for a month looks exact
 ## 3. Where it appears
 
 The camp is the **default picture outside narration**. Whenever the shared screen has no scene
-to tell, it shows the camp, pitched in the terrain the crew is in. Proposed placement:
+to tell, it shows the camp, pitched in the terrain the crew is in:
 
 | Moment | Shared screen (TV, or a phone's World pane) | Phones |
 | --- | --- | --- |
@@ -547,8 +548,8 @@ A movement that breaks one of these is a bug, not a matter of taste:
 ## 9. The data
 
 New records (architecture §3), each versioned like every stored shape. The sketch below includes
-fields that exist only to serve §12's proposals (`revision`, `grownBy`, `rewardId`, receipts);
-they stand or fall with those proposals. Phase 1 writes none of it (§10).
+fields that serve §12's requirements (`revision`, `grownBy`, `rewardId`, receipts). Phase 1 writes
+none of it (§10).
 
 | Record | PK | SK | What it holds |
 | --- | --- | --- | --- |
@@ -556,7 +557,7 @@ they stand or fall with those proposals. Phase 1 writes none of it (§10).
 | Camp, other crews | `HH#<hhId>` | `CAMP#<crewId>` | The same shape, one per `CREW#<crewId>`. |
 
 ```ts
-// packages/shared/src/types/camp.ts (proposed)
+// packages/shared/src/types/camp.ts (intended shape)
 interface CampRecord {
   version: number;
   revision: number;                              // conditional writes (§12.4)
@@ -659,27 +660,29 @@ Settled by the product owner:
 | Phase 1 | Small: the animated lobby only, expanding once children notice their camp (§10) |
 | The first reward | Arrives in the first session: a personal choice and a first-chapter find (§5.3) |
 | The shared-edit limit | Tested in playtest, with an Undo that does not use up a change (§6.1) |
-| Proposals and requirements | Kept apart: §12 stays proposed until approved, and §13 marks the checks that depend on it |
+| Implementation requirements | All of §12 approved, including its defaults: one bonus when a goal step and an objective are the same deed, lower-stage pieces staying in later shops, and the migration policy for existing crews (§12) |
 
 Still open, parked until families ask:
 
 1. **Editing your own space from the adventure book.** It would break the book's look-only rule
    and needs a write path from a device binding with no room (§7).
-2. **Choosing which friends are out.** Friends rotate automatically under this proposal (§4.4). If
+2. **Choosing which friends are out.** Friends rotate automatically (§4.4). If
    kids want to pick, it is a shared-hotspot change at the friends' corner, under §6.1's
    one-change-per-moment rule.
 
-## 12. Implementation recommendations requiring review
+## 12. Implementation requirements
 
-These recommendations close gaps in the draft. They are **proposed**, and should be reviewed
-before implementation. The two parked features in §11 do not block the initial release.
+These close gaps in the earlier draft, and are **approved** (*decided*): implementation follows
+them. Where one says something is under test (the shared-edit limit and Undo, §12.5), the playtest
+decides the number, not whether the mechanism is built. The two parked features in §11 do not
+block the initial release.
 
 ### 12.1 Personal pieces follow the hero
 
 Crew inventory and hero-owned spaces need separate ownership rules. A reference to a piece in one
 crew's inventory cannot by itself authorize that piece in a hero's space at another crew.
 
-**Recommendation:** initially give every hero the same free catalog of personal decorations and
+Initially give every hero the same free catalog of personal decorations and
 tent styles. Store their selected style and slots on the character. Reserve earned and purchased
 pieces for shared hotspots. Personal decorations then travel with the character without copying
 crew property. If earned personal decorations are added later, give them an explicit
@@ -704,7 +707,7 @@ The once-per-place rule and duplicate conversion need separate identities:
   visit.
 - Snapshot completed goal steps for payment. Steps backed by an item must still count if the party
   completed them and later handed over the item. A goal step and an optional objective that
-  describe the same deed need an explicit authoring rule: proposed default is one bonus, not two.
+  describe the same deed pay one bonus, not two.
 
 Use stable award identities rather than scene ids that can change during editorial revisions. The
 record sketch in §9 needs these receipts; choose their storage shape after checking transaction
@@ -712,14 +715,14 @@ and record-size limits. A content version update must not reset claims.
 
 ### 12.3 Progression has a ceiling and a replay rule
 
-**Recommendation:** count each distinct `growsCamp` campaign the crew successfully completes once
+Count each distinct `growsCamp` campaign the crew successfully completes once
 (`grownBy`), capped at stage 4. Failed or abandoned attempts do not advance the frame and do not
 remove anything. Replaying a campaign does not advance it again. Later successful campaigns may
 add cosmetic trophies after stage 4.
 
 Existing crews need a migration policy: derive the starting stage and kept trophies from their
 recorded successful `growsCamp` campaigns, initialize Dash Cash to zero, and do not back-pay
-historical chapter rewards. Keep that migration idempotent. Confirm this policy before release.
+historical chapter rewards. Keep that migration idempotent.
 
 Every frame must support the full seated party and the four visible friends. Frame growth can add
 decorative hotspots, but cannot be required to display a hero's personal space. Early phases must
@@ -727,10 +730,10 @@ render a safe fallback for a crew whose derived stage exceeds the available fram
 
 ### 12.4 The chapter-end purchase is optional and atomic
 
-**Recommendation:** allow at most one purchase per chapter-end visit. Show up to three eligible,
+Allow at most one purchase per chapter-end visit. Show up to three eligible,
 unowned pieces for the current stage, in a stable catalog order, plus **Save our Dash Cash**. Show
 the price and resulting balance. If none is affordable, show the balance without starting a vote.
-Confirm whether lower-stage pieces remain in later shops; proposed default is yes.
+Lower-stage pieces the crew does not own stay in later shops.
 
 A vote belongs to one chapter-end instance and one crew. Use the existing choice-vote rules for
 connected and stepped-away players, including the turn-marker tie break. Leaving the screen
@@ -743,7 +746,7 @@ without spending. A stale intent from a closed vote or a previous downtime momen
 
 ### 12.5 Shared edits and automatic display do not discard anything
 
-**Recommendation:** identify each downtime moment on the server, and count shared edits by seated
+Identify each downtime moment on the server, and count shared edits by seated
 player rather than device. Reconnecting or using a second phone does not reset the limit. Invalid
 changes do not count. Explain the limit before the first edit and disable further shared edits
 with a short message; personal edits remain available. Undo (§6.1) restores the hotspot's previous
@@ -787,10 +790,10 @@ device can reach more than one crew, name the selected crew explicitly in the bo
 
 ## 13. Acceptance criteria and playtest questions
 
-### 13.1 Required: checks of decided design
+### 13.1 Required checks
 
-These follow from decisions in §11 and the existing rules the camp lives under, and hold whatever
-happens to §12.
+These follow from the decisions in §11, the requirements in §12 and the existing rules the camp
+lives under.
 
 - Failed campaigns keep every camp gain (§1).
 - The tutorial, The Hollow Crown and any other campaign without `growsCamp` never grow the frame
@@ -812,28 +815,21 @@ happens to §12.
   motion and the still fallback (§8.7), and keyboard access as docs/accessibility.md already
   requires.
 - The book opens offline after an online read with its saved pieces and friend reactions (§7).
+- A reward reached through two routes, replayed, retried or reconnected grants once, by its
+  `rewardId` receipt; a duplicate owned piece converts to Dash Cash once per distinct reward offer;
+  skipping a celebration does not lose its reward, because finds are saved when found (§12.2).
+- Each `growsCamp` campaign grows the frame at most once per crew, however often it is replayed,
+  and the frame stops at stage 4; existing crews migrate idempotently (§12.3).
+- Personal decorations come from the free catalog, and crew-owned pieces never appear in a hero's
+  space at another crew (§12.1).
+- At most one purchase per chapter-end visit; a losing concurrent purchase refreshes the offer
+  without spending; a stale intent is refused (§12.4).
+- Shared edits are counted per seated player, not per device; Undo gives the change back; placing
+  a piece first owned this chapter is not counted (§12.5).
+- The book names the crew and how fresh its saved copy is, and its first use without a cache is
+  clear (§12.6).
 
-### 13.2 Conditional: checks that apply only if §12 is approved
-
-Each of these tests a proposal. If its proposal is rejected or changed, the check goes or changes
-with it.
-
-- *If §12.2 is approved:* a reward reached through two routes, replayed, retried or reconnected
-  grants once, by its `rewardId` receipt; a duplicate owned piece converts to Dash Cash once per
-  distinct reward offer; skipping a celebration does not lose its reward, because finds are saved
-  when found.
-- *If §12.3 is approved:* each `growsCamp` campaign grows the frame at most once per crew, however
-  often it is replayed, and the frame stops at stage 4; existing crews migrate idempotently.
-- *If §12.1 is approved:* personal decorations come from the free catalog, and crew-owned pieces
-  never appear in a hero's space at another crew.
-- *If §12.4 is approved:* at most one purchase per chapter-end visit; a losing concurrent purchase
-  refreshes the offer without spending; a stale intent is refused.
-- *If §12.5 is approved:* shared edits are counted per seated player, not per device; Undo gives
-  the change back; placing a piece first owned this chapter is not counted.
-- *If §12.6 is approved:* the book names the crew and how fresh its saved copy is, and its first
-  use without a cache is clear.
-
-### 13.3 Playtest questions
+### 13.2 Playtest questions
 
 Playtest each phase with children in both target age groups and a grown-up. Observe whether children
 recognize a past adventure, can find their own space and can place a piece without help. Record
