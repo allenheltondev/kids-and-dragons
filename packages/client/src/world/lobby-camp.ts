@@ -138,10 +138,11 @@ export interface StillCampFigure {
 
 /**
  * The camp as a still picture, for a screen with no WebGL (§8.7): every hero
- * at their own bedroll, at the size the moving camp draws them, faded if they
+ * at their own bedroll, at the size the moving camp draws them (times the
+ * camp's `figureScale`, camp-framing.ts `campFigureScale`), faded if they
  * stepped away. Nobody walks and nobody queues: nothing is lost but movement.
  */
-export function stillCampFigures(layout: CampLayout, heroes: readonly CampHero[]): StillCampFigure[] {
+export function stillCampFigures(layout: CampLayout, heroes: readonly CampHero[], figureScale = 1): StillCampFigure[] {
   const measure = campMeasure(layout.canvas.height);
   const out: StillCampFigure[] = [];
   for (const hero of heroes) {
@@ -149,7 +150,7 @@ export function stillCampFigures(layout: CampLayout, heroes: readonly CampHero[]
     const lane = bed ? layout.lanes.get(bed.lane) : undefined;
     if (!bed || !lane) continue;
     // camp.ts `fitArt`: the canvas is drawn so the nominal paint is the figure's height.
-    const heightPx = campHeightPx(hero.figure.heightCm, measure) * lane.scale;
+    const heightPx = campHeightPx(hero.figure.heightCm, measure) * lane.scale * figureScale;
     out.push({
       id: hero.figure.id,
       url: hero.figure.url,

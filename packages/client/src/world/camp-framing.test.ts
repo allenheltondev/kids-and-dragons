@@ -11,7 +11,10 @@ import manifest from "../../../../assets/manifest.json";
 import { campLayout, parseCampManifest } from "./camp-layout";
 import {
   GROUND_MARGIN,
+  MIN_FIGURE_SCALE,
   campBleed,
+  campFigureScale,
+  campFit,
   campFocusBand,
   campFraming,
   campWindow,
@@ -19,7 +22,8 @@ import {
   type CampFraming,
   type CampWindow,
 } from "./camp-framing";
-import { HERO_SHARE } from "./camp-motion";
+import { HERO_SHARE, campHeightPx, campMeasure } from "./camp-motion";
+import { FIGURE_SIZES } from "./figure-sizes";
 
 const layout = campLayout(parseCampManifest((manifest as { camp: unknown }).camp), "open_plains", 1);
 const canvas = layout.canvas;
@@ -106,12 +110,13 @@ describe("framing the camp (cover, then slide)", () => {
         expect(at.y + height + bleed.bottom).toBeGreaterThanOrEqual(h - EPS);
       });
 
-      it("puts the walking band in the window whenever it fits, centered", () => {
+      it("puts the walking band in the window whenever it fits, centered, and keeps its feet in when not", () => {
         const b = bandPx(at);
         const middle = (window.top + window.bottom) / 2;
         // Clamped only where covering the window demands it.
         if (at.y < window.top - EPS && at.y + height > window.bottom + EPS) {
-          expect((b.top + b.bottom) / 2).toBeCloseTo(middle);
+          if (fits(at, window)) expect((b.top + b.bottom) / 2).toBeCloseTo(middle);
+          else expect(b.bottom).toBeCloseTo(window.bottom);
         }
         if (fits(at, window) && at.y < window.top - EPS && at.y + height > window.bottom + EPS) {
           expect(b.top).toBeGreaterThanOrEqual(window.top - EPS);
@@ -131,22 +136,19 @@ describe("framing the camp (cover, then slide)", () => {
     }
   });
 
-  it("overflows the window evenly on the 16:9 TVs, where the band is taller than the window", () => {
+  it("keeps the feet in on the 16:9 TVs, where the full-size band is taller than the window", () => {
     for (const [w, h, top, bottom] of [[1280, 720, 168, 352], [1920, 1080, 252, 528]] as const) {
       const { window, at } = frameOf(w, h, top, bottom);
       expect(fits(at, window)).toBe(false);
       const b = bandPx(at);
-      const over = window.top - b.top;
-      expect(over).toBeGreaterThan(0);
-      expect(over).toBeCloseTo(b.bottom - window.bottom);
-      // The back and middle lanes stand in the window; the near lane is a few percent of the
-      // pane below it, in the gap above the panels, never deep under them.
+      // The near lane's feet and their margin end on the window's bottom; only heads reach past its top.
+      expect(b.bottom).toBeCloseTo(window.bottom);
+      expect(window.top - b.top).toBeGreaterThan(0);
       const laneY = (id: string) => at.y + layout.lanes.get(id)!.y * canvas.height * at.scale;
-      for (const id of ["back", "middle"]) {
+      for (const id of ["back", "middle", "near"]) {
         expect(laneY(id)).toBeGreaterThan(window.top);
         expect(laneY(id)).toBeLessThan(window.bottom);
       }
-      expect(laneY("near") - window.bottom).toBeLessThan(0.04 * h);
     }
   });
 
@@ -180,5 +182,143 @@ describe("framing the camp (cover, then slide)", () => {
 
   it("fills a 16:9 pane exactly when nothing covers it", () => {
     expect(frameOf(1920, 1080, 0, 0).at).toEqual({ scale: 1, x: 0, y: 0 });
+  });
+});
+
+/*
+ * The figures' factor (docs/camp.md §8.3): when the band does not fit the
+ * window at the painting's cover scale, the figures and pieces shrink, not the
+ * painting. The insets are the lobby's as measured on the playtest table
+ * (tools/playtest, `section.lobby` and `.lobby__camp-window`): on a 1280 × 720
+ * TV the header reaches 65 px, and the panels cover 352 px with three heroes
+ * seated and 446 px with four (the party wraps to a second row); the
+ * 1920 × 1080 TV is the same lobby at 1.5×; Travel Mode's 390 × 844 phone has
+ * a 390 × 668 World pane with 35 px of header and 348 px of panels.
+ */
+describe("the figures' factor", () => {
+  const cm = (species: string) => FIGURE_SIZES[`characters/${species}`]![0];
+  const THREE = [cm("unicorn"), cm("griffin"), cm("dragonling")];
+  const FOUR = [...THREE, cm("bigfoot")];
+  const measure = campMeasure(canvas.height);
+  const lanes = layout.backdrop.lanes;
+  const near = Math.max(...lanes.map((lane) => lane.y));
+
+  const CASES = [
+    ["a 1280 × 720 TV, three heroes", 1280, 720, 65, 352, THREE],
+    ["a 1280 × 720 TV, four heroes and the bigfoot", 1280, 720, 65, 446, FOUR],
+    ["a 1920 × 1080 TV, three heroes", 1920, 1080, 98, 528, THREE],
+    ["a 1920 × 1080 TV, four heroes and the bigfoot", 1920, 1080, 98, 669, FOUR],
+    ["a 390 × 844 phone's World pane, four heroes", 390, 668, 35, 348, FOUR],
+    ["a TV with a short lobby, four heroes", 1280, 720, 65, 240, FOUR],
+    ["a very short window, four heroes", 1280, 720, 168, 540, FOUR],
+    ["a window of no height", 1280, 720, 300, 420, FOUR],
+  ] as const;
+
+  /** Where every hero's feet and the top of their head land, in pane px, on every lane. */
+  function figuresPx(w: number, h: number, top: number, bottom: number, heights: readonly number[]) {
+    const window = campWindow(h, top, bottom);
+    const fit = campFit(w, window, layout, heights);
+    const at = fit.framing;
+    const toPane = (y: number) => at.y + y * canvas.height * at.scale;
+    const figures = lanes.flatMap((lane) =>
+      heights.map((heightCm) => {
+        const drawn = (campHeightPx(heightCm, measure) * lane.scale * fit.figureScale) / canvas.height;
+        return { lane: lane.id, feet: toPane(lane.y), head: toPane(lane.y - drawn) };
+      }),
+    );
+    return { window, fit, figures, nearFeet: toPane(near + GROUND_MARGIN * fit.figureScale) };
+  }
+
+  for (const [name, w, h, top, bottom, heights] of CASES) {
+    describe(name, () => {
+      const { window, fit, figures, nearFeet } = figuresPx(w, h, top, bottom, heights);
+
+      it("never shrinks below the floor, nor grows past full size", () => {
+        expect(fit.figureScale).toBeGreaterThanOrEqual(MIN_FIGURE_SCALE);
+        expect(fit.figureScale).toBeLessThanOrEqual(1);
+      });
+
+      it("leaves the painting cover-fit, edge to edge", () => {
+        expect(fit.framing.scale).toBeCloseTo(Math.max(w / canvas.width, (window.bottom - window.top) / canvas.height));
+        expect(fit.framing.x).toBeLessThanOrEqual(EPS);
+        expect(fit.framing.y).toBeLessThanOrEqual(window.top + EPS);
+        expect(fit.framing.y + canvas.height * fit.framing.scale).toBeGreaterThanOrEqual(window.bottom - EPS);
+      });
+
+      it("keeps the near lane's feet, and their shadow, inside the window", () => {
+        expect(nearFeet).toBeLessThanOrEqual(window.bottom + EPS);
+        for (const figure of figures) expect(figure.feet).toBeLessThanOrEqual(window.bottom + EPS);
+      });
+
+      it("shows every hero whole, on any lane, whenever it is above the floor", () => {
+        if (fit.figureScale <= MIN_FIGURE_SCALE + EPS) return;
+        for (const figure of figures) {
+          expect(figure.head).toBeGreaterThanOrEqual(window.top - EPS);
+          expect(figure.feet).toBeLessThanOrEqual(window.bottom + EPS);
+        }
+      });
+    });
+  }
+
+  it("is 1 whenever the band already fits, and draws nobody smaller then", () => {
+    for (const [w, h, top, bottom] of [[390, 668, 35, 348], [1920, 1080, 0, 0], [1280, 720, 0, 240]] as const) {
+      const window = campWindow(h, top, bottom);
+      expect(campFigureScale(w, window, layout, FOUR)).toBe(1);
+      expect(campFit(w, window, layout, FOUR).band).toEqual(campFocusBand(layout, FOUR));
+    }
+  });
+
+  it("is the largest factor that fits: the band then fills the window exactly", () => {
+    const window = campWindow(720, 65, 352);
+    const k = campFigureScale(1280, window, layout, THREE);
+    expect(k).toBeGreaterThan(MIN_FIGURE_SCALE);
+    expect(k).toBeLessThan(1);
+    const at = campFraming(1280, window, canvas, campFocusBand(layout, THREE, k));
+    const b = campFocusBand(layout, THREE, k);
+    expect((b.bottom - b.top) * canvas.height * at.scale).toBeCloseTo(window.bottom - window.top);
+  });
+
+  it("shrinks for a taller hero seated, and for a shorter window", () => {
+    const window = campWindow(720, 65, 300);
+    expect(campFigureScale(1280, window, layout, FOUR)).toBeLessThan(campFigureScale(1280, window, layout, THREE));
+    expect(campFigureScale(1280, campWindow(720, 65, 360), layout, THREE)).toBeLessThan(
+      campFigureScale(1280, campWindow(720, 65, 300), layout, THREE),
+    );
+  });
+
+  it("at the floor keeps the feet on the window's bottom and lets only the tallest heads reach past its top", () => {
+    const { window, fit, figures, nearFeet } = figuresPx(1280, 720, 65, 446, FOUR);
+    expect(fit.figureScale).toBe(MIN_FIGURE_SCALE);
+    expect(nearFeet).toBeCloseTo(window.bottom);
+    // The back and middle lanes' feet stand in the window too.
+    for (const figure of figures) expect(figure.feet).toBeGreaterThan(window.top);
+  });
+
+  it("changes smoothly: a px of panel, or a hero's few cm, moves it only a little", () => {
+    for (const [w, h, top, heights] of [[1280, 720, 65, FOUR], [1920, 1080, 98, THREE], [390, 668, 35, FOUR]] as const) {
+      let prev = campFigureScale(w, campWindow(h, top, 0), layout, heights);
+      for (let bottom = 1; bottom <= h; bottom++) {
+        const next = campFigureScale(w, campWindow(h, top, bottom), layout, heights);
+        // At most a fiftieth per px even on the phone, where the painting is drawn smallest.
+        expect(Math.abs(next - prev)).toBeLessThan(0.02);
+        prev = next;
+      }
+    }
+    let prev = campFigureScale(1280, campWindow(720, 65, 352), layout, [100]);
+    for (let tallest = 101; tallest <= 260; tallest++) {
+      const next = campFigureScale(1280, campWindow(720, 65, 352), layout, [tallest]);
+      expect(Math.abs(next - prev)).toBeLessThan(0.01);
+      prev = next;
+    }
+  });
+
+  it("reports the real tables' factors", () => {
+    const k = (w: number, h: number, top: number, bottom: number, heights: readonly number[]) =>
+      campFigureScale(w, campWindow(h, top, bottom), layout, heights);
+    // 720p with three heroes fits a hair under full size; four heroes and the bigfoot, in a
+    // window the party's second row shrinks to 209 px, hit the floor.
+    expect(k(1280, 720, 65, 352, THREE)).toBeCloseTo(0.983, 3);
+    expect(k(1280, 720, 65, 446, FOUR)).toBe(MIN_FIGURE_SCALE);
+    expect(k(390, 668, 35, 348, FOUR)).toBe(1);
   });
 });

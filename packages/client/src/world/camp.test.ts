@@ -15,7 +15,7 @@ import { createCamp, type CampFigure, type CampFigureView, type CampStage } from
 import { ANCHOR_X, ANCHOR_Y } from "./actor-art";
 import { laneAt, pieceHeightCm, standPoint } from "./camp-layout";
 import { MAX_FRAME_S, campHeightPx, campMeasure } from "./camp-motion";
-import { campFocusBand, campFraming, campWindow } from "./camp-framing";
+import { MIN_FIGURE_SCALE, campFit, campWindow } from "./camp-framing";
 import { fitCanvas } from "./figure-scale";
 import { MAX_WALKERS } from "./camp-wander";
 import { CAMP_KIT_STYLES, campKitStyle } from "./camp-kit-art";
@@ -384,7 +384,7 @@ describe("the camp in the lobby (#614)", () => {
   it("covers the pane and slides the camp into the lobby's window, easing there as the panels grow", () => {
     const { camp: c, app } = camp();
     const window = campWindow(900, 100, 300);
-    const target = campFraming(1600, window, layout.canvas, campFocusBand(layout, CREW.map((f) => f.heightCm)));
+    const target = campFit(1600, window, layout, CREW.map((f) => f.heightCm)).framing;
     const start = c.view.y;
     c.setInset(300, 100);
     // No jump: the frame eases toward the new one.
@@ -399,6 +399,68 @@ describe("the camp in the lobby (#614)", () => {
     expect(c.view.x + W * c.view.scale.x).toBeGreaterThanOrEqual(1600 - 1e-6);
     expect(c.view.y).toBeLessThanOrEqual(window.top + 0.5);
     expect(c.view.y + H * c.view.scale.y).toBeGreaterThanOrEqual(window.bottom - 0.5);
+    c.destroy();
+  });
+
+  it("shrinks the figures, not the painting, when the window is too short for them, easing there", () => {
+    const { camp: c, app } = camp();
+    frames(app, c, 1);
+    for (const view of c.figures()) expect(view.figureScale).toBe(1);
+    // 420 px of panels under a 120 px header: a 360 px window on a 900 px pane.
+    const window = campWindow(900, 120, 420);
+    const fit = campFit(1600, window, layout, CREW.map((f) => f.heightCm));
+    expect(fit.figureScale).toBeLessThan(1);
+    expect(fit.figureScale).toBeGreaterThan(MIN_FIGURE_SCALE);
+    c.setInset(420, 120);
+    app.ticker.frame(16);
+    // No jump: one frame in, the figures are only a little smaller.
+    const first = c.figures()[0]!.figureScale;
+    expect(first).toBeLessThan(1);
+    expect(first).toBeGreaterThan(fit.figureScale);
+    frames(app, c, 3);
+    for (const view of c.figures()) expect(view.figureScale).toBeCloseTo(fit.figureScale, 3);
+    // The painting is still cover-fit, edge to edge.
+    expect(c.view.scale.x).toBeCloseTo(fit.framing.scale);
+    expect(c.view.x + W * c.view.scale.x).toBeGreaterThanOrEqual(1600 - 1e-6);
+    // Every figure is drawn at its lane's scale times the factor, pieces too.
+    const ground = c.view.children[1] as Container;
+    for (const view of c.figures()) {
+      const drawn = ground.children.find((child) => child.label === `figure:${view.id}`)!;
+      const lane = layout.lanes.get(view.lane!)!;
+      if (view.lane) expect(drawn.scale.y).toBeCloseTo(lane.scale * fit.figureScale);
+    }
+    const piece = layout.frame.pieces[0]!;
+    const pieceView = ground.children.find((child) => child.label === `piece:${piece.id}`)!;
+    expect(pieceView.scale.y).toBeCloseTo(layout.lanes.get(piece.lane)!.scale * fit.figureScale);
+    // And every hero stands whole in the window, head to feet, wherever it is.
+    const at = fit.framing;
+    for (const view of c.figures()) {
+      const feet = at.y + view.y * at.scale;
+      const head = feet - view.heightPx * at.scale;
+      expect(feet).toBeLessThanOrEqual(window.bottom + 0.5);
+      expect(head).toBeGreaterThanOrEqual(window.top - 0.5);
+    }
+    c.destroy();
+  });
+
+  it("holds the rules of clean motion at a smaller size: nothing slides, feet on the ground", () => {
+    const { camp: c, app } = camp({ seed: 31 });
+    c.setInset(560, 120);
+    frames(app, c, 3);
+    const k = c.figures()[0]!.figureScale;
+    expect(k).toBeLessThan(0.9);
+    const crossings = layout.backdrop.crossings.map((x) => x.x * W);
+    let walked = 0;
+    frames(app, c, 90, 16, (prev, next) => {
+      noSlide(prev, next);
+      for (const [id, now] of next) {
+        const was = prev.get(id)!;
+        walked += Math.hypot(now.x - was.x, now.y - was.y);
+        const onLane = laneAt(layout, now.y / H) !== null;
+        expect(onLane || crossings.some((x) => Math.abs(x - now.x) < 1e-6), `${id} off the ground`).toBe(true);
+      }
+    });
+    expect(walked).toBeGreaterThan(W / 2);
     c.destroy();
   });
 
