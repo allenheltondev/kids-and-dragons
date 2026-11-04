@@ -2,7 +2,8 @@
  * Who walks where, and when (docs/camp.md §8.5): the camp's wander planner.
  *
  * Each figure holds at a stand point for 8 to 20 seconds, then walks to a
- * nearby free one. The rules that keep it calm and clean (§8.6) live here, as
+ * nearby free one it has not just stood at, so it carries on round the camp
+ * rather than pacing between two spots. The rules that keep it calm and clean (§8.6) live here, as
  * decisions rather than as animation:
  *
  * - **At most two walkers at once.** A figure whose hold runs out while two
@@ -52,6 +53,13 @@ export const RETRY_MAX_S = 3;
 export const CLEARANCE = 0.04;
 /** A figure picks among this many of the nearest free stand points. */
 export const NEARBY = 3;
+/**
+ * ...that it has not stood at in its last this many stops. Without it a
+ * figure ambles back and forth between the same few spots by its bedroll;
+ * with it each walk carries on round the camp, so over a few minutes a full
+ * camp uses the whole width of the clearing (camp-manifest.test.ts).
+ */
+export const RECENT = 3;
 
 /** mulberry32, as packages/shared/src/chapter-pacing.ts uses: small, seeded, the same everywhere. */
 export function seededRandom(seed: number): () => number {
@@ -135,6 +143,8 @@ export interface WanderSnapshot {
 interface State extends WanderSnapshot {
   seat?: number;
   sweeps: LaneSweep[];
+  /** The stand points it stood at last, newest first (at most RECENT). */
+  recent: string[];
 }
 
 export interface WanderPlanner {
@@ -248,8 +258,11 @@ export function createWanderPlanner(layout: CampLayout, seed: number, options: W
       f.until = now + between(RETRY_MIN_S, RETRY_MAX_S);
       return;
     }
-    choices.sort((a, b) => a.length - b.length || a.point.localeCompare(b.point));
-    const pick = choices[Math.floor(random() * Math.min(NEARBY, choices.length))]!;
+    // Somewhere it has not just been, if there is anywhere.
+    const fresh = choices.filter((c) => !f.recent.includes(c.point));
+    const pool = fresh.length > 0 ? fresh : choices;
+    pool.sort((a, b) => a.length - b.length || a.point.localeCompare(b.point));
+    const pick = pool[Math.floor(random() * Math.min(NEARBY, pool.length))]!;
     const seconds = Math.max(0.01, options.walkSeconds(f.id, pick.route));
     f.mode = "walk";
     f.to = { spot: pick.spot, point: pick.point };
@@ -271,8 +284,16 @@ export function createWanderPlanner(layout: CampLayout, seed: number, options: W
     return best;
   }
 
+  function remember(f: State, point: string | null): void {
+    if (!point) return;
+    f.recent = [point, ...f.recent.filter((p) => p !== point)].slice(0, RECENT);
+  }
+
   function arrive(f: State): void {
-    if (f.to) f.at = f.to;
+    if (f.to) {
+      f.at = f.to;
+      remember(f, f.to.point);
+    }
     f.to = null;
     f.route = null;
     f.sweeps = [];
@@ -334,7 +355,9 @@ export function createWanderPlanner(layout: CampLayout, seed: number, options: W
         until: clock,
         walking: false,
         sweeps: [],
+        recent: [],
       };
+      remember(f, at.point);
       hold(f, clock);
       figures.set(figure.id, f);
     },
@@ -356,6 +379,7 @@ export function createWanderPlanner(layout: CampLayout, seed: number, options: W
       f.startedAt = clock;
       if (route === null) {
         f.at = to;
+        remember(f, to.point);
         f.to = null;
         f.route = null;
         f.sweeps = [];

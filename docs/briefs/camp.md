@@ -23,8 +23,11 @@ prompt's pixel figures change with it.
   backdrop, so a frame's lanes and x positions must fit every backdrop's lanes.
 - **On the open ground.** Every lane, and so every stand point, lies in the open, nearly level
   grass band the backdrop promises, from 45 to 75 percent of the height (open_plains: lanes at
-  52, 60 and 68 percent). The camp's pieces keep to the middle third; free wander spots (no
-  action) stay outside it.
+  52, 60 and 68 percent). The camp spreads across the clearing the way a real campsite
+  does: the campfire at the center, the bedrolls two to each side of it, free wander spots (no
+  action) out toward the edges, and every piece and stand point within 8 to 92 percent of the
+  width, which a portrait phone keeps. The trailhead, where the party leaves, is the one
+  exception.
 - **Cover-fit and slid.** The client draws a backdrop across the whole width of the screen and
   slides it up or down so the lanes stand in the open window between the lobby's header and its
   panels (`packages/client/src/world/camp-framing.ts`). So a backdrop's top quarter is plain sky
@@ -45,7 +48,9 @@ prompt's pixel figures change with it.
   matches `assets/biomes/plains/bg.webp`; the pieces match `assets/story-props/camp-firepit.webp`).
   No text, no heroes drawn (the existing hero figures stand in the camp), never scary.
 - **Backdrops are empty campsites**: a calm clearing with a plain, readable ground band where the
-  lanes fall, the middle third the openest part of it, plain sky above and a quiet lower band
+  lanes fall, wide open across about the middle 80 percent of the width with the fire's worn
+  patch at its center and no rocks, trees or stones inside it (those keep to the outer edges and
+  the distance), plain sky above and a quiet lower band
   (both may be trimmed), and the trail leaving at the trailhead's edge. Nothing a figure could
   seem to stand inside.
 - **Pieces fill their canvas the way figures do**: whole object inside the margin, resting on
@@ -72,6 +77,14 @@ is the real painting. Any file under `assets/camp/` the manifest does not declar
 The `open_plains` backdrop and the stage-1 frame: a small campfire, a neutral bedroll and pack
 (the same painting at all four seats), the trailhead post, and the campfire's flame (motion
 `flicker`). Five paintings in all.
+
+The backdrop was repainted for the revised #615 composition: the higher horizon, wide open
+middle 80 percent, fire patch at y 648, edge scenery and trail, and quiet top/bottom quarters
+for cover-fit cropping. The canonical prompt and the final composition-edit prompt are saved
+in `camp-art-prompts.json`. The exported RGB WebP is 1920 × 1080, Lanczos resized, quality 90,
+method 6, and 177 KB, below the 500 KB limit.
+
+![Revised open-plains clearing](../../assets/camp/backdrops/open_plains.webp)
 
 ## Hero-colored bedrolls: the implemented format
 

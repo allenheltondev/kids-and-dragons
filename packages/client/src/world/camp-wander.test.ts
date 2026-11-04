@@ -15,6 +15,7 @@ import {
   HOLD_MIN_S,
   MAX_WALKERS,
   QUEUE_GAP,
+  RECENT,
   createWanderPlanner,
   queueSpots,
   seededRandom,
@@ -145,6 +146,26 @@ describe("the wander planner (§8.5)", () => {
       expect(walk.to.point).not.toBe(walk.from.point);
       expect(walk.route).toEqual(campRoute(layout, walk.from.spot, walk.to.spot));
     }
+  });
+
+  it("carries on round the camp rather than pacing back to where it just was", () => {
+    // Alone in camp, a hero always has somewhere fresh to go: it never walks
+    // back to one of its last RECENT stops, and in ten minutes it uses every spot it may.
+    const planner = createWanderPlanner(layout, 5, {
+      walkSeconds: (_, route) => planWalk(route, layout.canvas, campGait(160, "standing", PX_PER_CM)).duration,
+    });
+    const bed = standPoint(layout, "bedroll-0")!;
+    planner.add({ id: "h0", seat: 0 }, { spot: { lane: bed.lane, x: bed.x }, point: bed.id });
+    const recent: string[] = [bed.id];
+    const visited = new Set<string>([bed.id]);
+    for (const walk of run(planner, 600, 0.1)) {
+      expect(recent).not.toContain(walk.to.point);
+      recent.unshift(walk.to.point!);
+      recent.length = Math.min(recent.length, RECENT);
+      visited.add(walk.to.point!);
+    }
+    const open = layout.frame.standPoints.filter((p) => p.seat === undefined || p.seat === 0);
+    expect([...visited].sort()).toEqual(open.map((p) => p.id).sort());
   });
 
   it("plans the same camp from the same seed, however the frames fall", () => {

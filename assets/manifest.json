@@ -1269,7 +1269,7 @@
     ]
   },
   "camp": {
-    "$comment": "The crew's camp (docs/camp.md §3.1, §4.1, §8.3 and §8.4; brief docs/briefs/camp.md; prompts docs/camp-art-prompts.json). Every coordinate is a fraction of backdropCanvas: x from the left edge, y from the top. A lane's y is the ground line its figures' and pieces' ground contact (the canvas origin, 512,900) stands on. backdrops: one opaque 1920x1080 WebP per terrain family (biomeFamilies) at assets/<path>; open_plains is the fallback for every family not painted yet. A backdrop's lanes are its walkable floor, back to near; a nearer lane draws in front and at its larger scale, and x0..x1 is how far along it a figure may walk. A figure changes lanes only at a crossing, between the lanes the crossing lists. frames: one per frame stage (§4.1). pieces are 1024x1024 RGBA cutouts on the figure canvas, standing on a lane at x; movingParts are cutouts on the same canvas, laid exactly over their piece and animated only while a figure uses it (§8.4). standPoints are where one figure at a time may stand, the way it faces (face), and optionally what it does there (action: warmUp, lookUp, peek, rest, greet or pet), the piece it does it at (hotspot, a piece id) and, for a bedroll or tent, whose seat it is (seat, 0-3). trailhead is where a ready hero walks to before Begin. Lanes, and so stand points, lie in the open, nearly level grass band the backdrop prompt promises (y 0.45 to 0.75), so the client can slide the cover-fitted painting to stand the camp in the lobby's window (camp-framing.ts); the camp's pieces keep to the middle third and free wander spots stay outside it. verify.py checks this layout and the format of any camp art present; missing art is owed in art:inventory, not a failure, and the client draws a stand-in until it lands.",
+    "$comment": "The crew's camp (docs/camp.md §3.1, §4.1, §8.3 and §8.4; brief docs/briefs/camp.md; prompts docs/camp-art-prompts.json). Every coordinate is a fraction of backdropCanvas: x from the left edge, y from the top. A lane's y is the ground line its figures' and pieces' ground contact (the canvas origin, 512,900) stands on. backdrops: one opaque 1920x1080 WebP per terrain family (biomeFamilies) at assets/<path>; open_plains is the fallback for every family not painted yet. A backdrop's lanes are its walkable floor, back to near; a nearer lane draws in front and at its larger scale, and x0..x1 is how far along it a figure may walk. A figure changes lanes only at a crossing, between the lanes the crossing lists. frames: one per frame stage (§4.1). pieces are 1024x1024 RGBA cutouts on the figure canvas, standing on a lane at x; movingParts are cutouts on the same canvas, laid exactly over their piece and animated only while a figure uses it (§8.4). standPoints are where one figure at a time may stand, the way it faces (face), and optionally what it does there (action: warmUp, lookUp, peek, rest, greet or pet), the piece it does it at (hotspot, a piece id) and, for a bedroll or tent, whose seat it is (seat, 0-3). trailhead is where a ready hero walks to before Begin. Lanes, and so stand points, lie in the open, nearly level grass band the backdrop prompt promises (y 0.45 to 0.75), so the client can slide the cover-fitted painting to stand the camp in the lobby's window (camp-framing.ts); the backdrop spans the screen's whole width, so the camp spreads across the clearing: the campfire at the center, the bedrolls two to each side of it, free wander spots out toward the edges, and every piece and stand point within x 0.08 to 0.92, which a portrait phone keeps (the trailhead, where the party leaves, is the one exception). verify.py checks this layout and the format of any camp art present; missing art is owed in art:inventory, not a failure, and the client draws a stand-in until it lands.",
     "kitStyles": [
       { "id": "rolled", "path": "camp/kits/rolled.png", "tint": "svg-cloth-mask", "paletteSlot": "accent" },
       { "id": "quilted", "path": "camp/kits/quilted.png", "tint": "svg-cloth-mask", "paletteSlot": "accent" },
@@ -1286,8 +1286,10 @@
           { "id": "near", "y": 0.68, "x0": 0.04, "x1": 0.97, "scale": 1.0 }
         ],
         "crossings": [
-          { "x": 0.18, "lanes": ["back", "middle", "near"] },
-          { "x": 0.82, "lanes": ["back", "middle", "near"] }
+          { "x": 0.20, "lanes": ["back", "middle", "near"] },
+          { "x": 0.31, "lanes": ["back", "middle", "near"] },
+          { "x": 0.69, "lanes": ["back", "middle", "near"] },
+          { "x": 0.80, "lanes": ["back", "middle", "near"] }
         ]
       }
     ],
@@ -1296,29 +1298,31 @@
         "stage": 1,
         "pieces": [
           { "id": "campfire", "path": "camp/frames/stage1/campfire.png", "lane": "middle", "x": 0.50, "heightCm": 60 },
-          { "id": "bedroll_0", "path": "camp/frames/stage1/bedroll.png", "lane": "back", "x": 0.40, "heightCm": 40 },
-          { "id": "bedroll_1", "path": "camp/frames/stage1/bedroll.png", "lane": "back", "x": 0.60, "heightCm": 40 },
-          { "id": "bedroll_2", "path": "camp/frames/stage1/bedroll.png", "lane": "near", "x": 0.38, "heightCm": 40 },
-          { "id": "bedroll_3", "path": "camp/frames/stage1/bedroll.png", "lane": "near", "x": 0.62, "heightCm": 40 },
+          { "id": "bedroll_0", "path": "camp/frames/stage1/bedroll.png", "lane": "back", "x": 0.36, "heightCm": 40 },
+          { "id": "bedroll_1", "path": "camp/frames/stage1/bedroll.png", "lane": "back", "x": 0.64, "heightCm": 40 },
+          { "id": "bedroll_2", "path": "camp/frames/stage1/bedroll.png", "lane": "near", "x": 0.25, "heightCm": 40 },
+          { "id": "bedroll_3", "path": "camp/frames/stage1/bedroll.png", "lane": "near", "x": 0.75, "heightCm": 40 },
           { "id": "trailhead_post", "path": "camp/frames/stage1/trailhead-post.png", "lane": "middle", "x": 0.91, "heightCm": 120 }
         ],
         "movingParts": [
           { "piece": "campfire", "path": "camp/frames/stage1/campfire-flame.png", "motion": "flicker" }
         ],
         "standPoints": [
-          { "id": "bedroll_0", "lane": "back", "x": 0.40, "face": "right", "action": "rest", "hotspot": "bedroll_0", "seat": 0 },
-          { "id": "bedroll_1", "lane": "back", "x": 0.60, "face": "left", "action": "rest", "hotspot": "bedroll_1", "seat": 1 },
-          { "id": "bedroll_2", "lane": "near", "x": 0.38, "face": "right", "action": "rest", "hotspot": "bedroll_2", "seat": 2 },
-          { "id": "bedroll_3", "lane": "near", "x": 0.62, "face": "left", "action": "rest", "hotspot": "bedroll_3", "seat": 3 },
+          { "id": "bedroll_0", "lane": "back", "x": 0.36, "face": "right", "action": "rest", "hotspot": "bedroll_0", "seat": 0 },
+          { "id": "bedroll_1", "lane": "back", "x": 0.64, "face": "left", "action": "rest", "hotspot": "bedroll_1", "seat": 1 },
+          { "id": "bedroll_2", "lane": "near", "x": 0.25, "face": "right", "action": "rest", "hotspot": "bedroll_2", "seat": 2 },
+          { "id": "bedroll_3", "lane": "near", "x": 0.75, "face": "left", "action": "rest", "hotspot": "bedroll_3", "seat": 3 },
           { "id": "campfire_left", "lane": "middle", "x": 0.43, "face": "right", "action": "warmUp", "hotspot": "campfire" },
           { "id": "campfire_right", "lane": "middle", "x": 0.57, "face": "left", "action": "warmUp", "hotspot": "campfire" },
           { "id": "campfire_back", "lane": "back", "x": 0.50, "face": "left", "action": "warmUp", "hotspot": "campfire" },
-          { "id": "wander_back_left", "lane": "back", "x": 0.24, "face": "right" },
-          { "id": "wander_back_right", "lane": "back", "x": 0.76, "face": "left" },
-          { "id": "wander_middle_left", "lane": "middle", "x": 0.13, "face": "right" },
-          { "id": "wander_middle_right", "lane": "middle", "x": 0.86, "face": "left" },
-          { "id": "wander_near_left", "lane": "near", "x": 0.24, "face": "right" },
-          { "id": "wander_near_right", "lane": "near", "x": 0.77, "face": "left" }
+          { "id": "wander_back_left", "lane": "back", "x": 0.13, "face": "right" },
+          { "id": "wander_back_right", "lane": "back", "x": 0.87, "face": "left" },
+          { "id": "wander_back_inner_left", "lane": "back", "x": 0.25, "face": "right" },
+          { "id": "wander_back_inner_right", "lane": "back", "x": 0.75, "face": "left" },
+          { "id": "wander_middle_left", "lane": "middle", "x": 0.10, "face": "right" },
+          { "id": "wander_middle_right", "lane": "middle", "x": 0.85, "face": "left" },
+          { "id": "wander_near_left", "lane": "near", "x": 0.12, "face": "right" },
+          { "id": "wander_near_right", "lane": "near", "x": 0.88, "face": "left" }
         ],
         "trailhead": { "lane": "near", "x": 0.95 }
       }

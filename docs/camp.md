@@ -81,9 +81,9 @@ during downtime, and in the World pane during the lobby.
 ### 3.1 Pitched in the right place
 
 Each terrain family (`assets/manifest.json` → `biomeFamilies`, twelve of them) gets one camp
-backdrop: a wide, calm campsite painting with room for the camp in the middle third and its
-hotspots (§4.2) on a fixed layout. The view picks the backdrop from the chapter's biome, and in
-the lobby from the chapter the crew would pick up from. The lobby and the chapter's end always
+backdrop: a wide, calm campsite painting with a wide clearing for the camp, across about the
+middle 80 percent of the width, and its hotspots (§4.2) on a fixed layout. The view picks the
+backdrop from the chapter's biome, and in the lobby from the chapter the crew would pick up from. The lobby and the chapter's end always
 show the full, outdoor camp.
 
 Painting all twelve is a lot of art, so they ship in order of how often a party rests outdoors
@@ -593,7 +593,9 @@ to paint. The backdrop is static too.
 The camp should feel calm, like watching a campsite, not a busy screen:
 
 - **Wandering.** Each figure stays at a stand point for a while (roughly 8 to 20 seconds), then
-  picks another nearby free one and walks there. **At most two figures are walking at once**, so
+  picks another nearby free one it hasn't just stood at and walks there, so over a few minutes
+  the crew ranges across the whole clearing rather than pacing by its bedrolls. **At most two
+  figures are walking at once**, so
   the eye always has something to follow and never everything. Indoors nobody wanders: the heroes
   rest on their bedrolls, and a friend moves only when it's tapped.
 - **Moments the game already has** take priority over wandering, and each is a little scene:

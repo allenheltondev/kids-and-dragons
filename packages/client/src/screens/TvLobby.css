@@ -186,19 +186,53 @@
   .kad-party--world .lobby__gather .lobby__join--compact .lobby__qr-block { grid-area: qr; min-inline-size: 5em; }
   .kad-party--world .lobby__gather .lobby__join--compact .lobby__join-step { grid-area: step; font-size: .7em; max-inline-size: 30em; }
   .kad-party--world .lobby__gather .lobby__join--compact .lobby__code-letter { font-size: 1.5em; }
-  .kad-party--world .lobby__gather .lobby__join--compact .lobby__qr { inline-size: 5em; block-size: 5em; }
+  /* Square whatever the code beside it takes: as a percentage cap, the image's max-inline-size let
+     the code's column take its width and left a tall sliver that no phone could scan. */
+  .kad-party--world .lobby__gather .lobby__join--compact .lobby__qr { inline-size: 5em; block-size: 5em; max-inline-size: none; flex: none; }
   .kad-party--world .lobby__gather:has(.lobby__join--compact) { align-items: end; }
   .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby__party { align-self: end; gap: .4em; }
+  /* The heroes share one row where the screen is wide enough. A hero's name has the card's whole
+     width across its top, with the portrait under it and the level and readiness beside that, so
+     a name is never squeezed into the column beside a portrait (where "Thistlewhisker" broke in
+     two) and a chip never sits over it. */
   .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby__lineup {
     /* Keep room for a whole name beside its portrait. A third narrow card
        used to break even Sparklehoof; use another row before squeezing it. */
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 14em), 1fr));
     gap: .5em;
   }
-  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member { grid-template-columns: 2.4em minmax(0, 1fr); padding: .45em .5em; }
+  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member {
+    grid-template-columns: 2.4em minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
+    grid-template-areas: "name name" "portrait meta" "portrait status";
+    align-items: center;
+    gap: .25em .5em;
+    padding: .45em .6em;
+  }
+  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member .lobby-member__text { display: contents; }
+  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member > :is(.lobby-member__seat, .lobby-member__portrait) { grid-area: portrait; }
+  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member .lobby-member__name { grid-area: name; }
+  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member .lobby-member__meta { grid-area: meta; }
+  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member .lobby-member__status { grid-area: status; justify-items: start; }
+  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member .lobby-member__status .kad-chip { white-space: nowrap; }
   .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member .lobby-member__portrait { inline-size: 2.4em; block-size: 2.9em; }
-  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member__name { font-size: .95em; }
+  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member__name { font-size: .95em; white-space: nowrap; overflow-wrap: normal; word-break: normal; }
   .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member__meta { font-size: .8em; white-space: nowrap; }
+}
+/* A short TV (1024 x 600) leaves the level to the phones (above), so a card is the name over the
+   portrait and readiness. At the largest text the portrait, code and QR step down a size so two
+   cards still fit beside the Room panel with each name whole. */
+@media (min-width: 900px) and (orientation: landscape) and (max-height: 650px) {
+  .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member {
+    grid-template-rows: auto auto;
+    grid-template-areas: "name name" "portrait status";
+  }
+  html[data-text="largest"] .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member .lobby-member__portrait { inline-size: 1.4em; block-size: 1.7em; }
+  html[data-text="largest"] .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby__lineup { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  html[data-text="largest"] .kad-party--world .lobby__gather:has(.lobby__join--compact) .lobby-member { grid-template-columns: 1.4em minmax(0, 1fr); row-gap: .15em; padding-block: .3em; }
+  /* The code and a square QR side by side in the Room panel's column. */
+  html[data-text="largest"] .kad-party--world .lobby__gather .lobby__join--compact .lobby__code-letter { font-size: 1.15em; }
+  html[data-text="largest"] .kad-party--world .lobby__gather .lobby__join--compact .lobby__qr { inline-size: 3.4em; block-size: 3.4em; }
 }
 
 /* The compact camp band must retain the short-screen rules above. Its later,
