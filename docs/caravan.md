@@ -114,7 +114,7 @@ from what the crew owns for it. There is no dragging, no rotating and no free pl
 
 Hotspots keep it doable for an eight-year-old on a phone, keep every combination looking painted
 rather than cluttered, and let the art be composed once per frame stage rather than for every
-possible arrangement. They also make the stored state small (§8).
+possible arrangement. They also make the stored state small (§9).
 
 ### 4.3 Pieces
 
@@ -155,7 +155,7 @@ Every hero seated with the crew has **one space of their own**: a tent, a bedrol
 corner, in their own color (the palette rule heroes already use), with two or three small slots
 for things they choose. Only that hero's player changes it. It shows whenever the hero is seated,
 and a hero sitting with another crew brings their space along, because it belongs to the hero,
-not the crew (§8).
+not the crew (§9).
 
 ## 5. How the crew earns things
 
@@ -183,7 +183,7 @@ Authoring rules, so finds keep to the house rules:
 - **Finds are a few per campaign, not per chapter.** Roughly one every two chapters keeps each
   one an event.
 
-The pieces live in a catalog of their own, `content/caravan.json` (§8), validated like the rest
+The pieces live in a catalog of their own, `content/caravan.json` (§9), validated like the rest
 of `content/`. They are not world canon in `canon/items.yaml`: a caravan piece is a game object
 the crew owns, not an object in the realm's lore.
 
@@ -266,7 +266,175 @@ anything. A phone between games belongs to one kid, not a crew, so the natural e
 is letting that kid change **their own hero's space** from the book while online (open question
 3). Votes and shared hotspots stay at the table.
 
-## 8. The data
+## 8. Movement: a caravan that is alive
+
+*Decided:* characters walk and move around the caravan and use the things in it. Not much more
+than walking and moving, but it has to look clean.
+
+This is what makes the caravan a place rather than a picture. A hero comes out of their tent when
+their kid sits down, wanders over to warm up at the cookfire, and Pepper trots over when someone
+taps her. None of it needs new figure art.
+
+### 8.1 Paper-puppet motion, from the art we already have
+
+Every figure is one finished transparent cutout (docs/art-pipeline.md: the Rive rigs and split
+parts are retired). The caravan does not bring rigs back. It moves cutouts the way a paper puppet
+theater does: the whole figure steps, leans, turns and settles, and **the motion, not the
+drawing, says what it is doing**. This is the look to hold the line on. Done carefully it reads
+as charming and deliberate. Done carelessly it reads as sliding stickers.
+
+The parts already exist and are shared by the story lineup and the combat board
+(`world/actor-art.ts`):
+
+- **Facing.** Art is drawn facing left, and a figure turns by easing `scale.x` through zero to
+  `-1`, as combat already does (`facingFor`, `board.ts`).
+- **Smoothing.** `approach` moves a value toward its target at a fixed rate, so nothing snaps.
+- **Grounding.** Feet sit at the canvas's ground contact (512, 900), with a contact shadow
+  (`drawContactShadow`) that follows them.
+- **Idle by stance.** `stanceIdle` already breathes standing figures and bobs hovering, flying
+  and swimming ones (`world/idle-motion.ts`, #362).
+- **Walking a route.** The combat board walks a figure one square at a time at a steady pace
+  and leaves fading footprints. The caravan walks the same way along its own paths (§8.3).
+
+### 8.2 The walk
+
+A standing figure walks as a series of **steps**, never a glide:
+
+- **Each step is a small hop**: rise about 3% of the figure's height and land. The shadow
+  tightens at the top and spreads on landing, so the feet are plainly on the ground between steps.
+- **A lean into the walk**: a couple of degrees forward while moving, easing upright on stopping,
+  with an alternating wobble of about 1.5° per step for the gait.
+- **A tiny squash on landing** (about 2% shorter and wider, back within a tenth of a second).
+  It's the one cartoon touch, and it's what keeps the hop from looking mechanical.
+- **Starts and stops ease.** The first step and the last are shorter, and a figure arriving
+  settles: one small dip, then it breathes. It never brakes to a halt.
+- **Speed and step size come from size.** True size is already known (`figure-scale.ts`,
+  `height_cm`). A duckling patters with quick, tiny hops; a hero steps at a walking pace; the
+  mosshorn lumbers with slow, long ones. Speed grows more slowly than height, so big things don't
+  rush.
+- **By stance.** Hovering and flying figures don't hop: they glide along the path with their
+  existing bob and a little lean. Swimmers stay near water.
+
+### 8.3 Where figures can go
+
+Each caravan backdrop (§3.1) declares its ground in the manifest. Each frame stage declares the
+caravan's spots on that ground.
+
+- **Ground lanes.** The walkable floor is two or three horizontal lanes at fixed depths (near,
+  middle, back), not a free 2D field. Lanes make depth order trivial (a nearer lane always draws
+  in front), keep figures from overlapping in ugly ways, and make every route a short, readable
+  line. A nearer lane draws its figures slightly bigger, so depth reads without a perspective
+  engine.
+- **Stand points.** Every hotspot (§4.2) has one or more stand points: a place on a lane, the
+  way to face, and what to do there (§8.4). The cookfire might have three, the banner one, each
+  hero's space one at its door.
+- **Paths, not pathfinding.** A figure gets from one stand point to another along its lane, and
+  changes lanes only at the ends of a crossing marked on the layout. It walks around the caravan,
+  never through it. All of it is authored data on a fixed layout, so there's no navigation code
+  to get wrong.
+- **One figure per stand point**, and passing figures in one lane take turns: one waits a beat
+  rather than walking through another.
+- **Clear of the words.** Stand points never sit under the parts of the screen the lobby, the
+  vote and the narration plate cover. `stage-inset.ts` already reports how much of the pane the
+  narration plate covers, so the story stage stands figures above it; the lobby and vote panels
+  would report the same way.
+
+### 8.4 What figures do there
+
+A stand point's **action** is a short, looped pose made of the same transforms as the walk, with
+the hotspot's piece doing its half:
+
+| Action | The figure | The piece |
+| --- | --- | --- |
+| **Warm up** (cookfire) | Faces the fire, settles a little lower, slow breath | Flames flicker; a spark rises now and then |
+| **Look up** (banner, lookout) | Leans back a few degrees and holds | The banner ripples |
+| **Peek** (wagon, chest) | Leans in, hops once, leans back | The lid lifts and drops |
+| **Rest** (own space) | Turns to the door, dips and holds still | The tent flap sways |
+| **Greet** (another figure) | Turns to face them, one hop | n/a |
+| **Pet** (a friend) | Steps close, leans in | The friend hops, turns toward them and its reaction shows (§4.4) |
+
+Pieces that move are their own small cutouts (a flag, a lantern, a flame, a lid) on top of the
+painted piece, with simple motion: sway, ripple, flicker, lift. The backdrop stays still, apart
+from very slow ambient touches already common in the scenes (drifting smoke or snow).
+
+### 8.5 When things move
+
+The caravan should feel calm, like watching a campsite, not a busy screen:
+
+- **Wandering.** Each figure stays at a stand point for a while (roughly 8 to 20 seconds),
+  then picks another nearby free one and walks there. **At most two figures are walking at
+  once**, so the eye always has something to follow and never everything.
+- **Moments the game already has** take priority over wandering, and each is a little scene:
+
+| Moment | What happens |
+| --- | --- |
+| A kid sits down in the lobby | Their hero steps out of their own space, looks around and waves (a hop and a turn toward the screen) |
+| A kid taps Ready | Their hero walks to the wagon and waits there |
+| A player steps away (#258) | Their hero walks back to their own space and fades the way the lineup already fades a stepped-away hero |
+| Begin | Everyone gathers at the wagon, and the caravan rolls off as the chapter's first scene fades in |
+| A rest scene's caravan appears (§3) | The heroes walk in from the edge, and each settles at a spot |
+| A find is unpacked (§5.1) | A hero carries it to its hotspot, and it pops into place |
+| A big upgrade is bought (§6.2) | The crew gathers round as it's put up |
+| A kid taps a friend on their phone | The friend reacts on the TV, then walks over to that kid's hero |
+
+- **Taps on a phone show on the TV.** A tap is a short-lived message, never saved, sent to the
+  room's screens the way room cheers already are (#388, `RoomCheers`). It's rate-limited per
+  phone, and the TV queues and drops extra taps, so a kid hammering the button gets a happy
+  friend rather than a jittering one.
+- **Movement is the screen's own, not the game's.** The server stores where pieces and friends
+  are placed (§9), never where anybody is standing. Wandering runs on each screen from a seed
+  (the caravan and the minute), so the TV and a phone looking at it mostly agree, and nothing has
+  to sync. It's the same reasoning as the victory flourish (`world/victory.ts`): spectacle is read
+  from state, never put in the protocol.
+
+### 8.6 What "clean" means: the rules
+
+A movement that breaks one of these is a bug, not a matter of taste:
+
+1. **Nothing slides.** A standing figure only moves across the ground while stepping. Every
+   pixel of travel belongs to a hop.
+2. **Feet stay on the ground line**, and the contact shadow is always under them, including mid-
+   turn (combat already keeps the shadow under the feet on a turn).
+3. **Nothing snaps.** Every change of position, angle, scale and opacity eases (`approach`). A
+   figure that has to be somewhere else at once (a lane full, a resize) fades out and back in
+   rather than jumping.
+4. **Nothing overlaps badly.** Depth order comes from the lane, one figure per stand point, and
+   figures in one lane don't pass through each other.
+5. **Calm by default.** Slow walk speeds, long holds, two walkers at most, no idle fidgeting
+   beyond the breath.
+6. **Small, consistent amounts.** Hop, lean and squash use the same few constants for every
+   figure, scaled by size, so the whole cast moves like one family.
+7. **Smooth on the slowest screen.** Movement runs on frame time, not frame count, so a
+   dropped frame shortens a step rather than stopping it. It runs at 60 fps on a living room
+   mini-PC and stays readable at 30 on an older phone, checked with the frame meter (`?perf`,
+   docs/hardware.md) with a full caravan: four heroes, five friends and moving pieces.
+
+### 8.7 Reduced motion and no WebGL
+
+- **Reduced motion** (`a11y/prefs.ts`, the device preference or the in-game setting): nobody
+  wanders and nothing hops. Figures stand at their stand points, as the idle already does when
+  `still`. A moment like a hero arriving or a friend being tapped becomes a soft fade at the new
+  spot, and the reaction's words show as usual.
+- **No WebGL** (`RendererFallback`, `StaticStage`): the caravan is drawn as a still picture with
+  everybody at their stand points. Nothing is lost but the movement.
+- **A hidden or backgrounded screen** stops the movement and picks it up fresh, rather than
+  catching up on everything it missed.
+
+### 8.8 How it is built and tested
+
+- **A third stage beside the story lineup and the combat board.** `world/caravan.ts` draws it,
+  sharing `actor-art.ts` with the other two, under WorldView's usual rules: nothing reads the room
+  mode, nothing uses a viewport unit.
+- **The thinking is Pixi-free.** Lanes, stand points, routes, the wander planner and the step
+  curve live in pure modules (like `cast.ts`, `board-math.ts` and `idle-motion.ts`), so "nothing
+  slides", "one figure per stand point" and "two walkers at most" are things a test can hold
+  without a WebGL context.
+- **Frame-by-frame tests** run against the fake stage (`testing/fake-stage.ts`) with hand-driven
+  frames, as `scene-motion.test.ts` already does.
+- **Looking at it** uses `npm run play:jump` with `--record MS` (extended to open the lobby with
+  a caravan in it) to film the caravan on a TV and phones side by side. "Clean" is judged on those recordings at real speed, not on stills.
+
+## 9. The data
 
 New records (architecture §3), each versioned like every stored shape:
 
@@ -310,21 +478,24 @@ interface CaravanSpace {
 - **Deleting**: the caravan goes with its crew and its household, and a hero's space goes with the
   hero. It names no kid, so a kid's own delete (#252) leaves the crew's caravan alone.
 
-## 9. Building it in phases
+## 10. Building it in phases
 
 Each phase is playable on its own, and the first one tests the whole idea cheaply.
 
-**Phase 1: the caravan exists.** The record and its view; the `open_plains` backdrop for
-everywhere; frame stage 1 and 2; souvenirs and the crew banner as kept pieces; the lobby
-showing it on the TV; the adventure book's look-only tray. No tokens, finds or friends yet. The
-test: do kids point at the TV during the lobby?
+**Phase 1: the caravan exists, and it is alive.** The record and its view; the `open_plains`
+backdrop for everywhere; frame stage 1 and 2; souvenirs and the crew banner as kept pieces; the
+lobby showing it on the TV; the adventure book's look-only tray. Movement ships here, not later,
+because it is most of the appeal: the walk and its rules (§8.2, §8.6), lanes and stand points,
+wandering, and the lobby moments (a hero stepping out on sitting down, walking to the wagon on
+Ready, the roll-off on Begin). No tokens, finds or friends yet. The test: do kids point at the
+TV during the lobby?
 
 **Phase 2: earning and changing it.** Trail tokens at the chapter's end; the shop and the vote;
 free hotspot changes; each hero's space; the caravan beat on the chapter's end; the first
 `findForCaravan` finds, in Riftlight and the Practice Meadow first (Gemfall is pinned, below).
 
 **Phase 3: friends and places.** The five friends above, each with a befriend choice in its
-chapter; tapping friends; the rest-scene crossfade; the first-wave backdrops
+chapter; tapping friends on a phone and seeing them react and walk over on the TV (§8.5); the rest-scene crossfade; the first-wave backdrops
 (`red_sky_volcanic`, `frozen_north`); frame stages 3 and 4; Travel Mode's Caravan button.
 
 **Later:** the remaining backdrops in the order of §3.1, editing your own space from the
@@ -336,7 +507,7 @@ effect must not move the gameplay digests below the hashes: `findForCaravan` cha
 digests measure (no flag, XP, item or route), and that should be checked when Pepper and the
 mosshorn are added.
 
-## 10. Open questions
+## 11. Open questions
 
 1. **The token's name.** "Trail tokens" is a placeholder. It should be one short word or two an
    eight-year-old says out loud, and it must not collide with coins or with star words
@@ -354,3 +525,9 @@ mosshorn are added.
 6. **Riftlight's graph campaign.** A graph campaign can reach a place in more than one order, so
    a find or friend there must be offered on every way into that place, or tied to a scene every
    way passes through.
+7. **How much the pieces move.** §8.4 gives moving pieces (flames, flags, lids) their own small
+   cutouts. That is cheap per piece but adds up across every piece in the shop. Should every
+   piece move a little, or only the ones a figure uses?
+8. **The roll-off on Begin.** Rolling the caravan off as the chapter fades in is the best moment
+   in §8.5, and it adds a second or two before the first scene. Is that worth it every chapter, or
+   only the first of an evening?
