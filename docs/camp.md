@@ -150,8 +150,8 @@ of the transformation cutscene, never longer than it.
 **Only full campaigns count** (*decided*). The Practice Meadow (`first-steps`) is the tutorial and
 never grows the frame. Today's full campaigns are Gemfall and Riftlight. The campaign file says
 so (`"growsCamp": true`), so a new campaign is a deliberate choice rather than an accident.
-*Proposed:* The Hollow Crown (`the-hollow-crown`, the one-chapter reference campaign) does not
-grow the frame either. Both still pay Dash Cash and can hand over finds and friends.
+The Hollow Crown (`the-hollow-crown`, the one-chapter reference campaign) does not grow the frame
+either (*decided*). Both still pay Dash Cash and can hand over finds and friends.
 
 Only a *finished* campaign moves the frame. A failed campaign keeps everything already in the camp
 (§1) but does not grow it. A crew still working toward its first finished campaign keeps the camp
@@ -594,7 +594,7 @@ book, more friends and finds as chapters are written.
 
 **Gemfall is pinned.** `gemfall-compat.test.ts` hashes every Gemfall file, so adding a find, a
 befriend choice or a rest scene's `setting` to a Gemfall chapter is a deliberate re-hash with its
-reason in the commit. Nothing here may move the gameplay digests below the hashes: `findForCamp`
+reason in the commit. Re-taking those hashes for the camp is approved (*decided*). Nothing here may move the gameplay digests below the hashes: `findForCamp`
 and `setting` change nothing the digests measure (no flag, XP, item or route), and that should be
 checked when the mosshorn is added and the rest scenes are tagged.
 
@@ -609,7 +609,8 @@ Settled by the product owner:
 | Rest scenes | Every rest scene is marked indoor or outdoor. Outdoor crossfades to the camp, with its narration on the camp screen; indoor keeps its picture with bedrolls and packs (§3, §3.2) |
 | Editing from the adventure book | Not now: the book stays look-only (§7). Left open below |
 | A crew with no finished campaign | The shop is enough; the frame still grows only on a finished full campaign (§4.1) |
-| The tutorial | Never grows the frame (§4.1) |
+| The tutorial and The Hollow Crown | Neither grows the frame; only `growsCamp` campaigns do (§4.1) |
+| Gemfall's pinned hashes | Re-taking them for the camp's content changes is approved; the gameplay digests must still not move (§10) |
 | Friends | Only creatures that belong to nobody in the story; Pepper is out, and new characters will be written (§4.4) |
 | How many friends at once | Four at most, rotating on their own (§4.4). Choosing is left open below |
 | Finds in a graph campaign | Offered on every way in, given once (§5.1) |
@@ -623,11 +624,6 @@ Still open, parked until families ask:
 2. **Choosing which friends are out.** Friends rotate automatically under this proposal (§4.4). If
    kids want to pick, it is a shared-hotspot change at the friends' corner, under §6.1's
    one-change-per-moment rule.
-
-Proposed, needing a yes or no:
-
-3. **The Hollow Crown.** Does the one-chapter reference campaign count as a full campaign? Proposed:
-   no, like the tutorial (§4.1).
 
 ## 12. Implementation recommendations requiring review
 
@@ -749,7 +745,7 @@ Implementation checks:
 
 - A reward reached through two routes, replayed, retried or reconnected grants once. A duplicate
   owned piece converts once per distinct reward offer. Failed campaigns keep all camp gains.
-- The tutorial and other campaigns without `growsCamp` never grow the frame; replaying a full
+- The tutorial, The Hollow Crown and any other campaign without `growsCamp` never grow the frame; replaying a full
   campaign grows it at most once.
 - Every rest scene has a `setting`, and validation fails without one. An indoor rest never shows
   the campsite backdrop or tents.
