@@ -31,7 +31,6 @@ import {
   LobbyContent,
   NarrationPanel,
   TransformCutscene,
-  TurnBanner,
 } from "../screens";
 import { FieldGuideBanner } from "../screens/FieldGuideNews";
 import { ChapterGoalCard } from "../screens/ChapterGoal";
@@ -162,7 +161,6 @@ export function WorldView({
       {creating ? <CreationPreview /> : null}
       {!creating && (phase === "lobby" || phase === "creation") && <LobbyContent />}
       {isSceneLike(phase) && <NarrationPanel />}
-      {isSceneLike(phase) && <TurnBanner />}
       {/* The chapter's goal through a fight (#356), folded to a line in the top corner. Outside
           a fight it is in the narration's head; in a place that fights back it heads RiftStatus. */}
       {isSceneLike(phase) && state?.encounter != null && !state.encounter.environment ? (

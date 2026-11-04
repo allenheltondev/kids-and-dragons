@@ -99,8 +99,6 @@ export function RiftStatus(): ReactElement | null {
 
   return (
     <aside className="rift-status" aria-label="The rift">
-      {/* The chapter's goal (#356) heads the corner it shares with the rift. */}
-      <ChapterGoalCard place="world" folded />
       {clock ? (
         <p className={`rift-status__clock rift-status__clock--${clock.mood}`} role="status">
           <span className="rift-status__figure" aria-hidden="true">
@@ -136,6 +134,7 @@ export function RiftStatus(): ReactElement | null {
           </li>
         ))}
       </ul>
+      <ChapterGoalCard place="world" folded />
       {caption ? (
         <ul className="rift-status__caption" key={caption.seq} aria-live="polite">
           {caption.lines.map((line, i) => (

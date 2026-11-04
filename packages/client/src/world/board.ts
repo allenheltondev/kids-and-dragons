@@ -51,6 +51,7 @@
  */
 
 import { reducedMotion } from "../a11y/prefs";
+import { committedAttacks } from "@kad/shared";
 import { stanceIdle } from "./idle-motion";
 import {
   drawnHeight,
@@ -258,6 +259,7 @@ export interface BoardLayer {
 }
 
 interface BoardActor {
+  charging: boolean;
   container: Container;
   art: Container;
   /** How tall this figure really is, and how it stands (#362). */
@@ -400,6 +402,7 @@ export function createBoardLayer(): BoardLayer {
   const floatLayer = new Container();
   // Footprints on the floor, under every figure and over the reach glow.
   const trailLayer = new Graphics();
+  let windupLayer: Graphics | null = null;
   container.addChild(tilesLayer, highlightLayer, trailLayer, actorsLayer, nameLayer, floatLayer);
   const trail: TrailMark[] = [];
 
@@ -622,6 +625,7 @@ export function createBoardLayer(): BoardLayer {
       art,
       heightCm: size.heightCm,
       stance: boardStance(size.stance),
+      charging: !!combatant.windup,
       hero: combatant.side === "party",
       paint: null,
       footprint: null,
@@ -729,6 +733,7 @@ export function createBoardLayer(): BoardLayer {
       const existing = actors.get(combatant.id);
       const feet = feetOf(gridActor);
       if (existing) {
+        existing.charging = !!combatant.windup;
         existing.down = combatant.down;
         existing.away = isAway(current.party, combatant.id);
         setPuffed(existing, combatant.puffed !== undefined && !combatant.down);
@@ -793,11 +798,21 @@ export function createBoardLayer(): BoardLayer {
     const actor = currentActor(encounter);
     const moves = actor?.side === "party" ? legalMoves(encounter) : [];
     const spots = (list: readonly Position[]) => list.map((m) => `${m.x},${m.y}`).join(";");
-    const key = `${spots(moves)}|${spots(aim?.tiles ?? [])}|${spots(aim?.targets ?? [])}`;
+    const danger = committedAttacks(encounter).flatMap(attack => attack.tiles);
+    const key = `${spots(moves)}|${spots(aim?.tiles ?? [])}|${spots(aim?.targets ?? [])}|${spots(danger)}`;
     if (key === movesKey) return;
     movesKey = key;
 
     highlightLayer.clear();
+    for (const tile of danger) {
+      const x = tile.x * BOARD_TILE_PX, y = tile.y * BOARD_TILE_PX, pad = BOARD_TILE_PX * .06;
+      highlightLayer.roundRect(x + pad, y + pad, BOARD_TILE_PX - 2 * pad, BOARD_TILE_PX - 2 * pad, 12)
+        .fill({ color: 0xffa548, alpha: .32 }).stroke({ color: 0xffdf94, width: 5 });
+      // Crossed diagonals preserve the warning without colour or motion.
+      highlightLayer.moveTo(x + 25, y + 25).lineTo(x + BOARD_TILE_PX - 25, y + BOARD_TILE_PX - 25)
+        .moveTo(x + BOARD_TILE_PX - 25, y + 25).lineTo(x + 25, y + BOARD_TILE_PX - 25)
+        .stroke({ color: 0xffdf94, alpha: .8, width: 4 });
+    }
     for (const move of moves) {
       const pad = BOARD_TILE_PX * 0.08;
       highlightLayer
@@ -873,7 +888,7 @@ export function createBoardLayer(): BoardLayer {
     envLayer.addChild(g);
     for (const tile of overlay.tiles) {
       const marker = tile.glyph === "objective" ? tile.objectiveKind === "hold" ? "hold" : "seal" : tile.glyph;
-      const url = tile.state === "lost" || tile.state === "gone" ? null : combatMarkerArt(marker, tile.label, tile.state === "freed");
+      const url = tile.state === "lost" || tile.state === "gone" ? null : combatMarkerArt(marker, tile.label, tile.state === "freed", tile.art);
       const texture = url ? environmentTextures.get(url) : undefined;
       drawOverlayTile(g, tile, texture !== undefined);
       if (texture) {
@@ -979,6 +994,19 @@ export function createBoardLayer(): BoardLayer {
 
   function playBeat(event: EncounterEvent, route?: readonly Position[]): void {
     switch (event.type) {
+      case "windupStarted":
+        { const actor = actors.get(event.actorId); if (actor) actor.charging = true; }
+        spawnFloater(event.actorId, "Gathering sparks!", 0xffd08a);
+        return;
+      case "windupReleased":
+        { const actor = actors.get(event.actorId); if (actor) actor.charging = false; }
+        if (!reducedMotion()) for (const tile of event.tiles) spawnTileFloater(tile, "✦", 0xffd08a);
+        spawnFloater(event.actorId, event.targets.length ? "Burst!" : "You made room!", 0xffd08a);
+        return;
+      case "windupInterrupted":
+        { const actor = actors.get(event.actorId); if (actor) actor.charging = false; }
+        spawnFloater(event.actorId, "Interrupted!", 0x9ff4d6);
+        return;
       case "moved":
       case "shoved": {
         // Optimistic: start the walk when the beat lands. The patch behind the
@@ -1133,6 +1161,26 @@ export function createBoardLayer(): BoardLayer {
       const still = reducedMotion();
       clock += dtSeconds;
       pulse += dtSeconds;
+      const charging = [...actors.values()].filter(actor => actor.charging && !actor.down);
+      if (charging.length && !windupLayer) {
+        windupLayer = new Graphics();
+        container.addChildAt(windupLayer, container.getChildIndex(actorsLayer));
+      } else if (!charging.length && windupLayer) {
+        windupLayer.destroy(); windupLayer = null;
+      }
+      windupLayer?.clear();
+      for (const actor of charging) {
+        if (!windupLayer) break;
+        const swell = still ? 1 : 1 + .05 * Math.sin(pulse * 3);
+        const x = actor.container.x, y = actor.container.y;
+        windupLayer.ellipse(x, y, BOARD_TILE_PX * .48 * swell, BOARD_TILE_PX * .24 * swell)
+          .fill({ color: 0xffb64b, alpha: .2 }).stroke({ color: 0xffdf94, width: 5 });
+        for (let spark = 0; spark < 3; spark++) {
+          const angle = spark * Math.PI * 2 / 3 + (still ? 0 : pulse * 1.4);
+          windupLayer.circle(x + Math.cos(angle) * BOARD_TILE_PX * .45, y - BOARD_TILE_PX * .2 + Math.sin(angle) * BOARD_TILE_PX * .2, 6)
+            .fill({ color: 0xffe7aa, alpha: .95 });
+        }
+      }
 
       // Due beats, in order. The queue is short (≤ a round of events) and
       // append-only between ticks, so a filter pass is fine.
@@ -1180,7 +1228,9 @@ export function createBoardLayer(): BoardLayer {
         // Turning to face the nearest opponent: a quick squash through
         // edge-on, which reads as the figure turning round rather than
         // flipping (the lineup does the same, scene.ts).
-        actor.art.scale.x = approach(actor.art.scale.x, actor.facing, TURN_RATE, dtSeconds);
+        const charge = actor.charging ? 1.14 + (still ? 0 : .035 * Math.sin(pulse * 3)) : 1;
+        actor.art.tint = actor.charging ? 0xffcf82 : 0xffffff;
+        actor.art.scale.x = approach(actor.art.scale.x, actor.facing * charge, TURN_RATE, dtSeconds);
         actor.shadow.x = actor.shadowX * actor.art.scale.x;
         if (actor.leaving) {
           // Through the tear (#201): fading out, name and shadow with it,
@@ -1198,7 +1248,7 @@ export function createBoardLayer(): BoardLayer {
         // is on the ground like anybody else.
         const idle = stanceIdle(actor.stance, pulse, actor.phase, still || actor.down);
         const reach = Math.max(actor.height, BOARD_TILE_PX);
-        actor.art.scale.y = 1 + idle.breath;
+        actor.art.scale.y = (1 + idle.breath) * charge;
         actor.art.x = idle.dx * reach;
         actor.art.y = approach(actor.art.y, idle.dy * reach - lift, DOWN_RATE, dtSeconds);
         actor.shadow.scale.set(
@@ -1257,7 +1307,7 @@ export function createBoardLayer(): BoardLayer {
           floaters.splice(i, 1);
           continue;
         }
-        floater.text.y = floater.y - FLOATER_RISE * t;
+        floater.text.y = still ? floater.y : floater.y - FLOATER_RISE * t;
         floater.text.alpha = t < 0.15 ? t / 0.15 : 1 - Math.max(0, (t - 0.6) / 0.4);
       }
     },

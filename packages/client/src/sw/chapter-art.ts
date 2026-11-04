@@ -37,6 +37,11 @@ export function chapterAssets(chapter: Chapter | null, party: readonly FigureOf[
     seen.add(id);
     const scene = chapter.scenes[id];
     if (!scene) continue;
+    if (scene.type === "encounter") {
+      for (const environment of [scene.environment, ...(scene.environment?.variants ?? [])]) {
+        for (const objective of environment?.objectives ?? []) if (objective.art) urls.add(`/assets/story-props/${objective.art}.webp`);
+      }
+    }
     urls.add((scene.art ? sceneBackdropUrl(scene.art) : null) ?? biomeBackdropUrl(chapter.biome));
     for(const member of ("cast" in scene ? scene.cast ?? [] : [])) {
       const url=castArtUrl(member.figure);if(url)urls.add(url);

@@ -69,6 +69,9 @@ export function beatSubjects(event: EncounterEvent): string[] {
     case "shoved":
     case "bonus":
     case "dazed":
+    case "windupStarted":
+    case "windupReleased":
+    case "windupInterrupted":
     case "warded":
     case "rooted":
     case "numbed":

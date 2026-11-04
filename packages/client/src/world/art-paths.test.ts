@@ -11,6 +11,7 @@ import bramblewood from "../../../../content/chapters/bramblewood-01.json";
 import type { Chapter, ClassId, SpeciesId, TierId } from "@kad/shared";
 import manifest from "../../../../assets/manifest.json";
 import gemfall from "../../../../content/chapters/gemfall-08.json";
+import quay from "../../../../content/chapters/gemfall-01.json";
 import { makeState } from "../testing/fixtures";
 import {
   ANCHOR_X,
@@ -40,7 +41,7 @@ describe("art paths", () => {
       expect(existsSync(new URL(`../../../../${url!.slice(1)}`, import.meta.url)), scene.art).toBe(true);
     }
   });
-  it("follows scene art and returns to biome art for combat or stale chapter content", () => {
+  it("follows scene art and falls back when absent or chapter content is stale", () => {
     const chapter = gemfall as unknown as Chapter;
     const state = makeState({ chapterId: chapter.id, sceneId: "scene_mouth" });
     expect(sceneArtFor(chapter, state)).toBe("scenes/gemfall/gem-gallery");
@@ -49,6 +50,12 @@ describe("art paths", () => {
     expect(sceneArtFor(chapter, { ...state, sceneId: "ending_heroes" })).toBeNull();
     expect(sceneArtFor(chapter, { ...state, chapterId: "gemfall-06" })).toBeNull();
     expect(sceneArtFor(null, state)).toBeNull();
+  });
+  it("keeps an authored encounter backdrop during combat without changing tile paths", () => {
+    const chapter = quay as unknown as Chapter;
+    const state = makeState({ chapterId: chapter.id, sceneId: "encounter_quay_wisps" });
+    expect(sceneArtFor(chapter, { ...state, encounter: {} as NonNullable<typeof state.encounter> })).toBe("scenes/gemfall/exchange-quay-wisps");
+    expect(biomeTilesUrl(chapter.biome)).toBe("/assets/biomes/exchange/tiles.png");
   });
   it("resolves scene illustrations without treating legacy art ids as backdrops", () => {
     expect(sceneBackdropUrl("scenes/gemfall/hollow-gate")).toBe("/assets/scenes/gemfall/hollow-gate.webp");

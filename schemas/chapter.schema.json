@@ -1143,6 +1143,33 @@
               "const": true
             }
           }
+        },
+        "windupAttack": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "label",
+            "radius",
+            "damage"
+          ],
+          "properties": {
+            "label": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 40
+            },
+            "radius": {
+              "enum": [
+                0,
+                1
+              ]
+            },
+            "damage": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 6
+            }
+          }
         }
       }
     },
@@ -2036,6 +2063,7 @@
                   "effects": {
                     "$ref": "#/$defs/effects"
                   },
+                  "art": { "type": "string", "pattern": "^[a-z0-9_-]+$", "description": "Existing story prop asset id, without extension." },
                   "endsFight": {
                     "description": "Done ends the fight as a victory (onVictory).",
                     "const": true
@@ -2080,6 +2108,7 @@
                   "effects": {
                     "$ref": "#/$defs/effects"
                   },
+                  "art": { "type": "string", "pattern": "^[a-z0-9_-]+$", "description": "Existing story prop asset id, without extension." },
                   "endsFight": {
                     "description": "Done ends the fight as a victory (onVictory).",
                     "const": true
@@ -2398,6 +2427,7 @@
                         "effects": {
                           "$ref": "#/$defs/effects"
                         },
+                        "art": { "type": "string", "pattern": "^[a-z0-9_-]+$", "description": "Existing story prop asset id, without extension." },
                         "endsFight": {
                           "description": "Done ends the fight as a victory (onVictory).",
                           "const": true
@@ -2442,6 +2472,7 @@
                         "effects": {
                           "$ref": "#/$defs/effects"
                         },
+                        "art": { "type": "string", "pattern": "^[a-z0-9_-]+$", "description": "Existing story prop asset id, without extension." },
                         "endsFight": {
                           "description": "Done ends the fight as a victory (onVictory).",
                           "const": true
