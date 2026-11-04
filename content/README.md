@@ -345,11 +345,10 @@ Every chapter says what the party is trying to do, and the table can see it the 
 }
 ```
 
-- **It shows itself.** The shared screen draws it under the chapter's name, on the sky above the
-  figures; every phone draws it under the hero's strip as one line (the goal and its pips) that a
-  tap opens to the steps. Nobody has to tap to see it. In a fight the shared screen folds it to the
-  goal and a row of pips in the top corner, and the phones leave it off so the fight's cards have
-  the room. On a short pane (a tablet at the largest text)
+- **It shows itself.** The shared screen (the TV, or a phone's World pane) draws it under the
+  chapter's name, on the sky above the figures. Nobody has to tap to see it. A player's own pane
+  leaves it off: in playtests it was a scroll nobody read mid-scene, in room the controls need.
+  In a fight the shared screen folds it to the goal and a row of pips in the top corner. On a short pane (a tablet at the largest text)
   it keeps the pips and names only the next step. Read-aloud says the goal after the first scene's
   story; a tick is seen and chimed, never read out.
 - **A step ticks when its flag is set**, or any one of a list. It is the same machinery as a bonus

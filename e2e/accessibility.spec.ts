@@ -1,5 +1,5 @@
 /**
- * Display settings (#262), end to end: with the largest text, high contrast, less movement
+ * Settings (#262), end to end: with the largest text, high contrast, less movement
  * and one-handed play all on, the key controls of every player surface are still where a
  * thumb can tap them, and nothing is sitting on top of anything else.
  *
@@ -77,7 +77,7 @@ async function expectApart(controls: { name: string; locator: Locator }[]): Prom
 function corner(page: Page, sound = true, help = false): { name: string; locator: Locator }[] {
   return [
     ...(help ? [{ name: "Help", locator: page.getByRole("button", { name: "Help", exact: true }) }] : []),
-    { name: "Display settings", locator: page.getByRole("button", { name: "Display settings" }).first() },
+    { name: "Settings", locator: page.getByRole("button", { name: "Settings", exact: true }).first() },
     { name: "Read-aloud", locator: page.getByRole("button", { name: /turn read-aloud/i }) },
     ...(sound ? [{ name: "Sound", locator: page.getByRole("button", { name: /^(enable sound|turn sound)/i }) }] : []),
   ];
@@ -141,8 +141,8 @@ async function useHelpSheet(page: Page, words: RegExp): Promise<void> {
 
 /** The settings sheet: every option reachable, and the choices land on <html>. */
 async function useSettingsSheet(page: Page): Promise<void> {
-  await page.getByRole("button", { name: "Display settings" }).first().click(TAP);
-  const sheet = page.getByRole("dialog", { name: "Display settings" });
+  await page.getByRole("button", { name: "Settings", exact: true }).first().click(TAP);
+  const sheet = page.getByRole("dialog", { name: "Settings", exact: true });
   await expect(sheet).toBeVisible(TAP);
   const viewport = page.viewportSize()!;
   const box = (await sheet.boundingBox())!;
@@ -163,8 +163,8 @@ test("settings are remembered on the device and applied before anything else", a
   await page.goto("/");
   await expect(page.locator("html")).not.toHaveAttribute("data-text", /.+/);
 
-  await page.getByRole("button", { name: "Display settings" }).first().click(TAP);
-  const sheet = page.getByRole("dialog", { name: "Display settings" });
+  await page.getByRole("button", { name: "Settings", exact: true }).first().click(TAP);
+  const sheet = page.getByRole("dialog", { name: "Settings", exact: true });
   await expect(sheet).toBeVisible(TAP);
   await guidePicture(page, "display-settings");
   await sheet.getByRole("button", { name: "Largest", exact: true }).click(TAP);
@@ -206,7 +206,7 @@ for (const hand of ["right", "left"] as const) {
     await expectSettingsApplied(page, prefs);
 
     // One-handed: the corner row is down with the tray, on the thumb's side, not at the top.
-    const settings = page.getByRole("button", { name: "Display settings" }).first();
+    const settings = page.getByRole("button", { name: "Settings", exact: true }).first();
     const settingsBox = (await settings.boundingBox())!;
     expect(settingsBox.y, "the corner row is in the lower half").toBeGreaterThan(640 / 2);
     const tabs = page.getByRole("navigation", { name: "What to look at" });
@@ -261,17 +261,16 @@ for (const hand of ["right", "left"] as const) {
     await useHelpSheet(page, /This is the map/);
 
     await tabs.getByRole("button", { name: /^You$/ }).click(TAP);
-    // The settings are also reachable from the bottom of the You tab (Room settings), without
-    // reaching for the top of the phone.
+    // One gear for everything: on a phone in a room, the corner's Settings sheet also holds this
+    // game's own settings (play on phones instead), above the display ones.
     const dock = page.locator(".player__dock");
     if (await dock.isVisible().catch(() => false)) await dock.click(TAP);
-    await page.getByRole("combobox", { name: "Your page" }).selectOption("room");
-    await page.locator(".player__room-settings").getByRole("button", { name: "Room settings" }).click(TAP);
-    await page.locator(".player__room-settings").getByRole("button", { name: "Display settings" }).click(TAP);
-    await expect(page.getByRole("dialog", { name: "Display settings" })).toBeVisible(TAP);
+    await page.getByRole("button", { name: "Settings", exact: true }).first().click(TAP);
+    const settingsSheet = page.getByRole("dialog", { name: "Settings", exact: true });
+    await expect(settingsSheet).toBeVisible(TAP);
+    await expect(settingsSheet.getByRole("region", { name: "This game" }).getByRole("button", { name: /show the world on the phones|use a tv for the world/i })).toBeVisible();
     await page.keyboard.press("Escape");
-
-    await page.getByRole("combobox", { name: "Your page" }).selectOption("bag");
+    await expect(settingsSheet).toHaveCount(0);
 
     // The roll: the prompt, then the dice card, on this one small screen.
     await openPlayerTask(page);
@@ -304,7 +303,7 @@ test("Party Mode: the TV and a left-handed phone at the largest text", async ({ 
     // of the host controls and arrival notices.
     await expectSettingsApplied(tv, prefs);
     await expectCornerClear(tv);
-    const tvSettings = (await tv.getByRole("button", { name: "Display settings" }).first().boundingBox())!;
+    const tvSettings = (await tv.getByRole("button", { name: "Settings", exact: true }).first().boundingBox())!;
     expect(tvSettings.y, "the TV's corner row stays at the top").toBeLessThan(100);
     await expectNoSideScroll(tv);
 
@@ -322,7 +321,7 @@ test("Party Mode: the TV and a left-handed phone at the largest text", async ({ 
     await expectNoSideScroll(tv);
 
     // The left-handed phone: the corner row on the left, the commit on the left.
-    const settings = (await phone.getByRole("button", { name: "Display settings" }).first().boundingBox())!;
+    const settings = (await phone.getByRole("button", { name: "Settings", exact: true }).first().boundingBox())!;
     expect(settings.x, "the corner row follows the left hand").toBeLessThan(390 / 2);
     await openPlayerTask(phone);
     // "Look for a gap" leads to a check, so this road reaches the dice.
