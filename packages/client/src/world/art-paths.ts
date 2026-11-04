@@ -20,6 +20,12 @@ export const CANVAS = { width: 1024, height: 1024, originX: 512, originY: 900 } 
 export const ANCHOR_X = CANVAS.originX / CANVAS.width;
 export const ANCHOR_Y = CANVAS.originY / CANVAS.height;
 
+export const CAMP_ART = {
+  backdrop: "/assets/camp/backdrops/open_plains.webp",
+  fire: "/assets/camp/frames/stage1/campfire.png",
+  flame: "/assets/camp/frames/stage1/campfire-flame.png",
+} as const;
+
 /**
  * The tier every character starts at (content/rules.json → tierLevels, level 1).
  * It is what creation has to draw: the draft has no level yet, and the hero the

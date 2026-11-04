@@ -837,6 +837,8 @@ def check_camp_art(rep: Report, mf: dict) -> None:
             cutouts.setdefault(part["path"], False)
     tol = mf["tolerance"]
     figure = mf["canvas"]
+    for kit in spec.get("kitStyles", []):
+        cutouts[kit["path"]] = True
     for rel, grounded in cutouts.items():
         declared.add(rel)
         path = os.path.join(ROOT, "assets", rel)

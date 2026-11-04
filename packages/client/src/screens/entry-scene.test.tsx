@@ -4,7 +4,19 @@ import { afterEach, expect, it } from "vitest";
 import { existsSync } from "node:fs";
 import { EntryScene, ENTRY_SCENES, lobbySceneFor } from "./EntryScene";
 import manifest from "../../../../assets/manifest.json";
+import { makeMember, makeCharacter } from "../testing/fixtures";
 afterEach(cleanup);
+it("shows occupied camp seats with independent hero colors, and falls back when the camp backdrop is missing", () => {
+  const campParty = ["a", "b", "c", "d"].map((id, seat) => makeMember({
+    character: makeCharacter({ id, appearance: { palette: "meadow", accent: seat % 2 ? "#ff0000" : "#0000ff" } }),
+  }));
+  const view = render(<EntryScene scene="lobby-waiting" campParty={campParty} />);
+  expect(view.container.querySelectorAll("[data-camp-kit]")).toHaveLength(4);
+  expect(view.container.querySelectorAll("feColorMatrix")).toHaveLength(4);
+  fireEvent.error(view.container.querySelector('image[href="/assets/camp/backdrops/open_plains.webp"]')!);
+  expect(view.container.querySelector(".campfire")).toBeNull();
+  expect(view.container.querySelector("img")!.src).toContain("lobby-waiting.webp");
+});
 it("ships a declared image for every entry step", () => {
   for (const scene of ENTRY_SCENES) {
     expect(manifest.sceneIllustrations).toContain(`scenes/entry/${scene}`);

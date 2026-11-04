@@ -1,0 +1,53 @@
+{
+  "mode": "Built-in image_gen",
+  "paintings": [
+    {
+      "id": "rolled",
+      "path": "assets/camp/kits/rolled.png",
+      "reference": "assets/camp/frames/stage1/bedroll.png",
+      "output": {
+        "width": 1024,
+        "height": 1024,
+        "format": "PNG",
+        "alpha": true,
+        "groundContact": {
+          "x": 512,
+          "y": 900
+        }
+      },
+      "prompt": "Use case: illustration-story. Production game cutout for Kids & Dragons. Match reference painted hand: warm children's storybook gouache, visible brushwork, tapered dark-brown outlines, upper-left light; clear at 120px. ONE traveler's sleeping kit, low wide three-quarter view, bed laid lengthwise diagonally toward the lower left, leather pack at far upper-right pillow end. Undyed light neutral gray cloth everywhere that is fabric, using value shading only (no colored fabric), warm brown leather, natural tin metal. Keep cloth visually distinct from leather to allow accurate runtime cloth masks. All cloth unpatterned except stitching/patches specified. No hero, people, text, emblems, scenery, ground, cast shadow or glow. True transparent background, square 1024x1024 RGBA PNG. Whole kit centered horizontally, eight percent minimum clear margin. Lowest visible row y=900, nothing below y912. Low wide shape filling about x100..924 and y400..900. Reference is style and low perspective only, create the described variant. Variant: tidy rolled blanket. One neat tightly rolled cylindrical wool blanket, tied by two dark brown leather straps; small square cloth pillow behind its left end. Compact upright leather backpack at right with tin cup. No quilt, no patches. Keep straps and backpack clearly outside cloth regions where possible."
+    },
+    {
+      "id": "quilted",
+      "path": "assets/camp/kits/quilted.png",
+      "reference": "assets/camp/frames/stage1/bedroll.png",
+      "output": {
+        "width": 1024,
+        "height": 1024,
+        "format": "PNG",
+        "alpha": true,
+        "groundContact": {
+          "x": 512,
+          "y": 900
+        }
+      },
+      "prompt": "Use case: illustration-story. Production game cutout for Kids & Dragons. Match reference painted hand: warm children's storybook gouache, visible brushwork, tapered dark-brown outlines, upper-left light; clear at 120px. ONE traveler's sleeping kit, low wide three-quarter view, bed laid lengthwise diagonally toward the lower left, leather pack at far upper-right pillow end. Undyed light neutral gray cloth everywhere that is fabric, using value shading only (no colored fabric), warm brown leather, natural tin metal. Keep cloth visually distinct from leather to allow accurate runtime cloth masks. All cloth unpatterned except stitching/patches specified. No hero, people, text, emblems, scenery, ground, cast shadow or glow. True transparent background, square 1024x1024 RGBA PNG. Whole kit centered horizontally, eight percent minimum clear margin. Lowest visible row y=900, nothing below y912. Low wide shape filling about x100..924 and y400..900. Reference is style and low perspective only, create the described variant. Variant: thick quilted bedroll. A generous laid-flat rectangular sleeping mat with broad stitched diamond quilting, a folded soft blanket edge at its near end, and a small square pillow. A rounded leather backpack at the pillow end with a tin mug. No leather straps cross the cloth. Comfortably padded, broad readable folds; no patches."
+    },
+    {
+      "id": "patched",
+      "path": "assets/camp/kits/patched.png",
+      "reference": "assets/camp/frames/stage1/bedroll.png",
+      "output": {
+        "width": 1024,
+        "height": 1024,
+        "format": "PNG",
+        "alpha": true,
+        "groundContact": {
+          "x": 512,
+          "y": 900
+        }
+      },
+      "prompt": "Use case: illustration-story. Production game cutout for Kids & Dragons. Match reference painted hand: warm children's storybook gouache, visible brushwork, tapered dark-brown outlines, upper-left light; clear at 120px. ONE traveler's sleeping kit, low wide three-quarter view, bed laid lengthwise diagonally toward the lower left, leather pack at far upper-right pillow end. Undyed light neutral gray cloth everywhere that is fabric, using value shading only (no colored fabric), warm brown leather, natural tin metal. Keep cloth visually distinct from leather to allow accurate runtime cloth masks. All cloth unpatterned except stitching/patches specified. No hero, people, text, emblems, scenery, ground, cast shadow or glow. True transparent background, square 1024x1024 RGBA PNG. Whole kit centered horizontally, eight percent minimum clear margin. Lowest visible row y=900, nothing below y912. Low wide shape filling about x100..924 and y400..900. Reference is style and low perspective only, create the described variant. Variant: patched trail kit. One narrow laid-flat canvas sleeping mat with a loosely folded blanket and small square pillow, two broad stitched rectangular cloth repair patches in slightly different GRAYS, lovingly mended rather than dirty or broken. A soft slouchy brown leather satchel at the upper-right pillow end, with a small tin cup on its side. No leather straps across the sleeping cloth. Low irregular folded silhouette, unlike a cylindrical roll or puffy diamond quilt."
+    }
+  ]
+}

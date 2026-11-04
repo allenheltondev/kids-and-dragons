@@ -1,6 +1,6 @@
 # Brief: camp art
 
-**Status:** Phase 1 open (#615). The design is [docs/camp.md](../camp.md) (§3.1 backdrops, §4.1
+**Status:** Phase 1 delivered (#615), with three hero-colored bedroll styles. The design is [docs/camp.md](../camp.md) (§3.1 backdrops, §4.1
 frame stages, §8.3 lanes and stand points, §8.4 actions and moving parts). The prompts are in
 [docs/camp-art-prompts.json](../camp-art-prompts.json); the paintings are made from them, then
 checked by `npm run art:verify` and counted by `npm run art:inventory`.
@@ -65,23 +65,30 @@ The `open_plains` backdrop and the stage-1 frame: a small campfire, a neutral be
 (the same painting at all four seats), the trailhead post, and the campfire's flame (motion
 `flicker`). Five paintings in all.
 
-## Phase 2: hero-colored kit (to be agreed with the client work before it is painted)
+## Hero-colored bedrolls: the implemented format
 
-Phase 2 gives each hero their own tent, bedroll and pack in their own color (§4.5: the palette
-rule heroes already use). The proposed convention, **not yet agreed with the client camp stage and
-not to be painted until it is**:
+Three styles are declared in `manifest.camp.kitStyles`: `rolled`, `quilted`, and `patched`.
+Each is one 1024 × 1024 RGBA painting under `assets/camp/kits/`, with neutral light cloth,
+natural leather and metal, and the same y 900 ground contact as the neutral bedroll.
+Prompts are in [camp-kit-art-prompts.json](../camp-kit-art-prompts.json).
 
-- **Two layers per kit piece, on one canvas.** `<style>.png` is the **untinted detail layer**:
-  everything that keeps its own color (outlines, poles, ropes, pegs, buckles, stitching, shading
-  accents), with the colored cloth left transparent. `<style>-tint.png` is the **tint layer**:
-  only the cloth, painted near-greyscale (the same saturation limit as tintable effects,
-  `tolerance.tintableMaxSaturation`, 0.15), with its light and shade in value alone. The client
-  multiplies the tint layer by the hero's color and draws the detail layer over it, so one
-  painting serves every hero color.
-- **Both layers share the figure canvas and ground contact** and stack pixel for pixel; a tent's
-  flap (its moving part, motion `sway`) gets the same pair.
-- **Open questions for the client work**: draw order (tint under or over detail), the blend
-  (multiply against a mid-grey or a lightness-preserving tint), which palette slot of the hero's
-  color is used, and how styles are named in the manifest. Settle these in the client PR, then
-  add the layers to `camp` and these formats here, and extend `art:verify` to check the tint
-  layer's saturation.
+`world/CampBedroll.tsx` draws the natural painting first. A second instance of that **same
+image** is clipped to the registered cloth paths in `world/camp-kit-art.ts`, converted to
+luminance, and multiplied by the hero's `appearance.accent` in sRGB. Outlines and folds retain
+their shading; leather straps, buckles, packs and cups retain their natural colors. This
+settles the earlier proposed two-PNG convention for these bedrolls: one painting and an SVG
+cloth mask keep every pixel registered, without generating two layers independently.
+Filter and clip IDs are unique per seat. Invalid accents use meadow teal, and a failed style
+image falls back to the original neutral Phase 1 painting.
+
+The hero's character ID determines a stable style, independent of party order or reconnects.
+No new server state or kit picker is introduced. The lobby draws occupied seats only, back
+bedrolls before the fire and near bedrolls after it. The future interactive camp renderer can
+reuse `CampBedroll` and `Campfire`; walking and warming-up actions remain part of #614.
+
+Art verification checks the variants' format, alpha, margin and ground contact; inventory
+counts the five Phase 1 paintings and three kits once each. Runtime tests tie style paths to
+the manifest, check tint math and fallback, and guard against filter collisions between seats.
+The tent and tent-flap formats remain future work.
+
+![Natural and blue cloth on all three bedroll styles](camp-kits-preview.png)

@@ -159,7 +159,7 @@ export function LobbyContent(): ReactElement {
 
   return (
     <section className="lobby entry-scene-host" aria-label="Lobby">
-      <EntryScene scene={readiness.allReady ? "lobby-ready" : "lobby-waiting"} />
+      <EntryScene scene={readiness.allReady ? "lobby-ready" : "lobby-waiting"} campParty={readiness.members} />
       <header className="lobby__header">
       {/* The household's table, when the family named it: where the game is
           kept, not the phones. */}
