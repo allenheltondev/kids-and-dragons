@@ -17,13 +17,15 @@ test("TV lobby keeps its crew in the corner row and joining beside four heroes",
       const state = useGameStore.getState().state;
       useGameStore.setState({ state: { ...state, location: "The kitchen table", crew: "otters", crews: [{ id: "otters", name: "The Moonlit Otter Crew" }] } });
     });
-    for (const viewport of [
-      { width: 1280, height: 720, text: "normal", ready: false, visitors: false },
-      { width: 1920, height: 1080, text: "normal", ready: false, visitors: false },
-      { width: 1024, height: 600, text: "largest", ready: false, visitors: false },
-      { width: 1024, height: 600, text: "largest", ready: true, visitors: false },
-      { width: 1280, height: 720, text: "normal", ready: true, visitors: true },
-    ]) {
+    /* Every TV size, at normal and the largest text, waiting and all ready (the ready line is one
+       more row in the party's panel), and a room open to visitors (a longer code). The normal text
+       of a size comes before its largest, so the names' size there can be held to it. */
+    const sizes = [{ width: 1280, height: 720 }, { width: 1366, height: 768 }, { width: 1920, height: 1080 }, { width: 1024, height: 600 }];
+    const viewports = sizes.flatMap(size => (["normal", "largest"] as const).flatMap(text => [false, true].map(ready => ({ ...size, text, ready, visitors: false }))));
+    viewports.push({ width: 1280, height: 720, text: "normal", ready: true, visitors: true }, { width: 1280, height: 720, text: "largest", ready: false, visitors: true });
+    const normalName = new Map<string, number>();
+    const report: string[] = [];
+    for (const viewport of viewports) {
       await page.setViewportSize(viewport);
       await page.evaluate(async ({ text, ready, visitors }) => {
         if (text === "normal") delete document.documentElement.dataset.text;
@@ -42,8 +44,8 @@ test("TV lobby keeps its crew in the corner row and joining beside four heroes",
         range.selectNodeContents(name);
         return range.getClientRects().length !== 1 || name.scrollWidth > name.clientWidth + 1;
       }).map(name => name.textContent));
-      expect(brokenNames, "hero names must remain whole and contained").toEqual([]);
-      await page.screenshot({ path: info.outputPath(`tv-${viewport.width}-${viewport.text}-${viewport.ready ? "ready" : "waiting"}${viewport.visitors ? "-visitors" : ""}.png`) });
+      expect.soft(brokenNames, `${viewport.width}x${viewport.height} ${viewport.text}: hero names must remain whole and contained`).toEqual([]);
+      await page.screenshot({ path: info.outputPath(`tv-${viewport.width}x${viewport.height}-${viewport.text}-${viewport.ready ? "ready" : "waiting"}${viewport.visitors ? "-visitors" : ""}.png`) });
       const layout = await page.evaluate(() => {
         const fonts = [...document.querySelectorAll<HTMLElement>(".lobby__heading > span:last-child, .lobby__header > .lobby__place > span:last-child, .lobby__header .crew-identity__name")].map(el => { const style = getComputedStyle(el); return [style.fontSize, style.fontFamily, style.fontWeight].join("|"); });
         const headerStyle = getComputedStyle(document.querySelector(".lobby__header")!);
@@ -74,7 +76,85 @@ test("TV lobby keeps its crew in the corner row and joining beside four heroes",
           }).map(el => el.className),
         };
       });
-      expect(layout).toEqual({ inCornerRow: true, clearOfCorner: true, windowUnderRow: true, equalType: true, noHeaderBackground: true, crewInHeader: true, crewBesideTable: true, joinBesideParty: true, campaignsBelowParty: true, overflow: false, outside: [] });
+      // Every panel inside the pane, and what each panel holds inside it: the code's letters and
+      // the QR in the Room panel, the heroes in the party's, and every adventure on the screen
+      // whenever the room has more than one (four stacked cards once pushed them off it).
+      const fit = await page.evaluate(async () => {
+        const modulePath = "/src/store/index.ts";
+        const { useGameStore } = await import(modulePath);
+        const options: unknown[] = useGameStore.getState().state?.campaignOptions ?? [];
+        const pane = document.querySelector(".lobby")!.getBoundingClientRect();
+        const screen = { left: 0, top: 0, right: innerWidth, bottom: innerHeight };
+        const within = (box: DOMRect, outer: { left: number; top: number; right: number; bottom: number }) =>
+          box.left >= outer.left - 1 && box.top >= outer.top - 1 && box.right <= outer.right + 1 && box.bottom <= outer.bottom + 1;
+        const spills: string[] = [];
+        const hold = (selector: string, parentSelector: string) => {
+          for (const el of document.querySelectorAll<HTMLElement>(selector)) {
+            const box = el.getBoundingClientRect();
+            const parent = el.closest(parentSelector) ?? document.querySelector(parentSelector);
+            if (!within(box, pane) || !within(box, screen)) spills.push(`${selector} outside the pane`);
+            if (parent && parent !== el && !within(box, parent.getBoundingClientRect())) spills.push(`${selector} outside ${parentSelector}`);
+          }
+        };
+        hold(".lobby__join", ".lobby");
+        hold(".lobby__party", ".lobby");
+        hold(".lobby__party-heading", ".lobby__party");
+        hold(".lobby__next-step", ".lobby__party");
+        hold(".lobby-member", ".lobby__party");
+        hold(".lobby-member__name", ".lobby-member");
+        hold(".lobby-member__portrait", ".lobby-member");
+        hold(".lobby-member__status .kad-chip", ".lobby-member");
+        hold(".lobby__code-letter", ".lobby__join");
+        hold(".lobby__qr", ".lobby__join");
+        hold(".lobby__join-step", ".lobby__join");
+        hold(".lobby__campaigns", ".lobby");
+        hold(".lobby__campaign", ".lobby__campaigns");
+        const campaigns = [...document.querySelectorAll<HTMLElement>(".lobby__campaign")];
+        // Seen, not merely laid out: drawn, sized, whole inside the pane and the screen, and the
+        // top thing at its own middle.
+        const seen = campaigns.filter(el => {
+          const box = el.getBoundingClientRect();
+          if (!el.checkVisibility({ opacityProperty: false, visibilityProperty: true }) || box.width < 1 || box.height < 1) return false;
+          if (!within(box, pane) || !within(box, screen)) return false;
+          const hit = document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2);
+          return hit !== null && el.contains(hit);
+        }).length;
+        // One grid: the Room panel and the party share a top and a bottom (the cards' last row),
+        // and the adventures span the two of them, edge to edge.
+        const join = document.querySelector(".lobby__join")!.getBoundingClientRect();
+        const party = document.querySelector(".lobby__party")!.getBoundingClientRect();
+        const lineup = document.querySelector(".lobby__lineup")!.getBoundingClientRect();
+        const row = document.querySelector(".lobby__campaigns")?.getBoundingClientRect();
+        const near = (a: number, b: number) => Math.abs(a - b) <= 2;
+        const misaligned = [
+          near(join.top, party.top) ? null : `Room panel top ${join.top} vs party ${party.top}`,
+          near(join.bottom, lineup.bottom) ? null : `Room panel bottom ${join.bottom} vs cards ${lineup.bottom}`,
+          !row || near(row.left, join.left) ? null : `adventures left ${row.left} vs Room panel ${join.left}`,
+          !row || near(row.right, party.right) ? null : `adventures right ${row.right} vs party ${party.right}`,
+        ].filter(Boolean);
+        const name = Math.min(...[...document.querySelectorAll<HTMLElement>(".lobby-member__name")].map(el => parseFloat(getComputedStyle(el).fontSize)));
+        // The camp's window and the factor its figures are drawn at there (world/camp-framing.ts).
+        const [insetsPath, campPath, framingPath] = ["/src/world/stage-inset.ts", "/src/world/lobby-camp.ts", "/src/world/camp-framing.ts"];
+        const insets = await import(insetsPath);
+        const camp = await import(campPath);
+        const framing = await import(framingPath);
+        const layout = camp.lobbyCampLayout()!;
+        const heights = camp.campHeroes(useGameStore.getState().state).map((hero: { figure: { heightCm: number } }) => hero.figure.heightCm);
+        const window = framing.campWindow(pane.height, insets.lobbyInsetTop(), insets.lobbyInsetBottom());
+        const k = framing.campFigureScale(pane.width, window, layout, heights);
+        return { options: options.length, campaigns: campaigns.length, seen, spills, misaligned, name, windowHeight: Math.round(window.bottom - window.top), k: Math.round(k * 100) / 100 };
+      });
+      const label = `${viewport.width}x${viewport.height} ${viewport.text}${viewport.ready ? " ready" : ""}${viewport.visitors ? " visitors" : ""}`;
+      report.push(`${label}: window ${fit.windowHeight}px, k ${fit.k}, names ${fit.name}px`);
+      const key = `${viewport.width}x${viewport.height}`;
+      if (viewport.text === "normal" && !viewport.visitors) normalName.set(key, Math.min(normalName.get(key) ?? Infinity, fit.name));
+      expect.soft(fit.options, `${label}: the room offers two adventures`).toBeGreaterThan(1);
+      expect.soft({ campaigns: fit.campaigns, seen: fit.seen }, `${label}: every adventure is on screen`).toEqual({ campaigns: fit.options, seen: fit.options });
+      expect.soft(fit.spills, `${label}: nothing spills out of its panel or the pane`).toEqual([]);
+      expect.soft(fit.misaligned, `${label}: the panels line up`).toEqual([]);
+      if (viewport.text === "largest") expect.soft(fit.name, `${label}: names at the largest text are no smaller than at normal`).toBeGreaterThanOrEqual(normalName.get(key) ?? 0);
+      expect.soft(layout, label).toEqual({ inCornerRow: true, clearOfCorner: true, windowUnderRow: true, equalType: true, noHeaderBackground: true, crewInHeader: true, crewBesideTable: true, joinBesideParty: true, campaignsBelowParty: true, overflow: false, outside: [] });
     }
+    console.log(report.join("\n"));
   } finally { await context.close(); }
 });
