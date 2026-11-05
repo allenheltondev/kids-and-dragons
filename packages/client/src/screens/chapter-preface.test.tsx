@@ -53,7 +53,7 @@ const CHAPTER = {
 } as unknown as Chapter;
 
 function hero(playerId: string, name: string, connected = true): PartyMember {
-  const character = { id: `c_${playerId}`, ownerPlayerId: playerId, name, inventory: [], questItems: [] } as unknown as ResolvedCharacter;
+  const character = { id: `c_${playerId}`, ownerPlayerId: playerId, name, species: "unicorn", tier: "fledgling", class: "songkeeper", appearance: { palette: "meadow", accent: "#7FD4C1" }, inventory: [], questItems: [] } as unknown as ResolvedCharacter;
   return { character, playerId, hp: 10, down: false, connected, ready: true };
 }
 
@@ -132,14 +132,18 @@ describe("a chapter's start", () => {
     expect(spoken).toHaveLength(2);
   });
 
-  it("reads the story alone after PREFACE_WAIT_MS when the files never come, then the goal once they do", () => {
+  it.each([false, true])("reads the story after the bounded wait and the late goal once (with turn: %s)", withTurn => {
     vi.useFakeTimers();
-    seed(run(), { chapter: null });
+    seed(run({ prompt: withTurn ? {
+      kind: "choice", sceneId: "s_1", forPlayerIds: ["p_1"], vote: false,
+      options: [{ id: "climb", label: "Climb the tree", icon: "hand" }],
+    } : null }), { chapter: null });
     render(<NarrationPanel />);
     act(() => vi.advanceTimersByTime(PREFACE_WAIT_MS));
-    expect(spoken).toEqual(["A cat is up a tree."]);
+    const beforeGoal = ["A cat is up a tree.", ...(withTurn ? ["Hero's turn."] : [])];
+    expect(spoken).toEqual(beforeGoal);
     act(() => useGameStore.setState({ chapter: CHAPTER }));
-    expect(spoken).toEqual(["A cat is up a tree.", "Your goal: Get the cat down from the tree."]);
+    expect(spoken).toEqual([...beforeGoal, "Your goal: Get the cat down from the tree."]);
   });
 
   it("says nothing of it mid-chapter", () => {

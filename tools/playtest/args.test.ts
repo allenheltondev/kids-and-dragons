@@ -13,6 +13,12 @@ describe("play:jump's command line", () => {
   it("defaults to a party table of two, still pictures only", () => {
     expect(parse(["gemfall-01"])).toMatchObject({ players: 2, travel: false, record: 0, start: false, flags: {}, facts: {} });
   });
+  it("opens a lobby, with no chapter (#614)", () => {
+    expect(parse(["--lobby", "--players", "3", "--record", "8000"])).toMatchObject({ lobby: true, positional: [], players: 3, record: 8000 });
+    expect(parse(["gemfall-01"]).lobby).toBe(false);
+    expect(() => parse(["--lobby", "gemfall-01"])).toThrow(/--lobby/);
+    expect(() => parse(["--lobby", "--start"])).toThrow(/--lobby/);
+  });
   it("refuses what it cannot do, with the reason", () => {
     expect(() => parse(["x", "--players", "5"])).toThrow(/1 to 4/);
     expect(() => parse(["x", "--wat"])).toThrow(/unknown option --wat/);

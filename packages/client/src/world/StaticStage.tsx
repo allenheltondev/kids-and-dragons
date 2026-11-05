@@ -15,6 +15,8 @@ import { useEnsureChapter } from "../screens/content";
 import { biomeBackdropUrl, characterWorldArtUrl, enemyArtUrl, sceneArtFor, sceneBackdropUrl } from "./art-paths";
 
 import { castFor } from "./cast";
+import { campShownIn, lobbyCampLayout } from "./lobby-camp";
+import { StillCamp } from "./StillCamp";
 import { sceneRiftFor, STILL_FRAME } from "./scene-rift";
 import { RIFT_NEUTRAL_EFFECT, RIFT_SHEET, riftSheetUrl } from "../screens/riftlight";
 
@@ -46,6 +48,16 @@ export function StaticStage(): React.JSX.Element {
   const guests = castFor(chapter, state);
   const enemyArt = enemyArtBySpec(chapter, state?.sceneId ?? null);
   const enemies: readonly Combatant[] = encounter?.combatants.filter((c) => c.side !== "party" && !c.down) ?? [];
+
+  // The lobby's picture is the crew's camp (#614), still here as everything is.
+  const camp = state && campShownIn(state.phase) ? lobbyCampLayout() : null;
+  if (state && camp) {
+    return (
+      <div className="kad-static-stage" data-testid="static-stage" aria-hidden="true">
+        <StillCamp layout={camp} state={state} />
+      </div>
+    );
+  }
 
   return (
     <div className="kad-static-stage" data-testid="static-stage" aria-hidden="true">

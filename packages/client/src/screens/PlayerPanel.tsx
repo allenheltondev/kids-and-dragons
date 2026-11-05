@@ -1,4 +1,5 @@
 import { SceneReading } from "../ui/SceneReading";
+import { StoryInteractionControls } from "./StoryInteraction";
 import { PagedOptions } from "../ui/PagedOptions";
 import { setPlayerSection, usePlayerNavigation } from "../store/player-navigation";
 /**
@@ -121,7 +122,6 @@ import { useTvFocus } from "../layout/tv-focus";
 
 /** The rank-up card (#314), fetched the first time a rank lands; the plain line stands in until then. */
 const RankUpCard = lazyChunk(() => import("./RankUpMoment"), (module) => module.RankUpCard);
-const StoryInteractionControls = lazyChunk(() => import("./StoryInteraction"), (module) => module.StoryInteractionControls);
 
 function RankUpLine({ up }: { up: RankUp }): ReactElement {
   return (
@@ -1470,7 +1470,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
           </div>
         ) : null}
 
-        {myPrompt?.kind === "interaction" ? <Suspense fallback={null}><StoryInteractionControls /></Suspense> : null}
+        {myPrompt?.kind === "interaction" ? <StoryInteractionControls /> : null}
         {/* ---------------- item swap (spec §9.1) ---------------- */}
         {myPrompt !== null && myPrompt.kind === "item_swap" ? (
           <div className="prompt">

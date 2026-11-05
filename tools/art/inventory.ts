@@ -28,6 +28,7 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { environmentCoverage } from "./environment-coverage.ts";
+import { campArtOwed, type CampManifest } from "./camp-art.ts";
 
 const tty = process.stdout.isTTY;
 const GREEN = tty ? "\x1b[32m" : "";
@@ -36,7 +37,7 @@ const DIM = tty ? "\x1b[2m" : "";
 const BOLD = tty ? "\x1b[1m" : "";
 const RESET = tty ? "\x1b[0m" : "";
 
-interface Manifest {
+interface Manifest extends CampManifest {
   tiers: string[];
   species: { id: string }[];
   gearPortraits: {
@@ -285,6 +286,14 @@ const delivered = (line: Line): number => line.need - line.missing.length;
     need: plates.length,
     missing: plates.filter((id) => !has("assets", `${id}.webp`)).map((id) => `${id}.webp`),
     note: "prologue, chapter and epilogue plates, 1600x900 (docs/story-plates.md); the story plays without a plate until it lands",
+  });
+}
+
+{
+  lines.push({
+    category: "Camp art",
+    ...campArtOwed(root, manifest),
+    note: "backdrops 1920x1080 opaque, pieces and moving parts 1024x1024 cutouts (docs/briefs/camp.md); the camp draws a stand-in until each lands",
   });
 }
 

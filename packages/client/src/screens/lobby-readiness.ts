@@ -18,3 +18,10 @@ export function lobbyReadiness(state: Pick<RunState, "party" | "seats" | "remove
     allReady: connected.length > 0 && ready === connected.length && making.length === 0,
   };
 }
+
+/** What the shared screen's party heading says once everyone is ready: where to start, never how
+ * many (the heading's count said that a moment ago). Short, since it stands in the heading's pill
+ * at the TV's largest text. */
+export function readyLine(saved: boolean): string {
+  return saved ? "Everyone is ready! Keep going on a phone." : "Everyone is ready! Start on a phone.";
+}

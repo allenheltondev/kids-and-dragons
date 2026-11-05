@@ -33,14 +33,41 @@
   overflow-wrap: anywhere;
 }
 
+/* Compact: one line, on a chip of its own, for the lobby, where it sits over the camp's painting.
+   The chip is the status chip's (shared.css .kad-chip), so the words read on any part of the art,
+   and the name gives way (an ellipsis) before the line wraps or pushes anything aside. */
 .crew-identity--compact {
-  padding: 0;
-  border: 0;
-  background: none;
+  gap: 0.4em;
+  box-sizing: border-box;
+  max-inline-size: 100%;
+  block-size: 2em;
+  padding: 0 0.8em 0 0.35em;
+  border: 0.08em solid var(--color-border, #3a3468);
+  border-radius: var(--radius-pill, 999em);
+  background: var(--color-surface-sunken, #120f26);
   font-size: 0.85em;
+  line-height: 1.2;
+  white-space: nowrap;
 }
 
 .crew-identity--compact .crew-identity__art {
-  inline-size: 2.5em;
-  block-size: 2.5em;
+  inline-size: 1.5em;
+  block-size: 1.5em;
+}
+
+.crew-identity--compact .crew-identity__copy {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35em;
+}
+
+.crew-identity--compact .crew-identity__label {
+  flex: none;
+}
+
+.crew-identity--compact .crew-identity__name {
+  min-inline-size: 0;
+  overflow: hidden;
+  overflow-wrap: normal;
+  text-overflow: ellipsis;
 }
