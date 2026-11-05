@@ -191,6 +191,9 @@ const roadFights = [
   { sceneId: "encounter_crawlers", chapterId: "gemfall-03a", cue: "Dry bank", target: { x: 6, y: 3 }, outcome: "escaped", destination: "rest_wet_end", text: "scrambles onto the dry bank" },
   { sceneId: "encounter_crabs", chapterId: "gemfall-03a", cue: "Guard the cart wheel", target: { x: 3, y: 2 }, outcome: "victory", destination: "scene_crabs_turned", text: "The soup seller hands you a warm bottle" },
   { sceneId: "encounter_mimic", chapterId: "gemfall-03b", cue: "Slip the mooring rope", target: { x: 4, y: 2 }, outcome: "victory", destination: "scene_act_closed", text: "The show is over" },
+  { sceneId: "encounter_mimics", chapterId: "gemfall-04a", cue: "Stomp from the flat stone", target: { x: 3, y: 2 }, outcome: "victory", destination: "scene_mimics_unmasked", text: "cough up boots" },
+  { sceneId: "encounter_wolves", chapterId: "gemfall-05b", cue: "Rope bridge", target: { x: 6, y: 3 }, outcome: "escaped", destination: "scene_foothills_view", text: "The last of you clears the bridge" },
+  { sceneId: "encounter_drake", chapterId: "gemfall-05b", cue: "Open the side channel", target: { x: 4, y: 2 }, outcome: "victory", destination: "scene_drake_shooed", text: "coughs up a smooth blue charm" },
 ] as const;
 
 for (const fight of roadFights) {
@@ -199,13 +202,15 @@ for (const fight of roadFights) {
     const boxes = fight.sceneId === "encounter_boxes";
     const brook = fight.sceneId === "encounter_logs";
     const wisps = fight.sceneId === "encounter_wisps";
+    const bridge = fight.chapterId === "gemfall-05b" && fight.sceneId === "encounter_wolves";
     const marsh = fight.chapterId === "gemfall-03a" && fight.sceneId === "encounter_crawlers";
-    const spring = fight.sceneId === "encounter_drake";
+    const spring = fight.chapterId === "gemfall-07r" && fight.sceneId === "encounter_drake";
+    const spill = fight.chapterId === "gemfall-05b" && fight.sceneId === "encounter_drake";
     const echo = fight.sceneId === "encounter_echoes" || fight.sceneId === "encounter_echo" || fight.sceneId === "encounter_mimic";
     const finale = fight.chapterId === "gemfall-08";
     const ledges = finale && fight.sceneId === "encounter_crabs";
     const dragon = fight.sceneId === "encounter_dragon";
-    const support = finale || fight.sceneId === "encounter_crawlers" || fight.chapterId === "gemfall-04a";
+    const support = finale || fight.sceneId === "encounter_crawlers" || fight.chapterId === "gemfall-04a" || bridge;
     const table = await seedTable({ mode: "party", tv: true, chapterId: fight.chapterId, sceneId: fight.sceneId, heroes: [
       { name: "Aster", species: "kitsune", class: "songkeeper", stats: { might: 0, quick: 3, clever: 0, heart: 0 } },
       { name: "Fern", species: "unicorn", class: "thornguard", stats: { might: 0, quick: 3, clever: 0, heart: 0 } },
@@ -255,6 +260,7 @@ for (const fight of roadFights) {
       let sawCurrent = false;
       let sawWarning = false;
       let sawSpring = false;
+      let sawSpill = false;
       let sawUpper = false;
       let sawLedgeProgress = false;
       for (let turn = 0; state.encounter && turn < 24; turn++) {
@@ -276,6 +282,11 @@ for (const fight of roadFights) {
           await display.page.screenshot({ path: info.outputPath("upper-ledge.png") });
           sawUpper = true;
         }
+        if (spill && encounter.round >= 2 && !sawSpill) {
+          await expect(panel).toContainText("Rising stream pushes you");
+          await display.page.screenshot({ path: info.outputPath("rising-stream.png") });
+          sawSpill = true;
+        }
         const warnings = committedAttacks(encounter);
         if (warnings.length && !sawWarning) {
           await expect(display.page.getByLabel("Battle plan")).toContainText(/marked ground/i);
@@ -289,14 +300,14 @@ for (const fight of roadFights) {
         // longer climb so the recording shows the actual opening change.
         const goal = ledges ? encounter.round >= 3 ? { x: 6, y: 1 } : { x: 3, y: 2 } : fight.target;
         const score = (p: { x: number; y: number }) => goal
-          ? Number(danger.some(t => t.x === p.x && t.y === p.y)) * 10 + (marsh ? Math.min(stepsBetween(p, goal), stepsBetween(p, { x: 6, y: 2 })) : stepsBetween(p, goal))
+          ? Number(danger.some(t => t.x === p.x && t.y === p.y)) * 10 + (marsh || bridge ? Math.min(stepsBetween(p, goal), stepsBetween(p, { x: 6, y: 2 })) : stepsBetween(p, goal))
           : Number(ink(p)) * 10 - Math.min(...enemies.map(enemy => stepsBetween(p, enemy)));
         const moves = legalMoves(encounter).filter(p =>
           (!spring || p.x !== 5 || (p.y !== 1 && p.y !== 4)) &&
-          (!brook || turn === 0 || p.x !== 2 || p.y !== 3) && (!marsh || p.x !== 3 || p.y !== 3));
+          (!brook || turn === 0 || p.x !== 2 || p.y !== 3) && (!spill || p.x !== 2 || p.y !== 3) && (!marsh || p.x !== 3 || p.y !== 3));
         const runoff = (p: { x: number; y: number }) => p.x === 2 && p.y === 3;
         // Give the wisps an opening beat before committing anyone to the cart.
-        const tile = (turn === 0 && wisps) || ((echo || dragon) && !sawWarning) ? undefined : turn === 0 && brook ? moves.find(runoff) : turn === 0 && boxes ? moves.find(ink)
+        const tile = (spill && encounter.round === 1) || (turn === 0 && wisps) || ((echo || dragon) && !sawWarning) ? undefined : turn === 0 && brook ? moves.find(runoff) : turn === 0 && boxes ? moves.find(ink)
           : moves.sort((a, b) => score(a) - score(b))[0];
         if (tile && (score(tile) < score(at) || (turn === 0 && ((boxes && ink(tile)) || (brook && runoff(tile)))))) {
           if (!movedThroughUi) {
@@ -335,6 +346,7 @@ for (const fight of roadFights) {
       if (brook) expect(sawCurrent).toBe(true);
       if (wisps || echo || dragon) expect(sawWarning).toBe(true);
       if (spring) expect(sawSpring).toBe(true);
+      if (spill) expect(sawSpill).toBe(true);
       if (ledges) {
         expect(sawUpper).toBe(true);
         expect(sawLedgeProgress).toBe(true);

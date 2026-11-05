@@ -212,6 +212,9 @@ describe("ford road combat batch", () => {
 });
 
 const mountainFights = [
+  { chapter: "gemfall-04a", sceneId: "encounter_mimics", target: { x: 3, y: 2 }, outcome: "victory" },
+  { chapter: "gemfall-05b", sceneId: "encounter_wolves", target: { x: 6, y: 3 }, outcome: "escaped" },
+  { chapter: "gemfall-05b", sceneId: "encounter_drake", target: { x: 4, y: 2 }, outcome: "victory" },
   { chapter: "gemfall-03a", sceneId: "encounter_crawlers", target: { x: 6, y: 3 }, outcome: "escaped" },
   { chapter: "gemfall-03a", sceneId: "encounter_crabs", target: { x: 3, y: 2 }, outcome: "victory" },
   { chapter: "gemfall-03b", sceneId: "encounter_mimic", target: { x: 4, y: 2 }, outcome: "victory" },
@@ -245,7 +248,7 @@ describe.each(mountainFights)("$sceneId on the mountain road", ({ chapter, scene
         const score = (p: { x: number; y: number }) =>
           Number(danger.some(t => t.x === p.x && t.y === p.y)) * 10 +
           (chapter === "gemfall-03a" && sceneId === "encounter_crawlers" ? Math.min(stepsBetween(p, goal), stepsBetween(p, { x: 6, y: 2 })) : stepsBetween(p, goal));
-        const moves = legalMoves(state).filter(p => (sceneId !== "encounter_drake" || p.x !== 5 || (p.y !== 1 && p.y !== 4)) &&
+        const moves = legalMoves(state).filter(p => (chapter !== "gemfall-07r" || sceneId !== "encounter_drake" || p.x !== 5 || (p.y !== 1 && p.y !== 4)) &&
           (chapter !== "gemfall-03a" || sceneId !== "encounter_crawlers" || p.x !== 3 || p.y !== 3));
         const next = moves.sort((a, b) => score(a) - score(b))[0];
         if (next && score(next) < score(at)) {
@@ -259,7 +262,7 @@ describe.each(mountainFights)("$sceneId on the mountain road", ({ chapter, scene
     if (sceneId === "encounter_wisps") expect(sawWarning).toBe(true);
     if (sceneId === "encounter_crawlers" && outcome === "victory") expect(state.environment!.objectives).toEqual([2]);
     if (sceneId === "encounter_echoes") expect(state.environment!.objectives).toEqual([1]);
-    if (sceneId === "encounter_drake") {
+    if (chapter === "gemfall-07r" && sceneId === "encounter_drake") {
       expect(positionOf(state, "drake#1")).toEqual({ x: 5, y: 1 });
       expect(positionOf(state, "small#1")).toEqual({ x: 5, y: 4 });
     }
@@ -276,4 +279,22 @@ describe.each(mountainFights)("$sceneId on the mountain road", ({ chapter, scene
     expect(["timedOut", "defeat"]).toContain(encounterOutcome(state));
     expect(scene.onTimeout).toEqual(scene.onDefeat);
   });
+});
+
+it("the high stream lets a hero stand on the low route before the round-two spill", () => {
+  let { state } = setup("encounter_drake", 1, content.chapter("gemfall-05b")!);
+  while (currentActor(state)!.side === "enemy") state = endTurnWithEvents(enemyTurn(state)).state;
+  const hero = currentActor(state)!;
+  const low = { x: 2, y: 3 };
+  const moved = moveTo(state, low);
+  if (!moved.ok) throw new Error("The low route must be reachable");
+  const first = endTurnWithEvents(moved.state);
+  expect(positionOf(first.state, hero.id)).toEqual(low);
+  expect(first.events.some(event => event.type === "hazard")).toBe(false);
+  state = first.state;
+  while (currentActor(state)!.side === "enemy") state = endTurnWithEvents(enemyTurn(state)).state;
+  expect(state.round).toBe(2);
+  const next = endTurnWithEvents(state);
+  expect(next.events).toContainEqual(expect.objectContaining({ type: "hazard", hazardId: "stream-spill", actorId: hero.id }));
+  expect(positionOf(next.state, hero.id)!.x).toBeLessThan(low.x);
 });
