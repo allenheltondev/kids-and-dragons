@@ -64,6 +64,8 @@ import { closedIfIdle } from "./host.ts";
 import { prepareStepFinds, recordStepFinds } from "./field-guide.ts";
 import { claimCampFinds, stepCampFinds } from "./camp-finds.ts";
 import { claimMilestones, stepMilestones } from "./camp-milestones.ts";
+import { claimCampDrops, prepareChapterEndCamp, settleChapterEndCamp, stepCampDrops, type ChapterEndCamp } from "./camp-pay.ts";
+import { prepareCampVote } from "./camp-shop.ts";
 import { dispatchTurnPush } from "./push.ts";
 import { practiceChapterId, practiceRefusal, settlePractice } from "./practice.ts";
 import {
@@ -89,6 +91,9 @@ import { recordTiming, timingNoteFor } from "./timing.ts";
 
 /** Far above any intent a client builds (a hero's creation is the largest). */
 const MAX_LOGGED_INTENT_CHARS = 4096;
+
+/** The downtime the camp's view is shown in (docs/camp.md §9): never a scene. */
+const CAMP_DOWNTIME: ReadonlySet<RunState["phase"]> = new Set<RunState["phase"]>(["lobby", "creation", "chapter_complete"]);
 
 /** The part of an identity that authorises an action. */
 /**
@@ -399,6 +404,13 @@ export async function applyAction(
     if (!change.ok) return { ok: false, seq: state.seq, error: change.error };
     spentCharacter = change.value.character;
     result = { state: change.value.state };
+  } else if (input.intent.type === "CAMP_VOTE") {
+    // The chapter-end shop (docs/camp.md §6.2, §12.4): a vote, and when it
+    // decides, the purchase, written to the crew's camp before this commit
+    // and once per visit whatever is retried (camp-shop.ts).
+    const vote = await prepareCampVote(state, input.intent, input.playerId, auth.run, deps);
+    if (!vote.ok) return { ok: false, seq: state.seq, error: vote.error };
+    result = { state: vote.state };
   } else {
     // A returning hero is a household row the engine cannot reach, so it is
     // loaded here and handed in; whether this player may bring it is the
@@ -479,11 +491,20 @@ export async function applyAction(
     delete result.state.crewCheck;
     delete result.state.crewConfirmed;
   }
-  // The camp's view is for downtime, never for scenes (docs/camp.md §9): it
-  // goes when a chapter starts.
-  if (state.chapterId === null && result.state.chapterId !== null && result.state.camp !== undefined) {
+  // The camp's view is for downtime, never for scenes (docs/camp.md §9): the
+  // lobby's, and the chapter end's (set where the chapter settles, below,
+  // and kept into the lobby after it). It goes the moment play is back in a
+  // scene, whichever way it got there. The chapter end's tally and shop are
+  // its summary's alone; leaving the summary drops them, which cancels a
+  // shop vote without spending (§6.2).
+  if (result.state.camp !== undefined && !CAMP_DOWNTIME.has(result.state.phase)) {
     result = { ...result, state: { ...result.state } };
     delete result.state.camp;
+  }
+  if (result.state.phase !== "chapter_complete" && (result.state.campTally !== undefined || result.state.campShop !== undefined)) {
+    result = { ...result, state: { ...result.state } };
+    delete result.state.campTally;
+    delete result.state.campShop;
   }
   // A hero sat down or got up in the lobby: her own finished campaigns can
   // unlock one the household has not finished (#283), so the lobby's locks
@@ -588,7 +609,29 @@ export async function applyAction(
     characters.push(...started.value);
   }
   let settlement: ChapterSettlement | null = null;
+  // Dash Cash (docs/camp.md §5.2): this step's lucky drops, claimed after the
+  // commit; and, when the chapter ends, its pay, written after it too.
+  const stepDrops = stepCampDrops(state, result.state, input.intent.type === "START_CHAPTER");
+  let chapterEndCamp: ChapterEndCamp | null = null;
   if (finishedChapter) {
+    // The optional objectives met, snapshotted as the chapter ends, before a
+    // replay's XP line is emptied below: the camp's pay goes by its own
+    // receipt, not by whether these heroes earned the XP again.
+    const objectivesMet = (result.state.bonuses ?? []).length;
+    const campEnd = await prepareChapterEndCamp(
+      {
+        run: auth.run,
+        state: result.state,
+        objectivesMet,
+        stepDrops,
+        visit: `${input.runId}:${result.state.chapterId ?? "-"}:${String(nextSeq)}`,
+      },
+      deps,
+    );
+    if (campEnd) {
+      chapterEndCamp = campEnd.settle;
+      result = { ...result, state: { ...result.state, ...campEnd.view } };
+    }
     // XP, the chapter's record, the setback counter, and — when this
     // completion decides it — the campaign's fate (progression.ts). All of it
     // rides the same conditional commit below.
@@ -765,14 +808,22 @@ export async function applyAction(
    * on the message and never in the log, so a replay claims and announces
    * nothing again (camp-finds.ts).
    */
-  const campClaims = await claimCampFinds(
-    stepCampFinds(state, next, input.intent.type === "START_CHAPTER"),
-    { run: auth.run, state: next },
-    deps,
-  );
+  const stepFinds = stepCampFinds(state, next, input.intent.type === "START_CHAPTER");
+  const campClaims = await claimCampFinds(stepFinds, { run: auth.run, state: next }, deps);
   // A tier or distinction this step landed writes its kit piece now (#621,
   // camp-milestones.ts); her phone says so after the transformation.
   const kitUnlocks = await claimMilestones(stepMilestones(state, next), { run: auth.run }, deps);
+  /*
+   * Lucky drops (§5.2), saved when they land, the same way and for the same
+   * reasons: claimed once by run and scene, and only what paid rides this
+   * broadcast as `campDrops`, live only. Then, on the chapter's last step,
+   * the sweep and the chapter's pay (camp-pay.ts), in that order, so a drop
+   * this step rolled lands before the pay closes the chapter to drops.
+   */
+  const campDrops = await claimCampDrops(stepDrops, { run: auth.run, state: next }, deps);
+  if (chapterEndCamp) {
+    campClaims.push(...(await settleChapterEndCamp(chapterEndCamp, { run: auth.run, state: next, stepFinds }, deps)));
+  }
 
   // The session clock's mark (#511), written alongside the broadcast and
   // awaited with the other after-commit work. It cannot fail the turn.
@@ -788,6 +839,7 @@ export async function applyAction(
     ...(discovered.length > 0 ? { discovered } : {}),
     ...(campClaims.length > 0 ? { campClaims } : {}),
     ...(kitUnlocks.length > 0 ? { kitUnlocks } : {}),
+    ...(campDrops.length > 0 ? { campDrops } : {}),
   };
   try {
     await deps.channel.publish(next.roomCode, message);

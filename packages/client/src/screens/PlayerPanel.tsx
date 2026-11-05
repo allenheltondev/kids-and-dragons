@@ -97,6 +97,7 @@ import { PrologueReplay } from "./StoryPlates";
 import { useRunCampaign } from "./run-campaign";
 import { savedHeading, savedHeroes } from "./save-copy";
 import { VoteTicks } from "./VoteTicks";
+import { CampShopVote, shopLine } from "./CampChapterEnd";
 import { ClassPlaceChoice } from "./ClassPlace";
 import {
   beginLabel,
@@ -2006,6 +2007,22 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
               </>
             ) : (
               <>
+                {/* The chapter-end shop (docs/camp.md §6.2): the vote, like a
+                    choice point. Before the shop opens, the balance and when. */}
+                {state.campShop ? (
+                  <CampShopVote
+                    shop={state.campShop}
+                    party={party}
+                    playerId={me.playerId}
+                    held={held}
+                    onVote={(option) => void dispatch({ type: "CAMP_VOTE", visit: state.campShop!.visit, option })}
+                  />
+                ) : state.campTally ? (
+                  <p className="camp-vote__done kad-muted" data-testid="camp-balance-phone">
+                    <Icon name="dash_cash" />
+                    <span>{`Your crew has ${String(state.campTally.balance)} Dash Cash. ${shopLine(state.campTally, undefined) ?? ""}`.trim()}</span>
+                  </p>
+                ) : null}
                 <KeepsakeOffer />
                 {/*
                  * A vote, like the ready-up before a fight: one phone's tap used

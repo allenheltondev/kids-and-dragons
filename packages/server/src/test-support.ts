@@ -15,6 +15,7 @@ import { campaignMode, chapterFor, lobbyCampaign, parseCampaignGraph } from "@ka
 import { makeChapter, makeItems, makeMap, makeRules } from "../../shared/src/test-fixtures.ts";
 import { makeRng } from "@kad/shared";
 import type {
+  CampCatalog,
   AbilityCatalog,
   Bestiary,
   Campaign,
@@ -67,6 +68,8 @@ export function makeContent(
     /** The Field Guide's lookups (#106). Absent: chapters discover nothing implicit. */
     world?: WorldMap | null;
     bestiary?: Bestiary | null;
+    /** The camp catalog (#618), for the chapter-end shop (#619). Absent: no shop. */
+    campCatalog?: CampCatalog | null;
   } = {},
 ): ContentStore {
   const rules = overrides.rules ?? makeRules();
@@ -96,6 +99,7 @@ export function makeContent(
     campaignIds: () => [...campaigns.keys()],
     world: () => overrides.world ?? null,
     bestiary: () => overrides.bestiary ?? null,
+    campCatalog: () => overrides.campCatalog ?? null,
     // The same selection the real store makes (shared `chapterFor`), over
     // whatever chapters this fixture was given — so a test about a routed
     // beat exercises the rule rather than a fixture's idea of it.

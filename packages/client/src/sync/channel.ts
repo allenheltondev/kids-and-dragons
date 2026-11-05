@@ -73,6 +73,12 @@ export interface SequencerHandlers {
    */
   onKitUnlocks?(event: { runId: string; seq: number; unlocks: KitMilestoneUnlock[]; crossings: number }): void;
   /**
+   * The lucky drops a step paid (`ServerMessage.campDrops`, docs/camp.md
+   * §5.2), emitted once, right after that step's patch. Live only, like
+   * `onDiscovered`.
+   */
+  onCampDrops?(event: { runId: string; seq: number; sceneIds: string[] }): void;
+  /**
    * A player's unconfirmed tap (`PreviewMessage`). Handed over the moment it
    * arrives and never ordered: it is not a step of the state, so it neither
    * waits for a gap to fill nor moves `seq`.
@@ -276,6 +282,9 @@ export class MessageSequencer {
     if (message.kitUnlocks && message.kitUnlocks.length > 0) {
       const crossings = (message.progression?.awards ?? []).filter((a) => a.newTier !== undefined).length;
       this.handlers.onKitUnlocks?.({ runId: message.runId, seq: message.seq, unlocks: message.kitUnlocks, crossings });
+    }
+    if (message.campDrops && message.campDrops.length > 0) {
+      this.handlers.onCampDrops?.({ runId: message.runId, seq: message.seq, sceneIds: message.campDrops.map((d) => d.sceneId) });
     }
   }
 

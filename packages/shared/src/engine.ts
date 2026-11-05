@@ -117,6 +117,7 @@ import {
   type DeedCredit,
 } from "./deeds.js";
 import { assignPlayerColors } from "./player-colors.js";
+import { LUCKY_DROPS_PER_CHAPTER, luckyRoll } from "./camp-luck.js";
 import { tierForLevel } from "./rules.js";
 import { addItem, addQuestItem, freeSlots, hasItem, removeItem, swapItem, useConsumable } from "./inventory.js";
 import { sceneChoices, visibleChoices } from "./chapter-graph.js";
@@ -693,6 +694,57 @@ function recordFind(draft: RunState, effect: Extract<Effect, { type: "findForCam
       ...(kit ? { heroes: seatedMembers(draft).map((m) => m.character.id) } : {}),
     },
   ];
+}
+
+/**
+ * A lucky drop (docs/camp.md §5.2): after a mini-game the party succeeded at
+ * or a fight it won in this step, a 1 in 8 chance of 1 Dash Cash, drawn from
+ * this step's seeded rng (port.ts), so replaying the log draws the same. Read
+ * off the step, before against after, so no path into a win can skip it:
+ *
+ *   - a game: the scene's interaction prompt turned to its result, a success,
+ *     on this step. A `play` interaction always succeeds, so it never rolls;
+ *     relaxed play is easier, not automatic, and does.
+ *   - a fight: the encounter that was up settled as a victory on this step
+ *     (`settleEncounter`'s `lastEncounter`). An `autoResolve` or a playtest
+ *     jump out of a fight was never won, so neither rolls.
+ *
+ * Once a scene a chapter (`campLuck.rolled`), so retrying a won game cannot
+ * roll again, and no more once the chapter's cap has come up. Only recorded:
+ * whether it pays (never in a chapter already paid, the cap across attempts)
+ * is the store's to say, after the commit (server handlers/camp-pay.ts).
+ */
+function rollCampLuck(before: RunState, draft: RunState, ctx: EngineContext): void {
+  if (draft.chapterId === null || draft.chapterId !== before.chapterId) return;
+  let won: { sceneId: string; kind: "game" | "fight" } | null = null;
+  const was = before.prompt;
+  const now = draft.prompt;
+  if (
+    was?.kind === "interaction" &&
+    now?.kind === "interaction" &&
+    was.phase !== "result" &&
+    now.phase === "result" &&
+    now.outcome === "success" &&
+    now.sceneId === was.sceneId &&
+    now.openedSeq === was.openedSeq &&
+    now.attempt === was.attempt &&
+    now.spec.kind !== "play"
+  ) {
+    won = { sceneId: now.sceneId, kind: "game" };
+  } else if (
+    before.encounter &&
+    draft.lastEncounter?.outcome === "victory" &&
+    draft.lastEncounter.sceneId !== null &&
+    draft.lastEncounter.sceneId === before.sceneId &&
+    JSON.stringify(draft.lastEncounter) !== JSON.stringify(before.lastEncounter ?? null)
+  ) {
+    won = { sceneId: draft.lastEncounter.sceneId, kind: "fight" };
+  }
+  if (!won) return;
+  const luck = draft.campLuck ?? { rolled: [], drops: [] };
+  if (luck.rolled.includes(won.sceneId) || luck.drops.length >= LUCKY_DROPS_PER_CHAPTER) return;
+  const drops = luckyRoll(ctx.rng.next()) ? [...luck.drops, won] : luck.drops;
+  draft.campLuck = { rolled: [...luck.rolled, won.sceneId], drops };
 }
 
 function applyEffectsDraft(
@@ -1301,6 +1353,9 @@ export function applyIntent(
 
   try {
     const presentation = dispatch(draft, envelope, rolling, effects);
+    // Last of all, so every other roll this step made came first, as it
+    // always did: a lucky drop draws from the stream only once it has won.
+    rollCampLuck(state, draft, ctx);
     if (loaded?.spent()) draft.playtestDie = null;
     pruneTrades(draft);
     refreshChoicePrompt(draft, ctx);
@@ -1579,7 +1634,20 @@ function checkIntentShape(intent: ClientIntent): void {
     case "RESOLVE_TRADE":
       if (typeof intent.accept !== "boolean") malformed("accept");
       return;
+    case "CAMP_VOTE":
+      if (!campVoteWellFormed(intent)) malformed("visit or option");
+      return;
   }
+}
+
+/**
+ * A `CAMP_VOTE` as JSON from a phone may carry anything: both fields must be
+ * short, non-empty strings before the server reads them (server
+ * handlers/camp-shop.ts checks this before anything else).
+ */
+export function campVoteWellFormed(intent: { visit?: unknown; option?: unknown }): boolean {
+  const ok = (v: unknown): boolean => typeof v === "string" && v.length > 0 && v.length <= 200;
+  return ok(intent.visit) && ok(intent.option);
 }
 
 function dispatch(
@@ -1689,6 +1757,11 @@ function dispatch(
 
     case "SWITCH_CLASS":
       throw new Illegal("ILLEGAL", "a class is switched through the authoritative run handler");
+
+    case "CAMP_VOTE":
+      // It spends the crew's Dash Cash, a store write the engine never sees
+      // (server handlers/camp-shop.ts), like SWITCH_CLASS above.
+      throw new Illegal("ILLEGAL", "the chapter-end shop is resolved by the authoritative run handler");
 
     case "KEEP_CLASS":
       return doKeepClass(draft, playerId, intent.classId, intent.stall === true);
@@ -2031,6 +2104,10 @@ function doStartChapter(
   draft.bonuses = [];
   // Last chapter's finds were claimed when they were found (docs/camp.md §12.2).
   delete draft.campFinds;
+  // Lucky drops were claimed as they landed; the tally and shop were the last summary's.
+  delete draft.campLuck;
+  delete draft.campTally;
+  delete draft.campShop;
   delete draft.fightEndings;
   delete draft.xpAlreadyPaid;
   // Deeds counted last chapter were folded into the heroes when it ended.
@@ -2189,7 +2266,7 @@ function doKeepClass(draft: RunState, playerId: string, classId: unknown, stall:
  * keeps its place in the rotation but is never handed a turn it cannot take.
  * Null only for an empty party, which leaves the choice open to anyone.
  */
-export function storyTurnHolder(state: RunState): PartyMember | null {
+export function storyTurnHolder(state: Pick<RunState, "party" | "storyTurn">): PartyMember | null {
   const n = state.party.length;
   if (n === 0) return null;
   const start = (((state.storyTurn ?? 0) % n) + n) % n;
@@ -2375,7 +2452,7 @@ export function lobbyCampaign(state: RunState): LobbyCampaignChoice {
  * player whose turn it is gets their way if their vote is among the tied, and
  * otherwise the first tied vote after them in turn order does.
  */
-function tallyVotes(draft: RunState, votes: Record<string, string>): string {
+export function tallyVotes(draft: Pick<RunState, "party" | "storyTurn">, votes: Record<string, string>): string {
   const counts = new Map<string, number>();
   for (const choiceId of Object.values(votes)) {
     counts.set(choiceId, (counts.get(choiceId) ?? 0) + 1);
@@ -3189,6 +3266,11 @@ function returnToLobby(draft: RunState): void {
   draft.lastRoll = null;
   delete draft.deeds;
   delete draft.rankUps;
+  // Leaving the summary cancels its shop vote, spending nothing (docs/camp.md
+  // §6.2): there is no pending vote to come back to.
+  delete draft.campTally;
+  delete draft.campShop;
+  delete draft.campLuck;
   // A beat is chapter-scoped: the seat keeps rotating, the count starts over.
   delete draft.spotlightMoments;
   for (const member of draft.party) member.ready = false;

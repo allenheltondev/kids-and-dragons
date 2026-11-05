@@ -13,7 +13,7 @@ import type { FieldGuideFind } from "../field-guide-record.js";
 import type { FactId, FactValue, JourneyView, NodeId } from "./campaign-graph.js";
 import type { BuffId, CheckBuffOffer, RunBuff } from "./buffs.js";
 import type { MatchupNote } from "./matchups.js";
-import type { CampFind, CampView } from "./camp.js";
+import type { CampFind, CampLuck, CampShopView, CampTally, CampView } from "./camp.js";
 import type { NarrationPart } from "../narration.js";
 import type { ChoiceAhead } from "../choice-ahead.js";
 
@@ -664,6 +664,26 @@ export interface RunState {
    * cleared when a chapter starts.
    */
   campFinds?: CampFind[];
+  /**
+   * The chapter's lucky-drop rolls (docs/camp.md §5.2): rolled by the engine
+   * with the step's seeded rng after a mini-game the party succeeded at (never
+   * a `play` one) or a fight it won, once a scene, and only recorded here. The
+   * server claims each drop right after its step commits (handlers/camp-pay.ts),
+   * so it is saved when it lands and replaying the log claims nothing. Absent
+   * until a roll; cleared when a chapter starts.
+   */
+  campLuck?: CampLuck;
+  /**
+   * The chapter's Dash Cash, counted in on its summary (§5.2): set by the
+   * server when the chapter ends; gone when the table leaves the summary.
+   */
+  campTally?: CampTally;
+  /**
+   * The chapter-end shop and its vote (§6.2, §12.4): set by the server when
+   * the chapter ends with the shop open; gone when the table leaves the
+   * summary, which cancels the vote without spending.
+   */
+  campShop?: CampShopView;
   /**
    * The crew is partway through this adventure and none of the heroes seated
    * have been on it, so the TV asks before anything resumes: keep going, or

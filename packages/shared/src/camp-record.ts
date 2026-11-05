@@ -34,8 +34,8 @@ export const KIT_VERSION = 2;
 export const MAX_FRAME_STAGE: FrameStage = 4;
 /** The chapter-end shop opens once the crew has been paid for this many chapters (§5.3). */
 export const SHOP_OPENS_AT = 2;
-/** At most this many lucky drops in one chapter (§5.2). */
-export const LUCKY_DROPS_PER_CHAPTER = 2;
+/** At most this many lucky drops in one chapter (§5.2); with the odds, in camp-luck.ts, which the engine imports. */
+export { LUCKY_DROPS_PER_CHAPTER } from "./camp-luck.js";
 /** Personal decoration slots a new kit has (§4.5: two or three). */
 export const KIT_SLOTS = 2;
 
@@ -325,7 +325,7 @@ function assertCamp(raw: Record<string, unknown>): CampRecord {
     owned: entries(raw["owned"], "camp.owned", (e, path): OwnedCampPiece => {
       const from = e["from"];
       if (from !== "found" && from !== "bought" && from !== "kept") throw fail(`${path}.from`, `"found", "bought" or "kept"`);
-      return { from, ...optionalString(e, "rewardId"), at: str(e["at"], `${path}.at`) };
+      return { from, ...optionalString(e, "rewardId"), ...optionalString(e, "visit"), at: str(e["at"], `${path}.at`) };
     }),
     placed: entries(raw["placed"], "camp.placed", undefined),
     friends: entries(raw["friends"], "camp.friends", (e, path): CampFriend => ({

@@ -1,8 +1,8 @@
 /**
  * The crew's camp and each hero's kit, on the server (docs/camp.md §9, §12):
  * reading them, changing them safely, and claiming a reward once. The storage
- * under everything the camp does later (#618 to #620); nothing here is
- * gameplay yet: no payouts, no shop, no intents from phones.
+ * under everything the camp does (#618 to #620); the gameplay is elsewhere:
+ * finds in camp-finds.ts, Dash Cash in camp-pay.ts, the shop in camp-shop.ts.
  *
  * **Outside the commitment rule.** Nothing here is a provisional gain: a camp
  * is its own row, and a kit rides on the hero beside `committed` and
@@ -182,8 +182,8 @@ export async function claimReceipt(
     householdId,
     crew,
     (camp) => {
-      refused = refusal(camp, claim);
-      return refused ? null : withReceipt(apply(camp), claim, at);
+      refused = claimRefusal(camp, claim);
+      return refused ? null : withClaimReceipt(apply(camp), claim, at);
     },
     deps,
     options,
@@ -244,7 +244,12 @@ export function claimLuckyDrop(
   return claimReceipt(householdId, crew, { kind: "drop", ...drop }, apply, deps, options);
 }
 
-function refusal(camp: CampRecord, claim: CampClaim): ClaimRefusal | undefined {
+/**
+ * Why `claim` would give nothing on this camp, or undefined when it would pay.
+ * The rule `claimReceipt` writes by; exported so the chapter's end can say
+ * what a claim it is about to make will do (camp-pay.ts) by the same rule.
+ */
+export function claimRefusal(camp: CampRecord, claim: CampClaim): ClaimRefusal | undefined {
   const { rewards, chapters, drops } = camp.receipts;
   switch (claim.kind) {
     case "reward":
@@ -260,7 +265,8 @@ function refusal(camp: CampRecord, claim: CampClaim): ClaimRefusal | undefined {
   }
 }
 
-function withReceipt(camp: CampRecord, claim: CampClaim, at: string): CampRecord {
+/** The camp with `claim`'s receipt written (and, for a chapter, its count and pruned drops), as `claimReceipt` writes it. */
+export function withClaimReceipt(camp: CampRecord, claim: CampClaim, at: string): CampRecord {
   const receipts = structuredClone(camp.receipts);
   switch (claim.kind) {
     case "reward":

@@ -89,6 +89,7 @@ import { appSyncEventSource } from "../sync/appsync-socket";
 import { setFieldGuideDiscoveries } from "./field-guide-discoveries";
 import { announceFieldGuideNews, clearFieldGuideNews } from "./field-guide-news";
 import { announceKitNews, clearKitNews } from "./kit-news";
+import { announceDashCash, clearDashCash } from "./dash-cash-news";
 import { noteServerTime } from "./server-clock";
 import { navigate } from "../router";
 import { nudgeReconnect } from "../sync/wake-reconnect";
@@ -369,6 +370,8 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
           onDiscovered: ({ runId, seq, canonIds }) => announceFieldGuideNews(runId, seq, canonIds),
           // Live-only milestone kit pieces (#621), told on the phone after the cutscene.
           onKitUnlocks: ({ runId, seq, unlocks, crossings }) => announceKitNews(runId, seq, unlocks, crossings),
+          // Live-only lucky drops (docs/camp.md §5.2): the TV sparkles, the phones echo it.
+          onCampDrops: ({ runId, seq, sceneIds }) => announceDashCash(runId, seq, sceneIds),
           onPreview: ({ runId, playerId, preview, context }) => {
             if (runtime.sequencer !== sequencer || get().state?.runId !== runId) return;
             const { [playerId]: _old, ...rest } = get().previews;
@@ -1456,6 +1459,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         setFieldGuideDiscoveries(null);
         clearFieldGuideNews();
         clearKitNews();
+        clearDashCash();
         set({
           connection: "idle",
           synced: true,
