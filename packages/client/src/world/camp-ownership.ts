@@ -7,7 +7,7 @@
  *     unicorn and a tall bigfoot could each lie in theirs); the pack on the
  *     same painting stays in proportion;
  *   - her tent is bigger than she is: `TENT_HEIGHT_FIT` times her drawn height
- *     and at least `TENT_WIDTH_FIT` times her drawn width, so she could fit
+ *     (`SMALL_TENT_HEIGHT_FIT` for a small hero, `tentHeightFit`) and at least `TENT_WIDTH_FIT` times her drawn width, so she could fit
  *     inside. Every tent, the patched lean-to and the milestone tents
  *     included: a tent always stands taller than its hero (decided, #620),
  *     however much wider than tall its painting is.
@@ -50,8 +50,23 @@ export interface CampOwner {
 
 /** A bedroll's drawn length over its hero's drawn body length. */
 export const BEDROLL_LENGTH_FIT = 1.2;
-/** A tent's drawn height over its hero's drawn height. */
+/** A tent's drawn height over its hero's drawn height: a big hero's. */
 export const TENT_HEIGHT_FIT = 1.1;
+/**
+ * ...and a small hero's (decided, #620): a roomier tent, so a kitsune's ears
+ * sit clearly under its top even standing in front of it at her door.
+ */
+export const SMALL_TENT_HEIGHT_FIT = 1.2;
+/**
+ * Small and big, by a hero's painted height (her height times `HERO_PAINT`'s
+ * share, cm): up to `SMALL_HERO_CM` her tent is `SMALL_TENT_HEIGHT_FIT` times
+ * her height, from `BIG_HERO_CM` it is `TENT_HEIGHT_FIT`, and between the two
+ * it ramps smoothly from one to the other. Kitsune (88 cm painted) and
+ * dragonlings (105) are small; manticores (153), griffins (168), unicorns
+ * (178) and bigfoots (224) big.
+ */
+export const SMALL_HERO_CM = 110;
+export const BIG_HERO_CM = 150;
 /** A tent's drawn width over its hero's drawn width, at least. */
 export const TENT_WIDTH_FIT = 1.3;
 /** The narrowest a tent stand-in is drawn, width over height (a bell tent). */
@@ -97,6 +112,14 @@ export function heroDrawnBox(owner: CampOwner, measure: StageMeasure): { height:
   return { height: drawn * box.height, width: drawn * box.width };
 }
 
+/** Her tent's drawn height over her drawn height (`SMALL_TENT_HEIGHT_FIT` for a small hero, `TENT_HEIGHT_FIT` for a big one, a ramp between). */
+export function tentHeightFit(owner: CampOwner): number {
+  const box = (owner.species ? HERO_PAINT[owner.species] : undefined) ?? NOMINAL_BOX;
+  const cm = owner.heightCm * box.height;
+  const t = Math.max(0, Math.min(1, (cm - SMALL_HERO_CM) / (BIG_HERO_CM - SMALL_HERO_CM)));
+  return SMALL_TENT_HEIGHT_FIT + (TENT_HEIGHT_FIT - SMALL_TENT_HEIGHT_FIT) * t;
+}
+
 /** What a piece of a hero's own gear is, for fitting. */
 export type CampGearKind = "bedroll" | "tent" | "other";
 
@@ -132,14 +155,15 @@ export function fittedGear(
     return { height, width: height * shape };
   }
   if (kind === "tent") {
-    if (aspect === null) return tentStandInBox(base, hero);
-    const height = Math.max(base, TENT_HEIGHT_FIT * hero.height, (TENT_WIDTH_FIT * hero.width) / shape);
+    const fit = tentHeightFit(owner);
+    if (aspect === null) return tentStandInBox(base, hero, fit);
+    const height = Math.max(base, fit * hero.height, (TENT_WIDTH_FIT * hero.width) / shape);
     return { height, width: height * shape };
   }
   return { height: base, width: base * shape };
 }
 
-function tentStandInBox(base: number, hero: { height: number; width: number }): { height: number; width: number } {
-  const height = Math.max(base, TENT_HEIGHT_FIT * hero.height);
+function tentStandInBox(base: number, hero: { height: number; width: number }, fit = TENT_HEIGHT_FIT): { height: number; width: number } {
+  const height = Math.max(base, fit * hero.height);
   return { height, width: Math.max(TENT_WIDTH_FIT * hero.width, TENT_STAND_IN_MIN_ASPECT * height) };
 }

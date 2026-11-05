@@ -18,7 +18,7 @@ import { makeCharacter, makeMember, makeState } from "../testing/fixtures";
 import { fakeApp, installFakeCanvas2D } from "../testing/fake-stage";
 import { createCamp } from "./camp";
 import { campLayoutFor } from "./lobby-camp";
-import { BEDROLL_LENGTH_FIT, HERO_PAINT, TENT_HEIGHT_FIT, TENT_WIDTH_FIT } from "./camp-ownership";
+import { BEDROLL_LENGTH_FIT, BIG_HERO_CM, HERO_PAINT, SMALL_HERO_CM, SMALL_TENT_HEIGHT_FIT, TENT_HEIGHT_FIT, TENT_WIDTH_FIT, tentHeightFit } from "./camp-ownership";
 import { standInSize } from "./camp-stand-in";
 import { CAMP_KIT_STYLES, type CampKitStyle } from "./camp-kit-art";
 import { campPaint, campPaintBox } from "./camp-paint";
@@ -34,6 +34,27 @@ afterEach(cleanup);
 const SPECIES = Object.keys(FIGURE_SIZES).filter((id) => id.startsWith("characters/")).map((id) => id.slice("characters/".length));
 const heightOf = (species: string): number => FIGURE_SIZES[`characters/${species}`]![0];
 const noArt = (): Promise<Texture> => Promise.reject(new Error("not painted yet"));
+/** The small heroes, whose tents are 1.2 times their height (camp-ownership.ts `tentHeightFit`): every species painted no taller than `SMALL_HERO_CM`. */
+const SMALL = SPECIES.filter((s) => heightOf(s) * HERO_PAINT[s]!.height <= SMALL_HERO_CM);
+
+describe("a small hero's tent is roomier (#620)", () => {
+  it("counts kitsune and dragonlings small and every other species big, with no species on the ramp between", () => {
+    expect(SMALL.sort()).toEqual(["dragonling", "kitsune"]);
+    for (const s of SPECIES) {
+      const cm = heightOf(s) * HERO_PAINT[s]!.height;
+      expect(cm <= SMALL_HERO_CM || cm >= BIG_HERO_CM, `${s} (${cm.toFixed(0)} cm painted) is clearly small or big`).toBe(true);
+      expect(tentHeightFit({ heightCm: heightOf(s), species: s })).toBeCloseTo(SMALL.includes(s) ? SMALL_TENT_HEIGHT_FIT : TENT_HEIGHT_FIT, 9);
+    }
+  });
+
+  it("ramps smoothly from the small fit to the big one", () => {
+    const at = (cm: number) => tentHeightFit({ heightCm: cm });
+    expect(at(SMALL_HERO_CM)).toBeCloseTo(SMALL_TENT_HEIGHT_FIT, 6);
+    expect(at((SMALL_HERO_CM + BIG_HERO_CM) / 2)).toBeCloseTo((SMALL_TENT_HEIGHT_FIT + TENT_HEIGHT_FIT) / 2, 6);
+    expect(at(BIG_HERO_CM)).toBeCloseTo(TENT_HEIGHT_FIT, 6);
+    for (let cm = 60; cm < 240; cm += 5) expect(at(cm + 5)).toBeLessThanOrEqual(at(cm));
+  });
+});
 const settle = async (): Promise<void> => {
   for (let i = 0; i < 5; i++) await Promise.resolve();
 };
@@ -150,6 +171,8 @@ describe("a hero's own gear fits her (camp-ownership.ts)", () => {
             // Every tent stands taller than its hero, the patched lean-to and the milestone tents
             // included (#620): its painted height, cloth and poles, over her painted height.
             expect(fit.tent.height / fit.hero.height, `tent over her height (${at})`).toBeGreaterThanOrEqual(TENT_HEIGHT_FIT - 0.02);
+            // A small hero's tent is roomier (#620): 1.2 times her height, so her ears sit clearly under its top.
+            if (SMALL.includes(species)) expect(fit.tent.height / fit.hero.height, `a small hero's roomier tent (${at})`).toBeGreaterThanOrEqual(SMALL_TENT_HEIGHT_FIT - 0.02);
             expect(fit.tent.height, `tent taller than she is (${at})`).toBeGreaterThan(fit.hero.height);
           }
         });
