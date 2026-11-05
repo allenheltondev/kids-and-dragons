@@ -186,9 +186,14 @@ for (const fight of roadFights) {
     test.setTimeout(240_000);
     const boxes = fight.sceneId === "encounter_boxes";
     const wisps = fight.sceneId === "encounter_wisps";
+    const crawlers = fight.sceneId === "encounter_crawlers";
     const table = await seedTable({ mode: "party", tv: true, chapterId: fight.chapterId, sceneId: fight.sceneId, heroes: [
       { name: "Aster", species: "kitsune", class: "songkeeper", stats: { might: 0, quick: 3, clever: 0, heart: 0 } },
       { name: "Fern", species: "unicorn", class: "thornguard", stats: { might: 0, quick: 3, clever: 0, heart: 0 } },
+      ...(crawlers ? [
+        { name: "Briar", species: "kitsune", class: "songkeeper", stats: { might: 0, quick: 3, clever: 0, heart: 0 } },
+        { name: "Lark", species: "unicorn", class: "songkeeper", stats: { might: 0, quick: 3, clever: 0, heart: 0 } },
+      ] as const : []),
     ] });
     const phones = [];
     const display = await openTv(browser, table, { recordVideo: { dir: info.outputPath("video"), size: { width: 1280, height: 720 } } });
@@ -252,6 +257,11 @@ for (const fight of roadFights) {
           } else {
             await action(page, table.code, { type: "MOVE", to: { x: tile.x, y: tile.y } });
           }
+        }
+        if (crawlers && encounter.combatants.find(c => c.id === actorId)?.actions.includes("rally")) {
+          const injured = encounter.combatants.filter(c => c.side === "party" && c.hp <= c.maxHp - 2)
+            .sort((a, b) => a.hp - b.hp)[0];
+          if (injured) await action(page, table.code, { type: "COMBAT_ACTION", abilityId: "rally", targetId: injured.id });
         }
         await action(page, table.code, { type: "END_TURN" });
         state = await roomState<RunState>(page, table.code);
