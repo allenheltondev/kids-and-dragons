@@ -25,7 +25,7 @@ for (const sceneId of ["encounter_wolves", "encounter_mimic_plank"]) {
       { name: "Fern", species: "unicorn", class: "thornguard", stats: { might: 0, quick: 3, clever: 0, heart: 0 } },
     ] });
     const phones = [];
-    const display = await openTv(browser, table, sceneId === "encounter_wolves" ? { recordVideo: { dir: info.outputPath("video"), size: { width: 1280, height: 720 } } } : {});
+    const display = await openTv(browser, table, { recordVideo: { dir: info.outputPath("video"), size: { width: 1280, height: 720 } } });
     try {
       for (const seat of table.phones) {
         const phone = await openPhone(browser, seat);
@@ -38,6 +38,10 @@ for (const sceneId of ["encounter_wolves", "encounter_mimic_plank"]) {
       await onAir(display.page);
       await display.page.emulateMedia({ reducedMotion: "reduce" });
       let state = await roomState<RunState>(phones[0].page, table.code);
+      if (sceneId === "encounter_mimic_plank") {
+        expect(state.encounter!.combatants.filter(c => c.side === "enemy").every(c => c.windupAttack?.presentation === "slam")).toBe(true);
+        await expect(display.page.getByLabel("Battle plan")).toContainText(/planks/i);
+      }
       const owner = (s: RunState) => s.party.findIndex(m => m.character.id === currentActorId(s.encounter!));
       const active = phones[owner(state)].page;
       for (const surface of [{ width: 320, height: 720, text: "normal" }, { width: 390, height: 844, text: "largest" }]) {
@@ -63,6 +67,7 @@ for (const sceneId of ["encounter_wolves", "encounter_mimic_plank"]) {
       await display.page.emulateMedia({ reducedMotion: "no-preference" });
       let movedThroughUi = false;
       let handedOff = false;
+      let sawCrossing = false;
       const defenders = new Set<string>();
       for (let turn = 0; state.encounter && turn < 24; turn++) {
         const page = phones[owner(state)].page;
@@ -96,6 +101,11 @@ for (const sceneId of ["encounter_wolves", "encounter_mimic_plank"]) {
         }
         await action(page, table.code, { type: "END_TURN" });
         state = await roomState<RunState>(page, table.code);
+        if (sceneId === "encounter_mimic_plank" && state.encounter?.combatants.some(c => c.escaped) && !sawCrossing) {
+          await expect(display.page.getByLabel("Friends across")).toContainText("1/2 across");
+          await display.page.screenshot({ path: info.outputPath("crossing-progress.png") });
+          sawCrossing = true;
+        }
         if (turn === 1 && state.encounter) {
           await page.reload();
           await onAir(page);
@@ -108,6 +118,18 @@ for (const sceneId of ["encounter_wolves", "encounter_mimic_plank"]) {
       expect(state.encounter).toBeNull();
       expect(state.sceneId).toBe(sceneId === "encounter_wolves" ? "scene_plank_bridge" : "scene_mimic_passed");
       expect(state.narration).toContain(sceneId === "encounter_wolves" ? "out of reach" : "last friend");
+      if (sceneId === "encounter_mimic_plank") {
+        expect(sawCrossing).toBe(true);
+        await expect(display.page.locator("[data-crossing-clear]")).toBeVisible();
+        await expect(display.page.getByTestId("rank-up-moment")).toHaveCount(0);
+        await expect.poll(() => display.page.locator("[data-crossing-clear] img").evaluateAll(images => images.every(image => (image as HTMLImageElement).complete && (image as HTMLImageElement).naturalWidth > 0))).toBe(true);
+        await expect(display.page.locator("[data-crossing-clear]")).toBeVisible();
+        await expect.poll(() => display.page.locator("[data-crossing-clear]").evaluate(el => {
+          const box = el.getBoundingClientRect();
+          return box.top >= document.querySelector(".narration__head")!.getBoundingClientRect().bottom && box.bottom <= document.querySelector(".narration__plate")!.getBoundingClientRect().top;
+        })).toBe(true);
+        await display.page.screenshot({ path: info.outputPath("crossing-clear.png") });
+      }
       if (sceneId === "encounter_wolves") {
         expect(handedOff).toBe(true);
         expect(defenders.size).toBe(2);

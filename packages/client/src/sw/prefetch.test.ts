@@ -10,6 +10,7 @@ import { makeChapter } from "../../../shared/src/test-fixtures";
 import { makeCharacter, makeMember } from "../testing/fixtures";
 import { upcomingAssets } from "./prefetch";
 import { chapterAssets } from "./chapter-art";
+import gemfall02 from "../../../../content/chapters/gemfall-02.json";
 
 /**
  * The shared fixture, with real art: clearing → (check_squeeze | shrine);
@@ -28,6 +29,9 @@ function chapter(): Chapter {
 const PARTY = [makeMember({ character: makeCharacter({ species: "unicorn", tier: "fledgling", class: "songkeeper" }) })];
 
 describe("the scenes ahead", () => {
+  it("warms the mimic crossing's retreat prop for the persisted escape payoff", () => {
+    expect(chapterAssets(gemfall02 as unknown as Chapter, [])).toContain("/assets/entities/mire_mimic/little.png");
+  });
   it("warms authored objective props along with the chapter", () => {
     const content = chapter();
     const fight = content.scenes.encounter_wisps as Extract<Chapter["scenes"][string], { type: "encounter" }>;

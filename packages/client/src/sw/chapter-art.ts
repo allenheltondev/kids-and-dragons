@@ -38,6 +38,7 @@ export function chapterAssets(chapter: Chapter | null, party: readonly FigureOf[
     const scene = chapter.scenes[id];
     if (!scene) continue;
     if (scene.type === "encounter") {
+      if (chapter.id === "gemfall-02" && id === "encounter_mimic_plank") urls.add("/assets/entities/mire_mimic/little.png");
       for (const environment of [scene.environment, ...(scene.environment?.variants ?? [])]) {
         if (environment?.objectives?.some(o => o.id === "wagon-lane")) urls.add("/assets/story-props/sausage-wagon.webp");
         for (const exit of environment?.exits ?? []) if (exit.art) urls.add(`/assets/story-props/${exit.art}.webp`);
