@@ -116,6 +116,7 @@ describe("the place's beats, in words", () => {
       text: "The drover calls you back!", tone: "bad",
     });
     expect(environmentBeatLine(expired, words)?.text).toBe("The rift is closing!");
+    expect(environmentBeatLine(expired, { ...words, clock: "The rift closes" })?.text).toBe("The rift is closing!");
     expect(environmentBeatLine({ ...expired, onExpire: "surge" }, { ...words, clock: "The rift boils" })?.text).toBe("The rift is surging!");
   });
 
