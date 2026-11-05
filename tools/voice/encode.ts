@@ -27,12 +27,13 @@ export interface Encoded {
 const TRIM_LEADING = "silenceremove=start_periods=1:start_duration=0.02:start_threshold=-50dB";
 export const VOICE_FILTER = [TRIM_LEADING, "areverse", TRIM_LEADING, "areverse", "loudnorm=I=-16:TP=-1.5:LRA=11"].join(",");
 
-export function encodeVoice(wav: Buffer): Encoded {
+/** `audio` is what the provider sent: WAV (the default) or the MP3 ElevenLabs returns. */
+export function encodeVoice(audio: Buffer, ext: "wav" | "mp3" = "wav"): Encoded {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "kad-voice-"));
-  const input = path.join(dir, "in.wav");
+  const input = path.join(dir, `in.${ext}`);
   const output = path.join(dir, "out.webm");
   try {
-    fs.writeFileSync(input, wav);
+    fs.writeFileSync(input, audio);
     execFileSync("ffmpeg", ["-y", "-i", input, "-af", VOICE_FILTER, "-c:a", "libopus", "-b:a", "32k", "-ac", "1", output], {
       stdio: ["ignore", "ignore", "pipe"],
     });

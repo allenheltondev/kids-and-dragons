@@ -65,6 +65,7 @@ export function checkManifests(input: ManifestInput): VoiceVerdict {
     for (const d of desired.deviceVoice) {
       if (d.reason === "broken-script") failures.push({ at: `${name} ${d.address}`, message: "its script does not rebuild the line's words (npm run content:validate says why)" });
       else if (d.reason === "uncast-speaker") failures.push({ at: `${name} ${d.address}`, message: "its script names a speaker who is not on the cast sheet (content/voice/cast.json)" });
+      else if (d.reason === "voice-not-selected") notes.push({ at: `${name} ${d.address}`, message: "someone on this line has no ElevenLabs voice picked yet; the device voice reads it" });
       else notes.push({ at: `${name} ${d.address}`, message: "its script is stale; the device voice reads it until it is re-cut" });
     }
   }

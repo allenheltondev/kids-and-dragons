@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { checkManifests, checkSources, fixManifest } from "./check";
-import type { Desired } from "./desired";
+import { desiredClips, type CastSheet, type Desired } from "./desired";
+import { classify } from "./lines";
 import type { Manifest } from "./manifest";
+import { sourceHash } from "./script";
 import { SiteClipSource } from "./sources";
 import { MemoryClipStore } from "./store";
 
@@ -82,6 +84,33 @@ describe("voice:verify fails on broken, never on missing (#545)", () => {
     const verdict = check(played(), wants(), { "not-a-key": {}, [key(7)]: {} });
     expect(verdict.failures).toEqual([expect.objectContaining({ message: expect.stringContaining("not a clip key") })]);
     expect(verdict.notes).toEqual([expect.objectContaining({ message: expect.stringContaining("no manifest plays") })]);
+  });
+});
+
+describe("a speaker on the sheet with no ElevenLabs voice yet", () => {
+  // The narrator exists but nobody has picked her a voice: every unscripted line is the device's, and that is the
+  // state the game starts in, so the gate must not be red on it.
+  const CAST: CastSheet = { speakers: { narrator: { who: "A warm storyteller." } } };
+  const LINES = classify([{ address: "ch/scene_a/narration", campaign: "c", chapter: "ch", kind: "narration", text: TEXT, renders: 1 }], { facetsMax: 2 });
+
+  it("is read by the device voice and passes voice:verify, noting why", () => {
+    const desired = desiredClips(LINES, { cast: CAST, scripts: new Map() });
+    expect(desired.deviceVoice).toEqual([{ address: "ch/scene_a/narration", chapter: "ch", reason: "voice-not-selected" }]);
+    const verdict = check(null, desired);
+    expect(verdict.failures).toEqual([]);
+    expect(verdict.notes).toEqual([expect.objectContaining({ message: expect.stringContaining("no ElevenLabs voice picked yet") })]);
+  });
+
+  it("still fails a script that names a speaker the sheet does not have", () => {
+    const script = { "ch/scene_a/narration": { source: sourceHash(TEXT), lines: [{ by: "ghost", text: TEXT }] } };
+    const desired = desiredClips(LINES, { cast: CAST, scripts: new Map([["ch", script]]) });
+    expect(desired.deviceVoice[0]?.reason).toBe("uncast-speaker");
+    expect(check(null, desired).failures).toEqual([expect.objectContaining({ message: expect.stringContaining("not on the cast sheet") })]);
+  });
+
+  it("fails a manifest entry that plays a voice the line no longer has", () => {
+    const desired = desiredClips(LINES, { cast: CAST, scripts: new Map() });
+    expect(check(played(), desired).failures).toEqual([expect.objectContaining({ message: expect.stringContaining("device voice must read") })]);
   });
 });
 
