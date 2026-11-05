@@ -54,7 +54,8 @@ import { fightEndingIcon, fightEndingLine } from "./fight-ending-copy";
 import { useEnsureChapter, useEnsureContent } from "./content";
 import { useEndPlatesStatus } from "./end-plates";
 import { ChapterGoalCard } from "./ChapterGoal";
-import { CampTally, tallyEarned } from "./CampChapterEnd";
+import { CAMP_BEAT_AFTER_MS, CampBeat, CampTally, campBeatDue, tallyEarned } from "./CampChapterEnd";
+import { setCampBeat } from "../world/camp-beat";
 import "./shared.css";
 import "./ChapterCompletePanel.css";
 
@@ -246,6 +247,25 @@ export function ChapterCompletePanel(): ReactElement {
   );
 
   const headingIcon = ended === "complete" ? "crown" : setback || ended === "failed" ? "scroll" : "trophy";
+
+  // The camp beat (docs/camp.md §3; #620): once the tally has been up a
+  // while, and no shop vote is running, the summary turns to the camp. Local
+  // to this screen, never a gate: the phones' "back to the lobby" works
+  // throughout, and leaving takes the camp with it.
+  const [tallyHeld, setTallyHeld] = useState(false);
+  const hasCamp = state?.camp !== undefined;
+  useEffect(() => {
+    if (onEnding || !hasCamp) return;
+    const timer = setTimeout(() => { setTallyHeld(true); }, CAMP_BEAT_AFTER_MS);
+    return () => { clearTimeout(timer); };
+  }, [onEnding, hasCamp]);
+  const beat = state ? campBeatDue(state, onEnding, tallyHeld) : false;
+  useEffect(() => {
+    setCampBeat(beat);
+  }, [beat]);
+  useEffect(() => () => { setCampBeat(false); }, []);
+
+  if (beat && state) return <CampBeat state={state} />;
 
   if (onEnding) {
     return (

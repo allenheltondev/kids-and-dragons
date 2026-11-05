@@ -14,7 +14,8 @@
  * is a button the player may tap but is never moved to.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import type { RefObject } from "react";
 import type { ReactElement } from "react";
 import { createPortal } from "react-dom";
 import type { FieldGuide } from "@kad/shared";
@@ -105,11 +106,31 @@ export function useHasPendingTurn(): boolean {
   return turnKey !== null || trade;
 }
 
+/**
+ * A phone toast stands just under the hero's own card (the pinned `.sheet`),
+ * never over her name on it (#620; it covered the name in #619's
+ * screenshots). Measured when the toast shows; with no card on the page it
+ * keeps its place at the top.
+ */
+export function useBelowHeroCard(ref: RefObject<HTMLElement | null>, shown: boolean): void {
+  useLayoutEffect(() => {
+    const toast = ref.current;
+    if (!shown || !toast) return;
+    const surface = toast.closest<HTMLElement>("[data-surface]");
+    const card = surface?.querySelector<HTMLElement>(".sheet");
+    if (!surface || !card) return;
+    const below = card.getBoundingClientRect().bottom - surface.getBoundingClientRect().top;
+    if (below > 0) toast.style.insetBlockStart = `${String(Math.round(below + 6))}px`;
+  }, [ref, shown]);
+}
+
 export function FieldGuideToast(): ReactElement | null {
+  const toast = useRef<HTMLDivElement | null>(null);
   const busy = useHasPendingTurn();
   const news = useFieldGuideNews();
   const { guide, settled } = useGuideFor(news.length > 0);
   const ids = useNewsBatch(!busy && settled);
+  useBelowHeroCard(toast, ids !== null);
   if (!ids) return null;
   const titles = titlesOf(guide, ids);
   const first = ids[0]!;
@@ -123,7 +144,7 @@ export function FieldGuideToast(): ReactElement | null {
     }
   };
   return (
-    <div className="guide-news guide-news--phone" role="status" aria-live="polite">
+    <div className="guide-news guide-news--phone" role="status" aria-live="polite" ref={toast}>
       <button type="button" className="guide-news__body" onClick={open}>
         {art
           ? <img className="guide-news__art" src={art} alt="" />

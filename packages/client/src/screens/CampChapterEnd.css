@@ -139,3 +139,46 @@
     animation: none;
   }
 }
+
+/* The chapter end's camp beat on the TV (#620, docs/camp.md §3): a header, the camp in the
+   window between it and the foot (useLobbyInset tells the stage), and what waits beside the
+   fire in the foot. The camp shows through: only the header and foot carry a scrim. */
+.camp-beat {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3, 0.75em);
+  padding: var(--space-4, 1em);
+  color: var(--color-text, #f4f0ff);
+  overflow: hidden;
+}
+.camp-beat__head,
+.camp-beat__foot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  padding: var(--space-2, 0.5em) var(--space-4, 1em);
+  border-radius: var(--radius-lg, 1em);
+  background: var(--kad-bg-overlay, rgba(8, 7, 17, 0.72));
+  text-align: center;
+  align-self: center;
+  max-inline-size: 100%;
+}
+.camp-beat__heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  font-size: var(--font-size-xl, 1.5em);
+  color: var(--color-accent, #f5c86c);
+}
+.camp-beat__crew { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--space-3, 0.75em); }
+.camp-beat__balance { display: inline-flex; align-items: center; gap: 0.35em; font-weight: 700; }
+.camp-beat__grew { margin: 0; font-weight: 700; }
+.camp-beat__window { flex: 1 1 0; min-block-size: 0; pointer-events: none; }
+.camp-beat__beside-heading { display: flex; align-items: center; justify-content: center; gap: 0.4em; margin: 0; font-size: 1.05em; }
+.camp-beat__beside ul { margin: 0.3em 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 0.2em; }
+.camp-beat__hint { margin: 0; }
+.camp-beat .complete__next { margin: 0; display: flex; gap: 0.4em; align-items: center; }

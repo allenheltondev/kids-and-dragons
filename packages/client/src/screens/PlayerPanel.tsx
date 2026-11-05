@@ -98,6 +98,7 @@ import { useRunCampaign } from "./run-campaign";
 import { savedHeading, savedHeroes } from "./save-copy";
 import { VoteTicks } from "./VoteTicks";
 import { CampShopVote, shopLine } from "./CampChapterEnd";
+import { CampButton, CampPanel, KitWelcome } from "./CampPanel";
 import { ClassPlaceChoice } from "./ClassPlace";
 import {
   beginLabel,
@@ -1075,6 +1076,8 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   return (
     <>
     {guideOpen ? <FieldGuide /> : null}
+    {/* The camp (docs/camp.md §3; #620): open from a Camp button, gone with the downtime. */}
+    <CampPanel state={state} me={me} held={held} dispatch={(intent) => void dispatch(intent)} />
     {replayingIntro && runCampaign ? <PrologueReplay campaign={runCampaign} onClose={closeIntro} /> : null}
     {/* `hidden`, not unmounted, while the guide is open: a half-made aim in a
         fight survives a look at the guide, like the bag. */}
@@ -1744,6 +1747,10 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                 {inLobby ? "I'm ready!" : "I'm ready to fight!"}
               </Button>
             )}
+            {/* Beside Ready (docs/camp.md §3): never in its way, and Begin closes it.
+                The first-session choice (§5.3) under them, so Ready stays in reach. */}
+            {inLobby ? <CampButton state={state} /> : null}
+            {inLobby ? <KitWelcome state={state} me={me} held={held} dispatch={(intent) => void dispatch(intent)} /> : null}
             <ul className="prompt__party">
               {party.map((member) => {
                 // Stepped away (#258): not waited on, so not "waiting" either.
@@ -2023,6 +2030,8 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                     <span>{`Your crew has ${String(state.campTally.balance)} Dash Cash. ${shopLine(state.campTally, undefined) ?? ""}`.trim()}</span>
                   </p>
                 ) : null}
+                {/* The camp's beat (docs/camp.md §3, §12.5): place what was found or bought. */}
+                <CampButton state={state} block />
                 <KeepsakeOffer />
                 {/*
                  * A vote, like the ready-up before a fight: one phone's tap used
@@ -2051,6 +2060,8 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                     Back to the lobby
                   </Button>
                 )}
+                {/* The first-session choice (§5.3) under "back to the lobby", never pushing it away. */}
+                <KitWelcome state={state} me={me} held={held} dispatch={(intent) => void dispatch(intent)} />
                 {party.length > 1 ? (
                   <>
                     <p className="prompt__sub kad-muted">
@@ -2392,6 +2403,13 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
         {/* In the lobby the one thing left to do comes last, at the foot of
             the page, after the sheet you have just been looking over — and
             it is the whole answer: the tap says you are ready. */}
+        {/* The camp (docs/camp.md §3; #620): the Camp button, above Ready and
+            never in its way. At a rest stop too. */}
+        {inLobby || atRest ? (
+          <div className="player__camp">
+            <CampButton state={state} block />
+          </div>
+        ) : null}
         {inLobby ? (
           <Button variant="primary" size="lg" block className="player__task-entry player__task-entry--foot"
             icon={<Icon name="hand" />} disabled={(readyRequested && busy) || !synced} onClick={readyToPlay}>

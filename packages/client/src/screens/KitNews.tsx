@@ -17,7 +17,7 @@
  * stand alone.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ReactElement } from "react";
 import { MILESTONE_KIT_PIECES, TIER_IDS } from "@kad/shared";
 import type { ClassId, ClassRank, TierId } from "@kad/shared";
@@ -25,7 +25,7 @@ import { camp as campManifest } from "../../../../assets/manifest.json";
 import { useParty, useSession } from "../store";
 import { ackKitNews, useKitNews, type KitNewsItem } from "../store/kit-news";
 import { noticeMs } from "../ui/notice-timing";
-import { useHasPendingTurn } from "./FieldGuideNews";
+import { useBelowHeroCard, useHasPendingTurn } from "./FieldGuideNews";
 import { TRANSFORM_BEAT_MS } from "./TransformCutscene";
 import "./FieldGuideNews.css";
 import "./KitNews.css";
@@ -96,6 +96,7 @@ function useReadyItems(): KitNewsItem[] {
 }
 
 export function KitNewsToast(): ReactElement | null {
+  const toast = useRef<HTMLDivElement | null>(null);
   const busy = useHasPendingTurn();
   const ready = useReadyItems();
   const [shown, setShown] = useState<KitNewsItem[] | null>(null);
@@ -111,12 +112,13 @@ export function KitNewsToast(): ReactElement | null {
     const timer = setTimeout(() => setShown(null), noticeMs(kitNewsWords(shown)));
     return () => clearTimeout(timer);
   }, [shown]);
+  useBelowHeroCard(toast, shown !== null && shown.length > 0);
   if (!shown || shown.length === 0) return null;
   const first = shown[0]!;
   const art = shown.length === 1 && !artFailed ? artOf(first) : null;
   const lead = shown.length > 1 ? "New for your tent" : first.kind === "tent" ? "New tent unlocked" : "New decoration for your tent";
   return (
-    <div className="guide-news guide-news--phone kit-news" role="status" aria-live="polite" data-testid="kit-news">
+    <div className="guide-news guide-news--phone kit-news" role="status" aria-live="polite" data-testid="kit-news" ref={toast}>
       <div className="guide-news__body">
         {art
           ? <img className="guide-news__art" src={art} alt="" onError={() => setArtFailed(true)} />

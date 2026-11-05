@@ -1,14 +1,20 @@
 /**
  * The camp's beat at a chapter's end (docs/camp.md §5.2, §5.3, §6.2; #619):
  * the chapter's Dash Cash counted in, any lucky drops, and the shop's offer
- * and vote. Kept to the tally and the vote: placing pieces and the camp scene
- * itself are #620's.
+ * and vote; then (#620) the camp itself.
  *
  *   - `CampTally`, on the TV's summary (ChapterCompletePanel): read-only, as
  *     the shared screen always is (docs/tv-read-only-audit.md). The shop's
  *     options and who has voted for each, never a control.
  *   - `CampShopVote`, on a phone: the vote, built like a choice point (spec
  *     §6.1): pick, then confirm, the seats ticking as friends vote.
+ *   - `CampBeat`, on the TV once the tally has been up a while and no vote is
+ *     running (§3, §8.5): the full camp, the crew's pieces placed, the
+ *     heroes in it, and what was found or bought this chapter beside the
+ *     campfire with its hotspot lit for placing. Never put up on its own
+ *     (§12.5): a kid places it from her phone. When a full campaign grew the
+ *     frame, the heroes pitch the new camp first (§4.1). Read-only, and
+ *     nothing waits on it: back to the lobby works throughout.
  *   - `DashCashSparkle`: the little "Dash Cash!" a lucky drop gets, on the TV
  *     and echoed on the phones. Only for a drop that paid; nothing for one
  *     that did not, and never a meter or the odds (§5.2).
@@ -17,10 +23,14 @@
  * names coins, and the summary does not show the purse.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ReactElement } from "react";
-import { SAVE_DASH_CASH } from "@kad/shared";
-import type { CampShopView, CampTally, PartyMember } from "@kad/shared";
+import { SAVE_DASH_CASH, speak } from "@kad/shared";
+import type { CampShopView, CampTally, PartyMember, RunState } from "@kad/shared";
+import { useLobbyInset } from "./LobbyContent";
+import { CrewIdentity } from "./CrewIdentity";
+import { campLayoutFor, campStage } from "../world/lobby-camp";
+import { campBeside, crewName, hotspotName, layoutHotspots, type CampBesideView } from "../world/camp-scene";
 import { Button } from "../ui/Button";
 import { Icon } from "./icons";
 import { VoteTicks } from "./VoteTicks";
@@ -202,6 +212,97 @@ export function CampShopVote({
         </div>
       )}
     </div>
+  );
+}
+
+/**
+ * How long the tally holds the summary before the camp beat turns the page
+ * (§3): long enough to hear the XP and the Dash Cash. A vote under way holds
+ * it on the tally, where its ticks are; nothing else does, and the phones'
+ * "back to the lobby" never waits for it.
+ */
+export const CAMP_BEAT_AFTER_MS = 9000;
+
+/** Whether the summary should be showing the camp beat now. */
+export function campBeatDue(state: Pick<RunState, "camp" | "campShop" | "endingRead">, held: boolean, elapsed: boolean): boolean {
+  if (!state.camp || state.endingRead === false || held || !elapsed) return false;
+  const shop = state.campShop;
+  const voting = shop !== undefined && shop.result === undefined && shop.options.length > 0;
+  return !voting;
+}
+
+/** What the TV says of a piece beside the campfire. */
+export function besideLine(piece: CampBesideView, kindOf: (hotspotId: string) => string | undefined): string {
+  if (piece.hotspotId) {
+    return `${piece.label}: it goes on the ${hotspotName(kindOf(piece.hotspotId) ?? piece.hotspotId).toLowerCase()}. Put it up with Camp on a phone.`;
+  }
+  return `${piece.label}: it goes up when your camp grows.`;
+}
+
+/**
+ * The chapter end's camp beat on the TV: a header, the camp in the window
+ * between it and the foot (told to the stage as the lobby tells it), and in
+ * the foot what waits beside the fire.
+ */
+export function CampBeat({ state }: { state: RunState }): ReactElement {
+  const section = useRef<HTMLElement | null>(null);
+  const windowRef = useRef<HTMLDivElement | null>(null);
+  useLobbyInset(section, windowRef);
+  const layout = campLayoutFor(campStage(state));
+  const beside = layout ? campBeside(state, layout) : [];
+  const kinds = new Map((layout ? layoutHotspots(layout) : []).map((h) => [h.id, h.kind]));
+  const grew = state.camp?.grew === true;
+  const name = crewName(state);
+  const balance = state.campShop?.balance ?? state.campTally?.balance ?? state.camp?.dashCash ?? 0;
+  const lines = beside.map((piece) => besideLine(piece, (id) => kinds.get(id)));
+  const spoken = useRef(false);
+  useEffect(() => {
+    if (spoken.current) return;
+    spoken.current = true;
+    const said = [grew ? "Your camp grew! A tent for every hero." : "Here is your camp.", ...lines].join(" ");
+    speak(said, { source: "narration" });
+  }, [grew, lines]);
+  return (
+    <section className="camp-beat" aria-labelledby="camp-beat-heading" ref={section} data-testid="camp-beat">
+      <header className="camp-beat__head">
+        <h2 className="camp-beat__heading" id="camp-beat-heading">
+          <Icon name="rest" />
+          <span>{grew ? "Your camp grew!" : "Back at camp"}</span>
+        </h2>
+        <div className="camp-beat__crew">
+          <CrewIdentity name={name} compact />
+          <span className="camp-beat__balance">
+            <Icon name="dash_cash" />
+            <span>{dash(balance)}</span>
+          </span>
+        </div>
+        {grew ? <p className="camp-beat__grew">A tent for every hero, and a cookfire.</p> : null}
+      </header>
+      <div className="camp-beat__window" ref={windowRef} aria-hidden="true" />
+      <footer className="camp-beat__foot">
+        {beside.length > 0 ? (
+          <div className="camp-beat__beside" data-testid="camp-beside">
+            <h3 className="camp-beat__beside-heading">
+              <Icon name="star" />
+              <span>New beside the campfire</span>
+            </h3>
+            <ul>
+              {lines.map((line, i) => (
+                <li key={beside[i]!.pieceId} data-beside={beside[i]!.pieceId}>
+                  {line}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <p className="camp-beat__hint kad-muted">Change the camp and your own tent with Camp on your phones.</p>
+        )}
+        <p className="complete__next kad-muted">
+          <Icon name="travel" />
+          <span>Tap &ldquo;Back to the lobby&rdquo; on your phone when you&rsquo;re done.</span>
+        </p>
+      </footer>
+    </section>
   );
 }
 

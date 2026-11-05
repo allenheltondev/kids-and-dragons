@@ -2221,3 +2221,4 @@ html:not([data-contrast="high"]) .hp-bar .sheet__hp-track {
     font-size: min(1.05em, max(0.72em, calc((100cqi - 0.8em) / (var(--name-word, 8) * 0.58))));
   }
 }
+.player__camp { display: flex; flex-direction: column; gap: 0.6rem; margin-block: 0.5rem; flex: none; }

@@ -1,0 +1,218 @@
+// @vitest-environment jsdom
+/**
+ * The phone's camp (#620, docs/camp.md §5.3, §6.1, §12.5, §12.6): the
+ * first-session choice shows once and can be skipped; every camp action has a
+ * named, keyboard-reachable control outside the picture; the shared-edit
+ * limit is said before the first change and, once used, disables further
+ * shared changes with a short message while a new piece stays free; Undo is
+ * offered for your own latest change only; indoors there are no shared spots;
+ * and the panel goes with the downtime, holding nothing up.
+ */
+
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import type { CampMoment, CampView, ClientIntent, HeroKitView, PartyMember, RunState } from "@kad/shared";
+import { makeCharacter, makeMember, makeState } from "../testing/fixtures";
+import { CampButton, CampPanel, KitWelcome } from "./CampPanel";
+import { closeCampPanel, openCampPanel } from "./camp-panel";
+
+const me: PartyMember = makeMember({
+  playerId: "p_1",
+  character: makeCharacter({ id: "c_1", ownerPlayerId: "p_1", name: "Sparklehoof" }),
+});
+const friend: PartyMember = makeMember({
+  playerId: "p_2",
+  character: makeCharacter({ id: "c_2", ownerPlayerId: "p_2", name: "Thistle" }),
+});
+
+const kit = (over: Partial<HeroKitView> = {}): HeroKitView => ({ revision: 4, style: null, tent: null, color: null, slots: [null, null], unlocked: [], ...over });
+const camp = (over: Partial<CampView> = {}): CampView => ({
+  revision: 2,
+  frameStage: 2,
+  grownBy: ["gemfall"],
+  dashCash: 3,
+  owned: ["shop_striped_awning", "find_noodle_awning", "shop_lantern_string", "shop_weathervane_pole"],
+  placed: {},
+  friends: [],
+  buddies: {},
+  shopOpen: true,
+  ...over,
+});
+const moment = (over: Partial<CampMoment> = {}): CampMoment => ({ id: "lobby|r:-:0", kind: "lobby", outdoor: true, changes: {}, ...over });
+const table = (over: Partial<RunState> = {}): RunState =>
+  makeState({ phase: "lobby", party: [me, friend], camp: camp(), campMoment: moment(), kits: { c_1: kit(), c_2: kit() }, ...over });
+
+let sent: ClientIntent[] = [];
+const dispatch = (intent: ClientIntent): void => {
+  sent.push(intent);
+};
+
+beforeEach(() => {
+  sent = [];
+  globalThis.localStorage?.clear();
+});
+afterEach(() => {
+  cleanup();
+  act(() => closeCampPanel());
+});
+
+describe("the first-session choice (§5.3)", () => {
+  it("offers a one-tap style for an unchosen hero, and picking it writes her kit", () => {
+    render(<KitWelcome state={table()} me={me} held={false} dispatch={dispatch} />);
+    expect(screen.getByRole("heading", { name: "Pick your camp style!" })).toBeTruthy();
+    fireEvent.click(screen.getByRole("radio", { name: "Mint" }));
+    fireEvent.click(screen.getByRole("button", { name: "Quilted" }));
+    expect(sent).toEqual([{ type: "KIT_EDIT", characterId: "c_1", revision: 4, style: "quilted", tent: "quilted", color: "rose" }]);
+    expect(screen.queryByTestId("kit-welcome")).toBeNull();
+  });
+
+  it("can be skipped, and shows only once", () => {
+    const { unmount } = render(<KitWelcome state={table()} me={friend} held={false} dispatch={dispatch} />);
+    fireEvent.click(screen.getByRole("button", { name: "Skip for now" }));
+    expect(screen.queryByTestId("kit-welcome")).toBeNull();
+    expect(sent).toEqual([]);
+    unmount();
+    render(<KitWelcome state={table()} me={friend} held={false} dispatch={dispatch} />);
+    expect(screen.queryByTestId("kit-welcome")).toBeNull();
+  });
+
+  it("is never offered to a hero whose kid already chose, nor without a camp, nor in a scene", () => {
+    render(<KitWelcome state={table({ kits: { c_1: kit({ style: "rolled" }) } })} me={me} held={false} dispatch={dispatch} />);
+    render(<KitWelcome state={table({ camp: undefined })} me={me} held={false} dispatch={dispatch} />);
+    render(<KitWelcome state={table({ phase: "scene", campMoment: undefined })} me={me} held={false} dispatch={dispatch} />);
+    expect(screen.queryByTestId("kit-welcome")).toBeNull();
+  });
+});
+
+function openPanel(state: RunState): ReturnType<typeof render> {
+  const view = render(
+    <>
+      <CampButton state={state} />
+      <CampPanel state={state} me={me} held={false} dispatch={dispatch} />
+    </>,
+  );
+  fireEvent.click(screen.getByRole("button", { name: "Camp" }));
+  return view;
+}
+
+describe("the Camp panel's controls (§12.6, docs/accessibility.md)", () => {
+  it("names every action outside the picture, and keeps the picture's own taps out of the tab order", () => {
+    openPanel(table());
+    const dialog = screen.getByRole("dialog", { name: /camp$/ });
+    // Every button the kid can reach has a name.
+    for (const button of within(dialog).getAllByRole("button")) expect(button.textContent?.trim() || button.getAttribute("aria-label")).toBeTruthy();
+    // Her kit: tent, bedroll and pack, color, and her decoration spots.
+    for (const name of ["Tent", "Bedroll and pack", "Color", "Decorations on your tent"]) expect(within(dialog).getByRole("group", { name })).toBeTruthy();
+    expect(within(dialog).getByRole("combobox", { name: "Spot 1" })).toBeTruthy();
+    expect(within(dialog).getByRole("combobox", { name: "Spot 2" })).toBeTruthy();
+    // Each shared spot, by name, with what it shows.
+    expect(within(dialog).getByRole("group", { name: "Cookfire: Cookfire" })).toBeTruthy();
+    expect(within(dialog).getByRole("group", { name: "Awning: nothing yet" })).toBeTruthy();
+    expect(within(dialog).getByRole("group", { name: "Banner pole: Crew banner" })).toBeTruthy();
+    // The picture is decoration for a screen reader; its tap targets are not tab stops.
+    const picture = dialog.querySelector(".camp-panel__picture")!;
+    expect(picture.getAttribute("aria-hidden")).toBe("true");
+    for (const tap of picture.querySelectorAll("button")) expect(tap.tabIndex).toBe(-1);
+  });
+
+  it("changes only her own kit, with no limit", () => {
+    openPanel(table());
+    const tent = screen.getByRole("group", { name: "Tent" });
+    fireEvent.click(within(tent).getByRole("button", { name: /Patched tent/ }));
+    fireEvent.click(within(screen.getByRole("group", { name: "Color" })).getByRole("button", { name: "Blue" }));
+    fireEvent.change(screen.getByRole("combobox", { name: "Spot 1" }), { target: { value: "deco_pinwheel" } });
+    expect(sent).toEqual([
+      { type: "KIT_EDIT", characterId: "c_1", revision: 4, tent: "patched" },
+      { type: "KIT_EDIT", characterId: "c_1", revision: 4, color: "meadow" },
+      { type: "KIT_EDIT", characterId: "c_1", revision: 4, slots: ["deco_pinwheel", null] },
+    ]);
+    // Her friend's kit is not hers to change.
+    expect(screen.queryByText("Thistle's kit")).toBeNull();
+    // A milestone tent she has not earned is not offered.
+    expect(within(tent).queryByRole("button", { name: /Mythic/ })).toBeNull();
+  });
+
+  it("says the shared limit before the first change, then picks for a spot", () => {
+    openPanel(table());
+    expect(screen.getByTestId("camp-limit-rule").textContent).toMatch(/one camp spot at each stop/);
+    expect(screen.queryByTestId("camp-limit-used")).toBeNull();
+    const awning = screen.getByRole("group", { name: "Awning: nothing yet" });
+    fireEvent.click(within(awning).getByRole("button", { name: "Striped awning" }));
+    expect(sent).toEqual([{ type: "CAMP_PLACE", moment: "lobby|r:-:0", hotspot: "awning", piece: "shop_striped_awning" }]);
+  });
+
+  it("once the change is used, disables further shared changes with a short message, and offers Undo", () => {
+    const used = table({
+      camp: camp({ placed: { awning: "shop_striped_awning" } }),
+      campMoment: moment({ changes: { p_1: [{ hotspot: "awning", before: null, after: "shop_striped_awning", counted: true }] } }),
+    });
+    openPanel(used);
+    expect(screen.getByTestId("camp-limit-used").textContent).toMatch(/camp change for now/);
+    const lanterns = screen.getByRole("group", { name: "Lanterns: nothing yet" });
+    expect((within(lanterns).getByRole("button", { name: "Lantern string" }) as HTMLButtonElement).disabled).toBe(true);
+    // Her own kit is still hers to change.
+    expect((within(screen.getByRole("group", { name: "Tent" })).getAllByRole("button")[0] as HTMLButtonElement).disabled).toBe(false);
+    fireEvent.click(screen.getByRole("button", { name: "Undo my change to the awning" }));
+    expect(sent).toEqual([{ type: "CAMP_UNDO", moment: "lobby|r:-:0" }]);
+  });
+
+  it("offers no Undo once somebody else has picked over her change", () => {
+    openPanel(
+      table({
+        camp: camp({ placed: { awning: "find_noodle_awning" } }),
+        campMoment: moment({
+          changes: {
+            p_1: [{ hotspot: "awning", before: null, after: "shop_striped_awning", counted: true }],
+            p_2: [{ hotspot: "awning", before: "shop_striped_awning", after: "find_noodle_awning", counted: true }],
+          },
+        }),
+      }),
+    );
+    expect(screen.queryByTestId("camp-undo")).toBeNull();
+  });
+
+  it("keeps a piece first owned this chapter free at the chapter's end, its spot lit", () => {
+    const end = table({
+      phase: "chapter_complete",
+      campMoment: moment({ id: "chapterEnd|r:c:9", kind: "chapterEnd", changes: { p_1: [{ hotspot: "awning", before: null, after: "shop_striped_awning", counted: true }] } }),
+      camp: camp({ placed: { awning: "shop_striped_awning" } }),
+      campShop: { visit: "v", balance: 0, options: [], votes: {}, result: { kind: "bought", pieceId: "shop_weathervane_pole", label: "Weathervane pole" } },
+    });
+    openPanel(end);
+    const pole = screen.getByRole("group", { name: "Banner pole: Crew banner" });
+    expect(pole.className).toContain("is-lit");
+    const weathervane = within(pole).getByRole("button", { name: /Weathervane pole/ }) as HTMLButtonElement;
+    expect(weathervane.textContent).toContain("New, free");
+    expect(weathervane.disabled).toBe(false);
+  });
+
+  it("has no shared spots indoors, where her own kit still changes", () => {
+    openPanel(table({ phase: "scene", sceneType: "rest", campMoment: moment({ id: "rest:s|x", kind: "rest", outdoor: false }) }));
+    expect(screen.getByTestId("camp-indoors")).toBeTruthy();
+    expect(screen.queryByTestId("camp-limit-rule")).toBeNull();
+    expect(screen.getByRole("group", { name: "Tent" })).toBeTruthy();
+  });
+
+  it("goes with the downtime: Begin closes it, and there is no Camp button in a scene", () => {
+    const state = table();
+    const view = openPanel(state);
+    expect(screen.getByTestId("camp-panel")).toBeTruthy();
+    view.rerender(
+      <>
+        <CampButton state={{ ...state, phase: "scene", campMoment: undefined }} />
+        <CampPanel state={{ ...state, phase: "scene", campMoment: undefined }} me={me} held={false} dispatch={dispatch} />
+      </>,
+    );
+    expect(screen.queryByTestId("camp-panel")).toBeNull();
+    expect(screen.queryByRole("button", { name: "Camp" })).toBeNull();
+  });
+
+  it("closes with Done or Escape", () => {
+    openPanel(table());
+    fireEvent.keyDown(window, { key: "Escape" });
+    expect(screen.queryByTestId("camp-panel")).toBeNull();
+    act(() => openCampPanel());
+    fireEvent.click(screen.getByRole("button", { name: "Done" }));
+    expect(screen.queryByTestId("camp-panel")).toBeNull();
+  });
+});
