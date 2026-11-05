@@ -46,6 +46,12 @@ describe("phone combat feedback", () => {
     const arrived = { ...state, combatants: state.combatants.map(c => c.side === "party" ? { ...c, escaped: true as const } : c) };
     expect(crossingProgress(arrived)).toMatch(/^1\/1 at the big campfire: .+\.$/);
   });
+  it.each(["lower-ledge", "upper-ledge"])("counts saved arrivals past %s", id => {
+    const state = { ...encounter, environment: { expired: false, spec: { exits: [{ id, label: "Ledge", tiles: [{ x: 4, y: 1 }] }] } } };
+    expect(crossingProgress(state)).toBe("0/1 past the ledges.");
+    const arrived = { ...state, combatants: state.combatants.map(c => c.side === "party" ? { ...c, escaped: true as const } : c) };
+    expect(crossingProgress(JSON.parse(JSON.stringify(arrived)))).toMatch(/^1\/1 past the ledges: .+\.$/);
+  });
   it("attaches damage, healing, protection and dodge to the affected fighter", () => {
     expect(combatFeedback([
       { type: "damage", actorId: "wisp#1", amount: 3, hp: 3 },
