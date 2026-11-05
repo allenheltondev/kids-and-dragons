@@ -245,3 +245,61 @@ describe('camp art inventory', () => {
     }
   });
 });
+
+/**
+ * A hero's gear is fitted to her painted box (packages/client/src/world/camp-ownership.ts
+ * `HERO_PAINT`): per species, the most any of her paintings (every tier, every class figure)
+ * covers of her drawn height, measured as actor-art.ts `measurePaint` measures (alpha over 64 on a
+ * 256px copy). The table must cover every painting, so her gear fits each, and stay close to the
+ * largest, so it is not fitted to a hero bigger than any she is drawn as.
+ */
+describe('the hero paint boxes gear is fitted to', () => {
+  it('cover every hero painting, and no more than a little past the largest', async () => {
+    const { HERO_PAINT } = await import('../../packages/client/src/world/camp-ownership.ts');
+    const code = `
+import glob, json, collections
+from PIL import Image
+nominal = 900 / 1024 - 0.078
+out = collections.defaultdict(lambda: [0.0, 0.0])
+paths = glob.glob('assets/characters/*/*/assembled.png') + glob.glob('assets/character-rigs/*/*/*/assembled.png')
+for path in paths:
+    species = path.split('/')[-2] if 'character-rigs' in path else path.split('/')[2]
+    alpha = Image.open(path).convert('RGBA').resize((256, 256)).getchannel('A').point(lambda v: 255 if v > 64 else 0)
+    l, t, r, b = alpha.getbbox()
+    out[species][0] = max(out[species][0], (b - t) / 256 / nominal)
+    out[species][1] = max(out[species][1], (r - l) / 256 / nominal)
+print(json.dumps(out))
+`;
+    const measured = JSON.parse(execFileSync('python3', ['-c', code], { cwd: join(art, '..', '..'), encoding: 'utf8' })) as Record<string, [number, number]>;
+    expect(Object.keys(measured).sort()).toEqual(Object.keys(HERO_PAINT).sort());
+    for (const [species, [height, width]] of Object.entries(measured)) {
+      const table = HERO_PAINT[species]!;
+      expect(table.height, `${species} height`).toBeGreaterThanOrEqual(height);
+      expect(table.width, `${species} width`).toBeGreaterThanOrEqual(width);
+      expect(table.height - height, `${species} height`).toBeLessThan(0.02);
+      expect(table.width - width, `${species} width`).toBeLessThan(0.02);
+    }
+  });
+});
+
+describe('the Phase 2 prompts, in step with the stage-2 layout (#620)', () => {
+  const prompts = JSON.parse(readFileSync(join(art, '..', '..', 'docs', 'camp-art-prompts-phase2.json'), 'utf8')) as { paintings: { path: string; plays: string }[] };
+  const camp = (manifest as unknown as { camp: { crewPieces: { id: string; path: string; hotspot: string; heightCm: number; widthCm: number }[]; frames: { hotspots?: { kind: string; lane: string }[] }[] } }).camp;
+  const stage2 = camp.frames[1]!.hotspots!;
+
+  it("says each crew piece's true height and width, and the lane its spot stands on", () => {
+    for (const piece of camp.crewPieces) {
+      const painting = prompts.paintings.find((p) => p.path === `assets/${piece.path}`)!;
+      expect(painting.plays, piece.id).toContain(`Drawn at ${piece.heightCm} cm tall and ${piece.widthCm} cm wide.`);
+      const lane = stage2.find((h) => h.kind === piece.hotspot)!.lane;
+      expect(painting.plays, piece.id).toContain(`${lane} lane`);
+    }
+  });
+
+  it('sizes a tent to fit its owner, and hangs her souvenir line against her tent', () => {
+    for (const painting of prompts.paintings.filter((p) => /kits\/tents\/[a-z]+\.png$/.test(p.path))) {
+      expect(painting.plays, painting.path).toMatch(/fit its owner/);
+    }
+    expect(prompts.paintings.find((p) => p.path.endsWith('souvenir-line.png'))!.plays).toMatch(/back lane against the inner side of each hero's tent/);
+  });
+});

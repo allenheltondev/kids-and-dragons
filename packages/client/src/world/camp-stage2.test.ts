@@ -67,7 +67,7 @@ const texts = (root: Container): string[] => {
 };
 
 describe("frame stage 2", () => {
-  it("pitches a tent for each seat, in its hero's color and named, while the tents are unpainted", async () => {
+  it("pitches a tent for each seat, in its hero's color and named over it, while the tents are unpainted", async () => {
     const layout = campLayoutFor(2)!;
     expect(layout.frame.stage).toBe(2);
     const app = fakeApp();
@@ -84,7 +84,9 @@ describe("frame stage 2", () => {
     const all = labels(camp.view);
     for (const seat of [0, 1, 2, 3]) expect(all).toContain(`piece:tent_${String(seat)}`);
     expect(all.filter((l) => l === "camp-stand-in:tent")).toHaveLength(4);
-    expect(texts(camp.view)).toEqual(expect.arrayContaining(["Hero 1's tent", "Hero 2's tent", "Tent"]));
+    // Her name over her tent; an empty seat's tent is pale and says nothing.
+    expect(texts(camp.view)).toEqual(expect.arrayContaining(["Hero 1", "Hero 2"]));
+    expect(texts(camp.view)).not.toContain("Tent");
     // Her one decoration hangs on her tent.
     expect(all.filter((l) => l === "camp-stand-in:decoration")).toHaveLength(1);
     // The crew's pieces at their spots, and its name on the banner.

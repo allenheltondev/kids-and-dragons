@@ -577,6 +577,23 @@ camp's spots on that ground.
   point, crossing and place in the trailhead's line is moved in from the edge by the figure's
   width (`campVisibleSpan`); a line too long for what is left runs on behind the trailhead, and
   one wider than the whole span takes a second row on the next lane back.
+- **A hero's own gear fits her** (*decided*, #620). Her bedroll is drawn about 1.2 times her drawn
+  body length (the longer of her drawn height and width), so she could lie in it, its pack in
+  proportion on the same painting; her tent about 1.25 times her drawn height and at least 1.3
+  times her drawn width, so she could fit inside. Her drawn box is her species' painted box
+  (`HERO_PAINT`, the largest any of her paintings covers), so a bigfoot's gear is about 215/85 of a
+  kitsune's and nothing is floored. It is a minimum: gear already bigger keeps its own size. The
+  constants live in one place (`camp-ownership.ts`); the moving camp, the still camp and a phone's
+  Camp panel all size from it.
+- **Nothing overlaps.** Every piece is a box at its true size (a shared piece's `heightCm` and
+  `widthCm`, a hero's gear fitted to her), and at stage 2 no shared piece's box overlaps a tent or
+  another piece, tall pieces (the banner pole, the lanterns, the awning) stand at the sides or
+  behind and never in front of a tent, and the small labels over stand-ins never collide
+  (`camp-boxes.ts`, tested on the real manifest for four bigfoots, four kitsune, a mix and four of
+  every species, at 1280 x 720 and 1920 x 1080). The spots are spaced for those parties at full
+  size; a party whose gear is wider still (four manticores or griffins) is drawn a little smaller,
+  never piled up (`campRowScale`, never under 0.9). The focus band holds the tents and the names
+  over them, not only the heads.
 - **Indoors, one lane.** A packed-down camp (§3.2) uses a single generic layout laid over the
   scene's own picture: one near lane along the bottom, a bedroll stand point for each hero and a
   spot for each friend. No per-scene authoring.

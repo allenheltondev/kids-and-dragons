@@ -3,35 +3,44 @@
  * or the plains biome's own background standing in for it until it is
  * painted, every seated hero at her bedroll or tent, and the crew's pieces at
  * their hotspots. For a screen with no WebGL, and for a phone's Camp panel,
- * which is this picture with its hotspots tappable (`onSpot`). Framed the way
- * the moving camp is (camp-framing.ts `campFraming`): covering the pane's
- * width, slid so the camp stands in the window, its plain edges drawn on where
- * it stops short of the pane, and its heroes drawn smaller when the window is
- * too short for them at full size. No renderer: plain images and SVG,
- * positioned in percent of the backdrop's box, which is placed in px off the
- * pane's measured size.
+ * which is this picture with its hotspots tappable (`onSpot`).
  *
- * Art that is not painted yet is drawn as a labelled stand-in, as the moving
- * camp draws it (camp-stand-in.ts): a tent in her color with her name, a named
- * box for a piece.
+ * On the shared screen it is framed the way the moving camp is (camp-boxes.ts
+ * `campFitFor`): covering the pane's width, slid so the camp stands in the
+ * window, its plain edges drawn on where it stops short of the pane, and its
+ * heroes drawn smaller when the window is too short for them at full size.
+ *
+ * In a phone's Camp panel (`fit="width"`) the panel is for picking spots, so
+ * it shows the camp's whole width instead: the painting is scaled to the
+ * panel's width and cropped to the camp's band (sky and foreground trimmed,
+ * never the sides), and every pickable spot gets a chip under the picture,
+ * big enough for a child's finger (docs/accessibility.md `--kad-touch-min`),
+ * with a thin line up to its spot.
+ *
+ * Every piece is placed from the same boxes the moving camp draws
+ * (camp-boxes.ts `campBoxes`): a hero's gear fitted to her, a shared piece at
+ * its true height and width. Art that is not painted yet is a quiet stand-in,
+ * as the moving camp draws it (camp-stand-in.ts): a soft tent in her color, a
+ * pale rounded silhouette for a piece, and a small label laid out clear of the
+ * others. No renderer: plain images and SVG, positioned in percent of the
+ * backdrop's box, which is placed in px off the pane's measured size.
  */
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import type { ReactNode } from "react";
 import type { RunState } from "@kad/shared";
 import type { CampLayout } from "./camp-layout";
-import { BLEED_SOURCE, campBleed, campFit, campVisibleSpan, campWindow } from "./camp-framing";
+import { BLEED_SOURCE, campBleed, campFocusBand, campVisibleSpan, campWindow, type CampFraming } from "./camp-framing";
 import { LOBBY_CAMP_STAND_IN, campDressing, campHeroes, stillCampFigures } from "./lobby-camp";
 import { lobbyInsetBottom, lobbyInsetTop, onLobbyInset, onLobbyInsetTop } from "./stage-inset";
-import { campHeightPx, campMeasure } from "./camp-motion";
-import { pieceHeightCm } from "./camp-layout";
 import { ANCHOR_Y } from "./art-paths";
 import { NOMINAL_PAINT } from "./figure-scale";
 import { CampBedroll } from "./CampBedroll";
 import { Campfire } from "./Campfire";
 import { CAMP_KIT_STYLES, campKitStyle } from "./camp-kit-art";
-import { campOwnedScale, campPieceOwner } from "./camp-ownership";
-import { tentArt } from "./camp-scene";
+import { campPieceOwner } from "./camp-ownership";
+import { campBoxes, campFitFor, campReachOf, campRowScale, type CampBox, type CampBoxInput } from "./camp-boxes";
+import { hotspotName, tentArt } from "./camp-scene";
 import "./StaticStage.css";
 
 /** The paint's share of a figure canvas's height: what a piece's size is measured against. */
@@ -39,57 +48,101 @@ const PAINT = ANCHOR_Y - NOMINAL_PAINT.top;
 /** In the 1024 canvas: the ground, and the top of a nominally painted piece. */
 const GROUND = 900;
 const TOP = NOMINAL_PAINT.top * 1024;
+/** A phone chip's row, px: the touch target and the gap under it. */
+const CHIP_ROW = 60;
 
-/** Its painting, or the stand-in while that is owed. */
-function ArtOr({ src, children }: { src: string | null; children: ReactNode }): React.JSX.Element {
+/** Its painting, or the stand-in while that is owed (and the owed one is reported, for its label). */
+function ArtOr({ src, children, onMissing }: { src: string | null; children: ReactNode; onMissing?: (src: string) => void }): React.JSX.Element {
   const [failed, setFailed] = useState<string | null>(null);
   if (!src || failed === src) return <>{children}</>;
-  return <img src={src} alt="" onError={() => setFailed(src)} />;
+  return (
+    <img
+      src={src}
+      alt=""
+      onError={() => {
+        setFailed(src);
+        onMissing?.(src);
+      }}
+    />
+  );
 }
 
-/** A ridge tent in her color, before her tent is painted. */
-export function TentStandIn({ accent, decorations }: { accent: string; decorations: number }): React.JSX.Element {
-  const w = 760;
-  const diamonds = Array.from({ length: Math.min(3, decorations) }, (_, i) => {
-    const x = 512 - w / 2 + ((i + 1) / (Math.min(3, decorations) + 1)) * w;
-    const y = TOP + (GROUND - TOP) * (Math.abs(x - 512) / (w / 2)) + 60;
-    return <path key={i} d={`M${x} ${y - 36}L${x + 36} ${y}L${x} ${y + 36}L${x - 36} ${y}Z`} fill="#ffd36e" stroke="#6b4f2a" strokeWidth="8" />;
+/** A soft-edged tent in her color, before her tent is painted; `width` is its drawn width over its height. */
+export function TentStandIn({ accent, decorations, width = 1.1, owned = true }: { accent: string; decorations: number; width?: number; owned?: boolean }): React.JSX.Element {
+  const h = GROUND - TOP;
+  const w = Math.min(1000, h * width);
+  const l = 512 - w / 2;
+  const r = 512 + w / 2;
+  const d = `M${l} ${GROUND}C${512 - w * 0.41} ${GROUND - h * 0.35} ${512 - w * 0.17} ${GROUND - h * 0.82} ${512 - w * 0.05} ${GROUND - h * 0.98}Q512 ${TOP - h * 0.02} ${512 + w * 0.05} ${GROUND - h * 0.98}C${512 + w * 0.17} ${GROUND - h * 0.82} ${512 + w * 0.41} ${GROUND - h * 0.35} ${r} ${GROUND}Z`;
+  const count = Math.min(3, decorations);
+  const dots = Array.from({ length: count }, (_, i) => {
+    const t = (i + 1) / (count + 1);
+    const x = 512 - w * 0.42 + t * w * 0.3;
+    const y = GROUND - h * (0.12 + 0.62 * t);
+    return <circle key={i} cx={x} cy={y} r={h * 0.045} fill="#ffd36e" />;
   });
+  const fill = owned ? accent : "#c9b99a";
   return (
-    <svg viewBox="0 0 1024 1024" aria-hidden="true" data-stand-in="tent">
-      <path d={`M${512 - w / 2} ${GROUND}L512 ${TOP}L${512 + w / 2} ${GROUND}Z`} fill={accent} stroke="#3b2d1c" strokeWidth="14" />
-      <path d={`M${512 - 100} ${GROUND}L512 ${GROUND - 450}L${512 + 100} ${GROUND}Z`} fill="#000" opacity=".35" />
-      {diamonds}
+    <svg viewBox="0 0 1024 1024" aria-hidden="true" data-stand-in="tent" data-owned={owned ? "true" : "false"} overflow="visible">
+      <path d={d} fill={fill} opacity={owned ? 0.92 : 0.45} stroke={fill} strokeOpacity=".35" strokeWidth="26" strokeLinejoin="round" />
+      <path d={`M${512 - w * 0.04} ${GROUND - h * 0.97}C${512 - w * 0.22} ${GROUND - h * 0.7} ${512 - w * 0.38} ${GROUND - h * 0.3} ${512 - w * 0.46} ${GROUND}L${512 - w * 0.1} ${GROUND}Z`} fill="#fff" opacity={owned ? 0.12 : 0.06} />
+      <path d={`M${512 - w * 0.13} ${GROUND}Q${512 - w * 0.12} ${GROUND - h * 0.5} 512 ${GROUND - h * 0.52}Q${512 + w * 0.12} ${GROUND - h * 0.5} ${512 + w * 0.13} ${GROUND}Z`} fill="#000" opacity={owned ? 0.3 : 0.12} />
+      {dots}
     </svg>
   );
 }
 
-/** A named box, before a piece is painted. */
-function PieceStandIn({ label }: { label: string }): React.JSX.Element {
+/** A pale, rounded silhouette at a piece's true height and width (`width`, over its height), before it is painted. */
+function PieceStandIn({ width }: { width: number }): React.JSX.Element {
+  const h = GROUND - TOP;
+  const w = Math.max(40, h * width);
+  const r = Math.min(w, h) * 0.45;
   return (
-    <svg viewBox="0 0 1024 1024" aria-hidden="true" data-stand-in="piece">
-      <rect x="392" y={TOP} width="240" height={GROUND - TOP} rx="30" fill="#2a2f4a" fillOpacity=".28" stroke="#8b6cf5" strokeWidth="12" />
-      <text x="512" y={GROUND + 70} textAnchor="middle" dominantBaseline="middle" fontSize="90" fontWeight="700" fill="#fdf6e3" stroke="#1d1a2c" strokeWidth="18" paintOrder="stroke">
-        {label}
-      </text>
+    <svg viewBox="0 0 1024 1024" aria-hidden="true" data-stand-in="piece" overflow="visible">
+      <rect x={512 - w / 2} y={TOP} width={w} height={h} rx={r} fill="#f3ead6" fillOpacity=".2" stroke="#f3ead6" strokeOpacity=".32" strokeWidth="10" />
     </svg>
   );
 }
 
-/** The souvenir line beside her tent: a pennant per souvenir. */
+/** The souvenir line on her tent: a pennant per souvenir. */
 function SouvenirStandIn({ accent, count }: { accent: string; count: number }): React.JSX.Element {
   const n = Math.min(4, count);
   return (
     <svg viewBox="0 0 1024 1024" aria-hidden="true" data-stand-in="souvenirs">
-      <path d={`M232 ${GROUND}V${TOP}M792 ${GROUND}V${TOP}`} stroke="#6b4f2a" strokeWidth="24" />
-      <path d={`M232 ${TOP + 60}Q512 ${TOP + 220} 792 ${TOP + 60}`} stroke="#e8dcc0" strokeWidth="10" fill="none" />
+      <path d={`M232 ${GROUND}V${TOP}M792 ${GROUND}V${TOP}`} stroke="#6b4f2a" strokeWidth="20" strokeOpacity=".8" />
+      <path d={`M232 ${TOP + 60}Q512 ${TOP + 220} 792 ${TOP + 60}`} stroke="#e8dcc0" strokeWidth="10" fill="none" strokeOpacity=".8" />
       {Array.from({ length: n }, (_, i) => {
         const x = 232 + ((i + 1) / (n + 1)) * 560;
         const y = TOP + 120;
-        return <path key={i} d={`M${x - 50} ${y}L${x + 50} ${y}L${x} ${y + 150}Z`} fill={accent} stroke="#3b2d1c" strokeWidth="8" />;
+        return <path key={i} d={`M${x - 50} ${y}L${x + 50} ${y}L${x} ${y + 150}Z`} fill={accent} opacity=".9" />;
       })}
     </svg>
   );
+}
+
+/** A chip under the phone's picture: its spot's x, its row, and its width, px. */
+interface Chip {
+  id: string;
+  label: string;
+  x: number;
+  left: number;
+  width: number;
+  row: number;
+}
+
+/** Chips in rows, left to right, each as near its spot as it can be without touching another. */
+export function chipRows(spots: readonly { id: string; label: string; x: number }[], paneWidth: number, charPx = 8.6): Chip[] {
+  const rows: number[] = [];
+  return [...spots]
+    .sort((a, b) => a.x - b.x)
+    .map((spot) => {
+      const width = Math.min(paneWidth - 8, spot.label.length * charPx + 28);
+      const left = Math.max(4, Math.min(paneWidth - width - 4, spot.x - width / 2));
+      let row = rows.findIndex((right) => right + 6 <= left);
+      if (row < 0) row = rows.push(-Infinity) - 1;
+      rows[row] = left + width;
+      return { id: spot.id, label: spot.label, x: spot.x, left, width, row };
+    });
 }
 
 export interface StillCampProps {
@@ -101,9 +154,11 @@ export interface StillCampProps {
   onSpot?: (hotspotId: string) => void;
   /** The hotspot a phone has open, ringed. */
   activeSpot?: string | null;
+  /** "cover", the shared screen's framing; "width", a phone's Camp panel: the whole camp across, its band only. */
+  fit?: "cover" | "width";
 }
 
-export function StillCamp({ layout, state, insets, onSpot, activeSpot = null }: StillCampProps): React.JSX.Element {
+export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fit: mode = "cover" }: StillCampProps): React.JSX.Element {
   const host = useRef<HTMLDivElement | null>(null);
   const [pane, setPane] = useState({ width: 0, height: 0 });
   const lobbyBottom = useSyncExternalStore(onLobbyInset, lobbyInsetBottom, lobbyInsetBottom);
@@ -111,6 +166,8 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null }: 
   const inset = insets?.bottom ?? lobbyBottom;
   const insetTop = insets?.top ?? lobbyTop;
   const [backdrop, setBackdrop] = useState(`/assets/${layout.backdrop.path}`);
+  const [missing, setMissing] = useState<ReadonlySet<string>>(new Set());
+  const owed = (src: string): void => setMissing((was) => (was.has(src) ? was : new Set([...was, src])));
 
   useEffect(() => {
     const element = host.current;
@@ -124,36 +181,100 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null }: 
   }, []);
 
   const heroes = campHeroes(state);
-  // The moving camp's one rule (camp-framing.ts `campFit`): heroes shrink,
-  // never the painting, when the band would not fit the window at full size.
-  const fit = pane.width > 0 && pane.height > 0
-    ? campFit(pane.width, campWindow(pane.height, insetTop, inset), layout, heroes.map((hero) => hero.figure.heightCm))
-    : null;
-  const at = fit?.framing ?? null;
-  const scale = fit?.figureScale ?? 1;
-  const figures = stillCampFigures(layout, heroes, scale, at ? campVisibleSpan(pane.width, at, layout.canvas.width) : undefined);
-  const box = at
-    ? { left: at.x, top: at.y, width: layout.canvas.width * at.scale, height: layout.canvas.height * at.scale }
-    : { left: 0, top: 0, width: 0, height: 0 };
-  const bleed = at ? campBleed(pane.height, at, layout.canvas) : { top: 0, bottom: 0 };
-  const measure = campMeasure(layout.canvas.height);
   const dressing = campDressing(state, layout);
-  /** A piece's box height as a fraction of the frame, on `lane`, `heightCm` tall. */
-  const sizeOf = (heightCm: number, laneScale: number, paint = PAINT, owner = 1) =>
-    (campHeightPx(heightCm, measure) * owner * laneScale * scale) / paint / layout.canvas.height;
-  // An edge strip: the painting's own plain top or bottom quarter, stretched
-  // over what the pane has past that edge and flipped so the seam meets itself.
+  const input: Omit<CampBoxInput, "figureScale"> = {
+    heroes: heroes.map(({ figure }) => ({
+      seat: figure.seat!,
+      heightCm: figure.heightCm,
+      id: figure.id,
+      ...(figure.species ? { species: figure.species } : {}),
+      ...(figure.name ? { name: figure.name } : {}),
+      kitStyle: figure.kitStyle ?? null,
+      souvenirs: figure.souvenirs ?? 0,
+    })),
+    spots: dressing.spots,
+    beside: dressing.beside,
+  };
+  const heights = heroes.map((hero) => hero.figure.heightCm);
+  const W = layout.canvas.width;
+  const H = layout.canvas.height;
+
+  // The framing: the shared screen's cover-fit, or the panel's whole width.
+  let at: CampFraming | null = null;
+  let scale = 1;
+  let rootHeight: number | undefined;
+  let bandPx = 0;
+  let bandTop = 0;
+  if (mode === "width" && pane.width > 0) {
+    scale = layout.frame.hotspots ? campRowScale(layout, input) : 1;
+    const reach = layout.frame.hotspots ? campReachOf(layout, campBoxes(layout, { ...input, figureScale: 1 })) : [];
+    const band = campFocusBand(layout, heights, scale, reach);
+    const s = pane.width / W;
+    bandTop = band.top;
+    bandPx = (band.bottom - band.top) * H * s;
+    at = { scale: s, x: 0, y: -band.top * H * s };
+  } else if (mode === "cover" && pane.width > 0 && pane.height > 0) {
+    const fitted = campFitFor(pane.width, campWindow(pane.height, insetTop, inset), layout, input, 0.5, heights);
+    at = fitted.framing;
+    scale = fitted.figureScale;
+  }
+  const boxes = campBoxes(layout, { ...input, figureScale: scale });
+  const boxOf = new Map(boxes.map((b) => [b.id, b]));
+  const figures = stillCampFigures(layout, heroes, scale, at && mode === "cover" ? campVisibleSpan(pane.width, at, W) : undefined);
+  const box = at ? { left: at.x, top: at.y, width: W * at.scale, height: H * at.scale } : { left: 0, top: 0, width: 0, height: 0 };
+  let bleed = at && mode === "cover" ? campBleed(pane.height, at, layout.canvas) : { top: 0, bottom: 0 };
+
+  // A phone's chips: one per pickable spot, under the picture.
+  const chips = mode === "width" && onSpot && at
+    ? chipRows(
+        dressing.spots.filter((spot) => spot.pickable).map((spot) => ({ id: spot.id, label: hotspotName(spot.kind), x: spot.x * W * at!.scale })),
+        pane.width,
+      )
+    : [];
+  const chipRowsCount = chips.reduce((n, chip) => Math.max(n, chip.row + 1), 0);
+  if (mode === "width") {
+    rootHeight = Math.max(120, bandPx + chipRowsCount * CHIP_ROW + (chipRowsCount > 0 ? 8 : 0));
+    // The chips stand on the painting's own grass, drawn on past its foot when they reach that far.
+    if (at) bleed = campBleed(rootHeight, at, layout.canvas);
+  }
+
+  /** A piece's square canvas as a fraction of the frame's height, for its box's drawn height. */
+  const canvasOf = (b: CampBox, paint = PAINT) => b.height / paint / H;
   const strip = (edge: "top" | "bottom", px: number) =>
     px > 0 ? (
       <div className={`kad-static-camp__bleed kad-static-camp__bleed--${edge}`} style={{ height: px }} aria-hidden="true">
         <img src={backdrop} alt="" style={{ height: px / BLEED_SOURCE }} />
       </div>
     ) : null;
-  const nearest = [...layout.lanes.values()].sort((a, b) => b.y - a.y)[0];
-  const fire = layout.frame.hotspots?.find((h) => h.kind === "cookfire") ?? layout.frame.pieces.find((p) => p.id === "campfire");
+  // Labels show over stand-ins only: a painting says what it is.
+  const labelled = (b: CampBox, src: string | null) => b.label && (src === null || missing.has(src));
+  const label = (b: CampBox, src: string | null) =>
+    labelled(b, src) ? (
+      <span
+        key={`label:${b.id}`}
+        className="kad-static-camp__label"
+        data-label={b.id}
+        style={{
+          left: `${(b.label!.x / W) * 100}%`,
+          top: `${(b.label!.y / H) * 100}%`,
+          fontSize: (b.label!.size / H) * box.height,
+        }}
+      >
+        {b.label!.text}
+      </span>
+    ) : null;
+  const labels: ReactNode[] = [];
+  const at01 = (b: CampBox) => ({ left: `${(b.x / W) * 100}%`, top: `${(b.ground / H) * 100}%` });
 
   return (
-    <div ref={host} className="kad-static-camp" data-testid="static-camp" data-stage={layout.frame.stage}>
+    <div
+      ref={host}
+      className={`kad-static-camp${mode === "width" ? " kad-static-camp--fit-width" : ""}`}
+      data-testid="static-camp"
+      data-stage={layout.frame.stage}
+      data-figure-scale={scale.toFixed(3)}
+      style={rootHeight !== undefined ? { height: rootHeight } : undefined}
+    >
       <div className="kad-static-camp__frame" style={{ left: box.left, top: box.top, width: box.width, height: box.height }}>
         {strip("top", bleed.top)}
         {strip("bottom", bleed.bottom)}
@@ -184,74 +305,109 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null }: 
         ))}
         {layout.frame.pieces.map(piece => {
           const lane = layout.lanes.get(piece.lane);
-          if (!lane) return null;
+          const b = boxOf.get(piece.id);
+          if (!lane || !b) return null;
           const owner = campPieceOwner(layout, piece, heroes.map(hero => hero.figure));
           // Her stored style first; the id's hash only when none is stored (#633, #620).
           const kitStyle = owner && piece.id.startsWith("bedroll") ? campKitStyle(owner.id, owner.kitStyle) : null;
-          const paintHeight = kitStyle ? CAMP_KIT_STYLES[kitStyle].paintHeight : PAINT;
-          const size = sizeOf(pieceHeightCm(piece), lane.scale, paintHeight, campOwnedScale(owner, measure));
+          const size = canvasOf(b, kitStyle ? CAMP_KIT_STYLES[kitStyle].paintHeight : PAINT);
           const accent = owner?.accent ?? "#c9b99a";
           const tent = piece.id.startsWith("tent_") ? tentArt(owner?.tent ?? null, campKitStyle(owner?.id ?? piece.id, owner?.kitStyle)) : undefined;
-          return <span key={piece.id} className="kad-static-camp__piece" data-piece={piece.id} style={{
-            left: `${piece.x * 100}%`, top: `${lane.y * 100}%`, height: `${size * 100}%`, zIndex: Math.round(lane.y * 1000) - 1,
+          const tentSrc = tent ? `/assets/${tent.path}` : null;
+          if (piece.id.startsWith("tent_")) labels.push(label(b, tentSrc));
+          return <span key={piece.id} className="kad-static-camp__piece" data-piece={piece.id} data-owner={owner?.id} data-aspect={(b.width / b.height).toFixed(4)} style={{
+            ...at01(b), height: `${size * 100}%`, zIndex: Math.round(lane.y * 1000) - 1,
           }} data-mirrored={piece.id.startsWith("bedroll") && piece.x > .5 ? "true" : undefined}>
             {owner && kitStyle ? <CampBedroll style={kitStyle} accent={accent} />
               : piece.id === "campfire" ? <Campfire active={false} />
               : piece.id.startsWith("tent_") ? (
-                <ArtOr src={tent ? `/assets/${tent.path}` : null}>
-                  <TentStandIn accent={accent} decorations={(owner?.slots ?? []).filter((s) => s !== null).length} />
+                <ArtOr src={tentSrc} onMissing={owed}>
+                  <TentStandIn accent={accent} owned={owner !== undefined} width={b.width / b.height} decorations={(owner?.slots ?? []).filter((s) => s !== null).length} />
                 </ArtOr>
               )
               : piece.id.startsWith("souvenirs_") ? (
                 <ArtOr src={`/assets/${piece.path}`}><SouvenirStandIn accent={accent} count={owner?.souvenirs ?? 0} /></ArtOr>
               )
-              : <ArtOr src={`/assets/${piece.path}`}><PieceStandIn label={piece.id.replace(/_/g, " ")} /></ArtOr>}
-            {piece.id.startsWith("tent_") && owner?.name ? <span className="kad-static-camp__tag">{`${owner.name}'s tent`}</span> : null}
+              : <ArtOr src={`/assets/${piece.path}`}><PieceStandIn width={b.width / b.height} /></ArtOr>}
           </span>;
         })}
         {dressing.spots.map((spot) => {
           const lane = layout.lanes.get(spot.lane);
           if (!lane) return null;
-          const size = sizeOf(spot.pieceId ? spot.heightCm : 120, lane.scale);
+          const b = boxOf.get(`spot:${spot.id}`);
           const ring = spot.highlighted || activeSpot === spot.id;
+          if (!b && !ring && !(onSpot && spot.pickable)) return null;
+          const empty = { height: (lane.scale * scale * 120 * 0.26) / 160 / PAINT };
+          const src = spot.path ? `/assets/${spot.path}` : null;
+          if (b) labels.push(label(b, src));
           return (
             <span
               key={spot.id}
               className={`kad-static-camp__piece kad-static-camp__spot${ring ? " is-lit" : ""}${spot.pieceId ? "" : " is-empty"}`}
               data-spot={spot.id}
               data-spot-piece={spot.pieceId ?? ""}
-              style={{ left: `${spot.x * 100}%`, top: `${lane.y * 100}%`, height: `${size * 100}%`, zIndex: Math.round(lane.y * 1000) - 1 }}
+              style={{
+                left: `${spot.x * 100}%`,
+                top: `${lane.y * 100}%`,
+                height: `${(b ? canvasOf(b) : empty.height) * 100}%`,
+                zIndex: Math.round(lane.y * 1000) - 1,
+              }}
             >
-              {spot.pieceId ? (
-                <ArtOr src={spot.path ? `/assets/${spot.path}` : null}><PieceStandIn label={spot.label} /></ArtOr>
+              {spot.pieceId && b ? (
+                <ArtOr src={src} onMissing={owed}><PieceStandIn width={b.width / b.height} /></ArtOr>
               ) : null}
-              {spot.banner ? <span className="kad-static-camp__banner">{spot.banner}</span> : null}
-              {onSpot && spot.pickable ? (
+              {spot.banner && b && mode === "cover" ? (
+                <span className="kad-static-camp__banner" style={{ maxInlineSize: `${(b.width / b.height) * PAINT * 100}%` }}>{spot.banner}</span>
+              ) : null}
+              {onSpot && spot.pickable && mode === "cover" ? (
                 // The picture's own tap target; the named control in the panel is the accessible one.
-                <button type="button" className="kad-static-camp__tap" tabIndex={-1} aria-hidden="true" onClick={() => onSpot(spot.id)}>
-                  {spot.pieceId ? null : <span className="kad-static-camp__spot-name">{spot.label}</span>}
-                </button>
+                <button type="button" className="kad-static-camp__tap" tabIndex={-1} aria-hidden="true" onClick={() => onSpot(spot.id)} />
               ) : null}
             </span>
           );
         })}
-        {nearest
-          ? dressing.beside.map((piece, i) => {
-              const x = (fire?.x ?? 0.5) + (i - (dressing.beside.length - 1) / 2) * 0.075;
-              const size = sizeOf(Math.min(piece.heightCm, 120), nearest.scale);
-              return (
-                <span
-                  key={piece.pieceId}
-                  className="kad-static-camp__piece kad-static-camp__beside"
-                  data-beside={piece.pieceId}
-                  style={{ left: `${x * 100}%`, top: `${nearest.y * 100}%`, height: `${size * 100}%`, zIndex: Math.round(nearest.y * 1000) + 1 }}
-                >
-                  <ArtOr src={piece.path ? `/assets/${piece.path}` : null}><PieceStandIn label={piece.label} /></ArtOr>
-                </span>
-              );
-            })
-          : null}
+        {dressing.beside.map((piece) => {
+          const b = boxOf.get(`beside:${piece.pieceId}`);
+          if (!b) return null;
+          const src = piece.path ? `/assets/${piece.path}` : null;
+          labels.push(label(b, src));
+          return (
+            <span
+              key={piece.pieceId}
+              className="kad-static-camp__piece kad-static-camp__beside"
+              data-beside={piece.pieceId}
+              style={{ ...at01(b), height: `${canvasOf(b) * 100}%`, zIndex: Math.round((b.ground / H) * 1000) + 1 }}
+            >
+              <ArtOr src={src} onMissing={owed}><PieceStandIn width={b.width / b.height} /></ArtOr>
+            </span>
+          );
+        })}
+        {mode === "cover" ? labels : null}
       </div>
+      {chips.length > 0 && at ? (
+        <div className="kad-static-camp__chips" style={{ top: bandPx }} aria-hidden="true">
+          {chips.map((chip) => {
+            const spot = dressing.spots.find((s) => s.id === chip.id)!;
+            const ground = ((layout.lanes.get(spot.lane)?.y ?? 0) - bandTop) * H * at!.scale;
+            const top = 4 + chip.row * CHIP_ROW;
+            return (
+              <span key={chip.id}>
+                <span className="kad-static-camp__leader" style={{ left: chip.x, top: ground - bandPx, height: bandPx - ground + top }} />
+                <button
+                  type="button"
+                  tabIndex={-1}
+                  className={`kad-static-camp__chip${activeSpot === chip.id ? " is-active" : ""}`}
+                  data-chip={chip.id}
+                  style={{ left: chip.left, top, width: chip.width }}
+                  onClick={() => onSpot!(chip.id)}
+                >
+                  {chip.label}
+                </button>
+              </span>
+            );
+          })}
+        </div>
+      ) : null}
     </div>
   );
 }

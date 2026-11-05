@@ -13,7 +13,9 @@ import { useGameStore } from "../store";
 import { StaticStage } from "./StaticStage";
 import { setLobbyInsetBottom } from "./stage-inset";
 import { CAMP_KIT_STYLES, type CampKitStyle } from "./camp-kit-art";
-import { figureSize } from "./figure-scale";
+import { NOMINAL_PAINT, figureSize } from "./figure-scale";
+import { BEDROLL_LENGTH_FIT, HERO_PAINT } from "./camp-ownership";
+import { ANCHOR_Y } from "./art-paths";
 
 function member(n: number, overrides: Partial<PartyMember> = {}): PartyMember {
   return makeMember({
@@ -34,17 +36,26 @@ afterEach(() => {
 });
 
 describe("the still camp", () => {
-  it("fits the painted pack to its owner's size rather than the PNG canvas", () => {
+  it("fits the painted bedroll to its owner, longer than she is, rather than the PNG canvas", () => {
     mount(makeState({ party: [
       member(1, { character: makeCharacter({ id: "tiny", species: "dragonling" }) }),
       member(2, { character: makeCharacter({ id: "large", species: "bigfoot" }) }),
     ] }));
-    const heights = [0, 1].map(seat => {
+    // Each bedroll's drawn length over its hero's drawn body length (camp-ownership.ts).
+    const lengths = [0, 1].map(seat => {
       const el = document.querySelector<HTMLElement>(`[data-piece="bedroll_${seat}"]`)!;
       const style = el.querySelector("[data-camp-kit]")!.getAttribute("data-camp-kit") as CampKitStyle;
-      return parseFloat(el.style.height) * CAMP_KIT_STYLES[style].paintHeight;
+      return parseFloat(el.style.height) * CAMP_KIT_STYLES[style].paintWidth;
     });
-    expect(heights[1]! / heights[0]!).toBeCloseTo(figureSize("characters/bigfoot").heightCm / figureSize("characters/dragonling").heightCm);
+    const bodies = (["dragonling", "bigfoot"] as const).map((species, seat) => {
+      const el = document.querySelector<HTMLElement>(`[data-hero="${seat === 0 ? "tiny" : "large"}"]`)!;
+      const box = HERO_PAINT[species]!;
+      // The hero's square canvas is drawn so her nominal paint is her height.
+      return parseFloat(el.style.height) * (ANCHOR_Y - NOMINAL_PAINT.top) * Math.max(box.height, box.width);
+    });
+    for (const seat of [0, 1]) expect(lengths[seat]! / bodies[seat]!).toBeCloseTo(BEDROLL_LENGTH_FIT, 2);
+    // A bigfoot lies down taller than a dragonling is long.
+    expect(lengths[1]! / lengths[0]!).toBeGreaterThan(figureSize("characters/bigfoot").heightCm / figureSize("characters/dragonling").heightCm / 1.2);
   });
   it("draws owned kit styles and the fire without motion", () => {
     mount(makeState({ party: [member(1), member(2)] }));

@@ -156,6 +156,7 @@ function heroFigure(member: PartyMember, kit: HeroKitView | undefined): Omit<Cam
     souvenirs: character.souvenirs?.length ?? 0,
     heightCm: size.heightCm,
     stance: size.stance,
+    species: character.species,
   };
 }
 
