@@ -18,6 +18,7 @@ import type {
   ArrivalMessage,
   CheerMessage,
   ChannelMessage,
+  KitMilestoneUnlock,
   Presentation,
   PreviewMessage,
   RunState,
@@ -64,6 +65,13 @@ export interface SequencerHandlers {
    * snapshot or a replayed gap never emits this.
    */
   onDiscovered?(event: { runId: string; seq: number; canonIds: string[] }): void;
+  /**
+   * Milestone kit pieces a step wrote (`ServerMessage.kitUnlocks`, #621),
+   * emitted once, after that step's patch and progression. Live only, like
+   * `onDiscovered`. `crossings` is how many heroes the same message took to a
+   * new tier, which is how long the cutscene it waits for runs.
+   */
+  onKitUnlocks?(event: { runId: string; seq: number; unlocks: KitMilestoneUnlock[]; crossings: number }): void;
   /**
    * A player's unconfirmed tap (`PreviewMessage`). Handed over the moment it
    * arrives and never ordered: it is not a step of the state, so it neither
@@ -265,6 +273,10 @@ export class MessageSequencer {
     if (message.discovered && message.discovered.length > 0) {
       this.handlers.onDiscovered?.({ runId: message.runId, seq: message.seq, canonIds: message.discovered });
     }
+    if (message.kitUnlocks && message.kitUnlocks.length > 0) {
+      const crossings = (message.progression?.awards ?? []).filter((a) => a.newTier !== undefined).length;
+      this.handlers.onKitUnlocks?.({ runId: message.runId, seq: message.seq, unlocks: message.kitUnlocks, crossings });
+    }
   }
 
   private desync(): void {
@@ -408,12 +420,27 @@ export function parseChannelMessage(raw: string): ChannelMessage | null {
     Array.isArray(discovered) && discovered.every((id): id is string => typeof id === "string")
       ? discovered
       : null;
+  const unlocks = kitUnlocksOf((candidate as ServerMessage).kitUnlocks);
   return {
     ...message,
     ...(presentation ? { presentation } : {}),
     ...(progression ? { progression } : {}),
     ...(finds ? { discovered: finds } : {}),
+    ...(unlocks ? { kitUnlocks: unlocks } : {}),
   };
+}
+
+/** `kitUnlocks` as the wire carried it: only well-formed entries, or null for none. */
+function kitUnlocksOf(value: unknown): KitMilestoneUnlock[] | null {
+  if (!Array.isArray(value)) return null;
+  const unlocks = value.filter(
+    (u): u is KitMilestoneUnlock =>
+      typeof u === "object" && u !== null &&
+      typeof (u as KitMilestoneUnlock).characterId === "string" &&
+      typeof (u as KitMilestoneUnlock).pieceId === "string" &&
+      ((u as KitMilestoneUnlock).kind === "tent" || (u as KitMilestoneUnlock).kind === "decoration"),
+  );
+  return unlocks.length > 0 ? unlocks.map(({ characterId, pieceId, kind }) => ({ characterId, pieceId, kind })) : null;
 }
 
 // ---------------------------------------------------------------------------

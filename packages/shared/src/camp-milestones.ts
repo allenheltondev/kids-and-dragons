@@ -13,8 +13,9 @@
  *
  * Only tiers whose art is painted are listed (spec §8.1 draws Ascendant and
  * above as Mythic until it is). A tier added here later is granted to every
- * hero who holds it at her next kit read (`readKit`), so nobody misses one for
- * being early.
+ * hero who holds it, or once reached it (`HeroKit.highestTier`, kept through
+ * a failed campaign's revert), at her next kit read (`readKit`), so nobody
+ * misses one for being early.
  *
  * Type imports only: tools/content/validate.mjs loads this file directly.
  */
@@ -59,3 +60,16 @@ export const PLACEHOLDER_KIT_PIECES: Readonly<Record<string, KitPieceId>> = {
       .map((id) => [`kit_${id}`, id]),
   ),
 };
+
+/**
+ * Whether `pieceId` is a milestone tent (a tier's) or a milestone decoration
+ * (a distinction's), or null for any other piece. What a hero's phone says
+ * when one unlocks (#621).
+ */
+export function milestoneKind(pieceId: KitPieceId): "tent" | "decoration" | null {
+  if (Object.values(MILESTONE_KIT_PIECES.tiers).includes(pieceId)) return "tent";
+  for (const ranks of Object.values(MILESTONE_KIT_PIECES.distinctions)) {
+    if (Object.values(ranks).includes(pieceId)) return "decoration";
+  }
+  return null;
+}

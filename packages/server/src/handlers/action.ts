@@ -63,6 +63,7 @@ import { iso, type HandlerDeps } from "./deps.ts";
 import { closedIfIdle } from "./host.ts";
 import { prepareStepFinds, recordStepFinds } from "./field-guide.ts";
 import { claimCampFinds, stepCampFinds } from "./camp-finds.ts";
+import { claimMilestones, stepMilestones } from "./camp-milestones.ts";
 import { dispatchTurnPush } from "./push.ts";
 import { practiceChapterId, practiceRefusal, settlePractice } from "./practice.ts";
 import {
@@ -769,6 +770,9 @@ export async function applyAction(
     { run: auth.run, state: next },
     deps,
   );
+  // A tier or distinction this step landed writes its kit piece now (#621,
+  // camp-milestones.ts); her phone says so after the transformation.
+  const kitUnlocks = await claimMilestones(stepMilestones(state, next), { run: auth.run }, deps);
 
   // The session clock's mark (#511), written alongside the broadcast and
   // awaited with the other after-commit work. It cannot fail the turn.
@@ -783,6 +787,7 @@ export async function applyAction(
     ...(event.progression ? { progression: event.progression } : {}),
     ...(discovered.length > 0 ? { discovered } : {}),
     ...(campClaims.length > 0 ? { campClaims } : {}),
+    ...(kitUnlocks.length > 0 ? { kitUnlocks } : {}),
   };
   try {
     await deps.channel.publish(next.roomCode, message);

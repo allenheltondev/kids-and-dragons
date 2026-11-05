@@ -40,7 +40,7 @@ import {
   readKit,
   dropKey,
 } from "@kad/shared";
-import type { CampRecord, CampView, HeroKit, RewardId } from "@kad/shared";
+import type { CampRecord, CampView, Character, HeroKit, RewardId } from "@kad/shared";
 import type { ContentStore } from "../content/loader.ts";
 import type { CampaignProgressRecord } from "../store/repository.ts";
 import { rewrite } from "./claim.ts";
@@ -317,14 +317,16 @@ export function finishedGrowsCamp(attempts: readonly CampaignProgressRecord[], c
  * Change one hero's kit, at her home (`homeHouseholdId`, which a visitor's
  * party member names). `fn` gets a copy of her kit as it stands (`readKit`)
  * and returns it as it should be, or null for no change; like `mutateCamp`'s,
- * it may run more than once. Written on her row, conditional on the row's
+ * it may run more than once. `hero` is her row as read, whose `kit` is what is
+ * stored: a milestone write (camp-milestones.ts) asks it whether a piece the
+ * read only derived is on the row yet. Written on her row, conditional on the row's
  * version and claim as read, so it can neither undo a run's write to her nor
  * be undone by one; the claim is kept as it was.
  */
 export async function mutateKit(
   homeHouseholdId: string,
   characterId: string,
-  fn: (kit: HeroKit) => HeroKit | null,
+  fn: (kit: HeroKit, hero: Character) => HeroKit | null,
   deps: Pick<HandlerDeps, "repo">,
   options: WriteOptions = {},
 ): Promise<CampWriteResult<HeroKit>> {
@@ -337,7 +339,7 @@ export async function mutateKit(
     if (options.expectedRevision !== undefined && kit.revision !== options.expectedRevision) {
       return { ok: false, reason: "stale", value: kit };
     }
-    const next = fn(structuredClone(kit));
+    const next = fn(structuredClone(kit), hero);
     if (next === null) return { ok: true, value: kit, changed: false };
     const written: HeroKit = { ...next, v: KIT_VERSION, revision: kit.revision + 1 };
     if (await deps.repo.writeCharacter(rewrite(hero, { ...hero, kit: written }))) {

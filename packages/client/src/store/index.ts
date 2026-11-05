@@ -88,6 +88,7 @@ import {
 import { appSyncEventSource } from "../sync/appsync-socket";
 import { setFieldGuideDiscoveries } from "./field-guide-discoveries";
 import { announceFieldGuideNews, clearFieldGuideNews } from "./field-guide-news";
+import { announceKitNews, clearKitNews } from "./kit-news";
 import { noteServerTime } from "./server-clock";
 import { navigate } from "../router";
 import { nudgeReconnect } from "../sync/wake-reconnect";
@@ -366,6 +367,8 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
           onProgression: (progression) => set({ progression }),
           // Live-only "new page!" ids (#106) — queued for #110 to celebrate.
           onDiscovered: ({ runId, seq, canonIds }) => announceFieldGuideNews(runId, seq, canonIds),
+          // Live-only milestone kit pieces (#621), told on the phone after the cutscene.
+          onKitUnlocks: ({ runId, seq, unlocks, crossings }) => announceKitNews(runId, seq, unlocks, crossings),
           onPreview: ({ runId, playerId, preview, context }) => {
             if (runtime.sequencer !== sequencer || get().state?.runId !== runId) return;
             const { [playerId]: _old, ...rest } = get().previews;
@@ -1452,6 +1455,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         // room there is neither.
         setFieldGuideDiscoveries(null);
         clearFieldGuideNews();
+        clearKitNews();
         set({
           connection: "idle",
           synced: true,

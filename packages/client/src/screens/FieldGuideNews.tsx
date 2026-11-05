@@ -97,7 +97,7 @@ function titlesOf(guide: FieldGuide | null, ids: string[]): string[] {
  * so rather than cover a choice card or the action bar it waits and appears
  * once the question is answered. The news stays queued meanwhile.
  */
-function useHasPendingTurn(): boolean {
+export function useHasPendingTurn(): boolean {
   const turnKey = useMyTurnKey();
   const state = useRunState();
   const playerId = useSession()?.playerId ?? "";

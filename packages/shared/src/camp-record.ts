@@ -10,7 +10,7 @@
 
 import { MILESTONE_KIT_PIECES, PLACEHOLDER_KIT_PIECES } from "./camp-milestones.js";
 import { CLASS_RANKS, TIER_IDS } from "./types/domain.js";
-import type { Character, ClassId, ClassRank } from "./types/domain.js";
+import type { Character, ClassId, ClassRank, ResolvedCharacter, TierId } from "./types/domain.js";
 import type {
   CampFriend,
   CampReceipt,
@@ -42,7 +42,7 @@ export const KIT_SLOTS = 2;
 // The kit pieces a hero's own milestones unlock (§5.4), with the catalog's
 // real ids (`content/camp.json` → `milestones`, #618). In a file of their own,
 // with type imports only, so the content validator can check the two agree.
-export { MILESTONE_KIT_PIECES, PLACEHOLDER_KIT_PIECES } from "./camp-milestones.js";
+export { MILESTONE_KIT_PIECES, PLACEHOLDER_KIT_PIECES, milestoneKind } from "./camp-milestones.js";
 
 export class StoredCampError extends Error {
   override name = "StoredCampError";
@@ -130,51 +130,96 @@ export function campView(camp: CampRecord): CampView {
 // ---------------------------------------------------------------------------
 
 /**
+ * One standing a milestone can be read off: a progress half as stored, or what
+ * the run shows of a hero (`resolvedStanding`). Loose, because the character
+ * ladder's backfill reads a row as it was stored.
+ */
+export interface MilestoneStanding {
+  tier?: unknown;
+  mastery?: unknown;
+}
+
+/** The milestone pieces one standing has earned, into `out`; and its tier's place on the ladder. */
+function addPieces(out: Set<KitPieceId>, standing: MilestoneStanding | null | undefined): number {
+  if (!standing || typeof standing !== "object") return -1;
+  const reached = TIER_IDS.indexOf(standing.tier as TierId);
+  for (const [i, tier] of TIER_IDS.entries()) {
+    const piece = MILESTONE_KIT_PIECES.tiers[tier];
+    if (piece && i <= reached) out.add(piece);
+  }
+  const mastery = (standing.mastery ?? {}) as Partial<Record<ClassId, { rank?: unknown }>>;
+  for (const [classId, entry] of Object.entries(mastery) as [ClassId, { rank?: unknown } | undefined][]) {
+    const pieces = MILESTONE_KIT_PIECES.distinctions[classId];
+    const held = CLASS_RANKS.indexOf(entry?.rank as ClassRank);
+    if (!pieces || held <= 0) continue;
+    for (const rank of CLASS_RANKS.slice(1, held + 1) as Exclude<ClassRank, "none">[]) out.add(pieces[rank]);
+  }
+  return reached;
+}
+
+/**
  * Every milestone piece a hero's progress has earned: each painted tier up to
  * the one she is at, and each class distinction up to the rank she holds.
  * Read off both halves, because a milestone is the hero's own deed and is kept
  * even if a failed campaign later puts the tier back (§5.4): the provisional
- * half is where a tier reached mid-campaign first shows.
+ * half is where a tier reached mid-campaign first shows. `also` adds other
+ * standings: the highest tier her kit remembers, or a rank the run has landed
+ * that her row will only get at the chapter's end.
  *
  * Tolerant of the raw stored shape, since the character ladder's backfill step
  * calls it on a row as it was stored.
  */
-export function milestonePieces(character: Pick<Character, "committed" | "provisional">): KitPieceId[] {
+export function milestonePieces(
+  character: Partial<Pick<Character, "committed" | "provisional">>,
+  also: readonly MilestoneStanding[] = [],
+): KitPieceId[] {
   const out = new Set<KitPieceId>();
-  for (const half of [character.committed, character.provisional]) {
-    if (!half || typeof half !== "object") continue;
-    const reached = TIER_IDS.indexOf(half.tier);
-    for (const [i, tier] of TIER_IDS.entries()) {
-      const piece = MILESTONE_KIT_PIECES.tiers[tier];
-      if (piece && i <= reached) out.add(piece);
-    }
-    const mastery = (half.mastery ?? {}) as Partial<Record<ClassId, { rank?: unknown }>>;
-    for (const [classId, entry] of Object.entries(mastery) as [ClassId, { rank?: unknown } | undefined][]) {
-      const pieces = MILESTONE_KIT_PIECES.distinctions[classId];
-      const held = CLASS_RANKS.indexOf(entry?.rank as ClassRank);
-      if (!pieces || held <= 0) continue;
-      for (const rank of CLASS_RANKS.slice(1, held + 1) as Exclude<ClassRank, "none">[]) out.add(pieces[rank]);
-    }
-  }
+  for (const standing of [character.committed, character.provisional, ...also]) addPieces(out, standing);
   return [...out].sort();
 }
 
 /**
- * `kit` with every milestone `character` has earned unlocked. `at` is when it
- * landed, when the caller knows (a tier awarded at a chapter's end); absent on
- * a backfill. Never removes anything, never changes `revision`, and returns
+ * What the run shows of a hero, as a standing (#621): her tier, and the rank
+ * of the class she wears and of each she has taken off. A rank lands on the
+ * run at a fight's end and on her row only at the chapter's end, so this is
+ * how its decoration is written the moment it lands.
+ */
+export function resolvedStanding(hero: Pick<ResolvedCharacter, "tier" | "class" | "rank" | "spares">): MilestoneStanding {
+  const mastery: Partial<Record<ClassId, { rank: ClassRank }>> = {};
+  for (const spare of hero.spares ?? []) mastery[spare.class] = { rank: spare.rank };
+  mastery[hero.class] = { rank: hero.rank ?? "none" };
+  return { tier: hero.tier, mastery };
+}
+
+/**
+ * `kit` with every milestone `character` (and `also`, as `milestonePieces`)
+ * has earned unlocked, and an unpainted tier she has reached remembered
+ * (`HeroKit.highestTier`), so a tier a failed campaign puts back still grants
+ * its tent once that tent is painted. A painted tier needs no remembering:
+ * its own tent is the record. `at` is when it landed, when the caller knows
+ * (a tier awarded at a chapter's end); absent on a backfill. Never removes
+ * anything, never lowers `highestTier`, never changes `revision`, and returns
  * `kit` itself when nothing is new.
  */
 export function withMilestones(
   kit: HeroKit,
   character: Pick<Character, "committed" | "provisional">,
   at?: string,
+  also: readonly MilestoneStanding[] = [],
 ): HeroKit {
-  const fresh = milestonePieces(character).filter((id) => !Object.hasOwn(kit.unlocked, id));
-  if (fresh.length === 0) return kit;
+  const remembered: MilestoneStanding[] = kit.highestTier ? [{ tier: kit.highestTier }] : [];
+  const out = new Set<KitPieceId>();
+  let highest = -1;
+  for (const standing of [character.committed, character.provisional, ...also, ...remembered]) {
+    highest = Math.max(highest, addPieces(out, standing));
+  }
+  const fresh = [...out].sort().filter((id) => !Object.hasOwn(kit.unlocked, id));
+  const tier = highest > 0 ? TIER_IDS[highest] : undefined;
+  const unpainted = tier !== undefined && MILESTONE_KIT_PIECES.tiers[tier] === undefined && tier !== kit.highestTier;
+  if (fresh.length === 0 && !unpainted) return kit;
   const unlocked = { ...kit.unlocked };
   for (const id of fresh) unlocked[id] = { from: "milestone", ...(at ? { at } : {}) };
-  return { ...kit, unlocked };
+  return { ...kit, unlocked, ...(unpainted ? { highestTier: tier } : {}) };
 }
 
 /**
@@ -317,7 +362,15 @@ function assertKit(raw: Record<string, unknown>): HeroKit {
       }
       return { from, ...optionalString(e, "rewardId"), ...optionalString(e, "at") };
     }),
+    ...highestTierOf(raw["highestTier"]),
   };
+}
+
+/** `HeroKit.highestTier` as stored: absent, or one of the ladder's tiers (#621). */
+function highestTierOf(value: unknown): Pick<HeroKit, "highestTier"> {
+  if (value === undefined) return {};
+  if (!TIER_IDS.includes(value as TierId)) throw fail("kit.highestTier", `one of ${TIER_IDS.join(", ")}`);
+  return { highestTier: value as TierId };
 }
 
 function receipt(e: Record<string, unknown>, path: string): CampReceipt {

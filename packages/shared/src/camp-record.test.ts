@@ -169,6 +169,33 @@ describe("the hero's kit", () => {
     expect(failCampaign(hero(), "s", "t")).not.toHaveProperty("kit");
     expect(commitCampaign(h).kit).toEqual(kit);
   });
+
+  it("remembers the highest tier reached, so an unpainted tier's tent comes once it is painted, even after a revert (#621)", () => {
+    const h = hero({ committed: { ...hero().committed, tier: "mythic" }, provisional: { ...hero().committed, tier: "ascendant", runId: "r_1" } });
+    const failed = failCampaign(h, "souvenir", "2026-08-01T00:00:00.000Z");
+    expect(failed.committed.tier).toBe("mythic");
+    expect(failed.kit?.highestTier).toBe("ascendant");
+    expect(readKit(failed).unlocked).not.toHaveProperty("ascendant");
+    // Its art and catalog entry ship.
+    MILESTONE_KIT_PIECES.tiers.ascendant = "ascendant";
+    try {
+      expect(readKit(failed).unlocked["ascendant"]).toEqual({ from: "milestone" });
+      // Never lowered, and nothing new to write the second time.
+      const kit = withMilestones(failed.kit!, failed);
+      expect(withMilestones(kit, failed)).toBe(kit);
+      expect(kit.highestTier).toBe("ascendant");
+    } finally {
+      delete MILESTONE_KIT_PIECES.tiers.ascendant;
+    }
+  });
+
+  it("stores the highest tier as one of the ladder's, or not at all", () => {
+    expect(migrateKit({ ...emptyKit(), highestTier: "sworn" }).highestTier).toBe("sworn");
+    expect(migrateKit(emptyKit())).not.toHaveProperty("highestTier");
+    expect(() => migrateKit({ ...emptyKit(), highestTier: "galactic" })).toThrow(StoredCampError);
+    // A fledgling has climbed nowhere yet, so nothing is written for her.
+    expect(withMilestones(emptyKit(), hero())).not.toHaveProperty("highestTier");
+  });
 });
 
 describe("the character ladder's kit backfill (v8 → v9, §12.3)", () => {

@@ -19,7 +19,7 @@ import type {
 import type { RiftActionKind } from "./campaign-graph.js";
 import type { InteractionAction } from "../interactions.js";
 import type { ChapterOutcome } from "./chapter.js";
-import type { CampClaimResult } from "./camp.js";
+import type { CampClaimResult, KitMilestoneUnlock } from "./camp.js";
 import type { RoomMode, RunState, DiceRoll } from "./state.js";
 import type { FieldGuideFind } from "../field-guide-record.js";
 import type { Badge, ProfileFlair } from "../kid-profile.js";
@@ -374,6 +374,13 @@ export interface ServerMessage {
    * replay never announces a find twice.
    */
   campClaims?: CampClaimResult[];
+  /**
+   * Milestone kit pieces this step wrote to a seated hero's kit (docs/camp.md
+   * §5.4, #621): a tent for a new appearance tier, a decoration for a class
+   * distinction. Her phone says so after the transformation, never during
+   * it. Live only, exactly as `discovered`: a replay never announces one twice.
+   */
+  kitUnlocks?: KitMilestoneUnlock[];
 }
 
 /** A full snapshot, sent on join and whenever a client's gap is too large. */

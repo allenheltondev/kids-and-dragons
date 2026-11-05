@@ -173,6 +173,28 @@ export interface HeroKit {
   /** Personal decoration slots, two or three (§4.5). */
   slots: (KitPieceId | null)[];
   unlocked: Record<KitPieceId, KitUnlock>;
+  /**
+   * The highest unpainted appearance tier she has ever reached (Ascendant and
+   * up, spec §8.1), kept here because the kit is outside the commitment rule
+   * and her tier is not: a failed campaign puts the tier back, and this
+   * remembers it (§5.4, #621). It is what grants that tier's tent once its art
+   * and catalog entry ship, even to a hero who has since lost the tier. A
+   * painted tier needs no entry here, since its tent is its record. Absent
+   * until she reaches a tier with no tent yet.
+   */
+  highestTier?: TierId;
+}
+
+/**
+ * A milestone kit piece a step just wrote to a hero's kit (§5.4, #621):
+ * `ServerMessage.kitUnlocks`, live only, so her phone can say so once the
+ * transformation is over. `tent` for a new appearance tier, `decoration` for
+ * a class distinction.
+ */
+export interface KitMilestoneUnlock {
+  characterId: string;
+  pieceId: KitPieceId;
+  kind: "tent" | "decoration";
 }
 
 /**
