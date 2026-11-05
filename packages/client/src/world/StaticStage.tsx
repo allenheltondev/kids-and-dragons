@@ -9,13 +9,15 @@
  * It reads the same state the renderer does and imports no renderer.
  */
 
+import { useSyncExternalStore } from "react";
 import { enemyArtId, type Chapter, type Combatant, type PartyMember } from "@kad/shared";
 import { useChapter, useRunState } from "../store";
 import { useEnsureChapter } from "../screens/content";
 import { biomeBackdropUrl, characterWorldArtUrl, enemyArtUrl, sceneArtFor, sceneBackdropUrl } from "./art-paths";
 
 import { castFor } from "./cast";
-import { campShownIn, lobbyCampLayout } from "./lobby-camp";
+import { campLayoutFor, campShownFor, campStage } from "./lobby-camp";
+import { campBeatShown, onCampBeat } from "./camp-beat";
 import { StillCamp } from "./StillCamp";
 import { sceneRiftFor, STILL_FRAME } from "./scene-rift";
 import { RIFT_NEUTRAL_EFFECT, RIFT_SHEET, riftSheetUrl } from "../screens/riftlight";
@@ -50,7 +52,9 @@ export function StaticStage(): React.JSX.Element {
   const enemies: readonly Combatant[] = encounter?.combatants.filter((c) => c.side !== "party" && !c.down) ?? [];
 
   // The lobby's picture is the crew's camp (#614), still here as everything is.
-  const camp = state && campShownIn(state.phase) ? lobbyCampLayout() : null;
+  // And the chapter end's camp beat (#620), at the crew's own frame stage.
+  const beat = useSyncExternalStore(onCampBeat, campBeatShown, campBeatShown);
+  const camp = state && campShownFor(state, beat) ? campLayoutFor(campStage(state)) : null;
   if (state && camp) {
     return (
       <div className="kad-static-stage" data-testid="static-stage" aria-hidden="true">

@@ -17,10 +17,11 @@
  * cannot read it two ways.
  */
 
-import type { CastStance, PartyMember, PhaseKind, RunState } from "@kad/shared";
+import type { CastStance, HeroKitView, PartyMember, PhaseKind, RunState } from "@kad/shared";
 import { characterWorldArtUrl } from "./art-paths";
 import { camp as campManifest } from "../../../../assets/manifest.json";
-import type { CampFigure } from "./camp";
+import type { CampDressing, CampFigure } from "./camp";
+import { campBeside, campSpots, crewName, kitLook } from "./camp-scene";
 import { CAMP_SEATS, campLayout, parseCampManifest, type CampLayout } from "./camp-layout";
 import { NOMINAL_PAINT, figureSize, paintAspect } from "./figure-scale";
 import { campStandRange, campStandX, type CampSpan } from "./camp-framing";
@@ -44,17 +45,33 @@ export const LOBBY_CAMP_STAND_IN = "biomes/plains/bg.webp";
  * rather than the whole manifest. Parsed once; a layout that fails to parse
  * is reported and leaves the lobby on the story stage as before, never blank.
  */
-let parsedLayout: CampLayout | null | undefined;
+const parsedLayouts = new Map<number, CampLayout | null>();
 export function lobbyCampLayout(): CampLayout | null {
-  if (parsedLayout === undefined) {
+  return campLayoutFor(LOBBY_CAMP_STAGE);
+}
+
+/**
+ * The camp at the crew's frame stage (§4.1; #620), from its stored record
+ * (`RunState.camp.frameStage`): bedrolls at stage 1, a tent each and a
+ * cookfire at stage 2, and the biggest frame painted for anything past it
+ * (§12.3's safe fallback). Parsed once per stage.
+ */
+export function campLayoutFor(stage: number): CampLayout | null {
+  const key = Math.max(1, Math.floor(stage));
+  if (!parsedLayouts.has(key)) {
     try {
-      parsedLayout = campLayout(parseCampManifest(campManifest), LOBBY_CAMP_FAMILY, LOBBY_CAMP_STAGE);
+      parsedLayouts.set(key, campLayout(parseCampManifest(campManifest), LOBBY_CAMP_FAMILY, key));
     } catch (error) {
       globalThis.reportError?.(error);
-      parsedLayout = null;
+      parsedLayouts.set(key, null);
     }
   }
-  return parsedLayout;
+  return parsedLayouts.get(key) ?? null;
+}
+
+/** The frame stage the crew's camp stands at, from its record; stage 1 when the store could not say. */
+export function campStage(state: Pick<RunState, "camp"> | null | undefined): number {
+  return state?.camp?.frameStage ?? LOBBY_CAMP_STAGE;
 }
 
 /**
@@ -69,6 +86,15 @@ export function lobbyCampLayout(): CampLayout | null {
 export function campShownIn(phase: PhaseKind | string | null | undefined): boolean {
   const resolved = phase ?? "lobby";
   return resolved === "lobby" || resolved === "creation";
+}
+
+/**
+ * Whether the shared screen shows the camp now: the lobby, or the chapter's
+ * end once its camp beat is up (`beat`, the summary's own page turn, §3).
+ */
+export function campShownFor(state: Pick<RunState, "phase"> | null | undefined, beat: boolean): boolean {
+  if (!state) return false;
+  return campShownIn(state.phase) || (beat && state.phase === "chapter_complete");
 }
 
 /** Begin: the lobby gave way to the chapter's first scene. */
@@ -94,7 +120,7 @@ export interface CampHero {
  * somebody else leaves. Past the camp's four bedrolls (a seat freed by a
  * removal and taken again) a hero takes the first bedroll nobody holds.
  */
-export function campHeroes(state: Pick<RunState, "party" | "removed"> | null | undefined): CampHero[] {
+export function campHeroes(state: Pick<RunState, "party" | "removed" | "kits"> | null | undefined): CampHero[] {
   if (!state) return [];
   const removed = new Set(state.removed ?? []);
   const seated = state.party
@@ -103,7 +129,7 @@ export function campHeroes(state: Pick<RunState, "party" | "removed"> | null | u
   const held = new Set(seated.map(({ index }) => index).filter((index) => index < CAMP_SEATS));
   const spare = Array.from({ length: CAMP_SEATS }, (_, seat) => seat).filter((seat) => !held.has(seat));
   return seated.map(({ member, index }) => ({
-    figure: { ...heroFigure(member), seat: index < CAMP_SEATS ? index : spare.shift() ?? index },
+    figure: { ...heroFigure(member, state.kits?.[member.character.id]), seat: index < CAMP_SEATS ? index : spare.shift() ?? index },
     ready: member.ready,
     away: !member.connected,
   }));
@@ -113,16 +139,38 @@ export function campHeroes(state: Pick<RunState, "party" | "removed"> | null | u
  * A hero's figure: the art, true height and stance the story lineup draws
  * them with (scene.ts), so the camp's unicorn is the lineup's unicorn.
  */
-function heroFigure(member: PartyMember): Omit<CampFigure, "seat"> {
+function heroFigure(member: PartyMember, kit: HeroKitView | undefined): Omit<CampFigure, "seat"> {
   const { character } = member;
   const size: { heightCm: number; stance: CastStance } = figureSize(`characters/${character.species}`);
+  // Her kit as stored (#620): her own style, tent, color and decorations. With
+  // none stored she is drawn exactly as before kits (the id's hash, her accent).
+  const look = kitLook(kit, character.appearance.accent);
   return {
     id: character.id,
     url: characterWorldArtUrl(character.species, character.tier, character.class),
-    accent: character.appearance.accent,
+    accent: look.accent,
+    kitStyle: look.style,
+    tent: look.tent,
+    name: character.name,
+    slots: look.slots,
+    souvenirs: character.souvenirs?.length ?? 0,
     heightCm: size.heightCm,
     stance: size.stance,
   };
+}
+
+/**
+ * The crew's side of the camp, as camp.ts draws it (#620): each shared
+ * hotspot's piece, trophies and the banner's name, and at the chapter's end
+ * what was found or bought this chapter beside the campfire, its hotspot lit.
+ */
+export function campDressing(
+  state: Pick<RunState, "camp" | "campMoment" | "campFinds" | "campShop" | "crew" | "crews" | "firstCrewName">,
+  layout: CampLayout,
+): CampDressing {
+  const beside = campBeside(state, layout);
+  const highlight = new Set(beside.map((b) => b.hotspotId).filter((id): id is string => id !== null));
+  return { spots: campSpots(layout, state.camp, { crewName: crewName(state), highlight }), beside };
 }
 
 /** A hero in the still camp (StaticStage): their art's square canvas, placed in the backdrop. */

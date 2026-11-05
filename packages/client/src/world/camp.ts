@@ -36,6 +36,8 @@ import { Assets, Container, Graphics, Rectangle, Sprite, Texture, type Applicati
 import { CAMP_KIT_STYLES, campKitStyle } from "./camp-kit-art";
 import { campKitCanvas } from "./camp-kit-canvas";
 import { campOwnedScale, campPieceOwner } from "./camp-ownership";
+import { bannerName, hotspotGlow, pieceStandIn, souvenirStandIn, tentStandIn } from "./camp-stand-in";
+import { tentArt, type CampBesideView, type CampSpotView } from "./camp-scene";
 import type { CastStance } from "@kad/shared";
 import {
   ANCHOR_X,
@@ -114,8 +116,33 @@ export interface CampFigure {
    * (`campKitStyle`), exactly as before kits were stored.
    */
   kitStyle?: string | null;
+  /** Her stored tent (`HeroKit.tent`); absent or null draws the tent of her bedroll style. */
+  tent?: string | null;
+  /** Her name, under her tent while its painting is owed. */
+  name?: string;
+  /** Her decoration slots, hung on her tent. */
+  slots?: readonly (string | null)[];
+  /** How many souvenirs she carries, on the line beside her tent. */
+  souvenirs?: number;
 }
 
+/**
+ * The crew's side of the camp (§4.2, §12.5; #620): what stands at each shared
+ * hotspot, and what waits beside the campfire for a kid to place.
+ */
+export interface CampDressing {
+  spots: readonly CampSpotView[];
+  beside: readonly CampBesideView[];
+}
+
+/**
+ * How long the heroes take to pitch a new camp when the frame grows (§4.1):
+ * a small cousin of the transformation cutscene, never longer than it
+ * (camp.test.ts holds it to `TRANSFORM_BEAT_MS`), and nothing waits on it.
+ */
+export const PITCH_S = 2.4;
+/** How far apart the pieces go up while pitching. */
+const PITCH_STAGGER_S = 0.15;
 /**
  * The moments the game already has (§8.5) that the camp acts out. `unready`
  * is a Ready taken back: out of the trailhead's line and back to wandering.
@@ -182,6 +209,12 @@ export interface CampStage {
   figures(): CampFigureView[];
   /** The pieces somebody is using, whose moving parts animate. */
   activePieces(): string[];
+  /** The crew's pieces at their hotspots and beside the campfire (#620). */
+  setDressing(dressing: CampDressing): void;
+  /** The frame just grew: the heroes pitch the new camp (§4.1). Cut short by anything; never waited on. */
+  pitch(): void;
+  /** Whether a pitch is still under way (for tests). */
+  pitching(): boolean;
   destroy(): void;
 }
 
@@ -315,6 +348,15 @@ interface Actor {
 
 interface PieceView {
   ownerScale: number;
+  /** The art it is drawn with now, relative to `assets/`. */
+  path: string;
+  /** Its art did not load: a labelled stand-in is drawn instead (camp-stand-in.ts). */
+  missing: boolean;
+  standIn: Container | null;
+  /** What the stand-in was last drawn for, so it is redrawn only when that changes. */
+  standInKey: string;
+  /** How far up it is while the camp is being pitched, 0 to 1. */
+  pitch: number;
   shadow: Container;
   groundCount: number;
   mirrored: boolean;
@@ -472,6 +514,11 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     const entry: PieceView = {
       id: piece.id,
       ownerScale: 1,
+      path: piece.path,
+      missing: false,
+      standIn: null,
+      standInKey: "",
+      pitch: 1,
       kitRevision: 0,
       neutralTexture: null,
       shadow,
@@ -488,16 +535,52 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
       fit: fitCanvas(heightPx, null),
     };
     pieces.set(piece.id, entry);
-    void load(assetUrl(piece.path))
+    loadPiece(entry, piece.path);
+  }
+  function loadPiece(entry: PieceView, path: string): void {
+    entry.path = path;
+    void load(assetUrl(path))
       .then((texture) => {
+        if (destroyed || entry.path !== path) return;
         entry.neutralTexture = texture;
-        if (destroyed || entry.kitKey && entry.sprite) return;
+        entry.missing = false;
+        entry.standIn?.destroy({ children: true });
+        entry.standIn = null;
+        if (entry.kitKey && entry.sprite && entry.id.startsWith("bedroll")) return;
         // Measured like a figure, so a campfire painted small in its canvas
         // is still its true height; the part follows the same fit.
         showPieceArt(entry, texture);
       })
-      .catch(() => undefined);
+      .catch(() => {
+        if (destroyed || entry.path !== path) return;
+        entry.missing = true;
+        drawStandIn(entry, lastOwners.get(entry.id));
+      });
   }
+
+  /** The owner each owned piece was last drawn for. */
+  const lastOwners = new Map<string, CampFigure | undefined>();
+
+  /** A labelled stand-in for a piece whose painting is owed (camp-stand-in.ts). */
+  function drawStandIn(entry: PieceView, owner: CampFigure | undefined): void {
+    if (!entry.missing || destroyed) return;
+    const decorations = (owner?.slots ?? []).filter((s) => s !== null).length;
+    const key = `${owner?.id ?? ""}:${owner?.accent ?? ""}:${owner?.name ?? ""}:${String(decorations)}:${String(owner?.souvenirs ?? 0)}`;
+    if (entry.standIn && entry.standInKey === key) return;
+    entry.standInKey = key;
+    entry.standIn?.destroy({ children: true });
+    for (const child of [...entry.container.children]) {
+      if (child instanceof Graphics && !child.label.startsWith("camp-ground-") && !child.label.startsWith("camp-stand-in")) child.destroy();
+    }
+    const standIn = entry.id.startsWith("tent_")
+      ? tentStandIn(entry.heightPx, { ...(owner?.accent ? { accent: owner.accent } : {}), label: owner?.name ? `${owner.name}'s tent` : "Tent", decorations })
+      : entry.id.startsWith("souvenirs_")
+        ? souvenirStandIn(entry.heightPx, { ...(owner?.accent ? { accent: owner.accent } : {}), souvenirs: owner?.souvenirs ?? 0 })
+        : pieceStandIn(entry.heightPx, entry.id.replace(/_\d+$/, "").replace(/_/g, " "));
+    entry.standIn = standIn;
+    entry.container.addChildAt(standIn, entry.groundCount);
+  }
+
   for (const moving of layout.frame.movingParts) {
     const piece = pieces.get(moving.piece);
     if (!piece || piece.part) continue;
@@ -1253,8 +1336,9 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     }
 
     const active = activeHotspots(layout.frame.standPoints, usingPoints());
+    tickPitch();
     for (const piece of pieces.values()) {
-      piece.container.scale.set(piece.laneScale * figureScale * piece.ownerScale);
+      piece.container.scale.set(piece.laneScale * figureScale * piece.ownerScale * piece.pitch);
       if (!piece.part || !piece.motion) continue;
       piece.strength = approach(piece.strength, !still && active.has(piece.id) ? 1 : 0, PART_RATE, dt);
       if (piece.strength < 0.001) piece.strength = 0;
@@ -1277,7 +1361,19 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
       const piece = pieces.get(definition.id)!;
       const owner = campPieceOwner(layout, definition, figures);
       piece.ownerScale = campOwnedScale(owner, measure);
-      piece.container.scale.set(piece.laneScale * figureScale * piece.ownerScale);
+      piece.container.scale.set(piece.laneScale * figureScale * piece.ownerScale * piece.pitch);
+      lastOwners.set(definition.id, owner);
+      if (definition.id.startsWith("tent_")) {
+        // Her tent (§4.5): the one she picked, or her bedroll style's.
+        const path = owner ? tentArt(owner.tent ?? null, campKitStyle(owner.id, owner.kitStyle))?.path : undefined;
+        if (path && path !== piece.path) loadPiece(piece, path);
+        else drawStandIn(piece, owner);
+        continue;
+      }
+      if (definition.id.startsWith("souvenirs_")) {
+        drawStandIn(piece, owner);
+        continue;
+      }
       if (!definition.id.startsWith("bedroll")) continue;
       const key = owner?.accent ? `${owner.id}:${owner.accent}:${owner.kitStyle ?? ""}` : undefined;
       if (piece.kitKey === key) continue;
@@ -1609,6 +1705,144 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     return [...pieces.values()].filter((p) => p.strength > 0).map((p) => p.id);
   }
 
+  // ---------------------------------------------------------------------------
+  // The crew's pieces (#620): at their hotspots, and beside the campfire
+  // ---------------------------------------------------------------------------
+
+  interface DressView {
+    key: string;
+    container: Container;
+    laneScale: number;
+    heightPx: number;
+    pitch: number;
+  }
+  const dressed = new Map<string, DressView>();
+
+  /** Where things found this chapter wait: along the near lane, in front of the fire. */
+  function besideSpot(index: number, count: number): { lane: string; x: number } {
+    const fire = layout.frame.hotspots?.find((h) => h.kind === "cookfire") ?? layout.frame.pieces.find((p) => p.id === "campfire");
+    const x = (fire?.x ?? 0.5) + (index - (count - 1) / 2) * 0.075;
+    const lanes = [...layout.lanes.values()].sort((a, b) => b.y - a.y);
+    return { lane: lanes[0]!.id, x };
+  }
+
+  function dressPiece(key: string, at: { lane: string; x: number }, piece: { path: string | null; heightCm: number; label: string; banner?: string | null; glow?: boolean }): DressView {
+    const lane = laneOf(layout, at.lane);
+    const container = new Container();
+    container.label = `dress:${key}`;
+    container.x = at.x * W;
+    container.y = lane.y * H;
+    container.zIndex = lane.y * H - 0.4;
+    const heightPx = campHeightPx(piece.heightCm, measure);
+    if (piece.glow) container.addChild(hotspotGlow(Math.max(heightPx, campHeightPx(120, measure))));
+    const body = new Container();
+    container.addChild(body);
+    const standIn = (): void => {
+      if (destroyed || body.destroyed) return;
+      body.removeChildren().forEach((c) => c.destroy({ children: true }));
+      body.addChild(pieceStandIn(heightPx, piece.label));
+      if (piece.banner) {
+        const name = bannerName(heightPx, piece.banner);
+        if (name) body.addChild(name);
+      }
+    };
+    if (piece.path) {
+      void load(assetUrl(piece.path))
+        .then((texture) => {
+          if (destroyed || body.destroyed) return;
+          const sprite = new Sprite(texture);
+          fitSprite(sprite, fitCanvas(heightPx, measurePaint(texture)));
+          body.removeChildren().forEach((c) => c.destroy({ children: true }));
+          body.addChild(sprite);
+          if (piece.banner) {
+            const name = bannerName(heightPx, piece.banner);
+            if (name) body.addChild(name);
+          }
+        })
+        .catch(standIn);
+    } else {
+      standIn();
+    }
+    ground.addChild(container);
+    return { key, container, laneScale: lane.scale, heightPx, pitch: 1 };
+  }
+
+  function setDressing(dressing: CampDressing): void {
+    if (destroyed) return;
+    const want = new Map<string, { key: string; make: () => DressView }>();
+    for (const spot of dressing.spots) {
+      if (spot.pieceId === null && !spot.highlighted) continue;
+      const key = `${spot.pieceId ?? "-"}|${spot.banner ?? ""}|${spot.highlighted ? "lit" : ""}`;
+      want.set(`spot:${spot.id}`, {
+        key,
+        make: () =>
+          dressPiece(`spot:${spot.id}`, { lane: spot.lane, x: spot.x }, {
+            path: spot.pieceId ? spot.path : null,
+            heightCm: spot.pieceId ? spot.heightCm : 20,
+            label: spot.pieceId ? spot.label : "",
+            banner: spot.banner,
+            glow: spot.highlighted,
+          }),
+      });
+    }
+    dressing.beside.forEach((piece, i) => {
+      const at = besideSpot(i, dressing.beside.length);
+      want.set(`beside:${piece.pieceId}`, {
+        key: `${String(i)}/${String(dressing.beside.length)}`,
+        make: () => dressPiece(`beside:${piece.pieceId}`, at, { path: piece.path, heightCm: Math.min(piece.heightCm, 120), label: piece.label }),
+      });
+    });
+    for (const [id, view] of dressed) {
+      const next = want.get(id);
+      if (next && next.key === view.key) continue;
+      view.container.destroy({ children: true });
+      dressed.delete(id);
+    }
+    for (const [id, next] of want) {
+      if (dressed.has(id)) continue;
+      const view = next.make();
+      view.key = next.key;
+      dressed.set(id, view);
+    }
+  }
+
+  let pitchFrom: number | null = null;
+
+  function pitch(): void {
+    if (destroyed) return;
+    if (still) {
+      // Reduced motion: the new camp is simply there, and the heroes wave.
+      pitchFrom = null;
+    } else {
+      pitchFrom = elapsed;
+    }
+    for (const actor of actors.values()) moment("arrive", actor.def.id);
+    tickPitch();
+  }
+
+  /** Every piece rises in turn, left to right, over `PITCH_S`. */
+  let pitchSettled = true;
+  function tickPitch(): void {
+    if (pitchFrom === null && pitchSettled) {
+      for (const d of dressed.values()) d.container.scale.set(d.laneScale * figureScale);
+      return;
+    }
+    pitchSettled = pitchFrom === null;
+    const order = [...pieces.values(), ...dressed.values()].sort((a, b) => a.container.x - b.container.x);
+    order.forEach((p, i) => {
+      if (pitchFrom === null) {
+        p.pitch = 1;
+        return;
+      }
+      const span = PITCH_S - PITCH_STAGGER_S * Math.min(order.length - 1, 8);
+      const start = Math.min(i, 8) * PITCH_STAGGER_S;
+      const t = Math.max(0, Math.min(1, (elapsed - pitchFrom! - start) / Math.max(0.3, span)));
+      p.pitch = t * t * (3 - 2 * t);
+    });
+    for (const d of dressed.values()) d.container.scale.set(d.laneScale * figureScale * d.pitch);
+    if (pitchFrom !== null && elapsed - pitchFrom >= PITCH_S) pitchFrom = null;
+  }
+
   function destroy(): void {
     if (destroyed) return;
     destroyed = true;
@@ -1627,6 +1861,9 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     setInset,
     figures,
     activePieces,
+    setDressing,
+    pitch,
+    pitching: () => pitchFrom !== null,
     destroy,
   };
 }

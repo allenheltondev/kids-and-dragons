@@ -134,3 +134,66 @@
   font-size: .75em;
   white-space: nowrap;
 }
+
+/* Phase 2 (#620): whose tent it is, the crew's name on its banner, a lit hotspot for a new
+   piece, and the phone panel's tap targets on the picture (the named controls are beside it). */
+.kad-static-camp__tag {
+  position: absolute;
+  inset-block-start: 88%;
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  padding: .05em .4em;
+  border-radius: .25em;
+  background: rgb(13 11 26 / 75%);
+  color: #fff;
+  font-size: .7em;
+  white-space: nowrap;
+}
+.kad-static-camp__banner {
+  position: absolute;
+  inset-block-start: 18%;
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  max-inline-size: 160%;
+  padding: .1em .45em;
+  border-radius: .2em;
+  background: #7a2f3a;
+  color: #fff3d6;
+  font-weight: 700;
+  font-size: .7em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.kad-static-camp__spot.is-lit::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: 5%;
+  inset-block-start: 82%;
+  inline-size: 90%;
+  block-size: 12%;
+  border: 3px solid #ffd36e;
+  border-radius: 50%;
+  box-shadow: 0 0 12px #ffd36e;
+}
+.kad-static-camp__spot.is-empty { aspect-ratio: 1; }
+.kad-static-camp__tap {
+  position: absolute;
+  inset-inline: 15%;
+  inset-block: 10% 10%;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.kad-static-camp__spot-name {
+  padding: .05em .35em;
+  border: 1px dashed #ffd36e;
+  border-radius: .25em;
+  background: rgb(13 11 26 / 70%);
+  color: #fff;
+  font-size: .65em;
+  white-space: nowrap;
+}
