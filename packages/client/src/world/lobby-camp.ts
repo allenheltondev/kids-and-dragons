@@ -119,6 +119,7 @@ function heroFigure(member: PartyMember): Omit<CampFigure, "seat"> {
   return {
     id: character.id,
     url: characterWorldArtUrl(character.species, character.tier, character.class),
+    accent: character.appearance.accent,
     heightCm: size.heightCm,
     stance: size.stance,
   };

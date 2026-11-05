@@ -1,6 +1,6 @@
 # Brief: camp art
 
-**Status:** Phase 1 open (#615). The design is [docs/camp.md](../camp.md) (§3.1 backdrops, §4.1
+**Status:** Phase 1 delivered (#615), with three hero-colored bedroll styles. The design is [docs/camp.md](../camp.md) (§3.1 backdrops, §4.1
 frame stages, §8.3 lanes and stand points, §8.4 actions and moving parts). The prompts are in
 [docs/camp-art-prompts.json](../camp-art-prompts.json); the paintings are made from them, then
 checked by `npm run art:verify` and counted by `npm run art:inventory`.
@@ -78,23 +78,70 @@ The `open_plains` backdrop and the stage-1 frame: a small campfire, a neutral be
 (the same painting at all four seats), the trailhead post, and the campfire's flame (motion
 `flicker`). Five paintings in all.
 
-## Phase 2: hero-colored kit (to be agreed with the client work before it is painted)
+The backdrop was repainted for the revised #615 composition: the higher horizon, wide open
+middle 80 percent, fire patch at y 648, edge scenery and trail, and quiet top/bottom quarters
+for cover-fit cropping. The canonical prompt and the final composition-edit prompt are saved
+in `camp-art-prompts.json`. The exported RGB WebP is 1920 × 1080, Lanczos resized, quality 90,
+method 6, and 177 KB, below the 500 KB limit.
 
-Phase 2 gives each hero their own tent, bedroll and pack in their own color (§4.5: the palette
-rule heroes already use). The proposed convention, **not yet agreed with the client camp stage and
-not to be painted until it is**:
+![Revised open-plains clearing](../../assets/camp/backdrops/open_plains.webp)
 
-- **Two layers per kit piece, on one canvas.** `<style>.png` is the **untinted detail layer**:
-  everything that keeps its own color (outlines, poles, ropes, pegs, buckles, stitching, shading
-  accents), with the colored cloth left transparent. `<style>-tint.png` is the **tint layer**:
-  only the cloth, painted near-greyscale (the same saturation limit as tintable effects,
-  `tolerance.tintableMaxSaturation`, 0.15), with its light and shade in value alone. The client
-  multiplies the tint layer by the hero's color and draws the detail layer over it, so one
-  painting serves every hero color.
-- **Both layers share the figure canvas and ground contact** and stack pixel for pixel; a tent's
-  flap (its moving part, motion `sway`) gets the same pair.
-- **Open questions for the client work**: draw order (tint under or over detail), the blend
-  (multiply against a mid-grey or a lightness-preserving tint), which palette slot of the hero's
-  color is used, and how styles are named in the manifest. Settle these in the client PR, then
-  add the layers to `camp` and these formats here, and extend `art:verify` to check the tint
-  layer's saturation.
+## Hero-colored bedrolls: the implemented format
+
+Three styles are declared in `manifest.camp.kitStyles`: `rolled`, `quilted`, and `patched`.
+Their packs have distinct silhouettes: the rolled blanket has a structured two-pocket
+rucksack, the quilted bedroll has a round rope-drawstring pack, and the patched trail kit has
+a low, wide flap satchel. Packs retain their natural material colors; only bedding is tinted.
+Each is one 1024 × 1024 RGBA painting under `assets/camp/kits/`, with neutral light cloth,
+natural leather and metal, and the same y 900 ground contact as the neutral bedroll.
+Prompts are in [camp-kit-art-prompts.json](../camp-kit-art-prompts.json).
+
+`world/CampBedroll.tsx` draws the natural painting first. A second instance of that **same
+image** is clipped to the registered cloth paths in `world/camp-kit-art.ts`, converted to
+luminance, and multiplied by the hero's `appearance.accent` in sRGB. Outlines and folds retain
+their shading; leather straps, buckles, packs and cups retain their natural colors. This
+settles the earlier proposed two-PNG convention for these bedrolls: one painting and an SVG
+cloth mask keep every pixel registered, without generating two layers independently.
+Filter and clip IDs are unique per seat. Invalid accents use meadow teal, and a failed style
+image falls back to the original neutral Phase 1 painting.
+
+The hero's character ID determines a stable style, independent of party order or reconnects.
+No new server state or kit picker is introduced. The moving camp assigns a variant to each
+occupied bedroll and uses `camp-kit-canvas.ts` to apply the same registered cloth mask as the
+SVG component, caching the result per source painting, style and accent. Backpacks stay natural.
+The still fallback draws the same kits with `CampBedroll` and a motionless `Campfire`.
+The camp renderer's existing warm-up action flickers the delivered flame layer; reduced
+motion keeps it still. Pieces and heroes share the renderer's existing lane depth ordering.
+
+Art verification checks the variants' format, alpha, margin and ground contact; inventory
+counts the five Phase 1 paintings and three kits once each. Runtime tests tie style paths to
+the manifest, check tint math and fallback, and guard against filter collisions between seats.
+The tent and tent-flap formats remain future work.
+
+## Hero-sized owned pieces
+
+`ownerSeat` on a camp piece declares which hero it belongs to. Existing seat-linked rest
+hotspots also infer that ownership. An owned piece's `heightCm` is its reference size for a
+160 cm hero; both renderers scale it in proportion to its owner's displayed height. A 40 cm
+kit therefore shrinks for a dragonling and grows for a bigfoot. The factor is applied after
+the base piece's legibility floor, and includes shadows and moving parts without changing
+ground contact. Shared pieces such as the fire and trailhead retain their authored size.
+Empty seats use the reference size. Reassigning a seat or changing the hero's size updates
+the piece without rerasterizing its art. The still renderer also accounts for the kit's
+actual painted height, rather than treating its transparent canvas as the object.
+
+## Grounding and light
+
+The camp shares one upper-left daylight direction. Heroes and pieces have soft contact
+shadows and a faint lower-right cast, drawn beneath their cutouts and scaled with their lane.
+The fire adds a restrained warm pool on the ground. A light warm ambient tint ties the
+cutouts to the late-afternoon background; these effects belong to the renderer, so the PNG
+cutouts stay free of baked ground or cast shadows.
+
+Bedrolls sit just inside their owners' rest positions instead of underneath the heroes.
+The right-hand kits face inward, forming two pairs around the fire. Rest stand points and
+walking routes stay unchanged. The still fallback uses the same grouping and soft shadows.
+
+![The camp as one composition, with visible kits and shared ground light](camp-composition-preview.webp)
+
+![Natural and blue cloth on all three bedroll styles](camp-kits-preview.png)

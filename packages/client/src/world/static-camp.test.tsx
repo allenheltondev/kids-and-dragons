@@ -12,6 +12,8 @@ import { makeCharacter, makeMember, makeState } from "../testing/fixtures";
 import { useGameStore } from "../store";
 import { StaticStage } from "./StaticStage";
 import { setLobbyInsetBottom } from "./stage-inset";
+import { CAMP_KIT_STYLES, type CampKitStyle } from "./camp-kit-art";
+import { figureSize } from "./figure-scale";
 
 function member(n: number, overrides: Partial<PartyMember> = {}): PartyMember {
   return makeMember({
@@ -32,6 +34,24 @@ afterEach(() => {
 });
 
 describe("the still camp", () => {
+  it("fits the painted pack to its owner's size rather than the PNG canvas", () => {
+    mount(makeState({ party: [
+      member(1, { character: makeCharacter({ id: "tiny", species: "dragonling" }) }),
+      member(2, { character: makeCharacter({ id: "large", species: "bigfoot" }) }),
+    ] }));
+    const heights = [0, 1].map(seat => {
+      const el = document.querySelector<HTMLElement>(`[data-piece="bedroll_${seat}"]`)!;
+      const style = el.querySelector("[data-camp-kit]")!.getAttribute("data-camp-kit") as CampKitStyle;
+      return parseFloat(el.style.height) * CAMP_KIT_STYLES[style].paintHeight;
+    });
+    expect(heights[1]! / heights[0]!).toBeCloseTo(figureSize("characters/bigfoot").heightCm / figureSize("characters/dragonling").heightCm);
+  });
+  it("draws owned kit styles and the fire without motion", () => {
+    mount(makeState({ party: [member(1), member(2)] }));
+    expect(document.querySelectorAll("[data-camp-kit]")).toHaveLength(2);
+    expect(document.querySelector('.campfire[data-flicker="off"]')).not.toBeNull();
+    expect(document.querySelector('[data-piece="trailhead_post"] img')).not.toBeNull();
+  });
   it("shows the camp in the lobby, every seated hero at a bedroll, the stepped-away faded", () => {
     mount(makeState({ phase: "creation", party: [member(1), member(2, { connected: false })] }));
     expect(screen.getByTestId("static-camp")).toBeTruthy();
@@ -39,6 +59,7 @@ describe("the still camp", () => {
     expect(heroes.map((h) => h.dataset.hero)).toEqual(["c_1", "c_2"]);
     expect(heroes[1]!.classList.contains("is-away")).toBe(true);
     expect(heroes[0]!.querySelector("img")!.getAttribute("src")).toMatch(/griffin/);
+    expect(heroes[0]!.querySelector(".kad-static-camp__name")!.textContent).toBe("Sparklehoof");
     // At their bedrolls: the manifest's seat 0 and 1 stand points.
     expect(heroes[0]!.style.left).toBe("36%");
     expect(heroes[1]!.style.left).toBe("64%");

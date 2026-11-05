@@ -15,6 +15,8 @@ describe("combat illustrations", () => {
     }
   });
   it("gives every environment kind distinct art, and keeps unknown captives honest", () => {
+    expect(combatMarkerArt("seal", "Tie the rope", false, "fight-mooring-post")).toBe("/assets/story-props/fight-mooring-post.webp");
+    expect(combatMarkerArt("seal", "Tie the rope", false, "../outside")).toContain("objective-seal.webp");
     const kinds: CombatMarker[] = ["fire", "thorns", "rift", "exit", "hold", "seal"];
     expect(new Set(kinds.map(kind => combatMarkerArt(kind))).size).toBe(6);
     expect(combatMarkerArt("captive", "Bun")).toContain("rescue-bun.webp");

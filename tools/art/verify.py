@@ -772,6 +772,9 @@ def check_camp_layout(rep: Report, mf: dict) -> None:
             if not CAMP_X_MIN <= piece["x"] <= CAMP_X_MAX:
                 problems.append(f"piece {piece['id']} within x {CAMP_X_MIN} to {CAMP_X_MAX}")
             height = piece.get("heightCm")
+            owner = piece.get("ownerSeat")
+            if owner is not None and (type(owner) is not int or owner not in CAMP_SEATS):
+                problems.append(f"piece {piece['id']} ownerSeat a seat from 0 to 3")
             if height is not None and (isinstance(height, bool) or not isinstance(height, (int, float)) or height <= 0):
                 problems.append(f"piece {piece['id']} heightCm a positive number")
         for part in frame.get("movingParts", []):
@@ -849,6 +852,8 @@ def check_camp_art(rep: Report, mf: dict) -> None:
             cutouts.setdefault(part["path"], False)
     tol = mf["tolerance"]
     figure = mf["canvas"]
+    for kit in spec.get("kitStyles", []):
+        cutouts[kit["path"]] = True
     for rel, grounded in cutouts.items():
         declared.add(rel)
         path = os.path.join(ROOT, "assets", rel)

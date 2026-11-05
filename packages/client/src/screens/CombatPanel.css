@@ -158,7 +158,7 @@
   background: var(--color-surface-sunken, #120f26);
 }
 .combat__grid .combat__cell:not(.combat__cell--blocked):not(.combat__cell--enemy):not(.combat__cell--party) {
-  background-image: linear-gradient(#14271e5c, #14271e5c), var(--battle-floor, none);
+  background-image: var(--battle-warning, linear-gradient(#14271e5c, #14271e5c)), var(--battle-floor, none);
   background-size: auto, 400% 400%;
   background-position: center, 0 0;
 }
@@ -890,3 +890,26 @@ html[data-text] .combat .combat__actions .choice { font-size: .85em; }
 .combat__roster { grid-column: 1; grid-row: 1 / 3; }
 .combat__enlarge { grid-column: 2; grid-row: 1; }
 .combat__budget { grid-column: 1 / -1; }
+
+/* Committed sparks carry a hatch and a warning mark, independent of colour. */
+.combat__grid .combat__cell--danger { --battle-warning: repeating-linear-gradient(135deg, #f7b454aa 0 3px, #502449bb 3px 8px); background-image: var(--battle-warning); outline: 2px solid #ffd08a; outline-offset: -3px; }
+.combat__cell--danger::before { content: "!"; position: absolute; z-index: 4; inset-block-start: 0; inset-inline-end: 2%; color: #ffe5b0; font-size: max(12px, .8em); font-weight: 900; text-shadow: 0 1px 2px #000; pointer-events: none; }
+
+.combat__cell--charging > .combat__cell-art { filter: drop-shadow(0 0 5px #ffd28a) sepia(.5); }
+
+/* A mission encounter spends the header on health rather than between-fight XP. */
+.player--fighting:has(.combat[data-windup]) .sheet .xp-meter { display: none; }
+
+/* Mission rules already explain the situation; aiming instructions keep their seat. */
+.combat[data-quiet-hint] .combat__seat { display: none; }
+.combat[data-windup] .combat__board { min-block-size: clamp(80px, 24cqh, 180px); }
+
+/* Keep threat text and complete action cards readable at the largest text setting. */
+.combat[data-windup] .combat__env { font-size: max(12px, .7em); line-height: 1.25; }
+.combat[data-windup] .combat__fighter-strip button { font-size: max(12px, .65em); line-height: 1.15; padding-block: .15em; }
+.combat[data-windup] .combat__budget { line-height: 1.2; }
+.combat[data-windup] .paged-options__nav { font-size: .75em; }
+.combat[data-windup] .combat__result summary { min-block-size: 44px; padding-block: .15em; }
+.combat[data-windup] .combat__targets .choice { font-size: .8em; min-block-size: 44px; padding-block: .2em; }
+.combat[data-windup] .combat__ask { font-size: .8em; line-height: 1.25; }
+.combat[data-windup] .combat__ask-row > .kad-button { min-block-size: 44px; font-size: .75em; padding-block: .25em; }

@@ -28,6 +28,14 @@ function chapter(): Chapter {
 const PARTY = [makeMember({ character: makeCharacter({ species: "unicorn", tier: "fledgling", class: "songkeeper" }) })];
 
 describe("the scenes ahead", () => {
+  it("warms authored objective props along with the chapter", () => {
+    const content = chapter();
+    const fight = content.scenes.encounter_wisps as Extract<Chapter["scenes"][string], { type: "encounter" }>;
+    const quay: Chapter = { ...content, scenes: { ...content.scenes, encounter_wisps: { ...fight, environment: { objectives: [
+      { id: "rope", kind: "close", label: "Tie the rope", at: { x: 2, y: 2 }, turns: 2, art: "fight-mooring-post" },
+    ] } } } };
+    expect(chapterAssets(quay, [])).toContain("/assets/story-props/fight-mooring-post.webp");
+  });
   it("starts with the party's own figures — every scene needs them", () => {
     const urls = upcomingAssets(null, null, PARTY);
     expect(urls).toHaveLength(1);

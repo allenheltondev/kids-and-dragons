@@ -179,7 +179,25 @@ const FIRST_PAINT_BUDGET_KB = 330;
 // 1470 -> 1485 for combat planning: the deterministic enemy planner is now
 // visible on phone/TV, with fighter inspection, suggestions and mission rules.
 // 1481KB measured; existing biome and character art is reused, no dependency added.
-const TOTAL_BUDGET_KB = 1485;
+// 1485 -> 1525 for the crew's camp (#613, #614, #615): 1523KB measured in CI
+// and locally. Lane walking, moments, framing, the still fallback and registered
+// kit tinting live in the lazy room/renderer graph. This is the explicit cost
+// of the new camp feature, with no dependency added; first paint remains 329KB
+// under its unchanged 330KB cap. Painted PNG/WebP assets are fetched separately.
+// 1525 -> 1528 for the requested camp composition pass: 1526KB measured.
+// Soft contact/cast shadows reuse existing textures, with no new dependency or
+// art downloads. The shared light direction and kit placement stay in the lazy
+// renderer. First paint is unchanged at 329KB under its existing 330KB ceiling.
+// 1528 -> 1533 after merging main's combat presentation and the updated lobby,
+// plus owner-relative camp kit sizing (#615). The integrated head measured
+// 1531KB in Linux CI (run 41923372911), first paint still 329KB. The extra code
+// stays in the lazy room/renderer graph; no dependency or first-paint allowance
+// changed. Retain 2KB of slack and verify this cap against the next CI build.
+// 1533 -> 1538 for the parent camp branch's queue/visibility pass (1d5e052a):
+// 1536KB measured in Linux CI run 41934647049 after its automatic merge.
+// Heroes leave the trailhead line cleanly and framing keeps every figure on
+// screen. This adds lazy camp code; first paint remains 329KB. Keep 2KB slack.
+const TOTAL_BUDGET_KB = 1538;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

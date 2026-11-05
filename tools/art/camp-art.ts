@@ -5,6 +5,7 @@ import { join } from 'node:path';
 export interface CampManifest {
   camp?: {
     backdrops: { family: string; path: string }[];
+    kitStyles?: { id: string; path: string }[];
     frames: {
       stage: number;
       pieces: { id: string; path: string }[];
@@ -26,6 +27,7 @@ export function campArtOwed(root: string, manifest: CampManifest): { need: numbe
       ...frame.pieces.map(piece => piece.path),
       ...(frame.movingParts ?? []).map(part => part.path),
     ]),
+    ...(camp.kitStyles ?? []).map(style => style.path),
   ])];
   return { need: paths.length, missing: paths.filter(path => !existsSync(join(root, 'assets', path))) };
 }

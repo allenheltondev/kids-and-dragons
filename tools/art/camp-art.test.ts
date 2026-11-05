@@ -39,20 +39,24 @@ ${files.split('\n').map(line => `    ${line}`).join('\n')}
     print(json.dumps(dict(failures=rep.failures, warnings=rep.warnings)))
 `;
   const output = execFileSync(process.platform === 'win32' ? 'python' : 'python3', ['-c', code], { encoding: 'utf8' });
-  return JSON.parse(output.trim().split('\n').at(-1)!);
+  const result = JSON.parse(output.trim().split('\n').at(-1)!) as { failures: string[]; warnings: string[] };
+  result.failures = result.failures.map(label => label.replaceAll('\\', '/'));
+  return result;
 }
 
 const everyPainting = `
 save('camp/backdrops/open_plains.webp', Image.new('RGB', (1920, 1080), (90, 140, 60)), 'WEBP')
 for rel in ['campfire', 'bedroll', 'trailhead-post']:
     save(f'camp/frames/stage1/{rel}.png', cutout(), 'PNG')
-save('camp/frames/stage1/campfire-flame.png', cutout(820), 'PNG')`;
+save('camp/frames/stage1/campfire-flame.png', cutout(820), 'PNG')
+for style in ['rolled', 'quilted', 'patched']:
+    save(f'camp/kits/{style}.png', cutout(), 'PNG')`;
 
 describe('camp layout (manifest.camp)', () => {
   it('accepts the declared layout and owes, rather than fails, every missing painting', () => {
     const { failures, warnings } = verify('');
     expect(failures).toEqual([]);
-    expect(warnings).toHaveLength(5);
+    expect(warnings).toHaveLength(8);
   });
 
   it.each([
@@ -81,6 +85,7 @@ describe('camp art delivery', () => {
     ['a backdrop on the wrong canvas', `save('camp/backdrops/open_plains.webp', Image.new('RGB', (1600, 900)), 'WEBP')`, 'camp/backdrops/open_plains.webp canvas'],
     ['a piece with an opaque background', `save('camp/frames/stage1/campfire.png', cutout().convert('RGB'), 'PNG')`, 'assets/camp/frames/stage1/campfire.png mode'],
     ['a floating piece', `save('camp/frames/stage1/bedroll.png', cutout(780), 'PNG')`, 'camp/frames/stage1/bedroll.png origin'],
+    ['a floating kit variant', `save('camp/kits/rolled.png', cutout(780), 'PNG')`, 'camp/kits/rolled.png origin'],
     ['a moving part below the ground', `save('camp/frames/stage1/campfire-flame.png', cutout(960), 'PNG')`, 'camp/frames/stage1/campfire-flame.png origin'],
     ['an undeclared file', `save('camp/frames/stage1/tent.png', cutout(), 'PNG')`, 'camp/frames/stage1/tent.png undeclared'],
   ])('rejects %s', (_, file, label) => {
@@ -90,12 +95,15 @@ describe('camp art delivery', () => {
 
 describe('camp art prompts', () => {
   it('keep one prompt for each painting the manifest declares, in its format', () => {
-    const prompts = JSON.parse(readFileSync(join(process.cwd(), 'docs/camp-art-prompts.json'), 'utf8')) as {
+    const phase1 = JSON.parse(readFileSync(join(process.cwd(), 'docs/camp-art-prompts.json'), 'utf8'));
+    const kits = JSON.parse(readFileSync(join(process.cwd(), 'docs/camp-kit-art-prompts.json'), 'utf8'));
+    const prompts = { paintings: [...phase1.paintings, ...kits.paintings] } as {
       paintings: { path: string; output: { width: number; height: number; format: string } }[];
     };
     const declared = [
       ...manifest.camp.backdrops.map(backdrop => backdrop.path),
       ...manifest.camp.frames.flatMap(frame => [...frame.pieces, ...frame.movingParts].map(art => art.path)),
+      ...manifest.camp.kitStyles.map(art => art.path),
     ];
     expect(prompts.paintings.map(painting => painting.path.replace(/^assets\//, '')).sort())
       .toEqual([...new Set(declared)].sort());
@@ -113,13 +121,16 @@ describe('camp art inventory', () => {
     const root = mkdtempSync(join(tmpdir(), 'kad-camp-art-'));
     try {
       expect(campArtOwed(root, manifest)).toEqual({
-        need: 5,
+        need: 8,
         missing: [
           'camp/backdrops/open_plains.webp',
           'camp/frames/stage1/campfire.png',
           'camp/frames/stage1/bedroll.png',
           'camp/frames/stage1/trailhead-post.png',
           'camp/frames/stage1/campfire-flame.png',
+          'camp/kits/rolled.png',
+          'camp/kits/quilted.png',
+          'camp/kits/patched.png',
         ],
       });
       mkdirSync(join(root, 'assets/camp/frames/stage1'), { recursive: true });

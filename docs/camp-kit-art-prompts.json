@@ -1,0 +1,67 @@
+{
+  "mode": "Built-in image_gen",
+  "backpackEdits": [
+    {
+      "style": "rolled",
+      "prompt": "Use case: precise-object-edit. Edit this production game cutout. Keep the sleeping roll/mat, pillow, every cloth fold and stitching, blanket binding straps, entire canvas, composition and pixel positions unchanged. ONLY replace the brown backpack at the upper-right pillow end with the backpack design described below. Preserve true transparency, 1024x1024 canvas, all clear margins and the kit's lowest visible point at y900. Keep the new pack wholly in the old backpack area (approximately x620..942 y390..805), its bottom partly behind the same pillow/bedroll. Same warm storybook gouache, visible brush texture, tapered dark-brown outlines, upper-left light. Natural brown leather, muted neutral canvas if specified, small natural tin cup. No text, logos, people, background, shadow or extra props. This should read as a DIFFERENT BACKPACK SILHOUETTE, not merely recoloring the existing pack. Do not tint any part of the backpack to the hero's color. Design for the ROLLED kit: a tall, very boxy expedition RUCKSACK with squared corners, a stiff framed silhouette, two clearly separate square front pockets with small brass buckles, and a compact rolled leather top flap. Dark chestnut leather, not orange. Narrow straight shoulder straps visible behind it, no giant loop handle. A tin cup clips to one side. The box-shaped body and twin pockets must be recognizable at thumbnail size."
+    },
+    {
+      "style": "quilted",
+      "prompt": "Use case: precise-object-edit. Edit this production game cutout. Keep the sleeping roll/mat, pillow, every cloth fold and stitching, blanket binding straps, entire canvas, composition and pixel positions unchanged. ONLY replace the brown backpack at the upper-right pillow end with the backpack design described below. Preserve true transparency, 1024x1024 canvas, all clear margins and the kit's lowest visible point at y900. Keep the new pack wholly in the old backpack area (approximately x620..942 y390..805), its bottom partly behind the same pillow/bedroll. Same warm storybook gouache, visible brush texture, tapered dark-brown outlines, upper-left light. Natural brown leather, muted neutral canvas if specified, small natural tin cup. No text, logos, people, background, shadow or extra props. This should read as a DIFFERENT BACKPACK SILHOUETTE, not merely recoloring the existing pack. Do not tint any part of the backpack to the hero's color. Design for the QUILTED kit: a round pear-shaped DRAWSTRING PACK, soft and sack-like, its top gathered into a puckered circular opening with a thick knotted rope drawstring. Warm muted olive-brown canvas body, dark chocolate leather oval base and narrow shoulder straps, one small horizontal leather pocket near its bottom. NO flap, NO large central vertical buckle strap, NO top loop handle. A small tin cup hangs from a side rope loop. This round sack silhouette must look unlike a rectangular rucksack or a flap satchel."
+    },
+    {
+      "style": "patched",
+      "prompt": "Use case: precise-object-edit. Edit this production game cutout. Keep the sleeping roll/mat, pillow, every cloth fold and stitching, blanket binding straps, entire canvas, composition and pixel positions unchanged. ONLY replace the brown backpack at the upper-right pillow end with the backpack design described below. Preserve true transparency, 1024x1024 canvas, all clear margins and the kit's lowest visible point at y900. Keep the new pack wholly in the old backpack area (approximately x620..942 y390..805), its bottom partly behind the same pillow/bedroll. Same warm storybook gouache, visible brush texture, tapered dark-brown outlines, upper-left light. Natural brown leather, muted neutral canvas if specified, small natural tin cup. No text, logos, people, background, shadow or extra props. This should read as a DIFFERENT BACKPACK SILHOUETTE, not merely recoloring the existing pack. Do not tint any part of the backpack to the hero's color. Design for the PATCHED kit: a low WIDE FLAP SATCHEL, distinctly wider than it is tall, a softly sagging caramel-brown leather messenger bag with a broad rounded envelope flap and TWO widely spaced small brass toggles. One long narrow shoulder strap lies in a loose arch behind the bag. A visible stitched leather repair patch on one corner. NO tall rucksack, NO large central buckle strap, NO drawstring. One tiny tin cup clips to its side. Width approximately x650..942, top around y530 and bottom around y760; leave the old backpack's upper area transparent. Low broad messenger-satchel silhouette must be visibly different from both other pack types."
+    }
+  ],
+  "paintings": [
+    {
+      "id": "rolled",
+      "path": "assets/camp/kits/rolled.png",
+      "reference": "assets/camp/frames/stage1/bedroll.png",
+      "output": {
+        "width": 1024,
+        "height": 1024,
+        "format": "PNG",
+        "alpha": true,
+        "groundContact": {
+          "x": 512,
+          "y": 900
+        }
+      },
+      "prompt": "Use case: illustration-story. Production game cutout for Kids & Dragons. Match reference painted hand: warm children's storybook gouache, visible brushwork, tapered dark-brown outlines, upper-left light; clear at 120px. ONE traveler's sleeping kit, low wide three-quarter view, bed laid lengthwise diagonally toward the lower left, leather pack at far upper-right pillow end. Undyed light neutral gray cloth everywhere that is fabric, using value shading only (no colored fabric), warm brown leather, natural tin metal. Keep cloth visually distinct from leather to allow accurate runtime cloth masks. All cloth unpatterned except stitching/patches specified. No hero, people, text, emblems, scenery, ground, cast shadow or glow. True transparent background, square 1024x1024 RGBA PNG. Whole kit centered horizontally, eight percent minimum clear margin. Lowest visible row y=900, nothing below y912. Low wide shape filling about x100..924 and y400..900. Reference is style and low perspective only, create the described variant. Variant: tidy rolled blanket. One neat tightly rolled cylindrical wool blanket, tied by two dark brown leather straps; small square cloth pillow behind its left end. Compact upright leather backpack at right with tin cup. No quilt, no patches. Keep straps and backpack clearly outside cloth regions where possible."
+    },
+    {
+      "id": "quilted",
+      "path": "assets/camp/kits/quilted.png",
+      "reference": "assets/camp/frames/stage1/bedroll.png",
+      "output": {
+        "width": 1024,
+        "height": 1024,
+        "format": "PNG",
+        "alpha": true,
+        "groundContact": {
+          "x": 512,
+          "y": 900
+        }
+      },
+      "prompt": "Use case: illustration-story. Production game cutout for Kids & Dragons. Match reference painted hand: warm children's storybook gouache, visible brushwork, tapered dark-brown outlines, upper-left light; clear at 120px. ONE traveler's sleeping kit, low wide three-quarter view, bed laid lengthwise diagonally toward the lower left, leather pack at far upper-right pillow end. Undyed light neutral gray cloth everywhere that is fabric, using value shading only (no colored fabric), warm brown leather, natural tin metal. Keep cloth visually distinct from leather to allow accurate runtime cloth masks. All cloth unpatterned except stitching/patches specified. No hero, people, text, emblems, scenery, ground, cast shadow or glow. True transparent background, square 1024x1024 RGBA PNG. Whole kit centered horizontally, eight percent minimum clear margin. Lowest visible row y=900, nothing below y912. Low wide shape filling about x100..924 and y400..900. Reference is style and low perspective only, create the described variant. Variant: thick quilted bedroll. A generous laid-flat rectangular sleeping mat with broad stitched diamond quilting, a folded soft blanket edge at its near end, and a small square pillow. A rounded leather backpack at the pillow end with a tin mug. No leather straps cross the cloth. Comfortably padded, broad readable folds; no patches."
+    },
+    {
+      "id": "patched",
+      "path": "assets/camp/kits/patched.png",
+      "reference": "assets/camp/frames/stage1/bedroll.png",
+      "output": {
+        "width": 1024,
+        "height": 1024,
+        "format": "PNG",
+        "alpha": true,
+        "groundContact": {
+          "x": 512,
+          "y": 900
+        }
+      },
+      "prompt": "Use case: illustration-story. Production game cutout for Kids & Dragons. Match reference painted hand: warm children's storybook gouache, visible brushwork, tapered dark-brown outlines, upper-left light; clear at 120px. ONE traveler's sleeping kit, low wide three-quarter view, bed laid lengthwise diagonally toward the lower left, leather pack at far upper-right pillow end. Undyed light neutral gray cloth everywhere that is fabric, using value shading only (no colored fabric), warm brown leather, natural tin metal. Keep cloth visually distinct from leather to allow accurate runtime cloth masks. All cloth unpatterned except stitching/patches specified. No hero, people, text, emblems, scenery, ground, cast shadow or glow. True transparent background, square 1024x1024 RGBA PNG. Whole kit centered horizontally, eight percent minimum clear margin. Lowest visible row y=900, nothing below y912. Low wide shape filling about x100..924 and y400..900. Reference is style and low perspective only, create the described variant. Variant: patched trail kit. One narrow laid-flat canvas sleeping mat with a loosely folded blanket and small square pillow, two broad stitched rectangular cloth repair patches in slightly different GRAYS, lovingly mended rather than dirty or broken. A soft slouchy brown leather satchel at the upper-right pillow end, with a small tin cup on its side. No leather straps across the sleeping cloth. Low irregular folded silhouette, unlike a cylindrical roll or puffy diamond quilt."
+    }
+  ]
+}

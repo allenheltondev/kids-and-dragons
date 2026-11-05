@@ -20,6 +20,12 @@ export const CANVAS = { width: 1024, height: 1024, originX: 512, originY: 900 } 
 export const ANCHOR_X = CANVAS.originX / CANVAS.width;
 export const ANCHOR_Y = CANVAS.originY / CANVAS.height;
 
+export const CAMP_ART = {
+  backdrop: "/assets/camp/backdrops/open_plains.webp",
+  fire: "/assets/camp/frames/stage1/campfire.png",
+  flame: "/assets/camp/frames/stage1/campfire-flame.png",
+} as const;
+
 /**
  * The tier every character starts at (content/rules.json → tierLevels, level 1).
  * It is what creation has to draw: the draft has no level yet, and the hero the
@@ -149,11 +155,11 @@ export function sceneBackdropUrl(art: string): string | null {
     ? `/assets/${art}.webp` : null;
 }
 
-/** Story art follows the scene; combat always uses the chapter's terrain. */
+/** Authored backdrops follow the scene; combat terrain is a separate tile layer. */
 export function sceneArtFor(chapter: Chapter | null, state: RunState | null): string | null {
-  if (!chapter || chapter.id !== state?.chapterId || !state.sceneId || state.encounter) return null;
+  if (!chapter || chapter.id !== state?.chapterId || !state.sceneId) return null;
   const scene = chapter.scenes[state.sceneId];
-  return scene && scene.type !== "encounter" ? scene.art ?? null : null;
+  return scene?.art ?? null;
 }
 
 /** The 4×4 combat tile sheet for a biome — floor row, then blocked row. */

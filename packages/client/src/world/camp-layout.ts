@@ -62,8 +62,10 @@ export interface CampPiece {
   path: string;
   lane: string;
   x: number;
-  /** How tall the painted piece really is. Absent: `pieceHeightCm` guesses from its id. */
+  /** Painted height, or the reference height for a 160cm owner. Absent: inferred from the id. */
   heightCm?: number;
+  /** Optional hero seat for owned kit; shared camp pieces omit it. */
+  ownerSeat?: number;
 }
 
 /**
@@ -278,6 +280,11 @@ function parseFrame(raw: unknown, at: string, backdrops: readonly CampBackdrop[]
       x: fraction(p["x"], `${where}.x`),
     };
     if (p["heightCm"] !== undefined) piece.heightCm = positive(p["heightCm"], `${where}.heightCm`);
+    if (p["ownerSeat"] !== undefined) {
+      const seat = p["ownerSeat"];
+      if (typeof seat !== "number" || !Number.isInteger(seat) || seat < 0 || seat >= CAMP_SEATS) fail(`${where}.ownerSeat`, "must be a seat from 0 to 3");
+      piece.ownerSeat = seat;
+    }
     onEveryBackdrop(piece, backdrops, where, true);
     return piece;
   });

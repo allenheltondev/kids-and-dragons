@@ -16,6 +16,14 @@ import type { CampLayout } from "./camp-layout";
 import { BLEED_SOURCE, campBleed, campFit, campVisibleSpan, campWindow } from "./camp-framing";
 import { LOBBY_CAMP_STAND_IN, campHeroes, stillCampFigures } from "./lobby-camp";
 import { lobbyInsetBottom, lobbyInsetTop, onLobbyInset, onLobbyInsetTop } from "./stage-inset";
+import { campHeightPx, campMeasure } from "./camp-motion";
+import { pieceHeightCm } from "./camp-layout";
+import { ANCHOR_Y } from "./art-paths";
+import { NOMINAL_PAINT } from "./figure-scale";
+import { CampBedroll } from "./CampBedroll";
+import { Campfire } from "./Campfire";
+import { CAMP_KIT_STYLES, campKitStyle } from "./camp-kit-art";
+import { campOwnedScale, campPieceOwner } from "./camp-ownership";
 
 export function StillCamp({ layout, state }: { layout: CampLayout; state: RunState }): React.JSX.Element {
   const host = useRef<HTMLDivElement | null>(null);
@@ -83,8 +91,26 @@ export function StillCamp({ layout, state }: { layout: CampLayout; state: RunSta
             }}
           >
             {figure.url ? <img src={figure.url} alt="" /> : null}
+            <span className="kad-static-camp__name">{state.party.find(member => member.character.id === figure.id)?.character.name}</span>
           </span>
         ))}
+        {layout.frame.pieces.map(piece => {
+          const lane = layout.lanes.get(piece.lane);
+          if (!lane) return null;
+          const owner = campPieceOwner(layout, piece, heroes.map(hero => hero.figure));
+          const measure = campMeasure(layout.canvas.height);
+          const kitStyle = owner && piece.id.startsWith("bedroll") ? campKitStyle(owner.id) : null;
+          const paintHeight = kitStyle ? CAMP_KIT_STYLES[kitStyle].paintHeight : ANCHOR_Y - NOMINAL_PAINT.top;
+          const size = campHeightPx(pieceHeightCm(piece), measure) * campOwnedScale(owner, measure) * lane.scale
+            * (fit?.figureScale ?? 1) / paintHeight / layout.canvas.height;
+          return <span key={piece.id} className="kad-static-camp__piece" data-piece={piece.id} style={{
+            left: `${piece.x * 100}%`, top: `${lane.y * 100}%`, height: `${size * 100}%`, zIndex: Math.round(lane.y * 1000) - 1,
+          }} data-mirrored={piece.id.startsWith("bedroll") && piece.x > .5 ? "true" : undefined}>
+            {owner && kitStyle ? <CampBedroll style={kitStyle} accent={owner.accent ?? "#7FD4C1"} />
+              : piece.id === "campfire" ? <Campfire active={false} />
+              : <img src={`/assets/${piece.path}`} alt="" />}
+          </span>;
+        })}
       </div>
     </div>
   );

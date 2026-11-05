@@ -50,8 +50,9 @@ import { setBoardInsetEnd } from "../world/stage-inset";
 import { describeBeats, hurtWords, needsLine, statName, verdictWord, type Beat, type Swing } from "./fight-log";
 import { calloutsOf, fightChips, spokenCallouts } from "./matchup-copy";
 import { combatMission, enemyIntentLine, nextEnemyId } from "./combat-plan";
-import { combatantById } from "@kad/shared";
+import { combatantById, committedAttacks } from "@kad/shared";
 import "./FightLog.css";
+import { TurnBanner } from "./TurnBanner";
 import { RiftStatus } from "./RiftStatus";
 
 /** How many lines the TV shows: the last few beats, never a wall of text. */
@@ -169,10 +170,13 @@ export function FightLog(): ReactElement | null {
 
   const chips = useFightChips(encounter);
   if (!encounter) return null;
-  const lines = fightLogLines(batches, encounter);
+  const history = fightLogLines(batches, encounter);
+  const lines = encounter.environment ? history.slice(-1) : history;
+  const forecastId = committedAttacks(encounter)[0]?.actorId ?? nextEnemyId(encounter);
 
   return (
     <aside className="fight-log" aria-label="The fight so far" ref={box}>
+      <TurnBanner />
       {encounter.environment && <RiftStatus />}
       {chips.length > 0 ? (
         <ul className="fight-log__chips" aria-label="Worth knowing in this fight">
@@ -184,10 +188,10 @@ export function FightLog(): ReactElement | null {
           ))}
         </ul>
       ) : null}
-      <section className="fight-log__plan" aria-label="Battle plan">
-        <strong>{combatMission(encounter)}</strong>
-        {nextEnemyId(encounter) && <p><b>{combatantById(encounter, nextEnemyId(encounter)!)?.name}:</b> {enemyIntentLine(encounter, nextEnemyId(encounter)!)}</p>}
-      </section>
+      {(!encounter.environment || forecastId) && <section className="fight-log__plan" aria-label="Battle plan">
+        {!encounter.environment && <strong>{combatMission(encounter)}</strong>}
+        {forecastId && <p><b>{combatantById(encounter, forecastId)?.name}:</b> {enemyIntentLine(encounter, forecastId)}</p>}
+      </section>}
       <ol className="fight-log__lines" aria-live="polite">
         {lines.length === 0 ? <li className="fight-log__line fight-log__line--quiet">The fight is on!</li> : null}
         {lines.map((line) => (

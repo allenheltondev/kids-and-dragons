@@ -18,8 +18,112 @@ import { MAX_FRAME_S, campHeightPx, campMeasure } from "./camp-motion";
 import { EDGE_MARGIN, MIN_FIGURE_SCALE, campFigureWidth, campFit, campWindow } from "./camp-framing";
 import { fitCanvas } from "./figure-scale";
 import { MAX_WALKERS } from "./camp-wander";
+import { CAMP_KIT_STYLES, campKitStyle } from "./camp-kit-art";
+import { campOwnedScale } from "./camp-ownership";
 
 beforeAll(installFakeCanvas2D);
+
+it("resizes any owned piece with its hero without moving its ground contact or reloading art", async () => {
+  const layout = campLayoutFixture();
+  const owned = layout.frame.pieces.find(piece => piece.id === "pack")!;
+  owned.ownerSeat = 0;
+  const app = fakeApp();
+  const urls: string[] = [];
+  const stage = createCamp(app as unknown as Application, layout, { still: true, loadTexture: url => {
+    urls.push(url);
+    return Promise.resolve(Texture.WHITE);
+  } });
+  stage.resize(1280, 720);
+  const hero: CampFigure = { id: "owner", url: null, heightCm: 85, stance: "standing", seat: 0 };
+  const ground = stage.view.children[1] as Container;
+  const pack = ground.children.find(child => child.label === "piece:pack")!;
+  const fire = ground.children.find(child => child.label === "piece:campfire")!;
+  const ratio = () => pack.scale.y / layout.lanes.get(owned.lane)!.scale
+    / (fire.scale.y / layout.lanes.get("middle")!.scale);
+  stage.setFigures([hero]);
+  app.ticker.frame(16);
+  await Promise.resolve();
+  const at = { x: pack.x, y: pack.y };
+  const count = urls.length;
+  expect(ratio()).toBeCloseTo(campOwnedScale(hero, campMeasure(1080)));
+  stage.setFigures([{ ...hero, heightCm: 215 }]);
+  app.ticker.frame(16);
+  expect(ratio()).toBeCloseTo(campOwnedScale({ heightCm: 215 }, campMeasure(1080)));
+  expect({ x: pack.x, y: pack.y }).toEqual(at);
+  expect(urls).toHaveLength(count);
+  stage.setFigures([]);
+  app.ticker.frame(16);
+  expect(ratio()).toBeCloseTo(1);
+  stage.destroy();
+});
+
+it.each([false, true])("loads a seated hero's kit and retains a bedroll if the variant fails (%s)", async failed => {
+  const ownLayout = campLayoutFixture();
+  ownLayout.frame.pieces.push({ id: "bedroll_0", path: "camp/frames/stage1/bedroll.png", lane: "back", x: .24 });
+  ownLayout.frame.standPoints.find(p => p.seat === 0)!.hotspot = "bedroll_0";
+  const urls: string[] = [];
+  const stage = createCamp(fakeApp() as unknown as Application, ownLayout, { loadTexture: url => {
+    urls.push(url);
+    return failed && url.includes("/kits/") ? Promise.reject(new Error("missing")) : Promise.resolve(Texture.WHITE);
+  } });
+  const hero: CampFigure = { id: "hero-0", url: null, heightCm: 165, stance: "standing", seat: 0, accent: "#55aaff" };
+  stage.setFigures([hero]);
+  await Promise.resolve();
+  await Promise.resolve();
+  expect(urls).toContain(CAMP_KIT_STYLES[campKitStyle(hero.id)].path);
+  const bed = stage.view.children.flatMap(c => (c as Container).children ?? []).find(c => c.label === "piece:bedroll_0") as Container;
+  expect(bed.children.filter(c => c instanceof Sprite)).toHaveLength(1);
+  expect(bed.children[0]!.label).toBe("camp-ground-shadow");
+  const count = urls.length;
+  stage.setFigures([hero]);
+  expect(urls).toHaveLength(count);
+  stage.destroy();
+});
+
+it("restores an empty bedroll and ignores kit loads from removed or replaced owners", async () => {
+  const layout = campLayoutFixture();
+  layout.frame.pieces.push({ id: "bedroll_0", path: "camp/frames/stage1/bedroll.png", lane: "back", x: .24, ownerSeat: 0 });
+  const neutral = new Texture();
+  const requests: ((texture: Texture) => void)[] = [];
+  const stage = createCamp(fakeApp() as unknown as Application, layout, { loadTexture: url =>
+    url.includes("/kits/") ? new Promise(resolve => requests.push(resolve)) : Promise.resolve(neutral),
+  });
+  const bed = stage.view.children.flatMap(c => (c as Container).children ?? []).find(c => c.label === "piece:bedroll_0") as Container;
+  const art = () => (bed.children.find(child => child instanceof Sprite) as Sprite).texture;
+  const hero: CampFigure = { id: "first", url: null, heightCm: 85, stance: "standing", seat: 0, accent: "#55aaff" };
+  await Promise.resolve();
+  stage.setFigures([hero]);
+  const firstKit = new Texture();
+  requests[0]!(firstKit);
+  await Promise.resolve();
+  expect(art()).toBe(firstKit);
+  stage.setFigures([]);
+  expect(art()).toBe(neutral);
+  stage.setFigures([hero]);
+  stage.setFigures([{ ...hero, id: "replacement", accent: "#ff9955" }]);
+  const replacementKit = new Texture();
+  requests[2]!(replacementKit);
+  await Promise.resolve();
+  requests[1]!(firstKit);
+  await Promise.resolve();
+  expect(art()).toBe(replacementKit);
+  stage.setFigures([hero]);
+  stage.setFigures([]);
+  requests[3]!(firstKit);
+  await Promise.resolve();
+  expect(art()).toBe(neutral);
+  // Even the same hero returning must not accept an earlier pending request.
+  stage.setFigures([hero]);
+  stage.setFigures([]);
+  stage.setFigures([hero]);
+  requests[4]!(firstKit);
+  await Promise.resolve();
+  expect(art()).toBe(neutral);
+  requests[5]!(replacementKit);
+  await Promise.resolve();
+  expect(art()).toBe(replacementKit);
+  stage.destroy();
+});
 
 const layout = campLayoutFixture();
 const W = layout.canvas.width;
