@@ -55,9 +55,21 @@ const camp = (pieceId, rewardId) => ({ type: "findForCamp", pieceId, rewardId })
 const kit = (pieceId, rewardId) => ({ type: "findForKit", pieceId, rewardId });
 
 describe("the shipped catalog", () => {
-  it("passes, with no find authored yet (#622 authors them)", () => {
+  it("passes, with the first chapters' finds where #622 authored them", () => {
     expect(problems()).toEqual([]);
-    expect([...CHAPTERS.values()].flatMap(chapterFinds)).toEqual([]);
+    const shipped = [...CHAPTERS.values()]
+      .flatMap((chapter) => chapterFinds(chapter).map(({ effect, at }) => `${chapter.id}${at.replace(/\/\d+$/, "")} ${effect.type} ${effect.rewardId}`))
+      .sort();
+    expect(shipped).toEqual([
+      "first-steps-01/scenes/rest_picnic/onEnter findForCamp first-steps-01.picnic_blanket",
+      "first-steps-01/scenes/rest_ready/onEnter findForKit first-steps-01.clipboard_star",
+      "gemfall-01/scenes/interaction_lantern_pole/onEnter findForCamp gemfall-01.wagon_lantern",
+      "gemfall-01/scenes/interaction_quay_line/onEnter findForKit gemfall-01.lamp_ribbon",
+      "riftlight-exchange-rift/scenes/awning_flap/onEnter findForCamp riftlight-exchange-rift.noodle_awning",
+      "riftlight-exchange-rift/scenes/awning_up/onEnter findForCamp riftlight-exchange-rift.noodle_awning",
+      "riftlight-exchange-rift/scenes/trail_found/onEnter findForKit riftlight-exchange-rift.gull_feather",
+      "riftlight-exchange-rift/scenes/trail_lost/onEnter findForKit riftlight-exchange-rift.gull_feather",
+    ]);
   });
 
   it("prices every starter piece at 5 and every stage-2 piece at 10 to 15", () => {

@@ -223,12 +223,12 @@
     ]
   },
   "first-steps-01/rest_ready/narration": {
-    "source": "sha256:c5e4ae76f7c962efb6010cd983cc6b2ed8d8ec5ba4d80994fc7b5accbbf021fd",
+    "source": "sha256:9c4174e09dc941bbfd730f7765837b9167f389b9c72e0943e5154275aafa8730",
     "reviewed": false,
     "lines": [
       {
         "by": "narrator",
-        "text": "Tansy draws a star next to your names on the clipboard. Then she opens a second gate, the one at the back of the meadow, and points at the road beyond it."
+        "text": "Tansy draws a star next to your names on the clipboard. She gives everybody a little wooden star on a red string, too. The yellow paint is a bit wobbly. Then she opens a second gate, the one at the back of the meadow, and points at the road beyond it."
       },
       {
         "by": "tansy",
