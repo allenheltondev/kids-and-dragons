@@ -804,13 +804,18 @@
     },
     "encounter_wolves": {
       "type": "encounter",
-      "map": "roadside",
-      "narration": "The wolves circle the old carts, trying to get between you and the warm.",
+      "map": "sausage_lane",
+      "narration": "Keep one hero by the fire at two round ends. The hot coals beside it sting your boots. The cinder wolves can run straight across them.",
       "enemies": [
         {
           "id": "wolf",
           "name": "Cinder Wolf",
-          "creature": "cinder_wolf"
+          "creature": "cinder_wolf",
+          "rift": {
+            "ignores": [
+              "fire"
+            ]
+          }
         }
       ],
       "onVictory": {
@@ -818,6 +823,48 @@
         "narration": "The pack backs off into one glowing heap. You are too much bother."
       },
       "onDefeat": {
+        "goto": "rest_scattered",
+        "narration": "The wolves want the fire more than you do. In the end, they simply take it."
+      },
+      "art": "scenes/gemfall/abandoned-caravan-rest",
+      "environment": {
+        "clock": {
+          "rounds": 5,
+          "label": "The wolves take the fire",
+          "onExpire": "collapse"
+        },
+        "hazards": [
+          {
+            "id": "hot-coals",
+            "kind": "fire",
+            "label": "Hot coals",
+            "tiles": [
+              {
+                "x": 3,
+                "y": 3
+              }
+            ],
+            "damage": 1
+          }
+        ],
+        "objectives": [
+          {
+            "id": "camp-embers",
+            "kind": "hold",
+            "label": "Keep the fire",
+            "tiles": [
+              {
+                "x": 3,
+                "y": 2
+              }
+            ],
+            "art": "camp-firepit",
+            "rounds": 2,
+            "endsFight": true
+          }
+        ]
+      },
+      "onTimeout": {
         "goto": "rest_scattered",
         "narration": "The wolves want the fire more than you do. In the end, they simply take it."
       }
@@ -2476,7 +2523,35 @@
           "prop_post_ropes"
         ]
       }
-    }
+    },
+    "fights": [
+      {
+        "chapter": "gemfall-04a",
+        "scene": "encounter_wolves",
+        "creature": "cinder_wolf",
+        "board": "sausage_lane",
+        "backdrop": "scenes/gemfall/abandoned-caravan-rest",
+        "introScenes": [],
+        "victoryScene": "rest_wolf_fire",
+        "defeatScene": "rest_scattered",
+        "tileUrl": "/assets/biomes/plains/tiles.png",
+        "rescueFigure": "",
+        "activeUrl": "/assets/entities/cinder_wolf/cache_sniff.png",
+        "retreatUrl": "/assets/entities/cinder_wolf/shooed.png",
+        "props": [],
+        "terrainProps": [],
+        "poses": {
+          "intro": "cache_sniff",
+          "retreat": "shooed"
+        },
+        "retreatDirection": 1
+      }
+    ],
+    "warmUrls": [
+      "/assets/entities/cinder_wolf/cache_sniff.png",
+      "/assets/entities/cinder_wolf/shooed.png",
+      "/assets/biomes/plains/tiles.png"
+    ]
   },
   "resumeInteractions": {
     "interaction_plates": {

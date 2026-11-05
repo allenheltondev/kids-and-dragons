@@ -212,6 +212,9 @@ describe("ford road combat batch", () => {
 });
 
 const mountainFights = [
+  { chapter: "gemfall-04a", sceneId: "encounter_wolves", target: { x: 3, y: 2 }, outcome: "victory" },
+  { chapter: "gemfall-04b", sceneId: "encounter_echo", target: { x: 6, y: 3 }, outcome: "escaped" },
+  { chapter: "gemfall-04b", sceneId: "encounter_logs", target: { x: 4, y: 2 }, outcome: "victory" },
   { chapter: "gemfall-08", sceneId: "encounter_gallery", target: { x: 3, y: 2 }, outcome: "victory" },
   { chapter: "gemfall-08", sceneId: "encounter_dragon", target: { x: 4, y: 2 }, outcome: "victory" },
   { chapter: "gemfall-08", sceneId: "encounter_crabs", target: { x: 6, y: 3 }, outcome: "escaped" },

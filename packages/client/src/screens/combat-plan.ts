@@ -34,6 +34,7 @@ export function crossingDestination(state: EncounterState): string | null {
   if (exits?.some(exit => exit.id === "big-campfire")) return "at the big campfire";
   if (exits?.some(exit => exit.id === "boundary-stone")) return "past the boundary";
   if (exits?.some(exit => exit.id === "lower-ledge" || exit.id === "upper-ledge")) return "past the ledges";
+  if (exits?.some(exit => exit.id === "quiet-gap")) return "past the quiet gap";
   return exits?.some(exit => exit.id === "far-bank") ? "across" : null;
 }
 
