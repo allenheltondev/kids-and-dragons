@@ -6,7 +6,12 @@
  * Resolved here rather than in the engine because each writes a store row
  * the engine never sees (the crew's camp, a hero's own kit), the way
  * CAMP_VOTE spends Dash Cash (camp-shop.ts). Prepared before the run's
- * commit, so the camp or kit, and the run state showing it, ride one patch.
+ * commit and written by it (#645): each `prepare*` reads, decides and
+ * returns the write it owes (`CampEditWrites`) without making it, and
+ * `applyAction` hands that to `repo.commit`, so the camp or kit and the run
+ * state showing it land in one transaction or not at all. An intent that
+ * loses its seq race, or finds the camp or kit moved on since it read them,
+ * changes nothing: no piece moves, and no change is counted.
  *
  * **The downtime moment** (`RunState.campMoment`, shared camp-edit.ts) is the
  * server's: a lobby visit, a rest scene, a chapter's end, each a moment of its
@@ -16,9 +21,11 @@
  * finds the same count. A change naming a moment the table has left is stale.
  *
  * **Shared hotspots**: any seated player, the full camp only; checked on the
- * camp as re-read inside `mutateCamp` (owned, fits the hotspot, the limit),
- * and written conditionally on the revision read, so two rooms reaching one
- * crew never lose a write and the later pick wins. Undo gives back only the
+ * camp as read by `planCamp` (owned, fits the hotspot, the limit), and
+ * written by the run's commit conditionally on the revision read, so two
+ * rooms reaching one crew never lose a write and the later pick wins (a
+ * commit that finds the camp moved on is tried again from a fresh read,
+ * `applyAction`). Undo gives back only the
  * player's own latest change, and only while the hotspot still shows it.
  *
  * **A hero's kit**: only her own player, any downtime, no limit; only from the
@@ -55,12 +62,25 @@ import type {
   PlaceRefusal,
   RunState,
 } from "@kad/shared";
-import type { RunRecord } from "../store/repository.ts";
-import { mutateCamp, mutateKit, readCampView, type CampDeps } from "./camp.ts";
+import type { CampWrite, CharacterWrite, RunRecord } from "../store/repository.ts";
+import { planCamp, planKit, readCampView, type CampDeps } from "./camp.ts";
 import { discoveryHousehold } from "./field-guide.ts";
 
 type EditError = NonNullable<ActionResponse["error"]>;
-export type CampEditResult = { ok: true; state: RunState } | { ok: false; error: EditError };
+
+/**
+ * The store writes a prepared camp intent owes, for the run's commit to carry
+ * (`CommitInput.camp`, `CommitInput.characters`): never made by the `prepare*`
+ * function itself (#645).
+ */
+export interface CampEditWrites {
+  /** The crew's camp, conditional on the revision read. */
+  camp?: CampWrite;
+  /** A hero's row with her kit changed, conditional on her version and claim as read. */
+  kit?: CharacterWrite;
+}
+
+export type CampEditResult = { ok: true; state: RunState; writes: CampEditWrites } | { ok: false; error: EditError };
 
 const STALE: EditError = { code: "STALE_DECISION", message: "The camp moved on. Look again." };
 const illegal = (message: string): { ok: false; error: EditError } => ({ ok: false, error: { code: "ILLEGAL", message } });
@@ -122,7 +142,7 @@ export async function prepareCampPlace(
   const rules = campRules(catalog);
   const fresh = freshPieces(state);
   const seen: { refused: PlaceRefusal | null; change: CampChange | null } = { refused: null, change: null };
-  const written = await mutateCamp(
+  const plan = await planCamp(
     householdId,
     state.crew,
     (camp) => {
@@ -150,8 +170,8 @@ export async function prepareCampPlace(
   );
   const { refused, change } = seen;
   if (refused !== null) return illegal(placeRefusalText(refused));
-  if (!written.ok || change === null) {
-    console.error(`camp: a placement on ${intent.hotspot} for ${householdId} was not written (${written.ok ? "no change" : written.reason})`);
+  if (!plan.ok || plan.write === null || change === null) {
+    console.error(`camp: a placement on ${intent.hotspot} for ${householdId} was not planned (${plan.ok ? "no change" : plan.reason})`);
     return illegal("The camp could not be reached. Try again.");
   }
   const mine = moment.changes[playerId] ?? [];
@@ -159,9 +179,10 @@ export async function prepareCampPlace(
     ok: true,
     state: {
       ...state,
-      camp: viewAfter(state, written.value),
+      camp: viewAfter(state, plan.value),
       campMoment: { ...moment, changes: { ...moment.changes, [playerId]: [...mine, change] } },
     },
+    writes: { camp: plan.write },
   };
 }
 
@@ -186,7 +207,7 @@ export async function prepareCampUndo(
   const hotspot = catalog.hotspots.find((h) => h.id === last.hotspot);
   if (!hotspot) return illegal("That spot is not in your camp.");
   const seen = { moved: false };
-  const written = await mutateCamp(
+  const plan = await planCamp(
     householdId,
     state.crew,
     (camp) => {
@@ -199,14 +220,15 @@ export async function prepareCampUndo(
     deps,
   );
   if (seen.moved) return illegal("Somebody changed that spot since, so it stays.");
-  if (!written.ok) return illegal("The camp could not be reached. Try again.");
+  if (!plan.ok || plan.write === null) return illegal("The camp could not be reached. Try again.");
   return {
     ok: true,
     state: {
       ...state,
-      camp: viewAfter(state, written.value),
+      camp: viewAfter(state, plan.value),
       campMoment: { ...moment, changes: { ...moment.changes, [playerId]: mine.slice(0, -1) } },
     },
+    writes: { camp: plan.write },
   };
 }
 
@@ -235,7 +257,7 @@ export async function prepareKitEdit(
     ...(intent.slots !== undefined ? { slots: intent.slots } : {}),
   };
   const seen: { problem: string | null } = { problem: null };
-  const written = await mutateKit(
+  const plan = await planKit(
     member.homeHouseholdId ?? run.householdId,
     intent.characterId,
     (kit) => {
@@ -246,16 +268,18 @@ export async function prepareKitEdit(
     { expectedRevision: intent.revision },
   );
   if (seen.problem !== null) return illegal(seen.problem);
-  if (!written.ok) {
-    if (written.reason === "stale") {
-      // Changed elsewhere since (the book, another phone): the newer kit stands.
-      return { ok: false, error: { code: "STALE_DECISION", message: "Your kit changed on another screen. Look again." } };
-    }
-    return written.reason === "missing"
-      ? { ok: false, error: { code: "NOT_FOUND", message: "that hero has not been saved yet" } }
-      : illegal("Your kit could not be saved. Try again.");
+  if (!plan.ok) {
+    // Changed elsewhere since (the book, another phone): the newer kit stands.
+    return plan.reason === "stale"
+      ? { ok: false, error: { code: "STALE_DECISION", message: "Your kit changed on another screen. Look again." } }
+      : { ok: false, error: { code: "NOT_FOUND", message: "that hero has not been saved yet" } };
   }
-  return { ok: true, state: { ...state, kits: { ...state.kits, [intent.characterId]: kitView(written.value) } } };
+  if (plan.write === null) return illegal("Your kit could not be saved. Try again.");
+  return {
+    ok: true,
+    state: { ...state, kits: { ...state.kits, [intent.characterId]: kitView(plan.value) } },
+    writes: { kit: plan.write },
+  };
 }
 
 // ---------------------------------------------------------------------------

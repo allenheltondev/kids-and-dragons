@@ -1649,6 +1649,11 @@ export class DynamoRepository implements GameRepository {
               : []),
             // Crew names, gated on the household's crew-names version.
             ...(input.crewNames ? crewNameTransaction(this.table, input.crewNames) : []),
+            // A camp change made at the table (#645): it lands with the run
+            // state that shows it, under the revision it was decided on.
+            ...(input.camp
+              ? [{ Put: { TableName: this.table, Item: campItem(input.camp), ...campCondition(input.camp.expectedRevision) } }]
+              : []),
             // If the run has moved on, the whole transaction is rejected and
             // these never land: that is the point of putting them here. Each
             // also carries its hero's claim and the version read (#282), since

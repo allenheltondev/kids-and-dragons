@@ -59,7 +59,8 @@ import {
 } from "@kad/shared";
 import type { DeviceIdentity } from "../identity.ts";
 import type { ApplyIntentResult, EngineContext } from "../engine/port.ts";
-import type { CampaignProgressRecord, CharacterWrite, EventRecord, RunRecord } from "../store/repository.ts";
+import type { CampaignProgressRecord, CampWrite, CharacterWrite, EventRecord, RunRecord } from "../store/repository.ts";
+import { CAMP_WRITE_ATTEMPTS } from "./camp.ts";
 import { followCrew, newcomersTo, rethinkNewcomers } from "./crew.ts";
 import { diff } from "../json-patch.ts";
 import { keepGuestHousehold } from "./account.ts";
@@ -149,10 +150,36 @@ function logStaleSeq(reason: "seq-gate" | "commit-race", input: ActionInput, ser
   );
 }
 
+/**
+ * A commit that carried a camp or kit change (#645) and lost on that write
+ * alone: the run is where this intent read it, but the camp or the hero's row
+ * moved on in between (another table reaching the same crew, a claim a step
+ * makes after its own commit, a milestone). Nothing landed, so the intent is
+ * applied again from a fresh read, the way `mutateCamp` re-reads a lost race.
+ */
+const RETRY_CAMP = Symbol("retry-camp");
+
+/**
+ * One intent, applied to the run (architecture §4.2). A camp change whose
+ * commit lost only to the camp or kit it changed is applied again from the
+ * top, at most `CAMP_WRITE_ATTEMPTS` times; after that, as after any lost
+ * race, the answer is STALE_SEQ, and the client catches up and retries once.
+ */
 export async function applyAction(
   received: ActionInput,
   deps: HandlerDeps,
 ): Promise<ActionResponse> {
+  for (let attempt = 1; ; attempt++) {
+    const response = await applyActionOnce(received, deps, attempt < CAMP_WRITE_ATTEMPTS);
+    if (response !== RETRY_CAMP) return response;
+  }
+}
+
+async function applyActionOnce(
+  received: ActionInput,
+  deps: HandlerDeps,
+  mayRetryCamp: boolean,
+): Promise<ActionResponse | typeof RETRY_CAMP> {
   let input = received;
   // The three reads every tap needs, side by side rather than one after
   // another: none depends on another's answer once the principal names the
@@ -334,6 +361,10 @@ export async function applyAction(
   let seated: CharacterWrite | null = null;
   let exitTaken: ExitWrite | null = null;
   let riftDeeds: CharacterWrite[] = [];
+  // A camp intent's store writes (camp-edit.ts, camp-shop.ts): decided before
+  // the commit and written by it, never before it (#645).
+  let campWrite: CampWrite | undefined;
+  let kitWrite: CharacterWrite | undefined;
   let result: ApplyIntentResult;
   if (input.intent.type === "CHOOSE_EXIT" || input.intent.type === "RIFT_ACTION") {
     // A journey transition, not a run one: the engine never sees it, exactly
@@ -409,14 +440,15 @@ export async function applyAction(
     result = { state: change.value.state };
   } else if (input.intent.type === "CAMP_VOTE") {
     // The chapter-end shop (docs/camp.md §6.2, §12.4): a vote, and when it
-    // decides, the purchase, written to the crew's camp before this commit
-    // and once per visit whatever is retried (camp-shop.ts).
+    // decides, the purchase, written to the crew's camp by this commit, with
+    // the vote, and once per visit whatever is retried (camp-shop.ts).
     const vote = await prepareCampVote(state, input.intent, input.playerId, auth.run, deps);
     if (!vote.ok) return { ok: false, seq: state.seq, error: vote.error };
     result = { state: vote.state };
+    campWrite = vote.camp;
   } else if (input.intent.type === "CAMP_PLACE" || input.intent.type === "CAMP_UNDO" || input.intent.type === "KIT_EDIT") {
     // The camp at the table (docs/camp.md §6.1, §12.5; #620): a shared
-    // hotspot or a hero's own kit, written before this commit (camp-edit.ts).
+    // hotspot or a hero's own kit, written by this commit (camp-edit.ts).
     const edit =
       input.intent.type === "CAMP_PLACE"
         ? await prepareCampPlace(state, input.intent, input.playerId, auth.run, deps)
@@ -425,6 +457,8 @@ export async function applyAction(
           : await prepareKitEdit(state, input.intent, input.playerId, auth.run, deps);
     if (!edit.ok) return { ok: false, seq: state.seq, error: edit.error };
     result = { state: edit.state };
+    campWrite = edit.writes.camp;
+    kitWrite = edit.writes.kit;
   } else {
     // A returning hero is a household row the engine cannot reach, so it is
     // loaded here and handed in; whether this player may bring it is the
@@ -558,6 +592,7 @@ export async function applyAction(
    */
   const characters: CharacterWrite[] = [...riftDeeds];
   if (spentCharacter) characters.push(spentCharacter);
+  if (kitWrite) characters.push(kitWrite);
   if (seated) {
     const hero = seated.character;
     characters.push(seated);
@@ -771,6 +806,7 @@ export async function applyAction(
     state: next,
     event,
     ...(characters.length > 0 ? { characters } : {}),
+    ...(campWrite ? { camp: campWrite } : {}),
     ...(settlement?.chapterProgress ? { chapterProgress: settlement.chapterProgress } : {}),
     ...(settlement?.campaignProgress
       ? {
@@ -797,6 +833,10 @@ export async function applyAction(
     // Two phones tapped inside the same millisecond. One of them wins; the
     // other is, by definition, now stale.
     const current = await deps.repo.getState(input.runId);
+    // The run is where this intent read it: what refused the commit was the
+    // camp or kit it changed, which moved on underneath. Nothing landed;
+    // apply it again to what is there now.
+    if ((campWrite || kitWrite) && mayRetryCamp && current?.seq === state.seq) return RETRY_CAMP;
     logStaleSeq("commit-race", input, current?.seq ?? state.seq);
     return {
       ok: false,

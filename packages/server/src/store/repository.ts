@@ -466,6 +466,17 @@ export interface CommitInput {
    * cannot race a rename (handlers/crew.ts).
    */
   crewNames?: { householdId: string; expectedVersion: number; names: { crew: string | null; name: string }[] };
+  /**
+   * A crew's camp this turn changes (docs/camp.md §6.1, §6.2; #620, #645): a
+   * shared hotspot picked or undone, or the shop's purchase, written in the
+   * same transaction as the run state that shows it and conditional on the
+   * camp's revision read (`CampWrite`). Two rooms can reach one crew, and the
+   * claims a step makes after its commit write the camp too, so a camp that
+   * has moved on since it was read refuses the whole commit exactly as a lost
+   * seq race does: nothing lands, not the camp, not the run. (A hero's kit
+   * rides `characters`: it is on her row.)
+   */
+  camp?: CampWrite;
 }
 
 /** `HH#<hhId>` / `OWNER#<sub>`: one grown-up who may manage the household (#248). */

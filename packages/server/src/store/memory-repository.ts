@@ -986,6 +986,10 @@ export class MemoryRepository implements GameRepository {
       if (this.crewNamesVersion(householdId) !== expectedVersion) return false;
       if (names.some(({ crew }) => crew !== null && !this.get(HH(householdId), CREW_SK(crew)))) return false;
     }
+    // A camp change lands only on the revision it was decided on (#645).
+    if (input.camp && !campHolds(this.get(HH(input.camp.householdId), CAMP_SK(input.camp.crew)), input.camp.expectedRevision)) {
+      return false;
+    }
 
     // No await from here through the final row: this is the local equivalent of
     // one TransactWriteItems, including across two different run partitions.
@@ -1032,6 +1036,7 @@ export class MemoryRepository implements GameRepository {
         }
       }
     }
+    if (input.camp) this.put(campItem(input.camp));
     if (chapterProgress) {
       this.put({
         PK: RUN(chapterProgress.runId),

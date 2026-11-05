@@ -48,7 +48,7 @@ import {
 } from "@kad/shared";
 import type { CampRecord, CampView, Character, HeroKit, RewardId } from "@kad/shared";
 import type { ContentStore } from "../content/loader.ts";
-import type { CampaignProgressRecord } from "../store/repository.ts";
+import type { CampaignProgressRecord, CampWrite, CharacterWrite } from "../store/repository.ts";
 import { rewrite } from "./claim.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
 import { hasCompleted } from "./progression.ts";
@@ -107,11 +107,53 @@ export async function readCampView(
 }
 
 /**
+ * A change to one crew's camp worked out on one read and not yet written
+ * (#620, #645): `read` is the camp as it stood, `value` as it would stand
+ * after `write` (at the revision the write gives it), and `write` the
+ * conditional write that would put it there, or null when there was nothing
+ * to do. The run's commit carries the write (`CommitInput.camp`), so a change
+ * made at the table lands with the run state that shows it or not at all: an
+ * intent that loses its seq race, or finds the camp moved on since this read,
+ * applies nothing.
+ */
+export type CampPlan =
+  | { ok: true; read: CampRecord; value: CampRecord; write: CampWrite | null }
+  | { ok: false; reason: "stale"; value: CampRecord };
+
+/** Plan a change to one crew's camp on the camp as it stands now, writing nothing; `mutateCamp`'s arguments. */
+export async function planCamp(
+  householdId: string,
+  crew: string | null | undefined,
+  fn: (camp: CampRecord) => CampRecord | null,
+  deps: CampDeps,
+  options: WriteOptions = {},
+): Promise<CampPlan> {
+  const crewId = crew ?? undefined;
+  const { camp, stored } = await readStanding(householdId, crewId, deps);
+  if (options.expectedRevision !== undefined && camp.revision !== options.expectedRevision) {
+    return { ok: false, reason: "stale", value: camp };
+  }
+  const next = fn(structuredClone(camp));
+  if (next === null) return { ok: true, read: camp, value: camp, write: null };
+  const expectedRevision = stored ? stored.revision : null;
+  return {
+    ok: true,
+    read: camp,
+    value: { ...next, revision: (expectedRevision ?? 0) + 1 },
+    write: { householdId, ...(crewId ? { crew: crewId } : {}), camp: next, expectedRevision },
+  };
+}
+
+/**
  * Change one crew's camp. `fn` gets a copy of the camp as it stands and
  * returns it as it should be, or null for "nothing to do" (no write). It may
  * run more than once, on fresher reads, so it must be a pure function of the
  * camp it is given: everything it decides from (an owned piece, a balance, a
  * receipt) is on that camp. The store sets `revision`.
+ *
+ * Written on its own, at once: for the writes that follow a run's commit (a
+ * find, a lucky drop, a chapter's pay), each made once by its receipt. A
+ * change an intent makes rides that intent's commit instead (`planCamp`).
  */
 export async function mutateCamp(
   householdId: string,
@@ -120,24 +162,13 @@ export async function mutateCamp(
   deps: CampDeps,
   options: WriteOptions = {},
 ): Promise<CampWriteResult<CampRecord>> {
-  const crewId = crew ?? undefined;
   let last: CampRecord | undefined;
   for (let attempt = 0; attempt < CAMP_WRITE_ATTEMPTS; attempt++) {
-    const { camp, stored } = await readStanding(householdId, crewId, deps);
-    last = camp;
-    if (options.expectedRevision !== undefined && camp.revision !== options.expectedRevision) {
-      return { ok: false, reason: "stale", value: camp };
-    }
-    const next = fn(structuredClone(camp));
-    if (next === null) return { ok: true, value: camp, changed: false };
-    const expectedRevision = stored ? stored.revision : null;
-    const written = await deps.repo.putCamp({
-      householdId,
-      ...(crewId ? { crew: crewId } : {}),
-      camp: next,
-      expectedRevision,
-    });
-    if (written) return { ok: true, value: { ...next, revision: (expectedRevision ?? 0) + 1 }, changed: true };
+    const plan = await planCamp(householdId, crew, fn, deps, options);
+    if (!plan.ok) return plan;
+    if (plan.write === null) return { ok: true, value: plan.value, changed: false };
+    last = plan.read;
+    if (await deps.repo.putCamp(plan.write)) return { ok: true, value: plan.value, changed: true };
   }
   return { ok: false, reason: "conflict", ...(last ? { value: last } : {}) };
 }
@@ -360,6 +391,10 @@ export function finishedGrowsCamp(attempts: readonly CampaignProgressRecord[], c
  * read only derived is on the row yet. Written on her row, conditional on the row's
  * version and claim as read, so it can neither undo a run's write to her nor
  * be undone by one; the claim is kept as it was.
+ *
+ * Written at once, for the writes that follow a run's commit (a find, a
+ * milestone). A kit edit at the table rides its intent's commit instead
+ * (`planKit`).
  */
 export async function mutateKit(
   homeHouseholdId: string,
@@ -370,21 +405,44 @@ export async function mutateKit(
 ): Promise<CampWriteResult<HeroKit>> {
   let last: HeroKit | undefined;
   for (let attempt = 0; attempt < CAMP_WRITE_ATTEMPTS; attempt++) {
-    const hero = await deps.repo.getCharacter(homeHouseholdId, characterId);
-    if (!hero) return { ok: false, reason: "missing" };
-    const kit = readKit(hero);
-    last = kit;
-    if (options.expectedRevision !== undefined && kit.revision !== options.expectedRevision) {
-      return { ok: false, reason: "stale", value: kit };
-    }
-    const next = fn(structuredClone(kit), hero);
-    if (next === null) return { ok: true, value: kit, changed: false };
-    const written: HeroKit = { ...next, v: KIT_VERSION, revision: kit.revision + 1 };
-    if (await deps.repo.writeCharacter(rewrite(hero, { ...hero, kit: written }))) {
-      return { ok: true, value: written, changed: true };
-    }
+    const plan = await planKit(homeHouseholdId, characterId, fn, deps, options);
+    if (!plan.ok) return plan;
+    if (plan.write === null) return { ok: true, value: plan.value, changed: false };
+    last = plan.read;
+    if (await deps.repo.writeCharacter(plan.write)) return { ok: true, value: plan.value, changed: true };
   }
   return { ok: false, reason: "conflict", ...(last ? { value: last } : {}) };
+}
+
+/**
+ * A change to one hero's kit worked out on one read of her row and not yet
+ * written (#620, #645), as `CampPlan` is for a camp: the run's commit carries
+ * the row write (`CommitInput.characters`), conditional on her version and
+ * claim as read, so a kit edit lands with the run state that shows it or not
+ * at all.
+ */
+export type KitPlan =
+  | { ok: true; read: HeroKit; value: HeroKit; write: CharacterWrite | null }
+  | { ok: false; reason: "stale" | "missing"; value?: HeroKit };
+
+/** Plan a change to one hero's kit on her row as it stands now, writing nothing; `mutateKit`'s arguments. */
+export async function planKit(
+  homeHouseholdId: string,
+  characterId: string,
+  fn: (kit: HeroKit, hero: Character) => HeroKit | null,
+  deps: Pick<HandlerDeps, "repo">,
+  options: WriteOptions = {},
+): Promise<KitPlan> {
+  const hero = await deps.repo.getCharacter(homeHouseholdId, characterId);
+  if (!hero) return { ok: false, reason: "missing" };
+  const kit = readKit(hero);
+  if (options.expectedRevision !== undefined && kit.revision !== options.expectedRevision) {
+    return { ok: false, reason: "stale", value: kit };
+  }
+  const next = fn(structuredClone(kit), hero);
+  if (next === null) return { ok: true, read: kit, value: kit, write: null };
+  const written: HeroKit = { ...next, v: KIT_VERSION, revision: kit.revision + 1 };
+  return { ok: true, read: kit, value: written, write: rewrite(hero, { ...hero, kit: written }) };
 }
 
 // ---------------------------------------------------------------------------

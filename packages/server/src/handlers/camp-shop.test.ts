@@ -9,9 +9,10 @@
 import { describe, expect, it } from "vitest";
 import { SAVE_DASH_CASH, shopVoting, storyTurnHolder } from "@kad/shared";
 import type { CampRecord } from "@kad/shared";
-import { mutateCamp, readCamp } from "./camp.ts";
+import { CAMP_WRITE_ATTEMPTS, mutateCamp, readCamp } from "./camp.ts";
 import { buyPiece } from "./camp-shop.ts";
-import { CATALOG, PRACTICE_CHAPTER, harnessFor, seeded, table, type Table } from "./camp-table.testing.ts";
+import { applyAction } from "./action.ts";
+import { CATALOG, PRACTICE_CHAPTER, harnessFor, racedCommits, seeded, table, takeSeq, type Table } from "./camp-table.testing.ts";
 import type { TestHarness } from "../test-support.ts";
 
 /** The crew's camp as a test wants it before the chapter: paid for `paid` chapters, `dashCash` to spend. */
@@ -230,6 +231,74 @@ describe("the vote (§6.2, §12.4)", () => {
     expect(shopVoting(shop)).toBe(false);
     expect(shop.votes).toEqual({});
     expect((await readCamp(t.householdId, null, harness.deps)).dashCash).toBe(1);
+  });
+});
+
+describe("a deciding vote that does not land (#645)", () => {
+  /** p_1 has voted for the awning; p_2's vote decides it. */
+  async function oneVoteIn(dashCash: number) {
+    const { harness, t } = await atShop(dashCash);
+    const visit = (await t.state()).campShop!.visit;
+    await t.send("p_1", { type: "CAMP_VOTE", visit, option: "shop_striped_awning" });
+    return { harness, t, visit, s: await t.state(), before: await readCamp(t.householdId, null, harness.deps) };
+  }
+
+  it("charges nothing, grants nothing and stamps no receipt when another action takes its seq first", async () => {
+    const { harness, t, visit, s, before } = await oneVoteIn(10);
+    const raced = racedCommits(harness, () => takeSeq(harness, t.runId));
+    const lost = await applyAction(
+      { runId: t.runId, playerId: "p_2", seq: s.seq, intent: { type: "CAMP_VOTE", visit, option: "shop_striped_awning" } },
+      raced.deps,
+    );
+    expect(lost).toMatchObject({ ok: false, seq: s.seq + 1, error: { code: "STALE_SEQ" } });
+    const camp = await readCamp(t.householdId, null, harness.deps);
+    expect(camp).toEqual(before);
+    expect(camp.dashCash).toBe(12);
+    expect(Object.values(camp.owned).some((o) => o.from === "bought" && o.visit === visit)).toBe(false);
+    const after = await t.state();
+    expect(after.campShop).toEqual(s.campShop);
+    expect(after.campShop?.result).toBeUndefined();
+    expect(after.campMoment).toEqual(s.campMoment);
+    // The vote sent again decides it, and the crew pays once.
+    await t.send("p_2", { type: "CAMP_VOTE", visit, option: "shop_striped_awning" });
+    expect((await t.state()).campShop!.result).toMatchObject({ kind: "bought", pieceId: "shop_striped_awning" });
+    const paid = await readCamp(t.householdId, null, harness.deps);
+    expect(paid.dashCash).toBe(7);
+    expect(paid.owned["shop_striped_awning"]).toMatchObject({ from: "bought", visit });
+  });
+
+  it("buys once, on the balance as it now stands, when the camp moved on under it once", async () => {
+    const { harness, t, visit, s, before } = await oneVoteIn(10);
+    // A lucky drop claimed by another table between this vote's read and its commit.
+    const raced = racedCommits(harness, () => mutateCamp(t.householdId, null, (c) => ({ ...c, dashCash: c.dashCash + 1 }), harness.deps));
+    const landed = await applyAction(
+      { runId: t.runId, playerId: "p_2", seq: s.seq, intent: { type: "CAMP_VOTE", visit, option: "shop_striped_awning" } },
+      raced.deps,
+    );
+    expect(landed).toMatchObject({ ok: true, seq: s.seq + 1 });
+    expect(raced.commits()).toBe(2);
+    const camp = await readCamp(t.householdId, null, harness.deps);
+    expect(camp.dashCash).toBe(before.dashCash + 1 - 5);
+    expect(Object.keys(camp.owned)).toEqual(["shop_striped_awning"]);
+    const shop = (await t.state()).campShop!;
+    expect(shop.result).toMatchObject({ kind: "bought", pieceId: "shop_striped_awning" });
+    expect(shop.balance).toBe(camp.dashCash);
+  });
+
+  it("buys nothing when the camp keeps moving under it, and leaves the vote undecided", async () => {
+    const { harness, t, s, before, visit } = await oneVoteIn(10);
+    const raced = racedCommits(harness, () => mutateCamp(t.householdId, null, (c) => ({ ...c, dashCash: c.dashCash + 1 }), harness.deps), Infinity);
+    const lost = await applyAction(
+      { runId: t.runId, playerId: "p_2", seq: s.seq, intent: { type: "CAMP_VOTE", visit, option: "shop_striped_awning" } },
+      raced.deps,
+    );
+    expect(lost).toMatchObject({ ok: false, seq: s.seq, error: { code: "STALE_SEQ" } });
+    const camp = await readCamp(t.householdId, null, harness.deps);
+    expect(camp.dashCash).toBe(before.dashCash + CAMP_WRITE_ATTEMPTS);
+    expect(camp.owned).toEqual({});
+    const after = await t.state();
+    expect(after.seq).toBe(s.seq);
+    expect(after.campShop).toEqual(s.campShop);
   });
 });
 

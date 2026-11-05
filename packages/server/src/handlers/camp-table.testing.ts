@@ -11,6 +11,8 @@ import { applyIntent, createRunState } from "@kad/shared";
 import type { ActionResponse, CampCatalog, CampRecord, Campaign, Chapter, ChannelMessage, ClientIntent, InteractionScene, RunState, ServerMessage } from "@kad/shared";
 import type { Engine } from "../engine/port.ts";
 import { makeChapter, makeContent, makeHarness, seedHousehold, type TestHarness } from "../test-support.ts";
+import type { CommitInput } from "../store/repository.ts";
+import type { HandlerDeps } from "./deps.ts";
 import { applyAction } from "./action.ts";
 import { createRoom, joinRoom } from "./room.ts";
 
@@ -147,4 +149,45 @@ export async function table(
     expect((await state()).phase).toBe("lobby");
   };
   return { householdId, runId, received, state, send, attempt, start, goto, leave };
+}
+
+/**
+ * The handler's deps with a store whose run commit lets `before` happen first,
+ * for the first `times` commits (#645): a competing action taking the seq the
+ * intent read, or somebody writing the camp underneath it. Everything else is
+ * the harness's own store. `commits()` counts the commits asked for.
+ */
+export function racedCommits(
+  harness: TestHarness,
+  before: (input: CommitInput) => Promise<unknown>,
+  times = 1,
+): { deps: HandlerDeps; commits: () => number } {
+  let asked = 0;
+  const raced = new Proxy(harness.repo, {
+    get(target, prop) {
+      if (prop === "commit") {
+        return async (input: CommitInput) => {
+          asked++;
+          if (asked <= times) await before(input);
+          return target.commit(input);
+        };
+      }
+      const value: unknown = Reflect.get(target, prop, target);
+      return typeof value === "function" ? (value as (...args: unknown[]) => unknown).bind(target) : value;
+    },
+  });
+  return { deps: { ...harness.deps, repo: raced }, commits: () => asked };
+}
+
+/** Another action taking the run's next seq first, as a phone tapping in the same moment does. */
+export async function takeSeq(harness: TestHarness, runId: string): Promise<void> {
+  const s = (await harness.repo.getState(runId))!;
+  const seq = s.seq + 1;
+  const landed = await harness.repo.commit({
+    runId,
+    expectedSeq: s.seq,
+    state: { ...s, seq },
+    event: { seq, runId, patch: [{ op: "replace", path: "/seq", value: seq }], at: "2026-11-05T00:00:00.000Z" },
+  });
+  expect(landed).toBe(true);
 }

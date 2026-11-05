@@ -20,14 +20,18 @@
  *     left, an earlier chapter's) is refused as stale, and a decided shop
  *     takes no more votes. Leaving the summary drops the shop (engine
  *     `returnToLobby`), so a vote never resumes and nothing is spent.
- *   - **Rechecked and written at once.** On resolution the camp is re-read and
- *     the piece's eligibility, the crew's ownership and its balance are checked
- *     again inside `mutateCamp`, which debits and grants in one write
- *     conditional on the revision it read. The piece records the visit that
- *     bought it, so a retried resolution (a lost seq race, a resent tap) finds
- *     it and charges nothing; a second table that spent first makes this one's
- *     check fail on the fresh read, and the offer and balance are refreshed for
- *     the table to vote again, with nothing spent.
+ *   - **Rechecked, and written with the vote.** On resolution the camp is
+ *     re-read and the piece's eligibility, the crew's ownership and its
+ *     balance are checked again (`planPurchase`), and the debit and grant are
+ *     one camp write conditional on the revision read, which the run's commit
+ *     carries (`CommitInput.camp`, #645): the purchase lands with the vote
+ *     that decided it and the shop that shows it, or not at all. A resolution
+ *     that loses its seq race spends nothing; one that finds the camp moved on
+ *     since its read is tried again from a fresh read (`applyAction`). The
+ *     piece records the visit that bought it, so a resolution of a visit that
+ *     already bought finds it and charges nothing; a second table that spent
+ *     first makes this one's check fail on the fresh read, and the offer and
+ *     balance are refreshed for the table to vote again, with nothing spent.
  */
 
 import {
@@ -44,13 +48,14 @@ import {
 } from "@kad/shared";
 import type { CampCatalog, CampPieceId, CampRecord, CampShopView, ClientIntent, RunState } from "@kad/shared";
 import type { ActionResponse } from "@kad/shared";
-import type { RunRecord } from "../store/repository.ts";
-import { mutateCamp, type CampDeps } from "./camp.ts";
+import type { CampWrite, RunRecord } from "../store/repository.ts";
+import { mutateCamp, planCamp, type CampDeps } from "./camp.ts";
 import { iso } from "./deps.ts";
 import { discoveryHousehold } from "./field-guide.ts";
 
 type VoteError = NonNullable<ActionResponse["error"]>;
-export type CampVoteResult = { ok: true; state: RunState } | { ok: false; error: VoteError };
+/** `camp`: the purchase's write, for the run's commit to carry; never made here (#645). */
+export type CampVoteResult = { ok: true; state: RunState; camp?: CampWrite } | { ok: false; error: VoteError };
 
 const STALE: VoteError = { code: "STALE_DECISION", message: "That shop has closed. Look again." };
 
@@ -107,10 +112,7 @@ export async function prepareCampVote(
   }
   if (!householdId) return { ok: false, error: { code: "ILLEGAL", message: "this table has no camp to spend from yet" } };
 
-  const bought = await buyPiece(householdId, state.crew, shop.visit, winner, catalog, deps);
-  if (bought.kind === "failed") {
-    return { ok: false, error: { code: "ILLEGAL", message: "The camp could not be reached. Vote again." } };
-  }
+  const bought = await planPurchase(householdId, state.crew, shop.visit, winner, catalog, deps);
   const camp = bought.camp;
   const next: CampShopView =
     bought.kind === "bought"
@@ -122,7 +124,7 @@ export async function prepareCampVote(
         }
       : // Another table spent first: what is left, at what the crew now has, to vote on again.
         { visit: shop.visit, balance: camp.dashCash, options: shopOffer(catalog, camp), votes: {}, refreshed: true };
-  return { ok: true, state: { ...withShop(state, next), camp: campView(camp) } };
+  return { ok: true, state: { ...withShop(state, next), camp: campView(camp) }, ...(bought.write ? { camp: bought.write } : {}) };
 }
 
 type Purchase =
@@ -130,9 +132,73 @@ type Purchase =
   | { kind: "refresh"; camp: CampRecord }
   | { kind: "failed" };
 
+interface PurchaseSeen {
+  outcome: "bought" | "refresh";
+  already: CampPieceId | null;
+}
+
 /**
- * Debit and grant in one conditional write, once per visit (§12.4). `fn`
- * runs on each fresh read, so it decides only from the camp it is given.
+ * The purchase, decided on one camp: debit and grant, once per visit (§12.4).
+ * It may run on each fresh read, so it decides only from the camp it is given
+ * and records what it decided in `seen`.
+ */
+function purchase(
+  visit: string,
+  pieceId: CampPieceId,
+  catalog: Pick<CampCatalog, "crewPieces" | "shops">,
+  at: string,
+  seen: PurchaseSeen,
+): (camp: CampRecord) => CampRecord | null {
+  return (camp) => {
+    // This visit already bought (a retry): it stands, and nothing more is charged.
+    seen.already = Object.entries(camp.owned).find(([, o]) => o.from === "bought" && o.visit === visit)?.[0] ?? null;
+    if (seen.already !== null) {
+      seen.outcome = "bought";
+      return null;
+    }
+    const price = shopPrice(catalog, pieceId);
+    if (price === null || price > camp.dashCash || !shopEligible(catalog, camp, pieceId)) {
+      seen.outcome = "refresh";
+      return null;
+    }
+    seen.outcome = "bought";
+    return {
+      ...camp,
+      dashCash: camp.dashCash - price,
+      owned: { ...camp.owned, [pieceId]: { from: "bought", visit, at } },
+    };
+  };
+}
+
+/**
+ * The purchase planned on the camp as it stands, written by nothing here: the
+ * debit and grant (`write`, conditional on the revision read) ride the vote's
+ * commit (#645). `write` is null when nothing is to be written: the visit had
+ * already bought (charged once, whatever is retried), or the crew can no
+ * longer have the piece (a refresh). `camp` is the camp as it would stand.
+ */
+export async function planPurchase(
+  householdId: string,
+  crew: string | null | undefined,
+  visit: string,
+  pieceId: CampPieceId,
+  catalog: Pick<CampCatalog, "crewPieces" | "shops">,
+  deps: CampDeps,
+): Promise<Exclude<Purchase, { kind: "failed" }> & { write: CampWrite | null }> {
+  const seen: PurchaseSeen = { outcome: "refresh", already: null };
+  const plan = await planCamp(householdId, crew, purchase(visit, pieceId, catalog, iso(deps.now()), seen), deps);
+  // No revision is named, so a plan is never stale.
+  if (!plan.ok) throw new Error(`camp: a purchase plan for ${householdId} was refused as stale`);
+  return seen.outcome === "bought"
+    ? { kind: "bought", pieceId: seen.already ?? pieceId, camp: plan.value, write: plan.write }
+    : { kind: "refresh", camp: plan.value, write: null };
+}
+
+/**
+ * Debit and grant in one conditional write of its own, at once, once per
+ * visit (§12.4): `planPurchase`'s decision, retried on a lost race. A vote at
+ * the table never calls this (its purchase rides its commit, `planPurchase`);
+ * it is the purchase rule under concurrency on its own (camp-shop.test.ts).
  */
 export async function buyPiece(
   householdId: string,
@@ -142,32 +208,8 @@ export async function buyPiece(
   catalog: Pick<CampCatalog, "crewPieces" | "shops">,
   deps: CampDeps,
 ): Promise<Purchase> {
-  const at = iso(deps.now());
-  const seen: { outcome: "bought" | "refresh"; already: CampPieceId | null } = { outcome: "refresh", already: null };
-  const written = await mutateCamp(
-    householdId,
-    crew,
-    (camp) => {
-      // This visit already bought (a retry): it stands, and nothing more is charged.
-      seen.already = Object.entries(camp.owned).find(([, o]) => o.from === "bought" && o.visit === visit)?.[0] ?? null;
-      if (seen.already !== null) {
-        seen.outcome = "bought";
-        return null;
-      }
-      const price = shopPrice(catalog, pieceId);
-      if (price === null || price > camp.dashCash || !shopEligible(catalog, camp, pieceId)) {
-        seen.outcome = "refresh";
-        return null;
-      }
-      seen.outcome = "bought";
-      return {
-        ...camp,
-        dashCash: camp.dashCash - price,
-        owned: { ...camp.owned, [pieceId]: { from: "bought", visit, at } },
-      };
-    },
-    deps,
-  );
+  const seen: PurchaseSeen = { outcome: "refresh", already: null };
+  const written = await mutateCamp(householdId, crew, purchase(visit, pieceId, catalog, iso(deps.now()), seen), deps);
   if (!written.ok) {
     console.error(`camp: a purchase of ${pieceId} for ${householdId} was not written (${written.reason})`);
     return written.value ? { kind: "refresh", camp: written.value } : { kind: "failed" };

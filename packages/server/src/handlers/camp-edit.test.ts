@@ -12,8 +12,8 @@ import { describe, expect, it } from "vitest";
 import { SHARED_EDITS_PER_MOMENT, growCamp, hotspotsAt, readKit, shownAt } from "@kad/shared";
 import type { CampRecord, ClientIntent, RunState } from "@kad/shared";
 import { joinRoom } from "./room.ts";
-import { mutateCamp, readCamp } from "./camp.ts";
-import { CATALOG, harnessFor, seeded, table, type Table } from "./camp-table.testing.ts";
+import { CAMP_WRITE_ATTEMPTS, mutateCamp, readCamp } from "./camp.ts";
+import { CATALOG, harnessFor, racedCommits, seeded, table, type Table } from "./camp-table.testing.ts";
 import type { TestHarness } from "../test-support.ts";
 import { applyAction } from "./action.ts";
 
@@ -280,5 +280,105 @@ describe("shared hotspots (§6.1, §12.5)", () => {
       const spot = stage2.find((h) => h.id === id)!;
       expect(shownAt(spot, after.placed), id).toBe(piece);
     }
+  });
+});
+
+describe("a change that does not land (#645)", () => {
+  /** p_2 readying up in the same moment: a real action on the seq the change read, landing first. */
+  const readyFirst = (harness: TestHarness, t: Table, seq: number) => () =>
+    applyAction({ runId: t.runId, playerId: "p_2", seq, intent: { type: "READY", ready: true } }, harness.deps);
+  /** Somebody else writing the camp in between (another table, a claim after its own commit). */
+  const nudge = (harness: TestHarness, t: Table) => () =>
+    mutateCamp(t.householdId, null, (c) => ({ ...c, dashCash: c.dashCash + 1 }), harness.deps);
+
+  it("CAMP_PLACE beaten to its seq by READY moves no piece and spends no change", async () => {
+    const { harness, t } = await lobby();
+    const s = await t.state();
+    const before = await readCamp(t.householdId, null, harness.deps);
+    const raced = racedCommits(harness, readyFirst(harness, t, s.seq));
+    const lost = await applyAction({ runId: t.runId, playerId: "p_1", seq: s.seq, intent: place(s, "awning", "shop_striped_awning") }, raced.deps);
+    expect(lost).toMatchObject({ ok: false, seq: s.seq + 1, error: { code: "STALE_SEQ" } });
+    expect(await readCamp(t.householdId, null, harness.deps)).toEqual(before);
+    const after = await t.state();
+    expect(after.seq).toBe(s.seq + 1);
+    expect(after.party.find((m) => m.playerId === "p_2")?.ready).toBe(true);
+    expect(after.campMoment).toEqual(s.campMoment);
+    expect(after.camp?.placed).toEqual({});
+    // Her one change this moment is still hers to make.
+    await t.send("p_1", place(after, "awning", "shop_striped_awning"));
+    expect((await readCamp(t.householdId, null, harness.deps)).placed).toEqual({ awning: "shop_striped_awning" });
+    expect((await t.state()).campMoment?.changes["p_1"]).toHaveLength(1);
+  });
+
+  it("CAMP_UNDO beaten to its seq by READY leaves the piece up and the change counted", async () => {
+    const { harness, t } = await lobby();
+    await t.send("p_1", place(await t.state(), "awning", "shop_striped_awning"));
+    const s = await t.state();
+    const before = await readCamp(t.householdId, null, harness.deps);
+    expect(before.placed).toEqual({ awning: "shop_striped_awning" });
+    const raced = racedCommits(harness, readyFirst(harness, t, s.seq));
+    const lost = await applyAction({ runId: t.runId, playerId: "p_1", seq: s.seq, intent: undo(s) }, raced.deps);
+    expect(lost).toMatchObject({ ok: false, error: { code: "STALE_SEQ" } });
+    expect(await readCamp(t.householdId, null, harness.deps)).toEqual(before);
+    const after = await t.state();
+    expect(after.seq).toBe(s.seq + 1);
+    expect(after.campMoment).toEqual(s.campMoment);
+    expect(after.campMoment?.changes["p_1"]).toHaveLength(1);
+  });
+
+  it("KIT_EDIT beaten to its seq by READY leaves her row and the table's kit as they were", async () => {
+    const { harness, t, heroes } = await lobby();
+    const s = await t.state();
+    const row = await harness.repo.getCharacter(t.householdId, heroes.p1);
+    expect(row?.kit).toBeUndefined();
+    const raced = racedCommits(harness, readyFirst(harness, t, s.seq));
+    const lost = await applyAction(
+      { runId: t.runId, playerId: "p_1", seq: s.seq, intent: { type: "KIT_EDIT", characterId: heroes.p1, revision: 0, style: "quilted" } },
+      raced.deps,
+    );
+    expect(lost).toMatchObject({ ok: false, error: { code: "STALE_SEQ" } });
+    expect(await harness.repo.getCharacter(t.householdId, heroes.p1)).toEqual(row);
+    const after = await t.state();
+    expect(after.seq).toBe(s.seq + 1);
+    expect(after.kits?.[heroes.p1]).toMatchObject({ revision: 0, style: null });
+    expect(after.campMoment).toEqual(s.campMoment);
+    // The edit itself was fine: sent again, on the revision it showed, it lands.
+    await t.send("p_1", { type: "KIT_EDIT", characterId: heroes.p1, revision: 0, style: "quilted" });
+    expect((await t.state()).kits?.[heroes.p1]).toMatchObject({ revision: 1, style: "quilted" });
+  });
+
+  it("refuses a placement whose camp keeps moving underneath it: nothing lands and the run stays at its seq", async () => {
+    const { harness, t } = await lobby();
+    const s = await t.state();
+    const before = await readCamp(t.householdId, null, harness.deps);
+    // The camp moves between every read and commit, every time this change tries.
+    const raced = racedCommits(harness, nudge(harness, t), Infinity);
+    const lost = await applyAction({ runId: t.runId, playerId: "p_1", seq: s.seq, intent: place(s, "awning", "shop_striped_awning") }, raced.deps);
+    expect(lost).toMatchObject({ ok: false, seq: s.seq, error: { code: "STALE_SEQ" } });
+    expect(raced.commits()).toBe(CAMP_WRITE_ATTEMPTS);
+    const camp = await readCamp(t.householdId, null, harness.deps);
+    expect(camp.placed).toEqual({});
+    expect(camp.dashCash).toBe(before.dashCash + CAMP_WRITE_ATTEMPTS);
+    expect(camp.revision).toBe(before.revision + CAMP_WRITE_ATTEMPTS);
+    const after = await t.state();
+    expect(after.seq).toBe(s.seq);
+    expect(after.campMoment).toEqual(s.campMoment);
+    expect(after.camp?.placed).toEqual({});
+    expect(await harness.repo.listEvents(t.runId, s.seq)).toEqual([]);
+  });
+
+  it("applies a placement again, on the camp as it now stands, when the camp moved on once", async () => {
+    const { harness, t } = await lobby();
+    const s = await t.state();
+    const before = await readCamp(t.householdId, null, harness.deps);
+    const raced = racedCommits(harness, nudge(harness, t));
+    const landed = await applyAction({ runId: t.runId, playerId: "p_1", seq: s.seq, intent: place(s, "awning", "shop_striped_awning") }, raced.deps);
+    expect(landed).toMatchObject({ ok: true, seq: s.seq + 1 });
+    expect(raced.commits()).toBe(2);
+    const camp = await readCamp(t.householdId, null, harness.deps);
+    expect(camp).toMatchObject({ placed: { awning: "shop_striped_awning" }, dashCash: before.dashCash + 1, revision: before.revision + 2 });
+    const after = await t.state();
+    expect(after.campMoment?.changes["p_1"]).toHaveLength(1);
+    expect(after.camp).toMatchObject({ placed: { awning: "shop_striped_awning" }, dashCash: camp.dashCash });
   });
 });
