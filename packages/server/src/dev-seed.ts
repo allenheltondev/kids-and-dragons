@@ -24,6 +24,7 @@ import { createGuestHousehold, vetTypedName, type BoundDevice } from "./handlers
 import { applyAction } from "./handlers/action.ts";
 import type { ActionError, HandlerDeps, HandlerResult } from "./handlers/deps.ts";
 import { admitNewPhone, bindNewPhone, createRoom, joinRoom, settleRoom } from "./handlers/room.ts";
+import { mutateCamp } from "./handlers/camp.ts";
 
 export interface SeedHero {
   /** The hero's name, as typed on the last creation step. */
@@ -64,6 +65,13 @@ export interface SeedRequest {
   flags?: Record<string, boolean>;
   /** A graph campaign's world facts the chapter starts with (#220). */
   facts?: Record<string, FactValue>;
+  /**
+   * The new household's camp before the room opens (docs/camp.md §9; #620): the
+   * full campaigns it has grown by (stage 2 at one), the pieces it owns, what
+   * stands where, its Dash Cash and paid chapters. For looking at a grown camp
+   * without playing a whole campaign first. Only with a new household (not `code`).
+   */
+  camp?: { grownBy?: string[]; owned?: string[]; placed?: Record<string, string>; dashCash?: number; paidChapterCount?: number };
 }
 
 /** What a browser would have stored had it done this itself (client store/persistence.ts). */
@@ -124,6 +132,7 @@ export function readSeedRequest(body: unknown): SeedRequest | string {
   if (b.facts !== undefined && (typeof b.facts !== "object" || b.facts === null || Object.values(b.facts).some((v) => typeof v !== "string" && typeof v !== "number" && typeof v !== "boolean"))) return "facts must map fact names to plain values";
   if ((b.flags !== undefined || b.facts !== undefined) && b.chapterId === undefined) return "flags and facts need chapterId";
   if (b.sceneId !== undefined && (typeof b.sceneId !== "string" || (b.begin !== true && b.chapterId === undefined))) return "sceneId needs begin or chapterId";
+  if (b.camp !== undefined && (typeof b.camp !== "object" || b.camp === null || b.code !== undefined)) return "camp is an object, for a new household";
   return b as unknown as SeedRequest;
 }
 
@@ -160,6 +169,7 @@ export async function seedRoom(input: SeedRequest, deps: HandlerDeps): Promise<H
   } else if (input.tv) {
     // POST /api/room with display: true.
     const screen = await createGuestHousehold({ displayName: "Host", display: true }, deps);
+    await seedCamp(screen.principal.householdId, input.camp, deps);
     const created = await createRoom(
       {
         householdId: screen.principal.householdId,
@@ -179,6 +189,7 @@ export async function seedRoom(input: SeedRequest, deps: HandlerDeps): Promise<H
     const name = vetTypedName(first.player ?? "Host", "Host");
     if (!name.ok) return name;
     const host = await createGuestHousehold({ displayName: name.value }, deps);
+    await seedCamp(host.principal.householdId, input.camp, deps);
     const created = await createRoom(
       {
         householdId: host.principal.householdId,
@@ -273,4 +284,23 @@ export async function seedRoom(input: SeedRequest, deps: HandlerDeps): Promise<H
 
   const mode = (await deps.repo.getState(runId))?.mode ?? input.mode;
   return { ok: true, value: { code, runId, mode, ...(tv ? { tv } : {}), phones } };
+}
+
+/** The seed's camp, written before the room reads it (`SeedRequest.camp`). */
+async function seedCamp(householdId: string, camp: SeedRequest["camp"], deps: HandlerDeps): Promise<void> {
+  if (!camp) return;
+  const at = new Date(deps.now()).toISOString();
+  await mutateCamp(
+    householdId,
+    null,
+    (c) => ({
+      ...c,
+      grownBy: camp.grownBy ?? c.grownBy,
+      dashCash: camp.dashCash ?? c.dashCash,
+      paidChapterCount: camp.paidChapterCount ?? c.paidChapterCount,
+      placed: camp.placed ?? c.placed,
+      owned: { ...c.owned, ...Object.fromEntries((camp.owned ?? []).map((id) => [id, { from: "bought" as const, at }])) },
+    }),
+    deps,
+  );
 }

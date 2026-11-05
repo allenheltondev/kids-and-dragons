@@ -67,6 +67,8 @@ export interface TableOptions {
   startServer?: boolean;
   /** Pass the prefer-reduced-motion setting to every device. */
   reducedMotion?: boolean;
+  /** The new household's camp before the room opens (dev-seed.ts `SeedRequest.camp`; #620). */
+  camp?: { grownBy?: string[]; owned?: string[]; placed?: Record<string, string>; dashCash?: number; paidChapterCount?: number };
   /** Called with progress lines; default silent. */
   log?: (line: string) => void;
 }
@@ -164,6 +166,7 @@ export async function openTable(options: TableOptions): Promise<Table> {
       ...(options.sceneId ? { sceneId: options.sceneId } : {}),
       ...(options.flags ? { flags: options.flags } : {}),
       ...(options.facts ? { facts: options.facts } : {}),
+      ...(options.camp ? { camp: options.camp } : {}),
     }),
   });
   const seeded = (await seed.json()) as SeedResponse & { error?: { code: string; message: string } };
