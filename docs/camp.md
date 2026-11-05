@@ -721,6 +721,15 @@ interface HeroKit {
 }
 ```
 
+*As built (#617):* the shapes are in `packages/shared/src/types/camp.ts` and the server's API in
+`packages/server/src/handlers/camp.ts`. Against the sketch: the shape version is `v` (as on
+`FieldGuideRecord`), since `version` on a character is its write counter; a kit's `style` and
+`color` are `null` until the kid picks (§5.3), and a backfilled milestone has no `at`; the
+receipts are a `receipts` map on the camp row (`rewards`, `chapters`, and lucky `drops` keyed by
+run and scene), so a claim and its reward are one conditional put, with a paid chapter's drop
+receipts pruned to keep the row small. The frame is read as the crew's finished `growsCamp`
+campaigns counted once, stored or not, which is also the migration for existing crews.
+
 - **Written only by the server**, as every authoritative change is: phones send intents
   (`campPlace`, `campVote`, `kitPlace`, `buddyPick`), and the server checks the piece is owned,
   the hotspot fits it, the sender may change it and the intent is not stale. `kitPlace` and
