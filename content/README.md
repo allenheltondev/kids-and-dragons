@@ -122,11 +122,12 @@ content/
   bestiary.json                  canon's creatures, ready for a board     → Bestiary       (generated)
   world.json                     where every place is on the realm map    → WorldMap       (generated)
   help.json                      the words behind every "?" and long-press → HelpContent   (#256)
+  camp.json                      the camp's pieces, shops, kit and friends → CampCatalog   (#618)
   campaigns/<id>.json            a story arc, listing its chapters        → Campaign
   chapters/<id>.json             one ~30-minute sitting                   → Chapter
   maps/<id>.json                 encounter boards — rows + spawn points   → EncounterMap
 schemas/
-  rules|abilities|items|chapter|campaign|map|help.schema.json  JSON Schema, draft 2020-12
+  rules|abilities|items|chapter|campaign|map|help|camp.schema.json  JSON Schema, draft 2020-12
 ```
 
 ## Authoring XP
@@ -587,6 +588,46 @@ succeeds, so the halved award, the setback counter, and — through that counter
 and the souvenir it leaves behind are all unreachable in play, though each is built and unit-tested.
 Whoever writes the first authored chapter should give it an ending that declares
 `"outcome": "setback"`; it is one key on one terminal scene.
+
+## Camp finds: `findForCamp` and `findForKit` (#618)
+
+A chapter can hand the crew a piece for its camp, or every hero a piece for their own kit
+([docs/camp.md §5.1, §5.4](../docs/camp.md#51-finds-pieces-handed-over-in-a-chapter)):
+
+```json
+"onSuccess": {
+  "goto": "scene_awning_up",
+  "narration": "The noodle cook rolls up her old striped awning and presses it into your hands.",
+  "effects": [{ "type": "findForCamp", "pieceId": "find_noodle_awning", "rewardId": "riftlight-exchange-rift.noodle_awning" }]
+}
+```
+
+- **The pieces live in `content/camp.json`**, with their art in `assets/manifest.json` → `camp`.
+  A `findForCamp` names a crew piece whose `group` is `find`; a `findForKit` names a kit decoration
+  whose `group` is `find`. A crew piece can never be a kit find, nor the other way round (§12.1).
+- **The `rewardId` is the piece's offer for this chapter**, declared in the piece's `offers` in
+  `content/camp.json`. It is the find's identity for good: the crew gets the piece the first time
+  and nothing for that reward again, however the party comes back. Never a scene id, and never
+  changed once a chapter ships. A crew that already owns the piece from another reward gets 1 Dash
+  Cash; a hero who already has a kit piece gets nothing more, and never Dash Cash.
+- **In a graph campaign, offer it on every way in, with one `rewardId`.** A place can be reached in
+  more than one order, so a find there goes on each way into it, and every one of them names the
+  same offer. A piece has at most one offer per chapter, so the gate holds this for you.
+- **A find is a bonus, never a gate.** Nothing in a chapter can test for it, and no choice waits on
+  it.
+- **A find rewards something done**, not a thing lying on the floor: helping at the Saltrot steps
+  earns the awning, calming the ducklings earns a feather. It lands on the scene that shows the
+  result, like any other choice's effect.
+- **The narration names the thing, never the camp.** "Grandmother Winkle presses a striped awning
+  into your hands" reads true for every party; "for your camp" does not, and the phone's "For the
+  camp!" notice says it instead.
+- **A few per campaign, not per chapter.** Roughly one find every two chapters keeps each one an
+  event. The Practice Meadow and the first chapter of every `growsCamp` campaign hand one over on
+  their spine (§5.3).
+
+`npm run content:validate` fails a find that names no find piece of the right catalog, a
+`rewardId` that is not that piece's offer for the chapter, and a catalog whose ids, groups, shop
+prices or milestones disagree with the manifest or with each other.
 
 ## Conventions the schema cannot state
 

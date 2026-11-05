@@ -2679,7 +2679,14 @@
     "interaction_quay_line": {
       "art": "scenes/gemfall/exchange-docks",
       "type": "story",
-      "narration": "Down on the quay, dockhands pass pear crates in a long line. You fill a gap. Not one pear drops, and the dockmaster gives you each a pear.",
+      "narration": "Down on the quay, dockhands pass pear crates in a long line. You fill a gap. Not one pear drops, and the dockmaster gives you each a pear. Then he snips a red and gold ribbon off the harbor lamp string for everybody.",
+      "onEnter": [
+        {
+          "type": "findForKit",
+          "pieceId": "deco_lamp_ribbon",
+          "rewardId": "gemfall-01.lamp_ribbon"
+        }
+      ],
       "choices": [
         {
           "id": "continue",
@@ -2743,7 +2750,14 @@
       ],
       "art": "scenes/gemfall/caravan-yard",
       "type": "story",
-      "narration": "On the way, a lantern pole snags a washing line. You hold the pole steady while Hesper unhooks it. Long underwear floats down onto a goat. \"On to the North Gate,\" says Hesper.",
+      "narration": "On the way, a lantern pole snags a washing line. You hold the pole steady while Hesper unhooks it. Long underwear floats down onto a goat. Then Hesper hands you the pole, lantern and all. \"Keep it,\" she says. \"Steady hands should carry their own light. On to the North Gate.\"",
+      "onEnter": [
+        {
+          "type": "findForCamp",
+          "pieceId": "find_wagon_lantern",
+          "rewardId": "gemfall-01.wagon_lantern"
+        }
+      ],
       "choices": [
         {
           "id": "continue",

@@ -15,6 +15,7 @@
  * downstream sees a `ResolvedCharacter` and cannot tell where a bonus came from.
  */
 
+import { emptyKit, withMilestones } from "./camp-record.js";
 import { CLASS_RANKS, STAT_IDS } from "./types/domain.js";
 import type {
   Appearance,
@@ -178,8 +179,15 @@ export function failCampaign(
   earnedAt: string,
 ): Character {
   const fromRun = character.provisional?.runId ?? "";
+  // A tier or class distinction reached in this campaign keeps its kit piece
+  // (docs/camp.md §5.4): the hero earned it once. The kit is outside the
+  // commitment rule, so this is the one thing the revert adds rather than
+  // takes back; a hero with nothing new to keep is left exactly as she was.
+  const kit = character.kit ?? emptyKit();
+  const kept = withMilestones(kit, character, earnedAt);
   return {
     ...character,
+    ...(kept !== kit ? { kit: kept } : {}),
     provisional: null,
     questItems: [],
     souvenirs: [...character.souvenirs, { id: souvenirId, fromRun, earnedAt }],

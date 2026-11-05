@@ -16,6 +16,8 @@
  * | Character        | HH#<hhId>       | CHAR#<charId>      |
  * | Campaign run     | HH#<hhId>       | RUN#<runId>        |
  * | Field guide      | HH#<hhId>       | FIELDGUIDE         |
+ * | Camp, first crew | HH#<hhId>       | CAMP               |
+ * | Camp, other crew | HH#<hhId>       | CAMP#<crewId>      |
  * | Chapter progress | RUN#<runId>     | CHAPTER#<n>        |
  * | Game state       | RUN#<runId>     | STATE              |
  * | Event log        | RUN#<runId>     | EVT#<seq>          |
@@ -115,6 +117,14 @@ export const CREWSAVE_PREFIX = (crew: string) => `CREWSAVE#${crew}#`;
 
 /** A household's crew (`CrewRecord`). */
 export const CREW_SK = (crew: string) => `CREW#${crew}`;
+
+/**
+ * A crew's camp (`CampRecord`, docs/camp.md §9): `CAMP` for the household's
+ * first crew, which has no id (architecture §4.5, "Crews"), `CAMP#<crewId>`
+ * for each other. Neither is a prefix of `CAMPAIGN#` (`PREFIX.campaign`), so
+ * listing the first crew's attempts never sees a camp.
+ */
+export const CAMP_SK = (crew?: string) => (crew ? `CAMP#${crew}` : "CAMP");
 
 /**
  * The name a household gave its first crew, which has no `CrewRecord`. Not under

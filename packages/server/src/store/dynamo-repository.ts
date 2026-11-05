@@ -25,8 +25,10 @@ import {
   FIELD_GUIDE_VERSION,
   FORGOTTEN_FINDER,
   migrateCharacter,
+  migrateCamp,
   migrateFieldGuide,
 } from "@kad/shared";
+import { campCondition, campItem } from "./camp-io.ts";
 import { claimedRow, readAll } from "./character-io.ts";
 import {
   BatchWriteCommand,
@@ -41,6 +43,7 @@ import {
   type TransactWriteCommandInput,
 } from "@aws-sdk/lib-dynamodb";
 import type {
+  CampRecord,
   Character,
   DeviceBinding,
   FieldGuideDiscovery,
@@ -51,6 +54,7 @@ import type {
 } from "@kad/shared";
 import type {
   CampaignProgressRecord,
+  CampWrite,
   CrewRecord,
   ChapterProgressRecord,
   CharacterWrite,
@@ -75,6 +79,7 @@ import type {
 import { collectMove, fieldGuideItem, planMove, transferKey, type MoveStep, type StoredRow } from "./profile-move.ts";
 import {
   ACCT,
+  CAMP_SK,
   CAMPAIGN_SK,
   CREW_SK,
   CREWSAVE_PREFIX,
@@ -1405,6 +1410,26 @@ export class DynamoRepository implements GameRepository {
     return (item?.data as { name?: string } | undefined)?.name ?? null;
   }
 
+  async getCamp(householdId: string, crew?: string): Promise<CampRecord | null> {
+    // Consistent: a conditional write on the revision read follows it.
+    const item = await this.get(HH(householdId), CAMP_SK(crew), true);
+    return item ? migrateCamp(item.data, item.v) : null;
+  }
+
+  async putCamp(write: CampWrite): Promise<boolean> {
+    // One conditional PutItem: the receipts ride inside the row (CampReceipts),
+    // so a claim and its reward land together without a transaction.
+    try {
+      await this.doc.send(
+        new PutCommand({ TableName: this.table, Item: campItem(write), ...campCondition(write.expectedRevision) }),
+      );
+      return true;
+    } catch (err) {
+      if (isConditionalFailure(err)) return false;
+      throw err;
+    }
+  }
+
   async getFieldGuide(householdId: string): Promise<FieldGuideRecord> {
     const item = await this.get(HH(householdId), FIELDGUIDE);
     if (!item) return migrateFieldGuide({}, FIELD_GUIDE_VERSION);
@@ -1624,6 +1649,11 @@ export class DynamoRepository implements GameRepository {
               : []),
             // Crew names, gated on the household's crew-names version.
             ...(input.crewNames ? crewNameTransaction(this.table, input.crewNames) : []),
+            // A camp change made at the table (#645): it lands with the run
+            // state that shows it, under the revision it was decided on.
+            ...(input.camp
+              ? [{ Put: { TableName: this.table, Item: campItem(input.camp), ...campCondition(input.camp.expectedRevision) } }]
+              : []),
             // If the run has moved on, the whole transaction is rejected and
             // these never land: that is the point of putting them here. Each
             // also carries its hero's claim and the version read (#282), since

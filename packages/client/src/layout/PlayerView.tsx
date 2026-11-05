@@ -24,6 +24,8 @@ import { useEffect, useLayoutEffect } from "react";
 import type { ReactNode } from "react";
 import { PlayerPanel, SignInFlow, WelcomeBack } from "../screens";
 import { FieldGuideToast } from "../screens/FieldGuideNews";
+import { KitNewsToast } from "../screens/KitNews";
+import { DashCashSparkle } from "../screens/CampChapterEnd";
 import { ArrivalNotices } from "../screens/ArrivalNotices";
 import { HostControls } from "../screens/HostControls";
 // Imported by path rather than through the `screens` barrel on purpose: the
@@ -138,6 +140,10 @@ export function PlayerView({ roomControls }: { roomControls?: ReactNode }): Reac
       {/* Field Guide finds; waits while a turn prompt is open. Not under TV
           focus: the finds are still kept, for when the guide is back. */}
       {focus ? null : <FieldGuideToast />}
+      {/* Milestone kit pieces (#621), after the transformation; waits like the toast above. */}
+      {focus ? null : <KitNewsToast />}
+      {/* The TV's "Dash Cash!" sparkle, echoed (docs/camp.md §5.2). */}
+      {focus ? null : <DashCashSparkle place="phone" />}
       {/*
        * Roadmap chapter 6's playtest drawer — warp to a scene, load the next
        * d20. `import.meta.env.DEV` is replaced with a literal `false` in the

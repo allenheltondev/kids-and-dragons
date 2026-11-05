@@ -29,6 +29,7 @@ import type { Character, Household, OrganizerHouseholdDeleted, RoomChannel, RunS
 import { diff } from "../json-patch.ts";
 import type { EventRecord, ForgetJob } from "../store/repository.ts";
 import { summaries } from "./account.ts";
+import { forgetBuddies } from "./camp.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -47,7 +48,7 @@ export type ForgetDeps = Pick<HandlerDeps, "repo" | "now"> & { channel?: RoomCha
 type Owned = Pick<HandlerDeps, "repo" | "now"> & { channel?: RoomChannel };
 
 /** One kid to forget: the names she went by, and the tables that may have kept them. */
-export type Forgetting = Pick<ForgetJob, "playerId" | "nicknames" | "heroes" | "tables">;
+export type Forgetting = Pick<ForgetJob, "playerId" | "nicknames" | "heroes" | "heroIds" | "tables">;
 
 /** Forget jobs the sweep retries per invocation. */
 const FORGET_BATCH = 25;
@@ -148,6 +149,7 @@ async function forgetJob(
     reason,
     nicknames: player ? [player.displayName] : [],
     heroes: heroes.map((c) => c.name),
+    heroIds: heroes.map((c) => c.id),
     tables: await tablesOf(playerId, home, heroes, deps),
     createdAt: iso(deps.now()),
     attempts: 0,
@@ -313,6 +315,9 @@ export async function forgetEverywhere(
     for (const table of kid.tables) {
       try {
         await deps.repo.forgetFinder(table, kid.playerId);
+        // Her heroes' buddies in that table's camps (docs/camp.md §9). Her
+        // kits went with her heroes, and a camp is the crew's, so it stays.
+        await forgetBuddies(table, kid.heroIds ?? [], deps);
         for (const run of await deps.repo.listRuns(table)) {
           if (await forgetInRun(run.id, kid, deps)) changed++;
           await forgetInLog(run.id, kid, deps);

@@ -1,4 +1,5 @@
 import crewArt from "./painted/crew.webp";
+import dashCashArt from "./painted/dash_cash.webp";
 import glyph_note_lowArt from "./painted/glyph_note_low.webp";
 import glyph_note_middleArt from "./painted/glyph_note_middle.webp";
 import glyph_note_highArt from "./painted/glyph_note_high.webp";
@@ -170,6 +171,7 @@ const prefixed = (prefix: string, icons: Record<string, string>): Record<string,
 
 export const PAINTED_ART: Record<string, string> = {
   crew: crewArt,
+  dash_cash: dashCashArt,
 
   ...prefixed("glyph", {
     note_low: glyph_note_lowArt,

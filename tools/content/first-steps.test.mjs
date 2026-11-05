@@ -51,6 +51,14 @@ describe("the practice (#255)", () => {
     expect(read("content", "campaigns", "gemfall.json").chapters).not.toContain(chapter.id);
   });
 
+  it("is the only campaign marked a tutorial, so it alone does not count toward opening the camp shop (docs/camp.md §5.3)", () => {
+    expect(campaign.tutorial).toBe(true);
+    const others = readdirSync(join(REPO, "content", "campaigns"))
+      .filter((f) => f.endsWith(".json") && f !== "first-steps.json")
+      .map((f) => read("content", "campaigns", f));
+    expect(others.filter((c) => c.tutorial !== undefined).map((c) => c.id)).toEqual([]);
+  });
+
   it("teaches every step in order, with one hint each, on every path", () => {
     const all = paths();
     expect(all.length).toBeGreaterThan(1);

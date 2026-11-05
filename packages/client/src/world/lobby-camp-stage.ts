@@ -24,7 +24,8 @@ import type { RunState } from "@kad/shared";
 import { createCamp, type CampStage } from "./camp";
 import type { CampLayout } from "./camp-layout";
 import { frameSeconds } from "./camp-motion";
-import { LOBBY_CAMP_STAND_IN, begun, campCues, campHeroes, campSeed, campShownIn, type CampHero } from "./lobby-camp";
+import { LOBBY_CAMP_STAND_IN, begun, campCues, campDressing, campHeroes, campLayoutFor, campSeed, campShownFor, campStage, type CampHero } from "./lobby-camp";
+import { campBeatShown, onCampBeat } from "./camp-beat";
 
 export { lobbyCampLayout } from "./lobby-camp";
 
@@ -38,10 +39,12 @@ export interface LobbyCampOptions {
   still?: boolean;
   assetUrl?: (path: string) => string;
   loadTexture?: (url: string) => Promise<Texture>;
+  /** The layout for a frame stage (lobby-camp.ts `campLayoutFor`); absent: always `layout`. */
+  layoutFor?: (stage: number) => CampLayout | null;
 }
 
 export interface LobbyCamp {
-  /** The run state, every time it changes. */
+  /** The run state, every time it changes, and whenever the chapter end's camp beat turns. */
   sync(state: RunState | null): void;
   resize(width: number, height: number): void;
   /** The lobby panels' covered height and the header's reach (stage-inset.ts `onLobbyInset`). */
@@ -65,16 +68,29 @@ export function createLobbyCamp(app: Application, layout: CampLayout, options: L
   let heroes: CampHero[] | null = null;
   let phase: string | null = null;
   let destroyed = false;
+  let mounted: CampLayout = layout;
+  let last: RunState | null = null;
+  /** The chapter end whose stage-up has been pitched, so it plays once. */
+  let pitched: string | null = null;
+  // A beat turning is read a moment later, on the state as it then stands: the
+  // summary turns it off as the table goes back to the lobby, and the lobby's
+  // own sync, in the same commit, keeps the camp up rather than refolding it.
+  const offBeat = onCampBeat(() => {
+    queueMicrotask(() => {
+      if (!destroyed) sync(last);
+    });
+  });
 
   function dropFading(): void {
     fading?.destroy();
     fading = null;
   }
 
-  function mount(state: RunState): CampStage {
+  function mount(state: RunState, at: CampLayout): CampStage {
     // A lobby back before the last one finished fading: that one is gone at once.
     dropFading();
-    const camp = createCamp(app, layout, {
+    mounted = at;
+    const camp = createCamp(app, at, {
       seed: campSeed(state),
       still,
       assetUrl,
@@ -103,13 +119,28 @@ export function createLobbyCamp(app: Application, layout: CampLayout, options: L
     if (destroyed) return;
     const next = state?.phase ?? null;
     // No state yet is no lobby yet: a phone reloading mid-chapter must not flash a camp.
-    if (state && campShownIn(state.phase)) {
+    last = state;
+    if (state && campShownFor(state, campBeatShown())) {
       const now = campHeroes(state);
+      // The crew's frame stage, from its record: a camp that grew is pitched anew.
+      const want = options.layoutFor?.(campStage(state)) ?? layout;
+      if (shown && want !== mounted) {
+        shown.destroy();
+        shown = null;
+        heroes = null;
+      }
       const first = shown === null;
-      if (first) shown = mount(state);
+      if (first) shown = mount(state, want);
       else shown!.setSeed(campSeed(state));
       const camp = shown!;
       camp.setFigures(now.map((hero) => hero.figure));
+      camp.setDressing(campDressing(state, mounted));
+      // The frame grew at this chapter's end (§4.1): the heroes pitch it, once.
+      const grew = state.phase === "chapter_complete" && state.camp?.grew === true ? state.campMoment?.id ?? "grew" : null;
+      if (grew !== null && grew !== pitched) {
+        pitched = grew;
+        camp.pitch();
+      }
       for (const cue of campCues(first ? null : heroes, now)) {
         if (cue.kind === "setOff") camp.moment("setOff");
         else camp.moment(cue.kind, cue.id);
@@ -155,6 +186,7 @@ export function createLobbyCamp(app: Application, layout: CampLayout, options: L
     destroy() {
       if (destroyed) return;
       destroyed = true;
+      offBeat();
       app.ticker.remove(tick);
       shown?.destroy();
       shown = null;

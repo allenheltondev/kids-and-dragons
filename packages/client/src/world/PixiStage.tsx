@@ -22,6 +22,7 @@ import { sceneRiftFor } from "./scene-rift";
 import { castFor } from "./cast";
 import { boardInsetEnd, lobbyInsetBottom, lobbyInsetTop, onBoardInsetEnd, onLobbyInset, onLobbyInsetTop, onStageInset, onStageInsetTop, stageInsetBottom, stageInsetTop } from "./stage-inset";
 import { createLobbyCamp, lobbyCampLayout, type LobbyCamp } from "./lobby-camp-stage";
+import { campLayoutFor } from "./lobby-camp";
 import { PREFS_EVENT, reducedMotion } from "../a11y/prefs";
 
 /**
@@ -86,7 +87,9 @@ export function attentionKeyFor(
  */
 export function nameplatesVisibleIn(phase: string | null | undefined): boolean {
   const resolved = phase ?? "lobby";
-  return resolved !== "lobby" && resolved !== "creation";
+  // The chapter's summary, too: it covers the lineup with cards that name
+  // every hero, and the faint names behind it ran into its last line (#620).
+  return resolved !== "lobby" && resolved !== "creation" && resolved !== "chapter_complete";
 }
 
 function boardView(
@@ -241,6 +244,7 @@ export function PixiStage(): React.JSX.Element {
         lobbyCamp = createLobbyCamp(instance, layout, {
           cover: (on) => covered.setCovered(on),
           still: reducedMotion(),
+          layoutFor: campLayoutFor,
         });
         campRef.current = lobbyCamp;
         lobbyCamp.setInset(lobbyInsetBottom(), lobbyInsetTop());

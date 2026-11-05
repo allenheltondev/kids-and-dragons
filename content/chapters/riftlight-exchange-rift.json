@@ -154,7 +154,7 @@
     },
     "awning_up": {
       "type": "story",
-      "narration": "The awning snaps tight, and the snow whooshes off onto a crate. The noodle seller drops three coins in your hands, then wraps up a supper bundle: flatbread, cheese and a sausage. \"For later. Don't tell the pot. The pot thinks everything is for the pot.\"",
+      "narration": "The awning snaps tight, and the snow whooshes off onto a crate. The noodle seller drops three coins in your hands, then wraps up a supper bundle: flatbread, cheese and a sausage. \"For later. Don't tell the pot. The pot thinks everything is for the pot.\" Then she rolls up her old spare awning, yellow and cream stripes, and puts it in your arms.",
       "choices": [
         {
           "id": "continue",
@@ -177,6 +177,11 @@
           "type": "grantItem",
           "itemId": "supper_bundle",
           "to": "party"
+        },
+        {
+          "type": "findForCamp",
+          "pieceId": "find_noodle_awning",
+          "rewardId": "riftlight-exchange-rift.noodle_awning"
         }
       ],
       "art": "scenes/gemfall/exchange-noodle-stall",
@@ -189,7 +194,7 @@
     },
     "awning_flap": {
       "type": "story",
-      "narration": "The awning flaps like a huge wet bird. A pot of broth tips into the gutter. The noodle seller ties the cloth down herself. \"That is for trying,\" she says, and gives you one coin. The pot gurgles in a hurt way.",
+      "narration": "The awning flaps like a huge wet bird. A pot of broth tips into the gutter. The noodle seller ties the cloth down herself. \"That is for trying,\" she says, and gives you one coin and her old spare awning, rolled up tight. The pot gurgles in a hurt way.",
       "choices": [
         {
           "id": "continue",
@@ -207,6 +212,11 @@
         {
           "type": "grantCoins",
           "amount": 1
+        },
+        {
+          "type": "findForCamp",
+          "pieceId": "find_noodle_awning",
+          "rewardId": "riftlight-exchange-rift.noodle_awning"
         }
       ],
       "art": "scenes/gemfall/exchange-noodle-stall",
@@ -654,7 +664,14 @@
     },
     "trail_found": {
       "type": "story",
-      "narration": "The newest prints are crisp, no bigger than a plum, with white fuzz stuck in one. They skid sideways, as if something had tugged their owner. \"Little goat,\" says the gull from a post. \"Lost. Cold. Like me.\" Then a deep horn blows from the water.",
+      "narration": "The newest prints are crisp, no bigger than a plum, with white fuzz stuck in one. They skid sideways, as if something had tugged their owner. \"Little goat,\" says the gull from a post. \"Lost. Cold. Like me.\" It shakes its wings, frosty feathers float down, and everybody catches one. \"Good tracking. Keep those.\" Then a deep horn blows from the water.",
+      "onEnter": [
+        {
+          "type": "findForKit",
+          "pieceId": "deco_gull_feather",
+          "rewardId": "riftlight-exchange-rift.gull_feather"
+        }
+      ],
       "choices": [
         {
           "id": "continue",
@@ -667,7 +684,14 @@
     },
     "trail_lost": {
       "type": "story",
-      "narration": "Snow covers the marks before you can read them, and you end up with a boot full of slush. A barrel rolls a little way by itself, then stops. \"Barrels do not do that,\" says the gull from a post. Then a deep horn blows from the water.",
+      "narration": "Snow covers the marks before you can read them, and you end up with a boot full of slush. A barrel rolls a little way by itself, then stops. \"Barrels do not do that,\" says the gull from a post. It shakes the frost off its wings, and everybody catches a falling feather. \"For the slush,\" it grumbles. Then a deep horn blows from the water.",
+      "onEnter": [
+        {
+          "type": "findForKit",
+          "pieceId": "deco_gull_feather",
+          "rewardId": "riftlight-exchange-rift.gull_feather"
+        }
+      ],
       "choices": [
         {
           "id": "continue",

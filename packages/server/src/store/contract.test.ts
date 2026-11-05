@@ -18,8 +18,8 @@
 
 import { CreateTableCommand, DynamoDBClient, ScanCommand } from "@aws-sdk/client-dynamodb";
 import { afterAll, beforeEach, describe, expect, it } from "vitest";
-import { FIELD_GUIDE_VERSION, FORGOTTEN_FINDER } from "@kad/shared";
-import type { Character, Household, JourneyState, PlayerProfile, RunState } from "@kad/shared";
+import { emptyCamp, emptyKit, FIELD_GUIDE_VERSION, FORGOTTEN_FINDER } from "@kad/shared";
+import type { CampRecord, Character, Household, JourneyState, PlayerProfile, RunState } from "@kad/shared";
 import { DynamoRepository, GSI1_NAME } from "./dynamo-repository.ts";
 import { MemoryRepository } from "./memory-repository.ts";
 import type { CharacterWrite, EventRecord, GameRepository, PushSubscriptionRecord, RoomRecord } from "./repository.ts";
@@ -1981,6 +1981,142 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
         expect((await repo.getFieldGuide("h_home")).entries["lark"]?.firstFoundBy).toBe("p_ada");
         expect((await repo.getFieldGuide("h_rue")).entries["lark"]?.firstFoundBy).toBe("p_ada");
         expect(Object.keys((await repo.getFieldGuide("h_home")).entries)).toEqual(["lark"]);
+      });
+    });
+
+    describe("the crew's camp (#617)", () => {
+      const camp = (dashCash: number): CampRecord => ({ ...emptyCamp(), dashCash, revision: 99 });
+
+      it("is null until written, then lands at revision 1 and moves one revision per write", async () => {
+        expect(await repo.getCamp("h_1")).toBeNull();
+        expect(await repo.putCamp({ householdId: "h_1", camp: camp(2), expectedRevision: null })).toBe(true);
+        expect(await repo.getCamp("h_1")).toEqual({ ...camp(2), revision: 1 });
+        expect(await repo.putCamp({ householdId: "h_1", camp: camp(3), expectedRevision: 1 })).toBe(true);
+        expect(await repo.getCamp("h_1")).toMatchObject({ dashCash: 3, revision: 2 });
+      });
+
+      it("refuses a write on a revision it no longer holds, and a create where a row exists", async () => {
+        await repo.putCamp({ householdId: "h_1", camp: camp(2), expectedRevision: null });
+        expect(await repo.putCamp({ householdId: "h_1", camp: camp(9), expectedRevision: null })).toBe(false);
+        expect(await repo.putCamp({ householdId: "h_1", camp: camp(9), expectedRevision: 0 })).toBe(false);
+        expect(await repo.putCamp({ householdId: "h_1", crew: "cw_1", camp: camp(9), expectedRevision: 1 })).toBe(false);
+        expect(await repo.getCamp("h_1")).toMatchObject({ dashCash: 2, revision: 1 });
+        expect(await repo.getCamp("h_1", "cw_1")).toBeNull();
+      });
+
+      it("keeps each crew's camp under its own key, apart from the campaign rows", async () => {
+        await repo.putCamp({ householdId: "h_1", camp: camp(1), expectedRevision: null });
+        await repo.putCamp({ householdId: "h_1", crew: "cw_1", camp: camp(5), expectedRevision: null });
+        expect((await repo.getCamp("h_1"))?.dashCash).toBe(1);
+        expect((await repo.getCamp("h_1", "cw_1"))?.dashCash).toBe(5);
+        expect(await repo.listCampaignProgress("h_1")).toEqual([]);
+        expect(await repo.listCampaignProgress("h_1", "cw_1")).toEqual([]);
+      });
+
+      it("goes with its household", async () => {
+        await repo.putHousehold(household());
+        await repo.putCamp({ householdId: "h_1", camp: camp(1), expectedRevision: null });
+        await repo.putCamp({ householdId: "h_1", crew: "cw_1", camp: camp(1), expectedRevision: null });
+        expect(await repo.deleteHousehold("h_1")).toBe(true);
+        expect(await repo.getCamp("h_1")).toBeNull();
+        expect(await repo.getCamp("h_1", "cw_1")).toBeNull();
+      });
+
+      describe("riding the run's commit (#645)", () => {
+        const kitted = (base: Character, style: "quilted" | "rolled"): Character => ({
+          ...base,
+          kit: { ...emptyKit(), style, revision: (base.kit?.revision ?? 0) + 1 },
+        });
+
+        it("lands with the state and the event, under the revision read, for any crew", async () => {
+          await repo.putState(state("r_1", 0));
+          expect(
+            await repo.commit({
+              runId: "r_1",
+              expectedSeq: 0,
+              state: state("r_1", 1),
+              event: event("r_1", 1),
+              camp: { householdId: "h_1", camp: camp(4), expectedRevision: null },
+            }),
+          ).toBe(true);
+          expect(await repo.getCamp("h_1")).toEqual({ ...camp(4), revision: 1 });
+          expect(
+            await repo.commit({
+              runId: "r_1",
+              expectedSeq: 1,
+              state: state("r_1", 2),
+              event: event("r_1", 2),
+              camp: { householdId: "h_1", camp: camp(3), expectedRevision: 1 },
+            }),
+          ).toBe(true);
+          expect(await repo.getCamp("h_1")).toMatchObject({ dashCash: 3, revision: 2 });
+          expect(
+            await repo.commit({
+              runId: "r_1",
+              expectedSeq: 2,
+              state: state("r_1", 3),
+              event: event("r_1", 3),
+              camp: { householdId: "h_1", crew: "cw_1", camp: camp(7), expectedRevision: null },
+            }),
+          ).toBe(true);
+          expect(await repo.getCamp("h_1", "cw_1")).toMatchObject({ dashCash: 7, revision: 1 });
+          expect(await repo.getCamp("h_1")).toMatchObject({ dashCash: 3, revision: 2 });
+          expect((await repo.getState("r_1"))?.seq).toBe(3);
+        });
+
+        it("lands neither the camp nor the hero's kit when the run has moved on", async () => {
+          await repo.putState(state("r_1", 0));
+          await repo.putCamp({ householdId: "h_1", camp: camp(4), expectedRevision: null });
+          const hero = character("c_kit");
+          expect(await repo.writeCharacter({ character: hero, expectedVersion: null, expectedClaim: null })).toBe(true);
+          const read = (await repo.getCharacter("h_1", "c_kit"))!;
+          await repo.commit({ runId: "r_1", expectedSeq: 0, state: state("r_1", 1), event: event("r_1", 1) });
+
+          expect(
+            await repo.commit({
+              runId: "r_1",
+              expectedSeq: 0,
+              state: state("r_1", 1),
+              event: event("r_1", 1),
+              characters: [{ character: kitted(read, "quilted"), expectedVersion: read.version ?? 0, expectedClaim: null }],
+              camp: { householdId: "h_1", camp: camp(1), expectedRevision: 1 },
+            }),
+          ).toBe(false);
+          expect(await repo.getCamp("h_1")).toMatchObject({ dashCash: 4, revision: 1 });
+          expect((await repo.getCharacter("h_1", "c_kit"))?.kit).toBeUndefined();
+          expect(await repo.listEvents("r_1", 0)).toHaveLength(1);
+        });
+
+        it("refuses the whole commit when the camp moved on since it was read: no run, no event, no kit", async () => {
+          await repo.putState(state("r_1", 0));
+          await repo.putCamp({ householdId: "h_1", camp: camp(4), expectedRevision: null });
+          const hero = character("c_kit");
+          await repo.writeCharacter({ character: hero, expectedVersion: null, expectedClaim: null });
+          const read = (await repo.getCharacter("h_1", "c_kit"))!;
+          // Another table, or a claim after its own commit, writes the camp in between.
+          expect(await repo.putCamp({ householdId: "h_1", camp: camp(9), expectedRevision: 1 })).toBe(true);
+
+          const stale = {
+            runId: "r_1",
+            expectedSeq: 0,
+            state: state("r_1", 1),
+            event: event("r_1", 1),
+            characters: [{ character: kitted(read, "rolled"), expectedVersion: read.version ?? 0, expectedClaim: null }],
+          };
+          expect(await repo.commit({ ...stale, camp: { householdId: "h_1", camp: camp(1), expectedRevision: 1 } })).toBe(false);
+          // A create where a row now stands is refused the same way.
+          expect(await repo.commit({ ...stale, camp: { householdId: "h_1", camp: camp(1), expectedRevision: null } })).toBe(false);
+          expect(await repo.getCamp("h_1")).toMatchObject({ dashCash: 9, revision: 2 });
+          expect((await repo.getState("r_1"))?.seq).toBe(0);
+          expect(await repo.listEvents("r_1", 0)).toEqual([]);
+          expect((await repo.getCharacter("h_1", "c_kit"))?.kit).toBeUndefined();
+
+          // On the revision it now holds, the same turn lands whole.
+          expect(await repo.commit({ ...stale, camp: { householdId: "h_1", camp: camp(1), expectedRevision: 2 } })).toBe(true);
+          expect(await repo.getCamp("h_1")).toMatchObject({ dashCash: 1, revision: 3 });
+          expect((await repo.getCharacter("h_1", "c_kit"))?.kit).toMatchObject({ style: "rolled", revision: 1 });
+          expect((await repo.getState("r_1"))?.seq).toBe(1);
+        });
       });
     });
 

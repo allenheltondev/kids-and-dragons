@@ -7,7 +7,7 @@ import {
   TransactWriteCommand,
   UpdateCommand,
 } from "@aws-sdk/lib-dynamodb";
-import { CHARACTER_VERSION, type Character, type RunState } from "@kad/shared";
+import { CAMP_VERSION, CHARACTER_VERSION, emptyCamp, type Character, type RunState } from "@kad/shared";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { DynamoRepository } from "./dynamo-repository.ts";
 
@@ -362,5 +362,59 @@ describe("DynamoRepository graph journeys (#194)", () => {
     send.mockResolvedValueOnce({ Item: { data: structuredClone(attempt) } });
     const repo = new DynamoRepository({ tableName: "kad-test", client });
     expect(await repo.getCampaignProgress("h_1", "rift-sampler")).toEqual(attempt);
+  });
+});
+
+describe("DynamoRepository camp writes (#617)", () => {
+  const client = new DynamoDBClient({
+    region: "us-east-1",
+    credentials: { accessKeyId: "test", secretAccessKey: "test" },
+  });
+  const send = vi.fn();
+
+  beforeEach(() => {
+    send.mockReset();
+    vi.spyOn(DynamoDBDocumentClient, "from").mockReturnValue({ send } as unknown as DynamoDBDocumentClient);
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("puts one item, conditional on the revision read, at the next revision", async () => {
+    send.mockResolvedValueOnce({});
+    const repo = new DynamoRepository({ tableName: "kad-test", client });
+    const camp = { ...emptyCamp(), dashCash: 3 };
+
+    expect(await repo.putCamp({ householdId: "h_1", crew: "cw_1", camp, expectedRevision: 4 })).toBe(true);
+
+    const command = send.mock.calls[0]?.[0];
+    expect(command).toBeInstanceOf(PutCommand);
+    expect(command.input).toMatchObject({
+      Item: { PK: "HH#h_1", SK: "CAMP#cw_1", entity: "camp", v: CAMP_VERSION, data: { ...camp, revision: 5 } },
+      ConditionExpression: "#d.#rev = :rev",
+      ExpressionAttributeValues: { ":rev": 4 },
+    });
+  });
+
+  it("creates the first crew's camp only where none is, and answers a lost race with false", async () => {
+    send.mockResolvedValueOnce({});
+    send.mockRejectedValueOnce(Object.assign(new Error("lost"), { name: "ConditionalCheckFailedException" }));
+    const repo = new DynamoRepository({ tableName: "kad-test", client });
+
+    expect(await repo.putCamp({ householdId: "h_1", camp: emptyCamp(), expectedRevision: null })).toBe(true);
+    expect(send.mock.calls[0]?.[0].input).toMatchObject({
+      Item: { SK: "CAMP", data: { revision: 1 } },
+      ConditionExpression: "attribute_not_exists(PK)",
+    });
+    expect(await repo.putCamp({ householdId: "h_1", camp: emptyCamp(), expectedRevision: null })).toBe(false);
+  });
+
+  it("reads strongly consistent and migrates the row", async () => {
+    send.mockResolvedValueOnce({ Item: { data: { revision: 2, grownBy: ["gemfall"] } } });
+    const repo = new DynamoRepository({ tableName: "kad-test", client });
+
+    expect(await repo.getCamp("h_1")).toEqual({ ...emptyCamp(), revision: 2, grownBy: ["gemfall"], frameStage: 2 });
+    expect(send.mock.calls[0]?.[0].input).toMatchObject({ Key: { PK: "HH#h_1", SK: "CAMP" }, ConsistentRead: true });
   });
 });

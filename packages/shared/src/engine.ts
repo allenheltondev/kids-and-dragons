@@ -117,6 +117,7 @@ import {
   type DeedCredit,
 } from "./deeds.js";
 import { assignPlayerColors } from "./player-colors.js";
+import { LUCKY_DROPS_PER_CHAPTER, luckyRoll } from "./camp-luck.js";
 import { tierForLevel } from "./rules.js";
 import { addItem, addQuestItem, freeSlots, hasItem, removeItem, swapItem, useConsumable } from "./inventory.js";
 import { sceneChoices, visibleChoices } from "./chapter-graph.js";
@@ -669,6 +670,83 @@ function takeItem(draft: RunState, ids: string | readonly string[], ctx: EngineC
   }
 }
 
+/**
+ * A find for the camp or the kit (docs/camp.md §5.1, §5.4), recorded on the
+ * run and nothing more. Whether the crew already owns the piece, or has
+ * claimed the reward, is the store's to know, and the engine is pure and
+ * replayable, so it never asks: the server claims what this records right
+ * after the step commits (handlers/camp-finds.ts). Once per `rewardId` a
+ * chapter, so a scene revisited, or a second way to the same place, records
+ * nothing new. A kit find names who was seated, since every one of them gets
+ * a copy and the table may change before the claim is read back.
+ */
+function recordFind(draft: RunState, effect: Extract<Effect, { type: "findForCamp" | "findForKit" }>): void {
+  const finds = draft.campFinds ?? [];
+  if (finds.some((find) => find.rewardId === effect.rewardId)) return;
+  const kit = effect.type === "findForKit";
+  draft.campFinds = [
+    ...finds,
+    {
+      kind: kit ? "kit" : "camp",
+      pieceId: effect.pieceId,
+      rewardId: effect.rewardId,
+      sceneId: draft.sceneId ?? "",
+      ...(kit ? { heroes: seatedMembers(draft).map((m) => m.character.id) } : {}),
+    },
+  ];
+}
+
+/**
+ * A lucky drop (docs/camp.md §5.2): after a mini-game the party succeeded at
+ * or a fight it won in this step, a 1 in 8 chance of 1 Dash Cash, drawn from
+ * this step's seeded rng (port.ts), so replaying the log draws the same. Read
+ * off the step, before against after, so no path into a win can skip it:
+ *
+ *   - a game: the scene's interaction prompt turned to its result, a success,
+ *     on this step. A `play` interaction always succeeds, so it never rolls;
+ *     relaxed play is easier, not automatic, and does.
+ *   - a fight: the encounter that was up settled as a victory on this step
+ *     (`settleEncounter`'s `lastEncounter`). An `autoResolve` or a playtest
+ *     jump out of a fight was never won, so neither rolls.
+ *
+ * Once a scene a chapter (`campLuck.rolled`), so retrying a won game cannot
+ * roll again, and no more once the chapter's cap has come up. Only recorded:
+ * whether it pays (never in a chapter already paid, the cap across attempts)
+ * is the store's to say, after the commit (server handlers/camp-pay.ts).
+ */
+function rollCampLuck(before: RunState, draft: RunState, ctx: EngineContext): void {
+  if (draft.chapterId === null || draft.chapterId !== before.chapterId) return;
+  let won: { sceneId: string; kind: "game" | "fight" } | null = null;
+  const was = before.prompt;
+  const now = draft.prompt;
+  if (
+    was?.kind === "interaction" &&
+    now?.kind === "interaction" &&
+    was.phase !== "result" &&
+    now.phase === "result" &&
+    now.outcome === "success" &&
+    now.sceneId === was.sceneId &&
+    now.openedSeq === was.openedSeq &&
+    now.attempt === was.attempt &&
+    now.spec.kind !== "play"
+  ) {
+    won = { sceneId: now.sceneId, kind: "game" };
+  } else if (
+    before.encounter &&
+    draft.lastEncounter?.outcome === "victory" &&
+    draft.lastEncounter.sceneId !== null &&
+    draft.lastEncounter.sceneId === before.sceneId &&
+    JSON.stringify(draft.lastEncounter) !== JSON.stringify(before.lastEncounter ?? null)
+  ) {
+    won = { sceneId: draft.lastEncounter.sceneId, kind: "fight" };
+  }
+  if (!won) return;
+  const luck = draft.campLuck ?? { rolled: [], drops: [] };
+  if (luck.rolled.includes(won.sceneId) || luck.drops.length >= LUCKY_DROPS_PER_CHAPTER) return;
+  const drops = luckyRoll(ctx.rng.next()) ? [...luck.drops, won] : luck.drops;
+  draft.campLuck = { rolled: [...luck.rolled, won.sceneId], drops };
+}
+
 function applyEffectsDraft(
   draft: RunState,
   effects: readonly Effect[] | undefined,
@@ -719,6 +797,11 @@ function applyEffectsDraft(
 
       case "takeItem":
         takeItem(draft, effect.itemId, ctx);
+        break;
+
+      case "findForCamp":
+      case "findForKit":
+        recordFind(draft, effect);
         break;
 
       case "grantItem": {
@@ -1270,6 +1353,9 @@ export function applyIntent(
 
   try {
     const presentation = dispatch(draft, envelope, rolling, effects);
+    // Last of all, so every other roll this step made came first, as it
+    // always did: a lucky drop draws from the stream only once it has won.
+    rollCampLuck(state, draft, ctx);
     if (loaded?.spent()) draft.playtestDie = null;
     pruneTrades(draft);
     refreshChoicePrompt(draft, ctx);
@@ -1548,7 +1634,59 @@ function checkIntentShape(intent: ClientIntent): void {
     case "RESOLVE_TRADE":
       if (typeof intent.accept !== "boolean") malformed("accept");
       return;
+    case "CAMP_VOTE":
+      if (!campVoteWellFormed(intent)) malformed("visit or option");
+      return;
+    case "CAMP_PLACE":
+    case "CAMP_UNDO":
+    case "KIT_EDIT": {
+      const problem = campIntentProblem(intent);
+      if (problem !== null) malformed(problem);
+      return;
+    }
   }
+}
+
+/**
+ * Whether a `CAMP_PLACE`, `CAMP_UNDO` or `KIT_EDIT` from a phone has the
+ * shape its type says (docs/camp.md §12.5; #620): short strings where ids go,
+ * a whole-number revision, slots an array of ids or nulls. Null when it does;
+ * otherwise the field that does not. The server checks this first.
+ */
+export function campIntentProblem(intent: Record<string, unknown> & { type: string }): string | null {
+  const id = (v: unknown): boolean => typeof v === "string" && v.length > 0 && v.length <= 200;
+  switch (intent.type) {
+    case "CAMP_PLACE":
+      if (!id(intent["moment"])) return "moment";
+      if (!id(intent["hotspot"])) return "hotspot";
+      if (intent["piece"] !== null && !id(intent["piece"])) return "piece";
+      return null;
+    case "CAMP_UNDO":
+      return id(intent["moment"]) ? null : "moment";
+    case "KIT_EDIT": {
+      if (!id(intent["characterId"])) return "characterId";
+      const revision = intent["revision"];
+      if (typeof revision !== "number" || !Number.isInteger(revision) || revision < 0) return "revision";
+      if (intent["style"] !== undefined && !id(intent["style"])) return "style";
+      if (intent["tent"] !== undefined && !id(intent["tent"])) return "tent";
+      if (intent["color"] !== undefined && intent["color"] !== null && !id(intent["color"])) return "color";
+      const slots = intent["slots"];
+      if (slots !== undefined && !(Array.isArray(slots) && slots.length <= 8 && slots.every((s) => s === null || id(s)))) return "slots";
+      return null;
+    }
+    default:
+      return null;
+  }
+}
+
+/**
+ * A `CAMP_VOTE` as JSON from a phone may carry anything: both fields must be
+ * short, non-empty strings before the server reads them (server
+ * handlers/camp-shop.ts checks this before anything else).
+ */
+export function campVoteWellFormed(intent: { visit?: unknown; option?: unknown }): boolean {
+  const ok = (v: unknown): boolean => typeof v === "string" && v.length > 0 && v.length <= 200;
+  return ok(intent.visit) && ok(intent.option);
 }
 
 function dispatch(
@@ -1658,6 +1796,18 @@ function dispatch(
 
     case "SWITCH_CLASS":
       throw new Illegal("ILLEGAL", "a class is switched through the authoritative run handler");
+
+    case "CAMP_VOTE":
+      // It spends the crew's Dash Cash, a store write the engine never sees
+      // (server handlers/camp-shop.ts), like SWITCH_CLASS above.
+      throw new Illegal("ILLEGAL", "the chapter-end shop is resolved by the authoritative run handler");
+
+    case "CAMP_PLACE":
+    case "CAMP_UNDO":
+    case "KIT_EDIT":
+      // They write the crew's camp or a hero's kit, store writes the engine
+      // never sees (server handlers/camp-edit.ts), like CAMP_VOTE above.
+      throw new Illegal("ILLEGAL", "the camp is changed through the authoritative run handler");
 
     case "KEEP_CLASS":
       return doKeepClass(draft, playerId, intent.classId, intent.stall === true);
@@ -1998,6 +2148,12 @@ function doStartChapter(
   // evening's second chapter under the first one's ending banner.
   draft.chapterOutcome = null;
   draft.bonuses = [];
+  // Last chapter's finds were claimed when they were found (docs/camp.md §12.2).
+  delete draft.campFinds;
+  // Lucky drops were claimed as they landed; the tally and shop were the last summary's.
+  delete draft.campLuck;
+  delete draft.campTally;
+  delete draft.campShop;
   delete draft.fightEndings;
   delete draft.xpAlreadyPaid;
   // Deeds counted last chapter were folded into the heroes when it ended.
@@ -2156,7 +2312,7 @@ function doKeepClass(draft: RunState, playerId: string, classId: unknown, stall:
  * keeps its place in the rotation but is never handed a turn it cannot take.
  * Null only for an empty party, which leaves the choice open to anyone.
  */
-export function storyTurnHolder(state: RunState): PartyMember | null {
+export function storyTurnHolder(state: Pick<RunState, "party" | "storyTurn">): PartyMember | null {
   const n = state.party.length;
   if (n === 0) return null;
   const start = (((state.storyTurn ?? 0) % n) + n) % n;
@@ -2342,7 +2498,7 @@ export function lobbyCampaign(state: RunState): LobbyCampaignChoice {
  * player whose turn it is gets their way if their vote is among the tied, and
  * otherwise the first tied vote after them in turn order does.
  */
-function tallyVotes(draft: RunState, votes: Record<string, string>): string {
+export function tallyVotes(draft: Pick<RunState, "party" | "storyTurn">, votes: Record<string, string>): string {
   const counts = new Map<string, number>();
   for (const choiceId of Object.values(votes)) {
     counts.set(choiceId, (counts.get(choiceId) ?? 0) + 1);
@@ -3156,6 +3312,11 @@ function returnToLobby(draft: RunState): void {
   draft.lastRoll = null;
   delete draft.deeds;
   delete draft.rankUps;
+  // Leaving the summary cancels its shop vote, spending nothing (docs/camp.md
+  // §6.2): there is no pending vote to come back to.
+  delete draft.campTally;
+  delete draft.campShop;
+  delete draft.campLuck;
   // A beat is chapter-scoped: the seat keeps rotating, the count starts over.
   delete draft.spotlightMoments;
   for (const member of draft.party) member.ready = false;
