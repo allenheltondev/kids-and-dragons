@@ -476,6 +476,21 @@ describe("Gemfall's numbers, with temporary buffs in the build (#200)", () => {
             expect(scene.onTimeout).toEqual(scene.onDefeat);
             continue;
           }
+          if (chapterId === "gemfall-08" && sceneId === "encounter_gallery") {
+            expect(scene.environment?.objectives?.[0]?.id).toBe("gallery-hollow");
+            expect(scene.onTimeout).toEqual(scene.onDefeat);
+            continue;
+          }
+          if (chapterId === "gemfall-08" && sceneId === "encounter_dragon") {
+            expect(scene.environment?.objectives?.[0]?.id).toBe("witness-stone");
+            expect(scene.onTimeout).toEqual(scene.onDefeat);
+            continue;
+          }
+          if (chapterId === "gemfall-08" && sceneId === "encounter_crabs") {
+            expect(scene.environment?.exits?.[0]?.id).toBe("lower-ledge");
+            expect(scene.onTimeout).toEqual(scene.onDefeat);
+            continue;
+          }
           expect(scene).not.toHaveProperty("environment");
           expect(scene).not.toHaveProperty("onEscape");
           expect(scene).not.toHaveProperty("onTimeout");

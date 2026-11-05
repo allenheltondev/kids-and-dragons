@@ -57,7 +57,7 @@ import {
 import { ChapterGoalCard } from "./ChapterGoal";
 import "./RiftStatus.css";
 import { WagonDefense } from "./WagonDefense";
-import { crossingProgress } from "./combat-plan";
+import { crossingDestination, crossingProgress } from "./combat-plan";
 
 /** At most this many caption lines from one round: the newest win. */
 const CAPTION_LINES = 3;
@@ -104,12 +104,7 @@ export function RiftStatus(): ReactElement | null {
   const clock = view.clock ? clockReadout(view.clock) : null;
   const markedHazards = view.hazards.filter(hazard => hazard.art && !hazard.gone);
   const progress = crossingProgress(encounter);
-  const exits = encounter.environment?.spec.exits;
-  const progressLabel = exits?.some(exit => exit.id === "big-campfire")
-    ? "Friends at the big campfire"
-    : exits?.some(exit => exit.id === "boundary-stone")
-      ? "Friends past the boundary"
-      : "Friends across";
+  const progressLabel = `Friends ${crossingDestination(encounter)}`;
 
   return (
     <aside className="rift-status" aria-label={view.clock?.label && !/\brift\b/i.test(view.clock.label) ? view.clock.label : "The rift"}>
@@ -155,7 +150,7 @@ export function RiftStatus(): ReactElement | null {
           </li>
         ))}
       </ul>
-      {progress ? <p className="rift-status__crossing" aria-label={progressLabel}>{progress}</p> : !view.objectives.some(o => ["wagon-lane", "bread-wagon", "tally-books", "cellar-door", "road-bell"].includes(o.id)) && !view.captives.some(c => c.art) && markedHazards.length === 0 && <ChapterGoalCard place="world" folded />}
+      {progress ? <p className="rift-status__crossing" aria-label={progressLabel}>{progress}</p> : !view.objectives.some(o => ["wagon-lane", "bread-wagon", "tally-books", "cellar-door", "road-bell", "gallery-hollow", "witness-stone"].includes(o.id)) && !view.captives.some(c => c.art) && markedHazards.length === 0 && <ChapterGoalCard place="world" folded />}
       {caption && !view.objectives.some(o => o.id === "wagon-lane") && !progress ? (
         <ul className="rift-status__caption" key={caption.seq} aria-live="polite">
           {caption.lines.map((line, i) => (

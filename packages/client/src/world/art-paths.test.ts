@@ -46,7 +46,7 @@ describe("art paths", () => {
     const state = makeState({ chapterId: chapter.id, sceneId: "scene_mouth" });
     expect(sceneArtFor(chapter, state)).toBe("scenes/gemfall/gem-gallery");
     expect(sceneArtFor(chapter, { ...state, sceneId: "scene_seal_chamber" })).toBe("scenes/gemfall/seal-chamber");
-    expect(sceneArtFor(chapter, { ...state, sceneId: "encounter_dragon" })).toBeNull();
+    expect(sceneArtFor(chapter, { ...state, sceneId: "encounter_dragon" })).toBe("scenes/gemfall/seal-chamber");
     expect(sceneArtFor(chapter, { ...state, sceneId: "ending_heroes" })).toBeNull();
     expect(sceneArtFor(chapter, { ...state, chapterId: "gemfall-06" })).toBeNull();
     expect(sceneArtFor(null, state)).toBeNull();
