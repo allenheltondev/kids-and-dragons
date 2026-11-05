@@ -367,7 +367,7 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-07h.json": "dbcf17577035bbfa12f82bc8aba85ceb36f81f773d1b725df0d50ab2a388baed",
   "chapters/gemfall-07l.json": "6dea56eb3fb6fcbd61cd2dc6abf36edb3f3d48f8e1a94cbdf72a641f43bd64f1",
   "chapters/gemfall-07r.json": "512abc8825a6a1fe9d48ac6cbe34ce05536b3b2ea84c143de6c3c89b57398363",
-  "chapters/gemfall-08.json": "727944de75a75c1f8adf01d15b765301bab7dd647f655fa5f1ec751c8575be27",
+  "chapters/gemfall-08.json": "c51f750091fd615fe5a4faf1485fbd2b9a55e662b50c1796cf03259eb41d44d0",
 };
 
 describe("Gemfall's reviewed files and legacy contracts", () => {

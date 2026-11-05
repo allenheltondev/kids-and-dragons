@@ -28,7 +28,7 @@ export function StoryArtLayer() {
  const props=result ? result.won ? art.props.filter(id=>id.startsWith("pickup-")) :
   art.props.includes("fight-shrine-bell")?["fight-shrine-bell"]:art.props.includes("fight-warm-mud-hollow")?["fight-warm-mud-hollow"]:[] :
   art.creature==="mire_mimic"?["fight-disguised-planks"]:art.creature==="will_o_wisp"&&chapter.campaignId==="riftlight"?["fight-sideways-flame"]:[];
- const showRetreat=result?.won ?? false;
+ const showRetreat=result?.won && art.scene !== "encounter_dragon";
  return <div className="story-art-layer" style={result && chapter.campaignId === "gemfall" ? outcomeSpace : undefined} aria-hidden="true" key={state.chapterId+":"+state.sceneId+":"+(result?.won?"won":"arrival")}>
   {showRetreat&&<img className="story-art-layer__retreat" data-direction={art.retreatDirection} src={art.retreatUrl} alt="" />}
   {props.map(id=><img key={id} className={"story-art-layer__prop"+(id==="fight-disguised-planks"?" story-art-layer__breath":"")} src={"/assets/story-props/"+id+".webp"} alt="" />)}

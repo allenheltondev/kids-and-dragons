@@ -212,6 +212,9 @@ describe("ford road combat batch", () => {
 });
 
 const mountainFights = [
+  { chapter: "gemfall-08", sceneId: "encounter_gallery", target: { x: 3, y: 2 }, outcome: "victory" },
+  { chapter: "gemfall-08", sceneId: "encounter_dragon", target: { x: 4, y: 2 }, outcome: "victory" },
+  { chapter: "gemfall-08", sceneId: "encounter_crabs", target: { x: 6, y: 3 }, outcome: "escaped" },
   { chapter: "gemfall-06", sceneId: "encounter_crawlers", target: { x: 4, y: 2 }, outcome: "victory" },
   { chapter: "gemfall-07l", sceneId: "encounter_echoes", target: { x: 4, y: 3 }, outcome: "victory" },
   { chapter: "gemfall-07r", sceneId: "encounter_drake", target: { x: 6, y: 3 }, outcome: "escaped" },
@@ -232,8 +235,9 @@ describe.each(mountainFights)("$sceneId on the mountain road", ({ chapter, scene
         const at = positionOf(state, actor.id)!;
         const danger = committedAttacks(state).flatMap(w => w.tiles);
         sawWarning ||= danger.length > 0;
+        const goal = chapter === "gemfall-08" && sceneId === "encounter_crabs" && state.round >= 3 ? { x: 6, y: 1 } : target;
         const score = (p: { x: number; y: number }) =>
-          Number(danger.some(t => t.x === p.x && t.y === p.y)) * 10 + stepsBetween(p, target);
+          Number(danger.some(t => t.x === p.x && t.y === p.y)) * 10 + stepsBetween(p, goal);
         const moves = legalMoves(state).filter(p => sceneId !== "encounter_drake" || p.x !== 5 || (p.y !== 1 && p.y !== 4));
         const next = moves.sort((a, b) => score(a) - score(b))[0];
         if (next && score(next) < score(at)) {
