@@ -3103,13 +3103,14 @@
     },
     "encounter_crawlers": {
       "type": "encounter",
-      "map": "gallery",
-      "narration": "The bone crawlers clack along the gallery after the hum. Herd them back to the cellar stairs before they reach the old logs.",
+      "map": "sausage_lane",
+      "narration": "Pellam draws the crawlers downstairs with a humming stone. End two hero turns next to the cellar door to clear the boxes from its track and shut it. The crawlers on the gallery are still coming.",
       "enemies": [
         {
           "id": "crawler",
           "name": "Bone Crawler",
-          "creature": "bone_crawler"
+          "creature": "bone_crawler",
+          "count": 2
         }
       ],
       "onVictory": {
@@ -3123,6 +3124,38 @@
         ]
       },
       "onDefeat": {
+        "goto": "scene_crawlers_rescued",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      },
+      "art": "scenes/gemfall/citadel-cellar-hall",
+      "environment": {
+        "clock": {
+          "rounds": 5,
+          "label": "The crawlers reach the logs",
+          "onExpire": "collapse"
+        },
+        "objectives": [
+          {
+            "id": "cellar-door",
+            "label": "Shut the cellar door",
+            "art": "prop_door_barrels",
+            "kind": "close",
+            "at": {
+              "x": 4,
+              "y": 2
+            },
+            "turns": 2,
+            "endsFight": true
+          }
+        ]
+      },
+      "onTimeout": {
         "goto": "scene_crawlers_rescued",
         "effects": [
           {
@@ -3764,7 +3797,36 @@
           "prop_letters"
         ]
       }
-    }
+    },
+    "fights": [
+      {
+        "chapter": "gemfall-06",
+        "scene": "encounter_crawlers",
+        "creature": "bone_crawler",
+        "board": "sausage_lane",
+        "backdrop": "scenes/gemfall/citadel-cellar-hall",
+        "introScenes": [
+          "scene_crawlers_hall"
+        ],
+        "victoryScene": "scene_crawlers_home",
+        "defeatScene": "scene_crawlers_rescued",
+        "tileUrl": "/assets/fight-boards/fight_wind_yard/tiles.png",
+        "rescueFigure": "",
+        "activeUrl": "/assets/entities/bone_crawler/assembled.png",
+        "retreatUrl": "/assets/entities/bone_crawler/assembled.png",
+        "props": [],
+        "terrainProps": [],
+        "poses": {
+          "intro": "assembled",
+          "retreat": "assembled"
+        },
+        "retreatDirection": 1
+      }
+    ],
+    "warmUrls": [
+      "/assets/fight-boards/fight_wind_yard/tiles.png",
+      "/assets/entities/bone_crawler/assembled.png"
+    ]
   },
   "resumeInteractions": {
     "interaction_soup_pots": {

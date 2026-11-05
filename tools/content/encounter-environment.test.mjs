@@ -139,6 +139,21 @@ describe("the schema", () => {
           expect(scene.onTimeout).toEqual(scene.onDefeat);
           continue;
         }
+        if (chapter.id === "gemfall-06" && sceneId === "encounter_crawlers") {
+          expect(scene.environment?.objectives?.[0]?.id).toBe("cellar-door");
+          expect(scene.onTimeout).toEqual(scene.onDefeat);
+          continue;
+        }
+        if (chapter.id === "gemfall-07l" && sceneId === "encounter_echoes") {
+          expect(scene.environment?.objectives?.[0]?.id).toBe("road-bell");
+          expect(scene.onTimeout).toEqual(scene.onDefeat);
+          continue;
+        }
+        if (chapter.id === "gemfall-07r" && sceneId === "encounter_drake") {
+          expect(scene.environment?.exits?.[0]?.id).toBe("spring-ledge");
+          expect(scene.onTimeout).toEqual(scene.onDefeat);
+          continue;
+        }
         expect(scene).not.toHaveProperty("environment");
         expect(scene).not.toHaveProperty("onEscape");
         expect(scene).not.toHaveProperty("onTimeout");
