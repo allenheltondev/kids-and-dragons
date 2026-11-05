@@ -658,8 +658,9 @@ export function campBoxes(layout: CampLayout, input: CampBoxInput): CampBox[] {
     const split = box.kind === "spot" ? splitInTwo(box.text) : null;
     const options = !split ? placings(box.text) : twoLines ? [...placings(split), ...placings(box.text)] : [...placings(box.text), ...placings(split)];
     // Something waiting beside the fire is named only where its name has room.
-    // A crowded shared spot can use the open space beside its usual label position.
-    const shifted = box.kind === "spot"
+    // Two shared names that met are set again (`twoLines`), and may then also use the open space
+    // beside their usual places.
+    const shifted = box.kind === "spot" && twoLines
       ? options.flatMap((option) => [-0.25, 0.25, -0.5, 0.5].map((offset) => ({ ...option, x: option.x + offset * option.width })))
       : [];
     box.label = [...options, ...shifted].find((option) => clear(option, box)) ?? (optional ? null : options[0]!);
@@ -680,7 +681,6 @@ export function campBoxes(layout: CampLayout, input: CampBoxInput): CampBox[] {
     // Still under the foot, slid toward the screen's nearer edge, clear of a piece on the lane in front.
     const edge = box.anchor > W / 2 ? 1 : -1;
     for (const text of texts) options.push(sized(text, box.anchor + (edge * labelWidth(text, LABEL_PX)) / 4, box.ground + GAP));
-    for (const text of texts) options.push(sized(text, edge > 0 ? W : 0, box.ground + GAP));
     for (let f = 0.5; f >= 0.2 - 1e-9; f -= 0.05) {
       for (const side of [1, -1]) {
         for (const text of texts) {
@@ -698,7 +698,9 @@ export function campBoxes(layout: CampLayout, input: CampBoxInput): CampBox[] {
       const probe = sized(text, box.anchor, 0);
       options.push({ ...probe, y: box.ground - box.height - GAP - probe.height });
     }
-    // A far banner can have a tent in front of it. Fit a compact name at the edge.
+    // Failing all those, at the screen's nearer edge under the foot (a far banner can have a tent in front of it).
+    for (const text of texts) options.push(sized(text, edge > 0 ? W : 0, box.ground + GAP));
+    // Then a compact name at the edge.
     for (const text of texts) options.push(sized(text, edge > 0 ? W : 0, box.ground + GAP, 18));
     box.name = options.find((option) => !rectOverlapsShape(labelRect(option), box) && clear(option, box)) ?? options[texts.length - 1]!;
     placed.push(box);
