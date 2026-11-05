@@ -231,6 +231,8 @@ for (const fight of roadFights) {
       await opening.evaluate(() => { delete document.documentElement.dataset.text; });
       const panel = display.page.locator(".fight-log");
       await expect(panel).toContainText(fight.cue);
+      const ledgeProgress = display.page.getByLabel("Friends past the ledges");
+      if (ledges) await expect(ledgeProgress).toContainText("0/4 past the ledges");
       if (fight.chapterId === "gemfall-05c" && fight.sceneId === "encounter_crabs") {
         // Screen-reader progress must describe the same destination as the visible counter.
         await expect(display.page.getByLabel("Friends past the boundary")).toContainText("0/2 past the boundary");
@@ -245,6 +247,7 @@ for (const fight of roadFights) {
       let sawWarning = false;
       let sawSpring = false;
       let sawUpper = false;
+      let sawLedgeProgress = false;
       for (let turn = 0; state.encounter && turn < 24; turn++) {
         const page = active();
         const encounter = state.encounter;
@@ -254,6 +257,10 @@ for (const fight of roadFights) {
           expect(positionOf(encounter, "drake#1")).toEqual({ x: 5, y: 1 });
           expect(positionOf(encounter, "small#1")).toEqual({ x: 5, y: 4 });
           sawSpring = true;
+        }
+        if (ledges && !sawLedgeProgress && encounter.combatants.some(c => c.escaped)) {
+          await expect(ledgeProgress).toContainText("1/4 past the ledges");
+          sawLedgeProgress = true;
         }
         if (ledges && encounter.round >= 3 && !sawUpper) {
           await expect(panel).toContainText("Upper ledge is open");
@@ -309,7 +316,10 @@ for (const fight of roadFights) {
       if (boxes) expect(sawInk).toBe(true);
       if (wisps || echo || dragon) expect(sawWarning).toBe(true);
       if (spring) expect(sawSpring).toBe(true);
-      if (ledges) expect(sawUpper).toBe(true);
+      if (ledges) {
+        expect(sawUpper).toBe(true);
+        expect(sawLedgeProgress).toBe(true);
+      }
       expect(state.lastEncounter).toMatchObject({ sceneId: fight.sceneId, outcome: fight.outcome, destination: fight.destination });
       await expect(display.page.getByText(new RegExp(fight.text))).toBeVisible({ timeout: 60_000 });
       await display.page.screenshot({ path: info.outputPath("outcome.png") });
