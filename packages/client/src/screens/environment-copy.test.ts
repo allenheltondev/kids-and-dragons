@@ -110,6 +110,16 @@ describe("the place's beats, in words", () => {
   const words = { name: (id: string) => names[id] ?? id, isParty: (id: string) => id === "c_1", captive: (i?: number) => (i === 1 ? "Moss" : "Pip"), objective: () => "Hold the stones" };
   const you = { ...words, name: (id: string) => (id === "c_1" ? "You" : words.name(id)) };
 
+  it("uses the authored deadline for a physical crossing while keeping rift fallback wording", () => {
+    const expired = { type: "riftClock" as const, onExpire: "collapse" as const };
+    expect(environmentBeatLine(expired, { ...words, clock: "The drover calls you back" })).toEqual({
+      text: "The drover calls you back!", tone: "bad",
+    });
+    expect(environmentBeatLine(expired, words)?.text).toBe("The rift is closing!");
+    expect(environmentBeatLine(expired, { ...words, clock: "The rift closes" })?.text).toBe("The rift is closing!");
+    expect(environmentBeatLine({ ...expired, onExpire: "surge" }, { ...words, clock: "The rift boils" })?.text).toBe("The rift is surging!");
+  });
+
   it("tells every environmental beat, for the room and for the hero it happened to", () => {
     const fire = { type: "hazard" as const, hazardId: "f", label: "Rift fire" };
     expect(environmentBeatLine({ ...fire, actorId: "c_1" }, words)).toEqual({ text: "Rift fire gets Sparklehoof!", tone: "bad" });

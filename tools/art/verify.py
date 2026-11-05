@@ -709,7 +709,7 @@ CAMP_X_MAX = 0.92
 # moving part; resting at a tent sways its flap, which every tent style carries.
 CAMP_HOTSPOT_KINDS = {"cookfire", "awning", "lanterns", "friends_corner", "banner_pole", "trophy"}
 CAMP_ANIMATED_ACTIONS = {"warmUp", "lookUp", "peek"}
-CAMP_CREW_GROUPS = {"frame", "kept", "find", "starter-shop", "stage2-shop", "trophy"}
+CAMP_CREW_GROUPS = {"frame", "kept", "find", "starter-shop", "stage2-shop", "stage3-shop", "stage4-shop", "trophy"}
 CAMP_KIT_GROUPS = {"catalog", "find", "milestone"}
 CAMP_DISTINCTIONS = ("apprentice", "expert", "master")
 # Content sits beside the manifest; the tests point ROOT at a scratch tree for the art alone.
@@ -739,8 +739,8 @@ def check_camp_layout(rep: Report, mf: dict) -> None:
         lanes = backdrop.get("lanes", [])
         by_id = {lane["id"]: lane for lane in lanes}
         problems: list[str] = []
-        if not 2 <= len(lanes) <= 3 or len(by_id) != len(lanes):
-            problems.append("two or three lanes with unique ids")
+        if not 2 <= len(lanes) <= 4 or len(by_id) != len(lanes):
+            problems.append("two to four lanes with unique ids")
         for lane in lanes:
             if not (CAMP_GROUND_TOP <= lane["y"] <= CAMP_GROUND_BOTTOM and 0 <= lane["x0"] < lane["x1"] <= 1 and lane["scale"] > 0):
                 problems.append(

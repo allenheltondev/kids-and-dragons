@@ -209,7 +209,10 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // the shop, kit panel and stage-2 renderer. #623 adds 5KB for tent cloth
 // masks and their renderer wiring. The art files are fetched separately.
 // The integrated build measures 1614KB in CI and locally.
-const TOTAL_BUDGET_KB = 1616;
+// 1616 -> 1642 for the Phase 3 camp integrated with main. The merged build
+// measures 1639KB with the stage 3 and 4 layouts, shop art metadata and
+// painted footprints in the lazy camp code. First paint stays at 331KB.
+const TOTAL_BUDGET_KB = 1642;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

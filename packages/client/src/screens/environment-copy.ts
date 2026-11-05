@@ -62,6 +62,9 @@ export function modifierIcon(modifier: EnvironmentModifierView): string {
 /** What an objective asks, how far along it is, and what doing it means (#220). */
 export function objectiveLine(objective: EnvironmentObjectiveView): string {
   if (objective.done) return `${objective.label}: done!`;
+  if (objective.kind === "hold" && objective.endsFight && objective.target === 1) {
+    return `${objective.label} at round end to win.`;
+  }
   const how =
     objective.kind === "hold"
       ? "end a round with one of you on it and no monster there"
@@ -110,6 +113,9 @@ export function hazardCost(hazard: Pick<EnvironmentHazardView, "damage" | "slow"
 /** What one hazard costs, and whether it is burning yet. */
 export function hazardLine(hazard: EnvironmentHazardView): string {
   if (hazard.gone) return `${hazard.label} has died down.`;
+  if (hazard.art && hazard.active && hazard.push && !hazard.damage && !hazard.root && !hazard.slow) {
+    return `${hazard.label} pushes you ${hazard.push.tiles} square${s(hazard.push.tiles)} ${hazard.push.direction} if you stop there.`;
+  }
   const cost = `stopping on it ${hazardCost(hazard)}.`;
   return hazard.active ? `${hazard.label}: ${cost}` : `${hazard.label} (not yet): soon ${cost}`;
 }
@@ -134,6 +140,9 @@ export function rescueLine(rescue: EnvironmentRescueView): string {
     case "lost":
       return `${rescue.name} is lost to the rift.`;
     default: {
+      if (rescue.art && rescue.target && rescue.hp === undefined) {
+        return `Free ${rescue.name} (${rescue.progress ?? 0}/${rescue.target}). End turns beside them to help.`;
+      }
       const free = rescue.target ? `Free ${rescue.name}: ${rescue.progress ?? 0}/${rescue.target} helping turns. End a turn beside them to help.` : `Free ${rescue.name}: end your turn next to them.`;
       // A captive the monsters can get at (#220) says how many tugs are left.
       const how = rescue.hp === undefined ? free : `${free} A monster next to them drags them away: ${rescue.hp} more and they are gone.`;
@@ -191,6 +200,8 @@ export interface BeatWords {
   objective(id: string): string;
   /** Named physical route; absent keeps the legacy rift wording. */
   exit?(id: string): string | undefined;
+  /** The encounter's authored deadline, if it names something other than a rift. */
+  clock?: string;
 }
 
 /**
@@ -246,7 +257,9 @@ export function environmentBeatLine(
         tone: "good",
       };
     case "riftClock":
-      return { text: event.onExpire === "collapse" ? "The rift is closing!" : "The rift is surging!", tone: "bad" };
+      return { text: event.onExpire === "collapse"
+        ? `${words.clock && !/\brift\b/i.test(words.clock) ? words.clock : "The rift is closing"}!`
+        : "The rift is surging!", tone: "bad" };
     case "surge":
       return { text: `The rift surges: everyone still here loses ${event.amount}.`, tone: "bad" };
     default:

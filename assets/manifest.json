@@ -390,6 +390,7 @@
       "scale": "medium_to_large",
       "states": {
         "shooed": "entities/mire_mimic/shooed.png",
+        "strongbox": "entities/mire_mimic/strongbox.webp",
         "little": "entities/mire_mimic/little.png"
       }
     },
@@ -1281,15 +1282,48 @@
         "family": "open_plains",
         "path": "camp/backdrops/open_plains.webp",
         "lanes": [
+          { "id": "far", "y": 0.45, "x0": 0.08, "x1": 0.92, "scale": 0.6 },
           { "id": "back", "y": 0.52, "x0": 0.12, "x1": 0.88, "scale": 0.84 },
-          { "id": "middle", "y": 0.60, "x0": 0.08, "x1": 0.92, "scale": 0.92 },
+          { "id": "middle", "y": 0.6, "x0": 0.08, "x1": 0.92, "scale": 0.92 },
           { "id": "near", "y": 0.68, "x0": 0.04, "x1": 0.97, "scale": 1.0 }
         ],
         "crossings": [
-          { "x": 0.20, "lanes": ["back", "middle", "near"] },
-          { "x": 0.31, "lanes": ["back", "middle", "near"] },
-          { "x": 0.69, "lanes": ["back", "middle", "near"] },
-          { "x": 0.80, "lanes": ["back", "middle", "near"] }
+          { "x": 0.2, "lanes": ["far", "back", "middle", "near"] },
+          { "x": 0.31, "lanes": ["far", "back", "middle", "near"] },
+          { "x": 0.69, "lanes": ["far", "back", "middle", "near"] },
+          { "x": 0.8, "lanes": ["far", "back", "middle", "near"] }
+        ]
+      },
+      {
+        "family": "red_sky_volcanic",
+        "path": "camp/backdrops/red_sky_volcanic.webp",
+        "lanes": [
+          { "id": "far", "y": 0.45, "x0": 0.08, "x1": 0.92, "scale": 0.6 },
+          { "id": "back", "y": 0.52, "x0": 0.12, "x1": 0.88, "scale": 0.84 },
+          { "id": "middle", "y": 0.6, "x0": 0.08, "x1": 0.92, "scale": 0.92 },
+          { "id": "near", "y": 0.68, "x0": 0.04, "x1": 0.97, "scale": 1.0 }
+        ],
+        "crossings": [
+          { "x": 0.2, "lanes": ["far", "back", "middle", "near"] },
+          { "x": 0.31, "lanes": ["far", "back", "middle", "near"] },
+          { "x": 0.69, "lanes": ["far", "back", "middle", "near"] },
+          { "x": 0.8, "lanes": ["far", "back", "middle", "near"] }
+        ]
+      },
+      {
+        "family": "frozen_north",
+        "path": "camp/backdrops/frozen_north.webp",
+        "lanes": [
+          { "id": "far", "y": 0.45, "x0": 0.08, "x1": 0.92, "scale": 0.6 },
+          { "id": "back", "y": 0.52, "x0": 0.12, "x1": 0.88, "scale": 0.84 },
+          { "id": "middle", "y": 0.6, "x0": 0.08, "x1": 0.92, "scale": 0.92 },
+          { "id": "near", "y": 0.68, "x0": 0.04, "x1": 0.97, "scale": 1.0 }
+        ],
+        "crossings": [
+          { "x": 0.2, "lanes": ["far", "back", "middle", "near"] },
+          { "x": 0.31, "lanes": ["far", "back", "middle", "near"] },
+          { "x": 0.69, "lanes": ["far", "back", "middle", "near"] },
+          { "x": 0.8, "lanes": ["far", "back", "middle", "near"] }
         ]
       }
     ],
@@ -1375,6 +1409,108 @@
           { "id": "wander_near_right", "lane": "near", "x": 0.92, "face": "left" }
         ],
         "trailhead": { "lane": "near", "x": 0.95 }
+      },
+      {
+        "stage": 3,
+        "pieces": [
+          { "id": "tent_0", "path": "camp/kits/tents/rolled.png", "lane": "back", "x": 0.24, "heightCm": 140, "ownerSeat": 0 },
+          { "id": "tent_1", "path": "camp/kits/tents/rolled.png", "lane": "middle", "x": 0.367, "heightCm": 140, "ownerSeat": 1 },
+          { "id": "tent_2", "path": "camp/kits/tents/rolled.png", "lane": "middle", "x": 0.648, "heightCm": 140, "ownerSeat": 2 },
+          { "id": "tent_3", "path": "camp/kits/tents/rolled.png", "lane": "back", "x": 0.776, "heightCm": 140, "ownerSeat": 3 },
+          { "id": "souvenirs_0", "path": "camp/kits/souvenir-line.png", "lane": "back", "x": 0.213, "heightCm": 70, "ownerSeat": 0 },
+          { "id": "souvenirs_1", "path": "camp/kits/souvenir-line.png", "lane": "middle", "x": 0.358, "heightCm": 70, "ownerSeat": 1 },
+          { "id": "souvenirs_2", "path": "camp/kits/souvenir-line.png", "lane": "middle", "x": 0.657, "heightCm": 70, "ownerSeat": 2 },
+          { "id": "souvenirs_3", "path": "camp/kits/souvenir-line.png", "lane": "back", "x": 0.802, "heightCm": 70, "ownerSeat": 3 },
+          { "id": "awning_frame", "path": "camp/frames/stage3/awning.png", "lane": "far", "x": 0.5, "heightCm": 185 },
+          { "id": "lantern_string_frame", "path": "camp/frames/stage3/lantern-string.png", "lane": "near", "x": 0.315, "heightCm": 46 },
+          { "id": "lookout_post_frame", "path": "camp/frames/stage3/lookout-post.png", "lane": "near", "x": 0.455, "heightCm": 76 }
+        ],
+        "movingParts": [
+          { "piece": "tent_0", "path": "camp/kits/tents/rolled-flap.png", "motion": "sway" },
+          { "piece": "tent_1", "path": "camp/kits/tents/rolled-flap.png", "motion": "sway" },
+          { "piece": "tent_2", "path": "camp/kits/tents/rolled-flap.png", "motion": "sway" },
+          { "piece": "tent_3", "path": "camp/kits/tents/rolled-flap.png", "motion": "sway" },
+          { "piece": "lantern_string_frame", "path": "camp/frames/stage3/lantern-string-swing.png", "motion": "sway" }
+        ],
+        "hotspots": [
+          { "id": "cookfire", "kind": "cookfire", "lane": "near", "x": 0.515, "default": "cookfire_pot" },
+          { "id": "awning", "kind": "awning", "lane": "far", "x": 0.11 },
+          { "id": "lanterns", "kind": "lanterns", "lane": "near", "x": 0.08 },
+          { "id": "friends_corner", "kind": "friends_corner", "lane": "middle", "x": 0.915 },
+          { "id": "banner_pole", "kind": "banner_pole", "lane": "far", "x": 0.92, "default": "kept_crew_banner" },
+          { "id": "trophy_1", "kind": "trophy", "lane": "near", "x": 0.775 },
+          { "id": "trophy_2", "kind": "trophy", "lane": "near", "x": 0.835 }
+        ],
+        "standPoints": [
+          { "id": "tent_0", "lane": "back", "x": 0.24, "face": "right", "action": "rest", "hotspot": "tent_0", "seat": 0 },
+          { "id": "tent_1", "lane": "middle", "x": 0.367, "face": "right", "action": "rest", "hotspot": "tent_1", "seat": 1 },
+          { "id": "tent_2", "lane": "middle", "x": 0.648, "face": "left", "action": "rest", "hotspot": "tent_2", "seat": 2 },
+          { "id": "tent_3", "lane": "back", "x": 0.776, "face": "left", "action": "rest", "hotspot": "tent_3", "seat": 3 },
+          { "id": "cookfire_left", "lane": "near", "x": 0.435, "face": "right", "action": "warmUp", "hotspot": "cookfire" },
+          { "id": "cookfire_right", "lane": "near", "x": 0.595, "face": "left", "action": "warmUp", "hotspot": "cookfire" },
+          { "id": "awning", "lane": "middle", "x": 0.16, "face": "left", "hotspot": "awning" },
+          { "id": "lanterns", "lane": "near", "x": 0.14, "face": "left", "action": "lookUp", "hotspot": "lanterns" },
+          { "id": "friends_corner", "lane": "middle", "x": 0.845, "face": "right", "action": "pet", "hotspot": "friends_corner" },
+          { "id": "banner_pole", "lane": "middle", "x": 0.865, "face": "right", "action": "lookUp", "hotspot": "banner_pole" },
+          { "id": "wander_near_left", "lane": "near", "x": 0.08, "face": "right" },
+          { "id": "wander_near_center_left", "lane": "near", "x": 0.31, "face": "right" },
+          { "id": "wander_middle_center", "lane": "middle", "x": 0.5, "face": "right" },
+          { "id": "wander_near_center_right", "lane": "near", "x": 0.69, "face": "left" },
+          { "id": "wander_near_right", "lane": "near", "x": 0.92, "face": "left" },
+          { "id": "lantern_string_frame", "lane": "near", "x": 0.375, "face": "left", "action": "lookUp", "hotspot": "lantern_string_frame" }
+        ],
+        "trailhead": { "lane": "near", "x": 0.95 }
+      },
+      {
+        "stage": 4,
+        "pieces": [
+          { "id": "tent_0", "path": "camp/kits/tents/rolled.png", "lane": "back", "x": 0.24, "heightCm": 140, "ownerSeat": 0 },
+          { "id": "tent_1", "path": "camp/kits/tents/rolled.png", "lane": "middle", "x": 0.367, "heightCm": 140, "ownerSeat": 1 },
+          { "id": "tent_2", "path": "camp/kits/tents/rolled.png", "lane": "middle", "x": 0.648, "heightCm": 140, "ownerSeat": 2 },
+          { "id": "tent_3", "path": "camp/kits/tents/rolled.png", "lane": "back", "x": 0.776, "heightCm": 140, "ownerSeat": 3 },
+          { "id": "souvenirs_0", "path": "camp/kits/souvenir-line.png", "lane": "back", "x": 0.213, "heightCm": 70, "ownerSeat": 0 },
+          { "id": "souvenirs_1", "path": "camp/kits/souvenir-line.png", "lane": "middle", "x": 0.358, "heightCm": 70, "ownerSeat": 1 },
+          { "id": "souvenirs_2", "path": "camp/kits/souvenir-line.png", "lane": "middle", "x": 0.657, "heightCm": 70, "ownerSeat": 2 },
+          { "id": "souvenirs_3", "path": "camp/kits/souvenir-line.png", "lane": "back", "x": 0.802, "heightCm": 70, "ownerSeat": 3 },
+          { "id": "shared_tent_frame", "path": "camp/frames/stage4/shared-tent.png", "lane": "far", "x": 0.505, "heightCm": 195 },
+          { "id": "banners_frame", "path": "camp/frames/stage4/banners.png", "lane": "near", "x": 0.265, "heightCm": 70 },
+          { "id": "lookout_frame", "path": "camp/frames/stage4/lookout.png", "lane": "near", "x": 0.21, "heightCm": 94 }
+        ],
+        "movingParts": [
+          { "piece": "tent_0", "path": "camp/kits/tents/rolled-flap.png", "motion": "sway" },
+          { "piece": "tent_1", "path": "camp/kits/tents/rolled-flap.png", "motion": "sway" },
+          { "piece": "tent_2", "path": "camp/kits/tents/rolled-flap.png", "motion": "sway" },
+          { "piece": "tent_3", "path": "camp/kits/tents/rolled-flap.png", "motion": "sway" },
+          { "piece": "banners_frame", "path": "camp/frames/stage4/banners-ripple.png", "motion": "ripple" }
+        ],
+        "hotspots": [
+          { "id": "cookfire", "kind": "cookfire", "lane": "near", "x": 0.505, "default": "cookfire_pot" },
+          { "id": "awning", "kind": "awning", "lane": "far", "x": 0.125 },
+          { "id": "lanterns", "kind": "lanterns", "lane": "near", "x": 0.085 },
+          { "id": "friends_corner", "kind": "friends_corner", "lane": "middle", "x": 0.905 },
+          { "id": "banner_pole", "kind": "banner_pole", "lane": "far", "x": 0.92, "default": "kept_crew_banner" },
+          { "id": "trophy_1", "kind": "trophy", "lane": "near", "x": 0.76 },
+          { "id": "trophy_2", "kind": "trophy", "lane": "near", "x": 0.82 }
+        ],
+        "standPoints": [
+          { "id": "tent_0", "lane": "back", "x": 0.24, "face": "right", "action": "rest", "hotspot": "tent_0", "seat": 0 },
+          { "id": "tent_1", "lane": "middle", "x": 0.367, "face": "right", "action": "rest", "hotspot": "tent_1", "seat": 1 },
+          { "id": "tent_2", "lane": "middle", "x": 0.648, "face": "left", "action": "rest", "hotspot": "tent_2", "seat": 2 },
+          { "id": "tent_3", "lane": "back", "x": 0.776, "face": "left", "action": "rest", "hotspot": "tent_3", "seat": 3 },
+          { "id": "cookfire_left", "lane": "near", "x": 0.425, "face": "right", "action": "warmUp", "hotspot": "cookfire" },
+          { "id": "cookfire_right", "lane": "near", "x": 0.585, "face": "left", "action": "warmUp", "hotspot": "cookfire" },
+          { "id": "awning", "lane": "middle", "x": 0.175, "face": "left", "hotspot": "awning" },
+          { "id": "lanterns", "lane": "near", "x": 0.145, "face": "left", "action": "lookUp", "hotspot": "lanterns" },
+          { "id": "friends_corner", "lane": "middle", "x": 0.835, "face": "right", "action": "pet", "hotspot": "friends_corner" },
+          { "id": "banner_pole", "lane": "middle", "x": 0.865, "face": "right", "action": "lookUp", "hotspot": "banner_pole" },
+          { "id": "wander_near_left", "lane": "near", "x": 0.08, "face": "right" },
+          { "id": "wander_near_center_left", "lane": "near", "x": 0.31, "face": "right" },
+          { "id": "wander_middle_center", "lane": "middle", "x": 0.5, "face": "right" },
+          { "id": "wander_near_center_right", "lane": "near", "x": 0.69, "face": "left" },
+          { "id": "wander_near_right", "lane": "near", "x": 0.92, "face": "left" },
+          { "id": "banners_frame", "lane": "near", "x": 0.325, "face": "left", "action": "lookUp", "hotspot": "banners_frame" }
+        ],
+        "trailhead": { "lane": "near", "x": 0.95 }
       }
     ],
     "$crewPiecesComment": "Phase 2 (#623; docs/camp.md §4.2, §4.3, §5.1 to §5.3; prompts docs/camp-art-prompts-phase2.json). crewPieces are the crew's art for its shared hotspots: each names the hotspot kind it stands at (cookfire, awning, lanterns, friends_corner, banner_pole or trophy), and a frame's hotspots say where that kind stands at that stage (lane and x) and, with default, which piece stands there until the crew places another. A stand point's hotspot names a frame piece or a frame hotspot. Like frame pieces, crew pieces are 1024x1024 RGBA cutouts on the figure canvas standing at y 900, heightCm their painted height; movingParts are registered over them and move only while a figure uses the hotspot (§8.4), so every piece at a hotspot with a warmUp, lookUp or peek stand point has one. group says where the art comes from, never its price or reward: frame (comes with a frame stage), kept (something the game already gives the crew), find (a chapter hands it over; chapter is the one it was painted for), starter-shop and stage2-shop (the two shop shelves of §5.3 and §5.2), trophy (campaign). Ids are stable: content/camp.json (#618) refers to them. On a phone, a piece's picture is its own painting, cropped to what is painted.",
@@ -1394,7 +1530,15 @@
       { "id": "shop_lantern_arch", "hotspot": "lanterns", "group": "stage2-shop", "path": "camp/pieces/shop-lantern-arch.png", "heightCm": 150, "widthCm": 165, "movingParts": [{ "path": "camp/pieces/shop-lantern-arch-swing.png", "motion": "sway" }] },
       { "id": "shop_friends_hammock", "hotspot": "friends_corner", "group": "stage2-shop", "path": "camp/pieces/shop-friends-hammock.png", "heightCm": 85, "widthCm": 190 },
       { "id": "trophy_gemfall", "hotspot": "trophy", "group": "trophy", "campaign": "gemfall", "path": "camp/pieces/trophy-gemfall.png", "heightCm": 90, "widthCm": 78 },
-      { "id": "trophy_riftlight", "hotspot": "trophy", "group": "trophy", "campaign": "riftlight", "path": "camp/pieces/trophy-riftlight.png", "heightCm": 90, "widthCm": 79 }
+      { "id": "trophy_riftlight", "hotspot": "trophy", "group": "trophy", "campaign": "riftlight", "path": "camp/pieces/trophy-riftlight.png", "heightCm": 90, "widthCm": 79 },
+      {"id": "shop_tea_kettle", "hotspot": "friends_corner", "group": "stage3-shop", "path": "camp/pieces/shop-tea-kettle.png", "heightCm": 45, "widthCm": 35},
+      {"id": "shop_map_table", "hotspot": "awning", "group": "stage3-shop", "path": "camp/pieces/shop-map-table.png", "heightCm": 75, "widthCm": 99},
+      {"id": "shop_woodpile", "hotspot": "awning", "group": "stage3-shop", "path": "camp/pieces/shop-woodpile.png", "heightCm": 65, "widthCm": 140},
+      {"id": "shop_water_crock", "hotspot": "friends_corner", "group": "stage3-shop", "path": "camp/pieces/shop-water-crock.png", "heightCm": 65, "widthCm": 64},
+      {"id": "shop_supply_chest", "hotspot": "awning", "group": "stage4-shop", "path": "camp/pieces/shop-supply-chest.png", "heightCm": 65, "widthCm": 99},
+      {"id": "shop_rug", "hotspot": "friends_corner", "group": "stage4-shop", "path": "camp/pieces/shop-rug.png", "heightCm": 35, "widthCm": 82},
+      {"id": "shop_herb_planter", "hotspot": "friends_corner", "group": "stage4-shop", "path": "camp/pieces/shop-herb-planter.png", "heightCm": 55, "widthCm": 71},
+      {"id": "shop_trophy_rack", "hotspot": "awning", "group": "stage4-shop", "path": "camp/pieces/shop-trophy-rack.png", "heightCm": 120, "widthCm": 130}
     ],
     "$heroKitComment": "Each hero's kit (docs/camp.md §4.5, §5.4; #623). A kit style is a tent, a bedroll and a pack together. tentStyles are 1024x1024 RGBA cutouts on the figure canvas standing at y 900, tinted the way kitStyles are (#633): one painting with every tintable cloth surface painted undyed light neutral grey (value shading only), leather, wood, rope and metal in natural colours, and a cloth region traced and registered in the client after painting (packages/client/src/world/camp-kit-art.ts) that is multiplied by the hero's appearance.accent; flap is the door flap, cut from the finished tent at the same position (motion sway while its hero rests there), and the tent's cloth region tints it too. kit names the kitStyles bedroll and pack of the same style (the free catalog); a milestone tent (tier, a manifest.tiers id) unlocks with its tier and has no bedroll of its own. At stage 2 a seat shows its hero's tent (frame pieces tent_0 to tent_3, drawn with the hero's style; the rolled tent is the fallback); the bedroll and pack stay the stage-1 and indoor (§3.2) kit. souvenirDisplay is the peg line beside each tent (frame pieces souvenirs_0 to souvenirs_3) where the client hangs a hero's existing souvenir icons at hangPoints, canvas pixels on its 1024 canvas. decorations are small cutouts on the story-prop canvas (512x512 RGBA, 24px clear margin; manifest.storyProps), natural colours, hung in a tent's two or three slots, heightCm their size beside a hero; also their phone picture. group: catalog (free), find (a kit find, chapter the one it was painted for), milestone (class and distinction, the class distinction that unlocks it). paintedIcons are camp icons on the painted-icon canvas (manifest.paintedIcons), owed here until they land at packages/client/src/assets/painted/<id>.webp and join paintedIcons.ids.",
     "tentStyles": [
@@ -1440,6 +1584,14 @@
   },
   "$castFiguresComment": "Named story characters' own figures, drawn on the story stage opposite the party (content `cast`, docs/briefs/story-cast-art.md). Same contract as entities: assets/cast/<id>/assembled.png, 1024x1024 RGBA, one complete cutout standing on the canvas origin (feet at y=900), facing left toward the party. `basis` is the entity or species the character is one of; `scale` is how big they stand, in the entities' scale words; `heightCm` is their height in centimeters, in their own pose and inside that band (canon/creatures.yaml `scale`, packages/canon SCALE_CM), and `stance` how they occupy a scene (standing, hovering, flying or swimming). Both are data, never shown to a player (#362). verify.py checks each entry.",
   "castFigures": [
+    {
+      "id": "bun",
+      "name": "Bun",
+      "basis": "snowhorn_goat",
+      "scale": "tiny_to_small",
+      "heightCm": 45,
+      "stance": "standing"
+    },
     {
       "id": "coralie_fenn",
       "name": "Madame Coralie Fenn",

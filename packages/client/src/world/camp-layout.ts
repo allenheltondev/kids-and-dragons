@@ -3,8 +3,7 @@
  * the trailhead, as authored in assets/manifest.json → `camp`, and the routes
  * a figure walks between them.
  *
- * The walkable floor is two or three horizontal lanes at fixed depths, not a
- * free 2D field. A figure walks along its lane and changes lanes only at a
+ * The walkable floor has horizontal lanes at fixed depths. A figure walks along its lane and changes lanes only at a
  * crossing the layout marks, so a route is a short line with at most a couple
  * of corners and there is no pathfinding to get wrong. A nearer lane (larger
  * `y`) draws in front and slightly bigger.

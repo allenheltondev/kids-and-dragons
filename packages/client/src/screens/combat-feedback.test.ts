@@ -31,7 +31,7 @@ describe("phone combat feedback", () => {
     expect(words).toContain("slaps on the marked ground");
     expect(words).toContain("lowers the planks");
     expect(words).not.toMatch(/sparks|bursts/);
-    expect(enemyIntentLine(physical, "wisp#1")).toContain("Raised planks slap marked ground");
+    expect(enemyIntentLine(physical, "wisp#1")).toContain("hits marked ground next turn");
   });
   it("counts saved crossings without crediting a hero who is still on the lane", () => {
     const state = { ...encounter, environment: { expired: false, spec: { exits: [{ id: "far-bank", label: "Bank", tiles: [{ x: 4, y: 1 }] }] } } };
@@ -39,6 +39,12 @@ describe("phone combat feedback", () => {
     const escaped = { ...state, combatants: state.combatants.map(c => c.side === "party" ? { ...c, escaped: true as const } : c) };
     expect(crossingProgress(JSON.parse(JSON.stringify(escaped)))).toContain("1/1 across");
     expect(crossingProgress(encounter)).toBeNull();
+  });
+  it("calls the wolf escape progress an arrival at the big campfire", () => {
+    const state = { ...encounter, environment: { expired: false, spec: { exits: [{ id: "big-campfire", label: "Big campfire", tiles: [{ x: 4, y: 1 }] }] } } };
+    expect(crossingProgress(state)).toBe("0/1 at the big campfire.");
+    const arrived = { ...state, combatants: state.combatants.map(c => c.side === "party" ? { ...c, escaped: true as const } : c) };
+    expect(crossingProgress(arrived)).toMatch(/^1\/1 at the big campfire: .+\.$/);
   });
   it("attaches damage, healing, protection and dodge to the affected fighter", () => {
     expect(combatFeedback([

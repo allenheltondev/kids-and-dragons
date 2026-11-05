@@ -8,6 +8,7 @@ import manifest from '../../assets/manifest.json';
 import { campArtOwed } from './camp-art.ts';
 
 const art = fileURLToPath(new URL('.', import.meta.url));
+const python = process.platform === 'win32' ? 'python' : 'python3';
 
 /** Runs verify.py's camp checks against the real manifest, edited by `edit` (Python). */
 function verify(edit: string, files = ''): { failures: string[]; warnings: string[] } {
@@ -54,7 +55,7 @@ ${files.split('\n').map(line => `    ${line}`).join('\n')}
     v.check_camp_art(rep, mf)
     print(json.dumps(dict(failures=rep.failures, warnings=rep.warnings)))
 `;
-  const output = execFileSync(process.platform === 'win32' ? 'python' : 'python3', ['-c', code], { encoding: 'utf8' });
+  const output = execFileSync(python, ['-c', code], { encoding: 'utf8' });
   const result = JSON.parse(output.trim().split('\n').at(-1)!) as { failures: string[]; warnings: string[] };
   result.failures = result.failures.map(label => label.replaceAll('\\', '/'));
   return result;
@@ -62,7 +63,8 @@ ${files.split('\n').map(line => `    ${line}`).join('\n')}
 
 /** Every camp painting the manifest declares, in its format: ground pieces, the parts over them, decorations and the icon. */
 const everyPainting = `
-save('camp/backdrops/open_plains.webp', Image.new('RGB', (1920, 1080), (90, 140, 60)), 'WEBP')
+for backdrop in camp['backdrops']:
+    save(backdrop['path'], Image.new('RGB', (1920, 1080), (90, 140, 60)), 'WEBP')
 grounded = {p['path'] for f in camp['frames'] for p in f['pieces']} | {k['path'] for k in camp['kitStyles']}
 grounded |= {p['path'] for p in camp['crewPieces']} | {t['path'] for t in camp['tentStyles']} | {camp['souvenirDisplay']['path']}
 parts = {m['path'] for f in camp['frames'] for m in f['movingParts']} | {t['flap'] for t in camp['tentStyles']}
@@ -89,9 +91,9 @@ describe('camp layout (manifest.camp)', () => {
   });
 
   it.each([
-    ['a lane below the open ground', `camp['backdrops'][0]['lanes'][2]['y'] = 0.8`, 'camp/backdrop/open_plains lanes'],
+    ['a lane below the open ground', `camp['backdrops'][0]['lanes'][-1]['y'] = 0.8`, 'camp/backdrop/open_plains lanes'],
     ['a lane above the open ground, in the sky', `camp['backdrops'][0]['lanes'][0]['y'] = 0.4`, 'camp/backdrop/open_plains lanes'],
-    ['lanes out of depth order', `camp['backdrops'][0]['lanes'][1]['y'] = 0.5`, 'camp/backdrop/open_plains lanes'],
+    ['lanes out of depth order', `camp['backdrops'][0]['lanes'][-2]['y'] = 0.5`, 'camp/backdrop/open_plains lanes'],
     ['a crossing off a lane', `camp['backdrops'][0]['crossings'][0]['x'] = 0.02`, 'camp/backdrop/open_plains lanes'],
     ['a stand point past its lane end', `point('wander_near_right')['x'] = 0.99`, 'camp/stage1 layout'],
     ['a hotspot that names no piece', `point('campfire_left')['hotspot'] = 'cookfire'`, 'camp/stage1 layout'],
@@ -100,13 +102,13 @@ describe('camp layout (manifest.camp)', () => {
     ['a stand point out at the edge, where a phone crops', `point('wander_near_left')['x'] = 0.06`, 'camp/stage1 layout'],
     ['a piece out at the edge, where a phone crops', `frame['pieces'][0]['x'] = 0.95`, 'camp/stage1 layout'],
     ['a moving part on no piece', `frame['movingParts'][0]['piece'] = 'cookfire'`, 'camp/stage1 layout'],
-    ['no open_plains fallback', `camp['backdrops'][0]['family'] = 'frozen_north'`, 'camp backdrops'],
+    ['no open_plains fallback', `camp['backdrops'] = [b for b in camp['backdrops'] if b['family'] != 'open_plains']`, 'camp backdrops'],
     ['a stage-2 stand point at a hotspot nobody laid out', `point2('awning')['hotspot'] = 'lookout'`, 'camp/stage2 layout'],
     ['a hotspot off its lane', `hotspot('awning')['x'] = 0.95`, 'camp/stage2 layout'],
     ['a hotspot of a kind nobody paints', `hotspot('awning')['kind'] = 'lookout'`, 'camp/stage2 layout'],
     ['a hotspot sharing a piece id', `hotspot('awning')['id'] = 'tent_0'; point2('awning')['hotspot'] = 'tent_0'`, 'camp/stage2 layout'],
     ['a hotspot whose default stands at another kind', `hotspot('cookfire')['default'] = 'kept_crew_banner'`, 'camp/stage2 layout'],
-    ['a lantern nobody can swing, at a hotspot a hero looks up at', `del crew('shop_lantern_arch')['movingParts']`, ['camp/stage1 layout', 'camp/stage2 layout']],
+    ['a lantern nobody can swing, at a hotspot a hero looks up at', `del crew('shop_lantern_arch')['movingParts']`, manifest.camp.frames.map(frame => `camp/stage${frame.stage} layout`)],
     ['a tent spot with no flap to sway', `stage2['movingParts'] = stage2['movingParts'][1:]`, 'camp/stage2 layout'],
     ['a frame piece warmed at with no flame', `frame['movingParts'] = []`, 'camp/stage1 layout'],
   ])('rejects %s', (_, edit, label) => expect(verify(edit).failures).toEqual([label].flat()));
@@ -161,7 +163,7 @@ describe('camp art prompts', () => {
   const read = (file: string) => JSON.parse(readFileSync(join(process.cwd(), 'docs', file), 'utf8')) as {
     paintings: { path: string; reference: string; plays: string; prompt: string; output: { width: number; height: number; format: string } }[];
   };
-  const files = ['camp-art-prompts.json', 'camp-kit-art-prompts.json', 'camp-art-prompts-phase2.json'];
+  const files = ['camp-art-prompts.json', 'camp-kit-art-prompts.json', 'camp-art-prompts-phase2.json', 'camp-art-prompts-phase3.json'];
   const paintings = files.flatMap(file => read(file).paintings);
   const camp = manifest.camp;
   const decorations = new Set(camp.decorations.map(deco => deco.path));
@@ -231,8 +233,8 @@ describe('camp art inventory', () => {
         'camp/decorations/songkeeper-master.png',
         'painted/dash_cash.webp',
       ]));
-      // Phase 1 and #633's eight, and Phase 2's sixty: the four tent spots share their fallback tent.
-      expect(owed.need).toBe(68);
+      // Phase 1 and #633's eight, Phase 2's sixty, and Phase 3's eighteen.
+      expect(owed.need).toBe(86);
       mkdirSync(join(root, 'assets/camp/frames/stage1'), { recursive: true });
       writeFileSync(join(root, 'assets/camp/frames/stage1/bedroll.png'), 'fixture');
       mkdirSync(join(root, 'packages/client/src/assets/painted'), { recursive: true });
@@ -258,19 +260,21 @@ describe('the hero paint boxes gear is fitted to', () => {
     const { HERO_PAINT } = await import('../../packages/client/src/world/camp-ownership.ts');
     const code = `
 import glob, json, collections
+from pathlib import Path
 from PIL import Image
 nominal = 900 / 1024 - 0.078
 out = collections.defaultdict(lambda: [0.0, 0.0])
 paths = glob.glob('assets/characters/*/*/assembled.png') + glob.glob('assets/character-rigs/*/*/*/assembled.png')
 for path in paths:
-    species = path.split('/')[-2] if 'character-rigs' in path else path.split('/')[2]
+    parts = Path(path).parts
+    species = parts[-2] if 'character-rigs' in parts else parts[2]
     alpha = Image.open(path).convert('RGBA').resize((256, 256)).getchannel('A').point(lambda v: 255 if v > 64 else 0)
     l, t, r, b = alpha.getbbox()
     out[species][0] = max(out[species][0], (b - t) / 256 / nominal)
     out[species][1] = max(out[species][1], (r - l) / 256 / nominal)
 print(json.dumps(out))
 `;
-    const measured = JSON.parse(execFileSync('python3', ['-c', code], { cwd: join(art, '..', '..'), encoding: 'utf8' })) as Record<string, [number, number]>;
+    const measured = JSON.parse(execFileSync(python, ['-c', code], { cwd: join(art, '..', '..'), encoding: 'utf8' })) as Record<string, [number, number]>;
     expect(Object.keys(measured).sort()).toEqual(Object.keys(HERO_PAINT).sort());
     for (const [species, [height, width]] of Object.entries(measured)) {
       const table = HERO_PAINT[species]!;
@@ -288,7 +292,7 @@ print(json.dumps(out))
  */
 describe('the camp paint table', () => {
   it('matches the paintings on disk, one footprint for every grounded camp painting', () => {
-    const out = execFileSync('python3', [join(art, 'camp-paint.py'), '--check'], { cwd: join(art, '..', '..'), encoding: 'utf8' });
+    const out = execFileSync(python, [join(art, 'camp-paint.py'), '--check'], { cwd: join(art, '..', '..'), encoding: 'utf8' });
     expect(out).toContain('up to date');
     const table = JSON.parse(readFileSync(join(art, '..', '..', 'packages/client/src/world/camp-paint.json'), 'utf8')) as { paint: Record<string, unknown> };
     const camp = manifest.camp;
@@ -327,7 +331,7 @@ with tempfile.TemporaryDirectory() as root:
     json.dump(table, open(os.path.join(root, paint.TABLE_REL), 'w'))
     print(json.dumps(paint.stale(root)))
 `;
-    const problems = JSON.parse(execFileSync('python3', ['-c', code], { encoding: 'utf8' }).trim().split('\n').at(-1)!) as string[];
+    const problems = JSON.parse(execFileSync(python, ['-c', code], { encoding: 'utf8' }).trim().split('\n').at(-1)!) as string[];
     expect(problems).toHaveLength(1);
     expect(problems[0]).toContain('camp/frames/stage2/crew-banner.png');
   });
@@ -401,7 +405,7 @@ for tent in manifest['camp']['tentStyles']:
         out[tent['id'] + ':' + kind] = dict(group=tent['group'], **n)
 print(json.dumps(out))
 `;
-    const measured = JSON.parse(execFileSync('python3', ['-c', code, JSON.stringify(cloth)], { cwd: join(art, '..', '..'), encoding: 'utf8' }).trim().split('\n').at(-1)!) as Record<string, { group: string; cloth: number; cloth_in: number; wood: number; wood_in: number; rope: number; rope_in: number }>;
+    const measured = JSON.parse(execFileSync(python, ['-c', code, JSON.stringify(cloth)], { cwd: join(art, '..', '..'), encoding: 'utf8' }).trim().split('\n').at(-1)!) as Record<string, { group: string; cloth: number; cloth_in: number; wood: number; wood_in: number; rope: number; rope_in: number }>;
     expect(Object.keys(measured)).toHaveLength(manifest.camp.tentStyles.length * 2);
     for (const [id, n] of Object.entries(measured)) {
       expect(n.cloth_in / n.cloth, `${id}: its cloth is tinted`).toBeGreaterThan(0.93);
@@ -415,11 +419,11 @@ print(json.dumps(out))
 
 describe('the Phase 2 prompts, in step with the stage-2 layout (#620)', () => {
   const prompts = JSON.parse(readFileSync(join(art, '..', '..', 'docs', 'camp-art-prompts-phase2.json'), 'utf8')) as { paintings: { path: string; plays: string }[] };
-  const camp = (manifest as unknown as { camp: { crewPieces: { id: string; path: string; hotspot: string; heightCm: number; widthCm: number }[]; frames: { hotspots?: { kind: string; lane: string }[] }[] } }).camp;
+  const camp = (manifest as unknown as { camp: { crewPieces: { id: string; path: string; hotspot: string; group: string; heightCm: number; widthCm: number }[]; frames: { hotspots?: { kind: string; lane: string }[] }[] } }).camp;
   const stage2 = camp.frames[1]!.hotspots!;
 
   it("says each crew piece's true height and width, and the lane its spot stands on", () => {
-    for (const piece of camp.crewPieces) {
+    for (const piece of camp.crewPieces.filter(piece => !/^stage[34]-shop$/.test(piece.group))) {
       const painting = prompts.paintings.find((p) => p.path === `assets/${piece.path}`)!;
       expect(painting.plays, piece.id).toContain(`Drawn at ${piece.heightCm} cm tall and ${piece.widthCm} cm wide.`);
       const lane = stage2.find((h) => h.kind === piece.hotspot)!.lane;
@@ -429,7 +433,7 @@ describe('the Phase 2 prompts, in step with the stage-2 layout (#620)', () => {
 
   it('says where a piece a stage-1 crew can own stands at stage 1, where its kind has a spot there', () => {
     const stage1 = camp.frames[0]!.hotspots ?? [];
-    const early = camp.crewPieces.filter((piece) => /^(find|kept|starter-shop)$/.test((piece as { group?: string }).group ?? ''));
+    const early = camp.crewPieces.filter((piece) => /^(find|kept|starter-shop)$/.test(piece.group));
     let said = 0;
     for (const piece of early) {
       const spot = stage1.find((h) => h.kind === piece.hotspot);

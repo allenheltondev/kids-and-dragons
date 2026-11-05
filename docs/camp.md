@@ -571,8 +571,7 @@ A standing figure walks as a series of **steps**, never a glide:
 Each camp backdrop (§3.1) declares its ground in the manifest. Each frame stage declares the
 camp's spots on that ground.
 
-- **Ground lanes.** The walkable floor is two or three horizontal lanes at fixed depths (near,
-  middle, back), not a free 2D field. Lanes make depth order trivial (a nearer lane always draws
+- **Ground lanes.** The walkable floor has horizontal lanes at fixed depths. The larger frames add a far lane behind the near, middle and back lanes. Lanes make depth order trivial (a nearer lane always draws
   in front), keep figures from overlapping in ugly ways, and make every route a short, readable
   line. A nearer lane draws its figures slightly bigger, so depth reads without a perspective
   engine.

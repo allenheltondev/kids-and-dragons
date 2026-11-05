@@ -18,7 +18,7 @@ prompt's pixel figures change with it.
   top. A lane's `y` is the ground line where a figure's or piece's ground contact (the figure
   canvas origin, 512, 900) stands.
 - **Backdrops** (`backdrops[]`, one per terrain family in `biomeFamilies`) carry the ground:
-  two or three `lanes`, back to near (each lower on screen and no smaller in `scale` than the one
+  two to four `lanes`, back to near (each lower on screen and no smaller in `scale` than the one
   behind), and the `crossings` where a figure may change lanes. `open_plains` is required: it is
   the fallback for every family not painted yet.
 - **Frames** (`frames[]`, one per frame stage) carry the camp: `pieces` standing on a lane,

@@ -42,7 +42,7 @@ export const RULES = [
 export const EXCEPTIONS = [/\bafterwards\b/gi];
 
 /** Keys whose string values are ids, refs, or machine values, not text. */
-const ID_KEYS = new Set(["id", "goto", "flag", "icon", "art", "figure", "entry", "asset_id", "itemId", "canon_id", "map", "src", "campaignId", "schema_version", "document_type", "updated"]);
+const ID_KEYS = new Set(["id", "goto", "flag", "icon", "art", "backdrop", "figure", "entry", "asset_id", "itemId", "canon_id", "map", "src", "campaignId", "schema_version", "document_type", "updated"]);
 
 /** Top-level YAML keys that are guidance to authors, not game text. */
 const META_KEYS = new Set(["purpose", "agent_instructions", "controlled_values"]);
