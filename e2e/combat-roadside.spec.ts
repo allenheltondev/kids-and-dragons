@@ -263,7 +263,10 @@ for (const fight of roadFights) {
           sawLedgeProgress = true;
         }
         if (ledges && encounter.round >= 3 && !sawUpper) {
-          await expect(panel).toContainText("Upper ledge is open");
+          // The turns above are ended through the API as fast as it answers,
+          // while the TV plays the fight log back at reading pace, a few turns
+          // behind. Give it time to reach round 3 before reading the ledges.
+          await expect(panel).toContainText("Upper ledge is open", { timeout: 60_000 });
           await display.page.screenshot({ path: info.outputPath("upper-ledge.png") });
           sawUpper = true;
         }
