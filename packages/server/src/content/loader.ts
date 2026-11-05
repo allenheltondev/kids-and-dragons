@@ -35,6 +35,7 @@ import type {
   AbilityCatalog,
   AuthoredEnemySpec,
   Bestiary,
+  CampCatalog,
   Campaign,
   Chapter,
   CombatAbility,
@@ -156,6 +157,13 @@ export interface ContentStore {
    * `sceneDiscoveries`). `null` when the content set has none.
    */
   bestiary(): Bestiary | null;
+  /**
+   * `content/camp.json` — the camp catalog (docs/camp.md §9, #618): the shop
+   * lists and their prices the chapter's end offers (#619). `null` when the
+   * content set has none: the chapter's end then pays Dash Cash and offers no
+   * shop, which is thin, not broken. `content:validate` checks the shipped one.
+   */
+  campCatalog(): CampCatalog | null;
 }
 
 class LoadedContent implements ContentStore {
@@ -169,10 +177,15 @@ class LoadedContent implements ContentStore {
     private readonly _campaigns: ReadonlyMap<string, Campaign>,
     private readonly _world: WorldMap | null = null,
     private readonly _bestiary: Bestiary | null = null,
+    private readonly _campCatalog: CampCatalog | null = null,
   ) {}
 
   world(): WorldMap | null {
     return this._world;
+  }
+
+  campCatalog(): CampCatalog | null {
+    return this._campCatalog;
   }
 
   bestiary(): Bestiary | null {
@@ -419,7 +432,12 @@ async function readAll(root: string): Promise<ContentStore> {
   // maps/: a content set without them discovers less, it does not break, and
   // `content:validate` is what insists the shipped set has both.
   const world = await readJson<WorldMap>(path.join(root, "world.json"), []);
-  return new LoadedContent(root, rules, items, chapters, maps, abilities, campaigns, world, bestiary);
+  // The camp catalog (#618), for the chapter-end shop (#619). Optional the
+  // same way: `content:validate` (tools/content/camp-catalog.mjs) is what
+  // checks the shipped one, so here it only has to be shaped like one.
+  const campFile = await readJson<CampCatalog>(path.join(root, "camp.json"), []);
+  const camp = campFile && Array.isArray(campFile.crewPieces) && Array.isArray(campFile.shops) ? campFile : null;
+  return new LoadedContent(root, rules, items, chapters, maps, abilities, campaigns, world, bestiary, camp);
 }
 
 /**
