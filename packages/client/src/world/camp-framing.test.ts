@@ -72,7 +72,10 @@ describe("the camp's focus band", () => {
   it("grows for the tallest seated figure, and never shrinks for small ones", () => {
     expect(campFocusBand(layout, [95, 85])).toEqual(band);
     const bigfoot = campFocusBand(layout, [95, 215]);
-    expect(bigfoot.top).toBeCloseTo(back.y - HERO_SHARE * (215 / 160) * back.scale);
+    // The added far lane has a higher ground line, but the back lane can
+    // still put a tall hero's head higher because figures draw larger there.
+    const highestHead = Math.min(...lanes.map(lane => lane.y - HERO_SHARE * (215 / 160) * lane.scale));
+    expect(bigfoot.top).toBeCloseTo(highestHead);
     expect(bigfoot.bottom).toBe(band.bottom);
   });
 });
@@ -321,9 +324,9 @@ describe("the figures' factor", () => {
   it("reports the real tables' factors", () => {
     const k = (w: number, h: number, top: number, bottom: number, heights: readonly number[]) =>
       campFigureScale(w, campWindow(h, top, bottom), layout, heights);
-    // 720p with three heroes fits a hair under full size; four heroes and the bigfoot, in a
-    // window the party's second row shrinks to 209 px, hit the floor.
-    expect(k(1280, 720, 65, 352, THREE)).toBeCloseTo(0.983, 3);
+    // The new far lane extends the focus band: three heroes fit at about 95%
+    // in this 720p window. Four heroes and the bigfoot in a shorter window hit the floor.
+    expect(k(1280, 720, 65, 352, THREE)).toBeCloseTo(0.950, 3);
     expect(k(1280, 720, 65, 446, FOUR)).toBe(MIN_FIGURE_SCALE);
     expect(k(390, 668, 35, 348, FOUR)).toBe(1);
   });
