@@ -304,6 +304,7 @@ export interface EnvironmentHazardView {
 }
 
 export interface EnvironmentRescueView {
+  readonly art?: string;
   readonly name: string;
   readonly at: MapTile;
   readonly status: RescueStatus;
@@ -406,6 +407,7 @@ export function environmentView(state: EncounterState): EnvironmentView | null {
       const hp = env.captiveHp?.[i];
       return {
         name: captive.name,
+        ...(captive.art ? { art: captive.art } : {}),
         at: captive.at,
         status,
         ...((captive.turns ?? 1) > 1 ? { progress: status === "freed" ? captive.turns! : env.rescueProgress?.[i] ?? 0, target: captive.turns! } : {}),

@@ -1994,14 +1994,20 @@
     },
     "encounter_wisps": {
       "type": "encounter",
-      "map": "roadside",
-      "narration": "The wisps zip around the cart, tugging strings and giggling. Drive them off before the mule bolts.",
+      "map": "surge_wagon",
+      "narration": "The mule stamps and pulls at its tangled harness. End two hero turns beside the cart to free it. Watch where the wisps gather their sparks.",
       "enemies": [
         {
           "id": "wisp",
           "name": "Lantern Wisp",
           "creature": "will_o_wisp",
-          "count": 2
+          "count": 2,
+          "windupAttack": {
+            "label": "Lantern sparks",
+            "radius": 1,
+            "damage": 2
+          },
+          "quick": 4
         }
       ],
       "onVictory": {
@@ -2015,6 +2021,34 @@
         ]
       },
       "onDefeat": {
+        "goto": "scene_wisps_scattered",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      },
+      "art": "scenes/gemfall/bridge-lantern-wisps",
+      "environment": {
+        "victory": "rescue",
+        "clock": {
+          "rounds": 5,
+          "label": "The mule bolts",
+          "onExpire": "collapse"
+        },
+        "rescue": {
+          "name": "the mule",
+          "art": "prop_mule_cart",
+          "at": {
+            "x": 4,
+            "y": 2
+          },
+          "turns": 2
+        }
+      },
+      "onTimeout": {
         "goto": "scene_wisps_scattered",
         "effects": [
           {
@@ -2422,7 +2456,40 @@
           "prop_letters"
         ]
       }
-    }
+    },
+    "fights": [
+      {
+        "chapter": "gemfall-05a",
+        "scene": "encounter_wisps",
+        "creature": "will_o_wisp",
+        "board": "surge_wagon",
+        "backdrop": "scenes/gemfall/bridge-lantern-wisps",
+        "introScenes": [
+          "scene_lantern_wisps"
+        ],
+        "victoryScene": "scene_wisps_shooed",
+        "defeatScene": "scene_wisps_scattered",
+        "tileUrl": "/assets/fight-boards/fight_ferry_landing/tiles.png",
+        "rescueFigure": "",
+        "activeUrl": "/assets/entities/will_o_wisp/assembled.png",
+        "retreatUrl": "/assets/entities/will_o_wisp/shooed.png",
+        "props": [
+          "pickup-mosslight-jar"
+        ],
+        "terrainProps": [],
+        "poses": {
+          "intro": "assembled",
+          "retreat": "shooed"
+        },
+        "retreatDirection": 1
+      }
+    ],
+    "warmUrls": [
+      "/assets/entities/will_o_wisp/assembled.png",
+      "/assets/entities/will_o_wisp/shooed.png",
+      "/assets/fight-boards/fight_ferry_landing/tiles.png",
+      "/assets/story-props/pickup-mosslight-jar.webp"
+    ]
   },
   "resumeInteractions": {
     "interaction_bowls": {

@@ -151,7 +151,7 @@ export function RiftStatus(): ReactElement | null {
           </li>
         ))}
       </ul>
-      {progress ? <p className="rift-status__crossing" aria-label={progressLabel}>{progress}</p> : !view.objectives.some(o => o.id === "wagon-lane") && !view.objectives.some(o => o.art && o.endsFight) && markedHazards.length === 0 && <ChapterGoalCard place="world" folded />}
+      {progress ? <p className="rift-status__crossing" aria-label={progressLabel}>{progress}</p> : !view.objectives.some(o => o.id === "wagon-lane") && !view.objectives.some(o => o.art && o.endsFight) && !view.captives.some(c => c.art) && markedHazards.length === 0 && <ChapterGoalCard place="world" folded />}
       {caption && !view.objectives.some(o => o.id === "wagon-lane") && !progress ? (
         <ul className="rift-status__caption" key={caption.seq} aria-live="polite">
           {caption.lines.map((line, i) => (

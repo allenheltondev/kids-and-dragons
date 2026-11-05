@@ -210,3 +210,49 @@ describe("ford road combat batch", () => {
     expect(state.stepsLeft).toBe(hero.steps);
   });
 });
+
+const mountainFights = [
+  { chapter: "gemfall-05a", sceneId: "encounter_wisps", target: { x: 4, y: 2 }, outcome: "victory" },
+  { chapter: "gemfall-05c", sceneId: "encounter_crabs", target: { x: 6, y: 3 }, outcome: "escaped" },
+  { chapter: "gemfall-05c", sceneId: "encounter_crawlers", target: { x: 3, y: 2 }, outcome: "victory" },
+] as const;
+
+describe.each(mountainFights)("$sceneId on the mountain road", ({ chapter, sceneId, target, outcome }) => {
+  it.each([1, 2, 4])("%i support heroes can reach the authored goal without attacking", seats => {
+    const { state: initial } = setup(sceneId, seats, content.chapter(chapter)!);
+    let state = initial;
+    let sawWarning = false;
+    for (let turn = 0; turn < 70 && encounterOutcome(state) === "ongoing"; turn++) {
+      const actor = currentActor(state)!;
+      if (actor.side === "enemy") state = enemyTurn(state);
+      else {
+        const at = positionOf(state, actor.id)!;
+        const danger = committedAttacks(state).flatMap(w => w.tiles);
+        sawWarning ||= danger.length > 0;
+        const score = (p: { x: number; y: number }) =>
+          Number(danger.some(t => t.x === p.x && t.y === p.y)) * 10 + stepsBetween(p, target);
+        const next = [...legalMoves(state)].sort((a, b) => score(a) - score(b))[0];
+        if (next && score(next) < score(at)) {
+          const moved = moveTo(state, next);
+          if (moved.ok) state = moved.state;
+        }
+      }
+      state = endTurnWithEvents(state).state;
+    }
+    expect(encounterOutcome(state)).toBe(outcome);
+    if (sceneId === "encounter_wisps") expect(sawWarning).toBe(true);
+    if (sceneId === "encounter_crawlers") expect(state.environment!.objectives).toEqual([2]);
+    if (sceneId === "encounter_crabs") expect(state.combatants.filter(c => c.side === "party").every(c => c.escaped)).toBe(true);
+    expect(state.combatants.filter(c => c.side === "enemy").every(c => !c.down)).toBe(true);
+  });
+  it("leaving the goal unattended reaches the authored recovery", () => {
+    const { scene, state: initial } = setup(sceneId, 1, content.chapter(chapter)!);
+    let state = initial;
+    for (let turn = 0; turn < 70 && encounterOutcome(state) === "ongoing"; turn++) {
+      if (currentActor(state)!.side === "enemy") state = enemyTurn(state);
+      state = endTurnWithEvents(state).state;
+    }
+    expect(["timedOut", "defeat"]).toContain(encounterOutcome(state));
+    expect(scene.onTimeout).toEqual(scene.onDefeat);
+  });
+});
