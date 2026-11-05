@@ -2617,6 +2617,10 @@
         "at"
       ],
       "properties": {
+        "art": {
+          "type": "string",
+          "pattern": "^[a-z0-9_-]+$"
+        },
         "name": {
           "type": "string",
           "minLength": 1
