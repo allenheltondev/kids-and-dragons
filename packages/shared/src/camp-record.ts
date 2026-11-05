@@ -8,8 +8,9 @@
  * nothing here reads or writes a store.
  */
 
+import { MILESTONE_KIT_PIECES, PLACEHOLDER_KIT_PIECES } from "./camp-milestones.js";
 import { CLASS_RANKS, TIER_IDS } from "./types/domain.js";
-import type { Character, ClassId, ClassRank, TierId } from "./types/domain.js";
+import type { Character, ClassId, ClassRank } from "./types/domain.js";
 import type {
   CampFriend,
   CampReceipt,
@@ -26,8 +27,8 @@ import type {
 
 /** Bump together with a new step in `CAMP_STEPS`; a bump without a step throws on read. */
 export const CAMP_VERSION = 1;
-/** Bump together with a new step in `KIT_STEPS`. */
-export const KIT_VERSION = 1;
+/** Bump together with a new step in `KIT_STEPS`. v2: `tent`, and the catalog's milestone ids (#618). */
+export const KIT_VERSION = 2;
 
 /** The grand camp (§4.1). Finished campaigns past it are trophies. */
 export const MAX_FRAME_STAGE: FrameStage = 4;
@@ -38,33 +39,10 @@ export const LUCKY_DROPS_PER_CHAPTER = 2;
 /** Personal decoration slots a new kit has (§4.5: two or three). */
 export const KIT_SLOTS = 2;
 
-/**
- * The kit pieces a hero's own milestones unlock (§5.4): a tent style per
- * appearance tier reached, a decoration per class distinction earned.
- *
- * **Placeholder ids** until the kit catalog exists (`content/camp.json`, #618),
- * which will own them; that issue replaces this constant with the catalog's
- * lookup and keeps these ids or migrates them. Only tiers whose art is painted
- * are listed (spec §8.1 draws Ascendant and above as Mythic until it is): a
- * tier added here later is granted to every hero who holds it at their next
- * kit read (`readKit`), so nobody misses one for being early.
- */
-export const MILESTONE_KIT_PIECES: {
-  tiers: Partial<Record<TierId, KitPieceId>>;
-  distinctions: Record<ClassId, Record<Exclude<ClassRank, "none">, KitPieceId>>;
-} = {
-  tiers: {
-    sworn: "kit_tent_sworn",
-    radiant: "kit_tent_radiant",
-    mythic: "kit_tent_mythic",
-  },
-  distinctions: {
-    thornguard: { apprentice: "kit_deco_thornguard_apprentice", expert: "kit_deco_thornguard_expert", master: "kit_deco_thornguard_master" },
-    duskrunner: { apprentice: "kit_deco_duskrunner_apprentice", expert: "kit_deco_duskrunner_expert", master: "kit_deco_duskrunner_master" },
-    starweaver: { apprentice: "kit_deco_starweaver_apprentice", expert: "kit_deco_starweaver_expert", master: "kit_deco_starweaver_master" },
-    songkeeper: { apprentice: "kit_deco_songkeeper_apprentice", expert: "kit_deco_songkeeper_expert", master: "kit_deco_songkeeper_master" },
-  },
-};
+// The kit pieces a hero's own milestones unlock (§5.4), with the catalog's
+// real ids (`content/camp.json` → `milestones`, #618). In a file of their own,
+// with type imports only, so the content validator can check the two agree.
+export { MILESTONE_KIT_PIECES, PLACEHOLDER_KIT_PIECES } from "./camp-milestones.js";
 
 export class StoredCampError extends Error {
   override name = "StoredCampError";
@@ -97,6 +75,7 @@ export function emptyKit(): HeroKit {
     v: KIT_VERSION,
     revision: 0,
     style: null,
+    tent: null,
     color: null,
     slots: Array.from({ length: KIT_SLOTS }, () => null),
     unlocked: {},
@@ -219,6 +198,36 @@ const CAMP_STEPS: Record<number, Step> = {
 
 const KIT_STEPS: Record<number, Step> = {
   0: (raw) => raw,
+  /*
+   * v1 → v2 (#618). The tent is chosen apart from the bedroll and pack
+   * (`tent`, null until picked: a milestone tent has no bedroll of its own),
+   * and #617's placeholder milestone ids become the catalog's real ones. The
+   * bump is so a v1 build refuses a v2 kit rather than narrowing `tent` away.
+   *
+   * No placeholder id ever shipped (#617 and #618 land together), so the
+   * rename is for development tables only, and it is total: every placeholder
+   * in `unlocked` and in `slots` is renamed, keeping its record, and one whose
+   * real id is already unlocked is simply dropped, so none survives a read.
+   * Idempotent: a v2 kit has no placeholder left to rename.
+   */
+  1: (raw) => {
+    const rename = (id: unknown): unknown => (typeof id === "string" ? (PLACEHOLDER_KIT_PIECES[id] ?? id) : id);
+    const unlocked = isObject(raw["unlocked"]) ? raw["unlocked"] : {};
+    const renamed: Record<string, unknown> = {};
+    // Real ids first, so a placeholder never overwrites the record of the piece it became.
+    for (const [id, entry] of Object.entries(unlocked)) if (!Object.hasOwn(PLACEHOLDER_KIT_PIECES, id)) renamed[id] = entry;
+    for (const [id, entry] of Object.entries(unlocked)) {
+      const real = PLACEHOLDER_KIT_PIECES[id];
+      if (real !== undefined && !Object.hasOwn(renamed, real)) renamed[real] = entry;
+    }
+    const slots = Array.isArray(raw["slots"]) ? raw["slots"].map(rename) : raw["slots"];
+    return {
+      ...raw,
+      ...(raw["unlocked"] === undefined ? {} : { unlocked: renamed }),
+      ...(slots === undefined ? {} : { slots }),
+      tent: raw["tent"] ?? null,
+    };
+  },
 };
 
 /** Storage → domain for a camp row. `version` is the envelope's `v`; `undefined` is v0. */
@@ -298,6 +307,7 @@ function assertKit(raw: Record<string, unknown>): HeroKit {
     v: KIT_VERSION,
     revision: count(raw["revision"] ?? 0, "kit.revision"),
     style: nullableString(raw["style"], "kit.style"),
+    tent: nullableString(raw["tent"], "kit.tent"),
     color: nullableString(raw["color"], "kit.color"),
     slots: slots.map((s, i) => nullableString(s, `kit.slots[${i}]`)),
     unlocked: entries(raw["unlocked"], "kit.unlocked", (e, path): KitUnlock => {

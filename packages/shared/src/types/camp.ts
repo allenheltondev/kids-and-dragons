@@ -21,6 +21,8 @@
  * piece cannot be confused in a signature even though both are strings.
  */
 
+import type { ClassId, ClassRank, TierId } from "./domain.js";
+
 /** A crew piece in the camp catalog (§4.3). Never a kit piece (§12.1). */
 export type CampPieceId = string;
 /** A shared hotspot: the banner pole, the cookfire, the awning (§4.2). Never a hero's tent. */
@@ -29,8 +31,18 @@ export type HotspotId = string;
 export type FriendId = string;
 /** A piece in the kit catalog (§4.5, §5.4): its own ids, never a `CampPieceId` (§12.1). */
 export type KitPieceId = string;
-/** A tent, bedroll and pack style, chosen together (§4.5). */
+/**
+ * A bedroll-and-pack style (`content/camp.json` → `kit.styles`; art
+ * `assets/manifest.json` → `camp.kitStyles`). Chosen apart from the tent
+ * (`TentStyleId`), since a milestone tent has no bedroll of its own (#618).
+ */
 export type KitStyleId = string;
+/**
+ * A tent style (`kit.tents`; art `camp.tentStyles`). The free ones share their
+ * ids with the bedroll styles they were painted beside; a milestone tent is a
+ * kit piece, unlocked into `HeroKit.unlocked` under this same id.
+ */
+export type TentStyleId = string;
 /** A kit color (§4.5): the palette rule heroes already use. */
 export type KitColorId = string;
 /**
@@ -142,8 +154,20 @@ export interface HeroKit {
   v: number;
   /** Bumped by every kit write, from the table or the book (§7, §12.6); stale edits are refused. */
   revision: number;
-  /** Null until her kid picks one, which is the first-session choice (§5.3). */
+  /**
+   * Her bedroll and pack. Null until her kid picks one, which is the
+   * first-session choice (§5.3). Until then the client draws the style its
+   * id hash gives her (client `campKitStyle`), as it did before kits were
+   * stored. That hash is only ever a fallback and is never written here, so a
+   * hero nobody has chosen for keeps looking exactly as she always has.
+   */
   style: KitStyleId | null;
+  /**
+   * Her tent (frame stage 2 and up, §4.1): a free catalog tent, or a
+   * milestone tent she has unlocked. Null until her kid picks one, and the
+   * client then draws the tent of her bedroll style. Since kit v2 (#618).
+   */
+  tent: TentStyleId | null;
   /** Null until her kid picks one (§5.3). */
   color: KitColorId | null;
   /** Personal decoration slots, two or three (§4.5). */
@@ -169,4 +193,149 @@ export interface CampView {
   buddies: Record<string, FriendId>;
   /** The crew has been paid for two chapters (§5.3). */
   shopOpen: boolean;
+}
+
+// ---------------------------------------------------------------------------
+// The catalog: content/camp.json (#618)
+// ---------------------------------------------------------------------------
+
+/**
+ * A kind of shared hotspot a crew piece stands at (§4.2). Where each kind
+ * stands at each frame stage is art (`assets/manifest.json` →
+ * `camp.frames[].hotspots`).
+ */
+export type CampHotspotKind = "cookfire" | "awning" | "lanterns" | "friends_corner" | "banner_pole" | "trophy";
+
+/**
+ * One authored offer of a find or a friend (§12.2): its stable `rewardId`
+ * and the chapter that hands it over. Every way into that chapter that offers
+ * it names this one id, so it is given once whichever way the party came.
+ */
+export interface CampOffer {
+  rewardId: RewardId;
+  chapter: string;
+}
+
+interface CatalogCrewPieceBase {
+  /** The manifest crew piece (`camp.crewPieces[].id`) this is. */
+  id: CampPieceId;
+  hotspot: CampHotspotKind;
+}
+
+/**
+ * A crew piece in the catalog (§4.3): where it comes from, and for a shop
+ * piece what it costs. Never a kit piece (§12.1).
+ *
+ *   - `frame`: comes with a frame stage (the stage-2 cookfire).
+ *   - `kept`: something the game already gives the crew (its banner).
+ *   - `find`: a chapter hands it over (`findForCamp`), through one of `offers`.
+ *   - `shop`: bought with Dash Cash (§5.2), from `stage`'s shop on.
+ *   - `trophy`: for finishing `campaign`.
+ */
+export type CatalogCrewPiece =
+  | (CatalogCrewPieceBase & { group: "frame"; stage: FrameStage })
+  | (CatalogCrewPieceBase & { group: "kept" })
+  | (CatalogCrewPieceBase & { group: "find"; offers: CampOffer[] })
+  | (CatalogCrewPieceBase & { group: "shop"; stage: FrameStage; price: number })
+  | (CatalogCrewPieceBase & { group: "trophy"; campaign: string });
+
+/**
+ * What the chapter-end shop offers at one frame stage (§12.4), in its stable
+ * order. A list prices pieces of its own stage or lower, and every lower-stage
+ * piece stays in later shops.
+ */
+export interface CampShop {
+  stage: FrameStage;
+  pieces: CampPieceId[];
+}
+
+/** A decoration in the kit catalog (§4.5, §5.4). Kit pieces, never crew pieces (§12.1). */
+export type CatalogDecoration =
+  | { id: KitPieceId; group: "catalog" }
+  | { id: KitPieceId; group: "find"; offers: CampOffer[] }
+  | { id: KitPieceId; group: "milestone" };
+
+/** A tent style in the kit catalog. A milestone tent is a kit piece (`milestones.tiers`). */
+export interface CatalogTent {
+  id: TentStyleId;
+  group: "catalog" | "milestone";
+}
+
+/** Every hero's free kit catalog (§5.4), and the kit pieces earned beyond it. */
+export interface KitCatalog {
+  /** Bedroll-and-pack styles, all free. */
+  styles: { id: KitStyleId }[];
+  /**
+   * Where kit colors come from. `playerColors`: a `KitColorId` is a player
+   * color pair's `palette` name (shared `PLAYER_COLORS`), and null is the
+   * hero's own `appearance.accent`, the palette rule heroes already use.
+   */
+  colors: { from: "playerColors" };
+  tents: CatalogTent[];
+  decorations: CatalogDecoration[];
+}
+
+/** A creature the crew can befriend (§4.4), and what it does when a kid taps it. */
+export interface CatalogFriend {
+  id: FriendId;
+  /** Its figure, as a chapter's `cast` names it (`entities/<id>`, `cast/<id>`). */
+  figure: string;
+  name: string;
+  /** Where it is befriended; a scene of that chapter casts `figure`. */
+  offers: CampOffer[];
+  /** What it says or does when tapped, one at a time. */
+  reactions: string[];
+}
+
+/** `content/camp.json`: what the camp *is*. What it looks like is the manifest's `camp`. */
+export interface CampCatalog {
+  crewPieces: CatalogCrewPiece[];
+  shops: CampShop[];
+  kit: KitCatalog;
+  /**
+   * Which tent each appearance tier unlocks and which decoration each class
+   * distinction does (§5.4). Shared `MILESTONE_KIT_PIECES` is its copy.
+   */
+  milestones: {
+    tiers: Partial<Record<TierId, TentStyleId>>;
+    distinctions: Record<ClassId, Record<Exclude<ClassRank, "none">, KitPieceId>>;
+  };
+  friends: CatalogFriend[];
+}
+
+// ---------------------------------------------------------------------------
+// Finds during play (§5.1, §5.4, §12.2)
+// ---------------------------------------------------------------------------
+
+/**
+ * One find handed over this chapter (`RunState.campFinds`), as the engine
+ * recorded it when a `findForCamp` or `findForKit` effect applied: enough for
+ * the phones' "For the camp!" and for the chapter's end to say what was found.
+ * Whether it was new is the store's to say (`ServerMessage.campClaims`): the
+ * server claims it right after the step that recorded it commits, so it is
+ * saved when found, never at the chapter's end.
+ */
+export interface CampFind {
+  kind: "camp" | "kit";
+  pieceId: CampPieceId | KitPieceId;
+  rewardId: RewardId;
+  /** The scene the effect applied in. */
+  sceneId: string;
+  /** A kit find's recipients: the heroes seated when it was found, by character id. */
+  heroes?: string[];
+}
+
+/**
+ * What claiming one find did (`ServerMessage.campClaims`, live only).
+ * `piece`: the crew owns it now. `dashCash`: the crew already owned it from
+ * another reward, so it got 1 Dash Cash instead. `kit`: `heroes` got their own
+ * copy (none, when every one already had it). `none`: this crew had already
+ * claimed the reward, so nothing was given.
+ */
+export interface CampClaimResult {
+  rewardId: RewardId;
+  kind: "camp" | "kit";
+  pieceId: string;
+  result: "piece" | "dashCash" | "kit" | "none";
+  heroes?: string[];
 }

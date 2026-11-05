@@ -332,7 +332,7 @@ describe("migrateCharacter — class mastery (v5, #308)", () => {
     // v9 step backfills the kit pieces her distinctions earned (#617).
     const { kit, ...migrated } = migrateCharacter(row, undefined);
     expect(migrated).toEqual({ ...row, version: 0 });
-    expect(Object.keys(kit?.unlocked ?? {})).toEqual(["kit_deco_songkeeper_apprentice", "kit_deco_songkeeper_expert"]);
+    expect(Object.keys(kit?.unlocked ?? {})).toEqual(["deco_songkeeper_apprentice", "deco_songkeeper_expert"]);
   });
 
   it("migrates a v0 row all the way up", () => {

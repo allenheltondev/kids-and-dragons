@@ -33,6 +33,20 @@ it("keeps a hero's style when the party order changes", () => {
   for (const id of heroes.reverse()) expect(campKitStyle(id)).toBe(before[id]);
   expect(new Set(Object.values(before)).size).toBe(3);
 });
+it("draws a stored kit style, and falls back to the unchanged id hash for a hero with none (#618)", () => {
+  // Pinned from the hash as it was before kits were stored: an existing hero
+  // with no stored style must keep exactly the bedroll she has always had.
+  const pinned = { c_1: "rolled", c_pip: "quilted", c_ada: "patched", hero_7f3a: "rolled" } as const;
+  for (const [id, style] of Object.entries(pinned)) {
+    expect(campKitStyle(id)).toBe(style);
+    expect(campKitStyle(id, null)).toBe(style);
+    expect(campKitStyle(id, undefined)).toBe(style);
+    // A style this build cannot draw is not trusted over the fallback.
+    expect(campKitStyle(id, "sworn")).toBe(style);
+  }
+  expect(campKitStyle("c_1", "patched")).toBe("patched");
+  expect(campKitStyle("c_pip", "rolled")).toBe("rolled");
+});
 it("isolates cloth filters between seats and falls back to the neutral painting on an image failure", () => {
   const view = render(<><CampBedroll style="rolled" accent="#ff0000" /><CampBedroll style="rolled" accent="#00ff00" /></>);
   const clips = [...view.container.querySelectorAll("clipPath")].map(el => el.id);

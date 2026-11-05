@@ -19,8 +19,15 @@ export const CAMP_KIT_STYLES = {
 export type CampKitStyle = keyof typeof CAMP_KIT_STYLES;
 const styles = Object.keys(CAMP_KIT_STYLES) as CampKitStyle[];
 
-/** Stable across disconnects and party reordering, without saving cosmetic server state. */
-export function campKitStyle(characterId: string): CampKitStyle {
+/**
+ * A hero's bedroll-and-pack style: the one her kid picked (`HeroKit.style`),
+ * when it is one this build can draw, and otherwise the style her id hashes
+ * to. The hash is only the fallback for a hero with no stored style, so a
+ * hero nobody has chosen for looks exactly as she did before kits were stored,
+ * stable across disconnects and party reordering; it is never written back.
+ */
+export function campKitStyle(characterId: string, stored?: string | null): CampKitStyle {
+  if (stored && Object.hasOwn(CAMP_KIT_STYLES, stored)) return stored as CampKitStyle;
   let hash = 0;
   for (const char of characterId) hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
   return styles[hash % styles.length]!;

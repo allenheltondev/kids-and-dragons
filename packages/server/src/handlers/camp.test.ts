@@ -267,6 +267,19 @@ describe("receipts (§12.2)", () => {
     expect(camp.receipts.drops).toEqual({});
     expect(Object.keys(camp.receipts.chapters)).toEqual([drop.chapterId]);
   });
+
+  it("counts every attempt at a chapter toward its cap of 2, an abandoned one included (docs/camp.md §11)", async () => {
+    const h = harness();
+    const chapterId = "riftlight-ashspan-bridge";
+    // One drop in an evening that was abandoned before the chapter's end, so nothing was paid.
+    expect(await claimLuckyDrop("h_test", null, { runId: "r_abandoned", sceneId: "fight_bridge", chapterId }, addCash(1), h.deps)).toMatchObject({ value: { claimed: true } });
+    // The chapter again, another evening, another run: one more drop is all it has left.
+    expect(await claimLuckyDrop("h_test", null, { runId: "r_again", sceneId: "fight_bridge", chapterId }, addCash(1), h.deps)).toMatchObject({ value: { claimed: true } });
+    expect(await claimLuckyDrop("h_test", null, { runId: "r_again", sceneId: "game_ice", chapterId }, addCash(1), h.deps)).toMatchObject({ value: { refused: "cap" } });
+    // Another chapter has its own two.
+    expect(await claimLuckyDrop("h_test", null, { runId: "r_again", sceneId: "x", chapterId: "riftlight-washout" }, addCash(1), h.deps)).toMatchObject({ value: { claimed: true } });
+    expect((await readCamp("h_test", null, h.deps)).dashCash).toBe(3);
+  });
 });
 
 describe("the kit", () => {
@@ -274,11 +287,11 @@ describe("the kit", () => {
     const h = harness();
     const pip = hero(h, "c_pip", "p_1");
     await h.repo.putCharacter({ ...pip, provisional: { ...pip.committed, runId: "r_live" } });
-    const picked = await mutateKit("h_test", "c_pip", (kit) => ({ ...kit, style: "tent_round", color: "berry" }), h.deps);
-    expect(picked).toMatchObject({ ok: true, value: { revision: 1, style: "tent_round" } });
+    const picked = await mutateKit("h_test", "c_pip", (kit) => ({ ...kit, style: "quilted", color: "berry" }), h.deps);
+    expect(picked).toMatchObject({ ok: true, value: { revision: 1, style: "quilted" } });
     const stored = await h.repo.getCharacter("h_test", "c_pip");
     expect(stored?.provisional?.runId).toBe("r_live");
-    expect(stored?.kit).toMatchObject({ revision: 1, style: "tent_round", color: "berry" });
+    expect(stored?.kit).toMatchObject({ revision: 1, style: "quilted", color: "berry" });
 
     expect(await mutateKit("h_test", "c_pip", (kit) => ({ ...kit, color: "moss" }), h.deps, { expectedRevision: 0 })).toMatchObject({
       ok: false,
@@ -305,10 +318,10 @@ describe("the kit", () => {
       }
       return row;
     });
-    expect(await mutateKit("h_test", "c_pip", (kit) => ({ ...kit, style: "tent_round" }), h.deps)).toMatchObject({ ok: true });
+    expect(await mutateKit("h_test", "c_pip", (kit) => ({ ...kit, style: "quilted" }), h.deps)).toMatchObject({ ok: true });
     const stored = await read("h_test", "c_pip");
     expect(stored?.committed.xp).toBe(50);
-    expect(stored?.kit?.style).toBe("tent_round");
+    expect(stored?.kit?.style).toBe("quilted");
   });
 
   it("goes with the hero to another crew and when she moves home (#251)", async () => {
@@ -317,7 +330,7 @@ describe("the kit", () => {
     await h.repo.putHousehold({ id: "h_home", displayName: "Home", ownerSub: "sub_home", guest: false, createdAt: AT });
     await h.repo.putPlayer({ id: "p_1", householdId: "h_test", displayName: "Ada", color: "#7FD4C1" });
     await h.repo.putCharacter(hero(h, "c_pip", "p_1"));
-    await mutateKit("h_test", "c_pip", (kit) => ({ ...kit, style: "tent_round", unlocked: { ...kit.unlocked, feather: { from: "found", rewardId: "duck_feather", at: AT } } }), h.deps);
+    await mutateKit("h_test", "c_pip", (kit) => ({ ...kit, style: "quilted", unlocked: { ...kit.unlocked, feather: { from: "found", rewardId: "duck_feather", at: AT } } }), h.deps);
     const kit = readKit((await h.repo.getCharacter("h_test", "c_pip"))!);
 
     // Seated with another crew: the crew's claim moves, the kit does not.
@@ -350,8 +363,8 @@ describe("the kit", () => {
     };
     await h.repo.putCharacter(veteran);
     const kit = readKit((await h.repo.getCharacter("h_test", "c_pip"))!);
-    expect(Object.keys(kit.unlocked).sort()).toEqual(["kit_deco_songkeeper_apprentice", "kit_tent_radiant", "kit_tent_sworn"]);
-    expect(kit.unlocked["kit_tent_sworn"]).toEqual({ from: "milestone" });
+    expect(Object.keys(kit.unlocked).sort()).toEqual(["deco_songkeeper_apprentice", "radiant", "sworn"]);
+    expect(kit.unlocked["sworn"]).toEqual({ from: "milestone" });
     expect(readKit(veteran)).toEqual(kit);
   });
 });
@@ -368,7 +381,7 @@ describe("outside the commitment rule", () => {
     const playerId = players[0]!.principal.playerId;
     const pip = hero(h, "c_pip", playerId, householdId);
     await h.repo.putCharacter(pip);
-    await mutateKit(householdId, "c_pip", (kit) => ({ ...kit, style: "tent_round", slots: ["feather", null], unlocked: { feather: { from: "found", at: AT } } }), h.deps);
+    await mutateKit(householdId, "c_pip", (kit) => ({ ...kit, style: "quilted", slots: ["feather", null], unlocked: { feather: { from: "found", at: AT } } }), h.deps);
     await claimReward(householdId, null, "meadow_wreath", (camp) => ({ ...addCash(3)(camp), owned: { wreath: { from: "found", rewardId: "meadow_wreath", at: AT } } }), h.deps);
     const campBefore = await readCamp(householdId, null, h.deps);
     const kitBefore = readKit((await h.repo.getCharacter(householdId, "c_pip"))!);
@@ -444,7 +457,7 @@ describe("deleting (#252)", () => {
     await h.repo.putPlayer({ id: "p_bo", householdId: "h_test", displayName: "Bo", color: "#7FD4C1" });
     await h.repo.putCharacter(hero(h, "c_ada", "p_ada"));
     await h.repo.putCharacter(hero(h, "c_bo", "p_bo"));
-    await mutateKit("h_test", "c_ada", (kit) => ({ ...kit, style: "tent_round" }), h.deps);
+    await mutateKit("h_test", "c_ada", (kit) => ({ ...kit, style: "quilted" }), h.deps);
     await makeCrew(h, "h_test", "cw_1");
     await mutateCamp("h_test", null, (camp) => ({ ...camp, dashCash: 2, buddies: { c_ada: "bun", c_bo: "bun" } }), h.deps);
     await mutateCamp("h_test", "cw_1", (camp) => ({ ...camp, buddies: { c_ada: "kid_goat" } }), h.deps);

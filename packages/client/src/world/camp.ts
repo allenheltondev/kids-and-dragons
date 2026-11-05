@@ -108,6 +108,12 @@ export interface CampFigure {
   seat?: number;
   /** Hero accent for their own bedroll; friends have no kit. */
   accent?: string;
+  /**
+   * The hero's stored bedroll-and-pack style (`HeroKit.style`), when her kid
+   * has picked one. Absent or null draws the style her id hashes to
+   * (`campKitStyle`), exactly as before kits were stored.
+   */
+  kitStyle?: string | null;
 }
 
 /**
@@ -1273,7 +1279,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
       piece.ownerScale = campOwnedScale(owner, measure);
       piece.container.scale.set(piece.laneScale * figureScale * piece.ownerScale);
       if (!definition.id.startsWith("bedroll")) continue;
-      const key = owner?.accent ? `${owner.id}:${owner.accent}` : undefined;
+      const key = owner?.accent ? `${owner.id}:${owner.accent}:${owner.kitStyle ?? ""}` : undefined;
       if (piece.kitKey === key) continue;
       piece.kitKey = key;
       const revision = ++piece.kitRevision;
@@ -1282,7 +1288,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
       if (piece.neutralTexture) showPieceArt(piece, piece.neutralTexture);
       if (!key || !owner?.accent) continue;
       const accent = owner.accent;
-      const style = campKitStyle(owner.id);
+      const style = campKitStyle(owner.id, owner.kitStyle);
       void load(assetUrl(CAMP_KIT_STYLES[style].path.replace(/^\/assets\//, ""))).then(texture => {
         if (destroyed || piece.kitRevision !== revision) return;
         const source = texture.source?.resource as CanvasImageSource | undefined;
