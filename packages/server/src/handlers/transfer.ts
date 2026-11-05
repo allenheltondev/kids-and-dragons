@@ -49,6 +49,7 @@ import {
   type OrganizerDeps,
 } from "./organizer.ts";
 import { takeOutEverywhere } from "./remove.ts";
+import { forgetBuddies } from "./camp.ts";
 
 /**
  * A day: long enough to make the code at pickup and redeem it at home that
@@ -161,6 +162,15 @@ export async function acceptTransfer(
       return null;
     });
     if (out && !out.ok) console.error(`acceptTransfer: ${out.error.message}`);
+    // Her heroes' buddies (docs/camp.md §4.4) name her old home's friends, so
+    // they come out of every one of its camps: its first crew's and each other
+    // crew's. Her kit is on her heroes and moved with them. Like the seats
+    // above, the move has already happened, so a camp that could not be
+    // written is only logged; a buddy left behind names a hero who is no
+    // longer seated there, and nothing at that table can pick her.
+    await forgetBuddies(record.householdId, move.characters.map((c) => c.id), deps).catch((err: unknown) => {
+      console.error(`acceptTransfer: could not take ${move.player.id}'s buddies out of ${record.householdId}'s camps:`, err);
+    });
 
     const home = "household" in to ? to.household.id : to.householdId;
     const [summary] = await summaries([home], deps);

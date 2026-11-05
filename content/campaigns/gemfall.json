@@ -3,6 +3,7 @@
   "id": "gemfall",
   "title": "Gemfall",
   "blurb": "Mount Red Sky has erupted, and gemstones are raining across the realm. Everybody is racing north to grab them. Your party is racing too. Nobody has asked yet why the stones hum.",
+  "growsCamp": true,
   "chapters": [
     "gemfall-01",
     "gemfall-02",

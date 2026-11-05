@@ -1,9 +1,9 @@
-import { CAMP_KIT_STYLES, campClothMatrix, type CampKitStyle } from "./camp-kit-art";
+import { campClothMatrix } from "./camp-kit-art";
 
-/** The SVG bedroll's cloth tint, rasterized once for the WebGL camp's texture. */
+/** The SVG cloth tint, rasterized once for the WebGL camp's texture. */
 const cache = new WeakMap<object, Map<string, HTMLCanvasElement>>();
-export function campKitCanvas(source: CanvasImageSource, style: CampKitStyle, accent: string): HTMLCanvasElement | null {
-  const key = `${style}:${accent}`;
+export function campKitCanvas(source: CanvasImageSource, cloth: string, accent: string): HTMLCanvasElement | null {
+  const key = `${cloth}:${accent}`;
   const known = cache.get(source)?.get(key);
   if (known) return known;
   try {
@@ -25,7 +25,7 @@ export function campKitCanvas(source: CanvasImageSource, style: CampKitStyle, ac
       image.data[i + 2] = r * matrix[10]! + g * matrix[11]! + b * matrix[12]!;
     }
     colored.putImageData(image, 0, 0);
-    ctx.clip(new Path2D(CAMP_KIT_STYLES[style].cloth), "evenodd");
+    ctx.clip(new Path2D(cloth), "evenodd");
     ctx.drawImage(tint, 0, 0);
     const variants = cache.get(source) ?? new Map<string, HTMLCanvasElement>();
     if (variants.size >= 16) variants.delete(variants.keys().next().value!);

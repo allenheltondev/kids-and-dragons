@@ -70,11 +70,30 @@ export interface CampFraming {
  * (`campFigureScale`): the heads and the feet's margin shrink with it, the
  * lanes do not.
  */
-export function campFocusBand(layout: CampLayout, heightsCm: readonly number[] = [], figureScale = 1): CampBand {
-  const reach = campReach(layout, heightsCm);
+export function campFocusBand(layout: CampLayout, heightsCm: readonly number[] = [], figureScale = 1, extra: readonly CampReach[] = []): CampBand {
+  const reach: CampReach[] = [...campReach(layout, heightsCm), ...extra];
   const top = Math.min(...reach.map((lane) => lane.y - lane.head * figureScale));
-  const bottom = Math.max(...reach.map((lane) => lane.y)) + GROUND_MARGIN * figureScale;
+  const ground = Math.max(...reach.map((lane) => lane.y));
+  const bottom = Math.max(ground + GROUND_MARGIN * figureScale, ...reach.map((lane) => lane.y + (lane.foot ?? 0)));
   return { top: Math.max(0, top), bottom: Math.min(1, bottom) };
+}
+
+/**
+ * Something that stands up from a ground line `y` by `head` at full size, as
+ * fractions of the canvas: a lane's tallest seated head, or a stage-2 piece
+ * taller than any hero (a hero's tent is a little taller than she is, and its
+ * name sits over it; camp-boxes.ts `campReachOf`).
+ */
+export interface CampReach {
+  y: number;
+  head: number;
+  /**
+   * How far a name under its foot reaches below `y`, as a fraction of the
+   * canvas: names keep their size as the figures shrink, so this does not
+   * scale with the figure factor (camp-boxes.ts puts the crew's name under its
+   * banner pole).
+   */
+  foot?: number;
 }
 
 /** Each lane's ground and how far the tallest seated head stands above it at full size, as fractions of the canvas. */
@@ -111,6 +130,7 @@ export function campFigureScale(
   window: CampWindow,
   layout: CampLayout,
   heightsCm: readonly number[] = [],
+  extra: readonly CampReach[] = [],
 ): number {
   const { canvas } = layout;
   const windowHeight = Math.max(0, window.bottom - window.top);
@@ -118,12 +138,17 @@ export function campFigureScale(
   if (!(scale > 0)) return MIN_FIGURE_SCALE;
   // The window's height as a share of the painting's.
   const room = windowHeight / (canvas.height * scale);
-  const reach = campReach(layout, heightsCm);
+  const reach: CampReach[] = [...campReach(layout, heightsCm), ...extra];
   const ground = Math.max(...reach.map((lane) => lane.y));
+  // A name under a foot holds the band's bottom at its own size (`CampReach.foot`).
+  const foot = Math.max(0, ...reach.map((lane) => lane.y + (lane.foot ?? 0) - ground));
   let k = 1;
   for (const lane of reach) {
     if (lane.head <= 0) continue;
-    k = Math.min(k, (room - (ground - lane.y)) / (lane.head + GROUND_MARGIN), lane.y / lane.head);
+    // The band is ground - lane.y + head k + max(margin k, foot) tall: the larger root that fits.
+    const withMargin = (room - (ground - lane.y)) / (lane.head + GROUND_MARGIN);
+    const bound = GROUND_MARGIN * withMargin >= foot ? withMargin : (room - (ground - lane.y) - foot) / lane.head;
+    k = Math.min(k, bound, lane.y / lane.head);
   }
   return Math.min(1, Math.max(MIN_FIGURE_SCALE, k));
 }
@@ -147,9 +172,12 @@ export function campFit(
   layout: CampLayout,
   heightsCm: readonly number[] = [],
   focusX = 0.5,
+  options: { reach?: readonly CampReach[]; maxScale?: number } = {},
 ): CampFit {
-  const figureScale = campFigureScale(paneWidth, window, layout, heightsCm);
-  const band = campFocusBand(layout, heightsCm, figureScale);
+  const extra = options.reach ?? [];
+  // The row's own bound (camp-boxes.ts `campRowScale`): gear too big for the spots at full size.
+  const figureScale = Math.min(options.maxScale ?? 1, campFigureScale(paneWidth, window, layout, heightsCm, extra));
+  const band = campFocusBand(layout, heightsCm, figureScale, extra);
   return { figureScale, band, framing: campFraming(paneWidth, window, layout.canvas, band, focusX) };
 }
 

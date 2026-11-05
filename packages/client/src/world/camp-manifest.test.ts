@@ -54,6 +54,37 @@ describe("the camp layout in the manifest", () => {
     expect(layout.frame.standPoints.filter((p) => p.seat !== undefined)).toHaveLength(4);
   });
 
+  it("lays out stage 2 (#623): a tent per seat with its door spot in front, and every shared hotspot", () => {
+    const layout = campLayout(parsed, "open_plains", 2);
+    expect(layout.frame.stage).toBe(2);
+    for (let seat = 0; seat < 4; seat++) {
+      const rest = layout.frame.standPoints.find(point => point.seat === seat)!;
+      const tent = layout.frame.pieces.find(piece => piece.id === rest.hotspot)!;
+      expect(tent.ownerSeat).toBe(seat);
+      expect(Math.abs(tent.x - rest.x)).toBeLessThan(0.02);
+      expect(layout.frame.movingParts.some(part => part.piece === tent.id && part.motion === "sway")).toBe(true);
+    }
+    const kinds = (layout.frame.hotspots ?? []).map(spot => spot.kind);
+    expect(new Set(kinds)).toEqual(new Set(["cookfire", "awning", "lanterns", "friends_corner", "banner_pole", "trophy"]));
+    for (const spot of layout.frame.hotspots!.filter(spot => spot.kind !== "trophy")) {
+      expect(layout.frame.standPoints.some(point => point.hotspot === spot.id), spot.id).toBe(true);
+    }
+  });
+
+  it("gives stage 1 its own lantern hooks, friends' corner and banner pole (§4.1, §5.3), each with a stand point", () => {
+    const layout = campLayout(parsed, "open_plains", 1);
+    const spots = layout.frame.hotspots ?? [];
+    expect(spots.map(spot => spot.id).sort()).toEqual(["banner_pole", "friends_corner", "lanterns"]);
+    expect(spots.find(spot => spot.id === "banner_pole")!.default).toBe("kept_crew_banner");
+    for (const spot of spots) {
+      expect(spot.kind, spot.id).toBe(spot.id);
+      expect(layout.frame.standPoints.some(point => point.hotspot === spot.id), spot.id).toBe(true);
+    }
+    // The same ids at stage 2, so a piece placed at stage 1 carries over when the camp grows.
+    const stage2 = campLayout(parsed, "open_plains", 2).frame.hotspots ?? [];
+    for (const spot of spots) expect(stage2.find(later => later.id === spot.id)?.kind, spot.id).toBe(spot.kind);
+  });
+
   it("sets every bedroll beside its owner, toward the fire, instead of hiding it under their feet", () => {
     const layout = campLayout(parsed, "open_plains", 1);
     const fire = layout.frame.pieces.find(piece => piece.id === "campfire")!;
@@ -65,9 +96,9 @@ describe("the camp layout in the manifest", () => {
     }
   });
 
-  for (const seed of [1, 7, 42, 2026]) {
-    it(`lets every hero leave their bedroll, seed ${seed}`, () => {
-      const layout = campLayout(parsed, "open_plains", 1);
+  for (const [stage, seed] of [1, 7, 42, 2026].flatMap(seed => [[1, seed], [2, seed]] as const)) {
+    it(`lets every hero leave their ${stage === 1 ? "bedroll" : "tent"}, seed ${seed}`, () => {
+      const layout = campLayout(parsed, "open_plains", stage);
       const planner = createWanderPlanner(layout, seed, {
         walkSeconds: (id, route) =>
           planWalk(route, layout.canvas, campGait(HEIGHTS[Number(id.slice(1))] ?? 160, "standing", PX_PER_CM)).duration,

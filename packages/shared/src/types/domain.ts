@@ -7,6 +7,7 @@
  */
 
 import type { ProfileFlair } from "../kid-profile.js";
+import type { HeroKit } from "./camp.js";
 import type { MatchupRules } from "./matchups.js";
 
 export type StatId = "might" | "quick" | "clever" | "heart";
@@ -321,6 +322,14 @@ export interface Character {
    * written before it existed (character schema v4). Only ever `true`.
    */
   practiced?: true;
+  /**
+   * Her kit: her tent, bedroll, pack and decorations (docs/camp.md §4.5). On
+   * the hero, so it goes to every crew and table, moves home with her (#251)
+   * and is deleted with her. Outside the commitment rule: no campaign's end
+   * touches it. Absent until something is written to it; read it as
+   * `readKit(character)` (camp-record.ts), never directly.
+   */
+  kit?: HeroKit;
   createdAt: string;
   /**
    * The row's monotonic version, which the claim conditions every write on

@@ -37,7 +37,22 @@ export type Effect =
   | { type: "damage"; amount: number; to?: GrantTarget; nonlethal?: boolean }
   | { type: "heal"; amount: number; to?: GrantTarget }
   | { type: "grantXp"; amount: number }
-  | { type: "setFlag"; flag: string; value?: boolean };
+  | { type: "setFlag"; flag: string; value?: boolean }
+  /**
+   * A find for the crew's camp (docs/camp.md §5.1): `pieceId` is a crew find
+   * piece in `content/camp.json`, and `rewardId` that piece's offer for this
+   * chapter, shared by every way into it (§12.2). Never a bag item and never a
+   * gate: nothing in a chapter can test for it. The crew gets the piece, or 1
+   * Dash Cash when it already owns it from another reward; a reward this crew
+   * has claimed gives nothing. Saved when found (`RunState.campFinds`).
+   */
+  | { type: "findForCamp"; pieceId: string; rewardId: string }
+  /**
+   * A kit find (§5.4): every seated hero gets her own copy of `pieceId`, a kit
+   * find piece. A hero who already has it gets nothing more, and never Dash
+   * Cash, which is the crew's. Otherwise as `findForCamp`.
+   */
+  | { type: "findForKit"; pieceId: string; rewardId: string };
 
 /**
  * A test against the party and the run's flags (#158). Every field is
@@ -1261,6 +1276,21 @@ export interface Campaign {
    * Requires `chapters: []`, and a campaign with chapters may not set it.
    */
   comingSoon?: boolean;
+  /**
+   * A full campaign, whose successful finish grows a crew's camp by one frame
+   * stage (docs/camp.md §4.1, §12.3): Gemfall and Riftlight. Absent on the
+   * Practice Meadow and The Hollow Crown, which never grow it, so a new
+   * campaign grows the camp only when its file says so. Only ever true.
+   */
+  growsCamp?: true;
+  /**
+   * A tutorial: the Practice Meadow (`first-steps`). Its chapters still pay the
+   * crew Dash Cash, but they do not count toward the two paid chapters that
+   * open the camp shop (docs/camp.md §5.3, §11), so a crew earns the shop in
+   * real adventures. Absent on every other campaign, The Hollow Crown
+   * included, whose chapters count. Only ever true.
+   */
+  tutorial?: true;
   /**
    * Makes this a graph campaign (#192): the next chapter is chosen by the
    * graph's edges, not by `index`. Absent — every campaign authored before it

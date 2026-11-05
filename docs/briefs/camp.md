@@ -1,8 +1,11 @@
 # Brief: camp art
 
-**Status:** Phase 1 delivered (#615), with three hero-colored bedroll styles. The design is [docs/camp.md](../camp.md) (§3.1 backdrops, §4.1
-frame stages, §8.3 lanes and stand points, §8.4 actions and moving parts). The prompts are in
-[docs/camp-art-prompts.json](../camp-art-prompts.json); the paintings are made from them, then
+**Status:** Phase 1 delivered (#615), with three hero-colored bedroll styles (#633). Phase 2
+(#623) delivered: 60 paintings, below, and the layout re-laid by their real footprints (#620). The design is [docs/camp.md](../camp.md) (§3.1 backdrops, §4.1
+frame stages, §4.5 and §5.4 the hero's kit, §8.3 lanes and stand points, §8.4 actions and moving parts). The prompts are in
+[docs/camp-art-prompts.json](../camp-art-prompts.json) (Phase 1),
+[docs/camp-kit-art-prompts.json](../camp-kit-art-prompts.json) (#633's kits) and
+[docs/camp-art-prompts-phase2.json](../camp-art-prompts-phase2.json) (Phase 2); the paintings are made from them, then
 checked by `npm run art:verify` and counted by `npm run art:inventory`.
 
 ## The contract: `assets/manifest.json` → `camp`
@@ -15,7 +18,7 @@ prompt's pixel figures change with it.
   top. A lane's `y` is the ground line where a figure's or piece's ground contact (the figure
   canvas origin, 512, 900) stands.
 - **Backdrops** (`backdrops[]`, one per terrain family in `biomeFamilies`) carry the ground:
-  two or three `lanes`, back to near (each lower on screen and no smaller in `scale` than the one
+  two to four `lanes`, back to near (each lower on screen and no smaller in `scale` than the one
   behind), and the `crossings` where a figure may change lanes. `open_plains` is required: it is
   the fallback for every family not painted yet.
 - **Frames** (`frames[]`, one per frame stage) carry the camp: `pieces` standing on a lane,
@@ -43,6 +46,12 @@ prompt's pixel figures change with it.
 | Camp backdrop | `assets/camp/backdrops/<family>.webp` | 1920 × 1080 | WebP, opaque (the biome background format) |
 | Piece | `assets/camp/frames/stage<N>/<piece>.png` | 1024 × 1024 | PNG, RGBA cutout, lowest opaque row at y 900 (±12), 8px clear margin |
 | Moving part | `assets/camp/frames/stage<N>/<piece>-<part>.png` | 1024 × 1024 | PNG, RGBA, registered pixel for pixel over its piece, nothing below y 912 |
+| Kit (bedroll and pack) | `assets/camp/kits/<style>.png` | 1024 × 1024 | PNG, RGBA cutout like a piece; neutral grey cloth, tinted by the client (below) |
+| Tent and its flap | `assets/camp/kits/tents/<style>.png`, `<style>-flap.png` | 1024 × 1024 | as a piece and its moving part; neutral grey cloth, tinted like a kit |
+| Souvenir line | `assets/camp/kits/souvenir-line.png` | 1024 × 1024 | as a piece, with its pegs at the manifest's `hangPoints` |
+| Crew piece and its moving part | `assets/camp/pieces/<piece>.png`, `<piece>-<part>.png` | 1024 × 1024 | as a piece and its moving part |
+| Kit decoration | `assets/camp/decorations/<name>.png` | 512 × 512 | PNG, RGBA, 24px clear margin (the story-prop canvas), no ground contact |
+| Camp icon | `packages/client/src/assets/painted/<id>.webp` | 256 × 256 | WebP, RGBA, 8px clear margin (the painted-icon canvas) |
 
 - **Style**: the storybook gouache of the biome backgrounds and the story props (the backdrop
   matches `assets/biomes/plains/bg.webp`; the pieces match `assets/story-props/camp-firepit.webp`).
@@ -57,7 +66,11 @@ prompt's pixel figures change with it.
   y 900. The client sizes them on the stage from the piece's `heightCm` in the manifest (its
   true painted height, scaled like a figure's and by its lane), so a campfire stands at its real
   size beside a hero. Stage 1: campfire 60, bedroll 40 (its pack is the tallest part), trailhead
-  post 120.
+  post 120. What a piece is drawn as across is its painting's own: the layout measures every
+  grounded painting's opaque bounds (`npm run art:camp-paint` writes
+  `packages/client/src/world/camp-paint.json`; `art:verify` fails when it is stale), so a
+  repainted piece is laid out by its new shape. A crew piece's `widthCm` is that painted width at
+  its `heightCm`.
 - **A moving part only where a stand point animates the piece** (§8.4), and made from the
   finished piece itself (cut from the same painting, its base feathered into the piece) so the
   two always stack. A piece nobody uses needs none.
@@ -116,7 +129,112 @@ motion keeps it still. Pieces and heroes share the renderer's existing lane dept
 Art verification checks the variants' format, alpha, margin and ground contact; inventory
 counts the five Phase 1 paintings and three kits once each. Runtime tests tie style paths to
 the manifest, check tint math and fallback, and guard against filter collisions between seats.
-The tent and tent-flap formats remain future work.
+Phase 2's tents follow this convention, not a second one (below).
+
+## Phase 2 (#623): what is declared, and how it fits #633
+
+Everything below is in `assets/manifest.json` → `camp` with a stable id, which `content/camp.json`
+(#618) refers to. The manifest says what each painting is and where it stands; prices, rewards and
+which chapter scene hands a find over are #618's. `art:verify` checks the declarations
+(`check_camp_catalog`) and the format of any painting present; every missing one is a "not yet
+delivered" warning and is owed under **Camp art** in `art:inventory` (8 of 68 delivered when this
+was declared).
+
+**A kit style is a tent, a bedroll and a pack together** (`HeroKit.style`, docs/camp.md §9). #633
+painted the bedroll and pack of three styles; Phase 2 adds the tent of each, with the same id:
+
+| Style | Bedroll and pack (#633) | Tent (Phase 2) |
+| --- | --- | --- |
+| `rolled` | rolled blanket, boxy two-pocket rucksack | trim A-frame ridge tent |
+| `quilted` | quilted mat, round drawstring pack | puffy quilted dome |
+| `patched` | patched mat, low flap satchel | low mended lean-to |
+
+`tentStyles` also declares the three milestone tents, `sworn`, `radiant` and `mythic` (a
+`manifest.tiers` id each; unlocked at levels 4, 7 and 10 by `rules.json` → `tierLevels`), which
+have no bedroll of their own. Ascendant, Starborn and Legendary follow when their hero art does.
+
+**Tinting is #633's, unchanged.** A tent is one painting with every tintable cloth surface in undyed
+light neutral grey (value shading only) and poles, rope, leather and metal in natural colors.
+After it is painted, its cloth region is traced and registered beside the kits' in
+`world/camp-kit-art.ts`, and the client multiplies that region's luminance by the hero's
+`appearance.accent` (`tint: "svg-cloth-mask"`, `paletteSlot: "accent"`). The door flap is cut from
+the finished tent at the same position, so the tent's cloth region tints it too. There is no
+separate tint layer to paint.
+
+**The stage-2 frame** (`frames[1]`, open_plains lanes, all of verify's lane rules):
+
+- **Tent spots** `tent_0` to `tent_3`, two each side of the awning, staggered on two lanes like
+  stage 1's bedrolls (docs/camp.md §8.3): the outer two on the back lane (x 0.195 and 0.787), the
+  inner two on the middle lane in front of them (0.365 and 0.644), an inner tent's side standing in
+  front of its neighbour's up to that neighbour's door. Each is owned by its seat (`ownerSeat`)
+  and drawn in that hero's style and color, fitted to its owner (camp-ownership.ts: about 1.1
+  times her height, 1.2 for a small hero such as a kitsune or a dragonling, the patched lean-to too, so every tent stands taller than its hero, never
+  under the style's own height for a 160 cm hero). The manifest's path is the `rolled` tent, the fallback, as the
+  neutral bedroll is at stage 1. Each door's rest stand point is on its tent's own lane, at the door,
+  and each spot's flap (`movingParts`, motion `sway`) is the hero's style's `flap`. At stage 2
+  outdoors a seat shows its tent; the bedroll and pack stay the stage-1 and indoor kit (§3.2).
+- **Souvenir lines** `souvenirs_0` to `souvenirs_3` on each tent's own lane beside its door (0.179, 0.39, 0.62, 0.806), where no nearer tent covers it: one
+  painting (`souvenirDisplay`), a short twine line with four empty pegs at its `hangPoints`, where
+  the client hangs the hero's existing souvenir icons.
+- **Shared hotspots** (`hotspots`, a new key: id, kind, lane, x, and an optional `default` crew
+  piece): `cookfire` (near 0.502, default `cookfire_pot`), `awning` (back 0.521, behind the fire,
+  between the inner tents, whose sides may stand in front of its feet), `lanterns` (near 0.08, past the first tent, free to stand in front of its outer edge), `friends_corner` (near
+  0.243, in front of the first tents), `banner_pole` (near 0.905, by the trail, free to stand in front of the last tent's outer edge, default
+  `kept_crew_banner`; the crew's name is lettered under its foot, never on the flag) and
+  `trophy_1`, `trophy_2` (near 0.735 and 0.804, in front of the last tents). Stage 1 has the lantern hooks (near 0.08), the
+  friends' corner (near 0.38) and the banner pole (back 0.865). A stand point's
+  `hotspot` may now name a frame hotspot as well as a piece: two warmUp spots at the cookfire, a
+  lookUp at the lanterns and the banner, a pet at the friends' corner and a shady spot under the
+  awning (on the middle lane, between the inner tents, so no tent hides whoever stands there).
+  A tall piece (awning, lanterns, banner pole and their shop pieces) may stand partly behind a
+  nearer tent, covered from the foot up but never in the top half of its height: paint what makes
+  it itself (the flag, the vane or pinwheel, the lamps, the canopy) in that top half. A banner
+  pole's pennant layer is kept clear all the way down to its own painted foot, so streamers that
+  hang below the half (the weathervane's reach about two thirds of the way down) cost the pole
+  room: keep them as high as the design allows. A short near-lane piece (the friends' corner, a
+  trophy, the cookfire) may stand in front of a tent's lower half, and the lanterns and the banner
+  pole may stand in front of the outer edge of the tent behind them (the outer quarter of its
+  painted width, its guy ropes and stakes, below its roof), never its door or its souvenir line. The client parser (`camp-layout.ts`) reads `hotspots`; the lobby still pitches stage 1.
+- **The trailhead post** is stage 1's painting, unchanged.
+
+**Crew pieces** (`crewPieces`: id, `hotspot` kind, `group`, path, heightCm, movingParts):
+
+| Group | Pieces |
+| --- | --- |
+| frame | `cookfire_pot` |
+| kept | `kept_crew_banner` (the crew's woven pennant, `CrewIdentity`) |
+| find | `find_picnic_blanket` (first-steps-01), `find_wagon_lantern` (gemfall-01), `find_noodle_awning` (riftlight-exchange-rift) |
+| starter-shop | `shop_lantern_string`, `shop_striped_awning`, `shop_log_bench`, `shop_pinwheel_pole` |
+| stage2-shop | `shop_kettle_cookfire`, `shop_weathervane_pole`, `shop_patchwork_awning`, `shop_lantern_arch`, `shop_friends_hammock` |
+| trophy | `trophy_gemfall`, `trophy_riftlight` |
+
+**Their sizes** (`heightCm`, the painted height; #623, set against the delivered paintings): a
+picnic blanket a hero could sit on (80 cm with its basket, 145 wide), the log bench 70 and the
+hammock 85; the trophies 90 and both cookfires 95, as big as a near-lane piece may stand in front
+of the back-lane tents (under about 98 cm, the gap between the near and back lanes); the wagon lantern 170,
+the lantern arch 150 and the lantern string 115 (a wide string between two posts); the awnings
+175; the crew banner and the pinwheel pole 200 and the weathervane pole 220. The tall pieces were
+brought down from the first declared heights so the four tents, the awning, the lanterns and the
+banner pole fit across the clearing (docs/camp.md §8.3).
+
+Every banner-pole piece flies the same crew pennant (packages/client/src/assets/painted/crew.webp),
+so placing one never hides the crew's banner. **Moving parts only where a stand point animates the
+piece:** verify fails a piece at a hotspot with a warmUp, lookUp or peek stand point that has
+none, and a tent spot without its flap. So the cookfires have flames, the banner poles pennants and
+the lanterns a swing; awnings, the friends' corner and trophies have none. A crew piece's phone
+picture is its own painting, cropped to what is painted.
+
+**Kit decorations** (`decorations`, on the story-prop canvas): seven in the free catalog
+(`deco_bunting`, `deco_lantern`, `deco_little_flag`, `deco_flower_pot`, `deco_shell_chime`,
+`deco_picture_sign`, `deco_pinwheel`), three kit finds (`deco_clipboard_star` first-steps-01,
+`deco_lamp_ribbon` gemfall-01, `deco_gull_feather` riftlight-exchange-rift), and twelve
+class-distinction pieces, `deco_<class>_<apprentice|expert|master>`, each in its class's colors
+(the class token inks in `ClassToken.css`). Decorations keep their natural colors; verify fails a
+catalog missing any class and distinction.
+
+**The Dash Cash icon** (`paintedIcons: ["dash_cash"]`): a teal paper camp ticket with a punched gold
+star, at `packages/client/src/assets/painted/dash_cash.webp`. It is owed in the camp section rather
+than `manifest.paintedIcons.ids`, where a missing icon fails verify; move it there when it lands.
 
 ## Hero-sized owned pieces
 

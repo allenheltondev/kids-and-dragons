@@ -3,5 +3,6 @@
   "id": "first-steps",
   "title": "First Steps",
   "blurb": "A sunny practice meadow, a faun with a clipboard, and a wisp who loves tag. Learn how to play before the real adventure starts.",
-  "chapters": ["first-steps-01"]
+  "chapters": ["first-steps-01"],
+  "tutorial": true
 }

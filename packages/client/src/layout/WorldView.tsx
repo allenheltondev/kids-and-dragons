@@ -33,6 +33,7 @@ import {
   TransformCutscene,
 } from "../screens";
 import { FieldGuideBanner } from "../screens/FieldGuideNews";
+import { DashCashSparkle } from "../screens/CampChapterEnd";
 import { ChapterGoalCard } from "../screens/ChapterGoal";
 import { ChapterPreface } from "../screens/ChapterPreface";
 import { RoomCheers } from "../screens/RoomCheers";
@@ -215,6 +216,8 @@ export function WorldView({
       {/* The shared screen's own copy of the Field Guide news. A phone's world
           pane has a player, and that phone's toast speaks for it instead. */}
       {isDisplay ? <FieldGuideBanner /> : null}
+      {/* A lucky drop that paid (docs/camp.md §5.2): a little sparkle, nothing more. */}
+      {isDisplay ? <DashCashSparkle place="tv" /> : null}
 
       {measuring ? (
         <ChunkBoundary quiet>

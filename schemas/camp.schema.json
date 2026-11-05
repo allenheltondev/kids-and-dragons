@@ -1,0 +1,297 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kids-and-dragons.local/schemas/camp.schema.json",
+  "title": "Camp catalog",
+  "description": "content/camp.json: what the crew's camp and each hero's kit are as game data (docs/camp.md §4, §5, §9; #618). Mirrors CampCatalog in packages/shared/src/types/camp.ts; where the two disagree, the TypeScript type wins. What any piece looks like is assets/manifest.json -> camp, which declares every id used here; tools/content/camp-catalog.mjs checks the two against each other and against the chapters.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["crewPieces", "hotspots", "shops", "kit", "milestones", "friends"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "$comment": { "type": "string" },
+    "crewPieces": {
+      "description": "The crew's pieces (§4.3), one per manifest camp.crewPieces entry. Never kit pieces (§12.1).",
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/crewPiece" }
+    },
+    "hotspots": {
+      "description": "The shared hotspots (§4.2; #620): each id, its kind, the frame stage it first appears at, and the frame's own piece shown there until the crew places another (default). Where each stands is art (assets/manifest.json -> camp.frames[].hotspots, the same ids), which content:validate holds this list to.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "stage"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "kind": { "$ref": "#/$defs/hotspot" },
+          "stage": { "$ref": "#/$defs/stage" },
+          "default": { "$ref": "#/$defs/id" }
+        }
+      }
+    },
+    "shops": {
+      "description": "The chapter-end shop at each frame stage (§5.2, §12.4), in its stable order. A list prices pieces of its own stage or lower, and lower-stage pieces stay in later shops.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["stage", "pieces"],
+        "properties": {
+          "stage": { "$ref": "#/$defs/stage" },
+          "pieces": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "$ref": "#/$defs/id" }
+          }
+        }
+      }
+    },
+    "kit": {
+      "description": "Every hero's free kit catalog, and the kit pieces earned beyond it (§4.5, §5.4).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["styles", "colors", "tents", "decorations"],
+      "properties": {
+        "styles": {
+          "description": "Bedroll-and-pack styles (manifest camp.kitStyles), all free. Chosen apart from the tent.",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id"],
+            "properties": { "id": { "$ref": "#/$defs/id" } }
+          }
+        },
+        "colors": {
+          "description": "playerColors: a kit color is a player color pair's palette name (shared PLAYER_COLORS), and null is the hero's own appearance.accent.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["from"],
+          "properties": { "from": { "const": "playerColors" } }
+        },
+        "tents": {
+          "description": "Tent styles (manifest camp.tentStyles). catalog: free. milestone: unlocked by a tier (milestones.tiers).",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "group"],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "group": { "enum": ["catalog", "milestone"] }
+            }
+          }
+        },
+        "decorations": {
+          "description": "Decorations (manifest camp.decorations). catalog: free. find: a chapter's findForKit hands every seated hero a copy. milestone: unlocked by a class distinction.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/decoration" }
+        }
+      }
+    },
+    "milestones": {
+      "description": "What a hero's own milestones unlock (§5.4): a tent per appearance tier whose art is painted, a decoration per class distinction. packages/shared/src/camp-milestones.ts is its copy.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tiers", "distinctions"],
+      "properties": {
+        "$comment": { "type": "string" },
+        "tiers": {
+          "type": "object",
+          "additionalProperties": false,
+          "minProperties": 1,
+          "properties": {
+            "sworn": { "$ref": "#/$defs/id" },
+            "radiant": { "$ref": "#/$defs/id" },
+            "mythic": { "$ref": "#/$defs/id" },
+            "ascendant": { "$ref": "#/$defs/id" },
+            "starborn": { "$ref": "#/$defs/id" },
+            "legendary": { "$ref": "#/$defs/id" }
+          }
+        },
+        "distinctions": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["thornguard", "duskrunner", "starweaver", "songkeeper"],
+          "properties": {
+            "thornguard": { "$ref": "#/$defs/ranks" },
+            "duskrunner": { "$ref": "#/$defs/ranks" },
+            "starweaver": { "$ref": "#/$defs/ranks" },
+            "songkeeper": { "$ref": "#/$defs/ranks" }
+          }
+        }
+      }
+    },
+    "friends": {
+      "description": "Creatures a crew can befriend (§4.4), each belonging to nobody in the story. #624 fills it.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/friend" }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(_[a-z0-9]+)*$"
+    },
+    "stage": {
+      "description": "A frame stage (§4.1).",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 4
+    },
+    "hotspot": {
+      "description": "The kind of shared hotspot a crew piece stands at (§4.2; manifest camp.frames[].hotspots[].kind).",
+      "enum": ["cookfire", "awning", "lanterns", "friends_corner", "banner_pole", "trophy"]
+    },
+    "rewardId": {
+      "description": "A stable award identity (§12.2): never a scene id, and never reused. Conventionally <chapter>.<what>.",
+      "type": "string",
+      "pattern": "^[a-z0-9]+([-_.][a-z0-9]+)*$",
+      "maxLength": 80
+    },
+    "offers": {
+      "description": "Each authored offer of this find or friend: its rewardId and the chapter that hands it over. Every way into that chapter that offers it names this one id.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["rewardId", "chapter"],
+        "properties": {
+          "rewardId": { "$ref": "#/$defs/rewardId" },
+          "chapter": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "ranks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["apprentice", "expert", "master"],
+      "properties": {
+        "apprentice": { "$ref": "#/$defs/id" },
+        "expert": { "$ref": "#/$defs/id" },
+        "master": { "$ref": "#/$defs/id" }
+      }
+    },
+    "crewPiece": {
+      "type": "object",
+      "required": ["id", "hotspot", "group"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "hotspot": { "$ref": "#/$defs/hotspot" },
+        "group": { "enum": ["frame", "kept", "find", "shop", "trophy"] }
+      },
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["stage"],
+          "properties": {
+            "id": true,
+            "hotspot": true,
+            "group": { "const": "frame" },
+            "stage": { "$ref": "#/$defs/stage" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": true,
+            "hotspot": true,
+            "group": { "const": "kept" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["offers"],
+          "properties": {
+            "id": true,
+            "hotspot": true,
+            "group": { "const": "find" },
+            "offers": { "$ref": "#/$defs/offers" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["stage", "price"],
+          "properties": {
+            "id": true,
+            "hotspot": true,
+            "group": { "const": "shop" },
+            "stage": { "$ref": "#/$defs/stage" },
+            "price": {
+              "description": "Dash Cash. The validator holds starter (stage 1) pieces at 5 and stage-2 pieces to 10 to 15 (§5.2, §5.3).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["campaign"],
+          "properties": {
+            "id": true,
+            "hotspot": true,
+            "group": { "const": "trophy" },
+            "campaign": { "type": "string", "minLength": 1 }
+          }
+        }
+      ]
+    },
+    "decoration": {
+      "type": "object",
+      "required": ["id", "group"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "group": { "enum": ["catalog", "find", "milestone"] }
+      },
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": { "id": true, "group": { "enum": ["catalog", "milestone"] } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["offers"],
+          "properties": { "id": true, "group": { "const": "find" }, "offers": { "$ref": "#/$defs/offers" } }
+        }
+      ]
+    },
+    "friend": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "figure", "name", "offers", "reactions"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "figure": {
+          "description": "Its figure, as a chapter's cast names it; a scene of each offer's chapter casts it.",
+          "type": "string",
+          "pattern": "^(entities|characters|cast)/[a-z0-9]+([_-][a-z0-9]+)*$"
+        },
+        "name": { "type": "string", "minLength": 1, "maxLength": 32 },
+        "offers": { "$ref": "#/$defs/offers" },
+        "reactions": {
+          "description": "What it says or does when a kid taps it, one at a time: short, for an eight-year-old.",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "items": { "type": "string", "minLength": 1, "maxLength": 120 }
+        }
+      }
+    }
+  }
+}

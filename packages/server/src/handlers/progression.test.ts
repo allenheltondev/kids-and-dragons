@@ -10,6 +10,7 @@ import {
 import { makeChapter } from "../../../shared/src/test-fixtures.ts";
 import { makeContent, makeHarness, seedHousehold, T0, type TestHarness } from "../test-support.ts";
 import { applyAction } from "./action.ts";
+import { readCamp } from "./camp.ts";
 import {
   foldChapterXp,
   joinOrStartAttempt,
@@ -493,6 +494,22 @@ describe("settleChapterCompletion — the campaign boundary", () => {
     expect(settlement.chapterProgress?.outcome).toBe("setback");
     expect(settlement.campaignProgress).toMatchObject({ status: "active", setbacks: 1 });
     expect(settlement.characters[0]?.character.provisional?.xp).toBe(150);
+  });
+
+  it("a growsCamp campaign finished on a setback ending is finished: it grows the camp (docs/camp.md §11)", async () => {
+    // One chapter, so this setback is the campaign's last beat, and below the limit.
+    const harness = campaignHarness({ chapters: ["bramblewood-01"], growsCamp: true });
+    const { householdId, players } = await seedHousehold(harness, 1);
+    const { state, character } = setup(harness, householdId, players[0]!.principal.playerId);
+    await harness.repo.putCharacter(character);
+    completing(state, { chapterOutcome: "setback" });
+    state.xpEarned = 150;
+
+    const settlement = await settleChapterCompletion(state, harness.deps, householdId);
+    expect(settlement.campaignProgress).toMatchObject({ status: "complete", setbacks: 1 });
+    await harness.repo.putCampaignProgress(settlement.campaignProgress!);
+
+    expect(await readCamp(householdId, null, harness.deps)).toMatchObject({ frameStage: 2, grownBy: ["the-hollow-crown"] });
   });
 
   it("fails the campaign at the third setback: revert to committed, keep a souvenir", async () => {

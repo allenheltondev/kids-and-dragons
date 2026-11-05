@@ -20,6 +20,7 @@ import { createPairingCode, redeemPairingCode } from "./pairing.ts";
 import { createRoom, joinRoom } from "./room.ts";
 import { shareDevice } from "./shared-device.ts";
 import { acceptTransfer, createTransferCode, TRANSFER_TTL_MS } from "./transfer.ts";
+import { mutateCamp, mutateKit, readKit } from "./camp.ts";
 
 const realEngine: Engine = { applyIntent, createRunState };
 
@@ -111,6 +112,46 @@ describe("taking a hero home (#251)", () => {
     expect((await tonight.send({ type: "SEAT_CHARACTER", characterId: hero!.id })).ok).toBe(true);
     expect((await tonight.state()).party[0]?.character).toMatchObject({ name: "Sparklehoof", level: 3 });
     expect(Object.keys((await harness.repo.getFieldGuide(home)).entries)).toEqual(["moth"]);
+  });
+
+  it("takes her heroes' buddies out of every one of the club's camps, and her kit comes home with her (docs/camp.md §4.4)", async () => {
+    const { harness, club, ada, hero } = await adaAtTheClub();
+    // A second crew at the club, and Bo's hero, whose buddy must stay.
+    const crew = "crew_two";
+    const at = "2026-07-01T00:00:00.000Z";
+    const lobby = { runId: "r_crew", seq: 0 } as unknown as RunState;
+    await harness.repo.putState(lobby);
+    expect(
+      await harness.repo.commit({
+        runId: lobby.runId,
+        expectedSeq: 0,
+        state: { ...lobby, seq: 1 },
+        event: { seq: 1, at } as never,
+        crew: { householdId: club.id, id: crew, name: "The Otters", createdAt: at },
+      }),
+    ).toBe(true);
+    const friends = { bun: { rewardId: "first-steps-01.bun", at } };
+    for (const c of [null, crew]) {
+      expect(await mutateCamp(club.id, c, (camp) => ({ ...camp, friends, buddies: { [hero.id]: "bun", c_bo: "bun" } }), harness.deps)).toMatchObject({ ok: true });
+    }
+    const picked = await mutateKit(
+      club.id,
+      hero.id,
+      (kit) => ({ ...kit, style: "quilted", tent: "patched", unlocked: { ...kit.unlocked, deco_lamp_ribbon: { from: "found", rewardId: "gemfall-01.lamp_ribbon", at } } }),
+      harness.deps,
+    );
+    expect(picked).toMatchObject({ ok: true });
+    const kit = readKit((await harness.repo.getCharacter(club.id, hero.id))!);
+
+    const code = value(await createTransferCode({ ...LEADER, householdId: club.id, playerId: ada.player.id }, harness.deps));
+    const moved = value(await acceptTransfer({ ...MUM, code: code.code }, harness.deps));
+
+    for (const c of [undefined, crew]) {
+      const camp = await harness.repo.getCamp(club.id, c);
+      expect(camp?.buddies).toEqual({ c_bo: "bun" });
+      expect(camp?.friends).toEqual(friends);
+    }
+    expect(readKit((await harness.repo.getCharacter(moved.household.id, hero.id))!)).toEqual(kit);
   });
 
   it("works once", async () => {

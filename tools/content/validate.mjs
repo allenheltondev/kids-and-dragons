@@ -49,6 +49,8 @@ import { collectCharacters, voiceClashes } from "../voice/cast/sheet.ts";
 import { loadSources } from "../voice/cast/sources.ts";
 import { routeSetConflicts } from "./route-paths.mjs";
 import { classPlaceReach, classPlaceVerdict, loadAllowList as loadClassPlaceAllow } from "./class-places.mjs";
+import { campCatalogProblems, chapterFinds } from "./camp-catalog.mjs";
+import { MILESTONE_KIT_PIECES } from "../../packages/shared/src/camp-milestones.ts";
 
 /**
  * Which tree to validate. Defaults to this repo; `KAD_CONTENT_ROOT` points it
@@ -195,7 +197,7 @@ function describe(err) {
 
 // ----------------------------------------------------------------------------- schema pass
 
-const SCHEMA_NAMES = ["rules", "items", "chapter", "campaign", "map", "abilities", "world", "help", "voice-script", "voice-cast", "voice-lexicon"];
+const SCHEMA_NAMES = ["rules", "items", "chapter", "campaign", "map", "abilities", "world", "help", "camp", "voice-script", "voice-cast", "voice-lexicon"];
 const AJV_OPTIONS = { allErrors: true, strict: true, allowUnionTypes: true };
 
 function compileSchemas(schemas, options = {}) {
@@ -2051,7 +2053,39 @@ function main() {
     }
   }
 
+  checkCamp(rep, ajv, chaptersById, brokenChapterIds, new Set(loadedCampaigns.map(({ campaign }) => campaign.id)));
+
   return finish(rep);
+}
+
+/**
+ * The camp catalog (#618, docs/camp.md §4, §5, §9): its schema, then every
+ * rule the schema cannot see (camp-catalog.mjs), against the manifest's camp
+ * art and every chapter's finds. A chapter with a find and no catalog is a
+ * failure too, so a find can never reach the table unchecked.
+ */
+function checkCamp(rep, ajv, chaptersById, brokenChapterIds, campaignIds) {
+  console.log(`\n${BOLD}camp${RESET}`);
+  const path = join(CONTENT, "camp.json");
+  const catalog = existsSync(path) ? readJson(rep, path) : null;
+  if (!catalog) {
+    rep.fail(rel(path), "", "content/camp.json is missing", "The camp's pieces, shops, kit catalog and milestones live there (docs/camp.md §9).");
+    return;
+  }
+  if (!validateAgainstSchema(rep, ajv, "camp", path, catalog)) return;
+  const problems = campCatalogProblems({
+    catalog,
+    manifest: assetRegistry.camp,
+    chapters: chaptersById,
+    brokenChapters: brokenChapterIds,
+    campaigns: campaignIds,
+    milestones: MILESTONE_KIT_PIECES,
+  });
+  for (const { file, at, problem, hint } of problems) rep.fail(file, at, problem, hint);
+  if (!problems.length) {
+    const finds = [...chaptersById.values()].reduce((n, chapter) => n + chapterFinds(chapter).length, 0);
+    rep.ok(`${rel(path)}  camp  (${catalog.crewPieces.length} crew pieces, ${catalog.shops.length} shop(s), every id declared art, ${finds} find(s) through declared offers)`);
+  }
 }
 
 /**

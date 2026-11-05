@@ -16,6 +16,7 @@ export * from "./types/state.js";
 export * from "./types/protocol.js";
 export * from "./types/world.js";
 export * from "./types/matchups.js";
+export * from "./types/camp.js";
 
 export * from "./rules.js";
 export * from "./character.js";
@@ -26,6 +27,9 @@ export * from "./claim.js";
 export * from "./player-colors.js";
 export * from "./migrate.js";
 export * from "./field-guide-record.js";
+export * from "./camp-record.js";
+export * from "./camp-shop.js";
+export * from "./camp-edit.js";
 export * from "./kid-profile.js";
 export * from "./crews.js";
 export * from "./dice.js";

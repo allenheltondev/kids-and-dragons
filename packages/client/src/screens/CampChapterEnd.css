@@ -1,0 +1,190 @@
+/*
+ * The camp's beat at a chapter's end (CampChapterEnd.tsx, #619). `em` against
+ * the surface, like the rest of the summary; no viewport units.
+ */
+
+.camp-tally {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  padding: var(--space-3, 0.75em) var(--space-4, 1em);
+  border: 0.08em solid var(--color-accent, #f5c86c);
+  border-radius: var(--radius-lg, 1em);
+  background: var(--kad-bg-raised, rgba(255, 255, 255, 0.06));
+  text-align: center;
+}
+
+.camp-tally__heading,
+.camp-tally__balance,
+.camp-tally__shop-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+}
+
+.camp-tally__heading {
+  font-size: var(--font-size-lg, 1.25em);
+  font-weight: 800;
+  color: var(--color-accent, #f5c86c);
+}
+
+.camp-tally__lines {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-1, 0.25em) var(--space-4, 1em);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.camp-tally__balance {
+  font-size: var(--font-size-lg, 1.25em);
+}
+
+.camp-tally__shop {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.camp-tally__option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1, 0.25em);
+  min-inline-size: 9em;
+  padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
+  border-radius: var(--radius-md, 0.75em);
+  background: var(--kad-bg-overlay, rgba(8, 7, 17, 0.5));
+}
+
+.camp-tally__option-label {
+  font-weight: 700;
+}
+
+/* A piece the crew cannot afford yet (§6.2): shown to look forward to, never voted for. */
+.camp-tally__option--later,
+.camp-vote .choice--later {
+  opacity: 0.6;
+}
+
+.camp-vote {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5em);
+}
+
+.camp-vote__options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.camp-vote__confirm {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2, 0.5em);
+}
+
+.camp-vote__done {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+}
+
+/* The sparkle: small, warm and over quickly. No meter, no odds (docs/camp.md §5.2). */
+.dash-sparkle {
+  position: absolute;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.4em 0.9em;
+  border-radius: var(--radius-pill, 999em);
+  background: var(--color-accent, #f5c86c);
+  color: var(--kad-on-accent, #1d1430);
+  font-weight: 800;
+  pointer-events: none;
+  animation: dash-sparkle 2.6s ease-out both;
+}
+
+.dash-sparkle--tv {
+  inset-block-start: 8%;
+  inset-inline-end: 4%;
+  font-size: 1.4em;
+}
+
+.dash-sparkle--phone {
+  position: fixed;
+  inset-block-start: 4.5em;
+  inset-inline-end: 1em;
+}
+
+@keyframes dash-sparkle {
+  0% { opacity: 0; transform: translateY(0.4em) scale(0.8); }
+  15% { opacity: 1; transform: translateY(0) scale(1.08); }
+  25% { transform: scale(1); }
+  85% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dash-sparkle {
+    animation: none;
+  }
+}
+
+/* The chapter end's camp beat on the TV (#620, docs/camp.md §3): a header, the camp in the
+   window between it and the foot (useLobbyInset tells the stage), and what waits beside the
+   fire in the foot. The camp shows through: only the header and foot carry a scrim. */
+.camp-beat {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3, 0.75em);
+  padding: var(--space-4, 1em);
+  color: var(--color-text, #f4f0ff);
+  overflow: hidden;
+}
+.camp-beat__head,
+.camp-beat__foot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  padding: var(--space-2, 0.5em) var(--space-4, 1em);
+  border-radius: var(--radius-lg, 1em);
+  background: var(--kad-bg-overlay, rgba(8, 7, 17, 0.72));
+  text-align: center;
+  align-self: center;
+  max-inline-size: 100%;
+}
+.camp-beat__heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0;
+  font-size: var(--font-size-xl, 1.5em);
+  color: var(--color-accent, #f5c86c);
+}
+.camp-beat__crew { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--space-3, 0.75em); }
+.camp-beat__balance { display: inline-flex; align-items: center; gap: 0.35em; font-weight: 700; }
+.camp-beat__grew { margin: 0; font-weight: 700; }
+.camp-beat__window { flex: 1 1 0; min-block-size: 0; pointer-events: none; }
+.camp-beat__beside-heading { display: flex; align-items: center; justify-content: center; gap: 0.4em; margin: 0; font-size: 1.05em; }
+.camp-beat__beside ul { margin: 0.3em 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 0.2em; }
+.camp-beat__hint { margin: 0; }
+.camp-beat .complete__next { margin: 0; display: flex; gap: 0.4em; align-items: center; }

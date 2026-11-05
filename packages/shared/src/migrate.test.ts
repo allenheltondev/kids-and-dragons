@@ -328,8 +328,11 @@ describe("migrateCharacter — class mastery (v5, #308)", () => {
       ...character,
       committed: { ...character.committed, mastery: { songkeeper: { rank: "expert" as const, deeds: { hearts: 4 } } } },
     };
-    // The v1 step stamps the claim version, as it does on any v0 row.
-    expect(migrateCharacter(row, undefined)).toEqual({ ...row, version: 0 });
+    // The v1 step stamps the claim version, as it does on any v0 row, and the
+    // v9 step backfills the kit pieces her distinctions earned (#617).
+    const { kit, ...migrated } = migrateCharacter(row, undefined);
+    expect(migrated).toEqual({ ...row, version: 0 });
+    expect(Object.keys(kit?.unlocked ?? {})).toEqual(["deco_songkeeper_apprentice", "deco_songkeeper_expert"]);
   });
 
   it("migrates a v0 row all the way up", () => {

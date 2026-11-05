@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -8,6 +8,7 @@ import manifest from '../../assets/manifest.json';
 import { campArtOwed } from './camp-art.ts';
 
 const art = fileURLToPath(new URL('.', import.meta.url));
+const python = process.platform === 'win32' ? 'python' : 'python3';
 
 /** Runs verify.py's camp checks against the real manifest, edited by `edit` (Python). */
 function verify(edit: string, files = ''): { failures: string[]; warnings: string[] } {
@@ -25,6 +26,16 @@ def cutout(bottom=900):
     im = Image.new('RGBA', (1024, 1024))
     ImageDraw.Draw(im).rectangle((300, 600, 700, bottom), fill=(150, 110, 60, 255))
     return im
+def decoration(size=512, inset=40):
+    im = Image.new('RGBA', (size, size))
+    ImageDraw.Draw(im).ellipse((inset, inset, size - inset, size - inset), fill=(200, 160, 60, 255))
+    return im
+def deco(i): return next(d for d in camp['decorations'] if d['id'] == i)
+def tent(i): return next(t for t in camp['tentStyles'] if t['id'] == i)
+def crew(i): return next(p for p in camp['crewPieces'] if p['id'] == i)
+stage2 = camp['frames'][1]
+def point2(i): return next(p for p in stage2['standPoints'] if p['id'] == i)
+def hotspot(i): return next(h for h in stage2['hotspots'] if h['id'] == i)
 ${edit}
 with tempfile.TemporaryDirectory() as root:
     v.ROOT = root
@@ -32,37 +43,57 @@ with tempfile.TemporaryDirectory() as root:
         path = Path(root) / 'assets' / rel
         path.parent.mkdir(parents=True, exist_ok=True)
         im.save(path, fmt, lossless=True) if fmt == 'WEBP' else im.save(path, fmt)
+    def save_icon(icon, im):
+        path = Path(root) / 'packages/client/src/assets/painted' / f'{icon}.webp'
+        path.parent.mkdir(parents=True, exist_ok=True)
+        ImageDraw.Draw(im).ellipse((40, 40, 216, 216), fill=(60, 170, 160, 255))
+        im.save(path, 'WEBP', lossless=True)
 ${files.split('\n').map(line => `    ${line}`).join('\n')}
     rep = v.Report()
     v.check_camp_layout(rep, mf)
+    v.check_camp_catalog(rep, mf)
     v.check_camp_art(rep, mf)
     print(json.dumps(dict(failures=rep.failures, warnings=rep.warnings)))
 `;
-  const output = execFileSync(process.platform === 'win32' ? 'python' : 'python3', ['-c', code], { encoding: 'utf8' });
+  const output = execFileSync(python, ['-c', code], { encoding: 'utf8' });
   const result = JSON.parse(output.trim().split('\n').at(-1)!) as { failures: string[]; warnings: string[] };
   result.failures = result.failures.map(label => label.replaceAll('\\', '/'));
   return result;
 }
 
+/** Every camp painting the manifest declares, in its format: ground pieces, the parts over them, decorations and the icon. */
 const everyPainting = `
-save('camp/backdrops/open_plains.webp', Image.new('RGB', (1920, 1080), (90, 140, 60)), 'WEBP')
-for rel in ['campfire', 'bedroll', 'trailhead-post']:
-    save(f'camp/frames/stage1/{rel}.png', cutout(), 'PNG')
-save('camp/frames/stage1/campfire-flame.png', cutout(820), 'PNG')
-for style in ['rolled', 'quilted', 'patched']:
-    save(f'camp/kits/{style}.png', cutout(), 'PNG')`;
+for backdrop in camp['backdrops']:
+    save(backdrop['path'], Image.new('RGB', (1920, 1080), (90, 140, 60)), 'WEBP')
+grounded = {p['path'] for f in camp['frames'] for p in f['pieces']} | {k['path'] for k in camp['kitStyles']}
+grounded |= {p['path'] for p in camp['crewPieces']} | {t['path'] for t in camp['tentStyles']} | {camp['souvenirDisplay']['path']}
+parts = {m['path'] for f in camp['frames'] for m in f['movingParts']} | {t['flap'] for t in camp['tentStyles']}
+parts |= {m['path'] for p in camp['crewPieces'] for m in p.get('movingParts', [])}
+for rel in grounded:
+    save(rel, cutout(), 'PNG')
+for rel in parts - grounded:
+    save(rel, cutout(820), 'PNG')
+for deco in camp['decorations']:
+    save(deco['path'], decoration(), 'PNG')
+for icon in camp['paintedIcons']:
+    save_icon(icon, Image.new('RGBA', (256, 256)))`;
 
 describe('camp layout (manifest.camp)', () => {
   it('accepts the declared layout and owes, rather than fails, every missing painting', () => {
     const { failures, warnings } = verify('');
     expect(failures).toEqual([]);
-    expect(warnings).toHaveLength(8);
+    const root = mkdtempSync(join(tmpdir(), 'kad-camp-owed-'));
+    try {
+      expect(warnings).toHaveLength(campArtOwed(root, manifest).need);
+    } finally {
+      rmSync(root, { recursive: true });
+    }
   });
 
   it.each([
-    ['a lane below the open ground', `camp['backdrops'][0]['lanes'][2]['y'] = 0.8`, 'camp/backdrop/open_plains lanes'],
+    ['a lane below the open ground', `camp['backdrops'][0]['lanes'][-1]['y'] = 0.8`, 'camp/backdrop/open_plains lanes'],
     ['a lane above the open ground, in the sky', `camp['backdrops'][0]['lanes'][0]['y'] = 0.4`, 'camp/backdrop/open_plains lanes'],
-    ['lanes out of depth order', `camp['backdrops'][0]['lanes'][1]['y'] = 0.5`, 'camp/backdrop/open_plains lanes'],
+    ['lanes out of depth order', `camp['backdrops'][0]['lanes'][-2]['y'] = 0.5`, 'camp/backdrop/open_plains lanes'],
     ['a crossing off a lane', `camp['backdrops'][0]['crossings'][0]['x'] = 0.02`, 'camp/backdrop/open_plains lanes'],
     ['a stand point past its lane end', `point('wander_near_right')['x'] = 0.99`, 'camp/stage1 layout'],
     ['a hotspot that names no piece', `point('campfire_left')['hotspot'] = 'cookfire'`, 'camp/stage1 layout'],
@@ -71,8 +102,36 @@ describe('camp layout (manifest.camp)', () => {
     ['a stand point out at the edge, where a phone crops', `point('wander_near_left')['x'] = 0.06`, 'camp/stage1 layout'],
     ['a piece out at the edge, where a phone crops', `frame['pieces'][0]['x'] = 0.95`, 'camp/stage1 layout'],
     ['a moving part on no piece', `frame['movingParts'][0]['piece'] = 'cookfire'`, 'camp/stage1 layout'],
-    ['no open_plains fallback', `camp['backdrops'][0]['family'] = 'frozen_north'`, 'camp backdrops'],
-  ])('rejects %s', (_, edit, label) => expect(verify(edit).failures).toEqual([label]));
+    ['no open_plains fallback', `camp['backdrops'] = [b for b in camp['backdrops'] if b['family'] != 'open_plains']`, 'camp backdrops'],
+    ['a stage-2 stand point at a hotspot nobody laid out', `point2('awning')['hotspot'] = 'lookout'`, 'camp/stage2 layout'],
+    ['a hotspot off its lane', `hotspot('awning')['x'] = 0.95`, 'camp/stage2 layout'],
+    ['a hotspot of a kind nobody paints', `hotspot('awning')['kind'] = 'lookout'`, 'camp/stage2 layout'],
+    ['a hotspot sharing a piece id', `hotspot('awning')['id'] = 'tent_0'; point2('awning')['hotspot'] = 'tent_0'`, 'camp/stage2 layout'],
+    ['a hotspot whose default stands at another kind', `hotspot('cookfire')['default'] = 'kept_crew_banner'`, 'camp/stage2 layout'],
+    ['a lantern nobody can swing, at a hotspot a hero looks up at', `del crew('shop_lantern_arch')['movingParts']`, manifest.camp.frames.map(frame => `camp/stage${frame.stage} layout`)],
+    ['a tent spot with no flap to sway', `stage2['movingParts'] = stage2['movingParts'][1:]`, 'camp/stage2 layout'],
+    ['a frame piece warmed at with no flame', `frame['movingParts'] = []`, 'camp/stage1 layout'],
+  ])('rejects %s', (_, edit, label) => expect(verify(edit).failures).toEqual([label].flat()));
+});
+
+describe('camp catalog (#623)', () => {
+  it.each([
+    ['a crew piece at a hotspot kind no frame has', `crew('shop_log_bench')['hotspot'] = 'porch'`],
+    ['a crew piece from nowhere', `crew('shop_log_bench')['group'] = 'gift'`],
+    ['a find with no chapter', `del crew('find_picnic_blanket')['chapter']`],
+    ['a find for a chapter that does not exist', `crew('find_picnic_blanket')['chapter'] = 'first-steps-99'`],
+    ['a trophy for no campaign', `crew('trophy_gemfall')['campaign'] = 'moonfall'`],
+    ['a crew piece with no height', `del crew('shop_log_bench')['heightCm']`],
+    ['two crew pieces with one id', `crew('shop_log_bench')['id'] = 'shop_striped_awning'`],
+    ['a catalog tent with no bedroll kit', `tent('quilted')['kit'] = 'woolly'`],
+    ['a kit style with no tent', `camp['tentStyles'] = [t for t in camp['tentStyles'] if t['id'] != 'patched']`],
+    ['a milestone tent for a tier the art lacks', `tent('mythic')['tier'] = 'starborn'`],
+    ['a tent with no flap', `del tent('sworn')['flap']`],
+    ['a tent tinted some other way', `tent('rolled')['tint'] = 'two-layer'`],
+    ['a souvenir peg below the ground', `camp['souvenirDisplay']['hangPoints'][0]['y'] = 950`],
+    ['a class distinction with no decoration', `camp['decorations'] = [d for d in camp['decorations'] if d['id'] != 'deco_songkeeper_master']`],
+    ['a kit find with no chapter', `del deco('deco_gull_feather')['chapter']`],
+  ])('rejects %s', (_, edit) => expect(verify(edit).failures).toEqual(['camp catalog']));
 });
 
 describe('camp art delivery', () => {
@@ -88,30 +147,63 @@ describe('camp art delivery', () => {
     ['a floating kit variant', `save('camp/kits/rolled.png', cutout(780), 'PNG')`, 'camp/kits/rolled.png origin'],
     ['a moving part below the ground', `save('camp/frames/stage1/campfire-flame.png', cutout(960), 'PNG')`, 'camp/frames/stage1/campfire-flame.png origin'],
     ['an undeclared file', `save('camp/frames/stage1/tent.png', cutout(), 'PNG')`, 'camp/frames/stage1/tent.png undeclared'],
+    ['a floating tent', `save('camp/kits/tents/radiant.png', cutout(780), 'PNG')`, 'camp/kits/tents/radiant.png origin'],
+    ['a tent flap below the ground', `save('camp/kits/tents/radiant-flap.png', cutout(960), 'PNG')`, 'camp/kits/tents/radiant-flap.png origin'],
+    ['a floating shop piece', `save('camp/pieces/shop-log-bench.png', cutout(700), 'PNG')`, 'camp/pieces/shop-log-bench.png origin'],
+    ['a decoration on the figure canvas', `save('camp/decorations/bunting.png', decoration(1024), 'PNG')`, 'assets/camp/decorations/bunting.png canvas'],
+    ['a decoration in its edge margin', `save('camp/decorations/bunting.png', decoration(512, 10), 'PNG')`, 'assets/camp/decorations/bunting.png edge margin'],
+    ['a decoration that is not a PNG', `save('camp/decorations/bunting.png', decoration(), 'WEBP')`, 'camp/decorations/bunting.png format'],
+    ['a Dash Cash icon on the wrong canvas', `save_icon('dash_cash', Image.new('RGBA', (512, 512)))`, 'painted/dash_cash'],
   ])('rejects %s', (_, file, label) => {
     expect(verify('', `${everyPainting}\n${file}`).failures).toEqual([label]);
   });
 });
 
 describe('camp art prompts', () => {
+  const read = (file: string) => JSON.parse(readFileSync(join(process.cwd(), 'docs', file), 'utf8')) as {
+    paintings: { path: string; reference: string; plays: string; prompt: string; output: { width: number; height: number; format: string } }[];
+  };
+  const files = ['camp-art-prompts.json', 'camp-kit-art-prompts.json', 'camp-art-prompts-phase2.json', 'camp-art-prompts-phase3.json'];
+  const paintings = files.flatMap(file => read(file).paintings);
+  const camp = manifest.camp;
+  const decorations = new Set(camp.decorations.map(deco => deco.path));
+  const icons = new Set(camp.paintedIcons.map(id => `packages/client/src/assets/painted/${id}.webp`));
+
   it('keep one prompt for each painting the manifest declares, in its format', () => {
-    const phase1 = JSON.parse(readFileSync(join(process.cwd(), 'docs/camp-art-prompts.json'), 'utf8'));
-    const kits = JSON.parse(readFileSync(join(process.cwd(), 'docs/camp-kit-art-prompts.json'), 'utf8'));
-    const prompts = { paintings: [...phase1.paintings, ...kits.paintings] } as {
-      paintings: { path: string; output: { width: number; height: number; format: string } }[];
-    };
     const declared = [
-      ...manifest.camp.backdrops.map(backdrop => backdrop.path),
-      ...manifest.camp.frames.flatMap(frame => [...frame.pieces, ...frame.movingParts].map(art => art.path)),
-      ...manifest.camp.kitStyles.map(art => art.path),
+      ...camp.backdrops.map(backdrop => backdrop.path),
+      ...camp.frames.flatMap(frame => [...frame.pieces, ...frame.movingParts].map(art => art.path)),
+      ...camp.kitStyles.map(art => art.path),
+      ...camp.crewPieces.flatMap(piece => [piece.path, ...(piece.movingParts ?? []).map(part => part.path)]),
+      ...camp.tentStyles.flatMap(tent => [tent.path, tent.flap]),
+      camp.souvenirDisplay.path,
+      ...decorations,
     ];
-    expect(prompts.paintings.map(painting => painting.path.replace(/^assets\//, '')).sort())
+    expect(paintings.map(painting => painting.path).filter(path => !icons.has(path)).map(path => path.replace(/^assets\//, '')).sort())
       .toEqual([...new Set(declared)].sort());
-    for (const painting of prompts.paintings) {
-      const backdrop = painting.path.endsWith('.webp');
-      expect(painting.output).toMatchObject(backdrop
-        ? { ...manifest.camp.backdropCanvas, format: 'WebP' }
-        : { width: manifest.canvas.width, height: manifest.canvas.height, format: 'PNG' });
+    expect(paintings.map(painting => painting.path).filter(path => icons.has(path)).sort()).toEqual([...icons].sort());
+    for (const painting of paintings) {
+      const rel = painting.path.replace(/^assets\//, '');
+      expect(painting.output, painting.path).toMatchObject(
+        painting.path.endsWith('.webp') && !icons.has(painting.path) ? { ...camp.backdropCanvas, format: 'WebP' }
+          : icons.has(painting.path) ? { ...manifest.paintedIcons.canvas, format: 'WebP' }
+          : decorations.has(rel) ? { width: camp.decorationCanvas.width, height: camp.decorationCanvas.height, format: 'PNG' }
+          : { width: manifest.canvas.width, height: manifest.canvas.height, format: 'PNG' });
+    }
+  });
+
+  it('give every Phase 2 painting a reference from the art already painted, and keep to the house rules', () => {
+    const phase2 = read('camp-art-prompts-phase2.json').paintings;
+    for (const [i, painting] of phase2.entries()) {
+      // A moving part is cut from its piece, which comes before it in the file and is painted first.
+      const earlier = phase2.slice(0, i).some(before => before.path === painting.reference);
+      expect(earlier || existsSync(join(process.cwd(), painting.reference)), `${painting.path} reference ${painting.reference}`).toBe(true);
+      if (!earlier) expect(painting.reference, painting.path).toMatch(/^assets\/camp\/(frames\/stage1|kits)\/|^packages\/client\/src\/assets\/painted\//);
+      expect(painting.plays.length, painting.path).toBeGreaterThan(40);
+      expect(painting.prompt, painting.path).toMatch(/upper-left light/);
+      expect(painting.prompt, painting.path).toMatch(/no text/i);
+      if (!/moving-part cutout/i.test(painting.prompt)) expect(painting.prompt, painting.path).toMatch(/one funny detail/i);
+      expect(painting.prompt + painting.plays, painting.path).not.toMatch(/—/);
     }
   });
 });
@@ -120,25 +212,243 @@ describe('camp art inventory', () => {
   it('owes each declared painting once, until it is on disk', () => {
     const root = mkdtempSync(join(tmpdir(), 'kad-camp-art-'));
     try {
-      expect(campArtOwed(root, manifest)).toEqual({
-        need: 8,
-        missing: [
-          'camp/backdrops/open_plains.webp',
-          'camp/frames/stage1/campfire.png',
-          'camp/frames/stage1/bedroll.png',
-          'camp/frames/stage1/trailhead-post.png',
-          'camp/frames/stage1/campfire-flame.png',
-          'camp/kits/rolled.png',
-          'camp/kits/quilted.png',
-          'camp/kits/patched.png',
-        ],
-      });
+      const owed = campArtOwed(root, manifest);
+      expect(owed.missing).toHaveLength(owed.need);
+      expect(new Set(owed.missing).size).toBe(owed.need);
+      expect(owed.missing).toEqual(expect.arrayContaining([
+        'camp/backdrops/open_plains.webp',
+        'camp/frames/stage1/campfire.png',
+        'camp/frames/stage1/bedroll.png',
+        'camp/frames/stage1/trailhead-post.png',
+        'camp/frames/stage1/campfire-flame.png',
+        'camp/kits/rolled.png',
+        'camp/kits/quilted.png',
+        'camp/kits/patched.png',
+        'camp/frames/stage2/cookfire.png',
+        'camp/frames/stage2/cookfire-flame.png',
+        'camp/kits/tents/mythic.png',
+        'camp/kits/tents/mythic-flap.png',
+        'camp/kits/souvenir-line.png',
+        'camp/pieces/trophy-riftlight.png',
+        'camp/decorations/songkeeper-master.png',
+        'painted/dash_cash.webp',
+      ]));
+      // Phase 1 and #633's eight, Phase 2's sixty, and Phase 3's eighteen.
+      expect(owed.need).toBe(86);
       mkdirSync(join(root, 'assets/camp/frames/stage1'), { recursive: true });
       writeFileSync(join(root, 'assets/camp/frames/stage1/bedroll.png'), 'fixture');
+      mkdirSync(join(root, 'packages/client/src/assets/painted'), { recursive: true });
+      writeFileSync(join(root, 'packages/client/src/assets/painted/dash_cash.webp'), 'fixture');
       expect(campArtOwed(root, manifest).missing).not.toContain('camp/frames/stage1/bedroll.png');
+      expect(campArtOwed(root, manifest).missing).not.toContain('painted/dash_cash.webp');
       expect(campArtOwed(root, {})).toEqual({ need: 0, missing: [] });
     } finally {
       rmSync(root, { recursive: true });
     }
+  });
+});
+
+/**
+ * A hero's gear is fitted to her painted box (packages/client/src/world/camp-ownership.ts
+ * `HERO_PAINT`): per species, the most any of her paintings (every tier, every class figure)
+ * covers of her drawn height, measured as actor-art.ts `measurePaint` measures (alpha over 64 on a
+ * 256px copy). The table must cover every painting, so her gear fits each, and stay close to the
+ * largest, so it is not fitted to a hero bigger than any she is drawn as.
+ */
+describe('the hero paint boxes gear is fitted to', () => {
+  it('cover every hero painting, and no more than a little past the largest', async () => {
+    const { HERO_PAINT } = await import('../../packages/client/src/world/camp-ownership.ts');
+    const code = `
+import glob, json, collections
+from pathlib import Path
+from PIL import Image
+nominal = 900 / 1024 - 0.078
+out = collections.defaultdict(lambda: [0.0, 0.0])
+paths = glob.glob('assets/characters/*/*/assembled.png') + glob.glob('assets/character-rigs/*/*/*/assembled.png')
+for path in paths:
+    parts = Path(path).parts
+    species = parts[-2] if 'character-rigs' in parts else parts[2]
+    alpha = Image.open(path).convert('RGBA').resize((256, 256)).getchannel('A').point(lambda v: 255 if v > 64 else 0)
+    l, t, r, b = alpha.getbbox()
+    out[species][0] = max(out[species][0], (b - t) / 256 / nominal)
+    out[species][1] = max(out[species][1], (r - l) / 256 / nominal)
+print(json.dumps(out))
+`;
+    const measured = JSON.parse(execFileSync(python, ['-c', code], { cwd: join(art, '..', '..'), encoding: 'utf8' })) as Record<string, [number, number]>;
+    expect(Object.keys(measured).sort()).toEqual(Object.keys(HERO_PAINT).sort());
+    for (const [species, [height, width]] of Object.entries(measured)) {
+      const table = HERO_PAINT[species]!;
+      expect(table.height, `${species} height`).toBeGreaterThanOrEqual(height);
+      expect(table.width, `${species} width`).toBeGreaterThanOrEqual(width);
+      expect(table.height - height, `${species} height`).toBeLessThan(0.02);
+      expect(table.width - width, `${species} width`).toBeLessThan(0.02);
+    }
+  });
+});
+
+/**
+ * The camp lays its pieces out by their painted footprints (packages/client/src/world/camp-paint.json,
+ * written by tools/art/camp-paint.py), so a repainted piece must not keep its old shape there.
+ */
+describe('the camp paint table', () => {
+  it('matches the paintings on disk, one footprint for every grounded camp painting', () => {
+    const out = execFileSync(python, [join(art, 'camp-paint.py'), '--check'], { cwd: join(art, '..', '..'), encoding: 'utf8' });
+    expect(out).toContain('up to date');
+    const table = JSON.parse(readFileSync(join(art, '..', '..', 'packages/client/src/world/camp-paint.json'), 'utf8')) as { paint: Record<string, unknown> };
+    const camp = manifest.camp;
+    const grounded = new Set([
+      ...camp.frames.flatMap((frame) => frame.pieces.map((piece) => piece.path)),
+      ...camp.kitStyles.map((kit) => kit.path),
+      ...camp.crewPieces.map((piece) => piece.path),
+      ...camp.tentStyles.map((tent) => tent.path),
+      camp.souvenirDisplay.path,
+    ]);
+    for (const path of grounded) {
+      if (existsSync(join(art, '..', '..', 'assets', path))) expect(table.paint[path], path).toBeTruthy();
+    }
+  });
+
+  it("measures every crew piece's pennant, so its streamers are kept clear (camp-boxes.ts pieceKeepTop)", () => {
+    const table = JSON.parse(readFileSync(join(art, '..', '..', 'packages/client/src/world/camp-paint.json'), 'utf8')) as { paint: Record<string, unknown> };
+    const pennants = manifest.camp.crewPieces.flatMap((piece) => ((piece as { movingParts?: { path: string; motion: string }[] }).movingParts ?? []).filter((part) => part.motion === 'ripple'));
+    expect(pennants.length).toBeGreaterThan(0);
+    for (const part of pennants) {
+      if (existsSync(join(art, '..', '..', 'assets', part.path))) expect(table.paint[part.path], part.path).toBeTruthy();
+    }
+  });
+
+  it('fails a stale table', () => {
+    const code = `
+import importlib, json, os, shutil, sys, tempfile
+sys.path.insert(0, ${JSON.stringify(art)})
+paint = importlib.import_module('camp-paint')
+with tempfile.TemporaryDirectory() as root:
+    shutil.copytree(os.path.join(paint.ROOT, 'assets', 'camp'), os.path.join(root, 'assets', 'camp'))
+    shutil.copy(os.path.join(paint.ROOT, 'assets', 'manifest.json'), os.path.join(root, 'assets', 'manifest.json'))
+    os.makedirs(os.path.dirname(os.path.join(root, paint.TABLE_REL)))
+    table = json.load(open(paint.TABLE))
+    table['paint']['camp/frames/stage2/crew-banner.png']['box'][2] -= 200
+    json.dump(table, open(os.path.join(root, paint.TABLE_REL), 'w'))
+    print(json.dumps(paint.stale(root)))
+`;
+    const problems = JSON.parse(execFileSync(python, ['-c', code], { encoding: 'utf8' }).trim().split('\n').at(-1)!) as string[];
+    expect(problems).toHaveLength(1);
+    expect(problems[0]).toContain('camp/frames/stage2/crew-banner.png');
+  });
+});
+
+/**
+ * A hero's color tints her tent's cloth and its flap, never its poles and ropes (docs/briefs/camp.md,
+ * "Tinting is #633's"): the cloth regions traced in packages/client/src/world/camp-kit-art.ts, filled
+ * even-odd as the client clips them, cover the painting's light cloth, and leave its wood alone: the
+ * catalog tents' poles and stakes, and every tent's guy ropes out at its sides.
+ */
+describe('the tent cloth masks (#623)', () => {
+  it("cover each tent's cloth and its flap's, not its poles and ropes", () => {
+    const source = readFileSync(join(art, '..', '..', 'packages/client/src/world/camp-kit-art.ts'), 'utf8');
+    const block = source.slice(source.indexOf('const CAMP_TENT_CLOTH'));
+    const cloth = Object.fromEntries([...block.matchAll(/(\w+): "(M[^"]+)"/g)].map((m) => [m[1], m[2]]));
+    const code = `
+import colorsys, json, re, sys
+from PIL import Image, ImageChops, ImageDraw
+cloth = json.loads(sys.argv[1])
+def polygons(d):
+    out, cur, pos, cmd = [], [], (0.0, 0.0), None
+    toks = re.findall(r'[MLHVQZ]|-?\\d+(?:\\.\\d+)?', d)
+    i = 0
+    while i < len(toks):
+        if toks[i] in 'MLHVQZ':
+            cmd = toks[i]; i += 1
+            if cmd == 'Z':
+                if cur: out.append(cur); cur = []
+                continue
+            if cmd == 'M' and cur: out.append(cur); cur = []
+        if cmd in 'ML':
+            pos = (float(toks[i]), float(toks[i + 1])); i += 2; cur.append(pos)
+            if cmd == 'M': cmd = 'L'
+        elif cmd == 'H':
+            pos = (float(toks[i]), pos[1]); i += 1; cur.append(pos)
+        elif cmd == 'V':
+            pos = (pos[0], float(toks[i])); i += 1; cur.append(pos)
+        elif cmd == 'Q':
+            cx, cy, x, y = map(float, toks[i:i + 4]); i += 4
+            for s in range(1, 13):
+                u = s / 12
+                cur.append(((1 - u) ** 2 * pos[0] + 2 * (1 - u) * u * cx + u * u * x, (1 - u) ** 2 * pos[1] + 2 * (1 - u) * u * cy + u * u * y))
+            pos = (x, y)
+    if cur: out.append(cur)
+    return out
+def mask(d):
+    m = Image.new('1', (1024, 1024), 0)
+    for poly in polygons(d):
+        layer = Image.new('1', (1024, 1024), 0)
+        ImageDraw.Draw(layer).polygon(poly, fill=1)
+        m = ImageChops.logical_xor(m, layer)
+    return m.load()
+manifest = json.load(open('assets/manifest.json', encoding='utf-8'))
+out = {}
+for tent in manifest['camp']['tentStyles']:
+    m = mask(cloth[tent['id']])
+    for kind, rel in (('tent', tent['path']), ('flap', tent['flap'])):
+        px = Image.open('assets/' + rel).convert('RGBA').load()
+        n = dict(cloth=0, cloth_in=0, wood=0, wood_in=0, rope=0, rope_in=0)
+        for y in range(0, 1024, 2):
+            for x in range(0, 1024, 2):
+                r, g, b, a = px[x, y]
+                if a < 128: continue
+                h, s, v = colorsys.rgb_to_hsv(r / 255, g / 255, b / 255)
+                inside = 1 if m[x, y] else 0
+                if s < 0.25 and v > 0.45: n['cloth'] += 1; n['cloth_in'] += inside
+                if s > 0.45 and 0.04 < h < 0.14 and v > 0.3:
+                    n['wood'] += 1; n['wood_in'] += inside
+                    if (x < 200 or x > 824) and y > 600: n['rope'] += 1; n['rope_in'] += inside
+        out[tent['id'] + ':' + kind] = dict(group=tent['group'], **n)
+print(json.dumps(out))
+`;
+    const measured = JSON.parse(execFileSync(python, ['-c', code, JSON.stringify(cloth)], { cwd: join(art, '..', '..'), encoding: 'utf8' }).trim().split('\n').at(-1)!) as Record<string, { group: string; cloth: number; cloth_in: number; wood: number; wood_in: number; rope: number; rope_in: number }>;
+    expect(Object.keys(measured)).toHaveLength(manifest.camp.tentStyles.length * 2);
+    for (const [id, n] of Object.entries(measured)) {
+      expect(n.cloth_in / n.cloth, `${id}: its cloth is tinted`).toBeGreaterThan(0.93);
+      // A milestone tent's gold trim is sewn on its cloth and takes the color with it; a catalog tent is cloth and wood only.
+      if (n.group === 'catalog') expect(n.wood_in / Math.max(1, n.wood), `${id}: its poles and stakes stay wood`).toBeLessThan(0.06);
+      // Out at its sides, below the eaves, is rope and stakes (and, on a milestone tent, the gold-trimmed hem).
+      if (n.rope > 50) expect(n.rope_in / n.rope, `${id}: its guy ropes stay rope`).toBeLessThan(n.group === 'catalog' ? 0.1 : 0.2);
+    }
+  });
+});
+
+describe('the Phase 2 prompts, in step with the stage-2 layout (#620)', () => {
+  const prompts = JSON.parse(readFileSync(join(art, '..', '..', 'docs', 'camp-art-prompts-phase2.json'), 'utf8')) as { paintings: { path: string; plays: string }[] };
+  const camp = (manifest as unknown as { camp: { crewPieces: { id: string; path: string; hotspot: string; group: string; heightCm: number; widthCm: number }[]; frames: { hotspots?: { kind: string; lane: string }[] }[] } }).camp;
+  const stage2 = camp.frames[1]!.hotspots!;
+
+  it("says each crew piece's true height and width, and the lane its spot stands on", () => {
+    for (const piece of camp.crewPieces.filter(piece => !/^stage[34]-shop$/.test(piece.group))) {
+      const painting = prompts.paintings.find((p) => p.path === `assets/${piece.path}`)!;
+      expect(painting.plays, piece.id).toContain(`Drawn at ${piece.heightCm} cm tall and ${piece.widthCm} cm wide.`);
+      const lane = stage2.find((h) => h.kind === piece.hotspot)!.lane;
+      expect(painting.plays, piece.id).toContain(`${lane} lane`);
+    }
+  });
+
+  it('says where a piece a stage-1 crew can own stands at stage 1, where its kind has a spot there', () => {
+    const stage1 = camp.frames[0]!.hotspots ?? [];
+    const early = camp.crewPieces.filter((piece) => /^(find|kept|starter-shop)$/.test(piece.group));
+    let said = 0;
+    for (const piece of early) {
+      const spot = stage1.find((h) => h.kind === piece.hotspot);
+      if (!spot) continue;
+      const painting = prompts.paintings.find((p) => p.path === `assets/${piece.path}`)!;
+      expect(painting.plays, piece.id).toMatch(new RegExp(`At stage 1 it (stands|lies) on the ${spot.lane} lane`));
+      said++;
+    }
+    expect(said).toBe(6);
+  });
+
+  it('sizes a tent to fit its owner, and hangs her souvenir line against her tent', () => {
+    for (const painting of prompts.paintings.filter((p) => /kits\/tents\/[a-z]+\.png$/.test(p.path))) {
+      expect(painting.plays, painting.path).toMatch(/fit its owner/);
+    }
+    expect(prompts.paintings.find((p) => p.path.endsWith('souvenir-line.png'))!.plays).toMatch(/on each tent's own lane against its side, the open side a nearer tent never covers/);
   });
 });
