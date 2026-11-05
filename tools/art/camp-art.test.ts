@@ -304,6 +304,15 @@ describe('the camp paint table', () => {
     }
   });
 
+  it("measures every crew piece's pennant, so its streamers are kept clear (camp-boxes.ts pieceKeepTop)", () => {
+    const table = JSON.parse(readFileSync(join(art, '..', '..', 'packages/client/src/world/camp-paint.json'), 'utf8')) as { paint: Record<string, unknown> };
+    const pennants = manifest.camp.crewPieces.flatMap((piece) => ((piece as { movingParts?: { path: string; motion: string }[] }).movingParts ?? []).filter((part) => part.motion === 'ripple'));
+    expect(pennants.length).toBeGreaterThan(0);
+    for (const part of pennants) {
+      if (existsSync(join(art, '..', '..', 'assets', part.path))) expect(table.paint[part.path], part.path).toBeTruthy();
+    }
+  });
+
   it('fails a stale table', () => {
     const code = `
 import importlib, json, os, shutil, sys, tempfile
