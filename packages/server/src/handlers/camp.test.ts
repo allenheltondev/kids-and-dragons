@@ -5,7 +5,7 @@
  */
 
 import { describe, expect, it, vi } from "vitest";
-import { emptyCamp, newCharacter, readKit, resolveCharacter } from "@kad/shared";
+import { campView, emptyCamp, newCharacter, readKit, resolveCharacter } from "@kad/shared";
 import type { Campaign, CampRecord, Character, Household, RunState } from "@kad/shared";
 import { makeChapter } from "../../../shared/src/test-fixtures.ts";
 import { makeContent, makeHarness, seedHousehold, stubEngine, T0, type TestHarness } from "../test-support.ts";
@@ -279,6 +279,61 @@ describe("receipts (§12.2)", () => {
     // Another chapter has its own two.
     expect(await claimLuckyDrop("h_test", null, { runId: "r_again", sceneId: "x", chapterId: "riftlight-washout" }, addCash(1), h.deps)).toMatchObject({ value: { claimed: true } });
     expect((await readCamp("h_test", null, h.deps)).dashCash).toBe(3);
+  });
+});
+
+describe("what opens the shop (§5.3): the Practice Meadow does not count", () => {
+  const chapter = (id: string, campaignId: string) => ({ ...makeChapter(), id, campaignId });
+  function shopHarness(): TestHarness {
+    return makeHarness({
+      content: makeContent({
+        campaigns: [{ ...campaign("first-steps", false), chapters: ["first-steps-01"], tutorial: true }, ...CAMPAIGNS.slice(1)],
+        chapters: [chapter("first-steps-01", "first-steps"), makeChapter(), chapter("gemfall-01", "gemfall")],
+      }),
+    });
+  }
+
+  it("keeps the shop shut for a crew paid for the Practice Meadow and one other chapter, and still pays the meadow", async () => {
+    const h = shopHarness();
+    await payChapter("h_test", null, "first-steps-01", addCash(2), h.deps);
+    await payChapter("h_test", null, "bramblewood-01", addCash(2), h.deps);
+    const camp = await readCamp("h_test", null, h.deps);
+    expect(camp).toMatchObject({ dashCash: 4, paidChapterCount: 1 });
+    expect(Object.keys(camp.receipts.chapters).sort()).toEqual(["bramblewood-01", "first-steps-01"]);
+    expect(campView(camp).shopOpen).toBe(false);
+  });
+
+  it("opens it at two chapters of campaigns that are not a tutorial, The Hollow Crown's counting", async () => {
+    const h = shopHarness();
+    await payChapter("h_test", null, "bramblewood-01", addCash(2), h.deps);
+    await payChapter("h_test", null, "gemfall-01", addCash(2), h.deps);
+    const camp = await readCamp("h_test", null, h.deps);
+    expect(camp.paidChapterCount).toBe(2);
+    expect(campView(camp).shopOpen).toBe(true);
+  });
+
+  it("corrects an existing crew's stored count from its receipts, the same however often it is read and written", async () => {
+    const h = shopHarness();
+    // Stored before the meadow stopped counting: two receipts, counted 2, the shop open.
+    const before: CampRecord = {
+      ...emptyCamp(),
+      dashCash: 4,
+      paidChapterCount: 2,
+      receipts: { rewards: {}, chapters: { "first-steps-01": { at: AT }, "bramblewood-01": { at: AT } }, drops: {} },
+    };
+    expect(await h.repo.putCamp({ householdId: "h_test", camp: before, expectedRevision: null })).toBe(true);
+    const read = await readCamp("h_test", null, h.deps);
+    expect(read).toMatchObject({ paidChapterCount: 1, dashCash: 4 });
+    expect(await readCamp("h_test", null, h.deps)).toEqual(read);
+    await mutateCamp("h_test", null, (camp) => camp, h.deps);
+    expect((await h.repo.getCamp("h_test"))?.paidChapterCount).toBe(1);
+    expect(await readCamp("h_test", null, h.deps)).toEqual({ ...read, revision: read.revision + 1 });
+    // A count that undercounts (a chapter paid without one) is put right too.
+    await mutateCamp("h_test", null, (camp) => ({ ...camp, paidChapterCount: 0 }), h.deps);
+    expect((await readCamp("h_test", null, h.deps)).paidChapterCount).toBe(1);
+    // And the next real chapter opens the shop.
+    await payChapter("h_test", null, "gemfall-01", addCash(2), h.deps);
+    expect(campView(await readCamp("h_test", null, h.deps)).shopOpen).toBe(true);
   });
 });
 

@@ -1280,6 +1280,14 @@ export interface Campaign {
    */
   growsCamp?: true;
   /**
+   * A tutorial: the Practice Meadow (`first-steps`). Its chapters still pay the
+   * crew Dash Cash, but they do not count toward the two paid chapters that
+   * open the camp shop (docs/camp.md §5.3, §11), so a crew earns the shop in
+   * real adventures. Absent on every other campaign, The Hollow Crown
+   * included, whose chapters count. Only ever true.
+   */
+  tutorial?: true;
+  /**
    * Makes this a graph campaign (#192): the next chapter is chosen by the
    * graph's edges, not by `index`. Absent — every campaign authored before it
    * existed, Gemfall included — is an ordered campaign, played exactly as it

@@ -26,6 +26,10 @@
  *     (no back-pay), and every camp, stored or not, reads with each
  *     `growsCamp` campaign the crew has finished counted once (`growCamp`);
  *     the next write stores what was read;
+ *   - every camp reads with `paidChapterCount` derived from its paid-chapter
+ *     receipts, a `tutorial` campaign's chapters left out (§5.3;
+ *     `withShopCount`), so a count stored when the Practice Meadow still
+ *     counted is corrected the same way however often it is read;
  *   - a hero reads with the milestone kit pieces for the tiers and
  *     distinctions she holds (`readKit`; the character ladder's v8 → v9 step
  *     puts them on the row, so her next write keeps them).
@@ -33,7 +37,9 @@
 
 import {
   campView,
+  countsTowardShop,
   emptyCamp,
+  paidShopChapters,
   growCamp,
   KIT_VERSION,
   LUCKY_DROPS_PER_CHAPTER,
@@ -183,7 +189,7 @@ export async function claimReceipt(
     crew,
     (camp) => {
       refused = claimRefusal(camp, claim);
-      return refused ? null : withClaimReceipt(apply(camp), claim, at);
+      return refused ? null : withShopCount(withClaimReceipt(apply(camp), claim, at), deps.content);
     },
     deps,
     options,
@@ -212,9 +218,10 @@ export function claimReward(
 }
 
 /**
- * Pay a chapter's completion once per crew (§5.2): its receipt, one more
- * `paidChapterCount`, and its lucky-drop receipts pruned, since a paid chapter
- * drops nothing more. `apply` adds the Dash Cash.
+ * Pay a chapter's completion once per crew (§5.2): its receipt, the
+ * `paidChapterCount` counted again from the receipts (one more, unless the
+ * chapter is a tutorial's, §5.3), and its lucky-drop receipts pruned, since a
+ * paid chapter drops nothing more. `apply` adds the Dash Cash.
  */
 export function payChapter(
   householdId: string,
@@ -265,7 +272,12 @@ export function claimRefusal(camp: CampRecord, claim: CampClaim): ClaimRefusal |
   }
 }
 
-/** The camp with `claim`'s receipt written (and, for a chapter, its count and pruned drops), as `claimReceipt` writes it. */
+/**
+ * The camp with `claim`'s receipt written (and, for a chapter, its drops
+ * pruned), as `claimReceipt` writes it. A chapter's receipt moves
+ * `paidChapterCount` only once the caller counts again (`withShopCount`),
+ * since whether it counts is the content's to say.
+ */
 export function withClaimReceipt(camp: CampRecord, claim: CampClaim, at: string): CampRecord {
   const receipts = structuredClone(camp.receipts);
   switch (claim.kind) {
@@ -278,7 +290,7 @@ export function withClaimReceipt(camp: CampRecord, claim: CampClaim, at: string)
       for (const [key, drop] of Object.entries(receipts.drops)) {
         if (drop.chapterId === claim.chapterId) delete receipts.drops[key];
       }
-      return { ...camp, receipts, paidChapterCount: camp.paidChapterCount + 1 };
+      return { ...camp, receipts };
     }
     case "drop":
       receipts.drops[dropKey(claim.runId, claim.sceneId)] = { at, runId: claim.runId, chapterId: claim.chapterId };
@@ -296,7 +308,27 @@ async function readStanding(
     deps.repo.getCamp(householdId, crew),
     deps.repo.listCampaignProgress(householdId, crew),
   ]);
-  return { stored, camp: growCamp(stored ?? emptyCamp(), finishedGrowsCamp(attempts, deps.content)) };
+  return { stored, camp: withShopCount(growCamp(stored ?? emptyCamp(), finishedGrowsCamp(attempts, deps.content)), deps.content) };
+}
+
+/**
+ * Whether a paid chapter counts toward opening the shop (§5.3): unless its
+ * campaign marks itself a `tutorial` (the Practice Meadow). A chapter the
+ * content no longer has counts, since it was paid for real play.
+ */
+export function chapterCountsTowardShop(chapterId: string, content: Pick<ContentStore, "chapter" | "campaign">): boolean {
+  const chapter = content.chapter(chapterId);
+  return chapter === null || countsTowardShop(content.campaign(chapter.campaignId));
+}
+
+/**
+ * The camp with `paidChapterCount` derived from its paid-chapter receipts,
+ * tutorial chapters left out (§5.3). Idempotent; returns `camp` itself when
+ * the count already agrees.
+ */
+export function withShopCount(camp: CampRecord, content: Pick<ContentStore, "chapter" | "campaign">): CampRecord {
+  const paidChapterCount = paidShopChapters(camp.receipts.chapters, (id) => chapterCountsTowardShop(id, content));
+  return paidChapterCount === camp.paidChapterCount ? camp : { ...camp, paidChapterCount };
 }
 
 /**

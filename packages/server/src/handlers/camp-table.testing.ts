@@ -8,13 +8,16 @@
 import { readFileSync } from "node:fs";
 import { expect } from "vitest";
 import { applyIntent, createRunState } from "@kad/shared";
-import type { ActionResponse, CampCatalog, Chapter, ChannelMessage, ClientIntent, InteractionScene, RunState, ServerMessage } from "@kad/shared";
+import type { ActionResponse, CampCatalog, CampRecord, Campaign, Chapter, ChannelMessage, ClientIntent, InteractionScene, RunState, ServerMessage } from "@kad/shared";
 import type { Engine } from "../engine/port.ts";
 import { makeChapter, makeContent, makeHarness, seedHousehold, type TestHarness } from "../test-support.ts";
 import { applyAction } from "./action.ts";
 import { createRoom, joinRoom } from "./room.ts";
 
 export const CHAPTER = "bramblewood-01";
+
+/** The Practice Meadow's chapter, whose campaign marks itself a tutorial (docs/camp.md §5.3). */
+export const PRACTICE_CHAPTER = "first-steps-01";
 
 /** The shipped catalog, so the shop's lists and prices are the real ones. */
 export const CATALOG = JSON.parse(readFileSync(new URL("../../../../content/camp.json", import.meta.url), "utf8")) as CampCatalog;
@@ -43,10 +46,37 @@ export function payingChapter(): Chapter {
   return chapter;
 }
 
+/**
+ * A camp as a test seeds it: `over` spread on, with a `paidChapterCount` of n
+ * written as n paid-chapter receipts for chapters the fixture content does not
+ * have (they count, camp.ts `withShopCount`), since the count is read off the
+ * receipts.
+ */
+export function seeded(camp: CampRecord, over: Partial<CampRecord>): CampRecord {
+  const { paidChapterCount, ...rest } = over;
+  const next = { ...camp, ...rest };
+  if (paidChapterCount === undefined) return next;
+  const chapters = { ...next.receipts.chapters };
+  for (let i = 1; i <= paidChapterCount; i++) chapters[`earlier-chapter-${String(i)}`] = { at: "2026-11-01T00:00:00.000Z" };
+  return { ...next, paidChapterCount, receipts: { ...next.receipts, chapters } };
+}
+
 const realEngine: Engine = { applyIntent, createRunState };
 
-export const harnessFor = (catalog: CampCatalog | null = CATALOG): TestHarness =>
-  makeHarness({ engine: realEngine, content: makeContent({ chapters: [payingChapter()], campCatalog: catalog }), playtest: true });
+/** The Practice Meadow as the shop's count reads it: a campaign that marks itself a tutorial. */
+const PRACTICE: Campaign = { id: "first-steps", title: "First Steps", blurb: "", chapters: [PRACTICE_CHAPTER], tutorial: true };
+
+/**
+ * The fixture content: the paying chapter, and the Practice Meadow beside it
+ * (its campaign is the only one the content has, so the fixture chapter's own
+ * campaign boundary never fires). With `practice`, the paying chapter is the
+ * meadow's own, played the way the server plays the practice.
+ */
+export const harnessFor = (catalog: CampCatalog | null = CATALOG, options: { practice?: boolean } = {}): TestHarness => {
+  const meadow = { ...payingChapter(), id: PRACTICE_CHAPTER, campaignId: PRACTICE.id };
+  const chapters = options.practice ? [meadow] : [payingChapter(), meadow];
+  return makeHarness({ engine: realEngine, content: makeContent({ chapters, campaigns: [PRACTICE], campCatalog: catalog }), playtest: true });
+};
 
 const hero = (name: string, species: "unicorn" | "bigfoot", cls: "songkeeper" | "thornguard"): ClientIntent => ({
   type: "CREATE_CHARACTER",
@@ -75,7 +105,11 @@ export interface Table {
 }
 
 /** A room of the household with two players joined; nobody seated yet. */
-export async function table(harness: TestHarness, household?: Awaited<ReturnType<typeof seedHousehold>>): Promise<Table> {
+export async function table(
+  harness: TestHarness,
+  household?: Awaited<ReturnType<typeof seedHousehold>>,
+  chapterId: string = CHAPTER,
+): Promise<Table> {
   const { householdId, players } = household ?? (await seedHousehold(harness, 2));
   const created = await createRoom({ householdId, mode: "party" }, harness.deps);
   if (!created.ok) throw new Error("room");
@@ -103,7 +137,7 @@ export async function table(harness: TestHarness, household?: Awaited<ReturnType
     }
     await send("p_1", { type: "READY", ready: true });
     await send("p_2", { type: "READY", ready: true });
-    await send("p_1", { type: "START_CHAPTER", chapterId: CHAPTER });
+    await send("p_1", { type: "START_CHAPTER", chapterId });
   };
   const goto = (sceneId: string) => send("p_1", { type: "PLAYTEST_GOTO", sceneId });
   const leave = async () => {

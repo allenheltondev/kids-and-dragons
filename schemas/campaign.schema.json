@@ -60,6 +60,11 @@
       "type": "boolean",
       "const": true
     },
+    "tutorial": {
+      "description": "Campaign.tutorial: the Practice Meadow. Its chapters pay Dash Cash but do not count toward the two paid chapters that open the camp shop (docs/camp.md \u00a75.3). Absent on every other campaign.",
+      "type": "boolean",
+      "const": true
+    },
     "routeSets": {
       "description": "Named sets of story flags a routed beat chooses from, e.g. the three roads north, or the three pursuits. Declared here rather than inferred from the files that exist, because the failure worth catching is a *missing* member: only a declared set can notice an absence.",
       "type": "object",

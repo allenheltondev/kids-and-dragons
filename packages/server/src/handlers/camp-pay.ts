@@ -33,10 +33,10 @@
  *     logged; the story has already happened.
  */
 
-import { CHAPTER_FINISH_PAY, campView, chapterPay, dropKey, shopIsOpen, shopOffer } from "@kad/shared";
+import { CHAPTER_FINISH_PAY, campView, chapterPay, dropKey, shopIsOpen, shopOffer, shopOpensIn } from "@kad/shared";
 import type { CampClaimResult, CampFind, CampRecord, CampShopView, CampTally, CampView, LuckyDrop, RunState } from "@kad/shared";
 import type { RunRecord } from "../store/repository.ts";
-import { claimLuckyDrop, claimRefusal, payChapter, readCamp, withClaimReceipt, type CampDeps } from "./camp.ts";
+import { chapterCountsTowardShop, claimLuckyDrop, claimRefusal, payChapter, readCamp, withClaimReceipt, withShopCount, type CampDeps } from "./camp.ts";
 import { claimCampFinds } from "./camp-finds.ts";
 import { iso } from "./deps.ts";
 import { discoveryHousehold } from "./field-guide.ts";
@@ -108,7 +108,8 @@ export interface PreparedChapterEnd {
 /**
  * The chapter's end, as the camp will stand once this step's drops and the
  * chapter's pay land: the tally, the balance, and, once the crew has been paid
- * for two chapters (§5.3), the shop's offer (§12.4). Null when there is no
+ * for two chapters, tutorial chapters not counted (§5.3), the shop's offer
+ * (§12.4), affordable or not. Null when there is no
  * camp to say anything about (an unsettled room, a store that cannot be read):
  * the summary then shows no camp beat at all, and nothing is paid.
  *
@@ -151,15 +152,22 @@ export async function prepareChapterEndCamp(
   const objectives = replay ? 0 : Math.max(0, input.objectivesMet);
   const pay = replay ? null : chapterPay(objectives);
   if (pay !== null) {
-    camp = withClaimReceipt({ ...camp, dashCash: camp.dashCash + pay }, { kind: "chapter", chapterId, runId: state.runId }, at);
+    camp = withShopCount(
+      withClaimReceipt({ ...camp, dashCash: camp.dashCash + pay }, { kind: "chapter", chapterId, runId: state.runId }, at),
+      deps.content,
+    );
   }
+  const shopOpen = shopIsOpen(camp);
   const campTally: CampTally = {
     finished: replay ? 0 : CHAPTER_FINISH_PAY,
     objectives,
     drops,
     replay,
     balance: camp.dashCash,
-    shopOpen: shopIsOpen(camp),
+    shopOpen,
+    ...(shopOpen ? {} : { shopIn: shopOpensIn(camp) }),
+    // The Practice Meadow pays, but does not bring the shop any nearer (§5.3).
+    ...(chapterCountsTowardShop(chapterId, deps.content) ? {} : { uncounted: true as const }),
   };
   const catalog = deps.content.campCatalog();
   const campShop: CampShopView | undefined =

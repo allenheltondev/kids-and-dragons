@@ -372,10 +372,15 @@ opens only after two chapters, so neither can be the first reward.
   say), and the chapter's end shows it beside the campfire and highlights where it can go.
 - **The shop opens after two chapters** (*decided*). A crew needs a little skin in the game before
   it can buy anything: the chapter-end shop appears only once the crew has been paid for at least
-  two chapters, in any campaign. Before that, the chapter's end shows the balance and says the
-  shop opens after the next chapter. The first pieces in each shop cost **5 Dash Cash**
-  (*decided*). Most crews can afford one when the shop opens; a crew that earned only the 4 for
-  finishing two chapters buys a chapter later (§5.2).
+  two chapters, in any campaign but the tutorial. **The Practice Meadow doesn't count toward the
+  two** (*decided*): its chapter still pays Dash Cash like any other, but the shop is earned in
+  real adventures. The tutorial says so in data, `"tutorial": true` on its campaign file, so no
+  id is written into the rule; The Hollow Crown is not marked and counts. Before the shop opens,
+  the chapter's end shows the balance and how far the shop is: "the camp shop opens after the next
+  chapter", or after two adventure chapters, and at the meadow's own end that practice doesn't
+  count. The first pieces in each shop cost **5 Dash Cash** (*decided*). Most crews can afford
+  one when the shop opens; a crew that earned only the 4 for finishing two chapters buys a chapter
+  later (§5.2), and one that started in the meadow arrives with its 2 as well.
 
 ### 5.4 Each hero's kit pieces
 
@@ -434,8 +439,15 @@ Playtests decide whether the limit stays, loosens or goes (§13).
 Buying a piece costs Dash Cash and adds something new to the crew's collection. Spending is a crew
 decision:
 
-1. At the **chapter's end**, once the shop is open (two chapters played, §5.3) and the crew can
-   afford something, the phones show up to three pieces it can buy, plus "Save our Dash Cash."
+1. At the **chapter's end**, once the shop is open (two chapters played, the Practice Meadow
+   not counted, §5.3), the phones and the TV show up to three of the shop's pieces, plus "Save our
+   Dash Cash." **Pieces the crew can't afford yet are shown too** (*decided*), with their price and
+   how much more they need ("Needs 3 more"), so there is something to save toward. They are never
+   votable: disabled on the phones, and a vote for one is refused. When more than three are
+   eligible, the affordable ones come first and the cheapest of the rest fill the list, so it is
+   never all out of reach while something is affordable (§12.4). If nothing is affordable, the
+   pieces still show, with a kind "you can't buy any of these yet, keep saving", and no vote
+   starts.
 2. Every seated player votes, the way a choice point works: most votes wins, and a tie goes to
    the turn marker (spec §6.1). "Save our Dash Cash" is always an option and always free.
 3. The winner joins the collection and is shown beside the campfire on the TV, and the crew can
@@ -708,7 +720,7 @@ interface CampRecord {
   placed: Record<HotspotId, PieceId>;            // shared hotspots only
   friends: Record<FriendId, { rewardId: string; at: string }>;
   buddies: Record<CharId, FriendId>;             // one per hero, this crew's friends only (§4.4)
-  paidChapterCount: number;                      // the shop opens at 2 (§5.3)
+  paidChapterCount: number;                      // the shop opens at 2, tutorial chapters not counted (§5.3)
   // Receipts (§12.2): paid chapters and claimed reward ids. Storage shape to be chosen
   // after checking transaction and record-size limits.
 }
@@ -833,6 +845,8 @@ Settled by the product owner:
 | Phase 1 | Small: the animated lobby only, expanding once children notice their camp (§10) |
 | The first reward | Arrives in the first session: a kit choice and a first-chapter find (§5.3) |
 | The shop | Opens once the crew has been paid for two chapters; its first pieces cost 5 Dash Cash (§5.3) |
+| Shop opening | The Practice Meadow doesn't count toward the two paid chapters (§5.3) |
+| Shop offers | Includes pieces the crew can't afford yet, shown with what they still need, never votable (§6.2) |
 | Lucky drops | A 1 in 8 chance of 1 Dash Cash after each won mini-game or fight, rolled by the server. Never from `play` interactions, at most 2 a chapter, none in a chapter already paid for (§5.2) |
 | What a chapter pays | 2 for finishing, any ending, plus 1 per optional objective met (§5.2) |
 | Milestone kit pieces | A tent style for each new appearance tier and a decoration for each class distinction, kept even if a failed campaign puts the tier back (§5.4) |
@@ -912,9 +926,17 @@ render a safe fallback for a crew whose derived stage exceeds the available fram
 ### 12.4 The chapter-end purchase is optional and atomic
 
 Allow at most one purchase per chapter-end visit. Show up to three eligible,
-unowned pieces for the current stage, in a stable catalog order, plus **Save our Dash Cash**. Show
-the price and resulting balance. If none is affordable, show the balance without starting a vote.
-Lower-stage pieces the crew does not own stay in later shops.
+unowned pieces for the current stage, affordable or not, in a stable catalog order, plus **Save our
+Dash Cash**. When more than three are eligible, take every affordable one first (in catalog
+order), then the cheapest the crew cannot afford yet (catalog order between equal prices), and
+show the chosen ones in catalog order. Show each piece's price and the resulting balance, or, for
+one the crew cannot afford yet, how much more it needs; that one is never votable, and the server
+refuses a vote for it. If none is affordable, show the pieces and the balance without starting a
+vote. Lower-stage pieces the crew does not own stay in later shops.
+
+The count that opens the shop (§5.3) is derived from the paid-chapter receipts, leaving out the
+chapters of a campaign marked `tutorial`, on every read. A crew whose stored count still includes
+the Practice Meadow reads corrected, and its next write stores it, however often that happens.
 
 A vote belongs to one chapter-end instance and one crew. Use the existing choice-vote rules for
 connected and stepped-away players, including the turn-marker tie break. Leaving the screen
@@ -990,7 +1012,8 @@ lives under.
   the campsite backdrop or tents (§3.2).
 - The first session offers each kid a choice for their own kit, and the first chapter of the
   Practice Meadow and of every `growsCamp` campaign hands over a find on every path (§5.3).
-- The shop does not open until the crew has been paid for two chapters (§5.3).
+- The shop does not open until the crew has been paid for two chapters, the Practice Meadow not
+  counted (§5.3).
 - Lucky drops come only from the server's roll, after a won mini-game or fight, at about 1 in 8
   over many trials; each pays once, whatever is retried or reconnected (§5.2, §12.2).
 - No purchase can overspend, buy a piece twice or charge after the chapter's end has been left.

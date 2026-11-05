@@ -103,6 +103,54 @@ describe("the TV's tally (§5.2)", () => {
     expect(screen.getByTestId("camp-shop-line").textContent).toMatch(/Vote on your phones/);
   });
 
+  it("says the Practice Meadow does not count, and how far the shop is", () => {
+    const line = (over: Partial<Tally>) => {
+      cleanup();
+      render(<CampTally tally={tally({ shopOpen: false, ...over })} party={PARTY} />);
+      return screen.getByTestId("camp-shop-line").textContent;
+    };
+    expect(line({ shopIn: 1 })).toBe("The camp shop opens after the next chapter.");
+    expect(line({ shopIn: 2 })).toBe("The camp shop opens after two adventure chapters.");
+    expect(line({ shopIn: 2, uncounted: true })).toBe("Practice doesn't count toward the camp shop. It opens after two adventure chapters.");
+    expect(line({ shopIn: 1, uncounted: true })).toBe("Practice doesn't count toward the camp shop. It opens after the next adventure chapter.");
+  });
+
+  it("shows a piece the crew cannot afford yet with what it still needs, and no ticks for it", () => {
+    const later = shop({
+      balance: 7,
+      options: [
+        { pieceId: "shop_kettle_cookfire", label: "Kettle cookfire", price: 10, after: 7, needs: 3 },
+        { pieceId: "shop_log_bench", label: "Log bench", price: 5, after: 2 },
+      ],
+      votes: { p_1: "shop_log_bench" },
+    });
+    render(<CampTally tally={tally({ balance: 7 })} shop={later} party={PARTY} />);
+    const offer = screen.getByRole("list", { name: "The camp shop" });
+    const kettle = offer.querySelector('[data-option="shop_kettle_cookfire"]')!;
+    expect(kettle.textContent).toContain("10 Dash Cash. Needs 3 more");
+    expect(kettle.hasAttribute("data-later")).toBe(true);
+    expect(within(kettle as HTMLElement).queryByText(/Votes/)).toBeNull();
+    expect(within(offer).getByText("5 Dash Cash, leaves 2")).toBeTruthy();
+    expect(within(offer).getByText("Save our Dash Cash")).toBeTruthy();
+    expect(screen.queryAllByRole("button")).toHaveLength(0);
+    expect(screen.getByTestId("camp-shop-line").textContent).toMatch(/Vote on your phones/);
+  });
+
+  it("shows the pieces for later and starts no vote when none is affordable", () => {
+    const none = shop({
+      balance: 2,
+      options: [
+        { pieceId: "shop_lantern_string", label: "Lantern string", price: 5, after: 2, needs: 3 },
+        { pieceId: "shop_log_bench", label: "Log bench", price: 5, after: 2, needs: 3 },
+      ],
+    });
+    render(<CampTally tally={tally({ balance: 2 })} shop={none} party={PARTY} />);
+    const offer = screen.getByRole("list", { name: "The camp shop" });
+    expect(within(offer).getAllByText("5 Dash Cash. Needs 3 more")).toHaveLength(2);
+    expect(within(offer).queryByText("Save our Dash Cash")).toBeNull();
+    expect(screen.getByTestId("camp-shop-line").textContent).toBe("You can't buy any of these yet. Keep saving, and they'll be here!");
+  });
+
   it("shows the balance and starts no vote when nothing is affordable", () => {
     render(<CampTally tally={tally({ balance: 2 })} shop={shop({ balance: 2, options: [] })} party={PARTY} />);
     expect(screen.queryByRole("list", { name: "The camp shop" })).toBeNull();
@@ -191,7 +239,44 @@ describe("the phone's vote (§6.2)", () => {
     expect(screen.queryAllByRole("button")).toHaveLength(0);
   });
 
-  it("starts no vote when nothing is affordable", () => {
+  it("shows a piece the crew cannot afford yet, disabled, with what it still needs", () => {
+    const onVote = vi.fn();
+    const later = shop({
+      balance: 7,
+      options: [
+        { pieceId: "shop_kettle_cookfire", label: "Kettle cookfire", price: 10, after: 7, needs: 3 },
+        { pieceId: "shop_log_bench", label: "Log bench", price: 5, after: 2 },
+      ],
+    });
+    render(<CampShopVote shop={later} party={PARTY} playerId="p_1" held={false} onVote={onVote} />);
+    const kettle = screen.getByRole("button", { name: /Kettle cookfire/ }) as HTMLButtonElement;
+    expect(kettle.disabled).toBe(true);
+    expect(kettle.textContent).toContain("10 Dash Cash. Needs 3 more");
+    fireEvent.click(kettle);
+    expect(screen.queryByRole("button", { name: "Vote: Kettle cookfire" })).toBeNull();
+    expect((screen.getByRole("button", { name: /Log bench/ }) as HTMLButtonElement).disabled).toBe(false);
+    expect((screen.getByRole("button", { name: /Save our Dash Cash/ }) as HTMLButtonElement).disabled).toBe(false);
+    fireEvent.click(screen.getByRole("button", { name: /Log bench/ }));
+    fireEvent.click(screen.getByRole("button", { name: "Vote: Log bench" }));
+    expect(onVote).toHaveBeenCalledWith("shop_log_bench");
+  });
+
+  it("shows the pieces for later, every one disabled and no saving asked, when none is affordable", () => {
+    const none = shop({
+      balance: 2,
+      options: [
+        { pieceId: "shop_lantern_string", label: "Lantern string", price: 5, after: 2, needs: 3 },
+        { pieceId: "shop_log_bench", label: "Log bench", price: 5, after: 2, needs: 3 },
+      ],
+    });
+    render(<CampShopVote shop={none} party={PARTY} playerId="p_1" held={false} onVote={() => undefined} />);
+    expect(screen.getByTestId("camp-vote-none").textContent).toBe("Your crew has 2 Dash Cash. You can't buy any of these yet. Keep saving, and they'll be here!");
+    const buttons = screen.getAllByRole("button") as HTMLButtonElement[];
+    expect(buttons.map((b) => b.disabled)).toEqual([true, true]);
+    expect(screen.queryByRole("button", { name: /Save our Dash Cash/ })).toBeNull();
+  });
+
+  it("starts no vote when the shop has nothing to show", () => {
     render(<CampShopVote shop={shop({ balance: 3, options: [] })} party={PARTY} playerId="p_1" held={false} onVote={() => undefined} />);
     expect(screen.getByTestId("camp-vote-none").textContent).toMatch(/3 Dash Cash/);
     expect(screen.queryAllByRole("button")).toHaveLength(0);

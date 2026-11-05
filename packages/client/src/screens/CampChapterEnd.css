@@ -70,6 +70,12 @@
   font-weight: 700;
 }
 
+/* A piece the crew cannot afford yet (§6.2): shown to look forward to, never voted for. */
+.camp-tally__option--later,
+.camp-vote .choice--later {
+  opacity: 0.6;
+}
+
 .camp-vote {
   display: flex;
   flex-direction: column;

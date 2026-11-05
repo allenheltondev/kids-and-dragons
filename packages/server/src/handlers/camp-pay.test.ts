@@ -42,7 +42,7 @@ describe("the chapter's pay (§5.2)", () => {
     expect(camp.paidChapterCount).toBe(1);
     expect(camp.receipts.chapters[CHAPTER]).toMatchObject({ runId: t.runId });
     const s = await t.state();
-    expect(s.campTally).toEqual({ finished: 2, objectives: 0, drops: 0, replay: false, balance: 2, shopOpen: false });
+    expect(s.campTally).toEqual({ finished: 2, objectives: 0, drops: 0, replay: false, balance: 2, shopOpen: false, shopIn: 1 });
     // The camp's view is on the summary, with the balance after.
     expect(s.camp).toMatchObject({ dashCash: 2, shopOpen: false });
     // Not open yet: no shop.
@@ -88,7 +88,7 @@ describe("the chapter's pay (§5.2)", () => {
     await t.goto("scene_shrine");
     await t.goto("scene_ending");
     const s = await t.state();
-    expect(s.campTally).toEqual({ finished: 0, objectives: 0, drops: 0, replay: true, balance: 2, shopOpen: false });
+    expect(s.campTally).toEqual({ finished: 0, objectives: 0, drops: 0, replay: true, balance: 2, shopOpen: false, shopIn: 1 });
     const camp = await readCamp(t.householdId, null, harness.deps);
     expect(camp.dashCash).toBe(2);
     expect(camp.paidChapterCount).toBe(1);

@@ -68,7 +68,9 @@ export interface SeedRequest {
   /**
    * The new household's camp before the room opens (docs/camp.md §9; #620): the
    * full campaigns it has grown by (stage 2 at one), the pieces it owns, what
-   * stands where, its Dash Cash and paid chapters. For looking at a grown camp
+   * stands where, its Dash Cash and paid chapters (written as that many
+   * placeholder paid-chapter receipts, since the count is read off them,
+   * camp.ts `withShopCount`). For looking at a grown camp
    * without playing a whole campaign first. Only with a new household (not `code`).
    */
   camp?: { grownBy?: string[]; owned?: string[]; placed?: Record<string, string>; dashCash?: number; paidChapterCount?: number };
@@ -297,7 +299,13 @@ async function seedCamp(householdId: string, camp: SeedRequest["camp"], deps: Ha
       ...c,
       grownBy: camp.grownBy ?? c.grownBy,
       dashCash: camp.dashCash ?? c.dashCash,
-      paidChapterCount: camp.paidChapterCount ?? c.paidChapterCount,
+      receipts: {
+        ...c.receipts,
+        chapters: {
+          ...c.receipts.chapters,
+          ...Object.fromEntries(Array.from({ length: Math.max(0, camp.paidChapterCount ?? 0) }, (_, i) => [`seeded-chapter-${String(i + 1)}`, { at }])),
+        },
+      },
       placed: camp.placed ?? c.placed,
       owned: { ...c.owned, ...Object.fromEntries((camp.owned ?? []).map((id) => [id, { from: "bought" as const, at }])) },
     }),

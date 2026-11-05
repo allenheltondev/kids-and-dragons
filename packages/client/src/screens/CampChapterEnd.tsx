@@ -5,9 +5,12 @@
  *
  *   - `CampTally`, on the TV's summary (ChapterCompletePanel): read-only, as
  *     the shared screen always is (docs/tv-read-only-audit.md). The shop's
- *     options and who has voted for each, never a control.
+ *     pieces, a piece the crew cannot afford yet with what it still needs,
+ *     and who has voted for each, never a control.
  *   - `CampShopVote`, on a phone: the vote, built like a choice point (spec
- *     §6.1): pick, then confirm, the seats ticking as friends vote.
+ *     §6.1): pick, then confirm, the seats ticking as friends vote. A piece
+ *     out of reach is shown, disabled, with what it needs (§6.2); with
+ *     nothing affordable the pieces show and no vote starts.
  *   - `CampBeat`, on the TV once the tally has been up a while and no vote is
  *     running (§3, §8.5): the full camp, the crew's pieces placed, the
  *     heroes in it, and what was found or bought this chapter beside the
@@ -25,8 +28,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { ReactElement } from "react";
-import { SAVE_DASH_CASH, speak } from "@kad/shared";
-import type { CampShopView, CampTally, PartyMember, RunState } from "@kad/shared";
+import { SAVE_DASH_CASH, shopOptionVotable, shopVoting, speak } from "@kad/shared";
+import type { CampShopOption, CampShopView, CampTally, PartyMember, RunState } from "@kad/shared";
 import { useLobbyInset } from "./LobbyContent";
 import { CrewIdentity } from "./CrewIdentity";
 import { campLayoutFor, campStage } from "../world/lobby-camp";
@@ -38,6 +41,21 @@ import { ackDashCash, useDashCashNews } from "../store/dash-cash-news";
 import "./CampChapterEnd.css";
 
 const dash = (n: number): string => `${String(n)} Dash Cash`;
+
+/** What a shop piece's line under its name says: what buying it leaves, or what it still needs. */
+export function shopOptionSub(option: Pick<CampShopOption, "price" | "after" | "needs">): string {
+  return shopOptionVotable(option)
+    ? `${dash(option.price)}, leaves ${String(option.after)}`
+    : `${dash(option.price)}. Needs ${String(option.needs ?? 0)} more`;
+}
+
+/** When the shop opens, for a crew that is not there yet (§5.3). The Practice Meadow does not count. */
+export function shopOpensLine(tally: Pick<CampTally, "shopIn" | "uncounted">): string {
+  const n = tally.shopIn ?? 1;
+  const when = n <= 1 ? "after the next chapter" : "after two adventure chapters";
+  if (tally.uncounted) return `Practice doesn't count toward the camp shop. It opens ${n <= 1 ? "after the next adventure chapter" : when}.`;
+  return `The camp shop opens ${when}.`;
+}
 
 /** The tally's lines, as the TV shows and says them. */
 export function tallyLines(tally: CampTally): string[] {
@@ -54,11 +72,12 @@ export const tallyEarned = (tally: CampTally): number => (tally.replay ? 0 : tal
 
 /** One line about the shop: what it decided, what it offers, or when it opens. */
 export function shopLine(tally: CampTally, shop: CampShopView | undefined): string | null {
-  if (!tally.shopOpen) return "The camp shop opens after the next chapter.";
+  if (!tally.shopOpen) return shopOpensLine(tally);
   if (!shop) return null;
   if (shop.result?.kind === "bought") return `You bought the ${shop.result.label.toLowerCase()}!`;
   if (shop.result?.kind === "saved") return "You are saving your Dash Cash.";
   if (shop.options.length === 0) return "Nothing in the camp shop fits yet. Keep saving!";
+  if (!shopVoting(shop)) return "You can't buy any of these yet. Keep saving, and they'll be here!";
   if (shop.refreshed) return "Another table spent some Dash Cash first. Here is what is left.";
   return "Vote on your phones: buy something, or save it.";
 }
@@ -73,7 +92,9 @@ export function CampTally({
   shop?: CampShopView | undefined;
   party: readonly PartyMember[];
 }): ReactElement {
-  const voting = shop !== undefined && shop.result === undefined && shop.options.length > 0;
+  const voting = shopVoting(shop);
+  // The pieces show while nothing is decided, affordable or not; "Save" only while there is a vote.
+  const listed = shop !== undefined && shop.result === undefined && shop.options.length > 0;
   const voterIds = party.map((m) => m.playerId);
   const votedFor = (option: string) =>
     Object.entries(shop?.votes ?? {})
@@ -99,13 +120,21 @@ export function CampTally({
           Your crew has <b>{dash(shop?.balance ?? tally.balance)}</b>
         </span>
       </p>
-      {voting ? (
+      {listed ? (
         <ul className="camp-tally__shop" aria-label="The camp shop">
-          {[...shop.options.map((o) => ({ id: o.pieceId, label: o.label, sub: `${dash(o.price)}, leaves ${String(o.after)}` })), { id: SAVE_DASH_CASH, label: "Save our Dash Cash", sub: "Free" }].map((option) => (
-            <li className="camp-tally__option" key={option.id}>
+          {[
+            ...shop.options.map((o) => ({ id: o.pieceId, label: o.label, sub: shopOptionSub(o), later: !shopOptionVotable(o) })),
+            ...(voting ? [{ id: SAVE_DASH_CASH, label: "Save our Dash Cash", sub: "Free", later: false }] : []),
+          ].map((option) => (
+            <li
+              className={`camp-tally__option${option.later ? " camp-tally__option--later" : ""}`}
+              key={option.id}
+              data-option={option.id}
+              {...(option.later ? { "data-later": "" } : {})}
+            >
               <span className="camp-tally__option-label">{option.label}</span>
               <span className="camp-tally__option-sub kad-muted">{option.sub}</span>
-              <VoteTicks voterIds={voterIds} votedIds={votedFor(option.id)} party={[...party]} />
+              {voting && !option.later ? <VoteTicks voterIds={voterIds} votedIds={votedFor(option.id)} party={[...party]} /> : null}
             </li>
           ))}
         </ul>
@@ -146,6 +175,7 @@ export function CampShopVote({
       </p>
     );
   }
+  const voting = shopVoting(shop);
   if (shop.options.length === 0) {
     return (
       <p className="camp-vote__done kad-muted" data-testid="camp-vote-none">
@@ -155,20 +185,22 @@ export function CampShopVote({
     );
   }
   const options = [
-    ...shop.options.map((o) => ({ id: o.pieceId, label: o.label, sub: `${dash(o.price)}, leaves ${String(o.after)}` })),
-    { id: SAVE_DASH_CASH, label: "Save our Dash Cash", sub: "Free" },
+    ...shop.options.map((o) => ({ id: o.pieceId, label: o.label, sub: shopOptionSub(o), later: !shopOptionVotable(o) })),
+    ...(voting ? [{ id: SAVE_DASH_CASH, label: "Save our Dash Cash", sub: "Free", later: false }] : []),
   ];
   const voterIds = party.map((m) => m.playerId);
-  const chosen = options.find((o) => o.id === pending && o.id !== myVote) ?? null;
+  const chosen = options.find((o) => o.id === pending && o.id !== myVote && !o.later) ?? null;
   return (
     <div className="camp-vote" data-testid="camp-vote">
       <h3 className="prompt__title">
         <Icon name="vote" />
         <span>The camp shop</span>
       </h3>
-      <p className="prompt__sub kad-muted">
+      <p className="prompt__sub kad-muted" {...(voting ? {} : { "data-testid": "camp-vote-none" })}>
         {shop.refreshed ? "Another table spent some first. " : ""}
-        {`Your crew has ${dash(shop.balance)}. Everyone votes.`}
+        {voting
+          ? `Your crew has ${dash(shop.balance)}. Everyone votes.`
+          : `Your crew has ${dash(shop.balance)}. You can't buy any of these yet. Keep saving, and they'll be here!`}
       </p>
       <ul className="camp-vote__options">
         {options.map((option) => {
@@ -180,9 +212,9 @@ export function CampShopVote({
             <li key={option.id}>
               <button
                 type="button"
-                className={`choice kad-tap kad-focusable${selected ? " choice--on" : ""}`}
+                className={`choice kad-tap kad-focusable${selected ? " choice--on" : ""}${option.later ? " choice--later" : ""}`}
                 aria-pressed={selected}
-                disabled={held}
+                disabled={held || option.later}
                 onClick={() => setPending(option.id)}
               >
                 <span className="choice__icon">
@@ -194,7 +226,7 @@ export function CampShopVote({
                 </span>
                 <span className="choice__trail">
                   <span className="choice__mark">{myVote === option.id ? <Icon name="check" label="Your vote" /> : null}</span>
-                  <VoteTicks voterIds={voterIds} votedIds={votedIds} party={[...party]} />
+                  {option.later ? null : <VoteTicks voterIds={voterIds} votedIds={votedIds} party={[...party]} />}
                 </span>
               </button>
             </li>
@@ -226,9 +258,7 @@ export const CAMP_BEAT_AFTER_MS = 9000;
 /** Whether the summary should be showing the camp beat now. */
 export function campBeatDue(state: Pick<RunState, "camp" | "campShop" | "endingRead">, held: boolean, elapsed: boolean): boolean {
   if (!state.camp || state.endingRead === false || held || !elapsed) return false;
-  const shop = state.campShop;
-  const voting = shop !== undefined && shop.result === undefined && shop.options.length > 0;
-  return !voting;
+  return !shopVoting(state.campShop);
 }
 
 /** What the TV says of a piece beside the campfire. */

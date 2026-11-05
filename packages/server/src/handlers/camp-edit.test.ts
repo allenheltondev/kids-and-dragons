@@ -13,7 +13,7 @@ import { SHARED_EDITS_PER_MOMENT, readKit } from "@kad/shared";
 import type { CampRecord, ClientIntent, RunState } from "@kad/shared";
 import { joinRoom } from "./room.ts";
 import { mutateCamp, readCamp } from "./camp.ts";
-import { harnessFor, table, type Table } from "./camp-table.testing.ts";
+import { harnessFor, seeded, table, type Table } from "./camp-table.testing.ts";
 import type { TestHarness } from "../test-support.ts";
 import { applyAction } from "./action.ts";
 
@@ -27,7 +27,7 @@ const hero = (name: string, species: "unicorn" | "bigfoot", cls: "songkeeper" | 
 });
 
 async function seedCamp(t: Table, harness: TestHarness, over: Partial<CampRecord>): Promise<void> {
-  const written = await mutateCamp(t.householdId, null, (c) => ({ ...c, ...over }), harness.deps);
+  const written = await mutateCamp(t.householdId, null, (c) => seeded(c, over), harness.deps);
   expect(written.ok).toBe(true);
 }
 

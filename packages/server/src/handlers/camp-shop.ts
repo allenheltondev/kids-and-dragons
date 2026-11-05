@@ -11,6 +11,10 @@
  *     counts), as `doChoose` does. Most votes wins and a tie goes toward the
  *     story turn marker (`tallyVotes`). "Save our Dash Cash" is always an
  *     option and always free.
+ *   - **Only what the crew can afford.** The shop shows pieces out of reach
+ *     too (`CampShopOption.needs`); a vote for one is refused as ILLEGAL, and
+ *     a shop with nothing affordable takes no vote at all, "Save our Dash
+ *     Cash" included (`shopVoting`).
  *   - **One visit, one purchase.** A shop belongs to one chapter-end visit
  *     (`CampShopView.visit`); a vote naming another (a shop the table has
  *     left, an earlier chapter's) is refused as stale, and a decided shop
@@ -26,7 +30,18 @@
  *     the table to vote again, with nothing spent.
  */
 
-import { SAVE_DASH_CASH, campPieceLabel, campVoteWellFormed, campView, shopEligible, shopOffer, shopPrice, tallyVotes } from "@kad/shared";
+import {
+  SAVE_DASH_CASH,
+  campPieceLabel,
+  campVoteWellFormed,
+  campView,
+  shopEligible,
+  shopOffer,
+  shopOptionVotable,
+  shopPrice,
+  shopVoting,
+  tallyVotes,
+} from "@kad/shared";
 import type { CampCatalog, CampPieceId, CampRecord, CampShopView, ClientIntent, RunState } from "@kad/shared";
 import type { ActionResponse } from "@kad/shared";
 import type { RunRecord } from "../store/repository.ts";
@@ -60,9 +75,18 @@ export async function prepareCampVote(
     return { ok: false, error: { code: "FORBIDDEN", message: "only a seated player votes in the shop" } };
   }
   if (shop.result) return { ok: false, error: { code: "ILLEGAL", message: "the shop has already been decided" } };
-  if (intent.option !== SAVE_DASH_CASH && !shop.options.some((o) => o.pieceId === intent.option)) {
+  const option = shop.options.find((o) => o.pieceId === intent.option);
+  if (intent.option !== SAVE_DASH_CASH && !option) {
     // An option from an offer since refreshed, or never made.
     return { ok: false, error: STALE };
+  }
+  if (option && !shopOptionVotable(option)) {
+    // Shown for the crew to look forward to, never bought (§6.2).
+    return { ok: false, error: { code: "ILLEGAL", message: "the crew cannot afford that yet" } };
+  }
+  if (!shopVoting(shop)) {
+    // Nothing affordable: the shop shows its pieces and starts no vote (§12.4).
+    return { ok: false, error: { code: "ILLEGAL", message: "nothing in the shop is affordable, so there is no vote" } };
   }
 
   const votes = { ...shop.votes, [playerId]: intent.option };

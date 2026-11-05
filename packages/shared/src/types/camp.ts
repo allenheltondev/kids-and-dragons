@@ -138,7 +138,13 @@ export interface CampRecord {
    * On the crew's record because a buddy names a crew friend (§12.1).
    */
   buddies: Record<string, FriendId>;
-  /** Chapters the crew has been paid for; the shop opens at 2 (§5.3). */
+  /**
+   * Chapters the crew has been paid for that count toward the shop, which
+   * opens at 2 (§5.3): the `receipts.chapters` of every campaign but a
+   * `tutorial` one (the Practice Meadow). Derived from those receipts on every
+   * read (server `handlers/camp.ts`), so a count stored before the tutorial
+   * stopped counting is corrected, idempotently, and the next write stores it.
+   */
   paidChapterCount: number;
   receipts: CampReceipts;
 }
@@ -487,17 +493,34 @@ export interface CampTally {
   balance: number;
   /** The crew has been paid for enough chapters for the shop (§5.3). */
   shopOpen: boolean;
+  /**
+   * While the shop is shut: how many more paid chapters open it (1 or 2).
+   * Absent once it is open.
+   */
+  shopIn?: number;
+  /**
+   * This chapter is a tutorial's (the Practice Meadow, `Campaign.tutorial`):
+   * it paid, but it does not count toward opening the shop (§5.3).
+   */
+  uncounted?: true;
 }
 
 /** "Save our Dash Cash": the shop vote's always-free option (§6.2). */
 export const SAVE_DASH_CASH = "save";
 
-/** One piece the chapter-end shop offers (§12.4): its price and the balance after. */
+/**
+ * One piece the chapter-end shop shows (§6.2, §12.4): its price and the
+ * balance after. A piece the crew cannot afford yet is shown too, for the
+ * crew to look forward to, with `needs`; it is never votable.
+ */
 export interface CampShopOption {
   pieceId: CampPieceId;
   label: string;
   price: number;
+  /** The balance after buying it; for a piece out of reach (`needs`), the balance as it stands. */
   after: number;
+  /** How much more Dash Cash it needs ("Needs 3 more"). Present only on a piece the crew cannot afford yet. */
+  needs?: number;
 }
 
 /**
@@ -506,8 +529,9 @@ export interface CampShopOption {
  * the shop is open; gone the moment the table leaves it, which cancels the
  * vote without spending anything.
  *
- * `options` is empty when nothing is affordable: the balance shows and no
- * vote starts. `votes` is playerId → a piece id or `SAVE_DASH_CASH`, counted
+ * `options` may include pieces the crew cannot afford yet (`needs`), which
+ * are shown and never votable. When none is affordable, the list and the
+ * balance show and no vote starts (`shopVoting`). `votes` is playerId → a piece id or `SAVE_DASH_CASH`, counted
  * by the choice-point rules (`tallyVotes`). `result` is what the vote decided,
  * at most one purchase a visit; `refreshed` says the offer was rebuilt
  * because another table reaching this crew spent first.
