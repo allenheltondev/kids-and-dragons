@@ -65,6 +65,12 @@ export interface SequencerHandlers {
    */
   onDiscovered?(event: { runId: string; seq: number; canonIds: string[] }): void;
   /**
+   * The lucky drops a step paid (`ServerMessage.campDrops`, docs/camp.md
+   * §5.2), emitted once, right after that step's patch. Live only, like
+   * `onDiscovered`.
+   */
+  onCampDrops?(event: { runId: string; seq: number; sceneIds: string[] }): void;
+  /**
    * A player's unconfirmed tap (`PreviewMessage`). Handed over the moment it
    * arrives and never ordered: it is not a step of the state, so it neither
    * waits for a gap to fill nor moves `seq`.
@@ -264,6 +270,9 @@ export class MessageSequencer {
     }
     if (message.discovered && message.discovered.length > 0) {
       this.handlers.onDiscovered?.({ runId: message.runId, seq: message.seq, canonIds: message.discovered });
+    }
+    if (message.campDrops && message.campDrops.length > 0) {
+      this.handlers.onCampDrops?.({ runId: message.runId, seq: message.seq, sceneIds: message.campDrops.map((d) => d.sceneId) });
     }
   }
 

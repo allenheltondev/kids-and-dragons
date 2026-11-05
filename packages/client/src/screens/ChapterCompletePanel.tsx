@@ -54,6 +54,7 @@ import { fightEndingIcon, fightEndingLine } from "./fight-ending-copy";
 import { useEnsureChapter, useEnsureContent } from "./content";
 import { useEndPlatesStatus } from "./end-plates";
 import { ChapterGoalCard } from "./ChapterGoal";
+import { CampTally, tallyEarned } from "./CampChapterEnd";
 import "./shared.css";
 import "./ChapterCompletePanel.css";
 
@@ -141,6 +142,7 @@ export function ChapterCompletePanel(): ReactElement {
    */
   const setback = state?.chapterOutcome === "setback";
   const bonuses = state?.bonuses ?? [];
+  const campTally = state?.campTally;
   // The chapter that ended the whole campaign gets the campaign's ending.
   const ended = state?.campaign?.ended;
   const heading =
@@ -233,9 +235,11 @@ export function ChapterCompletePanel(): ReactElement {
             : `Chapter finished! ${xpLine ?? `The party earned ${String(xp)} experience.`}`,
         // Shown with each hero's name; heard as "hero" (#552).
         ...ownRolls.map((r) => `Hero earned ${String(r.xp)} experience from their own good rolls.`),
+        // The camp's Dash Cash, heard once with the rest of the tally.
+        ...(campTally && tallyEarned(campTally) > 0 ? [`And ${String(tallyEarned(campTally))} Dash Cash for the camp.`] : []),
       ].join(" "),
     );
-  }, [onEnding, xp, xpLine, ownRolls, setback, heading, endLine]);
+  }, [onEnding, xp, xpLine, ownRolls, setback, heading, endLine, campTally]);
 
   const questItems = party.flatMap((m) =>
     m.character.questItems.map((itemId) => ({ itemId, owner: m.character.name })),
@@ -361,6 +365,11 @@ export function ChapterCompletePanel(): ReactElement {
           </ul>
         </div>
       )}
+
+      {/* The camp's beat (docs/camp.md §5.2, §6.2): the chapter's Dash Cash and
+          the shop, read-only here; the phones vote. Absent with no camp to say
+          anything about. */}
+      {campTally ? <CampTally tally={campTally} shop={state?.campShop} party={party} /> : null}
 
       <ul className="complete__party">
         {party.map((member) => {
