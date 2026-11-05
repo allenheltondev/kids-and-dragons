@@ -86,6 +86,7 @@
       "guessedLines": 1,
       "speaks": true,
       "status": "approved",
+      "direction": "earnest, over-explaining, hurt when refused",
       "history": [
         {
           "decision": "approved",
@@ -130,8 +131,7 @@
       "lineCount": 1,
       "speaks": true,
       "status": "approved",
-      "accent": "american child",
-      "direction": "high pitched, stuttering",
+      "direction": "small, high pitched, stuttering",
       "history": [
         {
           "decision": "approved",
@@ -209,6 +209,7 @@
       "lineCount": 27,
       "speaks": true,
       "status": "approved",
+      "direction": "patient, cheerful, encouraging",
       "history": [
         {
           "decision": "approved",
@@ -256,7 +257,8 @@
       ],
       "lineCount": 12,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "tiny, squeaky, boastful, a sore loser for two seconds"
     },
     "bun": {
       "name": "Bun",
@@ -330,6 +332,7 @@
       "guessedLines": 2,
       "speaks": true,
       "status": "approved",
+      "direction": "fast, excited, thinking out loud",
       "history": [
         {
           "decision": "approved",
@@ -383,6 +386,7 @@
       "lineCount": 6,
       "speaks": true,
       "status": "approved",
+      "direction": "grand, theatrical, calls everyone darlings",
       "history": [
         {
           "decision": "approved",
@@ -463,7 +467,8 @@
       ],
       "lineCount": 9,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "few words, listens to the whole answer, kind but busy"
     },
     "boggart": {
       "name": "Boggart",
@@ -515,7 +520,8 @@
       ],
       "lineCount": 9,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "sidelong, delighted, says everything twice"
     },
     "lighthouse_keeper": {
       "name": "Lighthouse Keeper",
@@ -613,7 +619,8 @@
       "lineCount": 8,
       "guessedLines": 2,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "one slow turn before every answer, few words"
     },
     "old_wick": {
       "name": "Old Wick",
@@ -776,7 +783,8 @@
       ],
       "lineCount": 5,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "brisk, a little prim, everything in jars"
     },
     "selkie_grandmother": {
       "name": "Selkie Grandmother",
@@ -953,7 +961,8 @@
       ],
       "lineCount": 5,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "unhurried, warm, asks one question and waits"
     },
     "drover": {
       "name": "Rush drover",
@@ -1210,6 +1219,7 @@
       "guessedLines": 8,
       "speaks": true,
       "status": "approved",
+      "direction": "fast, plain, practical, out of breath",
       "history": [
         {
           "decision": "approved",
@@ -1291,7 +1301,8 @@
       ],
       "lineCount": 9,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "very slow, hears everything, mossy and calm"
     },
     "drake": {
       "name": "Drake",
@@ -1429,6 +1440,7 @@
       "speaks": true,
       "status": "approved",
       "accent": "Deep, louisiana drawl",
+      "direction": "very few words, long unhurried pauses",
       "history": [
         {
           "decision": "approved",
@@ -1628,7 +1640,8 @@
       "lineCount": 16,
       "guessedLines": 2,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "unhurried, hums between sentences, proud"
     },
     "nan_rummage": {
       "name": "Nana Rummage",
@@ -1671,7 +1684,8 @@
       ],
       "lineCount": 6,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "dreamy, talks sideways to lost things"
     },
     "mire_mimic": {
       "name": "Mire Mimic",
@@ -1837,7 +1851,7 @@
       "guessedLines": 1,
       "speaks": true,
       "status": "approved",
-      "accent": "So heavy Scottish that you can barely understand",
+      "accent": "Heavy Scottish",
       "history": [
         {
           "decision": "approved",
@@ -1999,7 +2013,8 @@
       ],
       "lineCount": 7,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "dry, careful, kind underneath"
     },
     "brackens": {
       "name": "Brackens",
@@ -2144,7 +2159,8 @@
       "lineCount": 8,
       "guessedLines": 2,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "warm gravel, formal, kind, quietly worried"
     },
     "cart_driver": {
       "name": "Cart Driver",
@@ -2324,7 +2340,8 @@
       ],
       "lineCount": 3,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "bossy, delighted, grandmotherly"
     },
     "marker_movers": {
       "name": "Marker Movers",
@@ -2388,6 +2405,7 @@
       "lineCount": 5,
       "speaks": true,
       "status": "approved",
+      "direction": "old, slow, whispering",
       "history": [
         {
           "decision": "approved",
@@ -2572,6 +2590,7 @@
       "guessedLines": 2,
       "speaks": true,
       "status": "approved",
+      "direction": "cheerful, breathless, jogging while talking",
       "history": [
         {
           "decision": "approved",
@@ -2719,7 +2738,7 @@
       "guessedLines": 1,
       "speaks": true,
       "status": "approved",
-      "direction": "autistic, speaks slightly fast and hard stop at sentences",
+      "direction": "flat, precise, slightly fast, hard stops at the end of sentences",
       "history": [
         {
           "decision": "approved",
@@ -2848,7 +2867,8 @@
       ],
       "lineCount": 5,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "gruff, puffing, good-humored"
     },
     "map_seller": {
       "name": "Map Seller",
@@ -2989,7 +3009,7 @@
       "guessedLines": 1,
       "speaks": true,
       "status": "approved",
-      "accent": "nervous, fast talker",
+      "direction": "nervous, fast talker",
       "history": [
         {
           "decision": "approved",
@@ -3138,7 +3158,8 @@
       ],
       "lineCount": 7,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "quick, proud, a little sassy"
     },
     "tibbet": {
       "name": "Corporal Tibbet",
@@ -3353,7 +3374,8 @@
       "lineCount": 5,
       "guessedLines": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "mild, unhurried, sips tea between sentences"
     },
     "soup_woman": {
       "name": "Soup Woman",
@@ -3438,7 +3460,8 @@
       "lineCount": 5,
       "guessedLines": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "slow, kind, proud of his visitors' book"
     },
     "young_gatherer": {
       "name": "Young Gatherer",
@@ -3479,7 +3502,8 @@
       "lineCount": 6,
       "guessedLines": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "small, brave, insists she is not lost"
     },
     "great_gran_ashby": {
       "name": "Great-Grandma Ashby",
@@ -3523,7 +3547,8 @@
       "lineCount": 20,
       "guessedLines": 2,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "very old, brisk, tender, unarguable"
     },
     "grandmother": {
       "name": "Grandmother",
@@ -3577,6 +3602,7 @@
       "guessedLines": 11,
       "speaks": true,
       "status": "approved",
+      "direction": "cozy, brisk, doting, counts everything",
       "history": [
         {
           "decision": "approved",
@@ -3749,8 +3775,7 @@
       "guessedLines": 3,
       "speaks": true,
       "status": "approved",
-      "accent": "childish pronunciations, has a obvious lisp",
-      "direction": "bright voice, high pitched almost like she's straining to talk",
+      "direction": "bright, high-pitched, straining to talk, childish pronunciation, a lisp",
       "history": [
         {
           "decision": "approved",
@@ -4065,6 +4090,7 @@
       "lineCount": 9,
       "speaks": true,
       "status": "provisional",
+      "direction": "dry, careful, kind underneath",
       "history": [
         {
           "decision": "approved",
@@ -4151,7 +4177,8 @@
       "lineCount": 1,
       "speaks": true,
       "status": "approved",
-      "accent": "Cruella DeVille",
+      "accent": "Transatlantic",
+      "direction": "grand, theatrical, dramatic",
       "history": [
         {
           "decision": "approved",
@@ -4210,6 +4237,7 @@
       "lineCount": 9,
       "speaks": true,
       "status": "approved",
+      "direction": "exhausted, practical, flat",
       "history": [
         {
           "decision": "approved",
@@ -4259,6 +4287,7 @@
       "guessedLines": 1,
       "speaks": true,
       "status": "provisional",
+      "direction": "fast-talking, fair, deadpan",
       "history": [
         {
           "decision": "approved",
@@ -4364,7 +4393,8 @@
       "lineCount": 9,
       "guessedLines": 2,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "gracious, thrilled, never sore about losing"
     },
     "alder": {
       "name": "Alder",
@@ -4436,7 +4466,8 @@
       "lineCount": 5,
       "guessedLines": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "brisk, patient, a warm sales smile"
     },
     "linnet": {
       "name": "Cadet Linnet",
@@ -4674,7 +4705,8 @@
       "lineCount": 78,
       "guessedLines": 19,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "ancient, unhurried, dry, amused"
     },
     "bones": {
       "name": "Bones",
@@ -4821,7 +4853,8 @@
       ],
       "lineCount": 10,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "worried, dramatic, counts and loses count"
     },
     "saltrot_guide": {
       "name": "Puddle",
@@ -4989,7 +5022,7 @@
       "guessedLines": 1,
       "speaks": true,
       "status": "approved",
-      "accent": "pubescent, voice cracking, some deep \\ some higher pitched words, but confident",
+      "direction": "voice cracking, some words deep and some high, but confident",
       "history": [
         {
           "decision": "approved",
@@ -5038,7 +5071,8 @@
       "lineCount": 46,
       "guessedLines": 4,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "brisk, exact, counts aloud, faster when upset"
     },
     "orin_vale": {
       "name": "Master Orin Vale",
@@ -5096,7 +5130,8 @@
       "lineCount": 73,
       "speaks": true,
       "status": "approved",
-      "accent": "studious, british accent. very curious",
+      "accent": "British",
+      "direction": "studious, very curious",
       "history": [
         {
           "decision": "approved",
@@ -5144,7 +5179,8 @@
       ],
       "lineCount": 19,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "small, nervous, quick, a little squeaky"
     },
     "olivia": {
       "name": "Lady Olivia",
@@ -5327,6 +5363,7 @@
       "lineCount": 53,
       "speaks": true,
       "status": "approved",
+      "direction": "gentle, patient, teacherly",
       "history": [
         {
           "decision": "approved",
@@ -5424,7 +5461,8 @@
       ],
       "lineCount": 8,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "indignant, literal, chilly"
     },
     "fish_seller": {
       "name": "Fish seller",
@@ -5465,7 +5503,8 @@
       "lineCount": 5,
       "guessedLines": 1,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "practical, short, protective"
     },
     "barge_pilot": {
       "name": "Barge pilot",
@@ -5556,7 +5595,8 @@
       ],
       "lineCount": 11,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "brisk, generous, talks to her pot"
     },
     "corvane": {
       "name": "Corvane",
@@ -5597,7 +5637,8 @@
       "lineCount": 23,
       "speaks": true,
       "status": "provisional",
-      "notes": "Provisional voice changed from Charon to Schedar to avoid a chapter-level voice conflict."
+      "notes": "Provisional voice changed from Charon to Schedar to avoid a chapter-level voice conflict.",
+      "direction": "courtly, old, confused, patient, sad"
     },
     "yeti_herder": {
       "name": "Yeti herder",
@@ -5659,7 +5700,7 @@
       "guessedLines": 3,
       "speaks": true,
       "status": "approved",
-      "accent": "raspy, low, slow and patient",
+      "direction": "raspy, low, slow and patient",
       "history": [
         {
           "decision": "approved",
@@ -5747,7 +5788,8 @@
       "lineCount": 170,
       "guessedLines": 8,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "brisk, warm, a little dramatic, calling from above"
     },
     "elder_murmur": {
       "name": "Elder Murmur",
@@ -5792,7 +5834,8 @@
       ],
       "lineCount": 27,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "whispering, very slow, very old, gentle"
     },
     "flurry": {
       "name": "Flurry",
@@ -5837,7 +5880,8 @@
       ],
       "lineCount": 28,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "quick, nervous, kind, soft"
     },
     "grandmother_winkle": {
       "name": "Grandmother Winkle",
@@ -5956,7 +6000,8 @@
       ],
       "lineCount": 8,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "brisk, practical"
     },
     "keeper_sorrel": {
       "name": "Keeper Sorrel",
@@ -5996,7 +6041,8 @@
       ],
       "lineCount": 26,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "brisk, kind, unflappable"
     },
     "keeper_clove": {
       "name": "Keeper Clove",
@@ -6036,7 +6082,8 @@
       ],
       "lineCount": 23,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "fussy, kind, brave when it counts"
     },
     "tumble": {
       "name": "Tumble",
@@ -6081,7 +6128,8 @@
       ],
       "lineCount": 9,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "fast, cheerful, breathless"
     },
     "dragonling_stone_keeper": {
       "name": "Tally",
@@ -6162,7 +6210,8 @@
       ],
       "lineCount": 7,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "cheerful, hurried, round and breathless"
     },
     "keeper_juniper": {
       "name": "Keeper Juniper",
@@ -6207,7 +6256,8 @@
       ],
       "lineCount": 72,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "brisk, warm, sing-song when giving instructions"
     },
     "route_worker_yeti": {
       "name": "Hummock",
@@ -6247,7 +6297,8 @@
       ],
       "lineCount": 32,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "slow, rumbling, kind, a gentle giant"
     },
     "grandma_drift": {
       "name": "Grandma Drift",
@@ -6325,7 +6376,8 @@
       ],
       "lineCount": 14,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "slow, deep, gentle, a crew speaking together"
     },
     "fishmonger": {
       "name": "Fishmonger",
@@ -7111,7 +7163,8 @@
       ],
       "lineCount": 18,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "rigid, honest, never wastes a word"
     },
     "travelers": {
       "name": "Travelers",
@@ -7224,7 +7277,8 @@
       "lineCount": 5,
       "guessedLines": 3,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "curt, cawing together"
     },
     "dock_workers": {
       "name": "Dock workers",
@@ -7284,6 +7338,7 @@
       "guessedLines": 4,
       "speaks": true,
       "status": "approved",
+      "direction": "squeaky, bleating",
       "history": [
         {
           "decision": "approved",
@@ -7325,7 +7380,8 @@
       ],
       "lineCount": 16,
       "speaks": true,
-      "status": "provisional"
+      "status": "provisional",
+      "direction": "practical, short dockside speech"
     },
     "frost_wyrm": {
       "name": "Frost wyrm",

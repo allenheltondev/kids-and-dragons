@@ -8,15 +8,15 @@
  * would cost. Reads files and calls nothing. Absence is reported, never fatal:
  * a game with no clips yet is every clip `missing`, and exits 0.
  *
- *   npm run voice:status                       # every chapter, Gemini 3.8 Flash TTS
+ *   npm run voice:status                       # every chapter, ElevenLabs v4
  *   npm run voice:status -- --chapter bramblewood-01
- *   npm run voice:status -- --model gemini-3.1-flash-tts --json
+ *   npm run voice:status -- --model eleven_v3 --json
  *   npm run voice:status -- --with-choices     # also count choice labels
  */
 
 import path from "node:path";
 import { parseArgs } from "node:util";
-import { GEMINI } from "./desired";
+import { ELEVENLABS } from "./desired";
 import { dollars, quote, type Pricing, type PricedModel } from "./cost-model";
 import { readJson } from "./load";
 import { clipStatus, countByState, toRender, type Status } from "./manifest";
@@ -26,14 +26,14 @@ import { desire, loadWorld } from "./world";
 const { values } = parseArgs({
   options: {
     chapter: { type: "string" },
-    model: { type: "string", default: GEMINI.model },
+    model: { type: "string", default: ELEVENLABS.model },
     "with-choices": { type: "boolean", default: false },
     json: { type: "boolean", default: false },
   },
 });
 
 const pricing = readJson(path.join(import.meta.dirname, "pricing.json")) as unknown as Pricing;
-const model: PricedModel | undefined = pricing.models.find((m) => m.id === values.model);
+const model: PricedModel | undefined = pricing.models.find((m) => m.id === values.model || m.apiModel === values.model);
 if (model === undefined) {
   console.error(`No model "${String(values.model)}" in pricing.json. Known: ${pricing.models.map((m) => m.id).join(", ")}.`);
   process.exit(2);
@@ -48,7 +48,7 @@ if (values.chapter !== undefined && !groups.has(values.chapter)) {
   process.exit(2);
 }
 
-const provider = { provider: GEMINI.provider, model: model.id };
+const provider = { provider: model.provider, model: model.apiModel ?? model.id };
 const rows = wanted.map((name) => {
   const desired = desire(world, name, provider);
   const status: Status = clipStatus(desired, world.manifests.get(name) ?? {}, world.lock);
