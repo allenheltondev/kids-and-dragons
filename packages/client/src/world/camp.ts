@@ -33,7 +33,7 @@
  */
 
 import { Assets, Container, Graphics, Rectangle, Sprite, Texture, type Application } from "pixi.js";
-import { CAMP_KIT_STYLES, campKitStyle } from "./camp-kit-art";
+import { CAMP_KIT_STYLES, campKitStyle, campTentCloth } from "./camp-kit-art";
 import { campKitCanvas } from "./camp-kit-canvas";
 import { campPieceOwner } from "./camp-ownership";
 import { bannerName, hotspotGlow, pieceStandIn, souvenirStandIn, standInLabel, tentStandIn } from "./camp-stand-in";
@@ -540,11 +540,18 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     pieces.set(piece.id, entry);
     loadPiece(entry, piece.path);
   }
-  function loadPiece(entry: PieceView, path: string): void {
+  function tintCloth(texture: Texture, cloth?: string, accent?: string): Texture {
+    const source = texture.source?.resource as CanvasImageSource | undefined;
+    const canvas = source && cloth && accent ? campKitCanvas(source, cloth, accent) : null;
+    return canvas ? Texture.from(canvas) : texture;
+  }
+
+  function loadPiece(entry: PieceView, path: string, cloth?: string, accent?: string): Promise<void> {
+    const revision = entry.kitRevision;
     entry.path = path;
-    void load(assetUrl(path))
+    return load(assetUrl(path))
       .then((texture) => {
-        if (destroyed || entry.path !== path) return;
+        if (destroyed || entry.path !== path || (entry.id.startsWith("tent_") && entry.kitRevision !== revision)) return;
         entry.neutralTexture = texture;
         entry.missing = false;
         entry.standIn?.destroy({ children: true });
@@ -552,10 +559,11 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
         if (entry.kitKey && entry.sprite && entry.id.startsWith("bedroll")) return;
         // Measured like a figure, so a campfire painted small in its canvas
         // is still its true height; the part follows the same fit.
-        showPieceArt(entry, texture);
+        showPieceArt(entry, tintCloth(texture, cloth, accent));
       })
       .catch(() => {
-        if (destroyed || entry.path !== path) return;
+        if (destroyed || entry.path !== path || (entry.id.startsWith("tent_") && entry.kitRevision !== revision)) return;
+        if (entry.sprite) entry.sprite.visible = false;
         entry.missing = true;
         drawStandIn(entry, lastOwners.get(entry.id));
       });
@@ -595,6 +603,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     piece.container.addChild(part);
     piece.part = part;
     piece.motion = moving.motion;
+    if (piece.id.startsWith("tent_")) continue;
     void load(assetUrl(moving.path))
       .then((texture) => {
         if (destroyed) return;
@@ -1373,9 +1382,28 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
       lastOwners.set(definition.id, owner);
       if (definition.id.startsWith("tent_")) {
         // Her tent (§4.5): the one she picked, or her bedroll style's.
-        const path = owner ? tentArt(owner.tent ?? null, campKitStyle(owner.id, owner.kitStyle))?.path : undefined;
-        if (path && path !== piece.path) loadPiece(piece, path);
-        else drawStandIn(piece, owner);
+        const tent = tentArt(owner?.tent ?? null, owner ? campKitStyle(owner.id, owner.kitStyle) : "rolled");
+        if (!tent) continue;
+        const accent = owner?.accent;
+        const key = `${tent.id}:${accent ?? ""}`;
+        if (piece.kitKey === key) {
+          drawStandIn(piece, owner);
+          continue;
+        }
+        piece.kitKey = key;
+        const revision = ++piece.kitRevision;
+        piece.heightPx = campHeightPx(tent.heightCm ?? pieceHeightCm(definition), measure);
+        piece.partSprite?.destroy();
+        piece.partSprite = null;
+        const cloth = campTentCloth(tent.id);
+        void loadPiece(piece, tent.path, cloth, accent).then(async () => {
+          if (destroyed || piece.kitRevision !== revision || piece.missing || !piece.part || !tent.flap) return;
+          const texture = await load(assetUrl(tent.flap));
+          if (destroyed || piece.kitRevision !== revision) return;
+          piece.partSprite = new Sprite(tintCloth(texture, cloth, accent));
+          fitSprite(piece.partSprite, piece.fit);
+          piece.part.addChild(piece.partSprite);
+        }).catch(() => undefined);
         continue;
       }
       if (definition.id.startsWith("souvenirs_")) {
@@ -1396,7 +1424,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
       void load(assetUrl(CAMP_KIT_STYLES[style].path.replace(/^\/assets\//, ""))).then(texture => {
         if (destroyed || piece.kitRevision !== revision) return;
         const source = texture.source?.resource as CanvasImageSource | undefined;
-        const canvas = source ? campKitCanvas(source, style, accent) : null;
+        const canvas = source ? campKitCanvas(source, CAMP_KIT_STYLES[style].cloth, accent) : null;
         showPieceArt(piece, canvas ? Texture.from(canvas) : texture);
       }).catch(() => undefined);
     }
