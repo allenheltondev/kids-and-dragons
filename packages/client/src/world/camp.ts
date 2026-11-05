@@ -51,7 +51,7 @@ import {
   measurePaint,
 } from "./actor-art";
 import {
-  bunFireside,
+  friendFireside,
   campRoute,
   campRoutes,
   laneAt,
@@ -61,6 +61,7 @@ import {
   standPoint,
   type CampAction,
   type CampFace,
+  type CampFriendHabit,
   type CampLane,
   type CampLayout,
   type CampPartMotion,
@@ -73,6 +74,7 @@ import {
   activeHotspots,
   actionPose,
   bunSettlePose,
+  ducklingSettlePose,
   campGait,
   campHeightPx,
   campMeasure,
@@ -104,7 +106,7 @@ import {
 /** Somebody in camp: a hero or a friend. */
 export interface CampFigure {
   id: string;
-  habit?: "bunFireside";
+  habit?: CampFriendHabit;
   /** The cutout, or null for the "art pending" placeholder. */
   url: string | null;
   /** True height (figure-scale.ts `figureSize`). */
@@ -1103,9 +1105,9 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     };
     actors.set(def.id, actor);
     fitArt(actor);
-    const fireside = def.habit === "bunFireside" ? bunFireside(layout) : undefined;
-    const home = fireside ? pointPlace(fireside) : homeOf(actor);
-    placeAt(actor, home, null);
+    const fireside = def.habit ? friendFireside(layout, def.habit) : undefined;
+    const home = fireside ? { spot: { lane: fireside.lane, x: pointX(fireside) }, point: null } : homeOf(actor);
+    placeAt(actor, home, fireside ? toFacing(fireside.face) : null);
     planner.add({ id: def.id, ...(def.seat !== undefined ? { seat: def.seat } : {}) }, home);
     if (fireside) planner.direct(def.id, home, null, 0);
     loadArt(actor);
@@ -1252,9 +1254,9 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
 
     if (!actor.walk) {
       const since = elapsed - actor.arrivedAt;
-      const pose = actor.def.habit === "bunFireside" && !actor.leaving
-        ? bunSettlePose(since, still)
-        : actionPose(actor.action ?? "rest", since, still || !actor.action);
+      const habit = actor.leaving ? undefined : actor.def.habit;
+      const settle = habit === "bun" ? bunSettlePose : habit === "duckling" ? ducklingSettlePose : undefined;
+      const pose = settle?.(since, still) ?? actionPose(actor.action ?? "rest", since, still || !actor.action);
       const forward = actor.facing;
       rotation += pose.lean * forward;
       lift += pose.lift * actor.heightPx;

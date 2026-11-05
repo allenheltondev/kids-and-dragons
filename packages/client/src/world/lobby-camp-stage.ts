@@ -24,7 +24,7 @@ import type { RunState } from "@kad/shared";
 import { createCamp, type CampStage } from "./camp";
 import type { CampLayout } from "./camp-layout";
 import { frameSeconds } from "./camp-motion";
-import { LOBBY_CAMP_STAND_IN, begun, campBun, campCues, campDressing, campHeroes, campLayoutFor, campSeed, campShownFor, campStage, type CampHero } from "./lobby-camp";
+import { LOBBY_CAMP_STAND_IN, begun, campCues, campDressing, campFriends, campHeroes, campLayoutFor, campSeed, campShownFor, campStage, type CampHero } from "./lobby-camp";
 import { campBeatShown, onCampBeat } from "./camp-beat";
 
 export { lobbyCampLayout } from "./lobby-camp";
@@ -133,9 +133,7 @@ export function createLobbyCamp(app: Application, layout: CampLayout, options: L
       if (first) shown = mount(state, want);
       else shown!.setSeed(campSeed(state));
       const camp = shown!;
-      const figures = now.map((hero) => hero.figure);
-      const bun = campBun(state);
-      camp.setFigures(bun ? [...figures, bun] : figures);
+      camp.setFigures([...now.map((hero) => hero.figure), ...campFriends(state)]);
       camp.setDressing(campDressing(state, mounted));
       // The frame grew at this chapter's end (§4.1): the heroes pitch it, once.
       const grew = state.phase === "chapter_complete" && state.camp?.grew === true ? state.campMoment?.id ?? "grew" : null;

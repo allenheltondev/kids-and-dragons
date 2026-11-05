@@ -31,7 +31,7 @@ import type { ReactNode } from "react";
 import type { RunState } from "@kad/shared";
 import type { CampLayout } from "./camp-layout";
 import { BLEED_SOURCE, campBleed, campFocusBand, campVisibleSpan, campWindow, type CampFraming } from "./camp-framing";
-import { LOBBY_CAMP_STAND_IN, campBun, campDressing, campHeroes, stillCampFigures } from "./lobby-camp";
+import { LOBBY_CAMP_STAND_IN, campDressing, campFriends, campHeroes, stillCampFigures } from "./lobby-camp";
 import { lobbyInsetBottom, lobbyInsetTop, onLobbyInset, onLobbyInsetTop } from "./stage-inset";
 import { ANCHOR_Y } from "./art-paths";
 import { NOMINAL_PAINT } from "./figure-scale";
@@ -199,7 +199,7 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
   const boxes = campBoxes(layout, { ...input, figureScale: scale });
   const boxOf = new Map(boxes.map((b) => [b.id, b]));
   const visible = at && mode === "cover" ? campVisibleSpan(pane.width, at, W) : undefined;
-  const figures = stillCampFigures(layout, heroes, scale, visible, campBun(state));
+  const figures = stillCampFigures(layout, heroes, scale, visible, campFriends(state));
   const box = at ? { left: at.x, top: at.y, width: W * at.scale, height: H * at.scale } : { left: 0, top: 0, width: 0, height: 0 };
   let bleed = at && mode === "cover" ? campBleed(pane.height, at, layout.canvas) : { top: 0, bottom: 0 };
 

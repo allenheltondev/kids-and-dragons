@@ -468,6 +468,18 @@ export function bunSettlePose(since: number, still: boolean): ActionPose {
   };
 }
 
+/** Two little waddles, then a low, quiet tuck beside the warm stones. */
+export function ducklingSettlePose(since: number, still: boolean): ActionPose {
+  const step = (since - 0.2) / 0.75;
+  const waddle = !still && step > 0 && step < 1 ? Math.sin(step * Math.PI * 2) : 0;
+  return {
+    lean: 0.12 * waddle,
+    lift: 0.08 * Math.abs(waddle),
+    low: still ? 0.2 : 0.2 * smoothstep((since - 0.95) / 0.45),
+    breathPace: 0.55,
+  };
+}
+
 /**
  * A hero arriving in the lobby (§8.5): sits up on the bedroll, looks around
  * and waves, a hop and a turn toward the screen. `turned` is when the figure

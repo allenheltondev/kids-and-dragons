@@ -22,7 +22,7 @@ import { castArtUrl, characterWorldArtUrl } from "./art-paths";
 import { camp as campManifest } from "../../../../assets/manifest.json";
 import type { CampDressing, CampFigure } from "./camp";
 import { campBeside, campSpots, crewName, kitLook } from "./camp-scene";
-import { bunFireside, CAMP_SEATS, campLayout, parseCampManifest, type CampLayout } from "./camp-layout";
+import { friendFireside, CAMP_SEATS, campLayout, parseCampManifest, type CampLayout } from "./camp-layout";
 import { NOMINAL_PAINT, figureSize, paintAspect } from "./figure-scale";
 import { campStandRange, campStandX, type CampSpan } from "./camp-framing";
 import { ANCHOR_Y } from "./art-paths";
@@ -160,9 +160,13 @@ function heroFigure(member: PartyMember, kit: HeroKitView | undefined): Omit<Cam
   };
 }
 
-export function campBun(state: Pick<RunState, "camp">): CampFigure | null {
-  if (!state.camp?.friends.includes("bun")) return null;
-  return { id: "friend:bun", url: castArtUrl("cast/bun"), ...figureSize("cast/bun"), habit: "bunFireside" };
+export function campFriends(state: Pick<RunState, "camp">): CampFigure[] {
+  const owned = state.camp?.friends ?? [];
+  const figures: CampFigure[] = [];
+  for (const [habit, art] of [["bun", "cast/bun"], ["duckling", "entities/duckling"]] as const) {
+    if (owned.includes(habit)) figures.push({ id: `friend:${habit}`, url: castArtUrl(art), ...figureSize(art), habit });
+  }
+  return figures;
 }
 
 /**
@@ -204,14 +208,14 @@ export function stillCampFigures(
   heroes: readonly CampHero[],
   figureScale = 1,
   visible: CampSpan = { x0: 0, x1: 1 },
-  bun: CampFigure | null = null,
+  friends: readonly CampFigure[] = [],
 ): StillCampFigure[] {
   const measure = campMeasure(layout.canvas.height);
   const out: StillCampFigure[] = [];
-  const figures = bun ? [...heroes, { figure: bun, away: false }] : heroes;
+  const figures = [...heroes, ...friends.map((figure) => ({ figure, away: false }))];
   for (const { figure, away } of figures) {
-    const bed = figure.habit === "bunFireside"
-      ? bunFireside(layout)
+    const bed = figure.habit
+      ? friendFireside(layout, figure.habit)
       : layout.frame.standPoints.find((point) => point.seat === figure.seat);
     const lane = bed ? layout.lanes.get(bed.lane) : undefined;
     if (!bed || !lane) continue;

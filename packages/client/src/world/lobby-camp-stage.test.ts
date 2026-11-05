@@ -14,7 +14,7 @@ import { fakeApp, installFakeCanvas2D, type FakeApp } from "../testing/fake-stag
 import { LEAVE_FADE_S, createLobbyCamp, type LobbyCamp } from "./lobby-camp-stage";
 import { EDGE_MARGIN } from "./camp-framing";
 import { NOMINAL_PAINT, paintAspect } from "./figure-scale";
-import { bunSettlePose } from "./camp-motion";
+import { bunSettlePose, ducklingSettlePose } from "./camp-motion";
 
 beforeAll(installFakeCanvas2D);
 
@@ -51,24 +51,27 @@ const run = (app: FakeApp, seconds: number, each?: () => void): void => {
 const lobbyWith = (party: PartyMember[], phase: RunState["phase"] = "lobby"): RunState => makeState({ phase, party });
 
 describe("the lobby's camp on the stage", () => {
-  it("settles befriended Bun at the same fireside spot across state updates", () => {
+  it("settles befriended Bun and the duckling at distinct fireside spots across state updates", () => {
     const { lobby, app } = table();
     const state = lobbyWith([]);
     lobby.sync(state);
     expect(lobby.camp()!.figures()).toEqual([]);
 
-    const withBun: RunState = {
+    const withFriends: RunState = {
       ...state,
-      camp: { revision: 1, frameStage: 1, grownBy: [], dashCash: 0, owned: [], placed: {}, friends: ["bun"], buddies: {}, shopOpen: false },
+      camp: { revision: 1, frameStage: 1, grownBy: [], dashCash: 0, owned: [], placed: {}, friends: ["bun", "duckling"], buddies: {}, shopOpen: false },
     };
-    lobby.sync(withBun);
+    lobby.sync(withFriends);
     run(app, 2);
     const bun = () => lobby.camp()!.figures().find((figure) => figure.id === "friend:bun");
-    expect(bun()).toMatchObject({ point: "campfire-w", walking: false });
+    const duckling = () => lobby.camp()!.figures().find((figure) => figure.id === "friend:duckling");
+    expect(bun()).toMatchObject({ x: expect.closeTo(0.465 * layout.canvas.width), point: null, walking: false });
+    expect(duckling()).toMatchObject({ x: expect.closeTo(0.535 * layout.canvas.width), point: null, walking: false });
 
-    lobby.sync({ ...withBun, visited: ["next"] });
+    lobby.sync({ ...withFriends, visited: ["next"] });
     run(app, 30);
-    expect(bun()).toMatchObject({ point: "campfire-w", walking: false });
+    expect(bun()).toMatchObject({ x: expect.closeTo(0.465 * layout.canvas.width), walking: false });
+    expect(duckling()).toMatchObject({ x: expect.closeTo(0.535 * layout.canvas.width), walking: false });
     lobby.destroy();
   });
 
@@ -77,6 +80,13 @@ describe("the lobby's camp on the stage", () => {
     expect(bunSettlePose(0.55, false).lean).toBeLessThan(0);
     expect(bunSettlePose(20, false)).toMatchObject({ lean: 0, low: 0.09 });
     expect(bunSettlePose(0.42, true)).toMatchObject({ lean: 0, low: 0.09 });
+  });
+
+  it("gives the duckling two opposing waddles and a settled pose", () => {
+    expect(ducklingSettlePose(0.4, false).lean).toBeGreaterThan(0);
+    expect(ducklingSettlePose(0.75, false).lean).toBeLessThan(0);
+    expect(ducklingSettlePose(20, false)).toMatchObject({ lean: 0, lift: 0, low: 0.2 });
+    expect(ducklingSettlePose(0.4, true)).toMatchObject({ lean: 0, lift: 0, low: 0.2 });
   });
 
   it("does not mount outside the lobby, nor before there is a state", () => {
