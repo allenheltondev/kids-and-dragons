@@ -1590,8 +1590,8 @@
     },
     "encounter_gallery": {
       "type": "encounter",
-      "map": "gallery",
-      "narration": "The restless remains clatter toward whatever is wrong. Right now, that is you. One keeps stopping to look for its lost toe bone.",
+      "map": "gem_gallery",
+      "narration": "The stones in your pockets are humming. Stand by the hollow at the end of two rounds to lead the bones back to their wall. Keep someone by the hollow while friends draw the bones away.",
       "enemies": [
         {
           "id": "bones",
@@ -1605,6 +1605,34 @@
         "narration": "The bones sink back into the rock, tired and a bit relieved."
       },
       "onDefeat": {
+        "goto": "scene_bells_ringing",
+        "narration": "The bones do not hurt you. They carry you, very slowly, back up the tube. By the time you climb down again, the bells far below are counting down."
+      },
+      "art": "scenes/gemfall/gem-gallery",
+      "environment": {
+        "clock": {
+          "rounds": 5,
+          "label": "The bells ring below",
+          "onExpire": "collapse"
+        },
+        "objectives": [
+          {
+            "id": "gallery-hollow",
+            "label": "Guide the bones home",
+            "art": "prop_humming_stone",
+            "kind": "hold",
+            "tiles": [
+              {
+                "x": 3,
+                "y": 2
+              }
+            ],
+            "rounds": 2,
+            "endsFight": true
+          }
+        ]
+      },
+      "onTimeout": {
         "goto": "scene_bells_ringing",
         "narration": "The bones do not hurt you. They carry you, very slowly, back up the tube. By the time you climb down again, the bells far below are counting down."
       }
@@ -2869,8 +2897,8 @@
     },
     "encounter_dragon": {
       "type": "encounter",
-      "map": "gallery",
-      "narration": "The Seal-Keeper uncurls until it fills the cave. A guardian of old bones steps out of the wall beside it, very pleased to be included.",
+      "map": "seal_trial",
+      "narration": "“Show me how you stand together,” says the Seal-Keeper. Watch the ground its breath is aimed at. End three hero turns beside the witness stone to answer the challenge.",
       "enemies": [
         {
           "id": "keeper",
@@ -2878,7 +2906,13 @@
           "creature": "legend_dragon",
           "hp": 20,
           "guard": 14,
-          "steps": 3
+          "steps": 3,
+          "windupAttack": {
+            "label": "Keeper breath",
+            "radius": 1,
+            "damage": 3,
+            "presentation": "slam"
+          }
         },
         {
           "id": "seal_bones",
@@ -2893,6 +2927,42 @@
         "narration": "The dragon laughs like an avalanche having a nice day. \"You fight like people who mean it,\" it says, and steps aside."
       },
       "onDefeat": {
+        "goto": "scene_dragon_claw",
+        "narration": "The Seal-Keeper scoops you up in one enormous claw, as gently as a bird's nest.",
+        "variants": [
+          {
+            "when": {
+              "partySize": {
+                "max": 1
+              }
+            },
+            "text": "You are alone in a claw big enough for twenty. It is warm and still, and somehow you feel less alone than you have all day."
+          }
+        ]
+      },
+      "art": "scenes/gemfall/seal-chamber",
+      "environment": {
+        "clock": {
+          "rounds": 6,
+          "label": "The Keeper ends the trial",
+          "onExpire": "collapse"
+        },
+        "objectives": [
+          {
+            "id": "witness-stone",
+            "label": "Stand by the witness stone",
+            "art": "carved-stone",
+            "kind": "close",
+            "at": {
+              "x": 4,
+              "y": 2
+            },
+            "turns": 3,
+            "endsFight": true
+          }
+        ]
+      },
+      "onTimeout": {
         "goto": "scene_dragon_claw",
         "narration": "The Seal-Keeper scoops you up in one enormous claw, as gently as a bird's nest.",
         "variants": [
@@ -5630,14 +5700,17 @@
     },
     "encounter_crabs": {
       "type": "encounter",
-      "map": "switchback",
-      "narration": "The guard crabs click, clack and puff out their glassy backs. Bump them off the path before they bump you.",
+      "map": "boundary_retreat",
+      "narration": "The lower ledge is open first. Cross before the gravel slides, or wait for the upper path to open. The crabs are watching both ways up.",
       "enemies": [
         {
           "id": "crab",
           "name": "Guard Crab",
           "creature": "glassback_crab",
-          "hp": 10
+          "hp": 10,
+          "rift": {
+            "post": "exit"
+          }
         }
       ],
       "onVictory": {
@@ -5655,6 +5728,53 @@
         ]
       },
       "onDefeat": {
+        "goto": "scene_crabs_herded",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      },
+      "art": "scenes/gemfall/crab-field-guards",
+      "environment": {
+        "clock": {
+          "rounds": 5,
+          "label": "The crabs herd you off the ledge",
+          "onExpire": "collapse"
+        },
+        "exits": [
+          {
+            "id": "lower-ledge",
+            "label": "Lower ledge",
+            "art": "prop_stepping_stones",
+            "tiles": [
+              {
+                "x": 6,
+                "y": 3
+              }
+            ],
+            "closesRound": 2
+          },
+          {
+            "id": "upper-ledge",
+            "label": "Upper ledge",
+            "art": "notched-stone",
+            "tiles": [
+              {
+                "x": 6,
+                "y": 1
+              }
+            ],
+            "opensRound": 3
+          }
+        ]
+      },
+      "onEscape": {
+        "goto": "scene_crabs_passed"
+      },
+      "onTimeout": {
         "goto": "scene_crabs_herded",
         "effects": [
           {
@@ -5683,6 +5803,25 @@
         }
       ],
       "art": "scenes/gemfall/crab-field-guards"
+    },
+    "scene_crabs_passed": {
+      "type": "story",
+      "art": "scenes/gemfall/crab-field-guards",
+      "narration": "The last of you climbs past the ledges. The crabs lower their claws. They settle over their coins and stones again while you climb into a drift of embermoths.",
+      "cast": [
+        {
+          "figure": "entities/glassback_crab",
+          "count": 2
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb on",
+          "icon": "forward",
+          "goto": "scene_ember_drift"
+        }
+      ]
     },
     "scene_crabs_herded": {
       "type": "story",
@@ -5755,7 +5894,7 @@
           "name": "Seal-Keeper"
         }
       ],
-      "narration": "One of your stones hums beside its own gap. Listen for the match, set the stone in place, then hold it steady while the Keeper warms the seal.",
+      "narration": "A stone hums beside its own gap. Listen for the match, set the stone in place, then hold it steady while the Keeper warms the seal.",
       "interaction": {
         "kind": "sequence",
         "cue": "Arrange the steps: listen, fit, then hold steady.",
@@ -6042,7 +6181,87 @@
           "prop_stone_board"
         ]
       }
-    }
+    },
+    "fights": [
+      {
+        "chapter": "gemfall-08",
+        "scene": "encounter_gallery",
+        "creature": "restless_remains",
+        "board": "gem_gallery",
+        "backdrop": "scenes/gemfall/gem-gallery",
+        "introScenes": [
+          "check_remains"
+        ],
+        "victoryScene": "rest_cool_gallery",
+        "defeatScene": "scene_bells_ringing",
+        "tileUrl": "/assets/biomes/red_sky_foothills/tiles.png",
+        "rescueFigure": "",
+        "activeUrl": "/assets/entities/restless_remains/assembled.png",
+        "retreatUrl": "/assets/entities/restless_remains/assembled.png",
+        "props": [],
+        "terrainProps": [],
+        "poses": {
+          "intro": "assembled",
+          "retreat": "assembled"
+        },
+        "retreatDirection": 1
+      },
+      {
+        "chapter": "gemfall-08",
+        "scene": "encounter_dragon",
+        "creature": "legend_dragon",
+        "board": "seal_trial",
+        "backdrop": "scenes/gemfall/seal-chamber",
+        "introScenes": [],
+        "victoryScene": "scene_seal_cracks",
+        "defeatScene": "scene_dragon_claw",
+        "tileUrl": "/assets/biomes/red_sky_foothills/tiles.png",
+        "rescueFigure": "",
+        "activeUrl": "/assets/cast/seal_keeper/assembled.png",
+        "retreatUrl": "/assets/entities/legend_dragon/assembled.png",
+        "props": [],
+        "terrainProps": [],
+        "poses": {
+          "intro": "assembled",
+          "retreat": "assembled"
+        },
+        "retreatDirection": 1
+      },
+      {
+        "chapter": "gemfall-08",
+        "scene": "encounter_crabs",
+        "creature": "glassback_crab",
+        "board": "boundary_retreat",
+        "backdrop": "scenes/gemfall/crab-field-guards",
+        "introScenes": [
+          "scene_crab_guards"
+        ],
+        "victoryScene": "scene_crabs_bumped",
+        "defeatScene": "scene_crabs_herded",
+        "tileUrl": "/assets/biomes/red_sky_foothills/tiles.png",
+        "rescueFigure": "",
+        "activeUrl": "/assets/entities/glassback_crab/warning.png",
+        "retreatUrl": "/assets/entities/glassback_crab/shooed.png",
+        "props": [
+          "pickup-luckstone"
+        ],
+        "terrainProps": [],
+        "poses": {
+          "intro": "warning",
+          "retreat": "shooed"
+        },
+        "retreatDirection": 1
+      }
+    ],
+    "warmUrls": [
+      "/assets/entities/restless_remains/assembled.png",
+      "/assets/biomes/red_sky_foothills/tiles.png",
+      "/assets/cast/seal_keeper/assembled.png",
+      "/assets/entities/legend_dragon/assembled.png",
+      "/assets/entities/glassback_crab/warning.png",
+      "/assets/entities/glassback_crab/shooed.png",
+      "/assets/story-props/pickup-luckstone.webp"
+    ]
   },
   "resumeInteractions": {
     "interaction_climb_warmup": {

@@ -1470,7 +1470,7 @@ describe("the place fighting back (#201)", () => {
       "Rift fire gets you!",
       "You freed Pip!",
       "You step through the rift!",
-      "The rift throws Bramblewisp 1 somewhere new!",
+      "Bramblewisp 1 moves to new ground!",
       "The rift is closing!",
       "The rift surges: everyone still here loses 1.",
       "Pip is lost to the rift.",

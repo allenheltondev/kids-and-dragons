@@ -1796,14 +1796,21 @@
     },
     "encounter_echoes": {
       "type": "encounter",
-      "map": "switchback",
-      "narration": "The echo hunter unfolds out of the rock wall. The wolf, scared half silly, sticks close beside it.",
+      "map": "boundary_retreat",
+      "narration": "The hunter listens for a heartbeat, then sends an echo into the marked ground. Move clear. Ring the road bell at round end to drown out the echo and send the hunter back into the rocks.",
       "enemies": [
         {
           "id": "echo",
           "name": "Echo Hunter",
           "creature": "echo_hunter",
-          "hp": 11
+          "hp": 11,
+          "quick": 4,
+          "windupAttack": {
+            "label": "Echo pulse",
+            "radius": 1,
+            "damage": 3,
+            "presentation": "slam"
+          }
         },
         {
           "id": "wolf",
@@ -1817,6 +1824,34 @@
         "narration": "The echo hunter folds back into the rock, sulking. The wolf bolts downhill."
       },
       "onDefeat": {
+        "goto": "ending_lost_in_echoes",
+        "narration": "The echoes get so loud you cannot think. You stumble back down the switchback, stones rattling."
+      },
+      "art": "scenes/gemfall/echo-cutting",
+      "environment": {
+        "clock": {
+          "rounds": 5,
+          "label": "The cutting fills with echoes",
+          "onExpire": "collapse"
+        },
+        "objectives": [
+          {
+            "id": "road-bell",
+            "label": "Ring the road bell",
+            "art": "prop_hand_bell",
+            "kind": "hold",
+            "tiles": [
+              {
+                "x": 4,
+                "y": 3
+              }
+            ],
+            "rounds": 1,
+            "endsFight": true
+          }
+        ]
+      },
+      "onTimeout": {
         "goto": "ending_lost_in_echoes",
         "narration": "The echoes get so loud you cannot think. You stumble back down the switchback, stones rattling."
       }
@@ -3058,7 +3093,36 @@
           "prop_humming_stone"
         ]
       }
-    }
+    },
+    "fights": [
+      {
+        "chapter": "gemfall-07l",
+        "scene": "encounter_echoes",
+        "creature": "echo_hunter",
+        "board": "boundary_retreat",
+        "backdrop": "scenes/gemfall/echo-cutting",
+        "introScenes": [
+          "check_echoes"
+        ],
+        "victoryScene": "scene_bend_crowds",
+        "defeatScene": "ending_lost_in_echoes",
+        "tileUrl": "/assets/biomes/red_sky_foothills/tiles.png",
+        "rescueFigure": "",
+        "activeUrl": "/assets/entities/echo_hunter/assembled.png",
+        "retreatUrl": "/assets/entities/echo_hunter/assembled.png",
+        "props": [],
+        "terrainProps": [],
+        "poses": {
+          "intro": "assembled",
+          "retreat": "assembled"
+        },
+        "retreatDirection": 1
+      }
+    ],
+    "warmUrls": [
+      "/assets/biomes/red_sky_foothills/tiles.png",
+      "/assets/entities/echo_hunter/assembled.png"
+    ]
   },
   "resumeInteractions": {
     "interaction_tea_cups": {

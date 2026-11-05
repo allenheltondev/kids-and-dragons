@@ -371,11 +371,11 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-05a.json": "c451bbe0914eabf4c903cdc1f44be7a447ef103eda538144cdd1cd2438276be5",
   "chapters/gemfall-05b.json": "cb0ae1115e782279406cdad9916bf23c84042b8e79aa0d0cf703b28784feefd7",
   "chapters/gemfall-05c.json": "d124128fab62f1df00dd3e328c41a925548a6bcb9a60611829a51732d2d9252c",
-  "chapters/gemfall-06.json": "4b7f0681e41319f1056507d87b6eb454881eab90751ce33799b636b24a226c81",
+  "chapters/gemfall-06.json": "359aa09a894ae86b525fd3131a16300344aa2c4bfcfb584b1bab3792b2ed2140",
   "chapters/gemfall-07h.json": "dbcf17577035bbfa12f82bc8aba85ceb36f81f773d1b725df0d50ab2a388baed",
-  "chapters/gemfall-07l.json": "de14b6283a49fb31c475a72eebeee60dda66f6356d95159fca0b86e3ed6fe259",
-  "chapters/gemfall-07r.json": "cff883ee0ad20ca3d5ae6a902852de288b6f7bf15482662f553c861ef67f7df9",
-  "chapters/gemfall-08.json": "727944de75a75c1f8adf01d15b765301bab7dd647f655fa5f1ec751c8575be27",
+  "chapters/gemfall-07l.json": "6dea56eb3fb6fcbd61cd2dc6abf36edb3f3d48f8e1a94cbdf72a641f43bd64f1",
+  "chapters/gemfall-07r.json": "512abc8825a6a1fe9d48ac6cbe34ce05536b3b2ea84c143de6c3c89b57398363",
+  "chapters/gemfall-08.json": "b7234f140d44295f803111975fbfe7564e1499fdc9ede49afc8acfd159e22603",
 };
 
 describe("Gemfall's reviewed files and legacy contracts", () => {
