@@ -212,6 +212,9 @@ describe("ford road combat batch", () => {
 });
 
 const mountainFights = [
+  { chapter: "gemfall-03a", sceneId: "encounter_crawlers", target: { x: 6, y: 3 }, outcome: "escaped" },
+  { chapter: "gemfall-03a", sceneId: "encounter_crabs", target: { x: 3, y: 2 }, outcome: "victory" },
+  { chapter: "gemfall-03b", sceneId: "encounter_mimic", target: { x: 4, y: 2 }, outcome: "victory" },
   { chapter: "gemfall-04a", sceneId: "encounter_wolves", target: { x: 3, y: 2 }, outcome: "victory" },
   { chapter: "gemfall-04b", sceneId: "encounter_echo", target: { x: 6, y: 3 }, outcome: "escaped" },
   { chapter: "gemfall-04b", sceneId: "encounter_logs", target: { x: 4, y: 2 }, outcome: "victory" },
@@ -240,8 +243,10 @@ describe.each(mountainFights)("$sceneId on the mountain road", ({ chapter, scene
         sawWarning ||= danger.length > 0;
         const goal = chapter === "gemfall-08" && sceneId === "encounter_crabs" && state.round >= 3 ? { x: 6, y: 1 } : target;
         const score = (p: { x: number; y: number }) =>
-          Number(danger.some(t => t.x === p.x && t.y === p.y)) * 10 + stepsBetween(p, goal);
-        const moves = legalMoves(state).filter(p => sceneId !== "encounter_drake" || p.x !== 5 || (p.y !== 1 && p.y !== 4));
+          Number(danger.some(t => t.x === p.x && t.y === p.y)) * 10 +
+          (chapter === "gemfall-03a" && sceneId === "encounter_crawlers" ? Math.min(stepsBetween(p, goal), stepsBetween(p, { x: 6, y: 2 })) : stepsBetween(p, goal));
+        const moves = legalMoves(state).filter(p => (sceneId !== "encounter_drake" || p.x !== 5 || (p.y !== 1 && p.y !== 4)) &&
+          (chapter !== "gemfall-03a" || sceneId !== "encounter_crawlers" || p.x !== 3 || p.y !== 3));
         const next = moves.sort((a, b) => score(a) - score(b))[0];
         if (next && score(next) < score(at)) {
           const moved = moveTo(state, next);
@@ -252,13 +257,13 @@ describe.each(mountainFights)("$sceneId on the mountain road", ({ chapter, scene
     }
     expect(encounterOutcome(state)).toBe(outcome);
     if (sceneId === "encounter_wisps") expect(sawWarning).toBe(true);
-    if (sceneId === "encounter_crawlers") expect(state.environment!.objectives).toEqual([2]);
+    if (sceneId === "encounter_crawlers" && outcome === "victory") expect(state.environment!.objectives).toEqual([2]);
     if (sceneId === "encounter_echoes") expect(state.environment!.objectives).toEqual([1]);
     if (sceneId === "encounter_drake") {
       expect(positionOf(state, "drake#1")).toEqual({ x: 5, y: 1 });
       expect(positionOf(state, "small#1")).toEqual({ x: 5, y: 4 });
     }
-    if (sceneId === "encounter_crabs") expect(state.combatants.filter(c => c.side === "party").every(c => c.escaped)).toBe(true);
+    if (outcome === "escaped") expect(state.combatants.filter(c => c.side === "party").every(c => c.escaped)).toBe(true);
     expect(state.combatants.filter(c => c.side === "enemy").every(c => !c.down)).toBe(true);
   });
   it("leaving the goal unattended reaches the authored recovery", () => {
