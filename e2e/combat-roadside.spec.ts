@@ -225,6 +225,10 @@ for (const fight of roadFights) {
       await opening.evaluate(() => { delete document.documentElement.dataset.text; });
       const panel = display.page.locator(".fight-log");
       await expect(panel).toContainText(fight.cue);
+      if (fight.sceneId === "encounter_crabs") {
+        // Screen-reader progress must describe the same destination as the visible counter.
+        await expect(display.page.getByLabel("Friends past the boundary")).toContainText("0/2 past the boundary");
+      }
       await display.page.evaluate(() => { document.documentElement.dataset.text = "largest"; });
       await expect.poll(() => panel.evaluate(el => el.scrollHeight <= el.clientHeight + 1)).toBe(true);
       await display.page.screenshot({ path: info.outputPath("tv-largest.png") });
