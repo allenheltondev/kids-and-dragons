@@ -97,6 +97,48 @@ describe("the schema", () => {
           expect(scene.onTimeout.goto).toBe("scene_mimic_squelched");
           continue;
         }
+        if (chapter.id === "gemfall-03c" && sceneId === "encounter_crabs") {
+          expect(scene.environment.hazards[0]).toMatchObject({ id: "ford-runoff", push: { direction: "west", tiles: 2 } });
+          expect(scene.environment.objectives[0]).toMatchObject({ id: "ford-stone", kind: "hold", rounds: 1, endsFight: true });
+          expect(scene.environment.clock).toMatchObject({ rounds: 5, onExpire: "collapse" });
+          expect(scene.onVictory.goto).toBe("scene_crabs_cleared");
+          expect(scene.onTimeout).toEqual(scene.onDefeat);
+          expect(scene).not.toHaveProperty("onEscape");
+          continue;
+        }
+        if (chapter.id === "gemfall-03c" && sceneId === "encounter_wolves") {
+          expect(scene.environment.exits[0]).toMatchObject({ id: "big-campfire", art: "camp-firepit" });
+          expect(scene.onEscape.goto).toBe("scene_campfire_play");
+          expect(scene.onTimeout.goto).toBe("scene_campfire_play");
+          continue;
+        }
+        if (chapter.id === "gemfall-03c" && sceneId === "encounter_drakes") {
+          expect(scene.environment.objectives[0]).toMatchObject({ id: "bread-wagon", kind: "close", turns: 2, endsFight: true });
+          expect(scene.onTimeout.goto).toBe("end_swept_setback");
+          continue;
+        }
+        if (chapter.id === "gemfall-04c" && sceneId === "encounter_boxes") {
+          expect(scene.environment.hazards[0]).toMatchObject({ id: "depot-ink", slow: { steps: 2, turns: 1 } });
+          expect(scene.onTimeout.goto).toBe("scene_boxes_sulking");
+          continue;
+        }
+        if (chapter.id === "gemfall-05a" && sceneId === "encounter_wisps") {
+          expect(scene.environment.victory).toBe("rescue");
+          expect(scene.environment.rescue).toMatchObject({ name: "the mule", art: "prop_mule_cart", turns: 2 });
+          expect(scene.onTimeout).toEqual(scene.onDefeat);
+          continue;
+        }
+        if (chapter.id === "gemfall-05c" && sceneId === "encounter_crabs") {
+          expect(scene.environment.exits[0].id).toBe("boundary-stone");
+          expect(scene.onEscape.goto).toBe("scene_turned_back");
+          expect(scene.onTimeout).toEqual(scene.onDefeat);
+          continue;
+        }
+        if (chapter.id === "gemfall-05c" && sceneId === "encounter_crawlers") {
+          expect(scene.environment.objectives[0]).toMatchObject({ id: "tally-books", kind: "hold", rounds: 2, endsFight: true });
+          expect(scene.onTimeout).toEqual(scene.onDefeat);
+          continue;
+        }
         expect(scene).not.toHaveProperty("environment");
         expect(scene).not.toHaveProperty("onEscape");
         expect(scene).not.toHaveProperty("onTimeout");

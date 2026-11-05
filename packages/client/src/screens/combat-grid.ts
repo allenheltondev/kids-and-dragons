@@ -176,7 +176,7 @@ function featuresOf(encounter: EncounterState): Map<string, GridFeature> {
     // Burnt out for good: no longer a mark on the ground.
     if (hazard.gone) continue;
     for (const t of hazard.tiles) {
-      out.set(`${t.x},${t.y}`, { kind: "hazard", label: hazard.label, icon: hazardIcon(hazard.kind), active: hazard.active });
+      out.set(`${t.x},${t.y}`, { kind: "hazard", label: hazard.label, icon: hazardIcon(hazard.kind), active: hazard.active, ...(hazard.art ? { art: hazard.art } : {}) });
     }
   }
   for (const exit of view.exits) {
@@ -194,7 +194,7 @@ function featuresOf(encounter: EncounterState): Map<string, GridFeature> {
   for (const captive of view.captives) {
     if (captive.status !== "waiting") continue;
     const { at, name } = captive;
-    out.set(`${at.x},${at.y}`, { kind: "captive", label: name, icon: CAPTIVE_ICON, active: true });
+    out.set(`${at.x},${at.y}`, { kind: "captive", label: name, icon: CAPTIVE_ICON, active: true, ...(captive.art ? { art: captive.art } : {}) });
   }
   return out;
 }
@@ -242,6 +242,8 @@ export function enemyPortraitUrl(
   if (!scene || scene.type !== "encounter") return null;
   const specId = combatantId.split("#")[0] ?? combatantId;
   const spec = scene.enemies.find((e) => e.id === specId);
+  const appearance = chapter.presentation?.fights?.find(fight => fight.scene === sceneId);
+  if (appearance?.poses.intro === "strongbox" && appearance.creature === spec?.creature) return appearance.activeUrl;
   const art = spec ? enemyArtId(spec) : null;
   if (!art) return null;
   if (art.startsWith("cast/")) return `/assets/${art}/assembled.png`;

@@ -390,6 +390,7 @@
       "scale": "medium_to_large",
       "states": {
         "shooed": "entities/mire_mimic/shooed.png",
+        "strongbox": "entities/mire_mimic/strongbox.webp",
         "little": "entities/mire_mimic/little.png"
       }
     },

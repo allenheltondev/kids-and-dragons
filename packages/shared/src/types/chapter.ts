@@ -760,6 +760,8 @@ export interface RiftClock {
  */
 export interface EnvironmentHazard {
   id: string;
+  /** Optional painted marker from the story prop catalog. */
+  art?: string;
   /** What it looks like, and so which glyph and word the phone uses. */
   kind: "fire" | "thorns" | "rift";
   /** What the phone calls it: "Rift fire". */
@@ -822,6 +824,8 @@ export interface RiftExit {
  * fact (`setFlag`, then a journey flag and a node's `onComplete`).
  */
 export interface RescueObjective {
+  /** Optional story prop marking who needs help. */
+  art?: string;
   /** "Pip the ferry-sprite". */
   name: string;
   at: MapTile;
