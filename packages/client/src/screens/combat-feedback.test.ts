@@ -31,7 +31,7 @@ describe("phone combat feedback", () => {
     expect(words).toContain("slaps on the marked ground");
     expect(words).toContain("lowers the planks");
     expect(words).not.toMatch(/sparks|bursts/);
-    expect(enemyIntentLine(physical, "wisp#1")).toContain("Raised planks slap marked ground");
+    expect(enemyIntentLine(physical, "wisp#1")).toContain("hits marked ground next turn");
   });
   it("counts saved crossings without crediting a hero who is still on the lane", () => {
     const state = { ...encounter, environment: { expired: false, spec: { exits: [{ id: "far-bank", label: "Bank", tiles: [{ x: 4, y: 1 }] }] } } };

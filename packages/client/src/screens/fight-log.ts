@@ -136,7 +136,10 @@ export function describeBeats(
     return c ? combatantLabel(c) : id;
   };
   const isParty = (id: string): boolean => combatantById(encounter, id)?.side === "party";
-  const windup = (id: string) => windupCopy(combatantById(encounter, id)?.windupAttack?.presentation);
+  const windup = (id: string) => {
+    const attack = combatantById(encounter, id)?.windupAttack;
+    return windupCopy(attack?.presentation, attack?.label);
+  };
   const out: Beat[] = [];
   /*
    * The swing still waiting on its hurt: the index of its line in `out`, and

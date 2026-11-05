@@ -148,7 +148,7 @@ export function RiftStatus(): ReactElement | null {
           </li>
         ))}
       </ul>
-      {crossingProgress(encounter) ? <p className="rift-status__crossing" aria-label="Friends across">{crossingProgress(encounter)}</p> : !view.objectives.some(o => o.id === "wagon-lane") && markedHazards.length === 0 && <ChapterGoalCard place="world" folded />}
+      {crossingProgress(encounter) ? <p className="rift-status__crossing" aria-label="Friends across">{crossingProgress(encounter)}</p> : !view.objectives.some(o => o.id === "wagon-lane") && !view.objectives.some(o => o.art && o.endsFight) && markedHazards.length === 0 && <ChapterGoalCard place="world" folded />}
       {caption && !view.objectives.some(o => o.id === "wagon-lane") && !crossingProgress(encounter) ? (
         <ul className="rift-status__caption" key={caption.seq} aria-live="polite">
           {caption.lines.map((line, i) => (
