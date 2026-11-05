@@ -1448,14 +1448,21 @@
     },
     "encounter_echo": {
       "type": "encounter",
-      "map": "glade",
-      "narration": "The echo hunter rises from its crack, frills spread wide. It is young, about pony-sized. A wisp drifts down to join in.",
+      "map": "boundary_retreat",
+      "narration": "Watch the patch where the hunter aims its echo. Move clear before it strikes. If everyone slips past the quiet gap, you can leave the hunter behind.",
       "enemies": [
         {
           "id": "hunter",
           "name": "Young Echo Hunter",
           "creature": "echo_hunter",
-          "hp": 12
+          "hp": 12,
+          "quick": 4,
+          "windupAttack": {
+            "label": "Echo pulse",
+            "radius": 1,
+            "damage": 3,
+            "presentation": "slam"
+          }
         },
         {
           "id": "wisp",
@@ -1469,6 +1476,35 @@
         "narration": "Far too loud! The hunter slides back into the dark, and the wisp drifts off to bother a mosshorn."
       },
       "onDefeat": {
+        "goto": "scene_echo_recovery",
+        "narration": "The hunter herds you out, nudge by patient nudge. A path closes behind you. The glade is gone."
+      },
+      "art": "scenes/gemfall/fern-spring-glade",
+      "environment": {
+        "clock": {
+          "rounds": 5,
+          "label": "The glade path closes",
+          "onExpire": "collapse"
+        },
+        "exits": [
+          {
+            "id": "quiet-gap",
+            "label": "Quiet gap",
+            "tiles": [
+              {
+                "x": 6,
+                "y": 3
+              }
+            ],
+            "art": "prop_reed_gate"
+          }
+        ]
+      },
+      "onEscape": {
+        "goto": "scene_glade_heart",
+        "narration": "Your last footfall fades beyond the gap. The hunter listens to an empty glade."
+      },
+      "onTimeout": {
         "goto": "scene_echo_recovery",
         "narration": "The hunter herds you out, nudge by patient nudge. A path closes behind you. The glade is gone."
       }
@@ -1980,13 +2016,16 @@
     },
     "encounter_logs": {
       "type": "encounter",
-      "map": "reedbank",
-      "narration": "The logs heave up out of the brook on long, muddy legs. Make them let go of the bridge!",
+      "map": "surge_wagon",
+      "narration": "The shallows pull your boots downstream if you stop in them. Tie the rope from the dry bank by ending two turns beside the post. The logs can shove you into the water.",
       "enemies": [
         {
           "id": "log",
           "name": "Log Mimic",
-          "creature": "mire_mimic"
+          "creature": "mire_mimic",
+          "rift": {
+            "shoves": true
+          }
         }
       ],
       "onVictory": {
@@ -2000,6 +2039,56 @@
         ]
       },
       "onDefeat": {
+        "goto": "scene_logs_slipped",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      },
+      "art": "scenes/gemfall/brook-log-mimics",
+      "environment": {
+        "clock": {
+          "rounds": 5,
+          "label": "The logs roll the bridge",
+          "onExpire": "collapse"
+        },
+        "hazards": [
+          {
+            "id": "brook-shallows",
+            "kind": "rift",
+            "label": "Brook current",
+            "art": "water-surge",
+            "tiles": [
+              {
+                "x": 2,
+                "y": 3
+              }
+            ],
+            "push": {
+              "direction": "west",
+              "tiles": 2
+            }
+          }
+        ],
+        "objectives": [
+          {
+            "id": "brook-rope",
+            "kind": "close",
+            "label": "Tie the crossing rope",
+            "art": "fight-mooring-post",
+            "at": {
+              "x": 4,
+              "y": 2
+            },
+            "turns": 2,
+            "endsFight": true
+          }
+        ]
+      },
+      "onTimeout": {
         "goto": "scene_logs_slipped",
         "effects": [
           {
@@ -2572,7 +2661,62 @@
           "prop_fern"
         ]
       }
-    }
+    },
+    "fights": [
+      {
+        "chapter": "gemfall-04b",
+        "scene": "encounter_echo",
+        "creature": "echo_hunter",
+        "board": "boundary_retreat",
+        "backdrop": "scenes/gemfall/fern-spring-glade",
+        "introScenes": [
+          "check_silent"
+        ],
+        "victoryScene": "scene_glade_heart",
+        "defeatScene": "scene_echo_recovery",
+        "tileUrl": "/assets/biomes/plains/tiles.png",
+        "rescueFigure": "",
+        "activeUrl": "/assets/entities/echo_hunter/assembled.png",
+        "retreatUrl": "/assets/entities/echo_hunter/assembled.png",
+        "props": [],
+        "terrainProps": [],
+        "poses": {
+          "intro": "assembled",
+          "retreat": "assembled"
+        },
+        "retreatDirection": 1
+      },
+      {
+        "chapter": "gemfall-04b",
+        "scene": "encounter_logs",
+        "creature": "mire_mimic",
+        "board": "surge_wagon",
+        "backdrop": "scenes/gemfall/brook-log-mimics",
+        "introScenes": [
+          "scene_stepping_logs"
+        ],
+        "victoryScene": "scene_logs_cleared",
+        "defeatScene": "scene_logs_slipped",
+        "tileUrl": "/assets/fight-boards/fight_ferry_landing/tiles.png",
+        "rescueFigure": "",
+        "activeUrl": "/assets/entities/mire_mimic/assembled.png",
+        "retreatUrl": "/assets/entities/mire_mimic/little.png",
+        "props": [],
+        "terrainProps": [],
+        "poses": {
+          "intro": "assembled",
+          "retreat": "little"
+        },
+        "retreatDirection": 1
+      }
+    ],
+    "warmUrls": [
+      "/assets/entities/echo_hunter/assembled.png",
+      "/assets/biomes/plains/tiles.png",
+      "/assets/entities/mire_mimic/assembled.png",
+      "/assets/entities/mire_mimic/little.png",
+      "/assets/fight-boards/fight_ferry_landing/tiles.png"
+    ]
   },
   "resumeInteractions": {
     "interaction_sapling_rhyme": {
