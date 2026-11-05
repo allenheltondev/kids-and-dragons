@@ -353,9 +353,14 @@ const DIGESTS: PreEpicSave["digests"] = {
 // The campaign file is re-pinned for the crew's camp (#617, docs/camp.md §4.1, approved in §10):
 // it gains `"growsCamp": true`, which only the camp's frame reads. No chapter changed, and no flag,
 // XP, item, route or ending moved, so the gameplay digests below are unchanged.
+// Chapter 1 is re-pinned for its first camp finds (#622, docs/camp.md §5.1, §5.3, §5.4; approved
+// by the owner): interaction_quay_line gains a `findForKit` (the lamp ribbon) and
+// interaction_lantern_pole a `findForCamp` (Hesper's wagon lantern), each an `onEnter` beside a
+// sentence of narration naming the thing. A find changes no flag, XP, item or route, so the
+// gameplay digests below are unchanged.
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "7042c8fa98760e9ded81d479d40e392bb56ecb9bf62ed70baf724ffa53b7a09a",
-  "chapters/gemfall-01.json": "b0b420dcda3053cbbd0b44b176f160885e902a1143d065ec082ecd0c4a61602e",
+  "chapters/gemfall-01.json": "79c14d032ab9f1c1de32911b3147b8c74e562da37ddf86502cf6f6a687e12b2b",
   "chapters/gemfall-02.json": "0cf491a7e971ba10e9ff43ccabac33f42bf0545811c8f93db74128d7438d14d8",
   "chapters/gemfall-03a.json": "7812a6ee4d1dc8056946a0f4f8608f83cef73758e9775a34f214cb70bc4cfec6",
   "chapters/gemfall-03b.json": "8d82081327befaf263ee5542b1ad29f7f1ff2e61cc48de495d811277bf4e7167",
