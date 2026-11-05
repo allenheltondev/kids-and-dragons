@@ -2469,7 +2469,8 @@
           "windupAttack": {
             "label": "Plank slap",
             "radius": 1,
-            "damage": 3
+            "damage": 3,
+            "presentation": "slam"
           }
         }
       ],

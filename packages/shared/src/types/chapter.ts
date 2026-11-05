@@ -507,7 +507,7 @@ export interface RestScene {
 
 export interface EnemySpec {
   /** A visible, fixed-area attack: prepare one turn, release on the next. */
-  windupAttack?: { label: string; radius: 0 | 1; damage: number };
+  windupAttack?: { label: string; radius: 0 | 1; damage: number; presentation?: "slam" };
   id: string;
   name?: string;
   count: number;

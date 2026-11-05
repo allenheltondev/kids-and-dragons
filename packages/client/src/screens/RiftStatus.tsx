@@ -55,6 +55,7 @@ import {
 import { ChapterGoalCard } from "./ChapterGoal";
 import "./RiftStatus.css";
 import { WagonDefense } from "./WagonDefense";
+import { crossingProgress } from "./combat-plan";
 
 /** At most this many caption lines from one round: the newest win. */
 const CAPTION_LINES = 3;
@@ -72,6 +73,7 @@ export function riftCaption(events: readonly EncounterEvent[], encounter: Encoun
     isParty: (id: string): boolean => combatantById(encounter, id)?.side === "party",
     captive: (index?: number) => captiveName(encounter.environment?.spec, index),
     objective: (id: string) => encounter.environment?.spec.objectives?.find((o) => o.id === id)?.label ?? id,
+    exit: (id: string) => encounter.environment?.spec.exits?.find(exit => exit.id === id && exit.art)?.label,
   };
   const lines: string[] = [];
   for (const event of events) {
@@ -136,8 +138,8 @@ export function RiftStatus(): ReactElement | null {
           </li>
         ))}
       </ul>
-      {!view.objectives.some(o => o.id === "wagon-lane") && <ChapterGoalCard place="world" folded />}
-      {caption && !view.objectives.some(o => o.id === "wagon-lane") ? (
+      {crossingProgress(encounter) ? <p className="rift-status__crossing" aria-label="Friends across">{crossingProgress(encounter)}</p> : !view.objectives.some(o => o.id === "wagon-lane") && <ChapterGoalCard place="world" folded />}
+      {caption && !view.objectives.some(o => o.id === "wagon-lane") && !crossingProgress(encounter) ? (
         <ul className="rift-status__caption" key={caption.seq} aria-live="polite">
           {caption.lines.map((line, i) => (
             <li key={i}>{line}</li>

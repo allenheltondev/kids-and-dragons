@@ -43,7 +43,10 @@ export default defineConfig({
     // already identify them; repeating every long source name costs downloads.
     rolldownOptions: { output: {
       assetFileNames: "bundle/[hash][extname]",
-      chunkFileNames: (chunk) => chunk.isDynamicEntry || namedChunks.has(chunk.name)
+      // Keep the names used by failure/lazy-loading probes. Other chunks,
+      // including internal dynamic imports, are identified by their hash.
+      // Repeating their source names in imports and preload tables adds bytes.
+      chunkFileNames: (chunk) => namedChunks.has(chunk.name)
         ? "bundle/[name]-[hash].js" : "bundle/[hash].js",
     } },
     /*

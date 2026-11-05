@@ -22,6 +22,7 @@ import { captiveName, combatantById } from "@kad/shared";
 import { combatantLabel } from "./combat-grid";
 import { numbedLine, puffedLine } from "./buff-copy";
 import { environmentBeatLine } from "./environment-copy";
+import { windupCopy } from "./windup-copy";
 import { calloutsOf, calloutsOfRoll, type Callout } from "./matchup-copy";
 
 /** How hard a hit landed, as the table would shout it. */
@@ -135,6 +136,7 @@ export function describeBeats(
     return c ? combatantLabel(c) : id;
   };
   const isParty = (id: string): boolean => combatantById(encounter, id)?.side === "party";
+  const windup = (id: string) => windupCopy(combatantById(encounter, id)?.windupAttack?.presentation);
   const out: Beat[] = [];
   /*
    * The swing still waiting on its hurt: the index of its line in `out`, and
@@ -156,13 +158,13 @@ export function describeBeats(
     const key = `${seq}:${i}`;
     switch (event.type) {
       case "windupStarted":
-        out.push({ key, text: `${name(event.actorId)} gathers ${event.label}. Leave the marked ground before their next turn!`, tone: "bad" });
+        out.push({ key, text: `${name(event.actorId)} ${windup(event.actorId).prepare} ${event.label}. Leave the marked ground before their next turn!`, tone: "bad" });
         return;
       case "windupReleased":
-        out.push({ key, text: event.targets.length ? `${event.label} bursts on the marked ground!` : `${event.label} bursts into empty ground. You made room!`, tone: event.targets.length ? "bad" : "good" });
+        out.push({ key, text: event.targets.length ? `${event.label} ${windup(event.actorId).impact} on the marked ground!` : `${event.label} ${windup(event.actorId).impact} into empty ground. You made room!`, tone: event.targets.length ? "bad" : "good" });
         return;
       case "windupInterrupted":
-        out.push({ key, text: `${name(event.actorId)} loses the gathered sparks. Interrupted!`, tone: "good" });
+        out.push({ key, text: `${name(event.actorId)} ${windup(event.actorId).interrupted}. Interrupted!`, tone: "good" });
         return;
       case "roll": {
         const hit = event.roll.result === "hit" || event.roll.result === "success";
@@ -272,6 +274,7 @@ export function describeBeats(
           isParty,
           captive: (index) => captiveName(encounter.environment?.spec, index),
           objective: (id) => encounter.environment?.spec.objectives?.find((o) => o.id === id)?.label ?? id,
+          exit: (id) => encounter.environment?.spec.exits?.find(exit => exit.id === id && exit.art)?.label,
         });
         if (line) out.push({ key, ...line, environment: true });
         return;

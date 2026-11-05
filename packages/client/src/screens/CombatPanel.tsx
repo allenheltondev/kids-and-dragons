@@ -98,7 +98,7 @@ import { Button } from "../ui/Button";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
 import { BuffList, combatBuffRows } from "./BuffList";
-import { combatMission, enemyIntentLine, nextEnemyId } from "./combat-plan";
+import { combatMission, crossingProgress, enemyIntentLine, nextEnemyId } from "./combat-plan";
 import { biomeTilesUrl } from "../world/art-paths";
 import { tablePreviews } from "../world/previews";
 import { PUFFED_HINT, PUFFED_WORDS } from "./buff-copy";
@@ -489,7 +489,10 @@ export function CombatControls(): ReactElement | null {
   const fight = encounter.startedAt ?? null;
   if (lastFacing.current.fight !== fight) lastFacing.current = { fight, facing: {} };
   const cells = gridCells(encounter, party, tappable, selectedTiles, lastFacing.current.facing);
-  const danger = new Map<string, string>(committedAttacks(encounter).flatMap(attack => attack.tiles.map(tile => [`${tile.x},${tile.y}`, attack.label] as const)));
+  const danger = new Map<string, string>(committedAttacks(encounter).flatMap(attack => {
+    const verb = combatantById(encounter, attack.actorId)?.windupAttack?.presentation === "slam" ? "strikes" : "bursts";
+    return attack.tiles.map(tile => [`${tile.x},${tile.y}`, `${attack.label} ${verb} here next turn`] as const);
+  }));
   const shownPreview = state ? tablePreviews(state, previews).combat : null;
   const suggestedAt = shownPreview?.preview.kind === "suggest" ? shownPreview.preview.to : null;
   const threatened = new Set(encounter.combatants.filter(f => f.side === "enemy" && !f.down).map(f => enemyPlanFor(encounter, f.id).attack).filter(Boolean));
@@ -562,6 +565,7 @@ export function CombatControls(): ReactElement | null {
           const cellKey = `${cell.x},${cell.y}`;
           const marks = [
             cell.occupant && encounter.combatants.find(c => c.id === cell.occupant?.id)?.windup ? " combat__cell--charging" : "",
+            cell.occupant && encounter.combatants.find(c => c.id === cell.occupant?.id)?.windupAttack?.presentation === "slam" ? " combat__cell--slam" : "",
             danger.has(cellKey) ? " combat__cell--danger" : "",
             cell.blocked ? " combat__cell--blocked" : "",
             cell.selected ? " combat__cell--selected" : "",
@@ -599,7 +603,7 @@ export function CombatControls(): ReactElement | null {
                 className={`combat__cell combat__cell--tap${aiming ? " combat__cell--aim" : " combat__cell--walk"} kad-focusable${marks}`}
                 aria-label={target ? `Choose ${target.name}, ${target.hp} hearts` : `${planning && canSuggest ? "Suggest" : aiming ? "Aim at" : "Move to"} column ${cell.x + 1}, row ${cell.y + 1}${
                   cell.feature ? `: ${tileWords(cell.feature)}` : ""
-                }${danger.has(cellKey) ? ` — ${danger.get(cellKey)} bursts here next turn` : ""}`}
+                }${danger.has(cellKey) ? ` — ${danger.get(cellKey)}` : ""}`}
                 onClick={() => target ? tapTarget(target.id) : tapTile({ x: cell.x, y: cell.y })}
               >
                 {mark}
@@ -716,7 +720,7 @@ export function CombatControls(): ReactElement | null {
             {c.id === me.character.id ? `You (${c.name})` : combatantLabel(c)}
             {c.side === "enemy" ? ", enemy" : ""}
             {c.down ? ": knocked down" : `: ${c.hp} of ${c.maxHp} hearts`}
-            {cells.some(cell => cell.occupant?.id === c.id && danger.has(`${cell.x},${cell.y}`)) ? ", standing in marked danger: move clear before the burst" : ""}
+            {cells.some(cell => cell.occupant?.id === c.id && danger.has(`${cell.x},${cell.y}`)) ? ", standing in marked danger: move clear before impact" : ""}
             {c.puffed !== undefined ? `, ${PUFFED_WORDS.toLowerCase()} up: ${PUFFED_HINT.toLowerCase()}` : ""}
             {isNumbedHero(encounter, me.character.id, c.id) ? ", numbed: fewer steps for a while, then it wears off" : ""}
             {c.id === active?.id ? ", taking a turn" : ""}
@@ -972,6 +976,8 @@ function EnvironmentStatus({ encounter }: { encounter: EncounterState }): ReactE
     });
   }
   for (const exit of view.exits) lines.push({ key: `exit:${exit.id}`, icon: EXIT_ICON, text: exitLine(exit) });
+  const crossed = crossingProgress(encounter);
+  if (crossed && view.escaped.length) lines.push({ key: "crossed", icon: EXIT_ICON, text: crossed });
   for (const modifier of view.modifiers) {
     lines.push({ key: `modifier:${modifier.id}`, icon: modifierIcon(modifier), text: modifierLine(modifier) });
   }
@@ -1057,7 +1063,7 @@ function CellFeedback({ feedback }: { feedback: ActiveFeedback }): ReactElement 
       "--effect-frames": frames, "--effect-steps": frames - 1, "--effect-ms": `${frames / 12}s`,
       "--effect-still": `${Math.floor((frames - 1) / 2) / (frames - 1) * 100}%`,
     } as CSSProperties} />
-    {feedback.reaction && <img className="combat__reaction-art" src={`/assets/combat-ux/reaction-${feedback.reaction}.webp`} alt="" draggable={false} onError={event => { event.currentTarget.hidden = true; }} />}
+    {feedback.reaction && feedback.reaction !== "slam" && <img className="combat__reaction-art" src={`/assets/combat-ux/reaction-${feedback.reaction}.webp`} alt="" draggable={false} onError={event => { event.currentTarget.hidden = true; }} />}
     <span className="combat__feedback-number">{feedback.label}</span>
   </span>;
 }

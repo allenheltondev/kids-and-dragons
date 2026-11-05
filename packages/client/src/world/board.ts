@@ -52,6 +52,7 @@
 
 import { reducedMotion } from "../a11y/prefs";
 import { createWagonStage } from "./wagon-stage";
+import { windupCopy } from "../screens/windup-copy";
 import { committedAttacks } from "@kad/shared";
 import { stanceIdle } from "./idle-motion";
 import {
@@ -261,6 +262,9 @@ export interface BoardLayer {
 
 interface BoardActor {
   charging: boolean;
+  slam: boolean;
+  slamAge: number;
+  slamTiles: readonly Position[];
   container: Container;
   art: Container;
   /** How tall this figure really is, and how it stands (#362). */
@@ -629,6 +633,9 @@ export function createBoardLayer(): BoardLayer {
       heightCm: size.heightCm,
       stance: boardStance(size.stance),
       charging: !!combatant.windup,
+      slam: combatant.windupAttack?.presentation === "slam",
+      slamAge: 1,
+      slamTiles: [],
       hero: combatant.side === "party",
       paint: null,
       footprint: null,
@@ -737,6 +744,7 @@ export function createBoardLayer(): BoardLayer {
       const feet = feetOf(gridActor);
       if (existing) {
         existing.charging = !!combatant.windup;
+        existing.slam = combatant.windupAttack?.presentation === "slam";
         existing.down = combatant.down;
         existing.away = isAway(current.party, combatant.id);
         setPuffed(existing, combatant.puffed !== undefined && !combatant.down);
@@ -948,15 +956,15 @@ export function createBoardLayer(): BoardLayer {
     actor.puffBadge = badge;
   }
 
-  function spawnFloater(actorId: string, label: string, color: number): void {
+  function spawnFloater(actorId: string, label: string, color: number, scale = 1): void {
     const actor = actors.get(actorId);
     if (!actor) return;
     const text = new Text({
       text: label,
       style: {
         fontFamily: "system-ui, sans-serif",
-        fontWeight: "900",
-        fontSize: BOARD_TILE_PX * 0.42,
+        fontWeight: scale < 1 ? "600" : "900",
+        fontSize: BOARD_TILE_PX * 0.42 * scale,
         fill: color,
         stroke: { color: 0x120f26, width: 6 },
       },
@@ -966,7 +974,7 @@ export function createBoardLayer(): BoardLayer {
     // reserves the top 64px of the 256px effect frame for exactly this
     // (assets/manifest.json $effectToleranceComment), so nothing an effect
     // sheet ever draws can sit behind it.
-    const x = actor.container.x;
+    const x = scale < 1 && view ? Math.max(text.width / 2 + 4, Math.min(actor.container.x, view.encounter.board.width * BOARD_TILE_PX - text.width / 2 - 4)) : actor.container.x;
     const y = actor.targetY - ACTOR_HEIGHT - BOARD_TILE_PX * 0.05;
     text.x = x;
     text.y = y;
@@ -997,15 +1005,19 @@ export function createBoardLayer(): BoardLayer {
 
   function playBeat(event: EncounterEvent, route?: readonly Position[]): void {
     switch (event.type) {
-      case "windupStarted":
-        { const actor = actors.get(event.actorId); if (actor) actor.charging = true; }
-        spawnFloater(event.actorId, "Gathering sparks!", 0xffd08a);
+      case "windupStarted": {
+        const actor = actors.get(event.actorId);
+        if (actor) actor.charging = true;
+        spawnFloater(event.actorId, windupCopy(actor?.slam ? "slam" : undefined).start, 0xffd08a, actor?.slam ? .55 : 1);
         return;
-      case "windupReleased":
-        { const actor = actors.get(event.actorId); if (actor) actor.charging = false; }
-        if (!reducedMotion()) for (const tile of event.tiles) spawnTileFloater(tile, "✦", 0xffd08a);
-        spawnFloater(event.actorId, event.targets.length ? "Burst!" : "You made room!", 0xffd08a);
+      }
+      case "windupReleased": {
+        const actor = actors.get(event.actorId);
+        if (actor) { actor.charging = false; actor.slamAge = 0; actor.slamTiles = event.tiles; }
+        if (!reducedMotion() && !actor?.slam) for (const tile of event.tiles) spawnTileFloater(tile, "✦", 0xffd08a);
+        spawnFloater(event.actorId, event.targets.length ? windupCopy(actor?.slam ? "slam" : undefined).release : "You made room!", 0xffd08a, actor?.slam ? .65 : 1);
         return;
+      }
       case "windupInterrupted":
         { const actor = actors.get(event.actorId); if (actor) actor.charging = false; }
         spawnFloater(event.actorId, "Interrupted!", 0x9ff4d6);
@@ -1174,10 +1186,11 @@ export function createBoardLayer(): BoardLayer {
       clock += dtSeconds;
       pulse += dtSeconds;
       const charging = [...actors.values()].filter(actor => actor.charging && !actor.down);
-      if (charging.length && !windupLayer) {
+      const slamming = [...actors.values()].filter(actor => actor.slam && actor.slamAge < .6);
+      if ((charging.length || slamming.length) && !windupLayer) {
         windupLayer = new Graphics();
         container.addChildAt(windupLayer, container.getChildIndex(actorsLayer));
-      } else if (!charging.length && windupLayer) {
+      } else if (!charging.length && !slamming.length && windupLayer) {
         windupLayer.destroy(); windupLayer = null;
       }
       windupLayer?.clear();
@@ -1185,6 +1198,7 @@ export function createBoardLayer(): BoardLayer {
         if (!windupLayer) break;
         const swell = still ? 1 : 1 + .05 * Math.sin(pulse * 3);
         const x = actor.container.x, y = actor.container.y;
+        if (actor.slam) continue; // The rearing body is the tell, not floating magic.
         windupLayer.ellipse(x, y, BOARD_TILE_PX * .48 * swell, BOARD_TILE_PX * .24 * swell)
           .fill({ color: 0xffb64b, alpha: .2 }).stroke({ color: 0xffdf94, width: 5 });
         for (let spark = 0; spark < 3; spark++) {
@@ -1192,6 +1206,11 @@ export function createBoardLayer(): BoardLayer {
           windupLayer.circle(x + Math.cos(angle) * BOARD_TILE_PX * .45, y - BOARD_TILE_PX * .2 + Math.sin(angle) * BOARD_TILE_PX * .2, 6)
             .fill({ color: 0xffe7aa, alpha: .95 });
         }
+      }
+      if (!still && windupLayer) for (const actor of slamming) for (const tile of actor.slamTiles) {
+        const t = actor.slamAge / .6;
+        windupLayer.ellipse((tile.x + .5) * BOARD_TILE_PX, (tile.y + .7) * BOARD_TILE_PX, BOARD_TILE_PX * (.2 + .3 * t), BOARD_TILE_PX * (.08 + .12 * t))
+          .stroke({ color: 0xc7ac78, width: 7, alpha: 1 - t });
       }
 
       // Due beats, in order. The queue is short (≤ a round of events) and
@@ -1207,6 +1226,7 @@ export function createBoardLayer(): BoardLayer {
       }
 
       for (const actor of actors.values()) {
+        actor.slamAge = Math.min(1, actor.slamAge + dtSeconds);
         const next = actor.route[0];
         if (next) {
           // Square by square at a steady pace, a footprint on each one.
@@ -1240,8 +1260,9 @@ export function createBoardLayer(): BoardLayer {
         // Turning to face the nearest opponent: a quick squash through
         // edge-on, which reads as the figure turning round rather than
         // flipping (the lineup does the same, scene.ts).
-        const charge = actor.charging ? 1.14 + (still ? 0 : .035 * Math.sin(pulse * 3)) : 1;
-        actor.art.tint = actor.charging ? 0xffcf82 : 0xffffff;
+        const impact = actor.slam && !still && actor.slamAge < .4 ? Math.sin(actor.slamAge / .4 * Math.PI) : 0;
+        const charge = actor.charging ? actor.slam ? 1 : 1.14 + (still ? 0 : .035 * Math.sin(pulse * 3)) : 1;
+        actor.art.tint = actor.charging && !actor.slam ? 0xffcf82 : 0xffffff;
         actor.art.scale.x = approach(actor.art.scale.x, actor.facing * charge, TURN_RATE, dtSeconds);
         actor.shadow.x = actor.shadowX * actor.art.scale.x;
         if (actor.leaving) {
@@ -1260,7 +1281,7 @@ export function createBoardLayer(): BoardLayer {
         // is on the ground like anybody else.
         const idle = stanceIdle(actor.stance, pulse, actor.phase, still || actor.down);
         const reach = Math.max(actor.height, BOARD_TILE_PX);
-        actor.art.scale.y = (1 + idle.breath) * charge;
+        actor.art.scale.y = (1 + idle.breath) * charge * (actor.slam && actor.charging ? 1.12 : 1 - impact * .2);
         actor.art.x = idle.dx * reach;
         actor.art.y = approach(actor.art.y, idle.dy * reach - lift, DOWN_RATE, dtSeconds);
         actor.shadow.scale.set(
@@ -1273,7 +1294,8 @@ export function createBoardLayer(): BoardLayer {
           actor.art.rotation = approach(actor.art.rotation, FALLEN_ROTATION, DOWN_RATE, dtSeconds);
           actor.art.alpha = approach(actor.art.alpha, FALLEN_ALPHA, DOWN_RATE, dtSeconds);
         } else {
-          actor.art.rotation = still ? idle.rotation : approach(actor.art.rotation, idle.rotation, DOWN_RATE, dtSeconds);
+          const rotation = actor.slam && actor.charging ? -actor.facing * .22 : idle.rotation + actor.facing * impact * .18;
+          actor.art.rotation = still ? rotation : approach(actor.art.rotation, rotation, DOWN_RATE, dtSeconds);
           actor.art.alpha = approach(actor.art.alpha, actor.away ? AWAY_ALPHA : 1, DOWN_RATE, dtSeconds);
         }
       }
