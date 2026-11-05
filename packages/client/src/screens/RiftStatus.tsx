@@ -105,7 +105,7 @@ export function RiftStatus(): ReactElement | null {
   const markedHazards = view.hazards.filter(hazard => hazard.art && !hazard.gone);
 
   return (
-    <aside className="rift-status" aria-label={view.clock?.label ?? "The rift"}>
+    <aside className="rift-status" aria-label={view.clock?.label && !/\brift\b/i.test(view.clock.label) ? view.clock.label : "The rift"}>
       {view.objectives.some(o => o.id === "wagon-lane") ? <WagonDefense encounter={encounter} /> : null}
       {clock ? (
         <p className={`rift-status__clock rift-status__clock--${clock.mood}`} role="status">
