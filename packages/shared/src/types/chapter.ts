@@ -745,6 +745,8 @@ export interface RiftClock {
  */
 export interface EnvironmentHazard {
   id: string;
+  /** Optional painted marker from the story prop catalog. */
+  art?: string;
   /** What it looks like, and so which glyph and word the phone uses. */
   kind: "fire" | "thorns" | "rift";
   /** What the phone calls it: "Rift fire". */

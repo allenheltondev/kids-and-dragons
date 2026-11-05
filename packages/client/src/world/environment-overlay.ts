@@ -106,6 +106,7 @@ export function environmentOverlay(encounter: EncounterState): EnvironmentOverla
         glyph: hazard.kind,
         state: hazard.active ? "active" : "pending",
         label: hazard.label,
+        ...(hazard.art ? { art: hazard.art } : {}),
       });
     }
   }

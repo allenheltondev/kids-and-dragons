@@ -17,10 +17,11 @@ async function action(page: Page, code: string, intent: ClientIntent) {
   throw Error("Repeated stale actions");
 }
 
-for (const sceneId of ["encounter_wolves", "encounter_mimic_plank"]) {
+for (const sceneId of ["encounter_wolves", "encounter_mimic_plank", "encounter_crabs"]) {
   test(`${sceneId}: friends complete the alternative to attacking on real phones and TV`, async ({ browser }, info) => {
     test.setTimeout(240_000);
-    const table = await seedTable({ mode: "party", tv: true, chapterId: "gemfall-02", sceneId, heroes: [
+    const ford = sceneId === "encounter_crabs";
+    const table = await seedTable({ mode: "party", tv: true, chapterId: ford ? "gemfall-03c" : "gemfall-02", sceneId, heroes: [
       { name: "Aster", species: "kitsune", class: "songkeeper", stats: { might: 0, quick: 3, clever: 0, heart: 0 } },
       { name: "Fern", species: "unicorn", class: "thornguard", stats: { might: 0, quick: 3, clever: 0, heart: 0 } },
     ] });
@@ -59,7 +60,7 @@ for (const sceneId of ["encounter_wolves", "encounter_mimic_plank"]) {
       for (const text of ["normal", "largest"]) {
         await display.page.evaluate(text => { if (text === "normal") delete document.documentElement.dataset.text; else document.documentElement.dataset.text = text; }, text);
         const panel = display.page.locator(".fight-log");
-        await expect(panel).toContainText(sceneId === "encounter_wolves" ? "Wagon stuck" : "Far bank");
+        await expect(panel).toContainText(ford ? "Ford current" : sceneId === "encounter_wolves" ? "Wagon stuck" : "Far bank");
         await expect.poll(() => panel.evaluate(el => el.scrollHeight <= el.clientHeight + 1)).toBe(true);
         await display.page.screenshot({ path: info.outputPath(`tv-${text}.png`) });
       }
@@ -72,9 +73,13 @@ for (const sceneId of ["encounter_wolves", "encounter_mimic_plank"]) {
       for (let turn = 0; state.encounter && turn < 24; turn++) {
         const page = phones[owner(state)].page;
         const encounter = state.encounter;
-        const targets = sceneId === "encounter_wolves" ? [{ x: 3, y: 2 }] : [{ x: 6, y: 2 }, { x: 6, y: 3 }];
+        const targets = sceneId === "encounter_mimic_plank" ? [{ x: 6, y: 2 }, { x: 6, y: 3 }] : [{ x: 3, y: 2 }];
         const distance = (p: { x: number; y: number }) => Math.min(...targets.map(t => stepsBetween(p, t)));
-        const tile = [...legalMoves(encounter)].sort((a, b) => distance(a) - distance(b))[0];
+        const moves = legalMoves(encounter).filter(tile => !ford || tile.x !== 2 || tile.y !== 3);
+        const tile = ford && turn === 0
+          ? legalMoves(encounter).find(tile => tile.x === 2 && tile.y === 3)
+          : moves.sort((a, b) => distance(a) - distance(b))[0];
+        if (ford && turn === 0) expect(tile).toBeDefined();
         const actorId = currentActorId(encounter)!;
         const atPost = sceneId === "encounter_wolves" && distance(positionOf(encounter, actorId)!) === 0;
         let yielding = false;
@@ -106,6 +111,11 @@ for (const sceneId of ["encounter_wolves", "encounter_mimic_plank"]) {
           await display.page.screenshot({ path: info.outputPath("crossing-progress.png") });
           sawCrossing = true;
         }
+        if (ford && turn === 0) {
+          expect(positionOf(state.encounter!, actorId)!.x).toBeLessThan(2);
+          await expect(display.page.locator(".rift-status__caption")).toContainText("Ford current");
+          await display.page.screenshot({ path: info.outputPath("ford-current.png") });
+        }
         if (turn === 1 && state.encounter) {
           await page.reload();
           await onAir(page);
@@ -116,8 +126,19 @@ for (const sceneId of ["encounter_wolves", "encounter_mimic_plank"]) {
       }
       expect(movedThroughUi).toBe(true);
       expect(state.encounter).toBeNull();
-      expect(state.sceneId).toBe(sceneId === "encounter_wolves" ? "scene_plank_bridge" : "scene_mimic_passed");
-      expect(state.narration).toContain(sceneId === "encounter_wolves" ? "out of reach" : "last friend");
+      expect(state.sceneId).toBe(ford ? "scene_crabs_cleared" : sceneId === "encounter_wolves" ? "scene_plank_bridge" : "scene_mimic_passed");
+      expect(state.narration).toContain(ford ? "river charm" : sceneId === "encounter_wolves" ? "out of reach" : "last friend");
+      if (ford) {
+        await expect(display.page.getByText(/drover gives you a river charm/i)).toBeVisible();
+        const charm = display.page.locator('.story-art-layer img[src$="/pickup-river-charm.webp"]');
+        await expect(charm).toBeVisible();
+        await expect.poll(() => charm.evaluate(el => {
+          const box = el.getBoundingClientRect();
+          return box.top >= document.querySelector(".narration__head")!.getBoundingClientRect().bottom
+            && box.bottom <= document.querySelector(".narration__plate")!.getBoundingClientRect().top;
+        })).toBe(true);
+        await display.page.screenshot({ path: info.outputPath("ford-clear.png") });
+      }
       if (sceneId === "encounter_mimic_plank") {
         expect(sawCrossing).toBe(true);
         await expect(display.page.locator("[data-crossing-clear]")).toBeVisible();

@@ -283,6 +283,7 @@ export interface EnvironmentExitView {
 }
 
 export interface EnvironmentHazardView {
+  readonly art?: string;
   readonly id: string;
   readonly kind: EnvironmentHazard["kind"];
   readonly label: string;
@@ -390,6 +391,7 @@ export function environmentView(state: EncounterState): EnvironmentView | null {
       id: hazard.id,
       kind: hazard.kind,
       label: hazard.label,
+      ...(hazard.art ? { art: hazard.art } : {}),
       tiles: hazard.tiles,
       damage: hazard.damage ?? 0,
       ...(hazard.slow ? { slow: { steps: hazard.slow.steps, turns: hazard.slow.turns } } : {}),
