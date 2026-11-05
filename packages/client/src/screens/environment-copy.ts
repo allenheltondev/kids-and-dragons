@@ -254,7 +254,9 @@ export function environmentBeatLine(
         tone: "good",
       };
     case "riftClock":
-      return { text: event.onExpire === "collapse" ? `${words.clock ?? "The rift is closing"}!` : "The rift is surging!", tone: "bad" };
+      return { text: event.onExpire === "collapse"
+        ? `${words.clock && !/\brift\b/i.test(words.clock) ? words.clock : "The rift is closing"}!`
+        : "The rift is surging!", tone: "bad" };
     case "surge":
       return { text: `The rift surges: everyone still here loses ${event.amount}.`, tone: "bad" };
     default:
