@@ -104,8 +104,12 @@ export function RiftStatus(): ReactElement | null {
   const clock = view.clock ? clockReadout(view.clock) : null;
   const markedHazards = view.hazards.filter(hazard => hazard.art && !hazard.gone);
   const progress = crossingProgress(encounter);
-  const progressLabel = encounter.environment?.spec.exits?.some(exit => exit.id === "big-campfire")
-    ? "Friends at the big campfire" : "Friends across";
+  const exits = encounter.environment?.spec.exits;
+  const progressLabel = exits?.some(exit => exit.id === "big-campfire")
+    ? "Friends at the big campfire"
+    : exits?.some(exit => exit.id === "boundary-stone")
+      ? "Friends past the boundary"
+      : "Friends across";
 
   return (
     <aside className="rift-status" aria-label={view.clock?.label && !/\brift\b/i.test(view.clock.label) ? view.clock.label : "The rift"}>
