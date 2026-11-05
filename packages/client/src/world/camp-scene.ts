@@ -40,6 +40,7 @@ export interface KitArt {
   heightCm?: number;
   kit?: string;
   tier?: string;
+  flap?: string;
 }
 
 export const CREW_PIECE_ART: readonly CampArtPiece[] = (campManifest.crewPieces ?? []) as CampArtPiece[];

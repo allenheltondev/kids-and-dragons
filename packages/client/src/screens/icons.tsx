@@ -117,9 +117,7 @@ const GLYPHS: Record<string, ReactElement> = {
       <path d="M10 8v8l6-4Z" />
     </g>
   ),
-  // Dash Cash's stand-in (docs/camp.md §5.2) until its painting lands at
-  // assets/painted/dash_cash.webp (manifest camp.paintedIcons), which then wins
-  // above: a ticket with a star, so it never reads as the story's coin.
+  // The vector ticket matches the painted Dash Cash icon.
   dash_cash: (
     <g {...S}>
       <path d="M3 7h18v3a2 2 0 0 0 0 4v3H3v-3a2 2 0 0 0 0-4Z" />

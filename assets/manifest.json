@@ -1404,7 +1404,7 @@
       "id": "souvenir_line",
       "path": "camp/kits/souvenir-line.png",
       "heightCm": 70,
-      "hangPoints": [{ "x": 352, "y": 500 }, { "x": 459, "y": 516 }, { "x": 565, "y": 516 }, { "x": 672, "y": 500 }]
+      "hangPoints": [{ "x": 342, "y": 600 }, { "x": 462, "y": 628 }, { "x": 593, "y": 628 }, { "x": 715, "y": 600 }]
     },
     "decorationCanvas": { "width": 512, "height": 512, "edgeMarginPx": 24 },
     "decorations": [
@@ -3195,6 +3195,7 @@
       "height": 256
     },
     "ids": [
+      "dash_cash",
       "eye",
       "facet_barge",
       "facet_caravan",

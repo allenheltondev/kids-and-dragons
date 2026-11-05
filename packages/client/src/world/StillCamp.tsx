@@ -35,9 +35,9 @@ import { LOBBY_CAMP_STAND_IN, campDressing, campHeroes, stillCampFigures } from 
 import { lobbyInsetBottom, lobbyInsetTop, onLobbyInset, onLobbyInsetTop } from "./stage-inset";
 import { ANCHOR_Y } from "./art-paths";
 import { NOMINAL_PAINT } from "./figure-scale";
-import { CampBedroll } from "./CampBedroll";
+import { CampBedroll, CampClothArt } from "./CampBedroll";
 import { Campfire } from "./Campfire";
-import { CAMP_KIT_STYLES, campKitStyle } from "./camp-kit-art";
+import { CAMP_KIT_STYLES, campKitStyle, campTentCloth } from "./camp-kit-art";
 import { campPieceOwner } from "./camp-ownership";
 import { campBoxes, campFitFor, campReachOf, campRowScale, type CampBox, type CampBoxInput } from "./camp-boxes";
 import { hotspotName, tentArt } from "./camp-scene";
@@ -320,11 +320,9 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
           }} data-mirrored={piece.id.startsWith("bedroll") && piece.x > .5 ? "true" : undefined}>
             {owner && kitStyle ? <CampBedroll style={kitStyle} accent={accent} />
               : piece.id === "campfire" ? <Campfire active={false} />
-              : piece.id.startsWith("tent_") ? (
-                <ArtOr src={tentSrc} onMissing={owed}>
-                  <TentStandIn accent={accent} owned={owner !== undefined} width={b.width / b.height} decorations={(owner?.slots ?? []).filter((s) => s !== null).length} />
-                </ArtOr>
-              )
+              : tent && tentSrc ? <CampClothArt path={tentSrc} cloth={owner?.accent ? campTentCloth(tent.id) : undefined} accent={accent} onMissing={owed} fallback={
+                <TentStandIn accent={accent} owned={owner !== undefined} width={b.width / b.height} decorations={(owner?.slots ?? []).filter((s) => s !== null).length} />
+              } />
               : piece.id.startsWith("souvenirs_") ? (
                 <ArtOr src={`/assets/${piece.path}`}><SouvenirStandIn accent={accent} count={owner?.souvenirs ?? 0} /></ArtOr>
               )
