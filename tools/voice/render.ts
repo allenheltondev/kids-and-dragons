@@ -20,8 +20,9 @@ import type { ClipStore } from "./store";
 
 export interface RenderDeps {
   /** The provider call: WAV audio, and the audio tokens billed when the provider reports them. */
-  synth: (segment: DesiredSegment) => Promise<Buffer | { wav: Buffer; audioTokens?: number }>;
-  encode: (wav: Buffer) => Encoded;
+  /** A bare Buffer is WAV. */
+  synth: (segment: DesiredSegment) => Promise<Buffer | { audio: Buffer; ext: "wav" | "mp3"; audioTokens?: number }>;
+  encode: (audio: Buffer, ext: "wav" | "mp3") => Encoded;
   store: ClipStore;
   /** Dollars one request for this many characters costs (an estimate). */
   price: (chars: number) => number;
@@ -131,16 +132,17 @@ export async function renderOwed(owed: readonly DesiredSegment[], deps: RenderDe
       }
       try {
         const said = await deps.synth(segment);
-        const wav = Buffer.isBuffer(said) ? said : said.wav;
+        const audio = Buffer.isBuffer(said) ? said : said.audio;
+        const ext = Buffer.isBuffer(said) ? "wav" : said.ext;
         const tokens = Buffer.isBuffer(said) ? undefined : said.audioTokens;
-        const seconds = wavSeconds(wav);
+        const seconds = ext === "wav" ? wavSeconds(audio) : null;
         if (tokens !== undefined && seconds !== null && seconds > 0) {
           report.measured.audioTokens += tokens;
           report.measured.seconds += seconds;
           report.measured.clips += 1;
           report.measured.tokensPerSecond = report.measured.audioTokens / report.measured.seconds;
         }
-        const encoded = deps.encode(wav);
+        const encoded = deps.encode(audio, ext);
         await deps.store.put(segment.key, encoded.bytes, { ms: encoded.ms });
         report.rendered.push(segment.key);
         report.lengths.set(segment.key, encoded.ms);

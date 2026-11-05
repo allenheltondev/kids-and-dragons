@@ -3,10 +3,10 @@
  *
  * It reuses the bake-off's request builder and sender (bakeoff/providers.ts),
  * which already turn a line, a speaker and a delivery into the exact request a
- * model wants (Gemini 3.8: the character and delivery ride in
- * `speechMetadata.style`, beats in angle brackets) and clean the noise Gemini
- * leaves where a turn ends. So the clip that ships is made the way the clip
- * that was auditioned was.
+ * model wants (ElevenLabs v3 and later: the character's accent and direction
+ * and the line's delivery go in front as audio tags, beats in brackets; Gemini
+ * 3.8: they ride in `speechMetadata.style`). So the clip that ships is made
+ * the way the clip that was auditioned was.
  *
  * One request per clip (`mode: "lines"`): a clip is one speaker, one voice.
  */
@@ -21,9 +21,10 @@ export interface DeliveryTables {
   beats: CastFile["beats"];
 }
 
-/** What a provider sent back: the audio, and the audio tokens it billed when it says (Gemini does). */
+/** What a provider sent back: the audio (ElevenLabs sends MP3, Gemini and the fake tones WAV), and the audio tokens it billed when it says (Gemini does). */
 export interface Synthesized {
-  wav: Buffer;
+  audio: Buffer;
+  ext: "wav" | "mp3";
   audioTokens?: number;
 }
 
@@ -50,9 +51,18 @@ export function makeSynthesizer(options: SynthOptions): Synthesizer {
     const entry = options.cast.speakers[by];
     if (entry === undefined) throw new Error(`"${segment.by}" is not in the cast`);
     const voice = (entry.gemini as { voice?: string } | undefined)?.voice;
+    const voiceId = entry.elevenlabs?.voiceId;
     const cast: CastFile = {
       ...(options.cast.accent === undefined ? {} : { accent: options.cast.accent }),
-      speakers: { [by]: { describe: entry.who ?? "", ...(voice === undefined ? {} : { gemini: { voice } }) } },
+      speakers: {
+        [by]: {
+          describe: entry.who ?? "",
+          ...(entry.accent === undefined ? {} : { accent: entry.accent }),
+          ...(entry.direction === undefined ? {} : { direction: entry.direction }),
+          ...(voice === undefined ? {} : { gemini: { voice } }),
+          ...(voiceId === undefined ? {} : { elevenlabs: { voiceId } }),
+        },
+      },
       delivery: options.tables.delivery,
       beats: options.tables.beats,
     };
@@ -71,7 +81,6 @@ export function makeSynthesizer(options: SynthOptions): Synthesizer {
     const job = jobs[0];
     if (job === undefined) throw new Error("no request was planned");
     const rendered = await send(job, options.keys, options.fetch);
-    if (rendered.ext !== "wav") throw new Error(`expected WAV audio, got ${rendered.ext}`);
-    return { wav: rendered.bytes, ...(rendered.audioTokens === undefined ? {} : { audioTokens: rendered.audioTokens }) };
+    return { audio: rendered.bytes, ext: rendered.ext, ...(rendered.audioTokens === undefined ? {} : { audioTokens: rendered.audioTokens }) };
   };
 }

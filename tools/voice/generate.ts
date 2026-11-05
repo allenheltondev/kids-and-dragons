@@ -4,7 +4,7 @@
  *
  * Works out which clips the game wants (the same list `voice:status` shows),
  * skips every one the destination already has (that check is the generation
- * cache), renders the rest with Gemini 3.8 Flash TTS, encodes them, uploads
+ * cache), renders the rest with ElevenLabs, encodes them, uploads
  * them straight to the site bucket's `voice/` prefix, and writes the manifest
  * the client reads. Docs: docs/voice-narration-plan.md §4-§5.
  *
@@ -14,13 +14,13 @@
  *
  *   npm run voice:generate -- --chapter bramblewood-01                 # plan only
  *   npm run voice:generate -- --chapter bramblewood-01 --dir /tmp/clips --render
- *   GEMINI_API_KEY=… npm run voice:generate -- --chapter bramblewood-01 --stage staging --render
+ *   ELEVENLABS_API_KEY=… npm run voice:generate -- --chapter bramblewood-01 --stage staging --render
  *   … --stage staging,prod            # one render, uploaded to both buckets
  *   … --bucket kad-site-prod-123456   # a bucket by name
  *
  * Flags: --chapter ID (a chapter, `_<campaign>` or `_help`), --speaker ID,
  * --max-dollars N (default 75, stops before the request that would cross it),
- * --max-chars N, --concurrency N, --model ID, --prune (drop manifest entries
+ * --max-chars N, --concurrency N, --model ID (a pricing.json id or its API model; default eleven_v4), --prune (drop manifest entries
  * nothing asks for any more), --with-choices, --region R, --fake (tones in place of a provider:
  * free, offline; with --dir its manifest goes beside the clips, never into content/).
  *
@@ -39,7 +39,7 @@ import { CloudFormationClient, DescribeStacksCommand } from "@aws-sdk/client-clo
 import { S3Client } from "@aws-sdk/client-s3";
 import { keysFromEnv } from "./bakeoff/providers";
 import { dollars, quote, type PricedModel, type Pricing } from "./cost-model";
-import { GEMINI } from "./desired";
+import { ELEVENLABS } from "./desired";
 import { encodeVoice } from "./encode";
 import { readJson } from "./load";
 import { mergeManifest, type Manifest } from "./manifest";
@@ -56,7 +56,7 @@ const { values } = parseArgs({
     bucket: { type: "string" },
     dir: { type: "string" },
     region: { type: "string" },
-    model: { type: "string", default: GEMINI.model },
+    model: { type: "string", default: ELEVENLABS.model },
     render: { type: "boolean", default: false },
     prune: { type: "boolean", default: false },
     "with-choices": { type: "boolean", default: false },
@@ -80,7 +80,7 @@ if (maxChars !== undefined && !(maxChars >= 0)) fail("--max-chars takes a number
 if (!Number.isInteger(concurrency) || concurrency < 1) fail("--concurrency takes a whole number.");
 
 const pricing = readJson(path.join(import.meta.dirname, "pricing.json")) as unknown as Pricing;
-const model: PricedModel | undefined = pricing.models.find((m) => m.id === values.model);
+const model: PricedModel | undefined = pricing.models.find((m) => m.id === values.model || m.apiModel === values.model);
 if (model === undefined) fail(`No model "${String(values.model)}" in pricing.json. Known: ${pricing.models.map((m) => m.id).join(", ")}.`);
 
 const region = values.region ?? process.env.AWS_REGION ?? process.env.AWS_DEFAULT_REGION ?? "us-east-1";
@@ -111,7 +111,7 @@ const world = loadWorld({ withChoices: values["with-choices"] });
 const names = values.chapter === undefined ? [...world.groups.keys()] : [values.chapter];
 if (values.chapter !== undefined && !world.groups.has(values.chapter)) fail(`No lines for "${values.chapter}".`);
 
-const provider = values.fake ? { provider: "fake", model: "fake-tone" } : { provider: GEMINI.provider, model: model.id };
+const provider = values.fake ? { provider: "fake", model: "fake-tone" } : { provider: model.provider, model: model.apiModel ?? model.id };
 const stores = await destinations();
 if (values.render && stores.length === 0) fail("Nothing to upload to. Name a destination: --stage staging, --bucket NAME or --dir FOLDER.");
 const store: ClipStore = stores.length === 0 ? new MemoryClipStore() : new StoreSet(stores);
@@ -131,7 +131,10 @@ const today = new Date().toISOString().slice(0, 10);
 const price = (chars: number): number => (values.fake ? 0 : (quote(model, { chars, requests: 1 }, pricing.speech, today)?.dollars ?? 0));
 
 const keys = keysFromEnv();
-if (values.render && !values.fake && keys.gemini === undefined) fail("No Gemini key. Set GEMINI_API_KEY (or GOOGLE_API_KEY).");
+if (values.render && !values.fake) {
+  if (provider.provider === "elevenlabs" && keys.elevenlabs === undefined) fail("No ElevenLabs key. Set ELEVENLABS_API_KEY.");
+  if (provider.provider === "gemini" && keys.gemini === undefined) fail("No Gemini key. Set GEMINI_API_KEY (or GOOGLE_API_KEY).");
+}
 const synth = makeSynthesizer({
   provider: provider as never,
   cast: world.cast,

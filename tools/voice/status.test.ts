@@ -15,8 +15,8 @@ const OPTIONS = { facetsMax: 2 };
 const CAST: CastSheet = {
   accent: "General American",
   speakers: {
-    narrator: { who: "A warm storyteller.", gemini: { voice: "Sulafat" } },
-    pib: { who: "A bramble sprite.", gemini: { voice: "Leda" } },
+    narrator: { who: "A warm storyteller.", elevenlabs: { voiceId: "voice-narrator" } },
+    pib: { who: "A bramble sprite.", elevenlabs: { voiceId: "voice-pib" } },
   },
 };
 
@@ -48,12 +48,34 @@ describe("the clip key", () => {
       },
     };
     const scripts = new Map([["ch-01", script]]);
-    const retuned: CastSheet = { ...CAST, speakers: { ...CAST.speakers, pib: { who: "A bramble sprite.", gemini: { voice: "Zephyr" } } } };
+    const retuned: CastSheet = { ...CAST, speakers: { ...CAST.speakers, pib: { who: "A bramble sprite.", elevenlabs: { voiceId: "voice-pib-two" } } } };
     const [narratorBefore, pibBefore] = keysOf([A, B], CAST, scripts)["ch-01/b/narration|"]!;
     const [narratorAfter, pibAfter] = keysOf([A, B], retuned, scripts)["ch-01/b/narration|"]!;
     expect(narratorAfter).toBe(narratorBefore);
     expect(pibAfter).not.toBe(pibBefore);
     expect(keysOf([A, B], retuned)["ch-01/a/narration|"]).toEqual(keysOf([A, B])["ch-01/a/narration|"]);
+  });
+
+  it("changes for exactly the speaker whose direction or accent was edited, and not for their notes", () => {
+    const script: ScriptFile = {
+      [B.address]: {
+        source: sourceHash(B.text),
+        lines: [
+          { by: "narrator", text: "The path ends" },
+          { by: "pib", text: "at a wall of thorns." },
+        ],
+      },
+    };
+    const scripts = new Map([["ch-01", script]]);
+    const speak = (pib: Record<string, unknown>): CastSheet => ({ ...CAST, speakers: { ...CAST.speakers, pib: { ...CAST.speakers.pib!, ...pib } } });
+    const [narrator, pib] = keysOf([B], CAST, scripts)["ch-01/b/narration|"]!;
+    const [narratorD, pibD] = keysOf([B], speak({ direction: "small, nervous" }), scripts)["ch-01/b/narration|"]!;
+    const [, pibA] = keysOf([B], speak({ accent: "Scottish" }), scripts)["ch-01/b/narration|"]!;
+    const [, pibWho] = keysOf([B], speak({ who: "Someone else entirely." }), scripts)["ch-01/b/narration|"]!;
+    expect(narratorD).toBe(narrator);
+    expect(pibD).not.toBe(pib);
+    expect(pibA).not.toBe(pib);
+    expect(pibWho).toBe(pib); // the description never reaches ElevenLabs
   });
 
   it("does not change when a scene is renamed or moved", () => {
@@ -87,6 +109,31 @@ describe("the clip key", () => {
     const keys = keysOf([line("ch-01/t/narration", "{party} go on.")]);
     expect(Object.keys(keys)).toHaveLength(4);
     expect(new Set(Object.values(keys).flat()).size).toBe(4);
+  });
+});
+
+describe("a speaker with no voice yet", () => {
+  it("leaves the whole line to the device voice, never to somebody else's", () => {
+    const script: ScriptFile = {
+      [B.address]: {
+        source: sourceHash(B.text),
+        lines: [
+          { by: "narrator", text: "The path ends" },
+          { by: "pib", text: "at a wall of thorns." },
+        ],
+      },
+    };
+    const mute: CastSheet = { ...CAST, speakers: { ...CAST.speakers, pib: { who: "A bramble sprite." } } };
+    const got = desiredClips(classify([A, B], OPTIONS), { cast: mute, scripts: new Map([["ch-01", script]]) });
+    expect(got.deviceVoice).toEqual([{ address: B.address, chapter: "ch-01", reason: "uncast-speaker" }]);
+    expect(got.lines.map((l) => l.address)).toEqual([A.address]);
+  });
+
+  it("sends everything unscripted to the device voice until the narrator has a voice", () => {
+    const mute: CastSheet = { ...CAST, speakers: { ...CAST.speakers, narrator: { who: "A warm storyteller." } } };
+    const got = desiredClips(classify([A], OPTIONS), { cast: mute, scripts: new Map() });
+    expect(got.lines).toEqual([]);
+    expect(got.deviceVoice.map((d) => d.reason)).toEqual(["uncast-speaker"]);
   });
 });
 

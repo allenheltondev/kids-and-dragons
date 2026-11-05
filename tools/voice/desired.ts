@@ -20,6 +20,9 @@ import { scriptReport, type ScriptEntry, type ScriptFile } from "./script";
 export interface CastSpeaker {
   who?: string;
   gemini?: Record<string, unknown>;
+  elevenlabs?: { voiceId?: string; name?: string; approved?: boolean };
+  accent?: string;
+  direction?: string;
   [field: string]: unknown;
 }
 
@@ -33,8 +36,11 @@ export interface Provider {
   model: string;
 }
 
-/** Gemini 3.8 Flash TTS, decided 2026-10-28 (docs/voice-narration-plan.md). */
+/** Gemini 3.8 Flash TTS, decided 2026-10-28 (docs/voice-narration-plan.md) and dropped for ElevenLabs on 2026-11-05. Still what the bake-off can audition. */
 export const GEMINI: Provider = { provider: "gemini", model: "gemini-3.8-flash-tts" };
+
+/** What the game's narration is rendered with (docs/voice-narration-plan.md, "Provider"). Its price is the `apiModel` row in pricing.json. */
+export const ELEVENLABS: Provider = { provider: "elevenlabs", model: "eleven_v4" };
 
 export interface DesiredSegment {
   key: string;
@@ -76,13 +82,22 @@ export interface DesireOptions {
 }
 
 /**
- * What reaches the provider about a voice: the pinned voice config, the cast's
- * accent and the speaker's description (Gemini is steered by it). Changing any
- * of them re-renders that speaker's lines and nobody else's.
+ * What reaches the provider about a voice. Changing any of it re-renders that
+ * speaker's lines and nobody else's.
+ *
+ *  - ElevenLabs: the voice's id and the accent and direction that go in front of each line as tags. The speaker's
+ *    description never reaches ElevenLabs, so rewording it moves nothing. `undefined` while nobody has picked a
+ *    voice for them: their lines go to the device voice, not to somebody else's.
+ *  - Anything else (Gemini, the fake tones): the pinned voice config, the cast's accent and the description.
  */
-export function voiceOf(cast: CastSheet, speaker: string): unknown {
+export function voiceOf(cast: CastSheet, speaker: string, provider: Provider = ELEVENLABS): unknown {
   const entry = cast.speakers[speaker];
   if (entry === undefined) return undefined;
+  if (provider.provider === "elevenlabs") {
+    const voiceId = entry.elevenlabs?.voiceId;
+    if (voiceId === undefined || voiceId === "") return undefined;
+    return { voiceId, accent: entry.accent, direction: entry.direction, defaultAccent: cast.accent };
+  }
   return { ...entry.gemini, accent: cast.accent, who: entry.who };
 }
 
@@ -91,11 +106,12 @@ function baseSpeaker(by: string): string {
 }
 
 export function desiredClips(lines: readonly ClassifiedLine[], options: DesireOptions): Desired {
-  const provider = options.provider ?? GEMINI;
+  const provider = options.provider ?? ELEVENLABS;
   const out: Desired = { lines: [], deviceVoice: [] };
   const speakers = new Set(Object.keys(options.cast.speakers));
+  const voiced = (by: string): boolean => voiceOf(options.cast, baseSpeaker(by), provider) !== undefined;
   const segment = (by: string, text: string, variant: string, delivery?: string): DesiredSegment | null => {
-    const voice = voiceOf(options.cast, baseSpeaker(by));
+    const voice = voiceOf(options.cast, baseSpeaker(by), provider);
     if (voice === undefined) return null;
     const spoken = spokenForm(text, variant, options.lexicon);
     if (spoken === "") return null;
@@ -120,6 +136,13 @@ export function desiredClips(lines: readonly ClassifiedLine[], options: DesireOp
         continue;
       }
       cut = entry;
+    }
+
+    // Anyone on the line with no voice yet (an ElevenLabs voice is picked by ear, never assigned) leaves the whole
+    // line to the device voice: half a line in the right voice and half in none would read worse than either.
+    if ((cut === null ? ["narrator"] : cut.lines.map((l) => l.by)).some((by) => !voiced(by))) {
+      out.deviceVoice.push({ address: line.address, chapter: line.chapter, reason: "uncast-speaker" });
+      continue;
     }
 
     for (const variant of line.variants) {

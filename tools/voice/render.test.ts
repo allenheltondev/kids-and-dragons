@@ -169,7 +169,7 @@ describe("measuring what the provider bills", () => {
     const { pcmToWav } = await import("./bakeoff/providers");
     // Two seconds of 24 kHz audio, billed as 60 tokens: 30 a second.
     const wav = pcmToWav(Buffer.alloc(24000 * 2 * 2), 24000);
-    const { made } = deps({ synth: () => Promise.resolve({ wav, audioTokens: 60 }) });
+    const { made } = deps({ synth: () => Promise.resolve({ audio: wav, ext: "wav" as const, audioTokens: 60 }) });
     const report = await renderOwed(owed(2), made, live);
     expect(report.measured).toEqual({ audioTokens: 120, seconds: 4, clips: 2, tokensPerSecond: 30 });
   });

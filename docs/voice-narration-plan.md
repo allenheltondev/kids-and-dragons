@@ -276,7 +276,7 @@ and what the rest would cost, and stops.
 ```bash
 npm run voice:generate -- --chapter bramblewood-01                       # plan and price only
 npm run voice:generate -- --chapter bramblewood-01 --fake --dir /tmp/clips --render   # fake tones, no key, no AWS
-GEMINI_API_KEY=… npm run voice:generate -- --chapter bramblewood-01 --stage staging --render
+ELEVENLABS_API_KEY=… npm run voice:generate -- --chapter bramblewood-01 --stage staging --render
 … --stage staging,prod        # render once, upload to both buckets
 ```
 
@@ -552,4 +552,4 @@ pipeline, and rewriting before the full render (8) avoids paying to render text 
   (not inside it, so deploy's `--delete` never touches them).
 - **One narrator voice** for the whole game.
 - **Names:** text on screen can say a player's name; audio always says "hero", from the recorded voice and the device voice alike. A name never reaches any speaker or provider; every name-bearing surface gets a sweep (section 8).
-- **Provider and model:** Gemini 3.8 Flash TTS (`gemini-3.8-flash-tts`), decided by the owner. ElevenLabs stays in the bake-off for comparison only.
+- **Provider and model:** ElevenLabs, decided by the owner on 2026-11-05, replacing the 2026-10-28 choice of Gemini 3.8 Flash TTS. `voice:generate`, `voice:status` and `voice:verify` default to Eleven v4 (`eleven_v4`; `--model eleven_v3` or any `pricing.json` id or API model takes another). Voices are the ones picked on the cast page (docs/voice-cast.md, docs/voice-species.md), not assigned. At the §9 estimate the whole game is about $113 on v4 and $57 on v4 Turbo against $30 on Gemini, so the $75 first-run cap covers one campaign at a time on v4: render with `--chapter`. The tags in front of each line count as billed characters and the estimate does not, so expect a few percent more. Gemini stays in the bake-off for comparison only.
