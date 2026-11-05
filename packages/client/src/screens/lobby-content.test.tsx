@@ -17,6 +17,7 @@ import { makeMember, makeState } from "../testing/fixtures";
 import { useGameStore } from "../store";
 import { resetHelpCache } from "../help/content";
 import { LobbyContent } from "./LobbyContent";
+import { lobbyInsetBottom, lobbyInsetTop } from "../world/stage-inset";
 
 const PREMISE = "Mount Red Sky has erupted, and gemstones are raining across the realm.";
 const FIRST: CampaignView = {
@@ -52,6 +53,23 @@ describe("the adventure's crew", () => {
   });
 });
 
+describe("the table's name", () => {
+  it("shows the name alone, with no label", () => {
+    mount({ location: "The kitchen table" });
+    const place = document.querySelector(".lobby__place");
+    expect(place?.textContent).toBe("The kitchen table");
+    expect(screen.queryByText("Your table")).toBeNull();
+  });
+
+  it("draws nothing at all for a table with no name", () => {
+    for (const location of [undefined, "", "   "]) {
+      mount({ location });
+      expect(document.querySelector(".lobby__place")).toBeNull();
+      cleanup();
+    }
+  });
+});
+
 describe("what the room should do next", () => {
   it("shows a player making a hero and withholds the start instruction", () => {
     mount({
@@ -61,13 +79,18 @@ describe("what the room should do next", () => {
     expect(screen.getByText("Sam")).toBeTruthy();
     expect(screen.getByText("Making a hero")).toBeTruthy();
     expect(screen.getByText("The party (1/2 ready)")).toBeTruthy();
-    expect(screen.queryByText(/Start the adventure on a phone/)).toBeNull();
+    expect(screen.queryByText(/Everyone is ready!/)).toBeNull();
   });
 
   it("says where to start after everyone playing is ready", () => {
     mount({ party: [makeMember({ ready: true })] });
-    expect(screen.getByText("Everyone is ready! Start the adventure on a phone.")).toBeTruthy();
-    expect(document.querySelector('[data-entry-scene="lobby-ready"]')).not.toBeNull();
+    // Said in the party's heading, in place of its count, through a status region that was there
+    // all along so a screen reader announces it.
+    const heading = screen.getByRole("heading", { name: "Everyone is ready! Start on a phone." });
+    expect(heading.querySelector('[role="status"]')?.textContent).toBe("Everyone is ready! Start on a phone.");
+    expect(screen.queryByText(/The party \(/)).toBeNull();
+    // The camp is the lobby's picture now (#614), drawn by the stage behind it.
+    expect(document.querySelector("[data-entry-scene]")).toBeNull();
   });
 
   it("does not treat a seated hero who still needs Ready as making a hero", () => {
@@ -75,6 +98,9 @@ describe("what the room should do next", () => {
     expect(screen.getByText("Tap Ready on your phone")).toBeTruthy();
     expect(screen.queryByText("Making a hero")).toBeNull();
     expect(screen.queryByText(/Everyone is ready!/)).toBeNull();
+    // The heading's status region is already there, empty, waiting for the words.
+    const status = screen.getByRole("heading", { name: "The party (0/1 ready)" }).querySelector('[role="status"]');
+    expect(status?.textContent).toBe("");
   });
 });
 
@@ -291,5 +317,29 @@ describe("heroes new to the crew's adventure", () => {
     mount(check);
     expect(screen.getByText(/The grown-up running the game picks/)).toBeTruthy();
     expect(screen.queryByRole("button", { name: "Keep going with Riftlight" })).toBeNull();
+  });
+});
+
+describe("the camp behind the lobby (#614)", () => {
+  it("tells the stage where its window is, top and bottom, and nothing once it goes", () => {
+    const rect = (top: number, bottom: number) => ({ top, bottom, height: bottom - top, left: 0, right: 1280, width: 1280, x: 0, y: top, toJSON: () => ({}) });
+    const spy = vi.spyOn(Element.prototype, "getBoundingClientRect").mockImplementation(function (this: Element) {
+      // A 720p TV: the crew shares the corner row's strip, so the window opens just under it.
+      if (this.classList.contains("lobby__camp-window")) return rect(65, 470) as DOMRect;
+      if (this.classList.contains("lobby")) return rect(0, 720) as DOMRect;
+      return rect(0, 0) as DOMRect;
+    });
+    mount({ party: [makeMember()] });
+    expect(lobbyInsetBottom()).toBe(250);
+    expect(lobbyInsetTop()).toBe(65);
+    cleanup();
+    expect(lobbyInsetBottom()).toBe(0);
+    expect(lobbyInsetTop()).toBe(0);
+    spy.mockRestore();
+  });
+
+  it("has no painted backdrop of its own: the camp is its picture", () => {
+    mount({ party: [makeMember()] });
+    expect(document.querySelector(".entry-scene")).toBeNull();
   });
 });

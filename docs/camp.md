@@ -81,9 +81,9 @@ during downtime, and in the World pane during the lobby.
 ### 3.1 Pitched in the right place
 
 Each terrain family (`assets/manifest.json` → `biomeFamilies`, twelve of them) gets one camp
-backdrop: a wide, calm campsite painting with room for the camp in the middle third and its
-hotspots (§4.2) on a fixed layout. The view picks the backdrop from the chapter's biome, and in
-the lobby from the chapter the crew would pick up from. The lobby and the chapter's end always
+backdrop: a wide, calm campsite painting with a wide clearing for the camp, across about the
+middle 80 percent of the width, and its hotspots (§4.2) on a fixed layout. The view picks the
+backdrop from the chapter's biome, and in the lobby from the chapter the crew would pick up from. The lobby and the chapter's end always
 show the full, outdoor camp.
 
 Painting all twelve is a lot of art, so they ship in order of how often a party rests outdoors
@@ -556,8 +556,24 @@ camp's spots on that ground.
   rather than walking through another.
 - **Clear of the words.** Stand points never sit under the parts of the screen the lobby, the vote
   and the narration plate cover. `stage-inset.ts` already reports how much of the pane the
-  narration plate covers, so the story stage stands figures above it; the lobby and vote panels
-  would report the same way.
+  narration plate covers, so the story stage stands figures above it; the lobby reports its
+  header and panels the same way. The camp is one painting, edge to edge: it is scaled to cover
+  the pane's width (or the window's height, if that needs more) and slid up or down so its focus
+  band, from a standing hero's head on the back lane to just below the near lane, sits centered
+  in the open window between the header and the panels. Its plain sky is trimmed off the top and
+  its plain grass runs on under the panels (`camp-framing.ts`); the backdrop is painted for that
+  (docs/briefs/camp.md). **Every hero is seen whole.** When the band is taller than the window
+  at that scale (a tall hero seated, a short window on a 16:9 TV), the figures and pieces are
+  drawn smaller, never the painting: the camp draws them at the largest factor up to 1 that fits
+  the band in the window (`campFigureScale`), and their steps shrink with them. It never goes
+  below 0.6; past that the near lane's feet stay in the window and only the tallest heads may
+  reach under the header. The factor eases with the framing as heroes sit down and panels change
+  height, and the moving camp, the still one and Travel Mode's phone pane all take it from the
+  same `campFit`. **Every hero is seen whole across, too.** Near the screen's edge, and where the
+  pane crops the painting's sides (a TV narrower than 16:9, a phone's World pane), every stand
+  point, crossing and place in the trailhead's line is moved in from the edge by the figure's
+  width (`campVisibleSpan`); a line too long for what is left runs on behind the trailhead, and
+  one wider than the whole span takes a second row on the next lane back.
 - **Indoors, one lane.** A packed-down camp (§3.2) uses a single generic layout laid over the
   scene's own picture: one near lane along the bottom, a bedroll stand point for each hero and a
   spot for each friend. No per-scene authoring.
@@ -588,7 +604,9 @@ to paint. The backdrop is static too.
 The camp should feel calm, like watching a campsite, not a busy screen:
 
 - **Wandering.** Each figure stays at a stand point for a while (roughly 8 to 20 seconds), then
-  picks another nearby free one and walks there. **At most two figures are walking at once**, so
+  picks another nearby free one it hasn't just stood at and walks there, so over a few minutes
+  the crew ranges across the whole clearing rather than pacing by its bedrolls. **At most two
+  figures are walking at once**, so
   the eye always has something to follow and never everything. Indoors nobody wanders: the heroes
   rest on their bedrolls, and a friend moves only when it's tapped.
 - **Moments the game already has** take priority over wandering, and each is a little scene:
@@ -596,7 +614,8 @@ The camp should feel calm, like watching a campsite, not a busy screen:
 | Moment | What happens |
 | --- | --- |
 | A kid sits down in the lobby | Their hero crawls out of their tent (or sits up on their bedroll, at stage 1), looks around and waves (a hop and a turn toward the screen) |
-| A kid taps Ready | Their hero shoulders their pack and walks to the trailhead at the edge of camp |
+| A kid taps Ready | Their hero shoulders their pack and walks to the trailhead at the edge of camp, joining the line there in tap order |
+| A kid takes Ready back | Their hero steps out of the line within a beat or two and goes back to wandering: walking off when no lane-mate is in the way, otherwise fading out of the line and back in at home |
 | A player steps away (#258) | Their hero walks back to their own tent and fades the way the lineup already fades a stepped-away hero |
 | Begin | Everyone sets off together down the trail as the chapter's first scene fades in, at the start of every chapter (*decided*) |
 | An outdoor rest scene opens (§3.2) | The heroes walk in from the edge, and each settles at a spot |

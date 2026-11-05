@@ -36,7 +36,16 @@
   flex-direction: column;
   gap: var(--space-4, 1em);
   min-block-size: 0;
-  flex: 1 1 auto;
+  flex: 0 1 auto;
+}
+
+/* The camp shows through here (#614): the space the lobby leaves between its
+   header and its panels, which stand along the bottom. LobbyContent reports
+   what lies below this to the stage, which frames the camp above it. */
+.lobby__camp-window {
+  flex: 1 1 0;
+  min-block-size: 0;
+  pointer-events: none;
 }
 
 /* Join on the left, the people already here on the right. Scoped to the
@@ -348,16 +357,13 @@
 
 .lobby-member__status .kad-chip { font-size: 0.8em; }
 
-.lobby__next-step {
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
-  margin: 0;
-  padding: 0.5em 0.65em;
-  border-radius: 0.65em;
-  background: var(--color-surface, #1a1730);
-  font-size: 0.85em;
+/* Everyone is ready: the party's heading says so in place of its count (LobbyContent.tsx), in
+   gold, so the room sees the change from across it. The words carry it, never the colour alone. */
+.lobby__party-heading--ready {
+  color: var(--kad-gold-hi, #ffe6a8);
+  text-shadow: 0 0 0.5em rgb(245 200 108 / 55%);
 }
+html[data-contrast="high"] .lobby__party-heading--ready { text-shadow: none; }
 
 /* Both chips in the same cell; see MemberCard. */
 .lobby-member__status > * {
@@ -517,27 +523,82 @@
   font-size: 0.8em;
 }
 
-/* The crew this lobby plays, and the host's way to change it. */
+/* The crew this lobby plays, and the host's way to change it: one line along the top of the
+   pane, each on its own chip over the painting. The hint is the host's alone and the Room panel
+   says the same, so where the pane is too narrow for both it wraps onto a second line that the
+   row's fixed height clips away, rather than running over the crew's name. Heights in em: the
+   chip is 2em at 0.85em (CrewIdentity.css), so 1.7em here. */
 .lobby__crew {
   display: flex;
-  align-items: center;
+  flex: none;
   flex-wrap: wrap;
-  gap: var(--space-3, 0.75em);
+  align-items: center;
+  gap: 1.7em 0.5em;
+  block-size: 1.7em;
+  min-inline-size: 0;
+  overflow: hidden;
 }
 
 .lobby__crew-hint {
-  font-size: 0.85em;
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  block-size: 2.125em;
+  padding: 0 0.8em;
+  border: 0.08em solid var(--color-border, #3a3468);
+  border-radius: var(--radius-pill, 999em);
+  background: var(--color-surface-sunken, #120f26);
+  font-size: 0.8em;
+  white-space: nowrap;
 }
 
 @media (max-width: 600px) {
   :is(.kad-travel, .kad-party--player) .lobby { gap: .2em; padding: .4em; }
-  :is(.kad-travel, .kad-party--player) .lobby__campaigns { gap: .3em; }
-  :is(.kad-travel, .kad-party--player) .lobby__campaign { padding: .35em; }
-  :is(.kad-travel, .kad-party--player) .lobby__campaign :is(.campaign-art, .lobby__campaign-line) { display: none; }
+  /* The adventures on a phone: one row at the panels' width, a card each for its name and the
+     one line that says what it is ("A new adventure", or why it is asleep), the picked one in
+     the gold frame with its Selected tag, as on the TV. No painting: every line of height here
+     comes out of the camp's window. The frames are drawn thinner, as they are on a short
+     landscape screen (chrome.css), so a card two lines tall keeps its corners whole. */
+  :is(.kad-travel, .kad-party--player) .lobby__campaigns { flex-wrap: nowrap; gap: .3em; }
+  :is(.kad-travel, .kad-party--player) .lobby__campaign {
+    --chrome-w: 12px;
+    flex: 1 1 0;
+    min-inline-size: 0;
+    max-inline-size: none;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto;
+    align-content: center;
+    row-gap: .1em;
+    padding: .4em .65em;
+  }
+  :is(.kad-travel, .kad-party--player) .lobby__campaign--picked {
+    --chrome-w: 16px;
+    /* Inside the card's own edge, so it lines up with the panels under it. */
+    outline: 2px solid var(--kad-gold, #ffc95c);
+    outline-offset: -2px;
+  }
+  :is(.kad-travel, .kad-party--player) .lobby__campaign[data-locked="true"] { opacity: .7; }
+  :is(.kad-travel, .kad-party--player) .lobby__campaign .campaign-art { display: none; }
+  :is(.kad-travel, .kad-party--player) .lobby__campaign-title { flex-wrap: wrap; gap: .15em .35em; font-size: .85em; line-height: 1.2; }
+  :is(.kad-travel, .kad-party--player) .lobby__campaign-line { font-size: .7em; line-height: 1.25; }
+  :is(.kad-travel, .kad-party--player) .lobby__campaign-selected {
+    display: inline-flex;
+    align-items: center;
+    gap: .25em;
+    padding: .1em .4em;
+    border-radius: .4em;
+    background: var(--kad-gold, #ffc95c);
+    color: var(--kad-accent-ink, #0d0b1a);
+    font-size: .75em;
+    font-weight: 800;
+    white-space: nowrap;
+  }
   :is(.kad-travel, .kad-party--player) .lobby__join { padding: .4em; gap: .4em; }
   :is(.kad-travel, .kad-party--player) .lobby__qr-block { display: none; }
   :is(.kad-travel, .kad-party--player) .lobby__lineup { flex: none; max-block-size: none; overflow: visible; gap: .3em; }
-  :is(.kad-travel, .kad-party--player) .lobby-member { padding: .3em; min-block-size: 44px; }
+  /* The portrait's column is the small portrait's own width, so the name and chip sit beside it
+     (the shared 4.5em column left an empty gap between them). */
+  :is(.kad-travel, .kad-party--player) .lobby-member { padding: .3em; min-block-size: 44px; grid-template-columns: 2em minmax(0, 1fr); column-gap: .5em; }
   :is(.kad-travel, .kad-party--player) .lobby-member__portrait { inline-size: 2em; block-size: 2.5em; }
   :is(.kad-travel, .kad-party--player) .lobby-member__meta { display: none; }
 }
@@ -545,7 +606,6 @@
 .lobby__code-letter { line-height: 1; padding-block: .18em; }
 .lobby__code-letter { inline-size: 1.6em; block-size: 1.6em; min-inline-size: 1.6em; padding: 0; }
 @media (max-width: 600px) {
-  :is(.kad-travel, .kad-party--player) .lobby__campaign { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto; }
   :is(.kad-travel, .kad-party--player) .lobby__join-step { display: none; }
 }
 

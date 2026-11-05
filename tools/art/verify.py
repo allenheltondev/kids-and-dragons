@@ -687,6 +687,205 @@ def check_story_plates(rep: Report, mf: dict) -> None:
             plate = os.path.relpath(os.path.join(folder, stem), os.path.join(ROOT, "assets")).replace(os.sep, "/")
             if plate not in declared:
                 rep.fail(f"{plate} undeclared", "listed in manifest.storyPlates.ids", "undeclared file")
+
+
+CAMP_ACTIONS = {"warmUp", "lookUp", "peek", "rest", "greet", "pet"}
+CAMP_MOTIONS = {"flicker", "sway", "ripple", "lift"}
+CAMP_FACES = {"left", "right"}
+# The backdrop prompt (docs/camp-art-prompts.json, docs/briefs/camp.md) promises open, nearly
+# level grass from 45 to 75 percent of the height; every lane's ground line, and so every stand
+# point, lies in it. The client slides the cover-fitted painting so this band stands in the
+# lobby's window (docs/camp.md §8.3, packages/client/src/world/camp-framing.ts).
+CAMP_GROUND_TOP = 0.45
+CAMP_GROUND_BOTTOM = 0.75
+CAMP_SEATS = {0, 1, 2, 3}
+# The backdrop fills the screen's width (cover-fit, camp-framing.ts), so the camp spreads across
+# the clearing; a portrait phone crops the outer edges a little, so pieces and stand points keep
+# within this much of the width. The trailhead, where the party leaves camp, is the one exception.
+CAMP_X_MIN = 0.08
+CAMP_X_MAX = 0.92
+
+
+def check_camp_layout(rep: Report, mf: dict) -> None:
+    """The camp's layout data (docs/camp.md §8.3, §8.4): lanes, crossings, pieces, stand points.
+
+    This is authored data the client walks figures over, so a mistake in it fails
+    here rather than as a figure standing in mid-air.
+    """
+    spec = mf.get("camp")
+    if not spec:
+        return
+    families = set(mf.get("biomeFamilies", {}))
+    backdrops = spec.get("backdrops", [])
+    seen_families: set[str] = set()
+    lane_sets: list[dict[str, dict]] = []
+    for backdrop in backdrops:
+        family = backdrop.get("family")
+        label = f"camp/backdrop/{family}"
+        if family not in families or family in seen_families:
+            rep.fail(f"{label} family", "one backdrop per manifest.biomeFamilies id", family)
+            continue
+        seen_families.add(family)
+        lanes = backdrop.get("lanes", [])
+        by_id = {lane["id"]: lane for lane in lanes}
+        problems: list[str] = []
+        if not 2 <= len(lanes) <= 3 or len(by_id) != len(lanes):
+            problems.append("two or three lanes with unique ids")
+        for lane in lanes:
+            if not (CAMP_GROUND_TOP <= lane["y"] <= CAMP_GROUND_BOTTOM and 0 <= lane["x0"] < lane["x1"] <= 1 and lane["scale"] > 0):
+                problems.append(
+                    f"lane {lane['id']} on the open ground, y {CAMP_GROUND_TOP} to {CAMP_GROUND_BOTTOM}, with x0 < x1"
+                )
+        for back, near in zip(lanes, lanes[1:]):
+            if not (back["y"] < near["y"] and back["scale"] <= near["scale"]):
+                problems.append(f"lanes back to near: {near['id']} lower and no smaller than {back['id']}")
+        for crossing in backdrop.get("crossings", []):
+            named = crossing.get("lanes", [])
+            if len(named) < 2 or any(
+                n not in by_id or not by_id[n]["x0"] <= crossing["x"] <= by_id[n]["x1"] for n in named
+            ):
+                problems.append(f"crossing at x={crossing['x']} joins two or more lanes it lies on")
+        if problems:
+            rep.fail(f"{label} lanes", "a walkable floor", "; ".join(problems))
+        else:
+            rep.ok(f"{label} lanes  {', '.join(by_id)}")
+        lane_sets.append(by_id)
+    if "open_plains" not in seen_families:
+        rep.fail("camp backdrops", "an open_plains backdrop, the fallback for every family", "none")
+
+    def on_lane(lane: str, x: float) -> bool:
+        # Frames are shared by every backdrop, so a spot must be on its lane in each.
+        return bool(lane_sets) and all(lane in lanes and lanes[lane]["x0"] <= x <= lanes[lane]["x1"] for lanes in lane_sets)
+
+    stages = [frame.get("stage") for frame in spec.get("frames", [])]
+    if stages != list(range(1, len(stages) + 1)):
+        rep.fail("camp frames", "stages 1, 2, 3... in order", stages)
+    for frame in spec.get("frames", []):
+        label = f"camp/stage{frame.get('stage')}"
+        problems = []
+        pieces = {piece["id"]: piece for piece in frame.get("pieces", [])}
+        if len(pieces) != len(frame.get("pieces", [])):
+            problems.append("unique piece ids")
+        for piece in frame.get("pieces", []):
+            if not on_lane(piece["lane"], piece["x"]):
+                problems.append(f"piece {piece['id']} on its lane")
+            if not CAMP_X_MIN <= piece["x"] <= CAMP_X_MAX:
+                problems.append(f"piece {piece['id']} within x {CAMP_X_MIN} to {CAMP_X_MAX}")
+            height = piece.get("heightCm")
+            owner = piece.get("ownerSeat")
+            if owner is not None and (type(owner) is not int or owner not in CAMP_SEATS):
+                problems.append(f"piece {piece['id']} ownerSeat a seat from 0 to 3")
+            if height is not None and (isinstance(height, bool) or not isinstance(height, (int, float)) or height <= 0):
+                problems.append(f"piece {piece['id']} heightCm a positive number")
+        for part in frame.get("movingParts", []):
+            if part.get("piece") not in pieces or part.get("motion") not in CAMP_MOTIONS:
+                problems.append(f"moving part {part.get('path')} on a piece, with a motion in {sorted(CAMP_MOTIONS)}")
+        points = frame.get("standPoints", [])
+        if len({point["id"] for point in points}) != len(points):
+            problems.append("unique stand point ids")
+        seats: list[int] = []
+        for point in points:
+            pid = point["id"]
+            if not on_lane(point["lane"], point["x"]):
+                problems.append(f"stand point {pid} on its lane")
+            if not CAMP_X_MIN <= point["x"] <= CAMP_X_MAX:
+                problems.append(f"stand point {pid} within x {CAMP_X_MIN} to {CAMP_X_MAX}")
+            if point.get("face") not in CAMP_FACES:
+                problems.append(f"stand point {pid} faces left or right")
+            action = point.get("action")
+            if action is not None and action not in CAMP_ACTIONS:
+                problems.append(f"stand point {pid} action in {sorted(CAMP_ACTIONS)}")
+            if "hotspot" in point and point["hotspot"] not in pieces:
+                problems.append(f"stand point {pid} hotspot names a piece")
+            if "seat" in point:
+                if point["seat"] not in CAMP_SEATS or action != "rest":
+                    problems.append(f"stand point {pid} seat 0-3, on a rest spot")
+                seats.append(point["seat"])
+        # Every frame seats the full party (docs/camp.md §12): one rest spot per seat.
+        if sorted(seats) != sorted(CAMP_SEATS):
+            problems.append(f"one rest spot per seat 0-3, found {sorted(seats)}")
+        trailhead = frame.get("trailhead") or {}
+        if not on_lane(trailhead.get("lane", ""), trailhead.get("x", -1)):
+            problems.append("a trailhead on a lane")
+        if problems:
+            rep.fail(f"{label} layout", "pieces and stand points on the backdrop's lanes", "; ".join(problems))
+        else:
+            rep.ok(f"{label} layout  {len(pieces)} pieces, {len(points)} stand points")
+
+
+def check_camp_art(rep: Report, mf: dict) -> None:
+    """Camp art (docs/briefs/camp.md): backdrops opaque 1920x1080 WebP, pieces and moving
+    parts figure-canvas RGBA PNG cutouts; nothing undeclared under assets/camp.
+
+    A missing painting is not a failure: the client draws a stand-in until it lands, and
+    `art:inventory` lists it as owed.
+    """
+    spec = mf.get("camp")
+    if not spec:
+        return
+    canvas = spec["backdropCanvas"]
+    declared: set[str] = set()
+    for backdrop in spec.get("backdrops", []):
+        rel = backdrop["path"]
+        declared.add(rel)
+        path = os.path.join(ROOT, "assets", rel)
+        if not os.path.isfile(path):
+            rep.warn(f"{rel}  not yet delivered", "the camp draws a stand-in backdrop")
+            continue
+        with Image.open(path) as im:
+            if im.format != "WEBP":
+                rep.fail(f"{rel} format", "WEBP", im.format)
+                continue
+            if im.size != (canvas["width"], canvas["height"]):
+                rep.fail(f"{rel} canvas", f"{canvas['width']}x{canvas['height']}", f"{im.size[0]}x{im.size[1]}")
+                continue
+            if im.convert("RGBA").getchannel("A").getextrema()[0] < 255:
+                rep.fail(f"{rel} opaque", "no transparent pixels", "transparency")
+                continue
+        rep.ok(f"{rel}  {canvas['width']}x{canvas['height']} opaque")
+
+    cutouts: dict[str, bool] = {}  # path -> stands on the ground (a piece) or lies over one (a part)
+    for frame in spec.get("frames", []):
+        for piece in frame.get("pieces", []):
+            cutouts[piece["path"]] = True
+        for part in frame.get("movingParts", []):
+            cutouts.setdefault(part["path"], False)
+    tol = mf["tolerance"]
+    figure = mf["canvas"]
+    for kit in spec.get("kitStyles", []):
+        cutouts[kit["path"]] = True
+    for rel, grounded in cutouts.items():
+        declared.add(rel)
+        path = os.path.join(ROOT, "assets", rel)
+        if not os.path.isfile(path):
+            rep.warn(f"{rel}  not yet delivered", "the camp draws a stand-in")
+            continue
+        with Image.open(path) as im:
+            if im.format != "PNG":
+                rep.fail(f"{rel} format", "PNG", im.format)
+                continue
+        image = check_format(rep, path, figure, tol)
+        if image is None:
+            continue
+        if grounded:
+            check_origin(rep, rel, image, figure, tol)
+        else:
+            # A moving part is registered to its piece's canvas, so it never reaches
+            # below the ground contact the piece stands on.
+            ys, _ = np.where(image[..., 3] > tol["alphaThreshold"])
+            if ys.size and int(ys.max()) > figure["originY"] + tol["originYTolerancePx"]:
+                rep.fail(f"{rel} origin", f"nothing below y={figure['originY']} (+/-{tol['originYTolerancePx']})", f"y={int(ys.max())}")
+            else:
+                rep.ok(f"{rel} registered over its piece")
+
+    directory = os.path.join(ROOT, "assets", "camp")
+    for folder, _, files in os.walk(directory):
+        for filename in sorted(files):
+            rel = os.path.relpath(os.path.join(folder, filename), os.path.join(ROOT, "assets")).replace(os.sep, "/")
+            if rel not in declared:
+                rep.fail(f"{rel} undeclared", "a path in manifest.camp", "undeclared file")
+
+
 def check_scene_illustrations(rep: Report, mf: dict) -> None:
     """Declared story backdrops are opaque; entry portraits use their tall canvas."""
     for art in mf.get("sceneIllustrations", []):
@@ -861,6 +1060,8 @@ def main() -> int:
     check_figure_variants(rep, mf)
     check_campaign_art(rep, mf)
     check_story_plates(rep, mf)
+    check_camp_layout(rep, mf)
+    check_camp_art(rep, mf)
     check_scene_illustrations(rep, mf)
     check_painted_icons(rep, mf)
     check_painted_icons(rep, mf, "badgeArt", "badges")

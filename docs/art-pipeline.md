@@ -19,3 +19,10 @@ travel, falls, numbers, targeting, sound, and spell effects independently of art
 
 Historical rig briefs and original source paintings may remain as reference. They
 are not delivery requirements. Git history retains the retired rigs and parts.
+
+Camp art (the crew's campsite, docs/camp.md) follows the same rules with its own layout
+contract in `assets/manifest.json` under `camp`: opaque 1920 x 1080 WebP backdrops per terrain
+family, and 1024 x 1024 RGBA piece and moving-part cutouts standing on (512, 900). Missing camp
+art is owed in `art:inventory`, never a placeholder file. Conventions, including the proposed
+Phase 2 hero-colored kit layers, are in `docs/briefs/camp.md`; prompts in
+`docs/camp-art-prompts.json`.

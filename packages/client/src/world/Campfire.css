@@ -1,0 +1,19 @@
+.campfire { inline-size: 100%; block-size: 100%; overflow: visible; }
+.campfire__flame {
+  /* Coordinates in the shared 1024px canvas, where the flame meets the logs. */
+  transform-origin: 512px 625px;
+  animation: campfire-flicker 2.7s ease-in-out infinite;
+}
+@keyframes campfire-flicker {
+  0%, 100% { transform: skewX(0deg) scale(1, 1); opacity: .92; }
+  14% { transform: skewX(-1.2deg) scale(.98, 1.025); opacity: 1; }
+  33% { transform: skewX(.8deg) scale(1.015, .98); opacity: .8; }
+  51% { transform: skewX(-.5deg) scale(.99, 1.035); opacity: .97; }
+  72% { transform: skewX(1.1deg) scale(1.02, .99); opacity: .86; }
+  87% { transform: skewX(-.7deg) scale(.985, 1.015); opacity: 1; }
+}
+.campfire[data-flicker="off"] .campfire__flame,
+:root[data-motion="reduced"] .campfire__flame { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  .campfire__flame { animation: none; }
+}
