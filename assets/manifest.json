@@ -1325,6 +1325,102 @@
           { "x": 0.69, "lanes": ["far", "back", "middle", "near"] },
           { "x": 0.8, "lanes": ["far", "back", "middle", "near"] }
         ]
+      },
+      {
+        "family": "enchanted_forest",
+        "path": "camp/backdrops/enchanted_forest.webp",
+        "lanes": [
+          { "id": "far", "y": 0.48, "x0": 0.08, "x1": 0.92, "scale": 0.6 },
+          { "id": "back", "y": 0.52, "x0": 0.12, "x1": 0.88, "scale": 0.84 },
+          { "id": "middle", "y": 0.6, "x0": 0.08, "x1": 0.92, "scale": 0.92 },
+          { "id": "near", "y": 0.68, "x0": 0.04, "x1": 0.97, "scale": 1.0 }
+        ],
+        "crossings": [
+          { "x": 0.2, "lanes": ["far", "back", "middle", "near"] },
+          { "x": 0.31, "lanes": ["far", "back", "middle", "near"] },
+          { "x": 0.69, "lanes": ["far", "back", "middle", "near"] },
+          { "x": 0.8, "lanes": ["far", "back", "middle", "near"] }
+        ]
+      },
+      {
+        "family": "sky_islands",
+        "path": "camp/backdrops/sky_islands.webp",
+        "lanes": [
+          { "id": "far", "y": 0.48, "x0": 0.08, "x1": 0.92, "scale": 0.6 },
+          { "id": "back", "y": 0.52, "x0": 0.12, "x1": 0.88, "scale": 0.84 },
+          { "id": "middle", "y": 0.6, "x0": 0.08, "x1": 0.92, "scale": 0.92 },
+          { "id": "near", "y": 0.68, "x0": 0.04, "x1": 0.97, "scale": 1.0 }
+        ],
+        "crossings": [
+          { "x": 0.2, "lanes": ["far", "back", "middle", "near"] },
+          { "x": 0.31, "lanes": ["far", "back", "middle", "near"] },
+          { "x": 0.69, "lanes": ["far", "back", "middle", "near"] },
+          { "x": 0.8, "lanes": ["far", "back", "middle", "near"] }
+        ]
+      },
+      {
+        "family": "whispering_marsh",
+        "path": "camp/backdrops/whispering_marsh.webp",
+        "lanes": [
+          { "id": "far", "y": 0.48, "x0": 0.08, "x1": 0.92, "scale": 0.6 },
+          { "id": "back", "y": 0.52, "x0": 0.12, "x1": 0.88, "scale": 0.84 },
+          { "id": "middle", "y": 0.6, "x0": 0.08, "x1": 0.92, "scale": 0.92 },
+          { "id": "near", "y": 0.68, "x0": 0.04, "x1": 0.97, "scale": 1.0 }
+        ],
+        "crossings": [
+          { "x": 0.2, "lanes": ["far", "back", "middle", "near"] },
+          { "x": 0.31, "lanes": ["far", "back", "middle", "near"] },
+          { "x": 0.69, "lanes": ["far", "back", "middle", "near"] },
+          { "x": 0.8, "lanes": ["far", "back", "middle", "near"] }
+        ]
+      },
+      {
+        "family": "cliffside_exchange",
+        "path": "camp/backdrops/cliffside_exchange.webp",
+        "lanes": [
+          { "id": "far", "y": 0.48, "x0": 0.08, "x1": 0.92, "scale": 0.6 },
+          { "id": "back", "y": 0.52, "x0": 0.12, "x1": 0.88, "scale": 0.84 },
+          { "id": "middle", "y": 0.6, "x0": 0.08, "x1": 0.92, "scale": 0.92 },
+          { "id": "near", "y": 0.68, "x0": 0.04, "x1": 0.97, "scale": 1.0 }
+        ],
+        "crossings": [
+          { "x": 0.2, "lanes": ["far", "back", "middle", "near"] },
+          { "x": 0.31, "lanes": ["far", "back", "middle", "near"] },
+          { "x": 0.69, "lanes": ["far", "back", "middle", "near"] },
+          { "x": 0.8, "lanes": ["far", "back", "middle", "near"] }
+        ]
+      },
+      {
+        "family": "great_river",
+        "path": "camp/backdrops/great_river.webp",
+        "lanes": [
+          { "id": "far", "y": 0.48, "x0": 0.08, "x1": 0.92, "scale": 0.6 },
+          { "id": "back", "y": 0.52, "x0": 0.12, "x1": 0.88, "scale": 0.84 },
+          { "id": "middle", "y": 0.6, "x0": 0.08, "x1": 0.92, "scale": 0.92 },
+          { "id": "near", "y": 0.68, "x0": 0.04, "x1": 0.97, "scale": 1.0 }
+        ],
+        "crossings": [
+          { "x": 0.2, "lanes": ["far", "back", "middle", "near"] },
+          { "x": 0.31, "lanes": ["far", "back", "middle", "near"] },
+          { "x": 0.69, "lanes": ["far", "back", "middle", "near"] },
+          { "x": 0.8, "lanes": ["far", "back", "middle", "near"] }
+        ]
+      },
+      {
+        "family": "bone_yard",
+        "path": "camp/backdrops/bone_yard.webp",
+        "lanes": [
+          { "id": "far", "y": 0.48, "x0": 0.08, "x1": 0.92, "scale": 0.6 },
+          { "id": "back", "y": 0.52, "x0": 0.12, "x1": 0.88, "scale": 0.84 },
+          { "id": "middle", "y": 0.6, "x0": 0.08, "x1": 0.92, "scale": 0.92 },
+          { "id": "near", "y": 0.68, "x0": 0.04, "x1": 0.97, "scale": 1.0 }
+        ],
+        "crossings": [
+          { "x": 0.2, "lanes": ["far", "back", "middle", "near"] },
+          { "x": 0.31, "lanes": ["far", "back", "middle", "near"] },
+          { "x": 0.69, "lanes": ["far", "back", "middle", "near"] },
+          { "x": 0.8, "lanes": ["far", "back", "middle", "near"] }
+        ]
       }
     ],
     "frames": [
