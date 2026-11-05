@@ -432,6 +432,11 @@ describe("Gemfall's numbers, with temporary buffs in the build (#200)", () => {
             expect(scene.environment?.exits?.[0]?.id).toBe("far-bank");
             continue;
           }
+          if (chapterId === "gemfall-03c" && sceneId === "encounter_crabs") {
+            expect(scene.environment?.hazards?.[0]?.id).toBe("ford-runoff");
+            expect(scene.environment?.objectives?.[0]?.id).toBe("ford-stone");
+            continue;
+          }
           expect(scene).not.toHaveProperty("environment");
           expect(scene).not.toHaveProperty("onEscape");
           expect(scene).not.toHaveProperty("onTimeout");

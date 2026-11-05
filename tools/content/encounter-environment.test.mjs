@@ -97,6 +97,15 @@ describe("the schema", () => {
           expect(scene.onTimeout.goto).toBe("scene_mimic_squelched");
           continue;
         }
+        if (chapter.id === "gemfall-03c" && sceneId === "encounter_crabs") {
+          expect(scene.environment.hazards[0]).toMatchObject({ id: "ford-runoff", push: { direction: "west", tiles: 2 } });
+          expect(scene.environment.objectives[0]).toMatchObject({ id: "ford-stone", kind: "hold", rounds: 1, endsFight: true });
+          expect(scene.environment.clock).toMatchObject({ rounds: 5, onExpire: "collapse" });
+          expect(scene.onVictory.goto).toBe("scene_crabs_cleared");
+          expect(scene.onTimeout).toEqual(scene.onDefeat);
+          expect(scene).not.toHaveProperty("onEscape");
+          continue;
+        }
         expect(scene).not.toHaveProperty("environment");
         expect(scene).not.toHaveProperty("onEscape");
         expect(scene).not.toHaveProperty("onTimeout");

@@ -176,7 +176,7 @@ function featuresOf(encounter: EncounterState): Map<string, GridFeature> {
     // Burnt out for good: no longer a mark on the ground.
     if (hazard.gone) continue;
     for (const t of hazard.tiles) {
-      out.set(`${t.x},${t.y}`, { kind: "hazard", label: hazard.label, icon: hazardIcon(hazard.kind), active: hazard.active });
+      out.set(`${t.x},${t.y}`, { kind: "hazard", label: hazard.label, icon: hazardIcon(hazard.kind), active: hazard.active, ...(hazard.art ? { art: hazard.art } : {}) });
     }
   }
   for (const exit of view.exits) {

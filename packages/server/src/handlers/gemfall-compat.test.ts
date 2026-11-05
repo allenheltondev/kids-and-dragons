@@ -356,7 +356,7 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-02.json": "0cf491a7e971ba10e9ff43ccabac33f42bf0545811c8f93db74128d7438d14d8",
   "chapters/gemfall-03a.json": "7812a6ee4d1dc8056946a0f4f8608f83cef73758e9775a34f214cb70bc4cfec6",
   "chapters/gemfall-03b.json": "8d82081327befaf263ee5542b1ad29f7f1ff2e61cc48de495d811277bf4e7167",
-  "chapters/gemfall-03c.json": "57269a151bdfd11371b74a12f04bbc39408b71b7d7907394b0f78a348c88660f",
+  "chapters/gemfall-03c.json": "519be521ed4311a9fb7082f7eb064d8c71165fb9d94e2949b5b1bd57e9df3a43",
   "chapters/gemfall-04a.json": "640082c13d77bbc764355321d0cd6b1c52dec4a826c503b3ab23a778fefa21d5",
   "chapters/gemfall-04b.json": "cce66b5dbbabbc623d93adf586eb980502b602cf7a80814d336bc01cd5a3e3e2",
   "chapters/gemfall-04c.json": "881c3771593f311b91cb73cab951929abfd112fc1795c9cb36b4c851860bb388",

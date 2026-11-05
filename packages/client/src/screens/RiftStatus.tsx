@@ -46,6 +46,8 @@ import {
   clockReadout,
   environmentBeatLine,
   exitLine,
+  hazardIcon,
+  hazardLine,
   modifierIcon,
   modifierLine,
   objectiveIcon,
@@ -73,6 +75,7 @@ export function riftCaption(events: readonly EncounterEvent[], encounter: Encoun
     isParty: (id: string): boolean => combatantById(encounter, id)?.side === "party",
     captive: (index?: number) => captiveName(encounter.environment?.spec, index),
     objective: (id: string) => encounter.environment?.spec.objectives?.find((o) => o.id === id)?.label ?? id,
+    clock: encounter.environment?.spec.clock?.label,
     exit: (id: string) => encounter.environment?.spec.exits?.find(exit => exit.id === id && exit.art)?.label,
   };
   const lines: string[] = [];
@@ -99,9 +102,10 @@ export function RiftStatus(): ReactElement | null {
   const view = environmentView(encounter);
   if (!view) return null;
   const clock = view.clock ? clockReadout(view.clock) : null;
+  const markedHazards = view.hazards.filter(hazard => hazard.art && !hazard.gone);
 
   return (
-    <aside className="rift-status" aria-label="The rift">
+    <aside className="rift-status" aria-label={view.clock?.label && !/\brift\b/i.test(view.clock.label) ? view.clock.label : "The rift"}>
       {view.objectives.some(o => o.id === "wagon-lane") ? <WagonDefense encounter={encounter} /> : null}
       {clock ? (
         <p className={`rift-status__clock rift-status__clock--${clock.mood}`} role="status">
@@ -117,6 +121,12 @@ export function RiftStatus(): ReactElement | null {
           <li key={`exit:${exit.id}`} className={exit.open ? "rift-status__line--open" : undefined}>
             <Icon name={EXIT_ICON} />
             <span>{exitLine(exit)}</span>
+          </li>
+        ))}
+        {markedHazards.map(hazard => (
+          <li key={`hazard:${hazard.id}`}>
+            <Icon name={hazardIcon(hazard.kind)} />
+            <span>{hazardLine(hazard)}</span>
           </li>
         ))}
         {view.modifiers.map((modifier) => (
@@ -138,7 +148,7 @@ export function RiftStatus(): ReactElement | null {
           </li>
         ))}
       </ul>
-      {crossingProgress(encounter) ? <p className="rift-status__crossing" aria-label="Friends across">{crossingProgress(encounter)}</p> : !view.objectives.some(o => o.id === "wagon-lane") && <ChapterGoalCard place="world" folded />}
+      {crossingProgress(encounter) ? <p className="rift-status__crossing" aria-label="Friends across">{crossingProgress(encounter)}</p> : !view.objectives.some(o => o.id === "wagon-lane") && markedHazards.length === 0 && <ChapterGoalCard place="world" folded />}
       {caption && !view.objectives.some(o => o.id === "wagon-lane") && !crossingProgress(encounter) ? (
         <ul className="rift-status__caption" key={caption.seq} aria-live="polite">
           {caption.lines.map((line, i) => (

@@ -2252,14 +2252,17 @@
     },
     "encounter_crabs": {
       "type": "encounter",
-      "map": "reedbank",
-      "narration": "The crabs clack and shuffle sideways, in no hurry at all. Nudge them off the stones before the line loses patience.",
+      "map": "ford_stones",
+      "narration": "Watch those claws. A crab can shove you onto the low stone, where the current sweeps you back. Hold the high stone through the end of a round, or shoo both crabs into the reeds.",
       "enemies": [
         {
           "id": "crab",
           "name": "Young Glassback Crab",
           "creature": "glassback_crab",
-          "hp": 10
+          "hp": 10,
+          "rift": {
+            "shoves": true
+          }
         }
       ],
       "onVictory": {
@@ -2273,6 +2276,58 @@
         ]
       },
       "onDefeat": {
+        "goto": "scene_crabs_coaxed",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      },
+      "art": "scenes/gemfall/ford-reed-crabs",
+      "environment": {
+        "clock": {
+          "rounds": 5,
+          "label": "The drover calls you back",
+          "onExpire": "collapse"
+        },
+        "hazards": [
+          {
+            "id": "ford-runoff",
+            "kind": "rift",
+            "label": "Ford current",
+            "art": "water-surge",
+            "tiles": [
+              {
+                "x": 2,
+                "y": 3
+              }
+            ],
+            "push": {
+              "direction": "west",
+              "tiles": 2
+            }
+          }
+        ],
+        "objectives": [
+          {
+            "id": "ford-stone",
+            "kind": "hold",
+            "label": "Hold the high stone",
+            "tiles": [
+              {
+                "x": 3,
+                "y": 2
+              }
+            ],
+            "rounds": 1,
+            "endsFight": true,
+            "art": "fight-wet-gravel"
+          }
+        ]
+      },
+      "onTimeout": {
         "goto": "scene_crabs_coaxed",
         "effects": [
           {
@@ -2704,6 +2759,39 @@
     }
   },
   "presentation": {
+    "warmUrls": [
+      "/assets/fight-boards/fight_ferry_landing/tiles.png",
+      "/assets/entities/glassback_crab/warning.png",
+      "/assets/entities/glassback_crab/shooed.png",
+      "/assets/story-props/pickup-river-charm.webp"
+    ],
+    "fights": [
+      {
+        "chapter": "gemfall-03c",
+        "scene": "encounter_crabs",
+        "board": "ford_stones",
+        "creature": "glassback_crab",
+        "introScenes": [
+          "scene_reed_crabs"
+        ],
+        "backdrop": "scenes/gemfall/ford-reed-crabs",
+        "props": [
+          "pickup-river-charm"
+        ],
+        "poses": {
+          "intro": "warning",
+          "retreat": "shooed"
+        },
+        "victoryScene": "scene_crabs_cleared",
+        "defeatScene": "scene_crabs_coaxed",
+        "tileUrl": "/assets/fight-boards/fight_ferry_landing/tiles.png",
+        "terrainProps": [],
+        "rescueFigure": "centaur",
+        "retreatDirection": 1,
+        "activeUrl": "/assets/entities/glassback_crab/warning.png",
+        "retreatUrl": "/assets/entities/glassback_crab/shooed.png"
+      }
+    ],
     "interactions": {
       "check_block_jumpers": {
         "props": [
