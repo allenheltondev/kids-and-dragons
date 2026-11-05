@@ -2018,7 +2018,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                     onVote={(option) => void dispatch({ type: "CAMP_VOTE", visit: state.campShop!.visit, option })}
                   />
                 ) : state.campTally ? (
-                  <p className="prompt__sub kad-muted" data-testid="camp-balance-phone">
+                  <p className="camp-vote__done kad-muted" data-testid="camp-balance-phone">
                     <Icon name="dash_cash" />
                     <span>{`Your crew has ${String(state.campTally.balance)} Dash Cash. ${shopLine(state.campTally, undefined) ?? ""}`.trim()}</span>
                   </p>

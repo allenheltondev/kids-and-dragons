@@ -110,8 +110,9 @@ describe("the TV's tally (§5.2)", () => {
   });
 
   it("says what the vote bought", () => {
-    render(<CampTally tally={tally()} shop={shop({ result: { kind: "bought", pieceId: "shop_striped_awning", label: "Striped awning" } })} party={PARTY} />);
+    render(<CampTally tally={tally()} shop={shop({ balance: 4, result: { kind: "bought", pieceId: "shop_striped_awning", label: "Striped awning" } })} party={PARTY} />);
     expect(screen.getByTestId("camp-shop-line").textContent).toBe("You bought the striped awning!");
+    expect(screen.getByTestId("camp-balance").textContent).toContain("4 Dash Cash");
   });
 
   it("sits on the chapter summary, and never beside the story's coins", () => {

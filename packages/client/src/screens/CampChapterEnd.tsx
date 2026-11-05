@@ -85,7 +85,8 @@ export function CampTally({
       <p className="camp-tally__balance" data-testid="camp-balance">
         <Icon name="dash_cash" />
         <span>
-          Your crew has <b>{dash(tally.balance)}</b>
+          {/* After a purchase the shop holds the balance as it now stands. */}
+          Your crew has <b>{dash(shop?.balance ?? tally.balance)}</b>
         </span>
       </p>
       {voting ? (
