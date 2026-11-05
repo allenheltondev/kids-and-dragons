@@ -126,10 +126,26 @@ export interface CampSpot {
   x: number;
 }
 
+/**
+ * A shared hotspot (§4.2) from stage 2: where the crew's piece of that kind
+ * stands at this stage, and the piece shown there until the crew places
+ * another (`default`, a `crewPieces` id in the manifest). Nothing is drawn at
+ * a hotspot yet: the camp record that says what is placed comes with Phase 2.
+ */
+export interface CampHotspot {
+  id: string;
+  kind: string;
+  lane: string;
+  x: number;
+  default?: string;
+}
+
 export interface CampFrame {
   stage: number;
   pieces: CampPiece[];
   movingParts: CampMovingPart[];
+  /** Absent before stage 2. */
+  hotspots?: CampHotspot[];
   standPoints: CampStandPoint[];
   trailhead: CampSpot;
 }
@@ -299,6 +315,22 @@ function parseFrame(raw: unknown, at: string, backdrops: readonly CampBackdrop[]
     return { piece, path: text(m["path"], `${where}.path`), motion: oneOf(m["motion"], CAMP_PART_MOTIONS, `${where}.motion`) };
   });
 
+  const hotspots = array(o["hotspots"] ?? [], `${at}.hotspots`).map((rawSpot, i): CampHotspot => {
+    const where = `${at}.hotspots[${i}]`;
+    const h = object(rawSpot, where);
+    const spot: CampHotspot = {
+      id: text(h["id"], `${where}.id`),
+      kind: text(h["kind"], `${where}.kind`),
+      lane: text(h["lane"], `${where}.lane`),
+      x: fraction(h["x"], `${where}.x`),
+    };
+    if (h["default"] !== undefined) spot.default = text(h["default"], `${where}.default`);
+    onEveryBackdrop(spot, backdrops, where);
+    return spot;
+  });
+  unique([...pieces.map((p) => p.id), ...hotspots.map((h) => h.id)], `${at}.hotspots`, "piece or hotspot");
+  const hotspotIds = new Set(hotspots.map((h) => h.id));
+
   const standPoints = array(o["standPoints"], `${at}.standPoints`).map((rawPoint, i): CampStandPoint => {
     const where = `${at}.standPoints[${i}]`;
     const s = object(rawPoint, where);
@@ -311,7 +343,7 @@ function parseFrame(raw: unknown, at: string, backdrops: readonly CampBackdrop[]
     if (s["action"] !== undefined) point.action = oneOf(s["action"], CAMP_ACTIONS, `${where}.action`);
     if (s["hotspot"] !== undefined) {
       const hotspot = text(s["hotspot"], `${where}.hotspot`);
-      if (!pieceIds.has(hotspot)) fail(`${where}.hotspot`, `names no piece "${hotspot}"`);
+      if (!pieceIds.has(hotspot) && !hotspotIds.has(hotspot)) fail(`${where}.hotspot`, `names no piece or hotspot "${hotspot}"`);
       point.hotspot = hotspot;
     }
     if (s["seat"] !== undefined) {
@@ -336,7 +368,7 @@ function parseFrame(raw: unknown, at: string, backdrops: readonly CampBackdrop[]
   const trailhead = { lane: text(t["lane"], `${at}.trailhead.lane`), x: fraction(t["x"], `${at}.trailhead.x`) };
   onEveryBackdrop(trailhead, backdrops, `${at}.trailhead`);
 
-  return { stage, pieces, movingParts, standPoints, trailhead };
+  return { stage, pieces, movingParts, ...(hotspots.length ? { hotspots } : {}), standPoints, trailhead };
 }
 
 /**

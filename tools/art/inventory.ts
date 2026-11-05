@@ -293,7 +293,7 @@ const delivered = (line: Line): number => line.need - line.missing.length;
   lines.push({
     category: "Camp art",
     ...campArtOwed(root, manifest),
-    note: "backdrops 1920x1080 opaque, pieces and moving parts 1024x1024 cutouts (docs/briefs/camp.md); the camp draws a stand-in until each lands",
+    note: "backdrops 1920x1080 opaque, pieces, tents and moving parts 1024x1024 cutouts, decorations 512x512, the Dash Cash icon 256x256 (docs/briefs/camp.md; prompts docs/camp-art-prompts*.json); the camp draws a stand-in until each lands",
   });
 }
 
