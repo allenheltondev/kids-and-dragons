@@ -75,6 +75,7 @@ export function riftCaption(events: readonly EncounterEvent[], encounter: Encoun
     isParty: (id: string): boolean => combatantById(encounter, id)?.side === "party",
     captive: (index?: number) => captiveName(encounter.environment?.spec, index),
     objective: (id: string) => encounter.environment?.spec.objectives?.find((o) => o.id === id)?.label ?? id,
+    clock: encounter.environment?.spec.clock?.label,
     exit: (id: string) => encounter.environment?.spec.exits?.find(exit => exit.id === id && exit.art)?.label,
   };
   const lines: string[] = [];
@@ -104,7 +105,7 @@ export function RiftStatus(): ReactElement | null {
   const markedHazards = view.hazards.filter(hazard => hazard.art && !hazard.gone);
 
   return (
-    <aside className="rift-status" aria-label="The rift">
+    <aside className="rift-status" aria-label={view.clock?.label ?? "The rift"}>
       {view.objectives.some(o => o.id === "wagon-lane") ? <WagonDefense encounter={encounter} /> : null}
       {clock ? (
         <p className={`rift-status__clock rift-status__clock--${clock.mood}`} role="status">
