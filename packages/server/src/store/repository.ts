@@ -10,6 +10,7 @@
  */
 
 import type {
+  CampRecord,
   ChapterOutcome,
   ChapterStory,
   Character,
@@ -47,6 +48,12 @@ export interface ForgetJob {
   /** The names to take out. */
   nicknames: string[];
   heroes: string[];
+  /**
+   * Her heroes' ids, whose `buddies` entries come out of every camp at each
+   * table (docs/camp.md §9). Absent on a job written before camps existed,
+   * when there were no buddies to take out.
+   */
+  heroIds?: string[];
   /** Tables still to clean. */
   tables: string[];
   createdAt: string;
@@ -368,6 +375,22 @@ export interface CharacterWrite {
   expectedVersion: number | null;
   /** The claim read (`provisional.runId`), null for none. Not checked for a new hero. */
   expectedClaim: string | null;
+}
+
+/**
+ * A conditional write of one crew's camp (`CampRecord`, docs/camp.md §9, §12.4).
+ * Two rooms can reach one crew, so every write names the revision it read and
+ * lands only if the row still holds it: a lost race is `false` and nothing
+ * written, never an overwrite.
+ */
+export interface CampWrite {
+  householdId: string;
+  /** One of the household's other crews; absent is its first (`CAMP`). */
+  crew?: string;
+  /** The camp as it should stand. Its `revision` is ignored: the store writes `expectedRevision + 1`, or 1 for a new row. */
+  camp: CampRecord;
+  /** The revision read. Null: no row was read, and the row must not exist yet. */
+  expectedRevision: number | null;
 }
 
 export interface CommitInput {
@@ -916,6 +939,17 @@ export interface GameRepository {
   getCrewNamesVersion(householdId: string): Promise<number>;
   /** The name the household gave its first crew, or null while it has none. */
   getFirstCrewName(householdId: string): Promise<string | null>;
+
+  // --- the crew's camp (household-scoped, permanent; docs/camp.md §9) ---------
+  /**
+   * `HH#<id>` / `CAMP` (the first crew) or `CAMP#<crew>`, migrated on read
+   * (`migrateCamp`). Strongly consistent, since a conditional write follows
+   * it. `null` while nothing has been written; `handlers/camp.ts` reads that
+   * as the crew's derived camp.
+   */
+  getCamp(householdId: string, crew?: string): Promise<CampRecord | null>;
+  /** See `CampWrite`. `false`, and nothing written, when the row no longer stands as read. */
+  putCamp(write: CampWrite): Promise<boolean>;
 
   // --- field guide (household-scoped, permanent) -----------------------------
   /** `HH#<id>` / `FIELDGUIDE`. An empty book (never `null`) when nothing is found yet. */

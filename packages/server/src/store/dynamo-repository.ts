@@ -25,8 +25,10 @@ import {
   FIELD_GUIDE_VERSION,
   FORGOTTEN_FINDER,
   migrateCharacter,
+  migrateCamp,
   migrateFieldGuide,
 } from "@kad/shared";
+import { campCondition, campItem } from "./camp-io.ts";
 import { claimedRow, readAll } from "./character-io.ts";
 import {
   BatchWriteCommand,
@@ -41,6 +43,7 @@ import {
   type TransactWriteCommandInput,
 } from "@aws-sdk/lib-dynamodb";
 import type {
+  CampRecord,
   Character,
   DeviceBinding,
   FieldGuideDiscovery,
@@ -51,6 +54,7 @@ import type {
 } from "@kad/shared";
 import type {
   CampaignProgressRecord,
+  CampWrite,
   CrewRecord,
   ChapterProgressRecord,
   CharacterWrite,
@@ -75,6 +79,7 @@ import type {
 import { collectMove, fieldGuideItem, planMove, transferKey, type MoveStep, type StoredRow } from "./profile-move.ts";
 import {
   ACCT,
+  CAMP_SK,
   CAMPAIGN_SK,
   CREW_SK,
   CREWSAVE_PREFIX,
@@ -1403,6 +1408,26 @@ export class DynamoRepository implements GameRepository {
   async getFirstCrewName(householdId: string): Promise<string | null> {
     const item = await this.get(HH(householdId), FIRSTCREW, true);
     return (item?.data as { name?: string } | undefined)?.name ?? null;
+  }
+
+  async getCamp(householdId: string, crew?: string): Promise<CampRecord | null> {
+    // Consistent: a conditional write on the revision read follows it.
+    const item = await this.get(HH(householdId), CAMP_SK(crew), true);
+    return item ? migrateCamp(item.data, item.v) : null;
+  }
+
+  async putCamp(write: CampWrite): Promise<boolean> {
+    // One conditional PutItem: the receipts ride inside the row (CampReceipts),
+    // so a claim and its reward land together without a transaction.
+    try {
+      await this.doc.send(
+        new PutCommand({ TableName: this.table, Item: campItem(write), ...campCondition(write.expectedRevision) }),
+      );
+      return true;
+    } catch (err) {
+      if (isConditionalFailure(err)) return false;
+      throw err;
+    }
   }
 
   async getFieldGuide(householdId: string): Promise<FieldGuideRecord> {

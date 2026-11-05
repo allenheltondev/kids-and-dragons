@@ -20,11 +20,14 @@ import {
   FIELD_GUIDE_VERSION,
   FORGOTTEN_FINDER,
   migrateCharacter,
+  migrateCamp,
   migrateFieldGuide,
 } from "@kad/shared";
+import { campHolds, campItem } from "./camp-io.ts";
 import { claimHolds, claimedRow, readAll } from "./character-io.ts";
 import path from "node:path";
 import type {
+  CampRecord,
   Character,
   DeviceBinding,
   FieldGuideDiscovery,
@@ -36,6 +39,7 @@ import type {
 } from "@kad/shared";
 import type {
   CampaignProgressRecord,
+  CampWrite,
   CrewRecord,
   ChapterProgressRecord,
   CharacterWrite,
@@ -60,6 +64,7 @@ import type {
 import { collectMove, fieldGuideItem, planMove } from "./profile-move.ts";
 import {
   ACCT,
+  CAMP_SK,
   CAMPAIGN_SK,
   CREW_SK,
   CREWSAVE_PREFIX,
@@ -854,6 +859,20 @@ export class MemoryRepository implements GameRepository {
   async getFirstCrewName(householdId: string): Promise<string | null> {
     const item = this.get(HH(householdId), FIRSTCREW);
     return (item?.data as { name?: string } | undefined)?.name ?? null;
+  }
+
+  async getCamp(householdId: string, crew?: string): Promise<CampRecord | null> {
+    const item = this.get(HH(householdId), CAMP_SK(crew));
+    return item ? migrateCamp(item.data, item.v) : null;
+  }
+
+  async putCamp(write: CampWrite): Promise<boolean> {
+    // The condition DynamoRepository puts on the same write, checked and
+    // written with no await between: one conditional PutItem.
+    const stored = this.get(HH(write.householdId), CAMP_SK(write.crew));
+    if (!campHolds(stored, write.expectedRevision)) return false;
+    this.put(campItem(write));
+    return true;
   }
 
   async getFieldGuide(householdId: string): Promise<FieldGuideRecord> {
