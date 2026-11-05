@@ -212,7 +212,10 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // 1616 -> 1642 for the Phase 3 camp integrated with main. The merged build
 // measures 1639KB with the stage 3 and 4 layouts, shop art metadata and
 // painted footprints in the lazy camp code. First paint stays at 331KB.
-const TOTAL_BUDGET_KB = 1642;
+// 1642 -> 1646 when Phase 2 met main's Gemfall fight reworks (#639 to #644):
+// the merged build measures 1644KB locally and in CI, first paint 331KB.
+// Keep 2KB of slack for CI.
+const TOTAL_BUDGET_KB = 1646;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);
