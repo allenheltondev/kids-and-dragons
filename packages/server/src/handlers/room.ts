@@ -27,6 +27,7 @@ import { addPlayer, createGuestHousehold, keepGuestHousehold, mayClaim, type Bou
 import { notePlayed } from "./retention.ts";
 import { lobbyCampaigns, seatedParty } from "./progression.ts";
 import { loadBook } from "./field-guide.ts";
+import { readCampView } from "./camp.ts";
 import { isRemoved } from "./remove.ts";
 import { closeIfIdle, isClosed } from "./host.ts";
 import { savedGameView } from "./save.ts";
@@ -220,6 +221,11 @@ export async function offerCampaigns(
   const firstName = await firstCrewName(householdId, deps);
   if (firstName !== null) state.firstCrewName = firstName;
   else delete state.firstCrewName;
+  // The crew's camp, for the lobby's screens (docs/camp.md §9). The crew's,
+  // like everything above: a crew switch refreshes it.
+  const camp = await readCampView(householdId, crew, deps);
+  if (camp) state.camp = camp;
+  else delete state.camp;
   // A campaign the crew has under way is what the picker rests on, the most
   // recently played first; with none, the first startable one.
   const attempts = await deps.repo.listCampaignProgress(householdId, crew);

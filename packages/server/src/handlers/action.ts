@@ -477,6 +477,12 @@ export async function applyAction(
     delete result.state.crewCheck;
     delete result.state.crewConfirmed;
   }
+  // The camp's view is for downtime, never for scenes (docs/camp.md §9): it
+  // goes when a chapter starts.
+  if (state.chapterId === null && result.state.chapterId !== null && result.state.camp !== undefined) {
+    result = { ...result, state: { ...result.state } };
+    delete result.state.camp;
+  }
   // A hero sat down or got up in the lobby: her own finished campaigns can
   // unlock one the household has not finished (#283), so the lobby's locks
   // follow who is seated. A no-op unless an option declares `requires`.
