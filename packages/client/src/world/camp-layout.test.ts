@@ -82,6 +82,16 @@ describe("parseCampManifest", () => {
     expect(parsed((m) => (m.frames[0].pieces[0].heightCm = "tall"))).toThrow(/heightCm/);
   });
 
+  it("reads a frame's shared hotspots, which a stand point may name in place of a piece", () => {
+    const read = parsed((m) => {
+      m.frames[0].hotspots = [{ id: "banner_pole", kind: "banner_pole", lane: "near", x: 0.84, default: "kept_crew_banner" }];
+      m.frames[0].standPoints[0].hotspot = "banner_pole";
+    })();
+    expect(read.frames[0]!.hotspots).toEqual([{ id: "banner_pole", kind: "banner_pole", lane: "near", x: 0.84, default: "kept_crew_banner" }]);
+    expect(read.frames[0]!.standPoints[0]!.hotspot).toBe("banner_pole");
+    expect(parseCampManifest(campManifestFixture()).frames[0]!.hotspots).toBeUndefined();
+  });
+
   it("ignores keys it does not know, so the section can grow", () => {
     expect(() => parsed((m) => (m.tentStyles = ["canvas"]))()).not.toThrow();
   });
@@ -95,7 +105,9 @@ describe("parseCampManifest", () => {
     ["three seats at stage 1", (m) => delete m.frames[0].standPoints[2].seat, /exactly 4 seats/],
     ["two bedrolls for one seat", (m) => (m.frames[0].standPoints[3].seat = 0), /seat "0" appears twice/],
     ["a fifth seat number", (m) => (m.frames[0].standPoints[2].seat = 4), /from 0 to 3/],
-    ["a hotspot naming no piece", (m) => (m.frames[0].standPoints[0].hotspot = "cookfire"), /names no piece "cookfire"/],
+    ["a hotspot naming no piece", (m) => (m.frames[0].standPoints[0].hotspot = "cookfire"), /names no piece or hotspot "cookfire"/],
+    ["a hotspot off its lane", (m) => (m.frames[0].hotspots = [{ id: "awning", kind: "awning", lane: "back", x: 0.02 }]), /hotspots\[0\]\.x: is off the walkable span/],
+    ["a hotspot sharing a piece's id", (m) => (m.frames[0].hotspots = [{ id: "campfire", kind: "cookfire", lane: "middle", x: 0.5 }]), /piece or hotspot "campfire" appears twice/],
     ["a moving part for no piece", (m) => (m.frames[0].movingParts[0].piece = "banner"), /names no piece "banner"/],
     ["a motion nobody draws", (m) => (m.frames[0].movingParts[0].motion = "spin"), /must be one of/],
     ["a facing that is not left or right", (m) => (m.frames[0].standPoints[0].face = "up"), /must be one of left, right/],

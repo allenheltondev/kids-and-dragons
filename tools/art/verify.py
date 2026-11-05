@@ -704,6 +704,16 @@ CAMP_SEATS = {0, 1, 2, 3}
 # within this much of the width. The trailhead, where the party leaves camp, is the one exception.
 CAMP_X_MIN = 0.08
 CAMP_X_MAX = 0.92
+# Phase 2 (#623): the shared hotspot kinds a frame lays out (docs/camp.md §4.2) and where a
+# piece's art comes from. A piece at a hotspot whose stand point animates it (§8.4) needs a
+# moving part; resting at a tent sways its flap, which every tent style carries.
+CAMP_HOTSPOT_KINDS = {"cookfire", "awning", "lanterns", "friends_corner", "banner_pole", "trophy"}
+CAMP_ANIMATED_ACTIONS = {"warmUp", "lookUp", "peek"}
+CAMP_CREW_GROUPS = {"frame", "kept", "find", "starter-shop", "stage2-shop", "trophy"}
+CAMP_KIT_GROUPS = {"catalog", "find", "milestone"}
+CAMP_DISTINCTIONS = ("apprentice", "expert", "master")
+# Content sits beside the manifest; the tests point ROOT at a scratch tree for the art alone.
+CONTENT_ROOT = ROOT
 
 
 def check_camp_layout(rep: Report, mf: dict) -> None:
@@ -753,6 +763,9 @@ def check_camp_layout(rep: Report, mf: dict) -> None:
     if "open_plains" not in seen_families:
         rep.fail("camp backdrops", "an open_plains backdrop, the fallback for every family", "none")
 
+    crew = {piece["id"]: piece for piece in spec.get("crewPieces", [])}
+    tents = {tent["path"] for tent in spec.get("tentStyles", [])}
+
     def on_lane(lane: str, x: float) -> bool:
         # Frames are shared by every backdrop, so a spot must be on its lane in each.
         return bool(lane_sets) and all(lane in lanes and lanes[lane]["x0"] <= x <= lanes[lane]["x1"] for lanes in lane_sets)
@@ -780,6 +793,21 @@ def check_camp_layout(rep: Report, mf: dict) -> None:
         for part in frame.get("movingParts", []):
             if part.get("piece") not in pieces or part.get("motion") not in CAMP_MOTIONS:
                 problems.append(f"moving part {part.get('path')} on a piece, with a motion in {sorted(CAMP_MOTIONS)}")
+        # Shared hotspots (§4.2): where a crew piece of that kind stands at this stage.
+        hotspots = {spot["id"]: spot for spot in frame.get("hotspots", [])}
+        if len(hotspots) != len(frame.get("hotspots", [])) or set(hotspots) & set(pieces):
+            problems.append("unique hotspot ids, none a piece id")
+        for spot in frame.get("hotspots", []):
+            hid = spot["id"]
+            if spot.get("kind") not in CAMP_HOTSPOT_KINDS:
+                problems.append(f"hotspot {hid} kind in {sorted(CAMP_HOTSPOT_KINDS)}")
+            if not on_lane(spot.get("lane", ""), spot.get("x", -1)):
+                problems.append(f"hotspot {hid} on its lane")
+            if not CAMP_X_MIN <= spot.get("x", -1) <= CAMP_X_MAX:
+                problems.append(f"hotspot {hid} within x {CAMP_X_MIN} to {CAMP_X_MAX}")
+            if "default" in spot and crew.get(spot["default"], {}).get("hotspot") != spot.get("kind"):
+                problems.append(f"hotspot {hid} default a crew piece for {spot.get('kind')}")
+        moving = {part.get("piece") for part in frame.get("movingParts", [])}
         points = frame.get("standPoints", [])
         if len({point["id"] for point in points}) != len(points):
             problems.append("unique stand point ids")
@@ -795,8 +823,18 @@ def check_camp_layout(rep: Report, mf: dict) -> None:
             action = point.get("action")
             if action is not None and action not in CAMP_ACTIONS:
                 problems.append(f"stand point {pid} action in {sorted(CAMP_ACTIONS)}")
-            if "hotspot" in point and point["hotspot"] not in pieces:
-                problems.append(f"stand point {pid} hotspot names a piece")
+            if "hotspot" in point and point["hotspot"] not in pieces and point["hotspot"] not in hotspots:
+                problems.append(f"stand point {pid} hotspot names a piece or a hotspot")
+            animated = action in CAMP_ANIMATED_ACTIONS or (
+                action == "rest" and pieces.get(point.get("hotspot"), {}).get("path") in tents
+            )
+            if animated and point.get("hotspot") in pieces and point["hotspot"] not in moving:
+                problems.append(f"piece {point['hotspot']} a moving part, for stand point {pid}")
+            if action in CAMP_ANIMATED_ACTIONS and point.get("hotspot") in hotspots:
+                kind = hotspots[point["hotspot"]].get("kind")
+                still = sorted(cid for cid, piece in crew.items() if piece.get("hotspot") == kind and not piece.get("movingParts"))
+                if still:
+                    problems.append(f"crew pieces {', '.join(still)} a moving part, for stand point {pid}")
             if "seat" in point:
                 if point["seat"] not in CAMP_SEATS or action != "rest":
                     problems.append(f"stand point {pid} seat 0-3, on a rest spot")
@@ -811,6 +849,124 @@ def check_camp_layout(rep: Report, mf: dict) -> None:
             rep.fail(f"{label} layout", "pieces and stand points on the backdrop's lanes", "; ".join(problems))
         else:
             rep.ok(f"{label} layout  {len(pieces)} pieces, {len(points)} stand points")
+
+
+def check_camp_catalog(rep: Report, mf: dict) -> None:
+    """The Phase 2 camp art catalog (docs/camp.md §4.3, §4.5, §5.4; #623): the crew's hotspot
+    pieces, the tent styles, the souvenir line, the kit decorations and the camp's icons.
+
+    Only the art's declarations: what a piece costs or which chapter gives it is
+    content/camp.json's, so nothing here names a price or a reward.
+    """
+    spec = mf.get("camp")
+    if not spec:
+        return
+    problems: list[str] = []
+    figure = mf["canvas"]
+
+    def unique(entries: list[dict], what: str) -> None:
+        ids = [entry.get("id") for entry in entries]
+        if len(set(ids)) != len(ids):
+            problems.append(f"unique {what} ids")
+
+    def height(entry: dict) -> None:
+        value = entry.get("heightCm")
+        if isinstance(value, bool) or not isinstance(value, (int, float)) or value <= 0:
+            problems.append(f"{entry.get('id')} heightCm a positive number")
+
+    def chapter(entry: dict) -> None:
+        if "chapter" in entry and not os.path.isfile(os.path.join(CONTENT_ROOT, "content", "chapters", f"{entry['chapter']}.json")):
+            problems.append(f"{entry['id']} chapter a chapter in content/chapters")
+
+    crew = spec.get("crewPieces", [])
+    unique(crew, "crew piece")
+    for piece in crew:
+        pid = piece.get("id")
+        height(piece)
+        chapter(piece)
+        if piece.get("hotspot") not in CAMP_HOTSPOT_KINDS:
+            problems.append(f"{pid} hotspot a kind in {sorted(CAMP_HOTSPOT_KINDS)}")
+        if piece.get("group") not in CAMP_CREW_GROUPS:
+            problems.append(f"{pid} group in {sorted(CAMP_CREW_GROUPS)}")
+        if (piece.get("group") == "find") != ("chapter" in piece):
+            problems.append(f"{pid} a chapter exactly when it is a find")
+        if (piece.get("group") == "trophy") != (piece.get("hotspot") == "trophy"):
+            problems.append(f"{pid} a trophy exactly at a trophy hotspot")
+        if piece.get("group") == "trophy" and not os.path.isfile(
+            os.path.join(CONTENT_ROOT, "content", "campaigns", f"{piece.get('campaign')}.json")
+        ):
+            problems.append(f"{pid} campaign a campaign in content/campaigns")
+        for part in piece.get("movingParts", []):
+            if part.get("motion") not in CAMP_MOTIONS:
+                problems.append(f"{pid} moving part motion in {sorted(CAMP_MOTIONS)}")
+
+    kits = {kit["id"] for kit in spec.get("kitStyles", [])}
+    tents = spec.get("tentStyles", [])
+    unique(tents, "tent style")
+    tiers = set(mf.get("tiers", [])) - {"fledgling"}
+    for tent in tents:
+        tid = tent.get("id")
+        height(tent)
+        if not tent.get("flap") or tent.get("tint") != "svg-cloth-mask" or tent.get("paletteSlot") != "accent":
+            problems.append(f"tent {tid} a flap, tinted like kitStyles (svg-cloth-mask, accent)")
+        if tent.get("group") == "catalog" and tent.get("kit") not in kits:
+            problems.append(f"tent {tid} kit a kitStyles id")
+        elif tent.get("group") == "milestone" and tent.get("tier") not in tiers:
+            problems.append(f"tent {tid} tier in manifest.tiers, past fledgling")
+        elif tent.get("group") not in {"catalog", "milestone"}:
+            problems.append(f"tent {tid} group catalog or milestone")
+    if tents and kits - {tent.get("kit") for tent in tents}:
+        problems.append(f"a catalog tent for every kit style, missing {sorted(kits - {tent.get('kit') for tent in tents})}")
+
+    display = spec.get("souvenirDisplay")
+    if display:
+        height(display)
+        points = display.get("hangPoints", [])
+        if not points or not all(
+            0 < point.get("x", -1) < figure["width"] and 0 < point.get("y", -1) < figure["originY"] for point in points
+        ):
+            problems.append("souvenir hangPoints on its canvas, above the ground contact")
+
+    decorations = spec.get("decorations", [])
+    unique(decorations, "decoration")
+    classes = set(json.load(open(os.path.join(CONTENT_ROOT, "content", "rules.json"), encoding="utf-8"))["classes"])
+    earned: list[tuple[str, str]] = []
+    for deco in decorations:
+        did = deco.get("id")
+        height(deco)
+        chapter(deco)
+        if deco.get("group") not in CAMP_KIT_GROUPS:
+            problems.append(f"{did} group in {sorted(CAMP_KIT_GROUPS)}")
+        if (deco.get("group") == "find") != ("chapter" in deco):
+            problems.append(f"{did} a chapter exactly when it is a find")
+        if deco.get("group") == "milestone":
+            earned.append((deco.get("class"), deco.get("distinction")))
+    if decorations and sorted(earned) != sorted((c, d) for c in classes for d in CAMP_DISTINCTIONS):
+        problems.append("one milestone decoration per class and distinction (apprentice, expert, master)")
+
+    for icon in spec.get("paintedIcons", []):
+        if not isinstance(icon, str) or not icon:
+            problems.append("paintedIcons ids")
+
+    if problems:
+        rep.fail("camp catalog", "crew pieces, tents and decorations declared for #618 to name", "; ".join(problems))
+    elif crew or tents or decorations:
+        rep.ok(f"camp catalog  {len(crew)} crew pieces, {len(tents)} tents, {len(decorations)} decorations")
+
+
+def painted_icon_problem(path: str, size: tuple[int, int]) -> tuple[str, object] | None:
+    """What is wrong with a painted icon (WEBP RGBA, real alpha, 8px clear border), if anything."""
+    with Image.open(path) as im:
+        if im.format != "WEBP" or im.mode != "RGBA" or im.size != size:
+            return (f"WEBP RGBA {size}", f"{im.format} {im.mode} {im.size}")
+        alpha = np.asarray(im)[..., 3]
+    ys, xs = np.where(alpha > 8)
+    if not len(xs):
+        return ("nonempty icon", "fully transparent")
+    margin = int(min(xs.min(), ys.min(), size[0]-1-xs.max(), size[1]-1-ys.max()))
+    if margin < 8:
+        return ("at least 8px transparent margin", margin)
+    return None
 
 
 def check_camp_art(rep: Report, mf: dict) -> None:
@@ -854,6 +1010,20 @@ def check_camp_art(rep: Report, mf: dict) -> None:
     figure = mf["canvas"]
     for kit in spec.get("kitStyles", []):
         cutouts[kit["path"]] = True
+    # Phase 2 (#623): the crew's hotspot pieces and the hero's tents and souvenir line stand on
+    # the ground like frame pieces; their moving parts and the tents' flaps lie over them.
+    for piece in spec.get("crewPieces", []):
+        cutouts[piece["path"]] = True
+    for tent in spec.get("tentStyles", []):
+        cutouts[tent["path"]] = True
+    if spec.get("souvenirDisplay"):
+        cutouts[spec["souvenirDisplay"]["path"]] = True
+    for piece in spec.get("crewPieces", []):
+        for part in piece.get("movingParts", []):
+            cutouts.setdefault(part["path"], False)
+    for tent in spec.get("tentStyles", []):
+        if tent.get("flap"):
+            cutouts.setdefault(tent["flap"], False)
     for rel, grounded in cutouts.items():
         declared.add(rel)
         path = os.path.join(ROOT, "assets", rel)
@@ -877,6 +1047,36 @@ def check_camp_art(rep: Report, mf: dict) -> None:
                 rep.fail(f"{rel} origin", f"nothing below y={figure['originY']} (+/-{tol['originYTolerancePx']})", f"y={int(ys.max())}")
             else:
                 rep.ok(f"{rel} registered over its piece")
+
+    # Kit decorations hang in a tent's slots and are their own phone picture: the story-prop
+    # canvas (512x512, 24px clear margin), with no ground contact.
+    decoration_canvas = spec.get("decorationCanvas")
+    for deco in spec.get("decorations", []):
+        rel = deco["path"]
+        declared.add(rel)
+        path = os.path.join(ROOT, "assets", rel)
+        if not os.path.isfile(path):
+            rep.warn(f"{rel}  not yet delivered", "the kit picker and the tent show nothing in that slot")
+            continue
+        with Image.open(path) as im:
+            if im.format != "PNG":
+                rep.fail(f"{rel} format", "PNG", im.format)
+                continue
+        check_format(rep, path, decoration_canvas, {**tol, "edgeMarginPx": decoration_canvas["edgeMarginPx"]})
+
+    # The camp's icons join the painted icons (manifest.paintedIcons) once painted.
+    icons = mf.get("paintedIcons", {}).get("canvas", {"width": 256, "height": 256})
+    for icon in spec.get("paintedIcons", []):
+        label = f"painted/{icon}"
+        path = os.path.join(ROOT, "packages", "client", "src", "assets", "painted", f"{icon}.webp")
+        if not os.path.isfile(path):
+            rep.warn(f"{label}.webp  not yet delivered", "the camp shows the tally without its icon")
+            continue
+        problem = painted_icon_problem(path, (icons["width"], icons["height"]))
+        if problem:
+            rep.fail(label, *problem)
+        else:
+            rep.ok(f"{label}  {icons['width']}x{icons['height']} RGBA")
 
     directory = os.path.join(ROOT, "assets", "camp")
     for folder, _, files in os.walk(directory):
@@ -916,20 +1116,11 @@ def check_painted_icons(rep: Report, mf: dict, section: str = "paintedIcons", di
         if not os.path.isfile(path):
             rep.fail(label, "declared painted icon present", "missing")
             continue
-        with Image.open(path) as im:
-            if im.format != "WEBP" or im.mode != "RGBA" or im.size != size:
-                rep.fail(label, f"WEBP RGBA {size}", f"{im.format} {im.mode} {im.size}")
-                continue
-            alpha = np.asarray(im)[..., 3]
-            ys, xs = np.where(alpha > 8)
-            if not len(xs):
-                rep.fail(label, "nonempty icon", "fully transparent")
-                continue
-            margin = int(min(xs.min(), ys.min(), size[0]-1-xs.max(), size[1]-1-ys.max()))
-            if margin < 8:
-                rep.fail(label, "at least 8px transparent margin", margin)
-                continue
-        rep.ok(f"{label}  {size[0]}x{size[1]} RGBA  margin={margin}px")
+        problem = painted_icon_problem(path, size)
+        if problem:
+            rep.fail(label, *problem)
+            continue
+        rep.ok(f"{label}  {size[0]}x{size[1]} RGBA")
 
 
 def check_guide_art(rep: Report, mf: dict) -> None:
@@ -1061,6 +1252,7 @@ def main() -> int:
     check_campaign_art(rep, mf)
     check_story_plates(rep, mf)
     check_camp_layout(rep, mf)
+    check_camp_catalog(rep, mf)
     check_camp_art(rep, mf)
     check_scene_illustrations(rep, mf)
     check_painted_icons(rep, mf)

@@ -54,6 +54,25 @@ describe("the camp layout in the manifest", () => {
     expect(layout.frame.standPoints.filter((p) => p.seat !== undefined)).toHaveLength(4);
   });
 
+  it("lays out stage 2 (#623): a tent per seat with its door spot in front, and every shared hotspot", () => {
+    const layout = campLayout(parsed, "open_plains", 2);
+    expect(layout.frame.stage).toBe(2);
+    for (let seat = 0; seat < 4; seat++) {
+      const rest = layout.frame.standPoints.find(point => point.seat === seat)!;
+      const tent = layout.frame.pieces.find(piece => piece.id === rest.hotspot)!;
+      expect(tent.ownerSeat).toBe(seat);
+      expect(Math.abs(tent.x - rest.x)).toBeLessThan(0.02);
+      expect(layout.frame.movingParts.some(part => part.piece === tent.id && part.motion === "sway")).toBe(true);
+    }
+    const kinds = (layout.frame.hotspots ?? []).map(spot => spot.kind);
+    expect(new Set(kinds)).toEqual(new Set(["cookfire", "awning", "lanterns", "friends_corner", "banner_pole", "trophy"]));
+    for (const spot of layout.frame.hotspots!.filter(spot => spot.kind !== "trophy")) {
+      expect(layout.frame.standPoints.some(point => point.hotspot === spot.id), spot.id).toBe(true);
+    }
+    // The lobby is still pitched at stage 1 until the camp record lands.
+    expect(campLayout(parsed, "open_plains", 1).frame.hotspots).toBeUndefined();
+  });
+
   it("sets every bedroll beside its owner, toward the fire, instead of hiding it under their feet", () => {
     const layout = campLayout(parsed, "open_plains", 1);
     const fire = layout.frame.pieces.find(piece => piece.id === "campfire")!;
@@ -65,9 +84,9 @@ describe("the camp layout in the manifest", () => {
     }
   });
 
-  for (const seed of [1, 7, 42, 2026]) {
-    it(`lets every hero leave their bedroll, seed ${seed}`, () => {
-      const layout = campLayout(parsed, "open_plains", 1);
+  for (const [stage, seed] of [1, 7, 42, 2026].flatMap(seed => [[1, seed], [2, seed]] as const)) {
+    it(`lets every hero leave their ${stage === 1 ? "bedroll" : "tent"}, seed ${seed}`, () => {
+      const layout = campLayout(parsed, "open_plains", stage);
       const planner = createWanderPlanner(layout, seed, {
         walkSeconds: (id, route) =>
           planWalk(route, layout.canvas, campGait(HEIGHTS[Number(id.slice(1))] ?? 160, "standing", PX_PER_CM)).duration,
