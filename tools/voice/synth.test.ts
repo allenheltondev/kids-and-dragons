@@ -2,7 +2,8 @@
 
 import { describe, expect, it } from "vitest";
 import { ELEVENLABS, type CastSheet } from "./desired";
-import { makeSynthesizer, type DeliveryTables } from "./synth";
+import { renderOwed } from "./render";
+import { makeBilledChars, makeSynthesizer, type DeliveryTables } from "./synth";
 
 const TABLES: DeliveryTables = {
   delivery: { whisper: { style: "whispering", tag: "[whispers]" } },
@@ -74,5 +75,34 @@ describe("the ElevenLabs synthesizer", () => {
   it("refuses an unfilled token", async () => {
     const { synth } = harness();
     await expect(synth({ key: "k5", by: "narrator", text: "Go on, {party}." })).rejects.toThrow(/unfilled token/);
+  });
+});
+
+describe("what the spend caps count", () => {
+  const options = { provider: ELEVENLABS, cast: CAST, tables: TABLES, keys: { elevenlabs: "sk-test" }, fetch: () => Promise.reject(new Error("never called")) };
+
+  it("is the characters in the request body, tags included", async () => {
+    const { sent, synth } = harness();
+    const segment = { key: "k6", by: "pip", text: "Shh.", delivery: "whisper" };
+    await synth(segment);
+    expect(makeBilledChars(options)(segment)).toBe((sent[0]!.body.text as string).length);
+    expect(makeBilledChars(options)(segment)).toBeGreaterThan(segment.text.length);
+  });
+
+  it("is what a dry run reserves against --max-chars", async () => {
+    const segments = [
+      { key: "a".repeat(64), by: "pip", text: "Hello there." },
+      { key: "b".repeat(64), by: "pip", text: "Hello again." },
+    ];
+    const billed = makeBilledChars(options);
+    const one = billed(segments[0]!);
+    const report = await renderOwed(
+      segments,
+      { synth: () => Promise.reject(new Error("dry run")), encode: () => ({ bytes: Buffer.from(""), ms: 1 }), store: { name: "none", head: () => Promise.resolve(null), put: () => Promise.resolve(true) }, price: () => 0, billedChars: billed },
+      { render: false, maxDollars: 75, maxChars: one },
+    );
+    expect(report.planned).toHaveLength(1);
+    expect(report.deferred).toHaveLength(1);
+    expect(report.chars).toBe(one);
   });
 });

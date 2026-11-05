@@ -45,7 +45,7 @@ import { readJson } from "./load";
 import { mergeManifest, type Manifest } from "./manifest";
 import { candidates, renderOwed } from "./render";
 import { DirClipStore, MemoryClipStore, S3ClipStore, StoreSet, type ClipStore } from "./store";
-import { makeSynthesizer } from "./synth";
+import { makeBilledChars, makeSynthesizer, type SynthOptions } from "./synth";
 import { desire, loadWorld, MANIFEST_DIR } from "./world";
 
 const { values } = parseArgs({
@@ -135,18 +135,21 @@ if (values.render && !values.fake) {
   if (provider.provider === "elevenlabs" && keys.elevenlabs === undefined) fail("No ElevenLabs key. Set ELEVENLABS_API_KEY.");
   if (provider.provider === "gemini" && keys.gemini === undefined) fail("No Gemini key. Set GEMINI_API_KEY (or GOOGLE_API_KEY).");
 }
-const synth = makeSynthesizer({
+const synthOptions: SynthOptions = {
   provider: provider as never,
   cast: world.cast,
   tables: world.tables,
   keys,
   fetch: (url, init) => fetch(url, init) as never,
-});
+};
+const synth = makeSynthesizer(synthOptions);
+// The caps count what the provider bills: the words and the tags sent in front of them.
+const billedChars = makeBilledChars(synthOptions);
 
 const startedAt = Date.now();
 const report = await renderOwed(
   wanted,
-  { synth, encode: encodeVoice, store, price, log: (message) => console.log(`  ${message}`) },
+  { synth, encode: encodeVoice, store, price, billedChars, log: (message) => console.log(`  ${message}`) },
   { render: values.render, maxDollars, ...(maxChars === undefined ? {} : { maxChars }), concurrency },
 );
 

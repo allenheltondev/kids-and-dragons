@@ -125,7 +125,7 @@ describe("a speaker with no voice yet", () => {
     };
     const mute: CastSheet = { ...CAST, speakers: { ...CAST.speakers, pib: { who: "A bramble sprite." } } };
     const got = desiredClips(classify([A, B], OPTIONS), { cast: mute, scripts: new Map([["ch-01", script]]) });
-    expect(got.deviceVoice).toEqual([{ address: B.address, chapter: "ch-01", reason: "uncast-speaker" }]);
+    expect(got.deviceVoice).toEqual([{ address: B.address, chapter: "ch-01", reason: "voice-not-selected" }]);
     expect(got.lines.map((l) => l.address)).toEqual([A.address]);
   });
 
@@ -133,7 +133,7 @@ describe("a speaker with no voice yet", () => {
     const mute: CastSheet = { ...CAST, speakers: { ...CAST.speakers, narrator: { who: "A warm storyteller." } } };
     const got = desiredClips(classify([A], OPTIONS), { cast: mute, scripts: new Map() });
     expect(got.lines).toEqual([]);
-    expect(got.deviceVoice.map((d) => d.reason)).toEqual(["uncast-speaker"]);
+    expect(got.deviceVoice.map((d) => d.reason)).toEqual(["voice-not-selected"]);
   });
 });
 

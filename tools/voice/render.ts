@@ -19,13 +19,14 @@ import type { Encoded } from "./encode";
 import type { ClipStore } from "./store";
 
 export interface RenderDeps {
-  /** The provider call: WAV audio, and the audio tokens billed when the provider reports them. */
-  /** A bare Buffer is WAV. */
+  /** The provider call: the audio (a bare Buffer is WAV), and the audio tokens billed when the provider reports them. */
   synth: (segment: DesiredSegment) => Promise<Buffer | { audio: Buffer; ext: "wav" | "mp3"; audioTokens?: number }>;
   encode: (audio: Buffer, ext: "wav" | "mp3") => Encoded;
   store: ClipStore;
   /** Dollars one request for this many characters costs (an estimate). */
   price: (chars: number) => number;
+  /** Characters the provider bills for this clip: the words plus any tags sent with them. Defaults to the words alone. */
+  billedChars?: (segment: DesiredSegment) => number;
   sleep?: (ms: number) => Promise<void>;
   log?: (message: string) => void;
 }
@@ -114,7 +115,7 @@ export async function renderOwed(owed: readonly DesiredSegment[], deps: RenderDe
       report.lengths.set(segment.key, there.ms);
       return;
     }
-    const chars = segment.text.length;
+    const chars = deps.billedChars?.(segment) ?? segment.text.length;
     const cost = deps.price(chars);
     if (!options.render) {
       if (reserve(chars, cost)) report.planned.push(segment.key);

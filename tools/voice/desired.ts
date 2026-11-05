@@ -59,7 +59,8 @@ export interface DesiredLine {
   segments: DesiredSegment[];
 }
 
-export type DeviceVoiceReason = "stale-script" | "broken-script" | "uncast-speaker";
+/** `voice-not-selected`: a speaker on the sheet nobody has picked an ElevenLabs voice for yet. Expected, not an error: unlike `uncast-speaker`, which is a script naming someone the sheet does not have. */
+export type DeviceVoiceReason = "stale-script" | "broken-script" | "uncast-speaker" | "voice-not-selected";
 
 export interface Desired {
   lines: DesiredLine[];
@@ -141,7 +142,7 @@ export function desiredClips(lines: readonly ClassifiedLine[], options: DesireOp
     // Anyone on the line with no voice yet (an ElevenLabs voice is picked by ear, never assigned) leaves the whole
     // line to the device voice: half a line in the right voice and half in none would read worse than either.
     if ((cut === null ? ["narrator"] : cut.lines.map((l) => l.by)).some((by) => !voiced(by))) {
-      out.deviceVoice.push({ address: line.address, chapter: line.chapter, reason: "uncast-speaker" });
+      out.deviceVoice.push({ address: line.address, chapter: line.chapter, reason: "voice-not-selected" });
       continue;
     }
 
