@@ -5894,7 +5894,7 @@
           "name": "Seal-Keeper"
         }
       ],
-      "narration": "One of your stones hums beside its own gap. Listen for the match, set the stone in place, then hold it steady while the Keeper warms the seal.",
+      "narration": "A stone hums beside its own gap. Listen for the match, set the stone in place, then hold it steady while the Keeper warms the seal.",
       "interaction": {
         "kind": "sequence",
         "cue": "Arrange the steps: listen, fit, then hold steady.",

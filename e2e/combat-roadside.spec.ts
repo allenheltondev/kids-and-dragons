@@ -289,7 +289,7 @@ for (const fight of roadFights) {
           }
         }
         if (support && encounter.combatants.find(c => c.id === actorId)?.actions.includes("rally")) {
-          const injured = encounter.combatants.filter(c => c.side === "party" && c.hp <= c.maxHp - 2)
+          const injured = encounter.combatants.filter(c => c.side === "party" && !c.escaped && c.hp <= c.maxHp - 2)
             .sort((a, b) => a.hp - b.hp)[0];
           if (injured) {
             await action(page, table.code, { type: "COMBAT_ACTION", abilityId: "rally", targetId: injured.id });
