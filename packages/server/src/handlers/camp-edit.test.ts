@@ -9,11 +9,11 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { SHARED_EDITS_PER_MOMENT, readKit } from "@kad/shared";
+import { SHARED_EDITS_PER_MOMENT, growCamp, hotspotsAt, readKit, shownAt } from "@kad/shared";
 import type { CampRecord, ClientIntent, RunState } from "@kad/shared";
 import { joinRoom } from "./room.ts";
 import { mutateCamp, readCamp } from "./camp.ts";
-import { harnessFor, seeded, table, type Table } from "./camp-table.testing.ts";
+import { CATALOG, harnessFor, seeded, table, type Table } from "./camp-table.testing.ts";
 import type { TestHarness } from "../test-support.ts";
 import { applyAction } from "./action.ts";
 
@@ -236,12 +236,49 @@ describe("shared hotspots (§6.1, §12.5)", () => {
     expect((await t.state()).camp?.placed).toEqual({ banner_pole: "shop_weathervane_pole", awning: "shop_striped_awning" });
   });
 
-  it("have none at a stage-1 camp", async () => {
+  it("have no awning yet at a stage-1 camp", async () => {
     const harness = harnessFor();
     const t = await table(harness);
     await t.send("p_1", hero("Sparklehoof", "unicorn", "songkeeper"));
     const s = await t.state();
     expect(s.camp?.frameStage).toBe(1);
     expect((await t.attempt("p_1", place(s, "awning", "shop_striped_awning"))).error?.message).toContain("not in your camp yet");
+  });
+
+  it("put the first finds up at a stage-1 camp, and keep them up when the camp grows (§4.1, §5.3)", async () => {
+    const harness = harnessFor();
+    const t = await table(harness);
+    await seedCamp(t, harness, {
+      owned: {
+        find_picnic_blanket: { from: "found", rewardId: "first-steps-01.picnic_blanket", at: "2026-11-01T00:00:00.000Z" },
+        find_wagon_lantern: { from: "found", rewardId: "gemfall-01.wagon_lantern", at: "2026-11-01T00:00:00.000Z" },
+        shop_pinwheel_pole: { from: "bought", at: "2026-11-01T00:00:00.000Z" },
+      },
+    });
+    await t.send("p_1", hero("Sparklehoof", "unicorn", "songkeeper"));
+    await t.send("p_2", hero("Thistle", "bigfoot", "thornguard"));
+    let s = await t.state();
+    expect(s.camp?.frameStage).toBe(1);
+    await t.send("p_1", place(s, "lanterns", "find_wagon_lantern"));
+    s = await t.state();
+    await t.send("p_2", place(s, "friends_corner", "find_picnic_blanket"));
+    s = await t.state();
+    const placed = { lanterns: "find_wagon_lantern", friends_corner: "find_picnic_blanket" };
+    expect(s.camp?.placed).toEqual(placed);
+    // The banner pole is there too, showing the crew banner until somebody picks the pinwheel.
+    expect(s.camp?.placed.banner_pole).toBeUndefined();
+
+    // The crew finishes Gemfall: the camp grows to stage 2, and every pick stays on the
+    // hotspot of the same id, which the stage-2 frame lays out in its own place.
+    const grown = await mutateCamp(t.householdId, null, (c) => growCamp(c, ["gemfall"]), harness.deps);
+    expect(grown.ok).toBe(true);
+    const after = await readCamp(t.householdId, null, harness.deps);
+    expect(after.frameStage).toBe(2);
+    expect(after.placed).toEqual(placed);
+    const stage2 = hotspotsAt(CATALOG.hotspots, 2);
+    for (const [id, piece] of Object.entries(placed)) {
+      const spot = stage2.find((h) => h.id === id)!;
+      expect(shownAt(spot, after.placed), id).toBe(piece);
+    }
   });
 });

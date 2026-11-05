@@ -54,6 +54,19 @@ describe("the shared hotspots (§4.2, §4.3)", () => {
     expect(waitingPieces(stage1, camp({ frameStage: 1, owned: ["shop_striped_awning"] }))).toEqual([{ pieceId: "shop_striped_awning", label: "Striped awning", stage: 2 }]);
     expect(waitingPieces(stage2, camp({ owned: ["shop_striped_awning"] }))).toEqual([]);
   });
+
+  it("have a stage-1 spot for the first finds, the crew banner and every starter piece but the awnings", () => {
+    const early = ["kept_crew_banner", "find_picnic_blanket", "find_wagon_lantern", "find_noodle_awning", "shop_lantern_string", "shop_striped_awning", "shop_log_bench", "shop_pinwheel_pole"];
+    const view = camp({ frameStage: 1, grownBy: [], owned: early });
+    // Only an awning waits, with its note: stage 1 has no awning (docs/camp.md §11).
+    expect(waitingPieces(stage1, view).map((w) => [w.pieceId, w.stage])).toEqual([["find_noodle_awning", 2], ["shop_striped_awning", 2]]);
+    const spots = campSpots(stage1, view, { crewName: "The Otter Crew" });
+    expect(spots.map((s) => s.id).sort()).toEqual(["banner_pole", "friends_corner", "lanterns"]);
+    expect(spots.find((s) => s.id === "banner_pole")).toMatchObject({ pieceId: "kept_crew_banner", banner: "The Otter Crew" });
+    expect(spotOptions({ id: "lanterns", kind: "lanterns" }, stage1, view)).toEqual(["find_wagon_lantern", "shop_lantern_string"]);
+    expect(spotOptions({ id: "friends_corner", kind: "friends_corner" }, stage1, view)).toEqual(["find_picnic_blanket", "shop_log_bench"]);
+    expect(spotOptions({ id: "banner_pole", kind: "banner_pole" }, stage1, view)).toEqual(["kept_crew_banner", "shop_pinwheel_pole"]);
+  });
 });
 
 describe("the chapter end's finds beside the campfire (§5.3, §12.5)", () => {
@@ -90,6 +103,16 @@ describe("the chapter end's finds beside the campfire (§5.3, §12.5)", () => {
   it("says when a find's spot comes, at a camp that has none yet", () => {
     const s = state({ camp: camp({ frameStage: 1, grownBy: [], owned: ["find_noodle_awning"] }) });
     expect(campBeside(s, stage1)).toMatchObject([{ pieceId: "find_noodle_awning", hotspotId: null, waitsForStage: 2 }]);
+  });
+
+  it("lights a first find's own spot at a stage-1 camp", () => {
+    const s = state({
+      campFinds: [{ kind: "camp", pieceId: "find_wagon_lantern", rewardId: "gemfall-01.wagon_lantern", sceneId: "s" }],
+      camp: camp({ frameStage: 1, grownBy: [], owned: ["find_wagon_lantern"] }),
+    });
+    expect(campBeside(s, stage1)).toMatchObject([{ pieceId: "find_wagon_lantern", hotspotId: "lanterns", waitsForStage: null }]);
+    const dressing = campDressing({ ...s, crew: undefined, crews: undefined, firstCrewName: undefined } as RunState, stage1);
+    expect(dressing.spots.find((spot) => spot.id === "lanterns")).toMatchObject({ pieceId: null, highlighted: true });
   });
 
   it("lists nothing outside the chapter's end", () => {

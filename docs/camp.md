@@ -149,14 +149,18 @@ campaign. This cosmetic ladder is separate from character tiers, which are level
 
 | Stage | Frame | Reached |
 | --- | --- | --- |
-| 1 | Bedrolls around a small campfire | The crew's first chapter |
+| 1 | Bedrolls around a small campfire, with lantern hooks, a friends' corner and a banner pole | The crew's first chapter |
 | 2 | A tent for each hero and a cookfire | First full campaign finished |
 | 3 | A bigger camp: an awning, lantern strings and a lookout post | Second full campaign finished |
 | 4 | A grand camp: a big shared tent, banners and a lookout | Third full campaign finished |
 
 The frame is **earned, never bought**, so a crew that spends nothing still watches its camp grow.
-Each stage adds hotspots (§4.2), so a bigger camp also has more room. When a stage arrives at the
-chapter's end it gets its own short moment: the heroes pitch the new camp. That's a small cousin
+Each stage adds hotspots (§4.2), so a bigger camp also has more room. Stage 1 already has three
+shared spots (*decided*, §11): lantern hooks, a friends' corner and a banner pole flying the crew's
+banner, so a crew's first finds and its first purchases go up straight away (§5.3). A hotspot
+keeps its id as the camp grows, so a piece put up at stage 1 stays up at stage 2, where the bigger
+camp lays that spot out in its own place. Stage 1 has no awning: an awning waits for stage 2
+(§8.3). When a stage arrives at the chapter's end it gets its own short moment: the heroes pitch the new camp. That's a small cousin
 of the transformation cutscene, never longer than it.
 
 **Only full campaigns count** (*decided*). The Practice Meadow (`first-steps`) is the tutorial and
@@ -369,7 +373,10 @@ opens only after two chapters, so neither can be the first reward.
 - **A recognizable find in the first chapter.** The Practice Meadow and the first chapter of every
   `growsCamp` campaign each hand over one find on their spine, so every path to every ending gets
   it. It is something the kids will remember from that chapter (a pinecone wreath from the meadow,
-  say), and the chapter's end shows it beside the campfire and highlights where it can go.
+  say), and the chapter's end shows it beside the campfire and highlights where it can go. Stage 1
+  has a spot for the picnic blanket and the wagon lantern, and for every starter shop piece but the
+  striped awning, so they go up the same evening (§4.1); an awning (Riftlight's noodle awning, the
+  striped awning) waits for stage 2 with its note (§12.5).
 - **The shop opens after two chapters** (*decided*). A crew needs a little skin in the game before
   it can buy anything: the chapter-end shop appears only once the crew has been paid for at least
   two chapters, in any campaign but the tutorial. **The Practice Meadow doesn't count toward the
@@ -598,14 +605,27 @@ camp's spots on that ground.
   constants live in one place (`camp-ownership.ts`); the moving camp, the still camp and a phone's
   Camp panel all size from it.
 - **Nothing overlaps.** Every piece is a box at its true size (a shared piece's `heightCm` and
-  `widthCm`, a hero's gear fitted to her), and at stage 2 no shared piece's box overlaps a tent or
-  another piece, tall pieces (the banner pole, the lanterns, the awning) stand at the sides or
-  behind and never in front of a tent, and the small labels over stand-ins never collide
-  (`camp-boxes.ts`, tested on the real manifest for four bigfoots, four kitsune, a mix and four of
-  every species, at 1280 x 720 and 1920 x 1080). The spots are spaced for those parties at full
-  size; a party whose gear is wider still (four manticores or griffins) is drawn a little smaller,
-  never piled up (`campRowScale`, never under 0.9). The focus band holds the tents and the names
-  over them, not only the heads.
+  `widthCm`, a hero's gear fitted to her), and at stage 1 and stage 2 no shared piece's box overlaps
+  a hero's bedroll or tent, the campfire, the trailhead post or another piece, tall pieces (the
+  banner pole, the lanterns, the awning) stand at the sides or behind and never in front of a
+  hero's gear, and the small labels over stand-ins never collide (`camp-boxes.ts`, tested on the
+  real manifest for four bigfoots, four kitsune, a mix and four of every species, at 1280 x 720
+  and 1920 x 1080). At stage 2 the spots are spaced for those parties at full size; a party whose
+  gear is wider still (four manticores or griffins) is drawn a little smaller, never piled up
+  (`campRowScale`, never under 0.9). The focus band holds the tents and the names over them, not
+  only the heads.
+- **Stage 1 is a ring of bedrolls.** A bedroll is longer than its hero lying down, much wider than
+  her tent, and too tall to stand in front of another lane's, so at stage 1 everything that
+  reaches the back lane stands side by side across the clearing: the lantern hooks at the far
+  left, two bedrolls (the outer one on the middle lane, the inner on the back lane), the campfire
+  on the backdrop's worn patch, two more bedrolls, then the banner pole and the trailhead post at
+  the trail. The friends' corner is low enough to lie on the near lane in front of the bedrolls,
+  and what the chapter hands over waits there by the fire. Only the small parties (four kitsune or
+  four dragonlings) fit at full size; the rest are drawn a little smaller, never piled up: about
+  0.85 to 0.95 for a mix or four of a middling species, and down to about 0.74 for a party with a
+  bigfoot at the right end, four bigfoots most (`campRowScale`, never under 0.72 at stage 1). An
+  awning, the widest tall piece, would shrink every party by about another tenth, so it waits for
+  stage 2's bigger camp (§11).
 - **Indoors, one lane.** A packed-down camp (§3.2) uses a single generic layout laid over the
   scene's own picture: one near lane along the bottom, a bedroll stand point for each hero and a
   spot for each friend. No per-scene authoring.
@@ -875,6 +895,7 @@ Settled by the product owner:
 | Buddies on a move home | Removed from the old household's camps (§4.4) |
 | Lucky drops across attempts | The cap of 2 counts every attempt at a chapter (§5.2) |
 | Implementation requirements | All of §12 approved, including its defaults: lower-stage pieces staying in later shops, and the migration policy for existing crews (§12) |
+| Stage-1 shared spots | Lantern hooks, a friends' corner and a banner pole from the first chapter, so first finds and starter purchases go up straight away (§4.1, §5.3). The awning stays a stage-2 spot: the noodle awning and the striped awning wait for it with their note (§8.3, §12.5) |
 
 Nothing is open. The two parked questions from earlier (editing from the book, choosing friends)
 are settled above as kit and buddy editing in the book and buddies.
@@ -977,7 +998,8 @@ counted. All of this is under test (§6.1), so keep the limit one server-side co
 Awarding a piece never silently replaces a decoration another child chose. It joins the
 collection, is shown beside the campfire, its matching hotspot is highlighted, and a player may
 place it during downtime. If its hotspot is not available yet (a later frame stage), it stays in
-the collection with a note saying when it can be displayed.
+the collection with a note saying when it can be displayed. Stage 1 has the lantern hooks, the
+friends' corner and the banner pole (§4.1), so only an awning waits that way at stage 1.
 
 Choose the visible friends once per downtime moment: first each seated hero's buddy (§4.4), then the
 rotating seats, with a stable tie break and newly acquired friends first. Persist enough rotation

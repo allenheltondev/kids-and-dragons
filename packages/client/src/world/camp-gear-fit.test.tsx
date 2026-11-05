@@ -35,7 +35,9 @@ const settle = async (): Promise<void> => {
 };
 
 interface Fit {
+  /** Her drawn box at stage 2, beside her tent, and at stage 1, beside her bedroll (the two may be on different lanes). */
   hero: { height: number; width: number };
+  bedrollHero: { height: number; width: number };
   bedroll: { height: number; length: number };
   tent: { height: number; width: number };
 }
@@ -65,7 +67,7 @@ async function pixiFit(species: string): Promise<Fit> {
     const me = camp.figures().find((f) => f.id === id)!;
     const paint = HERO_PAINT[species]!;
     // Her nominal paint is her drawn height (camp.ts fitArt); her painting covers HERO_PAINT of it.
-    out.hero = { height: me.heightPx * paint.height, width: me.heightPx * paint.width };
+    out[stage === 1 ? "bedrollHero" : "hero"] = { height: me.heightPx * paint.height, width: me.heightPx * paint.width };
     const rest = layout.frame.standPoints.find((p) => p.seat === 0)!;
     expect(me.lane, "she rests on her gear's own lane").toBe(layout.frame.pieces.find((p) => p.id === rest.hotspot)!.lane);
     if (stage === 1) {
@@ -99,7 +101,7 @@ function stillFit(species: string): Fit {
     const pct = (el: Element | null) => parseFloat((el as HTMLElement).style.height) / 100;
     const hero = pct(document.querySelector(`[data-hero="${id}"]`)) * PAINT;
     const paint = HERO_PAINT[species]!;
-    out.hero = { height: hero * paint.height, width: hero * paint.width };
+    out[stage === 1 ? "bedrollHero" : "hero"] = { height: hero * paint.height, width: hero * paint.width };
     if (stage === 1) {
       const el = document.querySelector(`[data-piece="bedroll_0"]`)!;
       const style = CAMP_KIT_STYLES[el.querySelector("[data-camp-kit]")!.getAttribute("data-camp-kit") as keyof typeof CAMP_KIT_STYLES];
@@ -120,7 +122,7 @@ describe("a hero's own gear fits her (camp-ownership.ts)", () => {
       for (const species of SPECIES) {
         it(`a ${species}'s bedroll is longer than she is, and her tent bigger`, async () => {
           const fit = await measure(species);
-          const body = Math.max(fit.hero.height, fit.hero.width);
+          const body = Math.max(fit.bedrollHero.height, fit.bedrollHero.width);
           expect(fit.bedroll.length / body, "bedroll over her body length").toBeGreaterThanOrEqual(1.15);
           expect(fit.bedroll.length / body).toBeLessThanOrEqual(BEDROLL_LENGTH_FIT + 0.06);
           expect(fit.tent.height / fit.hero.height, "tent over her height").toBeGreaterThanOrEqual(1.2);
