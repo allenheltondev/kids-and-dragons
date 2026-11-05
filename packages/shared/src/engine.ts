@@ -669,6 +669,32 @@ function takeItem(draft: RunState, ids: string | readonly string[], ctx: EngineC
   }
 }
 
+/**
+ * A find for the camp or the kit (docs/camp.md §5.1, §5.4), recorded on the
+ * run and nothing more. Whether the crew already owns the piece, or has
+ * claimed the reward, is the store's to know, and the engine is pure and
+ * replayable, so it never asks: the server claims what this records right
+ * after the step commits (handlers/camp-finds.ts). Once per `rewardId` a
+ * chapter, so a scene revisited, or a second way to the same place, records
+ * nothing new. A kit find names who was seated, since every one of them gets
+ * a copy and the table may change before the claim is read back.
+ */
+function recordFind(draft: RunState, effect: Extract<Effect, { type: "findForCamp" | "findForKit" }>): void {
+  const finds = draft.campFinds ?? [];
+  if (finds.some((find) => find.rewardId === effect.rewardId)) return;
+  const kit = effect.type === "findForKit";
+  draft.campFinds = [
+    ...finds,
+    {
+      kind: kit ? "kit" : "camp",
+      pieceId: effect.pieceId,
+      rewardId: effect.rewardId,
+      sceneId: draft.sceneId ?? "",
+      ...(kit ? { heroes: seatedMembers(draft).map((m) => m.character.id) } : {}),
+    },
+  ];
+}
+
 function applyEffectsDraft(
   draft: RunState,
   effects: readonly Effect[] | undefined,
@@ -719,6 +745,11 @@ function applyEffectsDraft(
 
       case "takeItem":
         takeItem(draft, effect.itemId, ctx);
+        break;
+
+      case "findForCamp":
+      case "findForKit":
+        recordFind(draft, effect);
         break;
 
       case "grantItem": {
@@ -1998,6 +2029,8 @@ function doStartChapter(
   // evening's second chapter under the first one's ending banner.
   draft.chapterOutcome = null;
   draft.bonuses = [];
+  // Last chapter's finds were claimed when they were found (docs/camp.md §12.2).
+  delete draft.campFinds;
   delete draft.fightEndings;
   delete draft.xpAlreadyPaid;
   // Deeds counted last chapter were folded into the heroes when it ended.

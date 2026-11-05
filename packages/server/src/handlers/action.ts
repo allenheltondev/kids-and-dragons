@@ -62,6 +62,7 @@ import { keepGuestHousehold } from "./account.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
 import { closedIfIdle } from "./host.ts";
 import { prepareStepFinds, recordStepFinds } from "./field-guide.ts";
+import { claimCampFinds, stepCampFinds } from "./camp-finds.ts";
 import { dispatchTurnPush } from "./push.ts";
 import { practiceChapterId, practiceRefusal, settlePractice } from "./practice.ts";
 import {
@@ -755,6 +756,20 @@ export async function applyAction(
    */
   const discovered = await recordStepFinds(finds, deps);
 
+  /*
+   * The camp's finds (docs/camp.md §5.1, §5.4), saved when found (§12.2):
+   * what this step's `findForCamp` / `findForKit` effects recorded on the run
+   * is claimed now that the step has landed, once per reward id, and what
+   * each claim did rides this broadcast as `campClaims`. Like `discovered`,
+   * on the message and never in the log, so a replay claims and announces
+   * nothing again (camp-finds.ts).
+   */
+  const campClaims = await claimCampFinds(
+    stepCampFinds(state, next, input.intent.type === "START_CHAPTER"),
+    { run: auth.run, state: next },
+    deps,
+  );
+
   // The session clock's mark (#511), written alongside the broadcast and
   // awaited with the other after-commit work. It cannot fail the turn.
   const recording = recordTiming(deps, { runId: input.runId, chapterId: next.chapterId, seq: nextSeq, at: event.at }, timing);
@@ -767,6 +782,7 @@ export async function applyAction(
     ...(event.presentation ? { presentation: event.presentation } : {}),
     ...(event.progression ? { progression: event.progression } : {}),
     ...(discovered.length > 0 ? { discovered } : {}),
+    ...(campClaims.length > 0 ? { campClaims } : {}),
   };
   try {
     await deps.channel.publish(next.roomCode, message);

@@ -19,6 +19,7 @@ import type {
 import type { RiftActionKind } from "./campaign-graph.js";
 import type { InteractionAction } from "../interactions.js";
 import type { ChapterOutcome } from "./chapter.js";
+import type { CampClaimResult } from "./camp.js";
 import type { RoomMode, RunState, DiceRoll } from "./state.js";
 import type { FieldGuideFind } from "../field-guide-record.js";
 import type { Badge, ProfileFlair } from "../kid-profile.js";
@@ -365,6 +366,14 @@ export interface ServerMessage {
    * announce the same find.
    */
   discovered?: string[];
+  /**
+   * What this step's camp finds did once claimed (docs/camp.md §5.1, §5.4):
+   * a new piece, 1 Dash Cash for one the crew already owned, which heroes got
+   * a kit copy, or nothing for a reward already claimed. The find itself is
+   * in `patch`, under `/campFinds`. Live only, exactly as `discovered`: a
+   * replay never announces a find twice.
+   */
+  campClaims?: CampClaimResult[];
 }
 
 /** A full snapshot, sent on join and whenever a client's gap is too large. */

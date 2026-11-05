@@ -442,11 +442,47 @@
             "setFlag",
             "takeItem",
             "grantCoins",
-            "spendCoins"
+            "spendCoins",
+            "findForCamp",
+            "findForKit"
           ]
         }
       },
       "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "findForCamp",
+                  "findForKit"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "$comment": "docs/camp.md §5.1, §5.4, §12.2. A bonus, never a gate. tools/content/camp-catalog.mjs checks the piece is a find of the right catalog in content/camp.json and the rewardId is its offer for this chapter.",
+            "required": [
+              "pieceId",
+              "rewardId"
+            ],
+            "properties": {
+              "pieceId": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(_[a-z0-9]+)*$"
+              },
+              "rewardId": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+([-_.][a-z0-9]+)*$",
+                "maxLength": 80
+              }
+            }
+          }
+        },
         {
           "if": {
             "properties": {

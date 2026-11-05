@@ -13,7 +13,7 @@ import type { FieldGuideFind } from "../field-guide-record.js";
 import type { FactId, FactValue, JourneyView, NodeId } from "./campaign-graph.js";
 import type { BuffId, CheckBuffOffer, RunBuff } from "./buffs.js";
 import type { MatchupNote } from "./matchups.js";
-import type { CampView } from "./camp.js";
+import type { CampFind, CampView } from "./camp.js";
 import type { NarrationPart } from "../narration.js";
 import type { ChoiceAhead } from "../choice-ahead.js";
 
@@ -653,6 +653,17 @@ export interface RunState {
    * camp draws from the seated heroes and ignores it.
    */
   camp?: CampView;
+  /**
+   * The finds this chapter has handed over (`findForCamp`, `findForKit`;
+   * docs/camp.md §5.1, §5.4), in the order found and once per `rewardId`, so
+   * the phones can say "For the camp!" and the chapter's end can list them.
+   * The engine only records them; the server claims each from storage right
+   * after the step that found it commits (handlers/camp-finds.ts), so a find
+   * is saved when found, never at the chapter's end, and replaying the log
+   * rebuilds this list without claiming anything twice. Absent until a find;
+   * cleared when a chapter starts.
+   */
+  campFinds?: CampFind[];
   /**
    * The crew is partway through this adventure and none of the heroes seated
    * have been on it, so the TV asks before anything resumes: keep going, or
