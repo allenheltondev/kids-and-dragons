@@ -132,7 +132,7 @@ describe("the place's beats, in words", () => {
     expect(environmentBeatLine({ type: "freed", byId: "c_1" }, words)!.text).toBe("Sparklehoof freed Pip!");
     expect(environmentBeatLine({ type: "captiveLost" }, words)).toEqual({ text: "Pip is lost to the rift.", tone: "bad" });
     expect(environmentBeatLine({ type: "relocated", actorId: "wisp#1", to: { x: 0, y: 0 } }, words)!.text).toBe(
-      "The rift throws Bramblewisp 1 somewhere new!",
+      "Bramblewisp 1 moves to new ground!",
     );
     expect(environmentBeatLine({ type: "riftClock", onExpire: "collapse" }, words)!.text).toBe("The rift is closing!");
     expect(environmentBeatLine({ type: "riftClock", onExpire: "surge" }, words)!.text).toBe("The rift is surging!");
