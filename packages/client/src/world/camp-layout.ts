@@ -425,6 +425,10 @@ export function standPoint(layout: CampLayout, id: string): CampStandPoint | und
   return layout.frame.standPoints.find((p) => p.id === id);
 }
 
+export function bunFireside(layout: CampLayout): CampStandPoint | undefined {
+  return layout.frame.standPoints.find((point) => point.action === "warmUp");
+}
+
 /**
  * How big a figure is drawn with its feet at `y`: its lane's scale on a lane,
  * eased between the two lanes' while it is on a crossing, so a figure grows

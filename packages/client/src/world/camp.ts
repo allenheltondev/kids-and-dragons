@@ -51,6 +51,7 @@ import {
   measurePaint,
 } from "./actor-art";
 import {
+  bunFireside,
   campRoute,
   campRoutes,
   laneAt,
@@ -71,6 +72,7 @@ import {
 import {
   activeHotspots,
   actionPose,
+  bunSettlePose,
   campGait,
   campHeightPx,
   campMeasure,
@@ -102,6 +104,7 @@ import {
 /** Somebody in camp: a hero or a friend. */
 export interface CampFigure {
   id: string;
+  habit?: "bunFireside";
   /** The cutout, or null for the "art pending" placeholder. */
   url: string | null;
   /** True height (figure-scale.ts `figureSize`). */
@@ -1100,9 +1103,11 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     };
     actors.set(def.id, actor);
     fitArt(actor);
-    const home = homeOf(actor);
+    const fireside = def.habit === "bunFireside" ? bunFireside(layout) : undefined;
+    const home = fireside ? pointPlace(fireside) : homeOf(actor);
     placeAt(actor, home, null);
     planner.add({ id: def.id, ...(def.seat !== undefined ? { seat: def.seat } : {}) }, home);
+    if (fireside) planner.direct(def.id, home, null, 0);
     loadArt(actor);
     return actor;
   }
@@ -1247,7 +1252,9 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
 
     if (!actor.walk) {
       const since = elapsed - actor.arrivedAt;
-      const pose = actor.action ? actionPose(actor.action, since, still) : actionPose("rest", 0, true);
+      const pose = actor.def.habit === "bunFireside" && !actor.leaving
+        ? bunSettlePose(since, still)
+        : actionPose(actor.action ?? "rest", since, still || !actor.action);
       const forward = actor.facing;
       rotation += pose.lean * forward;
       lift += pose.lift * actor.heightPx;

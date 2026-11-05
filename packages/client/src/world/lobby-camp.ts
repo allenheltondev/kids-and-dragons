@@ -18,11 +18,11 @@
  */
 
 import type { CastStance, HeroKitView, PartyMember, PhaseKind, RunState } from "@kad/shared";
-import { characterWorldArtUrl } from "./art-paths";
+import { castArtUrl, characterWorldArtUrl } from "./art-paths";
 import { camp as campManifest } from "../../../../assets/manifest.json";
 import type { CampDressing, CampFigure } from "./camp";
 import { campBeside, campSpots, crewName, kitLook } from "./camp-scene";
-import { CAMP_SEATS, campLayout, parseCampManifest, type CampLayout } from "./camp-layout";
+import { bunFireside, CAMP_SEATS, campLayout, parseCampManifest, type CampLayout } from "./camp-layout";
 import { NOMINAL_PAINT, figureSize, paintAspect } from "./figure-scale";
 import { campStandRange, campStandX, type CampSpan } from "./camp-framing";
 import { ANCHOR_Y } from "./art-paths";
@@ -160,6 +160,11 @@ function heroFigure(member: PartyMember, kit: HeroKitView | undefined): Omit<Cam
   };
 }
 
+export function campBun(state: Pick<RunState, "camp">): CampFigure | null {
+  if (!state.camp?.friends.includes("bun")) return null;
+  return { id: "friend:bun", url: castArtUrl("cast/bun"), ...figureSize("cast/bun"), habit: "bunFireside" };
+}
+
 /**
  * The crew's side of the camp, as camp.ts draws it (#620): each shared
  * hotspot's piece, trophies and the banner's name, and at the chapter's end
@@ -199,23 +204,27 @@ export function stillCampFigures(
   heroes: readonly CampHero[],
   figureScale = 1,
   visible: CampSpan = { x0: 0, x1: 1 },
+  bun: CampFigure | null = null,
 ): StillCampFigure[] {
   const measure = campMeasure(layout.canvas.height);
   const out: StillCampFigure[] = [];
-  for (const hero of heroes) {
-    const bed = layout.frame.standPoints.find((point) => point.seat === hero.figure.seat);
+  const figures = bun ? [...heroes, { figure: bun, away: false }] : heroes;
+  for (const { figure, away } of figures) {
+    const bed = figure.habit === "bunFireside"
+      ? bunFireside(layout)
+      : layout.frame.standPoints.find((point) => point.seat === figure.seat);
     const lane = bed ? layout.lanes.get(bed.lane) : undefined;
     if (!bed || !lane) continue;
     // camp.ts `fitArt`: the canvas is drawn so the nominal paint is the figure's height.
-    const heightPx = campHeightPx(hero.figure.heightCm, measure) * lane.scale * figureScale;
+    const heightPx = campHeightPx(figure.heightCm, measure) * lane.scale * figureScale;
     out.push({
-      id: hero.figure.id,
-      url: hero.figure.url,
+      id: figure.id,
+      url: figure.url,
       // Moved in from an edge the pane crops, as the moving camp stands them (camp.ts `pointX`).
       x: campStandX(bed.x, campStandRange(lane, visible, (heightPx * paintAspect(NOMINAL_PAINT)) / layout.canvas.width)),
       y: lane.y,
       size: heightPx / (ANCHOR_Y - NOMINAL_PAINT.top) / layout.canvas.height,
-      away: hero.away,
+      away,
     });
   }
   return out;
