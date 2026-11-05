@@ -425,9 +425,13 @@ export function standPoint(layout: CampLayout, id: string): CampStandPoint | und
   return layout.frame.standPoints.find((p) => p.id === id);
 }
 
-export type CampFriendHabit = "bun" | "duckling";
+export type CampFriendHabit = "bun" | "duckling" | "mosshorn";
 
-export function friendFireside(layout: CampLayout, habit: CampFriendHabit): CampStandPoint | undefined {
+export function friendHabitSpot(layout: CampLayout, habit: CampFriendHabit): CampStandPoint | undefined {
+  if (habit === "mosshorn") {
+    const corner = layout.frame.standPoints.find((point) => point.action === "pet");
+    return corner && { ...corner, x: corner.x - 0.075, face: "left" };
+  }
   const warmSpots = layout.frame.standPoints.filter((point) => point.action === "warmUp");
   const nearby = warmSpots[habit === "bun" ? 0 : 1];
   // Tuck closer to the stones so the heroes can still use their warm-up spots.

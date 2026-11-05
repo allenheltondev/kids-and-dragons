@@ -32,6 +32,7 @@ import type { RunState } from "@kad/shared";
 import type { CampLayout } from "./camp-layout";
 import { BLEED_SOURCE, campBleed, campFocusBand, campVisibleSpan, campWindow, type CampFraming } from "./camp-framing";
 import { LOBBY_CAMP_STAND_IN, campDressing, campFriends, campHeroes, stillCampFigures } from "./lobby-camp";
+import leafArt from "../assets/painted/leaf.webp";
 import { lobbyInsetBottom, lobbyInsetTop, onLobbyInset, onLobbyInsetTop } from "./stage-inset";
 import { ANCHOR_Y } from "./art-paths";
 import { NOMINAL_PAINT } from "./figure-scale";
@@ -295,6 +296,7 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
             }}
           >
             {figure.url ? <img src={figure.url} alt="" /> : null}
+            {figure.id === "friend:mosshorn" && <span className="kad-static-camp__leaf"><img src={leafArt} alt="" /></span>}
             <span className="kad-static-camp__name">{state.party.find(member => member.character.id === figure.id)?.character.name}</span>
           </span>
         ))}

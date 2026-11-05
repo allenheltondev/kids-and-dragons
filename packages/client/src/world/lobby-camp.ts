@@ -22,7 +22,7 @@ import { castArtUrl, characterWorldArtUrl } from "./art-paths";
 import { camp as campManifest } from "../../../../assets/manifest.json";
 import type { CampDressing, CampFigure } from "./camp";
 import { campBeside, campSpots, crewName, kitLook } from "./camp-scene";
-import { friendFireside, CAMP_SEATS, campLayout, parseCampManifest, type CampLayout } from "./camp-layout";
+import { friendHabitSpot, CAMP_SEATS, campLayout, parseCampManifest, type CampLayout } from "./camp-layout";
 import { NOMINAL_PAINT, figureSize, paintAspect } from "./figure-scale";
 import { campStandRange, campStandX, type CampSpan } from "./camp-framing";
 import { ANCHOR_Y } from "./art-paths";
@@ -163,7 +163,7 @@ function heroFigure(member: PartyMember, kit: HeroKitView | undefined): Omit<Cam
 export function campFriends(state: Pick<RunState, "camp">): CampFigure[] {
   const owned = state.camp?.friends ?? [];
   const figures: CampFigure[] = [];
-  for (const [habit, art] of [["bun", "cast/bun"], ["duckling", "entities/duckling"]] as const) {
+  for (const [habit, art] of [["bun", "cast/bun"], ["duckling", "entities/duckling"], ["mosshorn", "entities/mosshorn"]] as const) {
     if (owned.includes(habit)) figures.push({ id: `friend:${habit}`, url: castArtUrl(art), ...figureSize(art), habit });
   }
   return figures;
@@ -215,7 +215,7 @@ export function stillCampFigures(
   const figures = [...heroes, ...friends.map((figure) => ({ figure, away: false }))];
   for (const { figure, away } of figures) {
     const bed = figure.habit
-      ? friendFireside(layout, figure.habit)
+      ? friendHabitSpot(layout, figure.habit)
       : layout.frame.standPoints.find((point) => point.seat === figure.seat);
     const lane = bed ? layout.lanes.get(bed.lane) : undefined;
     if (!bed || !lane) continue;
