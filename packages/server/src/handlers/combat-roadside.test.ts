@@ -1,7 +1,7 @@
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { beginEncounter, committedAttacks, currentActor, enemyPlanFor, encounterOutcome, endTurnWithEvents,
-  legalMoves, moveTo, parseBoard, performAction, performEnemyWindup, positionOf, resolveCharacter, stepsBetween,
+  combatantById, legalMoves, moveTo, parseBoard, performAction, performEnemyWindup, positionOf, resolveCharacter, stepsBetween,
   type EncounterScene, type EncounterState } from "@kad/shared";
 import { makeCharacter } from "../../../shared/src/test-fixtures.ts";
 import { loadContent } from "../content/loader.ts";
@@ -12,8 +12,8 @@ const ford = content.chapter("gemfall-03c")!;
 // Misses isolate route/clock fairness for support heroes. Shared windup tests
 // exercise damage, protection, interruption and recovery after a poor move.
 const ctx = { rules: content.rules(), abilities: content.abilities(), rng: { next: () => .001 } };
-function setup(id: string, seats: number) {
-  const scene = (id === "encounter_crabs" ? ford : chapter).scenes[id] as EncounterScene;
+function setup(id: string, seats: number, source = id === "encounter_crabs" ? ford : chapter) {
+  const scene = source.scenes[id] as EncounterScene;
   const map = content.map(scene.map)!;
   return { scene, state: beginEncounter({ board: parseBoard(map.rows), environment: scene.environment!,
     party: Array.from({ length: seats }, (_, i) => ({ character: resolveCharacter(makeCharacter({ id: `hero${i}`, class: "songkeeper" }), ctx.rules, content.items()), at: map.partySpawns[i]! })),
@@ -107,5 +107,106 @@ describe("authored roadside combat", () => {
     expect(scene.onEscape?.goto).toBe("scene_mimic_passed");
     expect(scene.onEscape?.effects).toBeUndefined();
     expect(scene.onVictory.effects).toContainEqual({ type: "grantItem", itemId: "brave_whistle", to: "party" });
+  });
+});
+
+describe("ford road combat batch", () => {
+  it.each([1, 2, 4])("%i heroes can reach the big campfire without defeating the pack", seats => {
+    const { scene, state: initial } = setup("encounter_wolves", seats, ford);
+    const exit = scene.environment!.exits![0]!;
+    let state = initial;
+    for (let turn = 0; turn < 60 && encounterOutcome(state) === "ongoing"; turn++) {
+      const actor = currentActor(state)!;
+      if (actor.side === "enemy") state = enemyTurn(state);
+      else {
+        const distance = (tile: { x: number; y: number }) => Math.min(...exit.tiles.map(t => stepsBetween(tile, t)));
+        const next = [...legalMoves(state)].sort((a, b) => distance(a) - distance(b))[0];
+        if (next && distance(next) < distance(positionOf(state, actor.id)!)) {
+          const moved = moveTo(state, next);
+          if (moved.ok) state = moved.state;
+        }
+      }
+      state = endTurnWithEvents(state).state;
+    }
+    expect(encounterOutcome(state)).toBe("escaped");
+    expect(state.combatants.filter(c => c.side === "party").every(c => c.escaped)).toBe(true);
+  });
+
+  it.each([1, 2, 4])("%i heroes can right the wagon through the tail sweeps", seats => {
+    const { state: initial } = setup("encounter_drakes", seats, ford);
+    let state = initial;
+    let sawWarning = false;
+    const wheel = { x: 4, y: 2 };
+    for (let turn = 0; turn < 60 && encounterOutcome(state) === "ongoing"; turn++) {
+      const actor = currentActor(state)!;
+      if (actor.side === "enemy") state = enemyTurn(state);
+      else {
+        const danger = committedAttacks(state).flatMap(warning => warning.tiles);
+        const at = positionOf(state, actor.id)!;
+        const risk = (p: { x: number; y: number }) => Number(danger.some(t => t.x === p.x && t.y === p.y));
+        const score = (p: { x: number; y: number }) => risk(p) * 10 + stepsBetween(p, wheel);
+        const next = [...legalMoves(state)].sort((a, b) => score(a) - score(b))[0];
+        if (next && score(next) < score(at)) {
+          const moved = moveTo(state, next);
+          if (moved.ok) state = moved.state;
+        }
+      }
+      sawWarning ||= committedAttacks(state).length > 0;
+      state = endTurnWithEvents(state).state;
+    }
+    expect(sawWarning).toBe(true);
+    expect(encounterOutcome(state)).toBe("victory");
+    expect(state.environment!.objectives).toEqual([2]);
+  });
+
+  it("clearing the depot still earns Pennywhistle's whistle", () => {
+    const depot = content.chapter("gemfall-04c")!;
+    const { scene, state: initial } = setup("encounter_boxes", 2, depot);
+    const hits = { ...ctx, rng: { next: () => .999 } };
+    let state = initial;
+    for (let turn = 0; turn < 60 && encounterOutcome(state) === "ongoing"; turn++) {
+      const actor = currentActor(state)!;
+      if (actor.side === "enemy") state = enemyTurn(state);
+      else {
+        const foes = state.combatants.filter(c => c.side === "enemy" && !c.down);
+        const distance = (p: { x: number; y: number }) => Math.min(...foes.map(foe => stepsBetween(p, positionOf(state, foe.id)!)));
+        const at = positionOf(state, actor.id)!;
+        const tile = [...legalMoves(state)].filter(t => t.x !== 2 || (t.y !== 2 && t.y !== 3)).sort((a, b) => distance(a) - distance(b))[0];
+        if (tile && distance(tile) < distance(at)) {
+          const moved = moveTo(state, tile);
+          if (moved.ok) state = moved.state;
+        }
+        for (const foe of foes) {
+          const attack = performAction(state, hits, { abilityId: "attack", targetId: foe.id });
+          if (attack.ok) { state = attack.state; break; }
+        }
+      }
+      state = endTurnWithEvents(state).state;
+    }
+    expect(encounterOutcome(state)).toBe("victory");
+    expect(scene.onVictory.effects).toContainEqual({ type: "grantItem", itemId: "brave_whistle", to: "party" });
+    expect(scene.onTimeout?.effects).not.toContainEqual(expect.objectContaining({ type: "grantItem" }));
+  });
+
+  it("sticky ink costs steps after a bad stop, then wears off", () => {
+    const depot = content.chapter("gemfall-04c")!;
+    let { state } = setup("encounter_boxes", 1, depot);
+    while (currentActor(state)!.side === "enemy") state = endTurnWithEvents(enemyTurn(state)).state;
+    const hero = currentActor(state)!;
+    const moved = moveTo(state, { x: 2, y: 2 });
+    if (!moved.ok) throw new Error("Ink must be reachable");
+    const landed = endTurnWithEvents(moved.state);
+    expect(landed.events).toContainEqual(expect.objectContaining({ type: "slowed", actorId: hero.id, steps: 2, turns: 1 }));
+    state = landed.state;
+    while (currentActor(state)!.side === "enemy") state = endTurnWithEvents(enemyTurn(state)).state;
+    expect(state.stepsLeft).toBe(hero.steps - 2);
+    expect(combatantById(state, hero.id)?.hp).toBe(hero.hp);
+    const escaped = legalMoves(state).find(t => t.y >= 4 || t.x >= 4);
+    if (!escaped) throw new Error("The slowed hero needs a way out");
+    const movedClear = moveTo(state, escaped);
+    if (!movedClear.ok) throw new Error("The way out must be legal");
+    state = endTurnWithEvents(movedClear.state).state;
+    while (currentActor(state)!.side === "enemy") state = endTurnWithEvents(enemyTurn(state)).state;
+    expect(state.stepsLeft).toBe(hero.steps);
   });
 });

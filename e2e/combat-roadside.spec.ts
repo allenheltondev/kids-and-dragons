@@ -1,5 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
-import { currentActorId, legalMoves, positionOf, stepsBetween, type ClientIntent, type RunState } from "../packages/shared/src/index";
+import { committedAttacks, currentActorId, legalMoves, positionOf, stepsBetween, type ClientIntent, type RunState } from "../packages/shared/src/index";
 import { seedTable, openPhone, openTv, onAir } from "./seed";
 import { roomState } from "./room-state";
 import { API } from "./api";
@@ -41,7 +41,7 @@ for (const sceneId of ["encounter_wolves", "encounter_mimic_plank", "encounter_c
       let state = await roomState<RunState>(phones[0].page, table.code);
       if (sceneId === "encounter_mimic_plank") {
         expect(state.encounter!.combatants.filter(c => c.side === "enemy").every(c => c.windupAttack?.presentation === "slam")).toBe(true);
-        await expect(display.page.getByLabel("Battle plan")).toContainText(/planks/i);
+        await expect(display.page.getByLabel("Battle plan")).toContainText(/plank slap/i);
       }
       const owner = (s: RunState) => s.party.findIndex(m => m.character.id === currentActorId(s.encounter!));
       const active = phones[owner(state)].page;
@@ -165,6 +165,104 @@ for (const sceneId of ["encounter_wolves", "encounter_mimic_plank", "encounter_c
           await display.page.screenshot({ path: info.outputPath(`wagon-clear-${text}.png`) });
         }
       }
+    } finally {
+      for (const phone of phones) await phone.context.close();
+      await display.context.close();
+    }
+  });
+}
+
+const roadFights = [
+  { sceneId: "encounter_wolves", chapterId: "gemfall-03c", cue: "Big campfire", outcome: "escaped", destination: "scene_campfire_play" },
+  { sceneId: "encounter_drakes", chapterId: "gemfall-03c", cue: "Right the wagon", outcome: "victory", destination: "end_forded" },
+  { sceneId: "encounter_boxes", chapterId: "gemfall-04c", cue: "Inky mud", outcome: "timedOut", destination: "scene_boxes_sulking" },
+] as const;
+
+for (const fight of roadFights) {
+  test(`ford road batch: ${fight.sceneId} plays through on phone and TV`, async ({ browser }, info) => {
+    test.setTimeout(240_000);
+    const wolves = fight.sceneId === "encounter_wolves";
+    const drakes = fight.sceneId === "encounter_drakes";
+    const table = await seedTable({ mode: "party", tv: true, chapterId: fight.chapterId, sceneId: fight.sceneId, heroes: [
+      { name: "Aster", species: "kitsune", class: "songkeeper", stats: { might: 0, quick: 3, clever: 0, heart: 0 } },
+      { name: "Fern", species: "unicorn", class: "thornguard", stats: { might: 0, quick: 3, clever: 0, heart: 0 } },
+    ] });
+    const phones = [];
+    const display = await openTv(browser, table, { recordVideo: { dir: info.outputPath("video"), size: { width: 1280, height: 720 } } });
+    try {
+      for (const seat of table.phones) {
+        const phone = await openPhone(browser, seat);
+        phones.push(phone);
+        await onAir(phone.page);
+        await action(phone.page, table.code, { type: "READY", ready: true });
+        await phone.page.evaluate(async () => { const path = "/src/store/player-navigation.ts"; (await import(path)).setPlayerSection("turn"); });
+      }
+      await onAir(display.page);
+      let state = await roomState<RunState>(phones[0].page, table.code);
+      const active = () => phones[state.party.findIndex(m => m.character.id === currentActorId(state.encounter!))].page;
+      const opening = active();
+      for (const surface of [{ width: 320, height: 720, text: "normal" }, { width: 390, height: 844, text: "largest" }]) {
+        await opening.setViewportSize(surface);
+        await opening.evaluate(text => { if (text === "normal") delete document.documentElement.dataset.text; else document.documentElement.dataset.text = text; }, surface.text);
+        await expect(opening.locator(".combat__grid")).toBeVisible();
+        await expect(opening.locator(".combat__actions button").first()).toBeInViewport({ ratio: .9 });
+        await opening.screenshot({ path: info.outputPath(`phone-${surface.width}.png`) });
+      }
+      await opening.setViewportSize({ width: 390, height: 844 });
+      await opening.evaluate(() => { delete document.documentElement.dataset.text; });
+      const panel = display.page.locator(".fight-log");
+      await expect(panel).toContainText(fight.cue);
+      await display.page.evaluate(() => { document.documentElement.dataset.text = "largest"; });
+      await expect.poll(() => panel.evaluate(el => el.scrollHeight <= el.clientHeight + 1)).toBe(true);
+      await display.page.screenshot({ path: info.outputPath("tv-largest.png") });
+      await display.page.evaluate(() => { delete document.documentElement.dataset.text; });
+
+      let movedThroughUi = false;
+      let sawInk = false;
+      let sawWarning = false;
+      for (let turn = 0; state.encounter && turn < 24; turn++) {
+        const page = active();
+        const encounter = state.encounter;
+        const actorId = currentActorId(encounter)!;
+        const at = positionOf(encounter, actorId)!;
+        const warnings = committedAttacks(encounter);
+        if (warnings.length && !sawWarning) {
+          await expect(display.page.getByLabel("Battle plan")).toContainText(/tail sweep/i);
+          await display.page.screenshot({ path: info.outputPath("tail-sweep.png") });
+          sawWarning = true;
+        }
+        const danger = warnings.flatMap(w => w.tiles);
+        const enemies = encounter.combatants.filter(c => c.side === "enemy" && !c.down).map(c => positionOf(encounter, c.id)!);
+        const ink = (p: { x: number; y: number }) => p.x === 2 && (p.y === 2 || p.y === 3);
+        const score = (p: { x: number; y: number }) => wolves
+          ? stepsBetween(p, { x: 6, y: 2 })
+          : drakes ? Number(danger.some(t => t.x === p.x && t.y === p.y)) * 10 + stepsBetween(p, { x: 4, y: 2 })
+          : Number(ink(p)) * 10 - Math.min(...enemies.map(enemy => stepsBetween(p, enemy)));
+        const moves = [...legalMoves(encounter)];
+        const tile = turn === 0 && !wolves && !drakes ? moves.find(ink) : moves.sort((a, b) => score(a) - score(b))[0];
+        if (tile && (score(tile) < score(at) || (turn === 0 && ink(tile)))) {
+          if (!movedThroughUi) {
+            await page.getByRole("button", { name: new RegExp(`^Move to column ${tile.x + 1}, row ${tile.y + 1}(?=:| —|$)`) }).click();
+            await expect.poll(async () => (await roomState<RunState>(page, table.code)).seq).toBeGreaterThan(state.seq);
+            movedThroughUi = true;
+          } else {
+            await action(page, table.code, { type: "MOVE", to: { x: tile.x, y: tile.y } });
+          }
+        }
+        await action(page, table.code, { type: "END_TURN" });
+        state = await roomState<RunState>(page, table.code);
+        if (turn === 0 && !wolves && !drakes) {
+          await expect(display.page.locator(".rift-status__caption")).toContainText("Inky mud");
+          await display.page.screenshot({ path: info.outputPath("ink-stop.png") });
+          sawInk = true;
+        }
+      }
+      expect(movedThroughUi).toBe(true);
+      if (!wolves && !drakes) expect(sawInk).toBe(true);
+      expect(state.lastEncounter).toMatchObject({ sceneId: fight.sceneId, outcome: fight.outcome, destination: fight.destination });
+      const outcomeText = wolves ? "You bring supper to the big fire" : drakes ? "The wagon lurches upright" : "The last stamp disappears";
+      await expect(display.page.getByText(new RegExp(outcomeText))).toBeVisible({ timeout: 60_000 });
+      await display.page.screenshot({ path: info.outputPath("outcome.png") });
     } finally {
       for (const phone of phones) await phone.context.close();
       await display.context.close();

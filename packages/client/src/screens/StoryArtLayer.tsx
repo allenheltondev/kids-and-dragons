@@ -29,7 +29,7 @@ export function StoryArtLayer() {
   art.creature==="will_o_wisp"?["fight-shrine-bell"]:art.props.includes("fight-warm-mud-hollow")?["fight-warm-mud-hollow"]:[] :
   art.creature==="mire_mimic"?["fight-disguised-planks"]:art.creature==="will_o_wisp"?["fight-sideways-flame"]:[];
  const showRetreat=result?.won ?? false;
- return <div className="story-art-layer" style={result && art.board === "ford_stones" ? outcomeSpace : undefined} aria-hidden="true" key={state.chapterId+":"+state.sceneId+":"+(result?.won?"won":"arrival")}>
+ return <div className="story-art-layer" style={result && chapter.campaignId === "gemfall" ? outcomeSpace : undefined} aria-hidden="true" key={state.chapterId+":"+state.sceneId+":"+(result?.won?"won":"arrival")}>
   {showRetreat&&<img className="story-art-layer__retreat" data-direction={art.retreatDirection} src={art.retreatUrl} alt="" />}
   {props.map(id=><img key={id} className={"story-art-layer__prop"+(id==="fight-disguised-planks"?" story-art-layer__breath":"")} src={"/assets/story-props/"+id+".webp"} alt="" />)}
   {intro?.creature==="will_o_wisp"&&[0,1].map(i=><img key={i} className="story-art-layer__wisp" style={{animationDelay:(-i*1.6)+"s"}} src="/assets/entities/will_o_wisp/assembled.png" alt="" />)}
