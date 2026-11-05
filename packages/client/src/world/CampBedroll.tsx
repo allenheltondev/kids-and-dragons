@@ -1,5 +1,7 @@
 import { useId, useState } from "react";
-import { CAMP_KIT_STYLES, campClothMatrix, type CampKitStyle } from "./camp-kit-art";
+import { CAMP_KIT_STYLES, campClothMatrix, campTentCloth, type CampKitStyle } from "./camp-kit-art";
+import { campPaint } from "./camp-paint";
+import { TENT_ART } from "./camp-scene";
 
 /** Tint only the cloth, leaving a single registered painting's leather and cup untouched. */
 export function CampBedroll({ style, accent }: { style: CampKitStyle; accent: string }): React.JSX.Element {
@@ -10,18 +12,36 @@ export function CampBedroll({ style, accent }: { style: CampKitStyle; accent: st
   } />;
 }
 
-export function CampClothArt({ path, cloth, accent, kit, fallback, onMissing }: {
+/**
+ * A hero's tent as a phone's picker shows it: its painting, cloth and flap in
+ * her color (the flap is cut from the tent at the same place, so the tent's
+ * own cloth region tints it here), cropped to what is painted
+ * (camp-paint.ts). `fallback` while it is owed.
+ */
+export function CampTent({ tent, accent, fallback }: { tent: string; accent: string; fallback: React.JSX.Element }): React.JSX.Element {
+  const art = TENT_ART.find((t) => t.id === tent);
+  const paint = art ? campPaint(art.path) : null;
+  if (!art || !paint) return fallback;
+  const px = (v: number) => Math.round(v * 1024);
+  const viewBox = `${String(px(paint.left))} ${String(px(paint.top))} ${String(px(paint.right - paint.left))} ${String(px(paint.bottom - paint.top))}`;
+  return <CampClothArt path={`/assets/${art.path}`} cloth={campTentCloth(art.id)} accent={accent} tent={art.id} viewBox={viewBox} fallback={fallback} />;
+}
+
+/** A painting with its cloth tinted; `viewBox` crops it (a phone's picker shows only what is painted). */
+export function CampClothArt({ path, cloth, accent, kit, tent, viewBox = "0 0 1024 1024", fallback, onMissing }: {
   path: string;
   cloth: string | undefined;
   accent: string;
   kit?: CampKitStyle;
+  tent?: string;
+  viewBox?: string;
   fallback: React.JSX.Element;
   onMissing?: (src: string) => void;
 }): React.JSX.Element {
   const id = useId().replace(/:/g, "");
   const [failed, setFailed] = useState<string | null>(null);
   if (failed === path) return fallback;
-  return <svg viewBox="0 0 1024 1024" aria-hidden="true" data-camp-kit={kit}>
+  return <svg viewBox={viewBox} aria-hidden="true" data-camp-kit={kit} data-camp-tent={tent} data-cropped={viewBox === "0 0 1024 1024" ? undefined : "true"}>
     <defs>
       <clipPath id={`${id}-cloth`}><path d={cloth} clipRule="evenodd" /></clipPath>
       <filter id={`${id}-color`} colorInterpolationFilters="sRGB" x="0" y="0" width="100%" height="100%">

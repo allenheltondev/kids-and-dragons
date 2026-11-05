@@ -7,7 +7,7 @@
     {
       "id": "camp/frames/stage2/cookfire",
       "path": "assets/camp/frames/stage2/cookfire.png",
-      "plays": "crewPieces id cookfire_pot (frame). Stage-2 frame: the cookfire hotspot's own piece (default), on the near lane at the center of the camp, in front of the awning and clear of the tents behind it, in place of stage 1's campfire. Heroes warm up at it from two stand points; still until one does. Drawn at 80 cm tall and 110 cm wide.",
+      "plays": "crewPieces id cookfire_pot (frame). Stage-2 frame: the cookfire hotspot's own piece (default), on the near lane at the center of the camp, in front of the awning and clear of the tents behind it, in place of stage 1's campfire. Heroes warm up at it from two stand points; still until one does. Drawn at 95 cm tall and 77 cm wide.",
       "reference": "assets/camp/frames/stage1/campfire.png",
       "output": {
         "width": 1024,
@@ -44,7 +44,7 @@
     {
       "id": "camp/frames/stage2/crew-banner",
       "path": "assets/camp/frames/stage2/crew-banner.png",
-      "plays": "crewPieces id kept_crew_banner (kept). Stage-2 frame: the banner pole hotspot's own piece (default), the crew's banner (a kept piece, CrewIdentity), on the near lane at the camp's right edge, past the last tent, by the trail out of camp, so it never stands in front of a tent. A hero looks up at it from one stand point and the pennant ripples. At stage 1 it stands on the back lane at the camp's far right, past every bedroll, beside the trailhead post. Drawn at 260 cm tall and 70 cm wide.",
+      "plays": "crewPieces id kept_crew_banner (kept). Stage-2 frame: the banner pole hotspot's own piece (default), the crew's banner (a kept piece, CrewIdentity), on the near lane at the camp's right edge, past the last tent, by the trail out of camp, so it never stands in front of a tent. A hero looks up at it from one stand point and the pennant ripples. At stage 1 it stands on the back lane at the camp's far right, past every bedroll, beside the trailhead post. Drawn at 200 cm tall and 136 cm wide.",
       "reference": "assets/camp/frames/stage1/trailhead-post.png",
       "output": {
         "width": 1024,
@@ -81,7 +81,7 @@
     {
       "id": "camp/pieces/find-picnic-blanket",
       "path": "assets/camp/pieces/find-picnic-blanket.png",
-      "plays": "crewPieces id find_picnic_blanket (find). A crew find painted for the Practice Meadow (first-steps-01), where Tansy spreads a picnic blanket under an apple tree. Stands at the friends' corner hotspot (near lane, right of the cookfire, low enough to stand in front of the tents), where the crew's friends gather. At stage 1 it lies on the near lane left of the campfire, low enough to lie in front of the bedrolls. Drawn at 40 cm tall and 150 cm wide.",
+      "plays": "crewPieces id find_picnic_blanket (find). A crew find painted for the Practice Meadow (first-steps-01), where Tansy spreads a picnic blanket under an apple tree. Stands at the friends' corner hotspot (near lane, right of the cookfire, low enough to stand in front of the tents), where the crew's friends gather. At stage 1 it lies on the near lane between the first bedroll and the campfire. Drawn at 80 cm tall and 145 cm wide.",
       "reference": "assets/camp/frames/stage1/bedroll.png",
       "output": {
         "width": 1024,
@@ -99,7 +99,7 @@
     {
       "id": "camp/pieces/find-wagon-lantern",
       "path": "assets/camp/pieces/find-wagon-lantern.png",
-      "plays": "crewPieces id find_wagon_lantern (find). A crew find painted for Gemfall 1 (gemfall-01), from Hesper Longstride's lantern wagon. Stands at the lanterns hotspot (near lane, at the camp's left edge, past the first tent, so it never stands in front of a tent); a hero looks up at it and the lantern swings. At stage 1 it stands on the back lane at the camp's far left, past every bedroll. Drawn at 190 cm tall and 60 cm wide.",
+      "plays": "crewPieces id find_wagon_lantern (find). A crew find painted for Gemfall 1 (gemfall-01), from Hesper Longstride's lantern wagon. Stands at the lanterns hotspot (near lane, at the camp's left edge, past the first tent, so it never stands in front of a tent); a hero looks up at it and the lantern swings. At stage 1 it stands on the near lane at the camp's far left, past every bedroll. Drawn at 170 cm tall and 92 cm wide.",
       "reference": "assets/camp/frames/stage1/trailhead-post.png",
       "output": {
         "width": 1024,
@@ -136,7 +136,7 @@
     {
       "id": "camp/pieces/find-noodle-awning",
       "path": "assets/camp/pieces/find-noodle-awning.png",
-      "plays": "crewPieces id find_noodle_awning (find). A crew find painted for Riftlight's first chapter (riftlight-exchange-rift), the noodle seller's awning the heroes saved from the snow. Stands at the awning hotspot (back lane, between the two pairs of tents, behind the cookfire); a hero can stand in its shade. Drawn at 210 cm tall and 130 cm wide.",
+      "plays": "crewPieces id find_noodle_awning (find). A crew find painted for Riftlight's first chapter (riftlight-exchange-rift), the noodle seller's awning the heroes saved from the snow. Stands at the awning hotspot (back lane, between the two pairs of tents, behind the cookfire); a hero can stand in its shade. Drawn at 175 cm tall and 207 cm wide.",
       "reference": "assets/camp/frames/stage1/trailhead-post.png",
       "output": {
         "width": 1024,
@@ -154,7 +154,7 @@
     {
       "id": "camp/pieces/shop-lantern-string",
       "path": "assets/camp/pieces/shop-lantern-string.png",
-      "plays": "crewPieces id shop_lantern_string (starter-shop). A starter shop piece for the lanterns hotspot (near lane, at the camp's left edge, past the first tent, so it never stands in front of a tent): a second string of lanterns. A hero looks up at it and the lanterns swing. At stage 1 it stands on the back lane at the camp's far left, past every bedroll. Drawn at 180 cm tall and 80 cm wide.",
+      "plays": "crewPieces id shop_lantern_string (starter-shop). A starter shop piece for the lanterns hotspot (near lane, at the camp's left edge, past the first tent, so it never stands in front of a tent): a second string of lanterns. A hero looks up at it and the lanterns swing. At stage 1 it stands on the near lane at the camp's far left, past every bedroll. Drawn at 115 cm tall and 174 cm wide.",
       "reference": "assets/camp/frames/stage1/trailhead-post.png",
       "output": {
         "width": 1024,
@@ -191,7 +191,7 @@
     {
       "id": "camp/pieces/shop-striped-awning",
       "path": "assets/camp/pieces/shop-striped-awning.png",
-      "plays": "crewPieces id shop_striped_awning (starter-shop). A starter shop piece for the awning hotspot (back lane, between the two pairs of tents, behind the cookfire): a striped awning. A hero can stand in its shade. Drawn at 200 cm tall and 120 cm wide.",
+      "plays": "crewPieces id shop_striped_awning (starter-shop). A starter shop piece for the awning hotspot (back lane, between the two pairs of tents, behind the cookfire): a striped awning. A hero can stand in its shade. Drawn at 175 cm tall and 206 cm wide.",
       "reference": "assets/camp/frames/stage1/trailhead-post.png",
       "output": {
         "width": 1024,
@@ -209,7 +209,7 @@
     {
       "id": "camp/pieces/shop-log-bench",
       "path": "assets/camp/pieces/shop-log-bench.png",
-      "plays": "crewPieces id shop_log_bench (starter-shop). A starter shop piece for the friends' corner hotspot (near lane, right of the cookfire, low enough to stand in front of the tents): a log bench where the crew's friends sit. At stage 1 it lies on the near lane left of the campfire, low enough to lie in front of the bedrolls. Drawn at 45 cm tall and 130 cm wide.",
+      "plays": "crewPieces id shop_log_bench (starter-shop). A starter shop piece for the friends' corner hotspot (near lane, right of the cookfire, low enough to stand in front of the tents): a log bench where the crew's friends sit. At stage 1 it lies on the near lane between the first bedroll and the campfire. Drawn at 70 cm tall and 138 cm wide.",
       "reference": "assets/camp/frames/stage1/bedroll.png",
       "output": {
         "width": 1024,
@@ -227,7 +227,7 @@
     {
       "id": "camp/pieces/shop-pinwheel-pole",
       "path": "assets/camp/pieces/shop-pinwheel-pole.png",
-      "plays": "crewPieces id shop_pinwheel_pole (starter-shop). A starter shop piece for the banner pole hotspot (near lane, at the camp's right edge, past the last tent, so it never stands in front of a tent): a banner pole with a pinwheel, flying the crew's pennant. A hero looks up at it and the pennant ripples. At stage 1 it stands on the back lane at the camp's far right, past every bedroll, beside the trailhead post. Drawn at 260 cm tall and 70 cm wide.",
+      "plays": "crewPieces id shop_pinwheel_pole (starter-shop). A starter shop piece for the banner pole hotspot (near lane, at the camp's right edge, past the last tent, so it never stands in front of a tent): a banner pole with a pinwheel, flying the crew's pennant. A hero looks up at it and the pennant ripples. At stage 1 it stands on the back lane at the camp's far right, past every bedroll, beside the trailhead post. Drawn at 200 cm tall and 107 cm wide.",
       "reference": "assets/camp/frames/stage1/trailhead-post.png",
       "output": {
         "width": 1024,
@@ -264,7 +264,7 @@
     {
       "id": "camp/pieces/shop-kettle-cookfire",
       "path": "assets/camp/pieces/shop-kettle-cookfire.png",
-      "plays": "crewPieces id shop_kettle_cookfire (stage2-shop). A stage-2 shop piece for the cookfire hotspot (near lane, center, in front of the awning): a grander cookfire with a big kettle. Heroes warm up at it from two stand points and its flames flicker. Drawn at 95 cm tall and 125 cm wide.",
+      "plays": "crewPieces id shop_kettle_cookfire (stage2-shop). A stage-2 shop piece for the cookfire hotspot (near lane, center, in front of the awning): a grander cookfire with a big kettle. Heroes warm up at it from two stand points and its flames flicker. Drawn at 95 cm tall and 107 cm wide.",
       "reference": "assets/camp/frames/stage1/campfire.png",
       "output": {
         "width": 1024,
@@ -301,7 +301,7 @@
     {
       "id": "camp/pieces/shop-weathervane-pole",
       "path": "assets/camp/pieces/shop-weathervane-pole.png",
-      "plays": "crewPieces id shop_weathervane_pole (stage2-shop). A stage-2 shop piece for the banner pole hotspot (near lane, at the camp's right edge, past the last tent, so it never stands in front of a tent): a tall banner pole with streamers and a weathervane, flying the crew's pennant. A hero looks up at it and the pennant ripples. Drawn at 290 cm tall and 80 cm wide.",
+      "plays": "crewPieces id shop_weathervane_pole (stage2-shop). A stage-2 shop piece for the banner pole hotspot (near lane, at the camp's right edge, past the last tent, so it never stands in front of a tent): a tall banner pole with streamers and a weathervane, flying the crew's pennant. A hero looks up at it and the pennant ripples. Drawn at 200 cm tall and 144 cm wide.",
       "reference": "assets/camp/frames/stage1/trailhead-post.png",
       "output": {
         "width": 1024,
@@ -338,7 +338,7 @@
     {
       "id": "camp/pieces/shop-patchwork-awning",
       "path": "assets/camp/pieces/shop-patchwork-awning.png",
-      "plays": "crewPieces id shop_patchwork_awning (stage2-shop). A stage-2 shop piece for the awning hotspot (back lane, between the two pairs of tents, behind the cookfire): a big patchwork awning. A hero can stand in its shade. Drawn at 230 cm tall and 140 cm wide.",
+      "plays": "crewPieces id shop_patchwork_awning (stage2-shop). A stage-2 shop piece for the awning hotspot (back lane, between the two pairs of tents, behind the cookfire): a big patchwork awning. A hero can stand in its shade. Drawn at 175 cm tall and 210 cm wide.",
       "reference": "assets/camp/frames/stage1/trailhead-post.png",
       "output": {
         "width": 1024,
@@ -356,7 +356,7 @@
     {
       "id": "camp/pieces/shop-lantern-arch",
       "path": "assets/camp/pieces/shop-lantern-arch.png",
-      "plays": "crewPieces id shop_lantern_arch (stage2-shop). A stage-2 shop piece for the lanterns hotspot (near lane, at the camp's left edge, past the first tent, so it never stands in front of a tent): an arch of lanterns. A hero looks up at it and the lanterns swing. Drawn at 210 cm tall and 90 cm wide.",
+      "plays": "crewPieces id shop_lantern_arch (stage2-shop). A stage-2 shop piece for the lanterns hotspot (near lane, at the camp's left edge, past the first tent, so it never stands in front of a tent): an arch of lanterns. A hero looks up at it and the lanterns swing. Drawn at 150 cm tall and 165 cm wide.",
       "reference": "assets/camp/frames/stage1/trailhead-post.png",
       "output": {
         "width": 1024,
@@ -393,7 +393,7 @@
     {
       "id": "camp/pieces/shop-friends-hammock",
       "path": "assets/camp/pieces/shop-friends-hammock.png",
-      "plays": "crewPieces id shop_friends_hammock (stage2-shop). A stage-2 shop piece for the friends' corner hotspot (near lane, right of the cookfire, low enough to stand in front of the tents): a little hammock where the crew's friends nap. Drawn at 90 cm tall and 160 cm wide.",
+      "plays": "crewPieces id shop_friends_hammock (stage2-shop). A stage-2 shop piece for the friends' corner hotspot (near lane, right of the cookfire, low enough to stand in front of the tents): a little hammock where the crew's friends nap. Drawn at 85 cm tall and 190 cm wide.",
       "reference": "assets/camp/frames/stage1/bedroll.png",
       "output": {
         "width": 1024,
@@ -411,7 +411,7 @@
     {
       "id": "camp/pieces/trophy-gemfall",
       "path": "assets/camp/pieces/trophy-gemfall.png",
-      "plays": "crewPieces id trophy_gemfall (trophy). The Gemfall trophy (campaign gemfall), shown at the camp once the crew finishes Gemfall: a kept piece at a trophy hotspot on the near lane. Drawn at 70 cm tall and 55 cm wide.",
+      "plays": "crewPieces id trophy_gemfall (trophy). The Gemfall trophy (campaign gemfall), shown at the camp once the crew finishes Gemfall: a kept piece at a trophy hotspot on the near lane. Drawn at 90 cm tall and 78 cm wide.",
       "reference": "assets/camp/frames/stage1/campfire.png",
       "output": {
         "width": 1024,
@@ -429,7 +429,7 @@
     {
       "id": "camp/pieces/trophy-riftlight",
       "path": "assets/camp/pieces/trophy-riftlight.png",
-      "plays": "crewPieces id trophy_riftlight (trophy). The Riftlight trophy (campaign riftlight), shown at the camp once the crew finishes Riftlight: a kept piece at a trophy hotspot on the near lane. Drawn at 70 cm tall and 55 cm wide.",
+      "plays": "crewPieces id trophy_riftlight (trophy). The Riftlight trophy (campaign riftlight), shown at the camp once the crew finishes Riftlight: a kept piece at a trophy hotspot on the near lane. Drawn at 90 cm tall and 79 cm wide.",
       "reference": "assets/camp/frames/stage1/campfire.png",
       "output": {
         "width": 1024,
@@ -447,7 +447,7 @@
     {
       "id": "camp/kits/tents/rolled",
       "path": "assets/camp/kits/tents/rolled.png",
-      "plays": "tentStyles id rolled (catalog). A hero's tent at stage 2, at their seat's tent spot (frame pieces tent_0 to tent_3, two each side of the cookfire on the back lane), tinted to the hero's own color. The hero rests at its door and the flap sways. Drawn to fit its owner (packages/client/src/world/camp-ownership.ts): about 1.25 times her drawn height and at least 1.3 times her drawn width, so she could fit inside, and never under 140 cm for a 160 cm hero. Paint it about as wide as it is tall; the camp sizes it to her. Matches the rolled kit (assets/camp/kits/rolled.png): tidy, structured, squared.",
+      "plays": "tentStyles id rolled (catalog). A hero's tent at stage 2, at their seat's tent spot (frame pieces tent_0 to tent_3, two each side of the cookfire on the back lane), tinted to the hero's own color. The hero rests at its door and the flap sways. Drawn to fit its owner (packages/client/src/world/camp-ownership.ts): about 1.1 times her drawn height and at least 1.3 times her drawn width, so she could fit inside (a lean-to, painted much wider than tall, about 1.2 times her body length, as her bedroll is), and never under its own height for a 160 cm hero. Paint it about as wide as it is tall; the camp sizes it to her. Matches the rolled kit (assets/camp/kits/rolled.png): tidy, structured, squared.",
       "reference": "assets/camp/kits/rolled.png",
       "output": {
         "width": 1024,
@@ -486,7 +486,7 @@
     {
       "id": "camp/kits/tents/quilted",
       "path": "assets/camp/kits/tents/quilted.png",
-      "plays": "tentStyles id quilted (catalog). A hero's tent at stage 2, at their seat's tent spot (frame pieces tent_0 to tent_3, two each side of the cookfire on the back lane), tinted to the hero's own color. The hero rests at its door and the flap sways. Drawn to fit its owner (packages/client/src/world/camp-ownership.ts): about 1.25 times her drawn height and at least 1.3 times her drawn width, so she could fit inside, and never under 140 cm for a 160 cm hero. Paint it about as wide as it is tall; the camp sizes it to her. Matches the quilted kit (assets/camp/kits/quilted.png): round, padded, drawstring-soft.",
+      "plays": "tentStyles id quilted (catalog). A hero's tent at stage 2, at their seat's tent spot (frame pieces tent_0 to tent_3, two each side of the cookfire on the back lane), tinted to the hero's own color. The hero rests at its door and the flap sways. Drawn to fit its owner (packages/client/src/world/camp-ownership.ts): about 1.1 times her drawn height and at least 1.3 times her drawn width, so she could fit inside (a lean-to, painted much wider than tall, about 1.2 times her body length, as her bedroll is), and never under its own height for a 160 cm hero. Paint it about as wide as it is tall; the camp sizes it to her. Matches the quilted kit (assets/camp/kits/quilted.png): round, padded, drawstring-soft.",
       "reference": "assets/camp/kits/quilted.png",
       "output": {
         "width": 1024,
@@ -525,7 +525,7 @@
     {
       "id": "camp/kits/tents/patched",
       "path": "assets/camp/kits/tents/patched.png",
-      "plays": "tentStyles id patched (catalog). A hero's tent at stage 2, at their seat's tent spot (frame pieces tent_0 to tent_3, two each side of the cookfire on the back lane), tinted to the hero's own color. The hero rests at its door and the flap sways. Drawn to fit its owner (packages/client/src/world/camp-ownership.ts): about 1.25 times her drawn height and at least 1.3 times her drawn width, so she could fit inside, and never under 140 cm for a 160 cm hero. Paint it about as wide as it is tall; the camp sizes it to her. Matches the patched kit (assets/camp/kits/patched.png): low, broad, mended.",
+      "plays": "tentStyles id patched (catalog). A hero's tent at stage 2, at their seat's tent spot (frame pieces tent_0 to tent_3, two each side of the cookfire on the back lane), tinted to the hero's own color. The hero rests at its door and the flap sways. Drawn to fit its owner (packages/client/src/world/camp-ownership.ts): about 1.1 times her drawn height and at least 1.3 times her drawn width, so she could fit inside (a lean-to, painted much wider than tall, about 1.2 times her body length, as her bedroll is), and never under its own height for a 160 cm hero. Paint it about as wide as it is tall; the camp sizes it to her. Matches the patched kit (assets/camp/kits/patched.png): low, broad, mended.",
       "reference": "assets/camp/kits/patched.png",
       "output": {
         "width": 1024,

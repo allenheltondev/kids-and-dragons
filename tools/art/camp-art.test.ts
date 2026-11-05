@@ -282,6 +282,128 @@ print(json.dumps(out))
   });
 });
 
+/**
+ * The camp lays its pieces out by their painted footprints (packages/client/src/world/camp-paint.json,
+ * written by tools/art/camp-paint.py), so a repainted piece must not keep its old shape there.
+ */
+describe('the camp paint table', () => {
+  it('matches the paintings on disk, one footprint for every grounded camp painting', () => {
+    const out = execFileSync('python3', [join(art, 'camp-paint.py'), '--check'], { cwd: join(art, '..', '..'), encoding: 'utf8' });
+    expect(out).toContain('up to date');
+    const table = JSON.parse(readFileSync(join(art, '..', '..', 'packages/client/src/world/camp-paint.json'), 'utf8')) as { paint: Record<string, unknown> };
+    const camp = manifest.camp;
+    const grounded = new Set([
+      ...camp.frames.flatMap((frame) => frame.pieces.map((piece) => piece.path)),
+      ...camp.kitStyles.map((kit) => kit.path),
+      ...camp.crewPieces.map((piece) => piece.path),
+      ...camp.tentStyles.map((tent) => tent.path),
+      camp.souvenirDisplay.path,
+    ]);
+    for (const path of grounded) {
+      if (existsSync(join(art, '..', '..', 'assets', path))) expect(table.paint[path], path).toBeTruthy();
+    }
+  });
+
+  it('fails a stale table', () => {
+    const code = `
+import importlib, json, os, shutil, sys, tempfile
+sys.path.insert(0, ${JSON.stringify(art)})
+paint = importlib.import_module('camp-paint')
+with tempfile.TemporaryDirectory() as root:
+    shutil.copytree(os.path.join(paint.ROOT, 'assets', 'camp'), os.path.join(root, 'assets', 'camp'))
+    shutil.copy(os.path.join(paint.ROOT, 'assets', 'manifest.json'), os.path.join(root, 'assets', 'manifest.json'))
+    os.makedirs(os.path.dirname(os.path.join(root, paint.TABLE_REL)))
+    table = json.load(open(paint.TABLE))
+    table['paint']['camp/frames/stage2/crew-banner.png']['box'][2] -= 200
+    json.dump(table, open(os.path.join(root, paint.TABLE_REL), 'w'))
+    print(json.dumps(paint.stale(root)))
+`;
+    const problems = JSON.parse(execFileSync('python3', ['-c', code], { encoding: 'utf8' }).trim().split('\n').at(-1)!) as string[];
+    expect(problems).toHaveLength(1);
+    expect(problems[0]).toContain('camp/frames/stage2/crew-banner.png');
+  });
+});
+
+/**
+ * A hero's color tints her tent's cloth and its flap, never its poles and ropes (docs/briefs/camp.md,
+ * "Tinting is #633's"): the cloth regions traced in packages/client/src/world/camp-kit-art.ts, filled
+ * even-odd as the client clips them, cover the painting's light cloth, and leave its wood alone: the
+ * catalog tents' poles and stakes, and every tent's guy ropes out at its sides.
+ */
+describe('the tent cloth masks (#623)', () => {
+  it("cover each tent's cloth and its flap's, not its poles and ropes", () => {
+    const source = readFileSync(join(art, '..', '..', 'packages/client/src/world/camp-kit-art.ts'), 'utf8');
+    const block = source.slice(source.indexOf('const CAMP_TENT_CLOTH'));
+    const cloth = Object.fromEntries([...block.matchAll(/(\w+): "(M[^"]+)"/g)].map((m) => [m[1], m[2]]));
+    const code = `
+import colorsys, json, re, sys
+from PIL import Image, ImageChops, ImageDraw
+cloth = json.loads(sys.argv[1])
+def polygons(d):
+    out, cur, pos, cmd = [], [], (0.0, 0.0), None
+    toks = re.findall(r'[MLHVQZ]|-?\\d+(?:\\.\\d+)?', d)
+    i = 0
+    while i < len(toks):
+        if toks[i] in 'MLHVQZ':
+            cmd = toks[i]; i += 1
+            if cmd == 'Z':
+                if cur: out.append(cur); cur = []
+                continue
+            if cmd == 'M' and cur: out.append(cur); cur = []
+        if cmd in 'ML':
+            pos = (float(toks[i]), float(toks[i + 1])); i += 2; cur.append(pos)
+            if cmd == 'M': cmd = 'L'
+        elif cmd == 'H':
+            pos = (float(toks[i]), pos[1]); i += 1; cur.append(pos)
+        elif cmd == 'V':
+            pos = (pos[0], float(toks[i])); i += 1; cur.append(pos)
+        elif cmd == 'Q':
+            cx, cy, x, y = map(float, toks[i:i + 4]); i += 4
+            for s in range(1, 13):
+                u = s / 12
+                cur.append(((1 - u) ** 2 * pos[0] + 2 * (1 - u) * u * cx + u * u * x, (1 - u) ** 2 * pos[1] + 2 * (1 - u) * u * cy + u * u * y))
+            pos = (x, y)
+    if cur: out.append(cur)
+    return out
+def mask(d):
+    m = Image.new('1', (1024, 1024), 0)
+    for poly in polygons(d):
+        layer = Image.new('1', (1024, 1024), 0)
+        ImageDraw.Draw(layer).polygon(poly, fill=1)
+        m = ImageChops.logical_xor(m, layer)
+    return m.load()
+manifest = json.load(open('assets/manifest.json', encoding='utf-8'))
+out = {}
+for tent in manifest['camp']['tentStyles']:
+    m = mask(cloth[tent['id']])
+    for kind, rel in (('tent', tent['path']), ('flap', tent['flap'])):
+        px = Image.open('assets/' + rel).convert('RGBA').load()
+        n = dict(cloth=0, cloth_in=0, wood=0, wood_in=0, rope=0, rope_in=0)
+        for y in range(0, 1024, 2):
+            for x in range(0, 1024, 2):
+                r, g, b, a = px[x, y]
+                if a < 128: continue
+                h, s, v = colorsys.rgb_to_hsv(r / 255, g / 255, b / 255)
+                inside = 1 if m[x, y] else 0
+                if s < 0.25 and v > 0.45: n['cloth'] += 1; n['cloth_in'] += inside
+                if s > 0.45 and 0.04 < h < 0.14 and v > 0.3:
+                    n['wood'] += 1; n['wood_in'] += inside
+                    if (x < 200 or x > 824) and y > 600: n['rope'] += 1; n['rope_in'] += inside
+        out[tent['id'] + ':' + kind] = dict(group=tent['group'], **n)
+print(json.dumps(out))
+`;
+    const measured = JSON.parse(execFileSync('python3', ['-c', code, JSON.stringify(cloth)], { cwd: join(art, '..', '..'), encoding: 'utf8' }).trim().split('\n').at(-1)!) as Record<string, { group: string; cloth: number; cloth_in: number; wood: number; wood_in: number; rope: number; rope_in: number }>;
+    expect(Object.keys(measured)).toHaveLength(manifest.camp.tentStyles.length * 2);
+    for (const [id, n] of Object.entries(measured)) {
+      expect(n.cloth_in / n.cloth, `${id}: its cloth is tinted`).toBeGreaterThan(0.93);
+      // A milestone tent's gold trim is sewn on its cloth and takes the color with it; a catalog tent is cloth and wood only.
+      if (n.group === 'catalog') expect(n.wood_in / Math.max(1, n.wood), `${id}: its poles and stakes stay wood`).toBeLessThan(0.06);
+      // Out at its sides, below the eaves, is rope and stakes (and, on a milestone tent, the gold-trimmed hem).
+      if (n.rope > 50) expect(n.rope_in / n.rope, `${id}: its guy ropes stay rope`).toBeLessThan(n.group === 'catalog' ? 0.1 : 0.2);
+    }
+  });
+});
+
 describe('the Phase 2 prompts, in step with the stage-2 layout (#620)', () => {
   const prompts = JSON.parse(readFileSync(join(art, '..', '..', 'docs', 'camp-art-prompts-phase2.json'), 'utf8')) as { paintings: { path: string; plays: string }[] };
   const camp = (manifest as unknown as { camp: { crewPieces: { id: string; path: string; hotspot: string; heightCm: number; widthCm: number }[]; frames: { hotspots?: { kind: string; lane: string }[] }[] } }).camp;

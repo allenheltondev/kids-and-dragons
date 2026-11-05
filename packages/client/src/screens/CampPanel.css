@@ -117,6 +117,8 @@
 .camp-option--piece { flex-direction: row; }
 .camp-option__art { display: block; inline-size: 4.2rem; block-size: 3.4rem; overflow: hidden; }
 .camp-option__art > svg { inline-size: 100%; block-size: 100%; transform: scale(1.25) translateY(-6%); }
+/* A tent is cropped to its painting already (CampTent). */
+.camp-option__art > svg[data-cropped], .kit-welcome__art > svg[data-cropped] { transform: none; }
 .camp-option__label { font-size: 0.9rem; }
 .camp-option__badge {
   padding: 0 0.4em;

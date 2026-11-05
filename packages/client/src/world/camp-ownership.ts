@@ -8,7 +8,13 @@
  *     same painting stays in proportion;
  *   - her tent is bigger than she is: `TENT_HEIGHT_FIT` times her drawn height
  *     and at least `TENT_WIDTH_FIT` times her drawn width, so she could fit
- *     inside.
+ *     inside; a lean-to (a tent painted at least `LEAN_TO_ASPECT` times wider
+ *     than tall, the patched style) is one she lies in, so it is fitted like
+ *     her bedroll, `BEDROLL_LENGTH_FIT` times her body length, and is still
+ *     longer and wider than she is.
+ *
+ * A tent's shape is its painting's (camp-paint.ts): the box the layout keeps
+ * clear is what is painted, guy ropes and stakes included.
  *
  * The fit is a minimum, never a cap: gear already bigger than it keeps its
  * authored size scaled with its owner (`campOwnedScale`). Anything else she
@@ -46,9 +52,11 @@ export interface CampOwner {
 /** A bedroll's drawn length over its hero's drawn body length. */
 export const BEDROLL_LENGTH_FIT = 1.2;
 /** A tent's drawn height over its hero's drawn height. */
-export const TENT_HEIGHT_FIT = 1.25;
+export const TENT_HEIGHT_FIT = 1.1;
 /** A tent's drawn width over its hero's drawn width, at least. */
 export const TENT_WIDTH_FIT = 1.3;
+/** A tent painted at least this much wider than tall is a lean-to, fitted by length like a bedroll. */
+export const LEAN_TO_ASPECT = 1.6;
 /** The narrowest a tent stand-in is drawn, width over height (a bell tent). */
 export const TENT_STAND_IN_MIN_ASPECT = 0.65;
 
@@ -128,7 +136,9 @@ export function fittedGear(
   }
   if (kind === "tent") {
     if (aspect === null) return tentStandInBox(base, hero);
-    const height = Math.max(base, TENT_HEIGHT_FIT * hero.height, (TENT_WIDTH_FIT * hero.width) / shape);
+    const height = shape >= LEAN_TO_ASPECT
+      ? Math.max(base, (BEDROLL_LENGTH_FIT * Math.max(hero.height, hero.width)) / shape, (TENT_WIDTH_FIT * hero.width) / shape)
+      : Math.max(base, TENT_HEIGHT_FIT * hero.height, (TENT_WIDTH_FIT * hero.width) / shape);
     return { height, width: height * shape };
   }
   return { height: base, width: base * shape };
