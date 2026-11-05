@@ -19,7 +19,7 @@ import type {
 import type { RiftActionKind } from "./campaign-graph.js";
 import type { InteractionAction } from "../interactions.js";
 import type { ChapterOutcome } from "./chapter.js";
-import type { CampClaimResult } from "./camp.js";
+import type { CampClaimResult, LuckyDrop } from "./camp.js";
 import type { RoomMode, RunState, DiceRoll } from "./state.js";
 import type { FieldGuideFind } from "../field-guide-record.js";
 import type { Badge, ProfileFlair } from "../kid-profile.js";
@@ -220,6 +220,16 @@ export type ClientIntent =
    */
   | { type: "ENDING_READ" }
   /**
+   * A vote in the chapter-end shop (docs/camp.md §6.2, §12.4;
+   * `RunState.campShop`): a piece it offers, or `"save"` for "Save our Dash
+   * Cash". Counted by the choice-point rules; changing your mind is another
+   * vote. `visit` echoes `CampShopView.visit`, so a vote from a shop the
+   * table has since left (or another chapter's) is refused as stale. Resolved
+   * by the server, which spends the crew's Dash Cash, so the engine never
+   * sees it, like SWITCH_CLASS.
+   */
+  | { type: "CAMP_VOTE"; visit: string; option: string }
+  /**
    * Playtest mode (roadmap chapter 6). Both are refused with FORBIDDEN unless
    * `EngineContext.playtest` is true, which only `dev-server.ts` ever sets —
    * `lambda/runtime.ts` passes a literal `false`, so a deployed build has no
@@ -374,6 +384,14 @@ export interface ServerMessage {
    * replay never announces a find twice.
    */
   campClaims?: CampClaimResult[];
+  /**
+   * The lucky drops this step paid (docs/camp.md §5.2): 1 Dash Cash each, saved
+   * to the crew's camp as they landed. The TV sparkles "Dash Cash!" and the
+   * phones echo it. Only drops the store accepted, so one refused (a chapter
+   * already paid for, the chapter's cap) shows nothing, and a roll that did not
+   * come up is never on any message. Live only, exactly as `discovered`.
+   */
+  campDrops?: LuckyDrop[];
 }
 
 /** A full snapshot, sent on join and whenever a client's gap is too large. */

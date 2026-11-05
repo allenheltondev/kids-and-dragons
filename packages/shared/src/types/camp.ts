@@ -60,6 +60,13 @@ export interface OwnedCampPiece {
   from: "found" | "bought" | "kept";
   /** The offer that gave it, for a find (§12.2). */
   rewardId?: RewardId;
+  /**
+   * The chapter-end visit that bought it (`CampShopView.visit`), for a piece
+   * bought in the shop (§12.4). It makes a purchase once per visit on the
+   * store's side too: a retried resolution finds the piece bought under its
+   * own visit and charges nothing.
+   */
+  visit?: string;
   /** ISO. */
   at: string;
 }
@@ -338,4 +345,83 @@ export interface CampClaimResult {
   pieceId: string;
   result: "piece" | "dashCash" | "kit" | "none";
   heroes?: string[];
+}
+
+// ---------------------------------------------------------------------------
+// Dash Cash at the chapter's end, lucky drops and the shop (§5.2, §6.2, §12.4; #619)
+// ---------------------------------------------------------------------------
+
+/**
+ * A lucky drop the engine rolled (§5.2): 1 Dash Cash after a mini-game the
+ * party succeeded at (`game`) or a fight it won (`fight`), at the scene it
+ * happened in. The engine only records it; whether it pays is the store's to
+ * say (`claimLuckyDrop`: never twice, never in a paid chapter, at most
+ * `LUCKY_DROPS_PER_CHAPTER` a chapter across every attempt).
+ */
+export interface LuckyDrop {
+  sceneId: string;
+  kind: "game" | "fight";
+}
+
+/**
+ * `RunState.campLuck`: the chapter's lucky-drop rolls, as the engine made
+ * them with the step's seeded rng, so replaying the log rolls the same.
+ * `rolled` is every scene a roll was made at (once a chapter each, so a
+ * retried game cannot roll again); `drops` the rolls that came up.
+ */
+export interface CampLuck {
+  rolled: string[];
+  drops: LuckyDrop[];
+}
+
+/**
+ * `RunState.campTally`: the chapter's Dash Cash as its end counts it in
+ * (§5.2), snapshotted by the server when the chapter ends. `replay` is a
+ * chapter this crew had already been paid for, which pays nothing again.
+ */
+export interface CampTally {
+  /** 2 for finishing, any ending; 0 on a replay. */
+  finished: number;
+  /** 1 for each optional objective met; 0 on a replay. */
+  objectives: number;
+  /** Lucky drops that paid this chapter (in the balance from the moment they landed). */
+  drops: number;
+  replay: boolean;
+  /** The crew's Dash Cash once this chapter is paid. */
+  balance: number;
+  /** The crew has been paid for enough chapters for the shop (§5.3). */
+  shopOpen: boolean;
+}
+
+/** "Save our Dash Cash": the shop vote's always-free option (§6.2). */
+export const SAVE_DASH_CASH = "save";
+
+/** One piece the chapter-end shop offers (§12.4): its price and the balance after. */
+export interface CampShopOption {
+  pieceId: CampPieceId;
+  label: string;
+  price: number;
+  after: number;
+}
+
+/**
+ * `RunState.campShop`: the chapter-end shop and its vote (§6.2, §12.4), one
+ * per chapter-end visit. Present only on a chapter's summary, and only once
+ * the shop is open; gone the moment the table leaves it, which cancels the
+ * vote without spending anything.
+ *
+ * `options` is empty when nothing is affordable: the balance shows and no
+ * vote starts. `votes` is playerId → a piece id or `SAVE_DASH_CASH`, counted
+ * by the choice-point rules (`tallyVotes`). `result` is what the vote decided,
+ * at most one purchase a visit; `refreshed` says the offer was rebuilt
+ * because another table reaching this crew spent first.
+ */
+export interface CampShopView {
+  /** This chapter-end visit's id: a `CAMP_VOTE` naming another is stale. */
+  visit: string;
+  balance: number;
+  options: CampShopOption[];
+  votes: Record<string, string>;
+  result?: { kind: "bought"; pieceId: CampPieceId; label: string } | { kind: "saved" };
+  refreshed?: true;
 }
