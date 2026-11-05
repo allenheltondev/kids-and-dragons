@@ -91,9 +91,9 @@ describe('camp layout (manifest.camp)', () => {
   });
 
   it.each([
-    ['a lane below the open ground', `camp['backdrops'][0]['lanes'][2]['y'] = 0.8`, 'camp/backdrop/open_plains lanes'],
+    ['a lane below the open ground', `camp['backdrops'][0]['lanes'][-1]['y'] = 0.8`, 'camp/backdrop/open_plains lanes'],
     ['a lane above the open ground, in the sky', `camp['backdrops'][0]['lanes'][0]['y'] = 0.4`, 'camp/backdrop/open_plains lanes'],
-    ['lanes out of depth order', `camp['backdrops'][0]['lanes'][1]['y'] = 0.5`, 'camp/backdrop/open_plains lanes'],
+    ['lanes out of depth order', `camp['backdrops'][0]['lanes'][-2]['y'] = 0.5`, 'camp/backdrop/open_plains lanes'],
     ['a crossing off a lane', `camp['backdrops'][0]['crossings'][0]['x'] = 0.02`, 'camp/backdrop/open_plains lanes'],
     ['a stand point past its lane end', `point('wander_near_right')['x'] = 0.99`, 'camp/stage1 layout'],
     ['a hotspot that names no piece', `point('campfire_left')['hotspot'] = 'cookfire'`, 'camp/stage1 layout'],
@@ -410,7 +410,7 @@ print(json.dumps(out))
 
 describe('the Phase 2 prompts, in step with the stage-2 layout (#620)', () => {
   const prompts = JSON.parse(readFileSync(join(art, '..', '..', 'docs', 'camp-art-prompts-phase2.json'), 'utf8')) as { paintings: { path: string; plays: string }[] };
-  const camp = (manifest as unknown as { camp: { crewPieces: { id: string; path: string; hotspot: string; heightCm: number; widthCm: number }[]; frames: { hotspots?: { kind: string; lane: string }[] }[] } }).camp;
+  const camp = (manifest as unknown as { camp: { crewPieces: { id: string; path: string; hotspot: string; group: string; heightCm: number; widthCm: number }[]; frames: { hotspots?: { kind: string; lane: string }[] }[] } }).camp;
   const stage2 = camp.frames[1]!.hotspots!;
 
   it("says each crew piece's true height and width, and the lane its spot stands on", () => {
@@ -424,7 +424,7 @@ describe('the Phase 2 prompts, in step with the stage-2 layout (#620)', () => {
 
   it('says where a piece a stage-1 crew can own stands at stage 1, where its kind has a spot there', () => {
     const stage1 = camp.frames[0]!.hotspots ?? [];
-    const early = camp.crewPieces.filter((piece) => /^(find|kept|starter-shop)$/.test((piece as { group?: string }).group ?? ''));
+    const early = camp.crewPieces.filter((piece) => /^(find|kept|starter-shop)$/.test(piece.group));
     let said = 0;
     for (const piece of early) {
       const spot = stage1.find((h) => h.kind === piece.hotspot);

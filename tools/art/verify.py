@@ -739,8 +739,8 @@ def check_camp_layout(rep: Report, mf: dict) -> None:
         lanes = backdrop.get("lanes", [])
         by_id = {lane["id"]: lane for lane in lanes}
         problems: list[str] = []
-        if not 2 <= len(lanes) <= 3 or len(by_id) != len(lanes):
-            problems.append("two or three lanes with unique ids")
+        if not 2 <= len(lanes) <= 4 or len(by_id) != len(lanes):
+            problems.append("two to four lanes with unique ids")
         for lane in lanes:
             if not (CAMP_GROUND_TOP <= lane["y"] <= CAMP_GROUND_BOTTOM and 0 <= lane["x0"] < lane["x1"] <= 1 and lane["scale"] > 0):
                 problems.append(

@@ -1,6 +1,6 @@
 /**
  * The camp on the real manifest (docs/camp.md §4.2, §8.3, §8.6; #620), at
- * stage 1 and at stage 2, drawn as camp-boxes.ts lays it out, which is what
+ * stages 1 through 4, drawn as camp-boxes.ts lays it out, which is what
  * the moving camp and the still one draw: every hero's bedroll or tent at her
  * fitted size, every shared piece at its true height, the campfire and the
  * trailhead post, each as its painting's real footprint (camp-paint.ts, slice
@@ -13,7 +13,7 @@
  * Worst cases: four bigfoots (the tallest), four kitsune (the smallest), a mix
  * (bigfoot, kitsune, unicorn, griffin), four of every other species, and for
  * each every piece the crew could have up at each spot, in the styles their
- * seats hash to and in every tent (stage 2) or bedroll style (stage 1) a kid
+ * seats hash to and in every tent (stages 2–4) or bedroll style (stage 1) a kid
  * could pick for all four.
  */
 
@@ -67,9 +67,12 @@ const PARTIES: Record<string, string[]> = {
  * their widest tents, or a bigfoot in an inner seat, go down to the floor
  * (`MIN_FIGURE_SCALE`), never piled up.
  */
+const TENT_STYLES = TENT_ART.map((tent) => tent.id);
 const STAGES = [
   { stage: 1, minRow: 0.75, grownBy: [] as string[], styles: Object.keys(CAMP_KIT_STYLES) },
-  { stage: 2, minRow: 0.6, grownBy: ["gemfall", "riftlight"], styles: TENT_ART.map((t) => t.id) },
+  { stage: 2, minRow: 0.6, grownBy: ["gemfall", "riftlight"], styles: TENT_STYLES },
+  { stage: 3, minRow: 0.6, grownBy: ["gemfall", "riftlight"], styles: TENT_STYLES },
+  { stage: 4, minRow: 0.6, grownBy: ["gemfall", "riftlight"], styles: TENT_STYLES },
 ] as const;
 /** The small parties, drawn nearly full size at either stage, and how near. */
 const SMALL = ["four kitsune", "four of kitsune", "four of dragonling"];
@@ -96,7 +99,7 @@ const heroesOf = (species: string[], style: string | null = null, stage = 2): Ca
     species: s,
     name: NAME,
     souvenirs: 4,
-    ...(style ? (stage === 2 ? { tent: style } : { id: `hero_${String(seat)}`, kitStyle: style }) : {}),
+    ...(style ? (stage >= 2 ? { tent: style } : { id: `hero_${String(seat)}`, kitStyle: style }) : {}),
   }));
 
 /** Every placement of the crew's pieces a stage's spots allow: each pickable spot shows each piece of its kind in turn. */
@@ -163,12 +166,12 @@ for (const { stage, minRow, grownBy, styles } of STAGES) {
             const input = { heroes, spots, allSouvenirs: true };
             const window = campWindow(view.height, view.top, view.bottom);
             const fit = campFitFor(view.width, window, layout, input);
-            if (SMALL.includes(name)) expect(campRowScale(layout, input), "a small party is drawn nearly full size").toBeGreaterThanOrEqual(SMALL_ROW);
+            if (stage <= 2 && SMALL.includes(name)) expect(campRowScale(layout, input), "a small party is drawn nearly full size").toBeGreaterThanOrEqual(SMALL_ROW);
             expect(campRowScale(layout, input), "never drawn much smaller to fit the row").toBeGreaterThanOrEqual(minRow);
             // Every hero at her tent's door too (stage 2): nothing on her lane or a nearer one covers her.
             const boxes = [...campBoxes(layout, { ...input, figureScale: fit.figureScale }), ...campDoorBoxes(layout, { heroes, figureScale: fit.figureScale })];
             expect(gearOf(boxes)).toHaveLength(4);
-            expect(boxes.filter((b) => b.kind === "door")).toHaveLength(stage === 2 ? 4 : 0);
+            expect(boxes.filter((b) => b.kind === "door")).toHaveLength(stage >= 2 ? 4 : 0);
             expect(campOverlaps(boxes)).toEqual([]);
             expect(campLabelClashes(boxes)).toEqual([]);
             // Inside the visible span, and between the header and the panels.
@@ -195,12 +198,12 @@ for (const { stage, minRow, grownBy, styles } of STAGES) {
         const gear = gearOf(boxes);
         const shortest = Math.min(...gear.map((b) => b.height));
         const tall = boxes.filter((b) => b.kind === "spot" && b.height > shortest * 0.6);
-        for (const id of stage === 1 ? ["spot:banner_pole", "spot:lanterns"] : ["spot:awning", "spot:banner_pole", "spot:lanterns"]) {
+        for (const id of stage === 1 ? ["spot:banner_pole", "spot:lanterns"] : stage === 2 ? ["spot:awning", "spot:banner_pole", "spot:lanterns"] : []) {
           expect(tall.map((b) => b.id), String(style)).toContain(id);
         }
         // Not one painted slice of a tall piece in front of, or behind, a hero's gear.
         for (const piece of tall) for (const mine of gear) expect(shapesOverlap(piece, mine), `${piece.id} over ${mine.id} (${String(style)})`).toBe(false);
-        if (stage === 1) continue;
+        if (stage !== 2) continue;
         // At stage 2 the awning stands behind the cookfire, between the tents, and the lanterns and the banner pole at the ends.
         const at = (id: string) => boxes.find((b) => b.id === id)!.anchor;
         expect(at("spot:lanterns")).toBeLessThan(Math.min(...gear.map((b) => b.anchor)));
