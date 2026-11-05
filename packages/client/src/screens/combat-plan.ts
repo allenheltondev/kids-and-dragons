@@ -30,8 +30,10 @@ export function combatMission(state: EncounterState): string {
 }
 
 export function crossingProgress(state: EncounterState): string | null {
-  if (!state.environment?.spec.exits?.some(exit => exit.id === "far-bank" || exit.id === "big-campfire")) return null;
+  const exits = state.environment?.spec.exits;
+  const atCampfire = exits?.some(exit => exit.id === "big-campfire");
+  if (!atCampfire && !exits?.some(exit => exit.id === "far-bank")) return null;
   const heroes = state.combatants.filter(c => c.side === "party");
   const across = heroes.filter(c => c.escaped);
-  return `${across.length}/${heroes.length} across${across.length ? `: ${across.map(c => c.name).join(", ")}` : ""}.`;
+  return `${across.length}/${heroes.length} ${atCampfire ? "at the big campfire" : "across"}${across.length ? `: ${across.map(c => c.name).join(", ")}` : ""}.`;
 }
