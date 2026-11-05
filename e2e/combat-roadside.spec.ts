@@ -185,6 +185,7 @@ for (const fight of roadFights) {
   test(`road fights: ${fight.chapterId} ${fight.sceneId} plays through on phone and TV`, async ({ browser }, info) => {
     test.setTimeout(240_000);
     const boxes = fight.sceneId === "encounter_boxes";
+    const wisps = fight.sceneId === "encounter_wisps";
     const table = await seedTable({ mode: "party", tv: true, chapterId: fight.chapterId, sceneId: fight.sceneId, heroes: [
       { name: "Aster", species: "kitsune", class: "songkeeper", stats: { might: 0, quick: 3, clever: 0, heart: 0 } },
       { name: "Fern", species: "unicorn", class: "thornguard", stats: { might: 0, quick: 3, clever: 0, heart: 0 } },
@@ -240,7 +241,9 @@ for (const fight of roadFights) {
           ? Number(danger.some(t => t.x === p.x && t.y === p.y)) * 10 + stepsBetween(p, fight.target)
           : Number(ink(p)) * 10 - Math.min(...enemies.map(enemy => stepsBetween(p, enemy)));
         const moves = [...legalMoves(encounter)];
-        const tile = turn === 0 && boxes ? moves.find(ink) : moves.sort((a, b) => score(a) - score(b))[0];
+        // Give the wisps an opening beat before committing anyone to the cart.
+        const tile = turn === 0 && wisps ? undefined : turn === 0 && boxes ? moves.find(ink)
+          : moves.sort((a, b) => score(a) - score(b))[0];
         if (tile && (score(tile) < score(at) || (turn === 0 && boxes && ink(tile)))) {
           if (!movedThroughUi) {
             await page.getByRole("button", { name: new RegExp(`^Move to column ${tile.x + 1}, row ${tile.y + 1}(?=:| —|$)`) }).click();
@@ -260,6 +263,7 @@ for (const fight of roadFights) {
       }
       expect(movedThroughUi).toBe(true);
       if (boxes) expect(sawInk).toBe(true);
+      if (wisps) expect(sawWarning).toBe(true);
       expect(state.lastEncounter).toMatchObject({ sceneId: fight.sceneId, outcome: fight.outcome, destination: fight.destination });
       await expect(display.page.getByText(new RegExp(fight.text))).toBeVisible({ timeout: 60_000 });
       await display.page.screenshot({ path: info.outputPath("outcome.png") });
