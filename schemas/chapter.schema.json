@@ -1153,6 +1153,7 @@
             "damage"
           ],
           "properties": {
+            "presentation": { "enum": ["slam"], "description": "Physical raised-plank warning and impact; omitted keeps the spark presentation." },
             "label": {
               "type": "string",
               "minLength": 1,
@@ -1976,6 +1977,7 @@
                   "$ref": "#/$defs/mapTile"
                 }
               },
+              "art": { "type": "string", "pattern": "^[a-z0-9_-]+$", "description": "Existing story prop asset id, without extension." },
               "opensRound": {
                 "description": "Open from this round (default 1).",
                 "type": "integer",
@@ -2340,6 +2342,7 @@
                         "$ref": "#/$defs/mapTile"
                       }
                     },
+                    "art": { "type": "string", "pattern": "^[a-z0-9_-]+$", "description": "Existing story prop asset id, without extension." },
                     "opensRound": {
                       "description": "Open from this round (default 1).",
                       "type": "integer",

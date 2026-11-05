@@ -507,7 +507,7 @@ export interface RestScene {
 
 export interface EnemySpec {
   /** A visible, fixed-area attack: prepare one turn, release on the next. */
-  windupAttack?: { label: string; radius: 0 | 1; damage: number };
+  windupAttack?: { label: string; radius: 0 | 1; damage: number; presentation?: "slam" };
   id: string;
   name?: string;
   count: number;
@@ -787,6 +787,8 @@ export interface HazardPush {
  * and the story takes `onEscape` (which is then required).
  */
 export interface RiftExit {
+  /** Existing story prop used instead of the default magical gate. */
+  art?: string;
   id: string;
   label: string;
   tiles: MapTile[];

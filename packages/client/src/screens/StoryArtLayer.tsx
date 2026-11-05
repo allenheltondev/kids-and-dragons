@@ -1,11 +1,27 @@
 import { useChapter, useRunState } from "../store";
+import { useSyncExternalStore } from "react";
+import { onStageInset, stageInsetBottom, onStageInsetTop, stageInsetTop } from "../world/stage-inset";
 import { fightResult, introAppearance } from "../world/riftlight-art";
 import "./StoryArtLayer.css";
 
 /** Decorative payoff only; the persisted engine receipt owns the outcome and loot. */
 export function StoryArtLayer() {
  const chapter=useChapter(),state=useRunState();
+ const bottom=useSyncExternalStore(onStageInset,stageInsetBottom);
+ const top=useSyncExternalStore(onStageInsetTop,stageInsetTop);
  if(!chapter || !state || chapter.id!==state.chapterId || state.encounter)return null;
+ const receipt=state.lastEncounter;
+ const outcomeSpace={ top: "auto", bottom: bottom + 8, maxHeight: `max(0px, calc(100cqh - ${bottom + top + 16}px))` };
+ const here=receipt?.chapterId==="gemfall-02" && receipt.destination===state.sceneId;
+ const wagon=here && receipt.sceneId==="encounter_wolves" && receipt.outcome==="victory";
+ const crossing=here && receipt.sceneId==="encounter_mimic_plank" && receipt.outcome==="escaped";
+ if(wagon || crossing)
+  return <div className="story-art-layer story-art-layer--wagon" style={outcomeSpace} aria-hidden="true" data-wagon-clear={wagon || undefined} data-crossing-clear={crossing || undefined}>
+   {wagon ? <img className="story-art-layer__wagon" src="/assets/story-props/sausage-wagon.webp" alt="" /> : <>
+   <img className="story-art-layer__prop" style={{ inlineSize: "100%", blockSize: "100%", right: 0 }} src="/assets/story-props/fight-plank-edge.webp" alt="" />
+   <img className="story-art-layer__retreat" data-direction="-1" src="/assets/entities/mire_mimic/little.png" alt="" />
+   </>}
+  </div>;
  const result=fightResult(chapter,state),intro=introAppearance(chapter,state);
  if(!result && !intro)return null;
  const art=result?.art??intro!;

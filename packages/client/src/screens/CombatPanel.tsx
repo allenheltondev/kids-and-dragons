@@ -98,7 +98,7 @@ import { Button } from "../ui/Button";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
 import { BuffList, combatBuffRows } from "./BuffList";
-import { combatMission, enemyIntentLine, nextEnemyId } from "./combat-plan";
+import { combatMission, crossingProgress, enemyIntentLine, nextEnemyId } from "./combat-plan";
 import { biomeTilesUrl } from "../world/art-paths";
 import { tablePreviews } from "../world/previews";
 import { PUFFED_HINT, PUFFED_WORDS } from "./buff-copy";
@@ -136,6 +136,7 @@ import { combatMarkerArt, markerFromIcon } from "../world/combat-art";
 import { EFFECT_FRAMES } from "./combat-feedback";
 import { useCombatFeedback, type ActiveFeedback } from "./use-combat-feedback";
 import "./CombatPanel.css";
+import { WagonDefense } from "./WagonDefense";
 
 /**
  * What has been tapped so far this turn. One machine rather than scattered
@@ -300,7 +301,7 @@ export function CombatControls(): ReactElement | null {
 
 
   if (!encounter || !me) return null;
-  const windupEncounter = encounter.combatants.some(c => c.windupAttack);
+  const missionEncounter = Boolean(encounter.environment) || encounter.combatants.some(c => c.windupAttack);
 
   const active = currentActor(encounter);
   const myTurn = active !== null && active.side === "party" && active.id === me.character.id;
@@ -318,7 +319,7 @@ export function CombatControls(): ReactElement | null {
   const offeredActions =
     myTurn && rules && abilities ? legalActions(encounter, combatContext(rules, abilities)) : [];
   const priority = (id: string) => id === "ready" ? 2 : id === "attack" ? 1 : 0;
-  const actions = windupEncounter ? [...offeredActions].sort((a, b) => priority(a.abilityId) - priority(b.abilityId)) : offeredActions;
+  const actions = missionEncounter ? [...offeredActions].sort((a, b) => priority(a.abilityId) - priority(b.abilityId)) : offeredActions;
   const moves = myTurn ? legalMoves(encounter) : [];
   // The gold squares, though, go the moment a tap is on its way.
   const walkTiles = deciding && selection.step === "idle" ? moves : [];
@@ -488,7 +489,10 @@ export function CombatControls(): ReactElement | null {
   const fight = encounter.startedAt ?? null;
   if (lastFacing.current.fight !== fight) lastFacing.current = { fight, facing: {} };
   const cells = gridCells(encounter, party, tappable, selectedTiles, lastFacing.current.facing);
-  const danger = new Map<string, string>(committedAttacks(encounter).flatMap(attack => attack.tiles.map(tile => [`${tile.x},${tile.y}`, attack.label] as const)));
+  const danger = new Map<string, string>(committedAttacks(encounter).flatMap(attack => {
+    const verb = combatantById(encounter, attack.actorId)?.windupAttack?.presentation === "slam" ? "strikes" : "bursts";
+    return attack.tiles.map(tile => [`${tile.x},${tile.y}`, `${attack.label} ${verb} here next turn`] as const);
+  }));
   const shownPreview = state ? tablePreviews(state, previews).combat : null;
   const suggestedAt = shownPreview?.preview.kind === "suggest" ? shownPreview.preview.to : null;
   const threatened = new Set(encounter.combatants.filter(f => f.side === "enemy" && !f.down).map(f => enemyPlanFor(encounter, f.id).attack).filter(Boolean));
@@ -561,6 +565,7 @@ export function CombatControls(): ReactElement | null {
           const cellKey = `${cell.x},${cell.y}`;
           const marks = [
             cell.occupant && encounter.combatants.find(c => c.id === cell.occupant?.id)?.windup ? " combat__cell--charging" : "",
+            cell.occupant && encounter.combatants.find(c => c.id === cell.occupant?.id)?.windupAttack?.presentation === "slam" ? " combat__cell--slam" : "",
             danger.has(cellKey) ? " combat__cell--danger" : "",
             cell.blocked ? " combat__cell--blocked" : "",
             cell.selected ? " combat__cell--selected" : "",
@@ -598,7 +603,7 @@ export function CombatControls(): ReactElement | null {
                 className={`combat__cell combat__cell--tap${aiming ? " combat__cell--aim" : " combat__cell--walk"} kad-focusable${marks}`}
                 aria-label={target ? `Choose ${target.name}, ${target.hp} hearts` : `${planning && canSuggest ? "Suggest" : aiming ? "Aim at" : "Move to"} column ${cell.x + 1}, row ${cell.y + 1}${
                   cell.feature ? `: ${tileWords(cell.feature)}` : ""
-                }${danger.has(cellKey) ? ` — ${danger.get(cellKey)} bursts here next turn` : ""}`}
+                }${danger.has(cellKey) ? ` — ${danger.get(cellKey)}` : ""}`}
                 onClick={() => target ? tapTarget(target.id) : tapTile({ x: cell.x, y: cell.y })}
               >
                 {mark}
@@ -629,7 +634,7 @@ export function CombatControls(): ReactElement | null {
   );
 
   return (
-    <div className="prompt combat" data-windup={windupEncounter || undefined} data-quiet-hint={windupEncounter && selection.step === "idle" && !pending && synced && !encounter.actionTaken || undefined}>
+    <div className="prompt combat" data-mission={missionEncounter || undefined} data-quiet-hint={missionEncounter && selection.step === "idle" && !pending && synced && !encounter.actionTaken || undefined}>
       <div className="combat__overview">
         <FighterRoster encounter={encounter} myId={me.character.id} />
         <button type="button" className="combat__enlarge kad-focusable" onClick={() => setMapOpen(true)} aria-label="Enlarge battle map">＋</button>
@@ -668,7 +673,7 @@ export function CombatControls(): ReactElement | null {
           needs saving, what burns. Absent in every fight without an
           environment, so nothing here moves an ordinary board. */}
       {encounter.environment?.spec.victory === "rescue" && <p className="combat__mission" role="status">{combatMission(encounter)}</p>}
-      <EnvironmentStatus encounter={encounter} />
+      {encounter.environment?.spec.objectives?.some(o => o.id === "wagon-lane") ? <WagonDefense encounter={encounter} /> : <EnvironmentStatus encounter={encounter} />}
 
       {/* What the last beat did, in one line: the newest swing, its sum and
           the Guard it needed, or whatever else just happened. The running
@@ -715,7 +720,7 @@ export function CombatControls(): ReactElement | null {
             {c.id === me.character.id ? `You (${c.name})` : combatantLabel(c)}
             {c.side === "enemy" ? ", enemy" : ""}
             {c.down ? ": knocked down" : `: ${c.hp} of ${c.maxHp} hearts`}
-            {cells.some(cell => cell.occupant?.id === c.id && danger.has(`${cell.x},${cell.y}`)) ? ", standing in marked danger: move clear before the burst" : ""}
+            {cells.some(cell => cell.occupant?.id === c.id && danger.has(`${cell.x},${cell.y}`)) ? ", standing in marked danger: move clear before impact" : ""}
             {c.puffed !== undefined ? `, ${PUFFED_WORDS.toLowerCase()} up: ${PUFFED_HINT.toLowerCase()}` : ""}
             {isNumbedHero(encounter, me.character.id, c.id) ? ", numbed: fewer steps for a while, then it wears off" : ""}
             {c.id === active?.id ? ", taking a turn" : ""}
@@ -779,7 +784,7 @@ export function CombatControls(): ReactElement | null {
                     : undefined
                 }
               >
-                {aimingWho.name}: {windupEncounter ? "choose someone." : "tap a glowing figure or choose below."}
+                {aimingWho.name}: {missionEncounter ? "choose someone." : "tap a glowing figure or choose below."}
                 {selection.step === "target" && (selection.action.maxTargets ?? 1) > 1
                   ? ` (${selection.picked.length + 1} of ${Math.min(
                       selection.action.maxTargets ?? 1,
@@ -809,7 +814,7 @@ export function CombatControls(): ReactElement | null {
             onClickCapture={held ? swallowTap : undefined}
           >
             {selection.step === "idle" && cardCount > 0 ? (
-              <PagedOptions pageSize={windupEncounter ? 2 : 3} className="prompt__options combat__actions" data-dense={dense || undefined}>
+              <PagedOptions pageSize={missionEncounter ? 2 : 3} className="prompt__options combat__actions" data-dense={dense || undefined}>
                 {actions.map((action) => (
                   <li key={action.abilityId}>
                     <button
@@ -971,6 +976,8 @@ function EnvironmentStatus({ encounter }: { encounter: EncounterState }): ReactE
     });
   }
   for (const exit of view.exits) lines.push({ key: `exit:${exit.id}`, icon: EXIT_ICON, text: exitLine(exit) });
+  const crossed = crossingProgress(encounter);
+  if (crossed && view.escaped.length) lines.push({ key: "crossed", icon: EXIT_ICON, text: crossed });
   for (const modifier of view.modifiers) {
     lines.push({ key: `modifier:${modifier.id}`, icon: modifierIcon(modifier), text: modifierLine(modifier) });
   }
@@ -1005,7 +1012,7 @@ function FighterRoster({ encounter, myId }: { encounter: EncounterState; myId: s
   const dangerIds = new Set(committedAttacks(encounter).flatMap(attack => encounter.board.actors
     .filter(actor => attack.tiles.some(tile => tile.x === actor.x && tile.y === actor.y)).map(actor => actor.id)));
   const selected = fighters.find(f => f.id === inspected) ?? fighters.find(f => f.windup && !f.down) ?? fighters.find(f => f.id === nextEnemyId(encounter)) ?? fighters.find(f => f.id === myId) ?? fighters[0];
-  return <section className="combat__roster" aria-label={`Round ${encounter.round}: fighters and plans`}>
+  return <section className="combat__roster" data-inspected={inspected !== null || undefined} aria-label={`Round ${encounter.round}: fighters and plans`}>
     <ul className="combat__fighter-strip" aria-label="Fighter details">
       {fighters.map(fighter => <li key={fighter.id} data-active={fighter.id === activeId || undefined}>
         <button type="button" className="kad-focusable" aria-pressed={selected?.id === fighter.id} onClick={() => setInspected(fighter.id)}
@@ -1056,7 +1063,7 @@ function CellFeedback({ feedback }: { feedback: ActiveFeedback }): ReactElement 
       "--effect-frames": frames, "--effect-steps": frames - 1, "--effect-ms": `${frames / 12}s`,
       "--effect-still": `${Math.floor((frames - 1) / 2) / (frames - 1) * 100}%`,
     } as CSSProperties} />
-    {feedback.reaction && <img className="combat__reaction-art" src={`/assets/combat-ux/reaction-${feedback.reaction}.webp`} alt="" draggable={false} onError={event => { event.currentTarget.hidden = true; }} />}
+    {feedback.reaction && feedback.reaction !== "slam" && <img className="combat__reaction-art" src={`/assets/combat-ux/reaction-${feedback.reaction}.webp`} alt="" draggable={false} onError={event => { event.currentTarget.hidden = true; }} />}
     <span className="combat__feedback-number">{feedback.label}</span>
   </span>;
 }

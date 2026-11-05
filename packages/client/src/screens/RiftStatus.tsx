@@ -54,6 +54,8 @@ import {
 } from "./environment-copy";
 import { ChapterGoalCard } from "./ChapterGoal";
 import "./RiftStatus.css";
+import { WagonDefense } from "./WagonDefense";
+import { crossingProgress } from "./combat-plan";
 
 /** At most this many caption lines from one round: the newest win. */
 const CAPTION_LINES = 3;
@@ -71,6 +73,7 @@ export function riftCaption(events: readonly EncounterEvent[], encounter: Encoun
     isParty: (id: string): boolean => combatantById(encounter, id)?.side === "party",
     captive: (index?: number) => captiveName(encounter.environment?.spec, index),
     objective: (id: string) => encounter.environment?.spec.objectives?.find((o) => o.id === id)?.label ?? id,
+    exit: (id: string) => encounter.environment?.spec.exits?.find(exit => exit.id === id && exit.art)?.label,
   };
   const lines: string[] = [];
   for (const event of events) {
@@ -99,6 +102,7 @@ export function RiftStatus(): ReactElement | null {
 
   return (
     <aside className="rift-status" aria-label="The rift">
+      {view.objectives.some(o => o.id === "wagon-lane") ? <WagonDefense encounter={encounter} /> : null}
       {clock ? (
         <p className={`rift-status__clock rift-status__clock--${clock.mood}`} role="status">
           <span className="rift-status__figure" aria-hidden="true">
@@ -121,7 +125,7 @@ export function RiftStatus(): ReactElement | null {
             <span>{modifierLine(modifier)}</span>
           </li>
         ))}
-        {view.objectives.map((objective) => (
+        {view.objectives.filter(o => o.id !== "wagon-lane").map((objective) => (
           <li key={`objective:${objective.id}`} className={objective.done ? "rift-status__line--open" : undefined}>
             <Icon name={objectiveIcon(objective.kind)} />
             <span>{objectiveLine(objective)}</span>
@@ -134,8 +138,8 @@ export function RiftStatus(): ReactElement | null {
           </li>
         ))}
       </ul>
-      <ChapterGoalCard place="world" folded />
-      {caption ? (
+      {crossingProgress(encounter) ? <p className="rift-status__crossing" aria-label="Friends across">{crossingProgress(encounter)}</p> : !view.objectives.some(o => o.id === "wagon-lane") && <ChapterGoalCard place="world" folded />}
+      {caption && !view.objectives.some(o => o.id === "wagon-lane") && !crossingProgress(encounter) ? (
         <ul className="rift-status__caption" key={caption.seq} aria-live="polite">
           {caption.lines.map((line, i) => (
             <li key={i}>{line}</li>

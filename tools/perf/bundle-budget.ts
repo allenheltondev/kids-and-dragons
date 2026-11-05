@@ -197,7 +197,13 @@ const FIRST_PAINT_BUDGET_KB = 330;
 // 1536KB measured in Linux CI run 41934647049 after its automatic merge.
 // Heroes leave the trailhead line cleanly and framing keeps every figure on
 // screen. This adds lazy camp code; first paint remains 329KB. Keep 2KB slack.
-const TOTAL_BUDGET_KB = 1538;
+// 1485 -> 1490 for the wagon defense benchmark: native wagon travel, shared
+// state-derived progress/defender views and the departure payoff add ~5KB.
+// First paint stays 329KB; no dependency is added. Wagon art warms with the chapter.
+// 1538 + 5 = 1543 when the camp branch met main's wagon benchmark (#634): the
+// two raises were made separately from 1485, so they add. The merged build
+// measured exactly 1543KB locally, first paint 329KB; keep 2KB of slack for CI.
+const TOTAL_BUDGET_KB = 1545;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

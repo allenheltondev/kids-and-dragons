@@ -1,6 +1,7 @@
-import type { EncounterEvent, EncounterState } from "@kad/shared";
+import { combatantById, type EncounterEvent, type EncounterState } from "@kad/shared";
+import { windupCopy } from "./windup-copy";
 
-export type CombatReaction = "hurt" | "ready" | "celebrate";
+export type CombatReaction = "hurt" | "ready" | "celebrate" | "slam";
 export interface CombatFeedback {
   actorId: string;
   effect: "impact_strike" | "heal_bloom" | "guard_ward" | "miss_veer" | "burst_star";
@@ -28,8 +29,16 @@ export function combatFeedback(events: readonly EncounterEvent[], encounter: Enc
     const add = (actorId: string, effect: CombatFeedback["effect"], label: string, reaction?: CombatReaction) =>
       out.push({ actorId, effect, label, eventIndex, ...(reaction ? { reaction } : {}) });
     switch (event.type) {
-      case "windupStarted": add(event.actorId, "guard_ward", event.label, "ready"); break;
-      case "windupReleased": add(event.actorId, "burst_star", "Burst!"); break;
+      case "windupStarted":
+        // Physical preparation is the saved raised pose and marked ground;
+        // adding a ward here would turn it back into a magical attack.
+        if (combatantById(encounter, event.actorId)?.windupAttack?.presentation !== "slam") add(event.actorId, "guard_ward", event.label, "ready");
+        break;
+      case "windupReleased": {
+        const style = combatantById(encounter, event.actorId)?.windupAttack?.presentation;
+        add(event.actorId, style === "slam" ? "impact_strike" : "burst_star", windupCopy(style).release, style === "slam" ? "slam" : undefined);
+        break;
+      }
       case "windupInterrupted": add(event.actorId, "miss_veer", "Interrupted!", "hurt"); break;
       case "damage": if (event.amount > 0) add(event.actorId, "impact_strike", `−${event.amount}`, "hurt"); break;
       case "heal": if (event.amount > 0) add(event.actorId, "heal_bloom", `+${event.amount}`); break;

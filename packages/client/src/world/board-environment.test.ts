@@ -46,12 +46,11 @@ function members(chars: readonly ResolvedCharacter[]): PartyMember[] {
 }
 
 /**
- * Gemfall's second chapter's wolf fight, on its own map, exactly as authored:
- * the fixture for "a fight without an environment draws what it always drew".
+ * The shipped ordinary wolf fight, before the opt-in roadside mission:
+ * the fixture for "a saved fight without an environment draws what it always drew".
  */
 function gemfallFight(): EncounterState {
   const scene = (gemfall02 as unknown as { scenes: Record<string, EncounterScene> }).scenes["encounter_wolves"]!;
-  expect(scene.environment).toBeUndefined();
   const enemies: EnemyPlacement[] = [];
   for (const authored of scene.enemies) {
     const { spec } = resolveEnemy(authored as AuthoredEnemySpec, bestiary as unknown as Bestiary);
@@ -294,6 +293,30 @@ describe("the place's beats on the board", () => {
 
 
 describe("painted environment markers", () => {
+  it("rears for a physical windup and plays its slam without spark captions", () => {
+    const base = riftFight();
+    const encounter = { ...base, combatants: base.combatants.map(c => c.side === "enemy" ? { ...c,
+      windupAttack: { label: "Plank slap", radius: 1 as const, damage: 3, presentation: "slam" as const },
+      windup: { tiles: [{ x: 0, y: 0 }] },
+    } : c) };
+    const layer = drawn(encounter);
+    try {
+      const actorLayer = layer.container.children.find(c => c.sortableChildren) as Container;
+      const enemy = actorLayer.children.find(c => !(c instanceof Graphics) && c.x > BOARD_TILE_PX * 5) as Container;
+      const art = enemy.children.find(c => c instanceof Container && !(c instanceof Graphics)) as Container;
+      expect(Math.abs(art.rotation)).toBeGreaterThan(.15);
+      const raised = art.scale.y;
+      layer.playEvents([{ type: "windupStarted", actorId: "wisp#1", label: "Plank slap", tiles: [{ x: 0, y: 0 }] }], 0);
+      layer.tick(.01);
+      layer.playEvents([{ type: "windupReleased", actorId: "wisp#1", label: "Plank slap", tiles: [{ x: 0, y: 0 }], targets: ["c_1"] }], 0);
+      layer.tick(.15);
+      expect(art.scale.y).toBeLessThan(raised);
+      const words = nodes(layer).filter((n): n is Text => n instanceof Text).map(n => n.text);
+      expect(words).toContain("Planks raised!");
+      expect(words).toContain("Whap!");
+      expect(words).not.toContain("Gathering sparks!");
+    } finally { layer.destroy(); }
+  });
   it("loads Bun on the shared board, switches to her upright art when freed", async () => {
     const load = vi.spyOn(Assets, "load").mockResolvedValue(Texture.WHITE as unknown as Record<string, unknown>);
     const encounter = riftFight({ rescue: { name: "Bun", at: { x: 1, y: 7 } } });

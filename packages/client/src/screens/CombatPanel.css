@@ -896,20 +896,25 @@ html[data-text] .combat .combat__actions .choice { font-size: .85em; }
 .combat__cell--danger::before { content: "!"; position: absolute; z-index: 4; inset-block-start: 0; inset-inline-end: 2%; color: #ffe5b0; font-size: max(12px, .8em); font-weight: 900; text-shadow: 0 1px 2px #000; pointer-events: none; }
 
 .combat__cell--charging > .combat__cell-art { filter: drop-shadow(0 0 5px #ffd28a) sepia(.5); }
+.combat__cell--charging.combat__cell--slam > .combat__cell-art { filter: drop-shadow(0 -3px 2px #d9bb82); transform: rotate(-12deg) scaleY(1.12); }
+.combat__cell--slam[data-reaction="slam"] > .combat__cell-art { animation: plank-slap .4s ease-out; }
+@keyframes plank-slap { 35% { transform: rotate(12deg) scaleY(.8); } }
+@media (prefers-reduced-motion: reduce) { .combat__cell--slam[data-reaction="slam"] > .combat__cell-art { animation: none; } }
+[data-motion="reduced"] .combat__cell--slam[data-reaction="slam"] > .combat__cell-art { animation: none; }
 
 /* A mission encounter spends the header on health rather than between-fight XP. */
-.player--fighting:has(.combat[data-windup]) .sheet .xp-meter { display: none; }
+.player--fighting:has(.combat[data-mission]) .sheet .xp-meter { display: none; }
 
 /* Mission rules already explain the situation; aiming instructions keep their seat. */
 .combat[data-quiet-hint] .combat__seat { display: none; }
-.combat[data-windup] .combat__board { min-block-size: clamp(80px, 24cqh, 180px); }
+.combat[data-mission] .combat__board { min-block-size: clamp(80px, 24cqh, 180px); }
 
 /* Keep threat text and complete action cards readable at the largest text setting. */
-.combat[data-windup] .combat__env { font-size: max(12px, .7em); line-height: 1.25; }
-.combat[data-windup] .combat__fighter-strip button { font-size: max(12px, .65em); line-height: 1.15; padding-block: .15em; }
-.combat[data-windup] .combat__budget { line-height: 1.2; }
-.combat[data-windup] .paged-options__nav { font-size: .75em; }
-.combat[data-windup] .combat__result summary { min-block-size: 44px; padding-block: .15em; }
-.combat[data-windup] .combat__targets .choice { font-size: .8em; min-block-size: 44px; padding-block: .2em; }
-.combat[data-windup] .combat__ask { font-size: .8em; line-height: 1.25; }
-.combat[data-windup] .combat__ask-row > .kad-button { min-block-size: 44px; font-size: .75em; padding-block: .25em; }
+.combat[data-mission] .combat__env { font-size: max(12px, .7em); line-height: 1.25; }
+.combat[data-mission] .combat__fighter-strip button { font-size: max(12px, .65em); line-height: 1.15; padding-block: .15em; }
+.combat[data-mission] .combat__budget { line-height: 1.2; }
+.combat[data-mission] .paged-options__nav { font-size: .75em; }
+.combat[data-mission] .combat__result summary { min-block-size: 44px; padding-block: .15em; }
+.combat[data-mission] .combat__targets .choice { font-size: .8em; min-block-size: 44px; padding-block: .2em; }
+.combat[data-mission] .combat__ask { font-size: .8em; line-height: 1.25; }
+.combat[data-mission] .combat__ask-row > .kad-button { min-block-size: 44px; font-size: .75em; padding-block: .25em; }

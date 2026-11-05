@@ -3381,11 +3381,13 @@
       "prop_fern",
       "prop_pickle_wagon",
       "prop_hay_wagon",
+      "sausage-wagon",
       "prop_mule_cart",
       "prop_rock",
       "prop_cracked_rock"
     ],
     "motions": {
+      "sausage-wagon": { "preset": "still", "durationMs": 3200 },
       "rope-loop": {
         "preset": "swing",
         "durationMs": 2600

@@ -10,6 +10,7 @@ import { makeChapter } from "../../../shared/src/test-fixtures";
 import { makeCharacter, makeMember } from "../testing/fixtures";
 import { upcomingAssets } from "./prefetch";
 import { chapterAssets } from "./chapter-art";
+import gemfall02 from "../../../../content/chapters/gemfall-02.json";
 
 /**
  * The shared fixture, with real art: clearing → (check_squeeze | shrine);
@@ -28,13 +29,21 @@ function chapter(): Chapter {
 const PARTY = [makeMember({ character: makeCharacter({ species: "unicorn", tier: "fledgling", class: "songkeeper" }) })];
 
 describe("the scenes ahead", () => {
+  it("warms the mimic crossing's retreat prop for the persisted escape payoff", () => {
+    expect(chapterAssets(gemfall02 as unknown as Chapter, [])).toContain("/assets/entities/mire_mimic/little.png");
+  });
   it("warms authored objective props along with the chapter", () => {
     const content = chapter();
     const fight = content.scenes.encounter_wisps as Extract<Chapter["scenes"][string], { type: "encounter" }>;
     const quay: Chapter = { ...content, scenes: { ...content.scenes, encounter_wisps: { ...fight, environment: { objectives: [
       { id: "rope", kind: "close", label: "Tie the rope", at: { x: 2, y: 2 }, turns: 2, art: "fight-mooring-post" },
-    ] } } } };
+    ], exits: [{ id: "bank", label: "Far bank", tiles: [{ x: 3, y: 2 }], art: "fight-plank-edge" }] } } } };
     expect(chapterAssets(quay, [])).toContain("/assets/story-props/fight-mooring-post.webp");
+    expect(chapterAssets(quay, [])).toContain("/assets/story-props/fight-plank-edge.webp");
+    const wagon: Chapter = { ...content, scenes: { ...content.scenes, encounter_wisps: { ...fight, environment: { objectives: [
+      { id: "wagon-lane", kind: "hold", label: "Lane", tiles: [{ x: 2, y: 2 }], rounds: 2 },
+    ] } } } };
+    expect(chapterAssets(wagon, [])).toContain("/assets/story-props/sausage-wagon.webp");
   });
   it("starts with the party's own figures — every scene needs them", () => {
     const urls = upcomingAssets(null, null, PARTY);

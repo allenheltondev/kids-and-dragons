@@ -21,6 +21,16 @@ function turn(state: EncounterState, id: string): EncounterState {
 function armed(seats = 1) { return performEnemyWindup(turn(fight(seats), "lamp#1"), ctx); }
 
 describe("committed enemy bursts", () => {
+  it("persists a physical presentation without changing targeting, rolls or damage", () => {
+    const base = turn(fight(), "lamp#1");
+    const physical = { ...base, combatants: base.combatants.map(c => c.windupAttack ? { ...c, windupAttack: { ...c.windupAttack, presentation: "slam" as const } } : c) };
+    const normal = performEnemyWindup(base, ctx);
+    const raised = performEnemyWindup(physical, ctx);
+    expect(raised.events).toEqual(normal.events);
+    const saved = JSON.parse(JSON.stringify(raised.state)) as EncounterState;
+    expect(combatantById(saved, "lamp#1")!.windupAttack?.presentation).toBe("slam");
+    expect(performEnemyWindup({ ...saved, actionTaken: false }, ctx).events).toEqual(performEnemyWindup({ ...normal.state, actionTaken: false }, ctx).events);
+  });
   it.each([1, 2, 4])("gives every hero a response turn, saves fixed ground, and can be dodged with %i seats", seats => {
     const prepared = armed(seats);
     expect(prepared.events[0]?.type).toBe("windupStarted");

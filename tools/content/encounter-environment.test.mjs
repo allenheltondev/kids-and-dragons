@@ -3,8 +3,8 @@
  *
  * Two halves, like validate-core.test.mjs. The schema — the half an editor sees —
  * has to accept the sandbox chapter the authoring doc teaches from and refuse
- * the shapes it says do not exist; the shipped chapters, none of which
- * declare an environment, must still pass untouched. And `content:validate`
+ * the shapes it says do not exist; shipped environments and ordinary fights
+ * must retain their explicit contracts. And `content:validate`
  * itself has to *catch* a broken environment in real content, which is shown
  * the only way that means anything: a copy of the real tree with exactly one
  * thing bent, and a specific complaint required (validate-core.test.mjs explains
@@ -52,7 +52,7 @@ describe("the schema", () => {
     expect(map.ok, map.errors.join("\n")).toBe(true);
   });
 
-  it("accepts shipped environments, including the authored quay benchmark", () => {
+  it("accepts shipped environments, including the explicit Gemfall combat benchmarks", () => {
     const dir = join(REPO, "content", "chapters");
     for (const file of readdirSync(dir).filter((f) => f.endsWith(".json"))) {
       const chapter = read("content", "chapters", file);
@@ -60,7 +60,7 @@ describe("the schema", () => {
       expect(ok, `${file}\n${errors.join("\n")}`).toBe(true);
       // The practice (#255) teaches walking to a gate and helping a friend up
       // with an exit and a captive. It is never a campaign a party continues,
-      // and every campaign chapter still fights exactly as before.
+      // while ordinary campaign fights retain their default rules.
       if (chapter.campaignId === "first-steps") {
         for (const scene of Object.values(chapter.scenes)) {
           expect(Object.keys(scene.environment ?? {}).every((k) => ["exits", "rescue", "victory"].includes(k))).toBe(true);
@@ -70,13 +70,31 @@ describe("the schema", () => {
         continue;
       }
       // Riftlight, the graph campaign, is what environmental combat (#201) was
-      // built for; the ordered campaigns still fight exactly as before.
+      // built for; ordered campaigns opt in only through the exceptions below.
       if (chapter.campaignId === "riftlight") continue;
       for (const [sceneId, scene] of Object.entries(chapter.scenes)) {
         if (chapter.id === "gemfall-01" && sceneId === "encounter_quay_wisps") {
           expect(scene.environment.objectives[0]).toMatchObject({ id: "ferry-rope", turns: 2, endsFight: true });
           expect(scene.environment.clock.onExpire).toBe("collapse");
           expect(scene.onTimeout.goto).toBe("scene_quay_wisps_scattered");
+          continue;
+        }
+        if (chapter.id === "gemfall-02" && sceneId === "encounter_wolves") {
+          expect(scene.environment.objectives).toHaveLength(1);
+          expect(scene.environment.objectives[0]).toMatchObject({ id: "wagon-lane", kind: "hold", rounds: 2, endsFight: true });
+          expect(scene.environment.clock).toMatchObject({ rounds: 5, onExpire: "collapse" });
+          expect(scene.onVictory.goto).toBe("scene_plank_bridge");
+          expect(scene.onTimeout.goto).toBe("scene_plank_bridge");
+          expect(scene).not.toHaveProperty("onEscape");
+          continue;
+        }
+        if (chapter.id === "gemfall-02" && sceneId === "encounter_mimic_plank") {
+          expect(scene.environment.exits).toHaveLength(1);
+          expect(scene.environment.exits[0]).toMatchObject({ id: "far-bank", art: "fight-plank-edge" });
+          expect(scene.environment.clock).toMatchObject({ rounds: 6, onExpire: "collapse" });
+          expect(scene.onVictory.goto).toBe("scene_mimic_gone");
+          expect(scene.onEscape.goto).toBe("scene_mimic_passed");
+          expect(scene.onTimeout.goto).toBe("scene_mimic_squelched");
           continue;
         }
         expect(scene).not.toHaveProperty("environment");
