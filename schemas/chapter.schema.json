@@ -1881,6 +1881,10 @@
                 "type": "string",
                 "pattern": "^[a-z0-9]+([-_][a-z0-9]+)*$"
               },
+              "art": {
+                "type": "string",
+                "pattern": "^[a-z0-9_-]+$"
+              },
               "kind": {
                 "enum": [
                   "fire",
@@ -2245,6 +2249,10 @@
                     "id": {
                       "type": "string",
                       "pattern": "^[a-z0-9]+([-_][a-z0-9]+)*$"
+                    },
+                    "art": {
+                      "type": "string",
+                      "pattern": "^[a-z0-9_-]+$"
                     },
                     "kind": {
                       "enum": [

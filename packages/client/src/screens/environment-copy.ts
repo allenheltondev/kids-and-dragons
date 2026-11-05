@@ -62,6 +62,9 @@ export function modifierIcon(modifier: EnvironmentModifierView): string {
 /** What an objective asks, how far along it is, and what doing it means (#220). */
 export function objectiveLine(objective: EnvironmentObjectiveView): string {
   if (objective.done) return `${objective.label}: done!`;
+  if (objective.kind === "hold" && objective.endsFight && objective.target === 1) {
+    return `${objective.label} at round end to win.`;
+  }
   const how =
     objective.kind === "hold"
       ? "end a round with one of you on it and no monster there"
@@ -110,6 +113,9 @@ export function hazardCost(hazard: Pick<EnvironmentHazardView, "damage" | "slow"
 /** What one hazard costs, and whether it is burning yet. */
 export function hazardLine(hazard: EnvironmentHazardView): string {
   if (hazard.gone) return `${hazard.label} has died down.`;
+  if (hazard.art && hazard.active && hazard.push && !hazard.damage && !hazard.root && !hazard.slow) {
+    return `${hazard.label} pushes you ${hazard.push.tiles} square${s(hazard.push.tiles)} ${hazard.push.direction} if you stop there.`;
+  }
   const cost = `stopping on it ${hazardCost(hazard)}.`;
   return hazard.active ? `${hazard.label}: ${cost}` : `${hazard.label} (not yet): soon ${cost}`;
 }
