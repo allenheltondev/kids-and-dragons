@@ -142,6 +142,7 @@ export function environmentOverlay(encounter: EncounterState): EnvironmentOverla
       glyph: "captive",
       state: status,
       label: name,
+      ...(status === "waiting" && captive.art ? { art: captive.art } : {}),
       ...(status === "waiting" && roundsLeft !== undefined ? { count: roundsLeft } : {}),
     });
   }

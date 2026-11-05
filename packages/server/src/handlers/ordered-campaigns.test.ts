@@ -449,6 +449,18 @@ describe("Gemfall's numbers, with temporary buffs in the build (#200)", () => {
             expect(scene.environment?.hazards?.[0]?.id).toBe("depot-ink");
             continue;
           }
+          if (chapterId === "gemfall-05a" && sceneId === "encounter_wisps") {
+            expect(scene.environment?.victory).toBe("rescue");
+            continue;
+          }
+          if (chapterId === "gemfall-05c" && sceneId === "encounter_crabs") {
+            expect(scene.environment?.exits?.[0]?.id).toBe("boundary-stone");
+            continue;
+          }
+          if (chapterId === "gemfall-05c" && sceneId === "encounter_crawlers") {
+            expect(scene.environment?.objectives?.[0]?.id).toBe("tally-books");
+            continue;
+          }
           expect(scene).not.toHaveProperty("environment");
           expect(scene).not.toHaveProperty("onEscape");
           expect(scene).not.toHaveProperty("onTimeout");

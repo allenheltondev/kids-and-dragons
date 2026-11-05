@@ -41,7 +41,9 @@ export function chapterAssets(chapter: Chapter | null, party: readonly FigureOf[
       if (chapter.id === "gemfall-02" && id === "encounter_mimic_plank") urls.add("/assets/entities/mire_mimic/little.png");
       for (const environment of [scene.environment, ...(scene.environment?.variants ?? [])]) {
         if (environment?.objectives?.some(o => o.id === "wagon-lane")) urls.add("/assets/story-props/sausage-wagon.webp");
-        for (const marker of [...(environment?.exits ?? []), ...(environment?.objectives ?? []), ...(environment?.hazards ?? [])]) {
+        const rescue = environment?.rescue;
+        const captives = Array.isArray(rescue) ? rescue : rescue ? [rescue] : [];
+        for (const marker of [...(environment?.exits ?? []), ...(environment?.objectives ?? []), ...(environment?.hazards ?? []), ...captives]) {
           if (marker.art) urls.add(`/assets/story-props/${marker.art}.webp`);
         }
       }

@@ -809,6 +809,8 @@ export interface RiftExit {
  * fact (`setFlag`, then a journey flag and a node's `onComplete`).
  */
 export interface RescueObjective {
+  /** Optional story prop marking who needs help. */
+  art?: string;
   /** "Pip the ferry-sprite". */
   name: string;
   at: MapTile;
