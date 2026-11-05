@@ -103,6 +103,9 @@ export function RiftStatus(): ReactElement | null {
   if (!view) return null;
   const clock = view.clock ? clockReadout(view.clock) : null;
   const markedHazards = view.hazards.filter(hazard => hazard.art && !hazard.gone);
+  const progress = crossingProgress(encounter);
+  const progressLabel = encounter.environment?.spec.exits?.some(exit => exit.id === "big-campfire")
+    ? "Friends at the big campfire" : "Friends across";
 
   return (
     <aside className="rift-status" aria-label={view.clock?.label && !/\brift\b/i.test(view.clock.label) ? view.clock.label : "The rift"}>
@@ -148,8 +151,8 @@ export function RiftStatus(): ReactElement | null {
           </li>
         ))}
       </ul>
-      {crossingProgress(encounter) ? <p className="rift-status__crossing" aria-label="Friends across">{crossingProgress(encounter)}</p> : !view.objectives.some(o => o.id === "wagon-lane") && !view.objectives.some(o => o.art && o.endsFight) && markedHazards.length === 0 && <ChapterGoalCard place="world" folded />}
-      {caption && !view.objectives.some(o => o.id === "wagon-lane") && !crossingProgress(encounter) ? (
+      {progress ? <p className="rift-status__crossing" aria-label={progressLabel}>{progress}</p> : !view.objectives.some(o => o.id === "wagon-lane") && !view.objectives.some(o => o.art && o.endsFight) && markedHazards.length === 0 && <ChapterGoalCard place="world" folded />}
+      {caption && !view.objectives.some(o => o.id === "wagon-lane") && !progress ? (
         <ul className="rift-status__caption" key={caption.seq} aria-live="polite">
           {caption.lines.map((line, i) => (
             <li key={i}>{line}</li>
