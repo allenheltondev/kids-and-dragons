@@ -274,6 +274,7 @@ export function describeBeats(
           isParty,
           captive: (index) => captiveName(encounter.environment?.spec, index),
           objective: (id) => encounter.environment?.spec.objectives?.find((o) => o.id === id)?.label ?? id,
+          clock: encounter.environment?.spec.clock?.label,
           exit: (id) => encounter.environment?.spec.exits?.find(exit => exit.id === id && exit.art)?.label,
         });
         if (line) out.push({ key, ...line, environment: true });
