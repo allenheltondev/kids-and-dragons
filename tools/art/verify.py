@@ -709,7 +709,7 @@ CAMP_X_MAX = 0.92
 # moving part; resting at a tent sways its flap, which every tent style carries.
 CAMP_HOTSPOT_KINDS = {"cookfire", "awning", "lanterns", "friends_corner", "banner_pole", "trophy"}
 CAMP_ANIMATED_ACTIONS = {"warmUp", "lookUp", "peek"}
-CAMP_CREW_GROUPS = {"frame", "kept", "find", "starter-shop", "stage2-shop", "trophy"}
+CAMP_CREW_GROUPS = {"frame", "kept", "find", "starter-shop", "stage2-shop", "stage3-shop", "stage4-shop", "trophy"}
 CAMP_KIT_GROUPS = {"catalog", "find", "milestone"}
 CAMP_DISTINCTIONS = ("apprentice", "expert", "master")
 # Content sits beside the manifest; the tests point ROOT at a scratch tree for the art alone.

@@ -32,7 +32,15 @@
     { "id": "shop_lantern_arch", "hotspot": "lanterns", "group": "shop", "stage": 2, "price": 15 },
     { "id": "shop_friends_hammock", "hotspot": "friends_corner", "group": "shop", "stage": 2, "price": 15 },
     { "id": "trophy_gemfall", "hotspot": "trophy", "group": "trophy", "campaign": "gemfall" },
-    { "id": "trophy_riftlight", "hotspot": "trophy", "group": "trophy", "campaign": "riftlight" }
+    { "id": "trophy_riftlight", "hotspot": "trophy", "group": "trophy", "campaign": "riftlight" },
+    {"id": "shop_tea_kettle", "hotspot": "friends_corner", "group": "shop", "stage": 3, "price": 10},
+    {"id": "shop_map_table", "hotspot": "awning", "group": "shop", "stage": 3, "price": 12},
+    {"id": "shop_woodpile", "hotspot": "awning", "group": "shop", "stage": 3, "price": 10},
+    {"id": "shop_water_crock", "hotspot": "friends_corner", "group": "shop", "stage": 3, "price": 12},
+    {"id": "shop_supply_chest", "hotspot": "awning", "group": "shop", "stage": 4, "price": 12},
+    {"id": "shop_rug", "hotspot": "friends_corner", "group": "shop", "stage": 4, "price": 10},
+    {"id": "shop_herb_planter", "hotspot": "friends_corner", "group": "shop", "stage": 4, "price": 12},
+    {"id": "shop_trophy_rack", "hotspot": "awning", "group": "shop", "stage": 4, "price": 15}
   ],
   "hotspots": [
     { "id": "cookfire", "kind": "cookfire", "stage": 2, "default": "cookfire_pot" },
@@ -51,6 +59,46 @@
     {
       "stage": 2,
       "pieces": [
+        "shop_kettle_cookfire",
+        "shop_weathervane_pole",
+        "shop_patchwork_awning",
+        "shop_lantern_arch",
+        "shop_friends_hammock",
+        "shop_lantern_string",
+        "shop_striped_awning",
+        "shop_log_bench",
+        "shop_pinwheel_pole"
+      ]
+    },
+    {
+      "stage": 3,
+      "pieces": [
+        "shop_tea_kettle",
+        "shop_map_table",
+        "shop_woodpile",
+        "shop_water_crock",
+        "shop_kettle_cookfire",
+        "shop_weathervane_pole",
+        "shop_patchwork_awning",
+        "shop_lantern_arch",
+        "shop_friends_hammock",
+        "shop_lantern_string",
+        "shop_striped_awning",
+        "shop_log_bench",
+        "shop_pinwheel_pole"
+      ]
+    },
+    {
+      "stage": 4,
+      "pieces": [
+        "shop_supply_chest",
+        "shop_rug",
+        "shop_herb_planter",
+        "shop_trophy_rack",
+        "shop_tea_kettle",
+        "shop_map_table",
+        "shop_woodpile",
+        "shop_water_crock",
         "shop_kettle_cookfire",
         "shop_weathervane_pole",
         "shop_patchwork_awning",

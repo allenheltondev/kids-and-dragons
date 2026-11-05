@@ -190,7 +190,9 @@ describe("the shops", () => {
       'stage-2 shop leaves out "shop_log_bench" (stage 1)',
     );
     expect(problems(({ catalog }) => catalog.shops.shift()).join("\n")).toContain("there is no starter (stage 1) shop");
-    expect(problems(({ catalog }) => catalog.shops.pop()).join("\n")).toContain("there is no stage-2 shop");
+    expect(problems(({ catalog }) => {
+      catalog.shops = catalog.shops.filter((shop) => shop.stage !== 2);
+    }).join("\n")).toContain("there is no stage-2 shop");
   });
 });
 
