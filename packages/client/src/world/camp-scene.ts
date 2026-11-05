@@ -26,6 +26,8 @@ export interface CampArtPiece {
   group: string;
   path: string;
   heightCm: number;
+  /** Its painted width, as `heightCm` is its height: the box the layout keeps clear (camp-boxes.ts). */
+  widthCm?: number;
   campaign?: string;
   movingParts?: { path: string; motion: CampMovingPart["motion"] }[];
 }
@@ -125,6 +127,7 @@ export interface CampSpotView {
   /** The piece's art, relative to `assets/`. */
   path: string | null;
   heightCm: number;
+  widthCm: number;
   movingParts: { path: string; motion: CampMovingPart["motion"] }[];
   /** Somebody may pick for it (never a trophy). */
   pickable: boolean;
@@ -140,6 +143,7 @@ export interface CampBesideView {
   label: string;
   path: string | null;
   heightCm: number;
+  widthCm: number;
   /** The hotspot it would go on now, or null while the camp has none for it. */
   hotspotId: string | null;
   /** The frame stage whose camp has a spot for it, when this one does not. */
@@ -169,6 +173,7 @@ export function campBeside(
       label: pieceName(pieceId),
       path: art?.path ?? null,
       heightCm: art?.heightCm ?? 60,
+      widthCm: art?.widthCm ?? art?.heightCm ?? 60,
       hotspotId: spot?.id ?? null,
       waitsForStage: spot || !rule ? null : stageForPiece(rule, ALL_HOTSPOTS),
     });
@@ -201,6 +206,7 @@ export function campSpots(
       label: pieceId ? pieceName(pieceId) : hotspotName(h.kind),
       path: art?.path ?? null,
       heightCm: art?.heightCm ?? 60,
+      widthCm: art?.widthCm ?? art?.heightCm ?? 60,
       movingParts: art?.movingParts ?? [],
       pickable: h.kind !== "trophy",
       highlighted: options.highlight?.has(h.id) ?? false,

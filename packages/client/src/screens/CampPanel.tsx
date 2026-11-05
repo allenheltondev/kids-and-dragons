@@ -3,8 +3,9 @@
  *
  *   - `CampButton`: "Camp", beside Ready in the lobby, at a rest scene and at
  *     the chapter's end. It opens the panel; nothing waits on it.
- *   - `CampPanel`: a picture of the camp, framed as the shared screen frames
- *     it, its hotspots tappable, and beside it a named, keyboard-reachable
+ *   - `CampPanel`: a picture of the whole camp across (StillCamp `fit="width"`:
+ *     every tent and spot in view, sky and foreground cropped instead of the
+ *     sides), a chip under it for each spot, and beside it a named, keyboard-reachable
  *     control for everything the picture does: this kid's own kit (tent,
  *     bedroll and pack, color, decorations; no limit), and the crew's shared
  *     spots (one change a stop, Undo free, new things free at the chapter's
@@ -423,7 +424,7 @@ export function CampPanel({ state, me, held, dispatch }: { state: RunState; me: 
         <KitWelcome state={state} me={me} held={held} dispatch={dispatch} />
         {layout ? (
           <div className="camp-panel__picture" aria-hidden="true">
-            <StillCamp layout={layout} state={state} insets={{ top: 0, bottom: 0 }} activeSpot={active} {...(state.campMoment?.outdoor ? { onSpot: setActive } : {})} />
+            <StillCamp layout={layout} state={state} fit="width" activeSpot={active} {...(state.campMoment?.outdoor ? { onSpot: setActive } : {})} />
           </div>
         ) : null}
         {mine.map((member) => {

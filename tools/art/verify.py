@@ -884,6 +884,11 @@ def check_camp_catalog(rep: Report, mf: dict) -> None:
         pid = piece.get("id")
         height(piece)
         chapter(piece)
+        # Its painted width, as heightCm is its height: the box the stage-2 layout keeps clear
+        # of the tents and the other pieces (packages/client/src/world/camp-boxes.ts).
+        width = piece.get("widthCm")
+        if isinstance(width, bool) or not isinstance(width, (int, float)) or width <= 0:
+            problems.append(f"{pid} widthCm a positive number")
         if piece.get("hotspot") not in CAMP_HOTSPOT_KINDS:
             problems.append(f"{pid} hotspot a kind in {sorted(CAMP_HOTSPOT_KINDS)}")
         if piece.get("group") not in CAMP_CREW_GROUPS:

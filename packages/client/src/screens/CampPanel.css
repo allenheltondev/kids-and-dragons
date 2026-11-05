@@ -40,8 +40,6 @@
 .camp-panel__picture {
   position: relative;
   margin-inline: -1rem;
-  block-size: min(52vh, 84vw);
-  min-block-size: 13rem;
   font-size: 1.05rem;
   flex: none;
 }

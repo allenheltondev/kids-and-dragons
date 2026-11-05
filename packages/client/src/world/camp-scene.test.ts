@@ -67,7 +67,7 @@ describe("the chapter end's finds beside the campfire (§5.3, §12.5)", () => {
   it("lists what was found this chapter, its spot lit, and never puts it up over a kid's pick", () => {
     const s = state({});
     expect(campBeside(s, stage2)).toEqual([
-      { pieceId: "find_noodle_awning", label: "Noodle awning", path: "camp/pieces/find-noodle-awning.png", heightCm: 210, hotspotId: "awning", waitsForStage: null },
+      { pieceId: "find_noodle_awning", label: "Noodle awning", path: "camp/pieces/find-noodle-awning.png", heightCm: 210, widthCm: 130, hotspotId: "awning", waitsForStage: null },
     ]);
     const dressing = campDressing({ ...s, crew: undefined, crews: undefined, firstCrewName: undefined } as RunState, stage2);
     const awning = dressing.spots.find((spot) => spot.id === "awning")!;
