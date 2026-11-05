@@ -1333,14 +1333,14 @@
       {
         "stage": 2,
         "pieces": [
-          { "id": "tent_0", "path": "camp/kits/tents/rolled.png", "lane": "back", "x": 0.21, "heightCm": 140, "ownerSeat": 0 },
-          { "id": "tent_1", "path": "camp/kits/tents/rolled.png", "lane": "back", "x": 0.37, "heightCm": 140, "ownerSeat": 1 },
-          { "id": "tent_2", "path": "camp/kits/tents/rolled.png", "lane": "back", "x": 0.63, "heightCm": 140, "ownerSeat": 2 },
-          { "id": "tent_3", "path": "camp/kits/tents/rolled.png", "lane": "back", "x": 0.79, "heightCm": 140, "ownerSeat": 3 },
-          { "id": "souvenirs_0", "path": "camp/kits/souvenir-line.png", "lane": "back", "x": 0.24, "heightCm": 70, "ownerSeat": 0 },
-          { "id": "souvenirs_1", "path": "camp/kits/souvenir-line.png", "lane": "back", "x": 0.34, "heightCm": 70, "ownerSeat": 1 },
-          { "id": "souvenirs_2", "path": "camp/kits/souvenir-line.png", "lane": "back", "x": 0.66, "heightCm": 70, "ownerSeat": 2 },
-          { "id": "souvenirs_3", "path": "camp/kits/souvenir-line.png", "lane": "back", "x": 0.76, "heightCm": 70, "ownerSeat": 3 }
+          { "id": "tent_0", "path": "camp/kits/tents/rolled.png", "lane": "back", "x": 0.24, "heightCm": 140, "ownerSeat": 0 },
+          { "id": "tent_1", "path": "camp/kits/tents/rolled.png", "lane": "middle", "x": 0.367, "heightCm": 140, "ownerSeat": 1 },
+          { "id": "tent_2", "path": "camp/kits/tents/rolled.png", "lane": "middle", "x": 0.648, "heightCm": 140, "ownerSeat": 2 },
+          { "id": "tent_3", "path": "camp/kits/tents/rolled.png", "lane": "back", "x": 0.776, "heightCm": 140, "ownerSeat": 3 },
+          { "id": "souvenirs_0", "path": "camp/kits/souvenir-line.png", "lane": "back", "x": 0.213, "heightCm": 70, "ownerSeat": 0 },
+          { "id": "souvenirs_1", "path": "camp/kits/souvenir-line.png", "lane": "middle", "x": 0.358, "heightCm": 70, "ownerSeat": 1 },
+          { "id": "souvenirs_2", "path": "camp/kits/souvenir-line.png", "lane": "middle", "x": 0.657, "heightCm": 70, "ownerSeat": 2 },
+          { "id": "souvenirs_3", "path": "camp/kits/souvenir-line.png", "lane": "back", "x": 0.802, "heightCm": 70, "ownerSeat": 3 }
         ],
         "movingParts": [
           { "piece": "tent_0", "path": "camp/kits/tents/rolled-flap.png", "motion": "sway" },
@@ -1349,29 +1349,30 @@
           { "piece": "tent_3", "path": "camp/kits/tents/rolled-flap.png", "motion": "sway" }
         ],
         "hotspots": [
-          { "id": "cookfire", "kind": "cookfire", "lane": "near", "x": 0.50, "default": "cookfire_pot" },
-          { "id": "awning", "kind": "awning", "lane": "back", "x": 0.50 },
-          { "id": "lanterns", "kind": "lanterns", "lane": "near", "x": 0.08 },
-          { "id": "friends_corner", "kind": "friends_corner", "lane": "near", "x": 0.74 },
-          { "id": "banner_pole", "kind": "banner_pole", "lane": "near", "x": 0.905, "default": "kept_crew_banner" },
-          { "id": "trophy_1", "kind": "trophy", "lane": "near", "x": 0.285 },
-          { "id": "trophy_2", "kind": "trophy", "lane": "near", "x": 0.615 }
+          { "id": "cookfire", "kind": "cookfire", "lane": "near", "x": 0.512, "default": "cookfire_pot" },
+          { "id": "awning", "kind": "awning", "lane": "back", "x": 0.511 },
+          { "id": "lanterns", "kind": "lanterns", "lane": "middle", "x": 0.08 },
+          { "id": "friends_corner", "kind": "friends_corner", "lane": "near", "x": 0.211 },
+          { "id": "banner_pole", "kind": "banner_pole", "lane": "middle", "x": 0.92, "default": "kept_crew_banner" },
+          { "id": "trophy_1", "kind": "trophy", "lane": "near", "x": 0.761 },
+          { "id": "trophy_2", "kind": "trophy", "lane": "near", "x": 0.825 }
         ],
         "standPoints": [
-          { "id": "tent_0", "lane": "back", "x": 0.21, "face": "right", "action": "rest", "hotspot": "tent_0", "seat": 0 },
-          { "id": "tent_1", "lane": "back", "x": 0.37, "face": "right", "action": "rest", "hotspot": "tent_1", "seat": 1 },
-          { "id": "tent_2", "lane": "back", "x": 0.63, "face": "left", "action": "rest", "hotspot": "tent_2", "seat": 2 },
-          { "id": "tent_3", "lane": "back", "x": 0.79, "face": "left", "action": "rest", "hotspot": "tent_3", "seat": 3 },
-          { "id": "cookfire_left", "lane": "near", "x": 0.42, "face": "right", "action": "warmUp", "hotspot": "cookfire" },
-          { "id": "cookfire_right", "lane": "near", "x": 0.58, "face": "left", "action": "warmUp", "hotspot": "cookfire" },
-          { "id": "awning", "lane": "back", "x": 0.50, "face": "left", "hotspot": "awning" },
-          { "id": "lanterns", "lane": "near", "x": 0.14, "face": "left", "action": "lookUp", "hotspot": "lanterns" },
-          { "id": "friends_corner", "lane": "near", "x": 0.67, "face": "right", "action": "pet", "hotspot": "friends_corner" },
-          { "id": "banner_pole", "lane": "near", "x": 0.85, "face": "right", "action": "lookUp", "hotspot": "banner_pole" },
-          { "id": "wander_middle_left", "lane": "middle", "x": 0.09, "face": "right" },
+          { "id": "tent_0", "lane": "back", "x": 0.24, "face": "right", "action": "rest", "hotspot": "tent_0", "seat": 0 },
+          { "id": "tent_1", "lane": "middle", "x": 0.367, "face": "right", "action": "rest", "hotspot": "tent_1", "seat": 1 },
+          { "id": "tent_2", "lane": "middle", "x": 0.648, "face": "left", "action": "rest", "hotspot": "tent_2", "seat": 2 },
+          { "id": "tent_3", "lane": "back", "x": 0.776, "face": "left", "action": "rest", "hotspot": "tent_3", "seat": 3 },
+          { "id": "cookfire_left", "lane": "near", "x": 0.432, "face": "right", "action": "warmUp", "hotspot": "cookfire" },
+          { "id": "cookfire_right", "lane": "near", "x": 0.592, "face": "left", "action": "warmUp", "hotspot": "cookfire" },
+          { "id": "awning", "lane": "back", "x": 0.511, "face": "left", "hotspot": "awning" },
+          { "id": "lanterns", "lane": "middle", "x": 0.14, "face": "left", "action": "lookUp", "hotspot": "lanterns" },
+          { "id": "friends_corner", "lane": "near", "x": 0.141, "face": "right", "action": "pet", "hotspot": "friends_corner" },
+          { "id": "banner_pole", "lane": "middle", "x": 0.865, "face": "right", "action": "lookUp", "hotspot": "banner_pole" },
+          { "id": "wander_near_left", "lane": "near", "x": 0.08, "face": "right" },
+          { "id": "wander_near_center_left", "lane": "near", "x": 0.31, "face": "right" },
           { "id": "wander_middle_center", "lane": "middle", "x": 0.50, "face": "right" },
-          { "id": "wander_middle_right", "lane": "middle", "x": 0.91, "face": "left" },
-          { "id": "wander_near_left", "lane": "near", "x": 0.33, "face": "left" }
+          { "id": "wander_near_center_right", "lane": "near", "x": 0.69, "face": "left" },
+          { "id": "wander_near_right", "lane": "near", "x": 0.92, "face": "left" }
         ],
         "trailhead": { "lane": "near", "x": 0.95 }
       }

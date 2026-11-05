@@ -63,8 +63,10 @@ describe("a phone's Camp chips", () => {
         const spots = spotsAt(stage, width);
         const chips = chipRows(spots, width);
         expectTidy(chips, spots, width);
-        // Two rows at most: the awning stands behind the cookfire, so their chips take a row each.
-        expect(Math.max(...chips.map((c) => c.row)) + 1).toBeLessThanOrEqual(2);
+        // Two rows at most at stage 1. At stage 2 the awning stands behind the cookfire, so their
+        // chips take a row each, and on a phone the lanterns and the friends' corner, side by side
+        // in front of the left-hand tents, may take a third.
+        expect(Math.max(...chips.map((c) => c.row)) + 1).toBeLessThanOrEqual(stage === 1 || width >= 768 ? 2 : 3);
       });
     }
   }
