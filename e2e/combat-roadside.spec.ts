@@ -261,7 +261,11 @@ for (const fight of roadFights) {
         if (crawlers && encounter.combatants.find(c => c.id === actorId)?.actions.includes("rally")) {
           const injured = encounter.combatants.filter(c => c.side === "party" && c.hp <= c.maxHp - 2)
             .sort((a, b) => a.hp - b.hp)[0];
-          if (injured) await action(page, table.code, { type: "COMBAT_ACTION", abilityId: "rally", targetId: injured.id });
+          if (injured) {
+            await action(page, table.code, { type: "COMBAT_ACTION", abilityId: "rally", targetId: injured.id });
+            state = await roomState<RunState>(page, table.code);
+            if (!state.encounter || currentActorId(state.encounter) !== actorId) continue;
+          }
         }
         await action(page, table.code, { type: "END_TURN" });
         state = await roomState<RunState>(page, table.code);
