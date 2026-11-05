@@ -260,12 +260,14 @@ describe('the hero paint boxes gear is fitted to', () => {
     const { HERO_PAINT } = await import('../../packages/client/src/world/camp-ownership.ts');
     const code = `
 import glob, json, collections
+from pathlib import Path
 from PIL import Image
 nominal = 900 / 1024 - 0.078
 out = collections.defaultdict(lambda: [0.0, 0.0])
 paths = glob.glob('assets/characters/*/*/assembled.png') + glob.glob('assets/character-rigs/*/*/*/assembled.png')
 for path in paths:
-    species = path.split('/')[-2] if 'character-rigs' in path else path.split('/')[2]
+    parts = Path(path).parts
+    species = parts[-2] if 'character-rigs' in parts else parts[2]
     alpha = Image.open(path).convert('RGBA').resize((256, 256)).getchannel('A').point(lambda v: 255 if v > 64 else 0)
     l, t, r, b = alpha.getbbox()
     out[species][0] = max(out[species][0], (b - t) / 256 / nominal)
