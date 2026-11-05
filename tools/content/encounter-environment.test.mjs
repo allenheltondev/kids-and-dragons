@@ -122,6 +122,23 @@ describe("the schema", () => {
           expect(scene.onTimeout.goto).toBe("scene_boxes_sulking");
           continue;
         }
+        if (chapter.id === "gemfall-05a" && sceneId === "encounter_wisps") {
+          expect(scene.environment.victory).toBe("rescue");
+          expect(scene.environment.rescue).toMatchObject({ name: "the mule", art: "prop_mule_cart", turns: 2 });
+          expect(scene.onTimeout).toEqual(scene.onDefeat);
+          continue;
+        }
+        if (chapter.id === "gemfall-05c" && sceneId === "encounter_crabs") {
+          expect(scene.environment.exits[0].id).toBe("boundary-stone");
+          expect(scene.onEscape.goto).toBe("scene_turned_back");
+          expect(scene.onTimeout).toEqual(scene.onDefeat);
+          continue;
+        }
+        if (chapter.id === "gemfall-05c" && sceneId === "encounter_crawlers") {
+          expect(scene.environment.objectives[0]).toMatchObject({ id: "tally-books", kind: "hold", rounds: 2, endsFight: true });
+          expect(scene.onTimeout).toEqual(scene.onDefeat);
+          continue;
+        }
         expect(scene).not.toHaveProperty("environment");
         expect(scene).not.toHaveProperty("onEscape");
         expect(scene).not.toHaveProperty("onTimeout");

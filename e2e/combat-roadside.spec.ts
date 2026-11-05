@@ -173,19 +173,27 @@ for (const sceneId of ["encounter_wolves", "encounter_mimic_plank", "encounter_c
 }
 
 const roadFights = [
-  { sceneId: "encounter_wolves", chapterId: "gemfall-03c", cue: "Big campfire", outcome: "escaped", destination: "scene_campfire_play" },
-  { sceneId: "encounter_drakes", chapterId: "gemfall-03c", cue: "Right the wagon", outcome: "victory", destination: "end_forded" },
-  { sceneId: "encounter_boxes", chapterId: "gemfall-04c", cue: "Inky mud", outcome: "timedOut", destination: "scene_boxes_sulking" },
+  { sceneId: "encounter_wolves", chapterId: "gemfall-03c", cue: "Big campfire", target: { x: 6, y: 2 }, outcome: "escaped", destination: "scene_campfire_play", text: "You bring supper to the big fire" },
+  { sceneId: "encounter_drakes", chapterId: "gemfall-03c", cue: "Right the wagon", target: { x: 4, y: 2 }, outcome: "victory", destination: "end_forded", text: "The wagon lurches upright" },
+  { sceneId: "encounter_boxes", chapterId: "gemfall-04c", cue: "Inky mud", target: null, outcome: "timedOut", destination: "scene_boxes_sulking", text: "The last stamp disappears" },
+  { sceneId: "encounter_wisps", chapterId: "gemfall-05a", cue: "Free the mule", target: { x: 4, y: 2 }, outcome: "victory", destination: "scene_wisps_shooed", text: "Brask scoops their leftover glow" },
+  { sceneId: "encounter_crabs", chapterId: "gemfall-05c", cue: "Boundary stone", target: { x: 6, y: 3 }, outcome: "escaped", destination: "scene_turned_back", text: "The last of you steps past the stone" },
+  { sceneId: "encounter_crawlers", chapterId: "gemfall-05c", cue: "Guard the books", target: { x: 3, y: 2 }, outcome: "victory", destination: "scene_crawlers_shooed", text: "Ashby counts her books twice" },
 ] as const;
 
 for (const fight of roadFights) {
-  test(`ford road batch: ${fight.sceneId} plays through on phone and TV`, async ({ browser }, info) => {
+  test(`road fights: ${fight.chapterId} ${fight.sceneId} plays through on phone and TV`, async ({ browser }, info) => {
     test.setTimeout(240_000);
-    const wolves = fight.sceneId === "encounter_wolves";
-    const drakes = fight.sceneId === "encounter_drakes";
+    const boxes = fight.sceneId === "encounter_boxes";
+    const wisps = fight.sceneId === "encounter_wisps";
+    const crawlers = fight.sceneId === "encounter_crawlers";
     const table = await seedTable({ mode: "party", tv: true, chapterId: fight.chapterId, sceneId: fight.sceneId, heroes: [
       { name: "Aster", species: "kitsune", class: "songkeeper", stats: { might: 0, quick: 3, clever: 0, heart: 0 } },
       { name: "Fern", species: "unicorn", class: "thornguard", stats: { might: 0, quick: 3, clever: 0, heart: 0 } },
+      ...(crawlers ? [
+        { name: "Briar", species: "kitsune", class: "songkeeper", stats: { might: 0, quick: 3, clever: 0, heart: 0 } },
+        { name: "Lark", species: "unicorn", class: "songkeeper", stats: { might: 0, quick: 3, clever: 0, heart: 0 } },
+      ] as const : []),
     ] });
     const phones = [];
     const display = await openTv(browser, table, { recordVideo: { dir: info.outputPath("video"), size: { width: 1280, height: 720 } } });
@@ -227,20 +235,21 @@ for (const fight of roadFights) {
         const at = positionOf(encounter, actorId)!;
         const warnings = committedAttacks(encounter);
         if (warnings.length && !sawWarning) {
-          await expect(display.page.getByLabel("Battle plan")).toContainText(/tail sweep/i);
-          await display.page.screenshot({ path: info.outputPath("tail-sweep.png") });
+          await expect(display.page.getByLabel("Battle plan")).toContainText(/marked ground/i);
+          await display.page.screenshot({ path: info.outputPath("windup.png") });
           sawWarning = true;
         }
         const danger = warnings.flatMap(w => w.tiles);
         const enemies = encounter.combatants.filter(c => c.side === "enemy" && !c.down).map(c => positionOf(encounter, c.id)!);
         const ink = (p: { x: number; y: number }) => p.x === 2 && (p.y === 2 || p.y === 3);
-        const score = (p: { x: number; y: number }) => wolves
-          ? stepsBetween(p, { x: 6, y: 2 })
-          : drakes ? Number(danger.some(t => t.x === p.x && t.y === p.y)) * 10 + stepsBetween(p, { x: 4, y: 2 })
+        const score = (p: { x: number; y: number }) => fight.target
+          ? Number(danger.some(t => t.x === p.x && t.y === p.y)) * 10 + stepsBetween(p, fight.target)
           : Number(ink(p)) * 10 - Math.min(...enemies.map(enemy => stepsBetween(p, enemy)));
         const moves = [...legalMoves(encounter)];
-        const tile = turn === 0 && !wolves && !drakes ? moves.find(ink) : moves.sort((a, b) => score(a) - score(b))[0];
-        if (tile && (score(tile) < score(at) || (turn === 0 && ink(tile)))) {
+        // Give the wisps an opening beat before committing anyone to the cart.
+        const tile = turn === 0 && wisps ? undefined : turn === 0 && boxes ? moves.find(ink)
+          : moves.sort((a, b) => score(a) - score(b))[0];
+        if (tile && (score(tile) < score(at) || (turn === 0 && boxes && ink(tile)))) {
           if (!movedThroughUi) {
             await page.getByRole("button", { name: new RegExp(`^Move to column ${tile.x + 1}, row ${tile.y + 1}(?=:| —|$)`) }).click();
             await expect.poll(async () => (await roomState<RunState>(page, table.code)).seq).toBeGreaterThan(state.seq);
@@ -249,19 +258,28 @@ for (const fight of roadFights) {
             await action(page, table.code, { type: "MOVE", to: { x: tile.x, y: tile.y } });
           }
         }
+        if (crawlers && encounter.combatants.find(c => c.id === actorId)?.actions.includes("rally")) {
+          const injured = encounter.combatants.filter(c => c.side === "party" && c.hp <= c.maxHp - 2)
+            .sort((a, b) => a.hp - b.hp)[0];
+          if (injured) {
+            await action(page, table.code, { type: "COMBAT_ACTION", abilityId: "rally", targetId: injured.id });
+            state = await roomState<RunState>(page, table.code);
+            if (!state.encounter || currentActorId(state.encounter) !== actorId) continue;
+          }
+        }
         await action(page, table.code, { type: "END_TURN" });
         state = await roomState<RunState>(page, table.code);
-        if (turn === 0 && !wolves && !drakes) {
+        if (turn === 0 && boxes) {
           await expect(display.page.locator(".rift-status__caption")).toContainText("Inky mud");
           await display.page.screenshot({ path: info.outputPath("ink-stop.png") });
           sawInk = true;
         }
       }
       expect(movedThroughUi).toBe(true);
-      if (!wolves && !drakes) expect(sawInk).toBe(true);
+      if (boxes) expect(sawInk).toBe(true);
+      if (wisps) expect(sawWarning).toBe(true);
       expect(state.lastEncounter).toMatchObject({ sceneId: fight.sceneId, outcome: fight.outcome, destination: fight.destination });
-      const outcomeText = wolves ? "You bring supper to the big fire" : drakes ? "The wagon lurches upright" : "The last stamp disappears";
-      await expect(display.page.getByText(new RegExp(outcomeText))).toBeVisible({ timeout: 60_000 });
+      await expect(display.page.getByText(new RegExp(fight.text))).toBeVisible({ timeout: 60_000 });
       await display.page.screenshot({ path: info.outputPath("outcome.png") });
     } finally {
       for (const phone of phones) await phone.context.close();
