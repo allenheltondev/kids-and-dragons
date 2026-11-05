@@ -436,6 +436,6 @@ describe('the Phase 2 prompts, in step with the stage-2 layout (#620)', () => {
     for (const painting of prompts.paintings.filter((p) => /kits\/tents\/[a-z]+\.png$/.test(p.path))) {
       expect(painting.plays, painting.path).toMatch(/fit its owner/);
     }
-    expect(prompts.paintings.find((p) => p.path.endsWith('souvenir-line.png'))!.plays).toMatch(/back lane against the inner side of each hero's tent/);
+    expect(prompts.paintings.find((p) => p.path.endsWith('souvenir-line.png'))!.plays).toMatch(/on each tent's own lane against its side, the open side a nearer tent never covers/);
   });
 });

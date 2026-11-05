@@ -22,7 +22,7 @@ import manifest from "../../../../assets/manifest.json";
 import catalog from "../../../../content/camp.json";
 import { campLayout, parseCampManifest, type CampLayout } from "./camp-layout";
 import { campVisibleSpan, campWindow } from "./camp-framing";
-import { campBoxes, campFitFor, campLabelClashes, campOverlaps, campRowScale, labelRect, labelsOf, rectOf, shapesOverlap, type CampBoxInput } from "./camp-boxes";
+import { campBoxes, campDoorBoxes, campFitFor, campLabelClashes, campOverlaps, campRowScale, labelRect, labelsOf, rectOf, shapesOverlap, type CampBoxInput } from "./camp-boxes";
 import { CAMP_KIT_STYLES } from "./camp-kit-art";
 import { campPaint } from "./camp-paint";
 import { CREW_PIECE_ART, TENT_ART, campSpots, pieceName } from "./camp-scene";
@@ -59,19 +59,21 @@ const PARTIES: Record<string, string[]> = {
  * worn patch, the trailhead post at the trail, the lantern hooks and the
  * banner pole all stand side by side across the clearing: the small parties
  * are drawn nearly full size, four bigfoots about three quarters. Stage 2: a
- * tent with its guy ropes is far wider than its hero, and four of them, the
- * awning between them and the lanterns and the banner pole at the ends fill
- * the clearing, so only the small parties are drawn nearly full size and four
- * bigfoots in their widest tents go down to the floor (`MIN_FIGURE_SCALE`),
- * never piled up.
+ * tent is taller than its hero and, with its guy ropes, far wider; the four
+ * stand on two lanes (the outer two on the back lane, the inner two in front),
+ * an inner tent's side in front of its neighbour's but never over its door,
+ * with the awning between the inner two and the lanterns and the banner pole
+ * at the ends. The small parties are drawn at about 0.86, and four bigfoots in
+ * their widest tents, or a bigfoot in an inner seat, go down to the floor
+ * (`MIN_FIGURE_SCALE`), never piled up.
  */
 const STAGES = [
   { stage: 1, minRow: 0.75, grownBy: [] as string[], styles: Object.keys(CAMP_KIT_STYLES) },
   { stage: 2, minRow: 0.6, grownBy: ["gemfall", "riftlight"], styles: TENT_ART.map((t) => t.id) },
 ] as const;
-/** The parties drawn nearly full size at either stage, and how near. */
+/** The small parties, drawn nearly full size at either stage, and how near. */
 const SMALL = ["four kitsune", "four of kitsune", "four of dragonling"];
-const SMALL_ROW = 0.9;
+const SMALL_ROW = 0.85;
 
 /**
  * The crew pieces a camp at `stage` can own (content/camp.json): every find
@@ -163,8 +165,10 @@ for (const { stage, minRow, grownBy, styles } of STAGES) {
             const fit = campFitFor(view.width, window, layout, input);
             if (SMALL.includes(name)) expect(campRowScale(layout, input), "a small party is drawn nearly full size").toBeGreaterThanOrEqual(SMALL_ROW);
             expect(campRowScale(layout, input), "never drawn much smaller to fit the row").toBeGreaterThanOrEqual(minRow);
-            const boxes = campBoxes(layout, { ...input, figureScale: fit.figureScale });
+            // Every hero at her tent's door too (stage 2): nothing on her lane or a nearer one covers her.
+            const boxes = [...campBoxes(layout, { ...input, figureScale: fit.figureScale }), ...campDoorBoxes(layout, { heroes, figureScale: fit.figureScale })];
             expect(gearOf(boxes)).toHaveLength(4);
+            expect(boxes.filter((b) => b.kind === "door")).toHaveLength(stage === 2 ? 4 : 0);
             expect(campOverlaps(boxes)).toEqual([]);
             expect(campLabelClashes(boxes)).toEqual([]);
             // Inside the visible span, and between the header and the panels.
@@ -228,7 +232,8 @@ for (const { stage, minRow, grownBy, styles } of STAGES) {
       expect(beside).toHaveLength(3);
       for (const species of [PARTIES["four bigfoots"]!, PARTIES["a mix"]!, PARTIES["four kitsune"]!]) {
         const input = { heroes: heroesOf(species, null, stage), spots: all[0], allSouvenirs: true };
-        const boxes = campBoxes(layout, { ...input, beside, figureScale: campRowScale(layout, input) });
+        const k = campRowScale(layout, input);
+        const boxes = [...campBoxes(layout, { ...input, beside, figureScale: k }), ...campDoorBoxes(layout, { heroes: input.heroes, figureScale: k })];
         expect(boxes.filter((b) => b.kind === "beside")).toHaveLength(3);
         expect(campOverlaps(boxes)).toEqual([]);
         expect(campLabelClashes(boxes)).toEqual([]);
