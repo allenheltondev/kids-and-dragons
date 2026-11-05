@@ -36,7 +36,7 @@ export function combatFeedback(events: readonly EncounterEvent[], encounter: Enc
         break;
       case "windupReleased": {
         const style = combatantById(encounter, event.actorId)?.windupAttack?.presentation;
-        add(event.actorId, style === "slam" ? "impact_strike" : "burst_star", windupCopy(style).release, style === "slam" ? "slam" : undefined);
+        add(event.actorId, style === "slam" ? "impact_strike" : "burst_star", windupCopy(style, event.label).release, style === "slam" ? "slam" : undefined);
         break;
       }
       case "windupInterrupted": add(event.actorId, "miss_veer", "Interrupted!", "hurt"); break;

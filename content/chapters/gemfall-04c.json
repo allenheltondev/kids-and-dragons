@@ -1975,13 +1975,16 @@
     },
     "encounter_boxes": {
       "type": "encounter",
-      "map": "roadside",
-      "narration": "The two boxes crash out into the yard, snapping their lids and burping ink. Drive them off before they swallow the paperwork!",
+      "map": "sausage_lane",
+      "narration": "The strongboxes burp ink into the yard. Step past the puddles, or go around. If a mimic shoves you into one, your boots stick on your next turn.",
       "enemies": [
         {
           "id": "box",
           "name": "Strongbox Mimic",
-          "creature": "mire_mimic"
+          "creature": "mire_mimic",
+          "rift": {
+            "shoves": true
+          }
         }
       ],
       "onVictory": {
@@ -1996,6 +1999,47 @@
       },
       "onDefeat": {
         "goto": "scene_boxes_sulking",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      },
+      "art": "scenes/gemfall/warden-supply-stop",
+      "environment": {
+        "clock": {
+          "rounds": 6,
+          "label": "The boxes eat the stamps",
+          "onExpire": "collapse"
+        },
+        "hazards": [
+          {
+            "id": "depot-ink",
+            "kind": "rift",
+            "label": "Inky mud",
+            "art": "fight-warm-mud-hollow",
+            "tiles": [
+              {
+                "x": 2,
+                "y": 2
+              },
+              {
+                "x": 2,
+                "y": 3
+              }
+            ],
+            "slow": {
+              "steps": 2,
+              "turns": 1
+            }
+          }
+        ]
+      },
+      "onTimeout": {
+        "goto": "scene_boxes_sulking",
+        "narration": "The last stamp disappears with a gulp. Pennywhistle drags out a ledger.",
         "effects": [
           {
             "type": "heal",
@@ -2643,7 +2687,37 @@
           "wind-blanket"
         ]
       }
-    }
+    },
+    "fights": [
+      {
+        "chapter": "gemfall-04c",
+        "scene": "encounter_boxes",
+        "creature": "mire_mimic",
+        "board": "sausage_lane",
+        "backdrop": "scenes/gemfall/warden-supply-stop",
+        "introScenes": [
+          "scene_box_ten"
+        ],
+        "victoryScene": "scene_boxes_gone",
+        "defeatScene": "scene_boxes_sulking",
+        "tileUrl": "/assets/biomes/plains/tiles.png",
+        "rescueFigure": "centaur",
+        "activeUrl": "/assets/entities/mire_mimic/strongbox.webp",
+        "retreatUrl": "/assets/entities/mire_mimic/shooed.png",
+        "props": [],
+        "terrainProps": [],
+        "poses": {
+          "intro": "strongbox",
+          "retreat": "shooed"
+        },
+        "retreatDirection": 1
+      }
+    ],
+    "warmUrls": [
+      "/assets/biomes/plains/tiles.png",
+      "/assets/entities/mire_mimic/strongbox.webp",
+      "/assets/entities/mire_mimic/shooed.png"
+    ]
   },
   "resumeInteractions": {
     "interaction_last_post": {
