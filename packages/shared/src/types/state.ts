@@ -13,6 +13,7 @@ import type { FieldGuideFind } from "../field-guide-record.js";
 import type { FactId, FactValue, JourneyView, NodeId } from "./campaign-graph.js";
 import type { BuffId, CheckBuffOffer, RunBuff } from "./buffs.js";
 import type { MatchupNote } from "./matchups.js";
+import type { CampView } from "./camp.js";
 import type { NarrationPart } from "../narration.js";
 import type { ChoiceAhead } from "../choice-ahead.js";
 
@@ -644,6 +645,14 @@ export interface RunState {
    * lobby's campaigns are (`offerCampaigns`).
    */
   firstCrewName?: string;
+  /**
+   * The crew's camp (docs/camp.md §9), slim and read-only, for the screens at
+   * the lobby, a rest and the chapter's end, and never during scenes: filled
+   * where the lobby's campaigns are (`offerCampaigns`) and dropped when a
+   * chapter starts. Absent when the store could not say. Phase 1's lobby
+   * camp draws from the seated heroes and ignores it.
+   */
+  camp?: CampView;
   /**
    * The crew is partway through this adventure and none of the heroes seated
    * have been on it, so the TV asks before anything resumes: keep going, or

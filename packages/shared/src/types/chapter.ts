@@ -1258,6 +1258,13 @@ export interface Campaign {
    */
   comingSoon?: boolean;
   /**
+   * A full campaign, whose successful finish grows a crew's camp by one frame
+   * stage (docs/camp.md §4.1, §12.3): Gemfall and Riftlight. Absent on the
+   * Practice Meadow and The Hollow Crown, which never grow it, so a new
+   * campaign grows the camp only when its file says so. Only ever true.
+   */
+  growsCamp?: true;
+  /**
    * Makes this a graph campaign (#192): the next chapter is chosen by the
    * graph's edges, not by `index`. Absent — every campaign authored before it
    * existed, Gemfall included — is an ordered campaign, played exactly as it

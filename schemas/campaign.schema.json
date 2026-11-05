@@ -55,6 +55,11 @@
       "description": "Campaign.comingSoon: a lobby teaser for a story still being written - title, blurb and art, no chapters, never startable. Locked with its prerequisites' reason, then \"Coming soon\". Publishing the real campaign replaces the file under the same id.",
       "type": "boolean"
     },
+    "growsCamp": {
+      "description": "Campaign.growsCamp: a full campaign, whose successful finish grows a crew's camp by one frame stage (docs/camp.md \u00a74.1, \u00a712.3). Absent on the tutorial and on The Hollow Crown, which never grow it.",
+      "type": "boolean",
+      "const": true
+    },
     "routeSets": {
       "description": "Named sets of story flags a routed beat chooses from, e.g. the three roads north, or the three pursuits. Declared here rather than inferred from the files that exist, because the failure worth catching is a *missing* member: only a declared set can notice an absence.",
       "type": "object",

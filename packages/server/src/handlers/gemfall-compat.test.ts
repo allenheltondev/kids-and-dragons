@@ -350,8 +350,11 @@ const DIGESTS: PreEpicSave["digests"] = {
 // bell-rope instruction exposed by its new dice sequence (chapter 05c).
 // Ending, road, setback, resumed-save, and ordinary-fight goldens are unchanged.
 // Chapter 02 is re-pinned for the opt-in wagon hold and mimic crossing missions.
+// The campaign file is re-pinned for the crew's camp (#617, docs/camp.md §4.1, approved in §10):
+// it gains `"growsCamp": true`, which only the camp's frame reads. No chapter changed, and no flag,
+// XP, item, route or ending moved, so the gameplay digests below are unchanged.
 const GEMFALL_FILES: Record<string, string> = {
-  "campaigns/gemfall.json": "43d406c6e7d81ee2586a4041b2cbe3677762c30b389e1dcd666ea7a75a374463",
+  "campaigns/gemfall.json": "7042c8fa98760e9ded81d479d40e392bb56ecb9bf62ed70baf724ffa53b7a09a",
   "chapters/gemfall-01.json": "b0b420dcda3053cbbd0b44b176f160885e902a1143d065ec082ecd0c4a61602e",
   "chapters/gemfall-02.json": "0cf491a7e971ba10e9ff43ccabac33f42bf0545811c8f93db74128d7438d14d8",
   "chapters/gemfall-03a.json": "7812a6ee4d1dc8056946a0f4f8608f83cef73758e9775a34f214cb70bc4cfec6",
