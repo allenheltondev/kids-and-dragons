@@ -1,23 +1,179 @@
 {
   "issue": 628,
   "generator": "Built-in ImageGen",
-  "prompts": {
-    "red_sky_volcanic": "Wide 16:9 children's fantasy game background, hand painted storybook gouache, visible brushwork. Red Sky volcanic foothills camp clearing at gentle warm dusk. Open muted rust-gold dirt and short ochre grass, very wide level empty clearing over middle 80 percent of width, clear unobstructed ground from 45 to 75 percent height for sprite lanes, quiet low-detail lower quarter for UI. Horizon at 38 percent; rosy peach open sky, remote rounded brick-red volcanic peaks and sparse stones confined to far edges. Cozy safe friendly mood. Camp props will be added in game, no tents, fires, characters, text, borders or watermark.",
-    "frozen_north": "Wide 16:9 hand painted storybook gouache fantasy game backdrop for Frozen North. Friendly pale blue snow clearing framed by distant rounded glacier ridges and alpine mountains, warm winter sunlight from upper left. Horizon around 38% canvas. Entire middle 80% width open flat snow from 45–75% height for sprite lanes. Quiet muted lower quarter, upper quarter mostly open pale sky. Details and snowdrifts at outer edges. No camp furniture, characters, text or border.",
-    "bun": "Edit this exact children's storybook gouache goat kid sprite, Bun. Move the cranberry red ribbon from her neck to the TOP OF HER HEAD, where the bow sits between her small horn buds as a ribbon headpiece. Repaint the neck with natural cream fur where the bow used to be. Preserve the same cream shaggy coat, expression, full-body pose facing left, charcoal hooves, warm lighting, brushwork and true transparent background. Leave clear margin around the entire silhouette. No other changes.",
-    "awning": "Single isolated video-game prop on genuine transparent alpha, a freestanding warm ochre and teal canvas shade awning with four wooden poles and clear open space below. Children's fantasy storybook gouache with visible brushwork and tapered dark brown outlines, warm upper-left light, muted natural pigments. Front three-quarter view at ground level. Whole silhouette inside canvas, centered, resting on a horizontal ground contact line near the bottom. No ground, no shadows outside the object, no people, no lettering, no extra objects.",
-    "lantern-string": "Single isolated video-game prop on genuine transparent alpha, a rustic freestanding string of four golden lanterns suspended between two slim upright timber posts. Children's fantasy storybook gouache with visible brushwork and tapered dark brown outlines, warm upper-left light, muted natural pigments. Front three-quarter view at ground level. Whole silhouette inside canvas, centered, resting on a horizontal ground contact line near the bottom. No ground, no shadows outside the object, no people, no lettering, no extra objects.",
-    "lookout-post": "Single isolated video-game prop on genuine transparent alpha, a small timber lookout perch on short stilts with a ladder and simple rails. Children's fantasy storybook gouache with visible brushwork and tapered dark brown outlines, warm upper-left light, muted natural pigments. Front three-quarter view at ground level. Whole silhouette inside canvas, centered, resting on a horizontal ground contact line near the bottom. No ground, no shadows outside the object, no people, no lettering, no extra objects.",
-    "shared-tent": "Single isolated video-game prop on genuine transparent alpha, a grand welcoming shared canvas expedition tent with muted red and ochre stripes and a broad doorway. Children's fantasy storybook gouache with visible brushwork and tapered dark brown outlines, warm upper-left light, muted natural pigments. Front three-quarter view at ground level. Whole silhouette inside canvas, centered, resting on a horizontal ground contact line near the bottom. No ground, no shadows outside the object, no people, no lettering, no extra objects.",
-    "banners": "Single isolated video-game prop on genuine transparent alpha, two freestanding timber posts with hanging stitched teal and gold camp banners with geometric motifs. Children's fantasy storybook gouache with visible brushwork and tapered dark brown outlines, warm upper-left light, muted natural pigments. Front three-quarter view at ground level. Whole silhouette inside canvas, centered, resting on a horizontal ground contact line near the bottom. No ground, no shadows outside the object, no people, no lettering, no extra objects.",
-    "lookout": "Single isolated video-game prop on genuine transparent alpha, a sturdy tall timber lookout platform with ladder, railed top deck, and a small roof. Children's fantasy storybook gouache with visible brushwork and tapered dark brown outlines, warm upper-left light, muted natural pigments. Front three-quarter view at ground level. Whole silhouette inside canvas, centered, resting on a horizontal ground contact line near the bottom. No ground, no shadows outside the object, no people, no lettering, no extra objects.",
-    "tea-kettle": "Single isolated video-game prop on genuine transparent alpha, a little copper camp kettle on a low wooden stool. Children's fantasy storybook gouache with visible brushwork and tapered dark brown outlines, warm upper-left light, muted natural pigments. Front three-quarter view at ground level. Whole silhouette inside canvas, centered, resting on a horizontal ground contact line near the bottom. No ground, no shadows outside the object, no people, no lettering, no extra objects.",
-    "map-table": "Single isolated video-game prop on genuine transparent alpha, a small rough-hewn table with a rolled map and compass. Children's fantasy storybook gouache with visible brushwork and tapered dark brown outlines, warm upper-left light, muted natural pigments. Front three-quarter view at ground level. Whole silhouette inside canvas, centered, resting on a horizontal ground contact line near the bottom. No ground, no shadows outside the object, no people, no lettering, no extra objects.",
-    "woodpile": "Single isolated video-game prop on genuine transparent alpha, a low neatly stacked pile of firewood on a simple timber rack. Children's fantasy storybook gouache with visible brushwork and tapered dark brown outlines, warm upper-left light, muted natural pigments. Front three-quarter view at ground level. Whole silhouette inside canvas, centered, resting on a horizontal ground contact line near the bottom. No ground, no shadows outside the object, no people, no lettering, no extra objects.",
-    "water-crock": "Single isolated video-game prop on genuine transparent alpha, a large glazed teal water crock with wooden ladle. Children's fantasy storybook gouache with visible brushwork and tapered dark brown outlines, warm upper-left light, muted natural pigments. Front three-quarter view at ground level. Whole silhouette inside canvas, centered, resting on a horizontal ground contact line near the bottom. No ground, no shadows outside the object, no people, no lettering, no extra objects.",
-    "supply-chest": "Single isolated video-game prop on genuine transparent alpha, a handsome closed oak expedition chest with brass corners. Children's fantasy storybook gouache with visible brushwork and tapered dark brown outlines, warm upper-left light, muted natural pigments. Front three-quarter view at ground level. Whole silhouette inside canvas, centered, resting on a horizontal ground contact line near the bottom. No ground, no shadows outside the object, no people, no lettering, no extra objects.",
-    "rug": "Single isolated video-game prop on genuine transparent alpha, a rolled woven camp rug tied with leather straps. Children's fantasy storybook gouache with visible brushwork and tapered dark brown outlines, warm upper-left light, muted natural pigments. Front three-quarter view at ground level. Whole silhouette inside canvas, centered, resting on a horizontal ground contact line near the bottom. No ground, no shadows outside the object, no people, no lettering, no extra objects.",
-    "herb-planter": "Single isolated video-game prop on genuine transparent alpha, a small cedar box of fresh green cooking herbs. Children's fantasy storybook gouache with visible brushwork and tapered dark brown outlines, warm upper-left light, muted natural pigments. Front three-quarter view at ground level. Whole silhouette inside canvas, centered, resting on a horizontal ground contact line near the bottom. No ground, no shadows outside the object, no people, no lettering, no extra objects.",
-    "trophy-rack": "Single isolated video-game prop on genuine transparent alpha, a freestanding oak rack with carved wooden stars and colorful tied ribbons. Children's fantasy storybook gouache with visible brushwork and tapered dark brown outlines, warm upper-left light, muted natural pigments. Front three-quarter view at ground level. Whole silhouette inside canvas, centered, resting on a horizontal ground contact line near the bottom. No ground, no shadows outside the object, no people, no lettering, no extra objects."
-  }
+  "paintings": [
+    {
+      "path": "assets/camp/frames/stage3/awning.png",
+      "prompt": "Single isolated video-game prop on genuine transparent alpha, a freestanding warm ochre and teal canvas shade awning with four wooden poles and clear open space below. Children's fantasy storybook gouache with visible brushwork and tapered dark brown outlines, warm upper-left light, muted natural pigments. Front three-quarter view at ground level. Whole silhouette inside canvas, centered, resting on a horizontal ground contact line near the bottom. No ground, no shadows outside the object, no people, no lettering, no extra objects.",
+      "output": {
+        "width": 1024,
+        "height": 1024,
+        "format": "PNG"
+      }
+    },
+    {
+      "path": "assets/camp/frames/stage3/lantern-string.png",
+      "prompt": "Single isolated video-game prop on genuine transparent alpha, a rustic freestanding string of four golden lanterns suspended between two slim upright timber posts. Children's fantasy storybook gouache with visible brushwork and tapered dark brown outlines, warm upper-left light, muted natural pigments. Front three-quarter view at ground level. Whole silhouette inside canvas, centered, resting on a horizontal ground contact line near the bottom. No ground, no shadows outside the object, no people, no lettering, no extra objects.",
+      "output": {
+        "width": 1024,
+        "height": 1024,
+        "format": "PNG"
+      }
+    },
+    {
+      "path": "assets/camp/frames/stage3/lookout-post.png",
+      "prompt": "Single isolated video-game prop on genuine transparent alpha, a small timber lookout perch on short stilts with a ladder and simple rails. Children's fantasy storybook gouache with visible brushwork and tapered dark brown outlines, warm upper-left light, muted natural pigments. Front three-quarter view at ground level. Whole silhouette inside canvas, centered, resting on a horizontal ground contact line near the bottom. No ground, no shadows outside the object, no people, no lettering, no extra objects.",
+      "output": {
+        "width": 1024,
+        "height": 1024,
+        "format": "PNG"
+      }
+    },
+    {
+      "path": "assets/camp/frames/stage4/shared-tent.png",
+      "prompt": "Single isolated video-game prop on genuine transparent alpha, a grand welcoming shared canvas expedition tent with muted red and ochre stripes and a broad doorway. Children's fantasy storybook gouache with visible brushwork and tapered dark brown outlines, warm upper-left light, muted natural pigments. Front three-quarter view at ground level. Whole silhouette inside canvas, centered, resting on a horizontal ground contact line near the bottom. No ground, no shadows outside the object, no people, no lettering, no extra objects.",
+      "output": {
+        "width": 1024,
+        "height": 1024,
+        "format": "PNG"
+      }
+    },
+    {
+      "path": "assets/camp/frames/stage4/banners.png",
+      "prompt": "Single isolated video-game prop on genuine transparent alpha, two freestanding timber posts with hanging stitched teal and gold camp banners with geometric motifs. Children's fantasy storybook gouache with visible brushwork and tapered dark brown outlines, warm upper-left light, muted natural pigments. Front three-quarter view at ground level. Whole silhouette inside canvas, centered, resting on a horizontal ground contact line near the bottom. No ground, no shadows outside the object, no people, no lettering, no extra objects.",
+      "output": {
+        "width": 1024,
+        "height": 1024,
+        "format": "PNG"
+      }
+    },
+    {
+      "path": "assets/camp/frames/stage4/lookout.png",
+      "prompt": "Single isolated video-game prop on genuine transparent alpha, a sturdy tall timber lookout platform with ladder, railed top deck, and a small roof. Children's fantasy storybook gouache with visible brushwork and tapered dark brown outlines, warm upper-left light, muted natural pigments. Front three-quarter view at ground level. Whole silhouette inside canvas, centered, resting on a horizontal ground contact line near the bottom. No ground, no shadows outside the object, no people, no lettering, no extra objects.",
+      "output": {
+        "width": 1024,
+        "height": 1024,
+        "format": "PNG"
+      }
+    },
+    {
+      "path": "assets/camp/frames/stage3/lantern-string-swing.png",
+      "prompt": "Extract the hanging lantern-string from its finished painting and retain its original position on the transparent figure canvas.",
+      "output": {
+        "width": 1024,
+        "height": 1024,
+        "format": "PNG"
+      }
+    },
+    {
+      "path": "assets/camp/frames/stage4/banners-ripple.png",
+      "prompt": "Extract the hanging banners from its finished painting and retain its original position on the transparent figure canvas.",
+      "output": {
+        "width": 1024,
+        "height": 1024,
+        "format": "PNG"
+      }
+    },
+    {
+      "path": "assets/camp/backdrops/red_sky_volcanic.webp",
+      "prompt": "Wide 16:9 children's fantasy game background, hand painted storybook gouache, visible brushwork. Red Sky volcanic foothills camp clearing at gentle warm dusk. Open muted rust-gold dirt and short ochre grass, very wide level empty clearing over middle 80 percent of width, clear unobstructed ground from 45 to 75 percent height for sprite lanes, quiet low-detail lower quarter for UI. Horizon at 38 percent; rosy peach open sky, remote rounded brick-red volcanic peaks and sparse stones confined to far edges. Cozy safe friendly mood. Camp props will be added in game, no tents, fires, characters, text, borders or watermark.",
+      "output": {
+        "width": 1920,
+        "height": 1080,
+        "format": "WebP"
+      }
+    },
+    {
+      "path": "assets/camp/backdrops/frozen_north.webp",
+      "prompt": "Wide 16:9 hand painted storybook gouache fantasy game backdrop for Frozen North. Friendly pale blue snow clearing framed by distant rounded glacier ridges and alpine mountains, warm winter sunlight from upper left. Horizon around 38% canvas. Entire middle 80% width open flat snow from 45–75% height for sprite lanes. Quiet muted lower quarter, upper quarter mostly open pale sky. Details and snowdrifts at outer edges. No camp furniture, characters, text or border.",
+      "output": {
+        "width": 1920,
+        "height": 1080,
+        "format": "WebP"
+      }
+    },
+    {
+      "path": "assets/camp/pieces/shop-tea-kettle.png",
+      "prompt": "Single isolated video-game prop on genuine transparent alpha, a little copper camp kettle on a low wooden stool. Children's fantasy storybook gouache with visible brushwork and tapered dark brown outlines, warm upper-left light, muted natural pigments. Front three-quarter view at ground level. Whole silhouette inside canvas, centered, resting on a horizontal ground contact line near the bottom. No ground, no shadows outside the object, no people, no lettering, no extra objects.",
+      "output": {
+        "width": 1024,
+        "height": 1024,
+        "format": "PNG"
+      }
+    },
+    {
+      "path": "assets/camp/pieces/shop-map-table.png",
+      "prompt": "Single isolated video-game prop on genuine transparent alpha, a small rough-hewn table with a rolled map and compass. Children's fantasy storybook gouache with visible brushwork and tapered dark brown outlines, warm upper-left light, muted natural pigments. Front three-quarter view at ground level. Whole silhouette inside canvas, centered, resting on a horizontal ground contact line near the bottom. No ground, no shadows outside the object, no people, no lettering, no extra objects.",
+      "output": {
+        "width": 1024,
+        "height": 1024,
+        "format": "PNG"
+      }
+    },
+    {
+      "path": "assets/camp/pieces/shop-woodpile.png",
+      "prompt": "Single isolated video-game prop on genuine transparent alpha, a low neatly stacked pile of firewood on a simple timber rack. Children's fantasy storybook gouache with visible brushwork and tapered dark brown outlines, warm upper-left light, muted natural pigments. Front three-quarter view at ground level. Whole silhouette inside canvas, centered, resting on a horizontal ground contact line near the bottom. No ground, no shadows outside the object, no people, no lettering, no extra objects.",
+      "output": {
+        "width": 1024,
+        "height": 1024,
+        "format": "PNG"
+      }
+    },
+    {
+      "path": "assets/camp/pieces/shop-water-crock.png",
+      "prompt": "Single isolated video-game prop on genuine transparent alpha, a large glazed teal water crock with wooden ladle. Children's fantasy storybook gouache with visible brushwork and tapered dark brown outlines, warm upper-left light, muted natural pigments. Front three-quarter view at ground level. Whole silhouette inside canvas, centered, resting on a horizontal ground contact line near the bottom. No ground, no shadows outside the object, no people, no lettering, no extra objects.",
+      "output": {
+        "width": 1024,
+        "height": 1024,
+        "format": "PNG"
+      }
+    },
+    {
+      "path": "assets/camp/pieces/shop-supply-chest.png",
+      "prompt": "Single isolated video-game prop on genuine transparent alpha, a handsome closed oak expedition chest with brass corners. Children's fantasy storybook gouache with visible brushwork and tapered dark brown outlines, warm upper-left light, muted natural pigments. Front three-quarter view at ground level. Whole silhouette inside canvas, centered, resting on a horizontal ground contact line near the bottom. No ground, no shadows outside the object, no people, no lettering, no extra objects.",
+      "output": {
+        "width": 1024,
+        "height": 1024,
+        "format": "PNG"
+      }
+    },
+    {
+      "path": "assets/camp/pieces/shop-rug.png",
+      "prompt": "Single isolated video-game prop on genuine transparent alpha, a rolled woven camp rug tied with leather straps. Children's fantasy storybook gouache with visible brushwork and tapered dark brown outlines, warm upper-left light, muted natural pigments. Front three-quarter view at ground level. Whole silhouette inside canvas, centered, resting on a horizontal ground contact line near the bottom. No ground, no shadows outside the object, no people, no lettering, no extra objects.",
+      "output": {
+        "width": 1024,
+        "height": 1024,
+        "format": "PNG"
+      }
+    },
+    {
+      "path": "assets/camp/pieces/shop-herb-planter.png",
+      "prompt": "Single isolated video-game prop on genuine transparent alpha, a small cedar box of fresh green cooking herbs. Children's fantasy storybook gouache with visible brushwork and tapered dark brown outlines, warm upper-left light, muted natural pigments. Front three-quarter view at ground level. Whole silhouette inside canvas, centered, resting on a horizontal ground contact line near the bottom. No ground, no shadows outside the object, no people, no lettering, no extra objects.",
+      "output": {
+        "width": 1024,
+        "height": 1024,
+        "format": "PNG"
+      }
+    },
+    {
+      "path": "assets/camp/pieces/shop-trophy-rack.png",
+      "prompt": "Single isolated video-game prop on genuine transparent alpha, a freestanding oak rack with carved wooden stars and colorful tied ribbons. Children's fantasy storybook gouache with visible brushwork and tapered dark brown outlines, warm upper-left light, muted natural pigments. Front three-quarter view at ground level. Whole silhouette inside canvas, centered, resting on a horizontal ground contact line near the bottom. No ground, no shadows outside the object, no people, no lettering, no extra objects.",
+      "output": {
+        "width": 1024,
+        "height": 1024,
+        "format": "PNG"
+      }
+    }
+  ],
+  "castFigures": [
+    {
+      "path": "assets/cast/bun/assembled.png",
+      "prompt": "Edit this exact children's storybook gouache goat kid sprite, Bun. Move the cranberry red ribbon from her neck to the TOP OF HER HEAD, where the bow sits between her small horn buds as a ribbon headpiece. Repaint the neck with natural cream fur where the bow used to be. Preserve the same cream shaggy coat, expression, full-body pose facing left, charcoal hooves, warm lighting, brushwork and true transparent background. Leave clear margin around the entire silhouette. No other changes.",
+      "output": {
+        "width": 1024,
+        "height": 1024,
+        "format": "PNG"
+      }
+    }
+  ]
 }
