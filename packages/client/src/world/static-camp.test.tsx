@@ -16,6 +16,7 @@ import { CAMP_KIT_STYLES, type CampKitStyle } from "./camp-kit-art";
 import { NOMINAL_PAINT, figureSize } from "./figure-scale";
 import { BEDROLL_LENGTH_FIT, HERO_PAINT } from "./camp-ownership";
 import { ANCHOR_Y } from "./art-paths";
+import { lobbyCampLayout } from "./lobby-camp";
 
 function member(n: number, overrides: Partial<PartyMember> = {}): PartyMember {
   return makeMember({
@@ -54,8 +55,11 @@ describe("the still camp", () => {
       return parseFloat(el.style.height) * (ANCHOR_Y - NOMINAL_PAINT.top) * Math.max(box.height, box.width);
     });
     for (const seat of [0, 1]) expect(lengths[seat]! / bodies[seat]!).toBeCloseTo(BEDROLL_LENGTH_FIT, 2);
-    // A bigfoot lies down taller than a dragonling is long.
-    expect(lengths[1]! / lengths[0]!).toBeGreaterThan(figureSize("characters/bigfoot").heightCm / figureSize("characters/dragonling").heightCm / 1.2);
+    // A bigfoot lies down taller than a dragonling is long, judged on one lane (seat 0's bedroll
+    // stands nearer than seat 1's, so it is drawn at its lane's larger scale).
+    const layout = lobbyCampLayout()!;
+    const laneScale = (seat: number) => layout.lanes.get(layout.frame.pieces.find((p) => p.id === `bedroll_${seat}`)!.lane)!.scale;
+    expect(lengths[1]! / laneScale(1) / (lengths[0]! / laneScale(0))).toBeGreaterThan(figureSize("characters/bigfoot").heightCm / figureSize("characters/dragonling").heightCm / 1.2);
   });
   it("draws owned kit styles and the fire without motion", () => {
     mount(makeState({ party: [member(1), member(2)] }));
@@ -72,8 +76,9 @@ describe("the still camp", () => {
     expect(heroes[0]!.querySelector("img")!.getAttribute("src")).toMatch(/griffin/);
     expect(heroes[0]!.querySelector(".kad-static-camp__name")!.textContent).toBe("Sparklehoof");
     // At their bedrolls: the manifest's seat 0 and 1 stand points.
-    expect(heroes[0]!.style.left).toBe("36%");
-    expect(heroes[1]!.style.left).toBe("64%");
+    const rest = (seat: number) => `${String(lobbyCampLayout()!.frame.standPoints.find((p) => p.seat === seat)!.x * 100)}%`;
+    expect(heroes[0]!.style.left).toBe(rest(0));
+    expect(heroes[1]!.style.left).toBe(rest(1));
   });
 
   it("falls back to the plains background while the camp's painting is owed", () => {

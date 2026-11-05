@@ -69,8 +69,20 @@ describe("the camp layout in the manifest", () => {
     for (const spot of layout.frame.hotspots!.filter(spot => spot.kind !== "trophy")) {
       expect(layout.frame.standPoints.some(point => point.hotspot === spot.id), spot.id).toBe(true);
     }
-    // The lobby is still pitched at stage 1 until the camp record lands.
-    expect(campLayout(parsed, "open_plains", 1).frame.hotspots).toBeUndefined();
+  });
+
+  it("gives stage 1 its own lantern hooks, friends' corner and banner pole (§4.1, §5.3), each with a stand point", () => {
+    const layout = campLayout(parsed, "open_plains", 1);
+    const spots = layout.frame.hotspots ?? [];
+    expect(spots.map(spot => spot.id).sort()).toEqual(["banner_pole", "friends_corner", "lanterns"]);
+    expect(spots.find(spot => spot.id === "banner_pole")!.default).toBe("kept_crew_banner");
+    for (const spot of spots) {
+      expect(spot.kind, spot.id).toBe(spot.id);
+      expect(layout.frame.standPoints.some(point => point.hotspot === spot.id), spot.id).toBe(true);
+    }
+    // The same ids at stage 2, so a piece placed at stage 1 carries over when the camp grows.
+    const stage2 = campLayout(parsed, "open_plains", 2).frame.hotspots ?? [];
+    for (const spot of spots) expect(stage2.find(later => later.id === spot.id)?.kind, spot.id).toBe(spot.kind);
   });
 
   it("sets every bedroll beside its owner, toward the fire, instead of hiding it under their feet", () => {

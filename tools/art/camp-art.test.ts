@@ -106,10 +106,10 @@ describe('camp layout (manifest.camp)', () => {
     ['a hotspot of a kind nobody paints', `hotspot('awning')['kind'] = 'lookout'`, 'camp/stage2 layout'],
     ['a hotspot sharing a piece id', `hotspot('awning')['id'] = 'tent_0'; point2('awning')['hotspot'] = 'tent_0'`, 'camp/stage2 layout'],
     ['a hotspot whose default stands at another kind', `hotspot('cookfire')['default'] = 'kept_crew_banner'`, 'camp/stage2 layout'],
-    ['a lantern nobody can swing, at a hotspot a hero looks up at', `del crew('shop_lantern_arch')['movingParts']`, 'camp/stage2 layout'],
+    ['a lantern nobody can swing, at a hotspot a hero looks up at', `del crew('shop_lantern_arch')['movingParts']`, ['camp/stage1 layout', 'camp/stage2 layout']],
     ['a tent spot with no flap to sway', `stage2['movingParts'] = stage2['movingParts'][1:]`, 'camp/stage2 layout'],
     ['a frame piece warmed at with no flame', `frame['movingParts'] = []`, 'camp/stage1 layout'],
-  ])('rejects %s', (_, edit, label) => expect(verify(edit).failures).toEqual([label]));
+  ])('rejects %s', (_, edit, label) => expect(verify(edit).failures).toEqual([label].flat()));
 });
 
 describe('camp catalog (#623)', () => {
@@ -294,6 +294,20 @@ describe('the Phase 2 prompts, in step with the stage-2 layout (#620)', () => {
       const lane = stage2.find((h) => h.kind === piece.hotspot)!.lane;
       expect(painting.plays, piece.id).toContain(`${lane} lane`);
     }
+  });
+
+  it('says where a piece a stage-1 crew can own stands at stage 1, where its kind has a spot there', () => {
+    const stage1 = camp.frames[0]!.hotspots ?? [];
+    const early = camp.crewPieces.filter((piece) => /^(find|kept|starter-shop)$/.test((piece as { group?: string }).group ?? ''));
+    let said = 0;
+    for (const piece of early) {
+      const spot = stage1.find((h) => h.kind === piece.hotspot);
+      if (!spot) continue;
+      const painting = prompts.paintings.find((p) => p.path === `assets/${piece.path}`)!;
+      expect(painting.plays, piece.id).toMatch(new RegExp(`At stage 1 it (stands|lies) on the ${spot.lane} lane`));
+      said++;
+    }
+    expect(said).toBe(6);
   });
 
   it('sizes a tent to fit its owner, and hangs her souvenir line against her tent', () => {

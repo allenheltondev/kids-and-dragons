@@ -44,7 +44,7 @@
     {
       "id": "camp/frames/stage2/crew-banner",
       "path": "assets/camp/frames/stage2/crew-banner.png",
-      "plays": "crewPieces id kept_crew_banner (kept). Stage-2 frame: the banner pole hotspot's own piece (default), the crew's banner (a kept piece, CrewIdentity), on the near lane at the camp's right edge, past the last tent, by the trail out of camp, so it never stands in front of a tent. A hero looks up at it from one stand point and the pennant ripples. Drawn at 260 cm tall and 70 cm wide.",
+      "plays": "crewPieces id kept_crew_banner (kept). Stage-2 frame: the banner pole hotspot's own piece (default), the crew's banner (a kept piece, CrewIdentity), on the near lane at the camp's right edge, past the last tent, by the trail out of camp, so it never stands in front of a tent. A hero looks up at it from one stand point and the pennant ripples. At stage 1 it stands on the back lane at the camp's far right, past every bedroll, beside the trailhead post. Drawn at 260 cm tall and 70 cm wide.",
       "reference": "assets/camp/frames/stage1/trailhead-post.png",
       "output": {
         "width": 1024,
@@ -81,7 +81,7 @@
     {
       "id": "camp/pieces/find-picnic-blanket",
       "path": "assets/camp/pieces/find-picnic-blanket.png",
-      "plays": "crewPieces id find_picnic_blanket (find). A crew find painted for the Practice Meadow (first-steps-01), where Tansy spreads a picnic blanket under an apple tree. Stands at the friends' corner hotspot (near lane, right of the cookfire, low enough to stand in front of the tents), where the crew's friends gather. Drawn at 40 cm tall and 150 cm wide.",
+      "plays": "crewPieces id find_picnic_blanket (find). A crew find painted for the Practice Meadow (first-steps-01), where Tansy spreads a picnic blanket under an apple tree. Stands at the friends' corner hotspot (near lane, right of the cookfire, low enough to stand in front of the tents), where the crew's friends gather. At stage 1 it lies on the near lane left of the campfire, low enough to lie in front of the bedrolls. Drawn at 40 cm tall and 150 cm wide.",
       "reference": "assets/camp/frames/stage1/bedroll.png",
       "output": {
         "width": 1024,
@@ -99,7 +99,7 @@
     {
       "id": "camp/pieces/find-wagon-lantern",
       "path": "assets/camp/pieces/find-wagon-lantern.png",
-      "plays": "crewPieces id find_wagon_lantern (find). A crew find painted for Gemfall 1 (gemfall-01), from Hesper Longstride's lantern wagon. Stands at the lanterns hotspot (near lane, at the camp's left edge, past the first tent, so it never stands in front of a tent); a hero looks up at it and the lantern swings. Drawn at 190 cm tall and 60 cm wide.",
+      "plays": "crewPieces id find_wagon_lantern (find). A crew find painted for Gemfall 1 (gemfall-01), from Hesper Longstride's lantern wagon. Stands at the lanterns hotspot (near lane, at the camp's left edge, past the first tent, so it never stands in front of a tent); a hero looks up at it and the lantern swings. At stage 1 it stands on the back lane at the camp's far left, past every bedroll. Drawn at 190 cm tall and 60 cm wide.",
       "reference": "assets/camp/frames/stage1/trailhead-post.png",
       "output": {
         "width": 1024,
@@ -154,7 +154,7 @@
     {
       "id": "camp/pieces/shop-lantern-string",
       "path": "assets/camp/pieces/shop-lantern-string.png",
-      "plays": "crewPieces id shop_lantern_string (starter-shop). A starter shop piece for the lanterns hotspot (near lane, at the camp's left edge, past the first tent, so it never stands in front of a tent): a second string of lanterns. A hero looks up at it and the lanterns swing. Drawn at 180 cm tall and 80 cm wide.",
+      "plays": "crewPieces id shop_lantern_string (starter-shop). A starter shop piece for the lanterns hotspot (near lane, at the camp's left edge, past the first tent, so it never stands in front of a tent): a second string of lanterns. A hero looks up at it and the lanterns swing. At stage 1 it stands on the back lane at the camp's far left, past every bedroll. Drawn at 180 cm tall and 80 cm wide.",
       "reference": "assets/camp/frames/stage1/trailhead-post.png",
       "output": {
         "width": 1024,
@@ -209,7 +209,7 @@
     {
       "id": "camp/pieces/shop-log-bench",
       "path": "assets/camp/pieces/shop-log-bench.png",
-      "plays": "crewPieces id shop_log_bench (starter-shop). A starter shop piece for the friends' corner hotspot (near lane, right of the cookfire, low enough to stand in front of the tents): a log bench where the crew's friends sit. Drawn at 45 cm tall and 130 cm wide.",
+      "plays": "crewPieces id shop_log_bench (starter-shop). A starter shop piece for the friends' corner hotspot (near lane, right of the cookfire, low enough to stand in front of the tents): a log bench where the crew's friends sit. At stage 1 it lies on the near lane left of the campfire, low enough to lie in front of the bedrolls. Drawn at 45 cm tall and 130 cm wide.",
       "reference": "assets/camp/frames/stage1/bedroll.png",
       "output": {
         "width": 1024,
@@ -227,7 +227,7 @@
     {
       "id": "camp/pieces/shop-pinwheel-pole",
       "path": "assets/camp/pieces/shop-pinwheel-pole.png",
-      "plays": "crewPieces id shop_pinwheel_pole (starter-shop). A starter shop piece for the banner pole hotspot (near lane, at the camp's right edge, past the last tent, so it never stands in front of a tent): a banner pole with a pinwheel, flying the crew's pennant. A hero looks up at it and the pennant ripples. Drawn at 260 cm tall and 70 cm wide.",
+      "plays": "crewPieces id shop_pinwheel_pole (starter-shop). A starter shop piece for the banner pole hotspot (near lane, at the camp's right edge, past the last tent, so it never stands in front of a tent): a banner pole with a pinwheel, flying the crew's pennant. A hero looks up at it and the pennant ripples. At stage 1 it stands on the back lane at the camp's far right, past every bedroll, beside the trailhead post. Drawn at 260 cm tall and 70 cm wide.",
       "reference": "assets/camp/frames/stage1/trailhead-post.png",
       "output": {
         "width": 1024,
