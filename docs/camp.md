@@ -165,7 +165,8 @@ so (`"growsCamp": true`), so a new campaign is a deliberate choice rather than a
 The Hollow Crown (`the-hollow-crown`, the one-chapter reference campaign) does not grow the frame
 either (*decided*). Both still pay Dash Cash and can hand over finds and friends.
 
-Only a *finished* campaign moves the frame. A failed campaign keeps everything already in the camp
+Only a *finished* campaign moves the frame. Finished means it reached its end on any ending, a
+setback ending included (*decided*, §11). A failed campaign keeps everything already in the camp
 (§1) but does not grow it. A crew still working toward its first finished campaign keeps the camp
 changing through the shop, and that is enough (*decided*).
 
@@ -229,7 +230,8 @@ chapter, with a befriending moment, and no claim on it anywhere else in the stor
 - **Two heroes can pick the same buddy.** The friend is shared, and the spare seat rotates.
 - **A buddy is picked from the phone**, at the table or in the adventure book (§7), since it only
   decides that kid's own seat. Friends belong to the crew, so a hero's buddy applies in that
-  crew's camp only (§12.1).
+  crew's camp only (§12.1), and a hero who moves home (#251) leaves her buddies behind: they are
+  removed from every camp of the old household (*decided*, §11).
 - Until a hero picks one, they have no buddy and every seat rotates, exactly as before. Rotation
   stays the default; buddies are an option, never a chore.
 
@@ -334,7 +336,8 @@ chapter's pay, not something to grind for:
   celebrating, content/README.md) always succeed, so, by the same reasoning as goal steps, they
   never drop. Relaxed play still counts: it is easier, not automatic.
 - **At most 2 lucky drops a chapter**, and **none in a chapter already paid for** (*decided*)
-  (§12.2), so replaying a chapter is never a way to farm them.
+  (§12.2), so replaying a chapter is never a way to farm them. The 2 counts every attempt at the
+  chapter, an abandoned one included (*decided*, §11).
 
 Across today's 42 chapters there are 184 mini-games a party can fail and 61 fights, about 5 per
 chapter in all; a single road through a chapter meets fewer. That makes a lucky drop worth roughly
@@ -730,6 +733,15 @@ run and scene), so a claim and its reward are one conditional put, with a paid c
 receipts pruned to keep the row small. The frame is read as the crew's finished `growsCamp`
 campaigns counted once, stored or not, which is also the migration for existing crews.
 
+*As built (#618):* a kit's tent is its own field, `HeroKit.tent`, beside `style` (the bedroll and
+pack), since a milestone tent has no bedroll of its own; kit v2 adds it and renames #617's
+never-shipped placeholder milestone ids. A hero with no stored `style` is drawn with the style her
+id hashes to, as before, and that hash is never stored. `content/camp.json` holds each find's
+`offers` (its `rewardId` and chapter), and a chapter's find must name its piece's offer for that
+chapter. A find is recorded on the run (`RunState.campFinds`) by the engine and claimed by the
+server right after the step commits (`handlers/camp-finds.ts`); a kit find is deduplicated per
+hero by the piece she holds, with no crew receipt.
+
 - **Written only by the server**, as every authoritative change is: phones send intents
   (`campPlace`, `campVote`, `kitPlace`, `buddyPick`), and the server checks the piece is owned,
   the hotspot fits it, the sender may change it and the intent is not stale. `kitPlace` and
@@ -828,6 +840,9 @@ Settled by the product owner:
 | Goal steps | Pay no Dash Cash: every success path ticks them all, so they would be free money. Finishing and optional objectives pay (§5.2) |
 | Kit finds | Every seated hero gets their own copy; a duplicate gives nothing, since Dash Cash is the crew's (§5.4) |
 | The shared-edit limit | Tested in playtest, with an Undo that does not use up a change (§6.1) |
+| Setback campaign endings | Count as finished: they grow the frame (§4.1) |
+| Buddies on a move home | Removed from the old household's camps (§4.4) |
+| Lucky drops across attempts | The cap of 2 counts every attempt at a chapter (§5.2) |
 | Implementation requirements | All of §12 approved, including its defaults: lower-stage pieces staying in later shops, and the migration policy for existing crews (§12) |
 
 Nothing is open. The two parked questions from earlier (editing from the book, choosing friends)
@@ -879,13 +894,13 @@ and record-size limits. A content version update must not reset claims.
 
 ### 12.3 Progression has a ceiling and a replay rule
 
-Count each distinct `growsCamp` campaign the crew successfully completes once
+Count each distinct `growsCamp` campaign the crew finishes, on any ending, once
 (`grownBy`), capped at stage 4. Failed or abandoned attempts do not advance the frame and do not
-remove anything. Replaying a campaign does not advance it again. Later successful campaigns may
+remove anything. Replaying a campaign does not advance it again. Later finished campaigns may
 add cosmetic trophies after stage 4.
 
 Existing crews need a migration policy: derive the starting stage and kept trophies from their
-recorded successful `growsCamp` campaigns, initialize Dash Cash to zero, and do not back-pay
+recorded finished `growsCamp` campaigns, initialize Dash Cash to zero, and do not back-pay
 historical chapter rewards. Existing heroes do get the milestone kit pieces (§5.4) for the tiers
 and distinctions they already hold: those are the hero's own record, not a payout. Keep that
 migration idempotent.
