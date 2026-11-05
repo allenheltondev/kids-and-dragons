@@ -1,0 +1,116 @@
+{
+  "$schema": "../schemas/camp.schema.json",
+  "$comment": "The crew's camp and each hero's kit as game data (docs/camp.md §4, §5, §9; #618): where each piece comes from, what the shop charges, which find each reward id hands over, what milestones unlock, and the friends. What any of it looks like is assets/manifest.json -> camp, and every id here is declared there. Checked by npm run content:validate. Types: CampCatalog in packages/shared/src/types/camp.ts.",
+  "crewPieces": [
+    { "id": "cookfire_pot", "hotspot": "cookfire", "group": "frame", "stage": 2 },
+    { "id": "kept_crew_banner", "hotspot": "banner_pole", "group": "kept" },
+    {
+      "id": "find_picnic_blanket",
+      "hotspot": "friends_corner",
+      "group": "find",
+      "offers": [{ "rewardId": "first-steps-01.picnic_blanket", "chapter": "first-steps-01" }]
+    },
+    {
+      "id": "find_wagon_lantern",
+      "hotspot": "lanterns",
+      "group": "find",
+      "offers": [{ "rewardId": "gemfall-01.wagon_lantern", "chapter": "gemfall-01" }]
+    },
+    {
+      "id": "find_noodle_awning",
+      "hotspot": "awning",
+      "group": "find",
+      "offers": [{ "rewardId": "riftlight-exchange-rift.noodle_awning", "chapter": "riftlight-exchange-rift" }]
+    },
+    { "id": "shop_lantern_string", "hotspot": "lanterns", "group": "shop", "stage": 1, "price": 5 },
+    { "id": "shop_striped_awning", "hotspot": "awning", "group": "shop", "stage": 1, "price": 5 },
+    { "id": "shop_log_bench", "hotspot": "friends_corner", "group": "shop", "stage": 1, "price": 5 },
+    { "id": "shop_pinwheel_pole", "hotspot": "banner_pole", "group": "shop", "stage": 1, "price": 5 },
+    { "id": "shop_kettle_cookfire", "hotspot": "cookfire", "group": "shop", "stage": 2, "price": 12 },
+    { "id": "shop_weathervane_pole", "hotspot": "banner_pole", "group": "shop", "stage": 2, "price": 10 },
+    { "id": "shop_patchwork_awning", "hotspot": "awning", "group": "shop", "stage": 2, "price": 12 },
+    { "id": "shop_lantern_arch", "hotspot": "lanterns", "group": "shop", "stage": 2, "price": 15 },
+    { "id": "shop_friends_hammock", "hotspot": "friends_corner", "group": "shop", "stage": 2, "price": 15 },
+    { "id": "trophy_gemfall", "hotspot": "trophy", "group": "trophy", "campaign": "gemfall" },
+    { "id": "trophy_riftlight", "hotspot": "trophy", "group": "trophy", "campaign": "riftlight" }
+  ],
+  "shops": [
+    {
+      "stage": 1,
+      "pieces": ["shop_lantern_string", "shop_striped_awning", "shop_log_bench", "shop_pinwheel_pole"]
+    },
+    {
+      "stage": 2,
+      "pieces": [
+        "shop_kettle_cookfire",
+        "shop_weathervane_pole",
+        "shop_patchwork_awning",
+        "shop_lantern_arch",
+        "shop_friends_hammock",
+        "shop_lantern_string",
+        "shop_striped_awning",
+        "shop_log_bench",
+        "shop_pinwheel_pole"
+      ]
+    }
+  ],
+  "kit": {
+    "styles": [{ "id": "rolled" }, { "id": "quilted" }, { "id": "patched" }],
+    "colors": { "from": "playerColors" },
+    "tents": [
+      { "id": "rolled", "group": "catalog" },
+      { "id": "quilted", "group": "catalog" },
+      { "id": "patched", "group": "catalog" },
+      { "id": "sworn", "group": "milestone" },
+      { "id": "radiant", "group": "milestone" },
+      { "id": "mythic", "group": "milestone" }
+    ],
+    "decorations": [
+      { "id": "deco_bunting", "group": "catalog" },
+      { "id": "deco_lantern", "group": "catalog" },
+      { "id": "deco_little_flag", "group": "catalog" },
+      { "id": "deco_flower_pot", "group": "catalog" },
+      { "id": "deco_shell_chime", "group": "catalog" },
+      { "id": "deco_picture_sign", "group": "catalog" },
+      { "id": "deco_pinwheel", "group": "catalog" },
+      {
+        "id": "deco_clipboard_star",
+        "group": "find",
+        "offers": [{ "rewardId": "first-steps-01.clipboard_star", "chapter": "first-steps-01" }]
+      },
+      {
+        "id": "deco_lamp_ribbon",
+        "group": "find",
+        "offers": [{ "rewardId": "gemfall-01.lamp_ribbon", "chapter": "gemfall-01" }]
+      },
+      {
+        "id": "deco_gull_feather",
+        "group": "find",
+        "offers": [{ "rewardId": "riftlight-exchange-rift.gull_feather", "chapter": "riftlight-exchange-rift" }]
+      },
+      { "id": "deco_thornguard_apprentice", "group": "milestone" },
+      { "id": "deco_thornguard_expert", "group": "milestone" },
+      { "id": "deco_thornguard_master", "group": "milestone" },
+      { "id": "deco_duskrunner_apprentice", "group": "milestone" },
+      { "id": "deco_duskrunner_expert", "group": "milestone" },
+      { "id": "deco_duskrunner_master", "group": "milestone" },
+      { "id": "deco_starweaver_apprentice", "group": "milestone" },
+      { "id": "deco_starweaver_expert", "group": "milestone" },
+      { "id": "deco_starweaver_master", "group": "milestone" },
+      { "id": "deco_songkeeper_apprentice", "group": "milestone" },
+      { "id": "deco_songkeeper_expert", "group": "milestone" },
+      { "id": "deco_songkeeper_master", "group": "milestone" }
+    ]
+  },
+  "milestones": {
+    "$comment": "Ascendant, Starborn and Legendary unlock their tents when their art ships (spec §8.1, docs/camp.md §5.4). packages/shared/src/camp-milestones.ts is this table's copy; the validator fails when they disagree.",
+    "tiers": { "sworn": "sworn", "radiant": "radiant", "mythic": "mythic" },
+    "distinctions": {
+      "thornguard": { "apprentice": "deco_thornguard_apprentice", "expert": "deco_thornguard_expert", "master": "deco_thornguard_master" },
+      "duskrunner": { "apprentice": "deco_duskrunner_apprentice", "expert": "deco_duskrunner_expert", "master": "deco_duskrunner_master" },
+      "starweaver": { "apprentice": "deco_starweaver_apprentice", "expert": "deco_starweaver_expert", "master": "deco_starweaver_master" },
+      "songkeeper": { "apprentice": "deco_songkeeper_apprentice", "expert": "deco_songkeeper_expert", "master": "deco_songkeeper_master" }
+    }
+  },
+  "friends": []
+}
