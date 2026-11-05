@@ -147,12 +147,15 @@ export function pieceStandIn(heightPx: number, widthPx = heightPx * 0.6): Contai
   return out;
 }
 
-/** The crew's name on its banner (`CrewIdentity`): wrapped inside the banner's own box, painted or not. */
-export function bannerName(heightPx: number, widthPx: number, name: string): Container | null {
+/**
+ * The crew's name on its banner pole (`CrewIdentity`), laid out by camp-boxes.ts
+ * under the pole's foot, clear of the flag: `text` is one line or two (a "\n"),
+ * `size` canvas px; its middle top is at the container's origin.
+ */
+export function bannerName(text: string, size: number): Container | null {
   try {
-    const size = Math.max(14, Math.min(22, heightPx * 0.09));
-    const text = new Text({
-      text: name,
+    const name = new Text({
+      text,
       style: {
         fontFamily: "Nunito, system-ui, sans-serif",
         fontSize: size,
@@ -160,15 +163,12 @@ export function bannerName(heightPx: number, widthPx: number, name: string): Con
         fill: 0xfff3d6,
         stroke: { color: 0x5a1f28, width: Math.max(3, size * 0.25) },
         align: "center",
-        wordWrap: true,
-        wordWrapWidth: Math.max(size * 3, widthPx),
-        breakWords: true,
+        lineHeight: size * 1.3,
       },
     });
-    text.anchor.set(0.5, 0);
-    text.y = -heightPx * 0.86;
-    text.label = "camp-banner-name";
-    return text;
+    name.anchor.set(0.5, 0);
+    name.label = "camp-banner-name";
+    return name;
   } catch {
     return null;
   }

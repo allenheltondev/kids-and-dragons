@@ -1,24 +1,30 @@
 /**
  * Where everything in the camp is drawn, as boxes (docs/camp.md §4.2, §8.3,
- * §8.6; #620): each frame piece at its true size (a hero's own gear fitted to
- * her, camp-ownership.ts), each shared hotspot's piece at its `heightCm` and
- * `widthCm`, what waits beside the cookfire, and the small label under or over
- * each, placed so no two labels collide.
+ * §8.6; #620, #623): each frame piece at its true size (a hero's own gear
+ * fitted to her, camp-ownership.ts), each shared hotspot's piece at its
+ * `heightCm`, what waits beside the cookfire, the small label under or over
+ * each and the crew's name under its banner pole, placed so no two labels
+ * collide. Every painted piece is its painting's footprint (camp-paint.ts):
+ * as wide as it is painted, centred where its paint is (a banner's flag flies
+ * off to one side of its pole), and, for overlaps, the slices of its height it
+ * actually covers; a piece not painted yet is its declared `widthCm`.
  *
  * The one reading of the layout the moving camp (camp.ts), the still camp
  * (StillCamp.tsx) and the overlap test (camp-boxes.test.ts) share, so a piece
  * is never drawn where the test did not look. Pure and Pixi-free.
  *
  * Every number is canvas px (the 1920 x 1080 backdrop canvas): `x` is a box's
- * middle, `ground` its foot, and it rises `height` from there. Boxes shrink
+ * painted middle, `anchor` its painting's ground contact, `ground` its foot,
+ * and it rises `height` from there. Boxes shrink
  * about their foot with the camp's figure factor; labels keep their size.
  */
 
 import { CAMP_KIT_STYLES, campKitStyle } from "./camp-kit-art";
+import { campPaintBox, campPaintSlices } from "./camp-paint";
 import { laneOf, pieceHeightCm, type CampLayout, type CampPiece } from "./camp-layout";
 import { campHeightPx, campMeasure } from "./camp-motion";
 import { campGearKind, campPieceOwner, fittedGear, type CampOwner } from "./camp-ownership";
-import type { CampBesideView, CampSpotView } from "./camp-scene";
+import { pieceArt, tentArt, type CampBesideView, type CampSpotView } from "./camp-scene";
 import { MIN_FIGURE_SCALE, campFit, type CampFit, type CampReach, type CampWindow } from "./camp-framing";
 
 /** A seated hero, as her gear is sized and named. */
@@ -27,12 +33,14 @@ export interface CampBoxHero extends CampOwner {
   id?: string;
   name?: string;
   kitStyle?: string | null;
+  /** Her stored tent (`HeroKit.tent`); absent or null, her bedroll style's. */
+  tent?: string | null;
   souvenirs?: number;
 }
 
 export interface CampBoxInput {
   heroes: readonly CampBoxHero[];
-  spots?: readonly Pick<CampSpotView, "id" | "lane" | "x" | "pieceId" | "label" | "heightCm" | "widthCm">[];
+  spots?: readonly (Pick<CampSpotView, "id" | "lane" | "x" | "pieceId" | "label" | "heightCm" | "widthCm"> & { banner?: string | null })[];
   beside?: readonly Pick<CampBesideView, "pieceId" | "label" | "heightCm" | "widthCm">[];
   /** The camp's figure factor (camp-framing.ts `campFit`). */
   figureScale?: number;
@@ -57,11 +65,23 @@ export interface CampBox {
   lane: string;
   /** The hero whose gear it is. */
   seat?: number;
+  /** The painted middle, canvas px: what the box is centred on. */
   x: number;
+  /** The ground contact its painting is drawn from (the 1024 canvas's x 512), canvas px. */
+  anchor: number;
   ground: number;
   width: number;
   height: number;
+  /** Its name, shown over a stand-in while its painting is owed. */
   label: CampLabelBox | null;
+  /** The crew's name on its banner pole, always shown: under the pole's foot, clear of the flag and everything else. */
+  name?: CampLabelBox | null;
+  /**
+   * What of the box is painted (camp-paint.ts), canvas px: its painting cut
+   * into slices of its height, each as wide as its paint there. Absent before
+   * the piece is painted, when the whole box counts.
+   */
+  slices?: readonly Rect[];
 }
 
 /** A shared piece's label, and a tent's (her name is the one to find), canvas px. */
@@ -72,17 +92,17 @@ export const MIN_LABEL_PX = 16;
 const TENT_LABEL_ROOM = 0.1;
 /** Nothing beside the cookfire is drawn taller than this: it waits on the near lane, clear of the tents. */
 export const BESIDE_MAX_CM = 90;
+/** ...and where the near lane has no room for it at that, it waits a little smaller, down to the last. */
+const BESIDE_FALLBACK_CM = [BESIDE_MAX_CM, 70, 48, 36];
 /** The gap kept between two boxes that must not touch, canvas px. */
 const GAP = 4;
 
 /**
- * Painted frame pieces' width over height (alpha-measured from the art,
- * tools/art/camp-art.test.ts), and the souvenir line's stand-in. A piece not
- * here is as wide as it is tall.
+ * Width over height for a frame piece with no painting yet (the souvenir
+ * line's stand-in). A painted piece's shape is its painting's
+ * (camp-paint.ts); a piece in neither is as wide as it is tall.
  */
 export const FRAME_PIECE_ASPECT: Readonly<Record<string, number>> = {
-  campfire: 1.06,
-  trailhead: 0.64,
   souvenirs: 1.1,
 };
 
@@ -90,39 +110,101 @@ const aspectOf = (id: string): number => FRAME_PIECE_ASPECT[id.split("_")[0]!] ?
 
 /** A label's width at `size` canvas px: a little wider than Nunito bold sets it, so a real clash is never missed. */
 export function labelWidth(text: string, size: number): number {
-  return text.length * size * 0.58 + size * 0.8;
+  return Math.max(...text.split("\n").map((line) => line.length * size * 0.58 + size * 0.8));
 }
 
-/** The size a piece of a hero's gear is drawn at before its lane and the figure factor, and its scale over its authored height. */
+/**
+ * The painting a frame piece is drawn with for its owner, relative to
+ * `assets/`, its authored height, and whether it is drawn mirrored: her
+ * tent's (the one she picked, or her bedroll style's, or the rolled
+ * fallback), her bedroll style's, or the piece's own.
+ */
+export function piecePainting(
+  piece: CampPiece,
+  owner: (CampOwner & { id?: string; kitStyle?: string | null; tent?: string | null }) | undefined,
+): { path: string; heightCm: number; mirrored: boolean } {
+  const kind = campGearKind(piece.id);
+  if (kind === "tent") {
+    const tent = tentArt(owner?.tent ?? null, owner ? campKitStyle(owner.id ?? piece.id, owner.kitStyle) : "rolled");
+    return { path: tent?.path ?? piece.path, heightCm: tent?.heightCm ?? pieceHeightCm(piece), mirrored: false };
+  }
+  const mirrored = kind === "bedroll" && piece.x > 0.5;
+  if (kind === "bedroll" && owner) {
+    const style = CAMP_KIT_STYLES[campKitStyle(owner.id ?? piece.id, owner.kitStyle)];
+    return { path: style.path.replace(/^\/assets\//, ""), heightCm: pieceHeightCm(piece), mirrored };
+  }
+  return { path: piece.path, heightCm: pieceHeightCm(piece), mirrored };
+}
+
+/**
+ * The size a piece of a hero's gear is drawn at before its lane and the
+ * figure factor, its scale over its authored height, and its painted middle's
+ * offset from its ground contact (camp-paint.ts).
+ */
 export function ownedPieceSize(
   layout: CampLayout,
   piece: CampPiece,
-  owner: (CampOwner & { id?: string; kitStyle?: string | null }) | undefined,
-): { height: number; width: number; scale: number } {
+  owner: (CampOwner & { id?: string; kitStyle?: string | null; tent?: string | null }) | undefined,
+): { height: number; width: number; scale: number; offset: number } {
   const measure = campMeasure(layout.canvas.height);
-  const base = campHeightPx(pieceHeightCm(piece), measure);
+  const painting = piecePainting(piece, owner);
+  const base = campHeightPx(painting.heightCm, measure);
   const kind = campGearKind(piece.id);
-  let aspect: number | null = aspectOf(piece.id);
-  if (kind === "bedroll") {
+  const shape = campPaintBox(painting.path, 1);
+  let aspect: number | null = shape?.width ?? aspectOf(piece.id);
+  if (!shape && kind === "bedroll") {
     const style = CAMP_KIT_STYLES[campKitStyle(owner?.id ?? piece.id, owner?.kitStyle)];
     aspect = style.paintWidth / style.paintHeight;
-  } else if (kind === "tent") {
-    // Before the tents are painted, the stand-in is drawn at whatever width fits her.
+  } else if (!shape && kind === "tent") {
+    // Before her tent is painted, the stand-in is drawn at whatever width fits her.
     aspect = null;
   }
   const size = fittedGear(kind, base, aspect, owner, measure);
-  return { ...size, scale: size.height / base };
+  const offset = shape ? (painting.mirrored ? -shape.offset : shape.offset) * size.height : 0;
+  return { ...size, scale: size.height / base, offset };
 }
 
-const overlaps = (a: { l: number; r: number; t: number; b: number }, b: { l: number; r: number; t: number; b: number }): boolean =>
-  a.l < b.r && b.l < a.r && a.t < b.b && b.t < a.b;
+/** A crew piece drawn `height` tall: its painted width and offset, or its declared width before it is painted. */
+function crewPieceBox(pieceId: string | null, height: number, heightCm: number, widthCm: number): { width: number; offset: number; path: string | null } {
+  const path = pieceId ? pieceArt(pieceId)?.path ?? null : null;
+  const painted = campPaintBox(path, height);
+  return painted ? { ...painted, path } : { width: (height * widthCm) / heightCm, offset: 0, path: null };
+}
 
-export const rectOf = (box: Pick<CampBox, "x" | "ground" | "width" | "height">) => ({
+interface Rect {
+  l: number;
+  r: number;
+  t: number;
+  b: number;
+}
+
+const overlaps = (a: Rect, b: Rect): boolean => a.l < b.r && b.l < a.r && a.t < b.b && b.t < a.b;
+
+export const rectOf = (box: Pick<CampBox, "x" | "ground" | "width" | "height">): Rect => ({
   l: box.x - box.width / 2,
   r: box.x + box.width / 2,
   t: box.ground - box.height,
   b: box.ground,
 });
+
+/** What of a box is painted: its painting's slices (camp-paint.ts), or the whole box before it is painted. */
+export const shapeOf = (box: Pick<CampBox, "x" | "ground" | "width" | "height" | "slices">): readonly Rect[] => box.slices ?? [rectOf(box)];
+
+/** Whether two boxes' paint overlaps, slice by slice. */
+export function shapesOverlap(a: Pick<CampBox, "x" | "ground" | "width" | "height" | "slices">, b: Pick<CampBox, "x" | "ground" | "width" | "height" | "slices">): boolean {
+  if (!overlaps(rectOf(a), rectOf(b))) return false;
+  return shapeOf(a).some((sa) => shapeOf(b).some((sb) => overlaps(sa, sb)));
+}
+
+const rectOverlapsShape = (rect: Rect, box: CampBox): boolean => overlaps(rect, rectOf(box)) && shapeOf(box).some((s) => overlaps(rect, s));
+
+/** The slices of a box's painting, drawn at the box's height on its ground contact. */
+function sliced(box: CampBox, path: string | null | undefined, mirrored = false): CampBox {
+  const slices = campPaintSlices(path, box.height, mirrored);
+  if (slices) box.slices = slices.map((s) => ({ l: box.anchor + s.l, r: box.anchor + s.r, t: box.ground + s.t, b: box.ground + s.b }));
+  else delete box.slices;
+  return box;
+}
 export const labelRect = (label: CampLabelBox) => ({ l: label.x - label.width / 2, r: label.x + label.width / 2, t: label.y, b: label.y + label.height });
 
 /** A hero's souvenir line hangs on her own tent; nothing else may touch another thing. */
@@ -138,21 +220,28 @@ export function campOverlaps(boxes: readonly CampBox[]): [string, string][] {
       const a = boxes[i]!;
       const b = boxes[j]!;
       if (mayTouch(a, b)) continue;
-      if (overlaps(rectOf(a), rectOf(b))) out.push([a.id, b.id]);
+      if (shapesOverlap(a, b)) out.push([a.id, b.id]);
     }
   }
   return out;
 }
 
-/** Every pair of labels that collide, and every label over somebody else's box. */
+/** A box's labels: its own, and the crew's name on its banner. */
+export const labelsOf = (box: CampBox): { id: string; label: CampLabelBox }[] => [
+  ...(box.label ? [{ id: `label:${box.id}`, label: box.label }] : []),
+  ...(box.name ? [{ id: `name:${box.id}`, label: box.name }] : []),
+];
+
+/** Every pair of labels that collide, every label over somebody else's box, and the crew's name over its own banner's flag. */
 export function campLabelClashes(boxes: readonly CampBox[]): [string, string][] {
   const out: [string, string][] = [];
-  for (const a of boxes) {
-    if (!a.label) continue;
+  const all = boxes.flatMap((box) => labelsOf(box).map((l) => ({ ...l, box })));
+  for (const a of all) {
+    for (const b of all) if (a.id < b.id && overlaps(labelRect(a.label), labelRect(b.label))) out.push([a.id, b.id]);
     for (const b of boxes) {
-      if (a === b) continue;
-      if (b.label && a.id < b.id && overlaps(labelRect(a.label), labelRect(b.label))) out.push([`label:${a.id}`, `label:${b.id}`]);
-      if (!mayTouch(a, b) && overlaps(labelRect(a.label), rectOf(b))) out.push([`label:${a.id}`, b.id]);
+      if (a.box === b ? a.id.startsWith("name:") : !mayTouch(a.box, b)) {
+        if (rectOverlapsShape(labelRect(a.label), b)) out.push([a.id, b.id]);
+      }
     }
   }
   return out;
@@ -179,44 +268,50 @@ export function campBoxes(layout: CampLayout, input: CampBoxInput): CampBox[] {
     const owner = campPieceOwner(layout, piece, input.heroes);
     if (piece.id.startsWith("souvenirs_") && !input.allSouvenirs && !((owner?.souvenirs ?? 0) > 0)) continue;
     const size = ownedPieceSize(layout, piece, owner);
+    const painting = piecePainting(piece, owner);
     const kind = piece.id.startsWith("tent_") ? "tent" : owner || piece.ownerSeat !== undefined ? "owned" : "frame";
     const seat = piece.ownerSeat ?? layout.frame.standPoints.find((p) => p.hotspot === piece.id && p.seat !== undefined)?.seat;
-    boxes.push({
+    boxes.push(sliced({
       id: piece.id,
       kind,
       lane: piece.lane,
       ...(seat !== undefined ? { seat } : {}),
-      x: piece.x * W,
+      x: piece.x * W + size.offset * lane.scale * k,
+      anchor: piece.x * W,
       ground: lane.y * H,
       width: size.width * lane.scale * k,
       height: size.height * lane.scale * k,
       label: null,
       ...(kind === "tent" && owner?.name?.trim() ? { text: owner.name.trim() } : {}),
-    } as CampBox & { text?: string });
+    } as CampBox & { text?: string }, painting.path, painting.mirrored));
   }
   for (const spot of input.spots ?? []) {
     if (!spot.pieceId) continue;
     const lane = laneOf(layout, spot.lane);
     const height = campHeightPx(spot.heightCm, measure) * lane.scale * k;
-    boxes.push({
+    const painted = crewPieceBox(spot.pieceId, height, spot.heightCm, spot.widthCm);
+    boxes.push(sliced({
       id: `spot:${spot.id}`,
       kind: "spot",
       lane: spot.lane,
-      x: spot.x * W,
+      x: spot.x * W + painted.offset,
+      anchor: spot.x * W,
       ground: lane.y * H,
-      width: (height * spot.widthCm) / spot.heightCm,
+      width: painted.width,
       height,
       label: null,
       text: spot.label,
-    } as CampBox & { text?: string });
+      // A banner pole flying the crew's name is named by it, painted or not.
+      ...(spot.banner?.trim() ? { banner: spot.banner.trim(), text: undefined } : {}),
+    } as CampBox & { text?: string; banner?: string }, painted.path));
   }
   // Labels, most important first: her tent, then the crew's spots.
   const placed: CampBox[] = [];
   const clear = (label: CampLabelBox, self: CampBox): boolean =>
     label.x - label.width / 2 >= 0 &&
     label.x + label.width / 2 <= W &&
-    boxes.every((other) => other === self || mayTouch(self, other) || !overlaps(labelRect(label), rectOf(other))) &&
-    placed.every((other) => other === self || !other.label || !overlaps(labelRect(label), labelRect(other.label)));
+    boxes.every((other) => other === self || mayTouch(self, other) || !rectOverlapsShape(labelRect(label), other)) &&
+    placed.every((other) => labelsOf(other).every((l) => l.label === label || !overlaps(labelRect(label), labelRect(l.label))));
   const nearest = [...layout.lanes.values()].sort((a, b) => b.y - a.y)[0]!;
   const labelFor = (box: CampBox & { text?: string }, optional = false): void => {
     if (!box.text) return;
@@ -232,57 +327,110 @@ export function campBoxes(layout: CampLayout, input: CampBoxInput): CampBox[] {
     const under = at(box.ground + GAP);
     const inside = at(box.ground - height - GAP);
     const over = at(top - height - GAP);
-    const options = box.kind === "tent" ? [over, under] : box.kind === "beside" ? [under] : box.lane === nearest.id ? [under, over] : [inside, over, under];
+    const options = box.kind === "tent" ? [over, inside, under] : box.kind === "beside" ? [under] : box.lane === nearest.id ? [under, over] : [inside, over, under];
     // Something waiting beside the fire is named only where its name has room.
     box.label = options.find((option) => clear(option, box)) ?? (optional ? null : options[0]!);
     placed.push(box);
   };
+  /** The crew's name under its banner pole's foot, on the pole (its anchor), on one line or two: never on the flag. */
+  const nameFor = (box: CampBox & { banner?: string }): void => {
+    if (!box.banner) return;
+    const words = box.banner.split(/\s+/);
+    const split = words.length < 2 ? null : (() => {
+      let best = 1;
+      for (let i = 1; i < words.length; i++) {
+        const gap = (cut: number) => Math.abs(words.slice(0, cut).join(" ").length - words.slice(cut).join(" ").length);
+        if (gap(i) < gap(best)) best = i;
+      }
+      return `${words.slice(0, best).join(" ")}\n${words.slice(best).join(" ")}`;
+    })();
+    const texts = [box.banner, ...(split ? [split] : [])];
+    const sized = (text: string, x: number, y: number): CampLabelBox => {
+      const width = labelWidth(text, LABEL_PX);
+      return { text, x: Math.max(width / 2, Math.min(W - width / 2, x)), y, width, height: LABEL_PX * 1.3 * text.split("\n").length, size: LABEL_PX };
+    };
+    // Under the pole's foot, on one line or two; failing that, on the grass beside the pole
+    // under the flag, where the painting is only pole.
+    const options = texts.map((text) => sized(text, box.anchor, box.ground + GAP));
+    for (let f = 0.5; f >= 0.2 - 1e-9; f -= 0.05) {
+      for (const side of [1, -1]) {
+        for (const text of texts) {
+          const probe = sized(text, 0, box.ground - f * box.height);
+          const rect = labelRect(probe);
+          const beside = shapeOf(box).filter((s) => s.t < rect.b && rect.t < s.b);
+          if (beside.length === 0) continue;
+          const edge = side > 0 ? Math.max(...beside.map((s) => s.r)) + GAP + probe.width / 2 : Math.min(...beside.map((s) => s.l)) - GAP - probe.width / 2;
+          options.push({ ...probe, x: edge });
+        }
+      }
+    }
+    // Last, over the pole's top, in the sky.
+    for (const text of texts) {
+      const probe = sized(text, box.anchor, 0);
+      options.push({ ...probe, y: box.ground - box.height - GAP - probe.height });
+    }
+    box.name = options.find((option) => !rectOverlapsShape(labelRect(option), box) && clear(option, box)) ?? options[texts.length - 1]!;
+    placed.push(box);
+  };
   for (const box of boxes) labelFor(box);
+  for (const box of boxes) nameFor(box);
   // Beside the cookfire (§12.5): the free near-lane ground nearest the fire.
   const fire = layout.frame.hotspots?.find((h) => h.kind === "cookfire") ?? layout.frame.pieces.find((p) => p.id === "campfire");
   const fx = (fire?.x ?? 0.5) * W;
   const fullSize = k === 1 || !(input.beside?.length) ? null : campBoxes(layout, { ...input, figureScale: 1 });
   (input.beside ?? []).forEach((piece, i) => {
     const known = fullSize?.find((b) => b.id === `beside:${piece.pieceId}`);
-    const cm = Math.min(piece.heightCm, BESIDE_MAX_CM);
-    const fullHeight = campHeightPx(cm, measure) * nearest.scale;
-    const fullWidth = (fullHeight * piece.widthCm) / piece.heightCm;
-    const make = (x: number, scale: number): CampBox & { text?: string } => ({
-      id: `beside:${piece.pieceId}`,
-      kind: "beside",
-      lane: nearest.id,
-      x,
-      ground: nearest.y * H,
-      width: fullWidth * scale,
-      height: fullHeight * scale,
-      label: null,
-      text: piece.label,
-    });
-    let chosen: (CampBox & { text?: string }) | null = known ? make(known.x, 1) : null;
+    const path = piece.pieceId ? pieceArt(piece.pieceId)?.path ?? null : null;
+    const make = (anchor: number, cm: number): CampBox & { text?: string } => {
+      const height = campHeightPx(cm, measure) * nearest.scale;
+      const full = crewPieceBox(piece.pieceId, height, piece.heightCm, piece.widthCm);
+      return sliced({
+        id: `beside:${piece.pieceId}`,
+        kind: "beside",
+        lane: nearest.id,
+        x: anchor + full.offset,
+        anchor,
+        ground: nearest.y * H,
+        width: full.width,
+        height,
+        label: null,
+        text: piece.label,
+      } as CampBox & { text?: string }, path);
+    };
+    const tallest = Math.min(piece.heightCm, BESIDE_MAX_CM);
+    // Where the full-size camp put it, at the size it found room for there, so it never slides as the factor eases.
+    const knownCm = known ? BESIDE_FALLBACK_CM.map((f) => Math.min(tallest, f)).find((cm) => Math.abs(campHeightPx(cm, measure) * nearest.scale - known.height) < 0.5) : undefined;
+    let chosen: (CampBox & { text?: string }) | null = known ? make(known.anchor, knownCm ?? tallest) : null;
     // Nearest the fire with room for it and its name; failing that, room for it alone (the
-    // chapter's end names it on the shared screen anyway).
-    for (const named of [true, false]) {
-      for (let step = 0; step < 200 && !chosen; step++) {
-        for (const side of [-1, 1]) {
-          const x = fx + side * step * 0.0025 * W;
-          if (x < nearest.x0 * W || x > nearest.x1 * W) continue;
-          const candidate = make(x, 1);
-          if (rectOf(candidate).l < 0 || rectOf(candidate).r > W) continue;
-          if (boxes.some((b) => overlaps(rectOf(candidate), rectOf(b)))) continue;
-          const label: CampLabelBox = { text: piece.label, x, y: candidate.ground + GAP, width: labelWidth(piece.label, LABEL_PX), height: LABEL_PX * 1.3, size: LABEL_PX };
-          if (named && !clear(label, candidate)) continue;
-          chosen = candidate;
-          break;
+    // chapter's end names it on the shared screen anyway); failing that, the same a little
+    // smaller, down to low enough to wait in front of the lane behind.
+    for (const cm of BESIDE_FALLBACK_CM.map((f) => Math.min(tallest, f))) {
+      for (const named of [true, false]) {
+        for (let step = 0; step < 200 && !chosen; step++) {
+          for (const side of [-1, 1]) {
+            const x = fx + side * step * 0.0025 * W;
+            if (x < nearest.x0 * W || x > nearest.x1 * W) continue;
+            const candidate = make(x, cm);
+            if (rectOf(candidate).l < 0 || rectOf(candidate).r > W) continue;
+            if (boxes.some((b) => shapesOverlap(candidate, b))) continue;
+            const label: CampLabelBox = { text: piece.label, x: candidate.x, y: candidate.ground + GAP, width: labelWidth(piece.label, LABEL_PX), height: LABEL_PX * 1.3, size: LABEL_PX };
+            if (named && !clear(label, candidate)) continue;
+            chosen = candidate;
+            break;
+          }
         }
       }
     }
-    const box = chosen ?? make(fx + (i - ((input.beside?.length ?? 1) - 1) / 2) * 0.075 * W, 1);
-    box.width *= k;
-    box.height *= k;
+    const full = chosen ?? make(fx + (i - ((input.beside?.length ?? 1) - 1) / 2) * 0.075 * W, BESIDE_FALLBACK_CM.at(-1)!);
+    // Shrunk with the figures, about its foot.
+    const box = sliced({ ...full, x: full.anchor + (full.x - full.anchor) * k, width: full.width * k, height: full.height * k }, path);
     boxes.push(box);
     labelFor(box, true);
   });
-  for (const box of boxes) delete (box as { text?: string }).text;
+  for (const box of boxes) {
+    delete (box as { text?: string }).text;
+    delete (box as { banner?: string }).banner;
+  }
   return boxes;
 }
 
@@ -312,7 +460,15 @@ export function campReachOf(layout: CampLayout, boxes: readonly CampBox[], figur
   // Measured at `figureScale` and given back at full size, as the band scales it again.
   return boxes
     .filter((b) => b.kind !== "frame")
-    .map((b) => ({ y: b.ground / H, head: Math.max(b.height, b.label && b.label.y < b.ground - b.height ? b.ground - b.label.y : 0) / H / figureScale }));
+    .map((b) => {
+      // A name under the foot keeps its size, so its reach below the ground is not scaled.
+      const foot = Math.max(0, ...labelsOf(b).map(({ label }) => label.y + label.height - b.ground)) / H;
+      return {
+        y: b.ground / H,
+        head: Math.max(b.height, ...labelsOf(b).map(({ label }) => (label.y < b.ground - b.height ? b.ground - label.y : 0))) / H / figureScale,
+        ...(foot > 0 ? { foot } : {}),
+      };
+    });
 }
 
 /**

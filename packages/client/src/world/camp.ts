@@ -37,7 +37,8 @@ import { CAMP_KIT_STYLES, campKitStyle, campTentCloth } from "./camp-kit-art";
 import { campKitCanvas } from "./camp-kit-canvas";
 import { campPieceOwner } from "./camp-ownership";
 import { bannerName, hotspotGlow, pieceStandIn, souvenirStandIn, standInLabel, tentStandIn } from "./camp-stand-in";
-import { campBoxes, campFitFor, ownedPieceSize, type CampBox, type CampBoxInput } from "./camp-boxes";
+import { campBoxes, campFitFor, ownedPieceSize, type CampBox, type CampBoxInput, type CampLabelBox } from "./camp-boxes";
+import { campPaint } from "./camp-paint";
 import { tentArt, type CampBesideView, type CampSpotView } from "./camp-scene";
 import type { CastStance } from "@kad/shared";
 import {
@@ -474,9 +475,10 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     piece.shadow.destroy({ children: true });
     piece.shadow = shadow;
   };
-  const showPieceArt = (piece: PieceView, texture: Texture): void => {
+  const showPieceArt = (piece: PieceView, texture: Texture, path = piece.path): void => {
     const sprite = new Sprite(texture);
-    piece.fit = fitCanvas(piece.heightPx, measurePaint(texture));
+    // The table's footprint (camp-paint.ts), the one the boxes were laid out by; measured only for art it lacks.
+    piece.fit = fitCanvas(piece.heightPx, campPaint(path) ?? measurePaint(texture));
     fitPieceShadow(piece, texture);
     fitSprite(sprite, piece.fit, piece.mirrored);
     if (piece.partSprite) fitSprite(piece.partSprite, piece.fit);
@@ -1425,7 +1427,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
         if (destroyed || piece.kitRevision !== revision) return;
         const source = texture.source?.resource as CanvasImageSource | undefined;
         const canvas = source ? campKitCanvas(source, CAMP_KIT_STYLES[style].cloth, accent) : null;
-        showPieceArt(piece, canvas ? Texture.from(canvas) : texture);
+        showPieceArt(piece, canvas ? Texture.from(canvas) : texture, CAMP_KIT_STYLES[style].path);
       }).catch(() => undefined);
     }
     const wanted = new Set(figures.map((f) => f.id));
@@ -1463,7 +1465,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
         loadArt(actor);
       }
     }
-    heroes = figures.filter((f) => f.seat !== undefined).map((f) => ({ seat: f.seat!, heightCm: f.heightCm, id: f.id, ...(f.species ? { species: f.species } : {}), ...(f.name ? { name: f.name } : {}), kitStyle: f.kitStyle ?? null, souvenirs: f.souvenirs ?? 0 }));
+    heroes = figures.filter((f) => f.seat !== undefined).map((f) => ({ seat: f.seat!, heightCm: f.heightCm, id: f.id, ...(f.species ? { species: f.species } : {}), ...(f.name ? { name: f.name } : {}), kitStyle: f.kitStyle ?? null, tent: f.tent ?? null, souvenirs: f.souvenirs ?? 0 }));
     labelsDirty = true;
     // A taller hero sitting down raises the band the frame keeps in the window.
     frame();
@@ -1771,26 +1773,29 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     const lane = laneOf(layout, box.lane);
     const container = new Container();
     container.label = `dress:${key}`;
-    container.x = box.x;
+    // Drawn from its ground contact; the box is centred on what is painted (camp-paint.ts).
+    container.x = box.anchor;
     container.y = box.ground;
     container.zIndex = box.ground - 0.4;
     // The box is at full size on its lane; the container scales it by both.
     const heightPx = box.height / lane.scale;
     const widthPx = box.width / lane.scale;
     const view: DressView = { key, container, laneScale: lane.scale, heightPx, pitch: 1, missing: false };
-    if (piece.glow) container.addChild(hotspotGlow(Math.max(widthPx, campHeightPx(120, measure))));
+    // Where its paint's middle is, off its ground contact.
+    const middle = (box.x - box.anchor) / lane.scale;
+    if (piece.glow) {
+      const glow = hotspotGlow(Math.max(widthPx, campHeightPx(120, measure)));
+      glow.x = middle;
+      container.addChild(glow);
+    }
     const body = new Container();
     container.addChild(body);
-    const banner = (): void => {
-      if (!piece.banner) return;
-      const name = bannerName(heightPx, widthPx, piece.banner);
-      if (name) body.addChild(name);
-    };
     const standIn = (): void => {
       if (destroyed || body.destroyed) return;
       body.removeChildren().forEach((c) => c.destroy({ children: true }));
-      body.addChild(pieceStandIn(heightPx, widthPx));
-      banner();
+      const shape = pieceStandIn(heightPx, widthPx);
+      shape.x = middle;
+      body.addChild(shape);
       view.missing = true;
       labelsDirty = true;
     };
@@ -1799,10 +1804,9 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
         .then((texture) => {
           if (destroyed || body.destroyed) return;
           const sprite = new Sprite(texture);
-          fitSprite(sprite, fitCanvas(heightPx, measurePaint(texture)));
+          fitSprite(sprite, fitCanvas(heightPx, campPaint(piece.path) ?? measurePaint(texture)));
           body.removeChildren().forEach((c) => c.destroy({ children: true }));
           body.addChild(sprite);
-          banner();
           view.missing = false;
           labelsDirty = true;
         })
@@ -1823,7 +1827,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     for (const spot of next.spots) {
       if (spot.pieceId === null && !spot.highlighted) continue;
       const lane = laneOf(layout, spot.lane);
-      const box = full.get(`spot:${spot.id}`) ?? { id: spot.id, kind: "spot" as const, lane: spot.lane, x: spot.x * W, ground: lane.y * H, width: 0, height: campHeightPx(20, measure) * lane.scale, label: null };
+      const box = full.get(`spot:${spot.id}`) ?? { id: spot.id, kind: "spot" as const, lane: spot.lane, x: spot.x * W, anchor: spot.x * W, ground: lane.y * H, width: 0, height: campHeightPx(20, measure) * lane.scale, label: null };
       const key = `${spot.pieceId ?? "-"}|${spot.banner ?? ""}|${spot.highlighted ? "lit" : ""}|${String(Math.round(box.x))}`;
       want.set(`spot:${spot.id}`, {
         key,
@@ -1877,20 +1881,24 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     labelsDirty = false;
     labelsAt = figureScale;
     const seen = new Set<string>();
-    for (const box of campBoxes(layout, { ...boxInput(), figureScale })) {
-      if (!box.label || !showsLabel(box)) continue;
-      const key = `${box.id}|${box.label.text}|${String(box.label.size)}`;
+    const show = (id: string, label: CampLabelBox, make: (text: string, size: number) => Container | null): void => {
+      const key = `${id}|${label.text}|${String(label.size)}`;
       seen.add(key);
       let text = labels.get(key);
       if (!text) {
-        const made = standInLabel(box.label.text, box.label.size);
-        if (!made) continue;
+        const made = make(label.text, label.size);
+        if (!made) return;
         text = made;
         labels.set(key, text);
         labelLayer.addChild(text);
       }
-      text.x = box.label.x;
-      text.y = box.label.y;
+      text.x = label.x;
+      text.y = label.y;
+    };
+    for (const box of campBoxes(layout, { ...boxInput(), figureScale })) {
+      if (box.label && showsLabel(box)) show(box.id, box.label, standInLabel);
+      // The crew's name on its banner pole, painted or not, wherever the pole stands.
+      if (box.name && dressed.has(box.id)) show(`name:${box.id}`, box.name, bannerName);
     }
     for (const [key, text] of labels) {
       if (seen.has(key)) continue;

@@ -39,7 +39,9 @@ import { CampBedroll, CampClothArt } from "./CampBedroll";
 import { Campfire } from "./Campfire";
 import { CAMP_KIT_STYLES, campKitStyle, campTentCloth } from "./camp-kit-art";
 import { campPieceOwner } from "./camp-ownership";
-import { campBoxes, campFitFor, campReachOf, campRowScale, type CampBox, type CampBoxInput } from "./camp-boxes";
+import { campBoxes, campFitFor, campReachOf, campRowScale, piecePainting, rectOf, type CampBox, type CampBoxInput } from "./camp-boxes";
+import { chipRows } from "./camp-chips";
+import { campPaint } from "./camp-paint";
 import { hotspotName, tentArt } from "./camp-scene";
 import "./StaticStage.css";
 
@@ -120,31 +122,6 @@ function SouvenirStandIn({ accent, count }: { accent: string; count: number }): 
   );
 }
 
-/** A chip under the phone's picture: its spot's x, its row, and its width, px. */
-interface Chip {
-  id: string;
-  label: string;
-  x: number;
-  left: number;
-  width: number;
-  row: number;
-}
-
-/** Chips in rows, left to right, each as near its spot as it can be without touching another. */
-export function chipRows(spots: readonly { id: string; label: string; x: number }[], paneWidth: number, charPx = 8.6): Chip[] {
-  const rows: number[] = [];
-  return [...spots]
-    .sort((a, b) => a.x - b.x)
-    .map((spot) => {
-      const width = Math.min(paneWidth - 8, spot.label.length * charPx + 28);
-      const left = Math.max(4, Math.min(paneWidth - width - 4, spot.x - width / 2));
-      let row = rows.findIndex((right) => right + 6 <= left);
-      if (row < 0) row = rows.push(-Infinity) - 1;
-      rows[row] = left + width;
-      return { id: spot.id, label: spot.label, x: spot.x, left, width, row };
-    });
-}
-
 export interface StillCampProps {
   layout: CampLayout;
   state: RunState;
@@ -190,6 +167,7 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
       ...(figure.species ? { species: figure.species } : {}),
       ...(figure.name ? { name: figure.name } : {}),
       kitStyle: figure.kitStyle ?? null,
+      tent: figure.tent ?? null,
       souvenirs: figure.souvenirs ?? 0,
     })),
     spots: dressing.spots,
@@ -227,7 +205,18 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
   // A phone's chips: one per pickable spot, under the picture.
   const chips = mode === "width" && onSpot && at
     ? chipRows(
-        dressing.spots.filter((spot) => spot.pickable).map((spot) => ({ id: spot.id, label: hotspotName(spot.kind), x: spot.x * W * at!.scale })),
+        dressing.spots.filter((spot) => spot.pickable).map((spot) => {
+          // Its line may drop from anywhere across the middle of its piece's painting.
+          const b = boxOf.get(`spot:${spot.id}`);
+          const r = b ? rectOf(b) : null;
+          const inset = r ? (r.r - r.l) * 0.1 : 0;
+          return {
+            id: spot.id,
+            label: hotspotName(spot.kind),
+            x: spot.x * W * at!.scale,
+            ...(r ? { x0: (r.l + inset) * at!.scale, x1: (r.r - inset) * at!.scale } : {}),
+          };
+        }),
         pane.width,
       )
     : [];
@@ -238,8 +227,11 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
     if (at) bleed = campBleed(rootHeight, at, layout.canvas);
   }
 
-  /** A piece's square canvas as a fraction of the frame's height, for its box's drawn height. */
-  const canvasOf = (b: CampBox, paint = PAINT) => b.height / paint / H;
+  /** A piece's square canvas as a fraction of the frame's height, for its box's drawn height: its painting's own footprint (camp-paint.ts), or the nominal one. */
+  const canvasOf = (b: CampBox, path?: string | null, paint = PAINT) => {
+    const painted = campPaint(path);
+    return b.height / (painted ? painted.bottom - painted.top : paint) / H;
+  };
   const strip = (edge: "top" | "bottom", px: number) =>
     px > 0 ? (
       <div className={`kad-static-camp__bleed kad-static-camp__bleed--${edge}`} style={{ height: px }} aria-hidden="true">
@@ -264,7 +256,9 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
       </span>
     ) : null;
   const labels: ReactNode[] = [];
-  const at01 = (b: CampBox) => ({ left: `${(b.x / W) * 100}%`, top: `${(b.ground / H) * 100}%` });
+  // A piece's canvas stands on its ground contact; its box is centred on what is painted.
+  const at01 = (b: CampBox) => ({ left: `${(b.anchor / W) * 100}%`, top: `${(b.ground / H) * 100}%` });
+  const names: ReactNode[] = [];
 
   return (
     <div
@@ -310,9 +304,10 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
           const owner = campPieceOwner(layout, piece, heroes.map(hero => hero.figure));
           // Her stored style first; the id's hash only when none is stored (#633, #620).
           const kitStyle = owner && piece.id.startsWith("bedroll") ? campKitStyle(owner.id, owner.kitStyle) : null;
-          const size = canvasOf(b, kitStyle ? CAMP_KIT_STYLES[kitStyle].paintHeight : PAINT);
+          const size = canvasOf(b, piecePainting(piece, owner).path, kitStyle ? CAMP_KIT_STYLES[kitStyle].paintHeight : PAINT);
           const accent = owner?.accent ?? "#c9b99a";
-          const tent = piece.id.startsWith("tent_") ? tentArt(owner?.tent ?? null, campKitStyle(owner?.id ?? piece.id, owner?.kitStyle)) : undefined;
+          // Her tent, as the moving camp and the boxes pick it (camp-boxes.ts `piecePainting`).
+          const tent = piece.id.startsWith("tent_") ? tentArt(owner?.tent ?? null, owner ? campKitStyle(owner.id, owner.kitStyle) : "rolled") : undefined;
           const tentSrc = tent ? `/assets/${tent.path}` : null;
           if (piece.id.startsWith("tent_")) labels.push(label(b, tentSrc));
           return <span key={piece.id} className="kad-static-camp__piece" data-piece={piece.id} data-owner={owner?.id} data-aspect={(b.width / b.height).toFixed(4)} style={{
@@ -320,7 +315,7 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
           }} data-mirrored={piece.id.startsWith("bedroll") && piece.x > .5 ? "true" : undefined}>
             {owner && kitStyle ? <CampBedroll style={kitStyle} accent={accent} />
               : piece.id === "campfire" ? <Campfire active={false} />
-              : tent && tentSrc ? <CampClothArt path={tentSrc} cloth={owner?.accent ? campTentCloth(tent.id) : undefined} accent={accent} onMissing={owed} fallback={
+              : tent && tentSrc ? <CampClothArt path={tentSrc} tent={tent.id} cloth={owner?.accent ? campTentCloth(tent.id) : undefined} accent={accent} onMissing={owed} fallback={
                 <TentStandIn accent={accent} owned={owner !== undefined} width={b.width / b.height} decorations={(owner?.slots ?? []).filter((s) => s !== null).length} />
               } />
               : piece.id.startsWith("souvenirs_") ? (
@@ -338,6 +333,19 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
           const empty = { height: (lane.scale * scale * 120 * 0.26) / 160 / PAINT };
           const src = spot.path ? `/assets/${spot.path}` : null;
           if (b) labels.push(label(b, src));
+          // The crew's name, under its banner pole's foot (camp-boxes.ts), clear of the flag.
+          if (b?.name && mode === "cover") {
+            names.push(
+              <span
+                key={`name:${b.id}`}
+                className="kad-static-camp__banner"
+                data-banner-name={spot.id}
+                style={{ left: `${(b.name.x / W) * 100}%`, top: `${(b.name.y / H) * 100}%`, fontSize: (b.name.size / H) * box.height }}
+              >
+                {b.name.text.split("\n").map((line, i) => <span key={i}>{line}</span>)}
+              </span>,
+            );
+          }
           return (
             <span
               key={spot.id}
@@ -347,15 +355,12 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
               style={{
                 left: `${spot.x * 100}%`,
                 top: `${lane.y * 100}%`,
-                height: `${(b ? canvasOf(b) : empty.height) * 100}%`,
+                height: `${(b ? canvasOf(b, spot.pieceId ? spot.path : null) : empty.height) * 100}%`,
                 zIndex: Math.round(lane.y * 1000) - 1,
               }}
             >
               {spot.pieceId && b ? (
                 <ArtOr src={src} onMissing={owed}><PieceStandIn width={b.width / b.height} /></ArtOr>
-              ) : null}
-              {spot.banner && b && mode === "cover" ? (
-                <span className="kad-static-camp__banner" style={{ maxInlineSize: `${(b.width / b.height) * PAINT * 100}%` }}>{spot.banner}</span>
               ) : null}
               {onSpot && spot.pickable && mode === "cover" ? (
                 // The picture's own tap target; the named control in the panel is the accessible one.
@@ -374,13 +379,14 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
               key={piece.pieceId}
               className="kad-static-camp__piece kad-static-camp__beside"
               data-beside={piece.pieceId}
-              style={{ ...at01(b), height: `${canvasOf(b) * 100}%`, zIndex: Math.round((b.ground / H) * 1000) + 1 }}
+              style={{ ...at01(b), height: `${canvasOf(b, piece.path) * 100}%`, zIndex: Math.round((b.ground / H) * 1000) + 1 }}
             >
               <ArtOr src={src} onMissing={owed}><PieceStandIn width={b.width / b.height} /></ArtOr>
             </span>
           );
         })}
         {mode === "cover" ? labels : null}
+        {names}
       </div>
       {chips.length > 0 && at ? (
         <div className="kad-static-camp__chips" style={{ top: bandPx }} aria-hidden="true">
@@ -399,7 +405,7 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
                   style={{ left: chip.left, top, width: chip.width }}
                   onClick={() => onSpot!(chip.id)}
                 >
-                  {chip.label}
+                  {chip.label.split("\n").map((line) => <span key={line}>{line}</span>)}
                 </button>
               </span>
             );

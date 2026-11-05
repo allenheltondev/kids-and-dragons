@@ -2,8 +2,12 @@
 import { cleanup, fireEvent, render } from "@testing-library/react";
 import { afterEach, expect, it } from "vitest";
 import manifest from "../../../../assets/manifest.json";
-import { CAMP_KIT_STYLES, campClothMatrix, campKitStyle } from "./camp-kit-art";
+import { kitAccent, type CampView, type HeroKitView, type RunState } from "@kad/shared";
+import { CAMP_KIT_STYLES, campClothMatrix, campKitStyle, campTentCloth } from "./camp-kit-art";
 import { CampBedroll } from "./CampBedroll";
+import { StillCamp } from "./StillCamp";
+import { campLayoutFor } from "./lobby-camp";
+import { makeCharacter, makeMember, makeState } from "../testing/fixtures";
 import { execFileSync } from "node:child_process";
 
 afterEach(cleanup);
@@ -46,6 +50,25 @@ it("draws a stored kit style, and falls back to the unchanged id hash for a hero
   }
   expect(campKitStyle("c_1", "patched")).toBe("patched");
   expect(campKitStyle("c_pip", "rolled")).toBe("rolled");
+});
+it("tints a hero's tent's cloth in her kit color at stage 2, and leaves the rest of the painting as painted (#623)", () => {
+  const hero = makeMember({ playerId: "p_1", character: makeCharacter({ id: "c_1", ownerPlayerId: "p_1", name: "Moss", species: "bigfoot" }) });
+  const kits: Record<string, HeroKitView> = { c_1: { revision: 1, style: "rolled", tent: "sworn", color: "ember", slots: [], unlocked: ["sworn"] } };
+  const camp: CampView = { revision: 1, frameStage: 2, grownBy: ["gemfall"], dashCash: 0, owned: [], placed: {}, friends: [], buddies: {}, shopOpen: false };
+  const state = { ...makeState({ phase: "lobby", party: [hero] }), camp, kits } as RunState;
+  const view = render(<StillCamp layout={campLayoutFor(2)!} state={state} insets={{ top: 0, bottom: 0 }} />);
+  const tent = view.container.querySelector('[data-piece="tent_0"] svg[data-camp-tent="sworn"]')!;
+  expect(tent).not.toBeNull();
+  const [painting, cloth] = [...tent.querySelectorAll("image")];
+  expect(painting!.getAttribute("href")).toBe("/assets/camp/kits/tents/sworn.png");
+  expect(painting!.getAttribute("clip-path")).toBeNull();
+  // Only its cloth region (camp-kit-art.ts, which the flap is cut from too), multiplied by her color.
+  expect(cloth!.getAttribute("href")).toBe("/assets/camp/kits/tents/sworn.png");
+  expect(tent.querySelector("clipPath path")!.getAttribute("d")).toBe(campTentCloth("sworn"));
+  expect(tent.querySelector("feColorMatrix")!.getAttribute("values")).toBe(campClothMatrix(kitAccent("ember", hero.character.appearance.accent)));
+  // An unseated tent spot is the rolled fallback, untinted.
+  const spare = view.container.querySelector('[data-piece="tent_1"] svg[data-camp-tent="rolled"]')!;
+  expect(spare.querySelectorAll("image")).toHaveLength(1);
 });
 it("isolates cloth filters between seats and falls back to the neutral painting on an image failure", () => {
   const view = render(<><CampBedroll style="rolled" accent="#ff0000" /><CampBedroll style="rolled" accent="#00ff00" /></>);

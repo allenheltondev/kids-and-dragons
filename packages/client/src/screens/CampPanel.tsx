@@ -38,7 +38,7 @@ import type { ClientIntent, HeroKitView, PartyMember, RunState } from "@kad/shar
 import { Button } from "../ui/Button";
 import { Icon } from "./icons";
 import { StillCamp, TentStandIn } from "../world/StillCamp";
-import { CampBedroll } from "../world/CampBedroll";
+import { CampBedroll, CampTent } from "../world/CampBedroll";
 import { CAMP_KIT_STYLES, campKitStyle, type CampKitStyle } from "../world/camp-kit-art";
 import { campLayoutFor, campStage } from "../world/lobby-camp";
 import {
@@ -96,7 +96,9 @@ export function KitWelcome({ state, me, held, dispatch }: { state: RunState; me:
   const headingId = useId();
   if (campMomentKind(state) === null || !state.camp || !kitUnchosen(kit) || kitWelcomeDone(heroId) || !kit) return null;
   const accent = kitAccent(color, me.character.appearance.accent);
-  const pick = (style: string): void => {
+  // Outdoors at stage 2 and up, a seat shows its tent (§4.5); an indoor rest packs the camp down to bedrolls (§3.2).
+  const tents = campStage(state) >= 2 && state.campMoment?.outdoor !== false;
+  const pick =(style: string): void => {
     finishKitWelcome(heroId);
     const tent = KIT_RULES.tents.some((t) => t.id === style && t.group === "catalog") ? style : undefined;
     dispatch({ type: "KIT_EDIT", characterId: heroId, revision: kit.revision, style, ...(tent ? { tent } : {}), ...(color ? { color } : {}) });
@@ -128,7 +130,9 @@ export function KitWelcome({ state, me, held, dispatch }: { state: RunState; me:
         {KIT_RULES.styles.map((s) => (
           <button key={s.id} type="button" className="kit-welcome__style kad-tap kad-focusable" disabled={held} onClick={() => pick(s.id)} data-style={s.id}>
             <span className="kit-welcome__art" aria-hidden="true">
-              {Object.hasOwn(CAMP_KIT_STYLES, s.id) ? <CampBedroll style={s.id as CampKitStyle} accent={accent} /> : null}
+              {/* What the camp shows of a style: its tent once the camp has tents (§4.5), its bedroll and pack before. */}
+              {tents ? <CampTent tent={tentArt(null, s.id)?.id ?? s.id} accent={accent} fallback={<TentStandIn accent={accent} decorations={0} />} />
+                : Object.hasOwn(CAMP_KIT_STYLES, s.id) ? <CampBedroll style={s.id as CampKitStyle} accent={accent} /> : null}
             </span>
             <span>{kitName(s.id, "style")}</span>
           </button>
@@ -166,7 +170,7 @@ function KitEditor({ member, kit, held, dispatch }: { member: PartyMember; kit: 
           {kitTentChoices(KIT_RULES, kit.unlocked).map((id) => (
             <button key={id} type="button" className="camp-option kad-focusable" aria-pressed={tent === id} disabled={held} onClick={() => edit({ tent: id })} data-tent={id}>
               <span className="camp-option__art" aria-hidden="true">
-                <TentStandIn accent={accent} decorations={0} />
+                <CampTent tent={id} accent={accent} fallback={<TentStandIn accent={accent} decorations={0} />} />
               </span>
               <span className="camp-option__label">{kitName(id, "tent")}</span>
             </button>

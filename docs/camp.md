@@ -369,7 +369,9 @@ opens only after two chapters, so neither can be the first reward.
 
 - **A personal choice at the first downtime moment.** The first time a hero is seated with a crew
   that has a camp, their kid picks their kit's style and color (§4.5) from the free catalog
-  (§5.4). It takes one tap, can be skipped, and is the first thing the camp asks of anyone.
+  (§5.4). It takes one tap, can be skipped, and is the first thing the camp asks of anyone. Each
+  style is shown as the camp will draw it, in the color picked: its tent once the camp has tents
+  (stage 2 and up, outdoors), its bedroll and pack before that.
 - **A recognizable find in the first chapter.** The Practice Meadow and the first chapter of every
   `growsCamp` campaign each hand over one find on their spine, so every path to every ending gets
   it. It is something the kids will remember from that chapter (a pinecone wreath from the meadow,
@@ -423,6 +425,13 @@ another owned piece (subject to the shared-change limit below):
 - **Shared hotspots** (banner, awning, lanterns, cookfire, friends' corner): any seated player, in
   the full camp only. An indoor rest has none (§3.2).
 - **A hero's kit:** only that hero's player, indoors or out, and from the adventure book (§7).
+
+On a phone the Camp panel shows the whole camp across, and under it a chip for each shared spot,
+each joined to its spot by a thin line straight up (`camp-chips.ts`): in as few rows as keep every
+chip apart, every line inside its own chip and never through another chip or along another line,
+a two-word name on two lines rather than a row of its own. A phone takes two rows at most (the
+awning stands behind the cookfire, so their chips take a row each). The kit's tent choices are the
+tents themselves, in her color.
 
 If two phones pick for one hotspot at once, the later pick wins and the TV shows it; there is
 nothing to lose, because the crew still owns both pieces. A kid's own kit is unlimited.
@@ -598,34 +607,52 @@ camp's spots on that ground.
   one wider than the whole span takes a second row on the next lane back.
 - **A hero's own gear fits her** (*decided*, #620). Her bedroll is drawn about 1.2 times her drawn
   body length (the longer of her drawn height and width), so she could lie in it, its pack in
-  proportion on the same painting; her tent about 1.25 times her drawn height and at least 1.3
-  times her drawn width, so she could fit inside. Her drawn box is her species' painted box
+  proportion on the same painting; her tent about 1.1 times her drawn height and at least 1.3
+  times her drawn width, so she could fit inside. A lean-to (a tent painted at least 1.6 times wider
+  than tall, the patched style) is one she lies in, so it is fitted like her bedroll, about 1.2
+  times her body length, and is still longer and wider than she is (*decided*, #623: fitted to her
+  height, four bigfoots' lean-tos could not stand side by side at any size). A tent's shape is its
+  painting's, guy ropes and stakes included. Her drawn box is her species' painted box
   (`HERO_PAINT`, the largest any of her paintings covers), so a bigfoot's gear is about 215/85 of a
   kitsune's and nothing is floored. It is a minimum: gear already bigger keeps its own size. The
   constants live in one place (`camp-ownership.ts`); the moving camp, the still camp and a phone's
   Camp panel all size from it.
-- **Nothing overlaps.** Every piece is a box at its true size (a shared piece's `heightCm` and
-  `widthCm`, a hero's gear fitted to her), and at stage 1 and stage 2 no shared piece's box overlaps
-  a hero's bedroll or tent, the campfire, the trailhead post or another piece, tall pieces (the
-  banner pole, the lanterns, the awning) stand at the sides or behind and never in front of a
-  hero's gear, and the small labels over stand-ins never collide (`camp-boxes.ts`, tested on the
-  real manifest for four bigfoots, four kitsune, a mix and four of every species, at 1280 x 720
-  and 1920 x 1080). At stage 2 the spots are spaced for those parties at full size; a party whose
-  gear is wider still (four manticores or griffins) is drawn a little smaller, never piled up
-  (`campRowScale`, never under 0.9). The focus band holds the tents and the names over them, not
-  only the heads.
+- **Every piece is its painting** (#623). A piece is drawn so its painted height is its
+  `heightCm`; how wide it then is, and how far its paint sits off its ground contact (a banner's
+  flag flies off to one side of its pole), is the painting's. `npm run art:camp-paint`
+  (`tools/art/camp-paint.py`) measures every grounded camp painting's opaque bounds on its 1024
+  canvas, and the same bounds in six slices of its height, into `camp-paint.json`; the layout's
+  boxes, the moving camp and the still camp all read that table (`camp-paint.ts`), and
+  `art:verify` and `camp-art.test.ts` fail when it no longer matches the paintings. A shared
+  piece's `widthCm` is its painted width at its `heightCm` (tested), so the manifest says what
+  is drawn.
+- **Nothing overlaps.** Every piece is its painting's footprint, slice by slice (so a short piece
+  may stand under a banner's flag but never in it; a hero's gear fitted to her), and at stage 1
+  and stage 2 no piece overlaps a hero's bedroll or tent, the campfire, the trailhead post or
+  another piece, tall pieces (the banner pole, the lanterns, the awning) stand at the sides or
+  behind and never in front of a hero's gear, and no label collides with another or lands on
+  somebody else's piece (`camp-boxes.ts`, tested on the real manifest for four bigfoots, four
+  kitsune, a mix each way round and four of every species, in every tent or bedroll style a kid
+  can pick, at 1280 x 720 and 1920 x 1080, under the lobby's panels with and without the campaign
+  picker). The crew's name stands under its banner pole's foot, on one line or two, or failing
+  that on the grass beside the pole under the flag, never on the flag. At stage 2 a tent with its
+  guy ropes is far wider than its hero, and the four of them, the awning between them, and the
+  lanterns and the banner pole at the ends fill the clearing: four kitsune or four dragonlings are
+  drawn nearly full size (0.9 and up), a mix about 0.7 to 0.85, and four bigfoots in their widest
+  tents go down to the floor, never piled up (`campRowScale`, never under 0.6 at stage 2). The
+  focus band holds the tents, the names over them and the crew's name under its pole, not only the
+  heads.
 - **Stage 1 is a ring of bedrolls.** A bedroll is longer than its hero lying down, much wider than
   her tent, and too tall to stand in front of another lane's, so at stage 1 everything that
   reaches the back lane stands side by side across the clearing: the lantern hooks at the far
-  left, two bedrolls (the outer one on the middle lane, the inner on the back lane), the campfire
-  on the backdrop's worn patch, two more bedrolls, then the banner pole and the trailhead post at
-  the trail. The friends' corner is low enough to lie on the near lane in front of the bedrolls,
-  and what the chapter hands over waits there by the fire. Only the small parties (four kitsune or
-  four dragonlings) fit at full size; the rest are drawn a little smaller, never piled up: about
-  0.85 to 0.95 for a mix or four of a middling species, and down to about 0.74 for a party with a
-  bigfoot at the right end, four bigfoots most (`campRowScale`, never under 0.72 at stage 1). An
-  awning, the widest tall piece, would shrink every party by about another tenth, so it waits for
-  stage 2's bigger camp (§11).
+  left on the near lane, two bedrolls (the outer one on the middle lane, the inner on the back
+  lane), the campfire on the backdrop's worn patch, two more bedrolls, then the banner pole and the
+  trailhead post at the trail. The friends' corner lies on the near lane between the first
+  bedroll and the campfire, and what the chapter hands over waits on the near lane by the fire
+  (a little smaller where the lane has no room for it at full size). The small parties are drawn
+  nearly full size (about 0.93), a mix about 0.83, four bigfoots about 0.76 (`campRowScale`,
+  never under 0.75 at stage 1). An awning, the widest tall piece, would shrink every party further,
+  so it waits for stage 2's bigger camp (§11).
 - **Indoors, one lane.** A packed-down camp (§3.2) uses a single generic layout laid over the
   scene's own picture: one near lane along the bottom, a bedroll stand point for each hero and a
   spot for each friend. No per-scene authoring.
@@ -896,6 +923,7 @@ Settled by the product owner:
 | Lucky drops across attempts | The cap of 2 counts every attempt at a chapter (§5.2) |
 | Implementation requirements | All of §12 approved, including its defaults: lower-stage pieces staying in later shops, and the migration policy for existing crews (§12) |
 | Stage-1 shared spots | Lantern hooks, a friends' corner and a banner pole from the first chapter, so first finds and starter purchases go up straight away (§4.1, §5.3). The awning stays a stage-2 spot: the noodle awning and the striped awning wait for it with their note (§8.3, §12.5) |
+| Laid out by the paintings (#623) | Every camp piece is laid out by its painting's measured footprint (`camp-paint.json`), not a guessed width; a tent is 1.1 times its hero's height (a lean-to fitted by length, like her bedroll), and big parties are drawn smaller at stage 2 rather than overlap, down to the 0.6 floor for four bigfoots (§8.3) |
 
 Nothing is open. The two parked questions from earlier (editing from the book, choosing friends)
 are settled above as kit and buddy editing in the book and buddies.

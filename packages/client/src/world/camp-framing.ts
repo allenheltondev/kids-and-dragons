@@ -71,9 +71,10 @@ export interface CampFraming {
  * lanes do not.
  */
 export function campFocusBand(layout: CampLayout, heightsCm: readonly number[] = [], figureScale = 1, extra: readonly CampReach[] = []): CampBand {
-  const reach = [...campReach(layout, heightsCm), ...extra];
+  const reach: CampReach[] = [...campReach(layout, heightsCm), ...extra];
   const top = Math.min(...reach.map((lane) => lane.y - lane.head * figureScale));
-  const bottom = Math.max(...reach.map((lane) => lane.y)) + GROUND_MARGIN * figureScale;
+  const ground = Math.max(...reach.map((lane) => lane.y));
+  const bottom = Math.max(ground + GROUND_MARGIN * figureScale, ...reach.map((lane) => lane.y + (lane.foot ?? 0)));
   return { top: Math.max(0, top), bottom: Math.min(1, bottom) };
 }
 
@@ -86,6 +87,13 @@ export function campFocusBand(layout: CampLayout, heightsCm: readonly number[] =
 export interface CampReach {
   y: number;
   head: number;
+  /**
+   * How far a name under its foot reaches below `y`, as a fraction of the
+   * canvas: names keep their size as the figures shrink, so this does not
+   * scale with the figure factor (camp-boxes.ts puts the crew's name under its
+   * banner pole).
+   */
+  foot?: number;
 }
 
 /** Each lane's ground and how far the tallest seated head stands above it at full size, as fractions of the canvas. */
@@ -130,12 +138,17 @@ export function campFigureScale(
   if (!(scale > 0)) return MIN_FIGURE_SCALE;
   // The window's height as a share of the painting's.
   const room = windowHeight / (canvas.height * scale);
-  const reach = [...campReach(layout, heightsCm), ...extra];
+  const reach: CampReach[] = [...campReach(layout, heightsCm), ...extra];
   const ground = Math.max(...reach.map((lane) => lane.y));
+  // A name under a foot holds the band's bottom at its own size (`CampReach.foot`).
+  const foot = Math.max(0, ...reach.map((lane) => lane.y + (lane.foot ?? 0) - ground));
   let k = 1;
   for (const lane of reach) {
     if (lane.head <= 0) continue;
-    k = Math.min(k, (room - (ground - lane.y)) / (lane.head + GROUND_MARGIN), lane.y / lane.head);
+    // The band is ground - lane.y + head k + max(margin k, foot) tall: the larger root that fits.
+    const withMargin = (room - (ground - lane.y)) / (lane.head + GROUND_MARGIN);
+    const bound = GROUND_MARGIN * withMargin >= foot ? withMargin : (room - (ground - lane.y) - foot) / lane.head;
+    k = Math.min(k, bound, lane.y / lane.head);
   }
   return Math.min(1, Math.max(MIN_FIGURE_SCALE, k));
 }

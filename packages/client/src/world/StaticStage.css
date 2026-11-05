@@ -149,22 +149,21 @@
   pointer-events: none;
   text-shadow: 0 0 .15em #1d1a2c, 0 0 .3em #1d1a2c, 0 0 .5em rgb(29 26 44 / 60%);
 }
+/* The crew's name under its banner pole's foot, where camp-boxes.ts puts it: the moving camp's
+   cream letters with a maroon edge, one line or two. */
 .kad-static-camp__banner {
   position: absolute;
-  inset-block-start: 12%;
-  inset-inline-start: 50%;
   transform: translateX(-50%);
-  padding: .1em .3em;
-  border-radius: .2em;
-  background: #7a2f3a;
+  z-index: 2000;
   color: #fff3d6;
   font-weight: 800;
-  font-size: .6em;
-  line-height: 1.15;
+  line-height: 1.3;
   text-align: center;
-  inline-size: max-content;
-  overflow-wrap: normal;
+  white-space: nowrap;
+  pointer-events: none;
+  text-shadow: 0 0 .12em #5a1f28, 0 0 .2em #5a1f28, 0 0 .35em rgb(90 31 40 / 70%);
 }
+.kad-static-camp__banner > span { display: block; }
 .kad-static-camp__spot.is-lit::after {
   content: "";
   position: absolute;
@@ -225,3 +224,5 @@
   cursor: pointer;
 }
 .kad-static-camp__chip.is-active { background: #ffd36e; color: #1d1a2c; }
+/* A two-word name may sit on two lines (camp-chips.ts), still inside the touch target. */
+.kad-static-camp__chip > span { display: block; line-height: 1.05; }

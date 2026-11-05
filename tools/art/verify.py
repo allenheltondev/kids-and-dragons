@@ -1091,6 +1091,23 @@ def check_camp_art(rep: Report, mf: dict) -> None:
                 rep.fail(f"{rel} undeclared", "a path in manifest.camp", "undeclared file")
 
 
+def check_camp_paint(rep: Report) -> None:
+    """The camp's painted footprints (tools/art/camp-paint.py): the table the layout's boxes and
+    both renderers read must match the paintings on disk, so a repainted piece is never laid out
+    by its old shape."""
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import importlib
+
+    paint = importlib.import_module("camp-paint")
+    problems = paint.stale(ROOT)
+    if problems:
+        rep.fail("camp paint table", "packages/client/src/world/camp-paint.json matches the paintings",
+                 "; ".join(problems[:4]) + (" ..." if len(problems) > 4 else ""),
+                 "run `npm run art:camp-paint` and commit the table")
+    else:
+        rep.ok("camp paint table matches the paintings")
+
+
 def check_scene_illustrations(rep: Report, mf: dict) -> None:
     """Declared story backdrops are opaque; entry portraits use their tall canvas."""
     for art in mf.get("sceneIllustrations", []):
@@ -1259,6 +1276,7 @@ def main() -> int:
     check_camp_layout(rep, mf)
     check_camp_catalog(rep, mf)
     check_camp_art(rep, mf)
+    check_camp_paint(rep)
     check_scene_illustrations(rep, mf)
     check_painted_icons(rep, mf)
     check_painted_icons(rep, mf, "badgeArt", "badges")

@@ -15,6 +15,8 @@ import type { CampMoment, CampView, ClientIntent, HeroKitView, PartyMember, RunS
 import { makeCharacter, makeMember, makeState } from "../testing/fixtures";
 import { CampButton, CampPanel, KitWelcome } from "./CampPanel";
 import { closeCampPanel, openCampPanel } from "./camp-panel";
+import { kitAccent } from "@kad/shared";
+import { campClothMatrix } from "../world/camp-kit-art";
 
 const me: PartyMember = makeMember({
   playerId: "p_1",
@@ -64,6 +66,27 @@ describe("the first-session choice (§5.3)", () => {
     fireEvent.click(screen.getByRole("button", { name: "Quilted" }));
     expect(sent).toEqual([{ type: "KIT_EDIT", characterId: "c_1", revision: 4, style: "quilted", tent: "quilted", color: "rose" }]);
     expect(screen.queryByTestId("kit-welcome")).toBeNull();
+  });
+
+  it("shows each style's tent once the camp has tents, in her color, and its bedroll before (§4.5)", () => {
+    const { container, unmount } = render(<KitWelcome state={table()} me={friend} held={false} dispatch={dispatch} />);
+    fireEvent.click(screen.getByRole("radio", { name: "Mint" }));
+    const tents = [...container.querySelectorAll(".kit-welcome__style svg[data-camp-tent]")];
+    expect(tents.map((svg) => svg.getAttribute("data-camp-tent"))).toEqual(["rolled", "quilted", "patched"]);
+    for (const svg of tents) {
+      // The painting, then the same painting clipped to its cloth and tinted: the poles and ropes stay as painted.
+      const images = svg.querySelectorAll("image");
+      expect(images).toHaveLength(2);
+      expect(images[1]!.getAttribute("clip-path")).toMatch(/^url\(#/);
+      expect(svg.querySelector("feColorMatrix")!.getAttribute("values")).toBe(campClothMatrix(kitAccent("rose", friend.character.appearance.accent)));
+      // Cropped to what is painted, not the whole canvas.
+      expect(svg.getAttribute("viewBox")).not.toBe("0 0 1024 1024");
+    }
+    expect(container.querySelector(".kit-welcome__style [data-camp-kit]")).toBeNull();
+    unmount();
+    const early = render(<KitWelcome state={table({ camp: camp({ frameStage: 1, grownBy: [] }) })} me={friend} held={false} dispatch={dispatch} />);
+    expect(early.container.querySelectorAll(".kit-welcome__style [data-camp-kit]")).toHaveLength(3);
+    expect(early.container.querySelector(".kit-welcome__style [data-camp-tent]")).toBeNull();
   });
 
   it("can be skipped, and shows only once", () => {
