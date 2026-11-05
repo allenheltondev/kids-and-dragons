@@ -164,28 +164,33 @@ separate tint layer to paint.
 **The stage-2 frame** (`frames[1]`, open_plains lanes, all of verify's lane rules):
 
 - **Tent spots** `tent_0` to `tent_3`, two each side of the awning, staggered on two lanes like
-  stage 1's bedrolls (docs/camp.md §8.3): the outer two on the back lane (x 0.24 and 0.776), the
-  inner two on the middle lane in front of them (0.367 and 0.648), an inner tent's side standing in
+  stage 1's bedrolls (docs/camp.md §8.3): the outer two on the back lane (x 0.229 and 0.776), the
+  inner two on the middle lane in front of them (0.366 and 0.642), an inner tent's side standing in
   front of its neighbour's up to that neighbour's door. Each is owned by its seat (`ownerSeat`)
   and drawn in that hero's style and color, fitted to its owner (camp-ownership.ts: about 1.1
-  times her height, the patched lean-to too, so every tent stands taller than its hero, never
+  times her height, 1.2 for a small hero such as a kitsune or a dragonling, the patched lean-to too, so every tent stands taller than its hero, never
   under the style's own height for a 160 cm hero). The manifest's path is the `rolled` tent, the fallback, as the
   neutral bedroll is at stage 1. Each door's rest stand point is on its tent's own lane, at the door,
   and each spot's flap (`movingParts`, motion `sway`) is the hero's style's `flap`. At stage 2
   outdoors a seat shows its tent; the bedroll and pack stay the stage-1 and indoor kit (§3.2).
-- **Souvenir lines** `souvenirs_0` to `souvenirs_3` on each tent's own lane against its open side (0.213, 0.358, 0.657, 0.802), the side no nearer tent covers: one
+- **Souvenir lines** `souvenirs_0` to `souvenirs_3` on each tent's own lane beside its door (0.197, 0.374, 0.634, 0.808), where no nearer tent covers it: one
   painting (`souvenirDisplay`), a short twine line with four empty pegs at its `hangPoints`, where
   the client hangs the hero's existing souvenir icons.
 - **Shared hotspots** (`hotspots`, a new key: id, kind, lane, x, and an optional `default` crew
   piece): `cookfire` (near 0.512, default `cookfire_pot`), `awning` (back 0.511, behind the fire,
-  between the inner tents), `lanterns` (middle 0.08, past the first tent), `friends_corner` (near
-  0.211, in front of the first tent), `banner_pole` (middle 0.92, by the trail, default
+  between the inner tents, whose sides may stand in front of its feet), `lanterns` (middle 0.08, past the first tent), `friends_corner` (near
+  0.233, in front of the first tents), `banner_pole` (middle 0.913, by the trail, default
   `kept_crew_banner`; the crew's name is lettered under its foot, never on the flag) and
-  `trophy_1`, `trophy_2` (near 0.761 and 0.825, in front of the last tent). Stage 1 has the lantern hooks (near 0.08), the
+  `trophy_1`, `trophy_2` (near 0.738 and 0.818, in front of the last tents). Stage 1 has the lantern hooks (near 0.08), the
   friends' corner (near 0.38) and the banner pole (back 0.865). A stand point's
   `hotspot` may now name a frame hotspot as well as a piece: two warmUp spots at the cookfire, a
   lookUp at the lanterns and the banner, a pet at the friends' corner and a shady spot under the
-  awning. The client parser (`camp-layout.ts`) reads `hotspots`; the lobby still pitches stage 1.
+  awning (on the middle lane, between the inner tents, so no tent hides whoever stands there).
+  A tall piece (awning, lanterns, banner pole and their shop pieces) may stand partly behind a
+  nearer tent, covered from the foot up but never in the top half of its height: paint what makes
+  it itself (the flag, the vane or pinwheel, the lamps, the canopy) in that top half. A short
+  near-lane piece (the friends' corner, a trophy, the cookfire) may stand in front of a tent's
+  lower half. The client parser (`camp-layout.ts`) reads `hotspots`; the lobby still pitches stage 1.
 - **The trailhead post** is stage 1's painting, unchanged.
 
 **Crew pieces** (`crewPieces`: id, `hotspot` kind, `group`, path, heightCm, movingParts):

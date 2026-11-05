@@ -81,7 +81,7 @@
     {
       "id": "camp/pieces/find-picnic-blanket",
       "path": "assets/camp/pieces/find-picnic-blanket.png",
-      "plays": "crewPieces id find_picnic_blanket (find). A crew find painted for the Practice Meadow (first-steps-01), where Tansy spreads a picnic blanket under an apple tree. Stands at the friends' corner hotspot (near lane, at the camp's left, in front of the first tent on the back lane, low enough to stand in front of it), where the crew's friends gather. At stage 1 it lies on the near lane between the first bedroll and the campfire. Drawn at 80 cm tall and 145 cm wide.",
+      "plays": "crewPieces id find_picnic_blanket (find). A crew find painted for the Practice Meadow (first-steps-01), where Tansy spreads a picnic blanket under an apple tree. Stands at the friends' corner hotspot (near lane, at the camp's left, in front of the first tents, low enough to stand in front of a tent's lower half), where the crew's friends gather. At stage 1 it lies on the near lane between the first bedroll and the campfire. Drawn at 80 cm tall and 145 cm wide.",
       "reference": "assets/camp/frames/stage1/bedroll.png",
       "output": {
         "width": 1024,
@@ -136,7 +136,7 @@
     {
       "id": "camp/pieces/find-noodle-awning",
       "path": "assets/camp/pieces/find-noodle-awning.png",
-      "plays": "crewPieces id find_noodle_awning (find). A crew find painted for Riftlight's first chapter (riftlight-exchange-rift), the noodle seller's awning the heroes saved from the snow. Stands at the awning hotspot (back lane, between the two inner tents on the middle lane, behind the cookfire); a hero can stand in its shade. Drawn at 175 cm tall and 207 cm wide.",
+      "plays": "crewPieces id find_noodle_awning (find). A crew find painted for Riftlight's first chapter (riftlight-exchange-rift), the noodle seller's awning the heroes saved from the snow. Stands at the awning hotspot (back lane, between the two inner tents on the middle lane, behind the cookfire; their sides may stand in front of its feet, never its canopy, so paint the canopy in the top half); a hero can stand in its shade. Drawn at 175 cm tall and 207 cm wide.",
       "reference": "assets/camp/frames/stage1/trailhead-post.png",
       "output": {
         "width": 1024,
@@ -191,7 +191,7 @@
     {
       "id": "camp/pieces/shop-striped-awning",
       "path": "assets/camp/pieces/shop-striped-awning.png",
-      "plays": "crewPieces id shop_striped_awning (starter-shop). A starter shop piece for the awning hotspot (back lane, between the two inner tents on the middle lane, behind the cookfire): a striped awning. A hero can stand in its shade. Drawn at 175 cm tall and 206 cm wide.",
+      "plays": "crewPieces id shop_striped_awning (starter-shop). A starter shop piece for the awning hotspot (back lane, between the two inner tents on the middle lane, behind the cookfire; their sides may stand in front of its feet, never its canopy, so paint the canopy in the top half): a striped awning. A hero can stand in its shade. Drawn at 175 cm tall and 206 cm wide.",
       "reference": "assets/camp/frames/stage1/trailhead-post.png",
       "output": {
         "width": 1024,
@@ -209,7 +209,7 @@
     {
       "id": "camp/pieces/shop-log-bench",
       "path": "assets/camp/pieces/shop-log-bench.png",
-      "plays": "crewPieces id shop_log_bench (starter-shop). A starter shop piece for the friends' corner hotspot (near lane, at the camp's left, in front of the first tent on the back lane, low enough to stand in front of it): a log bench where the crew's friends sit. At stage 1 it lies on the near lane between the first bedroll and the campfire. Drawn at 70 cm tall and 138 cm wide.",
+      "plays": "crewPieces id shop_log_bench (starter-shop). A starter shop piece for the friends' corner hotspot (near lane, at the camp's left, in front of the first tents, low enough to stand in front of a tent's lower half): a log bench where the crew's friends sit. At stage 1 it lies on the near lane between the first bedroll and the campfire. Drawn at 70 cm tall and 138 cm wide.",
       "reference": "assets/camp/frames/stage1/bedroll.png",
       "output": {
         "width": 1024,
@@ -338,7 +338,7 @@
     {
       "id": "camp/pieces/shop-patchwork-awning",
       "path": "assets/camp/pieces/shop-patchwork-awning.png",
-      "plays": "crewPieces id shop_patchwork_awning (stage2-shop). A stage-2 shop piece for the awning hotspot (back lane, between the two inner tents on the middle lane, behind the cookfire): a big patchwork awning. A hero can stand in its shade. Drawn at 175 cm tall and 210 cm wide.",
+      "plays": "crewPieces id shop_patchwork_awning (stage2-shop). A stage-2 shop piece for the awning hotspot (back lane, between the two inner tents on the middle lane, behind the cookfire; their sides may stand in front of its feet, never its canopy, so paint the canopy in the top half): a big patchwork awning. A hero can stand in its shade. Drawn at 175 cm tall and 210 cm wide.",
       "reference": "assets/camp/frames/stage1/trailhead-post.png",
       "output": {
         "width": 1024,
@@ -393,7 +393,7 @@
     {
       "id": "camp/pieces/shop-friends-hammock",
       "path": "assets/camp/pieces/shop-friends-hammock.png",
-      "plays": "crewPieces id shop_friends_hammock (stage2-shop). A stage-2 shop piece for the friends' corner hotspot (near lane, at the camp's left, in front of the first tent on the back lane, low enough to stand in front of it): a little hammock where the crew's friends nap. Drawn at 85 cm tall and 190 cm wide.",
+      "plays": "crewPieces id shop_friends_hammock (stage2-shop). A stage-2 shop piece for the friends' corner hotspot (near lane, at the camp's left, in front of the first tents, low enough to stand in front of a tent's lower half): a little hammock where the crew's friends nap. Drawn at 85 cm tall and 190 cm wide.",
       "reference": "assets/camp/frames/stage1/bedroll.png",
       "output": {
         "width": 1024,
@@ -447,7 +447,7 @@
     {
       "id": "camp/kits/tents/rolled",
       "path": "assets/camp/kits/tents/rolled.png",
-      "plays": "tentStyles id rolled (catalog). A hero's tent at stage 2, at their seat's tent spot (frame pieces tent_0 to tent_3, two each side of the cookfire, staggered like stage 1's bedrolls: the outer two on the back lane, the inner two on the middle lane in front of them), tinted to the hero's own color. The hero rests at its door and the flap sways. Drawn to fit its owner (packages/client/src/world/camp-ownership.ts): about 1.1 times her drawn height and at least 1.3 times her drawn width, so she could fit inside (a lean-to too, however much wider than tall it is painted: a tent always stands taller than its hero), and never under its own height for a 160 cm hero. Paint it about as wide as it is tall; the camp sizes it to her. Matches the rolled kit (assets/camp/kits/rolled.png): tidy, structured, squared.",
+      "plays": "tentStyles id rolled (catalog). A hero's tent at stage 2, at their seat's tent spot (frame pieces tent_0 to tent_3, two each side of the cookfire, staggered like stage 1's bedrolls: the outer two on the back lane, the inner two on the middle lane in front of them), tinted to the hero's own color. The hero rests at its door and the flap sways. Drawn to fit its owner (packages/client/src/world/camp-ownership.ts): about 1.1 times her drawn height (1.2 for a small hero such as a kitsune or a dragonling) and at least 1.3 times her drawn width, so she could fit inside (a lean-to too, however much wider than tall it is painted: a tent always stands taller than its hero), and never under its own height for a 160 cm hero. Paint it about as wide as it is tall; the camp sizes it to her. Matches the rolled kit (assets/camp/kits/rolled.png): tidy, structured, squared.",
       "reference": "assets/camp/kits/rolled.png",
       "output": {
         "width": 1024,
@@ -486,7 +486,7 @@
     {
       "id": "camp/kits/tents/quilted",
       "path": "assets/camp/kits/tents/quilted.png",
-      "plays": "tentStyles id quilted (catalog). A hero's tent at stage 2, at their seat's tent spot (frame pieces tent_0 to tent_3, two each side of the cookfire, staggered like stage 1's bedrolls: the outer two on the back lane, the inner two on the middle lane in front of them), tinted to the hero's own color. The hero rests at its door and the flap sways. Drawn to fit its owner (packages/client/src/world/camp-ownership.ts): about 1.1 times her drawn height and at least 1.3 times her drawn width, so she could fit inside (a lean-to too, however much wider than tall it is painted: a tent always stands taller than its hero), and never under its own height for a 160 cm hero. Paint it about as wide as it is tall; the camp sizes it to her. Matches the quilted kit (assets/camp/kits/quilted.png): round, padded, drawstring-soft.",
+      "plays": "tentStyles id quilted (catalog). A hero's tent at stage 2, at their seat's tent spot (frame pieces tent_0 to tent_3, two each side of the cookfire, staggered like stage 1's bedrolls: the outer two on the back lane, the inner two on the middle lane in front of them), tinted to the hero's own color. The hero rests at its door and the flap sways. Drawn to fit its owner (packages/client/src/world/camp-ownership.ts): about 1.1 times her drawn height (1.2 for a small hero such as a kitsune or a dragonling) and at least 1.3 times her drawn width, so she could fit inside (a lean-to too, however much wider than tall it is painted: a tent always stands taller than its hero), and never under its own height for a 160 cm hero. Paint it about as wide as it is tall; the camp sizes it to her. Matches the quilted kit (assets/camp/kits/quilted.png): round, padded, drawstring-soft.",
       "reference": "assets/camp/kits/quilted.png",
       "output": {
         "width": 1024,
@@ -525,7 +525,7 @@
     {
       "id": "camp/kits/tents/patched",
       "path": "assets/camp/kits/tents/patched.png",
-      "plays": "tentStyles id patched (catalog). A hero's tent at stage 2, at their seat's tent spot (frame pieces tent_0 to tent_3, two each side of the cookfire, staggered like stage 1's bedrolls: the outer two on the back lane, the inner two on the middle lane in front of them), tinted to the hero's own color. The hero rests at its door and the flap sways. Drawn to fit its owner (packages/client/src/world/camp-ownership.ts): about 1.1 times her drawn height and at least 1.3 times her drawn width, so she could fit inside (a lean-to too, however much wider than tall it is painted: a tent always stands taller than its hero), and never under its own height for a 160 cm hero. Paint it about as wide as it is tall; the camp sizes it to her. Matches the patched kit (assets/camp/kits/patched.png): low, broad, mended.",
+      "plays": "tentStyles id patched (catalog). A hero's tent at stage 2, at their seat's tent spot (frame pieces tent_0 to tent_3, two each side of the cookfire, staggered like stage 1's bedrolls: the outer two on the back lane, the inner two on the middle lane in front of them), tinted to the hero's own color. The hero rests at its door and the flap sways. Drawn to fit its owner (packages/client/src/world/camp-ownership.ts): about 1.1 times her drawn height (1.2 for a small hero such as a kitsune or a dragonling) and at least 1.3 times her drawn width, so she could fit inside (a lean-to too, however much wider than tall it is painted: a tent always stands taller than its hero), and never under its own height for a 160 cm hero. Paint it about as wide as it is tall; the camp sizes it to her. Matches the patched kit (assets/camp/kits/patched.png): low, broad, mended.",
       "reference": "assets/camp/kits/patched.png",
       "output": {
         "width": 1024,

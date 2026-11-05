@@ -62,8 +62,11 @@ export interface CampLabelBox {
 
 export interface CampBox {
   id: string;
-  /** `door`: a hero standing at her own tent's door (`campDoorBoxes`), kept in view. */
-  kind: "frame" | "tent" | "owned" | "spot" | "beside" | "door";
+  /**
+   * `door`: a hero standing at her own tent's door (`campDoorBoxes`), kept in view;
+   * `stand`: a hero at a tall shared piece's stand point (`campStandBoxes`), never hidden by a nearer tent.
+   */
+  kind: "frame" | "tent" | "owned" | "spot" | "beside" | "door" | "stand";
   lane: string;
   /** The hero whose gear it is. */
   seat?: number;
@@ -227,6 +230,23 @@ function mayTouch(a: CampBox, b: CampBox): boolean {
 }
 
 /**
+ * The tall shared pieces (docs/camp.md §8.3): the awning, the lanterns and the
+ * banner pole, and the shop pieces on those spots. Each may stand partly
+ * behind a nearer tent, as `campCoverClashes` allows.
+ */
+export const TALL_SPOTS: ReadonlySet<string> = new Set(["awning", "lanterns", "banner_pole"]);
+/** How much of a tall piece nearer tents may cover: under this share of its painted area... */
+export const TALL_MAX_COVERED = 0.5;
+/** ...and none of this top share of its painted height. */
+export const TALL_KEEP_TOP = 0.5;
+/** How high up a farther tent a short near-lane piece may stand in front of it: its lower half. */
+export const LOW_FRONT_SHARE = 0.5;
+
+const isTallSpot = (box: CampBox): boolean => box.kind === "spot" && TALL_SPOTS.has(box.id.slice("spot:".length));
+/** A hero's tent, or the souvenir line hanging on it. */
+const isTentGear = (box: CampBox): boolean => box.seat !== undefined && (box.kind === "tent" || (box.kind === "owned" && box.id.startsWith("souvenirs_")));
+
+/**
  * Whether `a` may be drawn over `b`'s paint, or `b` over `a`'s (docs/camp.md
  * §8.3): the stage-2 tents stand on two lanes, so a tent on the nearer lane
  * (and the souvenir line on it) may stand in front of a tent further back, the
@@ -234,26 +254,118 @@ function mayTouch(a: CampBox, b: CampBox): boolean {
  * further back. Never over anybody's door: a hero at her tent's door is seen
  * whole, so nothing on her lane or a nearer one covers her (`campDoorBoxes`),
  * nor another hero; and never over a farther tent's souvenir line.
+ *
+ * Two more, both decided (#620): a tall shared piece may stand partly behind a
+ * nearer tent (how much, `campCoverClashes` judges with every nearer tent
+ * together), never behind or in front of a hero at her door; and a short
+ * shared piece on the near lane (`nearest`, its ground) may stand in front of
+ * the lower half of a farther tent (`LOW_FRONT_SHARE`), never its door. A hero
+ * at a tall piece's stand point (`campStandBoxes`) is never covered by a
+ * nearer tent, and is otherwise passed like any walking hero.
  */
-function mayStandBefore(a: CampBox, b: CampBox): boolean {
+function mayStandBefore(a: CampBox, b: CampBox, nearest?: number): boolean {
   if (mayTouch(a, b)) return true;
-  if (a.ground === b.ground || a.seat === undefined || b.seat === undefined) return false;
+  if (a.kind === "stand" || b.kind === "stand") {
+    const [stand, other] = a.kind === "stand" ? [a, b] : [b, a];
+    return !(isTentGear(other) && other.ground > stand.ground);
+  }
+  if (a.ground === b.ground) return false;
   const [near, far] = a.ground > b.ground ? [a, b] : [b, a];
+  if (isTallSpot(far) && isTentGear(near)) return true;
+  if (far.kind === "tent" && near.kind === "spot" && !isTallSpot(near) && near.ground === nearest) {
+    return near.ground - near.height >= far.ground - far.height * LOW_FRONT_SHARE;
+  }
+  if (a.seat === undefined || b.seat === undefined) return false;
   return far.kind === "tent" && (near.kind === "tent" || near.kind === "door" || (near.kind === "owned" && near.id.startsWith("souvenirs_")));
 }
 
-/** Every pair of boxes that overlap and may not. */
+/** The area of the union of some rectangles. */
+function unionArea(rects: readonly Rect[]): number {
+  const xs = [...new Set(rects.flatMap((r) => [r.l, r.r]))].sort((p, q) => p - q);
+  let area = 0;
+  for (let i = 0; i + 1 < xs.length; i++) {
+    const x0 = xs[i]!;
+    const x1 = xs[i + 1]!;
+    const spans = rects.filter((r) => r.l <= x0 && r.r >= x1).map((r) => [r.t, r.b] as const).sort((p, q) => p[0] - q[0]);
+    let covered = 0;
+    let top = 0;
+    let bottom = 0;
+    let open = false;
+    for (const [t, b] of spans) {
+      if (!open || t > bottom) {
+        if (open) covered += bottom - top;
+        top = t;
+        bottom = b;
+        open = true;
+      } else bottom = Math.max(bottom, b);
+    }
+    if (open) covered += bottom - top;
+    area += covered * (x1 - x0);
+  }
+  return area;
+}
+
+const intersect = (a: Rect, b: Rect): Rect | null => {
+  const r = { l: Math.max(a.l, b.l), r: Math.min(a.r, b.r), t: Math.max(a.t, b.t), b: Math.min(a.b, b.b) };
+  return r.l < r.r && r.t < r.b ? r : null;
+};
+
+/**
+ * Every tall shared piece nearer tents cover too much of (docs/camp.md §8.3),
+ * paired with a tent that covers it. It must still read as itself: no nearer
+ * tent or souvenir line covers any of the top `TALL_KEEP_TOP` of its painted
+ * height (where a banner's flag, a pole's vane or pinwheel, the lamps and an
+ * awning's canopy are painted), and all of them together cover less than
+ * `TALL_MAX_COVERED` of its painted area, slice by slice.
+ */
+export function campCoverClashes(boxes: readonly CampBox[]): [string, string][] {
+  const out = new Map<string, [string, string]>();
+  for (const piece of boxes.filter(isTallSpot)) {
+    const nearer = boxes.filter((b) => isTentGear(b) && b.ground > piece.ground && shapesOverlap(b, piece));
+    if (nearer.length === 0) continue;
+    const keepBelow = piece.ground - piece.height * (1 - TALL_KEEP_TOP);
+    const mine = shapeOf(piece);
+    const covered: Rect[] = [];
+    for (const tent of nearer) {
+      for (const s of mine) {
+        for (const t of shapeOf(tent)) {
+          const hit = intersect(s, t);
+          if (!hit) continue;
+          covered.push(hit);
+          if (hit.t < keepBelow - 1e-6) out.set(`${piece.id}|${tent.id}`, [piece.id, tent.id]);
+        }
+      }
+    }
+    const total = mine.reduce((sum, s) => sum + (s.r - s.l) * (s.b - s.t), 0);
+    if (unionArea(covered) >= TALL_MAX_COVERED * total) out.set(`${piece.id}|${nearer[0]!.id}`, [piece.id, nearer[0]!.id]);
+  }
+  return [...out.values()];
+}
+
+/** How much of a tall piece's painted area nearer tents cover, 0 to 1 (for tests and the docs' numbers). */
+export function campCoveredShare(boxes: readonly CampBox[], pieceId: string): number {
+  const piece = boxes.find((b) => b.id === pieceId);
+  if (!piece) return 0;
+  const mine = shapeOf(piece);
+  const covered = boxes
+    .filter((b) => isTentGear(b) && b.ground > piece.ground)
+    .flatMap((tent) => mine.flatMap((s) => shapeOf(tent).map((t) => intersect(s, t)).filter((r): r is Rect => r !== null)));
+  return unionArea(covered) / mine.reduce((sum, s) => sum + (s.r - s.l) * (s.b - s.t), 0);
+}
+
+/** Every pair of boxes that overlap and may not, and every tall piece nearer tents cover too much of (`campCoverClashes`). */
 export function campOverlaps(boxes: readonly CampBox[]): [string, string][] {
   const out: [string, string][] = [];
+  const nearest = Math.max(...boxes.filter((b) => b.kind !== "door" && b.kind !== "stand").map((b) => b.ground));
   for (let i = 0; i < boxes.length; i++) {
     for (let j = i + 1; j < boxes.length; j++) {
       const a = boxes[i]!;
       const b = boxes[j]!;
-      if (mayStandBefore(a, b)) continue;
+      if (mayStandBefore(a, b, nearest)) continue;
       if (shapesOverlap(a, b)) out.push([a.id, b.id]);
     }
   }
-  return out;
+  return [...out, ...campCoverClashes(boxes)];
 }
 
 /**
@@ -286,6 +398,40 @@ export function campDoorBoxes(layout: CampLayout, input: Pick<CampBoxInput, "her
       ground: lane.y * H,
       width: box.width * lane.scale * k,
       height: box.height * lane.scale * k,
+      label: null,
+    });
+  }
+  return out;
+}
+
+/**
+ * A hero at each tall shared piece's stand point (the awning's, the lanterns',
+ * the banner pole's; `TALL_SPOTS`), as a box at the camp's figure factor: the
+ * party's tallest and widest painted box (`HERO_PAINT`), or a standing
+ * person's for an empty table, on the stand point's lane. A tall piece may
+ * stand partly behind a nearer tent, but whoever goes to look at it is never
+ * hidden by one (`mayStandBefore`).
+ */
+export function campStandBoxes(layout: CampLayout, input: Pick<CampBoxInput, "heroes" | "figureScale">): CampBox[] {
+  const k = input.figureScale ?? 1;
+  const measure = campMeasure(layout.canvas.height);
+  const W = layout.canvas.width;
+  const H = layout.canvas.height;
+  const drawn = (input.heroes.length ? input.heroes : [{ heightCm: DEFAULT_SIZE.heightCm }]).map((h) => heroDrawnBox(h, measure));
+  const hero = { height: Math.max(...drawn.map((b) => b.height)), width: Math.max(...drawn.map((b) => b.width)) };
+  const out: CampBox[] = [];
+  for (const point of layout.frame.standPoints) {
+    if (!point.hotspot || !TALL_SPOTS.has(point.hotspot) || !layout.frame.hotspots?.some((h) => h.id === point.hotspot)) continue;
+    const lane = laneOf(layout, point.lane);
+    out.push({
+      id: `stand:${point.id}`,
+      kind: "stand",
+      lane: point.lane,
+      x: point.x * W,
+      anchor: point.x * W,
+      ground: lane.y * H,
+      width: hero.width * lane.scale * k,
+      height: hero.height * lane.scale * k,
       label: null,
     });
   }
@@ -529,13 +675,18 @@ export function campBoxes(layout: CampLayout, input: CampBoxInput): CampBox[] {
 /**
  * The largest figure factor, from 1 down to `MIN_FIGURE_SCALE`, at which none
  * of these boxes overlap, nor covers a hero at her tent's door (docs/camp.md §8.3,
- * `campDoorBoxes`): a party whose gear is too big
+ * `campDoorBoxes`), nor hides a hero at a tall piece's stand point
+ * (`campStandBoxes`): a party whose gear is too big
  * for the camp's fixed spots at full size is drawn a little smaller, never
  * piled up. 1 for every party the spots were spaced for.
  */
 export function campRowScale(layout: CampLayout, input: Omit<CampBoxInput, "figureScale">): number {
   const fits = (k: number): boolean =>
-    campOverlaps([...campBoxes(layout, { ...input, figureScale: k }).filter((b) => b.kind !== "beside"), ...campDoorBoxes(layout, { heroes: input.heroes, figureScale: k })]).length === 0;
+    campOverlaps([
+      ...campBoxes(layout, { ...input, figureScale: k }).filter((b) => b.kind !== "beside"),
+      ...campDoorBoxes(layout, { heroes: input.heroes, figureScale: k }),
+      ...campStandBoxes(layout, { heroes: input.heroes, figureScale: k }),
+    ]).length === 0;
   if (fits(1)) return 1;
   let lo = MIN_FIGURE_SCALE;
   let hi = 1;
