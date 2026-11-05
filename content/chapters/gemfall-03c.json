@@ -1321,8 +1321,8 @@
     },
     "encounter_wolves": {
       "type": "encounter",
-      "map": "roadside",
-      "narration": "The wolves do not want to leave. They are cold, and your fire is right there.",
+      "map": "sausage_lane",
+      "narration": "The pack has your fire surrounded. Slip past the wolves and get everyone to the big campfire, or stand your ground and shoo them away.",
       "enemies": [
         {
           "id": "wolf",
@@ -1343,6 +1343,35 @@
           }
         ],
         "narration": "The wolves eat everybody's supper and curl up on your bedrolls. Cold and hungry, you wander toward the big campfire."
+      },
+      "art": "scenes/gemfall/queue-dusk-camp",
+      "environment": {
+        "clock": {
+          "rounds": 5,
+          "label": "The pack takes your camp",
+          "onExpire": "collapse"
+        },
+        "exits": [
+          {
+            "id": "big-campfire",
+            "label": "Big campfire",
+            "art": "camp-firepit",
+            "tiles": [
+              {
+                "x": 6,
+                "y": 2
+              }
+            ]
+          }
+        ]
+      },
+      "onEscape": {
+        "goto": "scene_campfire_play",
+        "narration": "You bring supper to the big fire. The wolves curl up around the embers you left behind."
+      },
+      "onTimeout": {
+        "goto": "scene_campfire_play",
+        "narration": "A wolf makes off with your supper. You gather the bedrolls and head for the big fire."
       }
     },
     "scene_campfire_play": {
@@ -2058,23 +2087,56 @@
     },
     "encounter_drakes": {
       "type": "encounter",
-      "map": "ford",
-      "narration": "The drakes do not see why a wagon full of bread should stay upright when it could be lunch.",
+      "map": "surge_wagon",
+      "narration": "Watch where the drakes aim their tails. End two turns beside the wagon wheel to heave it upright before the river takes it.",
       "enemies": [
         {
           "id": "drake",
           "name": "Young River Drake",
           "creature": "river_drake",
-          "hp": 10
+          "hp": 10,
+          "quick": 4,
+          "windupAttack": {
+            "label": "Tail sweep",
+            "radius": 1,
+            "damage": 3,
+            "presentation": "slam"
+          }
         }
       ],
       "onVictory": {
         "goto": "end_forded",
-        "narration": "The drakes sulk off with one loaf each. The drovers cheer as you shove the wagon up the bank."
+        "narration": "The wagon lurches upright. The drakes slink off with two loaves."
       },
       "onDefeat": {
         "goto": "end_swept_setback",
         "narration": "A drake flicks its tail. Over goes the wagon, and you go with it, into the current."
+      },
+      "art": "scenes/gemfall/west-branch-ford",
+      "environment": {
+        "clock": {
+          "rounds": 5,
+          "label": "The wagon tips",
+          "onExpire": "collapse"
+        },
+        "objectives": [
+          {
+            "id": "bread-wagon",
+            "kind": "close",
+            "label": "Right the wagon",
+            "art": "prop_wagon_wheel_rut",
+            "at": {
+              "x": 4,
+              "y": 2
+            },
+            "turns": 2,
+            "endsFight": true
+          }
+        ]
+      },
+      "onTimeout": {
+        "goto": "end_swept_setback",
+        "narration": "The wagon slips off the stones. The drovers pull you from the current farther downstream."
       }
     },
     "scene_surge_scarves_help": {
@@ -2763,7 +2825,12 @@
       "/assets/fight-boards/fight_ferry_landing/tiles.png",
       "/assets/entities/glassback_crab/warning.png",
       "/assets/entities/glassback_crab/shooed.png",
-      "/assets/story-props/pickup-river-charm.webp"
+      "/assets/story-props/pickup-river-charm.webp",
+      "/assets/biomes/plains/tiles.png",
+      "/assets/entities/cinder_wolf/cache_sniff.png",
+      "/assets/entities/cinder_wolf/shooed.png",
+      "/assets/entities/river_drake/warning.png",
+      "/assets/entities/river_drake/shooed.png"
     ],
     "fights": [
       {
@@ -2790,6 +2857,52 @@
         "retreatDirection": 1,
         "activeUrl": "/assets/entities/glassback_crab/warning.png",
         "retreatUrl": "/assets/entities/glassback_crab/shooed.png"
+      },
+      {
+        "chapter": "gemfall-03c",
+        "scene": "encounter_wolves",
+        "creature": "cinder_wolf",
+        "board": "sausage_lane",
+        "backdrop": "scenes/gemfall/queue-dusk-camp",
+        "introScenes": [
+          "scene_dusk_wolves"
+        ],
+        "victoryScene": "scene_campfire_play",
+        "defeatScene": "scene_campfire_play",
+        "tileUrl": "/assets/biomes/plains/tiles.png",
+        "rescueFigure": "centaur",
+        "activeUrl": "/assets/entities/cinder_wolf/cache_sniff.png",
+        "retreatUrl": "/assets/entities/cinder_wolf/shooed.png",
+        "props": [],
+        "terrainProps": [],
+        "poses": {
+          "intro": "cache_sniff",
+          "retreat": "shooed"
+        },
+        "retreatDirection": 1
+      },
+      {
+        "chapter": "gemfall-03c",
+        "scene": "encounter_drakes",
+        "creature": "river_drake",
+        "board": "surge_wagon",
+        "backdrop": "scenes/gemfall/west-branch-ford",
+        "introScenes": [
+          "check_drake_toll"
+        ],
+        "victoryScene": "end_forded",
+        "defeatScene": "end_swept_setback",
+        "tileUrl": "/assets/fight-boards/fight_ferry_landing/tiles.png",
+        "rescueFigure": "centaur",
+        "activeUrl": "/assets/entities/river_drake/warning.png",
+        "retreatUrl": "/assets/entities/river_drake/shooed.png",
+        "props": [],
+        "terrainProps": [],
+        "poses": {
+          "intro": "warning",
+          "retreat": "shooed"
+        },
+        "retreatDirection": 1
       }
     ],
     "interactions": {

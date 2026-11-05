@@ -242,6 +242,8 @@ export function enemyPortraitUrl(
   if (!scene || scene.type !== "encounter") return null;
   const specId = combatantId.split("#")[0] ?? combatantId;
   const spec = scene.enemies.find((e) => e.id === specId);
+  const appearance = chapter.presentation?.fights?.find(fight => fight.scene === sceneId);
+  if (appearance?.poses.intro === "strongbox" && appearance.creature === spec?.creature) return appearance.activeUrl;
   const art = spec ? enemyArtId(spec) : null;
   if (!art) return null;
   if (art.startsWith("cast/")) return `/assets/${art}/assembled.png`;

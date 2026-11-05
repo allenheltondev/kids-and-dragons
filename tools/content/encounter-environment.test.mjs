@@ -106,6 +106,22 @@ describe("the schema", () => {
           expect(scene).not.toHaveProperty("onEscape");
           continue;
         }
+        if (chapter.id === "gemfall-03c" && sceneId === "encounter_wolves") {
+          expect(scene.environment.exits[0]).toMatchObject({ id: "big-campfire", art: "camp-firepit" });
+          expect(scene.onEscape.goto).toBe("scene_campfire_play");
+          expect(scene.onTimeout.goto).toBe("scene_campfire_play");
+          continue;
+        }
+        if (chapter.id === "gemfall-03c" && sceneId === "encounter_drakes") {
+          expect(scene.environment.objectives[0]).toMatchObject({ id: "bread-wagon", kind: "close", turns: 2, endsFight: true });
+          expect(scene.onTimeout.goto).toBe("end_swept_setback");
+          continue;
+        }
+        if (chapter.id === "gemfall-04c" && sceneId === "encounter_boxes") {
+          expect(scene.environment.hazards[0]).toMatchObject({ id: "depot-ink", slow: { steps: 2, turns: 1 } });
+          expect(scene.onTimeout.goto).toBe("scene_boxes_sulking");
+          continue;
+        }
         expect(scene).not.toHaveProperty("environment");
         expect(scene).not.toHaveProperty("onEscape");
         expect(scene).not.toHaveProperty("onTimeout");
