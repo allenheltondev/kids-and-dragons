@@ -20,7 +20,7 @@
  */
 
 import { CAMP_KIT_STYLES, campKitStyle } from "./camp-kit-art";
-import { campPaintBox, campPaintSlices } from "./camp-paint";
+import { campPaint, campPaintBox, campPaintSlices } from "./camp-paint";
 import { laneOf, pieceHeightCm, type CampLayout, type CampPiece } from "./camp-layout";
 import { campHeightPx, campMeasure } from "./camp-motion";
 import { campGearKind, campPieceOwner, fittedGear, heroDrawnBox, type CampOwner } from "./camp-ownership";
@@ -81,6 +81,12 @@ export interface CampBox {
   label: CampLabelBox | null;
   /** The crew's name on its banner pole, always shown: under the pole's foot, clear of the flag and everything else. */
   name?: CampLabelBox | null;
+  /**
+   * A tall shared piece's share of its painted height, from its top, that
+   * nothing may cover (`campCoverClashes`): its top half, or down to the foot
+   * of a banner pole's pennant where that hangs lower (`pieceKeepTop`).
+   */
+  keepTop?: number;
   /**
    * What of the box is painted (camp-paint.ts), canvas px: its painting cut
    * into slices of its height, each as wide as its paint there. Absent before
@@ -241,8 +247,43 @@ export const TALL_MAX_COVERED = 0.5;
 export const TALL_KEEP_TOP = 0.5;
 /** How high up a farther tent a short near-lane piece may stand in front of it: its lower half. */
 export const LOW_FRONT_SHARE = 0.5;
+/**
+ * The tall pieces that may also stand in front of a farther tent's outer edge
+ * (docs/camp.md §8.3; #620), as `campEdgeClashes` allows: the lanterns and the
+ * banner pole, and the shop pieces on those spots.
+ */
+export const EDGE_SPOTS: ReadonlySet<string> = new Set(["lanterns", "banner_pole"]);
+/** How much of a farther tent's painted width they may stand in front of, from its outer edge: a quarter (its guy ropes and stakes)... */
+export const EDGE_MAX_SHARE = 0.25;
+/** ...and none of this top share of its painted height, where its ridge and roof are. */
+export const EDGE_KEEP_TOP = 0.5;
+/** A banner pole's piece whose pennant is not measured keeps this much of its height clear, from its top. */
+export const PENNANT_KEEP_TOP_FALLBACK = 0.75;
+
+/**
+ * How much of a tall piece's painted height, from its top, nothing may cover
+ * (`campCoverClashes`): its top half (`TALL_KEEP_TOP`), and on the banner pole
+ * down to the foot of its pennant, the moving part's own painted bounds
+ * (camp-paint.json), so a weathervane's streamers hanging below the half are
+ * kept too; a pennant not measured keeps `PENNANT_KEEP_TOP_FALLBACK`.
+ */
+export function pieceKeepTop(hotspot: string, pieceId: string | null): number {
+  if (hotspot !== "banner_pole" || !pieceId) return TALL_KEEP_TOP;
+  const art = pieceArt(pieceId);
+  const base = campPaint(art?.path);
+  const pennants = (art?.movingParts ?? []).filter((part) => part.motion === "ripple");
+  if (!base || pennants.length === 0) return Math.max(TALL_KEEP_TOP, PENNANT_KEEP_TOP_FALLBACK);
+  let keep = TALL_KEEP_TOP;
+  for (const part of pennants) {
+    const paint = campPaint(part.path);
+    // A moving part shares its piece's canvas registration (camp.ts), so its foot is on the same scale.
+    keep = Math.max(keep, paint ? (paint.bottom - base.top) / (base.bottom - base.top) : PENNANT_KEEP_TOP_FALLBACK);
+  }
+  return Math.min(1, keep);
+}
 
 const isTallSpot = (box: CampBox): boolean => box.kind === "spot" && TALL_SPOTS.has(box.id.slice("spot:".length));
+const isEdgeSpot = (box: CampBox): boolean => box.kind === "spot" && EDGE_SPOTS.has(box.id.slice("spot:".length));
 /** A hero's tent, or the souvenir line hanging on it. */
 const isTentGear = (box: CampBox): boolean => box.seat !== undefined && (box.kind === "tent" || (box.kind === "owned" && box.id.startsWith("souvenirs_")));
 
@@ -259,7 +300,10 @@ const isTentGear = (box: CampBox): boolean => box.seat !== undefined && (box.kin
  * nearer tent (how much, `campCoverClashes` judges with every nearer tent
  * together), never behind or in front of a hero at her door; and a short
  * shared piece on the near lane (`nearest`, its ground) may stand in front of
- * the lower half of a farther tent (`LOW_FRONT_SHARE`), never its door. A hero
+ * the lower half of a farther tent (`LOW_FRONT_SHARE`), never its door. And
+ * a third (#620): the lanterns and the banner pole may stand in front of a
+ * farther tent's outer edge, never its door, its ridge or its souvenir line
+ * (how much, `campEdgeClashes` judges). A hero
  * at a tall piece's stand point (`campStandBoxes`) is never covered by a
  * nearer tent, and is otherwise passed like any walking hero.
  */
@@ -272,6 +316,7 @@ function mayStandBefore(a: CampBox, b: CampBox, nearest?: number): boolean {
   if (a.ground === b.ground) return false;
   const [near, far] = a.ground > b.ground ? [a, b] : [b, a];
   if (isTallSpot(far) && isTentGear(near)) return true;
+  if (isEdgeSpot(near) && far.kind === "tent") return true;
   if (far.kind === "tent" && near.kind === "spot" && !isTallSpot(near) && near.ground === nearest) {
     return near.ground - near.height >= far.ground - far.height * LOW_FRONT_SHARE;
   }
@@ -315,7 +360,8 @@ const intersect = (a: Rect, b: Rect): Rect | null => {
  * paired with a tent that covers it. It must still read as itself: no nearer
  * tent or souvenir line covers any of the top `TALL_KEEP_TOP` of its painted
  * height (where a banner's flag, a pole's vane or pinwheel, the lamps and an
- * awning's canopy are painted), and all of them together cover less than
+ * awning's canopy are painted), nor any of a banner pole's pennant where it
+ * hangs lower (`keepTop`, `pieceKeepTop`), and all of them together cover less than
  * `TALL_MAX_COVERED` of its painted area, slice by slice.
  */
 export function campCoverClashes(boxes: readonly CampBox[]): [string, string][] {
@@ -323,7 +369,7 @@ export function campCoverClashes(boxes: readonly CampBox[]): [string, string][] 
   for (const piece of boxes.filter(isTallSpot)) {
     const nearer = boxes.filter((b) => isTentGear(b) && b.ground > piece.ground && shapesOverlap(b, piece));
     if (nearer.length === 0) continue;
-    const keepBelow = piece.ground - piece.height * (1 - TALL_KEEP_TOP);
+    const keepBelow = piece.ground - piece.height * (1 - (piece.keepTop ?? TALL_KEEP_TOP));
     const mine = shapeOf(piece);
     const covered: Rect[] = [];
     for (const tent of nearer) {
@@ -342,6 +388,62 @@ export function campCoverClashes(boxes: readonly CampBox[]): [string, string][] 
   return [...out.values()];
 }
 
+/**
+ * Every farther tent the lanterns or the banner pole stand in front of too
+ * much of (docs/camp.md §8.3; #620), paired with it. They may stand only in
+ * front of its outer edge, the side away from the middle of the camp, so the
+ * tent still reads as itself: everything of it they cover lies in the outer
+ * `EDGE_MAX_SHARE` of its painted width (its guy ropes and stakes, never its
+ * door) and below its top `EDGE_KEEP_TOP` (its ridge and roof), slice by
+ * slice. Its door, the hero at it and its souvenir line are never covered at
+ * all (`mayStandBefore`).
+ */
+export function campEdgeClashes(boxes: readonly CampBox[]): [string, string][] {
+  const tents = boxes.filter((b) => b.kind === "tent");
+  if (tents.length === 0) return [];
+  const middle = (Math.min(...tents.map((t) => t.anchor)) + Math.max(...tents.map((t) => t.anchor))) / 2;
+  const out: [string, string][] = [];
+  for (const piece of boxes.filter(isEdgeSpot)) {
+    for (const tent of tents) {
+      if (tent.ground >= piece.ground || !shapesOverlap(piece, tent)) continue;
+      const outward = tent.anchor < middle ? -1 : 1;
+      const r = rectOf(tent);
+      const limit = outward < 0 ? r.l + EDGE_MAX_SHARE * (r.r - r.l) : r.r - EDGE_MAX_SHARE * (r.r - r.l);
+      const keepBelow = tent.ground - tent.height * (1 - EDGE_KEEP_TOP);
+      let clash = Math.sign(piece.anchor - tent.anchor) !== outward;
+      for (const s of shapeOf(piece)) {
+        for (const t of shapeOf(tent)) {
+          const hit = intersect(s, t);
+          if (!hit) continue;
+          if ((outward < 0 ? hit.r > limit + 1e-6 : hit.l < limit - 1e-6) || hit.t < keepBelow - 1e-6) clash = true;
+        }
+      }
+      if (clash) out.push([piece.id, tent.id]);
+    }
+  }
+  return out;
+}
+
+/** How much of a farther tent's painted width, from its outer edge, the lanterns or the banner pole stand in front of, 0 to 1 (for tests and the docs' numbers). */
+export function campEdgeShare(boxes: readonly CampBox[], tentId: string): number {
+  const tent = boxes.find((b) => b.id === tentId);
+  if (!tent) return 0;
+  const r = rectOf(tent);
+  let l = Infinity;
+  let rr = -Infinity;
+  for (const piece of boxes.filter((b) => isEdgeSpot(b) && b.ground > tent.ground)) {
+    for (const s of shapeOf(piece)) {
+      for (const t of shapeOf(tent)) {
+        const hit = intersect(s, t);
+        if (!hit) continue;
+        l = Math.min(l, hit.l);
+        rr = Math.max(rr, hit.r);
+      }
+    }
+  }
+  return rr > l ? (rr - l) / (r.r - r.l) : 0;
+}
+
 /** How much of a tall piece's painted area nearer tents cover, 0 to 1 (for tests and the docs' numbers). */
 export function campCoveredShare(boxes: readonly CampBox[], pieceId: string): number {
   const piece = boxes.find((b) => b.id === pieceId);
@@ -353,7 +455,11 @@ export function campCoveredShare(boxes: readonly CampBox[], pieceId: string): nu
   return unionArea(covered) / mine.reduce((sum, s) => sum + (s.r - s.l) * (s.b - s.t), 0);
 }
 
-/** Every pair of boxes that overlap and may not, and every tall piece nearer tents cover too much of (`campCoverClashes`). */
+/**
+ * Every pair of boxes that overlap and may not, every tall piece nearer tents
+ * cover too much of (`campCoverClashes`), and every farther tent the lanterns
+ * or the banner pole stand in front of too much of (`campEdgeClashes`).
+ */
 export function campOverlaps(boxes: readonly CampBox[]): [string, string][] {
   const out: [string, string][] = [];
   const nearest = Math.max(...boxes.filter((b) => b.kind !== "door" && b.kind !== "stand").map((b) => b.ground));
@@ -365,7 +471,7 @@ export function campOverlaps(boxes: readonly CampBox[]): [string, string][] {
       if (shapesOverlap(a, b)) out.push([a.id, b.id]);
     }
   }
-  return [...out, ...campCoverClashes(boxes)];
+  return [...out, ...campCoverClashes(boxes), ...campEdgeClashes(boxes)];
 }
 
 /**
@@ -512,6 +618,7 @@ export function campBoxes(layout: CampLayout, input: CampBoxInput): CampBox[] {
       width: painted.width,
       height,
       label: null,
+      ...(TALL_SPOTS.has(spot.id) ? { keepTop: pieceKeepTop(spot.id, spot.pieceId) } : {}),
       text: spot.label,
       // A banner pole flying the crew's name is named by it, painted or not.
       ...(spot.banner?.trim() ? { banner: spot.banner.trim(), text: undefined } : {}),

@@ -642,7 +642,7 @@ camp's spots on that ground.
   can pick, at 1280 x 720 and 1920 x 1080, under the lobby's panels with and without the campaign
   picker). The crew's name stands under its banner pole's foot, on one line or two, or failing
   that on the grass beside the pole under the flag, never on the flag. A shared piece's name takes
-  two lines where one has no room (two trophies side by side). Three overlaps are allowed, all
+  two lines where one has no room (two trophies side by side). Four overlaps are allowed, all
   at stage 2 and all decided by the owner (#620), the nearer always drawn in front:
   - **A nearer tent may partly cover a tent further back, never its door or its souvenir line.**
     The door is where its hero rests, and her souvenirs hang beside it.
@@ -651,41 +651,57 @@ camp's spots on that ground.
     (and the souvenir lines on them) together cover less than half of the piece's painted area
     and none of the top half of its painted height, where the crew's flag, the weathervane and
     pinwheel, the lamps and the awning's canopy are painted (`campCoverClashes`, judged slice by
-    slice). It never stands behind, or in front of, a hero at her door. The hero who goes to look
+    slice). A banner pole's pennant is kept whole however far down it hangs: the weathervane's
+    streamers reach about two thirds of the way down its pole, below that half, so the layout keeps
+    clear everything down to the foot of the pennant layer's own painted bounds (`pieceKeepTop`,
+    from `camp-paint.json`, which measures each pennant too; a pennant not measured keeps the top
+    three quarters). It never stands behind, or in front of, a hero at her door. The hero who goes to look
     at it stands at its stand point, which no nearer tent covers (`campStandBoxes`), and its name
     is set clean like every other.
   - **A short near-lane piece may stand in front of the lower half of a tent further back**, never
     its door: the friends' corner, the trophies and the cookfire.
+  - **The lanterns and the banner pole may stand in front of the outer edge of a tent further
+    back, never its door.** Only its outer side (away from the middle of the camp), and the tent
+    still reads as itself: all they cover of it lies in the outer quarter of its painted width,
+    where its guy ropes and stakes are, and below the top half of its painted height, its ridge
+    and roof (`campEdgeClashes`, slice by slice). Never over the hero resting at its door, its
+    souvenir line or any hero's door box, and the pieces stay readable: nothing stands in front
+    of them, so their lamps, flag and pennant are never covered.
 
   A hero resting at her tent's door is seen whole: nothing on her lane or a nearer one covers her
   (`campDoorBoxes`). The focus band holds the tents, the names over them and the crew's name under
   its pole, not only the heads.
 - **Stage 2 is two lanes of tents** (*decided*, #620). The four tents are staggered like stage 1's
-  ring of bedrolls: the outer two on the back lane (x 0.229 and 0.776), the inner two on the
-  middle lane in front of them (0.366 and 0.642), so each inner tent's side stands in front of
+  ring of bedrolls: the outer two on the back lane (x 0.195 and 0.787), the inner two on the
+  middle lane in front of them (0.365 and 0.644), so each inner tent's side stands in front of
   its neighbour's, up to that neighbour's door. Between the inner two, the awning stands on the
-  back lane (0.511), where the inner tents' sides may stand in front of its feet, and the
-  cookfire in front of it on the near lane (0.512). The lanterns (0.08) and the banner pole
-  (0.913, by the trail) stand at the ends on the middle lane, past the outer tents. The friends'
-  corner lies on the near lane in front of the first tents (0.233) and the two trophies on the
-  near lane in front of the last (0.738 and 0.818), each free to stand in front of a tent's lower
+  back lane (0.521), where the inner tents' sides may stand in front of its feet, and the
+  cookfire in front of it on the near lane (0.502). The lanterns (0.08) and the banner pole
+  (0.905, by the trail) stand at the ends on the near lane, past the outer tents, each free to
+  stand in front of the outer edge of the outer tent behind it; the near lane stands them lower
+  than the middle lane would, so less of them reaches up beside a back tent's door. The friends'
+  corner lies on the near lane in front of the first tents (0.243) and the two trophies on the
+  near lane in front of the last (0.735 and 0.804), each free to stand in front of a tent's lower
   half. Each hero rests at her own tent's door, on its lane; her souvenir line hangs on her tent
-  beside its door (0.197, 0.374, 0.634, 0.808), where no nearer tent covers it. A hero looks up at
-  the lanterns from the middle lane at 0.17 and at the banner from 0.866, and stands under the
-  awning from the middle lane at 0.511, between the inner tents, where no tent hides her. The
-  heroes wander on the near lane at 0.08, 0.31, 0.69 and 0.92 and on the middle lane at 0.5.
-  Tents are wide (a bigfoot's lean-to is twice as wide as she is tall), so a party whose tents and
-  the crew's widest pieces cannot all stand at full size is drawn smaller (`campRowScale`), never
-  piled up and never under 0.6. With every spot holding its widest or tallest piece, in the tent
-  styles their seats pick and in every tent style: four kitsune 1.0 and four dragonlings 0.98 to
-  1.0; four manticores 0.78 to 0.88, four griffins 0.75 to 0.9, four unicorns 0.73 to 0.92; a mix
-  (bigfoot, kitsune, unicorn, griffin) 0.63 to 0.95, about 0.8 in the styles their seats pick;
-  four bigfoots 0.63 to 0.92, about 0.65 in the styles their seats pick. The low end of every big
-  party is the patched lean-to in an inner seat: its door must stay clear of the outer tent behind
-  it, and the lanterns and the banner pole at the ends keep the outer tents from moving out. The
-  crew's default camp (the cookfire, its banner and trophies only) draws the mix at about 0.82 and
-  four bigfoots at about 0.65. On a 1280 x 720 TV with the campaign picker open the window, not the
-  row, holds a party with a bigfoot on the back lane to about 0.72.
+  beside its door (0.179, 0.39, 0.62, 0.806), where no nearer tent covers it. A hero looks up at
+  the lanterns from the middle lane at 0.14 and at the banner from 0.845, pets the friends from
+  the near lane at 0.168, and stands under the awning from the middle lane at 0.521, between the
+  inner tents, where no tent hides her. The heroes wander on the near lane at 0.08, 0.31, 0.69
+  and 0.92 and on the middle lane at 0.5. Tents are wide (a bigfoot's lean-to is twice as wide as
+  she is tall), so a party whose tents and the crew's widest pieces cannot all stand at full size
+  is drawn smaller (`campRowScale`), never piled up and never under 0.6. With every spot holding
+  its widest or tallest piece, in the tent styles their seats pick and in every tent style: four
+  kitsune 0.96 and four dragonlings 0.95 to 0.96 (the two trophies side by side on the near lane
+  hold every party under 0.96); four manticores 0.81 to 0.82, four griffins 0.77 to 0.84, four
+  unicorns 0.75 to 0.86; a mix (bigfoot, kitsune, unicorn, griffin) 0.75 to 0.86, about 0.82 in
+  the styles their seats pick, and the other way round 0.82 to 0.87; four bigfoots 0.64 to 0.89,
+  about 0.69 in the styles their seats pick. The low end of every big party is the patched
+  lean-to in an inner seat beside the crew's widest awning: its door must stay clear of the outer
+  tent behind it, and the outer tents can move out only until the lanterns and the banner pole
+  would reach a small hero's door. The crew's default camp (the cookfire, its banner and
+  trophies only) draws the mix at about 0.82, four unicorns at 0.82, four griffins at 0.87, four
+  manticores at 0.92 and four bigfoots at about 0.72. On a 1280 x 720 TV with the campaign picker
+  open the window, not the row, holds a party with a bigfoot on the back lane to about 0.72.
 - **Stage 1 is a ring of bedrolls.** A bedroll is longer than its hero lying down, much wider than
   her tent, and too tall to stand in front of another lane's, so at stage 1 everything that
   reaches the back lane stands side by side across the clearing: the lantern hooks at the far
@@ -971,9 +987,10 @@ Settled by the product owner:
 | A tent is bigger than its hero (#620) | Every tent, the patched lean-to and the milestone tents included, stands taller than its hero, and every bedroll is longer than her, in every species and both renderers; the lean-to is no longer fitted by length (§8.3) |
 | Stage-2 tents staggered | The four tents stand on two lanes, like stage 1's ring of bedrolls, so parties draw near full size and every tent stands taller than its hero (§8.3) |
 | A nearer tent over a farther one (#620) | A tent on a nearer lane may partly cover a tent further back, never its door (where its hero rests) and never its souvenir line (§8.3) |
-| Tall shared pieces behind a nearer tent (#620) | The awning, the lanterns and the banner pole, and the shop pieces on those spots, may stand partly behind a nearer tent: never behind or in front of a hero at her door, less than half of the piece's painted area covered and none of its top half (the flag, the vane, the lamps, the canopy), the hero who goes to look at it never hidden by a tent, and its name still set clean (§8.3) |
+| Tall shared pieces behind a nearer tent (#620) | The awning, the lanterns and the banner pole, and the shop pieces on those spots, may stand partly behind a nearer tent: never behind or in front of a hero at her door, less than half of the piece's painted area covered and none of its top half (the flag, the vane, the lamps, the canopy) nor any of a banner pole's pennant, the hero who goes to look at it never hidden by a tent, and its name still set clean (§8.3) |
 | Short near-lane pieces in front of a tent (#620) | The friends' corner, the trophies and the cookfire may stand on the near lane in front of the lower half of a tent further back, never its door (§8.3) |
 | Small heroes get roomier tents (#620) | A small hero's tent is 1.2 times her painted height, a big hero's 1.1: up to 110 cm painted (kitsune, dragonlings) 1.2, from 150 cm (manticores, griffins, unicorns, bigfoots) 1.1, a smooth ramp between; a kitsune's ears sit clearly under her tent's top as she stands at its door (§8.3) |
+| Lanterns and banner over a back tent's edge | The lanterns and banner pole may stand in front of the outer edge of a back tent, never its door, so big parties draw near 0.8 at stage 2 (§8.3) |
 
 Nothing is open. The two parked questions from earlier (editing from the book, choosing friends)
 are settled above as kit and buddy editing in the book and buddies.

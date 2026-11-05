@@ -23,12 +23,16 @@ import catalog from "../../../../content/camp.json";
 import { campLayout, parseCampManifest, type CampLayout } from "./camp-layout";
 import { campVisibleSpan, campWindow } from "./camp-framing";
 import {
+  EDGE_KEEP_TOP,
+  EDGE_MAX_SHARE,
   TALL_KEEP_TOP,
   TALL_MAX_COVERED,
   campBoxes,
   campCoverClashes,
   campCoveredShare,
   campDoorBoxes,
+  campEdgeClashes,
+  campEdgeShare,
   campFitFor,
   campLabelClashes,
   campOverlaps,
@@ -36,6 +40,7 @@ import {
   campStandBoxes,
   labelRect,
   labelsOf,
+  pieceKeepTop,
   rectOf,
   shapesOverlap,
   type CampBox,
@@ -43,7 +48,7 @@ import {
 } from "./camp-boxes";
 import { CAMP_KIT_STYLES } from "./camp-kit-art";
 import { campPaint } from "./camp-paint";
-import { CREW_PIECE_ART, TENT_ART, campSpots, pieceName } from "./camp-scene";
+import { CREW_PIECE_ART, TENT_ART, campSpots, pieceArt, pieceName } from "./camp-scene";
 import { FIGURE_SIZES } from "./figure-sizes";
 
 const parsed = parseCampManifest((manifest as { camp: unknown }).camp);
@@ -81,10 +86,11 @@ const PARTIES: Record<string, string[]> = {
  * stand on two lanes (the outer two on the back lane, the inner two in front),
  * an inner tent's side in front of its neighbour's but never over its door,
  * with the awning between the inner two (their sides may stand in front of its
- * feet) and the lanterns and the banner pole at the ends. The small parties are
- * drawn full size, even in their roomier tents, and four bigfoots in their
- * widest tents, or a bigfoot in an inner seat, go down to about 0.63, never
- * piled up and never under the floor (`MIN_FIGURE_SCALE`).
+ * feet) and the lanterns and the banner pole at the ends on the near lane (each
+ * may stand in front of the outer edge of the tent behind it). The small
+ * parties are drawn nearly full size, even in their roomier tents, and four
+ * bigfoots in their widest tents, or a bigfoot in an inner seat, go down to
+ * about 0.64, never piled up and never under the floor (`MIN_FIGURE_SCALE`).
  */
 const STAGES = [
   { stage: 1, minRow: 0.75, smallRow: 0.85, grownBy: [] as string[], styles: Object.keys(CAMP_KIT_STYLES) },
@@ -146,6 +152,71 @@ function placements(layout: CampLayout, stage: number, grownBy: readonly string[
   }
   return out;
 }
+
+describe("the lanterns and the banner pole in front of a farther tent's outer edge (#620)", () => {
+  // Two tents, so the camp has a middle (x 960), and the lanterns on a nearer lane at the left one.
+  const tent = (x: number, seat: number): CampBox => ({ id: `tent_${String(seat)}`, kind: "tent", lane: "back", seat, x, anchor: x, ground: 600, width: 200, height: 200, label: null });
+  const lanterns = (x: number, height = 90, width = 40): CampBox => ({ id: "spot:lanterns", kind: "spot", lane: "middle", x, anchor: x, ground: 640, width, height, label: null, keepTop: TALL_KEEP_TOP });
+  const camp = (piece: CampBox) => [tent(500, 0), tent(1420, 3), piece];
+
+  it("allows its outer quarter, below its top half", () => {
+    // The tent spans 400 to 600; its outer quarter is 400 to 450, its top half above 500.
+    expect(campOverlaps(camp(lanterns(420)))).toEqual([]);
+    expect(campEdgeShare(camp(lanterns(420)), "tent_0")).toBeCloseTo(40 / 200);
+  });
+
+  it("refuses more than a quarter of its width, its ridge, or its inner side", () => {
+    expect(campEdgeClashes(camp(lanterns(440)))).toEqual([["spot:lanterns", "tent_0"]]);
+    expect(campEdgeClashes(camp(lanterns(420, 160)))).toEqual([["spot:lanterns", "tent_0"]]);
+    expect(campEdgeClashes(camp(lanterns(580)))).toEqual([["spot:lanterns", "tent_0"]]);
+  });
+
+  it("never lets them stand over a hero at her door or her souvenir line", () => {
+    const door: CampBox = { id: "door:tent_0", kind: "door", lane: "back", seat: 0, x: 420, anchor: 420, ground: 600, width: 40, height: 100, label: null };
+    expect(campOverlaps([...camp(lanterns(420)), door])).toContainEqual(["spot:lanterns", "door:tent_0"]);
+    const line: CampBox = { id: "souvenirs_0", kind: "owned", lane: "back", seat: 0, x: 420, anchor: 420, ground: 600, width: 40, height: 60, label: null };
+    expect(campOverlaps([...camp(lanterns(420)), line])).toContainEqual(["spot:lanterns", "souvenirs_0"]);
+  });
+
+  it("is only theirs: the awning and the shorter pieces may not stand in front of a farther tent's edge", () => {
+    expect(campOverlaps(camp({ ...lanterns(420), id: "spot:awning" }))).toEqual([["tent_0", "spot:awning"]]);
+  });
+});
+
+describe("a banner pole's pennant (#620)", () => {
+  it("is kept whole, however far below the pole's top half its streamers hang", () => {
+    // The weathervane's streamers hang to about two thirds of the way down; the crew's flag and the pinwheel stay in the top half.
+    expect(pieceKeepTop("banner_pole", "shop_weathervane_pole")).toBeGreaterThan(0.65);
+    expect(pieceKeepTop("banner_pole", "kept_crew_banner")).toBe(TALL_KEEP_TOP);
+    expect(pieceKeepTop("banner_pole", "shop_pinwheel_pole")).toBe(TALL_KEEP_TOP);
+    expect(pieceKeepTop("lanterns", "shop_lantern_arch")).toBe(TALL_KEEP_TOP);
+    for (const piece of CREW_PIECE_ART.filter((p) => p.hotspot === "banner_pole")) {
+      const base = campPaint(piece.path)!;
+      for (const part of pieceArt(piece.id)!.movingParts!.filter((m) => m.motion === "ripple")) {
+        const pennant = campPaint(part.path);
+        expect(pennant, part.path).toBeTruthy();
+        expect(pieceKeepTop("banner_pole", piece.id), piece.id).toBeGreaterThanOrEqual((pennant!.bottom - base.top) / (base.bottom - base.top) - 1e-9);
+      }
+    }
+  });
+
+  it("is never covered by a nearer tent, even below the pole's top half", () => {
+    const layout = campLayout(parsed, "open_plains", 2);
+    const spots = campSpots(layout, { placed: { banner_pole: "shop_weathervane_pole" }, grownBy: ["gemfall", "riftlight"] }, { crewName: "The crew" }).map((spot) => {
+      if (spot.id !== "banner_pole") return spot;
+      const art = CREW_PIECE_ART.find((p) => p.id === "shop_weathervane_pole")!;
+      return { ...spot, pieceId: art.id, label: pieceName(art.id), heightCm: art.heightCm, widthCm: art.widthCm ?? art.heightCm, banner: null };
+    });
+    const pole = campBoxes(layout, { heroes: [], spots }).find((b) => b.id === "spot:banner_pole")!;
+    // A nearer tent reaching up to 62% of the pole's height from its top: under the half, over the streamers.
+    const top = pole.ground - pole.height * (1 - 0.62);
+    const streamers = (pole.slices ?? [rectOf(pole)]).find((s) => s.t < top && s.b > top)!;
+    const nearer: CampBox = { id: "tent_3", kind: "tent", lane: "near", seat: 3, x: streamers.r - 5, anchor: streamers.r - 5, ground: pole.ground + 20, width: 10, height: pole.ground + 20 - top, label: null };
+    expect(campCoverClashes([pole, nearer])).toEqual([["spot:banner_pole", "tent_3"]]);
+    // With only the top half kept, as before #620's pennant rule, the same tent would have passed.
+    expect(campCoverClashes([{ ...pole, keepTop: TALL_KEEP_TOP }, nearer])).toEqual([]);
+  });
+});
 
 it("has every piece's true width in the manifest: its painting's, at its height", () => {
   for (const piece of CREW_PIECE_ART) {
@@ -222,13 +293,18 @@ for (const { stage, minRow, smallRow, grownBy, styles } of STAGES) {
           expect(tall.map((b) => b.id), String(style)).toContain(id);
         }
         // Not one painted slice of a tall piece in front of, or beside, a hero's gear: only behind a
-        // nearer tent (stage 2), and then only as much as `campCoverClashes` allows.
+        // nearer tent (stage 2), and then only as much as `campCoverClashes` allows, or (the lanterns
+        // and the banner pole) in front of a farther tent's outer edge, as `campEdgeClashes` allows.
         for (const piece of tall) {
           for (const mine of gear) {
-            if (shapesOverlap(piece, mine)) expect(piece.ground, `${piece.id} over ${mine.id} (${String(style)})`).toBeLessThan(mine.ground);
+            if (!shapesOverlap(piece, mine) || piece.ground < mine.ground) continue;
+            expect(["spot:lanterns", "spot:banner_pole"], `${piece.id} over ${mine.id} (${String(style)})`).toContain(piece.id);
+            expect(mine.kind, `${piece.id} over ${mine.id} (${String(style)})`).toBe("tent");
+            expect(piece.ground, `${piece.id} over ${mine.id} (${String(style)})`).toBeGreaterThan(mine.ground);
           }
         }
         expect(campCoverClashes(boxes)).toEqual([]);
+        expect(campEdgeClashes(boxes)).toEqual([]);
         if (stage === 1) continue;
         // At stage 2 the awning stands behind the cookfire, between the tents, and the lanterns and the banner pole at the ends.
         const at = (id: string) => boxes.find((b) => b.id === id)!.anchor;
@@ -259,8 +335,12 @@ for (const { stage, minRow, smallRow, grownBy, styles } of STAGES) {
               if (covering.length === 0) continue;
               behind++;
               expect(campCoveredShare(boxes, piece.id), at).toBeLessThan(TALL_MAX_COVERED);
-              const top = { x: piece.x, width: piece.width, ground: piece.ground - piece.height * (1 - TALL_KEEP_TOP), height: piece.height * TALL_KEEP_TOP, slices: (piece.slices ?? [rectOf(piece)]).filter((s) => s.t < piece.ground - piece.height * (1 - TALL_KEEP_TOP)).map((s) => ({ ...s, b: Math.min(s.b, piece.ground - piece.height * (1 - TALL_KEEP_TOP)) })) };
-              for (const tent of covering) expect(shapesOverlap(top, tent), `${at}: its top half under ${tent.id}`).toBe(false);
+              // Its top half, and all of a banner pole's pennant where it hangs lower.
+              const keep = piece.keepTop ?? TALL_KEEP_TOP;
+              expect(keep, at).toBeGreaterThanOrEqual(TALL_KEEP_TOP);
+              const foot = piece.ground - piece.height * (1 - keep);
+              const top = { x: piece.x, width: piece.width, ground: foot, height: piece.height * keep, slices: (piece.slices ?? [rectOf(piece)]).filter((s) => s.t < foot).map((s) => ({ ...s, b: Math.min(s.b, foot) })) };
+              for (const tent of covering) expect(shapesOverlap(top, tent), `${at}: its top (${keep.toFixed(2)}) under ${tent.id}`).toBe(false);
             }
             for (const stand of stands) {
               for (const tent of boxes.filter((b) => b.kind === "tent" && b.ground > stand.ground)) expect(shapesOverlap(stand, tent), `${stand.id} hidden by ${tent.id}`).toBe(false);
@@ -269,6 +349,50 @@ for (const { stage, minRow, smallRow, grownBy, styles } of STAGES) {
         }
       }
       if (stage === 2) expect(behind, "the stage-2 layout uses the rule somewhere").toBeGreaterThan(0);
+    });
+
+    it("lets the lanterns and the banner pole stand in front of a back tent's outer edge, never its door (#620)", () => {
+      // The owner's rule: only in front of the side away from the middle of the camp, at most a quarter
+      // of its painted width (its guy ropes and stakes) and none of its top half (its ridge and roof);
+      // never over its door, the hero at it, or its souvenir line; the pieces themselves uncovered.
+      let edges = 0;
+      for (const species of Object.values(PARTIES)) {
+        for (const style of [null, ...styles]) {
+          for (const spots of style === null ? all : all.slice(0, 2)) {
+            const input = { heroes: heroesOf(species, style, stage), spots, allSouvenirs: true };
+            const k = campRowScale(layout, input);
+            const boxes = campBoxes(layout, { ...input, figureScale: k });
+            const doors = campDoorBoxes(layout, { heroes: input.heroes, figureScale: k });
+            const tents = boxes.filter((b) => b.kind === "tent");
+            const middle = (Math.min(...tents.map((t) => t.anchor)) + Math.max(...tents.map((t) => t.anchor))) / 2;
+            for (const piece of boxes.filter((b) => b.id === "spot:lanterns" || b.id === "spot:banner_pole")) {
+              const at = `${piece.id}, ${species.join("/")} in ${String(style)}`;
+              for (const door of doors) expect(shapesOverlap(piece, door), `${at} over ${door.id}`).toBe(false);
+              for (const line of boxes.filter((b) => b.id.startsWith("souvenirs_"))) expect(shapesOverlap(piece, line), `${at} over ${line.id}`).toBe(false);
+              for (const tent of tents.filter((t) => t.ground < piece.ground && shapesOverlap(t, piece))) {
+                edges++;
+                const r = rectOf(tent);
+                const outward = tent.anchor < middle ? -1 : 1;
+                expect(Math.sign(piece.anchor - tent.anchor), `${at}: on ${tent.id}'s outer side`).toBe(outward);
+                expect(campEdgeShare(boxes, tent.id), `${at}: ${tent.id}'s edge`).toBeLessThanOrEqual(EDGE_MAX_SHARE + 1e-9);
+                // Its middle half (the door) and its top half (the ridge) untouched.
+                const keep = (rect: { l: number; r: number; t: number; b: number }) => ({ x: (rect.l + rect.r) / 2, width: rect.r - rect.l, ground: rect.b, height: rect.b - rect.t, slices: [rect] });
+                const door = keep({ l: r.l + (r.r - r.l) * EDGE_MAX_SHARE, r: r.r - (r.r - r.l) * EDGE_MAX_SHARE, t: r.t, b: r.b });
+                const ridge = keep({ l: r.l, r: r.r, t: r.t, b: tent.ground - tent.height * (1 - EDGE_KEEP_TOP) });
+                const paintOf = (box: CampBox) => ({ ...box, slices: (box.slices ?? [rectOf(box)]).flatMap((s) => (tent.slices ?? [r]).map((t) => ({ l: Math.max(s.l, t.l), r: Math.min(s.r, t.r), t: Math.max(s.t, t.t), b: Math.min(s.b, t.b) })).filter((x) => x.l < x.r && x.t < x.b)) });
+                expect(shapesOverlap(paintOf(piece), door), `${at}: ${tent.id}'s door`).toBe(false);
+                expect(shapesOverlap(paintOf(piece), ridge), `${at}: ${tent.id}'s ridge`).toBe(false);
+              }
+              // Nothing stands in front of the piece's own top (its lamps, its flag, its pennant).
+              const foot = piece.ground - piece.height * (1 - (piece.keepTop ?? TALL_KEEP_TOP));
+              const top = { ...piece, ground: foot, height: piece.height * (piece.keepTop ?? TALL_KEEP_TOP), slices: (piece.slices ?? [rectOf(piece)]).filter((s) => s.t < foot).map((s) => ({ ...s, b: Math.min(s.b, foot) })) };
+              for (const other of boxes.filter((b) => b !== piece && b.ground > piece.ground)) expect(shapesOverlap(top, other), `${at}: its top under ${other.id}`).toBe(false);
+            }
+            expect(campEdgeClashes(boxes), `${species.join("/")} in ${String(style)}`).toEqual([]);
+          }
+        }
+      }
+      if (stage === 2) expect(edges, "the stage-2 layout uses the rule somewhere").toBeGreaterThan(0);
     });
 
     it("stands every hero at her door below her tent's top, a small hero's ears clearly so (#620)", () => {

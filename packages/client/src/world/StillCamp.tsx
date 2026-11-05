@@ -396,7 +396,7 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
             const top = 4 + chip.row * CHIP_ROW;
             return (
               <span key={chip.id}>
-                <span className="kad-static-camp__leader" style={{ left: chip.x, top: ground - bandPx, height: bandPx - ground + top }} />
+                {chip.x !== null ? <span className="kad-static-camp__leader" style={{ left: chip.x, top: ground - bandPx, height: bandPx - ground + top }} /> : null}
                 <button
                   type="button"
                   tabIndex={-1}

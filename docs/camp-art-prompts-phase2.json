@@ -44,7 +44,7 @@
     {
       "id": "camp/frames/stage2/crew-banner",
       "path": "assets/camp/frames/stage2/crew-banner.png",
-      "plays": "crewPieces id kept_crew_banner (kept). Stage-2 frame: the banner pole hotspot's own piece (default), the crew's banner (a kept piece, CrewIdentity), on the middle lane at the camp's right edge, past the last tent, by the trail out of camp, so it never stands in front of a tent. A hero looks up at it from one stand point and the pennant ripples. At stage 1 it stands on the back lane at the camp's far right, past every bedroll, beside the trailhead post. Drawn at 200 cm tall and 136 cm wide.",
+      "plays": "crewPieces id kept_crew_banner (kept). Stage-2 frame: the banner pole hotspot's own piece (default), the crew's banner (a kept piece, CrewIdentity), on the near lane at the camp's right edge, past the last tent, by the trail out of camp, where it may stand in front of the outer edge of the last tent (its guy ropes and stakes), never its door or its roof; nothing ever covers the flag and pennant, so keep them in the top half of the pole. A hero looks up at it from one stand point and the pennant ripples. At stage 1 it stands on the back lane at the camp's far right, past every bedroll, beside the trailhead post. Drawn at 200 cm tall and 136 cm wide.",
       "reference": "assets/camp/frames/stage1/trailhead-post.png",
       "output": {
         "width": 1024,
@@ -99,7 +99,7 @@
     {
       "id": "camp/pieces/find-wagon-lantern",
       "path": "assets/camp/pieces/find-wagon-lantern.png",
-      "plays": "crewPieces id find_wagon_lantern (find). A crew find painted for Gemfall 1 (gemfall-01), from Hesper Longstride's lantern wagon. Stands at the lanterns hotspot (middle lane, at the camp's left edge, past the first tent, so it never stands in front of a tent); a hero looks up at it and the lantern swings. At stage 1 it stands on the near lane at the camp's far left, past every bedroll. Drawn at 170 cm tall and 92 cm wide.",
+      "plays": "crewPieces id find_wagon_lantern (find). A crew find painted for Gemfall 1 (gemfall-01), from Hesper Longstride's lantern wagon. Stands at the lanterns hotspot (near lane, at the camp's left edge, past the first tent, where it may stand in front of the outer edge of the first tent, its guy ropes and stakes, never its door or its roof); a hero looks up at it and the lantern swings. At stage 1 it stands on the near lane at the camp's far left, past every bedroll. Drawn at 170 cm tall and 92 cm wide.",
       "reference": "assets/camp/frames/stage1/trailhead-post.png",
       "output": {
         "width": 1024,
@@ -154,7 +154,7 @@
     {
       "id": "camp/pieces/shop-lantern-string",
       "path": "assets/camp/pieces/shop-lantern-string.png",
-      "plays": "crewPieces id shop_lantern_string (starter-shop). A starter shop piece for the lanterns hotspot (middle lane, at the camp's left edge, past the first tent, so it never stands in front of a tent): a second string of lanterns. A hero looks up at it and the lanterns swing. At stage 1 it stands on the near lane at the camp's far left, past every bedroll. Drawn at 115 cm tall and 174 cm wide.",
+      "plays": "crewPieces id shop_lantern_string (starter-shop). A starter shop piece for the lanterns hotspot (near lane, at the camp's left edge, past the first tent, where it may stand in front of the outer edge of the first tent, its guy ropes and stakes, never its door or its roof): a second string of lanterns. A hero looks up at it and the lanterns swing. At stage 1 it stands on the near lane at the camp's far left, past every bedroll. Drawn at 115 cm tall and 174 cm wide.",
       "reference": "assets/camp/frames/stage1/trailhead-post.png",
       "output": {
         "width": 1024,
@@ -227,7 +227,7 @@
     {
       "id": "camp/pieces/shop-pinwheel-pole",
       "path": "assets/camp/pieces/shop-pinwheel-pole.png",
-      "plays": "crewPieces id shop_pinwheel_pole (starter-shop). A starter shop piece for the banner pole hotspot (middle lane, at the camp's right edge, past the last tent, so it never stands in front of a tent): a banner pole with a pinwheel, flying the crew's pennant. A hero looks up at it and the pennant ripples. At stage 1 it stands on the back lane at the camp's far right, past every bedroll, beside the trailhead post. Drawn at 200 cm tall and 107 cm wide.",
+      "plays": "crewPieces id shop_pinwheel_pole (starter-shop). A starter shop piece for the banner pole hotspot (near lane, at the camp's right edge, past the last tent, where it may stand in front of the outer edge of the last tent, its guy ropes and stakes, never its door or its roof): a banner pole with a pinwheel, flying the crew's pennant. A hero looks up at it and the pennant ripples. At stage 1 it stands on the back lane at the camp's far right, past every bedroll, beside the trailhead post. Drawn at 200 cm tall and 107 cm wide.",
       "reference": "assets/camp/frames/stage1/trailhead-post.png",
       "output": {
         "width": 1024,
@@ -301,7 +301,7 @@
     {
       "id": "camp/pieces/shop-weathervane-pole",
       "path": "assets/camp/pieces/shop-weathervane-pole.png",
-      "plays": "crewPieces id shop_weathervane_pole (stage2-shop). A stage-2 shop piece for the banner pole hotspot (middle lane, at the camp's right edge, past the last tent, so it never stands in front of a tent): a tall banner pole with streamers and a weathervane, flying the crew's pennant. A hero looks up at it and the pennant ripples. Drawn at 200 cm tall and 144 cm wide.",
+      "plays": "crewPieces id shop_weathervane_pole (stage2-shop). A stage-2 shop piece for the banner pole hotspot (near lane, at the camp's right edge, past the last tent, where it may stand in front of the outer edge of the last tent, its guy ropes and stakes, never its door or its roof): a tall banner pole with streamers and a weathervane, flying the crew's pennant. A hero looks up at it and the pennant ripples. Nothing ever covers the pennant and its streamers, however far down the pole they hang (the layout keeps clear the pennant layer's own painted bounds), so the lower they hang the more room the pole needs: keep the streamers' tips above two thirds of the way down. Drawn at 200 cm tall and 144 cm wide.",
       "reference": "assets/camp/frames/stage1/trailhead-post.png",
       "output": {
         "width": 1024,
@@ -356,7 +356,7 @@
     {
       "id": "camp/pieces/shop-lantern-arch",
       "path": "assets/camp/pieces/shop-lantern-arch.png",
-      "plays": "crewPieces id shop_lantern_arch (stage2-shop). A stage-2 shop piece for the lanterns hotspot (middle lane, at the camp's left edge, past the first tent, so it never stands in front of a tent): an arch of lanterns. A hero looks up at it and the lanterns swing. Drawn at 150 cm tall and 165 cm wide.",
+      "plays": "crewPieces id shop_lantern_arch (stage2-shop). A stage-2 shop piece for the lanterns hotspot (near lane, at the camp's left edge, past the first tent, where it may stand in front of the outer edge of the first tent, its guy ropes and stakes, never its door or its roof): an arch of lanterns. A hero looks up at it and the lanterns swing. Drawn at 150 cm tall and 165 cm wide.",
       "reference": "assets/camp/frames/stage1/trailhead-post.png",
       "output": {
         "width": 1024,
