@@ -551,7 +551,11 @@ export function campBoxes(layout: CampLayout, input: CampBoxInput): CampBox[] {
     const split = box.kind === "spot" ? splitInTwo(box.text) : null;
     const options = !split ? placings(box.text) : twoLines ? [...placings(split), ...placings(box.text)] : [...placings(box.text), ...placings(split)];
     // Something waiting beside the fire is named only where its name has room.
-    box.label = options.find((option) => clear(option, box)) ?? (optional ? null : options[0]!);
+    // A crowded shared spot can use the open space beside its usual label position.
+    const shifted = box.kind === "spot"
+      ? options.flatMap((option) => [-0.25, 0.25, -0.5, 0.5].map((offset) => ({ ...option, x: option.x + offset * option.width })))
+      : [];
+    box.label = [...options, ...shifted].find((option) => clear(option, box)) ?? (optional ? null : options[0]!);
     placed.push(box);
   };
   /** The crew's name under its banner pole's foot, on the pole (its anchor), on one line or two: never on the flag. */
@@ -559,9 +563,9 @@ export function campBoxes(layout: CampLayout, input: CampBoxInput): CampBox[] {
     if (!box.banner) return;
     const split = splitInTwo(box.banner);
     const texts = [box.banner, ...(split ? [split] : [])];
-    const sized = (text: string, x: number, y: number): CampLabelBox => {
-      const width = labelWidth(text, LABEL_PX);
-      return { text, x: Math.max(width / 2, Math.min(W - width / 2, x)), y, width, height: LABEL_PX * 1.3 * text.split("\n").length, size: LABEL_PX };
+    const sized = (text: string, x: number, y: number, size = LABEL_PX): CampLabelBox => {
+      const width = labelWidth(text, size);
+      return { text, x: Math.max(width / 2, Math.min(W - width / 2, x)), y, width, height: size * 1.3 * text.split("\n").length, size };
     };
     // Under the pole's foot, on one line or two; failing that, on the grass beside the pole
     // under the flag, where the painting is only pole.
@@ -569,6 +573,7 @@ export function campBoxes(layout: CampLayout, input: CampBoxInput): CampBox[] {
     // Still under the foot, slid toward the screen's nearer edge, clear of a piece on the lane in front.
     const edge = box.anchor > W / 2 ? 1 : -1;
     for (const text of texts) options.push(sized(text, box.anchor + (edge * labelWidth(text, LABEL_PX)) / 4, box.ground + GAP));
+    for (const text of texts) options.push(sized(text, edge > 0 ? W : 0, box.ground + GAP));
     for (let f = 0.5; f >= 0.2 - 1e-9; f -= 0.05) {
       for (const side of [1, -1]) {
         for (const text of texts) {
@@ -586,6 +591,8 @@ export function campBoxes(layout: CampLayout, input: CampBoxInput): CampBox[] {
       const probe = sized(text, box.anchor, 0);
       options.push({ ...probe, y: box.ground - box.height - GAP - probe.height });
     }
+    // A far banner can have a tent in front of it. Fit a compact name at the edge.
+    for (const text of texts) options.push(sized(text, edge > 0 ? W : 0, box.ground + GAP, 18));
     box.name = options.find((option) => !rectOverlapsShape(labelRect(option), box) && clear(option, box)) ?? options[texts.length - 1]!;
     placed.push(box);
   };

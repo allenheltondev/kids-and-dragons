@@ -1008,14 +1008,14 @@ export function createBoardLayer(): BoardLayer {
       case "windupStarted": {
         const actor = actors.get(event.actorId);
         if (actor) actor.charging = true;
-        spawnFloater(event.actorId, windupCopy(actor?.slam ? "slam" : undefined).start, 0xffd08a, actor?.slam ? .55 : 1);
+        spawnFloater(event.actorId, windupCopy(actor?.slam ? "slam" : undefined, event.label).start, 0xffd08a, actor?.slam ? .55 : 1);
         return;
       }
       case "windupReleased": {
         const actor = actors.get(event.actorId);
         if (actor) { actor.charging = false; actor.slamAge = 0; actor.slamTiles = event.tiles; }
         if (!reducedMotion() && !actor?.slam) for (const tile of event.tiles) spawnTileFloater(tile, "✦", 0xffd08a);
-        spawnFloater(event.actorId, event.targets.length ? windupCopy(actor?.slam ? "slam" : undefined).release : "You made room!", 0xffd08a, actor?.slam ? .65 : 1);
+        spawnFloater(event.actorId, event.targets.length ? windupCopy(actor?.slam ? "slam" : undefined, event.label).release : "You made room!", 0xffd08a, actor?.slam ? .65 : 1);
         return;
       }
       case "windupInterrupted":

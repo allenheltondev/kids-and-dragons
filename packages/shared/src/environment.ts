@@ -283,6 +283,7 @@ export interface EnvironmentExitView {
 }
 
 export interface EnvironmentHazardView {
+  readonly art?: string;
   readonly id: string;
   readonly kind: EnvironmentHazard["kind"];
   readonly label: string;
@@ -303,6 +304,7 @@ export interface EnvironmentHazardView {
 }
 
 export interface EnvironmentRescueView {
+  readonly art?: string;
   readonly name: string;
   readonly at: MapTile;
   readonly status: RescueStatus;
@@ -390,6 +392,7 @@ export function environmentView(state: EncounterState): EnvironmentView | null {
       id: hazard.id,
       kind: hazard.kind,
       label: hazard.label,
+      ...(hazard.art ? { art: hazard.art } : {}),
       tiles: hazard.tiles,
       damage: hazard.damage ?? 0,
       ...(hazard.slow ? { slow: { steps: hazard.slow.steps, turns: hazard.slow.turns } } : {}),
@@ -404,6 +407,7 @@ export function environmentView(state: EncounterState): EnvironmentView | null {
       const hp = env.captiveHp?.[i];
       return {
         name: captive.name,
+        ...(captive.art ? { art: captive.art } : {}),
         at: captive.at,
         status,
         ...((captive.turns ?? 1) > 1 ? { progress: status === "freed" ? captive.turns! : env.rescueProgress?.[i] ?? 0, target: captive.turns! } : {}),

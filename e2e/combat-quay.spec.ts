@@ -45,6 +45,8 @@ test("the quay's committed burst survives refresh, can be interrupted, and frien
     const phone = phones[owner(state)].page;
     await expect(phone.locator(".combat__cell--danger").first()).toBeVisible();
     await expect(display.page.getByLabel("Battle plan")).toContainText("Marked ground bursts next turn");
+    // The quay still keeps its chapter goal alongside the ferry-rope objective.
+    await expect(display.page.locator(".fight-log .goal")).toBeVisible();
     await display.page.emulateMedia({ reducedMotion: "reduce" });
     for (const surface of [
       { width: 1280, height: 720, text: "normal", contrast: "normal" },

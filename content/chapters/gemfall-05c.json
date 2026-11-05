@@ -439,14 +439,17 @@
     },
     "encounter_crabs": {
       "type": "encounter",
-      "map": "switchback",
-      "narration": "The glassback crabs charge, slow and clacking and very sure of themselves.",
+      "map": "boundary_retreat",
+      "narration": "The crabs are defending their warm ground. Get everyone past the boundary stone, or drive off the crabs. A crab may wait by the way out. Pull it toward one of you so another can slip by.",
       "enemies": [
         {
           "id": "crab",
           "name": "Young Glassback Crab",
           "creature": "glassback_crab",
-          "hp": 10
+          "hp": 10,
+          "rift": {
+            "post": "exit"
+          }
         }
       ],
       "onVictory": {
@@ -454,6 +457,35 @@
         "narration": "The crabs back into their warm burrow, still clacking. The prospector drops his pry bar and runs all the way back past the stones."
       },
       "onDefeat": {
+        "goto": "scene_crabs_rescue",
+        "narration": "The crabs chase you down the hill, past the bells, and right back out through the boundary stones."
+      },
+      "art": "scenes/gemfall/crab-field-guards",
+      "environment": {
+        "clock": {
+          "rounds": 5,
+          "label": "The crabs drive you down the hill",
+          "onExpire": "collapse"
+        },
+        "exits": [
+          {
+            "id": "boundary-stone",
+            "label": "Boundary stone",
+            "art": "notched-stone",
+            "tiles": [
+              {
+                "x": 6,
+                "y": 3
+              }
+            ]
+          }
+        ]
+      },
+      "onEscape": {
+        "goto": "scene_turned_back",
+        "narration": "The last of you steps past the stone. Both crabs stop at the boundary and settle into the warm ground. The prospector sits down hard and asks for soup."
+      },
+      "onTimeout": {
         "goto": "scene_crabs_rescue",
         "narration": "The crabs chase you down the hill, past the bells, and right back out through the boundary stones."
       }
@@ -1953,8 +1985,8 @@
     },
     "encounter_crawlers": {
       "type": "encounter",
-      "map": "gallery",
-      "narration": "The crawlers click across the porch, straight for the humming packs and the tally house door. Drive them off before they reach the books.",
+      "map": "sausage_lane",
+      "narration": "The crawlers follow the hum in your packs. Keep a hero on the marked square for two round ends while Ashby gets the shutters closed. Friends can draw the crawlers away or shoo them off.",
       "enemies": [
         {
           "id": "crawler",
@@ -1973,6 +2005,40 @@
         ]
       },
       "onDefeat": {
+        "goto": "scene_crawlers_scattered",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      },
+      "art": "scenes/gemfall/tally-porch-crawlers",
+      "environment": {
+        "clock": {
+          "rounds": 5,
+          "label": "The crawlers reach the shelves",
+          "onExpire": "collapse"
+        },
+        "objectives": [
+          {
+            "id": "tally-books",
+            "kind": "hold",
+            "label": "Guard the books",
+            "art": "cairn-ledger",
+            "tiles": [
+              {
+                "x": 3,
+                "y": 2
+              }
+            ],
+            "rounds": 2,
+            "endsFight": true
+          }
+        ]
+      },
+      "onTimeout": {
         "goto": "scene_crawlers_scattered",
         "effects": [
           {
@@ -2604,7 +2670,61 @@
           "prop_hand_bell"
         ]
       }
-    }
+    },
+    "fights": [
+      {
+        "chapter": "gemfall-05c",
+        "scene": "encounter_crabs",
+        "creature": "glassback_crab",
+        "board": "boundary_retreat",
+        "backdrop": "scenes/gemfall/crab-field-guards",
+        "introScenes": [
+          "scene_crab_warning"
+        ],
+        "victoryScene": "scene_turned_back",
+        "defeatScene": "scene_crabs_rescue",
+        "tileUrl": "/assets/biomes/red_sky_foothills/tiles.png",
+        "rescueFigure": "",
+        "activeUrl": "/assets/entities/glassback_crab/warning.png",
+        "retreatUrl": "/assets/entities/glassback_crab/shooed.png",
+        "props": [],
+        "terrainProps": [],
+        "poses": {
+          "intro": "warning",
+          "retreat": "shooed"
+        },
+        "retreatDirection": 1
+      },
+      {
+        "chapter": "gemfall-05c",
+        "scene": "encounter_crawlers",
+        "creature": "bone_crawler",
+        "board": "sausage_lane",
+        "backdrop": "scenes/gemfall/tally-porch-crawlers",
+        "introScenes": [
+          "scene_crawlers_porch"
+        ],
+        "victoryScene": "scene_crawlers_shooed",
+        "defeatScene": "scene_crawlers_scattered",
+        "tileUrl": "/assets/biomes/red_sky_foothills/tiles.png",
+        "rescueFigure": "",
+        "activeUrl": "/assets/entities/bone_crawler/assembled.png",
+        "retreatUrl": "/assets/entities/bone_crawler/assembled.png",
+        "props": [],
+        "terrainProps": [],
+        "poses": {
+          "intro": "assembled",
+          "retreat": "assembled"
+        },
+        "retreatDirection": 1
+      }
+    ],
+    "warmUrls": [
+      "/assets/entities/glassback_crab/warning.png",
+      "/assets/entities/glassback_crab/shooed.png",
+      "/assets/biomes/red_sky_foothills/tiles.png",
+      "/assets/entities/bone_crawler/assembled.png"
+    ]
   },
   "resumeInteractions": {
     "interaction_pry_bars": {

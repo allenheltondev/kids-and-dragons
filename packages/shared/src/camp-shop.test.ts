@@ -116,7 +116,9 @@ describe("the shop (§5.3, §12.4)", () => {
   });
 
   it("uses the nearest shop below a stage that has none of its own", () => {
-    expect(shopFor(catalog, 4)?.stage).toBe(2);
+    const earlyCatalog = { ...catalog, shops: catalog.shops.filter((shop) => shop.stage <= 2) };
+    expect(shopFor(earlyCatalog, 4)?.stage).toBe(2);
+    expect(shopFor(catalog, 4)?.stage).toBe(4);
     expect(shopFor(catalog, 1)?.stage).toBe(1);
   });
 
