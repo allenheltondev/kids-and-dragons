@@ -40,12 +40,12 @@ export interface LobbyCampOptions {
   assetUrl?: (path: string) => string;
   loadTexture?: (url: string) => Promise<Texture>;
   /** The layout for a frame stage (lobby-camp.ts `campLayoutFor`); absent: always `layout`. */
-  layoutFor?: (stage: number) => CampLayout | null;
+  layoutFor?: (stage: number, biome?: string | null) => CampLayout | null;
 }
 
 export interface LobbyCamp {
   /** The run state, every time it changes, and whenever the chapter end's camp beat turns. */
-  sync(state: RunState | null): void;
+  sync(state: RunState | null, biome?: string | null): void;
   resize(width: number, height: number): void;
   /** The lobby panels' covered height and the header's reach (stage-inset.ts `onLobbyInset`). */
   setInset(bottomPx: number, topPx?: number): void;
@@ -70,6 +70,7 @@ export function createLobbyCamp(app: Application, layout: CampLayout, options: L
   let destroyed = false;
   let mounted: CampLayout = layout;
   let last: RunState | null = null;
+  let lastBiome: string | null = null;
   /** The chapter end whose stage-up has been pitched, so it plays once. */
   let pitched: string | null = null;
   // A beat turning is read a moment later, on the state as it then stands: the
@@ -77,7 +78,7 @@ export function createLobbyCamp(app: Application, layout: CampLayout, options: L
   // own sync, in the same commit, keeps the camp up rather than refolding it.
   const offBeat = onCampBeat(() => {
     queueMicrotask(() => {
-      if (!destroyed) sync(last);
+      if (!destroyed) sync(last, lastBiome);
     });
   });
 
@@ -115,15 +116,16 @@ export function createLobbyCamp(app: Application, layout: CampLayout, options: L
     fading = camp;
   }
 
-  function sync(state: RunState | null): void {
+  function sync(state: RunState | null, biome: string | null = null): void {
     if (destroyed) return;
     const next = state?.phase ?? null;
     // No state yet is no lobby yet: a phone reloading mid-chapter must not flash a camp.
     last = state;
+    lastBiome = biome;
     if (state && campShownFor(state, campBeatShown())) {
       const now = campHeroes(state);
       // The crew's frame stage, from its record: a camp that grew is pitched anew.
-      const want = options.layoutFor?.(campStage(state)) ?? layout;
+      const want = options.layoutFor?.(campStage(state), state.phase === "chapter_complete" ? biome : null) ?? layout;
       if (shown && want !== mounted) {
         shown.destroy();
         shown = null;
