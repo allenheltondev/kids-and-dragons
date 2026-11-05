@@ -154,6 +154,15 @@ describe("the catalog against its art", () => {
     expect(problems(({ catalog }) => (catalog.kit.tents.find((t) => t.id === "sworn").group = "catalog")).join("\n")).toContain('tent "sworn" is catalog');
   });
 
+  it("holds the shared hotspots to the art's frames, stage by stage (#620)", () => {
+    const hot = (catalog, id) => catalog.hotspots.find((h) => h.id === id);
+    expect(problems(({ catalog }) => (hot(catalog, "awning").kind = "lanterns")).join("\n")).toContain('hotspot "awning" is a lanterns here');
+    expect(problems(({ catalog }) => (hot(catalog, "awning").stage = 3)).join("\n")).toContain('first stands at stage 2 in the art, not 3');
+    expect(problems(({ catalog }) => delete hot(catalog, "cookfire").default).join("\n")).toContain('shows "cookfire_pot" by default in the art');
+    expect(problems(({ catalog }) => catalog.hotspots.push({ id: "lookout", kind: "awning", stage: 3 })).join("\n")).toContain('hotspot "lookout" is in no frame');
+    expect(problems(({ catalog }) => (catalog.hotspots = catalog.hotspots.filter((h) => h.id !== "trophy_2"))).join("\n")).toContain('has hotspot "trophy_2", which the catalog does not list');
+  });
+
   it("rejects a kit piece and a crew piece sharing an id (§12.1)", () => {
     const found = problems(({ catalog, manifest }) => {
       catalog.kit.decorations.push({ id: "shop_log_bench", group: "catalog" });

@@ -10,7 +10,7 @@
  * and its character is already on the board.
  */
 
-import { checkLocationName, tableFull, VISITOR_CODE_EXTRA } from "@kad/shared";
+import { campMomentStamp, checkLocationName, newCampMoment, tableFull, VISITOR_CODE_EXTRA } from "@kad/shared";
 import type {
   CreateRoomResponse,
   CrewView,
@@ -164,6 +164,9 @@ export async function createRoom(
     now: iso(nowMs),
   });
   if (input.location) state.location = input.location;
+  // The lobby is the room's first downtime moment (docs/camp.md §12.5).
+  const moment = newCampMoment(state, campMomentStamp(state));
+  if (moment) state.campMoment = moment;
   // Where the household stands in this room's campaign — and in any other it
   // has part-way through — so the lobby can say which chapter is next, and
   // offer the choice, before anybody taps anything.

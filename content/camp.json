@@ -34,6 +34,15 @@
     { "id": "trophy_gemfall", "hotspot": "trophy", "group": "trophy", "campaign": "gemfall" },
     { "id": "trophy_riftlight", "hotspot": "trophy", "group": "trophy", "campaign": "riftlight" }
   ],
+  "hotspots": [
+    { "id": "cookfire", "kind": "cookfire", "stage": 2, "default": "cookfire_pot" },
+    { "id": "awning", "kind": "awning", "stage": 2 },
+    { "id": "lanterns", "kind": "lanterns", "stage": 2 },
+    { "id": "friends_corner", "kind": "friends_corner", "stage": 2 },
+    { "id": "banner_pole", "kind": "banner_pole", "stage": 2, "default": "kept_crew_banner" },
+    { "id": "trophy_1", "kind": "trophy", "stage": 2 },
+    { "id": "trophy_2", "kind": "trophy", "stage": 2 }
+  ],
   "shops": [
     {
       "stage": 1,

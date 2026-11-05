@@ -37,7 +37,11 @@ import type {
   FactValue,
 } from "@kad/shared";
 import {
+  campMomentKind,
+  campMomentStamp,
   currentPlayable,
+  frameStageFor,
+  grownView,
   decisionContext,
   isPracticeCampaign,
   lobbyCampaign,
@@ -66,6 +70,7 @@ import { claimCampFinds, stepCampFinds } from "./camp-finds.ts";
 import { claimMilestones, stepMilestones } from "./camp-milestones.ts";
 import { claimCampDrops, prepareChapterEndCamp, settleChapterEndCamp, stepCampDrops, type ChapterEndCamp } from "./camp-pay.ts";
 import { prepareCampVote } from "./camp-shop.ts";
+import { prepareCampPlace, prepareCampUndo, prepareKitEdit, syncCampDowntime } from "./camp-edit.ts";
 import { dispatchTurnPush } from "./push.ts";
 import { practiceChapterId, practiceRefusal, settlePractice } from "./practice.ts";
 import {
@@ -92,8 +97,6 @@ import { recordTiming, timingNoteFor } from "./timing.ts";
 /** Far above any intent a client builds (a hero's creation is the largest). */
 const MAX_LOGGED_INTENT_CHARS = 4096;
 
-/** The downtime the camp's view is shown in (docs/camp.md §9): never a scene. */
-const CAMP_DOWNTIME: ReadonlySet<RunState["phase"]> = new Set<RunState["phase"]>(["lobby", "creation", "chapter_complete"]);
 
 /** The part of an identity that authorises an action. */
 /**
@@ -411,6 +414,17 @@ export async function applyAction(
     const vote = await prepareCampVote(state, input.intent, input.playerId, auth.run, deps);
     if (!vote.ok) return { ok: false, seq: state.seq, error: vote.error };
     result = { state: vote.state };
+  } else if (input.intent.type === "CAMP_PLACE" || input.intent.type === "CAMP_UNDO" || input.intent.type === "KIT_EDIT") {
+    // The camp at the table (docs/camp.md §6.1, §12.5; #620): a shared
+    // hotspot or a hero's own kit, written before this commit (camp-edit.ts).
+    const edit =
+      input.intent.type === "CAMP_PLACE"
+        ? await prepareCampPlace(state, input.intent, input.playerId, auth.run, deps)
+        : input.intent.type === "CAMP_UNDO"
+          ? await prepareCampUndo(state, input.intent, input.playerId, auth.run, deps)
+          : await prepareKitEdit(state, input.intent, input.playerId, auth.run, deps);
+    if (!edit.ok) return { ok: false, seq: state.seq, error: edit.error };
+    result = { state: edit.state };
   } else {
     // A returning hero is a household row the engine cannot reach, so it is
     // loaded here and handed in; whether this player may bring it is the
@@ -492,12 +506,13 @@ export async function applyAction(
     delete result.state.crewConfirmed;
   }
   // The camp's view is for downtime, never for scenes (docs/camp.md §9): the
-  // lobby's, and the chapter end's (set where the chapter settles, below,
-  // and kept into the lobby after it). It goes the moment play is back in a
-  // scene, whichever way it got there. The chapter end's tally and shop are
+  // lobby's, a rest scene's (read as it opens, syncCampDowntime), and the
+  // chapter end's (set where the chapter settles, below, and kept into the
+  // lobby after it). It goes the moment play is back in a scene, whichever
+  // way it got there. The chapter end's tally and shop are
   // its summary's alone; leaving the summary drops them, which cancels a
   // shop vote without spending (§6.2).
-  if (result.state.camp !== undefined && !CAMP_DOWNTIME.has(result.state.phase)) {
+  if (result.state.camp !== undefined && campMomentKind(result.state) === null) {
     result = { ...result, state: { ...result.state } };
     delete result.state.camp;
   }
@@ -522,6 +537,9 @@ export async function applyAction(
   // (crew.ts): asked again, and any keep-going dropped, when who is seated or
   // the crew changes; asked again when the adventure that leads changes.
   result = { ...result, state: await rethinkNewcomers(state, result.state, auth.run.householdId, deps) };
+  // The downtime moment the camp's shared changes are counted in, the camp at
+  // a rest, and the seated heroes' kits (docs/camp.md §12.5; #620).
+  result = { ...result, state: await syncCampDowntime(result.state, { run: auth.run, stamp: campMomentStamp(result.state), ...(result.created ? { created: result.created.id } : {}) }, deps) };
 
   /*
    * Progression, computed here and committed below.
@@ -639,6 +657,12 @@ export async function applyAction(
       ? await settlePractice(result.state, deps, auth.run.householdId)
       : await settleChapterCompletion(result.state, deps, auth.run.householdId, startedAttempt ?? undefined);
     characters.push(...settlement.characters);
+    if (settlement.campaignView?.ended === "complete" && result.state.camp && deps.content.campaign(settlement.campaignView.id)?.growsCamp === true) {
+      // A full campaign finished (docs/camp.md §4.1): the camp the summary
+      // shows is the grown one, and the screens pitch it (#620). The record
+      // reads it grown from the attempt this commit completes (camp.ts).
+      result = { ...result, state: { ...result.state, camp: grownView(result.state.camp, settlement.campaignView.id, frameStageFor) } };
+    }
     if (settlement.campaignView) {
       // What the lobby offers next, and whether this chapter just ended the
       // whole campaign — the completion screen reads it (RunState.campaign).

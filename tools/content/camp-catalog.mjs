@@ -145,6 +145,39 @@ export function campCatalogProblems({ catalog, manifest, chapters, brokenChapter
     if (entry.group === "trophy" && !campaigns.has(entry.campaign)) fail(`${at}/campaign`, `"${id}" is the trophy for "${entry.campaign}", which is not a campaign`);
   }
 
+  // The shared hotspots (#620) are the art's, stage by stage: the server checks
+  // a placement against this list, and the screens draw the manifest's.
+  const hotspots = byId(catalog.hotspots, "/hotspots");
+  const frames = [...(art.frames ?? [])].sort((a, b) => a.stage - b.stage);
+  for (const [id, { entry, at }] of hotspots) {
+    const first = frames.find((f) => (f.hotspots ?? []).some((h) => h.id === id));
+    const painted = first?.hotspots.find((h) => h.id === id);
+    if (!first || !painted) {
+      fail(`${at}/id`, `hotspot "${id}" is in no frame in ${MANIFEST} → camp.frames`);
+      continue;
+    }
+    if (painted.kind !== entry.kind) fail(`${at}/kind`, `hotspot "${id}" is a ${entry.kind} here, but a ${painted.kind} in the art`);
+    if (first.stage !== entry.stage) fail(`${at}/stage`, `hotspot "${id}" first stands at stage ${first.stage} in the art, not ${entry.stage}`);
+    if ((painted.default ?? null) !== (entry.default ?? null)) {
+      fail(`${at}/default`, `hotspot "${id}" shows "${painted.default ?? "nothing"}" by default in the art, not "${entry.default ?? "nothing"}"`);
+    }
+    if (entry.default !== undefined) {
+      const piece = crew.get(entry.default)?.entry;
+      if (!piece) fail(`${at}/default`, `hotspot "${id}" defaults to "${entry.default}", which is not a crew piece`);
+      else if (piece.hotspot !== entry.kind) fail(`${at}/default`, `"${entry.default}" stands at ${piece.hotspot}, not at the ${entry.kind} "${id}"`);
+    }
+    for (const later of frames.filter((f) => f.stage > first.stage)) {
+      if (!(later.hotspots ?? []).some((h) => h.id === id && h.kind === entry.kind)) {
+        fail(`${at}/id`, `hotspot "${id}" is missing from frame stage ${later.stage}, and a camp never loses a spot as it grows`);
+      }
+    }
+  }
+  for (const frame of frames) {
+    for (const h of frame.hotspots ?? []) {
+      if (!hotspots.has(h.id)) fail("/hotspots", `${MANIFEST} → camp frame stage ${frame.stage} has hotspot "${h.id}", which the catalog does not list`);
+    }
+  }
+
   // ------------------------------------------------------------------ the shops (§5.2, §5.3, §12.4)
 
   const shopPieces = [...crew.values()].filter(({ entry }) => entry.group === "shop");

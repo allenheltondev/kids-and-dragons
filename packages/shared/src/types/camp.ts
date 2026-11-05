@@ -222,6 +222,65 @@ export interface CampView {
   buddies: Record<string, FriendId>;
   /** The crew has been paid for two chapters (§5.3). */
   shopOpen: boolean;
+  /**
+   * This chapter's end finished a `growsCamp` campaign and grew the frame to
+   * `frameStage` (§4.1): the screens play the short stage-up moment, the
+   * heroes pitching the new camp (#620). Present only on that summary and the
+   * lobby right after it.
+   */
+  grew?: true;
+}
+
+/**
+ * `RunState.kits`: one seated hero's kit as the screens draw and edit it
+ * (§4.5; #620), by character id. What is stored (`HeroKit`), less the
+ * bookkeeping: `unlocked` is only the ids she holds beyond the free catalog.
+ */
+export interface HeroKitView {
+  /** The kit's revision, which a `KIT_EDIT` names so a stale edit is refused. */
+  revision: number;
+  style: KitStyleId | null;
+  tent: TentStyleId | null;
+  color: KitColorId | null;
+  slots: (KitPieceId | null)[];
+  unlocked: KitPieceId[];
+}
+
+/**
+ * One shared-hotspot change a player made in this downtime moment (§6.1,
+ * §12.5): what the hotspot showed before and after (null: nothing, or its
+ * frame's default), and whether it counted against the limit. Placing a piece
+ * first owned this chapter, at the chapter's end, does not.
+ */
+export interface CampChange {
+  hotspot: HotspotId;
+  before: CampPieceId | null;
+  after: CampPieceId | null;
+  counted: boolean;
+}
+
+/**
+ * Where a downtime moment happens (§3): the lobby, a rest scene or the
+ * chapter's end. The lobby and the chapter's end are the full camp; a rest
+ * is indoors until rest scenes are tagged (§3.2), so it has no shared hotspots.
+ */
+export type CampMomentKind = "lobby" | "rest" | "chapterEnd";
+
+/**
+ * `RunState.campMoment`: the downtime moment the table is in (§12.5; #620),
+ * identified by the server, and every shared change made in it by each seated
+ * player, by player id (a player, never a device, so a second phone or a
+ * reconnect does not reset anything). A new moment starts empty. Absent
+ * outside downtime.
+ */
+export interface CampMoment {
+  /** Stable for the moment; a `CAMP_PLACE` or `CAMP_UNDO` naming another is stale. */
+  id: string;
+  kind: CampMomentKind;
+  /** The full camp is up, so shared hotspots may change (never indoors, §3.2). */
+  outdoor: boolean;
+  /** Each player's changes this moment, oldest first. */
+  changes: Record<string, CampChange[]>;
 }
 
 // ---------------------------------------------------------------------------
@@ -290,6 +349,19 @@ export interface CatalogTent {
   group: "catalog" | "milestone";
 }
 
+/**
+ * A shared hotspot (§4.2): where the crew places a piece of `kind`, from frame
+ * `stage` on. `default` is the frame's own piece shown there until the crew
+ * places another. Where it stands is art (`assets/manifest.json` →
+ * `camp.frames[].hotspots`, the same ids), which the validator holds this to.
+ */
+export interface CatalogHotspot {
+  id: HotspotId;
+  kind: CampHotspotKind;
+  stage: FrameStage;
+  default?: CampPieceId;
+}
+
 /** Every hero's free kit catalog (§5.4), and the kit pieces earned beyond it. */
 export interface KitCatalog {
   /** Bedroll-and-pack styles, all free. */
@@ -319,6 +391,8 @@ export interface CatalogFriend {
 /** `content/camp.json`: what the camp *is*. What it looks like is the manifest's `camp`. */
 export interface CampCatalog {
   crewPieces: CatalogCrewPiece[];
+  /** The shared hotspots, by frame stage (§4.2; #620). */
+  hotspots: CatalogHotspot[];
   shops: CampShop[];
   kit: KitCatalog;
   /**

@@ -13,7 +13,7 @@ import type { FieldGuideFind } from "../field-guide-record.js";
 import type { FactId, FactValue, JourneyView, NodeId } from "./campaign-graph.js";
 import type { BuffId, CheckBuffOffer, RunBuff } from "./buffs.js";
 import type { MatchupNote } from "./matchups.js";
-import type { CampFind, CampLuck, CampShopView, CampTally, CampView } from "./camp.js";
+import type { CampFind, CampLuck, CampMoment, CampShopView, CampTally, CampView, HeroKitView } from "./camp.js";
 import type { NarrationPart } from "../narration.js";
 import type { ChoiceAhead } from "../choice-ahead.js";
 
@@ -653,6 +653,19 @@ export interface RunState {
    * camp draws from the seated heroes and ignores it.
    */
   camp?: CampView;
+  /**
+   * Each seated hero's kit (docs/camp.md §4.5; #620), by character id, read
+   * from her own row at each downtime moment and after her kid edits it.
+   * Absent outside downtime, and for a hero whose row could not be read (she
+   * is then drawn as before kits were stored).
+   */
+  kits?: Record<string, HeroKitView>;
+  /**
+   * The downtime moment the table is in (§12.5; #620): its id, and each
+   * player's shared changes in it. Set by the server as a lobby, a rest scene
+   * or a chapter's end begins; gone the moment play is back in a scene.
+   */
+  campMoment?: CampMoment;
   /**
    * The finds this chapter has handed over (`findForCamp`, `findForKit`;
    * docs/camp.md §5.1, §5.4), in the order found and once per `rewardId`, so

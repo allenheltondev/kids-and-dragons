@@ -230,6 +230,39 @@ export type ClientIntent =
    */
   | { type: "CAMP_VOTE"; visit: string; option: string }
   /**
+   * Put one of the crew's pieces on a shared hotspot (docs/camp.md §6.1,
+   * §12.5; #620), or `piece: null` to take it back to the frame's own (or to
+   * nothing). Any seated player, in the full camp only, never indoors; one
+   * counted change a player each downtime moment (`SHARED_EDITS_PER_MOMENT`),
+   * and placing a piece first owned this chapter at the chapter's end is free.
+   * `moment` echoes `CampMoment.id`, so a change from a moment the table has
+   * left is refused as stale. Two at once: the later wins. Resolved by the
+   * server, which writes the crew's camp, so the engine never sees it.
+   */
+  | { type: "CAMP_PLACE"; moment: string; hotspot: string; piece: string | null }
+  /**
+   * Undo this player's own latest shared change in this moment (§6.1): the
+   * hotspot shows what it did before, and the change is given back. Refused
+   * when somebody has changed that hotspot since; never undoes another's pick.
+   */
+  | { type: "CAMP_UNDO"; moment: string }
+  /**
+   * Change a seated hero's own kit (§4.5; #620): any of her bedroll-and-pack
+   * style, tent, color and decoration slots. Only her own player, at any
+   * downtime moment, indoors or out, with no limit. `revision` echoes
+   * `HeroKitView.revision`; a kit changed since (from the book, another
+   * phone) refuses it as stale. Written to her own row by the server.
+   */
+  | {
+      type: "KIT_EDIT";
+      characterId: string;
+      revision: number;
+      style?: string;
+      tent?: string;
+      color?: string | null;
+      slots?: (string | null)[];
+    }
+  /**
    * Playtest mode (roadmap chapter 6). Both are refused with FORBIDDEN unless
    * `EngineContext.playtest` is true, which only `dev-server.ts` ever sets —
    * `lambda/runtime.ts` passes a literal `false`, so a deployed build has no

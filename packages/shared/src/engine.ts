@@ -1637,6 +1637,45 @@ function checkIntentShape(intent: ClientIntent): void {
     case "CAMP_VOTE":
       if (!campVoteWellFormed(intent)) malformed("visit or option");
       return;
+    case "CAMP_PLACE":
+    case "CAMP_UNDO":
+    case "KIT_EDIT": {
+      const problem = campIntentProblem(intent);
+      if (problem !== null) malformed(problem);
+      return;
+    }
+  }
+}
+
+/**
+ * Whether a `CAMP_PLACE`, `CAMP_UNDO` or `KIT_EDIT` from a phone has the
+ * shape its type says (docs/camp.md §12.5; #620): short strings where ids go,
+ * a whole-number revision, slots an array of ids or nulls. Null when it does;
+ * otherwise the field that does not. The server checks this first.
+ */
+export function campIntentProblem(intent: Record<string, unknown> & { type: string }): string | null {
+  const id = (v: unknown): boolean => typeof v === "string" && v.length > 0 && v.length <= 200;
+  switch (intent.type) {
+    case "CAMP_PLACE":
+      if (!id(intent["moment"])) return "moment";
+      if (!id(intent["hotspot"])) return "hotspot";
+      if (intent["piece"] !== null && !id(intent["piece"])) return "piece";
+      return null;
+    case "CAMP_UNDO":
+      return id(intent["moment"]) ? null : "moment";
+    case "KIT_EDIT": {
+      if (!id(intent["characterId"])) return "characterId";
+      const revision = intent["revision"];
+      if (typeof revision !== "number" || !Number.isInteger(revision) || revision < 0) return "revision";
+      if (intent["style"] !== undefined && !id(intent["style"])) return "style";
+      if (intent["tent"] !== undefined && !id(intent["tent"])) return "tent";
+      if (intent["color"] !== undefined && intent["color"] !== null && !id(intent["color"])) return "color";
+      const slots = intent["slots"];
+      if (slots !== undefined && !(Array.isArray(slots) && slots.length <= 8 && slots.every((s) => s === null || id(s)))) return "slots";
+      return null;
+    }
+    default:
+      return null;
   }
 }
 
@@ -1762,6 +1801,13 @@ function dispatch(
       // It spends the crew's Dash Cash, a store write the engine never sees
       // (server handlers/camp-shop.ts), like SWITCH_CLASS above.
       throw new Illegal("ILLEGAL", "the chapter-end shop is resolved by the authoritative run handler");
+
+    case "CAMP_PLACE":
+    case "CAMP_UNDO":
+    case "KIT_EDIT":
+      // They write the crew's camp or a hero's kit, store writes the engine
+      // never sees (server handlers/camp-edit.ts), like CAMP_VOTE above.
+      throw new Illegal("ILLEGAL", "the camp is changed through the authoritative run handler");
 
     case "KEEP_CLASS":
       return doKeepClass(draft, playerId, intent.classId, intent.stall === true);
