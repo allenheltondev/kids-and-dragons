@@ -247,7 +247,7 @@ export function environmentBeatLine(
         tone: "bad",
       };
     case "relocated":
-      return { text: `The rift throws ${words.name(event.actorId)} somewhere new!`, tone: "plain" };
+      return { text: `${words.name(event.actorId)} moves to new ground!`, tone: "plain" };
     case "objective":
       return {
         text:

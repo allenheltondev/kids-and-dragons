@@ -179,6 +179,9 @@ const roadFights = [
   { sceneId: "encounter_wisps", chapterId: "gemfall-05a", cue: "Free the mule", target: { x: 4, y: 2 }, outcome: "victory", destination: "scene_wisps_shooed", text: "Brask scoops their leftover glow" },
   { sceneId: "encounter_crabs", chapterId: "gemfall-05c", cue: "Boundary stone", target: { x: 6, y: 3 }, outcome: "escaped", destination: "scene_turned_back", text: "The last of you steps past the stone" },
   { sceneId: "encounter_crawlers", chapterId: "gemfall-05c", cue: "Guard the books", target: { x: 3, y: 2 }, outcome: "victory", destination: "scene_crawlers_shooed", text: "Ashby counts her books twice" },
+  { sceneId: "encounter_crawlers", chapterId: "gemfall-06", cue: "Shut the cellar door", target: { x: 4, y: 2 }, outcome: "victory", destination: "scene_crawlers_home", text: "Pellam shuts the door" },
+  { sceneId: "encounter_echoes", chapterId: "gemfall-07l", cue: "Ring the road bell", target: { x: 4, y: 3 }, outcome: "victory", destination: "scene_bend_crowds", text: "The echo hunter folds back" },
+  { sceneId: "encounter_drake", chapterId: "gemfall-07r", cue: "Ledge path", target: { x: 6, y: 3 }, outcome: "escaped", destination: "scene_drake_drinks", text: "plunges its snout into the spring" },
 ] as const;
 
 for (const fight of roadFights) {
@@ -186,6 +189,8 @@ for (const fight of roadFights) {
     test.setTimeout(240_000);
     const boxes = fight.sceneId === "encounter_boxes";
     const wisps = fight.sceneId === "encounter_wisps";
+    const spring = fight.sceneId === "encounter_drake";
+    const echo = fight.sceneId === "encounter_echoes";
     const crawlers = fight.sceneId === "encounter_crawlers";
     const table = await seedTable({ mode: "party", tv: true, chapterId: fight.chapterId, sceneId: fight.sceneId, heroes: [
       { name: "Aster", species: "kitsune", class: "songkeeper", stats: { might: 0, quick: 3, clever: 0, heart: 0 } },
@@ -228,11 +233,17 @@ for (const fight of roadFights) {
       let movedThroughUi = false;
       let sawInk = false;
       let sawWarning = false;
+      let sawSpring = false;
       for (let turn = 0; state.encounter && turn < 24; turn++) {
         const page = active();
         const encounter = state.encounter;
         const actorId = currentActorId(encounter)!;
         const at = positionOf(encounter, actorId)!;
+        if (spring && !sawSpring && encounter.round >= 2) {
+          expect(positionOf(encounter, "drake#1")).toEqual({ x: 5, y: 1 });
+          expect(positionOf(encounter, "small#1")).toEqual({ x: 5, y: 4 });
+          sawSpring = true;
+        }
         const warnings = committedAttacks(encounter);
         if (warnings.length && !sawWarning) {
           await expect(display.page.getByLabel("Battle plan")).toContainText(/marked ground/i);
@@ -245,9 +256,9 @@ for (const fight of roadFights) {
         const score = (p: { x: number; y: number }) => fight.target
           ? Number(danger.some(t => t.x === p.x && t.y === p.y)) * 10 + stepsBetween(p, fight.target)
           : Number(ink(p)) * 10 - Math.min(...enemies.map(enemy => stepsBetween(p, enemy)));
-        const moves = [...legalMoves(encounter)];
+        const moves = legalMoves(encounter).filter(p => !spring || p.x !== 5 || (p.y !== 1 && p.y !== 4));
         // Give the wisps an opening beat before committing anyone to the cart.
-        const tile = turn === 0 && wisps ? undefined : turn === 0 && boxes ? moves.find(ink)
+        const tile = (turn === 0 && wisps) || (echo && !sawWarning) ? undefined : turn === 0 && boxes ? moves.find(ink)
           : moves.sort((a, b) => score(a) - score(b))[0];
         if (tile && (score(tile) < score(at) || (turn === 0 && boxes && ink(tile)))) {
           if (!movedThroughUi) {
@@ -277,7 +288,8 @@ for (const fight of roadFights) {
       }
       expect(movedThroughUi).toBe(true);
       if (boxes) expect(sawInk).toBe(true);
-      if (wisps) expect(sawWarning).toBe(true);
+      if (wisps || echo) expect(sawWarning).toBe(true);
+      if (spring) expect(sawSpring).toBe(true);
       expect(state.lastEncounter).toMatchObject({ sceneId: fight.sceneId, outcome: fight.outcome, destination: fight.destination });
       await expect(display.page.getByText(new RegExp(fight.text))).toBeVisible({ timeout: 60_000 });
       await display.page.screenshot({ path: info.outputPath("outcome.png") });

@@ -2509,14 +2509,44 @@
     },
     "encounter_drake": {
       "type": "encounter",
-      "map": "thicket",
-      "narration": "The drake hisses like a kettle and lashes its tail. It does not want to hurt anybody. It only wants the spring. Drive it back from the path, and give it room to drink.",
+      "map": "spring_ledge",
+      "narration": "The drake coils its tail across the path. A smaller one peers from behind. Leave the pools clear so they can move to the spring. Once the ledge opens, slip past one at a time.",
       "enemies": [
         {
           "id": "drake",
           "name": "Young River Drake",
           "creature": "river_drake",
-          "hp": 10
+          "hp": 10,
+          "windupAttack": {
+            "label": "Tail sweep",
+            "radius": 1,
+            "damage": 3,
+            "presentation": "slam"
+          },
+          "count": 1,
+          "rift": {
+            "ignores": [
+              "rift"
+            ]
+          }
+        },
+        {
+          "id": "small",
+          "name": "Smaller River Drake",
+          "creature": "river_drake",
+          "hp": 10,
+          "windupAttack": {
+            "label": "Tail sweep",
+            "radius": 1,
+            "damage": 3,
+            "presentation": "slam"
+          },
+          "count": 1,
+          "rift": {
+            "ignores": [
+              "rift"
+            ]
+          }
         }
       ],
       "onVictory": {
@@ -2538,10 +2568,97 @@
             "to": "party"
           }
         ]
+      },
+      "art": "scenes/gemfall/spring-drake-ledge",
+      "environment": {
+        "clock": {
+          "rounds": 5,
+          "label": "The drake blocks the ledge",
+          "onExpire": "collapse"
+        },
+        "relocate": [
+          {
+            "enemy": "drake#1",
+            "to": {
+              "x": 5,
+              "y": 1
+            },
+            "round": 2
+          },
+          {
+            "enemy": "small#1",
+            "to": {
+              "x": 5,
+              "y": 4
+            },
+            "round": 2
+          }
+        ],
+        "exits": [
+          {
+            "id": "spring-ledge",
+            "label": "Ledge path",
+            "art": "prop_stepping_stones",
+            "tiles": [
+              {
+                "x": 6,
+                "y": 3
+              }
+            ],
+            "opensRound": 2
+          }
+        ],
+        "hazards": [
+          {
+            "id": "spring-pools",
+            "label": "Cold pools",
+            "kind": "rift",
+            "art": "water-surge",
+            "tiles": [
+              {
+                "x": 5,
+                "y": 1
+              },
+              {
+                "x": 5,
+                "y": 4
+              }
+            ],
+            "slow": {
+              "steps": 1,
+              "turns": 1
+            }
+          }
+        ]
+      },
+      "onEscape": {
+        "goto": "scene_drake_drinks",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "sunbloom_draught",
+            "to": "party"
+          }
+        ]
+      },
+      "onTimeout": {
+        "goto": "scene_drake_rescued",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
       }
     },
     "scene_drake_drinks": {
       "type": "story",
+      "cast": [
+        {
+          "figure": "entities/river_drake"
+        }
+      ],
       "narration": "The drake backs off and plunges its snout into the spring. Gulp, gulp, gulp. The splash wakes a sunbloom, which opens at once. You fill a flask with spring water and one gold petal.",
       "choices": [
         {
@@ -2687,7 +2804,37 @@
           "prop_humming_stone"
         ]
       }
-    }
+    },
+    "fights": [
+      {
+        "chapter": "gemfall-07r",
+        "scene": "encounter_drake",
+        "creature": "river_drake",
+        "board": "spring_ledge",
+        "backdrop": "scenes/gemfall/spring-drake-ledge",
+        "introScenes": [
+          "scene_drake_ledge"
+        ],
+        "victoryScene": "scene_drake_drinks",
+        "defeatScene": "scene_drake_rescued",
+        "tileUrl": "/assets/fight-boards/fight_ferry_landing/tiles.png",
+        "rescueFigure": "",
+        "activeUrl": "/assets/entities/river_drake/warning.png",
+        "retreatUrl": "/assets/entities/river_drake/shooed.png",
+        "props": [],
+        "terrainProps": [],
+        "poses": {
+          "intro": "warning",
+          "retreat": "shooed"
+        },
+        "retreatDirection": 1
+      }
+    ],
+    "warmUrls": [
+      "/assets/fight-boards/fight_ferry_landing/tiles.png",
+      "/assets/entities/river_drake/warning.png",
+      "/assets/entities/river_drake/shooed.png"
+    ]
   },
   "resumeInteractions": {
     "interaction_stone_chain": {
