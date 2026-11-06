@@ -815,12 +815,18 @@
     "encounter_wolves": {
       "type": "encounter",
       "map": "ford",
-      "narration": "The pack spreads across the shallow ford, guarding the warm side.",
+      "narration": "The pack blocks the old ford. The upper crossing is swift enough to push you back. Head for the lower stones: the far bank opens in round three, once the water drops.",
       "enemies": [
         {
           "id": "wolf",
           "name": "Cinder Wolf",
-          "creature": "cinder_wolf"
+          "creature": "cinder_wolf",
+          "rift": {
+            "post": "none",
+            "ignores": [
+              "rift"
+            ]
+          }
         }
       ],
       "onVictory": {
@@ -828,6 +834,62 @@
         "narration": "The wolves give way, grumbling, and pile back against their pillar. You wade across while they pretend they meant to move."
       },
       "onDefeat": {
+        "goto": "rest_setback",
+        "narration": "The pack holds the ford. You end up back on the south bank, soggy and outnumbered."
+      },
+      "environment": {
+        "clock": {
+          "rounds": 7,
+          "label": "The pack closes the ford",
+          "onExpire": "collapse"
+        },
+        "exits": [
+          {
+            "id": "far-bank",
+            "label": "Lower bank",
+            "art": "prop_stepping_stones",
+            "tiles": [
+              {
+                "x": 7,
+                "y": 5
+              },
+              {
+                "x": 8,
+                "y": 5
+              }
+            ],
+            "opensRound": 3
+          }
+        ],
+        "hazards": [
+          {
+            "id": "pillar-current",
+            "label": "Pillar current",
+            "kind": "rift",
+            "art": "water-surge",
+            "tiles": [
+              {
+                "x": 4,
+                "y": 2
+              },
+              {
+                "x": 5,
+                "y": 2
+              }
+            ],
+            "push": {
+              "direction": "west",
+              "tiles": 2
+            }
+          }
+        ]
+      },
+      "onEscape": {
+        "goto": "scene_far_rim",
+        "narration": "Your last friend steps onto the lower bank. Upstream the wolves are still guarding the warm stones, where you left them."
+      },
+      "art": "scenes/gemfall/bridge-pillar-shallows",
+      "onTimeout": {
         "goto": "rest_setback",
         "narration": "The pack holds the ford. You end up back on the south bank, soggy and outnumbered."
       }
@@ -2485,13 +2547,41 @@
           "retreat": "shooed"
         },
         "retreatDirection": 1
+      },
+      {
+        "chapter": "gemfall-05a",
+        "scene": "encounter_wolves",
+        "creature": "cinder_wolf",
+        "board": "ford",
+        "backdrop": "scenes/gemfall/bridge-pillar-shallows",
+        "introScenes": [
+          "scene_under_bridge"
+        ],
+        "victoryScene": "scene_far_rim",
+        "defeatScene": "rest_setback",
+        "tileUrl": "/assets/fight-boards/fight_gravel_ford/tiles.png",
+        "rescueFigure": "",
+        "activeUrl": "/assets/entities/cinder_wolf/assembled.png",
+        "retreatUrl": "/assets/entities/cinder_wolf/shooed.png",
+        "props": [],
+        "terrainProps": [],
+        "poses": {
+          "intro": "assembled",
+          "retreat": "shooed"
+        },
+        "retreatDirection": 1
       }
     ],
     "warmUrls": [
       "/assets/entities/will_o_wisp/assembled.png",
       "/assets/entities/will_o_wisp/shooed.png",
       "/assets/fight-boards/fight_ferry_landing/tiles.png",
-      "/assets/story-props/pickup-mosslight-jar.webp"
+      "/assets/story-props/pickup-mosslight-jar.webp",
+      "/assets/scenes/gemfall/bridge-pillar-shallows.webp",
+      "/assets/fight-boards/fight_gravel_ford/tiles.png",
+      "/assets/entities/cinder_wolf/assembled.png",
+      "/assets/entities/cinder_wolf/shooed.png",
+      "/assets/story-props/prop_stepping_stones.webp"
     ]
   },
   "resumeInteractions": {
