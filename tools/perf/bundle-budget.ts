@@ -257,7 +257,13 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // chunk. 1692KB measured, first paint 332KB, unchanged at its budget. 2KB of slack.
 // 1694 -> 1696 for the #656 review fixes (the book's memory-only queue, the
 // camp-read marker): 1694KB measured, first paint 328KB. 2KB of slack again.
-const TOTAL_BUDGET_KB = 1696;
+// 1696 -> 1707 for the camp's light (Pixi's blur filter for the shadow layer)
+// and the last three terrain accents' paintings: 1705KB measured, first paint
+// 328KB. 2KB of slack again.
+// 1707 -> 1709 for the fire's glow, the back lanes' haze and the indoor rest's
+// shadows (ground-shadows.ts shared with the story stage): 1707KB measured,
+// first paint 328KB. 2KB of slack again.
+const TOTAL_BUDGET_KB = 1709;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

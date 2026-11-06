@@ -366,9 +366,13 @@ describe("the camp packed down at an indoor rest (docs/camp.md §3.2, #625)", ()
       const asked = load.mock.calls.map((call) => String(call[0]));
       expect(asked.some((url) => url.includes("camp/backdrops") || url.includes("tent") || url.includes("campfire"))).toBe(false);
       expect(asked).toContain("/assets/scenes/riftlight/wyrm-nest.webp");
+      // Each hero casts a soft shadow in the room's light, on one layer under the lineup (camp-light.ts INDOOR_LIGHT).
+      const shadows = app.stage.getChildByLabel("rest-shadows", true) as Container;
+      expect(shadows.children.length).toBeGreaterThanOrEqual(2);
       // Gone with the rest.
       s.setPackedCamp(null);
       expect(s.packedCamp()).toEqual([]);
+      expect(shadows.children).toHaveLength(0);
     } finally { s.destroy(); load.mockRestore(); }
   });
   it("sits the friends out at the row's two ends, at their true heights, and takes them away with it (#624)", async () => {
