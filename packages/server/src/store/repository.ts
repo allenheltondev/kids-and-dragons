@@ -49,9 +49,10 @@ export interface ForgetJob {
   nicknames: string[];
   heroes: string[];
   /**
-   * Her heroes' ids, whose `buddies` entries come out of every camp at each
-   * table (docs/camp.md §9). Absent on a job written before camps existed,
-   * when there were no buddies to take out.
+   * Her heroes' ids. Written for the camps' buddies (docs/camp.md §9), which
+   * since #624 are on the heroes' own kits and go with them, so nothing reads
+   * it now; kept so a job already queued still parses. Absent on a job
+   * written before camps existed.
    */
   heroIds?: string[];
   /** Tables still to clean. */

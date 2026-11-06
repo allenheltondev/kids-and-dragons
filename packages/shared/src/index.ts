@@ -30,6 +30,7 @@ export * from "./field-guide-record.js";
 export * from "./camp-record.js";
 export * from "./camp-shop.js";
 export * from "./camp-edit.js";
+export * from "./camp-friends.js";
 export * from "./kid-profile.js";
 export * from "./crews.js";
 export * from "./dice.js";

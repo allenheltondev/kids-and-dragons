@@ -49,7 +49,7 @@ import { collectCharacters, voiceClashes } from "../voice/cast/sheet.ts";
 import { loadSources } from "../voice/cast/sources.ts";
 import { routeSetConflicts } from "./route-paths.mjs";
 import { classPlaceReach, classPlaceVerdict, loadAllowList as loadClassPlaceAllow } from "./class-places.mjs";
-import { campCatalogProblems, chapterFinds } from "./camp-catalog.mjs";
+import { campCatalogProblems, chapterBefriends, chapterFinds } from "./camp-catalog.mjs";
 import { MILESTONE_KIT_PIECES } from "../../packages/shared/src/camp-milestones.ts";
 
 /**
@@ -2080,11 +2080,13 @@ function checkCamp(rep, ajv, chaptersById, brokenChapterIds, campaignIds) {
     brokenChapters: brokenChapterIds,
     campaigns: campaignIds,
     milestones: MILESTONE_KIT_PIECES,
+    castFigures: assetRegistry.castFigures ?? [],
   });
   for (const { file, at, problem, hint } of problems) rep.fail(file, at, problem, hint);
   if (!problems.length) {
     const finds = [...chaptersById.values()].reduce((n, chapter) => n + chapterFinds(chapter).length, 0);
-    rep.ok(`${rel(path)}  camp  (${catalog.crewPieces.length} crew pieces, ${catalog.shops.length} shop(s), every id declared art, ${finds} find(s) through declared offers)`);
+    const befriends = [...chaptersById.values()].reduce((n, chapter) => n + chapterBefriends(chapter).length, 0);
+    rep.ok(`${rel(path)}  camp  (${catalog.crewPieces.length} crew pieces, ${catalog.shops.length} shop(s), ${catalog.friends.length} friend(s), every id declared art, ${finds} find(s) and ${befriends} befriend(s) through declared offers)`);
   }
 }
 

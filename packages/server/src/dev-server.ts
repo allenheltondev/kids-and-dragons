@@ -39,6 +39,7 @@ import {
 } from "./handlers/code-guard.ts";
 import { relayPreview } from "./handlers/preview.ts";
 import { relayCheer } from "./handlers/cheer.ts";
+import { relayFriendTap } from "./handlers/friend-tap.ts";
 import { createScreenCode, isScreenSlowDown, redeemScreenCode } from "./handlers/screens.ts";
 import { viewerStillShows } from "./handlers/viewer.ts";
 import { chooseWatching } from "./handlers/watch.ts";
@@ -610,6 +611,25 @@ async function main(): Promise<void> {
         playerId: session.playerId,
         householdId: session.householdId,
         cheer: (req.body ?? {}).cheer,
+      },
+      deps,
+    );
+    if (!result.ok) return sendError(res, result.status, result.code, result.message);
+    res.json({ ok: true });
+  });
+
+  // A kid tapping a camp friend (handlers/friend-tap.ts, #624): relayed, never committed.
+  app.post("/api/friend-tap", async (req: Request, res: Response) => {
+    const deps = await withRuntime(base, res);
+    if (!deps) return;
+    const session = await resolveSession(req, base);
+    if (!session) return sendError(res, 401, "FORBIDDEN", "a friend tap needs a room session token");
+    const result = await relayFriendTap(
+      {
+        runId: session.runId,
+        playerId: session.playerId,
+        householdId: session.householdId,
+        friendId: (req.body ?? {}).friendId,
       },
       deps,
     );

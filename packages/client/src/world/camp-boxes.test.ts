@@ -10,6 +10,14 @@
  * banner's flag), and all of it stays inside the visible span and between the
  * lobby's header and its panels.
  *
+ * Four friends stand among them too (#624, docs/camp.md §4.4): each at its
+ * friend spot, the tallest friend out at the roomy spot 0 and any other at
+ * spots 1 to 3 (camp-friends.ts `friendSpots`), every spot sized for the
+ * biggest friend content/camp.json has that may stand there. A friend is
+ * seen whole: nothing nearer and nothing on its own lane covers it, it covers
+ * no shown label, and it stands in front of only the lower half of anything
+ * further back (`campFriendClashes`).
+ *
  * Worst cases: four bigfoots (the tallest), four kitsune (the smallest), a mix
  * (bigfoot, kitsune, unicorn, griffin), four of every other species, and for
  * each every piece the crew could have up at each spot, in the styles their
@@ -47,11 +55,24 @@ import {
   type CampBoxInput,
 } from "./camp-boxes";
 import { CAMP_KIT_STYLES } from "./camp-kit-art";
+import { campFriendBoxes, campFriendClashes, type CampBoxFriend } from "./camp-boxes";
+import { friendHeightCm } from "./camp-friends";
+import type { CastSize } from "@kad/shared";
 import { campPaint } from "./camp-paint";
 import { CREW_PIECE_ART, TENT_ART, campSpots, pieceArt, pieceName } from "./camp-scene";
 import { FIGURE_SIZES } from "./figure-sizes";
 
 const parsed = parseCampManifest((manifest as { camp: unknown }).camp);
+
+/**
+ * The friends at each friend spot, at their biggest (#624): spot 0 holds the
+ * tallest friend out, so any catalog friend; spots 1 to 3 any but the
+ * tallest of them all.
+ */
+const CATALOG_FRIENDS: CampBoxFriend[] = (catalog.friends as { figure: string; size?: string }[])
+  .map((f) => ({ figure: f.figure, heightCm: friendHeightCm({ figure: f.figure, ...(f.size ? { size: f.size as CastSize } : {}) }) }))
+  .sort((a, b) => b.heightCm - a.heightCm);
+const FRIENDS: CampBoxFriend[][] = [CATALOG_FRIENDS, CATALOG_FRIENDS.slice(1), CATALOG_FRIENDS.slice(1), CATALOG_FRIENDS.slice(1)];
 
 /** The TV lobby's header and panels, measured on the dev table with four heroes seated (tools/playtest/table.ts). */
 const LOBBY = [
@@ -254,7 +275,7 @@ for (const { stage, minRow, smallRow, grownBy, styles } of STAGES) {
             ...styles.flatMap((style) => all.slice(0, 2).map((spots) => ({ heroes: heroesOf(species, style, stage), spots }))),
           ];
           for (const { heroes, spots } of cases) {
-            const input = { heroes, spots, allSouvenirs: true };
+            const input = { heroes, spots, allSouvenirs: true, friends: FRIENDS };
             const window = campWindow(view.height, view.top, view.bottom);
             const fit = campFitFor(view.width, window, layout, input);
             if (smallRow !== null && SMALL.includes(name)) expect(campRowScale(layout, input), "a small party is drawn nearly full size").toBeGreaterThanOrEqual(smallRow);
@@ -268,6 +289,11 @@ for (const { stage, minRow, smallRow, grownBy, styles } of STAGES) {
             expect(stands.length).toBeGreaterThanOrEqual(stage === 2 ? 3 : 2);
             expect(campOverlaps([...boxes, ...stands])).toEqual([]);
             expect(campLabelClashes(boxes)).toEqual([]);
+            // Four friends out among them (#624): each seen whole, covering nothing it may not.
+            const friends = campFriendBoxes(layout, { friends: FRIENDS, figureScale: fit.figureScale });
+            expect(friends).toHaveLength(4);
+            expect(campFriendClashes([...boxes, ...stands, ...friends])).toEqual([]);
+            boxes.push(...friends);
             // Inside the visible span, and between the header and the panels.
             const span = campVisibleSpan(view.width, fit.framing, W);
             const screenY = (y: number) => fit.framing.y + y * fit.framing.scale;

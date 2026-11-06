@@ -52,7 +52,17 @@ export type Effect =
    * find piece. A hero who already has it gets nothing more, and never Dash
    * Cash, which is the crew's. Otherwise as `findForCamp`.
    */
-  | { type: "findForKit"; pieceId: string; rewardId: string };
+  | { type: "findForKit"; pieceId: string; rewardId: string }
+  /**
+   * A friend joins the crew's camp (docs/camp.md §4.4; #624): `friendId` is a
+   * friend in `content/camp.json`, and `rewardId` its offer for this chapter,
+   * shared by every way into it (§12.2). Authored on the "Come along" choice,
+   * beside a "Say goodbye" that writes nothing, so the friend may be offered
+   * again on a later visit. Never a gate. Saved when befriended, like a find
+   * (`RunState.campFinds`, kind `friend`); a reward this crew has already
+   * claimed gives nothing.
+   */
+  | { type: "befriend"; friendId: string; rewardId: string };
 
 /**
  * A test against the party and the run's flags (#158). Every field is

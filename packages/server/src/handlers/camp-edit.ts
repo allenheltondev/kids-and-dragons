@@ -31,15 +31,28 @@
  * **A hero's kit**: only her own player, any downtime, no limit; only from the
  * kit catalog and her own unlocks (§12.1); written to her row conditionally on
  * the kit revision her phone showed, so an edit from the book in between
- * refuses the stale one rather than overwriting it.
+ * refuses the stale one rather than overwriting it. Her buddy is on her kit
+ * too (§4.4; #624), kept for this crew's camp alone (`campKey`), and only
+ * ever one of this crew's friends.
+ *
+ * **The friends out** (§4.4, §12.5; #624) are chosen here as each moment
+ * begins (`CampMoment.friends`): the rotation once, from how often each
+ * friend has been out, and who is out from it and the seated heroes' buddies
+ * on every step, so a hero sitting down brings her buddy out at once. How
+ * often each has been out is counted after the step that began the moment
+ * commits (`recordOuting`), once per moment by its id.
  */
 
 import {
   campIntentProblem,
+  campKey,
   campMomentKind,
   campView,
   emptyKit,
   followCampMoment,
+  friendRotation,
+  friendsOut,
+  withOuting,
   freshPieces,
   kitEditProblem,
   kitView,
@@ -54,6 +67,8 @@ import type {
   ActionResponse,
   CampCatalog,
   CampChange,
+  CampFriendsView,
+  CampMoment,
   CampRecord,
   CampView,
   ClientIntent,
@@ -64,7 +79,7 @@ import type {
   RunState,
 } from "@kad/shared";
 import type { CampWrite, CharacterWrite, RunRecord } from "../store/repository.ts";
-import { planCamp, planKit, readCampView, type CampDeps } from "./camp.ts";
+import { mutateCamp, planCamp, planKit, readCamp, readCampView, type CampDeps } from "./camp.ts";
 import { discoveryHousehold } from "./field-guide.ts";
 
 type EditError = NonNullable<ActionResponse["error"]>;
@@ -256,14 +271,26 @@ export async function prepareKitEdit(
     ...(intent.tent !== undefined ? { tent: intent.tent } : {}),
     ...(intent.color !== undefined ? { color: intent.color } : {}),
     ...(intent.slots !== undefined ? { slots: intent.slots } : {}),
+    ...(intent.buddy !== undefined ? { buddy: intent.buddy } : {}),
   };
+  // A buddy is one of this crew's friends, as the crew's own record says (§4.4).
+  const key = campKey(run.householdId, state.crew);
+  let friends: string[] = [];
+  if (edit.buddy) {
+    try {
+      friends = Object.keys((await readCamp(run.householdId, state.crew, deps)).friends);
+    } catch (err) {
+      console.error(`camp: could not read ${run.householdId}'s friends for a buddy pick:`, err);
+      return illegal("Your kit could not be saved. Try again.");
+    }
+  }
   const seen: { problem: string | null } = { problem: null };
   const plan = await planKit(
     member.homeHouseholdId ?? run.householdId,
     intent.characterId,
     (kit) => {
-      seen.problem = kitEditProblem(catalog.kit, Object.keys(kit.unlocked), edit);
-      return seen.problem === null ? withKitEdit(kit, edit) : null;
+      seen.problem = kitEditProblem(catalog.kit, Object.keys(kit.unlocked), edit, friends);
+      return seen.problem === null ? withKitEdit(kit, edit, key) : null;
     },
     deps,
     { expectedRevision: intent.revision },
@@ -278,7 +305,7 @@ export async function prepareKitEdit(
   if (plan.write === null) return illegal("Your kit could not be saved. Try again.");
   return {
     ok: true,
-    state: { ...state, kits: { ...state.kits, [intent.characterId]: kitView(plan.value) } },
+    state: withFriendsOut({ ...state, kits: { ...state.kits, [intent.characterId]: kitView(plan.value, key) } }),
     writes: { kit: plan.write },
   };
 }
@@ -331,11 +358,12 @@ export async function syncCampDowntime(
   }
   const removed = new Set(state.removed ?? []);
   const seated = state.party.filter((m) => !removed.has(m.playerId));
+  const key = campKey(input.run.householdId, state.crew);
   const kits: Record<string, HeroKitView> = {};
   const want = seated.filter((m) => fresh || !state.kits?.[m.character.id]);
   // A hero made this very step is written by its commit: her kit is the empty one.
   const made = want.filter((m) => m.character.id === input.created);
-  for (const m of made) kits[m.character.id] = kitView(emptyKit());
+  for (const m of made) kits[m.character.id] = kitView(emptyKit(), key);
   for (const m of seated) {
     const known = state.kits?.[m.character.id];
     if (known && !fresh) kits[m.character.id] = known;
@@ -344,7 +372,7 @@ export async function syncCampDowntime(
     want.filter((m) => m.character.id !== input.created).map(async (m) => {
       try {
         const row = await deps.repo.getCharacter(m.homeHouseholdId ?? input.run.householdId, m.character.id);
-        return [m.character.id, kitView(row ? readKit(row) : emptyKit())] as const;
+        return [m.character.id, kitView(row ? readKit(row) : emptyKit(), key)] as const;
       } catch (err) {
         console.error(`camp: could not read hero ${m.character.id}'s kit:`, err);
         return null;
@@ -354,5 +382,106 @@ export async function syncCampDowntime(
   for (const entry of read) if (entry) kits[entry[0]] = entry[1];
   if (Object.keys(kits).length > 0) next.kits = kits;
   else delete next.kits;
-  return next;
+  return syncCampFriends(next, input.run.householdId, deps);
+}
+
+/** The moment's friends, as `syncCampDowntime` keeps them: for a camp view set after it (the chapter's end). */
+export async function syncCampFriends(state: RunState, householdId: string, deps: CampDeps): Promise<RunState> {
+  return withFriendsOut(await withRotation(state, householdId, deps));
+}
+
+// ---------------------------------------------------------------------------
+// The friends out (§4.4, §12.5; #624)
+// ---------------------------------------------------------------------------
+
+/**
+ * The moment with its rotation chosen, once: as it begins, or when the
+ * crew's friends are not the ones it was chosen from (a crew switch in the
+ * lobby, a friend befriended since). Read from the crew's record, which
+ * says how often each friend has been out; a failed read falls back to the
+ * friends by id, and is tried again on the next step. No friends, no
+ * `friends`.
+ */
+async function withRotation(state: RunState, householdId: string, deps: CampDeps): Promise<RunState> {
+  const moment = state.campMoment;
+  const have = state.camp?.friends ?? [];
+  if (!moment) return state;
+  if (have.length === 0) {
+    if (!moment.friends) return state;
+    const bare: CampMoment = { ...moment };
+    delete bare.friends;
+    return { ...state, campMoment: bare };
+  }
+  const chosen = moment.friends?.rotation;
+  if (chosen && chosen.length === have.length && chosen.every((id) => have.includes(id))) return state;
+  let rotation = [...have].sort();
+  try {
+    const record = await readCamp(householdId, state.crew, deps);
+    const mine = Object.fromEntries(Object.entries(record.friends).filter(([id]) => have.includes(id)));
+    const ranked = friendRotation(mine);
+    // A friend the view has and the record does not yet (a claim still landing) goes first: it is new.
+    rotation = [...have.filter((id) => !ranked.includes(id)).sort(), ...ranked];
+  } catch (err) {
+    console.error(`camp: could not read ${householdId}'s friends for the rotation:`, err);
+  }
+  const catalog = deps.content.campCatalog();
+  const cards: CampFriendsView["cards"] = (catalog?.friends ?? [])
+    .filter((f) => have.includes(f.id))
+    .map((f) => ({ id: f.id, name: f.name, figure: f.figure, ...(f.size ? { size: f.size } : {}) }));
+  return { ...state, campMoment: { ...moment, friends: { rotation, out: moment.friends?.out ?? [], cards } } };
+}
+
+/**
+ * Who is out now (`friendsOut`): each seated hero's buddy, in seat order,
+ * then the moment's rotation. Run after every step that can seat a hero or
+ * change a buddy, so a buddy is out the moment her hero is seated.
+ */
+export function withFriendsOut(state: RunState): RunState {
+  const friends = state.campMoment?.friends;
+  if (!state.campMoment || !friends) return state;
+  const removed = new Set(state.removed ?? []);
+  const buddies = state.party.filter((m) => !removed.has(m.playerId)).map((m) => state.kits?.[m.character.id]?.buddy);
+  const out = friendsOut(friends.rotation, buddies);
+  if (out.length === friends.out.length && out.every((id, i) => friends.out[i] === id)) return state;
+  return { ...state, campMoment: { ...state.campMoment, friends: { ...friends, out } } };
+}
+
+/**
+ * The moment's rotation was chosen on this step (it began, or its friends
+ * changed): what `recordOuting` should count, or null.
+ */
+export function stepOuting(before: RunState, after: RunState): { moment: string; out: string[] } | null {
+  const now = after.campMoment;
+  if (!now?.friends || now.friends.out.length === 0) return null;
+  const was = before.campMoment;
+  if (was?.id === now.id && was.friends) return null;
+  return { moment: now.id, out: [...now.friends.out] };
+}
+
+/**
+ * Count one moment's friends out into the crew's record (§12.5), after the
+ * step that began it commits: once per moment, by its id (`CampRecord.outing`),
+ * so a retry, a reconnect or a second screen counts nothing twice. Never
+ * fails the turn: a count that cannot be written leaves the next rotation a
+ * little less fair, and is logged.
+ */
+export async function recordOuting(
+  outing: { moment: string; out: readonly string[] } | null,
+  input: { run: Pick<RunRecord, "id" | "householdId">; state: RunState },
+  deps: CampDeps,
+): Promise<void> {
+  if (!outing) return;
+  try {
+    const householdId = await discoveryHousehold(input.run, input.state, deps);
+    if (!householdId) return;
+    const written = await mutateCamp(
+      householdId,
+      input.state.crew,
+      (camp) => (camp.outing === outing.moment ? null : { ...camp, friends: withOuting(camp.friends, outing.out), outing: outing.moment }),
+      deps,
+    );
+    if (!written.ok) console.error(`camp: moment ${outing.moment}'s friends were not counted (${written.reason})`);
+  } catch (err) {
+    console.error(`camp: counting moment ${outing.moment}'s friends for run ${input.run.id} failed:`, err);
+  }
 }

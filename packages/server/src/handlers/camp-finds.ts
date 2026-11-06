@@ -22,6 +22,12 @@
  *     already has it gets nothing, and Dash Cash is never paid for one. Her
  *     copy records the reward it came from, and holding the piece is what
  *     makes a second claim give nothing, so a replay cannot farm it either.
+ *   - **A friend is the crew's** (§4.4; #624): a `befriend` is claimed the
+ *     same way as a crew find, through `claimReward`, so the friend and its
+ *     receipt land in one conditional write, once. A friend the crew already
+ *     has from another offer pays 1 Dash Cash instead, as a piece does. A
+ *     "Say goodbye" recorded nothing, so it writes nothing and the friend may
+ *     be offered again on a later visit.
  *   - **Never fails the turn.** A claim that cannot be written is logged and
  *     reported as nothing; the step it rode has already happened.
  *
@@ -60,6 +66,12 @@ export function withCampFind(camp: CampRecord, find: CampFind, at: string): { ca
   };
 }
 
+/** The crew's camp with one friend joined (#624): the friend, or 1 Dash Cash for a friend it already has. */
+export function withCampFriend(camp: CampRecord, find: CampFind, at: string): { camp: CampRecord; result: "friend" | "dashCash" } {
+  if (Object.hasOwn(camp.friends, find.pieceId)) return { camp: { ...camp, dashCash: camp.dashCash + 1 }, result: "dashCash" };
+  return { camp: { ...camp, friends: { ...camp.friends, [find.pieceId]: { rewardId: find.rewardId, at } } }, result: "friend" };
+}
+
 /**
  * Claim the step's finds, in the order found, and say what each did. The
  * camp is the run's household's and crew's (`RunState.crew`; absent is the
@@ -84,7 +96,7 @@ export async function claimCampFinds(
   const results: CampClaimResult[] = [];
   for (const find of finds) {
     try {
-      results.push(find.kind === "camp" ? await claimCrewFind(householdId, state, find, deps) : await claimKitFind(householdId, state, find, deps));
+      results.push(find.kind === "kit" ? await claimKitFind(householdId, state, find, deps) : await claimCrewFind(householdId, state, find, deps));
     } catch (err) {
       console.error(`camp: claiming ${find.rewardId} for run ${run.id} failed:`, err);
     }
@@ -94,21 +106,21 @@ export async function claimCampFinds(
 
 async function claimCrewFind(householdId: string, state: RunState, find: CampFind, deps: CampDeps): Promise<CampClaimResult> {
   const at = iso(deps.now());
-  let result: "piece" | "dashCash" = "piece";
+  let result: "piece" | "friend" | "dashCash" = find.kind === "friend" ? "friend" : "piece";
   const claimed = await claimReward(
     householdId,
     state.crew,
     find.rewardId,
     (camp) => {
       // Pure, and may run again on a fresher read: the last run is the one written.
-      const applied = withCampFind(camp, find, at);
+      const applied = find.kind === "friend" ? withCampFriend(camp, find, at) : withCampFind(camp, find, at);
       result = applied.result;
       return applied.camp;
     },
     deps,
     { runId: state.runId },
   );
-  const base = { rewardId: find.rewardId, kind: "camp" as const, pieceId: find.pieceId };
+  const base = { rewardId: find.rewardId, kind: find.kind === "friend" ? ("friend" as const) : ("camp" as const), pieceId: find.pieceId };
   if (!claimed.ok) {
     console.error(`camp: ${find.rewardId} was not claimed (${claimed.reason})`);
     return { ...base, result: "none" };

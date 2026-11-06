@@ -17,6 +17,7 @@ import { CampButton, CampPanel, KitWelcome } from "./CampPanel";
 import { closeCampPanel, openCampPanel } from "./camp-panel";
 import { kitAccent } from "@kad/shared";
 import { campClothMatrix } from "../world/camp-kit-art";
+import { useGameStore } from "../store";
 
 const me: PartyMember = makeMember({
   playerId: "p_1",
@@ -36,7 +37,6 @@ const camp = (over: Partial<CampView> = {}): CampView => ({
   owned: ["shop_striped_awning", "find_noodle_awning", "shop_lantern_string", "shop_weathervane_pole"],
   placed: {},
   friends: [],
-  buddies: {},
   shopOpen: true,
   ...over,
 });
@@ -243,5 +243,57 @@ describe("the Camp panel's controls (§12.6, docs/accessibility.md)", () => {
     act(() => openCampPanel());
     fireEvent.click(screen.getByRole("button", { name: "Done" }));
     expect(screen.queryByTestId("camp-panel")).toBeNull();
+  });
+});
+
+describe("friends and buddies on the phone (#624, §4.4, §8.5)", () => {
+  const cards = [
+    { id: "bun", name: "Bun", figure: "cast/bun" },
+    { id: "mosshorn", name: "Mosshorn", figure: "entities/mosshorn", size: "small" as const },
+    { id: "duckling", name: "Duckling", figure: "entities/duckling" },
+    { id: "kid_goat", name: "Kid goat", figure: "cast/snowhorn_kid" },
+    { id: "lamb", name: "Lamb", figure: "cast/goat_kid" },
+  ];
+  const friendly = (over: Partial<HeroKitView> = {}): RunState =>
+    table({
+      camp: camp({ friends: cards.map((c) => c.id) }),
+      campMoment: moment({ friends: { rotation: ["lamb", "bun", "mosshorn", "duckling", "kid_goat"], out: ["lamb", "bun", "mosshorn", "duckling"], cards } }),
+      kits: { c_1: kit(over), c_2: kit() },
+    });
+
+  it("picks her buddy in her kit, from the crew's friends, or none", () => {
+    openPanel(friendly());
+    const picker = screen.getByTestId("buddy-picker");
+    expect(within(picker).getByRole("button", { name: "No buddy" }).getAttribute("aria-pressed")).toBe("true");
+    fireEvent.click(within(picker).getByRole("button", { name: "Kid goat" }));
+    expect(sent).toEqual([{ type: "KIT_EDIT", characterId: "c_1", revision: 4, buddy: "kid_goat" }]);
+  });
+
+  it("shows her buddy picked, and takes it back to none", () => {
+    openPanel(friendly({ buddy: "bun" }));
+    const picker = screen.getByTestId("buddy-picker");
+    expect(within(picker).getByRole("button", { name: "Bun" }).getAttribute("aria-pressed")).toBe("true");
+    fireEvent.click(within(picker).getByRole("button", { name: "No buddy" }));
+    expect(sent).toEqual([{ type: "KIT_EDIT", characterId: "c_1", revision: 4, buddy: null }]);
+  });
+
+  it("calls a friend who is out over, a moment apart, and lists every friend without saying anybody left", () => {
+    const taps: string[] = [];
+    useGameStore.setState({ tapFriend: async (id: string) => (taps.push(id), true) });
+    openPanel(friendly());
+    const section = screen.getByTestId("camp-friends");
+    // A named button for each friend out, and none for the one taking its turn later.
+    expect(within(section).getAllByRole("button").map((b) => b.textContent)).toEqual(["Call Lamb over", "Call Bun over", "Call Mosshorn over", "Call Duckling over"]);
+    for (let i = 0; i < 10; i++) fireEvent.click(within(section).getByRole("button", { name: "Call Bun over" }));
+    expect(taps).toEqual(["bun"]);
+    expect(within(section).getByRole("status").textContent).toBe("Bun is on the way!");
+    expect(screen.getByTestId("friend-collection").textContent).toContain("Kid goat");
+    expect(screen.getByTestId("friend-collection").textContent).not.toMatch(/left|gone|away/i);
+  });
+
+  it("has no friends section and no buddy picker for a crew with no friends", () => {
+    openPanel(table());
+    expect(screen.queryByTestId("camp-friends")).toBeNull();
+    expect(screen.queryByTestId("buddy-picker")).toBeNull();
   });
 });

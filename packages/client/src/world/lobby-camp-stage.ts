@@ -46,6 +46,8 @@ import {
   type CampHero,
 } from "./lobby-camp";
 import { campBeatShown, onCampBeat } from "./camp-beat";
+import { campFriendFigures, friendFigureId } from "./camp-friends";
+import type { TapVerdict } from "./camp-taps";
 
 export { lobbyCampLayout } from "./lobby-camp";
 
@@ -84,6 +86,11 @@ export interface LobbyCamp {
   /** The narration plate's height and its head's reach (stage-inset.ts `onStageInset`): a rest's window. */
   setStageInset(bottomPx: number, topPx?: number): void;
   setStill(still: boolean): void;
+  /**
+   * A kid tapped a friend on her phone (#624, `GameStore.friendTaps`): the
+   * camp up now acts it out, or drops it (camp-taps.ts). Nothing without a camp.
+   */
+  tapFriend(tap: { friendId: string; heroId: string; words: string }): TapVerdict;
   /** The camp the shared screen is showing, or null when it shows none. */
   camp(): CampStage | null;
   /** A camp still fading off after Begin or Go on, or null. */
@@ -111,6 +118,8 @@ export function createLobbyCamp(app: Application, layout: CampLayout, options: L
   let mounted: CampLayout = layout;
   let last: RunState | null = null;
   let lastChapter: CampChapter | null = null;
+  /** Each friend out at its friend spot, kept while it stays out (camp-friends.ts `friendSpots`). */
+  let spots = new Map<string, number>();
   /** The chapter end whose stage-up has been pitched, so it plays once. */
   let pitched: string | null = null;
   // A beat turning is read a moment later, on the state as it then stands: the
@@ -190,7 +199,10 @@ export function createLobbyCamp(app: Application, layout: CampLayout, options: L
         shown = mount(state, want, atRest);
       } else shown!.setSeed(campSeed(state));
       const camp = shown!;
-      camp.setFigures(now.map((hero) => hero.figure));
+      // The friends out (§4.4; #624), each at its friend spot, beside the heroes.
+      const friends = campFriendFigures(state, first ? new Map() : spots);
+      spots = new Map(friends.map((f) => [f.id.slice("friend:".length), f.friend]));
+      camp.setFigures([...now.map((hero) => hero.figure), ...friends]);
       camp.setDressing(campDressing(state, mounted));
       // The frame grew at this chapter's end (§4.1): the heroes pitch it, once.
       const grew = state.phase === "chapter_complete" && state.camp?.grew === true ? state.campMoment?.id ?? "grew" : null;
@@ -257,6 +269,10 @@ export function createLobbyCamp(app: Application, layout: CampLayout, options: L
         shown.view.alpha = 1;
         options.cover?.(true);
       }
+    },
+    tapFriend(tap) {
+      if (!shown) return "dropped";
+      return shown.tapFriend({ figureId: friendFigureId(tap.friendId), heroId: tap.heroId, words: tap.words });
     },
     camp: () => shown,
     leaving: () => fading,

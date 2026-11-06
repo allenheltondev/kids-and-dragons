@@ -22,6 +22,7 @@
  */
 
 import type { ClassId, ClassRank, TierId } from "./domain.js";
+import type { CastSize } from "./chapter.js";
 
 /** A crew piece in the camp catalog (§4.3). Never a kit piece (§12.1). */
 export type CampPieceId = string;
@@ -76,6 +77,13 @@ export interface CampFriend {
   rewardId: RewardId;
   /** ISO. */
   at: string;
+  /**
+   * How many downtime moments it has been out (§12.5; #624): what "the
+   * friends who have been out least" reads, so rotation survives reconnects,
+   * new rooms and new evenings. Absent is never yet. Counted once a moment,
+   * after the step that began the moment commits (`CampRecord.outing`).
+   */
+  outs?: number;
 }
 
 /** One receipt: when the claim landed, and in which run when there was one. */
@@ -134,10 +142,12 @@ export interface CampRecord {
   placed: Record<HotspotId, CampPieceId>;
   friends: Record<FriendId, CampFriend>;
   /**
-   * Each hero's buddy, by character id, from this crew's friends only (§4.4).
-   * On the crew's record because a buddy names a crew friend (§12.1).
+   * The downtime moment whose friends out were last counted into
+   * `friends[].outs` (§12.5; #624): the receipt that makes counting a moment
+   * once, whatever is retried. Absent until the first. A buddy is the hero's,
+   * on her kit (`HeroKit.buddies`), never here.
    */
-  buddies: Record<string, FriendId>;
+  outing?: string;
   /**
    * Chapters the crew has been paid for that count toward the shop, which
    * opens at 2 (§5.3): the `receipts.chapters` of every campaign but a
@@ -187,6 +197,15 @@ export interface HeroKit {
   slots: (KitPieceId | null)[];
   unlocked: Record<KitPieceId, KitUnlock>;
   /**
+   * Her buddy in each crew's camp (§4.4; #624): one of that crew's friends,
+   * always out while she is seated with that crew. Keyed by the camp
+   * (`campKey`: the household, and the crew when it is not the household's
+   * first), because a buddy applies only in its own crew's camp. On her kit,
+   * so it goes where she goes and is deleted with her; a move home drops the
+   * old household's entries (§4.4). Since kit v3.
+   */
+  buddies: Record<string, FriendId>;
+  /**
    * The highest unpainted appearance tier she has ever reached (Ascendant and
    * up, spec §8.1), kept here because the kit is outside the commitment rule
    * and her tier is not: a failed campaign puts the tier back, and this
@@ -224,8 +243,8 @@ export interface CampView {
   dashCash: number;
   owned: CampPieceId[];
   placed: Record<HotspotId, CampPieceId>;
+  /** Every friend the crew has, out or not: the collection (§12.5). */
   friends: FriendId[];
-  buddies: Record<string, FriendId>;
   /** The crew has been paid for two chapters (§5.3). */
   shopOpen: boolean;
   /**
@@ -250,6 +269,11 @@ export interface HeroKitView {
   color: KitColorId | null;
   slots: (KitPieceId | null)[];
   unlocked: KitPieceId[];
+  /**
+   * Her buddy in this table's crew's camp (`HeroKit.buddies` for its
+   * `campKey`), or absent for none (§4.4; #624). Picked through `KIT_EDIT`.
+   */
+  buddy?: FriendId;
 }
 
 /**
@@ -288,6 +312,33 @@ export interface CampMoment {
   outdoor: boolean;
   /** Each player's changes this moment, oldest first. */
   changes: Record<string, CampChange[]>;
+  /** The crew's friends this moment: who is out, and the collection (§4.4, §12.5; #624). Absent with no friends. */
+  friends?: CampFriendsView;
+}
+
+/** A friend as the screens draw and name it (#624): from the catalog (`CatalogFriend`). */
+export interface CampFriendCard {
+  id: FriendId;
+  name: string;
+  /** Its figure (`cast/<id>`, `entities/<id>`), whose art and height the screens know. */
+  figure: string;
+  /** Its size band (`CatalogFriend.size`); absent, the figure's own height. */
+  size?: CastSize;
+}
+
+/**
+ * `CampMoment.friends` (§4.4, §12.5; #624). `rotation` is chosen once, as
+ * the moment begins: every friend, the friends who have been out least
+ * first, then the newest, then by id (`friendRotation`). `out` is who stands
+ * in camp now, at most `FRIENDS_OUT`: each seated hero's buddy first, then
+ * the rotation, so a hero sitting down brings her buddy out at once and the
+ * spare seats keep the moment's order (`friendsOut`). `cards` is every
+ * friend, newest first: those not out are still the crew's.
+ */
+export interface CampFriendsView {
+  rotation: FriendId[];
+  out: FriendId[];
+  cards: CampFriendCard[];
 }
 
 // ---------------------------------------------------------------------------
@@ -388,6 +439,12 @@ export interface CatalogFriend {
   id: FriendId;
   /** Its figure, as a chapter's `cast` names it (`entities/<id>`, `cast/<id>`). */
   figure: string;
+  /**
+   * How big it stands in camp, as its chapter casts it (a `CastSize` band,
+   * figure-size.ts `heightInBand`): the mosshorn befriended in Gemfall 4B is
+   * a small one. Absent: the figure's own height.
+   */
+  size?: CastSize;
   name: string;
   /** Where it is befriended; a scene of that chapter casts `figure`. */
   offers: CampOffer[];
@@ -426,7 +483,8 @@ export interface CampCatalog {
  * saved when found, never at the chapter's end.
  */
 export interface CampFind {
-  kind: "camp" | "kit";
+  /** `friend`: a `befriend` (#624), its friend id in `pieceId`. */
+  kind: "camp" | "kit" | "friend";
   pieceId: CampPieceId | KitPieceId;
   rewardId: RewardId;
   /** The scene the effect applied in. */
@@ -444,9 +502,10 @@ export interface CampFind {
  */
 export interface CampClaimResult {
   rewardId: RewardId;
-  kind: "camp" | "kit";
+  kind: "camp" | "kit" | "friend";
   pieceId: string;
-  result: "piece" | "dashCash" | "kit" | "none";
+  /** `friend`: the crew has a new friend (#624); a friend it already had pays `dashCash` once, as a piece does. */
+  result: "piece" | "dashCash" | "kit" | "friend" | "none";
   heroes?: string[];
 }
 

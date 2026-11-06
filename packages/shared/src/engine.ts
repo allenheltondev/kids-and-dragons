@@ -678,17 +678,18 @@ function takeItem(draft: RunState, ids: string | readonly string[], ctx: EngineC
  * after the step commits (handlers/camp-finds.ts). Once per `rewardId` a
  * chapter, so a scene revisited, or a second way to the same place, records
  * nothing new. A kit find names who was seated, since every one of them gets
- * a copy and the table may change before the claim is read back.
+ * a copy and the table may change before the claim is read back. A friend
+ * (`befriend`, #624) is recorded the same way, its id in `pieceId`.
  */
-function recordFind(draft: RunState, effect: Extract<Effect, { type: "findForCamp" | "findForKit" }>): void {
+function recordFind(draft: RunState, effect: Extract<Effect, { type: "findForCamp" | "findForKit" | "befriend" }>): void {
   const finds = draft.campFinds ?? [];
   if (finds.some((find) => find.rewardId === effect.rewardId)) return;
   const kit = effect.type === "findForKit";
   draft.campFinds = [
     ...finds,
     {
-      kind: kit ? "kit" : "camp",
-      pieceId: effect.pieceId,
+      kind: kit ? "kit" : effect.type === "befriend" ? "friend" : "camp",
+      pieceId: effect.type === "befriend" ? effect.friendId : effect.pieceId,
       rewardId: effect.rewardId,
       sceneId: draft.sceneId ?? "",
       ...(kit ? { heroes: seatedMembers(draft).map((m) => m.character.id) } : {}),
@@ -801,6 +802,7 @@ function applyEffectsDraft(
 
       case "findForCamp":
       case "findForKit":
+      case "befriend":
         recordFind(draft, effect);
         break;
 
@@ -1672,6 +1674,7 @@ export function campIntentProblem(intent: Record<string, unknown> & { type: stri
       if (intent["color"] !== undefined && intent["color"] !== null && !id(intent["color"])) return "color";
       const slots = intent["slots"];
       if (slots !== undefined && !(Array.isArray(slots) && slots.length <= 8 && slots.every((s) => s === null || id(s)))) return "slots";
+      if (intent["buddy"] !== undefined && intent["buddy"] !== null && !id(intent["buddy"])) return "buddy";
       return null;
     }
     default:

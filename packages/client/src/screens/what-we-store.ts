@@ -65,7 +65,7 @@ export const STORED: readonly StoredThing[] = [
   {
     title: "Each hero",
     what:
-      "The hero's name, kind and look, and everything earned: level, points, items and keepsakes, which adventures the hero has finished and is in the middle of, which chapters have already given the hero their XP, whether the hero has played the practice, and the hero's camp kit: tent, bedroll, pack and decorations. It belongs to the kid and goes wherever she plays.",
+      "The hero's name, kind and look, and everything earned: level, points, items and keepsakes, which adventures the hero has finished and is in the middle of, which chapters have already given the hero their XP, whether the hero has played the practice, and the hero's camp kit: tent, bedroll, pack, decorations and which of each crew's befriended creatures the hero picked as a buddy there (by an id). It belongs to the kid and goes wherever she plays.",
     kept: UNTIL_DELETED,
     owner: "hero",
     rows: ["Character"],
@@ -83,7 +83,7 @@ export const STORED: readonly StoredThing[] = [
   {
     title: "The crew's camp",
     what:
-      "Each crew's campsite: how big it has grown, its points to spend on the camp, the pieces it owns and where they stand, the creatures it befriended, which one each hero picked as a buddy (by an id, not by name), and a note of each reward already given, so nothing is given twice.",
+      "Each crew's campsite: how big it has grown, its points to spend on the camp, the pieces it owns and where they stand, the creatures it befriended and how often each has been out at camp, and a note of each reward already given, so nothing is given twice.",
     kept: UNTIL_DELETED,
     owner: "table",
     rows: ["Camp, first crew", "Camp, other crews"],
@@ -199,7 +199,7 @@ export const ELSEWHERE: readonly { title: string; what: string }[] = [
 
 /** What deleting does, in the order a grown-up would ask. */
 export const DELETING: readonly string[] = [
-  "Deleting a kid removes her profile, with the colors, frames and title she picked for her page, her heroes (with their camp kits) and her phones, and takes her heroes' buddies out of every crew's camp. Other households' saved games and Field Guides keep their story, and call her \"a friend\" instead.",
+  "Deleting a kid removes her profile, with the colors, frames and title she picked for her page, her heroes (with their camp kits and buddies) and her phones. Other households' saved games and Field Guides keep their story, and call her \"a friend\" instead.",
   "Deleting a household removes everything in it: its kids, their heroes, its devices, its Field Guide, its crews' camps and its saved games. A kid visiting from another household keeps her hero; it lives at her home.",
   "A hero in the middle of an adventure is deleted too. The table she was playing at carries on without her.",
   "Any grown-up who runs a group can delete one of its kids. The whole group can be deleted only by the last grown-up left in it.",

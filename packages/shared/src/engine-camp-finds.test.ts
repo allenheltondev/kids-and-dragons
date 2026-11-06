@@ -116,6 +116,19 @@ describe("finds in the engine", () => {
     expect(after.campFinds?.map((f) => f.rewardId)).toEqual(["bramblewood-01.awning", "bramblewood-01.feather", "other.feather"]);
   });
 
+  it("records a befriend as a friend find, once per reward id, and nothing else (#624)", () => {
+    const at = play().at(-1)!;
+    const BUN: Effect = { type: "befriend", friendId: "bun", rewardId: "bramblewood-01.bun" };
+    const once = applyEffects(at, [BUN], ctx());
+    const twice = applyEffects(once, [BUN], ctx());
+    expect(twice.campFinds?.at(-1)).toEqual({ kind: "friend", pieceId: "bun", rewardId: "bramblewood-01.bun", sceneId: "scene_shrine" });
+    expect(twice.campFinds?.filter((f) => f.kind === "friend")).toHaveLength(1);
+    // A friend is never a bag item, a flag or coins.
+    expect(twice.flags).toEqual(at.flags);
+    expect(twice.coins).toEqual(at.coins);
+    for (const member of twice.party) expect(member.character.inventory.map((e) => e.itemId)).not.toContain("bun");
+  });
+
   it("starts each chapter with no finds, and records none where nothing is found", () => {
     const states = play();
     const started = states.find((s) => s.chapterId === "bramblewood-01")!;

@@ -73,7 +73,7 @@ export interface SeedRequest {
    * camp.ts `withShopCount`). For looking at a grown camp
    * without playing a whole campaign first. Only with a new household (not `code`).
    */
-  camp?: { grownBy?: string[]; owned?: string[]; placed?: Record<string, string>; dashCash?: number; paidChapterCount?: number };
+  camp?: { grownBy?: string[]; owned?: string[]; placed?: Record<string, string>; dashCash?: number; paidChapterCount?: number; friends?: string[] };
 }
 
 /** What a browser would have stored had it done this itself (client store/persistence.ts). */
@@ -308,6 +308,11 @@ async function seedCamp(householdId: string, camp: SeedRequest["camp"], deps: Ha
       },
       placed: camp.placed ?? c.placed,
       owned: { ...c.owned, ...Object.fromEntries((camp.owned ?? []).map((id) => [id, { from: "bought" as const, at }])) },
+      // Befriended in the order given, a second apart (#624): the last is the newest.
+      friends: {
+        ...c.friends,
+        ...Object.fromEntries((camp.friends ?? []).map((id, i) => [id, { rewardId: `seeded.${id}`, at: new Date(deps.now() + i * 1000).toISOString() }])),
+      },
     }),
     deps,
   );

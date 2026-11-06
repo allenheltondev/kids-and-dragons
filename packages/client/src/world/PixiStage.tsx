@@ -365,6 +365,18 @@ export function PixiStage(): React.JSX.Element {
     sceneRef.current?.setPackedCamp(indoorRest(state) ? packedKits(state) : null);
   }, [packed]);
 
+  // A kid tapped a camp friend on her phone (#624): the camp takes each tap
+  // as it is heard, and acts it out or drops it (camp-taps.ts).
+  const friendTaps = useGameStore((store) => store.friendTaps);
+  useEffect(() => {
+    if (friendTaps.length === 0) return;
+    const { dropFriendTap } = useGameStore.getState();
+    for (const tap of friendTaps) {
+      campRef.current?.tapFriend(tap);
+      dropFriendTap(tap.key);
+    }
+  }, [friendTaps]);
+
   // The board is a reader of the mirrored state (brief, trap 2): every patch
   // that touches the encounter flows through here and nowhere else.
   useEffect(() => {
