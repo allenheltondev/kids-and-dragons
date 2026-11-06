@@ -36,7 +36,7 @@ it("resizes any owned piece with its hero without moving its ground contact or r
   } });
   stage.resize(1280, 720);
   const hero: CampFigure = { id: "owner", url: null, heightCm: 85, stance: "standing", seat: 0 };
-  const ground = stage.view.children[1] as Container;
+  const ground = stage.view.getChildByLabel("camp-ground") as Container;
   const pack = ground.children.find(child => child.label === "piece:pack")!;
   const fire = ground.children.find(child => child.label === "piece:campfire")!;
   const ratio = () => pack.scale.y / layout.lanes.get(owned.lane)!.scale
@@ -74,7 +74,10 @@ it.each([false, true])("loads a seated hero's kit and retains a bedroll if the v
   expect(urls).toContain(CAMP_KIT_STYLES[campKitStyle(hero.id)].path);
   const bed = stage.view.children.flatMap(c => (c as Container).children ?? []).find(c => c.label === "piece:bedroll_0") as Container;
   expect(bed.children.filter(c => c instanceof Sprite)).toHaveLength(1);
-  expect(bed.children[0]!.label).toBe("camp-ground-shadow");
+  // Its shadow lies on the camp's shadow layer, under it, cast from its art.
+  const cast = (stage.view.getChildByLabel("camp-shadows") as Container).getChildByLabel("cast:piece:bedroll_0") as Container;
+  expect(cast.children[0]!.label).toBe("camp-ground-shadow");
+  expect(cast.getChildByLabel("camp-cast-body", true)).not.toBeNull();
   const count = urls.length;
   stage.setFigures([hero]);
   expect(urls).toHaveLength(count);
@@ -241,7 +244,7 @@ describe("the camp stage", () => {
   it("draws nearer figures in front and slightly bigger", () => {
     const { camp: c, app } = camp();
     frames(app, c, 0.5);
-    const view = c.view.children[1] as Container;
+    const view = c.view.getChildByLabel("camp-ground") as Container;
     const back = view.children.find((child) => child.label === "figure:hero-0")!;
     const goat = view.children.find((child) => child.label === "figure:goat")!;
     const goatAt = c.figures().find((f) => f.id === "goat")!;
@@ -289,7 +292,7 @@ describe("the camp stage", () => {
   it("animates a piece only while somebody uses it", () => {
     // Nobody but a hero on a bedroll: the campfire is a painting.
     const { camp: c, app } = camp({ figures: [CREW[0]!] });
-    const fire = (c.view.children[1] as Container).children.find((child) => child.label === "piece:campfire") as Container;
+    const fire = (c.view.getChildByLabel("camp-ground") as Container).children.find((child) => child.label === "piece:campfire") as Container;
     const flame = fire.children.find((child) => child.label === "part:campfire")!;
     frames(app, c, 1);
     expect(c.activePieces()).toEqual([]);
@@ -520,7 +523,7 @@ describe("the camp in the lobby (#614)", () => {
     expect(c.view.scale.x).toBeCloseTo(fit.framing.scale);
     expect(c.view.x + W * c.view.scale.x).toBeGreaterThanOrEqual(1600 - 1e-6);
     // Every figure is drawn at its lane's scale times the factor, pieces too.
-    const ground = c.view.children[1] as Container;
+    const ground = c.view.getChildByLabel("camp-ground") as Container;
     for (const view of c.figures()) {
       const drawn = ground.children.find((child) => child.label === `figure:${view.id}`)!;
       const lane = layout.lanes.get(view.lane!)!;
@@ -653,7 +656,7 @@ describe("the camp's pieces", () => {
       loadTexture: () => Promise.resolve(Texture.WHITE),
     });
     await new Promise((resolve) => setTimeout(resolve, 0));
-    const ground = stage.view.children[1] as Container;
+    const ground = stage.view.getChildByLabel("camp-ground") as Container;
     const fire = ground.children.find((child) => child.label === "piece:campfire") as Container;
     const sprite = fire.children.find((child) => child instanceof Sprite) as Sprite;
     const part = (fire.children.find((child) => child.label === "part:campfire") as Container).children[0] as Sprite;
@@ -723,6 +726,33 @@ describe("the camp in reduced motion (§8.7)", () => {
     expect(view.walking).toBe(false);
     expect(view.point).not.toBeNull();
     expect(view.alpha).toBeGreaterThan(0.95);
+    c.destroy();
+  });
+});
+
+describe("the camp's light (camp-light.ts)", () => {
+  it("lays every shadow on one layer between the painting and the camp, each following what casts it", () => {
+    const { camp: c, app } = camp();
+    const layers = c.view.children.map((child) => child.label);
+    expect(layers.indexOf("camp-shadows")).toBe(layers.indexOf("camp-ground") - 1);
+    const shadows = c.view.getChildByLabel("camp-shadows") as Container;
+    const ground = c.view.getChildByLabel("camp-ground") as Container;
+    frames(app, c, 4);
+    // A figure walking about: its shadow stands where its feet are, at its size.
+    for (const view of c.figures()) {
+      const figure = ground.getChildByLabel(`figure:${view.id}`)!;
+      const cast = shadows.getChildByLabel(`cast:figure:${view.id}`)!;
+      expect(cast.position.x).toBeCloseTo(figure.position.x);
+      expect(cast.position.y).toBeCloseTo(figure.position.y);
+      expect(cast.scale.y).toBeCloseTo(figure.scale.y);
+      expect(cast.alpha).toBeCloseTo(figure.alpha);
+    }
+    // Every frame piece casts one too.
+    for (const piece of layout.frame.pieces) expect(shadows.getChildByLabel(`cast:piece:${piece.id}`)).not.toBeNull();
+    // Nobody left: no shadow of anybody left behind.
+    c.setFigures([]);
+    frames(app, c, 3);
+    expect(shadows.children.filter((child) => child.label.startsWith("cast:figure:"))).toEqual([]);
     c.destroy();
   });
 });

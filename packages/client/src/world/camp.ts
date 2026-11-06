@@ -32,10 +32,11 @@
  * screen picks up where it was instead of replaying what it missed (§8.7).
  */
 
-import { Assets, Container, Graphics, Rectangle, Sprite, Texture, type Application } from "pixi.js";
+import { Assets, BlurFilter, Container, Graphics, Rectangle, Sprite, Texture, type Application } from "pixi.js";
 import leafArt from "../assets/painted/leaf.webp";
 import { CAMP_KIT_STYLES, campKitStyle, campTentCloth } from "./camp-kit-art";
 import { campKitCanvas } from "./camp-kit-canvas";
+import { campLight, type CampLight } from "./camp-light";
 import { campPieceOwner } from "./camp-ownership";
 import { bannerName, friendWords, hotspotGlow, pieceStandIn, souvenirStandIn, standInLabel, tentStandIn } from "./camp-stand-in";
 import { REACT_S, WORDS_S, createTapQueue, type FriendTap, type TapVerdict } from "./camp-taps";
@@ -270,39 +271,42 @@ const AWAY_ALPHA = 0.5;
 const SET_OFF_STAGGER_S = 0.3;
 /** How far past the edge the trail takes them. */
 const OFF_EDGE = 0.1;
-/** One upper-left sun for the camp: soft brown contact and a faint lower-right cast. */
-function campGroundShadow(width: number, height: number, texture?: Texture, canvas = height, mirrored = false): Container {
+/**
+ * A piece's or figure's shadow on the ground, cast by the backdrop's own light
+ * (camp-light.ts): its outline sheared along the ground where the light sends
+ * it, and a contact shade under its feet. Drawn solid in the light's shade;
+ * the camp's one shadow layer gives them all the same depth and softness, so
+ * two that overlap merge rather than darken twice.
+ */
+function campGroundShadow(light: CampLight, width: number, height: number, texture?: Texture, canvas = height, mirrored = false, offsetY = 0): Container {
   const shadow = new Container();
   shadow.label = "camp-ground-shadow";
   if (texture) {
     const projection = new Container();
-    projection.scale.set(.9, -.18);
-    projection.skew.x = .9;
-    projection.x = width * .08;
-    projection.y = height * .015;
+    // The outline's top lands `lean` across and `reach` toward the viewer (both of its height).
+    const length = Math.hypot(light.lean, light.reach);
+    projection.scale.set(1, -length);
+    projection.skew.x = Math.atan2(light.lean, light.reach);
     const cast = new Sprite(texture);
     cast.label = "camp-cast-body";
     cast.anchor.set(ANCHOR_X, ANCHOR_Y);
     cast.width = cast.height = canvas;
+    // Where the art itself is drawn: its paint's foot on the ground (figure-scale.ts `fitCanvas`).
+    cast.y = offsetY;
     if (mirrored) cast.scale.x *= -1;
-    cast.tint = 0x302b20;
-    cast.alpha = .16;
+    cast.tint = light.shade;
+    cast.alpha = 0.72;
     projection.addChild(cast);
     shadow.addChild(projection);
   }
-  const contact = new Graphics();
-  for (let ring = 12; ring > 0; ring--) {
-    const spread = ring / 12;
-    contact.ellipse(width * .22, height * .035, width * .62 * spread, height * .065 * spread)
-      .fill({ color: 0x51452c, alpha: .014 });
-    contact.ellipse(0, 0, width * .48 * spread, height * .025 * spread)
-      .fill({ color: 0x302b20, alpha: .022 });
-  }
+  // Where it touches the ground: darkest, a little toward the cast.
+  const contact = new Graphics()
+    .ellipse(width * 0.06 * Math.sign(light.lean), height * 0.015, width * 0.48, Math.max(height * 0.055, 6))
+    .fill({ color: light.shade, alpha: 0.9 });
+  contact.label = "camp-ground-contact";
   shadow.addChild(contact);
   return shadow;
 }
-
-const CAMP_AMBIENT_TINT = 0xfff7ec;
 /** How fast the camp eases to a new frame when the panels over it change height. */
 const FRAME_RATE = 4;
 /**
@@ -453,6 +457,8 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   const view = new Container();
   view.label = "camp";
   app.stage.addChild(view);
+  /* The light the backdrop is painted in (camp-light.ts): every shadow and tint follows it. */
+  const light = campLight(layout.backdrop.family);
 
   // The backdrop: painted art when it loads, a plain dusk until then, so a
   // missing file never leaves the stage blank.
@@ -537,9 +543,58 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     }, () => (fallback ? load(fallback).then(showBackdrop) : undefined))
     .catch(() => undefined);
 
+  /*
+   * Every shadow on one layer under the camp, drawn solid and then laid down
+   * at the light's depth and softness as one: two that overlap merge, as real
+   * shadows do, rather than one darkening the other. Each follows what casts
+   * it (`syncCasts`, every frame).
+   */
+  const shadowLayer = new Container();
+  shadowLayer.label = "camp-shadows";
+  const shadowBlur = new BlurFilter({ strength: light.blur, quality: 2 });
+  shadowLayer.filters = [shadowBlur];
+  shadowLayer.alpha = light.depth;
+  view.addChild(shadowLayer);
+  const casts = new Map<Container, { owner: Container; holder: Container }>();
+  /** `owner` casts `shadow`: it lies on the shadow layer and follows `owner` there. */
+  function castShadow(owner: Container, shadow: Container): void {
+    const holder = new Container();
+    holder.label = `cast:${owner.label}`;
+    holder.addChild(shadow);
+    shadowLayer.addChild(holder);
+    casts.set(shadow, { owner, holder });
+    syncCast(owner, holder);
+  }
+  /** The shadow `old` was, now drawn as `next` (new art loaded). */
+  function recast(old: Container, next: Container): void {
+    const entry = casts.get(old);
+    casts.delete(old);
+    old.destroy({ children: true });
+    if (!entry) return;
+    entry.holder.addChild(next);
+    casts.set(next, entry);
+  }
+  function syncCast(owner: Container, holder: Container): void {
+    holder.position.copyFrom(owner.position);
+    holder.scale.copyFrom(owner.scale);
+    holder.alpha = owner.alpha;
+    holder.visible = owner.visible;
+  }
+  function syncCasts(): void {
+    for (const [shadow, { owner, holder }] of casts) {
+      if (owner.destroyed || shadow.destroyed || owner.parent === null) {
+        casts.delete(shadow);
+        holder.destroy({ children: true });
+        continue;
+      }
+      syncCast(owner, holder);
+    }
+  }
+
   // Pieces and figures share one depth-sorted layer: the nearer the feet,
   // the later drawn. A piece sorts just behind figures on its own lane.
   const ground = new Container();
+  ground.label = "camp-ground";
   ground.sortableChildren = true;
   view.addChild(ground);
 
@@ -559,14 +614,13 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     sprite.height = fit.canvas;
     sprite.y = fit.offsetY;
     sprite.scale.x = Math.abs(sprite.scale.x) * (mirrored ? -1 : 1);
-    sprite.tint = CAMP_AMBIENT_TINT;
+    sprite.tint = light.tint;
   };
   const fitPieceShadow = (piece: PieceView, texture: Texture): void => {
     const paint = measurePaint(texture);
     const width = paint ? piece.fit.canvas * (paint.right - paint.left) : piece.heightPx;
-    const shadow = campGroundShadow(width, piece.heightPx, texture, piece.fit.canvas, piece.mirrored);
-    piece.container.addChildAt(shadow, piece.container.getChildIndex(piece.shadow));
-    piece.shadow.destroy({ children: true });
+    const shadow = campGroundShadow(light, width, piece.heightPx, texture, piece.fit.canvas, piece.mirrored, piece.fit.offsetY);
+    recast(piece.shadow, shadow);
     piece.shadow = shadow;
   };
   const showPieceArt = (piece: PieceView, texture: Texture, path = piece.path): void => {
@@ -602,8 +656,8 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
       }
       container.addChild(light);
     }
-    const shadow = campGroundShadow(heightPx * (piece.id.startsWith("bedroll") ? 1.7 : .9), heightPx);
-    container.addChild(shadow);
+    const shadow = campGroundShadow(light, heightPx * (piece.id.startsWith("bedroll") ? 1.7 : .9), heightPx);
+    castShadow(container, shadow);
     const groundCount = container.children.length;
     const pending = new Graphics()
       .roundRect(-0.4 * heightPx, -heightPx, 0.8 * heightPx, heightPx, 0.1 * heightPx)
@@ -1104,9 +1158,8 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     actor.placeholder.scale.set(actor.heightPx / 100);
     const paint = actor.sprite ? measurePaint(actor.sprite.texture) : null;
     const width = paint ? canvas * (paint.right - paint.left) * .72 : canvas * .3;
-    const shadow = campGroundShadow(width, actor.heightPx, actor.sprite?.texture, canvas);
-    actor.container.addChildAt(shadow, actor.container.getChildIndex(actor.shadow));
-    actor.shadow.destroy({ children: true });
+    const shadow = campGroundShadow(light, width, actor.heightPx, actor.sprite?.texture, canvas);
+    recast(actor.shadow, shadow);
     actor.shadow = shadow;
   }
 
@@ -1117,7 +1170,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
       .then((texture) => {
         if (destroyed || actors.get(actor.def.id) !== actor || actor.def.url !== url) return;
         const sprite = new Sprite(texture);
-        sprite.tint = CAMP_AMBIENT_TINT;
+        sprite.tint = light.tint;
         sprite.anchor.set(ANCHOR_X, ANCHOR_Y);
         actor.sprite?.destroy();
         actor.sprite = sprite;
@@ -1154,8 +1207,9 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     art.addChild(placeholder);
     body.addChild(art);
     const shadow = new Graphics();
-    container.addChild(shadow, body);
+    container.addChild(body);
     ground.addChild(container);
+    castShadow(container, shadow);
     const { heightPx, gait } = sizeOf(def);
     const actor: Actor = {
       def,
@@ -1501,6 +1555,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
       piece.part.scale.set(pose.scaleX, pose.scaleY);
       piece.part.alpha = pose.alpha;
     }
+    syncCasts();
   }
   app.ticker.add(tick);
 
@@ -1835,6 +1890,8 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   function place(at: CampFraming): void {
     framed = at;
     view.scale.set(at.scale);
+    // The blur works in screen pixels: as soft at every size of the camp.
+    shadowBlur.strength = light.blur * at.scale;
     view.x = at.x;
     view.y = at.y;
     if (bleedTop && bleedBottom) {
@@ -1938,6 +1995,10 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     }
     const body = new Container();
     container.addChild(body);
+    // Its contact shade until its art loads, then its cast too.
+    let shadow: Container = campGroundShadow(light, widthPx * 0.8, heightPx);
+    shadow.x = middle;
+    castShadow(container, shadow);
     const standIn = (): void => {
       if (destroyed || body.destroyed) return;
       body.removeChildren().forEach((c) => c.destroy({ children: true }));
@@ -1952,7 +2013,12 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
         .then((texture) => {
           if (destroyed || body.destroyed) return;
           const sprite = new Sprite(texture);
-          fitSprite(sprite, fitCanvas(heightPx, campPaint(piece.path) ?? measurePaint(texture)));
+          const fit = fitCanvas(heightPx, campPaint(piece.path) ?? measurePaint(texture));
+          fitSprite(sprite, fit);
+          const cast = campGroundShadow(light, widthPx * 0.8, heightPx, texture, fit.canvas, false, fit.offsetY);
+          cast.x = middle;
+          recast(shadow, cast);
+          shadow = cast;
           body.removeChildren().forEach((c) => c.destroy({ children: true }));
           body.addChild(sprite);
           view.missing = false;
