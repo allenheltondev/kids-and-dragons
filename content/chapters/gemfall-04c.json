@@ -1747,18 +1747,21 @@
     },
     "encounter_wolves": {
       "type": "encounter",
-      "map": "roadside",
-      "narration": "The wolves are cold and hungry and far from home. They would like this bit of road, please.",
+      "map": "sausage_lane",
+      "narration": "The wolves rush the bend. Take turns holding the trail bell: ring it at the end of two rounds to send the pack away. A friend can draw the wolves off while you hold your ground.",
       "enemies": [
         {
           "id": "wolf",
           "name": "Cinder Wolf",
-          "creature": "cinder_wolf"
+          "creature": "cinder_wolf",
+          "rift": {
+            "post": "none"
+          }
         }
       ],
       "onVictory": {
         "goto": "end_foothills_in_sight",
-        "narration": "The pack backs off and trots north toward the hills, glowing like a string of lanterns.",
+        "narration": "At the second clang, the pack backs off and trots north toward the hills, glowing like a string of lanterns.",
         "effects": [
           {
             "type": "setFlag",
@@ -1767,6 +1770,34 @@
         ]
       },
       "onDefeat": {
+        "goto": "end_scattered",
+        "narration": "The pack bowls through your camp, and everyone scatters in the dark."
+      },
+      "environment": {
+        "clock": {
+          "rounds": 5,
+          "label": "The pack overruns the camp",
+          "onExpire": "collapse"
+        },
+        "objectives": [
+          {
+            "id": "trail-bell",
+            "label": "Ring the trail bell",
+            "kind": "hold",
+            "art": "fight-shrine-bell",
+            "tiles": [
+              {
+                "x": 3,
+                "y": 2
+              }
+            ],
+            "rounds": 2,
+            "endsFight": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/road-bend-grass",
+      "onTimeout": {
         "goto": "end_scattered",
         "narration": "The pack bowls through your camp, and everyone scatters in the dark."
       }
@@ -2711,12 +2742,39 @@
           "retreat": "shooed"
         },
         "retreatDirection": 1
+      },
+      {
+        "chapter": "gemfall-04c",
+        "scene": "encounter_wolves",
+        "creature": "cinder_wolf",
+        "board": "sausage_lane",
+        "backdrop": "scenes/gemfall/road-bend-grass",
+        "introScenes": [
+          "scene_road_bend"
+        ],
+        "victoryScene": "end_foothills_in_sight",
+        "defeatScene": "end_scattered",
+        "tileUrl": "/assets/biomes/plains/tiles.png",
+        "rescueFigure": "",
+        "activeUrl": "/assets/entities/cinder_wolf/assembled.png",
+        "retreatUrl": "/assets/entities/cinder_wolf/shooed.png",
+        "props": [],
+        "terrainProps": [],
+        "poses": {
+          "intro": "assembled",
+          "retreat": "shooed"
+        },
+        "retreatDirection": 1
       }
     ],
     "warmUrls": [
       "/assets/biomes/plains/tiles.png",
       "/assets/entities/mire_mimic/strongbox.webp",
-      "/assets/entities/mire_mimic/shooed.png"
+      "/assets/entities/mire_mimic/shooed.png",
+      "/assets/scenes/gemfall/road-bend-grass.webp",
+      "/assets/entities/cinder_wolf/assembled.png",
+      "/assets/entities/cinder_wolf/shooed.png",
+      "/assets/story-props/fight-shrine-bell.webp"
     ]
   },
   "resumeInteractions": {

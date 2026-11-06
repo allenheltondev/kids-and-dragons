@@ -1106,14 +1106,20 @@
     },
     "encounter_crab": {
       "type": "encounter",
-      "map": "switchback",
-      "narration": "Two glassback crabs clatter down the switchbacks, shells flashing every color.",
+      "map": "surge_wagon",
+      "narration": "The glassback crabs raise their claws. When they mark the ground, step clear. End two hero turns beside the burrow stone to roll it back into place and give the crabs their shelter.",
       "enemies": [
         {
           "id": "crab",
           "name": "Glassback Crab",
           "creature": "glassback_crab",
-          "hp": 10
+          "hp": 10,
+          "windupAttack": {
+            "label": "Glassback claw sweep",
+            "radius": 1,
+            "damage": 2,
+            "presentation": "slam"
+          }
         }
       ],
       "onVictory": {
@@ -1125,9 +1131,35 @@
             "value": true
           }
         ],
-        "narration": "Both crabs back onto their warm ground and forget you ever existed. But it took all morning. The sun is high when you reach the citadel road."
+        "narration": "The burrow stone settles with a clunk. Both crabs back onto their warm ground and tuck their claws inside. The sun is high when you reach the citadel road."
       },
       "onDefeat": {
+        "goto": "scene_gate_recovery",
+        "narration": "The crabs nudge you, very firmly, all the way down the ridge. You are fine. You are also at the bottom again, and the afternoon is nearly gone."
+      },
+      "environment": {
+        "clock": {
+          "rounds": 6,
+          "label": "The crabs push you off the ridge",
+          "onExpire": "collapse"
+        },
+        "objectives": [
+          {
+            "id": "burrow-stone",
+            "label": "Set the burrow stone",
+            "kind": "close",
+            "art": "prop_rock",
+            "at": {
+              "x": 4,
+              "y": 2
+            },
+            "turns": 2,
+            "endsFight": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/crab-field-guards",
+      "onTimeout": {
         "goto": "scene_gate_recovery",
         "narration": "The crabs nudge you, very firmly, all the way down the ridge. You are fine. You are also at the bottom again, and the afternoon is nearly gone."
       }
@@ -3821,11 +3853,38 @@
           "retreat": "assembled"
         },
         "retreatDirection": 1
+      },
+      {
+        "chapter": "gemfall-06",
+        "scene": "encounter_crab",
+        "creature": "glassback_crab",
+        "board": "surge_wagon",
+        "backdrop": "scenes/gemfall/crab-field-guards",
+        "introScenes": [
+          "scene_crab"
+        ],
+        "victoryScene": "scene_citadel_gate",
+        "defeatScene": "scene_gate_recovery",
+        "tileUrl": "/assets/fight-boards/fight_wind_yard/tiles.png",
+        "rescueFigure": "",
+        "activeUrl": "/assets/entities/glassback_crab/assembled.png",
+        "retreatUrl": "/assets/entities/glassback_crab/shooed.png",
+        "props": [],
+        "terrainProps": [],
+        "poses": {
+          "intro": "assembled",
+          "retreat": "shooed"
+        },
+        "retreatDirection": 1
       }
     ],
     "warmUrls": [
       "/assets/fight-boards/fight_wind_yard/tiles.png",
-      "/assets/entities/bone_crawler/assembled.png"
+      "/assets/entities/bone_crawler/assembled.png",
+      "/assets/scenes/gemfall/crab-field-guards.webp",
+      "/assets/entities/glassback_crab/assembled.png",
+      "/assets/entities/glassback_crab/shooed.png",
+      "/assets/story-props/prop_rock.webp"
     ]
   },
   "resumeInteractions": {

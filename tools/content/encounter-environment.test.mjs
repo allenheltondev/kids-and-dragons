@@ -204,6 +204,21 @@ describe("the schema", () => {
           expect(scene.onTimeout).toEqual(scene.onDefeat);
           continue;
         }
+        if (chapter.id === "gemfall-04c" && sceneId === "encounter_wolves") {
+          expect(scene.environment?.objectives?.[0]?.id).toBe("trail-bell");
+          expect(scene.onTimeout).toEqual(scene.onDefeat);
+          continue;
+        }
+        if (chapter.id === "gemfall-05a" && sceneId === "encounter_wolves") {
+          expect(scene.environment?.exits?.[0]?.id).toBe("far-bank");
+          expect(scene.onTimeout).toEqual(scene.onDefeat);
+          continue;
+        }
+        if (chapter.id === "gemfall-06" && sceneId === "encounter_crab") {
+          expect(scene.environment?.objectives?.[0]?.id).toBe("burrow-stone");
+          expect(scene.onTimeout).toEqual(scene.onDefeat);
+          continue;
+        }
         if (chapter.id === "gemfall-05b" && sceneId === "encounter_wolves") {
           expect(scene.environment?.exits?.[0]?.id).toBe("far-bank");
           expect(scene.onTimeout).toEqual(scene.onDefeat);
