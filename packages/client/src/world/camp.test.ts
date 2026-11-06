@@ -13,7 +13,8 @@ import { campLayoutFixture } from "../testing/camp-fixture";
 import { fakeApp, installFakeCanvas2D, type FakeApp } from "../testing/fake-stage";
 import { createCamp, type CampFigure, type CampFigureView, type CampStage } from "./camp";
 import { ANCHOR_X, ANCHOR_Y } from "./actor-art";
-import { laneAt, pieceHeightCm, standPoint } from "./camp-layout";
+import { laneAt, laneOf, pieceHeightCm, standPoint } from "./camp-layout";
+import { HAZE_FADE } from "./camp-light";
 import { MAX_FRAME_S, campHeightPx, campMeasure } from "./camp-motion";
 import { EDGE_MARGIN, MIN_FIGURE_SCALE, campFigureWidth, campFit, campWindow } from "./camp-framing";
 import { fitCanvas } from "./figure-scale";
@@ -754,5 +755,37 @@ describe("the camp's light (camp-light.ts)", () => {
     frames(app, c, 3);
     expect(shadows.children.filter((child) => child.label.startsWith("cast:figure:"))).toEqual([]);
     c.destroy();
+  });
+
+  it("lights the ground round the fire, flickering, and steady when the camp is still", () => {
+    for (const still of [false, true]) {
+      const { camp: c, app } = camp({ still });
+      const fire = (c.view.getChildByLabel("camp-ground") as Container).getChildByLabel("piece:campfire") as Container;
+      const glow = fire.getChildByLabel("camp-ground-firelight")!;
+      expect(glow.blendMode).toBe("add");
+      // Under the fire's painting.
+      expect(fire.getChildIndex(glow)).toBe(0);
+      const seen = new Set<number>();
+      for (let i = 0; i < 20; i++) {
+        app.ticker.frame(37);
+        seen.add(Math.round(glow.alpha * 1000));
+      }
+      if (still) expect([...seen]).toEqual([1000]);
+      else expect(seen.size).toBeGreaterThan(5);
+      c.destroy();
+    }
+  });
+
+  it("draws what stands further back a little hazier", async () => {
+    const stage = createCamp(fakeApp() as unknown as Application, layout, { still: true, loadTexture: () => Promise.resolve(Texture.WHITE) });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    const ground = stage.view.getChildByLabel("camp-ground") as Container;
+    const drawn = layout.frame.pieces.map((piece) => {
+      const sprite = (ground.getChildByLabel(`piece:${piece.id}`) as Container).children.find((child) => child instanceof Sprite) as Sprite;
+      return { y: laneOf(layout, piece.lane).y, alpha: sprite.alpha };
+    });
+    const near = Math.max(...drawn.map((d) => d.y));
+    for (const d of drawn) expect(d.alpha).toBeCloseTo(d.y === near ? 1 : 1 - HAZE_FADE * ((near - d.y) / (near - Math.min(...[...layout.lanes.values()].map((l) => l.y)))));
+    stage.destroy();
   });
 });

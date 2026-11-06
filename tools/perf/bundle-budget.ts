@@ -260,7 +260,10 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // 1696 -> 1707 for the camp's light (Pixi's blur filter for the shadow layer)
 // and the last three terrain accents' paintings: 1705KB measured, first paint
 // 328KB. 2KB of slack again.
-const TOTAL_BUDGET_KB = 1707;
+// 1707 -> 1709 for the fire's glow, the back lanes' haze and the indoor rest's
+// shadows (ground-shadows.ts shared with the story stage): 1707KB measured,
+// first paint 328KB. 2KB of slack again.
+const TOTAL_BUDGET_KB = 1709;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);
