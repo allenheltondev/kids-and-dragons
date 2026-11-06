@@ -2,7 +2,7 @@
 /** One shadow layer under what casts onto it (ground-shadows.ts): each shadow follows its owner and goes with it. */
 
 import { describe, expect, it } from "vitest";
-import { Container, Texture } from "pixi.js";
+import { Container, Texture, type Graphics } from "pixi.js";
 import { createShadowLayer, groundShadow } from "./ground-shadows";
 import { INDOOR_LIGHT, campLight } from "./camp-light";
 
@@ -16,6 +16,27 @@ describe("ground shadows", () => {
     const projection = cast.parent!;
     expect(projection.skew.x).toBeLessThan(0);
     expect(projection.scale.y).toBeLessThan(0);
+  });
+
+  it("draws every shadow opaque, so two that overlap are no darker than one: the layer alone sets how dark", () => {
+    const light = campLight("open_plains");
+    const layer = createShadowLayer(light);
+    expect(layer.layer.alpha).toBeCloseTo(light.depth);
+    for (const shadow of [groundShadow(light, 40, 100, Texture.WHITE, { canvas: 120 }), groundShadow(INDOOR_LIGHT, 40, 100)]) {
+      const parts: Container[] = [];
+      const walk = (c: Container): void => {
+        parts.push(c);
+        for (const child of c.children) walk(child as Container);
+      };
+      walk(shadow);
+      // Nothing in a shadow is drawn see-through: an opaque shape over an opaque shape is that shape,
+      // so the layer's one opacity is all that darkens the ground, once.
+      for (const part of parts) expect(part.alpha).toBe(1);
+      const contact = shadow.getChildByLabel("camp-ground-contact") as Graphics;
+      const fills = contact.context.instructions.filter((i) => i.action === "fill");
+      expect(fills.length).toBeGreaterThan(0);
+      for (const fill of fills) expect((fill.data as { style: { alpha: number } }).style.alpha).toBe(1);
+    }
   });
 
   it("keeps each shadow at its owner's place, size and fade, and drops it when the owner goes", () => {

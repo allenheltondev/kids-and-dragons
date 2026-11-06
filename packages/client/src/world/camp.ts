@@ -1968,9 +1968,12 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     }
     const body = new Container();
     container.addChild(body);
-    // Its contact shade until its art loads, then its cast too.
-    let shadow: Container = campGroundShadow(light, widthPx * 0.8, heightPx);
-    shadow.x = middle;
+    // Its contact shade until its art loads, then its cast too: both at its
+    // ground contact (x 0), where the art stands, not at its paint's middle; a
+    // shade only as wide as the paint reaches both sides of it (a banner's
+    // flag flies off to one side of its pole).
+    const footWidth = Math.max(widthPx * 0.2, (2 * Math.min(box.anchor - (box.x - box.width / 2), box.x + box.width / 2 - box.anchor)) / lane.scale) * 0.8;
+    let shadow: Container = campGroundShadow(light, footWidth, heightPx);
     castShadow(container, shadow);
     const standIn = (): void => {
       if (destroyed || body.destroyed) return;
@@ -1988,8 +1991,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
           const sprite = new Sprite(texture);
           const fit = fitCanvas(heightPx, campPaint(piece.path) ?? measurePaint(texture));
           fitSprite(sprite, fit, box.ground);
-          const cast = campGroundShadow(light, widthPx * 0.8, heightPx, texture, fit.canvas, false, fit.offsetY);
-          cast.x = middle;
+          const cast = campGroundShadow(light, footWidth, heightPx, texture, fit.canvas, false, fit.offsetY);
           recast(shadow, cast);
           shadow = cast;
           body.removeChildren().forEach((c) => c.destroy({ children: true }));

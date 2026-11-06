@@ -196,3 +196,33 @@ describe("the stage-up moment (§4.1)", () => {
     lobby.destroy();
   });
 });
+
+describe("the crew's pieces' shadows (camp-light.ts, ground-shadows.ts)", () => {
+  it("casts each from its ground contact, where its art stands: the banner's under its pole, not under its flag", async () => {
+    const layout = campLayoutFor(2)!;
+    const app = fakeApp();
+    // Every painting loads, so each piece casts its outline.
+    const camp = createCamp(app as unknown as Application, layout, { still: true, loadTexture: () => Promise.resolve(Texture.WHITE) });
+    camp.resize(1600, 900);
+    const state = makeState({ phase: "lobby", party: [member(1)] }) as RunState;
+    camp.setDressing(campDressing({ ...state, camp: view() }, layout));
+    await settle();
+    app.ticker.frame(16);
+    const shadows = camp.view.getChildByLabel("camp-shadows") as Container;
+    const banner = shadows.getChildByLabel("cast:dress:spot:banner_pole") as Container;
+    const piece = (camp.view.getChildByLabel("camp-ground") as Container).getChildByLabel("dress:spot:banner_pole") as Container;
+    // On the piece's own ground contact, with the art.
+    expect(banner.x).toBeCloseTo(piece.x);
+    const shadow = banner.children[0] as Container;
+    expect(shadow.x).toBe(0);
+    const art = (piece.children.at(-1) as Container).children[0] as Sprite;
+    const cast = shadow.getChildByLabel("camp-cast-body", true) as Sprite;
+    expect(cast.x).toBe(art.x);
+    expect(cast.y).toBe(art.y);
+    // The contact shade is under the pole (leaning a touch toward its cast), as wide as the paint reaches both sides of it.
+    const contact = shadow.getChildByLabel("camp-ground-contact") as Container;
+    const bounds = contact.getLocalBounds();
+    expect(Math.abs((bounds.minX + bounds.maxX) / 2)).toBeLessThan((bounds.maxX - bounds.minX) * 0.1);
+    camp.destroy();
+  });
+});

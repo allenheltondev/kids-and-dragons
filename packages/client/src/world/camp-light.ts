@@ -21,7 +21,7 @@ export interface CampLight {
   reach: number;
   /** The cast's colour, the ground's own shade rather than black. */
   shade: number;
-  /** How dark the shadows are, merged (0..1). */
+  /** How dark the shadows are (0..1): the whole layer's opacity, so one shadow or two overlapping are as dark. */
   depth: number;
   /** How soft their edges are: the blur's strength at the painting's own size. */
   blur: number;
@@ -36,26 +36,26 @@ export interface CampLight {
 }
 
 /** Plains light: a warm sun high behind the camp's left shoulder. */
-const PLAINS: CampLight = { lean: 0.55, reach: 0.2, shade: 0x1f3312, depth: 0.50, blur: 1, tint: 0xfff4e4, haze: 0xdfe9f5 };
+const PLAINS: CampLight = { lean: 0.55, reach: 0.2, shade: 0x1f3312, depth: 0.40, blur: 1, tint: 0xfff4e4, haze: 0xdfe9f5 };
 
 const LIGHTS: Readonly<Record<string, CampLight>> = {
   open_plains: PLAINS,
   // A red sky lit from the horizon: long casts toward the viewer, rust shade, a warm cast.
-  red_sky_volcanic: { lean: 0.12, reach: 0.27, shade: 0x2e0c06, depth: 0.5, blur: 1.2, tint: 0xffdcc6, haze: 0xf5b8a0 },
+  red_sky_volcanic: { lean: 0.12, reach: 0.27, shade: 0x2e0c06, depth: 0.40, blur: 1.2, tint: 0xffdcc6, haze: 0xf5b8a0 },
   // Low bright sun over snow from the left: blue shade, cool white light.
-  frozen_north: { lean: 0.6, reach: 0.24, shade: 0x34508a, depth: 0.44, blur: 0.8, tint: 0xeef4ff, haze: 0xdde8fb },
+  frozen_north: { lean: 0.6, reach: 0.24, shade: 0x34508a, depth: 0.35, blur: 0.8, tint: 0xeef4ff, haze: 0xdde8fb },
   // Light through the canopy behind the glade: short, soft, green-dark casts forward.
-  enchanted_forest: { lean: 0.08, reach: 0.14, shade: 0x12280f, depth: 0.54, blur: 1.6, tint: 0xf1f8e4, haze: 0xd3e6c8 },
+  enchanted_forest: { lean: 0.08, reach: 0.14, shade: 0x12280f, depth: 0.43, blur: 1.6, tint: 0xf1f8e4, haze: 0xd3e6c8 },
   // A sun behind the great tree at the left, over open sky.
-  sky_islands: { lean: 0.5, reach: 0.2, shade: 0x22381a, depth: 0.46, blur: 1, tint: 0xfff8ee, haze: 0xe4eef9 },
+  sky_islands: { lean: 0.5, reach: 0.2, shade: 0x22381a, depth: 0.37, blur: 1, tint: 0xfff8ee, haze: 0xe4eef9 },
   // Teal mist, lit from the glowing water behind: faint, very soft casts.
-  whispering_marsh: { lean: -0.05, reach: 0.12, shade: 0x0b2826, depth: 0.50, blur: 1.8, tint: 0xe6f4f2, haze: 0xbfdcdc },
+  whispering_marsh: { lean: -0.05, reach: 0.12, shade: 0x0b2826, depth: 0.40, blur: 1.8, tint: 0xe6f4f2, haze: 0xbfdcdc },
   // Bright stone plaza in a high sun from the left.
-  cliffside_exchange: { lean: 0.45, reach: 0.18, shade: 0x4a3a2c, depth: 0.40, blur: 0.8, tint: 0xfffaf0, haze: 0xece8e0 },
+  cliffside_exchange: { lean: 0.45, reach: 0.18, shade: 0x4a3a2c, depth: 0.32, blur: 0.8, tint: 0xfffaf0, haze: 0xece8e0 },
   // Afternoon sun from the right over the river and the bridge.
-  great_river: { lean: -0.5, reach: 0.2, shade: 0x33300f, depth: 0.48, blur: 1, tint: 0xfff3dc, haze: 0xe6e8d4 },
+  great_river: { lean: -0.5, reach: 0.2, shade: 0x33300f, depth: 0.38, blur: 1, tint: 0xfff3dc, haze: 0xe6e8d4 },
   // Golden late sun from the left over dry grass.
-  bone_yard: { lean: 0.6, reach: 0.24, shade: 0x4a2c10, depth: 0.46, blur: 1, tint: 0xffefd4, haze: 0xf6dfbe },
+  bone_yard: { lean: 0.6, reach: 0.24, shade: 0x4a2c10, depth: 0.37, blur: 1, tint: 0xffefd4, haze: 0xf6dfbe },
 };
 
 /** The light a backdrop family is painted in; the plains' for any family without one of its own. */
@@ -68,7 +68,7 @@ export function campLight(family: string | null | undefined): CampLight {
  * whatever lamp or doorway it has, so a neutral room light from above and a
  * little behind. Short, soft, warm-brown shadows, falling toward the viewer.
  */
-export const INDOOR_LIGHT: CampLight = { lean: 0.1, reach: 0.2, shade: 0x26170c, depth: 0.58, blur: 1.4, tint: 0xffffff, haze: 0xffffff };
+export const INDOOR_LIGHT: CampLight = { lean: 0.1, reach: 0.2, shade: 0x26170c, depth: 0.46, blur: 1.4, tint: 0xffffff, haze: 0xffffff };
 
 /** How far toward the haze the farthest lane leans, and how much of the painting shows through it. */
 export const HAZE_MIX = 0.32;

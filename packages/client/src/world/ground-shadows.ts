@@ -4,10 +4,11 @@
  *
  * Each thing standing on the ground casts its own outline, sheared along the
  * ground where the light sends it, and a contact shade under its feet, both
- * drawn solid in the light's shade. They all lie on one layer under what casts
- * them, which is blurred and laid down at the light's depth as one: two
- * shadows that overlap merge, as real shadows do, rather than one darkening
- * the other. Each follows what casts it (`sync`, every frame).
+ * drawn opaque in the light's shade. They all lie on one layer under what
+ * casts them, which is blurred and laid down at the light's depth as one: an
+ * opaque shape over another is the same opaque shape, so two shadows that
+ * overlap merge, as real shadows do, rather than one darkening the other.
+ * Each follows what casts it (`sync`, every frame).
  */
 
 import { BlurFilter, Container, Graphics, Sprite, type Texture } from "pixi.js";
@@ -47,14 +48,13 @@ export function groundShadow(light: CampLight, width: number, height: number, te
     cast.y = fit?.offsetY ?? 0;
     if (fit?.mirrored) cast.scale.x *= -1;
     cast.tint = light.shade;
-    cast.alpha = 0.72;
     projection.addChild(cast);
     shadow.addChild(projection);
   }
   // Where it touches the ground: darkest, a little toward the cast.
   const contact = new Graphics()
     .ellipse(width * 0.06 * Math.sign(light.lean), height * 0.015, width * 0.48, Math.max(height * 0.055, 6))
-    .fill({ color: light.shade, alpha: 0.9 });
+    .fill({ color: light.shade });
   contact.label = "camp-ground-contact";
   shadow.addChild(contact);
   return shadow;
