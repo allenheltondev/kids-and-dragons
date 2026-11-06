@@ -32,7 +32,7 @@
 import {
   BOOK_KIT_FIELDS,
   FIRST_CREW_NAME,
-  bookFieldProblem,
+  bookKitProblem,
   bookKitEdit,
   bookKitState,
   campKey,
@@ -377,7 +377,7 @@ export async function editKitFromBook(input: BookKitInput, deps: HandlerDeps): P
       const now = bookKitState(kit, key);
       let next: BookKitState;
       if (request.merge) {
-        const merged = mergeBookKit(now, request.changes, (state, field, value) => bookFieldProblem(rules, unlocked, state, field, value, friends));
+        const merged = mergeBookKit(now, request.changes, (base, next) => bookKitProblem(rules, unlocked, base, next, friends));
         Object.assign(seen, { applied: merged.applied, refused: merged.refused });
         next = merged.state;
       } else {

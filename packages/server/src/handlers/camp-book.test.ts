@@ -546,6 +546,27 @@ describe("POST /api/journal/kit over HTTP", () => {
     expect(readKit((await harness.repo.getCharacter(householdId, "c_ada"))!).color).toBe("rose");
   });
 
+  it("applies a queued swap of two hung decorations, as the direct write does (#656)", async () => {
+    const { harness, rt, householdId, ada } = await family();
+    const post = (body: unknown) => respond(event("POST", "/api/journal/kit", { body, headers: { "x-kad-device-token": ada.deviceToken } }), rt);
+    const hang = await post({ characterId: "c_ada", changes: [{ field: "slot0", before: null, after: "deco_bunting" }, { field: "slot1", before: null, after: "deco_lantern" }] });
+    expect(bodyOf(hang)).toMatchObject({ kit: { slots: ["deco_bunting", "deco_lantern"] } });
+    const swap = [{ field: "slot0", before: "deco_bunting", after: "deco_lantern" }, { field: "slot1", before: "deco_lantern", after: "deco_bunting" }];
+    // From the queue, as from the book straight away: both slots land.
+    const queued = await post({ characterId: "c_ada", merge: true, changes: swap });
+    expect(queued.statusCode).toBe(200);
+    expect(bodyOf(queued)).toMatchObject({ applied: ["slot0", "slot1"], refused: [], kit: { slots: ["deco_lantern", "deco_bunting"] } });
+    const direct = await post({ characterId: "c_ada", changes: swap.map((c) => ({ field: c.field, before: c.after, after: c.before })) });
+    expect(bodyOf(direct)).toMatchObject({ applied: ["slot0", "slot1"], kit: { slots: ["deco_bunting", "deco_lantern"] } });
+    // A swap that also asks for a spot her kit has not grown: that one is skipped, the swap lands.
+    const spot = await post({ characterId: "c_ada", merge: true, changes: [...swap, { field: "slot2", before: null, after: "deco_pinwheel" }] });
+    expect(bodyOf(spot)).toMatchObject({ applied: ["slot0", "slot1"], refused: ["slot2"], kit: { slots: ["deco_lantern", "deco_bunting"] } });
+    // And one that hangs a find she has not found in place of half the swap: neither half lands alone.
+    const locked = await post({ characterId: "c_ada", merge: true, changes: [{ field: "slot0", before: "deco_lantern", after: "deco_bunting" }, { field: "slot1", before: "deco_bunting", after: "deco_gull_feather" }] });
+    expect(bodyOf(locked)).toMatchObject({ applied: [], refused: ["slot0", "slot1"], kit: { slots: ["deco_lantern", "deco_bunting"] } });
+    expect(readKit((await harness.repo.getCharacter(householdId, "c_ada"))!).slots).toEqual(["deco_lantern", "deco_bunting"]);
+  });
+
   it("refuses a revoked binding", async () => {
     const { harness, rt, householdId, ada } = await family();
     await harness.repo.revokeDevice(householdId, ada.principal.deviceId);

@@ -104,6 +104,23 @@ export function bookKitEdit(base: BookKitState, state: BookKitState): KitEdit {
 }
 
 /**
+ * Why a kit cannot go from `base` to `next`, or null when it can: the table's
+ * rule (`kitEditProblem`) for whatever differs, slots as one arrangement. A
+ * style or tent once picked is never unset. No difference is no problem.
+ */
+export function bookKitProblem(
+  rules: KitRules,
+  unlocked: readonly string[],
+  base: BookKitState,
+  next: BookKitState,
+  friends: readonly string[],
+): string | null {
+  for (const field of ["style", "tent"] as const) if (next[field] === null && base[field] !== null) return `a ${field} is always picked`;
+  const edit = bookKitEdit(base, next);
+  return Object.keys(edit).length === 0 ? null : kitEditProblem(rules, unlocked, edit, friends);
+}
+
+/**
  * Why one field cannot take a value on this kit, or null when it can: the
  * table's rule (`kitEditProblem`) for that field alone. A style or tent is
  * never unset, and a slot the kit does not have cannot be filled.
@@ -119,53 +136,87 @@ export function bookFieldProblem(
   if ((field === "style" || field === "tent") && value === null) return `a ${field} is always picked`;
   const slot = slotIndex(field);
   if (slot !== null && (slot >= state.slots.length || slot >= MAX_KIT_SLOTS)) return "that decoration spot is not on this kit";
-  const next = withBookKitValue(state, field, value);
-  return kitEditProblem(rules, unlocked, bookKitEdit(state, next), friends);
+  return bookKitProblem(rules, unlocked, state, withBookKitValue(state, field, value), friends);
 }
 
 /** What applying a book change did, field by field. */
 export interface BookKitMerge {
   state: BookKitState;
-  /** Applied (or already so). */
+  /** Applied (or already so), in `BOOK_KIT_FIELDS` order. */
   applied: BookKitField[];
-  /** Not hers to pick (a locked piece, a friend this crew lacks): skipped. */
+  /** Not hers to pick (a locked piece, a friend this crew lacks, a piece hung twice): skipped, in `BOOK_KIT_FIELDS` order. */
   refused: BookKitField[];
 }
 
 /**
- * Apply a book change to the kit as it stands now, field by field: every
- * field takes the picked value, whatever the server has meanwhile (the device
- * wins, §7, §11), and anything the table's rule refuses is skipped. Emptied
- * slots go first, so a decoration moved from one spot to another never meets
- * itself.
+ * Apply a book change to the kit as it stands now: every field takes the
+ * picked value, whatever the server has meanwhile (the device wins, §7, §11),
+ * and anything the table's rule refuses is skipped, keeping what is stored.
+ * `check` is that rule for a whole kit (`bookKitProblem`).
+ *
+ * The style, tent, color and buddy are checked one by one. The slots are
+ * checked as one arrangement, as the table's `KIT_EDIT` checks them: every
+ * queued slot laid over the stored ones, so a swap or a rotation of pieces
+ * already hung lands whole (#656). Where that arrangement is not hers to
+ * have, only the queued slots that cause it keep their stored value: first a
+ * piece that is not hers to hang at all, then any piece hung twice by a queued
+ * slot, until what is left is valid.
  */
 export function mergeBookKit(
   current: BookKitState,
   changes: readonly BookKitChange[],
-  check: (state: BookKitState, field: BookKitField, value: string | null) => string | null,
+  check: (base: BookKitState, next: BookKitState) => string | null,
 ): BookKitMerge {
-  const order = [...changes].sort((a, b) => rank(a) - rank(b));
   let state = current;
-  const applied: BookKitField[] = [];
-  const refused: BookKitField[] = [];
-  for (const change of order) {
-    if (bookKitValue(state, change.field) === change.after) {
-      applied.push(change.field);
+  const applied = new Set<BookKitField>();
+  const refused = new Set<BookKitField>();
+  for (const change of changes) {
+    if (slotIndex(change.field) !== null) continue;
+    const next = withBookKitValue(state, change.field, change.after);
+    if (bookKitValue(state, change.field) !== change.after && check(state, next) !== null) {
+      refused.add(change.field);
       continue;
     }
-    if (check(state, change.field, change.after) !== null) {
-      refused.push(change.field);
-      continue;
-    }
-    state = withBookKitValue(state, change.field, change.after);
-    applied.push(change.field);
+    state = next;
+    applied.add(change.field);
   }
-  return { state, applied, refused };
-}
 
-function rank(change: BookKitChange): number {
-  const slot = slotIndex(change.field);
-  return (slot !== null && change.after === null ? 0 : 1) * 10 + BOOK_KIT_FIELDS.indexOf(change.field);
+  // The slots: one arrangement, from every queued slot over the stored ones.
+  const queued = new Map<number, BookKitChange>();
+  for (const change of changes) {
+    const slot = slotIndex(change.field);
+    if (slot === null) continue;
+    if (slot < state.slots.length && slot < MAX_KIT_SLOTS) queued.set(slot, change);
+    else refused.add(change.field);
+  }
+  const keep = (slot: number) => {
+    refused.add(queued.get(slot)!.field);
+    queued.delete(slot);
+  };
+  const empty = state.slots.map(() => null);
+  // A piece that is not hers to hang anywhere.
+  for (const [slot, change] of queued) {
+    if (change.after === null || change.after === state.slots[slot]) continue;
+    const alone = empty.map((_, i) => (i === slot ? change.after : null));
+    if (check({ ...state, slots: empty }, { ...state, slots: alone }) !== null) keep(slot);
+  }
+  const arranged = () => state.slots.map((piece, i) => (queued.has(i) ? queued.get(i)!.after : piece));
+  for (;;) {
+    const slots = arranged();
+    if (check(state, { ...state, slots }) === null) break;
+    // A piece hung twice: the queued slots that hang it keep what is stored. Nothing else to blame: none of them apply.
+    const hung = slots.filter((p): p is string => p !== null);
+    const twice = [...queued.keys()].filter((i) => slots[i] !== null && hung.filter((p) => p === slots[i]).length > 1);
+    const blamed = twice.length > 0 ? twice : [...queued.keys()];
+    if (blamed.length === 0) break;
+    for (const slot of blamed) keep(slot);
+  }
+  if (queued.size > 0) {
+    state = { ...state, slots: arranged() };
+    for (const change of queued.values()) applied.add(change.field);
+  }
+  const order = (fields: Set<BookKitField>) => BOOK_KIT_FIELDS.filter((f) => fields.has(f));
+  return { state, applied: order(applied), refused: order(refused) };
 }
 
 /** Changes as a request carries them: well formed, each field once, or null. */

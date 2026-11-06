@@ -8,9 +8,9 @@
 
 import "fake-indexeddb/auto";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { BookKitResponse, JournalKit } from "@kad/shared";
+import { bookKitProblem, mergeBookKit, type BookKitChange, type BookKitResponse, type JournalKit } from "@kad/shared";
 import { bookKitStatus, editBookKit, flushKitQueue, resetBookKitSync } from "./book-kit-sync";
-import { dropKitQueue, enqueueKitChanges, loadKitQueue } from "./kit-queue";
+import { dropKitQueue, enqueueKitChanges, journalKitState, loadKitQueue, withQueuedKit } from "./kit-queue";
 import { saveIdentity } from "./persistence";
 
 const KIT: JournalKit = { revision: 5, style: null, tent: "rolled", color: "rose", slots: [null, null], unlocked: [], buddies: {} };
@@ -108,6 +108,33 @@ describe("sending the book's kit changes", () => {
     expect(sent.map((s) => s.body.characterId)).toEqual(["c_gone", "c_1"]);
     expect(loadKitQueue("dev_1")).toEqual([]);
     expect(bookKitStatus().notes).toEqual(["One of your changes could not be saved."]);
+  });
+
+  it("queues a swap of two hung decorations offline, shows it, and the server's merge applies it whole (#656)", async () => {
+    const hung: JournalKit = { ...KIT, slots: ["deco_a", "deco_b"], unlocked: [] };
+    vi.stubGlobal("navigator", { onLine: false });
+    serve(() => answer(200, {}));
+    await editBookKit(
+      { characterId: "c_1", crew: null, changes: [{ field: "slot0", before: "deco_a", after: "deco_b" }, { field: "slot1", before: "deco_b", after: "deco_a" }] },
+      () => undefined,
+    );
+    expect(sent).toHaveLength(0);
+    expect(withQueuedKit(hung, "c_1", loadKitQueue("dev_1")).slots).toEqual(["deco_b", "deco_a"]);
+
+    // Back online: sent `merge`, and the server's own merge (shared `mergeBookKit`) lands both slots.
+    vi.stubGlobal("navigator", { onLine: true });
+    const rules = { styles: [], tents: [], decorations: [{ id: "deco_a", group: "catalog" }, { id: "deco_b", group: "catalog" }] };
+    serve(() => {
+      const changes = sent.at(-1)!.body.changes as BookKitChange[];
+      const merged = mergeBookKit(journalKitState(hung, null), changes, (base, next) => bookKitProblem(rules, [], base, next, []));
+      return answer(200, { kit: { ...hung, revision: 6, slots: merged.state.slots }, applied: merged.applied, refused: merged.refused } satisfies BookKitResponse);
+    });
+    const applied: JournalKit[] = [];
+    await flushKitQueue((_, kit) => applied.push(kit));
+    expect(sent.at(-1)!.body).toMatchObject({ characterId: "c_1", merge: true });
+    expect(applied.at(-1)!.slots).toEqual(["deco_b", "deco_a"]);
+    expect(loadKitQueue("dev_1")).toEqual([]);
+    expect(bookKitStatus()).toEqual({ offline: false, notes: [] });
   });
 
   it("waits, keeping the queue, while the browser says it is offline", async () => {

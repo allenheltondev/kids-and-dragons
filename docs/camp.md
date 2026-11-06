@@ -685,7 +685,11 @@ on this phone, will share when you're back online", and sends it when the signal
   `color`, `slot0`–`slot2`, `buddy`, each with `before` and `after`), and every one applies over
   the kit as it is now (shared `mergeBookKit`; the device wins). Sent straight away, one pick that
   is not hers refuses the whole change, as `KIT_EDIT` does; from the queue (`merge`) that pick is
-  skipped (`refused`) and the rest apply. Written with `mutateKit`, conditional on the hero's row
+  skipped (`refused`) and the rest apply. The decoration slots are checked as one arrangement, as
+  `KIT_EDIT` checks them: every queued slot laid over the stored ones, so a swap or rotation of
+  pieces already hung lands from the queue just as it does straight away (#656). Where that
+  arrangement is not hers to have, only the queued slots causing it keep their stored value: a
+  piece she has not unlocked, then a piece a queued slot would hang twice. Written with `mutateKit`, conditional on the hero's row
   as read and retried on a lost race, so a book edit and a table edit never lose a write.
 - **A table behind the book.** A table that read her kit as its moment began, before a book edit,
   shows an older revision. Her phone's `KIT_EDIT` made over what the table showed is applied over
