@@ -113,6 +113,9 @@ describe("the stage-up moment (§4.1)", () => {
     ["whispering_marsh", "whispering_marsh", "alpha"],
     ["exchange", "cliffside_exchange", "height"],
     ["sky_islands", "sky_islands", "angle"],
+    ["stone_crossing", "great_river", "alpha"],
+    ["enchanted_woods", "enchanted_forest", "x"],
+    ["bone_yard", "bone_yard", "angle"],
   ] as const)("animates the %s chapter-end accent and holds it still on request", async (biome, family, property) => {
     const app = fakeApp();
     const loaded: string[] = [];
