@@ -674,7 +674,10 @@ on this phone, will share when you're back online", and sends it when the signal
 - **The read** rides `GET /api/journal` as `JournalResponse.camp` (`handlers/camp-book.ts`
   `journalCamp`): each crew's `CampView`, friends and sources, and each of her heroes' kits with a
   buddy per crew (`JournalKit.buddies`, by crew id, "" for the first). A failed camp read leaves the
-  rest of the book whole. Saved with the book in IndexedDB, and on a read with a signal the tray
+  rest of the book whole and says so (`JournalResponse.campError`, with no `camp`), so the phone
+  keeps the camp its saved book has, saves it with the fresh rest, and the tray says when that camp
+  was read (`SavedJournal.campSavedAt`, "Last synced yesterday"); a book with no camp and no marker
+  (content with no camp) clears it (#656). Saved with the book in IndexedDB, and on a read with a signal the tray
   has the service worker keep every picture it draws (`sw/warm.ts`: the backdrop, her tent and
   gear, the pieces, the friends and the kit's choices), so it opens offline; it says when
   it last synced ("Synced at 4:05 PM", or "Last synced yesterday" from the saved copy).

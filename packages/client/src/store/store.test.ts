@@ -452,6 +452,41 @@ describe("joining", () => {
     expect((await h.store.getState().loadJournal())?.savedAt).toEqual(expect.any(String));
   });
 
+  it("keeps the saved camp when the server could not read it just now, and lets a real no-camp clear it (#656)", async () => {
+    const h = harness();
+    await h.store.getState().createRoom("travel", "Allen");
+    h.store.getState().leave();
+    const base = { heroes: [] as ResolvedCharacter[], fieldGuide: {}, finders: {}, whereabouts: null };
+    const camp = { crews: [], kits: { c_1: { revision: 1, style: "rolled", tent: "rolled", color: "rose", slots: [null, null], unlocked: [], buddies: {} } } };
+    h.api.loadJournal.mockResolvedValueOnce({ ...base, camp });
+    await h.store.getState().loadJournal();
+    const first = JSON.parse(h.storage.getItem("kad.journal")!) as { savedAt: string };
+
+    // Everything but the camp read: the book is fresh, the camp is last time's, with when it was read.
+    h.api.loadJournal.mockResolvedValueOnce({ ...base, fieldGuide: { moss: [] }, campError: true } as never);
+    const partial = await h.store.getState().loadJournal();
+    expect(partial).toMatchObject({ savedAt: null, campSavedAt: first.savedAt, journal: { camp, fieldGuide: { moss: [] } } });
+    expect(partial!.journal.campError).toBeUndefined();
+    const saved = JSON.parse(h.storage.getItem("kad.journal")!) as { journal: { camp?: unknown; campError?: true }; campSavedAt?: string };
+    expect(saved.journal.camp).toEqual(camp);
+    expect(saved.journal.campError).toBeUndefined();
+    expect(saved.campSavedAt).toBe(first.savedAt);
+
+    // Offline afterwards, the saved book opens with that camp and its own time.
+    h.api.loadJournal.mockRejectedValueOnce(new TypeError("Failed to fetch"));
+    expect(await h.store.getState().loadJournal()).toMatchObject({ journal: { camp }, savedAt: expect.any(String), campSavedAt: first.savedAt });
+
+    // A camp read that works again is fresh, with no older time.
+    h.api.loadJournal.mockResolvedValueOnce({ ...base, camp });
+    expect((await h.store.getState().loadJournal())?.campSavedAt).toBeUndefined();
+    expect((JSON.parse(h.storage.getItem("kad.journal")!) as { campSavedAt?: string }).campSavedAt).toBeUndefined();
+
+    // And a book with no camp at all, no marker, clears it.
+    h.api.loadJournal.mockResolvedValueOnce(base);
+    expect((await h.store.getState().loadJournal())?.journal.camp).toBeUndefined();
+    expect((JSON.parse(h.storage.getItem("kad.journal")!) as { journal: { camp?: unknown } }).journal.camp).toBeUndefined();
+  });
+
   it("forgets the saved journal when the server refuses the binding", async () => {
     const h = harness();
     await h.store.getState().createRoom("travel", "Allen");

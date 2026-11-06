@@ -965,6 +965,13 @@ export interface JournalResponse {
    * offline. Optional because a server from before it sends none.
    */
   camp?: JournalCamp;
+  /**
+   * Set, with no `camp`, when the server could not read the camp just now
+   * (#656): the rest of the book is fresh, and the phone keeps the camp its
+   * saved copy has, with when that was read. Absent with no `camp`: the
+   * content has no camp, so there is none to keep.
+   */
+  campError?: true;
 }
 
 /** The book's Camp tray (docs/camp.md §7, §12.6; #629). */

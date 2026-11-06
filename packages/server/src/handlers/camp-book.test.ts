@@ -88,6 +88,31 @@ describe("the book's camp read (§7)", () => {
     expect(camp.kits[p2]).toBeUndefined();
   });
 
+  it("says a failed camp read apart from no camp at all, so the phone keeps the camp it saved (#656)", async () => {
+    const { harness, t, p1 } = await lobby();
+    const broken = { ...harness.deps, repo: new Proxy(harness.repo, {
+      get(target, prop) {
+        if (prop === "getCamp") return () => Promise.reject(new Error("the camp table is not answering"));
+        const v: unknown = Reflect.get(target, prop, target);
+        return typeof v === "function" ? (v as (...a: unknown[]) => unknown).bind(target) : v;
+      },
+    }) };
+    const failed = value(await getJournal({ householdId: t.householdId, playerId: "p_1" }, broken));
+    expect(failed.camp).toBeUndefined();
+    expect(failed.campError).toBe(true);
+    // The rest of the book is whole.
+    expect(failed.heroes.map((h) => h.id)).toEqual([p1]);
+
+    // Content with no camp: no camp, and nothing to say about it.
+    const none = value(await getJournal({ householdId: t.householdId, playerId: "p_1" }, { ...harness.deps, content: { ...harness.deps.content, campCatalog: () => null } }));
+    expect(none.camp).toBeUndefined();
+    expect(none.campError).toBeUndefined();
+    // And a read that works carries the camp, with no marker.
+    const fine = value(await getJournal({ householdId: t.householdId, playerId: "p_1" }, harness.deps));
+    expect(fine.camp).toBeDefined();
+    expect(fine.campError).toBeUndefined();
+  });
+
   it("names a graph campaign's place, and a chapter told in order by its title", async () => {
     const content = await loadContent();
     const catalog = content.campCatalog()!;

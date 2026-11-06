@@ -458,6 +458,12 @@ export interface SavedJournal {
   /** ISO, for "from last time". */
   savedAt: string;
   journal: JournalResponse;
+  /**
+   * ISO, when the book's camp was last read, when that is older than the rest
+   * of it: a read whose camp failed (`JournalResponse.campError`) kept the
+   * camp from the copy before (#656). Absent: read with the rest, `savedAt`.
+   */
+  campSavedAt?: string;
 }
 
 const JOURNAL_KEY = "kad.journal";
@@ -469,7 +475,7 @@ export function validSavedJournal(parsed: unknown, deviceToken: string): SavedJo
   if (p.deviceToken !== deviceToken || typeof p.savedAt !== "string") return null;
   const journal = p.journal;
   if (typeof journal !== "object" || journal === null || !Array.isArray(journal.heroes)) return null;
-  return { deviceToken, savedAt: p.savedAt, journal };
+  return { deviceToken, savedAt: p.savedAt, journal, ...(typeof p.campSavedAt === "string" ? { campSavedAt: p.campSavedAt } : {}) };
 }
 
 /** The pre-IndexedDB path (#458), kept for the fallback and the migration. */

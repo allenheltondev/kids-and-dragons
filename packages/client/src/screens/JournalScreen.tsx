@@ -87,7 +87,7 @@ export function restingMember(hero: ResolvedCharacter): PartyMember {
 type Load =
   | { status: "loading" }
   /** `savedAt` set: last time's book, because the server could not be reached. */
-  | { status: "ready"; journal: JournalResponse; savedAt: string | null }
+  | { status: "ready"; journal: JournalResponse; savedAt: string | null; campSavedAt?: string }
   /** This phone has never played: no binding, so nobody to look at. */
   | { status: "new" }
   | { status: "failed" };
@@ -286,7 +286,7 @@ export function JournalScreen(): ReactElement {
         ) : null}
         {pane === "camp" ? (
           <CampTray journal={load.journal} fresh={load.savedAt === null}
-            synced={load.savedAt === null ? syncedAt(readAt) : `Last synced ${savedWhen(load.savedAt)}`} onKit={applyKit} />
+            synced={campSynced(load.campSavedAt ?? load.savedAt, readAt)} onKit={applyKit} />
         ) : null}
         {pane === "guide" ? (
           <div className="kad-surface kad-surface--player" data-surface="player">
@@ -308,6 +308,15 @@ export function savedWhen(savedAt: string, now: Date = new Date()): string {
   if (days <= 0) return "earlier today";
   if (days === 1) return "yesterday";
   return saved.toLocaleDateString(undefined, { month: "long", day: "numeric" });
+}
+
+/**
+ * What the Camp tray says about when its camp was read: now, or the saved
+ * copy's time, which is the camp's own when only the camp could not be read
+ * (#656; `JournalLoad.campSavedAt`).
+ */
+export function campSynced(savedAt: string | null, readAt: Date, now: Date = new Date()): string {
+  return savedAt === null ? syncedAt(readAt) : `Last synced ${savedWhen(savedAt, now)}`;
 }
 
 /** "Synced at 4:05 PM": when this read landed, for the Camp tray. */

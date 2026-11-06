@@ -58,9 +58,9 @@ import type {
   CampRecord,
   Character,
   HeroKit,
-  JournalCamp,
   JournalCrewCamp,
   JournalKit,
+  JournalResponse,
   RunState,
 } from "@kad/shared";
 import type { ContentStore } from "../content/loader.ts";
@@ -73,25 +73,27 @@ import { mutateKit, readCamp, type CampDeps } from "./camp.ts";
 // ---------------------------------------------------------------------------
 
 /**
- * The book's Camp tray for her heroes (`characters`, already hers). Null when
- * the content has no camp, or a store read failed: the rest of the book
- * opens without it, and its saved copy keeps the last camp it had.
+ * The book's Camp tray for her heroes (`characters`, already hers), as the
+ * journal carries it: `camp`; nothing when the content has no camp; or, when
+ * a store read failed, `campError` and no camp, so the rest of the book opens
+ * without it and the phone keeps the camp its saved copy has (#656), rather
+ * than taking the gap for a household with no camp.
  */
 export async function journalCamp(
   householdId: string,
   heroes: readonly Character[],
   deps: CampDeps,
-): Promise<JournalCamp | null> {
+): Promise<Pick<JournalResponse, "camp" | "campError">> {
   const catalog = deps.content.campCatalog();
-  if (!catalog) return null;
+  if (!catalog) return {};
   try {
     const crews = await crewCamps(householdId, heroes, catalog, deps);
     const kits: Record<string, JournalKit> = {};
     for (const hero of heroes) kits[hero.id] = journalKit(readKit(hero), householdId);
-    return { crews, kits };
+    return { camp: { crews, kits } };
   } catch (err) {
     console.error(`camp: the book could not read ${householdId}'s camps:`, err);
-    return null;
+    return { campError: true };
   }
 }
 
