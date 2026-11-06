@@ -121,8 +121,12 @@ export interface CampaignView {
   blurb?: string;
   /** How many chapters a playthrough visits — beats, not files. */
   chapters: number;
-  /** The chapter "Begin" would start; null only at a fork nobody has chosen. */
-  next: { index: number; title: string } | null;
+  /**
+   * The chapter "Begin" would start; null only at a fork nobody has chosen.
+   * Its `biome` is what the lobby pitches the crew's camp in (docs/camp.md
+   * §3.1; #627); absent on runs persisted before it existed.
+   */
+  next: { index: number; title: string; biome?: string } | null;
   /**
    * Set by the chapter completion that ended the attempt — the campaign was
    * finished (the gains are kept for good) or failed at its setback limit (the

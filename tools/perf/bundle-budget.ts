@@ -215,7 +215,10 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // 1642 -> 1646 when Phase 2 met main's Gemfall fight reworks (#639 to #644):
 // the merged build measures 1644KB locally and in CI, first paint 331KB.
 // Keep 2KB of slack for CI.
-const TOTAL_BUDGET_KB = 1646;
+// 1646 -> 1648 for #627: the camp in the chapter's terrain (the biome-family
+// table beside the camp layout) and Travel Mode's Camp button measure 1646KB
+// locally, first paint 331KB; keep 2KB of slack for CI.
+const TOTAL_BUDGET_KB = 1648;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

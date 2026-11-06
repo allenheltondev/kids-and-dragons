@@ -40,7 +40,8 @@ import { Icon } from "./icons";
 import { StillCamp, TentStandIn } from "../world/StillCamp";
 import { CampBedroll, CampTent } from "../world/CampBedroll";
 import { CAMP_KIT_STYLES, campKitStyle, type CampKitStyle } from "../world/camp-kit-art";
-import { campLayoutFor, campStage } from "../world/lobby-camp";
+import { campFamilyFor, campLayoutFor, campStage } from "../world/lobby-camp";
+import { useChapter } from "../store";
 import {
   KIT_RULES,
   campBeside,
@@ -389,6 +390,7 @@ function SharedSpots({
 /** The panel itself: a picture and its named controls. Open only in downtime. */
 export function CampPanel({ state, me, held, dispatch }: { state: RunState; me: PartyMember; held: boolean; dispatch: Dispatch }): ReactElement | null {
   const open = useSyncExternalStore(onCampPanel, campPanelOpen, campPanelOpen);
+  const chapter = useChapter();
   const kind = campMomentKind(state);
   const [active, setActive] = useState<string | null>(null);
   const headingRef = useRef<HTMLHeadingElement | null>(null);
@@ -410,7 +412,8 @@ export function CampPanel({ state, me, held, dispatch }: { state: RunState; me: 
   }, [open]);
   if (!open || kind === null) return null;
   // Indoors the camp is packed down to bedrolls and packs (§3.2).
-  const layout = campLayoutFor(state.campMoment?.outdoor === false ? 1 : campStage(state));
+  // Pitched in the chapter's terrain (§3.1), as the shared screen pitches it.
+  const layout = campLayoutFor(state.campMoment?.outdoor === false ? 1 : campStage(state), campFamilyFor(state, chapter));
   const mine = state.party.filter((m) => m.playerId === me.playerId);
   return (
     <div className="camp-panel" role="dialog" aria-modal="true" aria-labelledby={titleId} data-testid="camp-panel">

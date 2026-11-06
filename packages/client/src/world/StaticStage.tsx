@@ -16,7 +16,7 @@ import { useEnsureChapter } from "../screens/content";
 import { biomeBackdropUrl, characterWorldArtUrl, enemyArtUrl, sceneArtFor, sceneBackdropUrl } from "./art-paths";
 
 import { castFor } from "./cast";
-import { campLayoutFor, campShownFor, campStage } from "./lobby-camp";
+import { campFamilyFor, campLayoutFor, campShownFor, campStage } from "./lobby-camp";
 import { campBeatShown, onCampBeat } from "./camp-beat";
 import { StillCamp } from "./StillCamp";
 import { sceneRiftFor, STILL_FRAME } from "./scene-rift";
@@ -54,7 +54,7 @@ export function StaticStage(): React.JSX.Element {
   // The lobby's picture is the crew's camp (#614), still here as everything is.
   // And the chapter end's camp beat (#620), at the crew's own frame stage.
   const beat = useSyncExternalStore(onCampBeat, campBeatShown, campBeatShown);
-  const camp = state && campShownFor(state, beat) ? campLayoutFor(campStage(state)) : null;
+  const camp = state && campShownFor(state, beat) ? campLayoutFor(campStage(state), campFamilyFor(state, chapter)) : null;
   if (state && camp) {
     return (
       <div className="kad-static-stage" data-testid="static-stage" aria-hidden="true">

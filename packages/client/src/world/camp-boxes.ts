@@ -282,7 +282,17 @@ export function pieceKeepTop(hotspot: string, pieceId: string | null): number {
   return Math.min(1, keep);
 }
 
-const isTallSpot = (box: CampBox): boolean => box.kind === "spot" && TALL_SPOTS.has(box.id.slice("spot:".length));
+/**
+ * The bigger frames' own tall pieces (docs/camp.md §4.1, §8.3; #627): stage
+ * 3's awning, lantern string and lookout post, stage 4's shared tent, banners
+ * and lookout, every one an id ending `_frame`. Shared, like the tall hotspot
+ * pieces, and treated as they are: each may stand partly behind a nearer tent
+ * (`campCoverClashes`), never behind or in front of a hero at her door, and
+ * whoever goes to look at one is never hidden (`campStandBoxes`).
+ */
+export const isTallFramePiece = (id: string): boolean => id.endsWith("_frame");
+const isTallSpot = (box: CampBox): boolean =>
+  (box.kind === "spot" && TALL_SPOTS.has(box.id.slice("spot:".length))) || (box.kind === "frame" && isTallFramePiece(box.id));
 const isEdgeSpot = (box: CampBox): boolean => box.kind === "spot" && EDGE_SPOTS.has(box.id.slice("spot:".length));
 /** A hero's tent, or the souvenir line hanging on it. */
 const isTentGear = (box: CampBox): boolean => box.seat !== undefined && (box.kind === "tent" || (box.kind === "owned" && box.id.startsWith("souvenirs_")));
@@ -527,7 +537,11 @@ export function campStandBoxes(layout: CampLayout, input: Pick<CampBoxInput, "he
   const hero = { height: Math.max(...drawn.map((b) => b.height)), width: Math.max(...drawn.map((b) => b.width)) };
   const out: CampBox[] = [];
   for (const point of layout.frame.standPoints) {
-    if (!point.hotspot || !TALL_SPOTS.has(point.hotspot) || !layout.frame.hotspots?.some((h) => h.id === point.hotspot)) continue;
+    const hotspot = point.hotspot;
+    if (!hotspot) continue;
+    const tallSpot = TALL_SPOTS.has(hotspot) && layout.frame.hotspots?.some((h) => h.id === hotspot);
+    const tallFrame = isTallFramePiece(hotspot) && layout.frame.pieces.some((p) => p.id === hotspot);
+    if (!tallSpot && !tallFrame) continue;
     const lane = laneOf(layout, point.lane);
     out.push({
       id: `stand:${point.id}`,
@@ -592,6 +606,7 @@ export function campBoxes(layout: CampLayout, input: CampBoxInput): CampBox[] {
     boxes.push(sliced({
       id: piece.id,
       kind,
+      ...(kind === "frame" && isTallFramePiece(piece.id) ? { keepTop: TALL_KEEP_TOP } : {}),
       lane: piece.lane,
       ...(seat !== undefined ? { seat } : {}),
       x: piece.x * W + size.offset * lane.scale * k,
@@ -820,7 +835,7 @@ export function campReachOf(layout: CampLayout, boxes: readonly CampBox[], figur
   const H = layout.canvas.height;
   // Measured at `figureScale` and given back at full size, as the band scales it again.
   return boxes
-    .filter((b) => b.kind !== "frame")
+    .filter((b) => b.kind !== "frame" || isTallFramePiece(b.id))
     .map((b) => {
       // A name under the foot keeps its size, so its reach below the ground is not scaled.
       const foot = Math.max(0, ...labelsOf(b).map(({ label }) => label.y + label.height - b.ground)) / H;

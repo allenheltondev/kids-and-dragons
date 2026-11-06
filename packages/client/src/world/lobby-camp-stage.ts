@@ -39,8 +39,12 @@ export interface LobbyCampOptions {
   still?: boolean;
   assetUrl?: (path: string) => string;
   loadTexture?: (url: string) => Promise<Texture>;
-  /** The layout for a frame stage (lobby-camp.ts `campLayoutFor`); absent: always `layout`. */
-  layoutFor?: (stage: number) => CampLayout | null;
+  /**
+   * The layout for a frame stage, pitched for this state (lobby-camp.ts
+   * `campLayoutFor`, on `campFamilyFor`'s terrain); absent:
+   * always `layout`.
+   */
+  layoutFor?: (stage: number, state: RunState) => CampLayout | null;
 }
 
 export interface LobbyCamp {
@@ -122,8 +126,9 @@ export function createLobbyCamp(app: Application, layout: CampLayout, options: L
     last = state;
     if (state && campShownFor(state, campBeatShown())) {
       const now = campHeroes(state);
-      // The crew's frame stage, from its record: a camp that grew is pitched anew.
-      const want = options.layoutFor?.(campStage(state)) ?? layout;
+      // The crew's frame stage, from its record, in the chapter's terrain: a camp that grew, or
+      // moved to another terrain, is pitched anew.
+      const want = options.layoutFor?.(campStage(state), state) ?? layout;
       if (shown && want !== mounted) {
         shown.destroy();
         shown = null;

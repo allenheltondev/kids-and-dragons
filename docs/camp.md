@@ -76,7 +76,9 @@ a future chapter-end shop (§6.2). This keeps the session budget untouched: the 
 time that already exists.
 
 **Travel Mode** has no TV, so the camp view lives behind the same Camp button on each phone
-during downtime, and in the World pane during the lobby.
+during downtime, and in the World pane during the lobby. The button is in the You pane at a lobby
+visit, a rest scene and the chapter's end (the Camp panel, with the still camp at the crew's stage
+in the chapter's terrain), and nowhere else (`travel-layout.test.tsx`; #627).
 
 ### 3.1 Pitched in the right place
 
@@ -85,6 +87,15 @@ backdrop: a wide, calm campsite painting with a wide clearing for the camp, acro
 middle 80 percent of the width, and its hotspots (§4.2) on a fixed layout. The view picks the
 backdrop from the chapter's biome, and in the lobby from the chapter the crew would pick up from. The lobby and the chapter's end always
 show the full, outdoor camp.
+
+One function decides it for every screen (`campFamilyFor` in
+`packages/client/src/world/lobby-camp.ts`, through camp-backdrop.ts `campBackdropFamily`; #625, #627): the chapter's biome, through `biomeFamilies`, to
+its family's backdrop where one is painted, else `open_plains`. In the lobby the biome is the
+next chapter of the campaign the lobby would begin (`CampaignView.next.biome`, sent by the
+server); at a rest scene and the chapter's end it is the chapter being played. Every frame stage
+is laid over every backdrop (§8.3), and the first-wave backdrops share `open_plains`'s lanes, so
+the camp stands the same on each and only the painting changes (`camp-boxes.test.ts` runs the
+full matrix once per distinct set of lanes and holds every backdrop to it).
 
 Painting all twelve is a lot of art, so they ship in order of how often a party rests outdoors
 there. These are all rest scenes, counted from the repo on 2026-11-04; once rest scenes are
@@ -701,6 +712,32 @@ camp's spots on that ground.
   trophies only) draws the mix at about 0.82, four unicorns at 0.82, four griffins at 0.87, four
   manticores at 0.92 and four bigfoots at about 0.72. On a 1280 x 720 TV with the campaign picker
   open the window, not the row, holds a party with a bigfoot on the back lane to about 0.72.
+- **Stages 3 and 4 stand their own big pieces on the far lane** (#627). Each bigger frame brings
+  three pieces of its own (stage 3: an awning, a lantern string and a lookout post; stage 4: a big
+  shared tent, banners and a lookout, every one an id ending `_frame`), drawn at their real sizes:
+  the lookout post 270 cm and the stage-4 lookout 300 cm, both taller than a bigfoot (215); the
+  lantern string 200 cm, its rope at about 165 cm with its lanterns hanging below it; the banners'
+  posts 230 cm; the awning 220 cm, tall enough for a bigfoot to stand under; and the shared tent
+  280 cm, taller than any hero's own tent. Pieces that big only fit across the clearing behind the
+  tents, so they stand on the far lane: the lookout at the far left beside the first tent, the
+  awning or the shared tent in the middle between the inner tents' peaks, the lantern string or
+  the banners past the last tent, and the crew's own awning spot at the far right. They are
+  treated as the tall shared pieces are (*proposed*, #627, for the owner to confirm): each may
+  stand partly behind a nearer tent, under the same rule (less than half of it covered and none
+  of its top half), never behind or in front of a hero at her door, and whoever goes to look at
+  one stands where no nearer tent hides her (`isTallFramePiece`, `campCoverClashes`,
+  `campStandBoxes`). The far lane draws them at 0.6 of the near lane's scale, so the lookout
+  reads as a tall tower behind the camp rather than a prop beside the fire. With the big pieces
+  in, the shared spots move to stage 2's places on the near lane (the lanterns at the far left,
+  the friends' corner in front of the first tents, the trophies and the banner pole at the
+  right), and the crew's awning spot (an awning, a map table, a woodpile, a supply chest or a
+  trophy rack) to the far lane's right end. Everything is drawn smaller than at stage 2: with
+  every spot holding its widest or tallest piece, in every tent style, four bigfoots at about
+  0.61, the mix (bigfoot, kitsune, unicorn, griffin) 0.61 to 0.63 either way round, four
+  unicorns, griffins or manticores about 0.66, and four kitsune or dragonlings about 0.67, at
+  both stages. What holds the small parties is not their
+  tents but the far lane's own pieces side by side (the lantern string or the banners beside the
+  crew's awning spot); what holds the big ones is the middle piece between the inner tents.
 - **Stage 1 is a ring of bedrolls.** A bedroll is longer than its hero lying down, much wider than
   her tent, and too tall to stand in front of another lane's, so at stage 1 everything that
   reaches the back lane stands side by side across the clearing: the lantern hooks at the far

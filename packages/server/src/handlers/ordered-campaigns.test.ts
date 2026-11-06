@@ -88,7 +88,8 @@ describe("the shipped ordered campaigns", () => {
       // Hollow Crown is one beat long) — exactly as `expectedIndex` always said.
       const index = campaign.chapters.length > 1 ? 2 : 1;
       const expected = content.chapterAt(id, index, midway.routeFlags!)!;
-      expect(campaignView(campaign, midway, deps).next).toEqual({ index, title: expected.title });
+      // And its biome, which the lobby pitches the camp in (docs/camp.md §3.1; #627).
+      expect(campaignView(campaign, midway, deps).next).toEqual({ index, title: expected.title, biome: expected.biome });
     });
   }
 });

@@ -17,7 +17,9 @@
  * cannot read it two ways.
  */
 
-import type { CastStance, HeroKitView, PartyMember, PhaseKind, RunState } from "@kad/shared";
+import { lobbyCampaign } from "@kad/shared";
+import type { CastStance, Chapter, HeroKitView, PartyMember, PhaseKind, RunState } from "@kad/shared";
+import { CAMP_FALLBACK_FAMILY, campBackdropFamily } from "./camp-backdrop";
 import { characterWorldArtUrl } from "./art-paths";
 import { camp as campManifest } from "../../../../assets/manifest.json";
 import type { CampDressing, CampFigure } from "./camp";
@@ -28,8 +30,12 @@ import { campStandRange, campStandX, type CampSpan } from "./camp-framing";
 import { ANCHOR_Y } from "./art-paths";
 import { campHeightPx, campMeasure } from "./camp-motion";
 
-/** The terrain family the lobby pitches in, for everyone in Phase 1 (§10). */
-export const LOBBY_CAMP_FAMILY = "open_plains";
+/**
+ * The terrain family a camp pitches in when nothing says where the crew is
+ * (§3.1). Anywhere else the chapter picks it (`campFamilyFor`, through
+ * camp-backdrop.ts `campBackdropFamily`).
+ */
+export const LOBBY_CAMP_FAMILY = CAMP_FALLBACK_FAMILY;
 /** Bedrolls round a small campfire (§4.1). */
 export const LOBBY_CAMP_STAGE = 1;
 /**
@@ -45,7 +51,7 @@ export const LOBBY_CAMP_STAND_IN = "biomes/plains/bg.webp";
  * rather than the whole manifest. Parsed once; a layout that fails to parse
  * is reported and leaves the lobby on the story stage as before, never blank.
  */
-const parsedLayouts = new Map<number, CampLayout | null>();
+const parsedLayouts = new Map<string, CampLayout | null>();
 export function lobbyCampLayout(): CampLayout | null {
   return campLayoutFor(LOBBY_CAMP_STAGE);
 }
@@ -53,20 +59,54 @@ export function lobbyCampLayout(): CampLayout | null {
 /**
  * The camp at the crew's frame stage (§4.1; #620), from its stored record
  * (`RunState.camp.frameStage`): bedrolls at stage 1, a tent each and a
- * cookfire at stage 2, and the biggest frame painted for anything past it
- * (§12.3's safe fallback). Parsed once per stage.
+ * cookfire at stage 2, an awning, a lantern string and a lookout at stage 3,
+ * the grand camp at stage 4, and the biggest frame painted for anything past
+ * it (§12.3's safe fallback). Pitched on `family`'s backdrop (§3.1, #627;
+ * `campFamilyFor`), `open_plains` where it has none. Parsed
+ * once per stage and family.
  */
-export function campLayoutFor(stage: number): CampLayout | null {
-  const key = Math.max(1, Math.floor(stage));
+export function campLayoutFor(stage: number, family: string = LOBBY_CAMP_FAMILY): CampLayout | null {
+  const at = Math.max(1, Math.floor(Number.isFinite(stage) ? stage : 1));
+  const key = `${family}:${String(at)}`;
   if (!parsedLayouts.has(key)) {
     try {
-      parsedLayouts.set(key, campLayout(parseCampManifest(campManifest), LOBBY_CAMP_FAMILY, key));
+      parsedLayouts.set(key, campLayout(parseCampManifest(campManifest), family, at));
     } catch (error) {
       globalThis.reportError?.(error);
       parsedLayouts.set(key, null);
     }
   }
   return parsedLayouts.get(key) ?? null;
+}
+
+/**
+ * The biome the camp is pitched in now (§3.1; #627): in the lobby, the next
+ * chapter of the campaign the lobby would begin (`CampaignView.next.biome`,
+ * the chapter the crew would pick up from); anywhere else, the chapter being
+ * played, once this screen has it. Null when nobody can say (a lobby before
+ * any campaign, a chapter still loading).
+ */
+export function campBiome(
+  state: Pick<RunState, "phase" | "chapterId" | "campaign" | "campaignOptions" | "party" | "campaignVotes" | "storyTurn"> | null | undefined,
+  chapter: Pick<Chapter, "id" | "biome"> | null | undefined,
+): string | null {
+  if (!state) return null;
+  const phase = state.phase ?? "lobby";
+  if (phase === "lobby" || phase === "creation") return lobbyCampaign(state as RunState).leader?.next?.biome ?? null;
+  return chapter && chapter.id === state.chapterId ? chapter.biome : null;
+}
+
+/**
+ * The family a camp on this screen pitches in now: the terrain of
+ * `campBiome`'s chapter, through camp-backdrop.ts `campBackdropFamily`, and
+ * the fallback where it cannot say. The TV, a phone's World pane and its Camp
+ * panel all ask here, so they never pitch it in two places.
+ */
+export function campFamilyFor(
+  state: Parameters<typeof campBiome>[0],
+  chapter: Parameters<typeof campBiome>[1],
+): string {
+  return campBackdropFamily(campBiome(state, chapter));
 }
 
 /** The frame stage the crew's camp stands at, from its record; stage 1 when the store could not say. */

@@ -22,7 +22,7 @@ import { sceneRiftFor } from "./scene-rift";
 import { castFor } from "./cast";
 import { boardInsetEnd, lobbyInsetBottom, lobbyInsetTop, onBoardInsetEnd, onLobbyInset, onLobbyInsetTop, onStageInset, onStageInsetTop, stageInsetBottom, stageInsetTop } from "./stage-inset";
 import { createLobbyCamp, lobbyCampLayout, type LobbyCamp } from "./lobby-camp-stage";
-import { campLayoutFor } from "./lobby-camp";
+import { campFamilyFor, campLayoutFor } from "./lobby-camp";
 import { PREFS_EVENT, reducedMotion } from "../a11y/prefs";
 
 /**
@@ -244,7 +244,7 @@ export function PixiStage(): React.JSX.Element {
         lobbyCamp = createLobbyCamp(instance, layout, {
           cover: (on) => covered.setCovered(on),
           still: reducedMotion(),
-          layoutFor: campLayoutFor,
+          layoutFor: (stage, state) => campLayoutFor(stage, campFamilyFor(state, useGameStore.getState().chapter)),
         });
         campRef.current = lobbyCamp;
         lobbyCamp.setInset(lobbyInsetBottom(), lobbyInsetTop());
@@ -349,9 +349,10 @@ export function PixiStage(): React.JSX.Element {
    * reads a won fight). Begin is a phase change like any other here: the camp
    * is told to set off and fades, and the scene is already drawn under it.
    */
+  // The chapter, too: the camp is pitched in its terrain (lobby-camp.ts `campFamilyFor`), and it may land after the state.
   useEffect(() => {
     campRef.current?.sync(state);
-  }, [state]);
+  }, [state, chapter?.id]);
 
   // The board is a reader of the mirrored state (brief, trap 2): every patch
   // that touches the encounter flows through here and nowhere else.

@@ -153,6 +153,22 @@ describe("migration (§12.3)", () => {
     expect(await readCamp("h_test", null, h.deps)).toEqual(stored);
   });
 
+  it("reaches stage 3 when Gemfall and Riftlight are both finished, and a replay of either never moves it (#627)", async () => {
+    const h = harness();
+    await h.repo.putCampaignProgress(attempt("gemfall", "complete"));
+    await h.repo.putCampaignProgress(attempt("riftlight", "complete"));
+    const three = await readCamp("h_test", null, h.deps);
+    expect(three).toMatchObject({ frameStage: 3, grownBy: ["gemfall", "riftlight"] });
+    await mutateCamp("h_test", null, (camp) => camp, h.deps);
+    // Both played again and finished again: still the stage-3 camp, counted once each.
+    await h.repo.putCampaignProgress(attempt("gemfall", "complete", { everCompleted: true }));
+    await h.repo.putCampaignProgress(attempt("riftlight", "active", { everCompleted: true }));
+    expect(await readCamp("h_test", null, h.deps)).toMatchObject({ frameStage: 3, grownBy: ["gemfall", "riftlight"] });
+    // A third full campaign is the grand camp.
+    await h.repo.putCampaignProgress(attempt("full-3", "complete"));
+    expect(await readCamp("h_test", null, h.deps)).toMatchObject({ frameStage: 4, grownBy: ["gemfall", "riftlight", "full-3"] });
+  });
+
   it("grows once per campaign however often it is replayed, and stops at stage 4", async () => {
     const h = harness();
     await h.repo.putCampaignProgress(attempt("gemfall", "complete"));

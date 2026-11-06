@@ -404,12 +404,12 @@ export interface CampLayout {
 }
 
 /**
- * The camp for a terrain family at a frame stage. An unknown family takes the
- * first backdrop, and a stage past the last authored one takes the biggest,
+ * The camp for a terrain family at a frame stage. An unknown family takes
+ * `open_plains` (else the first backdrop), and a stage past the last authored one takes the biggest,
  * so a new terrain or a fifth campaign still pitches a camp.
  */
 export function campLayout(manifest: CampManifest, family: string, stage: number): CampLayout {
-  const backdrop = manifest.backdrops.find((b) => b.family === family) ?? manifest.backdrops[0]!;
+  const backdrop = manifest.backdrops.find((b) => b.family === family) ?? manifest.backdrops.find((b) => b.family === "open_plains") ?? manifest.backdrops[0]!;
   const byStage = [...manifest.frames].sort((a, b) => a.stage - b.stage);
   const frame = byStage.find((f) => f.stage === stage) ?? byStage.filter((f) => f.stage <= stage).pop() ?? byStage[0]!;
   return { canvas: manifest.backdropCanvas, backdrop, frame, lanes: new Map(backdrop.lanes.map((l) => [l.id, l])) };
