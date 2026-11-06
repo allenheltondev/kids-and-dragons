@@ -74,6 +74,7 @@ import {
 } from "./actor-art";
 import { figureSize, fitCanvas, NOMINAL_PAINT, paintAspect, stanceLift, type Overflow, type PaintBox } from "./figure-scale";
 import { sceneBackdropUrl } from "./art-paths";
+import { indoorRestMotion } from "./indoor-rest-motion";
 import {
   RIFT_FOOT,
   riftPasses,
@@ -495,6 +496,7 @@ export function createScene(app: Application): PartyScene {
   /** The selected backdrop URL, and the sprite drawing it. */
   let biomeId: string | null = null;
   let biomeSprite: Sprite | null = null;
+  let restMotion: ReturnType<typeof indoorRestMotion>;
   /**
    * Backdrops shown, oldest first, by the URL each was loaded under. A 1920x1080
    * backdrop is about 8MB decoded, a chapter has eight to twelve, and nothing
@@ -1016,6 +1018,9 @@ export function createScene(app: Application): PartyScene {
     // that is already standing there reads as a glitch.
     if (biomeSprite !== null && biomeSprite.alpha < 1) {
       biomeSprite.alpha = approach(biomeSprite.alpha, 1, FADE_RATE, dt);
+    }
+    if (restMotion && biomeSprite && backdrop.renderable) {
+      restMotion.tick(elapsed, biomeSprite.alpha < 0.99 || prefersReducedMotion());
     }
 
     tickCast(dt);
@@ -1671,6 +1676,8 @@ export function createScene(app: Application): PartyScene {
       // A new place: take the old art down immediately. The drawn stand-in is
       // underneath it, so the gap while the next one loads is never a blank
       // screen — and staying in the last chapter's woods would be worse.
+      restMotion?.destroy();
+      restMotion = undefined;
       biomeSprite?.destroy();
       biomeSprite = null;
       if (wanted === null) return;
@@ -1718,6 +1725,7 @@ export function createScene(app: Application): PartyScene {
           sprite.alpha = 0; // faded up by tick()
           biomeSprite = sprite;
           backdropArt.addChild(sprite);
+          if (loadedAs === wanted) restMotion = indoorRestMotion(art, sprite);
         })
         .catch(() => {
           /* keep the drawn stand-in: a missing backdrop must never blank the
@@ -1809,6 +1817,7 @@ export function createScene(app: Application): PartyScene {
       castActors.clear();
       board?.destroy();
       board = null;
+      restMotion?.destroy();
       backdrop.destroy({ children: true });
       storyLayer.destroy({ children: true });
       boardWrap.destroy({ children: true });
