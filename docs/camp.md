@@ -310,6 +310,20 @@ nothing and is never sad: the friend waves off, and the chapter goes on.
   the snowhorn goat she is drawn from, under her own name), the mosshorn (`entities/mosshorn`,
   `"size": "small"`, as Gemfall 4B casts it, so it stands 75 cm), a duckling and the kid goat.
   Each has a few reactions, its words when tapped. Pepper is not one (above).
+- **Where each is befriended (#626)**: a vote on the chapter's spine, "Come along" beside "Say
+  goodbye", each on its own result scene (content/README.md, "Camp friends"). Bun at the Practice
+  Meadow on the way to the back gate (`scene_bun_gate`), the strawberry mosshorn at 4B's gray
+  edge (`scene_mosshorn_friend`), the duckling that picks the party at Ashspan Bridge
+  (`duck_friend`). Two friends were written for the purpose: the **harbor gull**
+  (`entities/quay_gull`), offered in Gemfall 1 at dawn after the Empty Chair (`scene_gull_dawn`)
+  and by the frosty gull of Riftlight's Exchange Rift as the party walks on from the potato rest
+  (`gull_friend`), one friend with two offers, since both are the Exchange's gull and two
+  friends must never read as the same animal (§11); and the **silver
+  otter** (`entities/silver_otter`), met as the party leaves Gemfall 2's mimic ditch
+  (`scene_ditch_otter`). So every crew that plays Gemfall is offered at least two friends, and
+  4B's crews three. *Not offered:* the kid goat. The goat kid of Exchange Rift is the yeti
+  herder's, goes home to its herd in the glacier chapters and is met again in the finale, so it
+  fails "belongs to nobody"; its catalog offer stands, made by no chapter, for the owner's call.
 - **A buddy is on the hero's kit** (`HeroKit.buddies`, kit v3), keyed by the camp it applies in
   (`campKey`: the household, and the crew when it is not the household's first), so it goes where
   she goes and is deleted with her, and applies in that crew's camp only. It is picked through

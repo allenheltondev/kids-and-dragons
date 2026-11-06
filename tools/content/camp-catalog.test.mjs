@@ -223,8 +223,8 @@ describe("friends (§4.4)", () => {
   });
   const befriend = (friendId, rewardId) => ({ type: "befriend", friendId, rewardId });
 
-  it("ships the four friends that belong to nobody, Bun cast by the goat she is drawn from under her own name (#624)", () => {
-    expect(CATALOG.friends.map((f) => f.id)).toEqual(["bun", "mosshorn", "duckling", "kid_goat"]);
+  it("ships the friends that belong to nobody, Bun cast by the goat she is drawn from under her own name (#624, #626)", () => {
+    expect(CATALOG.friends.map((f) => f.id)).toEqual(["bun", "mosshorn", "duckling", "kid_goat", "harbor_gull", "silver_otter"]);
     // Pepper is Nim's pony, with a job and later scenes of her own (§4.4): never a friend.
     expect(CATALOG.friends.map((f) => f.name)).not.toContain("Pepper");
     expect(problems()).toEqual([]);

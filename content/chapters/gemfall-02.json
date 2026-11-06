@@ -2620,7 +2620,7 @@
           "id": "thanks",
           "label": "Say thank you, walk on",
           "icon": "heart",
-          "goto": "scene_embermoths"
+          "goto": "scene_ditch_otter"
         }
       ],
       "art": "scenes/gemfall/ditch-plank-mimics"
@@ -2639,10 +2639,80 @@
           "id": "on",
           "label": "On down the road",
           "icon": "travel",
-          "goto": "scene_embermoths"
+          "goto": "scene_ditch_otter"
         }
       ],
       "art": "scenes/gemfall/ditch-plank-mimics"
+    },
+    "scene_ditch_otter": {
+      "type": "choice_point",
+      "narration": "As you leave the ditch, a silver otter pops out of the muddy water by your boots. It holds up a button. It is yours! It must have come off in all that splashing. Then the otter sits on your foot and will not get off. It wants to come with you. Do you ask it along?",
+      "cast": [
+        {
+          "figure": "entities/silver_otter",
+          "name": "Silver otter"
+        }
+      ],
+      "choices": [
+        {
+          "id": "come",
+          "label": "Ask the otter to come along",
+          "icon": "heart",
+          "goto": "scene_ditch_otter_along",
+          "effects": [
+            {
+              "type": "befriend",
+              "friendId": "silver_otter",
+              "rewardId": "gemfall-02.otter"
+            }
+          ]
+        },
+        {
+          "id": "goodbye",
+          "label": "Say goodbye to the otter",
+          "icon": "hand",
+          "goto": "scene_ditch_otter_goodbye"
+        }
+      ],
+      "discovers": [
+        "creature.silver_otter"
+      ]
+    },
+    "scene_ditch_otter_along": {
+      "type": "story",
+      "narration": "The otter shakes itself dry, all over everybody. Then it climbs into your pack, turns around twice, and pokes its head out. It has brought a smooth blue pebble, and it will not say where from.",
+      "cast": [
+        {
+          "figure": "entities/silver_otter",
+          "name": "Silver otter"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "On down the road",
+          "icon": "arrow",
+          "goto": "scene_embermoths"
+        }
+      ]
+    },
+    "scene_ditch_otter_goodbye": {
+      "type": "story",
+      "narration": "You wave goodbye. The otter waves back, slides down the bank on its tummy, and plops into the ditch. Even the ripples look pleased.",
+      "cast": [
+        {
+          "figure": "entities/silver_otter",
+          "name": "Silver otter"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "On down the road",
+          "icon": "arrow",
+          "goto": "scene_embermoths"
+        }
+      ]
     },
     "interaction_moth_bells": {
       "cast": [

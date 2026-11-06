@@ -1776,7 +1776,7 @@
           "id": "continue",
           "label": "Back to the planks",
           "icon": "hand",
-          "goto": "planks_plan"
+          "goto": "duck_friend"
         }
       ],
       "onEnter": [
@@ -1816,7 +1816,7 @@
           "id": "continue",
           "label": "Back to the planks",
           "icon": "hand",
-          "goto": "planks_plan"
+          "goto": "duck_friend"
         }
       ],
       "onEnter": [
@@ -1837,6 +1837,88 @@
           "to": "party"
         }
       ]
+    },
+    "duck_friend": {
+      "type": "choice_point",
+      "narration": "One duckling will not stay in the basket. It climbs out, waddles over, and sits on your boot. Peep. Tilly laughs. \"That one has picked you,\" she says. \"They do that. It may go with you, if you like.\" Do you take it along?",
+      "cast": [
+        {
+          "figure": "cast/tilly",
+          "name": "Tilly"
+        },
+        {
+          "figure": "entities/duckling",
+          "name": "Duckling"
+        }
+      ],
+      "choices": [
+        {
+          "id": "come",
+          "label": "Ask the duckling to come along",
+          "icon": "heart",
+          "goto": "duck_along",
+          "effects": [
+            {
+              "type": "befriend",
+              "friendId": "duckling",
+              "rewardId": "riftlight-ashspan-bridge.duckling"
+            }
+          ]
+        },
+        {
+          "id": "goodbye",
+          "label": "Say goodbye to the duckling",
+          "icon": "hand",
+          "goto": "duck_goodbye"
+        }
+      ],
+      "art": "scenes/riftlight/ashspan-broken-deck"
+    },
+    "duck_along": {
+      "type": "story",
+      "narration": "The duckling climbs into your pocket and falls asleep at once, with one orange foot sticking out.",
+      "cast": [
+        {
+          "figure": "cast/tilly",
+          "name": "Tilly"
+        },
+        {
+          "figure": "entities/duckling",
+          "name": "Duckling"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back to the planks",
+          "icon": "arrow",
+          "goto": "planks_plan"
+        }
+      ],
+      "art": "scenes/riftlight/ashspan-broken-deck"
+    },
+    "duck_goodbye": {
+      "type": "story",
+      "narration": "You lift the duckling back into the basket. It peeps once, very loudly, to say goodbye, then snuggles in with the others.",
+      "cast": [
+        {
+          "figure": "cast/tilly",
+          "name": "Tilly"
+        },
+        {
+          "figure": "entities/duckling",
+          "name": "Duckling"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back to the planks",
+          "icon": "arrow",
+          "goto": "planks_plan"
+        }
+      ],
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "planks_plan": {
       "type": "choice_point",

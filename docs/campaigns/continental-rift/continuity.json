@@ -323,6 +323,24 @@
             "rooftops": "to the rooftops"
           }
         },
+        "gull_friend": {
+          "requires": [
+            "gull"
+          ],
+          "introduces": {}
+        },
+        "gull_along": {
+          "requires": [
+            "gull"
+          ],
+          "introduces": {}
+        },
+        "gull_goodbye": {
+          "requires": [
+            "gull"
+          ],
+          "introduces": {}
+        },
         "rookery": {
           "requires": [
             "ladder",
@@ -5022,6 +5040,27 @@
             "ducklings",
             "tilly",
             "ossley"
+          ],
+          "introduces": {}
+        },
+        "duck_friend": {
+          "requires": [
+            "ducklings",
+            "tilly"
+          ],
+          "introduces": {}
+        },
+        "duck_along": {
+          "requires": [
+            "ducklings",
+            "tilly"
+          ],
+          "introduces": {}
+        },
+        "duck_goodbye": {
+          "requires": [
+            "ducklings",
+            "tilly"
           ],
           "introduces": {}
         },

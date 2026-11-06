@@ -659,6 +659,40 @@ A chapter can hand the crew a piece for its camp, or every hero a piece for thei
 `rewardId` that is not that piece's offer for the chapter, and a catalog whose ids, groups, shop
 prices or milestones disagree with the manifest or with each other.
 
+## Camp friends: `befriend` (#624, #626)
+
+A chapter can let a creature the party met join the crew as a friend
+([docs/camp.md §4.4](../docs/camp.md#44-friends)). The friends live in `content/camp.json` →
+`friends`, each with its figure, name, a few one-sentence `reactions` and its `offers`, one per
+chapter, exactly as a find's.
+
+```json
+"choices": [
+  { "id": "come", "label": "Ask the otter to come along", "icon": "heart", "goto": "scene_ditch_otter_along",
+    "effects": [{ "type": "befriend", "friendId": "silver_otter", "rewardId": "gemfall-02.otter" }] },
+  { "id": "goodbye", "label": "Say goodbye to the otter", "icon": "hand", "goto": "scene_ditch_otter_goodbye" }
+]
+```
+
+- **A friend belongs to nobody in the story**: no owner, no job, no later scene of its own. Grep
+  every later chapter for the creature before adding it; a later appearance means pick another
+  creature, never rewrite the story (§12.6). The goat kid of Exchange Rift fails this (it goes
+  home to the yeti herder's herd and is met again), so its catalog offer is made nowhere.
+- **A choice, never a variant**: "Come along" carries the `befriend`, beside an ungated "Say
+  goodbye" with no effects. Each lands on a scene of its own that shows the result (the friend
+  climbs into a pack; the friend waves off, never sadly), and both then go on to the same scene,
+  so nothing later depends on it.
+- **On the spine**: the scene that asks stands on every way through the chapter, so every party is
+  offered the friend once, under the one `rewardId`. The friend is in that scene's `cast`, and
+  the words name the creature, never the camp.
+- **Its painted box** goes in `FRIEND_PAINT` (`packages/client/src/world/camp-friends.ts`), which
+  `tools/art/camp-art.test.ts` measures; a friend over 75 cm tall needs the camp-boxes tests'
+  roomy spot 0.
+
+`tools/content/camp-befriends.test.mjs` holds every authored befriending to these rules, and
+`packages/server/src/handlers/camp-befriend-chapters.test.ts` plays each one to the crew owning
+the friend.
+
 ## Conventions the schema cannot state
 
 - **Player-facing text uses US spelling** (color, gray, traveled, center, defense, realize, mom,
