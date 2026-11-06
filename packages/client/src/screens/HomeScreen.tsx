@@ -18,7 +18,7 @@
  * link, for Phone Mode, where the host is seated as a player straight away.
  */
 
-import { randomName } from "./creationContent";
+import { randomName } from "./hero-names";
 import { Suspense, useCallback, useEffect, useId, useMemo, useState } from "react";
 import { ChunkBoundary, lazyChunk } from "../ui/ChunkBoundary";
 import type { ChangeEvent, ReactElement } from "react";
