@@ -35,6 +35,7 @@ import {
   SHARED_EDITS_PER_MOMENT,
 } from "@kad/shared";
 import type { ClientIntent, HeroKitView, PartyMember, RunState } from "@kad/shared";
+import { useChapter } from "../store";
 import { Button } from "../ui/Button";
 import { Icon } from "./icons";
 import { StillCamp, TentStandIn } from "../world/StillCamp";
@@ -388,6 +389,7 @@ function SharedSpots({
 
 /** The panel itself: a picture and its named controls. Open only in downtime. */
 export function CampPanel({ state, me, held, dispatch }: { state: RunState; me: PartyMember; held: boolean; dispatch: Dispatch }): ReactElement | null {
+  const chapter = useChapter();
   const open = useSyncExternalStore(onCampPanel, campPanelOpen, campPanelOpen);
   const kind = campMomentKind(state);
   const [active, setActive] = useState<string | null>(null);
@@ -410,7 +412,9 @@ export function CampPanel({ state, me, held, dispatch }: { state: RunState; me: 
   }, [open]);
   if (!open || kind === null) return null;
   // Indoors the camp is packed down to bedrolls and packs (§3.2).
-  const layout = campLayoutFor(state.campMoment?.outdoor === false ? 1 : campStage(state));
+  const indoors = state.campMoment?.outdoor === false;
+  const biome = !indoors && (state.phase === "chapter_complete" || kind === "rest") ? chapter?.biome : null;
+  const layout = campLayoutFor(indoors ? 1 : campStage(state), biome);
   const mine = state.party.filter((m) => m.playerId === me.playerId);
   return (
     <div className="camp-panel" role="dialog" aria-modal="true" aria-labelledby={titleId} data-testid="camp-panel">

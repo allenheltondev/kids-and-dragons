@@ -69,6 +69,7 @@
   background: #2a2f4a;
 }
 .kad-static-camp__frame { position: absolute; }
+.kad-static-camp__accent { position: absolute; pointer-events: none; }
 /* The painting's plain edges drawn on past it (camp-framing.ts campBleed): flipped, so the
    painting's top row meets itself above it and its bottom row below it. */
 .kad-static-camp__bleed {

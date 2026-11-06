@@ -54,7 +54,9 @@ export function StaticStage(): React.JSX.Element {
   // The lobby's picture is the crew's camp (#614), still here as everything is.
   // And the chapter end's camp beat (#620), at the crew's own frame stage.
   const beat = useSyncExternalStore(onCampBeat, campBeatShown, campBeatShown);
-  const camp = state && campShownFor(state, beat) ? campLayoutFor(campStage(state)) : null;
+  const camp = state && campShownFor(state, beat)
+    ? campLayoutFor(campStage(state), state.phase === "chapter_complete" ? chapter?.biome : null)
+    : null;
   if (state && camp) {
     return (
       <div className="kad-static-stage" data-testid="static-stage" aria-hidden="true">

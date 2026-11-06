@@ -218,7 +218,10 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // 1646 -> 1650 for the six later camp backdrops (#649). Their lane layouts
 // bring the lazy camp payload to 1648KB in CI. The WebPs are fetched separately
 // and first paint stays at 331KB. Keep the existing 2KB of slack.
-const TOTAL_BUDGET_KB = 1650;
+// 1650 -> 1654 for camp terrain accents (#652) integrated with the friend
+// habits and latest main. The measured total is 1652KB, with first paint
+// still at 331KB. Keep 2KB of slack.
+const TOTAL_BUDGET_KB = 1654;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

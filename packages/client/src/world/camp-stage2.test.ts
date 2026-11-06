@@ -8,7 +8,7 @@
  */
 
 import { afterEach, beforeAll, describe, expect, it } from "vitest";
-import type { Application, Container, Texture } from "pixi.js";
+import { Texture, type Application, type Container, type Sprite } from "pixi.js";
 import type { CampView, PartyMember, RunState } from "@kad/shared";
 import { makeCharacter, makeMember, makeState } from "../testing/fixtures";
 import { fakeApp, installFakeCanvas2D, type FakeApp } from "../testing/fake-stage";
@@ -109,6 +109,46 @@ describe("frame stage 2", () => {
 });
 
 describe("the stage-up moment (§4.1)", () => {
+  it.each([
+    ["whispering_marsh", "whispering_marsh", "alpha"],
+    ["exchange", "cliffside_exchange", "height"],
+    ["sky_islands", "sky_islands", "angle"],
+  ] as const)("animates the %s chapter-end accent and holds it still on request", async (biome, family, property) => {
+    const app = fakeApp();
+    const loaded: string[] = [];
+    const lobby = createLobbyCamp(app as unknown as Application, lobbyCampLayout()!, {
+      layoutFor: campLayoutFor,
+      loadTexture: async (url) => {
+        loaded.push(url);
+        return Texture.WHITE;
+      },
+    });
+    lobby.resize(1600, 900);
+    lobby.sync(makeState({ phase: "chapter_complete" }), biome);
+    setCampBeat(true);
+    await settle();
+    const stage = lobby.camp()!.view;
+    const accent = stage.getChildByLabel("camp-terrain-accent", true) as Sprite;
+    const backdropLayer = accent.parent!;
+    expect(loaded).toContain(`/assets/camp/backdrops/${family}.webp`);
+    expect(backdropLayer.getChildIndex(accent)).toBeGreaterThan(
+      backdropLayer.getChildIndex(stage.getChildByLabel("camp-backdrop", true)!),
+    );
+    const initial = accent[property];
+    for (let i = 0; i < 20; i++) app.ticker.frame(16);
+    expect(accent[property]).not.toBeCloseTo(initial);
+
+    lobby.setStill(true);
+    const resting = accent[property];
+    for (let i = 0; i < 20; i++) app.ticker.frame(16);
+    expect(accent[property]).toBe(resting);
+
+    lobby.sync(makeState({ phase: "lobby" }), biome);
+    await settle();
+    expect(lobby.camp()!.view.getChildByLabel("camp-terrain-accent", true)).toBeFalsy();
+    lobby.destroy();
+  });
+
   it("is never longer than the transformation's beat", () => {
     expect(PITCH_S * 1000).toBeLessThanOrEqual(TRANSFORM_BEAT_MS);
   });
