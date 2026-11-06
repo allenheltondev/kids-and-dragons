@@ -32,6 +32,15 @@ describe("rendering what is owed", () => {
     expect(store.clips.size).toBe(3);
   });
 
+  it("reserves what the provider bills (the words and their tags), not the words alone", async () => {
+    const { made } = deps({ billedChars: (s) => s.text.length + 30 });
+    const report = await renderOwed(owed(2, 100), made, { ...live, maxChars: 259 });
+    expect(report.chars).toBe(130);
+    expect(report.rendered).toHaveLength(1);
+    expect(report.stoppedBy).toBe("chars");
+    expect(report.deferred).toHaveLength(1);
+  });
+
   it("never renders a clip the store already has: that is the generation cache", async () => {
     const { made, synth } = deps();
     await renderOwed(owed(3), made, live);
@@ -169,7 +178,7 @@ describe("measuring what the provider bills", () => {
     const { pcmToWav } = await import("./bakeoff/providers");
     // Two seconds of 24 kHz audio, billed as 60 tokens: 30 a second.
     const wav = pcmToWav(Buffer.alloc(24000 * 2 * 2), 24000);
-    const { made } = deps({ synth: () => Promise.resolve({ wav, audioTokens: 60 }) });
+    const { made } = deps({ synth: () => Promise.resolve({ audio: wav, ext: "wav" as const, audioTokens: 60 }) });
     const report = await renderOwed(owed(2), made, live);
     expect(report.measured).toEqual({ audioTokens: 120, seconds: 4, clips: 2, tokensPerSecond: 30 });
   });
