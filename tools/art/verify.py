@@ -812,6 +812,7 @@ def check_camp_layout(rep: Report, mf: dict) -> None:
         if len({point["id"] for point in points}) != len(points):
             problems.append("unique stand point ids")
         seats: list[int] = []
+        friends: list[int] = []
         for point in points:
             pid = point["id"]
             if not on_lane(point["lane"], point["x"]):
@@ -839,9 +840,16 @@ def check_camp_layout(rep: Report, mf: dict) -> None:
                 if point["seat"] not in CAMP_SEATS or action != "rest":
                     problems.append(f"stand point {pid} seat 0-3, on a rest spot")
                 seats.append(point["seat"])
+            if "friend" in point:
+                if point["friend"] not in CAMP_SEATS or action is not None or "seat" in point or "hotspot" in point:
+                    problems.append(f"stand point {pid} friend 0-3, with no seat, action or hotspot")
+                friends.append(point["friend"])
         # Every frame seats the full party (docs/camp.md §12): one rest spot per seat.
         if sorted(seats) != sorted(CAMP_SEATS):
             problems.append(f"one rest spot per seat 0-3, found {sorted(seats)}")
+        # ...and the four friends out (§4.4, §12.3; #624): one friend spot each.
+        if sorted(friends) != sorted(CAMP_SEATS):
+            problems.append(f"one friend spot per friend 0-3, found {sorted(friends)}")
         trailhead = frame.get("trailhead") or {}
         if not on_lane(trailhead.get("lane", ""), trailhead.get("x", -1)):
             problems.append("a trailhead on a lane")

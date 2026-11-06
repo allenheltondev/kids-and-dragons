@@ -589,6 +589,36 @@ and the souvenir it leaves behind are all unreachable in play, though each is bu
 Whoever writes the first authored chapter should give it an ending that declares
 `"outcome": "setback"`; it is one key on one terminal scene.
 
+## Rest scenes: indoors or out (`setting`, #625)
+
+Every `rest` scene says where the party rests, and `npm run content:validate` refuses one that
+does not ([docs/camp.md §3.2](../docs/camp.md#32-indoor-and-outdoor-rest-scenes)):
+
+```json
+"rest_mossbank": {
+  "type": "rest",
+  "setting": "outdoor",
+  "art": "scenes/bramblewood/shrine",
+  "narration": "The moss on the bank below the hill is warm where the sun got to it...",
+  "choices": [...]
+}
+```
+
+- **`"outdoor"`**: somewhere a campsite could be pitched. As the scene opens the shared screen
+  crossfades from the scene's picture to the crew's full camp, pitched in the chapter's terrain
+  (its `biome`'s family, or the plains while that family's backdrop is unpainted), with the
+  narration on its plate as usual. The crew's shared camp spots can change from the phones.
+- **`"indoor"`**: everywhere else, **including outdoor places no campsite fits**: a boat deck or a
+  raft, a narrow ledge, a river floe, a climb, a paved city quay. The scene keeps its own picture,
+  and the camp is packed down into it: each hero's bedroll and pack on the ground beside her. No
+  tents, no campfire, no shared spots; each kid's own kit can still change.
+
+Read the narration and the picture, not the keywords: "under the bridge" is outdoors, "a warm
+room" is not. A rest whose words put the party somewhere far from the chapter's terrain (a glacier
+chapter's ending on a foothills bank) is tagged indoor too, so the camp never contradicts the words.
+An ending is a rest like any other. The field is presentation only: it moves no flag, XP, item or
+route, so tagging a Gemfall chapter re-takes its file hashes and nothing else.
+
 ## Camp finds: `findForCamp` and `findForKit` (#618)
 
 A chapter can hand the crew a piece for its camp, or every hero a piece for their own kit

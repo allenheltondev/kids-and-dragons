@@ -1596,6 +1596,7 @@
     },
     "rest": {
       "type": "rest",
+      "setting": "indoor",
       "narration": "Hummock's hut is small for a yeti and huge for everyone else. Grandma Drift has gone on up to the reading room, but she left a pot of soup on his stove. Hummock's eyebrows drip as they thaw. \"Sleep by the stove,\" he says, \"or go and see the old valley by moonlight. It won't look like that again for a long time.\"",
       "cast": [
         {

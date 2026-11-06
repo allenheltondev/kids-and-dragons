@@ -162,17 +162,15 @@ export async function acceptTransfer(
       return null;
     });
     if (out && !out.ok) console.error(`acceptTransfer: ${out.error.message}`);
-    // Her heroes' buddies (docs/camp.md §4.4) name her old home's friends, so
-    // they come out of every one of its camps: its first crew's and each other
-    // crew's. Her kit is on her heroes and moved with them. Like the seats
-    // above, the move has already happened, so a camp that could not be
-    // written is only logged; a buddy left behind names a hero who is no
-    // longer seated there, and nothing at that table can pick her.
-    await forgetBuddies(record.householdId, move.characters.map((c) => c.id), deps).catch((err: unknown) => {
-      console.error(`acceptTransfer: could not take ${move.player.id}'s buddies out of ${record.householdId}'s camps:`, err);
-    });
-
     const home = "household" in to ? to.household.id : to.householdId;
+    // Her heroes' buddies in her old home's camps (docs/camp.md §4.4) name
+    // its crews' friends, so they stay behind: they come off her heroes'
+    // kits, which moved with her (#624). Like the seats above, the move has
+    // already happened, so a kit that could not be written is only logged; a
+    // buddy left behind applies only at a table she no longer sits at.
+    await forgetBuddies(home, move.characters.map((c) => c.id), record.householdId, deps).catch((err: unknown) => {
+      console.error(`acceptTransfer: could not take ${move.player.id}'s buddies at ${record.householdId} off her kits:`, err);
+    });
     const [summary] = await summaries([home], deps);
     if (!summary) return fail("NOT_FOUND", "That home is gone.");
     return ok({ household: summary, playerId: move.player.id, displayName: name, heroes: move.characters.length });

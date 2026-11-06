@@ -10,7 +10,7 @@
 
 import { describe, expect, it } from "vitest";
 import { SHARED_EDITS_PER_MOMENT, growCamp, hotspotsAt, readKit, shownAt } from "@kad/shared";
-import type { CampRecord, ClientIntent, RunState } from "@kad/shared";
+import type { CampRecord, ClientIntent, RestSetting, RunState } from "@kad/shared";
 import { joinRoom } from "./room.ts";
 import { CAMP_WRITE_ATTEMPTS, mutateCamp, readCamp } from "./camp.ts";
 import { CATALOG, harnessFor, racedCommits, seeded, table, type Table } from "./camp-table.testing.ts";
@@ -32,8 +32,8 @@ async function seedCamp(t: Table, harness: TestHarness, over: Partial<CampRecord
 }
 
 /** Two heroes seated in the lobby, at a stage-2 camp (one finished full campaign) that owns two awnings. */
-async function lobby(): Promise<{ harness: TestHarness; t: Table; heroes: { p1: string; p2: string } }> {
-  const harness = harnessFor();
+async function lobby(options: { restSetting?: RestSetting } = {}): Promise<{ harness: TestHarness; t: Table; heroes: { p1: string; p2: string } }> {
+  const harness = harnessFor(CATALOG, options);
   const t = await table(harness);
   await seedCamp(t, harness, {
     grownBy: ["gemfall"],
@@ -110,6 +110,19 @@ describe("a hero's kit (§4.5, §12.1)", () => {
     const shared = await t.attempt("p_1", place(s, "awning", "shop_striped_awning"));
     expect(shared.ok).toBe(false);
     expect(shared.error?.message).toContain("full camp");
+  });
+
+  it("can change, and so can the shared spots, at a rest whose scene is outdoors (§3.2, #625)", async () => {
+    const { t, heroes } = await lobby({ restSetting: "outdoor" });
+    await t.send("p_1", { type: "READY", ready: true });
+    await t.send("p_2", { type: "READY", ready: true });
+    await t.send("p_1", { type: "START_CHAPTER", chapterId: "bramblewood-01" });
+    await t.goto("scene_camp");
+    const s = await t.state();
+    expect(s.campMoment).toMatchObject({ kind: "rest", outdoor: true, changes: {} });
+    await t.send("p_1", { type: "KIT_EDIT", characterId: heroes.p1, revision: 0, style: "patched" });
+    await t.send("p_2", place(s, "awning", "shop_striped_awning"));
+    expect((await t.state()).camp?.placed).toMatchObject({ awning: "shop_striped_awning" });
   });
 });
 

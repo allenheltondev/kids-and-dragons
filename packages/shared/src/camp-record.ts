@@ -27,8 +27,11 @@ import type {
 
 /** Bump together with a new step in `CAMP_STEPS`; a bump without a step throws on read. */
 export const CAMP_VERSION = 1;
-/** Bump together with a new step in `KIT_STEPS`. v2: `tent`, and the catalog's milestone ids (#618). */
-export const KIT_VERSION = 2;
+/**
+ * Bump together with a new step in `KIT_STEPS`. v2: `tent`, and the catalog's
+ * milestone ids (#618). v3: `buddies` (#624).
+ */
+export const KIT_VERSION = 3;
 
 /** The grand camp (§4.1). Finished campaigns past it are trophies. */
 export const MAX_FRAME_STAGE: FrameStage = 4;
@@ -63,7 +66,6 @@ export function emptyCamp(): CampRecord {
     owned: {},
     placed: {},
     friends: {},
-    buddies: {},
     paidChapterCount: 0,
     receipts: { rewards: {}, chapters: {}, drops: {} },
   };
@@ -79,6 +81,7 @@ export function emptyKit(): HeroKit {
     color: null,
     slots: Array.from({ length: KIT_SLOTS }, () => null),
     unlocked: {},
+    buddies: {},
   };
 }
 
@@ -120,7 +123,6 @@ export function campView(camp: CampRecord): CampView {
     owned: Object.keys(camp.owned).sort(),
     placed: { ...camp.placed },
     friends: Object.keys(camp.friends).sort(),
-    buddies: { ...camp.buddies },
     shopOpen: camp.paidChapterCount >= SHOP_OPENS_AT,
   };
 }
@@ -273,6 +275,13 @@ const KIT_STEPS: Record<number, Step> = {
       tent: raw["tent"] ?? null,
     };
   },
+  /*
+   * v2 → v3 (#624). A hero's buddy in each crew's camp, on her kit
+   * (`buddies`, by `campKey`), so it goes where she goes. Nothing to fix:
+   * every v2 kit had none. The bump is so a v2 build refuses a v3 kit rather
+   * than narrowing her buddies away when it rewrites her row.
+   */
+  2: (raw) => ({ ...raw, buddies: raw["buddies"] ?? {} }),
 };
 
 /** Storage → domain for a camp row. `version` is the envelope's `v`; `undefined` is v0. */
@@ -331,8 +340,10 @@ function assertCamp(raw: Record<string, unknown>): CampRecord {
     friends: entries(raw["friends"], "camp.friends", (e, path): CampFriend => ({
       rewardId: str(e["rewardId"], `${path}.rewardId`),
       at: str(e["at"], `${path}.at`),
+      ...(e["outs"] === undefined ? {} : { outs: count(e["outs"], `${path}.outs`) }),
     })),
-    buddies: entries(raw["buddies"], "camp.buddies", undefined),
+    // `buddies` (Phase 2's, by hero) never held anything: a buddy is on the hero's kit (#624).
+    ...optionalString(raw, "outing"),
     paidChapterCount: count(raw["paidChapterCount"] ?? 0, "camp.paidChapterCount"),
     receipts: {
       rewards: entries(receipts["rewards"], "camp.receipts.rewards", receipt),
@@ -362,6 +373,7 @@ function assertKit(raw: Record<string, unknown>): HeroKit {
       }
       return { from, ...optionalString(e, "rewardId"), ...optionalString(e, "at") };
     }),
+    buddies: entries(raw["buddies"], "kit.buddies", undefined),
     ...highestTierOf(raw["highestTier"]),
   };
 }

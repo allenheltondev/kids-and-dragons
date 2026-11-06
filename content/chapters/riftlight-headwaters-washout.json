@@ -416,6 +416,7 @@
     },
     "floe_rest": {
       "type": "rest",
+      "setting": "indoor",
       "narration": "The big floe holds still long enough to lie flat and breathe. On your pack, the Listening Chime swings on its cord. The whole river runs downhill, but the chime leans the other way: upstream, back toward the glacier. \"Is it meant to do that?\" Skerry calls. For one minute, the river is only a bumpy road. How will you use it?",
       "heal": 1,
       "choices": [
@@ -1769,6 +1770,7 @@
     },
     "early": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "You sit on a new bank, wet and together. The cairned pass is still uphill. \"I'll fly back and tell Orin where you came out,\" says Skerry. She looks at the river. \"Yesterday it took my road. Today it gave you a new one. Something is moving this river. What? And can it be put back?\" Your chime still leans upstream, toward the glacier.",
       "heal": 0,
       "choices": [],
@@ -2122,6 +2124,7 @@
     },
     "middle": {
       "type": "rest",
+      "setting": "indoor",
       "narration": "You sit among boundary stones in low hills called the Red Sky Foothills. The carvings show a mountain with a strange shape. \"Never been this far down the river,\" says Skerry. \"The river brought you somewhere new.\" She shakes out her wings. \"I'll tell Orin. Something is moving this river. What? Can it be put back?\" First you check on each other. Then you can study the stones.",
       "heal": 0,
       "choices": [],
@@ -2280,6 +2283,7 @@
     },
     "rift_end": {
       "type": "rest",
+      "setting": "indoor",
       "narration": "You angle the rope toward the fold and gather at its edge. Thin air brushes your faces. \"Go together!\" Skerry calls. \"I'll tell Orin you went into the light!\" Nobody has let go. You will go through all at once, together, somewhere none of you has ever been.",
       "heal": 0,
       "choices": [],
@@ -2498,6 +2502,7 @@
     },
     "late": {
       "type": "rest",
+      "setting": "indoor",
       "narration": "You climb onto the east bank beside a bridge called Ashspan Bridge. One of its spans is cracked. A frogfolk boatman nods from his flat boat. \"Old Ossley,\" he says. Long pause. \"Bridge is broken. Folk need ferrying. You could help, if you're staying.\" Skerry lands beside you. \"I'll tell Orin. The river let you out somewhere new. Something is moving it. What? Can it be put back?\"",
       "heal": 0,
       "choices": [],
@@ -2564,6 +2569,7 @@
     },
     "rescued": {
       "type": "rest",
+      "setting": "indoor",
       "narration": "Ossley brings the boat to the east bank beside a bridge called Ashspan Bridge. One span is cracked. \"Folk need ferrying,\" he says. \"Bridge is broken.\" You share a supper bundle, warmer and together. Skerry shakes out her wings. \"I'll tell Orin. Something is moving this river. What? Can it be put back?\" The river changed your road. It did not end it.",
       "heal": 0,
       "choices": [],

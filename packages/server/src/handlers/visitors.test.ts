@@ -40,6 +40,7 @@ function visitChapter(): Chapter {
       },
       scene_camp: {
         type: "rest",
+        setting: "outdoor",
         narration: "A warm hollow.",
         // By player: the room's own hero, and the visitor's (`visitingHousehold`).
         onEnter: [

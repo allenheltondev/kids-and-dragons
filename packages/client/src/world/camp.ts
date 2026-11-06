@@ -37,8 +37,9 @@ import leafArt from "../assets/painted/leaf.webp";
 import { CAMP_KIT_STYLES, campKitStyle, campTentCloth } from "./camp-kit-art";
 import { campKitCanvas } from "./camp-kit-canvas";
 import { campPieceOwner } from "./camp-ownership";
-import { bannerName, hotspotGlow, pieceStandIn, souvenirStandIn, standInLabel, tentStandIn } from "./camp-stand-in";
-import { campBoxes, campFitFor, ownedPieceSize, type CampBox, type CampBoxInput, type CampLabelBox } from "./camp-boxes";
+import { bannerName, friendWords, hotspotGlow, pieceStandIn, souvenirStandIn, standInLabel, tentStandIn } from "./camp-stand-in";
+import { REACT_S, WORDS_S, createTapQueue, type FriendTap, type TapVerdict } from "./camp-taps";
+import { campBoxes, campFitFor, ownedPieceSize, type CampBox, type CampBoxFriend, type CampBoxInput, type CampLabelBox } from "./camp-boxes";
 import { campPaint } from "./camp-paint";
 import { campAccent, campAccentPose } from "./camp-accents";
 import { tentArt, type CampBesideView, type CampSpotView } from "./camp-scene";
@@ -53,7 +54,6 @@ import {
   measurePaint,
 } from "./actor-art";
 import {
-  friendHabitSpot,
   campRoute,
   campRoutes,
   laneAt,
@@ -98,17 +98,21 @@ import { reducedMotion } from "../a11y/prefs";
 import {
   BLEED_SOURCE,
   campBleed,
+  campSides,
   campStandRange,
   campStandX,
   campVisibleSpan,
   campWindow,
+  type CampFit,
   type CampFraming,
   type CampSpan,
+  type CampWindow,
 } from "./camp-framing";
 
 /** Somebody in camp: a hero or a friend. */
 export interface CampFigure {
   id: string;
+  /** A friend's fireside habit (camp-friends.ts `friendHabit`; #651): Bun's shake, the duckling's waddle, the mosshorn's leaf. */
   habit?: CampFriendHabit;
   /** The cutout, or null for the "art pending" placeholder. */
   url: string | null;
@@ -119,6 +123,10 @@ export interface CampFigure {
   species?: string;
   /** A hero's seat (0 to 3), whose bedroll is theirs. Friends have none. */
   seat?: number;
+  /** A friend's spot (0 to 3, `CampStandPoint.friend`; #624): where it stands when nothing calls it over. Heroes have none. */
+  friend?: number;
+  /** A friend's figure (`cast/bun`), whose painted box it is drawn and kept clear by (camp-friends.ts). */
+  figure?: string;
   /** Hero accent for their own bedroll; friends have no kit. */
   accent?: string;
   /**
@@ -174,6 +182,13 @@ export interface CampOptions {
   fallbackBackdrop?: string;
   /** How a texture is loaded; Pixi's `Assets.load` unless a test says otherwise. */
   loadTexture?: (url: string) => Promise<Texture>;
+  /**
+   * Never reach past the window's top (#625): past the figures' floor the
+   * whole camp is drawn smaller, with its mirrored copies filling the pane's
+   * sides (camp-framing.ts `campShrunkScale`, `campSides`). An outdoor rest's
+   * camp, whose window starts at the foot of the goal card (lobby-camp-stage.ts).
+   */
+  shrink?: boolean;
 }
 
 /** One figure as it stands this frame: what camp.test.ts reads. */
@@ -218,10 +233,24 @@ export interface CampStage {
   setInset(bottomPx: number, topPx?: number): void;
   /** Every figure, this frame. */
   figures(): CampFigureView[];
+  /**
+   * The window the camp is framed in and the fit it is headed for (camp-boxes.ts `campFitFor`),
+   * in pane px and canvas fractions, or null before it has a pane (for tests: tv-lobby-layout,
+   * layout-fit measure the camp against the panels and the goal card with it).
+   */
+  fitted(): { window: CampWindow; fit: CampFit } | null;
   /** The pieces somebody is using, whose moving parts animate. */
   activePieces(): string[];
   /** The crew's pieces at their hotspots and beside the campfire (#620). */
   setDressing(dressing: CampDressing): void;
+  /**
+   * A kid tapped a friend on her phone (§4.4, §8.5; #624): it says its words
+   * and walks over to her hero, one tap at a time (camp-taps.ts). Reduced
+   * motion: the words alone. Says what became of it.
+   */
+  tapFriend(tap: FriendTap): TapVerdict;
+  /** The friends' words up now, by figure id (for tests). */
+  friendWords(): { id: string; words: string }[];
   /** The frame just grew: the heroes pitch the new camp (§4.1). Cut short by anything; never waited on. */
   pitch(): void;
   /** Whether a pitch is still under way (for tests). */
@@ -356,6 +385,16 @@ interface Actor {
   removing: boolean;
   airborne: boolean;
   moving: boolean;
+  /** A tapped friend (#624): when it walks over, to whom, and when its tap is done (still: the words alone). */
+  tapWalkAt: number | null;
+  tapHero: string | null;
+  tapDoneAt: number | null;
+  /** Ways over to the hero found blocked so far: a lane-mate is nudged and it tries again, then fades. */
+  tapTries: number;
+  /** Its words over its head, and until when. */
+  words: Container | null;
+  wordsText: string;
+  wordsUntil: number;
 }
 
 interface PieceView {
@@ -429,6 +468,13 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   view.addChild(backdrop);
   let bleedTop: Sprite | null = null;
   let bleedBottom: Sprite | null = null;
+  /*
+   * A shrunk camp (`options.shrink`) may be narrower than the pane: a copy of
+   * the painting, edges and all, mirrored, stands each side of it, so each
+   * seam meets itself (camp-framing.ts `campSides`). Hidden at a cover scale.
+   */
+  const sides: { view: Container; top: Sprite; bottom: Sprite; left: boolean }[] = [];
+  /* The terrain's animated accent (camp-accents.ts; #652), over the painting. */
   const accent = campAccent(layout.backdrop.family);
   let accentSprite: Sprite | null = null;
   function updateAccent(): void {
@@ -455,6 +501,24 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     bleedBottom = new Sprite(strip(th * (1 - BLEED_SOURCE)));
     bleedBottom.label = "camp-bleed-bottom";
     backdrop.addChild(bleedTop, bleedBottom, sprite);
+    if (options.shrink) {
+      for (const left of [true, false]) {
+        const side = new Container();
+        side.label = left ? "camp-side-left" : "camp-side-right";
+        // Flipped across: the left copy spans -W..0, the right one W..2W.
+        side.scale.x = -1;
+        side.x = left ? 0 : 2 * W;
+        side.visible = false;
+        const top = new Sprite(bleedTop.texture);
+        const bottom = new Sprite(bleedBottom.texture);
+        const body = new Sprite(texture);
+        body.width = W;
+        body.height = H;
+        side.addChild(top, bottom, body);
+        backdrop.addChild(side);
+        sides.push({ view: side, top, bottom, left });
+      }
+    }
     if (framed) place(framed);
   };
   const fallback = options.fallbackBackdrop;
@@ -733,10 +797,16 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
    */
   function homeOf(actor: Actor): Place {
     const points = layout.frame.standPoints;
-    const own = actor.def.seat === undefined ? undefined : points.find((p) => p.seat === actor.def.seat);
+    const own =
+      actor.def.seat !== undefined
+        ? points.find((p) => p.seat === actor.def.seat)
+        : actor.def.friend !== undefined
+          ? points.find((p) => p.friend === actor.def.friend)
+          : undefined;
     if (own && !inLine(actor, pointPlace(own))) return pointPlace(own);
     const held = heldPoints(actor);
-    const open = (p: CampStandPoint) => !held.has(p.id) && p.seat === undefined && !inLine(actor, pointPlace(p));
+    // A friend spot is only its friend's, as a seat is only its hero's.
+    const open = (p: CampStandPoint) => !held.has(p.id) && p.seat === undefined && p.friend === undefined && !inLine(actor, pointPlace(p));
     const free = points.find(open) ?? own ?? points.find((p) => !held.has(p.id));
     return free ? pointPlace(free) : { spot: { ...layout.frame.trailhead }, point: null };
   }
@@ -752,7 +822,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     const held = heldPoints(actor);
     const here = actor.x / W;
     const other = layout.frame.standPoints
-      .filter((p) => p.seat === undefined && !held.has(p.id))
+      .filter((p) => p.seat === undefined && (p.friend === undefined || p.friend === actor.def.friend) && !held.has(p.id))
       .map(pointPlace)
       .filter((place) => !inLine(actor, place) && bodiesClear(actor, place, true))
       .sort((a, b) => Math.abs(a.spot.x - here) - Math.abs(b.spot.x - here));
@@ -1127,14 +1197,19 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
       removing: false,
       airborne: false,
       moving: false,
+      tapWalkAt: null,
+      tapHero: null,
+      tapDoneAt: null,
+      tapTries: 0,
+      words: null,
+      wordsText: "",
+      wordsUntil: 0,
     };
     actors.set(def.id, actor);
     fitArt(actor);
-    const habitSpot = def.habit ? friendHabitSpot(layout, def.habit) : undefined;
-    const home = habitSpot ? { spot: { lane: habitSpot.lane, x: pointX(habitSpot) }, point: null } : homeOf(actor);
-    placeAt(actor, home, habitSpot ? toFacing(habitSpot.face) : null);
-    planner.add({ id: def.id, ...(def.seat !== undefined ? { seat: def.seat } : {}) }, home);
-    if (habitSpot) planner.direct(def.id, home, null, 0);
+    const home = homeOf(actor);
+    placeAt(actor, home, null);
+    planner.add(wanderFigure(def), home);
     loadArt(actor);
     if (def.habit === "mosshorn") {
       void load(leafArt).then((texture) => {
@@ -1290,7 +1365,8 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
 
     if (!actor.walk) {
       const since = elapsed - actor.arrivedAt;
-      const habit = actor.leaving ? undefined : actor.def.habit;
+      // A friend's fireside habit (#651) plays each time it settles somewhere, unless something else is acting.
+      const habit = actor.leaving || actor.action ? undefined : actor.def.habit;
       const settle = habit === "bun" ? bunSettlePose : habit === "duckling" ? ducklingSettlePose : undefined;
       const pose = settle?.(since, still) ?? actionPose(actor.action ?? "rest", since, still || !actor.action);
       const forward = actor.facing;
@@ -1350,7 +1426,8 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     // Art is drawn facing left: scale.x 1 faces left, -1 right.
     actor.art.scale.x = -actor.facingNow * scaleX;
     if (actor.leaf) {
-      const drop = mosshornLeafDrop(elapsed - actor.arrivedAt, still);
+      // Carried while it wanders, dropped once each time it settles.
+      const drop = actor.walk && !still ? 0 : mosshornLeafDrop(elapsed - actor.arrivedAt, still);
       actor.leaf.visible = actor.sprite !== null && !actor.leaving;
       actor.leaf.width = actor.leaf.height = actor.heightPx * 0.19;
       actor.leaf.x = -actor.heightPx * (0.22 + 0.1 * drop);
@@ -1384,6 +1461,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     }
 
     requeue();
+    tickTaps();
     for (const actor of actors.values()) {
       if (actor.removing || actor.leaving) continue;
       if (actor.stepOutBy !== null) {
@@ -1399,9 +1477,12 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
 
     for (const actor of [...actors.values()]) {
       tickActor(actor, dt);
+      placeWords(actor);
       if (actor.removing && actor.alpha < 0.02) {
         actors.delete(actor.def.id);
         planner.remove(actor.def.id);
+        tapQueue.forget(actor.def.id);
+        actor.words?.destroy({ children: true });
         actor.container.destroy({ children: true });
       }
     }
@@ -1519,6 +1600,8 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
         loadArt(actor);
       }
     }
+    friendsOut = [];
+    for (const f of figures) if (f.friend !== undefined && f.figure) friendsOut[f.friend] = { figure: f.figure, heightCm: f.heightCm };
     heroes = figures.filter((f) => f.seat !== undefined).map((f) => ({ seat: f.seat!, heightCm: f.heightCm, id: f.id, ...(f.species ? { species: f.species } : {}), ...(f.name ? { name: f.name } : {}), kitStyle: f.kitStyle ?? null, tent: f.tent ?? null, souvenirs: f.souvenirs ?? 0 }));
     labelsDirty = true;
     // A taller hero sitting down raises the band the frame keeps in the window.
@@ -1533,9 +1616,8 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     for (const actor of actors.values()) {
       if (actor.removing) continue;
       const was = old.snapshot(actor.def.id);
-      const seat = actor.def.seat !== undefined ? { seat: actor.def.seat } : {};
       const here: Place = { spot: { lane: actor.lane ?? layout.frame.trailhead.lane, x: actor.x / W }, point: actor.walk ? null : actor.point };
-      planner.add({ id: actor.def.id, ...seat }, here);
+      planner.add(wanderFigure(actor.def), here);
       // A walk under way finishes; the new plan starts from where it ends.
       if (actor.walk && actor.walkTo) {
         const remaining = Math.max(0, actor.walkStart + actor.walk.duration - elapsed);
@@ -1708,6 +1790,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   /** Where the camp is framed this frame, and where it is headed. */
   let framed: CampFraming | null = null;
   let framing: CampFraming | null = null;
+  let lastFit: { window: CampWindow; fit: CampFit } | null = null;
 
   /**
    * Frame the camp in the pane (camp-framing.ts `campFraming`). A new pane
@@ -1720,7 +1803,9 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     if (destroyed || pane.width <= 0 || pane.height <= 0) return;
     const heights = [...actors.values()].filter((a) => !a.removing).map((a) => a.def.heightCm);
     // Her gear and the crew's pieces bound the row and the band too (camp-boxes.ts).
-    const fit = campFitFor(pane.width, campWindow(pane.height, insetTop, insetBottom), layout, boxInput(), 0.5, heights);
+    const window = campWindow(pane.height, insetTop, insetBottom);
+    const fit = campFitFor(pane.width, window, layout, boxInput(), 0.5, heights, options.shrink === true);
+    lastFit = { window, fit };
     framing = fit.framing;
     figureScaleTarget = fit.figureScale;
     if (cut || still || !framed) {
@@ -1765,6 +1850,12 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
       };
       strip(bleedTop, above, 0);
       strip(bleedBottom, below, H + below);
+      const beside = campSides(pane.width, at, layout.canvas);
+      for (const side of sides) {
+        side.view.visible = (side.left ? beside.left : beside.right) > 0;
+        strip(side.top, above, 0);
+        strip(side.bottom, below, H + below);
+      }
     }
   }
 
@@ -1818,10 +1909,12 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   let dressing: CampDressing = { spots: [], beside: [] };
   /** The seated heroes, as their gear is sized and named (camp-boxes.ts). */
   let heroes: CampBoxInput["heroes"] = [];
+  /** The friends out, by friend spot (#624): labels and pieces waiting beside the fire keep clear of them. */
+  let friendsOut: (CampBoxFriend | null)[] = [];
 
   /** What camp-boxes.ts lays out: this party, and the crew's pieces. */
   function boxInput(): Omit<CampBoxInput, "figureScale"> {
-    return { heroes, spots: dressing.spots, beside: dressing.beside };
+    return { heroes, spots: dressing.spots, beside: dressing.beside, friends: friendsOut };
   }
 
   function dressPiece(key: string, box: CampBox, piece: { path: string | null; heightCm: number; banner?: string | null; glow?: boolean }): DressView {
@@ -1999,6 +2092,154 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     if (pitchFrom !== null && elapsed - pitchFrom >= PITCH_S) pitchFrom = null;
   }
 
+  // ---------------------------------------------------------------------------
+  // A friend tapped on a phone (§4.4, §8.5; #624)
+  // ---------------------------------------------------------------------------
+
+  /** The taps each friend acts out, one at a time (camp-taps.ts). */
+  const tapQueue = createTapQueue();
+  /** A friend whose way over is blocked tries again this often, this many times, before it fades over. */
+  const TAP_RETRY_S = 1.2;
+  const TAP_TRIES = 3;
+  /** A friend's words, canvas px: big enough to read across a room. */
+  const WORDS_PX = 30;
+
+  function tapFriend(tap: FriendTap): TapVerdict {
+    if (destroyed) return "dropped";
+    const actor = actors.get(tap.figureId);
+    if (!actor || actor.removing || actor.leaving || actor.def.friend === undefined) return "dropped";
+    const verdict = tapQueue.offer(tap, elapsed);
+    if (verdict === "start") actTap(tap);
+    return verdict;
+  }
+
+  /** Its words up, a hop and a turn where it stands, then (unless still) over to the hero. */
+  function actTap(tap: FriendTap): void {
+    const actor = actors.get(tap.figureId);
+    if (!actor || actor.removing || actor.leaving) {
+      tapQueue.finish(tap.figureId, elapsed);
+      return;
+    }
+    showWords(actor, tap.words);
+    if (still) {
+      // Reduced motion (§8.7): the words alone, no hop and no walk.
+      actor.tapDoneAt = elapsed + WORDS_S;
+      return;
+    }
+    holdForMoment(actor);
+    actor.waveStart = elapsed;
+    actor.tapWalkAt = elapsed + REACT_S;
+    actor.tapHero = tap.heroId;
+  }
+
+  function tickTaps(): void {
+    for (const tap of tapQueue.due(elapsed)) actTap(tap);
+    for (const actor of actors.values()) {
+      if (actor.tapDoneAt !== null && elapsed >= actor.tapDoneAt) {
+        actor.tapDoneAt = null;
+        tapQueue.finish(actor.def.id, elapsed);
+      }
+      if (actor.tapWalkAt !== null && elapsed >= actor.tapWalkAt) {
+        actor.tapWalkAt = null;
+        walkToHero(actor);
+      }
+    }
+  }
+
+  /**
+   * Over to the tapping kid's hero, on her lane at her side (the side the
+   * friend comes from), facing her, through nobody: a way blocked is a fade.
+   * Then a hop, and back to wandering from there. A hero not in camp (away,
+   * leaving, gone) leaves the friend where it is, its words said.
+   */
+  function walkToHero(actor: Actor): void {
+    const id = actor.def.id;
+    const done = (): void => {
+      tapQueue.finish(id, elapsed);
+      planner.release(id);
+    };
+    const heroId = actor.tapHero;
+    const hero = heroId ? actors.get(heroId) : undefined;
+    actor.tapHero = null;
+    if (!hero || hero.removing || hero.leaving || !hero.lane || hero.alphaTarget < 0.9 || actor.removing) {
+      done();
+      return;
+    }
+    const lane = laneOf(layout, hero.lane);
+    const mine = widthOf(actor, lane.scale);
+    const range = campStandRange(lane, visible(), mine);
+    // Beside her, never in her: their whole drawn widths apart, as a fade judges a clear place (`bodiesClear`).
+    const gap = (mine + widthOf(hero, lane.scale)) / 2 + 0.004;
+    const from = actor.x < hero.x ? -1 : 1;
+    const beside = (side: number): number => hero.x / W + side * gap;
+    const inRange = (x: number): boolean => x >= range.x0 && x <= range.x1;
+    // The side it comes from first, then her other side: whichever it can reach through nobody.
+    let side = from;
+    let to: Place = { spot: { lane: lane.id, x: 0 }, point: null };
+    let way: { route: RoutePoint[] | null; blockers: string[] } = { route: null, blockers: [] };
+    for (const s of [from, -from]) {
+      if (!inRange(beside(s)) && inRange(beside(-s))) continue;
+      const place: Place = { spot: { lane: lane.id, x: campStandX(beside(s), range) }, point: null };
+      const found = clearWay(actor, place.spot);
+      if (way.blockers.length === 0 || found.route) {
+        side = s;
+        to = place;
+        way = found;
+      }
+      if (found.route) break;
+    }
+    const face = side > 0 ? -1 : 1;
+    // Somebody idles in the way: nudge them on and try again in a beat, a few times (about four seconds).
+    if (!way.route && actor.tapTries < TAP_TRIES) {
+      actor.tapTries++;
+      for (const blocker of way.blockers) if (blocker !== hero.def.id) planner.nudge(blocker);
+      actor.tapHero = heroId;
+      actor.tapWalkAt = elapsed + TAP_RETRY_S;
+      return;
+    }
+    actor.tapTries = 0;
+    // She waits where she stands for the friend coming to her, unless a moment has her (the line, Begin).
+    const waits = !hero.walk && planner.snapshot(hero.def.id)?.mode === "hold";
+    if (waits) planner.direct(hero.def.id, { spot: { lane: hero.lane, x: hero.x / W }, point: hero.point }, null, 0);
+    const arrive = (): void => {
+      actor.waveStart = elapsed;
+      if (waits && !hero.removing && planner.snapshot(hero.def.id)?.mode === "directed" && !queue.includes(hero.def.id)) {
+        hero.releaseAt = elapsed + WAVE_S;
+      }
+      done();
+    };
+    // Still no way through (the camp is full, its friends at their spots): over by a fade, never
+    // through anybody (§8.6, rule 3), beside her where it was always going to stand.
+    if (way.route) direct(actor, to, { route: way.route, face, then: arrive });
+    else direct(actor, to, { fade: true, face, then: arrive });
+  }
+
+  function showWords(actor: Actor, words: string): void {
+    actor.wordsUntil = elapsed + WORDS_S;
+    if (actor.words && actor.wordsText === words) return;
+    actor.words?.destroy({ children: true });
+    actor.words = friendWords(words, WORDS_PX);
+    actor.wordsText = words;
+    if (actor.words) labelLayer.addChild(actor.words);
+  }
+
+  /** Words over a friend's head while they are up, following it; gone when their time is. */
+  function placeWords(actor: Actor): void {
+    const words = actor.words;
+    if (!words) return;
+    if (elapsed >= actor.wordsUntil || actor.removing) {
+      words.destroy({ children: true });
+      actor.words = null;
+      actor.wordsText = "";
+      return;
+    }
+    const scale = laneScaleAt(layout, actor.y / H) * figureScale;
+    const half = words.width / 2;
+    words.x = Math.max(half, Math.min(W - half, actor.x));
+    words.y = actor.y + actor.body.y * scale - actor.heightPx * scale - 8;
+    words.alpha = Math.min(1, actor.alpha, (actor.wordsUntil - elapsed) / 0.4);
+  }
+
   function destroy(): void {
     if (destroyed) return;
     destroyed = true;
@@ -2016,12 +2257,20 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     resize,
     setInset,
     figures,
+    fitted: () => lastFit,
     activePieces,
     setDressing,
     pitch,
     pitching: () => pitchFrom !== null,
+    tapFriend,
+    friendWords: () => [...actors.values()].filter((a) => a.words !== null).map((a) => ({ id: a.def.id, words: a.wordsText })),
     destroy,
   };
+}
+
+/** A figure as the wander planner knows it: a hero's seat, or a friend's spot. */
+function wanderFigure(def: CampFigure): { id: string; seat?: number; friend?: number } {
+  return { id: def.id, ...(def.seat !== undefined ? { seat: def.seat } : {}), ...(def.friend !== undefined ? { friend: def.friend } : {}) };
 }
 
 /** A small stable hash of an id, for a figure's breathing phase. */

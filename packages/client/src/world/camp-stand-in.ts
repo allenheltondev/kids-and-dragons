@@ -54,6 +54,41 @@ export function standInLabel(words: string, size: number): Text | null {
   }
 }
 
+/** How wide a friend's words may run before they wrap, canvas px. */
+export const FRIEND_WORDS_WRAP = 380;
+
+/**
+ * A tapped friend's words (§4.4, §8.5; #624): a pale rounded bubble with a
+ * small tail down to the friend, dark words on it, centred on its tail's tip
+ * at (0, 0) so the camp only has to put it over the friend's head.
+ */
+export function friendWords(words: string, size: number): Container | null {
+  try {
+    const text = new Text({
+      text: words,
+      style: { fontFamily: "Nunito, system-ui, sans-serif", fontSize: size, fontWeight: "800", fill: 0x2b2238, align: "center", wordWrap: true, wordWrapWidth: FRIEND_WORDS_WRAP, lineHeight: size * 1.25 },
+    });
+    text.anchor.set(0.5, 1);
+    const pad = size * 0.55;
+    const tail = size * 0.5;
+    const w = text.width + pad * 2;
+    const h = text.height + pad * 1.4;
+    const bubble = new Graphics()
+      .roundRect(-w / 2, -tail - h, w, h, size * 0.7)
+      .fill({ color: 0xfff8ea, alpha: 0.97 })
+      .stroke({ width: 3, color: 0x6b4f2a, alpha: 0.85 })
+      .poly([-tail * 0.7, -tail - 1, tail * 0.7, -tail - 1, 0, 0])
+      .fill({ color: 0xfff8ea, alpha: 0.97 });
+    text.y = -tail - pad * 0.7;
+    const out = new Container();
+    out.label = "camp-friend-words";
+    out.addChild(bubble, text);
+    return out;
+  } catch {
+    return null;
+  }
+}
+
 /** What a stand-in was drawn at, before its container's scale: for the tests that hold her gear to her size. */
 const drawn = new WeakMap<Container, { width: number; height: number }>();
 export function standInSize(standIn: Container): { width: number; height: number } | undefined {

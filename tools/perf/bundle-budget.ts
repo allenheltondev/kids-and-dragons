@@ -221,7 +221,31 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // 1650 -> 1654 for camp terrain accents (#652) integrated with the friend
 // habits and latest main. The measured total is 1652KB, with first paint
 // still at 331KB. Keep 2KB of slack.
-const TOTAL_BUDGET_KB = 1654;
+// 1646 -> 1658 for the camp's friends (#624): its base (88ed7f5) measures
+// 1645KB locally, and with friends 1656KB. About 8KB is lazy camp code (who is
+// out, the friend spots and their overlap rules, the TV's tap queue and words,
+// the phone's buddy picker and Call over buttons); the rest is the friend-tap
+// relay in the store and channel, which every screen hears. First paint goes
+// from 331KB to 332KB, at its budget. Keep 2KB of slack for CI.
+// 1658 -> 1666 when #624 (friends, 1646 -> 1658 above) met #627 (frame
+// stages 3 and 4, the camp in the chapter's terrain and Travel Mode's Camp
+// button, which on its own branch raised 1646 -> 1648): one raise for both.
+// The merged build, with the friends sitting at an indoor rest's packed row
+// too, measures 1664KB locally, first paint 332KB, at its budget. Keep 2KB of
+// slack for CI.
+// 1666 -> 1673 when Phase 3 (#624, #625, #627; 1666 above) met main's later
+// backdrops, friend habits and terrain accents (#649, #651, #652; 1646 -> 1654
+// on main): one raise for both. The merged build, with main's habits folded
+// into #624's friends and the accents drawn on the shrunk and framed camps,
+// measures 1671KB locally, first paint 332KB, at its budget. Keep 2KB of
+// slack for CI.
+// 1673 -> 1677 for an indoor rest's friend taps (#624, the #654 review): the
+// packed scene says a tapped friend's words with a hop (scene.ts, camp-taps.ts
+// `createWordsTaps`, `routeFriendTap`), and the still stage does the same
+// without WebGL (still-friend-taps.ts). All of it in the lazy scene and still
+// stage chunks: the merged build measures 1675KB locally, first paint 332KB,
+// unchanged at its budget. Keep 2KB of slack for CI.
+const TOTAL_BUDGET_KB = 1677;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

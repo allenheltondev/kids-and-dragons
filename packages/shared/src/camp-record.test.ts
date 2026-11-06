@@ -16,6 +16,7 @@ import {
   StoredCampError,
   withMilestones,
 } from "./camp-record.js";
+import { grownView } from "./camp-edit.js";
 import { commitCampaign, failCampaign } from "./character.js";
 import { CHARACTER_VERSION, migrateCharacter } from "./migrate.js";
 import type { Character } from "./types/domain.js";
@@ -67,6 +68,32 @@ describe("the camp record", () => {
     expect(growCamp(one, ["gemfall"])).toBe(one);
     expect(growCamp(one, [])).toBe(one);
     expect(growCamp(one, ["riftlight"])).toMatchObject({ frameStage: 3, grownBy: ["gemfall", "riftlight"] });
+  });
+
+  it("reaches stage 3 on Gemfall and Riftlight, stage 4 on a third, and no replay moves it (#627)", () => {
+    const three = growCamp(growCamp(emptyCamp(), ["gemfall"]), ["riftlight"]);
+    expect(three.frameStage).toBe(3);
+    // Either replayed, in any order, alone or together: the same camp back.
+    expect(growCamp(three, ["riftlight"])).toBe(three);
+    expect(growCamp(three, ["gemfall", "riftlight", "gemfall"])).toBe(three);
+    const four = growCamp(three, ["full-3"]);
+    expect(four).toMatchObject({ frameStage: 4, grownBy: ["gemfall", "riftlight", "full-3"] });
+    // Capped: a fourth finish is a trophy, not a fifth stage.
+    expect(growCamp(four, ["full-4"]).frameStage).toBe(4);
+  });
+
+  it("marks the chapter end's view grown only when the frame moved (#627)", () => {
+    const two = campView(growCamp(emptyCamp(), ["gemfall"]));
+    const three = grownView(two, "riftlight", frameStageFor);
+    expect(three).toMatchObject({ frameStage: 3, grew: true, grownBy: ["gemfall", "riftlight"] });
+    // Finishing Riftlight again: already counted, nothing grows.
+    const again = grownView(campView(growCamp(emptyCamp(), ["gemfall", "riftlight"])), "riftlight", frameStageFor);
+    expect(again.frameStage).toBe(3);
+    expect(again.grew).toBeUndefined();
+    // Past the cap a finish adds a trophy but pitches no new camp.
+    const capped = grownView(campView(growCamp(emptyCamp(), ["gemfall", "riftlight", "full-3"])), "full-4", frameStageFor);
+    expect(capped).toMatchObject({ frameStage: 4, grownBy: ["gemfall", "riftlight", "full-3", "full-4"] });
+    expect(capped.grew).toBeUndefined();
   });
 
   it("shows the screens a slim view: no receipts, the shop open at two paid chapters", () => {
@@ -123,11 +150,20 @@ describe("the hero's kit", () => {
         radiant: { from: "milestone", at: "new" },
         deco_lamp_ribbon: { from: "found", rewardId: "gemfall-01.lamp_ribbon", at: "t" },
       },
+      buddies: {},
     });
     const ids = [...Object.keys(once.unlocked), ...once.slots];
     for (const placeholder of Object.keys(PLACEHOLDER_KIT_PIECES)) expect(ids).not.toContain(placeholder);
     expect(migrateKit(JSON.parse(JSON.stringify(once)))).toEqual(once);
     expect(migrateKit(v1)).toEqual(once);
+  });
+
+  it("migrates a v2 kit to v3 with no buddies, keeps v3 buddies by camp, and refuses a malformed one (#624)", () => {
+    const v2 = { v: 2, revision: 1, style: "rolled", tent: null, color: null, slots: [null, null], unlocked: {} };
+    expect(migrateKit(v2)).toMatchObject({ v: KIT_VERSION, buddies: {} });
+    const v3 = { ...v2, v: 3, buddies: { h_test: "bun", "h_test#cw_1": "kid_goat" } };
+    expect(migrateKit(v3).buddies).toEqual({ h_test: "bun", "h_test#cw_1": "kid_goat" });
+    expect(() => migrateKit({ ...v3, buddies: { h_test: 7 } })).toThrow(StoredCampError);
   });
 
   it("names the catalog's real milestone ids, one placeholder for each", () => {

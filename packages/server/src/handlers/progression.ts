@@ -459,7 +459,7 @@ export function campaignView(
     title: campaign.title,
     blurb: campaign.blurb,
     chapters: finalIndex(campaign, deps),
-    next: chapter ? { index: chapter.index, title: chapter.title } : null,
+    next: chapter ? { index: chapter.index, title: chapter.title, biome: chapter.biome } : null,
     ...(ended ? { ended } : {}),
   };
 }
@@ -505,7 +505,7 @@ function graphCampaignView(
   const shown = finished?.ok && finished.journey?.status === "ended" ? finished.journey : resumed.journey;
   return {
     ...base,
-    next: chapter ? { index: chapter.index, title: chapter.title } : null,
+    next: chapter ? { index: chapter.index, title: chapter.title, biome: chapter.biome } : null,
     journey: journeyView(graph, shown, (id) => deps.content.chapter(id)?.title, campaign),
   };
 }

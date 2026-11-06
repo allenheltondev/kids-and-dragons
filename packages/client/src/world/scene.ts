@@ -72,7 +72,7 @@ import {
   shadowOffset,
   type Footprint,
 } from "./actor-art";
-import { figureSize, fitCanvas, NOMINAL_PAINT, paintAspect, stanceLift, type Overflow, type PaintBox } from "./figure-scale";
+import { drawnHeight, figureSize, fitCanvas, NOMINAL_PAINT, paintAspect, stanceLift, type Overflow, type PaintBox } from "./figure-scale";
 import { sceneBackdropUrl } from "./art-paths";
 import {
   RIFT_FOOT,
@@ -105,6 +105,13 @@ import type { EncounterEvent } from "@kad/shared";
 import { stageLayout, STORY_MEASURE, type StageCastMember } from "./cast";
 import { boardStageWidth, storyStageFrame } from "./stage-inset";
 import { reducedMotion } from "../a11y/prefs";
+import { packedCampSpots, type PackedFriend, type PackedKit, type PackedSpot } from "./packed-camp";
+import { FRIEND_PAINT, friendFigureId } from "./camp-friends";
+import { WORDS_S, createWordsTaps, type FriendTapTarget, type TapVerdict } from "./camp-taps";
+import { friendWords } from "./camp-stand-in";
+import { WAVE_S, wavePose } from "./camp-motion";
+import { CAMP_KIT_STYLES } from "./camp-kit-art";
+import { campKitCanvas } from "./camp-kit-canvas";
 
 export { characterArtUrl };
 
@@ -121,6 +128,11 @@ const VICTORY_PEAK = 0.5;
 
 /** The story scene is authored at this size and framed into whatever pane it gets. */
 const DESIGN = { width: 1600, height: 900 } as const;
+/**
+ * A tapped packed friend's words, at the size the full camp draws them (camp.ts `WORDS_PX` on its
+ * 1080-tall canvas), read across a room: drawn at this and scaled to the same size on screen.
+ */
+const PACKED_WORDS_PX = 30;
 
 /** Backdrops kept decoded: the one on screen and the one before it. */
 const KEPT_BACKDROPS = 2;
@@ -320,7 +332,36 @@ export interface PartyScene {
    * exactly when a question needs answering and at no other time.
    */
   setCameraAttention(key: string): void;
+  /**
+   * The camp packed down into this scene's own picture (packed-camp.ts;
+   * docs/camp.md §3.2): at an indoor rest, each hero's bedroll and pack on the
+   * ground beside her in the lineup. Null, or empty, takes them away. No
+   * tents, no campfire, no shared spots. The friends out (#624) sit at the
+   * row's two ends, at their true heights.
+   */
+  setPackedCamp(kits: readonly PackedKit[] | null, friends?: readonly PackedFriend[]): void;
+  /** Where each packed bedroll lies now, in design units; for tests. */
+  packedCamp(): readonly PackedSpot[];
+  /** Where each packed friend sits now (feet), and its drawn painted height, in design units; for tests. */
+  packedFriendsShown?(): readonly (PackedSpot & { height: number })[];
+  /** Whether a friend out (#624) is drawn in the packed camp now: a tap for it is this scene's. */
+  showsPackedFriend(friendId: string): boolean;
+  /**
+   * A kid tapped a friend on her phone at an indoor rest (#624, docs/camp.md
+   * §3.2): its words over its head, and a hop where it sits unless motion is
+   * reduced. Nobody walks indoors. The full camp's queue and drop rules
+   * (camp-taps.ts `createWordsTaps`). Dropped for a friend not drawn here.
+   */
+  tapPackedFriend(tap: { friendId: string; heroId: string; words: string }): TapVerdict;
+  /** The packed friends' words up now, by friend id (for tests). */
+  packedFriendWords(): { id: string; words: string }[];
   destroy(): void;
+}
+
+/** The scene's packed camp as a tap's stage (camp-taps.ts `routeFriendTap`): it takes the friends it draws. */
+export function packedTapTarget(scene: PartyScene | null | undefined): FriendTapTarget | null {
+  if (!scene) return null;
+  return { showsFriend: (id) => scene.showsPackedFriend(id), tapFriend: (tap) => scene.tapPackedFriend(tap) };
 }
 
 /**
@@ -517,8 +558,27 @@ export function createScene(app: Application): PartyScene {
   // right: the nearer (lower) actor draws in front, whatever order they joined.
   actorsLayer.sortableChildren = true;
   storyLayer.addChild(actorsLayer);
+  /** A tapped packed friend's words, over every figure (#624). */
+  const packedWordsLayer = new Container();
+  packedWordsLayer.label = "packed-friend-words";
+  storyLayer.addChild(packedWordsLayer);
 
   const actors = new Map<string, Actor>();
+  /** An indoor rest's packed camp (`setPackedCamp`, laid out by `layoutPacked`). */
+  let packedKits: readonly PackedKit[] = [];
+  let packedSpots: PackedSpot[] = [];
+  let packedSlot = 0;
+  const packedSprites = new Map<string, { sprite: Sprite; key: string }>();
+  /** The friends out at an indoor rest, and where the last layout sat them. */
+  let packedFriendList: readonly PackedFriend[] = [];
+  let packedFriendSpots: (PackedSpot & { height: number })[] = [];
+  const packedFriendSprites = new Map<string, { sprite: Sprite; key: string; loaded: boolean }>();
+  /** The lineup's scale and the stage's shown edges at the last layout: what a friend is sized and kept inside by. */
+  let packedK = 1;
+  let packedBounds: { left: number; right: number } | undefined;
+  /** A packed friend tapped (#624): its words, and the hop, on the scene's clock (`tickPackedTaps`). */
+  const packedTaps = createWordsTaps();
+  const packedWords = new Map<string, { view: Container; words: string }>();
   const castActors = new Map<string, CastActor>();
 
   /*
@@ -922,6 +982,179 @@ export function createScene(app: Application): PartyScene {
       // Feet further down the screen = nearer the viewer = drawn in front.
       actor.container.zIndex = actor.y;
     });
+    // A friend at the row's ends stays on the shown stage, and clear of any guest's share of it.
+    const shownLeft = DESIGN.width - visibleRightEdge();
+    const castFrom = slots.castLeft.length > 0 ? Math.min(...slots.castLeft) : Infinity;
+    packedK = fit.k;
+    packedBounds = { left: Math.max(left, shownLeft), right: Math.min(left + width, visibleRight, castFrom) };
+    layoutPacked(slots.partySlot);
+  }
+
+  /*
+   * The camp packed down at an indoor rest (packed-camp.ts, docs/camp.md
+   * §3.2): each hero's bedroll and pack on the ground at her side, a little
+   * behind her feet, so she and her name stand clear in front of it. Her kit
+   * painting in her color, as the full camp draws it (camp.ts); while it
+   * loads, nothing (never a box over the scene's picture).
+   */
+  function layoutPacked(slot: number): void {
+    packedSlot = slot;
+    const heroes = packedKits
+      .map((kit) => actors.get(kit.id))
+      .filter((actor): actor is Actor => actor !== undefined)
+      .map((actor) => ({ id: actor.characterId, x: actor.x, y: actor.y, height: actor.height }));
+    // Each friend at its true height on the lineup's scale, never under the story floor.
+    const sized = packedFriendList.map((friend) => {
+      const height = drawnHeight({ heightCm: friend.heightCm, stance: friend.stance, paint: null }, packedK, STORY_MEASURE);
+      const box = FRIEND_PAINT[friend.figure];
+      return { friend, height, width: height * (box ? box.width : paintAspect(NOMINAL_PAINT)) };
+    });
+    const laid = packedCampSpots(heroes, slot, sized.map((f) => ({ id: f.friend.id, width: f.width })), packedBounds);
+    packedSpots = laid.bedrolls;
+    packedFriendSpots = laid.friends.map((spot) => ({ ...spot, height: sized.find((f) => f.friend.id === spot.id)?.height ?? 0 }));
+    for (const [id, entry] of packedFriendSprites) entry.sprite.renderable = packedFriendSpots.some((spot) => spot.id === id);
+    for (const spot of packedFriendSpots) {
+      const entry = packedFriendSprites.get(spot.id);
+      if (!entry || !entry.loaded) continue;
+      const { sprite } = entry;
+      // The painting's nominal box is the friend's drawn height (camp.ts draws friends so too).
+      const canvas = spot.height / (ANCHOR_Y - NOMINAL_PAINT.top);
+      sprite.scale.set((canvas / sprite.texture.height) * (spot.mirrored ? -1 : 1), canvas / sprite.texture.height);
+      sprite.position.set(spot.x, spot.y);
+      sprite.zIndex = spot.y;
+    }
+    // A bedroll whose hero is not in the lineup (she got up from the table) is not drawn.
+    for (const [id, entry] of packedSprites) entry.sprite.renderable = packedSpots.some((spot) => spot.id === id);
+    for (const spot of packedSpots) {
+      const entry = packedSprites.get(spot.id);
+      const kit = packedKits.find((k) => k.id === spot.id);
+      if (!entry || !kit) continue;
+      const { sprite } = entry;
+      // The painting's own width share: its painted width is the spot's.
+      const side = spot.width / CAMP_KIT_STYLES[kit.style].paintWidth;
+      sprite.width = side;
+      sprite.height = side;
+      sprite.scale.x = Math.abs(sprite.scale.x) * (spot.mirrored ? -1 : 1);
+      sprite.position.set(spot.x, spot.y);
+      // Behind her (her feet are nearer), in front of anyone further back.
+      sprite.zIndex = spot.y;
+    }
+  }
+
+  function setPackedFriends(friends: readonly PackedFriend[]): void {
+    packedFriendList = friends.filter((friend) => friend.url !== null);
+    const wanted = new Map(packedFriendList.map((friend) => [friend.id, friend.url!]));
+    for (const [id, entry] of packedFriendSprites) {
+      if (wanted.get(id) === entry.key) continue;
+      entry.sprite.destroy();
+      packedFriendSprites.delete(id);
+      // Gone in, or the camp packed away: its words go with it.
+      packedTaps.forget(friendFigureId(id));
+      packedWords.get(id)?.view.destroy({ children: true });
+      packedWords.delete(id);
+    }
+    for (const friend of packedFriendList) {
+      if (packedFriendSprites.has(friend.id)) continue;
+      const url = friend.url!;
+      const sprite = new Sprite();
+      sprite.anchor.set(ANCHOR_X, ANCHOR_Y);
+      sprite.label = `packed-friend:${friend.id}`;
+      sprite.visible = false;
+      actorsLayer.addChild(sprite);
+      const entry = { sprite, key: url, loaded: false };
+      packedFriendSprites.set(friend.id, entry);
+      void Assets.load<Texture>(url)
+        .then((texture) => {
+          if (destroyed || packedFriendSprites.get(friend.id)?.sprite !== sprite) return;
+          sprite.texture = texture;
+          sprite.visible = true;
+          entry.loaded = true;
+          layoutPacked(packedSlot);
+        })
+        .catch(() => undefined);
+    }
+  }
+
+  function setPackedKits(kits: readonly PackedKit[]): void {
+    packedKits = kits;
+    const wanted = new Map(kits.map((kit) => [kit.id, `${kit.style}:${kit.accent}`]));
+    for (const [id, entry] of packedSprites) {
+      if (wanted.get(id) === entry.key) continue;
+      entry.sprite.destroy();
+      packedSprites.delete(id);
+    }
+    for (const kit of kits) {
+      if (packedSprites.has(kit.id)) continue;
+      const key = `${kit.style}:${kit.accent}`;
+      const sprite = new Sprite();
+      // The kit paintings stand on the figures' canvas ground: (512, 900) of 1024.
+      sprite.anchor.set(0.5, 900 / 1024);
+      sprite.label = `packed:${kit.id}`;
+      sprite.visible = false;
+      actorsLayer.addChild(sprite);
+      packedSprites.set(kit.id, { sprite, key });
+      const art = CAMP_KIT_STYLES[kit.style];
+      void Assets.load<Texture>(art.path)
+        .then((texture) => {
+          if (destroyed || packedSprites.get(kit.id)?.sprite !== sprite) return;
+          const source = (texture.source as { resource?: unknown }).resource;
+          const canvas = source ? campKitCanvas(source as CanvasImageSource, art.cloth, kit.accent) : null;
+          sprite.texture = canvas ? Texture.from(canvas) : texture;
+          sprite.visible = true;
+          layoutPacked(packedSlot);
+        })
+        .catch(() => undefined);
+    }
+    layoutPacked(packedSlot);
+  }
+
+  /** Whether a packed friend is drawn now: out, painted and laid in the row. */
+  function packedFriendShown(friendId: string): boolean {
+    return packedFriendSprites.get(friendId)?.loaded === true && packedFriendSpots.some((spot) => spot.id === friendId);
+  }
+
+  /**
+   * A tapped packed friend's words over its head for `WORDS_S`, fading out
+   * over their last moment as the full camp's do, and its hop and turn where
+   * it sits (camp-motion.ts `wavePose`, the full camp's) unless still.
+   */
+  function tickPackedTaps(): void {
+    packedTaps.tick(elapsed);
+    const still = prefersReducedMotion();
+    const said = new Map(packedTaps.said().map((s) => [s.tap.figureId.slice("friend:".length), s]));
+    for (const [id, entry] of packedWords) {
+      if (said.get(id)?.tap.words === entry.words && packedFriendShown(id)) continue;
+      entry.view.destroy({ children: true });
+      packedWords.delete(id);
+    }
+    for (const spot of packedFriendSpots) {
+      const entry = packedFriendSprites.get(spot.id);
+      if (!entry?.loaded) continue;
+      const now = said.get(spot.id);
+      const since = now ? elapsed - now.since : Infinity;
+      const wave = since <= WAVE_S ? wavePose(since, still) : { lift: 0, turned: false };
+      const lift = wave.lift * spot.height;
+      const side = (spot.mirrored ? -1 : 1) * (wave.turned ? -1 : 1);
+      entry.sprite.position.set(spot.x, spot.y - lift);
+      entry.sprite.scale.x = Math.abs(entry.sprite.scale.x) * side;
+      if (!now) continue;
+      let words = packedWords.get(spot.id);
+      if (!words) {
+        const view = friendWords(now.tap.words, PACKED_WORDS_PX);
+        if (!view) continue;
+        packedWordsLayer.addChild(view);
+        words = { view, words: now.tap.words };
+        packedWords.set(spot.id, words);
+      }
+      // As big on screen as the full camp draws them: its canvas is 1080 tall, filling the pane's height.
+      words.view.scale.set(viewport.height / 1080 / Math.max(1e-6, storyLayer.scale.y));
+      const half = words.view.width / 2;
+      const left = (packedBounds?.left ?? 0) + half;
+      const right = (packedBounds?.right ?? DESIGN.width) - half;
+      words.view.x = left <= right ? Math.max(left, Math.min(right, spot.x)) : spot.x;
+      words.view.y = spot.y - lift - spot.height - 8;
+      words.view.alpha = Math.min(1, (now.since + WORDS_S - elapsed) / 0.4);
+    }
   }
 
   function tick(): void {
@@ -1019,6 +1252,7 @@ export function createScene(app: Application): PartyScene {
     }
 
     tickCast(dt);
+    tickPackedTaps();
 
     // No walk between slots for a viewer who asked for reduced motion — the
     // same rule tickCast keeps for an entrance.
@@ -1792,9 +2026,42 @@ export function createScene(app: Application): PartyScene {
       camState = setAttention(camState, key);
     },
 
+    setPackedCamp(kits, friends = []) {
+      if (destroyed) return;
+      // No packed camp, no friends sitting by it.
+      setPackedFriends(kits && kits.length > 0 ? friends : []);
+      setPackedKits(kits ?? []);
+    },
+
+    packedCamp() {
+      return packedSpots.filter((spot) => packedSprites.has(spot.id));
+    },
+
+    packedFriendsShown() {
+      return packedFriendSpots.filter((spot) => packedFriendSprites.get(spot.id)?.loaded === true);
+    },
+
+    showsPackedFriend(friendId) {
+      return !destroyed && packedFriendShown(friendId);
+    },
+
+    tapPackedFriend(tap) {
+      if (destroyed || !packedFriendShown(tap.friendId)) return "dropped";
+      const verdict = packedTaps.offer({ figureId: friendFigureId(tap.friendId), heroId: tap.heroId, words: tap.words }, elapsed);
+      // Up at once, not a frame late.
+      if (verdict === "start") tickPackedTaps();
+      return verdict;
+    },
+
+    packedFriendWords() {
+      return [...packedWords.entries()].map(([id, entry]) => ({ id, words: entry.words }));
+    },
+
     destroy() {
       destroyed = true;
       app.ticker.remove(tick);
+      packedSprites.clear();
+      packedFriendSprites.clear();
       removeGestures();
       // Leave the stage where the next scene expects to find it — a stage
       // torn down mid-jolt must not bequeath its displacement.

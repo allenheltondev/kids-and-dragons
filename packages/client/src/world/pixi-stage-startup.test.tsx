@@ -30,7 +30,7 @@ vi.mock("../store", () => ({
   useSession: () => null,
   usePresentation: vi.fn(),
   usePreviews: () => ({}),
-  useGameStore: { getState: () => ({}) },
+  useGameStore: Object.assign((select: (store: { friendTaps: never[] }) => unknown) => select({ friendTaps: [] }), { getState: () => ({}) }),
 }));
 
 import { PixiStage } from "./PixiStage";

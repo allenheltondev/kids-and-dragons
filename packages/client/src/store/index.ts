@@ -401,6 +401,10 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
             if (runtime.sequencer !== sequencer || get().state?.runId !== runId) return;
             set({ cheers: [...get().cheers, { key: ++cheerKey, cheer }].slice(-MAX_CHEERS) });
           },
+          onFriendTap: ({ runId, friendId, heroId, words }) => {
+            if (runtime.sequencer !== sequencer || get().state?.runId !== runId) return;
+            set({ friendTaps: [...get().friendTaps, { key: ++cheerKey, friendId, heroId, words }].slice(-MAX_CHEERS) });
+          },
           onGap: (sinceSeq) => {
             // Repeated hole notifications must respect a failed fetch's backoff.
             if (runtime.resyncRetry === null) void resync(sinceSeq).catch(() => undefined);
@@ -547,7 +551,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
     function disconnect(): void {
       // Previews, arrivals and cheers are live-only: a fresh channel starts
       // from nobody picking, nobody new and nobody cheering.
-      set({ previews: {}, myPreview: null, arrivals: [], arrivalsDropped: 0, cheers: [] });
+      set({ previews: {}, myPreview: null, arrivals: [], arrivalsDropped: 0, cheers: [], friendTaps: [] });
       runtime.previewSent = "[null,null]";
       runtime.previewNext = null;
       runtime.channel?.close();
@@ -815,6 +819,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       arrivals: [],
       arrivalsDropped: 0,
       cheers: [],
+      friendTaps: [],
       savedHeroes: {},
       heldHeroes: {},
       error: null,
@@ -1507,6 +1512,22 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
 
       dropCheer(key: number) {
         set({ cheers: get().cheers.filter((heard) => heard.key !== key) });
+      },
+
+      async tapFriend(friendId: string) {
+        const session = get().session;
+        if (!session?.playerId || !session.sessionToken) return false;
+        try {
+          await deps.api.postFriendTap(friendId, session.sessionToken);
+          return true;
+        } catch {
+          // A hop, not a turn: the next tap can try again.
+          return false;
+        }
+      },
+
+      dropFriendTap(key: number) {
+        set({ friendTaps: get().friendTaps.filter((tap) => tap.key !== key) });
       },
 
       async removePlayer(playerId: string) {

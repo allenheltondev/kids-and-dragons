@@ -181,6 +181,11 @@ Follow `content/chapters/bramblewood-01.json`. Each Gemfall chapter:
   (≤ 22 for a 90 chapter), pointed at flags the chapter already sets.
 - **At least one rest waypoint** (a `rest` scene *with* choices) before the end, and an
   ending (a scene with `"choices": []`). Several endings is normal.
+- **Every rest says `"setting": "indoor"` or `"outdoor"`** (required). Outdoors is somewhere a
+  campsite could be pitched, and the TV shows the crew's full camp there; everywhere else is
+  indoor, including outdoor places no campsite fits (a raft, a ledge, a climb), where the scene
+  keeps its picture with the camp packed down into it. Read the words, not the keywords
+  ([content/README.md, "Rest scenes"](../../content/README.md#rest-scenes-indoors-or-out-setting-625)).
 - **A setback ending somewhere** (`"outcome": "setback"`), reached by losing a fight or by a
   bad run of luck — never by a single ordinary failed roll. The campaign tolerates four
   (`setbackLimit: 4`) before it fails, so they must stay rarer than one per chapter on average.

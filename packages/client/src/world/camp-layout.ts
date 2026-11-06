@@ -117,6 +117,12 @@ export interface CampStandPoint {
   hotspot?: string;
   /** A hero's own bedroll (0 to 3): only that hero stands here. */
   seat?: number;
+  /**
+   * A friend spot (0 to 3; #624), by the friends' corner or the campfire:
+   * where a friend out stands. Heroes never stand here, and a friend never
+   * stands at a hero's seat or a piece's action spot.
+   */
+  friend?: number;
 }
 
 /** A spot on the ground: a lane and a position along it. */
@@ -352,6 +358,14 @@ function parseFrame(raw: unknown, at: string, backdrops: readonly CampBackdrop[]
       }
       point.seat = seat;
     }
+    if (s["friend"] !== undefined) {
+      const friend = s["friend"];
+      if (typeof friend !== "number" || !Number.isInteger(friend) || friend < 0 || friend >= CAMP_SEATS) {
+        fail(`${where}.friend`, `must be a whole number from 0 to ${CAMP_SEATS - 1}`);
+      }
+      if (point.seat !== undefined || point.action !== undefined) fail(`${where}.friend`, "is a friend's spot: no seat and no action");
+      point.friend = friend;
+    }
     onEveryBackdrop(point, backdrops, where);
     return point;
   });
@@ -359,6 +373,7 @@ function parseFrame(raw: unknown, at: string, backdrops: readonly CampBackdrop[]
   unique(standPoints.map((p) => p.id), `${at}.standPoints`, "stand point");
   const seats = standPoints.flatMap((p) => (p.seat === undefined ? [] : [String(p.seat)]));
   unique(seats, `${at}.standPoints`, "seat");
+  unique(standPoints.flatMap((p) => (p.friend === undefined ? [] : [String(p.friend)])), `${at}.standPoints`, "friend spot");
   if (stage === 1 && seats.length !== CAMP_SEATS) {
     fail(`${at}.standPoints`, `stage 1 needs exactly ${CAMP_SEATS} seats, one bedroll per hero; it has ${seats.length}`);
   }
@@ -404,12 +419,12 @@ export interface CampLayout {
 }
 
 /**
- * The camp for a terrain family at a frame stage. An unknown family takes the
- * first backdrop, and a stage past the last authored one takes the biggest,
+ * The camp for a terrain family at a frame stage. An unknown family takes
+ * `open_plains` (else the first backdrop), and a stage past the last authored one takes the biggest,
  * so a new terrain or a fifth campaign still pitches a camp.
  */
 export function campLayout(manifest: CampManifest, family: string, stage: number): CampLayout {
-  const backdrop = manifest.backdrops.find((b) => b.family === family) ?? manifest.backdrops[0]!;
+  const backdrop = manifest.backdrops.find((b) => b.family === family) ?? manifest.backdrops.find((b) => b.family === "open_plains") ?? manifest.backdrops[0]!;
   const byStage = [...manifest.frames].sort((a, b) => a.stage - b.stage);
   const frame = byStage.find((f) => f.stage === stage) ?? byStage.filter((f) => f.stage <= stage).pop() ?? byStage[0]!;
   return { canvas: manifest.backdropCanvas, backdrop, frame, lanes: new Map(backdrop.lanes.map((l) => [l.id, l])) };
@@ -425,18 +440,8 @@ export function standPoint(layout: CampLayout, id: string): CampStandPoint | und
   return layout.frame.standPoints.find((p) => p.id === id);
 }
 
+/** A friend's fireside habit (camp-friends.ts `friendHabit`; #651). */
 export type CampFriendHabit = "bun" | "duckling" | "mosshorn";
-
-export function friendHabitSpot(layout: CampLayout, habit: CampFriendHabit): CampStandPoint | undefined {
-  if (habit === "mosshorn") {
-    const corner = layout.frame.standPoints.find((point) => point.action === "pet");
-    return corner && { ...corner, x: corner.x - 0.075, face: "left" };
-  }
-  const warmSpots = layout.frame.standPoints.filter((point) => point.action === "warmUp");
-  const nearby = warmSpots[habit === "bun" ? 0 : 1];
-  // Tuck closer to the stones so the heroes can still use their warm-up spots.
-  return nearby && { ...nearby, x: nearby.x + (nearby.face === "right" ? 0.045 : -0.045) };
-}
 
 /**
  * How big a figure is drawn with its feet at `y`: its lane's scale on a lane,

@@ -172,13 +172,13 @@ export function campFit(
   layout: CampLayout,
   heightsCm: readonly number[] = [],
   focusX = 0.5,
-  options: { reach?: readonly CampReach[]; maxScale?: number } = {},
+  options: { reach?: readonly CampReach[]; maxScale?: number; shrink?: boolean } = {},
 ): CampFit {
   const extra = options.reach ?? [];
   // The row's own bound (camp-boxes.ts `campRowScale`): gear too big for the spots at full size.
   const figureScale = Math.min(options.maxScale ?? 1, campFigureScale(paneWidth, window, layout, heightsCm, extra));
   const band = campFocusBand(layout, heightsCm, figureScale, extra);
-  return { figureScale, band, framing: campFraming(paneWidth, window, layout.canvas, band, focusX) };
+  return { figureScale, band, framing: campFraming(paneWidth, window, layout.canvas, band, focusX, options.shrink === true) };
 }
 
 /**
@@ -207,6 +207,11 @@ export function campWindow(paneHeight: number, insetTop: number, insetBottom: nu
  *   keeps the feet in: its bottom sits on the window's bottom and only the
  *   tallest head reaches past the top, since a kid misses a hero's feet
  *   behind a panel more than the tip of an ear under the header.
+ * - **Shrunk** (`shrink`, an outdoor rest's camp under the goal card, #625).
+ *   Where the band at the figures' floor is still taller than the window, the
+ *   painting is drawn smaller instead (`campShrunkScale`) and centered, and
+ *   its mirrored copies fill the pane's sides (`campSides`): nothing of the
+ *   camp stands under the card, and nothing is cut off.
  *
  * Continuous in every input, so a panel growing a line eases the camp a
  * little rather than jumping it (camp.ts eases between two framings).
@@ -217,12 +222,15 @@ export function campFraming(
   canvas: { width: number; height: number },
   band: CampBand,
   focusX = 0.5,
+  shrink = false,
 ): CampFraming {
   const windowHeight = Math.max(0, window.bottom - window.top);
-  const scale = Math.max(paneWidth / canvas.width, windowHeight / canvas.height);
+  const cover = Math.max(paneWidth / canvas.width, windowHeight / canvas.height);
+  const scale = shrink ? campShrunkScale(cover, windowHeight, canvas, band) : cover;
   const width = canvas.width * scale;
   const height = canvas.height * scale;
-  const x = Math.min(0, Math.max(paneWidth - width, paneWidth / 2 - focusX * width));
+  // Shrunk narrower than the pane, it is centered, with its mirrored copies beside it (`campSides`).
+  const x = width < paneWidth ? (paneWidth - width) / 2 : Math.min(0, Math.max(paneWidth - width, paneWidth / 2 - focusX * width));
   const centered = (window.top + window.bottom) / 2 - ((band.top + band.bottom) / 2) * height;
   // Past fitting, the feet's edge of the band holds the window's bottom. The
   // two agree exactly when the band just fits, so the switch is seamless.
@@ -230,6 +238,51 @@ export function campFraming(
   const target = (band.bottom - band.top) * height > windowHeight ? feetFirst : centered;
   const y = Math.min(window.top, Math.max(window.bottom - height, target));
   return { scale, x, y };
+}
+
+/**
+ * The least share of its cover scale a shrunk camp is drawn at (`campShrunkScale`): the painting
+ * is never narrower than a third of the pane, so one mirrored copy each side always fills what it
+ * leaves (`campSides`). A 720p TV at the largest text, its goal card wrapped, takes about half.
+ * Past it, the feet keep the window's bottom and the band's top reaches past the window's, as an
+ * unshrunk camp's does.
+ */
+export const MIN_SHRINK = 1 / 3;
+
+/**
+ * The painting's scale for a camp that must not reach past its window's top (#625): an outdoor
+ * rest's, whose window starts at the foot of the goal card, so a hero or a tent standing past it
+ * is under the card. The figures shrink first, to their floor (`campFigureScale`); past that the
+ * whole camp, painting, lanes and figures alike, is drawn smaller, just enough that the focus
+ * band fits the window, rather than cut off at the top. Never above the cover scale (a band that
+ * fits is framed as ever, and the two agree where it just fits), never below `MIN_SHRINK` of it.
+ */
+export function campShrunkScale(
+  cover: number,
+  windowHeight: number,
+  canvas: { width: number; height: number },
+  band: CampBand,
+): number {
+  const share = band.bottom - band.top;
+  if (!(share > 0) || !(cover > 0)) return cover;
+  const fits = Math.max(0, windowHeight) / (share * canvas.height);
+  return Math.min(cover, Math.max(cover * MIN_SHRINK, fits));
+}
+
+/**
+ * How far the pane runs past a shrunk painting's left and right edges at `at`, in pane px: the
+ * stretches a mirrored copy of the painting fills (camp.ts, StillCamp.tsx), flipped so each seam
+ * meets itself, as the top and bottom edges are drawn on (`campBleed`). 0 at a cover scale.
+ */
+export function campSides(
+  paneWidth: number,
+  at: CampFraming,
+  canvas: { width: number; height: number },
+): { left: number; right: number } {
+  return {
+    left: Math.max(0, at.x),
+    right: Math.max(0, paneWidth - (at.x + canvas.width * at.scale)),
+  };
 }
 
 /**

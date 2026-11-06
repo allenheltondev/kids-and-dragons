@@ -16,9 +16,15 @@ import { useEnsureChapter } from "../screens/content";
 import { biomeBackdropUrl, characterWorldArtUrl, enemyArtUrl, sceneArtFor, sceneBackdropUrl } from "./art-paths";
 
 import { castFor } from "./cast";
-import { campLayoutFor, campShownFor, campStage } from "./lobby-camp";
+import { campFamilyFor, campLayoutFor, campShownFor, campStage, indoorRest, outdoorRest } from "./lobby-camp";
 import { campBeatShown, onCampBeat } from "./camp-beat";
+import { campFriendFigures } from "./camp-friends";
+import { useStillFriendTaps } from "./still-friend-taps";
 import { StillCamp } from "./StillCamp";
+import { CampBedroll } from "./CampBedroll";
+import { packedFriends, packedKits, type PackedFriend } from "./packed-camp";
+import { figureSize } from "./figure-scale";
+import { onStageCoverTop, onStageInset, stageCoverTop, stageInsetBottom } from "./stage-inset";
 import { sceneRiftFor, STILL_FRAME } from "./scene-rift";
 import { RIFT_NEUTRAL_EFFECT, RIFT_SHEET, riftSheetUrl } from "../screens/riftlight";
 
@@ -52,18 +58,42 @@ export function StaticStage(): React.JSX.Element {
   const enemies: readonly Combatant[] = encounter?.combatants.filter((c) => c.side !== "party" && !c.down) ?? [];
 
   // The lobby's picture is the crew's camp (#614), still here as everything is.
-  // And the chapter end's camp beat (#620), at the crew's own frame stage.
+  // And the chapter end's camp beat (#620), at the crew's own frame stage, and
+  // an outdoor rest (#625), above the narration plate; each pitched in the
+  // chapter's terrain (camp-backdrop.ts).
   const beat = useSyncExternalStore(onCampBeat, campBeatShown, campBeatShown);
-  const camp = state && campShownFor(state, beat)
-    ? campLayoutFor(campStage(state), state.phase === "chapter_complete" ? chapter?.biome : null)
-    : null;
+  const plate = useSyncExternalStore(onStageInset, stageInsetBottom, stageInsetBottom);
+  // What the head draws, the goal card's own foot, not its padded box (#625).
+  const plateTop = useSyncExternalStore(onStageCoverTop, stageCoverTop, stageCoverTop);
+  const camp = state && campShownFor(state, beat) ? campLayoutFor(campStage(state), campFamilyFor(state, chapter)) : null;
+  // An indoor rest keeps its picture, with each hero's bedroll and pack beside her (§3.2).
+  const packed = !camp && indoorRest(state) ? new Map(packedKits(state).map((kit) => [kit.id, kit])) : null;
+  // And the friends out at the row's two ends (#624), alternating, left first,
+  // each as tall beside the heroes as it truly is.
+  const friends = packed ? packedFriends(state) : [];
+  const shownFriends = friends.filter((f) => f.url !== null);
+  // A friend tapped on a phone (#624) says its words over its head here, in
+  // whichever camp shows it: the full still camp or the packed row.
+  const showing = new Set(
+    camp && state ? campFriendFigures(state).map((f) => f.id.slice("friend:".length)) : shownFriends.map((f) => f.id),
+  );
+  const words = useStillFriendTaps((id) => showing.has(id));
   if (state && camp) {
     return (
       <div className="kad-static-stage" data-testid="static-stage" aria-hidden="true">
-        <StillCamp layout={camp} state={state} />
+        <StillCamp layout={camp} state={state} friendWords={words} {...(outdoorRest(state) ? { insets: { top: plateTop, bottom: plate } } : {})} />
       </div>
     );
   }
+  const tallest = Math.max(1, ...party.map((m) => figureSize(`characters/${m.character.species}`).heightCm));
+  const friendItem = (friend: PackedFriend, index: number): React.JSX.Element => (
+    <li key={`friend:${friend.id}`} className={`kad-static-stage__figure kad-static-stage__friend${index % 2 === 0 ? " is-turned" : ""}`} data-testid="packed-friend">
+      <img src={friend.url!} alt="" style={{ maxBlockSize: `calc(26cqh * ${Math.min(1, friend.heightCm / tallest).toFixed(3)})` }} />
+      {words.has(friend.id) ? <span className="kad-static-stage__words" data-testid="friend-words">{words.get(friend.id)}</span> : null}
+    </li>
+  );
+  const leftFriends = shownFriends.filter((_, i) => i % 2 === 0).reverse();
+  const rightFriends = shownFriends.filter((_, i) => i % 2 === 1);
 
   return (
     <div className="kad-static-stage" data-testid="static-stage" aria-hidden="true">
@@ -92,17 +122,25 @@ export function StaticStage(): React.JSX.Element {
         })}
       </ul>
       <ul className="kad-static-stage__row kad-static-stage__row--party">
+        {leftFriends.map((friend) => friendItem(friend, shownFriends.indexOf(friend)))}
         {party.map((member) => {
           const hero = member.character;
           const live = encounter?.combatants.find((c) => c.id === hero.id);
+          const kit = packed?.get(hero.id);
           return (
-            <li key={hero.id} className={`kad-static-stage__figure${member.down || live?.down ? " is-down" : ""}`}>
+            <li key={hero.id} className={`kad-static-stage__figure${member.down || live?.down ? " is-down" : ""}${kit ? " is-packed" : ""}`}>
               <img src={characterWorldArtUrl(hero.species, hero.tier, hero.class)} alt="" />
+              {kit ? (
+                <span className="kad-static-stage__bedroll" data-testid="packed-bedroll">
+                  <CampBedroll style={kit.style} accent={kit.accent} />
+                </span>
+              ) : null}
               <span>{hero.name}</span>
               {live ? <meter min={0} max={live.maxHp} value={live.hp} /> : null}
             </li>
           );
         })}
+        {rightFriends.map((friend) => friendItem(friend, shownFriends.indexOf(friend)))}
       </ul>
     </div>
   );

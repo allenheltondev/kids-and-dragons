@@ -1000,6 +1000,7 @@
     },
     "rest_tea": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "Brask lights a tiny stove that hisses like a cat. His tea tastes of pine needles and warm stones. Everyone gets a mug. Pebble gets a thimble. Brask writes: \"Tea. Good.\" The neck can wait a minute.",
       "heal": 3,
       "cast": [
@@ -1961,6 +1962,7 @@
     },
     "message": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "Brask ties the ledger shut. \"You walked it first, so the aerie owes you a flight. Griffins pay their debts.\" He looks at the island. \"Our neighbors have route trouble too. We can fly you over to them, whenever you say.\" So here is tonight's piece: the pass is real and new, yet the oldest page shows a path here long ago, among landmarks that are gone. Something is moving the land. What is it? And can you put things right?",
       "heal": 2,
       "cast": [

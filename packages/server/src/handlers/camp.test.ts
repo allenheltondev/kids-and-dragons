@@ -153,6 +153,22 @@ describe("migration (§12.3)", () => {
     expect(await readCamp("h_test", null, h.deps)).toEqual(stored);
   });
 
+  it("reaches stage 3 when Gemfall and Riftlight are both finished, and a replay of either never moves it (#627)", async () => {
+    const h = harness();
+    await h.repo.putCampaignProgress(attempt("gemfall", "complete"));
+    await h.repo.putCampaignProgress(attempt("riftlight", "complete"));
+    const three = await readCamp("h_test", null, h.deps);
+    expect(three).toMatchObject({ frameStage: 3, grownBy: ["gemfall", "riftlight"] });
+    await mutateCamp("h_test", null, (camp) => camp, h.deps);
+    // Both played again and finished again: still the stage-3 camp, counted once each.
+    await h.repo.putCampaignProgress(attempt("gemfall", "complete", { everCompleted: true }));
+    await h.repo.putCampaignProgress(attempt("riftlight", "active", { everCompleted: true }));
+    expect(await readCamp("h_test", null, h.deps)).toMatchObject({ frameStage: 3, grownBy: ["gemfall", "riftlight"] });
+    // A third full campaign is the grand camp.
+    await h.repo.putCampaignProgress(attempt("full-3", "complete"));
+    expect(await readCamp("h_test", null, h.deps)).toMatchObject({ frameStage: 4, grownBy: ["gemfall", "riftlight", "full-3"] });
+  });
+
   it("grows once per campaign however often it is replayed, and stops at stage 4", async () => {
     const h = harness();
     await h.repo.putCampaignProgress(attempt("gemfall", "complete"));
@@ -395,9 +411,8 @@ describe("the kit", () => {
       expectedVersion: row.version ?? 0,
       expectedClaim: null,
     });
-    await mutateCamp("h_test", "cw_2", (camp) => ({ ...camp, buddies: { c_pip: "kid_goat" } }), h.deps);
+    await mutateCamp("h_test", "cw_2", (camp) => ({ ...camp, dashCash: 1 }), h.deps);
     expect(readKit((await h.repo.getCharacter("h_test", "c_pip"))!)).toEqual(kit);
-    expect((await readCamp("h_test", null, h.deps)).buddies).toEqual({});
 
     // Home.
     const transfer = { code: "MOVEHERNOW", householdId: "h_test", playerId: "p_1", createdBy: "sub", createdAt: AT, expiresAt: new Date(T0 + 86_400_000).toISOString(), ttl: Math.floor((T0 + 86_400_000) / 1000) };
@@ -488,7 +503,6 @@ describe("the run state's camp view", () => {
       owned: [],
       placed: {},
       friends: [],
-      buddies: {},
       shopOpen: true,
     });
     expect(lobby?.camp).not.toHaveProperty("receipts");
@@ -504,7 +518,7 @@ describe("deleting (#252)", () => {
     return { id, displayName: id, ownerSub: `sub_${id}`, guest: false, createdAt: AT };
   }
 
-  it("a kid's delete takes her kit with her hero and her buddies out of every camp, and leaves the camps", async () => {
+  it("a kid's delete takes her kit, buddies and all, with her hero, and leaves the camps (#624)", async () => {
     const h = harness();
     await h.repo.putHousehold(household("h_test"));
     await h.repo.putHousehold(household("h_friend"));
@@ -512,20 +526,19 @@ describe("deleting (#252)", () => {
     await h.repo.putPlayer({ id: "p_bo", householdId: "h_test", displayName: "Bo", color: "#7FD4C1" });
     await h.repo.putCharacter(hero(h, "c_ada", "p_ada"));
     await h.repo.putCharacter(hero(h, "c_bo", "p_bo"));
-    await mutateKit("h_test", "c_ada", (kit) => ({ ...kit, style: "quilted" }), h.deps);
+    // Her buddies are on her kit (#624): here, at another crew, and at a table she visited.
+    await mutateKit("h_test", "c_ada", (kit) => ({ ...kit, style: "quilted", buddies: { h_test: "bun", "h_test#cw_1": "kid_goat", h_friend: "duckling" } }), h.deps);
+    await mutateKit("h_test", "c_bo", (kit) => ({ ...kit, buddies: { h_test: "bun" } }), h.deps);
     await makeCrew(h, "h_test", "cw_1");
-    await mutateCamp("h_test", null, (camp) => ({ ...camp, dashCash: 2, buddies: { c_ada: "bun", c_bo: "bun" } }), h.deps);
-    await mutateCamp("h_test", "cw_1", (camp) => ({ ...camp, buddies: { c_ada: "kid_goat" } }), h.deps);
-    // A table she visited, whose crew she picked a buddy in.
+    await mutateCamp("h_test", null, (camp) => ({ ...camp, dashCash: 2 }), h.deps);
     await h.repo.putVisit("p_ada", "h_friend", AT);
-    await mutateCamp("h_friend", null, (camp) => ({ ...camp, buddies: { c_ada: "duckling" } }), h.deps);
+    await mutateCamp("h_friend", null, (camp) => ({ ...camp, dashCash: 1 }), h.deps);
 
     expect(await deleteKid(household("h_test"), "p_ada", h.deps)).toMatchObject({ ok: true, value: { cleanupPending: false } });
 
     expect(await h.repo.getCharacter("h_test", "c_ada")).toBeNull();
-    expect(await readCamp("h_test", null, h.deps)).toMatchObject({ dashCash: 2, buddies: { c_bo: "bun" } });
-    expect((await readCamp("h_test", "cw_1", h.deps)).buddies).toEqual({});
-    expect((await readCamp("h_friend", null, h.deps)).buddies).toEqual({});
+    expect(readKit((await h.repo.getCharacter("h_test", "c_bo"))!).buddies).toEqual({ h_test: "bun" });
+    expect(await readCamp("h_test", null, h.deps)).toMatchObject({ dashCash: 2 });
     expect(await h.repo.getCamp("h_friend")).not.toBeNull();
   });
 
@@ -540,11 +553,19 @@ describe("deleting (#252)", () => {
     expect(await h.repo.getCamp("h_test", "cw_1")).toBeNull();
   });
 
-  it("taking buddies out leaves a table with no camp unwritten", async () => {
+  it("a move home takes only the old household's buddies off her kit, and writes nothing else (#624)", async () => {
     const h = harness();
+    await h.repo.putHousehold(household("h_test"));
+    await h.repo.putPlayer({ id: "p_ada", householdId: "h_test", displayName: "Ada", color: "#7FD4C1" });
+    await h.repo.putCharacter(hero(h, "c_ada", "p_ada"));
+    await mutateKit("h_test", "c_ada", (kit) => ({ ...kit, buddies: { h_old: "bun", "h_old#cw_1": "kid_goat", h_friend: "duckling" } }), h.deps);
     const put = vi.spyOn(h.repo, "putCamp");
-    await forgetBuddies("h_test", ["c_ada"], h.deps);
+    await forgetBuddies("h_test", ["c_ada", "c_gone"], "h_old", h.deps);
+    expect(readKit((await h.repo.getCharacter("h_test", "c_ada"))!).buddies).toEqual({ h_friend: "duckling" });
     expect(put).not.toHaveBeenCalled();
-    expect(await h.repo.getCamp("h_test")).toBeNull();
+    // Nothing left to take off: no write.
+    const write = vi.spyOn(h.repo, "writeCharacter");
+    await forgetBuddies("h_test", ["c_ada"], "h_old", h.deps);
+    expect(write).not.toHaveBeenCalled();
   });
 });

@@ -1164,6 +1164,7 @@
     },
     "rest": {
       "type": "rest",
+      "setting": "indoor",
       "heal": 2,
       "cast": [
         {

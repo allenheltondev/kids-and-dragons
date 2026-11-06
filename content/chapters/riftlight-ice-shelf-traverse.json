@@ -664,6 +664,7 @@
     },
     "wide_spot": {
       "type": "rest",
+      "setting": "indoor",
       "heal": 2,
       "art": "scenes/riftlight/shelf-icicles",
       "cast": [
@@ -2389,6 +2390,7 @@
     },
     "rest_safe": {
       "type": "rest",
+      "setting": "outdoor",
       "heal": 0,
       "outcome": "success",
       "choices": [],
@@ -2459,6 +2461,7 @@
     },
     "rest_river": {
       "type": "rest",
+      "setting": "indoor",
       "heal": 0,
       "outcome": "success",
       "choices": [],

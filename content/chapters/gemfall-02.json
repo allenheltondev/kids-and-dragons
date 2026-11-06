@@ -2053,6 +2053,7 @@
     },
     "rest_marda_inn": {
       "type": "rest",
+      "setting": "indoor",
       "discovers": [
         "individual.marda_thorn",
         "npc.centaur"
@@ -2300,6 +2301,7 @@
     },
     "end_river": {
       "type": "rest",
+      "setting": "indoor",
       "narration": "East, then. Marda chalks your names under EAST, and in the morning you'll take the Sunward road to the Great River, where the trolls want stories instead of coins. Tonight you sleep in a real bed.",
       "cast": [
         {
@@ -2321,6 +2323,7 @@
     },
     "end_rush": {
       "type": "rest",
+      "setting": "indoor",
       "narration": "North, then, with everybody else. Marda chalks your names at the bottom of a very long NORTH list. All night, wagons creak past the hedges, every one going your way.",
       "cast": [
         {
@@ -2342,6 +2345,7 @@
     },
     "end_wild": {
       "type": "rest",
+      "setting": "indoor",
       "narration": "West, then, where hardly anybody goes. Marda chalks your names under WEST, where there is lots of room. Out past the hedges, the marsh frogs sing, as if they know you are coming.",
       "cast": [
         {

@@ -261,6 +261,11 @@ export type ClientIntent =
       tent?: string;
       color?: string | null;
       slots?: (string | null)[];
+      /**
+       * Her buddy in this crew's camp (docs/camp.md §4.4; #624): one of the
+       * crew's friends, or null for none. Kept per crew on her kit.
+       */
+      buddy?: string | null;
     }
   /**
    * Playtest mode (roadmap chapter 6). Both are refused with FORBIDDEN unless
@@ -534,12 +539,38 @@ export interface CheerRequest {
   cheer: string;
 }
 
+/**
+ * A kid tapped one of the camp's friends on her phone (docs/camp.md §4.4,
+ * §8.5; #624). Live only, like a cheer: never committed, never moves `seq`,
+ * never saved, and a screen that attaches later never sees it. The TV's
+ * friend says `words` (one of its catalog reactions, chosen by the server)
+ * and walks over to `heroId`, the tapping kid's hero. Rate-limited per
+ * phone (`FRIEND_TAP_LIMIT`), and the TV queues and drops extras
+ * (client `camp-taps.ts`), so a hammered button is a happy friend.
+ */
+export interface FriendTapMessage {
+  /** The state's seq when it was sent. Ordering only; never applied. */
+  seq: number;
+  runId: string;
+  friendId: string;
+  /** The tapping kid's seated hero, whom the friend walks over to. */
+  heroId: string;
+  /** What the friend says (the `play` reaction model: words for now). */
+  words: string;
+}
+
+/** `POST /api/friend-tap`, with a room session token: the hero comes from the token's seat. */
+export interface FriendTapRequest {
+  friendId: string;
+}
+
 export type ChannelMessage =
   | ({ kind: "patch" } & ServerMessage)
   | ({ kind: "snapshot" } & SnapshotMessage)
   | ({ kind: "preview" } & PreviewMessage)
   | ({ kind: "arrival" } & ArrivalMessage)
-  | ({ kind: "cheer" } & CheerMessage);
+  | ({ kind: "cheer" } & CheerMessage)
+  | ({ kind: "friendTap" } & FriendTapMessage);
 
 // ---------------------------------------------------------------------------
 // Transport seam — architecture §4.4

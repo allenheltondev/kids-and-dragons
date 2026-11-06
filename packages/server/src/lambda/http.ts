@@ -32,6 +32,7 @@ import {
 import { reportClientError } from "../handlers/client-error.ts";
 import { relayPreview } from "../handlers/preview.ts";
 import { relayCheer } from "../handlers/cheer.ts";
+import { relayFriendTap } from "../handlers/friend-tap.ts";
 import { createScreenCode, isScreenSlowDown, redeemScreenCode } from "../handlers/screens.ts";
 import { viewerStillShows } from "../handlers/viewer.ts";
 import { chooseWatching } from "../handlers/watch.ts";
@@ -165,6 +166,7 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
     if (req.path === "/api/preview") return (deps) => postPreview(req, deps);
     if (req.path === "/api/presence") return (deps) => postPresence(req, deps);
     if (req.path === "/api/cheer") return (deps) => postCheer(req, deps);
+    if (req.path === "/api/friend-tap") return (deps) => postFriendTap(req, deps);
     if (req.path === "/api/spectate") return (deps) => postSpectate(req, deps);
     if (req.path === "/api/progression/spend") return (deps) => postProgressionSpend(req, deps);
     if (req.path === "/api/resume") return (deps) => postResume(req, deps);
@@ -780,6 +782,26 @@ async function postCheer(req: Req, deps: HandlerDeps) {
       playerId: session.playerId,
       householdId: session.householdId,
       cheer: req.body.cheer,
+    },
+    deps,
+  );
+  if (!result.ok) return error(result.status, result.code, result.message);
+  return json(200, { ok: true });
+}
+
+/**
+ * A kid tapping a camp friend (handlers/friend-tap.ts, #624). Session token
+ * only, like a cheer: the hero comes from the token's seat, never the body.
+ */
+async function postFriendTap(req: Req, deps: HandlerDeps) {
+  const session = await resolveSession(req, deps);
+  if (!session) return error(401, "FORBIDDEN", "a friend tap needs a room session token");
+  const result = await relayFriendTap(
+    {
+      runId: session.runId,
+      playerId: session.playerId,
+      householdId: session.householdId,
+      friendId: req.body.friendId,
     },
     deps,
   );

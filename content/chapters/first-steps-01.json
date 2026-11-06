@@ -640,6 +640,7 @@
     },
     "rest_picnic": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "Tansy spreads a checked picnic blanket under an apple tree. Bun eats a dandelion. Flick and Dot nap in a teacup. The sun is warm, and every bump and scrape from today feels better. \"Keep the blanket,\" says Tansy. \"You earned it today.\"",
       "hint": "This is a rest. Everybody gets their hearts back. When your hero has a point to spend, a rest is where you spend it.",
       "heal": 20,
@@ -745,6 +746,7 @@
     },
     "rest_ready": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "Tansy draws a star next to your names on the clipboard. She gives everybody a little wooden star on a red string, too. The yellow paint is a bit wobbly. Then she opens a second gate, the one at the back of the meadow, and points at the road beyond it. \"You are ready,\" she says. \"Go have a real adventure.\" Flick waves with his whole glow.",
       "heal": 20,
       "cast": [

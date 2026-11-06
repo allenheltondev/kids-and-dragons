@@ -54,7 +54,7 @@ it("draws a stored kit style, and falls back to the unchanged id hash for a hero
 it("tints a hero's tent's cloth in her kit color at stage 2, and leaves the rest of the painting as painted (#623)", () => {
   const hero = makeMember({ playerId: "p_1", character: makeCharacter({ id: "c_1", ownerPlayerId: "p_1", name: "Moss", species: "bigfoot" }) });
   const kits: Record<string, HeroKitView> = { c_1: { revision: 1, style: "rolled", tent: "sworn", color: "ember", slots: [], unlocked: ["sworn"] } };
-  const camp: CampView = { revision: 1, frameStage: 2, grownBy: ["gemfall"], dashCash: 0, owned: [], placed: {}, friends: [], buddies: {}, shopOpen: false };
+  const camp: CampView = { revision: 1, frameStage: 2, grownBy: ["gemfall"], dashCash: 0, owned: [], placed: {}, friends: [], shopOpen: false };
   const state = { ...makeState({ phase: "lobby", party: [hero] }), camp, kits } as RunState;
   const view = render(<StillCamp layout={campLayoutFor(2)!} state={state} insets={{ top: 0, bottom: 0 }} />);
   const tent = view.container.querySelector('[data-piece="tent_0"] svg[data-camp-tent="sworn"]')!;

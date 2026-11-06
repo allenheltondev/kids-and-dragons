@@ -92,6 +92,14 @@ export interface HeardCheer {
   cheer: string;
 }
 
+/** A kid's tap on a camp friend, heard live (#624): the friend, the tapper's hero, and its words. */
+export interface HeardFriendTap {
+  key: number;
+  friendId: string;
+  heroId: string;
+  words: string;
+}
+
 export interface HeldPreview {
   preview: IntentPreview;
   context: string;
@@ -150,6 +158,12 @@ export interface GameStore {
    * go (`dropCheer`).
    */
   cheers: readonly HeardCheer[];
+  /**
+   * Taps on camp friends since this screen attached, oldest first (#624).
+   * Live only, like `cheers`; the camp takes each one (`dropFriendTap`) and
+   * queues or drops it so a friend never jitters (world/camp-taps.ts).
+   */
+  friendTaps: readonly HeardFriendTap[];
   /** Set when an intent was rejected. Cleared by `dismissError()`. */
   error: string | null;
   rules: RulesContent | null;
@@ -275,6 +289,15 @@ export interface GameStore {
   cheer(cheer: string): Promise<boolean>;
   /** The shared screen has finished floating a cheer up. */
   dropCheer(key: number): void;
+  /**
+   * This phone's kid taps a camp friend (#624, server handlers/friend-tap.ts):
+   * it reacts on the TV and walks over to her hero. Resolves `false` when it
+   * was not sent (too many too fast, or the friend is not out); nothing else
+   * depends on it, so nothing lands in `error`.
+   */
+  tapFriend(friendId: string): Promise<boolean>;
+  /** The camp has taken a friend tap. */
+  dropFriendTap(key: number): void;
   /**
    * "Just watch" on this phone (`true`), or back to making a hero (`false`)
    * (#388, server handlers/watch.ts). Resolves `true` once the server has it;

@@ -76,7 +76,9 @@ a future chapter-end shop (§6.2). This keeps the session budget untouched: the 
 time that already exists.
 
 **Travel Mode** has no TV, so the camp view lives behind the same Camp button on each phone
-during downtime, and in the World pane during the lobby.
+during downtime, and in the World pane during the lobby. The button is in the You pane at a lobby
+visit, a rest scene and the chapter's end (the Camp panel, with the still camp at the crew's stage
+in the chapter's terrain), and nowhere else (`travel-layout.test.tsx`; #627).
 
 ### 3.1 Pitched in the right place
 
@@ -84,26 +86,45 @@ Each terrain family (`assets/manifest.json` → `biomeFamilies`, twelve of them)
 backdrop: a wide, calm campsite painting with a wide clearing for the camp, across about the
 middle 80 percent of the width, and its hotspots (§4.2) on a fixed layout. The view picks the
 backdrop from the chapter's biome, and in the lobby from the chapter the crew would pick up from. The lobby and the chapter's end always
-show the full, outdoor camp.
+show the full, outdoor camp. (As built, #625: the lobby pitches in the chapter the room last
+played, which the run state still names after a chapter; a lobby before any chapter, or a screen
+that has not loaded the chapter yet, pitches on the plains. The run state does not yet name the
+next chapter's id, so "would pick up from" waits on that.)
+
+One function decides it for every screen (`campFamilyFor` in
+`packages/client/src/world/lobby-camp.ts`, through camp-backdrop.ts `campBackdropFamily`; #625, #627): the chapter's biome, through `biomeFamilies`, to
+its family's backdrop where one is painted, else `open_plains`. In the lobby the biome is the
+next chapter of the campaign the lobby would begin (`CampaignView.next.biome`, sent by the
+server); at a rest scene and the chapter's end it is the chapter being played. Every frame stage
+is laid over every backdrop (§8.3), and the first-wave backdrops share `open_plains`'s lanes, so
+the camp stands the same on each and only the painting changes (`camp-boxes.test.ts` runs the
+full matrix once per distinct set of lanes and holds every backdrop to it).
 
 Painting all twelve is a lot of art, so they ship in order of how often a party rests outdoors
-there. These are all rest scenes, counted from the repo on 2026-11-04; once rest scenes are
-tagged (§3.2), recount the outdoor ones before commissioning art:
+there. All rest scenes were counted from the repo on 2026-11-04; the outdoor ones were recounted
+once every rest scene was tagged (§3.2, #625, 2026-11-05): 75 of the 112 are outdoors.
 
-| Terrain family | Rest scenes | Ships |
-| --- | --- | --- |
-| `red_sky_volcanic` | 31 | First wave |
-| `frozen_north` | 26 | First wave |
-| `open_plains` | 25 | First wave, and the fallback for every family not painted yet |
-| `enchanted_forest` | 7 | Second wave |
-| `sky_islands` | 6 | Second wave |
-| `whispering_marsh` | 5 | Second wave |
-| `cliffside_exchange`, `great_river` | 4 each | Third wave |
-| `bone_yard` | 1 | Third wave |
-| `expanse`, `skullwater_caverns`, `mermaid_cove` | 0 | When a chapter rests there |
+| Terrain family | Rest scenes | Outdoor rests | Ships |
+| --- | --- | --- | --- |
+| `red_sky_volcanic` | 31 | 21 | First wave (painted) |
+| `frozen_north` | 26 | 13 | First wave (painted) |
+| `open_plains` | 25 | 18 | First wave (painted), and the fallback for every family not painted yet |
+| `enchanted_forest` | 7 | 6 | Second wave |
+| `sky_islands` | 6 | 4 | Second wave |
+| `whispering_marsh` | 5 | 4 | Second wave |
+| `great_river` | 4 | 4 | Third wave |
+| `cliffside_exchange` | 4 | 1 | Third wave |
+| `bone_yard` | 1 | 1 | Third wave |
+| `expanse`, `skullwater_caverns`, `mermaid_cove` | 0 | 0 | When a chapter rests there |
 
-(`sallow_wastelands`, with 3 rest scenes, is in no family today; it falls back to `open_plains`
-until it is given one.)
+(`sallow_wastelands`, with 3 rest scenes, all outdoors, is in no family today; it falls back to
+`open_plains` until it is given one.)
+
+One function picks the backdrop for every camp that pitches outdoors, the lobby, an outdoor rest
+and the chapter end's beat alike: `campBackdropFamily` in
+`packages/client/src/world/camp-backdrop.ts`, from the chapter's biome through `biomeFamilies`,
+to `open_plains` when the family has no backdrop in `camp.backdrops` yet. Painting a family is
+adding its backdrop to the manifest; nothing else changes.
 
 ### 3.2 Indoor and outdoor rest scenes
 
@@ -120,13 +141,43 @@ Not every rest happens where a tent could go. The party sleeps in bunks in a war
   deck, a narrow ledge). The scene keeps its own illustration, and the camp appears packed down
   inside it: each hero's bedroll and pack along the front of the picture, and the friends beside
   them. No tents, no campfire and no shared hotspots. Each hero's own bedroll can still change
-  (§4.5), and friends can still be tapped.
+  (§4.5), and friends can still be tapped: a tapped friend says its words over its head where it
+  sits, with a hop unless motion is reduced, and does not walk over (indoors nobody wanders). The
+  phone says the friend says hi, not that it is coming.
 
 The field is **required on every rest scene**, so `npm run content:validate` refuses a rest scene
 without it and nothing has to guess. Tagging today's 112 rest scenes is a one-time pass: a keyword
 scan already flags 31 of them as possibly indoor (rooms, bunks, cupboards, "inside"), but every
 scene gets a human read, since "under the bridge" is outdoors and "a warm room" is not. Tagging
 a Gemfall chapter re-takes its hashes (§10, "Gemfall is pinned").
+
+*Done* (#625): every rest scene is tagged, 75 outdoor and 37 indoor. Besides rooms, huts, caves
+and halls, these are indoor because no campsite fits: a raft, a river floe, a ferry deck, a
+narrow ice-shelf ledge, a paved city quay, and the climbs up Mount Red Sky. A few outdoor rests
+whose words put the party far outside the chapter's terrain (a glacier chapter ending on a
+foothills bank or beside Ashspan Bridge, a harbor chapter's glimpse of snow through the rift) are
+tagged indoor too, so the camp is never pitched in the wrong terrain (§12.6).
+
+How it shows:
+
+- **Outdoors.** As the rest scene opens, the full camp fades in over the scene's picture (about a
+  second; at once under reduced motion), and the scene stops drawing once it is covered. The
+  camp is framed above the narration plate, the way the story stage is, and below the goal card:
+  nothing of it stands under the card. Where that window is too short even at the figures' 0.6
+  floor (a 720p TV, a tall hero, a grown camp), the whole camp is drawn smaller instead of cut off,
+  its painting mirrored out to the pane's sides (`campShrunkScale`, #625). The heroes rest at their
+  bedrolls or tents; nobody lines up at the trailhead, since Ready is the lobby's. Go on fades it
+  off with the next scene already drawn under it. Shared spots can change (`campMoment.outdoor`).
+- **Indoors.** The scene's picture and lineup stay; each hero's bedroll and pack lie on the
+  ground at her side, a step behind her feet, in her color (`packed-camp.ts`). Indoors nobody
+  sleeps in it, so the bedroll is always rolled up beside the pack, whatever style the kid picked
+  for the camp, and it is sized to her like the rest of her gear. The
+  phone's Camp panel shows the same bedrolls in a row instead of the campsite picture, and only
+  each kid's own kit can change.
+
+Whether a rest is outdoors is the server's to say: it reads the scene's `setting` as the rest
+opens and puts it on the moment (`campMoment.outdoor`). A rest it has not said so for is shown
+indoors, so a slow or old server never puts a campsite behind a scene that contradicts it.
 
 ## 4. What is in it
 
@@ -243,6 +294,43 @@ Following the continuity rules, a friend joins because a **choice** says so ("As
 come along" beside "Say goodbye"), never because of a variant. Saying goodbye costs the story
 nothing and is never sad: the friend waves off, and the chapter goes on.
 
+*As built (#624):*
+
+- **Befriending** is a `befriend` effect (`{ "type": "befriend", "friendId": "kid_goat",
+  "rewardId": "riftlight-exchange-rift.kid_goat" }`) on the "Come along" choice. Like a find
+  (§5.1) it names its friend's offer for that very chapter in `content/camp.json` → `friends`, so
+  every way into the place shares one `rewardId` and it is given once; `npm run content:validate`
+  fails a befriend that names no friend, another friend's offer or another chapter's. The engine
+  records it on the run (`RunState.campFinds`, kind `friend`) and the server claims it right
+  after the step commits (`handlers/camp-finds.ts`, `claimReward`): the friend and its receipt in
+  one conditional write. A friend the crew already has from another offer pays 1 Dash Cash once,
+  as a piece does (§12.2). "Say goodbye" records nothing, so nothing is written and the friend
+  may be offered again on a later visit.
+- **The catalog's friends** are the four above: Bun (`cast/bun`, cast in the Practice Meadow as
+  the snowhorn goat she is drawn from, under her own name), the mosshorn (`entities/mosshorn`,
+  `"size": "small"`, as Gemfall 4B casts it, so it stands 75 cm), a duckling and the kid goat.
+  Each has a few reactions, its words when tapped. Pepper is not one (above).
+- **A buddy is on the hero's kit** (`HeroKit.buddies`, kit v3), keyed by the camp it applies in
+  (`campKey`: the household, and the crew when it is not the household's first), so it goes where
+  she goes and is deleted with her, and applies in that crew's camp only. It is picked through
+  `KIT_EDIT` (`buddy`, or null for none) on the phone's kit panel, written with the run's commit
+  like every kit edit, and refused unless the friend is one of this crew's. A move home (#251)
+  takes the old household's entries off her kit. This replaces the sketch's `CampRecord.buddies`
+  (§9, §12.1), which never held anything.
+- **Who is out** is the server's, on the downtime moment (`CampMoment.friends`): the rotation is
+  chosen once as the moment begins (the friends out least first, by `CampFriend.outs`, then the
+  newest, then by id), and who is out (`out`, at most four) is each seated hero's buddy, in seat
+  order, then the rotation, worked out again on every step, so a buddy is out the moment her hero
+  sits down. Each moment's friends out are counted into the crew's record after the step that
+  began it commits, once per moment by its id (`CampRecord.outing`), so the rotation survives
+  reconnects, new rooms and new evenings. More than four new friends queue by themselves: the
+  ones not yet out have been out least. `cards` lists every friend, out or not; the phone lists
+  them all ("Your crew's friends take turns at camp"), and nothing says one has left.
+- **Where they stand**: each frame has four friend spots (`standPoints[].friend`, §8.3), and the
+  tallest friend out takes spot 0, the roomy one; the rest keep their spots while they stay out.
+  A friend wanders like a hero between its own spot and the free wander spots, never to a seat,
+  another friend's spot or a piece's action spot.
+
 ### 4.5 Each hero's kit
 
 *Decided:* the personal parts of the camp belong to the hero, not the crew, so a kid can look after
@@ -250,8 +338,8 @@ them even when nobody else is playing.
 
 A hero's **kit** is their tent, their bedroll and pack, and two or three small slots for personal
 decorations, all in their own color (the palette rule heroes already use). Outdoors the tent
-stands in its spot in the camp; indoors (§3.2) the bedroll and pack are laid out along the front
-of the scene. At frame stage 1, before tents, it is the bedroll and pack everywhere. The hero's
+stands in its spot in the camp; indoors (§3.2) the bedroll is rolled up beside the pack along the
+front of the scene. At frame stage 1, before tents, it is the bedroll and pack everywhere. The hero's
 souvenirs (spec §8.3) hang at their tent.
 
 - **Only that hero's player changes it**, at the table during any downtime moment (no limit, §6.1)
@@ -701,6 +789,39 @@ camp's spots on that ground.
   trophies only) draws the mix at about 0.82, four unicorns at 0.82, four griffins at 0.87, four
   manticores at 0.92 and four bigfoots at about 0.72. On a 1280 x 720 TV with the campaign picker
   open the window, not the row, holds a party with a bigfoot on the back lane to about 0.72.
+- **Stages 3 and 4 stand their own big pieces on the far lane** (#627). Each bigger frame brings
+  three pieces of its own (stage 3: an awning, a lantern string and a lookout post; stage 4: a big
+  shared tent, banners and a lookout, every one an id ending `_frame`), drawn at their real sizes:
+  the lookout post 270 cm and the stage-4 lookout 300 cm, both taller than a bigfoot (215); the
+  lantern string 200 cm, its rope at about 165 cm with its lanterns hanging below it; the banners'
+  posts 230 cm; the awning 220 cm, tall enough for a bigfoot to stand under; and the shared tent
+  280 cm, taller than any hero's own tent. Pieces that big only fit across the clearing behind the
+  tents, so they stand on the far lane: the lookout at the far left beside the first tent, the
+  awning or the shared tent in the middle between the inner tents' peaks, the lantern string or
+  the banners past the last tent, and the crew's own awning spot at the far right. They are
+  treated as the tall shared pieces are (*decided*, #627; §11): each may
+  stand partly behind a nearer tent, under the same rule (less than half of it covered and none
+  of its top half), never behind or in front of a hero at her door, and whoever goes to look at
+  one stands where no nearer tent hides her (`isTallFramePiece`, `campCoverClashes`,
+  `campStandBoxes`). The far lane draws them at 0.6 of the near lane's scale, so the lookout
+  reads as a tall tower behind the camp rather than a prop beside the fire. With the big pieces
+  in, the shared spots move to stage 2's places on the near lane (the lanterns at the far left,
+  the friends' corner in front of the first tents, the trophies and the banner pole at the
+  right), and the crew's awning spot (an awning, a map table, a woodpile, a supply chest or a
+  trophy rack) to the far lane's right end. Everything is drawn smaller than at stage 2: with
+  every spot holding its widest or tallest piece, in every tent style, four bigfoots at about
+  0.61, the mix (bigfoot, kitsune, unicorn, griffin) 0.61 to 0.63 either way round, four
+  unicorns, griffins or manticores about 0.66, and four kitsune or dragonlings about 0.67, at
+  both stages. What holds the small parties is not their
+  tents but the far lane's own pieces side by side (the lantern string or the banners beside the
+  crew's awning spot); what holds the big ones is the middle piece between the inner tents.
+  The later backdrops (#649: the enchanted forest, sky islands, whispering marsh, cliffside
+  exchange, great river and bone yard) draw the far lane a little nearer, at 0.48 where the first
+  wave's is at 0.45, so the far lane's pieces sit lower behind the tents. To keep the same rule on
+  both grounds, the first tent stands at 0.172 (from 0.166) at stages 3 and 4, the lantern string
+  and the banners at 0.836 and 0.841 (from 0.83 and 0.835), and at stage 4 the second tent at
+  0.335 (from 0.345), clear of the shared tent's top half (`camp-boxes.test.ts` runs every stage on
+  both grounds).
 - **Stage 1 is a ring of bedrolls.** A bedroll is longer than its hero lying down, much wider than
   her tent, and too tall to stand in front of another lane's, so at stage 1 everything that
   reaches the back lane stands side by side across the clearing: the lantern hooks at the far
@@ -712,9 +833,27 @@ camp's spots on that ground.
   nearly full size (about 0.93), a mix about 0.83, four bigfoots about 0.76 (`campRowScale`,
   never under 0.75 at stage 1). An awning, the widest tall piece, would shrink every party further,
   so it waits for stage 2's bigger camp (§11).
+- **Friend spots** (#624). Each frame stage has four friend spots on the near lane, by the
+  friends' corner and the campfire: stage 1 at x 0.6 (spot 0), 0.27, 0.475 and 0.665; stage 2 at
+  0.672, 0.35, 0.4 and 0.6; stage 3 at 0.6, 0.395, 0.71 and 0.9; stage 4 at 0.59, 0.42, 0.37 and
+  0.9. Spot 0 holds the tallest friend out (the 75 cm mosshorn), the others any friend a kid
+  goat's size. A friend at its spot is seen whole: nothing nearer and nothing on its own lane
+  covers it, it stands in front of only the lower half of anything further back (a tent, a piece,
+  a hero at her door or at a tall piece, never a tall piece's kept top), covers no label that
+  shows, and never another friend (`campFriendClashes`), at every frame stage, for every party
+  and placement the overlap test tries, inside the window between the lobby's header and panels.
+  What waits beside the fire at a chapter's end keeps clear of them too.
 - **Indoors, one lane.** A packed-down camp (§3.2) uses a single generic layout laid over the
   scene's own picture: one near lane along the bottom, a bedroll stand point for each hero and a
-  spot for each friend. No per-scene authoring.
+  spot for each friend. No per-scene authoring. *Built* (#625, `packed-camp.ts`
+  `packedCampSpots`): the lane is the story lineup's own ground line, so the heroes stand where
+  every scene stands them; each hero's bedroll lies at her right, its middle 0.36 of her lineup
+  slot from hers and a step behind her feet (so she and her name are never covered), no wider than
+  0.85 of her slot or 0.7 of her drawn height (a rolled-up bedroll, shorter than she is). The friends out (§4.4) sit at the two ends of the row,
+  alternating, left first, each further out than the last on its side and turned to face the row,
+  at its true height on the lineup's scale, and kept inside the shown stage and clear of any
+  guest's share of it (`packedFriends`; drawn on the moving and the still stage since the #624
+  and #627 merge). The phone's packed row keeps to the kits: its friends are in the Friends section.
 
 ### 8.4 What figures do there
 
@@ -764,7 +903,15 @@ The camp should feel calm, like watching a campsite, not a busy screen:
 - **Taps on a phone show on the TV.** A tap is a short-lived message, never saved, sent to the
   room's screens the way room cheers already are (#388, `RoomCheers`). It's rate-limited per
   phone, and the TV queues and drops extra taps, so a kid hammering the button gets a happy friend
-  rather than a jittering one.
+  rather than a jittering one. *As built (#624):* `POST /api/friend-tap` (handlers/friend-tap.ts)
+  takes a friend who is out from a kid with a hero seated, two a phone every 8 seconds
+  (`FRIEND_TAP_LIMIT`), picks one of the friend's reactions and relays it as a `friendTap` channel
+  message (the friend, the kid's hero, the words). The phone's "Call Bun over" button rests 4
+  seconds after each tap. On the TV each friend acts out one tap at a time and holds one more
+  (camp-taps.ts): its words go up over its head for 4 seconds, it hops and turns where it stands,
+  and after a beat walks to the tapping kid's hero, on her lane at her side, while she waits for
+  it; a way still blocked after about four seconds (a lane-mate in it is nudged on) is a
+  fade, out where it stands and back in beside her (§8.6, rule 3). In reduced motion the words show and nobody walks.
 - **Movement is the screen's own, not the game's.** The server stores where pieces and friends are
   placed (§9), never where anybody is standing. Wandering runs on each screen from a seed taken
   from the downtime moment (§12.6), so the TV and a phone looking at it mostly agree, and nothing
@@ -841,8 +988,8 @@ interface CampRecord {
   dashCash: number;
   owned: Record<PieceId, { from: "found" | "bought" | "kept"; rewardId?: string; at: string }>;
   placed: Record<HotspotId, PieceId>;            // shared hotspots only
-  friends: Record<FriendId, { rewardId: string; at: string }>;
-  buddies: Record<CharId, FriendId>;             // one per hero, this crew's friends only (§4.4)
+  friends: Record<FriendId, { rewardId: string; at: string; outs?: number }>; // outs: moments out (#624)
+  outing?: string;                               // the last moment counted into outs (#624)
   paidChapterCount: number;                      // the shop opens at 2, tutorial chapters not counted (§5.3)
   // Receipts (§12.2): paid chapters and claimed reward ids. Storage shape to be chosen
   // after checking transaction and record-size limits.
@@ -856,6 +1003,7 @@ interface HeroKit {
   color: KitColorId;
   slots: (KitPieceId | null)[];                  // two or three
   unlocked: Record<KitPieceId, { from: "catalog" | "found" | "milestone"; rewardId?: string; at: string }>;
+  buddies: Record<CampKey, FriendId>;            // her buddy in each crew's camp (#624, §4.4)
 }
 ```
 
@@ -897,8 +1045,8 @@ hero by the piece she holds, with no crew receipt.
 - **Art**: a `camp` section in `assets/manifest.json` (backdrops per terrain family, frames per
   stage, pieces, tent and bedroll styles), owed in `npm run art:inventory` like story plates.
 - **Deleting**: the camp goes with its crew and its household, and a hero's kit goes with the hero,
-  as do their entries in any crew's `buddies`. It names no kid, so a kid's own delete (#252) leaves
-  the crew's camp alone.
+  her buddies with it (#624). It names no kid, so a kid's own delete (#252) leaves the crew's camp
+  alone.
 
 ## 10. Building it in phases
 
@@ -944,7 +1092,8 @@ befriend choice or a rest scene's `setting` to a Gemfall chapter is a deliberate
 reason in the commit. Re-taking those hashes for the camp is approved (*decided*). Nothing here may
 move the gameplay digests below the hashes: `findForCamp`, `findForKit` and `setting` change nothing
 the digests measure (no flag, XP, item or route), and that should be checked when the mosshorn is
-added and the rest scenes are tagged.
+added and the rest scenes are tagged. *Checked* for the rest scenes (#625): all sixteen chapters
+were re-hashed and the endings, roads, setbacks and resumed-save digests did not move.
 
 ## 11. Decisions and open questions
 
@@ -990,6 +1139,12 @@ Settled by the product owner:
 | Short near-lane pieces in front of a tent (#620) | The friends' corner, the trophies and the cookfire may stand on the near lane in front of the lower half of a tent further back, never its door (§8.3) |
 | Small heroes get roomier tents (#620) | A small hero's tent is 1.2 times her painted height, a big hero's 1.1: up to 110 cm painted (kitsune, dragonlings) 1.2, from 150 cm (manticores, griffins, unicorns, bigfoots) 1.1, a smooth ramp between; a kitsune's ears sit clearly under her tent's top as she stands at its door (§8.3) |
 | Lanterns and banner over a back tent's edge | The lanterns and banner pole may stand in front of the outer edge of a back tent, never its door, so big parties draw near 0.8 at stage 2 (§8.3) |
+| Indoor bedrolls are rolled up (#625) | Indoors nobody sleeps in it, so every hero's bedroll is rolled up beside the pack, whatever style the kid picked; it is sized to the hero like the rest of the gear, and need not be longer than they are (§3.2) |
+| Big frame pieces behind a nearer tent (#627) | The stage-3 and stage-4 frame pieces (the lookout post and lookout, the lantern string, the awning, the shared tent, the banners) follow the tall-shared-piece rule: each may stand partly behind a nearer tent, never by a hero's door (§8.3) |
+| A full camp at stages 3 and 4 (#627) | Parties draw at about 0.61 to 0.67 at stages 3 and 4, smaller than at stage 2, because the back row of frame pieces fills the width. The owner likes the fullness (§8.3) |
+| A blocked friend fades over (#624) | In a crowded camp a tapped friend whose way to the hero stays blocked fades over to her rather than walking through anyone (§8.4) |
+| Friend-tap limit (#624) | Each phone may tap friends twice every 8 seconds, and its button rests 4 seconds after a tap; the TV acts out one tap per friend at a time, holds one more and drops the rest (§8.4) |
+| Bun and the kid goat look different (#628) | Two friends must never read as the same animal at camp scale: Bun is repainted to stand apart from the kid goat (§4.4) |
 
 Nothing is open. The two parked questions from earlier (editing from the book, choosing friends)
 are settled above as kit and buddy editing in the book and buddies.
@@ -1010,8 +1165,9 @@ Kit pieces and crew pieces are separate catalogs with separate ids, so one can n
 the other. Every hero starts with the same free catalog. Earned kit pieces (kit finds, and
 milestones, §5.4) are recorded on the character in `HeroKit.unlocked`, with where they
 came from; that record moves with the hero when they move home (#251) and is deleted with them.
-Never infer kit ownership from any crew's catalog. A buddy (§4.4) is the exception that proves the
-rule: it names a crew-owned friend, so it is stored on the crew's camp record, keyed by the hero.
+Never infer kit ownership from any crew's catalog. A buddy (§4.4) names a crew-owned friend, so it
+is kept per crew: as built (#624) on the hero's kit, keyed by that crew's camp, and accepted only
+for one of that crew's friends.
 
 ### 12.2 Rewards are permanent, once, and independent of presentation
 

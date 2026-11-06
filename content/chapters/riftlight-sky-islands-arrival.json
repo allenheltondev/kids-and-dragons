@@ -1722,6 +1722,7 @@
     },
     "windbreak_rest": {
       "type": "rest",
+      "setting": "outdoor",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -2127,6 +2128,7 @@
     },
     "island_done": {
       "type": "rest",
+      "setting": "indoor",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -2472,6 +2474,7 @@
     },
     "island_rest": {
       "type": "rest",
+      "setting": "outdoor",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",

@@ -10,6 +10,14 @@
  * banner's flag), and all of it stays inside the visible span and between the
  * lobby's header and its panels.
  *
+ * Four friends stand among them too (#624, docs/camp.md §4.4): each at its
+ * friend spot, the tallest friend out at the roomy spot 0 and any other at
+ * spots 1 to 3 (camp-friends.ts `friendSpots`), every spot sized for the
+ * biggest friend content/camp.json has that may stand there. A friend is
+ * seen whole: nothing nearer and nothing on its own lane covers it, it covers
+ * no shown label, and it stands in front of only the lower half of anything
+ * further back (`campFriendClashes`).
+ *
  * Worst cases: four bigfoots (the tallest), four kitsune (the smallest), a mix
  * (bigfoot, kitsune, unicorn, griffin), four of every other species, and for
  * each every piece the crew could have up at each spot, in the styles their
@@ -38,6 +46,7 @@ import {
   campOverlaps,
   campRowScale,
   campStandBoxes,
+  isTallFramePiece,
   labelRect,
   labelsOf,
   pieceKeepTop,
@@ -47,11 +56,24 @@ import {
   type CampBoxInput,
 } from "./camp-boxes";
 import { CAMP_KIT_STYLES } from "./camp-kit-art";
+import { campFriendBoxes, campFriendClashes, type CampBoxFriend } from "./camp-boxes";
+import { friendHeightCm } from "./camp-friends";
+import type { CastSize } from "@kad/shared";
 import { campPaint } from "./camp-paint";
 import { CREW_PIECE_ART, TENT_ART, campSpots, pieceArt, pieceName } from "./camp-scene";
 import { FIGURE_SIZES } from "./figure-sizes";
 
 const parsed = parseCampManifest((manifest as { camp: unknown }).camp);
+
+/**
+ * The friends at each friend spot, at their biggest (#624): spot 0 holds the
+ * tallest friend out, so any catalog friend; spots 1 to 3 any but the
+ * tallest of them all.
+ */
+const CATALOG_FRIENDS: CampBoxFriend[] = (catalog.friends as { figure: string; size?: string }[])
+  .map((f) => ({ figure: f.figure, heightCm: friendHeightCm({ figure: f.figure, ...(f.size ? { size: f.size as CastSize } : {}) }) }))
+  .sort((a, b) => b.heightCm - a.heightCm);
+const FRIENDS: CampBoxFriend[][] = [CATALOG_FRIENDS, CATALOG_FRIENDS.slice(1), CATALOG_FRIENDS.slice(1), CATALOG_FRIENDS.slice(1)];
 
 /** The TV lobby's header and panels, measured on the dev table with four heroes seated (tools/playtest/table.ts). */
 const LOBBY = [
@@ -231,9 +253,47 @@ it("has every piece's true width in the manifest: its painting's, at its height"
   }
 });
 
-for (const { stage, minRow, smallRow, grownBy, styles } of STAGES) {
-  describe(`the stage-${String(stage)} camp's boxes (#620)`, () => {
-    const layout = campLayout(parsed, "open_plains", stage);
+/**
+ * The backdrops (docs/camp.md §3.1; #627): every frame is laid over every
+ * terrain's backdrop, so each stage is tested on each distinct ground. Two
+ * backdrops whose lanes are the same lay the camp out the same, box for box,
+ * so the full matrix runs once per distinct set of lanes, named by the first
+ * backdrop with it, and the others are held to it.
+ */
+const laneKey = (family: string) => JSON.stringify(parsed.backdrops.find((b) => b.family === family)!.lanes);
+const GROUNDS = parsed.backdrops.map((b) => b.family).filter((family, i, all) => all.findIndex((other) => laneKey(other) === laneKey(family)) === i);
+
+describe("the camp on every backdrop (#627)", () => {
+  it("has the first three waves' terrains (#627, #649), open_plains among them, each with its own painting and lanes", () => {
+    expect(parsed.backdrops.map((b) => b.family).sort()).toEqual([
+      "bone_yard", "cliffside_exchange", "enchanted_forest", "frozen_north", "great_river",
+      "open_plains", "red_sky_volcanic", "sky_islands", "whispering_marsh",
+    ]);
+    // Two grounds: the first wave's far lane at 0.45, and the later waves' a little lower, at 0.48.
+    expect(GROUNDS).toEqual(["open_plains", "enchanted_forest"]);
+    for (const backdrop of parsed.backdrops) {
+      expect(backdrop.path, backdrop.family).toBe(`camp/backdrops/${backdrop.family}.webp`);
+      expect(backdrop.lanes.map((l) => l.id), backdrop.family).toEqual(["far", "back", "middle", "near"]);
+    }
+  });
+
+  it("lays every stage out on every backdrop, box for box as on the ground it shares", () => {
+    const input = { heroes: heroesOf(PARTIES["a mix"]!, null, 3), spots: [], allSouvenirs: true };
+    for (const stage of [1, 2, 3, 4]) {
+      for (const backdrop of parsed.backdrops) {
+        const layout = campLayout(parsed, backdrop.family, stage);
+        expect(layout.backdrop.family).toBe(backdrop.family);
+        expect(layout.frame.stage).toBe(stage);
+        const twin = campLayout(parsed, GROUNDS.find((family) => laneKey(family) === laneKey(backdrop.family))!, stage);
+        expect(campBoxes(layout, input), `${backdrop.family} at stage ${String(stage)}`).toEqual(campBoxes(twin, input));
+      }
+    }
+  });
+});
+
+for (const ground of GROUNDS) for (const { stage, minRow, smallRow, grownBy, styles } of STAGES) {
+  describe(`the stage-${String(stage)} camp's boxes on ${ground} (#620, #627)`, () => {
+    const layout = campLayout(parsed, ground, stage);
     const W = layout.canvas.width;
     const all = placements(layout, stage, grownBy);
     /** A hero's own gear: her tent at stage 2, her bedroll and pack at stage 1. */
@@ -254,7 +314,7 @@ for (const { stage, minRow, smallRow, grownBy, styles } of STAGES) {
             ...styles.flatMap((style) => all.slice(0, 2).map((spots) => ({ heroes: heroesOf(species, style, stage), spots }))),
           ];
           for (const { heroes, spots } of cases) {
-            const input = { heroes, spots, allSouvenirs: true };
+            const input = { heroes, spots, allSouvenirs: true, friends: FRIENDS };
             const window = campWindow(view.height, view.top, view.bottom);
             const fit = campFitFor(view.width, window, layout, input);
             if (smallRow !== null && SMALL.includes(name)) expect(campRowScale(layout, input), "a small party is drawn nearly full size").toBeGreaterThanOrEqual(smallRow);
@@ -268,6 +328,11 @@ for (const { stage, minRow, smallRow, grownBy, styles } of STAGES) {
             expect(stands.length).toBeGreaterThanOrEqual(stage === 2 ? 3 : 2);
             expect(campOverlaps([...boxes, ...stands])).toEqual([]);
             expect(campLabelClashes(boxes)).toEqual([]);
+            // Four friends out among them (#624): each seen whole, covering nothing it may not.
+            const friends = campFriendBoxes(layout, { friends: FRIENDS, figureScale: fit.figureScale });
+            expect(friends).toHaveLength(4);
+            expect(campFriendClashes([...boxes, ...stands, ...friends])).toEqual([]);
+            boxes.push(...friends);
             // Inside the visible span, and between the header and the panels.
             const span = campVisibleSpan(view.width, fit.framing, W);
             const screenY = (y: number) => fit.framing.y + y * fit.framing.scale;
@@ -291,8 +356,11 @@ for (const { stage, minRow, smallRow, grownBy, styles } of STAGES) {
         const boxes = campBoxes(layout, { ...input, figureScale: campRowScale(layout, input) });
         const gear = gearOf(boxes);
         const shortest = Math.min(...gear.map((b) => b.height));
-        const tall = boxes.filter((b) => b.kind === "spot" && b.height > shortest * 0.6);
-        for (const id of stage === 1 ? ["spot:banner_pole", "spot:lanterns"] : stage === 2 ? ["spot:awning", "spot:banner_pole", "spot:lanterns"] : []) {
+        const tall = boxes.filter((b) => (b.kind === "spot" && b.height > shortest * 0.6) || (b.kind === "frame" && isTallFramePiece(b.id)));
+        // Stage 3's awning, lantern string and lookout post, stage 4's shared tent, banners and lookout (#627).
+        const frameTall = layout.frame.pieces.filter((p) => isTallFramePiece(p.id)).map((p) => p.id);
+        expect(frameTall, "the bigger frames' own tall pieces").toHaveLength(stage >= 3 ? 3 : 0);
+        for (const id of stage === 1 ? ["spot:banner_pole", "spot:lanterns"] : stage === 2 ? ["spot:awning", "spot:banner_pole", "spot:lanterns"] : frameTall) {
           expect(tall.map((b) => b.id), String(style)).toContain(id);
         }
         // Not one painted slice of a tall piece in front of, or beside, a hero's gear: only behind a
@@ -331,7 +399,7 @@ for (const { stage, minRow, smallRow, grownBy, styles } of STAGES) {
             const doors = campDoorBoxes(layout, { heroes: input.heroes, figureScale: k });
             const stands = campStandBoxes(layout, { heroes: input.heroes, figureScale: k });
             const nearerGear = (piece: CampBox) => boxes.filter((b) => b.seat !== undefined && (b.kind === "tent" || b.id.startsWith("souvenirs_")) && b.ground > piece.ground);
-            for (const piece of boxes.filter((b) => ["spot:awning", "spot:lanterns", "spot:banner_pole"].includes(b.id))) {
+            for (const piece of boxes.filter((b) => ["spot:awning", "spot:lanterns", "spot:banner_pole"].includes(b.id) || (b.kind === "frame" && isTallFramePiece(b.id)))) {
               const at = `${piece.id}, ${species.join("/")} in ${String(style)}`;
               for (const door of doors) expect(shapesOverlap(piece, door), `${at} by ${door.id}`).toBe(false);
               const covering = nearerGear(piece).filter((t) => shapesOverlap(t, piece));

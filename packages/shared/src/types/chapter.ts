@@ -52,7 +52,17 @@ export type Effect =
    * find piece. A hero who already has it gets nothing more, and never Dash
    * Cash, which is the crew's. Otherwise as `findForCamp`.
    */
-  | { type: "findForKit"; pieceId: string; rewardId: string };
+  | { type: "findForKit"; pieceId: string; rewardId: string }
+  /**
+   * A friend joins the crew's camp (docs/camp.md §4.4; #624): `friendId` is a
+   * friend in `content/camp.json`, and `rewardId` its offer for this chapter,
+   * shared by every way into it (§12.2). Authored on the "Come along" choice,
+   * beside a "Say goodbye" that writes nothing, so the friend may be offered
+   * again on a later visit. Never a gate. Saved when befriended, like a find
+   * (`RunState.campFinds`, kind `friend`); a reward this crew has already
+   * claimed gives nothing.
+   */
+  | { type: "befriend"; friendId: string; rewardId: string };
 
 /**
  * A test against the party and the run's flags (#158). Every field is
@@ -488,8 +498,27 @@ export interface ChoicePointScene {
   endsCampaign?: true;
 }
 
+/**
+ * Where a rest happens (docs/camp.md §3.2, #625), which decides what the
+ * shared screen shows while it is up:
+ *
+ *   - `"outdoor"`: somewhere a campsite could be pitched. The picture
+ *     crossfades to the crew's full camp in the chapter's terrain, with the
+ *     scene's narration on its plate, and the crew's shared spots can change.
+ *   - `"indoor"`: everywhere else, including outdoor places no campsite fits
+ *     (a boat deck, a narrow ledge, a climb). The scene keeps its own picture
+ *     and the camp is packed down into it: each hero's bedroll and pack along
+ *     the front. No tents, no campfire, no shared spots.
+ *
+ * Presentation only: nothing at play time but the camp reads it, so it moves
+ * no flag, XP, item or route.
+ */
+export type RestSetting = "indoor" | "outdoor";
+
 export interface RestScene {
   type: "rest";
+  /** Indoors or out; required, so nothing has to guess. See `RestSetting`. */
+  setting: RestSetting;
   art?: string;
   music?: string;
   narration: string;

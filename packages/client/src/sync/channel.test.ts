@@ -720,6 +720,27 @@ describe("cheers (#388)", () => {
     expect(parseChannelMessage(JSON.stringify({ ...good, cheer: "<b>hi</b>" }))).toBeNull();
     expect(parseChannelMessage(JSON.stringify({ ...good, cheer: undefined }))).toBeNull();
   });
+
+  it("hand a friend tap over live, never ordered, never moving the seq (#624)", () => {
+    const taps: unknown[] = [];
+    const sequencer = new MessageSequencer({
+      handlers: {
+        onState: () => undefined,
+        onPresentation: () => undefined,
+        onProgression: () => undefined,
+        onGap: () => undefined,
+        onFriendTap: (message) => void taps.push(message),
+      },
+    });
+    sequencer.reset(makeState({ seq: 4 }), 4);
+    const message = { kind: "friendTap" as const, seq: 9, runId: "r_1", friendId: "bun", heroId: "c_1", words: "Bun bleats." };
+    sequencer.ingest(message);
+    expect(taps).toEqual([message]);
+    expect(sequencer.seq).toBe(4);
+    expect(parseChannelMessage(JSON.stringify(message))).toEqual(message);
+    expect(parseChannelMessage(JSON.stringify({ ...message, words: "x".repeat(500) }))).toBeNull();
+    expect(parseChannelMessage(JSON.stringify({ ...message, heroId: 7 }))).toBeNull();
+  });
 });
 
 describe("parseChannelMessage", () => {

@@ -30,8 +30,9 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import type { ReactNode } from "react";
 import type { RunState } from "@kad/shared";
 import type { CampLayout } from "./camp-layout";
-import { BLEED_SOURCE, campBleed, campFocusBand, campVisibleSpan, campWindow, type CampFraming } from "./camp-framing";
-import { LOBBY_CAMP_STAND_IN, campDressing, campFriends, campHeroes, stillCampFigures } from "./lobby-camp";
+import { BLEED_SOURCE, campBleed, campFocusBand, campSides, campVisibleSpan, campWindow, type CampFraming } from "./camp-framing";
+import { LOBBY_CAMP_STAND_IN, campDressing, campHeroes, stillCampFigures } from "./lobby-camp";
+import { campFriendFigures } from "./camp-friends";
 import leafArt from "../assets/painted/leaf.webp";
 import { campAccent } from "./camp-accents";
 import { lobbyInsetBottom, lobbyInsetTop, onLobbyInset, onLobbyInsetTop } from "./stage-inset";
@@ -135,9 +136,11 @@ export interface StillCampProps {
   activeSpot?: string | null;
   /** "cover", the shared screen's framing; "width", a phone's Camp panel: the whole camp across, its band only. */
   fit?: "cover" | "width";
+  /** A tapped friend's words (#624), by friend id, shown over its head (still-friend-taps.ts). */
+  friendWords?: ReadonlyMap<string, string>;
 }
 
-export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fit: mode = "cover" }: StillCampProps): React.JSX.Element {
+export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fit: mode = "cover", friendWords }: StillCampProps): React.JSX.Element {
   const host = useRef<HTMLDivElement | null>(null);
   const [pane, setPane] = useState({ width: 0, height: 0 });
   const lobbyBottom = useSyncExternalStore(onLobbyInset, lobbyInsetBottom, lobbyInsetBottom);
@@ -165,6 +168,10 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
 
   const heroes = campHeroes(state);
   const dressing = campDressing(state, layout);
+  // The friends out (§4.4; #624) at their friend spots, beside the heroes at theirs.
+  const friendFigures = campFriendFigures(state);
+  const friendsOut: { figure: string; heightCm: number }[] = [];
+  for (const f of friendFigures) if (f.friend !== undefined && f.figure) friendsOut[f.friend] = { figure: f.figure, heightCm: f.heightCm };
   const input: Omit<CampBoxInput, "figureScale"> = {
     heroes: heroes.map(({ figure }) => ({
       seat: figure.seat!,
@@ -178,6 +185,7 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
     })),
     spots: dressing.spots,
     beside: dressing.beside,
+    ...(friendFigures.length > 0 ? { friends: friendsOut } : {}),
   };
   const heights = heroes.map((hero) => hero.figure.heightCm);
   const W = layout.canvas.width;
@@ -198,16 +206,18 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
     bandPx = (band.bottom - band.top) * H * s;
     at = { scale: s, x: 0, y: -band.top * H * s };
   } else if (mode === "cover" && pane.width > 0 && pane.height > 0) {
-    const fitted = campFitFor(pane.width, campWindow(pane.height, insetTop, inset), layout, input, 0.5, heights);
+    // A rest's window (`insets`) starts at the goal card's foot: past the figures' floor the camp shrinks (#625).
+    const fitted = campFitFor(pane.width, campWindow(pane.height, insetTop, inset), layout, input, 0.5, heights, insets !== undefined);
     at = fitted.framing;
     scale = fitted.figureScale;
   }
   const boxes = campBoxes(layout, { ...input, figureScale: scale });
   const boxOf = new Map(boxes.map((b) => [b.id, b]));
-  const visible = at && mode === "cover" ? campVisibleSpan(pane.width, at, W) : undefined;
-  const figures = stillCampFigures(layout, heroes, scale, visible, campFriends(state));
+  const friends = friendFigures.map((figure) => ({ figure, ready: false, away: false }));
+  const figures = stillCampFigures(layout, [...heroes, ...friends], scale, at && mode === "cover" ? campVisibleSpan(pane.width, at, W) : undefined);
   const box = at ? { left: at.x, top: at.y, width: W * at.scale, height: H * at.scale } : { left: 0, top: 0, width: 0, height: 0 };
   let bleed = at && mode === "cover" ? campBleed(pane.height, at, layout.canvas) : { top: 0, bottom: 0 };
+  const sides = at && mode === "cover" ? campSides(pane.width, at, layout.canvas) : { left: 0, right: 0 };
 
   // A phone's chips: one per pickable spot, under the picture.
   const chips = mode === "width" && onSpot && at
@@ -276,6 +286,22 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
       data-figure-scale={scale.toFixed(3)}
       style={rootHeight !== undefined ? { height: rootHeight } : undefined}
     >
+      {/* A shrunk camp's sides: the painting again, mirrored, so each seam meets itself (camp-framing.ts `campSides`). */}
+      {(["left", "right"] as const).map((edge) =>
+        sides[edge] > 0 ? (
+          <div
+            key={edge}
+            className="kad-static-camp__frame kad-static-camp__side"
+            data-side={edge}
+            style={{ left: box.left + (edge === "left" ? -box.width : box.width), top: box.top, width: box.width, height: box.height }}
+            aria-hidden="true"
+          >
+            {strip("top", bleed.top)}
+            {strip("bottom", bleed.bottom)}
+            <img className="kad-static-camp__backdrop" src={backdrop} alt="" />
+          </div>
+        ) : null,
+      )}
       <div className="kad-static-camp__frame" style={{ left: box.left, top: box.top, width: box.width, height: box.height }}>
         {strip("top", bleed.top)}
         {strip("bottom", bleed.bottom)}
@@ -298,7 +324,8 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
           <span
             key={figure.id}
             className={`kad-static-camp__hero${figure.away ? " is-away" : ""}`}
-            data-hero={figure.id}
+            data-hero={figure.friend === undefined ? figure.id : undefined}
+            data-friend={figure.friend === undefined ? undefined : figure.id}
             style={{
               left: `${figure.x * 100}%`,
               top: `${figure.y * 100}%`,
@@ -308,7 +335,10 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
           >
             {figure.url ? <img src={figure.url} alt="" /> : null}
             {figure.id === "friend:mosshorn" && <span className="kad-static-camp__leaf"><img src={leafArt} alt="" /></span>}
-            <span className="kad-static-camp__name">{state.party.find(member => member.character.id === figure.id)?.character.name}</span>
+            <span className="kad-static-camp__name">{figure.friend ?? state.party.find(member => member.character.id === figure.id)?.character.name}</span>
+            {figure.friend !== undefined && friendWords?.has(figure.id.slice("friend:".length)) ? (
+              <span className="kad-static-camp__words" data-testid="friend-words">{friendWords.get(figure.id.slice("friend:".length))}</span>
+            ) : null}
           </span>
         ))}
         {layout.frame.pieces.map(piece => {

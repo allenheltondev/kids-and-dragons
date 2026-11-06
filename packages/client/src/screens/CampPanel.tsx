@@ -13,12 +13,18 @@
  *     to the lobby close it: it lives only while the table is in downtime.
  *   - `KitWelcome`: the first-session choice (§5.3), once per hero on a phone,
  *     one tap, skippable, never in the way of Ready.
+ *   - The crew's friends (§4.4, §8.5; #624): each kid's buddy, picked in her
+ *     kit, and a "Call over" button for every friend out, which makes it
+ *     react on the TV and walk over to her hero. Friends who are not out are
+ *     listed all the same: they take turns, and nobody ever leaves.
  *
  * Every write is the server's (CAMP_PLACE, CAMP_UNDO, KIT_EDIT; handlers
  * camp-edit.ts); this only offers what the rules allow (shared camp-edit.ts).
  */
 
 import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
+import { useGameStore } from "../store";
+import { castArtUrl } from "../world/art-paths";
 import type { ReactElement } from "react";
 import {
   KIT_COLORS,
@@ -32,16 +38,18 @@ import {
   placeRefusalText,
   sharedEditsLeft,
   undoableChange,
+  FRIEND_TAP_COOLDOWN_MS,
   SHARED_EDITS_PER_MOMENT,
 } from "@kad/shared";
-import type { ClientIntent, HeroKitView, PartyMember, RunState } from "@kad/shared";
-import { useChapter } from "../store";
+import type { CampFriendCard, ClientIntent, HeroKitView, PartyMember, RunState } from "@kad/shared";
 import { Button } from "../ui/Button";
 import { Icon } from "./icons";
 import { StillCamp, TentStandIn } from "../world/StillCamp";
 import { CampBedroll, CampTent } from "../world/CampBedroll";
 import { CAMP_KIT_STYLES, campKitStyle, type CampKitStyle } from "../world/camp-kit-art";
-import { campLayoutFor, campStage } from "../world/lobby-camp";
+import { campFamilyFor, campLayoutFor, campStage } from "../world/lobby-camp";
+import { packedKits } from "../world/packed-camp";
+import { useChapter } from "../store";
 import {
   KIT_RULES,
   campBeside,
@@ -146,8 +154,107 @@ export function KitWelcome({ state, me, held, dispatch }: { state: RunState; me:
   );
 }
 
+/** A friend's picture, its figure's own art (#624). */
+function FriendArt({ card }: { card: CampFriendCard }): ReactElement | null {
+  const url = castArtUrl(card.figure);
+  const [failed, setFailed] = useState(false);
+  if (!url || failed) return null;
+  return <img src={url} alt="" onError={() => setFailed(true)} />;
+}
+
+/**
+ * Her buddy (§4.4; #624): one of the crew's friends, always out while she is
+ * seated, or none, when every seat rotates. Kept on her kit, for this crew.
+ */
+function BuddyPicker({ kit, friends, held, edit, hero }: { kit: HeroKitView; friends: readonly CampFriendCard[]; held: boolean; edit: (change: { buddy: string | null }) => void; hero: string }): ReactElement | null {
+  if (friends.length === 0) return null;
+  const buddy = kit.buddy ?? null;
+  return (
+    <fieldset className="camp-panel__group" data-testid="buddy-picker">
+      <legend>Buddy</legend>
+      <p className="camp-panel__note kad-muted">{`Your buddy is always out at camp while ${hero} is here.`}</p>
+      <div className="camp-panel__options">
+        <button type="button" className="camp-option kad-focusable" aria-pressed={buddy === null} disabled={held} onClick={() => edit({ buddy: null })} data-buddy="">
+          <span className="camp-option__label">No buddy</span>
+        </button>
+        {friends.map((card) => (
+          <button key={card.id} type="button" className="camp-option kad-focusable" aria-pressed={buddy === card.id} disabled={held} onClick={() => edit({ buddy: card.id })} data-buddy={card.id}>
+            <span className="camp-option__art camp-option__art--friend" aria-hidden="true">
+              <FriendArt card={card} />
+            </span>
+            <span className="camp-option__label">{card.name}</span>
+          </button>
+        ))}
+      </div>
+    </fieldset>
+  );
+}
+
+/**
+ * The crew's friends (§4.4, §8.5; #624): a named button for every friend out,
+ * which calls it over to this kid's hero on the TV, a moment apart
+ * (`FRIEND_TAP_COOLDOWN_MS`, so a hammered button sends a tap now and then,
+ * never a flood); and every friend the crew has, out or not.
+ */
+function CampFriends({ state }: { state: RunState }): ReactElement | null {
+  const friends = state.campMoment?.friends;
+  const tapFriend = useGameStore((store) => store.tapFriend);
+  const [resting, setResting] = useState<string | null>(null);
+  const [said, setSaid] = useState<string | null>(null);
+  const base = useId();
+  useEffect(() => {
+    if (resting === null) return;
+    const timer = setTimeout(() => setResting(null), FRIEND_TAP_COOLDOWN_MS);
+    return () => clearTimeout(timer);
+  }, [resting]);
+  if (!friends || friends.cards.length === 0) return null;
+  const out = friends.out.map((id) => friends.cards.find((c) => c.id === id)).filter((c): c is CampFriendCard => c !== undefined);
+  // Indoors the camp is packed down and nobody walks (§3.2): a tapped friend
+  // says hello where it sits, so the phone says that, not that it is coming.
+  const indoors = state.campMoment?.outdoor === false;
+  const call = (card: CampFriendCard): void => {
+    if (resting !== null) return;
+    setResting(card.id);
+    setSaid(indoors ? `${card.name} says hi! Look at the TV.` : `${card.name} is on the way!`);
+    void tapFriend(card.id);
+  };
+  return (
+    <section className="camp-panel__section" aria-labelledby={`${base}-friends`} data-testid="camp-friends">
+      <h3 className="camp-panel__heading" id={`${base}-friends`}>
+        <Icon name="heart" />
+        <span>Friends</span>
+      </h3>
+      <div className="camp-panel__options">
+        {out.map((card) => (
+          <button
+            key={card.id}
+            type="button"
+            className="camp-option camp-option--friend kad-focusable"
+            disabled={resting !== null}
+            onClick={() => call(card)}
+            data-friend={card.id}
+          >
+            <span className="camp-option__art camp-option__art--friend" aria-hidden="true">
+              <FriendArt card={card} />
+            </span>
+            <span className="camp-option__label">{indoors ? `Say hi to ${card.name}` : `Call ${card.name} over`}</span>
+          </button>
+        ))}
+      </div>
+      <p className="camp-panel__note" role="status" aria-live="polite" data-testid="friend-called">
+        {said ?? ""}
+      </p>
+      {friends.cards.length > out.length ? (
+        <p className="camp-panel__note kad-muted" data-testid="friend-collection">
+          {`Your crew's friends take turns at camp: ${friends.cards.map((c) => c.name).join(", ")}.`}
+        </p>
+      ) : null}
+    </section>
+  );
+}
+
 /** One hero's kit, changed by her own player (§4.5): no limit, indoors or out. */
-function KitEditor({ member, kit, held, dispatch }: { member: PartyMember; kit: HeroKitView; held: boolean; dispatch: Dispatch }): ReactElement {
+function KitEditor({ member, kit, held, dispatch, friends = [] }: { member: PartyMember; kit: HeroKitView; held: boolean; dispatch: Dispatch; friends?: readonly CampFriendCard[] }): ReactElement {
   const hero = member.character;
   const style = campKitStyle(hero.id, kit.style);
   const accent = kitAccent(kit.color, hero.appearance.accent);
@@ -243,6 +350,7 @@ function KitEditor({ member, kit, held, dispatch }: { member: PartyMember; kit: 
           ))}
         </div>
       </fieldset>
+      <BuddyPicker kit={kit} friends={friends} held={held} edit={edit} hero={hero.name} />
       {hero.souvenirs.length > 0 ? (
         <p className="camp-panel__note">
           <Icon name="charm" />
@@ -387,10 +495,32 @@ function SharedSpots({
   );
 }
 
+/**
+ * The camp packed down, as a phone shows it at an indoor rest (§3.2): each
+ * seated hero's bedroll and pack in her color, with her name, in a row. The
+ * friends out (#624) sit at its ends on the shared screen (packed-camp.ts
+ * `packedFriends`); here they are in the Friends section below, to call over.
+ */
+function PackedCamp({ state }: { state: RunState }): ReactElement {
+  const names = new Map(state.party.map((m) => [m.character.id, m.character.name]));
+  return (
+    <ul className="camp-panel__packed" aria-label="Packed camp" data-testid="camp-packed">
+      {packedKits(state).map((kit) => (
+        <li key={kit.id} className="camp-panel__packed-kit">
+          <span className="camp-panel__packed-art" aria-hidden="true">
+            <CampBedroll style={kit.style} accent={kit.accent} />
+          </span>
+          <span className="camp-panel__packed-name">{names.get(kit.id) ?? ""}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 /** The panel itself: a picture and its named controls. Open only in downtime. */
 export function CampPanel({ state, me, held, dispatch }: { state: RunState; me: PartyMember; held: boolean; dispatch: Dispatch }): ReactElement | null {
-  const chapter = useChapter();
   const open = useSyncExternalStore(onCampPanel, campPanelOpen, campPanelOpen);
+  const chapter = useChapter();
   const kind = campMomentKind(state);
   const [active, setActive] = useState<string | null>(null);
   const headingRef = useRef<HTMLHeadingElement | null>(null);
@@ -411,10 +541,10 @@ export function CampPanel({ state, me, held, dispatch }: { state: RunState; me: 
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
   if (!open || kind === null) return null;
-  // Indoors the camp is packed down to bedrolls and packs (§3.2).
+  // Indoors the camp is packed down to bedrolls and packs (§3.2): no campsite
+  // painting, no tents and no campfire, only each hero's own kit, set down.
   const indoors = state.campMoment?.outdoor === false;
-  const biome = !indoors && (state.phase === "chapter_complete" || kind === "rest") ? chapter?.biome : null;
-  const layout = campLayoutFor(indoors ? 1 : campStage(state), biome);
+  const layout = indoors ? null : campLayoutFor(campStage(state), campFamilyFor(state, chapter));
   const mine = state.party.filter((m) => m.playerId === me.playerId);
   return (
     <div className="camp-panel" role="dialog" aria-modal="true" aria-labelledby={titleId} data-testid="camp-panel">
@@ -435,10 +565,12 @@ export function CampPanel({ state, me, held, dispatch }: { state: RunState; me: 
             <StillCamp layout={layout} state={state} fit="width" activeSpot={active} {...(state.campMoment?.outdoor ? { onSpot: setActive } : {})} />
           </div>
         ) : null}
+        {indoors ? <PackedCamp state={state} /> : null}
         {mine.map((member) => {
           const kit = state.kits?.[member.character.id];
-          return kit ? <KitEditor key={member.character.id} member={member} kit={kit} held={held} dispatch={dispatch} /> : null;
+          return kit ? <KitEditor key={member.character.id} member={member} kit={kit} held={held} dispatch={dispatch} friends={state.campMoment?.friends?.cards ?? []} /> : null;
         })}
+        <CampFriends state={state} />
         <SharedSpots state={state} me={me} held={held} dispatch={dispatch} active={active} setActive={setActive} />
       </div>
     </div>

@@ -647,6 +647,7 @@
     },
     "rest_soup_tents": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "By the road, helpers in dark robes serve soup in big tents. Little crystals hum on strings around their necks. A ladler named Wend waves you in. \"Kindness first,\" says Wend.",
       "heal": 2,
       "choices": [
@@ -1829,6 +1830,7 @@
     },
     "end_foothills_in_sight": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "You camp past the bend, safe. In the morning you see the red foothills, where the rush is heading. The bark of verses is in your pack. Now you know what the road is saying: the land is flinching from the stones.",
       "heal": 4,
       "choices": [],
@@ -1874,6 +1876,7 @@
     },
     "end_scattered": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "By the time you find your feet, it is almost morning. The wolves ate the supplies and ran north. Sergeant Holloway's patrol writes you down as 'Stragglers, Muddy'. You lost a day, but the bark of verses is safe, and so are you.",
       "cast": [
         {

@@ -2062,6 +2062,7 @@
     },
     "rest": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "Puddle opens her floating lunch box: kelp rolls in leaves. \"Guides eat first,\" she says, and eats one, then shares the rest. Pip eats his in one bite. The ruins creak north with every wave. \"Rule says leave before the tide turns,\" says Puddle. \"But I've always wanted to see them move.\"",
       "heal": 2,
       "variants": [

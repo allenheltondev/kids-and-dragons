@@ -1755,6 +1755,7 @@
     },
     "rest_witch_fire": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "Rest in the line. The charm chimes at passing wagons, and Pudding visits every supper pot. At dawn, Burdock takes her home, and a drover calls numbers from much closer to the water. Your turn is nearly here.",
       "heal": 2,
       "choices": [
@@ -2154,6 +2155,7 @@
     },
     "end_forded": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "You stand dripping on the north bank, with the whole rush pouring past toward the mountain. The tuned charm chimes at every wagon. Behind you, the crossing verse starts again. Tonight you camp on the north side, right in the thick of it.",
       "heal": 4,
       "onEnter": [
@@ -2193,6 +2195,7 @@
     },
     "end_marsh_west": {
       "type": "rest",
+      "setting": "outdoor",
       "discovers": [
         "biome.enchanted_woods"
       ],
@@ -2240,6 +2243,7 @@
     },
     "end_swept_setback": {
       "type": "rest",
+      "setting": "outdoor",
       "discovers": [
         "biome.enchanted_woods"
       ],
