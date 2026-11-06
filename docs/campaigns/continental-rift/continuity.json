@@ -1188,6 +1188,31 @@
           ],
           "introduces": {}
         },
+        "kid_friend": {
+          "requires": [
+            "herder",
+            "herd",
+            "goat"
+          ],
+          "introduces": {
+            "spotted_kid": "white with brown spots"
+          }
+        },
+        "kid_along": {
+          "requires": [
+            "herder",
+            "spotted_kid"
+          ],
+          "introduces": {}
+        },
+        "kid_goodbye": {
+          "requires": [
+            "herder",
+            "herd",
+            "spotted_kid"
+          ],
+          "introduces": {}
+        },
         "departure": {
           "requires": [
             "hall",

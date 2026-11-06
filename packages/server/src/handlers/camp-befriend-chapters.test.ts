@@ -43,6 +43,7 @@ const BEFRIENDINGS: Befriending[] = [
   { friendId: "mosshorn", rewardId: "gemfall-04b.mosshorn", chapterId: "gemfall-04b", from: "scene_read_herd", via: "follow", ask: "scene_mosshorn_friend", come: "scene_mosshorn_along", goodbye: "scene_mosshorn_goodbye" },
   { friendId: "harbor_gull", rewardId: "riftlight-exchange-rift.gull", chapterId: "riftlight-exchange-rift", from: "quay_rest", via: "on", ask: "gull_friend", come: "gull_along", goodbye: "gull_goodbye" },
   { friendId: "duckling", rewardId: "riftlight-ashspan-bridge.duckling", chapterId: "riftlight-ashspan-bridge", from: "ducks_safe", via: "continue", ask: "duck_friend", come: "duck_along", goodbye: "duck_goodbye" },
+  { friendId: "kid_goat", rewardId: "riftlight-glacier-survival.kid_goat", chapterId: "riftlight-glacier-survival", from: "ledge_done", via: "continue", ask: "kid_friend", come: "kid_along", goodbye: "kid_goodbye" },
 ];
 
 /**
@@ -87,10 +88,9 @@ async function atTheWayIn(b: Befriending) {
 describe("the shipped befriendings (#626)", () => {
   it("lists every friend the catalog offers, each offer once", () => {
     const offered = content.campCatalog()!.friends.flatMap((f) => f.offers.map((o) => `${f.id} ${o.rewardId}`));
-    // The kid goat's offer stands in the catalog but no chapter makes it: the
-    // goat kid goes home to the yeti herder's herd and is met again later
-    // (docs/camp.md §4.4, §12.6), so it fails "belongs to nobody".
-    expect(BEFRIENDINGS.map((b) => `${b.friendId} ${b.rewardId}`).sort()).toEqual(offered.filter((o) => !o.startsWith("kid_goat ")).sort());
+    // The kid goat is the spotted kid the herder gives away in the glacier
+    // chapter, never the goat kid that goes home to her herd (docs/camp.md §4.4).
+    expect(BEFRIENDINGS.map((b) => `${b.friendId} ${b.rewardId}`).sort()).toEqual(offered.sort());
   });
 
   it.each(BEFRIENDINGS)("$chapterId: 'Come along' gives the crew $friendId", { timeout: 30_000 }, async (b) => {

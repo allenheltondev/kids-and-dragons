@@ -676,8 +676,11 @@ chapter, exactly as a find's.
 
 - **A friend belongs to nobody in the story**: no owner, no job, no later scene of its own. Grep
   every later chapter for the creature before adding it; a later appearance means pick another
-  creature, never rewrite the story (§12.6). The goat kid of Exchange Rift fails this (it goes
-  home to the yeti herder's herd and is met again), so its catalog offer is made nowhere.
+  creature, never rewrite the story (§12.6). A creature its keeper gives away freely counts as
+  belonging to nobody (the duckling Tilly hands over). The goat kid of Exchange Rift fails this
+  (it goes home to the yeti herder's herd and is met again), so the kid goat friend is a
+  different kid: the spotted one the herder gives away in `riftlight-glacier-survival`, always
+  named so that no later scene with the herder's goat kid reads as her.
 - **A choice, never a variant**: "Come along" carries the `befriend`, beside an ungated "Say
   goodbye" with no effects. Each lands on a scene of its own that shows the result (the friend
   climbs into a pack; the friend waves off, never sadly), and both then go on to the same scene,

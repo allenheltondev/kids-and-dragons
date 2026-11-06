@@ -1936,7 +1936,7 @@
     },
     "scene_mosshorn_along": {
       "type": "story",
-      "narration": "The mosshorn lowers its antlers again. That means yes. It trots off the long way around the gray, strawberries bouncing. It will find you. Mosshorns always do.",
+      "narration": "The mosshorn lowers its antlers again. That means yes. It won't step on the gray, so it trots off the long way around, strawberries bouncing. Mosshorns are very slow travelers. Yours will catch up someday, when you least expect it, with a new strawberry on its nose.",
       "cast": [
         {
           "figure": "entities/mosshorn"

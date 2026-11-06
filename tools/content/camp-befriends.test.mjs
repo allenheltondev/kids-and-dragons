@@ -65,10 +65,11 @@ const SITES = CHAPTERS.flatMap((chapter) => befriends(chapter).map(({ effect, at
 const friendOf = (id) => CATALOG.friends.find((f) => f.id === id);
 
 describe("befriendings in the chapters (#626)", () => {
-  it("offers every catalog friend but the kid goat, whose goat kid goes home to the herder's herd", () => {
+  it("offers every catalog friend, the kid goat as the herder's spotted kid she gives away (not the goat kid that goes home)", () => {
     const offered = new Set(SITES.map((s) => s.effect.rewardId));
     const missing = CATALOG.friends.flatMap((f) => f.offers.map((o) => o.rewardId)).filter((r) => !offered.has(r));
-    expect(missing).toEqual(["riftlight-exchange-rift.kid_goat"]);
+    expect(missing).toEqual([]);
+    expect(SITES.find((s) => s.effect.friendId === "kid_goat")?.effect.rewardId).toBe("riftlight-glacier-survival.kid_goat");
     // One offer, one place to make it.
     expect(SITES.map((s) => s.effect.rewardId)).toEqual([...offered]);
   });

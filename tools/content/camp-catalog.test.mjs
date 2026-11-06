@@ -259,10 +259,10 @@ describe("friends (§4.4)", () => {
   it("accepts a befriend through its friend's offer, on a choice, on every way into the place (#624)", () => {
     expect(
       problems(({ chapters }) => {
-        const chapter = chapters.get("riftlight-exchange-rift");
+        const chapter = chapters.get("riftlight-glacier-survival");
         const entry = chapter.scenes[chapter.entry];
-        entry.choices = [{ ...entry.choices[0], effects: [befriend("kid_goat", "riftlight-exchange-rift.kid_goat")] }, ...entry.choices.slice(1)];
-        findIn(chapters, "riftlight-exchange-rift", befriend("kid_goat", "riftlight-exchange-rift.kid_goat"));
+        entry.choices = [{ ...entry.choices[0], effects: [befriend("kid_goat", "riftlight-glacier-survival.kid_goat")] }, ...entry.choices.slice(1)];
+        findIn(chapters, "riftlight-glacier-survival", befriend("kid_goat", "riftlight-glacier-survival.kid_goat"));
       }),
     ).toEqual([]);
   });
@@ -276,8 +276,8 @@ describe("friends (§4.4)", () => {
   });
 
   it("rejects a befriend in a chapter that is not its offer's", () => {
-    expect(problems(({ chapters }) => findIn(chapters, "riftlight-saltrot-arrival", befriend("kid_goat", "riftlight-exchange-rift.kid_goat"))).join("\n")).toContain(
-      "is riftlight-exchange-rift's offer, not riftlight-saltrot-arrival's",
+    expect(problems(({ chapters }) => findIn(chapters, "riftlight-saltrot-arrival", befriend("kid_goat", "riftlight-glacier-survival.kid_goat"))).join("\n")).toContain(
+      "is riftlight-glacier-survival's offer, not riftlight-saltrot-arrival's",
     );
   });
 });

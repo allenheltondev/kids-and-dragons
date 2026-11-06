@@ -1677,7 +1677,7 @@
           "id": "continue",
           "label": "Meet the travelers",
           "icon": "hand",
-          "goto": "departure"
+          "goto": "kid_friend"
         }
       ],
       "art": "scenes/riftlight/singing-hall-camp",
@@ -1691,10 +1691,92 @@
         }
       ]
     },
+    "kid_friend": {
+      "type": "choice_point",
+      "narration": "As you turn to go, something bumps the back of your knees. It is not the little goat you brought home. That one is asleep in a heap of goats. This kid goat is even smaller, white with brown spots, and so wiggly that her whole back end wags. \"That spotted one has taken a shine to you,\" says the herder. \"She is mine to give, and I give her gladly. The herd will be quieter.\" Do you ask the spotted kid goat along?",
+      "cast": [
+        {
+          "figure": "cast/yeti_herder",
+          "name": "Yeti herder"
+        },
+        {
+          "figure": "cast/snowhorn_kid",
+          "name": "Spotted kid"
+        }
+      ],
+      "choices": [
+        {
+          "id": "come",
+          "label": "Ask the spotted kid goat to come along",
+          "icon": "heart",
+          "goto": "kid_along",
+          "effects": [
+            {
+              "type": "befriend",
+              "friendId": "kid_goat",
+              "rewardId": "riftlight-glacier-survival.kid_goat"
+            }
+          ]
+        },
+        {
+          "id": "goodbye",
+          "label": "Say goodbye to the spotted kid goat",
+          "icon": "hand",
+          "goto": "kid_goodbye"
+        }
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
+    },
+    "kid_along": {
+      "type": "story",
+      "narration": "The spotted kid goat springs straight up like popcorn, then trots at your heels. \"Mind your bootlaces,\" says the herder. \"She eats them.\" Too late. One lace is already half gone.",
+      "cast": [
+        {
+          "figure": "cast/yeti_herder",
+          "name": "Yeti herder"
+        },
+        {
+          "figure": "cast/snowhorn_kid",
+          "name": "Spotted kid"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Meet the travelers",
+          "icon": "hand",
+          "goto": "departure"
+        }
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
+    },
+    "kid_goodbye": {
+      "type": "story",
+      "narration": "You scratch the spotted kid goat behind the ears. She wiggles one last wiggle, sneezes on your boot, and bounces back to the herd. \"She will tell them all about you,\" says the herder.",
+      "cast": [
+        {
+          "figure": "cast/yeti_herder",
+          "name": "Yeti herder"
+        },
+        {
+          "figure": "cast/snowhorn_kid",
+          "name": "Spotted kid"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Meet the travelers",
+          "icon": "hand",
+          "goto": "departure"
+        }
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
+    },
     "departure": {
       "type": "rest",
       "setting": "outdoor",
-      "narration": "Warm and dry, you step outside. The kid stays with its herd, already asleep in a heap of goats. You know now where the snow on the quay came from: right here. But why is a glacier spilling onto a harbor, and why does its snow walk uphill? A griffin in a travel cloak is trying to fold a map while a unicorn stands on one corner. \"It will not fold,\" he mutters. Neither has noticed that the corner is under her hoof.",
+      "narration": "Warm and dry, you step outside. The little goat you brought home stays with its herd, already asleep in a heap of goats. You know now where the snow on the quay came from: right here. But why is a glacier spilling onto a harbor, and why does its snow walk uphill? A griffin in a travel cloak is trying to fold a map while a unicorn stands on one corner. \"It will not fold,\" he mutters. Neither has noticed that the corner is under her hoof.",
       "heal": 0,
       "choices": [],
       "outcome": "success",

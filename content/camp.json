@@ -210,13 +210,13 @@
     {
       "id": "kid_goat",
       "figure": "cast/snowhorn_kid",
-      "name": "Kid goat",
-      "offers": [{ "rewardId": "riftlight-exchange-rift.kid_goat", "chapter": "riftlight-exchange-rift" }],
+      "name": "Spotted kid goat",
+      "offers": [{ "rewardId": "riftlight-glacier-survival.kid_goat", "chapter": "riftlight-glacier-survival" }],
       "reactions": [
-        "The kid goat bounces straight up like a spring.",
-        "Maa! The kid goat snuggles in close to stay warm.",
-        "The kid goat chews your bootlace, very politely.",
-        "The kid goat does a tiny dance on the tips of its hooves."
+        "The spotted kid goat bounces straight up like a spring.",
+        "Maa! The spotted kid goat wiggles so hard her whole back end wags.",
+        "The spotted kid goat chews your bootlace, very politely.",
+        "The spotted kid goat does a tiny dance on the tips of her hooves."
       ]
     },
     {

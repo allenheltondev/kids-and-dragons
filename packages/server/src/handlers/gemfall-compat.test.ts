@@ -376,6 +376,11 @@ const DIGESTS: PreEpicSave["digests"] = {
 // after the Empty Chair, 02's silver otter as the party leaves the mimic ditch, 04b's strawberry
 // mosshorn at the gray edge after the herd. A befriend changes no flag, XP, item, route or
 // ending, no shipped check or terminal scene moved, and the gameplay digests below are unchanged.
+// Chapter 04b is re-pinned for the mosshorn's "come along" words (#626, approved by the owner):
+// scene_mosshorn_along no longer promises the mosshorn will find the party in the Woods, which
+// the Glade Stone ending ("no mosshorn comes near") contradicted; it will catch up someday. One
+// narration string only: no scene, edge, flag, effect, stat or TN moved, and the gameplay
+// digests below are unchanged.
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "7042c8fa98760e9ded81d479d40e392bb56ecb9bf62ed70baf724ffa53b7a09a",
   "chapters/gemfall-01.json": "46c1b186b77488b5c059dab1fea98e7e52ef06a14f0b7900037052c046a6f8ca",
@@ -384,7 +389,7 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-03b.json": "c7b75db3061e7df9ec1fa51bfc01cb60ee359cd6bbac6b4a9a881556b481b036",
   "chapters/gemfall-03c.json": "b038ce1c9d7e5c94fcd56730df53e22e3638025f29e45847481018f056fb907f",
   "chapters/gemfall-04a.json": "42889a82ac23a08135bdb2a942792906e1d36a5b9308f93cb4400b4770124115",
-  "chapters/gemfall-04b.json": "f2e88268e3cf4bad7feb583e0f7510c89a122a9cf67fc2989859483cfbe1b9de",
+  "chapters/gemfall-04b.json": "4c577d2da79220e014b36da19875559f63d4be16b23e795770cdd7e0db28646f",
   "chapters/gemfall-04c.json": "17b14d20611e8d1c7361c057625f9fd49ac253b0a7d7d4b01ef80d5a04ce73ae",
   "chapters/gemfall-05a.json": "bf36941e45e9064f050a1cc12ca06ff17454470212222d0d083ac32d5075a0bf",
   "chapters/gemfall-05b.json": "f0a16c181e23485c1c181ef91d758e5f4627bb769599cdbadc443b5a70c2bbf9",
