@@ -47,7 +47,6 @@ import {
   bookKitChanges,
   bookKitEdit,
   bookKitState,
-  bookKitValue,
   withBookKitValue,
   campIntentProblem,
   campKey,
@@ -294,10 +293,11 @@ export async function prepareKitEdit(
   /*
    * The table reads her kit as a moment begins, so a change from the book
    * (#629) mid-moment leaves `state.kits` behind her row. A phone that sent
-   * what the table showed is not stale, only behind: the edit is applied over
-   * her kit as it is now, field by field (`behindEdit`), so it never undoes a
-   * book change it did not see, and the table's view is refreshed with it. A
-   * revision the table itself has left is stale, as ever.
+   * what the table showed is not stale, only behind: the fields it changed are
+   * applied over her kit as it is now (`behindEdit`), the latest edit winning
+   * (docs/camp.md §11), and every other field the book changed is kept, so
+   * nothing is lost; the table's view is refreshed with it. A revision the
+   * table itself has left is stale, as ever.
    */
   const shown = state.kits?.[intent.characterId];
   const seen: { problem: string | null; stale: boolean } = { problem: null, stale: false };
@@ -340,9 +340,9 @@ export async function prepareKitEdit(
 /**
  * A table's `KIT_EDIT`, made over the kit the table showed (`shown`), as it
  * applies to her kit as stored (`stored`) once something else (the book) has
- * changed it: each field only where the stored value is still the one the
- * table showed; a field changed elsewhere (in the book, whose changes are the
- * device's and win, docs/camp.md §11) keeps that value.
+ * changed it: every field the table changed takes the table's pick, since the
+ * latest edit wins, book or table (docs/camp.md §11); every field it did not
+ * change keeps what is stored, the book's changes included, so none is lost.
  */
 export function behindEdit(edit: KitEdit, shown: HeroKitView, stored: BookKitState): KitEdit {
   const before: BookKitState = { style: shown.style, tent: shown.tent, color: shown.color, slots: [...shown.slots], buddy: shown.buddy ?? null };
@@ -355,7 +355,7 @@ export function behindEdit(edit: KitEdit, shown: HeroKitView, stored: BookKitSta
   };
   let state = stored;
   for (const change of bookKitChanges(before, after)) {
-    if (bookKitValue(stored, change.field) === change.before) state = withBookKitValue(state, change.field, change.after);
+    state = withBookKitValue(state, change.field, change.after);
   }
   return bookKitEdit(stored, state);
 }

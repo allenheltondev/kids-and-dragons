@@ -677,9 +677,10 @@ on this phone, will share when you're back online", and sends it when the signal
   as read and retried on a lost race, so a book edit and a table edit never lose a write.
 - **A table behind the book.** A table that read her kit as its moment began, before a book edit,
   shows an older revision. Her phone's `KIT_EDIT` made over what the table showed is applied over
-  her kit as it is now, field by field (camp-edit.ts `behindEdit`): a field the book changed keeps
-  the book's value, every other field applies, and the table's view is refreshed in the same run
-  commit. A revision the table itself has left is refused as stale, as before.
+  her kit as it is now (camp-edit.ts `behindEdit`): every field it changed takes the table's pick,
+  the latest edit winning, and every field it did not change keeps what is stored, the book's
+  changes included, so nothing is lost. The table's view is refreshed in the same run commit. A
+  revision the table itself has left is refused as stale, as before.
 - **The queue** (`store/kit-queue.ts`) is in localStorage (`kad.kitQueue`), tied to the device
   token, one entry per hero (and one per crew for a buddy). Every book edit is queued first, so it
   shows at once and survives the book closing mid-send; `store/book-kit-sync.ts` then sends it. An
@@ -1213,7 +1214,7 @@ Settled by the product owner:
 | What a chapter pays | 2 for finishing, any ending, plus 1 per optional objective met (§5.2) |
 | Milestone kit pieces | A tent style for each new appearance tier and a decoration for each class distinction, kept even if a failed campaign puts the tier back (§5.4) |
 | Offline kit edits | Queued on the phone and sent when the signal returns (§7) |
-| Book edits: the device wins (#629) | The kid's own kit and buddy edits from the adventure book apply over newer values; the server still checks they are valid (§7). This replaces the field-by-field merge |
+| Book edits: the device wins (#629) | The kid's own kit and buddy edits from the adventure book apply over newer values; the server still checks they are valid (§7). The latest edit of a field wins, whether it was made in the book or at a table, and the fields it did not touch keep what is stored, so nothing is lost. This replaces the field-by-field merge |
 | Goal steps | Pay no Dash Cash: every success path ticks them all, so they would be free money. Finishing and optional objectives pay (§5.2) |
 | Kit finds | Every seated hero gets their own copy; a duplicate gives nothing, since Dash Cash is the crew's (§5.4) |
 | The shared-edit limit | Tested in playtest, with an Undo that does not use up a change (§6.1) |
@@ -1379,7 +1380,7 @@ The book's kit and buddy edits (§7) use a write path authorized by the phone's 
 its read is: the server accepts `kitPlace` and `buddyPick` only for heroes that belong to the kid
 the phone is bound to and refuses everything else. Its writes are conditional on the hero's row
 as read, so an edit in the book and one at a live table never lose a write; where both pick the
-same field, the book's wins (the device wins, §7, §11). A live room picks up a kit change at its
+same field, the latest edit wins, book or table (§7, §11). A live room picks up a kit change at its
 next downtime moment, or at once when her phone next edits her kit there.
 
 ## 13. Acceptance criteria and playtest questions

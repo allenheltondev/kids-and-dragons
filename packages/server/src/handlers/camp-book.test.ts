@@ -260,7 +260,7 @@ describe("the book's kit write (§7, §12.6)", () => {
 });
 
 describe("a book edit racing a table edit (§12.6)", () => {
-  it("a book edit landing between the table's read and its commit never lets the table undo it: the same field keeps the book's value, and the table shows it", async () => {
+  it("a book edit landing between the table's read and its commit is not lost: the table's commit is the later edit of that field, and wins", async () => {
     const { harness, t, p1 } = await lobby();
     const s = await t.state();
     const raced = racedCommits(harness, async () => {
@@ -268,8 +268,9 @@ describe("a book edit racing a table edit (§12.6)", () => {
     });
     const landed = await applyAction({ runId: t.runId, playerId: "p_1", seq: s.seq, intent: { type: "KIT_EDIT", characterId: p1, revision: 0, color: "tide" } }, raced.deps);
     expect(landed.ok, JSON.stringify(landed.error)).toBe(true);
-    expect(readKit((await harness.repo.getCharacter(t.householdId, p1))!)).toMatchObject({ revision: 1, color: "rose" });
-    expect((await t.state()).kits?.[p1]).toMatchObject({ revision: 1, color: "rose" });
+    // The book's write landed (revision 1); the table re-read it and wrote over it (revision 2).
+    expect(readKit((await harness.repo.getCharacter(t.householdId, p1))!)).toMatchObject({ revision: 2, color: "tide" });
+    expect((await t.state()).kits?.[p1]).toMatchObject({ revision: 2, color: "tide" });
   });
 
   it("a book edit mid-moment: the table's next KIT_EDIT, made over what the table showed, lands, and both changes stand", async () => {
@@ -291,12 +292,12 @@ describe("a book edit racing a table edit (§12.6)", () => {
     expect(stale.error?.code).toBe("STALE_DECISION");
   });
 
-  it("a table edit of a field the book changed mid-moment keeps the book's value, and the table shows it", async () => {
+  it("a table edit of a field the book changed mid-moment is the later one, and wins; the book's other fields stay", async () => {
     const { harness, t, p1 } = await lobby();
-    value(await book(harness.deps, t.householdId, "p_1", { characterId: p1, changes: [{ field: "color", before: null, after: "rose" }] }));
+    value(await book(harness.deps, t.householdId, "p_1", { characterId: p1, changes: [{ field: "color", before: null, after: "rose" }, { field: "tent", before: null, after: "patched" }] }));
     await t.send("p_1", { type: "KIT_EDIT", characterId: p1, revision: 0, color: "tide", style: "quilted" });
-    expect(readKit((await harness.repo.getCharacter(t.householdId, p1))!)).toMatchObject({ revision: 2, color: "rose", style: "quilted" });
-    expect((await t.state()).kits?.[p1]).toMatchObject({ revision: 2, color: "rose", style: "quilted" });
+    expect(readKit((await harness.repo.getCharacter(t.householdId, p1))!)).toMatchObject({ revision: 2, color: "tide", style: "quilted", tent: "patched" });
+    expect((await t.state()).kits?.[p1]).toMatchObject({ revision: 2, color: "tide", style: "quilted", tent: "patched" });
   });
 
   it("a table edit landing between the book's read and its write is not lost, and the book's own fields win", async () => {
