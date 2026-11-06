@@ -58,6 +58,7 @@ import { localTimingReport, parseTimingControl, setTiming, TIMING_BODY, type Tim
 import { releaseSavedHero, resumeGame, stopForToday } from "./handlers/save.ts";
 import { listHeroes } from "./handlers/heroes.ts";
 import { getJournal } from "./handlers/journal.ts";
+import { editKitFromBook } from "./handlers/camp-book.ts";
 import { saveFlair } from "./handlers/profile.ts";
 import { getState } from "./handlers/state.ts";
 import { organizerRoute } from "./handlers/organizer.ts";
@@ -804,6 +805,18 @@ async function main(): Promise<void> {
     const kid = await resolveKid(req, base);
     if (!kid) return sendError(res, 401, "FORBIDDEN", "the journal needs this device's token");
     const result = await getJournal({ householdId: kid.householdId, playerId: kid.playerId }, deps);
+    if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    res.json(result.value);
+  });
+
+  // A kid's own kit or buddy, from the adventure book (see handlers/camp-book.ts).
+  app.post("/api/journal/kit", async (req: Request, res: Response) => {
+    const deps = await withRuntime(base, res);
+    if (!deps) return;
+
+    const kid = await resolveKid(req, base);
+    if (!kid) return sendError(res, 401, "FORBIDDEN", "the adventure book needs this device's token");
+    const result = await editKitFromBook({ householdId: kid.householdId, playerId: kid.playerId, body: req.body ?? {} }, deps);
     if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
     res.json(result.value);
   });

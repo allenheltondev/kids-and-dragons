@@ -49,6 +49,7 @@ import { parseTimingControl, setTiming, TIMING_BODY, type TimingControl } from "
 import { releaseSavedHero, resumeGame, stopForToday } from "../handlers/save.ts";
 import { listHeroes } from "../handlers/heroes.ts";
 import { getJournal } from "../handlers/journal.ts";
+import { editKitFromBook } from "../handlers/camp-book.ts";
 import { saveFlair } from "../handlers/profile.ts";
 import { getState } from "../handlers/state.ts";
 import { organizerRoute } from "../handlers/organizer.ts";
@@ -254,6 +255,7 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
   if (req.method === "GET" && req.path === "/api/state") return (deps) => getStateRoute(req, deps);
   if (req.method === "GET" && req.path === "/api/heroes") return (deps) => getHeroes(req, deps);
   if (req.method === "GET" && req.path === "/api/journal") return (deps) => getJournalRoute(req, deps);
+  if (req.method === "POST" && req.path === "/api/journal/kit") return (deps) => postBookKitRoute(req, deps);
   if (req.method === "POST" && req.path === "/api/profile/flair") return (deps) => postFlairRoute(req, deps);
   if (req.method === "GET" && req.path === "/api/household/players") return (deps) => getSharedPlayers(req, deps);
   // "It's your turn" while the app is in the background (#466).
@@ -928,6 +930,18 @@ async function getJournalRoute(req: Req, deps: HandlerDeps) {
   const kid = await resolveKid(req, deps);
   if (!kid) return error(401, "FORBIDDEN", "the journal needs this device's token");
   const result = await getJournal({ householdId: kid.householdId, playerId: kid.playerId }, deps);
+  return result.ok ? json(200, result.value, kid.principal) : fromError(result.error);
+}
+
+/**
+ * A kid's own kit or buddy, changed from the adventure book (handlers/camp-book.ts,
+ * docs/camp.md §7). Authorised as the journal's read is: the device token (or the
+ * room session a family tablet's picked kid holds) names the kid; the body never does.
+ */
+async function postBookKitRoute(req: Req, deps: HandlerDeps) {
+  const kid = await resolveKid(req, deps);
+  if (!kid) return error(401, "FORBIDDEN", "the adventure book needs this device's token");
+  const result = await editKitFromBook({ householdId: kid.householdId, playerId: kid.playerId, body: req.body }, deps);
   return result.ok ? json(200, result.value, kid.principal) : fromError(result.error);
 }
 

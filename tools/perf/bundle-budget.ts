@@ -251,7 +251,11 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // without WebGL (still-friend-taps.ts). All of it in the lazy scene and still
 // stage chunks: the merged build measures 1675KB locally, first paint 332KB,
 // unchanged at its budget. Keep 2KB of slack for CI.
-const TOTAL_BUDGET_KB = 1677;
+// 1677 -> 1694 for the adventure book's Camp tray (#629): the tray is its own
+// lazy chunk (CampPane, about 9KB with its CSS), and the book's kit queue and
+// its sender (store/kit-queue.ts, store/book-kit-sync.ts) ride the lazy journal
+// chunk. 1692KB measured, first paint 332KB, unchanged at its budget. 2KB of slack.
+const TOTAL_BUDGET_KB = 1694;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);
