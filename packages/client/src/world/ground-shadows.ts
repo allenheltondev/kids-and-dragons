@@ -26,7 +26,17 @@ export interface CastFit {
   offsetY?: number;
   /** Drawn turned round. */
   mirrored?: boolean;
+  /**
+   * Cast back, up the ground behind it, rather than toward the viewer: for a
+   * thing standing on a broad base (a tent on its pegs), whose shadow lies
+   * under it and reaches out past its back corner, starting at its pegs
+   * rather than hanging off its front (owner, 2026-11-06).
+   */
+  behind?: boolean;
 }
+
+/** How much further a shadow cast back reaches than one cast forward: the ground behind is foreshortened less. */
+export const BEHIND_REACH = 1.4;
 
 /**
  * One thing's shadow: its outline (`texture`, drawn on `fit`'s canvas) cast
@@ -39,8 +49,9 @@ export function groundShadow(light: CampLight, width: number, height: number, te
   if (texture) {
     const projection = new Container();
     // The outline's top lands `lean` across and `reach` toward the viewer (both of its height).
-    projection.scale.set(1, -Math.hypot(light.lean, light.reach));
-    projection.skew.x = Math.atan2(light.lean, light.reach);
+    const reach = fit?.behind ? -light.reach * BEHIND_REACH : light.reach;
+    projection.scale.set(1, -Math.hypot(light.lean, reach));
+    projection.skew.x = Math.atan2(light.lean, reach);
     const cast = new Sprite(texture);
     cast.label = "camp-cast-body";
     cast.anchor.set(ANCHOR_X, ANCHOR_Y);
@@ -54,7 +65,8 @@ export function groundShadow(light: CampLight, width: number, height: number, te
   }
   // Where it touches the ground: darkest, a little toward the cast.
   const contact = new Graphics()
-    .ellipse(width * 0.06 * Math.sign(light.lean), height * 0.015, width * 0.48, Math.max(height * 0.055, 6))
+    // Cast back, it sits inside the footprint, ending at the pegs rather than past them.
+    .ellipse(width * 0.06 * Math.sign(light.lean), fit?.behind ? -height * 0.045 : height * 0.015, width * 0.48, Math.max(height * 0.055, 6))
     .fill({ color: 0xffffff });
   contact.label = "camp-ground-contact";
   shadow.addChild(contact);

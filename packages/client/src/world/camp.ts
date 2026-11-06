@@ -274,8 +274,8 @@ const SET_OFF_STAGGER_S = 0.3;
 /** How far past the edge the trail takes them. */
 const OFF_EDGE = 0.1;
 /** A shadow on the ground, cast by the backdrop's own light (ground-shadows.ts). */
-function campGroundShadow(light: CampLight, width: number, height: number, texture?: Texture, canvas = height, mirrored = false, offsetY = 0): Container {
-  return groundShadow(light, width, height, texture, { canvas, mirrored, offsetY });
+function campGroundShadow(light: CampLight, width: number, height: number, texture?: Texture, canvas = height, mirrored = false, offsetY = 0, behind = false): Container {
+  return groundShadow(light, width, height, texture, { canvas, mirrored, offsetY, behind });
 }
 /** How fast the camp eases to a new frame when the panels over it change height. */
 const FRAME_RATE = 4;
@@ -624,7 +624,8 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   const fitPieceShadow = (piece: PieceView, texture: Texture): void => {
     const paint = measurePaint(texture);
     const width = paint ? piece.fit.canvas * (paint.right - paint.left) : piece.heightPx;
-    const shadow = campGroundShadow(light, width, piece.heightPx, texture, piece.fit.canvas, piece.mirrored, piece.fit.offsetY);
+    // A tent's shadow lies under it, cast back from its pegs (ground-shadows.ts `behind`).
+    const shadow = campGroundShadow(light, width, piece.heightPx, texture, piece.fit.canvas, piece.mirrored, piece.fit.offsetY, piece.id.startsWith("tent_"));
     recast(piece.shadow, shadow);
     piece.shadow = shadow;
   };
