@@ -20,7 +20,7 @@ import type { ScenePriority } from "@kad/shared";
 import { useSpeaking } from "../speech/read-aloud";
 import { useAbilities, useItems, useParty, usePreviews, useRules, useRunState } from "../store";
 import { describeCombatPreview, tablePreviews } from "../world/previews";
-import { setStageInsetBottom, setStageInsetTop } from "../world/stage-inset";
+import { coverBottom, setStageCoverTop, setStageInsetBottom, setStageInsetTop } from "../world/stage-inset";
 import { fitPlate, unfitPlate } from "./fit-plate";
 import { Icon } from "./icons";
 import { CharacterPortrait } from "./CharacterPortrait";
@@ -430,21 +430,30 @@ export function NarrationPanel(): ReactElement | null {
   const head = useRef<HTMLElement | null>(null);
   useEffect(() => {
     const element = head.current;
-    if (fighting || element === null) {
+    const clear = (): void => {
       setStageInsetTop(0);
+      setStageCoverTop(0);
+    };
+    if (fighting || element === null) {
+      clear();
       return;
     }
+    // Its box for the story's frame; what it draws (its padding left out) for a rest's camp.
     const report = (): void => {
       const pane = element.parentElement?.getBoundingClientRect().top ?? 0;
-      setStageInsetTop(element.getBoundingClientRect().bottom - pane);
+      const box = element.getBoundingClientRect();
+      setStageInsetTop(box.bottom - pane);
+      setStageCoverTop(coverBottom(pane, box.bottom, [...element.children].map((part) => part.getBoundingClientRect())));
     };
     report();
-    if (typeof ResizeObserver === "undefined") return () => setStageInsetTop(0);
+    if (typeof ResizeObserver === "undefined") return clear;
     const observer = new ResizeObserver(report);
     observer.observe(element);
+    // A goal step wrapping, or the card growing a line, can reshape a part inside a head held to its size.
+    for (const part of element.children) observer.observe(part);
     return () => {
       observer.disconnect();
-      setStageInsetTop(0);
+      clear();
     };
   }, [fighting, state === null]);
 

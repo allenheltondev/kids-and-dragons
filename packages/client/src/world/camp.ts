@@ -92,12 +92,15 @@ import { reducedMotion } from "../a11y/prefs";
 import {
   BLEED_SOURCE,
   campBleed,
+  campSides,
   campStandRange,
   campStandX,
   campVisibleSpan,
   campWindow,
+  type CampFit,
   type CampFraming,
   type CampSpan,
+  type CampWindow,
 } from "./camp-framing";
 
 /** Somebody in camp: a hero or a friend. */
@@ -171,6 +174,13 @@ export interface CampOptions {
   fallbackBackdrop?: string;
   /** How a texture is loaded; Pixi's `Assets.load` unless a test says otherwise. */
   loadTexture?: (url: string) => Promise<Texture>;
+  /**
+   * Never reach past the window's top (#625): past the figures' floor the
+   * whole camp is drawn smaller, with its mirrored copies filling the pane's
+   * sides (camp-framing.ts `campShrunkScale`, `campSides`). An outdoor rest's
+   * camp, whose window starts at the foot of the goal card (lobby-camp-stage.ts).
+   */
+  shrink?: boolean;
 }
 
 /** One figure as it stands this frame: what camp.test.ts reads. */
@@ -215,6 +225,12 @@ export interface CampStage {
   setInset(bottomPx: number, topPx?: number): void;
   /** Every figure, this frame. */
   figures(): CampFigureView[];
+  /**
+   * The window the camp is framed in and the fit it is headed for (camp-boxes.ts `campFitFor`),
+   * in pane px and canvas fractions, or null before it has a pane (for tests: tv-lobby-layout,
+   * layout-fit measure the camp against the panels and the goal card with it).
+   */
+  fitted(): { window: CampWindow; fit: CampFit } | null;
   /** The pieces somebody is using, whose moving parts animate. */
   activePieces(): string[];
   /** The crew's pieces at their hotspots and beside the campfire (#620). */
@@ -443,6 +459,12 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   view.addChild(backdrop);
   let bleedTop: Sprite | null = null;
   let bleedBottom: Sprite | null = null;
+  /*
+   * A shrunk camp (`options.shrink`) may be narrower than the pane: a copy of
+   * the painting, edges and all, mirrored, stands each side of it, so each
+   * seam meets itself (camp-framing.ts `campSides`). Hidden at a cover scale.
+   */
+  const sides: { view: Container; top: Sprite; bottom: Sprite; left: boolean }[] = [];
   const showBackdrop = (texture: Texture): void => {
     if (destroyed) return;
     const sprite = new Sprite(texture);
@@ -459,6 +481,24 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     bleedBottom = new Sprite(strip(th * (1 - BLEED_SOURCE)));
     bleedBottom.label = "camp-bleed-bottom";
     backdrop.addChild(bleedTop, bleedBottom, sprite);
+    if (options.shrink) {
+      for (const left of [true, false]) {
+        const side = new Container();
+        side.label = left ? "camp-side-left" : "camp-side-right";
+        // Flipped across: the left copy spans -W..0, the right one W..2W.
+        side.scale.x = -1;
+        side.x = left ? 0 : 2 * W;
+        side.visible = false;
+        const top = new Sprite(bleedTop.texture);
+        const bottom = new Sprite(bleedBottom.texture);
+        const body = new Sprite(texture);
+        body.width = W;
+        body.height = H;
+        side.addChild(top, bottom, body);
+        backdrop.addChild(side);
+        sides.push({ view: side, top, bottom, left });
+      }
+    }
     if (framed) place(framed);
   };
   const fallback = options.fallbackBackdrop;
@@ -1694,6 +1734,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   /** Where the camp is framed this frame, and where it is headed. */
   let framed: CampFraming | null = null;
   let framing: CampFraming | null = null;
+  let lastFit: { window: CampWindow; fit: CampFit } | null = null;
 
   /**
    * Frame the camp in the pane (camp-framing.ts `campFraming`). A new pane
@@ -1706,7 +1747,9 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     if (destroyed || pane.width <= 0 || pane.height <= 0) return;
     const heights = [...actors.values()].filter((a) => !a.removing).map((a) => a.def.heightCm);
     // Her gear and the crew's pieces bound the row and the band too (camp-boxes.ts).
-    const fit = campFitFor(pane.width, campWindow(pane.height, insetTop, insetBottom), layout, boxInput(), 0.5, heights);
+    const window = campWindow(pane.height, insetTop, insetBottom);
+    const fit = campFitFor(pane.width, window, layout, boxInput(), 0.5, heights, options.shrink === true);
+    lastFit = { window, fit };
     framing = fit.framing;
     figureScaleTarget = fit.figureScale;
     if (cut || still || !framed) {
@@ -1751,6 +1794,12 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
       };
       strip(bleedTop, above, 0);
       strip(bleedBottom, below, H + below);
+      const beside = campSides(pane.width, at, layout.canvas);
+      for (const side of sides) {
+        side.view.visible = (side.left ? beside.left : beside.right) > 0;
+        strip(side.top, above, 0);
+        strip(side.bottom, below, H + below);
+      }
     }
   }
 
@@ -2152,6 +2201,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     resize,
     setInset,
     figures,
+    fitted: () => lastFit,
     activePieces,
     setDressing,
     pitch,

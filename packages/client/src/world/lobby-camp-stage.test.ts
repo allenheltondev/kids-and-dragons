@@ -255,6 +255,47 @@ describe("the camp at a rest scene (docs/camp.md §3.2, #625)", () => {
     lobby.destroy();
   });
 
+  it("stands below the goal card, shrinking whole rather than reaching under it, where the lobby's camp keeps its feet in (#625)", () => {
+    // A 1280 × 720 TV: the plate's 317px, and the goal card's foot 176px down, as measured there.
+    const at = (lobby: LobbyCamp) => {
+      const { window, fit } = lobby.camp()!.fitted()!;
+      const H = layout.canvas.height;
+      const { scale, x, y } = fit.framing;
+      return { window, scale, x, top: y + fit.band.top * H * scale, bottom: y + fit.band.bottom * H * scale };
+    };
+    const { lobby, app } = table({ still: true });
+    lobby.resize(1280, 720);
+    lobby.sync(rest(true, [member(1), member(2), member(3), member(4)]));
+    lobby.setStageInset(317, 176);
+    run(app, 0.1);
+    const rested = at(lobby);
+    expect(rested.window).toEqual({ top: 176, bottom: 403 });
+    // Every hero, tent and tall piece (the band) stands in the window: none under the card.
+    expect(rested.top).toBeGreaterThanOrEqual(176 - 1e-6);
+    expect(rested.bottom).toBeLessThanOrEqual(403 + 1e-6);
+    // Drawn smaller than the pane's width to do it, centered, with the sides filled.
+    expect(rested.scale).toBeLessThan(1280 / layout.canvas.width);
+    expect(rested.x).toBeGreaterThan(0);
+    expect(rested.x + layout.canvas.width * rested.scale).toBeCloseTo(1280 - rested.x);
+    // A card that grows a line moves the window down with it.
+    lobby.setStageInset(317, 206);
+    run(app, 0.1);
+    expect(at(lobby).window.top).toBe(206);
+    expect(at(lobby).top).toBeGreaterThanOrEqual(206 - 1e-6);
+    lobby.destroy();
+
+    // The lobby's camp in the same window keeps covering the pane, its feet in and the heads past the top.
+    const other = table({ still: true });
+    other.lobby.resize(1280, 720);
+    other.lobby.sync(lobbyWith([member(1), member(2), member(3), member(4)]));
+    other.lobby.setInset(317, 176);
+    const lobbied = at(other.lobby);
+    expect(lobbied.scale).toBeCloseTo(1280 / layout.canvas.width);
+    expect(lobbied.bottom).toBeCloseTo(403);
+    expect(lobbied.top).toBeLessThan(176);
+    other.lobby.destroy();
+  });
+
   it("fades away on Go on, the next scene drawn under it, with nobody setting off", () => {
     const { lobby, app, covered } = table();
     lobby.sync(rest(true));

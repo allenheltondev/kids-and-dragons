@@ -11,12 +11,13 @@ import type { PartyMember, RunState } from "@kad/shared";
 import { makeCharacter, makeMember, makeState } from "../testing/fixtures";
 import { useGameStore } from "../store";
 import { StaticStage } from "./StaticStage";
-import { setLobbyInsetBottom } from "./stage-inset";
+import { setLobbyInsetBottom, setStageCoverTop, setStageInsetBottom } from "./stage-inset";
 import { CAMP_KIT_STYLES, type CampKitStyle } from "./camp-kit-art";
 import { NOMINAL_PAINT, figureSize } from "./figure-scale";
 import { BEDROLL_LENGTH_FIT, HERO_PAINT } from "./camp-ownership";
 import { ANCHOR_Y } from "./art-paths";
 import { lobbyCampLayout } from "./lobby-camp";
+import { campFocusBand } from "./camp-framing";
 
 function member(n: number, overrides: Partial<PartyMember> = {}): PartyMember {
   return makeMember({
@@ -95,5 +96,53 @@ describe("the still camp", () => {
     mount(makeState({ phase: "scene", party: [member(1)] }));
     expect(screen.queryByTestId("static-camp")).toBeNull();
     expect(screen.getByTestId("static-stage")).toBeTruthy();
+  });
+});
+
+describe("the still camp at an outdoor rest, under the goal card (#625)", () => {
+  afterEach(() => {
+    setStageInsetBottom(0);
+    setStageCoverTop(0);
+  });
+
+  it("frames below the card's foot, shrinking whole with the painting mirrored at the sides, where the lobby's covers the pane", () => {
+    // A 1280 × 720 TV, the plate 317px tall and the card's foot 176px down.
+    const sized = (name: "clientWidth" | "clientHeight", px: number) => Object.defineProperty(HTMLElement.prototype, name, { configurable: true, get: () => px });
+    sized("clientWidth", 1280);
+    sized("clientHeight", 720);
+    try {
+      const bigfoots = [1, 2, 3, 4].map((n) => member(n, { character: makeCharacter({ id: `b_${n}`, ownerPlayerId: `p_${n}`, species: "bigfoot" }) }));
+      setStageInsetBottom(317);
+      setStageCoverTop(176);
+      mount(makeState({ phase: "scene", sceneType: "rest", sceneId: "camp", party: bigfoots, campMoment: { id: "rest:camp|r:c:4", kind: "rest", outdoor: true, changes: {} } }));
+      const frame = document.querySelector<HTMLElement>(".kad-static-camp__frame:not(.kad-static-camp__side)")!;
+      const left = parseFloat(frame.style.left);
+      const width = parseFloat(frame.style.width);
+      expect(left).toBeGreaterThan(0);
+      expect(left * 2 + width).toBeCloseTo(1280);
+      const sides = [...document.querySelectorAll<HTMLElement>(".kad-static-camp__side")];
+      expect(sides.map((side) => side.dataset.side)).toEqual(["left", "right"]);
+      expect(parseFloat(sides[0]!.style.left)).toBeCloseTo(left - width);
+      expect(parseFloat(sides[1]!.style.left)).toBeCloseTo(left + width);
+      // The tallest head stands below the card, and every hero's feet in the window.
+      const top = parseFloat(frame.style.top);
+      const height = parseFloat(frame.style.height);
+      const k = parseFloat(document.querySelector<HTMLElement>("[data-testid='static-camp']")!.dataset.figureScale!);
+      const heads = campFocusBand(lobbyCampLayout()!, bigfoots.map(() => figureSize("characters/bigfoot").heightCm), k);
+      expect(top + heads.top * height).toBeGreaterThanOrEqual(176 - 0.5);
+      for (const hero of document.querySelectorAll<HTMLElement>(".kad-static-camp__hero")) {
+        const feet = top + (parseFloat(hero.style.top) / 100) * height;
+        expect(feet).toBeGreaterThan(176);
+        expect(feet).toBeLessThan(720 - 317);
+      }
+      cleanup();
+      // The lobby's camp in the same window covers the pane edge to edge, as ever.
+      mount(makeState({ phase: "lobby", party: bigfoots }));
+      expect(parseFloat(document.querySelector<HTMLElement>(".kad-static-camp__frame")!.style.left)).toBeLessThanOrEqual(0);
+      expect(document.querySelectorAll(".kad-static-camp__side")).toHaveLength(0);
+    } finally {
+      delete (HTMLElement.prototype as { clientWidth?: number }).clientWidth;
+      delete (HTMLElement.prototype as { clientHeight?: number }).clientHeight;
+    }
   });
 });

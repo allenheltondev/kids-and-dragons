@@ -160,7 +160,10 @@ How it shows:
 
 - **Outdoors.** As the rest scene opens, the full camp fades in over the scene's picture (about a
   second; at once under reduced motion), and the scene stops drawing once it is covered. The
-  camp is framed above the narration plate, the way the story stage is. The heroes rest at their
+  camp is framed above the narration plate, the way the story stage is, and below the goal card:
+  nothing of it stands under the card. Where that window is too short even at the figures' 0.6
+  floor (a 720p TV, a tall hero, a grown camp), the whole camp is drawn smaller instead of cut off,
+  its painting mirrored out to the pane's sides (`campShrunkScale`, #625). The heroes rest at their
   bedrolls or tents; nobody lines up at the trailhead, since Ready is the lobby's. Go on fades it
   off with the next scene already drawn under it. Shared spots can change (`campMoment.outdoor`).
 - **Indoors.** The scene's picture and lineup stay; each hero's bedroll and pack lie on the

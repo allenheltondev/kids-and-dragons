@@ -22,7 +22,7 @@ import { StillCamp } from "./StillCamp";
 import { CampBedroll } from "./CampBedroll";
 import { packedFriends, packedKits, type PackedFriend } from "./packed-camp";
 import { figureSize } from "./figure-scale";
-import { onStageInset, onStageInsetTop, stageInsetBottom, stageInsetTop } from "./stage-inset";
+import { onStageCoverTop, onStageInset, stageCoverTop, stageInsetBottom } from "./stage-inset";
 import { sceneRiftFor, STILL_FRAME } from "./scene-rift";
 import { RIFT_NEUTRAL_EFFECT, RIFT_SHEET, riftSheetUrl } from "../screens/riftlight";
 
@@ -61,7 +61,8 @@ export function StaticStage(): React.JSX.Element {
   // chapter's terrain (camp-backdrop.ts).
   const beat = useSyncExternalStore(onCampBeat, campBeatShown, campBeatShown);
   const plate = useSyncExternalStore(onStageInset, stageInsetBottom, stageInsetBottom);
-  const plateTop = useSyncExternalStore(onStageInsetTop, stageInsetTop, stageInsetTop);
+  // What the head draws, the goal card's own foot, not its padded box (#625).
+  const plateTop = useSyncExternalStore(onStageCoverTop, stageCoverTop, stageCoverTop);
   const camp = state && campShownFor(state, beat) ? campLayoutFor(campStage(state), campFamilyFor(state, chapter)) : null;
   if (state && camp) {
     return (

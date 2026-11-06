@@ -987,7 +987,9 @@ export function campReachOf(layout: CampLayout, boxes: readonly CampBox[], figur
 /**
  * `campFit` for this camp's party and pieces: the window's figure factor,
  * bounded by the row's (`campRowScale`), with the band holding every tent
- * and tall piece and the names over them.
+ * and tall piece and the names over them. `shrink`: past the figures' floor
+ * the whole camp is drawn smaller rather than reach past the window's top
+ * (camp-framing.ts `campShrunkScale`; an outdoor rest's, #625).
  */
 export function campFitFor(
   paneWidth: number,
@@ -996,18 +998,19 @@ export function campFitFor(
   input: Omit<CampBoxInput, "figureScale">,
   focusX = 0.5,
   heights: readonly number[] = input.heroes.map((h) => h.heightCm),
+  shrink = false,
 ): CampFit {
-  if (!layout.frame.hotspots) return campFit(paneWidth, window, layout, heights, focusX);
+  if (!layout.frame.hotspots) return campFit(paneWidth, window, layout, heights, focusX, { shrink });
   const maxScale = campRowScale(layout, input);
   // A name over a tent keeps its size as the tent shrinks, so the band is measured again at the
   // factor it gives: the second pass holds the names exactly.
-  let fit = campFit(paneWidth, window, layout, heights, focusX, { reach: campReachOf(layout, campBoxes(layout, { ...input, figureScale: 1 })), maxScale });
+  let fit = campFit(paneWidth, window, layout, heights, focusX, { reach: campReachOf(layout, campBoxes(layout, { ...input, figureScale: 1 })), maxScale, shrink });
   const reach: CampReach[] = [];
   for (let pass = 0; pass < 2; pass++) {
     const k = fit.figureScale;
     const at = campReachOf(layout, campBoxes(layout, { ...input, figureScale: k }), k);
     reach.push(...at);
-    fit = campFit(paneWidth, window, layout, heights, focusX, { reach: at, maxScale });
+    fit = campFit(paneWidth, window, layout, heights, focusX, { reach: at, maxScale, shrink });
   }
   // A name may also take another place at another factor (over a back tent's ridge at one, beside
   // it at the next), and then the band misses it: while the names drawn at this factor reach past
@@ -1019,7 +1022,7 @@ export function campFitFor(
     const band = campFocusBand(layout, heights, k, now);
     if (band.top >= fit.band.top - 0.5 / layout.canvas.height && band.bottom <= fit.band.bottom + 0.5 / layout.canvas.height) break;
     reach.push(...now);
-    fit = campFit(paneWidth, window, layout, heights, focusX, { reach, maxScale });
+    fit = campFit(paneWidth, window, layout, heights, focusX, { reach, maxScale, shrink });
   }
   return fit;
 }

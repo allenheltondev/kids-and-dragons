@@ -601,6 +601,48 @@ describe("the camp in the lobby (#614)", () => {
   });
 });
 
+describe("a shrunk camp's sides (#625)", () => {
+  it("fills the pane beside a painting drawn narrower than it with the painting again, mirrored", async () => {
+    const app = fakeApp();
+    const stage = createCamp(app as unknown as Application, layout, { still: true, shrink: true, loadTexture: () => Promise.resolve(Texture.WHITE) });
+    stage.setFigures([0, 1, 2, 3].map((seat) => ({ id: `h${String(seat)}`, url: null, heightCm: 260, stance: "standing" as const, seat })));
+    stage.resize(1280, 720);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    const backdrop = stage.view.children[0] as Container;
+    const side = (label: string) => backdrop.children.find((child) => child.label === label) as Container;
+    const [left, right] = [side("camp-side-left"), side("camp-side-right")];
+    // Room for the whole band: nothing beside the painting.
+    stage.setInset(100, 40);
+    expect(left.visible).toBe(false);
+    expect(right.visible).toBe(false);
+    // Under a tall goal card: the camp shrinks, and the mirrored copies fill each side.
+    stage.setInset(317, 230);
+    const { framing } = stage.fitted()!.fit;
+    expect(framing.x).toBeGreaterThan(0);
+    expect(left.visible).toBe(true);
+    expect(right.visible).toBe(true);
+    expect(left.scale.x).toBe(-1);
+    expect(right.scale.x).toBe(-1);
+    // Flipped about the painting's left and right edges: -W..0 and W..2W of the canvas.
+    expect(framing.x - W * framing.scale).toBeLessThanOrEqual(0);
+    expect(framing.x + right.x * framing.scale).toBeGreaterThanOrEqual(1280);
+    expect(right.x).toBe(2 * W);
+    stage.destroy();
+  });
+
+  it("is never drawn beside a camp that covers the pane, as the lobby's does", async () => {
+    const app = fakeApp();
+    const stage = createCamp(app as unknown as Application, layout, { still: true, loadTexture: () => Promise.resolve(Texture.WHITE) });
+    stage.resize(1280, 720);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    stage.setInset(317, 230);
+    const backdrop = stage.view.children[0] as Container;
+    expect(backdrop.children.some((child) => child.label?.startsWith("camp-side"))).toBe(false);
+    expect(stage.fitted()!.fit.framing.x).toBeLessThanOrEqual(0);
+    stage.destroy();
+  });
+});
+
 describe("the camp's pieces", () => {
   it("draws a piece at its true size on the figures' canvas contract, its moving part registered over it", async () => {
     const app = fakeApp();

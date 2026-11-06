@@ -20,7 +20,7 @@ import { RendererFallback } from "./RendererFallback";
 import { sceneArtFor } from "./art-paths";
 import { sceneRiftFor } from "./scene-rift";
 import { castFor } from "./cast";
-import { boardInsetEnd, lobbyInsetBottom, lobbyInsetTop, onBoardInsetEnd, onLobbyInset, onLobbyInsetTop, onStageInset, onStageInsetTop, stageInsetBottom, stageInsetTop } from "./stage-inset";
+import { boardInsetEnd, lobbyInsetBottom, lobbyInsetTop, onBoardInsetEnd, onLobbyInset, onLobbyInsetTop, onStageCoverTop, onStageInset, onStageInsetTop, stageCoverTop, stageInsetBottom, stageInsetTop } from "./stage-inset";
 import { createLobbyCamp, lobbyCampLayout, type LobbyCamp } from "./lobby-camp-stage";
 import { campLayoutFor, indoorRest } from "./lobby-camp";
 import { packedCampKey, packedFriends, packedKits } from "./packed-camp";
@@ -250,7 +250,7 @@ export function PixiStage(): React.JSX.Element {
         });
         campRef.current = lobbyCamp;
         lobbyCamp.setInset(lobbyInsetBottom(), lobbyInsetTop());
-        lobbyCamp.setStageInset(stageInsetBottom(), stageInsetTop());
+        lobbyCamp.setStageInset(stageInsetBottom(), stageCoverTop());
         lobbyCamp.sync(live.state, live.chapter);
       }
       if (import.meta.env.DEV) {
@@ -339,8 +339,9 @@ export function PixiStage(): React.JSX.Element {
   useEffect(() => onLobbyInset((px) => campRef.current?.setInset(px, lobbyInsetTop())), []);
   useEffect(() => onLobbyInsetTop((px) => campRef.current?.setInset(lobbyInsetBottom(), px)), []);
   // An outdoor rest's camp stands above the narration plate, as the story does (§3.2).
-  useEffect(() => onStageInset((px) => campRef.current?.setStageInset(px, stageInsetTop())), []);
-  useEffect(() => onStageInsetTop((px) => campRef.current?.setStageInset(stageInsetBottom(), px)), []);
+  // Its top is what the head draws, the goal card's own bottom, not the head's padded box (#625).
+  useEffect(() => onStageInset((px) => campRef.current?.setStageInset(px, stageCoverTop())), []);
+  useEffect(() => onStageCoverTop((px) => campRef.current?.setStageInset(stageInsetBottom(), px)), []);
   // Reduced motion, the device's or the in-game setting, as it changes (§8.7).
   useEffect(() => {
     if (typeof document === "undefined") return;

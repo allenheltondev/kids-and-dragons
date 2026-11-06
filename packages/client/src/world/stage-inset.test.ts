@@ -1,6 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   SKY_FRACTION,
+  coverBottom,
+  onStageCoverTop,
+  setStageCoverTop,
+  stageCoverTop,
   STAGE_KEEP,
   boardInsetEnd,
   boardStageWidth,
@@ -109,5 +113,46 @@ describe("the fight log's side", () => {
     expect(boardStageWidth(1280, 450)).toBe(830);
     expect(boardStageWidth(1280, 0)).toBe(1280);
     expect(boardStageWidth(1280, 1000)).toBe(640);
+  });
+});
+
+describe("what the head draws over the top of the pane (#625)", () => {
+  // A 1280 × 720 TV's head, as measured there: its box ends at 199, padding and all; the
+  // chapter's name ends at 55 and the goal card at 176.
+  const name = { height: 30, bottom: 55 };
+  const card = { height: 115, bottom: 176 };
+
+  it("is the lowest part's foot, not the head's padded box", () => {
+    expect(coverBottom(0, 199, [name, card])).toBe(176);
+    expect(coverBottom(0, 199, [card, name])).toBe(176);
+  });
+
+  it("follows the card as it grows a step or a wrapped line, and measures from the pane's top", () => {
+    expect(coverBottom(0, 260, [name, { height: 176, bottom: 237 }])).toBe(237);
+    expect(coverBottom(40, 239, [{ height: 30, bottom: 95 }, { height: 115, bottom: 216 }])).toBe(176);
+  });
+
+  it("stops where the head hides what overflows it, and rounds up so nothing stands a fraction under", () => {
+    expect(coverBottom(0, 199, [name, { height: 300, bottom: 355 }])).toBe(199);
+    expect(coverBottom(0, 199, [name, { height: 115, bottom: 175.2 }])).toBe(176);
+  });
+
+  it("leaves out a part with no size, and is 0 with nothing drawn", () => {
+    expect(coverBottom(0, 199, [name, { height: 0, bottom: 190 }])).toBe(55);
+    expect(coverBottom(0, 40, [])).toBe(0);
+    expect(coverBottom(0, 40, [{ height: 0, bottom: 30 }])).toBe(0);
+  });
+
+  it("tells listeners when it changes, and only then", () => {
+    const heard = vi.fn();
+    const stop = onStageCoverTop(heard);
+    setStageCoverTop(176.2);
+    setStageCoverTop(176);
+    setStageCoverTop(Number.NaN);
+    stop();
+    setStageCoverTop(206);
+    expect(heard.mock.calls).toEqual([[176], [0]]);
+    expect(stageCoverTop()).toBe(206);
+    setStageCoverTop(0);
   });
 });

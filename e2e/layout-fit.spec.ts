@@ -38,7 +38,7 @@ import { test, expect, type Browser, type BrowserContext, type Page } from "@pla
 import { openPlayerTask } from "./player-navigation";
 import { roomState } from "./room-state";
 import { API } from "./api";
-import { onAir, phoneStorage, seedTable, toTheLobby, tvStorage, type SeededPhone } from "./seed";
+import { onAir, openTv, phoneStorage, seedTable, toTheLobby, tvStorage, type SeededPhone } from "./seed";
 
 const TAP = { timeout: 20_000 } as const;
 
@@ -862,4 +862,80 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     await controls.about.click();
     await expect(tv.getByRole("region", { name: "About this screen" })).toBeVisible(TAP);
   });
+});
+
+/*
+ * An outdoor rest's camp under the chapter's goal card (#625, docs/camp.md §3.2). The camp is
+ * framed between the card and the narration plate; on a 720p TV, a grown camp with a bigfoot in
+ * it is too tall for that window even at its figures' floor, and used to stand its back row
+ * (the bigfoot's head, the lookout, the awning) under the card. Now it shrinks whole instead.
+ */
+test("an outdoor rest's camp stands below the goal card, none of it under it, at 720p and 1080p", async ({ browser }) => {
+  test.setTimeout(120_000);
+  const table = await seedTable({
+    mode: "party",
+    tv: true,
+    heroes: [
+      { name: "Moss", species: "bigfoot" }, { name: "Kit", species: "kitsune" },
+      { name: "Aster", species: "unicorn" }, { name: "Fern", species: "griffin" },
+    ],
+    chapterId: "riftlight-frostfang-shore",
+    sceneId: "rest_fire",
+    camp: {
+      grownBy: ["gemfall", "riftlight"],
+      friends: ["bun", "mosshorn", "duckling", "kid_goat"],
+      owned: ["find_picnic_blanket", "find_wagon_lantern", "find_noodle_awning", "shop_kettle_cookfire", "trophy_gemfall", "trophy_riftlight"],
+      placed: { friends_corner: "find_picnic_blanket", lanterns: "find_wagon_lantern", awning: "find_noodle_awning", cookfire: "shop_kettle_cookfire", trophy_1: "trophy_gemfall", trophy_2: "trophy_riftlight" },
+    },
+  });
+  // Reduced motion: the camp is framed where it is headed at once, not eased there.
+  const { context, page: tv } = await openTv(browser, table, { reducedMotion: "reduce" });
+  try {
+    await onAir(tv);
+    await expect(tv.getByTestId("chapter-goal")).toBeVisible(TAP);
+    // And the largest text at 720p, where the card wraps and the plate is tallest.
+    for (const size of [{ width: 1280, height: 720, text: "normal" }, { width: 1920, height: 1080, text: "normal" }, { width: 1280, height: 720, text: "largest" }]) {
+      await tv.setViewportSize(size);
+      await settings(tv, size.text as Text, "off");
+      const where = `${size.width}x${size.height} ${size.text} text`;
+      // The moving camp's own measure (camp.ts `fitted`, `figures`), or the still one's pieces
+      // where the TV has no WebGL (StillCamp.tsx): the window, and where every hero's head and
+      // the focus band (every tent and tall frame piece, and the names over them) reach.
+      let seen: { goal: number; windowTop: number | null; bandTop: number | null; heads: Record<string, number>; pieces: Record<string, number> } | null = null;
+      await expect.poll(async () => {
+        seen = await tv.evaluate(() => {
+          const goal = document.querySelector("[data-testid='chapter-goal']")!.getBoundingClientRect().bottom;
+          const heads: Record<string, number> = {};
+          const pieces: Record<string, number> = {};
+          type Fig = { id: string; y: number; lift: number; heightPx: number; alpha: number };
+          const camp = (globalThis as { __kadCamp?: () => { camp(): { view: { x: number; y: number; scale: { y: number } }; figures(): Fig[]; fitted(): { window: { top: number }; fit: { band: { top: number }; framing: { y: number; scale: number } } } | null } | null } | null })
+            .__kadCamp?.()?.camp();
+          if (camp) {
+            const fitted = camp.fitted();
+            if (!fitted) return null;
+            const { view } = camp;
+            for (const f of camp.figures()) if (f.alpha > 0) heads[f.id] = view.y + (f.y - f.lift - f.heightPx) * view.scale.y;
+            // The band in pane px: the canvas is 1080 tall (assets/manifest.json camp.canvas).
+            const bandTop = fitted.fit.framing.y + fitted.fit.band.top * 1080 * fitted.fit.framing.scale;
+            return { goal, windowTop: fitted.window.top, bandTop, heads, pieces };
+          }
+          const still = document.querySelector("[data-testid='static-camp']");
+          if (!still) return null;
+          still.querySelectorAll<HTMLElement>(".kad-static-camp__hero, .kad-static-camp__piece").forEach((el, i) => {
+            const box = el.getBoundingClientRect();
+            if (box.height > 0) (el.classList.contains("kad-static-camp__hero") ? heads : pieces)[el.dataset.hero ?? el.dataset.friend ?? String(i)] = box.top + box.height * 0.1;
+          });
+          return { goal, windowTop: null, bandTop: null, heads, pieces };
+        });
+        return seen !== null && Object.keys(seen.heads).length >= 4;
+      }, { ...TAP, message: `${where}: the rest's camp is up` }).toBe(true);
+      const { goal, windowTop, bandTop, heads, pieces } = seen!;
+      if (windowTop !== null) expect.soft(windowTop, `${where}: the camp's window starts at the goal card's foot`).toBeGreaterThanOrEqual(Math.floor(goal));
+      if (bandTop !== null) expect.soft(bandTop, `${where}: no tent, frame piece or name stands under the goal card`).toBeGreaterThanOrEqual(goal - 0.5);
+      const under = Object.entries({ ...heads, ...pieces }).filter(([, top]) => top < goal - 0.5).map(([id, top]) => `${id} at ${Math.round(top)}`);
+      expect.soft(under, `${where}: nobody's head is under the goal card (its foot at ${Math.round(goal)})`).toEqual([]);
+    }
+  } finally {
+    await context.close();
+  }
 });

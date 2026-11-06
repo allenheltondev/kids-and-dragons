@@ -14,7 +14,9 @@
  * An outdoor rest crossfades in: the camp comes up over the scene's own
  * picture, which stays drawn underneath until the camp wholly covers it. The
  * scene's narration is on its plate as at any scene, so the camp stands in
- * the window above the plate (the stage insets), not under the lobby's panels.
+ * the window above the plate and below the goal card (the stage insets), not
+ * under the lobby's panels; past its figures' floor the whole camp is drawn
+ * smaller rather than reach under the card (camp-framing.ts `campShrunkScale`).
  *
  * Nothing waits on it (§12.6). On Begin the camp is told `setOff` and starts
  * to fade in the same call, and the scene under it is uncovered in that call
@@ -83,7 +85,11 @@ export interface LobbyCamp {
   resize(width: number, height: number): void;
   /** The lobby panels' covered height and the header's reach (stage-inset.ts `onLobbyInset`). */
   setInset(bottomPx: number, topPx?: number): void;
-  /** The narration plate's height and its head's reach (stage-inset.ts `onStageInset`): a rest's window. */
+  /**
+   * The narration plate's height and how far down what its head draws reaches, the goal card's
+   * own foot (stage-inset.ts `onStageInset`, `onStageCoverTop`): a rest's window. A rest's camp
+   * never stands past its top, and shrinks rather than reach under the card (#625).
+   */
   setStageInset(bottomPx: number, topPx?: number): void;
   setStill(still: boolean): void;
   /**
@@ -151,6 +157,8 @@ export function createLobbyCamp(app: Application, layout: CampLayout, options: L
       still,
       assetUrl,
       fallbackBackdrop: assetUrl(LOBBY_CAMP_STAND_IN),
+      // A rest's window starts at the goal card's foot: nothing stands under the card (#625).
+      ...(shownAtRest ? { shrink: true } : {}),
       ...(options.loadTexture ? { loadTexture: options.loadTexture } : {}),
     });
     if (size.width > 0) camp.resize(size.width, size.height);
