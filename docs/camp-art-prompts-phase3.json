@@ -168,7 +168,8 @@
   "castFigures": [
     {
       "path": "assets/cast/bun/assembled.png",
-      "prompt": "Edit this exact children's storybook gouache goat kid sprite, Bun. Move the cranberry red ribbon from her neck to the TOP OF HER HEAD, where the bow sits between her small horn buds as a ribbon headpiece. Repaint the neck with natural cream fur where the bow used to be. Preserve the same cream shaggy coat, expression, full-body pose facing left, charcoal hooves, warm lighting, brushwork and true transparent background. Leave clear margin around the entire silhouette. No other changes.",
+      "prompt": "Edit the reference cutout of Bun, the children's fantasy goat kid. Keep the full-body left-facing three-quarter stance, feet planted, friendly amber eye, charcoal hooves, storybook gouache brushwork and the oversized bow on top of her head. Give her a much more distinctive warm cinnamon and cream patched coat: a broad chestnut saddle patch over her back and hindquarters and a large cinnamon patch around her far ear and eye, with a cream muzzle and legs. Make the ears a touch longer and floppier and the two horn buds small. Repaint the bow rich blue-green teal with muted lighter folds, no red anywhere. The color blocks and teal bow must read clearly at tiny TV sprite size. One goat only, true transparent alpha, clear margin on all sides, no ground, no cast shadow, no props, no text. Square cutout.",
+      "paintBox": { "left": 0.09765625, "top": 0.0546875, "right": 0.90234375, "bottom": 0.87890625 },
       "output": {
         "width": 1024,
         "height": 1024,
