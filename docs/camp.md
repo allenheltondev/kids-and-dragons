@@ -85,11 +85,11 @@ in the chapter's terrain), and nowhere else (`travel-layout.test.tsx`; #627).
 Each terrain family (`assets/manifest.json` → `biomeFamilies`, twelve of them) gets one camp
 backdrop: a wide, calm campsite painting with a wide clearing for the camp, across about the
 middle 80 percent of the width, and its hotspots (§4.2) on a fixed layout. The view picks the
-backdrop from the chapter's biome, and in the lobby from the chapter the crew would pick up from. The lobby and the chapter's end always
-show the full, outdoor camp. (As built, #625: the lobby pitches in the chapter the room last
-played, which the run state still names after a chapter; a lobby before any chapter, or a screen
-that has not loaded the chapter yet, pitches on the plains. The run state does not yet name the
-next chapter's id, so "would pick up from" waits on that.)
+backdrop from the chapter's biome, and in the lobby from the chapter the crew last finished: where it
+last made camp (owner, 2026-11-06). The lobby and the chapter's end always show the full, outdoor
+camp. The campaign view names that chapter (`CampaignView.last`, read from what the attempt already
+keeps, so it holds across evenings and rooms); before the crew has finished one, the lobby pitches
+in the chapter it would begin (`next`), and with neither, on the plains.
 
 One function decides it for every screen (`campFamilyFor` in
 `packages/client/src/world/lobby-camp.ts`, through camp-backdrop.ts `campBackdropFamily`; #625, #627): the chapter's biome, through `biomeFamilies`, to
@@ -1264,6 +1264,7 @@ Settled by the product owner:
 | One harbor gull for both campaigns (#626) | Gemfall 1's dawn gull and Riftlight's frosty Exchange gull are one friend, `harbor_gull`, with two offers: the same bird at the same quay, never two friends that read as one animal (§4.4) |
 | Bun and the kid goat look different (#628) | Two friends must never read as the same animal at camp scale: Bun is repainted to stand apart from the kid goat (§4.4) |
 | The book's crews (#629) | The adventure book lists every crew any of the kid's heroes is part of, recorded on each hero's kit whenever she is seated at a crew's table (§7). A hero who only sits in a crew's lobby and leaves, without making, seating, starting or editing anything, is not recorded for that crew; the owner confirmed that is the right behavior. For a hero from before the record (kit v4), the one-time backfill reads each past run's last snapshot and counts only runs that left the lobby with her still seated, so a lobby visit is not found there either; it cannot see a lobby where she made or edited something without a chapter starting, which the record counts from then on |
+| The lobby's camp | The lobby pitches the camp where the crew last made camp: the terrain of the chapter it last finished in the campaign the lobby would begin, on any evening and in any room; before it has finished one, the chapter it would begin (owner, 2026-11-06) |
 | The camp's light | Every backdrop has its own light (`world/camp-light.ts`): the sun always high at the upper right, so a shadow comes off a thing's left-hand corner and its bottom and falls to the lower left (owner, 2026-11-06); and from its painting, the shadows' colour, depth, softness and length, and a tint over everything standing in it. Every piece and figure, the crew's own pieces included, casts from that light onto one blurred shadow layer under the camp, so shadows merge where they overlap and follow the figures as they walk. The fire throws a flickering warm glow on the ground round it (steady with reduced motion), and what stands on the back lanes leans toward the painting's own haze and lets a touch of it through, so the back of the camp sits in its distance. At an indoor rest, the heroes, their packed bedrolls and the friends out cast short, soft, warm shadows in one neutral room light, since the scene's picture says nothing of where its lamp is; the story lineup elsewhere keeps its contact shadows (owner, 2026-11-06). Every backdrop has one thing that moves: a painted accent (`world/camp-accents.ts`) or, where none is painted, drawn air (`world/camp-air.ts`): snow falling on the frozen north, embers rising off the volcanic plain, dandelion seeds drifting across the open plains; none with reduced motion |
 
 Nothing is open. The two parked questions from earlier (editing from the book, choosing friends)

@@ -59,6 +59,8 @@ const realEngine: Engine = { applyIntent, createRunState };
 
 /** Every key an ordered campaign view had before #194. */
 const ORDERED_VIEW_KEYS = ["blurb", "chapters", "id", "next", "title"];
+/** And once a chapter is finished, where the crew last made camp (docs/camp.md §3.1): never a journey. */
+const ORDERED_VIEW_KEYS_AFTER_A_CHAPTER = [...ORDERED_VIEW_KEYS, "last"].sort();
 
 describe("the shipped ordered campaigns", () => {
   for (const id of ["gemfall", "the-hollow-crown"]) {
@@ -83,7 +85,10 @@ describe("the shipped ordered campaigns", () => {
         version: 3,
         updatedAt: new Date(T0).toISOString(),
       };
-      expect(Object.keys(campaignView(campaign, midway, deps)).sort()).toEqual(ORDERED_VIEW_KEYS);
+      const midwayView = campaignView(campaign, midway, deps);
+      expect(Object.keys(midwayView).sort()).toEqual(ORDERED_VIEW_KEYS_AFTER_A_CHAPTER);
+      // Beat 1 on the road it took.
+      expect(midwayView.last?.index).toBe(1);
       // The beat after the last finished — or beat 1 again past the end (the
       // Hollow Crown is one beat long) — exactly as `expectedIndex` always said.
       const index = campaign.chapters.length > 1 ? 2 : 1;
@@ -226,7 +231,7 @@ describe("ordered settlement writes no journey", () => {
       lastIndex: 1,
       routeFlags: { road_wild: true },
     });
-    expect(Object.keys(settlement.campaignView!).sort()).toEqual(ORDERED_VIEW_KEYS);
+    expect(Object.keys(settlement.campaignView!).sort()).toEqual(ORDERED_VIEW_KEYS_AFTER_A_CHAPTER);
   });
 
   it("carries no world state (#198): no facts, no completion rules, nothing but the road", async () => {

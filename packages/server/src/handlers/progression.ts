@@ -460,8 +460,25 @@ export function campaignView(
     blurb: campaign.blurb,
     chapters: finalIndex(campaign, deps),
     next: chapter ? { index: chapter.index, title: chapter.title, biome: chapter.biome } : null,
+    ...lastChapterOf(campaign, attempt, deps),
     ...(ended ? { ended } : {}),
   };
+}
+
+/**
+ * The chapter an attempt most recently finished, for `CampaignView.last`:
+ * where the crew last made camp. Read from what the attempt already keeps,
+ * so nothing new is stored (Gemfall's settled attempts stay byte for byte as
+ * they were): a graph journey's last completed chapter, or an ordered
+ * attempt's last beat on the roads it took.
+ */
+function lastChapterOf(campaign: Campaign, attempt: CampaignProgressRecord | null, deps: HandlerDeps): Pick<CampaignView, "last"> {
+  if (!attempt) return {};
+  const id =
+    attempt.journey?.chaptersCompleted?.at(-1) ??
+    ((attempt.lastIndex ?? 0) > 0 ? deps.content.chapterAt(campaign.id, attempt.lastIndex!, attempt.routeFlags ?? {})?.id : undefined);
+  const chapter = id ? deps.content.chapter(id) : null;
+  return chapter ? { last: { index: chapter.index, title: chapter.title, biome: chapter.biome } } : {};
 }
 
 /**
@@ -506,6 +523,7 @@ function graphCampaignView(
   return {
     ...base,
     next: chapter ? { index: chapter.index, title: chapter.title, biome: chapter.biome } : null,
+    ...lastChapterOf(campaign, attempt, deps),
     journey: journeyView(graph, shown, (id) => deps.content.chapter(id)?.title, campaign),
   };
 }
