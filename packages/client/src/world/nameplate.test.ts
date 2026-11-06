@@ -90,9 +90,12 @@ describe("nameplatesVisibleIn", () => {
     expect(nameplatesVisibleIn("lobby")).toBe(false);
     expect(nameplatesVisibleIn("creation")).toBe(false);
 
-    for (const phase of ["scene", "check", "encounter", "chapter_complete"]) {
+    for (const phase of ["scene", "check", "encounter"]) {
       expect(nameplatesVisibleIn(phase), phase).toBe(true);
     }
+    // The chapter's summary covers the lineup and names every hero on its
+    // cards; faint names behind it ran into its last line (#620).
+    expect(nameplatesVisibleIn("chapter_complete")).toBe(false);
     // No state yet resolves to the lobby, exactly as WorldView resolves it
     // (`useRunState()?.phase ?? "lobby"`). Answer it differently and the
     // pairing holds everywhere except at startup.

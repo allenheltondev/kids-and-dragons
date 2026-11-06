@@ -120,7 +120,9 @@ const DIST = path.join(ROOT, "packages", "client", "dist");
 // holds. The code card and the Room panel's section are their own lazy chunk (about 6KB).
 // 328 -> 330 for combat planning: the shared preview protocol and mission state
 // add 1KB to the entry graph (329KB measured). Combat surfaces remain lazy.
-const FIRST_PAINT_BUDGET_KB = 330;
+// 330 -> 332 for Phase 2 camp. Its base branch measures 331KB at first
+// paint, and #623's artwork and tent tinting leave that measurement unchanged.
+const FIRST_PAINT_BUDGET_KB = 332;
 
 /**
  * Everything, including what is lazily fetched.
@@ -203,7 +205,20 @@ const FIRST_PAINT_BUDGET_KB = 330;
 // 1538 + 5 = 1543 when the camp branch met main's wagon benchmark (#634): the
 // two raises were made separately from 1485, so they add. The merged build
 // measured exactly 1543KB locally, first paint 329KB; keep 2KB of slack for CI.
-const TOTAL_BUDGET_KB = 1545;
+// 1545 -> 1616 for Phase 2 camp. Its base branch measures 1609KB with
+// the shop, kit panel and stage-2 renderer. #623 adds 5KB for tent cloth
+// masks and their renderer wiring. The art files are fetched separately.
+// The integrated build measures 1614KB in CI and locally.
+// 1616 -> 1642 for the Phase 3 camp integrated with main. The merged build
+// measures 1639KB with the stage 3 and 4 layouts, shop art metadata and
+// painted footprints in the lazy camp code. First paint stays at 331KB.
+// 1642 -> 1646 when Phase 2 met main's Gemfall fight reworks (#639 to #644):
+// the merged build measures 1644KB locally and in CI, first paint 331KB.
+// Keep 2KB of slack for CI.
+// 1646 -> 1650 for the six later camp backdrops (#649). Their lane layouts
+// bring the lazy camp payload to 1648KB in CI. The WebPs are fetched separately
+// and first paint stays at 331KB. Keep the existing 2KB of slack.
+const TOTAL_BUDGET_KB = 1650;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

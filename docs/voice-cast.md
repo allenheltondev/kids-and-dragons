@@ -287,9 +287,12 @@ voice, and nothing there touches the Gemini one:
   two characters on one ElevenLabs voice in a chapter are warned about only in ElevenLabs mode.
   The review export still lists Gemini's decisions.
 
-**What this doesn't do yet:** `voice:generate`, `voice:status` and `voice:verify` still render
-and key every clip with Gemini's voice. The sheet now holds both, so switching production to
-ElevenLabs is a change to what the generator reads, not to the sheet.
+**What ships:** since 2026-11-05 `voice:generate`, `voice:status` and `voice:verify` render and key
+every clip with the speaker's ElevenLabs voice, plus the accent and direction that go in front of
+each line as tags (a change to either re-renders that speaker's lines, and nobody else's). A speaker
+with no ElevenLabs voice yet is read by the device voice, line and all, never by somebody else's
+voice, so the narrator comes first: until she has one every unscripted line is the device's. The
+Gemini fields stay on the sheet for the bake-off and the Gemini half of this page; nothing ships from them.
 
 ## Approving and rejecting
 

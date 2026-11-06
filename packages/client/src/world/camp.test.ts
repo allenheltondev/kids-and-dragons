@@ -17,6 +17,7 @@ import { laneAt, pieceHeightCm, standPoint } from "./camp-layout";
 import { MAX_FRAME_S, campHeightPx, campMeasure } from "./camp-motion";
 import { EDGE_MARGIN, MIN_FIGURE_SCALE, campFigureWidth, campFit, campWindow } from "./camp-framing";
 import { fitCanvas } from "./figure-scale";
+import { campPaint } from "./camp-paint";
 import { MAX_WALKERS } from "./camp-wander";
 import { CAMP_KIT_STYLES, campKitStyle } from "./camp-kit-art";
 import { campOwnedScale } from "./camp-ownership";
@@ -614,7 +615,8 @@ describe("the camp's pieces", () => {
     const fire = ground.children.find((child) => child.label === "piece:campfire") as Container;
     const sprite = fire.children.find((child) => child instanceof Sprite) as Sprite;
     const part = (fire.children.find((child) => child.label === "part:campfire") as Container).children[0] as Sprite;
-    const { canvas } = fitCanvas(campHeightPx(pieceHeightCm({ id: "campfire" }), campMeasure(H)), null);
+    // Sized by its painting's footprint (camp-paint.ts), the one the layout's boxes are laid out by.
+    const { canvas } = fitCanvas(campHeightPx(pieceHeightCm({ id: "campfire" }), campMeasure(H)), campPaint("camp/frames/stage1/campfire.png"));
     expect(sprite.height).toBeCloseTo(canvas);
     expect(sprite.anchor.x).toBeCloseTo(ANCHOR_X);
     expect(sprite.anchor.y).toBeCloseTo(ANCHOR_Y);

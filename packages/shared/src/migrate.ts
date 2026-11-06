@@ -26,6 +26,7 @@
  * to a phone.
  */
 
+import { emptyKit, migrateKit, milestonePieces, withMilestones } from "./camp-record.js";
 import { CLASS_RANKS, STAT_IDS, TIER_IDS } from "./types/domain.js";
 import type {
   Character,
@@ -46,7 +47,7 @@ import type {
  * commit — a bump without a step is a silent no-op migration, which is the one
  * failure this whole mechanism cannot detect.
  */
-export const CHARACTER_VERSION = 8;
+export const CHARACTER_VERSION = 9;
 
 /** Thrown for a stored row that cannot be repaired into a playable character. */
 export class StoredCharacterError extends Error {
@@ -201,6 +202,27 @@ const STEPS: Record<number, Step> = {
     };
     return { ...raw, committed: toV8(raw["committed"]), provisional: toV8(raw["provisional"]) };
   },
+  /*
+   * v8 → v9. The hero's kit (docs/camp.md §4.5, #617) arrives on the
+   * character. The bump is v7's reason again: a v8 build narrows `kit` away
+   * (`assertCharacter` keeps only what it knows), and its next write would
+   * drop her kit.
+   *
+   * And the migration §12.3 asks for: an existing hero is given the milestone
+   * kit pieces for the tiers and class distinctions she already holds (§5.4),
+   * read off both halves, since a milestone is kept even if a failed campaign
+   * later puts the tier back. On the row in memory now and written with it at
+   * its next natural write, which a failed campaign's revert is; so a tier
+   * reached in a campaign that then fails still leaves its piece. No `at`:
+   * nobody recorded the moment. Idempotent because the stamp is, and because
+   * `withMilestones` never adds a piece twice; a hero with nothing earned yet
+   * is left with no `kit` at all, exactly as stored.
+   */
+  8: (raw) => {
+    const halves = raw as unknown as Pick<Character, "committed" | "provisional">;
+    if (raw["kit"] !== undefined || milestonePieces(halves).length === 0) return raw;
+    return { ...raw, kit: withMilestones(emptyKit(), halves) };
+  },
 };
 
 /**
@@ -317,6 +339,9 @@ export function assertCharacter(value: unknown): Character {
     ...(raw["finished"] === undefined ? {} : { finished: finished(raw["finished"]) }),
     // The same: only `true` is ever written, and absent means not yet.
     ...(raw["practiced"] === true ? { practiced: true as const } : {}),
+    // Kept only when present: a hero nothing has been written to the kit of
+    // reads back as stored, and `readKit` gives her an empty one.
+    ...(raw["kit"] === undefined ? {} : { kit: migrateKit(raw["kit"]) }),
     createdAt: str(raw["createdAt"], "createdAt"),
     // Kept only when present, so a row the ladder did not touch reads back as
     // it was stored. Absent reads as 0 wherever it is compared.

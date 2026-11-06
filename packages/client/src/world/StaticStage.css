@@ -134,3 +134,97 @@
   font-size: .75em;
   white-space: nowrap;
 }
+
+/* Phase 2 (#620): the small labels over stand-ins (camp-boxes.ts lays them out clear of each
+   other; sized in px of the frame by StillCamp), the crew's name on its banner, a lit hotspot for
+   a new piece, and the phone panel's tap targets (the named controls are beside it). */
+.kad-static-camp__label {
+  position: absolute;
+  transform: translateX(-50%);
+  z-index: 2000;
+  color: #fdf6e3;
+  font-weight: 700;
+  line-height: 1.3;
+  /* One line, or the two camp-boxes.ts cuts a name into where one has no room. */
+  white-space: pre;
+  text-align: center;
+  pointer-events: none;
+  text-shadow: 0 0 .15em #1d1a2c, 0 0 .3em #1d1a2c, 0 0 .5em rgb(29 26 44 / 60%);
+}
+/* The crew's name under its banner pole's foot, where camp-boxes.ts puts it: the moving camp's
+   cream letters with a maroon edge, one line or two. */
+.kad-static-camp__banner {
+  position: absolute;
+  transform: translateX(-50%);
+  z-index: 2000;
+  color: #fff3d6;
+  font-weight: 800;
+  line-height: 1.3;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  text-shadow: 0 0 .12em #5a1f28, 0 0 .2em #5a1f28, 0 0 .35em rgb(90 31 40 / 70%);
+}
+.kad-static-camp__banner > span { display: block; }
+.kad-static-camp__spot.is-lit::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: 5%;
+  inset-block-start: 82%;
+  inline-size: 90%;
+  block-size: 12%;
+  border: 3px solid #ffd36e;
+  border-radius: 50%;
+  box-shadow: 0 0 12px #ffd36e;
+}
+.kad-static-camp__tap {
+  position: absolute;
+  inset-inline: 15%;
+  inset-block: 10% 10%;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* A phone's Camp panel (fit="width"): the whole camp across, cropped to its band, its height set by
+   StillCamp; under it a chip per pickable spot, a touch target (docs/accessibility.md), with a thin
+   line up to its spot. */
+.kad-static-camp--fit-width {
+  position: relative;
+  inset: auto;
+  inline-size: 100%;
+}
+.kad-static-camp--fit-width .kad-static-camp__name {
+  font-size: max(12px, .8em);
+  max-inline-size: 5.5em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.kad-static-camp__chips {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  z-index: 3000;
+}
+.kad-static-camp__leader {
+  position: absolute;
+  inline-size: 2px;
+  margin-inline-start: -1px;
+  background: rgb(255 211 110 / 70%);
+  pointer-events: none;
+}
+.kad-static-camp__chip {
+  position: absolute;
+  block-size: var(--kad-touch-min, 44px);
+  padding: 0 .6em;
+  border: 2px solid rgb(255 211 110 / 85%);
+  border-radius: 999px;
+  background: rgb(13 11 26 / 88%);
+  color: #fff;
+  font: 700 15px/1 Nunito, system-ui, sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.kad-static-camp__chip.is-active { background: #ffd36e; color: #1d1a2c; }
+/* A two-word name may sit on two lines (camp-chips.ts), still inside the touch target. */
+.kad-static-camp__chip > span { display: block; line-height: 1.05; }

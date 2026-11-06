@@ -3,6 +3,7 @@
   "id": "riftlight",
   "title": "Riftlight",
   "blurb": "Snow falls on the Exchange quay. A small goat needs help. Beyond a fold in the air, a bell is ringing in the ice.",
+  "growsCamp": true,
   "requires": [
     "gemfall"
   ],

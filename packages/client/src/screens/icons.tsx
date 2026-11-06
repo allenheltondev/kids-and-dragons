@@ -117,6 +117,13 @@ const GLYPHS: Record<string, ReactElement> = {
       <path d="M10 8v8l6-4Z" />
     </g>
   ),
+  // The vector ticket matches the painted Dash Cash icon.
+  dash_cash: (
+    <g {...S}>
+      <path d="M3 7h18v3a2 2 0 0 0 0 4v3H3v-3a2 2 0 0 0 0-4Z" />
+      <path d="M12 8.6l1 2.2 2.4.3-1.8 1.6.5 2.4-2.1-1.2-2.1 1.2.5-2.4-1.8-1.6 2.4-.3Z" fill="currentColor" stroke="none" />
+    </g>
+  ),
 };
 
 /**

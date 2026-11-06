@@ -19,6 +19,7 @@ import type {
 import type { RiftActionKind } from "./campaign-graph.js";
 import type { InteractionAction } from "../interactions.js";
 import type { ChapterOutcome } from "./chapter.js";
+import type { CampClaimResult, KitMilestoneUnlock, LuckyDrop } from "./camp.js";
 import type { RoomMode, RunState, DiceRoll } from "./state.js";
 import type { FieldGuideFind } from "../field-guide-record.js";
 import type { Badge, ProfileFlair } from "../kid-profile.js";
@@ -219,6 +220,49 @@ export type ClientIntent =
    */
   | { type: "ENDING_READ" }
   /**
+   * A vote in the chapter-end shop (docs/camp.md §6.2, §12.4;
+   * `RunState.campShop`): a piece it offers, or `"save"` for "Save our Dash
+   * Cash". Counted by the choice-point rules; changing your mind is another
+   * vote. `visit` echoes `CampShopView.visit`, so a vote from a shop the
+   * table has since left (or another chapter's) is refused as stale. Resolved
+   * by the server, which spends the crew's Dash Cash, so the engine never
+   * sees it, like SWITCH_CLASS.
+   */
+  | { type: "CAMP_VOTE"; visit: string; option: string }
+  /**
+   * Put one of the crew's pieces on a shared hotspot (docs/camp.md §6.1,
+   * §12.5; #620), or `piece: null` to take it back to the frame's own (or to
+   * nothing). Any seated player, in the full camp only, never indoors; one
+   * counted change a player each downtime moment (`SHARED_EDITS_PER_MOMENT`),
+   * and placing a piece first owned this chapter at the chapter's end is free.
+   * `moment` echoes `CampMoment.id`, so a change from a moment the table has
+   * left is refused as stale. Two at once: the later wins. Resolved by the
+   * server, which writes the crew's camp, so the engine never sees it.
+   */
+  | { type: "CAMP_PLACE"; moment: string; hotspot: string; piece: string | null }
+  /**
+   * Undo this player's own latest shared change in this moment (§6.1): the
+   * hotspot shows what it did before, and the change is given back. Refused
+   * when somebody has changed that hotspot since; never undoes another's pick.
+   */
+  | { type: "CAMP_UNDO"; moment: string }
+  /**
+   * Change a seated hero's own kit (§4.5; #620): any of her bedroll-and-pack
+   * style, tent, color and decoration slots. Only her own player, at any
+   * downtime moment, indoors or out, with no limit. `revision` echoes
+   * `HeroKitView.revision`; a kit changed since (from the book, another
+   * phone) refuses it as stale. Written to her own row by the server.
+   */
+  | {
+      type: "KIT_EDIT";
+      characterId: string;
+      revision: number;
+      style?: string;
+      tent?: string;
+      color?: string | null;
+      slots?: (string | null)[];
+    }
+  /**
    * Playtest mode (roadmap chapter 6). Both are refused with FORBIDDEN unless
    * `EngineContext.playtest` is true, which only `dev-server.ts` ever sets —
    * `lambda/runtime.ts` passes a literal `false`, so a deployed build has no
@@ -365,6 +409,29 @@ export interface ServerMessage {
    * announce the same find.
    */
   discovered?: string[];
+  /**
+   * What this step's camp finds did once claimed (docs/camp.md §5.1, §5.4):
+   * a new piece, 1 Dash Cash for one the crew already owned, which heroes got
+   * a kit copy, or nothing for a reward already claimed. The find itself is
+   * in `patch`, under `/campFinds`. Live only, exactly as `discovered`: a
+   * replay never announces a find twice.
+   */
+  campClaims?: CampClaimResult[];
+  /**
+   * Milestone kit pieces this step wrote to a seated hero's kit (docs/camp.md
+   * §5.4, #621): a tent for a new appearance tier, a decoration for a class
+   * distinction. Her phone says so after the transformation, never during
+   * it. Live only, exactly as `discovered`: a replay never announces one twice.
+   */
+  kitUnlocks?: KitMilestoneUnlock[];
+  /**
+   * The lucky drops this step paid (docs/camp.md §5.2): 1 Dash Cash each, saved
+   * to the crew's camp as they landed. The TV sparkles "Dash Cash!" and the
+   * phones echo it. Only drops the store accepted, so one refused (a chapter
+   * already paid for, the chapter's cap) shows nothing, and a roll that did not
+   * come up is never on any message. Live only, exactly as `discovered`.
+   */
+  campDrops?: LuckyDrop[];
 }
 
 /** A full snapshot, sent on join and whenever a client's gap is too large. */

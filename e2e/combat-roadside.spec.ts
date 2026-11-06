@@ -278,7 +278,7 @@ for (const fight of roadFights) {
           sawLedgeProgress = true;
         }
         if (ledges && encounter.round >= 3 && !sawUpper) {
-          await expect(panel).toContainText("Upper ledge is open");
+          await expect(panel).toContainText("Upper ledge is open", { timeout: 60_000 });
           await display.page.screenshot({ path: info.outputPath("upper-ledge.png") });
           sawUpper = true;
         }

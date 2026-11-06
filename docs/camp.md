@@ -149,14 +149,18 @@ campaign. This cosmetic ladder is separate from character tiers, which are level
 
 | Stage | Frame | Reached |
 | --- | --- | --- |
-| 1 | Bedrolls around a small campfire | The crew's first chapter |
+| 1 | Bedrolls around a small campfire, with lantern hooks, a friends' corner and a banner pole | The crew's first chapter |
 | 2 | A tent for each hero and a cookfire | First full campaign finished |
 | 3 | A bigger camp: an awning, lantern strings and a lookout post | Second full campaign finished |
 | 4 | A grand camp: a big shared tent, banners and a lookout | Third full campaign finished |
 
 The frame is **earned, never bought**, so a crew that spends nothing still watches its camp grow.
-Each stage adds hotspots (§4.2), so a bigger camp also has more room. When a stage arrives at the
-chapter's end it gets its own short moment: the heroes pitch the new camp. That's a small cousin
+Each stage adds hotspots (§4.2), so a bigger camp also has more room. Stage 1 already has three
+shared spots (*decided*, §11): lantern hooks, a friends' corner and a banner pole flying the crew's
+banner, so a crew's first finds and its first purchases go up straight away (§5.3). A hotspot
+keeps its id as the camp grows, so a piece put up at stage 1 stays up at stage 2, where the bigger
+camp lays that spot out in its own place. Stage 1 has no awning: an awning waits for stage 2
+(§8.3). When a stage arrives at the chapter's end it gets its own short moment: the heroes pitch the new camp. That's a small cousin
 of the transformation cutscene, never longer than it.
 
 **Only full campaigns count** (*decided*). The Practice Meadow (`first-steps`) is the tutorial and
@@ -165,7 +169,8 @@ so (`"growsCamp": true`), so a new campaign is a deliberate choice rather than a
 The Hollow Crown (`the-hollow-crown`, the one-chapter reference campaign) does not grow the frame
 either (*decided*). Both still pay Dash Cash and can hand over finds and friends.
 
-Only a *finished* campaign moves the frame. A failed campaign keeps everything already in the camp
+Only a *finished* campaign moves the frame. Finished means it reached its end on any ending, a
+setback ending included (*decided*, §11). A failed campaign keeps everything already in the camp
 (§1) but does not grow it. A crew still working toward its first finished campaign keeps the camp
 changing through the shop, and that is enough (*decided*).
 
@@ -229,7 +234,8 @@ chapter, with a befriending moment, and no claim on it anywhere else in the stor
 - **Two heroes can pick the same buddy.** The friend is shared, and the spare seat rotates.
 - **A buddy is picked from the phone**, at the table or in the adventure book (§7), since it only
   decides that kid's own seat. Friends belong to the crew, so a hero's buddy applies in that
-  crew's camp only (§12.1).
+  crew's camp only (§12.1), and a hero who moves home (#251) leaves her buddies behind: they are
+  removed from every camp of the old household (*decided*, §11).
 - Until a hero picks one, they have no buddy and every seat rotates, exactly as before. Rotation
   stays the default; buddies are an option, never a chore.
 
@@ -334,7 +340,8 @@ chapter's pay, not something to grind for:
   celebrating, content/README.md) always succeed, so, by the same reasoning as goal steps, they
   never drop. Relaxed play still counts: it is easier, not automatic.
 - **At most 2 lucky drops a chapter**, and **none in a chapter already paid for** (*decided*)
-  (§12.2), so replaying a chapter is never a way to farm them.
+  (§12.2), so replaying a chapter is never a way to farm them. The 2 counts every attempt at the
+  chapter, an abandoned one included (*decided*, §11).
 
 Across today's 42 chapters there are 184 mini-games a party can fail and 61 fights, about 5 per
 chapter in all; a single road through a chapter meets fewer. That makes a lucky drop worth roughly
@@ -362,17 +369,27 @@ opens only after two chapters, so neither can be the first reward.
 
 - **A personal choice at the first downtime moment.** The first time a hero is seated with a crew
   that has a camp, their kid picks their kit's style and color (§4.5) from the free catalog
-  (§5.4). It takes one tap, can be skipped, and is the first thing the camp asks of anyone.
+  (§5.4). It takes one tap, can be skipped, and is the first thing the camp asks of anyone. Each
+  style is shown as the camp will draw it, in the color picked: its tent once the camp has tents
+  (stage 2 and up, outdoors), its bedroll and pack before that.
 - **A recognizable find in the first chapter.** The Practice Meadow and the first chapter of every
   `growsCamp` campaign each hand over one find on their spine, so every path to every ending gets
   it. It is something the kids will remember from that chapter (a pinecone wreath from the meadow,
-  say), and the chapter's end shows it beside the campfire and highlights where it can go.
+  say), and the chapter's end shows it beside the campfire and highlights where it can go. Stage 1
+  has a spot for the picnic blanket and the wagon lantern, and for every starter shop piece but the
+  striped awning, so they go up the same evening (§4.1); an awning (Riftlight's noodle awning, the
+  striped awning) waits for stage 2 with its note (§12.5).
 - **The shop opens after two chapters** (*decided*). A crew needs a little skin in the game before
   it can buy anything: the chapter-end shop appears only once the crew has been paid for at least
-  two chapters, in any campaign. Before that, the chapter's end shows the balance and says the
-  shop opens after the next chapter. The first pieces in each shop cost **5 Dash Cash**
-  (*decided*). Most crews can afford one when the shop opens; a crew that earned only the 4 for
-  finishing two chapters buys a chapter later (§5.2).
+  two chapters, in any campaign but the tutorial. **The Practice Meadow doesn't count toward the
+  two** (*decided*): its chapter still pays Dash Cash like any other, but the shop is earned in
+  real adventures. The tutorial says so in data, `"tutorial": true` on its campaign file, so no
+  id is written into the rule; The Hollow Crown is not marked and counts. Before the shop opens,
+  the chapter's end shows the balance and how far the shop is: "the camp shop opens after the next
+  chapter", or after two adventure chapters, and at the meadow's own end that practice doesn't
+  count. The first pieces in each shop cost **5 Dash Cash** (*decided*). Most crews can afford
+  one when the shop opens; a crew that earned only the 4 for finishing two chapters buys a chapter
+  later (§5.2), and one that started in the meadow arrives with its 2 as well.
 
 ### 5.4 Each hero's kit pieces
 
@@ -409,6 +426,13 @@ another owned piece (subject to the shared-change limit below):
   the full camp only. An indoor rest has none (§3.2).
 - **A hero's kit:** only that hero's player, indoors or out, and from the adventure book (§7).
 
+On a phone the Camp panel shows the whole camp across, and under it a chip for each shared spot,
+each joined to its spot by a thin line straight up (`camp-chips.ts`): in as few rows as keep every
+chip apart, every line inside its own chip and never through another chip or along another line,
+a two-word name on two lines rather than a row of its own. A phone takes two rows at most (the
+awning stands behind the cookfire, so their chips take a row each). The kit's tent choices are the
+tents themselves, in her color.
+
 If two phones pick for one hotspot at once, the later pick wins and the TV shows it; there is
 nothing to lose, because the crew still owns both pieces. A kid's own kit is unlimited.
 
@@ -431,8 +455,15 @@ Playtests decide whether the limit stays, loosens or goes (§13).
 Buying a piece costs Dash Cash and adds something new to the crew's collection. Spending is a crew
 decision:
 
-1. At the **chapter's end**, once the shop is open (two chapters played, §5.3) and the crew can
-   afford something, the phones show up to three pieces it can buy, plus "Save our Dash Cash."
+1. At the **chapter's end**, once the shop is open (two chapters played, the Practice Meadow
+   not counted, §5.3), the phones and the TV show up to three of the shop's pieces, plus "Save our
+   Dash Cash." **Pieces the crew can't afford yet are shown too** (*decided*), with their price and
+   how much more they need ("Needs 3 more"), so there is something to save toward. They are never
+   votable: disabled on the phones, and a vote for one is refused. When more than three are
+   eligible, the affordable ones come first and the cheapest of the rest fill the list, so it is
+   never all out of reach while something is affordable (§12.4). If nothing is affordable, the
+   pieces still show, with a kind "you can't buy any of these yet, keep saving", and no vote
+   starts.
 2. Every seated player votes, the way a choice point works: most votes wins, and a tie goes to
    the turn marker (spec §6.1). "Save our Dash Cash" is always an option and always free.
 3. The winner joins the collection and is shown beside the campfire on the TV, and the crew can
@@ -540,8 +571,7 @@ A standing figure walks as a series of **steps**, never a glide:
 Each camp backdrop (§3.1) declares its ground in the manifest. Each frame stage declares the
 camp's spots on that ground.
 
-- **Ground lanes.** The walkable floor is two or three horizontal lanes at fixed depths (near,
-  middle, back), not a free 2D field. Lanes make depth order trivial (a nearer lane always draws
+- **Ground lanes.** The walkable floor has horizontal lanes at fixed depths. The larger frames add a far lane behind the near, middle and back lanes. Lanes make depth order trivial (a nearer lane always draws
   in front), keep figures from overlapping in ugly ways, and make every route a short, readable
   line. A nearer lane draws its figures slightly bigger, so depth reads without a perspective
   engine.
@@ -574,6 +604,114 @@ camp's spots on that ground.
   point, crossing and place in the trailhead's line is moved in from the edge by the figure's
   width (`campVisibleSpan`); a line too long for what is left runs on behind the trailhead, and
   one wider than the whole span takes a second row on the next lane back.
+- **A hero's own gear fits her** (*decided*, #620). Her bedroll is drawn about 1.2 times her drawn
+  body length (the longer of her drawn height and width), so she could lie in it, its pack in
+  proportion on the same painting; her tent about 1.1 times her drawn height and at least 1.3
+  times her drawn width, so she could fit inside. **A small hero's tent is roomier**
+  (*decided*, #620): 1.2 times her height, so a kitsune's ears sit clearly under its top even as
+  she stands in front of it at her door. Small and big go by her painted height (`HERO_PAINT`):
+  up to 110 cm (kitsune 88, dragonlings 105) is small, from 150 cm (manticores 153, griffins 168,
+  unicorns 178, bigfoots 224) big, and a hero between would ramp smoothly from 1.2 to 1.1
+  (`tentHeightFit`). A hero at her door stands on her tent's own lane, her feet on its ground, so
+  no perspective lifts her head past its top. **A tent is always bigger than its hero, and a
+  bedroll longer** (*decided*, #620): every tent, the patched lean-to and the milestone tents
+  included, stands taller than she does, its painted height (cloth and poles, `camp-paint.json`)
+  over hers, in every species and both renderers; a lean-to may still be much wider than it is
+  tall. A tent's shape is its painting's, guy ropes and stakes included. Her drawn box is her species' painted box
+  (`HERO_PAINT`, the largest any of her paintings covers), so a bigfoot's gear is about 215/85 of a
+  kitsune's and nothing is floored. It is a minimum: gear already bigger keeps its own size. The
+  constants live in one place (`camp-ownership.ts`); the moving camp, the still camp and a phone's
+  Camp panel all size from it.
+- **Every piece is its painting** (#623). A piece is drawn so its painted height is its
+  `heightCm`; how wide it then is, and how far its paint sits off its ground contact (a banner's
+  flag flies off to one side of its pole), is the painting's. `npm run art:camp-paint`
+  (`tools/art/camp-paint.py`) measures every grounded camp painting's opaque bounds on its 1024
+  canvas, and the same bounds in six slices of its height, into `camp-paint.json`; the layout's
+  boxes, the moving camp and the still camp all read that table (`camp-paint.ts`), and
+  `art:verify` and `camp-art.test.ts` fail when it no longer matches the paintings. A shared
+  piece's `widthCm` is its painted width at its `heightCm` (tested), so the manifest says what
+  is drawn.
+- **Nothing overlaps.** Every piece is its painting's footprint, slice by slice (so a short piece
+  may stand under a banner's flag but never in it; a hero's gear fitted to her), and at stage 1
+  and stage 2 no piece overlaps a hero's bedroll or tent, the campfire, the trailhead post or
+  another piece, tall pieces (the banner pole, the lanterns, the awning) stand at the sides or
+  behind and never in front of a hero's gear, and no label collides with another or lands on
+  somebody else's piece (`camp-boxes.ts`, tested on the real manifest for four bigfoots, four
+  kitsune, a mix each way round and four of every species, in every tent or bedroll style a kid
+  can pick, at 1280 x 720 and 1920 x 1080, under the lobby's panels with and without the campaign
+  picker). The crew's name stands under its banner pole's foot, on one line or two, or failing
+  that on the grass beside the pole under the flag, never on the flag. A shared piece's name takes
+  two lines where one has no room (two trophies side by side). Four overlaps are allowed, all
+  at stage 2 and all decided by the owner (#620), the nearer always drawn in front:
+  - **A nearer tent may partly cover a tent further back, never its door or its souvenir line.**
+    The door is where its hero rests, and her souvenirs hang beside it.
+  - **A tall shared piece may stand partly behind a nearer tent.** The awning, the lanterns and the
+    banner pole, and the shop pieces on those spots, still read as themselves: the nearer tents
+    (and the souvenir lines on them) together cover less than half of the piece's painted area
+    and none of the top half of its painted height, where the crew's flag, the weathervane and
+    pinwheel, the lamps and the awning's canopy are painted (`campCoverClashes`, judged slice by
+    slice). A banner pole's pennant is kept whole however far down it hangs: the weathervane's
+    streamers reach about two thirds of the way down its pole, below that half, so the layout keeps
+    clear everything down to the foot of the pennant layer's own painted bounds (`pieceKeepTop`,
+    from `camp-paint.json`, which measures each pennant too; a pennant not measured keeps the top
+    three quarters). It never stands behind, or in front of, a hero at her door. The hero who goes to look
+    at it stands at its stand point, which no nearer tent covers (`campStandBoxes`), and its name
+    is set clean like every other.
+  - **A short near-lane piece may stand in front of the lower half of a tent further back**, never
+    its door: the friends' corner, the trophies and the cookfire.
+  - **The lanterns and the banner pole may stand in front of the outer edge of a tent further
+    back, never its door.** Only its outer side (away from the middle of the camp), and the tent
+    still reads as itself: all they cover of it lies in the outer quarter of its painted width,
+    where its guy ropes and stakes are, and below the top half of its painted height, its ridge
+    and roof (`campEdgeClashes`, slice by slice). Never over the hero resting at its door, its
+    souvenir line or any hero's door box, and the pieces stay readable: nothing stands in front
+    of them, so their lamps, flag and pennant are never covered.
+
+  A hero resting at her tent's door is seen whole: nothing on her lane or a nearer one covers her
+  (`campDoorBoxes`). The focus band holds the tents, the names over them and the crew's name under
+  its pole, not only the heads.
+- **Stage 2 is two lanes of tents** (*decided*, #620). The four tents are staggered like stage 1's
+  ring of bedrolls: the outer two on the back lane (x 0.195 and 0.787), the inner two on the
+  middle lane in front of them (0.365 and 0.644), so each inner tent's side stands in front of
+  its neighbour's, up to that neighbour's door. Between the inner two, the awning stands on the
+  back lane (0.521), where the inner tents' sides may stand in front of its feet, and the
+  cookfire in front of it on the near lane (0.502). The lanterns (0.08) and the banner pole
+  (0.905, by the trail) stand at the ends on the near lane, past the outer tents, each free to
+  stand in front of the outer edge of the outer tent behind it; the near lane stands them lower
+  than the middle lane would, so less of them reaches up beside a back tent's door. The friends'
+  corner lies on the near lane in front of the first tents (0.243) and the two trophies on the
+  near lane in front of the last (0.735 and 0.804), each free to stand in front of a tent's lower
+  half. Each hero rests at her own tent's door, on its lane; her souvenir line hangs on her tent
+  beside its door (0.179, 0.39, 0.62, 0.806), where no nearer tent covers it. A hero looks up at
+  the lanterns from the middle lane at 0.14 and at the banner from 0.845, pets the friends from
+  the near lane at 0.168, and stands under the awning from the middle lane at 0.521, between the
+  inner tents, where no tent hides her. The heroes wander on the near lane at 0.08, 0.31, 0.69
+  and 0.92 and on the middle lane at 0.5. Tents are wide (a bigfoot's lean-to is twice as wide as
+  she is tall), so a party whose tents and the crew's widest pieces cannot all stand at full size
+  is drawn smaller (`campRowScale`), never piled up and never under 0.6. With every spot holding
+  its widest or tallest piece, in the tent styles their seats pick and in every tent style: four
+  kitsune 0.96 and four dragonlings 0.95 to 0.96 (the two trophies side by side on the near lane
+  hold every party under 0.96); four manticores 0.81 to 0.82, four griffins 0.77 to 0.84, four
+  unicorns 0.75 to 0.86; a mix (bigfoot, kitsune, unicorn, griffin) 0.75 to 0.86, about 0.82 in
+  the styles their seats pick, and the other way round 0.82 to 0.87; four bigfoots 0.64 to 0.89,
+  about 0.69 in the styles their seats pick. The low end of every big party is the patched
+  lean-to in an inner seat beside the crew's widest awning: its door must stay clear of the outer
+  tent behind it, and the outer tents can move out only until the lanterns and the banner pole
+  would reach a small hero's door. The crew's default camp (the cookfire, its banner and
+  trophies only) draws the mix at about 0.82, four unicorns at 0.82, four griffins at 0.87, four
+  manticores at 0.92 and four bigfoots at about 0.72. On a 1280 x 720 TV with the campaign picker
+  open the window, not the row, holds a party with a bigfoot on the back lane to about 0.72.
+- **Stage 1 is a ring of bedrolls.** A bedroll is longer than its hero lying down, much wider than
+  her tent, and too tall to stand in front of another lane's, so at stage 1 everything that
+  reaches the back lane stands side by side across the clearing: the lantern hooks at the far
+  left on the near lane, two bedrolls (the outer one on the middle lane, the inner on the back
+  lane), the campfire on the backdrop's worn patch, two more bedrolls, then the banner pole and the
+  trailhead post at the trail. The friends' corner lies on the near lane between the first
+  bedroll and the campfire, and what the chapter hands over waits on the near lane by the fire
+  (a little smaller where the lane has no room for it at full size). The small parties are drawn
+  nearly full size (about 0.93), a mix about 0.83, four bigfoots about 0.76 (`campRowScale`,
+  never under 0.75 at stage 1). An awning, the widest tall piece, would shrink every party further,
+  so it waits for stage 2's bigger camp (§11).
 - **Indoors, one lane.** A packed-down camp (§3.2) uses a single generic layout laid over the
   scene's own picture: one near lane along the bottom, a bedroll stand point for each hero and a
   spot for each friend. No per-scene authoring.
@@ -705,7 +843,7 @@ interface CampRecord {
   placed: Record<HotspotId, PieceId>;            // shared hotspots only
   friends: Record<FriendId, { rewardId: string; at: string }>;
   buddies: Record<CharId, FriendId>;             // one per hero, this crew's friends only (§4.4)
-  paidChapterCount: number;                      // the shop opens at 2 (§5.3)
+  paidChapterCount: number;                      // the shop opens at 2, tutorial chapters not counted (§5.3)
   // Receipts (§12.2): paid chapters and claimed reward ids. Storage shape to be chosen
   // after checking transaction and record-size limits.
 }
@@ -720,6 +858,24 @@ interface HeroKit {
   unlocked: Record<KitPieceId, { from: "catalog" | "found" | "milestone"; rewardId?: string; at: string }>;
 }
 ```
+
+*As built (#617):* the shapes are in `packages/shared/src/types/camp.ts` and the server's API in
+`packages/server/src/handlers/camp.ts`. Against the sketch: the shape version is `v` (as on
+`FieldGuideRecord`), since `version` on a character is its write counter; a kit's `style` and
+`color` are `null` until the kid picks (§5.3), and a backfilled milestone has no `at`; the
+receipts are a `receipts` map on the camp row (`rewards`, `chapters`, and lucky `drops` keyed by
+run and scene), so a claim and its reward are one conditional put, with a paid chapter's drop
+receipts pruned to keep the row small. The frame is read as the crew's finished `growsCamp`
+campaigns counted once, stored or not, which is also the migration for existing crews.
+
+*As built (#618):* a kit's tent is its own field, `HeroKit.tent`, beside `style` (the bedroll and
+pack), since a milestone tent has no bedroll of its own; kit v2 adds it and renames #617's
+never-shipped placeholder milestone ids. A hero with no stored `style` is drawn with the style her
+id hashes to, as before, and that hash is never stored. `content/camp.json` holds each find's
+`offers` (its `rewardId` and chapter), and a chapter's find must name its piece's offer for that
+chapter. A find is recorded on the run (`RunState.campFinds`) by the engine and claimed by the
+server right after the step commits (`handlers/camp-finds.ts`); a kit find is deduplicated per
+hero by the piece she holds, with no crew receipt.
 
 - **Written only by the server**, as every authoritative change is: phones send intents
   (`campPlace`, `campVote`, `kitPlace`, `buddyPick`), and the server checks the piece is owned,
@@ -812,6 +968,8 @@ Settled by the product owner:
 | Phase 1 | Small: the animated lobby only, expanding once children notice their camp (§10) |
 | The first reward | Arrives in the first session: a kit choice and a first-chapter find (§5.3) |
 | The shop | Opens once the crew has been paid for two chapters; its first pieces cost 5 Dash Cash (§5.3) |
+| Shop opening | The Practice Meadow doesn't count toward the two paid chapters (§5.3) |
+| Shop offers | Includes pieces the crew can't afford yet, shown with what they still need, never votable (§6.2) |
 | Lucky drops | A 1 in 8 chance of 1 Dash Cash after each won mini-game or fight, rolled by the server. Never from `play` interactions, at most 2 a chapter, none in a chapter already paid for (§5.2) |
 | What a chapter pays | 2 for finishing, any ending, plus 1 per optional objective met (§5.2) |
 | Milestone kit pieces | A tent style for each new appearance tier and a decoration for each class distinction, kept even if a failed campaign puts the tier back (§5.4) |
@@ -819,7 +977,19 @@ Settled by the product owner:
 | Goal steps | Pay no Dash Cash: every success path ticks them all, so they would be free money. Finishing and optional objectives pay (§5.2) |
 | Kit finds | Every seated hero gets their own copy; a duplicate gives nothing, since Dash Cash is the crew's (§5.4) |
 | The shared-edit limit | Tested in playtest, with an Undo that does not use up a change (§6.1) |
+| Setback campaign endings | Count as finished: they grow the frame (§4.1) |
+| Buddies on a move home | Removed from the old household's camps (§4.4) |
+| Lucky drops across attempts | The cap of 2 counts every attempt at a chapter (§5.2) |
 | Implementation requirements | All of §12 approved, including its defaults: lower-stage pieces staying in later shops, and the migration policy for existing crews (§12) |
+| Stage-1 shared spots | Lantern hooks, a friends' corner and a banner pole from the first chapter, so first finds and starter purchases go up straight away (§4.1, §5.3). The awning stays a stage-2 spot: the noodle awning and the striped awning wait for it with their note (§8.3, §12.5) |
+| Laid out by the paintings (#623) | Every camp piece is laid out by its painting's measured footprint (`camp-paint.json`), not a guessed width; a tent is 1.1 times its hero's height, and big parties are drawn smaller at stage 2 rather than overlap, down to the 0.6 floor for four bigfoots (§8.3) |
+| A tent is bigger than its hero (#620) | Every tent, the patched lean-to and the milestone tents included, stands taller than its hero, and every bedroll is longer than her, in every species and both renderers; the lean-to is no longer fitted by length (§8.3) |
+| Stage-2 tents staggered | The four tents stand on two lanes, like stage 1's ring of bedrolls, so parties draw near full size and every tent stands taller than its hero (§8.3) |
+| A nearer tent over a farther one (#620) | A tent on a nearer lane may partly cover a tent further back, never its door (where its hero rests) and never its souvenir line (§8.3) |
+| Tall shared pieces behind a nearer tent (#620) | The awning, the lanterns and the banner pole, and the shop pieces on those spots, may stand partly behind a nearer tent: never behind or in front of a hero at her door, less than half of the piece's painted area covered and none of its top half (the flag, the vane, the lamps, the canopy) nor any of a banner pole's pennant, the hero who goes to look at it never hidden by a tent, and its name still set clean (§8.3) |
+| Short near-lane pieces in front of a tent (#620) | The friends' corner, the trophies and the cookfire may stand on the near lane in front of the lower half of a tent further back, never its door (§8.3) |
+| Small heroes get roomier tents (#620) | A small hero's tent is 1.2 times her painted height, a big hero's 1.1: up to 110 cm painted (kitsune, dragonlings) 1.2, from 150 cm (manticores, griffins, unicorns, bigfoots) 1.1, a smooth ramp between; a kitsune's ears sit clearly under her tent's top as she stands at its door (§8.3) |
+| Lanterns and banner over a back tent's edge | The lanterns and banner pole may stand in front of the outer edge of a back tent, never its door, so big parties draw near 0.8 at stage 2 (§8.3) |
 
 Nothing is open. The two parked questions from earlier (editing from the book, choosing friends)
 are settled above as kit and buddy editing in the book and buddies.
@@ -870,13 +1040,13 @@ and record-size limits. A content version update must not reset claims.
 
 ### 12.3 Progression has a ceiling and a replay rule
 
-Count each distinct `growsCamp` campaign the crew successfully completes once
+Count each distinct `growsCamp` campaign the crew finishes, on any ending, once
 (`grownBy`), capped at stage 4. Failed or abandoned attempts do not advance the frame and do not
-remove anything. Replaying a campaign does not advance it again. Later successful campaigns may
+remove anything. Replaying a campaign does not advance it again. Later finished campaigns may
 add cosmetic trophies after stage 4.
 
 Existing crews need a migration policy: derive the starting stage and kept trophies from their
-recorded successful `growsCamp` campaigns, initialize Dash Cash to zero, and do not back-pay
+recorded finished `growsCamp` campaigns, initialize Dash Cash to zero, and do not back-pay
 historical chapter rewards. Existing heroes do get the milestone kit pieces (§5.4) for the tiers
 and distinctions they already hold: those are the hero's own record, not a payout. Keep that
 migration idempotent.
@@ -888,9 +1058,17 @@ render a safe fallback for a crew whose derived stage exceeds the available fram
 ### 12.4 The chapter-end purchase is optional and atomic
 
 Allow at most one purchase per chapter-end visit. Show up to three eligible,
-unowned pieces for the current stage, in a stable catalog order, plus **Save our Dash Cash**. Show
-the price and resulting balance. If none is affordable, show the balance without starting a vote.
-Lower-stage pieces the crew does not own stay in later shops.
+unowned pieces for the current stage, affordable or not, in a stable catalog order, plus **Save our
+Dash Cash**. When more than three are eligible, take every affordable one first (in catalog
+order), then the cheapest the crew cannot afford yet (catalog order between equal prices), and
+show the chosen ones in catalog order. Show each piece's price and the resulting balance, or, for
+one the crew cannot afford yet, how much more it needs; that one is never votable, and the server
+refuses a vote for it. If none is affordable, show the pieces and the balance without starting a
+vote. Lower-stage pieces the crew does not own stay in later shops.
+
+The count that opens the shop (§5.3) is derived from the paid-chapter receipts, leaving out the
+chapters of a campaign marked `tutorial`, on every read. A crew whose stored count still includes
+the Practice Meadow reads corrected, and its next write stores it, however often that happens.
 
 A vote belongs to one chapter-end instance and one crew. Use the existing choice-vote rules for
 connected and stepped-away players, including the turn-marker tie break. Leaving the screen
@@ -914,7 +1092,8 @@ counted. All of this is under test (§6.1), so keep the limit one server-side co
 Awarding a piece never silently replaces a decoration another child chose. It joins the
 collection, is shown beside the campfire, its matching hotspot is highlighted, and a player may
 place it during downtime. If its hotspot is not available yet (a later frame stage), it stays in
-the collection with a note saying when it can be displayed.
+the collection with a note saying when it can be displayed. Stage 1 has the lantern hooks, the
+friends' corner and the banner pole (§4.1), so only an awning waits that way at stage 1.
 
 Choose the visible friends once per downtime moment: first each seated hero's buddy (§4.4), then the
 rotating seats, with a stable tie break and newly acquired friends first. Persist enough rotation
@@ -966,7 +1145,8 @@ lives under.
   the campsite backdrop or tents (§3.2).
 - The first session offers each kid a choice for their own kit, and the first chapter of the
   Practice Meadow and of every `growsCamp` campaign hands over a find on every path (§5.3).
-- The shop does not open until the crew has been paid for two chapters (§5.3).
+- The shop does not open until the crew has been paid for two chapters, the Practice Meadow not
+  counted (§5.3).
 - Lucky drops come only from the server's roll, after a won mini-game or fight, at about 1 in 8
   over many trials; each pays once, whatever is retried or reconnected (§5.2, §12.2).
 - No purchase can overspend, buy a piece twice or charge after the chapter's end has been left.

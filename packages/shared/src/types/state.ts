@@ -13,6 +13,7 @@ import type { FieldGuideFind } from "../field-guide-record.js";
 import type { FactId, FactValue, JourneyView, NodeId } from "./campaign-graph.js";
 import type { BuffId, CheckBuffOffer, RunBuff } from "./buffs.js";
 import type { MatchupNote } from "./matchups.js";
+import type { CampFind, CampLuck, CampMoment, CampShopView, CampTally, CampView, HeroKitView } from "./camp.js";
 import type { NarrationPart } from "../narration.js";
 import type { ChoiceAhead } from "../choice-ahead.js";
 
@@ -644,6 +645,58 @@ export interface RunState {
    * lobby's campaigns are (`offerCampaigns`).
    */
   firstCrewName?: string;
+  /**
+   * The crew's camp (docs/camp.md §9), slim and read-only, for the screens at
+   * the lobby, a rest and the chapter's end, and never during scenes: filled
+   * where the lobby's campaigns are (`offerCampaigns`) and dropped when a
+   * chapter starts. Absent when the store could not say. Phase 1's lobby
+   * camp draws from the seated heroes and ignores it.
+   */
+  camp?: CampView;
+  /**
+   * Each seated hero's kit (docs/camp.md §4.5; #620), by character id, read
+   * from her own row at each downtime moment and after her kid edits it.
+   * Absent outside downtime, and for a hero whose row could not be read (she
+   * is then drawn as before kits were stored).
+   */
+  kits?: Record<string, HeroKitView>;
+  /**
+   * The downtime moment the table is in (§12.5; #620): its id, and each
+   * player's shared changes in it. Set by the server as a lobby, a rest scene
+   * or a chapter's end begins; gone the moment play is back in a scene.
+   */
+  campMoment?: CampMoment;
+  /**
+   * The finds this chapter has handed over (`findForCamp`, `findForKit`;
+   * docs/camp.md §5.1, §5.4), in the order found and once per `rewardId`, so
+   * the phones can say "For the camp!" and the chapter's end can list them.
+   * The engine only records them; the server claims each from storage right
+   * after the step that found it commits (handlers/camp-finds.ts), so a find
+   * is saved when found, never at the chapter's end, and replaying the log
+   * rebuilds this list without claiming anything twice. Absent until a find;
+   * cleared when a chapter starts.
+   */
+  campFinds?: CampFind[];
+  /**
+   * The chapter's lucky-drop rolls (docs/camp.md §5.2): rolled by the engine
+   * with the step's seeded rng after a mini-game the party succeeded at (never
+   * a `play` one) or a fight it won, once a scene, and only recorded here. The
+   * server claims each drop right after its step commits (handlers/camp-pay.ts),
+   * so it is saved when it lands and replaying the log claims nothing. Absent
+   * until a roll; cleared when a chapter starts.
+   */
+  campLuck?: CampLuck;
+  /**
+   * The chapter's Dash Cash, counted in on its summary (§5.2): set by the
+   * server when the chapter ends; gone when the table leaves the summary.
+   */
+  campTally?: CampTally;
+  /**
+   * The chapter-end shop and its vote (§6.2, §12.4): set by the server when
+   * the chapter ends with the shop open; gone when the table leaves the
+   * summary, which cancels the vote without spending.
+   */
+  campShop?: CampShopView;
   /**
    * The crew is partway through this adventure and none of the heroes seated
    * have been on it, so the TV asks before anything resumes: keep going, or

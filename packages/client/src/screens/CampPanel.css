@@ -1,0 +1,208 @@
+/* The phone's Camp panel and first-session choice (#620, docs/camp.md §3, §5.3, §12.6). Touch
+   targets are --kad-touch-min (docs/accessibility.md); rows wrap at the largest text. */
+
+.camp-panel {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  background: var(--kad-bg, #0d0b1a);
+  color: var(--kad-ink, #f4f0ff);
+}
+.camp-panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  padding: calc(var(--kad-corner-bottom, 0px) + 0.5rem) 1rem 0.5rem;
+  border-block-end: 1px solid var(--kad-border, rgba(190, 178, 255, 0.16));
+}
+.camp-panel__title {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  margin: 0;
+  font-size: 1.15rem;
+  min-inline-size: 0;
+}
+.camp-panel__title:focus { outline: none; }
+.camp-panel__title:focus-visible { outline: 2px solid var(--kad-border-strong, #bdb2ff); outline-offset: 2px; }
+.camp-panel__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.camp-panel__picture {
+  position: relative;
+  margin-inline: -1rem;
+  font-size: 1.05rem;
+  flex: none;
+}
+.camp-panel__section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.camp-panel__heading {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  margin: 0;
+  font-size: 1.05rem;
+}
+.camp-panel__note {
+  display: flex;
+  gap: 0.4em;
+  align-items: center;
+  margin: 0;
+  font-size: 0.9rem;
+}
+.camp-panel__rule,
+.camp-panel__limit {
+  display: flex;
+  gap: 0.5em;
+  align-items: flex-start;
+  margin: 0;
+  padding: 0.5rem 0.7rem;
+  border-radius: 0.6rem;
+  background: var(--kad-bg-raised, #1a1730);
+  font-size: 0.95rem;
+}
+.camp-panel__limit { border: 1px solid #ffd36e; }
+.camp-panel__group {
+  margin: 0;
+  padding: 0.6rem 0.7rem 0.7rem;
+  border: 1px solid var(--kad-border, rgba(190, 178, 255, 0.16));
+  border-radius: 0.75rem;
+  min-inline-size: 0;
+}
+.camp-panel__group > legend {
+  padding-inline: 0.3em;
+  font-weight: 700;
+}
+.camp-panel__spot.is-active { border-color: var(--kad-border-strong, #bdb2ff); }
+.camp-panel__spot.is-lit { border-color: #ffd36e; box-shadow: 0 0 0 1px #ffd36e inset; }
+.camp-panel__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  min-inline-size: 0;
+}
+.camp-option {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  min-block-size: var(--kad-touch-min, 48px);
+  min-inline-size: var(--kad-touch-min, 48px);
+  padding: 0.35rem 0.6rem;
+  border: 2px solid var(--kad-border, rgba(190, 178, 255, 0.16));
+  border-radius: 0.6rem;
+  background: var(--kad-bg-raised, #1a1730);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.camp-option[aria-pressed="true"] {
+  border-color: #ffd36e;
+  background: rgba(255, 211, 110, 0.14);
+}
+.camp-option[aria-pressed="true"] .camp-option__label::before { content: "✓ "; }
+.camp-option:disabled:not([aria-pressed="true"]) { opacity: 0.5; cursor: default; }
+.camp-option--piece { flex-direction: row; }
+.camp-option__art { display: block; inline-size: 4.2rem; block-size: 3.4rem; overflow: hidden; }
+.camp-option__art > svg { inline-size: 100%; block-size: 100%; transform: scale(1.25) translateY(-6%); }
+/* A tent is cropped to its painting already (CampTent). */
+.camp-option__art > svg[data-cropped], .kit-welcome__art > svg[data-cropped] { transform: none; }
+.camp-option__label { font-size: 0.9rem; }
+.camp-option__badge {
+  padding: 0 0.4em;
+  border-radius: 0.3em;
+  background: #ffd36e;
+  color: #1d1430;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.camp-swatch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-block-size: var(--kad-touch-min, 48px);
+  padding: 0.25rem 0.6rem 0.25rem 0.35rem;
+  border: 2px solid var(--kad-border, rgba(190, 178, 255, 0.16));
+  border-radius: 999px;
+  background: var(--kad-bg-raised, #1a1730);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.camp-swatch[aria-pressed="true"],
+.camp-swatch[aria-checked="true"] { border-color: #ffd36e; }
+.camp-swatch__dot {
+  inline-size: 1.6rem;
+  block-size: 1.6rem;
+  border-radius: 50%;
+  background: var(--swatch);
+  border: 2px solid rgba(0, 0, 0, 0.35);
+}
+.camp-swatch__name { font-size: 0.85rem; }
+.camp-panel__slots { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.camp-panel__slot {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.9rem;
+  min-inline-size: 0;
+}
+.camp-panel__slot > select {
+  min-block-size: var(--kad-touch-min, 48px);
+  max-inline-size: 100%;
+  padding-inline: 0.5rem;
+  border-radius: 0.5rem;
+  border: 2px solid var(--kad-border, rgba(190, 178, 255, 0.16));
+  background: var(--kad-bg-raised, #1a1730);
+  color: inherit;
+  font: inherit;
+}
+.camp-panel__waiting h4 { margin: 0 0 0.3rem; font-size: 0.95rem; }
+.camp-panel__waiting ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 0.3rem; }
+.camp-panel__waiting li { display: flex; gap: 0.4em; align-items: center; font-size: 0.9rem; }
+
+/* The first-session choice: a card in the flow of the page, never over Ready. */
+.kit-welcome {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.8rem;
+  border: 2px solid #ffd36e;
+  border-radius: 0.9rem;
+  background: var(--kad-bg-raised, #1a1730);
+}
+.kit-welcome__title { display: flex; align-items: center; gap: 0.4em; margin: 0; font-size: 1.05rem; }
+.kit-welcome__sub { margin: 0; font-size: 0.9rem; }
+.kit-welcome__colors,
+.kit-welcome__styles { display: flex; flex-wrap: wrap; gap: 0.5rem; min-inline-size: 0; }
+.kit-welcome__style {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  flex: 1 1 5.5rem;
+  min-block-size: var(--kad-touch-min, 48px);
+  padding: 0.4rem;
+  border: 2px solid var(--kad-border-strong, #bdb2ff);
+  border-radius: 0.7rem;
+  background: var(--kad-bg, #0d0b1a);
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.kit-welcome__art { display: block; inline-size: 4.5rem; block-size: 3.4rem; overflow: hidden; }
+.kit-welcome__art > svg { inline-size: 100%; block-size: 100%; transform: scale(1.3) translateY(-8%); }
+.camp-button { flex: none; }
