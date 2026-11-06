@@ -1061,9 +1061,29 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
           return seat ? { journal: await deps.api.loadJournalAsSeat(seat), savedAt: null } : null;
         }
         try {
-          const journal = await deps.api.loadJournal(deviceToken);
-          await (await journalDb()).saveJournal({ deviceToken, savedAt: new Date().toISOString(), journal }, deps.storage);
-          return { journal, savedAt: null };
+          const read = await deps.api.loadJournal(deviceToken);
+          const db = await journalDb();
+          const savedAt = new Date().toISOString();
+          if (read.campError) {
+            /*
+             * The server read everything but the camp (#656): keep the camp the
+             * saved copy has, with when it was read, rather than taking the gap
+             * for a household with no camp. A real "no camp" has no marker.
+             */
+            const { campError: _failed, ...journal } = read;
+            const saved = await db.loadSavedJournal(deviceToken, deps.storage);
+            const camp = saved?.journal.camp;
+            if (!saved || !camp) {
+              await db.saveJournal({ deviceToken, savedAt, journal }, deps.storage);
+              return { journal, savedAt: null };
+            }
+            const campSavedAt = saved.campSavedAt ?? saved.savedAt;
+            const kept = { ...journal, camp };
+            await db.saveJournal({ deviceToken, savedAt, journal: kept, campSavedAt }, deps.storage);
+            return { journal: kept, savedAt: null, campSavedAt };
+          }
+          await db.saveJournal({ deviceToken, savedAt, journal: read }, deps.storage);
+          return { journal: read, savedAt: null };
         } catch (error) {
           /*
            * The server answering "no" is news: the binding is gone (a guest
@@ -1077,7 +1097,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
           }
           const saved = await (await journalDb()).loadSavedJournal(deviceToken, deps.storage);
           if (!saved) throw error;
-          return { journal: saved.journal, savedAt: saved.savedAt };
+          return { journal: saved.journal, savedAt: saved.savedAt, ...(saved.campSavedAt ? { campSavedAt: saved.campSavedAt } : {}) };
         }
       },
 

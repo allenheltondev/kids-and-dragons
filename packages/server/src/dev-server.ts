@@ -58,6 +58,7 @@ import { localTimingReport, parseTimingControl, setTiming, TIMING_BODY, type Tim
 import { releaseSavedHero, resumeGame, stopForToday } from "./handlers/save.ts";
 import { listHeroes } from "./handlers/heroes.ts";
 import { getJournal } from "./handlers/journal.ts";
+import { editKitFromBook } from "./handlers/camp-book.ts";
 import { saveFlair } from "./handlers/profile.ts";
 import { getState } from "./handlers/state.ts";
 import { organizerRoute } from "./handlers/organizer.ts";
@@ -78,7 +79,7 @@ import {
 } from "./identity.ts";
 import { assetsDir, contentDir, dataDir } from "./paths.ts";
 import { verifyDevToken } from "./dev-auth.ts";
-import { readSeedRequest, seedRoom } from "./dev-seed.ts";
+import { readSeedRequest, seedRoom, withSeededDice } from "./dev-seed.ts";
 import { MemoryRepository } from "./store/memory-repository.ts";
 import { pushKey, subscribePush, unsubscribePush, type PushConfig, type PushSender } from "./handlers/push.ts";
 import { devVapidKeys, inProcessDispatch, pushConfig, pushMode, recordingSender, webPushSender, type RecordedPush } from "./web-push.ts";
@@ -570,7 +571,8 @@ async function main(): Promise<void> {
         ...(typeof body.context === "string" ? { context: body.context } : {}),
         principal,
       },
-      deps,
+      // A seeded table's loaded die (dev-seed.ts `SeedRequest.dice`); fair dice for every other run.
+      withSeededDice(deps, body.runId),
     );
     // The rejection is part of the protocol, not an HTTP failure: the client
     // reads `error.code` and resyncs. 200 keeps that path free of fetch()
@@ -804,6 +806,18 @@ async function main(): Promise<void> {
     const kid = await resolveKid(req, base);
     if (!kid) return sendError(res, 401, "FORBIDDEN", "the journal needs this device's token");
     const result = await getJournal({ householdId: kid.householdId, playerId: kid.playerId }, deps);
+    if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    res.json(result.value);
+  });
+
+  // A kid's own kit or buddy, from the adventure book (see handlers/camp-book.ts).
+  app.post("/api/journal/kit", async (req: Request, res: Response) => {
+    const deps = await withRuntime(base, res);
+    if (!deps) return;
+
+    const kid = await resolveKid(req, base);
+    if (!kid) return sendError(res, 401, "FORBIDDEN", "the adventure book needs this device's token");
+    const result = await editKitFromBook({ householdId: kid.householdId, playerId: kid.playerId, body: req.body ?? {} }, deps);
     if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
     res.json(result.value);
   });

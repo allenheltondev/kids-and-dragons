@@ -124,6 +124,9 @@ opens the sign-in on a phone is a separate follow-up issue, not built here.
 - Either button still works, by click or a remote's Enter, before the time runs out. Stop for
   today stays in the Room panel.
 - Under reduced motion the bar stands still and full, and the timer still runs.
+- It stands in the narration, never over the stage: beside the goal card where the head has
+  room, else at the end of the choices' row on the plate (`ui/story-dock.ts`). In the right-hand
+  column it covered an outdoor rest's camp.
 - The timeout does exactly what Keep playing does, which is this screen's own business: it puts the
   offer away for this Rest and sends nothing. So it happens once, the clock goes with the offer, and
   no phone or other screen is affected. While a stop is on its way, the clock waits.

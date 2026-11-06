@@ -29,10 +29,12 @@
  */
 
 import { useEffect, useState, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
 import type { RunState } from "@kad/shared";
 import { useGameStore, useRunState, useSession } from "../store";
 import { Button } from "../ui";
 import { inviteData, joinUrl, shareInvite, type ShareOutcome } from "../ui/share-invite";
+import { useStoryDock } from "../ui/story-dock";
 import { Icon } from "./icons";
 import { SignInFlow } from "./SignInFlow";
 import { LET_GO_NOTE, STOP_CONFIRM, STOP_OFFER } from "./save-copy";
@@ -126,8 +128,15 @@ export const STOP_OFFER_MS = 15_000;
  * then, and Stop for today stays in the Room panel. Keep playing is this
  * screen's own business (nothing is sent), so the time running out is too, and
  * it happens once: the offer is put away, and the clock with it.
+ *
+ * `docked`, on the shared screen: drawn in the narration, beside the goal card
+ * or the choices (ui/story-dock.ts), rather than in the right-hand column, which
+ * stands over the stage and covered an outdoor rest's camp. Only where it is drawn moves;
+ * the state and the clock stay here, so a slot coming or going mid-offer
+ * neither restarts the clock nor brings back an offer put away.
  */
-function StopOffer({ state, timeoutMs }: { state: RunState; timeoutMs?: number }): React.JSX.Element | null {
+function StopOffer({ state, timeoutMs, docked = false }: { state: RunState; timeoutMs?: number; docked?: boolean }): React.JSX.Element | null {
+  const slot = useStoryDock();
   const stopForToday = useGameStore((store) => store.stopForToday);
   const [busy, setBusy] = useState(false);
   const [putAway, setPutAway] = useState<string | null>(null);
@@ -140,13 +149,18 @@ function StopOffer({ state, timeoutMs }: { state: RunState; timeoutMs?: number }
     return () => clearTimeout(timer);
   }, [shown, sceneId, timeoutMs, busy]);
   if (!shown) return null;
-  return (
-    <div className="kad-host__offer" role="status">
+  // Outside a fight the narration is coming (its chunk may land after this one): wait for its
+  // slot rather than flash up in the column over the stage and then move. The clock runs.
+  if (docked && slot === null && state.encounter == null) return null;
+  const inStory = docked && slot !== null;
+  const offer = (
+    <div className={`kad-host__offer${inStory ? " kad-host__offer--docked" : ""}`} role="status">
       <p>{STOP_OFFER}</p>
       <Button
         variant="primary"
         size="md"
         block
+        className="kad-host__offer-stop"
         disabled={busy}
         onClick={() => {
           setBusy(true);
@@ -155,7 +169,7 @@ function StopOffer({ state, timeoutMs }: { state: RunState; timeoutMs?: number }
       >
         Stop here for today
       </Button>
-      <Button variant="ghost" size="md" block disabled={busy} onClick={() => setPutAway(sceneId)}>
+      <Button variant="ghost" size="md" block className="kad-host__offer-keep" disabled={busy} onClick={() => setPutAway(sceneId)}>
         Keep playing
       </Button>
       {timeoutMs === undefined ? null : (
@@ -168,6 +182,7 @@ function StopOffer({ state, timeoutMs }: { state: RunState; timeoutMs?: number }
       )}
     </div>
   );
+  return inStory ? createPortal(offer, slot) : offer;
 }
 
 /**
@@ -309,7 +324,8 @@ export function HostControls({ placement, button = true }: { placement: "inline"
       {/* On the shared screen the Room button sits in the corner row (App.tsx); in the
           bottom corner it lay over the story's last choice (#257). What it opens drops below. */}
       {button ? <RoomButton inCorner={false} /> : null}
-      <StopOffer state={state} timeoutMs={STOP_OFFER_MS} />
+      {/* In the narration when there is one (ui/story-dock.ts), never over the stage. */}
+      <StopOffer state={state} timeoutMs={STOP_OFFER_MS} docked />
       {open ? panel : null}
       {/* The grown-up's sign-in for the visitor switch. A phone's view
           already has one (layout/PlayerView); the shared display does not. */}

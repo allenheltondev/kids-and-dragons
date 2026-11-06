@@ -19,12 +19,13 @@
  * own specs, which do not use this.
  */
 
-import type { ClassId, ClientIntent, FactValue, RoomMode, SpeciesId, Stats } from "@kad/shared";
+import type { CampRecord, ClassId, ClientIntent, FactValue, Rng, RoomMode, SpeciesId, Stats } from "@kad/shared";
 import { createGuestHousehold, vetTypedName, type BoundDevice } from "./handlers/account.ts";
 import { applyAction } from "./handlers/action.ts";
 import type { ActionError, HandlerDeps, HandlerResult } from "./handlers/deps.ts";
 import { admitNewPhone, bindNewPhone, createRoom, joinRoom, settleRoom } from "./handlers/room.ts";
 import { mutateCamp } from "./handlers/camp.ts";
+import { switchCrew } from "./handlers/crew.ts";
 
 export interface SeedHero {
   /** The hero's name, as typed on the last creation step. */
@@ -73,7 +74,41 @@ export interface SeedRequest {
    * camp.ts `withShopCount`). For looking at a grown camp
    * without playing a whole campaign first. Only with a new household (not `code`).
    */
-  camp?: { grownBy?: string[]; owned?: string[]; placed?: Record<string, string>; dashCash?: number; paidChapterCount?: number; friends?: string[] };
+  camp?: SeedCamp;
+  /**
+   * More crews for the new household (architecture §4.5, "Crews"), each made
+   * with the host's "Start a new crew" and given its own camp, before anybody
+   * sits down; the room stays with the household's first crew. For the book's
+   * crew picker (#629). Only with a phone opening the room (not `tv`, not `code`).
+   */
+  crews?: { camp?: SeedCamp }[];
+  /**
+   * A loaded die: every d20 this table rolls, from the seed's own scene jump
+   * to its last action, lands on this face (1 to 20), and every smaller die
+   * on its matching share. For a spec that asserts how a fight ends, which a
+   * fair die would decide by luck: at `1` nothing hits anyone, as the combat
+   * unit tests roll (combat-roadside.test.ts), so the outcome is the one the
+   * party's moves earn. Dev server only, like the rest of this file: the
+   * table is remembered here, and only dev-server.ts asks (`withSeededDice`).
+   */
+  dice?: number;
+}
+
+/** A seeded camp (`SeedRequest.camp`). */
+export interface SeedCamp {
+  grownBy?: string[];
+  owned?: string[];
+  placed?: Record<string, string>;
+  dashCash?: number;
+  paidChapterCount?: number;
+  friends?: string[];
+  /**
+   * Finds and friends as play gives them (#629): a find piece or a friend under
+   * its catalog offer's `rewardId`, with its receipt, so the adventure book can
+   * say where it came from. Absent: every piece bought and every friend under a
+   * `seeded.` id, as before.
+   */
+  real?: boolean;
 }
 
 /** What a browser would have stored had it done this itself (client store/persistence.ts). */
@@ -135,6 +170,9 @@ export function readSeedRequest(body: unknown): SeedRequest | string {
   if ((b.flags !== undefined || b.facts !== undefined) && b.chapterId === undefined) return "flags and facts need chapterId";
   if (b.sceneId !== undefined && (typeof b.sceneId !== "string" || (b.begin !== true && b.chapterId === undefined))) return "sceneId needs begin or chapterId";
   if (b.camp !== undefined && (typeof b.camp !== "object" || b.camp === null || b.code !== undefined)) return "camp is an object, for a new household";
+  if (b.crews !== undefined && (!Array.isArray(b.crews) || b.crews.length > 3 || b.code !== undefined || b.tv === true)) return "crews is a short list, for a new household a phone opens";
+  if (b.dice !== undefined && (typeof b.dice !== "number" || !Number.isInteger(b.dice) || b.dice < 1 || b.dice > 20)) return "dice must be a d20 face, 1 to 20";
+  if (b.dice !== undefined && b.code !== undefined) return "dice loads a new table's die, not one already rolling";
   return b as unknown as SeedRequest;
 }
 
@@ -206,6 +244,16 @@ export async function seedRoom(input: SeedRequest, deps: HandlerDeps): Promise<H
     code = created.value.code;
     const refused = seat(host, await joinRoom({ code, principal: host.principal }, deps), first.name, code);
     if (refused) return refused;
+    // Each other crew: the host's "Start a new crew", its camp, then back to the first crew.
+    for (const crew of input.crews ?? []) {
+      const made = await switchCrew({ code, principal: host.principal, crew: "new" }, deps);
+      if (!made.ok) return made;
+      if (made.value.crew) await seedCamp(host.principal.householdId, crew.camp ?? {}, deps, made.value.crew);
+    }
+    if ((input.crews ?? []).length > 0) {
+      const back = await switchCrew({ code, principal: host.principal, crew: null }, deps);
+      if (!back.ok) return back;
+    }
   }
 
   // POST /api/room/:code/join, for a phone with no binding yet.
@@ -229,6 +277,8 @@ export async function seedRoom(input: SeedRequest, deps: HandlerDeps): Promise<H
 
   const runId = phones[0]?.session.runId ?? (await deps.repo.getRoom(code))?.runId;
   if (!runId) return fail("NOT_FOUND", `no open room ${code}`);
+  if (input.dice !== undefined) loadedDice.set(runId, input.dice);
+  deps = withSeededDice(deps, runId);
 
   // The rest is what the phones send.
   const send = async (phone: SeededPhone, intent: ClientIntent, via: HandlerDeps = deps): Promise<HandlerResult<null>> => {
@@ -289,13 +339,39 @@ export async function seedRoom(input: SeedRequest, deps: HandlerDeps): Promise<H
 }
 
 /** The seed's camp, written before the room reads it (`SeedRequest.camp`). */
-async function seedCamp(householdId: string, camp: SeedRequest["camp"], deps: HandlerDeps): Promise<void> {
+async function seedCamp(householdId: string, camp: SeedCamp | undefined, deps: HandlerDeps, crew: string | null = null): Promise<void> {
   if (!camp) return;
   const at = new Date(deps.now()).toISOString();
-  await mutateCamp(
-    householdId,
-    null,
-    (c) => ({
+  if (camp.real) {
+    await mutateCamp(householdId, crew, (c) => realCamp(seededCamp(c, { ...camp, owned: [], friends: [] }, at, deps), camp, at, deps), deps);
+    return;
+  }
+  await mutateCamp(householdId, crew, (c) => seededCamp(c, camp, at, deps), deps);
+}
+
+/** Finds and friends as play gives them (`SeedCamp.real`): under their catalog offers, with receipts. */
+function realCamp(c: CampRecord, camp: SeedCamp, at: string, deps: HandlerDeps): CampRecord {
+  const catalog = deps.content.campCatalog();
+  const owned = { ...c.owned };
+  const friends = { ...c.friends };
+  const rewards = { ...c.receipts.rewards };
+  for (const id of camp.owned ?? []) {
+    const piece = catalog?.crewPieces.find((p) => p.id === id);
+    const offer = piece?.group === "find" ? piece.offers[0] : undefined;
+    owned[id] = offer ? { from: "found", rewardId: offer.rewardId, at } : { from: "bought", at };
+    if (offer) rewards[offer.rewardId] = { at };
+  }
+  for (const [i, id] of (camp.friends ?? []).entries()) {
+    const offer = catalog?.friends.find((f) => f.id === id)?.offers[0];
+    const rewardId = offer?.rewardId ?? `seeded.${id}`;
+    friends[id] = { rewardId, at: new Date(deps.now() + i * 1000).toISOString() };
+    rewards[rewardId] = { at };
+  }
+  return { ...c, owned, friends, receipts: { ...c.receipts, rewards } };
+}
+
+function seededCamp(c: CampRecord, camp: SeedCamp, at: string, deps: HandlerDeps): CampRecord {
+  return ({
       ...c,
       grownBy: camp.grownBy ?? c.grownBy,
       dashCash: camp.dashCash ?? c.dashCash,
@@ -313,7 +389,25 @@ async function seedCamp(householdId: string, camp: SeedRequest["camp"], deps: Ha
         ...c.friends,
         ...Object.fromEntries((camp.friends ?? []).map((id, i) => [id, { rewardId: `seeded.${id}`, at: new Date(deps.now() + i * 1000).toISOString() }])),
       },
-    }),
-    deps,
-  );
+    });
+}
+
+/** Runs a seed loaded the die for (`SeedRequest.dice`), and the face it lands on. */
+const loadedDice = new Map<string, number>();
+
+/** A die that always lands on `face`: the d20 on that face, a smaller die on the same share of its sides. */
+export function loadedDie(face: number): Rng {
+  const value = (face - 1) / 20 + 0.001;
+  return { next: () => value };
+}
+
+/**
+ * These deps, rolling the seeded table's loaded die if `runId` is one
+ * (`SeedRequest.dice`); otherwise these deps unchanged, fair dice and all.
+ */
+export function withSeededDice<D extends { rng: HandlerDeps["rng"] }>(deps: D, runId: string): D {
+  const face = loadedDice.get(runId);
+  if (face === undefined) return deps;
+  const die = loadedDie(face);
+  return { ...deps, rng: () => die };
 }

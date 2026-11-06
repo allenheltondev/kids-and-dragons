@@ -19,7 +19,8 @@ import type {
 import type { RiftActionKind } from "./campaign-graph.js";
 import type { InteractionAction } from "../interactions.js";
 import type { ChapterOutcome } from "./chapter.js";
-import type { CampClaimResult, KitMilestoneUnlock, LuckyDrop } from "./camp.js";
+import type { CampClaimResult, CampFriendCard, CampView, HeroKitView, KitMilestoneUnlock, LuckyDrop } from "./camp.js";
+import type { BookKitChange, BookKitField } from "../camp-book.js";
 import type { RoomMode, RunState, DiceRoll } from "./state.js";
 import type { FieldGuideFind } from "../field-guide-record.js";
 import type { Badge, ProfileFlair } from "../kid-profile.js";
@@ -923,7 +924,8 @@ export interface HeroesResponse {
  *
  * Authorised by the device token alone, not a room session: between games
  * there is no room, and the journal is the household's and this player's, not
- * a run's. Read-only by construction; nothing here can be changed from it.
+ * a run's. Read-only; the one write beside it is a kid's own kit and buddy
+ * (`BookKitRequest`, docs/camp.md §7).
  */
 export interface JournalResponse {
   /** This player's own heroes, furthest-taken first — the same list WelcomeBack offers. */
@@ -957,6 +959,91 @@ export interface JournalResponse {
    * because a server from before it sends none.
    */
   story?: JournalStoryCampaign[];
+  /**
+   * The Camp tray (docs/camp.md §7; #629): each crew's camp to look at, and
+   * each of her heroes' kits to change. Saved with the book, so it opens
+   * offline. Optional because a server from before it sends none.
+   */
+  camp?: JournalCamp;
+  /**
+   * Set, with no `camp`, when the server could not read the camp just now
+   * (#656): the rest of the book is fresh, and the phone keeps the camp its
+   * saved copy has, with when that was read. Absent with no `camp`: the
+   * content has no camp, so there is none to keep.
+   */
+  campError?: true;
+}
+
+/** The book's Camp tray (docs/camp.md §7, §12.6; #629). */
+export interface JournalCamp {
+  /**
+   * The crews her heroes sit with: the household's first crew, then each other
+   * crew that has played (a save or a camp of its own), oldest first.
+   */
+  crews: JournalCrewCamp[];
+  /** Each of her heroes' kits, by character id. */
+  kits: Record<string, JournalKit>;
+}
+
+/** One crew's camp, look-only in the book. */
+export interface JournalCrewCamp {
+  /** The crew's id; null for the household's first crew. */
+  crew: string | null;
+  /** "The Otter Crew", or what the first crew is called. */
+  name: string;
+  camp: CampView;
+  /** Every friend, in the order spare seats fill (`friendRotation`), with its words and where it was met. */
+  friends: JournalFriend[];
+  /**
+   * Where each piece came from, by piece id, in a kid's words: "Found at the
+   * Ashspan Bridge", "Bought with Dash Cash". Every owned piece and every
+   * trophy has one.
+   */
+  sources: Record<string, string>;
+}
+
+/** A friend in the book: its card, what it says when tapped, and where the crew met it. */
+export interface JournalFriend extends CampFriendCard {
+  reactions: string[];
+  /** "Met at the Ashspan Bridge". */
+  source: string;
+}
+
+/**
+ * One hero's kit as the book shows and edits it: the table's view
+ * (`HeroKitView`), with her buddy in each of this household's crews' camps,
+ * by crew id ("" for the first crew) instead of one.
+ */
+export interface JournalKit extends Omit<HeroKitView, "buddy"> {
+  buddies: Record<string, string>;
+}
+
+/**
+ * `POST /api/journal/kit` (docs/camp.md §7, §12.6; #629): a kid's own kit or
+ * buddy, changed from the adventure book, outside any room. Authorised as the
+ * book's read is, by the phone's device binding, and only for her own heroes.
+ */
+export interface BookKitRequest {
+  characterId: string;
+  /** The crew whose camp a buddy change is for: its id, or null (or absent) for the first crew. */
+  crew?: string | null;
+  /**
+   * Sent from the phone's queue: a field that is not the hero's to pick is
+   * skipped (`BookKitResponse.refused`) and the rest apply. Absent (sent
+   * straight away), one such field refuses the whole change, as the table's
+   * `KIT_EDIT` does. Either way the change applies over whatever the server
+   * has now: the device wins (docs/camp.md §7, §11).
+   */
+  merge?: true;
+  changes: BookKitChange[];
+}
+
+/** What a book edit did, and the kit as it now stands. */
+export interface BookKitResponse {
+  kit: JournalKit;
+  applied: BookKitField[];
+  /** Not the hero's to pick (merge only; sent straight away, one refusal refuses the whole change). */
+  refused: BookKitField[];
 }
 
 /** One campaign on the Story page (#358). */
