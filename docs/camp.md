@@ -153,7 +153,9 @@ How it shows:
   bedrolls or tents; nobody lines up at the trailhead, since Ready is the lobby's. Go on fades it
   off with the next scene already drawn under it. Shared spots can change (`campMoment.outdoor`).
 - **Indoors.** The scene's picture and lineup stay; each hero's bedroll and pack lie on the
-  ground at her side, a step behind her feet, in her kit's style and color (`packed-camp.ts`). The
+  ground at her side, a step behind her feet, in her color (`packed-camp.ts`). Indoors nobody
+  sleeps in it, so the bedroll is always rolled up beside the pack, whatever style the kid picked
+  for the camp, and it is sized to her like the rest of her gear. The
   phone's Camp panel shows the same bedrolls in a row instead of the campsite picture, and only
   each kid's own kit can change.
 
@@ -283,8 +285,8 @@ them even when nobody else is playing.
 
 A hero's **kit** is their tent, their bedroll and pack, and two or three small slots for personal
 decorations, all in their own color (the palette rule heroes already use). Outdoors the tent
-stands in its spot in the camp; indoors (§3.2) the bedroll and pack are laid out along the front
-of the scene. At frame stage 1, before tents, it is the bedroll and pack everywhere. The hero's
+stands in its spot in the camp; indoors (§3.2) the bedroll is rolled up beside the pack along the
+front of the scene. At frame stage 1, before tents, it is the bedroll and pack everywhere. The hero's
 souvenirs (spec §8.3) hang at their tent.
 
 - **Only that hero's player changes it**, at the table during any downtime moment (no limit, §6.1)
@@ -1029,6 +1031,7 @@ Settled by the product owner:
 | Short near-lane pieces in front of a tent (#620) | The friends' corner, the trophies and the cookfire may stand on the near lane in front of the lower half of a tent further back, never its door (§8.3) |
 | Small heroes get roomier tents (#620) | A small hero's tent is 1.2 times her painted height, a big hero's 1.1: up to 110 cm painted (kitsune, dragonlings) 1.2, from 150 cm (manticores, griffins, unicorns, bigfoots) 1.1, a smooth ramp between; a kitsune's ears sit clearly under her tent's top as she stands at its door (§8.3) |
 | Lanterns and banner over a back tent's edge | The lanterns and banner pole may stand in front of the outer edge of a back tent, never its door, so big parties draw near 0.8 at stage 2 (§8.3) |
+| Indoor bedrolls are rolled up (#625) | Indoors nobody sleeps in it, so every hero's bedroll is rolled up beside the pack, whatever style the kid picked; it is sized to the hero like the rest of the gear, and need not be longer than they are (§3.2) |
 
 Nothing is open. The two parked questions from earlier (editing from the book, choosing friends)
 are settled above as kit and buddy editing in the book and buddies.

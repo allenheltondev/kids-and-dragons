@@ -19,11 +19,15 @@
  */
 
 import type { HeroKitView, PartyMember, RunState } from "@kad/shared";
-import { campKitStyle, type CampKitStyle } from "./camp-kit-art";
+import type { CampKitStyle } from "./camp-kit-art";
 import { kitLook } from "./camp-scene";
 import { indoorRest } from "./lobby-camp";
 
-/** One hero's packed kit: her bedroll-and-pack painting, in her color. */
+/**
+ * One hero's packed kit: her bedroll rolled up beside her pack, in her color.
+ * Indoors nobody sleeps in it, so it is always the rolled painting, whatever
+ * style her kid picked for the camp (owner, docs/camp.md §3.2, §11).
+ */
 export interface PackedKit {
   /** Her character id: the bedroll lies beside her in the lineup. */
   id: string;
@@ -51,11 +55,14 @@ export interface PackedSpot {
   mirrored: boolean;
 }
 
+/** Indoors the bedroll is rolled up: the camp's rolled bedroll-and-pack painting, for every hero. */
+export const PACKED_STYLE: CampKitStyle = "rolled";
+
 /** How far to her side a bedroll lies, as a share of her lineup slot (its middle). */
 export const PACKED_SIDE = 0.36;
 /** The widest a bedroll is drawn, as a share of her lineup slot. */
 export const PACKED_SLOT_WIDTH = 0.85;
-/** The widest a bedroll is drawn, as a share of her drawn height: gear she could use, never bigger than she is. */
+/** The widest the rolled bedroll and pack are drawn, as a share of her drawn height: packed gear, sized to her. */
 export const PACKED_HEIGHT_WIDTH = 0.7;
 /** How far behind her feet the bedroll's ground contact is, in design units: she stands in front of it. */
 export const PACKED_BEHIND = 6;
@@ -118,6 +125,6 @@ export function packedKits(state: Pick<RunState, "party" | "removed" | "kits"> |
     .map((member) => {
       const kit: HeroKitView | undefined = state.kits?.[member.character.id];
       const look = kitLook(kit, member.character.appearance.accent);
-      return { id: member.character.id, style: campKitStyle(member.character.id, look.style), accent: look.accent };
+      return { id: member.character.id, style: PACKED_STYLE, accent: look.accent };
     });
 }

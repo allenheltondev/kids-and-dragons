@@ -107,12 +107,13 @@ describe("an indoor rest on the still stage", () => {
     expect(backdrop.getAttribute("src")).not.toContain("camp/backdrops");
   });
 
-  it("sets each hero's bedroll and pack down beside her, in her own kit", () => {
+  it("sets each hero's bedroll down beside her, rolled up whatever style she picked", () => {
     const state = { ...rest(false), kits: { c_1: { revision: 1, style: "quilted", tent: null, color: null, slots: [], unlocked: [] } } } as RunState;
     mount(state, chapter("red_sky_foothills", "indoor"));
     const bedrolls = document.querySelectorAll('[data-testid="packed-bedroll"]');
     expect(bedrolls).toHaveLength(2);
-    expect(bedrolls[0]!.querySelector("[data-camp-kit]")!.getAttribute("data-camp-kit")).toBe("quilted");
+    // Her kit says quilted, but indoors nobody sleeps in it: it stays rolled up beside her pack.
+    expect(bedrolls[0]!.querySelector("[data-camp-kit]")!.getAttribute("data-camp-kit")).toBe("rolled");
   });
 });
 
@@ -144,7 +145,8 @@ describe("the packed camp's one lane (packed-camp.ts)", () => {
     const state = { ...rest(false, [member(1), member(2), member(3)]), removed: ["p_2"] } as RunState;
     const kits = packedKits(state);
     expect(kits.map((k) => k.id)).toEqual(["c_1", "c_3"]);
-    for (const kit of kits) expect(Object.keys(CAMP_KIT_STYLES)).toContain(kit.style);
+    // Indoors nobody sleeps in it: every hero's bedroll is rolled up beside her pack, whatever style she picked.
+    for (const kit of kits) expect(kit.style).toBe("rolled");
     expect(packedCampKey(state)).not.toBe("");
     expect(packedCampKey(rest(true))).toBe("");
   });
