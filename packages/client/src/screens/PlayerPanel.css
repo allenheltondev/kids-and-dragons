@@ -1548,13 +1548,15 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
 .player--deciding .sheet { padding-block: .3em; }
 .player--deciding .sheet__portrait { inline-size: 2.5em; block-size: 3em; }
 .player--deciding .sheet__meta { display: none; }
-@container prompt (max-height: 30em) {
+/* Keep the 375x667 phone in compact mode too: its prompt can be just over 30em tall,
+   which otherwise grows the heading/confirm rows enough to force unnecessary scrolling. */
+@container prompt (max-height: 34em) {
   .player--deciding .prompt__title { font-size: 1em; }
   .player--deciding .confirm__actions > .kad-button { min-block-size: 44px; padding-block: .3em; }
 }
 /* Consequence previews stay readable without adding a full row to every
    answer on a short phone. Their words already name the roll or activity. */
-@container prompt (max-height: 30em) {
+@container prompt (max-height: 34em) {
   .player--deciding .choice__ahead {
     display: inline-flex;
     margin: 0 0 0 .4em;

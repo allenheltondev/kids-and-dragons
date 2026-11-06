@@ -1,0 +1,72 @@
+{
+  "issue": 630,
+  "generator": "Built-in ImageGen",
+  "paintings": [
+    {
+      "path": "assets/camp/backdrops/enchanted_forest.webp",
+      "reference": "assets/biomes/enchanted_woods/bg.webp",
+      "plays": "Camp backdrop for the enchanted forest terrain family, with clear ground for the camp props and walking lanes.",
+      "prompt": "Wide 16:9 opaque children's fantasy game backdrop in warm storybook gouache with tactile brushwork. Deep Enchanted Woods, cool emerald canopy and massive twisted mossy roots interlaced as a distant arch, scattered luminous blue gem-like knots embedded in trunks at far edges, inviting soft filtered light, continuous level moss floor. Keep the middle of the frame clear and level for camp sprites and walking lanes. Keep the lower quarter quiet for UI. No tents, fires, figures, text, borders or watermarks.",
+      "output": {
+        "width": 1920,
+        "height": 1080,
+        "format": "WebP"
+      }
+    },
+    {
+      "path": "assets/camp/backdrops/sky_islands.webp",
+      "reference": "assets/biomes/sky_islands/bg.webp",
+      "plays": "Camp backdrop for the sky islands terrain family, with clear ground for the camp props and walking lanes.",
+      "prompt": "Wide 16:9 opaque children's fantasy game backdrop in warm storybook gouache with tactile brushwork. Grassy plateau with distant floating green islands and misty waterfalls suspended in open blue sky, with a safe broad flat grassy foreground. Keep the middle of the frame clear and level for camp sprites and walking lanes. Keep the lower quarter quiet for UI. No tents, fires, figures, text, borders or watermarks.",
+      "output": {
+        "width": 1920,
+        "height": 1080,
+        "format": "WebP"
+      }
+    },
+    {
+      "path": "assets/camp/backdrops/whispering_marsh.webp",
+      "reference": "assets/biomes/whispering_marsh/bg.webp",
+      "plays": "Camp backdrop for the whispering marsh terrain family, with clear ground for the camp props and walking lanes.",
+      "prompt": "Wide 16:9 opaque children's fantasy game backdrop in warm storybook gouache with tactile brushwork. Blue-green wetland with pools behind the clearing, huge distant cypress trees with exposed roots, soft luminous blue firefly specks and blue mist, muted jade and teal, and a broad uninterrupted dry mossy bank. Keep the middle of the frame clear and level for camp sprites and walking lanes. Keep the lower quarter quiet for UI. No tents, fires, figures, text, borders or watermarks.",
+      "output": {
+        "width": 1920,
+        "height": 1080,
+        "format": "WebP"
+      }
+    },
+    {
+      "path": "assets/camp/backdrops/cliffside_exchange.webp",
+      "reference": "assets/biomes/exchange/bg.webp",
+      "plays": "Camp backdrop for the cliffside exchange terrain family, with clear ground for the camp props and walking lanes.",
+      "prompt": "Wide 16:9 opaque children's fantasy game backdrop in warm storybook gouache with tactile brushwork. Coastal fantasy market city stacked against pale gray limestone sea cliffs, distant slate blue roofs, gold-trimmed blue awnings, arched trading halls and glittering blue sea at upper left, with a broad dry pale limestone terrace. Keep the middle of the frame clear and level for camp sprites and walking lanes. Keep the lower quarter quiet for UI. No tents, fires, figures, text, borders or watermarks.",
+      "output": {
+        "width": 1920,
+        "height": 1080,
+        "format": "WebP"
+      }
+    },
+    {
+      "path": "assets/camp/backdrops/great_river.webp",
+      "reference": "assets/biomes/stone_crossing/bg.webp",
+      "plays": "Camp backdrop for the great river terrain family, with clear ground for the camp props and walking lanes.",
+      "prompt": "Wide 16:9 opaque children's fantasy game backdrop in warm storybook gouache with tactile brushwork. Blue water and gentle whitewater below green wooded stone bluffs, an old single-arch gray stone footbridge in the distance, and a wide continuous dry grassy and gravel bank. Keep the middle of the frame clear and level for camp sprites and walking lanes. Keep the lower quarter quiet for UI. No tents, fires, figures, text, borders or watermarks.",
+      "output": {
+        "width": 1920,
+        "height": 1080,
+        "format": "WebP"
+      }
+    },
+    {
+      "path": "assets/camp/backdrops/bone_yard.webp",
+      "reference": "assets/biomes/bone_yard/bg.webp",
+      "plays": "Camp backdrop for the bone yard terrain family, with clear ground for the camp props and walking lanes.",
+      "prompt": "Wide 16:9 opaque children's fantasy game backdrop in warm storybook gouache with tactile brushwork. Sunny pale grass and warm sand clearing, tiny distant ivory fossil ribs tucked at far sides, gentle calm and welcoming, with no skulls or spooky elements. Keep the middle of the frame clear and level for camp sprites and walking lanes. Keep the lower quarter quiet for UI. No tents, fires, figures, text, borders or watermarks.",
+      "output": {
+        "width": 1920,
+        "height": 1080,
+        "format": "WebP"
+      }
+    }
+  ]
+}

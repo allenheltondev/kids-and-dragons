@@ -215,7 +215,10 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // 1642 -> 1646 when Phase 2 met main's Gemfall fight reworks (#639 to #644):
 // the merged build measures 1644KB locally and in CI, first paint 331KB.
 // Keep 2KB of slack for CI.
-const TOTAL_BUDGET_KB = 1646;
+// 1646 -> 1650 for the six later camp backdrops (#649). Their lane layouts
+// bring the lazy camp payload to 1648KB in CI. The WebPs are fetched separately
+// and first paint stays at 331KB. Keep the existing 2KB of slack.
+const TOTAL_BUDGET_KB = 1650;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);
