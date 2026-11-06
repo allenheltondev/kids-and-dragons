@@ -541,17 +541,23 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   const airLayer = new Container();
   airLayer.label = "camp-air";
   view.addChild(airLayer);
-  const motes = air ? campMotes(air, seed + 1) : [];
+  let motes = air ? campMotes(air, seed + 1) : [];
+  const drawMote = (dot: Graphics, size: number): void => {
+    dot.clear().circle(0, 0, size * 1.9).fill({ color: air!.color, alpha: 0.28 }).circle(0, 0, size).fill({ color: air!.color });
+  };
   const moteViews = motes.map((mote) => {
-    const dot = new Graphics()
-      .circle(0, 0, mote.size * 1.9)
-      .fill({ color: air!.color, alpha: 0.28 })
-      .circle(0, 0, mote.size)
-      .fill({ color: air!.color });
+    const dot = new Graphics();
+    drawMote(dot, mote.size);
     if (air!.glow) dot.blendMode = "add";
     airLayer.addChild(dot);
     return dot;
   });
+  /** A new seed lays the motes out again, as a camp first built with it would (`setSeed`); the same dots, redrawn. */
+  function reseedAir(): void {
+    if (!air) return;
+    motes = campMotes(air, seed + 1);
+    motes.forEach((mote, i) => drawMote(moteViews[i]!, mote.size));
+  }
   function updateAir(): void {
     airLayer.visible = air !== undefined && !still;
     if (!airLayer.visible) return;
@@ -653,7 +659,8 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     container.scale.set(lane.scale);
     const heightPx = campHeightPx(pieceHeightCm(piece), measure);
     if (piece.id === "campfire") container.addChild(fireGlow(heightPx));
-    const shadow = campGroundShadow(light, heightPx * (piece.id.startsWith("bedroll") ? 1.7 : .9), heightPx);
+    // Until its painting loads (or if it never does), a tent's contact shade already sits inside its pegs.
+    const shadow = campGroundShadow(light, heightPx * (piece.id.startsWith("bedroll") ? 1.7 : .9), heightPx, undefined, heightPx, false, 0, piece.id.startsWith("tent_"));
     castShadow(container, shadow);
     const groundCount = container.children.length;
     const pending = new Graphics()
@@ -1667,6 +1674,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   function setSeed(next: number): void {
     if (destroyed || next === seed) return;
     seed = next;
+    reseedAir();
     const old = planner;
     planner = makePlanner(seed);
     for (const actor of actors.values()) {

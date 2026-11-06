@@ -64,9 +64,10 @@ export function groundShadow(light: CampLight, width: number, height: number, te
     shadow.addChild(projection);
   }
   // Where it touches the ground: darkest, a little toward the cast.
+  const contactRy = Math.max(height * 0.055, 6);
   const contact = new Graphics()
-    // Cast back, it sits inside the footprint, ending at the pegs rather than past them.
-    .ellipse(width * 0.06 * Math.sign(light.lean), fit?.behind ? -height * 0.045 : height * 0.015, width * 0.48, Math.max(height * 0.055, 6))
+    // Cast back, it sits inside the footprint, its bottom edge on the pegs rather than past them.
+    .ellipse(width * 0.06 * Math.sign(light.lean), fit?.behind ? 1 - contactRy : height * 0.015, width * 0.48, contactRy)
     .fill({ color: 0xffffff });
   contact.label = "camp-ground-contact";
   shadow.addChild(contact);
