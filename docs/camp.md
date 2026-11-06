@@ -260,14 +260,15 @@ camp is a good reason to give them a little animation.
 **A friend must belong to nobody in the story.** A creature that has an owner, a job or a later
 scene of its own cannot also live at the camp. Pepper was the first idea and fails this test: she
 is Nim's pony, Nim needs her to carry news north (Gemfall 5A), and she appears again in Gemfall
-7H. The candidates that pass:
+7H. A creature its keeper gives away freely counts as belonging to nobody (*decided*, §11): the
+duckling Tilly hands over is the example. The candidates that pass:
 
 | Friend | Met in | What befriending already is |
 | --- | --- | --- |
 | Bun | The Practice Meadow (`first-steps-01`) | "Offer Bun something nice" |
 | The mosshorn | Gemfall 4B | Being gentle until it lowers its antlers |
 | A duckling | Riftlight, Ashspan Bridge | Settling the ducklings |
-| The kid goat | Riftlight, Exchange Rift | Warming it up together |
+| The spotted kid goat | Riftlight, Glacier of Origins | The yeti herder gives away the spotted kid that takes a shine to the party |
 
 *Decided:* more friends will be new characters written for the purpose: a creature met in a
 chapter, with a befriending moment, and no claim on it anywhere else in the story.
@@ -290,14 +291,14 @@ chapter, with a befriending moment, and no claim on it anywhere else in the stor
 - Until a hero picks one, they have no buddy and every seat rotates, exactly as before. Rotation
   stays the default; buddies are an option, never a chore.
 
-Following the continuity rules, a friend joins because a **choice** says so ("Ask the kid goat to
-come along" beside "Say goodbye"), never because of a variant. Saying goodbye costs the story
+Following the continuity rules, a friend joins because a **choice** says so ("Ask the spotted kid goat
+to come along" beside "Say goodbye"), never because of a variant. Saying goodbye costs the story
 nothing and is never sad: the friend waves off, and the chapter goes on.
 
 *As built (#624):*
 
 - **Befriending** is a `befriend` effect (`{ "type": "befriend", "friendId": "kid_goat",
-  "rewardId": "riftlight-exchange-rift.kid_goat" }`) on the "Come along" choice. Like a find
+  "rewardId": "riftlight-glacier-survival.kid_goat" }`) on the "Come along" choice. Like a find
   (§5.1) it names its friend's offer for that very chapter in `content/camp.json` → `friends`, so
   every way into the place shares one `rewardId` and it is given once; `npm run content:validate`
   fails a befriend that names no friend, another friend's offer or another chapter's. The engine
@@ -308,8 +309,32 @@ nothing and is never sad: the friend waves off, and the chapter goes on.
   may be offered again on a later visit.
 - **The catalog's friends** are the four above: Bun (`cast/bun`, cast in the Practice Meadow as
   the snowhorn goat she is drawn from, under her own name), the mosshorn (`entities/mosshorn`,
-  `"size": "small"`, as Gemfall 4B casts it, so it stands 75 cm), a duckling and the kid goat.
+  `"size": "small"`, as Gemfall 4B casts it, so it stands 75 cm), a duckling and the spotted kid goat
+  (`cast/snowhorn_kid`).
   Each has a few reactions, its words when tapped. Pepper is not one (above).
+- **Where each is befriended (#626)**: a vote on the chapter's spine, "Come along" beside "Say
+  goodbye", each on its own result scene (content/README.md, "Camp friends"). Bun at the Practice
+  Meadow on the way to the back gate (`scene_bun_gate`), the strawberry mosshorn at 4B's gray
+  edge (`scene_mosshorn_friend`), the duckling that picks the party at Ashspan Bridge
+  (`duck_friend`). Two friends were written for the purpose: the **harbor gull**
+  (`entities/quay_gull`), offered in Gemfall 1 at dawn after the Empty Chair (`scene_gull_dawn`)
+  and by the frosty gull of Riftlight's Exchange Rift as the party walks on from the potato rest
+  (`gull_friend`), one friend with two offers, since both are the Exchange's gull and two
+  friends must never read as the same animal (*decided*, §11); and the **silver
+  otter** (`entities/silver_otter`), met as the party leaves Gemfall 2's mimic ditch
+  (`scene_ditch_otter`). So every crew that plays Gemfall is offered at least two friends, and
+  4B's crews three. **The kid goat** is a different kid from the same herd
+  (*decided*, §11): the goat kid of Exchange Rift is the yeti herder's, saving it is a goal step,
+  it goes home to its herd in the glacier chapter, and the herder carries it in the Hidden
+  Opening, the Stuttering Flats and the finale, so it fails "belongs to nobody" and is never
+  offered. Instead, in Glacier of Origins (`riftlight-glacier-survival`), after the herder thanks
+  the party for bringing her kid home (`ledge_done`), a younger kid, white with brown spots and
+  extra wiggly, takes a shine to the party and the herder gives her gladly (`kid_friend`, its
+  results `kid_along` and `kid_goodbye`, under `riftlight-glacier-survival.kid_goat`). The words
+  always call her "the spotted kid goat", the ask says outright that she is not the little goat
+  the party brought home (asleep in the herd), and the chapter's ending says "the little goat you
+  brought home stays with its herd", so no later scene with the herder's goat kid can be read as
+  her. She is drawn with the same figure, `cast/snowhorn_kid`.
 - **A buddy is on the hero's kit** (`HeroKit.buddies`, kit v3), keyed by the camp it applies in
   (`campKey`: the household, and the crew when it is not the household's first), so it goes where
   she goes and is deleted with her, and applies in that crew's camp only. It is picked through
@@ -1144,6 +1169,9 @@ Settled by the product owner:
 | A full camp at stages 3 and 4 (#627) | Parties draw at about 0.61 to 0.67 at stages 3 and 4, smaller than at stage 2, because the back row of frame pieces fills the width. The owner likes the fullness (§8.3) |
 | A blocked friend fades over (#624) | In a crowded camp a tapped friend whose way to the hero stays blocked fades over to her rather than walking through anyone (§8.4) |
 | Friend-tap limit (#624) | Each phone may tap friends twice every 8 seconds, and its button rests 4 seconds after a tap; the TV acts out one tap per friend at a time, holds one more and drops the rest (§8.4) |
+| A friend given freely counts as belonging to nobody (#626) | A creature its keeper gives away freely, as Tilly gives a duckling and the yeti herder a spotted kid, belongs to nobody in the story and may be a friend (§4.4) |
+| The kid goat is a different kid from the herd, given by the herder (#626) | The goat kid of Exchange Rift goes home and is met again, so it is never offered; the friend is a younger spotted kid the herder gives away in Glacier of Origins, always named "the spotted kid goat" (§4.4) |
+| One harbor gull for both campaigns (#626) | Gemfall 1's dawn gull and Riftlight's frosty Exchange gull are one friend, `harbor_gull`, with two offers: the same bird at the same quay, never two friends that read as one animal (§4.4) |
 | Bun and the kid goat look different (#628) | Two friends must never read as the same animal at camp scale: Bun is repainted to stand apart from the kid goat (§4.4) |
 
 Nothing is open. The two parked questions from earlier (editing from the book, choosing friends)

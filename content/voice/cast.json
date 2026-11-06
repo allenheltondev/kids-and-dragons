@@ -1643,6 +1643,25 @@
       "status": "provisional",
       "direction": "unhurried, hums between sentences, proud"
     },
+    "silver_otter": {
+      "name": "Silver otter",
+      "kind": "creature",
+      "who": "a silver otter from the mimic ditch; playful and a little pleased with itself; only chatters",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "entities/silver_otter",
+      "chapters": [
+        "gemfall-02"
+      ],
+      "aliases": [],
+      "gemini": {
+        "voice": "Puck"
+      },
+      "lines": [],
+      "lineCount": 0,
+      "speaks": false,
+      "status": "provisional"
+    },
     "nan_rummage": {
       "name": "Nana Rummage",
       "kind": "character",
@@ -5464,6 +5483,25 @@
       "status": "provisional",
       "direction": "indignant, literal, chilly"
     },
+    "gull": {
+      "name": "Gull",
+      "kind": "creature",
+      "who": "the harbor gull from the docks, Gemfall's side of the one harbor gull (Riftlight's is \"The gull\"); only screeches here, never says sorry",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "entities/quay_gull",
+      "chapters": [
+        "gemfall-01"
+      ],
+      "aliases": [],
+      "gemini": {
+        "voice": "Zubenelgenubi"
+      },
+      "lines": [],
+      "lineCount": 0,
+      "speaks": false,
+      "status": "provisional"
+    },
     "fish_seller": {
       "name": "Fish seller",
       "kind": "character",
@@ -7220,6 +7258,25 @@
       "speaks": true,
       "status": "provisional"
     },
+    "duckling": {
+      "name": "Duckling",
+      "kind": "creature",
+      "who": "one small duckling that picks the party; only peeps",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "entities/duckling",
+      "chapters": [
+        "riftlight-ashspan-bridge"
+      ],
+      "aliases": [],
+      "gemini": {
+        "voice": "Achernar"
+      },
+      "lines": [],
+      "lineCount": 0,
+      "speaks": false,
+      "status": "provisional"
+    },
     "nettle": {
       "name": "Professor Nettle",
       "kind": "character",
@@ -7347,6 +7404,27 @@
           "at": "2026-10-30T18:25:36.649Z"
         }
       ]
+    },
+    "spotted_kid": {
+      "name": "Spotted kid",
+      "kind": "creature",
+      "who": "a younger kid goat from the yeti herder's herd, white with brown spots and extra wiggly; not the Goat kid the party brought home; only bleats",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/snowhorn_kid",
+      "chapters": [
+        "riftlight-glacier-survival"
+      ],
+      "aliases": [],
+      "gemini": {
+        "voice": "Laomedeia"
+      },
+      "lines": [],
+      "lineCount": 0,
+      "speaks": false,
+      "status": "provisional"
     },
     "dock_worker": {
       "name": "Dock worker",
