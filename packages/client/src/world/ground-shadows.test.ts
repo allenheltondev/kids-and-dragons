@@ -2,8 +2,8 @@
 /** One shadow layer under what casts onto it (ground-shadows.ts): each shadow follows its owner and goes with it. */
 
 import { describe, expect, it } from "vitest";
-import { Container, Texture, type Graphics } from "pixi.js";
-import { createShadowLayer, groundShadow } from "./ground-shadows";
+import { Container, Texture, type Filter, type Graphics } from "pixi.js";
+import { createShadowLayer, groundShadow, shadeRgb, shadedPixel } from "./ground-shadows";
 import { INDOOR_LIGHT, campLight } from "./camp-light";
 
 describe("ground shadows", () => {
@@ -37,6 +37,26 @@ describe("ground shadows", () => {
       expect(fills.length).toBeGreaterThan(0);
       for (const fill of fills) expect((fill.data as { style: { alpha: number } }).style.alpha).toBe(1);
     }
+  });
+
+  it("fills every silhouette with the light's one shade, whatever colours its painting has", () => {
+    const light = campLight("great_river");
+    const layer = createShadowLayer(light);
+    // The layer's first filter is the fill, before the blur, with the light's shade.
+    const fill = layer.layer.filters[0] as Filter;
+    expect(fill.glProgram.fragment).toContain("uShade * coverage");
+    const uniforms = (fill.resources as unknown as { shadeUniforms: { uniforms: { uShade: Float32Array } } }).shadeUniforms.uniforms;
+    expect([...uniforms.uShade]).toEqual([...new Float32Array(shadeRgb(light.shade))]);
+    const shade = shadeRgb(light.shade);
+    // A red blanket, a blue tent and a white sheep, fully covering: the same pixel, the shade itself.
+    const red = shadedPixel(light.shade, [0.8, 0.1, 0.1, 1]);
+    expect(shadedPixel(light.shade, [0.1, 0.2, 0.9, 1])).toEqual(red);
+    expect(shadedPixel(light.shade, [1, 1, 1, 1])).toEqual(red);
+    expect(red).toEqual([...shade, 1]);
+    // A painting's soft edge keeps its coverage, in the same shade.
+    const edge = shadedPixel(light.shade, [0.12, 0.2, 0.08, 0.4]);
+    expect(edge[3]).toBeCloseTo(0.4);
+    expect(edge[0] / edge[3]).toBeCloseTo(shade[0]);
   });
 
   it("keeps each shadow at its owner's place, size and fade, and drops it when the owner goes", () => {

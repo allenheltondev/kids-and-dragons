@@ -4,14 +4,16 @@
  *
  * Each thing standing on the ground casts its own outline, sheared along the
  * ground where the light sends it, and a contact shade under its feet, both
- * drawn opaque in the light's shade. They all lie on one layer under what
- * casts them, which is blurred and laid down at the light's depth as one: an
- * opaque shape over another is the same opaque shape, so two shadows that
- * overlap merge, as real shadows do, rather than one darkening the other.
+ * drawn opaque. They all lie on one layer under what casts them, which is
+ * filled with the light's shade (`shadeFill`: every pixel's colour replaced
+ * by it, only its coverage kept, so a red blanket and a blue tent cast the
+ * same shadow), blurred, and laid down at the light's depth as one: an opaque
+ * shape over another is the same opaque shape, so two shadows that overlap
+ * merge, as real shadows do, rather than one darkening the other.
  * Each follows what casts it (`sync`, every frame).
  */
 
-import { BlurFilter, Container, Graphics, Sprite, type Texture } from "pixi.js";
+import { BlurFilter, Container, Filter, GlProgram, Graphics, Sprite, defaultFilterVert, type Texture } from "pixi.js";
 import { ANCHOR_X, ANCHOR_Y } from "./art-paths";
 import type { CampLight } from "./camp-light";
 
@@ -47,17 +49,54 @@ export function groundShadow(light: CampLight, width: number, height: number, te
     cast.x = fit?.offsetX ?? 0;
     cast.y = fit?.offsetY ?? 0;
     if (fit?.mirrored) cast.scale.x *= -1;
-    cast.tint = light.shade;
     projection.addChild(cast);
     shadow.addChild(projection);
   }
   // Where it touches the ground: darkest, a little toward the cast.
   const contact = new Graphics()
     .ellipse(width * 0.06 * Math.sign(light.lean), height * 0.015, width * 0.48, Math.max(height * 0.055, 6))
-    .fill({ color: light.shade });
+    .fill({ color: 0xffffff });
   contact.label = "camp-ground-contact";
   shadow.addChild(contact);
   return shadow;
+}
+
+/**
+ * Fills what is drawn under it with one colour: each pixel becomes the
+ * colour, premultiplied by the pixel's own coverage, whatever colour it was.
+ * The silhouette of any painting, whatever its colours, comes out the one
+ * shade (`shadedPixel` is the same arithmetic, for tests). The stage renders
+ * with WebGL only (PixiStage.tsx), so a GL program is all it needs.
+ */
+const SHADE_FRAGMENT = `
+in vec2 vTextureCoord;
+out vec4 finalColor;
+uniform sampler2D uTexture;
+uniform vec3 uShade;
+void main(void)
+{
+    float coverage = texture(uTexture, vTextureCoord).a;
+    finalColor = vec4(uShade * coverage, coverage);
+}
+`;
+
+/** The shade as the fill's uniform: its channels from 0 to 1. */
+export function shadeRgb(shade: number): [number, number, number] {
+  return [((shade >> 16) & 0xff) / 255, ((shade >> 8) & 0xff) / 255, (shade & 0xff) / 255];
+}
+
+/** What the fill makes of one premultiplied pixel (`SHADE_FRAGMENT`). */
+export function shadedPixel(shade: number, pixel: readonly [number, number, number, number]): [number, number, number, number] {
+  const [r, g, b] = shadeRgb(shade);
+  const coverage = pixel[3];
+  return [r * coverage, g * coverage, b * coverage, coverage];
+}
+
+export function shadeFill(shade: number): Filter {
+  return new Filter({
+    glProgram: GlProgram.from({ vertex: defaultFilterVert, fragment: SHADE_FRAGMENT, name: "ground-shadow-fill" }),
+    resources: { shadeUniforms: { uShade: { value: new Float32Array(shadeRgb(shade)), type: "vec3<f32>" } } },
+  });
 }
 
 export interface ShadowLayer {
@@ -78,8 +117,9 @@ export interface ShadowLayer {
 export function createShadowLayer(light: CampLight, label = "camp-shadows"): ShadowLayer {
   const layer = new Container();
   layer.label = label;
+  const fill = shadeFill(light.shade);
   const blur = new BlurFilter({ strength: light.blur, quality: 2 });
-  layer.filters = [blur];
+  layer.filters = [fill, blur];
   layer.alpha = light.depth;
   const casts = new Map<Container, { owner: Container; holder: Container }>();
 
