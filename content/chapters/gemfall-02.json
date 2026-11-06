@@ -2053,6 +2053,7 @@
     },
     "rest_marda_inn": {
       "type": "rest",
+      "art": "scenes/gemfall/marda-thorn-inn",
       "discovers": [
         "individual.marda_thorn",
         "npc.centaur"

@@ -358,10 +358,12 @@ const DIGESTS: PreEpicSave["digests"] = {
 // interaction_lantern_pole a `findForCamp` (Hesper's wagon lantern), each an `onEnter` beside a
 // sentence of narration naming the thing. A find changes no flag, XP, item or route, so the
 // gameplay digests below are unchanged.
+// Gemfall 1, 2, 5B, 5C and 6 gain scene art for their indoor rests (#625).
+// Only the art references change; the gameplay digests stay pinned.
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "7042c8fa98760e9ded81d479d40e392bb56ecb9bf62ed70baf724ffa53b7a09a",
-  "chapters/gemfall-01.json": "79c14d032ab9f1c1de32911b3147b8c74e562da37ddf86502cf6f6a687e12b2b",
-  "chapters/gemfall-02.json": "0cf491a7e971ba10e9ff43ccabac33f42bf0545811c8f93db74128d7438d14d8",
+  "chapters/gemfall-01.json": "0fa1f6295509a05684b34a52c7f87093f056d971933bb9d6ce9e0a40b9c52ff0",
+  "chapters/gemfall-02.json": "29ecd68e9581f13400739f1d1c5e57b57f7307d47306f19020ea06465379af33",
   "chapters/gemfall-03a.json": "0021b89edb0e6881b795979849668f71886474d3374f6dcca6cec7e92c23d0c7",
   "chapters/gemfall-03b.json": "ac96f2a5d1f7d7f407cb7acfb4cc77b43b9fc326edbfcdd777f0377949851a10",
   "chapters/gemfall-03c.json": "a626860c1d62f9eaf701a988184cd42e9faa799eb73e50f6e68be8acad266e15",
@@ -369,9 +371,9 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-04b.json": "24a24e7109ebd6e0d066afce3044d5175394aba83618fd69d4c7602e82715da1",
   "chapters/gemfall-04c.json": "010c8259284a37df5dcf6139d476a7706b6c4e56de01b08a6e5ea23f4a65c252",
   "chapters/gemfall-05a.json": "c451bbe0914eabf4c903cdc1f44be7a447ef103eda538144cdd1cd2438276be5",
-  "chapters/gemfall-05b.json": "bc682d83ff34fdc7b70b59d802f4f455cdba1959ccb8e5a59a7e64d89448b8d5",
-  "chapters/gemfall-05c.json": "d124128fab62f1df00dd3e328c41a925548a6bcb9a60611829a51732d2d9252c",
-  "chapters/gemfall-06.json": "359aa09a894ae86b525fd3131a16300344aa2c4bfcfb584b1bab3792b2ed2140",
+  "chapters/gemfall-05b.json": "bbcc8839b8a3359b66ff2fbf8780ea371d258576e6905682eb0285d161440032",
+  "chapters/gemfall-05c.json": "3a02f8235a21e107876b7b9227418eba826cfeacccb8a22056762fecd2331f4b",
+  "chapters/gemfall-06.json": "81ccf1acd61256997e788ef2f5c0707d894f41c0a6b2ff751291eab178efbd48",
   "chapters/gemfall-07h.json": "dbcf17577035bbfa12f82bc8aba85ceb36f81f773d1b725df0d50ab2a388baed",
   "chapters/gemfall-07l.json": "6dea56eb3fb6fcbd61cd2dc6abf36edb3f3d48f8e1a94cbdf72a641f43bd64f1",
   "chapters/gemfall-07r.json": "512abc8825a6a1fe9d48ac6cbe34ce05536b3b2ea84c143de6c3c89b57398363",

@@ -2103,6 +2103,7 @@
     },
     "rest_empty_chair": {
       "type": "rest",
+      "art": "scenes/gemfall/empty-chair-overnight",
       "narration": "Cupboard, hayloft or squashed-up room, it is warm and dry. Through the wall, people argue happily about onions. Tomorrow the caravans leave.",
       "heal": 2,
       "choices": [

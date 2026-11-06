@@ -2718,6 +2718,7 @@
     },
     "rest_end_ashfall": {
       "type": "rest",
+      "art": "scenes/gemfall/warden-bunkroom",
       "narration": "The wardens give you bunks in a room where every window faces up. Far below, the mountain turns over in its sleep. You know what the stones are now, and what you want. Tomorrow, everything you passed on the road comes up the mountain to meet you.",
       "heal": 4,
       "choices": [],

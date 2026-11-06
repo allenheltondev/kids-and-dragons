@@ -778,6 +778,7 @@
     },
     "rest_guest_tree": {
       "type": "rest",
+      "art": "scenes/gemfall/mosshome-guest-tree",
       "narration": "Rest in the guest tree. Its hammocks hum when you rock them. In the morning, the MossHome elders want to hear what you found. Nearby, the runner ties the day's news cords, feet jogging even while she sits.",
       "heal": 3,
       "choices": [
