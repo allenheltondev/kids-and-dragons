@@ -44,6 +44,7 @@ import { REACT_S, WORDS_S, createTapQueue, type FriendTap, type TapVerdict } fro
 import { campBoxes, campFitFor, ownedPieceSize, type CampBox, type CampBoxFriend, type CampBoxInput, type CampLabelBox } from "./camp-boxes";
 import { campPaint } from "./camp-paint";
 import { campAccent, campAccentPose } from "./camp-accents";
+import { campAir, campMotes, motePose } from "./camp-air";
 import { tentArt, type CampBesideView, type CampSpotView } from "./camp-scene";
 import type { CastStance } from "@kad/shared";
 import {
@@ -273,8 +274,8 @@ const SET_OFF_STAGGER_S = 0.3;
 /** How far past the edge the trail takes them. */
 const OFF_EDGE = 0.1;
 /** A shadow on the ground, cast by the backdrop's own light (ground-shadows.ts). */
-function campGroundShadow(light: CampLight, width: number, height: number, texture?: Texture, canvas = height, mirrored = false, offsetY = 0): Container {
-  return groundShadow(light, width, height, texture, { canvas, mirrored, offsetY });
+function campGroundShadow(light: CampLight, width: number, height: number, texture?: Texture, canvas = height, mirrored = false, offsetY = 0, behind = false): Container {
+  return groundShadow(light, width, height, texture, { canvas, mirrored, offsetY, behind });
 }
 /** How fast the camp eases to a new frame when the panels over it change height. */
 const FRAME_RATE = 4;
@@ -532,6 +533,42 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   view.addChild(ground);
 
   /*
+   * The air (camp-air.ts): on a backdrop with no painted accent, snow, embers
+   * or seeds drifting over the camp, under the names. None when the camp is
+   * still (reduced motion).
+   */
+  const air = campAir(layout.backdrop.family);
+  const airLayer = new Container();
+  airLayer.label = "camp-air";
+  view.addChild(airLayer);
+  let motes = air ? campMotes(air, seed + 1) : [];
+  const drawMote = (dot: Graphics, size: number): void => {
+    dot.clear().circle(0, 0, size * 1.9).fill({ color: air!.color, alpha: 0.28 }).circle(0, 0, size).fill({ color: air!.color });
+  };
+  const moteViews = motes.map((mote) => {
+    const dot = new Graphics();
+    drawMote(dot, mote.size);
+    if (air!.glow) dot.blendMode = "add";
+    airLayer.addChild(dot);
+    return dot;
+  });
+  /** A new seed lays the motes out again, as a camp first built with it would (`setSeed`); the same dots, redrawn. */
+  function reseedAir(): void {
+    if (!air) return;
+    motes = campMotes(air, seed + 1);
+    motes.forEach((mote, i) => drawMote(moteViews[i]!, mote.size));
+  }
+  function updateAir(): void {
+    airLayer.visible = air !== undefined && !still;
+    if (!airLayer.visible) return;
+    motes.forEach((mote, i) => {
+      const pose = motePose(air!, mote, elapsed, W);
+      moteViews[i]!.position.set(pose.x, pose.y);
+      moteViews[i]!.alpha = pose.alpha;
+    });
+  }
+
+  /*
    * Pieces are cutouts on the figures' contract: a 1024 canvas with the
    * ground contact at (512, 900), drawn at true size (`heightCm`, or a
    * default by kind, camp-layout.ts `pieceHeightCm`) on the same scale as the
@@ -593,7 +630,8 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   const fitPieceShadow = (piece: PieceView, texture: Texture): void => {
     const paint = measurePaint(texture);
     const width = paint ? piece.fit.canvas * (paint.right - paint.left) : piece.heightPx;
-    const shadow = campGroundShadow(light, width, piece.heightPx, texture, piece.fit.canvas, piece.mirrored, piece.fit.offsetY);
+    // A tent's shadow lies under it, cast back from its pegs (ground-shadows.ts `behind`).
+    const shadow = campGroundShadow(light, width, piece.heightPx, texture, piece.fit.canvas, piece.mirrored, piece.fit.offsetY, piece.id.startsWith("tent_"));
     recast(piece.shadow, shadow);
     piece.shadow = shadow;
   };
@@ -621,7 +659,8 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     container.scale.set(lane.scale);
     const heightPx = campHeightPx(pieceHeightCm(piece), measure);
     if (piece.id === "campfire") container.addChild(fireGlow(heightPx));
-    const shadow = campGroundShadow(light, heightPx * (piece.id.startsWith("bedroll") ? 1.7 : .9), heightPx);
+    // Until its painting loads (or if it never does), a tent's contact shade already sits inside its pegs.
+    const shadow = campGroundShadow(light, heightPx * (piece.id.startsWith("bedroll") ? 1.7 : .9), heightPx, undefined, heightPx, false, 0, piece.id.startsWith("tent_"));
     castShadow(container, shadow);
     const groundCount = container.children.length;
     const pending = new Graphics()
@@ -1471,6 +1510,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     const dt = frameSeconds(app.ticker.deltaMS);
     elapsed += dt;
     updateAccent();
+    updateAir();
     easeFrame(dt);
 
     if (!still) {
@@ -1634,6 +1674,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   function setSeed(next: number): void {
     if (destroyed || next === seed) return;
     seed = next;
+    reseedAir();
     const old = planner;
     planner = makePlanner(seed);
     for (const actor of actors.values()) {
