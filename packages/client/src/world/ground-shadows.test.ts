@@ -3,7 +3,7 @@
 
 import { describe, expect, it } from "vitest";
 import { Container, Texture, type Filter, type Graphics } from "pixi.js";
-import { createShadowLayer, groundShadow, shadeRgb, shadedPixel } from "./ground-shadows";
+import { BEHIND_REACH, createShadowLayer, groundShadow, shadeRgb, shadedPixel } from "./ground-shadows";
 import { INDOOR_LIGHT, campLight } from "./camp-light";
 
 describe("ground shadows", () => {
@@ -57,6 +57,29 @@ describe("ground shadows", () => {
     const edge = shadedPixel(light.shade, [0.12, 0.2, 0.08, 0.4]);
     expect(edge[3]).toBeCloseTo(0.4);
     expect(edge[0] / edge[3]).toBeCloseTo(shade[0]);
+  });
+
+  it("casts a tent's shadow back from its pegs, under it, and everything else's toward the viewer", () => {
+    const light = campLight("open_plains");
+    /** Where the top of an outline 1 tall lands, on the ground. */
+    const top = (behind: boolean) => {
+      const shadow = groundShadow(light, 40, 100, Texture.WHITE, { canvas: 120, behind });
+      const projection = shadow.getChildByLabel("camp-cast-body", true)!.parent!;
+      projection.updateLocalTransform();
+      return projection.localTransform.apply({ x: 0, y: -1 });
+    };
+    const forward = top(false);
+    const back = top(true);
+    // Forward: down the screen, toward the viewer. Back: up it, behind the tent.
+    expect(forward.y).toBeGreaterThan(0);
+    expect(back.y).toBeLessThan(0);
+    expect(back.y).toBeCloseTo(-light.reach * BEHIND_REACH);
+    // Both to the lower or upper left: the sun is at the upper right.
+    expect(forward.x).toBeCloseTo(light.lean);
+    expect(back.x).toBeCloseTo(light.lean);
+    // Cast back, its contact shade sits inside the footprint, ending at the pegs.
+    const contact = groundShadow(light, 40, 100, Texture.WHITE, { canvas: 120, behind: true }).getChildByLabel("camp-ground-contact")!;
+    expect(contact.getLocalBounds().maxY).toBeLessThanOrEqual(2);
   });
 
   it("keeps each shadow at its owner's place, size and fade, and drops it when the owner goes", () => {

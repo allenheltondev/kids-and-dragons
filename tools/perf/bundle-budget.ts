@@ -263,7 +263,10 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // 1707 -> 1709 for the fire's glow, the back lanes' haze and the indoor rest's
 // shadows (ground-shadows.ts shared with the story stage): 1707KB measured,
 // first paint 328KB. 2KB of slack again.
-const TOTAL_BUDGET_KB = 1709;
+// 1709 -> 1711 for the camp's air (camp-air.ts: snow, embers and seeds over the
+// three backdrops with no painted accent): 1709KB measured, first paint 328KB.
+// 2KB of slack again.
+const TOTAL_BUDGET_KB = 1711;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);
