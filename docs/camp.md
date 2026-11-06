@@ -662,8 +662,12 @@ on this phone, will share when you're back online", and sends it when the signal
   chapter's start or end, a kit edit) adds that table's crew (action.ts, camp-book.ts
   `recordCrews`), with no write of its own, and it is never pruned, so a crew from long ago stays.
   Her claim and her buddies count too. A hero from before kit v4 has no record yet, and only for
-  her the household's last 40 runs are read once as a backfill, until her row is next written at a
-  table. The first crew comes first, then the others oldest first; a hero who has sat with nobody
+  her the household's last 40 runs are read as a backfill, until her row is next written at a
+  table. That first write seeds her record with the same backfill (the runs she sat in, her claim
+  and her buddies) before it adds the table's crew, so no crew the book listed is lost (#656); if
+  those runs cannot be read then, the write leaves her unrecorded and a later one tries again. A
+  hero made at a table has no past, and her record starts with that table's crew. The first crew
+  comes first, then the others oldest first; a hero who has sat with nobody
   yet gets the first crew. With more
   than one, a picker names them, and the heading names the one open ("The Otter Crew's camp"). A
   buddy picked there is kept under that crew's `campKey`.

@@ -110,22 +110,78 @@ export const CREW_LOOKBACK = 40;
  * write of its own and lands with the commit or not at all. A hero seated at
  * a table whose commit writes her row has played with that crew from then on,
  * however many later evenings were spent elsewhere.
+ *
+ * A hero with no record yet (a kit from before v4) is given one seeded with
+ * what the book's backfill finds for her (`pastCrewKeys`: the runs she sat in,
+ * her claim, her buddies) before this table's crew is added, so the first
+ * record never forgets a crew the book listed. Only those heroes cost a read
+ * of past runs, and each of them only once: from then on her kit has a record.
+ * Reads only; the rows are written by the commit that follows.
  */
-export function recordCrews(characters: CharacterWrite[], state: Pick<RunState, "party" | "removed"> & { crew?: string | null | undefined }, tableHouseholdId: string): void {
+export async function recordCrews(
+  characters: CharacterWrite[],
+  state: Pick<RunState, "party" | "removed"> & { crew?: string | null | undefined },
+  tableHouseholdId: string,
+  deps: Pick<HandlerDeps, "repo">,
+): Promise<void> {
   const removed = new Set(state.removed ?? []);
   const seated = new Set(state.party.filter((m) => !removed.has(m.playerId)).map((m) => m.character.id));
   const key = campKey(tableHouseholdId, state.crew);
+  const seats = new Map<string, Promise<PastSeat[] | null>>();
   for (const write of characters) {
     if (!seated.has(write.character.id)) continue;
-    const kit = readKit(write.character);
+    const before = readKit(write.character);
+    let kit = before;
+    // A brand-new hero has no past to seed; one from before v4 has.
+    if (kit.crews === undefined && write.expectedVersion !== null) {
+      const home = write.character.householdId;
+      if (!seats.has(home)) seats.set(home, pastSeats(home, deps).catch(() => null));
+      const past = await seats.get(home)!;
+      // Unread, she keeps no record yet: the book's backfill still finds her crews, and a later commit seeds it.
+      if (past === null) continue;
+      kit = { ...kit, crews: pastCrewKeys(write.character, past) };
+    }
     const next = withKitCrew(kit, key);
-    if (next !== kit) write.character = { ...write.character, kit: next };
+    if (next !== before) write.character = { ...write.character, kit: next };
   }
+}
+
+/** One of the household's past runs, as the backfill reads it: who sat, and with which crew. */
+interface PastSeat {
+  heroes: Set<string>;
+  crew: string | null;
+}
+
+/** The household's recent runs (`CREW_LOOKBACK`, newest first), for the backfill of heroes with no recorded crews. */
+async function pastSeats(householdId: string, deps: Pick<HandlerDeps, "repo">): Promise<PastSeat[]> {
+  const runs = (await deps.repo.listRuns(householdId)).sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, CREW_LOOKBACK);
+  const states = await Promise.all(runs.map((run) => deps.repo.getState(run.id).catch(() => null)));
+  return states.flatMap((s) => (s ? [{ heroes: new Set(s.party.map((m) => m.character.id)), crew: s.crew ?? null }] : []));
+}
+
+/**
+ * Every crew a hero is known to have sat with, by `campKey`: her kit's record,
+ * or for a hero with none yet the runs of her household she sat in (`seats`);
+ * and always her claim and her buddies.
+ */
+function pastCrewKeys(hero: Character, seats: readonly PastSeat[] | null): string[] {
+  const kit = readKit(hero);
+  const keys = new Set<string>(kit.crews ?? []);
+  if (kit.crews === undefined && seats) {
+    for (const seat of seats) if (seat.heroes.has(hero.id)) keys.add(campKey(hero.householdId, seat.crew));
+  }
+  const held = claimOf(hero);
+  if (held !== null) {
+    const { table, crew } = parseClaim(held, hero);
+    keys.add(campKey(table, crew));
+  }
+  for (const key of Object.keys(kit.buddies)) keys.add(key);
+  return [...keys];
 }
 
 /**
  * The crews of the household her heroes are part of (decided, #629): every
- * crew any of them has sat with, at this household:
+ * crew any of them has sat with, at this household (`pastCrewKeys`):
  *
  *   - her kit's crews (`HeroKit.crews`), recorded by every run commit that
  *     writes her row while she is seated (`recordCrews`): the record;
@@ -134,40 +190,23 @@ export function recordCrews(characters: CharacterWrite[], state: Pick<RunState, 
  *   - **the backfill**, for a hero with no recorded crews yet (a kit from
  *     before v4) and only for her: the household's recent runs
  *     (`CREW_LOOKBACK`), where a run whose party seats her was played with its
- *     `crew` (absent: the first). Once her row is next written at a table she
- *     has a record, and the runs are never read for her again.
+ *     `crew` (absent: the first). The first run commit that writes her row at
+ *     a table seeds her record with the same backfill (`recordCrews`), so
+ *     nothing it found is lost, and the runs are never read for her again.
  *
  * The household's first crew first, then the others oldest first. Only crews
  * the household still has; a hero who has sat with nobody yet gets the first
  * crew, where her next game will most likely be.
  */
 export async function heroCrews(householdId: string, heroes: readonly Character[], deps: Pick<HandlerDeps, "repo">): Promise<(string | null)[]> {
-  const found = new Set<string | null>();
-  const ids = new Set(heroes.map((h) => h.id));
-  const unrecorded = new Set<string>();
-  for (const hero of heroes) {
-    const kit = readKit(hero);
-    if (kit.crews === undefined) unrecorded.add(hero.id);
-    for (const key of kit.crews ?? []) {
-      if (key === householdId) found.add(null);
-      else if (campKeyOf(key, householdId)) found.add(key.slice(householdId.length + 1));
-    }
-    const held = claimOf(hero);
-    if (held !== null) {
-      const { table, crew } = parseClaim(held, hero);
-      if (table === householdId) found.add(crew ?? null);
-    }
-    for (const key of Object.keys(readKit(hero).buddies)) {
-      if (key === householdId) found.add(null);
-      else if (campKeyOf(key, householdId)) found.add(key.slice(householdId.length + 1));
-    }
-  }
   // The backfill: only for heroes with no record yet, and so, in time, never.
-  if (unrecorded.size > 0) {
-    const runs = (await deps.repo.listRuns(householdId)).sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, CREW_LOOKBACK);
-    const states = await Promise.all(runs.map((run) => deps.repo.getState(run.id).catch(() => null)));
-    for (const state of states) {
-      if (state?.party.some((m) => unrecorded.has(m.character.id))) found.add(state.crew ?? null);
+  const seats = heroes.some((h) => readKit(h).crews === undefined) ? await pastSeats(householdId, deps) : null;
+  const found = new Set<string | null>();
+  for (const hero of heroes) {
+    // A hero of this household's backfill reads its runs; her record and her claim say where else she sat.
+    for (const key of pastCrewKeys(hero, hero.householdId === householdId ? seats : null)) {
+      if (key === householdId) found.add(null);
+      else if (campKeyOf(key, householdId)) found.add(key.slice(householdId.length + 1));
     }
   }
   const crews = await deps.repo.listCrews(householdId);

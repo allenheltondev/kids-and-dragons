@@ -802,8 +802,9 @@ async function applyActionOnce(
   };
 
   // Each seated hero whose row this commit writes keeps the crew she is
-  // seated with on her kit (#629, camp-book.ts): no write of its own.
-  recordCrews(characters, next, auth.run.householdId);
+  // seated with on her kit (#629, camp-book.ts): no write of its own. A hero
+  // with no record yet is seeded from the runs she sat in (one read, once).
+  await recordCrews(characters, next, auth.run.householdId, deps);
 
   // State and event land together or not at all — the log can never disagree
   // with the snapshot it is supposed to explain.

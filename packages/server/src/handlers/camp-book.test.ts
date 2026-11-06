@@ -202,6 +202,91 @@ describe("the book's camp read (§7)", () => {
   });
 });
 
+describe("a hero from before kit v4: her first record keeps the backfill (#629, #656)", () => {
+  /**
+   * A household with the Otter Crew (cw_1) and the Lantern Crew (cw_2), and
+   * her v3 hero Pip (no `crews` on her kit) who sat at a past run of each.
+   */
+  async function legacy() {
+    const harness = harnessFor(CATALOG);
+    const household = await seedHousehold(harness, 1);
+    const { householdId } = household;
+    const pip = makeCharacter({ id: "c_pip", ownerPlayerId: "p_1", name: "Pip" });
+    const { crews: _none, ...v3 } = readKit(pip);
+    await harness.repo.putCharacter({ ...pip, householdId, kit: v3 });
+    for (const [i, [id, name]] of [["cw_1", "The Otter Crew"], ["cw_2", "The Lantern Crew"]].entries()) {
+      const room = await createRoom({ householdId, mode: "travel" }, harness.deps);
+      if (!room.ok) throw new Error("room");
+      const s = (await harness.repo.getState(room.value.runId))!;
+      await harness.repo.commit({
+        runId: room.value.runId,
+        expectedSeq: s.seq,
+        state: { ...s, seq: s.seq + 1, crew: id!, party: [{ character: { id: "c_pip" } as never, playerId: "p_1", hp: 1, down: false, connected: true, ready: false }] },
+        event: { seq: s.seq + 1, runId: room.value.runId, patch: [], at: AT },
+        crew: { householdId, id: id!, name: name!, createdAt: AT },
+      });
+      const run = (await harness.repo.getRun(room.value.runId))!;
+      await harness.repo.putRun({ ...run, createdAt: new Date(Date.parse("2026-10-01T00:00:00.000Z") + i * 60_000).toISOString() });
+    }
+    const crewsOf = async () => readKit((await harness.repo.getCharacter(householdId, "c_pip"))!).crews;
+    /** Her book's crews, read with the household's runs out of reach: only her kit's record can name them. */
+    const listedWithoutScan = async () => {
+      const noRuns = { ...harness.deps, repo: new Proxy(harness.repo, {
+        get(target, prop) {
+          if (prop === "listRuns") return () => Promise.reject(new Error("the backfill read runs"));
+          const v: unknown = Reflect.get(target, prop, target);
+          return typeof v === "function" ? (v as (...a: unknown[]) => unknown).bind(target) : v;
+        },
+      }) };
+      return heroCrews(householdId, [(await harness.repo.getCharacter(householdId, "c_pip"))!], noRuns);
+    };
+    return { harness, household, householdId, crewsOf, listedWithoutScan };
+  }
+
+  /** A table of the household's playing as `crew`, Pip seated at it. */
+  async function seatedAt(harness: TestHarness, household: Awaited<ReturnType<typeof seedHousehold>>, crew: string): Promise<Table> {
+    const t = await table(harness, household);
+    const s = await t.state();
+    await harness.repo.putState({ ...s, crew });
+    await t.send("p_1", { type: "SEAT_CHARACTER", characterId: "c_pip" });
+    return t;
+  }
+
+  it("a seated KIT_EDIT in the Otter Crew keeps the Lantern Crew in her book", async () => {
+    const { harness, household, householdId, crewsOf, listedWithoutScan } = await legacy();
+    const before = value(await getJournal({ householdId, playerId: "p_1" }, harness.deps));
+    expect(before.camp!.crews.map((c) => c.crew)).toEqual(["cw_1", "cw_2"]);
+
+    const t = await seatedAt(harness, household, "cw_1");
+    // A lobby seat writes no row, so the KIT_EDIT is her first v4 write.
+    expect(await crewsOf()).toBeUndefined();
+    await t.send("p_1", { type: "KIT_EDIT", characterId: "c_pip", revision: 0, color: "rose" });
+
+    expect(new Set(await crewsOf())).toEqual(new Set([campKey(householdId, "cw_1"), campKey(householdId, "cw_2")]));
+    const after = value(await getJournal({ householdId, playerId: "p_1" }, harness.deps));
+    expect(after.camp!.crews.map((c) => c.crew)).toEqual(["cw_1", "cw_2"]);
+    expect(await listedWithoutScan()).toEqual(["cw_1", "cw_2"]);
+  });
+
+  it("her chapter's start in the Otter Crew, the first write of her row, keeps the Lantern Crew too, and a new hero's creation reads no runs", async () => {
+    const { harness, household, householdId, crewsOf, listedWithoutScan } = await legacy();
+    const seated = await seatedAt(harness, household, "cw_1");
+    // A lobby seat alone writes no row (§11), so nothing is recorded yet.
+    expect(await crewsOf()).toBeUndefined();
+    await seated.send("p_1", { type: "READY", ready: true });
+    await seated.send("p_1", { type: "START_CHAPTER", chapterId: "bramblewood-01" });
+    expect(new Set(await crewsOf())).toEqual(new Set([campKey(householdId, "cw_1"), campKey(householdId, "cw_2")]));
+    expect(await listedWithoutScan()).toEqual(["cw_1", "cw_2"]);
+
+    // A hero made at a table has no past: her record is that table's crew alone.
+    const t = await table(harness, household);
+    await harness.repo.putState({ ...(await t.state()), crew: "cw_2" });
+    await t.send("p_1", hero("Sparklehoof", "unicorn", "songkeeper"));
+    const made = (await t.state()).party.find((m) => m.character.name === "Sparklehoof")!.character.id;
+    expect(readKit((await harness.repo.getCharacter(householdId, made))!).crews).toEqual([campKey(householdId, "cw_2")]);
+  });
+});
+
 describe("the book's kit write (§7, §12.6)", () => {
   it("changes her own hero's kit, and the table reads it at its next downtime moment", async () => {
     const { harness, t, p1 } = await lobby();
