@@ -20,9 +20,9 @@
  *     **buddy** in this crew's camp change exactly as on the phone's Camp
  *     panel (CampPanel.tsx `KitEditor`, the table's rules), through the book's
  *     own write (store/book-kit-sync.ts): at once, queued on the phone when
- *     there is no signal ("Saved on this phone…"), and merged field by field
- *     when it is sent, with a short note for anything somebody else changed
- *     meanwhile.
+ *     there is no signal ("Saved on this phone…"), and applied when it is
+ *     sent, over anything changed meanwhile (the device wins, §11), with a
+ *     short note for a pick that could not be saved.
  *
  * Named crew (a picker when her heroes sit with more than one), when it was
  * last synced, and a first-visit word when there is nothing to show yet.
@@ -247,7 +247,7 @@ function CrewCamp({
       buddy: intent.buddy !== undefined ? intent.buddy : now.buddy,
     };
     setError(null);
-    editBookKit({ characterId: hero.id, crew: crew.crew, changes: bookKitChanges(now, next), revision: serverKit.revision }, onKit).catch((e: unknown) => {
+    editBookKit({ characterId: hero.id, crew: crew.crew, changes: bookKitChanges(now, next) }, onKit).catch((e: unknown) => {
       setError(e instanceof Error && e.message ? e.message : "Your kit could not be saved.");
     });
   };

@@ -1,22 +1,19 @@
 /**
  * A kid's own kit and buddy, changed from the adventure book (docs/camp.md §7,
- * §12.6; #629): the pure rules the server merges by and the book's offline
+ * §12.6; #629): the pure rules the server applies by and the book's offline
  * queue records with.
  *
  * The book edits field by field. A field is one thing a kid picks: the tent,
  * the bedroll and pack (`style`), the color, each decoration slot, and the
- * buddy in one crew's camp. Every change says what it was made over
- * (`before`), so a change queued on a phone with no signal can be sent later
- * and applied only where the server still has that value
- * (`mergeBookKit`): a field somebody else changed in the meantime (at a
- * table, on the kid's other phone) keeps the newer value, and every field
- * nobody touched applies. Online, the book sends the same changes with the
- * kit's revision instead, and the server applies them the way the table does
- * (`KIT_EDIT`): all of them, or none if the kit has moved on.
+ * buddy in one crew's camp. Each change records the value it was made over
+ * (`before`), as the queue keeps it, but **the device wins** (decided, §11):
+ * a kid's own kit is only ever edited on her one phone, so a change from the
+ * book, sent straight away or long after from the queue, applies over whatever
+ * the server has now, as most offline-first apps do (`mergeBookKit`).
  *
- * Whatever is sent, the server checks each field with the table's own rule
- * (`kitEditProblem`), so the book can never pick a piece the hero does not
- * have or a friend the crew lacks.
+ * What is never waived is validity: the server checks each field with the
+ * table's own rule (`kitEditProblem`), so the book can never pick a piece the
+ * hero does not have or a friend the crew lacks.
  */
 
 import { kitEditProblem, MAX_KIT_SLOTS, type KitEdit, type KitRules } from "./camp-edit.js";
@@ -126,23 +123,21 @@ export function bookFieldProblem(
   return kitEditProblem(rules, unlocked, bookKitEdit(state, next), friends);
 }
 
-/** What a merge did, field by field. */
+/** What applying a book change did, field by field. */
 export interface BookKitMerge {
   state: BookKitState;
   /** Applied (or already so). */
   applied: BookKitField[];
-  /** Changed elsewhere since the change was made: the newer value stays. */
-  kept: BookKitField[];
   /** Not hers to pick (a locked piece, a friend this crew lacks): skipped. */
   refused: BookKitField[];
 }
 
 /**
- * Apply queued changes to the kit as it stands now, field by field (§7): a
- * change applies only where the field still has the value it was made over;
- * a field already at the picked value counts as applied; anything the table's
- * rule refuses is skipped. Emptied slots go first, so a decoration moved from
- * one spot to another never meets itself.
+ * Apply a book change to the kit as it stands now, field by field: every
+ * field takes the picked value, whatever the server has meanwhile (the device
+ * wins, §7, §11), and anything the table's rule refuses is skipped. Emptied
+ * slots go first, so a decoration moved from one spot to another never meets
+ * itself.
  */
 export function mergeBookKit(
   current: BookKitState,
@@ -152,16 +147,10 @@ export function mergeBookKit(
   const order = [...changes].sort((a, b) => rank(a) - rank(b));
   let state = current;
   const applied: BookKitField[] = [];
-  const kept: BookKitField[] = [];
   const refused: BookKitField[] = [];
   for (const change of order) {
-    const now = bookKitValue(state, change.field);
-    if (now === change.after) {
+    if (bookKitValue(state, change.field) === change.after) {
       applied.push(change.field);
-      continue;
-    }
-    if (now !== change.before) {
-      kept.push(change.field);
       continue;
     }
     if (check(state, change.field, change.after) !== null) {
@@ -171,7 +160,7 @@ export function mergeBookKit(
     state = withBookKitValue(state, change.field, change.after);
     applied.push(change.field);
   }
-  return { state, applied, kept, refused };
+  return { state, applied, refused };
 }
 
 function rank(change: BookKitChange): number {

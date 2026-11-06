@@ -5,7 +5,7 @@ import { bookFieldNames, bookFieldProblem, bookKitChanges, mergeBookKit, parseBo
 
 const RULES = {
   styles: [{ id: "rolled" }, { id: "quilted" }],
-  tents: [{ id: "rolled", group: "catalog" }, { id: "mythic", group: "milestone" }],
+  tents: [{ id: "rolled", group: "catalog" }, { id: "quilted", group: "catalog" }, { id: "mythic", group: "milestone" }],
   decorations: [{ id: "deco_a", group: "catalog" }, { id: "deco_b", group: "catalog" }, { id: "deco_star", group: "find" }],
 };
 const kit = (over: Partial<BookKitState> = {}): BookKitState => ({ style: null, tent: null, color: null, slots: [null, null], buddy: null, ...over });
@@ -13,12 +13,12 @@ const check = (friends: string[] = ["bun"]) => (state: BookKitState, field: Para
   bookFieldProblem(RULES, [], state, field, value, friends);
 
 describe("mergeBookKit", () => {
-  it("applies a field only where the server still has the value it was made over", () => {
+  it("applies every field over what the server has now: the device wins", () => {
     // Queued on a phone over an unpicked kit; meanwhile a table picked her tent.
     const queued = bookKitChanges(kit(), kit({ tent: "quilted", color: "rose" }));
     expect(queued).toEqual([{ field: "tent", before: null, after: "quilted" }, { field: "color", before: null, after: "rose" }]);
     const merged = mergeBookKit(kit({ tent: "rolled" }), queued, check());
-    expect(merged).toMatchObject({ applied: ["color"], kept: ["tent"], refused: [], state: { tent: "rolled", color: "rose" } });
+    expect(merged).toMatchObject({ applied: ["tent", "color"], refused: [], state: { tent: "quilted", color: "rose" } });
   });
 
   it("counts a field already at the picked value as applied, and skips what the table's rule refuses", () => {
@@ -33,7 +33,7 @@ describe("mergeBookKit", () => {
       ],
       check(),
     );
-    expect(merged).toMatchObject({ applied: ["style", "color"], kept: [], refused: ["tent", "slot0", "buddy"], state: { style: "quilted", tent: null, slots: [null, null], buddy: null } });
+    expect(merged).toMatchObject({ applied: ["style", "color"], refused: ["tent", "slot0", "buddy"], state: { style: "quilted", tent: null, slots: [null, null], buddy: null } });
   });
 
   it("empties slots first, so a decoration moved between spots never meets itself", () => {

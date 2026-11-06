@@ -173,14 +173,12 @@ describe("the book's kit write (§7, §12.6)", () => {
         ],
       }),
     );
-    expect(done).toMatchObject({ applied: ["tent", "color", "slot0"], kept: [], refused: [], kit: { revision: 1, tent: "patched", color: "rose", slots: ["deco_bunting", null] } });
-    expect(done.stale).toBeUndefined();
+    expect(done).toMatchObject({ applied: ["tent", "color", "slot0"], refused: [], kit: { revision: 1, tent: "patched", color: "rose", slots: ["deco_bunting", null] } });
     expect(readKit((await harness.repo.getCharacter(t.householdId, p1))!)).toMatchObject({ revision: 1, tent: "patched", color: "rose" });
 
-    // A revision the kit has left applies nothing and answers with the kit as it is.
-    const stale = value(await book(harness.deps, t.householdId, "p_1", { characterId: p1, revision: 0, changes: [{ field: "color", before: null, after: "tide" }] }));
-    expect(stale).toMatchObject({ stale: true, applied: [], kept: ["color"], kit: { revision: 1, color: "rose" } });
-    expect(readKit((await harness.repo.getCharacter(t.householdId, p1))!).color).toBe("rose");
+    // Made over an older kit, it applies all the same: the device wins (§11).
+    const older = value(await book(harness.deps, t.householdId, "p_1", { characterId: p1, changes: [{ field: "color", before: null, after: "tide" }] }));
+    expect(older).toMatchObject({ applied: ["color"], refused: [], kit: { revision: 2, color: "tide", tent: "patched" } });
 
     // The live room keeps the kit it read for this moment, and reads it afresh at the next one.
     expect((await t.state()).kits?.[p1]?.color).toBeNull();
@@ -188,41 +186,42 @@ describe("the book's kit write (§7, §12.6)", () => {
     await t.send("p_2", { type: "READY", ready: true });
     await t.send("p_1", { type: "START_CHAPTER", chapterId: "bramblewood-01" });
     await t.goto("scene_camp");
-    expect((await t.state()).kits?.[p1]).toMatchObject({ revision: 1, tent: "patched", color: "rose" });
+    expect((await t.state()).kits?.[p1]).toMatchObject({ revision: 2, tent: "patched", color: "tide" });
   });
 
   it("refuses another kid's hero, a hero she does not have, and a phone with no binding", async () => {
     const { harness, t, p2 } = await lobby();
-    const theirs = await book(harness.deps, t.householdId, "p_1", { characterId: p2, revision: 0, changes: [{ field: "color", before: null, after: "rose" }] });
+    const theirs = await book(harness.deps, t.householdId, "p_1", { characterId: p2, changes: [{ field: "color", before: null, after: "rose" }] });
     expect(theirs).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
-    const nobody = await book(harness.deps, t.householdId, "p_1", { characterId: "c_nobody", revision: 0, changes: [{ field: "color", before: null, after: "rose" }] });
+    const nobody = await book(harness.deps, t.householdId, "p_1", { characterId: "c_nobody", changes: [{ field: "color", before: null, after: "rose" }] });
     expect(nobody).toMatchObject({ ok: false, error: { code: "NOT_FOUND" } });
     expect((await harness.repo.getCharacter(t.householdId, p2))?.kit).toBeUndefined();
   });
 
   it("refuses what the table refuses: a friend the crew lacks, a crew piece, a locked tent, a malformed change", async () => {
     const { harness, t, p1 } = await lobby();
-    const lacking = await book(harness.deps, t.householdId, "p_1", { characterId: p1, revision: 0, changes: [{ field: "buddy", before: null, after: "bun" }] });
+    const lacking = await book(harness.deps, t.householdId, "p_1", { characterId: p1, changes: [{ field: "buddy", before: null, after: "bun" }] });
     expect(lacking).toMatchObject({ ok: false, error: { code: "ILLEGAL", message: expect.stringContaining("not one of this crew's friends") } });
-    const crewPiece = await book(harness.deps, t.householdId, "p_1", { characterId: p1, revision: 0, changes: [{ field: "slot0", before: null, after: "shop_log_bench" }] });
+    const crewPiece = await book(harness.deps, t.householdId, "p_1", { characterId: p1, changes: [{ field: "slot0", before: null, after: "shop_log_bench" }] });
     expect(crewPiece).toMatchObject({ ok: false, error: { message: expect.stringContaining("not hers to hang") } });
-    const locked = await book(harness.deps, t.householdId, "p_1", { characterId: p1, revision: 0, changes: [{ field: "tent", before: null, after: "mythic" }] });
+    const locked = await book(harness.deps, t.householdId, "p_1", { characterId: p1, changes: [{ field: "tent", before: null, after: "mythic" }] });
     expect(locked).toMatchObject({ ok: false, error: { message: expect.stringContaining("not hers to pick") } });
     for (const body of [
-      { characterId: p1, changes: [{ field: "color", before: null, after: "rose" }] }, // no revision, not merged
-      { characterId: p1, revision: 0, changes: [] },
-      { characterId: p1, revision: 0, changes: [{ field: "hat", before: null, after: "x" }] },
-      { characterId: p1, revision: 0, changes: [{ field: "color", before: null, after: "rose" }, { field: "color", before: null, after: "tide" }] },
-      { characterId: p1, revision: 0, crew: "cw_nope", changes: [{ field: "buddy", before: null, after: "duckling" }] },
+      { changes: [{ field: "color", before: null, after: "rose" }] }, // no hero
+      { characterId: p1, merge: "yes", changes: [{ field: "color", before: null, after: "rose" }] },
+      { characterId: p1, changes: [] },
+      { characterId: p1, changes: [{ field: "hat", before: null, after: "x" }] },
+      { characterId: p1, changes: [{ field: "color", before: null, after: "rose" }, { field: "color", before: null, after: "tide" }] },
+      { characterId: p1, crew: "cw_nope", changes: [{ field: "buddy", before: null, after: "duckling" }] },
     ]) {
       expect((await book(harness.deps, t.householdId, "p_1", body)).ok, JSON.stringify(body)).toBe(false);
     }
     // Her buddy, from the crew's own friends, is fine.
-    expect(value(await book(harness.deps, t.householdId, "p_1", { characterId: p1, revision: 0, changes: [{ field: "buddy", before: null, after: "duckling" }] })).kit.buddies).toEqual({ "": "duckling" });
+    expect(value(await book(harness.deps, t.householdId, "p_1", { characterId: p1, changes: [{ field: "buddy", before: null, after: "duckling" }] })).kit.buddies).toEqual({ "": "duckling" });
     expect(readKit((await harness.repo.getCharacter(t.householdId, p1))!).buddies).toEqual({ [campKey(t.householdId)]: "duckling" });
   });
 
-  it("merges a queued change field by field: a field changed elsewhere keeps the newer value, the rest apply, a pick no longer hers is skipped", async () => {
+  it("applies a queued change over the newer values a table set meanwhile (the device wins), skipping a pick that is not hers", async () => {
     const { harness, t, p1 } = await lobby();
     // Meanwhile, at the table: her tent.
     await t.send("p_1", { type: "KIT_EDIT", characterId: p1, revision: 0, tent: "rolled" });
@@ -238,8 +237,8 @@ describe("the book's kit write (§7, §12.6)", () => {
         ],
       }),
     );
-    expect(merged).toMatchObject({ applied: ["color", "slot1"], kept: ["tent"], refused: ["buddy"] });
-    expect(merged.kit).toMatchObject({ revision: 2, tent: "rolled", color: "rose", slots: [null, "deco_pinwheel"], buddies: {} });
+    expect(merged).toMatchObject({ applied: ["tent", "color", "slot1"], refused: ["buddy"] });
+    expect(merged.kit).toMatchObject({ revision: 2, tent: "patched", color: "rose", slots: [null, "deco_pinwheel"], buddies: {} });
 
     // A decoration moved from one spot to the other never meets itself.
     const moved = value(
@@ -252,7 +251,7 @@ describe("the book's kit write (§7, §12.6)", () => {
         ],
       }),
     );
-    expect(moved).toMatchObject({ applied: ["slot0", "slot1"], kept: [], refused: [], kit: { slots: ["deco_pinwheel", null] } });
+    expect(moved).toMatchObject({ applied: ["slot0", "slot1"], refused: [], kit: { slots: ["deco_pinwheel", null] } });
 
     // The same change again finds every field already so: nothing to write.
     const again = value(await book(harness.deps, t.householdId, "p_1", { characterId: p1, merge: true, changes: [{ field: "color", before: null, after: "rose" }] }));
@@ -265,7 +264,7 @@ describe("a book edit racing a table edit (§12.6)", () => {
     const { harness, t, p1 } = await lobby();
     const s = await t.state();
     const raced = racedCommits(harness, async () => {
-      value(await book(harness.deps, t.householdId, "p_1", { characterId: p1, revision: 0, changes: [{ field: "color", before: null, after: "rose" }] }));
+      value(await book(harness.deps, t.householdId, "p_1", { characterId: p1, changes: [{ field: "color", before: null, after: "rose" }] }));
     });
     const landed = await applyAction({ runId: t.runId, playerId: "p_1", seq: s.seq, intent: { type: "KIT_EDIT", characterId: p1, revision: 0, color: "tide" } }, raced.deps);
     expect(landed.ok, JSON.stringify(landed.error)).toBe(true);
@@ -277,7 +276,7 @@ describe("a book edit racing a table edit (§12.6)", () => {
     const { harness, t, p1 } = await lobby();
     expect((await t.state()).kits?.[p1]).toMatchObject({ revision: 0, color: null });
     // In the book, between games for her phone, while her table sits in the lobby.
-    value(await book(harness.deps, t.householdId, "p_1", { characterId: p1, revision: 0, changes: [{ field: "color", before: null, after: "rose" }, { field: "buddy", before: null, after: "duckling" }] }));
+    value(await book(harness.deps, t.householdId, "p_1", { characterId: p1, changes: [{ field: "color", before: null, after: "rose" }, { field: "buddy", before: null, after: "duckling" }] }));
     // The table still shows revision 0; her phone sends what it shows.
     await t.send("p_1", { type: "KIT_EDIT", characterId: p1, revision: 0, tent: "patched" });
     const kit = readKit((await harness.repo.getCharacter(t.householdId, p1))!);
@@ -294,13 +293,13 @@ describe("a book edit racing a table edit (§12.6)", () => {
 
   it("a table edit of a field the book changed mid-moment keeps the book's value, and the table shows it", async () => {
     const { harness, t, p1 } = await lobby();
-    value(await book(harness.deps, t.householdId, "p_1", { characterId: p1, revision: 0, changes: [{ field: "color", before: null, after: "rose" }] }));
+    value(await book(harness.deps, t.householdId, "p_1", { characterId: p1, changes: [{ field: "color", before: null, after: "rose" }] }));
     await t.send("p_1", { type: "KIT_EDIT", characterId: p1, revision: 0, color: "tide", style: "quilted" });
     expect(readKit((await harness.repo.getCharacter(t.householdId, p1))!)).toMatchObject({ revision: 2, color: "rose", style: "quilted" });
     expect((await t.state()).kits?.[p1]).toMatchObject({ revision: 2, color: "rose", style: "quilted" });
   });
 
-  it("a table edit landing between the book's read and its write: online the book's is stale; queued, both fields stand", async () => {
+  it("a table edit landing between the book's read and its write is not lost, and the book's own fields win", async () => {
     const { harness, t, p1 } = await lobby();
     /** The store, with the table's edit landing just before the book's first write to her row. */
     const racing = (edit: ClientIntent): HandlerDeps => {
@@ -326,11 +325,11 @@ describe("a book edit racing a table edit (§12.6)", () => {
     const online = value(
       await book(racing({ type: "KIT_EDIT", characterId: p1, revision: 0, style: "quilted" }), t.householdId, "p_1", {
         characterId: p1,
-        revision: 0,
         changes: [{ field: "color", before: null, after: "rose" }],
       }),
     );
-    expect(online).toMatchObject({ stale: true, applied: [], kit: { revision: 1, style: "quilted", color: null } });
+    // Its write lost the race, read again, and wrote over the table's: both stand.
+    expect(online).toMatchObject({ applied: ["color"], kit: { revision: 2, style: "quilted", color: "rose" } });
 
     const queued = value(
       await book(racing({ type: "KIT_EDIT", characterId: p1, revision: 1, tent: "rolled" }), t.householdId, "p_1", {
@@ -342,9 +341,9 @@ describe("a book edit racing a table edit (§12.6)", () => {
         ],
       }),
     );
-    // The table's tent landed first, so the book's tent is the older pick and stays out; its color lands.
-    expect(queued).toMatchObject({ applied: ["color"], kept: ["tent"], kit: { revision: 3, style: "quilted", tent: "rolled", color: "rose" } });
-    expect(readKit((await harness.repo.getCharacter(t.householdId, p1))!)).toMatchObject({ revision: 3, style: "quilted", tent: "rolled", color: "rose" });
+    // The table's tent landed first; the book's, written after it, wins.
+    expect(queued).toMatchObject({ applied: ["tent", "color"], kit: { revision: 4, style: "quilted", tent: "patched", color: "rose" } });
+    expect(readKit((await harness.repo.getCharacter(t.householdId, p1))!)).toMatchObject({ revision: 4, style: "quilted", tent: "patched", color: "rose" });
   });
 
   it("a kit written by something else between reads (a milestone) never loses either write", async () => {
@@ -399,7 +398,7 @@ describe("POST /api/journal/kit over HTTP", () => {
 
   it("is authorised by the device binding alone, for the bound kid's own heroes", async () => {
     const { harness, rt, householdId, ada, ben } = await family();
-    const change = { characterId: "c_ada", revision: 0, changes: [{ field: "color", before: null, after: "rose" }] };
+    const change = { characterId: "c_ada", changes: [{ field: "color", before: null, after: "rose" }] };
     expect((await respond(event("POST", "/api/journal/kit", { body: change }), rt)).statusCode).toBe(401);
 
     const saved = await respond(event("POST", "/api/journal/kit", { body: change, headers: { "x-kad-device-token": ada.deviceToken } }), rt);
@@ -423,7 +422,7 @@ describe("POST /api/journal/kit over HTTP", () => {
     const { harness, rt, householdId, ada } = await family();
     await harness.repo.revokeDevice(householdId, ada.principal.deviceId);
     const res = await respond(
-      event("POST", "/api/journal/kit", { body: { characterId: "c_ada", revision: 0, changes: [{ field: "color", before: null, after: "rose" }] }, headers: { "x-kad-device-token": ada.deviceToken } }),
+      event("POST", "/api/journal/kit", { body: { characterId: "c_ada", changes: [{ field: "color", before: null, after: "rose" }] }, headers: { "x-kad-device-token": ada.deviceToken } }),
       rt,
     );
     expect(res.statusCode).toBe(401);

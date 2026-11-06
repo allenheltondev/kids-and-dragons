@@ -6,9 +6,8 @@
  * from its saved copy on a reload, the kid changes her kit, the book says it
  * is saved on this phone, and the change survives the book being closed and
  * opened again. When the signal comes back the change lands on the server.
- * And when somebody else changed the same field meanwhile (her hero's player
- * at a table), the newer value stays, the rest of her change still lands, and
- * the book says so in a short note.
+ * And when the same field changed meanwhile (her hero's player at a table),
+ * the book's queued pick still wins: the device wins (docs/camp.md §11).
  *
  * The suite runs on the Vite dev server, which has no service worker, so "no
  * signal" is the server being unreachable from the page (every `/api` request
@@ -149,7 +148,7 @@ test.describe("the book's Camp tray", () => {
     expect(await page.evaluate(() => localStorage.getItem("kad.kitQueue"))).toBeNull();
   });
 
-  test("a field changed at a table meanwhile keeps the newer value, the rest lands, and the book says so", async ({ browser }) => {
+  test("a field changed at a table meanwhile: the book's queued pick wins, and the rest lands with it", async ({ browser }) => {
     test.setTimeout(120_000);
     const phone = await seedBook();
     const context = await browser.newContext({ viewport: { width: 390, height: 844 }, storageState: phoneStorage(phone) });
@@ -167,15 +166,15 @@ test.describe("the book's Camp tray", () => {
     // Meanwhile, at the table: her tent.
     await tableEdit(phone, { tent: "quilted" });
 
-    await signalBack(context);
-    const note = page.getByTestId("book-camp-note");
-    await expect(note).toContainText("Your tent changed on another screen while you were away, so the newer one stays.", TAP);
-    await expect.poll(async () => (await serverKit(phone)).color, { timeout: 20_000 }).toBe("tide");
     expect((await serverKit(phone)).tent).toBe("quilted");
-    // The book shows the kit as it now is.
-    await expect(kit.locator('[data-tent="quilted"]')).toHaveAttribute("aria-pressed", "true");
+
+    await signalBack(context);
+    await expect.poll(async () => (await serverKit(phone)).color, { timeout: 20_000 }).toBe("tide");
+    expect((await serverKit(phone)).tent).toBe("patched");
+    await expect(page.getByTestId("book-camp-queued")).toHaveCount(0, TAP);
+    // Nothing to explain: what she picked is what she has.
+    await expect(page.getByTestId("book-camp-note")).toHaveCount(0);
+    await expect(kit.locator('[data-tent="patched"]')).toHaveAttribute("aria-pressed", "true");
     await expect(kit.getByRole("button", { name: "Orange" })).toHaveAttribute("aria-pressed", "true");
-    await note.getByRole("button", { name: "OK" }).click();
-    await expect(note).toHaveCount(0);
   });
 });

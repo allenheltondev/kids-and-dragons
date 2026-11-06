@@ -20,30 +20,30 @@ const KIT: JournalKit = { revision: 4, style: null, tent: null, color: null, slo
 describe("the kit queue", () => {
   it("keeps each field's first value and its latest pick, and forgets a field changed back", () => {
     const ls = memStorage();
-    enqueueKitChanges("dev_1", { characterId: "c_1", crew: null, changes: [{ field: "color", before: null, after: "rose" }], revision: 4 }, ls);
+    enqueueKitChanges("dev_1", { characterId: "c_1", crew: null, changes: [{ field: "color", before: null, after: "rose" }], direct: true }, ls);
     enqueueKitChanges("dev_1", { characterId: "c_1", crew: null, changes: [{ field: "color", before: "rose", after: "tide" }, { field: "tent", before: null, after: "patched" }] }, ls);
     let [entry] = loadKitQueue("dev_1", ls);
     expect(entry!.changes).toEqual([
       { field: "color", before: null, after: "tide" },
       { field: "tent", before: null, after: "patched" },
     ]);
-    // Changed again, it merges field by field rather than as one stale revision.
-    expect(entry!.revision).toBeUndefined();
+    // Changed again, it is no longer the one change sent straight away.
+    expect(entry!.direct).toBeUndefined();
     enqueueKitChanges("dev_1", { characterId: "c_1", crew: null, changes: [{ field: "color", before: "tide", after: null }] }, ls);
     [entry] = loadKitQueue("dev_1", ls);
     expect(entry!.changes).toEqual([{ field: "tent", before: null, after: "patched" }]);
   });
 
-  it("keeps a revision only on a change that is all there is for her", () => {
+  it("sends a change straight away only when it is all there is for her", () => {
     const ls = memStorage();
-    enqueueKitChanges("dev_1", { characterId: "c_1", crew: null, changes: [{ field: "color", before: null, after: "rose" }], revision: 4 }, ls);
-    enqueueKitChanges("dev_1", { characterId: "c_1", crew: "cw_1", changes: [{ field: "buddy", before: null, after: "bun" }], revision: 4 }, ls);
+    enqueueKitChanges("dev_1", { characterId: "c_1", crew: null, changes: [{ field: "color", before: null, after: "rose" }], direct: true }, ls);
+    enqueueKitChanges("dev_1", { characterId: "c_1", crew: "cw_1", changes: [{ field: "buddy", before: null, after: "bun" }], direct: true }, ls);
     const [kit, buddy] = loadKitQueue("dev_1", ls);
-    expect(kit).toMatchObject({ revision: 4 });
+    expect(kit).toMatchObject({ direct: true });
     expect(buddy).toMatchObject({ crew: "cw_1", changes: [{ field: "buddy", after: "bun" }] });
-    expect(buddy!.revision).toBeUndefined();
+    expect(buddy!.direct).toBeUndefined();
     demoteQueuedKitChange("dev_1", kit!.id, ls);
-    expect(loadKitQueue("dev_1", ls)[0]!.revision).toBeUndefined();
+    expect(loadKitQueue("dev_1", ls)[0]!.direct).toBeUndefined();
   });
 
   it("never folds a change into the entry being sent", () => {

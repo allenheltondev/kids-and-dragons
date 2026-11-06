@@ -3,14 +3,12 @@
  *
  * Every change is queued first (kit-queue.ts), then sent here, one queued
  * entry at a time, to `POST /api/journal/kit` with the phone's device token,
- * as the book's read is authorised:
- *
- *   - an entry made with a signal over the kit the book showed, alone in the
- *     queue for her, goes with that kit's revision: the table's rule, all or
- *     nothing, and a kit changed elsewhere since applies none of it (`stale`);
- *   - anything else (queued with no signal, or whose first send never got
- *     there) merges field by field on the server, and what it kept from
- *     somewhere else comes back as a short note.
+ * as the book's read is authorised. Every field it changed applies over
+ * whatever the server has by then: the device wins (docs/camp.md §11). The
+ * server only checks each pick is hers: an entry made with a signal, alone in
+ * the queue for her, is refused whole by one that is not, as the table's
+ * `KIT_EDIT` is; anything else (`merge`) skips that pick and applies the rest,
+ * and the book says "could not be saved".
  *
  * With no signal the entry stays queued and the book says so ("Saved on this
  * phone"); it is sent when the signal returns (`flushKitQueue`, which the book
@@ -79,13 +77,7 @@ export function clearBookKitNotes(): void {
 
 /** Note what a send did, if it needs saying. */
 function noteOf(response: BookKitResponse): string | null {
-  if (response.stale) return "Your kit changed on another screen, so here it is as it is now.";
-  const kept = response.kept.length > 0 ? bookFieldNames(response.kept) : null;
-  const refused = response.refused.length > 0 ? bookFieldNames(response.refused) : null;
-  const lines: string[] = [];
-  if (kept) lines.push(`Your ${kept} changed on another screen while you were away, so the newer ${response.kept.length > 1 ? "ones stay" : "one stays"}.`);
-  if (refused) lines.push(`Your ${refused} pick could not be saved.`);
-  return lines.length > 0 ? lines.join(" ") : null;
+  return response.refused.length > 0 ? `Your ${bookFieldNames(response.refused)} pick could not be saved.` : null;
 }
 
 /** No signal: the fetch never got there, or the browser says it is offline. */
@@ -94,11 +86,11 @@ function noSignal(error: unknown): boolean {
   return error instanceof TypeError || (error instanceof ApiError && error.status === 0);
 }
 
-function bodyOf(entry: Pick<QueuedKitChange, "characterId" | "crew" | "revision"> & { changes: readonly BookKitChange[] }): BookKitRequest {
+function bodyOf(entry: Pick<QueuedKitChange, "characterId" | "crew" | "direct"> & { changes: readonly BookKitChange[] }): BookKitRequest {
   return {
     characterId: entry.characterId,
     ...(entry.crew !== undefined ? { crew: entry.crew } : {}),
-    ...(entry.revision !== undefined ? { revision: entry.revision } : { merge: true as const }),
+    ...(entry.direct ? {} : { merge: true as const }),
     changes: [...entry.changes],
   };
 }
@@ -203,28 +195,26 @@ async function drain(apply: ApplyKit): Promise<void> {
 
 /**
  * The book's edit: queue it (so it shows at once and outlives the book being
- * closed), then send what is queued. `revision` is the kit revision the book
- * showed. A tablet with no device token sends it straight away instead, with
+ * closed), then send what is queued. A tablet with no device token sends it straight away instead, with
  * the picked kid's room session; the answer is the kit as it now stands, or
  * an error to say.
  */
 export async function editBookKit(
-  input: { characterId: string; crew: string | null; changes: readonly BookKitChange[]; revision: number },
+  input: { characterId: string; crew: string | null; changes: readonly BookKitChange[] },
   apply: ApplyKit,
 ): Promise<void> {
   if (input.changes.length === 0) return;
   const deviceToken = loadPlayerDeviceToken();
   if (deviceToken) {
     const online = typeof navigator === "undefined" || navigator.onLine !== false;
-    const { characterId, crew, changes, revision } = input;
-    enqueueKitChanges(deviceToken, { characterId, crew, changes, ...(online ? { revision } : {}), busy });
+    enqueueKitChanges(deviceToken, { ...input, direct: online, busy });
     if (!online) setStatus({ offline: true });
     await flushKitQueue(apply);
     return;
   }
   const sessionToken = useGameStore.getState().session?.sessionToken;
   if (!sessionToken) throw new ApiError(401, "This phone is not signed in as anyone yet.");
-  const response = await send(bodyOf(input), { sessionToken });
+  const response = await send(bodyOf({ ...input, direct: true }), { sessionToken });
   apply(input.characterId, response.kit);
   const note = noteOf(response);
   if (note) setStatus({ notes: [...status.notes, note] });

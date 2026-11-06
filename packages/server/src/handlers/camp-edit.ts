@@ -47,7 +47,8 @@ import {
   bookKitChanges,
   bookKitEdit,
   bookKitState,
-  mergeBookKit,
+  bookKitValue,
+  withBookKitValue,
   campIntentProblem,
   campKey,
   campMomentKind,
@@ -340,8 +341,8 @@ export async function prepareKitEdit(
  * A table's `KIT_EDIT`, made over the kit the table showed (`shown`), as it
  * applies to her kit as stored (`stored`) once something else (the book) has
  * changed it: each field only where the stored value is still the one the
- * table showed (shared `mergeBookKit`); a field changed elsewhere keeps the
- * newer value.
+ * table showed; a field changed elsewhere (in the book, whose changes are the
+ * device's and win, docs/camp.md §11) keeps that value.
  */
 export function behindEdit(edit: KitEdit, shown: HeroKitView, stored: BookKitState): KitEdit {
   const before: BookKitState = { style: shown.style, tent: shown.tent, color: shown.color, slots: [...shown.slots], buddy: shown.buddy ?? null };
@@ -352,8 +353,11 @@ export function behindEdit(edit: KitEdit, shown: HeroKitView, stored: BookKitSta
     slots: edit.slots ? [...edit.slots] : before.slots,
     buddy: edit.buddy !== undefined ? edit.buddy : before.buddy,
   };
-  const merged = mergeBookKit(stored, bookKitChanges(before, after), () => null);
-  return bookKitEdit(stored, merged.state);
+  let state = stored;
+  for (const change of bookKitChanges(before, after)) {
+    if (bookKitValue(stored, change.field) === change.before) state = withBookKitValue(state, change.field, change.after);
+  }
+  return bookKitEdit(stored, state);
 }
 
 // ---------------------------------------------------------------------------

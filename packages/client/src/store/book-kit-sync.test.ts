@@ -1,9 +1,9 @@
 /**
- * Sending the book's queued kit changes (#629; docs/camp.md §7): with the
- * phone's device token; a change made with a signal goes with its revision,
- * one queued without merges field by field; no signal keeps it queued and
- * says so; a refused binding drops the queue unsent; what the server kept from
- * elsewhere comes back as a kid's note.
+ * Sending the book's queued kit changes (#629; docs/camp.md §7, §11): with the
+ * phone's device token; a change made with a signal goes straight away, one
+ * queued without is sent `merge`; either way it applies over what the server
+ * has (the device wins); no signal keeps it queued and says so; a refused
+ * binding drops the queue unsent; a pick the server refuses says so.
  */
 
 import "fake-indexeddb/auto";
@@ -38,32 +38,31 @@ afterEach(() => {
 });
 
 describe("sending the book's kit changes", () => {
-  it("sends a change made with a signal with its revision and the phone's device token", async () => {
-    const response: BookKitResponse = { kit: { ...KIT, revision: 6, color: "tide" }, applied: ["color"], kept: [], refused: [] };
+  it("sends a change made with a signal straight away, with the phone's device token", async () => {
+    const response: BookKitResponse = { kit: { ...KIT, revision: 6, color: "tide" }, applied: ["color"], refused: [] };
     serve(() => answer(200, response));
     const applied: [string, JournalKit][] = [];
-    await editBookKit({ characterId: "c_1", crew: null, changes: [{ field: "color", before: "rose", after: "tide" }], revision: 5 }, (id, kit) => applied.push([id, kit]));
+    await editBookKit({ characterId: "c_1", crew: null, changes: [{ field: "color", before: "rose", after: "tide" }] }, (id, kit) => applied.push([id, kit]));
     expect(sent).toHaveLength(1);
     expect(sent[0]!.url).toBe("/api/journal/kit");
     expect(sent[0]!.headers["x-kad-device-token"]).toBe("dev_1");
-    expect(sent[0]!.body).toEqual({ characterId: "c_1", revision: 5, changes: [{ field: "color", before: "rose", after: "tide" }] });
+    expect(sent[0]!.body).toEqual({ characterId: "c_1", changes: [{ field: "color", before: "rose", after: "tide" }] });
     expect(applied).toEqual([["c_1", response.kit]]);
     expect(loadKitQueue("dev_1")).toEqual([]);
     expect(bookKitStatus()).toEqual({ offline: false, notes: [] });
   });
 
-  it("with no signal keeps the change queued, says so, and merges it field by field once the signal returns", async () => {
+  it("with no signal keeps the change queued, says so, and sends every field when the signal returns, with no note", async () => {
     serve(() => Promise.reject(new TypeError("Failed to fetch")));
-    await editBookKit({ characterId: "c_1", crew: null, changes: [{ field: "color", before: "rose", after: "tide" }], revision: 5 }, () => undefined);
+    await editBookKit({ characterId: "c_1", crew: null, changes: [{ field: "color", before: "rose", after: "tide" }] }, () => undefined);
     expect(bookKitStatus().offline).toBe(true);
     const [queued] = loadKitQueue("dev_1");
     expect(queued).toMatchObject({ characterId: "c_1", changes: [{ field: "color", before: "rose", after: "tide" }] });
-    // Its first send never got there, so the revision it was made over no longer decides it.
-    expect(queued!.revision).toBeUndefined();
+    expect(queued!.direct).toBeUndefined();
 
-    // Meanwhile a table changed her tent too; the queued tent is the older pick.
+    // Meanwhile a table changed her tent; the queued tent is sent all the same, and wins.
     enqueueKitChanges("dev_1", { characterId: "c_1", crew: null, changes: [{ field: "tent", before: "rolled", after: "patched" }] });
-    serve(() => answer(200, { kit: { ...KIT, revision: 7, tent: "quilted", color: "tide" }, applied: ["color"], kept: ["tent"], refused: [] } satisfies BookKitResponse));
+    serve(() => answer(200, { kit: { ...KIT, revision: 7, tent: "patched", color: "tide" }, applied: ["tent", "color"], refused: [] } satisfies BookKitResponse));
     const applied: JournalKit[] = [];
     await flushKitQueue((_, kit) => applied.push(kit));
     expect(sent.at(-1)!.body).toEqual({
@@ -74,16 +73,21 @@ describe("sending the book's kit changes", () => {
         { field: "tent", before: "rolled", after: "patched" },
       ],
     });
-    expect(applied.at(-1)).toMatchObject({ tent: "quilted", color: "tide" });
+    expect(applied.at(-1)).toMatchObject({ tent: "patched", color: "tide" });
     expect(loadKitQueue("dev_1")).toEqual([]);
-    expect(bookKitStatus()).toEqual({ offline: false, notes: ["Your tent changed on another screen while you were away, so the newer one stays."] });
+    expect(bookKitStatus()).toEqual({ offline: false, notes: [] });
   });
 
-  it("says so when an online change found the kit moved on", async () => {
-    serve(() => answer(200, { kit: { ...KIT, revision: 9 }, applied: [], kept: ["color"], refused: [], stale: true } satisfies BookKitResponse));
-    await editBookKit({ characterId: "c_1", crew: null, changes: [{ field: "color", before: "rose", after: "tide" }], revision: 5 }, () => undefined);
-    expect(bookKitStatus().notes).toEqual(["Your kit changed on another screen, so here it is as it is now."]);
-    expect(loadKitQueue("dev_1")).toEqual([]);
+  it("says so when a pick could not be saved", async () => {
+    enqueueKitChanges("dev_1", { characterId: "c_1", crew: "cw_1", changes: [{ field: "buddy", before: null, after: "bun" }, { field: "color", before: "rose", after: "tide" }] });
+    // Two entries: her kit, and her buddy in that crew's camp; the crew has no Bun.
+    serve(() => {
+      const buddy = (sent.at(-1)!.body.changes as { field: string }[]).some((c) => c.field === "buddy");
+      return answer(200, { kit: { ...KIT, color: "tide" }, applied: buddy ? [] : ["color"], refused: buddy ? ["buddy"] : [] } satisfies BookKitResponse);
+    });
+    await flushKitQueue(() => undefined);
+    expect(sent).toHaveLength(2);
+    expect(bookKitStatus().notes).toEqual(["Your buddy pick could not be saved."]);
   });
 
   it("drops the whole queue unsent when the binding is refused", async () => {
@@ -95,11 +99,11 @@ describe("sending the book's kit changes", () => {
     expect(loadKitQueue("dev_1")).toEqual([]);
   });
 
-  it("lets go of a change that can never land, and sends the rest", async () => {
+  it("lets go of a change that can never land, says so, and sends the rest", async () => {
     enqueueKitChanges("dev_1", { characterId: "c_gone", crew: null, changes: [{ field: "color", before: null, after: "rose" }] });
     enqueueKitChanges("dev_1", { characterId: "c_1", crew: null, changes: [{ field: "color", before: null, after: "tide" }] });
     let calls = 0;
-    serve(() => (calls++ === 0 ? answer(404, { error: { code: "NOT_FOUND", message: "that hero is not in your book" } }) : answer(200, { kit: KIT, applied: ["color"], kept: [], refused: [] })));
+    serve(() => (calls++ === 0 ? answer(404, { error: { code: "NOT_FOUND", message: "that hero is not in your book" } }) : answer(200, { kit: KIT, applied: ["color"], refused: [] })));
     await flushKitQueue(() => undefined);
     expect(sent.map((s) => s.body.characterId)).toEqual(["c_gone", "c_1"]);
     expect(loadKitQueue("dev_1")).toEqual([]);
@@ -109,7 +113,7 @@ describe("sending the book's kit changes", () => {
   it("waits, keeping the queue, while the browser says it is offline", async () => {
     vi.stubGlobal("navigator", { onLine: false });
     serve(() => answer(200, {}));
-    await editBookKit({ characterId: "c_1", crew: "cw_1", changes: [{ field: "buddy", before: null, after: "bun" }], revision: 5 }, () => undefined);
+    await editBookKit({ characterId: "c_1", crew: "cw_1", changes: [{ field: "buddy", before: null, after: "bun" }] }, () => undefined);
     expect(sent).toHaveLength(0);
     expect(bookKitStatus().offline).toBe(true);
     expect(loadKitQueue("dev_1")).toMatchObject([{ crew: "cw_1", changes: [{ field: "buddy", after: "bun" }] }]);

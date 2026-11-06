@@ -1021,14 +1021,11 @@ export interface BookKitRequest {
   /** The crew whose camp a buddy change is for: its id, or null (or absent) for the first crew. */
   crew?: string | null;
   /**
-   * Sent straight away (online): the kit revision the book showed. A kit that
-   * has moved on since applies nothing (`BookKitResponse.stale`), as the
-   * table's `KIT_EDIT` does.
-   */
-  revision?: number;
-  /**
-   * Sent from the phone's queue (offline): each field applies only if the
-   * server still has the value it was made over (`BookKitChange.before`).
+   * Sent from the phone's queue: a field that is not the hero's to pick is
+   * skipped (`BookKitResponse.refused`) and the rest apply. Absent (sent
+   * straight away), one such field refuses the whole change, as the table's
+   * `KIT_EDIT` does. Either way the change applies over whatever the server
+   * has now: the device wins (docs/camp.md §7, §11).
    */
   merge?: true;
   changes: BookKitChange[];
@@ -1038,12 +1035,8 @@ export interface BookKitRequest {
 export interface BookKitResponse {
   kit: JournalKit;
   applied: BookKitField[];
-  /** Changed elsewhere since: the newer value stays. */
-  kept: BookKitField[];
-  /** Not the hero's to pick (merge only; online, one refusal refuses the whole change). */
+  /** Not the hero's to pick (merge only; sent straight away, one refusal refuses the whole change). */
   refused: BookKitField[];
-  /** Online only: the kit had moved on since the book read it, so nothing was applied. */
-  stale?: true;
 }
 
 /** One campaign on the Story page (#358). */

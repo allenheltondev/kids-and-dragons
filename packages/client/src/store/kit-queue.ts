@@ -5,9 +5,9 @@
  * before anything is sent, so it shows at once and survives the book being
  * closed, the phone locking or the signal dropping in the car. Each change
  * records, field by field, the value it was made over (shared camp-book.ts
- * `BookKitChange`), which is what lets the server merge it field by field when
- * it is finally sent: a field somebody changed elsewhere meanwhile keeps the
- * newer value, and every other field applies.
+ * `BookKitChange`). When it is finally sent, every field it changed applies
+ * over whatever the server has by then: the device wins (§11), and the server
+ * only checks each pick is still hers to make.
  *
  * The queue is the phone's: kept in its own storage (localStorage, beside the
  * binding it is sent with, persistence.ts) and tied to that binding's device
@@ -31,11 +31,12 @@ export interface QueuedKitChange {
   crew?: string | null;
   changes: BookKitChange[];
   /**
-   * Made with a signal, over the kit revision the book showed and nothing else
-   * queued for her: sent first with the table's revision check. Once a send of
-   * it fails for want of a signal, it is merged field by field instead.
+   * Made with a signal, and nothing else queued for her: sent straight away,
+   * where one pick that is not hers refuses the whole change, as the table
+   * does. Once a send of it fails for want of a signal, or it is changed again
+   * while queued, a pick that is not hers is skipped and the rest apply.
    */
-  revision?: number;
+  direct?: true;
   /** ISO, when it was first queued. */
   at: string;
 }
@@ -130,12 +131,12 @@ const newId = (): string => `kq_${Date.now().toString(36)}_${(sequence++).toStri
  * crew, the rest in one for the hero. A field already queued (and not being
  * sent right now, `busy`) keeps the value it was first made over and takes the
  * new pick; one changed back to where it started is no change at all.
- * `revision` is the kit revision the book showed, given when there is a
- * signal: it is kept only on an entry that is all there is for her.
+ * `direct` is given when there is a signal: it is kept only on an entry that
+ * is all there is for her.
  */
 export function enqueueKitChanges(
   deviceToken: string,
-  input: { characterId: string; crew: string | null; changes: readonly BookKitChange[]; revision?: number; busy?: string | null },
+  input: { characterId: string; crew: string | null; changes: readonly BookKitChange[]; direct?: boolean; busy?: string | null },
   storage?: KeyValueStorage,
 ): QueuedKitChange[] {
   const entries = loadKitQueue(deviceToken, storage).map((e) => ({ ...e, changes: [...e.changes] }));
@@ -154,8 +155,8 @@ export function enqueueKitChanges(
         else open.changes[at] = { field: change.field, before: open.changes[at]!.before, after: change.after };
       }
       open.changes = open.changes.filter((c) => c.before !== c.after);
-      // Changed again: merged with whatever else it meets, never a stale all-or-nothing.
-      delete open.revision;
+      // Changed again: no longer the one change made straight away.
+      delete open.direct;
       continue;
     }
     const alone = !entries.some((e) => e.characterId === input.characterId);
@@ -164,7 +165,7 @@ export function enqueueKitChanges(
       characterId: input.characterId,
       ...("crew" in group ? { crew: group.crew ?? null } : {}),
       changes: group.changes,
-      ...(alone && input.revision !== undefined ? { revision: input.revision } : {}),
+      ...(alone && input.direct ? { direct: true as const } : {}),
       at: new Date().toISOString(),
     });
   }
@@ -182,8 +183,8 @@ export function removeQueuedKitChange(deviceToken: string, id: string, storage?:
 export function demoteQueuedKitChange(deviceToken: string, id: string, storage?: KeyValueStorage): void {
   const entries = loadKitQueue(deviceToken, storage);
   const entry = entries.find((e) => e.id === id);
-  if (!entry || entry.revision === undefined) return;
-  delete entry.revision;
+  if (!entry || !entry.direct) return;
+  delete entry.direct;
   saveKitQueue(deviceToken, entries, storage);
 }
 

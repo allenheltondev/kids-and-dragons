@@ -12,18 +12,18 @@
  * is (the entry points resolve the kid and hand her in; the body never names
  * her). It changes one hero's kit or buddy, only for a hero that is hers, by
  * the table's own rule (`kitEditProblem`, the same check `KIT_EDIT` makes), and
- * a buddy only from the friends that crew has. Written on her row with
- * `mutateKit`, conditional on the row as read, so a book edit and a table's
- * can never lose each other's write:
+ * a buddy only from the friends that crew has.
  *
- *   - **Online** (`revision`): the table's revision check. A kit that has moved
- *     on since the book read it applies nothing, and the answer carries the kit
- *     as it now is (`stale`). A table edit racing it the other way is refused
- *     by the table's own check, because this write bumps the revision.
- *   - **Queued** (`merge`): field by field, each only where her kit still has
- *     the value the change was made over (shared `mergeBookKit`). A field
- *     changed elsewhere meanwhile keeps the newer value (`kept`); a pick that
- *     is not hers any more is skipped (`refused`); everything else applies.
+ * **The device wins** (decided, docs/camp.md §7, §11): a kid's own kit is only
+ * ever edited on her one phone, so a book change applies over whatever her
+ * kit holds now, a table's pick of the same field included, whether it is sent
+ * straight away or long after from the phone's queue (shared `mergeBookKit`).
+ * Only validity is checked: sent straight away, one field that is not hers to
+ * pick refuses the whole change, as `KIT_EDIT` does; from the queue (`merge`)
+ * that field is skipped (`refused`) and the rest apply. Last-writer-wins is
+ * about the values, never the write: it is `mutateKit`, conditional on her row
+ * as read and retried on a lost race, so nothing written between the read and
+ * the write (a table's commit, a milestone) is ever lost.
  *
  * A live room reads her kit afresh as its next downtime moment begins
  * (camp-edit.ts `syncCampDowntime`), so that is where a book edit shows.
@@ -246,17 +246,15 @@ export interface BookKitInput {
 
 /** What a book edit request asks for, or a reason it cannot be read. */
 function parseRequest(body: Record<string, unknown>): BookKitRequest | string {
-  const { characterId, crew, revision, merge } = body;
+  const { characterId, crew, merge } = body;
   if (typeof characterId !== "string" || characterId.length === 0 || characterId.length > 64) return "characterId is required";
   if (crew !== undefined && crew !== null && (typeof crew !== "string" || crew.length === 0 || crew.length > 64)) return "crew is a crew id or null";
   if (merge !== undefined && merge !== true) return "merge is true or absent";
-  if (merge !== true && (typeof revision !== "number" || !Number.isInteger(revision) || revision < 0)) return "revision is required unless the change is merged";
   const changes = parseBookKitChanges(body.changes);
   if (changes === null) return "changes are { field, before, after }, each field once";
   return {
     characterId,
     ...(crew !== undefined ? { crew: crew as string | null } : {}),
-    ...(typeof revision === "number" ? { revision } : {}),
     ...(merge === true ? { merge: true as const } : {}),
     changes,
   };
@@ -290,9 +288,8 @@ export async function editKitFromBook(input: BookKitInput, deps: HandlerDeps): P
   const key = campKey(input.householdId, crew);
   const rules = catalog.kit;
 
-  const seen: { applied: BookKitField[]; kept: BookKitField[]; refused: BookKitField[]; problem: string | null } = {
+  const seen: { applied: BookKitField[]; refused: BookKitField[]; problem: string | null } = {
     applied: [],
-    kept: [],
     refused: [],
     problem: null,
   };
@@ -306,7 +303,7 @@ export async function editKitFromBook(input: BookKitInput, deps: HandlerDeps): P
       let next: BookKitState;
       if (request.merge) {
         const merged = mergeBookKit(now, request.changes, (state, field, value) => bookFieldProblem(rules, unlocked, state, field, value, friends));
-        Object.assign(seen, { applied: merged.applied, kept: merged.kept, refused: merged.refused });
+        Object.assign(seen, { applied: merged.applied, refused: merged.refused });
         next = merged.state;
       } else {
         // The table's rule, all at once: every field the change names, as picked.
@@ -316,21 +313,16 @@ export async function editKitFromBook(input: BookKitInput, deps: HandlerDeps): P
         const edit = bookKitEdit(now, next);
         if (seen.problem === null && Object.keys(edit).length > 0) seen.problem = kitEditProblem(rules, unlocked, edit, friends);
         if (seen.problem !== null) return null;
-        Object.assign(seen, { applied: request.changes.map((c) => c.field), kept: [], refused: [] });
+        Object.assign(seen, { applied: request.changes.map((c) => c.field), refused: [] });
       }
       const edit = bookKitEdit(now, next);
       return Object.keys(edit).length === 0 ? null : withKitEdit(kit, edit, key);
     },
     deps,
-    request.merge ? {} : { expectedRevision: request.revision! },
   );
   if (seen.problem !== null) return fail("ILLEGAL", seen.problem);
   if (!written.ok) {
     if (written.reason === "missing") return fail("NOT_FOUND", "that hero is not in your book");
-    if (written.reason === "stale" && written.value) {
-      // Changed elsewhere since the book read it (a table, her other phone): the newer kit stands.
-      return ok({ kit: journalKit(written.value, input.householdId), applied: [], kept: request.changes.map((c) => c.field), refused: [], stale: true });
-    }
     console.error(`camp: a book edit to ${request.characterId}'s kit was not written (${written.reason})`);
     return fail("STALE_DECISION", "Your kit could not be saved just now. Try again.");
   }
@@ -338,7 +330,6 @@ export async function editKitFromBook(input: BookKitInput, deps: HandlerDeps): P
   return ok({
     kit: journalKit(written.value, input.householdId),
     applied: order(seen.applied),
-    kept: order(seen.kept),
     refused: order(seen.refused),
   });
 }
