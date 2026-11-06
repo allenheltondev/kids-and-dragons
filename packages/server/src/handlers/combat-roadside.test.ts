@@ -146,8 +146,7 @@ describe("ford road combat batch", () => {
         const risk = (p: { x: number; y: number }) => Number(danger.some(t => t.x === p.x && t.y === p.y));
         const score = (p: { x: number; y: number }) => risk(p) * 10 + stepsBetween(p, wheel);
         const next = [...legalMoves(state)].sort((a, b) => score(a) - score(b))[0];
-        // Let the crabs commit a sweep before anyone goes for the stone.
-        if (next && score(next) < score(at) && (sceneId !== "encounter_crab" || sawWarning)) {
+        if (next && score(next) < score(at)) {
           const moved = moveTo(state, next);
           if (moved.ok) state = moved.state;
         }

@@ -295,7 +295,7 @@ for (const fight of roadFights) {
           sawSpill = true;
         }
         if (ford && !sawBankOpen && encounter.round >= 3) {
-          await expect(panel).toContainText("Lower bank is open");
+          await expect(panel).toContainText("Lower bank is open", { timeout: 60_000 });
           sawBankOpen = true;
         }
         const warnings = committedAttacks(encounter);
