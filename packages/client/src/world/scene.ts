@@ -74,7 +74,7 @@ import {
 } from "./actor-art";
 import { figureSize, fitCanvas, NOMINAL_PAINT, paintAspect, stanceLift, type Overflow, type PaintBox } from "./figure-scale";
 import { sceneBackdropUrl } from "./art-paths";
-import { indoorRestMotion } from "./indoor-rest-motion";
+import type { RestMotion } from "./indoor-rest-motion";
 import {
   RIFT_FOOT,
   riftPasses,
@@ -125,6 +125,11 @@ const DESIGN = { width: 1600, height: 900 } as const;
 
 /** Backdrops kept decoded: the one on screen and the one before it. */
 const KEPT_BACKDROPS = 2;
+const INDOOR_MOTION_ART = new Set([
+  "scenes/gemfall/mosshome-guest-tree",
+  "scenes/gemfall/marda-thorn-inn",
+  "scenes/riftlight/ashspan-bridge-house",
+]);
 /** One camera "tile" of story space, in design units. See the header. */
 export const STORY_TILE = 100;
 const STORY_BOARD = { width: DESIGN.width / STORY_TILE, height: DESIGN.height / STORY_TILE } as const;
@@ -496,7 +501,7 @@ export function createScene(app: Application): PartyScene {
   /** The selected backdrop URL, and the sprite drawing it. */
   let biomeId: string | null = null;
   let biomeSprite: Sprite | null = null;
-  let restMotion: ReturnType<typeof indoorRestMotion>;
+  let restMotion: RestMotion | undefined;
   /**
    * Backdrops shown, oldest first, by the URL each was loaded under. A 1920x1080
    * backdrop is about 8MB decoded, a chapter has eight to twelve, and nothing
@@ -1725,7 +1730,11 @@ export function createScene(app: Application): PartyScene {
           sprite.alpha = 0; // faded up by tick()
           biomeSprite = sprite;
           backdropArt.addChild(sprite);
-          if (loadedAs === wanted) restMotion = indoorRestMotion(art, sprite);
+          if (loadedAs === wanted && art && INDOOR_MOTION_ART.has(art)) {
+            void import("./indoor-rest-motion").then(({ indoorRestMotion }) => {
+              if (!destroyed && biomeSprite === sprite) restMotion = indoorRestMotion(art, sprite, backdropArt);
+            }).catch(() => undefined);
+          }
         })
         .catch(() => {
           /* keep the drawn stand-in: a missing backdrop must never blank the

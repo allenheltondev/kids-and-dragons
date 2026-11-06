@@ -1,13 +1,12 @@
-import { Graphics, MeshPlane, Rectangle, Texture, type Sprite } from "pixi.js";
+import { Container, Graphics, MeshPlane, Rectangle, Texture, type Sprite } from "pixi.js";
 
-interface RestMotion {
+export interface RestMotion {
   tick(elapsed: number, still: boolean): void;
   destroy(): void;
 }
 
 /** Warp a small patch of the painting, with all four edges pinned to the original. */
-function warp(parent: Sprite, box: Rectangle, steam = false): RestMotion {
-  const source = parent.texture;
+function warp(parent: Container, source: Texture, box: Rectangle, steam = false): RestMotion {
   const texture = new Texture({
     source: source.source,
     frame: new Rectangle(source.frame.x + box.x, source.frame.y + box.y, box.width, box.height),
@@ -46,14 +45,19 @@ function warp(parent: Sprite, box: Rectangle, steam = false): RestMotion {
   };
 }
 
-export function indoorRestMotion(art: string | null | undefined, parent: Sprite): RestMotion | undefined {
+export function indoorRestMotion(art: string | null | undefined, painting: Sprite, backdrop: Container): RestMotion | undefined {
   // These coordinates are registered to the original 1920 × 1080 paintings.
-  if (parent.texture.width !== 1920 || parent.texture.height !== 1080) return;
+  const texture = painting.texture;
+  if (texture.width !== 1920 || texture.height !== 1080) return;
+  const layer = new Container({ position: painting.position, scale: painting.scale });
+  let effect: RestMotion;
   switch (art) {
     case "scenes/gemfall/mosshome-guest-tree":
-      return warp(parent, new Rectangle(340, 135, 490, 230));
+      effect = warp(layer, texture, new Rectangle(340, 135, 490, 230));
+      break;
     case "scenes/gemfall/marda-thorn-inn":
-      return warp(parent, new Rectangle(215, 268, 90, 124), true);
+      effect = warp(layer, texture, new Rectangle(215, 268, 90, 124), true);
+      break;
     case "scenes/riftlight/ashspan-bridge-house": {
       const embers = new Graphics()
         .ellipse(1453, 424, 9, 7).ellipse(1481, 424, 9, 7)
@@ -62,14 +66,26 @@ export function indoorRestMotion(art: string | null | undefined, parent: Sprite)
       embers.label = "indoor-rest-motion";
       embers.blendMode = "add";
       embers.visible = false;
-      parent.addChild(embers);
-      return {
+      layer.addChild(embers);
+      effect = {
         tick(elapsed, still) {
           embers.visible = !still;
           embers.alpha = 0.48 + 0.23 * Math.sin(elapsed * 2.1) + 0.14 * Math.sin(elapsed * 3.4);
         },
         destroy: () => embers.destroy(),
       };
+      break;
     }
+    default:
+      layer.destroy();
+      return;
   }
+  backdrop.addChild(layer);
+  return {
+    tick: effect.tick,
+    destroy() {
+      effect.destroy();
+      layer.destroy();
+    },
+  };
 }
