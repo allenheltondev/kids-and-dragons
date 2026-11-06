@@ -1961,6 +1961,7 @@
     },
     "rest": {
       "type": "rest",
+      "setting": "indoor",
       "heal": 2,
       "narration": "The readers make room for you on the warm side of the room, which is the side with the most blankets. \"Guests first,\" Murmur whispers, handing out lichen cakes. They taste like a forest kept in the cold.",
       "variants": [

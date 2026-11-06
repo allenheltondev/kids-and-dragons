@@ -13,7 +13,10 @@ import {
   EDGE_MARGIN,
   GROUND_MARGIN,
   MIN_FIGURE_SCALE,
+  MIN_SHRINK,
   campBleed,
+  campShrunkScale,
+  campSides,
   campFigureScale,
   campFit,
   campFocusBand,
@@ -424,5 +427,74 @@ describe("the places a figure stands, on screen", () => {
     // A line wider than the whole span bunches at its far end, never off the screen.
     const long = queueSpots(0.95, 1, [0.3, 0.3, 0.3], lane, QUEUE_GAP, span);
     for (const x of long) expect(x - 0.15).toBeGreaterThanOrEqual(span.x0 + EDGE_MARGIN - 1e-9);
+  });
+});
+
+describe("a camp that must not reach past its window's top: an outdoor rest's, under the goal card (#625)", () => {
+  // A 1280 × 720 TV at a rest: the goal card's foot 176px down, the plate 317px tall.
+  const window = campWindow(720, 176, 317);
+  const cover = 1280 / canvas.width;
+  // Four tall heroes at the figures' floor: the band the lobby would keep only its feet of.
+  const TALL = [260, 260, 260, 260];
+  const k = campFigureScale(1280, window, layout, TALL);
+  const tall = campFocusBand(layout, TALL, k);
+
+  it("is the cover framing wherever the band fits", () => {
+    for (const [top, bottom] of [[120, 240], [43, 200]] as const) {
+      const w = campWindow(720, top, bottom);
+      expect(campFraming(1280, w, canvas, band, 0.5, true)).toEqual(campFraming(1280, w, canvas, band));
+    }
+  });
+
+  it("past the figures' floor, draws the whole camp smaller so the band stands in the window, none of it under the card", () => {
+    expect(k).toBe(MIN_FIGURE_SCALE);
+    const covered = campFraming(1280, window, canvas, tall);
+    expect(bandPx(covered, tall).top).toBeLessThan(window.top);
+    const at = campFraming(1280, window, canvas, tall, 0.5, true);
+    expect(at.scale).toBeLessThan(cover);
+    const b = bandPx(at, tall);
+    expect(b.top).toBeGreaterThanOrEqual(window.top - EPS);
+    expect(b.bottom).toBeCloseTo(window.bottom);
+    // Every lane is still in the window, the painting still covers it, and the edges drawn on reach the pane's.
+    for (const id of ["back", "middle", "near"]) {
+      const y = at.y + layout.lanes.get(id)!.y * canvas.height * at.scale;
+      expect(y).toBeGreaterThan(window.top);
+      expect(y).toBeLessThan(window.bottom);
+    }
+    expect(at.y).toBeLessThanOrEqual(window.top + EPS);
+    expect(at.y + canvas.height * at.scale).toBeGreaterThanOrEqual(window.bottom - EPS);
+    const bleed = campBleed(720, at, canvas);
+    expect(at.y - bleed.top).toBeLessThanOrEqual(EPS);
+    expect(at.y + canvas.height * at.scale + bleed.bottom).toBeGreaterThanOrEqual(720 - EPS);
+  });
+
+  it("centers the smaller painting, and a mirrored copy each side fills the rest of the pane", () => {
+    const at = campFraming(1280, window, canvas, tall, 0.5, true);
+    const width = canvas.width * at.scale;
+    const sides = campSides(1280, at, canvas);
+    expect(sides.left).toBeCloseTo(sides.right);
+    expect(sides.left + width + sides.right).toBeCloseTo(1280);
+    expect(sides.left).toBeLessThanOrEqual(width);
+    // At a cover scale there is nothing beside it.
+    expect(campSides(1280, campFraming(1280, window, canvas, tall), canvas)).toEqual({ left: 0, right: 0 });
+    // And the whole painting is in view: every stand point on a lane is on screen.
+    expect(campVisibleSpan(1280, at, canvas.width)).toEqual({ x0: 0, x1: 1 });
+  });
+
+  it("shrinks continuously, from the cover scale where the band just fits", () => {
+    const share = tall.bottom - tall.top;
+    const fits = share * canvas.height * cover;
+    expect(campShrunkScale(cover, fits, canvas, tall)).toBeCloseTo(cover);
+    expect(campShrunkScale(cover, fits + 50, canvas, tall)).toBeCloseTo(cover);
+    expect(campShrunkScale(cover, fits - 1, canvas, tall)).toBeLessThan(cover);
+    expect(campShrunkScale(cover, fits - 1, canvas, tall)).toBeGreaterThan(cover - 0.01);
+  });
+
+  it("never draws it narrower than a third of the pane: past that, the feet keep the window's bottom", () => {
+    const short = campWindow(720, 360, 340);
+    const at = campFraming(1280, short, canvas, tall, 0.5, true);
+    expect(at.scale).toBeCloseTo(cover * MIN_SHRINK);
+    expect(bandPx(at, tall).bottom).toBeCloseTo(short.bottom);
+    expect(campSides(1280, at, canvas).left).toBeLessThanOrEqual(canvas.width * at.scale + EPS);
   });
 });

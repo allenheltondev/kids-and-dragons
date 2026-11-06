@@ -65,6 +65,7 @@ const chapter: Chapter = {
     },
     market: {
       type: "rest",
+      setting: "outdoor",
       narration: "A bench.",
       choices: [
         { id: "win", label: "Home", icon: "home", goto: "win_end" },

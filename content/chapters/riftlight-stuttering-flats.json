@@ -1214,6 +1214,7 @@
     },
     "rest": {
       "type": "rest",
+      "setting": "outdoor",
       "heal": 2,
       "rift": "steady",
       "narration": "Puddle leads you all to a high shell bank. She opens her floating lunch box: kelp rolls. The goat eats the lid. Then a frogfolk fisher comes wading straight toward the blinking opening with a net. It's Fen. \"Snow fish!\" she calls. \"I've never caught a snow fish!\"",

@@ -1443,6 +1443,7 @@
     },
     "rest": {
       "type": "rest",
+      "setting": "outdoor",
       "art": "scenes/riftlight/sky-night-windbreak",
       "heal": 2,
       "cast": [

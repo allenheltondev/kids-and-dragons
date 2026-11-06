@@ -17,6 +17,7 @@ afterAll(cleanup, 60_000);
 const json = (...parts) => JSON.parse(readFileSync(join(REPO, ...parts), "utf8"));
 const CATALOG = json("content", "camp.json");
 const MANIFEST = json("assets", "manifest.json").camp;
+const CAST_FIGURES = json("assets", "manifest.json").castFigures;
 const CHAPTERS = new Map(
   readdirSync(join(REPO, "content", "chapters"))
     .filter((f) => f.endsWith(".json"))
@@ -37,6 +38,7 @@ function problems(mutate = () => {}) {
     chapters: new Map([...CHAPTERS].map(([id, chapter]) => [id, structuredClone(chapter)])),
     campaigns: new Set(CAMPAIGNS),
     milestones: structuredClone(MILESTONE_KIT_PIECES),
+    castFigures: structuredClone(CAST_FIGURES),
   };
   mutate(input);
   return campCatalogProblems(input).map((p) => `${p.file}${p.at}: ${p.problem}${p.hint ? ` (${p.hint})` : ""}`);
@@ -211,13 +213,27 @@ describe("milestones (§5.4)", () => {
 });
 
 describe("friends (§4.4)", () => {
-  const goat = (overrides = {}) => ({
-    id: "kid_goat",
+  const lamb = (overrides = {}) => ({
+    id: "lamb",
     figure: "entities/goat",
-    name: "The kid goat",
-    offers: [{ rewardId: "riftlight-exchange-rift.kid_goat", chapter: "riftlight-exchange-rift" }],
-    reactions: ["The kid goat nibbles your sleeve."],
+    name: "Lamb",
+    offers: [{ rewardId: "riftlight-exchange-rift.lamb", chapter: "riftlight-exchange-rift" }],
+    reactions: ["The lamb nibbles your sleeve."],
     ...overrides,
+  });
+  const befriend = (friendId, rewardId) => ({ type: "befriend", friendId, rewardId });
+
+  it("ships the four friends that belong to nobody, Bun cast by the goat she is drawn from under her own name (#624)", () => {
+    expect(CATALOG.friends.map((f) => f.id)).toEqual(["bun", "mosshorn", "duckling", "kid_goat"]);
+    // Pepper is Nim's pony, with a job and later scenes of her own (§4.4): never a friend.
+    expect(CATALOG.friends.map((f) => f.name)).not.toContain("Pepper");
+    expect(problems()).toEqual([]);
+    // Bun is cast as the snowhorn goat her figure is drawn from; under another name she is nobody.
+    expect(
+      problems(({ chapters }) => {
+        for (const scene of Object.values(chapters.get("first-steps-01").scenes)) for (const m of scene.cast ?? []) if (m.name === "Bun") m.name = "Bunny";
+      }).join("\n"),
+    ).toContain('friend "bun" is cast/bun, which no scene of first-steps-01 casts');
   });
 
   it("accepts a friend a scene of its chapter casts", () => {
@@ -225,18 +241,44 @@ describe("friends (§4.4)", () => {
       problems(({ catalog, chapters }) => {
         const chapter = chapters.get("riftlight-exchange-rift");
         chapter.scenes[chapter.entry].cast = [{ figure: "entities/goat" }];
-        catalog.friends.push(goat());
+        catalog.friends.push(lamb());
       }),
     ).toEqual([]);
   });
 
-  it("rejects a friend no scene of its chapter casts, and a friend reusing a find's reward id", () => {
-    expect(problems(({ catalog }) => catalog.friends.push(goat({ figure: "entities/nobody_here" }))).join("\n")).toContain(
-      'friend "kid_goat" is entities/nobody_here, which no scene of riftlight-exchange-rift casts',
+  it("rejects a friend no scene of its chapter casts, a friend listed twice, and a friend reusing a find's reward id", () => {
+    expect(problems(({ catalog }) => catalog.friends.push(lamb({ figure: "entities/nobody_here" }))).join("\n")).toContain(
+      'friend "lamb" is entities/nobody_here, which no scene of riftlight-exchange-rift casts',
     );
+    expect(problems(({ catalog }) => catalog.friends.push({ ...catalog.friends[0] })).join("\n")).toContain('friend "bun" is listed twice');
     expect(
-      problems(({ catalog }) => catalog.friends.push(goat({ offers: [{ rewardId: "riftlight-exchange-rift.noodle_awning", chapter: "riftlight-exchange-rift" }] }))).join("\n"),
+      problems(({ catalog }) => catalog.friends.push(lamb({ offers: [{ rewardId: "riftlight-exchange-rift.noodle_awning", chapter: "riftlight-exchange-rift" }] }))).join("\n"),
     ).toContain("is already the offer of");
+  });
+
+  it("accepts a befriend through its friend's offer, on a choice, on every way into the place (#624)", () => {
+    expect(
+      problems(({ chapters }) => {
+        const chapter = chapters.get("riftlight-exchange-rift");
+        const entry = chapter.scenes[chapter.entry];
+        entry.choices = [{ ...entry.choices[0], effects: [befriend("kid_goat", "riftlight-exchange-rift.kid_goat")] }, ...entry.choices.slice(1)];
+        findIn(chapters, "riftlight-exchange-rift", befriend("kid_goat", "riftlight-exchange-rift.kid_goat"));
+      }),
+    ).toEqual([]);
+  });
+
+  it.each([
+    ["a friend the catalog does not have", befriend("pepper", "gemfall-04c.pepper"), 'befriend names "pepper", which is not a friend'],
+    ["a reward id that is not the friend's", befriend("kid_goat", "riftlight-exchange-rift.noodle_awning"), 'is not an offer of friend "kid_goat"'],
+    ["another friend's reward id", befriend("kid_goat", "riftlight-ashspan-bridge.duckling"), 'is not an offer of friend "kid_goat"'],
+  ])("rejects a befriend naming %s", (_, effect, message) => {
+    expect(problems(({ chapters }) => findIn(chapters, "riftlight-exchange-rift", effect)).join("\n")).toContain(message);
+  });
+
+  it("rejects a befriend in a chapter that is not its offer's", () => {
+    expect(problems(({ chapters }) => findIn(chapters, "riftlight-saltrot-arrival", befriend("kid_goat", "riftlight-exchange-rift.kid_goat"))).join("\n")).toContain(
+      "is riftlight-exchange-rift's offer, not riftlight-saltrot-arrival's",
+    );
   });
 });
 
@@ -266,5 +308,23 @@ describe("through the gate (npm run content:validate)", { timeout: 60_000 }, () 
     const schemaFind = validate(fixed);
     expect(schemaFind.code).not.toBe(0);
     expect(schemaFind.out).toContain('missing "rewardId"');
+  });
+
+  it("fails a befriend naming no real friend, and a befriend with no friend at all (#624)", () => {
+    const dir = copyTree();
+    const path = ["content", "chapters", "riftlight-exchange-rift.json"];
+    const chapter = readJson(dir, ...path);
+    chapter.scenes[chapter.entry].onEnter = [...(chapter.scenes[chapter.entry].onEnter ?? []), { type: "befriend", friendId: "pepper", rewardId: "riftlight-exchange-rift.pepper" }];
+    writeJson(dir, path, chapter);
+    const unknown = validate(dir);
+    expect(unknown.code).not.toBe(0);
+    expect(unknown.out).toContain('befriend names "pepper", which is not a friend');
+
+    const effect = readJson(dir, ...path);
+    delete effect.scenes[effect.entry].onEnter.at(-1).friendId;
+    writeJson(dir, path, effect);
+    const schema = validate(dir);
+    expect(schema.code).not.toBe(0);
+    expect(schema.out).toContain('missing "friendId"');
   });
 });

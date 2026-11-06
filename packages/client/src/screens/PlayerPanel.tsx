@@ -1396,6 +1396,15 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
           </div>
         ) : null}
 
+        {/* Travel Mode at a rest (docs/camp.md §3; #627): no TV shows the camp, so the
+            phone's way to it is here too, under the choices and never in their way,
+            as it is beside Ready in the lobby and under the chapter's rewards. */}
+        {atRest && state.mode === "travel" && myPrompt?.kind === "choice" ? (
+          <div className="player__camp player__camp--rest">
+            <CampButton state={state} block />
+          </div>
+        ) : null}
+
         {/* ---------------- roll (spec §4.1) ---------------- */}
         {myPrompt !== null && myPrompt.kind === "roll" ? (
           <div className="prompt">

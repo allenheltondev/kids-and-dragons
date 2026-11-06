@@ -130,7 +130,7 @@
       }
     },
     "friends": {
-      "description": "Creatures a crew can befriend (§4.4), each belonging to nobody in the story. #624 fills it.",
+      "description": "Creatures a crew can befriend (§4.4; #624), each belonging to nobody in the story. A chapter's befriend effect names one, through its offer for that chapter.",
       "type": "array",
       "items": { "$ref": "#/$defs/friend" }
     }
@@ -278,9 +278,13 @@
       "properties": {
         "id": { "$ref": "#/$defs/id" },
         "figure": {
-          "description": "Its figure, as a chapter's cast names it; a scene of each offer's chapter casts it.",
+          "description": "Its figure, whose art and height the camp draws: as a chapter's cast names it. A scene of each offer's chapter casts it, or casts the entity its cast figure is drawn from (manifest castFigures basis) under its name.",
           "type": "string",
           "pattern": "^(entities|characters|cast)/[a-z0-9]+([_-][a-z0-9]+)*$"
+        },
+        "size": {
+          "description": "How big it stands in camp, as its chapter casts it (a cast size band); absent, the figure's own height.",
+          "enum": ["tiny", "tiny_to_small", "small", "small_to_medium", "medium", "medium_to_large", "large", "very_large", "colossal"]
         },
         "name": { "type": "string", "minLength": 1, "maxLength": 32 },
         "offers": { "$ref": "#/$defs/offers" },

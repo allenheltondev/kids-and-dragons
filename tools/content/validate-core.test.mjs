@@ -143,6 +143,25 @@ describe("the scene graph — the rules a schema cannot express", () => {
     expect(out).toMatch(/endsCampaign on a scene that is not an ending/);
   });
 
+  it("catches a rest scene that does not say whether it is indoors or out (docs/camp.md §3.2)", () => {
+    // The shared screen pitches the full camp only outdoors, so nothing may guess.
+    const { code, out } = withChapter((chapter) => {
+      const rest = Object.values(chapter.scenes).find((scene) => scene.type === "rest");
+      delete rest.setting;
+    });
+    expect(code).not.toBe(0);
+    expect(out).toContain("setting");
+  });
+
+  it("catches a rest scene whose setting is neither indoor nor outdoor", () => {
+    const { code, out } = withChapter((chapter) => {
+      const rest = Object.values(chapter.scenes).find((scene) => scene.type === "rest");
+      rest.setting = "cave";
+    });
+    expect(code).not.toBe(0);
+    expect(out).toContain("setting");
+  });
+
   it("catches a chapter whose id disagrees with its filename", () => {
     // The loader resolves chapters by filename, so this is a chapter that
     // cannot be started by the id the campaign uses to name it.

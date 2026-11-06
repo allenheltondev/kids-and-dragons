@@ -206,3 +206,19 @@ describe("campRoute", () => {
   });
 });
 
+
+describe("a crew past the frame art painted (docs/camp.md §12.3; #627)", () => {
+  it("pitches the biggest frame painted, and an unknown terrain on open_plains", () => {
+    // Only stages 1 and 2 painted, as before Phase 3's art: a stage-3 or stage-4 crew gets stage 2.
+    const m = campManifestFixture() as Raw;
+    const two = { ...JSON.parse(JSON.stringify(m.frames[0])), stage: 2 };
+    m.frames = [m.frames[0], two];
+    m.backdrops = [{ ...JSON.parse(JSON.stringify(m.backdrops[0])), family: "frozen_north" }, ...m.backdrops];
+    const manifest = parseCampManifest(m);
+    for (const stage of [3, 4, 9]) expect(campLayout(manifest, "open_plains", stage).frame.stage).toBe(2);
+    expect(campLayout(manifest, "open_plains", 1).frame.stage).toBe(1);
+    // A terrain with no backdrop yet stands on open_plains, wherever it is listed.
+    expect(campLayout(manifest, "sky_islands", 3).backdrop.family).toBe("open_plains");
+    expect(campLayout(manifest, "frozen_north", 3).backdrop.family).toBe("frozen_north");
+  });
+});

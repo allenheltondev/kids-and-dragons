@@ -114,9 +114,9 @@ describe("taking a hero home (#251)", () => {
     expect(Object.keys((await harness.repo.getFieldGuide(home)).entries)).toEqual(["moth"]);
   });
 
-  it("takes her heroes' buddies out of every one of the club's camps, and her kit comes home with her (docs/camp.md §4.4)", async () => {
+  it("leaves her heroes' buddies at the club's camps behind, and her kit comes home with her (docs/camp.md §4.4, #624)", async () => {
     const { harness, club, ada, hero } = await adaAtTheClub();
-    // A second crew at the club, and Bo's hero, whose buddy must stay.
+    // A second crew at the club.
     const crew = "crew_two";
     const at = "2026-07-01T00:00:00.000Z";
     const lobby = { runId: "r_crew", seq: 0 } as unknown as RunState;
@@ -132,12 +132,14 @@ describe("taking a hero home (#251)", () => {
     ).toBe(true);
     const friends = { bun: { rewardId: "first-steps-01.bun", at } };
     for (const c of [null, crew]) {
-      expect(await mutateCamp(club.id, c, (camp) => ({ ...camp, friends, buddies: { [hero.id]: "bun", c_bo: "bun" } }), harness.deps)).toMatchObject({ ok: true });
+      expect(await mutateCamp(club.id, c, (camp) => ({ ...camp, friends }), harness.deps)).toMatchObject({ ok: true });
     }
+    // Her buddy in both of the club's crews' camps, and in a camp somewhere else she visits.
+    const buddies = { [club.id]: "bun", [`${club.id}#${crew}`]: "bun", h_elsewhere: "duckling" };
     const picked = await mutateKit(
       club.id,
       hero.id,
-      (kit) => ({ ...kit, style: "quilted", tent: "patched", unlocked: { ...kit.unlocked, deco_lamp_ribbon: { from: "found", rewardId: "gemfall-01.lamp_ribbon", at } } }),
+      (kit) => ({ ...kit, style: "quilted", tent: "patched", buddies, unlocked: { ...kit.unlocked, deco_lamp_ribbon: { from: "found", rewardId: "gemfall-01.lamp_ribbon", at } } }),
       harness.deps,
     );
     expect(picked).toMatchObject({ ok: true });
@@ -146,12 +148,9 @@ describe("taking a hero home (#251)", () => {
     const code = value(await createTransferCode({ ...LEADER, householdId: club.id, playerId: ada.player.id }, harness.deps));
     const moved = value(await acceptTransfer({ ...MUM, code: code.code }, harness.deps));
 
-    for (const c of [undefined, crew]) {
-      const camp = await harness.repo.getCamp(club.id, c);
-      expect(camp?.buddies).toEqual({ c_bo: "bun" });
-      expect(camp?.friends).toEqual(friends);
-    }
-    expect(readKit((await harness.repo.getCharacter(moved.household.id, hero.id))!)).toEqual(kit);
+    for (const c of [undefined, crew]) expect((await harness.repo.getCamp(club.id, c))?.friends).toEqual(friends);
+    const home = readKit((await harness.repo.getCharacter(moved.household.id, hero.id))!);
+    expect(home).toEqual({ ...kit, revision: home.revision, buddies: { h_elsewhere: "duckling" } });
   });
 
   it("works once", async () => {

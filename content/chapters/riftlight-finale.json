@@ -389,6 +389,7 @@
     },
     "rest": {
       "type": "rest",
+      "setting": "indoor",
       "art": "scenes/riftlight/hidden-ice-tunnel",
       "heal": 2,
       "narration": "Behind a rib of old ice, out of the wind, Bram hangs his lantern and Orin opens the last of the supper bag. Everyone eats with their mittens on. Through a crack in the ice rib, you can see a shimmer, far off, moving slowly, like breath. There is time to do one thing before you go on.",

@@ -2103,6 +2103,7 @@
     },
     "rest_empty_chair": {
       "type": "rest",
+      "setting": "indoor",
       "narration": "Cupboard, hayloft or squashed-up room, it is warm and dry. Through the wall, people argue happily about onions. Tomorrow the caravans leave.",
       "heal": 2,
       "choices": [
@@ -2661,6 +2662,7 @@
     },
     "rest_northbound": {
       "type": "rest",
+      "setting": "outdoor",
       "discovers": [
         "biome.sunward_fields"
       ],

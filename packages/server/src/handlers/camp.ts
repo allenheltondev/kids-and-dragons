@@ -36,6 +36,7 @@
  */
 
 import {
+  campKeyOf,
   campView,
   countsTowardShop,
   emptyCamp,
@@ -446,41 +447,37 @@ export async function planKit(
 }
 
 // ---------------------------------------------------------------------------
-// Deleting (#252)
+// Moving home (#251)
 // ---------------------------------------------------------------------------
 
 /**
- * Take deleted heroes' buddies out of every camp at one table (§9): its first
- * crew's and each other crew's. A camp goes with its household, and a kit with
- * its hero, so this is all a hero's delete leaves to do. Only stored camps are
- * touched, and a race is retried; a table that still cannot be cleaned throws,
- * so the forget job keeps it for the sweep (retention.ts).
+ * Take a moved kid's heroes' buddies in her old home's camps off their kits
+ * (§4.4, decided): a buddy names one of that household's crews' friends, and
+ * applies only in that crew's camp (`campKey`), so it stays behind. Her kit
+ * moved with her, so this writes her heroes' rows at her new home. A buddy at
+ * any other table she visits is kept. Nothing else changes: a hero deleted
+ * takes her kit, buddies and all, with her, so a delete has nothing to do.
+ * Throws when a hero's row cannot be written, for the caller to log.
  */
 export async function forgetBuddies(
-  householdId: string,
+  homeHouseholdId: string,
   heroIds: readonly string[],
+  oldHouseholdId: string,
   deps: Pick<HandlerDeps, "repo">,
 ): Promise<void> {
-  if (heroIds.length === 0) return;
-  const crews: (string | undefined)[] = [undefined, ...(await deps.repo.listCrews(householdId)).map((c) => c.id)];
-  for (const crew of crews) {
-    let done = false;
-    for (let attempt = 0; attempt < CAMP_WRITE_ATTEMPTS && !done; attempt++) {
-      const stored = await deps.repo.getCamp(householdId, crew);
-      const gone = stored ? heroIds.filter((id) => Object.hasOwn(stored.buddies, id)) : [];
-      if (!stored || gone.length === 0) {
-        done = true;
-        break;
-      }
-      const buddies = { ...stored.buddies };
-      for (const id of gone) delete buddies[id];
-      done = await deps.repo.putCamp({
-        householdId,
-        ...(crew ? { crew } : {}),
-        camp: { ...stored, buddies },
-        expectedRevision: stored.revision,
-      });
-    }
-    if (!done) throw new Error(`camp: could not take buddies out of ${householdId}'s camp${crew ? ` for ${crew}` : ""}`);
+  for (const id of heroIds) {
+    const written = await mutateKit(
+      homeHouseholdId,
+      id,
+      (kit) => {
+        const gone = Object.keys(kit.buddies).filter((key) => campKeyOf(key, oldHouseholdId));
+        if (gone.length === 0) return null;
+        const buddies = { ...kit.buddies };
+        for (const key of gone) delete buddies[key];
+        return { ...kit, buddies };
+      },
+      deps,
+    );
+    if (!written.ok && written.reason !== "missing") throw new Error(`camp: could not take hero ${id}'s buddies at ${oldHouseholdId} off her kit (${written.reason})`);
   }
 }

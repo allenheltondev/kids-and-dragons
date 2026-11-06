@@ -1072,6 +1072,7 @@
     },
     "warm": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "The herder sets out a little stove of warm stones. The kid falls asleep on someone's boots. \"The tunnel below is too narrow for me,\" she says. \"I'll go around by the hall's back door and meet you.\" She gives you a jar of glowing moss. \"Mosslight. For dark places.\"",
       "heal": 2,
       "choices": [
@@ -2434,6 +2435,7 @@
     },
     "ready": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "You stand together by the fold. The herder's cairn guards the passage mouth. She sniffs the salt wind. \"A coast, under my glacier,\" she says. \"Things are moving that should stay put. What is moving them? Can anyone put them back?\" Your chime hums. For a moment it leans past the fold, up the glacier, toward the oldest ice.",
       "heal": 0,
       "choices": [],
@@ -2476,6 +2478,7 @@
     },
     "leave": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "The herder walks you back to the hall by the wide back door. Behind you the fold sleeps on, ticking. \"Something down there answers our song,\" she says. \"Who taught it? And why is the sea under my glacier?\" The Cairnstep lead is still yours, and you can come back to sing the note later.",
       "heal": 0,
       "choices": [],

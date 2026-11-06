@@ -1251,6 +1251,7 @@
     },
     "rest_bell_house": {
       "type": "rest",
+      "setting": "indoor",
       "narration": "Sleep on warm stone under silent bells. A grandmother adds a hot rock to your blanket. Outside, the rush still lines up by lantern light. Inside, even the smallest bell is tucked in.",
       "heal": 3,
       "choices": [
@@ -1895,6 +1896,7 @@
     },
     "end_through_the_stones": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "You walk north through the boundary stones into the foothills, with the rush all around you. Ahead, on a red ridge, stands the Skywardens' citadel. Tonight you camp under the stones that were here first. They feel like they are on your side.",
       "heal": 4,
       "choices": [],

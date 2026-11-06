@@ -47,6 +47,43 @@
 }
 .kad-static-stage__figure.is-down img { transform: rotate(80deg); opacity: 0.6; }
 .kad-static-stage__figure meter { inline-size: 100%; }
+/* An indoor rest (docs/camp.md §3.2, #625): her bedroll and pack on the ground at her side, behind
+   her, as the moving stage lays it (packed-camp.ts). No tents, no campfire. */
+.kad-static-stage__figure.is-packed { position: relative; isolation: isolate; }
+.kad-static-stage__bedroll {
+  position: absolute;
+  z-index: -1;
+  inset-inline-start: 55%;
+  inset-block-end: 1.1em;
+  inline-size: 80%;
+  pointer-events: none;
+}
+.kad-static-stage__bedroll svg { display: block; inline-size: 100%; block-size: auto; }
+/* A friend out (#624) sits at an end of the packed row, at its true height beside the heroes. */
+.kad-static-stage__friend.is-turned img { transform: scaleX(-1); }
+/* A tapped friend's words over its head (#624): the moving camp's pale bubble, still. */
+.kad-static-stage__friend { position: relative; }
+.kad-static-stage__words, .kad-static-camp__words {
+  position: absolute;
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  inline-size: max-content;
+  max-inline-size: 14em;
+  padding: .45em .7em;
+  border: 2px solid rgb(107 79 42 / 85%);
+  border-radius: .8em;
+  background: #fff8ea;
+  color: #2b2238;
+  font: 800 clamp(14px, 2.6cqh, 30px)/1.25 Nunito, system-ui, sans-serif;
+  text-align: center;
+  text-shadow: none;
+  white-space: normal;
+  pointer-events: none;
+  z-index: 2;
+}
+.kad-static-stage__words { inset-block-end: 100%; }
+/* The painting's head is the nominal box's top, 7.8% down its canvas (figure-scale.ts NOMINAL_PAINT). */
+.kad-static-camp__words { inset-block-end: 92%; font-size: max(14px, .9em); }
 
 /* A still frame of the neutral tear, keeping the scene's visible doorway on
    devices without WebGL. Its rules/colours remain in the separate RiftSight UI. */
@@ -69,6 +106,9 @@
   background: #2a2f4a;
 }
 .kad-static-camp__frame { position: absolute; }
+/* A shrunk camp's mirrored copies, either side of it (#625). */
+.kad-static-camp__side { transform: scaleX(-1); }
+/* The terrain's accent over the painting (camp-accents.ts; #652). */
 .kad-static-camp__accent { position: absolute; pointer-events: none; }
 /* The painting's plain edges drawn on past it (camp-framing.ts campBleed): flipped, so the
    painting's top row meets itself above it and its bottom row below it. */

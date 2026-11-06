@@ -519,6 +519,7 @@
     },
     "rest_queue_camp": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "The travelers camp for the night. Toffee is shared, then stolen by a goat. Under the bridge, something rubs numbers off a slate and writes bigger ones.",
       "heal": 2,
       "choices": [
@@ -807,6 +808,7 @@
     },
     "rest_dry_end": {
       "type": "rest",
+      "setting": "outdoor",
       "discovers": [
         "biome.eastern_plains"
       ],
@@ -1056,6 +1058,7 @@
     },
     "rest_wet_end": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "You build a driftwood fire on the eastern shore and steam like dumplings. You will walk into the Eastern Plains the wet way, from the south. Old Ossley's boat is gone. His reed knot is still damp.",
       "heal": 4,
       "choices": [],
@@ -1083,6 +1086,7 @@
     },
     "rest_setback": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "The crawlers carry off the snacks, two bootlaces and the map. Chasing your boots takes all day. Old Ossley poles past and nods once, as if to say: you'll still get there. Just later.",
       "heal": 3,
       "outcome": "setback",

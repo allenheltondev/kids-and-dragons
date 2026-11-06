@@ -444,11 +444,43 @@
             "grantCoins",
             "spendCoins",
             "findForCamp",
-            "findForKit"
+            "findForKit",
+            "befriend"
           ]
         }
       },
       "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "befriend"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "$comment": "docs/camp.md §4.4, §12.2; #624. On a \"Come along\" choice beside a \"Say goodbye\" that writes nothing. tools/content/camp-catalog.mjs checks the friend is in content/camp.json and the rewardId is its offer for this chapter.",
+            "required": [
+              "friendId",
+              "rewardId"
+            ],
+            "properties": {
+              "friendId": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(_[a-z0-9]+)*$"
+              },
+              "rewardId": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+([-_.][a-z0-9]+)*$",
+                "maxLength": 80
+              }
+            }
+          }
+        },
         {
           "if": {
             "properties": {
@@ -1587,12 +1619,20 @@
       "additionalProperties": false,
       "required": [
         "type",
+        "setting",
         "narration",
         "choices"
       ],
       "properties": {
         "type": {
           "const": "rest"
+        },
+        "setting": {
+          "description": "RestScene.setting in chapter.ts (docs/camp.md §3.2): outdoor where a campsite could be pitched (the shared screen crossfades to the crew's full camp in the chapter's terrain); indoor everywhere else, outdoor places no campsite fits included (the scene keeps its picture and the camp is packed down into it).",
+          "enum": [
+            "indoor",
+            "outdoor"
+          ]
         },
         "art": {
           "type": "string",

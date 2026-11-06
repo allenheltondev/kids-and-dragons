@@ -34,6 +34,7 @@ import type {
   KitPieceId,
 } from "./types/camp.js";
 import type { RunState } from "./types/state.js";
+import type { Chapter, RestSetting } from "./types/chapter.js";
 
 /**
  * Shared changes each seated player may make in one downtime moment (§6.1,
@@ -76,12 +77,34 @@ export function scopeOfMoment(moment: CampMoment): string {
  * A new moment for `state`, or null outside downtime. Its id leads with its
  * scope (`scopeOfMoment`), then `stamp`, which the server makes unique (the
  * run and the seq that began it).
+ *
+ * The lobby and the chapter's end are always the full, outdoor camp. A rest is
+ * outdoors only when its scene says so (`RestScene.setting`, §3.2; #625), which
+ * the caller reads off the chapter (`restSettingOf`); a rest it could not read
+ * is indoors, the packed-down camp, which shows nothing a scene could contradict.
  */
-export function newCampMoment(state: Pick<RunState, "phase" | "sceneType" | "sceneId">, stamp: string): CampMoment | null {
+export function newCampMoment(
+  state: Pick<RunState, "phase" | "sceneType" | "sceneId">,
+  stamp: string,
+  restSetting?: RestSetting | null,
+): CampMoment | null {
   const kind = campMomentKind(state);
   const scope = campMomentScope(state);
   if (kind === null || scope === null) return null;
-  return { id: `${scope}|${stamp}`, kind, outdoor: kind !== "rest", changes: {} };
+  return { id: `${scope}|${stamp}`, kind, outdoor: kind !== "rest" || restSetting === "outdoor", changes: {} };
+}
+
+/**
+ * The setting of the rest scene `state` is on (§3.2), read off its chapter;
+ * null anywhere else, or when `chapter` is not the one the state is in.
+ */
+export function restSettingOf(
+  chapter: Pick<Chapter, "id" | "scenes"> | null | undefined,
+  state: Pick<RunState, "chapterId" | "sceneId" | "sceneType">,
+): RestSetting | null {
+  if (!chapter || state.sceneType !== "rest" || !state.sceneId || chapter.id !== state.chapterId) return null;
+  const scene = chapter.scenes[state.sceneId];
+  return scene?.type === "rest" ? scene.setting ?? null : null;
 }
 
 /**
@@ -103,11 +126,12 @@ export function followCampMoment(
   before: CampMoment | undefined,
   after: Pick<RunState, "phase" | "sceneType" | "sceneId">,
   stamp: string,
+  restSetting?: RestSetting | null,
 ): CampMoment | undefined {
   const scope = campMomentScope(after);
   if (scope === null) return undefined;
   if (before && scopeOfMoment(before) === scope) return before;
-  return newCampMoment(after, stamp) ?? undefined;
+  return newCampMoment(after, stamp, restSetting) ?? undefined;
 }
 
 // ---------------------------------------------------------------------------
@@ -289,8 +313,12 @@ export function placeRefusalText(refused: PlaceRefusal): string {
 // A hero's kit (§4.5, §12.1)
 // ---------------------------------------------------------------------------
 
-/** `RunState.kits[heroId]`: what the screens need of a stored kit. */
-export function kitView(kit: HeroKit): HeroKitView {
+/**
+ * `RunState.kits[heroId]`: what the screens need of a stored kit, at the camp
+ * `key` names (`campKey`), whose buddy is the one shown (§4.4; #624).
+ */
+export function kitView(kit: HeroKit, key?: string): HeroKitView {
+  const buddy = key === undefined ? undefined : kit.buddies[key];
   return {
     revision: kit.revision,
     style: kit.style,
@@ -298,6 +326,7 @@ export function kitView(kit: HeroKit): HeroKitView {
     color: kit.color,
     slots: [...kit.slots],
     unlocked: Object.keys(kit.unlocked).sort(),
+    ...(buddy ? { buddy } : {}),
   };
 }
 
@@ -334,6 +363,8 @@ export interface KitEdit {
   tent?: string;
   color?: string | null;
   slots?: (string | null)[];
+  /** Her buddy in this crew's camp (§4.4; #624), or null for none. */
+  buddy?: string | null;
 }
 
 /**
@@ -341,10 +372,12 @@ export interface KitEdit {
  * must be in the kit catalog and, beyond the free one, unlocked by her
  * (§12.1). Never anything the crew owns.
  */
-export function kitEditProblem(rules: KitRules, unlocked: readonly KitPieceId[], edit: KitEdit): string | null {
-  if (edit.style === undefined && edit.tent === undefined && edit.color === undefined && edit.slots === undefined) {
+export function kitEditProblem(rules: KitRules, unlocked: readonly KitPieceId[], edit: KitEdit, friends: readonly string[] = []): string | null {
+  if (edit.style === undefined && edit.tent === undefined && edit.color === undefined && edit.slots === undefined && edit.buddy === undefined) {
     return "nothing to change";
   }
+  // A buddy is one of this crew's friends (§4.4): never another crew's, never a piece.
+  if (edit.buddy !== undefined && edit.buddy !== null && !friends.includes(edit.buddy)) return `"${edit.buddy}" is not one of this crew's friends`;
   if (edit.style !== undefined && !rules.styles.some((s) => s.id === edit.style)) return `no such kit style "${edit.style}"`;
   if (edit.tent !== undefined && !kitTentChoices(rules, unlocked).includes(edit.tent)) return `tent "${edit.tent}" is not hers to pick`;
   if (edit.color !== undefined && edit.color !== null && !KIT_COLORS.includes(edit.color)) return `no such kit color "${edit.color}"`;
@@ -358,14 +391,20 @@ export function kitEditProblem(rules: KitRules, unlocked: readonly KitPieceId[],
   return null;
 }
 
-/** The kit with an edit applied. */
-export function withKitEdit<K extends Pick<HeroKit, "style" | "tent" | "color" | "slots">>(kit: K, edit: KitEdit): K {
+/** The kit with an edit applied; a buddy goes under `key`, the camp it is picked in (`campKey`). */
+export function withKitEdit<K extends Pick<HeroKit, "style" | "tent" | "color" | "slots"> & Partial<Pick<HeroKit, "buddies">>>(kit: K, edit: KitEdit, key?: string): K {
+  const buddies = edit.buddy === undefined || key === undefined ? undefined : { ...(kit.buddies ?? {}) };
+  if (buddies && key !== undefined) {
+    if (edit.buddy) buddies[key] = edit.buddy;
+    else delete buddies[key];
+  }
   return {
     ...kit,
     ...(edit.style !== undefined ? { style: edit.style } : {}),
     ...(edit.tent !== undefined ? { tent: edit.tent } : {}),
     ...(edit.color !== undefined ? { color: edit.color } : {}),
     ...(edit.slots !== undefined ? { slots: [...edit.slots] } : {}),
+    ...(buddies ? { buddies } : {}),
   };
 }
 

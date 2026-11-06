@@ -1639,6 +1639,7 @@
     },
     "rest_cool_gallery": {
       "type": "rest",
+      "setting": "indoor",
       "discovers": [
         "creature.embermoth"
       ],
@@ -4367,6 +4368,7 @@
     },
     "ending_heroes": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "You walk out into morning, and every bell in the foothills rings the happy ring. The embermoths come home in one glowing cloud. At the tree line, Tansy's family waves, goat and all. Under the mountain, the titan sleeps, snug under its mended seal. History calls you the Heroes of Red Sky.",
       "variants": [
         {
@@ -4469,6 +4471,7 @@
     },
     "ending_heroes_destroy": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "You walk out of a quiet mountain. The titan is gone, gently, like the last note of a song, and nobody will ever know what it was. At the tree line, Tansy's family listens to the quiet. History calls you the Heroes of Red Sky. And the Seal-Keeper, with nothing left to keep, flies out of the mountain at last, embermoths riding on its back.",
       "variants": [
         {
@@ -4571,6 +4574,7 @@
     },
     "ending_quiet_fixers": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "You slip out a side tunnel and never tell a soul. The tremors stop, the moths come home, the titan sleeps. History calls it a lucky year, and Tansy's family never knows who to thank. But four hundred years from now, a warden clerk will find one line in an odd-colored ledger, and smile, and wonder who. The Quiet Fixers.",
       "variants": [
         {
@@ -4661,6 +4665,7 @@
     },
     "ending_collectors": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "You carry the Keystone down the mountain, warm and humming. Whatever you were collecting, it is complete. Behind you, the Seal-Keeper lies across the seal to hold it, and under it the titan lies awake. At the tree line, Tansy stares with round eyes. History calls you The Collectors. A grandmother adds your names to a very old list.",
       "variants": [
         {
@@ -4805,6 +4810,7 @@
     },
     "ending_wardens_regret": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "You walk out behind the wardens. The realm is safe, the way a locked room is safe. Under the mountain, the titan waits in its cage. At the tree line, Tansy asks if the thing in the cage minds. Nobody can tell her. Years later, Captain Voss writes: I wonder if it was lonely. History calls it The Wardens' Regret. But the embermoths still visit the titan every evening.",
       "variants": [
         {
@@ -4907,6 +4913,7 @@
     },
     "ending_cure": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "You walk out with the Deep Hollow choir still singing, and under the seal the titan hums along. Hessa's choir swears the world is mending. Maybe it is: the sky is a little less red, and Hessa cries into a pot of soup. Tansy hums the chord all the way home. History calls it The Cure, with a question mark nobody can rub out.",
       "variants": [
         {
@@ -5009,6 +5016,7 @@
     },
     "ending_new_weather": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "You walk out holding the leash, and the titan lies half awake, in your keeping. The realm has something new: you. Farmers watch your camp to know if it will rain. Tansy's family plants beans by your weather, and the beans have never been happier. History calls you The New Weather. The Seal-Keeper sometimes visits for tea.",
       "variants": [
         {
@@ -5111,6 +5119,7 @@
     },
     "ending_turned_back": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "The Seal-Keeper never hurts children who come up the wrong way. It sets you down in the foothills with everybody else, then goes back to hold the seal alone. You watch the summit glow all night. At dawn, an embermoth lands on your hand and stays. It only does that for someone it expects to see again.",
       "variants": [
         {
@@ -5214,6 +5223,7 @@
     },
     "ending_last_ring": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "The ring nobody ever used rings across the realm. Something enormous stretches under the mountain, and nobody is at the seal to answer. The realm does not end. It rearranges: rivers wander, roads bend, the red sky turns ordinary. History calls you the almost-heroes. But in the foothills, a dragonling child is already learning the bell code backwards, looking for a ring to put it all back to sleep.",
       "variants": [
         {
@@ -5317,6 +5327,7 @@
     },
     "ending_broken_tether": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "The leash snaps, and the seal cracks. The titan rolls over, half awake, and the mountain throws gemstones across the sky. The Seal-Keeper throws itself across the crack and holds it. Everybody who reached for that leash grieves. But the seal is cracked, not broken, and the Keeper is still holding. Holding is something somebody can help with, someday.",
       "variants": [
         {

@@ -1570,6 +1570,7 @@
     },
     "rest": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "Juniper pours ginger tea from a pot shaped like a whale. Pip drinks his in one gulp and burns his tongue. The hen drinks from the lid. \"The temple must hear from us before the island gets there,\" says Juniper. \"A warning would send them all inside to get their push poles ready. Our welcome song would bring them out to clear the landing and let it rest. A song rings fast from bell to bell. A warning needs a carrier.\"",
       "heal": 2,
       "cast": [

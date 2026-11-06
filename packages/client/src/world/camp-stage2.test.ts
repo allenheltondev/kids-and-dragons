@@ -41,7 +41,6 @@ const view = (over: Partial<CampView> = {}): CampView => ({
   owned: ["shop_striped_awning"],
   placed: { awning: "shop_striped_awning" },
   friends: [],
-  buddies: {},
   shopOpen: false,
   ...over,
 });
@@ -97,7 +96,7 @@ describe("frame stage 2", () => {
 
   it("is what the lobby pitches for a crew whose record says stage 2, and stage 1 otherwise", () => {
     const app = fakeApp();
-    const lobby = createLobbyCamp(app as unknown as Application, lobbyCampLayout()!, { still: true, loadTexture: noArt, layoutFor: campLayoutFor });
+    const lobby = createLobbyCamp(app as unknown as Application, lobbyCampLayout()!, { still: true, loadTexture: noArt, layoutFor: (stage) => campLayoutFor(stage) });
     lobby.resize(1600, 900);
     lobby.sync({ ...makeState({ phase: "lobby", party: [member(1)] }), camp: view({ frameStage: 1, grownBy: [], placed: {} }) } as RunState);
     expect(labels(lobby.camp()!.view)).toContain("piece:bedroll_0");
@@ -124,7 +123,7 @@ describe("the stage-up moment (§4.1)", () => {
       },
     });
     lobby.resize(1600, 900);
-    lobby.sync(makeState({ phase: "chapter_complete" }), biome);
+    lobby.sync(makeState({ phase: "chapter_complete", chapterId: "ch" }), { id: "ch", biome });
     setCampBeat(true);
     await settle();
     const stage = lobby.camp()!.view;
@@ -143,7 +142,7 @@ describe("the stage-up moment (§4.1)", () => {
     for (let i = 0; i < 20; i++) app.ticker.frame(16);
     expect(accent[property]).toBe(resting);
 
-    lobby.sync(makeState({ phase: "lobby" }), biome);
+    lobby.sync(makeState({ phase: "lobby", chapterId: "ch" }), { id: "ch", biome });
     await settle();
     expect(lobby.camp()!.view.getChildByLabel("camp-terrain-accent", true)).toBeFalsy();
     lobby.destroy();
@@ -159,7 +158,7 @@ describe("the stage-up moment (§4.1)", () => {
     const lobby = createLobbyCamp(app as unknown as Application, lobbyCampLayout()!, {
       still: false,
       loadTexture: noArt,
-      layoutFor: campLayoutFor,
+      layoutFor: (stage) => campLayoutFor(stage),
       cover: (on) => covered.push(on),
     });
     lobby.resize(1600, 900);

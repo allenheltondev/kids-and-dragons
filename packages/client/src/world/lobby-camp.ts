@@ -17,19 +17,25 @@
  * cannot read it two ways.
  */
 
-import type { CastStance, HeroKitView, PartyMember, PhaseKind, RunState } from "@kad/shared";
-import { castArtUrl, characterWorldArtUrl } from "./art-paths";
-import { biomeFamilies, camp as campManifest } from "../../../../assets/manifest.json";
+import { campMomentKind, lobbyCampaign } from "@kad/shared";
+import type { CastStance, Chapter, HeroKitView, PartyMember, PhaseKind, RunState } from "@kad/shared";
+import { CAMP_FALLBACK_FAMILY, campBackdropFamily } from "./camp-backdrop";
+import { characterWorldArtUrl } from "./art-paths";
+import { camp as campManifest } from "../../../../assets/manifest.json";
 import type { CampDressing, CampFigure } from "./camp";
 import { campBeside, campSpots, crewName, kitLook } from "./camp-scene";
-import { friendHabitSpot, CAMP_SEATS, campLayout, parseCampManifest, type CampLayout } from "./camp-layout";
+import { CAMP_SEATS, campLayout, parseCampManifest, type CampLayout } from "./camp-layout";
 import { NOMINAL_PAINT, figureSize, paintAspect } from "./figure-scale";
 import { campStandRange, campStandX, type CampSpan } from "./camp-framing";
 import { ANCHOR_Y } from "./art-paths";
 import { campHeightPx, campMeasure } from "./camp-motion";
 
-/** The terrain family the lobby pitches in, for everyone in Phase 1 (§10). */
-export const LOBBY_CAMP_FAMILY = "open_plains";
+/**
+ * The terrain family a camp pitches in when nothing says where the crew is
+ * (§3.1). Anywhere else the chapter picks it (`campFamilyFor`, through
+ * camp-backdrop.ts `campBackdropFamily`).
+ */
+export const LOBBY_CAMP_FAMILY = CAMP_FALLBACK_FAMILY;
 /** Bedrolls round a small campfire (§4.1). */
 export const LOBBY_CAMP_STAGE = 1;
 /**
@@ -53,22 +59,54 @@ export function lobbyCampLayout(): CampLayout | null {
 /**
  * The camp at the crew's frame stage (§4.1; #620), from its stored record
  * (`RunState.camp.frameStage`): bedrolls at stage 1, a tent each and a
- * cookfire at stage 2, and the biggest frame painted for anything past it
- * (§12.3's safe fallback). Parsed once per stage.
+ * cookfire at stage 2, an awning, a lantern string and a lookout at stage 3,
+ * the grand camp at stage 4, and the biggest frame painted for anything past
+ * it (§12.3's safe fallback). Pitched on `family`'s backdrop (§3.1, #627;
+ * `campFamilyFor`), `open_plains` where it has none. Parsed
+ * once per stage and family.
  */
-export function campLayoutFor(stage: number, biome?: string | null): CampLayout | null {
-  const frame = Math.max(1, Math.floor(stage));
-  const family = Object.entries(biomeFamilies).find(([, biomes]) => biome && biomes.includes(biome))?.[0] ?? LOBBY_CAMP_FAMILY;
-  const key = `${frame}:${family}`;
+export function campLayoutFor(stage: number, family: string = LOBBY_CAMP_FAMILY): CampLayout | null {
+  const at = Math.max(1, Math.floor(Number.isFinite(stage) ? stage : 1));
+  const key = `${family}:${String(at)}`;
   if (!parsedLayouts.has(key)) {
     try {
-      parsedLayouts.set(key, campLayout(parseCampManifest(campManifest), family, frame));
+      parsedLayouts.set(key, campLayout(parseCampManifest(campManifest), family, at));
     } catch (error) {
       globalThis.reportError?.(error);
       parsedLayouts.set(key, null);
     }
   }
   return parsedLayouts.get(key) ?? null;
+}
+
+/**
+ * The biome the camp is pitched in now (§3.1; #627): in the lobby, the next
+ * chapter of the campaign the lobby would begin (`CampaignView.next.biome`,
+ * the chapter the crew would pick up from); anywhere else, the chapter being
+ * played, once this screen has it. Null when nobody can say (a lobby before
+ * any campaign, a chapter still loading).
+ */
+export function campBiome(
+  state: Pick<RunState, "phase" | "chapterId" | "campaign" | "campaignOptions" | "party" | "campaignVotes" | "storyTurn"> | null | undefined,
+  chapter: Pick<Chapter, "id" | "biome"> | null | undefined,
+): string | null {
+  if (!state) return null;
+  const phase = state.phase ?? "lobby";
+  if (phase === "lobby" || phase === "creation") return lobbyCampaign(state as RunState).leader?.next?.biome ?? null;
+  return chapter && chapter.id === state.chapterId ? chapter.biome : null;
+}
+
+/**
+ * The family a camp on this screen pitches in now: the terrain of
+ * `campBiome`'s chapter, through camp-backdrop.ts `campBackdropFamily`, and
+ * the fallback where it cannot say. The TV, a phone's World pane and its Camp
+ * panel all ask here, so they never pitch it in two places.
+ */
+export function campFamilyFor(
+  state: Parameters<typeof campBiome>[0],
+  chapter: Parameters<typeof campBiome>[1],
+): string {
+  return campBackdropFamily(campBiome(state, chapter));
 }
 
 /** The frame stage the crew's camp stands at, from its record; stage 1 when the store could not say. */
@@ -91,12 +129,26 @@ export function campShownIn(phase: PhaseKind | string | null | undefined): boole
 }
 
 /**
- * Whether the shared screen shows the camp now: the lobby, or the chapter's
- * end once its camp beat is up (`beat`, the summary's own page turn, §3).
+ * Whether the shared screen shows the full camp now: the lobby, the chapter's
+ * end once its camp beat is up (`beat`, the summary's own page turn, §3), or
+ * an outdoor rest scene (§3.2; #625). Whether a rest is outdoors is the
+ * server's to say (`campMoment.outdoor`, read off the scene's `setting`); a
+ * rest it has not said so for is indoors, so the campsite never shows where a
+ * scene could contradict it.
  */
-export function campShownFor(state: Pick<RunState, "phase"> | null | undefined, beat: boolean): boolean {
+export function campShownFor(state: Pick<RunState, "phase" | "sceneType" | "campMoment"> | null | undefined, beat: boolean): boolean {
   if (!state) return false;
-  return campShownIn(state.phase) || (beat && state.phase === "chapter_complete");
+  return campShownIn(state.phase) || (beat && state.phase === "chapter_complete") || outdoorRest(state);
+}
+
+/** At a rest scene whose camp is the full one, pitched outdoors (§3.2). */
+export function outdoorRest(state: Pick<RunState, "phase" | "sceneType" | "campMoment"> | null | undefined): boolean {
+  return !!state && campMomentKind(state) === "rest" && state.campMoment?.kind === "rest" && state.campMoment.outdoor === true;
+}
+
+/** At a rest scene the camp is packed down into: indoors, or a place no campsite fits (§3.2). */
+export function indoorRest(state: Pick<RunState, "phase" | "sceneType" | "campMoment"> | null | undefined): boolean {
+  return !!state && campMomentKind(state) === "rest" && !outdoorRest(state);
 }
 
 /** Begin: the lobby gave way to the chapter's first scene. */
@@ -106,7 +158,8 @@ export function begun(before: PhaseKind | string | null | undefined, after: Phas
 
 /** A seated hero as the camp needs them: the figure, and the two facts its moments read. */
 export interface CampHero {
-  figure: CampFigure & { seat: number };
+  /** A hero's figure, with her seat; or (the still camp's friends, #624) a friend's, with its spot. */
+  figure: CampFigure & ({ seat: number } | { friend: number });
   ready: boolean;
   /** Stepped away (#258): `connected` is false. */
   away: boolean;
@@ -162,15 +215,6 @@ function heroFigure(member: PartyMember, kit: HeroKitView | undefined): Omit<Cam
   };
 }
 
-export function campFriends(state: Pick<RunState, "camp">): CampFigure[] {
-  const owned = state.camp?.friends ?? [];
-  const figures: CampFigure[] = [];
-  for (const [habit, art] of [["bun", "cast/bun"], ["duckling", "entities/duckling"], ["mosshorn", "entities/mosshorn"]] as const) {
-    if (owned.includes(habit)) figures.push({ id: `friend:${habit}`, url: castArtUrl(art), ...figureSize(art), habit });
-  }
-  return figures;
-}
-
 /**
  * The crew's side of the camp, as camp.ts draws it (#620): each shared
  * hotspot's piece, trophies and the banner's name, and at the chapter's end
@@ -195,6 +239,8 @@ export interface StillCampFigure {
   /** The art's square canvas, as a fraction of the backdrop canvas's height. */
   size: number;
   away: boolean;
+  /** A friend's name (#624); a hero's is her party member's. */
+  friend?: string;
 }
 
 /**
@@ -210,27 +256,27 @@ export function stillCampFigures(
   heroes: readonly CampHero[],
   figureScale = 1,
   visible: CampSpan = { x0: 0, x1: 1 },
-  friends: readonly CampFigure[] = [],
 ): StillCampFigure[] {
   const measure = campMeasure(layout.canvas.height);
   const out: StillCampFigure[] = [];
-  const figures = [...heroes, ...friends.map((figure) => ({ figure, away: false }))];
-  for (const { figure, away } of figures) {
-    const bed = figure.habit
-      ? friendHabitSpot(layout, figure.habit)
-      : layout.frame.standPoints.find((point) => point.seat === figure.seat);
+  for (const hero of heroes) {
+    // A hero at her own bedroll or tent; a friend (#624) at its friend spot.
+    const bed = hero.figure.seat !== undefined
+      ? layout.frame.standPoints.find((point) => point.seat === hero.figure.seat)
+      : layout.frame.standPoints.find((point) => point.friend !== undefined && point.friend === hero.figure.friend);
     const lane = bed ? layout.lanes.get(bed.lane) : undefined;
     if (!bed || !lane) continue;
     // camp.ts `fitArt`: the canvas is drawn so the nominal paint is the figure's height.
-    const heightPx = campHeightPx(figure.heightCm, measure) * lane.scale * figureScale;
+    const heightPx = campHeightPx(hero.figure.heightCm, measure) * lane.scale * figureScale;
     out.push({
-      id: figure.id,
-      url: figure.url,
+      id: hero.figure.id,
+      url: hero.figure.url,
       // Moved in from an edge the pane crops, as the moving camp stands them (camp.ts `pointX`).
       x: campStandX(bed.x, campStandRange(lane, visible, (heightPx * paintAspect(NOMINAL_PAINT)) / layout.canvas.width)),
       y: lane.y,
       size: heightPx / (ANCHOR_Y - NOMINAL_PAINT.top) / layout.canvas.height,
-      away,
+      away: hero.away,
+      ...(hero.figure.friend !== undefined && hero.figure.name ? { friend: hero.figure.name } : {}),
     });
   }
   return out;

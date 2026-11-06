@@ -25,6 +25,7 @@ function chapter(id, rooms = [], { via = {}, fromStory = [] } = {}) {
     start: { type: "story", narration: "A door.", choices: [{ id: "on", label: "Go on", icon: "door", goto: "camp" }] },
     camp: {
       type: "rest",
+      setting: "outdoor",
       narration: "A fire.",
       choices: [
         ...rooms.filter((c) => !fromStory.includes(c)).map((c) => ({ id: `to_${c}`, label: `Visit ${c}`, icon: "door", goto: `room_${c}`, ...(via[c] ?? {}) })),
@@ -200,6 +201,7 @@ describe("content:validate over a graph campaign", { timeout: 60_000 }, () => {
     const reeds = marsh.scenes.scene_reeds;
     marsh.scenes.scene_camp = {
       type: "rest",
+      setting: "outdoor",
       narration: "A boggart banks a fire of wet reeds.",
       choices: [...classes.map((c) => ({ id: `to_${c}`, label: `Visit the ${c} room`, icon: "door", goto: `room_${c}` })), { id: "on", label: "Go on", icon: "door", goto: "scene_mud" }],
     };

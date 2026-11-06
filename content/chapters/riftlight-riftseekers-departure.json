@@ -1314,6 +1314,7 @@
     },
     "tea": {
       "type": "rest",
+      "setting": "outdoor",
       "heal": 2,
       "narration": "Seren builds a small stove from a tin and a candle. Steam fogs Orin's glasses. He leaves them fogged. \"Hands first,\" says Seren. \"Questions after.\" Whose story do you ask for?",
       "choices": [
@@ -1808,6 +1809,7 @@
     },
     "camp": {
       "type": "rest",
+      "setting": "outdoor",
       "heal": 2,
       "narration": "You sit on a dry stone by the singing hall, the Listening Chime between you. East, the ice shelf leads to the Cairnstep, the pass that should not be there. Behind you, the sealed seam answered your song, and the glacier may hide more openings. Or the long marked bank road goes to Ashspan Bridge, off the ice. Which matters most? Talk it over.",
       "choices": [
@@ -1885,6 +1887,7 @@
     },
     "set_out": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "You brush the snow off your packs and stand. The Listening Chime swings on its cord and leans, very slightly, toward the glacier. Somewhere out there a pass has appeared, a path has turned to water, and snow has fallen on a harbor. Something is moving the land. What is it? And can you put things right? The shelf toward the Cairnstep, the hidden openings in the ice, or the long bank road to Ashspan Bridge: which comes first?",
       "heal": 0,
       "choices": [],

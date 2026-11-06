@@ -83,6 +83,48 @@ export function onStageInsetTop(listener: (topPx: number) => void): () => void {
   };
 }
 
+/*
+ * What the head draws, not its box (#625). The head reports its whole box above, padding and
+ * all, which the story's frame and the display dock measure from. An outdoor rest's camp stands
+ * its tents and its heroes right up to what is drawn over the top of the pane, and a short TV
+ * cannot spare the head's padding: so the head also reports the bottom of the lowest thing it
+ * shows (the chapter's name, the goal card and its steps, a hand-off), and the rest's camp
+ * window starts there (lobby-camp-stage.ts `setStageInset`).
+ */
+let cover = 0;
+const coverListeners = new Set<(topPx: number) => void>();
+
+/** Report how far down the pane what the head draws reaches, in CSS px. 0 when there is no head. */
+export function setStageCoverTop(px: number): void {
+  const next = Number.isFinite(px) && px > 0 ? Math.round(px) : 0;
+  if (next === cover) return;
+  cover = next;
+  for (const listener of coverListeners) listener(cover);
+}
+
+export function stageCoverTop(): number {
+  return cover;
+}
+
+export function onStageCoverTop(listener: (topPx: number) => void): () => void {
+  coverListeners.add(listener);
+  return () => {
+    coverListeners.delete(listener);
+  };
+}
+
+/**
+ * How far below `paneTop` the lowest of `parts` reaches: the drawn bottom of a head whose box
+ * ends at `headBottom` and hides what overflows it. A part with no size is not drawn. Rounded
+ * up, so a camp framed from it never stands a fraction of a pixel under the card.
+ */
+export function coverBottom(paneTop: number, headBottom: number, parts: readonly { height: number; bottom: number }[]): number {
+  let lowest = Number.NEGATIVE_INFINITY;
+  for (const part of parts) if (part.height > 0) lowest = Math.max(lowest, part.bottom);
+  if (lowest === Number.NEGATIVE_INFINITY) return 0;
+  return Math.max(0, Math.ceil(Math.min(lowest, headBottom) - paneTop));
+}
+
 /** The share of the story rect above the figures' heads: sky the head may cover. */
 export const SKY_FRACTION = 0.3;
 /** However tall the head, the frame keeps this much of the height it had without one. */

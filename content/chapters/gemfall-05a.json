@@ -533,6 +533,7 @@
     },
     "rest_tent": {
       "type": "rest",
+      "setting": "indoor",
       "narration": "The engineers share strong tea. Every cup ripples. \"Even the tea is nervous,\" says Brask. Rest, and decide who should hear what you found.",
       "cast": [
         {
@@ -934,6 +935,7 @@
     },
     "rest_end": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "You camp on the rim. Below, the foothills glitter with thousands of campfires: all the rush in the world. Above them, the mountain glows. Tomorrow, at Redspire, the wardens' citadel, somebody will put it all on one table.",
       "heal": 4,
       "choices": [],
@@ -948,6 +950,7 @@
     },
     "rest_setback": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "Nobody is hurt. The wolves just wanted the warm side more. You wait two days on the south bank while the rush gets ahead. At last Pellam waves you across himself. \"Logged,\" he says. \"Late. But logged.\"",
       "cast": [
         {

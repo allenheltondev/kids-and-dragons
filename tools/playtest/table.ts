@@ -68,7 +68,7 @@ export interface TableOptions {
   /** Pass the prefer-reduced-motion setting to every device. */
   reducedMotion?: boolean;
   /** The new household's camp before the room opens (dev-seed.ts `SeedRequest.camp`; #620). */
-  camp?: { grownBy?: string[]; owned?: string[]; placed?: Record<string, string>; dashCash?: number; paidChapterCount?: number };
+  camp?: { grownBy?: string[]; owned?: string[]; placed?: Record<string, string>; dashCash?: number; paidChapterCount?: number; friends?: string[] };
   /** Called with progress lines; default silent. */
   log?: (line: string) => void;
 }
@@ -177,7 +177,10 @@ export async function openTable(options: TableOptions): Promise<Table> {
   log(`room ${seeded.code}: ${options.chapterId ?? "the lobby"}${options.sceneId ? ` at ${options.sceneId}` : ""}, ${players} player${players === 1 ? "" : "s"}`);
 
   const executablePath = chromiumPath();
-  const browser: Browser = await chromium.launch({ headless: !options.headed, ...(executablePath ? { executablePath } : {}) });
+  // Every screen keeps its frames running while another is driven: a phone's tap shows on the TV
+  // as it would at a table, not one frame per screenshot (#624).
+  const args = ["--disable-renderer-backgrounding", "--disable-background-timer-throttling", "--disable-backgrounding-occluded-windows"];
+  const browser: Browser = await chromium.launch({ headless: !options.headed, args, ...(executablePath ? { executablePath } : {}) });
   const motion = options.reducedMotion ? { reducedMotion: "reduce" as const } : {};
   const contexts: BrowserContext[] = [];
   let tv: Page;

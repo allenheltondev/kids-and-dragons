@@ -1130,6 +1130,7 @@
     },
     "camp": {
       "type": "rest",
+      "setting": "outdoor",
       "heal": 2,
       "narration": "The families press a hot kelp cake into every hand. \"Diggers eat first,\" says Puddle, and eats first anyway. Grandmother Winkle settles on her shell. Out on the flats, two travelers are wading toward the town's lamps.",
       "cast": [
