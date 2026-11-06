@@ -13,8 +13,9 @@
  *     Every piece is listed with its name and where it came from ("Found at
  *     the Ashspan Bridge"), and every friend with where the crew met it.
  *   - **Friends** can be tapped. With no TV to walk over on, a tapped friend
- *     says one of its reactions over its head in the picture and under its
- *     button, here only: nothing is sent, and no table hears it.
+ *     says one of its reactions in a speech bubble under the friends' buttons,
+ *     here only: nothing is sent, and no table hears it. Not over its head in
+ *     the picture, where at camp scale it covered the figures' names.
  *   - **Her hero's kit** (tent, bedroll and pack, color, decorations) and her
  *     **buddy** in this crew's camp change exactly as on the phone's Camp
  *     panel (CampPanel.tsx `KitEditor`, the table's rules), through the book's
@@ -58,6 +59,9 @@ export interface CampPaneProps {
   /** A kit the server answered with, for the book's copy. */
   onKit: ApplyKit;
 }
+
+/** px of grass under the picture's band, so the names under the figures at its foot stay whole. */
+const FOOT_ROOM = 30;
 
 /** Which crew is open, for the life of the page, like the hero (JournalScreen `useChosenHero`). */
 let chosenCrew: string | null | undefined;
@@ -317,7 +321,7 @@ function CrewCamp({
 
       {layout && state ? (
         <div className="book-camp__picture" aria-hidden="true">
-          <StillCamp layout={layout} state={state} fit="width" friendWords={words ? new Map([[words.id, words.text]]) : undefined} />
+          <StillCamp layout={layout} state={state} fit="width" footRoom={FOOT_ROOM} />
         </div>
       ) : null}
 
@@ -368,7 +372,7 @@ function CrewCamp({
             ))}
           </ul>
           <p className="book-camp__said" role="status" aria-live="polite" data-testid="book-camp-said">
-            {words ? words.text : ""}
+            {words ? `${crew.friends.find((f) => f.id === words.id)?.name ?? ""}: ${words.text}` : ""}
           </p>
           {crew.friends.length > out.length ? <p className="book-camp__from">Your crew's friends take turns at camp.</p> : null}
         </section>

@@ -176,10 +176,17 @@
 }
 
 .book-camp__said {
-  min-block-size: 1.4em;
   margin: 0;
   font-weight: 700;
-  color: #ffe9a8;
+}
+.book-camp__said:not(:empty) {
+  align-self: flex-start;
+  max-inline-size: 100%;
+  padding: 0.5em 0.8em;
+  border: 2px solid rgb(107 79 42 / 85%);
+  border-radius: 0.8em;
+  background: #fff8ea;
+  color: #2b2238;
 }
 
 .book-camp__pieces {
@@ -220,15 +227,18 @@
   margin: 0;
 }
 
+/* In the book the names have room to be whole (StillCamp `footRoom` keeps them inside the picture). */
+.book-camp__picture .kad-static-camp__name {
+  max-inline-size: none;
+}
+
 /*
- * On a phone the picture is a short strip: names and a tapped friend's words
- * would cover the figures, or be cut to "Spotted…". Every one of them is said
- * in full in the controls under the picture (the kit's heading, each friend's
- * button and the words line under them), so the strip shows only the camp.
+ * On a phone the picture is a short strip: names would cover the figures. Every
+ * one is said in full in the controls under it (the kit's heading, each
+ * friend's button), so the strip shows only the camp.
  */
 @media (max-width: 599px) {
-  .book-camp__picture .kad-static-camp__name,
-  .book-camp__picture .kad-static-camp__words {
+  .book-camp__picture .kad-static-camp__name {
     display: none;
   }
 }
