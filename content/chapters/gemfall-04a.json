@@ -2037,13 +2037,16 @@
     },
     "encounter_mimics": {
       "type": "encounter",
-      "map": "glade",
-      "narration": "The posts pull up out of the mud on short wet legs and shuffle toward your boots. Stomp them back into mud!",
+      "map": "sausage_lane",
+      "narration": "The marker posts shuffle toward your boots. Plant your feet on the flat stone through round end and stomp the posts back into mud. If you stop in the soft mud, it slows your next turn.",
       "enemies": [
         {
           "id": "mimic",
           "name": "Marker-Post Mimic",
-          "creature": "mire_mimic"
+          "creature": "mire_mimic",
+          "rift": {
+            "shoves": true
+          }
         }
       ],
       "onVictory": {
@@ -2057,6 +2060,58 @@
         ]
       },
       "onDefeat": {
+        "goto": "scene_mimics_took_boots",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      },
+      "art": "scenes/gemfall/mud-wallow-mimic-posts",
+      "environment": {
+        "clock": {
+          "rounds": 5,
+          "label": "The posts grab your boots",
+          "onExpire": "collapse"
+        },
+        "hazards": [
+          {
+            "id": "post-mud",
+            "label": "Soft mud",
+            "kind": "rift",
+            "art": "fight-warm-mud-hollow",
+            "tiles": [
+              {
+                "x": 2,
+                "y": 4
+              }
+            ],
+            "slow": {
+              "steps": 2,
+              "turns": 1
+            }
+          }
+        ],
+        "objectives": [
+          {
+            "id": "stomp-stone",
+            "label": "Stomp from the flat stone",
+            "kind": "hold",
+            "art": "notched-stone",
+            "tiles": [
+              {
+                "x": 3,
+                "y": 2
+              }
+            ],
+            "rounds": 1,
+            "endsFight": true
+          }
+        ]
+      },
+      "onTimeout": {
         "goto": "scene_mimics_took_boots",
         "effects": [
           {
@@ -2545,12 +2600,38 @@
           "retreat": "shooed"
         },
         "retreatDirection": 1
+      },
+      {
+        "chapter": "gemfall-04a",
+        "scene": "encounter_mimics",
+        "creature": "mire_mimic",
+        "board": "sausage_lane",
+        "backdrop": "scenes/gemfall/mud-wallow-mimic-posts",
+        "introScenes": [
+          "scene_mud_posts"
+        ],
+        "victoryScene": "scene_mimics_unmasked",
+        "defeatScene": "scene_mimics_took_boots",
+        "tileUrl": "/assets/fight-boards/fight_ferry_landing/tiles.png",
+        "rescueFigure": "",
+        "activeUrl": "/assets/entities/mire_mimic/marker-post.webp",
+        "retreatUrl": "/assets/entities/mire_mimic/little.png",
+        "props": [],
+        "terrainProps": [],
+        "poses": {
+          "intro": "marker_post",
+          "retreat": "little"
+        },
+        "retreatDirection": 1
       }
     ],
     "warmUrls": [
       "/assets/entities/cinder_wolf/cache_sniff.png",
       "/assets/entities/cinder_wolf/shooed.png",
-      "/assets/biomes/plains/tiles.png"
+      "/assets/biomes/plains/tiles.png",
+      "/assets/entities/mire_mimic/marker-post.webp",
+      "/assets/entities/mire_mimic/little.png",
+      "/assets/fight-boards/fight_ferry_landing/tiles.png"
     ]
   },
   "resumeInteractions": {
