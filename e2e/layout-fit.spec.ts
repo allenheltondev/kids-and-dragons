@@ -388,16 +388,16 @@ async function misfits(page: Page): Promise<string[]> {
  * before they load, and nothing else on the screen may move, or fit any worse, when they arrive.
  */
 async function shiftsWhenTheRowLoads(page: Page): Promise<string[]> {
-  const where = (): Promise<Record<string, string>> =>
+  const where = (): Promise<Record<string, number[]>> =>
     page.evaluate(() => {
-      const out: Record<string, string> = {};
+      const out: Record<string, number[]> = {};
       const things = [...document.querySelectorAll("h1, h2, h3, p, button, input, img[alt]:not([alt=''])")].filter(
         (el) => !el.closest(".kad-corner") && el.checkVisibility(),
       );
       things.slice(0, 40).forEach((el, i) => {
         const box = el.getBoundingClientRect();
         out[`${i} ${el.tagName.toLowerCase()} "${(el.textContent ?? "").trim().slice(0, 24)}"`] =
-          `${Math.round(box.left)},${Math.round(box.top)} ${Math.round(box.width)}x${Math.round(box.height)}`;
+          [box.left, box.top, box.width, box.height];
       });
       return out;
     });
@@ -411,10 +411,17 @@ async function shiftsWhenTheRowLoads(page: Page): Promise<string[]> {
   await style.evaluate((el) => el.remove());
   await frames();
   const after = await where();
+  const format = (box: number[]): string =>
+    `${box[0]!.toFixed(2)},${box[1]!.toFixed(2)} ${box[2]!.toFixed(2)}x${box[3]!.toFixed(2)}`;
+  // Text layout can round a dimension by a CSS pixel when the row is toggled.
+  // Keep position checks precise and leave the clipping/overlap checks intact.
+  const sameBox = (a: number[] | undefined, b: number[]): boolean =>
+    a !== undefined && b.every((value, i) => Math.abs(value - a[i]!) <= (i < 2 ? 0.1 : 1));
   for (const [thing, box] of Object.entries(after)) {
     // Only a move the row causes: the screen stood still across the check, row and all.
-    if (loaded[thing] === box && before[thing] !== undefined && before[thing] !== box) {
-      problems.push(`${thing} moves when the corner row loads (${before[thing]} -> ${box})`);
+    const withoutRow = before[thing];
+    if (sameBox(loaded[thing], box) && withoutRow && !sameBox(withoutRow, box)) {
+      problems.push(`${thing} moves when the corner row loads (${format(withoutRow)} -> ${format(box)})`);
     }
   }
   return problems;
