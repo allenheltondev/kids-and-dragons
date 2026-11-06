@@ -651,10 +651,13 @@ on this phone, will share when you're back online", and sends it when the signal
 - **A friend tap** has no TV: it shows one of the friend's reactions (`CatalogFriend.reactions`,
   carried in the journal so it works offline), round and round, in the words line under the friend
   buttons and, on a wide screen, over its head in the picture. Nothing is sent or relayed.
-- **The crews.** The book lists the household's first crew, then every other crew that has played
-  (a campaign save or a stored camp), oldest first; with more than one, a picker names them, and
-  the heading names the one open ("The Otter Crew's camp"). A buddy picked there is kept under that
-  crew's `campKey`.
+- **The crews** (*decided*, §11) are every crew any of the kid's heroes is part of at her
+  household (`heroCrews`). No record lists them, so three things say so: a hero's claim names the
+  crew whose adventure she is on, her kit's buddies name each crew she picked one in, and the
+  household's recent runs (the last 40) seat her with the run's crew. The first crew comes first,
+  then the others oldest first; a hero who has sat with nobody yet gets the first crew. With more
+  than one, a picker names them, and the heading names the one open ("The Otter Crew's camp"). A
+  buddy picked there is kept under that crew's `campKey`.
 - **The read** rides `GET /api/journal` as `JournalResponse.camp` (`handlers/camp-book.ts`
   `journalCamp`): each crew's `CampView`, friends and sources, and each of her heroes' kits with a
   buddy per crew (`JournalKit.buddies`, by crew id, "" for the first). A failed camp read leaves the
@@ -1231,6 +1234,7 @@ Settled by the product owner:
 | The kid goat is a different kid from the herd, given by the herder (#626) | The goat kid of Exchange Rift goes home and is met again, so it is never offered; the friend is a younger spotted kid the herder gives away in Glacier of Origins, always named "the spotted kid goat" (§4.4) |
 | One harbor gull for both campaigns (#626) | Gemfall 1's dawn gull and Riftlight's frosty Exchange gull are one friend, `harbor_gull`, with two offers: the same bird at the same quay, never two friends that read as one animal (§4.4) |
 | Bun and the kid goat look different (#628) | Two friends must never read as the same animal at camp scale: Bun is repainted to stand apart from the kid goat (§4.4) |
+| The book's crews (#629) | The adventure book lists every crew any of the kid's heroes is part of, found from her heroes' claims, buddies and recent tables (§7) |
 
 Nothing is open. The two parked questions from earlier (editing from the book, choosing friends)
 are settled above as kit and buddy editing in the book and buddies.

@@ -15,7 +15,7 @@ import { CATALOG, harnessFor, racedCommits, seeded, table, type Table } from "./
 import { makeHarness, seedHousehold, type TestHarness } from "../test-support.ts";
 import { makeCharacter } from "../../../shared/src/test-fixtures.ts";
 import { mutateCamp, mutateKit } from "./camp.ts";
-import { editKitFromBook, offerPlace } from "./camp-book.ts";
+import { editKitFromBook, heroCrews, offerPlace } from "./camp-book.ts";
 import { getJournal } from "./journal.ts";
 import { applyAction } from "./action.ts";
 import { respond, type HttpRuntime } from "../lambda/http.ts";
@@ -98,33 +98,74 @@ describe("the book's camp read (§7)", () => {
     expect(offerPlace("nobody.ever", catalog, content)).toBeNull();
   });
 
-  it("lists another crew once it has played, with its own camp, and leaves out a crew never played", async () => {
-    const { harness, t } = await lobby();
-    await harness.repo.commit({
-      runId: t.runId,
-      expectedSeq: (await t.state()).seq,
-      state: { ...(await t.state()), seq: (await t.state()).seq + 1 },
-      event: { seq: (await t.state()).seq + 1, runId: t.runId, patch: [], at: AT },
-      crew: { householdId: t.householdId, id: "cw_1", name: "The Otter Crew", createdAt: AT },
-    });
-    let journal = value(await getJournal({ householdId: t.householdId, playerId: "p_1" }, harness.deps));
-    expect(journal.camp!.crews.map((c) => c.name)).toEqual(["The first crew"]);
+  it("lists the crew of every hero of hers: two heroes in different crews are both listed, and a crew none of them sat with is not", async () => {
+    const { harness, t, p1 } = await lobby();
+    const addCrew = async (id: string, name: string) => {
+      const s = await t.state();
+      await harness.repo.commit({
+        runId: t.runId,
+        expectedSeq: s.seq,
+        state: { ...s, seq: s.seq + 1 },
+        event: { seq: s.seq + 1, runId: t.runId, patch: [], at: AT },
+        crew: { householdId: t.householdId, id, name, createdAt: AT },
+      });
+    };
+    await addCrew("cw_1", "The Otter Crew");
+    await addCrew("cw_2", "The Lantern Crew");
+    // Her second hero is on the Otter Crew's adventure (her claim names the crew).
+    const second = makeCharacter({ id: "c_second", ownerPlayerId: "p_1", name: "Bramble" });
+    await harness.repo.putCharacter({ ...second, householdId: t.householdId, provisional: { ...second.committed, runId: "gemfall~cw_1" } });
     await seedCamp(t.householdId, harness, { friends: { kid_goat: { rewardId: "riftlight-glacier-survival.kid_goat", at: AT } } }, "cw_1");
-    journal = value(await getJournal({ householdId: t.householdId, playerId: "p_1" }, harness.deps));
+    // Her brother's hero is on the Lantern Crew's; that is not one of hers.
+    const his = makeCharacter({ id: "c_his", ownerPlayerId: "p_2", name: "Rumble" });
+    await harness.repo.putCharacter({ ...his, householdId: t.householdId, provisional: { ...his.committed, runId: "gemfall~cw_2" } });
+
+    let journal = value(await getJournal({ householdId: t.householdId, playerId: "p_1" }, harness.deps));
+    // Sparklehoof is seated at the first crew's table (the run's party); Bramble is the Otter Crew's.
     expect(journal.camp!.crews.map((c) => [c.crew, c.name])).toEqual([[null, "The first crew"], ["cw_1", "The Otter Crew"]]);
+    expect(Object.keys(journal.camp!.kits).sort()).toEqual(["c_second", p1].sort());
     // The fixture content has no Glacier chapter to name, so it says no more than that.
     expect(journal.camp!.crews[1]!.friends.map((f) => [f.id, f.source])).toEqual([["kid_goat", "Met on an adventure"]]);
     expect(journal.camp!.crews[0]!.friends.map((f) => f.id)).toEqual(["duckling"]);
+
+    // A buddy picked in the Lantern Crew's camp makes it one of hers too.
+    await mutateKit(t.householdId, "c_second", (kit) => ({ ...kit, buddies: { [campKey(t.householdId, "cw_2")]: "bun" } }), harness.deps);
+    journal = value(await getJournal({ householdId: t.householdId, playerId: "p_1" }, harness.deps));
+    expect(journal.camp!.crews.map((c) => c.crew)).toEqual([null, "cw_1", "cw_2"]);
+    expect(journal.camp!.kits["c_second"]!.buddies).toEqual({ cw_2: "bun" });
+
+    // Her brother's book lists his heroes' crews: the table's, and the Lantern Crew's.
+    const histories = value(await getJournal({ householdId: t.householdId, playerId: "p_2" }, harness.deps));
+    expect(histories.camp!.crews.map((c) => c.crew)).toEqual([null, "cw_2"]);
+  });
+
+  it("finds a crew from the runs her hero sat in, and a hero who has sat with nobody gets the first crew", async () => {
+    const harness = harnessFor(CATALOG);
+    const household = await seedHousehold(harness, 1);
+    const { householdId } = household;
+    await harness.repo.putCharacter({ ...makeCharacter({ id: "c_new", ownerPlayerId: "p_1", name: "Pip" }), householdId });
+    const pip = (await harness.repo.getCharacter(householdId, "c_new"))!;
+    expect(await heroCrews(householdId, [pip], harness.deps)).toEqual([null]);
+
+    const t = await table(harness, household);
+    const s = await t.state();
+    await harness.repo.commit({
+      runId: t.runId,
+      expectedSeq: s.seq,
+      state: { ...s, seq: s.seq + 1, crew: "cw_1", party: [{ character: { id: "c_new" } as never, playerId: "p_1", hp: 1, down: false, connected: true, ready: false }] },
+      event: { seq: s.seq + 1, runId: t.runId, patch: [], at: AT },
+      crew: { householdId, id: "cw_1", name: "The Otter Crew", createdAt: AT },
+    });
+    expect(await heroCrews(householdId, [pip], harness.deps)).toEqual(["cw_1"]);
   });
 });
 
 describe("the book's kit write (§7, §12.6)", () => {
-  it("changes her own hero's kit online with the table's revision check, and the table reads it at its next downtime moment", async () => {
+  it("changes her own hero's kit, and the table reads it at its next downtime moment", async () => {
     const { harness, t, p1 } = await lobby();
     const done = value(
       await book(harness.deps, t.householdId, "p_1", {
         characterId: p1,
-        revision: 0,
         changes: [
           { field: "tent", before: null, after: "patched" },
           { field: "color", before: null, after: "rose" },

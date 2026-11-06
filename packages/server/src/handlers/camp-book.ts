@@ -38,6 +38,8 @@ import {
   campKey,
   campKeyOf,
   campView,
+  claimOf,
+  parseClaim,
   friendRotation,
   kitEditProblem,
   mergeBookKit,
@@ -80,7 +82,7 @@ export async function journalCamp(
   const catalog = deps.content.campCatalog();
   if (!catalog) return null;
   try {
-    const crews = await crewCamps(householdId, catalog, deps);
+    const crews = await crewCamps(householdId, heroes, catalog, deps);
     const kits: Record<string, JournalKit> = {};
     for (const hero of heroes) kits[hero.id] = journalKit(readKit(hero), householdId);
     return { crews, kits };
@@ -91,24 +93,65 @@ export async function journalCamp(
 }
 
 /**
- * The crews her heroes sit with: the household's first, always, then every
- * other crew that has played, oldest first. Any kid may sit with any crew
- * (architecture §4.5), so a crew that has a save or a camp of its own is one
- * her hero may be seated with; a crew made and never played is left out.
+ * How many of the household's runs, newest first, are read for who sat with
+ * which crew. A run's state is the one record that ties a hero to a crew
+ * (`RunState.party`, `RunState.crew`); an evening is a run, so this is a few
+ * months of play, and an older crew of hers is still found by her claim or
+ * her buddy there.
  */
-async function crewCamps(householdId: string, catalog: CampCatalog, deps: CampDeps): Promise<JournalCrewCamp[]> {
-  const [others, firstName] = await Promise.all([deps.repo.listCrews(householdId), deps.repo.getFirstCrewName(householdId)]);
-  const played = await Promise.all(
-    others.map(async (crew) => {
-      const [stored, attempts] = await Promise.all([deps.repo.getCamp(householdId, crew.id), deps.repo.listCampaignProgress(householdId, crew.id)]);
-      return stored !== null || attempts.length > 0 ? crew : null;
-    }),
-  );
-  const crews = [{ id: null as string | null, name: firstName ?? FIRST_CREW_NAME }, ...played.filter((c) => c !== null).map((c) => ({ id: c.id as string | null, name: c.name }))];
+export const CREW_LOOKBACK = 40;
+
+/**
+ * The crews of the household her heroes are part of (decided, #629): every
+ * crew any of them has sat with, at this household, found three ways, since
+ * no record lists them:
+ *
+ *   - her claim (`provisional.runId`), the crew whose adventure she is on;
+ *   - her kit's buddies, one per crew she picked one in (`campKey`);
+ *   - the household's recent runs (`CREW_LOOKBACK`): a run whose party seats
+ *     one of her heroes was played with its `crew` (absent: the first).
+ *
+ * The household's first crew first, then the others oldest first. Only crews
+ * the household still has; a hero who has sat with nobody yet gets the first
+ * crew, where her next game will most likely be.
+ */
+export async function heroCrews(householdId: string, heroes: readonly Character[], deps: Pick<HandlerDeps, "repo">): Promise<(string | null)[]> {
+  const found = new Set<string | null>();
+  const ids = new Set(heroes.map((h) => h.id));
+  for (const hero of heroes) {
+    const held = claimOf(hero);
+    if (held !== null) {
+      const { table, crew } = parseClaim(held, hero);
+      if (table === householdId) found.add(crew ?? null);
+    }
+    for (const key of Object.keys(readKit(hero).buddies)) {
+      if (key === householdId) found.add(null);
+      else if (campKeyOf(key, householdId)) found.add(key.slice(householdId.length + 1));
+    }
+  }
+  const runs = (await deps.repo.listRuns(householdId)).sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, CREW_LOOKBACK);
+  const states = await Promise.all(runs.map((run) => deps.repo.getState(run.id).catch(() => null)));
+  for (const state of states) {
+    if (state?.party.some((m) => ids.has(m.character.id))) found.add(state.crew ?? null);
+  }
+  const crews = await deps.repo.listCrews(householdId);
+  const out: (string | null)[] = [];
+  if (found.has(null)) out.push(null);
+  for (const crew of crews) if (found.has(crew.id)) out.push(crew.id);
+  return out.length > 0 ? out : [null];
+}
+
+/** Each of her heroes' crews' camps (`heroCrews`), named. */
+async function crewCamps(householdId: string, heroes: readonly Character[], catalog: CampCatalog, deps: CampDeps): Promise<JournalCrewCamp[]> {
+  const [ids, others, firstName] = await Promise.all([
+    heroCrews(householdId, heroes, deps),
+    deps.repo.listCrews(householdId),
+    deps.repo.getFirstCrewName(householdId),
+  ]);
   return Promise.all(
-    crews.map(async ({ id, name }) => {
-      const camp = await readCamp(householdId, id, deps);
-      return crewCamp(id, name, camp, catalog, deps.content);
+    ids.map(async (id) => {
+      const name = id === null ? firstName ?? FIRST_CREW_NAME : others.find((c) => c.id === id)?.name ?? FIRST_CREW_NAME;
+      return crewCamp(id, name, await readCamp(householdId, id, deps), catalog, deps.content);
     }),
   );
 }
