@@ -103,3 +103,105 @@ export function createTapQueue(): TapQueue {
     },
   };
 }
+
+/** A tap a friend acts out by its words alone, and since when. */
+export interface SaidTap {
+  tap: FriendTap;
+  since: number;
+}
+
+/**
+ * A friend that only says its words where it sits (docs/camp.md §3.2; #624):
+ * the camp packed down at an indoor rest, where nobody walks, and the still
+ * stage, where nothing moves. The same queue and drop rules as the full camp
+ * (`createTapQueue`): one tap at a time, one more held, the rest dropped. A
+ * tap is over once its words have been up `WORDS_S`, as the full camp's is
+ * under reduced motion; then the friend rests `TAP_GAP_S` before the next.
+ *
+ * Pure: the caller's clock, in seconds. `tick` says whether what is said changed.
+ */
+export interface WordsTaps {
+  offer(tap: FriendTap, now: number): TapVerdict;
+  /** The clock moved on to `now`: words whose time is up go, held taps whose time has come start. */
+  tick(now: number): boolean;
+  /** What each friend is saying now. */
+  said(): SaidTap[];
+  /** When `tick` next has something to do, or null for never (a timer's deadline). */
+  next(): number | null;
+  /** A friend is no longer shown: forget its taps. */
+  forget(figureId: string): void;
+}
+
+export function createWordsTaps(): WordsTaps {
+  const queue = createTapQueue();
+  const saying = new Map<string, SaidTap>();
+  /** When each friend's last tap ended: it rests `TAP_GAP_S` from then before a held one starts. */
+  const restingFrom = new Map<string, number>();
+  const start = (tap: FriendTap, now: number): void => {
+    saying.set(tap.figureId, { tap, since: now });
+    restingFrom.delete(tap.figureId);
+  };
+  return {
+    offer(tap, now) {
+      const verdict = queue.offer(tap, now);
+      if (verdict === "start") start(tap, now);
+      return verdict;
+    },
+    tick(now) {
+      let changed = false;
+      for (const [id, said] of saying) {
+        const end = said.since + WORDS_S;
+        if (now < end) continue;
+        saying.delete(id);
+        queue.finish(id, end);
+        restingFrom.set(id, end);
+        changed = true;
+      }
+      for (const tap of queue.due(now)) {
+        start(tap, now);
+        changed = true;
+      }
+      return changed;
+    },
+    said: () => [...saying.values()],
+    next() {
+      let soonest: number | null = null;
+      const consider = (at: number): void => {
+        soonest = soonest === null ? at : Math.min(soonest, at);
+      };
+      for (const said of saying.values()) consider(said.since + WORDS_S);
+      for (const [id, from] of restingFrom) if (!saying.has(id) && queue.waiting(id).length > 0) consider(from + TAP_GAP_S);
+      return soonest;
+    },
+    forget(figureId) {
+      queue.forget(figureId);
+      saying.delete(figureId);
+      restingFrom.delete(figureId);
+    },
+  };
+}
+
+/** A tap as the phone's message names it: the friend's catalog id, the tapping kid's hero, its words. */
+export interface HeardTap {
+  friendId: string;
+  heroId: string;
+  words: string;
+}
+
+/** A stage that may be showing a friend out: the full camp, or the camp packed into a scene. */
+export interface FriendTapTarget {
+  showsFriend(friendId: string): boolean;
+  tapFriend(tap: HeardTap): TapVerdict;
+}
+
+/**
+ * A tap goes to whichever stage is showing its friend (#624): the full camp
+ * (the lobby, an outdoor rest, the chapter end) or the camp packed down into
+ * an indoor rest's scene. Dropped only when none of them shows it.
+ */
+export function routeFriendTap(tap: HeardTap, targets: readonly (FriendTapTarget | null | undefined)[]): TapVerdict {
+  for (const target of targets) {
+    if (target?.showsFriend(tap.friendId)) return target.tapFriend(tap);
+  }
+  return "dropped";
+}

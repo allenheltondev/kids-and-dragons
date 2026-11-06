@@ -12,8 +12,8 @@
  * one does, and the pure pieces both stages share.
  */
 
-import { afterEach, describe, expect, it } from "vitest";
-import { cleanup, render } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { act, cleanup, render } from "@testing-library/react";
 import type { Chapter, PartyMember, RunState } from "@kad/shared";
 import { makeCharacter, makeMember, makeState } from "../testing/fixtures";
 import { useGameStore } from "../store";
@@ -22,6 +22,7 @@ import { campShownFor, indoorRest, outdoorRest } from "./lobby-camp";
 import { PACKED_BEHIND, PACKED_HEIGHT_WIDTH, PACKED_SIDE, PACKED_SLOT_WIDTH, packedCampKey, packedCampSpots, packedFriends, packedKits } from "./packed-camp";
 import { CAMP_KIT_STYLES } from "./camp-kit-art";
 import { campFriendFigures, friendHeightCm } from "./camp-friends";
+import { TAP_GAP_S, WORDS_S } from "./camp-taps";
 import catalog from "../../../../content/camp.json";
 
 const CARDS = (catalog.friends as { id: string; name: string; figure: string; size?: "small" | "medium" | "large" }[]).map(({ id, name, figure, size }) => ({ id, name, figure, ...(size ? { size } : {}) }));
@@ -228,5 +229,52 @@ describe("the packed camp's one lane (packed-camp.ts)", () => {
     for (const kit of kits) expect(kit.style).toBe("rolled");
     expect(packedCampKey(state)).not.toBe("");
     expect(packedCampKey(rest(true))).toBe("");
+  });
+});
+
+describe("a friend tapped on a phone, on the still stage (#624)", () => {
+  let key = 0;
+  const hear = (friendId: string, words: string, heroId = "c_1"): void =>
+    act(() => {
+      useGameStore.setState({ friendTaps: [...useGameStore.getState().friendTaps, { key: ++key, friendId, heroId, words }] });
+    });
+  const said = (): (string | null)[] => [...document.querySelectorAll('[data-testid="friend-words"]')].map((el) => el.textContent);
+
+  it("indoors, says its words over its head in the packed row for WORDS_S, holding one more tap, and takes every tap off the store", () => {
+    vi.useFakeTimers();
+    try {
+      mount(withFriends(rest(false), ["bun", "duckling"]), chapter("red_sky_foothills", "indoor"));
+      hear("bun", "Bun nibbles your sleeve. That means hello in goat.");
+      hear("bun", "Bun leans on you.", "c_2");
+      hear("bun", "Bun again.", "c_1");
+      expect(useGameStore.getState().friendTaps).toEqual([]);
+      const words = document.querySelector('[data-testid="friend-words"]')!;
+      expect(words.closest('[data-testid="packed-friend"]')!.querySelector("img")!.getAttribute("src")).toBe(campFriendFigures(withFriends(rest(false), ["bun"]))[0]!.url);
+      expect(said()).toEqual(["Bun nibbles your sleeve. That means hello in goat."]);
+      act(() => void vi.advanceTimersByTime(WORDS_S * 1000 + 50));
+      expect(said()).toEqual([]);
+      // The held one, after the friend's rest; the third was dropped.
+      act(() => void vi.advanceTimersByTime(TAP_GAP_S * 1000 + 50));
+      expect(said()).toEqual(["Bun leans on you."]);
+      act(() => void vi.advanceTimersByTime(WORDS_S * 1000 + TAP_GAP_S * 1000 + 100));
+      expect(said()).toEqual([]);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("outdoors, over the friend in the full still camp", () => {
+    mount(withFriends(rest(true), ["bun", "duckling"]), chapter("glacier_of_origins", "outdoor"));
+    hear("duckling", "Peep!");
+    const words = document.querySelector('[data-testid="friend-words"]')!;
+    expect(words.textContent).toBe("Peep!");
+    expect(words.closest("[data-friend]")!.getAttribute("data-friend")).toBe("friend:duckling");
+  });
+
+  it("drops a tap for a friend it does not show", () => {
+    mount(withFriends(rest(false), ["bun"]), chapter("red_sky_foothills", "indoor"));
+    hear("mosshorn", "Hm.");
+    expect(said()).toEqual([]);
+    expect(useGameStore.getState().friendTaps).toEqual([]);
   });
 });

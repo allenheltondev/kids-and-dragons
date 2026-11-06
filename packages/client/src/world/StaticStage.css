@@ -61,6 +61,29 @@
 .kad-static-stage__bedroll svg { display: block; inline-size: 100%; block-size: auto; }
 /* A friend out (#624) sits at an end of the packed row, at its true height beside the heroes. */
 .kad-static-stage__friend.is-turned img { transform: scaleX(-1); }
+/* A tapped friend's words over its head (#624): the moving camp's pale bubble, still. */
+.kad-static-stage__friend { position: relative; }
+.kad-static-stage__words, .kad-static-camp__words {
+  position: absolute;
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  inline-size: max-content;
+  max-inline-size: 14em;
+  padding: .45em .7em;
+  border: 2px solid rgb(107 79 42 / 85%);
+  border-radius: .8em;
+  background: #fff8ea;
+  color: #2b2238;
+  font: 800 clamp(14px, 2.6cqh, 30px)/1.25 Nunito, system-ui, sans-serif;
+  text-align: center;
+  text-shadow: none;
+  white-space: normal;
+  pointer-events: none;
+  z-index: 2;
+}
+.kad-static-stage__words { inset-block-end: 100%; }
+/* The painting's head is the nominal box's top, 7.8% down its canvas (figure-scale.ts NOMINAL_PAINT). */
+.kad-static-camp__words { inset-block-end: 92%; font-size: max(14px, .9em); }
 
 /* A still frame of the neutral tear, keeping the scene's visible doorway on
    devices without WebGL. Its rules/colours remain in the separate RiftSight UI. */

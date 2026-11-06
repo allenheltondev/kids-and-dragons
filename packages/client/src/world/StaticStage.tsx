@@ -18,6 +18,8 @@ import { biomeBackdropUrl, characterWorldArtUrl, enemyArtUrl, sceneArtFor, scene
 import { castFor } from "./cast";
 import { campFamilyFor, campLayoutFor, campShownFor, campStage, indoorRest, outdoorRest } from "./lobby-camp";
 import { campBeatShown, onCampBeat } from "./camp-beat";
+import { campFriendFigures } from "./camp-friends";
+import { useStillFriendTaps } from "./still-friend-taps";
 import { StillCamp } from "./StillCamp";
 import { CampBedroll } from "./CampBedroll";
 import { packedFriends, packedKits, type PackedFriend } from "./packed-camp";
@@ -64,25 +66,32 @@ export function StaticStage(): React.JSX.Element {
   // What the head draws, the goal card's own foot, not its padded box (#625).
   const plateTop = useSyncExternalStore(onStageCoverTop, stageCoverTop, stageCoverTop);
   const camp = state && campShownFor(state, beat) ? campLayoutFor(campStage(state), campFamilyFor(state, chapter)) : null;
-  if (state && camp) {
-    return (
-      <div className="kad-static-stage" data-testid="static-stage" aria-hidden="true">
-        <StillCamp layout={camp} state={state} {...(outdoorRest(state) ? { insets: { top: plateTop, bottom: plate } } : {})} />
-      </div>
-    );
-  }
   // An indoor rest keeps its picture, with each hero's bedroll and pack beside her (§3.2).
-  const packed = indoorRest(state) ? new Map(packedKits(state).map((kit) => [kit.id, kit])) : null;
+  const packed = !camp && indoorRest(state) ? new Map(packedKits(state).map((kit) => [kit.id, kit])) : null;
   // And the friends out at the row's two ends (#624), alternating, left first,
   // each as tall beside the heroes as it truly is.
   const friends = packed ? packedFriends(state) : [];
+  const shownFriends = friends.filter((f) => f.url !== null);
+  // A friend tapped on a phone (#624) says its words over its head here, in
+  // whichever camp shows it: the full still camp or the packed row.
+  const showing = new Set(
+    camp && state ? campFriendFigures(state).map((f) => f.id.slice("friend:".length)) : shownFriends.map((f) => f.id),
+  );
+  const words = useStillFriendTaps((id) => showing.has(id));
+  if (state && camp) {
+    return (
+      <div className="kad-static-stage" data-testid="static-stage" aria-hidden="true">
+        <StillCamp layout={camp} state={state} friendWords={words} {...(outdoorRest(state) ? { insets: { top: plateTop, bottom: plate } } : {})} />
+      </div>
+    );
+  }
   const tallest = Math.max(1, ...party.map((m) => figureSize(`characters/${m.character.species}`).heightCm));
   const friendItem = (friend: PackedFriend, index: number): React.JSX.Element => (
     <li key={`friend:${friend.id}`} className={`kad-static-stage__figure kad-static-stage__friend${index % 2 === 0 ? " is-turned" : ""}`} data-testid="packed-friend">
       <img src={friend.url!} alt="" style={{ maxBlockSize: `calc(26cqh * ${Math.min(1, friend.heightCm / tallest).toFixed(3)})` }} />
+      {words.has(friend.id) ? <span className="kad-static-stage__words" data-testid="friend-words">{words.get(friend.id)}</span> : null}
     </li>
   );
-  const shownFriends = friends.filter((f) => f.url !== null);
   const leftFriends = shownFriends.filter((_, i) => i % 2 === 0).reverse();
   const rightFriends = shownFriends.filter((_, i) => i % 2 === 1);
 

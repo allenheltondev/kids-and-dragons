@@ -17,7 +17,7 @@ import { fakeApp, installFakeCanvas2D, type FakeApp } from "../testing/fake-stag
 import { createCamp, type CampFigure, type CampStage } from "./camp";
 import { campLayout, parseCampManifest } from "./camp-layout";
 import { FRIEND_SPOTS, campFriendFigures, friendFigure, friendHabit, friendHeightCm, friendSpots } from "./camp-friends";
-import { REACT_S, TAP_WAITING, WORDS_S, createTapQueue, type FriendTap } from "./camp-taps";
+import { REACT_S, TAP_GAP_S, TAP_WAITING, WORDS_S, createTapQueue, createWordsTaps, routeFriendTap, type FriendTap, type FriendTapTarget } from "./camp-taps";
 import { stillCampFigures } from "./lobby-camp";
 
 beforeAll(installFakeCanvas2D);
@@ -123,6 +123,45 @@ describe("the TV's queue (§8.5)", () => {
     expect(queue.offer(tap("hero_a"), 0)).toBe("start");
     expect(queue.offer(tap("hero_b"), 0.1)).toBe("waiting");
     expect(queue.offer(tap("hero_b"), 0.2)).toBe("dropped");
+  });
+
+  it("indoors and on the still stage, says its words for WORDS_S under the same rules, then rests before the held tap (#624)", () => {
+    const taps = createWordsTaps();
+    const verdicts = Array.from({ length: 8 }, (_, i) => taps.offer(tap(i % 2 ? "hero_a" : "hero_b", `Peep ${String(i)}`), i * 0.05));
+    expect(verdicts).toEqual(["start", "waiting", "dropped", "dropped", "dropped", "dropped", "dropped", "dropped"]);
+    expect(taps.said().map((s) => s.tap.words)).toEqual(["Peep 0"]);
+    expect(taps.next()).toBe(WORDS_S);
+    expect(taps.tick(WORDS_S - 0.01)).toBe(false);
+    // Its words are done: gone, and the held one waits out the rest.
+    expect(taps.tick(WORDS_S)).toBe(true);
+    expect(taps.said()).toEqual([]);
+    expect(taps.next()).toBeCloseTo(WORDS_S + TAP_GAP_S);
+    expect(taps.tick(WORDS_S + TAP_GAP_S)).toBe(true);
+    expect(taps.said().map((s) => s.tap.words)).toEqual(["Peep 1"]);
+    expect(taps.tick(2 * WORDS_S + TAP_GAP_S)).toBe(true);
+    expect(taps.next()).toBeNull();
+    // Rested, a new tap starts at once; one in the rest is held for after it.
+    expect(taps.offer(tap("hero_a", "Again"), 2 * WORDS_S + TAP_GAP_S + 0.1)).toBe("waiting");
+    expect(taps.next()).toBeCloseTo(2 * WORDS_S + 2 * TAP_GAP_S);
+    taps.forget("friend:duckling");
+    expect(taps.next()).toBeNull();
+    expect(taps.offer(tap("hero_a", "Fresh"), 100)).toBe("start");
+  });
+
+  it("goes to whichever stage shows the friend, and is dropped where none does (#624)", () => {
+    const heard: string[] = [];
+    const stage = (name: string, shows: string[]): FriendTapTarget => ({
+      showsFriend: (id) => shows.includes(id),
+      tapFriend: (t) => (heard.push(`${name}:${t.friendId}`), "start"),
+    });
+    const camp = stage("camp", ["bun"]);
+    const packed = stage("packed", ["duckling"]);
+    const tapOf = (friendId: string) => ({ friendId, heroId: "hero_a", words: "Hi" });
+    expect(routeFriendTap(tapOf("bun"), [camp, packed])).toBe("start");
+    expect(routeFriendTap(tapOf("duckling"), [camp, packed])).toBe("start");
+    expect(routeFriendTap(tapOf("duckling"), [null, packed])).toBe("start");
+    expect(routeFriendTap(tapOf("mosshorn"), [camp, packed, null])).toBe("dropped");
+    expect(heard).toEqual(["camp:bun", "packed:duckling", "packed:duckling"]);
   });
 });
 

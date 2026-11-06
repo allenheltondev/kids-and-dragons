@@ -239,7 +239,13 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // into #624's friends and the accents drawn on the shrunk and framed camps,
 // measures 1671KB locally, first paint 332KB, at its budget. Keep 2KB of
 // slack for CI.
-const TOTAL_BUDGET_KB = 1673;
+// 1673 -> 1677 for an indoor rest's friend taps (#624, the #654 review): the
+// packed scene says a tapped friend's words with a hop (scene.ts, camp-taps.ts
+// `createWordsTaps`, `routeFriendTap`), and the still stage does the same
+// without WebGL (still-friend-taps.ts). All of it in the lazy scene and still
+// stage chunks: the merged build measures 1675KB locally, first paint 332KB,
+// unchanged at its budget. Keep 2KB of slack for CI.
+const TOTAL_BUDGET_KB = 1677;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

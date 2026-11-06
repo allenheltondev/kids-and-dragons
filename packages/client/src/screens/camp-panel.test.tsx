@@ -291,6 +291,19 @@ describe("friends and buddies on the phone (#624, §4.4, §8.5)", () => {
     expect(screen.getByTestId("friend-collection").textContent).not.toMatch(/left|gone|away/i);
   });
 
+  it("indoors, where nobody walks, says hi to a friend and tells her the TV shows it, not that it is coming (#624, §3.2)", () => {
+    const taps: string[] = [];
+    useGameStore.setState({ tapFriend: async (id: string) => (taps.push(id), true) });
+    const indoor = friendly();
+    openPanel({ ...indoor, phase: "scene", sceneType: "rest", sceneId: "rest_bell_house", campMoment: { ...indoor.campMoment!, id: "rest:rest_bell_house|x", kind: "rest", outdoor: false } } as RunState);
+    const section = screen.getByTestId("camp-friends");
+    expect(within(section).getAllByRole("button").map((b) => b.textContent)).toEqual(["Say hi to Lamb", "Say hi to Bun", "Say hi to Mosshorn", "Say hi to Duckling"]);
+    fireEvent.click(within(section).getByRole("button", { name: "Say hi to Bun" }));
+    expect(taps).toEqual(["bun"]);
+    expect(within(section).getByRole("status").textContent).toBe("Bun says hi! Look at the TV.");
+    expect(within(section).getByRole("status").textContent).not.toMatch(/on the way|over|coming/i);
+  });
+
   it("has no friends section and no buddy picker for a crew with no friends", () => {
     openPanel(table());
     expect(screen.queryByTestId("camp-friends")).toBeNull();

@@ -97,6 +97,8 @@ export interface LobbyCamp {
    * camp up now acts it out, or drops it (camp-taps.ts). Nothing without a camp.
    */
   tapFriend(tap: { friendId: string; heroId: string; words: string }): TapVerdict;
+  /** Whether the camp up now shows this friend out: a tap for it is the camp's (camp-taps.ts `routeFriendTap`). */
+  showsFriend(friendId: string): boolean;
   /** The camp the shared screen is showing, or null when it shows none. */
   camp(): CampStage | null;
   /** A camp still fading off after Begin or Go on, or null. */
@@ -282,6 +284,7 @@ export function createLobbyCamp(app: Application, layout: CampLayout, options: L
       if (!shown) return "dropped";
       return shown.tapFriend({ figureId: friendFigureId(tap.friendId), heroId: tap.heroId, words: tap.words });
     },
+    showsFriend: (friendId) => shown !== null && spots.has(friendId),
     camp: () => shown,
     leaving: () => fading,
     destroy() {

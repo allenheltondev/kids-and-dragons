@@ -28,7 +28,13 @@ import { beginEncounter, parseBoard } from "@kad/shared";
 import type { PartyMember, ResolvedCharacter } from "@kad/shared";
 import { makeRules } from "../../../shared/src/test-fixtures";
 import { fakeApp, installFakeCanvas2D, type FakeApp } from "../testing/fake-stage";
-import { BACKDROP_FLOOR, backdropFit, createScene, type PartyScene } from "./scene";
+import { BACKDROP_FLOOR, backdropFit, createScene, packedTapTarget, type PartyScene } from "./scene";
+import type { RunState } from "@kad/shared";
+import { makeCharacter, makeMember, makeState } from "../testing/fixtures";
+import { campLayoutFixture } from "../testing/camp-fixture";
+import { createLobbyCamp } from "./lobby-camp-stage";
+import { packedFriends, packedKits } from "./packed-camp";
+import { TAP_GAP_S, WORDS_S, routeFriendTap } from "./camp-taps";
 import type { BoardViewState } from "./board";
 import { RIFT_SHEET, RIFT_SHEET_MS } from "../screens/riftlight";
 
@@ -885,5 +891,157 @@ describe("the narration plate changing height", () => {
     figuresOf(app).forEach((f, i) => expect(f.x).toBeCloseTo(figuresOf(fresh.app)[i]!.x, 1));
     fresh.scene.destroy();
     s.destroy();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// A friend tapped at an indoor rest (#624, docs/camp.md §3.2)
+// ---------------------------------------------------------------------------
+
+describe("a packed friend tapped at an indoor rest (#624, docs/camp.md §3.2)", () => {
+  const BUN = { id: "bun", url: "/assets/cast/bun.webp", heightCm: 40, stance: "standing" as const, figure: "cast/bun" };
+  const DUCKLING = { id: "duckling", url: "/assets/entities/duckling.webp", heightCm: 20, stance: "standing" as const, figure: "entities/duckling" };
+  const byLabel = (app: FakeApp, label: string): Container | null => {
+    let found: Container | null = null;
+    const walk = (node: Container): void => {
+      if (found || node.destroyed) return;
+      if (node.label === label) { found = node; return; }
+      for (const child of node.children) walk(child as Container);
+    };
+    walk(app.stage);
+    return found;
+  };
+  const wordsShown = (app: FakeApp): string[] => {
+    const layer = byLabel(app, "packed-friend-words");
+    return layer ? layer.children.flatMap((bubble) => (bubble as Container).children.filter((c) => c instanceof Text).map((t) => (t as Text).text)) : [];
+  };
+  const frames = (app: FakeApp, seconds: number, each?: () => void): void => {
+    for (let i = 0; i < Math.round((seconds * 1000) / 16); i++) {
+      app.ticker.frame(16);
+      each?.();
+    }
+  };
+  async function indoors(): Promise<{ s: PartyScene; app: FakeApp; restore: () => void }> {
+    const load = vi.spyOn(Assets, "load").mockResolvedValue(Texture.WHITE as unknown as Record<string, unknown>);
+    const { scene: s, app } = scene();
+    s.setBiome("glacier_of_origins", "scenes/riftlight/wyrm-nest");
+    s.setParty([member(), member({ character: character({ id: "c_2", ownerPlayerId: "p_2", name: "Thistle" }) })]);
+    s.setPackedCamp([{ id: "c_1", style: "rolled", accent: "#7FD4C1" }, { id: "c_2", style: "rolled", accent: "#E8A33D" }], [BUN, DUCKLING]);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    return { s, app, restore: () => { s.destroy(); load.mockRestore(); document.documentElement.removeAttribute("data-motion"); } };
+  }
+
+  it("shows its words over its head for as long as the full camp does, hops where it sits, and never walks", async () => {
+    const { s, app, restore } = await indoors();
+    try {
+      expect(s.showsPackedFriend("bun")).toBe(true);
+      const sprite = byLabel(app, "packed-friend:bun")!;
+      const spot = s.packedFriendsShown!().find((f) => f.id === "bun")!;
+      expect(s.tapPackedFriend({ friendId: "bun", heroId: "c_1", words: "Bun nibbles your sleeve. That means hello in goat." })).toBe("start");
+      // Up at once, over its head: the bubble's tail above the top of its painting, by it.
+      expect(s.packedFriendWords()).toEqual([{ id: "bun", words: "Bun nibbles your sleeve. That means hello in goat." }]);
+      expect(wordsShown(app)).toEqual(["Bun nibbles your sleeve. That means hello in goat."]);
+      const bubble = byLabel(app, "camp-friend-words")!;
+      expect(bubble.y).toBeLessThan(spot.y - spot.height);
+      expect(Math.abs(bubble.x - spot.x)).toBeLessThan(400);
+      // The full camp's hop, off the ground and back, and not a step sideways.
+      let highest = 0;
+      frames(app, 2.2, () => {
+        highest = Math.max(highest, spot.y - sprite.y);
+        expect(sprite.x).toBe(spot.x);
+      });
+      expect(highest).toBeGreaterThan(0);
+      expect(sprite.y).toBe(spot.y);
+      // Still up until WORDS_S, then gone.
+      frames(app, WORDS_S - 2.2 - 0.1);
+      expect(s.packedFriendWords()).toHaveLength(1);
+      frames(app, 0.3);
+      expect(s.packedFriendWords()).toEqual([]);
+      expect(wordsShown(app)).toEqual([]);
+    } finally { restore(); }
+  });
+
+  it("only says its words under reduced motion: no hop", async () => {
+    document.documentElement.setAttribute("data-motion", "reduced");
+    const { s, app, restore } = await indoors();
+    try {
+      const sprite = byLabel(app, "packed-friend:duckling")!;
+      const spot = s.packedFriendsShown!().find((f) => f.id === "duckling")!;
+      expect(s.tapPackedFriend({ friendId: "duckling", heroId: "c_2", words: "Peep!" })).toBe("start");
+      frames(app, 2, () => expect(sprite.y).toBe(spot.y));
+      expect(s.packedFriendWords()).toEqual([{ id: "duckling", words: "Peep!" }]);
+    } finally { restore(); }
+  });
+
+  it("keeps the full camp's queue: one tap at a time, one more held, the rest dropped, then the held one says its words", async () => {
+    const { s, app, restore } = await indoors();
+    try {
+      const verdicts = ["Maa 0", "Maa 1", "Maa 2", "Maa 3"].map((words, i) => s.tapPackedFriend({ friendId: "bun", heroId: i % 2 ? "c_1" : "c_2", words }));
+      expect(verdicts).toEqual(["start", "waiting", "dropped", "dropped"]);
+      // Another friend is its own queue.
+      expect(s.tapPackedFriend({ friendId: "duckling", heroId: "c_1", words: "Peep!" })).toBe("start");
+      frames(app, WORDS_S + TAP_GAP_S + 0.1);
+      expect(s.packedFriendWords()).toEqual([{ id: "bun", words: "Maa 1" }]);
+    } finally { restore(); }
+  });
+
+  it("drops a tap for a friend it does not show, and forgets a friend's words when it goes in", async () => {
+    const { s, app, restore } = await indoors();
+    try {
+      expect(s.showsPackedFriend("mosshorn")).toBe(false);
+      expect(s.tapPackedFriend({ friendId: "mosshorn", heroId: "c_1", words: "Hm." })).toBe("dropped");
+      expect(s.tapPackedFriend({ friendId: "bun", heroId: "c_1", words: "Hi!" })).toBe("start");
+      s.setPackedCamp([{ id: "c_1", style: "rolled", accent: "#7FD4C1" }, { id: "c_2", style: "rolled", accent: "#E8A33D" }], [DUCKLING]);
+      frames(app, 0.1);
+      expect(s.packedFriendWords()).toEqual([]);
+      expect(s.showsPackedFriend("bun")).toBe(false);
+      s.setPackedCamp(null);
+      expect(s.tapPackedFriend({ friendId: "duckling", heroId: "c_1", words: "Peep!" })).toBe("dropped");
+    } finally { restore(); }
+  });
+});
+
+describe("a friend tap goes to whichever stage shows the friend (#624)", () => {
+  const cards = [
+    { id: "bun", name: "Bun", figure: "cast/bun" },
+    { id: "duckling", name: "Duckling", figure: "entities/duckling" },
+  ];
+  const restState = (outdoor: boolean): RunState =>
+    makeState({
+      phase: "scene",
+      sceneType: "rest",
+      sceneId: "rest_bell_house",
+      party: [makeMember({ character: makeCharacter({ id: "c_1", ownerPlayerId: "p_1", name: "Sparklehoof" }), playerId: "p_1" })],
+      campMoment: { id: "rest:rest_bell_house|r:c:4", kind: "rest", outdoor, changes: {}, friends: { rotation: ["bun", "duckling"], out: ["bun", "duckling"], cards } },
+    });
+
+  it("indoors, to the scene's packed camp, which shows its words; outdoors, to the full camp; dropped where neither shows it", async () => {
+    const load = vi.spyOn(Assets, "load").mockResolvedValue(Texture.WHITE as unknown as Record<string, unknown>);
+    const { scene: s, app } = scene();
+    const lobby = createLobbyCamp(app as unknown as Application, campLayoutFixture(), { loadTexture: () => Promise.reject(new Error("no art in tests")) });
+    lobby.resize(1600, 900);
+    try {
+      s.setParty([member()]);
+      const indoor = restState(false);
+      lobby.sync(indoor);
+      s.setPackedCamp(packedKits(indoor), packedFriends(indoor));
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      // The bug (#654 review): the full camp is not up indoors, so it would drop this.
+      expect(lobby.camp()).toBeNull();
+      expect(lobby.showsFriend("bun")).toBe(false);
+      expect(routeFriendTap({ friendId: "bun", heroId: "c_1", words: "Hi!" }, [lobby, packedTapTarget(s)])).toBe("start");
+      expect(s.packedFriendWords()).toEqual([{ id: "bun", words: "Hi!" }]);
+      // Neither shows the kid goat.
+      expect(routeFriendTap({ friendId: "kid_goat", heroId: "c_1", words: "Maa!" }, [lobby, packedTapTarget(s)])).toBe("dropped");
+
+      const outdoor = restState(true);
+      lobby.sync(outdoor);
+      s.setPackedCamp(null, []);
+      expect(lobby.showsFriend("duckling")).toBe(true);
+      expect(s.showsPackedFriend("duckling")).toBe(false);
+      expect(routeFriendTap({ friendId: "duckling", heroId: "c_1", words: "Peep!" }, [lobby, packedTapTarget(s)])).toBe("start");
+      expect(lobby.camp()!.friendWords()).toEqual([{ id: "friend:duckling", words: "Peep!" }]);
+      expect(s.packedFriendWords()).toEqual([]);
+    } finally { lobby.destroy(); s.destroy(); load.mockRestore(); }
   });
 });

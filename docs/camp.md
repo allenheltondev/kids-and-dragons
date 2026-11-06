@@ -141,7 +141,9 @@ Not every rest happens where a tent could go. The party sleeps in bunks in a war
   deck, a narrow ledge). The scene keeps its own illustration, and the camp appears packed down
   inside it: each hero's bedroll and pack along the front of the picture, and the friends beside
   them. No tents, no campfire and no shared hotspots. Each hero's own bedroll can still change
-  (§4.5), and friends can still be tapped.
+  (§4.5), and friends can still be tapped: a tapped friend says its words over its head where it
+  sits, with a hop unless motion is reduced, and does not walk over (indoors nobody wanders). The
+  phone says the friend says hi, not that it is coming.
 
 The field is **required on every rest scene**, so `npm run content:validate` refuses a rest scene
 without it and nothing has to guess. Tagging today's 112 rest scenes is a one-time pass: a keyword

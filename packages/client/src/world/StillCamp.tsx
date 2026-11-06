@@ -136,9 +136,11 @@ export interface StillCampProps {
   activeSpot?: string | null;
   /** "cover", the shared screen's framing; "width", a phone's Camp panel: the whole camp across, its band only. */
   fit?: "cover" | "width";
+  /** A tapped friend's words (#624), by friend id, shown over its head (still-friend-taps.ts). */
+  friendWords?: ReadonlyMap<string, string>;
 }
 
-export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fit: mode = "cover" }: StillCampProps): React.JSX.Element {
+export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fit: mode = "cover", friendWords }: StillCampProps): React.JSX.Element {
   const host = useRef<HTMLDivElement | null>(null);
   const [pane, setPane] = useState({ width: 0, height: 0 });
   const lobbyBottom = useSyncExternalStore(onLobbyInset, lobbyInsetBottom, lobbyInsetBottom);
@@ -334,6 +336,9 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
             {figure.url ? <img src={figure.url} alt="" /> : null}
             {figure.id === "friend:mosshorn" && <span className="kad-static-camp__leaf"><img src={leafArt} alt="" /></span>}
             <span className="kad-static-camp__name">{figure.friend ?? state.party.find(member => member.character.id === figure.id)?.character.name}</span>
+            {figure.friend !== undefined && friendWords?.has(figure.id.slice("friend:".length)) ? (
+              <span className="kad-static-camp__words" data-testid="friend-words">{friendWords.get(figure.id.slice("friend:".length))}</span>
+            ) : null}
           </span>
         ))}
         {layout.frame.pieces.map(piece => {

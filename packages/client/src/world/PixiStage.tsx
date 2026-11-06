@@ -6,7 +6,8 @@ import { Application } from "pixi.js";
 import type { Chapter, PartyMember, RunState } from "@kad/shared";
 import type { HeldPreview } from "../store/contract";
 import { currentActorId, enemyArtId } from "@kad/shared";
-import { createScene, getActiveScene, setActiveScene, type PartyScene } from "./scene";
+import { createScene, getActiveScene, packedTapTarget, setActiveScene, type PartyScene } from "./scene";
+import { routeFriendTap } from "./camp-taps";
 import type { BoardViewState } from "./board";
 import { presentationDuration } from "./presentation";
 import { shakeStrengthFor } from "./shake";
@@ -368,14 +369,16 @@ export function PixiStage(): React.JSX.Element {
     sceneRef.current?.setPackedCamp(indoorRest(state) ? packedKits(state) : null, packedFriends(state));
   }, [packed]);
 
-  // A kid tapped a camp friend on her phone (#624): the camp takes each tap
-  // as it is heard, and acts it out or drops it (camp-taps.ts).
+  // A kid tapped a camp friend on her phone (#624): each tap, as it is heard,
+  // goes to whichever stage shows that friend, the full camp or the camp packed
+  // into an indoor rest's scene, which acts it out or drops it (camp-taps.ts).
+  // Heard, it is taken off the store either way; dropped only where neither shows it.
   const friendTaps = useGameStore((store) => store.friendTaps);
   useEffect(() => {
     if (friendTaps.length === 0) return;
     const { dropFriendTap } = useGameStore.getState();
     for (const tap of friendTaps) {
-      campRef.current?.tapFriend(tap);
+      routeFriendTap(tap, [campRef.current, packedTapTarget(sceneRef.current)]);
       dropFriendTap(tap.key);
     }
   }, [friendTaps]);

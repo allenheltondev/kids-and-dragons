@@ -209,10 +209,13 @@ function CampFriends({ state }: { state: RunState }): ReactElement | null {
   }, [resting]);
   if (!friends || friends.cards.length === 0) return null;
   const out = friends.out.map((id) => friends.cards.find((c) => c.id === id)).filter((c): c is CampFriendCard => c !== undefined);
+  // Indoors the camp is packed down and nobody walks (§3.2): a tapped friend
+  // says hello where it sits, so the phone says that, not that it is coming.
+  const indoors = state.campMoment?.outdoor === false;
   const call = (card: CampFriendCard): void => {
     if (resting !== null) return;
     setResting(card.id);
-    setSaid(`${card.name} is on the way!`);
+    setSaid(indoors ? `${card.name} says hi! Look at the TV.` : `${card.name} is on the way!`);
     void tapFriend(card.id);
   };
   return (
@@ -234,7 +237,7 @@ function CampFriends({ state }: { state: RunState }): ReactElement | null {
             <span className="camp-option__art camp-option__art--friend" aria-hidden="true">
               <FriendArt card={card} />
             </span>
-            <span className="camp-option__label">{`Call ${card.name} over`}</span>
+            <span className="camp-option__label">{indoors ? `Say hi to ${card.name}` : `Call ${card.name} over`}</span>
           </button>
         ))}
       </div>
