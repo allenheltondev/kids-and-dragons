@@ -33,6 +33,7 @@
  */
 
 import { Assets, Container, Graphics, Rectangle, Sprite, Texture, type Application } from "pixi.js";
+import leafArt from "../assets/painted/leaf.webp";
 import { CAMP_KIT_STYLES, campKitStyle, campTentCloth } from "./camp-kit-art";
 import { campKitCanvas } from "./camp-kit-canvas";
 import { campPieceOwner } from "./camp-ownership";
@@ -40,6 +41,7 @@ import { bannerName, friendWords, hotspotGlow, pieceStandIn, souvenirStandIn, st
 import { REACT_S, WORDS_S, createTapQueue, type FriendTap, type TapVerdict } from "./camp-taps";
 import { campBoxes, campFitFor, ownedPieceSize, type CampBox, type CampBoxFriend, type CampBoxInput, type CampLabelBox } from "./camp-boxes";
 import { campPaint } from "./camp-paint";
+import { campAccent, campAccentPose } from "./camp-accents";
 import { tentArt, type CampBesideView, type CampSpotView } from "./camp-scene";
 import type { CastStance } from "@kad/shared";
 import {
@@ -61,6 +63,7 @@ import {
   standPoint,
   type CampAction,
   type CampFace,
+  type CampFriendHabit,
   type CampLane,
   type CampLayout,
   type CampPartMotion,
@@ -72,6 +75,9 @@ import {
 import {
   activeHotspots,
   actionPose,
+  bunSettlePose,
+  ducklingSettlePose,
+  mosshornLeafDrop,
   campGait,
   campHeightPx,
   campMeasure,
@@ -106,6 +112,8 @@ import {
 /** Somebody in camp: a hero or a friend. */
 export interface CampFigure {
   id: string;
+  /** A friend's fireside habit (camp-friends.ts `friendHabit`; #651): Bun's shake, the duckling's waddle, the mosshorn's leaf. */
+  habit?: CampFriendHabit;
   /** The cutout, or null for the "art pending" placeholder. */
   url: string | null;
   /** True height (figure-scale.ts `figureSize`). */
@@ -329,6 +337,7 @@ interface Actor {
   art: Container;
   shadow: Container;
   sprite: Sprite | null;
+  leaf?: Sprite;
   placeholder: Graphics;
   gait: CampGait;
   heightPx: number;
@@ -465,6 +474,17 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
    * seam meets itself (camp-framing.ts `campSides`). Hidden at a cover scale.
    */
   const sides: { view: Container; top: Sprite; bottom: Sprite; left: boolean }[] = [];
+  /* The terrain's animated accent (camp-accents.ts; #652), over the painting. */
+  const accent = campAccent(layout.backdrop.family);
+  let accentSprite: Sprite | null = null;
+  function updateAccent(): void {
+    if (!accent || !accentSprite) return;
+    const pose = campAccentPose(accent, elapsed, still);
+    accentSprite.position.set(pose.x, pose.y);
+    accentSprite.angle = pose.angle;
+    accentSprite.alpha = pose.alpha;
+    accentSprite.height = accent.height * pose.stretch;
+  }
   const showBackdrop = (texture: Texture): void => {
     if (destroyed) return;
     const sprite = new Sprite(texture);
@@ -503,7 +523,18 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   };
   const fallback = options.fallbackBackdrop;
   void load(assetUrl(layout.backdrop.path))
-    .then(showBackdrop, () => (fallback ? load(fallback).then(showBackdrop) : undefined))
+    .then(async (texture) => {
+      showBackdrop(texture);
+      if (!accent || destroyed) return;
+      const art = await load(accent.url);
+      if (destroyed) return;
+      accentSprite = new Sprite(art);
+      accentSprite.label = "camp-terrain-accent";
+      accentSprite.anchor.set(accent.pivotX / accent.width, accent.pivotY / accent.height);
+      accentSprite.width = accent.width;
+      updateAccent();
+      backdrop.addChild(accentSprite);
+    }, () => (fallback ? load(fallback).then(showBackdrop) : undefined))
     .catch(() => undefined);
 
   // Pieces and figures share one depth-sorted layer: the nearer the feet,
@@ -1180,6 +1211,17 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     placeAt(actor, home, null);
     planner.add(wanderFigure(def), home);
     loadArt(actor);
+    if (def.habit === "mosshorn") {
+      void load(leafArt).then((texture) => {
+        if (destroyed || actors.get(def.id) !== actor) return;
+        const leaf = new Sprite(texture);
+        leaf.label = "mosshorn-leaf";
+        leaf.anchor.set(0.5);
+        leaf.visible = false;
+        actor.leaf = leaf;
+        actor.container.addChild(leaf);
+      }).catch(() => {});
+    }
     return actor;
   }
 
@@ -1323,7 +1365,10 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
 
     if (!actor.walk) {
       const since = elapsed - actor.arrivedAt;
-      const pose = actor.action ? actionPose(actor.action, since, still) : actionPose("rest", 0, true);
+      // A friend's fireside habit (#651) plays each time it settles somewhere, unless something else is acting.
+      const habit = actor.leaving || actor.action ? undefined : actor.def.habit;
+      const settle = habit === "bun" ? bunSettlePose : habit === "duckling" ? ducklingSettlePose : undefined;
+      const pose = settle?.(since, still) ?? actionPose(actor.action ?? "rest", since, still || !actor.action);
       const forward = actor.facing;
       rotation += pose.lean * forward;
       lift += pose.lift * actor.heightPx;
@@ -1380,6 +1425,15 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     actor.body.scale.y = scaleY;
     // Art is drawn facing left: scale.x 1 faces left, -1 right.
     actor.art.scale.x = -actor.facingNow * scaleX;
+    if (actor.leaf) {
+      // Carried while it wanders, dropped once each time it settles.
+      const drop = actor.walk && !still ? 0 : mosshornLeafDrop(elapsed - actor.arrivedAt, still);
+      actor.leaf.visible = actor.sprite !== null && !actor.leaving;
+      actor.leaf.width = actor.leaf.height = actor.heightPx * 0.19;
+      actor.leaf.x = -actor.heightPx * (0.22 + 0.1 * drop);
+      actor.leaf.y = -actor.heightPx * (0.55 * (1 - drop) + 0.035);
+      actor.leaf.rotation = -0.8 * drop;
+    }
     actor.shadow.scale.set(Math.max(0.3, shadow));
     const cast = actor.shadow.getChildByLabel("camp-cast-body", true);
     if (cast) cast.scale.x = Math.abs(cast.scale.x) * (Math.sign(actor.art.scale.x) || 1);
@@ -1395,6 +1449,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     if (destroyed) return;
     const dt = frameSeconds(app.ticker.deltaMS);
     elapsed += dt;
+    updateAccent();
     easeFrame(dt);
 
     if (!still) {
@@ -1713,6 +1768,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   function setStill(next: boolean): void {
     if (destroyed || next === still) return;
     still = next;
+    updateAccent();
     if (!still) return;
     // Nobody wanders and nothing hops: whoever is walking is at their
     // destination instead, by a fade.

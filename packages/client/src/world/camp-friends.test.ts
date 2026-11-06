@@ -16,7 +16,7 @@ import type { CampFriendCard, RunState } from "@kad/shared";
 import { fakeApp, installFakeCanvas2D, type FakeApp } from "../testing/fake-stage";
 import { createCamp, type CampFigure, type CampStage } from "./camp";
 import { campLayout, parseCampManifest } from "./camp-layout";
-import { FRIEND_SPOTS, campFriendFigures, friendFigure, friendHeightCm, friendSpots } from "./camp-friends";
+import { FRIEND_SPOTS, campFriendFigures, friendFigure, friendHabit, friendHeightCm, friendSpots } from "./camp-friends";
 import { REACT_S, TAP_WAITING, WORDS_S, createTapQueue, type FriendTap } from "./camp-taps";
 import { stillCampFigures } from "./lobby-camp";
 
@@ -66,6 +66,39 @@ describe("who stands where (§4.4)", () => {
     }
   });
 
+});
+
+describe("fireside habits (#651)", () => {
+  it("gives Bun, the duckling and the mosshorn their habits wherever the rotation stands them, and the kid goat none yet", () => {
+    expect(friendFigure(card("bun"), 3).habit).toBe("bun");
+    expect(friendFigure(card("duckling"), 0).habit).toBe("duckling");
+    expect(friendFigure(card("mosshorn"), 2).habit).toBe("mosshorn");
+    expect(friendFigure(card("kid_goat"), 1)).not.toHaveProperty("habit");
+    expect(friendHabit("toString")).toBeUndefined();
+  });
+
+  it("lets the mosshorn carry its leaf while it wanders and drop it each time it settles", () => {
+    const layout = campLayout(parsed, "open_plains", 2);
+    const app = fakeApp();
+    const stage = createCamp(app as unknown as Application, layout, { seed: 3, loadTexture: () => Promise.resolve(Texture.WHITE) });
+    stage.resize(1920, 1080);
+    stage.setFigures([friendFigure(card("mosshorn"), 0)]);
+    return Promise.resolve().then(() => new Promise((r) => setTimeout(r, 0))).then(() => {
+      const leaf = () => stage.view.getChildByLabel("mosshorn-leaf", true)!;
+      let carried = false;
+      let dropped = false;
+      for (let t = 0; t < 60 && !(carried && dropped); t += 0.05) {
+        app.ticker.frame(50);
+        const me = figure(stage, "friend:mosshorn");
+        if (me.walking && leaf().rotation === 0) carried = true;
+        if (!me.walking && leaf().rotation < -0.79) dropped = true;
+      }
+      expect(leaf()).toBeTruthy();
+      expect(dropped).toBe(true);
+      expect(carried).toBe(true);
+      stage.destroy();
+    });
+  });
 });
 
 describe("the TV's queue (§8.5)", () => {

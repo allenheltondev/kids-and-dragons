@@ -982,13 +982,18 @@
     },
     "encounter_crawlers": {
       "type": "encounter",
-      "map": "reedbank",
-      "narration": "The crawlers clatter through the reeds toward whatever hums.",
+      "map": "sausage_lane",
+      "narration": "Your packs are humming. Get everyone to the dry bank before the crawlers catch up. The mud slows your next turn if you stop in it.",
       "enemies": [
         {
           "id": "crawler",
           "name": "Bone Crawler",
-          "creature": "bone_crawler"
+          "creature": "bone_crawler",
+          "count": 2,
+          "steps": 4,
+          "rift": {
+            "post": "none"
+          }
         }
       ],
       "onVictory": {
@@ -996,6 +1001,57 @@
         "narration": "Bopped and outrun, the crawlers clatter off in a huff to fix their spirals."
       },
       "onDefeat": {
+        "goto": "rest_setback",
+        "narration": "There are far more crawlers than it looked. They swarm the packs like a rattling blanket."
+      },
+      "art": "scenes/gemfall/river-mouth-shore",
+      "environment": {
+        "clock": {
+          "rounds": 5,
+          "label": "The crawlers catch the packs",
+          "onExpire": "collapse"
+        },
+        "hazards": [
+          {
+            "id": "marsh-mud",
+            "kind": "rift",
+            "label": "Sticky mud",
+            "art": "fight-warm-mud-hollow",
+            "tiles": [
+              {
+                "x": 3,
+                "y": 3
+              }
+            ],
+            "slow": {
+              "steps": 2,
+              "turns": 1
+            }
+          }
+        ],
+        "exits": [
+          {
+            "id": "far-bank",
+            "label": "Dry bank",
+            "art": "prop_stepping_stones",
+            "tiles": [
+              {
+                "x": 6,
+                "y": 3
+              },
+              {
+                "x": 6,
+                "y": 2
+              }
+            ]
+          }
+        ]
+      },
+      "onEscape": {
+        "goto": "rest_wet_end",
+        "narration": "The last of you scrambles onto the dry bank. The crawlers lose the hum and turn back to their spirals."
+      },
+      "onTimeout": {
         "goto": "rest_setback",
         "narration": "There are far more crawlers than it looked. They swarm the packs like a rattling blanket."
       }
@@ -2034,14 +2090,17 @@
     },
     "encounter_crabs": {
       "type": "encounter",
-      "map": "ford",
-      "narration": "The crabs click and clatter up the bank. Turn them around before they reach the carts.",
+      "map": "sausage_lane",
+      "narration": "Keep a hero at the cart wheel through the end of a round so the seller can pull it clear. Stay out of the sharp reeds. A crab can shove you into them.",
       "enemies": [
         {
           "id": "crab",
           "name": "Glassback Crab",
           "creature": "glassback_crab",
-          "hp": 10
+          "hp": 10,
+          "rift": {
+            "shoves": true
+          }
         }
       ],
       "onVictory": {
@@ -2055,6 +2114,54 @@
         ]
       },
       "onDefeat": {
+        "goto": "scene_crabs_sent_home",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      },
+      "art": "scenes/gemfall/queue-camp-crabs",
+      "environment": {
+        "clock": {
+          "rounds": 5,
+          "label": "The crabs reach the carts",
+          "onExpire": "collapse"
+        },
+        "hazards": [
+          {
+            "id": "sharp-reeds",
+            "kind": "thorns",
+            "label": "Sharp reeds",
+            "tiles": [
+              {
+                "x": 2,
+                "y": 4
+              }
+            ],
+            "damage": 1
+          }
+        ],
+        "objectives": [
+          {
+            "id": "soup-cart",
+            "kind": "hold",
+            "label": "Guard the cart wheel",
+            "art": "prop_wagon_wheel_rut",
+            "tiles": [
+              {
+                "x": 3,
+                "y": 2
+              }
+            ],
+            "rounds": 1,
+            "endsFight": true
+          }
+        ]
+      },
+      "onTimeout": {
         "goto": "scene_crabs_sent_home",
         "effects": [
           {
@@ -2452,7 +2559,59 @@
           "rope-loop"
         ]
       }
-    }
+    },
+    "fights": [
+      {
+        "chapter": "gemfall-03a",
+        "scene": "encounter_crawlers",
+        "creature": "bone_crawler",
+        "board": "sausage_lane",
+        "backdrop": "scenes/gemfall/river-mouth-shore",
+        "introScenes": [
+          "check_crawlers_leave"
+        ],
+        "victoryScene": "rest_wet_end",
+        "defeatScene": "rest_setback",
+        "tileUrl": "/assets/fight-boards/fight_ferry_landing/tiles.png",
+        "rescueFigure": "",
+        "activeUrl": "/assets/entities/bone_crawler/assembled.png",
+        "retreatUrl": "/assets/entities/bone_crawler/assembled.png",
+        "props": [],
+        "terrainProps": [],
+        "poses": {
+          "intro": "assembled",
+          "retreat": "assembled"
+        },
+        "retreatDirection": 1
+      },
+      {
+        "chapter": "gemfall-03a",
+        "scene": "encounter_crabs",
+        "creature": "glassback_crab",
+        "board": "sausage_lane",
+        "backdrop": "scenes/gemfall/queue-camp-crabs",
+        "introScenes": [],
+        "victoryScene": "scene_crabs_turned",
+        "defeatScene": "scene_crabs_sent_home",
+        "tileUrl": "/assets/fight-boards/fight_ferry_landing/tiles.png",
+        "rescueFigure": "",
+        "activeUrl": "/assets/entities/glassback_crab/warning.png",
+        "retreatUrl": "/assets/entities/glassback_crab/shooed.png",
+        "props": [],
+        "terrainProps": [],
+        "poses": {
+          "intro": "warning",
+          "retreat": "shooed"
+        },
+        "retreatDirection": 1
+      }
+    ],
+    "warmUrls": [
+      "/assets/entities/bone_crawler/assembled.png",
+      "/assets/fight-boards/fight_ferry_landing/tiles.png",
+      "/assets/entities/glassback_crab/warning.png",
+      "/assets/entities/glassback_crab/shooed.png"
+    ]
   },
   "resumeInteractions": {
     "interaction_pot": {

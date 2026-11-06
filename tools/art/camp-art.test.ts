@@ -163,7 +163,10 @@ describe('camp art prompts', () => {
   const read = (file: string) => JSON.parse(readFileSync(join(process.cwd(), 'docs', file), 'utf8')) as {
     paintings: { path: string; reference: string; plays: string; prompt: string; output: { width: number; height: number; format: string } }[];
   };
-  const files = ['camp-art-prompts.json', 'camp-kit-art-prompts.json', 'camp-art-prompts-phase2.json', 'camp-art-prompts-phase3.json'];
+  const files = [
+    'camp-art-prompts.json', 'camp-kit-art-prompts.json', 'camp-art-prompts-phase2.json',
+    'camp-art-prompts-phase3.json', 'camp-art-prompts-later.json',
+  ];
   const paintings = files.flatMap(file => read(file).paintings);
   const camp = manifest.camp;
   const decorations = new Set(camp.decorations.map(deco => deco.path));
@@ -217,6 +220,12 @@ describe('camp art inventory', () => {
       expect(new Set(owed.missing).size).toBe(owed.need);
       expect(owed.missing).toEqual(expect.arrayContaining([
         'camp/backdrops/open_plains.webp',
+        'camp/backdrops/enchanted_forest.webp',
+        'camp/backdrops/sky_islands.webp',
+        'camp/backdrops/whispering_marsh.webp',
+        'camp/backdrops/cliffside_exchange.webp',
+        'camp/backdrops/great_river.webp',
+        'camp/backdrops/bone_yard.webp',
         'camp/frames/stage1/campfire.png',
         'camp/frames/stage1/bedroll.png',
         'camp/frames/stage1/trailhead-post.png',
@@ -233,8 +242,8 @@ describe('camp art inventory', () => {
         'camp/decorations/songkeeper-master.png',
         'painted/dash_cash.webp',
       ]));
-      // Phase 1 and #633's eight, Phase 2's sixty, and Phase 3's eighteen.
-      expect(owed.need).toBe(86);
+      // Eight for Phase 1 and #633, sixty for Phase 2, eighteen for Phase 3, and six later backdrops.
+      expect(owed.need).toBe(92);
       mkdirSync(join(root, 'assets/camp/frames/stage1'), { recursive: true });
       writeFileSync(join(root, 'assets/camp/frames/stage1/bedroll.png'), 'fixture');
       mkdirSync(join(root, 'packages/client/src/assets/painted'), { recursive: true });

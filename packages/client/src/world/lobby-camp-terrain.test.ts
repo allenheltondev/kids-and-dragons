@@ -36,6 +36,9 @@ describe("campBiome", () => {
     expect(campFamilyFor(end, chapter)).toBe("red_sky_volcanic");
     const rest = makeState({ phase: "scene", sceneType: "rest", chapterId: "riftlight-frostfang-shore" });
     expect(campFamilyFor(rest, { id: "riftlight-frostfang-shore", biome: "frostfang_peaks" })).toBe("frozen_north");
+    // Main's later backdrops (#649), chosen the same way: Gemfall's first chapter at the Exchange.
+    const exchange = makeState({ phase: "chapter_complete", chapterId: "gemfall-01" });
+    expect(campFamilyFor(exchange, { id: "gemfall-01", biome: "exchange" })).toBe("cliffside_exchange");
     // Another chapter's content, still loading this one's: nothing to say yet.
     expect(campBiome(rest, chapter)).toBeNull();
     expect(campFamilyFor(rest, null)).toBe("open_plains");
@@ -45,7 +48,7 @@ describe("campBiome", () => {
 
 describe("campLayoutFor", () => {
   it("lays the crew's frame over the terrain's backdrop, each stage on each", () => {
-    for (const family of ["open_plains", "red_sky_volcanic", "frozen_north"]) {
+    for (const family of ["open_plains", "red_sky_volcanic", "frozen_north", "enchanted_forest", "sky_islands", "whispering_marsh", "cliffside_exchange", "great_river", "bone_yard"]) {
       for (const stage of [1, 2, 3, 4]) {
         const layout = campLayoutFor(stage, family)!;
         expect(layout.backdrop.family).toBe(family);

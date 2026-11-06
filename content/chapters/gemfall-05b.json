@@ -1714,13 +1714,16 @@
     },
     "encounter_wolves": {
       "type": "encounter",
-      "map": "switchback",
-      "narration": "The wolves get up, shake off a shower of sparks, and come down the switchback at you.",
+      "map": "sausage_lane",
+      "narration": "The wolves are coming down the switchback. Get everyone across the rope bridge before the pack cuts you off, or stand your ground and shoo them away.",
       "enemies": [
         {
           "id": "wolf",
           "name": "Cinder Wolf",
-          "creature": "cinder_wolf"
+          "creature": "cinder_wolf",
+          "rift": {
+            "post": "none"
+          }
         }
       ],
       "onVictory": {
@@ -1728,6 +1731,39 @@
         "narration": "The wolves decide this path isn't worth it. They lope off downhill, trailing sparks like a sneeze."
       },
       "onDefeat": {
+        "goto": "scene_gully_recovery",
+        "narration": "The wolves chase you down into a gully. Your packs scatter across the hillside."
+      },
+      "art": "scenes/gemfall/rope-bridge-spare-planks",
+      "environment": {
+        "clock": {
+          "rounds": 5,
+          "label": "The pack cuts off the bridge",
+          "onExpire": "collapse"
+        },
+        "exits": [
+          {
+            "id": "far-bank",
+            "label": "Rope bridge",
+            "art": "fight-plank-edge",
+            "tiles": [
+              {
+                "x": 6,
+                "y": 2
+              },
+              {
+                "x": 6,
+                "y": 3
+              }
+            ]
+          }
+        ]
+      },
+      "onEscape": {
+        "goto": "scene_foothills_view",
+        "narration": "The last of you clears the bridge. The wolves stop where the boards begin, ears flat."
+      },
+      "onTimeout": {
         "goto": "scene_gully_recovery",
         "narration": "The wolves chase you down into a gully. Your packs scatter across the hillside."
       }
@@ -1965,14 +2001,19 @@
     },
     "encounter_drake": {
       "type": "encounter",
-      "map": "ford",
-      "narration": "The young drake rears up and slaps the stream, and the slot becomes a splash fight. Move it along before the next climbers get soaked.",
+      "map": "surge_wagon",
+      "narration": "The drakes want a pool of their own. End two hero turns beside the channel stone to roll it aside. Water spills across the low route from round two and sweeps anyone who stops there back.",
       "enemies": [
         {
           "id": "drake",
           "name": "Young River Drake",
           "creature": "river_drake",
-          "hp": 10
+          "hp": 10,
+          "rift": {
+            "ignores": [
+              "rift"
+            ]
+          }
         }
       ],
       "onVictory": {
@@ -1986,6 +2027,57 @@
         ]
       },
       "onDefeat": {
+        "goto": "scene_drake_splashed",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      },
+      "art": "scenes/gemfall/high-stream-drake",
+      "environment": {
+        "clock": {
+          "rounds": 5,
+          "label": "The stream spills over the path",
+          "onExpire": "collapse"
+        },
+        "hazards": [
+          {
+            "id": "stream-spill",
+            "label": "Rising stream",
+            "kind": "rift",
+            "art": "water-surge",
+            "tiles": [
+              {
+                "x": 2,
+                "y": 3
+              }
+            ],
+            "fromRound": 2,
+            "push": {
+              "direction": "west",
+              "tiles": 2
+            }
+          }
+        ],
+        "objectives": [
+          {
+            "id": "channel-stone",
+            "label": "Open the side channel",
+            "kind": "close",
+            "art": "prop_stepping_stones",
+            "at": {
+              "x": 4,
+              "y": 2
+            },
+            "turns": 2,
+            "endsFight": true
+          }
+        ]
+      },
+      "onTimeout": {
         "goto": "scene_drake_splashed",
         "effects": [
           {
@@ -2406,7 +2498,65 @@
           "prop_knotted_cords"
         ]
       }
-    }
+    },
+    "fights": [
+      {
+        "chapter": "gemfall-05b",
+        "scene": "encounter_wolves",
+        "creature": "cinder_wolf",
+        "board": "sausage_lane",
+        "backdrop": "scenes/gemfall/rope-bridge-spare-planks",
+        "introScenes": [
+          "check_dash"
+        ],
+        "victoryScene": "scene_foothills_view",
+        "defeatScene": "scene_gully_recovery",
+        "tileUrl": "/assets/fight-boards/fight_ferry_landing/tiles.png",
+        "rescueFigure": "",
+        "activeUrl": "/assets/entities/cinder_wolf/cache_sniff.png",
+        "retreatUrl": "/assets/entities/cinder_wolf/shooed.png",
+        "props": [],
+        "terrainProps": [],
+        "poses": {
+          "intro": "cache_sniff",
+          "retreat": "shooed"
+        },
+        "retreatDirection": 1
+      },
+      {
+        "chapter": "gemfall-05b",
+        "scene": "encounter_drake",
+        "creature": "river_drake",
+        "board": "surge_wagon",
+        "backdrop": "scenes/gemfall/high-stream-drake",
+        "introScenes": [
+          "scene_drake_bank"
+        ],
+        "victoryScene": "scene_drake_shooed",
+        "defeatScene": "scene_drake_splashed",
+        "tileUrl": "/assets/fight-boards/fight_ferry_landing/tiles.png",
+        "rescueFigure": "",
+        "activeUrl": "/assets/entities/river_drake/warning.png",
+        "retreatUrl": "/assets/entities/river_drake/shooed.png",
+        "props": [
+          "pickup-river-charm"
+        ],
+        "terrainProps": [],
+        "poses": {
+          "intro": "warning",
+          "retreat": "shooed"
+        },
+        "retreatDirection": 1
+      }
+    ],
+    "warmUrls": [
+      "/assets/entities/cinder_wolf/cache_sniff.png",
+      "/assets/entities/cinder_wolf/shooed.png",
+      "/assets/fight-boards/fight_ferry_landing/tiles.png",
+      "/assets/entities/river_drake/warning.png",
+      "/assets/entities/river_drake/shooed.png",
+      "/assets/story-props/pickup-river-charm.webp"
+    ]
   },
   "resumeInteractions": {
     "interaction_post_relay": {

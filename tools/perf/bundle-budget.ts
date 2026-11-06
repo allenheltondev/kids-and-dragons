@@ -215,6 +215,12 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // 1642 -> 1646 when Phase 2 met main's Gemfall fight reworks (#639 to #644):
 // the merged build measures 1644KB locally and in CI, first paint 331KB.
 // Keep 2KB of slack for CI.
+// 1646 -> 1650 for the six later camp backdrops (#649). Their lane layouts
+// bring the lazy camp payload to 1648KB in CI. The WebPs are fetched separately
+// and first paint stays at 331KB. Keep the existing 2KB of slack.
+// 1650 -> 1654 for camp terrain accents (#652) integrated with the friend
+// habits and latest main. The measured total is 1652KB, with first paint
+// still at 331KB. Keep 2KB of slack.
 // 1646 -> 1658 for the camp's friends (#624): its base (88ed7f5) measures
 // 1645KB locally, and with friends 1656KB. About 8KB is lazy camp code (who is
 // out, the friend spots and their overlap rules, the TV's tap queue and words,
@@ -227,7 +233,13 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // The merged build, with the friends sitting at an indoor rest's packed row
 // too, measures 1664KB locally, first paint 332KB, at its budget. Keep 2KB of
 // slack for CI.
-const TOTAL_BUDGET_KB = 1666;
+// 1666 -> 1673 when Phase 3 (#624, #625, #627; 1666 above) met main's later
+// backdrops, friend habits and terrain accents (#649, #651, #652; 1646 -> 1654
+// on main): one raise for both. The merged build, with main's habits folded
+// into #624's friends and the accents drawn on the shrunk and framed camps,
+// measures 1671KB locally, first paint 332KB, at its budget. Keep 2KB of
+// slack for CI.
+const TOTAL_BUDGET_KB = 1673;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

@@ -363,18 +363,21 @@ const DIGESTS: PreEpicSave["digests"] = {
 // gains a required `"setting": "indoor"` or `"outdoor"`, which only the camp's presentation
 // reads (the full camp outdoors, the camp packed down into the scene's picture indoors). No
 // flag, XP, item, route, effect or ending moved, and the gameplay digests below are unchanged.
+// Chapters 03a, 03b, 04a and 05b are re-pinned again where the rest scenes met main's marsh-road
+// and switchback fight reworks (#647, #650): the hashes are the merged files, each fight rework as
+// main shipped it plus the rest scenes' `setting`. The gameplay digests below are unchanged.
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "7042c8fa98760e9ded81d479d40e392bb56ecb9bf62ed70baf724ffa53b7a09a",
   "chapters/gemfall-01.json": "0cb522de9449e39352475f23f0a164c2cbb527c4d9e1e88da6a54d87c4881f0c",
   "chapters/gemfall-02.json": "330e2683da6623078c354e7c9f789c3c00da930f0ff8505c672b37c2ec60d1b1",
-  "chapters/gemfall-03a.json": "2a89f00ed4428edb624bceb553c1d2e0db2623aaeef243ab2e23f8a3448b207d",
-  "chapters/gemfall-03b.json": "7cb5d1199bda5fa2cf9834bffbc6236714168a385e2a5c8a77368a05d85663c3",
+  "chapters/gemfall-03a.json": "aa3f2e19a4db60409c4541eac8bc4277488f65f0789318b4a8556125cb5e5686",
+  "chapters/gemfall-03b.json": "c7b75db3061e7df9ec1fa51bfc01cb60ee359cd6bbac6b4a9a881556b481b036",
   "chapters/gemfall-03c.json": "b038ce1c9d7e5c94fcd56730df53e22e3638025f29e45847481018f056fb907f",
-  "chapters/gemfall-04a.json": "788a7e6172d20d6e49122615b6425b51ccc3629a4b8012e7cbd60b9a1ec51e2c",
+  "chapters/gemfall-04a.json": "42889a82ac23a08135bdb2a942792906e1d36a5b9308f93cb4400b4770124115",
   "chapters/gemfall-04b.json": "f298c1097d03599a469af2357af5ed662f0ebc78ed7e22828d4df451157e5d36",
   "chapters/gemfall-04c.json": "03753c6ad802c886c01ba956225a86f2536776a2e2d4cdb6ced8571088dc6be6",
   "chapters/gemfall-05a.json": "b3b1bb23da7f9d8b8461c533e79360f8cc071a247f41856f3b796a8ec6925a05",
-  "chapters/gemfall-05b.json": "6a11f6bd43f3cbaec48430f40d375f50d2fadf2be0fb5c60f42394d12f5fcbfe",
+  "chapters/gemfall-05b.json": "f0a16c181e23485c1c181ef91d758e5f4627bb769599cdbadc443b5a70c2bbf9",
   "chapters/gemfall-05c.json": "da75ade067bc5769638c58401e2dd4876c2704553cb1ba182761057ef87a853d",
   "chapters/gemfall-06.json": "2b054e73e38befc9a47a780aa1999bf5fa775b0efd8b385c46a51c0d55dc5238",
   "chapters/gemfall-07h.json": "5e247fbcfeaad63d3a3786189a551a30479dd898b256cc4d4a93235acb1753cc",

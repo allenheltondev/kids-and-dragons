@@ -813,6 +813,13 @@ camp's spots on that ground.
   both stages. What holds the small parties is not their
   tents but the far lane's own pieces side by side (the lantern string or the banners beside the
   crew's awning spot); what holds the big ones is the middle piece between the inner tents.
+  The later backdrops (#649: the enchanted forest, sky islands, whispering marsh, cliffside
+  exchange, great river and bone yard) draw the far lane a little nearer, at 0.48 where the first
+  wave's is at 0.45, so the far lane's pieces sit lower behind the tents. To keep the same rule on
+  both grounds, the first tent stands at 0.172 (from 0.166) at stages 3 and 4, the lantern string
+  and the banners at 0.836 and 0.841 (from 0.83 and 0.835), and at stage 4 the second tent at
+  0.335 (from 0.345), clear of the shared tent's top half (`camp-boxes.test.ts` runs every stage on
+  both grounds).
 - **Stage 1 is a ring of bedrolls.** A bedroll is longer than its hero lying down, much wider than
   her tent, and too tall to stand in front of another lane's, so at stage 1 everything that
   reaches the back lane stands side by side across the clearing: the lantern hooks at the far

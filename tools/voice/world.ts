@@ -6,7 +6,7 @@
 
 import fs from "node:fs";
 import path from "node:path";
-import { desiredClips, GEMINI, type CastSheet, type Desired, type Provider } from "./desired";
+import { desiredClips, ELEVENLABS, type CastSheet, type Desired, type Provider } from "./desired";
 import { inventory } from "./inventory";
 import { classify, type ClassifiedLine } from "./lines";
 import { CONTENT, loadContent, readJson, reachableFacets } from "./load";
@@ -69,7 +69,7 @@ export function loadWorld(options: { withChoices?: boolean } = {}): World {
   };
 }
 
-export function desire(world: World, name: string, provider: Provider = GEMINI): Desired {
+export function desire(world: World, name: string, provider: Provider = ELEVENLABS): Desired {
   return desiredClips(world.groups.get(name) ?? [], {
     cast: world.cast,
     scripts: world.scripts,

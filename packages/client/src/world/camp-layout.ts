@@ -440,6 +440,9 @@ export function standPoint(layout: CampLayout, id: string): CampStandPoint | und
   return layout.frame.standPoints.find((p) => p.id === id);
 }
 
+/** A friend's fireside habit (camp-friends.ts `friendHabit`; #651). */
+export type CampFriendHabit = "bun" | "duckling" | "mosshorn";
+
 /**
  * How big a figure is drawn with its feet at `y`: its lane's scale on a lane,
  * eased between the two lanes' while it is on a crossing, so a figure grows

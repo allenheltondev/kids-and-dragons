@@ -22,6 +22,7 @@ import { campHeightPx } from "./camp-motion";
 import { figureSize, NOMINAL_PAINT, type StageMeasure } from "./figure-scale";
 import { ANCHOR_Y } from "./art-paths";
 import type { CastStance } from "@kad/shared";
+import type { CampFriendHabit } from "./camp-layout";
 
 /**
  * A friend as the camp stage draws it: camp.ts `CampFigure` with its friend
@@ -36,6 +37,22 @@ export interface FriendFigure {
   friend: number;
   name: string;
   figure: string;
+  /** Its fireside habit (`friendHabit`), for the friends that have one. */
+  habit?: CampFriendHabit;
+}
+
+/**
+ * The fireside habits (#651), by catalog friend: Bun gives her ribbon two
+ * shakes and tucks in, the duckling waddles twice and tucks low, the
+ * mosshorn carries a leaf and drops it. Each plays as the friend settles at
+ * a spot (its friend spot, or beside the hero who tapped it), wherever the
+ * rotation stood it.
+ */
+const HABITS: Readonly<Record<string, CampFriendHabit>> = { bun: "bun", duckling: "duckling", mosshorn: "mosshorn" };
+
+/** A catalog friend's fireside habit, or undefined for a friend with none yet. */
+export function friendHabit(friendId: string): CampFriendHabit | undefined {
+  return Object.hasOwn(HABITS, friendId) ? HABITS[friendId] : undefined;
 }
 
 /** How many friend spots each frame has: one per friend out (§4.4). */
@@ -78,7 +95,17 @@ export function campFriendsOut(state: Pick<RunState, "campMoment"> | null | unde
 /** A friend as the camp stage draws it: its art, its true height, and the friend spot it calls home. */
 export function friendFigure(card: CampFriendCard, spot: number): FriendFigure {
   const size = figureSize(card.figure);
-  return { id: `friend:${card.id}`, url: castArtUrl(card.figure), heightCm: friendHeightCm(card), stance: size.stance, friend: spot, name: card.name, figure: card.figure };
+  const habit = friendHabit(card.id);
+  return {
+    id: `friend:${card.id}`,
+    url: castArtUrl(card.figure),
+    heightCm: friendHeightCm(card),
+    stance: size.stance,
+    friend: spot,
+    name: card.name,
+    figure: card.figure,
+    ...(habit ? { habit } : {}),
+  };
 }
 
 /**

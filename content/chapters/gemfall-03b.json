@@ -829,14 +829,20 @@
     },
     "encounter_mimic": {
       "type": "encounter",
-      "map": "reedbank",
-      "narration": "The barge heaves up out of the mud on long gray legs. A wisp that has been leading prospectors this way drifts in to watch.",
+      "map": "surge_wagon",
+      "narration": "The barge rears up and aims a slap. Step clear of the marked mud. End two hero turns beside the mooring post to slip its rope loose, and the mimic will drift into the reeds.",
       "enemies": [
         {
           "id": "mimic",
           "name": "Mire Mimic (as a Barge)",
           "creature": "mire_mimic",
-          "count": 1
+          "count": 1,
+          "windupAttack": {
+            "label": "Plank slap",
+            "radius": 1,
+            "damage": 3,
+            "presentation": "slam"
+          }
         },
         {
           "id": "wisp",
@@ -850,6 +856,32 @@
         "narration": "The mimic decides you are too much trouble and slithers off into the reeds."
       },
       "onDefeat": {
+        "goto": "check_find_way",
+        "narration": "The mimic gulps the gem, spits you onto a mudbank, and sinks. The wisp drifts off, giggling. It's getting dark, and every channel looks the same."
+      },
+      "art": "scenes/gemfall/toll-reeds-tunnel",
+      "environment": {
+        "clock": {
+          "rounds": 5,
+          "label": "The barge sinks",
+          "onExpire": "collapse"
+        },
+        "objectives": [
+          {
+            "id": "barge-rope",
+            "kind": "close",
+            "label": "Slip the mooring rope",
+            "art": "fight-mooring-post",
+            "at": {
+              "x": 4,
+              "y": 2
+            },
+            "turns": 2,
+            "endsFight": true
+          }
+        ]
+      },
+      "onTimeout": {
         "goto": "check_find_way",
         "narration": "The mimic gulps the gem, spits you onto a mudbank, and sinks. The wisp drifts off, giggling. It's getting dark, and every channel looks the same."
       }
@@ -3212,7 +3244,34 @@
           "prop_rope_pole"
         ]
       }
-    }
+    },
+    "fights": [
+      {
+        "chapter": "gemfall-03b",
+        "scene": "encounter_mimic",
+        "creature": "mire_mimic",
+        "board": "surge_wagon",
+        "backdrop": "scenes/gemfall/toll-reeds-tunnel",
+        "introScenes": [],
+        "victoryScene": "scene_act_closed",
+        "defeatScene": "check_find_way",
+        "tileUrl": "/assets/fight-boards/fight_ferry_landing/tiles.png",
+        "rescueFigure": "",
+        "activeUrl": "/assets/entities/mire_mimic/barge.webp",
+        "retreatUrl": "/assets/entities/mire_mimic/barge.webp",
+        "props": [],
+        "terrainProps": [],
+        "poses": {
+          "intro": "barge",
+          "retreat": "barge"
+        },
+        "retreatDirection": 1
+      }
+    ],
+    "warmUrls": [
+      "/assets/entities/mire_mimic/barge.webp",
+      "/assets/fight-boards/fight_ferry_landing/tiles.png"
+    ]
   },
   "resumeInteractions": {
     "interaction_lantern": {

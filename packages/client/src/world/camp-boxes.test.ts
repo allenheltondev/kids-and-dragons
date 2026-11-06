@@ -264,8 +264,13 @@ const laneKey = (family: string) => JSON.stringify(parsed.backdrops.find((b) => 
 const GROUNDS = parsed.backdrops.map((b) => b.family).filter((family, i, all) => all.findIndex((other) => laneKey(other) === laneKey(family)) === i);
 
 describe("the camp on every backdrop (#627)", () => {
-  it("has the three first-wave terrains, open_plains among them, each with its own painting and lanes", () => {
-    expect(parsed.backdrops.map((b) => b.family).sort()).toEqual(["frozen_north", "open_plains", "red_sky_volcanic"]);
+  it("has the first three waves' terrains (#627, #649), open_plains among them, each with its own painting and lanes", () => {
+    expect(parsed.backdrops.map((b) => b.family).sort()).toEqual([
+      "bone_yard", "cliffside_exchange", "enchanted_forest", "frozen_north", "great_river",
+      "open_plains", "red_sky_volcanic", "sky_islands", "whispering_marsh",
+    ]);
+    // Two grounds: the first wave's far lane at 0.45, and the later waves' a little lower, at 0.48.
+    expect(GROUNDS).toEqual(["open_plains", "enchanted_forest"]);
     for (const backdrop of parsed.backdrops) {
       expect(backdrop.path, backdrop.family).toBe(`camp/backdrops/${backdrop.family}.webp`);
       expect(backdrop.lanes.map((l) => l.id), backdrop.family).toEqual(["far", "back", "middle", "near"]);
