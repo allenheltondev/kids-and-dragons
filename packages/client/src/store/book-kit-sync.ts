@@ -16,6 +16,11 @@
  * drops the whole queue unsent. Every kit the server answers with is written
  * into the saved book (journal-db.ts), so it opens offline as it now is.
  *
+ * When the phone's storage will not keep the queue (kit-queue.ts
+ * `kitQueueUnsaved`), it is kept in memory while the page is open: sent as
+ * usual with a signal, and with none the book says so plainly
+ * (`UNSAVED_NOTE`), since closing the page would lose it (#656).
+ *
  * A family tablet's picked kid has no device token, and nothing of hers is
  * kept on the tablet (store/index.ts `loadJournal`): her change is sent with
  * her room session straight away, or not at all.
@@ -29,6 +34,7 @@ import {
   demoteQueuedKitChange,
   dropKitQueue,
   enqueueKitChanges,
+  kitQueueUnsaved,
   loadKitQueue,
   onKitQueue,
   removeQueuedKitChange,
@@ -68,6 +74,18 @@ export function bookKitStatus(): BookKitStatus {
 function setStatus(next: Partial<BookKitStatus>): void {
   status = { ...status, ...next };
   emit();
+}
+
+/** What the book says when a change is kept only in memory and there is no signal to send it. */
+export const UNSAVED_NOTE = "This phone couldn't save that. Try again when you're back online.";
+
+/**
+ * No signal: what is queued waits for one. If the phone's storage would not
+ * keep it, it is only in this page's memory, and the book says so.
+ */
+function waitForSignal(): void {
+  const note = kitQueueUnsaved() && !status.notes.includes(UNSAVED_NOTE);
+  setStatus({ offline: true, ...(note ? { notes: [...status.notes, UNSAVED_NOTE] } : {}) });
 }
 
 /** Close the notes. */
@@ -150,12 +168,14 @@ async function drain(apply: ApplyKit): Promise<void> {
   for (;;) {
     const entry = loadKitQueue(deviceToken)[0];
     if (!entry) {
-      if (status.offline) setStatus({ offline: false });
+      // Everything is sent: a note that it was only in memory no longer holds.
+      const notes = status.notes.filter((n) => n !== UNSAVED_NOTE);
+      if (status.offline || notes.length !== status.notes.length) setStatus({ offline: false, notes });
       return;
     }
     if (typeof navigator !== "undefined" && navigator.onLine === false) {
       demoteQueuedKitChange(deviceToken, entry.id);
-      setStatus({ offline: true });
+      waitForSignal();
       return;
     }
     busy = entry.id;
@@ -169,7 +189,7 @@ async function drain(apply: ApplyKit): Promise<void> {
     } catch (error) {
       if (noSignal(error)) {
         demoteQueuedKitChange(deviceToken, entry.id);
-        setStatus({ offline: true });
+        waitForSignal();
         return;
       }
       if (error instanceof ApiError && error.status === 401) {
@@ -208,7 +228,7 @@ export async function editBookKit(
   if (deviceToken) {
     const online = typeof navigator === "undefined" || navigator.onLine !== false;
     enqueueKitChanges(deviceToken, { ...input, direct: online, busy });
-    if (!online) setStatus({ offline: true });
+    if (!online) waitForSignal();
     await flushKitQueue(apply);
     return;
   }

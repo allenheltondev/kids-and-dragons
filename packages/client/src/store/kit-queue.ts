@@ -14,7 +14,12 @@
  * token, as the saved book is (`SavedJournal.deviceToken`). Read with another
  * token, or once the binding is revoked (`dropKitQueue`), it is gone unsent.
  *
- * It only holds; book-camp-sync.ts sends.
+ * When the phone's storage will not take a write (out of quota, a private
+ * window), the queue is kept in memory for as long as the page is open
+ * (`kitQueueUnsaved`): the change still shows and is sent while the book is
+ * open, and the book says it was not saved on this phone (#656).
+ *
+ * It only holds; book-kit-sync.ts sends.
  */
 
 import { withBookKitValue, type BookKitChange, type BookKitState, type JournalKit } from "@kad/shared";
@@ -48,6 +53,18 @@ interface StoredQueue {
 
 const listeners = new Set<() => void>();
 
+/**
+ * The queue as this page last wrote it, when the phone's storage would not
+ * take it: what is read and sent instead of storage until a write lands.
+ * Null while storage holds the queue.
+ */
+let unsaved: StoredQueue | null = null;
+
+/** Whether something queued is kept only in this page's memory: the phone's storage would not take it. */
+export function kitQueueUnsaved(): boolean {
+  return unsaved !== null && unsaved.entries.length > 0;
+}
+
 /** Hear the queue change: an edit queued, a send landing, the queue dropped. */
 export function onKitQueue(listener: () => void): () => void {
   listeners.add(listener);
@@ -62,12 +79,22 @@ function safe(storage?: KeyValueStorage): KeyValueStorage {
   try {
     return storage ?? defaultStorage();
   } catch {
-    return { getItem: () => null, setItem: () => undefined, removeItem: () => undefined };
+    return {
+      getItem: () => null,
+      setItem: () => {
+        throw new Error("this phone has no storage to keep it in");
+      },
+      removeItem: () => undefined,
+    };
   }
 }
 
 /** The queued changes for `deviceToken`'s binding, oldest first. A queue kept for another binding is dropped. */
 export function loadKitQueue(deviceToken: string | null, storage?: KeyValueStorage): QueuedKitChange[] {
+  if (unsaved !== null) {
+    if (deviceToken !== null && unsaved.deviceToken === deviceToken) return unsaved.entries.map((e) => ({ ...e, changes: [...e.changes] }));
+    unsaved = null;
+  }
   const ls = safe(storage);
   let raw: string | null = null;
   try {
@@ -98,14 +125,17 @@ function saveKitQueue(deviceToken: string, entries: readonly QueuedKitChange[], 
   try {
     if (entries.length === 0) ls.removeItem(KIT_QUEUE_KEY);
     else ls.setItem(KIT_QUEUE_KEY, JSON.stringify({ deviceToken, entries: [...entries] } satisfies StoredQueue));
+    unsaved = null;
   } catch {
-    /* out of quota: the change still shows this time, and is sent while the page is open */
+    // Out of quota, or a private window: kept in memory, so it still shows and is sent while the page is open.
+    unsaved = { deviceToken, entries: entries.map((e) => ({ ...e, changes: [...e.changes] })) };
   }
   changed();
 }
 
 /** Whether anything waits to be sent, read cheaply (no token needed). */
 export function hasQueuedKitChanges(storage?: KeyValueStorage): boolean {
+  if (unsaved !== null) return unsaved.entries.length > 0;
   try {
     return safe(storage).getItem(KIT_QUEUE_KEY) !== null;
   } catch {
@@ -115,6 +145,7 @@ export function hasQueuedKitChanges(storage?: KeyValueStorage): boolean {
 
 /** Forget every queued change, unsent: the binding is revoked, or the phone is somebody else's now. */
 export function dropKitQueue(storage?: KeyValueStorage): void {
+  unsaved = null;
   try {
     safe(storage).removeItem(KIT_QUEUE_KEY);
   } catch {

@@ -42,7 +42,7 @@ import { campBackdropFamily } from "../world/camp-backdrop";
 import { pieceName } from "../world/camp-scene";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { loadPlayerDeviceToken } from "../store/persistence";
-import { journalKitState, loadKitQueue, withQueuedKit } from "../store/kit-queue";
+import { journalKitState, kitQueueUnsaved, loadKitQueue, withQueuedKit } from "../store/kit-queue";
 import { bookKitStatus, clearBookKitNotes, editBookKit, onBookKit, type ApplyKit } from "../store/book-kit-sync";
 import { warm } from "../sw/warm";
 import "./CampPane.css";
@@ -293,7 +293,8 @@ function CrewCamp({
         </div>
       ) : null}
 
-      {waiting && status.offline ? (
+      {/* Kept only in memory, it is not saved on this phone: the note says so instead (book-kit-sync.ts `UNSAVED_NOTE`). */}
+      {waiting && status.offline && kitQueueUnsaved() ? null : waiting && status.offline ? (
         <p className="book-camp__queued" role="status" data-testid="book-camp-queued">
           <Icon name="check" />
           <span>Saved on this phone, will share when you're back online.</span>

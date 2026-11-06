@@ -9,9 +9,9 @@
 import "fake-indexeddb/auto";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { bookKitProblem, mergeBookKit, type BookKitChange, type BookKitResponse, type JournalKit } from "@kad/shared";
-import { bookKitStatus, editBookKit, flushKitQueue, resetBookKitSync } from "./book-kit-sync";
-import { dropKitQueue, enqueueKitChanges, journalKitState, loadKitQueue, withQueuedKit } from "./kit-queue";
-import { saveIdentity } from "./persistence";
+import { UNSAVED_NOTE, bookKitStatus, editBookKit, flushKitQueue, resetBookKitSync } from "./book-kit-sync";
+import { KIT_QUEUE_KEY, dropKitQueue, enqueueKitChanges, hasQueuedKitChanges, journalKitState, kitQueueUnsaved, loadKitQueue, withQueuedKit } from "./kit-queue";
+import { defaultStorage, saveIdentity } from "./persistence";
 
 const KIT: JournalKit = { revision: 5, style: null, tent: "rolled", color: "rose", slots: [null, null], unlocked: [], buddies: {} };
 
@@ -35,6 +35,7 @@ beforeEach(() => {
 });
 afterEach(() => {
   vi.unstubAllGlobals();
+  vi.restoreAllMocks();
 });
 
 describe("sending the book's kit changes", () => {
@@ -144,5 +145,57 @@ describe("sending the book's kit changes", () => {
     expect(sent).toHaveLength(0);
     expect(bookKitStatus().offline).toBe(true);
     expect(loadKitQueue("dev_1")).toMatchObject([{ crew: "cw_1", changes: [{ field: "buddy", after: "bun" }] }]);
+  });
+
+  describe("when the phone's storage will not keep the queue (#656)", () => {
+    /** Out of quota, or a private window: every write to storage throws. */
+    const full = () =>
+      vi.spyOn(defaultStorage(), "setItem").mockImplementation(() => {
+        throw new DOMException("The quota has been exceeded.", "QuotaExceededError");
+      });
+
+    it("with a signal, still shows the change and sends it, and says nothing", async () => {
+      full();
+      let shown: JournalKit | null = null;
+      serve(() => {
+        // While it is on its way, the book shows it from the page's memory.
+        shown = withQueuedKit(KIT, "c_1", loadKitQueue("dev_1"));
+        return answer(200, { kit: { ...KIT, revision: 6, color: "tide" }, applied: ["color"], refused: [] } satisfies BookKitResponse);
+      });
+      const applied: JournalKit[] = [];
+      await editBookKit({ characterId: "c_1", crew: null, changes: [{ field: "color", before: "rose", after: "tide" }] }, (_, kit) => applied.push(kit));
+      expect(shown).toMatchObject({ color: "tide" });
+      expect(sent).toHaveLength(1);
+      expect(sent[0]!.body).toEqual({ characterId: "c_1", changes: [{ field: "color", before: "rose", after: "tide" }] });
+      expect(applied).toEqual([expect.objectContaining({ color: "tide" })]);
+      expect(loadKitQueue("dev_1")).toEqual([]);
+      expect(bookKitStatus()).toEqual({ offline: false, notes: [] });
+    });
+
+    it("with no signal, says it was not saved on this phone, keeps it in memory while the page is open, and sends it when the signal returns", async () => {
+      full();
+      vi.stubGlobal("navigator", { onLine: false });
+      serve(() => answer(200, {}));
+      await editBookKit({ characterId: "c_1", crew: null, changes: [{ field: "color", before: "rose", after: "tide" }] }, () => undefined);
+      expect(sent).toHaveLength(0);
+      expect(bookKitStatus()).toEqual({ offline: true, notes: [UNSAVED_NOTE] });
+      expect(UNSAVED_NOTE).toBe("This phone couldn't save that. Try again when you're back online.");
+      // Not in the phone's storage, but in the page's memory: still shown, still queued.
+      expect(defaultStorage().getItem(KIT_QUEUE_KEY)).toBeNull();
+      expect(kitQueueUnsaved()).toBe(true);
+      expect(hasQueuedKitChanges()).toBe(true);
+      expect(withQueuedKit(KIT, "c_1", loadKitQueue("dev_1")).color).toBe("tide");
+      // Another try with no signal says it once.
+      await flushKitQueue(() => undefined);
+      expect(bookKitStatus().notes).toEqual([UNSAVED_NOTE]);
+
+      vi.stubGlobal("navigator", { onLine: true });
+      serve(() => answer(200, { kit: { ...KIT, revision: 6, color: "tide" }, applied: ["color"], refused: [] } satisfies BookKitResponse));
+      await flushKitQueue(() => undefined);
+      expect(sent.at(-1)!.body).toEqual({ characterId: "c_1", merge: true, changes: [{ field: "color", before: "rose", after: "tide" }] });
+      expect(loadKitQueue("dev_1")).toEqual([]);
+      expect(kitQueueUnsaved()).toBe(false);
+      expect(bookKitStatus()).toEqual({ offline: false, notes: [] });
+    });
   });
 });

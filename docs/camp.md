@@ -705,8 +705,12 @@ on this phone, will share when you're back online", and sends it when the signal
   value it was first made over. It is sent as the book opens and on the browser's `online`; a 401
   drops the whole queue, and so does a journal read the server refuses or a phone with no binding.
   A change that can never land (a hero gone) is let go with "One of your changes could not be
-  saved.", and a pick the server skips "Your buddy pick could not be saved." A family tablet keeps
-  no queue: its change is sent at once or not at all.
+  saved.", and a pick the server skips "Your buddy pick could not be saved." If the phone's storage
+  will not take the queue (out of quota, a private window), it is kept in the page's memory
+  instead (`kitQueueUnsaved`), so the change still shows and is sent while the page is open; with
+  no signal to send it, the book says "This phone couldn't save that. Try again when you're back
+  online." in place of "Saved on this phone", and the note goes once it is sent (#656). A family
+  tablet keeps no queue: its change is sent at once or not at all.
 - **A live room** reads her kit afresh as its next downtime moment begins (`syncCampDowntime`).
 - **First visit.** With no camp in the saved book (a copy from before the camp, or a first read
   that failed), the tray says to open the book once with a signal; with no hero, to make one in the
