@@ -15,6 +15,7 @@ import {
   readKit,
   StoredCampError,
   withMilestones,
+  withKitCrew,
 } from "./camp-record.js";
 import { grownView } from "./camp-edit.js";
 import { commitCampaign, failCampaign } from "./character.js";
@@ -164,6 +165,27 @@ describe("the hero's kit", () => {
     const v3 = { ...v2, v: 3, buddies: { h_test: "bun", "h_test#cw_1": "kid_goat" } };
     expect(migrateKit(v3).buddies).toEqual({ h_test: "bun", "h_test#cw_1": "kid_goat" });
     expect(() => migrateKit({ ...v3, buddies: { h_test: 7 } })).toThrow(StoredCampError);
+  });
+
+  it("migrates a v3 kit to v4 with its crews unrecorded, keeps v4 crews once each, and refuses malformed ones (#629)", () => {
+    const v3 = { v: 3, revision: 2, style: "rolled", tent: null, color: null, slots: [null, null], unlocked: {}, buddies: { h_test: "bun" } };
+    const migrated = migrateKit(v3);
+    expect(migrated).toMatchObject({ v: KIT_VERSION, revision: 2, buddies: { h_test: "bun" } });
+    // Absent, not empty: never recorded, so the book backfills her from the runs.
+    expect(migrated.crews).toBeUndefined();
+    const v4 = { ...v3, v: 4, crews: ["h_test", "h_test#cw_1", "h_test"] };
+    expect(migrateKit(v4).crews).toEqual(["h_test", "h_test#cw_1"]);
+    expect(migrateKit(JSON.parse(JSON.stringify(migrateKit(v4))))).toEqual(migrateKit(v4));
+    expect(() => migrateKit({ ...v4, crews: "h_test" })).toThrow(StoredCampError);
+    expect(() => migrateKit({ ...v4, crews: [""] })).toThrow(StoredCampError);
+  });
+
+  it("adds a crew to a kit once, without bumping its revision (#629)", () => {
+    const kit = { ...emptyKit(), revision: 3 };
+    const once = withKitCrew(kit, "h_test#cw_1");
+    expect(once).toMatchObject({ revision: 3, crews: ["h_test#cw_1"] });
+    expect(withKitCrew(once, "h_test#cw_1")).toBe(once);
+    expect(withKitCrew(once, "h_test").crews).toEqual(["h_test#cw_1", "h_test"]);
   });
 
   it("names the catalog's real milestone ids, one placeholder for each", () => {

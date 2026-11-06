@@ -71,6 +71,7 @@ import { claimCampFinds, stepCampFinds } from "./camp-finds.ts";
 import { claimMilestones, stepMilestones } from "./camp-milestones.ts";
 import { claimCampDrops, prepareChapterEndCamp, settleChapterEndCamp, stepCampDrops, type ChapterEndCamp } from "./camp-pay.ts";
 import { prepareCampVote } from "./camp-shop.ts";
+import { recordCrews } from "./camp-book.ts";
 import { prepareCampPlace, prepareCampUndo, prepareKitEdit, recordOuting, stepOuting, syncCampDowntime, syncCampFriends } from "./camp-edit.ts";
 import { dispatchTurnPush } from "./push.ts";
 import { practiceChapterId, practiceRefusal, settlePractice } from "./practice.ts";
@@ -799,6 +800,10 @@ async function applyActionOnce(
     // otherwise be accepted and stored as sent.
     intent: JSON.stringify(input.intent).length <= MAX_LOGGED_INTENT_CHARS ? input.intent : ({ type: input.intent.type } as ClientIntent),
   };
+
+  // Each seated hero whose row this commit writes keeps the crew she is
+  // seated with on her kit (#629, camp-book.ts): no write of its own.
+  recordCrews(characters, next, auth.run.householdId);
 
   // State and event land together or not at all — the log can never disagree
   // with the snapshot it is supposed to explain.

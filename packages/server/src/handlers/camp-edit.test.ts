@@ -77,7 +77,8 @@ describe("a hero's kit (§4.5, §12.1)", () => {
     expect(readKit(row!)).toMatchObject({ style: "quilted", tent: "patched", slots: ["deco_bunting", "deco_pinwheel"] });
     // Her friend's hero is untouched: nobody chose for her, so she keeps her hash.
     expect(s.kits?.[heroes.p2]).toMatchObject({ style: null, tent: null, revision: 0 });
-    expect((await harness.repo.getCharacter(t.householdId, heroes.p2))?.kit).toBeUndefined();
+    // Her row has a kit only for the crew she was seated with (#629): nothing picked.
+    expect((await harness.repo.getCharacter(t.householdId, heroes.p2))?.kit).toMatchObject({ revision: 0, style: null, tent: null, crews: [t.householdId] });
   });
 
   it("refuses a stale revision, a crew piece, a locked milestone tent and a duplicate decoration", async () => {
@@ -343,7 +344,7 @@ describe("a change that does not land (#645)", () => {
     const { harness, t, heroes } = await lobby();
     const s = await t.state();
     const row = await harness.repo.getCharacter(t.householdId, heroes.p1);
-    expect(row?.kit).toBeUndefined();
+    expect(row?.kit).toMatchObject({ revision: 0, style: null });
     const raced = racedCommits(harness, readyFirst(harness, t, s.seq));
     const lost = await applyAction(
       { runId: t.runId, playerId: "p_1", seq: s.seq, intent: { type: "KIT_EDIT", characterId: heroes.p1, revision: 0, style: "quilted" } },

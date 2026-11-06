@@ -13,6 +13,7 @@ import type { APIGatewayProxyEventV2, APIGatewayProxyStructuredResultV2 } from "
 import type { BookKitResponse, CampRecord, ClientIntent } from "@kad/shared";
 import { CATALOG, harnessFor, racedCommits, seeded, table, type Table } from "./camp-table.testing.ts";
 import { makeHarness, seedHousehold, type TestHarness } from "../test-support.ts";
+import { createRoom } from "./room.ts";
 import { makeCharacter } from "../../../shared/src/test-fixtures.ts";
 import { mutateCamp, mutateKit } from "./camp.ts";
 import { editKitFromBook, heroCrews, offerPlace } from "./camp-book.ts";
@@ -139,7 +140,48 @@ describe("the book's camp read (§7)", () => {
     expect(histories.camp!.crews.map((c) => c.crew)).toEqual([null, "cw_2"]);
   });
 
-  it("finds a crew from the runs her hero sat in, and a hero who has sat with nobody gets the first crew", async () => {
+  it("records the crew a hero is seated with on her kit, with the run commit that writes her row", async () => {
+    const { harness, t, p1 } = await lobby();
+    // Made at the first crew's table: her creation's own write carries it.
+    expect(readKit((await harness.repo.getCharacter(t.householdId, p1))!).crews).toEqual([t.householdId]);
+    // A KIT_EDIT at that table writes her row again, and adds nothing twice.
+    await t.send("p_1", { type: "KIT_EDIT", characterId: p1, revision: 0, color: "rose" });
+    expect(readKit((await harness.repo.getCharacter(t.householdId, p1))!)).toMatchObject({ revision: 1, crews: [t.householdId] });
+  });
+
+  it("still lists a crew she was seated with long ago, after 50 and more later runs elsewhere", async () => {
+    const harness = harnessFor(CATALOG);
+    const household = await seedHousehold(harness, 1);
+    const { householdId } = household;
+    const t = await table(harness, household);
+    // Long ago she sat with the Otter Crew; that commit recorded it on her kit.
+    const s = await t.state();
+    await harness.repo.commit({
+      runId: t.runId,
+      expectedSeq: s.seq,
+      state: { ...s, seq: s.seq + 1 },
+      event: { seq: s.seq + 1, runId: t.runId, patch: [], at: AT },
+      crew: { householdId, id: "cw_1", name: "The Otter Crew", createdAt: AT },
+    });
+    const pip = makeCharacter({ id: "c_pip", ownerPlayerId: "p_1", name: "Pip" });
+    const kit = { ...readKit(pip), crews: [campKey(householdId, "cw_1"), householdId] };
+    await harness.repo.putCharacter({ ...pip, householdId, kit });
+    // Since then, 55 evenings with the first crew.
+    for (let i = 0; i < 55; i++) {
+      const room = await createRoom({ householdId, mode: "travel" }, harness.deps);
+      if (!room.ok) throw new Error("room");
+      const state = (await harness.repo.getState(room.value.runId))!;
+      await harness.repo.putState({ ...state, party: [{ character: { id: "c_pip" } as never, playerId: "p_1", hp: 1, down: false, connected: true, ready: false }] });
+      const run = (await harness.repo.getRun(room.value.runId))!;
+      await harness.repo.putRun({ ...run, createdAt: new Date(Date.parse("2026-12-01T00:00:00.000Z") + i * 60_000).toISOString() });
+    }
+    const hero = (await harness.repo.getCharacter(householdId, "c_pip"))!;
+    expect(await heroCrews(householdId, [hero], harness.deps)).toEqual([null, "cw_1"]);
+    const journal = value(await getJournal({ householdId, playerId: "p_1" }, harness.deps));
+    expect(journal.camp!.crews.map((c) => c.name)).toEqual(["The first crew", "The Otter Crew"]);
+  });
+
+  it("backfills a hero with no recorded crews (a kit from before v4) from the runs she sat in, and one who has sat with nobody gets the first crew", async () => {
     const harness = harnessFor(CATALOG);
     const household = await seedHousehold(harness, 1);
     const { householdId } = household;
@@ -195,7 +237,7 @@ describe("the book's kit write (§7, §12.6)", () => {
     expect(theirs).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
     const nobody = await book(harness.deps, t.householdId, "p_1", { characterId: "c_nobody", changes: [{ field: "color", before: null, after: "rose" }] });
     expect(nobody).toMatchObject({ ok: false, error: { code: "NOT_FOUND" } });
-    expect((await harness.repo.getCharacter(t.householdId, p2))?.kit).toBeUndefined();
+    expect((await harness.repo.getCharacter(t.householdId, p2))?.kit).toMatchObject({ revision: 0, color: null });
   });
 
   it("refuses what the table refuses: a friend the crew lacks, a crew piece, a locked tent, a malformed change", async () => {
