@@ -506,6 +506,36 @@ describe("Gemfall's numbers, with temporary buffs in the build (#200)", () => {
             expect(scene.onTimeout).toEqual(scene.onDefeat);
             continue;
           }
+          if (chapterId === "gemfall-03a" && sceneId === "encounter_crawlers") {
+            expect(scene.environment?.exits?.[0]?.id).toBe("far-bank");
+            expect(scene.onTimeout).toEqual(scene.onDefeat);
+            continue;
+          }
+          if (chapterId === "gemfall-03a" && sceneId === "encounter_crabs") {
+            expect(scene.environment?.objectives?.[0]?.id).toBe("soup-cart");
+            expect(scene.onTimeout).toEqual(scene.onDefeat);
+            continue;
+          }
+          if (chapterId === "gemfall-03b" && sceneId === "encounter_mimic") {
+            expect(scene.environment?.objectives?.[0]?.id).toBe("barge-rope");
+            expect(scene.onTimeout).toEqual(scene.onDefeat);
+            continue;
+          }
+          if (chapterId === "gemfall-04a" && sceneId === "encounter_mimics") {
+            expect(scene.environment?.objectives?.[0]?.id).toBe("stomp-stone");
+            expect(scene.onTimeout).toEqual(scene.onDefeat);
+            continue;
+          }
+          if (chapterId === "gemfall-05b" && sceneId === "encounter_wolves") {
+            expect(scene.environment?.exits?.[0]?.id).toBe("far-bank");
+            expect(scene.onTimeout).toEqual(scene.onDefeat);
+            continue;
+          }
+          if (chapterId === "gemfall-05b" && sceneId === "encounter_drake") {
+            expect(scene.environment?.objectives?.[0]?.id).toBe("channel-stone");
+            expect(scene.onTimeout).toEqual(scene.onDefeat);
+            continue;
+          }
           expect(scene).not.toHaveProperty("environment");
           expect(scene).not.toHaveProperty("onEscape");
           expect(scene).not.toHaveProperty("onTimeout");

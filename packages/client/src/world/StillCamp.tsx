@@ -31,7 +31,8 @@ import type { ReactNode } from "react";
 import type { RunState } from "@kad/shared";
 import type { CampLayout } from "./camp-layout";
 import { BLEED_SOURCE, campBleed, campFocusBand, campVisibleSpan, campWindow, type CampFraming } from "./camp-framing";
-import { LOBBY_CAMP_STAND_IN, campDressing, campHeroes, stillCampFigures } from "./lobby-camp";
+import { LOBBY_CAMP_STAND_IN, campDressing, campFriends, campHeroes, stillCampFigures } from "./lobby-camp";
+import leafArt from "../assets/painted/leaf.webp";
 import { campAccent } from "./camp-accents";
 import { lobbyInsetBottom, lobbyInsetTop, onLobbyInset, onLobbyInsetTop } from "./stage-inset";
 import { ANCHOR_Y } from "./art-paths";
@@ -203,7 +204,8 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
   }
   const boxes = campBoxes(layout, { ...input, figureScale: scale });
   const boxOf = new Map(boxes.map((b) => [b.id, b]));
-  const figures = stillCampFigures(layout, heroes, scale, at && mode === "cover" ? campVisibleSpan(pane.width, at, W) : undefined);
+  const visible = at && mode === "cover" ? campVisibleSpan(pane.width, at, W) : undefined;
+  const figures = stillCampFigures(layout, heroes, scale, visible, campFriends(state));
   const box = at ? { left: at.x, top: at.y, width: W * at.scale, height: H * at.scale } : { left: 0, top: 0, width: 0, height: 0 };
   let bleed = at && mode === "cover" ? campBleed(pane.height, at, layout.canvas) : { top: 0, bottom: 0 };
 
@@ -305,6 +307,7 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
             }}
           >
             {figure.url ? <img src={figure.url} alt="" /> : null}
+            {figure.id === "friend:mosshorn" && <span className="kad-static-camp__leaf"><img src={leafArt} alt="" /></span>}
             <span className="kad-static-camp__name">{state.party.find(member => member.character.id === figure.id)?.character.name}</span>
           </span>
         ))}

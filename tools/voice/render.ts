@@ -19,12 +19,14 @@ import type { Encoded } from "./encode";
 import type { ClipStore } from "./store";
 
 export interface RenderDeps {
-  /** The provider call: WAV audio, and the audio tokens billed when the provider reports them. */
-  synth: (segment: DesiredSegment) => Promise<Buffer | { wav: Buffer; audioTokens?: number }>;
-  encode: (wav: Buffer) => Encoded;
+  /** The provider call: the audio (a bare Buffer is WAV), and the audio tokens billed when the provider reports them. */
+  synth: (segment: DesiredSegment) => Promise<Buffer | { audio: Buffer; ext: "wav" | "mp3"; audioTokens?: number }>;
+  encode: (audio: Buffer, ext: "wav" | "mp3") => Encoded;
   store: ClipStore;
   /** Dollars one request for this many characters costs (an estimate). */
   price: (chars: number) => number;
+  /** Characters the provider bills for this clip: the words plus any tags sent with them. Defaults to the words alone. */
+  billedChars?: (segment: DesiredSegment) => number;
   sleep?: (ms: number) => Promise<void>;
   log?: (message: string) => void;
 }
@@ -113,7 +115,7 @@ export async function renderOwed(owed: readonly DesiredSegment[], deps: RenderDe
       report.lengths.set(segment.key, there.ms);
       return;
     }
-    const chars = segment.text.length;
+    const chars = deps.billedChars?.(segment) ?? segment.text.length;
     const cost = deps.price(chars);
     if (!options.render) {
       if (reserve(chars, cost)) report.planned.push(segment.key);
@@ -131,16 +133,17 @@ export async function renderOwed(owed: readonly DesiredSegment[], deps: RenderDe
       }
       try {
         const said = await deps.synth(segment);
-        const wav = Buffer.isBuffer(said) ? said : said.wav;
+        const audio = Buffer.isBuffer(said) ? said : said.audio;
+        const ext = Buffer.isBuffer(said) ? "wav" : said.ext;
         const tokens = Buffer.isBuffer(said) ? undefined : said.audioTokens;
-        const seconds = wavSeconds(wav);
+        const seconds = ext === "wav" ? wavSeconds(audio) : null;
         if (tokens !== undefined && seconds !== null && seconds > 0) {
           report.measured.audioTokens += tokens;
           report.measured.seconds += seconds;
           report.measured.clips += 1;
           report.measured.tokensPerSecond = report.measured.audioTokens / report.measured.seconds;
         }
-        const encoded = deps.encode(wav);
+        const encoded = deps.encode(audio, ext);
         await deps.store.put(segment.key, encoded.bytes, { ms: encoded.ms });
         report.rendered.push(segment.key);
         report.lengths.set(segment.key, encoded.ms);

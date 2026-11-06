@@ -14,6 +14,7 @@ import { fakeApp, installFakeCanvas2D, type FakeApp } from "../testing/fake-stag
 import { LEAVE_FADE_S, createLobbyCamp, type LobbyCamp } from "./lobby-camp-stage";
 import { EDGE_MARGIN } from "./camp-framing";
 import { NOMINAL_PAINT, paintAspect } from "./figure-scale";
+import { bunSettlePose, ducklingSettlePose, mosshornLeafDrop } from "./camp-motion";
 
 beforeAll(installFakeCanvas2D);
 
@@ -50,6 +51,54 @@ const run = (app: FakeApp, seconds: number, each?: () => void): void => {
 const lobbyWith = (party: PartyMember[], phase: RunState["phase"] = "lobby"): RunState => makeState({ phase, party });
 
 describe("the lobby's camp on the stage", () => {
+  it("settles befriended Bun and the duckling at distinct fireside spots across state updates", () => {
+    const { lobby, app } = table();
+    const state = lobbyWith([]);
+    lobby.sync(state);
+    expect(lobby.camp()!.figures()).toEqual([]);
+
+    const withFriends: RunState = {
+      ...state,
+      camp: { revision: 1, frameStage: 1, grownBy: [], dashCash: 0, owned: [], placed: {}, friends: ["bun", "duckling", "mosshorn"], buddies: {}, shopOpen: false },
+    };
+    lobby.sync(withFriends);
+    run(app, 2);
+    const bun = () => lobby.camp()!.figures().find((figure) => figure.id === "friend:bun");
+    const duckling = () => lobby.camp()!.figures().find((figure) => figure.id === "friend:duckling");
+    const mosshorn = () => lobby.camp()!.figures().find((figure) => figure.id === "friend:mosshorn");
+    expect(bun()).toMatchObject({ x: expect.closeTo(0.465 * layout.canvas.width), point: null, walking: false });
+    expect(duckling()).toMatchObject({ x: expect.closeTo(0.535 * layout.canvas.width), point: null, walking: false });
+    expect(mosshorn()).toMatchObject({ x: expect.closeTo(0.425 * layout.canvas.width), point: null, walking: false });
+
+    lobby.sync({ ...withFriends, visited: ["next"] });
+    run(app, 30);
+    expect(bun()).toMatchObject({ x: expect.closeTo(0.465 * layout.canvas.width), walking: false });
+    expect(duckling()).toMatchObject({ x: expect.closeTo(0.535 * layout.canvas.width), walking: false });
+    expect(mosshorn()).toMatchObject({ x: expect.closeTo(0.425 * layout.canvas.width), walking: false });
+    lobby.destroy();
+  });
+
+  it("shakes only on arrival and settles immediately with reduced motion", () => {
+    expect(bunSettlePose(0.42, false).lean).toBeGreaterThan(0);
+    expect(bunSettlePose(0.55, false).lean).toBeLessThan(0);
+    expect(bunSettlePose(20, false)).toMatchObject({ lean: 0, low: 0.09 });
+    expect(bunSettlePose(0.42, true)).toMatchObject({ lean: 0, low: 0.09 });
+  });
+
+  it("gives the duckling two opposing waddles and a settled pose", () => {
+    expect(ducklingSettlePose(0.4, false).lean).toBeGreaterThan(0);
+    expect(ducklingSettlePose(0.75, false).lean).toBeLessThan(0);
+    expect(ducklingSettlePose(20, false)).toMatchObject({ lean: 0, lift: 0, low: 0.2 });
+    expect(ducklingSettlePose(0.4, true)).toMatchObject({ lean: 0, lift: 0, low: 0.2 });
+  });
+
+  it("lets the mosshorn carry its leaf before dropping it once", () => {
+    expect(mosshornLeafDrop(0.5, false)).toBe(0);
+    expect(mosshornLeafDrop(1.075, false)).toBeCloseTo(0.5);
+    expect(mosshornLeafDrop(10, false)).toBe(1);
+    expect(mosshornLeafDrop(0, true)).toBe(1);
+  });
+
   it("does not mount outside the lobby, nor before there is a state", () => {
     const { lobby, app, covered } = table();
     lobby.sync(null);
