@@ -1,5 +1,8 @@
 import awning from "../assets/camp-accents/cliffside-exchange-awning.webp";
+import grass from "../assets/camp-accents/bone-yard-grass.webp";
+import glint from "../assets/camp-accents/great-river-glint.webp?no-inline";
 import ribbon from "../assets/camp-accents/sky-islands-ribbon.webp";
+import seeds from "../assets/camp-accents/enchanted-forest-seeds.webp";
 import fireflies from "../assets/camp-accents/whispering-marsh-fireflies.webp";
 
 interface CampAccent {
@@ -11,7 +14,7 @@ interface CampAccent {
   pivotX: number;
   pivotY: number;
   angle: number;
-  motion: "glow" | "sway" | "flutter";
+  motion: "glow" | "sway" | "flutter" | "current" | "seeds";
 }
 
 // Placement in the 1920 × 1080 painting, behind the camp's walking lanes.
@@ -19,6 +22,9 @@ const accents: Readonly<Record<string, CampAccent>> = {
   whispering_marsh: { url: fireflies, x: 1328, y: 274, width: 412, height: 206, pivotX: 0, pivotY: 0, angle: 0, motion: "glow" },
   cliffside_exchange: { url: awning, x: 1030, y: 255, width: 261, height: 87, pivotX: 20, pivotY: 24, angle: -5, motion: "sway" },
   sky_islands: { url: ribbon, x: 167, y: 154, width: 116, height: 58, pivotX: 17, pivotY: 28, angle: 0, motion: "flutter" },
+  great_river: { url: glint, x: 1530, y: 367, width: 132, height: 44, pivotX: 0, pivotY: 0, angle: 0, motion: "current" },
+  enchanted_forest: { url: seeds, x: 360, y: 265, width: 145, height: 48, pivotX: 72, pivotY: 24, angle: 0, motion: "seeds" },
+  bone_yard: { url: grass, x: 1740, y: 380, width: 40, height: 40, pivotX: 20, pivotY: 39, angle: 0, motion: "flutter" },
 };
 
 export function campAccent(family: string): CampAccent | undefined {
@@ -36,5 +42,11 @@ export function campAccentPose(accent: CampAccent, elapsed: number, still: boole
       return { ...rest, stretch: 1 + 0.08 * Math.sin(elapsed * 1.5) };
     case "flutter":
       return { ...rest, angle: angle + 4 * Math.sin(elapsed * 2) + 1.5 * Math.sin(elapsed * 4.3) };
+    case "current": {
+      const flow = (elapsed % 6) / 6;
+      return { ...rest, x: rest.x + 70 * (0.5 - flow), alpha: 0.75 * Math.sin(Math.PI * flow) ** 2 };
+    }
+    case "seeds":
+      return { ...rest, x: rest.x + 22 * Math.sin(elapsed * 0.55), y: rest.y + 9 * Math.sin(elapsed * 0.82), angle: 5 * Math.sin(elapsed * 0.7) };
   }
 }
