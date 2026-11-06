@@ -44,6 +44,10 @@
  */
 
 import {
+  bookKitChanges,
+  bookKitEdit,
+  bookKitState,
+  mergeBookKit,
   campIntentProblem,
   campKey,
   campMomentKind,
@@ -74,6 +78,8 @@ import type {
   ClientIntent,
   HeroKitView,
   HotspotRule,
+  BookKitState,
+  KitEdit,
   PieceRule,
   PlaceRefusal,
   RunState,
@@ -284,30 +290,70 @@ export async function prepareKitEdit(
       return illegal("Your kit could not be saved. Try again.");
     }
   }
-  const seen: { problem: string | null } = { problem: null };
+  /*
+   * The table reads her kit as a moment begins, so a change from the book
+   * (#629) mid-moment leaves `state.kits` behind her row. A phone that sent
+   * what the table showed is not stale, only behind: the edit is applied over
+   * her kit as it is now, field by field (`behindEdit`), so it never undoes a
+   * book change it did not see, and the table's view is refreshed with it. A
+   * revision the table itself has left is stale, as ever.
+   */
+  const shown = state.kits?.[intent.characterId];
+  const seen: { problem: string | null; stale: boolean } = { problem: null, stale: false };
   const plan = await planKit(
     member.homeHouseholdId ?? run.householdId,
     intent.characterId,
     (kit) => {
-      seen.problem = kitEditProblem(catalog.kit, Object.keys(kit.unlocked), edit, friends);
-      return seen.problem === null ? withKitEdit(kit, edit, key) : null;
+      seen.problem = null;
+      seen.stale = false;
+      let wanted: KitEdit = edit;
+      if (kit.revision !== intent.revision) {
+        if (!shown || shown.revision !== intent.revision || kit.revision < intent.revision) {
+          seen.stale = true;
+          return null;
+        }
+        wanted = behindEdit(edit, shown, bookKitState(kit, key));
+        if (Object.keys(wanted).length === 0) return null;
+      }
+      seen.problem = kitEditProblem(catalog.kit, Object.keys(kit.unlocked), wanted, friends);
+      return seen.problem === null ? withKitEdit(kit, wanted, key) : null;
     },
     deps,
-    { expectedRevision: intent.revision },
   );
   if (seen.problem !== null) return illegal(seen.problem);
-  if (!plan.ok) {
-    // Changed elsewhere since (the book, another phone): the newer kit stands.
-    return plan.reason === "stale"
-      ? { ok: false, error: { code: "STALE_DECISION", message: "Your kit changed on another screen. Look again." } }
-      : { ok: false, error: { code: "NOT_FOUND", message: "that hero has not been saved yet" } };
+  if (!plan.ok || seen.stale) {
+    // Changed elsewhere since, and not what this table showed: the newer kit stands.
+    return !plan.ok && plan.reason === "missing"
+      ? { ok: false, error: { code: "NOT_FOUND", message: "that hero has not been saved yet" } }
+      : { ok: false, error: { code: "STALE_DECISION", message: "Your kit changed on another screen. Look again." } };
   }
-  if (plan.write === null) return illegal("Your kit could not be saved. Try again.");
-  return {
-    ok: true,
-    state: withFriendsOut({ ...state, kits: { ...state.kits, [intent.characterId]: kitView(plan.value, key) } }),
-    writes: { kit: plan.write },
+  const refreshed = withFriendsOut({ ...state, kits: { ...state.kits, [intent.characterId]: kitView(plan.value, key) } });
+  if (plan.write === null) {
+    // Every field she picked was changed in the book first: nothing to write, but the table now shows it.
+    if (plan.read.revision !== intent.revision) return { ok: true, state: refreshed, writes: {} };
+    return illegal("Your kit could not be saved. Try again.");
+  }
+  return { ok: true, state: refreshed, writes: { kit: plan.write } };
+}
+
+/**
+ * A table's `KIT_EDIT`, made over the kit the table showed (`shown`), as it
+ * applies to her kit as stored (`stored`) once something else (the book) has
+ * changed it: each field only where the stored value is still the one the
+ * table showed (shared `mergeBookKit`); a field changed elsewhere keeps the
+ * newer value.
+ */
+export function behindEdit(edit: KitEdit, shown: HeroKitView, stored: BookKitState): KitEdit {
+  const before: BookKitState = { style: shown.style, tent: shown.tent, color: shown.color, slots: [...shown.slots], buddy: shown.buddy ?? null };
+  const after: BookKitState = {
+    style: edit.style ?? before.style,
+    tent: edit.tent ?? before.tent,
+    color: edit.color !== undefined ? edit.color : before.color,
+    slots: edit.slots ? [...edit.slots] : before.slots,
+    buddy: edit.buddy !== undefined ? edit.buddy : before.buddy,
   };
+  const merged = mergeBookKit(stored, bookKitChanges(before, after), () => null);
+  return bookKitEdit(stored, merged.state);
 }
 
 // ---------------------------------------------------------------------------

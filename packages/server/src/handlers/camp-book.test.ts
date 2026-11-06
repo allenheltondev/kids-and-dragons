@@ -220,16 +220,43 @@ describe("the book's kit write (§7, §12.6)", () => {
 });
 
 describe("a book edit racing a table edit (§12.6)", () => {
-  it("a book edit landing between the table's read and its commit refuses the table's as stale, and the book's stands", async () => {
+  it("a book edit landing between the table's read and its commit never lets the table undo it: the same field keeps the book's value, and the table shows it", async () => {
     const { harness, t, p1 } = await lobby();
     const s = await t.state();
     const raced = racedCommits(harness, async () => {
       value(await book(harness.deps, t.householdId, "p_1", { characterId: p1, revision: 0, changes: [{ field: "color", before: null, after: "rose" }] }));
     });
-    const lost = await applyAction({ runId: t.runId, playerId: "p_1", seq: s.seq, intent: { type: "KIT_EDIT", characterId: p1, revision: 0, color: "tide" } }, raced.deps);
-    expect(lost.ok).toBe(false);
-    expect(lost.error?.code).toBe("STALE_DECISION");
+    const landed = await applyAction({ runId: t.runId, playerId: "p_1", seq: s.seq, intent: { type: "KIT_EDIT", characterId: p1, revision: 0, color: "tide" } }, raced.deps);
+    expect(landed.ok, JSON.stringify(landed.error)).toBe(true);
     expect(readKit((await harness.repo.getCharacter(t.householdId, p1))!)).toMatchObject({ revision: 1, color: "rose" });
+    expect((await t.state()).kits?.[p1]).toMatchObject({ revision: 1, color: "rose" });
+  });
+
+  it("a book edit mid-moment: the table's next KIT_EDIT, made over what the table showed, lands, and both changes stand", async () => {
+    const { harness, t, p1 } = await lobby();
+    expect((await t.state()).kits?.[p1]).toMatchObject({ revision: 0, color: null });
+    // In the book, between games for her phone, while her table sits in the lobby.
+    value(await book(harness.deps, t.householdId, "p_1", { characterId: p1, revision: 0, changes: [{ field: "color", before: null, after: "rose" }, { field: "buddy", before: null, after: "duckling" }] }));
+    // The table still shows revision 0; her phone sends what it shows.
+    await t.send("p_1", { type: "KIT_EDIT", characterId: p1, revision: 0, tent: "patched" });
+    const kit = readKit((await harness.repo.getCharacter(t.householdId, p1))!);
+    expect(kit).toMatchObject({ revision: 2, color: "rose", tent: "patched", buddies: { [campKey(t.householdId)]: "duckling" } });
+    const s = await t.state();
+    expect(s.kits?.[p1]).toMatchObject({ revision: 2, color: "rose", tent: "patched", buddy: "duckling" });
+    // And the next edit, over the refreshed view, is an ordinary one.
+    await t.send("p_1", { type: "KIT_EDIT", characterId: p1, revision: 2, color: "tide" });
+    expect(readKit((await harness.repo.getCharacter(t.householdId, p1))!)).toMatchObject({ revision: 3, color: "tide", tent: "patched" });
+    // A revision the table itself has left is stale, as ever.
+    const stale = await t.attempt("p_1", { type: "KIT_EDIT", characterId: p1, revision: 2, style: "quilted" });
+    expect(stale.error?.code).toBe("STALE_DECISION");
+  });
+
+  it("a table edit of a field the book changed mid-moment keeps the book's value, and the table shows it", async () => {
+    const { harness, t, p1 } = await lobby();
+    value(await book(harness.deps, t.householdId, "p_1", { characterId: p1, revision: 0, changes: [{ field: "color", before: null, after: "rose" }] }));
+    await t.send("p_1", { type: "KIT_EDIT", characterId: p1, revision: 0, color: "tide", style: "quilted" });
+    expect(readKit((await harness.repo.getCharacter(t.householdId, p1))!)).toMatchObject({ revision: 2, color: "rose", style: "quilted" });
+    expect((await t.state()).kits?.[p1]).toMatchObject({ revision: 2, color: "rose", style: "quilted" });
   });
 
   it("a table edit landing between the book's read and its write: online the book's is stale; queued, both fields stand", async () => {
