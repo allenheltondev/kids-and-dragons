@@ -226,3 +226,30 @@ describe("the crew's pieces' shadows (camp-light.ts, ground-shadows.ts)", () => 
     camp.destroy();
   });
 });
+
+describe("the air over a camp with no painted accent (camp-air.ts)", () => {
+  it("drifts snow over the frozen north, and shows none when the camp is still", () => {
+    for (const still of [false, true]) {
+      const layout = { ...campLayoutFor(2)!, backdrop: { ...campLayoutFor(2)!.backdrop, family: "frozen_north" } };
+      const app = fakeApp();
+      const camp = createCamp(app as unknown as Application, layout, { still, loadTexture: noArt });
+      camp.resize(1600, 900);
+      const air = camp.view.getChildByLabel("camp-air") as Container;
+      // Over the camp, under its names.
+      const layers = camp.view.children.map((c) => c.label);
+      expect(layers.indexOf("camp-air")).toBe(layers.indexOf("camp-ground") + 1);
+      expect(layers.indexOf("camp-labels")).toBeGreaterThan(layers.indexOf("camp-air"));
+      app.ticker.frame(16);
+      const before = air.children.map((m) => m.y);
+      for (let i = 0; i < 60; i++) app.ticker.frame(16);
+      if (still) expect(air.visible).toBe(false);
+      else {
+        expect(air.visible).toBe(true);
+        expect(air.children.length).toBeGreaterThan(10);
+        // Falling.
+        expect(air.children.filter((m, i) => m.y > before[i]!).length).toBeGreaterThan(air.children.length / 2);
+      }
+      camp.destroy();
+    }
+  });
+});

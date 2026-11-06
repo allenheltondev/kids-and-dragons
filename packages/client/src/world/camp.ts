@@ -44,6 +44,7 @@ import { REACT_S, WORDS_S, createTapQueue, type FriendTap, type TapVerdict } fro
 import { campBoxes, campFitFor, ownedPieceSize, type CampBox, type CampBoxFriend, type CampBoxInput, type CampLabelBox } from "./camp-boxes";
 import { campPaint } from "./camp-paint";
 import { campAccent, campAccentPose } from "./camp-accents";
+import { campAir, campMotes, motePose } from "./camp-air";
 import { tentArt, type CampBesideView, type CampSpotView } from "./camp-scene";
 import type { CastStance } from "@kad/shared";
 import {
@@ -530,6 +531,36 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   ground.label = "camp-ground";
   ground.sortableChildren = true;
   view.addChild(ground);
+
+  /*
+   * The air (camp-air.ts): on a backdrop with no painted accent, snow, embers
+   * or seeds drifting over the camp, under the names. None when the camp is
+   * still (reduced motion).
+   */
+  const air = campAir(layout.backdrop.family);
+  const airLayer = new Container();
+  airLayer.label = "camp-air";
+  view.addChild(airLayer);
+  const motes = air ? campMotes(air, seed + 1) : [];
+  const moteViews = motes.map((mote) => {
+    const dot = new Graphics()
+      .circle(0, 0, mote.size * 1.9)
+      .fill({ color: air!.color, alpha: 0.28 })
+      .circle(0, 0, mote.size)
+      .fill({ color: air!.color });
+    if (air!.glow) dot.blendMode = "add";
+    airLayer.addChild(dot);
+    return dot;
+  });
+  function updateAir(): void {
+    airLayer.visible = air !== undefined && !still;
+    if (!airLayer.visible) return;
+    motes.forEach((mote, i) => {
+      const pose = motePose(air!, mote, elapsed, W);
+      moteViews[i]!.position.set(pose.x, pose.y);
+      moteViews[i]!.alpha = pose.alpha;
+    });
+  }
 
   /*
    * Pieces are cutouts on the figures' contract: a 1024 canvas with the
@@ -1471,6 +1502,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     const dt = frameSeconds(app.ticker.deltaMS);
     elapsed += dt;
     updateAccent();
+    updateAir();
     easeFrame(dt);
 
     if (!still) {
