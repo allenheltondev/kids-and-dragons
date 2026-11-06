@@ -521,6 +521,21 @@ describe("Gemfall's numbers, with temporary buffs in the build (#200)", () => {
             expect(scene.onTimeout).toEqual(scene.onDefeat);
             continue;
           }
+          if (chapterId === "gemfall-04a" && sceneId === "encounter_mimics") {
+            expect(scene.environment?.objectives?.[0]?.id).toBe("stomp-stone");
+            expect(scene.onTimeout).toEqual(scene.onDefeat);
+            continue;
+          }
+          if (chapterId === "gemfall-05b" && sceneId === "encounter_wolves") {
+            expect(scene.environment?.exits?.[0]?.id).toBe("far-bank");
+            expect(scene.onTimeout).toEqual(scene.onDefeat);
+            continue;
+          }
+          if (chapterId === "gemfall-05b" && sceneId === "encounter_drake") {
+            expect(scene.environment?.objectives?.[0]?.id).toBe("channel-stone");
+            expect(scene.onTimeout).toEqual(scene.onDefeat);
+            continue;
+          }
           expect(scene).not.toHaveProperty("environment");
           expect(scene).not.toHaveProperty("onEscape");
           expect(scene).not.toHaveProperty("onTimeout");

@@ -391,6 +391,7 @@
       "states": {
         "shooed": "entities/mire_mimic/shooed.png",
         "barge": "entities/mire_mimic/barge.webp",
+        "marker_post": "entities/mire_mimic/marker-post.webp",
         "strongbox": "entities/mire_mimic/strongbox.webp",
         "little": "entities/mire_mimic/little.png"
       }
