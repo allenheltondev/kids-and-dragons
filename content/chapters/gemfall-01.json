@@ -2111,13 +2111,80 @@
           "id": "to_yard",
           "label": "Up at dawn",
           "icon": "travel",
-          "goto": "scene_last_noodles"
+          "goto": "scene_gull_dawn"
         }
       ],
       "onEnter": [
         {
           "type": "setFlag",
           "flag": "found_a_bed"
+        }
+      ]
+    },
+    "scene_gull_dawn": {
+      "type": "choice_point",
+      "narration": "Before you leave, something taps at the door. It is the gull from the docks, standing on the step with one foot up. It does not try to take anything. It looks at you, then at the road, then at you again. Gulls never say sorry. But this one wants to come with you. Do you ask it along?",
+      "cast": [
+        {
+          "figure": "entities/quay_gull",
+          "name": "Gull"
+        }
+      ],
+      "choices": [
+        {
+          "id": "come",
+          "label": "Ask the gull to come along",
+          "icon": "wing",
+          "goto": "scene_gull_along",
+          "effects": [
+            {
+              "type": "befriend",
+              "friendId": "harbor_gull",
+              "rewardId": "gemfall-01.gull"
+            }
+          ]
+        },
+        {
+          "id": "goodbye",
+          "label": "Say goodbye to the gull",
+          "icon": "hand",
+          "goto": "scene_gull_goodbye"
+        }
+      ]
+    },
+    "scene_gull_along": {
+      "type": "story",
+      "narration": "The gull hops onto your shoulder and settles in. It smells a little of fish. It does not seem to know this about itself.",
+      "cast": [
+        {
+          "figure": "entities/quay_gull",
+          "name": "Gull"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Off to the noodle stall",
+          "icon": "arrow",
+          "goto": "scene_last_noodles"
+        }
+      ]
+    },
+    "scene_gull_goodbye": {
+      "type": "story",
+      "narration": "You wave goodbye. The gull gives one loud screech, which might mean goodbye, and flaps off to bother a fishing boat.",
+      "cast": [
+        {
+          "figure": "entities/quay_gull",
+          "name": "Gull"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Off to the noodle stall",
+          "icon": "arrow",
+          "goto": "scene_last_noodles"
         }
       ]
     },

@@ -1889,16 +1889,83 @@
         ]
       },
       "onSuccess": {
-        "goto": "scene_gray_patch",
+        "goto": "scene_mosshorn_friend",
         "narration": "The mosshorn slowly lowers its antlers. That means \"friend.\" It drops a strawberry in your hand, then stays behind."
       },
       "onFailure": {
-        "goto": "scene_gray_patch",
+        "goto": "scene_mosshorn_friend",
         "narration": "The mosshorn slowly lowers its antlers. That means \"friend.\" It drops a strawberry in your hand, then stays behind."
       },
       "cast": [
         {
           "figure": "entities/mosshorn"
+        }
+      ],
+      "art": "scenes/gemfall/gray-moss-patch"
+    },
+    "scene_mosshorn_friend": {
+      "type": "choice_point",
+      "narration": "You look back. The strawberry mosshorn is still at the gray edge, watching you go. Mosshorns never step on the gray. But this one would like to come with you, if you ask. Do you?",
+      "cast": [
+        {
+          "figure": "entities/mosshorn"
+        }
+      ],
+      "choices": [
+        {
+          "id": "come",
+          "label": "Ask the mosshorn to come along",
+          "icon": "heart",
+          "goto": "scene_mosshorn_along",
+          "effects": [
+            {
+              "type": "befriend",
+              "friendId": "mosshorn",
+              "rewardId": "gemfall-04b.mosshorn"
+            }
+          ]
+        },
+        {
+          "id": "goodbye",
+          "label": "Say goodbye to the mosshorn",
+          "icon": "hand",
+          "goto": "scene_mosshorn_goodbye"
+        }
+      ],
+      "art": "scenes/gemfall/gray-moss-patch"
+    },
+    "scene_mosshorn_along": {
+      "type": "story",
+      "narration": "The mosshorn lowers its antlers again. That means yes. It won't step on the gray, so it trots off the long way around, strawberries bouncing. Mosshorns are very slow travelers. Yours will catch up someday, when you least expect it, with a new strawberry on its nose.",
+      "cast": [
+        {
+          "figure": "entities/mosshorn"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk on",
+          "icon": "arrow",
+          "goto": "scene_gray_patch"
+        }
+      ],
+      "art": "scenes/gemfall/gray-moss-patch"
+    },
+    "scene_mosshorn_goodbye": {
+      "type": "story",
+      "narration": "You wave goodbye. The mosshorn wiggles its antlers, and a strawberry falls off. It stays at the gray edge, chewing, and watches you go.",
+      "cast": [
+        {
+          "figure": "entities/mosshorn"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk on",
+          "icon": "arrow",
+          "goto": "scene_gray_patch"
         }
       ],
       "art": "scenes/gemfall/gray-moss-patch"

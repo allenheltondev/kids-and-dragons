@@ -717,13 +717,95 @@
           "id": "get_star",
           "label": "Get your star",
           "icon": "star",
-          "goto": "rest_ready"
+          "goto": "scene_bun_gate"
         }
       ]
     },
     "scene_last_tip": {
       "type": "story",
       "narration": "\"When you are stuck, look at your phone,\" says Tansy. \"It only ever shows things you can really do. And if you tap the speaker, it reads them to you.\" Bun nods, as if she knew that already.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy"
+        },
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Bun",
+          "size": "small"
+        }
+      ],
+      "choices": [
+        {
+          "id": "get_star",
+          "label": "Get your star",
+          "icon": "star",
+          "goto": "scene_bun_gate"
+        }
+      ]
+    },
+    "scene_bun_gate": {
+      "type": "choice_point",
+      "narration": "As you follow Tansy across the meadow, Bun trots along at your heels. When you stop, she stops. When you look at her, she looks very innocent. She still has mud on one ear. Bun wants to come with you. Do you ask her along?",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy"
+        },
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Bun",
+          "size": "small"
+        }
+      ],
+      "choices": [
+        {
+          "id": "come",
+          "label": "Ask Bun to come along",
+          "icon": "heart",
+          "goto": "scene_bun_along",
+          "effects": [
+            {
+              "type": "befriend",
+              "friendId": "bun",
+              "rewardId": "first-steps-01.bun"
+            }
+          ]
+        },
+        {
+          "id": "goodbye",
+          "label": "Say goodbye to Bun",
+          "icon": "hand",
+          "goto": "scene_bun_goodbye"
+        }
+      ]
+    },
+    "scene_bun_along": {
+      "type": "story",
+      "narration": "Bun bleats and wiggles all four legs at once, which means yes in goat. She trots beside you with her head held high. Tansy writes BUN on her clipboard and draws a very small goat.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy"
+        },
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Bun",
+          "size": "small"
+        }
+      ],
+      "choices": [
+        {
+          "id": "get_star",
+          "label": "Get your star",
+          "icon": "star",
+          "goto": "rest_ready"
+        }
+      ]
+    },
+    "scene_bun_goodbye": {
+      "type": "story",
+      "narration": "You scratch Bun behind the ears and wave goodbye. She bleats, does a little hop, and trots back to the pond to look for more mud.",
       "cast": [
         {
           "figure": "entities/faun",
@@ -915,7 +997,7 @@
           "id": "get_star",
           "label": "Get your star",
           "icon": "star",
-          "goto": "rest_ready"
+          "goto": "scene_bun_gate"
         }
       ]
     },

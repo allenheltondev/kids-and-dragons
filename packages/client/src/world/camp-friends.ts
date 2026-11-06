@@ -69,6 +69,8 @@ export const FRIEND_PAINT: Readonly<Record<string, { height: number; width: numb
   "entities/mosshorn": { height: 1.03, width: 0.73 },
   "entities/duckling": { height: 0.99, width: 0.64 },
   "cast/snowhorn_kid": { height: 0.99, width: 0.85 },
+  "entities/quay_gull": { height: 1.0, width: 0.88 },
+  "entities/silver_otter": { height: 1.03, width: 0.69 },
 };
 
 const NOMINAL_BOX = { height: 1, width: (NOMINAL_PAINT.right - NOMINAL_PAINT.left) / (ANCHOR_Y - NOMINAL_PAINT.top) };

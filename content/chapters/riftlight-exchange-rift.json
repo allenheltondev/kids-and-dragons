@@ -1175,7 +1175,7 @@
           "id": "on",
           "label": "Walk on along the quay",
           "icon": "forward",
-          "goto": "quay"
+          "goto": "gull_friend"
         }
       ],
       "art": "scenes/riftlight/exchange-noodle-awning",
@@ -1185,6 +1185,76 @@
           "name": "Barge pilot"
         }
       ]
+    },
+    "gull_friend": {
+      "type": "choice_point",
+      "narration": "As you walk on, the frosty gull lands on a crate beside you and fluffs its feathers. \"Hmph,\" it says. \"You are the only ones doing anything about this snow. I might come along. To keep an eye on you.\" Do you ask it along?",
+      "cast": [
+        {
+          "figure": "entities/quay_gull",
+          "name": "Gull"
+        }
+      ],
+      "choices": [
+        {
+          "id": "come",
+          "label": "Ask the gull to come along",
+          "icon": "wing",
+          "goto": "gull_along",
+          "effects": [
+            {
+              "type": "befriend",
+              "friendId": "harbor_gull",
+              "rewardId": "riftlight-exchange-rift.gull"
+            }
+          ]
+        },
+        {
+          "id": "goodbye",
+          "label": "Say goodbye to the gull",
+          "icon": "hand",
+          "goto": "gull_goodbye"
+        }
+      ],
+      "art": "scenes/gemfall/exchange-quay"
+    },
+    "gull_along": {
+      "type": "story",
+      "narration": "The gull hops onto your shoulder and tucks one foot into your collar. \"Warmer up here,\" it grumbles. \"Not that I am cold.\"",
+      "cast": [
+        {
+          "figure": "entities/quay_gull",
+          "name": "Gull"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk on along the quay",
+          "icon": "arrow",
+          "goto": "quay"
+        }
+      ],
+      "art": "scenes/gemfall/exchange-quay"
+    },
+    "gull_goodbye": {
+      "type": "story",
+      "narration": "\"Suit yourselves,\" says the gull, and flaps back to its post. It watches you go, very much not waving, with one wing up.",
+      "cast": [
+        {
+          "figure": "entities/quay_gull",
+          "name": "Gull"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk on along the quay",
+          "icon": "arrow",
+          "goto": "quay"
+        }
+      ],
+      "art": "scenes/gemfall/exchange-quay"
     },
     "rookery": {
       "type": "story",

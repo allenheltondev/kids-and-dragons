@@ -75,6 +75,7 @@ const EXPECTED_REACHABLE = [
   "creature.mosshorn",
   "creature.restless_remains",
   "creature.river_drake",
+  "creature.silver_otter",
   "creature.snowhorn_goat",
   "creature.will_o_wisp",
   "faction.deep_hollow_cult",
@@ -128,7 +129,6 @@ const EXPECTED_UNREACHABLE = [
   "creature.kavari", // Canon-only species; no chapter reveals it yet.
   "creature.loftmire",
   "creature.reefglider",
-  "creature.silver_otter",
   "location.skullwater_cave",
   "location.the_whirlpool",
   "npc.skupper",

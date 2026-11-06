@@ -210,13 +210,40 @@
     {
       "id": "kid_goat",
       "figure": "cast/snowhorn_kid",
-      "name": "Kid goat",
-      "offers": [{ "rewardId": "riftlight-exchange-rift.kid_goat", "chapter": "riftlight-exchange-rift" }],
+      "name": "Spotted kid goat",
+      "offers": [{ "rewardId": "riftlight-glacier-survival.kid_goat", "chapter": "riftlight-glacier-survival" }],
       "reactions": [
-        "The kid goat bounces straight up like a spring.",
-        "Maa! The kid goat snuggles in close to stay warm.",
-        "The kid goat chews your bootlace, very politely.",
-        "The kid goat does a tiny dance on the tips of its hooves."
+        "The spotted kid goat bounces straight up like a spring.",
+        "Maa! The spotted kid goat wiggles so hard her whole back end wags.",
+        "The spotted kid goat chews your bootlace, very politely.",
+        "The spotted kid goat does a tiny dance on the tips of her hooves."
+      ]
+    },
+    {
+      "id": "harbor_gull",
+      "figure": "entities/quay_gull",
+      "name": "Harbor gull",
+      "offers": [
+        { "rewardId": "gemfall-01.gull", "chapter": "gemfall-01" },
+        { "rewardId": "riftlight-exchange-rift.gull", "chapter": "riftlight-exchange-rift" }
+      ],
+      "reactions": [
+        "The gull looks at your pocket. Just checking.",
+        "Hmph. The gull stands on one foot, then the other.",
+        "The gull fluffs up and pretends it did not want a pat.",
+        "The gull gives one loud screech. That means hello in gull."
+      ]
+    },
+    {
+      "id": "silver_otter",
+      "figure": "entities/silver_otter",
+      "name": "Silver otter",
+      "offers": [{ "rewardId": "gemfall-02.otter", "chapter": "gemfall-02" }],
+      "reactions": [
+        "The otter shows you its blue pebble. You may look, but not touch.",
+        "The otter rolls onto its back and wiggles happily.",
+        "The otter gives you back a button. It is not yours, but it is very shiny.",
+        "The otter chatters at you, then pats your boot twice."
       ]
     }
   ]

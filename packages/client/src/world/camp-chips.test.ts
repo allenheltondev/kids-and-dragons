@@ -143,7 +143,9 @@ describe("a phone's Camp chips", () => {
     let withLines = 0;
     for (let n = 0; n < 400; n++) {
       const width = Math.round(320 + random() * 448);
-      const count = 1 + Math.floor(random() * 7);
+      // Up to one spot of every shared kind (six); a real camp shows at most five (stages 2 to 4).
+      // Seven spots is never a camp, and its search alone took most of a CI minute under coverage.
+      const count = 1 + Math.floor(random() * NAMES.length);
       const spots: ChipSpot[] = Array.from({ length: count }, (_, i) => {
         const x = random() * width;
         // Most pieces are as wide as a real one at this width (3% to 15% of the panel); some only a point.
