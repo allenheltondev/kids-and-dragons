@@ -1248,7 +1248,7 @@ Settled by the product owner:
 | The kid goat is a different kid from the herd, given by the herder (#626) | The goat kid of Exchange Rift goes home and is met again, so it is never offered; the friend is a younger spotted kid the herder gives away in Glacier of Origins, always named "the spotted kid goat" (§4.4) |
 | One harbor gull for both campaigns (#626) | Gemfall 1's dawn gull and Riftlight's frosty Exchange gull are one friend, `harbor_gull`, with two offers: the same bird at the same quay, never two friends that read as one animal (§4.4) |
 | Bun and the kid goat look different (#628) | Two friends must never read as the same animal at camp scale: Bun is repainted to stand apart from the kid goat (§4.4) |
-| The book's crews (#629) | The adventure book lists every crew any of the kid's heroes is part of, recorded on each hero's kit whenever she is seated at a crew's table (§7) |
+| The book's crews (#629) | The adventure book lists every crew any of the kid's heroes is part of, recorded on each hero's kit whenever she is seated at a crew's table (§7). A hero who only sits in a crew's lobby and leaves, without making, seating, starting or editing anything, is not recorded for that crew; the owner confirmed that is the right behavior |
 
 Nothing is open. The two parked questions from earlier (editing from the book, choosing friends)
 are settled above as kit and buddy editing in the book and buddies.
