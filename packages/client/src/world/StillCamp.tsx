@@ -33,6 +33,7 @@ import type { CampLayout } from "./camp-layout";
 import { BLEED_SOURCE, campBleed, campFocusBand, campVisibleSpan, campWindow, type CampFraming } from "./camp-framing";
 import { LOBBY_CAMP_STAND_IN, campDressing, campFriends, campHeroes, stillCampFigures } from "./lobby-camp";
 import leafArt from "../assets/painted/leaf.webp";
+import { campAccent } from "./camp-accents";
 import { lobbyInsetBottom, lobbyInsetTop, onLobbyInset, onLobbyInsetTop } from "./stage-inset";
 import { ANCHOR_Y } from "./art-paths";
 import { NOMINAL_PAINT } from "./figure-scale";
@@ -143,7 +144,11 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
   const lobbyTop = useSyncExternalStore(onLobbyInsetTop, lobbyInsetTop, lobbyInsetTop);
   const inset = insets?.bottom ?? lobbyBottom;
   const insetTop = insets?.top ?? lobbyTop;
-  const [backdrop, setBackdrop] = useState(`/assets/${layout.backdrop.path}`);
+  const paintedBackdrop = `/assets/${layout.backdrop.path}`;
+  const [failedBackdrop, setFailedBackdrop] = useState<string | null>(null);
+  const usingFallback = failedBackdrop === paintedBackdrop;
+  const backdrop = usingFallback ? `/assets/${LOBBY_CAMP_STAND_IN}` : paintedBackdrop;
+  const accent = usingFallback ? undefined : campAccent(layout.backdrop.family);
   const [missing, setMissing] = useState<ReadonlySet<string>>(new Set());
   const owed = (src: string): void => setMissing((was) => (was.has(src) ? was : new Set([...was, src])));
 
@@ -278,11 +283,17 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
           className="kad-static-camp__backdrop"
           src={backdrop}
           alt=""
-          onError={() => {
-            const standIn = `/assets/${LOBBY_CAMP_STAND_IN}`;
-            if (backdrop !== standIn) setBackdrop(standIn);
-          }}
+          onError={() => setFailedBackdrop(paintedBackdrop)}
         />
+        {accent && (
+          <img className="kad-static-camp__accent" src={accent.url} alt="" style={{
+            left: `${100 * accent.x / W}%`,
+            top: `${100 * accent.y / H}%`,
+            width: `${100 * accent.width / W}%`,
+            transform: `rotate(${accent.angle}deg)`,
+            transformOrigin: `${100 * accent.pivotX / accent.width}% ${100 * accent.pivotY / accent.height}%`,
+          }} />
+        )}
         {figures.map((figure) => (
           <span
             key={figure.id}

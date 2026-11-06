@@ -19,7 +19,7 @@
 
 import type { CastStance, HeroKitView, PartyMember, PhaseKind, RunState } from "@kad/shared";
 import { castArtUrl, characterWorldArtUrl } from "./art-paths";
-import { camp as campManifest } from "../../../../assets/manifest.json";
+import { biomeFamilies, camp as campManifest } from "../../../../assets/manifest.json";
 import type { CampDressing, CampFigure } from "./camp";
 import { campBeside, campSpots, crewName, kitLook } from "./camp-scene";
 import { friendHabitSpot, CAMP_SEATS, campLayout, parseCampManifest, type CampLayout } from "./camp-layout";
@@ -45,7 +45,7 @@ export const LOBBY_CAMP_STAND_IN = "biomes/plains/bg.webp";
  * rather than the whole manifest. Parsed once; a layout that fails to parse
  * is reported and leaves the lobby on the story stage as before, never blank.
  */
-const parsedLayouts = new Map<number, CampLayout | null>();
+const parsedLayouts = new Map<string, CampLayout | null>();
 export function lobbyCampLayout(): CampLayout | null {
   return campLayoutFor(LOBBY_CAMP_STAGE);
 }
@@ -56,11 +56,13 @@ export function lobbyCampLayout(): CampLayout | null {
  * cookfire at stage 2, and the biggest frame painted for anything past it
  * (§12.3's safe fallback). Parsed once per stage.
  */
-export function campLayoutFor(stage: number): CampLayout | null {
-  const key = Math.max(1, Math.floor(stage));
+export function campLayoutFor(stage: number, biome?: string | null): CampLayout | null {
+  const frame = Math.max(1, Math.floor(stage));
+  const family = Object.entries(biomeFamilies).find(([, biomes]) => biome && biomes.includes(biome))?.[0] ?? LOBBY_CAMP_FAMILY;
+  const key = `${frame}:${family}`;
   if (!parsedLayouts.has(key)) {
     try {
-      parsedLayouts.set(key, campLayout(parseCampManifest(campManifest), LOBBY_CAMP_FAMILY, key));
+      parsedLayouts.set(key, campLayout(parseCampManifest(campManifest), family, frame));
     } catch (error) {
       globalThis.reportError?.(error);
       parsedLayouts.set(key, null);
