@@ -146,7 +146,8 @@ describe("ford road combat batch", () => {
         const risk = (p: { x: number; y: number }) => Number(danger.some(t => t.x === p.x && t.y === p.y));
         const score = (p: { x: number; y: number }) => risk(p) * 10 + stepsBetween(p, wheel);
         const next = [...legalMoves(state)].sort((a, b) => score(a) - score(b))[0];
-        if (next && score(next) < score(at)) {
+        // Let the crabs commit a sweep before anyone goes for the stone.
+        if (next && score(next) < score(at) && (sceneId !== "encounter_crab" || sawWarning)) {
           const moved = moveTo(state, next);
           if (moved.ok) state = moved.state;
         }
@@ -212,6 +213,9 @@ describe("ford road combat batch", () => {
 });
 
 const mountainFights = [
+  { chapter: "gemfall-04c", sceneId: "encounter_wolves", target: { x: 3, y: 2 }, outcome: "victory" },
+  { chapter: "gemfall-05a", sceneId: "encounter_wolves", target: { x: 7, y: 5 }, outcome: "escaped" },
+  { chapter: "gemfall-06", sceneId: "encounter_crab", target: { x: 4, y: 2 }, outcome: "victory" },
   { chapter: "gemfall-04a", sceneId: "encounter_mimics", target: { x: 3, y: 2 }, outcome: "victory" },
   { chapter: "gemfall-05b", sceneId: "encounter_wolves", target: { x: 6, y: 3 }, outcome: "escaped" },
   { chapter: "gemfall-05b", sceneId: "encounter_drake", target: { x: 4, y: 2 }, outcome: "victory" },
@@ -251,7 +255,8 @@ describe.each(mountainFights)("$sceneId on the mountain road", ({ chapter, scene
         const moves = legalMoves(state).filter(p => (chapter !== "gemfall-07r" || sceneId !== "encounter_drake" || p.x !== 5 || (p.y !== 1 && p.y !== 4)) &&
           (chapter !== "gemfall-03a" || sceneId !== "encounter_crawlers" || p.x !== 3 || p.y !== 3));
         const next = moves.sort((a, b) => score(a) - score(b))[0];
-        if (next && score(next) < score(at)) {
+        // Let the crabs commit a sweep before anyone goes for the stone.
+        if (next && score(next) < score(at) && (sceneId !== "encounter_crab" || sawWarning)) {
           const moved = moveTo(state, next);
           if (moved.ok) state = moved.state;
         }
@@ -259,7 +264,7 @@ describe.each(mountainFights)("$sceneId on the mountain road", ({ chapter, scene
       state = endTurnWithEvents(state).state;
     }
     expect(encounterOutcome(state)).toBe(outcome);
-    if (sceneId === "encounter_wisps") expect(sawWarning).toBe(true);
+    if (sceneId === "encounter_wisps" || sceneId === "encounter_crab") expect(sawWarning).toBe(true);
     if (sceneId === "encounter_crawlers" && outcome === "victory") expect(state.environment!.objectives).toEqual([2]);
     if (sceneId === "encounter_echoes") expect(state.environment!.objectives).toEqual([1]);
     if (chapter === "gemfall-07r" && sceneId === "encounter_drake") {
