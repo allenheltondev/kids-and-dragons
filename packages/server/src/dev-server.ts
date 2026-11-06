@@ -78,7 +78,7 @@ import {
 } from "./identity.ts";
 import { assetsDir, contentDir, dataDir } from "./paths.ts";
 import { verifyDevToken } from "./dev-auth.ts";
-import { readSeedRequest, seedRoom } from "./dev-seed.ts";
+import { readSeedRequest, seedRoom, withSeededDice } from "./dev-seed.ts";
 import { MemoryRepository } from "./store/memory-repository.ts";
 import { pushKey, subscribePush, unsubscribePush, type PushConfig, type PushSender } from "./handlers/push.ts";
 import { devVapidKeys, inProcessDispatch, pushConfig, pushMode, recordingSender, webPushSender, type RecordedPush } from "./web-push.ts";
@@ -570,7 +570,8 @@ async function main(): Promise<void> {
         ...(typeof body.context === "string" ? { context: body.context } : {}),
         principal,
       },
-      deps,
+      // A seeded table's loaded die (dev-seed.ts `SeedRequest.dice`); fair dice for every other run.
+      withSeededDice(deps, body.runId),
     );
     // The rejection is part of the protocol, not an HTTP failure: the client
     // reads `error.code` and resyncs. 200 keeps that path free of fetch()

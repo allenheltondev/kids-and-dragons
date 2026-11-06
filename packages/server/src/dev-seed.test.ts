@@ -7,8 +7,8 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { applyIntent, createRunState, type Campaign } from "@kad/shared";
-import { readSeedRequest, seedRoom, type SeedRequest } from "./dev-seed.ts";
+import { applyIntent, createRunState, rollD20, rollDie, type Campaign } from "@kad/shared";
+import { loadedDie, readSeedRequest, seedRoom, withSeededDice, type SeedRequest } from "./dev-seed.ts";
 import { makeChapter, makeContent, makeHarness } from "./test-support.ts";
 
 const CAMPAIGN: Campaign = {
@@ -189,6 +189,44 @@ describe("a playtest start: any chapter, any scene", () => {
     expect(readSeedRequest({ mode: "party", heroes: hero, chapterId: "x", flags: { a: "yes" } })).toMatch(/flags/);
     expect(readSeedRequest({ mode: "party", heroes: hero, flags: { a: true } })).toMatch(/need chapterId/);
     expect(typeof readSeedRequest({ mode: "party", heroes: hero, chapterId: "x", sceneId: "y", flags: { a: true }, facts: { tide: 2 } })).toBe("object");
+  });
+});
+
+describe("a loaded die (dice)", () => {
+  it("lands every d20 on the face asked for, and every smaller die on the same share", () => {
+    for (let face = 1; face <= 20; face++) {
+      const die = loadedDie(face);
+      expect([rollD20(die), rollD20(die), rollD20(die)]).toEqual([face, face, face]);
+      for (const sides of [4, 6, 8, 10, 12]) {
+        const value = rollDie(die, sides);
+        expect(value).toBeGreaterThanOrEqual(1);
+        expect(value).toBeLessThanOrEqual(sides);
+      }
+    }
+    expect(rollDie(loadedDie(1), 12)).toBe(1);
+    expect(rollDie(loadedDie(20), 12)).toBe(12);
+  });
+
+  it("rolls for the seeded table alone; every other run keeps fair dice", async () => {
+    const h = harness();
+    const loaded = await seed(h, { mode: "party", tv: true, campaignId: CAMPAIGN.id, heroes: [{ name: "Sam", species: "unicorn" }], dice: 1 });
+    const fair = await seed(h, { mode: "party", tv: true, campaignId: CAMPAIGN.id, heroes: [{ name: "Rosie", species: "griffin" }] });
+    const rigged = withSeededDice(h.deps, loaded.runId);
+    expect(Array.from({ length: 5 }, (_, seq) => rollD20(rigged.rng(`${loaded.runId}:${String(seq)}`)))).toEqual([1, 1, 1, 1, 1]);
+    expect(withSeededDice(h.deps, fair.runId)).toBe(h.deps);
+    expect(withSeededDice(h.deps, "r_nobody")).toBe(h.deps);
+  });
+
+  it("is read by the dev server's action route, and checked like the rest of the request", () => {
+    const src = fileURLToPath(new URL(".", import.meta.url));
+    expect(readFileSync(`${src}dev-server.ts`, "utf8")).toContain("withSeededDice(deps, body.runId)");
+    const hero = [{ name: "Sam", species: "unicorn" }];
+    expect(readSeedRequest({ mode: "party", heroes: hero, dice: 0 })).toMatch(/dice/);
+    expect(readSeedRequest({ mode: "party", heroes: hero, dice: 21 })).toMatch(/dice/);
+    expect(readSeedRequest({ mode: "party", heroes: hero, dice: 2.5 })).toMatch(/dice/);
+    expect(readSeedRequest({ mode: "party", heroes: hero, dice: "1" })).toMatch(/dice/);
+    expect(readSeedRequest({ mode: "party", heroes: hero, code: "ABCD", dice: 1 })).toMatch(/dice/);
+    expect(typeof readSeedRequest({ mode: "party", heroes: hero, dice: 20 })).toBe("object");
   });
 });
 
