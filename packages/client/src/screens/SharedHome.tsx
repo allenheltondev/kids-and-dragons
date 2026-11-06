@@ -12,7 +12,7 @@
  * is "Forget this tablet", at the bottom and quiet, behind a sign-in.
  */
 
-import { randomName } from "./creationContent";
+import { randomName } from "./hero-names";
 import { loadLocationName } from "../store/persistence";
 import { useCallback, useEffect, useId, useState } from "react";
 import type { ChangeEvent, ReactElement } from "react";

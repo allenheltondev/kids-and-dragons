@@ -168,6 +168,10 @@ How it shows:
   its painting mirrored out to the pane's sides (`campShrunkScale`, #625). The heroes rest at their
   bedrolls or tents; nobody lines up at the trailhead, since Ready is the lobby's. Go on fades it
   off with the next scene already drawn under it. Shared spots can change (`campMoment.outdoor`).
+  The host's "Stop here for today?" offer, up for its fifteen seconds at every rest, stands off
+  the camp too: beside the goal card where the TV is wide enough, else at the end of the choices'
+  row on the plate (`ui/story-dock.ts`). It used to stand in the TV's right-hand column, over the
+  camp's heroes, banner pole and crew name (e2e/layout-fit.spec.ts checks it at every TV size).
 - **Indoors.** The scene's picture and lineup stay; each hero's bedroll and pack lie on the
   ground at her side, a step behind her feet, in her color (`packed-camp.ts`). Indoors nobody
   sleeps in it, so the bedroll is always rolled up beside the pack, whatever style the kid picked

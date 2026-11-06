@@ -5,12 +5,13 @@
  * and close only after one "are you sure?".
  */
 
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import type { PartyMember, RunState } from "@kad/shared";
 import { useGameStore } from "../store";
 import type { ClientSession } from "../store/contract";
 import { makeState } from "../testing/fixtures";
+import { setStoryDock } from "../ui/story-dock";
 import { HostControls, LetHeroGo, STOP_OFFER_MS, rosterOf } from "./HostControls";
 
 function member(playerId: string, name: string, connected = true): PartyMember {
@@ -276,6 +277,16 @@ describe("crews: new players at the same TV", () => {
 
 describe("stopping for today (#259)", () => {
   const UNDER_WAY: Partial<RunState> = { ...RUN, phase: "scene", campaignId: "gemfall", sceneId: "s_1", sceneType: "story" };
+  // The shared screen's offer stands in the narration's slot (ui/story-dock.ts); stand one in.
+  const story = document.createElement("div");
+  beforeEach(() => {
+    document.body.append(story);
+    setStoryDock(story);
+  });
+  afterEach(() => {
+    setStoryDock(null);
+    story.remove();
+  });
 
   it("saves and stops only after one 'are you sure?', while a chapter is under way", () => {
     const { stopForToday, closeRoom } = room({ host: true }, UNDER_WAY);
@@ -399,6 +410,47 @@ describe("stopping for today (#259)", () => {
     room({}, { ...UNDER_WAY, sceneType: "rest" });
     render(<HostControls placement="float" />);
     expect(screen.queryByText(/cozy place to stop/)).toBeNull();
+  });
+
+  it("stands in the narration's slot on the shared screen, off the stage, and keeps its clock when the slot moves", () => {
+    // ui/story-dock.ts: an outdoor rest's camp is framed between the goal card and the plate,
+    // and the column the offer used to stand in lay over it.
+    vi.useFakeTimers();
+    act(() => setStoryDock(null));
+    room({ host: true }, { ...UNDER_WAY, sceneType: "rest" });
+    const head = document.createElement("div");
+    const plate = document.createElement("div");
+    document.body.append(head, plate);
+    try {
+      const { container } = render(<HostControls placement="float" />);
+      // The narration not up yet: it waits for its slot rather than flash over the stage.
+      expect(screen.queryByText(/cozy place to stop/)).toBeNull();
+      act(() => setStoryDock(head));
+      expect(container.querySelector(".kad-host__offer")).toBeNull();
+      expect(head.querySelector(".kad-host__offer--docked")?.textContent).toContain("Stop here for today");
+      act(() => {
+        vi.advanceTimersByTime(STOP_OFFER_MS / 2);
+      });
+      // The head has no room any more: the offer goes to the plate, on the same clock.
+      act(() => setStoryDock(plate));
+      expect(head.querySelector(".kad-host__offer")).toBeNull();
+      expect(plate.querySelector(".kad-host__offer--docked")).not.toBeNull();
+      act(() => {
+        vi.advanceTimersByTime(STOP_OFFER_MS / 2);
+      });
+      expect(plate.querySelector(".kad-host__offer")).toBeNull();
+      expect(screen.queryByText(/cozy place to stop/)).toBeNull();
+    } finally {
+      head.remove();
+      plate.remove();
+    }
+  });
+
+  it("stays in the column in a fight, where the narration has no slot", () => {
+    act(() => setStoryDock(null));
+    room({ host: true }, { ...UNDER_WAY, sceneType: "rest", encounter: {} as never });
+    const { container } = render(<HostControls placement="float" />);
+    expect(container.querySelector(".kad-host__offer:not(.kad-host__offer--docked)")).not.toBeNull();
   });
 });
 

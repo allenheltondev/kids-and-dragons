@@ -10,7 +10,7 @@
  */
 
 import { useSyncExternalStore, type CSSProperties } from "react";
-import { onStageInset, onStageInsetTop, stageInsetBottom, stageInsetTop } from "../world/stage-inset";
+import { onStageInset, onStageInsetTop, stageInsetBottom, stageInsetTop } from "../world/story-inset";
 
 const subscribe = (listener: () => void): (() => void) => {
   const stopTop = onStageInsetTop(listener);

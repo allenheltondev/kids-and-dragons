@@ -122,6 +122,12 @@ const DIST = path.join(ROOT, "packages", "client", "dist");
 // add 1KB to the entry graph (329KB measured). Combat surfaces remain lazy.
 // 330 -> 332 for Phase 2 camp. Its base branch measures 331KB at first
 // paint, and #623's artwork and tent tinting leave that measurement unchanged.
+// Down to 327KB measured, cap still 332, after Phase 3 sat at 332 exactly: the start
+// screens imported `randomName` from creationContent.ts, which put the creation cards'
+// matchup lines and the whole shared matchups chunk (3KB) in every first paint; the names
+// are their own module now (screens/hero-names.ts). And the display dock reads the plate's
+// height and the head's reach from world/story-inset.ts, so the framing maths in
+// stage-inset.ts (the camp's cover top among them) stays with the lazy stage.
 const FIRST_PAINT_BUDGET_KB = 332;
 
 /**

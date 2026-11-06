@@ -81,6 +81,58 @@
   text-transform: none;
 }
 
+/*
+ * The goal card, and at the row's end the host's stop offer at a rest when the row has room
+ * for it there (ui/story-dock.ts, NarrationPanel.tsx `useStoryDockPick`, HostControls.css
+ * `.kad-host__offer--docked`); else the offer is at the end of the choices' row on the plate.
+ * Either way it is off the stage: the stage and a rest's camp are framed between what the head
+ * draws and the plate. With no offer the slots are not drawn.
+ */
+.narration__goal-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-2, 0.5em) var(--space-4, 1em);
+}
+.narration__goal-row:not(:has(> *:not(.narration__dock:empty))) {
+  display: none;
+}
+.narration__dock {
+  min-inline-size: 0;
+  margin-inline-start: auto;
+  font-size: 1rem;
+  /* The narration is read, not driven; the offer's buttons are the grown-up's. */
+  pointer-events: auto;
+}
+.narration__dock:empty {
+  display: none;
+}
+/* Picked only with HEAD_DOCK_REM (34rem) beside the card: it takes that, and up to 48rem. */
+.narration__goal-row > .narration__dock {
+  flex: 1 1 34rem;
+  max-inline-size: 48rem;
+}
+
+/* The choices, and at the end of their row the stop offer when the head had no room for it:
+   beside the choices where they leave it room, under them, at the row's end, where not. */
+.narration__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-2, 0.5em) var(--space-4, 1em);
+}
+.narration__actions:not(:has(> *:not(.narration__dock:empty))) {
+  display: none;
+}
+.narration__actions > .narration__choices {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+.narration__actions > .narration__dock {
+  flex: 0 1 auto;
+  max-inline-size: min(48rem, 100%);
+}
+
 .narration__story {
   flex: 0 0 auto;
 }
