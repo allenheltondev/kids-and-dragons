@@ -112,6 +112,8 @@ import { friendWords } from "./camp-stand-in";
 import { WAVE_S, wavePose } from "./camp-motion";
 import { CAMP_KIT_STYLES } from "./camp-kit-art";
 import { campKitCanvas } from "./camp-kit-canvas";
+import { INDOOR_LIGHT } from "./camp-light";
+import { createShadowLayer, groundShadow } from "./ground-shadows";
 
 export { characterArtUrl };
 
@@ -557,6 +559,14 @@ export function createScene(app: Application): PartyScene {
   // Painter's order by zIndex, so the depth stagger in layoutActors() reads
   // right: the nearer (lower) actor draws in front, whatever order they joined.
   actorsLayer.sortableChildren = true;
+  /*
+   * At an indoor rest, the heroes, their packed bedrolls and the friends out
+   * cast soft shadows in the room's light (camp-light.ts `INDOOR_LIGHT`), on
+   * one layer under them, as the camp's do (ground-shadows.ts). Empty
+   * everywhere else: the story lineup keeps its contact shadows.
+   */
+  const restShadows = createShadowLayer(INDOOR_LIGHT, "rest-shadows");
+  storyLayer.addChild(restShadows.layer);
   storyLayer.addChild(actorsLayer);
   /** A tapped packed friend's words, over every figure (#624). */
   const packedWordsLayer = new Container();
@@ -1025,6 +1035,11 @@ export function createScene(app: Application): PartyScene {
     }
     // A bedroll whose hero is not in the lineup (she got up from the table) is not drawn.
     for (const [id, entry] of packedSprites) entry.sprite.renderable = packedSpots.some((spot) => spot.id === id);
+    layoutBedrolls();
+    castRestShadows();
+  }
+
+  function layoutBedrolls(): void {
     for (const spot of packedSpots) {
       const entry = packedSprites.get(spot.id);
       const kit = packedKits.find((k) => k.id === spot.id);
@@ -1039,6 +1054,29 @@ export function createScene(app: Application): PartyScene {
       // Behind her (her feet are nearer), in front of anyone further back.
       sprite.zIndex = spot.y;
     }
+  }
+
+  /** The packed camp's shadows, redrawn whenever it is laid out: none outside an indoor rest. */
+  function castRestShadows(): void {
+    restShadows.clear();
+    if (packedKits.length === 0) return;
+    for (const kit of packedKits) {
+      const actor = actors.get(kit.id);
+      if (!actor?.sprite) continue;
+      const { sprite } = actor;
+      const width = sprite.texture.width * Math.abs(sprite.scale.x) * 0.45;
+      restShadows.cast(actor.container, groundShadow(INDOOR_LIGHT, width, actor.height, sprite.texture, {
+        canvas: actor.canvas, offsetX: sprite.x, offsetY: sprite.y, mirrored: actor.art.scale.x < 0,
+      }));
+    }
+    // A bedroll's or a friend's shadow is drawn on its own painting's canvas, and scaled with it.
+    const own = (sprite: Sprite, low: boolean): void => {
+      if (!sprite.visible || !sprite.renderable || sprite.texture.height <= 1) return;
+      const side = sprite.texture.height;
+      restShadows.cast(sprite, groundShadow(INDOOR_LIGHT, sprite.texture.width * (low ? 0.6 : 0.4), side * (low ? 0.3 : 0.6), sprite.texture, { canvas: side }));
+    };
+    for (const { sprite } of packedSprites.values()) own(sprite, true);
+    for (const { sprite } of packedFriendSprites.values()) own(sprite, false);
   }
 
   function setPackedFriends(friends: readonly PackedFriend[]): void {
@@ -1253,6 +1291,9 @@ export function createScene(app: Application): PartyScene {
 
     tickCast(dt);
     tickPackedTaps();
+    // The rest's shadows follow the heroes (a step, a hop), as soft at any size of the stage.
+    restShadows.setScale(storyLayer.scale.y);
+    restShadows.sync();
 
     // No walk between slots for a viewer who asked for reduced motion — the
     // same rule tickCast keeps for an entrance.
