@@ -11,7 +11,7 @@
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { applyIntent, createRunState, makeRng } from "@kad/shared";
-import type { ClientIntent, RunState, ServerMessage } from "@kad/shared";
+import type { CampRecord, ClientIntent, RunState, ServerMessage } from "@kad/shared";
 import { loadContent } from "../content/loader.ts";
 import type { Engine } from "../engine/port.ts";
 import { seedRoom } from "../dev-seed.ts";
@@ -51,13 +51,16 @@ const BEFRIENDINGS: Befriending[] = [
  * (dev-seed.ts: any chapter of any campaign, out of order and unlocked), then
  * on into the offer by the choice a party takes there.
  */
-async function atTheWayIn(b: Befriending) {
+async function atTheWayIn(b: Befriending, camp?: CampRecord | null) {
   const harness = makeHarness({ engine: realEngine, playtest: true, content });
   harness.deps.rng = (key) => makeRng(`befriend:${String(key).split(":").pop()}`);
   const seeded = await seedRoom({ mode: "party", heroes: [{ name: "Glimmer", species: "unicorn" }], chapterId: b.chapterId, sceneId: b.from }, harness.deps);
   if (!seeded.ok) throw new Error(`seed: ${JSON.stringify(seeded.error)}`);
   const { code, runId } = seeded.value;
   const { playerId: me, householdId } = seeded.value.phones[0]!;
+  // A crew that has played earlier chapters brings its camp along (the second
+  // gull offer, below): its record goes into this table's household first.
+  if (camp) expect(await harness.repo.putCamp({ householdId, camp, expectedRevision: (await harness.repo.getCamp(householdId))?.revision ?? null })).toBe(true);
   const received: ServerMessage[] = [];
   harness.channel.subscribe(code, (m) => received.push(m as ServerMessage));
   const state = async (): Promise<RunState> => (await harness.repo.getState(runId))!;
@@ -115,5 +118,32 @@ describe("the shipped befriendings (#626)", () => {
     expect((await t.state()).campFinds?.filter((f) => f.kind === "friend") ?? []).toEqual([]);
     expect(t.received.flatMap((m) => m.campClaims ?? []).slice(claimed)).toEqual([]);
     expect(await t.harness.repo.getCamp(t.householdId)).toEqual(before);
+  });
+
+  it("the second harbor-gull offer pays 1 Dash Cash once, after Gemfall 1's gull, and never the friend twice", { timeout: 60_000 }, async () => {
+    const gemfall = BEFRIENDINGS.find((b) => b.rewardId === "gemfall-01.gull")!;
+    const exchange = BEFRIENDINGS.find((b) => b.rewardId === "riftlight-exchange-rift.gull")!;
+    // Gemfall 1: the gull comes along.
+    const first = await atTheWayIn(gemfall);
+    await first.must({ type: "CHOOSE", choiceId: "come" });
+    const afterGemfall = (await first.harness.repo.getCamp(first.householdId))!;
+    expect(Object.keys(afterGemfall.friends)).toEqual(["harbor_gull"]);
+    // The same crew, later, at the Exchange Rift: the same gull asks again.
+    const second = await atTheWayIn(exchange, afterGemfall);
+    await second.must({ type: "CHOOSE", choiceId: "come" });
+    const afterExchange = (await second.harness.repo.getCamp(second.householdId))!;
+    expect(Object.keys(afterExchange.friends)).toEqual(["harbor_gull"]);
+    expect(afterExchange.friends.harbor_gull).toMatchObject({ rewardId: "gemfall-01.gull" });
+    expect(afterExchange.dashCash).toBe(afterGemfall.dashCash + 1);
+    expect(afterExchange.receipts.rewards["riftlight-exchange-rift.gull"]).toBeTruthy();
+    expect(second.received.flatMap((m) => m.campClaims ?? []).filter((c) => c.rewardId === exchange.rewardId)).toEqual([
+      expect.objectContaining({ rewardId: exchange.rewardId, pieceId: "harbor_gull" }),
+    ]);
+    // A replay of the Exchange Rift with that camp: the offer is spent, so nothing more.
+    const replay = await atTheWayIn(exchange, afterExchange);
+    await replay.must({ type: "CHOOSE", choiceId: "come" });
+    const afterReplay = (await replay.harness.repo.getCamp(replay.householdId))!;
+    expect(Object.keys(afterReplay.friends)).toEqual(["harbor_gull"]);
+    expect(afterReplay.dashCash).toBe(afterExchange.dashCash);
   });
 });
