@@ -1117,7 +1117,8 @@
           "windupAttack": {
             "label": "Glassback claw sweep",
             "radius": 1,
-            "damage": 2
+            "damage": 2,
+            "presentation": "slam"
           }
         }
       ],
