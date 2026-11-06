@@ -285,6 +285,28 @@ describe.each(mountainFights)("$sceneId on the mountain road", ({ chapter, scene
   });
 });
 
+it("the under-bridge current pushes a hero two tiles west without hurting them", () => {
+  const foothills = content.chapter("gemfall-05a")!;
+  let { state } = setup("encounter_wolves", 1, foothills);
+  // Leave the pack at its spawn so this tests the current, not enemy AI.
+  while (currentActor(state)!.side === "enemy") state = endTurnWithEvents(state).state;
+  const hero = currentActor(state)!;
+  const upperCrossing = { x: 4, y: 2 };
+  const moved = moveTo(state, upperCrossing);
+  if (!moved.ok) throw new Error("The upper crossing must be reachable");
+  expect(positionOf(moved.state, hero.id)).toEqual(upperCrossing);
+
+  const resolved = endTurnWithEvents(moved.state);
+  expect(resolved.events).toContainEqual(expect.objectContaining({
+    type: "hazard", actorId: hero.id, hazardId: "pillar-current",
+  }));
+  expect(resolved.events).toContainEqual({
+    type: "shoved", actorId: hero.id, to: { x: 2, y: 2 },
+  });
+  expect(positionOf(resolved.state, hero.id)).toEqual({ x: 2, y: 2 });
+  expect(combatantById(resolved.state, hero.id)?.hp).toBe(hero.hp);
+});
+
 it("the high stream lets a hero stand on the low route before the round-two spill", () => {
   let { state } = setup("encounter_drake", 1, content.chapter("gemfall-05b")!);
   while (currentActor(state)!.side === "enemy") state = endTurnWithEvents(enemyTurn(state)).state;
