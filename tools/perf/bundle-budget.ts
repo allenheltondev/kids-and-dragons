@@ -255,7 +255,9 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // lazy chunk (CampPane, about 9KB with its CSS), and the book's kit queue and
 // its sender (store/kit-queue.ts, store/book-kit-sync.ts) ride the lazy journal
 // chunk. 1692KB measured, first paint 332KB, unchanged at its budget. 2KB of slack.
-const TOTAL_BUDGET_KB = 1694;
+// 1694 -> 1696 for the #656 review fixes (the book's memory-only queue, the
+// camp-read marker): 1694KB measured, first paint 328KB. 2KB of slack again.
+const TOTAL_BUDGET_KB = 1696;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);
