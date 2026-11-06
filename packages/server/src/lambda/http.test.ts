@@ -2247,6 +2247,8 @@ const SHARED = [
   { path: "/api/heroes", method: "GET", probe: "/api/heroes" },
   // What a phone can study between games (handlers/journal.ts).
   { path: "/api/journal", method: "GET", probe: "/api/journal" },
+  // A kid's own kit or buddy, from the adventure book (#629, handlers/camp-book.ts).
+  { path: "/api/journal/kit", method: "POST", probe: "/api/journal/kit" },
   // What a kid picked for her own page (#299, handlers/profile.ts).
   { path: "/api/profile/flair", method: "POST", probe: "/api/profile/flair" },
   { path: "/api/auth/link", method: "POST", probe: "/api/auth/link" },

@@ -630,6 +630,64 @@ on this phone, will share when you're back online", and sends it when the signal
   binding. If the binding is revoked or the kid is moved off the phone, the queue is dropped
   unsent.
 
+*As built (#629):*
+
+- **The tray.** "Camp" is the book's fifth tray object (the campfire), between Guide and Play
+  (`screens/CampPane.tsx`, its own lazy chunk, so nothing of it is in the journal chunk or the first
+  paint). It draws the phone Camp panel's still camp (`StillCamp`, `fit="width"`) from a run state
+  made of the book: her open hero seated alone at her tent, her kit, the crew's camp, and its
+  friends out as a table would choose them (her buddy first, then `friendRotation`), pitched in the
+  terrain of the household's last adventure (`whereabouts.biome` through `campBackdropFamily`).
+  Under it: the friends, the kit editor and buddy picker (the Camp panel's own `KitEditor`), and
+  "In your crew's camp", every piece with where it came from. On a phone-width strip the picture
+  shows no name labels or words bubbles (they would cover the figures or be cut short); every name
+  and word is in full in the controls under it.
+- **Where things came from** is the server's, in the journal (`JournalCrewCamp.sources`,
+  `JournalFriend.source`): a find "Found at the Ashspan Bridge" (a graph campaign's place, its map
+  label) or "Found in “Green Roads North”" (a chapter of a campaign told in order), "Bought with
+  Dash Cash", "Your crew's very own" (the banner), "Came with your camp" (a frame's own piece),
+  "For finishing Gemfall" (a trophy), and a friend "Met at …" the same way. An offer the content
+  no longer has reads "on an adventure".
+- **A friend tap** has no TV: it shows one of the friend's reactions (`CatalogFriend.reactions`,
+  carried in the journal so it works offline), round and round, in the words line under the friend
+  buttons and, on a wide screen, over its head in the picture. Nothing is sent or relayed.
+- **The crews.** The book lists the household's first crew, then every other crew that has played
+  (a campaign save or a stored camp), oldest first; with more than one, a picker names them, and
+  the heading names the one open ("The Otter Crew's camp"). A buddy picked there is kept under that
+  crew's `campKey`.
+- **The read** rides `GET /api/journal` as `JournalResponse.camp` (`handlers/camp-book.ts`
+  `journalCamp`): each crew's `CampView`, friends and sources, and each of her heroes' kits with a
+  buddy per crew (`JournalKit.buddies`, by crew id, "" for the first). A failed camp read leaves the
+  rest of the book whole. Saved with the book in IndexedDB, and on a read with a signal the tray
+  has the service worker keep every picture it draws (`sw/warm.ts`: the backdrop, her tent and
+  gear, the pieces, the friends and the kit's choices), so it opens offline; it says when
+  it last synced ("Synced at 4:05 PM", or "Last synced yesterday" from the saved copy).
+- **The write** is `POST /api/journal/kit` (`editKitFromBook`), resolved like the journal read
+  (her device token, or a family tablet's picked kid's room session), refused unless the hero's
+  `ownerPlayerId` is the bound kid, by the table's own rule (`kitEditProblem`) and with a buddy
+  only from that crew's friends. It carries field changes (`BookKitChange`: `style`, `tent`,
+  `color`, `slot0`–`slot2`, `buddy`, each with `before` and `after`) and either `revision` (sent
+  straight away: the table's check, all or nothing, and a kit that moved on comes back `stale`
+  with nothing applied) or `merge` (from the queue: field by field, shared `mergeBookKit`). Written
+  with `mutateKit`, conditional on the hero's row as read, so a book edit and a table edit never
+  lose a write: the table's `KIT_EDIT` then finds the revision moved and is refused as stale, and a
+  merged book edit that loses its race re-reads and merges again.
+- **The queue** (`store/kit-queue.ts`) is in localStorage (`kad.kitQueue`), tied to the device
+  token, one entry per hero (and one per crew for a buddy). Every book edit is queued first, so it
+  shows at once and survives the book closing mid-send; `store/book-kit-sync.ts` then sends it. An
+  entry made with a signal and alone for her goes with its revision; once a send of it finds no
+  signal, or it is changed again while queued, it merges instead. A field queued twice keeps the
+  value it was first made over. It is sent as the book opens and on the browser's `online`; a 401
+  drops the whole queue, and so does a journal read the server refuses or a phone with no binding.
+  A change that can never land (a hero gone) is let go with "One of your changes could not be
+  saved." A field kept from elsewhere says "Your tent changed on another screen while you were
+  away, so the newer one stays." A family tablet keeps no queue: its change is sent at once or not
+  at all.
+- **A live room** reads her kit afresh as its next downtime moment begins (`syncCampDowntime`).
+- **First visit.** With no camp in the saved book (a copy from before the camp, or a first read
+  that failed), the tray says to open the book once with a signal; with no hero, to make one in the
+  next game; a camp with nothing in it yet says finds and friends show up there.
+
 ## 8. Movement: a camp that is alive
 
 *Decided:* characters walk and move around the camp and use the things in it. Not much more than

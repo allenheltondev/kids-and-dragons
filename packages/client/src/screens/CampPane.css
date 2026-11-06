@@ -1,0 +1,234 @@
+/*
+ * "Camp" in the adventure book (#629). A pane like the hero's: it scrolls, and
+ * its kit controls are the phone Camp panel's own (CampPanel.css), so a kid
+ * finds the same buttons in the book as at the table.
+ */
+
+.book-camp {
+  block-size: 100%;
+  overflow-y: auto;
+  padding: 0.75em 1rem 1.5em;
+}
+
+.book-camp__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  max-inline-size: 44rem;
+  margin-inline: auto;
+}
+
+.book-camp__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 0.75rem;
+}
+
+.book-camp__title {
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
+  margin: 0;
+  font-family: var(--kad-font-display);
+  font-size: 1.3em;
+}
+
+.book-camp__synced {
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.book-camp__crews,
+.book-camp__heroes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.book-camp__crew {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  min-block-size: var(--kad-touch-min, 2.75rem);
+  padding: 0.35em 1em;
+  border: 0.1em solid #ad885777;
+  border-radius: 999px;
+  background: linear-gradient(#3c2d42, #20192f);
+  color: #f3ddb3;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+/* Chosen is a border and a check-like weight, never colour alone (spec §11). */
+.book-camp__crew.is-on {
+  border-color: #f3ddb3;
+  box-shadow: 0 0 0 0.12em #f3ddb3 inset;
+}
+
+.book-camp__queued,
+.book-camp__start,
+.book-camp__note,
+.book-camp__error {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin: 0;
+  padding: 0.6em 0.8em;
+  border-radius: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.book-camp__queued {
+  border: 1px solid #8fd1a4aa;
+  background: #18352a;
+  color: #d8f5e2;
+  font-weight: 700;
+}
+.book-camp__queued--sending {
+  border-color: var(--kad-border, rgba(190, 178, 255, 0.16));
+  background: transparent;
+  color: inherit;
+  font-weight: 400;
+}
+
+.book-camp__start {
+  border: 1px dashed #e5c28199;
+  color: #f3ddb3;
+}
+
+.book-camp__note {
+  border: 1px solid #ffd36e;
+  background: #3a2d14;
+  color: #fff1cf;
+}
+.book-camp__note p {
+  flex: 1 1 auto;
+  margin: 0;
+}
+.book-camp__note-ok {
+  flex: none;
+  min-inline-size: var(--kad-touch-min, 2.75rem);
+  min-block-size: var(--kad-touch-min, 2.75rem);
+  padding: 0.2em 0.9em;
+  border: 1px solid #ffd36e;
+  border-radius: 999px;
+  background: #ffd36e;
+  color: #2b1d05;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.book-camp__error {
+  border: 1px solid #ff9a8a;
+  color: #ffd9d2;
+}
+
+.book-camp__picture {
+  position: relative;
+  margin-inline: -1rem;
+  font-size: 1.05rem;
+}
+
+.book-camp__section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.book-camp__heading {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.book-camp__friends {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.book-camp__friends > li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  inline-size: 8.5rem;
+  text-align: center;
+}
+.book-camp__friend {
+  inline-size: 100%;
+}
+
+.book-camp__from {
+  margin: 0;
+  color: var(--kad-muted, #c8c0e8);
+  font-size: 0.85rem;
+}
+
+.book-camp__said {
+  min-block-size: 1.4em;
+  margin: 0;
+  font-weight: 700;
+  color: #ffe9a8;
+}
+
+.book-camp__pieces {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.book-camp__piece {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--kad-border, rgba(190, 178, 255, 0.16));
+  border-radius: 0.75rem;
+}
+.book-camp__piece-name {
+  font-weight: 700;
+}
+
+.book-camp__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  max-inline-size: 26rem;
+  margin: 2rem auto;
+  text-align: center;
+}
+.book-camp__empty-title {
+  margin: 0;
+  font-family: var(--kad-font-display);
+  font-size: 1.2em;
+}
+.book-camp__empty p {
+  margin: 0;
+}
+
+/*
+ * On a phone the picture is a short strip: names and a tapped friend's words
+ * would cover the figures, or be cut to "Spotted…". Every one of them is said
+ * in full in the controls under the picture (the kit's heading, each friend's
+ * button and the words line under them), so the strip shows only the camp.
+ */
+@media (max-width: 599px) {
+  .book-camp__picture .kad-static-camp__name,
+  .book-camp__picture .kad-static-camp__words {
+    display: none;
+  }
+}
