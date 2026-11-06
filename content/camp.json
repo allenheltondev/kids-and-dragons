@@ -169,5 +169,55 @@
       "songkeeper": { "apprentice": "deco_songkeeper_apprentice", "expert": "deco_songkeeper_expert", "master": "deco_songkeeper_master" }
     }
   },
-  "friends": []
+  "friends": [
+    {
+      "id": "bun",
+      "figure": "cast/bun",
+      "name": "Bun",
+      "offers": [{ "rewardId": "first-steps-01.bun", "chapter": "first-steps-01" }],
+      "reactions": [
+        "Bun bleats and wiggles all four legs at once.",
+        "Bun nibbles your sleeve. That means hello in goat.",
+        "Bun hops in a circle, then flops over on purpose.",
+        "Bun leans on you and lets out a happy goat sigh."
+      ]
+    },
+    {
+      "id": "mosshorn",
+      "figure": "entities/mosshorn",
+      "size": "small",
+      "name": "Mosshorn",
+      "offers": [{ "rewardId": "gemfall-04b.mosshorn", "chapter": "gemfall-04b" }],
+      "reactions": [
+        "The mosshorn lowers its antlers. A strawberry rolls off.",
+        "The mosshorn sniffs your hair and hums.",
+        "Tiny flowers on its antlers open up, just for you.",
+        "The mosshorn nudges you with its soft green nose."
+      ]
+    },
+    {
+      "id": "duckling",
+      "figure": "entities/duckling",
+      "name": "Duckling",
+      "offers": [{ "rewardId": "riftlight-ashspan-bridge.duckling", "chapter": "riftlight-ashspan-bridge" }],
+      "reactions": [
+        "Peep! The duckling waddles in a happy circle.",
+        "The duckling tucks its head under your hand.",
+        "Peep peep! It tries to quack and sneezes instead.",
+        "The duckling fluffs up until it is twice as round."
+      ]
+    },
+    {
+      "id": "kid_goat",
+      "figure": "cast/snowhorn_kid",
+      "name": "Kid goat",
+      "offers": [{ "rewardId": "riftlight-exchange-rift.kid_goat", "chapter": "riftlight-exchange-rift" }],
+      "reactions": [
+        "The kid goat bounces straight up like a spring.",
+        "Maa! The kid goat snuggles in close to stay warm.",
+        "The kid goat chews your bootlace, very politely.",
+        "The kid goat does a tiny dance on the tips of its hooves."
+      ]
+    }
+  ]
 }

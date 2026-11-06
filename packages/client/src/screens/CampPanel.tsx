@@ -13,12 +13,18 @@
  *     to the lobby close it: it lives only while the table is in downtime.
  *   - `KitWelcome`: the first-session choice (§5.3), once per hero on a phone,
  *     one tap, skippable, never in the way of Ready.
+ *   - The crew's friends (§4.4, §8.5; #624): each kid's buddy, picked in her
+ *     kit, and a "Call over" button for every friend out, which makes it
+ *     react on the TV and walk over to her hero. Friends who are not out are
+ *     listed all the same: they take turns, and nobody ever leaves.
  *
  * Every write is the server's (CAMP_PLACE, CAMP_UNDO, KIT_EDIT; handlers
  * camp-edit.ts); this only offers what the rules allow (shared camp-edit.ts).
  */
 
 import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
+import { useGameStore } from "../store";
+import { castArtUrl } from "../world/art-paths";
 import type { ReactElement } from "react";
 import {
   KIT_COLORS,
@@ -32,9 +38,10 @@ import {
   placeRefusalText,
   sharedEditsLeft,
   undoableChange,
+  FRIEND_TAP_COOLDOWN_MS,
   SHARED_EDITS_PER_MOMENT,
 } from "@kad/shared";
-import type { ClientIntent, HeroKitView, PartyMember, RunState } from "@kad/shared";
+import type { CampFriendCard, ClientIntent, HeroKitView, PartyMember, RunState } from "@kad/shared";
 import { Button } from "../ui/Button";
 import { Icon } from "./icons";
 import { StillCamp, TentStandIn } from "../world/StillCamp";
@@ -145,8 +152,104 @@ export function KitWelcome({ state, me, held, dispatch }: { state: RunState; me:
   );
 }
 
+/** A friend's picture, its figure's own art (#624). */
+function FriendArt({ card }: { card: CampFriendCard }): ReactElement | null {
+  const url = castArtUrl(card.figure);
+  const [failed, setFailed] = useState(false);
+  if (!url || failed) return null;
+  return <img src={url} alt="" onError={() => setFailed(true)} />;
+}
+
+/**
+ * Her buddy (§4.4; #624): one of the crew's friends, always out while she is
+ * seated, or none, when every seat rotates. Kept on her kit, for this crew.
+ */
+function BuddyPicker({ kit, friends, held, edit, hero }: { kit: HeroKitView; friends: readonly CampFriendCard[]; held: boolean; edit: (change: { buddy: string | null }) => void; hero: string }): ReactElement | null {
+  if (friends.length === 0) return null;
+  const buddy = kit.buddy ?? null;
+  return (
+    <fieldset className="camp-panel__group" data-testid="buddy-picker">
+      <legend>Buddy</legend>
+      <p className="camp-panel__note kad-muted">{`Your buddy is always out at camp while ${hero} is here.`}</p>
+      <div className="camp-panel__options">
+        <button type="button" className="camp-option kad-focusable" aria-pressed={buddy === null} disabled={held} onClick={() => edit({ buddy: null })} data-buddy="">
+          <span className="camp-option__label">No buddy</span>
+        </button>
+        {friends.map((card) => (
+          <button key={card.id} type="button" className="camp-option kad-focusable" aria-pressed={buddy === card.id} disabled={held} onClick={() => edit({ buddy: card.id })} data-buddy={card.id}>
+            <span className="camp-option__art camp-option__art--friend" aria-hidden="true">
+              <FriendArt card={card} />
+            </span>
+            <span className="camp-option__label">{card.name}</span>
+          </button>
+        ))}
+      </div>
+    </fieldset>
+  );
+}
+
+/**
+ * The crew's friends (§4.4, §8.5; #624): a named button for every friend out,
+ * which calls it over to this kid's hero on the TV, a moment apart
+ * (`FRIEND_TAP_COOLDOWN_MS`, so a hammered button sends a tap now and then,
+ * never a flood); and every friend the crew has, out or not.
+ */
+function CampFriends({ state }: { state: RunState }): ReactElement | null {
+  const friends = state.campMoment?.friends;
+  const tapFriend = useGameStore((store) => store.tapFriend);
+  const [resting, setResting] = useState<string | null>(null);
+  const [said, setSaid] = useState<string | null>(null);
+  const base = useId();
+  useEffect(() => {
+    if (resting === null) return;
+    const timer = setTimeout(() => setResting(null), FRIEND_TAP_COOLDOWN_MS);
+    return () => clearTimeout(timer);
+  }, [resting]);
+  if (!friends || friends.cards.length === 0) return null;
+  const out = friends.out.map((id) => friends.cards.find((c) => c.id === id)).filter((c): c is CampFriendCard => c !== undefined);
+  const call = (card: CampFriendCard): void => {
+    if (resting !== null) return;
+    setResting(card.id);
+    setSaid(`${card.name} is on the way!`);
+    void tapFriend(card.id);
+  };
+  return (
+    <section className="camp-panel__section" aria-labelledby={`${base}-friends`} data-testid="camp-friends">
+      <h3 className="camp-panel__heading" id={`${base}-friends`}>
+        <Icon name="heart" />
+        <span>Friends</span>
+      </h3>
+      <div className="camp-panel__options">
+        {out.map((card) => (
+          <button
+            key={card.id}
+            type="button"
+            className="camp-option camp-option--friend kad-focusable"
+            disabled={resting !== null}
+            onClick={() => call(card)}
+            data-friend={card.id}
+          >
+            <span className="camp-option__art camp-option__art--friend" aria-hidden="true">
+              <FriendArt card={card} />
+            </span>
+            <span className="camp-option__label">{`Call ${card.name} over`}</span>
+          </button>
+        ))}
+      </div>
+      <p className="camp-panel__note" role="status" aria-live="polite" data-testid="friend-called">
+        {said ?? ""}
+      </p>
+      {friends.cards.length > out.length ? (
+        <p className="camp-panel__note kad-muted" data-testid="friend-collection">
+          {`Your crew's friends take turns at camp: ${friends.cards.map((c) => c.name).join(", ")}.`}
+        </p>
+      ) : null}
+    </section>
+  );
+}
+
 /** One hero's kit, changed by her own player (§4.5): no limit, indoors or out. */
-function KitEditor({ member, kit, held, dispatch }: { member: PartyMember; kit: HeroKitView; held: boolean; dispatch: Dispatch }): ReactElement {
+function KitEditor({ member, kit, held, dispatch, friends = [] }: { member: PartyMember; kit: HeroKitView; held: boolean; dispatch: Dispatch; friends?: readonly CampFriendCard[] }): ReactElement {
   const hero = member.character;
   const style = campKitStyle(hero.id, kit.style);
   const accent = kitAccent(kit.color, hero.appearance.accent);
@@ -242,6 +345,7 @@ function KitEditor({ member, kit, held, dispatch }: { member: PartyMember; kit: 
           ))}
         </div>
       </fieldset>
+      <BuddyPicker kit={kit} friends={friends} held={held} edit={edit} hero={hero.name} />
       {hero.souvenirs.length > 0 ? (
         <p className="camp-panel__note">
           <Icon name="charm" />
@@ -433,8 +537,9 @@ export function CampPanel({ state, me, held, dispatch }: { state: RunState; me: 
         ) : null}
         {mine.map((member) => {
           const kit = state.kits?.[member.character.id];
-          return kit ? <KitEditor key={member.character.id} member={member} kit={kit} held={held} dispatch={dispatch} /> : null;
+          return kit ? <KitEditor key={member.character.id} member={member} kit={kit} held={held} dispatch={dispatch} friends={state.campMoment?.friends?.cards ?? []} /> : null;
         })}
+        <CampFriends state={state} />
         <SharedSpots state={state} me={me} held={held} dispatch={dispatch} active={active} setActive={setActive} />
       </div>
     </div>

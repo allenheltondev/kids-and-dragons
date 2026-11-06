@@ -27,6 +27,7 @@ import { campGearKind, campPieceOwner, fittedGear, heroDrawnBox, type CampOwner 
 import { DEFAULT_SIZE } from "./figure-scale";
 import { pieceArt, tentArt, type CampBesideView, type CampSpotView } from "./camp-scene";
 import { MIN_FIGURE_SCALE, campFit, campFocusBand, type CampFit, type CampReach, type CampWindow } from "./camp-framing";
+import { friendDrawnBox } from "./camp-friends";
 
 /** A seated hero, as her gear is sized and named. */
 export interface CampBoxHero extends CampOwner {
@@ -47,6 +48,11 @@ export interface CampBoxInput {
   figureScale?: number;
   /** Draw every souvenir line, whether or not its hero carries any (the overlap test's worst case). */
   allSouvenirs?: boolean;
+  /**
+   * The friends out, by friend spot (#624): anything waiting beside the
+   * fire keeps clear of them (`campFriendBoxes`).
+   */
+  friends?: readonly (CampBoxFriend | readonly CampBoxFriend[] | null | undefined)[];
 }
 
 export interface CampLabelBox {
@@ -64,9 +70,11 @@ export interface CampBox {
   id: string;
   /**
    * `door`: a hero standing at her own tent's door (`campDoorBoxes`), kept in view;
-   * `stand`: a hero at a tall shared piece's stand point (`campStandBoxes`), never hidden by a nearer tent.
+   * `stand`: a hero at a tall shared piece's stand point (`campStandBoxes`), never hidden by a nearer tent;
+   * `friend`: a friend at its friend spot (`campFriendBoxes`; #624); `hero`: a hero at any other
+   * stand point (`campHeroSpotBoxes`), whom a friend's spot leaves room for.
    */
-  kind: "frame" | "tent" | "owned" | "spot" | "beside" | "door" | "stand";
+  kind: "frame" | "tent" | "owned" | "spot" | "beside" | "door" | "stand" | "friend" | "hero";
   lane: string;
   /** The hero whose gear it is. */
   seat?: number;
@@ -625,6 +633,7 @@ export function campBoxes(layout: CampLayout, input: CampBoxInput): CampBox[] {
     } as CampBox & { text?: string; banner?: string }, painted.path));
   }
   // Labels, most important first: her tent, then the crew's spots. None lands on a hero at her door.
+  // (A friend's spot keeps clear of every label that shows, `campFriendClashes`, so labels need not move for it.)
   const doors = campDoorBoxes(layout, { heroes: input.heroes, figureScale: k });
   const placed: CampBox[] = [];
   const clear = (label: CampLabelBox, self: CampBox): boolean =>
@@ -723,7 +732,10 @@ export function campBoxes(layout: CampLayout, input: CampBoxInput): CampBox[] {
   const fx = (fire?.x ?? 0.5) * W;
   const fullSize = k === 1 || !(input.beside?.length) ? null : campBoxes(layout, { ...input, figureScale: 1 });
   // What waits beside the fire is placed at full size (below), so it keeps clear of the doors at full size.
-  const fullDoors = campDoorBoxes(layout, { heroes: input.heroes, figureScale: 1 });
+  const fullDoors = [
+    ...campDoorBoxes(layout, { heroes: input.heroes, figureScale: 1 }),
+    ...(input.friends ? campFriendBoxes(layout, { friends: input.friends, figureScale: 1 }) : []),
+  ];
   (input.beside ?? []).forEach((piece, i) => {
     const known = fullSize?.find((b) => b.id === `beside:${piece.pieceId}`);
     const path = piece.pieceId ? pieceArt(piece.pieceId)?.path ?? null : null;
@@ -786,6 +798,131 @@ export function campBoxes(layout: CampLayout, input: CampBoxInput): CampBox[] {
     delete (box as { banner?: string }).banner;
   }
   return boxes;
+}
+
+// ---------------------------------------------------------------------------
+// Friends (docs/camp.md §4.4; #624)
+// ---------------------------------------------------------------------------
+
+/** A friend as its box is sized: its figure and how tall it stands in camp (camp-friends.ts `friendHeightCm`). */
+export interface CampBoxFriend {
+  figure: string;
+  heightCm: number;
+}
+
+/** The biggest box any of `friends` paints, height and width each the largest of theirs. */
+export function worstFriendBox(friends: readonly CampBoxFriend[], measure: ReturnType<typeof campMeasure>): { height: number; width: number } {
+  const boxes = friends.map((f) => friendDrawnBox(f.figure, f.heightCm, measure));
+  return { height: Math.max(0, ...boxes.map((b) => b.height)), width: Math.max(0, ...boxes.map((b) => b.width)) };
+}
+
+/**
+ * A friend at each friend spot (`CampStandPoint.friend`) that `friends`
+ * fills (by spot), as a box at the camp's figure factor (camp-friends.ts
+ * `FRIEND_PAINT`), on the spot's lane: what the layout keeps clear for the
+ * four friends out (§4.4). A spot given a list of friends is sized for the
+ * biggest of them (`worstFriendBox`), so a test can hold a spot to any friend
+ * that may stand there.
+ */
+export function campFriendBoxes(
+  layout: CampLayout,
+  input: { friends: readonly (CampBoxFriend | readonly CampBoxFriend[] | null | undefined)[]; figureScale?: number },
+): CampBox[] {
+  const k = input.figureScale ?? 1;
+  const measure = campMeasure(layout.canvas.height);
+  const W = layout.canvas.width;
+  const H = layout.canvas.height;
+  const out: CampBox[] = [];
+  for (const point of layout.frame.standPoints) {
+    if (point.friend === undefined) continue;
+    const who = input.friends[point.friend];
+    if (!who) continue;
+    const box = worstFriendBox(Array.isArray(who) ? who : [who as CampBoxFriend], measure);
+    const lane = laneOf(layout, point.lane);
+    out.push({
+      id: `friend:${point.id}`,
+      kind: "friend",
+      lane: point.lane,
+      x: point.x * W,
+      anchor: point.x * W,
+      ground: lane.y * H,
+      width: box.width * lane.scale * k,
+      height: box.height * lane.scale * k,
+      label: null,
+    });
+  }
+  return out;
+}
+
+/**
+ * A hero at each of the camp's other stand points (its action spots and free
+ * wander spots, never a seat or a friend spot), as a box at the camp's figure
+ * factor: the party's tallest and widest painted box, as `campStandBoxes`.
+ * Where a friend's spot must leave room for whoever comes to stand there.
+ */
+export function campHeroSpotBoxes(layout: CampLayout, input: Pick<CampBoxInput, "heroes" | "figureScale">): CampBox[] {
+  const k = input.figureScale ?? 1;
+  const measure = campMeasure(layout.canvas.height);
+  const drawn = (input.heroes.length ? input.heroes : [{ heightCm: DEFAULT_SIZE.heightCm }]).map((h) => heroDrawnBox(h, measure));
+  const hero = { height: Math.max(...drawn.map((b) => b.height)), width: Math.max(...drawn.map((b) => b.width)) };
+  return layout.frame.standPoints
+    .filter((point) => point.seat === undefined && point.friend === undefined)
+    .map((point) => {
+      const lane = laneOf(layout, point.lane);
+      return {
+        id: `hero:${point.id}`,
+        kind: "hero" as const,
+        lane: point.lane,
+        x: point.x * layout.canvas.width,
+        anchor: point.x * layout.canvas.width,
+        ground: lane.y * layout.canvas.height,
+        width: hero.width * lane.scale * k,
+        height: hero.height * lane.scale * k,
+        label: null,
+      };
+    });
+}
+
+/**
+ * Whether a friend at its spot may stand where it overlaps `other` (§8.3,
+ * §8.6; #624). A friend is seen whole: nothing nearer stands in front of it,
+ * and nothing on its own lane beside it, a hero at a stand point included.
+ * Like a short near-lane piece (`LOW_FRONT_SHARE`), it may stand in front of
+ * the lower half of anything further back (a tent, a piece, a hero at her
+ * door or at a stand point), never its top half nor a tall piece's kept top
+ * (`keepTop`), and never in front of or behind another friend.
+ */
+function friendMayStandBefore(friend: CampBox, other: CampBox): boolean {
+  if (other.kind === "friend") return false;
+  if (other.ground >= friend.ground) return false;
+  // The share of `other`'s height, from its top, the friend keeps clear: its top half, or more of a tall piece's.
+  const keep = Math.max(1 - LOW_FRONT_SHARE, other.keepTop ?? 0);
+  return friend.ground - friend.height >= other.ground - other.height * (1 - keep) - 1e-6;
+}
+
+/**
+ * Every friend box that breaks the friends' rules (§4.4, §8.6; #624): one
+ * that overlaps anything it may not stand in front of
+ * (`friendMayStandBefore`), and one under any label, so a name is never
+ * hidden by a friend. Pairs are the friend first.
+ */
+export function campFriendClashes(boxes: readonly CampBox[]): [string, string][] {
+  const out: [string, string][] = [];
+  const friends = boxes.filter((b) => b.kind === "friend");
+  for (const friend of friends) {
+    for (const other of boxes) {
+      if (other === friend || (other.kind === "friend" && other.id < friend.id)) continue;
+      if (shapesOverlap(friend, other) && !friendMayStandBefore(friend, other)) out.push([friend.id, other.id]);
+    }
+    // A name that shows: the crew's on its banner, and a stand-in's over a piece whose painting is owed (no `slices`).
+    for (const box of boxes) {
+      for (const { id, label } of labelsOf(box)) {
+        if (id.startsWith("label:") && box.slices) continue;
+        if (overlaps(rectOf(friend), labelRect(label))) out.push([friend.id, id]);
+      }
+    }
+  }
+  return out;
 }
 
 /**

@@ -27,6 +27,25 @@ function manifestGroup(piece) {
 }
 
 /**
+ * Every `befriend` in a chapter (#624), wherever it is authored, with its JSON
+ * pointer: the same deep walk as `chapterFinds`.
+ */
+export function chapterBefriends(chapter) {
+  const out = [];
+  const walk = (value, at) => {
+    if (Array.isArray(value)) {
+      value.forEach((v, i) => walk(v, `${at}/${i}`));
+      return;
+    }
+    if (!value || typeof value !== "object") return;
+    if (value.type === "befriend") out.push({ effect: value, at });
+    for (const [key, v] of Object.entries(value)) walk(v, `${at}/${key.replaceAll("~", "~0").replaceAll("/", "~1")}`);
+  };
+  walk(chapter, "");
+  return out;
+}
+
+/**
  * Every `findForCamp` and `findForKit` in a chapter, wherever it is authored
  * (an `onEnter`, a choice, a branch, an interaction, a rescue, a retired
  * interaction kept for saves), with its JSON pointer. A deep walk, because an
@@ -56,6 +75,21 @@ function castFigures(chapter) {
 }
 
 /**
+ * Whether a scene of `chapter` puts `friend` on stage: its own figure, or
+ * (a cast figure drawn from an entity, manifest `castFigures[].basis`) that
+ * entity under the friend's name, as the Practice Meadow casts Bun.
+ */
+function castsFriend(chapter, friend, castArt) {
+  if (castFigures(chapter).has(friend.figure)) return true;
+  const basis = friend.figure.startsWith("cast/") ? castArt.get(friend.figure.slice("cast/".length))?.basis : undefined;
+  if (!basis) return false;
+  for (const scene of Object.values(chapter.scenes ?? {})) {
+    for (const member of scene?.cast ?? []) if (member?.figure === `entities/${basis}` && member?.name === friend.name) return true;
+  }
+  return false;
+}
+
+/**
  * Problems with the catalog, as `{ file, at, problem, hint? }`.
  *
  * @param {object} input
@@ -65,8 +99,9 @@ function castFigures(chapter) {
  * @param {Set<string>} [input.brokenChapters]  chapter ids that failed to load (not reported again)
  * @param {Set<string>} input.campaigns         campaign ids
  * @param {object} input.milestones    shared MILESTONE_KIT_PIECES
+ * @param {object[]} [input.castFigures] assets/manifest.json → castFigures (a friend's art and its basis)
  */
-export function campCatalogProblems({ catalog, manifest, chapters, brokenChapters = new Set(), campaigns, milestones }) {
+export function campCatalogProblems({ catalog, manifest, chapters, brokenChapters = new Set(), campaigns, milestones, castFigures: castArtList = [] }) {
   const problems = [];
   const CAMP = "content/camp.json";
   const MANIFEST = "assets/manifest.json";
@@ -273,6 +308,7 @@ export function campCatalogProblems({ catalog, manifest, chapters, brokenChapter
   for (const [id, { entry, at }] of crew) if (entry.group === "find") register("camp", id, entry.offers, at);
   for (const [id, { entry, at }] of decorations) if (entry.group === "find") register("kit", id, entry.offers, at);
   const friendIds = new Set();
+  const castArt = new Map(castArtList.map((f) => [f.id, f]));
   (catalog.friends ?? []).forEach((friend, i) => {
     const at = `/friends/${i}`;
     if (friendIds.has(friend.id)) fail(`${at}/id`, `friend "${friend.id}" is listed twice`);
@@ -281,7 +317,7 @@ export function campCatalogProblems({ catalog, manifest, chapters, brokenChapter
     // A friend references a real cast figure: somebody a scene of its chapter puts on stage.
     friend.offers.forEach((offer, j) => {
       const chapter = chapters.get(offer.chapter);
-      if (chapter && !castFigures(chapter).has(friend.figure)) {
+      if (chapter && !castsFriend(chapter, friend, castArt)) {
         fail(`${at}/offers/${j}/chapter`, `friend "${friend.id}" is ${friend.figure}, which no scene of ${offer.chapter} casts`, "A friend is a creature the party met there (docs/camp.md §4.4): cast it in the scene that befriends it.");
       }
     });
@@ -315,6 +351,30 @@ export function campCatalogProblems({ catalog, manifest, chapters, brokenChapter
       const offer = offers.get(effect.rewardId);
       if (!offer || offer.kind !== kind || offer.pieceId !== effect.pieceId) {
         fail(`${at}/rewardId`, `"${effect.rewardId}" is not an offer of "${effect.pieceId}" in ${CAMP}`, `Its offers: ${piece.offers.map((o) => o.rewardId).join(", ")}. Declare a new offer there, with a reward id no other offer uses.`, file);
+        continue;
+      }
+      if (offer.chapter !== chapterId) {
+        fail(`${at}/rewardId`, `"${effect.rewardId}" is ${offer.chapter}'s offer, not ${chapterId}'s`, "A reward id names one offer in one place, shared by every way into it (docs/camp.md §12.2).", file);
+      }
+    }
+  }
+
+  // ------------------------------------------------------------------ the friends chapters befriend (§4.4; #624)
+
+  // As a find: a real friend, through its own offer for this very chapter, so
+  // every way into the place shares one reward id and it is given once.
+  const friendsById = new Map((catalog.friends ?? []).map((f) => [f.id, f]));
+  for (const [chapterId, chapter] of chapters) {
+    const file = `content/chapters/${chapterId}.json`;
+    for (const { effect, at } of chapterBefriends(chapter)) {
+      const friend = friendsById.get(effect.friendId);
+      if (!friend) {
+        fail(`${at}/friendId`, `befriend names "${effect.friendId}", which is not a friend in ${CAMP}`, `Its friends: ${[...friendsById.keys()].join(", ") || "none"}. Add the friend there first (docs/camp.md §4.4).`, file);
+        continue;
+      }
+      const offer = offers.get(effect.rewardId);
+      if (!offer || offer.kind !== "friend" || offer.pieceId !== effect.friendId) {
+        fail(`${at}/rewardId`, `"${effect.rewardId}" is not an offer of friend "${effect.friendId}" in ${CAMP}`, `Its offers: ${friend.offers.map((o) => o.rewardId).join(", ")}.`, file);
         continue;
       }
       if (offer.chapter !== chapterId) {

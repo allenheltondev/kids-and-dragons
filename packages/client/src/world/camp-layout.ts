@@ -117,6 +117,12 @@ export interface CampStandPoint {
   hotspot?: string;
   /** A hero's own bedroll (0 to 3): only that hero stands here. */
   seat?: number;
+  /**
+   * A friend spot (0 to 3; #624), by the friends' corner or the campfire:
+   * where a friend out stands. Heroes never stand here, and a friend never
+   * stands at a hero's seat or a piece's action spot.
+   */
+  friend?: number;
 }
 
 /** A spot on the ground: a lane and a position along it. */
@@ -352,6 +358,14 @@ function parseFrame(raw: unknown, at: string, backdrops: readonly CampBackdrop[]
       }
       point.seat = seat;
     }
+    if (s["friend"] !== undefined) {
+      const friend = s["friend"];
+      if (typeof friend !== "number" || !Number.isInteger(friend) || friend < 0 || friend >= CAMP_SEATS) {
+        fail(`${where}.friend`, `must be a whole number from 0 to ${CAMP_SEATS - 1}`);
+      }
+      if (point.seat !== undefined || point.action !== undefined) fail(`${where}.friend`, "is a friend's spot: no seat and no action");
+      point.friend = friend;
+    }
     onEveryBackdrop(point, backdrops, where);
     return point;
   });
@@ -359,6 +373,7 @@ function parseFrame(raw: unknown, at: string, backdrops: readonly CampBackdrop[]
   unique(standPoints.map((p) => p.id), `${at}.standPoints`, "stand point");
   const seats = standPoints.flatMap((p) => (p.seat === undefined ? [] : [String(p.seat)]));
   unique(seats, `${at}.standPoints`, "seat");
+  unique(standPoints.flatMap((p) => (p.friend === undefined ? [] : [String(p.friend)])), `${at}.standPoints`, "friend spot");
   if (stage === 1 && seats.length !== CAMP_SEATS) {
     fail(`${at}.standPoints`, `stage 1 needs exactly ${CAMP_SEATS} seats, one bedroll per hero; it has ${seats.length}`);
   }

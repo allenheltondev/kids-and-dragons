@@ -123,11 +123,20 @@ describe("the hero's kit", () => {
         radiant: { from: "milestone", at: "new" },
         deco_lamp_ribbon: { from: "found", rewardId: "gemfall-01.lamp_ribbon", at: "t" },
       },
+      buddies: {},
     });
     const ids = [...Object.keys(once.unlocked), ...once.slots];
     for (const placeholder of Object.keys(PLACEHOLDER_KIT_PIECES)) expect(ids).not.toContain(placeholder);
     expect(migrateKit(JSON.parse(JSON.stringify(once)))).toEqual(once);
     expect(migrateKit(v1)).toEqual(once);
+  });
+
+  it("migrates a v2 kit to v3 with no buddies, keeps v3 buddies by camp, and refuses a malformed one (#624)", () => {
+    const v2 = { v: 2, revision: 1, style: "rolled", tent: null, color: null, slots: [null, null], unlocked: {} };
+    expect(migrateKit(v2)).toMatchObject({ v: KIT_VERSION, buddies: {} });
+    const v3 = { ...v2, v: 3, buddies: { h_test: "bun", "h_test#cw_1": "kid_goat" } };
+    expect(migrateKit(v3).buddies).toEqual({ h_test: "bun", "h_test#cw_1": "kid_goat" });
+    expect(() => migrateKit({ ...v3, buddies: { h_test: 7 } })).toThrow(StoredCampError);
   });
 
   it("names the catalog's real milestone ids, one placeholder for each", () => {

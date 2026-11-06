@@ -104,7 +104,8 @@ export function begun(before: PhaseKind | string | null | undefined, after: Phas
 
 /** A seated hero as the camp needs them: the figure, and the two facts its moments read. */
 export interface CampHero {
-  figure: CampFigure & { seat: number };
+  /** A hero's figure, with her seat; or (the still camp's friends, #624) a friend's, with its spot. */
+  figure: CampFigure & ({ seat: number } | { friend: number });
   ready: boolean;
   /** Stepped away (#258): `connected` is false. */
   away: boolean;
@@ -184,6 +185,8 @@ export interface StillCampFigure {
   /** The art's square canvas, as a fraction of the backdrop canvas's height. */
   size: number;
   away: boolean;
+  /** A friend's name (#624); a hero's is her party member's. */
+  friend?: string;
 }
 
 /**
@@ -203,7 +206,10 @@ export function stillCampFigures(
   const measure = campMeasure(layout.canvas.height);
   const out: StillCampFigure[] = [];
   for (const hero of heroes) {
-    const bed = layout.frame.standPoints.find((point) => point.seat === hero.figure.seat);
+    // A hero at her own bedroll or tent; a friend (#624) at its friend spot.
+    const bed = hero.figure.seat !== undefined
+      ? layout.frame.standPoints.find((point) => point.seat === hero.figure.seat)
+      : layout.frame.standPoints.find((point) => point.friend !== undefined && point.friend === hero.figure.friend);
     const lane = bed ? layout.lanes.get(bed.lane) : undefined;
     if (!bed || !lane) continue;
     // camp.ts `fitArt`: the canvas is drawn so the nominal paint is the figure's height.
@@ -216,6 +222,7 @@ export function stillCampFigures(
       y: lane.y,
       size: heightPx / (ANCHOR_Y - NOMINAL_PAINT.top) / layout.canvas.height,
       away: hero.away,
+      ...(hero.figure.friend !== undefined && hero.figure.name ? { friend: hero.figure.name } : {}),
     });
   }
   return out;

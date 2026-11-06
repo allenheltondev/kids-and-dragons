@@ -287,6 +287,38 @@ print(json.dumps(out))
 });
 
 /**
+ * A friend is drawn and kept clear by its painted box (packages/client/src/world/camp-friends.ts
+ * `FRIEND_PAINT`, #624), measured the same way: every friend content/camp.json lists must have
+ * one, covering its painting and no more than a little past it.
+ */
+describe('the friend paint boxes', () => {
+  it('cover every catalog friend painting, and no more than a little past it', async () => {
+    const { FRIEND_PAINT } = await import('../../packages/client/src/world/camp-friends.ts');
+    const friends = (JSON.parse(readFileSync(join(art, '..', '..', 'content', 'camp.json'), 'utf8')) as { friends: { figure: string }[] }).friends.map((f) => f.figure);
+    const code = `
+import json, sys
+from PIL import Image
+nominal = 900 / 1024 - 0.078
+out = {}
+for figure in json.loads(sys.argv[1]):
+    alpha = Image.open(f'assets/{figure}/assembled.png').convert('RGBA').resize((256, 256)).getchannel('A').point(lambda v: 255 if v > 64 else 0)
+    l, t, r, b = alpha.getbbox()
+    out[figure] = [(b - t) / 256 / nominal, (r - l) / 256 / nominal]
+print(json.dumps(out))
+`;
+    const measured = JSON.parse(execFileSync(python, ['-c', code, JSON.stringify(friends)], { cwd: join(art, '..', '..'), encoding: 'utf8' })) as Record<string, [number, number]>;
+    for (const [figure, [height, width]] of Object.entries(measured)) {
+      const table = FRIEND_PAINT[figure];
+      expect(table, figure).toBeTruthy();
+      expect(table!.height, `${figure} height`).toBeGreaterThanOrEqual(height);
+      expect(table!.width, `${figure} width`).toBeGreaterThanOrEqual(width);
+      expect(table!.height - height, `${figure} height`).toBeLessThan(0.02);
+      expect(table!.width - width, `${figure} width`).toBeLessThan(0.02);
+    }
+  });
+});
+
+/**
  * The camp lays its pieces out by their painted footprints (packages/client/src/world/camp-paint.json,
  * written by tools/art/camp-paint.py), so a repainted piece must not keep its old shape there.
  */

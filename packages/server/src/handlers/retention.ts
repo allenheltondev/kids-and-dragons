@@ -29,7 +29,6 @@ import type { Character, Household, OrganizerHouseholdDeleted, RoomChannel, RunS
 import { diff } from "../json-patch.ts";
 import type { EventRecord, ForgetJob } from "../store/repository.ts";
 import { summaries } from "./account.ts";
-import { forgetBuddies } from "./camp.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -315,9 +314,8 @@ export async function forgetEverywhere(
     for (const table of kid.tables) {
       try {
         await deps.repo.forgetFinder(table, kid.playerId);
-        // Her heroes' buddies in that table's camps (docs/camp.md §9). Her
-        // kits went with her heroes, and a camp is the crew's, so it stays.
-        await forgetBuddies(table, kid.heroIds ?? [], deps);
+        // Her heroes' buddies were on their kits, which went with them
+        // (docs/camp.md §9, #624), and a camp is the crew's, so it stays.
         for (const run of await deps.repo.listRuns(table)) {
           if (await forgetInRun(run.id, kid, deps)) changed++;
           await forgetInLog(run.id, kid, deps);

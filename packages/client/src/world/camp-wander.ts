@@ -187,6 +187,12 @@ export interface WanderFigure {
   id: string;
   /** A hero's seat (0 to 3): the bedroll only they use. Friends have none. */
   seat?: number;
+  /**
+   * A friend's spot (0 to 3; #624): the friend spot only it uses. A friend
+   * wanders between it and the free wander spots, never to a hero's seat or
+   * a piece's action spot.
+   */
+  friend?: number;
 }
 
 /** A walk the planner started, for the caller to animate. */
@@ -218,6 +224,7 @@ export interface WanderSnapshot {
 
 interface State extends WanderSnapshot {
   seat?: number;
+  friend?: number;
   sweeps: LaneSweep[];
   /** The stand points it stood at last, newest first (at most RECENT). */
   recent: string[];
@@ -381,6 +388,9 @@ export function createWanderPlanner(layout: CampLayout, seed: number, options: W
     for (const point of layout.frame.standPoints) {
       if (point.id === f.at.point || busy.has(point.id)) continue;
       if (point.seat !== undefined && point.seat !== f.seat) continue;
+      if (point.friend !== undefined && point.friend !== f.friend) continue;
+      // A friend has no business at a piece: it wanders the open spots and its own.
+      if (f.friend !== undefined && point.action !== undefined) continue;
       const spot = { lane: point.lane, x: options.pointX ? options.pointX(point) : point.x };
       if (reservedAt(f, spot)) continue;
       const found = campRoute(layout, f.at.spot, spot);
@@ -482,6 +492,7 @@ export function createWanderPlanner(layout: CampLayout, seed: number, options: W
       const f: State = {
         id: figure.id,
         ...(figure.seat !== undefined ? { seat: figure.seat } : {}),
+        ...(figure.friend !== undefined ? { friend: figure.friend } : {}),
         mode: "hold",
         at,
         to: null,

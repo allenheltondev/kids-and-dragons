@@ -243,6 +243,43 @@ Following the continuity rules, a friend joins because a **choice** says so ("As
 come along" beside "Say goodbye"), never because of a variant. Saying goodbye costs the story
 nothing and is never sad: the friend waves off, and the chapter goes on.
 
+*As built (#624):*
+
+- **Befriending** is a `befriend` effect (`{ "type": "befriend", "friendId": "kid_goat",
+  "rewardId": "riftlight-exchange-rift.kid_goat" }`) on the "Come along" choice. Like a find
+  (§5.1) it names its friend's offer for that very chapter in `content/camp.json` → `friends`, so
+  every way into the place shares one `rewardId` and it is given once; `npm run content:validate`
+  fails a befriend that names no friend, another friend's offer or another chapter's. The engine
+  records it on the run (`RunState.campFinds`, kind `friend`) and the server claims it right
+  after the step commits (`handlers/camp-finds.ts`, `claimReward`): the friend and its receipt in
+  one conditional write. A friend the crew already has from another offer pays 1 Dash Cash once,
+  as a piece does (§12.2). "Say goodbye" records nothing, so nothing is written and the friend
+  may be offered again on a later visit.
+- **The catalog's friends** are the four above: Bun (`cast/bun`, cast in the Practice Meadow as
+  the snowhorn goat she is drawn from, under her own name), the mosshorn (`entities/mosshorn`,
+  `"size": "small"`, as Gemfall 4B casts it, so it stands 75 cm), a duckling and the kid goat.
+  Each has a few reactions, its words when tapped. Pepper is not one (above).
+- **A buddy is on the hero's kit** (`HeroKit.buddies`, kit v3), keyed by the camp it applies in
+  (`campKey`: the household, and the crew when it is not the household's first), so it goes where
+  she goes and is deleted with her, and applies in that crew's camp only. It is picked through
+  `KIT_EDIT` (`buddy`, or null for none) on the phone's kit panel, written with the run's commit
+  like every kit edit, and refused unless the friend is one of this crew's. A move home (#251)
+  takes the old household's entries off her kit. This replaces the sketch's `CampRecord.buddies`
+  (§9, §12.1), which never held anything.
+- **Who is out** is the server's, on the downtime moment (`CampMoment.friends`): the rotation is
+  chosen once as the moment begins (the friends out least first, by `CampFriend.outs`, then the
+  newest, then by id), and who is out (`out`, at most four) is each seated hero's buddy, in seat
+  order, then the rotation, worked out again on every step, so a buddy is out the moment her hero
+  sits down. Each moment's friends out are counted into the crew's record after the step that
+  began it commits, once per moment by its id (`CampRecord.outing`), so the rotation survives
+  reconnects, new rooms and new evenings. More than four new friends queue by themselves: the
+  ones not yet out have been out least. `cards` lists every friend, out or not; the phone lists
+  them all ("Your crew's friends take turns at camp"), and nothing says one has left.
+- **Where they stand**: each frame has four friend spots (`standPoints[].friend`, §8.3), and the
+  tallest friend out takes spot 0, the roomy one; the rest keep their spots while they stay out.
+  A friend wanders like a hero between its own spot and the free wander spots, never to a seat,
+  another friend's spot or a piece's action spot.
+
 ### 4.5 Each hero's kit
 
 *Decided:* the personal parts of the camp belong to the hero, not the crew, so a kid can look after
@@ -712,6 +749,16 @@ camp's spots on that ground.
   nearly full size (about 0.93), a mix about 0.83, four bigfoots about 0.76 (`campRowScale`,
   never under 0.75 at stage 1). An awning, the widest tall piece, would shrink every party further,
   so it waits for stage 2's bigger camp (§11).
+- **Friend spots** (#624). Each frame stage has four friend spots on the near lane, by the
+  friends' corner and the campfire: stage 1 at x 0.6 (spot 0), 0.27, 0.475 and 0.665; stage 2 at
+  0.672, 0.35, 0.4 and 0.6; stage 3 at 0.6, 0.395, 0.71 and 0.9; stage 4 at 0.59, 0.42, 0.37 and
+  0.9. Spot 0 holds the tallest friend out (the 75 cm mosshorn), the others any friend a kid
+  goat's size. A friend at its spot is seen whole: nothing nearer and nothing on its own lane
+  covers it, it stands in front of only the lower half of anything further back (a tent, a piece,
+  a hero at her door or at a tall piece, never a tall piece's kept top), covers no label that
+  shows, and never another friend (`campFriendClashes`), at every frame stage, for every party
+  and placement the overlap test tries, inside the window between the lobby's header and panels.
+  What waits beside the fire at a chapter's end keeps clear of them too.
 - **Indoors, one lane.** A packed-down camp (§3.2) uses a single generic layout laid over the
   scene's own picture: one near lane along the bottom, a bedroll stand point for each hero and a
   spot for each friend. No per-scene authoring.
@@ -764,7 +811,15 @@ The camp should feel calm, like watching a campsite, not a busy screen:
 - **Taps on a phone show on the TV.** A tap is a short-lived message, never saved, sent to the
   room's screens the way room cheers already are (#388, `RoomCheers`). It's rate-limited per
   phone, and the TV queues and drops extra taps, so a kid hammering the button gets a happy friend
-  rather than a jittering one.
+  rather than a jittering one. *As built (#624):* `POST /api/friend-tap` (handlers/friend-tap.ts)
+  takes a friend who is out from a kid with a hero seated, two a phone every 8 seconds
+  (`FRIEND_TAP_LIMIT`), picks one of the friend's reactions and relays it as a `friendTap` channel
+  message (the friend, the kid's hero, the words). The phone's "Call Bun over" button rests 4
+  seconds after each tap. On the TV each friend acts out one tap at a time and holds one more
+  (camp-taps.ts): its words go up over its head for 4 seconds, it hops and turns where it stands,
+  and after a beat walks to the tapping kid's hero, on her lane at her side, while she waits for
+  it; a way still blocked after about four seconds (a lane-mate in it is nudged on) is a
+  fade, out where it stands and back in beside her (§8.6, rule 3). In reduced motion the words show and nobody walks.
 - **Movement is the screen's own, not the game's.** The server stores where pieces and friends are
   placed (§9), never where anybody is standing. Wandering runs on each screen from a seed taken
   from the downtime moment (§12.6), so the TV and a phone looking at it mostly agree, and nothing
@@ -841,8 +896,8 @@ interface CampRecord {
   dashCash: number;
   owned: Record<PieceId, { from: "found" | "bought" | "kept"; rewardId?: string; at: string }>;
   placed: Record<HotspotId, PieceId>;            // shared hotspots only
-  friends: Record<FriendId, { rewardId: string; at: string }>;
-  buddies: Record<CharId, FriendId>;             // one per hero, this crew's friends only (§4.4)
+  friends: Record<FriendId, { rewardId: string; at: string; outs?: number }>; // outs: moments out (#624)
+  outing?: string;                               // the last moment counted into outs (#624)
   paidChapterCount: number;                      // the shop opens at 2, tutorial chapters not counted (§5.3)
   // Receipts (§12.2): paid chapters and claimed reward ids. Storage shape to be chosen
   // after checking transaction and record-size limits.
@@ -856,6 +911,7 @@ interface HeroKit {
   color: KitColorId;
   slots: (KitPieceId | null)[];                  // two or three
   unlocked: Record<KitPieceId, { from: "catalog" | "found" | "milestone"; rewardId?: string; at: string }>;
+  buddies: Record<CampKey, FriendId>;            // her buddy in each crew's camp (#624, §4.4)
 }
 ```
 
@@ -897,8 +953,8 @@ hero by the piece she holds, with no crew receipt.
 - **Art**: a `camp` section in `assets/manifest.json` (backdrops per terrain family, frames per
   stage, pieces, tent and bedroll styles), owed in `npm run art:inventory` like story plates.
 - **Deleting**: the camp goes with its crew and its household, and a hero's kit goes with the hero,
-  as do their entries in any crew's `buddies`. It names no kid, so a kid's own delete (#252) leaves
-  the crew's camp alone.
+  her buddies with it (#624). It names no kid, so a kid's own delete (#252) leaves the crew's camp
+  alone.
 
 ## 10. Building it in phases
 
@@ -1010,8 +1066,9 @@ Kit pieces and crew pieces are separate catalogs with separate ids, so one can n
 the other. Every hero starts with the same free catalog. Earned kit pieces (kit finds, and
 milestones, §5.4) are recorded on the character in `HeroKit.unlocked`, with where they
 came from; that record moves with the hero when they move home (#251) and is deleted with them.
-Never infer kit ownership from any crew's catalog. A buddy (§4.4) is the exception that proves the
-rule: it names a crew-owned friend, so it is stored on the crew's camp record, keyed by the hero.
+Never infer kit ownership from any crew's catalog. A buddy (§4.4) names a crew-owned friend, so it
+is kept per crew: as built (#624) on the hero's kit, keyed by that crew's camp, and accepted only
+for one of that crew's friends.
 
 ### 12.2 Rewards are permanent, once, and independent of presentation
 

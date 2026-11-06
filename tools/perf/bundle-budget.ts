@@ -215,7 +215,13 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // 1642 -> 1646 when Phase 2 met main's Gemfall fight reworks (#639 to #644):
 // the merged build measures 1644KB locally and in CI, first paint 331KB.
 // Keep 2KB of slack for CI.
-const TOTAL_BUDGET_KB = 1646;
+// 1646 -> 1658 for the camp's friends (#624): its base (88ed7f5) measures
+// 1645KB locally, and with friends 1656KB. About 8KB is lazy camp code (who is
+// out, the friend spots and their overlap rules, the TV's tap queue and words,
+// the phone's buddy picker and Call over buttons); the rest is the friend-tap
+// relay in the store and channel, which every screen hears. First paint goes
+// from 331KB to 332KB, at its budget. Keep 2KB of slack for CI.
+const TOTAL_BUDGET_KB = 1658;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

@@ -122,7 +122,7 @@ async function pixiFit(species: string, kit: Kit): Promise<Fit> {
   return out as Fit;
 }
 
-const campView = (stage: number): CampView => ({ revision: 1, frameStage: stage as CampView["frameStage"], grownBy: stage > 1 ? ["gemfall"] : [], dashCash: 0, owned: [], placed: {}, friends: [], buddies: {}, shopOpen: false });
+const campView = (stage: number): CampView => ({ revision: 1, frameStage: stage as CampView["frameStage"], grownBy: stage > 1 ? ["gemfall"] : [], dashCash: 0, owned: [], placed: {}, friends: [], shopOpen: false });
 
 /** The still camp: the same, from the percentages it places its images at. */
 function stillFit(species: string, kit: Kit): Fit {

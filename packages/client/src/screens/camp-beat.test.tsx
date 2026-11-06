@@ -26,7 +26,6 @@ const camp = (over: Partial<CampView> = {}): CampView => ({
   owned: ["find_noodle_awning", "shop_striped_awning"],
   placed: { awning: "shop_striped_awning" },
   friends: [],
-  buddies: {},
   shopOpen: true,
   ...over,
 });

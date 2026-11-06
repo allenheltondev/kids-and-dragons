@@ -17,6 +17,7 @@ import { cheerById, readIntentPreview } from "@kad/shared";
 import type {
   ArrivalMessage,
   CheerMessage,
+  FriendTapMessage,
   ChannelMessage,
   KitMilestoneUnlock,
   Presentation,
@@ -88,6 +89,8 @@ export interface SequencerHandlers {
   onArrival?(message: ArrivalMessage): void;
   /** A spectator cheered (`CheerMessage`, #388). Live, unordered, like a preview. */
   onCheer?(message: CheerMessage): void;
+  /** A kid tapped a camp friend (`FriendTapMessage`, #624). Live, unordered, like a cheer. */
+  onFriendTap?(message: FriendTapMessage): void;
 }
 
 export type TimerHandle = ReturnType<typeof setTimeout> | number;
@@ -180,6 +183,10 @@ export class MessageSequencer {
     }
     if (message.kind === "cheer") {
       this.handlers.onCheer?.(message);
+      return;
+    }
+    if (message.kind === "friendTap") {
+      this.handlers.onFriendTap?.(message);
       return;
     }
 
@@ -408,6 +415,14 @@ export function parseChannelMessage(raw: string): ChannelMessage | null {
     const cheer = cheerById((candidate as Partial<CheerMessage>).cheer);
     if (!cheer) return null;
     return { kind: "cheer", seq: candidate.seq, runId: candidate.runId, cheer: cheer.id };
+  }
+
+  if (candidate.kind === "friendTap") {
+    // Short ids and the catalog's words, never anything long: the TV shows the words as they are.
+    const { friendId, heroId, words } = candidate as Partial<FriendTapMessage>;
+    const ok = (v: unknown, max: number): v is string => typeof v === "string" && v.length > 0 && v.length <= max;
+    if (!ok(friendId, 64) || !ok(heroId, 200) || !ok(words, 160)) return null;
+    return { kind: "friendTap", seq: candidate.seq, runId: candidate.runId, friendId, heroId, words };
   }
 
   if (candidate.kind === "snapshot" || (candidate.kind === undefined && candidate.state)) {

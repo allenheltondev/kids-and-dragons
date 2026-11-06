@@ -71,7 +71,7 @@ import { claimCampFinds, stepCampFinds } from "./camp-finds.ts";
 import { claimMilestones, stepMilestones } from "./camp-milestones.ts";
 import { claimCampDrops, prepareChapterEndCamp, settleChapterEndCamp, stepCampDrops, type ChapterEndCamp } from "./camp-pay.ts";
 import { prepareCampVote } from "./camp-shop.ts";
-import { prepareCampPlace, prepareCampUndo, prepareKitEdit, syncCampDowntime } from "./camp-edit.ts";
+import { prepareCampPlace, prepareCampUndo, prepareKitEdit, recordOuting, stepOuting, syncCampDowntime, syncCampFriends } from "./camp-edit.ts";
 import { dispatchTurnPush } from "./push.ts";
 import { practiceChapterId, practiceRefusal, settlePractice } from "./practice.ts";
 import {
@@ -684,6 +684,8 @@ async function applyActionOnce(
     if (campEnd) {
       chapterEndCamp = campEnd.settle;
       result = { ...result, state: { ...result.state, ...campEnd.view } };
+      // The chapter end's camp is read here, after the moment began: its friends too (#624).
+      result = { ...result, state: await syncCampFriends(result.state, auth.run.householdId, deps) };
     }
     // XP, the chapter's record, the setback counter, and — when this
     // completion decides it — the campaign's fate (progression.ts). All of it
@@ -885,6 +887,8 @@ async function applyActionOnce(
    * this step rolled lands before the pay closes the chapter to drops.
    */
   const campDrops = await claimCampDrops(stepDrops, { run: auth.run, state: next }, deps);
+  // The friends this step brought out at a new moment, counted once (camp-edit.ts, #624).
+  await recordOuting(stepOuting(state, next), { run: auth.run, state: next }, deps);
   if (chapterEndCamp) {
     campClaims.push(...(await settleChapterEndCamp(chapterEndCamp, { run: auth.run, state: next, stepFinds }, deps)));
   }

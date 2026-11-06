@@ -32,6 +32,7 @@ import type { RunState } from "@kad/shared";
 import type { CampLayout } from "./camp-layout";
 import { BLEED_SOURCE, campBleed, campFocusBand, campVisibleSpan, campWindow, type CampFraming } from "./camp-framing";
 import { LOBBY_CAMP_STAND_IN, campDressing, campHeroes, stillCampFigures } from "./lobby-camp";
+import { campFriendFigures } from "./camp-friends";
 import { lobbyInsetBottom, lobbyInsetTop, onLobbyInset, onLobbyInsetTop } from "./stage-inset";
 import { ANCHOR_Y } from "./art-paths";
 import { NOMINAL_PAINT } from "./figure-scale";
@@ -159,6 +160,10 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
 
   const heroes = campHeroes(state);
   const dressing = campDressing(state, layout);
+  // The friends out (§4.4; #624) at their friend spots, beside the heroes at theirs.
+  const friendFigures = campFriendFigures(state);
+  const friendsOut: { figure: string; heightCm: number }[] = [];
+  for (const f of friendFigures) if (f.friend !== undefined && f.figure) friendsOut[f.friend] = { figure: f.figure, heightCm: f.heightCm };
   const input: Omit<CampBoxInput, "figureScale"> = {
     heroes: heroes.map(({ figure }) => ({
       seat: figure.seat!,
@@ -172,6 +177,7 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
     })),
     spots: dressing.spots,
     beside: dressing.beside,
+    ...(friendFigures.length > 0 ? { friends: friendsOut } : {}),
   };
   const heights = heroes.map((hero) => hero.figure.heightCm);
   const W = layout.canvas.width;
@@ -198,7 +204,8 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
   }
   const boxes = campBoxes(layout, { ...input, figureScale: scale });
   const boxOf = new Map(boxes.map((b) => [b.id, b]));
-  const figures = stillCampFigures(layout, heroes, scale, at && mode === "cover" ? campVisibleSpan(pane.width, at, W) : undefined);
+  const friends = friendFigures.map((figure) => ({ figure, ready: false, away: false }));
+  const figures = stillCampFigures(layout, [...heroes, ...friends], scale, at && mode === "cover" ? campVisibleSpan(pane.width, at, W) : undefined);
   const box = at ? { left: at.x, top: at.y, width: W * at.scale, height: H * at.scale } : { left: 0, top: 0, width: 0, height: 0 };
   let bleed = at && mode === "cover" ? campBleed(pane.height, at, layout.canvas) : { top: 0, bottom: 0 };
 
@@ -285,7 +292,8 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
           <span
             key={figure.id}
             className={`kad-static-camp__hero${figure.away ? " is-away" : ""}`}
-            data-hero={figure.id}
+            data-hero={figure.friend === undefined ? figure.id : undefined}
+            data-friend={figure.friend === undefined ? undefined : figure.id}
             style={{
               left: `${figure.x * 100}%`,
               top: `${figure.y * 100}%`,
@@ -294,7 +302,7 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
             }}
           >
             {figure.url ? <img src={figure.url} alt="" /> : null}
-            <span className="kad-static-camp__name">{state.party.find(member => member.character.id === figure.id)?.character.name}</span>
+            <span className="kad-static-camp__name">{figure.friend ?? state.party.find(member => member.character.id === figure.id)?.character.name}</span>
           </span>
         ))}
         {layout.frame.pieces.map(piece => {
