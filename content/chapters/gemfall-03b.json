@@ -950,6 +950,7 @@
     },
     "rest_reed_raft": {
       "type": "rest",
+      "setting": "indoor",
       "narration": "Gullet ties her raft to a lantern pole and fries duckweed fritters on a hot stone. They taste like crunchy pond. \"Rest a while,\" she hums. But fog is rolling in, thick as porridge.",
       "cast": [
         {
@@ -1975,6 +1976,7 @@
     },
     "ending_forded_clean": {
       "type": "rest",
+      "setting": "outdoor",
       "discovers": [
         "biome.enchanted_woods"
       ],
@@ -2031,6 +2033,7 @@
     },
     "ending_swept_west": {
       "type": "rest",
+      "setting": "outdoor",
       "discovers": [
         "biome.enchanted_woods"
       ],
@@ -2080,6 +2083,7 @@
     },
     "ending_walked_over": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "You step off the mud onto a road full of wagons and fall in behind the sausage cart. Everybody here is going the same way, after the same stones. Behind you, faintly, the boggarts are laughing.",
       "heal": 3,
       "onEnter": [
@@ -2131,6 +2135,7 @@
     },
     "ending_marsh_kept_secrets": {
       "type": "rest",
+      "setting": "outdoor",
       "discovers": [
         "biome.enchanted_woods"
       ],

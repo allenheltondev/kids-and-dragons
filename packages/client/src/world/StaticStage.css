@@ -47,6 +47,18 @@
 }
 .kad-static-stage__figure.is-down img { transform: rotate(80deg); opacity: 0.6; }
 .kad-static-stage__figure meter { inline-size: 100%; }
+/* An indoor rest (docs/camp.md §3.2, #625): her bedroll and pack on the ground at her side, behind
+   her, as the moving stage lays it (packed-camp.ts). No tents, no campfire. */
+.kad-static-stage__figure.is-packed { position: relative; isolation: isolate; }
+.kad-static-stage__bedroll {
+  position: absolute;
+  z-index: -1;
+  inset-inline-start: 55%;
+  inset-block-end: 1.1em;
+  inline-size: 80%;
+  pointer-events: none;
+}
+.kad-static-stage__bedroll svg { display: block; inline-size: 100%; block-size: auto; }
 
 /* A still frame of the neutral tear, keeping the scene's visible doorway on
    devices without WebGL. Its rules/colours remain in the separate RiftSight UI. */

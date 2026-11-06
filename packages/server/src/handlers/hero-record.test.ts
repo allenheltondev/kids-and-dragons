@@ -42,12 +42,14 @@ function gemsChapter(): Chapter {
     scenes: {
       scene_gate: {
         type: "rest",
+        setting: "outdoor",
         narration: "A gate in the hedge.",
         discovers: [GATE],
         choices: [{ id: "in", label: "Go in", icon: "arrow", goto: "scene_camp" }],
       },
       scene_camp: {
         type: "rest",
+        setting: "outdoor",
         narration: "A warm hollow.",
         discovers: [CAMP],
         choices: [{ id: "on", label: "Onward", icon: "arrow", goto: "scene_end" }],

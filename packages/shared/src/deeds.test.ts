@@ -365,6 +365,7 @@ function trainingChapter(wolves: number): Chapter {
     scenes: {
       camp: {
         type: "rest",
+        setting: "outdoor",
         narration: "A fire, and the road beyond it.",
         heal: 99,
         choices: [

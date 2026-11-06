@@ -1289,6 +1289,7 @@
     },
     "rest_lonely_camp": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "Nobody camps near you. Your stones hum low and sleepy, like a cat that is far too big. Patch each other up. Tomorrow comes the worst bend on the north road.",
       "heal": 2,
       "choices": [
@@ -2314,12 +2315,14 @@
     },
     "rest_the_climb": {
       "type": "rest",
+      "setting": "indoor",
       "narration": "You climb the mountain everyone else is running from. At the top is the eighth stone, the one that is not for sale. The ground shakes with every step, and your packs hum louder the higher you go.",
       "heal": 4,
       "choices": []
     },
     "ending_robbed": {
       "type": "rest",
+      "setting": "indoor",
       "narration": "The masks are gone, and so is half your collection. The ground shakes in a slow, patient rhythm. You gather what is left and climb. The only stone still worth having is at the top, and you are far behind.",
       "onEnter": [
         {
@@ -2430,6 +2433,7 @@
     },
     "walk_rest_switchback": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "You camp on a switchback where the rocks are still warm. Nobody says much. Share the last snacks, patch each other up, and listen to the mountain grumble behind you, farther away each hour.",
       "heal": 2,
       "choices": [
@@ -2780,6 +2784,7 @@
     },
     "walk_ending_collectors": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "The realm holds. Not because of you, but it holds. The last bell never rings. At home, people ask the troll's old question: and where is it going? You are still thinking. History calls you The Collectors, and leaves the next page blank, just in case.",
       "variants": [
         {
@@ -2820,6 +2825,7 @@
     },
     "walk_ending_not_there": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "Behind you, the last bell rings. Far down the road, you watch the red sky grow redder from somewhere safe. The realm goes on, changed. History calls you The Ones Who Weren't There.",
       "variants": [
         {

@@ -43,6 +43,32 @@
   font-size: 1.05rem;
   flex: none;
 }
+/* Indoors (docs/camp.md §3.2): no campsite, only each hero's bedroll and pack, set down in a row. */
+.camp-panel__packed {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem 0.75rem;
+  margin: 0;
+  padding: 0.25rem 0;
+  list-style: none;
+  flex: none;
+}
+.camp-panel__packed-kit {
+  display: grid;
+  justify-items: center;
+  inline-size: 6.5rem;
+  gap: 0.15rem;
+}
+.camp-panel__packed-art { display: block; inline-size: 100%; aspect-ratio: 2 / 1; overflow: hidden; }
+.camp-panel__packed-art svg { display: block; inline-size: 100%; block-size: auto; margin-block-start: -38%; }
+.camp-panel__packed-name {
+  max-inline-size: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.95rem;
+}
 .camp-panel__section {
   display: flex;
   flex-direction: column;

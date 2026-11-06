@@ -358,24 +358,29 @@ const DIGESTS: PreEpicSave["digests"] = {
 // interaction_lantern_pole a `findForCamp` (Hesper's wagon lantern), each an `onEnter` beside a
 // sentence of narration naming the thing. A find changes no flag, XP, item or route, so the
 // gameplay digests below are unchanged.
+// Every chapter is re-pinned for indoor and outdoor rest scenes (#625, docs/camp.md §3.2, §10;
+// re-taking the hashes for the camp is approved by the owner): each of Gemfall's rest scenes
+// gains a required `"setting": "indoor"` or `"outdoor"`, which only the camp's presentation
+// reads (the full camp outdoors, the camp packed down into the scene's picture indoors). No
+// flag, XP, item, route, effect or ending moved, and the gameplay digests below are unchanged.
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "7042c8fa98760e9ded81d479d40e392bb56ecb9bf62ed70baf724ffa53b7a09a",
-  "chapters/gemfall-01.json": "79c14d032ab9f1c1de32911b3147b8c74e562da37ddf86502cf6f6a687e12b2b",
-  "chapters/gemfall-02.json": "0cf491a7e971ba10e9ff43ccabac33f42bf0545811c8f93db74128d7438d14d8",
-  "chapters/gemfall-03a.json": "7812a6ee4d1dc8056946a0f4f8608f83cef73758e9775a34f214cb70bc4cfec6",
-  "chapters/gemfall-03b.json": "8d82081327befaf263ee5542b1ad29f7f1ff2e61cc48de495d811277bf4e7167",
-  "chapters/gemfall-03c.json": "a626860c1d62f9eaf701a988184cd42e9faa799eb73e50f6e68be8acad266e15",
-  "chapters/gemfall-04a.json": "3f25b1f0ac770e4416d5f86dccfadf9438ed523dabf8c6a4e7eff9e5185e97fa",
-  "chapters/gemfall-04b.json": "24a24e7109ebd6e0d066afce3044d5175394aba83618fd69d4c7602e82715da1",
-  "chapters/gemfall-04c.json": "010c8259284a37df5dcf6139d476a7706b6c4e56de01b08a6e5ea23f4a65c252",
-  "chapters/gemfall-05a.json": "c451bbe0914eabf4c903cdc1f44be7a447ef103eda538144cdd1cd2438276be5",
-  "chapters/gemfall-05b.json": "cb0ae1115e782279406cdad9916bf23c84042b8e79aa0d0cf703b28784feefd7",
-  "chapters/gemfall-05c.json": "d124128fab62f1df00dd3e328c41a925548a6bcb9a60611829a51732d2d9252c",
-  "chapters/gemfall-06.json": "359aa09a894ae86b525fd3131a16300344aa2c4bfcfb584b1bab3792b2ed2140",
-  "chapters/gemfall-07h.json": "dbcf17577035bbfa12f82bc8aba85ceb36f81f773d1b725df0d50ab2a388baed",
-  "chapters/gemfall-07l.json": "6dea56eb3fb6fcbd61cd2dc6abf36edb3f3d48f8e1a94cbdf72a641f43bd64f1",
-  "chapters/gemfall-07r.json": "512abc8825a6a1fe9d48ac6cbe34ce05536b3b2ea84c143de6c3c89b57398363",
-  "chapters/gemfall-08.json": "b7234f140d44295f803111975fbfe7564e1499fdc9ede49afc8acfd159e22603",
+  "chapters/gemfall-01.json": "0cb522de9449e39352475f23f0a164c2cbb527c4d9e1e88da6a54d87c4881f0c",
+  "chapters/gemfall-02.json": "330e2683da6623078c354e7c9f789c3c00da930f0ff8505c672b37c2ec60d1b1",
+  "chapters/gemfall-03a.json": "2a89f00ed4428edb624bceb553c1d2e0db2623aaeef243ab2e23f8a3448b207d",
+  "chapters/gemfall-03b.json": "7cb5d1199bda5fa2cf9834bffbc6236714168a385e2a5c8a77368a05d85663c3",
+  "chapters/gemfall-03c.json": "b038ce1c9d7e5c94fcd56730df53e22e3638025f29e45847481018f056fb907f",
+  "chapters/gemfall-04a.json": "788a7e6172d20d6e49122615b6425b51ccc3629a4b8012e7cbd60b9a1ec51e2c",
+  "chapters/gemfall-04b.json": "f298c1097d03599a469af2357af5ed662f0ebc78ed7e22828d4df451157e5d36",
+  "chapters/gemfall-04c.json": "03753c6ad802c886c01ba956225a86f2536776a2e2d4cdb6ced8571088dc6be6",
+  "chapters/gemfall-05a.json": "b3b1bb23da7f9d8b8461c533e79360f8cc071a247f41856f3b796a8ec6925a05",
+  "chapters/gemfall-05b.json": "6a11f6bd43f3cbaec48430f40d375f50d2fadf2be0fb5c60f42394d12f5fcbfe",
+  "chapters/gemfall-05c.json": "da75ade067bc5769638c58401e2dd4876c2704553cb1ba182761057ef87a853d",
+  "chapters/gemfall-06.json": "2b054e73e38befc9a47a780aa1999bf5fa775b0efd8b385c46a51c0d55dc5238",
+  "chapters/gemfall-07h.json": "5e247fbcfeaad63d3a3786189a551a30479dd898b256cc4d4a93235acb1753cc",
+  "chapters/gemfall-07l.json": "469436e8d7737ff5784a8128ef3dcd4dd2a54e8a407bcb0eb2262348d9dc702e",
+  "chapters/gemfall-07r.json": "49476c762968ad22ef2464c1858b944e35c0e96857f51042fe4fa1c16be4d60a",
+  "chapters/gemfall-08.json": "d075f2163272dc3d29b89d0d12e937691d1fe12ea4cbf9eabd3406226f372612",
 };
 
 describe("Gemfall's reviewed files and legacy contracts", () => {

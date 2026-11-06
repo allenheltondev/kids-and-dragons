@@ -832,6 +832,7 @@
     },
     "rest_warm_stones": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "Dragonling neighbors offer you warm stones to sleep on. Their bell-keeper, Grandmother Tull, rings the night bell. A spare bell sits beside it, never rung. \"That one is nothing to worry about,\" she says, and then says it again.",
       "cast": [
         {
@@ -2718,6 +2719,7 @@
     },
     "rest_end_ashfall": {
       "type": "rest",
+      "setting": "indoor",
       "narration": "The wardens give you bunks in a room where every window faces up. Far below, the mountain turns over in its sleep. You know what the stones are now, and what you want. Tomorrow, everything you passed on the road comes up the mountain to meet you.",
       "heal": 4,
       "choices": [],
@@ -2879,6 +2881,7 @@
     },
     "rest_end_shut_out": {
       "type": "rest",
+      "setting": "outdoor",
       "art": "scenes/gemfall/redspire-citadel",
       "narration": "You sleep against the cold citadel wall, like the embermoths. The crabs, the sunset and the gate all beat you today. But the whole truth is in your heads now, and Pellam's lantern burns on the wall all night.",
       "heal": 3,

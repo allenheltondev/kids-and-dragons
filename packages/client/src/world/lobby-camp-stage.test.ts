@@ -182,3 +182,111 @@ describe("the lobby's camp on the stage", () => {
     lobby.destroy();
   });
 });
+
+describe("the camp at a rest scene (docs/camp.md §3.2, #625)", () => {
+  const rest = (outdoor: boolean | null, party: PartyMember[] = [member(1), member(2, { ready: true })]): RunState =>
+    makeState({
+      phase: "scene",
+      sceneType: "rest",
+      sceneId: "camp",
+      party,
+      ...(outdoor === null ? {} : { campMoment: { id: "rest:camp|r:c:4", kind: "rest", outdoor, changes: {} } }),
+    });
+
+  it("never pitches at an indoor rest, nor at a rest nobody has said is outdoors", () => {
+    const { lobby, app, covered } = table();
+    lobby.sync(rest(false));
+    expect(lobby.camp()).toBeNull();
+    lobby.sync(rest(null));
+    expect(lobby.camp()).toBeNull();
+    expect(app.stage.children).toHaveLength(0);
+    expect(covered).toEqual([]);
+    lobby.destroy();
+  });
+
+  it("crossfades the full camp in over the scene at an outdoor rest, covering it only once it is up", () => {
+    const { lobby, app, covered } = table();
+    lobby.sync(rest(true));
+    const camp = lobby.camp()!;
+    expect(camp).not.toBeNull();
+    expect(camp.view.alpha).toBe(0);
+    // The scene's own picture stays drawn under the camp as it comes up.
+    expect(covered).toEqual([false]);
+    run(app, 0.5);
+    expect(camp.view.alpha).toBeGreaterThan(0);
+    expect(camp.view.alpha).toBeLessThan(1);
+    run(app, 1.5);
+    expect(camp.view.alpha).toBe(1);
+    expect(covered).toEqual([false, true]);
+    expect(camp.figures().map((f) => f.id).sort()).toEqual(["c_1", "c_2"]);
+    lobby.destroy();
+  });
+
+  it("does not line a resting hero up at the trailhead: Ready is the lobby's", () => {
+    const { lobby, app } = table({ still: true });
+    lobby.sync(rest(true));
+    run(app, 3);
+    const t = layout.frame.trailhead;
+    // Member 2 is still marked ready from the lobby; at a rest she stays at her bedroll.
+    const hero = lobby.camp()!.figures().find((f) => f.id === "c_2")!;
+    expect(Math.abs(hero.x / layout.canvas.width - t.x)).toBeGreaterThan(0.1);
+    lobby.destroy();
+  });
+
+  it("is up at once under reduced motion", () => {
+    const { lobby, covered } = table({ still: true });
+    lobby.sync(rest(true));
+    expect(lobby.camp()!.view.alpha).toBe(1);
+    expect(covered).toEqual([true]);
+    lobby.destroy();
+  });
+
+  it("stands above the narration plate, not under the lobby's panels", () => {
+    const { lobby, app } = table();
+    lobby.setInset(120, 40);
+    lobby.sync(rest(true));
+    const camp = lobby.camp()!;
+    run(app, 2);
+    const atLobbyPanels = camp.view.y;
+    lobby.setStageInset(420, 0);
+    run(app, 3);
+    // A taller plate than the lobby's panels: the camp slides up to stand above it.
+    expect(camp.view.y).toBeLessThan(atLobbyPanels);
+    lobby.destroy();
+  });
+
+  it("fades away on Go on, the next scene drawn under it, with nobody setting off", () => {
+    const { lobby, app, covered } = table();
+    lobby.sync(rest(true));
+    run(app, 2);
+    const camp = lobby.camp()!;
+    lobby.sync(makeState({ phase: "scene", sceneType: "story", sceneId: "road", party: [member(1), member(2)] }));
+    expect(lobby.camp()).toBeNull();
+    expect(lobby.leaving()).toBe(camp);
+    expect(covered.at(-1)).toBe(false);
+    run(app, LEAVE_FADE_S + 0.5);
+    expect(lobby.leaving()).toBeNull();
+    lobby.destroy();
+  });
+
+  it("is pitched in the chapter's terrain, and anew when that chapter loads", () => {
+    const families: string[] = [];
+    const app = fakeApp();
+    const lobby = createLobbyCamp(app as unknown as Application, layout, {
+      still: true,
+      loadTexture: noArt,
+      layoutFor: (_stage, family) => {
+        families.push(family);
+        return family === "frozen_north" ? campLayoutFixture() : layout;
+      },
+    });
+    const state = { ...rest(true), chapterId: "riftlight-wyrm-nest" };
+    lobby.sync(state, null);
+    const first = lobby.camp();
+    expect(families.at(-1)).toBe("open_plains");
+    lobby.sync(state, { id: "riftlight-wyrm-nest", biome: "glacier_of_origins" });
+    expect(families.at(-1)).toBe("frozen_north");
+    expect(lobby.camp()).not.toBe(first);
+    lobby.destroy();
+  });
+});

@@ -268,7 +268,8 @@ export interface CampChange {
 /**
  * Where a downtime moment happens (§3): the lobby, a rest scene or the
  * chapter's end. The lobby and the chapter's end are the full camp; a rest
- * is indoors until rest scenes are tagged (§3.2), so it has no shared hotspots.
+ * is the full camp only where its scene is outdoors (`RestScene.setting`,
+ * §3.2), and indoors it is packed down, with no shared hotspots.
  */
 export type CampMomentKind = "lobby" | "rest" | "chapterEnd";
 

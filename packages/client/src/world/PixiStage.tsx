@@ -22,7 +22,8 @@ import { sceneRiftFor } from "./scene-rift";
 import { castFor } from "./cast";
 import { boardInsetEnd, lobbyInsetBottom, lobbyInsetTop, onBoardInsetEnd, onLobbyInset, onLobbyInsetTop, onStageInset, onStageInsetTop, stageInsetBottom, stageInsetTop } from "./stage-inset";
 import { createLobbyCamp, lobbyCampLayout, type LobbyCamp } from "./lobby-camp-stage";
-import { campLayoutFor } from "./lobby-camp";
+import { campLayoutFor, indoorRest } from "./lobby-camp";
+import { packedCampKey, packedKits } from "./packed-camp";
 import { PREFS_EVENT, reducedMotion } from "../a11y/prefs";
 
 /**
@@ -235,6 +236,7 @@ export function PixiStage(): React.JSX.Element {
       scene.setStageInsetTop(stageInsetTop());
       scene.setBoardInset(boardInsetEnd());
       scene.setEncounter(boardView(live.state, live.state?.party ?? [], live.chapter, live.previews));
+      scene.setPackedCamp(indoorRest(live.state) ? packedKits(live.state) : null);
 
       // The camp is drawn over the scene, so it is made after it; it mounts
       // itself while the phase is the lobby's (world/lobby-camp-stage.ts).
@@ -248,7 +250,8 @@ export function PixiStage(): React.JSX.Element {
         });
         campRef.current = lobbyCamp;
         lobbyCamp.setInset(lobbyInsetBottom(), lobbyInsetTop());
-        lobbyCamp.sync(live.state);
+        lobbyCamp.setStageInset(stageInsetBottom(), stageInsetTop());
+        lobbyCamp.sync(live.state, live.chapter);
       }
       if (import.meta.env.DEV) {
         (globalThis as Record<string, unknown>).__kadCamp = () => campRef.current;
@@ -335,6 +338,9 @@ export function PixiStage(): React.JSX.Element {
   // The lobby's panels and header, so the camp stands in the window between them.
   useEffect(() => onLobbyInset((px) => campRef.current?.setInset(px, lobbyInsetTop())), []);
   useEffect(() => onLobbyInsetTop((px) => campRef.current?.setInset(lobbyInsetBottom(), px)), []);
+  // An outdoor rest's camp stands above the narration plate, as the story does (§3.2).
+  useEffect(() => onStageInset((px) => campRef.current?.setStageInset(px, stageInsetTop())), []);
+  useEffect(() => onStageInsetTop((px) => campRef.current?.setStageInset(stageInsetBottom(), px)), []);
   // Reduced motion, the device's or the in-game setting, as it changes (§8.7).
   useEffect(() => {
     if (typeof document === "undefined") return;
@@ -350,8 +356,14 @@ export function PixiStage(): React.JSX.Element {
    * is told to set off and fades, and the scene is already drawn under it.
    */
   useEffect(() => {
-    campRef.current?.sync(state);
-  }, [state]);
+    campRef.current?.sync(state, chapter);
+  }, [state, chapter]);
+
+  // An indoor rest keeps its own picture, with the camp packed down into it (§3.2).
+  const packed = packedCampKey(state);
+  useEffect(() => {
+    sceneRef.current?.setPackedCamp(indoorRest(state) ? packedKits(state) : null);
+  }, [packed]);
 
   // The board is a reader of the mirrored state (brief, trap 2): every patch
   // that touches the encounter flows through here and nowhere else.

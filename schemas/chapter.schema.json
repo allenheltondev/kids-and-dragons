@@ -1587,12 +1587,20 @@
       "additionalProperties": false,
       "required": [
         "type",
+        "setting",
         "narration",
         "choices"
       ],
       "properties": {
         "type": {
           "const": "rest"
+        },
+        "setting": {
+          "description": "RestScene.setting in chapter.ts (docs/camp.md §3.2): outdoor where a campsite could be pitched (the shared screen crossfades to the crew's full camp in the chapter's terrain); indoor everywhere else, outdoor places no campsite fits included (the scene keeps its picture and the camp is packed down into it).",
+          "enum": [
+            "indoor",
+            "outdoor"
+          ]
         },
         "art": {
           "type": "string",

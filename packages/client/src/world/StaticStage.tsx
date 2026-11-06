@@ -16,9 +16,12 @@ import { useEnsureChapter } from "../screens/content";
 import { biomeBackdropUrl, characterWorldArtUrl, enemyArtUrl, sceneArtFor, sceneBackdropUrl } from "./art-paths";
 
 import { castFor } from "./cast";
-import { campLayoutFor, campShownFor, campStage } from "./lobby-camp";
+import { campFamilyFor, campLayoutFor, campShownFor, campStage, indoorRest, outdoorRest } from "./lobby-camp";
 import { campBeatShown, onCampBeat } from "./camp-beat";
 import { StillCamp } from "./StillCamp";
+import { CampBedroll } from "./CampBedroll";
+import { packedKits } from "./packed-camp";
+import { onStageInset, onStageInsetTop, stageInsetBottom, stageInsetTop } from "./stage-inset";
 import { sceneRiftFor, STILL_FRAME } from "./scene-rift";
 import { RIFT_NEUTRAL_EFFECT, RIFT_SHEET, riftSheetUrl } from "../screens/riftlight";
 
@@ -52,16 +55,22 @@ export function StaticStage(): React.JSX.Element {
   const enemies: readonly Combatant[] = encounter?.combatants.filter((c) => c.side !== "party" && !c.down) ?? [];
 
   // The lobby's picture is the crew's camp (#614), still here as everything is.
-  // And the chapter end's camp beat (#620), at the crew's own frame stage.
+  // And the chapter end's camp beat (#620), at the crew's own frame stage, and
+  // an outdoor rest (#625), above the narration plate; each pitched in the
+  // chapter's terrain (camp-backdrop.ts).
   const beat = useSyncExternalStore(onCampBeat, campBeatShown, campBeatShown);
-  const camp = state && campShownFor(state, beat) ? campLayoutFor(campStage(state)) : null;
+  const plate = useSyncExternalStore(onStageInset, stageInsetBottom, stageInsetBottom);
+  const plateTop = useSyncExternalStore(onStageInsetTop, stageInsetTop, stageInsetTop);
+  const camp = state && campShownFor(state, beat) ? campLayoutFor(campStage(state), campFamilyFor(state, chapter)) : null;
   if (state && camp) {
     return (
       <div className="kad-static-stage" data-testid="static-stage" aria-hidden="true">
-        <StillCamp layout={camp} state={state} />
+        <StillCamp layout={camp} state={state} {...(outdoorRest(state) ? { insets: { top: plateTop, bottom: plate } } : {})} />
       </div>
     );
   }
+  // An indoor rest keeps its picture, with each hero's bedroll and pack beside her (§3.2).
+  const packed = indoorRest(state) ? new Map(packedKits(state).map((kit) => [kit.id, kit])) : null;
 
   return (
     <div className="kad-static-stage" data-testid="static-stage" aria-hidden="true">
@@ -93,9 +102,15 @@ export function StaticStage(): React.JSX.Element {
         {party.map((member) => {
           const hero = member.character;
           const live = encounter?.combatants.find((c) => c.id === hero.id);
+          const kit = packed?.get(hero.id);
           return (
-            <li key={hero.id} className={`kad-static-stage__figure${member.down || live?.down ? " is-down" : ""}`}>
+            <li key={hero.id} className={`kad-static-stage__figure${member.down || live?.down ? " is-down" : ""}${kit ? " is-packed" : ""}`}>
               <img src={characterWorldArtUrl(hero.species, hero.tier, hero.class)} alt="" />
+              {kit ? (
+                <span className="kad-static-stage__bedroll" data-testid="packed-bedroll">
+                  <CampBedroll style={kit.style} accent={kit.accent} />
+                </span>
+              ) : null}
               <span>{hero.name}</span>
               {live ? <meter min={0} max={live.maxHp} value={live.hp} /> : null}
             </li>

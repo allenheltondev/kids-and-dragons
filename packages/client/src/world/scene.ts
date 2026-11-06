@@ -105,6 +105,9 @@ import type { EncounterEvent } from "@kad/shared";
 import { stageLayout, STORY_MEASURE, type StageCastMember } from "./cast";
 import { boardStageWidth, storyStageFrame } from "./stage-inset";
 import { reducedMotion } from "../a11y/prefs";
+import { packedCampSpots, type PackedKit, type PackedSpot } from "./packed-camp";
+import { CAMP_KIT_STYLES } from "./camp-kit-art";
+import { campKitCanvas } from "./camp-kit-canvas";
 
 export { characterArtUrl };
 
@@ -320,6 +323,16 @@ export interface PartyScene {
    * exactly when a question needs answering and at no other time.
    */
   setCameraAttention(key: string): void;
+  /**
+   * The camp packed down into this scene's own picture (packed-camp.ts;
+   * docs/camp.md §3.2): at an indoor rest, each hero's bedroll and pack on the
+   * ground beside her in the lineup. Null, or empty, takes them away. No
+   * tents, no campfire, no shared spots. Friends (#624) are a seam in
+   * packed-camp.ts and not drawn here yet.
+   */
+  setPackedCamp(kits: readonly PackedKit[] | null): void;
+  /** Where each packed bedroll lies now, in design units; for tests. */
+  packedCamp(): readonly PackedSpot[];
   destroy(): void;
 }
 
@@ -519,6 +532,11 @@ export function createScene(app: Application): PartyScene {
   storyLayer.addChild(actorsLayer);
 
   const actors = new Map<string, Actor>();
+  /** An indoor rest's packed camp (`setPackedCamp`, laid out by `layoutPacked`). */
+  let packedKits: readonly PackedKit[] = [];
+  let packedSpots: PackedSpot[] = [];
+  let packedSlot = 0;
+  const packedSprites = new Map<string, { sprite: Sprite; key: string }>();
   const castActors = new Map<string, CastActor>();
 
   /*
@@ -922,6 +940,72 @@ export function createScene(app: Application): PartyScene {
       // Feet further down the screen = nearer the viewer = drawn in front.
       actor.container.zIndex = actor.y;
     });
+    layoutPacked(slots.partySlot);
+  }
+
+  /*
+   * The camp packed down at an indoor rest (packed-camp.ts, docs/camp.md
+   * §3.2): each hero's bedroll and pack on the ground at her side, a little
+   * behind her feet, so she and her name stand clear in front of it. Her kit
+   * painting in her color, as the full camp draws it (camp.ts); while it
+   * loads, nothing (never a box over the scene's picture).
+   */
+  function layoutPacked(slot: number): void {
+    packedSlot = slot;
+    const heroes = packedKits
+      .map((kit) => actors.get(kit.id))
+      .filter((actor): actor is Actor => actor !== undefined)
+      .map((actor) => ({ id: actor.characterId, x: actor.x, y: actor.y, height: actor.height }));
+    packedSpots = packedCampSpots(heroes, slot).bedrolls;
+    // A bedroll whose hero is not in the lineup (she got up from the table) is not drawn.
+    for (const [id, entry] of packedSprites) entry.sprite.renderable = packedSpots.some((spot) => spot.id === id);
+    for (const spot of packedSpots) {
+      const entry = packedSprites.get(spot.id);
+      const kit = packedKits.find((k) => k.id === spot.id);
+      if (!entry || !kit) continue;
+      const { sprite } = entry;
+      // The painting's own width share: its painted width is the spot's.
+      const side = spot.width / CAMP_KIT_STYLES[kit.style].paintWidth;
+      sprite.width = side;
+      sprite.height = side;
+      sprite.scale.x = Math.abs(sprite.scale.x) * (spot.mirrored ? -1 : 1);
+      sprite.position.set(spot.x, spot.y);
+      // Behind her (her feet are nearer), in front of anyone further back.
+      sprite.zIndex = spot.y;
+    }
+  }
+
+  function setPackedKits(kits: readonly PackedKit[]): void {
+    packedKits = kits;
+    const wanted = new Map(kits.map((kit) => [kit.id, `${kit.style}:${kit.accent}`]));
+    for (const [id, entry] of packedSprites) {
+      if (wanted.get(id) === entry.key) continue;
+      entry.sprite.destroy();
+      packedSprites.delete(id);
+    }
+    for (const kit of kits) {
+      if (packedSprites.has(kit.id)) continue;
+      const key = `${kit.style}:${kit.accent}`;
+      const sprite = new Sprite();
+      // The kit paintings stand on the figures' canvas ground: (512, 900) of 1024.
+      sprite.anchor.set(0.5, 900 / 1024);
+      sprite.label = `packed:${kit.id}`;
+      sprite.visible = false;
+      actorsLayer.addChild(sprite);
+      packedSprites.set(kit.id, { sprite, key });
+      const art = CAMP_KIT_STYLES[kit.style];
+      void Assets.load<Texture>(art.path)
+        .then((texture) => {
+          if (destroyed || packedSprites.get(kit.id)?.sprite !== sprite) return;
+          const source = (texture.source as { resource?: unknown }).resource;
+          const canvas = source ? campKitCanvas(source as CanvasImageSource, art.cloth, kit.accent) : null;
+          sprite.texture = canvas ? Texture.from(canvas) : texture;
+          sprite.visible = true;
+          layoutPacked(packedSlot);
+        })
+        .catch(() => undefined);
+    }
+    layoutPacked(packedSlot);
   }
 
   function tick(): void {
@@ -1792,9 +1876,19 @@ export function createScene(app: Application): PartyScene {
       camState = setAttention(camState, key);
     },
 
+    setPackedCamp(kits) {
+      if (destroyed) return;
+      setPackedKits(kits ?? []);
+    },
+
+    packedCamp() {
+      return packedSpots.filter((spot) => packedSprites.has(spot.id));
+    },
+
     destroy() {
       destroyed = true;
       app.ticker.remove(tick);
+      packedSprites.clear();
       removeGestures();
       // Leave the stage where the next scene expects to find it — a stage
       // torn down mid-jolt must not bequeath its displacement.

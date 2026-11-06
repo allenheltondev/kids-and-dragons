@@ -84,26 +84,36 @@ Each terrain family (`assets/manifest.json` → `biomeFamilies`, twelve of them)
 backdrop: a wide, calm campsite painting with a wide clearing for the camp, across about the
 middle 80 percent of the width, and its hotspots (§4.2) on a fixed layout. The view picks the
 backdrop from the chapter's biome, and in the lobby from the chapter the crew would pick up from. The lobby and the chapter's end always
-show the full, outdoor camp.
+show the full, outdoor camp. (As built, #625: the lobby pitches in the chapter the room last
+played, which the run state still names after a chapter; a lobby before any chapter, or a screen
+that has not loaded the chapter yet, pitches on the plains. The run state does not yet name the
+next chapter's id, so "would pick up from" waits on that.)
 
 Painting all twelve is a lot of art, so they ship in order of how often a party rests outdoors
-there. These are all rest scenes, counted from the repo on 2026-11-04; once rest scenes are
-tagged (§3.2), recount the outdoor ones before commissioning art:
+there. All rest scenes were counted from the repo on 2026-11-04; the outdoor ones were recounted
+once every rest scene was tagged (§3.2, #625, 2026-11-05): 75 of the 112 are outdoors.
 
-| Terrain family | Rest scenes | Ships |
-| --- | --- | --- |
-| `red_sky_volcanic` | 31 | First wave |
-| `frozen_north` | 26 | First wave |
-| `open_plains` | 25 | First wave, and the fallback for every family not painted yet |
-| `enchanted_forest` | 7 | Second wave |
-| `sky_islands` | 6 | Second wave |
-| `whispering_marsh` | 5 | Second wave |
-| `cliffside_exchange`, `great_river` | 4 each | Third wave |
-| `bone_yard` | 1 | Third wave |
-| `expanse`, `skullwater_caverns`, `mermaid_cove` | 0 | When a chapter rests there |
+| Terrain family | Rest scenes | Outdoor rests | Ships |
+| --- | --- | --- | --- |
+| `red_sky_volcanic` | 31 | 21 | First wave (painted) |
+| `frozen_north` | 26 | 13 | First wave (painted) |
+| `open_plains` | 25 | 18 | First wave (painted), and the fallback for every family not painted yet |
+| `enchanted_forest` | 7 | 6 | Second wave |
+| `sky_islands` | 6 | 4 | Second wave |
+| `whispering_marsh` | 5 | 4 | Second wave |
+| `great_river` | 4 | 4 | Third wave |
+| `cliffside_exchange` | 4 | 1 | Third wave |
+| `bone_yard` | 1 | 1 | Third wave |
+| `expanse`, `skullwater_caverns`, `mermaid_cove` | 0 | 0 | When a chapter rests there |
 
-(`sallow_wastelands`, with 3 rest scenes, is in no family today; it falls back to `open_plains`
-until it is given one.)
+(`sallow_wastelands`, with 3 rest scenes, all outdoors, is in no family today; it falls back to
+`open_plains` until it is given one.)
+
+One function picks the backdrop for every camp that pitches outdoors, the lobby, an outdoor rest
+and the chapter end's beat alike: `campBackdropFamily` in
+`packages/client/src/world/camp-backdrop.ts`, from the chapter's biome through `biomeFamilies`,
+to `open_plains` when the family has no backdrop in `camp.backdrops` yet. Painting a family is
+adding its backdrop to the manifest; nothing else changes.
 
 ### 3.2 Indoor and outdoor rest scenes
 
@@ -127,6 +137,29 @@ without it and nothing has to guess. Tagging today's 112 rest scenes is a one-ti
 scan already flags 31 of them as possibly indoor (rooms, bunks, cupboards, "inside"), but every
 scene gets a human read, since "under the bridge" is outdoors and "a warm room" is not. Tagging
 a Gemfall chapter re-takes its hashes (§10, "Gemfall is pinned").
+
+*Done* (#625): every rest scene is tagged, 75 outdoor and 37 indoor. Besides rooms, huts, caves
+and halls, these are indoor because no campsite fits: a raft, a river floe, a ferry deck, a
+narrow ice-shelf ledge, a paved city quay, and the climbs up Mount Red Sky. A few outdoor rests
+whose words put the party far outside the chapter's terrain (a glacier chapter ending on a
+foothills bank or beside Ashspan Bridge, a harbor chapter's glimpse of snow through the rift) are
+tagged indoor too, so the camp is never pitched in the wrong terrain (§12.6).
+
+How it shows:
+
+- **Outdoors.** As the rest scene opens, the full camp fades in over the scene's picture (about a
+  second; at once under reduced motion), and the scene stops drawing once it is covered. The
+  camp is framed above the narration plate, the way the story stage is. The heroes rest at their
+  bedrolls or tents; nobody lines up at the trailhead, since Ready is the lobby's. Go on fades it
+  off with the next scene already drawn under it. Shared spots can change (`campMoment.outdoor`).
+- **Indoors.** The scene's picture and lineup stay; each hero's bedroll and pack lie on the
+  ground at her side, a step behind her feet, in her kit's style and color (`packed-camp.ts`). The
+  phone's Camp panel shows the same bedrolls in a row instead of the campsite picture, and only
+  each kid's own kit can change.
+
+Whether a rest is outdoors is the server's to say: it reads the scene's `setting` as the rest
+opens and puts it on the moment (`campMoment.outdoor`). A rest it has not said so for is shown
+indoors, so a slow or old server never puts a campsite behind a scene that contradicts it.
 
 ## 4. What is in it
 
@@ -714,7 +747,12 @@ camp's spots on that ground.
   so it waits for stage 2's bigger camp (§11).
 - **Indoors, one lane.** A packed-down camp (§3.2) uses a single generic layout laid over the
   scene's own picture: one near lane along the bottom, a bedroll stand point for each hero and a
-  spot for each friend. No per-scene authoring.
+  spot for each friend. No per-scene authoring. *Built* (#625, `packed-camp.ts`
+  `packedCampSpots`): the lane is the story lineup's own ground line, so the heroes stand where
+  every scene stands them; each hero's bedroll lies at her right, its middle 0.36 of her lineup
+  slot from hers and a step behind her feet (so she and her name are never covered), no wider than
+  0.85 of her slot or 0.7 of her drawn height (a rolled-up bedroll, shorter than she is). The friends' spots are at the two ends of the row,
+  alternating; they are laid out and tested but drawn only once friends exist (#624).
 
 ### 8.4 What figures do there
 
@@ -944,7 +982,8 @@ befriend choice or a rest scene's `setting` to a Gemfall chapter is a deliberate
 reason in the commit. Re-taking those hashes for the camp is approved (*decided*). Nothing here may
 move the gameplay digests below the hashes: `findForCamp`, `findForKit` and `setting` change nothing
 the digests measure (no flag, XP, item or route), and that should be checked when the mosshorn is
-added and the rest scenes are tagged.
+added and the rest scenes are tagged. *Checked* for the rest scenes (#625): all sixteen chapters
+were re-hashed and the endings, roads, setbacks and resumed-save digests did not move.
 
 ## 11. Decisions and open questions
 

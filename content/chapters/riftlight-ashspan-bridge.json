@@ -2119,6 +2119,7 @@
     },
     "rest_hut": {
       "type": "rest",
+      "setting": "indoor",
       "narration": "Bryn lights a stove in the bridge-house. It smells of oats, and a little of goat. Ossley points to a raised footpath into the Whispering Marsh. \"A school called the Academy is up there,\" he says. Long pause. \"They made me a reed mat. Nobody has fetched it. Follow the posts. The ducks take shortcuts. You should not.\"",
       "heal": 3,
       "cast": [
@@ -2282,6 +2283,7 @@
     },
     "routes": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "The bridge is whole, and the landing is safe. So here is tonight's piece: the stone that holds up the middle of Ashspan is not from here. It was here before the bridge, and nobody knows where it came from. Something is moving the land. What is it? And can you put things right? Ossley points downriver to the Saltrot, up the road to the boundary stones, and north along the upper bank road to Frostfang Shore. \"Long walk. Griffin country at the end.\" Whichever way you go, he is generally going it too.",
       "heal": 0,
       "cast": [
@@ -2326,6 +2328,7 @@
     },
     "village_rest": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "You rest by the dry mat. A round tower rises above the reeds. It has no roof. A page of homework floats down and lands on a duck. The duck looks proud of its marks.",
       "heal": 0,
       "cast": [],

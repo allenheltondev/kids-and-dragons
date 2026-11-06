@@ -327,6 +327,7 @@ export function makeChapter(): Chapter {
       },
       scene_camp: {
         type: "rest",
+        setting: "indoor",
         narration: "A hollow out of the wind.",
         heal: 3,
         choices: [{ id: "sleep", label: "Sleep", icon: "moon", goto: "scene_ridge" }],

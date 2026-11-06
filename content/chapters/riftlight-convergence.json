@@ -678,6 +678,7 @@
     },
     "rest": {
       "type": "rest",
+      "setting": "indoor",
       "art": "scenes/riftlight/convergence-ledge",
       "heal": 2,
       "narration": "Orin opens the supper bag: dried apple rings and warm water. Pip pins a page down with an apple ring, then eats the paperweight. Lady Olivia sits apart, staring at the passage. Bram sits with his back to his line, like a wall with ears. Where will you sit?",

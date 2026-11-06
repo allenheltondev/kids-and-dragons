@@ -1909,6 +1909,7 @@
     },
     "rest": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "Tally shares ember toffee, warm in the middle, counted out one each. Pip's piece glues his teeth together. \"Room for one big drawing to carry,\" he says, muffled, opening his notebook. Tally's road plan would help wherever the land moves next. A rubbing of the Eldest's carving keeps its old mountain, to compare with other stones. Which will Pip carry?",
       "cast": [
         {

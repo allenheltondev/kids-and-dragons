@@ -54,6 +54,7 @@ const chapter: Chapter = {
     },
     camp: {
       type: "rest",
+      setting: "outdoor",
       narration: "A fire.",
       choices: [
         { id: "win", label: "Home", icon: "home", goto: "win_end" },

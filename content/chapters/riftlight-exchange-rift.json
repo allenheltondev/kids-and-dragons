@@ -1161,6 +1161,7 @@
     },
     "quay_rest": {
       "type": "rest",
+      "setting": "indoor",
       "narration": "The pilot tosses up a bag of warm potato skins, salty and perfect. You eat them on a crate. Behind the stalls, a ladder climbs the harbor master's house to the rooftops. From up there comes a lot of cawing, all of it on purpose. \"Crows,\" says the pilot, rolling his eyes. \"They run a school up there. Do not mess with them.\"",
       "heal": 2,
       "choices": [
@@ -2365,6 +2366,7 @@
     },
     "white": {
       "type": "rest",
+      "setting": "indoor",
       "narration": "White slopes rise all around. Far below, water runs under a skin of ice. So this is where the snow on the quay came from: a mountain, on the other side of a tear in the air. But how can a harbor and a mountain touch? The kid peeks out at the empty snow and climbs straight back into your coat. Somewhere beyond the ridge, a bell rings.",
       "heal": 0,
       "choices": [],

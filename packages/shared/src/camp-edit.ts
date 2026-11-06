@@ -34,6 +34,7 @@ import type {
   KitPieceId,
 } from "./types/camp.js";
 import type { RunState } from "./types/state.js";
+import type { Chapter, RestSetting } from "./types/chapter.js";
 
 /**
  * Shared changes each seated player may make in one downtime moment (§6.1,
@@ -76,12 +77,34 @@ export function scopeOfMoment(moment: CampMoment): string {
  * A new moment for `state`, or null outside downtime. Its id leads with its
  * scope (`scopeOfMoment`), then `stamp`, which the server makes unique (the
  * run and the seq that began it).
+ *
+ * The lobby and the chapter's end are always the full, outdoor camp. A rest is
+ * outdoors only when its scene says so (`RestScene.setting`, §3.2; #625), which
+ * the caller reads off the chapter (`restSettingOf`); a rest it could not read
+ * is indoors, the packed-down camp, which shows nothing a scene could contradict.
  */
-export function newCampMoment(state: Pick<RunState, "phase" | "sceneType" | "sceneId">, stamp: string): CampMoment | null {
+export function newCampMoment(
+  state: Pick<RunState, "phase" | "sceneType" | "sceneId">,
+  stamp: string,
+  restSetting?: RestSetting | null,
+): CampMoment | null {
   const kind = campMomentKind(state);
   const scope = campMomentScope(state);
   if (kind === null || scope === null) return null;
-  return { id: `${scope}|${stamp}`, kind, outdoor: kind !== "rest", changes: {} };
+  return { id: `${scope}|${stamp}`, kind, outdoor: kind !== "rest" || restSetting === "outdoor", changes: {} };
+}
+
+/**
+ * The setting of the rest scene `state` is on (§3.2), read off its chapter;
+ * null anywhere else, or when `chapter` is not the one the state is in.
+ */
+export function restSettingOf(
+  chapter: Pick<Chapter, "id" | "scenes"> | null | undefined,
+  state: Pick<RunState, "chapterId" | "sceneId" | "sceneType">,
+): RestSetting | null {
+  if (!chapter || state.sceneType !== "rest" || !state.sceneId || chapter.id !== state.chapterId) return null;
+  const scene = chapter.scenes[state.sceneId];
+  return scene?.type === "rest" ? scene.setting ?? null : null;
 }
 
 /**
@@ -103,11 +126,12 @@ export function followCampMoment(
   before: CampMoment | undefined,
   after: Pick<RunState, "phase" | "sceneType" | "sceneId">,
   stamp: string,
+  restSetting?: RestSetting | null,
 ): CampMoment | undefined {
   const scope = campMomentScope(after);
   if (scope === null) return undefined;
   if (before && scopeOfMoment(before) === scope) return before;
-  return newCampMoment(after, stamp) ?? undefined;
+  return newCampMoment(after, stamp, restSetting) ?? undefined;
 }
 
 // ---------------------------------------------------------------------------

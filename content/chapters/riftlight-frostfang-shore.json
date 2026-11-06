@@ -1118,6 +1118,7 @@
     },
     "rest_fire": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "Tamsin breaks open a driftwood log. Its heart is dry, and it catches at the first spark. For a few minutes, the shore is cozy. Steam rises from the goats, and from your socks. One sock smells like river pudding. \"We climb next,\" says Tamsin. \"But nobody climbs my ladder with stiff fingers.\"",
       "heal": 3,
       "cast": [
@@ -1936,6 +1937,7 @@
     },
     "climb": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "The dry path runs along the ridge toward the notch, up a line of stacked stones. Far below, the river mutters above every line of Tamsin's paint. So here is tonight's piece: the river has climbed higher than it ever has, and your chime leaned toward the glacier. Something is moving the land. What is it? And can you put things right? The Cairnstep is next, where Brask keeps the pass ledger.",
       "heal": 2,
       "cast": [

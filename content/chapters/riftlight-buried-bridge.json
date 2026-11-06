@@ -1767,6 +1767,7 @@
     },
     "rest": {
       "type": "rest",
+      "setting": "outdoor",
       "heal": 2,
       "narration": "On the high bank, Puddle opens her floating lunch box: kelp rolls wrapped in leaves. \"Guides eat first,\" she says, and does. Orin shares his sandwiches, slightly squashed. Across the water, the round stone door at the far end of the bridge sits sealed with silt and shells. \"Well,\" says Orin, wiping his beak. \"Shall I tell you what I think?\"",
       "cast": [

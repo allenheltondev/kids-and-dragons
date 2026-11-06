@@ -1535,6 +1535,7 @@
     },
     "rest_row": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "The sun slides toward the hills. \"Nobody walks anywhere hungry,\" says Tally. She pours tea into cups that do not match, and counts the cups, and the runner. The river hurries by, a little lower than before.",
       "heal": 3,
       "cast": [
@@ -1713,6 +1714,7 @@
     },
     "bank_rest": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "\"I walk to the counting circle at first light,\" says Tally. \"You're welcome to come.\" A road also follows the east bank to a crossing called Ashspan Bridge. So here is tonight's piece: the river came higher than any notch in the count, and that is why it shoved the stones. But the oldest stone shows a mountain that burned when no count says it could, and a peak that is not shaped like ours. Something is moving the land. What is it? And can you put things right?",
       "heal": 0,
       "cast": [

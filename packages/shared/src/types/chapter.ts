@@ -488,8 +488,27 @@ export interface ChoicePointScene {
   endsCampaign?: true;
 }
 
+/**
+ * Where a rest happens (docs/camp.md §3.2, #625), which decides what the
+ * shared screen shows while it is up:
+ *
+ *   - `"outdoor"`: somewhere a campsite could be pitched. The picture
+ *     crossfades to the crew's full camp in the chapter's terrain, with the
+ *     scene's narration on its plate, and the crew's shared spots can change.
+ *   - `"indoor"`: everywhere else, including outdoor places no campsite fits
+ *     (a boat deck, a narrow ledge, a climb). The scene keeps its own picture
+ *     and the camp is packed down into it: each hero's bedroll and pack along
+ *     the front. No tents, no campfire, no shared spots.
+ *
+ * Presentation only: nothing at play time but the camp reads it, so it moves
+ * no flag, XP, item or route.
+ */
+export type RestSetting = "indoor" | "outdoor";
+
 export interface RestScene {
   type: "rest";
+  /** Indoors or out; required, so nothing has to guess. See `RestSetting`. */
+  setting: RestSetting;
   art?: string;
   music?: string;
   narration: string;

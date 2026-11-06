@@ -1592,6 +1592,7 @@
     },
     "rest_under_the_table": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "You sleep under your table, between the two camps. In the night, a warden and a mask both come to borrow the teapot. They stand there, not looking at each other, until somebody says please. Patch up your scrapes.",
       "heal": 3,
       "choices": [
@@ -2340,6 +2341,7 @@
     },
     "rest_up_the_mountain": {
       "type": "rest",
+      "setting": "indoor",
       "narration": "At the tree line you look back. Wardens, masks and mules are running downhill, together for once. You turn and climb the mountain everyone else is leaving. You said hold it. Now you find out.",
       "variants": [
         {
@@ -2373,6 +2375,7 @@
     },
     "ending_lost_in_echoes": {
       "type": "rest",
+      "setting": "indoor",
       "narration": "By the time the echoes let you go, the caravan is long gone, and the ground shakes in a slow, patient rhythm. Nobody is at the table. You climb anyway, far behind, humming to keep your courage up.",
       "onEnter": [
         {

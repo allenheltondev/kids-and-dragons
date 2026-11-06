@@ -40,7 +40,9 @@ import { Icon } from "./icons";
 import { StillCamp, TentStandIn } from "../world/StillCamp";
 import { CampBedroll, CampTent } from "../world/CampBedroll";
 import { CAMP_KIT_STYLES, campKitStyle, type CampKitStyle } from "../world/camp-kit-art";
-import { campLayoutFor, campStage } from "../world/lobby-camp";
+import { campFamilyFor, campLayoutFor, campStage } from "../world/lobby-camp";
+import { packedKits } from "../world/packed-camp";
+import { useChapter } from "../store";
 import {
   KIT_RULES,
   campBeside,
@@ -386,6 +388,27 @@ function SharedSpots({
   );
 }
 
+/**
+ * The camp packed down, as a phone shows it at an indoor rest (§3.2): each
+ * seated hero's bedroll and pack in her color, with her name, in a row. The
+ * friends (#624) sit at its ends once they come along (packed-camp.ts).
+ */
+function PackedCamp({ state }: { state: RunState }): ReactElement {
+  const names = new Map(state.party.map((m) => [m.character.id, m.character.name]));
+  return (
+    <ul className="camp-panel__packed" aria-label="Packed camp" data-testid="camp-packed">
+      {packedKits(state).map((kit) => (
+        <li key={kit.id} className="camp-panel__packed-kit">
+          <span className="camp-panel__packed-art" aria-hidden="true">
+            <CampBedroll style={kit.style} accent={kit.accent} />
+          </span>
+          <span className="camp-panel__packed-name">{names.get(kit.id) ?? ""}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 /** The panel itself: a picture and its named controls. Open only in downtime. */
 export function CampPanel({ state, me, held, dispatch }: { state: RunState; me: PartyMember; held: boolean; dispatch: Dispatch }): ReactElement | null {
   const open = useSyncExternalStore(onCampPanel, campPanelOpen, campPanelOpen);
@@ -393,6 +416,7 @@ export function CampPanel({ state, me, held, dispatch }: { state: RunState; me: 
   const [active, setActive] = useState<string | null>(null);
   const headingRef = useRef<HTMLHeadingElement | null>(null);
   const titleId = useId();
+  const chapter = useChapter();
   // Begin, Go on, back to the lobby: the panel goes with the downtime (§3, §12.6).
   useEffect(() => {
     if (kind === null) closeCampPanel();
@@ -409,8 +433,10 @@ export function CampPanel({ state, me, held, dispatch }: { state: RunState; me: 
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
   if (!open || kind === null) return null;
-  // Indoors the camp is packed down to bedrolls and packs (§3.2).
-  const layout = campLayoutFor(state.campMoment?.outdoor === false ? 1 : campStage(state));
+  // Indoors the camp is packed down to bedrolls and packs (§3.2): no campsite
+  // painting, no tents and no campfire, only each hero's own kit, set down.
+  const indoors = state.campMoment?.outdoor === false;
+  const layout = indoors ? null : campLayoutFor(campStage(state), campFamilyFor(state, chapter));
   const mine = state.party.filter((m) => m.playerId === me.playerId);
   return (
     <div className="camp-panel" role="dialog" aria-modal="true" aria-labelledby={titleId} data-testid="camp-panel">
@@ -431,6 +457,7 @@ export function CampPanel({ state, me, held, dispatch }: { state: RunState; me: 
             <StillCamp layout={layout} state={state} fit="width" activeSpot={active} {...(state.campMoment?.outdoor ? { onSpot: setActive } : {})} />
           </div>
         ) : null}
+        {indoors ? <PackedCamp state={state} /> : null}
         {mine.map((member) => {
           const kit = state.kits?.[member.character.id];
           return kit ? <KitEditor key={member.character.id} member={member} kit={kit} held={held} dispatch={dispatch} /> : null;

@@ -46,6 +46,7 @@ import {
   placeProblem,
   placeRefusalText,
   readKit,
+  restSettingOf,
   withKitEdit,
   withPlaced,
 } from "@kad/shared";
@@ -291,6 +292,8 @@ export async function prepareKitEdit(
  *
  *   - the downtime moment: kept while the table stays in it, a fresh one (an
  *     empty count) as it enters another, gone in a scene, a check or a fight;
+ *     A rest's moment is outdoors (shared spots may change) only where its
+ *     scene's `setting` says so (§3.2); every other rest is packed down;
  *   - the camp view at a rest scene, read as the rest opens (the lobby's and
  *     the chapter end's are set where those begin); the stage-up flag is the
  *     chapter end's alone;
@@ -306,7 +309,9 @@ export async function syncCampDowntime(
   input: { run: Pick<RunRecord, "householdId">; stamp: string; created?: string },
   deps: CampDeps,
 ): Promise<RunState> {
-  const moment = followCampMoment(state.campMoment, state, input.stamp);
+  // A rest is the full camp only where its scene is outdoors (§3.2; #625).
+  const restSetting = state.chapterId && state.sceneType === "rest" ? restSettingOf(deps.content.chapter(state.chapterId), state) : null;
+  const moment = followCampMoment(state.campMoment, state, input.stamp, restSetting);
   const next: RunState = { ...state };
   if (moment === undefined) {
     delete next.campMoment;

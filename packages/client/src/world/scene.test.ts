@@ -335,6 +335,38 @@ describe("the cast", () => {
   });
 });
 
+describe("the camp packed down at an indoor rest (docs/camp.md §3.2, #625)", () => {
+  it("lays each hero's bedroll beside her in the scene's own picture, and nothing else of the camp", async () => {
+    const load = vi.spyOn(Assets, "load").mockResolvedValue(Texture.WHITE as unknown as Record<string, unknown>);
+    const { scene: s, app } = scene();
+    try {
+      s.setBiome("glacier_of_origins", "scenes/riftlight/wyrm-nest");
+      s.setParty([member(), member({ character: character({ id: "c_2", ownerPlayerId: "p_2", name: "Thistle" }) })]);
+      s.setPackedCamp([
+        { id: "c_1", style: "rolled", accent: "#7FD4C1" },
+        { id: "c_2", style: "patched", accent: "#E8A33D" },
+      ]);
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      const spots = s.packedCamp();
+      expect(spots.map((spot) => spot.id)).toEqual(["c_1", "c_2"]);
+      // On her right, a step behind her feet, and each its own.
+      const heroes = [figureFor(app, "Sparklehoof")!, figureFor(app, "Thistle")!];
+      expect(spots[0]!.x).toBeGreaterThan(heroes[0]!.x);
+      expect(spots[0]!.x).toBeLessThan(heroes[1]!.x);
+      expect(spots[0]!.width).toBeGreaterThan(0);
+      // The kit paintings, and only them: no campsite backdrop, tent or campfire was asked for.
+      expect(load).toHaveBeenCalledWith("/assets/camp/kits/rolled.png");
+      expect(load).toHaveBeenCalledWith("/assets/camp/kits/patched.png");
+      const asked = load.mock.calls.map((call) => String(call[0]));
+      expect(asked.some((url) => url.includes("camp/backdrops") || url.includes("tent") || url.includes("campfire"))).toBe(false);
+      expect(asked).toContain("/assets/scenes/riftlight/wyrm-nest.webp");
+      // Gone with the rest.
+      s.setPackedCamp(null);
+      expect(s.packedCamp()).toEqual([]);
+    } finally { s.destroy(); load.mockRestore(); }
+  });
+});
+
 // ---------------------------------------------------------------------------
 // Fixtures
 // ---------------------------------------------------------------------------

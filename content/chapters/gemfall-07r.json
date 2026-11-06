@@ -1515,6 +1515,7 @@
     },
     "rest_way_shelter": {
       "type": "rest",
+      "setting": "indoor",
       "narration": "The way-shelter's bell is tied up with ribbon, so nobody rings it by accident. There is soup, a cat, and a wall of children's drawings of the mountain. Patch up your scrapes. Tomorrow is the worst bend.",
       "heal": 2,
       "choices": [
@@ -2280,6 +2281,7 @@
     },
     "rest_tree_line": {
       "type": "rest",
+      "setting": "indoor",
       "narration": "At the tree line, you look back. Everyone else is running downhill, even a man with an empty wheelbarrow. You turn and climb, arms full of stones that want to go home.",
       "onEnter": [
         {
@@ -2314,6 +2316,7 @@
     },
     "ending_scattered": {
       "type": "rest",
+      "setting": "indoor",
       "narration": "By the time you find half the stones, the caravan has passed the bend without you. The ground shakes in a slow, patient rhythm. You pick up what you can carry and climb anyway, far behind.",
       "onEnter": [
         {

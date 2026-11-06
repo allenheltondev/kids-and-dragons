@@ -581,6 +581,7 @@
     },
     "rest_waystation": {
       "type": "rest",
+      "setting": "indoor",
       "narration": "The centaurs feed you oat-cakes and pack you a supper bundle. Then they argue about whose stitching is neatest. \"Mine,\" sniffs the warden. Rest a while in the hay.",
       "cast": [
         {
@@ -871,6 +872,7 @@
     },
     "rest_pride_fire": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "Pride fire is the best fire. The cubs fall asleep on your boots. Out in the dark, the stone you left hums alone. Tomorrow, north to the broken bridge.",
       "cast": [
         {
@@ -903,6 +905,7 @@
     },
     "rest_wolf_fire": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "By midnight the cinder wolves are stacked in a glowing pile across the fire. It is the warmest camp ever. Tomorrow, north to the broken bridge.",
       "cast": [
         {
@@ -930,6 +933,7 @@
     },
     "rest_scattered": {
       "type": "rest",
+      "setting": "outdoor",
       "narration": "Nobody is hurt. The wolves just wanted the warm more than you did. You sleep under a cart cover. By morning, your camp is spread across a mile of grass. The Pride Stone hums, not sorry at all.",
       "heal": 3,
       "outcome": "setback",

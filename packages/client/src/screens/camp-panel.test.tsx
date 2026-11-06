@@ -214,6 +214,12 @@ describe("the Camp panel's controls (§12.6, docs/accessibility.md)", () => {
     expect(screen.getByTestId("camp-indoors")).toBeTruthy();
     expect(screen.queryByTestId("camp-limit-rule")).toBeNull();
     expect(screen.getByRole("group", { name: "Tent" })).toBeTruthy();
+    // Packed down (§3.2, #625): no campsite painting, tent or campfire, only each hero's bedroll and pack.
+    expect(document.querySelector(".kad-static-camp")).toBeNull();
+    expect(document.querySelector(".kad-static-camp__backdrop")).toBeNull();
+    const packed = screen.getByTestId("camp-packed");
+    expect(packed.querySelectorAll("li").length).toBeGreaterThan(0);
+    expect(packed.querySelectorAll("[data-camp-kit]").length).toBe(packed.querySelectorAll("li").length);
   });
 
   it("goes with the downtime: Begin closes it, and there is no Camp button in a scene", () => {

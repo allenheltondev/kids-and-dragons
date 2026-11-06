@@ -943,6 +943,7 @@
     },
     "rest": {
       "type": "rest",
+      "setting": "indoor",
       "heal": 2,
       "narration": "When your hearts stop thumping, the builders lead you into their side cave and share oat cakes from a tool tin. One cake is shaped like a chisel. \"My best work,\" says the builder who baked it. Flurry knits very fast, the way she does when she's thinking. Pip draws the wyrm, and gives it a little hat.",
       "variants": [

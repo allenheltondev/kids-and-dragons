@@ -546,6 +546,7 @@
     },
     "rest_mossbank": {
       "type": "rest",
+      "setting": "outdoor",
       "art": "scenes/bramblewood/shrine",
       "narration": "The moss on the bank below the hill is warm where the sun got to it, and the humming is not going anywhere. Somebody shares out whatever survived the day. Sit a while. This is the part of an afternoon where you notice you have got a little bit better at something.",
       "heal": 3,
@@ -626,6 +627,7 @@
     },
     "rest_lanternfall": {
       "type": "rest",
+      "setting": "outdoor",
       "art": "scenes/bramblewood/lanternfall",
       "narration": "You camp in the doorway with the lantern moths drifting up around you like sparks going the wrong way. Whoever is inside has stopped humming and started snoring. Whatever the Hollow Crown is, it is on the other side of this hill, and that is tomorrow's problem. Share out your things, patch each other up, and get some sleep.",
       "heal": 4,

@@ -8,7 +8,7 @@
 import { readFileSync } from "node:fs";
 import { expect } from "vitest";
 import { applyIntent, createRunState } from "@kad/shared";
-import type { ActionResponse, CampCatalog, CampRecord, Campaign, Chapter, ChannelMessage, ClientIntent, InteractionScene, RunState, ServerMessage } from "@kad/shared";
+import type { ActionResponse, CampCatalog, CampRecord, Campaign, Chapter, ChannelMessage, ClientIntent, InteractionScene, RestSetting, RunState, ServerMessage } from "@kad/shared";
 import type { Engine } from "../engine/port.ts";
 import { makeChapter, makeContent, makeHarness, seedHousehold, type TestHarness } from "../test-support.ts";
 import type { CommitInput } from "../store/repository.ts";
@@ -74,9 +74,13 @@ const PRACTICE: Campaign = { id: "first-steps", title: "First Steps", blurb: "",
  * campaign boundary never fires). With `practice`, the paying chapter is the
  * meadow's own, played the way the server plays the practice.
  */
-export const harnessFor = (catalog: CampCatalog | null = CATALOG, options: { practice?: boolean } = {}): TestHarness => {
-  const meadow = { ...payingChapter(), id: PRACTICE_CHAPTER, campaignId: PRACTICE.id };
-  const chapters = options.practice ? [meadow] : [payingChapter(), meadow];
+export const harnessFor = (catalog: CampCatalog | null = CATALOG, options: { practice?: boolean; restSetting?: RestSetting } = {}): TestHarness => {
+  const paying = payingChapter();
+  // The fixture's rest is indoors; a test of the outdoor camp at a rest (§3.2) moves it outside.
+  const camp = paying.scenes["scene_camp"];
+  if (options.restSetting && camp?.type === "rest") camp.setting = options.restSetting;
+  const meadow = { ...paying, id: PRACTICE_CHAPTER, campaignId: PRACTICE.id };
+  const chapters = options.practice ? [meadow] : [paying, meadow];
   return makeHarness({ engine: realEngine, content: makeContent({ chapters, campaigns: [PRACTICE], campCatalog: catalog }), playtest: true });
 };
 
