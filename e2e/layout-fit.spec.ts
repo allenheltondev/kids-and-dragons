@@ -388,7 +388,7 @@ async function misfits(page: Page): Promise<string[]> {
  * before they load, and nothing else on the screen may move, or fit any worse, when they arrive.
  */
 async function shiftsWhenTheRowLoads(page: Page): Promise<string[]> {
-  const where = (): Promise<Record<string, string>> =>
+  const where = (): Promise<Record<string, number[]>> =>
     page.evaluate(() => {
       const out: Record<string, number[]> = {};
       const things = [...document.querySelectorAll("h1, h2, h3, p, button, input, img[alt]:not([alt=''])")].filter(
