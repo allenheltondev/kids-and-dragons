@@ -946,3 +946,119 @@ test("an outdoor rest's camp stands below the goal card, none of it under it, at
     await context.close();
   }
 });
+
+/*
+ * The host's "Stop here for today" offer at the same outdoor rest. It stood in the shared screen's
+ * right-hand column, over the stage, and for its fifteen seconds covered the right of the camp:
+ * heroes, the banner pole, the crew's name. Now it stands in the narration (ui/story-dock.ts):
+ * beside the goal card where the head has room, else at the end of the choices' row on the plate,
+ * and the camp is framed between the two. At every TV size and the largest text, no hero, tent,
+ * frame piece or name is under it.
+ */
+test("the host's stop offer at an outdoor rest stands on none of the camp, at every TV size", async ({ browser }) => {
+  test.setTimeout(180_000);
+  const table = await seedTable({
+    mode: "party",
+    tv: true,
+    heroes: [
+      { name: "Moss", species: "bigfoot" }, { name: "Kit", species: "kitsune" },
+      { name: "Aster", species: "unicorn" }, { name: "Fern", species: "griffin" },
+    ],
+    chapterId: "riftlight-frostfang-shore",
+    sceneId: "rest_fire",
+    camp: {
+      grownBy: ["gemfall", "riftlight"],
+      friends: ["bun", "mosshorn", "duckling", "kid_goat"],
+      owned: ["find_picnic_blanket", "find_wagon_lantern", "find_noodle_awning", "shop_kettle_cookfire", "trophy_gemfall", "trophy_riftlight"],
+      placed: { friends_corner: "find_picnic_blanket", lanterns: "find_wagon_lantern", awning: "find_noodle_awning", cookfire: "shop_kettle_cookfire", trophy_1: "trophy_gemfall", trophy_2: "trophy_riftlight" },
+    },
+  });
+  // The offer puts itself away after fifteen seconds (HostControls.tsx STOP_OFFER_MS, timed in
+  // tv-read-only.spec.ts); this test is about where it stands, so its clock is held for the
+  // walk through the sizes. Reduced motion: the camp is framed where it is headed at once.
+  const { context, page: tv } = await openTv(browser, table, { reducedMotion: "reduce" }, (ctx) =>
+    ctx.addInitScript(() => {
+      const later = window.setTimeout;
+      window.setTimeout = ((handler: TimerHandler, ms?: number, ...rest: unknown[]) =>
+        ms === 15_000 ? 0 : later(handler, ms, ...rest)) as typeof window.setTimeout;
+    }),
+  );
+  try {
+    await onAir(tv);
+    const offer = tv.locator(".kad-host__offer");
+    await expect(offer).toBeVisible(TAP);
+    await expect(offer.getByRole("button", { name: "Stop here for today" })).toBeVisible();
+    const sizes = [
+      { width: 1024, height: 600, text: "normal" }, { width: 1280, height: 720, text: "normal" },
+      { width: 1366, height: 768, text: "normal" }, { width: 1920, height: 1080, text: "normal" },
+      { width: 1280, height: 720, text: "largest" }, { width: 1024, height: 600, text: "largest" },
+    ];
+    for (const size of sizes) {
+      await tv.setViewportSize(size);
+      await settings(tv, size.text as Text, "off");
+      const where = `${size.width}x${size.height} ${size.text} text`;
+      type Seen = {
+        offer: { left: number; top: number; right: number; bottom: number };
+        inStory: boolean;
+        window: { top: number; bottom: number } | null;
+        band: number | null;
+        figures: Record<string, { top: number; bottom: number }>;
+        pieces: Record<string, { left: number; top: number; right: number; bottom: number }>;
+      };
+      let seen: Seen | null = null;
+      // The moving camp's own measure (camp.ts `fitted`, `figures`), or the still one's pieces where
+      // the TV has no WebGL (StillCamp.tsx), as in the goal card's check above; polled until the
+      // camp has settled for this size.
+      await expect.poll(async () => {
+        seen = await tv.evaluate((): Seen | null => {
+          const box = document.querySelector(".kad-host__offer")?.getBoundingClientRect();
+          if (!box) return null;
+          const offer = { left: box.left, top: box.top, right: box.right, bottom: box.bottom };
+          const inStory = document.querySelector(".narration__dock .kad-host__offer") !== null;
+          const figures: Seen["figures"] = {};
+          const pieces: Seen["pieces"] = {};
+          type Fig = { id: string; y: number; lift: number; heightPx: number; alpha: number };
+          const camp = (globalThis as { __kadCamp?: () => { camp(): { view: { y: number; scale: { y: number } }; figures(): Fig[]; fitted(): { window: { top: number; bottom: number }; fit: { band: { top: number }; framing: { y: number; scale: number } } } | null } | null } | null })
+            .__kadCamp?.()?.camp();
+          if (camp) {
+            const fitted = camp.fitted();
+            if (!fitted) return null;
+            const { view } = camp;
+            for (const f of camp.figures()) {
+              if (f.alpha > 0) figures[f.id] = { top: view.y + (f.y - f.lift - f.heightPx) * view.scale.y, bottom: view.y + f.y * view.scale.y };
+            }
+            // The band in pane px: the canvas is 1080 tall (assets/manifest.json camp.canvas).
+            const band = fitted.fit.framing.y + fitted.fit.band.top * 1080 * fitted.fit.framing.scale;
+            return { offer, inStory, window: fitted.window, band, figures, pieces };
+          }
+          const still = document.querySelector("[data-testid='static-camp']");
+          if (!still) return null;
+          still.querySelectorAll<HTMLElement>(".kad-static-camp__hero, .kad-static-camp__piece").forEach((el, i) => {
+            const r = el.getBoundingClientRect();
+            if (r.height > 0) pieces[el.dataset.hero ?? el.dataset.friend ?? String(i)] = { left: r.left, top: r.top, right: r.right, bottom: r.bottom };
+          });
+          return { offer, inStory, window: null, band: null, figures, pieces };
+        });
+        return seen !== null && Object.keys(seen.figures).length + Object.keys(seen.pieces).length >= 4;
+      }, { ...TAP, message: `${where}: the rest's camp is up beside the stop offer` }).toBe(true);
+      const { offer, inStory, window: frame, band, figures, pieces } = seen!;
+      expect.soft(inStory, `${where}: the offer is drawn in the narration, not the column over the stage`).toBe(true);
+      // Above the camp (beside the goal card) or below it (on the plate), never across it.
+      const clear = (top: number, bottom: number): boolean => bottom <= offer.top + 0.5 || top >= offer.bottom - 0.5;
+      if (frame !== null) {
+        expect.soft(clear(frame.top, frame.bottom), `${where}: the camp's window (${Math.round(frame.top)}-${Math.round(frame.bottom)}) is clear of the offer (${Math.round(offer.top)}-${Math.round(offer.bottom)})`).toBe(true);
+      }
+      if (band !== null && frame !== null) {
+        expect.soft(clear(band, frame.bottom), `${where}: no tent, frame piece or name (from ${Math.round(band)}) is under the offer (${Math.round(offer.top)}-${Math.round(offer.bottom)})`).toBe(true);
+      }
+      const underFigures = Object.entries(figures).filter(([, f]) => !clear(f.top, f.bottom)).map(([id, f]) => `${id} at ${Math.round(f.top)}-${Math.round(f.bottom)}`);
+      expect.soft(underFigures, `${where}: no hero or friend is under the offer (${Math.round(offer.top)}-${Math.round(offer.bottom)})`).toEqual([]);
+      const over = (p: { left: number; top: number; right: number; bottom: number }): boolean =>
+        Math.min(p.right, offer.right) - Math.max(p.left, offer.left) > 1 && Math.min(p.bottom, offer.bottom) - Math.max(p.top, offer.top) > 1;
+      const underPieces = Object.entries(pieces).filter(([, p]) => over(p)).map(([id]) => id);
+      expect.soft(underPieces, `${where}: no piece of the still camp is under the offer`).toEqual([]);
+    }
+  } finally {
+    await context.close();
+  }
+});
