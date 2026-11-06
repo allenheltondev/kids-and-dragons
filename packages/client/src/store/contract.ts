@@ -110,6 +110,12 @@ export interface JournalLoad {
   journal: JournalResponse;
   /** ISO, when this is a saved copy because the server could not be reached. */
   savedAt: string | null;
+  /**
+   * ISO, when the camp in this book was read, when that is older than the rest
+   * of it: the server could not read the camp just now, and the saved copy's
+   * is shown (#656). Absent: the camp is as fresh as the book.
+   */
+  campSavedAt?: string;
 }
 
 export interface GameStore {

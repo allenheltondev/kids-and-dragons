@@ -3,9 +3,12 @@
  *
  * A phone that is not in a game can still open the things a game leaves
  * behind and just look: your hero, the bag they carry, the atlas with every
- * country the household has found, the story so far, and the Field Guide.
- * Nothing here sends an intent or can change anything, so there is nothing
- * to get wrong — it is the book you leaf through in the car, not the table.
+ * country the household has found, the story so far, the Field Guide, and the
+ * crew's camp. Nothing here sends an intent or can change anything anybody
+ * else owns, so there is nothing to get wrong — it is the book you leaf
+ * through in the car, not the table. The one thing a kid changes here is her
+ * own hero's kit and buddy, in Camp (CampPane.tsx; docs/camp.md §7), queued on
+ * the phone when there is no signal and sent when it returns.
  *
  * Shaped like Travel Mode on purpose (layout/TravelLayout.tsx): one surface at
  * a time over the same tray of objects, so the journal and the game feel like
@@ -28,6 +31,9 @@ import { useGameStore, useItems, useWorld } from "../store";
 import { setFieldGuideDiscoveries } from "../store/field-guide-discoveries";
 import { setJournalFinders } from "../store/journal-finders";
 import { loadPlayerDeviceToken } from "../store/persistence";
+import { dropKitQueue, hasQueuedKitChanges } from "../store/kit-queue";
+import { flushKitQueue, type ApplyKit } from "../store/book-kit-sync";
+import { ApiError } from "../sync/client";
 import { useBackStep } from "../store/back-steps";
 import { selectGuideEntry } from "../store/player-navigation";
 import { Button } from "../ui/Button";
@@ -48,7 +54,7 @@ import "../styles/chrome.css";
 import { PrivacyFooter } from "../ui/PrivacyFooter";
 
 /** `story` and `me` are the hero's own, opened from the Hero page rather than from the shelf. */
-export type JournalPane = "hero" | "map" | "story" | "guide" | "me";
+export type JournalPane = "hero" | "map" | "story" | "guide" | "me" | "camp";
 
 /**
  * Her own page (#299) is a chunk of its own, fetched the first time "My page" is
@@ -59,6 +65,9 @@ const ProfilePane = lazyChunk(() => import("./ProfilePane"), (module) => module.
 
 /** The story so far (#358): its own chunk too, fetched the first time "Story" is opened. */
 const StoryPane = lazyChunk(() => import("./StoryPane"), (module) => module.default);
+
+/** The crew's camp (#629; docs/camp.md §7): its own chunk, fetched the first time "Camp" is opened. */
+const CampPane = lazyChunk(() => import("./CampPane"), (module) => module.default);
 
 /**
  * A saved hero as the sheet and the atlas want them: a party member at full
@@ -78,7 +87,7 @@ export function restingMember(hero: ResolvedCharacter): PartyMember {
 type Load =
   | { status: "loading" }
   /** `savedAt` set: last time's book, because the server could not be reached. */
-  | { status: "ready"; journal: JournalResponse; savedAt: string | null }
+  | { status: "ready"; journal: JournalResponse; savedAt: string | null; campSavedAt?: string }
   /** This phone has never played: no binding, so nobody to look at. */
   | { status: "new" }
   | { status: "failed" };
@@ -116,9 +125,13 @@ export function JournalScreen(): ReactElement {
     setLoad((was) => (was.status === "ready" ? was : { status: "loading" }));
     loadJournal().then(
       (found) => {
+        // No binding, so nobody's queued kit changes to send (#629).
+        if (found === null) dropKitQueue();
         if (live) setLoad(found === null ? { status: "new" } : { status: "ready", ...found });
       },
-      () => {
+      (error: unknown) => {
+        // The server said no: the binding is revoked, and queued kit changes go unsent (docs/camp.md §7).
+        if (error instanceof ApiError && error.status >= 400 && error.status < 500) dropKitQueue();
         if (live) setLoad({ status: "failed" });
       },
     );
@@ -162,6 +175,35 @@ export function JournalScreen(): ReactElement {
       live = false;
     };
   }, [fresh, journal]);
+
+  /*
+   * Her kit as the server last answered (#629): into the open book, so every
+   * pane and the next look at Camp show it. The saved copy is kept by the
+   * sender (store/book-kit-sync.ts).
+   */
+  const applyKit = useCallback<ApplyKit>((characterId, kit) => {
+    setLoad((was) => {
+      if (was.status !== "ready" || !was.journal.camp) return was;
+      const camp = { ...was.journal.camp, kits: { ...was.journal.camp.kits, [characterId]: kit } };
+      return { ...was, journal: { ...was.journal, camp } };
+    });
+  }, []);
+  /*
+   * Kit changes queued with no signal go as the book opens and whenever the
+   * signal comes back (docs/camp.md §7). Opened from the saved copy, the first
+   * try finds no signal and says so ("Saved on this phone").
+   */
+  const ready = load.status === "ready";
+  useEffect(() => {
+    if (!ready) return;
+    const send = (): void => {
+      if (hasQueuedKitChanges()) void flushKitQueue(applyKit);
+    };
+    send();
+    window.addEventListener("online", send);
+    return () => window.removeEventListener("online", send);
+  }, [ready, fresh, applyKit]);
+  const [readAt] = useState(() => new Date());
 
   // Back to the game she is seated in, if a family tablet seated her; home for a phone (#299).
   const play = useCallback(() => {
@@ -213,6 +255,7 @@ export function JournalScreen(): ReactElement {
         <TrayTab on={pane === "hero" || pane === "story" || pane === "me"} object="satchel" label="Hero" onClick={() => setPane("hero")} />
         <TrayTab on={pane === "map"} object="map" label="Map" onClick={() => setPane("map")} />
         <TrayTab on={pane === "guide"} object="fieldGuide" label="Guide" onClick={() => setPane("guide")} />
+        <TrayTab on={pane === "camp"} object="rest" label="Camp" onClick={() => setPane("camp")} />
         <TrayTab on={false} object="lantern" label="Play" onClick={play} />
       </nav>
       {load.savedAt !== null ? (
@@ -241,6 +284,10 @@ export function JournalScreen(): ReactElement {
             </Suspense>
           </ChunkBoundary>
         ) : null}
+        {pane === "camp" ? (
+          <CampTray journal={load.journal} fresh={load.savedAt === null}
+            synced={campSynced(load.campSavedAt ?? load.savedAt, readAt)} onKit={applyKit} />
+        ) : null}
         {pane === "guide" ? (
           <div className="kad-surface kad-surface--player" data-surface="player">
             <FieldGuide backToBag={false} />
@@ -261,6 +308,32 @@ export function savedWhen(savedAt: string, now: Date = new Date()): string {
   if (days <= 0) return "earlier today";
   if (days === 1) return "yesterday";
   return saved.toLocaleDateString(undefined, { month: "long", day: "numeric" });
+}
+
+/**
+ * What the Camp tray says about when its camp was read: now, or the saved
+ * copy's time, which is the camp's own when only the camp could not be read
+ * (#656; `JournalLoad.campSavedAt`).
+ */
+export function campSynced(savedAt: string | null, readAt: Date, now: Date = new Date()): string {
+  return savedAt === null ? syncedAt(readAt) : `Last synced ${savedWhen(savedAt, now)}`;
+}
+
+/** "Synced at 4:05 PM": when this read landed, for the Camp tray. */
+export function syncedAt(at: Date): string {
+  return `Synced at ${at.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}`;
+}
+
+/** The Camp tray (#629), for the hero the book has open. */
+function CampTray({ journal, synced, fresh, onKit }: { journal: JournalResponse; synced: string; fresh: boolean; onKit: ApplyKit }): ReactElement {
+  const [hero, choose] = useChosenHero(journal.heroes);
+  return (
+    <ChunkBoundary inline message="Your camp couldn’t open.">
+      <Suspense fallback={<div className="journal__busy" role="status"><Spinner /><span>Opening your camp…</span></div>}>
+        <CampPane journal={journal} synced={synced} fresh={fresh} hero={hero} onHero={choose} onKit={onKit} />
+      </Suspense>
+    </ChunkBoundary>
+  );
 }
 
 function TrayTab({ on, object, label, onClick }: {

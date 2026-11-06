@@ -189,6 +189,51 @@
   margin: 0;
 }
 
+/*
+ * On the shared screen the offer stands in the narration: beside the chapter's goal card where
+ * the head has room, else at the end of the choices' row on the plate (ui/story-dock.ts,
+ * NarrationPanel.css `.narration__dock`). The stage, a rest's camp and its lineup are framed
+ * between the two, so the offer is never over a figure: in the right-hand column it covered an
+ * outdoor rest's camp. Two low lines, no taller than the card, so beside the card it moves
+ * nothing and on the plate it takes as little as it can: the words, then the two buttons with
+ * the clock running down beside them. On a pane too narrow for that the clock goes under them.
+ */
+.kad-host__offer--docked {
+  inline-size: 100%;
+  grid-template-columns: auto auto minmax(6em, 1fr);
+  grid-template-areas:
+    "words words words"
+    "stop keep clock";
+  align-items: center;
+  gap: 0.375rem 0.75rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  border-color: rgb(var(--kad-gold-rgb, 255 201 92) / 55%);
+  box-shadow: none;
+  text-shadow: none;
+  line-height: 1.25;
+}
+.kad-host__offer--docked > p { grid-area: words; }
+/* The bar and its words on one line. */
+.kad-host__offer--docked > .kad-host__offer-clock {
+  grid-area: clock;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.kad-host__offer--docked .kad-host__offer-bar { flex: 1 1 auto; }
+.kad-host__offer--docked > .kad-host__offer-stop { grid-area: stop; inline-size: auto; }
+.kad-host__offer--docked > .kad-host__offer-keep { grid-area: keep; inline-size: auto; }
+@container world (max-width: 30em) {
+  .kad-host__offer--docked {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "words words"
+      "stop keep"
+      "clock clock";
+  }
+}
+
 /* The shared screen's offer keeps playing by itself (HostControls.tsx STOP_OFFER_MS): a thin bar
    runs down, quietly, beside the words. Under reduced motion the bar stands still and full, and
    the clock still runs. */

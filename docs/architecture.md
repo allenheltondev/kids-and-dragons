@@ -1882,7 +1882,10 @@ surface at a time.
 `/journal` is the one surface with no room behind it. It reads `GET /api/journal`, authorised by
 the **device token** (`x-kad-device-token`) rather than a room session, which between games does
 not exist: the player's own heroes, the household's Field Guide, a player-id → name map for "found
-by", and the biome of the household's most recent run that left the lobby. It is read-only. The
+by", and the biome of the household's most recent run that left the lobby, and (#629) each crew's
+camp with her heroes' kits. It is read-only but for one write: `POST /api/journal/kit`, a kid's own
+kit or buddy, authorised the same way and queued on the phone with no signal
+(docs/camp.md §7, `store/kit-queue.ts`). The
 client keeps the last answer in IndexedDB (`store/journal-db.ts`; a pre-existing `kad.journal` in `localStorage` is moved over on first read, and `localStorage` then memory stand in where IndexedDB is blocked), keyed by the device token, and shows it (marked as
 last time's) when the request fails for want of a network; a 4xx means the binding is gone and
 discards it. A browser whose binding came from opening a Party Mode room on itself is marked

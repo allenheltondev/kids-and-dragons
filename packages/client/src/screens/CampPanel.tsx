@@ -155,7 +155,7 @@ export function KitWelcome({ state, me, held, dispatch }: { state: RunState; me:
 }
 
 /** A friend's picture, its figure's own art (#624). */
-function FriendArt({ card }: { card: CampFriendCard }): ReactElement | null {
+export function FriendArt({ card }: { card: CampFriendCard }): ReactElement | null {
   const url = castArtUrl(card.figure);
   const [failed, setFailed] = useState(false);
   if (!url || failed) return null;
@@ -254,7 +254,7 @@ function CampFriends({ state }: { state: RunState }): ReactElement | null {
 }
 
 /** One hero's kit, changed by her own player (§4.5): no limit, indoors or out. */
-function KitEditor({ member, kit, held, dispatch, friends = [] }: { member: PartyMember; kit: HeroKitView; held: boolean; dispatch: Dispatch; friends?: readonly CampFriendCard[] }): ReactElement {
+export function KitEditor({ member, kit, held, dispatch, friends = [] }: { member: PartyMember; kit: HeroKitView; held: boolean; dispatch: Dispatch; friends?: readonly CampFriendCard[] }): ReactElement {
   const hero = member.character;
   const style = campKitStyle(hero.id, kit.style);
   const accent = kitAccent(kit.color, hero.appearance.accent);

@@ -59,7 +59,7 @@ export interface NameplateSpec {
 /**
  * What a figure's nameplate says, or null when there is nothing to say.
  *
- * Creation sanitises and caps names at 16 characters (creationContent.ts), so
+ * Creation sanitises and caps names at 16 characters (screens/hero-names.ts), so
  * this is not a validator — it is the guard for the one case that still reaches
  * the stage: a save from before that cap, or a name that is all whitespace.
  * Drawing an empty `Text` would put a stroke-coloured smudge under the figure.
