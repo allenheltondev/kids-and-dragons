@@ -1,5 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
-import { committedAttacks, currentActorId, legalMoves, positionOf, stepsBetween, type ClientIntent, type RunState } from "../packages/shared/src/index";
+import { actorAt, committedAttacks, currentActorId, inBounds, isPassable, legalMoves, positionOf, STEP_DIRECTIONS, stepsBetween, type ClientIntent, type EncounterState, type RunState } from "../packages/shared/src/index";
 import { seedTable, openPhone, openTv, onAir } from "./seed";
 import { roomState } from "./room-state";
 import { API } from "./api";
@@ -17,13 +17,42 @@ async function action(page: Page, code: string, intent: ClientIntent) {
   throw Error("Repeated stale actions");
 }
 
+type Tile = { x: number; y: number };
+
+/**
+ * Steps from `from` to `to` walking round walls and enemies (friends can be
+ * passed, as grid.ts lets a mover cross its own side). Unreachable for now
+ * (an enemy on the tile, or a wall of them) counts as the straight-line
+ * distance plus a board's width, so the nearer way still sorts first.
+ */
+function walk(encounter: EncounterState, from: Tile, to: Tile): number {
+  const board = encounter.board;
+  const seen = new Set([`${from.x},${from.y}`]);
+  let frontier = [from];
+  for (let cost = 0; frontier.length; cost++) {
+    if (frontier.some(t => t.x === to.x && t.y === to.y)) return cost;
+    const next: Tile[] = [];
+    for (const t of frontier) for (const d of STEP_DIRECTIONS) {
+      const at = { x: t.x + d.x, y: t.y + d.y };
+      const key = `${at.x},${at.y}`;
+      if (!inBounds(board, at) || seen.has(key) || !isPassable(board, at) || (actorAt(board, at)?.side ?? "party") !== "party") continue;
+      seen.add(key);
+      next.push(at);
+    }
+    frontier = next;
+  }
+  return stepsBetween(from, to) + board.width;
+}
+
 for (const sceneId of ["encounter_wolves", "encounter_mimic_plank", "encounter_crabs"]) {
   test(`${sceneId}: friends complete the alternative to attacking on real phones and TV`, async ({ browser }, info) => {
     test.setTimeout(240_000);
     const ford = sceneId === "encounter_crabs";
-    const table = await seedTable({ mode: "party", tv: true, chapterId: ford ? "gemfall-03c" : "gemfall-02", sceneId, heroes: [
+    // A loaded die and a fixed turn order, as the road fights below explain:
+    // the outcome asserted is the one these moves earn, never luck.
+    const table = await seedTable({ mode: "party", tv: true, dice: 1, chapterId: ford ? "gemfall-03c" : "gemfall-02", sceneId, heroes: [
       { name: "Aster", species: "kitsune", class: "songkeeper", stats: { might: 0, quick: 3, clever: 0, heart: 0 } },
-      { name: "Fern", species: "unicorn", class: "thornguard", stats: { might: 0, quick: 3, clever: 0, heart: 0 } },
+      { name: "Fern", species: "unicorn", class: "thornguard", stats: { might: 2, quick: 1, clever: 0, heart: 0 } },
     ] });
     const phones = [];
     const display = await openTv(browser, table, { recordVideo: { dir: info.outputPath("video"), size: { width: 1280, height: 720 } } });
@@ -217,12 +246,21 @@ for (const fight of roadFights) {
     const ledges = finale && fight.sceneId === "encounter_crabs";
     const dragon = fight.sceneId === "encounter_dragon";
     const support = finale || fight.sceneId === "encounter_crawlers" || fight.chapterId === "gemfall-04a" || bridge || ford || bell;
-    const table = await seedTable({ mode: "party", tv: true, chapterId: fight.chapterId, sceneId: fight.sceneId, heroes: [
+    // Each outcome below must be the one these moves earn, never luck. With
+    // fair dice a run of hits turned escapes and timeouts into defeats
+    // (gemfall-03c wolves, gemfall-04c boxes in CI), so the table rolls a
+    // loaded die (dev-seed.ts `dice`): every roll a 1, nothing hits anyone.
+    // That leaves one coin toss, initiative: an equal roll and equal Quick is
+    // settled by character id, which is random per run. So every hero's Quick
+    // differs (3, 1, 2, 0), and the turn order is the same every time. Fern
+    // goes after a Quick 3 pack, which is what opens the gemfall-03c lane:
+    // a wolf steps out of it to go for her while she is still back.
+    const table = await seedTable({ mode: "party", tv: true, dice: 1, chapterId: fight.chapterId, sceneId: fight.sceneId, heroes: [
       { name: "Aster", species: "kitsune", class: "songkeeper", stats: { might: 0, quick: 3, clever: 0, heart: 0 } },
-      { name: "Fern", species: "unicorn", class: "thornguard", stats: { might: 0, quick: 3, clever: 0, heart: 0 } },
+      { name: "Fern", species: "unicorn", class: "thornguard", stats: { might: 2, quick: 1, clever: 0, heart: 0 } },
       ...(support ? [
-        { name: "Briar", species: "kitsune", class: "songkeeper", stats: { might: 0, quick: 3, clever: 0, heart: 0 } },
-        { name: "Lark", species: "unicorn", class: "songkeeper", stats: { might: 0, quick: 3, clever: 0, heart: 0 } },
+        { name: "Briar", species: "kitsune", class: "songkeeper", stats: { might: 1, quick: 2, clever: 0, heart: 0 } },
+        { name: "Lark", species: "unicorn", class: "songkeeper", stats: { might: 3, quick: 0, clever: 0, heart: 0 } },
       ] as const : []),
     ] });
     const phones = [];
@@ -310,8 +348,11 @@ for (const fight of roadFights) {
         // Leave the early route on the board until it closes, then try the
         // longer climb so the recording shows the actual opening change.
         const goal = ledges ? encounter.round >= 3 ? { x: 6, y: 1 } : { x: 3, y: 2 } : fight.target;
+        // Steps by the way round, not as the crow flies: a hero facing a
+        // wall of wolves walks around it instead of waiting at it.
+        const steps = (p: { x: number; y: number }, to: { x: number; y: number }) => walk(encounter, p, to);
         const score = (p: { x: number; y: number }) => goal
-          ? Number(danger.some(t => t.x === p.x && t.y === p.y)) * 10 + (marsh || bridge ? Math.min(stepsBetween(p, goal), stepsBetween(p, { x: 6, y: 2 })) : stepsBetween(p, goal))
+          ? Number(danger.some(t => t.x === p.x && t.y === p.y)) * 10 + (marsh || bridge ? Math.min(steps(p, goal), steps(p, { x: 6, y: 2 })) : steps(p, goal))
           : Number(ink(p)) * 10 - Math.min(...enemies.map(enemy => stepsBetween(p, enemy)));
         const moves = legalMoves(encounter).filter(p =>
           (!spring || p.x !== 5 || (p.y !== 1 && p.y !== 4)) &&

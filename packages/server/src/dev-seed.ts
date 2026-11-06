@@ -19,7 +19,7 @@
  * own specs, which do not use this.
  */
 
-import type { CampRecord, ClassId, ClientIntent, FactValue, RoomMode, SpeciesId, Stats } from "@kad/shared";
+import type { CampRecord, ClassId, ClientIntent, FactValue, Rng, RoomMode, SpeciesId, Stats } from "@kad/shared";
 import { createGuestHousehold, vetTypedName, type BoundDevice } from "./handlers/account.ts";
 import { applyAction } from "./handlers/action.ts";
 import type { ActionError, HandlerDeps, HandlerResult } from "./handlers/deps.ts";
@@ -82,6 +82,16 @@ export interface SeedRequest {
    * crew picker (#629). Only with a phone opening the room (not `tv`, not `code`).
    */
   crews?: { camp?: SeedCamp }[];
+  /**
+   * A loaded die: every d20 this table rolls, from the seed's own scene jump
+   * to its last action, lands on this face (1 to 20), and every smaller die
+   * on its matching share. For a spec that asserts how a fight ends, which a
+   * fair die would decide by luck: at `1` nothing hits anyone, as the combat
+   * unit tests roll (combat-roadside.test.ts), so the outcome is the one the
+   * party's moves earn. Dev server only, like the rest of this file: the
+   * table is remembered here, and only dev-server.ts asks (`withSeededDice`).
+   */
+  dice?: number;
 }
 
 /** A seeded camp (`SeedRequest.camp`). */
@@ -161,6 +171,8 @@ export function readSeedRequest(body: unknown): SeedRequest | string {
   if (b.sceneId !== undefined && (typeof b.sceneId !== "string" || (b.begin !== true && b.chapterId === undefined))) return "sceneId needs begin or chapterId";
   if (b.camp !== undefined && (typeof b.camp !== "object" || b.camp === null || b.code !== undefined)) return "camp is an object, for a new household";
   if (b.crews !== undefined && (!Array.isArray(b.crews) || b.crews.length > 3 || b.code !== undefined || b.tv === true)) return "crews is a short list, for a new household a phone opens";
+  if (b.dice !== undefined && (typeof b.dice !== "number" || !Number.isInteger(b.dice) || b.dice < 1 || b.dice > 20)) return "dice must be a d20 face, 1 to 20";
+  if (b.dice !== undefined && b.code !== undefined) return "dice loads a new table's die, not one already rolling";
   return b as unknown as SeedRequest;
 }
 
@@ -265,6 +277,8 @@ export async function seedRoom(input: SeedRequest, deps: HandlerDeps): Promise<H
 
   const runId = phones[0]?.session.runId ?? (await deps.repo.getRoom(code))?.runId;
   if (!runId) return fail("NOT_FOUND", `no open room ${code}`);
+  if (input.dice !== undefined) loadedDice.set(runId, input.dice);
+  deps = withSeededDice(deps, runId);
 
   // The rest is what the phones send.
   const send = async (phone: SeededPhone, intent: ClientIntent, via: HandlerDeps = deps): Promise<HandlerResult<null>> => {
@@ -376,4 +390,24 @@ function seededCamp(c: CampRecord, camp: SeedCamp, at: string, deps: HandlerDeps
         ...Object.fromEntries((camp.friends ?? []).map((id, i) => [id, { rewardId: `seeded.${id}`, at: new Date(deps.now() + i * 1000).toISOString() }])),
       },
     });
+}
+
+/** Runs a seed loaded the die for (`SeedRequest.dice`), and the face it lands on. */
+const loadedDice = new Map<string, number>();
+
+/** A die that always lands on `face`: the d20 on that face, a smaller die on the same share of its sides. */
+export function loadedDie(face: number): Rng {
+  const value = (face - 1) / 20 + 0.001;
+  return { next: () => value };
+}
+
+/**
+ * These deps, rolling the seeded table's loaded die if `runId` is one
+ * (`SeedRequest.dice`); otherwise these deps unchanged, fair dice and all.
+ */
+export function withSeededDice<D extends { rng: HandlerDeps["rng"] }>(deps: D, runId: string): D {
+  const face = loadedDice.get(runId);
+  if (face === undefined) return deps;
+  const die = loadedDie(face);
+  return { ...deps, rng: () => die };
 }
