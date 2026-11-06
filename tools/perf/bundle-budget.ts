@@ -221,7 +221,10 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // 1650 -> 1654 for camp terrain accents (#652) integrated with the friend
 // habits and latest main. The measured total is 1652KB, with first paint
 // still at 331KB. Keep 2KB of slack.
-const TOTAL_BUDGET_KB = 1654;
+// 1654 -> 1665 for indoor rest motion. Pixi's mesh renderer and the room
+// effects load only on the painted rests that use them. The build measures
+// 1663KB total and 331KB at first paint, retaining the 2KB total margin.
+const TOTAL_BUDGET_KB = 1665;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);
