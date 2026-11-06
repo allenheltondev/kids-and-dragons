@@ -1,0 +1,72 @@
+{
+  "issue": 625,
+  "generator": "Built-in ImageGen",
+  "paintings": [
+    {
+      "path": "assets/scenes/gemfall/mosshome-guest-tree.webp",
+      "chapter": "gemfall-05b",
+      "scene": "rest_guest_tree",
+      "prompt": "Create a wide 16:9 opaque game backdrop for Kids & Dragons, tactile hand-painted children's fantasy storybook gouache, visible brushwork and gentle natural colors. The inside of a vast hollow tree guesthouse in MossHome, gentle curves of old wood, shelves carved into the walls, roomy soft moss-green hammocks suspended between sturdy ribs of wood high and far back, small warm lanterns and a few subtle blue gem-like lights, high openings onto a mossy forest. Friendly bigfoot woodland guesthouse. Wide interior from an eye-level viewpoint with a strong sense of place. Furnishings stay at the back and side walls. Reserve the middle 80 percent width of the lower half for a continuous clear walkable floor with low contrast and quiet texture. Game overlays bedrolls, packs and character sprites along the front. No characters, figures, tents, campfire, writing, borders or watermark.",
+      "output": {
+        "width": 1920,
+        "height": 1080,
+        "format": "WebP"
+      }
+    },
+    {
+      "path": "assets/scenes/gemfall/boundary-bell-house.webp",
+      "chapter": "gemfall-05c",
+      "scene": "rest_bell_house",
+      "prompt": "Create a wide 16:9 opaque game backdrop for Kids & Dragons, tactile hand-painted children's fantasy storybook gouache, visible brushwork and gentle natural colors. A cozy roadside bell house in the Red Sky Foothills, amber rough-hewn timber and softly warm stone, several quiet bronze bells hung high from beams, blankets folded along one side wall, small open window at one far edge looking onto the nighttime wagon road and lantern lights. A place travelers can rest on warm stone. Wide interior from an eye-level viewpoint with a strong sense of place. Furnishings stay at the back and side walls. Reserve the middle 80 percent width of the lower half for a continuous clear walkable floor with low contrast and quiet texture. Game overlays bedrolls, packs and character sprites along the front. No characters, figures, tents, campfire, writing, borders or watermark.",
+      "output": {
+        "width": 1920,
+        "height": 1080,
+        "format": "WebP"
+      }
+    },
+    {
+      "path": "assets/scenes/gemfall/warden-bunkroom.webp",
+      "chapter": "gemfall-06",
+      "scene": "rest_end_ashfall",
+      "prompt": "Create a wide 16:9 opaque game backdrop for Kids & Dragons, tactile hand-painted children's fantasy storybook gouache, visible brushwork and gentle natural colors. Redspire Citadel wardens' modest mountain bunkroom, warm red sandstone walls, a few narrow timber bunks with folded teal and ochre blankets tucked against both sides and rear, high upward-facing slanted windows looking out at the ember-peach sky, quiet lanterns on the wall. Safe and practical, no military menace. Wide interior from an eye-level viewpoint with a strong sense of place. Furnishings stay at the back and side walls. Reserve the middle 80 percent width of the lower half for a continuous clear walkable floor with low contrast and quiet texture. Game overlays bedrolls, packs and character sprites along the front. No characters, figures, tents, campfire, writing, borders or watermark.",
+      "output": {
+        "width": 1920,
+        "height": 1080,
+        "format": "WebP"
+      }
+    },
+    {
+      "path": "assets/scenes/gemfall/empty-chair-overnight.webp",
+      "chapter": "gemfall-01",
+      "scene": "rest_empty_chair",
+      "prompt": "Create a wide 16:9 opaque game backdrop for Kids & Dragons, tactile hand-painted children's fantasy storybook gouache, visible brushwork and gentle natural colors. The warm quiet upstairs landing of the Empty Chair, a slightly crooked coastal fantasy inn at night. At the far wall a closed small cupboard door and a ladder ascending through a loft hatch suggest the different places travelers might sleep. A covered lantern glows from a wall bracket, timber beams and warm plaster, a hint of blue night at a small window. No furniture in the foreground, no visible beds, no tavern patrons. Wide interior from an eye-level viewpoint with a strong sense of place. Furnishings stay at the back and side walls. Reserve the middle 80 percent width of the lower half for a continuous clear walkable floor with low contrast and quiet texture. Game overlays bedrolls, packs and character sprites along the front. No characters, figures, tents, campfire, writing, borders or watermark.",
+      "output": {
+        "width": 1920,
+        "height": 1080,
+        "format": "WebP"
+      }
+    },
+    {
+      "path": "assets/scenes/gemfall/marda-thorn-inn.webp",
+      "chapter": "gemfall-02",
+      "scene": "rest_marda_inn",
+      "prompt": "Create a wide 16:9 opaque game backdrop for Kids & Dragons, tactile hand-painted children's fantasy storybook gouache, visible brushwork and gentle natural colors. Marda Thorn's warm centaur roadside inn in the Sunward Fields. A notably tall broad arched door designed for centaurs, deep chestnut timber beams, pale amber plaster, a small steaming stew pot resting on a sideboard, and a few simple oak dining tables tucked against the side and back walls. Dusk through the windows, honey-colored field hedges just visible. Warm, practical and hospitable. Wide interior from an eye-level viewpoint with a strong sense of place. Furnishings stay at the back and side walls. Reserve the middle 80 percent width of the lower half for a continuous clear walkable floor with low contrast and quiet texture. Game overlays bedrolls, packs and character sprites along the front. No characters, figures, tents, campfire, writing, borders or watermark.",
+      "output": {
+        "width": 1920,
+        "height": 1080,
+        "format": "WebP"
+      }
+    },
+    {
+      "path": "assets/scenes/riftlight/ashspan-bridge-house.webp",
+      "chapter": "riftlight-ashspan-bridge",
+      "scene": "rest_hut",
+      "prompt": "Create a wide 16:9 opaque game backdrop for Kids & Dragons, tactile hand-painted children's fantasy storybook gouache, visible brushwork and gentle natural colors. Bryn's small riverside bridge-house just inside the repaired Ashspan Bridge, warm plank walls and rough pale stone skirting, compact black iron stove near the far side with a closed door and a faint amber window, a bowl of oats, coiled bridge-mending rope on hooks, quiet dusk through the narrow window with the repaired wooden bridge and marsh reeds beyond. Cozy workroom, safe and humble. Wide interior from an eye-level viewpoint with a strong sense of place. Furnishings stay at the back and side walls. Reserve the middle 80 percent width of the lower half for a continuous clear walkable floor with low contrast and quiet texture. Game overlays bedrolls, packs and character sprites along the front. No characters, figures, tents, campfire, writing, borders or watermark.",
+      "output": {
+        "width": 1920,
+        "height": 1080,
+        "format": "WebP"
+      }
+    }
+  ]
+}

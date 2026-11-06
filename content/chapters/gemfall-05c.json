@@ -1251,6 +1251,7 @@
     },
     "rest_bell_house": {
       "type": "rest",
+      "art": "scenes/gemfall/boundary-bell-house",
       "narration": "Sleep on warm stone under silent bells. A grandmother adds a hot rock to your blanket. Outside, the rush still lines up by lantern light. Inside, even the smallest bell is tucked in.",
       "heal": 3,
       "choices": [
