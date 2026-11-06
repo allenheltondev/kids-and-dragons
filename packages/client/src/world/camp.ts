@@ -40,6 +40,7 @@ import { campPieceOwner } from "./camp-ownership";
 import { bannerName, hotspotGlow, pieceStandIn, souvenirStandIn, standInLabel, tentStandIn } from "./camp-stand-in";
 import { campBoxes, campFitFor, ownedPieceSize, type CampBox, type CampBoxInput, type CampLabelBox } from "./camp-boxes";
 import { campPaint } from "./camp-paint";
+import { campAccent, campAccentPose } from "./camp-accents";
 import { tentArt, type CampBesideView, type CampSpotView } from "./camp-scene";
 import type { CastStance } from "@kad/shared";
 import {
@@ -428,6 +429,16 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   view.addChild(backdrop);
   let bleedTop: Sprite | null = null;
   let bleedBottom: Sprite | null = null;
+  const accent = campAccent(layout.backdrop.family);
+  let accentSprite: Sprite | null = null;
+  function updateAccent(): void {
+    if (!accent || !accentSprite) return;
+    const pose = campAccentPose(accent, elapsed, still);
+    accentSprite.position.set(pose.x, pose.y);
+    accentSprite.angle = pose.angle;
+    accentSprite.alpha = pose.alpha;
+    accentSprite.height = accent.height * pose.stretch;
+  }
   const showBackdrop = (texture: Texture): void => {
     if (destroyed) return;
     const sprite = new Sprite(texture);
@@ -448,7 +459,18 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   };
   const fallback = options.fallbackBackdrop;
   void load(assetUrl(layout.backdrop.path))
-    .then(showBackdrop, () => (fallback ? load(fallback).then(showBackdrop) : undefined))
+    .then(async (texture) => {
+      showBackdrop(texture);
+      if (!accent || destroyed) return;
+      const art = await load(accent.url);
+      if (destroyed) return;
+      accentSprite = new Sprite(art);
+      accentSprite.label = "camp-terrain-accent";
+      accentSprite.anchor.set(accent.pivotX / accent.width, accent.pivotY / accent.height);
+      accentSprite.width = accent.width;
+      updateAccent();
+      backdrop.addChild(accentSprite);
+    }, () => (fallback ? load(fallback).then(showBackdrop) : undefined))
     .catch(() => undefined);
 
   // Pieces and figures share one depth-sorted layer: the nearer the feet,
@@ -1350,6 +1372,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     if (destroyed) return;
     const dt = frameSeconds(app.ticker.deltaMS);
     elapsed += dt;
+    updateAccent();
     easeFrame(dt);
 
     if (!still) {
@@ -1663,6 +1686,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   function setStill(next: boolean): void {
     if (destroyed || next === still) return;
     still = next;
+    updateAccent();
     if (!still) return;
     // Nobody wanders and nothing hops: whoever is walking is at their
     // destination instead, by a fade.

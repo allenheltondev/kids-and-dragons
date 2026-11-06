@@ -11,12 +11,13 @@ import type { PartyMember, RunState } from "@kad/shared";
 import { makeCharacter, makeMember, makeState } from "../testing/fixtures";
 import { useGameStore } from "../store";
 import { StaticStage } from "./StaticStage";
+import { StillCamp } from "./StillCamp";
 import { setLobbyInsetBottom } from "./stage-inset";
 import { CAMP_KIT_STYLES, type CampKitStyle } from "./camp-kit-art";
 import { NOMINAL_PAINT, figureSize } from "./figure-scale";
 import { BEDROLL_LENGTH_FIT, HERO_PAINT } from "./camp-ownership";
 import { ANCHOR_Y } from "./art-paths";
-import { lobbyCampLayout } from "./lobby-camp";
+import { campLayoutFor, lobbyCampLayout } from "./lobby-camp";
 
 function member(n: number, overrides: Partial<PartyMember> = {}): PartyMember {
   return makeMember({
@@ -37,6 +38,20 @@ afterEach(() => {
 });
 
 describe("the still camp", () => {
+  it("keeps the accent aligned to the current painting and hides it on fallback", () => {
+    const state = makeState({ phase: "chapter_complete" });
+    const { container, rerender } = render(<StillCamp state={state} layout={campLayoutFor(1, "exchange")!} />);
+    const accent = () => container.querySelector<HTMLImageElement>(".kad-static-camp__accent");
+    const backdrop = () => container.querySelector<HTMLImageElement>(".kad-static-camp__backdrop")!;
+    expect(accent()?.getAttribute("src")).toContain("cliffside-exchange-awning");
+    expect(accent()?.style.transform).toBe("rotate(-5deg)");
+    fireEvent.error(backdrop());
+    expect(accent()).toBeNull();
+    rerender(<StillCamp state={state} layout={campLayoutFor(1, "sky_islands")!} />);
+    expect(backdrop().getAttribute("src")).toContain("sky_islands.webp");
+    expect(accent()?.getAttribute("src")).toContain("sky-islands-ribbon");
+  });
+
   it("fits the painted bedroll to its owner, longer than she is, rather than the PNG canvas", () => {
     mount(makeState({ party: [
       member(1, { character: makeCharacter({ id: "tiny", species: "dragonling" }) }),

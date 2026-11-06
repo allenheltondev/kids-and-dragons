@@ -248,7 +248,7 @@ export function PixiStage(): React.JSX.Element {
         });
         campRef.current = lobbyCamp;
         lobbyCamp.setInset(lobbyInsetBottom(), lobbyInsetTop());
-        lobbyCamp.sync(live.state);
+        lobbyCamp.sync(live.state, live.chapter?.biome);
       }
       if (import.meta.env.DEV) {
         (globalThis as Record<string, unknown>).__kadCamp = () => campRef.current;
@@ -350,8 +350,8 @@ export function PixiStage(): React.JSX.Element {
    * is told to set off and fades, and the scene is already drawn under it.
    */
   useEffect(() => {
-    campRef.current?.sync(state);
-  }, [state]);
+    campRef.current?.sync(state, chapter?.biome);
+  }, [state, chapter?.biome]);
 
   // The board is a reader of the mirrored state (brief, trap 2): every patch
   // that touches the encounter flows through here and nowhere else.
