@@ -162,6 +162,9 @@ export function flushKitQueue(apply: ApplyKit): Promise<void> {
   return running;
 }
 
+/** A 4xx that says "not now" rather than "never": a timeout or a throttle. The change waits and is sent again. */
+const RETRYABLE: ReadonlySet<number> = new Set([408, 425, 429]);
+
 async function drain(apply: ApplyKit): Promise<void> {
   const deviceToken = loadPlayerDeviceToken();
   if (!deviceToken) return;
@@ -198,13 +201,13 @@ async function drain(apply: ApplyKit): Promise<void> {
         setStatus({ offline: false });
         return;
       }
-      if (error instanceof ApiError && error.status >= 400 && error.status < 500 && error.code !== "STALE_DECISION") {
+      if (error instanceof ApiError && error.status >= 400 && error.status < 500 && error.code !== "STALE_DECISION" && !RETRYABLE.has(error.status)) {
         // It can never land (not her hero any more, not a pick she has): let it go, and say so.
         removeQueuedKitChange(deviceToken, entry.id);
         setStatus({ notes: [...status.notes, "One of your changes could not be saved."] });
         continue;
       }
-      // The server is busy or down: it waits, as it would with no signal.
+      // The server is busy, down or throttling: it waits, as it would with no signal.
       setStatus({ offline: true });
       return;
     } finally {

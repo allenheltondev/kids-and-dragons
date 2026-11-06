@@ -111,6 +111,23 @@ describe("sending the book's kit changes", () => {
     expect(bookKitStatus().notes).toEqual(["One of your changes could not be saved."]);
   });
 
+  for (const status of [408, 429]) {
+    it(`keeps a change the server throttled or timed out (${String(status)}) and sends it again (#656)`, async () => {
+      enqueueKitChanges("dev_1", { characterId: "c_1", crew: null, changes: [{ field: "color", before: "rose", after: "tide" }] });
+      serve(() => answer(status, { error: { code: "SLOW_DOWN", message: "try again soon" } }));
+      await flushKitQueue(() => undefined);
+      expect(loadKitQueue("dev_1")).toHaveLength(1);
+      expect(bookKitStatus()).toMatchObject({ offline: true, notes: [] });
+
+      const applied: JournalKit[] = [];
+      serve(() => answer(200, { kit: { ...KIT, revision: 6, color: "tide" }, applied: ["color"], refused: [] }));
+      await flushKitQueue((_, kit) => applied.push(kit));
+      expect(loadKitQueue("dev_1")).toEqual([]);
+      expect(applied.map((k) => k.color)).toEqual(["tide"]);
+      expect(sent.map((s) => s.body.characterId)).toEqual(["c_1", "c_1"]);
+    });
+  }
+
   it("queues a swap of two hung decorations offline, shows it, and the server's merge applies it whole (#656)", async () => {
     const hung: JournalKit = { ...KIT, slots: ["deco_a", "deco_b"], unlocked: [] };
     vi.stubGlobal("navigator", { onLine: false });

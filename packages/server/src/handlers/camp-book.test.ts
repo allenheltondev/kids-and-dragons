@@ -10,7 +10,7 @@
 import { describe, expect, it } from "vitest";
 import { applyIntent, campKey, createRunState, readKit } from "@kad/shared";
 import type { APIGatewayProxyEventV2, APIGatewayProxyStructuredResultV2 } from "aws-lambda";
-import type { BookKitResponse, CampRecord, ClientIntent } from "@kad/shared";
+import type { BookKitResponse, CampRecord, ClientIntent, RunState } from "@kad/shared";
 import { CATALOG, harnessFor, racedCommits, seeded, table, type Table } from "./camp-table.testing.ts";
 import { makeHarness, seedHousehold, type TestHarness } from "../test-support.ts";
 import { createRoom } from "./room.ts";
@@ -219,11 +219,39 @@ describe("the book's camp read (§7)", () => {
     await harness.repo.commit({
       runId: t.runId,
       expectedSeq: s.seq,
-      state: { ...s, seq: s.seq + 1, crew: "cw_1", party: [{ character: { id: "c_new" } as never, playerId: "p_1", hp: 1, down: false, connected: true, ready: false }] },
+      state: { ...s, seq: s.seq + 1, crew: "cw_1", visited: ["opening"], party: [{ character: { id: "c_new" } as never, playerId: "p_1", hp: 1, down: false, connected: true, ready: false }] },
       event: { seq: s.seq + 1, runId: t.runId, patch: [], at: AT },
       crew: { householdId, id: "cw_1", name: "The Otter Crew", createdAt: AT },
     });
     expect(await heroCrews(householdId, [pip], harness.deps)).toEqual(["cw_1"]);
+  });
+
+  it("does not backfill a crew whose lobby she only visited, or one she left before it played (#656)", async () => {
+    const harness = harnessFor(CATALOG);
+    const household = await seedHousehold(harness, 1);
+    const { householdId } = household;
+    await harness.repo.putCharacter({ ...makeCharacter({ id: "c_new", ownerPlayerId: "p_1", name: "Pip" }), householdId });
+    const pip = (await harness.repo.getCharacter(householdId, "c_new"))!;
+    const seat = { character: { id: "c_new" } as never, playerId: "p_1", hp: 1, down: false, connected: true, ready: false };
+    const runs: [string, string, Partial<RunState>][] = [
+      // Sat in the Otter Crew's lobby, and no chapter ever began.
+      ["cw_1", "The Otter Crew", { phase: "lobby", chapterId: null, visited: [] }],
+      // Sat in the Lantern Crew's, left, and they played on without her.
+      ["cw_2", "The Lantern Crew", { phase: "scene", visited: ["opening"], removed: ["p_1"] }],
+    ];
+    for (const [id, name, played] of runs) {
+      const room = await createRoom({ householdId, mode: "travel" }, harness.deps);
+      if (!room.ok) throw new Error("room");
+      const s = (await harness.repo.getState(room.value.runId))!;
+      await harness.repo.commit({
+        runId: room.value.runId,
+        expectedSeq: s.seq,
+        state: { ...s, ...played, seq: s.seq + 1, crew: id, party: [seat] },
+        event: { seq: s.seq + 1, runId: room.value.runId, patch: [], at: AT },
+        crew: { householdId, id, name, createdAt: AT },
+      });
+    }
+    expect(await heroCrews(householdId, [pip], harness.deps)).toEqual([null]);
   });
 });
 
@@ -246,7 +274,7 @@ describe("a hero from before kit v4: her first record keeps the backfill (#629, 
       await harness.repo.commit({
         runId: room.value.runId,
         expectedSeq: s.seq,
-        state: { ...s, seq: s.seq + 1, crew: id!, party: [{ character: { id: "c_pip" } as never, playerId: "p_1", hp: 1, down: false, connected: true, ready: false }] },
+        state: { ...s, seq: s.seq + 1, crew: id!, visited: ["opening"], party: [{ character: { id: "c_pip" } as never, playerId: "p_1", hp: 1, down: false, connected: true, ready: false }] },
         event: { seq: s.seq + 1, runId: room.value.runId, patch: [], at: AT },
         crew: { householdId, id: id!, name: name!, createdAt: AT },
       });

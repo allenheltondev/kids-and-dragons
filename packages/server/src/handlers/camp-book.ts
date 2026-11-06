@@ -158,7 +158,23 @@ interface PastSeat {
 async function pastSeats(householdId: string, deps: Pick<HandlerDeps, "repo">): Promise<PastSeat[]> {
   const runs = (await deps.repo.listRuns(householdId)).sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, CREW_LOOKBACK);
   const states = await Promise.all(runs.map((run) => deps.repo.getState(run.id).catch(() => null)));
-  return states.flatMap((s) => (s ? [{ heroes: new Set(s.party.map((m) => m.character.id)), crew: s.crew ?? null }] : []));
+  return states.flatMap((s) => {
+    if (!s || !playedIn(s)) return [];
+    const removed = new Set(s.removed ?? []);
+    return [{ heroes: new Set(s.party.filter((m) => !removed.has(m.playerId)).map((m) => m.character.id)), crew: s.crew ?? null }];
+  });
+}
+
+/**
+ * Whether a past run shows it left the lobby: a chapter in play, ended or
+ * walked. A snapshot that never did is a lobby visit, which does not make a
+ * crew hers (decided, #629). The backfill sees only each run's last snapshot,
+ * so it is stricter than the record: a hero who made, seated or edited
+ * something in a lobby that never started a chapter is recorded from then on
+ * (`recordCrews`), but is not found in the history before v4.
+ */
+function playedIn(state: RunState): boolean {
+  return state.phase !== "lobby" || state.chapterId !== null || state.chapterOutcome != null || (state.visited?.length ?? 0) > 0 || state.xpEarned > 0;
 }
 
 /**
