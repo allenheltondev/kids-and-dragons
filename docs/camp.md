@@ -794,7 +794,7 @@ camp's spots on that ground.
   tents, so they stand on the far lane: the lookout at the far left beside the first tent, the
   awning or the shared tent in the middle between the inner tents' peaks, the lantern string or
   the banners past the last tent, and the crew's own awning spot at the far right. They are
-  treated as the tall shared pieces are (*proposed*, #627, for the owner to confirm): each may
+  treated as the tall shared pieces are (*decided*, #627; §11): each may
   stand partly behind a nearer tent, under the same rule (less than half of it covered and none
   of its top half), never behind or in front of a hero at her door, and whoever goes to look at
   one stands where no nearer tent hides her (`isTallFramePiece`, `campCoverClashes`,
@@ -1128,6 +1128,11 @@ Settled by the product owner:
 | Small heroes get roomier tents (#620) | A small hero's tent is 1.2 times her painted height, a big hero's 1.1: up to 110 cm painted (kitsune, dragonlings) 1.2, from 150 cm (manticores, griffins, unicorns, bigfoots) 1.1, a smooth ramp between; a kitsune's ears sit clearly under her tent's top as she stands at its door (§8.3) |
 | Lanterns and banner over a back tent's edge | The lanterns and banner pole may stand in front of the outer edge of a back tent, never its door, so big parties draw near 0.8 at stage 2 (§8.3) |
 | Indoor bedrolls are rolled up (#625) | Indoors nobody sleeps in it, so every hero's bedroll is rolled up beside the pack, whatever style the kid picked; it is sized to the hero like the rest of the gear, and need not be longer than they are (§3.2) |
+| Big frame pieces behind a nearer tent (#627) | The stage-3 and stage-4 frame pieces (the lookout post and lookout, the lantern string, the awning, the shared tent, the banners) follow the tall-shared-piece rule: each may stand partly behind a nearer tent, never by a hero's door (§8.3) |
+| A full camp at stages 3 and 4 (#627) | Parties draw at about 0.61 to 0.67 at stages 3 and 4, smaller than at stage 2, because the back row of frame pieces fills the width. The owner likes the fullness (§8.3) |
+| A blocked friend fades over (#624) | In a crowded camp a tapped friend whose way to the hero stays blocked fades over to her rather than walking through anyone (§8.4) |
+| Friend-tap limit (#624) | Each phone may tap friends twice every 8 seconds, and its button rests 4 seconds after a tap; the TV acts out one tap per friend at a time, holds one more and drops the rest (§8.4) |
+| Bun and the kid goat look different (#628) | Two friends must never read as the same animal at camp scale: Bun is repainted to stand apart from the kid goat (§4.4) |
 
 Nothing is open. The two parked questions from earlier (editing from the book, choosing friends)
 are settled above as kit and buddy editing in the book and buddies.
