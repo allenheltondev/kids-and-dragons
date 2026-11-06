@@ -122,6 +122,14 @@
   background: radial-gradient(ellipse, rgb(247 190 103 / 12%), transparent 72%);
 }
 .kad-static-camp__hero.is-away { opacity: 0.5; }
+.kad-static-camp__leaf {
+  position: absolute;
+  left: 24%;
+  top: 85%;
+  width: 15%;
+  transform: translate(-50%, -50%) rotate(-46deg);
+}
+.kad-static-camp__leaf img { display: block; width: 100%; }
 .kad-static-camp__name {
   position: absolute;
   inset-block-start: 87.89%;

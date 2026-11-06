@@ -33,6 +33,7 @@
  */
 
 import { Assets, Container, Graphics, Rectangle, Sprite, Texture, type Application } from "pixi.js";
+import leafArt from "../assets/painted/leaf.webp";
 import { CAMP_KIT_STYLES, campKitStyle, campTentCloth } from "./camp-kit-art";
 import { campKitCanvas } from "./camp-kit-canvas";
 import { campPieceOwner } from "./camp-ownership";
@@ -51,6 +52,7 @@ import {
   measurePaint,
 } from "./actor-art";
 import {
+  friendHabitSpot,
   campRoute,
   campRoutes,
   laneAt,
@@ -60,6 +62,7 @@ import {
   standPoint,
   type CampAction,
   type CampFace,
+  type CampFriendHabit,
   type CampLane,
   type CampLayout,
   type CampPartMotion,
@@ -71,6 +74,9 @@ import {
 import {
   activeHotspots,
   actionPose,
+  bunSettlePose,
+  ducklingSettlePose,
+  mosshornLeafDrop,
   campGait,
   campHeightPx,
   campMeasure,
@@ -102,6 +108,7 @@ import {
 /** Somebody in camp: a hero or a friend. */
 export interface CampFigure {
   id: string;
+  habit?: CampFriendHabit;
   /** The cutout, or null for the "art pending" placeholder. */
   url: string | null;
   /** True height (figure-scale.ts `figureSize`). */
@@ -300,6 +307,7 @@ interface Actor {
   art: Container;
   shadow: Container;
   sprite: Sprite | null;
+  leaf?: Sprite;
   placeholder: Graphics;
   gait: CampGait;
   heightPx: number;
@@ -1100,10 +1108,23 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     };
     actors.set(def.id, actor);
     fitArt(actor);
-    const home = homeOf(actor);
-    placeAt(actor, home, null);
+    const habitSpot = def.habit ? friendHabitSpot(layout, def.habit) : undefined;
+    const home = habitSpot ? { spot: { lane: habitSpot.lane, x: pointX(habitSpot) }, point: null } : homeOf(actor);
+    placeAt(actor, home, habitSpot ? toFacing(habitSpot.face) : null);
     planner.add({ id: def.id, ...(def.seat !== undefined ? { seat: def.seat } : {}) }, home);
+    if (habitSpot) planner.direct(def.id, home, null, 0);
     loadArt(actor);
+    if (def.habit === "mosshorn") {
+      void load(leafArt).then((texture) => {
+        if (destroyed || actors.get(def.id) !== actor) return;
+        const leaf = new Sprite(texture);
+        leaf.label = "mosshorn-leaf";
+        leaf.anchor.set(0.5);
+        leaf.visible = false;
+        actor.leaf = leaf;
+        actor.container.addChild(leaf);
+      }).catch(() => {});
+    }
     return actor;
   }
 
@@ -1247,7 +1268,9 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
 
     if (!actor.walk) {
       const since = elapsed - actor.arrivedAt;
-      const pose = actor.action ? actionPose(actor.action, since, still) : actionPose("rest", 0, true);
+      const habit = actor.leaving ? undefined : actor.def.habit;
+      const settle = habit === "bun" ? bunSettlePose : habit === "duckling" ? ducklingSettlePose : undefined;
+      const pose = settle?.(since, still) ?? actionPose(actor.action ?? "rest", since, still || !actor.action);
       const forward = actor.facing;
       rotation += pose.lean * forward;
       lift += pose.lift * actor.heightPx;
@@ -1304,6 +1327,14 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     actor.body.scale.y = scaleY;
     // Art is drawn facing left: scale.x 1 faces left, -1 right.
     actor.art.scale.x = -actor.facingNow * scaleX;
+    if (actor.leaf) {
+      const drop = mosshornLeafDrop(elapsed - actor.arrivedAt, still);
+      actor.leaf.visible = actor.sprite !== null && !actor.leaving;
+      actor.leaf.width = actor.leaf.height = actor.heightPx * 0.19;
+      actor.leaf.x = -actor.heightPx * (0.22 + 0.1 * drop);
+      actor.leaf.y = -actor.heightPx * (0.55 * (1 - drop) + 0.035);
+      actor.leaf.rotation = -0.8 * drop;
+    }
     actor.shadow.scale.set(Math.max(0.3, shadow));
     const cast = actor.shadow.getChildByLabel("camp-cast-body", true);
     if (cast) cast.scale.x = Math.abs(cast.scale.x) * (Math.sign(actor.art.scale.x) || 1);

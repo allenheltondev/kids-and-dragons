@@ -425,6 +425,19 @@ export function standPoint(layout: CampLayout, id: string): CampStandPoint | und
   return layout.frame.standPoints.find((p) => p.id === id);
 }
 
+export type CampFriendHabit = "bun" | "duckling" | "mosshorn";
+
+export function friendHabitSpot(layout: CampLayout, habit: CampFriendHabit): CampStandPoint | undefined {
+  if (habit === "mosshorn") {
+    const corner = layout.frame.standPoints.find((point) => point.action === "pet");
+    return corner && { ...corner, x: corner.x - 0.075, face: "left" };
+  }
+  const warmSpots = layout.frame.standPoints.filter((point) => point.action === "warmUp");
+  const nearby = warmSpots[habit === "bun" ? 0 : 1];
+  // Tuck closer to the stones so the heroes can still use their warm-up spots.
+  return nearby && { ...nearby, x: nearby.x + (nearby.face === "right" ? 0.045 : -0.045) };
+}
+
 /**
  * How big a figure is drawn with its feet at `y`: its lane's scale on a lane,
  * eased between the two lanes' while it is on a crossing, so a figure grows
