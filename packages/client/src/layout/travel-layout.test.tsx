@@ -363,6 +363,86 @@ describe("Travel Mode and the Field Guide (#112)", () => {
   });
 });
 
+describe("Travel Mode and the camp (docs/camp.md §3; #627)", () => {
+  /** The table in downtime with a camp: no TV, so each phone opens the camp itself. */
+  function inDowntime(over: Partial<RunState>): void {
+    act(() => {
+      useGameStore.setState({
+        state: {
+          ...state(),
+          endingRead: true,
+          camp: { revision: 1, frameStage: 3, grownBy: ["gemfall", "riftlight"], dashCash: 0, owned: [], placed: {}, friends: [], shopOpen: false },
+          campMoment: { id: "m_1", kind: "lobby", outdoor: true, changes: {} },
+          ...over,
+        },
+      });
+    });
+  }
+
+  for (const [moment, over] of [
+    ["a lobby visit", { phase: "lobby", chapterId: null, sceneId: null, sceneType: null }],
+    ["a rest scene", { phase: "scene", sceneType: "rest" }],
+    ["the chapter's end", { phase: "chapter_complete" }],
+  ] as const) {
+    it(`puts a Camp button on the phone at ${moment}, and it opens the camp`, () => {
+      vi.stubGlobal("fetch", vi.fn(() => new Promise(() => undefined)));
+      const { container } = mount();
+      inDowntime(over as Partial<RunState>);
+      act(() => {
+        tab(container, "You").click();
+      });
+      const button = container.querySelector<HTMLButtonElement>('[data-pane="player"] [data-testid="camp-button"]');
+      expect(button, moment).not.toBeNull();
+      act(() => {
+        button!.click();
+      });
+      const panel = container.querySelector('[data-testid="camp-panel"]');
+      expect(panel, moment).not.toBeNull();
+      // The camp itself, still (no TV to show it), at the crew's stage.
+      expect(panel!.querySelector('[data-testid="static-camp"]'), moment).not.toBeNull();
+      act(() => {
+        (container.querySelector('[data-testid="camp-done"]') as HTMLButtonElement).click();
+      });
+      vi.unstubAllGlobals();
+    });
+  }
+
+  it("keeps the Camp button under the rest scene's choices while she is the one choosing", () => {
+    vi.stubGlobal("fetch", vi.fn(() => new Promise(() => undefined)));
+    const { container } = mount();
+    inDowntime({
+      phase: "scene",
+      sceneType: "rest",
+      prompt: { kind: "choice", sceneId: "rest_lanternfall", options: [{ id: "a", label: "Dry your socks", icon: "fire" }], forPlayerIds: [], vote: false },
+      // No stat point waiting, which would come first.
+      party: [{ ...MEMBER, character: { ...MEMBER.character, unspentPoints: 0 } }],
+    });
+    act(() => {
+      tab(container, "You").click();
+    });
+    const button = [...container.querySelectorAll<HTMLButtonElement>('[data-pane="player"] [data-testid="camp-button"]')].find((b) => !b.closest("[hidden]"));
+    expect(button).toBeDefined();
+    expect(container.querySelector('[data-pane="player"] .prompt')?.textContent).toContain("Dry your socks");
+    act(() => {
+      button!.click();
+    });
+    expect(container.querySelector('[data-testid="camp-panel"]')).not.toBeNull();
+    act(() => {
+      (container.querySelector('[data-testid="camp-done"]') as HTMLButtonElement).click();
+    });
+    vi.unstubAllGlobals();
+  });
+
+  it("has no Camp button in a scene that is not a rest", () => {
+    const { container } = mount();
+    inDowntime({ phase: "scene", sceneType: "story", campMoment: undefined });
+    act(() => {
+      tab(container, "You").click();
+    });
+    expect(container.querySelector('[data-testid="camp-button"]')).toBeNull();
+  });
+});
+
 describe("Travel Mode on a tablet held sideways", () => {
   beforeEach(() => {
     vi.stubGlobal("matchMedia", vi.fn((query: string) => ({

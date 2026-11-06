@@ -365,6 +365,46 @@ describe("the camp packed down at an indoor rest (docs/camp.md §3.2, #625)", ()
       expect(s.packedCamp()).toEqual([]);
     } finally { s.destroy(); load.mockRestore(); }
   });
+  it("sits the friends out at the row's two ends, at their true heights, and takes them away with it (#624)", async () => {
+    const load = vi.spyOn(Assets, "load").mockResolvedValue(Texture.WHITE as unknown as Record<string, unknown>);
+    const { scene: s, app } = scene();
+    try {
+      s.setBiome("glacier_of_origins", "scenes/riftlight/wyrm-nest");
+      s.setParty([member(), member({ character: character({ id: "c_2", ownerPlayerId: "p_2", name: "Thistle" }) })]);
+      s.setPackedCamp(
+        [
+          { id: "c_1", style: "rolled", accent: "#7FD4C1" },
+          { id: "c_2", style: "rolled", accent: "#E8A33D" },
+        ],
+        [
+          { id: "bun", url: "/assets/cast/bun.webp", heightCm: 40, stance: "standing", figure: "cast/bun" },
+          { id: "duckling", url: "/assets/entities/duckling.webp", heightCm: 20, stance: "standing", figure: "entities/duckling" },
+          { id: "nobody", url: null, heightCm: 40, stance: "standing", figure: "cast/none" },
+        ],
+      );
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      const friends = s.packedFriendsShown!();
+      // A friend with no painting is not drawn.
+      expect(friends.map((f) => f.id)).toEqual(["bun", "duckling"]);
+      const heroes = [figureFor(app, "Sparklehoof")!, figureFor(app, "Thistle")!];
+      const bedrolls = s.packedCamp();
+      // Left of the first hero, turned to face the row; right of the last bedroll.
+      expect(friends[0]!.x).toBeLessThan(heroes[0]!.x);
+      expect(friends[0]!.mirrored).toBe(true);
+      expect(friends[1]!.x - friends[1]!.width / 2).toBeGreaterThan(bedrolls[1]!.x);
+      expect(friends[1]!.mirrored).toBe(false);
+      // True proportion: the bun twice the duckling, never under the story floor, and inside the design stage.
+      expect(friends[0]!.height).toBeGreaterThanOrEqual(80);
+      expect(friends[0]!.height).toBeGreaterThanOrEqual(friends[1]!.height);
+      for (const f of friends) {
+        expect(f.x - f.width / 2).toBeGreaterThanOrEqual(0);
+        expect(f.x + f.width / 2).toBeLessThanOrEqual(1600);
+      }
+      expect(load).toHaveBeenCalledWith("/assets/cast/bun.webp");
+      s.setPackedCamp(null, []);
+      expect(s.packedFriendsShown!()).toEqual([]);
+    } finally { s.destroy(); load.mockRestore(); }
+  });
 });
 
 // ---------------------------------------------------------------------------

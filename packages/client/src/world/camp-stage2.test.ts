@@ -96,7 +96,7 @@ describe("frame stage 2", () => {
 
   it("is what the lobby pitches for a crew whose record says stage 2, and stage 1 otherwise", () => {
     const app = fakeApp();
-    const lobby = createLobbyCamp(app as unknown as Application, lobbyCampLayout()!, { still: true, loadTexture: noArt, layoutFor: campLayoutFor });
+    const lobby = createLobbyCamp(app as unknown as Application, lobbyCampLayout()!, { still: true, loadTexture: noArt, layoutFor: (stage) => campLayoutFor(stage) });
     lobby.resize(1600, 900);
     lobby.sync({ ...makeState({ phase: "lobby", party: [member(1)] }), camp: view({ frameStage: 1, grownBy: [], placed: {} }) } as RunState);
     expect(labels(lobby.camp()!.view)).toContain("piece:bedroll_0");
@@ -118,7 +118,7 @@ describe("the stage-up moment (§4.1)", () => {
     const lobby = createLobbyCamp(app as unknown as Application, lobbyCampLayout()!, {
       still: false,
       loadTexture: noArt,
-      layoutFor: campLayoutFor,
+      layoutFor: (stage) => campLayoutFor(stage),
       cover: (on) => covered.push(on),
     });
     lobby.resize(1600, 900);

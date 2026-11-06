@@ -23,7 +23,7 @@ import { castFor } from "./cast";
 import { boardInsetEnd, lobbyInsetBottom, lobbyInsetTop, onBoardInsetEnd, onLobbyInset, onLobbyInsetTop, onStageInset, onStageInsetTop, stageInsetBottom, stageInsetTop } from "./stage-inset";
 import { createLobbyCamp, lobbyCampLayout, type LobbyCamp } from "./lobby-camp-stage";
 import { campLayoutFor, indoorRest } from "./lobby-camp";
-import { packedCampKey, packedKits } from "./packed-camp";
+import { packedCampKey, packedFriends, packedKits } from "./packed-camp";
 import { PREFS_EVENT, reducedMotion } from "../a11y/prefs";
 
 /**
@@ -236,7 +236,7 @@ export function PixiStage(): React.JSX.Element {
       scene.setStageInsetTop(stageInsetTop());
       scene.setBoardInset(boardInsetEnd());
       scene.setEncounter(boardView(live.state, live.state?.party ?? [], live.chapter, live.previews));
-      scene.setPackedCamp(indoorRest(live.state) ? packedKits(live.state) : null);
+      scene.setPackedCamp(indoorRest(live.state) ? packedKits(live.state) : null, packedFriends(live.state));
 
       // The camp is drawn over the scene, so it is made after it; it mounts
       // itself while the phase is the lobby's (world/lobby-camp-stage.ts).
@@ -355,14 +355,16 @@ export function PixiStage(): React.JSX.Element {
    * reads a won fight). Begin is a phase change like any other here: the camp
    * is told to set off and fades, and the scene is already drawn under it.
    */
+  // The chapter, too: the camp is pitched in its terrain (lobby-camp.ts `campFamilyFor`), and it may land after the state.
   useEffect(() => {
     campRef.current?.sync(state, chapter);
   }, [state, chapter]);
 
-  // An indoor rest keeps its own picture, with the camp packed down into it (§3.2).
+  // An indoor rest keeps its own picture, with the camp packed down into it (§3.2),
+  // and the friends out sitting at the row's ends (#624).
   const packed = packedCampKey(state);
   useEffect(() => {
-    sceneRef.current?.setPackedCamp(indoorRest(state) ? packedKits(state) : null);
+    sceneRef.current?.setPackedCamp(indoorRest(state) ? packedKits(state) : null, packedFriends(state));
   }, [packed]);
 
   // A kid tapped a camp friend on her phone (#624): the camp takes each tap

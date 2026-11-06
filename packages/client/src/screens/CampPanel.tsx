@@ -495,7 +495,8 @@ function SharedSpots({
 /**
  * The camp packed down, as a phone shows it at an indoor rest (§3.2): each
  * seated hero's bedroll and pack in her color, with her name, in a row. The
- * friends (#624) sit at its ends once they come along (packed-camp.ts).
+ * friends out (#624) sit at its ends on the shared screen (packed-camp.ts
+ * `packedFriends`); here they are in the Friends section below, to call over.
  */
 function PackedCamp({ state }: { state: RunState }): ReactElement {
   const names = new Map(state.party.map((m) => [m.character.id, m.character.name]));
@@ -516,11 +517,11 @@ function PackedCamp({ state }: { state: RunState }): ReactElement {
 /** The panel itself: a picture and its named controls. Open only in downtime. */
 export function CampPanel({ state, me, held, dispatch }: { state: RunState; me: PartyMember; held: boolean; dispatch: Dispatch }): ReactElement | null {
   const open = useSyncExternalStore(onCampPanel, campPanelOpen, campPanelOpen);
+  const chapter = useChapter();
   const kind = campMomentKind(state);
   const [active, setActive] = useState<string | null>(null);
   const headingRef = useRef<HTMLHeadingElement | null>(null);
   const titleId = useId();
-  const chapter = useChapter();
   // Begin, Go on, back to the lobby: the panel goes with the downtime (§3, §12.6).
   useEffect(() => {
     if (kind === null) closeCampPanel();

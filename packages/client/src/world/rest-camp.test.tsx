@@ -19,8 +19,16 @@ import { makeCharacter, makeMember, makeState } from "../testing/fixtures";
 import { useGameStore } from "../store";
 import { StaticStage } from "./StaticStage";
 import { campShownFor, indoorRest, outdoorRest } from "./lobby-camp";
-import { PACKED_BEHIND, PACKED_HEIGHT_WIDTH, PACKED_SIDE, PACKED_SLOT_WIDTH, packedCampKey, packedCampSpots, packedKits } from "./packed-camp";
+import { PACKED_BEHIND, PACKED_HEIGHT_WIDTH, PACKED_SIDE, PACKED_SLOT_WIDTH, packedCampKey, packedCampSpots, packedFriends, packedKits } from "./packed-camp";
 import { CAMP_KIT_STYLES } from "./camp-kit-art";
+import { campFriendFigures, friendHeightCm } from "./camp-friends";
+import catalog from "../../../../content/camp.json";
+
+const CARDS = (catalog.friends as { id: string; name: string; figure: string; size?: "small" | "medium" | "large" }[]).map(({ id, name, figure, size }) => ({ id, name, figure, ...(size ? { size } : {}) }));
+/** A rest with friends out (#624), as the server sends it: buddies first, at most four. */
+function withFriends(state: RunState, out: string[]): RunState {
+  return { ...state, campMoment: { ...state.campMoment!, friends: { rotation: out, out, cards: CARDS } } } as RunState;
+}
 
 function member(n: number, overrides: Partial<PartyMember> = {}): PartyMember {
   return makeMember({
@@ -115,6 +123,41 @@ describe("an indoor rest on the still stage", () => {
     // Her kit says quilted, but indoors nobody sleeps in it: it stays rolled up beside her pack.
     expect(bedrolls[0]!.querySelector("[data-camp-kit]")!.getAttribute("data-camp-kit")).toBe("rolled");
   });
+
+  it("sits the friends out at the row's two ends, left first, each as tall as it truly is beside the heroes (#624)", () => {
+    const out = ["bun", "duckling", "kid_goat"];
+    mount(withFriends(rest(false), out), chapter("red_sky_foothills", "indoor"));
+    const row = document.querySelector(".kad-static-stage__row--party")!;
+    const items = [...row.children];
+    const kinds = items.map((li) => (li.getAttribute("data-testid") === "packed-friend" ? "friend" : "hero"));
+    // Left end: the third friend outermost, then the first; right end: the second.
+    expect(kinds).toEqual(["friend", "friend", "hero", "hero", "friend"]);
+    const srcs = items.filter((li) => li.getAttribute("data-testid") === "packed-friend").map((li) => li.querySelector("img")!.getAttribute("src"));
+    const url = (id: string) => campFriendFigures(withFriends(rest(false), [id]))[0]!.url;
+    expect(srcs).toEqual([url("kid_goat"), url("bun"), url("duckling")]);
+    // Turned to face the row on the left; and smaller than the griffins they sit beside.
+    expect(items[0]!.className).toContain("is-turned");
+    expect(items[4]!.className).not.toContain("is-turned");
+    for (const li of [items[0]!, items[1]!, items[4]!]) {
+      const size = Number(/calc\(([\d.]+)cqh\)/.exec(li.querySelector("img")!.getAttribute("style") ?? "")?.[1]);
+      expect(size).toBeGreaterThan(0);
+      expect(size).toBeLessThan(26);
+    }
+  });
+
+  it("draws no friend at an indoor rest when none is out", () => {
+    mount(rest(false), chapter("red_sky_foothills", "indoor"));
+    expect(document.querySelectorAll('[data-testid="packed-friend"]')).toHaveLength(0);
+  });
+});
+
+describe("an outdoor rest's friends", () => {
+  it("stand at their friend spots in the full camp, as in the lobby (#624)", () => {
+    mount(withFriends(rest(true), ["bun", "duckling"]), chapter("glacier_of_origins", "outdoor"));
+    const friends = [...document.querySelectorAll(".kad-static-camp [data-friend]")].map((el) => el.getAttribute("data-friend"));
+    expect(friends).toEqual(["friend:bun", "friend:duckling"]);
+    expect(document.querySelectorAll('[data-testid="packed-friend"]')).toHaveLength(0);
+  });
 });
 
 describe("the packed camp's one lane (packed-camp.ts)", () => {
@@ -136,9 +179,45 @@ describe("the packed camp's one lane (packed-camp.ts)", () => {
     const { friends } = packedCampSpots(heroes, 400, [{ id: "f1" }, { id: "f2" }, { id: "f3" }]);
     expect(friends.map((f) => f.id)).toEqual(["f1", "f2", "f3"]);
     expect(friends[0]!.x).toBeLessThan(400);
-    expect(friends[1]!.x).toBeGreaterThan(800 + 400 * (PACKED_SIDE + PACKED_SLOT_WIDTH / 2));
+    // Clear of the last bedroll as it is drawn.
+    const { bedrolls } = packedCampSpots(heroes, 400);
+    expect(friends[1]!.x - friends[1]!.width / 2).toBeGreaterThan(bedrolls[1]!.x + bedrolls[1]!.width / 2);
     expect(friends[2]!.x).toBeLessThan(friends[0]!.x);
     expect(packedCampSpots([], 400, [{ id: "f1" }]).friends).toEqual([]);
+    // Turned to face the row from the left end.
+    expect(friends.map((f) => f.mirrored)).toEqual([true, false, true]);
+  });
+
+  it("keeps each friend wholly inside the shown stage, and the outer ones clear of the inner", () => {
+    const four = [{ id: "f1", width: 120 }, { id: "f2", width: 120 }, { id: "f3", width: 120 }, { id: "f4", width: 120 }];
+    const bounds = { left: 100, right: 1300 };
+    const { friends } = packedCampSpots(heroes, 400, four, bounds);
+    for (const f of friends) {
+      expect(f.x - f.width / 2).toBeGreaterThanOrEqual(bounds.left);
+      expect(f.x + f.width / 2).toBeLessThanOrEqual(bounds.right);
+      expect(f.width).toBe(120);
+    }
+    // With room on both sides, the outer friend on each stands beyond the inner, not over it.
+    const roomy = packedCampSpots(heroes, 400, four, { left: 0, right: 1600 }).friends;
+    expect(roomy[2]!.x + roomy[2]!.width / 2).toBeLessThanOrEqual(roomy[0]!.x - roomy[0]!.width / 2);
+    expect(roomy[3]!.x - roomy[3]!.width / 2).toBeGreaterThanOrEqual(roomy[1]!.x + roomy[1]!.width / 2);
+    // A full end sends the next friend to the other: here the right end has room for one.
+    const lopsided = packedCampSpots(heroes, 400, four, { left: -400, right: 1290 }).friends;
+    expect(lopsided.map((f) => f.mirrored)).toEqual([true, false, true, true]);
+    const lefts = lopsided.filter((f) => f.mirrored).sort((a, b) => a.x - b.x);
+    for (let i = 1; i < lefts.length; i++) expect(lefts[i - 1]!.x + lefts[i - 1]!.width / 2).toBeLessThanOrEqual(lefts[i]!.x - lefts[i]!.width / 2);
+  });
+
+  it("seats the lobby camp's friends out, at their true heights, only at an indoor rest", () => {
+    const state = withFriends(rest(false), ["kid_goat", "bun", "mosshorn", "duckling"]);
+    const friends = packedFriends(state);
+    // In the server's order (buddies first).
+    expect(friends.map((f) => f.id)).toEqual(["kid_goat", "bun", "mosshorn", "duckling"]);
+    for (const f of friends) expect(f.heightCm).toBe(friendHeightCm(CARDS.find((c) => c.id === f.id)!));
+    expect(packedFriends(withFriends(rest(true), ["bun"]))).toEqual([]);
+    expect(packedFriends(rest(false))).toEqual([]);
+    // A friend coming out redraws the packed camp.
+    expect(packedCampKey(state)).not.toBe(packedCampKey(rest(false)));
   });
 
   it("reads each seated hero's kit, skipping anyone taken out of the table", () => {

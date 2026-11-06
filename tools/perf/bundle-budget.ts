@@ -221,7 +221,13 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // the phone's buddy picker and Call over buttons); the rest is the friend-tap
 // relay in the store and channel, which every screen hears. First paint goes
 // from 331KB to 332KB, at its budget. Keep 2KB of slack for CI.
-const TOTAL_BUDGET_KB = 1658;
+// 1658 -> 1666 when #624 (friends, 1646 -> 1658 above) met #627 (frame
+// stages 3 and 4, the camp in the chapter's terrain and Travel Mode's Camp
+// button, which on its own branch raised 1646 -> 1648): one raise for both.
+// The merged build, with the friends sitting at an indoor rest's packed row
+// too, measures 1664KB locally, first paint 332KB, at its budget. Keep 2KB of
+// slack for CI.
+const TOTAL_BUDGET_KB = 1666;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

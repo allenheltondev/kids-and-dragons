@@ -59,6 +59,8 @@
   pointer-events: none;
 }
 .kad-static-stage__bedroll svg { display: block; inline-size: 100%; block-size: auto; }
+/* A friend out (#624) sits at an end of the packed row, at its true height beside the heroes. */
+.kad-static-stage__friend.is-turned img { transform: scaleX(-1); }
 
 /* A still frame of the neutral tear, keeping the scene's visible doorway on
    devices without WebGL. Its rules/colours remain in the separate RiftSight UI. */

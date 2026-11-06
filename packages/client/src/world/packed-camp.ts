@@ -11,15 +11,16 @@
  *
  * One generic layout, with no per-scene authoring: the lineup's own ground
  * line is the one near lane, each hero's bedroll lies on it at her side
- * (`packedCampSpots`), and the friends (§4.4, #624) sit at the two ends of the
- * row. This module only places them; scene.ts draws the bedrolls and the
+ * (`packedCampSpots`), and the friends out (§4.4, #624; `packedFriends`) sit
+ * at the two ends of the row. This module only places them; scene.ts draws the bedrolls and the
  * still stage (StaticStage) draws the same row in plain images.
  *
  * Pure and Pixi-free, so the layout is a table of tests (packed-camp.test.ts).
  */
 
-import type { HeroKitView, PartyMember, RunState } from "@kad/shared";
+import type { CastStance, HeroKitView, PartyMember, RunState } from "@kad/shared";
 import type { CampKitStyle } from "./camp-kit-art";
+import { FRIEND_SPOTS, campFriendsOut, friendFigure } from "./camp-friends";
 import { kitLook } from "./camp-scene";
 import { indoorRest } from "./lobby-camp";
 
@@ -36,12 +37,22 @@ export interface PackedKit {
 }
 
 /**
- * A friend sitting beside the packed bedrolls. The seam for #624 (friends):
- * whoever builds friends hands them here, and they get a spot at the ends of
- * the row. Nothing draws one yet.
+ * A friend out at an indoor rest (§4.4; #624), sitting at one end of the
+ * packed row: the friend the lobby camp would draw (camp-friends.ts
+ * `campFriendsOut`), at its true height on the story stage's scale.
  */
 export interface PackedFriend {
+  /** The friend's catalog id. */
   id: string;
+  /** Its painting, or null for none (nothing is drawn). */
+  url: string | null;
+  /** Its true height, in its size band (camp-friends.ts `friendHeightCm`). */
+  heightCm: number;
+  stance: CastStance;
+  /** Its figure, for its painted box (camp-friends.ts `FRIEND_PAINT`). */
+  figure: string;
+  /** Its drawn painted width, where the caller knows it: what its spot keeps clear of the row's edge. */
+  width?: number;
 }
 
 /** Where a bedroll or a friend sits, in the story's design units (feet / ground contact). */
@@ -67,17 +78,24 @@ export const PACKED_HEIGHT_WIDTH = 0.7;
 /** How far behind her feet the bedroll's ground contact is, in design units: she stands in front of it. */
 export const PACKED_BEHIND = 6;
 
+/** A friend's share of a lineup slot, where the caller does not say how wide it is drawn. */
+export const PACKED_FRIEND_WIDTH = 0.3;
+
 /**
  * Each hero's bedroll beside her (`heroes` in lineup order, each at its feet
  * and drawn height), and a spot at each end of the row for each friend.
  * A bedroll lies on her right, a little behind her feet, so she stands at its
  * end and nothing covers her or her name; it is no wider than her slot leaves
- * room for, nor than she is tall.
+ * room for, nor than she is tall. Friends alternate ends, left first, each
+ * further out than the last on its side, turned to face the row; `bounds`
+ * (the stage's shown edges, in the same units) keeps each one wholly inside
+ * them, moving a friend to the other end when its own is full.
  */
 export function packedCampSpots(
   heroes: readonly { id: string; x: number; y: number; height: number }[],
   slot: number,
-  friends: readonly PackedFriend[] = [],
+  friends: readonly Pick<PackedFriend, "id" | "width">[] = [],
+  bounds?: { left: number; right: number },
 ): { bedrolls: PackedSpot[]; friends: PackedSpot[] } {
   const bedrolls = heroes.map((hero, index) => ({
     id: hero.id,
@@ -91,12 +109,32 @@ export function packedCampSpots(
     const xs = heroes.map((h) => h.x);
     const ground = Math.max(...heroes.map((h) => h.y));
     const left = Math.min(...xs) - slot * 0.5;
-    const right = Math.max(...xs) + slot * (PACKED_SIDE + PACKED_SLOT_WIDTH / 2) + slot * 0.25;
+    // Just past the last bedroll as drawn, a step clear of it.
+    const right = Math.max(...bedrolls.map((b) => b.x + b.width / 2)) + slot * 0.1;
+    // Each side's next friend sits just beyond the last one there. A side
+    // with no room left inside `bounds` sends it to the other end; with no
+    // room at either, it stays on its own side, at the edge.
+    const reach = { left, right };
+    const used = { left: 0, right: 0 };
+    const gap = slot * 0.05;
+    const at = (onLeft: boolean, width: number): number => {
+      const side = onLeft ? used.left : used.right;
+      // The first on the left stands at the first hero's slot edge; the first on the right just past the last bedroll.
+      const pad = side === 0 ? (onLeft ? 0 : width / 2) : gap + width / 2;
+      return onLeft ? reach.left - pad : reach.right + pad;
+    };
+    const fits = (onLeft: boolean, x: number, width: number): boolean =>
+      !bounds || (onLeft ? x - width / 2 >= bounds.left : x + width / 2 <= bounds.right);
     friends.forEach((friend, index) => {
-      // Alternate ends, each further out than the last on its side.
-      const step = Math.floor(index / 2) * slot * 0.3;
-      const x = index % 2 === 0 ? left - step : right + step;
-      spots.push({ id: friend.id, x, y: ground, width: slot * 0.3, mirrored: index % 2 === 0 });
+      const width = friend.width ?? slot * PACKED_FRIEND_WIDTH;
+      let onLeft = index % 2 === 0;
+      if (!fits(onLeft, at(onLeft, width), width) && fits(!onLeft, at(!onLeft, width), width)) onLeft = !onLeft;
+      let x = at(onLeft, width);
+      if (bounds) x = Math.max(bounds.left + width / 2, Math.min(bounds.right - width / 2, x));
+      if (onLeft) { reach.left = Math.min(reach.left, x - width / 2); used.left++; }
+      else { reach.right = Math.max(reach.right, x + width / 2); used.right++; }
+      // Drawn facing left; a friend on the left turns round to face the row.
+      spots.push({ id: friend.id, x, y: ground, width, mirrored: onLeft });
     });
   }
   return { bedrolls, friends: spots };
@@ -109,7 +147,22 @@ export function packedCampSpots(
  */
 export function packedCampKey(state: (Pick<RunState, "phase" | "sceneType" | "sceneId" | "campMoment" | "party" | "removed" | "kits">) | null | undefined): string {
   if (!indoorRest(state)) return "";
-  return `${state!.sceneId ?? ""}|${packedKits(state).map((k) => `${k.id}:${k.style}:${k.accent}`).join(",")}`;
+  return `${state!.sceneId ?? ""}|${packedKits(state).map((k) => `${k.id}:${k.style}:${k.accent}`).join(",")}|${packedFriends(state).map((f) => f.id).join(",")}`;
+}
+
+/**
+ * The friends out at an indoor rest, as the packed row seats them: the
+ * lobby camp's (camp-friends.ts `campFriendsOut`, buddies first, at most
+ * four), each at its true height. None outside one.
+ */
+export function packedFriends(state: Pick<RunState, "phase" | "sceneType" | "sceneId" | "campMoment"> | null | undefined): PackedFriend[] {
+  if (!indoorRest(state)) return [];
+  return campFriendsOut(state)
+    .slice(0, FRIEND_SPOTS)
+    .map((card) => {
+      const figure = friendFigure(card, 0);
+      return { id: card.id, url: figure.url, heightCm: figure.heightCm, stance: figure.stance, figure: card.figure };
+    });
 }
 
 /**

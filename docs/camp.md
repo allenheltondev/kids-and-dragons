@@ -76,7 +76,9 @@ a future chapter-end shop (§6.2). This keeps the session budget untouched: the 
 time that already exists.
 
 **Travel Mode** has no TV, so the camp view lives behind the same Camp button on each phone
-during downtime, and in the World pane during the lobby.
+during downtime, and in the World pane during the lobby. The button is in the You pane at a lobby
+visit, a rest scene and the chapter's end (the Camp panel, with the still camp at the crew's stage
+in the chapter's terrain), and nowhere else (`travel-layout.test.tsx`; #627).
 
 ### 3.1 Pitched in the right place
 
@@ -88,6 +90,15 @@ show the full, outdoor camp. (As built, #625: the lobby pitches in the chapter t
 played, which the run state still names after a chapter; a lobby before any chapter, or a screen
 that has not loaded the chapter yet, pitches on the plains. The run state does not yet name the
 next chapter's id, so "would pick up from" waits on that.)
+
+One function decides it for every screen (`campFamilyFor` in
+`packages/client/src/world/lobby-camp.ts`, through camp-backdrop.ts `campBackdropFamily`; #625, #627): the chapter's biome, through `biomeFamilies`, to
+its family's backdrop where one is painted, else `open_plains`. In the lobby the biome is the
+next chapter of the campaign the lobby would begin (`CampaignView.next.biome`, sent by the
+server); at a rest scene and the chapter's end it is the chapter being played. Every frame stage
+is laid over every backdrop (§8.3), and the first-wave backdrops share `open_plains`'s lanes, so
+the camp stands the same on each and only the painting changes (`camp-boxes.test.ts` runs the
+full matrix once per distinct set of lanes and holds every backdrop to it).
 
 Painting all twelve is a lot of art, so they ship in order of how often a party rests outdoors
 there. All rest scenes were counted from the repo on 2026-11-04; the outdoor ones were recounted
@@ -773,6 +784,32 @@ camp's spots on that ground.
   trophies only) draws the mix at about 0.82, four unicorns at 0.82, four griffins at 0.87, four
   manticores at 0.92 and four bigfoots at about 0.72. On a 1280 x 720 TV with the campaign picker
   open the window, not the row, holds a party with a bigfoot on the back lane to about 0.72.
+- **Stages 3 and 4 stand their own big pieces on the far lane** (#627). Each bigger frame brings
+  three pieces of its own (stage 3: an awning, a lantern string and a lookout post; stage 4: a big
+  shared tent, banners and a lookout, every one an id ending `_frame`), drawn at their real sizes:
+  the lookout post 270 cm and the stage-4 lookout 300 cm, both taller than a bigfoot (215); the
+  lantern string 200 cm, its rope at about 165 cm with its lanterns hanging below it; the banners'
+  posts 230 cm; the awning 220 cm, tall enough for a bigfoot to stand under; and the shared tent
+  280 cm, taller than any hero's own tent. Pieces that big only fit across the clearing behind the
+  tents, so they stand on the far lane: the lookout at the far left beside the first tent, the
+  awning or the shared tent in the middle between the inner tents' peaks, the lantern string or
+  the banners past the last tent, and the crew's own awning spot at the far right. They are
+  treated as the tall shared pieces are (*proposed*, #627, for the owner to confirm): each may
+  stand partly behind a nearer tent, under the same rule (less than half of it covered and none
+  of its top half), never behind or in front of a hero at her door, and whoever goes to look at
+  one stands where no nearer tent hides her (`isTallFramePiece`, `campCoverClashes`,
+  `campStandBoxes`). The far lane draws them at 0.6 of the near lane's scale, so the lookout
+  reads as a tall tower behind the camp rather than a prop beside the fire. With the big pieces
+  in, the shared spots move to stage 2's places on the near lane (the lanterns at the far left,
+  the friends' corner in front of the first tents, the trophies and the banner pole at the
+  right), and the crew's awning spot (an awning, a map table, a woodpile, a supply chest or a
+  trophy rack) to the far lane's right end. Everything is drawn smaller than at stage 2: with
+  every spot holding its widest or tallest piece, in every tent style, four bigfoots at about
+  0.61, the mix (bigfoot, kitsune, unicorn, griffin) 0.61 to 0.63 either way round, four
+  unicorns, griffins or manticores about 0.66, and four kitsune or dragonlings about 0.67, at
+  both stages. What holds the small parties is not their
+  tents but the far lane's own pieces side by side (the lantern string or the banners beside the
+  crew's awning spot); what holds the big ones is the middle piece between the inner tents.
 - **Stage 1 is a ring of bedrolls.** A bedroll is longer than its hero lying down, much wider than
   her tent, and too tall to stand in front of another lane's, so at stage 1 everything that
   reaches the back lane stands side by side across the clearing: the lantern hooks at the far
@@ -800,8 +837,11 @@ camp's spots on that ground.
   `packedCampSpots`): the lane is the story lineup's own ground line, so the heroes stand where
   every scene stands them; each hero's bedroll lies at her right, its middle 0.36 of her lineup
   slot from hers and a step behind her feet (so she and her name are never covered), no wider than
-  0.85 of her slot or 0.7 of her drawn height (a rolled-up bedroll, shorter than she is). The friends' spots are at the two ends of the row,
-  alternating; they are laid out and tested but drawn only once friends exist (#624).
+  0.85 of her slot or 0.7 of her drawn height (a rolled-up bedroll, shorter than she is). The friends out (§4.4) sit at the two ends of the row,
+  alternating, left first, each further out than the last on its side and turned to face the row,
+  at its true height on the lineup's scale, and kept inside the shown stage and clear of any
+  guest's share of it (`packedFriends`; drawn on the moving and the still stage since the #624
+  and #627 merge). The phone's packed row keeps to the kits: its friends are in the Friends section.
 
 ### 8.4 What figures do there
 

@@ -20,7 +20,8 @@ import { campFamilyFor, campLayoutFor, campShownFor, campStage, indoorRest, outd
 import { campBeatShown, onCampBeat } from "./camp-beat";
 import { StillCamp } from "./StillCamp";
 import { CampBedroll } from "./CampBedroll";
-import { packedKits } from "./packed-camp";
+import { packedFriends, packedKits, type PackedFriend } from "./packed-camp";
+import { figureSize } from "./figure-scale";
 import { onStageInset, onStageInsetTop, stageInsetBottom, stageInsetTop } from "./stage-inset";
 import { sceneRiftFor, STILL_FRAME } from "./scene-rift";
 import { RIFT_NEUTRAL_EFFECT, RIFT_SHEET, riftSheetUrl } from "../screens/riftlight";
@@ -71,6 +72,18 @@ export function StaticStage(): React.JSX.Element {
   }
   // An indoor rest keeps its picture, with each hero's bedroll and pack beside her (§3.2).
   const packed = indoorRest(state) ? new Map(packedKits(state).map((kit) => [kit.id, kit])) : null;
+  // And the friends out at the row's two ends (#624), alternating, left first,
+  // each as tall beside the heroes as it truly is.
+  const friends = packed ? packedFriends(state) : [];
+  const tallest = Math.max(1, ...party.map((m) => figureSize(`characters/${m.character.species}`).heightCm));
+  const friendItem = (friend: PackedFriend, index: number): React.JSX.Element => (
+    <li key={`friend:${friend.id}`} className={`kad-static-stage__figure kad-static-stage__friend${index % 2 === 0 ? " is-turned" : ""}`} data-testid="packed-friend">
+      <img src={friend.url!} alt="" style={{ maxBlockSize: `calc(26cqh * ${Math.min(1, friend.heightCm / tallest).toFixed(3)})` }} />
+    </li>
+  );
+  const shownFriends = friends.filter((f) => f.url !== null);
+  const leftFriends = shownFriends.filter((_, i) => i % 2 === 0).reverse();
+  const rightFriends = shownFriends.filter((_, i) => i % 2 === 1);
 
   return (
     <div className="kad-static-stage" data-testid="static-stage" aria-hidden="true">
@@ -99,6 +112,7 @@ export function StaticStage(): React.JSX.Element {
         })}
       </ul>
       <ul className="kad-static-stage__row kad-static-stage__row--party">
+        {leftFriends.map((friend) => friendItem(friend, shownFriends.indexOf(friend)))}
         {party.map((member) => {
           const hero = member.character;
           const live = encounter?.combatants.find((c) => c.id === hero.id);
@@ -116,6 +130,7 @@ export function StaticStage(): React.JSX.Element {
             </li>
           );
         })}
+        {rightFriends.map((friend) => friendItem(friend, shownFriends.indexOf(friend)))}
       </ul>
     </div>
   );

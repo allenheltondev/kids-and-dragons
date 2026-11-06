@@ -77,7 +77,8 @@ describe("the campaign, as the table sees it", () => {
       // The premise rides along, so the lobby can tell a new table the story.
       blurb: "Two chapters.",
       chapters: 2,
-      next: { index: 1, title: "The Path" },
+      // Its biome, too: the lobby pitches the camp in it (docs/camp.md §3.1; #627).
+      next: { index: 1, title: "The Path", biome: makeChapter().biome },
     });
   });
 

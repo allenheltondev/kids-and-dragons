@@ -72,7 +72,7 @@ import {
   shadowOffset,
   type Footprint,
 } from "./actor-art";
-import { figureSize, fitCanvas, NOMINAL_PAINT, paintAspect, stanceLift, type Overflow, type PaintBox } from "./figure-scale";
+import { drawnHeight, figureSize, fitCanvas, NOMINAL_PAINT, paintAspect, stanceLift, type Overflow, type PaintBox } from "./figure-scale";
 import { sceneBackdropUrl } from "./art-paths";
 import {
   RIFT_FOOT,
@@ -105,7 +105,8 @@ import type { EncounterEvent } from "@kad/shared";
 import { stageLayout, STORY_MEASURE, type StageCastMember } from "./cast";
 import { boardStageWidth, storyStageFrame } from "./stage-inset";
 import { reducedMotion } from "../a11y/prefs";
-import { packedCampSpots, type PackedKit, type PackedSpot } from "./packed-camp";
+import { packedCampSpots, type PackedFriend, type PackedKit, type PackedSpot } from "./packed-camp";
+import { FRIEND_PAINT } from "./camp-friends";
 import { CAMP_KIT_STYLES } from "./camp-kit-art";
 import { campKitCanvas } from "./camp-kit-canvas";
 
@@ -327,12 +328,14 @@ export interface PartyScene {
    * The camp packed down into this scene's own picture (packed-camp.ts;
    * docs/camp.md §3.2): at an indoor rest, each hero's bedroll and pack on the
    * ground beside her in the lineup. Null, or empty, takes them away. No
-   * tents, no campfire, no shared spots. Friends (#624) are a seam in
-   * packed-camp.ts and not drawn here yet.
+   * tents, no campfire, no shared spots. The friends out (#624) sit at the
+   * row's two ends, at their true heights.
    */
-  setPackedCamp(kits: readonly PackedKit[] | null): void;
+  setPackedCamp(kits: readonly PackedKit[] | null, friends?: readonly PackedFriend[]): void;
   /** Where each packed bedroll lies now, in design units; for tests. */
   packedCamp(): readonly PackedSpot[];
+  /** Where each packed friend sits now (feet), and its drawn painted height, in design units; for tests. */
+  packedFriendsShown?(): readonly (PackedSpot & { height: number })[];
   destroy(): void;
 }
 
@@ -537,6 +540,13 @@ export function createScene(app: Application): PartyScene {
   let packedSpots: PackedSpot[] = [];
   let packedSlot = 0;
   const packedSprites = new Map<string, { sprite: Sprite; key: string }>();
+  /** The friends out at an indoor rest, and where the last layout sat them. */
+  let packedFriendList: readonly PackedFriend[] = [];
+  let packedFriendSpots: (PackedSpot & { height: number })[] = [];
+  const packedFriendSprites = new Map<string, { sprite: Sprite; key: string; loaded: boolean }>();
+  /** The lineup's scale and the stage's shown edges at the last layout: what a friend is sized and kept inside by. */
+  let packedK = 1;
+  let packedBounds: { left: number; right: number } | undefined;
   const castActors = new Map<string, CastActor>();
 
   /*
@@ -940,6 +950,11 @@ export function createScene(app: Application): PartyScene {
       // Feet further down the screen = nearer the viewer = drawn in front.
       actor.container.zIndex = actor.y;
     });
+    // A friend at the row's ends stays on the shown stage, and clear of any guest's share of it.
+    const shownLeft = DESIGN.width - visibleRightEdge();
+    const castFrom = slots.castLeft.length > 0 ? Math.min(...slots.castLeft) : Infinity;
+    packedK = fit.k;
+    packedBounds = { left: Math.max(left, shownLeft), right: Math.min(left + width, visibleRight, castFrom) };
     layoutPacked(slots.partySlot);
   }
 
@@ -956,7 +971,26 @@ export function createScene(app: Application): PartyScene {
       .map((kit) => actors.get(kit.id))
       .filter((actor): actor is Actor => actor !== undefined)
       .map((actor) => ({ id: actor.characterId, x: actor.x, y: actor.y, height: actor.height }));
-    packedSpots = packedCampSpots(heroes, slot).bedrolls;
+    // Each friend at its true height on the lineup's scale, never under the story floor.
+    const sized = packedFriendList.map((friend) => {
+      const height = drawnHeight({ heightCm: friend.heightCm, stance: friend.stance, paint: null }, packedK, STORY_MEASURE);
+      const box = FRIEND_PAINT[friend.figure];
+      return { friend, height, width: height * (box ? box.width : paintAspect(NOMINAL_PAINT)) };
+    });
+    const laid = packedCampSpots(heroes, slot, sized.map((f) => ({ id: f.friend.id, width: f.width })), packedBounds);
+    packedSpots = laid.bedrolls;
+    packedFriendSpots = laid.friends.map((spot) => ({ ...spot, height: sized.find((f) => f.friend.id === spot.id)?.height ?? 0 }));
+    for (const [id, entry] of packedFriendSprites) entry.sprite.renderable = packedFriendSpots.some((spot) => spot.id === id);
+    for (const spot of packedFriendSpots) {
+      const entry = packedFriendSprites.get(spot.id);
+      if (!entry || !entry.loaded) continue;
+      const { sprite } = entry;
+      // The painting's nominal box is the friend's drawn height (camp.ts draws friends so too).
+      const canvas = spot.height / (ANCHOR_Y - NOMINAL_PAINT.top);
+      sprite.scale.set((canvas / sprite.texture.height) * (spot.mirrored ? -1 : 1), canvas / sprite.texture.height);
+      sprite.position.set(spot.x, spot.y);
+      sprite.zIndex = spot.y;
+    }
     // A bedroll whose hero is not in the lineup (she got up from the table) is not drawn.
     for (const [id, entry] of packedSprites) entry.sprite.renderable = packedSpots.some((spot) => spot.id === id);
     for (const spot of packedSpots) {
@@ -972,6 +1006,36 @@ export function createScene(app: Application): PartyScene {
       sprite.position.set(spot.x, spot.y);
       // Behind her (her feet are nearer), in front of anyone further back.
       sprite.zIndex = spot.y;
+    }
+  }
+
+  function setPackedFriends(friends: readonly PackedFriend[]): void {
+    packedFriendList = friends.filter((friend) => friend.url !== null);
+    const wanted = new Map(packedFriendList.map((friend) => [friend.id, friend.url!]));
+    for (const [id, entry] of packedFriendSprites) {
+      if (wanted.get(id) === entry.key) continue;
+      entry.sprite.destroy();
+      packedFriendSprites.delete(id);
+    }
+    for (const friend of packedFriendList) {
+      if (packedFriendSprites.has(friend.id)) continue;
+      const url = friend.url!;
+      const sprite = new Sprite();
+      sprite.anchor.set(ANCHOR_X, ANCHOR_Y);
+      sprite.label = `packed-friend:${friend.id}`;
+      sprite.visible = false;
+      actorsLayer.addChild(sprite);
+      const entry = { sprite, key: url, loaded: false };
+      packedFriendSprites.set(friend.id, entry);
+      void Assets.load<Texture>(url)
+        .then((texture) => {
+          if (destroyed || packedFriendSprites.get(friend.id)?.sprite !== sprite) return;
+          sprite.texture = texture;
+          sprite.visible = true;
+          entry.loaded = true;
+          layoutPacked(packedSlot);
+        })
+        .catch(() => undefined);
     }
   }
 
@@ -1876,8 +1940,10 @@ export function createScene(app: Application): PartyScene {
       camState = setAttention(camState, key);
     },
 
-    setPackedCamp(kits) {
+    setPackedCamp(kits, friends = []) {
       if (destroyed) return;
+      // No packed camp, no friends sitting by it.
+      setPackedFriends(kits && kits.length > 0 ? friends : []);
       setPackedKits(kits ?? []);
     },
 
@@ -1885,10 +1951,15 @@ export function createScene(app: Application): PartyScene {
       return packedSpots.filter((spot) => packedSprites.has(spot.id));
     },
 
+    packedFriendsShown() {
+      return packedFriendSpots.filter((spot) => packedFriendSprites.get(spot.id)?.loaded === true);
+    },
+
     destroy() {
       destroyed = true;
       app.ticker.remove(tick);
       packedSprites.clear();
+      packedFriendSprites.clear();
       removeGestures();
       // Leave the stage where the next scene expects to find it — a stage
       // torn down mid-jolt must not bequeath its displacement.
