@@ -145,6 +145,17 @@ export function maskPathBeside(painting: string): string {
 }
 
 /**
+ * Whether a hero's look draws on her coat mask: a colour on either part, or a
+ * special. A hero wearing none is drawn as painted, so prefetching her mask
+ * ahead of play would only spend a phone's data; the book's own offline warm
+ * (hero-art.ts `heroOfflineArt`) still fetches it, since a colour can be picked
+ * there offline. Pure, so the service worker can call it.
+ */
+export function wearsLook(look: { coat?: string | null; accent?: string | null; special?: string | null } | null | undefined): boolean {
+  return Boolean(look && (look.coat || look.accent || look.special));
+}
+
+/**
  * A painting's coat mask URL, or null when `masked` (the art manifest's
  * `coatMasks.paintings`, paths under `assets/`) does not list it: a painting
  * with no mask draws as painted, and nothing asks for a file that is not

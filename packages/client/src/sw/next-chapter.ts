@@ -175,7 +175,7 @@ export function swHeroesOf(journal: Partial<Pick<JournalResponse, "heroes">> | n
   return heroes
     .filter((hero) => hero && typeof hero.species === "string" && typeof hero.tier === "string")
     .slice(0, SW_NEXT_HEROES_MAX)
-    .map((hero) => ({ character: { species: hero.species, tier: hero.tier, class: hero.class } }));
+    .map((hero) => ({ character: { species: hero.species, tier: hero.tier, class: hero.class, ...(hero.look ? { look: hero.look } : {}) } }));
 }
 
 /**
