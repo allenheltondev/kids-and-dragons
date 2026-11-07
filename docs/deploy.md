@@ -496,10 +496,24 @@ first invocation, and retention is handled account-wide by a utility outside thi
 repo. Setting `RetentionInDays` here would mean every deploy quietly overwriting
 whatever that utility had decided.
 
+**Old logs are deleted by the log sweeper (#524).** `LogSweepFunction` runs on
+`LogSweepSchedule` (04:00 UTC on the 1st of each month) and deletes every stream
+in `/aws/lambda/<stack>-*` whose newest event is more than 30 days old, so a log
+line lives at most about two months, which is what the privacy page says. It
+deletes streams only and never sets a retention policy, so it does not fight the
+account-wide utility. It logs one line: groups, streams deleted, failed, and
+whether it stopped for time (it stops 30 seconds before its 15-minute timeout;
+the next month carries on). Its schedule, `kad-log-sweep-<stage>`, needs the
+deploy role from `infra/github-oidc.yaml` as of #524: **redeploy that stack before
+the first deploy that adds it**, or CloudFormation is refused the schedule.
+
 **What the sweeper says.** It runs once a day and logs a one-line summary per
-run: scanned, deleted, spared, failed. `spared` counts households somebody
-claimed between the index query and the delete — not an error, a save. Expect
-most days to read `scanned 0` and nothing else.
+run: scanned, deleted, spared, failed; then the retention sweep's kids deleted,
+kept and failed, the kept households it emptied and deleted with their last kid,
+and the grown-ups' sign-ins it deleted with them (#524). `spared` counts
+households somebody claimed between the index query and the delete — not an
+error, a save. Expect most days to read `scanned 0` and nothing else. A line
+starting `[sweep] could not` is a failure worth reading: there are no alarms.
 
 A run deletes at most 25 households, so a backlog past that drains the next day
 rather than in one go. If you ever want it faster, `GuestSweepSchedule` is a

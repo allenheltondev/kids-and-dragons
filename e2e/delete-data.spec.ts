@@ -41,9 +41,10 @@ test("a grown-up keeps, then deletes, a group's data", async ({ browser }) => {
     await expect(page.getByText(kid, { exact: true })).toBeVisible(TAP);
   }
 
-  // Kept for a month without playing, and that sticks.
+  // A year by default, with no "until deleted" (#524); a month instead, and that sticks.
   const keep = page.getByLabel("Keep a kid who stops playing for");
-  await expect(keep).toHaveValue("");
+  await expect(keep).toHaveValue("365");
+  await expect(keep.locator("option")).toHaveCount(4);
   await keep.selectOption({ label: "A month without playing" });
   await expect(keep).toHaveValue("30", TAP);
 

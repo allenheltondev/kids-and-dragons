@@ -47,6 +47,13 @@ export const META = "META";
 export const STATE = "STATE";
 
 /**
+ * `ACCT#<sub>` / `RETIRING`: the sweep may be about to delete this sign-in
+ * (#524), so no household pointer may be written for it. Carries a `ttl`.
+ * Not under `HH#`, so `listHouseholdsForAccount` never sees it.
+ */
+export const ACCOUNT_RETIRING = "RETIRING";
+
+/**
  * When each seated phone last said it was here (#258, `handlers/presence.ts`):
  * one row per run, a map of player id to time. Carries a `ttl`, like a room.
  */
@@ -227,8 +234,9 @@ export const GSI1_RUN = (runId: string) => `RUN#${runId}`;
 export const GSI1_GUEST = "GUEST";
 
 /**
- * GSI1: every kid in a household whose owner set a retention window (#252),
- * sorted by when she may be forgotten if she does not play again. On the
+ * GSI1: every kid in a kept household (#252; every kept household has a
+ * window since #524, a year unless its owner chose less), sorted by when she
+ * may be forgotten if she does not play again. On the
  * `PLAYER#` row, as top-level bookkeeping beside `lastPlayedAt`, never in
  * `data`, so a `putPlayer` from an older read cannot move it. A candidate
  * list only: the sweeper re-reads the household's window before it deletes.

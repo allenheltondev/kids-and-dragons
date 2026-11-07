@@ -3,7 +3,8 @@
  *
  * It describes what the game does today, read from the code and the stack, and
  * claims nothing more: not compliance with any law, not a retention limit that
- * is not enforced yet, not a promise about a vendor's logs nobody has checked.
+ * is not enforced (the ones it states are, since #524), not a promise about a
+ * vendor's backups nobody has checked.
  * The audit behind each line is in docs/review/ (us-coppa-data-consent.md,
  * us-third-party-flows.md, us-retention-schedule.md). When one of those changes
  * what is true, this file changes with it; `privacy-policy.test.ts` holds it to
@@ -14,7 +15,7 @@
  * empty rather than showing a made-up address.
  */
 
-export const PRIVACY_UPDATED = "2026-10-27";
+export const PRIVACY_UPDATED = "2026-11-07";
 
 export interface PolicySection {
   id: string;
@@ -64,7 +65,7 @@ export const PRIVACY_SECTIONS: readonly PolicySection[] = [
       "Like any website, our hosting sees the network address and browser description of every phone or screen that loads the game.",
       "When someone tries a wrong room code, we count it against their network address for about half an hour, so nobody can guess their way into a game.",
       "When the game breaks, it sends one short crash report: what kind of failure, which version, which page and whether it was a phone, tablet or TV. It never includes what the error said, so nothing a kid typed is in it.",
-      "Our servers keep request logs to run the game. We have not yet confirmed how long our hosting provider keeps logs and backups, and we will not state a period here until we have.",
+      "Our servers keep request logs to run the game, for up to about two months (see below). We have not yet confirmed whether our hosting provider keeps backups, or for how long, and we will not state a period for them here until we have.",
       "To learn how long chapters take, we record the time of each chapter's steps against a random run id, with no names in it. We add these up ourselves, across families, to see how long each chapter takes. We set these records to expire after 180 days, and our database normally deletes expired records in the days that follow.",
       "The game sets no cookies. Your phone's own storage holds a sign-in token for that phone, settings such as read-aloud, and a copy of your adventure book.",
     ],
@@ -91,9 +92,14 @@ export const PRIVACY_SECTIONS: readonly PolicySection[] = [
     title: "How long it is kept",
     bullets: [
       "A household nobody signed in to keep is deleted a week after it last played.",
-      "A household a grown-up kept has no automatic end today. It stays until a grown-up deletes it, or, for a kid who stops playing, for the number of days the grown-up chose (30, 90, 180 or 365). We plan to add a time limit and will update this page when we do; until then, please delete what you no longer want kept.",
+      "In a household a grown-up kept, a kid who stops playing is deleted, with her heroes, a year after she last played, or after the shorter time a grown-up chose (30, 90 or 180 days). A kid who was added but has not played yet counts from when she was added. Each kid is counted on her own, so one who stops is deleted even if others in the household still play.",
+      "When the last kid in a kept household is deleted that way, the household goes too, with its saved games, and so does the sign-in of each of its grown-ups who runs no other household.",
+      "A grown-up can delete a kid or a household sooner. A grown-up who deletes a household themselves keeps their sign-in, so they can start another.",
+      "The record of every choice and dice roll in a game is set to expire 30 days after it is written, and our database normally deletes expired records in the days that follow. The saved game itself is kept with the household.",
+      "A phone's push address is set to expire 30 days after a turn notice last reached it or the phone last confirmed it still wants them.",
       "A room code and the record of who was at the table last six hours. One-time codes last from ten minutes to three days.",
-      "There is no warning before a household is deleted.",
+      "Our servers' logs are deleted once a month when they are more than 30 days old, so a log line is kept for up to about two months.",
+      "There is no warning before a household or a kid is deleted.",
     ],
   },
   {

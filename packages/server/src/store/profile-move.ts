@@ -65,8 +65,14 @@ export interface ProfileRows {
 export type MoveStep =
   /** Spend the code: there, unexpired, and naming this kid in this household. */
   | { op: "spend"; code: string; householdId: string; playerId: string; nowIso: string }
-  /** The home she is moving into is still there. */
+  /** The home she is moving into is still there, and nobody is retiring or deleting it (#524). */
   | { op: "check"; PK: string; SK: string }
+  /**
+   * The grown-up a new home is made for is not a sign-in the retention sweep
+   * is about to delete (#524, `ACCT#<sub>/RETIRING`): the new home's account
+   * pointer is one more way to gain a household, so it is fenced like the rest.
+   */
+  | { op: "account-open"; cognitoSub: string }
   /** Gone from the old home, if it is still exactly the row read. */
   | { op: "delete"; PK: string; SK: string; data: unknown }
   /**
@@ -203,6 +209,7 @@ export function fieldGuideItem(householdId: string, entries: Record<string, Fiel
 function newHome(household: Household, owner: HouseholdOwnerRecord): MoveStep[] {
   if (household.guest) throw new Error("a kid moves into a kept household, never a guest one");
   return [
+    { op: "account-open", cognitoSub: owner.cognitoSub },
     { op: "put", item: { PK: HH(household.id), SK: META, entity: "household", data: household }, ifAbsent: true },
     {
       op: "put",

@@ -10,15 +10,18 @@
 
 import path from "node:path";
 import { applyIntent, createRunState, FORGOTTEN_FINDER, makeRng, type Character, type ClientIntent, type RunState } from "@kad/shared";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { loadContent } from "../content/loader.ts";
 import type { Engine } from "../engine/port.ts";
 import { sweep } from "../lambda/sweep.ts";
 import { makeHarness, type TestHarness } from "../test-support.ts";
+import { createGuestHousehold, linkAccount } from "./account.ts";
 import { applyAction } from "./action.ts";
-import type { HandlerResult } from "./deps.ts";
+import { AccountRetiringError } from "../store/repository.ts";
+import type { AccountDirectory, HandlerResult } from "./deps.ts";
 import {
   acceptOrganizerInvite,
+  addProfile,
   createGroup,
   createOrganizerInvite,
   deleteHousehold,
@@ -40,6 +43,12 @@ const GEMFALL = "gemfall";
 function value<T>(result: HandlerResult<T>): T {
   if (!result.ok) throw new Error(`expected ok, got ${result.error.code}: ${result.error.message}`);
   return result.value;
+}
+
+/** A sign-in store that only records which sign-ins it was asked to delete (#524). */
+function directory(): AccountDirectory & { deleted: string[] } {
+  const deleted: string[] = [];
+  return { deleted, deleteAccount: async (sub) => void deleted.push(sub) };
 }
 
 function harness(): TestHarness {
@@ -314,18 +323,309 @@ describe("deleting a household (#252)", () => {
   });
 });
 
-describe("retention (#252)", () => {
-  it("keeps everybody until an owner says otherwise, and takes only the windows offered", async () => {
+describe("retention (#252, #524)", () => {
+  it("keeps a kid a year by default, takes only the windows offered, and has no 'until deleted'", async () => {
     const h = harness();
     const ada = await homeOf(h, "h_ada", "Ada");
-    expect(value(await viewHousehold({ ...ada.owner, householdId: ada.householdId }, h.deps)).retentionDays).toBeNull();
-    const odd = await setHouseholdRetention({ ...ada.owner, householdId: ada.householdId, retentionDays: 7 }, h.deps);
-    expect(odd).toMatchObject({ ok: false, error: { code: "ILLEGAL" } });
+    expect(value(await viewHousehold({ ...ada.owner, householdId: ada.householdId }, h.deps)).retentionDays).toBe(365);
+    for (const odd of [7, null, "forever", undefined]) {
+      const refused = await setHouseholdRetention({ ...ada.owner, householdId: ada.householdId, retentionDays: odd }, h.deps);
+      expect(refused).toMatchObject({ ok: false, error: { code: "ILLEGAL" } });
+    }
     const set = value(await setHouseholdRetention({ ...ada.owner, householdId: ada.householdId, retentionDays: 30 }, h.deps));
     expect(set.retentionDays).toBe(30);
-    const back = value(await setHouseholdRetention({ ...ada.owner, householdId: ada.householdId, retentionDays: null }, h.deps));
-    expect(back.retentionDays).toBeNull();
-    expect(await h.repo.getHousehold(ada.householdId)).not.toHaveProperty("retentionDays");
+    expect(await h.repo.getHousehold(ada.householdId)).toMatchObject({ retentionDays: 30 });
+  });
+
+  it("forgets a kid a year after she last played when nobody chose a window", async () => {
+    const h = harness();
+    const ada = await homeOf(h, "h_ada", "Ada");
+    const home = value(await createRoom({ householdId: ada.householdId, mode: "party" }, h.deps));
+    value(await joinRoom({ code: home.code, principal: ada }, h.deps));
+
+    h.clock.advance(364 * DAY);
+    expect((await sweep(h.repo, () => h.clock.now())).idle.deleted).toEqual([]);
+    h.clock.advance(2 * DAY);
+    expect((await sweep(h.repo, () => h.clock.now())).idle.deleted).toEqual([ada.playerId]);
+    expect(await h.repo.getPlayer(ada.householdId, ada.playerId)).toBeNull();
+  });
+
+  it("counts a kid an owner added and nobody played as from when she was added", async () => {
+    const h = harness();
+    const ada = await homeOf(h, "h_ada", "Ada");
+    const view = value(await addProfile({ ...ada.owner, householdId: ada.householdId, displayName: "Bo" }, h.deps));
+    const bo = view.players.find((p) => p.displayName === "Bo")!;
+
+    h.clock.advance(366 * DAY);
+    const swept = await sweep(h.repo, () => h.clock.now());
+    expect(swept.idle.deleted).toEqual([bo.id]);
+    // Ada was never on the clock in this fixture (no play, no window set), so the household stays.
+    expect(swept.idle.households).toEqual([]);
+    expect(await h.repo.getHousehold(ada.householdId)).not.toBeNull();
+  });
+
+  it("puts a guest household's kids on the clock the moment it is kept", async () => {
+    const h = harness();
+    const guest = await createGuestHousehold({ displayName: "Allen" }, h.deps);
+    const claimed = value(await linkAccount({ cognitoSub: "sub_allen", principal: guest.principal }, h.deps));
+    expect(claimed.claimed).toBe(true);
+
+    h.clock.advance(366 * DAY);
+    const accounts = directory();
+    const swept = await sweep(h.repo, () => h.clock.now(), accounts);
+    expect(swept.idle.deleted).toEqual([guest.principal.playerId]);
+    // Its only kid gone, the household goes too, and its owner had no other.
+    expect(swept.idle.households).toEqual([guest.household.id]);
+    expect(await h.repo.getHousehold(guest.household.id)).toBeNull();
+    expect(accounts.deleted).toEqual(["sub_allen"]);
+  });
+
+  it("deletes a kept household its last kid leaves, and only the sign-ins with nothing else", async () => {
+    const h = harness();
+    const ada = await homeOf(h, "h_ada", "Ada");
+    const rue = await homeOf(h, "h_rue", "Rue");
+    // Ada's grown-up also runs a second group, which keeps their sign-in.
+    await h.repo.putHousehold({ id: "h_club", displayName: "Club", ownerSub: ada.owner.cognitoSub, guest: false, createdAt: new Date(h.clock.now()).toISOString() });
+    await h.repo.putAccountPointer(ada.owner.cognitoSub, "h_club");
+    for (const home of [ada, rue]) {
+      value(await setHouseholdRetention({ ...home.owner, householdId: home.householdId, retentionDays: 30 }, h.deps));
+    }
+
+    h.clock.advance(31 * DAY);
+    const accounts = directory();
+    const swept = await sweep(h.repo, () => h.clock.now(), accounts);
+    expect([...swept.idle.deleted].sort()).toEqual([ada.playerId, rue.playerId].sort());
+    expect([...swept.idle.households].sort()).toEqual([ada.householdId, rue.householdId].sort());
+    expect(await h.repo.getHousehold(ada.householdId)).toBeNull();
+    expect(await h.repo.getHousehold(rue.householdId)).toBeNull();
+    expect(await h.repo.getHousehold("h_club")).not.toBeNull();
+    expect(await h.repo.listHouseholdsForAccount(ada.owner.cognitoSub)).toEqual(["h_club"]);
+    expect(accounts.deleted).toEqual([rue.owner.cognitoSub]);
+    expect(swept.idle.accounts).toBe(1);
+  });
+
+  it("finishes deleting a sign-in on the next sweep when Cognito refused it", async () => {
+    const h = harness();
+    const ada = await homeOf(h, "h_ada", "Ada");
+    value(await setHouseholdRetention({ ...ada.owner, householdId: ada.householdId, retentionDays: 30 }, h.deps));
+    h.clock.advance(31 * DAY);
+    const error = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    const failing = { deleteAccount: vi.fn(async () => Promise.reject(new Error("throttled"))) };
+    const first = await sweep(h.repo, () => h.clock.now(), failing);
+    expect(first.idle.failed.map((f) => f.playerId)).toEqual([ada.playerId]);
+    expect(await h.repo.getHousehold(ada.householdId)).toBeNull();
+    // Her job is kept, with the owners to finish.
+    expect((await h.repo.listForgets()).map((j) => j.retiring)).toEqual([{ owners: [ada.owner.cognitoSub] }]);
+
+    h.clock.advance(DAY);
+    const accounts = directory();
+    await sweep(h.repo, () => h.clock.now(), accounts);
+    expect(accounts.deleted).toEqual([ada.owner.cognitoSub]);
+    expect(await h.repo.listForgets()).toEqual([]);
+    error.mockRestore();
+  });
+
+  it("retires the household on a retry when the sweep stopped after deleting its last kid", async () => {
+    const h = harness();
+    const ada = await homeOf(h, "h_ada", "Ada");
+    value(await setHouseholdRetention({ ...ada.owner, householdId: ada.householdId, retentionDays: 30 }, h.deps));
+    h.clock.advance(31 * DAY);
+    const error = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    // Twice: the idle pass, then the same run's retry of her job.
+    vi.spyOn(h.repo, "beginRetiring")
+      .mockRejectedValueOnce(new Error("throttled"))
+      .mockRejectedValueOnce(new Error("throttled"));
+    const first = await sweep(h.repo, () => h.clock.now(), directory());
+    expect(first.idle.failed.map((f) => f.playerId)).toEqual([ada.playerId]);
+    // The kid is gone and nothing indexes the household any more, but her job remains.
+    expect(await h.repo.getPlayer(ada.householdId, ada.playerId)).toBeNull();
+    expect(await h.repo.getHousehold(ada.householdId)).not.toBeNull();
+
+    h.clock.advance(DAY);
+    const accounts = directory();
+    await sweep(h.repo, () => h.clock.now(), accounts);
+    expect(await h.repo.getHousehold(ada.householdId)).toBeNull();
+    expect(accounts.deleted).toEqual([ada.owner.cognitoSub]);
+    expect(await h.repo.listForgets()).toEqual([]);
+    error.mockRestore();
+  });
+
+  it("keeps a household a kid was added to just before it was marked, and lets kids in again", async () => {
+    const h = harness();
+    const ada = await homeOf(h, "h_ada", "Ada");
+    value(await setHouseholdRetention({ ...ada.owner, householdId: ada.householdId, retentionDays: 30 }, h.deps));
+    h.clock.advance(31 * DAY);
+    const begin = h.repo.beginRetiring.bind(h.repo);
+    vi.spyOn(h.repo, "beginRetiring").mockImplementationOnce(async (id) => {
+      // Lands first: an owner adding a kid as the sweep reaches the household.
+      value(await addProfile({ ...ada.owner, householdId: ada.householdId, displayName: "Bo" }, h.deps));
+      return begin(id);
+    });
+    const accounts = directory();
+    const swept = await sweep(h.repo, () => h.clock.now(), accounts);
+    expect(swept.idle.deleted).toEqual([ada.playerId]);
+    expect(swept.idle.households).toEqual([]);
+    expect((await h.repo.listPlayers(ada.householdId)).map((p) => p.displayName)).toEqual(["Bo"]);
+    expect(accounts.deleted).toEqual([]);
+    // The mark came off: another kid can still be added.
+    value(await addProfile({ ...ada.owner, householdId: ada.householdId, displayName: "Cy" }, h.deps));
+  });
+
+  it("refuses a kid added once the household is marked, and retires it", async () => {
+    const h = harness();
+    const ada = await homeOf(h, "h_ada", "Ada");
+    value(await setHouseholdRetention({ ...ada.owner, householdId: ada.householdId, retentionDays: 30 }, h.deps));
+    h.clock.advance(31 * DAY);
+    const has = h.repo.hasPlayers.bind(h.repo);
+    let refused: unknown = null;
+    vi.spyOn(h.repo, "hasPlayers").mockImplementationOnce(async (id) => {
+      // Lands after the mark: refused, so the empty read still holds.
+      refused = await addProfile({ ...ada.owner, householdId: ada.householdId, displayName: "Bo" }, h.deps).catch((e: unknown) => e);
+      return has(id);
+    });
+    const swept = await sweep(h.repo, () => h.clock.now(), directory());
+    expect(refused).toBeInstanceOf(Error);
+    expect(swept.idle.households).toEqual([ada.householdId]);
+    expect(await h.repo.getHousehold(ada.householdId)).toBeNull();
+  });
+
+  it("decides again when the household was rewritten while being retired", async () => {
+    const h = harness();
+    const ada = await homeOf(h, "h_ada", "Ada");
+    value(await setHouseholdRetention({ ...ada.owner, householdId: ada.householdId, retentionDays: 30 }, h.deps));
+    h.clock.advance(31 * DAY);
+    const error = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    const has = h.repo.hasPlayers.bind(h.repo);
+    const rename = async (id: string) => {
+      // A rename puts the household whole, and with it the mark.
+      await h.repo.putHousehold((await h.repo.getHousehold(id))!);
+      return has(id);
+    };
+    // Twice: the idle pass, then the same run's retry of her job.
+    vi.spyOn(h.repo, "hasPlayers").mockImplementationOnce(rename).mockImplementationOnce(rename);
+    const first = await sweep(h.repo, () => h.clock.now(), directory());
+    expect(first.idle.failed.map((f) => f.playerId)).toEqual([ada.playerId]);
+    expect(await h.repo.getHousehold(ada.householdId)).not.toBeNull();
+
+    h.clock.advance(DAY);
+    await sweep(h.repo, () => h.clock.now(), directory());
+    expect(await h.repo.getHousehold(ada.householdId)).toBeNull();
+    error.mockRestore();
+  });
+
+  it("keeps a sign-in that linked a second household just before it was marked", async () => {
+    const h = harness();
+    const ada = await homeOf(h, "h_ada", "Ada");
+    value(await setHouseholdRetention({ ...ada.owner, householdId: ada.householdId, retentionDays: 30 }, h.deps));
+    h.clock.advance(31 * DAY);
+    const begin = h.repo.beginRetiringAccount.bind(h.repo);
+    vi.spyOn(h.repo, "beginRetiringAccount").mockImplementationOnce(async (sub) => {
+      await h.repo.putAccountPointer(sub, "h_new");
+      return begin(sub);
+    });
+    const accounts = directory();
+    const swept = await sweep(h.repo, () => h.clock.now(), accounts);
+    expect(swept.idle.households).toEqual([ada.householdId]);
+    expect(accounts.deleted).toEqual([]);
+    expect(await h.repo.listHouseholdsForAccount(ada.owner.cognitoSub)).toEqual(["h_new"]);
+    // The mark came off: the sign-in can still gain a household.
+    await h.repo.putAccountPointer(ada.owner.cognitoSub, "h_later");
+  });
+
+  it("lets no organizer invite give a sign-in a household while the sweep deletes it", async () => {
+    const h = harness();
+    const ada = await homeOf(h, "h_ada", "Ada");
+    const club = value(await createGroup({ cognitoSub: "sub_lead", displayName: "Club" }, h.deps));
+    const invite = value(await createOrganizerInvite({ cognitoSub: "sub_lead", householdId: club.id }, h.deps));
+    value(await setHouseholdRetention({ ...ada.owner, householdId: ada.householdId, retentionDays: 30 }, h.deps));
+    h.clock.advance(31 * DAY);
+    const owns = h.repo.ownsAnyHousehold.bind(h.repo);
+    let redeemed: HandlerResult<unknown> | null = null;
+    vi.spyOn(h.repo, "ownsAnyHousehold").mockImplementationOnce(async (sub) => {
+      // Ada's grown-up redeems an invite between the sweep's read and its delete.
+      redeemed = await acceptOrganizerInvite({ ...ada.owner, code: invite.code }, h.deps);
+      return owns(sub);
+    });
+    const accounts = directory();
+    await sweep(h.repo, () => h.clock.now(), accounts);
+    expect(redeemed).toMatchObject({ ok: false });
+    expect(accounts.deleted).toEqual([ada.owner.cognitoSub]);
+    expect(await h.repo.listHouseholdsForAccount(ada.owner.cognitoSub)).toEqual([]);
+    expect((await h.repo.listOwners(club.id)).map((o) => o.cognitoSub)).toEqual(["sub_lead"]);
+  });
+
+  it("lets no organizer invite add an owner to a household while the sweep retires it", async () => {
+    const h = harness();
+    const ada = await homeOf(h, "h_ada", "Ada");
+    const invite = value(await createOrganizerInvite({ ...ada.owner, householdId: ada.householdId }, h.deps));
+    value(await setHouseholdRetention({ ...ada.owner, householdId: ada.householdId, retentionDays: 30 }, h.deps));
+    h.clock.advance(31 * DAY);
+    const has = h.repo.hasPlayers.bind(h.repo);
+    let redeemed: HandlerResult<unknown> | null = null;
+    vi.spyOn(h.repo, "hasPlayers").mockImplementationOnce(async (id) => {
+      // A second grown-up redeems an invite after the household was marked.
+      redeemed = await acceptOrganizerInvite({ cognitoSub: "sub_ben", code: invite.code }, h.deps);
+      return has(id);
+    });
+    const accounts = directory();
+    await sweep(h.repo, () => h.clock.now(), accounts);
+    expect(redeemed).toMatchObject({ ok: false });
+    expect(await h.repo.getHousehold(ada.householdId)).toBeNull();
+    // Ben never became an owner, so no pointer of his names a deleted household.
+    expect(await h.repo.listHouseholdsForAccount("sub_ben")).toEqual([]);
+    expect(accounts.deleted).toEqual([ada.owner.cognitoSub]);
+  });
+
+  it("leaves no household behind when a new group or a brand-new sign-in meets a sign-in being removed", async () => {
+    const h = harness();
+    /** Every household row the store holds that names this sign-in as its owner. */
+    const homesOf = (sub: string) =>
+      [...(h.repo as unknown as { items: Map<string, { entity?: string; data?: { ownerSub?: string | null } }> }).items.values()].filter(
+        (row) => row.entity === "household" && row.data?.ownerSub === sub,
+      );
+
+    await h.repo.beginRetiringAccount("sub_cleo");
+    const group = await createGroup({ cognitoSub: "sub_cleo", displayName: "Club" }, h.deps);
+    expect(group).toMatchObject({ ok: false, error: { code: "ILLEGAL" } });
+    const linked = await linkAccount({ cognitoSub: "sub_cleo", email: "cleo@example.com" }, h.deps);
+    expect(linked).toMatchObject({ ok: false, error: { code: "ILLEGAL" } });
+    expect(homesOf("sub_cleo")).toEqual([]);
+    expect(await h.repo.ownsAnyHousehold("sub_cleo")).toBe(false);
+
+    // Once the mark is gone, both work, each with its pointer.
+    await h.repo.endRetiringAccount("sub_cleo");
+    const made = value(await createGroup({ cognitoSub: "sub_cleo", displayName: "Club" }, h.deps));
+    expect(await h.repo.listHouseholdsForAccount("sub_cleo")).toEqual([made.id]);
+    expect((await h.repo.listOwners(made.id)).map((o) => o.cognitoSub)).toEqual(["sub_cleo"]);
+    const fresh = value(await linkAccount({ cognitoSub: "sub_dev", email: "dev@example.com" }, h.deps));
+    expect(await h.repo.listHouseholdsForAccount("sub_dev")).toEqual([fresh.householdId]);
+  });
+
+  it("refuses a household pointer for a sign-in once it is marked, and deletes the sign-in", async () => {
+    const h = harness();
+    const ada = await homeOf(h, "h_ada", "Ada");
+    value(await setHouseholdRetention({ ...ada.owner, householdId: ada.householdId, retentionDays: 30 }, h.deps));
+    h.clock.advance(31 * DAY);
+    const owns = h.repo.ownsAnyHousehold.bind(h.repo);
+    let refused: unknown = null;
+    vi.spyOn(h.repo, "ownsAnyHousehold").mockImplementationOnce(async (sub) => {
+      refused = await h.repo.putAccountPointer(sub, "h_new").catch((e: unknown) => e);
+      return owns(sub);
+    });
+    const accounts = directory();
+    await sweep(h.repo, () => h.clock.now(), accounts);
+    expect(refused).toBeInstanceOf(AccountRetiringError);
+    expect(accounts.deleted).toEqual([ada.owner.cognitoSub]);
+    expect(await h.repo.listHouseholdsForAccount(ada.owner.cognitoSub)).toEqual([]);
+  });
+
+  it("never deletes a sign-in when an owner deletes a household themselves", async () => {
+    const h = harness();
+    const ada = await homeOf(h, "h_ada", "Ada");
+    value(await deleteHousehold({ ...ada.owner, householdId: ada.householdId }, h.deps));
+    const accounts = directory();
+    await sweep(h.repo, () => h.clock.now(), accounts);
+    expect(accounts.deleted).toEqual([]);
   });
 
   it("forgets a kid who has not played for the window, and spares one who has", async () => {
@@ -350,10 +650,16 @@ describe("retention (#252)", () => {
     expect((await room.state()).seats?.[ada.playerId]).toBeUndefined();
     expect(await h.repo.getPlayer(ada.householdId, "p_bo")).not.toBeNull();
 
-    // A household that keeps everybody again takes Bo out of the sweep.
-    value(await setHouseholdRetention({ ...ada.owner, householdId: ada.householdId, retentionDays: null }, h.deps));
+    // Bo is still here, so Ada going did not take the household.
+    expect(swept.idle.households).toEqual([]);
+    expect(await h.repo.getHousehold(ada.householdId)).not.toBeNull();
+
+    // There is no window that keeps Bo forever (#524): the longest is a year.
+    value(await setHouseholdRetention({ ...ada.owner, householdId: ada.householdId, retentionDays: 365 }, h.deps));
     h.clock.advance(400 * DAY);
-    expect((await sweep(h.repo, () => h.clock.now())).idle.deleted).toEqual([]);
+    const later = await sweep(h.repo, () => h.clock.now());
+    expect(later.idle.deleted).toContain("p_bo");
+    expect(later.idle.households).toContain(ada.householdId);
   });
 
   it("re-reads the household's window rather than trust the index", async () => {
@@ -370,6 +676,51 @@ describe("retention (#252)", () => {
     expect(await h.repo.getPlayer(ada.householdId, ada.playerId)).not.toBeNull();
     h.clock.advance(335 * DAY);
     expect((await sweep(h.repo, () => h.clock.now())).idle.deleted).toEqual([ada.playerId]);
+  });
+});
+
+describe("a household part-way through being deleted (#524)", () => {
+  it("takes no new kid and no new owner, from an owner's delete or the sweep's", async () => {
+    const h = harness();
+    const ada = await homeOf(h, "h_ada", "Ada");
+    // The delete sets its mark, then dies before its purge finishes.
+    const store = h.repo as unknown as { purge: (id: string) => Promise<void> };
+    vi.spyOn(store, "purge").mockRejectedValueOnce(new Error("throttled"));
+    await expect(h.repo.deleteHousehold(ada.householdId)).rejects.toThrow("throttled");
+    expect(await h.repo.getHousehold(ada.householdId)).not.toBeNull();
+
+    expect(await h.repo.createPlayer({ id: "p_late", householdId: ada.householdId, displayName: "Bo", color: "#7FD4C1" })).toBe(false);
+    await expect(
+      h.repo.putOwner({ householdId: ada.householdId, cognitoSub: "sub_new", addedAt: new Date(h.clock.now()).toISOString() }),
+    ).rejects.toBeInstanceOf(AccountRetiringError);
+    await expect(addProfile({ ...ada.owner, householdId: ada.householdId, displayName: "Bo" }, h.deps)).rejects.toThrow();
+    expect(await h.repo.listHouseholdsForAccount("sub_new")).toEqual([]);
+  });
+});
+
+describe("the event log expires (#524)", () => {
+  it("drops each event 30 days after it is written, keeps the save, and a forget's rewrite keeps the date", async () => {
+    const h = harness();
+    const ada = await homeOf(h, "h_ada", "Ada");
+    const rue = await homeOf(h, "h_rue", "Rue");
+    const room = await visit(h, rue, ada);
+    const before = await room.state();
+    expect((await h.repo.listEvents(room.runId, 0)).length).toBeGreaterThan(0);
+
+    // Day 20: deleting Ada rewrites the old events and commits a new one.
+    h.clock.advance(20 * DAY);
+    value(await deleteProfile({ ...ada.owner, householdId: ada.householdId, playerId: ada.playerId }, h.deps));
+
+    // Day 31: the events from day 0 are gone, rewritten or not; day 20's is not.
+    h.clock.advance(11 * DAY);
+    const left = await h.repo.listEvents(room.runId, 0);
+    expect(left.length).toBeGreaterThan(0);
+    expect(left.every((e) => e.seq > before.seq)).toBe(true);
+
+    // Day 61: none left, and the saved game is untouched.
+    h.clock.advance(30 * DAY);
+    expect(await h.repo.listEvents(room.runId, 0)).toEqual([]);
+    expect((await room.state()).seq).toBeGreaterThan(before.seq);
   });
 });
 
