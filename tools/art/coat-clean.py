@@ -64,6 +64,10 @@ SOFTEN = 0.8  # the parts' edge: a gaussian of this sigma (px) over the cleaned 
 # Per painting (path under assets/), boxes as (top, bottom, left, right) in canvas pixels:
 #   "skin"     Bigfoot: inside the box, the largest smooth warm piece is skin
 #   "not_skin" Bigfoot: inside the box, nothing is skin (it is fur)
+#   "hand"     Bigfoot: inside the box, all his skin-coloured paint is skin (a fist, its fingers
+#              cut apart by their lines)
+#   "face"     Bigfoot: inside the box, his lit skin-coloured paint (OKLab L >= 0.58) is skin, though
+#              painted in strokes (the edge of his face against his darker mane)
 #   "coat"     unicorn: inside the box, her soft lavender is coat (inner ears, the far belly)
 #   "nose"     manticore: inside the box, the crimson paint is her nose, in neither part
 
@@ -78,6 +82,13 @@ FIXES: dict[str, dict[str, list[tuple[int, int, int, int]]]] = {
     "characters/manticore/sworn/assembled.png": {"nose": [(362, 398, 196, 257)]},
     "characters/manticore/radiant/assembled.png": {"nose": [(353, 389, 189, 250)]},
     "characters/manticore/mythic/assembled.png": {"nose": [(373, 409, 206, 267)]},
+    # Bigfoot dressed (class paintings and gear portraits): skin the rules missed (his brow and
+    # cheek beside his mane; a hand or its curled fingers)
+    "character-rigs/thornguard/radiant/bigfoot/assembled.png": {"skin": [(125, 275, 405, 535), (175, 235, 405, 460)], "face": [(140, 220, 408, 432)]},
+    "character-rigs/thornguard/mythic/bigfoot/assembled.png": {"hand": [(640, 715, 305, 392), (624, 640, 320, 392), (608, 624, 334, 392), (598, 608, 348, 392)]},
+    "character-rigs/duskrunner/sworn/bigfoot/assembled.png": {"hand": [(612, 705, 295, 375)]},
+    "gear-portraits/thornguard/radiant/bigfoot.png": {"skin": [(190, 375, 495, 645), (225, 290, 498, 545)]},
+    "gear-portraits/thornguard/mythic/bigfoot.png": {"skin": [(735, 880, 370, 470)]},
 }
 
 
@@ -239,8 +250,348 @@ def unicorn_horn(look: Look) -> np.ndarray:
 
 # ----------------------------------------------------------------------------- bigfoot
 
-def clean_bigfoot(look: Look, draft: np.ndarray, painting: str) -> tuple[np.ndarray, np.ndarray]:
-    """Skin (G) is found afresh from the painting; fur (R) is the rest of him that takes a colour.
+def clean_bigfoot(look: Look, draft: np.ndarray, painting: str) -> tuple[np.ndarray, ...]:
+    """His base paintings by `bigfoot_body`; his class paintings and gear portraits, dressed, by
+    `bigfoot_dressed`."""
+    if painting.startswith("characters/"):
+        return bigfoot_body(look, painting)
+    return bigfoot_dressed(look, draft, painting)
+
+
+def bigfoot_dressed(look: Look, draft: np.ndarray, painting: str) -> tuple[np.ndarray, ...]:
+    """Bigfoot in his class costume (class `character-rigs/` and gear `gear-portraits/`). His
+    costume, armour, belts, shawl, gems and everything else he wears or holds stay as painted,
+    in neither part: see `bigfoot_costume`. (Its brown leather is as brown as his mane, and its
+    gold as warm as his skin, so no colour rule tells them apart.)
+
+    - A class painting that is his base painting of the same tier with the costume painted over
+      it, pixel for pixel (most of them), takes its parts from that base painting's cleaning,
+      less the costume: he then reads exactly as on his base painting.
+    - Any other (a class painting drawn afresh, every gear portrait) is cleaned by his base rules,
+      `bigfoot_body`, over his figure less the costume, with its sizes in pixels scaled to the
+      canvas (a gear portrait is 1254 square) and its chroma thresholds raised by as much as his
+      pale fur is more saturated than on his base paintings, then the fix boxes.
+    - On a gear portrait the figure (B) is returned too: the draft's, less the pockets of
+      backdrop it shut in (`bigfoot_pockets`)."""
+    a = look.alpha
+    base = bigfoot_base_of(painting, a.shape)
+    costume = bigfoot_costume(look, painting, base)
+    if base is not None:
+        R, G = bigfoot_body(Look(base), bigfoot_base_path(painting))
+        return R & a & ~costume, G & a & ~costume
+    k = a.shape[0] / 1024
+    # his pale paint (fur, and his lit skin), by its lower and upper quartiles, against ~0.056
+    # and ~0.073 on his base paintings
+    bare = a & ~costume & (look.L > 0.72) & (look.C < 0.11) & (look.hue > 50) & (look.hue < 95)
+    dc = 0.0
+    if bare.any():
+        q1, q3 = np.percentile(look.C[bare], [25, 75])
+        dc = max(0.0, float((q1 - 0.056) + (q3 - 0.073)) / 2)
+    if not painting.startswith("gear-portraits/"):
+        body = a & ~costume
+        R, G = bigfoot_body(Look(look.rgba, body), painting, k, dc)
+        return R & body, G & body
+    pockets = bigfoot_pockets(look, costume)
+    body = a & ~costume & ~pockets
+    R, G = bigfoot_body(Look(look.rgba, body), painting, k, dc)
+    hole = np.clip(soften(ndimage.binary_dilation(pockets, structure=SQUARE)), 0.0, 1.0)
+    figure = draft[..., 2].astype(float) / 255.0 * (1.0 - hole)
+    return R & body, G & body, figure
+
+
+def bigfoot_pockets(look: Look, costume: np.ndarray) -> np.ndarray:
+    """A gear portrait's backdrop shut inside the drafted figure (between an arm and his side,
+    behind a leg, round a floating gem): its pieces of paint within 0.05 (OKLab) of the
+    backdrop's own median colour, of 300px or more scaled to the canvas, outside the costume,
+    grown 1px over its anti-aliased rim."""
+    a = look.alpha
+    lab = coat.srgb_to_oklab(look.rgba[..., :3] / 255.0)
+    behind = ~a
+    if not behind.any():
+        return np.zeros_like(a)
+    ref = np.median(lab[behind], axis=0)
+    # (the glow round a floating gem is painted on the backdrop and its dark goes; inside his
+    # costume, a navy vest's shadow is as dark as a navy backdrop and stays)
+    near = a & ~(costume & ~bigfoot_held(a)) & (np.sqrt(((lab - ref) ** 2).sum(-1)) < 0.05)
+    labs, n = ndimage.label(near)
+    if not n:
+        return np.zeros_like(a)
+    k = a.shape[0] / 1024
+    sizes = ndimage.sum(near, labs, np.arange(1, n + 1))
+    big = np.isin(labs, np.nonzero(sizes >= 300 * k * k)[0] + 1)
+    big = ndimage.binary_closing(big, structure=SQUARE)
+    return ndimage.binary_dilation(big, structure=SQUARE) & a
+
+
+def bigfoot_base_path(painting: str) -> str:
+    """His base painting of the same tier as a class painting or gear portrait."""
+    return f"characters/bigfoot/{painting.split('/')[2]}/assembled.png"
+
+
+def bigfoot_base_of(painting: str, shape: tuple[int, int]) -> np.ndarray | None:
+    """The base painting (RGBA) a class painting was made from, when it is that painting with the
+    costume painted over it: on the same canvas and, over at least half his figure, identical to
+    it. None for a class painting drawn afresh and for every gear portrait."""
+    if not painting.startswith("character-rigs/"):
+        return None
+    path = coat.asset(bigfoot_base_path(painting))
+    if not os.path.isfile(path):
+        return None
+    with Image.open(path) as im:
+        base = np.asarray(im.convert("RGBA"))
+    if base.shape[:2] != shape:
+        return None
+    with Image.open(coat.asset(painting)) as im:
+        own = np.asarray(im.convert("RGBA"))
+    fig = own[..., 3] > 0
+    same = (np.abs(base.astype(int) - own.astype(int)).max(-1) == 0) & fig
+    return base if same.sum() >= 0.5 * fig.sum() else None
+
+
+def bigfoot_costume(look: Look, painting: str, base: np.ndarray | None) -> np.ndarray:
+    """What he wears and holds, never coloured.
+
+    - Over his base painting: every pixel the costume changed (by more than 8 of 255 in any
+      channel, which leaves out the faint resampling noise), closed, its holes under 150px
+      filled (a bigger one is his fur through a tear), specks under 30px dropped, grown 1px for
+      the soft edge of its outline.
+    - Anything not joined to his body (a floating gem): `bigfoot_held`.
+    - Drawn afresh: the outlines traced by hand in BIGFOOT_COSTUME, each snapped to the painted
+      edge: a watershed over the paint's colour gradient, from the outline shrunk by a band
+      (costume) and grown by it (not), settles the line on the strongest edge within the band,
+      which is the costume's own ink outline or the edge of a lock of mane lying over it. Then
+      the tufts of fur poking out under its edge are given back, and a fringe of tassels is
+      shared out between tassels and fur (below)."""
+    a = look.alpha
+    if base is not None:
+        d = np.abs(base.astype(int) - look.rgba.astype(int)).max(-1)
+        diff = ndimage.binary_closing(d > 8, structure=disk(2))
+        holes = ndimage.binary_fill_holes(diff) & ~diff
+        labs, n = ndimage.label(holes)
+        if n:  # (a big hole is his fur showing through a tear in the tunic, and stays fur)
+            sizes = ndimage.sum(holes, labs, np.arange(1, n + 1))
+            diff |= np.isin(labs, np.nonzero(sizes < 150)[0] + 1)
+        labs, n = ndimage.label(diff)
+        if n:
+            sizes = ndimage.sum(diff, labs, np.arange(1, n + 1))
+            diff = np.isin(labs, np.nonzero(sizes >= 30)[0] + 1)
+        return (ndimage.binary_dilation(diff, structure=SQUARE) | bigfoot_held(a)) & a
+    traced = bigfoot_traced(painting, "worn", a.shape)
+    fringe = bigfoot_traced(painting, "fringe", a.shape)
+    worn = np.zeros_like(a)
+    if traced.any():
+        band = max(1, int(round(BIGFOOT_SNAP * a.shape[0] / 1024)))
+        grad = bigfoot_gradient(look)
+        markers = np.zeros(a.shape, np.int16)
+        markers[~ndimage.binary_dilation(traced, structure=disk(band)) & ~fringe] = 2
+        markers[ndimage.binary_erosion(traced, structure=disk(band))] = 1
+        worn = ndimage.watershed_ift(grad, markers) == 1
+        worn = ndimage.binary_fill_holes(ndimage.binary_opening(worn, structure=SQUARE))
+    pale = (look.L > 0.74) & (look.C < 0.08) & (look.hue > 50) & (look.hue < 100) & a
+    if traced.any():
+        # the tufts of his pale fur poking out under the costume's edge, which the tracing took
+        # in: pale fur in the costume's rim and joined to his fur outside it is fur
+        rim = worn & ~ndimage.binary_erosion(worn, structure=disk(3 * band))
+        # (in the costume's shadow, a tuft is a little darker and warmer than his lit fur)
+        tuft = (look.L > 0.62) & (look.C < 0.095) & (look.hue > 50) & (look.hue < 95) & a
+        tufts = ndimage.binary_propagation(pale & ~worn, mask=tuft & (rim | ~worn)) & rim
+        worn &= ~ndimage.binary_opening(tufts, structure=SQUARE)
+    if fringe.any():
+        # a fringe of tassels, traced round the lot: its gold (OKLab chroma >= 0.1) and its ink
+        # and deep shadow (L < 0.45) are costume, everything outside it is not, and a watershed
+        # over the colour gradient shares out the rest (the fur showing between the tassels and
+        # under them goes with his fur, a tassel's pale highlight with its tassel)
+        markers = np.zeros(a.shape, np.int16)
+        markers[~fringe & ~worn & ~traced] = 2
+        markers[worn | (fringe & a & ((look.C >= 0.1) | (look.L < 0.45)))] = 1
+        tassels = ndimage.watershed_ift(bigfoot_gradient(look), markers) == 1
+        worn |= fringe & ndimage.binary_opening(tassels, structure=SQUARE)
+    return (worn | bigfoot_held(a)) & a
+
+
+def bigfoot_gradient(look: Look) -> np.ndarray:
+    """The paint's colour gradient (OKLab, chroma weighted double), as uint16 for a watershed."""
+    lab = coat.srgb_to_oklab(look.rgba[..., :3] / 255.0)
+    grad = np.zeros(look.alpha.shape)
+    for ch, w in ((0, 1.0), (1, 2.0), (2, 2.0)):
+        smooth = ndimage.gaussian_filter(lab[..., ch], 1.0)
+        grad += w * np.hypot(ndimage.sobel(smooth, 0), ndimage.sobel(smooth, 1))
+    return (grad / max(grad.max(), 1e-9) * 65535).astype(np.uint16)
+
+
+def bigfoot_held(a: np.ndarray) -> np.ndarray:
+    """Everything in the figure not joined to his body (the largest piece): a floating gem."""
+    labs, n = ndimage.label(a, structure=SQUARE)
+    if n < 2:
+        return np.zeros_like(a)
+    sizes = ndimage.sum(a, labs, np.arange(1, n + 1))
+    return (labs > 0) & (labs != int(np.argmax(sizes)) + 1)
+
+
+def bigfoot_traced(painting: str, kind: str, shape: tuple[int, int]) -> np.ndarray:
+    """The painting's BIGFOOT_COSTUME outlines of one kind, filled, as a mask."""
+    from PIL import ImageDraw
+
+    im = Image.new("1", (shape[1], shape[0]), 0)
+    draw = ImageDraw.Draw(im)
+    for poly in BIGFOOT_COSTUME.get(painting, {}).get(kind, []):
+        draw.polygon(poly, fill=1, outline=1)
+    return np.asarray(im, bool)
+
+
+BIGFOOT_SNAP = 8  # px on a 1024 canvas: how far the snapped costume edge may move from the tracing
+
+# His costume where it was drawn afresh: hand-traced outlines, as (x, y) canvas points.
+#   "worn"    the costume: along the outside of its own ink outline and the edge of any lock of
+#             mane lying over it, snapped to the painted edge (`bigfoot_costume`)
+#   "fringe"  a fringe of tassels, traced round the lot: the fur showing between them is fur
+BIGFOOT_COSTUME: dict[str, dict[str, list[list[tuple[int, int]]]]] = {
+    # wooden armour with shoulder pads; his beard over its top
+    "character-rigs/thornguard/radiant/bigfoot/assembled.png": {"worn": [
+        [(300, 335), (318, 305), (345, 293), (372, 292), (385, 330), (385, 380), (395, 395),
+         (420, 402), (450, 400), (475, 398), (500, 395), (525, 388), (545, 378), (560, 365),
+         (580, 345), (598, 320), (605, 290), (615, 272), (640, 262), (675, 268), (705, 285),
+         (735, 315), (755, 350), (760, 385), (745, 402), (705, 410), (665, 410), (655, 420),
+         (655, 540), (630, 560), (560, 580), (480, 604), (450, 603), (410, 585), (372, 560),
+         (365, 480), (360, 410), (340, 400), (310, 395), (298, 375)],
+    ]},
+    "character-rigs/thornguard/mythic/bigfoot/assembled.png": {"worn": [
+        [(309, 412), (335, 404), (362, 406), (378, 440), (381, 468), (400, 482), (415, 489),
+         (440, 478), (459, 494), (480, 478), (496, 464), (520, 450), (540, 439), (560, 432),
+         (590, 430), (602, 410), (615, 385), (650, 380), (700, 382), (730, 400), (742, 430),
+         (727, 452), (677, 480), (640, 470), (626, 470), (624, 600), (620, 620), (560, 640),
+         (470, 668), (455, 660), (384, 617), (381, 520), (375, 485), (359, 477), (315, 474),
+         (305, 450)],
+    ]},
+    # a leather vest crossed by straps, with a belt; his beard over it
+    "character-rigs/duskrunner/sworn/bigfoot/assembled.png": {"worn": [
+        [(356, 376), (384, 414), (415, 439), (440, 464), (470, 440), (509, 426), (540, 404),
+         (565, 382), (584, 345), (602, 305), (640, 300), (665, 306), (640, 322), (620, 345),
+         (612, 376), (605, 457), (604, 532), (598, 552), (492, 553), (488, 578), (446, 578),
+         (440, 553), (384, 547), (379, 507), (360, 440)],
+    ]},
+    "character-rigs/duskrunner/radiant/bigfoot/assembled.png": {"worn": [
+        [(349, 395), (377, 432), (415, 451), (452, 478), (477, 457), (515, 432), (540, 404),
+         (565, 382), (590, 357), (615, 339), (640, 325), (672, 330), (650, 345), (620, 365),
+         (608, 457), (607, 520), (602, 553), (495, 560), (493, 598), (470, 604), (468, 625),
+         (459, 625), (457, 604), (437, 598), (437, 560), (377, 558), (372, 507), (352, 430)],
+    ]},
+    # a starry vest with a pendant; his beard over it (the floating gem: `bigfoot_held`)
+    "character-rigs/starweaver/sworn/bigfoot/assembled.png": {"worn": [
+        [(352, 375), (367, 398), (390, 429), (428, 462), (467, 462), (498, 439), (521, 421),
+         (559, 383), (582, 352), (598, 316), (628, 318), (626, 340), (622, 514), (613, 518),
+         (480, 565), (476, 593), (462, 593), (458, 566), (367, 516), (360, 450)],
+    ]},
+    "gear-portraits/thornguard/sworn/bigfoot.png": {"worn": [
+        [(397, 492), (405, 455), (422, 422), (447, 409), (463, 472), (497, 522), (522, 545),
+         (547, 563), (580, 540), (622, 526), (663, 505), (697, 472), (730, 447), (755, 422),
+         (780, 397), (830, 388), (897, 409), (932, 480), (913, 494), (830, 507), (786, 528),
+         (786, 705), (772, 715), (663, 740), (588, 765), (497, 722), (472, 697), (470, 540),
+         (463, 519), (413, 511)],
+    ]},
+    "gear-portraits/thornguard/radiant/bigfoot.png": {"worn": [
+        [(363, 505), (388, 422), (422, 397), (455, 405), (455, 480), (497, 513), (530, 526),
+         (572, 532), (613, 524), (663, 497), (697, 463), (730, 422), (747, 388), (780, 363),
+         (847, 372), (913, 413), (953, 480), (930, 511), (855, 519), (799, 532), (799, 705),
+         (788, 715), (680, 749), (572, 774), (480, 749), (453, 722), (453, 540), (447, 532),
+         (380, 524)],
+    ]},
+    "gear-portraits/thornguard/mythic/bigfoot.png": {"worn": [
+        [(381, 580), (390, 540), (415, 525), (445, 522), (455, 560), (493, 562), (527, 599),
+         (568, 574), (610, 553), (643, 574), (677, 545), (710, 515), (743, 490), (760, 463),
+         (827, 445), (893, 461), (912, 530), (893, 561), (827, 586), (777, 578), (774, 590),
+         (774, 747), (752, 765), (635, 799), (564, 824), (477, 774), (466, 747), (466, 613),
+         (452, 590), (385, 589)],
+    ]},
+    "gear-portraits/duskrunner/sworn/bigfoot.png": {"worn": [
+        [(439, 413), (460, 447), (493, 480), (527, 522), (552, 549), (577, 522), (610, 488),
+         (652, 455), (693, 438), (727, 397), (752, 355), (790, 340), (830, 345), (800, 375),
+         (779, 413), (770, 497), (762, 613), (754, 653), (612, 674), (572, 699), (550, 665),
+         (466, 657), (462, 605), (441, 450)],
+    ]},
+    "gear-portraits/duskrunner/radiant/bigfoot.png": {"worn": [
+        [(447, 460), (473, 495), (517, 530), (551, 556), (577, 571), (603, 556), (638, 530),
+         (673, 495), (708, 460), (743, 417), (769, 382), (800, 360), (848, 360), (815, 385),
+         (788, 434), (792, 547), (801, 626), (801, 669), (797, 697), (640, 700), (605, 734),
+         (600, 770), (580, 770), (578, 734), (552, 712), (550, 700), (482, 697), (475, 626),
+         (449, 470)],
+    ]},
+    "gear-portraits/duskrunner/mythic/bigfoot.png": {"worn": [
+        [(460, 641), (490, 652), (505, 690), (520, 700), (534, 661), (560, 626), (600, 612),
+         (621, 606), (656, 582), (690, 565), (725, 539), (772, 511), (768, 580), (764, 676),
+         (764, 728), (760, 748), (605, 752), (560, 806), (570, 848), (546, 848), (550, 806),
+         (512, 752), (469, 750), (462, 737)],
+    ]},
+    "gear-portraits/starweaver/sworn/bigfoot.png": {"worn": [
+        [(425, 437), (446, 490), (477, 522), (498, 539), (540, 545), (583, 524), (605, 505),
+         (635, 490), (667, 448), (688, 406), (709, 369), (762, 370), (740, 390), (732, 406),
+         (727, 606), (580, 660), (566, 712), (544, 712), (544, 664), (456, 660), (435, 637),
+         (430, 511), (419, 437)],
+    ]},
+    "gear-portraits/starweaver/radiant/bigfoot.png": {"worn": [
+        [(422, 430), (449, 485), (485, 530), (522, 557), (558, 577), (595, 557), (640, 539),
+         (685, 512), (731, 466), (767, 421), (795, 392), (815, 385), (800, 410), (788, 512),
+         (778, 668), (658, 723), (631, 714), (581, 759), (535, 741), (449, 687), (426, 621)],
+    ]},
+    "gear-portraits/starweaver/mythic/bigfoot.png": {"worn": [
+        [(449, 605), (495, 627), (522, 637), (540, 655), (558, 640), (585, 618), (631, 582),
+         (667, 562), (704, 535), (740, 498), (767, 469), (775, 480), (767, 562), (752, 727),
+         (685, 780), (655, 757), (615, 802), (570, 772), (552, 795), (552, 846), (530, 846),
+         (528, 795), (458, 718), (445, 698)],
+        # the floating gem, whose glow touches his mane
+        [(850, 160), (1010, 160), (1015, 300), (990, 345), (880, 345), (855, 300)],
+    ]},
+    # a woven shawl with a medallion, its tassels and a fringe (and, at Sworn, an earring)
+    "gear-portraits/songkeeper/sworn/bigfoot.png": {
+        "worn": [
+            [(365, 385), (390, 375), (405, 410), (420, 450), (440, 480), (460, 495), (500, 500),
+             (540, 490), (590, 450), (670, 410), (760, 375), (840, 395), (880, 450), (885, 500),
+             (870, 520), (780, 540), (720, 560), (700, 580), (600, 590), (530, 585), (470, 580),
+             (450, 570), (400, 565), (360, 550), (350, 460)],
+            [(455, 590), (500, 590), (500, 700), (455, 700)],
+            [(612, 235), (640, 235), (645, 280), (640, 320), (652, 330), (650, 395), (622, 398),
+             (620, 330), (630, 320), (612, 280)],
+        ],
+        "fringe": [
+            [(345, 530), (460, 560), (520, 570), (700, 560), (780, 520), (885, 490), (890, 590),
+             (720, 600), (715, 665), (520, 665), (500, 630), (455, 640), (345, 625)],
+        ],
+    },
+    "gear-portraits/songkeeper/radiant/bigfoot.png": {
+        "worn": [
+            [(330, 345), (367, 358), (380, 400), (398, 455), (483, 495), (520, 430), (567, 379),
+             (577, 358), (683, 324), (746, 335), (780, 389), (842, 474), (865, 537), (850, 560),
+             (780, 580), (740, 620), (700, 640), (560, 650), (540, 620), (500, 560), (420, 560),
+             (380, 560), (300, 520), (275, 500), (288, 474), (314, 410)],
+        ],
+        "fringe": [
+            [(265, 490), (380, 540), (500, 540), (540, 600), (560, 640), (740, 610), (780, 570),
+             (870, 520), (880, 620), (760, 620), (745, 715), (545, 715), (500, 700), (470, 700),
+             (370, 700), (265, 640)],
+        ],
+    },
+    "gear-portraits/songkeeper/mythic/bigfoot.png": {
+        "worn": [
+            [(363, 385), (410, 380), (422, 430), (430, 478), (519, 478), (563, 444), (597, 411),
+             (630, 378), (685, 365), (785, 376), (874, 465), (921, 533), (935, 585), (900, 590),
+             (800, 590), (740, 600), (700, 615), (540, 615), (510, 600), (400, 600), (330, 580),
+             (290, 560), (300, 500), (341, 422)],
+        ],
+        "fringe": [
+            [(280, 545), (400, 580), (520, 590), (700, 600), (900, 560), (945, 570), (945, 690),
+             (745, 690), (745, 700), (530, 700), (515, 780), (395, 780), (395, 660), (280, 660)],
+        ],
+    },
+}
+
+
+def bigfoot_body(look: Look, painting: str, k: float = 1.0, dc: float = 0.0) -> tuple[np.ndarray, np.ndarray]:
+    """His base paintings (and, through `bigfoot_dressed`, his class paintings and gear portraits).
+    `k` scales every size in pixels to his figure (1 on the base canvas, where the sizes below are
+    given), and `dc` raises every chroma threshold below by as much as his pale fur is more
+    saturated than on his base paintings (0 there).
+
+    Skin (G) is found afresh from the painting; fur (R) is the rest of him that takes a colour.
 
     1. Seeds: smooth, warm, saturated paint (OKLab chroma >= 0.075, hue 30..100, L >= 0.5; the
        cream fur is ~0.05) opened to cut thin bridges; his five largest patches (face, two hands,
@@ -255,55 +606,66 @@ def clean_bigfoot(look: Look, draft: np.ndarray, painting: str) -> tuple[np.ndar
     6. Fur: the figure less skin, ink outlines, leaves and eye whites. A small piece of it cut
        off by lines, skin-coloured and beside skin (a curled fingertip), is skin."""
     a, L, C = look.alpha, look.L, look.C
-    warm = look.warm(0.06, lmin=0.45) & ~look.ink
+
+    def px(n: int) -> int:
+        return n if k == 1 else max(1, int(round(n * k)))
+    warm = look.warm(0.06 + dc, lmin=0.45) & ~look.ink
     leaves = ndimage.binary_dilation(a & (look.hue >= 100) & (look.hue < 170) & (C > 0.04), iterations=1) & a
 
-    smooth_skin = warm & (C >= 0.075) & (L >= 0.5) & (look.rough < 0.045)
+    smooth_skin = warm & (C >= 0.075 + dc) & (L >= 0.5) & (look.rough < 0.045)
     core = ndimage.binary_opening(smooth_skin, structure=SQUARE, iterations=2)
     labs, n = ndimage.label(core)
     sizes = ndimage.sum(core, labs, np.arange(1, n + 1))
     top5 = np.isin(labs, np.argsort(sizes)[::-1][:5] + 1)
-    beside = np.unique(labs[ndimage.binary_dilation(top5, structure=disk(15)) & core])
+    beside = np.unique(labs[ndimage.binary_dilation(top5, structure=disk(px(15))) & core])
     seeds = np.isin(labs, beside[beside > 0])
-    reach = ndimage.binary_dilation(seeds, structure=disk(30))
+    reach = ndimage.binary_dilation(seeds, structure=disk(px(30)))
     skin = ndimage.binary_propagation(seeds, mask=(warm & (look.rough < 0.06) & reach & ~leaves) | seeds)
 
     lines = a & (L < 0.5)
     regions, rn = ndimage.label(a & ~ndimage.binary_dilation(lines, structure=SQUARE))
     idx = np.arange(1, rn + 1)
-    warm_share = ndimage.mean(look.warm(0.07), regions, idx)
+    warm_share = ndimage.mean(look.warm(0.07 + dc), regions, idx)
     thick = ndimage.maximum(ndimage.distance_transform_edt(regions > 0), regions, idx)
     area = ndimage.sum(np.ones_like(L), regions, idx)
     for _ in range(4):
         skin_share = ndimage.mean(skin, regions, idx)
         ok = np.zeros(rn + 1, bool)
-        ok[1:] = (warm_share >= 0.6) & (thick >= 2.5) & ((area < 6000) | (skin_share >= 0.3))
+        ok[1:] = (warm_share >= 0.6) & (thick >= 2.5 * k) & ((area < 6000 * k * k) | (skin_share >= 0.3))
         cand = ok[regions] & reach & ~leaves
-        touched = np.unique(regions[ndimage.binary_dilation(skin, structure=disk(4)) & cand])
+        touched = np.unique(regions[ndimage.binary_dilation(skin, structure=disk(px(4))) & cand])
         new = np.isin(regions, touched[touched > 0]) & cand & ~skin
         if not new.any():
             break
         skin |= new
     skin |= ndimage.binary_dilation(skin, structure=SQUARE, iterations=2) & ~lines & warm
-    skin = ndimage.binary_closing(skin, structure=disk(3))
+    skin = ndimage.binary_closing(skin, structure=disk(px(3)))
 
     ys = np.nonzero(a)[0]
     rows = np.arange(a.shape[0])[:, None]
     limbs = skin & (rows > ys.min() + 0.45 * (ys.max() - ys.min()))
-    shade = look.warm(0.065, lmin=0.36, lmax=0.66, h1=95) & ~leaves
-    skin |= ndimage.binary_propagation(limbs, mask=(shade & ndimage.binary_dilation(limbs, structure=disk(14))) | limbs)
-    skin = ndimage.binary_fill_holes(ndimage.binary_closing(skin, structure=disk(2)))
+    shade = look.warm(0.065 + dc, lmin=0.36, lmax=0.66, h1=95) & ~leaves
+    skin |= ndimage.binary_propagation(limbs, mask=(shade & ndimage.binary_dilation(limbs, structure=disk(px(14)))) | limbs)
+    skin = ndimage.binary_fill_holes(ndimage.binary_closing(skin, structure=disk(px(2))))
 
     for (r0, r1, c0, c1) in FIXES.get(painting, {}).get("skin", []):
         # the largest smooth, warm piece in the box, filled
         box = np.zeros_like(a)
         box[r0:r1, c0:c1] = True
-        cand = box & look.warm(0.05, lmin=0.5) & (look.rough < 0.05) & ~leaves
+        cand = box & look.warm(0.05 + dc, lmin=0.5) & (look.rough < 0.05) & ~leaves
         labs, n = ndimage.label(cand)
         if n:
             sizes = ndimage.sum(cand, labs, np.arange(1, n + 1))
             piece = labs == int(np.argmax(sizes)) + 1
-            skin |= ndimage.binary_fill_holes(ndimage.binary_closing(piece, structure=disk(2))) & box
+            skin |= ndimage.binary_fill_holes(ndimage.binary_closing(piece, structure=disk(px(2)))) & box
+    hand = boxes(painting, "hand", a.shape)
+    if hand is not None:
+        cand = hand & look.warm(0.075 + dc, lmin=0.4) & ~look.ink & ~leaves
+        skin |= ndimage.binary_fill_holes(ndimage.binary_closing(cand, structure=disk(px(2)))) & hand
+    face = boxes(painting, "face", a.shape)
+    if face is not None:
+        cand = face & look.warm(0.075 + dc, lmin=0.58) & ~look.ink & ~leaves
+        skin |= ndimage.binary_fill_holes(ndimage.binary_closing(cand, structure=disk(px(2)))) & face
     remove = boxes(painting, "not_skin", a.shape)
     if remove is not None:
         skin &= ~remove
@@ -316,9 +678,9 @@ def clean_bigfoot(look: Look, draft: np.ndarray, painting: str) -> tuple[np.ndar
     if n:
         i = np.arange(1, n + 1)
         small_warm = np.zeros(n + 1, bool)
-        small_warm[1:] = (ndimage.sum(R, labs, i) < 600) & (ndimage.mean(look.warm(0.06), labs, i) >= 0.5)
+        small_warm[1:] = (ndimage.sum(R, labs, i) < 600 * k * k) & (ndimage.mean(look.warm(0.06 + dc), labs, i) >= 0.5)
         touching = np.zeros(n + 1, bool)
-        touching[np.unique(labs[ndimage.binary_dilation(G, structure=disk(4)) & R])] = True
+        touching[np.unique(labs[ndimage.binary_dilation(G, structure=disk(px(4))) & R])] = True
         touching[0] = False
         pocket = (small_warm & touching)[labs]
         if remove is not None:
