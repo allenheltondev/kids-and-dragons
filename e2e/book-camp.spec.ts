@@ -3,9 +3,9 @@
  * §7, §13.1).
  *
  * A phone reads its book once with a signal, then loses it: the book opens
- * from its saved copy on a reload, the kid changes her kit, the book says it
- * is saved on this phone, and the change survives the book being closed and
- * opened again. When the signal comes back the change lands on the server.
+ * from its saved copy on a reload, the kid changes her kit, the change is kept
+ * on the phone without a word about saving (owner, 2026-11-07), and it
+ * survives the book being closed and opened again. When the signal comes back the change lands on the server.
  * And when the same field changed meanwhile (her hero's player at a table),
  * the book's queued pick still wins: the device wins (docs/camp.md §11).
  *
@@ -76,6 +76,26 @@ async function openBook(context: BrowserContext): Promise<Page> {
   return page;
 }
 
+/** A shelf of her kit (BookKit.tsx): Tent, Bedroll, Color, Decorate, Buddy. */
+async function shelf(page: Page, id: "tent" | "bedroll" | "color" | "decor" | "buddy"): Promise<void> {
+  await page.getByTestId("kit-editor").locator(`[data-shelf="${id}"]`).click(TAP);
+}
+
+/** What the phone has kept to send, by field. */
+async function queued(page: Page): Promise<string[]> {
+  return page.evaluate(() => {
+    const raw = localStorage.getItem("kad.kitQueue");
+    if (!raw) return [];
+    const entries = (JSON.parse(raw) as { entries?: { changes: { field: string }[] }[] }).entries ?? (JSON.parse(raw) as { changes: { field: string }[] }[]);
+    return (Array.isArray(entries) ? entries : []).flatMap((e) => e.changes.map((c) => c.field));
+  });
+}
+
+/** Saving happens behind the scenes: the book never says so (owner, 2026-11-07). */
+async function saysNothingAboutSaving(page: Page): Promise<void> {
+  await expect(page.getByTestId("book-camp").getByText(/saving|saved on this phone|synced/i)).toHaveCount(0);
+}
+
 async function openCamp(page: Page): Promise<void> {
   await page.getByRole("navigation", { name: "What to look at" }).getByRole("button", { name: "Camp" }).click(TAP);
   await expect(page.getByRole("heading", { name: "The first crew's camp" })).toBeVisible(TAP);
@@ -108,7 +128,7 @@ test.describe("the book's Camp tray", () => {
     // --- Online: the book is read once and saved ---
     let page = await openBook(context);
     await openCamp(page);
-    await expect(page.getByTestId("book-camp-synced")).toHaveText(/^Synced at /);
+    await saysNothingAboutSaving(page);
     const pieces = page.getByTestId("book-camp-pieces");
     await expect(pieces.getByText("Found at the Exchange Rift")).toBeVisible();
     await expect(pieces.getByText("Bought with Dash Cash")).toBeVisible();
@@ -124,12 +144,13 @@ test.describe("the book's Camp tray", () => {
     await page.reload();
     await expect(page.getByText(/no signal/i).first()).toBeVisible(TAP);
     await openCamp(page);
-    await expect(page.getByTestId("book-camp-synced")).toHaveText(/^Last synced /);
     await context.setOffline(true);
     const kit = page.getByTestId("kit-editor");
+    await shelf(page, "color");
     await kit.getByRole("button", { name: "Blue" }).click();
-    await expect(page.getByTestId("book-camp-queued")).toHaveText("Saved on this phone, will share when you're back online.");
     await expect(kit.getByRole("button", { name: "Blue" })).toHaveAttribute("aria-pressed", "true");
+    await expect.poll(() => queued(page), TAP).toContain("color");
+    await saysNothingAboutSaving(page);
     expect((await serverKit(phone)).color).toBeNull();
 
     // --- Closed and opened again, still with no signal: the change is still there ---
@@ -137,14 +158,15 @@ test.describe("the book's Camp tray", () => {
     await page.close();
     page = await openBook(context);
     await openCamp(page);
+    await shelf(page, "color");
     await expect(page.getByTestId("kit-editor").getByRole("button", { name: "Blue" })).toHaveAttribute("aria-pressed", "true");
-    await expect(page.getByTestId("book-camp-queued")).toBeVisible(TAP);
+    expect(await queued(page)).toContain("color");
 
     // --- The signal returns: it lands ---
     await signalBack(context);
     await expect.poll(async () => (await serverKit(phone)).color, { timeout: 20_000 }).toBe("meadow");
-    await expect(page.getByTestId("book-camp-queued")).toHaveCount(0, TAP);
     await expect(page.getByTestId("book-camp-note")).toHaveCount(0);
+    await saysNothingAboutSaving(page);
     expect(await page.evaluate(() => localStorage.getItem("kad.kitQueue"))).toBeNull();
   });
 
@@ -160,8 +182,9 @@ test.describe("the book's Camp tray", () => {
     await context.setOffline(true);
     const kit = page.getByTestId("kit-editor");
     await kit.locator('[data-tent="patched"]').click();
+    await shelf(page, "color");
     await kit.getByRole("button", { name: "Orange" }).click();
-    await expect(page.getByTestId("book-camp-queued")).toBeVisible(TAP);
+    await expect.poll(() => queued(page), TAP).toEqual(expect.arrayContaining(["tent", "color"]));
 
     // Meanwhile, at the table: her tent.
     await tableEdit(phone, { tent: "quilted" });
@@ -171,10 +194,10 @@ test.describe("the book's Camp tray", () => {
     await signalBack(context);
     await expect.poll(async () => (await serverKit(phone)).color, { timeout: 20_000 }).toBe("tide");
     expect((await serverKit(phone)).tent).toBe("patched");
-    await expect(page.getByTestId("book-camp-queued")).toHaveCount(0, TAP);
     // Nothing to explain: what she picked is what she has.
     await expect(page.getByTestId("book-camp-note")).toHaveCount(0);
-    await expect(kit.locator('[data-tent="patched"]')).toHaveAttribute("aria-pressed", "true");
     await expect(kit.getByRole("button", { name: "Orange" })).toHaveAttribute("aria-pressed", "true");
+    await shelf(page, "tent");
+    await expect(kit.locator('[data-tent="patched"]')).toHaveAttribute("aria-pressed", "true");
   });
 });
