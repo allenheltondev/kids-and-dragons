@@ -257,13 +257,16 @@ Resources:
             Action: ssm:*
             Resource: !Sub "arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter/kad/${!aws:PrincipalTag/kad:stage}/*"
 
-          # The sweep schedule is EventBridge Scheduler (ScheduleV2 in the
-          # template), named kad-sweep-<stage> in the default group — not a
-          # classic events:* rule, so no events statement is needed.
+          # The sweep schedules are EventBridge Scheduler (ScheduleV2 in the
+          # template), named kad-sweep-<stage> and kad-log-sweep-<stage> (#524)
+          # in the default group — not classic events:* rules, so no events
+          # statement is needed.
           - Sid: SchedulerKadSchedules
             Effect: Allow
             Action: scheduler:*
-            Resource: !Sub "arn:${AWS::Partition}:scheduler:${AWS::Region}:${AWS::AccountId}:schedule/default/kad-sweep-${!aws:PrincipalTag/kad:stage}"
+            Resource:
+              - !Sub "arn:${AWS::Partition}:scheduler:${AWS::Region}:${AWS::AccountId}:schedule/default/kad-sweep-${!aws:PrincipalTag/kad:stage}"
+              - !Sub "arn:${AWS::Partition}:scheduler:${AWS::Region}:${AWS::AccountId}:schedule/default/kad-log-sweep-${!aws:PrincipalTag/kad:stage}"
 
           # The stack declares no log groups (retention is managed outside this
           # repo), but Lambda's groups are /aws/lambda/kad-* and diagnosing a

@@ -48,6 +48,16 @@ Parameters:
       — and if it somehow is not, the backlog drains a day later rather than
       never.
 
+  LogSweepSchedule:
+    Type: String
+    Default: cron(0 4 1 * ? *)
+    Description: >-
+      When the log sweeper deletes Lambda log streams older than 30 days
+      (#524). Monthly, the owner's choice: a stream is deleted at the first run
+      after its newest line turns 30 days old, so a log line is kept for at
+      most about two months, which is what the privacy page says. Run it more
+      often and that bound shrinks; the page would then say less.
+
   WebAuthnRelyingPartyId:
     Type: String
     Default: ""
@@ -643,9 +653,16 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME: !Ref Table
+          # A kept household the retention window empties takes the sign-in of
+          # an owner who has no other household with it (#524).
+          USER_POOL_ID: !Ref UserPool
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref Table
+        - Statement:
+            - Effect: Allow
+              Action: cognito-idp:AdminDeleteUser
+              Resource: !GetAtt UserPool.Arn
       Events:
         Schedule:
           Type: ScheduleV2
@@ -660,6 +677,51 @@ Resources:
             # them to reach this resource would fail on a name the first had
             # taken.
             Name: !Sub "kad-sweep-${StageName}"
+
+  # ---------------------------------------------------------------------------
+  # Old logs — the log sweeper (#524)
+  #
+  # Monthly, deletes every log stream of this stack's functions whose newest
+  # event is more than 30 days old, so no log line is kept much past two
+  # months. It deletes streams and never sets a retention policy: see "Logs"
+  # below for why the stack declares none.
+  # ---------------------------------------------------------------------------
+
+  LogSweepFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .build/log-sweep
+      Description: Deletes this stack's Lambda log streams with nothing newer than 30 days
+      MemorySize: 256
+      # Bounded by time in the code, which stops 30 seconds before this; what
+      # is left waits for next month's run.
+      Timeout: 900
+      EventInvokeConfig:
+        MaximumRetryAttempts: 0
+      Environment:
+        Variables:
+          LOG_GROUP_PREFIX: !Sub "/aws/lambda/${AWS::StackName}-"
+      Policies:
+        - Statement:
+            - Effect: Allow
+              # DescribeLogGroups is authorized on the account's groups, not one.
+              Action: logs:DescribeLogGroups
+              Resource: !Sub "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:*"
+            - Effect: Allow
+              Action:
+                - logs:DescribeLogStreams
+                - logs:DeleteLogStream
+              Resource:
+                - !Sub "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${AWS::StackName}-*"
+                - !Sub "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${AWS::StackName}-*:*"
+      Events:
+        Schedule:
+          Type: ScheduleV2
+          Properties:
+            ScheduleExpression: !Ref LogSweepSchedule
+            Description: Delete Lambda log streams older than 30 days
+            # Per stage, for the reason on the sweeper's schedule.
+            Name: !Sub "kad-log-sweep-${StageName}"
 
   # ---------------------------------------------------------------------------
   # Hosting — architecture §1, §7
@@ -910,6 +972,10 @@ Resources:
   # retention is managed account-wide by a utility outside this repo — declaring
   # it here would mean a redeploy quietly resetting whatever that utility had
   # decided.
+  #
+  # What the privacy page promises about logs (#524) is kept by
+  # `LogSweepFunction` above instead, which deletes old streams and leaves
+  # every group's settings alone.
   #
   # `LoggingConfig` in Globals stays: format and levels are a property of the
   # application, not of how long anyone keeps the output.

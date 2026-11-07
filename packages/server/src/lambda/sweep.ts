@@ -1,6 +1,8 @@
 /**
  * The sweeper — what makes "anonymous play is not remembered" true, and an
- * owner's retention window (#252) true for a kid who stopped playing.
+ * owner's retention window (#252, a year unless they chose less, #524) true
+ * for a kid who stopped playing. A kept household the window empties goes
+ * too, with the sign-in of an owner who has nothing else (#524).
  *
  * Runs on a schedule, queries the `GUEST` partition of GSI1 for households whose
  * expiry has passed, and deletes each one along with everything under it. A
@@ -27,6 +29,8 @@ import {
   type ForgetRetryResult,
   type IdleSweepResult,
 } from "../handlers/retention.ts";
+import { CognitoDirectory } from "../cognito-directory.ts";
+import type { AccountDirectory } from "../handlers/deps.ts";
 import { DynamoRepository } from "../store/dynamo-repository.ts";
 import type { GameRepository } from "../store/repository.ts";
 import { requiredEnv } from "./runtime.ts";
@@ -47,11 +51,17 @@ export interface SweepResult {
 }
 
 export async function handler(): Promise<SweepResult> {
-  return sweep(new DynamoRepository({ tableName: requiredEnv("TABLE_NAME") }), Date.now);
+  // The grown-ups' sign-ins (#524): a kept household deleted for being idle
+  // takes the sign-in of an owner who has no other household with it.
+  const accounts = new CognitoDirectory({ userPoolId: requiredEnv("USER_POOL_ID"), region: requiredEnv("AWS_REGION") });
+  return sweep(new DynamoRepository({ tableName: requiredEnv("TABLE_NAME") }), Date.now, accounts);
 }
 
-/** One sweep, against any store; the handler is this on DynamoDB. */
-export async function sweep(repo: GameRepository, now: () => number): Promise<SweepResult> {
+/**
+ * One sweep, against any store; the handler is this on DynamoDB. Without
+ * `accounts` (tests, the dev server) no sign-in is ever deleted.
+ */
+export async function sweep(repo: GameRepository, now: () => number, accounts?: AccountDirectory): Promise<SweepResult> {
   const nowIso = new Date(now()).toISOString();
 
   const expired = await repo.listExpiredGuestHouseholds(nowIso, BATCH);
@@ -92,12 +102,14 @@ export async function sweep(repo: GameRepository, now: () => number): Promise<Sw
     }
   }
 
-  const idle = await sweepIdleProfiles({ repo, now });
-  const forgets = await retryForgets({ repo, now });
+  const idle = await sweepIdleProfiles({ repo, now, ...(accounts ? { accounts } : {}) });
+  // With the sign-in store too: a retry may finish retiring a household (#524).
+  const forgets = await retryForgets({ repo, now, ...(accounts ? { accounts } : {}) });
   console.log(
     `[sweep] scanned ${result.scanned}, deleted ${result.deleted.length}, ` +
       `spared ${result.spared.length}, failed ${result.failed.length}; ` +
       `idle kids deleted ${idle.deleted.length}, kept ${idle.kept.length}, failed ${idle.failed.length}; ` +
+      `kept households emptied and deleted ${idle.households.length}, sign-ins deleted ${idle.accounts}; ` +
       `forgets finished ${forgets.finished.length}, dropped ${forgets.dropped.length}, owed ${forgets.owed.length}`,
   );
   return { ...result, idle, forgets };

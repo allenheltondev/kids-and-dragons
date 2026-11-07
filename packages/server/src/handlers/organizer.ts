@@ -34,8 +34,8 @@ import type {
   PlayerProfile,
 } from "@kad/shared";
 import { newId } from "../ids.ts";
-import type { HouseholdOwnerRecord } from "../store/repository.ts";
-import { createProfile, summaries, vetTypedName, type AccountDeps } from "./account.ts";
+import { AccountRetiringError, type HouseholdOwnerRecord } from "../store/repository.ts";
+import { createProfile, RETIRING_SIGN_IN, summaries, vetTypedName, type AccountDeps } from "./account.ts";
 import { admitCodeLookup } from "./code-guard.ts";
 import { createPairingCode } from "./pairing.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
@@ -44,7 +44,7 @@ import { NEW_PLAYER_NAME_MAX } from "./shared-device.ts";
 import { takeOutEverywhere } from "./remove.ts";
 import { acceptTransfer, createTransferCode } from "./transfer.ts";
 import { claimIsLive, claimOf, parseClaim, releaseClaim } from "./claim.ts";
-import { deleteKid, deleteOwnedHousehold, retentionChoice, setRetention } from "./retention.ts";
+import { deleteKid, deleteOwnedHousehold, retentionChoice, retentionDaysOf, setRetention } from "./retention.ts";
 import { heroSaved } from "./save.ts";
 
 export type OrganizerDeps = AccountDeps & Pick<HandlerDeps, "random" | "channel" | "content">;
@@ -103,8 +103,13 @@ export async function createGroup(
     guest: false,
     createdAt: iso(nowMs),
   };
-  await deps.repo.putHousehold(household);
-  await deps.repo.putOwner(ownerRow(household.id, input, nowMs));
+  // The household, its pointer and its owner row together, or none of them
+  // (#524): never a group that nothing points at.
+  const made = await deps.repo.createOwnedHousehold(household, {
+    cognitoSub: input.cognitoSub,
+    owner: ownerRow(household.id, input, nowMs),
+  });
+  if (!made) return fail("ILLEGAL", RETIRING_SIGN_IN);
   return ok({ id: household.id, displayName: household.displayName, players: 0 });
 }
 
@@ -283,7 +288,7 @@ export async function deleteHousehold(
   return deleteOwnedHousehold(owned.value, input.cognitoSub, deps);
 }
 
-/** How long a kid who stops playing is kept (#252): a window in days, or `null` for until deleted. */
+/** How long a kid who stops playing is kept (#252): a window in days, a year at most (#524). */
 export async function setHouseholdRetention(
   input: Organizer & { householdId: unknown; retentionDays: unknown },
   deps: OrganizerDeps,
@@ -476,7 +481,11 @@ async function describe(
   let owners = stored;
   if (!owners.some((o) => o.cognitoSub === who.cognitoSub)) {
     const row = ownerRow(household.id, who, deps.now());
-    await deps.repo.putOwner(row);
+    // A look is never refused: while the sweep retires the household (#524)
+    // the row is not written, and the owner is listed all the same.
+    await deps.repo.putOwner(row).catch((err: unknown) => {
+      if (!(err instanceof AccountRetiringError)) throw err;
+    });
     owners = [...owners, row];
   }
   const rows: OrganizerOwner[] = owners.map((o) => ({
@@ -501,7 +510,7 @@ async function describe(
       retired: player.retired === true,
       heroes: heroesOf(player.id, characters, adventures, saves),
     })),
-    retentionDays: household.retentionDays ?? null,
+    retentionDays: retentionDaysOf(household),
   };
 }
 

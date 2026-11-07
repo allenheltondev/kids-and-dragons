@@ -142,7 +142,7 @@ export type OrganizerEdit =
   | { action: "retire-player"; householdId: string; playerId: string; retired: boolean }
   | { action: "leave-adventure"; householdId: string; characterId: string }
   | { action: "delete-player"; householdId: string; playerId: string }
-  | { action: "set-retention"; householdId: string; retentionDays: number | null };
+  | { action: "set-retention"; householdId: string; retentionDays: number };
 
 const ORGANIZER_EDIT_PATH: Record<OrganizerEdit["action"], string> = {
   "rename-household": "/api/organizer/household/rename",

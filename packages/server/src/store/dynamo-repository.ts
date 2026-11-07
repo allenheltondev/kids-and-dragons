@@ -76,8 +76,15 @@ import type {
   RunRecord,
   TransferCodeRecord,
 } from "./repository.ts";
+import {
+  ACCOUNT_RETIRING_TTL_SECONDS,
+  AccountRetiringError,
+  EVENT_TTL_SECONDS,
+  PUSH_SUBSCRIPTION_TTL_SECONDS,
+} from "./repository.ts";
 import { collectMove, fieldGuideItem, planMove, transferKey, type MoveStep, type StoredRow } from "./profile-move.ts";
 import {
+  ACCOUNT_RETIRING,
   ACCT,
   CAMP_SK,
   CAMPAIGN_SK,
@@ -130,10 +137,17 @@ interface TableItem {
   SK: string;
   GSI1PK?: string;
   GSI1SK?: string;
-  /** Epoch seconds, DynamoDB's TTL attribute. Only rooms, code-miss windows, invites, transfer codes and moved-device forwards carry it. */
+  /**
+   * Epoch seconds, DynamoDB's TTL attribute. Rooms, code-miss windows,
+   * invites, transfer codes, moved-device forwards and presence carry it, and
+   * since #524 event rows and push subscriptions: rows whose expiry nothing
+   * else has to follow.
+   */
   ttl?: number;
   /** ISO. On a `PLAYER#` row: when she last joined a room (#252). Bookkeeping beside `data`, like `sweeping`. */
   lastPlayedAt?: string;
+  /** On a household `META` row while the retention sweep decides whether to retire it (#524). */
+  retiring?: boolean;
   /** On a household `META` row, or a `PLAYER#` row (#252), once deleting it has begun. */
   sweeping?: boolean;
   /**
@@ -321,49 +335,59 @@ export class DynamoRepository implements GameRepository {
   async claimHousehold(householdId: string, cognitoSub: string, deviceId: string): Promise<boolean> {
     try {
       /*
-       * The entire promotion, in one conditional write. `REMOVE GSI1PK, GSI1SK`
-       * is what stops the sweeper ever looking at this household again; the
+       * The entire promotion, in one transaction. `REMOVE GSI1PK, GSI1SK` is
+       * what stops the sweeper ever looking at this household again; the
        * condition is what stops a second account claiming a household that is
        * already someone's. A guest's `ownerSub` is `null` rather than absent, so
        * both spellings of "unclaimed" are accepted.
+       *
+       * The account's pointer is written in the same transaction (#524), under
+       * a check that the sweep is not retiring that sign-in: a sign-in cannot
+       * gain a household between the sweep's check and its delete, and a claim
+       * never lands without the pointer that makes it one.
        */
       await this.doc.send(
-        new UpdateCommand({
-          TableName: this.table,
-          Key: { PK: HH(householdId), SK: META },
-          UpdateExpression:
-            "SET #d.#owner = :sub, #d.#guest = :no REMOVE #d.#expires, GSI1PK, GSI1SK",
-          /*
-           * `attribute_not_exists(sweeping)` is the other half of the sweeper's
-           * conditional delete. Once a sweep has begun, claiming has to fail —
-           * otherwise the claim succeeds against a household whose characters
-           * are already being deleted, and the family is told their party is
-           * kept while it disappears.
-           */
-          /*
-           * And only from the device that started it (#265), unless it is
-           * already this account's: a room code gets a phone a seat in the
-           * household, never the household. With no founder (absent, awaiting
-           * or dropped to "") nobody may claim it (#272).
-           */
-          ConditionExpression:
-            "attribute_exists(PK) AND attribute_not_exists(sweeping) AND (#d.#owner = :sub OR (" +
-            "(attribute_not_exists(#d.#owner) OR #d.#owner = :null) AND #d.#founder = :device))",
-          ExpressionAttributeNames: {
-            "#d": "data",
-            "#owner": "ownerSub",
-            "#guest": "guest",
-            "#expires": "expiresAt",
-            "#founder": "founderDeviceId",
-          },
-          ExpressionAttributeValues: { ":sub": cognitoSub, ":no": false, ":null": null, ":device": deviceId },
+        new TransactWriteCommand({
+          TransactItems: [
+            {
+              Update: {
+                TableName: this.table,
+                Key: { PK: HH(householdId), SK: META },
+                UpdateExpression: "SET #d.#owner = :sub, #d.#guest = :no REMOVE #d.#expires, GSI1PK, GSI1SK",
+                /*
+                 * `attribute_not_exists(sweeping)` is the other half of the
+                 * sweeper's conditional delete. Once a sweep has begun, claiming
+                 * has to fail — otherwise the claim succeeds against a household
+                 * whose characters are already being deleted, and the family is
+                 * told their party is kept while it disappears.
+                 *
+                 * And only from the device that started it (#265), unless it is
+                 * already this account's: a room code gets a phone a seat in the
+                 * household, never the household. With no founder (absent,
+                 * awaiting or dropped to "") nobody may claim it (#272).
+                 */
+                ConditionExpression:
+                  "attribute_exists(PK) AND attribute_not_exists(sweeping) AND (#d.#owner = :sub OR (" +
+                  "(attribute_not_exists(#d.#owner) OR #d.#owner = :null) AND #d.#founder = :device))",
+                ExpressionAttributeNames: {
+                  "#d": "data",
+                  "#owner": "ownerSub",
+                  "#guest": "guest",
+                  "#expires": "expiresAt",
+                  "#founder": "founderDeviceId",
+                },
+                ExpressionAttributeValues: { ":sub": cognitoSub, ":no": false, ":null": null, ":device": deviceId },
+              },
+            },
+            this.accountNotRetiring(cognitoSub),
+            { Put: { TableName: this.table, Item: accountPointerItem(cognitoSub, householdId) } },
+          ],
         }),
       );
     } catch (err) {
-      if (isConditionalFailure(err)) return false;
+      if (isTransactionCancelled(err)) return false;
       throw err;
     }
-    await this.putAccountPointer(cognitoSub, householdId);
     return true;
   }
 
@@ -517,6 +541,28 @@ export class DynamoRepository implements GameRepository {
     }
     await this.purge(householdId);
     return true;
+  }
+
+  async deleteRetiringHousehold(householdId: string): Promise<"deleted" | "gone" | "unmarked"> {
+    // Only while the sweep's `retiring` mark still stands (#524): a write that
+    // replaced `META` since took the mark, and with it the guarantee that no
+    // kid was added. A `sweeping` mark is an interrupted delete, finished here.
+    try {
+      await this.doc.send(
+        new UpdateCommand({
+          TableName: this.table,
+          Key: { PK: HH(householdId), SK: META },
+          UpdateExpression: "SET sweeping = :yes",
+          ConditionExpression: "attribute_exists(PK) AND (retiring = :yes OR sweeping = :yes)",
+          ExpressionAttributeValues: { ":yes": true },
+        }),
+      );
+    } catch (err) {
+      if (!isConditionalFailure(err)) throw err;
+      return (await this.consistentGet(HH(householdId), META)) ? "unmarked" : "gone";
+    }
+    await this.purge(householdId);
+    return "deleted";
   }
 
   /** Everything under a marked household, in the order that keeps an interrupted delete findable. */
@@ -682,11 +728,15 @@ export class DynamoRepository implements GameRepository {
 
   async rewriteEvent(event: EventRecord): Promise<void> {
     try {
+      // An update, not a put: the row keeps the expiry it was written with (#524).
       await this.doc.send(
-        new PutCommand({
+        new UpdateCommand({
           TableName: this.table,
-          Item: { PK: RUN(event.runId), SK: EVT_SK(event.seq), entity: "event", data: event } satisfies TableItem,
+          Key: { PK: RUN(event.runId), SK: EVT_SK(event.seq) },
+          UpdateExpression: "SET #d = :data",
           ConditionExpression: "attribute_exists(SK)",
+          ExpressionAttributeNames: { "#d": "data" },
+          ExpressionAttributeValues: { ":data": event },
         }),
       );
     } catch (err) {
@@ -761,12 +811,21 @@ export class DynamoRepository implements GameRepository {
   }
 
   async putAccountPointer(cognitoSub: string, householdId: string): Promise<void> {
-    await this.put({
-      PK: ACCT(cognitoSub),
-      SK: HH(householdId),
-      entity: "account",
-      data: { cognitoSub, householdId },
-    });
+    // Under the sign-in's retiring check (#524): never a pointer the sweep's
+    // last look at this account could have missed.
+    try {
+      await this.doc.send(
+        new TransactWriteCommand({
+          TransactItems: [
+            this.accountNotRetiring(cognitoSub),
+            { Put: { TableName: this.table, Item: accountPointerItem(cognitoSub, householdId) } },
+          ],
+        }),
+      );
+    } catch (err) {
+      if (isTransactionCancelled(err)) throw new AccountRetiringError();
+      throw err;
+    }
   }
 
   async listHouseholdsForAccount(cognitoSub: string): Promise<string[]> {
@@ -775,38 +834,179 @@ export class DynamoRepository implements GameRepository {
   }
 
   async putOwner(owner: HouseholdOwnerRecord): Promise<void> {
-    await this.doc.send(
-      new TransactWriteCommand({
-        TransactItems: [
-          {
-            Put: {
-              TableName: this.table,
-              Item: {
-                PK: HH(owner.householdId),
-                SK: OWNER_SK(owner.cognitoSub),
-                entity: "owner",
-                data: owner,
-              } satisfies TableItem,
+    try {
+      await this.doc.send(
+        new TransactWriteCommand({
+          TransactItems: [
+            {
+              Put: {
+                TableName: this.table,
+                Item: {
+                  PK: HH(owner.householdId),
+                  SK: OWNER_SK(owner.cognitoSub),
+                  entity: "owner",
+                  data: owner,
+                } satisfies TableItem,
+              },
             },
-          },
-          {
-            Put: {
-              TableName: this.table,
-              Item: {
-                PK: ACCT(owner.cognitoSub),
-                SK: HH(owner.householdId),
-                entity: "account",
-                data: { cognitoSub: owner.cognitoSub, householdId: owner.householdId },
-              } satisfies TableItem,
+            { Put: { TableName: this.table, Item: accountPointerItem(owner.cognitoSub, owner.householdId) } },
+            // A household that is there, and neither being retired (#524),
+            // whose owners the sweep has already read, nor being deleted; and
+            // not a sign-in the sweep may be about to delete. A call that
+            // arrives after the household is gone leaves nothing behind.
+            {
+              ConditionCheck: {
+                TableName: this.table,
+                Key: { PK: HH(owner.householdId), SK: META },
+                ConditionExpression: "attribute_exists(PK) AND attribute_not_exists(retiring) AND attribute_not_exists(sweeping)",
+              },
             },
-          },
-        ],
-      }),
-    );
+            this.accountNotRetiring(owner.cognitoSub),
+          ],
+        }),
+      );
+    } catch (err) {
+      if (isTransactionCancelled(err)) throw new AccountRetiringError();
+      throw err;
+    }
   }
 
-  async listOwners(householdId: string): Promise<HouseholdOwnerRecord[]> {
-    const items = await this.partition(HH(householdId), PREFIX.owner);
+  async createOwnedHousehold(
+    household: Household,
+    first: { cognitoSub: string; owner?: HouseholdOwnerRecord },
+  ): Promise<boolean> {
+    if (household.guest) throw new Error("createOwnedHousehold makes a kept household, never a guest one");
+    try {
+      await this.doc.send(
+        new TransactWriteCommand({
+          TransactItems: [
+            {
+              Put: {
+                TableName: this.table,
+                Item: { PK: HH(household.id), SK: META, entity: "household", data: household } satisfies TableItem,
+                ConditionExpression: "attribute_not_exists(PK)",
+              },
+            },
+            ...(first.owner
+              ? [
+                  {
+                    Put: {
+                      TableName: this.table,
+                      Item: {
+                        PK: HH(household.id),
+                        SK: OWNER_SK(first.owner.cognitoSub),
+                        entity: "owner",
+                        data: first.owner,
+                      } satisfies TableItem,
+                    },
+                  },
+                ]
+              : []),
+            { Put: { TableName: this.table, Item: accountPointerItem(first.cognitoSub, household.id) } },
+            this.accountNotRetiring(first.cognitoSub),
+          ],
+        }),
+      );
+      return true;
+    } catch (err) {
+      if (isTransactionCancelled(err)) return false;
+      throw err;
+    }
+  }
+
+  // --- retiring a kept household and its sign-ins (#524) ---------------------
+
+  async beginRetiring(householdId: string): Promise<boolean> {
+    try {
+      await this.doc.send(
+        new UpdateCommand({
+          TableName: this.table,
+          Key: { PK: HH(householdId), SK: META },
+          UpdateExpression: "SET retiring = :yes",
+          ConditionExpression: "attribute_exists(PK) AND attribute_not_exists(sweeping)",
+          ExpressionAttributeValues: { ":yes": true },
+        }),
+      );
+      return true;
+    } catch (err) {
+      if (isConditionalFailure(err)) return false;
+      throw err;
+    }
+  }
+
+  async endRetiring(householdId: string): Promise<void> {
+    try {
+      await this.doc.send(
+        new UpdateCommand({
+          TableName: this.table,
+          Key: { PK: HH(householdId), SK: META },
+          UpdateExpression: "REMOVE retiring",
+          ConditionExpression: "attribute_exists(PK)",
+        }),
+      );
+    } catch (err) {
+      if (!isConditionalFailure(err)) throw err;
+    }
+  }
+
+  async hasPlayers(householdId: string): Promise<boolean> {
+    const items = await this.query({
+      KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
+      ExpressionAttributeValues: { ":pk": HH(householdId), ":sk": PREFIX.player },
+      ConsistentRead: true,
+    });
+    return items.some((i) => !i.sweeping);
+  }
+
+  async beginRetiringAccount(cognitoSub: string): Promise<void> {
+    await this.put({
+      PK: ACCT(cognitoSub),
+      SK: ACCOUNT_RETIRING,
+      ttl: this.expiresIn(ACCOUNT_RETIRING_TTL_SECONDS),
+      entity: "account-retiring",
+      data: { cognitoSub },
+    });
+  }
+
+  async endRetiringAccount(cognitoSub: string): Promise<void> {
+    await this.doc.send(new DeleteCommand({ TableName: this.table, Key: { PK: ACCT(cognitoSub), SK: ACCOUNT_RETIRING } }));
+  }
+
+  async ownsAnyHousehold(cognitoSub: string): Promise<boolean> {
+    const items = await this.query(
+      {
+        KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
+        ExpressionAttributeValues: { ":pk": ACCT(cognitoSub), ":sk": "HH#" },
+        ConsistentRead: true,
+      },
+      1,
+    );
+    return items.length > 0;
+  }
+
+  /**
+   * A transaction item that fails while the sweep is retiring this sign-in
+   * (#524). A mark past its `ttl` that DynamoDB has not deleted yet does not
+   * count.
+   */
+  private accountNotRetiring(cognitoSub: string): TransactItem {
+    return {
+      ConditionCheck: {
+        TableName: this.table,
+        Key: { PK: ACCT(cognitoSub), SK: ACCOUNT_RETIRING },
+        ConditionExpression: "attribute_not_exists(PK) OR #ttl <= :now",
+        ExpressionAttributeNames: { "#ttl": "ttl" },
+        ExpressionAttributeValues: { ":now": Math.floor(this.now() / 1000) },
+      },
+    };
+  }
+
+  async listOwners(householdId: string, options?: { consistent?: boolean }): Promise<HouseholdOwnerRecord[]> {
+    const items = await this.query({
+      KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
+      ExpressionAttributeValues: { ":pk": HH(householdId), ":sk": PREFIX.owner },
+      ...(options?.consistent ? { ConsistentRead: true } : {}),
+    });
     return items.map((i) => i.data as HouseholdOwnerRecord);
   }
 
@@ -870,13 +1070,16 @@ export class DynamoRepository implements GameRepository {
             },
             {
               // A code made before its household was deleted hands out
-              // nothing (#252): there, and not being deleted.
+              // nothing (#252): there, and not being deleted, nor being
+              // retired by the sweep, which has already read its owners (#524).
               ConditionCheck: {
                 TableName: this.table,
                 Key: { PK: HH(row.householdId), SK: META },
-                ConditionExpression: "attribute_exists(PK) AND attribute_not_exists(sweeping)",
+                ConditionExpression: "attribute_exists(PK) AND attribute_not_exists(sweeping) AND attribute_not_exists(retiring)",
               },
             },
+            // Nor to a sign-in the sweep is about to delete (#524).
+            this.accountNotRetiring(row.cognitoSub),
             {
               Put: {
                 TableName: this.table,
@@ -1070,8 +1273,18 @@ export class DynamoRepository implements GameRepository {
             ExpressionAttributeValues: { ":now": step.nowIso, ":hh": step.householdId, ":pid": step.playerId },
           },
         };
+      case "account-open":
+        // A new home's grown-up is not a sign-in being retired (#524).
+        return this.accountNotRetiring(step.cognitoSub);
       case "check":
-        return { ConditionCheck: { TableName, Key: { PK: step.PK, SK: step.SK }, ConditionExpression: "attribute_exists(PK)" } };
+        // The new home is there, and nobody is retiring or deleting it (#524).
+        return {
+          ConditionCheck: {
+            TableName,
+            Key: { PK: step.PK, SK: step.SK },
+            ConditionExpression: "attribute_exists(PK) AND attribute_not_exists(retiring) AND attribute_not_exists(sweeping)",
+          },
+        };
       case "delete":
         // A map compared whole: any write since the read, to any field, fails it.
         return {
@@ -1156,6 +1369,43 @@ export class DynamoRepository implements GameRepository {
       await this.doc.send(this.playerWrite(player, "attribute_not_exists(sweeping)"));
     } catch (err) {
       if (!isConditionalFailure(err)) throw err;
+    }
+  }
+
+  async createPlayer(player: PlayerProfile): Promise<boolean> {
+    // A new row, in a household nobody is retiring or deleting (#524): the
+    // check on `META` is what makes the sweep's emptiness read final.
+    try {
+      await this.doc.send(
+        new TransactWriteCommand({
+          TransactItems: [
+            {
+              ConditionCheck: {
+                TableName: this.table,
+                Key: { PK: HH(player.householdId), SK: META },
+                // There: a call that arrives after the household was deleted
+                // must not leave a kid behind with no home to sweep her.
+                ConditionExpression: "attribute_exists(PK) AND attribute_not_exists(retiring) AND attribute_not_exists(sweeping)",
+              },
+            },
+            {
+              // The row `putPlayer` writes, as an update of `data`, where nothing is yet.
+              Update: {
+                TableName: this.table,
+                Key: { PK: HH(player.householdId), SK: PLAYER_SK(player.id) },
+                UpdateExpression: "SET #d = :data, entity = :entity",
+                ConditionExpression: "attribute_not_exists(PK)",
+                ExpressionAttributeNames: { "#d": "data" },
+                ExpressionAttributeValues: { ":data": player, ":entity": "player" },
+              },
+            },
+          ],
+        }),
+      );
+      return true;
+    } catch (err) {
+      if (isTransactionCancelled(err)) return false;
+      throw err;
     }
   }
 
@@ -1567,6 +1817,8 @@ export class DynamoRepository implements GameRepository {
                 Item: {
                   PK: RUN(runId),
                   SK: EVT_SK(event.seq),
+                  // Deleted 30 days on (#524); nothing reads an old event.
+                  ttl: this.expiresIn(EVENT_TTL_SECONDS),
                   entity: "event",
                   data: event,
                 } satisfies TableItem,
@@ -1703,10 +1955,17 @@ export class DynamoRepository implements GameRepository {
         // A key condition cannot mix `SK > :lo` with `begins_with`, so the
         // event range is expressed by its bounds — see EVT_SK_MAX.
         KeyConditionExpression: "PK = :pk AND SK BETWEEN :lo AND :hi",
+        // An expired event the TTL sweep has not reached yet is not in the
+        // log (#524): a reconnect that misses one gets a snapshot
+        // (`handlers/state.ts`). A filter rather than a check here, so a page
+        // is still `limit` long when there are more: `query` pages on.
+        FilterExpression: "attribute_not_exists(#ttl) OR #ttl > :now",
+        ExpressionAttributeNames: { "#ttl": "ttl" },
         ExpressionAttributeValues: {
           ":pk": RUN(runId),
           ":lo": EVT_SK(sinceSeq + 1),
           ":hi": EVT_SK_MAX,
+          ":now": Math.floor(this.now() / 1000),
         },
         ScanIndexForward: true,
       },
@@ -1957,14 +2216,43 @@ export class DynamoRepository implements GameRepository {
     await this.put({
       PK: PUSH(subscription.playerId),
       SK: DEVICE_SK(subscription.deviceId),
+      ttl: this.expiresIn(PUSH_SUBSCRIPTION_TTL_SECONDS),
       entity: "push-subscription",
       data: subscription,
     });
   }
 
+  async touchPushSubscription(playerId: string, deviceId: string): Promise<void> {
+    try {
+      await this.doc.send(
+        new UpdateCommand({
+          TableName: this.table,
+          Key: { PK: PUSH(playerId), SK: DEVICE_SK(deviceId) },
+          UpdateExpression: "SET #ttl = :ttl",
+          ConditionExpression: "attribute_exists(PK)",
+          ExpressionAttributeNames: { "#ttl": "ttl" },
+          ExpressionAttributeValues: { ":ttl": this.expiresIn(PUSH_SUBSCRIPTION_TTL_SECONDS) },
+        }),
+      );
+    } catch (err) {
+      // Unsubscribed or forgotten meanwhile: it stays gone.
+      if (!isConditionalFailure(err)) throw err;
+    }
+  }
+
   async listPushSubscriptions(playerId: string): Promise<PushSubscriptionRecord[]> {
     const items = await this.partition(PUSH(playerId), PREFIX.device);
-    return items.map((i) => i.data as PushSubscriptionRecord);
+    return items.filter((i) => this.live(i)).map((i) => i.data as PushSubscriptionRecord);
+  }
+
+  /** Epoch seconds `seconds` from now, for a row's `ttl`. */
+  private expiresIn(seconds: number): number {
+    return Math.floor(this.now() / 1000) + seconds;
+  }
+
+  /** False for a row whose `ttl` has passed and that DynamoDB has not deleted yet. */
+  private live(item: TableItem): boolean {
+    return item.ttl === undefined || item.ttl * 1000 > this.now();
   }
 
   async deletePushSubscription(playerId: string, deviceId: string): Promise<void> {
@@ -2059,6 +2347,11 @@ function campaignProgressItem(progress: CampaignProgressRecord): TableItem {
 /** `ConditionalCheckFailedException`, however the SDK version spells it. */
 function isConditionalFailure(err: unknown): boolean {
   return nameOf(err) === "ConditionalCheckFailedException";
+}
+
+/** `ACCT#<sub>` / `HH#<hhId>`: the pointer every owner guard reads. */
+function accountPointerItem(cognitoSub: string, householdId: string): TableItem {
+  return { PK: ACCT(cognitoSub), SK: HH(householdId), entity: "account", data: { cognitoSub, householdId } };
 }
 
 /**
