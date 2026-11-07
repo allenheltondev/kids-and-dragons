@@ -211,10 +211,10 @@ together to keep that window short.
   |---|---|---|---|
   | Unicorn | Coat | Mane | yes |
   | Bigfoot | Fur: his cream body and his brown mane | Skin: his tan face, hands and feet | yes |
-  | Dragonling | Scales | Wings | to confirm on the masks |
-  | Griffin | Coat | Feathers (the blue crest, ruff and tail tuft) | to confirm on the masks |
-  | Kitsune | Fur | Tails | to confirm on the masks |
-  | Manticore | Fur | Mane | to confirm on the masks |
+  | Dragonling | Scales | Wings | yes |
+  | Griffin | Coat | Feathers (the blue crest, ruff and tail tuft) | yes |
+  | Kitsune | Fur | Tails | yes |
+  | Manticore | Fur | Mane | yes |
 
   `draftFrom` names the palette slot (or slots, for a part painted in two: Bigfoot's fur is his
   `coat` and `mane`) the draft picks a part out by. Every painting of a species, in all three
@@ -230,6 +230,10 @@ together to keep that window short.
    pixel goes to the nearer part; B from the painting's alpha, or by a flood fill in from the
    edges on a gear portrait. It is a starting point, never shipped as is.
 2. An artist cleans each mask by hand, channel by channel (any editor; the mask is a plain PNG).
+   `npm run art:coat-clean -- <species>` is that cleaning written down for the base family
+   (unicorn and Bigfoot, #667): per-species rules and a per-painting table of hand-placed fix
+   boxes in `tools/art/coat-clean.py`, reading the drafts from `staging/coat-drafts` (or
+   `--drafts DIR`). The class and gear waves (#668) add their rules to it.
 3. `npm run art:sheet`'s colour page shows each painting, its three channels overlaid (main pink,
    accent blue, figure yellow), four main and accent pairings (light and dark, dark and light,
    saturated and grey, grey and saturated) and gold over the figure, for review before it ships.
