@@ -88,6 +88,7 @@ import type {
 import type { CampWrite, CharacterWrite, RunRecord } from "../store/repository.ts";
 import { mutateCamp, planCamp, planKit, readCamp, readCampView, type CampDeps } from "./camp.ts";
 import { discoveryHousehold } from "./field-guide.ts";
+import { campStanding, heroLookOf } from "./look-unlocks.ts";
 
 type EditError = NonNullable<ActionResponse["error"]>;
 
@@ -423,7 +424,8 @@ export async function syncCampDowntime(
     want.filter((m) => m.character.id !== input.created).map(async (m) => {
       try {
         const row = await deps.repo.getCharacter(m.homeHouseholdId ?? input.run.householdId, m.character.id);
-        return [m.character.id, kitView(row ? readKit(row) : emptyKit(), key), row?.look] as const;
+        // Her look with every milestone she holds (look-unlocks.ts), her crew's included.
+        return [m.character.id, kitView(row ? readKit(row) : emptyKit(), key), row ? heroLookOf(row, deps, { camp: campStanding(next.camp) }) : null] as const;
       } catch (err) {
         console.error(`camp: could not read hero ${m.character.id}'s kit:`, err);
         return null;
@@ -439,8 +441,11 @@ export async function syncCampDowntime(
   if (looks.size > 0) {
     next.party = next.party.map((m) => {
       const look = looks.get(m.character.id);
-      if (!look || m.character.look?.revision === look.revision) return m;
-      return { ...m, character: { ...m.character, look: lookView(look) } };
+      if (!look) return m;
+      const view = lookView(look);
+      const shown = m.character.look;
+      if (shown && shown.revision === view.revision && shown.unlocked.join() === view.unlocked.join()) return m;
+      return { ...m, character: { ...m.character, look: view } };
     });
   }
   return syncCampFriends(next, input.run.householdId, deps);

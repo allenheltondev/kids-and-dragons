@@ -1,0 +1,77 @@
+/*
+ * A shimmer coat's sweep in the DOM (docs/hero-looks.md §5.5; #669): an
+ * element laid OVER her image, never behind it (a gear portrait is opaque and
+ * would hide it), its moving band clipped by her coat mask so it lights only
+ * her coloured part. The mask is greyscale (white is coloured), so it is read
+ * by luminance. The timing is hero-art.ts `SHIMMER`: a 1.6 s sweep every 5 s.
+ *
+ * Under reduced motion (the device's or the setting's) it is a still sheen:
+ * no sweep, a soft band of light resting across her coloured part.
+ */
+
+.hero-shimmer {
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0.7;
+  background-image: linear-gradient(110deg, transparent 38%, rgb(255 255 255 / 75%) 50%, transparent 62%);
+  background-repeat: no-repeat;
+  background-size: 300% 100%;
+  background-position: 100% 0;
+  -webkit-mask-image: var(--hero-shimmer-mask);
+  mask-image: var(--hero-shimmer-mask);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: var(--hero-shimmer-mask-size, contain);
+  mask-size: var(--hero-shimmer-mask-size, contain);
+  -webkit-mask-position: var(--hero-shimmer-mask-position, 50% 100%);
+  mask-position: var(--hero-shimmer-mask-position, 50% 100%);
+  -webkit-mask-source-type: luminance;
+  mask-mode: luminance;
+  animation: hero-shimmer-sweep 5s linear infinite;
+}
+
+/* Laid over another element by measurement (HeroImage): placed on it, not in the flow. */
+.hero-shimmer--over {
+  position: absolute;
+}
+
+@keyframes hero-shimmer-sweep {
+  0% {
+    background-position: 100% 0;
+  }
+  32% {
+    background-position: 0% 0;
+  }
+  32.01%,
+  100% {
+    background-position: 100% 0;
+    opacity: 0;
+  }
+}
+
+/* Reduced motion: a still sheen, resting across her coloured part. */
+.hero-shimmer--still {
+  animation: none !important;
+  opacity: 0.45;
+  background-image: linear-gradient(110deg, transparent 15%, rgb(255 255 255 / 60%) 50%, transparent 85%);
+  background-size: 100% 100%;
+  background-position: 50% 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-shimmer {
+    animation: none !important;
+    opacity: 0.45;
+    background-image: linear-gradient(110deg, transparent 15%, rgb(255 255 255 / 60%) 50%, transparent 85%);
+    background-size: 100% 100%;
+    background-position: 50% 0;
+  }
+}
+
+html[data-motion="reduced"] .hero-shimmer {
+  animation: none !important;
+  opacity: 0.45;
+  background-image: linear-gradient(110deg, transparent 15%, rgb(255 255 255 / 60%) 50%, transparent 85%);
+  background-size: 100% 100%;
+  background-position: 50% 0;
+}

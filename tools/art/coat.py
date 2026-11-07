@@ -251,14 +251,23 @@ def _in_gamut(lab: np.ndarray, eps: float = 1e-4) -> np.ndarray:
     return ((lin >= -eps) & (lin <= 1 + eps)).all(axis=-1)
 
 
-def tint(rgba: np.ndarray, mask: np.ndarray, coat_hex: str) -> np.ndarray:
+# A two-tone coat's soft step (section 5.5): half its width in OKLab lightness, either side of
+# the region's mean. The client's COAT_SWAP.twoToneStep.
+TWO_TONE_STEP = 0.04
+
+
+def tint(rgba: np.ndarray, mask: np.ndarray, coat_hex: str, dark_hex: str | None = None) -> np.ndarray:
     """Recolour the masked region to `coat_hex` (hero-looks.md section 5.2), for review.
 
     Lightness: the coat's, plus each pixel's step from the region's mean (softened x0.85
     going darker), clamped to 0.04..0.98. Hue: the coat's. Chroma: the coat's, times
     sqrt(pixel/mean) clamped 0.6..1.4, or the coat's as is for a near-grey region (mean
     chroma under 0.02). Out of gamut: chroma lowered at the same lightness and hue. Blended
-    by the mask. Returns uint8 RGBA, alpha untouched."""
+    by the mask. Returns uint8 RGBA, alpha untouched.
+
+    Given `dark_hex`, a two-tone coat (section 5.5): each pixel is swapped to both colours and
+    the two mixed in sRGB, the light one above the region's mean lightness and the dark one
+    below, across a smooth step TWO_TONE_STEP either side (the client's `twoToneWeight`)."""
     rgb = rgba[..., :3].astype(np.float64) / 255.0
     w = mask.astype(np.float64) / 255.0
     if w.sum() <= 0:
@@ -270,33 +279,40 @@ def tint(rgba: np.ndarray, mask: np.ndarray, coat_hex: str) -> np.ndarray:
     meanL = float((w * L).sum() / total)
     meanC = float((w * C).sum() / total)
 
-    t = srgb_to_oklab(hex_rgb(coat_hex))
-    tL, tC, th = float(t[0]), float(np.hypot(t[1], t[2])), float(np.arctan2(t[2], t[1]))
+    def swap(hexv: str) -> np.ndarray:
+        t = srgb_to_oklab(hex_rgb(hexv))
+        tL, tC, th = float(t[0]), float(np.hypot(t[1], t[2])), float(np.arctan2(t[2], t[1]))
 
-    step = L - meanL
-    if tL < meanL:
-        step = step * 0.85
-    nL = np.clip(tL + step, 0.04, 0.98)
-    if meanC < 0.02:
-        nC = np.full_like(L, tC)
-    else:
-        nC = tC * np.clip(np.sqrt(np.maximum(C, 0) / meanC), 0.6, 1.4)
+        step = L - meanL
+        if tL < meanL:
+            step = step * 0.85
+        nL = np.clip(tL + step, 0.04, 0.98)
+        if meanC < 0.02:
+            nC = np.full_like(L, tC)
+        else:
+            nC = tC * np.clip(np.sqrt(np.maximum(C, 0) / meanC), 0.6, 1.4)
 
-    def at(scale: np.ndarray) -> np.ndarray:
-        c = nC * scale
-        return np.stack([nL, c * np.cos(th), c * np.sin(th)], axis=-1)
+        def at(scale: np.ndarray) -> np.ndarray:
+            c = nC * scale
+            return np.stack([nL, c * np.cos(th), c * np.sin(th)], axis=-1)
 
-    # bring out-of-gamut pixels in by chroma only (bisection on a per-pixel scale)
-    lo = np.zeros_like(L)
-    hi = np.ones_like(L)
-    ok = _in_gamut(at(hi))
-    lo[ok] = 1.0
-    for _ in range(14):
-        mid = (lo + hi) / 2
-        good = _in_gamut(at(mid))
-        lo = np.where(good, mid, lo)
-        hi = np.where(good, hi, mid)
-    new = oklab_to_srgb(at(lo))
+        # bring out-of-gamut pixels in by chroma only (bisection on a per-pixel scale)
+        lo = np.zeros_like(L)
+        hi = np.ones_like(L)
+        ok = _in_gamut(at(hi))
+        lo[ok] = 1.0
+        for _ in range(14):
+            mid = (lo + hi) / 2
+            good = _in_gamut(at(mid))
+            lo = np.where(good, mid, lo)
+            hi = np.where(good, hi, mid)
+        return oklab_to_srgb(at(lo))
+
+    new = swap(coat_hex)
+    if dark_hex is not None:
+        x = np.clip((L - meanL + TWO_TONE_STEP) / (2 * TWO_TONE_STEP), 0.0, 1.0)
+        light = (x * x * (3 - 2 * x))[..., None]
+        new = new * light + swap(dark_hex) * (1 - light)
 
     out = rgb * (1 - w[..., None]) + new * w[..., None]
     res = rgba.copy()

@@ -33,9 +33,10 @@ export const STARTER_COATS = { min: 4, max: 8 };
  * @param {Set<string>} input.campaigns
  * @param {Set<string>} input.friends   content/camp.json friends
  * @param {Set<string>} input.species
+ * @param {Map<string, object>} [input.chapters] every loaded chapter, by id: their `findLook` effects
  * @returns {{ file: string, at: string, problem: string, hint?: string }[]}
  */
-export function looksCatalogProblems({ catalog, manifest, tiers, classes, campaigns, friends, species }) {
+export function looksCatalogProblems({ catalog, manifest, tiers, classes, campaigns, friends, species, chapters }) {
   const out = [];
   const fail = (at, problem, hint, file = LOOKS) => out.push({ file, at, problem, ...(hint ? { hint } : {}) });
 
@@ -93,11 +94,97 @@ export function looksCatalogProblems({ catalog, manifest, tiers, classes, campai
     }
   }
 
+  // Special coats (§5.5, #669): earned, never a starter, and a two-tone's halves told apart.
+  catalog.coats.forEach((coat, i) => {
+    if (!coat.effect) return;
+    if (coat.unlock.from === "starter") fail(`/coats/${i}/effect`, `${coat.id} is a special coat and a starter`, "Special coats are earned (§5.5, §7.1).");
+    if (coat.effect.dark !== undefined && coat.effect.dark.toUpperCase() === coat.color.toUpperCase()) {
+      fail(`/coats/${i}/effect/dark`, `${coat.id}'s dark half is its light half`, "A two-tone coat's two colours differ.");
+    }
+  });
+
+  // Look finds in chapters (§6, #669).
+  if (chapters) out.push(...lookFindProblems(catalog, chapters, species));
+
   const delivered = manifest?.ids ?? [];
   const frames = new Map(catalog.nameplates.map((n) => [n.id, n]));
   delivered.forEach((id, i) => {
     const frame = frames.get(id);
     if (!frame || frame.art === undefined) fail(`/nameplateFrames/ids/${i}`, `"${id}" is not a frame with art in ${LOOKS}`, "List only frames the catalog paints.", MANIFEST);
   });
+  return out;
+}
+
+/**
+ * Every `findLook` in a chapter, wherever it is authored, with its JSON
+ * pointer: a deep walk, as camp-catalog.mjs `chapterFinds` is, so a find the
+ * walk missed cannot reach the table unchecked.
+ */
+export function chapterLookFinds(chapter) {
+  const found = [];
+  const walk = (value, at) => {
+    if (Array.isArray(value)) {
+      value.forEach((v, i) => walk(v, `${at}/${i}`));
+      return;
+    }
+    if (!value || typeof value !== "object") return;
+    if (value.type === "findLook") found.push({ effect: value, at });
+    for (const [key, v] of Object.entries(value)) walk(v, `${at}/${key.replaceAll("~", "~0").replaceAll("/", "~1")}`);
+  };
+  walk(chapter, "");
+  return found;
+}
+
+/**
+ * The look finds (docs/hero-looks.md §6; content/README.md "Look finds"):
+ * each names looks the catalog has, every one earned by a find; a coat find
+ * names one coat for every species and no more, so no kid at the table misses
+ * out; the `rewardId` is `<chapter id>.<name>` and names the same looks
+ * wherever the chapter authors it; and every found look in the catalog is
+ * handed over somewhere, since nothing else can give it.
+ */
+function lookFindProblems(catalog, chapters, species) {
+  const out = [];
+  const looks = new Map();
+  for (const list of ["coats", "nameplates", "titles"]) for (const entry of catalog[list] ?? []) looks.set(entry.id, { list, entry });
+  const offered = new Set();
+  for (const [chapterId, chapter] of chapters) {
+    const file = `content/chapters/${chapterId}.json`;
+    const byReward = new Map();
+    for (const { effect, at } of chapterLookFinds(chapter)) {
+      const fail = (where, problem, hint) => out.push({ file, at: `${at}${where}`, problem, ...(hint ? { hint } : {}) });
+      const ids = Array.isArray(effect.looks) ? effect.looks : [];
+      if (typeof effect.rewardId !== "string" || !effect.rewardId.startsWith(`${chapterId}.`)) {
+        fail("/rewardId", `"${effect.rewardId}" is not "${chapterId}.<name>"`, "A look find's reward is named for the chapter that hands it over, and never changes once it ships.");
+      }
+      const key = [...ids].sort().join(",");
+      const seen = byReward.get(effect.rewardId);
+      if (seen !== undefined && seen !== key) fail("/looks", `${effect.rewardId} names other looks elsewhere in this chapter`, "One reward, one set of looks, on every way in.");
+      else byReward.set(effect.rewardId, key);
+      const coatSpecies = new Map();
+      ids.forEach((id, i) => {
+        const look = looks.get(id);
+        if (!look) return fail(`/looks/${i}`, `no look "${id}" in ${LOOKS}`);
+        if (look.entry.unlock.from !== "found") return fail(`/looks/${i}`, `"${id}" is not a found look`, 'A find hands over a look whose unlock is { "from": "found" }.');
+        offered.add(id);
+        if (look.list === "coats") {
+          for (const s of look.entry.species) {
+            if (coatSpecies.has(s)) fail(`/looks/${i}`, `two coats for ${s}: ${coatSpecies.get(s)} and ${id}`, "One coat per species in a find.");
+            else coatSpecies.set(s, id);
+          }
+        }
+      });
+      if (coatSpecies.size > 0) {
+        const missing = [...species].filter((s) => !coatSpecies.has(s)).sort();
+        if (missing.length > 0) fail("/looks", `a coat find with no coat for ${missing.join(", ")}`, "Every seated hero gets one: name a coat for every species.");
+      }
+    }
+  }
+  for (const [id, { list, entry }] of looks) {
+    if (entry.unlock.from === "found" && !offered.has(id)) {
+      // A warning, not a failure: a trimmed set of chapters (a test's) may leave the find out.
+      out.push({ file: LOOKS, at: `/${list}`, problem: `"${id}" is found, but no chapter hands it over`, hint: "Place a findLook for it, or give it another unlock.", warning: true });
+    }
+  }
   return out;
 }

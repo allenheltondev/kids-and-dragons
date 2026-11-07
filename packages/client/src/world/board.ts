@@ -710,6 +710,8 @@ export function createBoardLayer(): BoardLayer {
         // flame by design): the painting is measured, and the canvas scaled
         // so the painting is the figure's true height (sizeActors).
         actor.sprite = sprite;
+        // A hero's shimmer coat lays its sweep over her sprite (#669).
+        actor.heroArt?.dress(sprite);
         actor.paint = measurePaint(texture);
         actor.footprint = groundedFootprint(measureFootprint(texture), actor.paint);
         sizeActors();

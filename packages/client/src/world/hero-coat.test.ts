@@ -11,7 +11,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import type { CoatPaint } from "@kad/shared";
-import { COAT_SWAP, coatRegionStats, coatTarget, swapPixel, tintCoatPixels } from "./hero-coat";
+import { COAT_SWAP, coatRegionStats, coatTarget, swapPixel, tintCoatPixels, twoToneWeight } from "./hero-coat";
 import { runTint, slicedTintRunner } from "./hero-coat-pass";
 import { hexToOklab, inGamut, oklabDistance, oklabToLinear, srgbToOklab } from "./oklab";
 import { pixelIO, regionMean, servePainting, syntheticPainting } from "../testing/coat-fixture";
@@ -154,7 +154,8 @@ const ART = fileURLToPath(new URL("../../../../tools/art/", import.meta.url));
 const REFERENCE = JSON.parse(readFileSync(`${ART}fixtures/coat-reference.json`, "utf8")) as {
   size: number;
   coats: Record<string, string>;
-  paintings: Record<string, { rgba: string; mask: string; tinted: Record<string, string> }>;
+  twoTones: Record<string, { color: string; dark: string }>;
+  paintings: Record<string, { rgba: string; mask: string; tinted: Record<string, string>; twoTone: Record<string, string> }>;
 };
 const bytes = (b64: string) => new Uint8ClampedArray(Buffer.from(b64, "base64"));
 
@@ -187,5 +188,63 @@ describe("the reference sheet (tools/art/fixtures/coat-reference.json)", () => {
         expect(worst, `${name} in ${kind} ${color}`).toBeLessThanOrEqual(1);
       }
     }
+  });
+
+  it("is matched on the two-tone coats too (§5.5), a step of 8-bit at most", () => {
+    const { size } = REFERENCE;
+    expect(Object.keys(REFERENCE.twoTones).length).toBeGreaterThan(0);
+    for (const [name, p] of Object.entries(REFERENCE.paintings)) {
+      const rgba = bytes(p.rgba);
+      const mask = bytes(p.mask);
+      const stats = coatRegionStats(rgba, mask, 1);
+      for (const [kind, { color, dark }] of Object.entries(REFERENCE.twoTones)) {
+        const out = new Uint8ClampedArray(rgba.length);
+        tintCoatPixels(rgba, mask, { kind: "two-tone", color, dark }, stats, out, { maskStride: 1 });
+        const want = bytes(p.twoTone[kind]!);
+        let worst = 0;
+        for (let i = 0; i < size * size * 4; i++) worst = Math.max(worst, Math.abs(out[i]! - want[i]!));
+        expect(worst, `${name} in two-tone ${kind}`).toBeLessThanOrEqual(1);
+      }
+    }
+  });
+});
+
+describe("two-tone coats (§5.5)", () => {
+  it("give the region's lighter half the light colour and its darker half the dark, with a soft step", () => {
+    const stats = { meanL: 0.6, meanC: 0.05, weight: 1 };
+    expect(twoToneWeight(0.7, stats)).toBe(1);
+    expect(twoToneWeight(0.5, stats)).toBe(0);
+    expect(twoToneWeight(0.6, stats)).toBeCloseTo(0.5, 6);
+    const a = twoToneWeight(0.6 - COAT_SWAP.twoToneStep / 2, stats);
+    const b = twoToneWeight(0.6 + COAT_SWAP.twoToneStep / 2, stats);
+    expect(a).toBeGreaterThan(0);
+    expect(b).toBeLessThan(1);
+    expect(a + b).toBeCloseTo(1, 6);
+  });
+
+  it("paint the lit part of the region near the light colour and the shaded part near the dark", () => {
+    const { painting, mask } = syntheticPainting("#E2CDEC", 48);
+    const stats = coatRegionStats(painting.data, mask.data, 4);
+    const out = new Uint8ClampedArray(painting.data.length);
+    tintCoatPixels(painting.data, mask.data, { kind: "two-tone", color: "#F4D986", dark: "#3E1D6B" }, stats, out, { maskStride: 4 });
+    const light = hexToOklab("#F4D986");
+    const dark = hexToOklab("#3E1D6B");
+    let lit = 0;
+    let shaded = 0;
+    for (let p = 0; p < 48 * 48; p++) {
+      const i = p * 4;
+      if (mask.data[i] !== 255) continue;
+      const L = labOf(painting.data, i)[0];
+      const got = labOf(out, i);
+      if (L > stats.meanL + COAT_SWAP.twoToneStep) {
+        lit += 1;
+        expect(oklabDistance(got, light)).toBeLessThan(oklabDistance(got, dark));
+      } else if (L < stats.meanL - COAT_SWAP.twoToneStep) {
+        shaded += 1;
+        expect(oklabDistance(got, dark)).toBeLessThan(oklabDistance(got, light));
+      }
+    }
+    expect(lit).toBeGreaterThan(0);
+    expect(shaded).toBeGreaterThan(0);
   });
 });

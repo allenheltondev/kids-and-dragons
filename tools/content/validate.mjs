@@ -50,7 +50,7 @@ import { loadSources } from "../voice/cast/sources.ts";
 import { routeSetConflicts } from "./route-paths.mjs";
 import { classPlaceReach, classPlaceVerdict, loadAllowList as loadClassPlaceAllow } from "./class-places.mjs";
 import { campCatalogProblems, chapterBefriends, chapterFinds } from "./camp-catalog.mjs";
-import { looksCatalogProblems } from "./looks-catalog.mjs";
+import { chapterLookFinds, looksCatalogProblems } from "./looks-catalog.mjs";
 import { MILESTONE_KIT_PIECES } from "../../packages/shared/src/camp-milestones.ts";
 
 /**
@@ -2055,7 +2055,7 @@ function main() {
   }
 
   checkCamp(rep, ajv, chaptersById, brokenChapterIds, new Set(loadedCampaigns.map(({ campaign }) => campaign.id)));
-  checkLooks(rep, ajv, rules, new Set(loadedCampaigns.map(({ campaign }) => campaign.id)));
+  checkLooks(rep, ajv, rules, new Set(loadedCampaigns.map(({ campaign }) => campaign.id)), chaptersById);
 
   return finish(rep);
 }
@@ -2063,9 +2063,10 @@ function main() {
 /**
  * The hero looks catalog (#664, docs/hero-looks.md §3.1): its schema, then
  * what the schema cannot see (looks-catalog.mjs), against the rules, the
- * campaigns, the camp's friends and the art manifest's delivered frames.
+ * campaigns, the camp's friends, the art manifest's delivered frames and every
+ * chapter's look finds (#669).
  */
-function checkLooks(rep, ajv, rules, campaignIds) {
+function checkLooks(rep, ajv, rules, campaignIds, chaptersById) {
   console.log(`\n${BOLD}looks${RESET}`);
   const path = join(CONTENT, "looks.json");
   const catalog = existsSync(path) ? readJson(rep, path) : null;
@@ -2084,10 +2085,14 @@ function checkLooks(rep, ajv, rules, campaignIds) {
     campaigns: campaignIds,
     friends: new Set((camp?.friends ?? []).map((f) => f.id)),
     species: new Set(Object.keys(rules?.species ?? {})),
+    chapters: chaptersById,
   });
-  for (const { file, at, problem, hint } of problems) rep.fail(file, at, problem, hint);
-  if (!problems.length) {
-    rep.ok(`${rel(path)}  looks  (${catalog.coats.length} coat(s), ${catalog.nameplates.length} frame(s), ${catalog.titles.length} title(s))`);
+  const failures = problems.filter((p) => !p.warning);
+  for (const { file, at, problem, hint } of failures) rep.fail(file, at, problem, hint);
+  for (const { file, problem, hint } of problems.filter((p) => p.warning)) rep.warn(`${file}: ${problem}`, hint);
+  if (!failures.length) {
+    const finds = [...chaptersById.values()].reduce((n, chapter) => n + chapterLookFinds(chapter).length, 0);
+    rep.ok(`${rel(path)}  looks  (${catalog.coats.length} coat(s), ${catalog.nameplates.length} frame(s), ${catalog.titles.length} title(s), ${finds} look find(s))`);
   }
 }
 

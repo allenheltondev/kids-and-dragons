@@ -27,7 +27,7 @@ const problems = (catalog, manifest) => looksCatalogProblems(input(catalog, mani
 describe("content/looks.json", () => {
   it("is clean as shipped, with the four starter frames and three starter titles", () => {
     expect(problems(CATALOG)).toEqual([]);
-    expect(CATALOG.nameplates.map((n) => n.id)).toEqual(["plain", "ribbon", "leafy", "starry"]);
+    expect(CATALOG.nameplates.filter((n) => n.unlock.from === "starter").map((n) => n.id)).toEqual(["plain", "ribbon", "leafy", "starry"]);
     expect(CATALOG.titles.filter((t) => t.unlock.from === "starter").map((t) => t.text)).toEqual(["the Bold", "the Kind", "the Curious"]);
   });
 
@@ -72,5 +72,48 @@ describe("content/looks.json", () => {
   it("refuses a delivered frame the catalog does not paint", () => {
     expect(problems(CATALOG, { ids: ["plain"] }).some((p) => p.includes('"plain" is not a frame with art'))).toBe(true);
     expect(problems(CATALOG, { ids: ["ribbon"] })).toEqual([]);
+  });
+
+  it("keeps special coats earned, and a two-tone's halves apart (#669, §5.5)", () => {
+    const broken = structuredClone(CATALOG);
+    const sky = broken.coats.find((c) => c.id === "unicorn_sky");
+    sky.effect = { kind: "two-tone", dark: sky.color };
+    const found = problems(broken);
+    expect(found.some((p) => p.includes("is a special coat and a starter"))).toBe(true);
+    expect(found.some((p) => p.includes("dark half is its light half"))).toBe(true);
+  });
+});
+
+describe("look finds in chapters (#669, §6)", () => {
+  const all = ["unicorn", "bigfoot", "dragonling", "griffin", "kitsune", "manticore"].map((s) => `${s}_aurora`);
+  const chapter = (effects) => ({ id: "ch-1", scenes: { a: { type: "story", onEnter: effects, choices: [] } } });
+  const findProblems = (chapters) =>
+    looksCatalogProblems({ ...input(CATALOG), chapters: new Map(chapters.map((c) => [c.id, c])) }).map((p) => `${p.at}: ${p.problem}${p.warning ? " (warning)" : ""}`);
+  const placed = [
+    chapter([{ type: "findLook", looks: ["the_tracker", "songbird", ...all], rewardId: "ch-1.gift" }]),
+  ];
+
+  it("passes a find of found looks with one coat per species, under the chapter's reward", () => {
+    expect(findProblems(placed)).toEqual([]);
+  });
+
+  it("catches a look that is no find, a coat find missing a species, a reward not the chapter's, and one reward naming two sets", () => {
+    const found = findProblems([
+      chapter([
+        { type: "findLook", looks: ["the_bold", "unicorn_aurora"], rewardId: "elsewhere.gift" },
+        { type: "findLook", looks: ["the_tracker"], rewardId: "elsewhere.gift" },
+        { type: "findLook", looks: ["no_such_look"], rewardId: "ch-1.x" },
+      ]),
+    ]);
+    expect(found.some((p) => p.includes('"the_bold" is not a found look'))).toBe(true);
+    expect(found.some((p) => p.includes("a coat find with no coat for bigfoot"))).toBe(true);
+    expect(found.some((p) => p.includes('"elsewhere.gift" is not "ch-1.<name>"'))).toBe(true);
+    expect(found.some((p) => p.includes("names other looks elsewhere"))).toBe(true);
+    expect(found.some((p) => p.includes('no look "no_such_look"'))).toBe(true);
+  });
+
+  it("warns of a found look no chapter hands over, without failing a trimmed set of chapters", () => {
+    const found = findProblems([chapter([])]);
+    expect(found.some((p) => p.includes('"the_tracker" is found, but no chapter hands it over (warning)'))).toBe(true);
   });
 });

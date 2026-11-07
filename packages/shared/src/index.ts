@@ -34,6 +34,7 @@ export * from "./camp-edit.js";
 export * from "./camp-friends.js";
 export * from "./camp-book.js";
 export * from "./hero-look.js";
+export * from "./look-unlocks.js";
 export * from "./kid-profile.js";
 export * from "./crews.js";
 export * from "./dice.js";

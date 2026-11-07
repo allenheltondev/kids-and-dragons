@@ -1,6 +1,6 @@
 {
   "$schema": "../schemas/looks.schema.json",
-  "$comment": "Hero looks (docs/hero-looks.md §3.1, §6, §7): the one catalog of coats, nameplate frames and titles a hero may choose. Mirrors LookCatalog in packages/shared/src/types/look.ts. Starter looks are free for every hero and never stored; every other look is held through a receipt on her own look (LookUnlock). Earning them (tiers, class ranks, campaigns, camp) is #669: their rules are listed here so the book and the tests know the whole set. Coats (#666) are colours for one species' coloured region (her coat, mane, scales, feathers or fur; the kid sees the shelf as Color): about six starters per species, natural for it, each checked against every backdrop and its siblings under colour-blind vision by packages/client/src/world/coat-palette.test.ts. A special coat (two-tone, shimmer; #669) keeps a color, its base, and adds an effect. A frame's painting is UI art (#665) at assets/<art>; until assets/manifest.json -> nameplateFrames.ids lists it as delivered, the plain plate (today's look) is drawn instead and nothing is requested. Titles are kept short: the longest one is what the nameplate collision tests are run with.",
+  "$comment": "Hero looks (docs/hero-looks.md §3.1, §6, §7): the one catalog of coats, nameplate frames and titles a hero may choose. Mirrors LookCatalog in packages/shared/src/types/look.ts. Starter looks are free for every hero and never stored; every other look is held through a receipt on her own look (LookUnlock). Earned ones are given by a receipt (#669, packages/shared/src/look-unlocks.ts): a found look by a chapter's findLook effect (content/README.md, Look finds), a milestone (tier, class rank, finished campaign, camp friend, first friend, grand camp) when it lands and on read. Coats (#666) are colours for one species' coloured region (her coat, mane, scales, feathers or fur; the kid sees the shelf as Color): about six starters per species, natural for it, each checked against every backdrop and its siblings under colour-blind vision by packages/client/src/world/coat-palette.test.ts. A special coat (two-tone, shimmer; #669) keeps a color, its base, and adds an effect; special coats are earned only. A frame's painting is UI art (#665) at assets/<art>; until assets/manifest.json -> nameplateFrames.ids lists it as delivered, the plain plate (today's look) is drawn instead and nothing is requested. Titles are kept short: the longest one is what the nameplate collision tests are run with.",
   "coats": [
     { "id": "unicorn_moonbeam", "name": "Moonbeam", "unlock": { "from": "starter" }, "species": ["unicorn"], "color": "#FBF8F2" },
     { "id": "unicorn_buttercup", "name": "Buttercup", "unlock": { "from": "starter" }, "species": ["unicorn"], "color": "#F4D986" },
@@ -37,18 +37,34 @@
     { "id": "manticore_crimson", "name": "Crimson", "unlock": { "from": "starter" }, "species": ["manticore"], "color": "#B12631" },
     { "id": "manticore_russet", "name": "Russet", "unlock": { "from": "starter" }, "species": ["manticore"], "color": "#742000" },
     { "id": "manticore_plum", "name": "Plum", "unlock": { "from": "starter" }, "species": ["manticore"], "color": "#4F003E" },
-    { "id": "manticore_shadow", "name": "Shadow", "unlock": { "from": "starter" }, "species": ["manticore"], "color": "#0E0C0F" }
+    { "id": "manticore_shadow", "name": "Shadow", "unlock": { "from": "starter" }, "species": ["manticore"], "color": "#0E0C0F" },
+    { "id": "unicorn_aurora", "name": "Aurora", "unlock": { "from": "found" }, "species": ["unicorn"], "color": "#0FD18B", "effect": { "kind": "shimmer" } },
+    { "id": "bigfoot_aurora", "name": "Aurora", "unlock": { "from": "found" }, "species": ["bigfoot"], "color": "#0FD18B", "effect": { "kind": "shimmer" } },
+    { "id": "dragonling_aurora", "name": "Aurora", "unlock": { "from": "found" }, "species": ["dragonling"], "color": "#0FD18B", "effect": { "kind": "shimmer" } },
+    { "id": "griffin_aurora", "name": "Aurora", "unlock": { "from": "found" }, "species": ["griffin"], "color": "#0FD18B", "effect": { "kind": "shimmer" } },
+    { "id": "kitsune_aurora", "name": "Aurora", "unlock": { "from": "found" }, "species": ["kitsune"], "color": "#0FD18B", "effect": { "kind": "shimmer" } },
+    { "id": "manticore_aurora", "name": "Aurora", "unlock": { "from": "found" }, "species": ["manticore"], "color": "#0FD18B", "effect": { "kind": "shimmer" } },
+    { "id": "unicorn_raspberry_ripple", "name": "Raspberry Ripple", "unlock": { "from": "milestone", "tier": "radiant" }, "species": ["unicorn"], "color": "#F89DC9", "effect": { "kind": "two-tone", "dark": "#742651" } },
+    { "id": "bigfoot_raspberry_ripple", "name": "Raspberry Ripple", "unlock": { "from": "milestone", "tier": "radiant" }, "species": ["bigfoot"], "color": "#F89DC9", "effect": { "kind": "two-tone", "dark": "#742651" } },
+    { "id": "dragonling_raspberry_ripple", "name": "Raspberry Ripple", "unlock": { "from": "milestone", "tier": "radiant" }, "species": ["dragonling"], "color": "#F89DC9", "effect": { "kind": "two-tone", "dark": "#742651" } },
+    { "id": "griffin_raspberry_ripple", "name": "Raspberry Ripple", "unlock": { "from": "milestone", "tier": "radiant" }, "species": ["griffin"], "color": "#F89DC9", "effect": { "kind": "two-tone", "dark": "#742651" } },
+    { "id": "kitsune_raspberry_ripple", "name": "Raspberry Ripple", "unlock": { "from": "milestone", "tier": "radiant" }, "species": ["kitsune"], "color": "#F89DC9", "effect": { "kind": "two-tone", "dark": "#742651" } },
+    { "id": "manticore_raspberry_ripple", "name": "Raspberry Ripple", "unlock": { "from": "milestone", "tier": "radiant" }, "species": ["manticore"], "color": "#F89DC9", "effect": { "kind": "two-tone", "dark": "#742651" } }
   ],
   "nameplates": [
     { "id": "plain", "name": "Plain", "unlock": { "from": "starter" } },
     { "id": "ribbon", "name": "Ribbon", "unlock": { "from": "starter" }, "art": "nameplates/ribbon.webp" },
     { "id": "leafy", "name": "Leafy", "unlock": { "from": "starter" }, "art": "nameplates/leafy.webp" },
-    { "id": "starry", "name": "Starry", "unlock": { "from": "starter" }, "art": "nameplates/starry.webp" }
+    { "id": "starry", "name": "Starry", "unlock": { "from": "starter" }, "art": "nameplates/starry.webp" },
+    { "id": "songbird", "name": "Songbird", "unlock": { "from": "found" }, "art": "nameplates/songbird.webp" },
+    { "id": "golden", "name": "Golden", "unlock": { "from": "milestone", "tier": "mythic" }, "art": "nameplates/golden.webp" }
   ],
   "titles": [
     { "id": "the_bold", "text": "the Bold", "unlock": { "from": "starter" } },
     { "id": "the_kind", "text": "the Kind", "unlock": { "from": "starter" } },
     { "id": "the_curious", "text": "the Curious", "unlock": { "from": "starter" } },
+    { "id": "the_tracker", "text": "the Tracker", "unlock": { "from": "found" } },
+    { "id": "the_friendly", "text": "the Friendly", "unlock": { "from": "milestone", "camp": "firstFriend" } },
     { "id": "the_sworn", "text": "the Sworn", "unlock": { "from": "milestone", "tier": "sworn" } },
     { "id": "the_radiant", "text": "the Radiant", "unlock": { "from": "milestone", "tier": "radiant" } },
     { "id": "the_mythic", "text": "the Mythic", "unlock": { "from": "milestone", "tier": "mythic" } },

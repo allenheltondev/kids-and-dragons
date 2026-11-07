@@ -28,6 +28,7 @@ import {
   lookIntentProblem,
   lookEditProblem,
   lookView,
+  readEarnedLook,
   readLook,
   withLookEdit,
 } from "@kad/shared";
@@ -36,6 +37,7 @@ import type { CharacterWrite, RunRecord } from "../store/repository.ts";
 import { rewrite } from "./claim.ts";
 import { CAMP_WRITE_ATTEMPTS, type CampDeps, type CampWriteResult } from "./camp.ts";
 import type { HandlerDeps } from "./deps.ts";
+import { campStanding, lookNames } from "./look-unlocks.ts";
 
 type EditError = NonNullable<ActionResponse["error"]>;
 
@@ -96,12 +98,14 @@ export async function prepareLookEdit(
 
   const hero = await deps.repo.getCharacter(member.homeHouseholdId ?? run.householdId, intent.characterId);
   if (!hero) return { ok: false, error: { code: "NOT_FOUND", message: "that hero has not been saved yet" } };
-  const stored = readLook(hero);
+  // Her look with every milestone she holds (#669), her crew's included: the
+  // write below stores what was read, so a backfilled receipt is kept.
+  const stored = readEarnedLook(catalog, hero, { camp: campStanding(state.camp), names: lookNames(deps) });
   if (stored.revision !== intent.revision) {
     // Changed elsewhere since (the book, another phone): the newer look stands.
     const error: EditError = { code: "STALE_DECISION", message: "Your look changed on another screen. Look again." };
     const shown = member.character.look?.revision ?? 0;
-    return shown === stored.revision ? { ok: false, error } : { ok: false, error, refresh: withPartyLook(state, hero.id, hero.look ?? null) };
+    return shown === stored.revision ? { ok: false, error } : { ok: false, error, refresh: withPartyLook(state, hero.id, stored) };
   }
   const edit = lookEditOf(intent);
   const problem = lookEditProblem(catalog, Object.keys(stored.unlocked), edit, hero.species);
@@ -126,13 +130,15 @@ export async function mutateLook(
   homeHouseholdId: string,
   characterId: string,
   fn: (look: HeroLook, hero: Character) => LookEdit | null,
-  deps: Pick<HandlerDeps, "repo">,
+  deps: Pick<HandlerDeps, "repo"> & Partial<Pick<HandlerDeps, "content">>,
 ): Promise<CampWriteResult<HeroLook>> {
   let last: HeroLook | undefined;
   for (let attempt = 0; attempt < CAMP_WRITE_ATTEMPTS; attempt++) {
     const hero = await deps.repo.getCharacter(homeHouseholdId, characterId);
     if (!hero) return { ok: false, reason: "missing" };
-    const stored = readLook(hero);
+    // With the content to hand, her look as she holds it (#669): her row's
+    // milestones read back, and kept by this write.
+    const stored = deps.content ? readEarnedLook(deps.content.looksCatalog(), hero, { names: lookNames({ content: deps.content }) }) : readLook(hero);
     const edit = fn(structuredClone(stored), hero);
     if (edit === null || !lookEditChanges(stored, edit)) return { ok: true, value: stored, changed: false };
     last = stored;

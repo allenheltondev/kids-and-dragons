@@ -491,7 +491,7 @@ export async function editKitFromBook(input: BookKitInput, deps: HandlerDeps): P
   const order = (fields: BookEditField[]) => BOOK_EDIT_FIELDS.filter((f) => fields.includes(f));
   return ok({
     kit: journalKit(kit, input.householdId),
-    ...(look ? { look: lookView(look) } : {}),
+    ...(look ? { look: lookView(look, { sources: true }) } : {}),
     applied: order(seen.applied),
     refused: order(seen.refused),
   });

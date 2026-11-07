@@ -21,7 +21,7 @@ import type { InteractionAction } from "../interactions.js";
 import type { ChapterOutcome } from "./chapter.js";
 import type { CampClaimResult, CampFriendCard, CampView, HeroKitView, KitMilestoneUnlock, LuckyDrop } from "./camp.js";
 import type { BookEditField, BookKitChange } from "../camp-book.js";
-import type { HeroLookView } from "./look.js";
+import type { HeroLookView, LookUnlockNews } from "./look.js";
 import type { RoomMode, RunState, DiceRoll } from "./state.js";
 import type { FieldGuideFind } from "../field-guide-record.js";
 import type { Badge, ProfileFlair } from "../kid-profile.js";
@@ -448,6 +448,14 @@ export interface ServerMessage {
    * it. Live only, exactly as `discovered`: a replay never announces one twice.
    */
   kitUnlocks?: KitMilestoneUnlock[];
+  /**
+   * Looks this step earned a seated hero (docs/hero-looks.md §6; #669): a
+   * find, a tier, a class rank, a finished campaign or her crew's camp, each
+   * receipt already on her row. Her own phone says so once, where her kit's
+   * news is. Live only, exactly as `kitUnlocks`: a replay never announces one
+   * twice.
+   */
+  lookUnlocks?: LookUnlockNews[];
   /**
    * The lucky drops this step paid (docs/camp.md §5.2): 1 Dash Cash each, saved
    * to the crew's camp as they landed. The TV sparkles "Dash Cash!" and the

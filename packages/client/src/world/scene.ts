@@ -1721,6 +1721,8 @@ export function createScene(app: Application): PartyScene {
         placeholder.destroy();
         art.addChild(sprite);
         actor.sprite = sprite;
+        // A shimmer coat's sweep goes over her sprite (#669).
+        actor.heroArt?.dress(sprite);
         actor.paint = measurePaint(texture);
         actor.footprint = groundedFootprint(measureFootprint(texture), actor.paint);
         // The measured width changes how much room this hero needs.

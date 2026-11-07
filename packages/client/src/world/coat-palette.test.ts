@@ -23,7 +23,8 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import type { SpeciesId } from "@kad/shared";
+import { coatPaintOf } from "@kad/shared";
+import type { CoatPaint, SpeciesId } from "@kad/shared";
 import manifest from "../../../../assets/manifest.json";
 import grounds from "./coat-backdrops.fixture.json";
 import { LOOKS } from "./hero-name";
@@ -57,11 +58,11 @@ function regionColor(species: SpeciesId): string {
 }
 
 /** The colour on the rendered stand-in hero: her region, tinted, averaged as a phone shows it. */
-function rendered(species: SpeciesId, color: string): Lab {
+function rendered(species: SpeciesId, color: string | CoatPaint): Lab {
   const { painting, mask } = syntheticPainting(regionColor(species), PORTRAIT_PX);
   const stats = coatRegionStats(painting.data, mask.data, 4);
   const out = new Uint8ClampedArray(painting.data.length);
-  tintCoatPixels(painting.data, mask.data, { kind: "plain", color }, stats, out, { maskStride: 4 });
+  tintCoatPixels(painting.data, mask.data, typeof color === "string" ? { kind: "plain", color } : color, stats, out, { maskStride: 4 });
   return regionMean(out, mask.data);
 }
 
@@ -125,5 +126,54 @@ describe("the starter colours (§7.1)", () => {
     });
     const want = [...biomes.map((b) => `biomes/${b}`), ...manifest.camp.backdrops.map((b) => `camp/${b.family}`)].sort();
     expect(Object.keys(grounds.grounds).sort(), "run tools/art/backdrop-grounds.py").toEqual(want);
+  });
+});
+
+/**
+ * The earned colours (§7.1, §5.5; #669): painted as they are worn (a
+ * two-tone coat by both its colours, through `coatPaintOf`), each stands out
+ * from every backdrop by the starters' rule, and is told apart from each of
+ * her species' starters and other earned colours under normal vision, so an
+ * earned tile is never a starter again.
+ */
+describe("the earned colours (§7.1, §5.5)", () => {
+  const earned = (species: SpeciesId) => LOOKS.coats.filter((c) => c.species.includes(species) && c.unlock.from !== "starter");
+
+  it("are there for every species: a shimmer and a two-tone each", () => {
+    for (const species of SPECIES) {
+      const kinds = earned(species).map((c) => c.effect?.kind ?? "plain");
+      expect(kinds, species).toContain("shimmer");
+      expect(kinds, species).toContain("two-tone");
+    }
+  });
+
+  it("stand out from every backdrop's ground by an OKLab distance of at least 0.10", () => {
+    const close: string[] = [];
+    for (const species of SPECIES) {
+      for (const coat of earned(species)) {
+        const lab = rendered(species, coatPaintOf(coat));
+        for (const ground of GROUNDS) {
+          const d = oklabDistance(lab, ground.lab);
+          if (d < 0.1) close.push(`${coat.id} on ${ground.name}: ${d.toFixed(3)}`);
+        }
+      }
+    }
+    expect(close).toEqual([]);
+  });
+
+  it("are told apart from her other colours: distance 0.08 or lightness 0.10", () => {
+    const alike: string[] = [];
+    for (const species of SPECIES) {
+      const all = LOOKS.coats.filter((c) => c.species.includes(species)).map((c) => ({ id: c.id, earned: c.unlock.from !== "starter", lab: rendered(species, coatPaintOf(c)) }));
+      for (const a of all.filter((c) => c.earned)) {
+        for (const b of all) {
+          if (a.id === b.id || (b.earned && b.id < a.id)) continue;
+          const d = oklabDistance(a.lab, b.lab);
+          const dl = Math.abs(a.lab[0] - b.lab[0]);
+          if (d < 0.08 && dl < 0.1) alike.push(`${a.id} / ${b.id}: ${d.toFixed(3)}, L ${dl.toFixed(3)}`);
+        }
+      }
+    }
+    expect(alike).toEqual([]);
   });
 });

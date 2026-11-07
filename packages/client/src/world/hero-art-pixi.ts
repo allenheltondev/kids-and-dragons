@@ -26,7 +26,10 @@
  */
 
 import { Assets, Texture } from "pixi.js";
-import { heroCoatOf, heroPaintingUrl, type HeroArtPlace, type HeroArtSubject, type HeroCoatRequest } from "./hero-art";
+import type { Sprite } from "pixi.js";
+import { reducedMotion } from "../a11y/prefs";
+import { heroCoatOf, heroPaintingUrl, heroShimmerOf, type HeroArtPlace, type HeroArtSubject, type HeroCoatRequest } from "./hero-art";
+import { shimmerLayer, type ShimmerLayer, type ShimmerOptions } from "./hero-shimmer-pixi";
 import { heroCoatsLoaded, loadHeroCoats, type HeroCoatsModule } from "./hero-coat-load";
 import type { CoatEntry, CoatSlot } from "./hero-coat-cache";
 
@@ -41,12 +44,27 @@ export interface HeroTextureOptions {
   missing?: () => void;
   /** How a tinted image becomes a texture; `Texture.from` unless a test says otherwise. */
   texture?: { make(source: unknown): Texture; destroy(texture: Texture): void };
+  /** A shimmer coat's sweep (`dress`). */
+  shimmer?: HeroShimmerOptions;
 }
 
 /** Stops further calls and lets go of her tinted texture; `update` gives it her look anew. */
 export interface HeroTextureHandle {
   (): void;
   update(hero: HeroArtSubject): void;
+  /**
+   * The sprite her textures go on (§5.5, #669): a stage hands it over once it
+   * has made it, so a shimmer coat's sweep can be laid over it (a child of
+   * the sprite, masked by her coat mask). A new sprite moves the sweep to it.
+   */
+  dress(sprite: Sprite): void;
+}
+
+export interface HeroShimmerOptions {
+  /** A still sheen, no sweep; `reducedMotion()` unless a stage or test says otherwise. */
+  still?: boolean;
+  /** How the sweep moves (hero-shimmer-pixi.ts); a test passes its own. */
+  ticker?: ShimmerOptions["ticker"];
 }
 
 const pixiTexture = {
@@ -59,7 +77,7 @@ export function loadHeroTexture(
   hero: HeroArtSubject,
   place: HeroArtPlace,
   use: (texture: Texture) => void,
-  { load = pixiLoad, missing, texture = pixiTexture }: HeroTextureOptions = {},
+  { load = pixiLoad, missing, texture = pixiTexture, shimmer: shimmerOptions = {} }: HeroTextureOptions = {},
 ): HeroTextureHandle {
   let live = true;
   let painted: Texture | null = null;
@@ -67,6 +85,34 @@ export function loadHeroTexture(
   let slot: CoatSlot | null = null;
   let want: HeroCoatRequest | null = heroCoatOf(hero, place);
   const painting = heroPaintingUrl(hero, place);
+
+  // Her shimmer (§5.5): laid over the sprite the stage dresses, once its mask is in.
+  let sprite: Sprite | null = null;
+  let sweep: string | null = heroShimmerOf(hero, place)?.mask ?? null;
+  let layer: ShimmerLayer | null = null;
+  let layerFor: { sprite: Sprite; mask: string } | null = null;
+  const undress = (): void => {
+    layer?.destroy();
+    layer = null;
+    layerFor = null;
+  };
+  const dressUp = (): void => {
+    if (!live) return;
+    if (layerFor && (layerFor.sprite !== sprite || layerFor.mask !== sweep)) undress();
+    if (!sprite || !sweep || layerFor) return;
+    const on = { sprite, mask: sweep };
+    layerFor = on;
+    void load(sweep)
+      .then((mask) => {
+        // Still wanted, on the same sprite: a stale load lays nothing.
+        if (!live || layerFor !== on || on.sprite.destroyed) return;
+        layer = shimmerLayer(on.sprite, mask, { still: shimmerOptions.still ?? reducedMotion(), ...(shimmerOptions.ticker !== undefined ? { ticker: shimmerOptions.ticker } : {}) });
+      })
+      .catch(() => {
+        // No mask to clip by: no sweep, never a band over the whole figure.
+        if (layerFor === on) layerFor = null;
+      });
+  };
 
   const show = (entry: CoatEntry | null): void => {
     if (!live) return;
@@ -114,14 +160,24 @@ export function loadHeroTexture(
     live = false;
     slot?.close();
     slot = null;
+    undress();
   }) as HeroTextureHandle;
   stop.update = (next) => {
     if (!live) return;
     const request = heroCoatOf(next, place);
     if (request?.painting !== undefined && request.painting !== painting) return; // a new painting is a new figure
+    if (heroPaintingUrl(next, place) === painting) {
+      sweep = heroShimmerOf(next, place)?.mask ?? null;
+      dressUp();
+    }
     if ((request?.key ?? null) === (want?.key ?? null)) return;
     want = request;
     ask();
+  };
+  stop.dress = (next) => {
+    if (!live) return;
+    sprite = next;
+    dressUp();
   };
   return stop;
 }

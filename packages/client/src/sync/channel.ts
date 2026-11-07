@@ -20,6 +20,7 @@ import type {
   FriendTapMessage,
   ChannelMessage,
   KitMilestoneUnlock,
+  LookUnlockNews,
   Presentation,
   PreviewMessage,
   RunState,
@@ -73,6 +74,8 @@ export interface SequencerHandlers {
    * new tier, which is how long the cutscene it waits for runs.
    */
   onKitUnlocks?(event: { runId: string; seq: number; unlocks: KitMilestoneUnlock[]; crossings: number }): void;
+  /** Looks a step earned a hero (`ServerMessage.lookUnlocks`, #669), emitted once, as `onKitUnlocks`. */
+  onLookUnlocks?(event: { runId: string; seq: number; unlocks: LookUnlockNews[]; crossings: number }): void;
   /**
    * The lucky drops a step paid (`ServerMessage.campDrops`, docs/camp.md
    * §5.2), emitted once, right after that step's patch. Live only, like
@@ -286,9 +289,12 @@ export class MessageSequencer {
     if (message.discovered && message.discovered.length > 0) {
       this.handlers.onDiscovered?.({ runId: message.runId, seq: message.seq, canonIds: message.discovered });
     }
+    const crossings = (message.progression?.awards ?? []).filter((a) => a.newTier !== undefined).length;
     if (message.kitUnlocks && message.kitUnlocks.length > 0) {
-      const crossings = (message.progression?.awards ?? []).filter((a) => a.newTier !== undefined).length;
       this.handlers.onKitUnlocks?.({ runId: message.runId, seq: message.seq, unlocks: message.kitUnlocks, crossings });
+    }
+    if (message.lookUnlocks && message.lookUnlocks.length > 0) {
+      this.handlers.onLookUnlocks?.({ runId: message.runId, seq: message.seq, unlocks: message.lookUnlocks, crossings });
     }
     if (message.campDrops && message.campDrops.length > 0) {
       this.handlers.onCampDrops?.({ runId: message.runId, seq: message.seq, sceneIds: message.campDrops.map((d) => d.sceneId) });
@@ -445,13 +451,32 @@ export function parseChannelMessage(raw: string): ChannelMessage | null {
       ? discovered
       : null;
   const unlocks = kitUnlocksOf((candidate as ServerMessage).kitUnlocks);
+  const looks = lookUnlocksOf((candidate as ServerMessage).lookUnlocks);
   return {
     ...message,
     ...(presentation ? { presentation } : {}),
     ...(progression ? { progression } : {}),
     ...(finds ? { discovered: finds } : {}),
     ...(unlocks ? { kitUnlocks: unlocks } : {}),
+    ...(looks ? { lookUnlocks: looks } : {}),
   };
+}
+
+const LOOK_KINDS: readonly string[] = ["coat", "nameplate", "title"];
+const LOOK_CAUSES: readonly string[] = ["tier", "rank", "campaign", "camp", "found"];
+
+/** `lookUnlocks` as the wire carried it: only well-formed entries, or null for none. */
+function lookUnlocksOf(value: unknown): LookUnlockNews[] | null {
+  if (!Array.isArray(value)) return null;
+  const unlocks = value.filter(
+    (u): u is LookUnlockNews =>
+      typeof u === "object" && u !== null &&
+      typeof (u as LookUnlockNews).characterId === "string" &&
+      typeof (u as LookUnlockNews).lookId === "string" &&
+      LOOK_KINDS.includes((u as LookUnlockNews).kind) &&
+      LOOK_CAUSES.includes((u as LookUnlockNews).cause),
+  );
+  return unlocks.length > 0 ? unlocks.map(({ characterId, lookId, kind, cause }) => ({ characterId, lookId, kind, cause })) : null;
 }
 
 /** `kitUnlocks` as the wire carried it: only well-formed entries, or null for none. */

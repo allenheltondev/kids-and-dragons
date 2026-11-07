@@ -17,6 +17,11 @@
  *     (a bisection), never each channel clipped.
  *   - **Blended** by the mask's value, in sRGB, so soft edges stay soft.
  *
+ * A **two-tone** coat (§5.5, #669) swaps each pixel twice, to its light and
+ * its dark colour, and mixes the two in sRGB by `twoToneWeight`: the light
+ * colour above the region's mean lightness, the dark below, across a soft
+ * step. A still image, so it costs one more swap per pixel and nothing else.
+ *
  * The same arithmetic as tools/art/coat.py `tint`, the review sheet's tinter:
  * coat.test.ts holds the two to one 8-bit step on a committed reference.
  *
@@ -39,6 +44,8 @@ export const COAT_SWAP = {
   maxRatio: 1.4,
   /** Bisection steps when bringing a colour back into gamut, as coat.py. */
   gamutSteps: 14,
+  /** A two-tone coat's soft step (§5.5): half its width in OKLab lightness, either side of the region's mean. */
+  twoToneStep: 0.04,
 } as const;
 
 /** The region's means, computed once per mask (§5.3 keeps them as numbers). */
@@ -95,15 +102,42 @@ export function coatRegionStats(rgba: ArrayLike<number>, mask: ArrayLike<number>
   return weight > 0 ? { meanL: sumL / weight, meanC: sumC / weight, weight } : { meanL: 0, meanC: 0, weight: 0 };
 }
 
-/** What the swap aims for, for this paint. Plain today; #669's special coats are new cases here. */
+/** What the swap aims for, for one colour. */
+function targetOf(hex: string): CoatTarget {
+  const [L, a, b] = hexToOklab(hex);
+  const h = Math.atan2(b, a);
+  return { L, C: Math.hypot(a, b), cos: Math.cos(h), sin: Math.sin(h) };
+}
+
+/** What the swap aims for, for this paint: a plain coat's colour, or a two-tone coat's light one. */
 export function coatTarget(paint: CoatPaint): CoatTarget {
+  return targetOf(paint.color);
+}
+
+/** Every target a paint swaps to: one for a plain coat; the light and the dark of a two-tone one (§5.5). */
+export interface CoatTargets {
+  light: CoatTarget;
+  dark?: CoatTarget;
+}
+
+export function coatTargets(paint: CoatPaint): CoatTargets {
   switch (paint.kind) {
-    case "plain": {
-      const [L, a, b] = hexToOklab(paint.color);
-      const h = Math.atan2(b, a);
-      return { L, C: Math.hypot(a, b), cos: Math.cos(h), sin: Math.sin(h) };
-    }
+    case "plain":
+      return { light: targetOf(paint.color) };
+    case "two-tone":
+      return { light: targetOf(paint.color), dark: targetOf(paint.dark) };
   }
+}
+
+/**
+ * How much of a two-tone coat's light colour a pixel takes (§5.5): 1 well
+ * above the region's mean lightness, 0 well below it, and a smooth step
+ * `COAT_SWAP.twoToneStep` wide either side, so the seam between the halves
+ * is soft. The same in coat.py.
+ */
+export function twoToneWeight(L: number, stats: Pick<CoatRegionStats, "meanL">): number {
+  const x = Math.min(1, Math.max(0, (L - stats.meanL + COAT_SWAP.twoToneStep) / (2 * COAT_SWAP.twoToneStep)));
+  return x * x * (3 - 2 * x);
 }
 
 /**
@@ -156,7 +190,7 @@ export function tintCoatPixels(
   out: { [index: number]: number; length: number },
   { from = 0, to = Math.floor(src.length / 4), maskStride = 1 }: TintRange = {},
 ): void {
-  const target = coatTarget(paint);
+  const { light: target, dark } = coatTargets(paint);
   for (let p = from; p < to; p++) {
     const i = p * 4;
     const w = stats.weight > 0 ? mask[p * maskStride]! / 255 : 0;
@@ -173,7 +207,17 @@ export function tintCoatPixels(
     const g0 = src[i + 1]!;
     const b0 = src[i + 2]!;
     const [L, C] = lc(src, i);
-    const [r, g, b] = swapPixel(L, C, target, stats);
+    let [r, g, b] = swapPixel(L, C, target, stats);
+    if (dark) {
+      // Two-tone (§5.5): the light colour above the mean, the dark below, mixed across the step.
+      const t = twoToneWeight(L, stats);
+      if (t < 1) {
+        const [dr, dg, db] = swapPixel(L, C, dark, stats);
+        r = r * t + dr * (1 - t);
+        g = g * t + dg * (1 - t);
+        b = b * t + db * (1 - t);
+      }
+    }
     out[i] = Math.round(((r0 / 255) * (1 - w) + r * w) * 255);
     out[i + 1] = Math.round(((g0 / 255) * (1 - w) + g * w) * 255);
     out[i + 2] = Math.round(((b0 / 255) * (1 - w) + b * w) * 255);

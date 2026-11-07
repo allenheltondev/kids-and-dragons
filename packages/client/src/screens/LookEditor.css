@@ -60,3 +60,12 @@
   box-shadow: 0 0 0 1px rgb(255 255 255 / 0.6);
   vertical-align: -0.05em;
 }
+
+/* Where an earned look came from (#669): "Finished The Gemfall", small, under its name. */
+.book-look__source {
+  display: block;
+  font-size: 0.75em;
+  line-height: 1.2;
+  opacity: 0.8;
+  text-align: center;
+}

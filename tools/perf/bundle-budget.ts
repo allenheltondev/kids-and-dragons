@@ -287,7 +287,16 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // starter colours in the looks catalog (content/looks.json, about 5KB, with the
 // name style's chunk), the Color shelf and the stages' retint and release. 2KB of
 // slack again.
-const TOTAL_BUDGET_KB = 1756;
+// 1756 -> 1764 for earned looks and the special coats (#669, docs/hero-looks.md
+// §5.5, §6): 1762KB measured, first paint 329KB (cap 332 unchanged). The shimmer's
+// Pixi layer is in the stage chunk and its DOM overlay and stylesheet with the
+// portraits' chunk; neither is in the first paint. The first paint gains only the
+// channel's well-formed check of the broadcast's `lookUnlocks` and its hand-off to
+// the kit's news, beside `kitUnlocks` (a few hundred bytes). The rest is the 12
+// earned colours and their effects in the looks catalog (bundled where #666's 36
+// are), the two-tone case in the tinter and its worker, the look news' words, and
+// the book's receipts. 2KB of slack again.
+const TOTAL_BUDGET_KB = 1764;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

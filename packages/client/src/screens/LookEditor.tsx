@@ -73,7 +73,7 @@ function shelvesFor(hero: HeroArtSubject, look: HeroLookView): typeof SHELVES {
   return colorShelfShows(hero, look) ? SHELVES : SHELVES.filter((s) => s.id !== "coat");
 }
 
-type Tile = (props: { on: boolean; label: string; onTap: () => void; data: Record<string, string>; preview: ReactElement; swatch?: string | null }) => ReactElement;
+type Tile = (props: { on: boolean; label: string; onTap: () => void; data: Record<string, string>; preview: ReactElement; swatch?: string | null; source?: string | undefined }) => ReactElement;
 
 /** The tiles of one shelf: each her hero, or her name, wearing that choice. */
 function ShelfTiles({ shelf, hero, look, edit, tile }: {
@@ -107,6 +107,7 @@ function ShelfTiles({ shelf, hero, look, edit, tile }: {
               data: { "data-coat": choice.id },
               preview: wearing(choice.id),
               swatch: LOOKS.coats.find((c) => c.id === choice.id)?.color ?? null,
+              source: look.sources?.[choice.id],
             })}
           </span>
         ))}
@@ -126,6 +127,7 @@ function ShelfTiles({ shelf, hero, look, edit, tile }: {
                 onTap: () => edit(change),
                 data: { "data-nameplate": choice.id },
                 preview: <HeroName name={name} look={trying(look, change)} style={{ ...heroNameStyle(trying(look, change)), title: null }} />,
+                source: look.sources?.[choice.id],
               })}
             </span>
           );
@@ -150,6 +152,7 @@ function ShelfTiles({ shelf, hero, look, edit, tile }: {
             onTap: () => edit({ title: choice.id }),
             data: { "data-title": choice.id },
             preview: <HeroName name={name} look={trying(look, { title: choice.id })} />,
+            source: look.sources?.[choice.id],
           })}
         </span>
       ))}
@@ -210,7 +213,7 @@ export function BookLook({ hero, look, edit }: { hero: ResolvedCharacter; look: 
               hero={hero}
               look={look}
               edit={edit}
-              tile={({ on, label, onTap, data, preview, swatch }) => (
+              tile={({ on, label, onTap, data, preview, swatch, source }) => (
                 <button type="button" className={`book-kit__tile book-look__tile kad-focusable${shelf === "coat" ? " book-look__tile--color" : ""}`} aria-pressed={on} onClick={onTap} {...data}>
                   <span className="book-kit__tile-art book-look__tile-art" aria-hidden="true">
                     {preview}
@@ -219,6 +222,7 @@ export function BookLook({ hero, look, edit }: { hero: ResolvedCharacter; look: 
                     <Swatch color={swatch} />
                     {label}
                   </span>
+                  {source ? <span className="book-look__source" data-testid="book-look-source">{source}</span> : null}
                   {on ? (
                     <span className="book-kit__tile-check" aria-hidden="true">
                       <Icon name="check" />

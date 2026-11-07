@@ -14,6 +14,7 @@ import type { FactId, FactValue, JourneyView, NodeId } from "./campaign-graph.js
 import type { BuffId, CheckBuffOffer, RunBuff } from "./buffs.js";
 import type { MatchupNote } from "./matchups.js";
 import type { CampFind, CampLuck, CampMoment, CampShopView, CampTally, CampView, HeroKitView } from "./camp.js";
+import type { LookFind } from "./look.js";
 import type { NarrationPart } from "../narration.js";
 import type { ChoiceAhead } from "../choice-ahead.js";
 
@@ -689,6 +690,15 @@ export interface RunState {
    * cleared when a chapter starts.
    */
   campFinds?: CampFind[];
+  /**
+   * The look finds this chapter has handed over (`findLook`; docs/hero-looks.md
+   * §6, #669), once per `rewardId`, each with who was seated. Recorded only,
+   * exactly as `campFinds`: the server writes each seated hero's receipt right
+   * after the step commits (handlers/look-unlocks.ts), and a replay of the log
+   * rebuilds this list without granting anything twice. Absent until a find;
+   * cleared when a chapter starts.
+   */
+  lookFinds?: LookFind[];
   /**
    * The chapter's lucky-drop rolls (docs/camp.md §5.2): rolled by the engine
    * with the step's seeded rng after a mini-game the party succeeded at (never

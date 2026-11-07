@@ -72,6 +72,41 @@ export interface HeroLookView {
   title: TitleId | null;
   /** The ids she holds beyond the starters, sorted. */
   unlocked: LookId[];
+  /**
+   * Where each of those came from, as the book says it ("Finished The
+   * Gemfall"). The book's copy only (`lookView(look, { sources: true })`);
+   * never on the party, where nothing reads it.
+   */
+  sources?: Record<LookId, string>;
+}
+
+/**
+ * One look find handed over this chapter (`RunState.lookFinds`), as the
+ * engine recorded it when a `findLook` applied: the looks, the reward, and
+ * who was seated, since each of them gets her own copy and the table may
+ * change before the server writes them.
+ */
+export interface LookFind {
+  looks: LookId[];
+  rewardId: string;
+  sceneId: string;
+  heroes: string[];
+}
+
+/**
+ * A look a step gave one hero (`ServerMessage.lookUnlocks`, #669), live only
+ * and never in the log: told once on her own phone, where her kit's news is
+ * (client kit-news.ts). The receipt is already on her row when this is sent.
+ */
+export interface LookUnlockNews {
+  characterId: string;
+  lookId: LookId;
+  kind: "coat" | "nameplate" | "title";
+  /**
+   * What earned it, which says when it is told: after the transformation
+   * (`tier`), after the rank-up moment (`rank`), otherwise at once.
+   */
+  cause: "tier" | "rank" | "campaign" | "camp" | "found";
 }
 
 // ---------------------------------------------------------------------------
@@ -80,7 +115,9 @@ export interface HeroLookView {
 
 /**
  * How a look is had. A starter is free for every hero; every other kind is
- * granted by a receipt on her look (#669 grants them).
+ * granted by a receipt on her look (#669; shared look-unlocks.ts): a find by
+ * the `findLook` chapter effect, a milestone when it lands, and on read for a
+ * hero who already holds it.
  */
 export type LookUnlockRule =
   | { from: "starter" }
@@ -94,7 +131,7 @@ export type LookUnlockRule =
   | { from: "milestone"; campaign: string }
   /** Her crew befriending one of the camp's friends (content/camp.json `friends`). */
   | { from: "milestone"; friend: string }
-  /** A camp milestone. */
+  /** A camp milestone: her crew's first friend, or its grand camp (frame stage 4, docs/camp.md §4.1). */
   | { from: "milestone"; camp: "firstFriend" | "fullCamp" };
 
 /**
@@ -115,17 +152,32 @@ export interface CatalogCoat {
   species: SpeciesId[];
   /** sRGB hex: the coat's colour, and the base of a special coat. */
   color: string;
+  /** A special coat (§5.5, #669): absent for a plain one. A build that does not know it draws `color` plain. */
+  effect?: CoatEffect;
 }
 
 /**
- * How a coat is painted, as the tinter reads it (client world/hero-coat.ts,
- * tools/art/coat.py). One kind today, `plain`: the region takes `color` by
- * the §5.2 colour swap. #669 adds the special coats as new kinds here (say
- * `{ kind: "two-tone"; color; dark }`, `{ kind: "shimmer"; color }`), an
- * optional `effect` on `CatalogCoat` that `coatPaintOf` maps to them, and a
- * case in the tinter; each kind has its own cache key (`coatPaintKey`).
+ * What makes a special coat special (§5.5), drawn in code from the region
+ * mask, with no new art:
+ *
+ *   - `two-tone`: the region's lighter half takes `color`, its darker half
+ *     `dark`, with a soft step between. A still image.
+ *   - `shimmer`: a slow highlight sweeping across the region every few
+ *     seconds, over a plain coat (or a two-tone one, given `dark`). The sweep
+ *     is an overlay masked by the region (client hero-shimmer.ts), never the
+ *     tinter's; under reduced motion it is a still sheen.
  */
-export type CoatPaint = { kind: "plain"; color: string };
+export type CoatEffect = { kind: "two-tone"; dark: string } | { kind: "shimmer"; dark?: string };
+
+/**
+ * How a coat is painted, as the tinter reads it (client world/hero-coat.ts,
+ * tools/art/coat.py). `plain`: the region takes `color` by the §5.2 colour
+ * swap. `two-tone` (#669): each pixel takes the swap to `color` above the
+ * region's mean lightness and to `dark` below it, mixed across a soft step.
+ * A shimmer coat paints as one of these; its sweep is an overlay, not paint.
+ * Each kind has its own cache key (`coatPaintKey`).
+ */
+export type CoatPaint = { kind: "plain"; color: string } | { kind: "two-tone"; color: string; dark: string };
 
 /** A nameplate frame (§7.2). */
 export interface CatalogNameplate {

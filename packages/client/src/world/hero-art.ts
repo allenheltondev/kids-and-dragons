@@ -38,7 +38,7 @@
  * `hero-art.test.tsx` holds the line.
  */
 
-import { coatPaintKey, coatPaintOf, speciesCoat } from "@kad/shared";
+import { coatPaintKey, coatPaintOf, coatShimmers, speciesCoat } from "@kad/shared";
 import type { CatalogCoat, ClassId, CoatId, CoatPaint, SpeciesId, TierId } from "@kad/shared";
 import { coats as catalogCoats } from "../../../../content/looks.json";
 import { STARTING_TIER, characterPortraitArtUrl, characterWorldArtUrl } from "./art-paths";
@@ -108,6 +108,48 @@ export function heroCoatOf(hero: HeroArtSubject, place: HeroArtPlace, catalog: {
   if (!mask) return null;
   const paint = coatPaintOf(coat);
   return { painting, mask, paint, key: `${painting}|${coatPaintKey(paint)}` };
+}
+
+/**
+ * Her shimmer (§5.5, #669): the region mask a shimmer coat's sweep is clipped
+ * by, or null when she wears no shimmer coat of her own species or the
+ * painting has no mask (she then draws as painted, with no sweep). The sweep
+ * is an overlay on every surface, never the tinter's: a sprite over her on the
+ * TV (hero-art-pixi.ts), an element over her image in the DOM (hero-art-dom.tsx).
+ */
+export function heroShimmerOf(hero: HeroArtSubject, place: HeroArtPlace, catalog: { coats: CatalogCoat[] } = COATS): { mask: string } | null {
+  const coat = speciesCoat(catalog, hero.species, hero.look?.coat);
+  if (!coatShimmers(coat)) return null;
+  const mask = coatMaskUrl(heroPaintingUrl(hero, place));
+  return mask ? { mask } : null;
+}
+
+/**
+ * The shimmer's timing (§5.5): a slow sweep across the region every few
+ * seconds, and nothing between sweeps. The DOM's keyframes (hero-shimmer.css)
+ * and the TV's ticker keep to the same numbers.
+ */
+export const SHIMMER = {
+  /** One sweep and the rest after it, in ms. */
+  periodMs: 5000,
+  /** The sweep itself, in ms: the start of each period. */
+  sweepMs: 1600,
+  /** The band's width, as a share of the figure's. */
+  band: 0.35,
+} as const;
+
+/**
+ * Where the band is at `t` ms: its centre as a share of the figure's width,
+ * from just off her left edge to just off her right, or null between sweeps.
+ * `still` (reduced motion): the middle, always, never moving.
+ */
+export function shimmerAt(t: number, still = false): number | null {
+  if (still) return 0.5;
+  const into = ((t % SHIMMER.periodMs) + SHIMMER.periodMs) % SHIMMER.periodMs;
+  if (into >= SHIMMER.sweepMs) return null;
+  const s = into / SHIMMER.sweepMs;
+  const eased = s * s * (3 - 2 * s);
+  return -SHIMMER.band + eased * (1 + 2 * SHIMMER.band);
 }
 
 /**

@@ -39,14 +39,22 @@ export function readLook(character: Pick<Character, "look">): HeroLook {
   return character.look ?? emptyLook();
 }
 
-/** What the screens draw and edit: the look, less the receipts. */
-export function lookView(look: HeroLook): HeroLookView {
+/**
+ * What the screens draw and edit: the look, less the receipts. `sources`
+ * adds where each earned look came from, for the book (the party never
+ * carries it).
+ */
+export function lookView(look: HeroLook, options: { sources?: boolean } = {}): HeroLookView {
+  const unlocked = Object.keys(look.unlocked).sort();
+  const sources: Record<string, string> = {};
+  if (options.sources) for (const id of unlocked) if (look.unlocked[id]?.source) sources[id] = look.unlocked[id]!.source!;
   return {
     revision: look.revision,
     coat: look.coat,
     nameplate: look.nameplate,
     title: look.title,
-    unlocked: Object.keys(look.unlocked).sort(),
+    unlocked,
+    ...(Object.keys(sources).length > 0 ? { sources } : {}),
   };
 }
 
@@ -207,14 +215,27 @@ export function speciesCoat(catalog: Pick<LookCatalog, "coats">, species: Specie
   return coat && coat.species.includes(species) ? coat : null;
 }
 
-/** How a coat is painted (`CoatPaint`). Plain today; #669 maps a coat's `effect` to its kind here. */
-export function coatPaintOf(coat: Pick<CatalogCoat, "color">): CoatPaint {
-  return { kind: "plain", color: coat.color.toUpperCase() };
+/**
+ * How a coat is painted (`CoatPaint`): plain, or two-tone where its `effect`
+ * names a `dark` (a two-tone coat, or a shimmer over a two-tone one). A
+ * shimmer's sweep is not paint (`coatShimmers`).
+ */
+export function coatPaintOf(coat: Pick<CatalogCoat, "color" | "effect">): CoatPaint {
+  const color = coat.color.toUpperCase();
+  const dark = coat.effect?.dark;
+  return dark ? { kind: "two-tone", color, dark: dark.toUpperCase() } : { kind: "plain", color };
+}
+
+/** Whether a coat has the shimmer's sweep over it (§5.5): an overlay on every surface, never the tinter's. */
+export function coatShimmers(coat: Pick<CatalogCoat, "effect"> | null | undefined): boolean {
+  return coat?.effect?.kind === "shimmer";
 }
 
 /** A paint's identity, for the tinter's cache: one entry per painting and paint. */
 export function coatPaintKey(paint: CoatPaint): string {
-  return `${paint.kind}:${paint.color.toUpperCase()}`;
+  return paint.kind === "two-tone"
+    ? `two-tone:${paint.color.toUpperCase()}:${paint.dark.toUpperCase()}`
+    : `${paint.kind}:${paint.color.toUpperCase()}`;
 }
 
 /** A title's words, or null for none (or one the catalog no longer has). */

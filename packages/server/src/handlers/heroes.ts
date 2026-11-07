@@ -13,6 +13,7 @@
 
 import {
   claimOf,
+  lookView,
   parseClaim,
   resolveCharacter,
   type Character,
@@ -25,6 +26,7 @@ import { betweenGames, liveCrewOf, seatedCrews } from "./crew.ts";
 import { ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 import { seatHero } from "./progression.ts";
 import { heroSaved } from "./save.ts";
+import { heroLookOf } from "./look-unlocks.ts";
 
 export interface ListHeroesInput {
   householdId: string;
@@ -58,7 +60,13 @@ export async function listHeroes(
     if (hold) held[character.id] = hold;
   }
   const heroes = own
-    .map((character) => resolveCharacter(character, rules, items))
+    .map((character) => {
+      // Her look as she holds it (#669): every milestone her row says she has
+      // earned read back, and where each came from, for the book's shelves.
+      const look = heroLookOf(character, deps);
+      const hero = resolveCharacter(look ? { ...character, look } : character, rules, items);
+      return look ? { ...hero, look: lookView(look, { sources: true }) } : hero;
+    })
     // The one you have taken furthest first; ties by name so the order holds.
     .sort((a, b) => b.level - a.level || a.name.localeCompare(b.name));
   return ok({

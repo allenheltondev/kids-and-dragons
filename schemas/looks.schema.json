@@ -10,7 +10,7 @@
     "$schema": { "type": "string" },
     "$comment": { "type": "string" },
     "coats": {
-      "description": "Colours for one species' coloured region (§4, §7.1; #666), shown to the kid as Color: about six starters per species. color is the coat's colour and the base of a special coat; #669 adds an optional effect (two-tone, shimmer) beside it.",
+      "description": "Colours for one species' coloured region (§4, §7.1; #666), shown to the kid as Color: about six starters per species, and earned ones. color is the coat's colour and the base of a special coat, whose effect (two-tone, shimmer; #669) sits beside it.",
       "type": "array",
       "items": {
         "type": "object",
@@ -21,7 +21,24 @@
           "name": { "$ref": "#/$defs/name" },
           "unlock": { "$ref": "#/$defs/unlock" },
           "species": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
-          "color": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" }
+          "color": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+          "effect": {
+            "description": "A special coat (§5.5; #669), drawn in code from the region mask. two-tone: the region's lighter half takes color, its darker half dark. shimmer: a slow highlight sweeping across the region, over a plain coat or (given dark) a two-tone one. color stays the base, so a build that does not know the effect draws it plain.",
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["kind", "dark"],
+                "properties": { "kind": { "const": "two-tone" }, "dark": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" } }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["kind"],
+                "properties": { "kind": { "const": "shimmer" }, "dark": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" } }
+              }
+            ]
+          }
         }
       }
     },

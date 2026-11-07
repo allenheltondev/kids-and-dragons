@@ -445,11 +445,48 @@
             "spendCoins",
             "findForCamp",
             "findForKit",
-            "befriend"
+            "befriend",
+            "findLook"
           ]
         }
       },
       "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "findLook"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "$comment": "docs/hero-looks.md §6; #669. Every seated hero gets her own copy of each look named that is for her (a coat only for its species). A bonus, never a gate. tools/content/looks-catalog.mjs checks each look is a found one in content/looks.json, a coat find names one coat for every species, and the rewardId is <chapter id>.<name> and names the same looks wherever it is authored.",
+            "required": [
+              "looks",
+              "rewardId"
+            ],
+            "properties": {
+              "looks": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_]*$"
+                }
+              },
+              "rewardId": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+([-_.][a-z0-9]+)*$",
+                "maxLength": 80
+              }
+            }
+          }
+        },
         {
           "if": {
             "properties": {

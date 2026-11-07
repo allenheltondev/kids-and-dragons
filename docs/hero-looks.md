@@ -1,6 +1,6 @@
 # Hero looks: a colour and a name style of her own
 
-**Status: design approved (2026-11-07); phase 1, the name style, built (#664); phase 2, colours (the tinter, data, editors and offline), built (#666), waiting on masks (#667, #668).** Every decision in §11 is *decided*: the
+**Status: design approved (2026-11-07); phase 1, the name style, built (#664); phase 2, colours (the tinter, data, editors and offline), built (#666), waiting on masks (#667, #668); phase 4, earned looks and special coats, built (#669), its frame art owed (#680).** Every decision in §11 is *decided*: the
 product owner's own on 2026-11-07, and the rest approved with this doc after two design reviews
 the same day. Nothing is still only proposed. The second revision answered the first review: the gear portraits (§4), book edits against the revision (§3.2), every
 hero drawing path (§9), the nameplate's geometry (§7.2), offline prefetch (§5.4), the tinter's
@@ -352,6 +352,33 @@ A few earned coats are more than a colour (*decided*):
   (and a dot of the colour by its name). It is offered only once one of her paintings has a
   mask; before that every tile would look the same.
 
+*As built (#669, the special coats):*
+
+- **The data.** `CatalogCoat.effect` (`CoatEffect`): `{ kind: "two-tone", dark }` or
+  `{ kind: "shimmer", dark? }`, earned only (`looks-catalog.mjs`). `coatPaintOf` maps a `dark` to
+  `CoatPaint` `{ kind: "two-tone", color, dark }` (its own cache key); `coatShimmers` says whether
+  the sweep goes over her. An older build reads `color` and draws it plain.
+- **Two-tone** is the tinter's (`hero-coat.ts` `coatTargets`, `twoToneWeight`; coat.py `tint(...,
+  dark_hex)`): each pixel is swapped to both colours and mixed in sRGB, the light colour above the
+  region's mean lightness and the dark below, across a smoothstep `COAT_SWAP.twoToneStep` (0.04 of
+  OKLab lightness) either side. The reference sheet gains two two-tone coats, and the client is
+  held to coat.py on them within one 8-bit step.
+- **Shimmer** is an overlay, never paint. `hero-art.ts` `heroShimmerOf` (the region mask, or
+  null), `SHIMMER` and `shimmerAt` (a 1.6 s sweep every 5 s). On the TV, `loadHeroTexture`'s
+  handle gains `dress(sprite)`, which the lineup, the board and the camp call on the sprite they
+  make; `hero-shimmer-pixi.ts` lays a child container over it, masked by her coat mask (a sprite
+  mask reads the red channel), with a soft band of `Texture.WHITE` strips moved by the ticker, or
+  resting across her middle under reduced motion. In the DOM, `CharacterPortrait` lays a
+  `.hero-shimmer` box in the image's own grid cell, after it (so over an opaque gear portrait),
+  and `HeroImage` lays one over its image by measurement (`ShimmerOver`); both clip the moving
+  gradient by `mask-image` read as luminance, and `hero-shimmer.css` stills it to a sheen under
+  the device's or the setting's reduced motion. Nothing loads for a hero with no shimmer coat or
+  no mask.
+- **Palettes.** `coat-palette.test.ts` holds every earned colour, painted as worn, against the
+  backdrops and against her other colours; Aurora and Raspberry Ripple are one colour for every
+  species, found by a search over the stand-in heroes (green and pink: the snowy grounds rule out
+  a pale starlight).
+
 ## 6. Unlocks
 
 - **Starter looks** are free from the start, for every hero, old or new.
@@ -365,6 +392,44 @@ A few earned coats are more than a colour (*decided*):
   run: a lost fight, a setback ending, a chapter replayed (camp.md §12.2).
 - **Gemfall is pinned.** A look find in a Gemfall chapter re-takes its hashes deliberately, with
   the reason in the commit, and its gameplay digests must not move.
+
+*As built (#669, phase 4):*
+
+- **The rules** are shared `look-unlocks.ts`: `earnedLooks` (the milestone looks a standing meets:
+  a tier reached, a class rank held, a campaign in her `finished`, and, given her crew's camp, a
+  friend by name, a first friend, a grand camp, which is frame stage 4), `foundLookGrants` (what a
+  find gives one hero: every frame and title it names, and the coat of her own species),
+  `withLookGrants` (receipts only ever added, the first kept, `revision` untouched) and
+  `readEarnedLook` (her stored look with every milestone her row holds, no `at`: the backfill on
+  read). Each receipt's `source` is the book's words: "Reached Sworn", "Became a Thornguard
+  Master", "Finished The Gemfall", "Made friends with Bun", "Found in The Note Under the Ice".
+- **Finds** are a chapter effect, `findLook: { looks, rewardId }` (content/README.md, "Look
+  finds"). The engine only records it (`RunState.lookFinds`, once per reward a chapter, with who
+  was seated), as it does a kit find.
+- **Written when it lands.** After each step's commit, beside the kit's milestones, server
+  `look-unlocks.ts` `claimLookUnlocks` writes to each hero the step concerns (a find's heroes, a
+  hero whose tier or rank moved or whose chapter XP reached a tier, every seated hero when the step
+  finished a campaign, made a friend, or opened a downtime moment on a camp that can earn
+  something), on her row at her home, conditional and retried (`grantLooks`; the write bumps her
+  look's `revision`). A tier reached by the setback that fails the campaign is written from the
+  settlement's awards, as `failCampaign` keeps the kit's tent. Lost fights, setbacks, reverts and
+  replays never touch her look, so a receipt is hers for good.
+- **Announced once, where the kit's are.** What this step earned (never a catch-up of something
+  held before) rides the broadcast as `lookUnlocks` (`LookUnlockNews`), live only; the phone queues
+  it in the kit's news (`store/kit-news.ts` `announceLookNews`, its own watermark) and the kit's
+  toast says it ("New title for you: the Tracker"), after the transformation for a tier, after the
+  rank-up moment for a rank, otherwise after a breath. It changes nothing in play: no engine read.
+- **Read with it everywhere** (`heroLookOf`): the table's downtime sync (with the moment's camp),
+  `LOOK_EDIT`'s check, the book's edits and its hero list, so a hero who already held a milestone
+  is offered it before anything was written for her, and her next look write stores it. The book
+  carries each receipt's `source` (`HeroLookView.sources`, the book's copy only) and shows it under
+  the tile. Looks not yet earned are still never shown.
+- **The first earned set** (`content/looks.json`): Aurora, a shimmer coat for every species (found
+  in `riftlight-hidden-glacier-rift`, answering the seam); Raspberry Ripple, a two-tone coat for
+  every species (reaching Radiant); the Songbird frame (found in `riftlight-ashspan-bridge`, with
+  Tilly's ribbon) and the Golden frame (reaching Mythic), both owed art (#680) and drawn as the
+  plain plate until listed; the Tracker (found in `riftlight-exchange-rift`, reading the tracks)
+  and the Friendly (a first friend), beside the titles #664 declared. No Gemfall chapter changed.
 
 ## 7. Palettes, frames and titles
 
