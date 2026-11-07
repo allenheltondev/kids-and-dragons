@@ -31,8 +31,10 @@ Usage:
 It writes beside each painting in assets/ unless --out is given. Then review the result on
 `npm run art:sheet -- --coat` and list the painting in assets/manifest.json -> coatMasks.paintings.
 
-Every species has base-family rules (all 24 base paintings, #667); the class and gear waves
-(#668) add theirs to RULES and FIXES.
+Every species has rules (#667, #668). A species' function is called for all three families;
+it can tell them apart by `painting` (base `characters/`, class `character-rigs/`, gear
+`gear-portraits/`). On a gear portrait, which is opaque, `look.alpha` is the draft's figure (B),
+so the painted backdrop is never in either part. A class costume, gear and props stay as painted.
 
 Requires: Pillow, numpy, scipy
 """
@@ -105,13 +107,15 @@ class Look:
     and `rough`, the local spread of lightness (5px window) over the painted, non-ink pixels:
     skin is painted smooth, fur in strokes."""
 
-    def __init__(self, rgba: np.ndarray):
+    def __init__(self, rgba: np.ndarray, figure: np.ndarray | None = None):
+        """`figure` (HxW bool) is her silhouette when the painting's alpha isn't: a gear portrait
+        is opaque, so its figure is the draft's B channel (everything but the backdrop)."""
         self.rgba = rgba
         lab = coat.srgb_to_oklab(rgba[..., :3] / 255.0)
         self.L = lab[..., 0]
         self.C = np.hypot(lab[..., 1], lab[..., 2])
         self.hue = np.degrees(np.arctan2(lab[..., 2], lab[..., 1]))
-        self.alpha = rgba[..., 3] > 128
+        self.alpha = (rgba[..., 3] > 128) if figure is None else (figure & (rgba[..., 3] > 128))
         self.ink = self.L < 0.36
         w = (self.alpha & ~self.ink).astype(float)
         n = np.maximum(ndimage.uniform_filter(w, 5), 1e-6)
@@ -818,7 +822,9 @@ RULES = {
 def clean(rgba: np.ndarray, draft: np.ndarray, species: str, painting: str) -> np.ndarray:
     """A drafted mask (HxWx3 uint8) cleaned: R and G by the species' rules and the painting's
     hand fixes, softened, clipped to the figure and shared out; B as drafted."""
-    main, accent = RULES[species](Look(rgba), draft, painting)
+    # Her figure is the draft's B: the painting's alpha on a cut-out (base and class), and
+    # everything but the painted backdrop on a gear portrait, which is opaque.
+    main, accent = RULES[species](Look(rgba, draft[..., 2] > 127), draft, painting)
     B = draft[..., 2].astype(float) / 255.0
     R, G = soften(main & ~accent), soften(accent)
     total = R + G
@@ -836,8 +842,6 @@ def main(argv: list[str] | None = None) -> int:
                     help="where art:coat-draft --out wrote the drafts (DIR/assets/...); default staging/coat-drafts")
     ap.add_argument("--out", help="write under OUT/assets/... instead of the repository's assets/")
     args = ap.parse_args(argv)
-    if args.family != "base":
-        sys.exit(f"error: no cleaning rules for the {args.family} family yet (#668)")
 
     with open(os.path.join(coat.ROOT, "assets", "manifest.json"), encoding="utf-8") as f:
         mf = json.load(f)
