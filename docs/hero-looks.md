@@ -226,8 +226,9 @@ clamping cases, and a sheet like §2's is kept as the reference.
   evicted entry revokes its object URL and destroys its Pixi texture. The source painting and mask are not held
   once the pass is done; the region's means are, as numbers.
 - **A test switches colour ten times in a row,** quickly, on a throttled midrange phone profile:
-  the last colour shows, no earlier one flashes after it, and the cache never holds more than its
-  bound.
+  the last colour shows, no earlier one flashes after it, and the evictable entries (those
+  nothing on screen holds) never total more than the bound. Entries held on screen may take the
+  total over it for as long as they are held, and are evicted once let go.
 
 ### 5.4 Offline
 
@@ -427,7 +428,7 @@ Each phase is playable on its own.
 | A class painting or gear portrait with no mask | Drawn as painted, without errors |
 | Offline, a hero seen before | Her chosen colour shows: painting and mask were prefetched |
 | Four heroes with 16-character names and the longest titles | No overlap; no name smaller than today; titles hidden rather than cut |
-| Ten colour switches in quick succession, throttled phone | The last shows, none flashes after it, the cache stays bounded |
+| Ten colour switches in quick succession, throttled phone | The last shows, none flashes after it; unpinned entries stay within the bound, pinned ones are released once let go |
 | An unlock earned in a campaign already under way | Announced once, kept through a lost fight or setback, changes nothing in play |
 | An old hero with no look | Drawn and played exactly as today; the Gemfall gameplay digests do not move |
 | A shimmer coat on a gear portrait | The sweep shows over the painting, only on her coloured part |
