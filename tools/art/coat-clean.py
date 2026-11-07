@@ -311,7 +311,111 @@ def clean_bigfoot(look: Look, draft: np.ndarray, painting: str) -> tuple[np.ndar
     return R, G
 
 
-RULES = {"unicorn": clean_unicorn, "bigfoot": clean_bigfoot}
+# ----------------------------------------------------------------------------- kitsune
+
+def clean_kitsune(look: Look, draft: np.ndarray, painting: str) -> tuple[np.ndarray, np.ndarray]:
+    """Fur (R) is her pale peach body and the white tips of her tails; tails (G) are the teal.
+    The draft is not used: her markings are as warm as her shaded fur, so it bled into them.
+
+    - Tails: teal paint (OKLab chroma >= 0.03, hue beyond 140 / -110), its pieces of 3000px or
+      more, closed and filled so the crystal facets and sparkles painted in them go with them.
+      The white tips are fur (a fox's white tail tip; under a colour they read as one coat).
+    - Orange stays as painted, in neither part: her ruff, crest, outer ears and the flame
+      markings on her face and legs (chroma >= 0.085, hue 15..80; her peach fur is ~0.05, its
+      shading ~0.07). Its pieces low on her legs (centre in the bottom 15% of her) are the soft
+      warm shading at her paws, painted as a gradient: those are fur, or her feet go ragged.
+    - Fur: the rest of her, less ink, her eyes (small filled ink loops, with their highlights)
+      and the Mythic crystals (KITSUNE_CRYSTALS, traced by hand); pieces under 400px dropped,
+      holes under 150px (a fleck of orange stroke in the pale fur) filled, then grown 1px into
+      the orange so the soft edge leaves no pale rim untinted.
+    - Ink drawn as an outline is in neither part."""
+    a, C, hue = look.alpha, look.C, look.hue
+    eyes = kitsune_eyes(look)
+
+    # tails: teal paint, its largest pieces, closed and filled (crystal facets, sparkles)
+    teal = a & (C >= 0.03) & ((hue > 140) | (hue < -110))
+    labs, n = ndimage.label(ndimage.binary_closing(teal, structure=SQUARE))
+    sizes = ndimage.sum(teal, labs, np.arange(1, n + 1)) if n else np.zeros(0)
+    tails = np.isin(labs, np.nonzero(sizes >= 3000)[0] + 1) & teal
+    tails = ndimage.binary_closing(tails, structure=disk(3))
+    tails = ndimage.binary_fill_holes(tails) & a
+
+    # orange: her ruff, ears, crest and the markings on her face and legs, kept as painted
+    orange = a & (C >= 0.085) & (hue > 15) & (hue < 80)
+    # ...but the warm shading at her paws (socks, painted as a soft gradient) is fur
+    ys = np.nonzero(a)[0]
+    labs, n = ndimage.label(orange)
+    if n:
+        i = np.arange(1, n + 1)
+        rows = np.array([c[0] for c in ndimage.center_of_mass(orange, labs, i)])
+        sock = np.zeros(n + 1, bool)
+        sock[1:] = rows > ys.min() + 0.85 * (ys.max() - ys.min())
+        orange &= ~sock[labs]
+    crystals = kitsune_crystals(painting, a.shape)
+    fur = a & ~tails & ~orange & ~look.ink & ~eyes & ~crystals
+    labs, n = ndimage.label(fur)
+    if n:
+        sizes = ndimage.sum(fur, labs, np.arange(1, n + 1))
+        fur = np.isin(labs, np.nonzero(sizes >= 400)[0] + 1)
+    # a fleck of orange stroke inside her pale fur is that fur's painting
+    holes = ndimage.binary_fill_holes(fur) & ~fur
+    labs, n = ndimage.label(holes)
+    if n:
+        small = np.zeros(n + 1, bool)
+        small[1:] = ndimage.sum(holes, labs, np.arange(1, n + 1)) < 150
+        fur |= small[labs] & ~look.ink & ~eyes & ~crystals
+    # the soft edge sits on the orange side of the line, so no pale rim is left untinted
+    fur |= ndimage.binary_dilation(fur, structure=SQUARE) & orange & ~crystals
+    return fur & ~look.outline(), tails & ~look.outline()
+
+
+# The Mythic kitsune's crystals, on her crest and in her ruff: hand-traced outlines, as (x, y)
+# canvas points. They are glassy and see-through (her orange shows through them) and their pale
+# facets are as pale as her fur, so no colour rule finds them. The crystals inside her tails
+# are the tails' painting and take the tails' colour.
+KITSUNE_CRYSTALS: dict[str, list[list[tuple[int, int]]]] = {
+    "characters/kitsune/mythic/assembled.png": [
+        # crest, her right: two shards in a V
+        [(151, 176), (166, 200), (181, 184), (191, 210), (181, 240), (178, 265), (172, 292),
+         (166, 285), (161, 255), (159, 228), (156, 205)],
+        # crest, her left: three long shards, and a sliver at the ear
+        [(298, 161), (301, 170), (298, 198), (290, 230), (275, 253), (260, 263), (245, 280),
+         (230, 289), (222, 294), (223, 285), (237, 237), (252, 213), (263, 202), (283, 173)],
+        [(307, 176), (312, 179), (305, 204), (299, 201)],
+        # ruff
+        [(378, 393), (420, 384), (410, 402), (385, 403)],
+        [(368, 404), (378, 401), (413, 442), (400, 445), (372, 426)],
+        [(366, 448), (376, 445), (387, 492), (378, 495), (365, 470)],
+        [(318, 441), (325, 450), (325, 488), (281, 523), (275, 516), (288, 474), (300, 461)],
+        [(338, 493), (344, 497), (339, 521), (323, 543), (317, 539), (321, 515)],
+        [(165, 469), (171, 473), (163, 500), (147, 519), (142, 515), (150, 490)],
+    ],
+}
+
+
+def kitsune_crystals(painting: str, shape: tuple[int, int]) -> np.ndarray:
+    """The painting's crystals (KITSUNE_CRYSTALS) as a mask, with a 2px margin; never coloured."""
+    from PIL import ImageDraw
+
+    im = Image.new("1", (shape[1], shape[0]), 0)
+    draw = ImageDraw.Draw(im)
+    for poly in KITSUNE_CRYSTALS.get(painting, []):
+        draw.polygon(poly, fill=1, outline=1)
+    return ndimage.binary_dilation(np.asarray(im, bool), structure=disk(2))
+
+
+def kitsune_eyes(look: Look) -> np.ndarray:
+    """Her eyes: small loops of ink, filled (their white highlights go with them)."""
+    loops = ndimage.binary_fill_holes(look.ink) & ~look.ink
+    labs, n = ndimage.label(loops)
+    if not n:
+        return np.zeros_like(look.alpha)
+    small = np.zeros(n + 1, bool)
+    small[1:] = ndimage.sum(loops, labs, np.arange(1, n + 1)) < 2500
+    return ndimage.binary_dilation(small[labs], structure=disk(2))
+
+
+RULES = {"unicorn": clean_unicorn, "bigfoot": clean_bigfoot, "kitsune": clean_kitsune}
 
 
 # ----------------------------------------------------------------------------- main
