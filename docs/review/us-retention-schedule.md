@@ -23,7 +23,7 @@ carries the table's `ttl` and DynamoDB deletes it, normally within a few days of
 | --- | --- | --- | --- | --- |
 | Guest household, with its kids, heroes, runs, devices, field guide | A family keeps playing across the week without signing in | 7 days after last play, renewed whenever a room opens (`GUEST_HOUSEHOLD_TTL_MS`) | Swept; whole household deleted | Unchanged |
 | A kid in a kept household, with her heroes, phones, visits, push subscriptions | Heroes continue across a campaign, which takes weeks, and across breaks | **365 days idle** (`DEFAULT_RETENTION_DAYS`), or the 30, 90 or 180 days an owner chose. No "never": `retentionChoice` refuses `null` | Idle sweep (`sweepIdleProfiles`), which also scrubs her names from other tables' saves | **Enforced** |
-| Kept household (rows, saves, field guide, camp, owner rows, account pointers) | Same | **Deleted when the idle sweep removes its last kid** (`retireIfEmpty`). A household with any kid left stays | Swept with the last kid; `repo.deleteHousehold` | **Enforced** |
+| Kept household (rows, saves, field guide, camp, owner rows, account pointers) | Same | **Deleted when the idle sweep removes its last kid** (`retireIfLast`, fenced: see below). A household with any kid left stays | Swept with the last kid; `repo.deleteRetiringHousehold` | **Enforced** |
 | Cognito owner (parent email, passkeys) | Let a grown-up sign in and manage the household | **Deleted with a kept household the idle sweep empties**, if that grown-up owns no other household (`CognitoDirectory`, `AdminDeleteUser` by `sub`) | Cognito `AdminDeleteUser` | **Enforced for the sweep.** See gaps: not on an owner's own delete |
 | Hero (character row) | The hero's progress | Lives with the kid | Deleted with her | Unchanged |
 | Saved game state, chapter progress | Pick a game up another day | Lives with the household | Deleted with the household | Unchanged |
@@ -48,6 +48,29 @@ carries the table's `ttl` and DynamoDB deletes it, normally within a few days of
   the policy and "What we store" say so.
 - The "until a grown-up deletes them" choice is gone from Run a group.
 - Nothing changes for a kid who keeps playing.
+
+## How retiring a household stays safe (review of #681)
+
+Deleting a household and a sign-in is irreversible, so the decision is fenced against anything
+being added while it is made (`retireIfLast` in `handlers/retention.ts`):
+
+1. **The household is marked** (`beginRetiring`, `retiring` on `META`). From then on no kid can be
+   made in it (`createPlayer`, a transaction with a check on `META`), moved into it (the move's
+   check), or given an owner (`putOwner`).
+2. **Only then is emptiness read**, strongly consistent (`hasPlayers`). A kid added before the mark
+   is seen and the mark comes off; one after is refused.
+3. **The owners are read** (strongly consistent, after the mark) **and written onto the kid's forget
+   job** before anything is deleted.
+4. **The delete needs the mark** (`deleteRetiringHousehold`): a write that replaced `META` since
+   (a rename) took the mark, so the job goes back to step 1 on the next sweep.
+5. **Each owner's sign-in is marked** (`ACCT#<sub>` / `RETIRING`, 7-day `ttl`), which refuses every
+   new household pointer for it (`putAccountPointer`, `putOwner`, and `claimHousehold`, now one
+   transaction with its pointer). **Only then is ownership read**, strongly consistent
+   (`ownsAnyHousehold`): a pointer written before the mark keeps the sign-in, one after is refused.
+   Then `AdminDeleteUser`.
+6. **Retryable throughout.** The kid's forget job stays until all of this and the scrub finish;
+   `retryForgets` runs `retireIfLast` for every `idle` job, from wherever it stopped, including
+   after the last kid's row is already gone.
 
 ## Who reads old events (checked 2026-11-07)
 
@@ -75,12 +98,8 @@ which is why the expiry counts from each event's write rather than from the end 
   that moment and may start another; deleting the sign-in under them would break Run a group. If
   they never do, the sign-in (an email) stays. Options: a "delete my sign-in too" choice on that
   delete, or a sweep of sign-ins that own nothing after some period. Undecided.
-- **A sign-in the sweep failed to delete is not retried.** The failure is logged
-  (`[sweep] could not delete the sign-in…`); its account pointer is already gone, so a later sweep
-  cannot find it. No alarms, by owner decision.
-- **A kept household whose last-kid delete stopped part-way** is not picked up again by the idle
-  sweep (the kid is gone, so nothing points at it). Its `sweeping` mark stays, and a forget job
-  covers only kids.
+- **No alarms**, by owner decision: a retirement that keeps failing is retried every day from the
+  kid's forget job and logged (`[sweep] could not…`), and nothing else tells anyone.
 - **Whether the sweeper keeps up.** 25 households and 25 idle kids per daily run; no alarm or backlog
   metric (owner decision: no alarms).
 - **Log groups outside `/aws/lambda/<stack>-*`.** The stack configures no API Gateway access logs,

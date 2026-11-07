@@ -291,13 +291,13 @@ export async function sweepIdleProfiles(deps: ForgetDeps): Promise<IdleSweepResu
         result.kept.push(idle.playerId);
         continue;
       }
-      await forgetEverywhere([job], deps);
+      // Before the scrub, which removes her job once it is clean: until then the
+      // job is what makes an interrupted retirement finish (`retryForgets`).
+      const retired = await retireIfLast(job, deps);
       result.deleted.push(idle.playerId);
-      const retired = await retireIfEmpty(household, deps);
-      if (retired) {
-        result.households.push(household.id);
-        result.accounts += retired.accounts;
-      }
+      if (retired.household) result.households.push(household.id);
+      result.accounts += retired.accounts;
+      await forgetEverywhere([retired.job], deps);
     } catch (err) {
       const reason = err instanceof Error ? err.message : String(err);
       console.error(`[sweep] could not forget ${idle.playerId}: ${reason}`);
@@ -307,37 +307,93 @@ export async function sweepIdleProfiles(deps: ForgetDeps): Promise<IdleSweepResu
   return result;
 }
 
+export interface Retirement {
+  /** The kid's forget job as it now stands: with `retiring` once her home is going. */
+  job: ForgetJob;
+  /** Whether this call deleted the household. */
+  household: boolean;
+  /** Sign-ins this call deleted. */
+  accounts: number;
+}
+
 /**
- * A kept household the idle sweep just took the last kid from (#524): there
- * is nobody left for it to keep, so it goes too, with its saves, its owners'
- * pointers and, for each grown-up who has no other household, their sign-in.
- * A household with any kid left, or that one was added to meanwhile, stays.
- * `null` when it stayed.
+ * After the idle sweep deleted a kid (`job`, reason `idle`): if she was the
+ * last kid of her kept home, the home goes too, with its saves and its
+ * owners' pointers, and so does the sign-in of each owner left with no
+ * household (#524). Only from the idle sweep, never an owner's own delete: an
+ * owner who deletes a household is signed in at that moment and may start
+ * another, so their sign-in is theirs to keep.
  *
- * Only here, not on an owner's own delete: an owner who deletes a household
- * is signed in at that moment and may start another, so their sign-in is
- * theirs to keep.
+ * Safe against a kid or an owner being added meanwhile: the household is
+ * marked first (`beginRetiring`), which refuses every new kid and owner from
+ * then on, and only then is emptiness read, strongly consistent. A kid added
+ * before the mark is seen and the household stays; one after is refused. The
+ * delete itself still needs the mark (`deleteRetiringHousehold`), so a write
+ * that replaced the household since sends the decision back to be made again.
+ *
+ * Retryable: once decided, the owners are written onto her forget job before
+ * anything goes, and the job stays until the scrub after this finishes, so
+ * `retryForgets` picks a retirement up wherever it stopped. Throws when a step
+ * fails, for exactly that.
  */
-async function retireIfEmpty(household: Household, deps: ForgetDeps): Promise<{ accounts: number } | null> {
-  if (household.guest) return null;
-  if ((await deps.repo.listPlayers(household.id)).length > 0) return null;
-  const owners = new Set((await deps.repo.listOwners(household.id)).map((o) => o.cognitoSub));
-  if (household.ownerSub) owners.add(household.ownerSub);
-  if (!(await deps.repo.deleteHousehold(household.id))) return null;
-  console.log(`[sweep] deleted kept household ${household.id}: its last kid was idle past its window`);
+export async function retireIfLast(job: ForgetJob, deps: ForgetDeps): Promise<Retirement> {
+  const none: Retirement = { job, household: false, accounts: 0 };
+  let current = job;
+  if (!current.retiring) {
+    const household = await deps.repo.getHousehold(job.home);
+    if (!household || household.guest) return none;
+    if (!(await deps.repo.beginRetiring(job.home))) return none;
+    if (await deps.repo.hasPlayers(job.home)) {
+      await deps.repo.endRetiring(job.home);
+      return none;
+    }
+    // Read after the mark, which refuses new owners, and strongly consistent.
+    const owners = new Set((await deps.repo.listOwners(job.home, { consistent: true })).map((o) => o.cognitoSub));
+    if (household.ownerSub) owners.add(household.ownerSub);
+    current = { ...job, retiring: { owners: [...owners] } };
+    await deps.repo.putForget(current);
+  }
+
+  const outcome = await deps.repo.deleteRetiringHousehold(job.home);
+  if (outcome === "unmarked") {
+    // Something replaced the household since the mark: decide again from scratch.
+    const { retiring: _undecided, ...again } = current;
+    await deps.repo.putForget(again);
+    throw new Error(`household ${job.home} changed while it was being retired; the sweep will look again`);
+  }
+  if (outcome === "deleted") {
+    console.log(`[sweep] deleted kept household ${job.home}: its last kid was idle past its window`);
+  }
 
   let accounts = 0;
-  for (const sub of owners) {
-    if ((await deps.repo.listHouseholdsForAccount(sub)).length > 0) continue;
-    if (!deps.accounts) continue;
-    try {
-      await deps.accounts.deleteAccount(sub);
-      accounts++;
-    } catch (err) {
-      console.error(`[sweep] could not delete the sign-in of an owner of ${household.id}:`, err);
+  if (deps.accounts) {
+    for (const sub of current.retiring?.owners ?? []) {
+      if (await retireAccount(sub, deps.repo, deps.accounts)) accounts++;
     }
   }
-  return { accounts };
+  return { job: current, household: outcome === "deleted", accounts };
+}
+
+/**
+ * Delete a grown-up's sign-in if they own no household (#524). The sign-in is
+ * marked first, which refuses every new household pointer for it (a claim, a
+ * new group, an invite accepted), and only then is ownership read, strongly
+ * consistent: a pointer written before the mark is seen and the sign-in kept,
+ * one after is refused. Throws if Cognito refuses, so the job is retried.
+ */
+async function retireAccount(
+  cognitoSub: string,
+  repo: ForgetDeps["repo"],
+  accounts: AccountDirectory,
+): Promise<boolean> {
+  await repo.beginRetiringAccount(cognitoSub);
+  if (await repo.ownsAnyHousehold(cognitoSub)) {
+    await repo.endRetiringAccount(cognitoSub);
+    return false;
+  }
+  await accounts.deleteAccount(cognitoSub);
+  // The mark stays until it expires: no pointer is written for a sign-in that is gone.
+  return true;
 }
 
 // ---------------------------------------------------------------------------
@@ -445,7 +501,10 @@ export async function retryForgets(deps: ForgetDeps): Promise<ForgetRetryResult>
         result.dropped.push(job.playerId);
         continue;
       }
-      const { owed } = await forgetEverywhere([job], deps);
+      // An idle delete may have left its household to retire (#524), even if
+      // the run that deleted her stopped before it got that far.
+      const current = job.reason === "idle" ? (await retireIfLast(job, deps)).job : job;
+      const { owed } = await forgetEverywhere([current], deps);
       (owed.length > 0 ? result.owed : result.finished).push(job.playerId);
     } catch (err) {
       console.error(`[sweep] could not finish forgetting ${job.playerId}:`, err);

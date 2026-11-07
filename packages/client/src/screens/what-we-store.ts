@@ -147,12 +147,12 @@ export const STORED: readonly StoredThing[] = [
   {
     title: "The grown-ups",
     what:
-      "The household's name, which signed-in grown-ups run it, and how long it keeps a kid who stops playing. The email each grown-up signed in with is held in two places: by the separate sign-in service (Amazon Cognito), and as a copy on the household's list of grown-ups, so they can tell each other apart.",
+      "The household's name, which signed-in grown-ups run it, and how long it keeps a kid who stops playing. The email each grown-up signed in with is held in two places: by the separate sign-in service (Amazon Cognito), and as a copy on the household's list of grown-ups, so they can tell each other apart. While a sign-in that runs no household is being removed, a note of its random id is kept for up to a week so it cannot be given a household partway through.",
     kept:
       "Until the household is deleted, or that grown-up leaves it. When a household goes because its last kid stopped playing, the sign-in of each of its grown-ups who runs no other household is deleted too. A grown-up who deletes a household themselves keeps their sign-in.",
     owner: "grown-up",
-    rows: ["Household", "Owner", "Account → household"],
-    entities: ["household", "owner", "account"],
+    rows: ["Household", "Owner", "Account → household", "Sign-in being removed"],
+    entities: ["household", "owner", "account", "account-retiring"],
   },
   {
     title: "One-time codes",

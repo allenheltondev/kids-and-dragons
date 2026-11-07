@@ -47,6 +47,13 @@ export const META = "META";
 export const STATE = "STATE";
 
 /**
+ * `ACCT#<sub>` / `RETIRING`: the sweep may be about to delete this sign-in
+ * (#524), so no household pointer may be written for it. Carries a `ttl`.
+ * Not under `HH#`, so `listHouseholdsForAccount` never sees it.
+ */
+export const ACCOUNT_RETIRING = "RETIRING";
+
+/**
  * When each seated phone last said it was here (#258, `handlers/presence.ts`):
  * one row per run, a map of player id to time. Carries a `ttl`, like a room.
  */

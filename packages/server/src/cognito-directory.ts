@@ -2,7 +2,7 @@
  * The grown-ups' sign-in store, as the sweep sees it (#524): it can delete a
  * sign-in, and nothing else. A grown-up's Cognito user holds their email, so
  * once the last household they own is deleted for being idle, their sign-in
- * goes too (`handlers/retention.ts`, `retireIfEmpty`).
+ * goes too (`handlers/retention.ts`, `retireIfLast`).
  */
 
 import { AwsJsonClient, AwsJsonError } from "./aws-json.ts";

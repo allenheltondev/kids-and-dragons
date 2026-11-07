@@ -34,7 +34,7 @@ import type {
   PlayerProfile,
 } from "@kad/shared";
 import { newId } from "../ids.ts";
-import type { HouseholdOwnerRecord } from "../store/repository.ts";
+import { AccountRetiringError, type HouseholdOwnerRecord } from "../store/repository.ts";
 import { createProfile, summaries, vetTypedName, type AccountDeps } from "./account.ts";
 import { admitCodeLookup } from "./code-guard.ts";
 import { createPairingCode } from "./pairing.ts";
@@ -476,7 +476,11 @@ async function describe(
   let owners = stored;
   if (!owners.some((o) => o.cognitoSub === who.cognitoSub)) {
     const row = ownerRow(household.id, who, deps.now());
-    await deps.repo.putOwner(row);
+    // A look is never refused: while the sweep retires the household (#524)
+    // the row is not written, and the owner is listed all the same.
+    await deps.repo.putOwner(row).catch((err: unknown) => {
+      if (!(err instanceof AccountRetiringError)) throw err;
+    });
     owners = [...owners, row];
   }
   const rows: OrganizerOwner[] = owners.map((o) => ({

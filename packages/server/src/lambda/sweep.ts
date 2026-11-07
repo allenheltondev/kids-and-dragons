@@ -103,7 +103,8 @@ export async function sweep(repo: GameRepository, now: () => number, accounts?: 
   }
 
   const idle = await sweepIdleProfiles({ repo, now, ...(accounts ? { accounts } : {}) });
-  const forgets = await retryForgets({ repo, now });
+  // With the sign-in store too: a retry may finish retiring a household (#524).
+  const forgets = await retryForgets({ repo, now, ...(accounts ? { accounts } : {}) });
   console.log(
     `[sweep] scanned ${result.scanned}, deleted ${result.deleted.length}, ` +
       `spared ${result.spared.length}, failed ${result.failed.length}; ` +

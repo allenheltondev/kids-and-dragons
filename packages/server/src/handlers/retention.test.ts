@@ -17,6 +17,7 @@ import { sweep } from "../lambda/sweep.ts";
 import { makeHarness, type TestHarness } from "../test-support.ts";
 import { createGuestHousehold, linkAccount } from "./account.ts";
 import { applyAction } from "./action.ts";
+import { AccountRetiringError } from "../store/repository.ts";
 import type { AccountDirectory, HandlerResult } from "./deps.ts";
 import {
   acceptOrganizerInvite,
@@ -403,19 +404,150 @@ describe("retention (#252, #524)", () => {
     expect(swept.idle.accounts).toBe(1);
   });
 
-  it("deletes the household but keeps going when a sign-in cannot be deleted", async () => {
+  it("finishes deleting a sign-in on the next sweep when Cognito refused it", async () => {
     const h = harness();
     const ada = await homeOf(h, "h_ada", "Ada");
     value(await setHouseholdRetention({ ...ada.owner, householdId: ada.householdId, retentionDays: 30 }, h.deps));
     h.clock.advance(31 * DAY);
     const error = vi.spyOn(console, "error").mockImplementation(() => undefined);
     const failing = { deleteAccount: vi.fn(async () => Promise.reject(new Error("throttled"))) };
-    const swept = await sweep(h.repo, () => h.clock.now(), failing);
-    expect(swept.idle.households).toEqual([ada.householdId]);
-    expect(swept.idle.accounts).toBe(0);
-    expect(swept.idle.failed).toEqual([]);
-    expect(failing.deleteAccount).toHaveBeenCalledWith(ada.owner.cognitoSub);
+    const first = await sweep(h.repo, () => h.clock.now(), failing);
+    expect(first.idle.failed.map((f) => f.playerId)).toEqual([ada.playerId]);
+    expect(await h.repo.getHousehold(ada.householdId)).toBeNull();
+    // Her job is kept, with the owners to finish.
+    expect((await h.repo.listForgets()).map((j) => j.retiring)).toEqual([{ owners: [ada.owner.cognitoSub] }]);
+
+    h.clock.advance(DAY);
+    const accounts = directory();
+    await sweep(h.repo, () => h.clock.now(), accounts);
+    expect(accounts.deleted).toEqual([ada.owner.cognitoSub]);
+    expect(await h.repo.listForgets()).toEqual([]);
     error.mockRestore();
+  });
+
+  it("retires the household on a retry when the sweep stopped after deleting its last kid", async () => {
+    const h = harness();
+    const ada = await homeOf(h, "h_ada", "Ada");
+    value(await setHouseholdRetention({ ...ada.owner, householdId: ada.householdId, retentionDays: 30 }, h.deps));
+    h.clock.advance(31 * DAY);
+    const error = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    // Twice: the idle pass, then the same run's retry of her job.
+    vi.spyOn(h.repo, "beginRetiring")
+      .mockRejectedValueOnce(new Error("throttled"))
+      .mockRejectedValueOnce(new Error("throttled"));
+    const first = await sweep(h.repo, () => h.clock.now(), directory());
+    expect(first.idle.failed.map((f) => f.playerId)).toEqual([ada.playerId]);
+    // The kid is gone and nothing indexes the household any more, but her job remains.
+    expect(await h.repo.getPlayer(ada.householdId, ada.playerId)).toBeNull();
+    expect(await h.repo.getHousehold(ada.householdId)).not.toBeNull();
+
+    h.clock.advance(DAY);
+    const accounts = directory();
+    await sweep(h.repo, () => h.clock.now(), accounts);
+    expect(await h.repo.getHousehold(ada.householdId)).toBeNull();
+    expect(accounts.deleted).toEqual([ada.owner.cognitoSub]);
+    expect(await h.repo.listForgets()).toEqual([]);
+    error.mockRestore();
+  });
+
+  it("keeps a household a kid was added to just before it was marked, and lets kids in again", async () => {
+    const h = harness();
+    const ada = await homeOf(h, "h_ada", "Ada");
+    value(await setHouseholdRetention({ ...ada.owner, householdId: ada.householdId, retentionDays: 30 }, h.deps));
+    h.clock.advance(31 * DAY);
+    const begin = h.repo.beginRetiring.bind(h.repo);
+    vi.spyOn(h.repo, "beginRetiring").mockImplementationOnce(async (id) => {
+      // Lands first: an owner adding a kid as the sweep reaches the household.
+      value(await addProfile({ ...ada.owner, householdId: ada.householdId, displayName: "Bo" }, h.deps));
+      return begin(id);
+    });
+    const accounts = directory();
+    const swept = await sweep(h.repo, () => h.clock.now(), accounts);
+    expect(swept.idle.deleted).toEqual([ada.playerId]);
+    expect(swept.idle.households).toEqual([]);
+    expect((await h.repo.listPlayers(ada.householdId)).map((p) => p.displayName)).toEqual(["Bo"]);
+    expect(accounts.deleted).toEqual([]);
+    // The mark came off: another kid can still be added.
+    value(await addProfile({ ...ada.owner, householdId: ada.householdId, displayName: "Cy" }, h.deps));
+  });
+
+  it("refuses a kid added once the household is marked, and retires it", async () => {
+    const h = harness();
+    const ada = await homeOf(h, "h_ada", "Ada");
+    value(await setHouseholdRetention({ ...ada.owner, householdId: ada.householdId, retentionDays: 30 }, h.deps));
+    h.clock.advance(31 * DAY);
+    const has = h.repo.hasPlayers.bind(h.repo);
+    let refused: unknown = null;
+    vi.spyOn(h.repo, "hasPlayers").mockImplementationOnce(async (id) => {
+      // Lands after the mark: refused, so the empty read still holds.
+      refused = await addProfile({ ...ada.owner, householdId: ada.householdId, displayName: "Bo" }, h.deps).catch((e: unknown) => e);
+      return has(id);
+    });
+    const swept = await sweep(h.repo, () => h.clock.now(), directory());
+    expect(refused).toBeInstanceOf(Error);
+    expect(swept.idle.households).toEqual([ada.householdId]);
+    expect(await h.repo.getHousehold(ada.householdId)).toBeNull();
+  });
+
+  it("decides again when the household was rewritten while being retired", async () => {
+    const h = harness();
+    const ada = await homeOf(h, "h_ada", "Ada");
+    value(await setHouseholdRetention({ ...ada.owner, householdId: ada.householdId, retentionDays: 30 }, h.deps));
+    h.clock.advance(31 * DAY);
+    const error = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    const has = h.repo.hasPlayers.bind(h.repo);
+    const rename = async (id: string) => {
+      // A rename puts the household whole, and with it the mark.
+      await h.repo.putHousehold((await h.repo.getHousehold(id))!);
+      return has(id);
+    };
+    // Twice: the idle pass, then the same run's retry of her job.
+    vi.spyOn(h.repo, "hasPlayers").mockImplementationOnce(rename).mockImplementationOnce(rename);
+    const first = await sweep(h.repo, () => h.clock.now(), directory());
+    expect(first.idle.failed.map((f) => f.playerId)).toEqual([ada.playerId]);
+    expect(await h.repo.getHousehold(ada.householdId)).not.toBeNull();
+
+    h.clock.advance(DAY);
+    await sweep(h.repo, () => h.clock.now(), directory());
+    expect(await h.repo.getHousehold(ada.householdId)).toBeNull();
+    error.mockRestore();
+  });
+
+  it("keeps a sign-in that linked a second household just before it was marked", async () => {
+    const h = harness();
+    const ada = await homeOf(h, "h_ada", "Ada");
+    value(await setHouseholdRetention({ ...ada.owner, householdId: ada.householdId, retentionDays: 30 }, h.deps));
+    h.clock.advance(31 * DAY);
+    const begin = h.repo.beginRetiringAccount.bind(h.repo);
+    vi.spyOn(h.repo, "beginRetiringAccount").mockImplementationOnce(async (sub) => {
+      await h.repo.putAccountPointer(sub, "h_new");
+      return begin(sub);
+    });
+    const accounts = directory();
+    const swept = await sweep(h.repo, () => h.clock.now(), accounts);
+    expect(swept.idle.households).toEqual([ada.householdId]);
+    expect(accounts.deleted).toEqual([]);
+    expect(await h.repo.listHouseholdsForAccount(ada.owner.cognitoSub)).toEqual(["h_new"]);
+    // The mark came off: the sign-in can still gain a household.
+    await h.repo.putAccountPointer(ada.owner.cognitoSub, "h_later");
+  });
+
+  it("refuses a household pointer for a sign-in once it is marked, and deletes the sign-in", async () => {
+    const h = harness();
+    const ada = await homeOf(h, "h_ada", "Ada");
+    value(await setHouseholdRetention({ ...ada.owner, householdId: ada.householdId, retentionDays: 30 }, h.deps));
+    h.clock.advance(31 * DAY);
+    const owns = h.repo.ownsAnyHousehold.bind(h.repo);
+    let refused: unknown = null;
+    vi.spyOn(h.repo, "ownsAnyHousehold").mockImplementationOnce(async (sub) => {
+      refused = await h.repo.putAccountPointer(sub, "h_new").catch((e: unknown) => e);
+      return owns(sub);
+    });
+    const accounts = directory();
+    await sweep(h.repo, () => h.clock.now(), accounts);
+    expect(refused).toBeInstanceOf(AccountRetiringError);
+    expect(accounts.deleted).toEqual([ada.owner.cognitoSub]);
+    expect(await h.repo.listHouseholdsForAccount(ada.owner.cognitoSub)).toEqual([]);
   });
 
   it("never deletes a sign-in when an owner deletes a household themselves", async () => {

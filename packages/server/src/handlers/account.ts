@@ -209,7 +209,11 @@ export async function createProfile(
     displayName,
     color: PLAYER_COLORS[existing.length % PLAYER_COLORS.length] ?? PLAYER_COLORS[0],
   };
-  await deps.repo.putPlayer(player);
+  // Refused while the retention sweep is retiring or deleting the household
+  // (#524): the sweep has read it as empty, and a kid made now would go with it.
+  if (!(await deps.repo.createPlayer(player))) {
+    throw new Error(`household ${householdId} is being removed; no kid can be added to it`);
+  }
   const household = await deps.repo.getHousehold(householdId);
   if (household && !household.guest) {
     const now = iso(deps.now());

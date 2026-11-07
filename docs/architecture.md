@@ -93,6 +93,7 @@ Single DynamoDB table, `kad`. Composite key `PK` / `SK`, one GSI (`GSI1PK` / `GS
 | Entity | PK | SK | Notes |
 |---|---|---|---|
 | Account → household | `ACCT#<cognitoSub>` | `HH#<hhId>` | Written only when somebody signs in. An adult may own more than one. **This pointer is the authority**: every "may this account manage it?" reads it. |
+| Sign-in being removed | `ACCT#<cognitoSub>` | `RETIRING` | Written by the retention sweep before it decides whether to delete a sign-in that owns no household (#524). While it stands no pointer can be written for that sign-in (`putAccountPointer`, `putOwner`, `claimHousehold`). Only the `sub`; `ttl` 7 days. |
 | Household | `HH#<hhId>` | `META` | The family. `ownerSub` (null while anonymous), `guest`, `expiresAt`, display name, and `retentionDays` when an owner set one (#252); absent means 365 (#524). |
 | Player profile | `HH#<hhId>` | `PLAYER#<playerId>` | Display name, color, avatar, and `retired` once an owner takes the kid off the pickers (#248). No role (#265): rows written before still carry `role`, and nothing reads it. `data.flair`: what she picked for her own page (#299, "Her page" in §4.5), versioned like any stored shape (§3.2). Beside `data`, never in it: `lastPlayedAt`, her `IDLE` index entry while her household is a kept one (#524), and `sweeping` once she is being deleted (#252). |
 | Device binding | `HH#<hhId>` | `DEVICE#<deviceId>` | → playerId, token hash, last seen, user agent. Revocable. |
@@ -1417,7 +1418,9 @@ scene id cannot break a save.
   before the cutoff, so a kid who joins a room while it runs is spared. A live
   claim does not spare an idle kid, as it does not stop any delete. When that
   delete leaves a kept household with no kids, the household goes too
-  (`retireIfEmpty`, through `deleteHousehold`), and so does the Cognito user
+  (`retireIfLast`: marked `retiring` so no kid or owner can be added, emptiness
+  read strongly consistent, then `deleteRetiringHousehold`; retried from the
+  kid's forget job), and so does the Cognito user
   of each owner who has no other household (`AccountDirectory`,
   `cognito-directory.ts`); an owner's own delete leaves their sign-in.
 - **Expiring rows (#524).** Event rows (`EVENT_TTL_SECONDS`) and push
