@@ -19,7 +19,7 @@ const view = (id: string, biome: string | undefined, over: Partial<CampaignView>
 });
 
 describe("campBiome", () => {
-  it("reads the lobby's next chapter, of the campaign the lobby would begin", () => {
+  it("reads the lobby's next chapter, of the campaign the lobby would begin, before the crew has finished one", () => {
     const lobby = makeState({ phase: "lobby", chapterId: null, campaign: view("riftlight", "glacier_of_origins"), campaignOptions: [view("riftlight", "glacier_of_origins")] });
     expect(campBiome(lobby, null)).toBe("glacier_of_origins");
     expect(campFamilyFor(lobby, null)).toBe("frozen_north");
@@ -28,6 +28,16 @@ describe("campBiome", () => {
     // Before any campaign, or on a run from before `next.biome`: the fallback.
     expect(campFamilyFor(makeState({ phase: "lobby", campaign: null, campaignOptions: [] }), null)).toBe("open_plains");
     expect(campFamilyFor(makeState({ phase: "creation", campaign: view("gemfall", undefined), campaignOptions: [] }), null)).toBe("open_plains");
+  });
+
+  it("pitches the lobby where the crew last made camp, the chapter it last finished, once it has finished one (owner, 2026-11-06)", () => {
+    const after = view("gemfall", "glacier_of_origins", { last: { index: 6, title: "Six", biome: "red_sky_foothills" } });
+    const lobby = makeState({ phase: "lobby", chapterId: null, campaign: after, campaignOptions: [after] });
+    expect(campBiome(lobby, null)).toBe("red_sky_foothills");
+    expect(campFamilyFor(lobby, null)).toBe("red_sky_volcanic");
+    // A last chapter in a terrain with no backdrop of its own pitches on the plains, not where it is headed.
+    const unpainted = view("gemfall", "glacier_of_origins", { last: { index: 2, title: "Two", biome: "sallow_wastelands" } });
+    expect(campFamilyFor(makeState({ phase: "lobby", campaign: unpainted, campaignOptions: [unpainted] }), null)).toBe("open_plains");
   });
 
   it("reads the chapter being played at a rest scene and at the chapter's end, once it has loaded", () => {

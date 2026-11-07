@@ -80,11 +80,12 @@ export function campLayoutFor(stage: number, family: string = LOBBY_CAMP_FAMILY)
 }
 
 /**
- * The biome the camp is pitched in now (§3.1; #627): in the lobby, the next
- * chapter of the campaign the lobby would begin (`CampaignView.next.biome`,
- * the chapter the crew would pick up from); anywhere else, the chapter being
- * played, once this screen has it. Null when nobody can say (a lobby before
- * any campaign, a chapter still loading).
+ * The biome the camp is pitched in now (§3.1; #627): in the lobby, the
+ * chapter the crew last finished in the campaign the lobby would begin
+ * (`CampaignView.last.biome`, where it last made camp; owner, 2026-11-06),
+ * or before any is finished the chapter it would begin (`next`); anywhere
+ * else, the chapter being played, once this screen has it. Null when nobody
+ * can say (a lobby before any campaign, a chapter still loading).
  */
 export function campBiome(
   state: Pick<RunState, "phase" | "chapterId" | "campaign" | "campaignOptions" | "party" | "campaignVotes" | "storyTurn"> | null | undefined,
@@ -92,7 +93,10 @@ export function campBiome(
 ): string | null {
   if (!state) return null;
   const phase = state.phase ?? "lobby";
-  if (phase === "lobby" || phase === "creation") return lobbyCampaign(state as RunState).leader?.next?.biome ?? null;
+  if (phase === "lobby" || phase === "creation") {
+    const leader = lobbyCampaign(state as RunState).leader;
+    return leader?.last?.biome ?? leader?.next?.biome ?? null;
+  }
   return chapter && chapter.id === state.chapterId ? chapter.biome : null;
 }
 

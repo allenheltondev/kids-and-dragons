@@ -460,8 +460,35 @@ export function campaignView(
     blurb: campaign.blurb,
     chapters: finalIndex(campaign, deps),
     next: chapter ? { index: chapter.index, title: chapter.title, biome: chapter.biome } : null,
+    ...lastChapterOf(campaign, attempt, deps),
     ...(ended ? { ended } : {}),
   };
+}
+
+/**
+ * The chapter an attempt most recently finished, for `CampaignView.last`:
+ * where the crew last made camp. Read from what the attempt already keeps,
+ * so nothing new is stored (Gemfall's settled attempts stay byte for byte as
+ * they were):
+ *
+ *  - its story (`attempt.story`), which every settlement appends to, ordered
+ *    or graph, a graph replay included: the chapter actually played, even
+ *    where the roads moved after it (Gemfall 3C's failed ford sets
+ *    `route_wild`, and beat 3 on that road is 3B, not the 3C finished);
+ *  - for a row from before the story was kept, a graph journey's place when
+ *    it is not mid-chapter (the visit it last finished), else its last
+ *    first-time completion; or an ordered attempt's last beat on its roads,
+ *    which can name the wrong branch of a beat whose roads moved after it.
+ */
+export function lastChapterOf(campaign: Campaign, attempt: CampaignProgressRecord | null, deps: Pick<HandlerDeps, "content">): Pick<CampaignView, "last"> {
+  if (!attempt) return {};
+  const journey = attempt.journey;
+  const id =
+    attempt.story?.at(-1)?.chapterId ??
+    (journey ? (journey.status !== "playing" ? journey.chapter : journey.chaptersCompleted?.at(-1)) : undefined) ??
+    ((attempt.lastIndex ?? 0) > 0 ? deps.content.chapterAt(campaign.id, attempt.lastIndex!, attempt.routeFlags ?? {})?.id : undefined);
+  const chapter = id ? deps.content.chapter(id) : null;
+  return chapter ? { last: { index: chapter.index, title: chapter.title, biome: chapter.biome } } : {};
 }
 
 /**
@@ -506,6 +533,7 @@ function graphCampaignView(
   return {
     ...base,
     next: chapter ? { index: chapter.index, title: chapter.title, biome: chapter.biome } : null,
+    ...lastChapterOf(campaign, attempt, deps),
     journey: journeyView(graph, shown, (id) => deps.content.chapter(id)?.title, campaign),
   };
 }
