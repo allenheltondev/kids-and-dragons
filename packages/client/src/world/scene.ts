@@ -61,8 +61,6 @@ import {
   FALLEN_ROTATION,
   approach,
   biomeBackdropUrl,
-  characterArtUrl,
-  characterWorldArtUrl,
   drawContactShadow,
   drawPlaceholder,
   breathingShadowScale,
@@ -74,6 +72,8 @@ import {
 } from "./actor-art";
 import { drawnHeight, figureSize, fitCanvas, NOMINAL_PAINT, paintAspect, stanceLift, type Overflow, type PaintBox } from "./figure-scale";
 import { sceneBackdropUrl } from "./art-paths";
+import { heroArtUrl } from "./hero-art";
+import { loadHeroTexture, type HeroTextureHandle } from "./hero-art-pixi";
 import {
   RIFT_FOOT,
   riftPasses,
@@ -99,8 +99,19 @@ import {
   nameplateBoxOf,
   nameplateGap,
   nameplateLabel,
+  type NameplateBox,
   type NameplateReading,
+  crowdedTitles,
+  destroyNameDress,
+  dressNameplate,
+  fitNameDress,
+  hideNameTitle,
+  setNameDressVisible,
+  titleBoxOf,
+  titleMinFont,
+  type NameDress,
 } from "./nameplate";
+import { heroNameStyle } from "./hero-name";
 import type { EncounterEvent } from "@kad/shared";
 import { stageLayout, STORY_MEASURE, type StageCastMember } from "./cast";
 import { boardStageWidth, storyStageFrame } from "./stage-inset";
@@ -114,8 +125,6 @@ import { CAMP_KIT_STYLES } from "./camp-kit-art";
 import { campKitCanvas } from "./camp-kit-canvas";
 import { INDOOR_LIGHT } from "./camp-light";
 import { createShadowLayer, groundShadow } from "./ground-shadows";
-
-export { characterArtUrl };
 
 /**
  * How long the scene-step veil takes to lift after its window — after the
@@ -206,6 +215,12 @@ const MAX_STAGE_SPREAD = 1.6;
 /** How much of a lineup slot a nameplate may fill — the rest is the gutter
     that keeps two names from running into each other. */
 const NAMEPLATE_SLOT = 0.9;
+
+/**
+ * The smallest title font on the lineup, in design units (docs/hero-looks.md
+ * §7.2): 14px at 720p, where the 900-unit design height is 720 pixels.
+ */
+const STORY_TITLE_MIN_FONT = titleMinFont(720 / 900);
 
 export type FocusTarget =
   | { kind: "party" }
@@ -321,6 +336,11 @@ export interface PartyScene {
   storyFigureBoxes?(): { x: number; y: number; width: number; height: number }[];
   storyNameplateBoxes?(): { text: string; x: number; y: number; width: number; height: number; fontPixels: number }[];
   /**
+   * The title lines drawn under the heroes' names (#664), as boxes in the
+   * same space `nameplateBoxes` reports: only titles that show.
+   */
+  titleBoxes?(): NameplateReading;
+  /**
    * Each figure on the story stage as drawn (#362), in canvas pixels: the box
    * its *paint* fills (not its canvas), the ground line under it, the top of
    * its name, and the height and stance it was drawn for. For
@@ -424,6 +444,12 @@ interface Actor extends StageFigureArt {
   characterId: string;
   /** Which asset this actor was built from. See `visualKeyOf`. */
   visualKey: string;
+  /**
+   * Her figure's texture (hero-art-pixi.ts): `update` gives it her look as it
+   * stands (a new colour on the same figure), calling it lets go of her tinted
+   * texture. Called whenever the actor is torn down.
+   */
+  heroArt: HeroTextureHandle | null;
   /*
    * `label` is the name under their feet — who this is, when two players
    * picked the same species (nameplate.ts). Null for a name with nothing in
@@ -433,6 +459,8 @@ interface Actor extends StageFigureArt {
   /** What `label` is currently saying, so a renamed character is spotted
       without measuring a Text every patch. */
   labelText: string | null;
+  /** Her frame and title beside `label` (#664), or null: exactly as before looks. */
+  dress: NameDress | null;
   phase: number;
   down: boolean;
   connected: boolean;
@@ -477,20 +505,21 @@ interface CastActor extends StageFigureArt {
  * cutscene playing over a figure that visibly never transformed.
  *
  * Class matters only when it selects a delivered manifest.figureVariants illustration;
- * `characterWorldArtUrl` folds that exact distinction into the key without
+ * `heroArtUrl` (hero-art.ts) folds that exact distinction into the key without
  * rebuilding an undeclared class/species/tier combination onto the same base
  * illustration. Appearance is deliberately *not* in here. Nothing about a figure is drawn
  * from it any more — the runtime recolour is gone and every figure wears the
  * colours it was authored in (`nameplate.ts` explains why) — so folding it in
  * would throw a illustration away and reload an identical one because
- * somebody tapped a swatch that now only colours their UI chrome.
+ * somebody tapped a swatch that now only colours their UI chrome. Nor is her
+ * chosen colour (#666, `look.coat`): a new colour is a new texture on the same
+ * figure (`Actor.heroArt.update`), not a new figure.
  *
  * Pure and exported so the rule is testable without a WebGL context, the same
  * way `storyFocusTiles` is.
  */
 export function visualKeyOf(member: PartyMember): string {
-  const { species, tier, class: characterClass } = member.character;
-  return characterWorldArtUrl(species, tier, characterClass);
+  return heroArtUrl(member.character, "world");
 }
 
 /**
@@ -978,6 +1007,13 @@ export function createScene(app: Application): PartyScene {
         fitNameplate(actor.label, slot, viewport.width < 600);
       }
       actor.x = slots.party[index] ?? actor.x;
+      if (actor.label) {
+        // Her title under her name (#664): hidden, never shortened, when it is
+        // too small at 720p, wider than her slot or would fall off the stage.
+        const scale = actor.container.scale.y || 1;
+        const feet = GROUND_Y + (index % 2 === 0 ? 0 : DESIGN.height * 0.03);
+        fitNameDress(actor.dress, actor.label, { maxWidth: slot, minFont: STORY_TITLE_MIN_FONT / scale, maxBottom: (DESIGN.height - feet) / scale });
+      }
       // A shallow depth stagger so three characters read as a group rather than
       // a row of stickers. Allen's Chapter 2 lineup composition replaces this.
       actor.y = GROUND_Y + (index % 2 === 0 ? 0 : DESIGN.height * 0.03);
@@ -992,6 +1028,8 @@ export function createScene(app: Application): PartyScene {
       // Feet further down the screen = nearer the viewer = drawn in front.
       actor.container.zIndex = actor.y;
     });
+    // A title that would run into a neighbour's plate is hidden (§7.2).
+    hideCrowdedTitles();
     // A friend at the row's ends stays on the shown stage, and clear of any guest's share of it.
     const shownLeft = DESIGN.width - visibleRightEdge();
     const castFrom = slots.castLeft.length > 0 ? Math.min(...slots.castLeft) : Infinity;
@@ -1539,6 +1577,39 @@ export function createScene(app: Application): PartyScene {
    * none of them changed it — and the width is left to `layoutActors`, which
    * runs at the end of the same `setParty`.
    */
+  /** Her lineup plates as numbers, in design space at their slots: names and the titles that show. */
+  function lineupPlates(): { actor: Actor; name: NameplateBox; title: NameplateBox | null }[] {
+    const lift = (actor: Actor, box: NameplateBox): NameplateBox => {
+      const scale = actor.container.scale.x;
+      return { ...box, x: actor.x + box.x * scale, y: actor.y + box.y * scale, width: box.width * scale, height: box.height * scale };
+    };
+    return [...actors.values()]
+      .filter((actor) => actor.label !== null && actor.label.visible)
+      .map((actor) => {
+        const title = titleBoxOf(actor.dress);
+        return { actor, name: lift(actor, nameplateBoxOf(actor.label!)), title: title ? lift(actor, title) : null };
+      });
+  }
+
+  function hideCrowdedTitles(): void {
+    const plates = lineupPlates();
+    if (!plates.some((p) => p.title)) return;
+    const crowded = crowdedTitles(plates);
+    plates.forEach((p, i) => {
+      if (crowded[i]) hideNameTitle(p.actor.dress);
+    });
+  }
+
+  /** Dress (or re-dress) her name for her look; layout fits it. */
+  function dressActor(actor: Actor, member: PartyMember): void {
+    if (!actor.label) {
+      destroyNameDress(actor.dress);
+      actor.dress = null;
+      return;
+    }
+    actor.dress = dressNameplate(actor.container, actor.label, heroNameStyle(member.character.look), actor.dress);
+  }
+
   function setLabel(actor: Actor, name: string): void {
     const next = nameplateLabel(name);
     if (next === actor.labelText) return;
@@ -1576,7 +1647,7 @@ export function createScene(app: Application): PartyScene {
     const placeholder = drawPlaceholder(ACTOR_HEIGHT);
     art.addChild(placeholder);
 
-    const { species, tier, id, name, class: characterClass } = member.character;
+    const { species, id, name } = member.character;
     // Fitted to the lineup's real spacing by `layoutActors`, which is the only
     // thing that knows how much room a figure has — and knows it only once the
     // party size is settled, which is after this runs.
@@ -1595,8 +1666,10 @@ export function createScene(app: Application): PartyScene {
       art,
       characterId: id,
       visualKey: visualKeyOf(member),
+      heroArt: null,
       label,
       labelText: nameplateLabel(name),
+      dress: label ? dressNameplate(container, label, heroNameStyle(member.character.look)) : null,
       phase: Math.random() * Math.PI * 2,
       down: member.down,
       connected: member.connected,
@@ -1631,28 +1704,33 @@ export function createScene(app: Application): PartyScene {
      * placeholder when it isn't there cannot go stale.
      */
     const loadPng = (): void => {
-      void Assets.load<Texture>(characterWorldArtUrl(species, tier, characterClass))
-        .then((texture) => {
-          // Identity, not id: a character who left and rejoined mid-load has a
-          // *new* actor under the same id, and this stale resolve would draw
-          // into containers that were destroyed with the old one.
-          if (destroyed || actors.get(id) !== actor) return;
-          const sprite = new Sprite(texture);
-          sprite.anchor.set(ANCHOR_X, ANCHOR_Y);
-          art.removeChildren();
-          placeholder.destroy();
-          art.addChild(sprite);
-          actor.sprite = sprite;
-          actor.paint = measurePaint(texture);
-          actor.footprint = groundedFootprint(measureFootprint(texture), actor.paint);
-          // The measured width changes how much room this hero needs.
-          layoutActors();
-          actor.shadow = refitShadow(container, actor.shadow, actor.canvas, actor.footprint);
-          actor.shadowCanvas = actor.canvas;
-        })
-        .catch(() => {
-          /* keep the placeholder: a missing tier must never blank the stage */
-        });
+      actor.heroArt = loadHeroTexture(member.character, "world", (texture) => {
+        // Identity, not id: a character who left and rejoined mid-load has a
+        // *new* actor under the same id, and this stale resolve would draw
+        // into containers that were destroyed with the old one.
+        if (destroyed || actors.get(id) !== actor) return;
+        // Her colour, arriving after her painting (or a new one): the same
+        // canvas and alpha, so the same figure with a new texture.
+        if (actor.sprite) {
+          actor.sprite.texture = texture;
+          return;
+        }
+        const sprite = new Sprite(texture);
+        sprite.anchor.set(ANCHOR_X, ANCHOR_Y);
+        art.removeChildren();
+        placeholder.destroy();
+        art.addChild(sprite);
+        actor.sprite = sprite;
+        // A sparkle special twinkles over her sprite, a child of it (§5.5).
+        actor.heroArt?.dress(sprite);
+        actor.paint = measurePaint(texture);
+        actor.footprint = groundedFootprint(measureFootprint(texture), actor.paint);
+        // The measured width changes how much room this hero needs.
+        layoutActors();
+        actor.shadow = refitShadow(container, actor.shadow, actor.canvas, actor.footprint);
+        actor.shadowCanvas = actor.canvas;
+      });
+      // A missing tier calls nothing: the placeholder stays, and never blanks the stage.
     };
 
     loadPng();
@@ -1726,11 +1804,15 @@ export function createScene(app: Application): PartyScene {
           // rebuild" split `visualKeyOf` makes for everything else that
           // arrives on a patch.
           setLabel(existing, member.character.name);
+          dressActor(existing, member);
+          // Her colour, changed at a rest or from the book (#666): the same figure, retinted.
+          existing.heroArt?.update(member.character);
           continue;
         }
         if (existing) {
           // A tier or class illustration changed; rebuild its sprite.
 
+          existing.heroArt?.();
           existing.container.destroy({ children: true });
           actors.delete(id);
         }
@@ -1739,6 +1821,7 @@ export function createScene(app: Application): PartyScene {
 
       for (const [id, actor] of [...actors.entries()]) {
         if (seen.has(id)) continue;
+        actor.heroArt?.();
         actor.container.destroy({ children: true });
         actors.delete(id);
       }
@@ -1858,7 +1941,10 @@ export function createScene(app: Application): PartyScene {
       nameplatesVisible = visible;
       for (const actor of actors.values()) {
         if (actor.label) actor.label.visible = visible;
+        setNameDressVisible(actor.dress, visible);
       }
+      // Titles are fitted with their names: shown again, they are laid out again.
+      if (visible && [...actors.values()].some((a) => a.dress)) layoutActors();
       for (const member of castActors.values()) {
         if (member.label) member.label.visible = visible;
       }
@@ -1893,6 +1979,11 @@ export function createScene(app: Application): PartyScene {
           width: box.width * scale, height: box.height * scale });
       }
       return { space: "story" as const, boxes };
+    },
+
+    titleBoxes() {
+      if (encounterView !== null && board) return { space: "board" as const, boxes: board.titleBoxes() };
+      return { space: "story" as const, boxes: lineupPlates().flatMap((p) => (p.title ? [p.title] : [])) };
     },
 
     storyFigureBoxes() {
@@ -2110,6 +2201,7 @@ export function createScene(app: Application): PartyScene {
       stepVeil.destroy();
       victoryGlow.destroy();
       for (const actor of actors.values()) {
+        actor.heroArt?.();
         actor.container.destroy({ children: true });
       }
       actors.clear();

@@ -20,7 +20,8 @@ import type { RiftActionKind } from "./campaign-graph.js";
 import type { InteractionAction } from "../interactions.js";
 import type { ChapterOutcome } from "./chapter.js";
 import type { CampClaimResult, CampFriendCard, CampView, HeroKitView, KitMilestoneUnlock, LuckyDrop } from "./camp.js";
-import type { BookKitChange, BookKitField } from "../camp-book.js";
+import type { BookEditField, BookKitChange } from "../camp-book.js";
+import type { HeroLookView, LookUnlockNews } from "./look.js";
 import type { RoomMode, RunState, DiceRoll } from "./state.js";
 import type { FieldGuideFind } from "../field-guide-record.js";
 import type { Badge, ProfileFlair } from "../kid-profile.js";
@@ -269,6 +270,28 @@ export type ClientIntent =
       buddy?: string | null;
     }
   /**
+   * Change a seated hero's own look (docs/hero-looks.md §3.2, §8.2; #664):
+   * her two colours (main and accent), special, nameplate frame and title. Only her own player, in
+   * downtime (the lobby and rests), with no limit. `revision` echoes
+   * `HeroLookView.revision` (0 for a hero with no look yet); a look changed
+   * since (from the book, another phone) refuses it as stale, and the table's
+   * view of her look is refreshed so the editor shows it as it now stands.
+   * Every look named must be hers. Written to her own row by the server.
+   */
+  | {
+      type: "LOOK_EDIT";
+      characterId: string;
+      revision: number;
+      /** Her main part's colour. */
+      coat?: string | null;
+      /** Her accent part's colour (owner, 2026-11-07). */
+      accent?: string | null;
+      /** A whole-figure special she has earned. */
+      special?: string | null;
+      nameplate?: string | null;
+      title?: string | null;
+    }
+  /**
    * Playtest mode (roadmap chapter 6). Both are refused with FORBIDDEN unless
    * `EngineContext.playtest` is true, which only `dev-server.ts` ever sets —
    * `lambda/runtime.ts` passes a literal `false`, so a deployed build has no
@@ -430,6 +453,14 @@ export interface ServerMessage {
    * it. Live only, exactly as `discovered`: a replay never announces one twice.
    */
   kitUnlocks?: KitMilestoneUnlock[];
+  /**
+   * Looks this step earned a seated hero (docs/hero-looks.md §6; #669): a
+   * find, a tier, a class rank, a finished campaign or her crew's camp, each
+   * receipt already on her row. Her own phone says so once, where her kit's
+   * news is. Live only, exactly as `kitUnlocks`: a replay never announces one
+   * twice.
+   */
+  lookUnlocks?: LookUnlockNews[];
   /**
    * The lucky drops this step paid (docs/camp.md §5.2): 1 Dash Cash each, saved
    * to the crew's camp as they landed. The TV sparkles "Dash Cash!" and the
@@ -1038,12 +1069,18 @@ export interface BookKitRequest {
   changes: BookKitChange[];
 }
 
-/** What a book edit did, and the kit as it now stands. */
+/** What a book edit did, and the kit (and, for a look change, the look) as it now stands. */
 export interface BookKitResponse {
   kit: JournalKit;
-  applied: BookKitField[];
+  /**
+   * Her look as it now stands (docs/hero-looks.md §3.2; #664), when the change
+   * named a look field (`nameplate`, `title`, `coat`). The same view the
+   * journal's heroes carry (`ResolvedCharacter.look`).
+   */
+  look?: HeroLookView;
+  applied: BookEditField[];
   /** Not the hero's to pick (merge only; sent straight away, one refusal refuses the whole change). */
-  refused: BookKitField[];
+  refused: BookEditField[];
 }
 
 /** One campaign on the Story page (#358). */

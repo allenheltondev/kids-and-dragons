@@ -1034,8 +1034,7 @@ function FighterRoster({ encounter, myId }: { encounter: EncounterState; myId: s
 function FighterFace({ combatant }: { combatant: Combatant }): ReactElement {
   const party = useParty();
   const member = party.find(member => member.character.id === combatant.id);
-  return member ? <CharacterPortrait species={member.character.species} tier={member.character.tier}
-    characterClass={member.character.class} className="combat__friend-art" size="2em" />
+  return member ? <CharacterPortrait hero={member.character} className="combat__friend-art" size="2em" />
     : <EnemyFace combatantId={combatant.id} icon={combatantIcon(combatant, party)} large />;
 }
 
@@ -1341,10 +1340,8 @@ function CellFigure({ occupant, numbed = false }: { occupant: GridOccupant; numb
       <>
         <CharacterPortrait
           backdrop
-          species={member.character.species}
+          hero={member.character}
           accent={member.character.appearance.accent}
-          tier={member.character.tier}
-          characterClass={member.character.class}
           className="combat__cell-face"
         />
         {badge}

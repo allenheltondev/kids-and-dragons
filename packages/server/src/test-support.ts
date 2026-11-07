@@ -15,6 +15,7 @@ import { campaignMode, chapterFor, lobbyCampaign, parseCampaignGraph } from "@ka
 import { makeChapter, makeItems, makeMap, makeRules } from "../../shared/src/test-fixtures.ts";
 import { makeRng } from "@kad/shared";
 import type {
+  LookCatalog,
   CampCatalog,
   AbilityCatalog,
   Bestiary,
@@ -29,6 +30,45 @@ import type {
 import { LocalSseChannel } from "./channel/room-channel.ts";
 import { MemoryTimingStore } from "./store/timing-store.ts";
 import type { ContentStore } from "./content/loader.ts";
+
+/**
+ * A small hero looks catalog (docs/hero-looks.md §7): the starter frames and
+ * titles, and one earned title and frame nobody holds until a test gives it;
+ * two starter main colours each for a unicorn and a Bigfoot, and one earned
+ * unicorn colour (#666); two starter accent colours each, one earned; and
+ * the two specials (sparkle, found; gold, at Radiant).
+ */
+export const LOOKS_FIXTURE: LookCatalog = {
+  coats: [
+    { id: "unicorn_sky", name: "Sky", unlock: { from: "starter" }, species: ["unicorn"], part: "main", color: "#58BCFD" },
+    { id: "unicorn_midnight", name: "Midnight", unlock: { from: "starter" }, species: ["unicorn"], part: "main", color: "#20134E" },
+    { id: "unicorn_starlight", name: "Starlight", unlock: { from: "found" }, species: ["unicorn"], part: "main", color: "#E8F0FF" },
+    { id: "bigfoot_ginger", name: "Ginger", unlock: { from: "starter" }, species: ["bigfoot"], part: "main", color: "#F27B00" },
+    { id: "bigfoot_frost", name: "Frost", unlock: { from: "starter" }, species: ["bigfoot"], part: "main", color: "#EBE7E3" },
+    { id: "unicorn_accent_rose", name: "Rose", unlock: { from: "starter" }, species: ["unicorn"], part: "accent", color: "#E0508F" },
+    { id: "unicorn_accent_teal", name: "Teal", unlock: { from: "starter" }, species: ["unicorn"], part: "accent", color: "#1FA0A0" },
+    { id: "unicorn_accent_bluebell", name: "Bluebell", unlock: { from: "milestone", tier: "sworn" }, species: ["unicorn"], part: "accent", color: "#4F6BED" },
+    { id: "bigfoot_accent_tan", name: "Tan", unlock: { from: "starter" }, species: ["bigfoot"], part: "accent", color: "#D9A066" },
+    { id: "bigfoot_accent_cocoa", name: "Cocoa", unlock: { from: "starter" }, species: ["bigfoot"], part: "accent", color: "#8A5A3C" },
+  ],
+  specials: [
+    { id: "aurora", name: "Aurora", unlock: { from: "found" }, effect: { kind: "sparkle" } },
+    { id: "gold", name: "Gold", unlock: { from: "milestone", tier: "radiant" }, effect: { kind: "gilded", color: "#E2B13C" } },
+  ],
+  nameplates: [
+    { id: "plain", name: "Plain", unlock: { from: "starter" } },
+    { id: "ribbon", name: "Ribbon", unlock: { from: "starter" }, art: "nameplates/ribbon.webp" },
+    { id: "leafy", name: "Leafy", unlock: { from: "starter" }, art: "nameplates/leafy.webp" },
+    { id: "starry", name: "Starry", unlock: { from: "starter" }, art: "nameplates/starry.webp" },
+    { id: "golden", name: "Golden", unlock: { from: "found" }, art: "nameplates/golden.webp" },
+  ],
+  titles: [
+    { id: "the_bold", text: "the Bold", unlock: { from: "starter" } },
+    { id: "the_kind", text: "the Kind", unlock: { from: "starter" } },
+    { id: "the_curious", text: "the Curious", unlock: { from: "starter" } },
+    { id: "of_the_gemfall", text: "of the Gemfall", unlock: { from: "milestone", campaign: "gemfall" } },
+  ],
+};
 import type { ApplyIntentResult, Engine, EngineContext, IntentInput } from "./engine/port.ts";
 import type { HandlerDeps } from "./handlers/deps.ts";
 import { DevIdentity, type DeviceIdentity } from "./identity.ts";
@@ -70,6 +110,8 @@ export function makeContent(
     bestiary?: Bestiary | null;
     /** The camp catalog (#618), for the chapter-end shop (#619). Absent: no shop. */
     campCatalog?: CampCatalog | null;
+    /** The hero looks catalog (#664). Absent: a small starter set (`LOOKS_FIXTURE`). */
+    looksCatalog?: LookCatalog | null;
   } = {},
 ): ContentStore {
   const rules = overrides.rules ?? makeRules();
@@ -100,6 +142,7 @@ export function makeContent(
     world: () => overrides.world ?? null,
     bestiary: () => overrides.bestiary ?? null,
     campCatalog: () => overrides.campCatalog ?? null,
+    looksCatalog: () => (overrides.looksCatalog === undefined ? LOOKS_FIXTURE : overrides.looksCatalog),
     // The same selection the real store makes (shared `chapterFor`), over
     // whatever chapters this fixture was given — so a test about a routed
     // beat exercises the rule rather than a fixture's idea of it.

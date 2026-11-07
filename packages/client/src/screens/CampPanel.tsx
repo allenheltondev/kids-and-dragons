@@ -64,6 +64,7 @@ import {
   waitingPieces,
 } from "../world/camp-scene";
 import { campPanelOpen, closeCampPanel, finishKitWelcome, kitWelcomeDone, onCampPanel, openCampPanel } from "./camp-panel";
+import { LookEditor } from "./LookEditor";
 import "./CampPanel.css";
 
 type Dispatch = (intent: ClientIntent) => void;
@@ -568,7 +569,13 @@ export function CampPanel({ state, me, held, dispatch }: { state: RunState; me: 
         {indoors ? <PackedCamp state={state} /> : null}
         {mine.map((member) => {
           const kit = state.kits?.[member.character.id];
-          return kit ? <KitEditor key={member.character.id} member={member} kit={kit} held={held} dispatch={dispatch} friends={state.campMoment?.friends?.cards ?? []} /> : null;
+          return (
+            <div key={member.character.id} style={{ display: "contents" }}>
+              {kit ? <KitEditor member={member} kit={kit} held={held} dispatch={dispatch} friends={state.campMoment?.friends?.cards ?? []} /> : null}
+              {/* Her look (docs/hero-looks.md §8.2; #664): the lobby and rests. */}
+              {kind === "lobby" || kind === "rest" ? <LookEditor member={member} held={held} dispatch={dispatch} /> : null}
+            </div>
+          );
         })}
         <CampFriends state={state} />
         <SharedSpots state={state} me={me} held={held} dispatch={dispatch} active={active} setActive={setActive} />

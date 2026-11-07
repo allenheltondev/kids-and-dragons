@@ -13,6 +13,7 @@
  *   __KAD_PRECACHE_CAMPAIGNS__  every `/content/campaigns/*.json` in the repo
  *   __KAD_FILE_INDEX__          the URL of this build's file index (below)
  *   __KAD_BUILD__               this build's id, as the page's `VITE_KAD_BUILD` (crash reports, #459)
+ *   __KAD_COAT_MASKS__          the paintings with a coat mask, whose masks are warmed with them
  *
  * The file index is a fingerprint of every file the deploy uploads under
  * `/assets/` and `/content/` (scripts/deploy.sh syncs both directories whole)
@@ -86,15 +87,28 @@ export function buildId(env: Record<string, string | undefined> = process.env): 
   return (env.KAD_BUILD ?? env.GITHUB_SHA ?? "dev").slice(0, 12);
 }
 
+/**
+ * The paintings with a coat mask (docs/hero-looks.md §4.3, §5.4): assets/manifest.json →
+ * `coatMasks.paintings`, paths under `assets/`. The worker cannot import the manifest, so it
+ * is handed the list (`__KAD_COAT_MASKS__`) and warms each listed painting's mask with it.
+ */
+export function coatMaskPaintings(manifestPath = `${here}../../assets/manifest.json`): string[] {
+  const manifest = JSON.parse(readFileSync(manifestPath, "utf8")) as { coatMasks?: { paintings?: unknown } };
+  const paintings = manifest.coatMasks?.paintings;
+  return Array.isArray(paintings) ? paintings.filter((p): p is string => typeof p === "string").sort() : [];
+}
+
 export interface WorkerInputs {
   bundleFiles: readonly string[];
   campaignFiles: readonly string[];
   fileIndexUrl: string;
   /** Defaults to `buildId()`. */
   build?: string;
+  /** Defaults to the art manifest's (`coatMaskPaintings()`). */
+  coatMasks?: readonly string[];
 }
 
-export function buildServiceWorker({ bundleFiles, campaignFiles, fileIndexUrl, build = buildId() }: WorkerInputs): string {
+export function buildServiceWorker({ bundleFiles, campaignFiles, fileIndexUrl, build = buildId(), coatMasks = coatMaskPaintings() }: WorkerInputs): string {
   const sources = WORKER_SOURCES.map((file) => readFileSync(`${here}${file}`, "utf8").replace(IMPORT, "").replace(EXPORT, ""));
   // Types stripped and comments dropped, nothing else: no bundling, no
   // module wrapper, so the lists prepended below stay plain globals.
@@ -106,6 +120,7 @@ export function buildServiceWorker({ bundleFiles, campaignFiles, fileIndexUrl, b
     `const __KAD_PRECACHE_CAMPAIGNS__ = ${JSON.stringify([...campaignFiles].sort())};`,
     `const __KAD_FILE_INDEX__ = ${JSON.stringify(fileIndexUrl)};`,
     `const __KAD_BUILD__ = ${JSON.stringify(build)};`,
+    `const __KAD_COAT_MASKS__ = ${JSON.stringify([...coatMasks].sort())};`,
     outputText,
   ].join("\n");
 }

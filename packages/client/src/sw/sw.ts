@@ -78,6 +78,8 @@ declare const __KAD_PRECACHE_CAMPAIGNS__: readonly string[];
 declare const __KAD_FILE_INDEX__: string;
 /** Prepended by `sw-build.ts`: this build's id, the same one the page reports (`VITE_KAD_BUILD`). */
 declare const __KAD_BUILD__: string;
+/** Prepended by `sw-build.ts`: the paintings with a coat mask (assets/manifest.json `coatMasks.paintings`, paths under `assets/`), whose masks are warmed with them (docs/hero-looks.md §5.4). */
+declare const __KAD_COAT_MASKS__: readonly string[];
 
 interface SwExtendableEvent extends Event {
   waitUntil(work: Promise<unknown>): void;
@@ -428,7 +430,7 @@ async function periodicRefresh(record: SwPeriodicRecord, deadline: number, mayUp
   record.chapters = next.ids;
   const cap = swPeriodicByteCap(swBudgetFor(await storageQuota()));
   let bytes = 0;
-  for (const { path, fingerprint } of swWarmList(swNextChapterArt(next.chapters, next.heroes), index, await savedKeys(files))) {
+  for (const { path, fingerprint } of swWarmList(swNextChapterArt(next.chapters, next.heroes, __KAD_COAT_MASKS__), index, await savedKeys(files))) {
     if (Date.now() > deadline || bytes >= cap) return "partial";
     const kept = await keepFromNetwork(files, path, fingerprint);
     if (kept > 0) {

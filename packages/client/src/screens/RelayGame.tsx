@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from "react";
 import { relayHolder, relayPosition, type InteractionPrompt, type PartyMember } from "@kad/shared";
-import { characterWorldArtUrl } from "../world/art-paths";
+import { HeroImage } from "../world/hero-art-dom";
 import { reducedMotion } from "../a11y/prefs";
 import { Icon } from "./icons";
 import { propUrl } from "./InteractionArt";
@@ -71,7 +71,7 @@ export function RelayWorld({ prompt, party, object, settled = true, now = Date.n
         const m = party.find((member) => member.playerId === id)!;
         const done = passed.includes(id);
         return <li key={id} className="relay-world__hero" data-active={id === holder} data-done={done} style={{ left: `${x(id)}%` }}>
-          <img src={characterWorldArtUrl(m.character.species, m.character.tier, m.character.class)} alt="" draggable={false} onError={(event) => { event.currentTarget.style.visibility = "hidden"; }} />
+          <HeroImage hero={m.character} place="world" alt="" draggable={false} onError={(event) => { event.currentTarget.style.visibility = "hidden"; }} />
           <span className="relay-world__footlight" aria-hidden="true" />
           <strong>{m.character.name}</strong><small>{done ? "Passed!" : id === holder ? caught ? "Got it!" : "Your turn!" : "Next"}</small>
         </li>;

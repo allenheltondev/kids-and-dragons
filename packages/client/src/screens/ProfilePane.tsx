@@ -18,6 +18,7 @@
  * none of it is in the first paint.
  */
 
+import { HeroName } from "./HeroName";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactElement } from "react";
 import {
@@ -221,7 +222,7 @@ function Page({ journal, profile }: { journal: JournalResponse; profile: KidProf
                     <li key={hero.id} className="profile__hero">
                       <HeroFrame hero={hero} frame={frameOf(hero)} />
                       <div className="profile__hero-text">
-                        <h4 className="profile__hero-name">{hero.name}</h4>
+                        <h4 className="profile__hero-name"><HeroName name={hero.name} look={hero.look} /></h4>
                         <p className="profile__level">
                           <Icon name="star" /> <span>Level {hero.level}</span>
                         </p>
@@ -292,8 +293,7 @@ function Page({ journal, profile }: { journal: JournalResponse; profile: KidProf
 function HeroFrame({ hero, frame, small = false }: { hero: ResolvedCharacter; frame: HeroFrameId; small?: boolean }): ReactElement {
   return (
     <div className={`profile__frame profile__frame--${frame}${small ? " profile__frame--small" : ""}`} data-frame={frame}>
-      <CharacterPortrait backdrop lit size="100%" species={hero.species} accent={hero.appearance.accent}
-        tier={hero.tier} characterClass={hero.class} />
+      <CharacterPortrait backdrop lit size="100%" hero={hero} accent={hero.appearance.accent} />
     </div>
   );
 }

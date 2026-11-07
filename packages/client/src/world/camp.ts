@@ -56,6 +56,8 @@ import {
   drawPlaceholder,
   measurePaint,
 } from "./actor-art";
+import type { HeroArtSubject } from "./hero-art";
+import { loadHeroTexture, type HeroTextureHandle } from "./hero-art-pixi";
 import {
   campRoute,
   campRoutes,
@@ -119,6 +121,12 @@ export interface CampFigure {
   habit?: CampFriendHabit;
   /** The cutout, or null for the "art pending" placeholder. */
   url: string | null;
+  /**
+   * A player's hero, whose figure is loaded through hero-art (`loadHeroTexture`)
+   * rather than from `url`, so she wears her look (docs/hero-looks.md §9).
+   * `url` is still hers (`heroArtUrl`): it is what a change of figure is noticed by.
+   */
+  hero?: HeroArtSubject;
   /** True height (figure-scale.ts `figureSize`). */
   heightCm: number;
   stance: CastStance;
@@ -306,6 +314,8 @@ type Place = WanderPlace;
 
 interface Actor {
   def: CampFigure;
+  /** A hero's figure texture (hero-art-pixi.ts): her colour, let go of when she leaves or the camp comes down. */
+  heroArt?: HeroTextureHandle;
   container: Container;
   body: Container;
   art: Container;
@@ -1170,21 +1180,29 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   function loadArt(actor: Actor): void {
     const url = actor.def.url;
     if (!url) return;
-    void load(url)
-      .then((texture) => {
-        if (destroyed || actors.get(actor.def.id) !== actor || actor.def.url !== url) return;
-        const sprite = new Sprite(texture);
-        shadeAt(sprite, actor.y);
-        sprite.anchor.set(ANCHOR_X, ANCHOR_Y);
-        actor.sprite?.destroy();
-        actor.sprite = sprite;
-        actor.placeholder.visible = false;
-        actor.art.addChild(sprite);
-        fitArt(actor);
-      })
-      .catch(() => {
-        /* keep the placeholder: a to-do, not a broken image */
-      });
+    const show = (texture: Texture): void => {
+      if (destroyed || actors.get(actor.def.id) !== actor || actor.def.url !== url) return;
+      // A hero's colour, arriving after her painting: the same figure, a new texture.
+      if (actor.sprite && actor.def.hero) {
+        actor.sprite.texture = texture;
+        return;
+      }
+      const sprite = new Sprite(texture);
+      shadeAt(sprite, actor.y);
+      sprite.anchor.set(ANCHOR_X, ANCHOR_Y);
+      actor.sprite?.destroy();
+      actor.sprite = sprite;
+      actor.placeholder.visible = false;
+      actor.art.addChild(sprite);
+      // A hero's sparkle special twinkles over her sprite, a child of it (§5.5).
+      actor.heroArt?.dress(sprite);
+      fitArt(actor);
+    };
+    // A failed load keeps the placeholder: a to-do, not a broken image.
+    actor.heroArt?.();
+    actor.heroArt = undefined;
+    if (actor.def.hero) actor.heroArt = loadHeroTexture(actor.def.hero, "world", show, { load });
+    else void load(url).then(show).catch(() => undefined);
   }
 
   function placeAt(actor: Actor, place: Place, face: 1 | -1 | null): void {
@@ -1543,6 +1561,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
         actors.delete(actor.def.id);
         planner.remove(actor.def.id);
         tapQueue.forget(actor.def.id);
+        actor.heroArt?.();
         actor.words?.destroy({ children: true });
         actor.container.destroy({ children: true });
       }
@@ -1661,6 +1680,9 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
         actor.sprite = null;
         actor.placeholder.visible = true;
         loadArt(actor);
+      } else if (def.hero) {
+        // Her colour (#666), changed at a rest or from the book: the same figure, retinted.
+        actor.heroArt?.update(def.hero);
       }
     }
     friendsOut = [];
@@ -2326,6 +2348,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
     if (destroyed) return;
     destroyed = true;
     app.ticker.remove(tick);
+    for (const actor of actors.values()) actor.heroArt?.();
     actors.clear();
     view.destroy({ children: true });
   }

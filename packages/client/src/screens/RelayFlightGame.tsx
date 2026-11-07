@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from "react";
 import { relayCatchWindow, relayPosition, relayTarget, relayThrowQuality, type InteractionPrompt, type PartyMember, type RelayCatchInput, type RelayThrowInput } from "@kad/shared";
-import { characterWorldArtUrl } from "../world/art-paths";
+import { HeroImage } from "../world/hero-art-dom";
 import { reducedMotion } from "../a11y/prefs";
 import { Button } from "../ui/Button";
 import { Icon } from "./icons";
@@ -95,7 +95,9 @@ export function RelayFlightCatcher({ prompt, playerId, object, nextName, nextMem
       <RelayLandscape />
       <span className="relay-skill__target" data-throw={caught} style={{ left: `${caught ? 50 + target.aim * 50 : flight.landing * 100}%`, top: `${caught ? 68 - target.power * 70 : 68}%` }} aria-hidden="true">
         <span className="relay-skill__target-ring" />
-        {caught && <img className="relay-skill__recipient" src={nextMember ? characterWorldArtUrl(nextMember.character.species, nextMember.character.tier, nextMember.character.class) : propUrl("rope-basket")} alt="" draggable={false} onError={event => { event.currentTarget.style.visibility = "hidden"; }} />}
+        {caught && (nextMember
+          ? <HeroImage className="relay-skill__recipient" hero={nextMember.character} place="world" alt="" draggable={false} onError={event => { event.currentTarget.style.visibility = "hidden"; }} />
+          : <img className="relay-skill__recipient" src={propUrl("rope-basket")} alt="" draggable={false} onError={event => { event.currentTarget.style.visibility = "hidden"; }} />)}
         <span className="relay-skill__target-label">{caught ? nextName : "Catch here"}</span>
       </span>
       {caught && <svg className="relay-skill__trajectory" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d={`M50 68 Q${50 + aim * 25} ${40 - power * 40} ${50 + aim * 50} ${68 - power * 70}`} data-quality={quality} /><circle cx={50 + aim * 50} cy={68 - power * 70} r="2" /></svg>}

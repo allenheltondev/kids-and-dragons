@@ -50,6 +50,7 @@ import { loadSources } from "../voice/cast/sources.ts";
 import { routeSetConflicts } from "./route-paths.mjs";
 import { classPlaceReach, classPlaceVerdict, loadAllowList as loadClassPlaceAllow } from "./class-places.mjs";
 import { campCatalogProblems, chapterBefriends, chapterFinds } from "./camp-catalog.mjs";
+import { chapterLookFinds, looksCatalogProblems } from "./looks-catalog.mjs";
 import { MILESTONE_KIT_PIECES } from "../../packages/shared/src/camp-milestones.ts";
 
 /**
@@ -197,7 +198,7 @@ function describe(err) {
 
 // ----------------------------------------------------------------------------- schema pass
 
-const SCHEMA_NAMES = ["rules", "items", "chapter", "campaign", "map", "abilities", "world", "help", "camp", "voice-script", "voice-cast", "voice-lexicon"];
+const SCHEMA_NAMES = ["rules", "items", "chapter", "campaign", "map", "abilities", "world", "help", "camp", "looks", "voice-script", "voice-cast", "voice-lexicon"];
 const AJV_OPTIONS = { allErrors: true, strict: true, allowUnionTypes: true };
 
 function compileSchemas(schemas, options = {}) {
@@ -2054,8 +2055,45 @@ function main() {
   }
 
   checkCamp(rep, ajv, chaptersById, brokenChapterIds, new Set(loadedCampaigns.map(({ campaign }) => campaign.id)));
+  checkLooks(rep, ajv, rules, new Set(loadedCampaigns.map(({ campaign }) => campaign.id)), chaptersById);
 
   return finish(rep);
+}
+
+/**
+ * The hero looks catalog (#664, docs/hero-looks.md §3.1): its schema, then
+ * what the schema cannot see (looks-catalog.mjs), against the rules, the
+ * campaigns, the camp's friends, the art manifest's delivered frames and every
+ * chapter's look finds (#669).
+ */
+function checkLooks(rep, ajv, rules, campaignIds, chaptersById) {
+  console.log(`\n${BOLD}looks${RESET}`);
+  const path = join(CONTENT, "looks.json");
+  const catalog = existsSync(path) ? readJson(rep, path) : null;
+  if (!catalog) {
+    rep.fail(rel(path), "", "content/looks.json is missing", "The hero looks catalog (coats, specials, nameplate frames and titles) lives there (docs/hero-looks.md §3.1).");
+    return;
+  }
+  if (!validateAgainstSchema(rep, ajv, "looks", path, catalog)) return;
+  const campPath = join(CONTENT, "camp.json");
+  const camp = existsSync(campPath) ? JSON.parse(readFileSync(campPath, "utf8")) : null;
+  const problems = looksCatalogProblems({
+    catalog,
+    manifest: assetRegistry.nameplateFrames,
+    tiers: new Set(Object.keys(rules?.tierLevels ?? {})),
+    classes: new Set(Object.keys(rules?.classes ?? {})),
+    campaigns: campaignIds,
+    friends: new Set((camp?.friends ?? []).map((f) => f.id)),
+    species: new Set(Object.keys(rules?.species ?? {})),
+    chapters: chaptersById,
+  });
+  const failures = problems.filter((p) => !p.warning);
+  for (const { file, at, problem, hint } of failures) rep.fail(file, at, problem, hint);
+  for (const { file, problem, hint } of problems.filter((p) => p.warning)) rep.warn(`${file}: ${problem}`, hint);
+  if (!failures.length) {
+    const finds = [...chaptersById.values()].reduce((n, chapter) => n + chapterLookFinds(chapter).length, 0);
+    rep.ok(`${rel(path)}  looks  (${catalog.coats.length} coat(s), ${(catalog.specials ?? []).length} special(s), ${catalog.nameplates.length} frame(s), ${catalog.titles.length} title(s), ${finds} look find(s))`);
+  }
 }
 
 /**

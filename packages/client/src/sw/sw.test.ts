@@ -12,7 +12,7 @@ import { PUSH_BODY, PUSH_TAG, PUSH_TITLE, turnPushPayload, type FieldGuide, type
 import { createHash } from "node:crypto";
 import { mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { buildId, buildServiceWorker, campaignFiles, fileIndexOf, fingerprint, precacheOf } from "../../sw-build";
+import { buildId, buildServiceWorker, campaignFiles, coatMaskPaintings, fileIndexOf, fingerprint, precacheOf } from "../../sw-build";
 import {
   SW_FILES_BUDGET_BYTES,
   SW_FILES_BUDGET_FLOOR_BYTES,
@@ -250,6 +250,15 @@ describe("the built sw.js", () => {
     expect(precacheOf(files)).toContain("/bundle/extra-z9.js");
     expect(source).toContain('"/content/campaigns/gemfall.json"');
     expect(source).toContain('const __KAD_FILE_INDEX__ = "/bundle/files-x1.json";');
+  });
+
+  it("carries the paintings with coat masks, which it cannot import, so it warms their masks too (#666)", () => {
+    // As the art manifest lists them today (none yet), and as a later wave will.
+    expect(source).toContain(`const __KAD_COAT_MASKS__ = ${JSON.stringify(coatMaskPaintings())};`);
+    const listed = buildServiceWorker({ bundleFiles: files, campaignFiles: [], fileIndexUrl: "/bundle/files-x1.json", build: "b", coatMasks: ["characters/unicorn/fledgling/assembled.png"] });
+    expect(listed).toContain('const __KAD_COAT_MASKS__ = ["characters/unicorn/fledgling/assembled.png"];');
+    expect(listed).toMatch(/swNextChapterArt\(next\.chapters, next\.heroes, __KAD_COAT_MASKS__\)/);
+    expect(() => new Script(listed)).not.toThrow();
   });
 
   it("carries the build id the page reports, and still imports nothing (#459)", () => {

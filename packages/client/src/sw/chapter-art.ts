@@ -11,7 +11,7 @@
  */
 
 import type { Chapter, ResolvedCharacter } from "@kad/shared";
-import { castArtUrl, biomeBackdropUrl, biomeTilesUrl, characterWorldArtUrl, enemyArtUrl, sceneBackdropUrl } from "../world/art-paths";
+import { castArtUrl, biomeBackdropUrl, biomeTilesUrl, characterPortraitArtUrl, characterWorldArtUrl, coatMaskFor, enemyArtUrl, sceneBackdropUrl } from "../world/art-paths";
 
 /** What a figure's art depends on: a seated party member, or a hero from the journal. */
 export interface FigureOf {
@@ -19,15 +19,37 @@ export interface FigureOf {
 }
 
 /**
- * Everything the chapter can draw, whichever road the party takes: the party's
- * figures, and for every scene its backdrop (or the biome's) and, for a fight,
- * its enemies and the biome's tiles. Each scene is visited once, in the
- * chapter's own order, so the entry's art comes first.
+ * A hero's two paintings (her world figure and her portrait), each followed
+ * by its coat mask where `masked` lists one (docs/hero-looks.md §5.4): her
+ * colour is tinted on the device from the two, so both must be there before
+ * the signal goes.
  */
-export function chapterAssets(chapter: Chapter | null, party: readonly FigureOf[]): string[] {
+export function heroPaintingsWithMasks(character: FigureOf["character"], masked: readonly string[]): string[] {
+  const out: string[] = [];
+  for (const painting of [
+    characterWorldArtUrl(character.species, character.tier, character.class),
+    characterPortraitArtUrl(character.species, character.tier, character.class),
+  ]) {
+    if (out.includes(painting)) continue;
+    out.push(painting);
+    const mask = coatMaskFor(painting, masked);
+    if (mask) out.push(mask);
+  }
+  return out;
+}
+
+/**
+ * Everything the chapter can draw, whichever road the party takes: the party's
+ * figures and portraits (with their coat masks, which `masked`, the art
+ * manifest's `coatMasks.paintings`, lists), and for every scene its backdrop
+ * (or the biome's) and, for a fight, its enemies and the biome's tiles. Each
+ * scene is visited once, in the chapter's own order, so the entry's art comes
+ * first.
+ */
+export function chapterAssets(chapter: Chapter | null, party: readonly FigureOf[], masked: readonly string[] = []): string[] {
   const urls = new Set<string>();
   for (const { character } of party) {
-    urls.add(characterWorldArtUrl(character.species, character.tier, character.class));
+    for (const url of heroPaintingsWithMasks(character, masked)) urls.add(url);
   }
   if (!chapter) return [...urls];
   const order = [chapter.entry, ...Object.keys(chapter.scenes)];

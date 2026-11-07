@@ -368,7 +368,7 @@
   box-shadow: inset 0 0 0 1px rgba(190, 178, 255, 0.12), inset 0 0.3em 0.6em rgba(0, 0, 0, 0.5);
   overflow: visible;
 }
-.game-hero__face > img { inline-size: 100%; block-size: 100%; object-fit: contain; object-position: 50% 100%; }
+.game-hero__face > :is(img, .hero-sparkle-host) { inline-size: 100%; block-size: 100%; object-fit: contain; object-position: 50% 100%; }
 .game-hero__face--goal { color: var(--kad-gold, #f5c86c); font-size: 1.8em; inline-size: 2.3em; block-size: 2.55em; }
 .game-hero--on .game-hero__face { box-shadow: inset 0 0 0 1px rgba(190, 178, 255, 0.12), var(--kad-chosen-glow, 0 0 0 0.15em #f5c86c); }
 .game-hero--done .game-hero__face { box-shadow: inset 0 0 0 1px rgba(190, 178, 255, 0.12), 0 0 0 0.15em var(--kad-success, #5fd6a0); }
