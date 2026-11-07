@@ -27,7 +27,7 @@ export type KitNewsKind = KitMilestoneUnlock["kind"] | LookUnlockNews["kind"];
 
 /** Whether an item is one of her looks rather than a kit piece. */
 export function isLookNews(item: { kind: KitNewsKind }): boolean {
-  return item.kind === "coat" || item.kind === "nameplate" || item.kind === "title";
+  return item.kind === "coat" || item.kind === "special" || item.kind === "nameplate" || item.kind === "title";
 }
 
 export interface KitNewsItem {

@@ -23,13 +23,17 @@
  * told, so a stage that hides its placeholder while art loads can show it at
  * once. A painting with no mask, or a hero with no colour, never loads the
  * tinter at all.
+ *
+ * A sparkle special (§5.5) is laid over the sprite the stage hands to
+ * `dress`, as a child of it, clipped by its own alpha (hero-sparkle-pixi.ts):
+ * it needs no mask and nothing from the tinter.
  */
 
 import { Assets, Texture } from "pixi.js";
 import type { Sprite } from "pixi.js";
 import { reducedMotion } from "../a11y/prefs";
-import { heroCoatOf, heroPaintingUrl, heroShimmerOf, type HeroArtPlace, type HeroArtSubject, type HeroCoatRequest } from "./hero-art";
-import { shimmerLayer, type ShimmerLayer, type ShimmerOptions } from "./hero-shimmer-pixi";
+import { heroCoatOf, heroPaintingUrl, heroSparkleOf, type HeroArtPlace, type HeroArtSubject, type HeroCoatRequest } from "./hero-art";
+import { sparkleLayer, type SparkleLayer, type SparkleOptions } from "./hero-sparkle-pixi";
 import { heroCoatsLoaded, loadHeroCoats, type HeroCoatsModule } from "./hero-coat-load";
 import type { CoatEntry, CoatSlot } from "./hero-coat-cache";
 
@@ -44,8 +48,8 @@ export interface HeroTextureOptions {
   missing?: () => void;
   /** How a tinted image becomes a texture; `Texture.from` unless a test says otherwise. */
   texture?: { make(source: unknown): Texture; destroy(texture: Texture): void };
-  /** A shimmer coat's sweep (`dress`). */
-  shimmer?: HeroShimmerOptions;
+  /** A sparkle special's twinkle (`dress`). */
+  sparkle?: HeroSparkleOptions;
 }
 
 /** Stops further calls and lets go of her tinted texture; `update` gives it her look anew. */
@@ -53,18 +57,18 @@ export interface HeroTextureHandle {
   (): void;
   update(hero: HeroArtSubject): void;
   /**
-   * The sprite her textures go on (§5.5, #669): a stage hands it over once it
-   * has made it, so a shimmer coat's sweep can be laid over it (a child of
-   * the sprite, masked by her coat mask). A new sprite moves the sweep to it.
+   * The sprite her textures go on (§5.5): a stage hands it over once it has
+   * made it, so a sparkle special can be laid over it (a child of the sprite,
+   * clipped by its own alpha). A new sprite moves the sparkles to it.
    */
   dress(sprite: Sprite): void;
 }
 
-export interface HeroShimmerOptions {
-  /** A still sheen, no sweep; `reducedMotion()` unless a stage or test says otherwise. */
+export interface HeroSparkleOptions {
+  /** A steady glow, no twinkle; `reducedMotion()` unless a stage or test says otherwise. */
   still?: boolean;
-  /** How the sweep moves (hero-shimmer-pixi.ts); a test passes its own. */
-  ticker?: ShimmerOptions["ticker"];
+  /** What twinkles it (hero-sparkle-pixi.ts); a test passes its own. */
+  ticker?: SparkleOptions["ticker"];
 }
 
 const pixiTexture = {
@@ -77,7 +81,7 @@ export function loadHeroTexture(
   hero: HeroArtSubject,
   place: HeroArtPlace,
   use: (texture: Texture) => void,
-  { load = pixiLoad, missing, texture = pixiTexture, shimmer: shimmerOptions = {} }: HeroTextureOptions = {},
+  { load = pixiLoad, missing, texture = pixiTexture, sparkle: sparkleOptions = {} }: HeroTextureOptions = {},
 ): HeroTextureHandle {
   let live = true;
   let painted: Texture | null = null;
@@ -86,32 +90,22 @@ export function loadHeroTexture(
   let want: HeroCoatRequest | null = heroCoatOf(hero, place);
   const painting = heroPaintingUrl(hero, place);
 
-  // Her shimmer (§5.5): laid over the sprite the stage dresses, once its mask is in.
+  // Her sparkles (§5.5): a child of the sprite the stage dresses, clipped by its own alpha.
   let sprite: Sprite | null = null;
-  let sweep: string | null = heroShimmerOf(hero, place)?.mask ?? null;
-  let layer: ShimmerLayer | null = null;
-  let layerFor: { sprite: Sprite; mask: string } | null = null;
+  let sparkles = heroSparkleOf(hero, place) !== null;
+  let layer: SparkleLayer | null = null;
+  const dressUp = (): void => {
+    if (!live) return;
+    if (layer && (!sparkles || layer.view.parent !== sprite)) {
+      layer.destroy();
+      layer = null;
+    }
+    if (!sprite || !sparkles || layer || sprite.destroyed) return;
+    layer = sparkleLayer(sprite, { still: sparkleOptions.still ?? reducedMotion(), ...(sparkleOptions.ticker !== undefined ? { ticker: sparkleOptions.ticker } : {}) });
+  };
   const undress = (): void => {
     layer?.destroy();
     layer = null;
-    layerFor = null;
-  };
-  const dressUp = (): void => {
-    if (!live) return;
-    if (layerFor && (layerFor.sprite !== sprite || layerFor.mask !== sweep)) undress();
-    if (!sprite || !sweep || layerFor) return;
-    const on = { sprite, mask: sweep };
-    layerFor = on;
-    void load(sweep)
-      .then((mask) => {
-        // Still wanted, on the same sprite: a stale load lays nothing.
-        if (!live || layerFor !== on || on.sprite.destroyed) return;
-        layer = shimmerLayer(on.sprite, mask, { still: shimmerOptions.still ?? reducedMotion(), ...(shimmerOptions.ticker !== undefined ? { ticker: shimmerOptions.ticker } : {}) });
-      })
-      .catch(() => {
-        // No mask to clip by: no sweep, never a band over the whole figure.
-        if (layerFor === on) layerFor = null;
-      });
   };
 
   const show = (entry: CoatEntry | null): void => {
@@ -167,7 +161,7 @@ export function loadHeroTexture(
     const request = heroCoatOf(next, place);
     if (request?.painting !== undefined && request.painting !== painting) return; // a new painting is a new figure
     if (heroPaintingUrl(next, place) === painting) {
-      sweep = heroShimmerOf(next, place)?.mask ?? null;
+      sparkles = heroSparkleOf(next, place) !== null;
       dressUp();
     }
     if ((request?.key ?? null) === (want?.key ?? null)) return;

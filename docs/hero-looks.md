@@ -1,6 +1,6 @@
-# Hero looks: a colour and a name style of her own
+# Hero looks: her colours and a name style of her own
 
-**Status: design approved (2026-11-07); phase 1, the name style, built (#664); phase 2, colours (the tinter, data, editors and offline), built (#666), waiting on masks (#667, #668); phase 4, earned looks and special coats, built (#669), its frame art owed (#680).** Every decision in §11 is *decided*: the
+**Status: design approved (2026-11-07); phase 1, the name style, built (#664); phase 2, colours (the tinter, data, editors and offline), built (#666), waiting on masks (#667, #668); phase 4, earned looks, built (#669), its frame art owed (#680); two parts and whole-figure specials (owner, 2026-11-07; #662), built.** Every decision in §11 is *decided*: the
 product owner's own on 2026-11-07, and the rest approved with this doc after two design reviews
 the same day. Nothing is still only proposed. The second revision answered the first review: the gear portraits (§4), book edits against the revision (§3.2), every
 hero drawing path (§9), the nameplate's geometry (§7.2), offline prefetch (§5.4), the tinter's
@@ -12,15 +12,19 @@ behavior they describe holds.
 
 **Purpose:** a kid makes a hero once and plays them for months. Today the only personal touches
 are the name and the accent colour the server assigns. The camp gave each hero a kit to make her
-own; this does the same for the hero herself. She chooses the **colour** of one part of her (her
-coat, her mane, her scales) and the **style of her name**: a nameplate frame and a title earned
+own; this does the same for the hero herself. She chooses the **colours** of two parts of her
+(a unicorn's coat and mane, a Bigfoot's fur and skin), earns **specials** that go over her whole
+figure (sparkles, gold), and picks the **style of her name**: a nameplate frame and a title earned
 in play.
 
 ## 1. What it is, and what it is not
 
-- **It is** one recoloured region per painting, a nameplate frame, and a title line under the
-  name. All of it is chosen in the adventure book or at the table, from a starter set plus looks
-  earned in play.
+- **It is** two recoloured parts per painting, a main part and an accent part, each the kid's
+  colour (*decided*, owner 2026-11-07: any pair is hers, with no rule against a clash); a few
+  earned **specials** that apply across her whole figure, never a colour (sparkles over her, or
+  gold that ignores her colours and makes her a gold statue); a nameplate frame; and a title line
+  under the name. All of it is chosen in the adventure book or at the table, from a starter set
+  plus looks earned in play.
 - **It is not** worn accessories, expressions, poses, animation variants, or new body shapes.
   The spec's old step 4 (horn shape, wing style, markings) stays removed, and `hornStyle`,
   `wingStyle` and `markings` on `Appearance` stay dead fields.
@@ -44,7 +48,9 @@ in five colours per region, and compared the camp kit's tint with a new one.
   colour: Bigfoot's tan skin and cream coat, his brown mane and brown outlines. Every shipped mask
   is hand-cleaned and reviewed (§4.3).
 - **The best region differs by species.** The unicorn's coat is clearly hers. Bigfoot's mane
-  changes his look more, and masks cleanly, while his coat runs into his skin.
+  changes his look more, and masks cleanly, while his coat runs into his skin. *Since (owner,
+  2026-11-07):* every species has two parts, and that seam is now the boundary between Bigfoot's
+  two: his fur (his cream body and his brown mane) and his skin (his tan face, hands and feet).
 
 ## 3. The data
 
@@ -58,7 +64,9 @@ set by the server and its `accent` is the player's identity colour; the look is 
 interface HeroLook {
   v: number;                        // LOOK_VERSION
   revision: number;                 // bumped by every write (§3.2)
-  coat: CoatId | null;              // null: as painted
+  coat: CoatId | null;              // her main part's colour; null: as painted
+  accent: CoatId | null;            // her accent part's colour; null: as painted
+  special: SpecialId | null;        // a whole-figure special; null: none
   nameplate: NameplateId | null;    // null: the plain plate
   title: TitleId | null;            // null: no title line
   unlocked: Record<LookId, LookUnlock>;
@@ -73,16 +81,21 @@ interface LookUnlock {
 }
 ```
 
-- **`coat` is the code's name, never the kid's.** The field is `coat` whichever part of the
-  species it colours; the book and the table call it **Color** (§8.1).
+- **`coat` is the code's name, never the kid's.** The field is `coat` for her main part's colour
+  whichever part that is, kept so that older looks stay valid, and `accent` is her accent part's;
+  the book and the table name each shelf for its part: "Coat" and "Mane", "Fur" and "Skin" (§8.1).
+- **A special is not a colour** (*decided*, owner 2026-11-07). It covers her whole figure, gear
+  included: sparkles over her, or gold, which ignores `coat` and `accent` while she wears it
+  (they are kept, and show again when she takes it off).
 - **Absent until chosen.** A hero with no `look` draws exactly as today. Nothing is backfilled on
   write, so old heroes, saved runs and the Gemfall gameplay digests do not move. Starter looks
   are implied (§6), not stored; milestone looks are backfilled on read, as the kit's are
   (camp.md §12.3).
-- **The colour follows the hero, not the painting** (*decided*). One `coat` tints whichever
-  painting she is drawn with: every tier, every class, the world figure and the portrait (§4).
-- **One catalog** (`content/looks.json`, validated by a new schema): coats, frames and titles,
-  each with its name, its unlock rule, and for a coat its colour or effect.
+- **The colour follows the hero, not the painting** (*decided*). Her `coat` and `accent` tint
+  whichever painting she is drawn with: every tier, every class, the world figure and the portrait
+  (§4).
+- **One catalog** (`content/looks.json`, validated by a new schema): coats (each a colour for one
+  part of one species), specials, frames and titles, each with its name and its unlock rule.
 
 ### 3.2 Edits from two places
 
@@ -96,8 +109,10 @@ The look is edited exactly as the kit is (camp.md §7, §11), with the same two 
   change are left alone. Queued edits are sent one at a time, oldest first, so **the last choice
   for each field wins**: blue then purple, both made offline, ends purple.
 - **The server always checks** that the hero is the writer's own, that every look named is
-  unlocked for her, and that a colour named is one of **her species'** colours (each species has
-  its own set, §7.1). On the book route a look that is not hers is skipped and the rest apply, and
+  unlocked for her, that a colour named is one of **her species'** colours (each species has its
+  own sets, §7.1) **for that part** (`coat` a main-part colour, `accent` an accent-part one), and
+  that a special named is one she has earned. Her two colours are never checked against each
+  other. On the book route a look that is not hers is skipped and the rest apply, and
   the book says it could not be saved (as `merge` does for the kit).
 - **A book edit and a table edit to the same field:** whichever reaches the server last stands.
   Both bump the revision, so a table editor open on the old look is refused once and refreshes.
@@ -143,7 +158,17 @@ in-memory pending list.
   (`screens/LookPane.tsx`, beside Camp on the tray) and the compact `LookEditor` in the phone's
   camp panel.
 
-## 4. The coloured region
+*As built (two parts and specials, owner 2026-11-07, #662):* `LOOK_VERSION` 2 adds `accent` and
+`special` to `HeroLook` and `HeroLookView`; `migrateLook` reads a v1 look (one `coat`) as her main
+colour with no accent and no special, so an old look still draws. `LookCatalog` gains `specials`
+(`CatalogSpecial`: `id`, `name`, `unlock`, `effect` `{ kind: "sparkle" }` or `{ kind: "gilded",
+color }`), and every `CatalogCoat` names its `part` (`"main"` or `"accent"`). `LookEdit`,
+`BookLookField` and `BOOK_LOOK_FIELDS` gain `accent` and `special`: `LOOK_EDIT` carries them, and
+the book sends them as new change kinds, merged field by field as the others are.
+`lookEditProblem` refuses a colour of the wrong part ("a main color, not an accent one"), another
+species' colour, and a special she has not earned. `LookUnlockNews.kind` gains `"special"`.
+
+## 4. Her coloured parts
 
 ### 4.1 Which paintings: three families, 168 in all
 
@@ -171,44 +196,59 @@ together to keep that window short.
 
 - **One mask per painting:** `coat-mask.png` beside an `assembled.png`, and
   `<species>.coat-mask.png` beside a gear portrait.
-- **8-bit greyscale, on the painting's own canvas,** registered pixel for pixel. White is
-  coloured, black is not, and the edges are soft (fur is fluffy; a hard edge reads as cut out).
-- **One region per species** (*decided*: one region), chosen **per species** (from §2). A first pass, confirmed on each species' clean masks:
+- **8-bit RGB, no alpha, on the painting's own canvas,** registered pixel for pixel (*decided*,
+  owner 2026-11-07):
+  - **R** her **main part**, **G** her **accent part** (a pixel is never strongly in both), each
+    white where coloured, black where not, with soft edges (fur is fluffy; a hard edge reads as
+    cut out);
+  - **B** her **whole figure**: the painting's alpha on a transparent painting; everything but
+    the backdrop on an opaque gear portrait. Specials are drawn on it (§5.5).
+- **Two parts per species** (*decided*), named in `assets/manifest.json` → `coatMasks.regions`
+  (`{ main: { region, draftFrom, confirmed }, accent: { ... } }`). A part's name is the kid's
+  shelf label, capitalised:
 
-  | Species | Region | Why |
-  |---|---|---|
-  | Unicorn | Coat | The light coat is most of her; the mane stays her painted accent |
-  | Bigfoot | Mane | The changed mane reads from the couch; the coat runs into his skin |
-  | Dragonling | Scales | To confirm on the masks |
-  | Griffin | Feathers | To confirm on the masks |
-  | Kitsune | Fur | To confirm on the masks |
-  | Manticore | Mane | To confirm on the masks |
+  | Species | Main (R) | Accent (G) | Confirmed |
+  |---|---|---|---|
+  | Unicorn | Coat | Mane | yes |
+  | Bigfoot | Fur: his cream body and his brown mane | Skin: his tan face, hands and feet | yes |
+  | Dragonling | Scales | Wings | to confirm on the masks |
+  | Griffin | Coat | Feathers (the blue crest, ruff and tail tuft) | to confirm on the masks |
+  | Kitsune | Fur | Tails | to confirm on the masks |
+  | Manticore | Fur | Mane | to confirm on the masks |
 
-  Every painting of a species, in all three families, colours the same part of her.
-- **What never takes the colour:** eyes, outlines, skin, horns and claws, gear, the class
-  costume, and a gear portrait's background.
+  `draftFrom` names the palette slot (or slots, for a part painted in two: Bigfoot's fur is his
+  `coat` and `mane`) the draft picks a part out by. Every painting of a species, in all three
+  families, colours the same two parts of her.
+- **What never takes a colour:** eyes, outlines, horns and claws, gear, the class costume, and a
+  gear portrait's background. Skin only where it is the species' accent (Bigfoot). A special
+  covers her whole figure, gear included.
 
 ### 4.3 How the art pipeline makes and checks them
 
-1. `npm run art:coat-draft -- <species>` writes a draft mask for every painting of the species,
-   picked out by colour as in §2. It is a starting point, never shipped as is.
-2. An artist cleans each mask by hand (any editor; the mask is a plain PNG).
-3. `npm run art:sheet` gains a colour page: each painting, its mask overlaid, and four test tints
-   (one light, one dark, one saturated, one grey), for review before it ships.
-4. `npm run art:verify` gates every mask: its size matches its painting's; its coverage is sane
-   (neither empty nor the whole canvas); and on a transparent painting, it lies inside the
-   painting's own alpha. A gear portrait is opaque, so the review sheet is its only check that
-   the background stays out.
+1. `npm run art:coat-draft -- <species>` drafts all three channels of every painting of the
+   species: R and G picked out by colour from each part's palette slot, the two competing so a
+   pixel goes to the nearer part; B from the painting's alpha, or by a flood fill in from the
+   edges on a gear portrait. It is a starting point, never shipped as is.
+2. An artist cleans each mask by hand, channel by channel (any editor; the mask is a plain PNG).
+3. `npm run art:sheet`'s colour page shows each painting, its three channels overlaid (main pink,
+   accent blue, figure yellow), four main and accent pairings (light and dark, dark and light,
+   saturated and grey, grey and saturated) and gold over the figure, for review before it ships.
+4. `npm run art:verify` gates every mask: 8-bit RGB; its size its painting's; R's and G's coverage
+   within `minCoverage`..`maxCoverage`; each part inside B (`maxSpill`); the parts' overlap at most
+   `maxOverlap` of the smaller; B non-empty and at most `maxFigureCoverage` of the canvas; and on a
+   transparent painting, B inside the painting's own alpha. A gear portrait is opaque, so the
+   review sheet is its only check that the backdrop stays out.
 5. `assets/manifest.json` lists which paintings have masks, so the client never asks for a mask
    that does not exist (as `figureVariants` does for class art).
 
-Built in #673: `assets/manifest.json` → `coatMasks` holds the species regions (`regions`, with
-the palette slot the draft picks from), the gate's bounds (`tolerance`) and the listed paintings
+Built in #673, and made two parts and a figure in #662: `assets/manifest.json` → `coatMasks` holds
+the species' parts (`regions`), the gate's bounds (`tolerance`) and the listed paintings
 (`paintings`, paths under `assets/`); `tools/art/coat.py` is the library under the draft tool,
 the gate and the sheet, and `packages/client/src/world/coat-masks.ts` is the client's lookup
-(`coatRegionOf`, `hasCoatMask`, `coatMaskUrl`). A drafted mask fails `art:verify` until its
-painting is listed, so a draft cannot ship by accident. The sheet's colour pages are
-`art/review/<species>/coat-<family>.png` and include unlisted drafts.
+(`coatPartsOf`, `coatRegionOf`, `coatPartLabel`, `coatPartSlots`, `hasCoatMask`, `coatMaskUrl`,
+`paintingIsCutOut`). A drafted mask fails `art:verify` until its painting is listed, so a draft
+cannot ship by accident. The sheet's colour pages are `art/review/<species>/coat-<family>.png`
+and include unlisted drafts.
 
 ## 5. The tinter
 
@@ -220,7 +260,7 @@ painting is listed, so a draft cannot ship by accident. The sheet's colour pages
   `characterPortraitArtUrl`, picks the painting as today, and applies her colour when the
   painting has a mask. Every surface that draws **a player's hero** goes through it (§9).
   Character creation and non-player art (the cast, enemies, other creatures) do not.
-- **One tinter** (`world/hero-coat.ts`) turns a painting, its mask and a coat into a tinted
+- **One tinter** (`world/hero-coat.ts`) turns a painting, its mask and her look into a tinted
   canvas, and from it:
   - **for Pixi,** a texture, as `campKitCanvas` does for the kit;
   - **for the DOM,** an object URL, for `CharacterPortrait` and the `<img>`s that take a URL
@@ -230,31 +270,64 @@ Both come from one pass, so the TV and every phone show the same hero.
 
 ### 5.2 The colour swap
 
-For each coloured pixel, in OKLab:
+Each of her parts is swapped on its own: her main colour on the mask's R, her accent colour on its
+G, each by **its own region's** lightness and chroma, in one pass. A part with no colour chosen
+stays as painted, and nothing outside both parts changes. Where the soft edges of the two parts
+reach one pixel, their weights are shared out, so a pixel is never more than wholly recoloured.
+**Gold** (a gilded special, §5.5) is the same swap over her whole figure (B), her colours
+ignored: she keeps her lightness steps, so she reads as a statue of it.
 
-- **Lightness:** the coat's target lightness, plus the pixel's own step from the region's mean
-  lightness, so shadows stay shadows and highlights stay highlights. Going from a light region to
-  a dark coat, the steps are softened a little (×0.85) so it does not go muddy. The result is
-  clamped to 0.04–0.98, so nothing goes to pure black or blows out to pure white.
-- **Hue:** the coat's.
-- **Chroma:** the coat's, varied gently with the pixel's own (square root of its ratio to the
-  region's mean, clamped to 0.6–1.4), so a painted gradient keeps some life. **A near-grey
-  region** (mean chroma under 0.02, a white or grey coat) has no ratio to keep: every pixel takes
-  the coat's chroma as is.
+**The chosen colour lands on most of the part** (#662). A part can be painted in two very
+different lightnesses: Bigfoot's fur is his cream body (about 60% of it, lightness about 0.9) and
+his brown mane (about 0.35). Anchored on the part's *mean* (0.67), every colour landed where
+almost no pixels are: a pale yellow clamped his body to white and turned his mane olive, a navy
+went slate on his body and near-black on his mane. So the swap anchors on the part's **median**
+lightness and chroma (mask-weighted), and fits the part's spread around the colour.
+
+For each coloured pixel of a region, in OKLab:
+
+- **Lightness:** the colour's, plus the pixel's own step from the region's **anchor** (its
+  weighted median lightness), so shadows stay shadows and highlights stay highlights:
+  - a region whose **spread** (its weighted 5th to 95th percentile of lightness) is wider than
+    0.30 has its steps scaled to fit 0.30;
+  - going darker than the anchor, the steps are softened a little (×0.85) so it does not go
+    muddy;
+  - the steps are scaled again, above and below the anchor on their own, so the spread stays
+    inside 0.14–0.95 around the colour: a dark choice never crushes the part's darkest pixels to
+    black, and a light one never clamps its fur strokes to white;
+  - a narrow region away from the ends keeps its steps exactly as painted. The result is clamped
+    to 0.04–0.98 at last, for the few pixels outside the spread.
+- **Hue:** the colour's.
+- **Chroma:** the colour's, varied gently with the pixel's own (square root of its ratio to the
+  region's weighted median chroma, clamped to 0.6–1.4), so a painted gradient keeps some life.
+  **A near-grey region** (median chroma under 0.02, a white or grey coat) has no ratio to keep:
+  every pixel takes the colour's chroma as is.
 - **Out of gamut:** a colour sRGB cannot show is brought in by lowering its chroma at the same
   lightness and hue, never by clipping each channel (which shifts the hue).
 - **Blend:** by the mask's value, so soft edges stay soft.
 
-The region's mean lightness and chroma are computed once per mask. A unit test pins the
-arithmetic (as `shadedPixel` does for the camp's shadows), including the near-grey, gamut and
-clamping cases, and a sheet like §2's is kept as the reference.
+Each region's anchors and spread are computed once per mask, from 1024-bin histograms (each
+value the bin's centre), the same in `hero-coat.ts` (`coatRegionStats`, `swapLightness`,
+`COAT_SWAP`) and coat.py (`region_stats`, `_lightness`). A unit test pins the arithmetic (as
+`shadedPixel` does for the camp's shadows), including the near-grey, gamut and clamping cases
+and a part painted in two lightnesses, and a sheet like §2's is kept as the reference.
+
+On Bigfoot's fledgling fur (a local draft mask, not committed), where the colour lands on his body
+and his mane, before and after:
+
+| Colour | Target L | Body L before → after (ΔE to the colour) | Mane L before → after |
+|---|---|---|---|
+| Pale yellow #F7E9A8 | 0.93 | 0.98, 97% clamped (0.066) → 0.94, none clamped (0.007) | 0.63 olive → 0.71 |
+| Navy #23264A | 0.29 | 0.45 slate (0.164) → 0.31 (0.020) | 0.08 near-black → 0.17 |
+| Grey #9A9A9A | 0.69 | 0.88 near-white (0.192) → 0.70 (0.018) | 0.40 → 0.50 |
+| Raspberry #E8326E | 0.62 | 0.78 light pink (0.184) → 0.64 (0.018) | 0.37 → 0.43 |
 
 ### 5.3 Its cost, and its cache
 
 - **Off the main thread.** The pass runs in a worker with an `OffscreenCanvas` where the browser
   has one, else in small slices between frames. The hero draws as painted until it is done.
-- **Each request is deduplicated:** two surfaces asking for the same painting and coat at once
-  share one pass.
+- **Each request is deduplicated:** two surfaces asking for the same painting and look (both
+  colours, or the gold) at once share one pass.
 - **The latest choice wins.** Each hero's request carries a sequence number; a pass that
   finishes after she has picked another colour is thrown away, not shown, and a queued pass for
   a colour no longer wanted is cancelled.
@@ -284,30 +357,31 @@ painting**, wherever a hero's painting is prefetched today:
 
 A test opens a hero the phone has seen before, offline, and finds her chosen colour on her.
 
-### 5.5 Special coats
+### 5.5 Specials
 
-A few earned coats are more than a colour (*decided*):
+Specials are whole-figure effects, not colours (*decided*, owner 2026-11-07). Each is every
+species', earned only, and drawn from the mask's figure channel (B), with no new art:
 
-- **Two-tone:** the region's lighter half takes one colour, its darker half the other, with a
-  soft step between. A still image, so it costs nothing extra.
-- **Shimmer:** a plain or two-tone coat with a slow highlight sweeping across the region every
-  few seconds. On the TV it is a sprite over the hero, masked by the region mask. In the DOM it
-  is an element laid **over** the image (never behind it: a gear portrait is opaque and would
-  hide it), its moving gradient clipped by the region mask (`mask-image`), so it lights only her
-  coloured part. **Under reduced motion** it is a still sheen, and no sweep.
+- **Sparkle:** small stars twinkling over her whole figure, each on its own beat. On the TV it is a
+  child of her sprite, so it moves with every transform the stage gives her, clipped by her
+  figure. In the DOM it is an element in the image's own box, laid **over** the image (never behind
+  it: a gear portrait is opaque and would hide it), clipped by her figure (`mask-image`, read by
+  alpha). **Under reduced motion** (the device's setting or `data-motion="reduced"`) the stars rest
+  at a steady glow, with no twinkle. Her colours show under it.
+- **Gold (gilded):** her whole figure swapped toward the special's colour by the §5.2 swap,
+  keeping its lightness steps, so she reads as a gold statue. Her chosen colours are ignored while
+  she wears it. A still image: a tint like any other, with its own cache key.
+
+The two-tone coat and the region-masked shimmer coat are gone (#662): the earned two-tone coat
+became Gold, and the found shimmer coat became the Aurora sparkle.
 
 *As built (#666, phase 2; no real mask ships yet, so every hero still draws as painted until
 #667 and #668 list theirs in `coatMasks.paintings`):*
 
 - **The data.** `look.coat` is a catalog id (`content/looks.json` → `coats`): `id`, `name` (the
-  tile's word), `unlock`, `species` (one each) and `color`. Six starters per species (§7.1).
-  How the tinter paints a coat is shared `CoatPaint`, one kind today (`{ kind: "plain", color }`);
-  `speciesCoat` (hers, by species), `coatPaintOf` and `coatPaintKey` are in shared `hero-look.ts`.
-  **For #669:** add an optional `effect` to `CatalogCoat` and its schema (say
-  `{ "kind": "two-tone", "dark": "#hex" }`, `{ "kind": "shimmer" }`), map it in `coatPaintOf` to a
-  new `CoatPaint` member, and add its case to `coatTarget` / `tintCoatPixels` (hero-coat.ts) and
-  coat.py's `tint`. `color` stays every coat's base, so a build that does not know an effect
-  draws it plain. Shimmer's moving sweep is a separate overlay (§5.5), not the tinter's.
+  tile's word), `unlock`, `species` (one each), `color`, and since #662 `part`. Six starters per
+  species and part (§7.1). How the tinter paints her is shared `CoatPaint` (§5.5, as built);
+  `speciesCoat`, `coatPaintOf` and `coatPaintKey` are in shared `hero-look.ts`.
 - **The resolver** (`world/hero-art.ts`): `HeroArtSubject` carries `look` (a `Character` or a
   `ResolvedCharacter` passes it whole). `heroCoatOf(hero, place)` is the tint request
   (`{ painting, mask, paint, key }`) or null: no colour, not her species', or no mask listed.
@@ -347,37 +421,45 @@ A few earned coats are more than a colour (*decided*):
   ahead (`prefetch.ts`) warm figure masks too, and the book's fresh read warms every hero's
   paintings and masks (`heroOfflineArt`, JournalScreen). The tint itself is not stored: it is made
   again, on the device, from those two files.
-- **The editors.** A **Color** shelf, first in the book's Look page and in the table's compact
-  editor: "As painted" and her species' colours, each tile `CharacterPortrait` of her wearing it
-  (and a dot of the colour by its name). It is offered only once one of her paintings has a
+- **The editors.** A colour shelf for each of her two parts (since #662, named for the part),
+  first in the book's Look page and in the table's compact editor: "As painted" and her species'
+  colours for that part, each tile `CharacterPortrait` of her wearing it, her other colour kept
+  (and a dot of the colour by its name). They are offered only once one of her paintings has a
   mask; before that every tile would look the same.
 
-*As built (#669, the special coats):*
+*As built (#662, the specials):*
 
-- **The data.** `CatalogCoat.effect` (`CoatEffect`): `{ kind: "two-tone", dark }` or
-  `{ kind: "shimmer", dark? }`, earned only (`looks-catalog.mjs`). `coatPaintOf` maps a `dark` to
-  `CoatPaint` `{ kind: "two-tone", color, dark }` (its own cache key); `coatShimmers` says whether
-  the sweep goes over her. An older build reads `color` and draws it plain.
-- **Two-tone** is the tinter's (`hero-coat.ts` `coatTargets`, `twoToneWeight`; coat.py `tint(...,
-  dark_hex)`): each pixel is swapped to both colours and mixed in sRGB, the light colour above the
-  region's mean lightness and the dark below, across a smoothstep `COAT_SWAP.twoToneStep` (0.04 of
-  OKLab lightness) either side. The reference sheet gains two two-tone coats, and the client is
-  held to coat.py on them within one 8-bit step.
-- **Shimmer** is an overlay, never paint. `hero-art.ts` `heroShimmerOf` (the region mask, or
-  null), `SHIMMER` and `shimmerAt` (a 1.6 s sweep every 5 s). On the TV, `loadHeroTexture`'s
-  handle gains `dress(sprite)`, which the lineup, the board and the camp call on the sprite they
-  make; `hero-shimmer-pixi.ts` lays a child container over it, masked by her coat mask (a sprite
-  mask reads the red channel), with a soft band of `Texture.WHITE` strips moved by the ticker, or
-  resting across her middle under reduced motion. In the DOM, `CharacterPortrait` lays a
-  `.hero-shimmer` box in the image's own grid cell, after it (so over an opaque gear portrait),
-  and `HeroImage` lays one over its image by measurement (`ShimmerOver`); both clip the moving
-  gradient by `mask-image` read as luminance, and `hero-shimmer.css` stills it to a sheen under
-  the device's or the setting's reduced motion. Nothing loads for a hero with no shimmer coat or
-  no mask.
-- **Palettes.** `coat-palette.test.ts` holds every earned colour, painted as worn, against the
-  backdrops and against her other colours; Aurora and Raspberry Ripple are one colour for every
-  species, found by a search over the stand-in heroes (green and pink: the snowy grounds rule out
-  a pale starlight).
+- **The data.** `content/looks.json` → `specials`: Aurora (`{ kind: "sparkle" }`, found in
+  `riftlight-hidden-glacier-rift`) and Gold (`{ kind: "gilded", color: "#E2B13C" }`, reaching
+  Radiant). Shared `hero-look.ts`: `coatPaintOf(catalog, species, look)` is how she is painted
+  (`CoatPaint` `{ kind: "parts", main, accent }` or `{ kind: "gilded", color }`, or null as
+  painted), `coatPaintKey` its cache key (both colours, or the gold), `lookSparkles` whether the
+  stars go over her, `lookSpecial`, and `speciesCoat(catalog, species, id, part)`.
+- **The tinter.** `hero-coat.ts` `tintHeroPixels` (her two parts or the gold, in one pass),
+  `heroRegionStats` (each region's means), `tintCoatPixels` (one region, the single-mask call, as
+  coat.py `tint`); `MASK_CHANNEL`. coat.py has `tint` (one channel), `tint_parts` (both) and
+  `gild` (the figure), held to the client within one 8-bit step on
+  `tools/art/fixtures/coat-reference.json`, whose stand-in now has an RGB mask and covers one
+  part, both parts, each alone, and two golds.
+- **Gold with no mask.** On a cut-out painting (every `assembled.png`, base and class) the
+  painting's own alpha is her figure, which is what B is there, so gold needs no mask: the pass
+  reads the alpha (`FIGURE_FROM_ALPHA`). A painting that turns out to be opaque fails the pass and
+  she draws as painted. An opaque gear portrait with no mask draws as painted; until its mask is
+  listed a classed hero's portrait can be ungilded while her world figure is gold, the same window
+  as her colours (§4.1). Her colours always need the mask.
+- **Sparkles.** `hero-art.ts` `heroSparkleOf` (null with no sparkle special, or on an opaque
+  portrait with no mask), `SPARKLE`, `sparkleAt`, `sparklePlace`. On the TV, `loadHeroTexture`'s
+  handle `dress(sprite)` lays `hero-sparkle-pixi.ts`'s layer as a child of the sprite, clipped by a
+  sprite of its own texture read by alpha (so the figure needs no mask there), its stars twinkled
+  by the ticker, or still. In the DOM, `HeroSparkles` (`hero-art-dom.tsx`, `hero-sparkle.css`) is
+  clipped by the painting itself on a cut-out, and on a gear portrait by her figure, which the
+  tinter makes from the mask's blue channel (a `{ kind: "figure" }` pass: white, alpha = B, since
+  CSS cannot pick a channel). `CharacterPortrait` lays it in the image's own grid cell.
+  `HeroImage` with sparkles is a `.hero-sparkle-host`: one grid cell holding the image and the
+  stars, wearing the image's `className` and `style`, so whatever moves, scales or animates her
+  (a game's bob, a strain shake, a hello pop) moves the stars with her, and nothing is measured or
+  placed by hand. The image inside fills the host and inherits its `object-fit` and
+  `object-position`; stylesheets that reach a hero's image by element (`> img`) reach the host too.
 
 ## 6. Unlocks
 
@@ -398,7 +480,7 @@ A few earned coats are more than a colour (*decided*):
 - **The rules** are shared `look-unlocks.ts`: `earnedLooks` (the milestone looks a standing meets:
   a tier reached, a class rank held, a campaign in her `finished`, and, given her crew's camp, a
   friend by name, a first friend, a grand camp, which is frame stage 4), `foundLookGrants` (what a
-  find gives one hero: every frame and title it names, and the coat of her own species),
+  find gives one hero: every special, frame and title it names, and the coat of her own species),
   `withLookGrants` (receipts only ever added, the first kept, `revision` untouched) and
   `readEarnedLook` (her stored look with every milestone her row holds, no `at`: the backfill on
   read). Each receipt's `source` is the book's words: "Reached Sworn", "Became a Thornguard
@@ -424,9 +506,10 @@ A few earned coats are more than a colour (*decided*):
   is offered it before anything was written for her, and her next look write stores it. The book
   carries each receipt's `source` (`HeroLookView.sources`, the book's copy only) and shows it under
   the tile. Looks not yet earned are still never shown.
-- **The first earned set** (`content/looks.json`): Aurora, a shimmer coat for every species (found
-  in `riftlight-hidden-glacier-rift`, answering the seam); Raspberry Ripple, a two-tone coat for
-  every species (reaching Radiant); the Songbird frame (found in `riftlight-ashspan-bridge`, with
+- **The first earned set** (`content/looks.json`): Aurora, the sparkle special (found in
+  `riftlight-hidden-glacier-rift`, answering the seam: "tiny sparkles drift off the frost and
+  settle on all of you"); Gold, the gilded special (reaching Radiant); Bluebell, an accent colour
+  for every species (reaching Sworn); the Songbird frame (found in `riftlight-ashspan-bridge`, with
   Tilly's ribbon) and the Golden frame (reaching Mythic), both owed art (#680) and drawn as the
   plain plate until listed; the Tracker (found in `riftlight-exchange-rift`, reading the tracks)
   and the Friendly (a first friend), beside the titles #664 declared. No Gemfall chapter changed.
@@ -435,34 +518,42 @@ A few earned coats are more than a colour (*decided*):
 
 ### 7.1 Colours
 
-- **Starter colours:** about six per species, natural for it (a unicorn's are pale; a Bigfoot
-  mane's are browns, black, ginger and grey). Free from the start.
-- **Earned colours:** new hues, and the special coats (§5.5).
-- **Checked by a test, on the rendered hero,** not on swatches: each colour applied to the
-  species' base painting, and measured as the mean colour of the region, at the size a phone's
+- **Starter colours:** about six per part per species, natural for it (a unicorn's coat is pale,
+  her mane bolder; a Bigfoot's fur runs through creams, gingers and browns, his skin through
+  peach, tan and cocoa). Free from the start.
+- **Earned colours:** new hues for either part (the first: Bluebell, an accent for every species).
+  Specials are not colours (§5.5).
+- **Checked by a test, on the rendered hero,** not on swatches: each colour applied to its part of
+  the species' base painting, and measured as the mean colour of the part, at the size a phone's
   portrait draws it.
-  - **Against the backdrops:** OKLab distance ≥ 0.10 from every backdrop's ground colour, so a
-    hero never disappears into the scenery.
-  - **Against each other:** within one species' starter set, every pair is told apart under
-    normal vision and under simulated deuteranopia, protanopia and tritanopia, by an OKLab
-    distance ≥ 0.08 **or** a lightness difference ≥ 0.10. Natural sets (two browns) pass on
-    lightness, as real browns are told apart.
+  - **Against the backdrops, her main part:** OKLab distance ≥ 0.10 from every backdrop's ground
+    colour, so a hero never disappears into the scenery. The accent is the smaller part, and is
+    not held to it.
+  - **Against each other, within a part:** within one species' set for one part, every pair is
+    told apart under normal vision and under simulated deuteranopia, protanopia and tritanopia,
+    by an OKLab distance ≥ 0.08 **or** a lightness difference ≥ 0.10. Natural sets (two browns)
+    pass on lightness, as real browns are told apart.
+  - **Never across her parts** (*decided*, owner 2026-11-07): her main and accent colours are never
+    held against each other. If the pair is odd, that is her choice.
 - The player's accent is untouched, so a colour never clashes with "whose hero is whose".
 
-*As built (#666):* six starters per species in `content/looks.json` (checked by
-`tools/content/looks-catalog.mjs`: four to eight each, named and coloured apart).
-`packages/client/src/world/coat-palette.test.ts` holds both rules **on a stand-in for the
-rendered hero**, since no real mask ships yet: a body painted in the species' own region colour
-(the manifest palette slot the draft picks by), shaded, with a soft-edged mask, at 96 pixels,
-tinted by the real tinter and averaged in linear light. The backdrops are
+*As built (#666; two parts #662):* six starters per part per species in `content/looks.json`
+(checked by `tools/content/looks-catalog.mjs`: four to eight per part, named and coloured apart
+within a part). `packages/client/src/world/coat-palette.test.ts` holds the rules **on a stand-in
+for the rendered hero**, since no real mask ships yet: a body and a mane painted in the species'
+own part colours (the manifest palette slots each part's draft picks by; a part painted in two
+slots, as Bigfoot's fur is, on each of them), shaded, with soft-edged parts, at 96 pixels, tinted
+by the real tinter and averaged in linear light. The backdrops are
 `coat-backdrops.fixture.json`, the mean of the bottom 30% of every biome background and camp
 backdrop (`tools/art/backdrop-grounds.py`; a test fails when a backdrop is missing from it).
 Colour-blind vision is Machado et al. (2009) at full severity. When the base masks land (#667),
 measure on the base painting and its mask instead; some colours may need nudging then. The
 starters were found by a search that kept each near a natural target and moved it only as far
-as the two rules needed, which is why a few are brighter than a painter would pick (Ginger,
-Amber) and why grey is missing from the Bigfoot set: a mid grey sits too close to the grey
-grounds, so his grey is a light Frost.
+as the rules needed, which is why the darkest main colours are a deep navy "Midnight" rather than
+black (black on a light part sits too close to the red-sky grounds) and why a few are brighter
+than a painter would pick. Gold is checked to read as its colour over the figure, not against the
+backdrops: every gold sits near some ground (a pale one near the snow, a deep one near
+Bramblewood), and it is a statue's look she picks on purpose.
 
 ### 7.2 Nameplates
 
@@ -508,17 +599,19 @@ that still does not fit a crowded lineup is hidden there (§7.2), never cut.
 A **Look** page beside Camp, built like #661's dressing room:
 
 - her hero at the top, large, wearing the look as she taps;
-- shelves: **Color**, **Nameplate**, **Title**, each a row of tiles, the chosen one marked by
-  more than colour. "Color", not "Coat", because the part that changes is her mane on some
-  species and her coat on others; the tiles show her hero wearing each one, so she sees which
-  part it is;
+- shelves: one for each of her two parts, named for it and capitalised ("Coat" and "Mane" for a
+  unicorn, "Fur" and "Skin" for a Bigfoot), then **Special**, **Nameplate**, **Title**, each a
+  row of tiles, the chosen one marked by more than colour. The colour tiles show her hero wearing
+  each one with her other colour kept, so she sees the pair. The colour shelves show only once
+  one of her paintings has a mask; the Special shelf only once she has earned a special;
 - earned looks she does not have yet are not shown. Nothing is a locked tease;
 - every tap is a save, silently, online or queued offline (§3.2). Nothing says "saving".
 
 ### 8.2 At the table
 
 A compact Look editor in her phone's panel during downtime (the lobby and rests), next to the
-kit's. `LOOK_EDIT`, unlimited, as `KIT_EDIT` is (*decided*), naming the look's `revision`
+kit's, with the same shelves as the book's (her two parts, Special once earned, Nameplate,
+Title). `LOOK_EDIT`, unlimited, as `KIT_EDIT` is (*decided*), naming the look's `revision`
 (§3.2). The TV shows the change at once.
 
 ## 9. Where she is drawn
@@ -566,14 +659,14 @@ Each phase is playable on its own.
 | Body colours and name style; no accessories, expressions, poses or animation variants | *decided* |
 | A starter set free, the rest earned in play | *decided* |
 | Changed in the book and at the table, not at creation | *decided* |
-| One coloured region per painting | *decided* |
+| A main part and an accent part per painting, the kid's choice of both; no pairing rule | *decided* (owner, 2026-11-07) |
 | The colour carries over to every tier and class painting | *decided* |
 | Titles show everywhere, the TV lineup included, under the name | *decided* |
 | The player's accent is unchanged; looks do not change the name's typography or colours; the frame and title are the kid's | *decided* |
-| Some earned coats are special: shimmer or two-tone | *decided* |
+| Specials are whole-figure effects (sparkle, gold), not colours | *decided* (owner, 2026-11-07) |
 | Unlimited edits at the table | *decided* |
 | The colour swap in OKLab, keeping lightness steps (§5.2), not the kit's multiply | *decided* (POC §2) |
-| The region is chosen per species (§4.2) | *decided* (POC §2) |
+| The two parts are chosen per species (§4.2); Bigfoot's are his fur (body and mane) and his skin, split where the POC found his coat running into his skin | *decided* (owner, 2026-11-07) |
 | Masks are drafted by a tool and hand-cleaned, never shipped raw | *decided* (POC §2) |
 | The gear portraits are kept and masked too: 168 masks (§4.1) | *decided* (review) |
 | Table edits name a revision; book edits merge per field, last choice wins; the server checks owner, unlock and species (§3.2) | *decided* (review; as the kit) |
@@ -582,9 +675,9 @@ Each phase is playable on its own.
 | The name drawn exactly as today; a title hidden, never shortened, when short of room (§7.2) | *decided* (review) |
 | Masks prefetched with their paintings (§5.4) | *decided* (review) |
 | A tint cache bounded by real memory, never evicting what is on screen; the latest choice wins (§5.3) | *decided* (review) |
-| The shelf is called Color; the field stays `coat` | *decided* (review) |
+| Each colour shelf is named for its part ("Coat", "Mane", "Fur", "Skin"); the main field stays `coat` | *decided* (owner, 2026-11-07) |
 | `look` beside `kit`, absent until chosen | *decided* |
-| One catalog for coats, frames and titles (`content/looks.json`) | *decided* |
+| One catalog for coats, specials, frames and titles (`content/looks.json`) | *decided* |
 | Locked looks are not shown | *decided* |
 | A few titles are free starters | *decided* |
 
@@ -610,13 +703,19 @@ Each phase is playable on its own.
 | Ten colour switches in quick succession, throttled phone | The last shows, none flashes after it; unpinned entries stay within the bound, pinned ones are released once let go |
 | An unlock earned in a campaign already under way | Announced once, kept through a lost fight or setback, changes nothing in play |
 | An old hero with no look | Drawn and played exactly as today; the Gemfall gameplay digests do not move |
-| A shimmer coat on a gear portrait | The sweep shows over the painting, only on her coloured part |
-| A shimmer coat under reduced motion | A still sheen, no sweep |
+| Two colours on one hero | Each part its own colour, swapped by its own region; nothing outside both changes |
+| Gold with colours chosen | Her whole figure gold, her colours ignored; they show again when she takes it off |
+| Sparkles on a gear portrait | The stars show over the painting, clipped by her figure |
+| Sparkles on a moving or animated image | The stars move with her: one box, no measuring |
+| Sparkles under reduced motion | Still stars, no twinkle |
+| A main colour sent as her accent, or the other way round; another species' accent; a special not earned | Refused (table) or skipped and said (book) |
+| An old look with only `coat` | Drawn as her main colour |
 
 ## 13. Playtest questions (#670)
 
 - Do kids notice their own colour on the TV, and do they find their hero faster or slower?
 - Do they change looks often, or pick once and keep it?
 - Do titles get read aloud, or ignored?
-- Does an earned coat feel like a reward, or go unnoticed?
+- Does an earned colour or a special feel like a reward, or go unnoticed?
+- Do kids enjoy picking two colours, or find two shelves too many?
 - Does anyone lose track of whose hero is whose?

@@ -110,7 +110,8 @@ describe("her earned looks, told where her kit's news is (#669)", () => {
     expect(kitNewsReadyAt({ kind: "title", cause: "rank", arrivedAt: 0, crossings: 0 })).toBe(DISTINCTION_HOLD_MS + KIT_NEWS_GAP_MS);
     expect(kitNewsReadyAt({ kind: "coat", cause: "found", arrivedAt: 0, crossings: 0 })).toBe(KIT_NEWS_GAP_MS);
     expect(kitNewsWords([{ kind: "title", pieceId: "the_tracker" }])).toBe("New title for you: the Tracker");
-    expect(kitNewsWords([{ kind: "coat", pieceId: "unicorn_aurora" }])).toBe("New color for you: Aurora");
+    expect(kitNewsWords([{ kind: "coat", pieceId: "unicorn_accent_bluebell" }])).toBe("New color for you: Bluebell");
+    expect(kitNewsWords([{ kind: "special", pieceId: "aurora" }])).toBe("New special for you: Aurora");
     expect(kitNewsWords([{ kind: "nameplate", pieceId: "songbird" }, { kind: "title", pieceId: "the_tracker" }])).toBe("New looks for you: Songbird, the Tracker");
   });
 

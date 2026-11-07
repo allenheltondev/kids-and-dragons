@@ -11,6 +11,7 @@
  */
 
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { coatPaintKey } from "@kad/shared";
 import type { CoatPaint } from "@kad/shared";
 import type { HeroCoatRequest } from "./hero-art";
 import { COAT_CACHE_BUDGET, CoatCache, type CoatEntry } from "./hero-coat-cache";
@@ -25,10 +26,14 @@ afterEach(() => {
 
 const COLORS = ["#FBF8F2", "#F8DF8A", "#FD98BE", "#58BCFD", "#A57FD8", "#20134E", "#77E2C5", "#BB1D30", "#F4CF4A", "#3E6ADF"];
 
+/** Her main colour alone (the accent as painted), as the resolver asks for it. */
 function request(painting: string, color: string): HeroCoatRequest {
-  const paint: CoatPaint = { kind: "plain", color };
-  return { painting, mask: maskPathBeside(painting), paint, key: `${painting}|plain:${color}` };
+  const paint: CoatPaint = { kind: "parts", main: color, accent: null };
+  return { painting, mask: maskPathBeside(painting), paint, key: `${painting}|${coatPaintKey(paint)}` };
 }
+
+/** The main colour a job paints, for a test's count. */
+const mainOf = (job: TintJob): string | null => (job.paint.kind === "parts" ? job.paint.main : null);
 
 /** A runner that makes `side`×`side` images after `ms`, counting passes and what was cancelled. */
 function timedRunner(ms: number, side = 1024): TintRunner & { started: TintJob[]; aborted: TintJob[]; closed: number } {
@@ -99,13 +104,13 @@ describe("the latest choice wins (§5.3)", () => {
     slot.want(request("/assets/u.png", "#58BCFD")); // queued behind it
     slot.want(request("/assets/u.png", "#20134E")); // supersedes it: cancelled before it starts
     await vi.advanceTimersByTimeAsync(250);
-    expect(runner.started.map((j) => j.paint.color)).toEqual(["#F4CF4A", "#20134E"]);
+    expect(runner.started.map((j) => mainOf(j))).toEqual(["#F4CF4A", "#20134E"]);
     slot.want(request("/assets/u.png", "#FD98BE")); // starts at once
     await vi.advanceTimersByTimeAsync(10);
     slot.want(request("/assets/u.png", "#77E2C5")); // the running one is stopped
     await vi.advanceTimersByTimeAsync(300);
-    expect(runner.aborted.map((j) => j.paint.color)).toContain("#FD98BE");
-    expect(shown).toEqual(["/assets/u.png|plain:#20134E", "/assets/u.png|plain:#77E2C5"]);
+    expect(runner.aborted.map((j) => mainOf(j))).toContain("#FD98BE");
+    expect(shown).toEqual(["/assets/u.png|parts:#20134E:-", "/assets/u.png|parts:#77E2C5:-"]);
   });
 
   it("ten quick colour switches on a throttled phone: the last shows, none after it, the bound kept, pins released", async () => {
@@ -117,7 +122,7 @@ describe("the latest choice wins (§5.3)", () => {
     const runner = slicedTintRunner(io, 512);
     const passes: string[] = [];
     const counting: TintRunner = (job, signal) => {
-      passes.push(job.paint.color);
+      passes.push(mainOf(job)!);
       return runner(job, signal);
     };
     const bytes = 64 * 64 * 4;
@@ -135,7 +140,7 @@ describe("the latest choice wins (§5.3)", () => {
     }
     await vi.advanceTimersByTimeAsync(1000);
     worst = Math.max(worst, cache.stats().unpinned);
-    const last = `${hero}|plain:${COLORS.at(-1)!}`;
+    const last = `${hero}|parts:${COLORS.at(-1)!}:-`;
     expect(shown.at(-1)).toBe(last);
     // Nothing older shows after the last one did, and nothing at all after the last pick.
     expect(shown.indexOf(last)).toBe(shown.length - 1);
@@ -170,7 +175,7 @@ describe("ten switches slower than a pass", () => {
       await vi.advanceTimersByTimeAsync(150);
       worst = Math.max(worst, cache.stats().unpinned);
     }
-    expect(shown).toEqual(COLORS.map((c) => `${hero}|plain:${c}`));
+    expect(shown).toEqual(COLORS.map((c) => `${hero}|parts:${c}:-`));
     expect(worst).toBeLessThanOrEqual(bytes * 3);
     // Evicted entries' URLs were revoked: at most the bound's worth plus the one shown are live.
     expect(cache.stats().entries).toBeLessThanOrEqual(4);

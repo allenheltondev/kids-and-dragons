@@ -271,7 +271,7 @@ export type ClientIntent =
     }
   /**
    * Change a seated hero's own look (docs/hero-looks.md §3.2, §8.2; #664):
-   * her colour (phase 2), nameplate frame and title. Only her own player, in
+   * her two colours (main and accent), special, nameplate frame and title. Only her own player, in
    * downtime (the lobby and rests), with no limit. `revision` echoes
    * `HeroLookView.revision` (0 for a hero with no look yet); a look changed
    * since (from the book, another phone) refuses it as stale, and the table's
@@ -282,7 +282,12 @@ export type ClientIntent =
       type: "LOOK_EDIT";
       characterId: string;
       revision: number;
+      /** Her main part's colour. */
       coat?: string | null;
+      /** Her accent part's colour (owner, 2026-11-07). */
+      accent?: string | null;
+      /** A whole-figure special she has earned. */
+      special?: string | null;
       nameplate?: string | null;
       title?: string | null;
     }

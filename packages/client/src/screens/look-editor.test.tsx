@@ -22,7 +22,7 @@ import { HeroName } from "./HeroName";
 
 afterEach(cleanup);
 
-const look = (over: Partial<HeroLookView> = {}): HeroLookView => ({ revision: 3, coat: null, nameplate: null, title: null, unlocked: [], ...over });
+const look = (over: Partial<HeroLookView> = {}): HeroLookView => ({ revision: 3, coat: null, accent: null, special: null, nameplate: null, title: null, unlocked: [], ...over });
 
 describe("her name in the DOM", () => {
   it("is just her name when she has no look, exactly as before", () => {
@@ -100,7 +100,7 @@ describe("the book's Look page (§8.1)", () => {
   });
 });
 
-describe("the Color shelf (#666, §8)", () => {
+describe("her colour shelves (#666, §8; two parts, owner 2026-11-07)", () => {
   const fledgling = (species: "unicorn" | "bigfoot") => [`characters/${species}/fledgling/assembled.png`];
   beforeEach(async () => {
     await loadHeroCoats();
@@ -113,23 +113,30 @@ describe("the Color shelf (#666, §8)", () => {
     setCoatMaskPaintings(null);
   });
 
-  it("is not offered while none of her paintings has a mask: every tile would look the same", () => {
+  const starters = (species: string, part: "main" | "accent") =>
+    LOOKS.coats.filter((c) => c.species.includes(species as "unicorn") && c.part === part && c.unlock.from === "starter").map((c) => c.id);
+
+  it("are not offered while none of her paintings has a mask: every tile would look the same", () => {
     setCoatMaskPaintings([]);
     const member = makeMember({ character: makeCharacter({ name: "Pip", look: look() }) });
     const { container } = render(<LookEditor member={member} held={false} dispatch={() => undefined} />);
     expect(container.querySelector("[data-coat]")).toBeNull();
+    expect(container.querySelector("[data-accent]")).toBeNull();
     cleanup();
     render(<BookLook hero={makeCharacter({ name: "Pip" })} look={look()} edit={() => undefined} />);
     expect(within(screen.getByRole("tablist")).getAllByRole("tab").map((t) => t.textContent)).toEqual(["Nameplate", "Title"]);
   });
 
-  it("at the table: her species' starter colours and as painted, each tile her hero wearing it, one LOOK_EDIT a tap", async () => {
+  it("at the table: two shelves named for her parts, her species' starters for each, one LOOK_EDIT a tap", async () => {
     setCoatMaskPaintings(fledgling("unicorn"));
     const sent: ClientIntent[] = [];
     const member = makeMember({ character: makeCharacter({ id: "c_1", name: "Pip", species: "unicorn", class: "songkeeper", look: look() }) });
     const { container } = render(<LookEditor member={member} held={false} dispatch={(i) => sent.push(i)} />);
+    expect([...container.querySelectorAll("legend")].map((l) => l.textContent)).toEqual(["Coat", "Mane", "Nameplate", "Title"]);
     const coats = [...container.querySelectorAll("[data-coat]")].map((b) => b.getAttribute("data-coat"));
-    expect(coats).toEqual(["", ...LOOKS.coats.filter((c) => c.species.includes("unicorn") && c.unlock.from === "starter").map((c) => c.id)]);
+    expect(coats).toEqual(["", ...starters("unicorn", "main")]);
+    const accents = [...container.querySelectorAll("[data-accent]")].map((b) => b.getAttribute("data-accent"));
+    expect(accents).toEqual(["", ...starters("unicorn", "accent")]);
     expect(container.querySelector('[data-coat=""]')!.getAttribute("aria-pressed")).toBe("true");
     // Each tile is her hero, tinted once its pass is done; as painted stays as painted.
     await waitFor(() => {
@@ -137,25 +144,60 @@ describe("the Color shelf (#666, §8)", () => {
       expect(srcs.filter((s) => s?.startsWith("blob:")).length).toBe(coats.length - 1);
     });
     fireEvent.click(container.querySelector('[data-coat="unicorn_sky"]')!);
+    fireEvent.click(container.querySelector('[data-accent="unicorn_accent_rose"]')!);
     fireEvent.click(container.querySelector('[data-coat=""]')!);
     expect(sent).toEqual([
       { type: "LOOK_EDIT", characterId: "c_1", revision: 3, coat: "unicorn_sky" },
+      { type: "LOOK_EDIT", characterId: "c_1", revision: 3, accent: "unicorn_accent_rose" },
       { type: "LOOK_EDIT", characterId: "c_1", revision: 3, coat: null },
     ]);
   });
 
-  it("in the book: Color first, her hero up top wearing it, an edit on the tap", () => {
+  it("in the book: Fur and Skin for a Bigfoot, her hero up top wearing them, an edit on the tap", () => {
     setCoatMaskPaintings(fledgling("bigfoot"));
     const edits: unknown[] = [];
     const hero = makeCharacter({ name: "Thistle", species: "bigfoot", class: "thornguard" });
-    const { container } = render(<BookLook hero={hero} look={look({ coat: "bigfoot_ginger" })} edit={(c) => edits.push(c)} />);
+    const { container } = render(<BookLook hero={hero} look={look({ coat: "bigfoot_ginger", accent: "bigfoot_accent_tan" })} edit={(c) => edits.push(c)} />);
     const tabs = within(screen.getByRole("tablist")).getAllByRole("tab").map((t) => t.textContent);
-    expect(tabs).toEqual(["Color", "Nameplate", "Title"]);
-    fireEvent.click(screen.getByRole("tab", { name: "Color" }));
+    expect(tabs).toEqual(["Fur", "Skin", "Nameplate", "Title"]);
+    fireEvent.click(screen.getByRole("tab", { name: "Fur" }));
     expect(container.querySelector('[data-coat="bigfoot_ginger"]')!.getAttribute("aria-pressed")).toBe("true");
     expect(container.querySelector('[data-coat^="unicorn_"]')).toBeNull();
+    expect(container.querySelector('[data-coat^="bigfoot_accent_"]')).toBeNull();
     fireEvent.click(container.querySelector('[data-coat="bigfoot_honey"]')!);
-    expect(edits).toEqual([{ coat: "bigfoot_honey" }]);
+    fireEvent.click(screen.getByRole("tab", { name: "Skin" }));
+    expect(container.querySelector('[data-accent="bigfoot_accent_tan"]')!.getAttribute("aria-pressed")).toBe("true");
+    fireEvent.click(container.querySelector('[data-accent=""]')!);
+    expect(edits).toEqual([{ coat: "bigfoot_honey" }, { accent: null }]);
     expect(container.textContent).not.toMatch(/saving|saved|synced|locked/i);
+  });
+});
+
+describe("the Special shelf (§5.5, §8)", () => {
+  afterEach(() => setCoatMaskPaintings(null));
+
+  it("shows only once she has earned a special, and offers only those she holds", () => {
+    setCoatMaskPaintings([]);
+    const hero = makeCharacter({ name: "Pip", species: "unicorn" });
+    const { container } = render(<BookLook hero={hero} look={look()} edit={() => undefined} />);
+    expect(within(screen.getByRole("tablist")).getAllByRole("tab").map((t) => t.textContent)).not.toContain("Special");
+    cleanup();
+    const edits: unknown[] = [];
+    const again = render(<BookLook hero={hero} look={look({ unlocked: ["aurora"] })} edit={(c) => edits.push(c)} />);
+    expect(within(screen.getByRole("tablist")).getAllByRole("tab").map((t) => t.textContent)).toEqual(["Special", "Nameplate", "Title"]);
+    fireEvent.click(screen.getByRole("tab", { name: "Special" }));
+    expect([...again.container.querySelectorAll("[data-special]")].map((b) => b.getAttribute("data-special"))).toEqual(["", "aurora"]);
+    fireEvent.click(again.container.querySelector('[data-special="aurora"]')!);
+    expect(edits).toEqual([{ special: "aurora" }]);
+  });
+
+  it("at the table, under her colours, a LOOK_EDIT naming it", () => {
+    setCoatMaskPaintings([]);
+    const sent: ClientIntent[] = [];
+    const member = makeMember({ character: makeCharacter({ id: "c_1", name: "Pip", species: "unicorn", look: look({ unlocked: ["gold"] }) }) });
+    const { container } = render(<LookEditor member={member} held={false} dispatch={(i) => sent.push(i)} />);
+    expect([...container.querySelectorAll("legend")].map((l) => l.textContent)).toEqual(["Special", "Nameplate", "Title"]);
+    fireEvent.click(container.querySelector('[data-special="gold"]')!);
+    expect(sent).toEqual([{ type: "LOOK_EDIT", characterId: "c_1", revision: 3, special: "gold" }]);
   });
 });

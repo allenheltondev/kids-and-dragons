@@ -331,73 +331,147 @@ def _in_gamut(lab: np.ndarray, eps: float = 1e-4) -> np.ndarray:
     return ((lin >= -eps) & (lin <= 1 + eps)).all(axis=-1)
 
 
-# A two-tone coat's soft step (section 5.5): half its width in OKLab lightness, either side of
-# the region's mean. The client's COAT_SWAP.twoToneStep.
-TWO_TONE_STEP = 0.04
+# How a part's lightness is mapped (section 5.2), named once; the client's COAT_SWAP.
+LIGHT_BINS = 1024      # the histograms a part's lightness and chroma percentiles are read from
+CHROMA_TOP = 0.5       # the chroma histogram's top: OKLab chroma in sRGB stays under it
+LOW_Q, HIGH_Q = 0.05, 0.95  # the part's spread: its 5th to 95th percentile of lightness
+SPAN = 0.30            # a part spread wider than this has its steps compressed to fit it
+FLOOR, CEIL = 0.14, 0.95  # the steps are compressed so the spread stays inside these
+DARK_SOFTEN = 0.85     # going darker than the part's anchor, the steps are softened
+MIN_L, MAX_L = 0.04, 0.98
 
 
-def tint(rgba: np.ndarray, mask: np.ndarray, coat_hex: str, dark_hex: str | None = None) -> np.ndarray:
-    """Recolour the masked region to `coat_hex` (hero-looks.md section 5.2), for review.
+def _quantiles(values: np.ndarray, w: np.ndarray, top: float, qs: tuple[float, ...]) -> list[float]:
+    """Weighted quantiles of `values` (0..top) from a LIGHT_BINS histogram: for each q, the
+    centre of the first bin whose running weight reaches q of the total. The client's
+    `coatRegionStats` reads them the same way."""
+    total = float(w.sum())
+    idx = np.clip(np.floor(values / top * LIGHT_BINS), 0, LIGHT_BINS - 1).astype(np.int64)
+    cum = np.cumsum(np.bincount(idx.ravel(), weights=w.ravel(), minlength=LIGHT_BINS))
+    out = []
+    for q in qs:
+        b = int(np.searchsorted(cum, q * total, side="left"))
+        out.append((min(b, LIGHT_BINS - 1) + 0.5) / LIGHT_BINS * top)
+    return out
 
-    Lightness: the coat's, plus each pixel's step from the region's mean (softened x0.85
-    going darker), clamped to 0.04..0.98. Hue: the coat's. Chroma: the coat's, times
-    sqrt(pixel/mean) clamped 0.6..1.4, or the coat's as is for a near-grey region (mean
-    chroma under 0.02). Out of gamut: chroma lowered at the same lightness and hue. Blended
-    by the mask. Returns uint8 RGBA, alpha untouched.
 
-    Given `dark_hex`, a two-tone coat (section 5.5): each pixel is swapped to both colours and
-    the two mixed in sRGB, the light one above the region's mean lightness and the dark one
-    below, across a smooth step TWO_TONE_STEP either side (the client's `twoToneWeight`)."""
+def region_stats(L: np.ndarray, C: np.ndarray, w: np.ndarray) -> dict:
+    """A region's lightness anchor and spread, and its chroma anchor (section 5.2).
+
+    The anchors are mask-weighted medians: the lightness and chroma of most of the part, where
+    the chosen colour lands (a Bigfoot's cream body, not halfway to his brown mane). The spread
+    is the weighted 5th to 95th percentile of lightness."""
+    low, anchor, high = _quantiles(L, w, 1.0, (LOW_Q, 0.5, HIGH_Q))
+    (anchor_c,) = _quantiles(C, w, CHROMA_TOP, (0.5,))
+    return {"anchorL": anchor, "lowL": low, "highL": high, "anchorC": anchor_c}
+
+
+def _lightness(L: np.ndarray, st: dict, tL: float) -> np.ndarray:
+    """Each pixel's new lightness (section 5.2): the colour's, plus its step from the part's
+    anchor, the steps compressed so a wide part's spread fits SPAN (and softened going darker),
+    and further so the spread stays inside FLOOR..CEIL around the colour, so nothing is crushed
+    to black or clamped to white. A narrow part away from the ends keeps its steps as painted."""
+    anchor, low, high = st["anchorL"], st["lowL"], st["highL"]
+    k = 1.0
+    spread = high - low
+    if spread > SPAN:
+        k = SPAN / spread
+    if tL < anchor:
+        k *= DARK_SOFTEN
+    up = (high - anchor) * k
+    down = (anchor - low) * k
+    k_up = max(0.0, CEIL - tL) / up if up > 0 and tL + up > CEIL else 1.0
+    k_down = max(0.0, tL - FLOOR) / down if down > 0 and tL - down < FLOOR else 1.0
+    step = L - anchor
+    step = step * k * np.where(step > 0, k_up, k_down)
+    return np.clip(tL + step, MIN_L, MAX_L)
+
+
+def _swap(L: np.ndarray, C: np.ndarray, st: dict, hexv: str) -> np.ndarray:
+    """Every pixel swapped to `hexv` by the section 5.2 rules, before the mask's blend: sRGB 0..1."""
+    t = srgb_to_oklab(hex_rgb(hexv))
+    tL, tC, th = float(t[0]), float(np.hypot(t[1], t[2])), float(np.arctan2(t[2], t[1]))
+
+    nL = _lightness(L, st, tL)
+    anchor_c = st["anchorC"]
+    if anchor_c < 0.02:
+        nC = np.full_like(L, tC)
+    else:
+        nC = tC * np.clip(np.sqrt(np.maximum(C, 0) / anchor_c), 0.6, 1.4)
+
+    def at(scale: np.ndarray) -> np.ndarray:
+        c = nC * scale
+        return np.stack([nL, c * np.cos(th), c * np.sin(th)], axis=-1)
+
+    # bring out-of-gamut pixels in by chroma only (bisection on a per-pixel scale)
+    lo = np.zeros_like(L)
+    hi = np.ones_like(L)
+    ok = _in_gamut(at(hi))
+    lo[ok] = 1.0
+    for _ in range(14):
+        mid = (lo + hi) / 2
+        good = _in_gamut(at(mid))
+        lo = np.where(good, mid, lo)
+        hi = np.where(good, hi, mid)
+    return oklab_to_srgb(at(lo))
+
+
+def _tint_regions(rgba: np.ndarray, regions: list[tuple[np.ndarray, str]]) -> np.ndarray:
+    """Recolour each (mask HxW uint8, colour hex) region of `rgba`, each by its own region's
+    anchor, spread and chroma, blended by its mask. Where the soft edges of two regions reach one
+    pixel and their weights add to more than 1, they are shared out (each scaled by 1/total), so
+    a pixel is never more than wholly recoloured. Regions with an empty mask are skipped. The
+    client's `tintHeroPixels` / `tintCoatPixels`. Returns uint8 RGBA, alpha untouched."""
     rgb = rgba[..., :3].astype(np.float64) / 255.0
-    w = mask.astype(np.float64) / 255.0
-    if w.sum() <= 0:
+    live = [(m.astype(np.float64) / 255.0, hexv) for m, hexv in regions if m.astype(np.float64).sum() > 0]
+    if not live:
         return rgba.copy()
     lab = srgb_to_oklab(rgb)
     L, a, b = lab[..., 0], lab[..., 1], lab[..., 2]
     C = np.hypot(a, b)
-    total = w.sum()
-    meanL = float((w * L).sum() / total)
-    meanC = float((w * C).sum() / total)
-
-    def swap(hexv: str) -> np.ndarray:
-        t = srgb_to_oklab(hex_rgb(hexv))
-        tL, tC, th = float(t[0]), float(np.hypot(t[1], t[2])), float(np.arctan2(t[2], t[1]))
-
-        step = L - meanL
-        if tL < meanL:
-            step = step * 0.85
-        nL = np.clip(tL + step, 0.04, 0.98)
-        if meanC < 0.02:
-            nC = np.full_like(L, tC)
-        else:
-            nC = tC * np.clip(np.sqrt(np.maximum(C, 0) / meanC), 0.6, 1.4)
-
-        def at(scale: np.ndarray) -> np.ndarray:
-            c = nC * scale
-            return np.stack([nL, c * np.cos(th), c * np.sin(th)], axis=-1)
-
-        # bring out-of-gamut pixels in by chroma only (bisection on a per-pixel scale)
-        lo = np.zeros_like(L)
-        hi = np.ones_like(L)
-        ok = _in_gamut(at(hi))
-        lo[ok] = 1.0
-        for _ in range(14):
-            mid = (lo + hi) / 2
-            good = _in_gamut(at(mid))
-            lo = np.where(good, mid, lo)
-            hi = np.where(good, hi, mid)
-        return oklab_to_srgb(at(lo))
-
-    new = swap(coat_hex)
-    if dark_hex is not None:
-        x = np.clip((L - meanL + TWO_TONE_STEP) / (2 * TWO_TONE_STEP), 0.0, 1.0)
-        light = (x * x * (3 - 2 * x))[..., None]
-        new = new * light + swap(dark_hex) * (1 - light)
-
-    out = rgb * (1 - w[..., None]) + new * w[..., None]
+    total = sum(w for w, _ in live)
+    share = np.where(total > 1, 1.0 / np.maximum(total, 1e-12), 1.0)
+    out = rgb * (1 - total * share)[..., None]
+    for w, hexv in live:
+        out = out + _swap(L, C, region_stats(L, C, w), hexv) * (w * share)[..., None]
     res = rgba.copy()
     res[..., :3] = (np.clip(out, 0, 1) * 255).round().astype(np.uint8)
     return res
+
+
+def tint(rgba: np.ndarray, mask: np.ndarray, coat_hex: str) -> np.ndarray:
+    """Recolour one masked region (`mask`, HxW uint8: one channel of a coat mask) to `coat_hex`
+    (hero-looks.md section 5.2), for review.
+
+    Lightness: the colour's, plus each pixel's step from the region's anchor (its weighted
+    median lightness), the steps compressed when the region's 5th..95th percentile spread is
+    wider than SPAN, softened x0.85 going darker, and compressed again to keep the spread inside
+    FLOOR..CEIL (`_lightness`), then clamped to 0.04..0.98. Hue: the colour's. Chroma: the colour's, times
+    sqrt(pixel/anchor) clamped 0.6..1.4 (the anchor the region's weighted median chroma), or
+    the colour's as is for a near-grey region (anchor under 0.02). Out of gamut: chroma lowered at the same lightness and hue. Blended
+    by the mask. Returns uint8 RGBA, alpha untouched.
+
+    A gilded special (section 5.5) is this on the mask's figure channel (blue) with its gold:
+    the whole figure, its lightness steps kept."""
+    return _tint_regions(rgba, [(mask, coat_hex)])
+
+
+def tint_parts(rgba: np.ndarray, mask_rgb: np.ndarray, main_hex: str | None, accent_hex: str | None) -> np.ndarray:
+    """Her two colours in one pass (section 5.2, two parts): the RGB mask's red channel (her
+    main part) takes `main_hex` and its green (her accent part) `accent_hex`, each swapped with
+    its own region's means; None leaves a part as painted. The client's `tintHeroPixels`."""
+    regions = []
+    if main_hex is not None:
+        regions.append((mask_rgb[..., 0], main_hex))
+    if accent_hex is not None:
+        regions.append((mask_rgb[..., 1], accent_hex))
+    return _tint_regions(rgba, regions)
+
+
+def gild(rgba: np.ndarray, mask_rgb: np.ndarray, gold_hex: str) -> np.ndarray:
+    """A gilded special (section 5.5): her whole figure (the RGB mask's blue channel) swapped
+    toward `gold_hex`, keeping its lightness steps, her colours ignored."""
+    return tint(rgba, mask_rgb[..., 2], gold_hex)
 
 
 # ----------------------------------------------------------------------------- the gate

@@ -661,7 +661,7 @@ prices or milestones disagree with the manifest or with each other.
 
 ## Look finds: `findLook` (#669)
 
-A chapter can hand every seated hero a look of her own: a colour, a nameplate frame or a title
+A chapter can hand every seated hero a look of her own: a colour, a special, a nameplate frame or a title
 ([docs/hero-looks.md §6](../docs/hero-looks.md#6-unlocks)):
 
 ```json
@@ -669,8 +669,8 @@ A chapter can hand every seated hero a look of her own: a colour, a nameplate fr
 ```
 
 - **The looks live in `content/looks.json`**, each with `"unlock": { "from": "found" }`. Every
-  hero gets each frame and title named, and the coat of her own species, so **a coat find names
-  one coat for every species** (Aurora names all six).
+  hero gets each special, frame and title named, and the coat of her own species, so **a coat
+  find names one coat for every species**. A special (Aurora's sparkles) is every species' at once.
 - **The `rewardId` is `<chapter id>.<name>`**, the same wherever the chapter authors it (a success
   and an assisted branch, every way into a graph place). A hero who already holds a look gets
   nothing more, ever: a replay, a revisit or a second way in gives nothing new.
@@ -679,8 +679,8 @@ A chapter can hand every seated hero a look of her own: a colour, a nameplate fr
   ties a songbird ribbon around your wrist", "tiny sparkles settle on all of you"), never the
   look or the book, which the phone's notice names. Cosmetic: it moves no flag, XP or route.
 - **A few, not many.** Today: the Tracker (`riftlight-exchange-rift`, reading the tracks well),
-  the Songbird frame (`riftlight-ashspan-bridge`, with Tilly's ribbon) and the Aurora coats
-  (`riftlight-hidden-glacier-rift`, answering the seam).
+  the Songbird frame (`riftlight-ashspan-bridge`, with Tilly's ribbon) and Aurora, the sparkle
+  special (`riftlight-hidden-glacier-rift`, answering the seam).
 
 `npm run content:validate` fails a find naming a look that is not a found one, a coat find short of
 a species, or a reward that is not the chapter's, and warns of a found look no chapter hands over.

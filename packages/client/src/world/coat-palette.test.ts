@@ -1,18 +1,22 @@
 /**
- * The starter colours (docs/hero-looks.md §7.1): every one stands out from
- * every backdrop a hero stands on, and within a species' set every pair is
- * told apart under normal vision and under simulated deuteranopia,
- * protanopia and tritanopia.
+ * The starter colours (docs/hero-looks.md §7.1; two parts, owner 2026-11-07):
+ * every species has a set for her main part and a set for her accent part.
+ * Every main colour stands out from every backdrop a hero stands on (her
+ * accent is the smaller part, and the main part is what keeps her off the
+ * ground), and within each set every pair is told apart under normal vision
+ * and under simulated deuteranopia, protanopia and tritanopia. Her two sets
+ * are never held against each other: the pair she picks is hers.
  *
  * **Measured on the rendered hero, as nearly as can be without her masks.**
- * The design measures each colour as the mean of her coloured region, applied
+ * The design measures each colour as the mean of her coloured part, applied
  * to her base painting at the size a phone's portrait draws it. No real mask
- * is shipped yet (#667, #668), so the hero here is a stand-in: a body painted
- * in her species' own region colour (the palette slot her starters were tuned
- * on, `TUNED_ON` below), with painted shading and a soft-edged mask, at 96
- * pixels (a phone portrait's well), tinted by this tinter and averaged in
- * linear light as the screen does. When the masks land, swap the stand-in for
- * the base painting and its mask; the thresholds stay.
+ * is shipped yet (#667, #668), so the hero here is a stand-in: a body and a
+ * mane painted in her species' own part colours (the manifest palette slots
+ * `art:coat-draft` picks each part by; a part painted in two slots, as a
+ * Bigfoot's fur is, on each of them), with painted shading and soft-edged
+ * parts, at 96 pixels (a phone portrait's well), tinted by this tinter and
+ * averaged in linear light as the screen does. When the masks land, swap the
+ * stand-in for the base painting and its mask; the thresholds stay.
  *
  * The backdrops are coat-backdrops.fixture.json: the ground band of every
  * biome background and camp backdrop, measured by tools/art/backdrop-grounds.py.
@@ -23,12 +27,12 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { coatPaintOf } from "@kad/shared";
-import type { CoatPaint, SpeciesId } from "@kad/shared";
+import type { CoatPart, SpeciesId } from "@kad/shared";
 import manifest from "../../../../assets/manifest.json";
 import grounds from "./coat-backdrops.fixture.json";
 import { LOOKS } from "./hero-name";
-import { coatRegionStats, tintCoatPixels } from "./hero-coat";
+import { MASK_CHANNEL, coatRegionStats, heroRegionStats, tintCoatPixels, tintHeroPixels } from "./hero-coat";
+import { coatPartSlots } from "./coat-masks";
 import { hexToOklab, linearToOklab, oklabDistance, oklabToLinear, type Lab } from "./oklab";
 import { regionMean, syntheticPainting } from "../testing/coat-fixture";
 
@@ -51,77 +55,83 @@ function seen(lab: Lab, vision: string): Lab {
 }
 
 /**
- * The palette slot each species' starter colours were chosen against: the one region of the
- * one-region masks (#673). The masks now carry two parts per species (a main and an accent,
- * manifest `coatMasks.regions`), and which part a catalog colour goes on is the catalog's
- * call; until it makes it, the stand-in keeps the painted colour these were tuned on.
+ * Her stand-ins: one for every pairing of the palette slots her two parts are
+ * painted in. Most parts are one slot; a part that spans two (a Bigfoot's fur
+ * is his cream body and his brown mane) is checked on each, since a colour
+ * must work on all of the part it covers.
  */
-const TUNED_ON: Record<SpeciesId, string> = {
-  unicorn: "coat",
-  bigfoot: "mane",
-  dragonling: "coat",
-  griffin: "mane",
-  kitsune: "mane",
-  manticore: "mane",
-};
-
-/** Her species' region as painted, the colour her starters were tuned on. */
-function regionColor(species: SpeciesId): string {
+function standIns(species: SpeciesId): { main: string; accent: string }[] {
   const palette = manifest.species.find((s) => s.id === species)!.palette as Record<string, string>;
-  return palette[TUNED_ON[species]]!;
+  const out: { main: string; accent: string }[] = [];
+  for (const main of coatPartSlots(species, "main")) for (const accent of coatPartSlots(species, "accent")) out.push({ main: palette[main]!, accent: palette[accent]! });
+  return out;
 }
 
-/** The colour on the rendered stand-in hero: her region, tinted, averaged as a phone shows it. */
-function rendered(species: SpeciesId, color: string | CoatPaint): Lab {
-  const { painting, mask } = syntheticPainting(regionColor(species), PORTRAIT_PX);
-  const stats = coatRegionStats(painting.data, mask.data, 4);
+const OFFSET: Record<CoatPart, number> = { main: MASK_CHANNEL.main, accent: MASK_CHANNEL.accent };
+
+/** The colour on stand-in `k`: her part, tinted, averaged as a phone shows it. */
+function rendered(species: SpeciesId, part: CoatPart, color: string, k: number): Lab {
+  const stand = standIns(species)[k]!;
+  const { painting, mask } = syntheticPainting(stand.main, PORTRAIT_PX, stand.accent);
+  const stats = coatRegionStats(painting.data, mask.data, 4, OFFSET[part]);
   const out = new Uint8ClampedArray(painting.data.length);
-  tintCoatPixels(painting.data, mask.data, typeof color === "string" ? { kind: "plain", color } : color, stats, out, { maskStride: 4 });
-  return regionMean(out, mask.data);
+  tintCoatPixels(painting.data, mask.data, color, stats, out, { maskStride: 4, maskOffset: OFFSET[part] });
+  return regionMean(out, mask.data, 4, OFFSET[part]);
 }
 
-const starters = (species: SpeciesId) => LOOKS.coats.filter((c) => c.species.includes(species) && c.unlock.from === "starter");
+/** Every stand-in of a species, by index. */
+const stands = (species: SpeciesId): number[] => [...standIns(species).keys()];
+
+const PARTS: readonly CoatPart[] = ["main", "accent"];
+const starters = (species: SpeciesId, part: CoatPart) => LOOKS.coats.filter((c) => c.species.includes(species) && c.part === part && c.unlock.from === "starter");
+const earned = (species: SpeciesId, part: CoatPart) => LOOKS.coats.filter((c) => c.species.includes(species) && c.part === part && c.unlock.from !== "starter");
 const GROUNDS = Object.entries(grounds.grounds).map(([name, hex]) => ({ name, lab: hexToOklab(hex) }));
 
 describe("the starter colours (§7.1)", () => {
-  it("are about six per species, every species", () => {
-    for (const species of SPECIES) expect(starters(species).length, species).toBe(6);
+  it("are about six per part per species, every species", () => {
+    for (const species of SPECIES) for (const part of PARTS) expect(starters(species, part).length, `${species} ${part}`).toBe(6);
   });
 
-  it("render as themselves: the region's mean is near the catalog's colour (a dark coat a little lighter, its painted highlights kept)", () => {
+  it("render as themselves: the part's mean is near the catalog's colour (a dark colour a little lighter, its painted highlights kept)", () => {
     for (const species of SPECIES) {
-      for (const coat of starters(species)) {
-        expect(oklabDistance(rendered(species, coat.color), hexToOklab(coat.color)), coat.id).toBeLessThan(0.08);
+      for (const part of PARTS) {
+        for (const coat of starters(species, part)) {
+          for (const k of stands(species)) expect(oklabDistance(rendered(species, part, coat.color, k), hexToOklab(coat.color)), `${coat.id} (${k})`).toBeLessThan(0.08);
+        }
       }
     }
   });
 
-  it("stand out from every backdrop's ground by an OKLab distance of at least 0.10", () => {
+  it("stand out from every backdrop's ground by an OKLab distance of at least 0.10: her main part's", () => {
     const close: string[] = [];
     for (const species of SPECIES) {
-      for (const coat of starters(species)) {
-        const lab = rendered(species, coat.color);
-        for (const ground of GROUNDS) {
-          const d = oklabDistance(lab, ground.lab);
-          if (d < 0.1) close.push(`${coat.id} on ${ground.name}: ${d.toFixed(3)}`);
+      for (const coat of starters(species, "main")) {
+        for (const k of stands(species)) {
+          const lab = rendered(species, "main", coat.color, k);
+          for (const ground of GROUNDS) {
+            const d = oklabDistance(lab, ground.lab);
+            if (d < 0.1) close.push(`${coat.id} (${k}) on ${ground.name}: ${d.toFixed(3)}`);
+          }
         }
       }
     }
     expect(close).toEqual([]);
   });
 
-  it("are told apart within a species, under normal and colour-blind vision: distance 0.08 or lightness 0.10", () => {
+  it("are told apart within each part's set, under normal and colour-blind vision: distance 0.08 or lightness 0.10", () => {
     const alike: string[] = [];
     for (const species of SPECIES) {
-      const set = starters(species).map((coat) => ({ id: coat.id, lab: rendered(species, coat.color) }));
-      for (const vision of ["normal", ...Object.keys(CVD)]) {
-        for (let i = 0; i < set.length; i++) {
-          for (let j = i + 1; j < set.length; j++) {
-            const a = seen(set[i]!.lab, vision);
-            const b = seen(set[j]!.lab, vision);
-            const d = oklabDistance(a, b);
-            const dl = Math.abs(a[0] - b[0]);
-            if (d < 0.08 && dl < 0.1) alike.push(`${set[i]!.id} / ${set[j]!.id} (${vision}): ${d.toFixed(3)}, L ${dl.toFixed(3)}`);
+      for (const [part, k] of PARTS.flatMap((part) => stands(species).map((k) => [part, k] as const))) {
+        const set = starters(species, part).map((coat) => ({ id: `${coat.id} (${k})`, lab: rendered(species, part, coat.color, k) }));
+        for (const vision of ["normal", ...Object.keys(CVD)]) {
+          for (let i = 0; i < set.length; i++) {
+            for (let j = i + 1; j < set.length; j++) {
+              const a = seen(set[i]!.lab, vision);
+              const b = seen(set[j]!.lab, vision);
+              const d = oklabDistance(a, b);
+              const dl = Math.abs(a[0] - b[0]);
+              if (d < 0.08 && dl < 0.1) alike.push(`${set[i]!.id} / ${set[j]!.id} (${vision}): ${d.toFixed(3)}, L ${dl.toFixed(3)}`);
+            }
           }
         }
       }
@@ -144,50 +154,75 @@ describe("the starter colours (§7.1)", () => {
 });
 
 /**
- * The earned colours (§7.1, §5.5; #669): painted as they are worn (a
- * two-tone coat by both its colours, through `coatPaintOf`), each stands out
- * from every backdrop by the starters' rule, and is told apart from each of
- * her species' starters and other earned colours under normal vision, so an
- * earned tile is never a starter again.
+ * The earned colours (§7.1): each part's earned colours stand out by the
+ * starters' rules (a main colour from every backdrop), and each is told apart
+ * from her other colours for that part under normal vision, so an earned tile
+ * is never a starter again.
  */
-describe("the earned colours (§7.1, §5.5)", () => {
-  const earned = (species: SpeciesId) => LOOKS.coats.filter((c) => c.species.includes(species) && c.unlock.from !== "starter");
-
-  it("are there for every species: a shimmer and a two-tone each", () => {
-    for (const species of SPECIES) {
-      const kinds = earned(species).map((c) => c.effect?.kind ?? "plain");
-      expect(kinds, species).toContain("shimmer");
-      expect(kinds, species).toContain("two-tone");
-    }
+describe("the earned colours (§7.1)", () => {
+  it("give every species an earned accent", () => {
+    for (const species of SPECIES) expect(earned(species, "accent").length, species).toBeGreaterThan(0);
   });
 
-  it("stand out from every backdrop's ground by an OKLab distance of at least 0.10", () => {
+  it("stand out from every backdrop's ground by an OKLab distance of at least 0.10: her main part's", () => {
     const close: string[] = [];
     for (const species of SPECIES) {
-      for (const coat of earned(species)) {
-        const lab = rendered(species, coatPaintOf(coat));
-        for (const ground of GROUNDS) {
-          const d = oklabDistance(lab, ground.lab);
-          if (d < 0.1) close.push(`${coat.id} on ${ground.name}: ${d.toFixed(3)}`);
+      for (const coat of earned(species, "main")) {
+        for (const k of stands(species)) {
+          const lab = rendered(species, "main", coat.color, k);
+          for (const ground of GROUNDS) {
+            const d = oklabDistance(lab, ground.lab);
+            if (d < 0.1) close.push(`${coat.id} (${k}) on ${ground.name}: ${d.toFixed(3)}`);
+          }
         }
       }
     }
     expect(close).toEqual([]);
   });
 
-  it("are told apart from her other colours: distance 0.08 or lightness 0.10", () => {
+  it("are told apart from her other colours for that part: distance 0.08 or lightness 0.10", () => {
     const alike: string[] = [];
     for (const species of SPECIES) {
-      const all = LOOKS.coats.filter((c) => c.species.includes(species)).map((c) => ({ id: c.id, earned: c.unlock.from !== "starter", lab: rendered(species, coatPaintOf(c)) }));
-      for (const a of all.filter((c) => c.earned)) {
-        for (const b of all) {
-          if (a.id === b.id || (b.earned && b.id < a.id)) continue;
-          const d = oklabDistance(a.lab, b.lab);
-          const dl = Math.abs(a.lab[0] - b.lab[0]);
-          if (d < 0.08 && dl < 0.1) alike.push(`${a.id} / ${b.id}: ${d.toFixed(3)}, L ${dl.toFixed(3)}`);
+      for (const [part, k] of PARTS.flatMap((part) => stands(species).map((k) => [part, k] as const))) {
+        const all = LOOKS.coats
+          .filter((c) => c.species.includes(species) && c.part === part)
+          .map((c) => ({ id: `${c.id} (${k})`, earned: c.unlock.from !== "starter", lab: rendered(species, part, c.color, k) }));
+        for (const a of all.filter((c) => c.earned)) {
+          for (const b of all) {
+            if (a.id === b.id || (b.earned && b.id < a.id)) continue;
+            const d = oklabDistance(a.lab, b.lab);
+            const dl = Math.abs(a.lab[0] - b.lab[0]);
+            if (d < 0.08 && dl < 0.1) alike.push(`${a.id} / ${b.id}: ${d.toFixed(3)}, L ${dl.toFixed(3)}`);
+          }
         }
       }
     }
     expect(alike).toEqual([]);
+  });
+});
+
+/**
+ * Gold (§5.5): her whole figure, read as gold. On the stand-in, the gilded
+ * figure's mean is near the special's colour. It is not held to the
+ * backdrops: gold is a statue's look she picks on purpose, and every gold
+ * there is sits near some ground (the snowy ones for a pale gold, Bramblewood
+ * for a deep one).
+ */
+describe("the gilded specials (§5.5)", () => {
+  const gilded = LOOKS.specials.flatMap((x) => (x.effect.kind === "gilded" ? [{ id: x.id, color: x.effect.color }] : []));
+
+  it("read as their colour on every species", () => {
+    expect(gilded.length).toBeGreaterThan(0);
+    for (const [species, stand] of SPECIES.flatMap((species) => standIns(species).map((stand) => [species, stand] as const))) {
+      const { painting, mask } = syntheticPainting(stand.main, PORTRAIT_PX, stand.accent);
+      const view = { data: mask.data, stride: 4, figure: MASK_CHANNEL.figure };
+      const stats = heroRegionStats(painting.data, view);
+      for (const { id, color } of gilded) {
+        const out = new Uint8ClampedArray(painting.data.length);
+        tintHeroPixels(painting.data, view, { kind: "gilded", color }, stats, out);
+        // Her outline and shading stay darker, so the figure reads as gold a little deeper than the swatch.
+        expect(oklabDistance(regionMean(out, mask.data, 4, MASK_CHANNEL.figure), hexToOklab(color)), `${id} on ${species}`).toBeLessThan(0.15);
+      }
+    }
   });
 });

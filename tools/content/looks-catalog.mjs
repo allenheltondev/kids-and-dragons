@@ -2,15 +2,17 @@
  * The hero looks catalog (docs/hero-looks.md §3.1, §6, §7; #664), checked for
  * what its schema cannot see.
  *
- * `content/looks.json` lists every coat, nameplate frame and title a hero may
- * choose. The schema checks each entry's shape; this checks the catalog as a
- * whole: ids unique across all three lists (a receipt names one look, never
- * two), the plain plate there and free with no art (it is today's look, and
- * what every hero wears until she picks another), at least one free title,
- * every frame's art at `nameplates/<id>.webp`, every species with its own
- * starter colours (`STARTER_COATS`), named and coloured apart within it
- * (whether they can be told apart is a client test, coat-palette.test.ts),
- * every frame the art manifest
+ * `content/looks.json` lists every coat, special, nameplate frame and title a
+ * hero may choose. The schema checks each entry's shape; this checks the
+ * catalog as a whole: ids unique across all four lists (a receipt names one
+ * look, never two), the plain plate there and free with no art (it is today's
+ * look, and what every hero wears until she picks another), at least one free
+ * title, every frame's art at `nameplates/<id>.webp`, every species with its
+ * own starter colours for each of her two parts, main and accent
+ * (`STARTER_COATS`), named and coloured apart within a part (whether they can
+ * be told apart is a client test, coat-palette.test.ts; her two parts are
+ * never held against each other: the pair is hers), every special earned
+ * (never a starter), every frame the art manifest
  * calls delivered (`nameplateFrames.ids`) one the catalog has, and every
  * unlock rule naming a tier, class, campaign or camp friend that exists.
  *
@@ -19,9 +21,13 @@
  */
 
 const LOOKS = "content/looks.json";
+/** The catalog's four lists, in the order a receipt's id is looked up. */
+const LOOK_LISTS = ["coats", "specials", "nameplates", "titles"];
+/** Her two parts (owner, 2026-11-07): each species has a starter set for each. */
+const PARTS = ["main", "accent"];
 const MANIFEST = "assets/manifest.json";
 
-/** How many free colours each species starts with (§7.1: "about six"). */
+/** How many free colours each species starts with, per part (§7.1: "about six"). */
 export const STARTER_COATS = { min: 4, max: 8 };
 
 /**
@@ -41,10 +47,10 @@ export function looksCatalogProblems({ catalog, manifest, tiers, classes, campai
   const fail = (at, problem, hint, file = LOOKS) => out.push({ file, at, problem, ...(hint ? { hint } : {}) });
 
   const seen = new Map();
-  for (const list of ["coats", "nameplates", "titles"]) {
+  for (const list of LOOK_LISTS) {
     (catalog[list] ?? []).forEach((entry, i) => {
       const at = `/${list}/${i}`;
-      if (seen.has(entry.id)) fail(`${at}/id`, `"${entry.id}" is already ${seen.get(entry.id)}`, "A look id names one look across coats, nameplates and titles: a receipt names it alone.");
+      if (seen.has(entry.id)) fail(`${at}/id`, `"${entry.id}" is already ${seen.get(entry.id)}`, "A look id names one look across coats, specials, nameplates and titles: a receipt names it alone.");
       else seen.set(entry.id, `${list}[${i}]`);
       const rule = entry.unlock;
       if (rule.tier !== undefined && !tiers.has(rule.tier)) fail(`${at}/unlock/tier`, `no tier "${rule.tier}"`);
@@ -67,7 +73,7 @@ export function looksCatalogProblems({ catalog, manifest, tiers, classes, campai
   });
   if (!catalog.titles.some((t) => t.unlock.from === "starter")) fail("/titles", "no starter title", "A few titles are free from the start (§7.3).");
 
-  // Colours (#666, §7.1): each species its own starter set, about six, named and coloured apart.
+  // Colours (#666, §7.1; two parts): each species its own starter set per part, about six, named and coloured apart within it.
   const bySpecies = new Map();
   catalog.coats.forEach((coat, i) => {
     for (const id of coat.species) {
@@ -75,9 +81,10 @@ export function looksCatalogProblems({ catalog, manifest, tiers, classes, campai
         fail(`/coats/${i}/species`, `no species "${id}"`);
         continue;
       }
-      const set = bySpecies.get(id) ?? { names: new Map(), colors: new Map(), starters: 0 };
-      bySpecies.set(id, set);
-      if (set.names.has(coat.name)) fail(`/coats/${i}/name`, `${id} already has a color called "${coat.name}" (${set.names.get(coat.name)})`, "The shelf shows the names side by side.");
+      const key = `${id} ${coat.part}`;
+      const set = bySpecies.get(key) ?? { names: new Map(), colors: new Map(), starters: 0 };
+      bySpecies.set(key, set);
+      if (set.names.has(coat.name)) fail(`/coats/${i}/name`, `${id}'s ${coat.part} part already has a color called "${coat.name}" (${set.names.get(coat.name)})`, "The shelf shows the names side by side.");
       else set.names.set(coat.name, coat.id);
       const color = coat.color.toUpperCase();
       if (set.colors.has(color)) fail(`/coats/${i}/color`, `${color} is already ${set.colors.get(color)}`, "Two tiles that look the same are one choice.");
@@ -87,20 +94,18 @@ export function looksCatalogProblems({ catalog, manifest, tiers, classes, campai
   });
   if (catalog.coats.length > 0) {
     for (const id of [...species].sort()) {
-      const starters = bySpecies.get(id)?.starters ?? 0;
-      if (starters < STARTER_COATS.min || starters > STARTER_COATS.max) {
-        fail("/coats", `${id} has ${starters} starter colors`, `About six per species, natural for it (§7.1): ${STARTER_COATS.min} to ${STARTER_COATS.max}.`);
+      for (const part of PARTS) {
+        const starters = bySpecies.get(`${id} ${part}`)?.starters ?? 0;
+        if (starters < STARTER_COATS.min || starters > STARTER_COATS.max) {
+          fail("/coats", `${id} has ${starters} starter ${part} colors`, `About six per part per species, natural for it (§7.1): ${STARTER_COATS.min} to ${STARTER_COATS.max}.`);
+        }
       }
     }
   }
 
-  // Special coats (§5.5, #669): earned, never a starter, and a two-tone's halves told apart.
-  catalog.coats.forEach((coat, i) => {
-    if (!coat.effect) return;
-    if (coat.unlock.from === "starter") fail(`/coats/${i}/effect`, `${coat.id} is a special coat and a starter`, "Special coats are earned (§5.5, §7.1).");
-    if (coat.effect.dark !== undefined && coat.effect.dark.toUpperCase() === coat.color.toUpperCase()) {
-      fail(`/coats/${i}/effect/dark`, `${coat.id}'s dark half is its light half`, "A two-tone coat's two colours differ.");
-    }
+  // Specials (§5.5; owner 2026-11-07): whole-figure effects, earned, never a starter.
+  (catalog.specials ?? []).forEach((special, i) => {
+    if (special.unlock.from === "starter") fail(`/specials/${i}/unlock`, `${special.id} is a special and a starter`, "Specials are earned (§5.5).");
   });
 
   // Look finds in chapters (§6, #669).
@@ -146,7 +151,7 @@ export function chapterLookFinds(chapter) {
 function lookFindProblems(catalog, chapters, species) {
   const out = [];
   const looks = new Map();
-  for (const list of ["coats", "nameplates", "titles"]) for (const entry of catalog[list] ?? []) looks.set(entry.id, { list, entry });
+  for (const list of LOOK_LISTS) for (const entry of catalog[list] ?? []) looks.set(entry.id, { list, entry });
   const offered = new Set();
   for (const [chapterId, chapter] of chapters) {
     const file = `content/chapters/${chapterId}.json`;

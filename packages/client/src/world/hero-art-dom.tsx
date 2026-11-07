@@ -2,24 +2,32 @@
  * A player's hero in the DOM (docs/hero-looks.md §5.1): `useHeroArt` and the
  * `<img>` built on it.
  *
- * The hook hands back her painting as painted first and, when she has a
- * colour and the painting a mask, re-renders with the tinter's object URL
- * once its pass is done (hero-coat-cache.ts). While the image is mounted the
- * hook holds that entry (a `CoatSlot`), so it is never evicted out from under
- * it; on unmount it lets go. A new colour keeps the old one showing until the
- * new one is ready, and an older colour never shows after a newer one.
+ * The hook hands back her painting as painted first and, when her look paints
+ * her (her colours on a masked painting, or gold), re-renders with the
+ * tinter's object URL once its pass is done (hero-coat-cache.ts). While the
+ * image is mounted the hook holds that entry (a `CoatSlot`), so it is never
+ * evicted out from under it; on unmount it lets go. A new look keeps the old
+ * one showing until the new one is ready, and an older look never shows after
+ * a newer one.
  *
  * So a caller treats the URL as one that may change under it, and reads it
  * through the hook on every render rather than caching it. The tinter is
  * loaded only when a hero needs it, never with the first paint; nothing here
  * imports Pixi.
+ *
+ * A sparkle special (§5.5) is an element laid over her image **in the
+ * image's own box**: `HeroImage` wraps the image and the sparkles in one
+ * grid cell (`.hero-sparkle-host`), which takes the image's class and style,
+ * so whatever moves, scales or animates her moves the sparkles with her, and
+ * nothing is measured or placed by hand. `CharacterPortrait` lays them in its
+ * own grid cell the same way.
  */
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { CSSProperties, ImgHTMLAttributes, ReactElement } from "react";
 import { reducedMotion } from "../a11y/prefs";
-import { heroCoatOf, heroPaintingUrl, heroShimmerOf, type HeroArtPlace, type HeroArtSubject, type HeroCoatRequest } from "./hero-art";
-import "./hero-shimmer.css";
+import { heroCoatOf, heroPaintingUrl, heroSparkleOf, type HeroArtPlace, type HeroArtSubject, type HeroCoatRequest, type HeroSparkle } from "./hero-art";
+import "./hero-sparkle.css";
 import type { CoatSlot } from "./hero-coat-cache";
 import { heroCoatsLoaded, loadHeroCoats, type HeroCoatsModule as Coats } from "./hero-coat-load";
 
@@ -30,12 +38,11 @@ interface Hold {
 }
 
 /**
- * The URL that draws `hero` in `place`, as of this render. `tinted: false` draws her as painted
- * and holds nothing: for an image kept mounted but not shown (CharacterPortrait's fallback).
+ * The tinter's object URL for `request` as of this render, held while
+ * mounted, or null while it is not ready (or for no request). The last one
+ * shown for the same painting stays until a new one is ready.
  */
-export function useHeroArt(hero: HeroArtSubject, place: HeroArtPlace, tinted = true): string {
-  const painted = heroPaintingUrl(hero, place);
-  const request = tinted ? heroCoatOf(hero, place) : null;
+function useTintUrl(request: HeroCoatRequest | null): string | null {
   const key = request?.key ?? null;
   const [shown, setShown] = useState<{ key: string; url: string } | null>(null);
   const hold = useRef<Hold | null>(null);
@@ -73,14 +80,23 @@ export function useHeroArt(hero: HeroArtSubject, place: HeroArtPlace, tinted = t
     // `request` is read through its key: a new object every render, the same tint.
   }, [key]);
 
-  if (request === null) return painted;
+  if (request === null) return null;
   if (shown?.key === request.key) return shown.url;
-  // A colour already tinted (another surface, an earlier visit) shows at once; the effect pins it.
+  // A look already tinted (another surface, an earlier visit) shows at once; the effect pins it.
   const ready = heroCoatsLoaded()?.heroCoats().peek(request.key);
   if (ready) return ready.url();
-  // Her last colour on this painting stays until the new one is ready; another painting's never shows.
+  // Her last look on this painting stays until the new one is ready; another painting's never shows.
   if (shown !== null && shown.key.startsWith(`${request.painting}|`)) return shown.url;
-  return painted;
+  return null;
+}
+
+/**
+ * The URL that draws `hero` in `place`, as of this render. `tinted: false` draws her as painted
+ * and holds nothing: for an image kept mounted but not shown (CharacterPortrait's fallback).
+ */
+export function useHeroArt(hero: HeroArtSubject, place: HeroArtPlace, tinted = true): string {
+  const painted = heroPaintingUrl(hero, place);
+  return useTintUrl(tinted ? heroCoatOf(hero, place) : null) ?? painted;
 }
 
 export type HeroImageProps = {
@@ -91,78 +107,60 @@ export type HeroImageProps = {
 /**
  * An `<img>` of a player's hero, for the lists that draw one per hero (a hook
  * cannot be called in a `.map`). Every other attribute passes straight
- * through, so it draws exactly the `<img>` it replaces. A shimmer coat (§5.5)
- * adds its sweep as a sibling laid over the image (`ShimmerOver`), out of the
- * flow, so the layout around it does not move.
+ * through, so it draws exactly the `<img>` it replaces.
+ *
+ * With a sparkle special (§5.5) it is a `.hero-sparkle-host` instead: one
+ * grid cell holding the image and the sparkles over it, wearing the image's
+ * `className` and `style` (its place, its size, its animation), so the two
+ * can never come apart. The image inside fills the host and fits its painting
+ * as the host's class says (`object-fit` and `object-position`, inherited).
+ * Stylesheets that reach a hero's image by element (`> img`) reach the host
+ * too (`.hero-sparkle-host`).
  */
-export function HeroImage({ hero, place, ...img }: HeroImageProps): ReactElement {
+export function HeroImage({ hero, place, className, style, ...img }: HeroImageProps): ReactElement {
   const src = useHeroArt(hero, place);
-  const shimmer = heroShimmerOf(hero, place);
-  const ref = useRef<HTMLImageElement | null>(null);
-  if (!shimmer) return <img src={src} {...img} />;
+  const sparkle = heroSparkleOf(hero, place);
+  if (!sparkle) return <img src={src} className={className} style={style} {...img} />;
   return (
-    <>
-      <img ref={ref} src={src} {...img} />
-      <ShimmerOver target={ref} mask={shimmer.mask} />
-    </>
+    <span className={`hero-sparkle-host${className ? ` ${className}` : ""}`} style={style} data-testid="hero-sparkle-host">
+      <img src={src} className="hero-sparkle-host__img" {...img} />
+      <HeroSparkles sparkle={sparkle} fitFrom="host" />
+    </span>
   );
 }
 
-/** The CSS a shimmer needs: its mask, as a custom property the stylesheet reads. */
-export function shimmerStyle(mask: string, extra: Record<string, string> = {}): CSSProperties {
-  return { "--hero-shimmer-mask": `url("${mask}")`, ...extra } as CSSProperties;
+/** The sparkles' class: still under reduced motion, as the stylesheet's own queries also say. */
+export function sparkleClass(extra = ""): string {
+  return `hero-sparkle${reducedMotion() ? " hero-sparkle--still" : ""}${extra ? ` ${extra}` : ""}`;
 }
 
-/** The shimmer's class: still under reduced motion, as the stylesheet's own queries also say. */
-export function shimmerClass(extra = ""): string {
-  return `hero-shimmer${reducedMotion() ? " hero-shimmer--still" : ""}${extra ? ` ${extra}` : ""}`;
-}
-
-/** The mask's size and place, matched to how the image fits its own box (`object-fit`, `object-position`). */
-function maskFit(img: HTMLImageElement): Record<string, string> {
-  const style = getComputedStyle(img);
-  const fit = style.objectFit;
-  const size = fit === "cover" ? "cover" : fit === "fill" || fit === "" ? "100% 100%" : "contain";
-  return { "--hero-shimmer-mask-size": size, "--hero-shimmer-mask-position": style.objectPosition || "50% 50%" };
+/** The CSS sparkles need: their clip, as a custom property the stylesheet reads. */
+export function sparkleStyle(clip: string, extra: Record<string, string> = {}): CSSProperties {
+  return { "--hero-sparkle-mask": `url("${clip}")`, ...extra } as CSSProperties;
 }
 
 /**
- * A shimmer coat's sweep laid over an image it is not inside (§5.5): placed
- * on the image's box by measurement, clipped by her coat mask fitted as the
- * image fits its painting, and moved again whenever the image's box changes.
- * Never in the flow, never taking a tap.
+ * Sparkles over her figure (§5.5), as an element for a grid cell shared with
+ * her image: clipped by her painting's own alpha on a cut-out, or by her
+ * figure the tinter makes from an opaque portrait's mask (nothing shows until
+ * it is ready). `fitFrom: "host"` reads how the clip fits from the host it
+ * sits in (`object-fit`, `object-position`), so it fits as the image does;
+ * otherwise the stylesheet around it says (CharacterPortrait).
  */
-export function ShimmerOver({ target, mask }: { target: { readonly current: HTMLImageElement | null }; mask: string }): ReactElement {
+export function HeroSparkles({ sparkle, className = "", fitFrom }: { sparkle: HeroSparkle; className?: string; fitFrom?: "host" }): ReactElement | null {
+  const figure = useTintUrl(sparkle.figure);
+  const clip = sparkle.figure ? figure : sparkle.painting;
   const self = useRef<HTMLSpanElement | null>(null);
   useLayoutEffect(() => {
-    const img = target.current;
     const over = self.current;
-    if (!img || !over) return undefined;
-    // Placed by hand, not by React: a measure puts it at 0,0 first, and a
-    // re-render must never undo that by "restoring" a value it thinks is set.
-    const place = (): void => {
-      over.style.left = "0px";
-      over.style.top = "0px";
-      const origin = over.getBoundingClientRect();
-      const at = img.getBoundingClientRect();
-      over.style.left = `${String(at.left - origin.left)}px`;
-      over.style.top = `${String(at.top - origin.top)}px`;
-      over.style.width = `${String(at.width)}px`;
-      over.style.height = `${String(at.height)}px`;
-      for (const [name, value] of Object.entries(maskFit(img))) over.style.setProperty(name, value);
-    };
-    place();
-    img.addEventListener("load", place);
-    const watch = typeof ResizeObserver === "function" ? new ResizeObserver(place) : null;
-    watch?.observe(img);
-    window.addEventListener("resize", place);
-    return () => {
-      img.removeEventListener("load", place);
-      watch?.disconnect();
-      window.removeEventListener("resize", place);
-    };
-  }, [target, mask]);
-  return (
-    <span ref={self} aria-hidden="true" className={shimmerClass("hero-shimmer--over")} data-shimmer-mask={mask} style={shimmerStyle(mask)} />
-  );
+    const host = over?.parentElement;
+    if (fitFrom !== "host" || !over || !host || typeof getComputedStyle !== "function") return;
+    // How it fits, not where it is: the place is the grid cell's, never measured.
+    const s = getComputedStyle(host);
+    const fit = s.objectFit;
+    over.style.setProperty("--hero-sparkle-mask-size", fit === "cover" ? "cover" : fit === "fill" ? "100% 100%" : "contain");
+    if (s.objectPosition) over.style.setProperty("--hero-sparkle-mask-position", s.objectPosition);
+  }, [fitFrom, clip]);
+  if (!clip) return null;
+  return <span ref={self} aria-hidden="true" className={sparkleClass(className)} data-sparkle-clip={clip} style={sparkleStyle(clip)} />;
 }

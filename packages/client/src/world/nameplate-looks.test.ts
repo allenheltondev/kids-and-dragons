@@ -40,7 +40,7 @@ beforeAll(installFakeCanvas2D);
 const NAMES = ["Moonlightbramble", "Skyclawthunderer", "Thistlewhisperer", "Puddlejumperzzzz"];
 const TITLE = LOOKS.titles.find((t) => t.text === longestTitle())!.id;
 
-const look = (over: Partial<HeroLookView> = {}): HeroLookView => ({ revision: 1, coat: null, nameplate: "ribbon", title: TITLE, unlocked: [], ...over });
+const look = (over: Partial<HeroLookView> = {}): HeroLookView => ({ revision: 1, coat: null, accent: null, special: null, nameplate: "ribbon", title: TITLE, unlocked: [], ...over });
 
 function party(size: number, styled: boolean): PartyMember[] {
   return NAMES.slice(0, size).map((name, i) =>

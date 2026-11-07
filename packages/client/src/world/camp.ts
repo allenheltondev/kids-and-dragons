@@ -1194,7 +1194,7 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
       actor.sprite = sprite;
       actor.placeholder.visible = false;
       actor.art.addChild(sprite);
-      // A hero's shimmer coat lays its sweep over her sprite (#669).
+      // A hero's sparkle special twinkles over her sprite, a child of it (§5.5).
       actor.heroArt?.dress(sprite);
       fitArt(actor);
     };

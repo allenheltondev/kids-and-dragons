@@ -8,6 +8,7 @@ import { describe, expect, it } from "vitest";
 import {
   coatPaintKey,
   coatPaintOf,
+  lookSparkles,
   speciesCoat,
   emptyLook,
   holdsLook,
@@ -24,7 +25,16 @@ import { makeCharacter } from "./test-fixtures.js";
 import type { LookCatalog } from "./types/look.js";
 
 const CATALOG: LookCatalog = {
-  coats: [{ id: "midnight", name: "Midnight", unlock: { from: "starter" }, species: ["unicorn"], color: "#223355" }],
+  coats: [
+    { id: "midnight", name: "Midnight", unlock: { from: "starter" }, species: ["unicorn"], part: "main", color: "#223355" },
+    { id: "rose", name: "Rose", unlock: { from: "starter" }, species: ["unicorn"], part: "accent", color: "#E0508F" },
+    { id: "bluebell", name: "Bluebell", unlock: { from: "milestone", tier: "sworn" }, species: ["unicorn"], part: "accent", color: "#4F6BED" },
+    { id: "tan", name: "Tan", unlock: { from: "starter" }, species: ["bigfoot"], part: "accent", color: "#D9A066" },
+  ],
+  specials: [
+    { id: "aurora", name: "Aurora", unlock: { from: "found" }, effect: { kind: "sparkle" } },
+    { id: "gold", name: "Gold", unlock: { from: "milestone", tier: "radiant" }, effect: { kind: "gilded", color: "#E2B13C" } },
+  ],
   nameplates: [
     { id: "plain", name: "Plain", unlock: { from: "starter" } },
     { id: "ribbon", name: "Ribbon", unlock: { from: "starter" }, art: "nameplates/ribbon.webp" },
@@ -36,14 +46,51 @@ const CATALOG: LookCatalog = {
   ],
 };
 
-describe("her colour (#666, §7.1)", () => {
-  it("is drawn only when it is one of her species' own, and painted plain", () => {
+describe("her colours (#666, §7.1; two parts, owner 2026-11-07)", () => {
+  it("are drawn only when each is her species' own for its part", () => {
     expect(speciesCoat(CATALOG, "unicorn", "midnight")?.id).toBe("midnight");
     expect(speciesCoat(CATALOG, "bigfoot", "midnight")).toBeNull();
     expect(speciesCoat(CATALOG, "unicorn", "nonesuch")).toBeNull();
     expect(speciesCoat(CATALOG, "unicorn", null)).toBeNull();
-    expect(coatPaintOf({ color: "#223355" })).toEqual({ kind: "plain", color: "#223355" });
-    expect(coatPaintKey(coatPaintOf({ color: "#aabbcc" }))).toBe("plain:#AABBCC");
+    expect(speciesCoat(CATALOG, "unicorn", "rose")).toBeNull();
+    expect(speciesCoat(CATALOG, "unicorn", "rose", "accent")?.id).toBe("rose");
+    expect(speciesCoat(CATALOG, "unicorn", "midnight", "accent")).toBeNull();
+  });
+
+  it("paint both parts independently, or one alone, and nothing for none", () => {
+    expect(coatPaintOf(CATALOG, "unicorn", { coat: "midnight", accent: "rose" })).toEqual({ kind: "parts", main: "#223355", accent: "#E0508F" });
+    expect(coatPaintOf(CATALOG, "unicorn", { accent: "rose" })).toEqual({ kind: "parts", main: null, accent: "#E0508F" });
+    expect(coatPaintOf(CATALOG, "unicorn", { coat: "midnight" })).toEqual({ kind: "parts", main: "#223355", accent: null });
+    // A colour of the wrong part, or another species', is not drawn.
+    expect(coatPaintOf(CATALOG, "unicorn", { coat: "rose", accent: "tan" })).toBeNull();
+    expect(coatPaintOf(CATALOG, "unicorn", {})).toBeNull();
+    expect(coatPaintOf(CATALOG, "unicorn", null)).toBeNull();
+  });
+
+  it("an old look with only `coat` still paints her main part", () => {
+    const old = migrateLook({ v: 1, revision: 2, coat: "midnight", nameplate: null, title: null, unlocked: {} });
+    expect(old).toMatchObject({ coat: "midnight", accent: null, special: null });
+    expect(coatPaintOf(CATALOG, "unicorn", old)).toEqual({ kind: "parts", main: "#223355", accent: null });
+  });
+
+  it("gold ignores her colours and covers her whole figure; sparkles are not paint", () => {
+    expect(coatPaintOf(CATALOG, "unicorn", { coat: "midnight", accent: "rose", special: "gold" })).toEqual({ kind: "gilded", color: "#E2B13C" });
+    expect(coatPaintOf(CATALOG, "unicorn", { coat: "midnight", special: "aurora" })).toEqual({ kind: "parts", main: "#223355", accent: null });
+    expect(coatPaintOf(CATALOG, "unicorn", { special: "aurora" })).toBeNull();
+    expect(lookSparkles(CATALOG, { special: "aurora" })).toBe(true);
+    expect(lookSparkles(CATALOG, { special: "gold" })).toBe(false);
+    expect(lookSparkles(CATALOG, { special: "nonesuch" })).toBe(false);
+  });
+
+  it("key each paint apart: both colours, either alone, or the gold", () => {
+    const keys = [
+      coatPaintKey({ kind: "parts", main: "#aabbcc", accent: null }),
+      coatPaintKey({ kind: "parts", main: null, accent: "#aabbcc" }),
+      coatPaintKey({ kind: "parts", main: "#aabbcc", accent: "#112233" }),
+      coatPaintKey({ kind: "gilded", color: "#aabbcc" }),
+    ];
+    expect(keys[0]).toBe("parts:#AABBCC:-");
+    expect(new Set(keys).size).toBe(4);
   });
 });
 
@@ -63,6 +110,25 @@ describe("what is hers to wear (§6)", () => {
     expect(lookEditProblem(CATALOG, [], { coat: "midnight" }, "bigfoot")).toMatch(/not one of her colors/);
   });
 
+  it("checks each colour against its part, and a special against her receipts", () => {
+    expect(lookEditProblem(CATALOG, [], { coat: "midnight", accent: "rose" }, "unicorn")).toBeNull();
+    // A main colour as her accent, and an accent colour as her main: refused.
+    expect(lookEditProblem(CATALOG, [], { accent: "midnight" }, "unicorn")).toMatch(/main color, not an accent/);
+    expect(lookEditProblem(CATALOG, [], { coat: "rose" }, "unicorn")).toMatch(/accent color, not a main/);
+    // Another species' accent.
+    expect(lookEditProblem(CATALOG, [], { accent: "tan" }, "unicorn")).toMatch(/not one of her colors/);
+    // An earned accent, before and after.
+    expect(lookEditProblem(CATALOG, [], { accent: "bluebell" }, "unicorn")).toMatch(/not hers/);
+    expect(lookEditProblem(CATALOG, ["bluebell"], { accent: "bluebell" }, "unicorn")).toBeNull();
+    // A special not earned, earned, unknown; none is always fine.
+    expect(lookEditProblem(CATALOG, [], { special: "gold" }, "unicorn")).toMatch(/not hers/);
+    expect(lookEditProblem(CATALOG, ["gold"], { special: "gold" }, "bigfoot")).toBeNull();
+    expect(lookEditProblem(CATALOG, [], { special: "nonesuch" }, "unicorn")).toMatch(/no such special/);
+    expect(lookEditProblem(CATALOG, [], { special: null, accent: null }, "unicorn")).toBeNull();
+    expect(lookIntentProblem({ characterId: "c_1", revision: 0, accent: "rose" })).toBeNull();
+    expect(lookIntentProblem({ characterId: "c_1", revision: 0, special: 4 })).toBe("special");
+  });
+
   it("checks a LOOK_EDIT's shape", () => {
     expect(lookIntentProblem({ characterId: "c_1", revision: 0, title: "the_bold" })).toBeNull();
     expect(lookIntentProblem({ characterId: "c_1", revision: -1, title: "the_bold" })).toBe("revision");
@@ -72,6 +138,25 @@ describe("what is hers to wear (§6)", () => {
 });
 
 describe("the book's merge (§3.2)", () => {
+  it("merges her accent and special per field, as her other fields", () => {
+    const stored = withLookEdit(emptyLook(), { coat: "midnight", title: "the_bold" });
+    const merged = mergeBookLook(
+      stored,
+      [
+        { field: "accent", before: null, after: "rose" },
+        { field: "special", before: null, after: "gold" },
+      ],
+      (edit) => lookEditProblem(CATALOG, [], edit, "unicorn"),
+    );
+    // The accent is hers and lands; gold is not earned and is skipped; the rest stays.
+    expect(merged.applied).toEqual(["accent"]);
+    expect(merged.refused).toEqual(["special"]);
+    expect(merged.look).toMatchObject({ coat: "midnight", accent: "rose", special: null, title: "the_bold" });
+    const later = mergeBookLook(merged.look, [{ field: "special", before: null, after: "gold" }], (edit) => lookEditProblem(CATALOG, ["gold"], edit, "unicorn"));
+    expect(later.look).toMatchObject({ coat: "midnight", accent: "rose", special: "gold" });
+    expect(withBookLookChanges(lookView(merged.look), [{ field: "accent", before: "rose", after: null }])).toMatchObject({ accent: null, coat: "midnight" });
+  });
+
   const check = (unlocked: string[]) => (edit: Parameters<typeof withLookEdit>[1]) => lookEditProblem(CATALOG, unlocked, edit, "unicorn");
 
   it("applies each field over what is stored, the device winning, and skips one not hers", () => {

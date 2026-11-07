@@ -452,7 +452,12 @@ async function readAll(root: string): Promise<ContentStore> {
   // The hero looks catalog (#664), optional the same way.
   const looksFile = await readJson<LookCatalog>(path.join(root, "looks.json"), []);
   const looks = looksFile && Array.isArray(looksFile.nameplates) && Array.isArray(looksFile.titles)
-    ? { coats: Array.isArray(looksFile.coats) ? looksFile.coats : [], nameplates: looksFile.nameplates, titles: looksFile.titles }
+    ? {
+        coats: Array.isArray(looksFile.coats) ? looksFile.coats : [],
+        specials: Array.isArray(looksFile.specials) ? looksFile.specials : [],
+        nameplates: looksFile.nameplates,
+        titles: looksFile.titles,
+      }
     : null;
   return new LoadedContent(root, rules, items, chapters, maps, abilities, campaigns, world, bestiary, camp, looks);
 }

@@ -7,7 +7,8 @@
  *
  *   - **Finds** in chapters, as a content effect (`findLook`): every seated
  *     hero gets her own copy of each look it names that is for her (a coat
- *     only for its species), once per reward (`foundLookGrants`).
+ *     only for its species; a special, a frame or a title for everyone),
+ *     once per reward (`foundLookGrants`).
  *   - **Milestones**: a tier reached, a class rank held, a campaign finished
  *     (`earnedLooks`, off her own row: `committed`, `provisional` and
  *     `finished`). Backfilled on read (`readEarnedLook`), so a hero who held
@@ -40,16 +41,17 @@ export interface CatalogLookEntry {
   id: LookId;
   kind: LookKind;
   unlock: LookUnlockRule;
-  /** A coat's species; absent for a frame or a title, which are every hero's. */
+  /** A coat's species; absent for a special, a frame or a title, which are every hero's. */
   species?: readonly SpeciesId[];
-  /** As a shelf names it: a coat's or a frame's name, a title's words. */
+  /** As a shelf names it: a coat's, a special's or a frame's name, a title's words. */
   name: string;
 }
 
-/** Every look in the catalog, coats then frames then titles. */
+/** Every look in the catalog, coats then specials then frames then titles. */
 export function catalogLooks(catalog: LookCatalog): CatalogLookEntry[] {
   return [
     ...catalog.coats.map((c) => ({ id: c.id, kind: "coat" as const, unlock: c.unlock, species: c.species, name: c.name })),
+    ...(catalog.specials ?? []).map((x) => ({ id: x.id, kind: "special" as const, unlock: x.unlock, name: x.name })),
     ...catalog.nameplates.map((n) => ({ id: n.id, kind: "nameplate" as const, unlock: n.unlock, name: n.name })),
     ...catalog.titles.map((t) => ({ id: t.id, kind: "title" as const, unlock: t.unlock, name: t.text })),
   ];
@@ -60,7 +62,7 @@ export function catalogLook(catalog: LookCatalog, id: string): CatalogLookEntry 
   return catalogLooks(catalog).find((entry) => entry.id === id) ?? null;
 }
 
-/** Whether a look is one a hero of `species` can wear: every frame and title, and a coat of her species. */
+/** Whether a look is one a hero of `species` can wear: every special, frame and title, and a coat of her species. */
 export function lookIsFor(entry: Pick<CatalogLookEntry, "species">, species: SpeciesId | undefined): boolean {
   return entry.species === undefined || (species !== undefined && entry.species.includes(species));
 }
@@ -206,7 +208,7 @@ export function milestoneGrants(earned: readonly EarnedLook[]): LookGrant[] {
 
 /**
  * What a `findLook` gives one hero: each look it names that is in the catalog,
- * earned by a find, and for her (a coat of her species; every frame and title).
+ * earned by a find, and for her (a coat of her species; every special, frame and title).
  */
 export function foundLookGrants(
   catalog: LookCatalog,
@@ -244,5 +246,5 @@ export function readEarnedLook(
 
 /** Whether a look has anything to show or keep: a choice or a receipt. A look with neither is as good as none. */
 export function lookHasAnything(look: HeroLook): boolean {
-  return look.coat !== null || look.nameplate !== null || look.title !== null || Object.keys(look.unlocked).length > 0 || look.revision > 0;
+  return look.coat !== null || look.accent !== null || look.special !== null || look.nameplate !== null || look.title !== null || Object.keys(look.unlocked).length > 0 || look.revision > 0;
 }

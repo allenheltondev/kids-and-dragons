@@ -2071,7 +2071,7 @@ function checkLooks(rep, ajv, rules, campaignIds, chaptersById) {
   const path = join(CONTENT, "looks.json");
   const catalog = existsSync(path) ? readJson(rep, path) : null;
   if (!catalog) {
-    rep.fail(rel(path), "", "content/looks.json is missing", "The hero looks catalog (coats, nameplate frames and titles) lives there (docs/hero-looks.md §3.1).");
+    rep.fail(rel(path), "", "content/looks.json is missing", "The hero looks catalog (coats, specials, nameplate frames and titles) lives there (docs/hero-looks.md §3.1).");
     return;
   }
   if (!validateAgainstSchema(rep, ajv, "looks", path, catalog)) return;
@@ -2092,7 +2092,7 @@ function checkLooks(rep, ajv, rules, campaignIds, chaptersById) {
   for (const { file, problem, hint } of problems.filter((p) => p.warning)) rep.warn(`${file}: ${problem}`, hint);
   if (!failures.length) {
     const finds = [...chaptersById.values()].reduce((n, chapter) => n + chapterLookFinds(chapter).length, 0);
-    rep.ok(`${rel(path)}  looks  (${catalog.coats.length} coat(s), ${catalog.nameplates.length} frame(s), ${catalog.titles.length} title(s), ${finds} look find(s))`);
+    rep.ok(`${rel(path)}  looks  (${catalog.coats.length} coat(s), ${(catalog.specials ?? []).length} special(s), ${catalog.nameplates.length} frame(s), ${catalog.titles.length} title(s), ${finds} look find(s))`);
   }
 }
 

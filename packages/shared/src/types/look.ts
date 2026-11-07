@@ -13,23 +13,32 @@
  * and the Gemfall gameplay digests do not move. Starter looks are implied by
  * the catalog (`unlock.from: "starter"`), never stored.
  *
- * Coat, nameplate and title ids are content (`content/looks.json`), so they
- * are plain strings here, named apart for the reader.
+ * Coat, special, nameplate and title ids are content (`content/looks.json`),
+ * so they are plain strings here, named apart for the reader.
+ *
+ * Her colours are two (owner, 2026-11-07): every species has a **main** part
+ * and an **accent** part (a unicorn's coat and mane, a Bigfoot's fur and
+ * skin), each coloured on its own. `coat` is the main part's colour (the name
+ * is the code's, kept so older data stays valid) and `accent` the accent
+ * part's. A **special** is not a colour: it applies across her whole figure
+ * (sparkles over her, or gold that ignores her colours).
  */
 
 import type { ClassId, ClassRank, SpeciesId, TierId } from "./domain.js";
 
-/** A colour for her coloured region (§4, phase 2). The book calls this "Color". */
+/** A colour for one of her two parts (§4): the main part (`look.coat`) or the accent part (`look.accent`). */
 export type CoatId = string;
+/** A whole-figure special (§5.5): sparkles, gold. */
+export type SpecialId = string;
 /** A nameplate frame (§7.2). "plain" is today's look. */
 export type NameplateId = string;
 /** A title, drawn under her name (§7.3). */
 export type TitleId = string;
-/** Any look in the catalog: a coat, a frame or a title. Ids are unique across all three. */
+/** Any look in the catalog: a coat, a special, a frame or a title. Ids are unique across all four. */
 export type LookId = string;
 
-/** The stored shape's version. */
-export const LOOK_VERSION = 1;
+/** The stored shape's version. v2 added `accent` and `special` (owner, 2026-11-07). */
+export const LOOK_VERSION = 2;
 
 /** `Character.look`: what she has chosen to look like (docs/hero-looks.md §3.1). */
 export interface HeroLook {
@@ -37,8 +46,12 @@ export interface HeroLook {
   v: number;
   /** Bumped by every write, from the table or the book (§3.2); a stale `LOOK_EDIT` is refused. */
   revision: number;
-  /** Null: as painted. */
+  /** Her main part's colour (a `part: "main"` coat of her species). Null: as painted. */
   coat: CoatId | null;
+  /** Her accent part's colour (a `part: "accent"` coat of her species). Null: as painted. */
+  accent: CoatId | null;
+  /** A whole-figure special. Null: none. A gilded one ignores `coat` and `accent` while worn. */
+  special: SpecialId | null;
   /** Null: the plain plate. */
   nameplate: NameplateId | null;
   /** Null: no title line. */
@@ -68,6 +81,8 @@ export interface HeroLookView {
   /** What a `LOOK_EDIT` names, so a stale one is refused. */
   revision: number;
   coat: CoatId | null;
+  accent: CoatId | null;
+  special: SpecialId | null;
   nameplate: NameplateId | null;
   title: TitleId | null;
   /** The ids she holds beyond the starters, sorted. */
@@ -101,7 +116,7 @@ export interface LookFind {
 export interface LookUnlockNews {
   characterId: string;
   lookId: LookId;
-  kind: "coat" | "nameplate" | "title";
+  kind: "coat" | "special" | "nameplate" | "title";
   /**
    * What earned it, which says when it is told: after the transformation
    * (`tier`), after the rank-up moment (`rank`), otherwise at once.
@@ -134,50 +149,57 @@ export type LookUnlockRule =
   /** A camp milestone: her crew's first friend, or its grand camp (frame stage 4, docs/camp.md §4.1). */
   | { from: "milestone"; camp: "firstFriend" | "fullCamp" };
 
+/** Which of her two parts a colour is for (§4.2): a unicorn's coat or mane, a Bigfoot's fur or skin. */
+export type CoatPart = "main" | "accent";
+
 /**
- * A coat (phase 2, #666): a colour for one species' region (§4.2, §7.1). The
- * kid sees it on the **Color** shelf; the code says `coat` whichever part of
- * her it colours.
- *
- * Every coat has a `color`: the plain colour, and the base of a special coat.
- * The special coats (§5.5, #669) are an `effect` added beside it, mapped to a
- * new member of `CoatPaint` below, so a build that does not know an effect
- * still draws the coat in its plain colour.
+ * A coat (#666; two parts, owner 2026-11-07): a colour for one part of one
+ * species (§4.2, §7.1). The kid sees it on her part's shelf ("Coat", "Mane";
+ * "Fur", "Skin"); the code says `coat` whichever part it colours, and
+ * `look.coat` holds the main part's, `look.accent` the accent part's.
  */
 export interface CatalogCoat {
   id: CoatId;
   name: string;
   unlock: LookUnlockRule;
-  /** The species whose region it colours; each species has its own set (§7.1). */
+  /** The species whose part it colours; each species has its own sets (§7.1). */
   species: SpeciesId[];
-  /** sRGB hex: the coat's colour, and the base of a special coat. */
+  /** Which part: the main one (`look.coat`) or the accent (`look.accent`). */
+  part: CoatPart;
+  /** sRGB hex. */
   color: string;
-  /** A special coat (§5.5, #669): absent for a plain one. A build that does not know it draws `color` plain. */
-  effect?: CoatEffect;
 }
 
 /**
- * What makes a special coat special (§5.5), drawn in code from the region
- * mask, with no new art:
+ * What a special does (§5.5), across her whole figure (the mask's blue
+ * channel, or a transparent painting's alpha), with no new art:
  *
- *   - `two-tone`: the region's lighter half takes `color`, its darker half
- *     `dark`, with a soft step between. A still image.
- *   - `shimmer`: a slow highlight sweeping across the region every few
- *     seconds, over a plain coat (or a two-tone one, given `dark`). The sweep
- *     is an overlay masked by the region (client hero-shimmer.ts), never the
- *     tinter's; under reduced motion it is a still sheen.
+ *   - `sparkle`: twinkling sparkles over her, an overlay on every surface,
+ *     never the tinter's; under reduced motion they rest, still.
+ *   - `gilded`: the whole figure swapped toward `color` by the §5.2 swap,
+ *     keeping its lightness steps, so she reads as a statue of it. Her chosen
+ *     colours are ignored while it is worn.
  */
-export type CoatEffect = { kind: "two-tone"; dark: string } | { kind: "shimmer"; dark?: string };
+export type SpecialEffect = { kind: "sparkle" } | { kind: "gilded"; color: string };
+
+/** A special (§5.5): every species', earned only. */
+export interface CatalogSpecial {
+  id: SpecialId;
+  name: string;
+  unlock: LookUnlockRule;
+  effect: SpecialEffect;
+}
 
 /**
- * How a coat is painted, as the tinter reads it (client world/hero-coat.ts,
- * tools/art/coat.py). `plain`: the region takes `color` by the §5.2 colour
- * swap. `two-tone` (#669): each pixel takes the swap to `color` above the
- * region's mean lightness and to `dark` below it, mixed across a soft step.
- * A shimmer coat paints as one of these; its sweep is an overlay, not paint.
- * Each kind has its own cache key (`coatPaintKey`).
+ * How a hero is painted, as the tinter reads it (client world/hero-coat.ts,
+ * tools/art/coat.py). `parts`: the main part (the mask's red channel) takes
+ * `main` and the accent part (green) takes `accent`, each by the §5.2 swap
+ * with its own region's means; null leaves a part as painted. `gilded`: the
+ * whole figure (blue, or a transparent painting's alpha) takes `color`, her
+ * colours ignored. Each has its own cache key (`coatPaintKey`). A sparkle is
+ * an overlay, never paint.
  */
-export type CoatPaint = { kind: "plain"; color: string } | { kind: "two-tone"; color: string; dark: string };
+export type CoatPaint = { kind: "parts"; main: string | null; accent: string | null } | { kind: "gilded"; color: string };
 
 /** A nameplate frame (§7.2). */
 export interface CatalogNameplate {
@@ -201,9 +223,10 @@ export interface CatalogTitle {
   unlock: LookUnlockRule;
 }
 
-/** `content/looks.json`: the one catalog of coats, frames and titles (§3.1). */
+/** `content/looks.json`: the one catalog of coats, specials, frames and titles (§3.1). */
 export interface LookCatalog {
   coats: CatalogCoat[];
+  specials: CatalogSpecial[];
   nameplates: CatalogNameplate[];
   titles: CatalogTitle[];
 }

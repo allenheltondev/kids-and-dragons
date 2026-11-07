@@ -217,6 +217,36 @@ describe("a painting with no mask (§4.1, §12)", () => {
   it("draws another species' colour as painted too", () => {
     serve(characterWorldArtUrl("unicorn", "fledgling"));
     expect(heroCoatOf({ ...unicorn(), look: { coat: GINGER.id } }, "world")).toBeNull();
+    // Nor a colour stored on the other part.
+    expect(heroCoatOf({ ...unicorn(), look: { coat: null, accent: SKY.id } }, "world")).toBeNull();
+  });
+});
+
+describe("her two colours (§5.2, two parts)", () => {
+  const ROSE = { id: "unicorn_accent_rose", color: "#E7379C" };
+
+  it("paints her main part and her accent part, each its own colour, in one pass", async () => {
+    const painting = characterWorldArtUrl("unicorn", "fledgling");
+    serve(painting);
+    const { container } = render(<HeroImage hero={{ ...unicorn(), look: { coat: SKY.id, accent: ROSE.id } }} place="world" alt="" />);
+    const img = container.querySelector("img")!;
+    await waitFor(() => expect(img.getAttribute("src")).toMatch(/^blob:tint-/));
+    const pixels = new Uint8ClampedArray(await urls.blobs.get(img.getAttribute("src")!)!.arrayBuffer());
+    const { mask } = syntheticPainting("#E2CDEC", 16);
+    expect(oklabDistance(regionMean(pixels, mask.data, 4, 0), hexToOklab(SKY.color))).toBeLessThan(0.08);
+    expect(oklabDistance(regionMean(pixels, mask.data, 4, 1), hexToOklab(ROSE.color))).toBeLessThan(0.1);
+    expect(cache.stats().entries).toBe(1);
+  });
+
+  it("draws an old look with only `coat` (written before her accent) as her main colour", async () => {
+    const painting = characterWorldArtUrl("unicorn", "fledgling");
+    serve(painting);
+    const old = { species: "unicorn" as SpeciesId, tier: "fledgling" as TierId, look: { revision: 2, coat: SKY.id, nameplate: null, title: null, unlocked: [] } };
+    expect(heroCoatOf(old, "world")!.paint).toEqual({ kind: "parts", main: SKY.color, accent: null });
+    const { container } = render(<HeroImage hero={old} place="world" alt="" />);
+    const img = container.querySelector("img")!;
+    await waitFor(() => expect(img.getAttribute("src")).toMatch(/^blob:tint-/));
+    expect(oklabDistance(await blobColor(img.getAttribute("src")!), hexToOklab(SKY.color))).toBeLessThan(0.08);
   });
 });
 

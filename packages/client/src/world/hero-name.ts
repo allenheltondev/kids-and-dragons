@@ -12,8 +12,9 @@
  * the name exactly as today, with nothing behind it, and no request for a
  * file that is not there.
  *
- * `lookChoices` lists the Color shelf's coats (#666) by the same rule
- * (starters and her receipts, nothing locked shown), and her species' only.
+ * `lookChoices` lists the colour shelves' coats (#666; one shelf per part)
+ * and the specials by the same rule (starters and her receipts, nothing
+ * locked shown), the colours her species' only.
  */
 
 import { holdsLook, lookTitleText, PLAIN_NAMEPLATE } from "@kad/shared";
@@ -24,6 +25,7 @@ import { nameplateFrames } from "../../../../assets/manifest.json";
 /** The catalog, as the server reads it. */
 export const LOOKS: LookCatalog = {
   coats: (looksJson as unknown as LookCatalog).coats ?? [],
+  specials: (looksJson as unknown as LookCatalog).specials ?? [],
   nameplates: (looksJson as unknown as LookCatalog).nameplates,
   titles: (looksJson as unknown as LookCatalog).titles,
 };
@@ -85,10 +87,12 @@ export interface LookChoice {
 /**
  * What a shelf offers her: every look of that kind she holds (a starter, or
  * one she has a receipt for), in catalog order. Earned looks she has not got
- * yet are not shown (§8.1): nothing is a locked tease.
+ * yet are not shown (§8.1): nothing is a locked tease. Her colours are her
+ * species' own for that part: `coat` her main part's, `accent` her accent
+ * part's. A special is every species'.
  */
 export function lookChoices(
-  kind: "nameplate" | "title" | "coat",
+  kind: "nameplate" | "title" | "coat" | "accent" | "special",
   look: Pick<HeroLookView, "unlocked"> | null | undefined,
   species?: SpeciesId,
   catalog: LookCatalog = LOOKS,
@@ -96,7 +100,9 @@ export function lookChoices(
   const unlocked = look?.unlocked ?? [];
   if (kind === "nameplate") return catalog.nameplates.filter((n) => holdsLook(catalog, unlocked, n.id)).map((n) => ({ id: n.id, name: n.name }));
   if (kind === "title") return catalog.titles.filter((t) => holdsLook(catalog, unlocked, t.id)).map((t) => ({ id: t.id, name: t.text }));
+  if (kind === "special") return (catalog.specials ?? []).filter((x) => holdsLook(catalog, unlocked, x.id)).map((x) => ({ id: x.id, name: x.name }));
+  const part = kind === "coat" ? "main" : "accent";
   return catalog.coats
-    .filter((c) => (species === undefined || c.species.includes(species)) && holdsLook(catalog, unlocked, c.id))
+    .filter((c) => c.part === part && (species === undefined || c.species.includes(species)) && holdsLook(catalog, unlocked, c.id))
     .map((c) => ({ id: c.id, name: c.name }));
 }

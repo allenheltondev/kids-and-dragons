@@ -1721,7 +1721,7 @@ export function createScene(app: Application): PartyScene {
         placeholder.destroy();
         art.addChild(sprite);
         actor.sprite = sprite;
-        // A shimmer coat's sweep goes over her sprite (#669).
+        // A sparkle special twinkles over her sprite, a child of it (§5.5).
         actor.heroArt?.dress(sprite);
         actor.paint = measurePaint(texture);
         actor.footprint = groundedFootprint(measureFootprint(texture), actor.paint);

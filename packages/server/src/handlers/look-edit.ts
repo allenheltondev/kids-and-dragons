@@ -25,6 +25,7 @@ import {
   LOOK_VERSION,
   campMomentKind,
   lookEditChanges,
+  lookEditOf as sharedLookEditOf,
   lookIntentProblem,
   lookEditProblem,
   lookView,
@@ -54,12 +55,8 @@ export type LookEditResult =
 const illegal = (message: string): { ok: false; error: EditError } => ({ ok: false, error: { code: "ILLEGAL", message } });
 
 /** The edit an intent asks for: only the fields it names. */
-export function lookEditOf(intent: { coat?: string | null; nameplate?: string | null; title?: string | null }): LookEdit {
-  return {
-    ...(intent.coat !== undefined ? { coat: intent.coat } : {}),
-    ...(intent.nameplate !== undefined ? { nameplate: intent.nameplate } : {}),
-    ...(intent.title !== undefined ? { title: intent.title } : {}),
-  };
+export function lookEditOf(intent: Partial<Record<keyof LookEdit, string | null | undefined>>): LookEdit {
+  return sharedLookEditOf(intent);
 }
 
 /** The run state with one seated hero's look as stored (or as she has none). */

@@ -57,12 +57,19 @@ export function kitNewsReadyAt(item: Pick<KitNewsItem, "kind" | "arrivedAt" | "c
 const capital = (word: string): string => `${word[0]?.toUpperCase() ?? ""}${word.slice(1)}`;
 
 /** How each look kind is said on the phone. */
-const LOOK_KIND_WORD: Record<string, string> = { coat: "color", nameplate: "nameplate", title: "title" };
+const LOOK_KIND_WORD: Record<string, string> = { coat: "color", special: "special", nameplate: "nameplate", title: "title" };
 
 /** What a piece is called on the phone: "Sworn tent", "Thornguard Apprentice"; a look by its catalog name. */
 export function kitPieceName(item: Pick<KitNewsItem, "kind" | "pieceId">): string {
   if (isLookNews(item)) {
-    const entry = item.kind === "coat" ? LOOKS.coats.find((c) => c.id === item.pieceId) : item.kind === "nameplate" ? LOOKS.nameplates.find((n) => n.id === item.pieceId) : null;
+    const entry =
+      item.kind === "coat"
+        ? LOOKS.coats.find((c) => c.id === item.pieceId)
+        : item.kind === "special"
+          ? LOOKS.specials.find((x) => x.id === item.pieceId)
+          : item.kind === "nameplate"
+            ? LOOKS.nameplates.find((n) => n.id === item.pieceId)
+            : null;
     if (entry) return entry.name;
     return lookTitleText(LOOKS, item.pieceId) ?? capital(item.pieceId.replace(/_/g, " "));
   }

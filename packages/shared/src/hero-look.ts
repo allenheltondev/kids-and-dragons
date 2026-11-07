@@ -13,14 +13,16 @@
  *     choice for each field stands.
  *
  * Either way the server checks every look named is hers (a starter, or one she
- * holds a receipt for) and, for a colour, one of her species' own (§7.1).
+ * holds a receipt for) and, for a colour, one of her species' own for that
+ * part (§7.1): `coat` a main-part colour, `accent` an accent-part one. A
+ * special is every species'.
  *
- * The colour (`coat`, #666) must be one of her species' own (`speciesCoat`);
- * how the tinter paints it is `coatPaintOf`.
+ * How the tinter paints her is `coatPaintOf`: her two colours, or a gilded
+ * special's gold over the whole figure, which ignores them.
  */
 
 import type { Character, SpeciesId } from "./types/domain.js";
-import type { CatalogCoat, CoatPaint, HeroLook, HeroLookView, LookCatalog, LookUnlock } from "./types/look.js";
+import type { CatalogCoat, CatalogSpecial, CoatPaint, CoatPart, HeroLook, HeroLookView, LookCatalog, LookUnlock } from "./types/look.js";
 import { LOOK_VERSION } from "./types/look.js";
 
 /** The longest title the catalog may have, in characters: what the nameplate collision tests are run at (§7.3). */
@@ -31,7 +33,7 @@ export const PLAIN_NAMEPLATE = "plain";
 
 /** A look nothing has been chosen on yet: as painted, the plain plate, no title. */
 export function emptyLook(): HeroLook {
-  return { v: LOOK_VERSION, revision: 0, coat: null, nameplate: null, title: null, unlocked: {} };
+  return { v: LOOK_VERSION, revision: 0, coat: null, accent: null, special: null, nameplate: null, title: null, unlocked: {} };
 }
 
 /** Her look as stored, or an empty one. Read it this way, never off the row directly. */
@@ -51,6 +53,8 @@ export function lookView(look: HeroLook, options: { sources?: boolean } = {}): H
   return {
     revision: look.revision,
     coat: look.coat,
+    accent: look.accent,
+    special: look.special,
     nameplate: look.nameplate,
     title: look.title,
     unlocked,
@@ -61,7 +65,7 @@ export function lookView(look: HeroLook, options: { sources?: boolean } = {}): H
 /** Every starter in the catalog: free for every hero, never stored (§6). */
 export function starterLooks(catalog: LookCatalog): Set<string> {
   const out = new Set<string>();
-  for (const list of [catalog.coats, catalog.nameplates, catalog.titles]) {
+  for (const list of [catalog.coats, catalog.specials ?? [], catalog.nameplates, catalog.titles]) {
     for (const entry of list) if (entry.unlock.from === "starter") out.add(entry.id);
   }
   return out;
@@ -72,18 +76,20 @@ export function holdsLook(catalog: LookCatalog, unlocked: readonly string[], id:
   return starterLooks(catalog).has(id) || unlocked.includes(id);
 }
 
-/** What a look edit may change. Absent: unchanged. Null: back to as painted, the plain plate, no title. */
+/** What a look edit may change. Absent: unchanged. Null: back to as painted, no special, the plain plate, no title. */
 export interface LookEdit {
   coat?: string | null;
+  accent?: string | null;
+  special?: string | null;
   nameplate?: string | null;
   title?: string | null;
 }
 
 /** One thing a kid picks for her look, as the book queues it (§3.2). */
-export type BookLookField = "coat" | "nameplate" | "title";
+export type BookLookField = "coat" | "accent" | "special" | "nameplate" | "title";
 
 /** Every look field, in the order they are applied. */
-export const BOOK_LOOK_FIELDS: readonly BookLookField[] = ["coat", "nameplate", "title"];
+export const BOOK_LOOK_FIELDS: readonly BookLookField[] = ["coat", "accent", "special", "nameplate", "title"];
 
 export function isBookLookField(value: unknown): value is BookLookField {
   return typeof value === "string" && (BOOK_LOOK_FIELDS as readonly string[]).includes(value);
@@ -91,9 +97,11 @@ export function isBookLookField(value: unknown): value is BookLookField {
 
 /**
  * Why `edit` cannot be made to a look holding `unlocked`, or null when it can:
- * each id must be in the catalog and hers to wear, and a coat must be one of
- * her species' own. Null for "as painted", "plain" and "no title" is always
- * fine.
+ * each id must be in the catalog and hers to wear; `coat` must be a colour of
+ * her species' main part and `accent` one of its accent part; a special is
+ * every species'. Null for "as painted", "no special", "plain" and "no title"
+ * is always fine. Her two colours are never checked against each other: an
+ * odd pair is her choice (owner, 2026-11-07).
  */
 export function lookEditProblem(
   catalog: LookCatalog,
@@ -102,11 +110,19 @@ export function lookEditProblem(
   species: SpeciesId,
 ): string | null {
   const held = (id: string): boolean => holdsLook(catalog, unlocked, id);
-  if (edit.coat !== undefined && edit.coat !== null) {
-    const coat = catalog.coats.find((c) => c.id === edit.coat);
-    if (!coat) return `no such color "${edit.coat}"`;
-    if (!coat.species.includes(species)) return `"${edit.coat}" is not one of her colors`;
-    if (!held(coat.id)) return `"${edit.coat}" is not hers yet`;
+  for (const part of ["main", "accent"] as const) {
+    const id = part === "main" ? edit.coat : edit.accent;
+    if (id === undefined || id === null) continue;
+    const coat = catalog.coats.find((c) => c.id === id);
+    if (!coat) return `no such color "${id}"`;
+    if (!coat.species.includes(species)) return `"${id}" is not one of her colors`;
+    if (coat.part !== part) return `"${id}" is ${coat.part === "main" ? "a main" : "an accent"} color, not ${part === "main" ? "a main" : "an accent"} one`;
+    if (!held(coat.id)) return `"${id}" is not hers yet`;
+  }
+  if (edit.special !== undefined && edit.special !== null) {
+    const special = (catalog.specials ?? []).find((x) => x.id === edit.special);
+    if (!special) return `no such special "${edit.special}"`;
+    if (!held(special.id)) return `${special.name} is not hers yet`;
   }
   if (edit.nameplate !== undefined && edit.nameplate !== null) {
     const frame = catalog.nameplates.find((n) => n.id === edit.nameplate);
@@ -123,12 +139,16 @@ export function lookEditProblem(
 
 /** The look with an edit made. Never bumps `revision`: the write does. */
 export function withLookEdit(look: HeroLook, edit: LookEdit): HeroLook {
-  return {
-    ...look,
-    ...(edit.coat !== undefined ? { coat: edit.coat } : {}),
-    ...(edit.nameplate !== undefined ? { nameplate: edit.nameplate } : {}),
-    ...(edit.title !== undefined ? { title: edit.title } : {}),
-  };
+  const out = { ...look };
+  for (const field of BOOK_LOOK_FIELDS) if (edit[field] !== undefined) out[field] = edit[field];
+  return out;
+}
+
+/** The fields an edit names, and only those: what a table intent or a book change carries. */
+export function lookEditOf(source: Partial<Record<BookLookField, string | null | undefined>>): LookEdit {
+  const out: LookEdit = {};
+  for (const field of BOOK_LOOK_FIELDS) if (source[field] !== undefined) out[field] = source[field];
+  return out;
 }
 
 /** Whether an edit changes anything on this look. */
@@ -204,38 +224,66 @@ export function withBookLookChanges(view: HeroLookView, changes: readonly BookLo
 }
 
 /**
- * The coat a hero of `species` wears for `id`: the catalog's entry, or null
- * for none, one the catalog no longer has, or another species' colour (which
- * the server never stores, but a screen must not draw either). Unlocks are
- * the server's to check; a stored coat is hers.
+ * The coat a hero of `species` wears for `id` on `part` (main by default):
+ * the catalog's entry, or null for none, one the catalog no longer has,
+ * another species' colour or the other part's (which the server never
+ * stores, but a screen must not draw either). Unlocks are the server's to
+ * check; a stored coat is hers.
  */
-export function speciesCoat(catalog: Pick<LookCatalog, "coats">, species: SpeciesId, id: string | null | undefined): CatalogCoat | null {
+export function speciesCoat(
+  catalog: Pick<LookCatalog, "coats">,
+  species: SpeciesId,
+  id: string | null | undefined,
+  part: CoatPart = "main",
+): CatalogCoat | null {
   if (!id) return null;
   const coat = catalog.coats.find((c) => c.id === id);
-  return coat && coat.species.includes(species) ? coat : null;
+  return coat && coat.species.includes(species) && coat.part === part ? coat : null;
+}
+
+/** A special by id, or null for none (or one the catalog no longer has). Every species'. */
+export function lookSpecial(catalog: Partial<Pick<LookCatalog, "specials">>, id: string | null | undefined): CatalogSpecial | null {
+  if (!id) return null;
+  return (catalog.specials ?? []).find((x) => x.id === id) ?? null;
+}
+
+/** The parts of a look the paint is read from. Absent fields are as painted. */
+export interface PaintedLook {
+  readonly coat?: string | null | undefined;
+  readonly accent?: string | null | undefined;
+  readonly special?: string | null | undefined;
 }
 
 /**
- * How a coat is painted (`CoatPaint`): plain, or two-tone where its `effect`
- * names a `dark` (a two-tone coat, or a shimmer over a two-tone one). A
- * shimmer's sweep is not paint (`coatShimmers`).
+ * How a hero of `species` wearing `look` is painted (`CoatPaint`), or null
+ * for as painted: a gilded special's gold over the whole figure, whatever her
+ * colours; else her main and accent colours (each null when unchosen, or not
+ * her species' for that part); null when neither is chosen. A sparkle is not
+ * paint (`lookSparkles`): under it she wears her colours.
  */
-export function coatPaintOf(coat: Pick<CatalogCoat, "color" | "effect">): CoatPaint {
-  const color = coat.color.toUpperCase();
-  const dark = coat.effect?.dark;
-  return dark ? { kind: "two-tone", color, dark: dark.toUpperCase() } : { kind: "plain", color };
+export function coatPaintOf(
+  catalog: Pick<LookCatalog, "coats"> & Partial<Pick<LookCatalog, "specials">>,
+  species: SpeciesId,
+  look: PaintedLook | null | undefined,
+): CoatPaint | null {
+  if (!look) return null;
+  const special = lookSpecial(catalog, look.special);
+  if (special?.effect.kind === "gilded") return { kind: "gilded", color: special.effect.color.toUpperCase() };
+  const main = speciesCoat(catalog, species, look.coat, "main")?.color.toUpperCase() ?? null;
+  const accent = speciesCoat(catalog, species, look.accent, "accent")?.color.toUpperCase() ?? null;
+  return main === null && accent === null ? null : { kind: "parts", main, accent };
 }
 
-/** Whether a coat has the shimmer's sweep over it (§5.5): an overlay on every surface, never the tinter's. */
-export function coatShimmers(coat: Pick<CatalogCoat, "effect"> | null | undefined): boolean {
-  return coat?.effect?.kind === "shimmer";
+/** Whether a look wears sparkles over her (§5.5): an overlay on every surface, clipped by her figure, never the tinter's. */
+export function lookSparkles(catalog: Partial<Pick<LookCatalog, "specials">>, look: Pick<PaintedLook, "special"> | null | undefined): boolean {
+  return lookSpecial(catalog, look?.special)?.effect.kind === "sparkle";
 }
 
-/** A paint's identity, for the tinter's cache: one entry per painting and paint. */
+/** A paint's identity, for the tinter's cache: one entry per painting and paint (both parts, or the gold). */
 export function coatPaintKey(paint: CoatPaint): string {
-  return paint.kind === "two-tone"
-    ? `two-tone:${paint.color.toUpperCase()}:${paint.dark.toUpperCase()}`
-    : `${paint.kind}:${paint.color.toUpperCase()}`;
+  return paint.kind === "gilded"
+    ? `gilded:${paint.color.toUpperCase()}`
+    : `parts:${paint.main?.toUpperCase() ?? "-"}:${paint.accent?.toUpperCase() ?? "-"}`;
 }
 
 /** A title's words, or null for none (or one the catalog no longer has). */
@@ -253,7 +301,10 @@ export class StoredLookError extends Error {
   override name = "StoredLookError";
 }
 
-const LOOK_STEPS: Record<number, (raw: Record<string, unknown>) => Record<string, unknown>> = {};
+const LOOK_STEPS: Record<number, (raw: Record<string, unknown>) => Record<string, unknown>> = {
+  // v1 had one colour (`coat`, now the main part's) and no special.
+  1: (raw) => ({ ...raw, accent: raw["accent"] ?? null, special: raw["special"] ?? null }),
+};
 
 /** Storage → domain for `Character.look`, which carries its own `v`. */
 export function migrateLook(data: unknown): HeroLook {
@@ -287,5 +338,14 @@ export function migrateLook(data: unknown): HeroLook {
       ...(typeof r["source"] === "string" ? { source: r["source"] } : {}),
     };
   }
-  return { v: LOOK_VERSION, revision, coat: nullable("coat"), nameplate: nullable("nameplate"), title: nullable("title"), unlocked };
+  return {
+    v: LOOK_VERSION,
+    revision,
+    coat: nullable("coat"),
+    accent: nullable("accent"),
+    special: nullable("special"),
+    nameplate: nullable("nameplate"),
+    title: nullable("title"),
+    unlocked,
+  };
 }

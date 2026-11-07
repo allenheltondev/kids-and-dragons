@@ -33,6 +33,7 @@ import {
   BOOK_EDIT_FIELDS,
   FIRST_CREW_NAME,
   isKitChange,
+  BOOK_LOOK_FIELDS,
   isLookChange,
   lookView,
   mergeBookLook,
@@ -367,7 +368,7 @@ function parseRequest(body: Record<string, unknown>): BookKitRequest | string {
  * friends that crew has; a look only one she holds (docs/hero-looks.md §3.2,
  * #664). See the header for online and queued changes.
  *
- * Her look's fields (`nameplate`, `title`, `coat`) are new change kinds on the
+ * Her look's fields (`coat`, `accent`, `special`, `nameplate`, `title`) are change kinds on the
  * same request, applied by the same rule: each over whatever is stored now,
  * the device winning, and one that is not hers skipped from the queue
  * (`merge`) or refusing the whole change sent straight away. They are written
@@ -417,7 +418,7 @@ export async function editKitFromBook(input: BookKitInput, deps: HandlerDeps): P
           lookSeen.applied = lookChanges.map((c) => c.field);
           next = withLookEdit(stored, edit);
         }
-        return { coat: next.coat, nameplate: next.nameplate, title: next.title };
+        return Object.fromEntries(BOOK_LOOK_FIELDS.map((f) => [f, next[f]])) as LookEdit;
       },
       deps,
     );

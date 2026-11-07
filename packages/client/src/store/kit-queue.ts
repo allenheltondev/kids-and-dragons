@@ -252,7 +252,7 @@ export function withQueuedKit(kit: JournalKit, characterId: string, entries: rea
 }
 
 /** A hero's look before anything is chosen: what a queued look change is laid over for a hero with none (docs/hero-looks.md §3.1). */
-export const NO_LOOK: HeroLookView = { revision: 0, coat: null, nameplate: null, title: null, unlocked: [] };
+export const NO_LOOK: HeroLookView = { revision: 0, coat: null, accent: null, special: null, nameplate: null, title: null, unlocked: [] };
 
 /**
  * Her look as the book shows it (docs/hero-looks.md §3.2; #664): the

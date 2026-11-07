@@ -6,7 +6,7 @@
 
 import { describe, expect, it } from "vitest";
 import { makeCharacter } from "./test-fixtures.js";
-import { coatPaintKey, coatPaintOf, coatShimmers, emptyLook, lookView } from "./hero-look.js";
+import { emptyLook, lookView } from "./hero-look.js";
 import {
   earnedLooks,
   foundLookGrants,
@@ -20,11 +20,15 @@ import type { LookCatalog } from "./types/look.js";
 
 const CATALOG: LookCatalog = {
   coats: [
-    { id: "unicorn_sky", name: "Sky", unlock: { from: "starter" }, species: ["unicorn"], color: "#3EC3FD" },
-    { id: "unicorn_aurora", name: "Aurora", unlock: { from: "found" }, species: ["unicorn"], color: "#0FD18B", effect: { kind: "shimmer" } },
-    { id: "bigfoot_aurora", name: "Aurora", unlock: { from: "found" }, species: ["bigfoot"], color: "#0FD18B", effect: { kind: "shimmer" } },
-    { id: "unicorn_ripple", name: "Ripple", unlock: { from: "milestone", tier: "radiant" }, species: ["unicorn"], color: "#F89DC9", effect: { kind: "two-tone", dark: "#742651" } },
-    { id: "bigfoot_ripple", name: "Ripple", unlock: { from: "milestone", tier: "radiant" }, species: ["bigfoot"], color: "#F89DC9", effect: { kind: "two-tone", dark: "#742651" } },
+    { id: "unicorn_sky", name: "Sky", unlock: { from: "starter" }, species: ["unicorn"], part: "main", color: "#3EC3FD" },
+    { id: "unicorn_starlight", name: "Starlight", unlock: { from: "found" }, species: ["unicorn"], part: "accent", color: "#F4F1EA" },
+    { id: "bigfoot_starlight", name: "Starlight", unlock: { from: "found" }, species: ["bigfoot"], part: "accent", color: "#F4F1EA" },
+    { id: "unicorn_bluebell", name: "Bluebell", unlock: { from: "milestone", tier: "radiant" }, species: ["unicorn"], part: "accent", color: "#4F6BED" },
+    { id: "bigfoot_bluebell", name: "Bluebell", unlock: { from: "milestone", tier: "radiant" }, species: ["bigfoot"], part: "accent", color: "#4F6BED" },
+  ],
+  specials: [
+    { id: "aurora", name: "Aurora", unlock: { from: "found" }, effect: { kind: "sparkle" } },
+    { id: "gold", name: "Gold", unlock: { from: "milestone", tier: "radiant" }, effect: { kind: "gilded", color: "#E2B13C" } },
   ],
   nameplates: [
     { id: "plain", name: "Plain", unlock: { from: "starter" } },
@@ -50,13 +54,14 @@ describe("earnedLooks: the milestones a standing has earned (§6)", () => {
     const hero = makeCharacter({ species: "unicorn" });
     expect(earnedLooks(CATALOG, heroLookStanding(hero))).toEqual([]);
     hero.provisional = { ...structuredClone(hero.committed), tier: "radiant", runId: "r_1" };
-    expect(ids(earnedLooks(CATALOG, heroLookStanding(hero)))).toEqual(["the_sworn", "unicorn_ripple"]);
+    expect(ids(earnedLooks(CATALOG, heroLookStanding(hero)))).toEqual(["gold", "the_sworn", "unicorn_bluebell"]);
   });
 
-  it("gives a coat only to its own species", () => {
+  it("gives a coat only to its own species, and a special to every species", () => {
     const bigfoot = makeCharacter({ species: "bigfoot" });
     bigfoot.committed.tier = "radiant";
-    expect(ids(earnedLooks(CATALOG, heroLookStanding(bigfoot)))).toEqual(["bigfoot_ripple", "the_sworn"]);
+    expect(ids(earnedLooks(CATALOG, heroLookStanding(bigfoot)))).toEqual(["bigfoot_bluebell", "gold", "the_sworn"]);
+    expect(earnedLooks(CATALOG, heroLookStanding(bigfoot)).find((e) => e.id === "gold")).toMatchObject({ kind: "special", cause: "tier", source: "Reached Radiant" });
   });
 
   it("reads a class rank held, a finished campaign, and the camp only when given one", () => {
@@ -90,10 +95,11 @@ describe("withLookGrants: receipts, once, never taken back (§6)", () => {
 });
 
 describe("foundLookGrants: a find shared out to each hero (§6)", () => {
-  it("gives every frame and title, and the coat of her own species alone", () => {
-    const looks = ["unicorn_aurora", "bigfoot_aurora", "songbird"];
-    expect(ids(foundLookGrants(CATALOG, looks, "unicorn", "r.x"))).toEqual(["songbird", "unicorn_aurora"]);
-    expect(ids(foundLookGrants(CATALOG, looks, "bigfoot", "r.x"))).toEqual(["bigfoot_aurora", "songbird"]);
+  it("gives every special, frame and title, and the coat of her own species alone", () => {
+    const looks = ["unicorn_starlight", "bigfoot_starlight", "songbird", "aurora"];
+    expect(ids(foundLookGrants(CATALOG, looks, "unicorn", "r.x"))).toEqual(["aurora", "songbird", "unicorn_starlight"]);
+    expect(ids(foundLookGrants(CATALOG, looks, "bigfoot", "r.x"))).toEqual(["aurora", "bigfoot_starlight", "songbird"]);
+    expect(ids(foundLookGrants(CATALOG, ["aurora"], undefined, "r.x"))).toEqual(["aurora"]);
     // Never a starter or a milestone look, and never one the catalog does not have.
     expect(foundLookGrants(CATALOG, ["the_bold", "golden", "nope"], "unicorn", "r.x")).toEqual([]);
   });
@@ -111,18 +117,5 @@ describe("readEarnedLook: milestones backfilled on read (camp.md §12.3)", () =>
     expect(readEarnedLook(CATALOG, { ...hero, look: stored })).toBe(stored);
     expect(readEarnedLook(null, hero)).toEqual(emptyLook());
     expect(milestoneGrants(earnedLooks(CATALOG, heroLookStanding(hero)))).toEqual([{ id: "the_sworn", from: "milestone", source: "Reached Sworn" }]);
-  });
-});
-
-describe("special coats' paint (§5.5)", () => {
-  it("paints a two-tone coat by both its colours, a shimmer as its base, and keys each apart", () => {
-    const [, aurora, , ripple] = CATALOG.coats;
-    expect(coatPaintOf(ripple!)).toEqual({ kind: "two-tone", color: "#F89DC9", dark: "#742651" });
-    expect(coatPaintOf(aurora!)).toEqual({ kind: "plain", color: "#0FD18B" });
-    expect(coatShimmers(aurora)).toBe(true);
-    expect(coatShimmers(ripple)).toBe(false);
-    expect(coatShimmers(null)).toBe(false);
-    expect(coatPaintOf({ color: "#0fd18b", effect: { kind: "shimmer", dark: "#222a79" } })).toEqual({ kind: "two-tone", color: "#0FD18B", dark: "#222A79" });
-    expect(coatPaintKey(coatPaintOf(ripple!))).not.toBe(coatPaintKey({ kind: "plain", color: "#F89DC9" }));
   });
 });

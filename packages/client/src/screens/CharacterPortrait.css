@@ -161,30 +161,23 @@
 }
 
 /*
- * A shimmer coat's sweep (docs/hero-looks.md §5.5; #669; world/hero-shimmer.css):
- * a box the image's own size and place, in the same grid cell and laid over
- * it, so it floats and grounds exactly as the painting does. Over, never
- * behind: a gear portrait is opaque. Its mask fits the painting as the image
- * does (`object-position`).
+ * A sparkle special (docs/hero-looks.md §5.5; world/hero-sparkle.css): a box
+ * the image's own size and place, in the same grid cell and laid over it, so
+ * it floats and grounds exactly as the painting does. Over, never behind: a
+ * gear portrait is opaque. Its clip fits the painting as the image does
+ * (`object-position`).
  */
 .portrait > .portrait__img,
 .portrait > .portrait__fallback {
   grid-area: 1 / 1;
 }
 
-.portrait > .portrait__shimmer {
+.portrait > .portrait__sparkle {
   display: block;
-  --hero-shimmer-mask-size: contain;
-  --hero-shimmer-mask-position: 50% 100%;
-  animation: hero-shimmer-sweep 5s linear infinite;
+  --hero-sparkle-mask-size: contain;
+  --hero-sparkle-mask-position: 50% 100%;
 }
 
-.portrait--gear > .portrait__shimmer {
-  --hero-shimmer-mask-position: 50% 50%;
-}
-
-.portrait--float > .portrait__shimmer {
-  animation:
-    portrait-float 6s var(--kad-ease, ease-in-out) infinite,
-    hero-shimmer-sweep 5s linear infinite;
+.portrait--gear > .portrait__sparkle {
+  --hero-sparkle-mask-position: 50% 50%;
 }

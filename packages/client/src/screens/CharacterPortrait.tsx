@@ -33,8 +33,8 @@ import { useState } from "react";
 import type { CSSProperties, ReactElement } from "react";
 import type { ClassId, SpeciesId, TierId } from "@kad/shared";
 import { ANCHOR_Y, STARTING_TIER } from "../world/art-paths";
-import { heroBase, heroPaintingUrl, heroShimmerOf, type HeroArtSubject } from "../world/hero-art";
-import { shimmerClass, shimmerStyle, useHeroArt } from "../world/hero-art-dom";
+import { heroBase, heroPaintingUrl, heroSparkleOf, type HeroArtSubject } from "../world/hero-art";
+import { HeroSparkles, useHeroArt } from "../world/hero-art-dom";
 import { Icon } from "./icons";
 import "./CharacterPortrait.css";
 
@@ -137,9 +137,10 @@ export function CharacterPortrait(props: CharacterPortraitProps): ReactElement {
   const baseSrc = useHeroArt(heroBase(subject), "portrait", !showingGear);
   const src = showingGear ? gearSrc : baseSrc;
   const missing = !showingGear && isMissingArt(failedBaseSrc, basePainting);
-  // A shimmer coat's sweep (§5.5, #669), over the painting shown: laid on top
-  // of it, never behind (a gear portrait is opaque), clipped by its mask.
-  const shimmer = props.hero !== undefined && !missing ? heroShimmerOf(showingGear ? subject : heroBase(subject), "portrait") : null;
+  // A sparkle special (§5.5), over the painting shown: in the image's own grid
+  // cell, laid on top of it, never behind (a gear portrait is opaque), clipped
+  // by her figure.
+  const sparkle = props.hero !== undefined && !missing ? heroSparkleOf(showingGear ? subject : heroBase(subject), "portrait") : null;
 
   const style: CSSProperties & Record<string, string | undefined> = {
     // The ground-contact contract, handed to CSS so the stylesheet never has
@@ -183,14 +184,7 @@ export function CharacterPortrait(props: CharacterPortraitProps): ReactElement {
           }}
         />
       )}
-      {shimmer ? (
-        <span
-          aria-hidden="true"
-          className={shimmerClass("portrait__img portrait__shimmer")}
-          data-shimmer-mask={shimmer.mask}
-          style={shimmerStyle(shimmer.mask)}
-        />
-      ) : null}
+      {sparkle ? <HeroSparkles sparkle={sparkle} className="portrait__img portrait__sparkle" /> : null}
     </span>
   );
 }

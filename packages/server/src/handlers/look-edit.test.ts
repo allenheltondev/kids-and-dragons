@@ -64,7 +64,7 @@ describe("LOOK_EDIT at the table (§3.2, §8.2)", () => {
     await t.send("p_1", { type: "LOOK_EDIT", characterId: p1, revision: 0, title: "the_bold" });
     await t.send("p_1", { type: "LOOK_EDIT", characterId: p1, revision: 1, nameplate: "ribbon" });
 
-    expect(await partyLook(t, p1)).toEqual({ revision: 2, coat: null, nameplate: "ribbon", title: "the_bold", unlocked: [] });
+    expect(await partyLook(t, p1)).toEqual({ revision: 2, coat: null, accent: null, special: null, nameplate: "ribbon", title: "the_bold", unlocked: [] });
     expect(await stored(harness, t.householdId, p1)).toMatchObject({ revision: 2, nameplate: "ribbon", title: "the_bold" });
     // Unlimited, and back to no title is a pick too.
     await t.send("p_1", { type: "LOOK_EDIT", characterId: p1, revision: 2, title: null });
@@ -132,7 +132,71 @@ describe("her colour at the table (#666, §3.2, §7.1)", () => {
   });
 });
 
+describe("her two colours and her special at the table (owner, 2026-11-07)", () => {
+  it("takes a main and an accent colour of hers, each on its own field", async () => {
+    const { harness, t, p1 } = await lobby();
+    await t.send("p_1", { type: "LOOK_EDIT", characterId: p1, revision: 0, coat: "unicorn_sky", accent: "unicorn_accent_rose" });
+    expect(await partyLook(t, p1)).toMatchObject({ coat: "unicorn_sky", accent: "unicorn_accent_rose", special: null });
+    await t.send("p_1", { type: "LOOK_EDIT", characterId: p1, revision: 1, accent: "unicorn_accent_teal" });
+    expect(await stored(harness, t.householdId, p1)).toMatchObject({ coat: "unicorn_sky", accent: "unicorn_accent_teal" });
+  });
+
+  it("refuses a main colour as her accent and an accent colour as her main", async () => {
+    const { harness, t, p1 } = await lobby();
+    const asAccent = await t.attempt("p_1", { type: "LOOK_EDIT", characterId: p1, revision: 0, accent: "unicorn_sky" });
+    expect(asAccent.error?.code).toBe("ILLEGAL");
+    expect(asAccent.error?.message).toMatch(/main color, not an accent/);
+    const asMain = await t.attempt("p_1", { type: "LOOK_EDIT", characterId: p1, revision: 0, coat: "unicorn_accent_rose" });
+    expect(asMain.error?.code).toBe("ILLEGAL");
+    expect(asMain.error?.message).toMatch(/accent color, not a main/);
+    expect((await harness.repo.getCharacter(t.householdId, p1))!.look).toBeUndefined();
+  });
+
+  it("refuses another species' accent", async () => {
+    const { t, p1 } = await lobby();
+    const answer = await t.attempt("p_1", { type: "LOOK_EDIT", characterId: p1, revision: 0, accent: "bigfoot_accent_tan" });
+    expect(answer.error?.code).toBe("ILLEGAL");
+    expect(answer.error?.message).toMatch(/not one of her colors/);
+  });
+
+  it("refuses an earned accent or a special she has not earned, and takes both once she holds them", async () => {
+    const { harness, t, p1 } = await lobby();
+    for (const edit of [{ accent: "unicorn_accent_bluebell" }, { special: "gold" }, { special: "aurora" }]) {
+      const answer = await t.attempt("p_1", { type: "LOOK_EDIT", characterId: p1, revision: 0, ...edit });
+      expect(answer.error?.code).toBe("ILLEGAL");
+      expect(answer.error?.message).toMatch(/not hers yet/);
+    }
+    const row = (await harness.repo.getCharacter(t.householdId, p1))!;
+    const look: HeroLook = {
+      ...readLook(row),
+      unlocked: { aurora: { from: "found", rewardId: "test.aurora" }, unicorn_accent_bluebell: { from: "milestone" } },
+    };
+    expect(await harness.repo.writeCharacter({ character: { ...row, look }, expectedVersion: row.version ?? 0, expectedClaim: row.provisional?.runId ?? null })).toBe(true);
+    await t.send("p_1", { type: "LOOK_EDIT", characterId: p1, revision: 0, accent: "unicorn_accent_bluebell", special: "aurora" });
+    expect(await stored(harness, t.householdId, p1)).toMatchObject({ accent: "unicorn_accent_bluebell", special: "aurora" });
+  });
+});
+
 describe("her colour from the book (#666, §3.2)", () => {
+  it("merges her accent and her special per field, the last choice for each standing", async () => {
+    const { harness, t, p1 } = await lobby();
+    const merge = (changes: Record<string, unknown>[]) => book(harness.deps, t.householdId, "p_1", { characterId: p1, merge: true, changes });
+    await merge([{ field: "coat", before: null, after: "unicorn_sky" }]);
+    await merge([{ field: "accent", before: null, after: "unicorn_accent_rose" }]);
+    await merge([{ field: "accent", before: "unicorn_accent_rose", after: "unicorn_accent_teal" }]);
+    expect(await stored(harness, t.householdId, p1)).toMatchObject({ coat: "unicorn_sky", accent: "unicorn_accent_teal", special: null });
+    // A special not earned and a main colour as her accent are skipped and said; her other fields stay.
+    const answer = await merge([
+      { field: "accent", before: "unicorn_accent_teal", after: "unicorn_midnight" },
+      { field: "special", before: null, after: "gold" },
+      { field: "title", before: null, after: "the_kind" },
+    ]);
+    const value = (answer as { value: BookKitResponse }).value;
+    expect(value.refused).toEqual(["accent", "special"]);
+    expect(value.applied).toEqual(["title"]);
+    expect(value.look).toMatchObject({ coat: "unicorn_sky", accent: "unicorn_accent_teal", special: null, title: "the_kind" });
+  });
+
   it("applies one of her colours, and ends two queued colour edits on the later one", async () => {
     const { harness, t, p1 } = await lobby();
     await book(harness.deps, t.householdId, "p_1", { characterId: p1, merge: true, changes: [{ field: "coat", before: null, after: "unicorn_sky" }] });
@@ -202,7 +266,7 @@ describe("a look from the book (§3.2)", () => {
     expect(answer.ok).toBe(true);
     const value = (answer as { value: BookKitResponse }).value;
     expect(value.applied).toEqual(["title"]);
-    expect(value.look).toEqual({ revision: 1, coat: null, nameplate: null, title: "the_curious", unlocked: [] });
+    expect(value.look).toEqual({ revision: 1, coat: null, accent: null, special: null, nameplate: null, title: "the_curious", unlocked: [] });
     expect((await stored(harness, t.householdId, p1)).title).toBe("the_curious");
   });
 
@@ -276,7 +340,7 @@ describe("a hero with no look (§3.1, §12)", () => {
   it("has none stored, and resolves with none, exactly as before looks", () => {
     const character = makeCharacter();
     expect(character.look).toBeUndefined();
-    expect(readLook(character)).toEqual({ v: 1, revision: 0, coat: null, nameplate: null, title: null, unlocked: {} });
+    expect(readLook(character)).toEqual({ v: 2, revision: 0, coat: null, accent: null, special: null, nameplate: null, title: null, unlocked: {} });
     const { rules, items } = { rules: harnessFor(CATALOG).deps.content.rules(), items: harnessFor(CATALOG).deps.content.items() };
     expect(resolveCharacter(character, rules, items)).not.toHaveProperty("look");
     expect(lookView(readLook(character)).unlocked).toEqual([]);

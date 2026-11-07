@@ -1539,7 +1539,7 @@
           },
           {
             "type": "findLook",
-            "looks": ["unicorn_aurora", "bigfoot_aurora", "dragonling_aurora", "griffin_aurora", "kitsune_aurora", "manticore_aurora"],
+            "looks": ["aurora"],
             "rewardId": "riftlight-hidden-glacier-rift.aurora"
           }
         ]
@@ -1558,7 +1558,7 @@
           },
           {
             "type": "findLook",
-            "looks": ["unicorn_aurora", "bigfoot_aurora", "dragonling_aurora", "griffin_aurora", "kitsune_aurora", "manticore_aurora"],
+            "looks": ["aurora"],
             "rewardId": "riftlight-hidden-glacier-rift.aurora"
           }
         ]

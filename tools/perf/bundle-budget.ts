@@ -296,7 +296,15 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // earned colours and their effects in the looks catalog (bundled where #666's 36
 // are), the two-tone case in the tinter and its worker, the look news' words, and
 // the book's receipts. 2KB of slack again.
-const TOTAL_BUDGET_KB = 1764;
+// 1764 -> 1773 for two colours per hero and whole-figure specials (#662,
+// docs/hero-looks.md §4.2, §5.2, §5.5): 1771KB measured, first paint 329KB unchanged
+// (cap 332). Nothing new is in the first paint: the sparkle overlay and its
+// stylesheet ride the portraits' chunk, the Pixi sparkle layer the stage chunk,
+// and the tinter's two-part and gold passes its own lazy chunk and worker as
+// before. Most of it is the 42 accent colours and the specials in the looks
+// catalog, bundled where #666's colours are; the rest the second colour shelf
+// and the Special shelf, and the swap's lightness and chroma histograms. 2KB of slack again.
+const TOTAL_BUDGET_KB = 1773;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

@@ -462,7 +462,7 @@ export function parseChannelMessage(raw: string): ChannelMessage | null {
   };
 }
 
-const LOOK_KINDS: readonly string[] = ["coat", "nameplate", "title"];
+const LOOK_KINDS: readonly string[] = ["coat", "special", "nameplate", "title"];
 const LOOK_CAUSES: readonly string[] = ["tier", "rank", "campaign", "camp", "found"];
 
 /** `lookUnlocks` as the wire carried it: only well-formed entries, or null for none. */

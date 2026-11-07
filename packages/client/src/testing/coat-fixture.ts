@@ -12,12 +12,22 @@ import { maskPathBeside } from "../world/art-paths";
 import type { PixelIO, Pixels } from "../world/hero-coat-pass";
 import { hexToRgb, linearToOklab, toLinear, type Lab } from "../world/oklab";
 
-/** A little hero: a shaded body (the region) inside an outline, on a transparent ground. */
-export function syntheticPainting(body: string, size = 24): { painting: Pixels; mask: Pixels } {
+/**
+ * A little hero: a shaded body inside an outline, a mane across the top of it
+ * in its own colour, on a transparent ground; and her RGB coat mask (owner,
+ * 2026-11-07): red the body (her main part), green the mane (her accent
+ * part), the two meeting across a soft edge that never adds to more than the
+ * whole pixel, and blue her whole figure (the painting's alpha).
+ */
+export function syntheticPainting(body: string, size = 24, mane = "#853A85"): { painting: Pixels; mask: Pixels } {
   const [r, g, b] = hexToRgb(body);
+  const [mr, mg, mb] = hexToRgb(mane);
   const painting = new Uint8ClampedArray(size * size * 4);
   const mask = new Uint8ClampedArray(size * size * 4);
   const c = (size - 1) / 2;
+  // The mane's lower edge, and how soft it is, in pixels.
+  const maneLine = c - size * 0.18;
+  const maneSoft = Math.max(1, size / 24);
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
       const i = (y * size + x) * 4;
@@ -26,13 +36,18 @@ export function syntheticPainting(body: string, size = 24): { painting: Pixels; 
       // Shading: lighter top left, darker bottom right, as a painted body is.
       const shade = 1.08 - 0.3 * ((x + y) / (2 * size));
       const edge = d > 0.86;
-      painting[i] = edge ? 59 : Math.min(255, Math.round(r * 255 * shade));
-      painting[i + 1] = edge ? 29 : Math.min(255, Math.round(g * 255 * shade));
-      painting[i + 2] = edge ? 54 : Math.min(255, Math.round(b * 255 * shade));
+      // How much of this pixel is mane: 1 above its line, 0 below, soft across it.
+      const m = Math.max(0, Math.min(1, (maneLine - y) / maneSoft + 0.5));
+      const paint = (body: number, mane: number) => Math.min(255, Math.round((body * (1 - m) + mane * m) * 255 * shade));
+      painting[i] = edge ? 59 : paint(r, mr);
+      painting[i + 1] = edge ? 29 : paint(g, mg);
+      painting[i + 2] = edge ? 54 : paint(b, mb);
       painting[i + 3] = 255;
-      // The mask: the body inside the outline, with a soft edge.
+      // The parts: inside the outline, with a soft edge, the body and the mane sharing the line between them.
       const w = edge ? 0 : Math.max(0, Math.min(1, (0.86 - d) / 0.12));
-      mask[i] = mask[i + 1] = mask[i + 2] = Math.round(w * 255);
+      mask[i] = Math.round(w * (1 - m) * 255);
+      mask[i + 1] = Math.round(w * m * 255);
+      mask[i + 2] = 255;
       mask[i + 3] = 255;
     }
   }
@@ -40,10 +55,10 @@ export function syntheticPainting(body: string, size = 24): { painting: Pixels; 
 }
 
 /** A painting URL and its mask's, served as a synthetic hero. */
-export function servePainting(files: Map<string, Pixels>, paintingUrl: string, body = "#E2CDEC", size = 24): void {
+export function servePainting(files: Map<string, Pixels>, paintingUrl: string, body = "#E2CDEC", size = 24, { mask: withMask = true }: { mask?: boolean } = {}): void {
   const { painting, mask } = syntheticPainting(body, size);
   files.set(paintingUrl, painting);
-  files.set(maskPathBeside(paintingUrl), mask);
+  if (withMask) files.set(maskPathBeside(paintingUrl), mask);
 }
 
 /** What a `PixelIO` was asked for. */
@@ -94,13 +109,15 @@ export function fakeUrls(): { create(blob: Blob): string; revoke(url: string): v
 
 /**
  * The mean colour of the masked region, in OKLab: what a phone shows of it at
- * portrait size, where the pixels average together (in linear light).
+ * portrait size, where the pixels average together (in linear light). The
+ * region is the mask's channel at `maskOffset`: red (0) her main part, green
+ * (1) her accent, blue (2) her figure.
  */
-export function regionMean(pixels: ArrayLike<number>, mask: ArrayLike<number>, maskStride = 4): Lab {
+export function regionMean(pixels: ArrayLike<number>, mask: ArrayLike<number>, maskStride = 4, maskOffset = 0): Lab {
   let w = 0;
   const sum = [0, 0, 0];
   for (let p = 0; p * 4 < pixels.length; p++) {
-    const m = mask[p * maskStride]! / 255;
+    const m = mask[p * maskStride + maskOffset]! / 255;
     if (m <= 0) continue;
     w += m;
     for (let k = 0; k < 3; k++) sum[k]! += m * toLinear(pixels[p * 4 + k]! / 255);

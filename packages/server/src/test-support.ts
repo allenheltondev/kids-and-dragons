@@ -34,16 +34,26 @@ import type { ContentStore } from "./content/loader.ts";
 /**
  * A small hero looks catalog (docs/hero-looks.md §7): the starter frames and
  * titles, and one earned title and frame nobody holds until a test gives it;
- * two starter colours each for a unicorn and a Bigfoot, and one earned
- * unicorn colour (#666).
+ * two starter main colours each for a unicorn and a Bigfoot, and one earned
+ * unicorn colour (#666); two starter accent colours each, one earned; and
+ * the two specials (sparkle, found; gold, at Radiant).
  */
 export const LOOKS_FIXTURE: LookCatalog = {
   coats: [
-    { id: "unicorn_sky", name: "Sky", unlock: { from: "starter" }, species: ["unicorn"], color: "#58BCFD" },
-    { id: "unicorn_midnight", name: "Midnight", unlock: { from: "starter" }, species: ["unicorn"], color: "#20134E" },
-    { id: "unicorn_starlight", name: "Starlight", unlock: { from: "found" }, species: ["unicorn"], color: "#E8F0FF" },
-    { id: "bigfoot_ginger", name: "Ginger", unlock: { from: "starter" }, species: ["bigfoot"], color: "#F27B00" },
-    { id: "bigfoot_frost", name: "Frost", unlock: { from: "starter" }, species: ["bigfoot"], color: "#EBE7E3" },
+    { id: "unicorn_sky", name: "Sky", unlock: { from: "starter" }, species: ["unicorn"], part: "main", color: "#58BCFD" },
+    { id: "unicorn_midnight", name: "Midnight", unlock: { from: "starter" }, species: ["unicorn"], part: "main", color: "#20134E" },
+    { id: "unicorn_starlight", name: "Starlight", unlock: { from: "found" }, species: ["unicorn"], part: "main", color: "#E8F0FF" },
+    { id: "bigfoot_ginger", name: "Ginger", unlock: { from: "starter" }, species: ["bigfoot"], part: "main", color: "#F27B00" },
+    { id: "bigfoot_frost", name: "Frost", unlock: { from: "starter" }, species: ["bigfoot"], part: "main", color: "#EBE7E3" },
+    { id: "unicorn_accent_rose", name: "Rose", unlock: { from: "starter" }, species: ["unicorn"], part: "accent", color: "#E0508F" },
+    { id: "unicorn_accent_teal", name: "Teal", unlock: { from: "starter" }, species: ["unicorn"], part: "accent", color: "#1FA0A0" },
+    { id: "unicorn_accent_bluebell", name: "Bluebell", unlock: { from: "milestone", tier: "sworn" }, species: ["unicorn"], part: "accent", color: "#4F6BED" },
+    { id: "bigfoot_accent_tan", name: "Tan", unlock: { from: "starter" }, species: ["bigfoot"], part: "accent", color: "#D9A066" },
+    { id: "bigfoot_accent_cocoa", name: "Cocoa", unlock: { from: "starter" }, species: ["bigfoot"], part: "accent", color: "#8A5A3C" },
+  ],
+  specials: [
+    { id: "aurora", name: "Aurora", unlock: { from: "found" }, effect: { kind: "sparkle" } },
+    { id: "gold", name: "Gold", unlock: { from: "milestone", tier: "radiant" }, effect: { kind: "gilded", color: "#E2B13C" } },
   ],
   nameplates: [
     { id: "plain", name: "Plain", unlock: { from: "starter" } },

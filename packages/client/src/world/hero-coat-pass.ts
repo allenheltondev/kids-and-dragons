@@ -1,6 +1,7 @@
 /**
  * One tinting pass (docs/hero-looks.md §5.1, §5.3): a painting and its coat
- * mask fetched, decoded, recoloured (hero-coat.ts) and encoded into the two
+ * mask fetched, decoded, recoloured (hero-coat.ts `tintHeroPixels`: her two
+ * colours, or a gilded special's gold over her figure) and encoded into the two
  * things a hero is drawn with: an image a Pixi texture is made from, and a
  * PNG an object URL is made from. One pass, so the TV and every phone show
  * the same hero.
@@ -14,18 +15,33 @@
  * The decoding and encoding are a seam (`PixelIO`), so the sliced runner is
  * the one the tests run, on pixels, with no canvas.
  *
- * Loaded only when a hero has a colour and her painting a mask: never in the
- * first paint.
+ * Two more jobs ride the same pass, so they share its worker, cache and
+ * lifetimes:
+ *
+ *   - **Gilded on a cut-out with no mask** (`mask: null`): a transparent
+ *     painting's alpha is her figure (the mask's blue channel matches it
+ *     there), so gold needs no mask. An opaque painting with no mask fails
+ *     the pass and she draws as painted.
+ *   - **Her figure** (`{ kind: "figure" }`): the mask's blue channel as an
+ *     alpha mask (white, alpha = blue), which a sparkle's DOM overlay is
+ *     clipped by over an opaque gear portrait (CSS cannot pick a channel).
+ *
+ * Loaded only when a hero has a look to paint and her painting can take it:
+ * never in the first paint.
  */
 
 import type { CoatPaint } from "@kad/shared";
-import { coatRegionStats, tintCoatPixels } from "./hero-coat";
+import { FIGURE_FROM_ALPHA, MASK_CHANNEL, heroRegionStats, tintHeroPixels, type HeroMask } from "./hero-coat";
+
+/** What a pass paints: her look (`CoatPaint`), or her figure as an alpha mask (a sparkle's clip in the DOM). */
+export type TintPaint = CoatPaint | { kind: "figure" };
 
 /** What a pass is asked to make. */
 export interface TintJob {
   painting: string;
-  mask: string;
-  paint: CoatPaint;
+  /** Her RGB coat mask, or null for a gilded cut-out read by its own alpha. */
+  mask: string | null;
+  paint: TintPaint;
 }
 
 /** RGBA pixels, as a canvas's `ImageData` holds them. */
@@ -74,12 +90,23 @@ function check(signal: AbortSignal): void {
  */
 export async function runTint(job: TintJob, io: PixelIO, signal: AbortSignal, slice = SLICE_PIXELS): Promise<TintImage> {
   check(signal);
-  const [painting, mask] = await Promise.all([io.decode(job.painting, signal), io.decode(job.mask, signal)]);
+  if (job.paint.kind === "figure") return runFigure(job, io, signal, slice);
+  const paint = job.paint;
+  const [painting, mask] = await Promise.all([io.decode(job.painting, signal), job.mask ? io.decode(job.mask, signal) : Promise.resolve(null)]);
   check(signal);
-  if (painting.width !== mask.width || painting.height !== mask.height) {
-    throw new Error(`coat mask ${job.mask} is ${mask.width}x${mask.height}, its painting ${painting.width}x${painting.height}`);
+  let view: HeroMask;
+  if (mask) {
+    if (painting.width !== mask.width || painting.height !== mask.height) {
+      throw new Error(`coat mask ${job.mask} is ${mask.width}x${mask.height}, its painting ${painting.width}x${painting.height}`);
+    }
+    view = { data: mask.data, stride: 4, figure: MASK_CHANNEL.figure };
+  } else {
+    // No mask: only gold, and only on a cut-out, whose alpha is her figure.
+    if (paint.kind !== "gilded") throw new Error(`no coat mask for ${job.painting}`);
+    if (!hasTransparency(painting.data)) throw new Error(`${job.painting} is opaque: her figure needs its mask`);
+    view = { data: painting.data, ...FIGURE_FROM_ALPHA };
   }
-  const stats = coatRegionStats(painting.data, mask.data, 4);
+  const stats = heroRegionStats(painting.data, view);
   const total = painting.width * painting.height;
   const out = new Uint8ClampedArray(painting.data.length);
   for (let from = 0; from < total; from += slice) {
@@ -87,11 +114,43 @@ export async function runTint(job: TintJob, io: PixelIO, signal: AbortSignal, sl
       await io.pause();
       check(signal);
     }
-    tintCoatPixels(painting.data, mask.data, job.paint, stats, out, { from, to: Math.min(total, from + slice), maskStride: 4 });
+    tintHeroPixels(painting.data, view, paint, stats, out, { from, to: Math.min(total, from + slice) });
   }
   check(signal);
   const encoded = await io.encode({ width: painting.width, height: painting.height, data: out });
   return { width: painting.width, height: painting.height, ...encoded };
+}
+
+/** Whether a painting has any see-through pixel: a cut-out, not an opaque portrait. */
+function hasTransparency(rgba: Uint8ClampedArray): boolean {
+  for (let i = 3; i < rgba.length; i += 4) if (rgba[i]! < 255) return true;
+  return false;
+}
+
+/** Her figure as an alpha mask: white, its alpha the mask's blue channel. */
+async function runFigure(job: TintJob, io: PixelIO, signal: AbortSignal, slice: number): Promise<TintImage> {
+  if (!job.mask) throw new Error(`no coat mask for ${job.painting}`);
+  const mask = await io.decode(job.mask, signal);
+  check(signal);
+  const total = mask.width * mask.height;
+  const out = new Uint8ClampedArray(mask.data.length);
+  for (let from = 0; from < total; from += slice) {
+    if (from > 0) {
+      await io.pause();
+      check(signal);
+    }
+    const to = Math.min(total, from + slice);
+    for (let p = from; p < to; p++) {
+      const i = p * 4;
+      out[i] = 255;
+      out[i + 1] = 255;
+      out[i + 2] = 255;
+      out[i + 3] = mask.data[i + MASK_CHANNEL.figure]!;
+    }
+  }
+  check(signal);
+  const encoded = await io.encode({ width: mask.width, height: mask.height, data: out });
+  return { width: mask.width, height: mask.height, ...encoded };
 }
 
 /** A runner that does every pass on this thread through `io`, one slice at a time. */

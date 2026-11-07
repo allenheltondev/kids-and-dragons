@@ -1,14 +1,14 @@
 /**
  * The coat-mask lookup is a contract with assets/manifest.json → coatMasks (docs/hero-looks.md
- * §4): every species names its region, every listed painting is one a hero resolver can draw,
- * and a painting with no listed mask never yields a mask URL.
+ * §4): every species names its two parts (main and accent), every listed painting is one a hero
+ * resolver can draw, and a painting with no listed mask never yields a mask URL.
  */
 
 import { describe, expect, it } from "vitest";
 import type { ClassId, SpeciesId, TierId } from "@kad/shared";
 import manifest from "../../../../assets/manifest.json";
 import { characterArtUrl, gearPortraitUrl } from "./art-paths";
-import { coatMaskUrl, coatRegionOf, hasCoatMask, maskPathBeside } from "./coat-masks";
+import { coatMaskUrl, coatPartLabel, coatPartSlots, coatPartsOf, coatRegionOf, hasCoatMask, maskPathBeside, paintingIsCutOut } from "./coat-masks";
 
 const heroPaintings = (): string[] => {
   const urls: string[] = [];
@@ -29,15 +29,35 @@ const heroPaintings = (): string[] => {
 };
 
 describe("coat masks", () => {
-  it("names a main and an accent part for every species, as §4.2 decided for unicorn and Bigfoot", () => {
+  it("names two parts for every species, as the owner decided for unicorn and Bigfoot", () => {
     for (const { id } of manifest.species) {
-      const { main, accent } = coatRegionOf(id as SpeciesId);
-      expect(main).toBeTruthy();
-      expect(accent).toBeTruthy();
-      expect(main).not.toBe(accent);
+      const parts = coatPartsOf(id as SpeciesId);
+      expect(parts.main.region, id).toBeTruthy();
+      expect(parts.accent.region, id).toBeTruthy();
+      expect(parts.main.region, id).not.toBe(parts.accent.region);
+    }
+    expect([coatPartLabel("unicorn", "main"), coatPartLabel("unicorn", "accent")]).toEqual(["Coat", "Mane"]);
+    expect([coatPartLabel("bigfoot", "main"), coatPartLabel("bigfoot", "accent")]).toEqual(["Fur", "Skin"]);
+  });
+
+  it("names each part by a plain name and drafts it from a real palette slot", () => {
+    for (const { id, palette } of manifest.species) {
+      const parts = coatPartsOf(id as SpeciesId);
+      expect(coatRegionOf(id as SpeciesId)).toEqual({ main: parts.main.region, accent: parts.accent.region });
+      for (const part of ["main", "accent"] as const) {
+        const slots = coatPartSlots(id as SpeciesId, part);
+        expect(slots.length, `${id} ${part}`).toBeGreaterThan(0);
+        for (const slot of slots) expect((palette as Record<string, string>)[slot], `${id} ${slot}`).toMatch(/^#/);
+      }
     }
     expect(coatRegionOf("unicorn")).toEqual({ main: "coat", accent: "mane" });
     expect(coatRegionOf("bigfoot")).toEqual({ main: "fur", accent: "skin" });
+  });
+
+  it("knows a cut-out painting, whose alpha is her figure, from an opaque gear portrait", () => {
+    expect(paintingIsCutOut("/assets/characters/unicorn/fledgling/assembled.png")).toBe(true);
+    expect(paintingIsCutOut("/assets/character-rigs/thornguard/sworn/bigfoot/assembled.png")).toBe(true);
+    expect(paintingIsCutOut("/assets/gear-portraits/thornguard/sworn/bigfoot.png")).toBe(false);
   });
 
   it("lists only paintings a hero is drawn with", () => {

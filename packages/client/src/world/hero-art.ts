@@ -14,11 +14,13 @@
  *   - `portrait`: a still (phones, the book, arrivals). A classed hero's gear
  *     portrait, else her base painting (`characterPortraitArtUrl`).
  *
- * Her colour is a request for the tinter (`heroCoatOf`): the painting, its
- * coat mask and how the coat is painted. It is made only when she has a
- * colour of her species' own **and** the painting has a mask (coat-masks.ts);
- * otherwise she draws as painted, and nothing asks for a mask that is not
- * there. The tinted painting itself is the tinter's (hero-coat-cache.ts) and
+ * Her look is a request for the tinter (`heroCoatOf`): the painting, its
+ * coat mask and how she is painted (her two colours, or gold). Her colours
+ * are made only when one is of her species' own for its part **and** the
+ * painting has a mask (coat-masks.ts); gold also on a cut-out painting with
+ * no mask, whose alpha is her figure. Otherwise she draws as painted, and
+ * nothing asks for a mask that is not there. Sparkles are an overlay, not
+ * paint (`heroSparkleOf`). The tinted painting itself is the tinter's (hero-coat-cache.ts) and
  * reaches a surface only through `useHeroArt` / `HeroImage`
  * (hero-art-dom.tsx) or `loadHeroTexture` (hero-art-pixi.ts), which hold it
  * while it is drawn. `heroArtUrl` is the painting as painted: what a figure
@@ -38,34 +40,47 @@
  * `hero-art.test.tsx` holds the line.
  */
 
-import { coatPaintKey, coatPaintOf, coatShimmers, speciesCoat } from "@kad/shared";
-import type { CatalogCoat, ClassId, CoatId, CoatPaint, SpeciesId, TierId } from "@kad/shared";
-import { coats as catalogCoats } from "../../../../content/looks.json";
+import { coatPaintKey, coatPaintOf, lookSparkles } from "@kad/shared";
+import type { CatalogCoat, CatalogSpecial, ClassId, CoatId, SpecialId, SpeciesId, TierId } from "@kad/shared";
+import { coats as catalogCoats, specials as catalogSpecials } from "../../../../content/looks.json";
 import { STARTING_TIER, characterPortraitArtUrl, characterWorldArtUrl } from "./art-paths";
-import { coatMaskUrl } from "./coat-masks";
+import { coatMaskUrl, paintingIsCutOut } from "./coat-masks";
+import type { TintPaint } from "./hero-coat-pass";
 
 /** The two kinds of place a hero is drawn (§5.1). */
 export type HeroArtPlace = "world" | "portrait";
 
 export const HERO_ART_PLACES: readonly HeroArtPlace[] = ["world", "portrait"];
 
-/** The catalog's colours (content/looks.json `coats`), as every screen reads them. */
-const COATS: { coats: CatalogCoat[] } = { coats: catalogCoats as unknown as CatalogCoat[] };
+/** What paints her (content/looks.json `coats` and `specials`), as every screen reads it. */
+export interface PaintCatalog {
+  coats: CatalogCoat[];
+  specials: CatalogSpecial[];
+}
+
+const COATS: PaintCatalog = { coats: catalogCoats as unknown as CatalogCoat[], specials: catalogSpecials as unknown as CatalogSpecial[] };
 
 /**
  * The parts of a hero her painting is picked from. A `Character` is one, and
  * so is a `ResolvedCharacter` (the party's): both carry her look, whose `coat`
- * is her colour. So is a draft or a hero shown at a tier she is growing into
- * (`{ ...character, tier }`), or wearing a colour on a shelf's tile
- * (`{ ...hero, look: { coat } }`).
+ * and `accent` are her two colours and `special` her special. So is a draft
+ * or a hero shown at a tier she is growing into (`{ ...character, tier }`),
+ * or wearing a colour on a shelf's tile (`{ ...hero, look: { ...look, accent } }`).
  */
 export interface HeroArtSubject {
   readonly species: SpeciesId;
   /** Defaults to the tier every character starts at. */
   readonly tier?: TierId | undefined;
   readonly class?: ClassId | undefined;
-  /** Her look; only its colour changes her painting. Absent or null: as painted. */
-  readonly look?: { readonly coat?: CoatId | null | undefined } | null | undefined;
+  /** Her look; only its colours and special change her painting. Absent or null: as painted. */
+  readonly look?:
+    | {
+        readonly coat?: CoatId | null | undefined;
+        readonly accent?: CoatId | null | undefined;
+        readonly special?: SpecialId | null | undefined;
+      }
+    | null
+    | undefined;
 }
 
 /** The painting this hero is drawn from in `place`, as painted. */
@@ -86,70 +101,93 @@ export function heroArtUrl(hero: HeroArtSubject, place: HeroArtPlace): string {
   return heroPaintingUrl(hero, place);
 }
 
-/** One tint the tinter can make: a painting, its mask, and the coat's paint (§5.1). */
+/** One pass the tinter can make: a painting, its mask, and what to paint (§5.1). */
 export interface HeroCoatRequest {
   painting: string;
-  mask: string;
-  paint: CoatPaint;
-  /** Its identity in the tinter's cache: the painting and the paint. */
+  /** Her RGB coat mask; null for gold on a cut-out with no mask, read by its own alpha. */
+  mask: string | null;
+  paint: TintPaint;
+  /** Its identity in the tinter's cache: the painting and the paint (both colours, or the gold). */
   key: string;
 }
 
 /**
- * Her colour in `place`, as a request for the tinter, or null to draw her as
- * painted: no colour chosen, a colour that is not her species' (or that the
- * catalog no longer has), or a painting with no mask yet.
+ * Her look in `place`, as a request for the tinter, or null to draw her as
+ * painted. Gold (a gilded special) is on her figure, whatever her colours: by
+ * the mask's blue channel, or on a cut-out painting with no mask yet by its
+ * own alpha; an opaque gear portrait with no mask draws as painted. Her two
+ * colours need the mask: none chosen, none of her species' for that part, or
+ * no mask, and she draws as painted.
  */
-export function heroCoatOf(hero: HeroArtSubject, place: HeroArtPlace, catalog: { coats: CatalogCoat[] } = COATS): HeroCoatRequest | null {
-  const coat = speciesCoat(catalog, hero.species, hero.look?.coat);
-  if (!coat) return null;
+export function heroCoatOf(hero: HeroArtSubject, place: HeroArtPlace, catalog: PaintCatalog = COATS): HeroCoatRequest | null {
+  const paint = coatPaintOf(catalog, hero.species, hero.look);
+  if (!paint) return null;
   const painting = heroPaintingUrl(hero, place);
   const mask = coatMaskUrl(painting);
-  if (!mask) return null;
-  const paint = coatPaintOf(coat);
+  if (!mask && !(paint.kind === "gilded" && paintingIsCutOut(painting))) return null;
   return { painting, mask, paint, key: `${painting}|${coatPaintKey(paint)}` };
 }
 
-/**
- * Her shimmer (§5.5, #669): the region mask a shimmer coat's sweep is clipped
- * by, or null when she wears no shimmer coat of her own species or the
- * painting has no mask (she then draws as painted, with no sweep). The sweep
- * is an overlay on every surface, never the tinter's: a sprite over her on the
- * TV (hero-art-pixi.ts), an element over her image in the DOM (hero-art-dom.tsx).
- */
-export function heroShimmerOf(hero: HeroArtSubject, place: HeroArtPlace, catalog: { coats: CatalogCoat[] } = COATS): { mask: string } | null {
-  const coat = speciesCoat(catalog, hero.species, hero.look?.coat);
-  if (!coatShimmers(coat)) return null;
-  const mask = coatMaskUrl(heroPaintingUrl(hero, place));
-  return mask ? { mask } : null;
+/** Where her sparkles may show: her painting's own alpha (`figure: null`), or her figure made from its mask. */
+export interface HeroSparkle {
+  painting: string;
+  figure: HeroCoatRequest | null;
 }
 
 /**
- * The shimmer's timing (§5.5): a slow sweep across the region every few
- * seconds, and nothing between sweeps. The DOM's keyframes (hero-shimmer.css)
- * and the TV's ticker keep to the same numbers.
+ * Her sparkles (§5.5): what the overlay is clipped by, or null when she wears
+ * no sparkle special or the painting cannot say where she is. Sparkles go
+ * over her whole figure: on a cut-out painting its own alpha is her figure
+ * (`figure: null`: clipped by the painting, mask or none); on an opaque gear
+ * portrait only its mask's blue channel is, made an alpha mask by the tinter
+ * (`figure`, a request); with no mask there, no sparkles. On the TV
+ * (hero-art-pixi.ts) the overlay is a child of her sprite, clipped by its own
+ * alpha; in the DOM (hero-art-dom.tsx) an element in the image's own box.
  */
-export const SHIMMER = {
-  /** One sweep and the rest after it, in ms. */
-  periodMs: 5000,
-  /** The sweep itself, in ms: the start of each period. */
-  sweepMs: 1600,
-  /** The band's width, as a share of the figure's. */
-  band: 0.35,
+export function heroSparkleOf(hero: HeroArtSubject, place: HeroArtPlace, catalog: PaintCatalog = COATS): HeroSparkle | null {
+  if (!lookSparkles(catalog, hero.look)) return null;
+  const painting = heroPaintingUrl(hero, place);
+  if (paintingIsCutOut(painting)) return { painting, figure: null };
+  const mask = coatMaskUrl(painting);
+  if (!mask) return null;
+  return { painting, figure: { painting, mask, paint: { kind: "figure" }, key: `${mask}|figure` } };
+}
+
+/**
+ * The sparkles' timing (§5.5): each twinkles on its own beat, so the figure
+ * is never all lit or all dark at once. The DOM's keyframes (hero-sparkle.css)
+ * keep to the same period.
+ */
+export const SPARKLE = {
+  /** How many twinkle over her on the TV. */
+  count: 18,
+  /** One twinkle, in ms. */
+  periodMs: 2400,
+  /** A sparkle's size, as a share of the figure's width. */
+  size: 0.045,
+  /** How bright a sparkle is at rest, under reduced motion. */
+  still: 0.55,
 } as const;
 
 /**
- * Where the band is at `t` ms: its centre as a share of the figure's width,
- * from just off her left edge to just off her right, or null between sweeps.
- * `still` (reduced motion): the middle, always, never moving.
+ * How bright sparkle `i` is at `t` ms, 0..1: a soft twinkle, each on its own
+ * phase. `still` (reduced motion): the same steady glow for every one, never
+ * moving.
  */
-export function shimmerAt(t: number, still = false): number | null {
-  if (still) return 0.5;
-  const into = ((t % SHIMMER.periodMs) + SHIMMER.periodMs) % SHIMMER.periodMs;
-  if (into >= SHIMMER.sweepMs) return null;
-  const s = into / SHIMMER.sweepMs;
-  const eased = s * s * (3 - 2 * s);
-  return -SHIMMER.band + eased * (1 + 2 * SHIMMER.band);
+export function sparkleAt(t: number, i: number, still = false): number {
+  if (still) return SPARKLE.still;
+  const phase = ((i * 0.618034) % 1) * SPARKLE.periodMs;
+  const into = (((t + phase) % SPARKLE.periodMs) + SPARKLE.periodMs) % SPARKLE.periodMs;
+  const s = Math.sin((into / SPARKLE.periodMs) * Math.PI);
+  return s * s * s;
+}
+
+/** Where sparkle `i` sits, as shares of the figure's box: spread evenly, the same everywhere. */
+export function sparklePlace(i: number): { x: number; y: number } {
+  // A golden-angle scatter over the middle of the canvas, where a figure stands.
+  const r = Math.sqrt((i + 0.5) / SPARKLE.count);
+  const a = i * 2.399963;
+  return { x: 0.5 + 0.38 * r * Math.cos(a), y: 0.55 + 0.4 * r * Math.sin(a) };
 }
 
 /**

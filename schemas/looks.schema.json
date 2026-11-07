@@ -2,40 +2,49 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://kids-and-dragons.local/schemas/looks.schema.json",
   "title": "Hero looks catalog",
-  "description": "content/looks.json: the one catalog of hero looks (docs/hero-looks.md §3.1, §6, §7; #664): coats, nameplate frames and titles. Mirrors LookCatalog in packages/shared/src/types/look.ts; where the two disagree, the TypeScript type wins. tools/content/looks-catalog.mjs checks what the schema cannot see: ids unique across all three lists, the plain plate, the starters, every rule naming a real tier, class, campaign or friend, and every frame's art path.",
+  "description": "content/looks.json: the one catalog of hero looks (docs/hero-looks.md §3.1, §6, §7; #664): coats (a colour for one part), specials (whole-figure effects), nameplate frames and titles. Mirrors LookCatalog in packages/shared/src/types/look.ts; where the two disagree, the TypeScript type wins. tools/content/looks-catalog.mjs checks what the schema cannot see: ids unique across all four lists, the plain plate, the starters, every rule naming a real tier, class, campaign or friend, and every frame's art path.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["coats", "nameplates", "titles"],
+  "required": ["coats", "specials", "nameplates", "titles"],
   "properties": {
     "$schema": { "type": "string" },
     "$comment": { "type": "string" },
     "coats": {
-      "description": "Colours for one species' coloured region (§4, §7.1; #666), shown to the kid as Color: about six starters per species, and earned ones. color is the coat's colour and the base of a special coat, whose effect (two-tone, shimmer; #669) sits beside it.",
+      "description": "Colours for one part of one species (§4, §7.1; #666; two parts, owner 2026-11-07): every species has a main part (look.coat) and an accent part (look.accent), each with its own shelf named for the part. About six starters per part per species, and earned ones. A colour is only ever a colour: whole-figure effects are specials.",
       "type": "array",
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "name", "unlock", "species", "color"],
+        "required": ["id", "name", "unlock", "species", "part", "color"],
         "properties": {
           "id": { "$ref": "#/$defs/id" },
           "name": { "$ref": "#/$defs/name" },
           "unlock": { "$ref": "#/$defs/unlock" },
           "species": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
-          "color": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+          "part": { "description": "Which of her two parts it colours: main (look.coat; a unicorn's coat, a Bigfoot's fur) or accent (look.accent; a unicorn's mane, a Bigfoot's skin).", "enum": ["main", "accent"] },
+          "color": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" }
+        }
+      }
+    },
+    "specials": {
+      "description": "Whole-figure specials (§5.5; owner 2026-11-07): not colours, every species alike, earned only. sparkle: twinkling sparkles over her, clipped by her figure, still under reduced motion. gilded: her whole figure swapped toward color, keeping its lightness steps, so she reads as a statue of it; her chosen colours are ignored while it is worn.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "unlock", "effect"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "name": { "$ref": "#/$defs/name" },
+          "unlock": { "$ref": "#/$defs/unlock" },
           "effect": {
-            "description": "A special coat (§5.5; #669), drawn in code from the region mask. two-tone: the region's lighter half takes color, its darker half dark. shimmer: a slow highlight sweeping across the region, over a plain coat or (given dark) a two-tone one. color stays the base, so a build that does not know the effect draws it plain.",
             "oneOf": [
+              { "type": "object", "additionalProperties": false, "required": ["kind"], "properties": { "kind": { "const": "sparkle" } } },
               {
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["kind", "dark"],
-                "properties": { "kind": { "const": "two-tone" }, "dark": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" } }
-              },
-              {
-                "type": "object",
-                "additionalProperties": false,
-                "required": ["kind"],
-                "properties": { "kind": { "const": "shimmer" }, "dark": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" } }
+                "required": ["kind", "color"],
+                "properties": { "kind": { "const": "gilded" }, "color": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" } }
               }
             ]
           }

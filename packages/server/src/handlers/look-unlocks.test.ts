@@ -35,10 +35,11 @@ const CAMPAIGN = "looks-fixture";
 
 const LOOKS: LookCatalog = {
   coats: [
-    { id: "unicorn_sky", name: "Sky", unlock: { from: "starter" }, species: ["unicorn"], color: "#3EC3FD" },
-    { id: "unicorn_aurora", name: "Aurora", unlock: { from: "found" }, species: ["unicorn"], color: "#0FD18B", effect: { kind: "shimmer" } },
-    { id: "bigfoot_aurora", name: "Aurora", unlock: { from: "found" }, species: ["bigfoot"], color: "#0FD18B", effect: { kind: "shimmer" } },
+    { id: "unicorn_sky", name: "Sky", unlock: { from: "starter" }, species: ["unicorn"], part: "main", color: "#3EC3FD" },
+    { id: "unicorn_mint", name: "Mint", unlock: { from: "found" }, species: ["unicorn"], part: "accent", color: "#0FD18B" },
+    { id: "bigfoot_mint", name: "Mint", unlock: { from: "found" }, species: ["bigfoot"], part: "accent", color: "#0FD18B" },
   ],
+  specials: [{ id: "aurora", name: "Aurora", unlock: { from: "found" }, effect: { kind: "sparkle" } }],
   nameplates: [{ id: "plain", name: "Plain", unlock: { from: "starter" } }],
   titles: [
     { id: "the_bold", text: "the Bold", unlock: { from: "starter" } },
@@ -73,7 +74,7 @@ const chapter = {
     found: {
       type: "story",
       narration: "A gull says: good tracking. Green sparkles settle on you.",
-      onEnter: [{ type: "findLook", looks: ["the_tracker", "unicorn_aurora", "bigfoot_aurora"], rewardId: "looks-01.tracks" }],
+      onEnter: [{ type: "findLook", looks: ["the_tracker", "unicorn_mint", "bigfoot_mint", "aurora"], rewardId: "looks-01.tracks" }],
       choices: [{ id: "on", label: "On to the yard", icon: "door", goto: "yard" }],
     },
     yard: {
@@ -164,15 +165,17 @@ describe("a look find (§6)", () => {
     const news = await t.must({ type: "CHOOSE", choiceId: "track" });
     expect(news).toEqual([
       { characterId: id, lookId: "the_tracker", kind: "title", cause: "found" },
-      { characterId: id, lookId: "unicorn_aurora", kind: "coat", cause: "found" },
+      { characterId: id, lookId: "unicorn_mint", kind: "coat", cause: "found" },
+      { characterId: id, lookId: "aurora", kind: "special", cause: "found" },
     ]);
     const look = (await t.row()).look!;
     expect(look.unlocked["the_tracker"]).toEqual({ from: "found", rewardId: "looks-01.tracks", at: expect.any(String), source: "Found in The Tracks" });
-    expect(look.unlocked["unicorn_aurora"]).toMatchObject({ from: "found", rewardId: "looks-01.tracks" });
-    // Never another species' colour.
-    expect(look.unlocked).not.toHaveProperty("bigfoot_aurora");
+    expect(look.unlocked["unicorn_mint"]).toMatchObject({ from: "found", rewardId: "looks-01.tracks" });
+    // A special is every species'; a colour never another species'.
+    expect(look.unlocked["aurora"]).toMatchObject({ from: "found", rewardId: "looks-01.tracks" });
+    expect(look.unlocked).not.toHaveProperty("bigfoot_mint");
     // Nothing chosen for her: a receipt is not a choice.
-    expect([look.coat, look.nameplate, look.title]).toEqual([null, null, null]);
+    expect([look.coat, look.accent, look.special, look.nameplate, look.title]).toEqual([null, null, null, null, null]);
     const revision = look.revision;
 
     // Back the same way: the engine records nothing new, and nothing is written or said.
@@ -189,7 +192,7 @@ describe("receipts are kept, whatever happens to the run (§6, camp.md §12.2)",
     await t.must({ type: "CHOOSE", choiceId: "on" });
     await t.loseFight();
     expect((await t.state()).sceneId).toBe("camp");
-    expect(Object.keys((await t.row()).look!.unlocked).sort()).toEqual(["the_tracker", "unicorn_aurora"]);
+    expect(Object.keys((await t.row()).look!.unlocked).sort()).toEqual(["aurora", "the_tracker", "unicorn_mint"]);
 
     // The setback that fails the campaign is also the completion that reaches Sworn.
     const news = await t.must({ type: "CHOOSE", choiceId: "lose" });
@@ -199,9 +202,9 @@ describe("receipts are kept, whatever happens to the run (§6, camp.md §12.2)",
     expect(row.committed.tier).toBe("fledgling");
     expect(row.provisional).toBeNull();
     // A failed campaign is not finished: no campaign title.
-    expect(Object.keys(row.look!.unlocked).sort()).toEqual(["the_sworn", "the_tracker", "unicorn_aurora"]);
+    expect(Object.keys(row.look!.unlocked).sort()).toEqual(["aurora", "the_sworn", "the_tracker", "unicorn_mint"]);
     // And every read of her (what the book and the table show) keeps them all.
-    expect(lookView(readEarnedLook(LOOKS, row)).unlocked).toEqual(["the_sworn", "the_tracker", "unicorn_aurora"]);
+    expect(lookView(readEarnedLook(LOOKS, row)).unlocked).toEqual(["aurora", "the_sworn", "the_tracker", "unicorn_mint"]);
   });
 });
 
@@ -229,7 +232,7 @@ describe("milestones (§6)", () => {
     await t.must({ type: "ADVANCE" });
     await t.begin();
     const again = await t.must({ type: "CHOOSE", choiceId: "track" });
-    expect(again.map((n) => n.lookId).sort()).toEqual(["the_tracker", "unicorn_aurora"]);
+    expect(again.map((n) => n.lookId).sort()).toEqual(["aurora", "the_tracker", "unicorn_mint"]);
     await t.must({ type: "PLAYTEST_GOTO", sceneId: "camp" });
     expect(await t.must({ type: "CHOOSE", choiceId: "win" })).toEqual([]);
     row = await t.row();
@@ -271,7 +274,7 @@ describe("an unlock in a campaign already under way (§12)", () => {
     // Each look told once, however many steps followed.
     const ids = withLooks.told.map((n) => n.lookId);
     expect(new Set(ids).size).toBe(ids.length);
-    expect(ids.sort()).toEqual(["of_the_fixture", "the_sworn", "the_tracker", "unicorn_aurora"]);
+    expect(ids.sort()).toEqual(["aurora", "of_the_fixture", "the_sworn", "the_tracker", "unicorn_mint"]);
   });
 });
 

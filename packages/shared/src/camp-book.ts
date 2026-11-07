@@ -267,7 +267,7 @@ export function bookFieldNames(fields: readonly BookEditField[]): string {
   const names: string[] = [];
   for (const field of fields) {
     const name = isBookLookField(field)
-      ? field === "coat"
+      ? field === "coat" || field === "accent"
         ? "hero color"
         : field
       : slotIndex(field) !== null
