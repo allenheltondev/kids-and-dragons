@@ -42,6 +42,7 @@ Requires: Pillow, numpy, scipy
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import os
 import sys
@@ -66,6 +67,10 @@ SOFTEN = 0.8  # the parts' edge: a gaussian of this sigma (px) over the cleaned 
 #   "not_skin" Bigfoot: inside the box, nothing is skin (it is fur)
 #   "coat"     unicorn: inside the box, her soft lavender is coat (inner ears, the far belly)
 #   "nose"     manticore: inside the box, the crimson paint is her nose, in neither part
+#   "gear"     griffin: inside the box, what his dark paint (L < 0.45) shuts in is gear (a pendant)
+#   "feathers" griffin: inside the box, his blue paint is feathers, not his class costume
+#   "backdrop" griffin (gear portrait): inside the box, a piece of the figure apart from him is
+#              the painted backdrop, not his figure (B)
 
 FIXES: dict[str, dict[str, list[tuple[int, int, int, int]]]] = {
     # her inner ears and the shaded belly between her far legs, lavender like her mane
@@ -78,6 +83,20 @@ FIXES: dict[str, dict[str, list[tuple[int, int, int, int]]]] = {
     "characters/manticore/sworn/assembled.png": {"nose": [(362, 398, 196, 257)]},
     "characters/manticore/radiant/assembled.png": {"nose": [(353, 389, 189, 250)]},
     "characters/manticore/mythic/assembled.png": {"nose": [(373, 409, 206, 267)]},
+    # griffin: on the duskrunner's Sworn paintings his crest and tail tuft are painted as indigo
+    # as his hood (the crest's spikes stand up out of the top of it), and the crescent pendant
+    # lies on his pale chest
+    "character-rigs/duskrunner/sworn/griffin/assembled.png": {
+        "feathers": [(85, 180, 195, 400), (85, 168, 400, 480), (680, 800, 760, 900)],
+        "gear": [(410, 540, 330, 450)]},
+    "gear-portraits/duskrunner/sworn/griffin.png": {
+        "feathers": [(120, 205, 270, 500), (120, 222, 500, 570), (850, 1005, 915, 1085)],
+        "gear": [(525, 680, 432, 532)]},
+    # griffin: the duskrunner's Radiant buckle, at the strap's edge on his pale belly
+    "character-rigs/duskrunner/radiant/griffin/assembled.png": {"gear": [(515, 592, 262, 345)]},
+    # griffin: the hummingbird painted in the backdrop of two of his gear portraits
+    "gear-portraits/thornguard/radiant/griffin.png": {"backdrop": [(140, 440, 780, 1140)]},
+    "gear-portraits/thornguard/mythic/griffin.png": {"backdrop": [(140, 440, 780, 1140)]},
 }
 
 
@@ -508,7 +527,50 @@ def clean_dragonling(look: Look, draft: np.ndarray, painting: str) -> tuple[np.n
 
 # ----------------------------------------------------------------------------- griffin
 
-def clean_griffin(look: Look, draft: np.ndarray, painting: str) -> tuple[np.ndarray, np.ndarray]:
+def clean_griffin(look: Look, draft: np.ndarray, painting: str) -> tuple[np.ndarray, ...]:
+    """His parts on a base painting (`griffin_parts`), and on a class painting or gear portrait.
+
+    On a class painting or gear portrait his class costume, gear and props are found first
+    (`griffin_gear`) and cut out of the figure he is cleaned on, so neither part reaches them.
+    On a gear portrait the draft's figure (B) is redrawn (`griffin_figure`): its flood fill
+    from the edges runs into a navy cloak as dark as the painted backdrop. Pixel sizes are
+    scaled to the canvas (a gear portrait is 1254 square, the others 1024)."""
+    if painting.startswith("characters/"):
+        return griffin_parts(look, painting, 1.0)
+    s = look.alpha.shape[1] / 1024
+    figure = None
+    if painting.startswith("gear-portraits/"):
+        figure = griffin_figure(look.rgba, draft[..., 2] / 255.0, painting, s)
+        look = Look(look.rgba, figure > 0.5)
+    whole = look.alpha
+    gear = griffin_gear(look, painting, s)
+    take = boxes(painting, "gear", gear.shape)
+    if take is not None:  # a pendant or buckle lying on his coat, as pale as it: what its outline shuts in
+        gear |= ndimage.binary_fill_holes(take & (look.L < 0.45)) & take & whole
+    give = boxes(painting, "feathers", gear.shape)
+    if give is not None:  # his own blue, painted as indigo as the hood
+        gear &= ~(give & (look.hue > -150) & (look.hue < -60) & (look.C >= 0.04))
+    look = copy.copy(look)
+    look.alpha = whole & ~gear
+    coat_, feathers = griffin_parts(look, painting, s)
+    # these paintings' outlines are thin (2px): a 2px lip over the ink under each part's edge,
+    # so the soft edge fades out over the dark line, not over his last light pixels
+    lip = look.ink & whole
+    coat_ |= ndimage.binary_dilation(coat_, structure=disk(2)) & lip & ~feathers
+    feathers |= ndimage.binary_dilation(feathers, structure=disk(2)) & lip & ~coat_
+    if figure is None:
+        return coat_, feathers
+    # an opaque portrait has no alpha to fade his edge into the backdrop: each part reaches
+    # 2px past the figure's edge, so its soft edge falls where the figure's does and no pale
+    # rim of untinted fur is left along it
+    out = ~whole
+    r = max(1, round(2 * s))
+    coat_ |= ndimage.binary_dilation(coat_, structure=disk(r)) & out
+    feathers |= ndimage.binary_dilation(feathers, structure=disk(r)) & out & ~coat_
+    return coat_, feathers, figure
+
+
+def griffin_parts(look: Look, painting: str, s: float) -> tuple[np.ndarray, np.ndarray]:
     """Feathers (G) and coat (R) are found afresh from the painting; the draft is not read.
 
     He is painted in one blue hue (OKLab ~-105) at every depth: the white body (C ~0.02), its
@@ -526,7 +588,13 @@ def clean_griffin(look: Look, draft: np.ndarray, painting: str) -> tuple[np.ndar
     3. Coat: the rest of him that is pale or blue-grey, as its largest pieces (the body, head
        and any limb cut off by a line); the stars and shading on it are coat. Specks between
        coat and feathers that are neither go to the nearer part.
-    4. The yellow wings stay as painted: the owner chose the blue plumage as the accent."""
+    4. The yellow wings stay as painted: the owner chose the blue plumage as the accent.
+    On a class painting or gear portrait (`clean_griffin` has cut his costume out of `look`):
+    a big blue piece is plumage only if as strong and deep as it (median C >= 0.062,
+    L < 0.66): a cloak casts a blue shadow on his pale coat. Pixel sizes are at 1024 square
+    and scaled by `s`."""
+    base = painting.startswith("characters/")
+    px, area = (lambda r: max(1, round(r * s))), (lambda n: n * s * s)
     a, L, C, hue = look.alpha, look.L, look.C, look.hue
     ys = np.nonzero(a)[0]
     y0, y1 = ys.min(), ys.max()
@@ -541,10 +609,12 @@ def clean_griffin(look: Look, draft: np.ndarray, painting: str) -> tuple[np.ndar
     keep = np.zeros_like(a)
     for i in range(1, n + 1):
         comp = labs == i
-        if comp.sum() < 2500:
+        if comp.sum() < area(2500):
             continue
         if np.nonzero(comp)[0].mean() > y1 - 0.12 * (y1 - y0):  # talons
             continue
+        if not base and (np.median(C[comp]) < 0.062 or np.median(L[comp]) >= 0.66):
+            continue  # a costume's blue shadow cast on his pale coat
         keep |= comp
     # the plumage's smaller pieces, cut off by a line or an ear, beside its big ones: as deep
     # a blue as the plumage (the shading on his chest and the stars are lighter)
@@ -552,15 +622,15 @@ def clean_griffin(look: Look, draft: np.ndarray, painting: str) -> tuple[np.ndar
     labs, n = ndimage.label(raw)
     if n:
         i = np.arange(1, n + 1)
-        near = ndimage.minimum(ndimage.distance_transform_edt(~keep), labs, i) <= 40
+        near = ndimage.minimum(ndimage.distance_transform_edt(~keep), labs, i) <= px(40)
         deep = (ndimage.mean(L, labs, i) < 0.56) & (ndimage.mean(C, labs, i) >= 0.06)
         add = np.zeros(n + 1, bool)
-        add[1:] = near & deep & (ndimage.sum(raw, labs, i) >= 20)
+        add[1:] = near & deep & (ndimage.sum(raw, labs, i) >= area(20))
         keep |= add[labs] & (rows < y1 - 0.12 * (y1 - y0))
-    reach = ndimage.binary_dilation(keep, structure=disk(12))
+    reach = ndimage.binary_dilation(keep, structure=disk(px(12)))
     grow = a & ~yellow & ((blue & (C >= 0.04)) | (L < 0.5)) & reach
     feathers = ndimage.binary_propagation(keep, mask=grow | keep)
-    feathers = ndimage.binary_closing(feathers, structure=disk(2))
+    feathers = ndimage.binary_closing(feathers, structure=disk(px(2)))
     feathers = ndimage.binary_fill_holes(feathers) & a & ~yellow
 
     # eyes: small loops of ink holding mostly dark paint (the iris round its catch-light); a
@@ -573,9 +643,9 @@ def clean_griffin(look: Look, draft: np.ndarray, painting: str) -> tuple[np.ndar
         small = np.zeros(n + 1, bool)
         size, mL = ndimage.sum(loops, labs, i), ndimage.mean(L, labs, i)
         dark = (mL < 0.6) | (ndimage.mean(yellow, labs, i) > 0.4)  # a brown or a gold iris
-        glint = (size < 400) & (mL > 0.75) & (ndimage.mean(C, labs, i) < 0.03)  # a catch-light
-        small[1:] = (size < 2500) & (dark | glint)
-        eyes = ndimage.binary_dilation(small[labs], structure=disk(2))
+        glint = (size < area(400)) & (mL > 0.75) & (ndimage.mean(C, labs, i) < 0.03)  # a catch-light
+        small[1:] = (size < area(2500)) & (dark | glint)
+        eyes = ndimage.binary_dilation(small[labs], structure=disk(px(2)))
 
     never = yellow | eyes | (look.ink & ~feathers)
     cand = a & ~feathers & ~never & (L >= 0.45)
@@ -584,7 +654,7 @@ def clean_griffin(look: Look, draft: np.ndarray, painting: str) -> tuple[np.ndar
     if n:
         sizes = ndimage.sum(cand, labs, np.arange(1, n + 1))
         big = np.zeros(n + 1, bool)
-        big[1:] = sizes >= max(1500, 0.02 * sizes.max())
+        big[1:] = sizes >= max(area(1500), 0.02 * sizes.max())
         coat_ = big[labs]
     coat_ = ndimage.binary_fill_holes(coat_) & ~never & ~feathers & a
     # the small pale pieces left over go to the nearer part: the tips of the mythic crest's
@@ -598,18 +668,143 @@ def clean_griffin(look: Look, draft: np.ndarray, painting: str) -> tuple[np.ndar
         d_f = ndimage.minimum(ndimage.distance_transform_edt(~feathers), labs, i)
         to_f = np.zeros(n + 1, bool)
         to_c = np.zeros(n + 1, bool)
-        to_f[1:] = (d_f <= 8) & (d_f <= d_c)
-        to_c[1:] = (d_c <= 8) & (d_c < d_f)
+        to_f[1:] = (d_f <= px(8)) & (d_f <= d_c)
+        to_c[1:] = (d_c <= px(8)) & (d_c < d_f)
         feathers |= to_f[labs]
         coat_ |= to_c[labs]
 
     left = a &~coat_ & ~feathers & ~never & (L >= 0.36)
     d_coat = ndimage.distance_transform_edt(~coat_)
     d_feat = ndimage.distance_transform_edt(~feathers)
-    coat_ |= left & (d_coat <= 5) & (d_coat <= d_feat)
-    feathers |= left & (d_feat <= 5) & (d_feat < d_coat)
+    coat_ |= left & (d_coat <= px(5)) & (d_coat <= d_feat)
+    feathers |= left & (d_feat <= px(5)) & (d_feat < d_coat)
     line = look.outline(light=0.7)
     return coat_ & ~line, feathers & ~line
+
+
+def griffin_figure(rgba: np.ndarray, drafted: np.ndarray, painting: str, s: float) -> np.ndarray:
+    """A gear portrait's figure (B), 0..1, redrawn: everything but the painted backdrop.
+
+    The backdrop is a dark navy wash with a soft vignette. The draft's flood fill steps from
+    pixel to pixel and so drifts into anything as dark (the duskrunner's navy cloak and hood);
+    here every pixel is measured against one smooth model of the backdrop instead.
+    1. The model: a quadratic in x and y per OKLab channel, fitted (robustly) on what the
+       draft called backdrop.
+    2. Backdrop: pixels within 0.04 of the model (median of 3), opened by a 3px disk to cut
+       the bridges through gaps in his outline, those that reach the canvas edge, then grown
+       back to the paint they were opened off.
+    3. Pockets: the backdrop seen between his legs or through a prop's ring, shut in by the
+       figure: a piece of that opened paint that does not reach the edge, of 270px and more,
+       as close to the model (mean < 0.025), as grey (chroma < 0.027) and as smooth (5px
+       lightness spread < 0.018) as the backdrop. A cloak is bluer and painted in folds.
+    4. The figure is the rest, less specks of under 2000px and anything touching the canvas
+       edge, and less the `backdrop` fix boxes (a hummingbird painted in the backdrop);
+       softened like the parts.
+    Pixel sizes are at 1024 square and scaled by `s`."""
+    h, w = rgba.shape[:2]
+    lab = coat.srgb_to_oklab(rgba[..., :3] / 255.0)
+    yy, xx = np.mgrid[0:h, 0:w] / max(h, w)
+    X = np.stack([np.ones_like(xx), xx, yy, xx * xx, yy * yy, xx * yy], -1).reshape(-1, 6)
+    known = np.nonzero((drafted < 0.05).ravel())[0][::7]
+    model = np.zeros_like(lab)
+    for c in range(3):
+        A, y = X[known], lab[..., c].ravel()[known]
+        for _ in range(3):  # refit without the outliers (whatever the draft let in)
+            coef = np.linalg.lstsq(A, y, rcond=None)[0]
+            res = np.abs(A @ coef - y)
+            ok = res < np.percentile(res, 80) * 2.5
+            A, y = A[ok], y[ok]
+        model[..., c] = (X @ coef).reshape(h, w)
+    dist = np.sqrt(((lab - model) ** 2).sum(-1))
+    near = ndimage.median_filter(dist, 3) < 0.04
+    r = max(1, round(3 * s))
+    core = ndimage.binary_opening(near, structure=disk(r))
+    edge = np.zeros((h, w), bool)
+    edge[0, :] = edge[-1, :] = edge[:, 0] = edge[:, -1] = True
+    back = ndimage.binary_propagation(core & edge, mask=core)
+
+    labs, n = ndimage.label(core & ~back)
+    if n:
+        i = np.arange(1, n + 1)
+        L = lab[..., 0]
+        mu = ndimage.uniform_filter(L, 7)
+        spread = np.sqrt(np.maximum(ndimage.uniform_filter(L * L, 7) - mu * mu, 0))
+        chroma = np.hypot(lab[..., 1], lab[..., 2])
+        pocket = np.zeros(n + 1, bool)
+        pocket[1:] = ((ndimage.sum(core, labs, i) >= 270 * s * s)
+                      & (ndimage.mean(dist, labs, i) < 0.025)
+                      & (ndimage.median(chroma, labs, i) < 0.027)
+                      & (ndimage.median(spread, labs, i) < 0.018))
+        back |= pocket[labs]
+    back = ndimage.binary_propagation(back, mask=near & ndimage.binary_dilation(back, structure=disk(r + 1)))
+
+    figure = ~back
+    labs, n = ndimage.label(figure)
+    if n:
+        i = np.arange(1, n + 1)
+        keep = np.zeros(n + 1, bool)
+        keep[1:] = ndimage.sum(figure, labs, i) >= 2000 * s * s
+        keep[np.unique(labs[edge])] = False
+        figure = keep[labs]
+    gone = boxes(painting, "backdrop", figure.shape)
+    if gone is not None:  # a piece apart from him, inside the box
+        labs, n = ndimage.label(figure)
+        him = labs == int(np.argmax(ndimage.sum(figure, labs, np.arange(1, n + 1)))) + 1
+        figure &= ~(gone & ~him)
+    return ndimage.gaussian_filter(figure.astype(float), SOFTEN)
+
+
+def griffin_gear(look: Look, painting: str, s: float) -> np.ndarray:
+    """His class costume, gear and props on a class painting or gear portrait, never coloured.
+
+    Griffin paint is his feather blue (OKLab hue -140..-100, chroma >= 0.04), his pale coat
+    and its blue-grey shading, and the yellow of his wings, beak and talons. A costume is
+    painted in other colours: the duskrunner's navy (hue beyond -100), the starweaver's teal,
+    the thornguard's browns and moss, and any thick dark paint (straps, the darkest cloaks).
+    1. Seeds: that paint, opened to cut thin bridges, in pieces of 1500px and more.
+    2. Grown over everything that is not griffin paint and not a thin ink line, opened by a
+       1px disk so it never creeps along the thin blend of fur into outline round his edges.
+    3. Its holes under 3000px (stars, crescents, buckles, emblems, rivets) go with it.
+    `s` scales pixel sizes to the canvas (a gear portrait is 1254 square)."""
+    a, L, C, hue = look.alpha, look.L, look.C, look.hue
+    ink = look.ink & a
+    r = max(2, round(2 * s))
+    feather = (hue > -140) & (hue < -100) & (C >= 0.04) & (L >= 0.36)
+    pale = (L >= 0.62) & ((C < 0.025) | ((hue > -150) & (hue < -80) & (C < 0.07)))
+    yellow = (C >= 0.04) & (hue > 40) & (hue < 120) & (L >= 0.55)
+    griffin = feather | pale | yellow
+    navy = (hue > -100) & (hue < -20) & (C >= 0.02) & (L < 0.62)
+    teal = (C >= 0.03) & ((hue < -138) | (hue > 140))
+    brown = (L < 0.62) & (hue > -20) & (hue < 140) & (C >= 0.02)
+    dark = ndimage.binary_opening(ink, structure=disk(r))
+    seed = ndimage.binary_opening((a & ~ink & (navy | teal | brown)) | (a & dark), structure=disk(r))
+    labs, n = ndimage.label(seed)
+    if n:
+        sizes = ndimage.sum(seed, labs, np.arange(1, n + 1))
+        seed = np.isin(labs, np.nonzero(sizes >= 1500 * s * s)[0] + 1)
+    # (opened, so it never creeps along the thin blend of fur into outline round his edges)
+    grow = ndimage.binary_opening(a & ~griffin & ~(ink & ~dark), structure=disk(1))
+    gear = ndimage.binary_propagation(seed, mask=grow | seed)
+    holes = ndimage.binary_fill_holes(gear) & ~gear
+    labs, n = ndimage.label(holes)
+    if n:
+        sizes = ndimage.sum(holes, labs, np.arange(1, n + 1))
+        gear |= np.isin(labs, np.nonzero(sizes < 3000 * s * s)[0] + 1)
+    # gems: small pieces of any paint set in gold (ringed mostly by yellow), such as the blue
+    # stone in the songkeeper's Mythic clasp, as blue as his feathers
+    gold = ndimage.binary_dilation(a & yellow & (C >= 0.06), structure=disk(r))
+    labs, n = ndimage.label(a & ~gold & ~gear)
+    if n:
+        i = np.arange(1, n + 1)
+        ring = ndimage.binary_dilation(labs > 0, structure=disk(r)) & ~(labs > 0)
+        near = ndimage.grey_dilation(labs, footprint=disk(r))
+        set_in = np.zeros(n + 1)
+        set_in[1:] = ndimage.mean(gold[ring], near[ring], i)
+        small = np.zeros(n + 1, bool)
+        small[1:] = ndimage.sum(labs > 0, labs, i) < 1500 * s * s
+        gem = (small & (set_in >= 0.85))[labs]
+        gear |= ndimage.binary_dilation(gem, structure=disk(r)) & ~gold
+    return gear & a
 
 
 # ----------------------------------------------------------------------------- manticore
