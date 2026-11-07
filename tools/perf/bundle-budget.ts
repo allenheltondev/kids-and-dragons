@@ -309,7 +309,11 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // mask list in assets/manifest.json (coatMasks.paintings), which the client bundles
 // so it never asks for a mask that doesn't exist: with the list emptied the total is
 // 1773KB. The masks themselves are fetched assets, not bundle. 2KB of slack again.
-const TOTAL_BUDGET_KB = 1776;
+// 1776 -> 1784 for the 72 class paintings' and 72 gear portraits' colour masks (#668):
+// 1782KB measured, first paint 329KB unchanged. The growth is again only the mask
+// list (144 more paths in coatMasks.paintings): with just the 24 base entries the
+// total is 1774KB. 2KB of slack again.
+const TOTAL_BUDGET_KB = 1784;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

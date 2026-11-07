@@ -255,9 +255,13 @@ describe("offline (§5.4)", () => {
     const world = characterWorldArtUrl("unicorn", "radiant", "songkeeper");
     const portrait = characterPortraitArtUrl("unicorn", "radiant", "songkeeper");
     serve(world, portrait);
-    const party = [{ character: { species: "unicorn" as const, tier: "radiant" as const, class: "songkeeper" as const } }];
+    const look = { revision: 1, coat: SKY.id, accent: null, special: null, nameplate: null, title: null, unlocked: [] };
+    const party = [{ character: { species: "unicorn" as const, tier: "radiant" as const, class: "songkeeper" as const, look } }];
     const urls = chapterAssets(makeChapter(), party, coatMaskPaintings());
     for (const url of [world, maskPathBeside(world), portrait, maskPathBeside(portrait)]) expect(urls).toContain(url);
+    // A hero drawn as painted (no colour, no special) needs no mask, so none is warmed.
+    const plain = [{ character: { species: "unicorn" as const, tier: "radiant" as const, class: "songkeeper" as const } }];
+    expect(chapterAssets(makeChapter(), plain, coatMaskPaintings()).filter((u) => u.includes("coat-mask"))).toEqual([]);
     // With no mask listed, only the paintings: nothing asks for a mask that is not there.
     expect(chapterAssets(makeChapter(), party, []).filter((u) => u.includes("coat-mask"))).toEqual([]);
     // And the book's warm step saves the same.
@@ -270,7 +274,8 @@ describe("offline (§5.4)", () => {
     const world = characterWorldArtUrl("unicorn", "mythic", "starweaver");
     serve(world, portrait);
     // What the service worker kept: the chapter's art for the seated party.
-    const saved = new Set(chapterAssets(null, [{ character: { species: "unicorn", tier: "mythic", class: "starweaver" } }], coatMaskPaintings()));
+    const look = { revision: 1, coat: SKY.id, accent: null, special: null, nameplate: null, title: null, unlocked: [] };
+    const saved = new Set(chapterAssets(null, [{ character: { species: "unicorn", tier: "mythic", class: "starweaver", look } }], coatMaskPaintings()));
     // No signal now: only saved files load.
     setHeroCoats(new CoatCache({ runner: slicedTintRunner(pixelIO(files, { available: (u) => saved.has(u) })), urls }));
     const { container } = render(<CharacterPortrait hero={hero} />);
