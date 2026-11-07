@@ -562,10 +562,8 @@ export function NarrationPanel(): ReactElement | null {
                 <>
                   <CharacterPortrait
                     backdrop
-                    species={owner.character.species}
+                    hero={owner.character}
                     accent={owner.character.appearance.accent}
-                    tier={owner.character.tier}
-                    characterClass={owner.character.class}
                     className="narration__turn-face"
                   />
                   <span>

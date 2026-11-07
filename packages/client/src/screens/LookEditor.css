@@ -1,0 +1,71 @@
+/* Her look in the book (LookPane.tsx, LookEditor.tsx `BookLook`): the kit's
+   dressing room (BookKit.css) with her hero and her name up top. */
+
+.book-look__hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding-block: 0.75rem;
+}
+
+.book-look__portrait {
+  width: min(14rem, 60vw);
+  aspect-ratio: 1;
+}
+
+.book-look__name {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.book-look__tile-art {
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 1.05rem;
+  padding-inline: 0.4rem;
+  text-align: center;
+}
+
+/* The table's compact editor (LookEditor.tsx `LookEditor`). */
+.look-option__art {
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  text-align: center;
+  padding-inline: 0.25rem;
+}
+
+/* The Color shelf (#666): her hero on every tile, tinted, with a dot naming the colour. */
+.book-look__tile--color .book-look__tile-art {
+  padding: 0;
+}
+
+.look-option__art--color {
+  inline-size: 4.2rem;
+  block-size: 4.2rem;
+  padding: 0;
+}
+
+.look-swatch {
+  display: inline-block;
+  inline-size: 0.8em;
+  block-size: 0.8em;
+  margin-inline-end: 0.3em;
+  border-radius: 50%;
+  border: 1px solid rgb(0 0 0 / 0.45);
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.6);
+  vertical-align: -0.05em;
+}
+
+/* Where an earned look came from (#669): "Finished The Gemfall", small, under its name. */
+.book-look__source {
+  display: block;
+  font-size: 0.75em;
+  line-height: 1.2;
+  opacity: 0.8;
+  text-align: center;
+}

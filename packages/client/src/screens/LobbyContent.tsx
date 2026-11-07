@@ -10,6 +10,7 @@
  * portrait pane of Travel Mode, and never knows which (architecture §4.6).
  */
 
+import { HeroName } from "./HeroName";
 import { useEffect, useRef, useState } from "react";
 import type { ReactElement, RefObject } from "react";
 import { setLobbyInsetBottom, setLobbyInsetTop } from "../world/stage-inset";
@@ -121,10 +122,8 @@ function MemberCard({ member, arriving = false }: { member: PartyMember; arrivin
         <span className="lobby-member__portrait" aria-hidden="true">
           <CharacterPortrait
             backdrop
-            species={character.species}
+            hero={character}
             accent={character.appearance.accent}
-            tier={character.tier}
-            characterClass={character.class}
             className="lobby-member__art"
             lit={member.ready}
           />
@@ -140,7 +139,7 @@ function MemberCard({ member, arriving = false }: { member: PartyMember; arrivin
         )}
       </span>
       <span className="lobby-member__text">
-        <span className="lobby-member__name">{character.name}</span>
+        <span className="lobby-member__name"><HeroName name={character.name} look={character.look} /></span>
         {/* The worn token and its notches (#314), in place of the bare class
             icon: same seat, so a rank landing never grows the card. */}
         <span className="lobby-member__meta kad-muted">

@@ -88,7 +88,7 @@ import {
 import { appSyncEventSource } from "../sync/appsync-socket";
 import { setFieldGuideDiscoveries } from "./field-guide-discoveries";
 import { announceFieldGuideNews, clearFieldGuideNews } from "./field-guide-news";
-import { announceKitNews, clearKitNews } from "./kit-news";
+import { announceKitNews, announceLookNews, clearKitNews } from "./kit-news";
 import { announceDashCash, clearDashCash } from "./dash-cash-news";
 import { noteServerTime } from "./server-clock";
 import { navigate } from "../router";
@@ -370,6 +370,8 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
           onDiscovered: ({ runId, seq, canonIds }) => announceFieldGuideNews(runId, seq, canonIds),
           // Live-only milestone kit pieces (#621), told on the phone after the cutscene.
           onKitUnlocks: ({ runId, seq, unlocks, crossings }) => announceKitNews(runId, seq, unlocks, crossings),
+          // Her earned looks (#669), told where her kit's news is.
+          onLookUnlocks: ({ runId, seq, unlocks, crossings }) => announceLookNews(runId, seq, unlocks, crossings),
           // Live-only lucky drops (docs/camp.md §5.2): the TV sparkles, the phones echo it.
           onCampDrops: ({ runId, seq, sceneIds }) => announceDashCash(runId, seq, sceneIds),
           onPreview: ({ runId, playerId, preview, context }) => {

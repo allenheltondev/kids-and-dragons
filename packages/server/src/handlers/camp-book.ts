@@ -30,8 +30,14 @@
  */
 
 import {
-  BOOK_KIT_FIELDS,
+  BOOK_EDIT_FIELDS,
   FIRST_CREW_NAME,
+  isKitChange,
+  BOOK_LOOK_FIELDS,
+  isLookChange,
+  lookView,
+  mergeBookLook,
+  withLookEdit,
   bookKitProblem,
   bookKitEdit,
   bookKitState,
@@ -50,8 +56,10 @@ import {
   withKitCrew,
 } from "@kad/shared";
 import type {
-  BookKitField,
+  BookEditField,
   BookKitRequest,
+  HeroLook,
+  LookEdit,
   BookKitResponse,
   BookKitState,
   CampCatalog,
@@ -61,12 +69,14 @@ import type {
   JournalCrewCamp,
   JournalKit,
   JournalResponse,
+  LookCampStanding,
   RunState,
 } from "@kad/shared";
 import type { ContentStore } from "../content/loader.ts";
 import type { CharacterWrite } from "../store/repository.ts";
 import { fail, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 import { mutateKit, readCamp, type CampDeps } from "./camp.ts";
+import { bookLookProblem, mutateLook } from "./look-edit.ts";
 
 // ---------------------------------------------------------------------------
 // The read
@@ -234,6 +244,52 @@ export async function heroCrews(householdId: string, heroes: readonly Character[
   return out.length > 0 ? out : [null];
 }
 
+/**
+ * Each hero's crews' camps as a camp look reads them (docs/hero-looks.md §6),
+ * by character id, for the book, which has no room's camp to hand: every
+ * friend any crew she has sat with at this household has made, and the
+ * grandest of their camps. Only crews she is known to have sat with
+ * (`pastCrewKeys`), never `heroCrews`' first-crew guess, so a hero who has
+ * played with nobody earns no crew's milestone. Null for a hero with no such
+ * crew, and for all of them when the content has no camp or a read fails:
+ * the camp looks then wait for the next read, as they did before.
+ */
+export async function heroCampStandings(
+  householdId: string,
+  heroes: readonly Character[],
+  deps: CampDeps,
+): Promise<Map<string, LookCampStanding | null>> {
+  const out = new Map<string, LookCampStanding | null>(heroes.map((h) => [h.id, null]));
+  if (heroes.length === 0 || !deps.content.campCatalog()) return out;
+  try {
+    const seats = heroes.some((h) => readKit(h).crews === undefined) ? await pastSeats(householdId, deps) : null;
+    const known = new Set((await deps.repo.listCrews(householdId)).map((c) => c.id));
+    const crewsOf = new Map<string, (string | null)[]>();
+    for (const hero of heroes) {
+      const crews = new Set<string | null>();
+      for (const key of pastCrewKeys(hero, hero.householdId === householdId ? seats : null)) {
+        if (key === householdId) crews.add(null);
+        else if (campKeyOf(key, householdId) && known.has(key.slice(householdId.length + 1))) crews.add(key.slice(householdId.length + 1));
+      }
+      crewsOf.set(hero.id, [...crews]);
+    }
+    const ids = [...new Set([...crewsOf.values()].flat())];
+    const camps = new Map(await Promise.all(ids.map(async (id) => [id, await readCamp(householdId, id, deps)] as const)));
+    for (const hero of heroes) {
+      const mine = (crewsOf.get(hero.id) ?? []).map((id) => camps.get(id)!);
+      if (mine.length === 0) continue;
+      out.set(hero.id, {
+        friends: [...new Set(mine.flatMap((camp) => Object.keys(camp.friends)))],
+        frameStage: Math.max(...mine.map((camp) => camp.frameStage)),
+      });
+    }
+  } catch (err) {
+    console.error(`looks: could not read ${householdId}'s camps for the book:`, err);
+    return new Map(heroes.map((h) => [h.id, null]));
+  }
+  return out;
+}
+
 /** Each of her heroes' crews' camps (`heroCrews`), named. */
 async function crewCamps(householdId: string, heroes: readonly Character[], catalog: CampCatalog, deps: CampDeps): Promise<JournalCrewCamp[]> {
   const [ids, others, firstName] = await Promise.all([
@@ -354,74 +410,139 @@ function parseRequest(body: Record<string, unknown>): BookKitRequest | string {
 }
 
 /**
- * A kit or buddy change from the book (`POST /api/journal/kit`). Refused
- * unless the hero is the bound kid's own; a buddy only from the friends that
- * crew has. See the header for online and queued changes.
+ * A kit, buddy or look change from the book (`POST /api/journal/kit`).
+ * Refused unless the hero is the bound kid's own; a buddy only from the
+ * friends that crew has; a look only one she holds (docs/hero-looks.md §3.2,
+ * #664). See the header for online and queued changes.
+ *
+ * Her look's fields (`coat`, `accent`, `special`, `nameplate`, `title`) are change kinds on the
+ * same request, applied by the same rule: each over whatever is stored now,
+ * the device winning, and one that is not hers skipped from the queue
+ * (`merge`) or refusing the whole change sent straight away. They are written
+ * to her look first, then her kit's fields to her kit; a queued entry may
+ * carry both, while a change sent straight away is one tap, so one or the
+ * other.
  */
 export async function editKitFromBook(input: BookKitInput, deps: HandlerDeps): Promise<HandlerResult<BookKitResponse>> {
   const request = parseRequest(input.body);
   if (typeof request === "string") return fail("ILLEGAL", request);
+  const kitChanges = request.changes.filter(isKitChange);
+  const lookChanges = request.changes.filter(isLookChange);
   const catalog = deps.content.campCatalog();
-  if (!catalog) return fail("ILLEGAL", "there is no kit catalog in this content");
+  if (kitChanges.length > 0 && !catalog) return fail("ILLEGAL", "there is no kit catalog in this content");
+  const looks = deps.content.looksCatalog();
+  if (lookChanges.length > 0 && !looks) return fail("ILLEGAL", "there are no looks in this content");
 
   const hero = await deps.repo.getCharacter(input.householdId, request.characterId);
   if (!hero) return fail("NOT_FOUND", "that hero is not in your book");
   if (hero.ownerPlayerId !== input.playerId) return fail("FORBIDDEN", "only a hero's own kid changes her kit");
 
-  // A buddy is one of this crew's friends, as the crew's own record says (§4.4).
-  const crew = request.crew ?? null;
-  const buddy = request.changes.some((c) => c.field === "buddy");
-  let friends: string[] = [];
-  if (buddy) {
-    if (crew !== null && !(await deps.repo.listCrews(input.householdId)).some((c) => c.id === crew)) {
-      return fail("NOT_FOUND", "that crew is not one of your household's");
-    }
-    friends = Object.keys((await readCamp(input.householdId, crew, deps)).friends);
-  }
-  const key = campKey(input.householdId, crew);
-  const rules = catalog.kit;
-
-  const seen: { applied: BookKitField[]; refused: BookKitField[]; problem: string | null } = {
+  const seen: { applied: BookEditField[]; refused: BookEditField[]; problem: string | null } = {
     applied: [],
     refused: [],
     problem: null,
   };
-  const written = await mutateKit(
-    input.householdId,
-    request.characterId,
-    (kit) => {
-      seen.problem = null;
-      const unlocked = Object.keys(kit.unlocked);
-      const now = bookKitState(kit, key);
-      let next: BookKitState;
-      if (request.merge) {
-        const merged = mergeBookKit(now, request.changes, (base, next) => bookKitProblem(rules, unlocked, base, next, friends));
-        Object.assign(seen, { applied: merged.applied, refused: merged.refused });
-        next = merged.state;
-      } else {
-        // The table's rule, all at once: every field the change names, as picked.
-        next = request.changes.reduce((state, c) => withBookKitValue(state, c.field, c.after), now);
-        const style = request.changes.find((c) => (c.field === "style" || c.field === "tent") && c.after === null);
-        seen.problem = style ? `a ${style.field} is always picked` : null;
-        const edit = bookKitEdit(now, next);
-        if (seen.problem === null && Object.keys(edit).length > 0) seen.problem = kitEditProblem(rules, unlocked, edit, friends);
-        if (seen.problem !== null) return null;
-        Object.assign(seen, { applied: request.changes.map((c) => c.field), refused: [] });
-      }
-      const edit = bookKitEdit(now, next);
-      return Object.keys(edit).length === 0 ? null : withKitEdit(kit, edit, key);
-    },
-    deps,
-  );
-  if (seen.problem !== null) return fail("ILLEGAL", seen.problem);
-  if (!written.ok) {
-    if (written.reason === "missing") return fail("NOT_FOUND", "that hero is not in your book");
-    console.error(`camp: a book edit to ${request.characterId}'s kit was not written (${written.reason})`);
-    return fail("STALE_DECISION", "Your kit could not be saved just now. Try again.");
+
+  // Her look (docs/hero-looks.md §3.2): each field over what is stored now.
+  let look: HeroLook | null = null;
+  if (lookChanges.length > 0 && looks) {
+    const lookSeen: { applied: BookEditField[]; refused: BookEditField[]; problem: string | null } = { applied: [], refused: [], problem: null };
+    // Her crews' camps, so a camp look she has earned is hers to pick (#669).
+    const camp = (await heroCampStandings(input.householdId, [hero], deps)).get(hero.id) ?? null;
+    const written = await mutateLook(
+      input.householdId,
+      request.characterId,
+      (stored, row) => {
+        Object.assign(lookSeen, { applied: [], refused: [], problem: null });
+        const check = (edit: LookEdit) => bookLookProblem(looks, stored, edit, row);
+        let next: HeroLook;
+        if (request.merge) {
+          const merged = mergeBookLook(stored, lookChanges, check);
+          Object.assign(lookSeen, { applied: merged.applied, refused: merged.refused });
+          next = merged.look;
+        } else {
+          const edit: LookEdit = Object.fromEntries(lookChanges.map((c) => [c.field, c.after]));
+          lookSeen.problem = check(edit);
+          if (lookSeen.problem !== null) return null;
+          lookSeen.applied = lookChanges.map((c) => c.field);
+          next = withLookEdit(stored, edit);
+        }
+        return Object.fromEntries(BOOK_LOOK_FIELDS.map((f) => [f, next[f]])) as LookEdit;
+      },
+      deps,
+      { camp },
+    );
+    if (lookSeen.problem !== null) return fail("ILLEGAL", lookSeen.problem);
+    if (!written.ok) {
+      if (written.reason === "missing") return fail("NOT_FOUND", "that hero is not in your book");
+      console.error(`looks: a book edit to ${request.characterId}'s look was not written (${written.reason})`);
+      return fail("STALE_DECISION", "Your look could not be saved just now. Try again.");
+    }
+    look = written.value;
+    seen.applied.push(...lookSeen.applied);
+    seen.refused.push(...lookSeen.refused);
   }
-  const order = (fields: BookKitField[]) => BOOK_KIT_FIELDS.filter((f) => fields.includes(f));
+
+  let kit: HeroKit;
+  if (kitChanges.length > 0 && catalog) {
+    // A buddy is one of this crew's friends, as the crew's own record says (§4.4).
+    const crew = request.crew ?? null;
+    const buddy = kitChanges.some((c) => c.field === "buddy");
+    let friends: string[] = [];
+    if (buddy) {
+      if (crew !== null && !(await deps.repo.listCrews(input.householdId)).some((c) => c.id === crew)) {
+        return fail("NOT_FOUND", "that crew is not one of your household's");
+      }
+      friends = Object.keys((await readCamp(input.householdId, crew, deps)).friends);
+    }
+    const key = campKey(input.householdId, crew);
+    const rules = catalog.kit;
+    const kitSeen: { applied: BookEditField[]; refused: BookEditField[] } = { applied: [], refused: [] };
+
+    const written = await mutateKit(
+      input.householdId,
+      request.characterId,
+      (stored) => {
+        seen.problem = null;
+        const unlocked = Object.keys(stored.unlocked);
+        const now = bookKitState(stored, key);
+        let next: BookKitState;
+        if (request.merge) {
+          const merged = mergeBookKit(now, kitChanges, (base, next) => bookKitProblem(rules, unlocked, base, next, friends));
+          Object.assign(kitSeen, { applied: merged.applied, refused: merged.refused });
+          next = merged.state;
+        } else {
+          // The table's rule, all at once: every field the change names, as picked.
+          next = kitChanges.reduce((state, c) => withBookKitValue(state, c.field, c.after), now);
+          const style = kitChanges.find((c) => (c.field === "style" || c.field === "tent") && c.after === null);
+          seen.problem = style ? `a ${style.field} is always picked` : null;
+          const edit = bookKitEdit(now, next);
+          if (seen.problem === null && Object.keys(edit).length > 0) seen.problem = kitEditProblem(rules, unlocked, edit, friends);
+          if (seen.problem !== null) return null;
+          Object.assign(kitSeen, { applied: kitChanges.map((c) => c.field), refused: [] });
+        }
+        const edit = bookKitEdit(now, next);
+        return Object.keys(edit).length === 0 ? null : withKitEdit(stored, edit, key);
+      },
+      deps,
+    );
+    if (seen.problem !== null) return fail("ILLEGAL", seen.problem);
+    if (!written.ok) {
+      if (written.reason === "missing") return fail("NOT_FOUND", "that hero is not in your book");
+      console.error(`camp: a book edit to ${request.characterId}'s kit was not written (${written.reason})`);
+      return fail("STALE_DECISION", "Your kit could not be saved just now. Try again.");
+    }
+    kit = written.value;
+    seen.applied.push(...kitSeen.applied);
+    seen.refused.push(...kitSeen.refused);
+  } else {
+    // A look change alone: her kit as it now stands, for the book's copy.
+    kit = readKit((await deps.repo.getCharacter(input.householdId, request.characterId)) ?? hero);
+  }
+  const order = (fields: BookEditField[]) => BOOK_EDIT_FIELDS.filter((f) => fields.includes(f));
   return ok({
-    kit: journalKit(written.value, input.householdId),
+    kit: journalKit(kit, input.householdId),
+    ...(look ? { look: lookView(look, { sources: true }) } : {}),
     applied: order(seen.applied),
     refused: order(seen.refused),
   });

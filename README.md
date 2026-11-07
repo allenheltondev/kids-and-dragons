@@ -150,7 +150,8 @@ breathing loop; there is no animation rig runtime ([docs/art-pipeline.md](docs/a
 | `npm run canon:check` | Validates `canon/` |
 | `npm run canon:bestiary`, `canon:items`, `canon:world`, `canon:field-guide` | Regenerate the content projections from canon |
 | `npm run art:verify` | The art contract against `assets/manifest.json` |
-| `npm run art:sheet` | Contact sheets for art review |
+| `npm run art:sheet` | Contact sheets for art review (`--coat`: only the hero-look colour pages) |
+| `npm run art:coat-draft -- <species>` | Draft coat masks (R main part, G accent part, B the figure) for every painting of a species, to clean by hand ([docs/hero-looks.md](docs/hero-looks.md) §4.3) |
 | `npm run art:inventory` | What is left to draw. Reports only. |
 | `npm run audio:verify` / `audio:import` | Check sounds / bring a sound in by hand |
 | `npm run perf:bundle` | The bundle budget |

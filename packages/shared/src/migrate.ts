@@ -27,6 +27,7 @@
  */
 
 import { emptyKit, migrateKit, milestonePieces, withMilestones } from "./camp-record.js";
+import { migrateLook } from "./hero-look.js";
 import { CLASS_RANKS, STAT_IDS, TIER_IDS } from "./types/domain.js";
 import type {
   Character,
@@ -47,7 +48,7 @@ import type {
  * commit — a bump without a step is a silent no-op migration, which is the one
  * failure this whole mechanism cannot detect.
  */
-export const CHARACTER_VERSION = 9;
+export const CHARACTER_VERSION = 10;
 
 /** Thrown for a stored row that cannot be repaired into a playable character. */
 export class StoredCharacterError extends Error {
@@ -223,6 +224,14 @@ const STEPS: Record<number, Step> = {
     if (raw["kit"] !== undefined || milestonePieces(halves).length === 0) return raw;
     return { ...raw, kit: withMilestones(emptyKit(), halves) };
   },
+  /*
+   * v9 → v10. The hero's look (docs/hero-looks.md §3.1, #664) arrives on the
+   * character. Nothing to fill: absent means nothing chosen, and a hero with no
+   * look draws exactly as before. The bump is v7's reason again: a v9 build
+   * narrows `look` away (`assertCharacter` keeps only what it knows), and its
+   * next write would drop her look.
+   */
+  9: (raw) => raw,
 };
 
 /**
@@ -342,6 +351,8 @@ export function assertCharacter(value: unknown): Character {
     // Kept only when present: a hero nothing has been written to the kit of
     // reads back as stored, and `readKit` gives her an empty one.
     ...(raw["kit"] === undefined ? {} : { kit: migrateKit(raw["kit"]) }),
+    // The same for her look: absent until something is chosen.
+    ...(raw["look"] === undefined ? {} : { look: migrateLook(raw["look"]) }),
     createdAt: str(raw["createdAt"], "createdAt"),
     // Kept only when present, so a row the ladder did not touch reads back as
     // it was stored. Absent reads as 0 wherever it is compared.

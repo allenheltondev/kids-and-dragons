@@ -1,0 +1,33 @@
+/* A hero's name style (docs/hero-looks.md §7.2; HeroName.tsx). The name keeps
+   the surface's own type and colours; the title is 0.6 of it, under it. */
+
+.hero-name {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 100%;
+  line-height: 1.15;
+}
+
+.hero-name__name {
+  overflow-wrap: anywhere;
+}
+
+.hero-name__title {
+  font-size: 0.6em;
+  font-weight: 700;
+  opacity: 0.92;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+
+/* A delivered frame (#665), nine-sliced to the name's width. */
+.hero-name--framed {
+  border-style: solid;
+  border-width: 0.45em 0.9em;
+  border-image-source: var(--hero-name-frame);
+  border-image-slice: var(--hero-name-slice) fill;
+  border-image-width: 0.45em 0.9em;
+  border-image-repeat: stretch;
+  padding: 0.05em 0.1em;
+}

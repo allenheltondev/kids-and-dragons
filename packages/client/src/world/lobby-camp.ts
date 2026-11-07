@@ -20,7 +20,7 @@
 import { campMomentKind, lobbyCampaign } from "@kad/shared";
 import type { CastStance, Chapter, HeroKitView, PartyMember, PhaseKind, RunState } from "@kad/shared";
 import { CAMP_FALLBACK_FAMILY, campBackdropFamily } from "./camp-backdrop";
-import { characterWorldArtUrl } from "./art-paths";
+import { heroArtUrl, type HeroArtSubject } from "./hero-art";
 import { camp as campManifest } from "../../../../assets/manifest.json";
 import type { CampDressing, CampFigure } from "./camp";
 import { campBeside, campSpots, crewName, kitLook } from "./camp-scene";
@@ -206,7 +206,8 @@ function heroFigure(member: PartyMember, kit: HeroKitView | undefined): Omit<Cam
   const look = kitLook(kit, character.appearance.accent);
   return {
     id: character.id,
-    url: characterWorldArtUrl(character.species, character.tier, character.class),
+    url: heroArtUrl(character, "world"),
+    hero: character,
     accent: look.accent,
     kitStyle: look.style,
     tent: look.tent,
@@ -237,6 +238,8 @@ export function campDressing(
 export interface StillCampFigure {
   id: string;
   url: string | null;
+  /** A player's hero, drawn through hero-art (`HeroImage`) rather than from `url`. */
+  hero?: HeroArtSubject;
   /** Feet on the ground, as fractions of the backdrop canvas. */
   x: number;
   y: number;
@@ -275,6 +278,7 @@ export function stillCampFigures(
     out.push({
       id: hero.figure.id,
       url: hero.figure.url,
+      ...(hero.figure.hero ? { hero: hero.figure.hero } : {}),
       // Moved in from an edge the pane crops, as the moving camp stands them (camp.ts `pointX`).
       x: campStandX(bed.x, campStandRange(lane, visible, (heightPx * paintAspect(NOMINAL_PAINT)) / layout.canvas.width)),
       y: lane.y,

@@ -670,6 +670,11 @@
           "type": "findForKit",
           "pieceId": "deco_gull_feather",
           "rewardId": "riftlight-exchange-rift.gull_feather"
+        },
+        {
+          "type": "findLook",
+          "looks": ["the_tracker"],
+          "rewardId": "riftlight-exchange-rift.tracker"
         }
       ],
       "choices": [

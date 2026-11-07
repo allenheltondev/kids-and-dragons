@@ -1789,6 +1789,11 @@
           "type": "grantItem",
           "itemId": "songbird_ribbon",
           "to": "party"
+        },
+        {
+          "type": "findLook",
+          "looks": ["songbird"],
+          "rewardId": "riftlight-ashspan-bridge.songbird"
         }
       ]
     },
@@ -1835,6 +1840,11 @@
           "type": "grantItem",
           "itemId": "songbird_ribbon",
           "to": "party"
+        },
+        {
+          "type": "findLook",
+          "looks": ["songbird"],
+          "rewardId": "riftlight-ashspan-bridge.songbird"
         }
       ]
     },

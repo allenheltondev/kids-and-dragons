@@ -155,10 +155,8 @@ export function WelcomeBack(): ReactElement {
                   <span className="welcome-back__art" aria-hidden="true">
                     <CharacterPortrait
                       backdrop
-                      species={h.species}
+                      hero={h}
                       accent={h.appearance.accent}
-                      tier={h.tier}
-                      characterClass={h.class}
                       lit={on}
                     />
                   </span>

@@ -1531,11 +1531,16 @@
       },
       "onSuccess": {
         "goto": "behind",
-        "narration": "The seam hums, pleased, but stays shut. A line of light runs to a crack in the corner, narrow as a cat door. It feels like being shown the way by a friend.",
+        "narration": "The seam hums, pleased, but stays shut. A line of light runs to a crack in the corner, narrow as a cat door. It feels like being shown the way by a friend. Tiny sparkles drift off the frost and settle on all of you, twinkling, like a thank you.",
         "effects": [
           {
             "type": "setFlag",
             "flag": "seam_answered"
+          },
+          {
+            "type": "findLook",
+            "looks": ["aurora"],
+            "rewardId": "riftlight-hidden-glacier-rift.aurora"
           }
         ]
       },
@@ -1545,11 +1550,16 @@
       },
       "onAssisted": {
         "goto": "behind",
-        "narration": "You trace the pattern together. The seam hums, pleased, and a line of light runs to a narrow crack in the corner.",
+        "narration": "You trace the pattern together. The seam hums, pleased, and a line of light runs to a narrow crack in the corner. Tiny sparkles drift off the frost and settle on all of you, twinkling.",
         "effects": [
           {
             "type": "setFlag",
             "flag": "seam_answered"
+          },
+          {
+            "type": "findLook",
+            "looks": ["aurora"],
+            "rewardId": "riftlight-hidden-glacier-rift.aurora"
           }
         ]
       },

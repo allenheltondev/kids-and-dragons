@@ -26,7 +26,7 @@
  * her room session straight away, or not at all.
  */
 
-import { bookFieldNames, type BookKitChange, type BookKitRequest, type BookKitResponse, type JournalKit } from "@kad/shared";
+import { bookFieldNames, type BookKitChange, type BookKitRequest, type BookKitResponse, type HeroLookView, type JournalKit } from "@kad/shared";
 import { ApiError, request } from "../sync/client";
 import { loadPlayerDeviceToken } from "./persistence";
 import { useGameStore } from "./index";
@@ -122,21 +122,29 @@ function send(body: BookKitRequest, auth: { deviceToken: string } | { sessionTok
   });
 }
 
-/** Put the kit the server answered with into the saved book, so it opens offline as it now is. */
-async function saveKit(deviceToken: string, characterId: string, kit: JournalKit): Promise<void> {
+/**
+ * Put the kit (and look, docs/hero-looks.md §3.2) the server answered with
+ * into the saved book, so it opens offline as it now is.
+ */
+async function saveKit(deviceToken: string, characterId: string, kit: JournalKit, look?: HeroLookView): Promise<void> {
   try {
     const db = await import("./journal-db");
     const saved = await db.loadSavedJournal(deviceToken);
-    if (!saved?.journal.camp) return;
-    const camp = { ...saved.journal.camp, kits: { ...saved.journal.camp.kits, [characterId]: kit } };
-    await db.saveJournal({ ...saved, journal: { ...saved.journal, camp } });
+    if (!saved) return;
+    const camp = saved.journal.camp ? { ...saved.journal.camp, kits: { ...saved.journal.camp.kits, [characterId]: kit } } : undefined;
+    const heroes = look ? saved.journal.heroes.map((h) => (h.id === characterId ? { ...h, look } : h)) : saved.journal.heroes;
+    if (!camp && !look) return;
+    await db.saveJournal({ ...saved, journal: { ...saved.journal, heroes, ...(camp ? { camp } : {}) } });
   } catch {
     /* the next read with a signal saves it */
   }
 }
 
-/** Where a kit the server answered with goes: the open book's copy. */
-export type ApplyKit = (characterId: string, kit: JournalKit) => void;
+/**
+ * Where what the server answered with goes: the open book's copy. `look` is
+ * her look as it now stands, when the change named a look field (#664).
+ */
+export type ApplyKit = (characterId: string, kit: JournalKit, look?: HeroLookView) => void;
 
 let running: Promise<void> | null = null;
 let again = false;
@@ -185,8 +193,8 @@ async function drain(apply: ApplyKit): Promise<void> {
     try {
       const response = await send(bodyOf(entry), { deviceToken });
       removeQueuedKitChange(deviceToken, entry.id);
-      apply(entry.characterId, response.kit);
-      await saveKit(deviceToken, entry.characterId, response.kit);
+      apply(entry.characterId, response.kit, response.look);
+      await saveKit(deviceToken, entry.characterId, response.kit, response.look);
       const note = noteOf(response);
       setStatus({ offline: false, notes: note ? [...status.notes, note] : status.notes });
     } catch (error) {
@@ -246,7 +254,7 @@ export async function editBookKit(
   const sent = chain.then(async () => {
     try {
       const response = await send(bodyOf({ ...input, direct: true }), { sessionToken });
-      apply(input.characterId, response.kit);
+      apply(input.characterId, response.kit, response.look);
       const note = noteOf(response);
       if (note) setStatus({ notes: [...status.notes, note] });
     } finally {
