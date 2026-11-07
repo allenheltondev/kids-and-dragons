@@ -7,13 +7,20 @@ share one (a Bigfoot's shaded fur is as warm as his skin; a unicorn's hooves are
 mane). This is the hand cleaning, written down so it can be run again: per-species rules, then a
 per-painting table of hand fixes for what no rule separates (an artist's brush and eraser).
 
-    R  the main part   unicorn: her coat          bigfoot: his fur (cream body and brown mane)
-    G  the accent part unicorn: mane, forelock, tail  bigfoot: his skin (face, hands, feet)
-    B  the figure      the draft's, as drafted (the painting's alpha)
+    R  the main part     G  the accent part     B  the figure (the draft's: the painting's alpha)
 
-Never in R or G: eyes, dark outlines, horn, hooves, Bigfoot's green leaves. Both parts get a
-soft edge (a ~1px blur), clipped to the figure, and are shared out where the blurs meet so a
-pixel is never more than wholly coloured.
+    unicorn     coat                              mane, forelock, tail
+    bigfoot     fur (cream body and brown mane)   skin (face, hands, feet)
+    dragonling  scales (with belly, wing bones)   wing webbing (with its glowing marks)
+    griffin     coat (with shading and stars)     blue crest, ruff and tail tuft
+    kitsune     fur (with white tail tips)        teal tails
+    manticore   fur (with inner ears, belly)      crimson mane (with eyebrows)
+
+Never in R or G: eyes, dark outlines, and each species' painted extras (a unicorn's horn and
+hooves, Bigfoot's leaves, a dragonling's spikes and horns, a griffin's yellow wings, beak and
+talons, a kitsune's orange ruff and markings, a manticore's scorpion tail, nose and claws).
+Both parts get a soft edge (a ~1px blur), clipped to the figure, and are shared out where the
+blurs meet so a pixel is never more than wholly coloured.
 
 Usage:
     npm run art:coat-draft -- bigfoot --family base --out staging/coat-drafts
@@ -24,8 +31,8 @@ Usage:
 It writes beside each painting in assets/ unless --out is given. Then review the result on
 `npm run art:sheet -- --coat` and list the painting in assets/manifest.json -> coatMasks.paintings.
 
-Only the base family has rules yet (unicorn and Bigfoot); the class and gear waves (#668) add
-theirs to RULES and FIXES.
+Every species has base-family rules (all 24 base paintings, #667); the class and gear waves
+(#668) add theirs to RULES and FIXES.
 
 Requires: Pillow, numpy, scipy
 """
