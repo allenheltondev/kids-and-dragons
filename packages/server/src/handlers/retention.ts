@@ -24,12 +24,19 @@
  * (`repo.deleteHousehold`, `repo.deleteProfile`), never a second one.
  */
 
-import { claimOf, FORGOTTEN_NAME, parseClaim, RETENTION_CHOICES, settleChapterEndVote } from "@kad/shared";
+import {
+  claimOf,
+  DEFAULT_RETENTION_DAYS,
+  FORGOTTEN_NAME,
+  parseClaim,
+  RETENTION_CHOICES,
+  settleChapterEndVote,
+} from "@kad/shared";
 import type { Character, Household, OrganizerHouseholdDeleted, RoomChannel, RunState } from "@kad/shared";
 import { diff } from "../json-patch.ts";
 import type { EventRecord, ForgetJob } from "../store/repository.ts";
 import { summaries } from "./account.ts";
-import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
+import { fail, iso, ok, type AccountDirectory, type HandlerDeps, type HandlerResult } from "./deps.ts";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -41,8 +48,11 @@ const FORGET_ATTEMPTS = 3;
 /** Retention sweeps per invocation; the schedule catches up, as the guest sweep's does. */
 const IDLE_BATCH = 25;
 
-/** What forgetting needs: a channel only when there are screens to tell. */
-export type ForgetDeps = Pick<HandlerDeps, "repo" | "now"> & { channel?: RoomChannel };
+/**
+ * What forgetting needs: a channel only when there are screens to tell, and
+ * the sign-in store only where a sweep may remove a grown-up's sign-in (#524).
+ */
+export type ForgetDeps = Pick<HandlerDeps, "repo" | "now"> & { channel?: RoomChannel; accounts?: AccountDirectory };
 
 type Owned = Pick<HandlerDeps, "repo" | "now"> & { channel?: RoomChannel };
 
@@ -159,42 +169,61 @@ async function forgetJob(
 // Retention
 // ---------------------------------------------------------------------------
 
-/** A window an owner may pick, or `null` for "until I delete them". */
-export function retentionChoice(raw: unknown): HandlerResult<number | null> {
-  if (raw === null) return ok(null);
+/**
+ * A window an owner may pick (#252). There is no `null`, "until I delete
+ * them", any more (#524): a kept household keeps a kid who stops playing for
+ * a year at most.
+ */
+export function retentionChoice(raw: unknown): HandlerResult<number> {
   if (typeof raw === "number" && (RETENTION_CHOICES as readonly number[]).includes(raw)) return ok(raw);
-  return fail("ILLEGAL", `expected { retentionDays: null | ${RETENTION_CHOICES.join(" | ")} }`);
+  return fail("ILLEGAL", `expected { retentionDays: ${RETENTION_CHOICES.join(" | ")} }`);
+}
+
+/** The window a kept household keeps an idle kid for: its owner's choice, or the default (#524). */
+export function retentionDaysOf(household: Household): number {
+  return household.retentionDays ?? DEFAULT_RETENTION_DAYS;
 }
 
 /**
  * Set how long a kid who stops playing is kept (#252), and put every kid in
- * the household on that clock. A kid with no `lastPlayedAt` (nobody has
- * joined a room as her since this existed) starts it now, so choosing a
- * window never deletes anybody on the spot.
+ * the household on that clock.
  */
 export async function setRetention(
   household: Household,
-  retentionDays: number | null,
+  retentionDays: number,
   deps: Pick<HandlerDeps, "repo" | "now">,
 ): Promise<Household> {
   // Re-read for the write, as a rename does, so a claim or founding since is kept.
   const current = (await deps.repo.getHousehold(household.id)) ?? household;
-  const { retentionDays: _old, ...rest } = current;
-  const next: Household = retentionDays === null ? rest : { ...rest, retentionDays };
+  const next: Household = { ...current, retentionDays };
   await deps.repo.putHousehold(next);
-
-  const now = iso(deps.now());
-  for (const player of await deps.repo.listPlayers(household.id)) {
-    const last = (await deps.repo.getLastPlayed(household.id, player.id)) ?? now;
-    await deps.repo.touchPlayer(household.id, player.id, last, keepUntil(next, last));
-  }
+  await startClocks(next, deps);
   return next;
 }
 
-/** When a kid who last played at `lastPlayedAt` may be forgotten, or `null` if never. */
+/**
+ * Put every kid of a kept household on its retention clock (#524): a window
+ * changed, or a guest household was just kept by signing in. A kid with no
+ * `lastPlayedAt` (nobody has joined a room as her since this existed) starts
+ * it now, so this never deletes anybody on the spot. A guest household's kids
+ * come off the clock: the guest sweep takes the whole household instead.
+ */
+export async function startClocks(household: Household, deps: Pick<HandlerDeps, "repo" | "now">): Promise<void> {
+  const now = iso(deps.now());
+  for (const player of await deps.repo.listPlayers(household.id)) {
+    const last = (await deps.repo.getLastPlayed(household.id, player.id)) ?? now;
+    await deps.repo.touchPlayer(household.id, player.id, last, keepUntil(household, last));
+  }
+}
+
+/**
+ * When a kid who last played at `lastPlayedAt` may be forgotten, or `null`
+ * for a guest household's kid, whom the guest sweep takes with her household.
+ * A kept household's kid always has a date (#524).
+ */
 export function keepUntil(household: Household, lastPlayedAt: string): string | null {
-  if (household.guest || household.retentionDays === undefined) return null;
-  return iso(Date.parse(lastPlayedAt) + household.retentionDays * DAY_MS);
+  if (household.guest) return null;
+  return iso(Date.parse(lastPlayedAt) + retentionDaysOf(household) * DAY_MS);
 }
 
 /**
@@ -226,6 +255,10 @@ export interface IdleSweepResult {
   /** Played since the index said so, or the household's window changed: re-filed, not deleted. */
   kept: string[];
   failed: { playerId: string; reason: string }[];
+  /** Kept households left with no kids by this sweep, deleted with them (#524). */
+  households: string[];
+  /** Grown-ups' sign-ins removed because the household deleted was the last they had (#524). */
+  accounts: number;
 }
 
 /**
@@ -237,7 +270,7 @@ export interface IdleSweepResult {
  */
 export async function sweepIdleProfiles(deps: ForgetDeps): Promise<IdleSweepResult> {
   const nowMs = deps.now();
-  const result: IdleSweepResult = { deleted: [], kept: [], failed: [] };
+  const result: IdleSweepResult = { deleted: [], kept: [], failed: [], households: [], accounts: 0 };
   for (const idle of await deps.repo.listIdlePlayers(iso(nowMs), IDLE_BATCH)) {
     try {
       const household = await deps.repo.getHousehold(idle.householdId);
@@ -250,7 +283,7 @@ export async function sweepIdleProfiles(deps: ForgetDeps): Promise<IdleSweepResu
         result.kept.push(idle.playerId);
         continue;
       }
-      const cutoff = iso(nowMs - (household.retentionDays ?? 0) * DAY_MS);
+      const cutoff = iso(nowMs - retentionDaysOf(household) * DAY_MS);
       const job = { ...(await forgetJob(idle.playerId, idle.householdId, "idle", deps)), idleBefore: cutoff };
       await deps.repo.putForget(job);
       if (!(await deps.repo.deleteProfile(idle.householdId, idle.playerId, cutoff))) {
@@ -260,6 +293,11 @@ export async function sweepIdleProfiles(deps: ForgetDeps): Promise<IdleSweepResu
       }
       await forgetEverywhere([job], deps);
       result.deleted.push(idle.playerId);
+      const retired = await retireIfEmpty(household, deps);
+      if (retired) {
+        result.households.push(household.id);
+        result.accounts += retired.accounts;
+      }
     } catch (err) {
       const reason = err instanceof Error ? err.message : String(err);
       console.error(`[sweep] could not forget ${idle.playerId}: ${reason}`);
@@ -267,6 +305,39 @@ export async function sweepIdleProfiles(deps: ForgetDeps): Promise<IdleSweepResu
     }
   }
   return result;
+}
+
+/**
+ * A kept household the idle sweep just took the last kid from (#524): there
+ * is nobody left for it to keep, so it goes too, with its saves, its owners'
+ * pointers and, for each grown-up who has no other household, their sign-in.
+ * A household with any kid left, or that one was added to meanwhile, stays.
+ * `null` when it stayed.
+ *
+ * Only here, not on an owner's own delete: an owner who deletes a household
+ * is signed in at that moment and may start another, so their sign-in is
+ * theirs to keep.
+ */
+async function retireIfEmpty(household: Household, deps: ForgetDeps): Promise<{ accounts: number } | null> {
+  if (household.guest) return null;
+  if ((await deps.repo.listPlayers(household.id)).length > 0) return null;
+  const owners = new Set((await deps.repo.listOwners(household.id)).map((o) => o.cognitoSub));
+  if (household.ownerSub) owners.add(household.ownerSub);
+  if (!(await deps.repo.deleteHousehold(household.id))) return null;
+  console.log(`[sweep] deleted kept household ${household.id}: its last kid was idle past its window`);
+
+  let accounts = 0;
+  for (const sub of owners) {
+    if ((await deps.repo.listHouseholdsForAccount(sub)).length > 0) continue;
+    if (!deps.accounts) continue;
+    try {
+      await deps.accounts.deleteAccount(sub);
+      accounts++;
+    } catch (err) {
+      console.error(`[sweep] could not delete the sign-in of an owner of ${household.id}:`, err);
+    }
+  }
+  return { accounts };
 }
 
 // ---------------------------------------------------------------------------

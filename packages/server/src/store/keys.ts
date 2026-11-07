@@ -227,8 +227,9 @@ export const GSI1_RUN = (runId: string) => `RUN#${runId}`;
 export const GSI1_GUEST = "GUEST";
 
 /**
- * GSI1: every kid in a household whose owner set a retention window (#252),
- * sorted by when she may be forgotten if she does not play again. On the
+ * GSI1: every kid in a kept household (#252; every kept household has a
+ * window since #524, a year unless its owner chose less), sorted by when she
+ * may be forgotten if she does not play again. On the
  * `PLAYER#` row, as top-level bookkeeping beside `lastPlayedAt`, never in
  * `data`, so a `putPlayer` from an older read cannot move it. A candidate
  * list only: the sweeper re-reads the household's window before it deletes.

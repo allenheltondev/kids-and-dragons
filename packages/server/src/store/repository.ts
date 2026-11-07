@@ -355,6 +355,25 @@ export interface EventRecord extends Omit<ServerMessage, "discovered"> {
 }
 
 /**
+ * How long an event row is kept after the store writes it (#524): 30 days,
+ * on the table's `ttl`. Nothing reads an old event. The log is only a
+ * reconnect's catch-up (at most `MAX_REPLAY_EVENTS`, with a snapshot when
+ * the run's events are not all there, `handlers/state.ts`) and what a
+ * forget scrubs. A run's save is its `STATE` row, which is untouched, so a
+ * game stopped to resume another day resumes all the same. Counted from the
+ * write, not from the event's `at`, and kept when a forget rewrites the row.
+ */
+export const EVENT_TTL_SECONDS = 30 * 24 * 60 * 60;
+
+/**
+ * How long a push subscription is kept after it was last confirmed (#524):
+ * 30 days on the table's `ttl`, renewed when a push to it is accepted
+ * (`touchPushSubscription`) or the phone subscribes again, which the push
+ * switch does whenever it is shown.
+ */
+export const PUSH_SUBSCRIPTION_TTL_SECONDS = 30 * 24 * 60 * 60;
+
+/**
  * One write to a hero's row under her claim (#282, architecture §4.5, "One
  * game at a time per hero: the claim"). The row lands only if it still stands
  * as it was read: its `version` is `expectedVersion` and its claim
@@ -833,7 +852,8 @@ export interface GameRepository {
   /**
    * Put an event back with its contents changed and its seq unchanged: a
    * deleted kid's names taken out of a table's log (#252). Only an event
-   * that is there; the log never grows by this.
+   * that is there; the log never grows by this, and the row keeps the
+   * expiry it was written with (`EVENT_TTL_SECONDS`).
    */
   rewriteEvent(event: EventRecord): Promise<void>;
   /**
@@ -1060,10 +1080,17 @@ export interface GameRepository {
   // --- push subscriptions (#466) ---------------------------------------------
   /**
    * Write (or replace) the subscription for one of a kid's own phones. One per
-   * phone: a phone that subscribes again replaces what it had.
+   * phone: a phone that subscribes again replaces what it had. Kept for
+   * `PUSH_SUBSCRIPTION_TTL_SECONDS` from now (#524).
    */
   putPushSubscription(subscription: PushSubscriptionRecord): Promise<void>;
-  /** Every phone of hers that takes pushes. Empty when none does. */
+  /**
+   * A push to this phone was accepted (#524): it is kept another
+   * `PUSH_SUBSCRIPTION_TTL_SECONDS` from now. A missing one is a no-op; this
+   * never brings one back.
+   */
+  touchPushSubscription(playerId: string, deviceId: string): Promise<void>;
+  /** Every phone of hers that takes pushes and has not expired. Empty when none does. */
   listPushSubscriptions(playerId: string): Promise<PushSubscriptionRecord[]>;
   /** The phone stops taking pushes. A missing one is a no-op. */
   deletePushSubscription(playerId: string, deviceId: string): Promise<void>;

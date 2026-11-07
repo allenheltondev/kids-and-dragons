@@ -2421,6 +2421,16 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
         await repo.deletePushSubscription("p_9", "d_2");
         expect((await repo.listPushSubscriptions("p_1")).map((s) => s.deviceId)).toEqual(["d_2"]);
       });
+
+      it("renews one that is there, and never brings back one that is not (#524)", async () => {
+        await repo.putPushSubscription(pushSubscription("p_1", "d_1"));
+        await repo.touchPushSubscription("p_1", "d_1");
+        expect(await repo.listPushSubscriptions("p_1")).toEqual([pushSubscription("p_1", "d_1")]);
+        await repo.touchPushSubscription("p_1", "d_nope");
+        await repo.deletePushSubscription("p_1", "d_1");
+        await repo.touchPushSubscription("p_1", "d_1");
+        expect(await repo.listPushSubscriptions("p_1")).toEqual([]);
+      });
     });
   });
 }

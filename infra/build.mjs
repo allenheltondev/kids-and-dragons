@@ -38,6 +38,8 @@ const FUNCTIONS = [
   { name: "sweep", entry: "packages/server/src/lambda/sweep.ts" },
   // "It's your turn" pushes (#466), invoked by the API asynchronously.
   { name: "push-sender", entry: "packages/server/src/lambda/push-sender.ts" },
+  // Monthly: deletes Lambda log streams older than 30 days (#524).
+  { name: "log-sweep", entry: "packages/server/src/lambda/log-sweep.ts" },
 ];
 
 await rm(OUT, { recursive: true, force: true });

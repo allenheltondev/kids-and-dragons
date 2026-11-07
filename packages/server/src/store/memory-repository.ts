@@ -61,6 +61,7 @@ import type {
   RunRecord,
   TransferCodeRecord,
 } from "./repository.ts";
+import { EVENT_TTL_SECONDS, PUSH_SUBSCRIPTION_TTL_SECONDS } from "./repository.ts";
 import { collectMove, fieldGuideItem, planMove } from "./profile-move.ts";
 import {
   ACCT,
@@ -234,6 +235,11 @@ export class MemoryRepository implements GameRepository {
 
   private isExpired(item: TableItem): boolean {
     return item.ttl !== undefined && item.ttl * 1000 <= this.now();
+  }
+
+  /** Epoch seconds `seconds` from now, for a row's `ttl`. */
+  private expiresIn(seconds: number): number {
+    return Math.floor(this.now() / 1000) + seconds;
   }
 
   private persist(): void {
@@ -463,8 +469,10 @@ export class MemoryRepository implements GameRepository {
   }
 
   async rewriteEvent(event: EventRecord): Promise<void> {
-    if (!this.get(RUN(event.runId), EVT_SK(event.seq))) return;
-    this.put({ PK: RUN(event.runId), SK: EVT_SK(event.seq), entity: "event", data: event });
+    const row = this.get(RUN(event.runId), EVT_SK(event.seq));
+    if (!row) return;
+    // The row keeps the expiry it was written with (#524), as DynamoDB's update does.
+    this.put({ PK: RUN(event.runId), SK: EVT_SK(event.seq), ...(row.ttl !== undefined ? { ttl: row.ttl } : {}), entity: "event", data: event });
   }
 
   async forgetFinder(householdId: string, playerId: string): Promise<number> {
@@ -993,7 +1001,7 @@ export class MemoryRepository implements GameRepository {
 
     // No await from here through the final row: this is the local equivalent of
     // one TransactWriteItems, including across two different run partitions.
-    this.put({ PK: RUN(runId), SK: EVT_SK(event.seq), entity: "event", data: event });
+    this.put({ PK: RUN(runId), SK: EVT_SK(event.seq), ttl: this.expiresIn(EVENT_TTL_SECONDS), entity: "event", data: event });
     this.put({ PK: RUN(runId), SK: STATE, entity: "state", data: state });
     if (input.founder && founding) {
       const { awaitingFounder: _taken, ...rest } = founding.data as Household;
@@ -1166,9 +1174,16 @@ export class MemoryRepository implements GameRepository {
     this.put({
       PK: PUSH(subscription.playerId),
       SK: DEVICE_SK(subscription.deviceId),
+      ttl: this.expiresIn(PUSH_SUBSCRIPTION_TTL_SECONDS),
       entity: "push-subscription",
       data: subscription,
     });
+  }
+
+  async touchPushSubscription(playerId: string, deviceId: string): Promise<void> {
+    const row = this.get(PUSH(playerId), DEVICE_SK(deviceId));
+    if (!row) return;
+    this.put({ ...row, ttl: this.expiresIn(PUSH_SUBSCRIPTION_TTL_SECONDS) });
   }
 
   async listPushSubscriptions(playerId: string): Promise<PushSubscriptionRecord[]> {

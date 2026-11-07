@@ -546,10 +546,10 @@ export interface Household {
   awaitingFounder?: true;
   /**
    * How long a kid who stops playing is kept, in days (#252), set by a
-   * signed-in owner. Absent is the behavior from before it existed: a kept
-   * household keeps every kid until an owner deletes one. Only a kept
-   * household has it; a guest household is swept whole a week after it last
-   * played (`expiresAt`), whoever is in it.
+   * signed-in owner. Absent means the default, `DEFAULT_RETENTION_DAYS`
+   * (365, #524): there is no "keep forever". Only a kept household has it; a
+   * guest household is swept whole a week after it last played
+   * (`expiresAt`), whoever is in it.
    */
   retentionDays?: number;
 }

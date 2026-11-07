@@ -29,6 +29,7 @@ import type { DeviceIdentity } from "../identity.ts";
 import type { GuestRenewal } from "../store/repository.ts";
 import { newId } from "../ids.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
+import { keepUntil, startClocks } from "./retention.ts";
 
 /**
  * How long an unclaimed household survives. Long enough that "we'll play again
@@ -189,11 +190,16 @@ export function vetTypedName(raw: unknown, fallback: string): HandlerResult<stri
  * A player profile and nothing else: no device is bound to it. `addPlayer`
  * binds the phone that asked; a kid added on a shared tablet gets no binding
  * at all (#250).
+ *
+ * A kid added to a kept household starts on its retention clock at once
+ * (#524), counted from now, so one added and never played with is not kept
+ * forever. A guest household's kid has no clock: the guest sweep takes her
+ * with the household.
  */
 export async function createProfile(
   householdId: string,
   displayName: string,
-  deps: Pick<AccountDeps, "repo">,
+  deps: Pick<AccountDeps, "repo" | "now">,
 ): Promise<PlayerProfile> {
   if (isBlockedName(displayName)) throw new Error("createProfile was handed a name the filter refuses");
   const existing = await deps.repo.listPlayers(householdId);
@@ -204,6 +210,11 @@ export async function createProfile(
     color: PLAYER_COLORS[existing.length % PLAYER_COLORS.length] ?? PLAYER_COLORS[0],
   };
   await deps.repo.putPlayer(player);
+  const household = await deps.repo.getHousehold(householdId);
+  if (household && !household.guest) {
+    const now = iso(deps.now());
+    await deps.repo.touchPlayer(householdId, player.id, now, keepUntil(household, now));
+  }
   return player;
 }
 
@@ -345,7 +356,18 @@ export async function linkAccount(
         }
       } else {
         const claimed = await deps.repo.claimHousehold(current.id, input.cognitoSub, input.principal.deviceId);
-        if (claimed) return ok(await describe(current.id, true, true, input.cognitoSub, deps));
+        if (claimed) {
+          // Kept now: its kids leave the guest sweep for the retention clock
+          // (#524). Never fails the claim, which has landed: a kid this misses
+          // is filed the next time she plays (`notePlayed`).
+          try {
+            const kept = await deps.repo.getHousehold(current.id);
+            if (kept) await startClocks(kept, deps);
+          } catch (err) {
+            console.error(`linkAccount: could not start the retention clocks of ${current.id}:`, err);
+          }
+          return ok(await describe(current.id, true, true, input.cognitoSub, deps));
+        }
       }
       // Someone else's already, or not this device's to claim. Fall through to
       // this account's own household.

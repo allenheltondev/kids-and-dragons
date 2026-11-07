@@ -76,6 +76,7 @@ import type {
   RunRecord,
   TransferCodeRecord,
 } from "./repository.ts";
+import { EVENT_TTL_SECONDS, PUSH_SUBSCRIPTION_TTL_SECONDS } from "./repository.ts";
 import { collectMove, fieldGuideItem, planMove, transferKey, type MoveStep, type StoredRow } from "./profile-move.ts";
 import {
   ACCT,
@@ -130,7 +131,12 @@ interface TableItem {
   SK: string;
   GSI1PK?: string;
   GSI1SK?: string;
-  /** Epoch seconds, DynamoDB's TTL attribute. Only rooms, code-miss windows, invites, transfer codes and moved-device forwards carry it. */
+  /**
+   * Epoch seconds, DynamoDB's TTL attribute. Rooms, code-miss windows,
+   * invites, transfer codes, moved-device forwards and presence carry it, and
+   * since #524 event rows and push subscriptions: rows whose expiry nothing
+   * else has to follow.
+   */
   ttl?: number;
   /** ISO. On a `PLAYER#` row: when she last joined a room (#252). Bookkeeping beside `data`, like `sweeping`. */
   lastPlayedAt?: string;
@@ -682,11 +688,15 @@ export class DynamoRepository implements GameRepository {
 
   async rewriteEvent(event: EventRecord): Promise<void> {
     try {
+      // An update, not a put: the row keeps the expiry it was written with (#524).
       await this.doc.send(
-        new PutCommand({
+        new UpdateCommand({
           TableName: this.table,
-          Item: { PK: RUN(event.runId), SK: EVT_SK(event.seq), entity: "event", data: event } satisfies TableItem,
+          Key: { PK: RUN(event.runId), SK: EVT_SK(event.seq) },
+          UpdateExpression: "SET #d = :data",
           ConditionExpression: "attribute_exists(SK)",
+          ExpressionAttributeNames: { "#d": "data" },
+          ExpressionAttributeValues: { ":data": event },
         }),
       );
     } catch (err) {
@@ -1567,6 +1577,8 @@ export class DynamoRepository implements GameRepository {
                 Item: {
                   PK: RUN(runId),
                   SK: EVT_SK(event.seq),
+                  // Deleted 30 days on (#524); nothing reads an old event.
+                  ttl: this.expiresIn(EVENT_TTL_SECONDS),
                   entity: "event",
                   data: event,
                 } satisfies TableItem,
@@ -1703,10 +1715,17 @@ export class DynamoRepository implements GameRepository {
         // A key condition cannot mix `SK > :lo` with `begins_with`, so the
         // event range is expressed by its bounds — see EVT_SK_MAX.
         KeyConditionExpression: "PK = :pk AND SK BETWEEN :lo AND :hi",
+        // An expired event the TTL sweep has not reached yet is not in the
+        // log (#524): a reconnect that misses one gets a snapshot
+        // (`handlers/state.ts`). A filter rather than a check here, so a page
+        // is still `limit` long when there are more: `query` pages on.
+        FilterExpression: "attribute_not_exists(#ttl) OR #ttl > :now",
+        ExpressionAttributeNames: { "#ttl": "ttl" },
         ExpressionAttributeValues: {
           ":pk": RUN(runId),
           ":lo": EVT_SK(sinceSeq + 1),
           ":hi": EVT_SK_MAX,
+          ":now": Math.floor(this.now() / 1000),
         },
         ScanIndexForward: true,
       },
@@ -1957,14 +1976,43 @@ export class DynamoRepository implements GameRepository {
     await this.put({
       PK: PUSH(subscription.playerId),
       SK: DEVICE_SK(subscription.deviceId),
+      ttl: this.expiresIn(PUSH_SUBSCRIPTION_TTL_SECONDS),
       entity: "push-subscription",
       data: subscription,
     });
   }
 
+  async touchPushSubscription(playerId: string, deviceId: string): Promise<void> {
+    try {
+      await this.doc.send(
+        new UpdateCommand({
+          TableName: this.table,
+          Key: { PK: PUSH(playerId), SK: DEVICE_SK(deviceId) },
+          UpdateExpression: "SET #ttl = :ttl",
+          ConditionExpression: "attribute_exists(PK)",
+          ExpressionAttributeNames: { "#ttl": "ttl" },
+          ExpressionAttributeValues: { ":ttl": this.expiresIn(PUSH_SUBSCRIPTION_TTL_SECONDS) },
+        }),
+      );
+    } catch (err) {
+      // Unsubscribed or forgotten meanwhile: it stays gone.
+      if (!isConditionalFailure(err)) throw err;
+    }
+  }
+
   async listPushSubscriptions(playerId: string): Promise<PushSubscriptionRecord[]> {
     const items = await this.partition(PUSH(playerId), PREFIX.device);
-    return items.map((i) => i.data as PushSubscriptionRecord);
+    return items.filter((i) => this.live(i)).map((i) => i.data as PushSubscriptionRecord);
+  }
+
+  /** Epoch seconds `seconds` from now, for a row's `ttl`. */
+  private expiresIn(seconds: number): number {
+    return Math.floor(this.now() / 1000) + seconds;
+  }
+
+  /** False for a row whose `ttl` has passed and that DynamoDB has not deleted yet. */
+  private live(item: TableItem): boolean {
+    return item.ttl === undefined || item.ttl * 1000 > this.now();
   }
 
   async deletePushSubscription(playerId: string, deviceId: string): Promise<void> {

@@ -759,10 +759,11 @@ export interface OrganizerHouseholdView {
   owners: OrganizerOwner[];
   players: OrganizerPlayer[];
   /**
-   * How long a kid who stops playing is kept, in days (#252), or `null`:
-   * until an owner deletes them, which is the default.
+   * How long a kid who stops playing is kept, in days (#252): one of
+   * `RETENTION_CHOICES`, `DEFAULT_RETENTION_DAYS` unless an owner chose
+   * another (#524).
    */
-  retentionDays: number | null;
+  retentionDays: number;
   /**
    * Answering a delete (#252): the kid is gone from here, but another
    * household's game or Field Guide still says her name. The cleanup is
@@ -772,11 +773,19 @@ export interface OrganizerHouseholdView {
 }
 
 /**
- * The retention windows an owner may pick (#252), in days, beside "until I
- * delete them" (`null`). The shortest is a month: anything less would forget a
- * kid who missed two club meetings.
+ * The retention windows an owner may pick (#252), in days. The shortest is a
+ * month: anything less would forget a kid who missed two club meetings.
+ * There is no "until I delete them" (#524): kids' data may not be kept
+ * indefinitely, so the longest is a year, which is also the default.
  */
 export const RETENTION_CHOICES = [30, 90, 180, 365] as const;
+
+/**
+ * How long a kept household keeps a kid who stops playing when its owner has
+ * not chosen (#524, owner decision 2026-10-27): a year, counted per kid from
+ * the last time she played, or from when she was added if she never has.
+ */
+export const DEFAULT_RETENTION_DAYS = 365;
 
 /**
  * What a deleted kid is called in what other people keep (#252): her seat

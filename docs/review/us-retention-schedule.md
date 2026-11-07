@@ -1,9 +1,9 @@
 # Retention schedule (#524, part of #320)
 
-Dated 2026-10-27. Status: **proposal. Nothing in this file is enforced yet.** The "Today" column is
-read from the code; the "Proposed" column is a suggestion from what each record is for, and the
-owner has not approved it. This is an engineering document, not legal advice, and the rule
-citations in [us-coppa-data-consent.md](./us-coppa-data-consent.md) are still unverified.
+Dated 2026-10-27, updated 2026-11-07. Status: **enforced in code for the rows marked "Enforced"**
+(branch `privacy/retention-524`); the rest are as they were. Not yet checked against the deployed
+account (see the end). This is an engineering document, not legal advice, and the rule citations in
+[us-coppa-data-consent.md](./us-coppa-data-consent.md) are still unverified.
 
 The rule's idea, as the author understands it and **unverified**, is that child data is kept only
 as long as reasonably necessary for the purpose it was collected for, with a written policy and a
@@ -12,76 +12,102 @@ names one. Where the purpose is a guess, the row says so.
 
 ## Schedule
 
-"Idle" means since the kid, or anyone in the household, last played. "Swept" means the daily
-sweeper (`lambda/sweep.ts`, `GuestSweepSchedule`, runs every 24 hours) deletes the DynamoDB rows.
+"Idle" means since **that kid** last joined a room (`notePlayed`), counted per kid (owner decision
+2026-11-07): siblings who still play do not keep a kid who stopped. A kid who was added and never
+played counts from when she was added (`createProfile`), or from when her household was kept by
+signing in (`linkAccount` → `startClocks`). "Swept" means the daily sweeper (`lambda/sweep.ts`,
+`GuestSweepSchedule`, every 24 hours, 25 per batch) deletes the DynamoDB rows. "TTL" means the row
+carries the table's `ttl` and DynamoDB deletes it, normally within a few days of the time.
 
-| Record | Purpose | Today | Proposed | Disposal |
+| Record | Purpose | Retention | Disposal | State |
 | --- | --- | --- | --- | --- |
-| Guest household, with its kids, heroes, runs, devices, field guide | A family keeps playing across the week without signing in | 7 days after last play, renewed whenever a room opens (`GUEST_HOUSEHOLD_TTL_MS`) | **No change: 7 days idle** | Swept; whole household deleted |
-| Kept household (a grown-up signed in) | Heroes continue across a campaign, which takes weeks, and across breaks | No limit | **Deleted 365 days after anyone last played**; owner may shorten to 30, 90 or 180; no "never" | Swept; whole household, owner rows and account pointer deleted |
-| A kid who stops playing, in a kept household | Same | Kid kept until the owner deletes her, or for the 30/90/180/365 days the owner chose (default: never) | **Default 365 days idle**, owner may shorten; same options minus "never" | Existing idle sweep (`retention.ts`), which also scrubs her name from other tables' saves |
-| Hero (character row) | The hero's progress | Lives with the kid | Same as her | Deleted with her |
-| Saved game state, chapter progress | Pick a game up another day | Lives with the household | Same as the household | Deleted with the household |
-| Event log of a **finished** run (`EVT#` rows) | Let a phone that dropped catch up mid-run | Lives with the household | **30 days after the run ends**, if nothing else reads it (not yet checked: recaps, journal, "story so far") | Delete rows; keep run summary |
-| Event log of a run in progress | Same | Lives with the household | Same as the household | Deleted with the household |
-| Room, presence | Run a live table | 6 hours | **No change** | DynamoDB TTL |
-| Device binding (id, kind, user agent, last seen) | Recognize a returning phone; let a grown-up tell tablets apart | With the household | With the household. **Stop storing user agent for visitors** if option B is chosen (#522) | Deleted with the household |
-| Device login token | Stay signed in to a device | 30 days, renewed after 15 | **No change** | Expires |
-| Visit rows (`VISIT#`) | Find a kid's saves at other tables so deleting her can scrub them | Until she or the visited household is deleted | **No change** | Deleted with her |
-| Forget job (`FORGET#`) | Finish a scrub that failed part-way | Until every table is clean; retried daily | **No change**, plus an alert if one is older than 7 days | Deleted when done |
-| Push subscription | "It's your turn" notice | Until switched off, or the kid or device is deleted | **Also delete after 90 days with no successful send** | Deleted |
-| Invite, transfer, pairing, screen codes | One-time actions (a screen code lets a second TV show a room) | 3 days, 1 day, 10 minutes, 10 minutes | **No change** | DynamoDB TTL |
-| Wrong-code counters | Stop guessing room codes | 15-minute windows, about half an hour kept | **No change** | DynamoDB TTL |
-| Session timing marks | Operator measures how long chapters take | 180 days, no player id | **180 days** is a guess at a useful sample size; **90 if you cannot justify more**. Write the reason here. | DynamoDB TTL |
-| Cognito owner (parent email, passkeys) | Let a grown-up sign in and manage the household | Until the household is deleted | Deleted with the household. **Check that household deletion removes the Cognito user**: not verified in the code | Cognito `AdminDeleteUser` (confirm it is called) |
-| Lambda and API logs (CloudWatch) | Debug and operate | Unknown; set by a utility outside this repo | **30 days**, declared in the template once the real setting is known | Log group retention |
-| Backups and exports | Disaster recovery | Point-in-time recovery is **off** by owner decision (`template.yaml`); other backups unknown | **None** unless the owner decides otherwise; if any exist, they expire within 35 days | To verify |
+| Guest household, with its kids, heroes, runs, devices, field guide | A family keeps playing across the week without signing in | 7 days after last play, renewed whenever a room opens (`GUEST_HOUSEHOLD_TTL_MS`) | Swept; whole household deleted | Unchanged |
+| A kid in a kept household, with her heroes, phones, visits, push subscriptions | Heroes continue across a campaign, which takes weeks, and across breaks | **365 days idle** (`DEFAULT_RETENTION_DAYS`), or the 30, 90 or 180 days an owner chose. No "never": `retentionChoice` refuses `null` | Idle sweep (`sweepIdleProfiles`), which also scrubs her names from other tables' saves | **Enforced** |
+| Kept household (rows, saves, field guide, camp, owner rows, account pointers) | Same | **Deleted when the idle sweep removes its last kid** (`retireIfEmpty`). A household with any kid left stays | Swept with the last kid; `repo.deleteHousehold` | **Enforced** |
+| Cognito owner (parent email, passkeys) | Let a grown-up sign in and manage the household | **Deleted with a kept household the idle sweep empties**, if that grown-up owns no other household (`CognitoDirectory`, `AdminDeleteUser` by `sub`) | Cognito `AdminDeleteUser` | **Enforced for the sweep.** See gaps: not on an owner's own delete |
+| Hero (character row) | The hero's progress | Lives with the kid | Deleted with her | Unchanged |
+| Saved game state, chapter progress | Pick a game up another day | Lives with the household | Deleted with the household | Unchanged |
+| Event log (`EVT#` rows), any run | Let a phone that dropped catch up mid-run; nothing else reads it (checked 2026-11-07, below) | **30 days after the store writes each event** (`EVENT_TTL_SECONDS`); a forget's rewrite keeps the original expiry | TTL; expired rows are also filtered out of reads | **Enforced** |
+| Room, presence | Run a live table | 6 hours | TTL | Unchanged |
+| Device binding (id, kind, user agent, last seen) | Recognize a returning phone; let a grown-up tell tablets apart | With the household | Deleted with the household or the kid | Unchanged (user agent depends on #522) |
+| Device login token | Stay signed in to a device | 30 days, renewed after 15 | Expires | Unchanged |
+| Visit rows (`VISIT#`) | Find a kid's saves at other tables so deleting her can scrub them | Until she or the visited household is deleted | Deleted with her | Unchanged |
+| Forget job (`FORGET#`) | Finish a scrub that failed part-way | Until every table is clean; retried daily | Deleted when done | Unchanged (no alert: owner decision 2026-11-07) |
+| Push subscription | "It's your turn" notice | **30 days after it was last confirmed**: a push the service accepted (`touchPushSubscription`), or the phone subscribing again, which the push switch does whenever it is shown. Also until switched off, or the kid or device is deleted | TTL; expired rows are also filtered out of reads | **Enforced** |
+| Invite, transfer, pairing, screen codes | One-time actions | 3 days, 1 day, 10 minutes, 10 minutes | TTL | Unchanged |
+| Wrong-code counters | Stop guessing room codes | 15-minute windows, about half an hour kept | TTL | Unchanged |
+| Session timing marks | Operator measures how long chapters take | 180 days, no player id | TTL | Unchanged; 180 vs 90 still undecided |
+| Lambda logs (`/aws/lambda/<stack>-*`) | Debug and operate | **A stream is deleted at the first monthly sweep after its newest line is 30 days old: at most about two months** | `LogSweepFunction` (`lambda/log-sweep.ts`, `LogSweepSchedule`, 04:00 UTC on the 1st), `DeleteLogStream`. No `RetentionInDays`: owner decision, see below | **Enforced** once deployed |
+| Backups and exports | Disaster recovery | Point-in-time recovery is **off** by owner decision (`template.yaml`); other backups unknown | To verify | Unchanged |
 
-## What a family would see if this is adopted
+## What a family sees
 
-- A kept household that nobody plays in for a year is deleted, with its heroes. **There is no
-  warning email** (declined 2026-10-27), so the public pages must say this clearly.
-- The "until I delete them" choice goes away.
-- Nothing changes for a household that is playing.
+- A kid who stops playing in a kept household is deleted, with her heroes, a year after she last
+  played (or the shorter window chosen). When the last kid goes, the household and the sign-in of
+  each grown-up who runs nothing else go too. **There is no warning email** (declined 2026-10-27);
+  the policy and "What we store" say so.
+- The "until a grown-up deletes them" choice is gone from Run a group.
+- Nothing changes for a kid who keeps playing.
 
-## Things this schedule cannot promise yet
+## Who reads old events (checked 2026-11-07)
 
-- **Whether the sweeper keeps up.** It deletes 25 households per run. If a run fails the batch
-  waits a day; no alarm was found in the code or template. Needs a failure alarm and a backlog metric.
-- **Cross-table cleanup.** A deleted kid is scrubbed from other tables' saves by forget jobs,
-  retried daily; this audit found no attempt limit and no alert in the code. An old job would mean her name is still in
-  someone else's game.
-- **Visitor re-credit.** A kid who played at another table keeps that table's save naming her
-  until it is scrubbed. The schedule above depends on the scrub working.
+Only two code paths read `EVT#` rows (`repo.listEvents`):
+
+- **Reconnect catch-up** (`handlers/state.ts`, `getState` with `sinceSeq`): replays at most
+  `MAX_REPLAY_EVENTS` (50) and returns a full snapshot when the events are not all there. A missing
+  event degrades to a snapshot.
+- **Forgetting a kid** (`retention.ts`, `forgetInLog`): scrubs her names from each event. An event
+  already gone has nothing to scrub; `rewriteEvent` is conditional on the row existing.
+
+The journal, the adventure book's crew backfill, save and resume, campaign completion and the
+"later campaigns need Gemfall" check, characters, the Field Guide and the camp all read the `STATE`
+row or their own records. No run has an "ended" marker (`RunRecord.status` is only ever `active`),
+which is why the expiry counts from each event's write rather than from the end of the run.
+
+## Gaps this does not close
+
+- **Kids already in a kept household with no window set** are not on the clock until they next
+  play, are added, or an owner picks a window: the index the sweep reads only holds kids with a
+  date. No backfill was written (owner decision 2026-11-07: the only such kid is the owner's own).
+- **A household that never had a kid** (an owner made a group and added nobody) is never swept: the
+  sweep only finds households through their kids.
+- **An owner who deletes a household themselves keeps their Cognito sign-in.** They are signed in at
+  that moment and may start another; deleting the sign-in under them would break Run a group. If
+  they never do, the sign-in (an email) stays. Options: a "delete my sign-in too" choice on that
+  delete, or a sweep of sign-ins that own nothing after some period. Undecided.
+- **A sign-in the sweep failed to delete is not retried.** The failure is logged
+  (`[sweep] could not delete the sign-in…`); its account pointer is already gone, so a later sweep
+  cannot find it. No alarms, by owner decision.
+- **A kept household whose last-kid delete stopped part-way** is not picked up again by the idle
+  sweep (the kid is gone, so nothing points at it). Its `sweeping` mark stays, and a forget job
+  covers only kids.
+- **Whether the sweeper keeps up.** 25 households and 25 idle kids per daily run; no alarm or backlog
+  metric (owner decision: no alarms).
+- **Log groups outside `/aws/lambda/<stack>-*`.** The stack configures no API Gateway access logs,
+  AppSync logs or CloudFront logs; if the account has any, the sweeper does not touch them.
 - **Third-party copies.** Push services and browser voices keep nothing the operator can delete
   (see [us-third-party-flows.md](./us-third-party-flows.md)).
-- **Anything legally required to be kept.** None has been identified. If counsel names one, add
-  it here with the reason.
+- **Anything legally required to be kept.** None has been identified. If counsel names one, add it
+  here with the reason.
 
-## To enforce this
+## Still to do
 
-Not done. When the numbers are approved:
-
-1. Add `retentionDays` default (365) and remove `null` from `RETENTION_CHOICES` use
-   (`shared/types/protocol.ts`, `handlers/retention.ts`, `OrganizerPanel.tsx`).
-2. Give kept households an idle expiry and extend the sweeper to delete the household, owner rows
-   and Cognito user.
-3. Add the event-log trim, after checking what reads old events.
-4. Add the pre-deletion email, if approved.
-5. Declare log retention in `infra/template.yaml` once the real setting is known.
-6. Tests: a household idle past its period is deleted with every row kind
-   (the existing `retention-stores.test.ts` and `guest-window.test.ts` are the place to extend); a
-   failed forget job is retried and alarmed; the Cognito user is gone.
-7. Update the public "What we store" page and the policy (#523), which currently say the household
-   is kept "until a grown-up deletes it".
-8. Check the real account for logs, backups and exports, and record dated evidence here.
+1. Deploy, after redeploying the deploy-role stack (`infra/github-oidc.yaml`), which now allows the
+   `kad-log-sweep-<stage>` schedule.
+2. Check the real account for log groups, their current retention, backups and exports, and record
+   dated evidence here (#525).
+3. Decide the owner-deleted sign-in gap above.
 
 ## Decision record
 
 | Date | Decision | By |
 | --- | --- | --- |
-| 2026-10-27 | Proposed the schedule above. | Claude |
+| 2026-10-27 | Proposed the schedule. | Claude |
 | 2026-10-27 | Approved: 365 days idle as the kept-household default, with the owner able to shorten it. | Owner |
 | 2026-10-27 | Approved: trim finished runs' event logs (30 days after the run ends), after checking what reads old events. | Owner |
 | 2026-10-27 | Declined for now: the pre-deletion email. Households are deleted without warning, so the policy must say so plainly. | Owner |
-| 2026-10-27 | Not yet decided: the other rows (push 90 days, timing 180 or 90, logs 30 days). | Owner |
+| 2026-11-07 | Existing kept households are never deleted on the spot: their kids' 365 days start no earlier than the deploy (in practice, from their next play, since no backfill runs). Only inactive kids are deleted, counted per kid. | Owner |
+| 2026-11-07 | Event logs: checked (above); each event expires 30 days after it is written, since no run has an end marker and nothing reads old events. | Claude, on the owner's approval of the trim |
+| 2026-11-07 | Push subscriptions: 30 days with no successful send. | Owner |
+| 2026-11-07 | Logs: 30 days, by a **monthly** sweeper Lambda, not `RetentionInDays` in SAM (which has caused deploy problems). Public wording: up to about two months. | Owner |
+| 2026-11-07 | No alarms. No backfill script. | Owner |

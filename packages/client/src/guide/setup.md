@@ -76,7 +76,7 @@ The kid's heroes, their finds and their own phone go with them. Saved games stay
 Everything is in **Run a group**, for a signed-in grown-up.
 
 - **Delete** beside a kid removes the kid and all their heroes, everywhere they played. It asks once more first. "This can't be undone."
-- **Keep a kid who stops playing for** lets you pick how long a kid who stops playing is kept: from a month to a year without playing, or **Until a grown-up deletes them**.
+- **Keep a kid who stops playing for** lets you pick how long a kid who stops playing is kept: from a month to a year without playing. A year is the most, and what you get unless you pick less. When the last kid in a group is gone this way, the group goes too.
 - At the bottom is a button to delete the whole group and everything in it. Only the last grown-up left in a group can do that.
 - **What we store, and for how long** lists everything the game keeps.
 

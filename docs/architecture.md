@@ -93,8 +93,8 @@ Single DynamoDB table, `kad`. Composite key `PK` / `SK`, one GSI (`GSI1PK` / `GS
 | Entity | PK | SK | Notes |
 |---|---|---|---|
 | Account → household | `ACCT#<cognitoSub>` | `HH#<hhId>` | Written only when somebody signs in. An adult may own more than one. **This pointer is the authority**: every "may this account manage it?" reads it. |
-| Household | `HH#<hhId>` | `META` | The family. `ownerSub` (null while anonymous), `guest`, `expiresAt`, display name, and `retentionDays` when an owner set one (#252). |
-| Player profile | `HH#<hhId>` | `PLAYER#<playerId>` | Display name, color, avatar, and `retired` once an owner takes the kid off the pickers (#248). No role (#265): rows written before still carry `role`, and nothing reads it. `data.flair`: what she picked for her own page (#299, "Her page" in §4.5), versioned like any stored shape (§3.2). Beside `data`, never in it: `lastPlayedAt`, her `IDLE` index entry while her household keeps a retention window, and `sweeping` once she is being deleted (#252). |
+| Household | `HH#<hhId>` | `META` | The family. `ownerSub` (null while anonymous), `guest`, `expiresAt`, display name, and `retentionDays` when an owner set one (#252); absent means 365 (#524). |
+| Player profile | `HH#<hhId>` | `PLAYER#<playerId>` | Display name, color, avatar, and `retired` once an owner takes the kid off the pickers (#248). No role (#265): rows written before still carry `role`, and nothing reads it. `data.flair`: what she picked for her own page (#299, "Her page" in §4.5), versioned like any stored shape (§3.2). Beside `data`, never in it: `lastPlayedAt`, her `IDLE` index entry while her household is a kept one (#524), and `sweeping` once she is being deleted (#252). |
 | Device binding | `HH#<hhId>` | `DEVICE#<deviceId>` | → playerId, token hash, last seen, user agent. Revocable. |
 | Owner | `HH#<hhId>` | `OWNER#<cognitoSub>` | One grown-up who may manage the household (#248), with the email they signed in with. Written in one transaction with that account's `ACCT#` pointer, and removed with it. |
 | Character | `HH#<hhId>` | `CHAR#<charId>` | Owned by a playerId, and stored under that kid's **home** household wherever she plays (§4.5, "Who owns what"), a visitor's included (#249, "Visitors"). Persistent across campaigns. See §3.1. |
@@ -130,7 +130,7 @@ GSI1 does five jobs, all of them lookups that would otherwise be scans:
 | `DEVICE#<deviceId>` | `HH#<hhId>` | device items | a returning phone → its household and player |
 | `RUN#<runId>` | `HH#<hhId>` | run items | a runId alone → the household that owns it |
 | `GUEST` | `<expiresAt>#<hhId>` | **guest** household items only | which anonymous households may be swept |
-| `IDLE` | `<keepUntil>#<hhId>#<playerId>` | player items, while their household keeps a retention window | which kids have not played for that window (#252) |
+| `IDLE` | `<keepUntil>#<hhId>#<playerId>` | player items of every kept household (#524) | which kids have not played for its window (#252) |
 | `FORGET` | `<createdAt>#<playerId>` | forget job items | which deletes still owe another table its scrub (#252) |
 
 Note that **characters hang off the household, not off a run.** That was already true and is what makes
@@ -1401,25 +1401,36 @@ scene id cannot break a save.
   marked. So a change an owner read before the delete fails after it, rather
   than making a new row with no mark on it that nothing would delete again. Visits from before visits were written down are found
   through her heroes' claims, which name the last table each played at.
-- **Keeping.** `Household.retentionDays` is null by default, which is the
-  behavior from before: a kept household keeps every kid until an owner
-  deletes one. An owner may pick 30, 90, 180 or 365 days
-  (`RETENTION_CHOICES`). Every join notes `lastPlayedAt` on the kid's home
-  profile (`notePlayed`), a visitor's included, and while her household has a
-  window it files her in GSI1's `IDLE` partition at `lastPlayedAt + window`.
-  Choosing a window starts the clock now for a kid with no `lastPlayedAt`, so
-  it never deletes anybody on the spot. The daily sweeper reads the `IDLE`
-  partition after the `GUEST` one, re-reads each household's window (the index
-  is only a candidate list: a lengthened or cleared window re-files her), and
-  deletes through `deleteProfile` gated on `lastPlayedAt` being at or before
-  the cutoff, so a kid who joins a room while it runs is spared. A live claim
-  does not spare an idle kid, as it does not stop any delete.
+- **Keeping.** Every kept household has a window (#524): `Household.retentionDays`
+  when an owner picked 30, 90, 180 or 365 days (`RETENTION_CHOICES`), and
+  `DEFAULT_RETENTION_DAYS` (365) when it is absent. There is no "until an
+  owner deletes them". Every join notes `lastPlayedAt` on the kid's home
+  profile (`notePlayed`), a visitor's included, and files a kept household's
+  kid in GSI1's `IDLE` partition at `lastPlayedAt + window`. A kid added to a
+  kept household is filed from when she is added (`createProfile`), and a
+  guest household's kids from the moment it is kept (`linkAccount` →
+  `startClocks`). Choosing a window starts the clock now for a kid with no
+  `lastPlayedAt`, so it never deletes anybody on the spot. The daily sweeper
+  reads the `IDLE` partition after the `GUEST` one, re-reads each household's
+  window (the index is only a candidate list: a changed window re-files her),
+  and deletes through `deleteProfile` gated on `lastPlayedAt` being at or
+  before the cutoff, so a kid who joins a room while it runs is spared. A live
+  claim does not spare an idle kid, as it does not stop any delete. When that
+  delete leaves a kept household with no kids, the household goes too
+  (`retireIfEmpty`, through `deleteHousehold`), and so does the Cognito user
+  of each owner who has no other household (`AccountDirectory`,
+  `cognito-directory.ts`); an owner's own delete leaves their sign-in.
+- **Expiring rows (#524).** Event rows (`EVENT_TTL_SECONDS`) and push
+  subscriptions (`PUSH_SUBSCRIPTION_TTL_SECONDS`, renewed by an accepted push)
+  carry a 30-day `ttl` and are filtered out of reads once it passes. Nothing
+  reads an old event: a reconnect replays at most `MAX_REPLAY_EVENTS` and
+  falls back to a snapshot, and the save is the `STATE` row.
 - **Why not DynamoDB TTL.** TTL deletes one row. A kid is a profile, heroes,
   bindings and visits, and a household spans the `RUN#` partitions besides,
   so a per-row TTL would leave the rest orphaned with nothing pointing at it,
   the argument §3.0 makes for guests. TTL stays on what is one row that
   nothing points at: rooms, codes, code-miss windows, presence, moved-device
-  forwards.
+  forwards, and since #524 event rows and push subscriptions.
 
 The guest sweep also takes a swept household's kids out of the saves at the
 tables they visited, and their `VISIT#` rows with it.

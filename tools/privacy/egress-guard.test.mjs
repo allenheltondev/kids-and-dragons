@@ -97,6 +97,8 @@ describe("hosts the shipped code may reach (#525)", () => {
     localhost: "the dev server's own address (dev-server.ts); not shipped to Lambda",
     "cognito-idp.${config.region}.amazonaws.com": "AWS Cognito: the grown-up's email and one-time code, sent from the browser (sync/auth.ts)",
     "${options.httpDomain}": "this stack's AppSync Events HTTP endpoint, server-side publish (channel/appsync-events-channel.ts)",
+    "${this.hostname}":
+      "AWS's own APIs from the sweepers (aws-json.ts, #524): Cognito AdminDeleteUser with a grown-up's sign-in id, and CloudWatch Logs stream listing and deletes; no player data",
     "${entry.address}": "the dev server printing its LAN address (dev-server.ts)",
   };
 

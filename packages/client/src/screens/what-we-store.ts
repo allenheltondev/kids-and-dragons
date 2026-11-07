@@ -41,7 +41,7 @@ export const OWNER_LABEL: Record<Owner, string> = {
 };
 
 const UNTIL_DELETED =
-  "With the household. A household nobody signed in to keep is deleted a week after it last played. A kept one keeps it until a grown-up deletes it, or for the window they chose.";
+  "With the household. A household nobody signed in to keep is deleted a week after it last played. A kept one keeps a kid until a year after she last played, or the shorter time its grown-ups chose, and goes itself once its last kid is gone. A grown-up can delete it sooner.";
 
 export const STORED: readonly StoredThing[] = [
   {
@@ -93,7 +93,8 @@ export const STORED: readonly StoredThing[] = [
     title: "Saved games",
     what:
       "Where the party is in each adventure: the chapter, the road taken, the setbacks, the coins. A game stopped for today is kept as it stood, to pick up another day. Every choice and dice roll in a game is kept in order (the event log), so a phone that drops out can catch up. The hero names of whoever played are in it, until that kid is deleted. A household that plays with more than one group of kids keeps each crew's saves apart, under a made-up name like \"The Otter Crew\".",
-    kept: UNTIL_DELETED,
+    kept:
+      "The saved game is kept with the household: a guest household's for a week after it last played, a kept one's until its last kid is gone or a grown-up deletes it. The event log: each entry is set to expire 30 days after it is written, and the database normally deletes it in the days that follow.",
     owner: "table",
     rows: ["Campaign run", "Chapter progress", "Game state", "Event log", "Campaign attempt", "Crew"],
     entities: ["run", "chapter-progress", "state", "event", "campaign-progress", "crew"],
@@ -137,7 +138,8 @@ export const STORED: readonly StoredThing[] = [
     title: "A phone that buzzes on its kid's turn",
     what:
       "Only if a grown-up turned it on, in the installed app: the address the phone's own push service (Apple's, Google's or Mozilla's) gave for it, and the keys that lock each message so only that phone can read it. A message only ever says \"It's your turn in Kids & Dragons\": no name, no hero, nothing about the game.",
-    kept: "Until the switch goes off, the phone stops taking messages, or the kid is deleted.",
+    kept:
+      "Until the switch goes off, the phone stops taking messages, or the kid is deleted, and set to expire 30 days after a notice last reached the phone or it last confirmed it still wants them.",
     owner: "device",
     rows: ["Push subscription"],
     entities: ["push-subscription"],
@@ -146,7 +148,8 @@ export const STORED: readonly StoredThing[] = [
     title: "The grown-ups",
     what:
       "The household's name, which signed-in grown-ups run it, and how long it keeps a kid who stops playing. The email each grown-up signed in with is held in two places: by the separate sign-in service (Amazon Cognito), and as a copy on the household's list of grown-ups, so they can tell each other apart.",
-    kept: "Until the household is deleted, or that grown-up leaves it.",
+    kept:
+      "Until the household is deleted, or that grown-up leaves it. When a household goes because its last kid stopped playing, the sign-in of each of its grown-ups who runs no other household is deleted too. A grown-up who deletes a household themselves keeps their sign-in.",
     owner: "grown-up",
     rows: ["Household", "Owner", "Account → household"],
     entities: ["household", "owner", "account"],
@@ -181,7 +184,7 @@ export const STORED: readonly StoredThing[] = [
 export const ELSEWHERE: readonly { title: string; what: string }[] = [
   {
     title: "Request logs",
-    what: "Our servers log each request (its address, what it asked for, and any error) to keep the game running. We have not yet confirmed how long our hosting provider keeps these logs or its backups.",
+    what: "Our servers log each request (its address, what it asked for, and any error) to keep the game running. Once a month, logs more than 30 days old are deleted, so a log line is kept for up to about two months. We have not yet confirmed whether our hosting provider keeps backups, or for how long.",
   },
   {
     title: "Crash reports",

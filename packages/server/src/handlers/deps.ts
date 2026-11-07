@@ -78,6 +78,16 @@ export interface HandlerDeps {
   timing?: { source: TimingSource; store: TimingStore } | undefined;
 }
 
+/**
+ * The grown-ups' sign-in store (Cognito in prod, `accounts/cognito-directory.ts`),
+ * asked for one thing only: removing a sign-in that no longer owns any
+ * household (#524). Only the sweep has one; a request never deletes a sign-in.
+ */
+export interface AccountDirectory {
+  /** Idempotent: a sign-in already gone is not an error. */
+  deleteAccount(cognitoSub: string): Promise<void>;
+}
+
 /** The error shape the protocol already defines (`ActionResponse.error`). */
 export type ActionError = NonNullable<ActionResponse["error"]>;
 

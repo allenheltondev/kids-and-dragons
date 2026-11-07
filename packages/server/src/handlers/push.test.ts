@@ -282,6 +282,50 @@ describe("the push sender's job (deliverTurnPush)", () => {
   });
 });
 
+describe("a subscription nothing reaches expires (#524)", () => {
+  const DAY = 24 * 60 * 60 * 1000;
+  const before = runState(null);
+  const after = runState(choiceFor(["p_2"]));
+
+  it("is gone 30 days after it was made, with no push accepted", async () => {
+    const { harness, kid } = await withPush();
+    harness.clock.advance(29 * DAY);
+    expect(await harness.repo.listPushSubscriptions(kid.playerId)).toHaveLength(1);
+    harness.clock.advance(2 * DAY);
+    expect(await harness.repo.listPushSubscriptions(kid.playerId)).toEqual([]);
+  });
+
+  it("is kept another 30 days by each push the service accepts, and not by one it refuses", async () => {
+    const { harness, kid, deps } = await withPush();
+    harness.clock.advance(20 * DAY);
+    await beat(harness, kid.playerId, harness.clock.now() - AWAY_AFTER_MS - 1);
+    expect((await deliverTurnPush(await stepped(harness, before, after), deps)).sent).toBe(1);
+    // Day 40: past the first 30 days, inside the 30 the accepted push bought.
+    harness.clock.advance(20 * DAY);
+    expect(await harness.repo.listPushSubscriptions(kid.playerId)).toHaveLength(1);
+    harness.clock.advance(11 * DAY);
+    expect(await harness.repo.listPushSubscriptions(kid.playerId)).toEqual([]);
+  });
+
+  it("is not renewed by a failed push", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const { harness, kid, deps } = await withPush(() => "failed");
+    harness.clock.advance(20 * DAY);
+    await beat(harness, kid.playerId, harness.clock.now() - AWAY_AFTER_MS - 1);
+    expect((await deliverTurnPush(await stepped(harness, before, after), deps)).failed).toBe(1);
+    harness.clock.advance(11 * DAY);
+    expect(await harness.repo.listPushSubscriptions(kid.playerId)).toEqual([]);
+    warn.mockRestore();
+  });
+
+  it("is never brought back by a renewal after it was unsubscribed", async () => {
+    const { harness, kid } = await withPush();
+    await harness.repo.deletePushSubscription(kid.playerId, kid.deviceId);
+    await harness.repo.touchPushSubscription(kid.playerId, kid.deviceId);
+    expect(await harness.repo.listPushSubscriptions(kid.playerId)).toEqual([]);
+  });
+});
+
 // ---------------------------------------------------------------------------
 // Through an action: the hand-over, never the send
 // ---------------------------------------------------------------------------

@@ -44,7 +44,7 @@ import { NEW_PLAYER_NAME_MAX } from "./shared-device.ts";
 import { takeOutEverywhere } from "./remove.ts";
 import { acceptTransfer, createTransferCode } from "./transfer.ts";
 import { claimIsLive, claimOf, parseClaim, releaseClaim } from "./claim.ts";
-import { deleteKid, deleteOwnedHousehold, retentionChoice, setRetention } from "./retention.ts";
+import { deleteKid, deleteOwnedHousehold, retentionChoice, retentionDaysOf, setRetention } from "./retention.ts";
 import { heroSaved } from "./save.ts";
 
 export type OrganizerDeps = AccountDeps & Pick<HandlerDeps, "random" | "channel" | "content">;
@@ -283,7 +283,7 @@ export async function deleteHousehold(
   return deleteOwnedHousehold(owned.value, input.cognitoSub, deps);
 }
 
-/** How long a kid who stops playing is kept (#252): a window in days, or `null` for until deleted. */
+/** How long a kid who stops playing is kept (#252): a window in days, a year at most (#524). */
 export async function setHouseholdRetention(
   input: Organizer & { householdId: unknown; retentionDays: unknown },
   deps: OrganizerDeps,
@@ -501,7 +501,7 @@ async function describe(
       retired: player.retired === true,
       heroes: heroesOf(player.id, characters, adventures, saves),
     })),
-    retentionDays: household.retentionDays ?? null,
+    retentionDays: retentionDaysOf(household),
   };
 }
 

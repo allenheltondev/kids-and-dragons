@@ -35,10 +35,11 @@ Dated 2026-10-27. Engineering status, not legal advice.
    grown-up to sign in to keep it and then delete it. There is no process, and no fulfillment test,
    for a parent who writes in. Needs a decision on what identity checks are reasonable, probably
    with counsel.
-4. **Retention wording.** The page says kept households have no automatic end today. When the
-   one-year limit in [us-retention-schedule.md](./us-retention-schedule.md) ships, change
-   `how-long` in `privacy-policy.ts` and the `UNTIL_DELETED` text in `what-we-store.ts` in the same
-   commit, and the test that pins "no automatic end today" will fail until you do.
+4. **Retention wording.** Done with #524 (2026-11-07): `how-long` in `privacy-policy.ts`,
+   `what-we-store.ts`, the sign-in offer and the setup guide state the enforced limits in
+   [us-retention-schedule.md](./us-retention-schedule.md) (a year idle per kid, the household and
+   sign-ins with its last kid, 30-day event logs and push addresses, logs up to about two months).
+   `privacy.test.tsx` pins them. Backups are still described as unconfirmed.
 5. **Browser read-aloud** is described as possibly sending text to the browser's maker, because
    that is unverified (see [us-third-party-flows.md](./us-third-party-flows.md) §4).
 6. Review of the page's wording by someone qualified.
