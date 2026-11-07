@@ -109,7 +109,8 @@
         "mane": "#4C3F32",
         "accent": "#70E09F",
         "marking": "#E0CAB4",
-        "outline": "#3B311D"
+        "outline": "#3B311D",
+        "skin": "#E6B481"
       }
     },
     {
@@ -3381,20 +3382,40 @@
     }
   ],
   "$figureVariantsComment": "Finished transparent class illustrations. Legacy character-rigs paths are retained for existing assets; no rig runtime or split parts are required.",
-  "$coatMasksComment": "Hero looks (docs/hero-looks.md section 4): the one region of each hero painting that takes her chosen colour. regions: which part each species colours (section 4.2), read by tools/art/coat.py (the draft tool, the gate, the sheet) and the client (packages/client/src/world/coat-masks.ts); draftFrom is the species palette slot the draft tool (npm run art:coat-draft) seeds its colour pick from, and confirmed is false until the region is confirmed on that species' clean masks. paintings: every painting that has a shipped, hand-cleaned mask, as its path under assets/ (the mask is coat-mask.png beside an assembled.png, <species>.coat-mask.png beside a gear portrait), so the client never asks for a mask that does not exist. A mask on disk that is not listed here fails art:verify: a draft is never shipped as is. tolerance: the gate's coverage bounds (fractions of the canvas) and how much of a mask may lie outside a transparent painting's alpha.",
+  "$coatMasksComment": "Hero looks (docs/hero-looks.md section 4): the two parts of each hero painting a kid colours, and the whole figure the special looks (sparkles, gold) go over. A mask is an 8-bit RGB PNG on its painting's own canvas: R is the main part, G the accent part, B the figure (the hero's whole silhouette: the painting's alpha on a transparent painting, everything but the backdrop on an opaque gear portrait). regions: each species' main and accent part (section 4.2), read by tools/art/coat.py (the draft tool, the gate, the sheet) and the client (packages/client/src/world/coat-masks.ts); region is the part's name, which the client shows the kid as the shelf label, draftFrom is the species palette slot the draft tool (npm run art:coat-draft) seeds that part's colour pick from, and confirmed is false until the part is confirmed on that species' clean masks. paintings: every painting that has a shipped, hand-cleaned mask, as its path under assets/ (the mask is coat-mask.png beside an assembled.png, <species>.coat-mask.png beside a gear portrait), so the client never asks for a mask that does not exist. A mask on disk that is not listed here fails art:verify: a draft is never shipped as is. tolerance: the gate's coverage bounds for each part (fractions of the canvas), the most of the canvas the figure may cover, how much of a part may lie outside the figure (and of the figure outside a transparent painting's alpha), and how much of the smaller part may also be in the other.",
   "coatMasks": {
     "regions": {
-      "unicorn": { "region": "coat", "draftFrom": "coat", "confirmed": true },
-      "bigfoot": { "region": "mane", "draftFrom": "mane", "confirmed": true },
-      "dragonling": { "region": "scales", "draftFrom": "coat", "confirmed": false },
-      "griffin": { "region": "feathers", "draftFrom": "mane", "confirmed": false },
-      "kitsune": { "region": "fur", "draftFrom": "mane", "confirmed": false },
-      "manticore": { "region": "mane", "draftFrom": "mane", "confirmed": false }
+      "unicorn": {
+        "main": { "region": "coat", "draftFrom": "coat", "confirmed": true },
+        "accent": { "region": "mane", "draftFrom": "mane", "confirmed": true }
+      },
+      "bigfoot": {
+        "main": { "region": "fur", "draftFrom": "coat", "confirmed": true },
+        "accent": { "region": "skin", "draftFrom": "skin", "confirmed": true }
+      },
+      "dragonling": {
+        "main": { "region": "scales", "draftFrom": "coat", "confirmed": false },
+        "accent": { "region": "wings", "draftFrom": "accent", "confirmed": false }
+      },
+      "griffin": {
+        "main": { "region": "coat", "draftFrom": "coat", "confirmed": false },
+        "accent": { "region": "feathers", "draftFrom": "mane", "confirmed": false }
+      },
+      "kitsune": {
+        "main": { "region": "fur", "draftFrom": "coat", "confirmed": false },
+        "accent": { "region": "tails", "draftFrom": "accent", "confirmed": false }
+      },
+      "manticore": {
+        "main": { "region": "fur", "draftFrom": "coat", "confirmed": false },
+        "accent": { "region": "mane", "draftFrom": "mane", "confirmed": false }
+      }
     },
     "tolerance": {
       "minCoverage": 0.003,
       "maxCoverage": 0.6,
-      "maxSpill": 0.01
+      "maxFigureCoverage": 0.85,
+      "maxSpill": 0.01,
+      "maxOverlap": 0.08
     },
     "paintings": []
   },

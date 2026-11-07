@@ -1,10 +1,17 @@
 """
 Kids & Dragons - coat masks: the shared library under art:coat-draft, art:verify and art:sheet.
 
-A coat mask (docs/hero-looks.md section 4) is an 8-bit greyscale PNG on its painting's own
-canvas: white is the one region of the hero that takes her chosen colour, black is not, and the
-edges are soft. Which region that is, per species, is assets/manifest.json -> coatMasks.regions,
-which the client reads too (packages/client/src/world/coat-masks.ts).
+A coat mask (docs/hero-looks.md section 4) is an 8-bit RGB PNG on its painting's own canvas,
+three channels with soft edges (fur is fluffy):
+
+    R  the main part, which takes the kid's main colour
+    G  the accent part, which takes her accent colour
+    B  the figure: the hero's whole silhouette, which the special looks (sparkles, gold) go over.
+       On a transparent painting it matches the painting's alpha; on an opaque gear portrait it
+       is everything but the backdrop.
+
+Which parts those are, per species, is assets/manifest.json -> coatMasks.regions (`main` and
+`accent`), which the client reads too (packages/client/src/world/coat-masks.ts).
 
 Three families of painting carry one each (section 4.1):
 
@@ -12,8 +19,8 @@ Three families of painting carry one each (section 4.1):
     class  assets/character-rigs/<class>/<tier>/<species>/assembled.png -> coat-mask.png beside it
     gear   assets/gear-portraits/<class>/<tier>/<species>.png     -> <species>.coat-mask.png
 
-This module knows those paths, drafts a mask by colour as the 2026-11-07 proof of concept did
-(section 2), and recolours a painting through a mask in OKLab as section 5.2 describes, for the
+This module knows those paths, drafts a mask's parts by colour as the 2026-11-07 proof of concept did
+(section 2), and recolours a painting through one channel of a mask in OKLab as section 5.2 describes, for the
 review sheet. The client's tinter (#666) is the one players see; this one is for reviewers.
 
 Requires: Pillow, numpy
@@ -90,7 +97,12 @@ def asset(rel: str, root: str | None = None) -> str:
     return os.path.join(root or ROOT, "assets", *rel.split("/"))
 
 
+PARTS = ("main", "accent")  # the mask's R and G, in that order; B is the figure
+CHANNELS = {"main": 0, "accent": 1, "figure": 2}
+
+
 def region_of(mf: dict, species: str) -> dict:
+    """A species' parts: {"main": {region, draftFrom, confirmed}, "accent": {...}}."""
     return mf["coatMasks"]["regions"][species]
 
 
@@ -161,60 +173,105 @@ def _distance(lab: np.ndarray, seed: np.ndarray) -> np.ndarray:
     return np.sqrt((d * d).sum(axis=-1))
 
 
-def draft_mask(rgba: np.ndarray, seed_hex: str, near: float = 0.06, far: float = 0.10) -> np.ndarray:
-    """A draft mask (uint8, HxW) for the region painted near `seed_hex`.
-
-    As the proof of concept did (hero-looks.md section 2): pick the region out by colour.
-    The palette colour is a target, not what was painted, so the seed first walks toward the
-    middle of the nearest painted mass (a few mean-shift steps, never far). On an opaque
-    painting the backdrop (flooded in from the edges) is left out first. Pixels within `near` of it
-    are in, beyond `far` are out, soft in between; small gaps (fur strokes, the outlines
-    inside a coat) are closed, specks are dropped, the edge is softened, and the result never
-    leaves the painting's alpha. It bleeds wherever two parts share a colour, which is why
-    every shipped mask is hand-cleaned (section 4.3)."""
-    rgb = rgba[..., :3].astype(np.float64) / 255.0
-    alpha = rgba[..., 3].astype(np.float64) / 255.0 if rgba.shape[-1] == 4 else np.ones(rgb.shape[:2])
-    lab = srgb_to_oklab(rgb)
+def figure_mask(rgba: np.ndarray) -> np.ndarray:
+    """The figure channel's draft, 0..1 (HxW): the hero's whole silhouette. On a transparent
+    painting it is the painting's own alpha; on an opaque one (a gear portrait) it is
+    everything the backdrop flood (`backdrop`) does not reach."""
+    if rgba.shape[-1] == 4:
+        alpha = rgba[..., 3].astype(np.float64) / 255.0
+    else:
+        alpha = np.ones(rgba.shape[:2])
     if alpha.min() >= 1.0:
-        # an opaque painting (a gear portrait): its backdrop is never the region
+        # an opaque painting (a gear portrait): its backdrop is never the figure
         alpha = alpha * (1.0 - backdrop(rgba))
-    solid = alpha > 0.5
+    return alpha
 
-    # Mean shift with a flat kernel no wider than the region's own tolerance, so the seed climbs
-    # to the nearest painted mode rather than being dragged to the biggest mass nearby (a
-    # griffin's white body beside her blue). It widens only while nothing is near enough.
-    seed = origin = srgb_to_oklab(hex_rgb(seed_hex))
-    pixels = lab[solid][::5]  # a sample is plenty to find a mode
+
+def _walk(pixels: np.ndarray, origins: list[np.ndarray], reach: float, far: float) -> list[np.ndarray]:
+    """Walk each part's seed from its palette colour to the middle of the nearest painted mass.
+
+    Mean shift with a flat kernel no wider than the part's own tolerance, so a seed climbs to
+    the nearest painted mode rather than being dragged to the biggest mass nearby (a griffin's
+    white body beside her blue). It widens only while nothing is near enough, and never
+    wanders further from the palette than `reach`: shading on a neighbouring part (a white
+    body's blue shadows) is a path to the wrong region. The parts compete: each walks only on
+    the pixels nearer to it than to the other part's seed, so two palette colours a shade
+    apart (Bigfoot's cream coat and tan skin) settle on two masses, not one. `reach` is a
+    little under the draft's `near`, so the two do not both slide into the shading between
+    them (Bigfoot's shaded fur, which would leave his face shared by both parts)."""
+    seeds = [o.copy() for o in origins]
+    radii = [far] * len(seeds)
+    settled = [False] * len(seeds)
     enough = max(16, len(pixels) // 500)
-    radius = far
-    for _ in range(30):
-        sel = _distance(pixels, seed) < radius
-        if sel.sum() < enough:
-            if radius > 0.4:
-                break
-            radius *= 1.25
-            continue
-        moved = pixels[sel].mean(axis=0)
-        # never wander further from the palette than the region's tolerance: shading on a
-        # neighbouring part (a white body's blue shadows) is a path to the wrong region
-        shift = moved - origin
-        reach = float(_distance(shift[None], np.zeros(3))[0])
-        if reach > near:
-            moved = origin + shift * (near / reach)
-        done = np.abs(moved - seed).max() < 1e-4
-        seed = moved
-        if done:
+    dists = [None] * len(seeds)
+    for _ in range(40):
+        dists = [_distance(pixels, s) for s in seeds]
+        for i, origin in enumerate(origins):
+            if settled[i]:
+                continue
+            mine = dists[i] < radii[i]
+            for j in range(len(seeds)):
+                if j != i:
+                    mine &= dists[i] <= dists[j]
+            if mine.sum() < enough:
+                if radii[i] > 0.4:
+                    settled[i] = True
+                else:
+                    radii[i] *= 1.25
+                continue
+            moved = pixels[mine].mean(axis=0)
+            shift = moved - origin
+            moved_by = float(_distance(shift[None], np.zeros(3))[0])
+            if moved_by > reach:
+                moved = origin + shift * (reach / moved_by)
+            settled[i] = np.abs(moved - seeds[i]).max() < 1e-4
+            seeds[i] = moved
+        if all(settled):
             break
+    return seeds
 
-    d = _distance(lab, seed)
-    soft = np.clip((far - d) / (far - near), 0.0, 1.0) * solid
+
+def _clean(soft: np.ndarray) -> np.ndarray:
+    """Close (fill strokes and thin outlines inside a part), open (drop specks), soften."""
     im = Image.fromarray((soft * 255).round().astype(np.uint8), "L")
-    # close (fill strokes and thin outlines inside the region), then open (drop specks)
     im = im.filter(ImageFilter.MaxFilter(7)).filter(ImageFilter.MinFilter(7))
     im = im.filter(ImageFilter.MinFilter(5)).filter(ImageFilter.MaxFilter(5))
     im = im.filter(ImageFilter.GaussianBlur(1.5))
-    out = np.asarray(im, dtype=np.float64) / 255.0
-    out = np.minimum(out, alpha)
+    return np.asarray(im, dtype=np.float64) / 255.0
+
+
+def draft_parts(rgba: np.ndarray, main_hex: str, accent_hex: str,
+                near: float = 0.06, far: float = 0.10, reach: float = 0.045) -> np.ndarray:
+    """A draft coat mask (uint8, HxWx3): R the main part painted near `main_hex`, G the accent
+    part near `accent_hex`, B the figure (`figure_mask`).
+
+    As the proof of concept did (hero-looks.md section 2): pick each part out by colour. The
+    palette colour is a target, not what was painted, so each seed first walks to the middle of
+    the nearest painted mass (`_walk`). Pixels within `near` of a part's seed are in, beyond
+    `far` are out, soft in between, and a pixel near both goes to the nearer, so no pixel is
+    strongly in both parts. Small gaps (fur strokes, the outlines inside a coat) are closed,
+    specks are dropped, the edge is softened, and nothing leaves the figure. It bleeds wherever
+    two parts share a colour, which is why every shipped mask is hand-cleaned (section 4.3)."""
+    rgb = rgba[..., :3].astype(np.float64) / 255.0
+    figure = figure_mask(rgba)
+    lab = srgb_to_oklab(rgb)
+    solid = figure > 0.5
+
+    origins = [srgb_to_oklab(hex_rgb(main_hex)), srgb_to_oklab(hex_rgb(accent_hex))]
+    seeds = _walk(lab[solid][::5], origins, reach, far)  # a sample is plenty to find a mode
+
+    d_main, d_accent = (_distance(lab, s) for s in seeds)
+    soft_main = np.clip((far - d_main) / (far - near), 0.0, 1.0) * solid * (d_main <= d_accent)
+    soft_accent = np.clip((far - d_accent) / (far - near), 0.0, 1.0) * solid * (d_accent < d_main)
+    main = np.minimum(_clean(soft_main), figure)
+    accent = np.minimum(_clean(soft_accent), figure)
+    # the closing and the blur let the two parts grow into each other where their strokes
+    # interleave: the stronger keeps the pixel and the weaker gets only what is left of it, so
+    # a pixel is at most half in each, and only along the soft line where they meet
+    main_wins = main >= accent
+    accent = np.where(main_wins, np.minimum(accent, 1.0 - main), accent)
+    main = np.where(main_wins, main, np.minimum(main, 1.0 - accent))
+    out = np.stack([main, accent, figure], axis=-1)
     return (out * 255).round().astype(np.uint8)
 
 
@@ -323,28 +380,64 @@ def tint(rgba: np.ndarray, mask: np.ndarray, coat_hex: str, dark_hex: str | None
 # ----------------------------------------------------------------------------- the gate
 
 
+def _share(part: np.ndarray, bound: np.ndarray) -> float:
+    """How much of `part` (0..1, HxW) lies beyond `bound`, as a share of it."""
+    total = part.sum()
+    return float(np.maximum(part - bound, 0).sum() / total) if total > 0 else 0.0
+
+
 def mask_problems(mask_im: Image.Image, painting_im: Image.Image, tol: dict) -> list[tuple[str, object, object]]:
     """What is wrong with a mask against its painting, as (what, expected, actual) triples.
-    Empty when it passes. `tol` is manifest coatMasks.tolerance."""
+    Empty when it passes. `tol` is manifest coatMasks.tolerance.
+
+    The mask is 8-bit RGB on the painting's canvas. R (main) and G (accent) each cover a sane
+    share of the canvas (neither empty nor all of it), each lies inside B (the figure), and they
+    barely overlap. B is neither empty nor the whole canvas, and on a transparent painting it
+    lies inside the painting's alpha. A gear portrait is opaque, so the review sheet is the only
+    check that its B leaves the backdrop out."""
     problems: list[tuple[str, object, object]] = []
-    if mask_im.mode != "L":
-        problems.append(("mode", "L (8-bit greyscale)", mask_im.mode))
+    if mask_im.mode != "RGB":
+        problems.append(("mode", "RGB (8-bit; R main, G accent, B figure)", mask_im.mode))
         return problems
     if mask_im.size != painting_im.size:
         problems.append(("canvas", f"{painting_im.size[0]}x{painting_im.size[1]} (its painting's)",
                          f"{mask_im.size[0]}x{mask_im.size[1]}"))
         return problems
     m = np.asarray(mask_im, dtype=np.float64) / 255.0
-    coverage = float(m.mean())
+    main, accent, figure = m[..., 0], m[..., 1], m[..., 2]
+
+    for name, part in (("main", main), ("accent", accent)):
+        coverage = float(part.mean())
+        if coverage < tol["minCoverage"]:
+            problems.append((f"{name} coverage", f">= {tol['minCoverage']:.2%} of the canvas", f"{coverage:.2%} (empty)"))
+        elif coverage > tol["maxCoverage"]:
+            problems.append((f"{name} coverage", f"<= {tol['maxCoverage']:.0%} of the canvas",
+                             f"{coverage:.1%} (the whole canvas)"))
+    coverage = float(figure.mean())
     if coverage < tol["minCoverage"]:
-        problems.append(("coverage", f">= {tol['minCoverage']:.2%} of the canvas", f"{coverage:.2%} (empty)"))
-    elif coverage > tol["maxCoverage"]:
-        problems.append(("coverage", f"<= {tol['maxCoverage']:.0%} of the canvas", f"{coverage:.1%} (the whole canvas)"))
+        problems.append(("figure coverage", f">= {tol['minCoverage']:.2%} of the canvas", f"{coverage:.2%} (empty)"))
+    elif coverage > tol["maxFigureCoverage"]:
+        problems.append(("figure coverage", f"<= {tol['maxFigureCoverage']:.0%} of the canvas",
+                         f"{coverage:.1%} (the backdrop too)"))
+
+    for name, part in (("main", main), ("accent", accent)):
+        spill = _share(part, figure)
+        if spill > tol["maxSpill"]:
+            problems.append((f"{name} inside the figure", f"<= {tol['maxSpill']:.1%} of it outside B",
+                             f"{spill:.1%} outside"))
+
+    smaller = min(main.sum(), accent.sum())
+    if smaller > 0:
+        overlap = float(np.minimum(main, accent).sum() / smaller)
+        if overlap > tol["maxOverlap"]:
+            problems.append(("overlap", f"<= {tol['maxOverlap']:.0%} of the smaller part also in the other",
+                             f"{overlap:.1%}"))
+
     if "A" in painting_im.getbands():
         alpha = np.asarray(painting_im.getchannel("A"), dtype=np.float64) / 255.0
-        if alpha.min() < 1.0 and m.sum() > 0:
-            spill = float(np.maximum(m - alpha, 0).sum() / m.sum())
+        if alpha.min() < 1.0:
+            spill = _share(figure, alpha)
             if spill > tol["maxSpill"]:
-                problems.append(("inside the figure", f"<= {tol['maxSpill']:.1%} of the mask outside the painting's alpha",
+                problems.append(("figure inside the alpha", f"<= {tol['maxSpill']:.1%} of B outside the painting's alpha",
                                  f"{spill:.1%} outside"))
     return problems

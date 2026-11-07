@@ -1226,24 +1226,38 @@ def check_story_props(rep: Report, mf: dict) -> None:
 def check_coat_masks(rep: Report, mf: dict) -> None:
     """Hero-look coat masks (docs/hero-looks.md section 4.3, step 4).
 
-    Every species names its region, and every mask is gated: listed in coatMasks.paintings
-    exactly when it is on disk (a draft is never shipped as is), 8-bit greyscale on its
-    painting's own canvas, neither empty nor the whole canvas, and on a transparent painting,
-    inside the painting's alpha. A gear portrait is opaque, so the review sheet is its only
-    check that the background stays out."""
+    Every species names its two parts, a main and an accent, and every mask is gated: listed in
+    coatMasks.paintings exactly when it is on disk (a draft is never shipped as is), 8-bit RGB
+    on its painting's own canvas (R main, G accent, B the figure), each part neither empty nor
+    the whole canvas and inside the figure, the parts barely overlapping, and the figure not
+    empty and, on a transparent painting, inside the painting's alpha. A gear portrait is
+    opaque, so the review sheet is its only check that the background stays out."""
     section = mf.get("coatMasks")
     if section is None:
         rep.fail("manifest coatMasks", "declared (hero-looks.md section 4.2)", "missing")
         return
-    allowed_regions = {"coat", "mane", "scales", "feathers", "fur"}
+    # a part's name is the kid's shelf label (capitalised): plain words, one per part
+    allowed_regions = {"coat", "mane", "scales", "feathers", "fur", "skin", "wings", "tails", "tail", "belly"}
     for sp in mf["species"]:
-        region = section["regions"].get(sp["id"])
-        if region is None:
-            rep.fail(f"coatMasks.regions.{sp['id']}", "a region for every species", "missing")
-        elif region.get("region") not in allowed_regions:
-            rep.fail(f"coatMasks.regions.{sp['id']}.region", sorted(allowed_regions), region.get("region"))
-        elif region.get("draftFrom") not in sp["palette"]:
-            rep.fail(f"coatMasks.regions.{sp['id']}.draftFrom", f"a palette slot of {sp['id']}", region.get("draftFrom"))
+        parts = section["regions"].get(sp["id"])
+        if not isinstance(parts, dict) or set(parts) != set(coat.PARTS):
+            rep.fail(f"coatMasks.regions.{sp['id']}", "a main and an accent part for every species",
+                     "missing" if parts is None else sorted(parts) if isinstance(parts, dict) else parts)
+            continue
+        for name in coat.PARTS:
+            part = parts[name]
+            where = f"coatMasks.regions.{sp['id']}.{name}"
+            if part.get("region") not in allowed_regions:
+                rep.fail(f"{where}.region", sorted(allowed_regions), part.get("region"))
+            elif part.get("draftFrom") not in sp["palette"]:
+                rep.fail(f"{where}.draftFrom", f"a palette slot of {sp['id']}", part.get("draftFrom"))
+            elif not isinstance(part.get("confirmed"), bool):
+                rep.fail(f"{where}.confirmed", "true or false", part.get("confirmed"))
+        if parts["main"].get("region") == parts["accent"].get("region"):
+            rep.fail(f"coatMasks.regions.{sp['id']}", "two different parts", parts["main"].get("region"))
+        elif parts["main"].get("draftFrom") == parts["accent"].get("draftFrom"):
+            rep.fail(f"coatMasks.regions.{sp['id']}", "each part drafted from its own palette slot",
+                     parts["main"].get("draftFrom"))
 
     tol = section["tolerance"]
     known = {p.painting: p for p in coat.paintings(mf)}

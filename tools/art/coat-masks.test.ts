@@ -2,10 +2,11 @@
  * Coat masks (docs/hero-looks.md §4.3): the gate in verify.py, the draft tool and the review
  * tint in coat.py. Fixtures are made in a temporary directory; the real paintings are only read.
  *
- * The 2026-11-07 proof of concept's throwaway masks were never committed, so the draft is held
- * to the regions that prototype describes (§2) rather than to its pixels: on the fledgling
- * unicorn, the light coat and not the purple mane; on the fledgling Bigfoot, the dark mane on
- * his head and shoulders and not the cream coat.
+ * A mask is 8-bit RGB: R the species' main part, G its accent part, B the figure (the hero's
+ * whole silhouette, for the special looks). The 2026-11-07 proof of concept's throwaway masks
+ * were never committed, so the draft is held to the parts the owner chose rather than to
+ * pixels: on the fledgling unicorn, R her light coat and G her purple mane; on the fledgling
+ * Bigfoot, R his cream fur and G the tan skin of his face and feet.
  */
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
@@ -27,7 +28,22 @@ import coat
   return JSON.parse(output.trim().split("\n").at(-1)!);
 }
 
-type Fixture = "good" | "wrong-size" | "empty" | "spill" | "whole-gear" | "good-gear" | "unlisted" | "listed-missing" | "rgba-mask";
+type Fixture =
+  | "good"
+  | "good-gear"
+  | "wrong-size"
+  | "greyscale"
+  | "rgba-mask"
+  | "empty-main"
+  | "empty-accent"
+  | "empty-figure"
+  | "main-spill"
+  | "accent-spill"
+  | "figure-spill"
+  | "overlap"
+  | "whole-gear"
+  | "unlisted"
+  | "listed-missing";
 
 function gate(fixture: Fixture): string[] {
   return run(`
@@ -36,24 +52,52 @@ mf = json.load(open(v.MANIFEST, encoding='utf-8'))
 fixture = ${JSON.stringify(fixture)}
 base = 'characters/unicorn/fledgling/assembled.png'
 gear = 'gear-portraits/thornguard/sworn/unicorn.png'
+FIGURE = (250, 200, 780, 900)
+
+def channels(size, figure, main, accent):
+    """An RGB mask from three greyscale channels (ellipse boxes or images)."""
+    out = []
+    for box in (main, accent, figure):
+        if isinstance(box, Image.Image):
+            out.append(box); continue
+        ch = Image.new('L', size)
+        if box: ImageDraw.Draw(ch).ellipse(box, fill=255)
+        out.append(ch)
+    return Image.merge('RGB', out)
+
 with tempfile.TemporaryDirectory() as root:
     v.ROOT = root
     def put(rel, im):
         p = Path(coat.asset(rel, root)); p.parent.mkdir(parents=True, exist_ok=True); im.save(p)
     figure = Image.new('RGBA', (1024, 1024))
-    ImageDraw.Draw(figure).ellipse((250, 200, 780, 900), fill=(240, 225, 240, 255))
+    ImageDraw.Draw(figure).ellipse(FIGURE, fill=(240, 225, 240, 255))
     put(base, figure)
     put(gear, Image.new('RGB', (1254, 1254), (20, 24, 40)))
-    mask = Image.new('L', (1024, 1024))
-    ImageDraw.Draw(mask).ellipse((320, 300, 700, 800), fill=255)
+    # main: the body, low on the figure; accent: the head, above it; figure: the alpha itself
+    main, accent = (320, 520, 700, 860), (380, 240, 640, 480)
+    if fixture == 'empty-main': main = None
+    if fixture == 'empty-accent': accent = None
+    if fixture == 'overlap': accent = main
+    fig = None if fixture == 'empty-figure' else FIGURE
+    if fixture in ('main-spill', 'accent-spill', 'figure-spill'):
+        # a band across the top of the canvas, where the painting is transparent
+        band = Image.new('L', (1024, 1024))
+        d = ImageDraw.Draw(band); d.ellipse(main if fixture == 'main-spill' else accent if fixture == 'accent-spill' else FIGURE, fill=255)
+        d.rectangle((0, 0, 1023, 150), fill=255)
+        if fixture == 'main-spill': main = band
+        elif fixture == 'accent-spill': accent = band
+        else: fig = band
+    mask = channels((1024, 1024), fig, main, accent)
     listed = [base]
     if fixture == 'wrong-size': mask = mask.resize((512, 512))
-    if fixture == 'empty': mask = Image.new('L', (1024, 1024))
-    if fixture == 'spill': ImageDraw.Draw(mask).rectangle((0, 0, 1023, 180), fill=255)
+    if fixture == 'greyscale': mask = mask.convert('L')
     if fixture == 'rgba-mask': mask = mask.convert('RGBA')
     if fixture in ('whole-gear', 'good-gear'):
-        gm = Image.new('L', (1254, 1254), 255 if fixture == 'whole-gear' else 0)
-        if fixture == 'good-gear': ImageDraw.Draw(gm).ellipse((400, 300, 850, 1000), fill=255)
+        if fixture == 'good-gear':
+            gm = channels((1254, 1254), (400, 300, 850, 1000), (430, 600, 820, 980), (480, 330, 770, 560))
+        else:
+            gm = channels((1254, 1254), Image.new('L', (1254, 1254), 255), Image.new('L', (1254, 1254), 255),
+                          (480, 330, 770, 560))
         put(coat.mask_path_for(gear), gm)
         listed.append(gear)
     if fixture != 'listed-missing': put(coat.mask_path_for(base), mask)
@@ -65,73 +109,95 @@ with tempfile.TemporaryDirectory() as root:
 `);
 }
 
+const BASE = "characters/unicorn/fledgling/coat-mask.png";
+const GEAR = "gear-portraits/thornguard/sworn/unicorn.coat-mask.png";
+
 describe("art:verify gates every coat mask", () => {
-  it("passes a mask on its painting's canvas, inside the figure", () => expect(gate("good")).toEqual([]));
-  it("passes an opaque gear portrait's mask that leaves room for the backdrop", () =>
+  it("passes a mask on its painting's canvas: two parts inside the figure, the figure its alpha", () =>
+    expect(gate("good")).toEqual([]));
+  it("passes an opaque gear portrait's mask whose figure leaves the backdrop out", () =>
     expect(gate("good-gear")).toEqual([]));
-  it("fails a mask of the wrong size", () =>
-    expect(gate("wrong-size")).toEqual(["characters/unicorn/fledgling/coat-mask.png canvas"]));
-  it("fails an empty mask", () =>
-    expect(gate("empty")).toEqual(["characters/unicorn/fledgling/coat-mask.png coverage"]));
-  it("fails a mask that spills outside the figure's alpha", () =>
-    expect(gate("spill")).toEqual(["characters/unicorn/fledgling/coat-mask.png inside the figure"]));
-  it("fails a mask that is the whole canvas", () =>
-    expect(gate("whole-gear")).toEqual(["gear-portraits/thornguard/sworn/unicorn.coat-mask.png coverage"]));
-  it("fails a mask that is not 8-bit greyscale", () =>
-    expect(gate("rgba-mask")).toEqual(["characters/unicorn/fledgling/coat-mask.png mode"]));
+  it("fails a mask of the wrong size", () => expect(gate("wrong-size")).toEqual([`${BASE} canvas`]));
+  it("fails a greyscale mask (the one-region format)", () => expect(gate("greyscale")).toEqual([`${BASE} mode`]));
+  it("fails a mask with an alpha channel: 8-bit RGB only", () => expect(gate("rgba-mask")).toEqual([`${BASE} mode`]));
+  it("fails an empty main part", () => expect(gate("empty-main")).toEqual([`${BASE} main coverage`]));
+  it("fails an empty accent part", () => expect(gate("empty-accent")).toEqual([`${BASE} accent coverage`]));
+  it("fails an empty figure", () =>
+    expect(gate("empty-figure")).toEqual([
+      `${BASE} figure coverage`,
+      `${BASE} main inside the figure`,
+      `${BASE} accent inside the figure`,
+    ]));
+  it("fails a main part that spills outside the figure", () =>
+    expect(gate("main-spill")).toEqual([`${BASE} main inside the figure`]));
+  it("fails an accent part that spills outside the figure", () =>
+    expect(gate("accent-spill")).toEqual([`${BASE} accent inside the figure`]));
+  it("fails a figure that spills outside a transparent painting's alpha", () =>
+    expect(gate("figure-spill")).toEqual([`${BASE} figure inside the alpha`]));
+  it("fails a pixel strongly in both parts", () => expect(gate("overlap")).toEqual([`${BASE} overlap`]));
+  it("fails a part, or a figure, that is the whole canvas", () =>
+    expect(gate("whole-gear")).toEqual([`${GEAR} main coverage`, `${GEAR} figure coverage`, `${GEAR} overlap`]));
   it("fails a mask on disk the manifest does not list (a draft is never shipped as is)", () =>
-    expect(gate("unlisted")).toEqual(["characters/unicorn/fledgling/coat-mask.png"]));
+    expect(gate("unlisted")).toEqual([BASE]));
   it("fails a listed mask that is missing, so the client never asks for it", () =>
-    expect(gate("listed-missing")).toEqual(["characters/unicorn/fledgling/coat-mask.png"]));
+    expect(gate("listed-missing")).toEqual([BASE]));
 });
 
 describe("art:coat-draft", () => {
-  it("drafts the prototype's regions: the unicorn's coat, Bigfoot's mane", () => {
+  it("drafts the owner's parts: the unicorn's coat and mane, Bigfoot's fur and skin, and the figure", () => {
     const result = run(`
 mf = json.load(open(os.path.join(coat.ROOT, 'assets', 'manifest.json'), encoding='utf-8'))
 out = {}
 for species in ('unicorn', 'bigfoot'):
-    region = coat.region_of(mf, species)
+    parts = coat.region_of(mf, species)
     palette = coat.palette_of(mf, species)
     rgba = np.asarray(Image.open(coat.asset(f'characters/{species}/fledgling/assembled.png')).convert('RGBA'))
-    m = coat.draft_mask(rgba, palette[region['draftFrom']]).astype(float) / 255
+    mask = coat.draft_parts(rgba, *(palette[parts[p]['draftFrom']] for p in coat.PARTS))
+    m = mask.astype(float) / 255
+    R, G, B = m[..., 0], m[..., 1], m[..., 2]
     alpha = rgba[..., 3] > 128
     lab = coat.srgb_to_oklab(rgba[..., :3] / 255.0)
     def near(slot):  # the painted pixels closest to a palette slot
         d = coat._distance(lab, coat.srgb_to_oklab(coat.hex_rgb(palette[slot])))
         return alpha & (d <= np.percentile(d[alpha], 8))
-    ys, xs = np.nonzero(alpha)
-    my = (m * np.arange(m.shape[0])[:, None]).sum() / m.sum()
     out[species] = dict(
-        region=region['region'],
-        share=float(m[alpha].sum() / alpha.sum()),
-        centre=float((my - ys.min()) / (ys.max() - ys.min())),  # 0 top of the figure, 1 its feet
-        coat=float(m[near('coat')].mean()),
-        mane=float(m[near('mane')].mean()),
-        problems=[p[0] for p in coat.mask_problems(Image.fromarray((m * 255).round().astype(np.uint8), 'L'),
-                                                    Image.fromarray(rgba, 'RGBA'), mf['coatMasks']['tolerance'])],
+        regions=[parts[p]['region'] for p in coat.PARTS],
+        main=float(R[alpha].mean()), accent=float(G[alpha].mean()),
+        both=float((np.minimum(R, G) > 0.5).sum()),
+        figure=float(np.abs(B - rgba[..., 3] / 255.0).max()),
+        at={slot: [float(R[near(slot)].mean()), float(G[near(slot)].mean())] for slot in ('coat', 'mane', 'skin') if slot in palette},
+        problems=[p[0] for p in coat.mask_problems(Image.fromarray(mask, 'RGB'), Image.fromarray(rgba, 'RGBA'),
+                                                    mf['coatMasks']['tolerance'])],
     )
 print(json.dumps(out))
 `);
     const { unicorn, bigfoot } = result;
-    expect(unicorn.region).toBe("coat");
-    expect(unicorn.share).toBeGreaterThan(0.45); // the light coat is most of her
-    expect(unicorn.share).toBeLessThan(0.8);
-    expect(unicorn.centre).toBeGreaterThan(0.3); // her body, not her head
-    expect(unicorn.coat).toBeGreaterThan(0.8);
-    expect(unicorn.mane).toBeLessThan(0.2); // the mane stays her painted accent
+    expect(unicorn.regions).toEqual(["coat", "mane"]);
+    expect(unicorn.main).toBeGreaterThan(0.45); // the light coat is most of her
+    expect(unicorn.main).toBeLessThan(0.8);
+    expect(unicorn.accent).toBeGreaterThan(0.1);
+    expect(unicorn.at.coat[0]).toBeGreaterThan(0.8); // R: her coat ...
+    expect(unicorn.at.coat[1]).toBeLessThan(0.1);
+    expect(unicorn.at.mane[1]).toBeGreaterThan(0.8); // G: her purple mane ...
+    expect(unicorn.at.mane[0]).toBeLessThan(0.1);
+    expect(unicorn.both).toBe(0); // no pixel strongly in both
+    expect(unicorn.figure).toBeLessThan(1 / 255 + 1e-9); // B is her alpha
     expect(unicorn.problems).toEqual([]);
 
-    expect(bigfoot.region).toBe("mane");
-    expect(bigfoot.share).toBeGreaterThan(0.15);
-    expect(bigfoot.share).toBeLessThan(0.45);
-    expect(bigfoot.centre).toBeLessThan(0.4); // head and shoulders
-    expect(bigfoot.mane).toBeGreaterThan(0.8);
-    expect(bigfoot.coat).toBeLessThan(0.15); // not the cream coat
+    expect(bigfoot.regions).toEqual(["fur", "skin"]);
+    expect(bigfoot.main).toBeGreaterThan(0.3);
+    expect(bigfoot.accent).toBeGreaterThan(0.08);
+    expect(bigfoot.at.coat[0]).toBeGreaterThan(0.8); // R: his cream fur ...
+    expect(bigfoot.at.coat[1]).toBeLessThan(0.1);
+    expect(bigfoot.at.skin[1]).toBeGreaterThan(0.8); // G: the tan skin of his face and feet ...
+    expect(bigfoot.at.skin[0]).toBeLessThan(0.1);
+    expect(bigfoot.at.mane[0] + bigfoot.at.mane[1]).toBeLessThan(0.15); // and his brown mane is neither
+    expect(bigfoot.both).toBe(0);
+    expect(bigfoot.figure).toBeLessThan(1 / 255 + 1e-9);
     expect(bigfoot.problems).toEqual([]);
   });
 
-  it("writes beside each painting and never replaces a mask without --force", () => {
+  it("writes an RGB mask beside each painting and never replaces a mask without --force", () => {
     const result = run(`
 import importlib.util, contextlib, io
 spec = importlib.util.spec_from_file_location('coat_draft', os.path.join(${JSON.stringify(art)}, 'coat-draft.py'))
@@ -142,7 +208,7 @@ with tempfile.TemporaryDirectory() as out:
         draft.main(args)
     written = sorted(str(p.relative_to(out)) for p in Path(out).rglob('*.png'))
     target = Path(coat.asset('characters/bigfoot/fledgling/coat-mask.png', out))
-    Image.new('L', (4, 4), 7).save(target)
+    Image.new('RGB', (4, 4), 7).save(target)
     with contextlib.redirect_stdout(io.StringIO()):
         draft.main(args)
     kept = Image.open(target).size
@@ -153,22 +219,31 @@ with tempfile.TemporaryDirectory() as out:
 `);
     expect(result.written).toEqual(["assets/characters/bigfoot/fledgling/coat-mask.png"]);
     expect(result.kept).toEqual([4, 4]);
-    expect(result.replaced).toEqual([[1024, 1024], "L"]);
+    expect(result.replaced).toEqual([[1024, 1024], "RGB"]);
   });
 
-  it("leaves an opaque painting's backdrop out of the draft", () => {
+  it("leaves an opaque painting's backdrop out of every channel, the figure included", () => {
     const r = run(`
-# a brown mane on a cream figure, on a brown backdrop: the mane is drafted, the backdrop is not
-im = Image.new('RGB', (400, 400), (70, 58, 46))
+# a gear-portrait-like fixture: a cream figure with a brown mane and tan face, on a dark backdrop
+im = Image.new('RGB', (400, 400), (32, 30, 52))
 d = ImageDraw.Draw(im)
 d.ellipse((100, 60, 300, 380), fill=(242, 234, 225))
 d.ellipse((150, 90, 250, 200), fill=(76, 63, 50))
+d.ellipse((175, 115, 225, 165), fill=(230, 180, 129))
 rgba = np.asarray(im.convert('RGBA'))
-m = coat.draft_mask(rgba, '#4C3F32').astype(float) / 255
-print(json.dumps(dict(mane=float(m[120:170, 180:220].mean()), backdrop=float(m[:40].mean() + m[:, :60].mean()))))
+m = coat.draft_parts(rgba, '#F2EAE1', '#E6B481').astype(float) / 255
+R, G, B = m[..., 0], m[..., 1], m[..., 2]
+backdrop = lambda ch: float(ch[:40].mean() + ch[:, :60].mean())
+print(json.dumps(dict(
+    body=float(R[260:340, 160:240].mean()), face=float(G[130:150, 190:210].mean()),
+    figure=float(B[100:360, 140:260].mean()),
+    backdrop=[backdrop(R), backdrop(G), backdrop(B)],
+)))
 `);
-    expect(r.mane).toBeGreaterThan(0.9);
-    expect(r.backdrop).toBeLessThan(0.01);
+    expect(r.body).toBeGreaterThan(0.9);
+    expect(r.face).toBeGreaterThan(0.9);
+    expect(r.figure).toBeGreaterThan(0.95);
+    for (const leak of r.backdrop) expect(leak).toBeLessThan(0.01);
   });
 });
 
@@ -196,5 +271,22 @@ print(json.dumps(dict(
     expect(r.order).toBe(true); // highlights stay highlights
     expect(r.hue).toBeLessThan(3); // the coat's hue, gamut kept by chroma not by clipping
     expect(r.brightest).toBeLessThan(252); // lightness clamped at 0.98: never blown out to pure white
+  });
+
+  it("colours a painting's two parts, each through its own channel, and leaves the rest as painted", () => {
+    const r = run(`
+rgba = np.zeros((1, 3, 4), np.uint8); rgba[..., 3] = 255
+rgba[0, :, :3] = [[220, 220, 220], [120, 60, 140], [30, 30, 30]]
+mask = np.zeros((1, 3, 3), np.uint8); mask[0, 0, 0] = 255; mask[0, 1, 1] = 255; mask[..., 2] = 255
+out = coat.tint(coat.tint(rgba, mask[..., 0], '#E8326E'), mask[..., 1], '#2E8B57')
+lab = coat.srgb_to_oklab(out[0, :, :3] / 255.0)
+hue = lambda v: float(np.degrees(np.arctan2(v[2], v[1])))
+want = lambda h: hue(coat.srgb_to_oklab(coat.hex_rgb(h)))
+print(json.dumps(dict(main=abs(hue(lab[0]) - want('#E8326E')), accent=abs(hue(lab[1]) - want('#2E8B57')),
+                      rest=out[0, 2].tolist() == rgba[0, 2].tolist())))
+`);
+    expect(r.main).toBeLessThan(3);
+    expect(r.accent).toBeLessThan(3);
+    expect(r.rest).toBe(true);
   });
 });

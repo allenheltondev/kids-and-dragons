@@ -8,8 +8,8 @@
  * The design measures each colour as the mean of her coloured region, applied
  * to her base painting at the size a phone's portrait draws it. No real mask
  * is shipped yet (#667, #668), so the hero here is a stand-in: a body painted
- * in her species' own region colour (the manifest palette slot `art:coat-draft`
- * picks the region by), with painted shading and a soft-edged mask, at 96
+ * in her species' own region colour (the palette slot her starters were tuned
+ * on, `TUNED_ON` below), with painted shading and a soft-edged mask, at 96
  * pixels (a phone portrait's well), tinted by this tinter and averaged in
  * linear light as the screen does. When the masks land, swap the stand-in for
  * the base painting and its mask; the thresholds stay.
@@ -50,11 +50,25 @@ function seen(lab: Lab, vision: string): Lab {
   return linearToOklab(out[0]!, out[1]!, out[2]!);
 }
 
-/** Her species' region as painted: the palette slot the draft picks it out by. */
+/**
+ * The palette slot each species' starter colours were chosen against: the one region of the
+ * one-region masks (#673). The masks now carry two parts per species (a main and an accent,
+ * manifest `coatMasks.regions`), and which part a catalog colour goes on is the catalog's
+ * call; until it makes it, the stand-in keeps the painted colour these were tuned on.
+ */
+const TUNED_ON: Record<SpeciesId, string> = {
+  unicorn: "coat",
+  bigfoot: "mane",
+  dragonling: "coat",
+  griffin: "mane",
+  kitsune: "mane",
+  manticore: "mane",
+};
+
+/** Her species' region as painted, the colour her starters were tuned on. */
 function regionColor(species: SpeciesId): string {
-  const slot = (manifest.coatMasks.regions as Record<string, { draftFrom: string }>)[species]!.draftFrom;
   const palette = manifest.species.find((s) => s.id === species)!.palette as Record<string, string>;
-  return palette[slot]!;
+  return palette[TUNED_ON[species]]!;
 }
 
 /** The colour on the rendered stand-in hero: her region, tinted, averaged as a phone shows it. */

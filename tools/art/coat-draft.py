@@ -8,8 +8,10 @@ Writes a draft coat mask for every painting of a species, in all three families:
     class  assets/character-rigs/<class>/<tier>/<species>/coat-mask.png
     gear   assets/gear-portraits/<class>/<tier>/<species>.coat-mask.png
 
-The region is the species' own (assets/manifest.json -> coatMasks.regions), picked out by
-colour from its palette slot as the proof of concept did. A draft is a starting point, never
+A mask is 8-bit RGB: R the species' main part and G its accent part (assets/manifest.json ->
+coatMasks.regions), each picked out by colour from its palette slot as the proof of concept did,
+a pixel near both going to the nearer; B the figure, the painting's alpha or, on an opaque gear
+portrait, everything the backdrop flood does not reach. A draft is a starting point, never
 shipped as is: it bleeds wherever two parts share a colour. Clean it by hand, look at it on
 `npm run art:sheet`, then list its painting in manifest coatMasks.paintings. Until it is listed,
 `npm run art:verify` fails on it.
@@ -59,12 +61,16 @@ def main(argv: list[str] | None = None) -> int:
     if args.species not in regions:
         print(f"unknown species {args.species!r}; known: {', '.join(regions)}", file=sys.stderr)
         return 2
-    region = regions[args.species]
-    seed = coat.palette_of(mf, args.species)[region["draftFrom"]]
+    parts = regions[args.species]
+    palette = coat.palette_of(mf, args.species)
+    seeds = [palette[parts[name]["draftFrom"]] for name in coat.PARTS]
     out_root = args.out or args.root
 
-    print(f"{args.species}: drafting the {region['region']} from palette {region['draftFrom']} {seed}"
-          + ("" if region.get("confirmed") else "  (region not yet confirmed: hero-looks.md section 4.2)"))
+    for channel, name, seed in zip("RG", coat.PARTS, seeds):
+        part = parts[name]
+        print(f"{args.species}: {channel} = {name} part, the {part['region']}, from palette {part['draftFrom']} {seed}"
+              + ("" if part.get("confirmed") else "  (not yet confirmed: hero-looks.md section 4.2)"))
+    print(f"{args.species}: B = the figure, from the painting's alpha (an opaque gear portrait: all but its backdrop)")
 
     wrote = skipped = missing = 0
     for p in coat.paintings(mf, args.species):
@@ -82,10 +88,11 @@ def main(argv: list[str] | None = None) -> int:
             skipped += 1
             continue
         rgba = np.asarray(Image.open(src).convert("RGBA"))
-        mask = coat.draft_mask(rgba, seed)
+        mask = coat.draft_parts(rgba, *seeds)
         os.makedirs(os.path.dirname(dst), exist_ok=True)
-        Image.fromarray(mask, "L").save(dst)
-        print(f"  draft {p.mask}  {mask.mean() / 255:.1%} of the canvas")
+        Image.fromarray(mask, "RGB").save(dst)
+        main, accent, figure = (mask[..., c].mean() / 255 for c in range(3))
+        print(f"  draft {p.mask}  main {main:.1%}, accent {accent:.1%}, figure {figure:.1%} of the canvas")
         wrote += 1
 
     print(f"\n{wrote} draft(s) written, {skipped} kept, {missing} painting(s) not delivered.")

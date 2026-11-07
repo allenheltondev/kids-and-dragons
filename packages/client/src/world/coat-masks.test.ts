@@ -29,10 +29,15 @@ const heroPaintings = (): string[] => {
 };
 
 describe("coat masks", () => {
-  it("names a region for every species, as §4.2 decided for unicorn and Bigfoot", () => {
-    for (const { id } of manifest.species) expect(coatRegionOf(id as SpeciesId)).toBeTruthy();
-    expect(coatRegionOf("unicorn")).toBe("coat");
-    expect(coatRegionOf("bigfoot")).toBe("mane");
+  it("names a main and an accent part for every species, as §4.2 decided for unicorn and Bigfoot", () => {
+    for (const { id } of manifest.species) {
+      const { main, accent } = coatRegionOf(id as SpeciesId);
+      expect(main).toBeTruthy();
+      expect(accent).toBeTruthy();
+      expect(main).not.toBe(accent);
+    }
+    expect(coatRegionOf("unicorn")).toEqual({ main: "coat", accent: "mane" });
+    expect(coatRegionOf("bigfoot")).toEqual({ main: "fur", accent: "skin" });
   });
 
   it("lists only paintings a hero is drawn with", () => {

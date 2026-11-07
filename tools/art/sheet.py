@@ -19,9 +19,10 @@ Usage:
     python tools/art/sheet.py --coat          # only the colour pages (hero-looks.md section 4.3)
 
 A species with any coat mask on disk (drafted or shipped) also gets colour pages,
-art/review/<species>/coat-<family>.png: each painting, its mask overlaid, and the region in
-four test tints (light, dark, saturated, grey). A gear portrait is opaque, so this page is the
-only check that its background stays out of the mask.
+art/review/<species>/coat-<family>.png: each painting, its mask's three channels overlaid (main,
+accent, figure), the main and accent parts in four test pairings of light, dark, saturated and
+grey, and a whole-figure gold preview through the figure channel. A gear portrait is opaque, so
+this page is the only check that its background stays out of the mask.
 
 Writes to art/review/<species>/. Sets that have not been delivered yet are skipped,
 not failed - only unicorn exists today.
@@ -317,15 +318,22 @@ def species_sheet(species: dict, sets: dict, canvas: dict, tol: dict) -> Image.I
 
 # hero-looks.md section 4.3, step 3: one light, one dark, one saturated, one grey
 TEST_TINTS = (("light", "#F7E9A8"), ("dark", "#23264A"), ("saturated", "#E8326E"), ("grey", "#9A9A9A"))
+# each part takes every test tint once, against a contrasting one on the other part
+TEST_PAIRS = (("light", "dark"), ("dark", "light"), ("saturated", "grey"), ("grey", "saturated"))
+# a special look over the whole figure (section 5.5), through the mask's B
+GOLD = "#E2B341"
 COAT_CELL = 220
-OVERLAY = (255, 0, 200)
+# the overlay's three channels, told apart at a glance: main, accent, figure
+OVERLAY = ((255, 0, 200), (0, 200, 255), (255, 214, 0))
 
 
 def coat_row(p, painting: Image.Image, mask: Image.Image, listed: bool) -> Image.Image:
-    """One painting's line on the colour page: as painted, the mask overlaid, four tints."""
+    """One painting's line on the colour page: as painted, the mask's channels overlaid, the
+    two parts in four test pairings, and gold over the whole figure."""
     work = COAT_CELL * 2  # tint at twice the cell, not the full canvas: a review, not a render
     rgba = np.asarray(painting.convert("RGBA").resize((work, work), Image.LANCZOS))
-    m = np.asarray(mask.convert("L").resize((work, work), Image.LANCZOS))
+    channels = mask.convert("RGB").resize((work, work), Image.LANCZOS)
+    main, accent, figure = (np.asarray(channels.getchannel(c)) for c in range(3))
 
     def cell(arr: np.ndarray) -> Image.Image:
         im = Image.fromarray(arr, "RGBA").resize((COAT_CELL, COAT_CELL), Image.LANCZOS)
@@ -333,26 +341,35 @@ def coat_row(p, painting: Image.Image, mask: Image.Image, listed: bool) -> Image
         plate.paste(im, (0, 0), im)
         return plate
 
-    w = (m.astype(np.float64) / 255.0 * 0.7)[..., None]
+    # the figure faintly under both parts, so a part outside it shows as an untinted edge
     over = rgba.copy()
-    over[..., :3] = (rgba[..., :3] * (1 - w) + np.array(OVERLAY) * w).round().astype(np.uint8)
-    # the mask shows even where the painting is transparent, so a spill is visible
-    over[..., 3] = np.maximum(rgba[..., 3], (m * 0.7).astype(np.uint8))
+    seen = rgba[..., 3].astype(np.float64)
+    for m, colour, strength in ((figure, OVERLAY[2], 0.35), (main, OVERLAY[0], 0.7), (accent, OVERLAY[1], 0.7)):
+        w = (m.astype(np.float64) / 255.0 * strength)[..., None]
+        over[..., :3] = (over[..., :3] * (1 - w) + np.array(colour) * w).round().astype(np.uint8)
+        # the mask shows even where the painting is transparent, so a spill is visible
+        seen = np.maximum(seen, m * strength)
+    over[..., 3] = seen.astype(np.uint8)
 
-    coverage = float(np.asarray(mask.convert("L"), dtype=np.float64).mean() / 255.0)
+    full = np.asarray(mask.convert("RGB"), dtype=np.float64) / 255.0
+    share = [f"{full[..., c].mean():.0%}" for c in range(3)]
+    tints = dict(TEST_TINTS)
     title = p.painting
     tiles = [
         card(cell(rgba), "as painted", PAPER, title if len(title) < 34 else "..." + title[-31:]),
-        card(cell(over), "mask", PAPER, f"{coverage:.1%} of canvas" + ("" if listed else ", unlisted")),
+        card(cell(over), "main / accent / figure", PAPER, " / ".join(share) + ("" if listed else ", unlisted")),
     ]
-    for name, hex_ in TEST_TINTS:
-        tiles.append(card(cell(coat.tint(rgba, m, hex_)), name, PAPER, hex_))
+    for main_name, accent_name in TEST_PAIRS:
+        tinted = coat.tint(coat.tint(rgba, main, tints[main_name]), accent, tints[accent_name])
+        tiles.append(card(cell(tinted), f"{main_name} / {accent_name}", PAPER,
+                          f"{tints[main_name]} / {tints[accent_name]}"))
+    tiles.append(card(cell(coat.tint(rgba, figure, GOLD)), "gold (figure)", PAPER, GOLD))
     return row(tiles)
 
 
 def coat_pages(mf: dict, species: dict, root: str = ROOT) -> dict[str, Image.Image]:
     """The colour pages for one species, per family, for every painting with a mask on disk."""
-    region = mf["coatMasks"]["regions"].get(species["id"], {})
+    parts = mf["coatMasks"]["regions"].get(species["id"], {})
     listed = set(mf["coatMasks"].get("paintings", []))
     rows: dict[str, list[Image.Image]] = {}
     for p in coat.paintings(mf, species["id"]):
@@ -364,9 +381,12 @@ def coat_pages(mf: dict, species: dict, root: str = ROOT) -> dict[str, Image.Ima
     pages: dict[str, Image.Image] = {}
     for family, lines in rows.items():
         width = max(r.width for r in lines)
-        sub = (f"region: {region.get('region', '?')}"
-               + ("" if region.get("confirmed") else " (to confirm)")
-               + "   |   only the region moves; soft edges stay soft"
+        named = [f"{name} ({shown}): {parts.get(name, {}).get('region', '?')}"
+                 for name, shown in zip(coat.PARTS, ("pink", "blue"))]
+        unconfirmed = [name for name in coat.PARTS if not parts.get(name, {}).get("confirmed")]
+        sub = ("   ".join(named) + "   figure (yellow)"
+               + (f" ({', '.join(unconfirmed)} to confirm)" if unconfirmed else "")
+               + "   |   only the parts move; soft edges stay soft"
                + ("   |   opaque: the background must stay out" if family == "gear" else ""))
         pages[family] = page([heading(f"{species['id']} - colour ({family})", sub, width), *lines])
     return pages

@@ -18,26 +18,35 @@ import { coatMaskFor, maskPathBeside } from "./art-paths";
 
 export { maskPathBeside };
 
-/** The part of a species that takes her colour (§4.2). The code says `coat` whatever it is. */
-export type CoatRegion = "coat" | "mane" | "scales" | "feathers" | "fur";
+/**
+ * The name of a part of a species that takes a colour (§4.2), shown to the kid as its shelf
+ * label (capitalised). The mask's R channel is her main part, G her accent part, B her figure.
+ */
+export type CoatRegion = "coat" | "mane" | "scales" | "feathers" | "fur" | "skin" | "wings" | "tails" | "tail" | "belly";
 
 interface CoatRegionEntry {
   region: CoatRegion;
-  /** The species palette slot `art:coat-draft` picks the region out by. Art-tool only. */
+  /** The species palette slot `art:coat-draft` picks the part out by. Art-tool only. */
   draftFrom: string;
-  /** False until the region is confirmed on the species' clean masks. */
+  /** False until the part is confirmed on the species' clean masks. */
   confirmed: boolean;
 }
 
-const REGIONS = coatMasks.regions as Record<SpeciesId, CoatRegionEntry>;
+/** A species' two colourable parts: the main (the mask's R) and the accent (its G). */
+export interface CoatRegions {
+  main: CoatRegion;
+  accent: CoatRegion;
+}
+
+const REGIONS = coatMasks.regions as Record<SpeciesId, { main: CoatRegionEntry; accent: CoatRegionEntry }>;
 
 /** Paintings with a shipped mask, as paths under /assets/. */
 const SHIPPED: readonly string[] = coatMasks.paintings as readonly string[];
 let masked: ReadonlySet<string> = new Set(SHIPPED);
 
-/** Which part of a species her colour goes on (§4.2). */
-export function coatRegionOf(species: SpeciesId): CoatRegion {
-  return REGIONS[species].region;
+/** Which parts of a species her colours go on (§4.2). */
+export function coatRegionOf(species: SpeciesId): CoatRegions {
+  return { main: REGIONS[species].main.region, accent: REGIONS[species].accent.region };
 }
 
 /** The paintings with a mask, as paths under /assets/ (the manifest's list, or a test's). */
