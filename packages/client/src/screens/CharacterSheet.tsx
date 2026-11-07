@@ -156,9 +156,7 @@ export function CharacterSheet({ member, isMe, items, explore = false, partySize
         <span className="sheetview__portrait" aria-hidden="true">
           <CharacterPortrait
             backdrop
-            species={character.species}
-            characterClass={character.class}
-            tier={character.tier}
+            hero={character}
             accent={character.appearance.accent}
             size="100%"
             lit

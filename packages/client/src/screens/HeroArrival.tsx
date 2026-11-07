@@ -28,7 +28,7 @@ export function HeroArrival(): React.JSX.Element | null {
   if (!active || active.runId !== session?.runId) return null;
   const hero = active.hero;
   return <div className="hero-arrival" role="status" aria-live="polite">
-    <CharacterPortrait species={hero.species} characterClass={hero.class} tier={hero.tier}
+    <CharacterPortrait hero={hero}
       accent={hero.appearance.accent} lit className="hero-arrival__portrait" />
     <strong>Meet {hero.name}!</strong>
     <span>Your adventure is waiting.</span>

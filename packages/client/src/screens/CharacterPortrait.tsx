@@ -7,6 +7,11 @@
  * so a unicorn looks like the same unicorn everywhere — the same rule scene.ts
  * follows for the two Pixi stages.
  *
+ * A player's hero is passed whole (`hero`) and drawn through the hero-art
+ * resolver (`useHeroArt`, docs/hero-looks.md §9), so she wears her look on
+ * every still. A species with no hero behind it yet (creation's cards) passes
+ * `species` instead, and is drawn as painted.
+ *
  * Three things it has to get right:
  *
  *   - **It never breaks a screen.** Art is a separate deploy from the bundle
@@ -27,12 +32,9 @@
 import { useState } from "react";
 import type { CSSProperties, ReactElement } from "react";
 import type { ClassId, SpeciesId, TierId } from "@kad/shared";
-import {
-  ANCHOR_Y,
-  STARTING_TIER,
-  characterArtUrl,
-  characterPortraitArtUrl,
-} from "../world/art-paths";
+import { ANCHOR_Y, STARTING_TIER } from "../world/art-paths";
+import { heroBase, type HeroArtSubject } from "../world/hero-art";
+import { useHeroArt } from "../world/hero-art-dom";
 import { Icon } from "./icons";
 import "./CharacterPortrait.css";
 
@@ -58,12 +60,27 @@ export function isMissingArt(failedSrc: string | null, src: string): boolean {
   return failedSrc !== null && failedSrc === src;
 }
 
-export interface CharacterPortraitProps {
-  species: SpeciesId;
-  /** Enables an approved creature/class/tier gear portrait when one exists. */
-  characterClass?: ClassId;
-  /** Defaults to the tier every character starts at. */
-  tier?: TierId;
+/** Who is drawn: a player's hero, or (creation) a species with no hero yet. */
+export type CharacterPortraitSubject =
+  | {
+      /** A player's hero, or the hero at a tier she is growing into (`{ ...character, tier }`). */
+      hero: HeroArtSubject;
+      species?: never;
+      characterClass?: never;
+      tier?: never;
+    }
+  | {
+      hero?: never;
+      species: SpeciesId;
+      /** Enables an approved creature/class/tier gear portrait when one exists. */
+      characterClass?: ClassId;
+      /** Defaults to the tier every character starts at. */
+      tier?: TierId;
+    };
+
+export type CharacterPortraitProps = CharacterPortraitSubject & PortraitLook;
+
+interface PortraitLook {
   /** Any CSS length. The art scales to fit; the box is what you size. */
   size?: string;
   /**
@@ -92,22 +109,24 @@ export interface CharacterPortraitProps {
   className?: string;
 }
 
-export function CharacterPortrait({
-  species,
-  characterClass,
-  tier = STARTING_TIER,
-  size,
-  lit = false,
-  accent,
-  backdrop = false,
-  float = false,
-  stand = "centre",
-  className = "",
-}: CharacterPortraitProps): ReactElement {
+export function CharacterPortrait(props: CharacterPortraitProps): ReactElement {
+  const {
+    size,
+    lit = false,
+    accent,
+    backdrop = false,
+    float = false,
+    stand = "centre",
+    className = "",
+  } = props;
+  const subject: HeroArtSubject =
+    props.hero !== undefined
+      ? props.hero
+      : { species: props.species, tier: props.tier ?? STARTING_TIER, class: props.characterClass };
   const [failedGearSrc, setFailedGearSrc] = useState<string | null>(null);
   const [failedBaseSrc, setFailedBaseSrc] = useState<string | null>(null);
-  const baseSrc = characterArtUrl(species, tier);
-  const preferredSrc = characterPortraitArtUrl(species, tier, characterClass);
+  const baseSrc = useHeroArt(heroBase(subject), "portrait");
+  const preferredSrc = useHeroArt(subject, "portrait");
   const gearSrc = preferredSrc === baseSrc ? null : preferredSrc;
   // A separately deployed gear portrait may briefly 404 before its bundle
   // catches up. Step down to the known species art before conceding to an icon.
@@ -130,11 +149,11 @@ export function CharacterPortrait({
     <span
       className={`portrait portrait--${stand}${backdrop ? " portrait--backdrop" : ""}${showingGear ? " portrait--gear" : ""}${float ? " portrait--float" : ""}${lit ? " portrait--lit" : ""} ${className}`.trim()}
       style={style}
-      data-species={species}
-      data-character-class={characterClass}
+      data-species={subject.species}
+      data-character-class={subject.class}
     >
       {missing ? (
-        <Icon name={species} className="portrait__fallback" size="72%" />
+        <Icon name={subject.species} className="portrait__fallback" size="72%" />
       ) : (
         <img
           className="portrait__img"

@@ -355,6 +355,7 @@ test enumerates it (below).
 | TV combat board | `world/board.ts` | world |
 | Camp and the lobby's camp | `world/camp.ts`, `world/lobby-camp.ts` | world |
 | Still stage (no WebGL) | `world/StaticStage.tsx` | world |
+| Still camp (no WebGL) | `world/StillCamp.tsx` | world |
 | Story interactions | `screens/InteractionArt.tsx`, `screens/InteractionExtras.tsx` | world |
 | Minigames | `screens/SkillGame.tsx`, `screens/RelayGame.tsx`, `screens/RelayFlightGame.tsx` | world |
 | Portraits: phones, the book, arrivals | `screens/CharacterPortrait.tsx` and its callers | portrait |

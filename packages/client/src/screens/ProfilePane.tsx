@@ -292,8 +292,7 @@ function Page({ journal, profile }: { journal: JournalResponse; profile: KidProf
 function HeroFrame({ hero, frame, small = false }: { hero: ResolvedCharacter; frame: HeroFrameId; small?: boolean }): ReactElement {
   return (
     <div className={`profile__frame profile__frame--${frame}${small ? " profile__frame--small" : ""}`} data-frame={frame}>
-      <CharacterPortrait backdrop lit size="100%" species={hero.species} accent={hero.appearance.accent}
-        tier={hero.tier} characterClass={hero.class} />
+      <CharacterPortrait backdrop lit size="100%" hero={hero} accent={hero.appearance.accent} />
     </div>
   );
 }

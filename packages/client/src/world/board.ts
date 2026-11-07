@@ -84,7 +84,6 @@ import {
   WALK_RATE,
   approach,
   biomeTilesUrl,
-  characterWorldArtUrl,
   drawContactShadow,
   drawPlaceholder,
   enemyArtUrl,
@@ -95,6 +94,7 @@ import {
   shadowOffset,
   type Footprint,
 } from "./actor-art";
+import { loadHeroTexture } from "./hero-art-pixi";
 
 import {
   createNameplate,
@@ -566,16 +566,8 @@ export function createBoardLayer(): BoardLayer {
     }
   }
 
-  function artUrlFor(combatant: Combatant, current: BoardViewState): string | null {
-    if (combatant.side === "party") {
-      const member = current.party.find((m) => m.character.id === combatant.id);
-      if (!member) return null;
-      return characterWorldArtUrl(
-        member.character.species,
-        member.character.tier,
-        member.character.class,
-      );
-    }
+  /** An enemy's cutout. A hero's comes from hero-art (`loadCutout`). */
+  function enemyArtUrlFor(combatant: Combatant, current: BoardViewState): string | null {
     // Enemy ids are `<specId>#<n>` (encounter.ts); the art hangs off the spec.
     const specId = combatant.id.split("#")[0] ?? combatant.id;
     const art = current.enemyArt[specId];
@@ -671,46 +663,51 @@ export function createBoardLayer(): BoardLayer {
     // placeholder when it is not there. A list of "delivered art" goes stale;
     // a 404 cannot.
     const loadCutout = (): void => {
-      const url = artUrlFor(combatant, current);
+      const show = (texture: Texture): void => {
+        // Identity, not id — a stale resolve must not draw into a destroyed
+        // container after the fight rebuilt this figure.
+        if (destroyed || actors.get(combatant.id) !== actor) return;
+        const sprite = new Sprite(texture);
+        sprite.anchor.set(ANCHOR_X, ANCHOR_Y);
+        clearTimeout(reveal);
+        art.removeChildren();
+        placeholder.destroy();
+        art.addChild(sprite);
+        // Some art fills a fifth of its canvas (a will-o'-wisp is a small
+        // flame by design): the painting is measured, and the canvas scaled
+        // so the painting is the figure's true height (sizeActors).
+        actor.sprite = sprite;
+        actor.paint = measurePaint(texture);
+        actor.footprint = groundedFootprint(measureFootprint(texture), actor.paint);
+        sizeActors();
+        // Refit the shadow to where this figure's feet really are: most art
+        // does not stand on the canvas centre line, and a shadow beside the
+        // feet is what made figures look like they were hovering.
+        const fitted = drawShadow(combatant.side, actor.canvas, actor.footprint);
+        actorContainer.addChildAt(fitted, actorContainer.getChildIndex(actor.shadow));
+        actor.shadow.destroy();
+        actor.shadow = fitted;
+        actor.shadowCanvas = actor.canvas;
+        fitted.x = actor.shadowX * art.scale.x;
+        // Fades up through the same easing that stands a fallen figure back
+        // up (tick), so a figure arrives rather than appearing.
+        if (!actor.down) art.alpha = 0;
+      };
+      const missing = (): void => {
+        // Keep the placeholder, and show it now: a missing figure must never
+        // blank the board.
+        clearTimeout(reveal);
+        if (!placeholder.destroyed) placeholder.visible = true;
+        if (!actor.shadow.destroyed) actor.shadow.visible = true;
+      };
+      if (combatant.side === "party") {
+        const member = current.party.find((m) => m.character.id === combatant.id);
+        if (member) loadHeroTexture(member.character, "world", show, { missing });
+        return;
+      }
+      const url = enemyArtUrlFor(combatant, current);
       if (!url) return;
-      void Assets.load<Texture>(url)
-        .then((texture) => {
-          // Identity, not id — a stale resolve must not draw into a destroyed
-          // container after the fight rebuilt this figure.
-          if (destroyed || actors.get(combatant.id) !== actor) return;
-          const sprite = new Sprite(texture);
-          sprite.anchor.set(ANCHOR_X, ANCHOR_Y);
-          clearTimeout(reveal);
-          art.removeChildren();
-          placeholder.destroy();
-          art.addChild(sprite);
-          // Some art fills a fifth of its canvas (a will-o'-wisp is a small
-          // flame by design): the painting is measured, and the canvas scaled
-          // so the painting is the figure's true height (sizeActors).
-          actor.sprite = sprite;
-          actor.paint = measurePaint(texture);
-          actor.footprint = groundedFootprint(measureFootprint(texture), actor.paint);
-          sizeActors();
-          // Refit the shadow to where this figure's feet really are: most art
-          // does not stand on the canvas centre line, and a shadow beside the
-          // feet is what made figures look like they were hovering.
-          const fitted = drawShadow(combatant.side, actor.canvas, actor.footprint);
-          actorContainer.addChildAt(fitted, actorContainer.getChildIndex(actor.shadow));
-          actor.shadow.destroy();
-          actor.shadow = fitted;
-          actor.shadowCanvas = actor.canvas;
-          fitted.x = actor.shadowX * art.scale.x;
-          // Fades up through the same easing that stands a fallen figure back
-          // up (tick), so a figure arrives rather than appearing.
-          if (!actor.down) art.alpha = 0;
-        })
-        .catch(() => {
-          // Keep the placeholder, and show it now: a missing enemy must never
-          // blank the board.
-          clearTimeout(reveal);
-          if (!placeholder.destroyed) placeholder.visible = true;
-          if (!actor.shadow.destroyed) actor.shadow.visible = true;
-        });
+      void Assets.load<Texture>(url).then(show).catch(missing);
     };
 
     if(actor.retreatUrl)void Assets.load<Texture>(actor.retreatUrl).catch(()=>{});

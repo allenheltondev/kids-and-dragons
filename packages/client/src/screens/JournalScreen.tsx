@@ -386,8 +386,7 @@ function HeroPane({ journal, onPlay, onOpen }: { journal: JournalResponse; onPla
                   <button type="button" className={`journal__pick kad-tap kad-focusable${on ? " journal__pick--on" : ""}`}
                     aria-pressed={on} onClick={() => choose(h.id)}>
                     <span className="journal__pick-art" aria-hidden="true">
-                      <CharacterPortrait backdrop species={h.species} accent={h.appearance.accent}
-                        tier={h.tier} characterClass={h.class} lit={on} />
+                      <CharacterPortrait backdrop hero={h} accent={h.appearance.accent} lit={on} />
                     </span>
                     <span className="journal__pick-name">{h.name}</span>
                   </button>

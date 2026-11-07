@@ -281,10 +281,8 @@ export function DiceOverlay(): ReactElement | null {
           {roller === null ? null : (
             <CharacterPortrait
               backdrop
-              species={roller.character.species}
+              hero={roller.character}
               accent={roller.character.appearance.accent}
-              tier={roller.character.tier}
-              characterClass={roller.character.class}
               className="dice__roller"
             />
           )}

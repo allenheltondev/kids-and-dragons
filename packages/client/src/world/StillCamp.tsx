@@ -37,6 +37,7 @@ import leafArt from "../assets/painted/leaf.webp";
 import { campAccent } from "./camp-accents";
 import { lobbyInsetBottom, lobbyInsetTop, onLobbyInset, onLobbyInsetTop } from "./stage-inset";
 import { ANCHOR_Y } from "./art-paths";
+import { HeroImage } from "./hero-art-dom";
 import { NOMINAL_PAINT } from "./figure-scale";
 import { CampBedroll, CampClothArt } from "./CampBedroll";
 import { Campfire } from "./Campfire";
@@ -339,7 +340,7 @@ export function StillCamp({ layout, state, insets, onSpot, activeSpot = null, fi
               zIndex: Math.round(figure.y * 1000),
             }}
           >
-            {figure.url ? <img src={figure.url} alt="" /> : null}
+            {figure.hero ? <HeroImage hero={figure.hero} place="world" alt="" /> : figure.url ? <img src={figure.url} alt="" /> : null}
             {figure.id === "friend:mosshorn" && <span className="kad-static-camp__leaf"><img src={leafArt} alt="" /></span>}
             <span className="kad-static-camp__name">{figure.friend ?? state.party.find(member => member.character.id === figure.id)?.character.name}</span>
             {figure.friend !== undefined && friendWords?.has(figure.id.slice("friend:".length)) ? (

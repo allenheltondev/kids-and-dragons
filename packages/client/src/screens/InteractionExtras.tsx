@@ -10,7 +10,7 @@
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import { useChapter, useRunState } from "../store";
 import { interactionAppearance } from "../world/riftlight-art";
-import { characterWorldArtUrl } from "../world/art-paths";
+import { HeroImage } from "../world/hero-art-dom";
 import { PaintedCover, PaintedGlyph, propUrl } from "./InteractionArt";
 import { balanceLift, cooperationProgress, balanceReady, interactionActor, interactionClues, playReady, precisionPosition, precisionSuccess, relayHolder, supportPlayers, supportsReady, trackedCover } from "@kad/shared";
 import type { InteractionAction, InteractionOption, InteractionPrompt, PartyMember } from "@kad/shared";
@@ -67,7 +67,7 @@ function HeroChip({ member, state, tone, mark, strain }: {
 }) {
   return <li className={`game-hero${tone ? ` game-hero--${tone}` : ""}${strain ? " game-hero--strain" : ""}`}>
     <span className="game-hero__face">
-      <img src={characterWorldArtUrl(member.character.species, member.character.tier, member.character.class)} alt="" decoding="async" onError={(event) => { event.currentTarget.style.visibility = "hidden"; }} />
+      <HeroImage hero={member.character} place="world" alt="" decoding="async" onError={(event) => { event.currentTarget.style.visibility = "hidden"; }} />
       {mark ? <span className="game-hero__mark" key={mark}><Icon name={mark} /></span> : null}
     </span>
     <span className="game-hero__name">{member.character.name}</span>
@@ -404,7 +404,7 @@ export function Board({ prompt, party, now, answer = [], playerId, stop = null, 
         <ul className="game-bubbles">{(prompt.reactions ?? []).slice(-3).map((reaction, index, shown) => {
           const who = member(reaction.playerId);
           return <li key={(prompt.taps ?? 0) - shown.length + index} className="game-bubble">
-            {who ? <img className="game-bubble__face" src={characterWorldArtUrl(who.character.species, who.character.tier, who.character.class)} alt="" decoding="async" onError={(event) => { event.currentTarget.style.display = "none"; }} /> : null}
+            {who ? <HeroImage className="game-bubble__face" hero={who.character} place="world" alt="" decoding="async" onError={(event) => { event.currentTarget.style.display = "none"; }} /> : null}
             <span><strong>{name(reaction.playerId)}:</strong> {reaction.text}</span>
           </li>;
         })}</ul>

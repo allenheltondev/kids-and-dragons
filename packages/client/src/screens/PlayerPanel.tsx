@@ -312,10 +312,8 @@ function IdentityStrip({ me, onOpenSheet, stats }: { me: PartyMember; onOpenShee
   const portrait = (
     <CharacterPortrait
       backdrop
-      species={character.species}
+      hero={character}
       accent={character.appearance.accent}
-      tier={character.tier}
-      characterClass={character.class}
       className="sheet__art"
     />
   );
@@ -2208,10 +2206,8 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
                   <span className="party-strip__portrait" aria-hidden="true">
                     <CharacterPortrait
                       backdrop
-                      species={member.character.species}
+                      hero={member.character}
                       accent={member.character.appearance.accent}
-                      characterClass={member.character.class}
-                      tier={member.character.tier}
                       className="party-strip__art"
                     />
                   </span>

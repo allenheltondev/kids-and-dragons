@@ -275,7 +275,7 @@ function CrewCamp({
               onClick={() => onHero(h.id)}
             >
               <span className="journal__pick-art" aria-hidden="true">
-                <CharacterPortrait backdrop species={h.species} accent={h.appearance.accent} tier={h.tier} characterClass={h.class} lit={h.id === hero.id} />
+                <CharacterPortrait backdrop hero={h} accent={h.appearance.accent} lit={h.id === hero.id} />
               </span>
               <span className="journal__pick-name">{h.name}</span>
             </button>

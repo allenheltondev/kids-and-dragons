@@ -56,6 +56,8 @@ import {
   drawPlaceholder,
   measurePaint,
 } from "./actor-art";
+import type { HeroArtSubject } from "./hero-art";
+import { loadHeroTexture } from "./hero-art-pixi";
 import {
   campRoute,
   campRoutes,
@@ -119,6 +121,12 @@ export interface CampFigure {
   habit?: CampFriendHabit;
   /** The cutout, or null for the "art pending" placeholder. */
   url: string | null;
+  /**
+   * A player's hero, whose figure is loaded through hero-art (`loadHeroTexture`)
+   * rather than from `url`, so she wears her look (docs/hero-looks.md §9).
+   * `url` is still hers (`heroArtUrl`): it is what a change of figure is noticed by.
+   */
+  hero?: HeroArtSubject;
   /** True height (figure-scale.ts `figureSize`). */
   heightCm: number;
   stance: CastStance;
@@ -1170,21 +1178,20 @@ export function createCamp(app: Application, layout: CampLayout, options: CampOp
   function loadArt(actor: Actor): void {
     const url = actor.def.url;
     if (!url) return;
-    void load(url)
-      .then((texture) => {
-        if (destroyed || actors.get(actor.def.id) !== actor || actor.def.url !== url) return;
-        const sprite = new Sprite(texture);
-        shadeAt(sprite, actor.y);
-        sprite.anchor.set(ANCHOR_X, ANCHOR_Y);
-        actor.sprite?.destroy();
-        actor.sprite = sprite;
-        actor.placeholder.visible = false;
-        actor.art.addChild(sprite);
-        fitArt(actor);
-      })
-      .catch(() => {
-        /* keep the placeholder: a to-do, not a broken image */
-      });
+    const show = (texture: Texture): void => {
+      if (destroyed || actors.get(actor.def.id) !== actor || actor.def.url !== url) return;
+      const sprite = new Sprite(texture);
+      shadeAt(sprite, actor.y);
+      sprite.anchor.set(ANCHOR_X, ANCHOR_Y);
+      actor.sprite?.destroy();
+      actor.sprite = sprite;
+      actor.placeholder.visible = false;
+      actor.art.addChild(sprite);
+      fitArt(actor);
+    };
+    // A failed load keeps the placeholder: a to-do, not a broken image.
+    if (actor.def.hero) loadHeroTexture(actor.def.hero, "world", show, { load });
+    else void load(url).then(show).catch(() => undefined);
   }
 
   function placeAt(actor: Actor, place: Place, face: 1 | -1 | null): void {

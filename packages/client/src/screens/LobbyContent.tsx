@@ -121,10 +121,8 @@ function MemberCard({ member, arriving = false }: { member: PartyMember; arrivin
         <span className="lobby-member__portrait" aria-hidden="true">
           <CharacterPortrait
             backdrop
-            species={character.species}
+            hero={character}
             accent={character.appearance.accent}
-            tier={character.tier}
-            characterClass={character.class}
             className="lobby-member__art"
             lit={member.ready}
           />

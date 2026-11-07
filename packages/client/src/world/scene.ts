@@ -61,8 +61,6 @@ import {
   FALLEN_ROTATION,
   approach,
   biomeBackdropUrl,
-  characterArtUrl,
-  characterWorldArtUrl,
   drawContactShadow,
   drawPlaceholder,
   breathingShadowScale,
@@ -74,6 +72,8 @@ import {
 } from "./actor-art";
 import { drawnHeight, figureSize, fitCanvas, NOMINAL_PAINT, paintAspect, stanceLift, type Overflow, type PaintBox } from "./figure-scale";
 import { sceneBackdropUrl } from "./art-paths";
+import { heroArtUrl } from "./hero-art";
+import { loadHeroTexture } from "./hero-art-pixi";
 import {
   RIFT_FOOT,
   riftPasses,
@@ -114,8 +114,6 @@ import { CAMP_KIT_STYLES } from "./camp-kit-art";
 import { campKitCanvas } from "./camp-kit-canvas";
 import { INDOOR_LIGHT } from "./camp-light";
 import { createShadowLayer, groundShadow } from "./ground-shadows";
-
-export { characterArtUrl };
 
 /**
  * How long the scene-step veil takes to lift after its window — after the
@@ -477,7 +475,7 @@ interface CastActor extends StageFigureArt {
  * cutscene playing over a figure that visibly never transformed.
  *
  * Class matters only when it selects a delivered manifest.figureVariants illustration;
- * `characterWorldArtUrl` folds that exact distinction into the key without
+ * `heroArtUrl` (hero-art.ts) folds that exact distinction into the key without
  * rebuilding an undeclared class/species/tier combination onto the same base
  * illustration. Appearance is deliberately *not* in here. Nothing about a figure is drawn
  * from it any more — the runtime recolour is gone and every figure wears the
@@ -489,8 +487,7 @@ interface CastActor extends StageFigureArt {
  * way `storyFocusTiles` is.
  */
 export function visualKeyOf(member: PartyMember): string {
-  const { species, tier, class: characterClass } = member.character;
-  return characterWorldArtUrl(species, tier, characterClass);
+  return heroArtUrl(member.character, "world");
 }
 
 /**
@@ -1576,7 +1573,7 @@ export function createScene(app: Application): PartyScene {
     const placeholder = drawPlaceholder(ACTOR_HEIGHT);
     art.addChild(placeholder);
 
-    const { species, tier, id, name, class: characterClass } = member.character;
+    const { species, id, name } = member.character;
     // Fitted to the lineup's real spacing by `layoutActors`, which is the only
     // thing that knows how much room a figure has — and knows it only once the
     // party size is settled, which is after this runs.
@@ -1631,28 +1628,25 @@ export function createScene(app: Application): PartyScene {
      * placeholder when it isn't there cannot go stale.
      */
     const loadPng = (): void => {
-      void Assets.load<Texture>(characterWorldArtUrl(species, tier, characterClass))
-        .then((texture) => {
-          // Identity, not id: a character who left and rejoined mid-load has a
-          // *new* actor under the same id, and this stale resolve would draw
-          // into containers that were destroyed with the old one.
-          if (destroyed || actors.get(id) !== actor) return;
-          const sprite = new Sprite(texture);
-          sprite.anchor.set(ANCHOR_X, ANCHOR_Y);
-          art.removeChildren();
-          placeholder.destroy();
-          art.addChild(sprite);
-          actor.sprite = sprite;
-          actor.paint = measurePaint(texture);
-          actor.footprint = groundedFootprint(measureFootprint(texture), actor.paint);
-          // The measured width changes how much room this hero needs.
-          layoutActors();
-          actor.shadow = refitShadow(container, actor.shadow, actor.canvas, actor.footprint);
-          actor.shadowCanvas = actor.canvas;
-        })
-        .catch(() => {
-          /* keep the placeholder: a missing tier must never blank the stage */
-        });
+      loadHeroTexture(member.character, "world", (texture) => {
+        // Identity, not id: a character who left and rejoined mid-load has a
+        // *new* actor under the same id, and this stale resolve would draw
+        // into containers that were destroyed with the old one.
+        if (destroyed || actors.get(id) !== actor) return;
+        const sprite = new Sprite(texture);
+        sprite.anchor.set(ANCHOR_X, ANCHOR_Y);
+        art.removeChildren();
+        placeholder.destroy();
+        art.addChild(sprite);
+        actor.sprite = sprite;
+        actor.paint = measurePaint(texture);
+        actor.footprint = groundedFootprint(measureFootprint(texture), actor.paint);
+        // The measured width changes how much room this hero needs.
+        layoutActors();
+        actor.shadow = refitShadow(container, actor.shadow, actor.canvas, actor.footprint);
+        actor.shadowCanvas = actor.canvas;
+      });
+      // A missing tier calls nothing: the placeholder stays, and never blanks the stage.
     };
 
     loadPng();
