@@ -1,0 +1,40 @@
+/* Her look in the book (LookPane.tsx, LookEditor.tsx `BookLook`): the kit's
+   dressing room (BookKit.css) with her hero and her name up top. */
+
+.book-look__hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding-block: 0.75rem;
+}
+
+.book-look__portrait {
+  width: min(14rem, 60vw);
+  aspect-ratio: 1;
+}
+
+.book-look__name {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.book-look__tile-art {
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 1.05rem;
+  padding-inline: 0.4rem;
+  text-align: center;
+}
+
+/* The table's compact editor (LookEditor.tsx `LookEditor`). */
+.look-option__art {
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  text-align: center;
+  padding-inline: 0.25rem;
+}

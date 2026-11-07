@@ -99,8 +99,19 @@ import {
   nameplateBoxOf,
   nameplateGap,
   nameplateLabel,
+  type NameplateBox,
   type NameplateReading,
+  crowdedTitles,
+  destroyNameDress,
+  dressNameplate,
+  fitNameDress,
+  hideNameTitle,
+  setNameDressVisible,
+  titleBoxOf,
+  titleMinFont,
+  type NameDress,
 } from "./nameplate";
+import { heroNameStyle } from "./hero-name";
 import type { EncounterEvent } from "@kad/shared";
 import { stageLayout, STORY_MEASURE, type StageCastMember } from "./cast";
 import { boardStageWidth, storyStageFrame } from "./stage-inset";
@@ -204,6 +215,12 @@ const MAX_STAGE_SPREAD = 1.6;
 /** How much of a lineup slot a nameplate may fill — the rest is the gutter
     that keeps two names from running into each other. */
 const NAMEPLATE_SLOT = 0.9;
+
+/**
+ * The smallest title font on the lineup, in design units (docs/hero-looks.md
+ * §7.2): 14px at 720p, where the 900-unit design height is 720 pixels.
+ */
+const STORY_TITLE_MIN_FONT = titleMinFont(720 / 900);
 
 export type FocusTarget =
   | { kind: "party" }
@@ -319,6 +336,11 @@ export interface PartyScene {
   storyFigureBoxes?(): { x: number; y: number; width: number; height: number }[];
   storyNameplateBoxes?(): { text: string; x: number; y: number; width: number; height: number; fontPixels: number }[];
   /**
+   * The title lines drawn under the heroes' names (#664), as boxes in the
+   * same space `nameplateBoxes` reports: only titles that show.
+   */
+  titleBoxes?(): NameplateReading;
+  /**
    * Each figure on the story stage as drawn (#362), in canvas pixels: the box
    * its *paint* fills (not its canvas), the ground line under it, the top of
    * its name, and the height and stance it was drawn for. For
@@ -431,6 +453,8 @@ interface Actor extends StageFigureArt {
   /** What `label` is currently saying, so a renamed character is spotted
       without measuring a Text every patch. */
   labelText: string | null;
+  /** Her frame and title beside `label` (#664), or null: exactly as before looks. */
+  dress: NameDress | null;
   phase: number;
   down: boolean;
   connected: boolean;
@@ -975,6 +999,13 @@ export function createScene(app: Application): PartyScene {
         fitNameplate(actor.label, slot, viewport.width < 600);
       }
       actor.x = slots.party[index] ?? actor.x;
+      if (actor.label) {
+        // Her title under her name (#664): hidden, never shortened, when it is
+        // too small at 720p, wider than her slot or would fall off the stage.
+        const scale = actor.container.scale.y || 1;
+        const feet = GROUND_Y + (index % 2 === 0 ? 0 : DESIGN.height * 0.03);
+        fitNameDress(actor.dress, actor.label, { maxWidth: slot, minFont: STORY_TITLE_MIN_FONT / scale, maxBottom: (DESIGN.height - feet) / scale });
+      }
       // A shallow depth stagger so three characters read as a group rather than
       // a row of stickers. Allen's Chapter 2 lineup composition replaces this.
       actor.y = GROUND_Y + (index % 2 === 0 ? 0 : DESIGN.height * 0.03);
@@ -989,6 +1020,8 @@ export function createScene(app: Application): PartyScene {
       // Feet further down the screen = nearer the viewer = drawn in front.
       actor.container.zIndex = actor.y;
     });
+    // A title that would run into a neighbour's plate is hidden (§7.2).
+    hideCrowdedTitles();
     // A friend at the row's ends stays on the shown stage, and clear of any guest's share of it.
     const shownLeft = DESIGN.width - visibleRightEdge();
     const castFrom = slots.castLeft.length > 0 ? Math.min(...slots.castLeft) : Infinity;
@@ -1536,6 +1569,39 @@ export function createScene(app: Application): PartyScene {
    * none of them changed it — and the width is left to `layoutActors`, which
    * runs at the end of the same `setParty`.
    */
+  /** Her lineup plates as numbers, in design space at their slots: names and the titles that show. */
+  function lineupPlates(): { actor: Actor; name: NameplateBox; title: NameplateBox | null }[] {
+    const lift = (actor: Actor, box: NameplateBox): NameplateBox => {
+      const scale = actor.container.scale.x;
+      return { ...box, x: actor.x + box.x * scale, y: actor.y + box.y * scale, width: box.width * scale, height: box.height * scale };
+    };
+    return [...actors.values()]
+      .filter((actor) => actor.label !== null && actor.label.visible)
+      .map((actor) => {
+        const title = titleBoxOf(actor.dress);
+        return { actor, name: lift(actor, nameplateBoxOf(actor.label!)), title: title ? lift(actor, title) : null };
+      });
+  }
+
+  function hideCrowdedTitles(): void {
+    const plates = lineupPlates();
+    if (!plates.some((p) => p.title)) return;
+    const crowded = crowdedTitles(plates);
+    plates.forEach((p, i) => {
+      if (crowded[i]) hideNameTitle(p.actor.dress);
+    });
+  }
+
+  /** Dress (or re-dress) her name for her look; layout fits it. */
+  function dressActor(actor: Actor, member: PartyMember): void {
+    if (!actor.label) {
+      destroyNameDress(actor.dress);
+      actor.dress = null;
+      return;
+    }
+    actor.dress = dressNameplate(actor.container, actor.label, heroNameStyle(member.character.look), actor.dress);
+  }
+
   function setLabel(actor: Actor, name: string): void {
     const next = nameplateLabel(name);
     if (next === actor.labelText) return;
@@ -1594,6 +1660,7 @@ export function createScene(app: Application): PartyScene {
       visualKey: visualKeyOf(member),
       label,
       labelText: nameplateLabel(name),
+      dress: label ? dressNameplate(container, label, heroNameStyle(member.character.look)) : null,
       phase: Math.random() * Math.PI * 2,
       down: member.down,
       connected: member.connected,
@@ -1720,6 +1787,7 @@ export function createScene(app: Application): PartyScene {
           // rebuild" split `visualKeyOf` makes for everything else that
           // arrives on a patch.
           setLabel(existing, member.character.name);
+          dressActor(existing, member);
           continue;
         }
         if (existing) {
@@ -1852,7 +1920,10 @@ export function createScene(app: Application): PartyScene {
       nameplatesVisible = visible;
       for (const actor of actors.values()) {
         if (actor.label) actor.label.visible = visible;
+        setNameDressVisible(actor.dress, visible);
       }
+      // Titles are fitted with their names: shown again, they are laid out again.
+      if (visible && [...actors.values()].some((a) => a.dress)) layoutActors();
       for (const member of castActors.values()) {
         if (member.label) member.label.visible = visible;
       }
@@ -1887,6 +1958,11 @@ export function createScene(app: Application): PartyScene {
           width: box.width * scale, height: box.height * scale });
       }
       return { space: "story" as const, boxes };
+    },
+
+    titleBoxes() {
+      if (encounterView !== null && board) return { space: "board" as const, boxes: board.titleBoxes() };
+      return { space: "story" as const, boxes: lineupPlates().flatMap((p) => (p.title ? [p.title] : [])) };
     },
 
     storyFigureBoxes() {

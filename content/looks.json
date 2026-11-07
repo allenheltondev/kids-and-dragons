@@ -1,0 +1,28 @@
+{
+  "$schema": "../schemas/looks.schema.json",
+  "$comment": "Hero looks (docs/hero-looks.md §3.1, §6, §7): the one catalog of coats, nameplate frames and titles a hero may choose. Mirrors LookCatalog in packages/shared/src/types/look.ts. Starter looks are free for every hero and never stored; every other look is held through a receipt on her own look (LookUnlock). Earning them (tiers, class ranks, campaigns, camp) is #669: their rules are listed here so the book and the tests know the whole set. Coats are phase 2 (#666). A frame's painting is UI art (#665) at assets/<art>; until assets/manifest.json -> nameplateFrames.ids lists it as delivered, the plain plate (today's look) is drawn instead and nothing is requested. Titles are kept short: the longest one is what the nameplate collision tests are run with.",
+  "coats": [],
+  "nameplates": [
+    { "id": "plain", "name": "Plain", "unlock": { "from": "starter" } },
+    { "id": "ribbon", "name": "Ribbon", "unlock": { "from": "starter" }, "art": "nameplates/ribbon.webp" },
+    { "id": "leafy", "name": "Leafy", "unlock": { "from": "starter" }, "art": "nameplates/leafy.webp" },
+    { "id": "starry", "name": "Starry", "unlock": { "from": "starter" }, "art": "nameplates/starry.webp" }
+  ],
+  "titles": [
+    { "id": "the_bold", "text": "the Bold", "unlock": { "from": "starter" } },
+    { "id": "the_kind", "text": "the Kind", "unlock": { "from": "starter" } },
+    { "id": "the_curious", "text": "the Curious", "unlock": { "from": "starter" } },
+    { "id": "the_sworn", "text": "the Sworn", "unlock": { "from": "milestone", "tier": "sworn" } },
+    { "id": "the_radiant", "text": "the Radiant", "unlock": { "from": "milestone", "tier": "radiant" } },
+    { "id": "the_mythic", "text": "the Mythic", "unlock": { "from": "milestone", "tier": "mythic" } },
+    { "id": "thornguard_master", "text": "Thornguard Master", "unlock": { "from": "milestone", "classRank": { "class": "thornguard", "rank": "master" } } },
+    { "id": "duskrunner_master", "text": "Duskrunner Master", "unlock": { "from": "milestone", "classRank": { "class": "duskrunner", "rank": "master" } } },
+    { "id": "starweaver_master", "text": "Starweaver Master", "unlock": { "from": "milestone", "classRank": { "class": "starweaver", "rank": "master" } } },
+    { "id": "songkeeper_master", "text": "Songkeeper Master", "unlock": { "from": "milestone", "classRank": { "class": "songkeeper", "rank": "master" } } },
+    { "id": "of_the_gemfall", "text": "of the Gemfall", "unlock": { "from": "milestone", "campaign": "gemfall" } },
+    { "id": "of_the_riftlight", "text": "of the Riftlight", "unlock": { "from": "milestone", "campaign": "riftlight" } },
+    { "id": "of_the_hollow_crown", "text": "of the Hollow Crown", "unlock": { "from": "milestone", "campaign": "the-hollow-crown" } },
+    { "id": "friend_of_bun", "text": "Friend of Bun", "unlock": { "from": "milestone", "friend": "bun" } },
+    { "id": "keeper_of_the_fire", "text": "Keeper of the Fire", "unlock": { "from": "milestone", "camp": "fullCamp" } }
+  ]
+}

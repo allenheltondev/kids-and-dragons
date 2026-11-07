@@ -20,7 +20,8 @@ import type { RiftActionKind } from "./campaign-graph.js";
 import type { InteractionAction } from "../interactions.js";
 import type { ChapterOutcome } from "./chapter.js";
 import type { CampClaimResult, CampFriendCard, CampView, HeroKitView, KitMilestoneUnlock, LuckyDrop } from "./camp.js";
-import type { BookKitChange, BookKitField } from "../camp-book.js";
+import type { BookEditField, BookKitChange } from "../camp-book.js";
+import type { HeroLookView } from "./look.js";
 import type { RoomMode, RunState, DiceRoll } from "./state.js";
 import type { FieldGuideFind } from "../field-guide-record.js";
 import type { Badge, ProfileFlair } from "../kid-profile.js";
@@ -267,6 +268,23 @@ export type ClientIntent =
        * crew's friends, or null for none. Kept per crew on her kit.
        */
       buddy?: string | null;
+    }
+  /**
+   * Change a seated hero's own look (docs/hero-looks.md §3.2, §8.2; #664):
+   * her colour (phase 2), nameplate frame and title. Only her own player, in
+   * downtime (the lobby and rests), with no limit. `revision` echoes
+   * `HeroLookView.revision` (0 for a hero with no look yet); a look changed
+   * since (from the book, another phone) refuses it as stale, and the table's
+   * view of her look is refreshed so the editor shows it as it now stands.
+   * Every look named must be hers. Written to her own row by the server.
+   */
+  | {
+      type: "LOOK_EDIT";
+      characterId: string;
+      revision: number;
+      coat?: string | null;
+      nameplate?: string | null;
+      title?: string | null;
     }
   /**
    * Playtest mode (roadmap chapter 6). Both are refused with FORBIDDEN unless
@@ -1038,12 +1056,18 @@ export interface BookKitRequest {
   changes: BookKitChange[];
 }
 
-/** What a book edit did, and the kit as it now stands. */
+/** What a book edit did, and the kit (and, for a look change, the look) as it now stands. */
 export interface BookKitResponse {
   kit: JournalKit;
-  applied: BookKitField[];
+  /**
+   * Her look as it now stands (docs/hero-looks.md §3.2; #664), when the change
+   * named a look field (`nameplate`, `title`, `coat`). The same view the
+   * journal's heroes carry (`ResolvedCharacter.look`).
+   */
+  look?: HeroLookView;
+  applied: BookEditField[];
   /** Not the hero's to pick (merge only; sent straight away, one refusal refuses the whole change). */
-  refused: BookKitField[];
+  refused: BookEditField[];
 }
 
 /** One campaign on the Story page (#358). */

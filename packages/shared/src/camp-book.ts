@@ -17,6 +17,7 @@
  */
 
 import { kitEditProblem, MAX_KIT_SLOTS, type KitEdit, type KitRules } from "./camp-edit.js";
+import { BOOK_LOOK_FIELDS, isBookLookField, type BookLookChange, type BookLookField } from "./hero-look.js";
 import type { HeroKit } from "./types/camp.js";
 
 /** One thing a kid picks for her kit (§4.5), or her buddy in one crew's camp (§4.4). */
@@ -25,11 +26,34 @@ export type BookKitField = "style" | "tent" | "color" | "slot0" | "slot1" | "slo
 /** Every field, in the order they are applied: the kit, then the buddy. */
 export const BOOK_KIT_FIELDS: readonly BookKitField[] = ["style", "tent", "color", "slot0", "slot1", "slot2", "buddy"];
 
+/**
+ * Anything the book edits for one hero, wherever she goes: her kit's fields
+ * and her look's (docs/hero-looks.md §3.2; #664). Both ride the same queue,
+ * sender and endpoint; the look's fields are new change kinds beside the kit's.
+ */
+export type BookEditField = BookKitField | BookLookField;
+
+/** Every field the book can send, kit then look: the most one request may carry. */
+export const BOOK_EDIT_FIELDS: readonly BookEditField[] = [...BOOK_KIT_FIELDS, ...BOOK_LOOK_FIELDS];
+
 /** One field changed: the value it was made over, and the value picked. */
 export interface BookKitChange {
-  field: BookKitField;
+  field: BookEditField;
   before: string | null;
   after: string | null;
+}
+
+/** A change to one of her kit's fields (or her buddy). */
+export type KitFieldChange = BookKitChange & { field: BookKitField };
+
+/** Whether a change is to her kit (or buddy) rather than her look. */
+export function isKitChange(change: BookKitChange): change is KitFieldChange {
+  return isBookKitField(change.field);
+}
+
+/** Whether a change is to her look (docs/hero-looks.md §3.2). */
+export function isLookChange(change: BookKitChange): change is BookLookChange {
+  return isBookLookField(change.field);
 }
 
 /** A kit as the book edits it: its fields, with the buddy for one crew's camp. */
@@ -79,8 +103,8 @@ export function withBookKitValue(state: BookKitState, field: BookKitField, value
 }
 
 /** The fields that differ between two states, each with the value it replaced. */
-export function bookKitChanges(before: BookKitState, after: BookKitState): BookKitChange[] {
-  const out: BookKitChange[] = [];
+export function bookKitChanges(before: BookKitState, after: BookKitState): KitFieldChange[] {
+  const out: KitFieldChange[] = [];
   for (const field of BOOK_KIT_FIELDS) {
     const was = bookKitValue(before, field);
     const now = bookKitValue(after, field);
@@ -164,9 +188,11 @@ export interface BookKitMerge {
  */
 export function mergeBookKit(
   current: BookKitState,
-  changes: readonly BookKitChange[],
+  all: readonly BookKitChange[],
   check: (base: BookKitState, next: BookKitState) => string | null,
 ): BookKitMerge {
+  // Her look's fields are merged on their own (hero-look.ts `mergeBookLook`).
+  const changes = all.filter(isKitChange);
   let state = current;
   const applied = new Set<BookKitField>();
   const refused = new Set<BookKitField>();
@@ -182,7 +208,7 @@ export function mergeBookKit(
   }
 
   // The slots: one arrangement, from every queued slot over the stored ones.
-  const queued = new Map<number, BookKitChange>();
+  const queued = new Map<number, KitFieldChange>();
   for (const change of changes) {
     const slot = slotIndex(change.field);
     if (slot === null) continue;
@@ -221,13 +247,13 @@ export function mergeBookKit(
 
 /** Changes as a request carries them: well formed, each field once, or null. */
 export function parseBookKitChanges(raw: unknown): BookKitChange[] | null {
-  if (!Array.isArray(raw) || raw.length === 0 || raw.length > BOOK_KIT_FIELDS.length) return null;
-  const seen = new Set<BookKitField>();
+  if (!Array.isArray(raw) || raw.length === 0 || raw.length > BOOK_EDIT_FIELDS.length) return null;
+  const seen = new Set<BookEditField>();
   const out: BookKitChange[] = [];
   for (const item of raw) {
     if (typeof item !== "object" || item === null) return null;
     const { field, before, after } = item as Record<string, unknown>;
-    if (!isBookKitField(field) || seen.has(field)) return null;
+    if (!(isBookKitField(field) || isBookLookField(field)) || seen.has(field)) return null;
     const value = (v: unknown): v is string | null => v === null || (typeof v === "string" && v.length > 0 && v.length <= 64);
     if (!value(before) || !value(after)) return null;
     seen.add(field);
@@ -237,10 +263,18 @@ export function parseBookKitChanges(raw: unknown): BookKitChange[] | null {
 }
 
 /** A kid's words for fields: "tent", "tent and color", "tent, color and buddy". */
-export function bookFieldNames(fields: readonly BookKitField[]): string {
+export function bookFieldNames(fields: readonly BookEditField[]): string {
   const names: string[] = [];
   for (const field of fields) {
-    const name = slotIndex(field) !== null ? "decorations" : field === "style" ? "bedroll" : field;
+    const name = isBookLookField(field)
+      ? field === "coat"
+        ? "hero color"
+        : field
+      : slotIndex(field) !== null
+        ? "decorations"
+        : field === "style"
+          ? "bedroll"
+          : field;
     if (!names.includes(name)) names.push(name);
   }
   if (names.length <= 1) return names[0] ?? "";

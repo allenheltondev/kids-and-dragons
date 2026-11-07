@@ -41,6 +41,7 @@
  * they wasted a sitting. There is no red anywhere in this file.
  */
 
+import { HeroName } from "./HeroName";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactElement } from "react";
 import { revelationsOf, speak } from "@kad/shared";
@@ -413,7 +414,7 @@ export function ChapterCompletePanel(): ReactElement {
                 />
               </span>
               <span className="complete-card__text">
-                <span className="complete-card__name">{member.character.name}</span>
+                <span className="complete-card__name"><HeroName name={member.character.name} look={member.character.look} /></span>
                 <span className="complete-card__chips">
                   <span className="kad-chip">
                     <Icon name="levelup" />

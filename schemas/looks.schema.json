@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kids-and-dragons.local/schemas/looks.schema.json",
+  "title": "Hero looks catalog",
+  "description": "content/looks.json: the one catalog of hero looks (docs/hero-looks.md §3.1, §6, §7; #664): coats, nameplate frames and titles. Mirrors LookCatalog in packages/shared/src/types/look.ts; where the two disagree, the TypeScript type wins. tools/content/looks-catalog.mjs checks what the schema cannot see: ids unique across all three lists, the plain plate, the starters, every rule naming a real tier, class, campaign or friend, and every frame's art path.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["coats", "nameplates", "titles"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "$comment": { "type": "string" },
+    "coats": {
+      "description": "Colours for one species' region (§4, §7.1). Phase 2 (#666) fills these; empty until then.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "unlock", "species", "color"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "name": { "$ref": "#/$defs/name" },
+          "unlock": { "$ref": "#/$defs/unlock" },
+          "species": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+          "color": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" }
+        }
+      }
+    },
+    "nameplates": {
+      "description": "Nameplate frames (§7.2), drawn behind the name. The plain plate (id plain) is today's look and has no art.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "unlock"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "name": { "$ref": "#/$defs/name" },
+          "unlock": { "$ref": "#/$defs/unlock" },
+          "art": {
+            "description": "Its nine-slice painting, under assets/ (UI art, #665): nameplates/<id>.webp. Drawn once assets/manifest.json -> nameplateFrames.ids lists it as delivered.",
+            "type": "string",
+            "pattern": "^nameplates/[a-z0-9_]+\\.webp$"
+          }
+        }
+      }
+    },
+    "titles": {
+      "description": "Titles (§7.3), drawn under the name at 0.6 of its size. Kept short: the longest is what the nameplate collision tests use.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "text", "unlock"],
+        "properties": {
+          "id": { "$ref": "#/$defs/id" },
+          "text": { "type": "string", "minLength": 1, "maxLength": 20 },
+          "unlock": { "$ref": "#/$defs/unlock" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$", "maxLength": 64 },
+    "name": { "type": "string", "minLength": 1, "maxLength": 24 },
+    "unlock": {
+      "description": "How a look is had (§6): a free starter, a find, or a milestone (a tier, a class rank, a finished campaign, a camp friend, a camp milestone).",
+      "oneOf": [
+        { "type": "object", "additionalProperties": false, "required": ["from"], "properties": { "from": { "enum": ["starter", "found"] } } },
+        { "type": "object", "additionalProperties": false, "required": ["from", "tier"], "properties": { "from": { "const": "milestone" }, "tier": { "type": "string" } } },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["from", "classRank"],
+          "properties": {
+            "from": { "const": "milestone" },
+            "classRank": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["class", "rank"],
+              "properties": { "class": { "type": "string" }, "rank": { "enum": ["apprentice", "expert", "master"] } }
+            }
+          }
+        },
+        { "type": "object", "additionalProperties": false, "required": ["from", "campaign"], "properties": { "from": { "const": "milestone" }, "campaign": { "type": "string" } } },
+        { "type": "object", "additionalProperties": false, "required": ["from", "friend"], "properties": { "from": { "const": "milestone" }, "friend": { "type": "string" } } },
+        { "type": "object", "additionalProperties": false, "required": ["from", "camp"], "properties": { "from": { "const": "milestone" }, "camp": { "enum": ["firstFriend", "fullCamp"] } } }
+      ]
+    }
+  }
+}

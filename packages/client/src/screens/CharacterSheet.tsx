@@ -25,6 +25,7 @@
  * Rest scene is for.
  */
 
+import { HeroName } from "./HeroName";
 import { useState } from "react";
 import type { CSSProperties, ReactElement } from "react";
 import { INVENTORY_SLOTS, STAT_IDS, TIER_IDS } from "@kad/shared";
@@ -164,7 +165,7 @@ export function CharacterSheet({ member, isMe, items, explore = false, partySize
           />
         </span>
         <span className="sheetview__id">
-          <h3 className="sheetview__name">{character.name}</h3>
+          <h3 className="sheetview__name"><HeroName name={character.name} look={character.look} /></h3>
           <p className="sheetview__kind kad-muted">
             <Icon name={character.species} />
             <span className="sheetview__word">{character.species}</span>
