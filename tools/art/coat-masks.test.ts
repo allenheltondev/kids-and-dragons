@@ -6,7 +6,8 @@
  * whole silhouette, for the special looks). The 2026-11-07 proof of concept's throwaway masks
  * were never committed, so the draft is held to the parts the owner chose rather than to
  * pixels: on the fledgling unicorn, R her light coat and G her purple mane; on the fledgling
- * Bigfoot, R his cream fur and G the tan skin of his face and feet.
+ * Bigfoot, R his fur (the cream coat and the brown mane on his head and shoulders, drafted
+ * from two palette slots) and G the tan skin of his face and feet.
  */
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
@@ -152,7 +153,7 @@ for species in ('unicorn', 'bigfoot'):
     parts = coat.region_of(mf, species)
     palette = coat.palette_of(mf, species)
     rgba = np.asarray(Image.open(coat.asset(f'characters/{species}/fledgling/assembled.png')).convert('RGBA'))
-    mask = coat.draft_parts(rgba, *(palette[parts[p]['draftFrom']] for p in coat.PARTS))
+    mask = coat.draft_parts(rgba, *(coat.seeds_of(mf, species, p) for p in coat.PARTS))
     m = mask.astype(float) / 255
     R, G, B = m[..., 0], m[..., 1], m[..., 2]
     alpha = rgba[..., 3] > 128
@@ -164,6 +165,7 @@ for species in ('unicorn', 'bigfoot'):
         regions=[parts[p]['region'] for p in coat.PARTS],
         main=float(R[alpha].mean()), accent=float(G[alpha].mean()),
         both=float((np.minimum(R, G) > 0.5).sum()),
+        overlap=float(np.minimum(R, G).sum() / min(R.sum(), G.sum())),
         figure=float(np.abs(B - rgba[..., 3] / 255.0).max()),
         at={slot: [float(R[near(slot)].mean()), float(G[near(slot)].mean())] for slot in ('coat', 'mane', 'skin') if slot in palette},
         problems=[p[0] for p in coat.mask_problems(Image.fromarray(mask, 'RGB'), Image.fromarray(rgba, 'RGBA'),
@@ -185,14 +187,16 @@ print(json.dumps(out))
     expect(unicorn.problems).toEqual([]);
 
     expect(bigfoot.regions).toEqual(["fur", "skin"]);
-    expect(bigfoot.main).toBeGreaterThan(0.3);
+    expect(bigfoot.main).toBeGreaterThan(0.55); // the coat and the mane: most of him
     expect(bigfoot.accent).toBeGreaterThan(0.08);
     expect(bigfoot.at.coat[0]).toBeGreaterThan(0.8); // R: his cream fur ...
     expect(bigfoot.at.coat[1]).toBeLessThan(0.1);
     expect(bigfoot.at.skin[1]).toBeGreaterThan(0.8); // G: the tan skin of his face and feet ...
-    expect(bigfoot.at.skin[0]).toBeLessThan(0.1);
-    expect(bigfoot.at.mane[0] + bigfoot.at.mane[1]).toBeLessThan(0.15); // and his brown mane is neither
+    expect(bigfoot.at.skin[0]).toBeLessThan(0.15); // his face is ringed by the mane: a soft edge, no more
+    expect(bigfoot.at.mane[0]).toBeGreaterThan(0.75); // ... and most of his brown mane, the same part
+    expect(bigfoot.at.mane[1]).toBeLessThan(0.1);
     expect(bigfoot.both).toBe(0);
+    expect(bigfoot.overlap).toBeLessThan(0.08); // the manifest's maxOverlap
     expect(bigfoot.figure).toBeLessThan(1 / 255 + 1e-9);
     expect(bigfoot.problems).toEqual([]);
   });

@@ -106,6 +106,19 @@ def region_of(mf: dict, species: str) -> dict:
     return mf["coatMasks"]["regions"][species]
 
 
+def slots_of(part: dict) -> list[str]:
+    """The palette slots a part drafts from: `draftFrom` is one slot name or a list of them
+    (Bigfoot's fur is his cream coat and his brown mane: ["coat", "mane"])."""
+    slots = part["draftFrom"]
+    return [slots] if isinstance(slots, str) else list(slots)
+
+
+def seeds_of(mf: dict, species: str, part: str) -> list[str]:
+    """The palette colours (hex) a species' part drafts from."""
+    palette = palette_of(mf, species)
+    return [palette[slot] for slot in slots_of(region_of(mf, species)[part])]
+
+
 def palette_of(mf: dict, species: str) -> dict:
     for sp in mf["species"]:
         if sp["id"] == species:
@@ -240,10 +253,12 @@ def _clean(soft: np.ndarray) -> np.ndarray:
     return np.asarray(im, dtype=np.float64) / 255.0
 
 
-def draft_parts(rgba: np.ndarray, main_hex: str, accent_hex: str,
+def draft_parts(rgba: np.ndarray, main_hex: str | list[str], accent_hex: str | list[str],
                 near: float = 0.06, far: float = 0.10, reach: float = 0.045) -> np.ndarray:
     """A draft coat mask (uint8, HxWx3): R the main part painted near `main_hex`, G the accent
-    part near `accent_hex`, B the figure (`figure_mask`).
+    part near `accent_hex`, B the figure (`figure_mask`). A part may be painted in more than
+    one colour (Bigfoot's fur: a cream coat and a brown mane): give it a list, and every one of
+    its colours seeds it.
 
     As the proof of concept did (hero-looks.md section 2): pick each part out by colour. The
     palette colour is a target, not what was painted, so each seed first walks to the middle of
@@ -257,10 +272,18 @@ def draft_parts(rgba: np.ndarray, main_hex: str, accent_hex: str,
     lab = srgb_to_oklab(rgb)
     solid = figure > 0.5
 
-    origins = [srgb_to_oklab(hex_rgb(main_hex)), srgb_to_oklab(hex_rgb(accent_hex))]
+    # every colour of both parts walks at once, each competing with all the others
+    owners: list[int] = []
+    origins: list[np.ndarray] = []
+    for owner, hexes in enumerate((main_hex, accent_hex)):
+        for hexv in [hexes] if isinstance(hexes, str) else hexes:
+            owners.append(owner)
+            origins.append(srgb_to_oklab(hex_rgb(hexv)))
     seeds = _walk(lab[solid][::5], origins, reach, far)  # a sample is plenty to find a mode
 
-    d_main, d_accent = (_distance(lab, s) for s in seeds)
+    # a part's distance is to the nearest of its own colours
+    d_main, d_accent = (np.min([_distance(lab, s) for s, o in zip(seeds, owners) if o == part], axis=0)
+                        for part in (0, 1))
     soft_main = np.clip((far - d_main) / (far - near), 0.0, 1.0) * solid * (d_main <= d_accent)
     soft_accent = np.clip((far - d_accent) / (far - near), 0.0, 1.0) * solid * (d_accent < d_main)
     main = np.minimum(_clean(soft_main), figure)

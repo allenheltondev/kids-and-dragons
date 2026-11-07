@@ -26,8 +26,8 @@ export type CoatRegion = "coat" | "mane" | "scales" | "feathers" | "fur" | "skin
 
 interface CoatRegionEntry {
   region: CoatRegion;
-  /** The species palette slot `art:coat-draft` picks the part out by. Art-tool only. */
-  draftFrom: string;
+  /** The species palette slot (or slots) `art:coat-draft` picks the part out by. Art-tool only. */
+  draftFrom: string | string[];
   /** False until the part is confirmed on the species' clean masks. */
   confirmed: boolean;
 }

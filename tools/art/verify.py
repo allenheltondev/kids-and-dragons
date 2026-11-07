@@ -1223,6 +1223,16 @@ def check_story_props(rep: Report, mf: dict) -> None:
 
 
 
+def slot_list(draft_from: object) -> list:
+    """A part's `draftFrom` as a list: one slot name, or a non-empty list of distinct names."""
+    if isinstance(draft_from, str):
+        return [draft_from]
+    if isinstance(draft_from, list) and draft_from and all(isinstance(s, str) for s in draft_from) \
+            and len(set(draft_from)) == len(draft_from):
+        return draft_from
+    return []
+
+
 def check_coat_masks(rep: Report, mf: dict) -> None:
     """Hero-look coat masks (docs/hero-looks.md section 4.3, step 4).
 
@@ -1249,15 +1259,15 @@ def check_coat_masks(rep: Report, mf: dict) -> None:
             where = f"coatMasks.regions.{sp['id']}.{name}"
             if part.get("region") not in allowed_regions:
                 rep.fail(f"{where}.region", sorted(allowed_regions), part.get("region"))
-            elif part.get("draftFrom") not in sp["palette"]:
-                rep.fail(f"{where}.draftFrom", f"a palette slot of {sp['id']}", part.get("draftFrom"))
+            elif not slot_list(part.get("draftFrom")) or any(s not in sp["palette"] for s in slot_list(part.get("draftFrom"))):
+                rep.fail(f"{where}.draftFrom", f"a palette slot of {sp['id']}, or a list of them", part.get("draftFrom"))
             elif not isinstance(part.get("confirmed"), bool):
                 rep.fail(f"{where}.confirmed", "true or false", part.get("confirmed"))
         if parts["main"].get("region") == parts["accent"].get("region"):
             rep.fail(f"coatMasks.regions.{sp['id']}", "two different parts", parts["main"].get("region"))
-        elif parts["main"].get("draftFrom") == parts["accent"].get("draftFrom"):
-            rep.fail(f"coatMasks.regions.{sp['id']}", "each part drafted from its own palette slot",
-                     parts["main"].get("draftFrom"))
+        elif set(slot_list(parts["main"].get("draftFrom"))) & set(slot_list(parts["accent"].get("draftFrom"))):
+            rep.fail(f"coatMasks.regions.{sp['id']}", "each part drafted from its own palette slots",
+                     sorted(set(slot_list(parts["main"].get("draftFrom"))) & set(slot_list(parts["accent"].get("draftFrom")))))
 
     tol = section["tolerance"]
     known = {p.painting: p for p in coat.paintings(mf)}

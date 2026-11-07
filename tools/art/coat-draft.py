@@ -63,12 +63,13 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     parts = regions[args.species]
     palette = coat.palette_of(mf, args.species)
-    seeds = [palette[parts[name]["draftFrom"]] for name in coat.PARTS]
+    seeds = [coat.seeds_of(mf, args.species, name) for name in coat.PARTS]
     out_root = args.out or args.root
 
     for channel, name, seed in zip("RG", coat.PARTS, seeds):
         part = parts[name]
-        print(f"{args.species}: {channel} = {name} part, the {part['region']}, from palette {part['draftFrom']} {seed}"
+        named = ", ".join(f"{slot} {palette[slot]}" for slot in coat.slots_of(part))
+        print(f"{args.species}: {channel} = {name} part, the {part['region']}, from palette {named}"
               + ("" if part.get("confirmed") else "  (not yet confirmed: hero-looks.md section 4.2)"))
     print(f"{args.species}: B = the figure, from the painting's alpha (an opaque gear portrait: all but its backdrop)")
 
