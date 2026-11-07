@@ -68,8 +68,10 @@ being added while it is made (`retireIfLast` in `handlers/retention.ts`):
 5. **Each owner's sign-in is marked** (`ACCT#<sub>` / `RETIRING`, 7-day `ttl`), which refuses every
    new household pointer for it. Every write of an `ACCT#<sub>/HH#` pointer checks the mark in its
    own transaction: `putAccountPointer`, `putOwner`, `claimHousehold` (now one transaction with its
-   pointer), `redeemOrganizerInvite`, and a transfer into a new home (`moveProfile`'s
-   `account-open` step). **Only then is ownership read**, strongly consistent
+   pointer), `redeemOrganizerInvite`, a transfer into a new home (`moveProfile`'s `account-open`
+   step), and making a new kept household (`createOwnedHousehold`, for a new group and a brand-new
+   sign-in: its `META`, pointer and owner row in one transaction, so a refused sign-in never leaves
+   a household nothing points at). **Only then is ownership read**, strongly consistent
    (`ownsAnyHousehold`): a pointer written before the mark keeps the sign-in, one after is refused.
    Then `AdminDeleteUser`.
 6. **Retryable throughout.** The kid's forget job stays until all of this and the scrub finish;

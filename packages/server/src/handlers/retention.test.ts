@@ -576,6 +576,31 @@ describe("retention (#252, #524)", () => {
     expect(accounts.deleted).toEqual([ada.owner.cognitoSub]);
   });
 
+  it("leaves no household behind when a new group or a brand-new sign-in meets a sign-in being removed", async () => {
+    const h = harness();
+    /** Every household row the store holds that names this sign-in as its owner. */
+    const homesOf = (sub: string) =>
+      [...(h.repo as unknown as { items: Map<string, { entity?: string; data?: { ownerSub?: string | null } }> }).items.values()].filter(
+        (row) => row.entity === "household" && row.data?.ownerSub === sub,
+      );
+
+    await h.repo.beginRetiringAccount("sub_cleo");
+    const group = await createGroup({ cognitoSub: "sub_cleo", displayName: "Club" }, h.deps);
+    expect(group).toMatchObject({ ok: false, error: { code: "ILLEGAL" } });
+    const linked = await linkAccount({ cognitoSub: "sub_cleo", email: "cleo@example.com" }, h.deps);
+    expect(linked).toMatchObject({ ok: false, error: { code: "ILLEGAL" } });
+    expect(homesOf("sub_cleo")).toEqual([]);
+    expect(await h.repo.ownsAnyHousehold("sub_cleo")).toBe(false);
+
+    // Once the mark is gone, both work, each with its pointer.
+    await h.repo.endRetiringAccount("sub_cleo");
+    const made = value(await createGroup({ cognitoSub: "sub_cleo", displayName: "Club" }, h.deps));
+    expect(await h.repo.listHouseholdsForAccount("sub_cleo")).toEqual([made.id]);
+    expect((await h.repo.listOwners(made.id)).map((o) => o.cognitoSub)).toEqual(["sub_cleo"]);
+    const fresh = value(await linkAccount({ cognitoSub: "sub_dev", email: "dev@example.com" }, h.deps));
+    expect(await h.repo.listHouseholdsForAccount("sub_dev")).toEqual([fresh.householdId]);
+  });
+
   it("refuses a household pointer for a sign-in once it is marked, and deletes the sign-in", async () => {
     const h = harness();
     const ada = await homeOf(h, "h_ada", "Ada");

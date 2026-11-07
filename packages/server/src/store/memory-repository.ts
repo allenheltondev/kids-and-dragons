@@ -400,6 +400,23 @@ export class MemoryRepository implements GameRepository {
     return "deleted";
   }
 
+  async createOwnedHousehold(
+    household: Household,
+    first: { cognitoSub: string; owner?: HouseholdOwnerRecord },
+  ): Promise<boolean> {
+    if (household.guest) throw new Error("createOwnedHousehold makes a kept household, never a guest one");
+    // Every condition the real transaction carries, before anything is written.
+    if (this.get(HH(household.id), META) || this.accountRetiring(first.cognitoSub)) return false;
+    // No await from the check to the last write: one transaction. A kept
+    // household carries no GUEST entry, so `META` is the plain row.
+    this.put({ PK: HH(household.id), SK: META, entity: "household", data: household });
+    if (first.owner) {
+      this.put({ PK: HH(household.id), SK: OWNER_SK(first.owner.cognitoSub), entity: "owner", data: first.owner });
+    }
+    this.put({ PK: ACCT(first.cognitoSub), SK: HH(household.id), entity: "account", data: { cognitoSub: first.cognitoSub, householdId: household.id } });
+    return true;
+  }
+
   // --- retiring a kept household and its sign-ins (#524) ---------------------
 
   async beginRetiring(householdId: string): Promise<boolean> {

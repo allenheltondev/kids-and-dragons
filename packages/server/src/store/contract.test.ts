@@ -2519,6 +2519,33 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
         expect(await repo.listHouseholdsForAccount("sub_b")).toEqual([]);
       });
 
+      it("makes a kept household with its first grown-up all at once, or not at all", async () => {
+        const at = "2026-07-04T18:00:00.000Z";
+        const owner = { householdId: "h_new", cognitoSub: "sub_a", addedAt: at };
+        const home = household({ id: "h_new", ownerSub: "sub_a" });
+
+        await repo.beginRetiringAccount("sub_a");
+        expect(await repo.createOwnedHousehold(home, { cognitoSub: "sub_a", owner })).toBe(false);
+        expect(await repo.getHousehold("h_new")).toBeNull();
+        expect(await repo.listOwners("h_new", { consistent: true })).toEqual([]);
+        expect(await repo.ownsAnyHousehold("sub_a")).toBe(false);
+
+        await repo.endRetiringAccount("sub_a");
+        expect(await repo.createOwnedHousehold(home, { cognitoSub: "sub_a", owner })).toBe(true);
+        expect(await repo.getHousehold("h_new")).toEqual(home);
+        expect(await repo.listHouseholdsForAccount("sub_a")).toEqual(["h_new"]);
+        expect(await repo.listOwners("h_new", { consistent: true })).toEqual([owner]);
+        // An id already taken is refused, and the first stands.
+        expect(await repo.createOwnedHousehold({ ...home, displayName: "Other" }, { cognitoSub: "sub_b" })).toBe(false);
+        expect(await repo.getHousehold("h_new")).toEqual(home);
+        expect(await repo.listHouseholdsForAccount("sub_b")).toEqual([]);
+
+        // Without an owner row: the pointer alone, as a brand-new sign-in's home.
+        expect(await repo.createOwnedHousehold(household({ id: "h_solo", ownerSub: "sub_c" }), { cognitoSub: "sub_c" })).toBe(true);
+        expect(await repo.listHouseholdsForAccount("sub_c")).toEqual(["h_solo"]);
+        expect(await repo.listOwners("h_solo", { consistent: true })).toEqual([]);
+      });
+
       it("will not mark a household that is gone, and reads emptiness from what is there", async () => {
         expect(await repo.beginRetiring("h_none")).toBe(false);
         await repo.putHousehold(household());

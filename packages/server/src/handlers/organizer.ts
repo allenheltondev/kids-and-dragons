@@ -35,7 +35,7 @@ import type {
 } from "@kad/shared";
 import { newId } from "../ids.ts";
 import { AccountRetiringError, type HouseholdOwnerRecord } from "../store/repository.ts";
-import { createProfile, summaries, vetTypedName, type AccountDeps } from "./account.ts";
+import { createProfile, RETIRING_SIGN_IN, summaries, vetTypedName, type AccountDeps } from "./account.ts";
 import { admitCodeLookup } from "./code-guard.ts";
 import { createPairingCode } from "./pairing.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
@@ -103,8 +103,13 @@ export async function createGroup(
     guest: false,
     createdAt: iso(nowMs),
   };
-  await deps.repo.putHousehold(household);
-  await deps.repo.putOwner(ownerRow(household.id, input, nowMs));
+  // The household, its pointer and its owner row together, or none of them
+  // (#524): never a group that nothing points at.
+  const made = await deps.repo.createOwnedHousehold(household, {
+    cognitoSub: input.cognitoSub,
+    owner: ownerRow(household.id, input, nowMs),
+  });
+  if (!made) return fail("ILLEGAL", RETIRING_SIGN_IN);
   return ok({ id: household.id, displayName: household.displayName, players: 0 });
 }
 

@@ -44,6 +44,14 @@ import { keepUntil, startClocks } from "./retention.ts";
 export const GUEST_HOUSEHOLD_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
 /**
+ * Said when a sign-in cannot make a household because the retention sweep
+ * is removing it (#524): it has owned nothing for a long time. Rare, and
+ * over within the sweep's run.
+ */
+export const RETIRING_SIGN_IN =
+  "This sign-in is being removed after a long time without a household. Try again in a few minutes, or sign up again.";
+
+/**
  * Somebody is playing in this household: if it is a guest, its 7 days start
  * again from now. The window is meant as "a week since you last played", not
  * "a week since you first did" — a campaign is eight evenings over weeks, and
@@ -399,14 +407,19 @@ export async function linkAccount(
   // Case 3 — a brand new account with nothing to claim.
   const nowMs = deps.now();
   const householdId = newId("h");
-  await deps.repo.putHousehold({
-    id: householdId,
-    displayName: `${safeEmailName(input.email)} household`,
-    ownerSub: input.cognitoSub,
-    guest: false,
-    createdAt: iso(nowMs),
-  });
-  await deps.repo.putAccountPointer(input.cognitoSub, householdId);
+  // The household and its pointer together, or neither (#524): a kept
+  // household nothing points at would never be swept.
+  const made = await deps.repo.createOwnedHousehold(
+    {
+      id: householdId,
+      displayName: `${safeEmailName(input.email)} household`,
+      ownerSub: input.cognitoSub,
+      guest: false,
+      createdAt: iso(nowMs),
+    },
+    { cognitoSub: input.cognitoSub },
+  );
+  if (!made) return fail("ILLEGAL", RETIRING_SIGN_IN);
 
   const bound = await addPlayer(
     { householdId, displayName: safeEmailName(input.email) },

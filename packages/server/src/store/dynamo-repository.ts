@@ -871,6 +871,49 @@ export class DynamoRepository implements GameRepository {
     }
   }
 
+  async createOwnedHousehold(
+    household: Household,
+    first: { cognitoSub: string; owner?: HouseholdOwnerRecord },
+  ): Promise<boolean> {
+    if (household.guest) throw new Error("createOwnedHousehold makes a kept household, never a guest one");
+    try {
+      await this.doc.send(
+        new TransactWriteCommand({
+          TransactItems: [
+            {
+              Put: {
+                TableName: this.table,
+                Item: { PK: HH(household.id), SK: META, entity: "household", data: household } satisfies TableItem,
+                ConditionExpression: "attribute_not_exists(PK)",
+              },
+            },
+            ...(first.owner
+              ? [
+                  {
+                    Put: {
+                      TableName: this.table,
+                      Item: {
+                        PK: HH(household.id),
+                        SK: OWNER_SK(first.owner.cognitoSub),
+                        entity: "owner",
+                        data: first.owner,
+                      } satisfies TableItem,
+                    },
+                  },
+                ]
+              : []),
+            { Put: { TableName: this.table, Item: accountPointerItem(first.cognitoSub, household.id) } },
+            this.accountNotRetiring(first.cognitoSub),
+          ],
+        }),
+      );
+      return true;
+    } catch (err) {
+      if (isTransactionCancelled(err)) return false;
+      throw err;
+    }
+  }
+
   // --- retiring a kept household and its sign-ins (#524) ---------------------
 
   async beginRetiring(householdId: string): Promise<boolean> {

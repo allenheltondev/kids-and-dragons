@@ -673,6 +673,19 @@ export interface GameRepository {
   putAccountPointer(cognitoSub: string, householdId: string): Promise<void>;
   listHouseholdsForAccount(cognitoSub: string): Promise<string[]>;
 
+  /**
+   * Make a new kept household with its first grown-up, all at once (#524):
+   * its `META`, the grown-up's `ACCT#` pointer and, when given, their
+   * `OWNER#` row, in one transaction under the sign-in's retiring check. A
+   * kept household is only ever found through a pointer or a kid, so one
+   * written without its pointer would be kept forever. `false`, and nothing
+   * written, while the sweep is retiring that sign-in (or the id is taken).
+   */
+  createOwnedHousehold(
+    household: Household,
+    first: { cognitoSub: string; owner?: HouseholdOwnerRecord },
+  ): Promise<boolean>;
+
   // --- retiring a kept household and its sign-ins (#524) ---------------------
   /**
    * Mark a household as being retired by the retention sweep, so no kid can
