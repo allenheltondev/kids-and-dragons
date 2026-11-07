@@ -24,6 +24,7 @@ import {
   characterWorldArtUrl,
   enemyArtUrl,
   sceneBackdropUrl,
+  wearsLook,
 } from "../world/art-paths";
 import { coatMaskPaintings, coatMaskUrl } from "../world/coat-masks";
 import { warm } from "./warm";
@@ -49,8 +50,9 @@ export function upcomingAssets(
   for (const { character } of party) {
     const figure = characterWorldArtUrl(character.species, character.tier, character.class);
     urls.add(figure);
-    // Her coat mask, where her figure has one: her colour is tinted from both (docs/hero-looks.md §5.4).
-    const mask = coatMaskUrl(figure);
+    // Her coat mask, where her figure has one and she wears a colour or a special: her colour is
+    // tinted from both (docs/hero-looks.md §5.4). A hero drawn as painted never needs it.
+    const mask = wearsLook(character.look) ? coatMaskUrl(figure) : null;
     if (mask) urls.add(mask);
   }
   if (!chapter) return [...urls];
@@ -97,7 +99,7 @@ export function usePrefetchUpcoming(enabled = true): void {
   const sceneId = state?.sceneId ?? null;
   const party = state?.party;
   // The party's figures change only with who is seated and their tier.
-  const partyKey = (party ?? []).map((m) => `${m.character.species}/${m.character.tier}/${m.character.class}`).join(",");
+  const partyKey = (party ?? []).map((m) => `${m.character.species}/${m.character.tier}/${m.character.class}/${wearsLook(m.character.look) ? "look" : ""}`).join(",");
 
   useEffect(() => {
     if (!enabled) return;
@@ -130,7 +132,7 @@ export function useWarmChapter(display: boolean): void {
   const state = useRunState();
   const chapterId = state?.chapterId ?? null;
   const party = state?.party;
-  const partyKey = (party ?? []).map((m) => `${m.character.species}/${m.character.tier}/${m.character.class}`).join(",");
+  const partyKey = (party ?? []).map((m) => `${m.character.species}/${m.character.tier}/${m.character.class}/${wearsLook(m.character.look) ? "look" : ""}`).join(",");
 
   useEffect(() => {
     if (!display || chapter === null || chapter.id !== chapterId) return;

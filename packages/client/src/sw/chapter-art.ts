@@ -11,18 +11,19 @@
  */
 
 import type { Chapter, ResolvedCharacter } from "@kad/shared";
-import { castArtUrl, biomeBackdropUrl, biomeTilesUrl, characterPortraitArtUrl, characterWorldArtUrl, coatMaskFor, enemyArtUrl, sceneBackdropUrl } from "../world/art-paths";
+import { castArtUrl, biomeBackdropUrl, biomeTilesUrl, characterPortraitArtUrl, characterWorldArtUrl, coatMaskFor, enemyArtUrl, sceneBackdropUrl, wearsLook } from "../world/art-paths";
 
 /** What a figure's art depends on: a seated party member, or a hero from the journal. */
 export interface FigureOf {
-  character: Pick<ResolvedCharacter, "species" | "tier" | "class">;
+  character: Pick<ResolvedCharacter, "species" | "tier" | "class"> & Partial<Pick<ResolvedCharacter, "look">>;
 }
 
 /**
  * A hero's two paintings (her world figure and her portrait), each followed
- * by its coat mask where `masked` lists one (docs/hero-looks.md §5.4): her
- * colour is tinted on the device from the two, so both must be there before
- * the signal goes.
+ * by its coat mask where `masked` lists one and she wears a colour or a special
+ * (`wearsLook`; docs/hero-looks.md §5.4): her colour is tinted on the device
+ * from the two, so both must be there before the signal goes. A hero drawn as
+ * painted needs no mask.
  */
 export function heroPaintingsWithMasks(character: FigureOf["character"], masked: readonly string[]): string[] {
   const out: string[] = [];
@@ -32,7 +33,7 @@ export function heroPaintingsWithMasks(character: FigureOf["character"], masked:
   ]) {
     if (out.includes(painting)) continue;
     out.push(painting);
-    const mask = coatMaskFor(painting, masked);
+    const mask = wearsLook(character.look) ? coatMaskFor(painting, masked) : null;
     if (mask) out.push(mask);
   }
   return out;
