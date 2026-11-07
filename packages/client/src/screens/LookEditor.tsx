@@ -4,10 +4,12 @@
  * and the Title a kid picks for her hero, as tiles that show her own hero (or
  * her own name) wearing each one.
  *
- *   - `BookLook`: the adventure book's dressing room (LookPane.tsx), built
- *     like the kit's (BookKit.tsx): her hero at the top, large, wearing the
- *     look as she taps, then one shelf at a time. Every tap is a save, behind
- *     the scenes; nothing says "saving".
+ *   - `BookLook`: the adventure book's dressing room (LookPane.tsx), the same
+ *     experience as the kit's (BookKit.tsx): her hero standing on the same
+ *     little stage her pitch stands on, full size, wearing the look the moment
+ *     she taps (with the pitch's little bounce), her nameplate and title under
+ *     her as the pitch's caption, then one shelf at a time of the same tiles.
+ *     Every tap is a save, behind the scenes; nothing says "saving".
  *   - `LookEditor`: the compact editor in her phone's camp panel at the table,
  *     during downtime (the lobby and rests), next to the kit's. Each tap is a
  *     `LOOK_EDIT` naming the look's revision; the TV shows it at once.
@@ -29,7 +31,7 @@
  * hides her colours while she wears it; the colour tiles still show them.
  */
 
-import { useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import type { ReactElement } from "react";
 import { PLAIN_NAMEPLATE } from "@kad/shared";
 import type { ClientIntent, CoatPart, HeroLookView, LookEdit, PartyMember, ResolvedCharacter } from "@kad/shared";
@@ -38,6 +40,7 @@ import { HeroName } from "./HeroName";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { LOOKS, heroNameStyle, lookChoices } from "../world/hero-name";
 import { HERO_ART_PLACES, heroPaintingUrl, type HeroArtSubject } from "../world/hero-art";
+import { HeroImage } from "../world/hero-art-dom";
 import { coatPartLabel, hasCoatMask } from "../world/coat-masks";
 import "./LookEditor.css";
 
@@ -65,7 +68,7 @@ function allShelves(hero: Pick<HeroArtSubject, "species">): ShelfDef[] {
   };
   return [
     { id: "coat", icon: "gem", ...part("main") },
-    { id: "accent", icon: "gem", ...part("accent") },
+    { id: "accent", icon: "spark", ...part("accent") },
     { id: "special", label: "Special", icon: "surprise", legend: "Your special" },
     { id: "nameplate", label: "Nameplate", icon: "scroll", legend: "Your nameplate" },
     { id: "title", label: "Title", icon: "star", legend: "Your title" },
@@ -234,13 +237,24 @@ export function BookLook({ hero, look, edit }: { hero: ResolvedCharacter; look: 
     openShelf = next;
     setShelf(next);
   };
+  // Her stage gives the pitch's little bounce whenever her look changes (not with reduced motion: BookKit.css).
+  const worn = `${look.coat ?? ""}|${look.accent ?? ""}|${look.special ?? ""}|${look.nameplate ?? ""}|${look.title ?? ""}`;
+  const [bounce, setBounce] = useState(0);
+  const first = useRef(true);
+  useEffect(() => {
+    if (first.current) {
+      first.current = false;
+      return;
+    }
+    setBounce((n) => n + 1);
+  }, [worn]);
   return (
     <section className="book-kit book-look" aria-label={`${hero.name}'s look`} data-testid="look-editor">
-      <div className="book-kit__pitch book-look__hero" data-testid="book-look-hero">
-        <div className="book-look__portrait" aria-hidden="true">
-          <CharacterPortrait backdrop hero={{ ...hero, look }} accent={hero.appearance.accent} lit />
+      <div className="book-kit__pitch book-look__pitch" data-testid="book-look-hero">
+        <div key={bounce} className={`book-kit__stage book-look__stage${bounce > 0 ? " is-bouncing" : ""}`} aria-hidden="true">
+          <HeroImage hero={{ ...hero, look }} place="world" className="book-look__figure" alt="" data-testid="book-look-figure" />
         </div>
-        <p className="book-look__name" data-testid="book-look-name">
+        <p className="book-kit__caption book-look__caption" data-testid="book-look-name">
           <HeroName name={hero.name} look={look} />
         </p>
       </div>
@@ -275,7 +289,7 @@ export function BookLook({ hero, look, edit }: { hero: ResolvedCharacter; look: 
               edit={edit}
               tile={({ on, label, onTap, data, preview, swatch, source }) => (
                 <button type="button" className={`book-kit__tile book-look__tile kad-focusable${shelf === "coat" || shelf === "accent" || shelf === "special" ? " book-look__tile--color" : ""}`} aria-pressed={on} onClick={onTap} {...data}>
-                  <span className="book-kit__tile-art book-look__tile-art" aria-hidden="true">
+                  <span className="book-kit__tile-art book-look__tile-art" aria-hidden="true" style={{ ["--name-len" as string]: String(Math.max(hero.name.length, 6)) }}>
                     {preview}
                   </span>
                   <span className="book-kit__tile-name">
