@@ -3394,20 +3394,20 @@
         "accent": { "region": "skin", "draftFrom": "skin", "confirmed": true }
       },
       "dragonling": {
-        "main": { "region": "scales", "draftFrom": "coat", "confirmed": false },
-        "accent": { "region": "wings", "draftFrom": "accent", "confirmed": false }
+        "main": { "region": "scales", "draftFrom": "coat", "confirmed": true },
+        "accent": { "region": "wings", "draftFrom": "accent", "confirmed": true }
       },
       "griffin": {
-        "main": { "region": "coat", "draftFrom": "coat", "confirmed": false },
-        "accent": { "region": "feathers", "draftFrom": "mane", "confirmed": false }
+        "main": { "region": "coat", "draftFrom": "coat", "confirmed": true },
+        "accent": { "region": "feathers", "draftFrom": "mane", "confirmed": true }
       },
       "kitsune": {
-        "main": { "region": "fur", "draftFrom": "coat", "confirmed": false },
-        "accent": { "region": "tails", "draftFrom": "accent", "confirmed": false }
+        "main": { "region": "fur", "draftFrom": "coat", "confirmed": true },
+        "accent": { "region": "tails", "draftFrom": "accent", "confirmed": true }
       },
       "manticore": {
-        "main": { "region": "fur", "draftFrom": "coat", "confirmed": false },
-        "accent": { "region": "mane", "draftFrom": "mane", "confirmed": false }
+        "main": { "region": "fur", "draftFrom": "coat", "confirmed": true },
+        "accent": { "region": "mane", "draftFrom": "mane", "confirmed": true }
       }
     },
     "tolerance": {
@@ -3417,7 +3417,16 @@
       "maxSpill": 0.01,
       "maxOverlap": 0.08
     },
-    "paintings": []
+    "paintings": [
+      "characters/unicorn/fledgling/assembled.png",
+      "characters/unicorn/sworn/assembled.png",
+      "characters/unicorn/radiant/assembled.png",
+      "characters/unicorn/mythic/assembled.png",
+      "characters/bigfoot/fledgling/assembled.png",
+      "characters/bigfoot/sworn/assembled.png",
+      "characters/bigfoot/radiant/assembled.png",
+      "characters/bigfoot/mythic/assembled.png"
+    ]
   },
   "$togetherOverlaysComment": "Painted overlays for group-action checks (docs/briefs/group-actions.md §7; approved design merged in #361, closing #360). Each declared move has two 1600x360 band states and four 192x192 token states on disk. Runtime support and the content gate described by that design still need implementation. Overlay art checks run in tools/art/verify.py through the regular art gate and CI.",
   "togetherOverlays": [

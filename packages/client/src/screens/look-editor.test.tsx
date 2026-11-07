@@ -90,7 +90,9 @@ describe("the book's Look page (§8.1)", () => {
     const { container } = render(<BookLook hero={hero} look={look({ title: "the_kind" })} edit={(c) => edits.push(c)} />);
     expect(screen.getByTestId("book-look-name").textContent).toBe("Moonbeamthe Kind");
     const tabs = within(screen.getByRole("tablist")).getAllByRole("tab").map((t) => t.textContent);
-    expect(tabs).toEqual(["Nameplate", "Title"]);
+    // her species' base paintings have masks (coatMasks.paintings), so her two colour shelves come first
+    expect(tabs).toEqual(["Coat", "Mane", "Nameplate", "Title"]);
+    fireEvent.click(screen.getByRole("tab", { name: "Nameplate" }));
     fireEvent.click(container.querySelector('[data-nameplate="ribbon"]')!);
     fireEvent.click(screen.getByRole("tab", { name: "Title" }));
     expect(container.querySelector('[data-title="the_kind"]')!.getAttribute("aria-pressed")).toBe("true");

@@ -45,10 +45,12 @@ describe("the scenes ahead", () => {
     ] } } } };
     expect(chapterAssets(wagon, [])).toContain("/assets/story-props/sausage-wagon.webp");
   });
-  it("starts with the party's own figures — every scene needs them", () => {
+  it("starts with the party's own figures — every scene needs them — each with its coat mask", () => {
     const urls = upcomingAssets(null, null, PARTY);
-    expect(urls).toHaveLength(1);
-    expect(urls[0]).toBe("/assets/characters/unicorn/fledgling/assembled.png");
+    expect(urls).toEqual([
+      "/assets/characters/unicorn/fledgling/assembled.png",
+      "/assets/characters/unicorn/fledgling/coat-mask.png",
+    ]);
   });
 
   it("before the chapter begins, fetches its entry and what follows it", () => {
