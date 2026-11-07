@@ -415,7 +415,86 @@ def kitsune_eyes(look: Look) -> np.ndarray:
     return ndimage.binary_dilation(small[labs], structure=disk(2))
 
 
-RULES = {"unicorn": clean_unicorn, "bigfoot": clean_bigfoot, "kitsune": clean_kitsune}
+# ----------------------------------------------------------------------------- dragonling
+
+def clean_dragonling(look: Look, draft: np.ndarray, painting: str) -> tuple[np.ndarray, np.ndarray]:
+    """Scales (R) and wings (G) are found afresh from the painting; the draft gives only B.
+
+    1. Between the ink lines, every piece that is mostly dark green paint (OKLab hue 100..200,
+       chroma >= 0.045, L < 0.72) is a spike, horn, claw, ear frill or Mythic's crest crystal,
+       never coloured, and its pale facets and tip go with it. (Fledgling's slate spikes and
+       claws are dark enough to be ink.)
+    2. Wings: the orange webbing (hue 15..110, chroma >= 0.07) in pieces of 3000px or more (an
+       orange eye is smaller), closed and filled so its lighter spots go with it. The glowing
+       mint marks painted on it (Radiant's spots, Mythic's stars, veins and edge line) are grown
+       from it and take its colour, staying lighter than it; then the faded orange where the
+       webbing meets a bone or the ink.
+    3. Scales: the rest of the pale paint (chroma < 0.09, L >= 0.5, not orange): the mint body
+       and its spots, the grey-lavender (or mint) belly and the mint wing bones, all one
+       colour. Never: ink, eyes (small loops of ink: pupils, highlights, fangs), orange eyes.
+    4. Last, the specks left in neither part (not ink, eyes or a spike's pale rim) go to the
+       nearer part within 5px."""
+    a, L, C, hue = look.alpha, look.L, look.C, look.hue
+    ink = look.ink
+    lines = ndimage.binary_dilation(ink, structure=SQUARE)
+    regions, rn = ndimage.label(a & ~lines)
+    idx = np.arange(1, rn + 1)
+
+    green = a & (hue > 100) & (hue < 200) & (C >= 0.045) & (L < 0.72) & ~ink
+    green_share = np.zeros(rn + 1)
+    green_share[1:] = ndimage.mean(green, regions, idx)
+    spike = (green_share >= 0.5)[regions] & (regions > 0)
+    spike |= green & ndimage.binary_dilation(spike, structure=disk(3))
+    spike = ndimage.binary_fill_holes(ndimage.binary_closing(spike, structure=disk(2))) & a
+    # the spike's own ink edge belongs with it
+    spike |= ndimage.binary_dilation(spike, structure=SQUARE, iterations=2) & ink
+
+    orange = a & (hue > 15) & (hue < 110) & (C >= 0.07) & ~ink
+    labs, n = ndimage.label(orange)
+    wing = np.zeros_like(a)
+    if n:
+        sizes = ndimage.sum(orange, labs, np.arange(1, n + 1))
+        big = np.zeros(n + 1, bool)
+        big[1:] = sizes >= 3000
+        wing = big[labs]
+    wing = ndimage.binary_fill_holes(ndimage.binary_closing(wing, structure=disk(3))) & a & ~spike
+
+    loops = ndimage.binary_fill_holes(ink) & ~ink
+    labs, n = ndimage.label(loops)
+    eyes = np.zeros_like(a)
+    if n:
+        small = np.zeros(n + 1, bool)
+        small[1:] = ndimage.sum(loops, labs, np.arange(1, n + 1)) < 2500
+        eyes = ndimage.binary_dilation(small[labs], structure=disk(2))
+    # the glowing marks painted on the webbing (Radiant's spots, Mythic's stars, veins and edge
+    # line) take the wing's colour, staying lighter than it; the ones the fill missed, where a
+    # star touches a wing bone or the line runs along the wing's edge, are grown from the wing,
+    # and then the faded orange beyond them, up to the ink
+    marks = a & ~ink & ~spike & (hue > 110) & (hue < 220) & (C >= 0.08) & (L >= 0.75)
+    wing |= ndimage.binary_propagation(wing, mask=marks | wing)
+    fade = a & ~ink & ~spike & (hue > 0) & (hue < 120) & (C >= 0.035)
+    wing |= ndimage.binary_propagation(wing, mask=(fade & ndimage.binary_dilation(wing, structure=disk(5))) | wing)
+
+    warm = (hue > 0) & (hue < 120) & (C >= 0.05)
+    scales = a & ~ink & ~spike & ~wing & ~eyes & ~warm & (C < 0.09) & (L >= 0.5)
+
+    # specks in neither (not ink, eyes, an orange eye or a spike's pale rim) go to the nearer part
+    near_spike = ndimage.binary_dilation(spike, structure=disk(3))
+    iris = ndimage.binary_dilation(orange & ~wing, structure=disk(2))
+    left = a & ~ink & ~spike & ~near_spike & ~eyes & ~iris & ~scales & ~wing & (L >= 0.5)
+    d_s = ndimage.distance_transform_edt(~scales)
+    d_w = ndimage.distance_transform_edt(~wing)
+    scales |= left & (d_s <= 5) & (d_s <= d_w)
+    wing |= left & (d_w <= 5) & (d_w < d_s)
+    return scales & ~wing, wing
+
+
+RULES = {
+    "unicorn": clean_unicorn,
+    "bigfoot": clean_bigfoot,
+    "kitsune": clean_kitsune,
+    "dragonling": clean_dragonling,
+}
 
 
 # ----------------------------------------------------------------------------- main
