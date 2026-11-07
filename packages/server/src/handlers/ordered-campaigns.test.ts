@@ -50,7 +50,7 @@ import { makeChapter, makeCharacter } from "../../../shared/src/test-fixtures.ts
 import { makeContent, makeHarness, seedHousehold, T0 } from "../test-support.ts";
 import { applyAction } from "./action.ts";
 import { playCampaign } from "./playthrough-driver.ts";
-import { campaignView, settleChapterCompletion } from "./progression.ts";
+import { campaignView, lastChapterOf, settleChapterCompletion } from "./progression.ts";
 import { createRoom, joinRoom } from "./room.ts";
 
 const ROOT = path.resolve(import.meta.dirname, "..", "..", "..", "..");
@@ -580,4 +580,51 @@ describe("Gemfall's numbers, with temporary buffs in the build (#200)", () => {
     const scenes = content.chapter(chapterId)!.scenes;
     return Object.keys(scenes).find((id) => scenes[id]!.type === "encounter")!;
   }
+});
+
+describe("where the crew last made camp (CampaignView.last; docs/camp.md §3.1)", () => {
+  const deps = makeHarness({ content }).deps;
+  const record = (over: Partial<CampaignProgressRecord>): CampaignProgressRecord => ({
+    householdId: "h_1",
+    campaignId: "gemfall",
+    status: "active",
+    setbacks: 0,
+    version: 1,
+    updatedAt: new Date(T0).toISOString(),
+    ...over,
+  });
+  const story = (...ids: string[]) => ids.map((chapterId) => ({ chapterId, ending: "end" }));
+
+  it("names the chapter actually finished, even where its roads moved after it (Gemfall 3C's failed ford)", () => {
+    const gemfall = content.campaign("gemfall")!;
+    // 3C can set route_wild on a failed ford; beat 3 on that road is 3B, in the marsh.
+    expect(content.chapterAt("gemfall", 3, { route_wild: true })?.id).toBe("gemfall-03b");
+    const after = record({ lastIndex: 3, routeFlags: { route_wild: true }, story: story("gemfall-01", "gemfall-02", "gemfall-03c") });
+    const last = lastChapterOf(gemfall, after, deps).last!;
+    expect(last.index).toBe(3);
+    expect(last.biome).toBe(content.chapter("gemfall-03c")!.biome);
+    expect(last.biome).not.toBe(content.chapter("gemfall-03b")!.biome);
+  });
+
+  it("names a graph replay played after another chapter, not the last first-time completion", () => {
+    const riftlight = content.campaign("riftlight")!;
+    // Played the bone yard, then the bridge for the first time, then the bone yard again.
+    const journey = {
+      chaptersCompleted: ["riftlight-bone-yard", "riftlight-ashspan-bridge"],
+      status: "choosing",
+      chapter: "riftlight-bone-yard",
+    } as unknown as CampaignProgressRecord["journey"];
+    const replayed = record({ campaignId: "riftlight", journey, story: story("riftlight-bone-yard", "riftlight-ashspan-bridge", "riftlight-bone-yard") });
+    expect(lastChapterOf(riftlight, replayed, deps).last?.biome).toBe(content.chapter("riftlight-bone-yard")!.biome);
+    // And once the next visit has begun (left mid-chapter, the room back in its lobby): still the replay,
+    // where the last first-time completion would say the bridge.
+    const onwards = { ...(journey as object), status: "playing", chapter: "riftlight-cairnstep-pass" } as unknown as CampaignProgressRecord["journey"];
+    const begun = record({ campaignId: "riftlight", journey: onwards, story: story("riftlight-bone-yard", "riftlight-ashspan-bridge", "riftlight-bone-yard") });
+    expect(lastChapterOf(riftlight, begun, deps).last?.biome).toBe(content.chapter("riftlight-bone-yard")!.biome);
+    // A row from before the story was kept: the journey's place, which it last finished.
+    const legacy = record({ campaignId: "riftlight", journey });
+    expect(lastChapterOf(riftlight, legacy, deps).last?.biome).toBe(content.chapter("riftlight-bone-yard")!.biome);
+    // Nothing finished: no last camp.
+    expect(lastChapterOf(riftlight, null, deps)).toEqual({});
+  });
 });

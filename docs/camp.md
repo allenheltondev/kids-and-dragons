@@ -87,8 +87,9 @@ backdrop: a wide, calm campsite painting with a wide clearing for the camp, acro
 middle 80 percent of the width, and its hotspots (§4.2) on a fixed layout. The view picks the
 backdrop from the chapter's biome, and in the lobby from the chapter the crew last finished: where it
 last made camp (owner, 2026-11-06). The lobby and the chapter's end always show the full, outdoor
-camp. The campaign view names that chapter (`CampaignView.last`, read from what the attempt already
-keeps, so it holds across evenings and rooms); before the crew has finished one, the lobby pitches
+camp. The campaign view names that chapter (`CampaignView.last`, read from the attempt's story,
+which every settlement appends to, replays included, so it holds across evenings and rooms and
+names the chapter actually played even where its roads moved after it); before the crew has finished one, the lobby pitches
 in the chapter it would begin (`next`), and with neither, on the plains.
 
 One function decides it for every screen (`campFamilyFor` in
