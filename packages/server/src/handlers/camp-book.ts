@@ -69,6 +69,7 @@ import type {
   JournalCrewCamp,
   JournalKit,
   JournalResponse,
+  LookCampStanding,
   RunState,
 } from "@kad/shared";
 import type { ContentStore } from "../content/loader.ts";
@@ -243,6 +244,52 @@ export async function heroCrews(householdId: string, heroes: readonly Character[
   return out.length > 0 ? out : [null];
 }
 
+/**
+ * Each hero's crews' camps as a camp look reads them (docs/hero-looks.md §6),
+ * by character id, for the book, which has no room's camp to hand: every
+ * friend any crew she has sat with at this household has made, and the
+ * grandest of their camps. Only crews she is known to have sat with
+ * (`pastCrewKeys`), never `heroCrews`' first-crew guess, so a hero who has
+ * played with nobody earns no crew's milestone. Null for a hero with no such
+ * crew, and for all of them when the content has no camp or a read fails:
+ * the camp looks then wait for the next read, as they did before.
+ */
+export async function heroCampStandings(
+  householdId: string,
+  heroes: readonly Character[],
+  deps: CampDeps,
+): Promise<Map<string, LookCampStanding | null>> {
+  const out = new Map<string, LookCampStanding | null>(heroes.map((h) => [h.id, null]));
+  if (heroes.length === 0 || !deps.content.campCatalog()) return out;
+  try {
+    const seats = heroes.some((h) => readKit(h).crews === undefined) ? await pastSeats(householdId, deps) : null;
+    const known = new Set((await deps.repo.listCrews(householdId)).map((c) => c.id));
+    const crewsOf = new Map<string, (string | null)[]>();
+    for (const hero of heroes) {
+      const crews = new Set<string | null>();
+      for (const key of pastCrewKeys(hero, hero.householdId === householdId ? seats : null)) {
+        if (key === householdId) crews.add(null);
+        else if (campKeyOf(key, householdId) && known.has(key.slice(householdId.length + 1))) crews.add(key.slice(householdId.length + 1));
+      }
+      crewsOf.set(hero.id, [...crews]);
+    }
+    const ids = [...new Set([...crewsOf.values()].flat())];
+    const camps = new Map(await Promise.all(ids.map(async (id) => [id, await readCamp(householdId, id, deps)] as const)));
+    for (const hero of heroes) {
+      const mine = (crewsOf.get(hero.id) ?? []).map((id) => camps.get(id)!);
+      if (mine.length === 0) continue;
+      out.set(hero.id, {
+        friends: [...new Set(mine.flatMap((camp) => Object.keys(camp.friends)))],
+        frameStage: Math.max(...mine.map((camp) => camp.frameStage)),
+      });
+    }
+  } catch (err) {
+    console.error(`looks: could not read ${householdId}'s camps for the book:`, err);
+    return new Map(heroes.map((h) => [h.id, null]));
+  }
+  return out;
+}
+
 /** Each of her heroes' crews' camps (`heroCrews`), named. */
 async function crewCamps(householdId: string, heroes: readonly Character[], catalog: CampCatalog, deps: CampDeps): Promise<JournalCrewCamp[]> {
   const [ids, others, firstName] = await Promise.all([
@@ -400,6 +447,8 @@ export async function editKitFromBook(input: BookKitInput, deps: HandlerDeps): P
   let look: HeroLook | null = null;
   if (lookChanges.length > 0 && looks) {
     const lookSeen: { applied: BookEditField[]; refused: BookEditField[]; problem: string | null } = { applied: [], refused: [], problem: null };
+    // Her crews' camps, so a camp look she has earned is hers to pick (#669).
+    const camp = (await heroCampStandings(input.householdId, [hero], deps)).get(hero.id) ?? null;
     const written = await mutateLook(
       input.householdId,
       request.characterId,
@@ -421,6 +470,7 @@ export async function editKitFromBook(input: BookKitInput, deps: HandlerDeps): P
         return Object.fromEntries(BOOK_LOOK_FIELDS.map((f) => [f, next[f]])) as LookEdit;
       },
       deps,
+      { camp },
     );
     if (lookSeen.problem !== null) return fail("ILLEGAL", lookSeen.problem);
     if (!written.ok) {

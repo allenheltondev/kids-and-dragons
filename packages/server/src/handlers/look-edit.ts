@@ -33,7 +33,7 @@ import {
   readLook,
   withLookEdit,
 } from "@kad/shared";
-import type { ActionResponse, Character, ClientIntent, HeroLook, LookCatalog, LookEdit, RunState } from "@kad/shared";
+import type { ActionResponse, Character, ClientIntent, HeroLook, LookCampStanding, LookCatalog, LookEdit, RunState } from "@kad/shared";
 import type { CharacterWrite, RunRecord } from "../store/repository.ts";
 import { rewrite } from "./claim.ts";
 import { CAMP_WRITE_ATTEMPTS, type CampDeps, type CampWriteResult } from "./camp.ts";
@@ -128,14 +128,15 @@ export async function mutateLook(
   characterId: string,
   fn: (look: HeroLook, hero: Character) => LookEdit | null,
   deps: Pick<HandlerDeps, "repo"> & Partial<Pick<HandlerDeps, "content">>,
+  options: { camp?: LookCampStanding | null } = {},
 ): Promise<CampWriteResult<HeroLook>> {
   let last: HeroLook | undefined;
   for (let attempt = 0; attempt < CAMP_WRITE_ATTEMPTS; attempt++) {
     const hero = await deps.repo.getCharacter(homeHouseholdId, characterId);
     if (!hero) return { ok: false, reason: "missing" };
     // With the content to hand, her look as she holds it (#669): her row's
-    // milestones read back, and kept by this write.
-    const stored = deps.content ? readEarnedLook(deps.content.looksCatalog(), hero, { names: lookNames({ content: deps.content }) }) : readLook(hero);
+    // milestones, and her crews' camps' given `camp`, read back and kept by this write.
+    const stored = deps.content ? readEarnedLook(deps.content.looksCatalog(), hero, { camp: options.camp ?? null, names: lookNames({ content: deps.content }) }) : readLook(hero);
     const edit = fn(structuredClone(stored), hero);
     if (edit === null || !lookEditChanges(stored, edit)) return { ok: true, value: stored, changed: false };
     last = stored;

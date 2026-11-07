@@ -27,6 +27,7 @@ import { ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 import { seatHero } from "./progression.ts";
 import { heroSaved } from "./save.ts";
 import { heroLookOf } from "./look-unlocks.ts";
+import { heroCampStandings } from "./camp-book.ts";
 
 export interface ListHeroesInput {
   householdId: string;
@@ -59,11 +60,14 @@ export async function listHeroes(
     const hold = await holdOf(character, room, deps);
     if (hold) held[character.id] = hold;
   }
+  // Her crews' camps (#669): the book has no room's camp, so a camp look she
+  // has earned (a first friend, a grand camp) is read off the crews she sat with.
+  const camps = await heroCampStandings(input.householdId, own, deps);
   const heroes = own
     .map((character) => {
-      // Her look as she holds it (#669): every milestone her row says she has
-      // earned read back, and where each came from, for the book's shelves.
-      const look = heroLookOf(character, deps);
+      // Her look as she holds it (#669): every milestone her row and her crews'
+      // camps say she has earned read back, and where each came from, for the book's shelves.
+      const look = heroLookOf(character, deps, { camp: camps.get(character.id) ?? null });
       const hero = resolveCharacter(look ? { ...character, look } : character, rules, items);
       return look ? { ...hero, look: lookView(look, { sources: true }) } : hero;
     })
