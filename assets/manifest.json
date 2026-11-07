@@ -3375,6 +3375,23 @@
     }
   ],
   "$figureVariantsComment": "Finished transparent class illustrations. Legacy character-rigs paths are retained for existing assets; no rig runtime or split parts are required.",
+  "$coatMasksComment": "Hero looks (docs/hero-looks.md section 4): the one region of each hero painting that takes her chosen colour. regions: which part each species colours (section 4.2), read by tools/art/coat.py (the draft tool, the gate, the sheet) and the client (packages/client/src/world/coat-masks.ts); draftFrom is the species palette slot the draft tool (npm run art:coat-draft) seeds its colour pick from, and confirmed is false until the region is confirmed on that species' clean masks. paintings: every painting that has a shipped, hand-cleaned mask, as its path under assets/ (the mask is coat-mask.png beside an assembled.png, <species>.coat-mask.png beside a gear portrait), so the client never asks for a mask that does not exist. A mask on disk that is not listed here fails art:verify: a draft is never shipped as is. tolerance: the gate's coverage bounds (fractions of the canvas) and how much of a mask may lie outside a transparent painting's alpha.",
+  "coatMasks": {
+    "regions": {
+      "unicorn": { "region": "coat", "draftFrom": "coat", "confirmed": true },
+      "bigfoot": { "region": "mane", "draftFrom": "mane", "confirmed": true },
+      "dragonling": { "region": "scales", "draftFrom": "coat", "confirmed": false },
+      "griffin": { "region": "feathers", "draftFrom": "mane", "confirmed": false },
+      "kitsune": { "region": "fur", "draftFrom": "mane", "confirmed": false },
+      "manticore": { "region": "mane", "draftFrom": "mane", "confirmed": false }
+    },
+    "tolerance": {
+      "minCoverage": 0.003,
+      "maxCoverage": 0.6,
+      "maxSpill": 0.01
+    },
+    "paintings": []
+  },
   "$togetherOverlaysComment": "Painted overlays for group-action checks (docs/briefs/group-actions.md §7; approved design merged in #361, closing #360). Each declared move has two 1600x360 band states and four 192x192 token states on disk. Runtime support and the content gate described by that design still need implementation. Overlay art checks run in tools/art/verify.py through the regular art gate and CI.",
   "togetherOverlays": [
     {

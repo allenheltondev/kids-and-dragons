@@ -16,6 +16,13 @@ Usage:
     python tools/art/sheet.py unicorn         # one species
     python tools/art/sheet.py unicorn/sworn   # one species/tier
 
+    python tools/art/sheet.py --coat          # only the colour pages (hero-looks.md section 4.3)
+
+A species with any coat mask on disk (drafted or shipped) also gets colour pages,
+art/review/<species>/coat-<family>.png: each painting, its mask overlaid, and the region in
+four test tints (light, dark, saturated, grey). A gear portrait is opaque, so this page is the
+only check that its background stays out of the mask.
+
 Writes to art/review/<species>/. Sets that have not been delivered yet are skipped,
 not failed - only unicorn exists today.
 
@@ -33,6 +40,9 @@ try:
     from PIL import Image, ImageDraw, ImageFont
 except ImportError:
     sys.exit("error: needs Pillow and numpy  ->  pip install pillow numpy")
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import coat  # noqa: E402  (coat masks: tools/art/coat.py)
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 MANIFEST = os.path.join(ROOT, "assets", "manifest.json")
@@ -302,11 +312,72 @@ def species_sheet(species: dict, sets: dict, canvas: dict, tol: dict) -> Image.I
     ])
 
 
+
+# ----------------------------------------------------------------------------- colour pages
+
+# hero-looks.md section 4.3, step 3: one light, one dark, one saturated, one grey
+TEST_TINTS = (("light", "#F7E9A8"), ("dark", "#23264A"), ("saturated", "#E8326E"), ("grey", "#9A9A9A"))
+COAT_CELL = 220
+OVERLAY = (255, 0, 200)
+
+
+def coat_row(p, painting: Image.Image, mask: Image.Image, listed: bool) -> Image.Image:
+    """One painting's line on the colour page: as painted, the mask overlaid, four tints."""
+    work = COAT_CELL * 2  # tint at twice the cell, not the full canvas: a review, not a render
+    rgba = np.asarray(painting.convert("RGBA").resize((work, work), Image.LANCZOS))
+    m = np.asarray(mask.convert("L").resize((work, work), Image.LANCZOS))
+
+    def cell(arr: np.ndarray) -> Image.Image:
+        im = Image.fromarray(arr, "RGBA").resize((COAT_CELL, COAT_CELL), Image.LANCZOS)
+        plate = checker((COAT_CELL, COAT_CELL))
+        plate.paste(im, (0, 0), im)
+        return plate
+
+    w = (m.astype(np.float64) / 255.0 * 0.7)[..., None]
+    over = rgba.copy()
+    over[..., :3] = (rgba[..., :3] * (1 - w) + np.array(OVERLAY) * w).round().astype(np.uint8)
+    # the mask shows even where the painting is transparent, so a spill is visible
+    over[..., 3] = np.maximum(rgba[..., 3], (m * 0.7).astype(np.uint8))
+
+    coverage = float(np.asarray(mask.convert("L"), dtype=np.float64).mean() / 255.0)
+    title = p.painting
+    tiles = [
+        card(cell(rgba), "as painted", PAPER, title if len(title) < 34 else "..." + title[-31:]),
+        card(cell(over), "mask", PAPER, f"{coverage:.1%} of canvas" + ("" if listed else ", unlisted")),
+    ]
+    for name, hex_ in TEST_TINTS:
+        tiles.append(card(cell(coat.tint(rgba, m, hex_)), name, PAPER, hex_))
+    return row(tiles)
+
+
+def coat_pages(mf: dict, species: dict, root: str = ROOT) -> dict[str, Image.Image]:
+    """The colour pages for one species, per family, for every painting with a mask on disk."""
+    region = mf["coatMasks"]["regions"].get(species["id"], {})
+    listed = set(mf["coatMasks"].get("paintings", []))
+    rows: dict[str, list[Image.Image]] = {}
+    for p in coat.paintings(mf, species["id"]):
+        mask_path, painting_path = coat.asset(p.mask, root), coat.asset(p.painting, root)
+        if not (os.path.isfile(mask_path) and os.path.isfile(painting_path)):
+            continue
+        with Image.open(painting_path) as painting, Image.open(mask_path) as mask:
+            rows.setdefault(p.family, []).append(coat_row(p, painting, mask, p.painting in listed))
+    pages: dict[str, Image.Image] = {}
+    for family, lines in rows.items():
+        width = max(r.width for r in lines)
+        sub = (f"region: {region.get('region', '?')}"
+               + ("" if region.get("confirmed") else " (to confirm)")
+               + "   |   only the region moves; soft edges stay soft"
+               + ("   |   opaque: the background must stay out" if family == "gear" else ""))
+        pages[family] = page([heading(f"{species['id']} - colour ({family})", sub, width), *lines])
+    return pages
+
+
 # ----------------------------------------------------------------------------- driver
 
 
 def main() -> int:
     args = [a for a in sys.argv[1:] if not a.startswith("-")]
+    coat_only = "--coat" in sys.argv
 
     if not os.path.exists(MANIFEST):
         sys.exit(f"error: no manifest at {MANIFEST}")
@@ -329,6 +400,8 @@ def main() -> int:
             if args and not any(a == sp["id"] or a == f'{sp["id"]}/{tier}' for a in args):
                 continue
             matched += 1
+            if coat_only:
+                continue
             loaded = load_set(sp, tier)
             if loaded is None:
                 skipped.append(f'{sp["id"]}/{tier}')
@@ -340,7 +413,15 @@ def main() -> int:
             written.append(save(tier_sheet(sp, tier, assembled, canvas, tol), out))
             print(f"  {GREEN}wrote{RESET} {written[-1]}")
 
+        if not args or sp["id"] in args:
+            for family, im in coat_pages(mf, sp).items():
+                out = os.path.join(REVIEW, sp["id"], f"coat-{family}.png")
+                written.append(save(im, out))
+                print(f"  {GREEN}wrote{RESET} {written[-1]}  (colour page)")
+
         # The cross-tier sheet only says anything once there are two tiers to compare.
+        if coat_only:
+            continue
         if len(sets) >= 2:
             out = os.path.join(REVIEW, sp["id"], "tiers.png")
             written.append(save(species_sheet(sp, sets, canvas, tol), out))
