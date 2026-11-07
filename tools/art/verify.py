@@ -596,6 +596,8 @@ def check_gear_portraits(rep: Report, mf: dict) -> None:
         for filename in files:
             if not filename.lower().endswith(".png"):
                 continue
+            if filename.lower().endswith(".coat-mask.png"):
+                continue  # a hero-looks mask: check_coat_masks owns it (and its strays)
             path = os.path.normcase(os.path.normpath(os.path.join(base, filename)))
             if path not in declared:
                 rep.fail(
