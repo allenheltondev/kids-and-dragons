@@ -16,6 +16,7 @@
  */
 
 import { emptyKit, withMilestones } from "./camp-record.js";
+import { lookView } from "./hero-look.js";
 import { CLASS_RANKS, STAT_IDS } from "./types/domain.js";
 import type {
   Appearance,
@@ -529,6 +530,8 @@ export function resolveCharacter(
     // Always derived from committed XP, never effective or stored level.
     committedLevel: levelForXp(rules, character.committed.xp),
     ...(character.practiced ? { practiced: true as const } : {}),
+    // Her chosen look (docs/hero-looks.md). Present only when stored.
+    ...(character.look ? { look: lookView(character.look) } : {}),
     // The fitting stall's swap, spent (#312). Present only when true.
     ...(progress.fitted ? { fitted: true as const } : {}),
   };

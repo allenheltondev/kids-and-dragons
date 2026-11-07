@@ -272,7 +272,13 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // 1716 -> 1717 for the #661 review fixes (every shelf's art warmed for offline,
 // a family tablet's taps shown at once and sent in order): 1715KB measured,
 // first paint 328KB. 2KB of slack again.
-const TOTAL_BUDGET_KB = 1717;
+// 1717 -> 1735 for the hero's name style (#664, docs/hero-looks.md §7.2): the
+// looks catalog (content/looks.json) and the name's title and frame on every
+// surface that shows a hero's name (HeroName, world/nameplate.ts with a small
+// nine-slice of its own rather than Pixi's), the table's Look editor in the
+// camp panel, and the book's Look page in its own lazy chunk. 1733KB measured
+// (main measured 1715KB), first paint 328KB unchanged. 2KB of slack again.
+const TOTAL_BUDGET_KB = 1735;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

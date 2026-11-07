@@ -79,6 +79,7 @@ import {
 } from "./encounter.js";
 import { captiveStatuses, captivesOf, objectivesDone, outcomeBranch, resolveEnvironment } from "./environment.js";
 import { parseBoard, type Position } from "./grid.js";
+import { lookIntentProblem } from "./hero-look.js";
 import { choiceAhead, type ChoiceAhead } from "./choice-ahead.js";
 import { enemyPlanFor } from "./combat-intent.js";
 import type {
@@ -1646,6 +1647,11 @@ function checkIntentShape(intent: ClientIntent): void {
       if (problem !== null) malformed(problem);
       return;
     }
+    case "LOOK_EDIT": {
+      const problem = lookIntentProblem(intent as unknown as Record<string, unknown>);
+      if (problem !== null) malformed(problem);
+      return;
+    }
   }
 }
 
@@ -1811,6 +1817,10 @@ function dispatch(
       // They write the crew's camp or a hero's kit, store writes the engine
       // never sees (server handlers/camp-edit.ts), like CAMP_VOTE above.
       throw new Illegal("ILLEGAL", "the camp is changed through the authoritative run handler");
+
+    case "LOOK_EDIT":
+      // A hero's own look, on her row (server handlers/look-edit.ts), like KIT_EDIT.
+      throw new Illegal("ILLEGAL", "a look is changed through the authoritative run handler");
 
     case "KEEP_CLASS":
       return doKeepClass(draft, playerId, intent.classId, intent.stall === true);

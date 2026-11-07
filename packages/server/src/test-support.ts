@@ -15,6 +15,7 @@ import { campaignMode, chapterFor, lobbyCampaign, parseCampaignGraph } from "@ka
 import { makeChapter, makeItems, makeMap, makeRules } from "../../shared/src/test-fixtures.ts";
 import { makeRng } from "@kad/shared";
 import type {
+  LookCatalog,
   CampCatalog,
   AbilityCatalog,
   Bestiary,
@@ -29,6 +30,27 @@ import type {
 import { LocalSseChannel } from "./channel/room-channel.ts";
 import { MemoryTimingStore } from "./store/timing-store.ts";
 import type { ContentStore } from "./content/loader.ts";
+
+/**
+ * A small hero looks catalog (docs/hero-looks.md §7): the starter frames and
+ * titles, and one earned title and frame nobody holds until a test gives it.
+ */
+export const LOOKS_FIXTURE: LookCatalog = {
+  coats: [],
+  nameplates: [
+    { id: "plain", name: "Plain", unlock: { from: "starter" } },
+    { id: "ribbon", name: "Ribbon", unlock: { from: "starter" }, art: "nameplates/ribbon.webp" },
+    { id: "leafy", name: "Leafy", unlock: { from: "starter" }, art: "nameplates/leafy.webp" },
+    { id: "starry", name: "Starry", unlock: { from: "starter" }, art: "nameplates/starry.webp" },
+    { id: "golden", name: "Golden", unlock: { from: "found" }, art: "nameplates/golden.webp" },
+  ],
+  titles: [
+    { id: "the_bold", text: "the Bold", unlock: { from: "starter" } },
+    { id: "the_kind", text: "the Kind", unlock: { from: "starter" } },
+    { id: "the_curious", text: "the Curious", unlock: { from: "starter" } },
+    { id: "of_the_gemfall", text: "of the Gemfall", unlock: { from: "milestone", campaign: "gemfall" } },
+  ],
+};
 import type { ApplyIntentResult, Engine, EngineContext, IntentInput } from "./engine/port.ts";
 import type { HandlerDeps } from "./handlers/deps.ts";
 import { DevIdentity, type DeviceIdentity } from "./identity.ts";
@@ -70,6 +92,8 @@ export function makeContent(
     bestiary?: Bestiary | null;
     /** The camp catalog (#618), for the chapter-end shop (#619). Absent: no shop. */
     campCatalog?: CampCatalog | null;
+    /** The hero looks catalog (#664). Absent: a small starter set (`LOOKS_FIXTURE`). */
+    looksCatalog?: LookCatalog | null;
   } = {},
 ): ContentStore {
   const rules = overrides.rules ?? makeRules();
@@ -100,6 +124,7 @@ export function makeContent(
     world: () => overrides.world ?? null,
     bestiary: () => overrides.bestiary ?? null,
     campCatalog: () => overrides.campCatalog ?? null,
+    looksCatalog: () => (overrides.looksCatalog === undefined ? LOOKS_FIXTURE : overrides.looksCatalog),
     // The same selection the real store makes (shared `chapterFor`), over
     // whatever chapters this fixture was given — so a test about a routed
     // beat exercises the rule rather than a fixture's idea of it.

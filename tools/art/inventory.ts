@@ -57,6 +57,7 @@ interface Manifest extends CampManifest {
   sceneIllustrations?: string[];
   campaignArt?: { campaigns: string[] };
   storyPlates?: { ids: string[] };
+  nameplateFrames?: { ids: string[] };
   paintedIcons?: { ids: string[] };
   badgeArt?: { ids: string[] };
   guideArt?: { id: string; width: number; height: number; alpha: boolean }[];
@@ -286,6 +287,23 @@ const delivered = (line: Line): number => line.need - line.missing.length;
     need: plates.length,
     missing: plates.filter((id) => !has("assets", `${id}.webp`)).map((id) => `${id}.webp`),
     note: "prologue, chapter and epilogue plates, 1600x900 (docs/story-plates.md); the story plays without a plate until it lands",
+  });
+}
+
+{
+  // Nameplate frames (docs/hero-looks.md §7.2; #665): the catalog paints them,
+  // the manifest lists the ones delivered, and the plain plate stands in until then.
+  const looksPath = join(root, "content", "looks.json");
+  const looks = existsSync(looksPath)
+    ? (JSON.parse(readFileSync(looksPath, "utf8")) as { nameplates?: { id: string; art?: string }[] })
+    : { nameplates: [] };
+  const painted = (looks.nameplates ?? []).filter((frame): frame is { id: string; art: string } => typeof frame.art === "string");
+  const delivered = new Set(manifest.nameplateFrames?.ids ?? []);
+  lines.push({
+    category: "Nameplate frames",
+    need: painted.length,
+    missing: painted.filter((frame) => !delivered.has(frame.id) || !has("assets", frame.art)).map((frame) => frame.art),
+    note: "UI art behind a hero's name, nine-slice with room for the title line (docs/hero-looks.md §7.2, #665); the plain plate stands in until each lands and is listed in manifest.nameplateFrames.ids",
   });
 }
 

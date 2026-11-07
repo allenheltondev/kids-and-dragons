@@ -73,6 +73,7 @@ import { claimCampDrops, prepareChapterEndCamp, settleChapterEndCamp, stepCampDr
 import { prepareCampVote } from "./camp-shop.ts";
 import { recordCrews } from "./camp-book.ts";
 import { prepareCampPlace, prepareCampUndo, prepareKitEdit, recordOuting, stepOuting, syncCampDowntime, syncCampFriends } from "./camp-edit.ts";
+import { prepareLookEdit } from "./look-edit.ts";
 import { dispatchTurnPush } from "./push.ts";
 import { practiceChapterId, practiceRefusal, settlePractice } from "./practice.ts";
 import {
@@ -366,6 +367,10 @@ async function applyActionOnce(
   // the commit and written by it, never before it (#645).
   let campWrite: CampWrite | undefined;
   let kitWrite: CharacterWrite | undefined;
+  // A hero's own look (look-edit.ts, #664): the row write, or a stale refusal
+  // that still commits the refreshed view so the refused phone shows it.
+  let lookWrite: CharacterWrite | undefined;
+  let refusal: NonNullable<ActionResponse["error"]> | undefined;
   let result: ApplyIntentResult;
   if (input.intent.type === "CHOOSE_EXIT" || input.intent.type === "RIFT_ACTION") {
     // A journey transition, not a run one: the engine never sees it, exactly
@@ -460,6 +465,17 @@ async function applyActionOnce(
     result = { state: edit.state };
     campWrite = edit.writes.camp;
     kitWrite = edit.writes.kit;
+  } else if (input.intent.type === "LOOK_EDIT") {
+    // A hero's own look (docs/hero-looks.md §3.2; #664), written by this commit.
+    const edit = await prepareLookEdit(state, input.intent, input.playerId, auth.run, deps);
+    if (!edit.ok) {
+      if (!edit.refresh) return { ok: false, seq: state.seq, error: edit.error };
+      result = { state: edit.refresh };
+      refusal = edit.error;
+    } else {
+      result = { state: edit.state };
+      lookWrite = edit.write;
+    }
   } else {
     // A returning hero is a household row the engine cannot reach, so it is
     // loaded here and handed in; whether this player may bring it is the
@@ -594,6 +610,7 @@ async function applyActionOnce(
   const characters: CharacterWrite[] = [...riftDeeds];
   if (spentCharacter) characters.push(spentCharacter);
   if (kitWrite) characters.push(kitWrite);
+  if (lookWrite) characters.push(lookWrite);
   if (seated) {
     const hero = seated.character;
     characters.push(seated);
@@ -784,7 +801,7 @@ async function applyActionOnce(
   // A taken exit is never trivial, even when this room shows nothing of the
   // campaign it moved: the household's journey changed and must be written.
   if (!result.presentation && trivial && !exitTaken) {
-    return { ok: true, seq: state.seq };
+    return refusal ? { ok: false, seq: state.seq, error: refusal } : { ok: true, seq: state.seq };
   }
 
   const event: EventRecord = {
@@ -844,7 +861,7 @@ async function applyActionOnce(
     // The run is where this intent read it: what refused the commit was the
     // camp or kit it changed, which moved on underneath. Nothing landed;
     // apply it again to what is there now.
-    if ((campWrite || kitWrite) && mayRetryCamp && current?.seq === state.seq) return RETRY_CAMP;
+    if ((campWrite || kitWrite || lookWrite) && mayRetryCamp && current?.seq === state.seq) return RETRY_CAMP;
     logStaleSeq("commit-race", input, current?.seq ?? state.seq);
     return {
       ok: false,
@@ -948,6 +965,8 @@ async function applyActionOnce(
   // (`DISPATCH_WAIT_MS`); nothing about presence, phones or push services is.
   await dispatchTurnPush({ before: state, after: next, actorId: input.playerId }, deps);
 
+  // A stale look edit committed only the refreshed view of her look: still refused.
+  if (refusal) return { ok: false, seq: nextSeq, error: refusal };
   return { ok: true, seq: nextSeq };
 }
 

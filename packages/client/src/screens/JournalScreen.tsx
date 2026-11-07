@@ -22,6 +22,7 @@
  * open there too.
  */
 
+import { HeroName } from "./HeroName";
 import { Suspense, useCallback, useEffect, useState } from "react";
 import { ChunkBoundary, lazyChunk } from "../ui/ChunkBoundary";
 import type { ReactElement } from "react";
@@ -54,7 +55,7 @@ import "../styles/chrome.css";
 import { PrivacyFooter } from "../ui/PrivacyFooter";
 
 /** `story` and `me` are the hero's own, opened from the Hero page rather than from the shelf. */
-export type JournalPane = "hero" | "map" | "story" | "guide" | "me" | "camp";
+export type JournalPane = "hero" | "map" | "story" | "guide" | "me" | "camp" | "look";
 
 /**
  * Her own page (#299) is a chunk of its own, fetched the first time "My page" is
@@ -68,6 +69,9 @@ const StoryPane = lazyChunk(() => import("./StoryPane"), (module) => module.defa
 
 /** The crew's camp (#629; docs/camp.md §7): its own chunk, fetched the first time "Camp" is opened. */
 const CampPane = lazyChunk(() => import("./CampPane"), (module) => module.default);
+
+/** Her hero's look (docs/hero-looks.md §8.1; #664): its own chunk, fetched the first time "Look" is opened. */
+const LookPane = lazyChunk(() => import("./LookPane"), (module) => module.default);
 
 /**
  * A saved hero as the sheet and the atlas want them: a party member at full
@@ -181,11 +185,14 @@ export function JournalScreen(): ReactElement {
    * pane and the next look at Camp show it. The saved copy is kept by the
    * sender (store/book-kit-sync.ts).
    */
-  const applyKit = useCallback<ApplyKit>((characterId, kit) => {
+  const applyKit = useCallback<ApplyKit>((characterId, kit, look) => {
     setLoad((was) => {
-      if (was.status !== "ready" || !was.journal.camp) return was;
+      if (was.status !== "ready") return was;
+      // Her look (docs/hero-looks.md §3.2), on the hero the book shows.
+      const heroes = look ? was.journal.heroes.map((h) => (h.id === characterId ? { ...h, look } : h)) : was.journal.heroes;
+      if (!was.journal.camp) return look ? { ...was, journal: { ...was.journal, heroes } } : was;
       const camp = { ...was.journal.camp, kits: { ...was.journal.camp.kits, [characterId]: kit } };
-      return { ...was, journal: { ...was.journal, camp } };
+      return { ...was, journal: { ...was.journal, heroes, camp } };
     });
   }, []);
   /*
@@ -255,6 +262,7 @@ export function JournalScreen(): ReactElement {
         <TrayTab on={pane === "map"} object="map" label="Map" onClick={() => setPane("map")} />
         <TrayTab on={pane === "guide"} object="fieldGuide" label="Guide" onClick={() => setPane("guide")} />
         <TrayTab on={pane === "camp"} object="rest" label="Camp" onClick={() => setPane("camp")} />
+        <TrayTab on={pane === "look"} object="scroll" label="Look" onClick={() => setPane("look")} />
         <TrayTab on={false} object="lantern" label="Play" onClick={play} />
       </nav>
       {load.savedAt !== null ? (
@@ -286,6 +294,7 @@ export function JournalScreen(): ReactElement {
         {pane === "camp" ? (
           <CampTray journal={load.journal} fresh={load.savedAt === null} onKit={applyKit} />
         ) : null}
+        {pane === "look" ? <LookTray journal={load.journal} onKit={applyKit} /> : null}
         {pane === "guide" ? (
           <div className="kad-surface kad-surface--player" data-surface="player">
             <FieldGuide backToBag={false} />
@@ -315,6 +324,18 @@ function CampTray({ journal, fresh, onKit }: { journal: JournalResponse; fresh: 
     <ChunkBoundary inline message="Your camp couldn’t open.">
       <Suspense fallback={<div className="journal__busy" role="status"><Spinner /><span>Opening your camp…</span></div>}>
         <CampPane journal={journal} fresh={fresh} hero={hero} onHero={choose} onKit={onKit} />
+      </Suspense>
+    </ChunkBoundary>
+  );
+}
+
+/** The Look tray (#664), for the hero the book has open. */
+function LookTray({ journal, onKit }: { journal: JournalResponse; onKit: ApplyKit }): ReactElement {
+  const [hero, choose] = useChosenHero(journal.heroes);
+  return (
+    <ChunkBoundary inline message="Your hero's look couldn’t open.">
+      <Suspense fallback={<div className="journal__busy" role="status"><Spinner /><span>Opening your look…</span></div>}>
+        <LookPane journal={journal} hero={hero} onHero={choose} onKit={onKit} />
       </Suspense>
     </ChunkBoundary>
   );
@@ -389,7 +410,7 @@ function HeroPane({ journal, onPlay, onOpen }: { journal: JournalResponse; onPla
                       <CharacterPortrait backdrop species={h.species} accent={h.appearance.accent}
                         tier={h.tier} characterClass={h.class} lit={on} />
                     </span>
-                    <span className="journal__pick-name">{h.name}</span>
+                    <span className="journal__pick-name"><HeroName name={h.name} look={h.look} /></span>
                   </button>
                 </li>
               );

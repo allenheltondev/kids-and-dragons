@@ -103,7 +103,16 @@ import {
   nameplateGap,
   nameplateLabel,
   type NameplateBox,
+  crowdedTitles,
+  destroyNameDress,
+  dressNameplate,
+  fitNameDress,
+  hideNameTitle,
+  titleBoxOf,
+  titleMinFont,
+  type NameDress,
 } from "./nameplate";
+import { heroNameStyle } from "./hero-name";
 import { BOARD_TILE_PX, beatOffsetsMs, facingFor, naturalPath, tileVariant } from "./board-math";
 import { combatMarkerArt } from "./combat-art";
 import { dashedSquare, environmentOverlay, type OverlayTile } from "./environment-overlay";
@@ -202,6 +211,16 @@ const NAMEPLATE_TYPE_HEIGHT = BOARD_TILE_PX * 2.4;
     was built with. `nameplateGap` is the one place that formula lives. */
 const NAMEPLATE_OFFSET_Y = nameplateGap(ACTOR_HEIGHT);
 
+/**
+ * A title on the board (docs/hero-looks.md §7.2) is held to the TV's 14px at
+ * 720p as the fight camera frames it closest: a seven-tile window (camera.ts,
+ * three tiles of context round the figure in focus), so 720 / 7 px a tile.
+ * At the board's type sizes that hides the title line in a fight, which is
+ * the rule working: the board is the most crowded thing the TV draws, and a
+ * title there is hidden, never shortened. Titles stay in the lineup.
+ */
+const BOARD_TITLE_MIN_FONT = titleMinFont(720 / 7 / BOARD_TILE_PX);
+
 /** A hero whose player stepped away (#258): the story lineup's fade (scene.ts). */
 const AWAY_ALPHA = 0.5;
 
@@ -250,6 +269,8 @@ export interface BoardLayer {
   /** The party names currently drawn, as boxes in board pixels. See
       `NameplateBox` for why this is readable at all. */
   nameplateBoxes(): NameplateBox[];
+  /** The title lines drawn under the names (#664), in the same space: only those that show. */
+  titleBoxes(): NameplateBox[];
   /** Each figure's drawn `art.scale.x`, by id: 1 as drawn (facing left),
       -1 turned to face right, in between while turning. For tests. */
   facings(): Record<string, number>;
@@ -315,6 +336,8 @@ interface BoardActor {
   /** What `label` is currently saying, so a renamed character is spotted
       without measuring a Text every patch. */
   labelText: string | null;
+  /** Her frame and title beside `label` in `nameLayer` (#664), or null: exactly as before looks. */
+  dress: NameDress | null;
   /**
    * `art.scale.x`'s target: 1 as drawn (facing left), -1 turned to face
    * right. Set from `facingFor` on every patch, so a figure squares up to
@@ -621,6 +644,8 @@ export function createBoardLayer(): BoardLayer {
       label.y = feet.y + NAMEPLATE_OFFSET_Y;
       nameLayer.addChild(label);
     }
+    const look = combatant.side === "party" ? current.party.find((m) => m.character.id === combatant.id)?.character.look : undefined;
+    const dress = label ? dressNameplate(nameLayer, label, heroNameStyle(look)) : null;
 
     // How tall this figure really is (#362): a hero's species, or the canon
     // creature behind the enemy's art.
@@ -656,6 +681,7 @@ export function createBoardLayer(): BoardLayer {
       label,
       puffBadge: null,
       labelText: nameplateLabel(named),
+      dress,
       phase: Math.random() * Math.PI * 2,
       facing: facingFor(current.encounter, combatant.id) === "right" ? -1 : 1,
       route: [],
@@ -779,6 +805,9 @@ export function createBoardLayer(): BoardLayer {
             existing.label.text = name;
             fitNameplate(existing.label, NAMEPLATE_MAX_WIDTH);
           }
+          // Her look, changed between fights (#664): a new frame or title.
+          const look = current.party.find((m) => m.character.id === combatant.id)?.character.look;
+          existing.dress = dressNameplate(nameLayer, existing.label, heroNameStyle(look), existing.dress);
         }
         continue;
       }
@@ -793,6 +822,7 @@ export function createBoardLayer(): BoardLayer {
       // The name is not in that container (see `nameLayer`), so it does not
       // come down with it — a beaten figure would leave its label on the grid.
       actor.label?.destroy();
+      destroyNameDress(actor.dress);
       actors.delete(id);
     }
     // Who is on the board decides how big everybody is drawn.
@@ -1256,6 +1286,8 @@ export function createBoardLayer(): BoardLayer {
         if (actor.label) {
           actor.label.x = actor.container.x;
           actor.label.y = actor.container.y + NAMEPLATE_OFFSET_Y - lift;
+          fitNameDress(actor.dress, actor.label, { maxWidth: NAMEPLATE_MAX_WIDTH, minFont: BOARD_TITLE_MIN_FONT });
+          if (actor.dress?.title) actor.dress.title.alpha = actor.label.alpha;
         }
         // Turning to face the nearest opponent: a quick squash through
         // edge-on, which reads as the figure turning round rather than
@@ -1298,6 +1330,15 @@ export function createBoardLayer(): BoardLayer {
           actor.art.rotation = still ? rotation : approach(actor.art.rotation, rotation, DOWN_RATE, dtSeconds);
           actor.art.alpha = approach(actor.art.alpha, actor.away ? AWAY_ALPHA : 1, DOWN_RATE, dtSeconds);
         }
+      }
+
+      // A title that would run into a neighbour's plate is hidden (§7.2).
+      const plated = [...actors.values()].filter((a) => a.label !== null && a.label.visible);
+      if (plated.some((a) => a.dress?.title?.visible)) {
+        const crowded = crowdedTitles(plated.map((a) => ({ name: nameplateBoxOf(a.label!), title: titleBoxOf(a.dress) })));
+        plated.forEach((a, i) => {
+          if (crowded[i]) hideNameTitle(a.dress);
+        });
       }
 
       // The turn marker: a pulsing ring under whoever the clock is on.
@@ -1352,6 +1393,13 @@ export function createBoardLayer(): BoardLayer {
         .map((a) => nameplateBoxOf(a.label!));
     },
 
+    titleBoxes() {
+      return [...actors.values()].flatMap((a) => {
+        const box = titleBoxOf(a.dress);
+        return box ? [box] : [];
+      });
+    },
+
     facings() {
       return Object.fromEntries([...actors.values()].map((a) => [a.id, a.art.scale.x]));
     },
@@ -1378,6 +1426,7 @@ export function createBoardLayer(): BoardLayer {
         // same place as everything else it owns. Destroying detaches it from
         // `nameLayer`, so the sweep below cannot reach it twice.
         actor.label?.destroy();
+        destroyNameDress(actor.dress);
       }
       actors.clear();
       container.destroy({ children: true });

@@ -60,6 +60,7 @@ import {
   freshPieces,
   kitEditProblem,
   kitView,
+  lookView,
   placeProblem,
   placeRefusalText,
   readKit,
@@ -422,7 +423,7 @@ export async function syncCampDowntime(
     want.filter((m) => m.character.id !== input.created).map(async (m) => {
       try {
         const row = await deps.repo.getCharacter(m.homeHouseholdId ?? input.run.householdId, m.character.id);
-        return [m.character.id, kitView(row ? readKit(row) : emptyKit(), key)] as const;
+        return [m.character.id, kitView(row ? readKit(row) : emptyKit(), key), row?.look] as const;
       } catch (err) {
         console.error(`camp: could not read hero ${m.character.id}'s kit:`, err);
         return null;
@@ -432,6 +433,16 @@ export async function syncCampDowntime(
   for (const entry of read) if (entry) kits[entry[0]] = entry[1];
   if (Object.keys(kits).length > 0) next.kits = kits;
   else delete next.kits;
+  // Her look, the same way (docs/hero-looks.md §3.2; #664): a change made in
+  // the book shows on the TV's nameplate as the next downtime moment begins.
+  const looks = new Map(read.flatMap((entry) => (entry && entry[2] ? [[entry[0], entry[2]] as const] : [])));
+  if (looks.size > 0) {
+    next.party = next.party.map((m) => {
+      const look = looks.get(m.character.id);
+      if (!look || m.character.look?.revision === look.revision) return m;
+      return { ...m, character: { ...m.character, look: lookView(look) } };
+    });
+  }
   return syncCampFriends(next, input.run.householdId, deps);
 }
 

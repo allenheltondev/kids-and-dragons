@@ -1,6 +1,6 @@
 # Hero looks: a colour and a name style of her own
 
-**Status: design approved (2026-11-07), nothing built.** Every decision in §11 is *decided*: the
+**Status: design approved (2026-11-07); phase 1, the name style, built (#664).** Every decision in §11 is *decided*: the
 product owner's own on 2026-11-07, and the rest approved with this doc after two design reviews
 the same day. Nothing is still only proposed. The second revision answered the first review: the gear portraits (§4), book edits against the revision (§3.2), every
 hero drawing path (§9), the nameplate's geometry (§7.2), offline prefetch (§5.4), the tinter's
@@ -108,6 +108,40 @@ The look is edited exactly as the kit is (camp.md §7, §11), with the same two 
 Both routes reuse #661's code: the device-bound queue (`kit-queue.ts`), its sender
 (`book-kit-sync.ts`) and its endpoint, with look changes as new change kinds; and the tablet's
 in-memory pending list.
+
+*As built (#664, phase 1):*
+
+- **The data.** `Character.look` (`HeroLook`, `LookUnlock`; shared `types/look.ts`) beside the
+  kit, character schema v10 (a v9 build would narrow it away), absent until something is chosen.
+  The rules are shared `hero-look.ts`: `readLook`, `lookView` (the slim `HeroLookView` the screens
+  read, on `ResolvedCharacter.look` only when she has a look), `lookEditProblem` (in the catalog,
+  hers to wear, a coat her species' own), `mergeBookLook`, `migrateLook`. Starters are implied by
+  the catalog, never stored.
+- **The catalog** is `content/looks.json` (schema `schemas/looks.schema.json`, checked by
+  `content:validate` through `tools/content/looks-catalog.mjs`): `coats` (empty until #666),
+  `nameplates` (plain, ribbon, leafy, starry) and `titles` (the three starters and the earned ones
+  #669 will grant), each with an `unlock` rule. The client bundles it (`world/hero-name.ts`).
+- **The table.** `LOOK_EDIT` (server `handlers/look-edit.ts`), the lobby and rests only, her own
+  player only, carried by the run's commit like `KIT_EDIT`. A stale revision is refused; when the
+  table's view of her look is behind her row, the refusal still commits the refreshed view, so the
+  refused phone shows the look as it now stands and its next tap lands. A live room also reads her
+  look afresh as each downtime moment begins (`syncCampDowntime`).
+- **The book.** The kit's queue, sender and endpoint (`POST /api/journal/kit`), with `coat`,
+  `nameplate` and `title` as change kinds beside the kit's (shared `BookEditField`); the answer
+  carries `look`. Her look is written first (`mutateLook`), then her kit.
+- **The frames' art** is declared in `assets/manifest.json` → `nameplateFrames`, whose `ids` list
+  only what is delivered (none yet); `art:inventory` owes the rest. Until a frame is listed the
+  plain plate is drawn and nothing is requested.
+- **The TV** (`world/nameplate.ts` `dressNameplate`, `fitNameDress`, `crowdedTitles`): the name
+  untouched, the title a sibling `Text` under it at 0.6 of its drawn size, the frame a nine-slice
+  sprite behind both. On the lineup a title shows at 14px at 720p and up; on the board, framed by
+  the fight camera's seven-tile window, the same rule hides it at today's type sizes.
+- **The DOM** (`screens/HeroName.tsx`): the lobby cards, the phone's sheet and party strip, the
+  character sheet, the chapter's end, the book's hero picks and profile. A hero with no look
+  renders her name alone, as before.
+- **The editors** (`screens/LookEditor.tsx`): `BookLook` on the book's Look page
+  (`screens/LookPane.tsx`, beside Camp on the tray) and the compact `LookEditor` in the phone's
+  camp panel.
 
 ## 4. The coloured region
 

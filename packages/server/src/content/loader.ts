@@ -43,6 +43,7 @@ import type {
   GraphProof,
   ItemCatalog,
   ItemDef,
+  LookCatalog,
   ParsedCampaignGraph,
   RulesContent,
   Scene,
@@ -164,6 +165,12 @@ export interface ContentStore {
    * shop, which is thin, not broken. `content:validate` checks the shipped one.
    */
   campCatalog(): CampCatalog | null;
+  /**
+   * `content/looks.json` — the hero looks catalog (docs/hero-looks.md §3.1,
+   * #664): coats, nameplate frames and titles. `null` when the content set has
+   * none: then no look can be chosen, and every hero draws as before looks.
+   */
+  looksCatalog(): LookCatalog | null;
 }
 
 class LoadedContent implements ContentStore {
@@ -178,7 +185,12 @@ class LoadedContent implements ContentStore {
     private readonly _world: WorldMap | null = null,
     private readonly _bestiary: Bestiary | null = null,
     private readonly _campCatalog: CampCatalog | null = null,
+    private readonly _looksCatalog: LookCatalog | null = null,
   ) {}
+
+  looksCatalog(): LookCatalog | null {
+    return this._looksCatalog;
+  }
 
   world(): WorldMap | null {
     return this._world;
@@ -437,7 +449,12 @@ async function readAll(root: string): Promise<ContentStore> {
   // checks the shipped one, so here it only has to be shaped like one.
   const campFile = await readJson<CampCatalog>(path.join(root, "camp.json"), []);
   const camp = campFile && Array.isArray(campFile.crewPieces) && Array.isArray(campFile.shops) ? campFile : null;
-  return new LoadedContent(root, rules, items, chapters, maps, abilities, campaigns, world, bestiary, camp);
+  // The hero looks catalog (#664), optional the same way.
+  const looksFile = await readJson<LookCatalog>(path.join(root, "looks.json"), []);
+  const looks = looksFile && Array.isArray(looksFile.nameplates) && Array.isArray(looksFile.titles)
+    ? { coats: Array.isArray(looksFile.coats) ? looksFile.coats : [], nameplates: looksFile.nameplates, titles: looksFile.titles }
+    : null;
+  return new LoadedContent(root, rules, items, chapters, maps, abilities, campaigns, world, bestiary, camp, looks);
 }
 
 /**
