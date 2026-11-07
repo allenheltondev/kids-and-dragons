@@ -128,6 +128,14 @@ export interface CampaignView {
    */
   next: { index: number; title: string; biome?: string } | null;
   /**
+   * The chapter this attempt most recently finished, where the crew last made
+   * camp: the lobby pitches the camp in its `biome` (docs/camp.md §3.1;
+   * owner, 2026-11-06), falling back to `next` before any chapter is
+   * finished. Absent when nothing is finished, or on runs persisted before it
+   * existed.
+   */
+  last?: { index: number; title: string; biome?: string };
+  /**
    * Set by the chapter completion that ended the attempt — the campaign was
    * finished (the gains are kept for good) or failed at its setback limit (the
    * gains are taken back, a souvenir is kept). Cleared when a chapter starts.
