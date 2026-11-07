@@ -34,12 +34,16 @@
   container-type: inline-size;
 }
 
-/* A name on a tile stays whole on one line, made smaller to fit, never broken. */
-.book-look__tile-art .hero-name {
+/* A name on a tile, plain or styled (LookEditor.tsx `NamePreview`), stays whole on
+   one line, made smaller to fit its tile, never broken or cut off. */
+.book-look__tile-art .look-name-preview {
+  display: block;
+  max-inline-size: 100%;
   font-size: min(1.05rem, calc(155cqi / var(--name-len, 8)));
+  white-space: nowrap;
 }
 
-.book-look__tile-art .hero-name__name {
+.look-name-preview .hero-name__name {
   overflow-wrap: normal;
   white-space: nowrap;
 }

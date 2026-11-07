@@ -32,7 +32,7 @@
  */
 
 import { useEffect, useId, useRef, useState } from "react";
-import type { ReactElement } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { PLAIN_NAMEPLATE } from "@kad/shared";
 import type { ClientIntent, CoatPart, HeroLookView, LookEdit, PartyMember, ResolvedCharacter } from "@kad/shared";
 import { Icon } from "./icons";
@@ -189,7 +189,7 @@ function ShelfTiles({ shelf, hero, look, edit, tile }: {
                 label: choice.name,
                 onTap: () => edit(change),
                 data: { "data-nameplate": choice.id },
-                preview: <HeroName name={name} look={trying(look, change)} style={{ ...heroNameStyle(trying(look, change)), title: null }} />,
+                preview: <NamePreview><HeroName name={name} look={trying(look, change)} style={{ ...heroNameStyle(trying(look, change)), title: null }} /></NamePreview>,
                 source: look.sources?.[choice.id],
               })}
             </span>
@@ -205,7 +205,7 @@ function ShelfTiles({ shelf, hero, look, edit, tile }: {
         label: "No title",
         onTap: () => edit({ title: null }),
         data: { "data-title": "" },
-        preview: <span>{name}</span>,
+        preview: <NamePreview><HeroName name={name} look={trying(look, { title: null })} /></NamePreview>,
       })}
       {lookChoices("title", look).map((choice) => (
         <span key={choice.id} style={{ display: "contents" }}>
@@ -214,13 +214,22 @@ function ShelfTiles({ shelf, hero, look, edit, tile }: {
             label: choice.name,
             onTap: () => edit({ title: choice.id }),
             data: { "data-title": choice.id },
-            preview: <HeroName name={name} look={trying(look, { title: choice.id })} />,
+            preview: <NamePreview><HeroName name={name} look={trying(look, { title: choice.id })} /></NamePreview>,
             source: look.sources?.[choice.id],
           })}
         </span>
       ))}
     </>
   );
+}
+
+/**
+ * A name on a tile, plain or styled: one wrapper whatever HeroName returns (a
+ * bare name has no frame and no title, and so no element of its own), so the
+ * tile's one-line, shrink-to-fit rule (LookEditor.css) reaches every one.
+ */
+function NamePreview({ children }: { children: ReactNode }): ReactElement {
+  return <span className="look-name-preview" data-testid="look-name-preview">{children}</span>;
 }
 
 /** A colour's dot beside its name: the tile's hero shows it, this names it at a glance. */
