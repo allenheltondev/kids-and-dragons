@@ -304,7 +304,12 @@ const FIRST_PAINT_BUDGET_KB = 332;
 // before. Most of it is the 42 accent colours and the specials in the looks
 // catalog, bundled where #666's colours are; the rest the second colour shelf
 // and the Special shelf, and the swap's lightness and chroma histograms. 2KB of slack again.
-const TOTAL_BUDGET_KB = 1773;
+// 1773 -> 1776 for the 24 base paintings' colour masks (#667): 1774KB measured with
+// main's retention work (#681) in, first paint 329KB unchanged. The growth is the
+// mask list in assets/manifest.json (coatMasks.paintings), which the client bundles
+// so it never asks for a mask that doesn't exist: with the list emptied the total is
+// 1773KB. The masks themselves are fetched assets, not bundle. 2KB of slack again.
+const TOTAL_BUDGET_KB = 1776;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);
